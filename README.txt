@@ -10,6 +10,7 @@ nginx
 gnuplot
 php
 python
+DHT_Read (now depreciated, originally named Adafruit_DHT.c from https://github.com/adafruit/Adafruit-Raspberry-Pi-Python-Code/tree/master/Adafruit_DHT_Driver)
 gpio (raspberry pi-specific)
 
 HARDWARE
