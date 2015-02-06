@@ -37,7 +37,7 @@ place contents of /www in your web root directory.
 SETUP
 Create login credentials for the web interface:
 1. Uncomment line 25 of auth.php and load it in your browser.
-2. Enter a name and click submit
+2. Enter a name and click submit.
 3. Copy the Hash from the next page and replace the warning in the quotes of $Password1 or $Password2 of auth.php.
 4. Change the user name in auth.php and recomment line 25.
 
@@ -46,5 +46,5 @@ Set up sensor data logging and relay changing by adding the following lines to c
 */2 * * * * /var/www/mycodo/mycodo-auto
 
 Go to http://localhost/graph/index.php
-Log in with the credentials you created earlier
+Log in with the credentials you created earlier.
 You should see the menu to the left with the current humidity and temperature and a graph to the right with the corresponding values.
