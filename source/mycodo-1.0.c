@@ -1,4 +1,8 @@
 /* MycoDo - Regulate temperature and humidity with raspberryPi and DHT22 sensor
+   by Kyle Gabriel
+   KyleGabriel.com
+   2012 - 2015
+   
    To compile: gcc mycodo-1.0.c -I/usr/local/include -L/usr/local/lib -lwiringPi -o mycodo
    To execute: sudo mycodo `sudo /var/www/bin/mycodo-sense.py -d`
  */
