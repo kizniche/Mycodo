@@ -15,12 +15,12 @@ gpio (raspberry pi-specific)
 
 HARDWARE
 Raspberry Pi
-Relays (4x)
-DHT22 temperature/humidity sensor
+Relays (Keyes Funduino 4 opto-isolated relay board)
+Temperature/humidity sensor (DHT22)
 Humidifier
 Heater
 Circulatory Fan
-Secondary Fan (HEPA filter recommended)
+Exhaust Fan (HEPA filter recommended)
 
 Connect the pins as follows:
 Relay1, Exhaust Fan: GPIO 23, pin 16
