@@ -21,7 +21,7 @@ function page_menu ($page)
         <div style='padding:1px 2px 2px 3px; float: center; color: #000; font-size: 11px; font-family: verdana;'>
 	Last sensor read<br>
         <?php
-        $sdatapath="/var/www/mycodo/PiSensorData";
+        $sdatapath = getcwd() . "/mycodo/PiSensorData";
         echo `tail -n 1 $sdatapath | cut -d' ' -f1,2,3,4,5,6`;
 	?>
 	</div></td></tr>
