@@ -6,21 +6,46 @@
 */
 
 SOFTWARE
+
+git
 nginx
 gnuplot
 php
 python
-DHT_Read (now depreciated, originally named Adafruit_DHT.c from https://github.com/adafruit/Adafruit-Raspberry-Pi-Python-Code/tree/master/Adafruit_DHT_Driver)
+Adafruit_Python_DHT
 gpio (raspberry pi-specific)
 
+
 HARDWARE
+
 Raspberry Pi
 Relays (Keyes Funduino 4 opto-isolated relay board)
-Temperature/humidity sensor (DHT22)
+DHT22 Temperature/humidity sensor
 Humidifier
 Heater
 Circulatory Fan
 Exhaust Fan (HEPA filter recommended)
+
+
+STEPS (From a fresh Raspbian install)
+
+1. Update and install essential software
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install build-essential python-dev gnuplot git
+
+2. Download the latest code for the controller and web interface
+cd /var/www
+sudo git clone https://github.com/kizniche/Automated-Mushroom-Cultivator /var/www/graph
+
+3. Download Adafruit_Python_DHT
+cd graph
+sudo mkdir Python_DHT
+sudo svn checkout https://github.com/adafruit/Adafruit_Python_DHT/trunk/
+sudo python setup.py install
+
+
+
 
 Connect the pins as follows:
 Relay1, Exhaust Fan: GPIO 23, pin 16
