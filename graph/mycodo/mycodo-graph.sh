@@ -1,7 +1,7 @@
 #!/bin/bash
 
-IMAGEPATH="/var/www/graph"
-DATAPATH="/var/www/mycodo"
+DATAPATH=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+IMAGEPATH="$(dirname "$DATAPATH")"
 
 usage() {
   echo Usage: $0 "[OPTION]"

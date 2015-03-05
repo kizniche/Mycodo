@@ -51,7 +51,7 @@ function open_legend_full()
                         else echo "<meta http-equiv='refresh' content='2;url=index.php'>";
                         break;
 		case 'Main':
-                                echo `/var/www/mycodo/mycodo-graph.sh dayweek`;
+                                echo `__DIR__/mycodo/mycodo-graph.sh dayweek`;
                                 echo "<img src=graph-main.png>";
                                 break;
 			case '1 Hour':
