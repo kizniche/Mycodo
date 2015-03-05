@@ -13,7 +13,7 @@ gnuplot
 php
 python
 Adafruit_Python_DHT
-gpio (raspberry pi-specific)
+gpio (WiringPi)
 
 
 HARDWARE
@@ -29,22 +29,25 @@ Exhaust Fan (HEPA filter recommended)
 
 STEPS (From a fresh Raspbian install)
 
-1. Update and install essential software
+1. Update
 sudo apt-get update
 sudo apt-get upgrade
-sudo apt-get install build-essential python-dev gnuplot git
 
-2. Download the latest code for the controller and web interface
-cd /var/www
+2. Install essential software
+sudo apt-get install build-essential python-dev gnuplot git-core
+
+3. Download the latest code for the controller, web interface, and Adafruit_Python_DHT
 sudo git clone https://github.com/kizniche/Automated-Mushroom-Cultivator /var/www/graph
+sudo git clone git://git.drogon.net/wiringPi /var/www/graph/source/WiringPi
+sudo git clone https://github.com/adafruit/Adafruit_Python_DHT /var/www/graph/source/Python_DHT
 
-3. Download Adafruit_Python_DHT
-cd graph
-sudo mkdir Python_DHT
-sudo svn checkout https://github.com/adafruit/Adafruit_Python_DHT/trunk/
+5. Compile WiringPi and DHT python library
+cd /var/www/graph/source/WiringPi
+sudo ./build
+
+cd /var/www/graph/source/Python_DHT
 sudo python setup.py install
-
-
+sudo cp /var/www/graph/source/Python_DHT/
 
 
 Connect the pins as follows:

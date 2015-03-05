@@ -9,25 +9,29 @@
 
 include "auth.php";
 
+/* Where gpio (WiringPi) located */
+$gpio_path = "/usr/local/bin/gpio";
+
 /* Where scripts stored */
-$dir = getcwd() . "/mycodo/";
-$sensordata_file = $dir . "PiSensorData";
+$main_path = getcwd() . "/mycodo/";
+$sensordata_file = $main_path . "PiSensorData";
+$config_file = $main_path . "mycodo.conf";
 
 function webor($state)
 {
-    global $dir;
+    global $main_path;
     
     if ($state) {
-        $command     = $dir . "mycodo r";
+        $command     = $main_path . "mycodo r";
         $readconfig  = shell_exec($command);
         $cpiece      = explode(" ", $editconfig);
-        $writeconfig = $dir . "mycodo w " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " 1 " . $cpiece[5] . " " . $cpiece[6] . "\n";
+        $writeconfig = $main_path . "mycodo w " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " 1 " . $cpiece[5] . " " . $cpiece[6] . "\n";
         shell_exec($exec);
     } else {
-        $command    = $dir . "mycodo r";
+        $command    = $main_path . "mycodo r";
         $readconfig = shell_exec($command);
         $cpiece     = explode(" ", $editconfig);
-        $editconfig = $dir . "mycodo w " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " 0 " . $cpiece[5] . " " . $cpiece[6] . "\n";
+        $editconfig = $main_path . "mycodo w " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " 0 " . $cpiece[5] . " " . $cpiece[6] . "\n";
         shell_exec($editconfig);
     }
 }
@@ -109,44 +113,45 @@ if ($_POST['SubmitMode']) {
     $hiTemp     = $_POST['hiTemp'];
     $offHum     = $_POST['offHum'];
     $onHum      = $_POST['onHum'];
-    $command    = $dir . "mycodo r";
+    $command    = $main_path . "mycodo r";
     $editconfig = shell_exec($command);
     $cpiece     = explode(" ", $editconfig);
-    $editconfig = $dir . "mycodo w " . $offTemp . " " . $onTemp . " " . $offHum . " " . $onHum . " " . $cpiece[4] . " " . $cpiece[5] . " " . $cpiece[6] . "\n";
+    $editconfig = $main_path . "mycodo w " . $offTemp . " " . $onTemp . " " . $offHum . " " . $onHum . " " . $cpiece[4] . " " . $cpiece[5] . " " . $cpiece[6] . "\n";
     exec($editconfig);
 }
 if ($_POST['SubmitMode2']) {
     $webov      = $_POST['webov'];
     $tState     = $_POST['tState'];
     $hState     = $_POST['hState'];
-    $command    = $dir . "mycodo r";
+    $command    = $main_path . "mycodo r";
     $editconfig = shell_exec($command);
     $cpiece     = explode(" ", $editconfig);
-    $editconfig = $dir . "mycodo w " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " " . $webov . " " . $tState . " " . $hState . "\n";
+    $editconfig = $main_path . "mycodo w " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " " . $webov . " " . $tState . " " . $hState . "\n";
     exec($editconfig);
 }
 if ($_POST['1secON']) {
     $sR1 = $_POST['sR1'];
-    exec(sprintf("%s/mycodo-relay.sh 1 %s > /dev/null 2>&1", $dir, $sR1));
+    exec(sprintf("%s/mycodo-relay.sh 1 %s > /dev/null 2>&1", $main_path, $sR1));
 }
 if ($_POST['2secON']) {
     $sR2 = $_POST['sR2'];
-    exec(sprintf("%s/mycodo-relay.sh 2 %s > /dev/null 2>&1", $dir, $sR2));
+    exec(sprintf("%s/mycodo-relay.sh 2 %s > /dev/null 2>&1", $main_path, $sR2));
 }
 if ($_POST['3secON']) {
     $sR3 = $_POST['sR3'];
-    exec(sprintf("%s/mycodo-relay.sh 3 %s > /dev/null 2>&1", $dir, $sR3));
+    exec(sprintf("%s/mycodo-relay.sh 3 %s > /dev/null 2>&1", $main_path, $sR3));
 }
 if ($_POST['4secON']) {
     $sR4 = $_POST['sR4'];
-    exec(sprintf("%s/mycodo-relay.sh 4 %s > /dev/null 2>&1", $dir, $sR4));
+    exec(sprintf("%s/mycodo-relay.sh 4 %s > /dev/null 2>&1", $main_path, $sR4));
 }
 
 echo '<html><body><head><title>Relay Control and Configuration</title>';
 if ($_GET['r'] == 1) {
     echo "<META HTTP-EQUIV=\"refresh\" CONTENT=\"90\">";
 }
-echo '</head><body><center><table><tr><td align=center><table bgcolor="#cccccc" cellpadding=5><tr><td align=left><div style="float: center; color: #000; font-size: 13px; font-family: verdana;"><center>';
+echo '</head><body><center><table><tr><td align=center>';
+echo '<table bgcolor="#cccccc" cellpadding=5><tr><td align=left><div style="float: center; color: #000; font-size: 13px; font-family: verdana;"><center>';
 echo "<table align=left><tr><td align=right>Current time: ", `date +"%Y %m %d %H %M %S"`;
 echo "<br>Last read: ", `tail -n 1 $sensordata_file | cut -d' ' -f1,2,3,4,5,6`, "</td><td align=right><a href=\"changemode.php\">Refresh</a></td></tr></table></td></tr><tr><td>";
 echo "RH: <b>", `tail -n 1 $sensordata_file | cut -d' ' -f8`, "%</b> | ";
@@ -158,16 +163,18 @@ echo "DP: <b>", round($dp_c, 1);
 echo "&deg;C / ", `tail -n 1 $sensordata_file | cut -d' ' -f11`, "&deg;F</b>";
 echo '</center></div></td></tr></table></td></tr><tr><td align=center><table cellpadding=2>';
 echo "<FORM action=\"\" method=\"POST\">";
-$sconfigpath = "/var/www/mycodo/mycodo.conf";
+
 echo "<p><tr><td>Web Override: <b>";
-if (`/var/www/mycodo/mycodo r | cut -d' ' -f5` == 1)
+$webor_read = $main_path . "mycodo r | cut -d' ' -f5";
+if (shell_exec($webor_read) == 1)
     echo "ON";
 else
     echo "OFF";
 echo "</b></td><td align=left>[<input type=\"submit\" name=\"OR\" value=\"ON\"> <input type=\"submit\" name=\"OR\" value=\"OFF\">]";
 
 echo "</td></tr><tr><td>Relay 1 (HEPA): <b>";
-if (`/usr/local/bin/gpio read 4` == 1)
+$read = $gpio_path . " read 4";
+if (shell_exec($read) == 1)
     echo "ON";
 else
     echo "OFF";
@@ -176,7 +183,8 @@ echo "] [<input type=\"text\" maxlength=3 size=3 name=\"sR1\" />sec ";
 echo "<input type=\"submit\" name=\"1secON\" value=\"ON\">]";
 
 echo "</td></tr><tr><td>Relay 2 (HUMI): <b>";
-if (`/usr/local/bin/gpio read 3` == 1)
+$read = $gpio_path . " read 3";
+if (shell_exec($read) == 1)
     echo "ON";
 else
     echo "OFF";
@@ -185,7 +193,8 @@ echo "] [<input type=\"text\" maxlength=3 size=3 name=\"sR2\" />sec ";
 echo "<input type=\"submit\" name=\"2secON\" value=\"ON\">]";
 
 echo "</td></tr><tr><td>Relay 3 (CFAN): <b>";
-if (`/usr/local/bin/gpio read 1` == 1)
+$read = $gpio_path . " read 1";
+if (shell_exec($read) == 1)
     echo "ON";
 else
     echo "OFF";
@@ -194,7 +203,8 @@ echo " [<input type=\"text\" maxlength=3 size=3 name=\"sR3\" />sec ";
 echo "<input type=\"submit\" name=\"3secON\" value=\"ON\">]";
 
 echo "</td></tr><tr><td>Relay 4 (HEAT): <b>";
-if (`/usr/local/bin/gpio read 0` == 1)
+$read = $gpio_path . " read 0";
+if (shell_exec($read) == 1)
     echo "ON";
 else
     echo "OFF";
@@ -203,15 +213,15 @@ echo " [<input type=\"text\" maxlength=3 size=3 name=\"sR4\" />sec ";
 echo "<input type=\"submit\" name=\"4secON\" value=\"ON\">]</td></tr></table>";
 echo "<table><tr><td></td><td>MnT</td><td>MxT</td><td>MnH</td><td>MxH</td></tr>";
 echo "<tr><td><input type=\"submit\" name=\"SubmitMode\" value=\"Set\"></td>";
-echo "<td><input type=\"text\" value=\"", `cat $sconfigpath | tr '\n' ' ' | tr -d ';' | cut -d' ' -f3`, "\" maxlength=2 size=1 name=\"offTemp\" /></td>";
-echo "<td><input type=\"text\" value=\"", `cat $sconfigpath | tr '\n' ' ' | tr -d ';' | cut -d' ' -f6`, "\" maxlength=2 size=1 name=\"onTemp\" /></td>";
-echo "<td><input type=\"text\" value=\"", `cat $sconfigpath | tr '\n' ' ' | tr -d ';' | cut -d' ' -f9`, "\" maxlength=2 size=1 name=\"offHum\" /></td>";
-echo "<td><input type=\"text\" value=\"", `cat $sconfigpath | tr '\n' ' ' | tr -d ';' | cut -d' ' -f12`, "\" maxlength=2 size=1 name=\"onHum\" /></td></tr>";
+echo "<td><input type=\"text\" value=\"", `cat $config_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f3`, "\" maxlength=2 size=1 name=\"offTemp\" /></td>";
+echo "<td><input type=\"text\" value=\"", `cat $config_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f6`, "\" maxlength=2 size=1 name=\"onTemp\" /></td>";
+echo "<td><input type=\"text\" value=\"", `cat $config_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f9`, "\" maxlength=2 size=1 name=\"offHum\" /></td>";
+echo "<td><input type=\"text\" value=\"", `cat $config_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f12`, "\" maxlength=2 size=1 name=\"onHum\" /></td></tr>";
 echo "<tr><td></td><td>wOV</td><td>tSta</td><td>hSta</td></tr>";
 echo "<tr><td><input type=\"submit\" name=\"SubmitMode2\" value=\"Set\"></td>";
-echo "<td><input type=\"text\" value=\"", `cat $sconfigpath | tr '\n' ' ' | tr -d ';' | cut -d' ' -f15`, "\" maxlength=2 size=1 name=\"webov\" /></td>";
-echo "<td><input type=\"text\" value=\"", `cat $sconfigpath | tr '\n' ' ' | tr -d ';' | cut -d' ' -f18`, "\" maxlength=2 size=1 name=\"tState\" /></td>";
-echo "<td><input type=\"text\" value=\"", `cat $sconfigpath | tr '\n' ' ' | tr -d ';' | cut -d' ' -f21`, "\" maxlength=2 size=1 name=\"hState\" /></td>";
+echo "<td><input type=\"text\" value=\"", `cat $config_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f15`, "\" maxlength=2 size=1 name=\"webov\" /></td>";
+echo "<td><input type=\"text\" value=\"", `cat $config_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f18`, "\" maxlength=2 size=1 name=\"tState\" /></td>";
+echo "<td><input type=\"text\" value=\"", `cat $config_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f21`, "\" maxlength=2 size=1 name=\"hState\" /></td>";
 echo "</tr></table></td></tr></table></FORM><p>";
 ?>
 </center>
