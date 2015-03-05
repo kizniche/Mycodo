@@ -1,12 +1,11 @@
 <?php
 /*
 *
-*  Menu script
+*  menu.php - The navigation menu of the control interface
 *  By Kyle Gabriel
 *  2012 - 2015
 *
 */
-
 
 $main_path = getcwd() . "/mycodo";
 $sensordata_file = $main_path . "/PiSensorData";
@@ -17,7 +16,9 @@ function menu_item($id, $title, $current) {
 
 	echo '<tr><td class=' . $class . '>';
 	echo '<a href="index.php?';
-	if ($_GET['r'] == 1) { echo 'r=1&'; }
+	if (isset($_GET['r'])){
+		if ($_GET['r'] == 1) { echo 'r=1&'; }
+	}
 	echo 'page=' . $id. '">' . $title . '</a></td></tr>';
 }
 
@@ -33,9 +34,9 @@ function page_menu ($page) {
     echo `tail -n 1 $sensordata_file | cut -d' ' -f1,2,3,4,5,6`;
 
 	echo '</div></td></tr><tr bgcolor="#cccccc" cellpadding=5><td align=right><span style="padding:1px 2px 2px 7px; display:inline; float: left; color: #000; font-size: 11px; font-family: verdana;">';
-	chdir($main_path);
-    echo '<p>T <b>' , `tail -n 1 $sensordata_file | cut -d' ' -f9` , '&deg;C</b> (' ,  `tail -n 1 $sensordata_file | cut -d' ' -f10` , '&deg;F)<br> ( ' , `$mycodo_file r | cut -d' ' -f1` , ' - ' , `$main_path/mycodo r | cut -d' ' -f2` , ' )<p>';
-    echo '<p>RH <b>' , `tail -n 1 $sensordata_file | cut -d' ' -f8` , '%</b> ( ' , `$main_path/mycodo r | cut -d' ' -f3` , ' - ' , `$main_path/mycodo r | cut -d' ' -f4` , ')<p>';
+
+    echo '<p>T <b>' , `tail -n 1 $sensordata_file | cut -d' ' -f9` , '&deg;C</b> (' ,  `tail -n 1 $sensordata_file | cut -d' ' -f10` , '&deg;F)<br> ( ' , `$mycodo_file -r | cut -d' ' -f1` , ' - ' , `$mycodo_file -r | cut -d' ' -f2` , ' )<p>';
+    echo '<p>RH <b>' , `tail -n 1 $sensordata_file | cut -d' ' -f8` , '%</b> ( ' , `$mycodo_file -r | cut -d' ' -f3` , ' - ' , `$mycodo_file -r | cut -d' ' -f4` , ')<p>';
     $dp_c = `tail -n 1 $sensordata_file | cut -d' ' -f11`;
     $dp_c = ($dp_c-32)*5/9;
     echo 'DP <b>' , round($dp_c, 1);
@@ -53,11 +54,10 @@ function page_menu ($page) {
 	echo '<tr><td class=link>Legend: <a href="javascript:open_legend()">Brief</a> - <a href="javascript:open_legend_full()">Full</a></td></tr>
 	<tr><td class=link>Ref (90s): ';
 	
-	if ($_GET['r'] == 1) {
-		echo '<b>On</b> / <a href="index.php?page=$page">Off</a>';
-	} else { 
-		echo '<a href="index.php?page=$page&r=1">On</a> / <b>Off</b>';
-	}
+	if (isset($_GET['r'])) {
+		if ($_GET['r'] == 1) echo '<b>On</b> / <a href="index.php?page=$page">Off</a>';
+		else echo '<a href="index.php?page=$page&r=1">On</a> / <b>Off</b>';
+	} else echo '<a href="index.php?page=$page&r=1">On</a> / <b>Off</b>';
 	
 	echo '</td></tr>';
 	echo '<tr><td class=link><a href="his.php" target="_blank">Log History</a></td></tr>';
