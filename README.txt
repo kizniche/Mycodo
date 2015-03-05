@@ -30,26 +30,42 @@ build-essential
 
 
 ---- INSTALL ----
-# Update
+# Update #
+
 sudo apt-get update
+
 sudo apt-get upgrade
 
-# Install essential software
+
+# Install essential software #
+
 sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev
 
-# Download the latest code for the controller, web interface, and Adafruit_Python_DHT
+
+# Download the latest code for the controller, web interface, and Adafruit_Python_DHT #
+
 sudo git clone https://github.com/kizniche/Automated-Mushroom-Cultivator /var/www/graph
+
 sudo git clone git://git.drogon.net/wiringPi /var/www/graph/source/WiringPi
+
 sudo git clone https://github.com/adafruit/Adafruit_Python_DHT /var/www/graph/source/Python_DHT
 
-# Compile temperature/humidity controller
+
+# Compile temperature/humidity controller #
+
 gcc /var/www/graph/source/mycodo-1.9.c -I/usr/local/include -L/usr/local/lib -lconfig -lwiringPi -o /var/www/graph/mycodo/mycodo
 
-# Compile WiringPi and DHT python library
+
+# Compile WiringPi and DHT python library #
+
 cd /var/www/graph/source/WiringPi
+
 sudo ./build
+
 cd /var/www/graph/source/Python_DHT
+
 sudo python setup.py install
+
 
 # Create login credentials for the web interface:
 # Uncomment line 25 of auth.php and go to http://localhost/graph/index.php
