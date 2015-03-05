@@ -116,8 +116,6 @@ int main(int argc, char *argv[]) {
 		exit(2);
 	}
 	config_file_path = concat(cwd, file_name);
-	//strcpy (config_file_path, cwd);
-	//strcpy (config_file_path, file_name);
 	
 	if (!argc) {
 		printf("Missing input argument!\n");
