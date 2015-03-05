@@ -14,7 +14,8 @@ php
 python
 Adafruit_Python_DHT
 gpio (WiringPi)
-
+libconfig-dev
+build-essential
 
 HARDWARE
 
@@ -34,12 +35,17 @@ sudo apt-get update
 sudo apt-get upgrade
 
 2. Install essential software
-sudo apt-get install build-essential python-dev gnuplot git-core
+sudo apt-get install build-essential python-dev gnuplot git-core libconfig-dev
 
 3. Download the latest code for the controller, web interface, and Adafruit_Python_DHT
 sudo git clone https://github.com/kizniche/Automated-Mushroom-Cultivator /var/www/graph
 sudo git clone git://git.drogon.net/wiringPi /var/www/graph/source/WiringPi
 sudo git clone https://github.com/adafruit/Adafruit_Python_DHT /var/www/graph/source/Python_DHT
+
+4. Compile temperature/humidity controller
+cd /var/www/graph/source
+gcc mycodo-1.0.c -I/usr/local/include -L/usr/local/lib -lconfig -lwiringPi -o mycodo
+mv ./mycodo ../mycodo/mycodo
 
 5. Compile WiringPi and DHT python library
 cd /var/www/graph/source/WiringPi
@@ -48,6 +54,9 @@ sudo ./build
 cd /var/www/graph/source/Python_DHT
 sudo python setup.py install
 sudo cp /var/www/graph/source/Python_DHT/
+
+
+**** NEEDS TO BE COMPLETED **** WORK IN PROGRESS ****
 
 
 Connect the pins as follows:

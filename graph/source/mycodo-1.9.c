@@ -1,4 +1,8 @@
 /* MycoDo - Regulate temperature and humidity with raspberryPi and DHT22 sensor
+   by Kyle Gabriel
+   KyleGabriel.com
+   2012 - 2015
+   
    To compile: gcc mycodo-1.0.c -I/usr/local/include -L/usr/local/lib -lconfig -lwiringPi -o mycodo
    To change relays: sudo mycodo `sudo /var/www/mycodo/mycodo-sense.py -d`
    To write config: sudo mycodo w [minTemp] [maxTemp] [minHum] [maxHum] [webOR] [tempState] [humState]
@@ -11,9 +15,23 @@
 #include <time.h>
 #include <limits.h>
 #include <libconfig.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 // Main configuration file
-char *config_file_name = "/var/www/mycodo/mycodo.conf";
+char* concat(char *s1, char *s2){
+    char *result = malloc(strlen(s1)+strlen(s2)+1);//+1 for the zero-terminator
+    //in real code you would check for errors in malloc here
+    strcpy(result, s1);
+    strcat(result, s2);
+    return result;
+}
+
+char *cwd;
+char *config_file_path;
+char *file_name = "/mycodo.conf";
+//char *config_file_path = "/var/www/mycodo/mycodo.conf";
 
 // Relay1 HEPA Pin - wiringPi pin 4 is BCM_GPIO 23, GPIO4
 // Relay2 HUMI Pin - wiringPi pin 3 is BCM_GPIO 22, GPIO3
@@ -92,10 +110,16 @@ int webOR = 0;
 int tempState = 2;
 int humState = 2;
 
-int main( int argc, char *argv[] )
-{
-	if (!argc)
-	{
+int main(int argc, char *argv[]) {
+	if ((cwd = getcwd(NULL, 64)) == NULL) {
+		perror("pwd");
+		exit(2);
+	}
+	config_file_path = concat(cwd, file_name);
+	//strcpy (config_file_path, cwd);
+	//strcpy (config_file_path, file_name);
+	
+	if (!argc) {
 		printf("Missing input argument!\n");
 		return 1;
 	}
@@ -111,16 +135,10 @@ int main( int argc, char *argv[] )
 		tempState = atoi(argv[7]);
 		humState = atoi(argv[8]);
 		writeCfg();
-	}
-
-	// read config file and print only variable values to screen
-	else if (strcmp(argv[1], "r") == 0) {
+	} else if (strcmp(argv[1], "r") == 0) { // read config file and print only variable values to screen
 		readCfg();
 		printf("%i %i %i %i %i %i %i\n", minTemp, maxTemp, minHum, maxHum, webOR, tempState, humState);
-	}
-
-	else {
-		// convert string input to int
+	} else { // convert string input to int
 		year = atoi(argv[1]);
 		month  = atoi(argv[2]);
 		day  = atoi(argv[3]);
@@ -132,22 +150,25 @@ int main( int argc, char *argv[] )
 		temp = atof(argv[9]);
 
 		// read config file and set variables
-		printf("\n%s:%s:%s %i Read config file %s",  argv[4], argv[5], argv[6], timestampL, config_file_name);
+		printf("\n%s:%s:%s %i Read config file %s",  argv[4], argv[5], argv[6], timestampL, config_file_path);
 		readCfg();
 		printf("\nminTemp: %i, maxTemp: %i, minHum: %i, maxHum: %i, webOR: %i, tempState: %i, humState: %i", minTemp, maxTemp, minHum, maxHum, webOR, tempState, humState);
 		printf("\n%s:%s:%s %i Read sensors", argv[4], argv[5], argv[6], timestampL);
-		if ( tempState == 2 ) printf("\nTemperature: %.1f  Range: (%i - %i) %.1f deg. from minTemp. ", temp, minTemp, maxTemp, temp - minTemp);
+		if (tempState == 2) printf("\nTemperature: %.1f  Range: (%i - %i) %.1f deg. from minTemp. ", temp, minTemp, maxTemp, temp - minTemp);
 		else printf("\nTemperature: %.1f  Range: (%i - %i) %.1f deg. from minTemp. ", temp, minTemp, maxTemp, minTemp - temp);
 
 		// read temperature sensor
 		CheckTemp();
 
-		if ( humState == 2 ) printf("\nHumidity:    %.1f  Range: (%i - %i) %.1f%% from minHum. ", hum, minHum, maxHum, hum - minHum);
-		else printf("\nHumidity:    %.1f  Range: (%i - %i) %.1f%% from minHum. ", hum, minHum, maxHum, minHum - hum);
+		if (humState == 2) {
+			printf("\nHumidity:    %.1f  Range: (%i - %i) %.1f%% from minHum. ", hum, minHum, maxHum, hum - minHum);
+		} else printf("\nHumidity:    %.1f  Range: (%i - %i) %.1f%% from minHum. ", hum, minHum, maxHum, minHum - hum);
+		
 		CheckHum();
 
-		if (!webOR) { ChangeRelays ( maxTemp - temp, maxHum - hum ); }
-		else { 
+		if (!webOR) {
+			ChangeRelays ( maxTemp - temp, maxHum - hum );
+		} else { 
 			printf("\nWebOverride activated - No relay change!");
 			printf("\nWaiting 60 seconds.\n");
 			sleep ( 60 );
@@ -164,8 +185,7 @@ int readCfg (void)
 	config_init(&cfg);
 
 	/* Read the file. If there is an error, report it and exit. */
-	if (!config_read_file(&cfg, config_file_name))
-	{
+	if (!config_read_file(&cfg, config_file_path)) {
 		printf("\n%s:%d - %s", config_error_file(&cfg), config_error_line(&cfg), config_error_text(&cfg));
 		config_destroy(&cfg);
 		return -1;
@@ -215,8 +235,7 @@ int writeCfg (void)
 
 	config_init(&cfg);
 
-	if (!config_read_file(&cfg, config_file_name))
-	{
+	if (!config_read_file(&cfg, config_file_path)) {
 		printf("\n%s:%d - %s", config_error_file(&cfg), config_error_line(&cfg), config_error_text(&cfg));
 		config_destroy(&cfg);
 		return -1;
@@ -323,7 +342,7 @@ int writeCfg (void)
 	}
 
 	/* write the modified config file */
-	config_write_file(&cfg, config_file_name);
+	config_write_file(&cfg, config_file_path);
 
 	config_destroy(&cfg);
 	return 0;
@@ -331,24 +350,17 @@ int writeCfg (void)
 
 int CheckTemp (void)
 {
-	if ( temp < minTemp ) 
-	{
+	if (temp < minTemp) {
 		tempState = 1;
 		printf("< minTemp. Heat On.");
-	}
-	else if ( temp >= minTemp && temp < maxTemp)
-	{
+	} else if (temp >= minTemp && temp < maxTemp) {
 		tempState = 2;
 		printf(">= minTemp. Heat off until < minTemp.");
-	}
-	else if ( temp >= maxTemp )
-	{
+	} else if (temp >= maxTemp) {
 		tempState = 3;
 		printf("> maxTemp. Heat Off, All fans On.");
-	}
-	else
-	{
-		if ( tempState == 2 ) printf("Heat off until < minTemp.");
+	} else {
+		if (tempState == 2) printf("Heat off until < minTemp.");
 		else printf("Heat on until > minTemp.");
 		return;
 	}
@@ -359,19 +371,14 @@ int CheckTemp (void)
 
 int CheckHum (void)
 {
-	if ( hum < minHum )
-	{
+	if (hum < minHum) {
 		humState = 1;
 		printf("< minHum. Hum On.");
-	}
-	else if ( hum >= minHum)
-	{
+	} else if (hum >= minHum) {
 		humState = 2;
 		printf(">= minHum. Hum Off until < minHum.");
-	}
-	else
-	{
-		if ( humState == 2 ) printf("Leaving off until < minHum.");
+	} else {
+		if (humState == 2) printf("Leaving off until < minHum.");
 		else printf("Leaving on until > minHum.");
 		return 0;
 	}
@@ -389,7 +396,7 @@ relay1(int i) // HEPA Fan
 				system("/var/www/mycodo/mycodo-relay.sh 1 0 &");
 				break;
 			case 1:
-				if ( humState == 3 && tempState != 3) {
+				if (humState == 3 && tempState != 3) {
 					printf("Turn on for %d seconds, then off for %d seconds.", RHepat[RHepat[0]], RHepao[RHepat[0]]);
 					char Pcom[120];
 					sprintf(Pcom, "/var/www/mycodo/mycodo-relay.sh %d %d &", RHepa, RHepat[RHepat[0]]);
@@ -412,8 +419,7 @@ relay1(int i) // HEPA Fan
 				if (RHepao[RHepat[0]] - (timestampL - RHepaTS) < sleept) sleept = RHepao[RHepat[0]] - (timestampL - RHepaTS);
 				break;
 		}
-	}
-	else printf("Override");
+	} else printf("Override");
 }
 
 relay2(int i) // Humidifier
@@ -445,8 +451,7 @@ relay2(int i) // Humidifier
 				if (RHumo[RHumt[0]] + RHumt[RHumt[0]] - (timestampL - RHumTS) < sleept) sleept = RHumo[RHumt[0]] + RHumt[RHumt[0]] - (timestampL - RHumTS);
 				break;
 		}
-	}
-	else printf("Override");
+	} else printf("Override");
 }
 
 relay3(int i) // Circulatory Fan
@@ -477,8 +482,7 @@ relay3(int i) // Circulatory Fan
 				if (RFano[RFant[0]] + RFant[RFant[0]] - (timestampL - RFanTS) < sleept) sleept = RFano[RFant[0]] + RFant[RFant[0]] - (timestampL - RFanTS);
 				break;
 		}
-	}
-	else printf("Override");
+	} else printf("Override");
 }
 
 relay4(int i) // Heat
@@ -510,37 +514,36 @@ relay4(int i) // Heat
 				if ((int)(RHeato[RHeatt[0]]*wfactor) + RHeatt[RHeatt[0]] - (timestampL - RHeatTS) < sleept) sleept = (int)(RHeato[RHeatt[0]]*wfactor) + RHeatt[RHeatt[0]] - (timestampL - RHeatTS);
 				break;
 		}
-	}
-	else printf("Override");
+	} else printf("Override");
 }
 
 int ChangeRelays (double tdiff, double hdiff)
 {
-	if ( tdiff > RFans[0] ) RFant[0] = 1;
+	if (tdiff > RFans[0]) RFant[0] = 1;
 	else if ( tdiff > RFans[1] ) RFant[0] = 2;
 	else if ( tdiff > RFans[2] ) RFant[0] = 3;
 	else if ( tdiff > RFans[3] ) RFant[0] = 4;
 	else RFant[0] = 5;
 
-	if ( hdiff > RFans[0] ) RFant[0] = 1;
+	if (hdiff > RFans[0]) RFant[0] = 1;
 	else if ( hdiff > RFans[1] ) RFant[0] = 2;
 	else if ( hdiff > RFans[2] ) RFant[0] = 3;
 	else if ( hdiff > RFans[3] ) RFant[0] = 4;
 	else RFant[0] = 5;
 
-	if ( tdiff > RFans[0] ) RHepat[0] = 1;
+	if (tdiff > RFans[0]) RHepat[0] = 1;
 	else if ( tdiff > RFans[1] ) RHepat[0] = 2;
 	else if ( tdiff > RFans[2] ) RHepat[0] = 3;
 	else if ( tdiff > RFans[3] ) RHepat[0] = 4;
 	else RHepat[0] = 5;
 
-	if ( tdiff < RHeats[0] ) RHeatt[0] = 1;
+	if (tdiff < RHeats[0]) RHeatt[0] = 1;
 	else if ( tdiff < RHeats[1] ) RHeatt[0] = 2;
 	else if ( tdiff < RHeats[2] ) RHeatt[0] = 3;
 	else if ( tdiff < RHeats[3] ) RHeatt[0] = 4;
 	else RHeatt[0] = 5;
 
-	if ( hdiff < RHums[0] ) RHumt[0] = 1;
+	if (hdiff < RHums[0]) RHumt[0] = 1;
 	else if ( hdiff < RHums[1] ) RHumt[0] = 2;
 	else if ( hdiff < RHums[2] ) RHumt[0] = 3;
 	else if ( hdiff < RHums[3] ) RHumt[0] = 4;
@@ -551,7 +554,7 @@ int ChangeRelays (double tdiff, double hdiff)
 	// Relays: RHepa 1, RHum  2, RFan  3, RHeat 4
 	// relayx(Y), Y: 0=Turn off, 1=Turn on, 2=Leave on, 3=Leave off 
 
-	if ( tempState == 1 && humState == 1 ) // Heat on, humidifier on
+	if (tempState == 1 && humState == 1) // Heat on, humidifier on
 	{
 		// Relay 1 HEPA
 		relay1(0); // Turn relay1 off
@@ -564,8 +567,7 @@ int ChangeRelays (double tdiff, double hdiff)
 			} else {
 				if (RHumo[RHumt[0]] + RHumt[RHumt[0]] - (timestampL - RHumTS) <= 0) {
 					relay2(1); // Turn relay2 on
-				}
-				else {
+				} else {
 					relay2(3); // Leave relay2 off
 				}
 			}
@@ -587,9 +589,7 @@ int ChangeRelays (double tdiff, double hdiff)
 				else relay4(3); // Leave relay4 off
 			}
 		} else relay4(1); // Turn relay4 on
-	}
-	else if ( tempState == 2 && humState == 1 )
-	{
+	} else if (tempState == 2 && humState == 1) {
 		// Relay 1 HEPA
 		relay1(0); // Turn relay1 off
 		usleep(500000);
@@ -599,16 +599,11 @@ int ChangeRelays (double tdiff, double hdiff)
 			if (timestampL - RHumTS < RHumt[RHumt[0]]) { // If not at end of on timer
 				relay2(2); // Leave relay2 on
 			} else {
-				if (RHumo[RHumt[0]] + RHumt[RHumt[0]] - (timestampL - RHumTS) <= 0) {
-					relay2(1); // Turn relay2 on
-				}
-				else {
-					relay2(3); // Leave relay2 off
-				}
+				if (RHumo[RHumt[0]] + RHumt[RHumt[0]] - (timestampL - RHumTS) <= 0) relay2(1); // Turn relay2 on
+				else relay2(3); // Leave relay2 off
 			}
-		} else {
-			relay2(1); // Turn relay2 on
-		}
+		} else relay2(1); // Turn relay2 on
+
 		usleep(500000);
 
 		// Relay 3 Circulatory Fan
@@ -617,9 +612,7 @@ int ChangeRelays (double tdiff, double hdiff)
 
 		// Relay 4 Heater
 		relay4(0); // Turn relay4 off until minTemp reached
-	}
-	else if ( tempState == 3 && humState == 1 )
-	{
+	} else if (tempState == 3 && humState == 1) {
 		// Relay 1 HEPA
 		relay1(1); // Turn relay1 on
 		usleep(500000);
@@ -629,31 +622,24 @@ int ChangeRelays (double tdiff, double hdiff)
 			if (timestampL - RHumTS < RHumt[RHumt[0]]) { // If not at end of on timer
 				relay2(2); // Leave relay2 on
 			} else {
-				if (RHumo[RHumt[0]] + RHumt[RHumt[0]] - (timestampL - RHumTS) <= 0) {
-					relay2(1); // Turn relay2 on
-				}
-				else {
-					relay2(3); // Leave relay2 off
-				}
+				if (RHumo[RHumt[0]] + RHumt[RHumt[0]] - (timestampL - RHumTS) <= 0) relay2(1); // Turn relay2 on
+				else relay2(3); // Leave relay2 off
 			}
-		} else {
-			relay2(1); // Turn relay2 on
-		}
+		} else relay2(1); // Turn relay2 on
+		
 		usleep(500000);
 
 		// Relay 3 Circulatory Fan
 		if (timestampL - RFanTS < RFano[RFant[0]]) { // If not end of off timer
-			if (timestampL - RFanTS < RFant[RFant[0]]) { // If not at end of on timer
-				relay3(2); // Leave relay1 on
-			} else relay3(3); // Leave relay1 off
-		} else relay3(1); // Turn relay1 on
+			if (timestampL - RFanTS < RFant[RFant[0]]) relay3(2); // If not at end of on timer, Leave relay2 on
+			else relay3(3); // Leave relay3 off
+		} else relay3(1); // Turn relay3 on
+		
 		usleep(500000);
 
 		// Relay 4 Heater
 		relay4(0); // Turn relay4 off until minTemp reached
-	}
-	else if ( tempState == 3 && (humState == 2 || humState == 3))
-	{
+	} else if (tempState == 3 && (humState == 2 || humState == 3)) {
 		// Relay 1 HEPA
 		relay1(1); // Turn relay1 on
 		usleep(500000);
@@ -664,23 +650,20 @@ int ChangeRelays (double tdiff, double hdiff)
 
 		// Relay 3 Circulatory Fan
 		if (timestampL - RFanTS < RFano[RFant[0]]) { // If not end of off timer
-			if (timestampL - RFanTS < RFant[RFant[0]]) { // If not at end of on timer
-				relay3(2); // Leave relay1 on
-			} else relay3(3); // Leave relay1 off
-		} else relay3(1); // Turn relay1 on
+			if (timestampL - RFanTS < RFant[RFant[0]]) relay3(2); // If not at end of on timer, leave relay3 on
+			else relay3(3); // Leave relay3 off
+		} else relay3(1); // Turn relay3 on
+		
 		usleep(500000);
 
 		// Relay 4 Heat
 		relay4(0); // Turn relay4 off
-	}
-	else if ( tempState == 1 && (humState == 2 || humState == 3) )
-	{
+	} else if (tempState == 1 && (humState == 2 || humState == 3)) {
 		// Relay 1 HEPA
 		if ( humState == 3 ) {
 			if (timestampL - RHepaTS < RHepao[RHepat[0]]) { // If not end of off timer
-				if (timestampL - RHepaTS < RHepat[RHepat[0]]) { // If not at end of on timer
-					relay1(2); // Leave relay1 on
-				} else relay1(3); // Leave relay1 off
+				if (timestampL - RHepaTS < RHepat[RHepat[0]]) relay1(2); // If not at end of on timer, Leave relay1 on
+				else relay1(3); // Leave relay1 off
 			} else relay1(1); // Turn relay1 on
 		} else relay1(0); // Turn relay1 off
 
@@ -694,33 +677,29 @@ int ChangeRelays (double tdiff, double hdiff)
 		// Relay 3 Circulatory Fan
 		if (humState == 3) {
 			if (timestampL - RFanTS < RFano[RFant[0]]) { // If not end of off timer
-				if (timestampL - RFanTS < RFant[RFant[0]]) { // If not at end of on timer
-					relay3(2); // Leave relay1 on
-				} else relay3(3); // Leave relay1 off
-			} else relay3(1); // Turn relay1 on
+				if (timestampL - RFanTS < RFant[RFant[0]]) relay3(2); // If not at end of on timer, Leave relay3 on
+				else relay3(3); // Leave relay3 off
+			} else relay3(1); // Turn relay3 on
 		} else relay3(0); // Turn relay3 off
 		usleep(500000);
 
 		// Relay 4 Heater
 		if (timestampL - RHeatTS - RHeatt[RHeatt[0]] < (int)(RHeato[RHeatt[0]]*wfactor)) { // If not end of on and off timer
-			if (timestampL - RHeatTS < RHeatt[RHeatt[0]]) { // If not at end of on timer
-				relay4(2); // Leave relay4 on
-			} else {
+			if (timestampL - RHeatTS < RHeatt[RHeatt[0]]) relay4(2); // If not at end of on timer, Leave relay4 on
+			else {
 				if ((int)(RHeato[RHeatt[0]]*wfactor) + RHeatt[RHeatt[0]] - (timestampL - RHeatTS) <= 0) relay4(1); // Turn relay4 on
 				else relay4(3); // Leave relay4 off
 			}
 		} else relay4(1); // Turn relay4 on
-	}
-	else if (tempState == 2 && (humState == 2 || humState == 3))
-	{
+	} else if (tempState == 2 && (humState == 2 || humState == 3)) {
 		// Relay 1 HEPA
 		if ( humState == 3 ) {
 			if (timestampL - RHepaTS < RHepao[RHepat[0]]) { // If not end of off timer
-				if (timestampL - RHepaTS < RHepat[RHepat[0]]) { // If not at end of on timer
-					relay1(2); // Leave relay1 on
-				} else relay1(3); // Leave relay1 off
+				if (timestampL - RHepaTS < RHepat[RHepat[0]]) relay1(2); // If not at end of on timer, Leave relay1 on
+				else relay1(3); // Leave relay1 off
 			} else relay1(1); // Turn relay1 on
 		} else relay1(0); // Turn relay1 off
+		
 		usleep(500000);
 
 		// Relay 2 Humidifier
@@ -730,10 +709,9 @@ int ChangeRelays (double tdiff, double hdiff)
 		// Relay 3 Circulatory Fan
 		if (humState == 3) {
 			if (timestampL - RFanTS < RFano[RFant[0]]) { // If not end of off timer
-				if (timestampL - RFanTS < RFant[RFant[0]]) { // If not at end of on timer
-					relay3(2); // Leave relay1 on
-				} else relay3(3); // Leave relay1 off
-			} else relay3(1); // Turn relay1 on
+				if (timestampL - RFanTS < RFant[RFant[0]]) relay3(2); // If not at end of on timer, Leave relay3 on
+				else relay3(3); // Leave relay3 off
+			} else relay3(1); // Turn relay3 on
 		} else relay3(0); // Turn relay3 off
 		usleep(500000);
 

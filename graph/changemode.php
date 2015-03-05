@@ -9,11 +9,10 @@
 
 include "auth.php";
 
-/* Where gpio (WiringPi) located */
+/* Set these paths correctly to gpio and mycodo directory */
 $gpio_path = "/usr/local/bin/gpio";
-
-/* Where scripts stored */
 $main_path = getcwd() . "/mycodo/";
+
 $sensordata_file = $main_path . "PiSensorData";
 $config_file = $main_path . "mycodo.conf";
 

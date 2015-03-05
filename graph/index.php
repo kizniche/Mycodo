@@ -1,6 +1,15 @@
-<?php include "auth.php";?>
 <?php
+/*
+*
+*  Index of the web interface
+*  By Kyle Gabriel
+*  2012 - 2015
+*
+*/
+
+include "auth.php";
 include_once ('menu.php');
+
 $page = isset($_GET['page']) ? $_GET['page'] : 'Main';
 ?>
 <html>
