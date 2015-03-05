@@ -43,9 +43,7 @@ sudo git clone git://git.drogon.net/wiringPi /var/www/graph/source/WiringPi
 sudo git clone https://github.com/adafruit/Adafruit_Python_DHT /var/www/graph/source/Python_DHT
 
 # Compile temperature/humidity controller
-cd /var/www/graph/source
-gcc mycodo-1.0.c -I/usr/local/include -L/usr/local/lib -lconfig -lwiringPi -o mycodo
-mv ./mycodo ../mycodo/mycodo
+gcc /var/www/graph/source/mycodo-1.9.c -I/usr/local/include -L/usr/local/lib -lconfig -lwiringPi -o /var/www/graph/mycodo/mycodo
 
 # Compile WiringPi and DHT python library
 cd /var/www/graph/source/WiringPi
