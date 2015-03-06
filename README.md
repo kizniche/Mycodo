@@ -63,13 +63,13 @@ INSTALL
 Hardware Setup
 --------------
 
-Relay1, Exhaust Fan: GPIO 23, pin 16
-Relay2, Humidifier: GPIO 22, pin 15
-Relay3, Circulatory Fan: GPIO 18, pin 12
-Relay4, Heater: GPIO 17, pin 11
-DHT22 sensor: GPIO 4, pin 7
-DHT22 Power: 3.3v, pin 1
-Relays and DHT22 Ground: Ground, pin 6
+Relay1, Exhaust Fan: GPIO 23, pin 16  
+Relay2, Humidifier: GPIO 22, pin 15  
+Relay3, Circulatory Fan: GPIO 18, pin 12  
+Relay4, Heater: GPIO 17, pin 11  
+DHT22 sensor: GPIO 4, pin 7  
+DHT22 Power: 3.3v, pin 1  
+Relays and DHT22 Ground: Ground, pin 6  
 
 
 Software Setup
@@ -81,8 +81,7 @@ Software Setup
 
 `sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev`
 
-  # Download the latest code for the controller/web interface, WireingPi,
-    and Adafruit_Python_DHT
+Download the latest code for the controller/web interface, WireingPi, and Adafruit_Python_DHT
 
 `sudo git clone https://github.com/kizniche/Automated-Mushroom-Cultivator /var/www/mycodo`
 
@@ -90,11 +89,11 @@ Software Setup
 
 `sudo git clone https://github.com/adafruit/Adafruit_Python_DHT /var/www/mycodo/source/Python_DHT`
 
-  # Compile temperature/humidity controller
+Compile temperature/humidity controller
 
 `gcc /var/www/mycodo/source/mycodo-1.9.c -I/usr/local/include -L/usr/local/lib -lconfig -lwiringPi -o /var/www/mycodo/cgi-bin/mycodo`
 
-  # Compile WiringPi and DHT python library
+Compile WiringPi and DHT python library
 
 `cd /var/www/mycodo/source/WiringPi`
 
@@ -108,8 +107,7 @@ Software Setup
 Web Server Setup
 ----------------
 
-   Enable SSL/HTTPS in apache then add the following 
-to /etc/apache2/sites-avalable/default-ssl
+Enable SSL/HTTPS in apache then add the following to /etc/apache2/sites-avalable/default-ssl
 
 	DocumentRoot /var/www
     <Directory />
@@ -126,48 +124,33 @@ to /etc/apache2/sites-avalable/default-ssl
 Web Interface Setup
 -------------------
 
-   To create login credentials for the web interface, uncomment line 25 of
-auth.php and go to http://localhost/graph/index.php
+To create login credentials for the web interface, uncomment line 25 of auth.php and go to http://localhost/graph/index.php
 
-   Enter a password in the password field and click submit, then Copy the
-Hash from the next page and replace the warning in the quotes of $Password1
-or $Password2 of auth.php.
+Enter a password in the password field and click submit, then Copy the Hash from the next page and replace the warning in the quotes of $Password1 or $Password2 of auth.php.
 
-   Don't forget to change the user name in auth.php to your choosing and
-re-comment line 25.
+Don't forget to change the user name in auth.php to your choosing and re-comment line 25.
 
 
 Automation Setup
 ----------------
 
-   Once the following cron jobs are set, the relays may become energized,
-depending on what the ranges are set. Check that the sensors are properly
-working by testing if the script 'mycodo-sense.sh -d' can display sensor
-data, as well as if gpio can alter the GPIO, with 'gpio write [pin] [value],
-where pin is the GPIO pin and value is 1=on and 0=off.
+Once the following cron jobs are set, the relays may become energized, depending on what the ranges are set. Check that the sensors are properly working by testing if the script 'mycodo-sense.sh -d' can display sensor data, as well as if gpio can alter the GPIO, with 'gpio write [pin] [value], where pin is the GPIO pin and value is 1=on and 0=off.
 
-   Set up sensor data logging and relay changing by adding the following
-lines to cron (with 'sudo crontab -e')
+   Set up sensor data logging and relay changing by adding the following lines to cron (with 'sudo crontab -e')
 
 `*/2 * * * * /usr/bin/python /var/www/mycodo/cgi-bin/sense.py -w /var/www/mycodo/log/sensor.log`
 `*/2 * * * * /var/www/mycodo/cgi-bin/mycodo-auto.sh`
 
-   Go to http://localhost/graph/index.php and log in with the credentials
-created earlier. You should see the menu to the left displaying the current
-humidity and temperature, and a graph to the right with the corresponding
-values.
+Go to http://localhost/graph/index.php and log in with the credentials created earlier. You should see the menu to the left displaying the current humidity and temperature, and a graph to the right with the corresponding values.
 
 
 
 Updates
 =======
 
-   Congratulations on using my software, however it may not be the latest
-version, or it may have been altered if not obtained through an official
-distribution site. You should be able to find the latest version on github
-or my web site.
+Congratulations on using my software, however it may not be the latest version, or it may have been altered if not obtained through an official distribution site. You should be able to find the latest version on github or my web site.
 
-https://github.com/kizniche/Automated-Mushroom-Cultivator
+https://github.com/kizniche/Automated-Mushroom-Cultivator  
 http://KyleGabriel.com
 
 
