@@ -120,15 +120,9 @@ to /etc/apache2/sites-avalable/default-ssl
     </Directory>
 	<Directory /var/www/mycodo>
         Options Indexes FollowSymLinks MultiViews
-        AllowOverride None
         Order allow,deny
         allow from all
     </Directory>
-	RedirectMatch 404 /mycodo/log(/|$)
-	RedirectMatch 404 /mycodo/cgi-bin(/|$)
-    RedirectMatch 404 /mycodo/images(/|$)
-	RedirectMatch 404 /mycodo/config(/|$)
-    RedirectMatch 404 /mycodo/source(/|$)
 
 
 Web Interface Setup
@@ -164,6 +158,7 @@ lines to cron (with 'sudo crontab -e')
 created earlier. You should see the menu to the left displaying the current
 humidity and temperature, and a graph to the right with the corresponding
 values.
+
 
 
 Updates
