@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------
-Title:   Automated Mushroom Cultivator
-Author:  Kyle T. Gabriel
-Date:    2012-2015
+Title:   Automated Mushroom Cultivator  
+Author:  Kyle T. Gabriel  
+Date:    2012-2015  
 Version: 1.9
 
 Description: This is a system designed for the Raspberry Pi, for regulating
