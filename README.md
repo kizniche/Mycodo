@@ -1,8 +1,8 @@
 ---------------------------------------------------------------------------
-Title:   Automated Mushroom Cultivator  
-Author:  Kyle T. Gabriel  
-Date:    2012-2015  
-Version: 1.9
+Title:   **Automated Mushroom Cultivator**  
+Author:  **Kyle T. Gabriel**  
+Date:    **2012-2015**  
+Version: **1.9**
 
 Description: This is a system designed for the Raspberry Pi, for regulating
 the temperature and humidity of an airspace with the use of a DHT22
@@ -16,6 +16,13 @@ php-web interface is available for viewing the data history on a graphical
 plot as well as to change configuration parameters.
 
 ---------------------------------------------------------------------------
+
+TODO
+----
+
+[x] Authorization log (for successful and unsuccessful logins)
+[ ] Allow guest login to just view
+
 
 INTRODUCTION
 ============
