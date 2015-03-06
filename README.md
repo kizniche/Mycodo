@@ -20,8 +20,8 @@ plot as well as to change configuration parameters.
 TODO
 ----
 
-- [x] Authorization log (for successful and unsuccessful logins)
-- [ ] Allow guest login to just view
+- [x] Authorization log (for successful and unsuccessful logins)  
+- [ ] Allow guest login for viewing
 
 
 INTRODUCTION
