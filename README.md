@@ -134,7 +134,9 @@ sudo python setup.py install
 Web Server Setup
 ----------------
 
-Enable SSL/HTTPS in apache then add the following to /etc/apache2/sites-avalable/default-ssl
+There is an `.htaccess` file in each directory that denys web access to these folders. It is strongly recommended that you make sure this works properly, to ensure no one can read from these directories, as log, configuration, and graph images are stored there.
+
+Generate an SSL certificate, enable SSL/HTTPS in apache, then add the following to /etc/apache2/sites-avalable/default-ssl, or modify to suit your needs.
 
 	DocumentRoot /var/www
     <Directory />
