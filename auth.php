@@ -14,6 +14,8 @@ $Password1 = "b8189be08a4431e8cac6fca76dec5c4d";
 $User2 = "guest";
 $Password2 = "GENERATE YOUR OWN HASH TO GO HERE BY UNCOMMENTING LINE 25 AND EXECUTING THIS SCRIPT";
 
+$cwd = getcwd();
+$auth_file = $cwd . "/log/auth.log";
 
 switch ($_GET['id']) {
 case 'hash':
@@ -48,6 +50,8 @@ default:
 
 // Append auth.log if user logs in or enters an incorrect password
 function write_auth_log($auth) {
+	global $auth;
+	
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$hostaddress = gethostbyaddr($ip);
 	$browser = $_SERVER['HTTP_USER_AGENT'];
@@ -65,8 +69,7 @@ function write_auth_log($auth) {
 	else $auth_write = $auth_write . $referred;
 	
 	$auth_write = $auth_write . ', ' . $browser . "\n";
-	
-	$auth_file = "/var/www/mycodo/log/auth.log";
+
 	$fh = fopen($auth_file, 'a') or die("can't open file");
 	fwrite($fh, $auth_write);
 	fclose($fh);
