@@ -7,6 +7,8 @@
 *
 */
 
+include "auth.php";
+
 $cwd = getcwd();
 $image_dir = $cwd . "/images";
 
