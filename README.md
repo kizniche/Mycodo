@@ -22,7 +22,7 @@ TODO
 
 - [x] Authorization log (for successful and unsuccessful logins)  
 - [ ] Support naming/renaming relay identifier from the web interface  
-- [ ] Support Raspberry Pi camera module for video/snapshot monitoring  
+- [ ] Support Raspberry Pi camera module for video/snapshot monitoring and timelapse photography  
 - [ ] Support for more than one temperature/humidity sensor  
 - [ ] Support for guest login (view only)  
 - [ ] Update user interface  
