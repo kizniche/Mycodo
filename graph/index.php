@@ -15,7 +15,7 @@ $graph_data = $main_path . "/mycodo/mycodo-graph.sh";
 
 $page = isset($_GET['page']) ? $_GET['page'] : 'Main';
 
-echo '<html><head><title>Mycodo -' . $page . '</title>';
+echo '<html><head><title>Mycodo - ' . $page . '</title>';
 echo '<style type="text/css">.inactive, .active, .title, .link {padding:1px 2px 2px 15px;} .inactive {background:skyblue; font-size: 12px;} .active {background:steelblue; font-weight:bold; font-size: 12px;} .title {background:white;} .slink {background:DarkTurquoise; float: center; color: #000; font-size: 11px; font-family: verdana;} .link {background:DarkTurquoise; font-size: 12px;} .link a {color:blue;} .inactive a {text-decoration:none; color:blue;} .active a {text-decoration:none; color:white;} a:hover   {color:black;} </style>';
 
 echo '<script type="text/javascript">';

@@ -13,7 +13,7 @@ $main_path = getcwd();
 $graph_data = $main_path . "/mycodo/mycodo-graph.sh";
 $sensordata_file = $main_path . "/mycodo/PiSensorData";
 
-echo '<html><head><title>Kizpi Mobile</title>';
+echo '<html><head><title>Mycodo Mobile</title>';
 echo '<script type="text/javascript">';
 function open_win() {
 	window.open("changemode.php","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=300, height=330");
