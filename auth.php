@@ -5,7 +5,6 @@
 *  By Kyle Gabriel
 *  2012 - 2015
 *
-*  TODO: Allow guest login to just view
 */
 
 session_start();
@@ -47,6 +46,7 @@ default:
 	}
 }
 
+// Append auth.log if user logs in or enters an incorrect password
 function write_auth_log($auth) {
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$hostaddress = gethostbyaddr($ip);
@@ -72,6 +72,7 @@ function write_auth_log($auth) {
 	fclose($fh);
 }
 
+// Turn plain text password into a hash
 function hashPassword($password) {
 	$salt1 = "df+-+-u87^GhuiuVcc.</#;jhdgOJeEehd>IOJ~1838HB>Ihssf\}\{jhggd";
 	$salt2 = "Jq*92@/<hX S_=!`/dJhFDtay@7369chsl[\?.><tqcw>wiejrgGQF`~1112";
@@ -82,7 +83,8 @@ function hashPassword($password) {
 	return md5($salt1.$password.salt2);
 }
 
-function rotateHEX($string, $n) { //for more security, randomize this string
+//for more security, randomize this string
+function rotateHEX($string, $n) {
 	$chars="abcdef1234567890";
 	$str="";
 	for ($i=0;$i<strlen($string);$i++)
