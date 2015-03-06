@@ -98,7 +98,7 @@ sudo ./build
 
 cd /var/www/mycodo/source/Python_DHT
 
-'sudo python setup.py install'
+`sudo python setup.py install`
 
 
 Web Server Setup
