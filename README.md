@@ -74,35 +74,55 @@ Relays and DHT22 Ground: Ground, pin 6
 
 Software Setup
 --------------
+```
+sudo apt-get update
+```
 
-`sudo apt-get update`
+```
+sudo apt-get upgrade
+```
 
-`sudo apt-get upgrade`
-
-`sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev`
+```
+sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev
+```
 
 Download the latest code for the controller/web interface, WireingPi, and Adafruit_Python_DHT
 
-`sudo git clone https://github.com/kizniche/Automated-Mushroom-Cultivator /var/www/mycodo`
+```
+sudo git clone https://github.com/kizniche/Automated-Mushroom-Cultivator /var/www/mycodo
+```
 
-`sudo git clone git://git.drogon.net/wiringPi /var/www/mycodo/source/WiringPi`
+```
+sudo git clone git://git.drogon.net/wiringPi /var/www/mycodo/source/WiringPi
+```
 
-`sudo git clone https://github.com/adafruit/Adafruit_Python_DHT /var/www/mycodo/source/Python_DHT`
+```
+sudo git clone https://github.com/adafruit/Adafruit_Python_DHT /var/www/mycodo/source/Python_DHT
+```
 
 Compile temperature/humidity controller
 
-`gcc /var/www/mycodo/source/mycodo-1.9.c -I/usr/local/include -L/usr/local/lib -lconfig -lwiringPi -o /var/www/mycodo/cgi-bin/mycodo`
+```
+gcc /var/www/mycodo/source/mycodo-1.9.c -I/usr/local/include -L/usr/local/lib -lconfig -lwiringPi -o /var/www/mycodo/cgi-bin/mycodo
+```
 
 Compile WiringPi and DHT python library
 
-`cd /var/www/mycodo/source/WiringPi`
+```
+cd /var/www/mycodo/source/WiringPi
+```
 
-`sudo ./build`
+```
+sudo ./build
+```
 
-`cd /var/www/mycodo/source/Python_DHT`
+```
+cd /var/www/mycodo/source/Python_DHT
+```
 
-`sudo python setup.py install`
-
+```
+sudo python setup.py install
+```
 
 Web Server Setup
 ----------------
