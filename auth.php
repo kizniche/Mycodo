@@ -70,7 +70,7 @@ function write_auth_log($auth) {
 	
 	$auth_write = $auth_write . ', ' . $browser . "\n";
 
-	$fh = fopen($auth_file, 'a') or die("can't open file");
+	$fh = fopen($auth_file, 'a') or die("Error: Can't fimd/open auth.log");
 	fwrite($fh, $auth_write);
 	fclose($fh);
 }
