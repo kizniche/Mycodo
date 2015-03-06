@@ -139,6 +139,7 @@ Once the following cron jobs are set, the relays may become energized, depending
    Set up sensor data logging and relay changing by adding the following lines to cron (with 'sudo crontab -e')
 
 `*/2 * * * * /usr/bin/python /var/www/mycodo/cgi-bin/sense.py -w /var/www/mycodo/log/sensor.log`
+
 `*/2 * * * * /var/www/mycodo/cgi-bin/mycodo-auto.sh`
 
 Go to http://localhost/graph/index.php and log in with the credentials created earlier. You should see the menu to the left displaying the current humidity and temperature, and a graph to the right with the corresponding values.
