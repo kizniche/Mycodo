@@ -26,7 +26,8 @@ function page_menu ($page) {
 	global $sensordata_file, $main_path, $mycodo_file;
 	
 	echo '<table width="100%"><tr><td align=center><div style="padding:1px 2px 2px 2px; float: center; color: #000; font-size: 11px; font-family: verdana;">';
-	echo 'Last page refresh<br><?php echo `date +"%Y-%m-%d %H %M %S"`;?>';
+	echo 'Last page refresh<br>';
+	echo `date +"%Y-%m-%d %H %M %S"`;
 	echo '</div></td></tr><tr bgcolor="#cccccc" cellpadding=5><td align=center>';
     echo '<div style="padding:1px 2px 2px 3px; float: center; color: #000; font-size: 11px; font-family: verdana;">';
 
