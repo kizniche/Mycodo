@@ -28,22 +28,49 @@ case 'hash':
 	break;
 
 default:
-	if(!$_SESSION['authenticated'])
-	if($_POST['loginbutton']) {
-		$inputuser = $_POST['input_user'];
-		$input_Password = hashPassword($_POST['input_password']);
-		# Uncomment the following line, load auth.php, enter desired pass in password box, click Login to display hashed password
-		# echo $input_Password;
-		if((!strcmp($inputuser ,$User1) && !strcmp($input_Password ,$Password1))  || (!strcmp($inputuser ,$User2) && !strcmp($input_Password ,$Password2))) {
-			$_SESSION['authenticated'] = 1;
-			if ($_GET['r'] == 1) header("Location:".$_SERVER[PHP_SELF]."?r=1");
-			else header("Location:".$_SERVER[PHP_SELF]);
-		}
-		else displayform(1);
+	if(!$_SESSION['authenticated']) {
+		if($_POST['loginbutton']) {
+			$inputuser = $_POST['input_user'];
+			$input_Password = hashPassword($_POST['input_password']);
+			# Uncomment the following line, load auth.php, enter desired pass in password box, click Login to display hashed password
+			# echo $input_Password;
+			if((!strcmp($inputuser ,$User1) && !strcmp($input_Password ,$Password1))  || (!strcmp($inputuser ,$User2) && !strcmp($input_Password ,$Password2))) {
+				write_auth_log(1);
+				$_SESSION['authenticated'] = 1;
+				if (isset($_GET['r'])) if ($_GET['r'] == 1) header("Location:".$_SERVER[PHP_SELF]."?r=1");
+				else header("Location:".$_SERVER[PHP_SELF]);
+			} else {
+				write_auth_log(0);
+				displayform(1);
+			}
+		} else displayform(0);
 	}
-	else displayform(0);
 }
 
+function write_auth_log($auth) {
+	$ip = $_SERVER['REMOTE_ADDR'];
+	$hostaddress = gethostbyaddr($ip);
+	$browser = $_SERVER['HTTP_USER_AGENT'];
+	$referred = $_SERVER['HTTP_REFERER'];
+	
+	$date = new DateTime();
+	$auth_write = $date->format('Y m d H:i:s') . ', ';
+	
+	if ($auth == 1) $auth_write = $auth_write . 'LOGIN, ';
+	else $auth_write = $auth_write . 'NOPASS, ';
+	
+	$auth_write = $auth_write . $_POST['input_user'] . ', ' . $ip . ', ' . $hostaddress . ', ';
+	
+	if ($referred == "") $auth_write = $auth_write . 'direct';
+	else $auth_write = $auth_write . $referred;
+	
+	$auth_write = $auth_write . ', ' . $browser . "\n";
+	
+	$auth_file = "/var/www/mycodo/log/auth.log";
+	$fh = fopen($auth_file, 'a') or die("can't open file");
+	fwrite($fh, $auth_write);
+	fclose($fh);
+}
 
 function hashPassword($password) {
 	$salt1 = "df+-+-u87^GhuiuVcc.</#;jhdgOJeEehd>IOJ~1838HB>Ihssf\}\{jhggd";
