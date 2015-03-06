@@ -35,12 +35,10 @@ function webor($state)
     }
 }
 
-if (isset($_POST['Mode'])) {
-    $ModeSet = $_POST['Mode'];
-}
+if (isset($_POST['Mode'])) $ModeSet = $_POST['Mode'];
+
 if (isset($_POST['OR'])) {
-    if (isset($_POST['OR']))
-        $OR = $_POST['OR'];
+    $OR = $_POST['OR'];
     switch ($OR) {
         case "ON":
             webor(1);
@@ -51,8 +49,7 @@ if (isset($_POST['OR'])) {
     }
 }
 if (isset($_POST['R1'])) {
-    if (isset($_POST['R1']))
-        $R1 = $_POST['R1'];
+    $R1 = $_POST['R1'];
     switch ($R1) {
         case "ON":
             echo `gpio mode 4 out`;
@@ -65,8 +62,7 @@ if (isset($_POST['R1'])) {
     }
 }
 if (isset($_POST['R2'])) {
-    if (isset($_POST['R2']))
-        $R2 = $_POST['R2'];
+    $R2 = $_POST['R2'];
     switch ($R2) {
         case "ON":
             echo `gpio mode 3 out`;
@@ -79,8 +75,7 @@ if (isset($_POST['R2'])) {
     }
 }
 if (isset($_POST['R3'])) {
-    if (isset($_POST['R3']))
-        $R3 = $_POST['R3'];
+    $R3 = $_POST['R3'];
     switch ($R3) {
         case "ON":
             echo `gpio mode 1 out`;
@@ -93,8 +88,7 @@ if (isset($_POST['R3'])) {
     }
 }
 if (isset($_POST['R4'])) {
-    if (isset($_POST['R4']))
-        $R4 = $_POST['R4'];
+    $R4 = $_POST['R4'];
     switch ($R4) {
         case "ON":
             echo `gpio mode 0 out`;
@@ -146,8 +140,8 @@ if ($_POST['4secON']) {
 }
 
 echo '<html><body><head><title>Relay Control and Configuration</title>';
-if ($_GET['r'] == 1) {
-    echo "<META HTTP-EQUIV=\"refresh\" CONTENT=\"90\">";
+if (isset($_GET['r'])) {
+	if ($_GET['r'] == 1) echo "<META HTTP-EQUIV=\"refresh\" CONTENT=\"90\">";
 }
 echo '</head><body><center><table><tr><td align=center>';
 echo '<table bgcolor="#cccccc" cellpadding=5><tr><td align=left><div style="float: center; color: #000; font-size: 13px; font-family: verdana;"><center>';
@@ -165,48 +159,43 @@ echo "<FORM action=\"\" method=\"POST\">";
 
 echo "<p><tr><td>Web Override: <b>";
 $webor_read = $main_path . "mycodo r | cut -d' ' -f5";
-if (shell_exec($webor_read) == 1)
-    echo "ON";
-else
-    echo "OFF";
+if (shell_exec($webor_read) == 1) echo "ON";
+else echo "OFF";
+
 echo "</b></td><td align=left>[<input type=\"submit\" name=\"OR\" value=\"ON\"> <input type=\"submit\" name=\"OR\" value=\"OFF\">]";
 
 echo "</td></tr><tr><td>Relay 1 (HEPA): <b>";
 $read = $gpio_path . " read 4";
-if (shell_exec($read) == 1)
-    echo "ON";
-else
-    echo "OFF";
+if (shell_exec($read) == 1) echo "ON";
+else echo "OFF";
+
 echo "</b></td><td align=center>[<input type=\"submit\" name=\"R1\" value=\"ON\"> <input type=\"submit\" name=\"R1\" value=\"OFF\">";
 echo "] [<input type=\"text\" maxlength=3 size=3 name=\"sR1\" />sec ";
 echo "<input type=\"submit\" name=\"1secON\" value=\"ON\">]";
 
 echo "</td></tr><tr><td>Relay 2 (HUMI): <b>";
 $read = $gpio_path . " read 3";
-if (shell_exec($read) == 1)
-    echo "ON";
-else
-    echo "OFF";
+if (shell_exec($read) == 1) echo "ON";
+else echo "OFF";
+
 echo "</b></td><td align=center>[<input type=\"submit\" name=\"R2\" value=\"ON\"> <input type=\"submit\" name=\"R2\" value=\"OFF\">";
 echo "] [<input type=\"text\" maxlength=3 size=3 name=\"sR2\" />sec ";
 echo "<input type=\"submit\" name=\"2secON\" value=\"ON\">]";
 
 echo "</td></tr><tr><td>Relay 3 (CFAN): <b>";
 $read = $gpio_path . " read 1";
-if (shell_exec($read) == 1)
-    echo "ON";
-else
-    echo "OFF";
+if (shell_exec($read) == 1) echo "ON";
+else echo "OFF";
+
 echo "</b></td><td align=center>[<input type=\"submit\" name=\"R3\" value=\"ON\"> <input type=\"submit\" name=\"R3\" value=\"OFF\">]";
 echo " [<input type=\"text\" maxlength=3 size=3 name=\"sR3\" />sec ";
 echo "<input type=\"submit\" name=\"3secON\" value=\"ON\">]";
 
 echo "</td></tr><tr><td>Relay 4 (HEAT): <b>";
 $read = $gpio_path . " read 0";
-if (shell_exec($read) == 1)
-    echo "ON";
-else
-    echo "OFF";
+if (shell_exec($read) == 1) echo "ON";
+else echo "OFF";
+
 echo "</b></td><td align=center>[<input type=\"submit\" name=\"R4\" value=\"ON\"> <input type=\"submit\" name=\"R4\" value=\"OFF\">]";
 echo " [<input type=\"text\" maxlength=3 size=3 name=\"sR4\" />sec ";
 echo "<input type=\"submit\" name=\"4secON\" value=\"ON\">]</td></tr></table>";
@@ -222,7 +211,7 @@ echo "<td><input type=\"text\" value=\"", `cat $config_file | tr '\n' ' ' | tr -
 echo "<td><input type=\"text\" value=\"", `cat $config_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f18`, "\" maxlength=2 size=1 name=\"tState\" /></td>";
 echo "<td><input type=\"text\" value=\"", `cat $config_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f21`, "\" maxlength=2 size=1 name=\"hState\" /></td>";
 echo "</tr></table></td></tr></table></FORM><p>";
+
+echo '</center></body></html>';
+
 ?>
-</center>
-</body>
-</html>
