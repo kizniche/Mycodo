@@ -1,7 +1,10 @@
 ---------------------------------------------------------------------------
 Title:   Automated Mushroom Cultivator
+
 Author:  Kyle T. Gabriel
+
 Date:    2012-2015
+
 Version: 1.9
 
 Description: This is a system designed for the Raspberry Pi, for regulating
@@ -17,8 +20,8 @@ plot as well as to change configuration parameters.
 
 ---------------------------------------------------------------------------
 
-Introduction
-=============
+INTRODUCTION
+============
 
    This installation assumes you are starting with a fresh install of
 Raspbian linux on your Raspberry Pi. If not, please adjust your install
@@ -30,16 +33,35 @@ the Raspberry Pi camera module for remote viewing. The hardware upgrade is
 nearly complete. At that time, there will be code updates to support the new
 hardware.
 
+
 HARDWARE
 --------
 
-Raspberry Pi
-DHT22 Temperature/humidity sensor
-Relays (Keyes Funduino 4 board, but any opto-isolated relays will do)
-Humidifier
-Heater
-Circulatory Fan
-Exhaust Fan (HEPA filter recommended)
+* Raspberry Pi
+* DHT22 Temperature/humidity sensor
+* Relays (Keyes Funduino 4 board, but any opto-isolated relays will do)
+* Humidifier
+* Heater
+* Circulatory Fan
+* Exhaust Fan (HEPA filter recommended)
+
+
+SOFTWARE
+--------
+
+* git
+* apache2
+* gnuplot
+* php
+* python
+* libconfig-dev
+* build-essential
+* Adafruit_Python_DHT
+* gpio (WiringPi)
+
+INSTALL
+=======
+
 
 Hardware Setup
 --------------
@@ -52,21 +74,6 @@ DHT22 sensor: GPIO 4, pin 7
 DHT22 Power: 3.3v, pin 1
 Relays and DHT22 Ground: Ground, pin 6
 
-SOFTWARE
---------
-
-git
-apache2
-gnuplot
-php
-python
-libconfig-dev
-build-essential
-Adafruit_Python_DHT
-gpio (WiringPi)
-
-INSTALL
-=======
 
 Software Setup
 --------------
