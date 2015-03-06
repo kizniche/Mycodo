@@ -50,7 +50,7 @@ default:
 
 // Append auth.log if user logs in or enters an incorrect password
 function write_auth_log($auth) {
-	global $auth;
+	global $auth_file;
 	
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$hostaddress = gethostbyaddr($ip);
