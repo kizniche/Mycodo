@@ -21,7 +21,13 @@ TODO
 ----
 
 - [x] Authorization log (for successful and unsuccessful logins)  
-- [ ] Allow guest login for viewing
+- [ ] Support Raspberry Pi camera module for video/snapshot monitoring  
+- [ ] Support for more than one temperature/humidity sensor  
+- [ ] Support for guest login (view only)  
+- [ ] Update user interface  
+  - [ ] Tabs instead of link menus  
+  - [ ] Graphics (temperature, humidity, time, date, etc.)  
+  - [ ] Touch screen improvements
 
 
 INTRODUCTION
@@ -131,7 +137,7 @@ cd /var/www/mycodo/source/Python_DHT
 sudo python setup.py install
 ```
 
-Web Server Setup
+Apache Setup
 ----------------
 
 There is an `.htaccess` file in each directory that denys web access to these folders. It is strongly recommended that you make sure this works properly, to ensure no one can read from these directories, as log, configuration, and graph images are stored there.
