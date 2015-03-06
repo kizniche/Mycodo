@@ -86,29 +86,53 @@ sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconf
   # Download the latest code for the controller/web interface, WireingPi,
     and Adafruit_Python_DHT
 
-sudo git clone https://github.com/kizniche/Automated-Mushroom-Cultivator /var/www/graph
+sudo git clone https://github.com/kizniche/Automated-Mushroom-Cultivator /var/www/mycodo
 
-sudo git clone git://git.drogon.net/wiringPi /var/www/graph/source/WiringPi
+sudo git clone git://git.drogon.net/wiringPi /var/www/mycodo/source/WiringPi
 
-sudo git clone https://github.com/adafruit/Adafruit_Python_DHT /var/www/graph/source/Python_DHT
+sudo git clone https://github.com/adafruit/Adafruit_Python_DHT /var/www/mycodo/source/Python_DHT
 
   # Compile temperature/humidity controller
 
-gcc /var/www/graph/source/mycodo-1.9.c -I/usr/local/include -L/usr/local/lib -lconfig -lwiringPi -o /var/www/graph/mycodo/mycodo
+gcc /var/www/mycodo/source/mycodo-1.9.c -I/usr/local/include -L/usr/local/lib -lconfig -lwiringPi -o /var/www/mycodo/cgi-bin/mycodo
 
   # Compile WiringPi and DHT python library
 
-cd /var/www/graph/source/WiringPi
+cd /var/www/mycodo/source/WiringPi
 
 sudo ./build
 
-cd /var/www/graph/source/Python_DHT
+cd /var/www/mycodo/source/Python_DHT
 
 sudo python setup.py install
 
 
-Web Setup
----------
+Web Server Setup
+----------------
+
+   Enable SSL/HTTPS in apache then add the following 
+to /etc/apache2/sites-avalable/default-ssl
+
+	DocumentRoot /var/www
+    <Directory />
+         Order deny,allow
+         Deny from all
+    </Directory>
+	<Directory /var/www/mycodo>
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride None
+        Order allow,deny
+        allow from all
+    </Directory>
+	RedirectMatch 404 /mycodo/log(/|$)
+	RedirectMatch 404 /mycodo/cgi-bin(/|$)
+    RedirectMatch 404 /mycodo/images(/|$)
+	RedirectMatch 404 /mycodo/config(/|$)
+    RedirectMatch 404 /mycodo/source(/|$)
+
+
+Web Interface Setup
+-------------------
 
    To create login credentials for the web interface, uncomment line 25 of
 auth.php and go to http://localhost/graph/index.php
@@ -133,8 +157,8 @@ where pin is the GPIO pin and value is 1=on and 0=off.
    Set up sensor data logging and relay changing by adding the following
 lines to cron (with 'sudo crontab -e')
 
-*/2 * * * * /usr/bin/python /var/www/graph/mycodo/mycodo-sense.py -w /var/www/graph/mycodo/PiSensorData
-*/2 * * * * /var/www/graph/mycodo/mycodo-auto.sh
+*/2 * * * * /usr/bin/python /var/www/mycodo/cgi-bin/sense.py -w /var/www/mycodo/log/sensor.log
+*/2 * * * * /var/www/mycodo/cgi-bin/mycodo-auto.sh
 
    Go to http://localhost/graph/index.php and log in with the credentials
 created earlier. You should see the menu to the left displaying the current
