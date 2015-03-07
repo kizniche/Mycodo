@@ -7,14 +7,15 @@
 *
 */
 
-include "auth.php";
-
-/* Set these paths correctly to gpio and mycodo directory */
+####### Configure #######
 $gpio_path = "/usr/local/bin/gpio";
 
 $cwd = getcwd();
 $sensordata_file = $cwd . "/log/sensor.log";
 $config_file = $cwd . "/config/mycodo.conf";
+
+
+include "auth.php";
 
 function webor($state)
 {

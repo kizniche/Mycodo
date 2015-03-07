@@ -7,15 +7,17 @@
 *
 */
 
-session_start();
-
+####### Configure #######
 $User1 = "admin";
 $Password1 = "b8189be08a4431e8cac6fca76dec5c4d";
+
 $User2 = "guest";
 $Password2 = "GENERATE YOUR OWN HASH TO GO HERE BY UNCOMMENTING LINE 25 AND EXECUTING THIS SCRIPT";
 
-$cwd = getcwd();
-$auth_file = $cwd . "/log/auth.log";
+$auth_file = getcwd() . "/log/auth.log";
+
+
+session_start();
 
 switch ($_GET['id']) {
 case 'hash':
@@ -27,7 +29,6 @@ case 'hash':
 	echo "</td></tr><tr><td colspan='2'><input type='Submit' value='Get md5&raquo;' name='loginbutton'></td></tr></table></form></body></html>";
 	exit;
 	break;
-
 default:
 	if(!$_SESSION['authenticated']) {
 		if($_POST['loginbutton']) {
@@ -52,25 +53,22 @@ default:
 function write_auth_log($auth) {
 	global $auth_file;
 	
+	$date = new DateTime();
+	$date->format('Y m d H:i:s');
+	
+	if ($auth == 1) $auth = $auth_write . 'LOGIN';
+	else $auth = . 'NOPASS';
+	
+	$user = $_POST['input_user'];
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$hostaddress = gethostbyaddr($ip);
 	$browser = $_SERVER['HTTP_USER_AGENT'];
 	$referred = $_SERVER['HTTP_REFERER'];
+	if ($referred == "") $referred = $auth_write . 'direct';
 	
-	$date = new DateTime();
-	$auth_write = $date->format('Y m d H:i:s') . ', ';
-	
-	if ($auth == 1) $auth_write = $auth_write . 'LOGIN, ';
-	else $auth_write = $auth_write . 'NOPASS, ';
-	
-	$auth_write = $auth_write . $_POST['input_user'] . ', ' . $ip . ', ' . $hostaddress . ', ';
-	
-	if ($referred == "") $auth_write = $auth_write . 'direct';
-	else $auth_write = $auth_write . $referred;
-	
-	$auth_write = $auth_write . ', ' . $browser . "\n";
+	$auth_write = $date . ', ' . $auth . ', ' . $user . ', ' . $ip . ', ' . $hostaddress . ', ' . $referred . ', ' . $browser . "\n";
 
-	$fh = fopen($auth_file, 'a') or die("Error: Can't fimd/open auth.log");
+	$fh = fopen($auth_file, 'a') or die("Error: Can't find/open auth.log");
 	fwrite($fh, $auth_write);
 	fclose($fh);
 }

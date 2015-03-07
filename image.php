@@ -7,10 +7,10 @@
 *
 */
 
-include "auth.php";
+####### Configure #######
+$image_dir = getcwd() . "/images";
 
-$cwd = getcwd();
-$image_dir = $cwd . "/images";
+include "auth.php";
 
 if (isset($_GET['span'])) {
 	header('Content-Type: image/jpeg');

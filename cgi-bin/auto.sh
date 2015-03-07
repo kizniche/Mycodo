@@ -1,4 +1,9 @@
 #!/bin/bash
+#
+#  auto.sh - Obtains sensor data and adjusts relays
+#  By Kyle Gabriel
+#  2012 - 2015
+#
 
 while true
 do

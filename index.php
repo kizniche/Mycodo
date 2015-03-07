@@ -7,11 +7,12 @@
 *
 */
 
+####### Configure #######
+$graph_exec = getcwd() . "/cgi-bin/graph.sh";
+
+
 include "auth.php";
 include_once ('menu.php');
-
-$cwd = getcwd();
-$graph_exec = $cwd . "/cgi-bin/graph.sh";
 
 $page = isset($_GET['page']) ? $_GET['page'] : 'Main';
 

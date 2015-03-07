@@ -1,4 +1,9 @@
 #!/bin/bash
+#
+#  graph.sh - Generates PNG graphs from sensor and relay log data
+#  By Kyle Gabriel
+#  2012 - 2015
+#
 
 PATHC=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 LOGPATH="$(dirname "$PATHC")/log"

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #
-#  by Kyle Gabriel
-#  KyleGabriel.com
+#  sense.py - Read sensors and write to log file
+#  By Kyle Gabriel
 #  2012 - 2015
 #
 

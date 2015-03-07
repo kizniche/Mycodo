@@ -1,4 +1,9 @@
 #!/bin/bash
+#
+#  relay.sh - Turns relays on and off
+#  By Kyle Gabriel
+#  2012 - 2015
+#
 
 PATH=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 LOGPATH="$(dirname "$PATH")/log"

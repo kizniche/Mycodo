@@ -7,11 +7,13 @@
 *
 */
 
-include "auth.php";
-
+####### Configure #######
 $cwd = getcwd();
 $graph_exec = $cwd . "/cgi-bin/graph.sh";
 $sensor_log = $cwd . "/log/sensor.log";
+
+
+include "auth.php";
 
 echo '<html><head><title>Mycodo Mobile</title>';
 echo '<script type="text/javascript">';
@@ -20,9 +22,7 @@ function open_win() {
 }
 echo '</script>';
 
-if (isset($_GET['r'])) {
-	if ($_GET['r'] == 1) echo "<META HTTP-EQUIV=\"refresh\" CONTENT=\"90\">";
-}
+if (isset($_GET['r'])) if ($_GET['r'] == 1) echo "<META HTTP-EQUIV=\"refresh\" CONTENT=\"90\">";
 
 echo '</head><body><center><table bgcolor="#cccccc" cellpadding=10><tr><td>';
 echo '<div style="float: center; color: #000; font-size: 24px; font-family: verdana;">';

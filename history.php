@@ -7,10 +7,11 @@
 *
 */
 
-include "auth.php";
+####### Configure #######
+$sensor_log = getcwd() . "/log/sensor.log";
 
-$cwd = getcwd();
-$sensor_log = $cwd . "/log/sensor.log";
+
+include "auth.php";
 
 echo '<html><head><META HTTP-EQUIV="refresh" CONTENT="65"></head><body>';
 

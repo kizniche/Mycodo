@@ -21,6 +21,7 @@ TODO
 ----
 
 - [x] Authorization log (for successful and unsuccessful logins)  
+- [ ] Automatic log file backup when a certain size is reached  
 - [ ] Support naming/renaming relay identifier from the web interface  
 - [ ] Support Raspberry Pi camera module for video/snapshot monitoring and timelapse photography  
 - [ ] Support for more than one temperature/humidity sensor  

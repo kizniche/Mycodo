@@ -7,12 +7,14 @@
 *
 */
 
-include "auth.php";
-
+####### Configure #######
 $cwd = getcwd();
 $sensor_log = $cwd . "/log/sensor.log";
 $relay_log = $cwd . "/log/relay.log";
 $images = $cwd . "/images";
+
+
+include "auth.php";
 
 echo '<html><head><title>Custom Graph</title>';
 echo '<script type="text/javascript">
