@@ -139,8 +139,19 @@ cd /var/www/mycodo/source/Python_DHT
 sudo python setup.py install
 ```
 
+Add the following to your /etc/logrotate.conf
+
+```
+/var/www/mycodo/log/* {
+    rotate 100
+	size 10M
+    copytruncate
+    nocompress
+}
+```
+
 Apache Setup
-----------------
+------------
 
 There is an `.htaccess` file in each directory that denys web access to these folders. It is strongly recommended that you make sure this works properly, to ensure no one can read from these directories, as log, configuration, and graph images are stored there.
 
