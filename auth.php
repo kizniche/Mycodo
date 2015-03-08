@@ -54,10 +54,10 @@ function write_auth_log($auth) {
 	global $auth_file;
 	
 	$date = new DateTime();
-	$date->format('Y m d H:i:s');
 	
-	if ($auth == 1) $auth = $auth_write . 'LOGIN';
-	else $auth = . 'NOPASS';
+	
+	if ($auth == 1) $auth = 'LOGIN';
+	else $auth = 'NOPASS';
 	
 	$user = $_POST['input_user'];
 	$ip = $_SERVER['REMOTE_ADDR'];
@@ -66,9 +66,9 @@ function write_auth_log($auth) {
 	$referred = $_SERVER['HTTP_REFERER'];
 	if ($referred == "") $referred = $auth_write . 'direct';
 	
-	$auth_write = $date . ', ' . $auth . ', ' . $user . ', ' . $ip . ', ' . $hostaddress . ', ' . $referred . ', ' . $browser . "\n";
+	$auth_write = $date->format('Y m d H:i:s') . ', ' . $auth . ', ' . $user . ', ' . $ip . ', ' . $hostaddress . ', ' . $referred . ', ' . $browser . "\n";
 
-	$fh = fopen($auth_file, 'a') or die("Error: Can't find/open auth.log");
+	$fh = fopen($auth_file, 'a') or die("Error: Can't find/open " . $auth_file);
 	fwrite($fh, $auth_write);
 	fclose($fh);
 }
