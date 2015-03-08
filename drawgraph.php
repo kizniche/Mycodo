@@ -82,12 +82,12 @@ plot \"$sensor_log\" using 1:8 index 0 title \" RH\" w lp ls 1 axes x1y1, \\\\
 } else displayform2();
 
 function displayform2() {
-	echo "<FORM action=\"\" method=\"POST\">";
+	echo "<div style=\"width: 100%; text-align: center;\"><div style=\"display: inline-block; text-align: right;\"><FORM action=\"\" method=\"POST\">";
 	echo "START:";
 	DateSelector("start");
-	echo "&nbsp;&nbsp;END:";
+	echo "<br>END:";
 	DateSelector( "end");
-	echo "&nbsp;&nbsp;<input type=\"submit\" name=\"SubmitDates\" value=\"Submit\"></FORM>";
+	echo "</div><div style=\"display: inline-block;\">&nbsp;&nbsp;<input type=\"submit\" name=\"SubmitDates\" value=\"Submit\"></FORM></div></div>";
 }
 
 function DateSelector($inName, $useDate=0) {
@@ -141,7 +141,7 @@ function DateSelector($inName, $useDate=0) {
 		if($currentHour < 10) echo ">0$currentHour\n";
 		else { echo ">$currentHour\n";}
 	}
-	echo "</SELECT>h ";
+	echo "</SELECT>:";
 
 	/* minute */
 	echo "<SELECT NAME=" . $inName . "Minute>\n";
