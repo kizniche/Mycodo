@@ -145,15 +145,15 @@ Set permissions
 sudo chown -R www-data:www-data /var/www/mycodo
 ```
 
-Add the following to your /etc/logrotate.conf
+~~Add the following to your /etc/logrotate.conf~~
 
 ```
-/var/www/mycodo/log/* {
+~~/var/www/mycodo/log/* {
     rotate 100
 	size 10M
     copytruncate
     nocompress
-}
+}~~
 ```
 
 Apache Setup
