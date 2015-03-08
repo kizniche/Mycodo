@@ -139,6 +139,12 @@ cd /var/www/mycodo/source/Python_DHT
 sudo python setup.py install
 ```
 
+Set permissions
+
+```
+sudo chown -R www-data:www-data /var/www/mycodo
+```
+
 Add the following to your /etc/logrotate.conf
 
 ```
