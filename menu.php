@@ -35,7 +35,7 @@ function page_menu ($page) {
 	$hum_max = `$mycodo_exe -r | cut -d' ' -f4`;
 	$hum_min = `$mycodo_exe -r | cut -d' ' -f3`;
 	$dp_f = `tail -n 1 $sensor_log | cut -d' ' -f11`;
-    $dp_c = ($dp_f-32)*5/9;
+	$dp_c = ($dp_f-32)*5/9;
 	
 	$time_now = `date +"%Y-%m-%d %H:%M:%S"`;
 	$time_last = `tail -n 1 $sensor_log | cut -d' ' -f1,2,3,4,5,6`;
@@ -47,13 +47,13 @@ function page_menu ($page) {
 	echo '<table width="100%"><tr><td align=center><div style="padding:1px 2px 2px 2px; float: center; color: #000; font-size: 11px; font-family: verdana;">';
 	echo 'Last page refresh<br>' , $time_now;
 	echo '</div></td></tr><tr bgcolor="#cccccc" cellpadding=5><td align=center>';
-    echo '<div style="padding:1px 2px 2px 3px; float: center; color: #000; font-size: 11px; font-family: verdana;">';
+	echo '<div style="padding:1px 2px 2px 3px; float: center; color: #000; font-size: 11px; font-family: verdana;">';
 	echo 'Last sensor read<br>' , $time_last;
 	echo '</div></td></tr><tr bgcolor="#cccccc" cellpadding=5><td align=right><div style="padding:1px 2px 2px 7px; display:inline; float: left; color: #000; font-size: 11px; font-family: verdana; text-align: left;">';
-    echo '<p>T <b>' , substr($t_c, 0, -1) , '&deg;C</b> (' , substr($t_c_min, 0, -1) , ' - ' , substr($t_c_max, 0, -1) , '&deg;C)';
+	echo '<p>T <b>' , substr($t_c, 0, -1) , '&deg;C</b> (' , substr($t_c_min, 0, -1) , ' - ' , substr($t_c_max, 0, -1) , '&deg;C)';
 	echo '<br>(' , substr($t_f, 0, -1) , '&deg;F)';
 	echo '<p>H <b>' , substr($hum, 0, -1) , '%</b> (' , substr($hum_min, 0, -1) , ' - ' , substr($hum_max, 0, -1) , '%)<p>';
-    echo 'DP <b>' , round($dp_c, 1) , '&deg;C</b> (' , substr($dp_f, 0, -1) , '&deg;F)';
+	echo 'DP <b>' , round($dp_c, 1) , '&deg;C</b> (' , substr($dp_f, 0, -1) , '&deg;F)';
 	echo '</div></td></tr>';
 	menu_item('Main', 'Main', $page);
 	menu_item('1 Hour', 'Past Hour', $page);
