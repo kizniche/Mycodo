@@ -118,7 +118,7 @@ sudo git clone https://github.com/adafruit/Adafruit_Python_DHT /var/www/mycodo/s
 Compile temperature/humidity controller
 
 ```
-gcc /var/www/mycodo/source/mycodo-1.9.c -I/usr/local/include -L/usr/local/lib -lconfig -lwiringPi -o /var/www/mycodo/cgi-bin/mycodo
+gcc /var/www/mycodo/source/1.9/mycodo.c -I/usr/local/include -L/usr/local/lib -lconfig -lwiringPi -o /var/www/mycodo/cgi-bin/mycodo
 ```
 
 Compile WiringPi and DHT python library
