@@ -29,11 +29,11 @@ function page_menu ($page) {
 	
 	$t_c = `tail -n 1 $sensor_log | cut -d' ' -f9`;
 	$t_f = `tail -n 1 $sensor_log | cut -d' ' -f10`;
-	$t_c_max = `$mycodo_exe -r | cut -d' ' -f2`;
-	$t_c_min = `$mycodo_exe -r | cut -d' ' -f1`;
+	$t_c_max = `$mycodo_exe r | cut -d' ' -f2`;
+	$t_c_min = `$mycodo_exe r | cut -d' ' -f1`;
 	$hum = `tail -n 1 $sensor_log | cut -d' ' -f8`;
-	$hum_max = `$mycodo_exe -r | cut -d' ' -f4`;
-	$hum_min = `$mycodo_exe -r | cut -d' ' -f3`;
+	$hum_max = `$mycodo_exe r | cut -d' ' -f4`;
+	$hum_min = `$mycodo_exe r | cut -d' ' -f3`;
 	$dp_f = `tail -n 1 $sensor_log | cut -d' ' -f11`;
 	$dp_c = ($dp_f-32)*5/9;
 	
