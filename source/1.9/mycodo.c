@@ -15,13 +15,12 @@
 #include <time.h>
 #include <limits.h>
 #include <libconfig.h>
-
-// Main configuration file
 #include <unistd.h>
 
+// Main configuration file
 char *cwd;
 char config_file_path[1024];
-char *file_name = "/mycodo.conf";
+char *file_name = "/config/mycodo.conf";
 //char *config_file_path = "/var/www/mycodo/mycodo.conf";
 
 // Relay1 HEPA Pin - wiringPi pin 4 is BCM_GPIO 23, GPIO4
@@ -101,20 +100,19 @@ int webOR = 0;
 int tempState = 2;
 int humState = 2;
 
-int main( int argc, char *argv[] )
-{
+int main(int argc, char *argv[]) {
 	if ((cwd = getcwd(NULL, 64)) == NULL) {
 		perror("pwd");
 		exit(2);
 	}
-	strcpy (config_file_path, cwd);
-	strcpy (config_file_path, file_name);
+	strcat(config_file_path, cwd);
+	strcat(config_file_path, file_name);
 	
-	printf(config_file_path);
-	
-	if (!argc)
-	{
+	if (argc < 2) {
 		printf("Missing input argument!\n");
+		printf("Usage: r to read and w to write\n");
+		printf("mycodo r\n");
+		printf("mycodo w minTemp maxTemp minHum maxHum webOR tempState humState\n");
 		return 1;
 	}
 
