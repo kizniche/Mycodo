@@ -145,6 +145,10 @@ Set permissions
 sudo chown -R www-data:www-data /var/www/mycodo
 ```
 
+```
+sudo chmod 664 /var/www/mycodo/config/mycodo.conf /var/www/mycodo/images/*.png /var/www/mycodo/log/*.log
+```
+
 ~~Add the following to your /etc/logrotate.conf~~
 
 ~~/var/www/mycodo/log/* {
