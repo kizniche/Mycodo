@@ -21,9 +21,11 @@ TODO
 ----
 
 - [x] Authorization log (for successful and unsuccessful logins)  
-- [ ] Automatic log file backup when a certain size is reached  
-- [ ] Support naming/renaming relay identifier from the web interface  
-- [ ] Support Raspberry Pi camera module for video/snapshot monitoring and timelapse photography  
+- [X] Support Raspberry Pi camera module for snapshot monitoring
+  - [ ] Timelapse video creation ability (define start, end, duration between, etc.)
+  - [ ] Video streaming (I already have this working!, update soon)
+- [ ] Automatic log file backup when a certain size is reached
+- [ ] Support naming/renaming relay identifier from the web interface
 - [ ] Support for more than one temperature/humidity sensor  
 - [ ] Support for guest login (view only)  
 - [ ] Update user interface  
@@ -139,6 +141,16 @@ cd /var/www/mycodo/source/Python_DHT
 
 ```
 sudo python setup.py install
+```
+
+Set permissions for www to use the RPi camera
+
+```
+sudo echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' > /etc/udev/rules.d/10-vchiq-permissions.rules
+```
+
+```
+sudo usermod -a -G video www-data
 ```
 
 Set permissions
