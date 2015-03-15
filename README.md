@@ -131,6 +131,8 @@ Compile temperature/humidity controller
 gcc /var/www/mycodo/source/1.9/mycodo.c -I/usr/local/include -L/usr/local/lib -lconfig -lwiringPi -o /var/www/mycodo/cgi-bin/mycodo
 ```
 
+Install Python_DHT
+
 ```
 cd /var/www/mycodo/source/Python_DHT
 ```
