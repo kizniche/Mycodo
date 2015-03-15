@@ -98,7 +98,7 @@ sudo apt-get upgrade
 ```
 
 ```
-sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev
+sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev php5 libapache2-mod-php5
 ```
 
 Download the latest code for the controller/web interface, WireingPi, and Adafruit_Python_DHT
@@ -115,12 +115,6 @@ sudo git clone git://git.drogon.net/wiringPi /var/www/mycodo/source/WiringPi
 sudo git clone https://github.com/adafruit/Adafruit_Python_DHT /var/www/mycodo/source/Python_DHT
 ```
 
-Compile temperature/humidity controller
-
-```
-gcc /var/www/mycodo/source/1.9/mycodo.c -I/usr/local/include -L/usr/local/lib -lconfig -lwiringPi -o /var/www/mycodo/cgi-bin/mycodo
-```
-
 Compile WiringPi and DHT python library
 
 ```
@@ -129,6 +123,12 @@ cd /var/www/mycodo/source/WiringPi
 
 ```
 sudo ./build
+```
+
+Compile temperature/humidity controller
+
+```
+gcc /var/www/mycodo/source/1.9/mycodo.c -I/usr/local/include -L/usr/local/lib -lconfig -lwiringPi -o /var/www/mycodo/cgi-bin/mycodo
 ```
 
 ```
