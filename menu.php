@@ -73,7 +73,8 @@ function page_menu ($page) {
 	} else echo '<a href="index.php?page=$page&r=1">On</a> / <b>Off</b>';
 	
 	echo '</td></tr>';
-	echo '<tr><td class=link><a href="capture-still.php" target="_blank">Camera Image</a></td></tr>';
+	echo '<tr><td class=link><a href="camera-still.php" target="_blank">Camera Image</a></td></tr>';
+	echo '<tr><td class=link><a href="camera-stream.php" target="_blank">Camera Stream</a></td></tr>';
 	echo '<tr><td class=link><a href="history.php" target="_blank">Log History</a></td></tr>';
 	echo '<tr><td class=link><a href="drawgraph.php" target="_blank">Custom Graph</a></td></tr>';
 	echo '<tr><td class=link><a href="javascript:open_chmode()">Configuration</a></td></tr>';
