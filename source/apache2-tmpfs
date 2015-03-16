@@ -1,0 +1,32 @@
+# And add:
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides:          apache2-tmpfs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Required-Start:   
+# Required-Stop:    
+# Short-Description: Create /var/log/apache2/error.log on tmpfs at startup
+# Description:       Create /var/log/apache2/error.log needed by Apache.
+### END INIT INFO
+case "${1:-''}" in
+  'start')
+   # create the /var/log/apache2/error.log needed by apache
+   mkdir /var/log/apache2
+   chmod 777 /var/log/apache2
+   touch /var/log/apache2/error.log
+   chmod 777 /var/log/apache2/error.log
+   ;;
+  'stop')
+   ;;
+  'restart')
+   ;;
+  'reload'|'force-reload')
+   ;;
+  'status')
+   ;;
+  *)
+   echo "Usage: $SELF start"
+   exit 1
+   ;;
+esac
