@@ -4,7 +4,7 @@
 #
 start() {
 	mkdir /tmp/stream
-        /usr/bin/raspistill --metering matrix --nopreview -bm -co 20 -sh 60 -awb auto -vf -hf -w 800 -h 600 -q 20 -o /tmp/stream/pic.jpg -tl 500 -t 9999999 -th 0:0:0 &
+        /usr/bin/raspistill --nopreview --burst --contrast 20 --sharpness 60 --awb auto --quality 20 --vflip --hflip --width 800 --height 600 -o /tmp/stream/pic.jpg --timelapse 500 --timeout 9999999 --thumb 0:0:0 &
         touch /var/lock/mycodo_raspistill
 
         LD_LIBRARY_PATH=/usr/local/lib /usr/local/bin/mjpg_streamer -i "input_file.so -f /tmp/stream -n pic.jpg" -o "output_http.so -w /var/www/mycodo" &
