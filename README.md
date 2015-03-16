@@ -91,113 +91,67 @@ Relays and DHT22 Ground: Ground, pin 6
 
 Software Setup
 --------------
-```
-sudo apt-get update
-```
+`sudo apt-get update`
 
-```
-sudo apt-get upgrade
-```
+`sudo apt-get upgrade`
 
 `sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev php5 libapache2-mod-php5`
 
 Download the latest code for the controller/web interface, WireingPi, and Adafruit_Python_DHT
 
-```
-sudo git clone https://github.com/kizniche/Automated-Mushroom-Cultivator /var/www/mycodo
-```
+`sudo git clone https://github.com/kizniche/Automated-Mushroom-Cultivator /var/www/mycodo`
 
-```
-sudo git clone git://git.drogon.net/wiringPi /var/www/mycodo/source/WiringPi
-```
+`sudo git clone git://git.drogon.net/wiringPi /var/www/mycodo/source/WiringPi`
 
-```
-sudo git clone https://github.com/adafruit/Adafruit_Python_DHT /var/www/mycodo/source/Python_DHT
-```
+`sudo git clone https://github.com/adafruit/Adafruit_Python_DHT /var/www/mycodo/source/Python_DHT`
 
 Compile WiringPi and DHT python library
 
-```
-cd /var/www/mycodo/source/WiringPi
-```
+`cd /var/www/mycodo/source/WiringPi`
 
-```
-sudo ./build
-```
+`sudo ./build`
 
 Compile temperature/humidity controller
 
-```
-gcc /var/www/mycodo/source/1.9/mycodo.c -I/usr/local/include -L/usr/local/lib -lconfig -lwiringPi -o /var/www/mycodo/cgi-bin/mycodo
-```
+`gcc /var/www/mycodo/source/1.9/mycodo.c -I/usr/local/include -L/usr/local/lib -lconfig -lwiringPi -o /var/www/mycodo/cgi-bin/mycodo`
 
 Install Python_DHT
 
-```
-cd /var/www/mycodo/source/Python_DHT
-```
+`cd /var/www/mycodo/source/Python_DHT`
 
-```
-sudo python setup.py install
-```
+`sudo python setup.py install`
 
 Set permissions for www to use the RPi camera
 
-```
-sudo echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' > /etc/udev/rules.d/10-vchiq-permissions.rules
-```
+`sudo echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' > /etc/udev/rules.d/10-vchiq-permissions.rules`
 
-```
-sudo usermod -a -G video www-data
-```
+`sudo usermod -a -G video www-data`
 
 Setup streaming capabilities
 
-```
-sudo apt-get install libjpeg8-dev libv4l-dev wget
-```
+`sudo apt-get install libjpeg8-dev libv4l-dev wget`
 
-```
-sudo ln -s /usr/include/linux/videodev2.h /usr/include/linux/videodev.h
-```
+`sudo ln -s /usr/include/linux/videodev2.h /usr/include/linux/videodev.h`
 
-```
-wget -P /var/www/mycodo/source http://sourceforge.net/code-snapshots/svn/m/mj/mjpg-streamer/code/mjpg-streamer-code-182.zip
-```
+`wget -P /var/www/mycodo/source http://sourceforge.net/code-snapshots/svn/m/mj/mjpg-streamer/code/mjpg-streamer-code-182.zip`
 
-```
-cd /var/www/mycodo/source
-```
+`cd /var/www/mycodo/source`
 
-```
-unzip mjpg-streamer-code-182.zip
-```
+`unzip mjpg-streamer-code-182.zip`
 
-```
-cd mjpg-streamer-code-182/mjpg-streamer
-```
+`cd mjpg-streamer-code-182/mjpg-streamer`
 
-```
-make mjpg_streamer input_file.so output_http.so
-```
+`make mjpg_streamer input_file.so output_http.so`
 
-```
-sudo cp mjpg_streamer /usr/local/bin
-```
+`sudo cp mjpg_streamer /usr/local/bin`
 
-```
-sudo cp output_http.so input_file.so /usr/local/lib/
-``` 
+`sudo cp output_http.so input_file.so /usr/local/lib/` 
 
 Set www permissions
 
-```
-sudo chown -R www-data:www-data /var/www/mycodo
-```
+`sudo chown -R www-data:www-data /var/www/mycodo`
 
-```
-sudo chmod 664 /var/www/mycodo/config/mycodo.conf /var/www/mycodo/images/*.png /var/www/mycodo/log/*.log
-```
+`sudo chmod 664 /var/www/mycodo/config/mycodo.conf /var/www/mycodo/images/*.png /var/www/mycodo/log/*.log`
 
 ~~Add the following to your /etc/logrotate.conf~~
 
