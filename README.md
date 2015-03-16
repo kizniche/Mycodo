@@ -22,7 +22,7 @@ TODO
 
 - [x] Authorization log (for successful and unsuccessful logins)  
 - [X] Support Raspberry Pi camera module for snapshot monitoring
-  - [X] Video streaming (I already have this working!, update soon)
+  - [X] Video streaming
   - [ ] Timelapse video creation ability (define start, end, duration between, etc.)
 - [ ] Automatic log file backup when a certain size is reached
 - [ ] Support naming/renaming relay identifier from the web interface
