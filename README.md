@@ -153,7 +153,45 @@ sudo echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' > /etc/udev/rules.d/10-
 sudo usermod -a -G video www-data
 ```
 
-Set permissions
+Setup streaming capabilities
+
+```
+sudo apt-get install libjpeg8-dev libv4l-dev wget
+```
+
+```
+sudo ln -s /usr/include/linux/videodev2.h /usr/include/linux/videodev.h
+```
+
+```
+wget -P /var/www/mycodo/source http://sourceforge.net/code-snapshots/svn/m/mj/mjpg-streamer/code/mjpg-streamer-code-182.zip
+```
+
+```
+cd /var/www/mycodo/source
+```
+
+```
+unzip mjpg-streamer-code-182.zip
+```
+
+```
+cd mjpg-streamer-code-182/mjpg-streamer
+```
+
+```
+make mjpg_streamer input_file.so output_http.so
+```
+
+```
+sudo cp mjpg_streamer /usr/local/bin
+```
+
+```
+sudo cp output_http.so input_file.so /usr/local/lib/
+``` 
+
+Set www permissions
 
 ```
 sudo chown -R www-data:www-data /var/www/mycodo
