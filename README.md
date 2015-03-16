@@ -147,6 +147,26 @@ Setup streaming capabilities
 
 `sudo cp output_http.so input_file.so /usr/local/lib/` 
 
+Set up tempfs for areas of the disk that are written often, preserving the life of the SD card and speeding up disk read/writes. Keep in mind all contents will be deleted upon reboot. If you need to analyze logs, remember to disable these lines in fstab before doing so.
+
+Edit fstab with `sudo vi /etc/fstab` add the following lines, then save.
+
+```
+tmpfs    /tmp    tmpfs    defaults,noatime,nosuid,size=100m    0 0
+tmpfs    /var/tmp    tmpfs    defaults,noatime,nosuid,size=30m    0 0
+tmpfs    /var/log    tmpfs    defaults,noatime,nosuid,mode=0755,size=100m    0 0
+tmpfs    /var/run    tmpfs    defaults,noatime,nosuid,mode=0755,size=2m    0 0
+tmpfs    /var/spool/mqueue    tmpfs    defaults,noatime,nosuid,mode=0700,gid=12,size=30m    0 0
+```
+
+Apache does not start if there is not a proper directory structure set up in /var/log. This script will ensure it's avalable after every startup, when Apache is started.
+
+`sudo cp /var/www/mycodo/source/apache2-tmpfs /etc/init.d/`
+
+`sudo chmod 0755 /etc/init.d/apache2-tmpfs'
+
+`sudo update-rc.d apache2-tmpfs defaults 90 10'
+
 Set www permissions
 
 `sudo chown -R www-data:www-data /var/www/mycodo`
