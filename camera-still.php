@@ -9,7 +9,6 @@
 
 ####### Configure #######
 $cwd = getcwd();
-$still_dir = "camera-stills/";
 $still_exec = $cwd . "/cgi-bin/camera-still.sh";
 
 include "auth.php";
@@ -22,7 +21,7 @@ echo '</form>';
 if (isset($_POST['Capture'])) {
 	$capture_output = shell_exec("$still_exec 2>&1; echo $?");
 	if ($capture_output != 0) echo 'Abnormal output (possibly error): ' . $capture_output . '<br>';
-	echo '<img src=image.php?span=cam-still>';
+	echo '<p><img src=image.php?span=cam-still></p>';
 }
 echo'</center></body></html>';
 
