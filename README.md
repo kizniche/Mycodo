@@ -22,8 +22,8 @@ TODO
 
 - [x] Authorization log (for successful and unsuccessful logins)  
 - [X] Support Raspberry Pi camera module for snapshot monitoring
+  - [X] Video streaming (I already have this working!, update soon)
   - [ ] Timelapse video creation ability (define start, end, duration between, etc.)
-  - [ ] Video streaming (I already have this working!, update soon)
 - [ ] Automatic log file backup when a certain size is reached
 - [ ] Support naming/renaming relay identifier from the web interface
 - [ ] Support for more than one temperature/humidity sensor  
