@@ -163,9 +163,9 @@ Apache does not start if there is not a proper directory structure set up in /va
 
 `sudo cp /var/www/mycodo/source/apache2-tmpfs /etc/init.d/`
 
-`sudo chmod 0755 /etc/init.d/apache2-tmpfs'
+`sudo chmod 0755 /etc/init.d/apache2-tmpfs`
 
-`sudo update-rc.d apache2-tmpfs defaults 90 10'
+`sudo update-rc.d apache2-tmpfs defaults 90 10`
 
 Set www permissions
 
