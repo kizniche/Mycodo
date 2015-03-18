@@ -111,9 +111,11 @@ Compile WiringPi and DHT python library
 
 `sudo ./build`
 
-Compile temperature/humidity controller
+Compile relay controller
 
-`gcc /var/www/mycodo/source/mycodo/1.9/mycodo.c -I/usr/local/include -L/usr/local/lib -lconfig -lwiringPi -o /var/www/mycodo/cgi-bin/mycodo`
+`cd /var/www/mycodo/source/mycodo/1.9/ && sudo make`
+
+`sudo mv mycodo /var/www/mycodo/cgi-bin/mycodo`
 
 Install Python_DHT
 
