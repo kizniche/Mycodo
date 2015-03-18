@@ -115,7 +115,7 @@ Compile relay controller
 
 `cd /var/www/mycodo/source/mycodo/1.9/ && sudo make`
 
-`sudo mv mycodo /var/www/mycodo/cgi-bin/mycodo`
+`sudo mv mycodo ../../../cgi-bin/mycodo`
 
 Install Python_DHT
 
