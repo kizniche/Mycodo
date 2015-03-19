@@ -211,11 +211,11 @@ Generate an SSL certificate, enable SSL/HTTPS in apache, then add the following 
 <a name="mysql"></a>
 ### MySQL and User Setup
 
-Download the files in source/php-login-mysql-install to your local computer. Go to http://127.0.0.1/phpmyadmin and login with root and the password you created. Click 'Import' and select 01-create-database.sql, then click 'OK'. Repeat with the file 02-create-and-fill-users-table.sql. This will wet up your MySQL database to allow registering users.
+Download the files in source/php-login-mysql-install to your local computer. Go to http://127.0.0.1/phpmyadmin and login with root and the password you created. Click 'Import' and select 01-create-database.sql, then click 'OK'. Repeat with the file 02-create-user-table.sql. This will wet up your MySQL database to allow registering users.
 
-Edit the file /var/www/mycodo/config/db.php and change 'password' to the password you created when you installed MySQL.
+Edit the file /var/www/mycodo/config/db.php and change 'password' for the defined DB-PASS to the password you created when you installed MySQL. Fill out Cookie and SMTP section. The SMTP section is important because you will need to receive a verification email after registration. As of 3/19/2015, gmail works as a SMTP server. Just create a new account and enter the credentials in as the config file instructs.
 
-Go to http://127.0.0.1/mycodo/register.php, enter your desired login information, then click Register and hope there are no errors reported. You can verify this new user in MyPHPAdmin. It will appear in the MySQL database created earlier.
+Go to http://127.0.0.1/mycodo/register.php, enter your desired login information, then click Register and hope there are no errors reported. You will be sent an email to verify your login information. Once you get this email and click the link, you are able to login. You can verify this new user in MyPHPAdmin. It will appear in the MySQL database created earlier.
 
 Revoke read access to register.php to prevent further users from being created.
 
