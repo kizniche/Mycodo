@@ -89,6 +89,12 @@ plot \"$sensor_log\" using 1:8 index 0 title \" RH\" w lp ls 1 axes x1y1, \\\\
 	echo "<p><a href='javascript:open_legend()'>Brief Graph Legend</a> - <a href='javascript:open_legend_full()'>Full Graph Legend</a>";
 } else displayform2();
 
+echo '</center></body></html>';
+
+} else {
+        include("views/not_logged_in.php");
+}
+
 function displayform2() {
 	echo "<div style=\"width: 100%; text-align: center;\"><div style=\"display: inline-block; text-align: right;\"><FORM action=\"\" method=\"POST\">";
 	echo "START:";
@@ -164,11 +170,5 @@ function DateSelector($inName, $useDate=0) {
 		else { echo ">$currentMinute\n";}
 	}
 	echo "</SELECT>";
-}
-
-echo '</center></body></html>';
-
-} else {
-        include("views/not_logged_in.php");
 }
 ?>
