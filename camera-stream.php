@@ -36,6 +36,6 @@ if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) {
 
 	echo 'Stream ON<p><img src="http://' . $_SERVER[HTTP_HOST] . ':8080/?action=stream" /></p>';
 } else echo 'Stream OFF';
-echo '</center><body></html>';
 
+echo '</center><body></html>';
 ?>
