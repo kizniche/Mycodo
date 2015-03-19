@@ -1,0 +1,55 @@
+.inactive, .active, .title, .link {
+	padding:3px 2px 2px 10px;
+} 
+
+.inactive {
+	background:skyblue;
+	font-size: 12px;
+}
+
+.active {
+	background:steelblue;
+	font-weight: bold;
+	font-size: 12px;
+}
+
+.title {
+	background:white;
+}
+
+.slink {
+	background:DarkTurquoise;
+	float: center;
+	color: #000;
+	font-size: 11px;
+	font-family: verdana;
+}
+
+.link {
+	background:DarkTurquoise;
+	font-size: 12px;
+}
+
+.link-profile {
+	background:DarkTurquoise;
+	padding: 3px 2px 0 0;
+	font-size: 12px;
+}
+
+.link a {
+	color:blue;
+}
+
+.inactive a {
+	text-decoration:none;
+	color:blue;
+}
+
+.active a {
+	text-decoration:none;
+	color:white;
+}
+
+a:hover   {
+	color:black;
+} 
