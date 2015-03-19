@@ -1,7 +1,6 @@
 <?php include('_header.php'); ?>
 
-<!-- clean separation of HTML and PHP -->
-<h2><?php echo $_SESSION['user_name']; ?> <?php echo WORDING_EDIT_YOUR_CREDENTIALS; ?></h2>
+<?php echo  $login->user_gravatar_image_tag; ?> <span style="font-size: 20px; font-weight: bold;"><?php echo $_SESSION['user_name']; ?> <?php echo WORDING_EDIT_YOUR_CREDENTIALS; ?></span>
 
 <!-- edit form for username / this form uses HTML5 attributes, like "required" and type="email" -->
 <form method="post" action="edit.php" name="user_edit_form_name">

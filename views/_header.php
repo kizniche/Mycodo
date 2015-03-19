@@ -41,8 +41,8 @@ if (isset($login)) {
         foreach ($login->messages as $message) {
             echo $message;
         }
-    }
     echo '<p>';
+    }
 }
 ?>
 
