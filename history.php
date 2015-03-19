@@ -1,7 +1,7 @@
 <?php
 /*
 *
-*  menu.php - The navigation menu of the control interface
+*  history.php - Read log
 *  By Kyle Gabriel
 *  2012 - 2015
 *
@@ -9,6 +9,12 @@
 
 ####### Configure #######
 $sensor_log = getcwd() . "/log/sensor.log";
+
+function displayModeform() {
+        echo "<FORM action=\"\" method=\"POST\">";
+        echo "Lines: <input type=\"text\" maxlength=8 size=8 name=\"Lines\" /> ";
+        echo "<input type=\"submit\" name=\"SubmitMode\" value=\"Set\"></FORM><p>Year Mo Day Hour Min Sec Timestamp RH Tc Tf DPf DPc<p>";
+}
 
 if (version_compare(PHP_VERSION, '5.3.7', '<')) {
     exit("Sorry, Simple PHP Login does not run on a PHP version smaller than 5.3.7 !");
@@ -31,12 +37,6 @@ if(isset($_POST['Lines'])) {
 else {
 	displayModeform();
 	echo `tail -n 20 $sensor_log | sed 's/$/<br>/'`;
-}
-
-function displayModeform() {
-	echo "<FORM action=\"\" method=\"POST\">";
-	echo "Lines: <input type=\"text\" maxlength=8 size=8 name=\"Lines\" /> ";
-	echo "<input type=\"submit\" name=\"SubmitMode\" value=\"Set\"></FORM><p>Year Mo Day Hour Min Sec Timestamp RH Tc Tf DPf DPc<p>";
 }
 
 echo '</body></html>';
