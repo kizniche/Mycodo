@@ -12,6 +12,16 @@ $cwd = getcwd();
 $sensor_log = $cwd . "/log/sensor.log";
 $mycodo_exe = $cwd . "/cgi-bin/mycodo";
 
+if (version_compare(PHP_VERSION, '5.3.7', '<')) {
+    exit("Sorry, Simple PHP Login does not run on a PHP version smaller than 5.3.7 !");
+} else if (version_compare(PHP_VERSION, '5.5.0', '<')) {
+    require_once("libraries/password_compatibility_library.php");
+}
+require_once("config/db.php");
+require_once("classes/Login.php");
+$login = new Login();
+
+if ($login->isUserLoggedIn() == true) {
 
 function menu_item($id, $title, $current) {
 	$class = ($current == $id) ? "active" : "inactive";
@@ -78,7 +88,8 @@ function page_menu ($page) {
 	echo '<tr><td class=link><a href="history.php" target="_blank">Log History</a></td></tr>';
 	echo '<tr><td class=link><a href="drawgraph.php" target="_blank">Custom Graph</a></td></tr>';
 	echo '<tr><td class=link><a href="javascript:open_chmode()">Configuration</a></td></tr>';
-	echo '<tr><td class=link><a href="index.php?page=log out">Log Out</a></td></tr>';
+	echo '<tr><td class=link><a href="index.php?logout">Log Out</a> (user ' . $_SESSION['user_name'] . ')</td></tr>';
 	echo '</td></tr></table>';
+}
 }
 ?>

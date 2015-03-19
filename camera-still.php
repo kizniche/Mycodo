@@ -1,7 +1,7 @@
 <?php
 /*
 *
-*  camera-stil.php - Captures image and displays it
+*  camera-still.php - Captures RPi still image and displays it
 *  By Kyle Gabriel
 *  2012 - 2015
 *
@@ -11,7 +11,16 @@
 $cwd = getcwd();
 $still_exec = $cwd . "/cgi-bin/camera-still.sh";
 
-include "auth.php";
+if (version_compare(PHP_VERSION, '5.3.7', '<')) {
+    exit("Sorry, Simple PHP Login does not run on a PHP version smaller than 5.3.7 !");
+} else if (version_compare(PHP_VERSION, '5.5.0', '<')) {
+    require_once("libraries/password_compatibility_library.php");
+}
+require_once("config/db.php");
+require_once("classes/Login.php");
+$login = new Login();
+
+if ($login->isUserLoggedIn() == true) {
 
 echo '<html><head><title>Camera Stills</title>';
 echo '</head><body><center>';
@@ -25,4 +34,7 @@ if (isset($_POST['Capture'])) {
 }
 echo'</center></body></html>';
 
+} else {
+        include("views/not_logged_in.php");
+}
 ?>
