@@ -36,7 +36,7 @@ I'm currently working on a new set of hardware that will support a range of new 
   * Acquire images or stream live video from a camera
   * Change modes of operation, such as minimum and maximum temperature/humidity
   * Independently control connected devices (turn on, off, on for [x] seconds)
-  * Login Authentication
+  * Login Authentication (written by php-login.net)
     * Using official PHP password hashing functions and the most modern password hashing/salting web standards
     * Optional "remember me" cookie to keep session authenticated
     * Profile edit (change user name, password, or email address)
