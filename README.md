@@ -68,13 +68,13 @@ I'm currently working on a new set of hardware that will support a range of new 
 * Circulatory Fan
 * Exhaust Fan (HEPA filter recommended)
 
-Relay1, Exhaust Fan: GPIO 23, pin 16
-Relay2, Humidifier: GPIO 22, pin 15
-Relay3, Circulatory Fan: GPIO 18, pin 12
-Relay4, Heater: GPIO 17, pin 11
-DHT22 sensor: GPIO 4, pin 7
-DHT22 Power: 3.3v, pin 1
-Relays and DHT22 Ground: Ground, pin 6
+Relay1, Exhaust Fan: GPIO 23, pin 16  
+Relay2, Humidifier: GPIO 22, pin 15  
+Relay3, Circulatory Fan: GPIO 18, pin 12  
+Relay4, Heater: GPIO 17, pin 11  
+DHT22 sensor: GPIO 4, pin 7  
+DHT22 Power: 3.3v, pin 1  
+Relays and DHT22 Ground: Ground, pin 6  
 
 <a name="soft-brief"></a>
 ### Software Brief
