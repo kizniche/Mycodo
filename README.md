@@ -5,27 +5,28 @@
 #### Index
 
 + [History](#history)
-+ [Features](#features)
-+ [Todo](#todo)
-+ [Hardware Brief](#hardware-brief)
-+ [Software Brief](#software-brief)
-+ [Install Instructions](#install-instructions)
-    - [Software Setup](#software-setup)
-    - [TempFS Setup](#tempfs-setup)
-    - [Apache2 Setup](#apache2-setup)
-    - [MySQL and User Setup](#mysql-setup)
-    - [Cron Setup](#cron-setup)
-+ [Web Interface login](#web-interface-login)
-+ [Useful Links](#useful-links)
++ [Features](#feat)
++ [Todo](#future)
++ [Hardware Brief](#hard-brief)
++ [Software Brief](#soft-brief)
++ [Install Instructions](#instructions)
+    - [Software Setup](#soft-setup)
+    - [TempFS Setup](#tempfs)
+    - [Apache2 Setup](#apache2)
+    - [MySQL and User Setup](#mysql)
+    - [Cron Setup](#cron)
++ [Web Interface login](#web-interface)
++ [Useful Links](#links)
 
 <a name="history"></a>
 ### History of Mycodo
 
-    This started out as a small project to regulate the temperature and humidity of a chamber I grew gourmet mushrooms in. At that time, in 2010, I used an ATMega that was interfaced to a computer via USB. When the Raspberry Pi was introduced in 2012, I decided to migrate my code from the ATMega and my linux computer to work on this one compact device. My first relay bank consisted of 4 relays, controlling a heater, humidifier, circulatory fan, and HEPA-filtered exhaust fan.
+This started out as a small project to regulate the temperature and humidity of a chamber I grew gourmet mushrooms in. At that time, in 2010, I used an ATMega that was interfaced to a computer via USB. When the Raspberry Pi was introduced in 2012, I decided to migrate my code from the ATMega and my linux computer to work on this one compact device. My first relay bank consisted of 4 relays, controlling a heater, humidifier, circulatory fan, and HEPA-filtered exhaust fan.
 
-    I'm currently working on a new set of hardware that will support a range of new features. As such, until I unveil the new hardware, this code will be undergoing lots of updates. I hope to keep everything working throughout the update process.
+I'm currently working on a new set of hardware that will support a range of new features. As such, until I unveil the new hardware, this code will be undergoing lots of updates. I hope to keep everything working throughout the update process.
 
-### Features <a name="features"></a>
+<a name="feat"></a>
+### Features
 
 * Logging temperature, humidity, and relay states
 * Configurable minimum and maximum allowable temperature and humidity
@@ -37,7 +38,8 @@
   * Independently control connected devices (turn on, off, on for [x] seconds)
   * Authentication using official PHP password hashing functions, the most modern password hashing/salting web standards
 
-### Todo <a name="todo"></a>
+<a name="future"></a>
+### Todo
 
 - [ ] Authorization log (for successful and unsuccessful logins)  
 - [ ] Timelapse video creation ability (define start, end, duration between, etc.)  
@@ -50,7 +52,8 @@
   - [ ] Graphics (temperature, humidity, time, date, etc.)  
   - [ ] Touch screen improvements
 
-### Hardware Brief <a name="hardware-brief"></a>
+<a name="hard-brief"></a>
+### Hardware Brief
 
 * Raspberry Pi
 * DHT22 Temperature/humidity sensor
@@ -68,7 +71,8 @@ DHT22 sensor: GPIO 4, pin 7
 DHT22 Power: 3.3v, pin 1
 Relays and DHT22 Ground: Ground, pin 6
 
-### Software Brief <a name="software-brief"></a>
+<a name="soft-brief"></a>
+### Software Brief
 
 The following software is required
 
@@ -83,11 +87,13 @@ The following software is required
 * wget
 * WiringPi (gpio)
 
-# Install Instructions <a name="install-instructions"></a>
+<a name="instructions"></a>
+# Install Instructions
 
    This installation assumes you are starting with a fresh install of Raspbian linux on your Raspberry Pi. If not, please adjust your install accordingly.
 
-### Software Setup <a name="software-setup"></a>
+<a name="soft-setup"></a>
+### Software Setup
 
 `sudo apt-get update`
 
@@ -161,7 +167,8 @@ Set www permissions
 
 `sudo chmod 660 /var/www/mycodo/config/* /var/www/mycodo/images/*.png /var/www/mycodo/log/*.log`
 
-### TempFS Setup <a name="tempfs-setup"></a>
+<a name="tempfs"></a>
+### TempFS Setup
 
 A temporary filesystem in RAM is created for areas of the disk that are written often, preserving the life of the SD card and speeding up disk read/writes. Keep in mind all contents will be deleted upon reboot. If you need to analyze logs, remember to disable these lines in fstab before doing so.
 
@@ -183,7 +190,8 @@ Apache does not start if there is not a proper directory structure set up in /va
 
 `sudo update-rc.d apache2-tmpfs defaults 90 10`
 
-### Apache2 Setup <a name="apache2-setup"></a>
+<a name="apache2"></a>
+### Apache2 Setup
 
 There is an `.htaccess` file in each directory that denys web access to these folders. It is strongly recommended that you make sure this works properly, to ensure no one can read from these directories, as log, configuration, and graph images, and other potentially sensitive imformation is stored there.
 
@@ -200,7 +208,8 @@ Generate an SSL certificate, enable SSL/HTTPS in apache, then add the following 
         allow from all
     </Directory>
 
-### MySQL and User Setup <a name="mysql-setup"></a>
+<a name="mysql"></a>
+### MySQL and User Setup
 
 Download the files in source/php-login-mysql-install to your local computer. Go to http://127.0.0.1/phpmyadmin and login with root and the password you created. Click 'Import' and select 01-create-database.sql, then click 'OK'. Repeat with the file 02-create-and-fill-users-table.sql. This will wet up your MySQL database to allow registering users.
 
@@ -216,7 +225,8 @@ This can be changed back with the following command if you wish to create more u
 
 `sudo chmod 640 /var/www/mycodo/register.php`
 
-### Cron Setup <a name="cron-setup"></a>
+<a name="cron"></a>
+### Cron Setup
 
 The following will enable automatic logging and relay control.
 
@@ -232,11 +242,13 @@ Once the following cron jobs are set, the relays may become energized, depending
 */2 * * * * /var/www/mycodo/cgi-bin/mycodo-auto.sh
 ```
 
-### Web Interface Login <a name="web-interface-login"></a>
+<a name="web-interface"></a>
+### Web Interface Login
 
 Go to http://127.0.0.1/mycodo/index.php and log in with the credentials created earlier. You should see the menu to the left displaying the current humidity and temperature, and a graph to the right with the corresponding values.
 
-### Useful Links <a name="useful-links"></a>
+<a name="links"></a>
+### Useful Links
 
 Congratulations on using my software, however it may not be the latest version, or it may have been altered if not obtained through an official distribution site. You should be able to find the latest version on github or my web site.
 
