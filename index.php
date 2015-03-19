@@ -81,14 +81,14 @@ if ($login->isUserLoggedIn() == true) {
                 </div>
             </td>
         </tr>
-        <tr bgcolor="#cccccc" cellpadding=5>
+        <tr class="link" cellpadding=5>
             <td align=center>
                 <div style="padding:1px 2px 2px 3px; float: center; color: #000; font-size: 11px; font-family: verdana;">
                     <?php echo 'Last sensor read<br>' , $time_last; ?>
                 </div>
             </td>
         </tr>
-        <tr bgcolor="#cccccc" cellpadding=5>
+        <tr class="link" cellpadding=5>
             <td align=right>
                 <div style="padding:1px 2px 2px 7px; display:inline; float: left; color: #000; font-size: 11px; font-family: verdana; text-align: left;">
 <?php
@@ -179,13 +179,6 @@ if ($login->isUserLoggedIn() == true) {
 <?php
 if (isset($_GET['page'])) {
 	switch ($_GET['page']) {
-		case 'log out':
-			$_SESSION['authenticated'] = 0;
-			$inputuser = $_POST['input_user'];
-			$inputpassword = $_POST['input_password'];
-			if ($_GET['r'] == 1) echo "<meta http-equiv='refresh' content='2;url=index.php?r=1'>";
-			else echo "<meta http-equiv='refresh' content='2;url=index.php'>";
-			break;
 		case 'Main':
 			shell_exec($graph_exec . ' dayweek');
 			echo "<img src=image.php?span=main>";
@@ -241,10 +234,13 @@ function menu_item($id, $title, $current) {
         $class = ($current == $id) ? "active" : "inactive";
 
         echo '<tr><td class=' . $class . '>';
-        echo '<a href="index.php?';
-        if (isset($_GET['r'])){
-                if ($_GET['r'] == 1) echo 'r=1&';
-        }
-        echo 'page=' . $id. '">' . $title . '</a></td></tr>';
+	if ($current != $id) {
+        	echo '<a href="index.php?';
+        	if (isset($_GET['r'])){
+                	if ($_GET['r'] == 1) echo 'r=1&';
+        	}
+        	echo 'page=' . $id. '">' . $title . '</a>';
+	} else echo $title;
+	echo '</td></tr>';
 }
 ?>

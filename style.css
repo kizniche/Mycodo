@@ -1,55 +1,60 @@
-.inactive, .active, .title, .link {
+body {
+    background:#fff;
+    text: black;
+}
+
+.inactive, .active, .link {
 	padding:3px 2px 2px 10px;
 } 
 
-.inactive {
-	background:skyblue;
-	font-size: 12px;
+a:link {
+    color: #FF0000;
 }
 
-.active {
-	background:steelblue;
-	font-weight: bold;
-	font-size: 12px;
+a:visited {
+    color: #00FF00;
 }
 
-.title {
-	background:white;
-}
-
-.slink {
-	background:DarkTurquoise;
-	float: center;
-	color: #000;
-	font-size: 11px;
-	font-family: verdana;
-}
-
-.link {
-	background:DarkTurquoise;
-	font-size: 12px;
-}
-
-.link-profile {
-	background:DarkTurquoise;
-	padding: 3px 2px 0 0;
-	font-size: 12px;
-}
-
-.link a {
-	color:blue;
-}
-
-.inactive a {
-	text-decoration:none;
-	color:blue;
-}
-
-.active a {
-	text-decoration:none;
-	color:white;
+a:active {
+    color: #0000FF;
 }
 
 a:hover   {
-	color:black;
-} 
+        color:black;
+}
+
+.inactive {
+	background: #FF7100;
+	font-size: 12px;
+}
+
+.inactive a {
+        text-decoration:none;
+        color: white;
+}
+
+.inactive a:hover {
+	color: black;
+}
+
+.active {
+	background: #FD0006;
+	font-weight: bold;
+	font-size: 12px;
+	color: white;
+}
+
+.link, .link-profile {
+	background: #CCCCCC;
+	font-size: 12px;
+}
+
+.link a, .link-profile a {
+	color: blue;
+}
+
+.link-profile {
+        padding: 3px 2px 0 0;
+}
+
+ 
