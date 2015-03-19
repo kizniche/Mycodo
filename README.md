@@ -105,6 +105,14 @@ Download the latest code for the controller/web interface, WireingPi, and Adafru
 
 `sudo git clone https://github.com/adafruit/Adafruit_Python_DHT /var/www/mycodo/source/Python_DHT`
 
+Set up MySQL with the following command and create a password when prompted.
+
+`sudo apt-get install mysql-server mysql-client`
+
+To set up PHPMyAdmin, use the following command, then select to configure Apache2 automatically (use the spacebar to select). If prompted, allow dbconfig-common to configure the phpmyadmin database. When asked, give the same password that you created during the MySQL installation.
+
+`sudo apt-get install phpmyadmin`
+
 Compile WiringPi and DHT python library
 
 `cd /var/www/mycodo/source/WiringPi`
@@ -175,24 +183,14 @@ Set www permissions
 
 `sudo chmod 664 /var/www/mycodo/config/mycodo.conf /var/www/mycodo/images/*.png /var/www/mycodo/log/*.log`
 
-~~Add the following to your /etc/logrotate.conf~~
-
-~~/var/www/mycodo/log/* {
-    rotate 100
-	size 10M
-    copytruncate
-    nocompress
-}~~
-
-
-Apache Setup
-------------
+Apache SSL Setup (Optional)
+---------------------------
 
 There is an `.htaccess` file in each directory that denys web access to these folders. It is strongly recommended that you make sure this works properly, to ensure no one can read from these directories, as log, configuration, and graph images are stored there.
 
 Generate an SSL certificate, enable SSL/HTTPS in apache, then add the following to /etc/apache2/sites-avalable/default-ssl, or modify to suit your needs.
 
-	DocumentRoot /var/www
+    DocumentRoot /var/www
     <Directory />
          Order deny,allow
          Deny from all
@@ -203,19 +201,19 @@ Generate an SSL certificate, enable SSL/HTTPS in apache, then add the following 
         allow from all
     </Directory>
 
+Authentication and User Setup
+-----------------------------
 
-Web Interface Setup
--------------------
+Download the files in source/php-login-mysql-install to your local computer. Go to http://127.0.0.1/phpmyadmin and login with root and the password you created. Click 'Import' and select 01-create-database.sql, then click
+'OK'. Repeat with the file 02-create-and-fill-users-table.sql. This will wet up your MySQL database to allow re
+gistering users.
 
-To create login credentials for the web interface, uncomment line 25 of auth.php and go to http://localhost/graph/index.php
+Edit the file /var/www/mycodo/config/db.php and change 'password' to the password you created when you installed MySQL.
 
-Enter a password in the password field and click submit, then Copy the Hash from the next page and replace the warning in the quotes of $Password1 or $Password2 of auth.php.
+Go to http://127.0.0.1/mycodo/register.php, enter your desired login information, then click Register and hope there are no errors reported. You can verify this new user in MyPHPAdmin. It will appear in the MySQL database created earlier.
 
-Don't forget to change the user name in auth.php to your choosing and re-comment line 25.
-
-
-Automation Setup
-----------------
+Auomated Sensor Logging and Relay Control
+-----------------------------------------
 
 Once the following cron jobs are set, the relays may become energized, depending on what the ranges are set. Check that the sensors are properly working by testing if the script 'mycodo-sense.sh -d' can display sensor data, as well as if gpio can alter the GPIO, with 'gpio write [pin] [value], where pin is the GPIO pin and value is 1=on and 0=off.
 
@@ -229,9 +227,10 @@ Once the following cron jobs are set, the relays may become energized, depending
 */2 * * * * /var/www/mycodo/cgi-bin/mycodo-auto.sh
 ```
 
-Go to http://localhost/graph/index.php and log in with the credentials created earlier. You should see the menu to the left displaying the current humidity and temperature, and a graph to the right with the corresponding values.
+Login to the Web Interface
+--------------------------
 
-
+Go to http://localhost/mycodo/index.php and log in with the credentials created earlier. You should see the menu to the left displaying the current humidity and temperature, and a graph to the right with the corresponding values.
 
 Updates
 =======
