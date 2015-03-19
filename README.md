@@ -157,7 +157,16 @@ Setup streaming capabilities
 
 `sudo cp output_http.so input_file.so /usr/local/lib/` 
 
-Set up tempfs for areas of the disk that are written often, preserving the life of the SD card and speeding up disk read/writes. Keep in mind all contents will be deleted upon reboot. If you need to analyze logs, remember to disable these lines in fstab before doing so.
+Set www permissions
+
+`sudo chown -R www-data:www-data /var/www/mycodo`
+
+`sudo chmod 664 /var/www/mycodo/config/mycodo.conf /var/www/mycodo/images/*.png /var/www/mycodo/log/*.log`
+
+TempFS
+------
+
+A temporary filesystem in RAM is created for areas of the disk that are written often, preserving the life of the SD card and speeding up disk read/writes. Keep in mind all contents will be deleted upon reboot. If you need to analyze logs, remember to disable these lines in fstab before doing so.
 
 Edit fstab with `sudo vi /etc/fstab` add the following lines, then save.
 
@@ -169,7 +178,7 @@ tmpfs    /var/run    tmpfs    defaults,noatime,nosuid,mode=0755,size=2m    0 0
 tmpfs    /var/spool/mqueue    tmpfs    defaults,noatime,nosuid,mode=0700,gid=12,size=30m    0 0
 ```
 
-Apache does not start if there is not a proper directory structure set up in /var/log. This script will ensure it's avalable after every startup, when Apache is started.
+Apache does not start if there is not a proper directory structure set up in /var/log for its log files. The creation of /var/log as a tempfs means that at every bootup this directory is empty. This script will ensure that the proper directory structure is created before Apache is started.
 
 `sudo cp /var/www/mycodo/source/apache2-tmpfs /etc/init.d/`
 
@@ -177,18 +186,12 @@ Apache does not start if there is not a proper directory structure set up in /va
 
 `sudo update-rc.d apache2-tmpfs defaults 90 10`
 
-Set www permissions
+Apache SSL Setup
+----------------
 
-`sudo chown -R www-data:www-data /var/www/mycodo`
+There is an `.htaccess` file in each directory that denys web access to these folders. It is strongly recommended that you make sure this works properly, to ensure no one can read from these directories, as log, configuration, and graph images, and other potentially sensitive imformation is stored there.
 
-`sudo chmod 664 /var/www/mycodo/config/mycodo.conf /var/www/mycodo/images/*.png /var/www/mycodo/log/*.log`
-
-Apache SSL Setup (Optional)
----------------------------
-
-There is an `.htaccess` file in each directory that denys web access to these folders. It is strongly recommended that you make sure this works properly, to ensure no one can read from these directories, as log, configuration, and graph images are stored there.
-
-Generate an SSL certificate, enable SSL/HTTPS in apache, then add the following to /etc/apache2/sites-avalable/default-ssl, or modify to suit your needs.
+Generate an SSL certificate, enable SSL/HTTPS in apache, then add the following to /etc/apache2/sites-avalable/default-ssl (or just 'default' if not using SSL), or modify to suit your needs.
 
     DocumentRoot /var/www
     <Directory />
@@ -201,12 +204,10 @@ Generate an SSL certificate, enable SSL/HTTPS in apache, then add the following 
         allow from all
     </Directory>
 
-Authentication and User Setup
+MySQL Setup and User Creation
 -----------------------------
 
-Download the files in source/php-login-mysql-install to your local computer. Go to http://127.0.0.1/phpmyadmin and login with root and the password you created. Click 'Import' and select 01-create-database.sql, then click
-'OK'. Repeat with the file 02-create-and-fill-users-table.sql. This will wet up your MySQL database to allow re
-gistering users.
+Download the files in source/php-login-mysql-install to your local computer. Go to http://127.0.0.1/phpmyadmin and login with root and the password you created. Click 'Import' and select 01-create-database.sql, then click 'OK'. Repeat with the file 02-create-and-fill-users-table.sql. This will wet up your MySQL database to allow registering users.
 
 Edit the file /var/www/mycodo/config/db.php and change 'password' to the password you created when you installed MySQL.
 
@@ -238,7 +239,7 @@ Once the following cron jobs are set, the relays may become energized, depending
 Login to the Web Interface
 --------------------------
 
-Go to http://localhost/mycodo/index.php and log in with the credentials created earlier. You should see the menu to the left displaying the current humidity and temperature, and a graph to the right with the corresponding values.
+Go to http://127.0.0.1/mycodo/index.php and log in with the credentials created earlier. You should see the menu to the left displaying the current humidity and temperature, and a graph to the right with the corresponding values.
 
 Updates
 =======
