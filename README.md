@@ -42,11 +42,11 @@ I'm currently working on a new set of hardware that will support a range of new 
     * Profile edit (change user name, password, or email address)
     * Gravitar support (if email used in registration is the same as on gravitar.com)
     * Lost/forgot password reset via email
+    * Authorization log of successful and unsuccessful login attempts
 
 <a name="future"></a>
 ### Todo
 
-- [ ] Authorization log (for successful and unsuccessful logins)  
 - [ ] Timelapse video creation ability (define start, end, duration between, etc.)  
 - [ ] Automatic log file backup when a certain size is reached  
 - [ ] Support naming/renaming relay identifier from the web interface  
@@ -197,6 +197,10 @@ Apache does not start if there is not a proper directory structure set up in /va
 
 <a name="apache2"></a>
 ### Apache2 Setup
+
+To resolve the IP address in the auth.log, the following line in /etc/apache2/apache2.conf needs to be changed from 'Off' to 'On' without the quotes.
+
+`HostnameLookups On`
 
 There is an `.htaccess` file in each directory that denys web access to these folders. It is strongly recommended that you make sure this works properly, to ensure no one can read from these directories, as log, configuration, and graph images, and other potentially sensitive imformation is stored there.
 

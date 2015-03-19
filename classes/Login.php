@@ -275,6 +275,7 @@ class Login
                 $this->errors[] = MESSAGE_PASSWORD_WRONG_3_TIMES;
             // using PHP 5.5's password_verify() function to check if the provided passwords fits to the hash of that user's password
             } else if (! password_verify($user_password, $result_row->user_password_hash)) {
+		write_auth_log(0, $result_row->user_name);
                 // increment the failed login counter for that user
                 $sth = $this->db_connection->prepare('UPDATE users '
                         . 'SET user_failed_logins = user_failed_logins+1, user_last_failed_login = :user_last_failed_login '
@@ -286,6 +287,7 @@ class Login
             } else if ($result_row->user_active != 1) {
                 $this->errors[] = MESSAGE_ACCOUNT_NOT_ACTIVATED;
             } else {
+		write_auth_log(1, $result_row->user_name);
                 // write user data into PHP SESSION [a file on your server]
                 $_SESSION['user_id'] = $result_row->user_id;
                 $_SESSION['user_name'] = $result_row->user_name;
@@ -758,7 +760,7 @@ class Login
     {
         $url = 'http://www.gravatar.com/avatar/';
         $url .= md5(strtolower(trim($email)));
-        $url .= "?s=$s&d=$d&r=$r&f=y";
+        $url .= "?s=$s&d=$d";
 
         // the image url (on gravatarr servers), will return in something like
         // http://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=80&d=mm&r=g
@@ -766,7 +768,7 @@ class Login
         $this->user_gravatar_image_url = $url;
 
         // build img tag around
-        $url = '<img src="' . $url . '"';
+        //$url = '<img src="' . $url . '"';
         foreach ($atts as $key => $val)
             $url .= ' ' . $key . '="' . $val . '"';
         $url .= ' />';
@@ -774,4 +776,25 @@ class Login
         // the image url like above but with an additional <img src .. /> around
         $this->user_gravatar_image_tag = $url;
     }
+}    
+
+function write_auth_log($auth, $user) {
+    $auth_file = getcwd() . "/log/auth.log";
+
+    $date = new DateTime();
+
+    if ($auth == 1) $auth = 'LOGIN';
+    else $auth = 'NOPASS';
+
+    $ip = $_SERVER['REMOTE_ADDR'];
+    $hostaddress = $_SERVER['REMOTE_HOST'];
+    $referred = $_SERVER['HTTP_REFERER'];
+    if ($referred == "") $referred = $auth_write . 'direct';
+    $browser = $_SERVER['HTTP_USER_AGENT'];
+
+    $auth_write = $date->format('Y m d H:i:s') . ', ' . $auth . ', ' . $user . ', ' . $ip . ', ' . $hostaddress . ', ' . $referred . ', ' . $browser . "\n";
+
+    $fh = fopen($auth_file, 'a') or die("Error: Can't find/open " . $auth_file);
+    fwrite($fh, $auth_write);
+    fclose($fh);
 }
