@@ -20,7 +20,7 @@ plot as well as to change configuration parameters.
 TODO
 ----
 
-- [x] Authorization log (for successful and unsuccessful logins)  
+- [ ] Authorization log (for successful and unsuccessful logins)  
 - [X] Support Raspberry Pi camera module for snapshot monitoring
   - [X] Video streaming
   - [ ] Timelapse video creation ability (define start, end, duration between, etc.)
@@ -211,6 +211,14 @@ gistering users.
 Edit the file /var/www/mycodo/config/db.php and change 'password' to the password you created when you installed MySQL.
 
 Go to http://127.0.0.1/mycodo/register.php, enter your desired login information, then click Register and hope there are no errors reported. You can verify this new user in MyPHPAdmin. It will appear in the MySQL database created earlier.
+
+Revoke read access to register.php to prevent further users from being created.
+
+`sudo chmod 000 /var/www/mycodo/register.php`
+
+This can be changed back with the following command if you wish to create more users.
+
+`sudo chmod 640 /var/www/mycodo/register.php`
 
 Auomated Sensor Logging and Relay Control
 -----------------------------------------
