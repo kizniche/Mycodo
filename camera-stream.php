@@ -18,7 +18,9 @@ if (version_compare(PHP_VERSION, '5.3.7', '<')) {
 } else if (version_compare(PHP_VERSION, '5.5.0', '<')) {
     require_once("libraries/password_compatibility_library.php");
 }
-require_once("config/db.php");
+require_once('config/config.php');
+require_once('translations/en.php');
+require_once('libraries/PHPMailer.php');
 require_once("classes/Login.php");
 $login = new Login();
 
