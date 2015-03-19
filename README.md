@@ -36,7 +36,12 @@ I'm currently working on a new set of hardware that will support a range of new 
   * Acquire images or stream live video from a camera
   * Change modes of operation, such as minimum and maximum temperature/humidity
   * Independently control connected devices (turn on, off, on for [x] seconds)
-  * Authentication using official PHP password hashing functions, the most modern password hashing/salting web standards
+  * Login Authentication
+    * Using official PHP password hashing functions and the most modern password hashing/salting web standards
+    * Optional "remember me" cookie to keep session authenticated
+    * Profile edit (change user name, password, or email address)
+    * Gravitar support (if email used in registration is the same as on gravitar.com)
+    * Lost/forgot password reset via email
 
 <a name="future"></a>
 ### Todo
