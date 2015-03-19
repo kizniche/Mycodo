@@ -1,31 +1,45 @@
----------------------------------------------------------------------------
-Title: Automated Mushroom Cultivator  
-Author: Kyle T. Gabriel  
-Date: 2012-2015  
-Version: 1.9
+# Mycodo
 
-Description: This is a system designed for the Raspberry Pi, for regulating
-the temperature and humidity of an airspace with the use of a DHT22
-temperature/humidity sensor and relays that control a heater, humidifier,
-and fans. It is written in html, php, python, C, and bash script. Cron is
-used to periodically write sensor data to a log file. This data is
-periodically checked and if the temperature or humidity is outside the set
-range, the heater, humidifier, and/or fans will modulate until all
-environmental conditions are back within the set range. An authenticated
-php-web interface is available for viewing the data history on a graphical
-plot as well as to change configuration parameters.
+A system designed around the Raspberry Pi, for regulating the temperature and humidity of an airspace. It has been specifically adapted for mushroom cultivation. It utilizes a DHT22 temperature/humidity sensor to monitor the enviroment(s) and relays to control a set of devices to alter the enviroment(s).
 
----------------------------------------------------------------------------
+#### Index
 
-TODO
-----
++ [Features](#features)
++ [TODO](#toto)
++ [Introduction](#introduction)
++ [Hardware Brief](#hardware-brief)
++ [Software Brief](#software-brief)
++ [Install Instructions](#install-instructions)
+    - [Software Setup](#software-setup)
+    - [TempFS Setup](#tempfs-setup)
+    - [Apache2 Setup](#apache2-setup)
+    - [MySQL and User Setup](#mysql-setup)
+    - [Cron Setup](#cron-setup)
++ [Web Interface login](#web-interface-login)
++ [Useful Links](#useful-links)
 
+### History of Mycodo
+
+This started out as a small project to regulate the temperature and humidity of a chamber I grew gourmet mushrooms in. At that time, in 2010, I used an ATMega that was interfaced to a computer via USB. When the Raspberry Pi was introduced in 2012, I decided to migrate my code from the ATMega and my linux computer to work on this one compact device. My first relay bank consisted of 4 relays, controlling a heater, humidifier, circulatory fan, and HEPA-filtered exhaust fan.
+
+I'm currently working on a new set of hardware that will support a range of new features. As such, until I unveil the new hardware, this code will be undergoing lots of updates. I hope to keep everything working throughout the update process.
+
+### Features <a name="features"></a>
+* Logging temperature, humidity, and relay states
+* Configurable minimum and maximum allowable temperature and humidity
+* Automatic operation of connected devices to raise/lower temperature and humidity
+* Web-control interface
+  * View raw data as well as generate graphs of current and past data
+  * Acquire images or stream live video from a camera
+  * Change modes of operation, such as minimum and maximum temperature/humidity
+  * Independently control connected devices (turn on, off, on for [x] seconds)
+  * Authentication using official PHP password hashing functions, the most modern password hashing/salting web standards
+
+### TODO <a name="todo"></a>
 - [ ] Authorization log (for successful and unsuccessful logins)  
-- [X] Support Raspberry Pi camera module for snapshot monitoring
-  - [X] Video streaming
-  - [ ] Timelapse video creation ability (define start, end, duration between, etc.)
-- [ ] Automatic log file backup when a certain size is reached
-- [ ] Support naming/renaming relay identifier from the web interface
+- [ ] Timelapse video creation ability (define start, end, duration between, etc.)  
+- [ ] Automatic log file backup when a certain size is reached  
+- [ ] Support naming/renaming relay identifier from the web interface  
 - [ ] Support for more than one temperature/humidity sensor  
 - [ ] Support for guest login (view only)  
 - [ ] Update user interface  
@@ -34,8 +48,7 @@ TODO
   - [ ] Touch screen improvements
 
 
-INTRODUCTION
-============
+## INTRODUCTION <a name="introduction"></a>
 
    This installation assumes you are starting with a fresh install of
 Raspbian linux on your Raspberry Pi. If not, please adjust your install
@@ -47,9 +60,7 @@ the Raspberry Pi camera module for remote viewing. The hardware upgrade is
 nearly complete. At that time, there will be code updates to support the new
 hardware.
 
-
-HARDWARE
---------
+### Hardware Brief <a name="hardware-brief"></a>
 
 * Raspberry Pi
 * DHT22 Temperature/humidity sensor
@@ -59,9 +70,15 @@ HARDWARE
 * Circulatory Fan
 * Exhaust Fan (HEPA filter recommended)
 
+Relay1, Exhaust Fan: GPIO 23, pin 16
+Relay2, Humidifier: GPIO 22, pin 15
+Relay3, Circulatory Fan: GPIO 18, pin 12
+Relay4, Heater: GPIO 17, pin 11
+DHT22 sensor: GPIO 4, pin 7
+DHT22 Power: 3.3v, pin 1
+Relays and DHT22 Ground: Ground, pin 6
 
-SOFTWARE
---------
+### Software Brief <a name="software-brief"></a>
 
 * git
 * apache2
@@ -73,24 +90,12 @@ SOFTWARE
 * Adafruit_Python_DHT
 * gpio (WiringPi)
 
-INSTALL
-=======
+# Install Instructions <a name="install-instructions"></a>
 
+   This installation assumes you are starting with a fresh install of Raspbian linux on your Raspberry Pi. If not, please adjust your install accordingly.
 
-Hardware Setup
---------------
+### Software Setup <a name="software-setup"></a>
 
-Relay1, Exhaust Fan: GPIO 23, pin 16  
-Relay2, Humidifier: GPIO 22, pin 15  
-Relay3, Circulatory Fan: GPIO 18, pin 12  
-Relay4, Heater: GPIO 17, pin 11  
-DHT22 sensor: GPIO 4, pin 7  
-DHT22 Power: 3.3v, pin 1  
-Relays and DHT22 Ground: Ground, pin 6  
-
-
-Software Setup
---------------
 `sudo apt-get update`
 
 `sudo apt-get upgrade`
@@ -161,10 +166,9 @@ Set www permissions
 
 `sudo chown -R www-data:www-data /var/www/mycodo`
 
-`sudo chmod 664 /var/www/mycodo/config/mycodo.conf /var/www/mycodo/images/*.png /var/www/mycodo/log/*.log`
+`sudo chmod 660 /var/www/mycodo/config/* /var/www/mycodo/images/*.png /var/www/mycodo/log/*.log`
 
-TempFS
-------
+### TempFS Setup <a name="tempfs-setup"></a>
 
 A temporary filesystem in RAM is created for areas of the disk that are written often, preserving the life of the SD card and speeding up disk read/writes. Keep in mind all contents will be deleted upon reboot. If you need to analyze logs, remember to disable these lines in fstab before doing so.
 
@@ -186,8 +190,7 @@ Apache does not start if there is not a proper directory structure set up in /va
 
 `sudo update-rc.d apache2-tmpfs defaults 90 10`
 
-Apache SSL Setup
-----------------
+### Apache2 Setup <a name="apache2-setup"></a>
 
 There is an `.htaccess` file in each directory that denys web access to these folders. It is strongly recommended that you make sure this works properly, to ensure no one can read from these directories, as log, configuration, and graph images, and other potentially sensitive imformation is stored there.
 
@@ -204,8 +207,7 @@ Generate an SSL certificate, enable SSL/HTTPS in apache, then add the following 
         allow from all
     </Directory>
 
-MySQL Setup and User Creation
------------------------------
+### MySQL and User Setup <a name="mysql-setup"></a>
 
 Download the files in source/php-login-mysql-install to your local computer. Go to http://127.0.0.1/phpmyadmin and login with root and the password you created. Click 'Import' and select 01-create-database.sql, then click 'OK'. Repeat with the file 02-create-and-fill-users-table.sql. This will wet up your MySQL database to allow registering users.
 
@@ -221,8 +223,9 @@ This can be changed back with the following command if you wish to create more u
 
 `sudo chmod 640 /var/www/mycodo/register.php`
 
-Auomated Sensor Logging and Relay Control
------------------------------------------
+### Cron Setup <a name="cron-setup"></a>
+
+The following will enable automatic logging and relay control.
 
 Once the following cron jobs are set, the relays may become energized, depending on what the ranges are set. Check that the sensors are properly working by testing if the script 'mycodo-sense.sh -d' can display sensor data, as well as if gpio can alter the GPIO, with 'gpio write [pin] [value], where pin is the GPIO pin and value is 1=on and 0=off.
 
@@ -236,13 +239,11 @@ Once the following cron jobs are set, the relays may become energized, depending
 */2 * * * * /var/www/mycodo/cgi-bin/mycodo-auto.sh
 ```
 
-Login to the Web Interface
---------------------------
+### Web Interface Login <a name="web-interface-login"></a>
 
 Go to http://127.0.0.1/mycodo/index.php and log in with the credentials created earlier. You should see the menu to the left displaying the current humidity and temperature, and a graph to the right with the corresponding values.
 
-Updates
-=======
+### Useful Links <a name="useful-links"></a>
 
 Congratulations on using my software, however it may not be the latest version, or it may have been altered if not obtained through an official distribution site. You should be able to find the latest version on github or my web site.
 
