@@ -268,6 +268,7 @@ class Login
 
             // if this user not exists
             if (! isset($result_row->user_id)) {
+		write_auth_log(2, $_POST['user_name']);
                 // was MESSAGE_USER_DOES_NOT_EXIST before, but has changed to MESSAGE_LOGIN_FAILED
                 // to prevent potential attackers showing if the user exists
                 $this->errors[] = MESSAGE_LOGIN_FAILED;
@@ -783,8 +784,9 @@ function write_auth_log($auth, $user) {
 
     $date = new DateTime();
 
-    if ($auth == 1) $auth = 'LOGIN';
-    else $auth = 'NOPASS';
+    if ($auth == 2) $auth = 'NOUSER';
+    else if ($auth == 1) $auth = 'LOGIN';
+    else if ($auth == 0) $auth = 'NOPASS';
 
     $ip = $_SERVER['REMOTE_ADDR'];
     $hostaddress = $_SERVER['REMOTE_HOST'];
