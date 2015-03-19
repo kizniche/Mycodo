@@ -1,12 +1,12 @@
 # Mycodo
 
-A system designed around the Raspberry Pi, for regulating the temperature and humidity of an airspace. It has been specifically adapted for mushroom cultivation. It utilizes a DHT22 temperature/humidity sensor to monitor the enviroment(s) and relays to control a set of devices to alter the enviroment(s).
+   A system designed around the Raspberry Pi, for regulating the temperature and humidity of an airspace. It has been specifically adapted for mushroom cultivation. It utilizes a DHT22 temperature/humidity sensor to monitor the enviroment(s) and relays to control a set of devices to alter the enviroment(s).
 
 #### Index
 
++ [History](#history)
 + [Features](#features)
-+ [TODO](#toto)
-+ [Introduction](#introduction)
++ [Todo](#todo)
 + [Hardware Brief](#hardware-brief)
 + [Software Brief](#software-brief)
 + [Install Instructions](#install-instructions)
@@ -18,13 +18,15 @@ A system designed around the Raspberry Pi, for regulating the temperature and hu
 + [Web Interface login](#web-interface-login)
 + [Useful Links](#useful-links)
 
+<a name="history"></a>
 ### History of Mycodo
 
-This started out as a small project to regulate the temperature and humidity of a chamber I grew gourmet mushrooms in. At that time, in 2010, I used an ATMega that was interfaced to a computer via USB. When the Raspberry Pi was introduced in 2012, I decided to migrate my code from the ATMega and my linux computer to work on this one compact device. My first relay bank consisted of 4 relays, controlling a heater, humidifier, circulatory fan, and HEPA-filtered exhaust fan.
+    This started out as a small project to regulate the temperature and humidity of a chamber I grew gourmet mushrooms in. At that time, in 2010, I used an ATMega that was interfaced to a computer via USB. When the Raspberry Pi was introduced in 2012, I decided to migrate my code from the ATMega and my linux computer to work on this one compact device. My first relay bank consisted of 4 relays, controlling a heater, humidifier, circulatory fan, and HEPA-filtered exhaust fan.
 
-I'm currently working on a new set of hardware that will support a range of new features. As such, until I unveil the new hardware, this code will be undergoing lots of updates. I hope to keep everything working throughout the update process.
+    I'm currently working on a new set of hardware that will support a range of new features. As such, until I unveil the new hardware, this code will be undergoing lots of updates. I hope to keep everything working throughout the update process.
 
 ### Features <a name="features"></a>
+
 * Logging temperature, humidity, and relay states
 * Configurable minimum and maximum allowable temperature and humidity
 * Automatic operation of connected devices to raise/lower temperature and humidity
@@ -35,7 +37,8 @@ I'm currently working on a new set of hardware that will support a range of new 
   * Independently control connected devices (turn on, off, on for [x] seconds)
   * Authentication using official PHP password hashing functions, the most modern password hashing/salting web standards
 
-### TODO <a name="todo"></a>
+### Todo <a name="todo"></a>
+
 - [ ] Authorization log (for successful and unsuccessful logins)  
 - [ ] Timelapse video creation ability (define start, end, duration between, etc.)  
 - [ ] Automatic log file backup when a certain size is reached  
@@ -46,19 +49,6 @@ I'm currently working on a new set of hardware that will support a range of new 
   - [ ] Tabs instead of link menus  
   - [ ] Graphics (temperature, humidity, time, date, etc.)  
   - [ ] Touch screen improvements
-
-
-## INTRODUCTION <a name="introduction"></a>
-
-   This installation assumes you are starting with a fresh install of
-Raspbian linux on your Raspberry Pi. If not, please adjust your install
-accordingly.
-
-   This README is a work in progress. This system is currently undergoing a
-redesign, to expand the number of relays from 4 to 8, and to add support for
-the Raspberry Pi camera module for remote viewing. The hardware upgrade is
-nearly complete. At that time, there will be code updates to support the new
-hardware.
 
 ### Hardware Brief <a name="hardware-brief"></a>
 
@@ -80,15 +70,18 @@ Relays and DHT22 Ground: Ground, pin 6
 
 ### Software Brief <a name="software-brief"></a>
 
-* git
+The following software is required
+
 * apache2
+* git
 * gnuplot
-* php
+* mysql
+* php5
+* phpmyadmin
 * python
-* libconfig-dev
-* build-essential
-* Adafruit_Python_DHT
-* gpio (WiringPi)
+* Python_DHT (Adafruit)
+* wget
+* WiringPi (gpio)
 
 # Install Instructions <a name="install-instructions"></a>
 
