@@ -1,69 +1,95 @@
+### General ###
 body {
-    background:#fff;
+    background:#FFF;
     text: black;
 }
 
-.inactive, .active, .link {
-	padding:3px 2px 2px 10px;
-} 
-
-a:link {
-    color: #000000;
-}
-
-a:visited {
-    color: #000000;
-}
-
-a:active {
-    color: #0000FF;
-}
-
-a:hover   {
-    color: black;
-}
+a:link { color: #000000; }
+a:visited { color: #000000; }
+a:active { color: #0000FF; }
+a:hover { color: black; }
 
 hr {
     margin: 15px 0 5px 0;
     width: 60%;
 }
 
+### Menu Style  ###
 .edit-title {
     padding: 25px 0 10px 0;
 }
 
+.sensor-block {
+    padding: 5px 0 5px 10px;
+    box-sizing: border-box;
+}
+
+.sensor-title {
+    margin: 0 10px 3px 0;
+    font-weight: bold;
+    font-size: 12px;
+    border-bottom: 1px solid;
+}
+
+.sensor-values, .setpoint {
+    font-family: monospace;
+    padding-bottom: 3px; 
+}
+
+.time {
+    padding:1px 2px 2px 3px;
+    float: center;
+    color: #000;
+    font-size: 11px;
+    font-family: verdana;
+}
+
+.sensor {
+    padding:1px 2px 2px 7px;
+    display:inline;
+    float: left;
+    color: #000;
+    font-size: 11px;
+    font-family: verdana;
+    text-align: left;
+}
+
+.inactive, .active, .link {
+    padding: 3px 2px 2px 10px;
+}
+
 .inactive {
-	background: #FF7100;
-	font-size: 12px;
+    background: #CA5800;
+    font-size: 12px;
 }
 
 .inactive a {
-        text-decoration:none;
-        color: white;
+    text-decoration: none;
+    color: white;
 }
 
 .inactive a:hover {
-	color: black;
+    color: black;
 }
 
 .active {
-	background: #FD0006;
-	font-weight: bold;
-	font-size: 12px;
-	color: white;
+    background: #CA0000;
+    font-weight: bold;
+    font-size: 12px;
+    color: white;
 }
 
 .link, .link-profile {
-	background: #CCCCCC;
-	font-size: 12px;
+    background: #CCCCCC;
+    font-size: 12px;
 }
 
 .link a, .link-profile a {
-	color: blue;
+    color: blue;
 }
 
 .link-profile {
-        padding: 3px 2px 0 0;
+    padding: 3px 2px 0 0;
 }
 
  

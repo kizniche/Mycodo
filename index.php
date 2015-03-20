@@ -76,27 +76,53 @@ if ($login->isUserLoggedIn() == true) {
     <table width="150px">
         <tr>
             <td align=center>
-                <div style="padding:1px 2px 2px 2px; float: center; color: #000; font-size: 11px; font-family: verdana;">
+                <div class="time">
                     <?php echo 'Last page refresh<br>' . $time_now; ?>
                 </div>
             </td>
         </tr>
-        <tr class="link" cellpadding=5>
+        <tr class="link">
             <td align=center>
-                <div style="padding:1px 2px 2px 3px; float: center; color: #000; font-size: 11px; font-family: verdana;">
+                <div class="time">
                     <?php echo 'Last sensor read<br>' , $time_last; ?>
                 </div>
             </td>
         </tr>
-        <tr class="link" cellpadding=5>
-            <td align=right>
-                <div style="padding:1px 2px 2px 7px; display:inline; float: left; color: #000; font-size: 11px; font-family: verdana; text-align: left;">
-<?php
-        echo'<p>T <b>' , substr($t_c, 0, -1) , '&deg;C</b> (' , substr($t_c_min, 0, -1) , ' - ' , substr($t_c_max, 0, -1) , '&deg;C)';
-        echo'<br>(' , substr($t_f, 0, -1) , '&deg;F)';
-        echo '<p>H <b>' , substr($hum, 0, -1) , '%</b> (' , substr($hum_min, 0, -1) , ' - ' , substr($hum_max, 0, -1) , '%)<p>';
-        echo 'DP <b>' , round($dp_c, 1) , '&deg;C</b> (' , substr($dp_f, 0, -1) , '&deg;F)';
-?>
+        <tr class="link">
+            <td>
+                <div class="sensor-block">
+                    <div class="sensor-title">
+                        Temperature
+                    </div>
+                    <div class="sensor-values">
+                        <?php echo '' . substr($t_c, 0, -1) . '&deg;C (' . substr($t_f, 0, -1) . '&deg;F)'; ?>
+                    </div>
+                        <?php echo '<div class="setpoint">Set: ' . substr($t_c_min, 0, -1) . ' -  ' . substr($t_c_max, 0, -1) . ' &deg;C</div>'; ?>
+                </div>
+            </td>
+        </tr>
+        <tr class="link">
+            <td>
+                <div class="sensor-block">
+                    <div class="sensor-title">
+                        Relative Humidity
+                    </div>
+                    <div class="sensor-values">
+                        <?php echo '' . substr($hum, 0, -1) . ' %'; ?>
+                    </div>
+                        <?php echo '<div class="setpoint">Set: ' . substr($hum_min, 0, -1) . ' - ' . substr($hum_max, 0, -1) . ' %</div>'; ?>
+                </div>
+            </td>
+        </tr>
+        <tr class="link">
+            <td>
+                <div class="sensor-block">
+                    <div class="sensor-title">
+                        Dew Point
+                    </div>
+                    <div class="sensor-values">
+                        <?php echo round($dp_c, 1) . '&deg;C (' . substr($dp_f, 0, -1) . '&deg;F)'; ?>
+                    </div>
                 </div>
             </td>
         </tr>
