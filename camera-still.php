@@ -23,20 +23,31 @@ require_once("classes/Login.php");
 $login = new Login();
 
 if ($login->isUserLoggedIn() == true) {
+?>
 
-echo '<html><head><title>Camera Stills</title>';
-echo '</head><body><center>';
-echo '<form action="" method="POST">';
-echo '<button name="Capture" type="submit" value="">Capture</button>';
-echo '</form>';
-if (isset($_POST['Capture'])) {
-	$capture_output = shell_exec("$still_exec 2>&1; echo $?");
-	if ($capture_output != 0) echo 'Abnormal output (possibly error): ' . $capture_output . '<br>';
-	echo '<p><img src=image.php?span=cam-still></p>';
-}
-echo'</center></body></html>';
-
+<html>
+    <head>
+	<title>
+	    Camera Stills
+	</title>
+    </head>
+    <body>
+	<center>
+	    <form action="" method="POST">
+		<button name="Capture" type="submit" value="">Capture</button>
+	    </form>
+	    <?php
+		if (isset($_POST['Capture'])) {
+		    $capture_output = shell_exec("$still_exec 2>&1; echo $?");
+		    if ($capture_output != 0) echo 'Abnormal output (possibly error): ' . $capture_output . '<br>';
+		    echo '<p><img src=image.php?span=cam-still></p>';
+		}
+	    ?>
+	</center>
+    </body>
+</html>
+<?php
 } else {
-        include("views/not_logged_in.php");
+    include("views/not_logged_in.php");
 }
 ?>
