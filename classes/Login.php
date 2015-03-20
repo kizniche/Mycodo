@@ -761,11 +761,11 @@ class Login
      * @param array $atts Optional, additional key/value attributes to include in the IMG tag
      * @source http://gravatar.com/site/implement/images/php/
      */
-    public function getGravatarImageUrl($email, $s = 50, $d = 'mm', $r = 'g', $atts = array() )
+    public function getGravatarImageUrl($email, $s = 50, $d = 'retro', $r = 'g', $atts = array() )
     {
         $url = 'http://www.gravatar.com/avatar/';
         $url .= md5(strtolower(trim($email)));
-        $url .= "?s=$s&d=$d&r=$r";
+        $url .= "?s=$s&d=$d";
 
         // the image url (on gravatarr servers), will return in something like
         // http://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=80&d=mm&r=g

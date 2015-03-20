@@ -153,7 +153,7 @@ if ($login->isUserLoggedIn() == true) {
             <td class=link-profile>
                 <div style="padding: 0px 0 5px 10px;">Logged in as: <?php echo $_SESSION['user_name']; ?><?php if ($_SESSION['user_name'] != guest) { ?></div>
                 <div style="clear: both;"></div>
-                <img style="float: left; padding: 5px 5px 10px 10px;" src="<?php echo $login->user_gravatar_image_tag; ?>">
+                <img style="float: left; padding: 5px 5px 10px 10px; width: 50px; height: 50px;" src="<?php echo $login->user_gravatar_image_tag; ?>">
                 <div style="float: left; vertical-align: middle;">
                 <table>
                     <tr>
@@ -172,10 +172,7 @@ if ($login->isUserLoggedIn() == true) {
                 <?php } ?>
             </td>
         </tr>
-    </td>
-</tr>
-</table>
-
+    </table>
 </td>
 <td width="830" valign="top">
 
