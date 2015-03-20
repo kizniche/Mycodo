@@ -27,7 +27,7 @@ usage() {
 
 graph_single() {
 echo "reset
-set terminal png size 850,490
+set terminal png size 830,490
 set xdata time
 set timefmt \"%Y %m %d %H %M %S\"
 set output \"$IMAGEPATH/graph-$file.png\"
