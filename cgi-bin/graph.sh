@@ -8,6 +8,10 @@
 PATHC=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 LOGPATH="$(dirname "$PATHC")/log"
 IMAGEPATH="$(dirname "$PATHC")/images"
+Y1MIN=0
+Y1MAX=100
+Y2MIN=5
+Y2MAX=30
 
 usage() {
   echo Usage: $0 "[OPTION]"
@@ -33,8 +37,8 @@ set timefmt \"%Y %m %d %H %M %S\"
 set output \"$IMAGEPATH/graph-$file.png\"
 set xrange [\"`date --date="$time ago" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
 set format x \"%H:%M\n%m/%d\"
-set yrange [0:100]
-set y2range [10:30]
+set yrange [$Y1MIN:$Y1MAX]
+set y2range [$Y2MIN:$Y2MAX]
 set my2tics 10
 set ytics 10
 set y2tics 5
@@ -180,8 +184,8 @@ set timefmt \"%Y %m %d %H %M %S\"
 set output \"$IMAGEPATH/graph-main.png\"
 set xrange [\"`date --date=yesterday +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
 set format x \"%H:%M\n%m/%d\"
-set yrange [0:100]
-set y2range [10:30]
+set yrange [$Y1MIN:$Y1MAX]
+set y2range [$Y2MIN:$Y2MAX]
 set mytics 10
 set my2tics 5
 set ytics 0,20
@@ -242,8 +246,8 @@ set timefmt \"%Y %m %d %H %M %S\"
 set output \"$IMAGEPATH/graph-6h-mobile.png\"
 set xrange [\"`date --date="6 hours ago" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
 set format x \"%H:%M\n%m/%d\"
-set yrange [0:100]
-set y2range [10:30]
+set yrange [$Y1MIN:$Y1MAX]
+set y2range [$Y2MIN:$Y2MAX]
 set mytics 5
 set ytics 20
 set y2tics 5
@@ -313,8 +317,8 @@ set timefmt \"%Y %m %d %H %M %S\"
 set output \"$IMAGEPATH/graph-main-mobile.png\"
 set xrange [\"`date --date=yesterday +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
 set format x \"%H:%M\n%m/%d\"
-set yrange [0:100]
-set y2range [10:30]
+set yrange [$Y1MIN:$Y1MAX]
+set y2range [$Y2MIN:$Y2MAX]
 set mytics 2
 set ytics 20,20
 set y2tics 10,10
