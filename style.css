@@ -1,4 +1,4 @@
-### General ###
+/*** General ***/
 body {
     background:#FFF;
     text: black;
@@ -14,9 +14,9 @@ hr {
     width: 60%;
 }
 
-### Menu Style  ###
+/*** Menu ***/
 .edit-title {
-    padding: 25px 0 10px 0;
+    padding: 20px 0 10px 0;
 }
 
 .sensor-block {
@@ -37,7 +37,8 @@ hr {
 }
 
 .time {
-    padding:1px 2px 2px 3px;
+    background: #F1A66D;
+    padding: 3px 0 3px 0;
     float: center;
     color: #000;
     font-size: 11px;
@@ -55,11 +56,12 @@ hr {
 }
 
 .inactive, .active, .link {
-    padding: 3px 2px 2px 10px;
+    padding: 3px 0 3px 10px;
 }
 
 .inactive {
-    background: #CA5800;
+    background: #E18944;
+    font-weight: bold;
     font-size: 12px;
 }
 
@@ -73,14 +75,17 @@ hr {
 }
 
 .active {
-    background: #CA0000;
+    background: #874611;
     font-weight: bold;
     font-size: 12px;
     color: white;
 }
 
+.link {
+    background: #F2C5A1;
+}
+
 .link, .link-profile {
-    background: #CCCCCC;
     font-size: 12px;
 }
 
@@ -89,7 +94,6 @@ hr {
 }
 
 .link-profile {
+    background: #E18944;
     padding: 3px 2px 0 0;
-}
-
- 
+} 
