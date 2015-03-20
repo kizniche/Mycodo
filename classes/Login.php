@@ -761,7 +761,7 @@ class Login
     {
         $url = 'http://www.gravatar.com/avatar/';
         $url .= md5(strtolower(trim($email)));
-        $url .= "?s=$s&d=$d";
+        $url .= "?s=$s&d=$d&r=$r";
 
         // the image url (on gravatarr servers), will return in something like
         // http://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=80&d=mm&r=g
@@ -772,7 +772,6 @@ class Login
         //$url = '<img src="' . $url . '"';
         foreach ($atts as $key => $val)
             $url .= ' ' . $key . '="' . $val . '"';
-        $url .= ' />';
 
         // the image url like above but with an additional <img src .. /> around
         $this->user_gravatar_image_tag = $url;

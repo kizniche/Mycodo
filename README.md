@@ -58,15 +58,17 @@ I'm currently working on a new set of hardware that will support a range of new 
   - [ ] Touch screen improvements
 
 <a name="hard-brief"></a>
-### Hardware Brief
+### Hardware
+
+
 
 * Raspberry Pi
-* DHT22 Temperature/humidity sensor
-* Relays (Keyes Funduino 4 board, but any opto-isolated relays will do)
+* Temperature/humidity sensor (DHT22)
+* Relays (2x Crydom 1240 and 1x Keyes Funduino relay board)
 * Humidifier
 * Heater
 * Circulatory Fan
-* Exhaust Fan (HEPA filter recommended)
+* Exhaust Fan, HEPA-filtered
 
 Relay1, Exhaust Fan: GPIO 23, pin 16  
 Relay2, Humidifier: GPIO 22, pin 15  
@@ -77,7 +79,7 @@ DHT22 Power: 3.3v, pin 1
 Relays and DHT22 Ground: Ground, pin 6  
 
 <a name="soft-brief"></a>
-### Software Brief
+### Software
 
 The following software is required
 
@@ -85,7 +87,7 @@ The following software is required
 * git
 * gnuplot
 * mysql
-* php5
+* php >= 5.3.7
 * phpmyadmin
 * python
 * Python_DHT (Adafruit)

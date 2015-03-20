@@ -8,11 +8,11 @@ body {
 } 
 
 a:link {
-    color: #FF0000;
+    color: #000000;
 }
 
 a:visited {
-    color: #00FF00;
+    color: #000000;
 }
 
 a:active {
@@ -20,7 +20,16 @@ a:active {
 }
 
 a:hover   {
-        color:black;
+    color: black;
+}
+
+hr {
+    margin: 15px 0 5px 0;
+    width: 60%;
+}
+
+.edit-title {
+    padding: 25px 0 10px 0;
 }
 
 .inactive {

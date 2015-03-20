@@ -72,8 +72,8 @@ if ($login->isUserLoggedIn() == true) {
 <body bgcolor="white">
 <table>
 <tr>
-<td width="150" valign="top">
-    <table width="100%">
+<td width="150px" valign="top">
+    <table width="150px">
         <tr>
             <td align=center>
                 <div style="padding:1px 2px 2px 2px; float: center; color: #000; font-size: 11px; font-family: verdana;">
@@ -158,12 +158,12 @@ if ($login->isUserLoggedIn() == true) {
                 <table>
                     <tr>
                         <td class=link-profile>
-                            <a href="edit.php">Edit Profile</a>
+                            <a href="edit.php"><?php echo WORDING_EDIT_USER_DATA; ?></a>
                         </td>
                     </tr>
                     <tr>
                         <td class=link-profile>
-                            <a href="index.php?logout">Log Out</a>
+                            <a href="index.php?logout"><?php echo WORDING_LOGOUT; ?></a>
                         </td>
                     </tr>
                 </table>
@@ -209,12 +209,7 @@ if (isset($_GET['page'])) {
 			break;
 		case 'All':
 			shell_exec($graph_exec . ' all');
-			echo "<img src=image.php?span=1h><p>
-				<img src=image.php?span=6h><p>
-				<img src=image.php?span=day><p>
-				<img src=image.php?span=week><p>
-				<img src=image.php?span=month><p>
-				<img src=image.php?span=year>";
+			echo "<img src=image.php?span=1h><p><img src=image.php?span=6h></p><p><img src=image.php?span=day></p><p><img src=image.php?span=week></p><p><img src=image.php?span=month></p><p><img src=image.php?span=year></p>";
 			break;
 		default:
 			shell_exec($graph_exec . ' dayweek');

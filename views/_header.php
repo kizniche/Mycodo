@@ -3,28 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
-    <style type="text/css">
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-            margin: 10px;
-        }
-        label {
-            position: relative;
-            vertical-align: middle;
-            bottom: 1px;
-        }
-        input[type=text],
-        input[type=password],
-        input[type=submit],
-        input[type=email] {
-            display: block;
-            margin-bottom: 15px;
-        }
-        input[type=checkbox] {
-            margin-bottom: 15px;
-        }
-    </style>
+    <link rel="stylesheet"  href="style.css" type="text/css" media="all" />
 </head>
 <body>
 
