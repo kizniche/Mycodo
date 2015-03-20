@@ -5,7 +5,7 @@
     <?php echo 'Editing ' . $_SESSION['user_name'] . '\'s Profile'; ?>
 </div>
 <div style="">
-    Image is pulled from Gravitar.com
+    Image can be changed at gravitar.com
 </div>
 <div style="clear: both; padding: 0 0 5px 0;"></div>
 <form method="post" action="edit.php" name="user_edit_form_name">
