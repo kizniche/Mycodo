@@ -7,7 +7,7 @@ if ($_SESSION['user_name'] != guest) {
     <?php echo 'Editing ' . $_SESSION['user_name'] . '\'s Profile'; ?>
 </div>
 <div style="">
-    Image can be changed at gravitar.com
+    Image can be changed at gravatar.com
 </div>
 <div style="clear: both; padding: 0 0 5px 0;"></div>
 <form method="post" action="edit.php" name="user_edit_form_name">
