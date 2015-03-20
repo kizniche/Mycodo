@@ -25,6 +25,42 @@ usage() {
   echo -e "  dayweek-mobile  draw a graph suitable for a mobile phone for the past day and week\n"
 }
 
+graph_single() {
+echo "reset
+set terminal png size 850,490
+set xdata time
+set timefmt \"%Y %m %d %H %M %S\"
+set output \"$IMAGEPATH/graph-$file.png\"
+set xrange [\"`date --date="$time ago" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
+set format x \"%H:%M\n%m/%d\"
+set yrange [0:100]
+set y2range [10:30]
+set my2tics 10
+set ytics 10
+set y2tics 5
+set style line 11 lc rgb '#808080' lt 1
+set border 3 back ls 11
+set tics nomirror
+set style line 12 lc rgb '#808080' lt 0 lw 1
+set grid xtics ytics back ls 12
+set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 2
+set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 2
+set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 2
+set style line 4 lc rgb '#ffa500' pt 0 ps 1 lt 1 lw 1
+set style line 5 lc rgb '#a101a6' pt 0 ps 1 lt 1 lw 1
+set style line 6 lc rgb '#48dd00' pt 0 ps 1 lt 1 lw 1
+set style line 7 lc rgb '#d30068' pt 0 ps 1 lt 1 lw 1
+set title \"$time: `date --date="$time ago" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
+unset key
+plot \"$sensor_lines$LOGPATH/sensor.log\" u 1:8 index 0 title \" RH\" w lp ls 1 axes x1y1, \\
+     \"\" using 1:9 index 0 title \"T\" w lp ls 2 axes x1y2, \\
+     \"\" using 1:12 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
+     \"$relay_lines$LOGPATH/relay.log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
+     \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\
+     \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\
+     \"\" using 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1" | gnuplot
+}
+
 if [ -n "$2" ]
 then
   echo "too many imputs: only one parameter is allowed"
@@ -104,213 +140,38 @@ plot \"$LOGPATH/sensor.log\" u 1:8 index 0 title \" RH\" w lp ls 1 axes x1y1, \\
      \"\" u 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1" | gnuplot
       ;;
     1h)
-echo "reset
-set terminal png size 850,490
-set xdata time
-set timefmt \"%Y %m %d %H %M %S\"
-set output \"$IMAGEPATH/graph-1h.png\"
-set xrange [\"`date --date="1 hour ago" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
-set format x \"%H:%M\n%m/%d\"
-set yrange [0:100]
-set y2range [10:30]
-set my2tics 10
-set ytics 10
-set y2tics 5
-set style line 11 lc rgb '#808080' lt 1
-set border 3 back ls 11
-set tics nomirror
-set style line 12 lc rgb '#808080' lt 0 lw 1
-set grid xtics ytics back ls 12
-set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 2
-set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 2
-set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 2
-set style line 4 lc rgb '#ffa500' pt 0 ps 1 lt 1 lw 1
-set style line 5 lc rgb '#a101a6' pt 0 ps 1 lt 1 lw 1
-set style line 6 lc rgb '#48dd00' pt 0 ps 1 lt 1 lw 1
-set style line 7 lc rgb '#d30068' pt 0 ps 1 lt 1 lw 1
-set title \"Past Hour: `date --date="1 hour ago" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
-unset key
-plot \"< tail -31 $LOGPATH/sensor.log\" u 1:8 index 0 title \" RH\" w lp ls 1 axes x1y1, \\
-     \"\" using 1:9 index 0 title \"T\" w lp ls 2 axes x1y2, \\
-     \"\" using 1:12 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
-     \"< tail -50 $LOGPATH/relay.log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
-     \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\
-     \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\
-     \"\" using 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1" | gnuplot
+      file="1h"
+      time="1 hour"
+      sensor_lines="< tail -31 "
+      relay_lines="< tail -50 "
+      graph_single
       ;;
     6h)
-echo "reset
-set terminal png size 850,490
-set xdata time
-set timefmt \"%Y %m %d %H %M %S\"
-set output \"$IMAGEPATH/graph-6h.png\"
-set xrange [\"`date --date="6 hours ago" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
-set format x \"%H:%M\n%m/%d\"
-set yrange [0:100]
-set y2range [10:30]
-set my2tics 10
-set ytics 10
-set y2tics 5
-set style line 11 lc rgb '#808080' lt 1
-set border 3 back ls 11
-set tics nomirror
-set style line 12 lc rgb '#808080' lt 0 lw 1
-set grid xtics ytics back ls 12
-set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 2
-set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 2
-set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 2
-set style line 4 lc rgb '#ffa500' pt 0 ps 1 lt 1 lw 1
-set style line 5 lc rgb '#a101a6' pt 0 ps 1 lt 1 lw 1
-set style line 6 lc rgb '#48dd00' pt 0 ps 1 lt 1 lw 1
-set style line 7 lc rgb '#d30068' pt 0 ps 1 lt 1 lw 1
-set title \"Past 6 Hours: `date --date="6 hours ago" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
-unset key
-plot \"< tail -180 $LOGPATH/sensor.log\" u 1:8 index 0 title \" RH\" w lp ls 1 axes x1y1, \\
-     \"\" using 1:9 index 0 title \"T\" w lp ls 2 axes x1y2, \\
-     \"\" using 1:12 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
-     \"< tail -280 $LOGPATH/relay.log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
-     \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\
-     \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\
-     \"\" using 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1" | gnuplot
+      file="6h"
+      time="6 hours"
+      sensor_lines="< tail -180 "
+      relay_lines="< tail -280 "
+      graph_single
       ;;
     day)
-echo "set terminal png size 850,490
-set xdata time
-set timefmt \"%Y %m %d %H %M %S\"
-set output \"$IMAGEPATH/graph-day.png\"
-set xrange [\"`date --date=yesterday +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
-set format x \"%H:%M\n%m/%d\"
-set yrange [0:100]
-set y2range [10:30]
-set my2tics 10
-set ytics 10
-set y2tics 5
-set style line 11 lc rgb '#808080' lt 1
-set border 3 back ls 11
-set tics nomirror
-set style line 12 lc rgb '#808080' lt 0 lw 1
-set grid xtics ytics back ls 12
-set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 2
-set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 2
-set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 2
-set style line 4 lc rgb '#ffa500' pt 0 ps 1 lt 1 lw 1
-set style line 5 lc rgb '#a101a6' pt 0 ps 1 lt 1 lw 1
-set style line 6 lc rgb '#48dd00' pt 0 ps 1 lt 1 lw 1
-set style line 7 lc rgb '#d30068' pt 0 ps 1 lt 1 lw 1
-set title \"Past Day: `date --date=yesterday +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
-unset key
-plot \"$LOGPATH/sensor.log\" using 1:8 index 0 title \" RH\" w lp ls 1 axes x1y1, \\
-     \"\" using 1:9 index 0 title \"T\" w lp ls 2 axes x1y2, \\
-     \"\" using 1:12 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
-     \"$LOGPATH/relay.log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
-     \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\
-     \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\
-     \"\" using 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1" | gnuplot
+      file="day"
+      time="1 day"
+      graph_single
       ;;
     week)
-echo "set terminal png size 850,490
-set xdata time
-set timefmt \"%Y %m %d %H %M %S\"
-set output \"$IMAGEPATH/graph-week.png\"
-set xrange [\"`date --date="last week" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
-set format x \"%a\n%m/%d\"
-set yrange [0:200]
-set y2range [25:100]
-set mytics 5
-set ytics 20
-set y2tics 5
-#set my2tics 5
-set style line 11 lc rgb '#808080' lt 1
-set border 3 back ls 11
-set tics nomirror
-set style line 12 lc rgb '#808080' lt 0 lw 1
-set grid xtics y2tics back ls 12
-set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 2
-set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 2
-set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 2
-set style line 4 lc rgb '#ffa500' pt 0 ps 1 lt 1 lw 1
-set style line 5 lc rgb '#a101a6' pt 0 ps 1 lt 1 lw 1
-set style line 6 lc rgb '#48dd00' pt 0 ps 1 lt 1 lw 1
-set style line 7 lc rgb '#d30068' pt 0 ps 1 lt 1 lw 1
-set title \"Past Week: `date --date="last week" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
-unset key
-plot \"$LOGPATH/sensor.log\" using 1:8 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
-     \"\" using 1:10 index 0 title \"T\" w lp ls 2 axes x1y2, \\
-     \"\" using 1:11 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
-     \"$LOGPATH/relay.log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
-     \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\
-     \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\
-     \"\" using 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1" | gnuplot
+      file="week"
+      time="1 week"
+      graph_single
       ;;
     month)
-echo "set terminal png size 850,490
-set xdata time
-set timefmt \"%Y %m %d %H %M %S\"
-set output \"$IMAGEPATH/graph-month.png\"
-set xrange [\"`date --date="last month" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
-set format x \"%a\n%m/%d\"
-set yrange [0:200]
-set y2range [25:100]
-set mytics 5
-set ytics 20
-set y2tics 5
-#set my2tics 5
-set style line 11 lc rgb '#808080' lt 1
-set border 3 back ls 11
-set tics nomirror
-set style line 12 lc rgb '#808080' lt 0 lw 1
-set grid xtics y2tics back ls 12
-set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 1
-set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 1
-set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 1
-set style line 4 lc rgb '#ffa500' pt 0 ps 1 lt 1 lw 1
-set style line 5 lc rgb '#a101a6' pt 0 ps 1 lt 1 lw 1
-set style line 6 lc rgb '#48dd00' pt 0 ps 1 lt 1 lw 1
-set style line 7 lc rgb '#d30068' pt 0 ps 1 lt 1 lw 1
-set title \"Past Month: `date --date="last month" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
-unset key
-plot \"$LOGPATH/sensor.log\" using 1:8 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
-     \"\" using 1:10 index 0 title \"T\" w lp ls 2 axes x1y2, \\
-     \"\" using 1:11 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
-     \"$LOGPATH/relay.log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
-     \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\
-     \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\
-     \"\" using 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1" | gnuplot
+      file="month"
+      time="1 month"
+      graph_single
       ;;
     year)
-echo "set terminal png size 850,490
-set xdata time
-set timefmt \"%Y %m %d %H %M %S\"
-set output \"$IMAGEPATH/graph-year.png\"
-set xrange [\"`date --date="last year" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
-set format x \"%b\n%m/%d/%y\"
-set yrange [0:200]
-set y2range [25:100]
-set mytics 5
-set ytics 20
-set y2tics 5
-#set my2tics 5
-set style line 11 lc rgb '#808080' lt 1
-set border 3 back ls 11
-set tics nomirror
-set style line 12 lc rgb '#808080' lt 0 lw 1
-set grid xtics y2tics back ls 12
-set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 1
-set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 1
-set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 1
-set style line 4 lc rgb '#ffa500' pt 0 ps 1 lt 1 lw 1
-set style line 5 lc rgb '#a101a6' pt 0 ps 1 lt 1 lw 1
-set style line 6 lc rgb '#48dd00' pt 0 ps 1 lt 1 lw 1
-set style line 7 lc rgb '#d30068' pt 0 ps 1 lt 1 lw 1
-set title \"Past Year: `date --date="last year" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
-unset key
-plot \"$LOGPATH/sensor.log\" using 1:8 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
-     \"\" using 1:10 index 0 title \"T\" w lp ls 2 axes x1y2, \\
-     \"\" using 1:11 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
-     \"$LOGPATH/relay.log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
-     \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\
-     \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\
-     \"\" using 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1" | gnuplot
+      file="year"
+      time="1 year"
+      graph_single
       ;;
     dayweek)
 echo "set terminal png size 830,1000
@@ -381,8 +242,8 @@ set timefmt \"%Y %m %d %H %M %S\"
 set output \"$IMAGEPATH/graph-6h-mobile.png\"
 set xrange [\"`date --date="6 hours ago" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
 set format x \"%H:%M\n%m/%d\"
-set yrange [0:200]
-set y2range [25:100]
+set yrange [0:100]
+set y2range [10:30]
 set mytics 5
 set ytics 20
 set y2tics 5
@@ -416,8 +277,8 @@ set timefmt \"%Y %m %d %H %M %S\"
 set output \"$IMAGEPATH/graph-day-mobile.png\"
 set xrange [\"`date --date=yesterday +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
 set format x \"%H:%M\n%m/%d\"
-set yrange [0:200]
-set y2range [25:100]
+set yrange [0:100]
+set y2range [10:30]
 set mytics 5
 set ytics 20
 set y2tics 5
@@ -452,8 +313,8 @@ set timefmt \"%Y %m %d %H %M %S\"
 set output \"$IMAGEPATH/graph-main-mobile.png\"
 set xrange [\"`date --date=yesterday +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
 set format x \"%H:%M\n%m/%d\"
-set yrange [0:200]
-set y2range [25:100]
+set yrange [0:100]
+set y2range [10:30]
 set mytics 2
 set ytics 20,20
 set y2tics 10,10
@@ -503,5 +364,5 @@ unset multiplot" | gnuplot
       echo -e "use" $0 "--help for usage\n"
       exit
       ;;
-  esac
+esac
 fi
