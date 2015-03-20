@@ -1,5 +1,7 @@
 <?php include('_header.php'); ?>
-
+<?php
+if ($_SESSION['user_name'] != guest) {
+?>
 <img style="float: left; padding-right: 10px;" src="<?php echo $login->user_gravatar_image_tag; ?>">
 <div style="font-size: 20px; font-weight: bold;">
     <?php echo 'Editing ' . $_SESSION['user_name'] . '\'s Profile'; ?>
@@ -47,7 +49,9 @@
         <input type="submit" name="user_edit_submit_password" value="<?php echo WORDING_CHANGE_PASSWORD; ?>" />
     </div>
 </form>
-
+<?php } else { ?>
+Profile editing disabled for guest.<p>
+<?php } ?>
 <a href="index.php"><?php echo WORDING_BACK_TO_LOGIN; ?></a>
 
 <?php include('_footer.php'); ?>

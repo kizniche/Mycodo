@@ -25,26 +25,7 @@ require_once('libraries/PHPMailer.php');
 require_once("classes/Login.php");
 $login = new Login();
 
-if ($login->isUserLoggedIn() == true) {
-
-function webor($state)
-{
-    global $main_path;
-    
-    if ($state) {
-        $command     = $main_path . "mycodo r";
-        $readconfig  = shell_exec($command);
-        $cpiece      = explode(" ", $editconfig);
-        $writeconfig = $main_path . "mycodo w " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " 1 " . $cpiece[5] . " " . $cpiece[6] . "\n";
-        shell_exec($exec);
-    } else {
-        $command    = $main_path . "mycodo r";
-        $readconfig = shell_exec($command);
-        $cpiece     = explode(" ", $editconfig);
-        $editconfig = $main_path . "mycodo w " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " 0 " . $cpiece[5] . " " . $cpiece[6] . "\n";
-        shell_exec($editconfig);
-    }
-}
+if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 
 if (isset($_POST['Mode'])) $ModeSet = $_POST['Mode'];
 
@@ -226,6 +207,25 @@ echo "</tr></table></td></tr></table></FORM><p>";
 echo '</center></body></html>';
 
 } else {
-        include("views/not_logged_in.php");
+    echo 'Configuration editing disabled for guest.';
+}
+
+function webor($state)
+{
+    global $main_path;
+
+    if ($state) {
+        $command     = $main_path . "mycodo r";
+        $readconfig  = shell_exec($command);
+        $cpiece      = explode(" ", $editconfig);
+        $writeconfig = $main_path . "mycodo w " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " 1 " . $cpiece[5] . " " . $cpiece[6] . "\n";
+        shell_exec($exec);
+    } else {
+        $command    = $main_path . "mycodo r";
+        $readconfig = shell_exec($command);
+        $cpiece     = explode(" ", $editconfig);
+        $editconfig = $main_path . "mycodo w " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " 0 " . $cpiece[5] . " " . $cpiece[6] . "\n";
+        shell_exec($editconfig);
+    }
 }
 ?>

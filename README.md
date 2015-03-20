@@ -42,6 +42,7 @@ I'm currently working on a new set of hardware that will support a range of new 
     * Profile edit (change user name, password, or email address)
     * Gravitar support (if email used in registration is the same as on gravitar.com)
     * Lost/forgot password reset via email
+    * Guest account for viewing only (user: guest, password: anonymous)
     * Authorization log of successful and unsuccessful login attempts
 
 <a name="future"></a>
@@ -51,7 +52,6 @@ I'm currently working on a new set of hardware that will support a range of new 
 - [ ] Automatic log file backup when a certain size is reached  
 - [ ] Support naming/renaming relay identifier from the web interface  
 - [ ] Support for more than one temperature/humidity sensor  
-- [ ] Support for guest login (view only)  
 - [ ] Update user interface  
   - [ ] Tabs instead of link menus  
   - [ ] Graphics (temperature, humidity, time, date, etc.)  

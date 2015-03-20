@@ -151,7 +151,7 @@ if ($login->isUserLoggedIn() == true) {
         </tr>
         <tr>
             <td class=link-profile>
-                <div style="padding: 3px 0 0 10px;">Logged in as: <?php echo $_SESSION['user_name']; ?></div>
+                <div style="padding: 0px 0 5px 10px;">Logged in as: <?php echo $_SESSION['user_name']; ?><?php if ($_SESSION['user_name'] != guest) { ?></div>
                 <div style="clear: both;"></div>
                 <img style="float: left; padding: 5px 5px 10px 10px;" src="<?php echo $login->user_gravatar_image_tag; ?>">
                 <div style="float: left; vertical-align: middle;">
@@ -167,6 +167,9 @@ if ($login->isUserLoggedIn() == true) {
                         </td>
                     </tr>
                 </table>
+                <?php } else { ?>
+                    <br><a href="index.php?logout"><?php echo WORDING_LOGOUT; ?></a></div>
+                <?php } ?>
             </td>
         </tr>
     </td>

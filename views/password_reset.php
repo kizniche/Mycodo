@@ -16,6 +16,7 @@
 <?php } else { ?>
 <form method="post" action="password_reset.php" name="password_reset_form">
     <label for="user_name"><?php echo WORDING_REQUEST_PASSWORD_RESET; ?></label>
+    <p>    
     <input id="user_name" type="text" name="user_name" required />
     <input type="submit" name="request_password_reset" value="<?php echo WORDING_RESET_PASSWORD; ?>" />
 </form>

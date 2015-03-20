@@ -85,15 +85,18 @@ class Login
             // user try to change his username
             if (isset($_POST["user_edit_submit_name"])) {
                 // function below uses use $_SESSION['user_id'] et $_SESSION['user_email']
-                $this->editUserName($_POST['user_name']);
+                if ($_SESSION['user_name'] == guest) echo 'Profile editing disabled for guest.<p>';
+                else $this->editUserName($_POST['user_name']);
             // user try to change his email
             } elseif (isset($_POST["user_edit_submit_email"])) {
                 // function below uses use $_SESSION['user_id'] et $_SESSION['user_email']
-                $this->editUserEmail($_POST['user_email']);
+                if ($_SESSION['user_name'] == guest) echo 'Profile editing disabled for guest.<p>';
+                else $this->editUserEmail($_POST['user_email']);
             // user try to change his password
             } elseif (isset($_POST["user_edit_submit_password"])) {
                 // function below uses $_SESSION['user_name'] and $_SESSION['user_id']
-                $this->editUserPassword($_POST['user_password_old'], $_POST['user_password_new'], $_POST['user_password_repeat']);
+                if ($_SESSION['user_name'] == guest) echo 'Profile editing disabled for guest.<p>';
+                else $this->editUserPassword($_POST['user_password_old'], $_POST['user_password_new'], $_POST['user_password_repeat']);
             }
 
         // login with cookie
@@ -110,7 +113,8 @@ class Login
 
         // checking if user requested a password reset mail
         if (isset($_POST["request_password_reset"]) && isset($_POST['user_name'])) {
-            $this->setPasswordResetDatabaseTokenAndSendMail($_POST['user_name']);
+	    if (strcasecmp($_POST['user_name'], guest) == 0) echo "Password reset is disabled for guest.<p>";
+            else $this->setPasswordResetDatabaseTokenAndSendMail($_POST['user_name']);
         } elseif (isset($_GET["user_name"]) && isset($_GET["verification_code"])) {
             $this->checkIfEmailVerificationCodeIsValid($_GET["user_name"], $_GET["verification_code"]);
         } elseif (isset($_POST["submit_new_password"])) {
