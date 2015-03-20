@@ -26,7 +26,7 @@ $login = new Login();
 
 if ($login->isUserLoggedIn() == true) {
 
-    echo '<html><head><META HTTP-EQUIV="refresh" CONTENT="65"></head><body>';
+    echo '<html><head><title>Log Viewer</title></head><body>';
     echo '<FORM action="" method="POST">';
     echo 'Lines: <input type="text" maxlength=8 size=8 name="Lines" /> ';
     echo '<input type="submit" name="Sensor" value="Sensor"> ';
