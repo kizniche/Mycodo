@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 *
 *  mobile.php - Generates the interface for a mobile device
