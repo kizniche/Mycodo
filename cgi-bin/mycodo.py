@@ -69,19 +69,24 @@ RFanTS = ''
 wfactor = ''
 
 def usage():
-  print "Usage:", __file__, "[OPTION] [FILE]..."
-  print "Reads temperature and humidity from sensors, writes log file, and operates relays as a daemon to maintain set environmental conditions.\n"
-  print "data is presented in the following format for -r:"
-  print "Year Month Day Hour Minute Second Timestamp Humidity TempC DewPointC HeatIndexC\n"
-  print "Options:\n"
-  print "    -r  --read"
-  print "           read and display sensor data"
-  print "    -w, --write=FILE"
-  print "           write data to file and print to screen"
-  print "    -d, --daemon"
-  print "           start program as daemon that monitors conditions and alters relays"
-  print "    -h, --help"
-  print "           display this help and exit\n"
+  print 'Usage:', __file__, '[OPTION] [FILE]...'
+  print '      ', __file__, '-c 1 -s 0' 
+  print 'Reads temperature and humidity from sensors, writes log file, and operates relays as a daemon to maintain set environmental conditions.\n'
+  print 'data is presented in the following format for -r:'
+  print 'Year Month Day Hour Minute Second Timestamp Humidity TempC DewPointC HeatIndexC\n'
+  print 'Options:\n'
+  print '    -r  --read'
+  print '           read sensor and display data'
+  print '    -w, --write=FILE'
+  print '           write sensor data to log file'
+  print '    -c, --change=RELAY'
+  print '           change the state of a relay (must use with -s)'
+  print '    -s, --state=[0][1]'
+  print '           change the state of RELAY to on(1) or off(0)'
+  print '    -d, --daemon'
+  print '           start program as daemon that monitors conditions and alters relays'
+  print '    -h, --help'
+  print '           display this help and exit\n'
 
 def setup():
   # Set up GPIO using BCM numbering
@@ -115,7 +120,7 @@ def main():
     sys.exit(1)
   
   try:
-    opts, args = getopt.getopt(sys.argv[1:], 'thrw:d', ["help", "read", "write=", "daemon"])
+    opts, args = getopt.getopt(sys.argv[1:], 'thrdw:c:s:', ["help", "read", "write=", "change=", "state=", "daemon"])
   except getopt.GetoptError as err:
     print(err) # will print "option -a not recognized"
     usage()
@@ -132,6 +137,26 @@ def main():
       log_file = arg
       readSensors()
       writeSensorLog()
+      sys.exit(0)
+    elif opt in ("-c", "--change"):
+      global relay_change
+      relay_change = arg
+      if relay_change > '8' or relay_change < '1':
+        print 'Error: 1 - 8 are the only acceptable options for -c'
+        usage()
+        sys.exit(0)
+    elif opt in ("-s", "--state"):
+      global relay_state
+      relay_state = arg
+      if relay_state == '0' or relay_state == '1':
+        print '%s Requested change of relay %s to' % (timestamp(), relay_change),
+        if relay_state == '1':
+          print 'On'
+        elif relay_state == '0':
+          print 'Off'
+      else:
+        print 'Error: 0 or 1 are the only acceptable options for -s'
+        usage()
       sys.exit(0)
     elif opt in ("-d", "--daemon"):
       setup()
@@ -156,8 +181,7 @@ def writeSensorLog():
     open(log_file, 'ab').write('{0} {1:.0f} {2:.1f} {3:.1f} {4:.1f} {5:.1f}\n'.format(datetime.datetime.now().strftime("%Y %m %d %H %M %S"), tstamp, humidity, tempc, dewpointc, heatindex))
     print '%s Data appended to %s' % (timestamp(), sensor_log_file)
   except:
-    print '%s Unable to append data' % (timestamp()
-    sys.exit()
+    print '%s Unable to append data' % timestamp()
 
 def readSensors():
   global tempc
