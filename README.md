@@ -250,7 +250,7 @@ Once the following cron jobs are set, the relays may become energized, depending
 ```
 
 ````
-*/2 * * * * /var/www/mycodo/cgi-bin/mycodo-auto.sh
+@reboot /var/www/mycodo/cgi-bin/mycodo-auto.sh
 ```
 
 <a name="web-interface"></a>

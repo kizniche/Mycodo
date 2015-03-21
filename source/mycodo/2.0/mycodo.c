@@ -174,14 +174,13 @@ int main(int argc, char *argv[]) {
 		printf("\n%s:%s:%s %i Read config file %s",  argv[4], argv[5], argv[6], timestampL, config_state_path);
 		readCfgState();
 		printf("\nminTemp: %i, maxTemp: %i, minHum: %i, maxHum: %i, webOR: %i, tempState: %i, humState: %i", minTemp, maxTemp, minHum, maxHum, webOR, tempState, humState);
-		printf("\n%s:%s:%s %i Read sensors", argv[4], argv[5], argv[6], timestampL);
-		if ( tempState == 2 ) printf("\nTemperature: %.1f  Range: (%i - %i) %.1f deg. from minTemp. ", temp, minTemp, maxTemp, temp - minTemp);
-		else printf("\nTemperature: %.1f  Range: (%i - %i) %.1f deg. from minTemp. ", temp, minTemp, maxTemp, minTemp - temp);
+		if ( tempState == 2 ) printf("\nTemp: %.1f C Range: (%i - %i) %.1f C from minTemp. ", temp, minTemp, maxTemp, temp - minTemp);
+		else printf("\nTemp: %.1f C Range: (%i - %i) %.1f C from minTemp. ", temp, minTemp, maxTemp, minTemp - temp);
 		// read temperature sensor
 		CheckTemp();
 
-		if ( humState == 2 ) printf("\nHumidity:    %.1f  Range: (%i - %i) %.1f%% from minHum. ", hum, minHum, maxHum, hum - minHum);
-		else printf("\nHumidity:    %.1f  Range: (%i - %i) %.1f%% from minHum. ", hum, minHum, maxHum, minHum - hum);
+		if ( humState == 2 ) printf("\nHumi: %.1f %% Range: (%i - %i) %.1f %% from minHumi. ", hum, minHum, maxHum, hum - minHum);
+		else printf("\nHumi: %.1f %% Range: (%i - %i) %.1f %% from minHumi. ", hum, minHum, maxHum, minHum - hum);
 		CheckHum();
 
 		if (!webOR) { ChangeRelays ( maxTemp - temp, maxHum - hum ); }
