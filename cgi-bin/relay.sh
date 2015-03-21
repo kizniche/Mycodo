@@ -5,18 +5,19 @@
 #  2012 - 2015
 #
 
-PATH=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-LOGPATH="$(dirname "$PATH")/log"
+PATH="/var/www/mycodo"
+LOGPATH="$PATH/log"
 
 usage() {
   echo Usage: $0 "[RELAY] [SECONDS]"
-  echo "Turns relay (1, 2, 3, or 4) on for defined number of seconds, then turns it off\n"
+  echo "Turns relay (1 - 4) on for defined number of seconds, then turns it off"
 }
 
 if [ -n "$3" ]
 then
-  echo "too many imputs: only two parameters are allowed"
-  echo -e "use" $0 "--help for usage\n"
+  echo "too many inputs: only two parameters are allowed"
+  echo "$0 $1 $2 $3 $4 $5"
+  echo -e "use" $0 "--help for usage"
   exit
 fi
 

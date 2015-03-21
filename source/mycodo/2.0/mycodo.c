@@ -21,8 +21,10 @@
 char *cwd;
 char config_cond_path[1024];
 char config_state_path[1024];
+char relay_exec_path[1024];
 char *config_condition = "/config/mycodo-cond.conf";
 char *config_state = "/config/mycodo-state.conf";
+char *relay_exec = "/cgi-bin/relay.sh";
 
 // Relay1 HEPA Pin - wiringPi pin 4 is BCM_GPIO 23, GPIO4
 // Relay2 HUMI Pin - wiringPi pin 3 is BCM_GPIO 22, GPIO3
@@ -92,6 +94,10 @@ int relay1o = 0;
 int relay2o = 0;
 int relay3o = 0;
 int relay4o = 0;
+int relay5o = 0;
+int relay6o = 0;
+int relay7o = 0;
+int relay8o = 0;
 
 int maxTemp = 80;
 int minTemp = 70;
@@ -111,6 +117,9 @@ int main(int argc, char *argv[]) {
 	
 	strcat(config_state_path, cwd);
 	strcat(config_state_path, config_state);
+	
+	strcat(relay_exec_path, cwd);
+	strcat(relay_exec_path, relay_exec);
 	
 	if (argc < 2) {
 		printf("Missing input argument!\n");
@@ -144,7 +153,7 @@ int main(int argc, char *argv[]) {
 	else if (strcmp(argv[1], "r") == 0) {
 		readCfgCond();
 		readCfgState();
-		printf("%i %i %i %i %i %i %i\n", minTemp, maxTemp, minHum, maxHum, webOR, tempState, humState);
+		printf("%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i\n", minTemp, maxTemp, minHum, maxHum, webOR, tempState, humState, relay1o, relay2o, relay3o, relay4o, relay5o, relay6o, relay7o, relay8o);
 	}
 
 	else {
@@ -168,7 +177,6 @@ int main(int argc, char *argv[]) {
 		printf("\n%s:%s:%s %i Read sensors", argv[4], argv[5], argv[6], timestampL);
 		if ( tempState == 2 ) printf("\nTemperature: %.1f  Range: (%i - %i) %.1f deg. from minTemp. ", temp, minTemp, maxTemp, temp - minTemp);
 		else printf("\nTemperature: %.1f  Range: (%i - %i) %.1f deg. from minTemp. ", temp, minTemp, maxTemp, minTemp - temp);
-
 		// read temperature sensor
 		CheckTemp();
 
@@ -223,15 +231,20 @@ int readCfgState (void) {
 	/*  */
 	if (!config_lookup_int(&cfg, "tempState", &tempState)) printf("\nNo 'tempState' setting in configuration file.");
 	if (!config_lookup_int(&cfg, "humState", &humState)) printf("\nNo 'humState' setting in configuration file.");
+	if (!config_lookup_int(&cfg, "relay1o", &relay1o)) printf("\nNo 'relay1o' setting in configuration file.");
+	if (!config_lookup_int(&cfg, "relay2o", &relay2o)) printf("\nNo 'relay2o' setting in configuration file.");
+	if (!config_lookup_int(&cfg, "relay3o", &relay3o)) printf("\nNo 'relay3o' setting in configuration file.");
+	if (!config_lookup_int(&cfg, "relay4o", &relay4o)) printf("\nNo 'relay4o' setting in configuration file.");
+	if (!config_lookup_int(&cfg, "relay5o", &relay5o)) printf("\nNo 'relay5o' setting in configuration file.");
+	if (!config_lookup_int(&cfg, "relay6o", &relay6o)) printf("\nNo 'relay6o' setting in configuration file.");
+	if (!config_lookup_int(&cfg, "relay7o", &relay7o)) printf("\nNo 'relay7o' setting in configuration file.");
+	if (!config_lookup_int(&cfg, "relay8o", &relay8o)) printf("\nNo 'relay8o' setting in configuration file.");
 	if (!config_lookup_int(&cfg, "RHeatTS", &RHeatTS)) printf("\nNo 'RHeatTS' setting in configuration file.");
 	if (!config_lookup_int(&cfg, "RHumTS", &RHumTS)) printf("\nNo 'RHumTS' setting in configuration file.");
 	if (!config_lookup_int(&cfg, "RHepaTS", &RHepaTS)) printf("\nNo 'RHepaTS' setting in configuration file.");
 	if (!config_lookup_int(&cfg, "RFanTS", &RFanTS)) printf("\nNo 'RFanTS' setting in configuration file.");
 	if (!config_lookup_float(&cfg, "wfactor", &wfactor)) printf("\nNo 'wfactor' setting in configuration file.");
-	if (!config_lookup_int(&cfg, "relay1o", &relay1o)) printf("\nNo 'relay1o' setting in configuration file.");
-	if (!config_lookup_int(&cfg, "relay2o", &relay2o)) printf("\nNo 'relay2o' setting in configuration file.");
-	if (!config_lookup_int(&cfg, "relay3o", &relay3o)) printf("\nNo 'relay3o' setting in configuration file.");
-	if (!config_lookup_int(&cfg, "relay4o", &relay4o)) printf("\nNo 'relay4o' setting in configuration file.");
+
 
 	config_destroy(&cfg);
 	return 0;
@@ -307,6 +320,10 @@ int writeCfgState(void) {
 	config_setting_t *trelay2o = 0;
 	config_setting_t *trelay3o = 0;
 	config_setting_t *trelay4o = 0;
+	config_setting_t *trelay5o = 0;
+	config_setting_t *trelay6o = 0;
+	config_setting_t *trelay7o = 0;
+	config_setting_t *trelay8o = 0;
 
 	config_init(&cfg);
 
@@ -320,15 +337,20 @@ int writeCfgState(void) {
 	/* lookup variables in config file */
 	ttempState = config_lookup(&cfg, "tempState");
 	thumState = config_lookup(&cfg, "humState");
+	trelay1o = config_lookup(&cfg, "relay1o");
+	trelay2o = config_lookup(&cfg, "relay2o");
+	trelay3o = config_lookup(&cfg, "relay3o");
+	trelay4o = config_lookup(&cfg, "relay4o");
+	trelay5o = config_lookup(&cfg, "relay5o");
+	trelay6o = config_lookup(&cfg, "relay6o");
+	trelay7o = config_lookup(&cfg, "relay7o");
+	trelay8o = config_lookup(&cfg, "relay8o");
 	tRHeatTS = config_lookup(&cfg, "RHeatTS");
 	tRHumTS = config_lookup(&cfg, "RHumTS");
 	tRHepaTS = config_lookup(&cfg, "RHepaTS");
 	tRFanTS = config_lookup(&cfg, "RFanTS");
 	twfactor = config_lookup(&cfg, "wfactor");
-	trelay1o = config_lookup(&cfg, "relay1o");
-	trelay2o = config_lookup(&cfg, "relay2o");
-	trelay3o = config_lookup(&cfg, "relay3o");
-	trelay4o = config_lookup(&cfg, "relay4o");
+
 
 	/* get variables from config file then print the variables that changed */
 	if (config_setting_get_int(ttempState) != tempState) {
@@ -340,6 +362,46 @@ int writeCfgState(void) {
 		printf("\nhumState: %i -> ", config_setting_get_int(thumState));
 		config_setting_set_int(thumState, humState);
 		printf("%i", config_setting_get_int(thumState));
+	}
+	if (config_setting_get_int(trelay1o) != relay1o) {
+		printf("\nrelay1o: %i -> ", config_setting_get_int(trelay1o));
+		config_setting_set_int(trelay1o, relay1o);
+		printf("%i", config_setting_get_int(trelay1o));
+	}
+	if (config_setting_get_int(trelay2o) != relay2o) {
+		printf("\nrelay2o: %i -> ", config_setting_get_int(trelay2o));
+		config_setting_set_int(trelay2o, relay2o);
+		printf("%i", config_setting_get_int(trelay2o));
+	}
+	if (config_setting_get_int(trelay3o) != relay3o) {
+		printf("\nrelay3o: %i -> ", config_setting_get_int(trelay3o));
+		config_setting_set_int(trelay3o, relay3o);
+		printf("%i", config_setting_get_int(trelay3o));
+	}
+	if (config_setting_get_int(trelay4o) != relay4o) {
+		printf("\nrelay4o: %i -> ", config_setting_get_int(trelay4o));
+		config_setting_set_int(trelay4o, relay4o);
+		printf("%i", config_setting_get_int(trelay4o));
+	}
+	if (config_setting_get_int(trelay5o) != relay5o) {
+		printf("\nrelay5o: %i -> ", config_setting_get_int(trelay5o));
+		config_setting_set_int(trelay5o, relay5o);
+		printf("%i", config_setting_get_int(trelay5o));
+	}
+	if (config_setting_get_int(trelay6o) != relay6o) {
+		printf("\nrelay6o: %i -> ", config_setting_get_int(trelay6o));
+		config_setting_set_int(trelay6o, relay6o);
+		printf("%i", config_setting_get_int(trelay6o));
+	}
+	if (config_setting_get_int(trelay7o) != relay7o) {
+		printf("\nrelay7o: %i -> ", config_setting_get_int(trelay7o));
+		config_setting_set_int(trelay7o, relay7o);
+		printf("%i", config_setting_get_int(trelay7o));
+	}
+	if (config_setting_get_int(trelay8o) != relay8o) {
+		printf("\nrelay8o: %i -> ", config_setting_get_int(trelay8o));
+		config_setting_set_int(trelay8o, relay8o);
+		printf("%i", config_setting_get_int(trelay8o));
 	}
 	if (config_setting_get_int(tRHeatTS) != RHeatTS) {
 		printf("\nRHeatTS: %i -> ", config_setting_get_int(tRHeatTS));
@@ -366,26 +428,6 @@ int writeCfgState(void) {
 		config_setting_set_float(twfactor, wfactor);
 		printf("%i", config_setting_get_float(twfactor));
 	}
-	if (config_setting_get_int(trelay1o) != relay1o) {
-		printf("\nrelay1o: %i -> ", config_setting_get_int(trelay1o));
-		config_setting_set_int(trelay1o, relay1o);
-		printf("%i", config_setting_get_int(trelay1o));
-	}
-	if (config_setting_get_int(trelay2o) != relay2o) {
-		printf("\nrelay2o: %i -> ", config_setting_get_int(trelay2o));
-		config_setting_set_int(trelay2o, relay2o);
-		printf("%i", config_setting_get_int(trelay2o));
-	}
-	if (config_setting_get_int(trelay3o) != relay3o) {
-		printf("\nrelay3o: %i -> ", config_setting_get_int(trelay3o));
-		config_setting_set_int(trelay3o, relay3o);
-		printf("%i", config_setting_get_int(trelay3o));
-	}
-	if (config_setting_get_int(trelay4o) != relay4o) {
-		printf("\nrelay4o: %i -> ", config_setting_get_int(trelay4o));
-		config_setting_set_int(trelay4o, relay4o);
-		printf("%i", config_setting_get_int(trelay4o));
-	}
 
 	/* write the modified config file */
 	config_write_file(&cfg, config_state_path);
@@ -393,8 +435,7 @@ int writeCfgState(void) {
 	return 0;
 }
 
-int CheckTemp (void)
-{
+int CheckTemp (void) {
 	if ( temp < minTemp ) 
 	{
 		tempState = 1;
@@ -420,9 +461,7 @@ int CheckTemp (void)
 	return 0;
 }
 
-
-int CheckHum (void)
-{
+int CheckHum (void) {
 	if ( hum < minHum )
 	{
 		humState = 1;
@@ -443,27 +482,32 @@ int CheckHum (void)
 	return 0;
 }
 
-relay1(int i) // HEPA Fan
-{
+relay1(int i) { // HEPA Fan
 	printf("\nRelay 1 (HEPA): ");
 	if (relay1o) {
+		char* relay_ex = relay_exec_path;
+		char* ChangeState[2];
 		switch (i) {
 			case 0:
 				printf("Off");
-				system("/var/www/mycodo/mycodo-relay.sh 1 0 &");
+				ChangeState[0] = "1";
+				ChangeState[1] = "0";
+				execv(relay_exec_path, ChangeState);
 				break;
 			case 1:
 				if ( humState == 3 && tempState != 3) {
 					printf("Turn on for %d seconds, then off for %d seconds.", RHepat[RHepat[0]], RHepao[RHepat[0]]);
 					char Pcom[120];
-					sprintf(Pcom, "/var/www/mycodo/mycodo-relay.sh %d %d &", RHepa, RHepat[RHepat[0]]);
+					sprintf(Pcom, "%s %d %d &", relay_exec_path, RHepa, RHepat[RHepat[0]]);
 					system(Pcom);
 					if (RHepao[RHepat[0]] + RHepat[RHepat[0]] < sleept) sleept = RHepao[RHepat[0]] + RHepat[RHepat[0]];
 					RHepaTS = timestampL;
 					writeCfgState();
 				} else {
 					printf("Turn on until temperature < maxTemp or humidity < maxHum.");
-					system("/var/www/mycodo/mycodo-relay.sh 1 1 &");
+					ChangeState[0] = "1";
+					ChangeState[1] = "1";
+					execv(relay_exec_path, ChangeState);
 				}
 				break;
 			case 2:
@@ -472,28 +516,32 @@ relay1(int i) // HEPA Fan
 				break;
 			case 3:
 				printf("Off for %d more seconds.", RHepao[RHepat[0]] - (timestampL - RHepaTS));
-				system("/var/www/mycodo/mycodo-relay.sh 1 0 &");
+				ChangeState[0] = "1";
+				ChangeState[1] = "0";
+				execv(relay_exec_path, ChangeState);
 				if (RHepao[RHepat[0]] - (timestampL - RHepaTS) < sleept) sleept = RHepao[RHepat[0]] - (timestampL - RHepaTS);
 				break;
 		}
-	}
-	else printf("Override");
+	} else printf("Override");
 }
 
-relay2(int i) // Humidifier
-{
-	printf("\nRelay 2  (Hum): ");
+relay2(int i) { // Humidifier
+	printf("\nRelay 2 (HUMI): ");
 	if (relay2o) {
+		char* relay_ex = relay_exec_path;
+		char* ChangeState[2];
 		switch (i) {
 			case 0: // Turn relay2 off
 				printf("Off until humidity < minHum");
-				system("/var/www/mycodo/mycodo-relay.sh 2 0 &");
+				ChangeState[0] = "2";
+				ChangeState[1] = "0";
+				execv(relay_exec_path, ChangeState);
 				break;
 			case 1:
 				RHumo[0] = RHumt[0];
 				printf("Turn on for %d sec, then off for %d seconds.", RHumt[RHumt[0]], RHumo[RHumt[0]]);
 				char Hcom[120];
-				sprintf(Hcom, "/var/www/mycodo/mycodo-relay.sh %d %d &", RHum, RHumt[RHumt[0]]);
+				sprintf(Hcom, "%s %d %d &", relay_exec_path, RHum, RHumt[RHumt[0]]);
 				system(Hcom);
 				if (RHumo[RHumt[0]] + RHumt[RHumt[0]] < sleept) sleept = RHumo[RHumt[0]] + RHumt[RHumt[0]];
 				RHumTS = timestampL;
@@ -505,27 +553,31 @@ relay2(int i) // Humidifier
 				break;
 			case 3:
 				printf("Off for %d more seconds.", RHumo[RHumt[0]] + RHumt[RHumt[0]] - (timestampL - RHumTS));
-				system("/var/www/mycodo/mycodo-relay.sh 2 0 &");
+				ChangeState[0] = "2";
+				ChangeState[1] = "0";
+				execv(relay_exec_path, ChangeState);
 				if (RHumo[RHumt[0]] + RHumt[RHumt[0]] - (timestampL - RHumTS) < sleept) sleept = RHumo[RHumt[0]] + RHumt[RHumt[0]] - (timestampL - RHumTS);
 				break;
 		}
-	}
-	else printf("Override");
+	} else printf("Override");
 }
 
-relay3(int i) // Circulatory Fan
-{
-	printf("\nRelay 3  (Fan): ");
+relay3(int i) { // Circulatory Fan
+	printf("\nRelay 3 (CFAN): ");
 	if (relay3o) {
+		char* relay_ex = relay_exec_path;
+		char* ChangeState[2];
 		switch (i) {
 			case 0:
 				printf("Off until temperature > maxTemp or humidity > maxHum.");
-				system("/var/www/mycodo/mycodo-relay.sh 3 0 &");
+				ChangeState[0] = "3";
+				ChangeState[1] = "0";
+				execv(relay_exec_path, ChangeState);
 				break;
 			case 1:
 				printf("Turn on for %d sec, then off for %d seconds.", RFant[RFant[0]], RFano[RFant[0]]);
 				char Fcom[120];
-				sprintf(Fcom, "/var/www/mycodo/mycodo-relay.sh %d %d &", RFan, RFant[RFant[0]]);
+				sprintf(Fcom, "%s %d %d &", relay_exec_path, RFan, RFant[RFant[0]]);
 				system(Fcom);
 				if (RFano[RFant[0]] + RFant[RFant[0]] < sleept) sleept = RFano[RFant[0]] + RFant[RFant[0]];
 				RFanTS = timestampL;
@@ -537,28 +589,32 @@ relay3(int i) // Circulatory Fan
 				break;
 			case 3:
 				printf("Off for %d more seconds.", RFano[RFant[0]] + RFant[RFant[0]] - (timestampL - RFanTS));
-				system("/var/www/mycodo/mycodo-relay.sh 3 0 &");
+				ChangeState[0] = "3";
+				ChangeState[1] = "0";
+				execv(relay_exec_path, ChangeState);
 				if (RFano[RFant[0]] + RFant[RFant[0]] - (timestampL - RFanTS) < sleept) sleept = RFano[RFant[0]] + RFant[RFant[0]] - (timestampL - RFanTS);
 				break;
 		}
-	}
-	else printf("Override");
+	} else printf("Override");
 }
 
-relay4(int i) // Heat
-{
-	printf("\nRelay 4 (Heat): ");
+relay4(int i) { // Heat
+	printf("\nRelay 4 (HEAT): ");
 	if (relay4o) {
+		char* relay_ex = relay_exec_path;
+		char* ChangeState[2];
 		switch (i) {
 			case 0: // Turn off
 				printf("Off until temperature < minTemp.");
-				system("/var/www/mycodo/mycodo-relay.sh 4 0 &");
+				ChangeState[0] = "4";
+				ChangeState[1] = "0";
+				execv(relay_exec_path, ChangeState);
 				break;
 			case 1: // Turn on
 				RHeato[0] = RHeatt[0];
 				printf("Turn on for %d sec, then off for %d seconds.", RHeatt[RHeatt[0]], (int)(RHeato[RHeatt[0]]*wfactor));
 				char Tcom[120];
-				sprintf(Tcom, "/var/www/mycodo/mycodo-relay.sh %d %d &", RHeat, RHeatt[RHeatt[0]]);
+				sprintf(Tcom, "%s %d %d &", relay_exec_path, RHeat, RHeatt[RHeatt[0]]);
 				system(Tcom);
 				if((int)(RHeato[RHeatt[0]]*wfactor) + (int)(RHeatt[RHeatt[0]]*wfactor)< sleept) sleept = (int)(RHeato[RHeatt[0]]*wfactor) + (int)(RHeatt[RHeatt[0]]*wfactor);
 				RHeatTS = timestampL;
@@ -570,16 +626,16 @@ relay4(int i) // Heat
 				break;
 			case 3:
 				printf("Off for %d more seconds.", (int)(RHeato[RHeatt[0]]*wfactor) + RHeatt[RHeatt[0]] - (timestampL - RHeatTS));
-				system("/var/www/mycodo/mycodo-relay.sh 4 0 &");
+				ChangeState[0] = "4";
+				ChangeState[1] = "0";
+				execv(relay_exec_path, ChangeState);
 				if ((int)(RHeato[RHeatt[0]]*wfactor) + RHeatt[RHeatt[0]] - (timestampL - RHeatTS) < sleept) sleept = (int)(RHeato[RHeatt[0]]*wfactor) + RHeatt[RHeatt[0]] - (timestampL - RHeatTS);
 				break;
 		}
-	}
-	else printf("Override");
+	} else printf("Override");
 }
 
-int ChangeRelays (double tdiff, double hdiff)
-{
+int ChangeRelays (double tdiff, double hdiff) {
 	if ( tdiff > RFans[0] ) RFant[0] = 1;
 	else if ( tdiff > RFans[1] ) RFant[0] = 2;
 	else if ( tdiff > RFans[2] ) RFant[0] = 3;
@@ -615,8 +671,7 @@ int ChangeRelays (double tdiff, double hdiff)
 	// Relays: RHepa 1, RHum  2, RFan  3, RHeat 4
 	// relayx(Y), Y: 0=Turn off, 1=Turn on, 2=Leave on, 3=Leave off 
 
-	if ( tempState == 1 && humState == 1 ) // Heat on, humidifier on
-	{
+	if ( tempState == 1 && humState == 1 ) {// Heat on, humidifier on
 		// Relay 1 HEPA
 		relay1(0); // Turn relay1 off
 		usleep(500000);
