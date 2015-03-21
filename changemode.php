@@ -14,7 +14,8 @@ $cwd = getcwd();
 $mycodo_exec = $cwd . "/cgi-bin/mycodo";
 $relay_exec = $cwd . "/cgi-bin/relay.sh";
 $sensordata_file = $cwd . "/log/sensor.log";
-$config_file = $cwd . "/config/mycodo.conf";
+$config_cond_file = $cwd . "/config/mycodo-cond.conf";
+$config_state_file = $cwd . "/config/mycodo-state.conf";
 $relay_config = $cwd . "/config/relay_config.php";
 
 if (version_compare(PHP_VERSION, '5.3.7', '<')) {
@@ -43,7 +44,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
     $command     = $mycodo_exec . " r";
     $readconfig  = shell_exec($command);
     $cpiece      = explode(" ", $readconfig);	
-    $writeconfig = $mycodo_exec . " w " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " " . $t . " " . $cpiece[5] . " " . $cpiece[6] . "\n";
+    $writeconfig = $mycodo_exec . " w cond " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " " . $t;
     shell_exec($writeconfig);
 	
 	// Check if a relay has been selected to be turned on or off
@@ -83,20 +84,29 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 		echo '</div>';
 	}
 	
-	$command    = $mycodo_exec . " r";
-	$editconfig = shell_exec($command);
-	$cpiece     = explode(" ", $editconfig);
-		
-    if ($_POST['ChangeConfig']) {
-		$cpiece[0] = $_POST['offTemp'];
-		$cpiece[1] = $_POST['onTemp'];
-		$cpiece[2] = $_POST['offHum'];
-		$cpiece[3] = $_POST['onHum'];
-		$cpiece[4] = $_POST['webov'];
+    if ($_POST['ChangeCond']) {
+		$command    = $mycodo_exec . " r";
+		$editconfig = shell_exec($command);
+		$cpiece     = explode(" ", $editconfig);
+		$cpiece[0]  = $_POST['offTemp'];
+		$cpiece[1]  = $_POST['onTemp'];
+		$cpiece[2]  = $_POST['offHum'];
+		$cpiece[3]  = $_POST['onHum'];
+		$cpiece[4]  = $_POST['webov'];
+		$editconfig = $mycodo_exec . " w cond " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " " . $cpiece[4] . " " . $cpiece[5] . " " . $cpiece[6];
+		shell_exec($editconfig);
 	}
-	$editconfig = $mycodo_exec . " w " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " " . $cpiece[4] . " " . $cpiece[5] . " " . $cpiece[6] . "\n";
-	shell_exec($editconfig);
-		
+	
+	if ($_POST['ChangeState']) {
+		$command    = $mycodo_exec . " r";
+		$editconfig = shell_exec($command);
+		$cpiece     = explode(" ", $editconfig);
+		$cpiece[0]  = $_POST['tState'];
+		$cpiece[1]  = $_POST['hState'];
+		$editconfig = $mycodo_exec . " w state " . $cpiece[0] . " " . $cpiece[1];
+		shell_exec($editconfig);
+	}
+
 	//ChangeState
 	//	$cpiece[5]	= $_POST['tState'];
 	//	$cpiece[6]= $_POST['hState'];
@@ -192,22 +202,22 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 		    </tr>
 		    <tr>
 			<td>
-			    <input type="submit" name="ChangeConfig" value="Set">
+			    <input type="submit" name="ChangeCond" value="Set">
 			</td>
 			<td>
-			    <input type="text" value="<?php echo `cat $config_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f3`; ?>" maxlength=2 size=1 name="offTemp" />
+			    <input type="text" value="<?php echo `cat $config_cond_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f3`; ?>" maxlength=2 size=1 name="offTemp" />
 			</td>
 			<td>
-			    <input type="text" value="<?php echo `cat $config_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f6`; ?>" maxlength=2 size=1 name="onTemp" />
+			    <input type="text" value="<?php echo `cat $config_cond_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f6`; ?>" maxlength=2 size=1 name="onTemp" />
 			</td>
 			<td>
-			    <input type="text" value="<?php echo `cat $config_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f9`; ?>" maxlength=2 size=1 name="offHum" />
+			    <input type="text" value="<?php echo `cat $config_cond_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f9`; ?>" maxlength=2 size=1 name="offHum" />
 			</td>
 			<td>
-			    <input type="text" value="<?php echo `cat $config_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f12`; ?>" maxlength=2 size=1 name="onHum" />
+			    <input type="text" value="<?php echo `cat $config_cond_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f12`; ?>" maxlength=2 size=1 name="onHum" />
 			</td>
 			<td>
-			    <input type="text" value="<?php echo `cat $config_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f15`; ?>" maxlength=2 size=1 name="webov" />
+			    <input type="text" value="<?php echo `cat $config_cond_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f15`; ?>" maxlength=2 size=1 name="webov" />
 			</td>
 		 </tr>
 		    <tr>
@@ -225,10 +235,10 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 			    <input type="submit" name="ChangeState" value="Set">
 			</td>
 			<td>
-			    <input type="text" value="<?php echo `cat $config_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f18`; ?>" maxlength=2 size=1 name="tState" />
+			    <input type="text" value="<?php echo `cat $config_state_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f3`; ?>" maxlength=2 size=1 name="tState" />
 			</td>
 			<td>
-			    <input type="text" value="<?php echo `cat $config_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f21`; ?>" maxlength=2 size=1 name="hState" />
+			    <input type="text" value="<?php echo `cat $config_state_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f6`; ?>" maxlength=2 size=1 name="hState" />
 			</td>
 		    </tr>
 		</table>
