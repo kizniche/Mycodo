@@ -266,9 +266,9 @@ set style line 6 lc rgb '#48dd00' pt 0 ps 1 lt 1 lw 1
 set style line 7 lc rgb '#d30068' pt 0 ps 1 lt 1 lw 1
 set title \"Past 6 Hours: `date --date="6 hours ago" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
 unset key
-plot \"$LOGPATH/sensor.log\" u 1:8 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
-     \"\" using 1:10 index 0 title \"T\" w lp ls 2 axes x1y2, \\
-     \"\" using 1:11 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
+plot \"$LOGPATH/sensor.log\" u 1:8 index 0 title \" RH\" w lp ls 1 axes x1y1, \\
+     \"\" using 1:9 index 0 title \"T\" w lp ls 2 axes x1y2, \\
+     \"\" using 1:12 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
      \"$LOGPATH/relay.log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
      \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\
      \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\
@@ -302,15 +302,15 @@ set style line 6 lc rgb '#48dd00' pt 0 ps 1 lt 1 lw 1
 set style line 7 lc rgb '#d30068' pt 0 ps 1 lt 1 lw 1
 set title \"Past Day: `date --date=yesterday +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
 unset key
-plot \"$LOGPATH/sensor.log\" using 1:8 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
-     \"\" using 1:10 index 0 title \"T\" w lp ls 2 axes x1y2, \\
-     \"\" using 1:11 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
+plot \"$LOGPATH/sensor.log\" using 1:8 index 0 title \" RH\" w lp ls 1 axes x1y1, \\
+     \"\" using 1:9 index 0 title \"T\" w lp ls 2 axes x1y2, \\
+     \"\" using 1:12 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
      \"$LOGPATH/relay.log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
      \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\
      \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\
      \"\" using 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1" | gnuplot
       ;;
-    dayweek-mobile)
+    main-mobile)
 echo "set terminal png size 800,850
 set xdata time
 set timefmt \"%Y %m %d %H %M %S\"
@@ -342,9 +342,9 @@ set multiplot layout 1,3
 # Top graph - day
 set size 1.0,0.48
 set origin 0.0,0.5
-plot \"$LOGPATH/sensor.log\" using 1:8 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
-     \"\" using 1:10 index 0 title \"T\" w lp ls 2 axes x1y2, \\
-     \"\" using 1:11 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
+plot \"$LOGPATH/sensor.log\" using 1:8 index 0 title \" RH\" w lp ls 1 axes x1y1, \\
+     \"\" using 1:9 index 0 title \"T\" w lp ls 2 axes x1y2, \\
+     \"\" using 1:12 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
      \"$LOGPATH/relay.log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
      \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\
      \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\
@@ -354,9 +354,9 @@ set size 1.0,0.48
 set origin 0.0,0.0
 set format x \"%a\n%m/%d\"
 set xrange [\"`date --date="last week" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
-plot \"$LOGPATH/sensor.log\" using 1:8 index 0 notitle w lp ls 1 axes x1y2, \\
-     \"\" using 1:10 index 0 notitle w lp ls 2 axes x1y2, \\
-     \"\" using 1:11 index 0 notitle w lp ls 3 axes x1y2, \\
+plot \"$LOGPATH/sensor.log\" using 1:8 index 0 notitle w lp ls 1 axes x1y1, \\
+     \"\" using 1:9 index 0 notitle w lp ls 2 axes x1y2, \\
+     \"\" using 1:12 index 0 notitle w lp ls 3 axes x1y2, \\
      \"$LOGPATH/relay.log\" u 1:7 index 0 notitle w impulses ls 4 axes x1y1, \\
      \"\" using 1:8 index 0 notitle w impulses ls 5 axes x1y1, \\
      \"\" using 1:9 index 0 notitle w impulses ls 6 axes x1y1, \\
