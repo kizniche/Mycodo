@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 *
 *  changemode.php - Reads/writes configuration files
