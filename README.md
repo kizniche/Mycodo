@@ -132,7 +132,7 @@ Compile WiringPi and DHT python library
 
 Compile relay controller
 
-`cd /var/www/mycodo/source/mycodo/1.9/ && sudo make`
+`cd /var/www/mycodo/source/mycodo/2.0/ && sudo make`
 
 `sudo mv mycodo ../../../cgi-bin/`
 
