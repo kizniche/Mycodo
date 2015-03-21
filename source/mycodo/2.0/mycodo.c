@@ -351,7 +351,6 @@ int writeCfgState(void) {
 	tRFanTS = config_lookup(&cfg, "RFanTS");
 	twfactor = config_lookup(&cfg, "wfactor");
 
-
 	/* get variables from config file then print the variables that changed */
 	if (config_setting_get_int(ttempState) != tempState) {
 		printf("\ntempState: %i -> ", config_setting_get_int(ttempState));
@@ -436,23 +435,16 @@ int writeCfgState(void) {
 }
 
 int CheckTemp (void) {
-	if ( temp < minTemp ) 
-	{
+	if ( temp < minTemp ) {
 		tempState = 1;
 		printf("< minTemp. Heat On.");
-	}
-	else if ( temp >= minTemp && temp < maxTemp)
-	{
+	} else if ( temp >= minTemp && temp < maxTemp) {
 		tempState = 2;
 		printf(">= minTemp. Heat off until < minTemp.");
-	}
-	else if ( temp >= maxTemp )
-	{
+	} else if ( temp >= maxTemp ) {
 		tempState = 3;
 		printf("> maxTemp. Heat Off, All fans On.");
-	}
-	else
-	{
+	} else {
 		if ( tempState == 2 ) printf("Heat off until < minTemp.");
 		else printf("Heat on until > minTemp.");
 		return;
@@ -462,18 +454,13 @@ int CheckTemp (void) {
 }
 
 int CheckHum (void) {
-	if ( hum < minHum )
-	{
+	if ( hum < minHum ) {
 		humState = 1;
 		printf("< minHum. Hum On.");
-	}
-	else if ( hum >= minHum)
-	{
+	} else if ( hum >= minHum) {
 		humState = 2;
 		printf(">= minHum. Hum Off until < minHum.");
-	}
-	else
-	{
+	} else {
 		if ( humState == 2 ) printf("Leaving off until < minHum.");
 		else printf("Leaving on until > minHum.");
 		return 0;
@@ -485,41 +472,42 @@ int CheckHum (void) {
 relay1(int i) { // HEPA Fan
 	printf("\nRelay 1 (HEPA): ");
 	if (relay1o) {
-		char* relay_ex = relay_exec_path;
-		char* ChangeState[2];
+		char com[120];
 		switch (i) {
 			case 0:
 				printf("Off");
-				ChangeState[0] = "1";
-				ChangeState[1] = "0";
-				execv(relay_exec_path, ChangeState);
+				sprintf(com, "%s 1 0 &", relay_exec_path);
+				system(com);
 				break;
 			case 1:
-				if ( humState == 3 && tempState != 3) {
+				if (humState == 3 && tempState != 3) {
 					printf("Turn on for %d seconds, then off for %d seconds.", RHepat[RHepat[0]], RHepao[RHepat[0]]);
-					char Pcom[120];
-					sprintf(Pcom, "%s %d %d &", relay_exec_path, RHepa, RHepat[RHepat[0]]);
-					system(Pcom);
-					if (RHepao[RHepat[0]] + RHepat[RHepat[0]] < sleept) sleept = RHepao[RHepat[0]] + RHepat[RHepat[0]];
+					sprintf(com, "%s %d %d &", relay_exec_path, RHepa, RHepat[RHepat[0]]);
+					system(com);
+					if (RHepao[RHepat[0]] + RHepat[RHepat[0]] < sleept) {
+						sleept = RHepao[RHepat[0]] + RHepat[RHepat[0]];
+					}
 					RHepaTS = timestampL;
 					writeCfgState();
 				} else {
 					printf("Turn on until temperature < maxTemp or humidity < maxHum.");
-					ChangeState[0] = "1";
-					ChangeState[1] = "1";
-					execv(relay_exec_path, ChangeState);
+					sprintf(com, "%s 1 1 &", relay_exec_path);
+					system(com);
 				}
 				break;
 			case 2:
 				printf("Remaining on for %d more seconds (of %d)", RHepat[RHepat[0]] - (timestampL - RHepaTS), RHepat[RHepat[0]]);
-				if ( RHepat[RHepat[0]] - (timestampL - RHepaTS) < sleept) sleept = RHepat[RHepat[0]] - (timestampL - RHepaTS);
+				if (RHepat[RHepat[0]] - (timestampL - RHepaTS) < sleept) {
+					sleept = RHepat[RHepat[0]] - (timestampL - RHepaTS);
+				}
 				break;
 			case 3:
 				printf("Off for %d more seconds.", RHepao[RHepat[0]] - (timestampL - RHepaTS));
-				ChangeState[0] = "1";
-				ChangeState[1] = "0";
-				execv(relay_exec_path, ChangeState);
-				if (RHepao[RHepat[0]] - (timestampL - RHepaTS) < sleept) sleept = RHepao[RHepat[0]] - (timestampL - RHepaTS);
+				sprintf(com, "%s 1 0 &", relay_exec_path);
+				system(com);
+				if (RHepao[RHepat[0]] - (timestampL - RHepaTS) < sleept) {
+					sleept = RHepao[RHepat[0]] - (timestampL - RHepaTS);
+				}
 				break;
 		}
 	} else printf("Override");
@@ -528,35 +516,37 @@ relay1(int i) { // HEPA Fan
 relay2(int i) { // Humidifier
 	printf("\nRelay 2 (HUMI): ");
 	if (relay2o) {
-		char* relay_ex = relay_exec_path;
-		char* ChangeState[2];
+		char com[120];
 		switch (i) {
 			case 0: // Turn relay2 off
 				printf("Off until humidity < minHum");
-				ChangeState[0] = "2";
-				ChangeState[1] = "0";
-				execv(relay_exec_path, ChangeState);
+				sprintf(com, "%s 2 0 &", relay_exec_path);
+				system(com);
 				break;
 			case 1:
 				RHumo[0] = RHumt[0];
 				printf("Turn on for %d sec, then off for %d seconds.", RHumt[RHumt[0]], RHumo[RHumt[0]]);
-				char Hcom[120];
-				sprintf(Hcom, "%s %d %d &", relay_exec_path, RHum, RHumt[RHumt[0]]);
-				system(Hcom);
-				if (RHumo[RHumt[0]] + RHumt[RHumt[0]] < sleept) sleept = RHumo[RHumt[0]] + RHumt[RHumt[0]];
+				sprintf(com, "%s %d %d &", relay_exec_path, RHum, RHumt[RHumt[0]]);
+				system(com);
+				if (RHumo[RHumt[0]] + RHumt[RHumt[0]] < sleept) {
+					sleept = RHumo[RHumt[0]] + RHumt[RHumt[0]];
+				}
 				RHumTS = timestampL;
 				writeCfgState();
 				break;
 			case 2:
 				printf("Remaining on for %d more seconds (of %d)", RHumt[RHumt[0]] - (timestampL - RHumTS), RHumt[RHumt[0]]);
-				if ( RHumt[RHumt[0]] - (timestampL - RHumTS) < sleept) sleept = RHumt[RHumt[0]] - (timestampL - RHumTS);
+				if ( RHumt[RHumt[0]] - (timestampL - RHumTS) < sleept) {
+					sleept = RHumt[RHumt[0]] - (timestampL - RHumTS);
+				}
 				break;
 			case 3:
 				printf("Off for %d more seconds.", RHumo[RHumt[0]] + RHumt[RHumt[0]] - (timestampL - RHumTS));
-				ChangeState[0] = "2";
-				ChangeState[1] = "0";
-				execv(relay_exec_path, ChangeState);
-				if (RHumo[RHumt[0]] + RHumt[RHumt[0]] - (timestampL - RHumTS) < sleept) sleept = RHumo[RHumt[0]] + RHumt[RHumt[0]] - (timestampL - RHumTS);
+				sprintf(com, "%s 2 0 &", relay_exec_path);
+				system(com);
+				if (RHumo[RHumt[0]] + RHumt[RHumt[0]] - (timestampL - RHumTS) < sleept) {
+					sleept = RHumo[RHumt[0]] + RHumt[RHumt[0]] - (timestampL - RHumTS);
+				}
 				break;
 		}
 	} else printf("Override");
@@ -565,34 +555,36 @@ relay2(int i) { // Humidifier
 relay3(int i) { // Circulatory Fan
 	printf("\nRelay 3 (CFAN): ");
 	if (relay3o) {
-		char* relay_ex = relay_exec_path;
-		char* ChangeState[2];
+		char com[120];
 		switch (i) {
 			case 0:
 				printf("Off until temperature > maxTemp or humidity > maxHum.");
-				ChangeState[0] = "3";
-				ChangeState[1] = "0";
-				execv(relay_exec_path, ChangeState);
+				sprintf(com, "%s 3 0 &", relay_exec_path);
+				system(com);
 				break;
 			case 1:
 				printf("Turn on for %d sec, then off for %d seconds.", RFant[RFant[0]], RFano[RFant[0]]);
-				char Fcom[120];
-				sprintf(Fcom, "%s %d %d &", relay_exec_path, RFan, RFant[RFant[0]]);
-				system(Fcom);
-				if (RFano[RFant[0]] + RFant[RFant[0]] < sleept) sleept = RFano[RFant[0]] + RFant[RFant[0]];
+				sprintf(com, "%s %d %d &", relay_exec_path, RFan, RFant[RFant[0]]);
+				system(com);
+				if (RFano[RFant[0]] + RFant[RFant[0]] < sleept) {
+					sleept = RFano[RFant[0]] + RFant[RFant[0]];
+				}
 				RFanTS = timestampL;
 				writeCfgState();
 				break;
 			case 2: // Leave on
 				printf("Remaining on for %d more seconds (of %d)", RFant[RFant[0]] - (timestampL - RFanTS), RFant[RFant[0]]);
-				if ( RFant[RFant[0]] - (timestampL - RFanTS) < sleept ) sleept = RFant[RFant[0]] - (timestampL - RFanTS);
+				if ( RFant[RFant[0]] - (timestampL - RFanTS) < sleept ) {
+					sleept = RFant[RFant[0]] - (timestampL - RFanTS);
+				}
 				break;
 			case 3:
 				printf("Off for %d more seconds.", RFano[RFant[0]] + RFant[RFant[0]] - (timestampL - RFanTS));
-				ChangeState[0] = "3";
-				ChangeState[1] = "0";
-				execv(relay_exec_path, ChangeState);
-				if (RFano[RFant[0]] + RFant[RFant[0]] - (timestampL - RFanTS) < sleept) sleept = RFano[RFant[0]] + RFant[RFant[0]] - (timestampL - RFanTS);
+				sprintf(com, "%s 3 0 &", relay_exec_path);
+				system(com);
+				if (RFano[RFant[0]] + RFant[RFant[0]] - (timestampL - RFanTS) < sleept) {
+					sleept = RFano[RFant[0]] + RFant[RFant[0]] - (timestampL - RFanTS);
+				}
 				break;
 		}
 	} else printf("Override");
@@ -601,35 +593,37 @@ relay3(int i) { // Circulatory Fan
 relay4(int i) { // Heat
 	printf("\nRelay 4 (HEAT): ");
 	if (relay4o) {
-		char* relay_ex = relay_exec_path;
-		char* ChangeState[2];
+		char com[120];
 		switch (i) {
 			case 0: // Turn off
 				printf("Off until temperature < minTemp.");
-				ChangeState[0] = "4";
-				ChangeState[1] = "0";
-				execv(relay_exec_path, ChangeState);
+				sprintf(com, "%s 4 0 &", relay_exec_path);
+				system(com);
 				break;
 			case 1: // Turn on
 				RHeato[0] = RHeatt[0];
 				printf("Turn on for %d sec, then off for %d seconds.", RHeatt[RHeatt[0]], (int)(RHeato[RHeatt[0]]*wfactor));
-				char Tcom[120];
-				sprintf(Tcom, "%s %d %d &", relay_exec_path, RHeat, RHeatt[RHeatt[0]]);
-				system(Tcom);
-				if((int)(RHeato[RHeatt[0]]*wfactor) + (int)(RHeatt[RHeatt[0]]*wfactor)< sleept) sleept = (int)(RHeato[RHeatt[0]]*wfactor) + (int)(RHeatt[RHeatt[0]]*wfactor);
+				sprintf(com, "%s %d %d &", relay_exec_path, RHeat, RHeatt[RHeatt[0]]);
+				system(com);
+				if((int)(RHeato[RHeatt[0]]*wfactor) + (int)(RHeatt[RHeatt[0]]*wfactor)< sleept) {
+					sleept = (int)(RHeato[RHeatt[0]]*wfactor) + (int)(RHeatt[RHeatt[0]]*wfactor);
+				}
 				RHeatTS = timestampL;
 				writeCfgState();
 				break;
 			case 2: // Leave on
 				printf("Remaining on for %d more seconds (of %d)", RHeatt[RHeatt[0]] - (timestampL - RHeatTS), RHeatt[RHeatt[0]]);
-				if ( RHeatt[RHeatt[0]] - (timestampL - RHeatTS) < sleept ) sleept = RHeatt[RHeatt[0]] - (timestampL - RHeatTS);
+				if ( RHeatt[RHeatt[0]] - (timestampL - RHeatTS) < sleept ) {
+					sleept = RHeatt[RHeatt[0]] - (timestampL - RHeatTS);
+				}
 				break;
 			case 3:
 				printf("Off for %d more seconds.", (int)(RHeato[RHeatt[0]]*wfactor) + RHeatt[RHeatt[0]] - (timestampL - RHeatTS));
-				ChangeState[0] = "4";
-				ChangeState[1] = "0";
-				execv(relay_exec_path, ChangeState);
-				if ((int)(RHeato[RHeatt[0]]*wfactor) + RHeatt[RHeatt[0]] - (timestampL - RHeatTS) < sleept) sleept = (int)(RHeato[RHeatt[0]]*wfactor) + RHeatt[RHeatt[0]] - (timestampL - RHeatTS);
+				sprintf(com, "%s 4 0 &", relay_exec_path);
+				system(com);
+				if ((int)(RHeato[RHeatt[0]]*wfactor) + RHeatt[RHeatt[0]] - (timestampL - RHeatTS) < sleept) {
+					sleept = (int)(RHeato[RHeatt[0]]*wfactor) + RHeatt[RHeatt[0]] - (timestampL - RHeatTS);
+				}
 				break;
 		}
 	} else printf("Override");

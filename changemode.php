@@ -36,17 +36,17 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 	// Check if Web Override has been selected to be turned on or off
     if (isset($_POST['OR'])) {
 		global $mycodo_exec;
-		
+		$command     = $mycodo_exec . " r";
+		$readconfig  = shell_exec($command);
+		$cpiece      = explode(" ", $readconfig);	
+		$writeconfig = $mycodo_exec . " w cond " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " " . $t;
+    
 		if ($_POST['OR']) $t = 1;
 		else $t = 0;
+		
+		shell_exec($writeconfig);
     }
-	
-    $command     = $mycodo_exec . " r";
-    $readconfig  = shell_exec($command);
-    $cpiece      = explode(" ", $readconfig);	
-    $writeconfig = $mycodo_exec . " w cond " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " " . $t;
-    shell_exec($writeconfig);
-	
+
 	// Check if a relay has been selected to be turned on or off
 	for ($p = 1; $p <= 8; $p++) {
 		if (isset($_POST['R' . $p])) {
@@ -64,6 +64,13 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 		}
     }
 	
+	function error_seconds($relay_num, $type_error) {
+		echo '<div class="error">Error: relay ' . $relay_num . ': ';
+		if ($type_error == 1) echo 'seconds must be a positive integer that\'s >1.';
+		else echo 'cannot turn on, relay is already on.';
+		echo '</div>';
+	}
+	
 	// Check if a relay has been selected to be turned on for a number of seconds
 	global $gpio_path, $relay_config, $relay_exec;
     require $relay_config;
@@ -71,19 +78,12 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 		if (isset($_POST[$p . 'secON'])) {
 			$sR = $_POST['sR' . $p];
 			$r_state = $gpio_path . " read " . $relay[($p - 1)][2];
-			if (!is_numeric($sR) || $sR < 1 || $sR != round($sR)) error_seconds($p, 1);
+			if (!is_numeric($sR) || $sR < 2 || $sR != round($sR)) error_seconds($p, 1);
 			else if (shell_exec($r_state) == 1) error_seconds($p, 2);
 			else exec(sprintf("%s %s %s > /dev/null 2>&1", $relay_exec, $p, $sR));
 		}
 	}
 
-	function error_seconds($relay_num, $type_error) {
-		echo '<div class="error">Error: relay ' . $relay_num . ': ';
-		if ($type_error == 1) echo 'seconds on must be a positive integer.';
-		else echo 'cannot turn on, relay is already on.';
-		echo '</div>';
-	}
-	
     if ($_POST['ChangeCond']) {
 		$command    = $mycodo_exec . " r";
 		$editconfig = shell_exec($command);
