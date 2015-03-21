@@ -32,73 +32,74 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 
     if (isset($_POST['Mode'])) $ModeSet = $_POST['Mode'];
 
+	// Check if Web Override has been selected to be turned on or off
     if (isset($_POST['OR'])) {
-	$OR = $_POST['OR'];
-	switch ($OR) {
-	    case "ON":
-	    webor(1);
-	    break;
-	    case "OFF":
-	    webor(0);
-	    break;
+		global $mycodo_exec;
+		
+		if ($_POST['OR']) $t = 1;
+		else $t = 0;
+    }
+	
+    $command     = $mycodo_exec . " r";
+    $readconfig  = shell_exec($command);
+    $cpiece      = explode(" ", $readconfig);	
+    $writeconfig = $mycodo_exec . " w " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " " . $t . " " . $cpiece[5] . " " . $cpiece[6] . "\n";
+    shell_exec($writeconfig);
+	
+	// Check if a relay has been selected to be turned on or off
+	for ($p = 1; $p <= 8; $p++) {
+		if (isset($_POST['R' . $p])) {
+			global $gpio_path, $relay_config;
+			require $relay_config;
+			
+			$r_state = $gpio_path . " read " . $relay[$relay_change][2];
+			if (shell_exec($r_state) == 1 && $state == 1) echo '<div class="error">Error: Relay ' . ($relay_change+1) . ': Can\'t turn on, it\'s already ON</div>';
+			else {
+				$gpio_mode = $gpio_path . ' mode ' . $relay[($p - 1)][2] . ' out';
+				$gpio_write = $gpio_path . ' write ' . $relay[($p - 1)][2] . ' ' . $_POST['R' .$p];
+				shell_exec($gpio_mode);
+				shell_exec($gpio_write);
+			}
+		}
+    }
+	
+	// Check if a relay has been selected to be turned on for a number of seconds
+	global $gpio_path, $relay_config, $relay_exec;
+    require $relay_config;
+	for ($p = 1; $p <=8; $p++) {
+		if (isset($_POST[$p . 'secON'])) {
+			$sR = $_POST['sR' . $p];
+			$r_state = $gpio_path . " read " . $relay[($p - 1)][2];
+			if (!is_numeric($sR) || $sR < 1 || $sR != round($sR)) error_seconds($p, 1);
+			else if (shell_exec($r_state) == 1) error_seconds($p, 2);
+			else exec(sprintf("%s %s %s > /dev/null 2>&1", $relay_exec, $p, $sR));
+		}
 	}
-    }
-    if (isset($_POST['R1'])) {
-	if ($_POST['R1']) change_relay(0, 1);
-	else change_relay(0, 0);
-    }
-    if (isset($_POST['R2'])) {
-	if ($_POST['R2']) change_relay(1, 1);
-	else change_relay(1, 0);
-    }
-    if (isset($_POST['R3'])) {
-	if ($_POST['R3']) change_relay(2, 1);
-	else change_relay(2, 0);
-    }
-    if (isset($_POST['R4'])) {
-	if ($_POST['R4']) change_relay(3, 1);
-	else change_relay(3, 0);
-    }
-    if (isset($_POST['R5'])) {
-	if ($_POST['R5']) change_relay(4, 1);
-	else change_relay(4, 0);
-    }
-    if (isset($_POST['R6'])) {
-	if ($_POST['R6']) change_relay(5, 1);
-	else change_relay(5, 0);
-    }
-    if (isset($_POST['R7'])) {
-	if ($_POST['R7']) change_relay(6, 1);
-	else change_relay(6, 0);
-    }
-    if (isset($_POST['R8'])) {
-	if ($_POST['R8']) change_relay(7, 1);
-	else change_relay(7, 0);
-    }
-    if ($_POST['SubmitMode']) {
-	$offTemp    = $_POST['offTemp'];
-	$onTemp     = $_POST['onTemp'];
-	$hiTemp     = $_POST['hiTemp'];
-	$offHum     = $_POST['offHum'];
-	$onHum      = $_POST['onHum'];
-	$command    = $mycodo_exec . " r";
-	$editconfig = shell_exec($command);
-	$cpiece     = explode(" ", $editconfig);
-	$editconfig = $mycodo_exec . " w " . $offTemp . " " . $onTemp . " " . $offHum . " " . $onHum . " " . $cpiece[4] . " " . $cpiece[5] . " " . $cpiece[6] . "\n";
-	shell_exec($editconfig);
-    }
-    if ($_POST['SubmitMode2']) {
-	$webov      = $_POST['webov'];
-	$tState     = $_POST['tState'];
-	$hState     = $_POST['hState'];
-	$command    = $mycodo_exec . " r";
-	$editconfig = shell_exec($command);
-	$cpiece     = explode(" ", $editconfig);
-	$editconfig = $mycodo_exec . " w " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " " . $webov . " " . $tState . " " . $hState . "\n";
-	shell_exec($editconfig);
-    }
 
-    relay_on_seconds();
+	function error_seconds($relay_num, $type_error) {
+		echo '<div class="error">Error: relay ' . $relay_num . ': ';
+		if ($type_error == 1) echo 'seconds on must be a positive integer.';
+		else echo 'cannot turn on, relay is already on.';
+		echo '</div>';
+	}
+	
+	$command    = $mycodo_exec . " r";
+	$editconfig = shell_exec($command);
+	$cpiece     = explode(" ", $editconfig);
+		
+    if ($_POST['ChangeConfig']) {
+		$cpiece[0] = $_POST['offTemp'];
+		$cpiece[1] = $_POST['onTemp'];
+		$cpiece[2] = $_POST['offHum'];
+		$cpiece[3] = $_POST['onHum'];
+		$cpiece[4] = $_POST['webov'];
+	}
+	$editconfig = $mycodo_exec . " w " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " " . $cpiece[4] . " " . $cpiece[5] . " " . $cpiece[6] . "\n";
+	shell_exec($editconfig);
+		
+	//ChangeState
+	//	$cpiece[5]	= $_POST['tState'];
+	//	$cpiece[6]= $_POST['hState'];
 ?>
 
 <html>
@@ -155,7 +156,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 	    <FORM action="" method="POST">
 		<div style="padding: 5px 0 10px 0;">
 		    Web Override: <b><?php $webor_read = $mycodo_exec . " r | cut -d' ' -f5"; if (shell_exec($webor_read) == 1) echo "ON"; else echo "OFF"; ?></b>
-		    [<input type="submit" name="OR" value="ON"> <input type="submit" name="OR" value="OFF">]
+		    [<button type="submit" name="OR" value="1">ON</button> <button type="submit" name="OR" value="0">OFF</button>]
 		</div>
 		<?php
 		    require $relay_config;
@@ -185,10 +186,13 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 			<td>
 			    MxH
 			</td>
+			<td>
+			    wOV
+			</td>
 		    </tr>
 		    <tr>
 			<td>
-			    <input type="submit" name="SubmitMode" value="Set">
+			    <input type="submit" name="ChangeConfig" value="Set">
 			</td>
 			<td>
 			    <input type="text" value="<?php echo `cat $config_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f3`; ?>" maxlength=2 size=1 name="offTemp" />
@@ -202,12 +206,12 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 			<td>
 			    <input type="text" value="<?php echo `cat $config_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f12`; ?>" maxlength=2 size=1 name="onHum" />
 			</td>
-		    </tr>
+			<td>
+			    <input type="text" value="<?php echo `cat $config_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f15`; ?>" maxlength=2 size=1 name="webov" />
+			</td>
+		 </tr>
 		    <tr>
 			<td>
-			</td>
-			<td>
-			    wOV
 			</td>
 			<td>
 			    tSta
@@ -218,10 +222,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 		    </tr>
 		    <tr>
 			<td>
-			    <input type="submit" name="SubmitMode2" value="Set">
-			</td>
-			<td>
-			    <input type="text" value="<?php echo `cat $config_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f15`; ?>" maxlength=2 size=1 name="webov" />
+			    <input type="submit" name="ChangeState" value="Set">
 			</td>
 			<td>
 			    <input type="text" value="<?php echo `cat $config_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f18`; ?>" maxlength=2 size=1 name="tState" />
@@ -239,99 +240,5 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 <?php
 } else {
     echo 'Configuration editing disabled for guest.';
-}
-
-function webor($state)
-{
-    global $mycodo_exec;
-
-    $command     = $mycodo_exec . " r";
-    $readconfig  = shell_exec($command);
-    $cpiece      = explode(" ", $readconfig);	
-    $writeconfig = $mycodo_exec . " w " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " " . $state . " " . $cpiece[5] . " " . $cpiece[6] . "\n";
-    shell_exec($writeconfig);
-}
-
-function change_relay($relay_change, $state) {
-    global $gpio_path, $relay_config;
-    require $relay_config;
-
-    $r_state = $gpio_path . " read " . $relay[$relay_change][2];
-    if (shell_exec($r_state) == 1 && $state == 1) echo '<div class="error">Error: Relay ' . ($relay_change+1) . ': Can\'t turn on, it\'s already ON</div>';
-    else {
-	$gpio_mode = $gpio_path . ' mode ' . $relay[$relay_change][2] . ' out';
-	$gpio_write = $gpio_path . ' write ' . $relay[$relay_change][2] . ' ' . $state;
-	shell_exec($gpio_mode);
-	shell_exec($gpio_write);
-    }
-}
-
-function error_seconds($relay_num, $type_error) {
-    echo '<div class="error">Error: relay ' . $relay_num . ': ';
-	if ($type_error == 1) echo 'seconds on must be a positive integer.';
-	else echo 'cannot turn on, relay is already on.';
-	echo '</div>';
-}
-
-function relay_on_seconds() {
-    global $gpio_path, $relay_config, $relay_exec;
-    require $relay_config;
-
-    if ($_POST['1secON']) {
-	$sR1 = $_POST['sR1'];
-	$r_state = $gpio_path . " read " . $relay[0][2];
-	if (!is_numeric($sR1) || $sR1 < 1 || $sR1 != round($sR1)) error_seconds(1, 1);
-	else if (shell_exec($r_state) == 1) error_seconds(1, 2);
-	else exec(sprintf("%s 1 %s > /dev/null 2>&1", $relay_exec, $sR1));
-    }
-    if ($_POST['2secON']) {
-	$sR2 = $_POST['sR2'];
-	$r_state = $gpio_path . " read " . $relay[1][2];
-	if (!is_numeric($sR2) || $sR2 < 1 || $sR2 != round($sR2)) error_seconds(2);
-	else if (shell_exec($r_state) == 1) error_seconds(2, 2);
-	else exec(sprintf("%s 2 %s > /dev/null 2>&1", $relay_exec, $sR2));
-    }
-    if ($_POST['3secON']) {
-	$sR3 = $_POST['sR3'];
-	$r_state = $gpio_path . " read " . $relay[2][2];
-	if (!is_numeric($sR3) || $sR3 < 1 || $sR3 != round($sR3)) error_seconds(3);
-	else if (shell_exec($r_state) == 1) error_seconds(3, 2);
-	else exec(sprintf("%s 3 %s > /dev/null 2>&1", $relay_exec, $sR3));
-    }
-    if ($_POST['4secON']) {
-	$sR4 = $_POST['sR4'];
-	$r_state = $gpio_path . " read " . $relay[3][2];
-	if (!is_numeric($sR4) || $sR4 < 1 || $sR4 != round($sR4)) error_seconds(4);
-	else if (shell_exec($r_state) == 1) error_seconds(4, 2);
-	else exec(sprintf("%s 4 %s > /dev/null 2>&1", $relay_exec, $sR4));
-    }
-    if ($_POST['5secON']) {
-	$sR5 = $_POST['sR5'];
-	$r_state = $gpio_path . " read " . $relay[4][2];
-	if (!is_numeric($sR5) || $sR5 < 1 || $sR5 != round($sR5)) error_seconds(5);
-	else if (shell_exec($r_state) == 1) error_seconds(5, 2);
-	else exec(sprintf("%s 5 %s > /dev/null 2>&1", $relay_exec, $sR5));
-    }
-    if ($_POST['6secON']) {
-	$sR6 = $_POST['sR6'];
-	$r_state = $gpio_path . " read " . $relay[5][2];
-	if (!is_numeric($sR6) || $sR6 < 1 || $sR6 != round($sR6)) error_seconds(6);
-	else if (shell_exec($r_state) == 1) error_seconds(6, 2);
-	else exec(sprintf("%s 6 %s > /dev/null 2>&1", $relay_exec, $sR6));
-    }
-    if ($_POST['7secON']) {
-	$sR7 = $_POST['sR7'];
-	$r_state = $gpio_path . " read " . $relay[6][2];
-	if (!is_numeric($sR7) || $sR7 < 1 || $sR7 != round($sR7)) error_seconds(7);
-	else if (shell_exec($r_state) == 1) error_seconds(7, 2);
-	else exec(sprintf("%s 7 %s > /dev/null 2>&1", $relay_exec, $sR7));
-    }
-    if ($_POST['8secON']) {
-	$sR8 = $_POST['sR8'];
-	$r_state = $gpio_path . " read " . $relay[7][2];
-	if (!is_numeric($sR8) || $sR8 < 1 || $sR8 != round($sR8)) error_seconds(8);
-	else if (shell_exec($r_state) == 1) error_seconds(8, 2);
-	else exec(sprintf("%s 8 %s > /dev/null 2>&1", $relay_exec, $sR8));
-    }
 }
 ?>
