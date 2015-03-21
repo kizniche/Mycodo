@@ -96,4 +96,10 @@ hr {
 .link-profile {
     background: #E18944;
     padding: 3px 2px 0 0;
+}
+
+/* Warnings and errors */
+.error {
+    color: red;
+    padding: 0 0 10px 5px;
 } 
