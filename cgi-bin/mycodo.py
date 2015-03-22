@@ -18,18 +18,19 @@ import getopt
 import Adafruit_DHT
 import RPi.GPIO as GPIO
 import ConfigParser
+import threading
 import rpyc
+from rpyc.utils.server import ThreadedServer
 from array import *
 
 config_file = '/var/www/mycodo/config/mycodo.cfg'
-sensor_log_file = '/var/www/mycodo/log/sensor.log'
-relay_log_file = '/var/www/mycodo/log/relay.log'
+sensor_log_file = '/var/www/mycodo/log/sensor-2.log'
+relay_log_file = '/var/www/mycodo/log/relay-2.log'
 
 # Change the following sensor and pin to your configuration
 # Sensor value can be Adafruit_DHT.DHT11, Adafruit_DHT.DHT22, or Adafruit_DHT.AM2302
 sensor = Adafruit_DHT.DHT22
 dhtPin = 4
-
 
 # GPIO pins using BCM numbering
 # Based on GPOI-relay connection
@@ -44,9 +45,6 @@ relayPin[6] = 25  # Relay 6:
 relayPin[7] = 8   # Relay 7: 
 relayPin[8] = 7   # Relay 8: 
 
-# User input
-log_file = ''
-
 # Sensor data
 chktemp = ''
 tempc = ''
@@ -56,18 +54,13 @@ dewpointc = ''
 dewpointf = ''
 heatindex =  ''
 
-# Environmental constraints
+# Constraints
 minTemp = ''
 maxTemp = ''
 minHum = ''
 maxHum = ''
 
-# Override relay control from web interface
-webOR = ''
-
-# States of devices
-tempState = ''
-humState = ''
+# Relay overrides
 relay1o = ''
 relay2o = ''
 relay3o = ''
@@ -77,6 +70,10 @@ relay6o = ''
 relay7o = ''
 relay8o = ''
 
+# Control States
+tempState = ''
+humState = ''
+
 # Timers
 RHeatTS = ''
 RHumTS = ''
@@ -85,36 +82,39 @@ RFanTS = ''
 
 # Miscellaneous
 currentTime = ''
+webOR = ''
 wfactor = ''
+server = ''
+serverStop = 0
 
 class MyService(rpyc.Service):
-    def exposed_GPIOLow(self, function = lambda x: x):
-        return main.GPIOLow(function = function)
-    def exposed_get_main_update(self):
-        return main.update
-
-class Blah():
-    update = 0
-    def GPIOLow(self, function):
+    # My service
+    def exposed_echo(self, text):
+        print text
+        return text
+    def exposed_GPIOLow(self, text):
         setup()
-        print "%s [Client command] Setting all GPIOs LOW" % Timestamp()
-        GPIO.output(relayPin[1], GPIO.LOW)
-        GPIO.output(relayPin[2], GPIO.LOW)
-        GPIO.output(relayPin[3], GPIO.LOW)
-        GPIO.output(relayPin[4], GPIO.LOW)
-        GPIO.output(relayPin[5], GPIO.LOW)
-        GPIO.output(relayPin[6], GPIO.LOW)
-        GPIO.output(relayPin[7], GPIO.LOW)
-        GPIO.output(relayPin[8], GPIO.LOW)
-        return function(1)
- 
- # start the rpyc server
-from rpyc.utils.server import ThreadedServer
-from threading import Thread
-server = ThreadedServer(MyService, port = 12345)
-t = Thread(target = server.start)
-t.daemon = True
-t.start()
+        print '%s [Client command] Set Relay %s GPIO LOW' % (Timestamp(), text)
+        ChangeRelay(int(float(text)), 0)
+        ReadGPIO()
+        return 1
+    def exposed_GPIOHigh(self, text):
+        setup()
+        print '%s [Client command] Set Relay %s GPIO HIGH' % (Timestamp(), text)
+        ChangeRelay(int(float(text)), 1)
+        ReadGPIO()
+        return 1
+    def exposed_Terminate(self, text):
+        print '%s [Client command] Terminate Threads' % Timestamp()
+        global serverStop
+        serverStop = 1
+
+class BackThread(threading.Thread):
+    def run(self):
+        global server
+        server = ThreadedServer(MyService, port = 18812)
+        server.start()
+
 
 def usage():
     print 'mycodo.py: Reads temperature and humidity from sensors, writes log file, and operates relays as a daemon to maintain set environmental conditions.\n'
@@ -133,9 +133,9 @@ def usage():
     print '    -w, --write=FILE'
     print '           write sensor data to log file'
     print '    -c, --change=RELAY'
-    print '           change the state of a relay (must use with -s)'
-    print '    -s, --state=[0][1]'
-    print '           change the state of RELAY to on(1) or off(0)'
+    print '           change the state of a relay (must use in conjunction with -s)'
+    print '    -s, --state=[0/1]'
+    print '           change the state of RELAY to on (1) or off (0)'
     print '    -d, --daemon'
     print '           start program as daemon that monitors conditions and modulates relays'
     print '    -h, --help'
@@ -155,16 +155,6 @@ def setup():
     GPIO.setup(relayPin[6], GPIO.OUT)
     GPIO.setup(relayPin[7], GPIO.OUT)
     GPIO.setup(relayPin[8], GPIO.OUT)
-
-#    print "%s Setting all GPIOs LOW" % Timestamp()
-#    GPIO.output(relayPin[1], GPIO.LOW)
-#    GPIO.output(relayPin[2], GPIO.LOW)
-#    GPIO.output(relayPin[3], GPIO.LOW)
-#    GPIO.output(relayPin[4], GPIO.LOW)
-#    GPIO.output(relayPin[5], GPIO.LOW)
-#    GPIO.output(relayPin[6], GPIO.LOW)
-#    GPIO.output(relayPin[7], GPIO.LOW)
-#    GPIO.output(relayPin[8], GPIO.LOW)
   
 def menu():
     if len(sys.argv) == 1: # No arguments given
@@ -172,7 +162,7 @@ def menu():
         sys.exit(1)
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'thrpdw:c:s:', ["help", "read", "pin", "write=", "change=", "state=", "daemon"])
+        opts, args = getopt.getopt(sys.argv[1:], 'thrpdwc:s:', ["help", "read", "pin", "write=", "change=", "state=", "daemon"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -189,8 +179,9 @@ def menu():
             ReadGPIO()
             sys.exit(0)
         elif opt in ("-w", "--write"):
-            global log_file
-            log_file = arg
+            global sensor_log_file
+            if arg == '': print '%s No log file specified, using default: %s' % (Timestamp(), sensor_log_file)
+            else: sensor_log_file = arg
             ReadSensors()
             WriteSensorLog()
             sys.exit(0)
@@ -222,22 +213,29 @@ def menu():
         else:
             assert False, "Fail"
 
-
+bt = BackThread()
 def Daemon():
+    global bt
+    global serverStop
+    bt.start()
+    print '%s Threaded server activated' % Timestamp()
     print '%s Daemon activated' % Timestamp()
-    ReadCfg()
-    ReadSensors()
-    ConditionsCheck()
-    print '%s Sleep 90 seconds' % Timestamp()
-    # the main logic
+    # the daemon loop
+    update = 91
     while True:
-        if main.update > 90:
+        if serverStop == 1:
+            global server
+            print '%s Terminating background thread' % Timestamp()
+            server.close()
+            print '%s Terminating forground thread' % Timestamp()
+            sys.exit(0)
+        if update > 90:
             ReadCfg()
             ReadSensors()
             ConditionsCheck()
             print '%s Sleep 90 seconds' % Timestamp()
-            main.update = 0
-        main.update+=1
+            update = 0
+        update+=1
         time.sleep(1)
 
 def ChangeRelay(Select, State):
@@ -250,12 +248,13 @@ def ReadGPIO():
     for x in range(1, 9):
         print 'Relay %s: %s  ' % (x, GPIO.input(relayPin[x])),
         if x == 4: print '\n%s' % Timestamp(),
+        if x == 8: print ''
 
 # Append the data in the file
 def WriteSensorLog():
     global sensor_log_file
     try:
-        open(log_file, 'ab').write('{0} {1:.0f} {2:.1f} {3:.1f} {4:.1f} {5:.1f}\n'.format(datetime.datetime.now().strftime("%Y %m %d %H %M %S"), currentTime, humidity, tempc, dewpointc, heatindex))
+        open(sensor_log_file, 'ab').write('{0} {1:.0f} {2:.1f} {3:.1f} {4:.1f} {5:.1f}\n'.format(datetime.datetime.now().strftime("%Y %m %d %H %M %S"), currentTime, humidity, tempc, dewpointc, heatindex))
         print '%s Data appended to %s' % (Timestamp(), sensor_log_file)
     except:
         print '%s Unable to append data' % Timestamp()
@@ -419,7 +418,6 @@ def RepresentsInt(s):
 def Timestamp():
     return datetime.datetime.fromtimestamp(time.time()).strftime('%Y %m %d %H %M %S')
  
-main = Blah()
 menu()
 usage()
 sys.exit(0)
