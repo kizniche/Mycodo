@@ -24,7 +24,7 @@ from rpyc.utils.server import ThreadedServer
 from array import *
 
 config_file = '/var/www/mycodo/config/mycodo.cfg'
-sensor_log_file = '/var/www/mycodo/log/sensor-2.log'
+sensor_log_file = '/var/www/mycodo/log/sensor.log'
 relay_log_file = '/var/www/mycodo/log/relay-2.log'
 
 # Change the following sensor and pin to your configuration
@@ -79,6 +79,8 @@ RHeatTS = ''
 RHumTS = ''
 RHepaTS = ''
 RFanTS = ''
+timerOneSeconds = ''
+timerTwoSeconds = ''
 
 # Miscellaneous
 currentTime = ''
@@ -105,7 +107,7 @@ class MyService(rpyc.Service):
         ReadGPIO()
         return 1
     def exposed_Terminate(self, text):
-        print '%s [Client command] Terminate Threads' % Timestamp()
+        print '%s [Client command] Terminate threads and shut down' % Timestamp()
         global serverStop
         serverStop = 1
 
@@ -218,24 +220,34 @@ def Daemon():
     global bt
     global serverStop
     bt.start()
-    print '%s Threaded server activated' % Timestamp()
+    print '%s Server started as thread' % Timestamp()
     print '%s Daemon activated' % Timestamp()
+    ReadCfg()
     # the daemon loop
-    update = 91
+    timerOne = 0
+    timerTwo = 0
     while True:
         if serverStop == 1:
             global server
-            print '%s Terminating background thread' % Timestamp()
+            print '%s Terminating server thread' % Timestamp()
             server.close()
-            print '%s Terminating forground thread' % Timestamp()
+            print '%s Exiting Python' % Timestamp()
             sys.exit(0)
-        if update > 90:
+        
+        if timerOne > timerOneSeconds:
+            print '%s %s-second timer expired: Sensor Read and Condition Check' % (Timestamp(), timerOneSeconds)
             ReadCfg()
             ReadSensors()
             ConditionsCheck()
-            print '%s Sleep 90 seconds' % Timestamp()
-            update = 0
-        update+=1
+            timerOne = 0
+            
+        if timerTwo > timerTwoSeconds:
+            print '%s %s-second timer expired: Sensor Log Write' % (Timestamp(), timerTwoSeconds)
+            WriteSensorLog()
+            timerTwo = 0
+
+        timerOne+=1
+        timerTwo+=1
         time.sleep(1)
 
 def ChangeRelay(Select, State):
@@ -322,6 +334,8 @@ def ReadCfg():
     global RHepaTS
     global RFanTS
     global wfactor
+    global timerOneSeconds
+    global timerTwoSeconds
 
     print '%s Begin reading configuration file' % Timestamp()
     config = ConfigParser.RawConfigParser()
@@ -347,11 +361,13 @@ def ReadCfg():
     RHepaTS = config.getint('states', 'RHepaTS')
     RFanTS = config.getint('states', 'RFanTS')
     wfactor = config.getfloat('states', 'wfactor')
+    timerOneSeconds = config.getint('states', 'timerOneSeconds')
+    timerTwoSeconds = config.getint('states', 'timerTwoSeconds')
 
-    print '%s Reading conditions' % Timestamp()
+    print '%s Reading configuration' % Timestamp()
     print '%s minTemp: %s°C, maxTemp: %s°C, minHum: %s%%, maxHum: %s%%, webOR: %s' % (Timestamp(), minTemp, maxTemp, minHum, maxHum, webOR)
     print '%s Reading states' % Timestamp()
-    print '%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %.1f'  % (Timestamp(), tempState, humState, relay1o, relay2o, relay3o, relay4o, relay5o, relay6o, relay7o, relay8o, RHeatTS, RHumTS, RHepaTS, RFanTS, wfactor)
+    print '%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %.1f %s %s'  % (Timestamp(), tempState, humState, relay1o, relay2o, relay3o, relay4o, relay5o, relay6o, relay7o, relay8o, RHeatTS, RHumTS, RHepaTS, RFanTS, wfactor, timerOneSeconds, timerTwoSeconds)
 
 def WriteCfg():
     global config_file
@@ -380,6 +396,8 @@ def WriteCfg():
     config.set('states', 'RHepaTS', RHepaTS)
     config.set('states', 'RFanTS', RFanTS)
     config.set('states', 'wfactor', wfactor)
+    config.set('states', 'timerOneSeconds', timerOneSeconds)
+    config.set('states', 'timerTwoSeconds', timerTwoSeconds)
 
     with open(config_file, 'wb') as configfile:
         config.write(configfile)
