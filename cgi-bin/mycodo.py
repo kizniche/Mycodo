@@ -18,6 +18,7 @@ import getopt
 import Adafruit_DHT
 import RPi.GPIO as GPIO
 import ConfigParser
+import rpyc
 from array import *
 
 config_file = '/var/www/mycodo/config/mycodo.cfg'
@@ -29,10 +30,11 @@ relay_log_file = '/var/www/mycodo/log/relay.log'
 sensor = Adafruit_DHT.DHT22
 dhtPin = 4
 
-### EDIT BELOW ###
+
 # GPIO pins using BCM numbering
 # Based on GPOI-relay connection
 relayPin = [0] * 9
+###### EDIT GPIO PINS BELOW ######
 relayPin[1] = 14  # Relay 1: 
 relayPin[2] = 15  # Relay 2: 
 relayPin[3] = 18  # Relay 3: 
@@ -85,6 +87,35 @@ RFanTS = ''
 currentTime = ''
 wfactor = ''
 
+class MyService(rpyc.Service):
+    def exposed_GPIOLow(self, function = lambda x: x):
+        return main.GPIOLow(function = function)
+    def exposed_get_main_update(self):
+        return main.update
+
+class Blah():
+    update = 0
+    def GPIOLow(self, function):
+        setup()
+        print "%s [Client command] Setting all GPIOs LOW" % Timestamp()
+        GPIO.output(relayPin[1], GPIO.LOW)
+        GPIO.output(relayPin[2], GPIO.LOW)
+        GPIO.output(relayPin[3], GPIO.LOW)
+        GPIO.output(relayPin[4], GPIO.LOW)
+        GPIO.output(relayPin[5], GPIO.LOW)
+        GPIO.output(relayPin[6], GPIO.LOW)
+        GPIO.output(relayPin[7], GPIO.LOW)
+        GPIO.output(relayPin[8], GPIO.LOW)
+        return function(1)
+ 
+ # start the rpyc server
+from rpyc.utils.server import ThreadedServer
+from threading import Thread
+server = ThreadedServer(MyService, port = 12345)
+t = Thread(target = server.start)
+t.daemon = True
+t.start()
+
 def usage():
     print 'mycodo.py: Reads temperature and humidity from sensors, writes log file, and operates relays as a daemon to maintain set environmental conditions.\n'
     print 'Usage:  ', __file__, '[OPTION] [FILE]...\n'
@@ -135,7 +166,7 @@ def setup():
 #    GPIO.output(relayPin[7], GPIO.LOW)
 #    GPIO.output(relayPin[8], GPIO.LOW)
   
-def main():
+def menu():
     if len(sys.argv) == 1: # No arguments given
         usage()
         sys.exit(1)
@@ -191,15 +222,23 @@ def main():
         else:
             assert False, "Fail"
 
+
 def Daemon():
-    loop = 1
     print '%s Daemon activated' % Timestamp()
-    while(loop):
-        ReadCfg()
-        ReadSensors()
-        ConditionsCheck()
-        print '%s Sleep 90 seconds' % Timestamp()
-        time.sleep(90)
+    ReadCfg()
+    ReadSensors()
+    ConditionsCheck()
+    print '%s Sleep 90 seconds' % Timestamp()
+    # the main logic
+    while True:
+        if main.update > 90:
+            ReadCfg()
+            ReadSensors()
+            ConditionsCheck()
+            print '%s Sleep 90 seconds' % Timestamp()
+            main.update = 0
+        main.update+=1
+        time.sleep(1)
 
 def ChangeRelay(Select, State):
     print '%s Setting relay %s to %s (from %s)' % (Timestamp(), Select, State, GPIO.input(relayPin[Select]))
@@ -380,6 +419,7 @@ def RepresentsInt(s):
 def Timestamp():
     return datetime.datetime.fromtimestamp(time.time()).strftime('%Y %m %d %H %M %S')
  
-main()
+main = Blah()
+menu()
 usage()
 sys.exit(0)
