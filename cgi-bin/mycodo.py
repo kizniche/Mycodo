@@ -26,7 +26,7 @@ from array import *
 
 config_file = '/var/www/mycodo/config/mycodo.cfg'
 sensor_log_file = '/var/www/mycodo/log/sensor.log'
-relay_log_file = '/var/www/mycodo/log/relay-2.log'
+relay_log_file = '/var/www/mycodo/log/relay.log'
 
 relay_script = '/var/www/mycodo/cgi-bin/relay.sh'
 
@@ -92,16 +92,16 @@ variableValue = ''
 
 class ComServer(rpyc.Service):
     def exposed_GPIOLow(self, remoteCommand):
-        setup()
+        GPIOSetup()
         print '%s [Client command] Set Relay %s GPIO LOW' % (Timestamp(), remoteCommand)
         ChangeRelay(int(float(remoteCommand)), 0)
-        ReadGPIO()
+        GPIORead()
         return 1
     def exposed_GPIOHigh(self, remoteCommand):
-        setup()
+        GPIOSetup()
         print '%s [Client command] Set Relay %s GPIO HIGH' % (Timestamp(), remoteCommand)
         ChangeRelay(int(float(remoteCommand)), 1)
-        ReadGPIO()
+        GPIORead()
         return 1
     def exposed_Terminate(self, remoteCommand):
         print '%s [Client command] Terminate threads and shut down' % Timestamp()
@@ -114,22 +114,22 @@ class ComThread(threading.Thread):
         global server
         server = ThreadedServer(ComServer, port = 18812)
         server.start()
-ct = ComThread()
 
-class RelayOnSeconds(threading.Thread):
+class RelayOnSecThread(threading.Thread):
     def __init__(self, relaySelect, relaySeconds):
         threading.Thread.__init__(self)
         self.relaySelect = relaySelect
         self.relaySeconds = relaySeconds
     def run(self):
         if GPIO.input(relayPin[self.relaySelect]) == 0:
-            print '%s [Relay Duration] Turning on relay %s for %s seconds' % (Timestamp(), self.relaySelect, self.relaySeconds)
+            WriteRelayLog(self.relaySelect, self.relaySeconds)
+            print '%s [Relay Duration] Turning relay %s (%s) on for %s seconds' % (Timestamp(), self.relaySelect, relayName[self.relaySelect], self.relaySeconds)
             GPIO.output(relayPin[self.relaySelect], 1)
             time.sleep(self.relaySeconds)
             GPIO.output(relayPin[self.relaySelect], 0)
-            print '%s [Relay Duration] Turning on relay %s for %s seconds' % (Timestamp(), self.relaySelect, self.relaySeconds)
+            print '%s [Relay Duration] Turning relay %s (%s) off (was on for %s seconds)' % (Timestamp(), self.relaySelect, relayName[self.relaySelect], self.relaySeconds)
         else:
-            print "%s [Relay Duration] Abort: Requested Relay %s on for %s seconds, but it's already on!" % (Timestamp(), self.relaySelect, self.relaySeconds)
+            print "%s [Relay Duration] Abort: Requested relay %s (%s) on for %s seconds, but it's already on!" % (Timestamp(), self.relaySelect, relayName[self.relaySelect], self.relaySeconds)
 
 def usage():
     print 'mycodo.py: Reads temperature and humidity from sensors, writes log file, and operates relays as a daemon to maintain set environmental conditions.\n'
@@ -160,12 +160,12 @@ def usage():
     print '    -w, --write=FILE'
     print '           Write sensor data to log file\n'
 
-def setup():
+def GPIOSetup():
     # Set up GPIO using BCM numbering
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
 
-    print "%s [GPIO Init] Setting up GPIOs" % Timestamp()
+    print "%s [GPIO Initialize] GPIO setode to BCM numbering, setup to output" % Timestamp()
     GPIO.setup(relayPin[1], GPIO.OUT)
     GPIO.setup(relayPin[2], GPIO.OUT)
     GPIO.setup(relayPin[3], GPIO.OUT)
@@ -181,7 +181,7 @@ def menu():
         sys.exit(1)
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'c:dhpr:s:tn:wz:', ["change=", "daemon", "help", "name=", "pin", "read=", "set=", "state=", "value=", "write="])
+        opts, args = getopt.getopt(sys.argv[1:], 'c:dhpr:s:tn:w', ["change=", "daemon", "help", "name=", "pin", "read=", "set=", "state=", "value=", "write="])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -204,14 +204,14 @@ def menu():
                 print '%s [GPIO Write] Requested change of relay %s to' % (Timestamp(), relaySelect)
                 if relayState == '1': print 'On'
                 elif relayState == '0': print 'Off'
-                ReadCfg()
-                setup()
+                ReadCfg(0)
+                GPIOSetup()
                 ChangeRelay(int(float(relaySelect)), int(float(relayState)))
-                ReadGPIO()
+                GPIORead()
                 sys.exit(0)
             elif relayState > 1:
-                ReadCfg()
-                setup()
+                ReadCfg(0)
+                GPIOSetup()
                 RelayOnDuration(int(float(relaySelect)), int(float(relayState)))
                 sys.exit(0)
             else:
@@ -219,8 +219,8 @@ def menu():
                 usage()
                 sys.exit(1)
         elif opt in ("-d", "--daemon"):
-            setup()
             Daemon()
+            sys.exit(0)
         elif opt in ("-h", "--help"):
             usage()
             sys.exit(0)
@@ -235,22 +235,22 @@ def menu():
                 sys.exit(1)
             else:
                 print "%s [Change Value] Changing variable '%s' value to %s" % (Timestamp(), variableName, variableValue)
-                ReadCfg()
+                ReadCfg(0)
                 globals()[variableName] = variableValue
                 WriteCfg()
                 print "%s [Change Value] Variable '%s' value changed to %s" % (Timestamp(), variableName, variableValue)
                 sys.exit(0)
         elif opt in ("-p", "--pin"):
-            ReadCfg()
-            setup()
-            ReadGPIO()
+            ReadCfg(0)
+            GPIOSetup()
+            GPIORead()
             sys.exit(0)
         elif opt in ("-r", "--read"):
             if arg == 'SENSOR':
                 ReadSensors()
                 sys.exit(0)
             elif arg == 'CONFIG':
-                ReadCfg()
+                ReadCfg(0)
                 sys.exit(0)
             else:
                 print 'Error: Invalid option for --read'
@@ -267,7 +267,7 @@ def menu():
                 print 'Error: The last option of --set must be 0 or 1'
                 sys.exit(0)
             print '%s [Set Conditions] Desired vvalues: minTemp: %s, maxTemp: %s, minHum: %s, maxHum: %s, WebOR: %s' % (Timestamp(), sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6]) 
-            ReadCfg()
+            ReadCfg(0)
             global minTemp
             global maxTemp
             global minHum
@@ -295,10 +295,13 @@ def menu():
 
 def Daemon():
     global terminateServer
-    ct.start()
-    print '%s [Daemon] Server started as thread' % Timestamp()
     print '%s [Daemon] Daemon started' % Timestamp()
-    ReadCfg()
+    ct = ComThread()
+    ct.start()
+    print '%s [Daemon] Communication server started as thread' % Timestamp()
+    ReadCfg(1)
+    print '%s [Daemon] Initial configuration read to set variables' % Timestamp()
+    GPIOSetup()
     # the daemon loop
     timerOne = 0
     timerTwo = 0
@@ -312,7 +315,8 @@ def Daemon():
         
         if timerOne > timerOneSeconds:
             print '%s [Daemon] %s-second timer expired: Sensor Read and Condition Check' % (Timestamp(), timerOneSeconds)
-            ReadCfg()
+            print '%s [Daemon] Reread config to make sure variables are current' % Timestamp()
+            ReadCfg(0)
             ReadSensors()
             ConditionsCheck()
             timerOne = 0
@@ -328,15 +332,15 @@ def Daemon():
 
 def RelayOnDuration(number, seconds):
     #jobs=[]
-    ros = RelayOnSeconds(number, seconds)
+    ros = RelayOnSecThread(number, seconds)
     #jobs.append(ros)
     ros.start()
         
 def ChangeRelay(Select, State):
-    print '%s [GPIO Write] Setting relay %s to %s (was %s)' % (Timestamp(), Select, State, GPIO.input(relayPin[Select]))
+    print '%s [GPIO Write] Setting relay %s (%s) to %s (was %s)' % (Timestamp(), Select, relayName[Select], State, GPIO.input(relayPin[Select]))
     GPIO.output(relayPin[Select], State)
 
-def ReadGPIO():
+def GPIORead():
     print '%s [GPIO Read]' % Timestamp(),
     for x in range(1, 9):
         print 'Relay %s: %s  ' % (x, GPIO.input(relayPin[x])),
@@ -352,9 +356,13 @@ def WriteSensorLog():
         print '%s [Write Sensor Log] Unable to append data to %s' % (Timestamp(), sensor_log_file)
 
 # Append relay  duration to log file
-def WriteRelayLog(relay1Dur, relay2Dur, relay3Dur, relay4Dur, relay5Dur, relay6Dur, relay7Dur, relay8Dur):
+def WriteRelayLog(relayNumber, relaySeconds):
+    relay = [0] * 9
+    for n in range(1, 9):
+        if n == relayNumber:
+            relay[relayNumber] = relaySeconds
     try:
-        open(relay_log_file, 'ab').write('{0} {1} {2} {3} {4} {5} {6} {7} {8}\n'.format(datetime.datetime.now().strftime("%Y %m %d %H %M %S"), relay1Dur, relay2Dur, relay3Dur, relay4Dur, relay5Dur, relay6Dur, relay7Dur, relay8Dur))
+        open(relay_log_file, 'ab').write('{0} {1} {2} {3} {4} {5} {6} {7} {8}\n'.format(datetime.datetime.now().strftime("%Y %m %d %H %M %S"), relay[1], relay[2], relay[3], relay[4], relay[5], relay[6], relay[7], relay[8]))
         print '%s [Write Relay Log] Data appended to %s' % (Timestamp(), relay_log_file)
     except:
         print '%s [Write Relay Log] Unable to append data to %s' % (Timestamp(), relay_log_file)
@@ -397,7 +405,7 @@ def ReadSensors():
             currentTime = time.time()
             print "{0} [Read Sensors] {1:.0f} {2:.1f} {3:.1f} {4:.1f} {5:.1f}".format(datetime.datetime.now().strftime("%Y %m %d %H %M %S"), currentTime, humidity, tempc, dewpointc, heatindex)
 
-def ReadCfg():
+def ReadCfg(silent):
     global config_file
     global tempc
     global humidity
@@ -468,18 +476,17 @@ def ReadCfg():
     timerOneSeconds = config.getint('States', 'timeroneseconds')
     timerTwoSeconds = config.getint('States', 'timertwoseconds')
 
-    print '%s [Read Config] minTemp: %s°C, maxTemp: %s°C, minHum: %s%%, maxHum: %s%%, webOR: %s' % (Timestamp(), minTemp, maxTemp, minHum, maxHum, webOR)
-    print '%s [Read Config] RelayNum[Name][Pin]:' % Timestamp(),
-    for x in range(1,9):
-        if x == 5:
-            print '\n%s [Read Config] RelayNum[Name][Pin]:' % Timestamp(),
-        if relayPin[x] < 10:
-            print '%s[%s][%s ]' % (x, relayName[x], relayPin[x]),
-        else:
-            print '%s[%s][%s]' % (x, relayName[x], relayPin[x]),
-    #print '%s [Read Config] Name[Num][Pin]: %s[1][%s] %s[2][%s] %s[3][%s] %s[4][%s]' % (Timestamp(), relayName[1], relayPin[1], relayName[2], relayPin[2], relayName[3], relayPin[3], relayName[4], relayPin[4])
-    #print '%s [Read Config] Name[Num][Pin]: %s[5][%s] %s[6][%s] %s[7][%s] %s[8][%s]' % (Timestamp(), relayName[5], relayPin[5], relayName[6], relayPin[6], relayName[7], relayPin[7], relayName[8], relayPin[8])
-    print '\n%s [Read Config] %s %s %s %s %s %s %s %s %s %s %s %s %s %s %.1f %s %s'  % (Timestamp(), tempState, humState, relay1o, relay2o, relay3o, relay4o, relay5o, relay6o, relay7o, relay8o, RHeatTS, RHumTS, RHepaTS, RFanTS, wfactor, timerOneSeconds, timerTwoSeconds)
+    if not silent:
+        print '%s [Read Config] minTemp: %s°C, maxTemp: %s°C, minHum: %s%%, maxHum: %s%%, webOR: %s' % (Timestamp(), minTemp, maxTemp, minHum, maxHum, webOR)
+        print '%s [Read Config] RelayNum[Name][Pin]:' % Timestamp(),
+        for x in range(1,9):
+            if x == 5:
+                print '\n%s [Read Config] RelayNum[Name][Pin]:' % Timestamp(),
+            if relayPin[x] < 10:
+                print '%s[%s][%s ]' % (x, relayName[x], relayPin[x]),
+            else:
+                print '%s[%s][%s]' % (x, relayName[x], relayPin[x]),
+        print '\n%s [Read Config] %s %s %s %s %s %s %s %s %s %s %s %s %s %s %.1f %s %s'  % (Timestamp(), tempState, humState, relay1o, relay2o, relay3o, relay4o, relay5o, relay6o, relay7o, relay8o, RHeatTS, RHumTS, RHepaTS, RFanTS, wfactor, timerOneSeconds, timerTwoSeconds)
 
 def WriteCfg():
     config_lock_path = lock_directory + config_lock
