@@ -237,13 +237,13 @@ This can be changed back with the following command if you wish to create more u
 `sudo chmod 640 /var/www/mycodo/register.php`
 
 <a name="cron"></a>
-### Cron Setup
+### Daemon Setup
 
 The following will enable automatic logging and relay control.
 
-Once the following cron jobs are set, the relays may become energized, depending on what the ranges are set. Check that the sensors are properly working by testing if the script 'mycodo-sense.sh -d' can display sensor data, as well as if gpio can alter the GPIO, with 'gpio write [pin] [value], where pin is the GPIO pin and value is 1=on and 0=off.
+Once the following init is set, the relays may become energized, depending on what the ranges are set. Check that the sensors are properly working by testing if the script 'sudo mycodo.py -r SENSOR' can display sensor data, as well as if gpio can alter the GPIO, with 'sudo mycodo.py -c [pin] --state [value], where pin is the GPIO pin and value is 1=on or 0=off.
 
-   Set up sensor data logging and relay changing by adding the following lines to cron (with 'sudo crontab -e')
+Set up the daemon to automatically log sensor data and alter relays with the following commands
 
 ```
 */2 * * * * /usr/bin/python /var/www/mycodo/cgi-bin/sense.py -w /var/www/mycodo/log/sensor.log
