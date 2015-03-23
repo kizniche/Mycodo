@@ -110,6 +110,24 @@ class ComServer(rpyc.Service):
         global terminateServer
         terminateServer = 1
         return 1
+    def exposed_RelayOnSec(self, remoteCommand, remoteCommand2):
+        RelayOnDuration(remoteCommand, remoteCommand2)
+        return 1
+    def exposed_ChangeConditions(self, mntemp, mxtemp, mnhum, mxhum, webo):
+        ReadCfg(0)
+        global minTemp
+        global maxTemp
+        global minHum
+        global maxHum
+        global webOR
+        minTemp = mntemp
+        maxTemp = mxtemp
+        minHum = mnhum
+        maxHum = mxhum
+        webOR = webo
+        WriteCfg()
+        return 1
+        
 
 class ComThread(threading.Thread):
     def run(self):
@@ -268,7 +286,7 @@ def menu():
             elif sys.argv[6] != '0' and sys.argv[6] != '1':
                 print 'Error: The last option of --set must be 0 or 1'
                 sys.exit(0)
-            print '%s [Set Conditions] Desired vvalues: minTemp: %s, maxTemp: %s, minHum: %s, maxHum: %s, WebOR: %s' % (Timestamp(), sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6]) 
+            print '%s [Set Conditions] Desired values: minTemp: %s, maxTemp: %s, minHum: %s, maxHum: %s, WebOR: %s' % (Timestamp(), sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6]) 
             ReadCfg(0)
             global minTemp
             global maxTemp

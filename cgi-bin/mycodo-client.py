@@ -33,13 +33,16 @@ def menu():
         sys.exit(1)
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'h:l:t', ["high", "low", "terminate"])
+        opts, args = getopt.getopt(sys.argv[1:], 'c:h:l:s:t', ["configure=", "high", "low", "seconds=", "set=", "terminate"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
         sys.exit(2)
     for opt, arg in opts:
-        if opt in ("-h", "--high"):
+        if opt in ("-c", "--configure"):
+            c.root.ChangeConditions(int(float(sys.argv[2])), int(float(sys.argv[3])), int(float(sys.argv[4])), int(float(sys.argv[5])), int(float(sys.argv[6])))
+            sys.exit(0)
+        elif opt in ("-h", "--high"):
             if RepresentsInt(arg) and int(float(arg)) < 9 and int(float(arg)) > 0:
                 print '%s [Remote command] Set relay %s GPIO High: Server returned:' % (Timestamp(), arg),
                 if c.root.GPIOHigh(arg) == 1:
@@ -61,10 +64,22 @@ def menu():
             else:
                 print 'Error: input must be an integer between 1 and 8'
                 sys.exit(1)
+        elif opt in ("-s", "--set"):
+            relaySelect = arg
+        elif opt == "--seconds":
+            relaySeconds = arg
+            print '%s [Remote command] Relay %s on for %s seconds: Server returned:' % (Timestamp(), relaySelect, relaySeconds),
+            if c.root.RelayOnSec(int(float(relaySelect)), int(float(relaySeconds))) == 1:
+                print 'Success'
+            else:
+                print 'Fail'
+            sys.exit(0)
         elif opt in ("-t", "--terminate"):
             print '%s [Remote command] Terminate all threads and daemon: Server returned:' % Timestamp(),
-            if c.root.Terminate(1) == 1: print 'Success'
-            else: print 'Fail'
+            if c.root.Terminate(1) == 1:
+                print 'Success'
+            else:
+                print 'Fail'
             sys.exit(0)
         else:
             assert False, "Fail"

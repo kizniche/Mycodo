@@ -12,8 +12,12 @@ $gpio_path = "/usr/local/bin/gpio";
 
 $cwd = getcwd();
 $mycodo_exec = $cwd . "/cgi-bin/mycodo";
+
+$mycodo_client = $cwd . "/cgi-bin/mycodo-client.py";
+
 $relay_exec = $cwd . "/cgi-bin/relay.sh";
-$sensordata_file = $cwd . "/log/sensor.log";
+$sensor_log = $cwd . "/log/sensor.log";
+$config_file = $cwd . "/config/mycodo.cfg";
 $config_cond_file = $cwd . "/config/mycodo-cond.conf";
 $config_state_file = $cwd . "/config/mycodo-state.conf";
 $relay_config = $cwd . "/config/relay_config.php";
@@ -80,7 +84,10 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 			$r_state = $gpio_path . " read " . $relay[($p - 1)][2];
 			if (!is_numeric($sR) || $sR < 2 || $sR != round($sR)) error_seconds($p, 1);
 			else if (shell_exec($r_state) == 1) error_seconds($p, 2);
-			else exec(sprintf("%s %s %s > /dev/null 2>&1", $relay_exec, $p, $sR));
+			else {
+                $secExec = $mycodo_client . " --set " . $p . " --seconds " . $sR;
+                shell_exec($secExec);
+            }
 		}
 	}
 
@@ -88,12 +95,12 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 		$command    = $mycodo_exec . " r";
 		$editconfig = shell_exec($command);
 		$cpiece     = explode(" ", $editconfig);
-		$cpiece[0]  = $_POST['offTemp'];
-		$cpiece[1]  = $_POST['onTemp'];
-		$cpiece[2]  = $_POST['offHum'];
-		$cpiece[3]  = $_POST['onHum'];
+		$cpiece[0]  = $_POST['minTemp'];
+		$cpiece[1]  = $_POST['maxTemp'];
+		$cpiece[2]  = $_POST['minHum'];
+        $cpiece[3]  = $_POST['maxHum'];
 		$cpiece[4]  = $_POST['webov'];
-		$editconfig = $mycodo_exec . " w cond " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " " . $cpiece[4] . " " . $cpiece[5] . " " . $cpiece[6];
+		$editconfig = $mycodo_client . " --configure " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " " . $cpiece[4];
 		shell_exec($editconfig);
 	}
 	
@@ -127,7 +134,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 		    <div>Current time: <?php echo `date +'%Y-%m-%d %H:%M:%S'`; ?></div>
 		    <div>
 			Last read: <?php 
-			    $time_last = `tail -n 1 $sensordata_file | cut -d' ' -f1,2,3,4,5,6`;
+			    $time_last = `tail -n 1 $sensor_log | cut -d' ' -f1,2,3,4,5,6`;
 			    $time_last[4] = '-';
 			    $time_last[7] = '-';
 			    $time_last[13] = ':';
@@ -143,16 +150,15 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 	    <div style="clear: both;"></div>
 	    <div style="padding: 10px 0 10px 0;">
 		<?php
-		    $t_c = `tail -n 1 $sensordata_file | cut -d' ' -f9`;
-		    $t_f = `tail -n 1 $sensordata_file | cut -d' ' -f10`;
-		    $t_c_max = `$mycodo_exe r | cut -d' ' -f2`;
-		    $t_c_min = `$mycodo_exe r | cut -d' ' -f1`;
-		    $hum = `tail -n 1 $sensordata_file | cut -d' ' -f8`;
-		    $hum_max = `$mycodo_exe r | cut -d' ' -f4`;
-		    $hum_min = `$mycodo_exe r | cut -d' ' -f3`;
-		    $dp_f = `tail -n 1 $sensordata_file | cut -d' ' -f11`;
-		    $dp_c = ($dp_f-32)*5/9;
-		    $dp_c = round($dp_c, 1);
+		    $t_c = `tail -n 1 $sensor_log | cut -d' ' -f9`;
+            $t_f = $t_c * (9/5) + 32;
+            $t_c_max = `$mycodo_exe r | cut -d' ' -f2`;
+            $t_c_min = `$mycodo_exe r | cut -d' ' -f1`;
+            $hum = `tail -n 1 $sensor_log | cut -d' ' -f8`;
+            $hum_max = `$mycodo_exe r | cut -d' ' -f4`;
+            $hum_min = `$mycodo_exe r | cut -d' ' -f3`;
+            $dp_c = `tail -n 1 $sensor_log | cut -d' ' -f10`;
+            $dp_f = $dp_c * (9/5) + 32;
 
 		    echo 'RH: ' . $hum . '% | ';
 		    echo 'T: ' . $t_c . '&deg;C / ' . $t_f . '&deg;F | ';
@@ -161,7 +167,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 	    </div>
 	    <FORM action="" method="POST">
 		<div style="padding: 5px 0 10px 0;">
-		    Web Override: <b><?php $webor_read = $mycodo_exec . " r | cut -d' ' -f5"; if (shell_exec($webor_read) == 1) echo "ON"; else echo "OFF"; ?></b>
+		    Web Override: <b><?php $webor_read = `cat $config_file | grep webor | cut -d' ' -f3`; if ($webor_read == 1) echo "ON"; else echo "OFF"; ?></b>
 		    [<button type="submit" name="OR" value="1">ON</button> <button type="submit" name="OR" value="0">OFF</button>]
 		</div>
 		<?php
@@ -174,7 +180,15 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 			<input type="submit" name="<?php echo $i; ?>secON" value="ON">]
 		    </div>
 		    <?php 
-		    } 
+		    }
+        
+        $mintemp = `cat $config_file | grep mintemp | cut -d' ' -f3`;
+        $maxtemp = `cat $config_file | grep maxtemp | cut -d' ' -f3`;
+        $minhum = `cat $config_file | grep minhum | cut -d' ' -f3`;
+        $maxhum = `cat $config_file | grep maxhum | cut -d' ' -f3`;
+        $webor = `cat $config_file | grep webor | cut -d' ' -f3`;
+        $tempstate = `cat $config_file | grep tempstate | cut -d' ' -f3`;
+        $humstate = `cat $config_file | grep humstate | cut -d' ' -f3`;
 		?>
 		<table style="margin: 0 auto; padding-top: 10px;">
 		    <tr>
@@ -193,7 +207,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 			    MxH
 			</td>
 			<td>
-			    wOV
+			    wOR
 			</td>
 		    </tr>
 		    <tr>
@@ -201,19 +215,19 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 			    <input type="submit" name="ChangeCond" value="Set">
 			</td>
 			<td>
-			    <input type="text" value="<?php echo `cat $config_cond_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f3`; ?>" maxlength=2 size=1 name="offTemp" />
+			    <input type="text" value="<?php echo $mintemp; ?>" maxlength=2 size=1 name="minTemp" />
 			</td>
 			<td>
-			    <input type="text" value="<?php echo `cat $config_cond_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f6`; ?>" maxlength=2 size=1 name="onTemp" />
+			    <input type="text" value="<?php echo $maxtemp; ?>" maxlength=2 size=1 name="maxTemp" />
 			</td>
 			<td>
-			    <input type="text" value="<?php echo `cat $config_cond_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f9`; ?>" maxlength=2 size=1 name="offHum" />
+			    <input type="text" value="<?php echo $minhum; ?>" maxlength=2 size=1 name="minHum" />
 			</td>
 			<td>
-			    <input type="text" value="<?php echo `cat $config_cond_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f12`; ?>" maxlength=2 size=1 name="onHum" />
+			    <input type="text" value="<?php echo $maxhum; ?>" maxlength=2 size=1 name="maxHum" />
 			</td>
 			<td>
-			    <input type="text" value="<?php echo `cat $config_cond_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f15`; ?>" maxlength=2 size=1 name="webov" />
+			    <input type="text" value="<?php echo $webor; ?>" maxlength=2 size=1 name="webov" />
 			</td>
 		    </tr>
 		    <tr>
@@ -231,10 +245,10 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 			    <input type="submit" name="ChangeState" value="Set">
 			</td>
 			<td>
-			    <input type="text" value="<?php echo `cat $config_state_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f3`; ?>" maxlength=2 size=1 name="tState" />
+			    <input type="text" value="<?php echo $tempstate; ?>" maxlength=2 size=1 name="tState" />
 			</td>
 			<td>
-			    <input type="text" value="<?php echo `cat $config_state_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f6`; ?>" maxlength=2 size=1 name="hState" />
+			    <input type="text" value="<?php echo $humstate; ?>" maxlength=2 size=1 name="hState" />
 			</td>
 		    </tr>
 		</table>
