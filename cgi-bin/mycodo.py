@@ -88,46 +88,52 @@ timerTwoSeconds = ''
 currentTime = ''
 wfactor = ''
 server = ''
-terminateServer = 0
 variableName = ''
 variableValue = ''
 
+ClientQue = '0'
+ClientArg1 = ''
+ClientArg2 = ''
+
 class ComServer(rpyc.Service):
     def exposed_GPIOLow(self, remoteCommand):
-        GPIOSetup()
-        print '%s [Client command] Set Relay %s GPIO LOW' % (Timestamp(), remoteCommand)
-        ChangeRelay(int(float(remoteCommand)), 0)
-        GPIORead()
+        global ClientQue
+        global ClientArg1
+        ClientArg1 = int(float(remoteCommand))
+        ClientQue = 'GPIOLow'
         return 1
     def exposed_GPIOHigh(self, remoteCommand):
-        GPIOSetup()
-        print '%s [Client command] Set Relay %s GPIO HIGH' % (Timestamp(), remoteCommand)
-        ChangeRelay(int(float(remoteCommand)), 1)
-        GPIORead()
+        global ClientQue
+        global ClientArg1
+        ClientArg1 = int(float(remoteCommand))
+        ClientQue = 'GPIOHigh'
         return 1
     def exposed_Terminate(self, remoteCommand):
-        print '%s [Client command] Terminate threads and shut down' % Timestamp()
-        global terminateServer
-        terminateServer = 1
+        global ClientQue
+        ClientQue = 'TerminateServer'
         return 1
     def exposed_RelayOnSec(self, remoteCommand, remoteCommand2):
-        RelayOnDuration(remoteCommand, remoteCommand2)
+        global ClientQue
+        global ClientArg1
+        global ClientArg2
+        ClientArg1 = int(float(remoteCommand))
+        ClientArg2 = int(float(remoteCommand2))
+        ClientQue = 'RelayOnSec'
         return 1
     def exposed_ChangeConditions(self, mntemp, mxtemp, mnhum, mxhum, webo):
-        ReadCfg(0)
         global minTemp
         global maxTemp
         global minHum
         global maxHum
         global webOR
+        global ClientQue
         minTemp = mntemp
         maxTemp = mxtemp
         minHum = mnhum
         maxHum = mxhum
         webOR = webo
-        WriteCfg()
+        ClientQue = 'ChangeConditions'
         return 1
-        
 
 class ComThread(threading.Thread):
     def run(self):
@@ -314,24 +320,43 @@ def menu():
             assert False, "Fail"
 
 def Daemon():
-    global terminateServer
-    print '%s [Daemon] Daemon started' % Timestamp()
+    global ClientQue
+    print '%s [Daemon] Mycodo daemon started' % Timestamp()
     ct = ComThread()
+    ct.daemon = True
     ct.start()
-    print '%s [Daemon] Communication server started as thread' % Timestamp()
+    print '%s [Daemon] Communication server started as daemon thread' % Timestamp()
     ReadCfg(1)
     print '%s [Daemon] Initial configuration read to set variables' % Timestamp()
     GPIOSetup()
-    # the daemon loop
     timerOne = 0
     timerTwo = 0
     while True:
-        if terminateServer == 1: # Check if variable set to terminate the server
-            global server
-            print '%s [Shutdown] Terminating server thread' % Timestamp()
-            server.close()
-            print '%s [Shutdown] Exiting Python' % Timestamp()
-            sys.exit(0)
+        if ClientQue != '0':
+            if ClientQue == 'GPIOLow':
+                GPIOSetup()
+                print '%s [Client command] Set Relay %s GPIO LOW' % (Timestamp(), ClientArg1)
+                ChangeRelay(ClientArg1, 0)
+                GPIORead()
+            elif ClientQue == 'GPIOHigh':
+                GPIOSetup()
+                print '%s [Client command] Set Relay %s GPIO HIGH' % (Timestamp(), ClientArg1)
+                ChangeRelay(ClientArg1, 1)
+                GPIORead()
+            elif ClientQue == 'ChangeConditions':
+                print '%s [Client command] Change: minTemp: %s, maxTemp: %s, minHum: %s, maxHum: %s, webOR: %s' % (Timestamp(), minTemp, maxTemp, minHum, maxHum, webOR)
+                WriteCfg()
+            elif ClientQue == 'RelayOnSec':
+                print '%s [Client command] Set Relay %s on for %s seconds' % (Timestamp(), ClientArg1, ClientArg2)
+                RelayOnDuration(ClientArg1, ClientArg2)
+            elif ClientQue == 'TerminateServer':
+                global server
+                print '%s [Client command] Terminate threads and shut down' % Timestamp()
+                print '%s [Shutdown] Terminating server thread' % Timestamp()
+                server.close()
+                print '%s [Shutdown] Exiting Python' % Timestamp()
+                sys.exit(0)
+            ClientQue = '0'
         
         if timerOne > timerOneSeconds:
             print '%s [Daemon] %s-second timer expired: Sensor Read and Condition Check' % (Timestamp(), timerOneSeconds)
