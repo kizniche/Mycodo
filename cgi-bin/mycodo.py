@@ -28,6 +28,8 @@ config_file = '/var/www/mycodo/config/mycodo.cfg'
 sensor_log_file = '/var/www/mycodo/log/sensor.log'
 relay_log_file = '/var/www/mycodo/log/relay-2.log'
 
+relay_script = '/var/www/mycodo/cgi-bin/relay.sh'
+
 lock_directory = '/var/lock/mycodo/'
 config_lock = 'config.lock'
 sensor_log_lock = 'sensorlog.lock'
@@ -112,8 +114,22 @@ class ComThread(threading.Thread):
         global server
         server = ThreadedServer(ComServer, port = 18812)
         server.start()
-
 ct = ComThread()
+
+class RelayOnSeconds(threading.Thread):
+    def __init__(self, relaySelect, relaySeconds):
+        threading.Thread.__init__(self)
+        self.relaySelect = relaySelect
+        self.relaySeconds = relaySeconds
+    def run(self):
+        if GPIO.input(relayPin[self.relaySelect]) == 0:
+            print '%s [Relay Duration] Turning on relay %s for %s seconds' % (Timestamp(), self.relaySelect, self.relaySeconds)
+            GPIO.output(relayPin[self.relaySelect], 1)
+            time.sleep(self.relaySeconds)
+            GPIO.output(relayPin[self.relaySelect], 0)
+            print '%s [Relay Duration] Turning on relay %s for %s seconds' % (Timestamp(), self.relaySelect, self.relaySeconds)
+        else:
+            print "%s [Relay Duration] Abort: Requested Relay %s on for %s seconds, but it's already on!" % (Timestamp(), self.relaySelect, self.relaySeconds)
 
 def usage():
     print 'mycodo.py: Reads temperature and humidity from sensors, writes log file, and operates relays as a daemon to maintain set environmental conditions.\n'
@@ -125,8 +141,8 @@ def usage():
     print 'Options:'
     print '    -c, --change=RELAY'
     print '           Change the state of a relay (--state required)'
-    print '        --state=[0/1]'
-    print '           Change the state of RELAY to on (1) or off (0)'
+    print '        --state=[0/1/X]'
+    print '           Change the state of RELAY to on (1), off (0), or (X) number of seconds on'
     print '    -d, --daemon'
     print '           Start program as daemon that monitors conditions and modulates relays'
     print '    -h, --help'
@@ -165,32 +181,41 @@ def menu():
         sys.exit(1)
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'c:dhpr:s:tn:w', ["change=", "daemon", "help", "name=", "pin", "read=", "set=", "state=", "value=", "write="])
+        opts, args = getopt.getopt(sys.argv[1:], 'c:dhpr:s:tn:wz:', ["change=", "daemon", "help", "name=", "pin", "read=", "set=", "state=", "value=", "write="])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
         sys.exit(2)
     for opt, arg in opts:
         if opt in ("-c", "--change"):
-            global relaySelect
-            relaySelect = int(float(arg))
-            if relaySelect > 8 or relaySelect < 1:
-                print 'Error: 1 - 8 are the only acceptable options for -c'
-                usage()
+            if not RepresentsInt(arg) or int(float(arg)) > 8 or int(float(arg)) < 1:
+                print 'Error: --change only accepts integrers 1 though 8'
                 sys.exit(1)
+            else:
+                global relaySelect
+                relaySelect = arg
         elif opt == "--state":
-            global relayState
-            relayState = int(float(arg))
-            if relayState == 0 or relayState == 1:
+            if not RepresentsInt(arg) or int(float(arg)) < 0:
+                print 'Error: --state only accepts integrers'
+            else:
+                global relayState
+                relayState = arg
+            if relayState == '0' or relayState == '1':
                 print '%s [GPIO Write] Requested change of relay %s to' % (Timestamp(), relaySelect)
                 if relayState == '1': print 'On'
                 elif relayState == '0': print 'Off'
+                ReadCfg()
                 setup()
-                ChangeRelay(relaySelect, relayState)
+                ChangeRelay(int(float(relaySelect)), int(float(relayState)))
                 ReadGPIO()
                 sys.exit(0)
+            elif relayState > 1:
+                ReadCfg()
+                setup()
+                RelayOnDuration(int(float(relaySelect)), int(float(relayState)))
+                sys.exit(0)
             else:
-                print 'Error: 0 or 1 are the only acceptable options for -s'
+                print 'Error: 0 and positive integers are the only acceptable options for --state'
                 usage()
                 sys.exit(1)
         elif opt in ("-d", "--daemon"):
@@ -216,6 +241,7 @@ def menu():
                 print "%s [Change Value] Variable '%s' value changed to %s" % (Timestamp(), variableName, variableValue)
                 sys.exit(0)
         elif opt in ("-p", "--pin"):
+            ReadCfg()
             setup()
             ReadGPIO()
             sys.exit(0)
@@ -300,12 +326,17 @@ def Daemon():
         timerTwo+=1
         time.sleep(1)
 
+def RelayOnDuration(number, seconds):
+    #jobs=[]
+    ros = RelayOnSeconds(number, seconds)
+    #jobs.append(ros)
+    ros.start()
+        
 def ChangeRelay(Select, State):
     print '%s [GPIO Write] Setting relay %s to %s (was %s)' % (Timestamp(), Select, State, GPIO.input(relayPin[Select]))
     GPIO.output(relayPin[Select], State)
 
 def ReadGPIO():
-    global relayPin
     print '%s [GPIO Read]' % Timestamp(),
     for x in range(1, 9):
         print 'Relay %s: %s  ' % (x, GPIO.input(relayPin[x])),
@@ -320,8 +351,7 @@ def WriteSensorLog():
     except:
         print '%s [Write Sensor Log] Unable to append data to %s' % (Timestamp(), sensor_log_file)
 
-################# WORKING ON ######################
-# Append relay change and duration to log file
+# Append relay  duration to log file
 def WriteRelayLog(relay1Dur, relay2Dur, relay3Dur, relay4Dur, relay5Dur, relay6Dur, relay7Dur, relay8Dur):
     try:
         open(relay_log_file, 'ab').write('{0} {1} {2} {3} {4} {5} {6} {7} {8}\n'.format(datetime.datetime.now().strftime("%Y %m %d %H %M %S"), relay1Dur, relay2Dur, relay3Dur, relay4Dur, relay5Dur, relay6Dur, relay7Dur, relay8Dur))
@@ -549,6 +579,7 @@ def ConditionsCheck():
         if (humidity < minHum):
             print '%s [Check Conditions] Humidity lower than minHum: %.2f%% < %s%% min' % (Timestamp(), humidity, minHum)
             print '%s [Check Conditions] Humidification On' % Timestamp()
+            
         elif (humidity > maxHum):
             print '%s [Check Conditions] Humidity greater than maxHum: %.2f%% > %s%% max' % (Timestamp(), humidity, maxHum)
             print '%s [Check Conditions] Exhaust Fan On' % Timestamp()
