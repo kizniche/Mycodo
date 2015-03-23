@@ -72,6 +72,7 @@ relay8o = ''
 # Control States
 tempState = ''
 humState = ''
+webOR = ''
 
 # Timers
 RHeatTS = ''
@@ -83,7 +84,6 @@ timerTwoSeconds = ''
 
 # Miscellaneous
 currentTime = ''
-webOR = ''
 wfactor = ''
 server = ''
 terminateServer = 0
@@ -349,23 +349,85 @@ def GPIORead():
 
 # Append sensor data to log file
 def WriteSensorLog():
-    try:
-        open(sensor_log_file, 'ab').write('{0} {1:.0f} {2:.1f} {3:.1f} {4:.1f} {5:.1f}\n'.format(datetime.datetime.now().strftime("%Y %m %d %H %M %S"), currentTime, humidity, tempc, dewpointc, heatindex))
-        print '%s [Write Sensor Log] Data appended to %s' % (Timestamp(), sensor_log_file)
-    except:
-        print '%s [Write Sensor Log] Unable to append data to %s' % (Timestamp(), sensor_log_file)
+    sensor_lock_path = lock_directory + sensor_log_lock
+    config = ConfigParser.RawConfigParser()
+
+    if not os.path.exists(lock_directory):
+        os.makedirs(lock_directory)
+
+    waitingForLock = 1
+    errorOnce = 1
+    lockWaitCount = 1
+    while waitingForLock:
+        if not lockFile(sensor_lock_path):
+            if errorOnce:
+                print '%s [Write Sensor Log] Cannot gain lock (already locked): Waiting to gain lock...' % Timestamp()
+                errorOnce = 0
+            if lockWaitCount == 60:
+                print '%s [Write Sensor Log] 60 seconds waiting to gain lock (too long): Breaking lock.' % Timestamp()
+                os.remove(sensor_lock_path)
+                lockWaitCount+=1
+            if lockWaitCount % 10 == 0:
+                print '%s [Write Sensor Log] Waiting to gain lock for %s seconds...' % (Timestamp(), lockWaitCount)
+            time.sleep(1)
+            lockWaitCount+=1
+        else:
+            waitingForLock = 0
+            print '%s [Write Sensor Log] Gained lock: %s' % (Timestamp(), sensor_lock_path)
+            try:
+                open(sensor_log_file, 'ab').write('{0} {1:.0f} {2:.1f} {3:.1f} {4:.1f} {5:.1f}\n'.format(datetime.datetime.now().strftime("%Y %m %d %H %M %S"), currentTime, humidity, tempc, dewpointc, heatindex))
+                print '%s [Write Sensor Log] Data appended to %s' % (Timestamp(), sensor_log_file)
+            except:
+                print '%s [Write Sensor Log] Unable to append data to %s' % (Timestamp(), sensor_log_file)
+                
+    if os.path.isfile(sensor_lock_path):
+        print '%s [Write Sensor Log] Removing lock file %s' % (Timestamp(), sensor_lock_path)
+        os.remove(sensor_lock_path)
+    else:
+        print "%s [Write Sensor Log] Unable to remove lock file %s because it doesn't exist!" % (Timestamp(), sensor_lock_path)
 
 # Append relay  duration to log file
 def WriteRelayLog(relayNumber, relaySeconds):
-    relay = [0] * 9
-    for n in range(1, 9):
-        if n == relayNumber:
-            relay[relayNumber] = relaySeconds
-    try:
-        open(relay_log_file, 'ab').write('{0} {1} {2} {3} {4} {5} {6} {7} {8}\n'.format(datetime.datetime.now().strftime("%Y %m %d %H %M %S"), relay[1], relay[2], relay[3], relay[4], relay[5], relay[6], relay[7], relay[8]))
-        print '%s [Write Relay Log] Data appended to %s' % (Timestamp(), relay_log_file)
-    except:
-        print '%s [Write Relay Log] Unable to append data to %s' % (Timestamp(), relay_log_file)
+    relay_lock_path = lock_directory + relay_log_lock
+    config = ConfigParser.RawConfigParser()
+
+    if not os.path.exists(lock_directory):
+        os.makedirs(lock_directory)
+
+    waitingForLock = 1
+    errorOnce = 1
+    lockWaitCount = 1
+    while waitingForLock:
+        if not lockFile(relay_lock_path):
+            if errorOnce:
+                print '%s [Write Relay Log] Cannot gain lock (already locked): Waiting to gain lock...' % Timestamp()
+                errorOnce = 0
+            if lockWaitCount == 60:
+                print '%s [Write Relay Log] 60 seconds waiting to gain lock (too long): Breaking lock.' % Timestamp()
+                os.remove(relay_lock_path)
+                lockWaitCount+=1
+            if lockWaitCount % 10 == 0:
+                print '%s [Write Relay Log] Waiting to gain lock for %s seconds...' % (Timestamp(), lockWaitCount)
+            time.sleep(1)
+            lockWaitCount+=1
+        else:
+            waitingForLock = 0
+            print '%s [Write Relay Log] Gained lock: %s' % (Timestamp(), relay_lock_path)
+            relay = [0] * 9
+            for n in range(1, 9):
+                if n == relayNumber:
+                    relay[relayNumber] = relaySeconds
+            try:
+                open(relay_log_file, 'ab').write('{0} {1} {2} {3} {4} {5} {6} {7} {8}\n'.format(datetime.datetime.now().strftime("%Y %m %d %H %M %S"), relay[1], relay[2], relay[3], relay[4], relay[5], relay[6], relay[7], relay[8]))
+                print '%s [Write Relay Log] Data appended to %s' % (Timestamp(), relay_log_file)
+            except:
+                print '%s [Write Relay Log] Unable to append data to %s' % (Timestamp(), relay_log_file)
+                
+    if os.path.isfile(relay_lock_path):
+        print '%s [Write Relay Log] Removing lock file %s' % (Timestamp(), relay_lock_path)
+        os.remove(relay_lock_path)
+    else:
+        print "%s [Write Relay Log] Unable to remove lock file %s because it doesn't exist!" % (Timestamp(), relay_lock_path)
 
 def ReadSensors():
     global tempc
@@ -501,19 +563,19 @@ def WriteCfg():
     while waitingForLock:
         if not lockFile(config_lock_path):
             if errorOnce:
-                print '%s [Write Config] Cannot gain config lock (already locked): Waiting to gain lock...' % Timestamp()
+                print '%s [Write Config] Cannot gain lock (already locked): Waiting to gain lock...' % Timestamp()
                 errorOnce = 0
             if lockWaitCount == 60:
-                print '%s [Write Config] 60 seconds waiting to gain config lock (too long): Breaking lock.' % Timestamp()
+                print '%s [Write Config] 60 seconds waiting to gain lock (too long): Breaking lock.' % Timestamp()
                 os.remove(config_lock_path)
                 lockWaitCount+=1
             if lockWaitCount % 10 == 0:
-                print '%s [Write Config] Waiting to gain config lock for %s seconds...' % (Timestamp(), lockWaitCount)
+                print '%s [Write Config] Waiting to gain lock for %s seconds...' % (Timestamp(), lockWaitCount)
             time.sleep(1)
             lockWaitCount+=1
         else:
             waitingForLock = 0
-            print '%s [Write Config] Gained lock, writing lock file %s' % (Timestamp(), config_lock_path)
+            print '%s [Write Config] Gained lock: %s' % (Timestamp(), config_lock_path)
             print '%s [Write Config] Writing config file %s' % (Timestamp(), config_file)
             config.add_section('RelayNames')
             config.set('RelayNames', 'relay1name', relayName[1])
