@@ -58,7 +58,7 @@ set title \"$time: `date --date="$time ago" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%
 unset key
 plot \"$sensor_lines$LOGPATH/sensor.log\" u 1:8 index 0 title \" RH\" w lp ls 1 axes x1y1, \\
      \"\" using 1:9 index 0 title \"T\" w lp ls 2 axes x1y2, \\
-     \"\" using 1:12 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
+     \"\" using 1:10 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
      \"$relay_lines$LOGPATH/relay.log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
      \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\
      \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\
@@ -212,7 +212,7 @@ set size 1.0,0.48
 set origin 0.0,0.5
 plot \"< tail -720 $LOGPATH/sensor.log\" using 1:8 index 0 title \" RH\" w lp ls 1 axes x1y1, \\
      \"\" using 1:9 index 0 title \"T\" w lp ls 2 axes x1y2, \\
-     \"\" using 1:12 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
+     \"\" using 1:10 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
      \"< tail -1090 $LOGPATH/relay.log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
      \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\
      \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\
@@ -224,7 +224,7 @@ set format x \"%a\n%m/%d\"
 set xrange [\"`date --date="last week" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
 plot \"< tail -4970 $LOGPATH/sensor.log\" using 1:8 index 0 notitle w lp ls 1 axes x1y1, \\
      \"\" using 1:9 index 0 notitle w lp ls 2 axes x1y2, \\
-     \"\" using 1:12 index 0 notitle w lp ls 3 axes x1y2, \\
+     \"\" using 1:10 index 0 notitle w lp ls 3 axes x1y2, \\
      \"< tail -5050 $LOGPATH/relay.log\" u 1:7 index 0 notitle w impulses ls 4 axes x1y1, \\
      \"\" using 1:8 index 0 notitle w impulses ls 5 axes x1y1, \\
      \"\" using 1:9 index 0 notitle w impulses ls 6 axes x1y1, \\
