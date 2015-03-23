@@ -1,0 +1,33 @@
+# And add:
+#!/bin/bash
+### BEGIN INIT INFO
+# provides:          mycodo-auto
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Required-Start:   
+# Required-Stop:    
+# Short-Description: Start|Stop mycodo.py daemon
+# Description:       Start|Stop mycodo.py daemon
+### END INIT INFO
+
+case "${1:-''}" in
+  'start')
+   # create the /var/log/apache2/error.log needed by apache
+   touch /var/log/mycodo.log
+   chmod 777 /var/log/mycodo.log
+   stdbuf -oL python /var/www/mycodo/cgi-bin/mycodo.py -d >> /var/log/mycodo.log 2>&1 &
+   ;;
+  'stop')
+   /var/www/mycodo/cgi-bin/mycodo-client.py -t
+   ;;
+  'restart')
+   ;;
+  'reload'|'force-reload')
+   ;;
+  'status')
+   ;;
+  *)
+   echo "Usage: $SELF start|stop"
+   exit 1
+   ;;
+esac
