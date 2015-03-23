@@ -7,6 +7,8 @@
 #
 #  Kyle Gabriel (2012 - 2015)
 #
+# Start with: sudo stdbuf -oL python ./mycodo.py -d | tee log
+#         or: sudo stdbuf -oL python ./mycodo.py -d >> /var/log/some.log 2>&1 &
 
 import subprocess
 import re
@@ -315,7 +317,7 @@ def Daemon():
         
         if timerOne > timerOneSeconds:
             print '%s [Daemon] %s-second timer expired: Sensor Read and Condition Check' % (Timestamp(), timerOneSeconds)
-            print '%s [Daemon] Reread config to make sure variables are current' % Timestamp()
+            print '%s [Daemon] Reread config to ensure variables are current' % Timestamp()
             ReadCfg(1)
             ReadSensors()
             ConditionsCheck()
