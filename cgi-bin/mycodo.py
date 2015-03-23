@@ -165,7 +165,7 @@ def GPIOSetup():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
 
-    print "%s [GPIO Initialize] GPIO setode to BCM numbering, setup to output" % Timestamp()
+    print "%s [GPIO Initialize] Set GPIO mode to BCM numbering, all as output" % Timestamp()
     GPIO.setup(relayPin[1], GPIO.OUT)
     GPIO.setup(relayPin[2], GPIO.OUT)
     GPIO.setup(relayPin[3], GPIO.OUT)
@@ -316,7 +316,7 @@ def Daemon():
         if timerOne > timerOneSeconds:
             print '%s [Daemon] %s-second timer expired: Sensor Read and Condition Check' % (Timestamp(), timerOneSeconds)
             print '%s [Daemon] Reread config to make sure variables are current' % Timestamp()
-            ReadCfg(0)
+            ReadCfg(1)
             ReadSensors()
             ConditionsCheck()
             timerOne = 0

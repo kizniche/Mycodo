@@ -33,31 +33,48 @@ def menu():
         sys.exit(1)
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'l:h:t', ["low", "high", "terminate"])
+        opts, args = getopt.getopt(sys.argv[1:], 'h:l:t', ["high", "low", "terminate"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
         sys.exit(2)
     for opt, arg in opts:
-        if opt in ("-l", "--low"):
-            relay = arg
-            print '%s [Remote command] Set relay %s GPIO Low:' % (Timestamp(), relay),
-            if c.root.GPIOLow(relay) == 1: print 'Success'
-            else: print 'Fail'
-            sys.exit(0)
-        elif opt in ("-h", "--high"):
-            relay = arg
-            print '%s [Remote command] Set relay %s GPIO High:' % (Timestamp(), relay),
-            if c.root.GPIOHigh(relay) == 1: print 'Success'
-            else: print 'Fail'
-            sys.exit(0)
+        if opt in ("-h", "--high"):
+            if RepresentsInt(arg) and int(float(arg)) < 9 and int(float(arg)) > 0:
+                print '%s [Remote command] Set relay %s GPIO High: Server returned:' % (Timestamp(), arg),
+                if c.root.GPIOHigh(arg) == 1:
+                    print 'success'
+                else:
+                    print 'fail'
+                sys.exit(0)
+            else:
+                print 'Error: input must be an integer between 1 and 8'
+                sys.exit(1)
+        elif opt in ("-l", "--low"):
+            if RepresentsInt(arg) and int(float(arg)) < 9 and int(float(arg)) > 0:
+                print '%s [Remote command] Set relay %s GPIO Low: Server returned:' % (Timestamp(), arg),
+                if c.root.GPIOLow(arg) == 1:
+                    print 'success'
+                else:
+                    print 'fail'
+                sys.exit(0)
+            else:
+                print 'Error: input must be an integer between 1 and 8'
+                sys.exit(1)
         elif opt in ("-t", "--terminate"):
-            print '%s [Remote command] Terminate service and daemon:' % Timestamp(),
+            print '%s [Remote command] Terminate all threads and daemon: Server returned:' % Timestamp(),
             if c.root.Terminate(1) == 1: print 'Success'
             else: print 'Fail'
             sys.exit(0)
         else:
             assert False, "Fail"
+
+def RepresentsInt(s):
+    try: 
+        int(s)
+        return True
+    except ValueError:
+        return False
 
 def Timestamp():
     return datetime.datetime.fromtimestamp(time.time()).strftime('%Y %m %d %H %M %S')
