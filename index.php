@@ -31,14 +31,14 @@ if ($login->isUserLoggedIn() == true) {
     global $sensor_log, $mycodo_exe;
 
     $t_c = `tail -n 1 $sensor_log | cut -d' ' -f9`;
-    $t_f = `tail -n 1 $sensor_log | cut -d' ' -f10`;
+    $t_f = $t_c * (9/5) + 32;
     $t_c_max = `$mycodo_exe r | cut -d' ' -f2`;
     $t_c_min = `$mycodo_exe r | cut -d' ' -f1`;
     $hum = `tail -n 1 $sensor_log | cut -d' ' -f8`;
     $hum_max = `$mycodo_exe r | cut -d' ' -f4`;
     $hum_min = `$mycodo_exe r | cut -d' ' -f3`;
-    $dp_f = `tail -n 1 $sensor_log | cut -d' ' -f11`;
-    $dp_c = ($dp_f-32)*5/9;
+    $dp_c = `tail -n 1 $sensor_log | cut -d' ' -f10`;
+    $dp_f = $dp_c * (9/5) + 32;
 
     $time_now = `date +"%Y-%m-%d %H:%M:%S"`;
     $time_last = `tail -n 1 $sensor_log | cut -d' ' -f1,2,3,4,5,6`;
@@ -54,7 +54,7 @@ if ($login->isUserLoggedIn() == true) {
 	<link rel="stylesheet"  href="style.css" type="text/css" media="all" />
 	<script type="text/javascript">
 	    function open_chmode() {
-		    window.open("changemode.php","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=430, height=500");
+		    window.open("changemode.php","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=450, height=510");
 	    }
 	    function open_legend() {
 		    window.open("image.php?span=legend","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=190, height=210");

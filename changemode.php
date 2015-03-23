@@ -106,10 +106,6 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 		$editconfig = $mycodo_exec . " w state " . $cpiece[0] . " " . $cpiece[1];
 		shell_exec($editconfig);
 	}
-
-	//ChangeState
-	//	$cpiece[5]	= $_POST['tState'];
-	//	$cpiece[6]= $_POST['hState'];
 ?>
 
 <html>
@@ -219,7 +215,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 			<td>
 			    <input type="text" value="<?php echo `cat $config_cond_file | tr '\n' ' ' | tr -d ';' | cut -d' ' -f15`; ?>" maxlength=2 size=1 name="webov" />
 			</td>
-		 </tr>
+		    </tr>
 		    <tr>
 			<td>
 			</td>

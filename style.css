@@ -102,4 +102,13 @@ hr {
 .error {
     color: red;
     padding: 0 0 10px 5px;
+}
+
+/* Changemode.php relay state text */
+.relay-state {
+    font-family: monospace;
+    font-size: 13px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 4px;
 } 
