@@ -1,28 +1,21 @@
 <?php
 /*
-*
-*  changemode.php - Reads/writes configuration files
+*  changemode.php - Reads/writes configuration/sensor files and modulates relays based on user input
 *  By Kyle Gabriel
 *  2012 - 2015
-*
 */
 
-####### Configure #######
+####### Configure Edit Here #######
+
+$install_path = "/var/www/mycodo";
+
 $gpio_path = "/usr/local/bin/gpio";
-$config_path = "/var/www/mycodo/config";
 
-$cwd = getcwd();
+########## End Configure ##########
 
-$mycodo_exec = $cwd . "/cgi-bin/mycodo";
-$mycodo_client = $cwd . "/cgi-bin/mycodo-client.py";
-
-$relay_exec = $cwd . "/cgi-bin/relay.sh";
-$sensor_log = $cwd . "/log/sensor.log";
-
-$config_file = $config_path . "/mycodo.cfg";
-$config_cond_file = $config_path . "/mycodo-cond.conf";
-$config_state_file = $config_path . "/mycodo-state.conf";
-$relay_config = $config_path . "/relay_config.php";
+$mycodo_client = $install_path . "/cgi-bin/mycodo-client.py";
+$sensor_log = $install_path . "/log/sensor.log";
+$config_file = $install_path . "/config/mycodo.cfg";
 
 if (version_compare(PHP_VERSION, '5.3.7', '<')) {
     exit("Sorry, Simple PHP Login does not run on a PHP version smaller than 5.3.7 !");
@@ -36,81 +29,69 @@ require_once("classes/Login.php");
 $login = new Login();
 
 if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
-
-    if (isset($_POST['Mode'])) $ModeSet = $_POST['Mode'];
-
-	// Check if Web Override has been selected to be turned on or off
-    if (isset($_POST['OR'])) {
-		global $mycodo_exec;
-		$command     = $mycodo_exec . " r";
-		$readconfig  = shell_exec($command);
-		$cpiece      = explode(" ", $readconfig);	
-		$writeconfig = $mycodo_exec . " w cond " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " " . $t;
     
-		if ($_POST['OR']) $t = 1;
-		else $t = 0;
-		
-		shell_exec($writeconfig);
-    }
-
-	// Check if a relay has been selected to be turned on or off
+    $t_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f9`, 0, -1);
+    $t_f = $t_c * (9/5) + 32;
+    $hum = substr(`tail -n 1 $sensor_log | cut -d' ' -f8`, 0, -1);
+    $dp_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f10`, 0, -1);
+    $dp_f = $dp_c * (9/5) + 32;
+    
+    $mintemp = substr(`cat $config_file | grep mintemp | cut -d' ' -f3`, 0, -1);
+    $maxtemp = substr(`cat $config_file | grep maxtemp | cut -d' ' -f3`, 0, -1);
+    $minhum = substr(`cat $config_file | grep minhum | cut -d' ' -f3`, 0, -1);
+    $maxhum = substr(`cat $config_file | grep maxhum | cut -d' ' -f3`, 0, -1);
+    $webor = substr(`cat $config_file | grep webor | cut -d' ' -f3`, 0, -1);
+        
 	for ($p = 1; $p <= 8; $p++) {
+        // Relay has been selected to be turned on or off
 		if (isset($_POST['R' . $p])) {
-			global $config_path, $relay_config;
-			
-			$r_state = $gpio_path . " read " . $relay[$relay_change][2];
-			if (shell_exec($r_state) == 1 && $state == 1) echo '<div class="error">Error: Relay ' . ($relay_change+1) . ': Can\'t turn on, it\'s already ON</div>';
-			else {
-                $pin = `cat $config_path/mycodo.cfg | grep relay${p}pin | cut -d' ' -f3`;
-				$gpio_write = $gpio_path . ' -g write ' . substr($pin, 0, -1) . ' ' . $_POST['R' .$p];
+			$name = substr(`cat $config_file | grep relay${p}name | cut -d' ' -f3`, 0, -1);
+            $pin = substr(`cat $config_file | grep relay${p}pin | cut -d' ' -f3`,0, -1);
+            $actual_state = "$gpio_path -g read $pin";
+            $desired_state = $_POST['R' . $p];
+            
+            if (shell_exec($actual_state) == 0 && $desired_state == 0) {
+                echo "<div class=\"error\">Error: Relay $p ($name): Can't turn on, it's already ON</div>";
+			} else {
+                $gpio_write = "$gpio_path -g write $pin $desired_state";
 				shell_exec($gpio_write);
 			}
 		}
-    }
-	
-	function error_seconds($relay_num, $type_error) {
-		echo '<div class="error">Error: relay ' . $relay_num . ': ';
-		if ($type_error == 1) echo 'seconds must be a positive integer that\'s >1.';
-		else echo 'cannot turn on, relay is already on.';
-		echo '</div>';
-	}
-	
-	// Check if a relay has been selected to be turned on for a number of seconds
-	global $gpio_path, $relay_config, $relay_exec;
-    require $relay_config;
-	for ($p = 1; $p <=8; $p++) {
-		if (isset($_POST[$p . 'secON'])) {
-			$sR = $_POST['sR' . $p];
-			$r_state = $gpio_path . " read " . $relay[($p - 1)][2];
-			if (!is_numeric($sR) || $sR < 2 || $sR != round($sR)) error_seconds($p, 1);
-			else if (shell_exec($r_state) == 1) error_seconds($p, 2);
-			else {
-                $secExec = $mycodo_client . " --set " . $p . " --seconds " . $sR;
-                shell_exec($secExec);
+        
+        // Relay has been selected to be turned on for a number of seconds
+        if (isset($_POST[$p . 'secON'])) {
+            $name = substr(`cat $config_file | grep relay${p}name | cut -d' ' -f3`, 0, -1);
+            $pin = substr(`cat $config_file | grep relay${p}pin | cut -d' ' -f3`,0, -1);
+			$actual_state = "$gpio_path -g read $pin";
+            $seconds_on = $_POST['sR' . $p];
+            
+			if (!is_numeric($seconds_on) || $seconds_on < 2 || $seconds_on != round($seconds_on)) {
+                   echo "<div class=\"error\">Error: Relay $p ($name): Seconds must be a positive integer >1</div>";
+			} else if (shell_exec($actual_state) == 0) {
+                echo "<div class=\"error\">Error: Relay $p ($name): Can't turn on for $seconds_on seconds, it's already ON</div>";
+			} else {
+                $relay_on_sec = "$mycodo_client --set $p --seconds $seconds_on";
+                shell_exec($relay_on_sec);
             }
 		}
-	}
+    }
+    
+    // Check if Web Override has been selected to be turned on or off
+    if (isset($_POST['OR'])) {
+		if ($_POST['OR']) $t = 1;
+		else $t = 0;
+		$editconfig = "$mycodo_client --configure $mintemp $maxtemp $minhum $maxhum $t";
+        echo "<pre>test${editconfig}test</pre>";
+        shell_exec($editconfig);
+    }
 
     if ($_POST['ChangeCond']) {
-		$command    = $mycodo_exec . " r";
-		$editconfig = shell_exec($command);
-		$cpiece     = explode(" ", $editconfig);
-		$cpiece[0]  = $_POST['minTemp'];
-		$cpiece[1]  = $_POST['maxTemp'];
-		$cpiece[2]  = $_POST['minHum'];
-        $cpiece[3]  = $_POST['maxHum'];
-		$cpiece[4]  = $_POST['webov'];
-		$editconfig = $mycodo_client . " --configure " . $cpiece[0] . " " . $cpiece[1] . " " . $cpiece[2] . " " . $cpiece[3] . " " . $cpiece[4];
-		shell_exec($editconfig);
-	}
-	
-	if ($_POST['ChangeState']) {
-		$command    = $mycodo_exec . " r";
-		$editconfig = shell_exec($command);
-		$cpiece     = explode(" ", $editconfig);
-		$cpiece[0]  = $_POST['tState'];
-		$cpiece[1]  = $_POST['hState'];
-		$editconfig = $mycodo_exec . " w state " . $cpiece[0] . " " . $cpiece[1];
+		$mintemp  = $_POST['minTemp'];
+		$maxtemp  = $_POST['maxTemp'];
+		$minhum  = $_POST['minHum'];
+        $maxhum  = $_POST['maxHum'];
+		$webor  = $_POST['webor'];
+		$editconfig = "$mycodo_client --configure $mintemp $maxtemp $minhum $maxhum $webor";
 		shell_exec($editconfig);
 	}
 ?>
@@ -122,9 +103,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 	</title>
 	<link rel="stylesheet"  href="style.css" type="text/css" media="all" />
 	<?php 
-	    if (isset($_GET['r'])) {
-		if ($_GET['r'] == 1) echo '<META HTTP-EQUIV="refresh" CONTENT="90">';
-	    }
+	    if (isset($_GET['r']) && $_GET['r'] == 1) echo '<META HTTP-EQUIV="refresh" CONTENT="90">';
 	?>
     </head>
     <body>
@@ -150,42 +129,28 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 	    <div style="clear: both;"></div>
 	    <div style="padding: 10px 0 10px 0;">
 		<?php
-		    $t_c = `tail -n 1 $sensor_log | cut -d' ' -f9`;
-            $t_f = $t_c * (9/5) + 32;
-            $t_c_max = `$mycodo_exe r | cut -d' ' -f2`;
-            $t_c_min = `$mycodo_exe r | cut -d' ' -f1`;
-            $hum = `tail -n 1 $sensor_log | cut -d' ' -f8`;
-            $hum_max = `$mycodo_exe r | cut -d' ' -f4`;
-            $hum_min = `$mycodo_exe r | cut -d' ' -f3`;
-            $dp_c = `tail -n 1 $sensor_log | cut -d' ' -f10`;
-            $dp_f = $dp_c * (9/5) + 32;
-
-		    echo 'RH: ' . $hum . '% | ';
-		    echo 'T: ' . $t_c . '&deg;C / ' . $t_f . '&deg;F | ';
-		    echo 'DP: ' . $dp_c . '&deg;C / '. $dp_f . '&deg;F';
+            echo "RH: ${hum}% | T: $t_c &deg;C / $t_f &deg;F | DP: $dp_c &deg;C / $dp_f &deg;F";
 		?>
 	    </div>
 	    <FORM action="" method="POST">
 		<div style="padding: 5px 0 10px 0;">
 		    Web Override: <b>
             <?php
-                $webor_read = `cat $config_file | grep webor | cut -d' ' -f3`;
-                if ($webor_read == 1) echo "ON";
+                if ($webor == 1) echo "ON";
                 else echo "OFF";
             ?>
             </b>
 		    [<button type="submit" name="OR" value="1">ON</button> <button type="submit" name="OR" value="0">OFF</button>]
 		</div>
 		<?php
-		    require $relay_config;
 		    for ($i = 1; $i <= 8; $i++) {
 		    ?>
-		    <div class="relay-state">Relay 
+		    <div class="relay-state"> 
                 <?php
-                    $name = `cat $config_path/mycodo.cfg | grep relay${i}name | cut -d' ' -f3`;
-                    $pin = `cat $config_path/mycodo.cfg | grep relay${i}pin | cut -d' ' -f3`;
-                    $read = $gpio_path . " -g read " . $pin;
-                    echo $i . ' (' . substr($name, 0, -1) . '): <b>';
+                    $name = substr(`cat $config_file | grep relay${i}name | cut -d' ' -f3`, 0, -1);
+                    $pin = substr(`cat $config_file | grep relay${i}pin | cut -d' ' -f3`, 0, -1);
+                    $read = "$gpio_path -g read $pin";
+                    echo "Relay ${i}: ${name}: pin ${pin}: <b>";
                     if (shell_exec($read) == 1) echo "OFF";
                     else echo "ON";
                 ?></b>
@@ -194,74 +159,45 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 		    </div>
 		    <?php 
 		    }
-        
-        $mintemp = `cat $config_file | grep mintemp | cut -d' ' -f3`;
-        $maxtemp = `cat $config_file | grep maxtemp | cut -d' ' -f3`;
-        $minhum = `cat $config_file | grep minhum | cut -d' ' -f3`;
-        $maxhum = `cat $config_file | grep maxhum | cut -d' ' -f3`;
-        $webor = `cat $config_file | grep webor | cut -d' ' -f3`;
-        $tempstate = `cat $config_file | grep tempstate | cut -d' ' -f3`;
-        $humstate = `cat $config_file | grep humstate | cut -d' ' -f3`;
 		?>
 		<table style="margin: 0 auto; padding-top: 10px;">
 		    <tr>
 			<td>
+			    MinT
 			</td>
 			<td>
-			    MnT
+			    MaxT
 			</td>
 			<td>
-			    MxT
+			    MinH
 			</td>
 			<td>
-			    MnH
-			</td>
-			<td>
-			    MxH
+			    MaxH
 			</td>
 			<td>
 			    wOR
 			</td>
+            <td>
+			</td>
 		    </tr>
 		    <tr>
 			<td>
+			    <input type="text" value="<?php echo $mintemp; ?>" maxlength=2 size=2 name="minTemp" />
+			</td>
+			<td>
+			    <input type="text" value="<?php echo $maxtemp; ?>" maxlength=2 size=2 name="maxTemp" />
+			</td>
+			<td>
+			    <input type="text" value="<?php echo $minhum; ?>" maxlength=2 size=2 name="minHum" />
+			</td>
+			<td>
+			    <input type="text" value="<?php echo $maxhum; ?>" maxlength=2 size=2 name="maxHum" />
+			</td>
+			<td>
+			    <input type="text" value="<?php echo $webor; ?>" maxlength=2 size=2 name="webor" />
+			</td>
+            <td>
 			    <input type="submit" name="ChangeCond" value="Set">
-			</td>
-			<td>
-			    <input type="text" value="<?php echo $mintemp; ?>" maxlength=2 size=1 name="minTemp" />
-			</td>
-			<td>
-			    <input type="text" value="<?php echo $maxtemp; ?>" maxlength=2 size=1 name="maxTemp" />
-			</td>
-			<td>
-			    <input type="text" value="<?php echo $minhum; ?>" maxlength=2 size=1 name="minHum" />
-			</td>
-			<td>
-			    <input type="text" value="<?php echo $maxhum; ?>" maxlength=2 size=1 name="maxHum" />
-			</td>
-			<td>
-			    <input type="text" value="<?php echo $webor; ?>" maxlength=2 size=1 name="webov" />
-			</td>
-		    </tr>
-		    <tr>
-			<td>
-			</td>
-			<td>
-			    tSta
-			</td>
-			<td>
-			    hSta
-			</td>
-		    </tr>
-		    <tr>
-			<td>
-			    <input type="submit" name="ChangeState" value="Set">
-			</td>
-			<td>
-			    <input type="text" value="<?php echo $tempstate; ?>" maxlength=2 size=1 name="tState" />
-			</td>
-			<td>
-			    <input type="text" value="<?php echo $humstate; ?>" maxlength=2 size=1 name="hState" />
 			</td>
 		    </tr>
 		</table>
