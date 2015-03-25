@@ -182,13 +182,11 @@ def usage():
     print '    -w, --write=FILE'
     print '           Write sensor data to log file\n'
 
-# This should be taken care of with GPIO-initialize.py running once at bootup via cron
+# GPIO-initialize.py is executed once at bootup to set all pins HIGH (relays off)
 def GPIOSetup():
-    # Set up GPIO using BCM numbering
+    print "%s [GPIO Initialize] Set GPIO mode to BCM numbering, all as output" % Timestamp()
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
-
-    print "%s [GPIO Initialize] Set GPIO mode to BCM numbering, all as output" % Timestamp()
     GPIO.setup(relayPin[1], GPIO.OUT)
     GPIO.setup(relayPin[2], GPIO.OUT)
     GPIO.setup(relayPin[3], GPIO.OUT)
@@ -501,7 +499,7 @@ def ReadSensors():
             heatindex =  -42.379 + 2.04901523 * tempf + 10.14333127 * humidity - 0.22475541 * tempf * humidity - 6.83783 * 10**-3 * tempf**2 - 5.481717 * 10**-2 * humidity**2 + 1.22874 * 10**-3 * tempf**2 * humidity + 8.5282 * 10**-4 * tempf * humidity**2 - 1.99 * 10**-6 * tempf**2 * humidity**2
             heatindex = (heatindex - 32) * (5.0 / 9.0)
             currentTime = time.time()
-            print "%s [Read Sensors] %s %s %s %s %s" % (Timestamp(), currentTime, humidity, tempc, dewpointc, heatindex)
+            print "%s [Read Sensors] %.0f %.2f %.2f %.2f %.2f" % (Timestamp(), currentTime, humidity, tempc, dewpointc, heatindex)
 
 def ReadCfg(silent):
     global config_file

@@ -43,10 +43,9 @@ if ($login->isUserLoggedIn() == true) {
         <input type="submit" name="Daemon" value="Daemon">
 	</FORM>
     <div style="font-family: monospace;">
-    <pre>
-	<?php
+    <pre><?php
 	    if(isset($_POST['Sensor'])) {
-            echo '<p>Year Mo Day Hour Min Sec Timestamp RH Tc Tf DPf DPc<p>';
+            echo 'Year Mo Day Hour Min Sec Timestamp RH Tc Tf DPf DPc<br> <br>';
             if ($_POST['Lines'] != '') {
                 $Lines = $_POST['Lines'];
                 echo `tail -n $Lines $sensor_log`;
@@ -56,7 +55,7 @@ if ($login->isUserLoggedIn() == true) {
 	    }
 
 	    if(isset($_POST['Relay'])) {
-            echo '<p>Year Mo Day Hour Min Sec R1Sec R2Sec R3Sec R4Sec</p>';
+            echo 'Year Mo Day Hour Min Sec R1Sec R2Sec R3Sec R4Sec<br> <br>';
             if ($_POST['Lines'] != '') {
                 $Lines = $_POST['Lines'];
                 echo `tail -n $Lines $relay_log`;
@@ -66,7 +65,7 @@ if ($login->isUserLoggedIn() == true) {
 	    }
 
 	    if(isset($_POST['Auth'])) {
-            echo '<p>Time, Type of auth, user, IP, Hostname, Referral, Browser</p>';
+            echo 'Time, Type of auth, user, IP, Hostname, Referral, Browser<br> <br>';
             if ($_POST['Lines'] != '') {
                 $Lines = $_POST['Lines'];
                 echo `tail -n $Lines $auth_log`;

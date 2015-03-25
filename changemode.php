@@ -56,14 +56,14 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 	// Check if a relay has been selected to be turned on or off
 	for ($p = 1; $p <= 8; $p++) {
 		if (isset($_POST['R' . $p])) {
-			global $mycodo_client, $relay_config;
+			global $config_path, $relay_config;
 			
 			$r_state = $gpio_path . " read " . $relay[$relay_change][2];
 			if (shell_exec($r_state) == 1 && $state == 1) echo '<div class="error">Error: Relay ' . ($relay_change+1) . ': Can\'t turn on, it\'s already ON</div>';
 			else {
-				$gpio_write = $mycodo_client . ' --relay ' . $p . ' ' . $_POST['R' .$p];
+                $pin = `cat $config_path/mycodo.cfg | grep relay${p}pin | cut -d' ' -f3`;
+				$gpio_write = $gpio_path . ' -g write ' . substr($pin, 0, -1) . ' ' . $_POST['R' .$p];
 				shell_exec($gpio_write);
-                sleep(5);
 			}
 		}
     }
@@ -167,7 +167,13 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 	    </div>
 	    <FORM action="" method="POST">
 		<div style="padding: 5px 0 10px 0;">
-		    Web Override: <b><?php $webor_read = `cat $config_file | grep webor | cut -d' ' -f3`; if ($webor_read == 1) echo "ON"; else echo "OFF"; ?></b>
+		    Web Override: <b>
+            <?php
+                $webor_read = `cat $config_file | grep webor | cut -d' ' -f3`;
+                if ($webor_read == 1) echo "ON";
+                else echo "OFF";
+            ?>
+            </b>
 		    [<button type="submit" name="OR" value="1">ON</button> <button type="submit" name="OR" value="0">OFF</button>]
 		</div>
 		<?php
