@@ -191,7 +191,7 @@ tmpfs    /var/spool/mqueue    tmpfs    defaults,noatime,nosuid,mode=0700,gid=12,
 
 Apache does not start if there is not a proper directory structure set up in /var/log for its log files. The creation of /var/log as a tempfs means that at every bootup this directory is empty. This script will ensure that the proper directory structure is created before Apache is started.
 
-`sudo cp /var/www/mycodo/source/apache2-tmpfs /etc/init.d/`
+`sudo cp /var/www/mycodo/source/init.d/apache2-tmpfs /etc/init.d/`
 
 `sudo chmod 0755 /etc/init.d/apache2-tmpfs`
 
@@ -243,14 +243,19 @@ The following will enable automatic logging and relay control.
 
 Once the following init is set, the relays may become energized, depending on what the ranges are set. Check that the sensors are properly working by testing if the script 'sudo mycodo.py -r SENSOR' can display sensor data, as well as if gpio can alter the GPIO, with 'sudo mycodo.py -c [pin] --state [value], where pin is the GPIO pin and value is 1=on or 0=off.
 
+`sudo cp /var/www/mycodo/init.d/mycodo /etc/init.d/`
+
+`sudo chmod 0755 /etc/init.d/mycodo`
+
+`sudo update-rc.d mycodo defaults`
+
 Set up the daemon to automatically log sensor data and alter relays with the following commands
 
-```
-*/2 * * * * /usr/bin/python /var/www/mycodo/cgi-bin/sense.py -w /var/www/mycodo/log/sensor.log
-```
+Open crontab with `sudo crontab -e`, add the following lines, then sanve with `Ctrl+e`
 
-````
-@reboot /var/www/mycodo/cgi-bin/mycodo-auto.sh
+```
+@reboot /usr/bin/python /var/www/mycodo/cgi-bin/GPIO-initialize.py &
+@reboot /var/www/mycodo/cgi-bin/mycodo-auto.sh &
 ```
 
 <a name="web-interface"></a>

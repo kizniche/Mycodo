@@ -13,8 +13,9 @@ $sensor_log = $cwd . "/log/sensor.log";
 $mycodo_exe = $cwd . "/cgi-bin/mycodo";
 $graph_exec = $cwd . "/cgi-bin/graph.sh";
 
+
 if (version_compare(PHP_VERSION, '5.3.7', '<')) {
-    exit("Sorry, Simple PHP Login does not run on a PHP version smaller than 5.3.7 !");
+    exit("PHP Login does not run on PHP versions before 5.3.7, please update your version of PHP");
 } else if (version_compare(PHP_VERSION, '5.5.0', '<')) {
     require_once("libraries/password_compatibility_library.php");
 }
@@ -25,11 +26,8 @@ require_once("classes/Login.php");
 $login = new Login();
 
 if ($login->isUserLoggedIn() == true) {
-
+	global $sensor_log, $mycodo_exe;
     $page = isset($_GET['page']) ? $_GET['page'] : 'Main';
-
-    global $sensor_log, $mycodo_exe;
-
     $t_c = `tail -n 1 $sensor_log | cut -d' ' -f9`;
     $t_f = $t_c * (9/5) + 32;
     $t_c_max = `$mycodo_exe r | cut -d' ' -f2`;
@@ -39,7 +37,6 @@ if ($login->isUserLoggedIn() == true) {
     $hum_min = `$mycodo_exe r | cut -d' ' -f3`;
     $dp_c = `tail -n 1 $sensor_log | cut -d' ' -f10`;
     $dp_f = $dp_c * (9/5) + 32;
-
     $time_now = `date +"%Y-%m-%d %H:%M:%S"`;
     $time_last = `tail -n 1 $sensor_log | cut -d' ' -f1,2,3,4,5,6`;
     $time_last[4] = '-';
@@ -47,7 +44,6 @@ if ($login->isUserLoggedIn() == true) {
     $time_last[13] = ':';
     $time_last[16] = ':';
 ?>
-
 <html>
     <head>
 	<title>Mycodo - <?php echo $page; ?></title>
@@ -63,13 +59,11 @@ if ($login->isUserLoggedIn() == true) {
 		    window.open("image.php?span=legend-full","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=600, height=385");
 	    }
 	</script>
-
 	<?php
 	    if (isset($_GET['r'])) {
 		if ($_GET['r'] == 1) echo "<META HTTP-EQUIV=\"refresh\" CONTENT=\"90\">";
 	    }
 	?>
-
     </head>
     <body bgcolor="white">
 	<table>
@@ -154,17 +148,12 @@ if ($login->isUserLoggedIn() == true) {
 			</tr>
 			<tr>
 			    <td class=link>
-				<a style="display: block;" href="camera-still.php" target="_blank">Camera Image</a>
+				Camera <a href="camera-still.php" target="_blank">Image</a> / <a href="camera-stream.php" target="_blank">Stream</a>
 			    </td>
 			</tr>
 			<tr>
 			    <td class=link>
-				<a style="display: block;" href="camera-stream.php" target="_blank">Camera Stream</a>
-			    </td>
-			</tr>
-			<tr>
-			    <td class=link>
-				<a style="display: block;" href="history.php" target="_blank">Display Logs</a>
+				<a style="display: block;" href="history.php" target="_blank">View Logs</a>
 			    </td>
 			</tr>
 			<tr>
@@ -256,7 +245,6 @@ if ($login->isUserLoggedIn() == true) {
 	</table>
     </body>
 </html>
-
 <?php
 } else include("views/not_logged_in.php");
 
@@ -273,5 +261,4 @@ function menu_item($id, $title, $current) {
 	    } else echo $title;
 	    echo '</td></tr>';
 }
-
 ?>

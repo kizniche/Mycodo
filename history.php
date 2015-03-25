@@ -43,14 +43,15 @@ if ($login->isUserLoggedIn() == true) {
         <input type="submit" name="Daemon" value="Daemon">
 	</FORM>
     <div style="font-family: monospace;">
+    <pre>
 	<?php
 	    if(isset($_POST['Sensor'])) {
             echo '<p>Year Mo Day Hour Min Sec Timestamp RH Tc Tf DPf DPc<p>';
             if ($_POST['Lines'] != '') {
                 $Lines = $_POST['Lines'];
-                echo `tail -n $Lines $sensor_log | sed 's/$/<br>/'`;
+                echo `tail -n $Lines $sensor_log`;
             } else {
-                echo `tail -n 20 $sensor_log | sed 's/$/<br>/'`;
+                echo `tail -n 20 $sensor_log`;
             }
 	    }
 
@@ -58,9 +59,9 @@ if ($login->isUserLoggedIn() == true) {
             echo '<p>Year Mo Day Hour Min Sec R1Sec R2Sec R3Sec R4Sec</p>';
             if ($_POST['Lines'] != '') {
                 $Lines = $_POST['Lines'];
-                echo `tail -n $Lines $relay_log | sed 's/$/<br>/'`;
+                echo `tail -n $Lines $relay_log`;
             } else {
-                echo `tail -n 20 $relay_log | sed 's/$/<br>/'`;
+                echo `tail -n 20 $relay_log`;
             }
 	    }
 
@@ -68,20 +69,21 @@ if ($login->isUserLoggedIn() == true) {
             echo '<p>Time, Type of auth, user, IP, Hostname, Referral, Browser</p>';
             if ($_POST['Lines'] != '') {
                 $Lines = $_POST['Lines'];
-                echo `tail -n $Lines $auth_log | sed 's/$/<br>/'`;
+                echo `tail -n $Lines $auth_log`;
             } else {
-                echo `tail -n 20 $auth_log | sed 's/$/<br>/'`;
+                echo `tail -n 20 $auth_log`;
             }
 	    }
 	    if(isset($_POST['Daemon'])) {
             if ($_POST['Lines'] != '') {
                 $Lines = $_POST['Lines'];
-                echo `tail -n $Lines $daemon_log | sed 's/$/<br>/'`;
+                echo `tail -n $Lines $daemon_log`;
             } else {
-                echo `tail -n 20 $daemon_log | sed 's/$/<br>/'`;
+                echo `tail -n 20 $daemon_log`;
             }
 	    }
 	?>
+    </pre>
     </div>
     </body>
 </html>

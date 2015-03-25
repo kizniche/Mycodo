@@ -9,18 +9,20 @@
 
 ####### Configure #######
 $gpio_path = "/usr/local/bin/gpio";
+$config_path = "/var/www/mycodo/config";
 
 $cwd = getcwd();
-$mycodo_exec = $cwd . "/cgi-bin/mycodo";
 
+$mycodo_exec = $cwd . "/cgi-bin/mycodo";
 $mycodo_client = $cwd . "/cgi-bin/mycodo-client.py";
 
 $relay_exec = $cwd . "/cgi-bin/relay.sh";
 $sensor_log = $cwd . "/log/sensor.log";
-$config_file = $cwd . "/config/mycodo.cfg";
-$config_cond_file = $cwd . "/config/mycodo-cond.conf";
-$config_state_file = $cwd . "/config/mycodo-state.conf";
-$relay_config = $cwd . "/config/relay_config.php";
+
+$config_file = $config_path . "/mycodo.cfg";
+$config_cond_file = $config_path . "/mycodo-cond.conf";
+$config_state_file = $config_path . "/mycodo-state.conf";
+$relay_config = $config_path . "/relay_config.php";
 
 if (version_compare(PHP_VERSION, '5.3.7', '<')) {
     exit("Sorry, Simple PHP Login does not run on a PHP version smaller than 5.3.7 !");
@@ -54,16 +56,14 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 	// Check if a relay has been selected to be turned on or off
 	for ($p = 1; $p <= 8; $p++) {
 		if (isset($_POST['R' . $p])) {
-			global $gpio_path, $relay_config;
-			require $relay_config;
+			global $mycodo_client, $relay_config;
 			
 			$r_state = $gpio_path . " read " . $relay[$relay_change][2];
 			if (shell_exec($r_state) == 1 && $state == 1) echo '<div class="error">Error: Relay ' . ($relay_change+1) . ': Can\'t turn on, it\'s already ON</div>';
 			else {
-				$gpio_mode = $gpio_path . ' mode ' . $relay[($p - 1)][2] . ' out';
-				$gpio_write = $gpio_path . ' write ' . $relay[($p - 1)][2] . ' ' . $_POST['R' .$p];
-				shell_exec($gpio_mode);
+				$gpio_write = $mycodo_client . ' --relay ' . $p . ' ' . $_POST['R' .$p];
 				shell_exec($gpio_write);
+                sleep(5);
 			}
 		}
     }
@@ -174,10 +174,17 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 		    require $relay_config;
 		    for ($i = 1; $i <= 8; $i++) {
 		    ?>
-		    <div class="relay-state">
-			Relay <?php echo $i . ' (' . $relay[$i-1][1] . '): <b>'; $read = $gpio_path . " read " . $relay[$i-1][2]; if (shell_exec($read) == 1) echo "ON"; else echo "OFF"; ?></b>
-			[<button type="submit" name="R<?php echo $i; ?>" value="1">ON</button> <button type="submit" name="R<?php echo $i; ?>" value="0">OFF</button>] [<input type="text" maxlength=3 size=3 name="sR<?php echo $i; ?>" /> sec 
-			<input type="submit" name="<?php echo $i; ?>secON" value="ON">]
+		    <div class="relay-state">Relay 
+                <?php
+                    $name = `cat $config_path/mycodo.cfg | grep relay${i}name | cut -d' ' -f3`;
+                    $pin = `cat $config_path/mycodo.cfg | grep relay${i}pin | cut -d' ' -f3`;
+                    $read = $gpio_path . " -g read " . $pin;
+                    echo $i . ' (' . substr($name, 0, -1) . '): <b>';
+                    if (shell_exec($read) == 1) echo "OFF";
+                    else echo "ON";
+                ?></b>
+                [<button type="submit" name="R<?php echo $i; ?>" value="1">OFF</button> <button type="submit" name="R<?php echo $i; ?>" value="0">ON</button>] [<input type="text" maxlength=3 size=3 name="sR<?php echo $i; ?>" /> sec 
+                <input type="submit" name="<?php echo $i; ?>secON" value="ON">]
 		    </div>
 		    <?php 
 		    }
