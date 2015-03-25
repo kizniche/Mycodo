@@ -22,10 +22,8 @@ def usage():
     print 'Options:'
     print '    -c  --configure='
     print '           Set '
-    print '    -l  --low=RELAY'
-    print '           Set RELAY GPIO Low'
-    print '    -h  --high=RELAY'
-    print '           Set RELAY GPIO High'
+    print '    -r  --relay [RELAY] [1/0]'
+    print '           Set RELAY pin high (1) or low (0)'
     print '    -s  --set='
     print '           Set'
     print '        --seconds='
@@ -39,7 +37,7 @@ def menu():
         sys.exit(1)
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'c:h:l:s:t', ["configure=", "high", "low", "seconds=", "set=", "terminate"])
+        opts, args = getopt.getopt(sys.argv[1:], 'c:r:s:t', ["configure=", "relay=", "seconds=", "set=", "terminate"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -48,21 +46,12 @@ def menu():
         if opt in ("-c", "--configure"):
             c.root.ChangeConditions(int(float(sys.argv[2])), int(float(sys.argv[3])), int(float(sys.argv[4])), int(float(sys.argv[5])), int(float(sys.argv[6])))
             sys.exit(0)
-        elif opt in ("-h", "--high"):
-            if RepresentsInt(arg) and int(float(arg)) < 9 and int(float(arg)) > 0:
-                print '%s [Remote command] Set relay %s GPIO High: Server returned:' % (Timestamp(), arg),
-                if c.root.GPIOHigh(arg) == 1:
-                    print 'success'
-                else:
-                    print 'fail'
-                sys.exit(0)
-            else:
-                print 'Error: input must be an integer between 1 and 8'
-                sys.exit(1)
-        elif opt in ("-l", "--low"):
-            if RepresentsInt(arg) and int(float(arg)) < 9 and int(float(arg)) > 0:
-                print '%s [Remote command] Set relay %s GPIO Low: Server returned:' % (Timestamp(), arg),
-                if c.root.GPIOLow(arg) == 1:
+        elif opt in ("-r", "--relay"):
+            if RepresentsInt(sys.argv[2]) and int(float(sys.argv[2])) < 9 and int(float(sys.argv[2])) > 0:
+                print sys.argv[2]
+                print sys.argv[3]
+                print '%s [Remote command] Set relay %s GPIO to %s: Server returned:' % (Timestamp(), int(float(sys.argv[2])), int(float(sys.argv[3]))),
+                if c.root.ChangeRelay(int(float(sys.argv[2])), int(float(sys.argv[3]))) == 1:
                     print 'success'
                 else:
                     print 'fail'

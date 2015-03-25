@@ -96,17 +96,13 @@ ClientArg1 = ''
 ClientArg2 = ''
 
 class ComServer(rpyc.Service):
-    def exposed_GPIOLow(self, remoteCommand):
+    def exposed_ChangeRelay(self, remoteCommand, remoteCommand2):
         global ClientQue
         global ClientArg1
+        global ClientArg2
         ClientArg1 = int(float(remoteCommand))
-        ClientQue = 'GPIOLow'
-        return 1
-    def exposed_GPIOHigh(self, remoteCommand):
-        global ClientQue
-        global ClientArg1
-        ClientArg1 = int(float(remoteCommand))
-        ClientQue = 'GPIOHigh'
+        ClientArg2 = int(float(remoteCommand2))
+        ClientQue = 'ChangeRelay'
         return 1
     def exposed_Terminate(self, remoteCommand):
         global ClientQue
@@ -167,8 +163,8 @@ def usage():
     print 'Options:'
     print '    -c, --change=RELAY'
     print '           Change the state of a relay (--state required)'
-    print '        --state=[0/1/X]'
-    print '           Change the state of RELAY to on (1), off (0), or (X) number of seconds on'
+    print '        --state=[ON/OFF/X]'
+    print '           Change the state of RELAY to ON, OFF, or (X) number of seconds on'
     print '    -d, --daemon'
     print '           Start program as daemon that monitors conditions and modulates relays'
     print '    -h, --help'
@@ -186,6 +182,7 @@ def usage():
     print '    -w, --write=FILE'
     print '           Write sensor data to log file\n'
 
+# This should be taken care of with GPIO-initialize.py running once at bootup via cron
 def GPIOSetup():
     # Set up GPIO using BCM numbering
     GPIO.setmode(GPIO.BCM)
@@ -221,29 +218,26 @@ def menu():
                 global relaySelect
                 relaySelect = arg
         elif opt == "--state":
-            if not RepresentsInt(arg) or int(float(arg)) < 0:
-                print 'Error: --state only accepts integrers'
-            else:
-                global relayState
-                relayState = arg
-            if relayState == '0' or relayState == '1':
-                print '%s [GPIO Write] Requested change of relay %s to' % (Timestamp(), relaySelect)
-                if relayState == '1': print 'On'
-                elif relayState == '0': print 'Off'
+            if RepresentsInt(arg) and int(float(arg)) > 1 or (arg == 'OFF' or arg == 'ON'):
                 ReadCfg(0)
-                GPIOSetup()
-                ChangeRelay(int(float(relaySelect)), int(float(relayState)))
-                GPIORead()
-                sys.exit(0)
-            elif relayState > 1:
-                ReadCfg(0)
-                GPIOSetup()
-                RelayOnDuration(int(float(relaySelect)), int(float(relayState)))
-                sys.exit(0)
-            else:
-                print 'Error: 0 and positive integers are the only acceptable options for --state'
-                usage()
-                sys.exit(1)
+                if arg == 'ON':
+                    print '%s [GPIO Write] Requested change of relay %s to ON' % (Timestamp(), relaySelect)
+                    ChangeRelay(int(float(relaySelect)), 0)
+                    GPIORead()
+                    sys.exit(0)
+                if arg == 'OFF':
+                    print '%s [GPIO Write] Requested change of relay %s to OFF' % (Timestamp(), relaySelect)
+                    ChangeRelay(int(float(relaySelect)), 1)
+                    GPIORead()
+                    sys.exit(0)
+                elif int(float(arg)) > 1:
+                    print '%s [GPIO Write] Requested change of relay %s to ON for %s seconds' % (Timestamp(), int(float(arg)))
+                    RelayOnDuration(int(float(relaySelect)), int(float(arg)))
+                    sys.exit(0)
+                else:
+                    print 'Error: --state only accepts ON, OFF, or integrers above 1'
+                    usage()
+                    sys.exit(1)
         elif opt in ("-d", "--daemon"):
             Daemon()
             sys.exit(0)
@@ -268,7 +262,6 @@ def menu():
                 sys.exit(0)
         elif opt in ("-p", "--pin"):
             ReadCfg(0)
-            GPIOSetup()
             GPIORead()
             sys.exit(0)
         elif opt in ("-r", "--read"):
@@ -328,20 +321,13 @@ def Daemon():
     print '%s [Daemon] Communication server started as daemon thread' % Timestamp()
     ReadCfg(1)
     print '%s [Daemon] Initial configuration read to set variables' % Timestamp()
-    GPIOSetup()
     timerOne = 0
     timerTwo = 0
     while True:
         if ClientQue != '0':
-            if ClientQue == 'GPIOLow':
-                GPIOSetup()
-                print '%s [Client command] Set Relay %s GPIO LOW' % (Timestamp(), ClientArg1)
-                ChangeRelay(ClientArg1, 0)
-                GPIORead()
-            elif ClientQue == 'GPIOHigh':
-                GPIOSetup()
-                print '%s [Client command] Set Relay %s GPIO HIGH' % (Timestamp(), ClientArg1)
-                ChangeRelay(ClientArg1, 1)
+            if ClientQue == 'ChangeRelay':
+                print '%s [Client command] Set Relay %s GPIO to %s' % (Timestamp(), ClientArg1, ClientArg1)
+                ChangeRelay(ClientArg1, ClientArg2)
                 GPIORead()
             elif ClientQue == 'ChangeConditions':
                 print '%s [Client command] Change: minTemp: %s, maxTemp: %s, minHum: %s, maxHum: %s, webOR: %s' % (Timestamp(), minTemp, maxTemp, minHum, maxHum, webOR)
@@ -388,7 +374,9 @@ def ChangeRelay(Select, State):
 def GPIORead():
     print '%s [GPIO Read]' % Timestamp(),
     for x in range(1, 9):
-        print 'Relay %s: %s  ' % (x, GPIO.input(relayPin[x])),
+        print 'Relay %s:' % x,
+        if GPIO.input(relayPin[x]): print 'OFF,',
+        else: print 'ON, ',
         if x == 4: print '\n%s [GPIO Read]' % Timestamp(),
         if x == 8: print ''
 
@@ -426,7 +414,7 @@ def WriteSensorLog():
                 print '%s [Write Sensor Log] Unable to append data to %s' % (Timestamp(), sensor_log_file)
                 
     if os.path.isfile(sensor_lock_path):
-        print '%s [Write Sensor Log] Removing lock file %s' % (Timestamp(), sensor_lock_path)
+        print '%s [Write Sensor Log] Removing lock: %s' % (Timestamp(), sensor_lock_path)
         os.remove(sensor_lock_path)
     else:
         print "%s [Write Sensor Log] Unable to remove lock file %s because it doesn't exist!" % (Timestamp(), sensor_lock_path)
@@ -486,31 +474,34 @@ def ReadSensors():
     chktemp = 1
 
     print '%s [Read Sensors] Temperature/humidity reading one:' % Timestamp(),
+    sys.stdout.flush()
     humidity2, tempc2 = Adafruit_DHT.read_retry(sensor, dhtPin)
     print '%.2f°C, %.2f%%' % (tempc2, humidity2)
-    time.sleep(3);
+    time.sleep(2);
     print '%s [Read Sensors] Temperature/humidity reading two:' % Timestamp(),
+    sys.stdout.flush()
 
     while(chktemp):
         humidity, tempc = Adafruit_DHT.read_retry(sensor, dhtPin)
         print '%.2f°C, %.2f%%' % (tempc2, humidity2)
         print '%s [Read Sensors] Differences: %.2f°C, %.2f%%' % (Timestamp(), abs(tempc2-tempc), abs(humidity2-humidity))
-        if (abs(tempc2-tempc) > 1 and abs(humidity2-humidity) > 1):
+        if abs(tempc2-tempc) > 1 or abs(humidity2-humidity) > 1:
             tempc2 = tempc
             humidity2 = humidity
             chktemp = 1
-            print "%s [Read Sensors] Successive readings >1 difference: Wait 3 sec to stabilize: rereading..." % Timestamp(),
-            time.sleep(3)
+            print "%s [Read Sensors] Successive readings >1 difference: Rereading..." % Timestamp(),
+            sys.stdout.flush()
+            time.sleep(2)
         else:
             chktemp = 0
             print "%s [Read Sensors] Successive readings <1 difference: keeping." % Timestamp()
             tempf = float(tempc) * 9 / 5 + 32
             dewpointc = tempc - ((100 - humidity)/ 5)
-            dewpointf = (tempc - ((100 - humidity)/ 5)) * 9 / 5 + 32
+            dewpointf = dewpointc * 9 / 5 + 32
             heatindex =  -42.379 + 2.04901523 * tempf + 10.14333127 * humidity - 0.22475541 * tempf * humidity - 6.83783 * 10**-3 * tempf**2 - 5.481717 * 10**-2 * humidity**2 + 1.22874 * 10**-3 * tempf**2 * humidity + 8.5282 * 10**-4 * tempf * humidity**2 - 1.99 * 10**-6 * tempf**2 * humidity**2
             heatindex = (heatindex - 32) * (5.0 / 9.0)
             currentTime = time.time()
-            print "{0} [Read Sensors] {1:.0f} {2:.1f} {3:.1f} {4:.1f} {5:.1f}".format(datetime.datetime.now().strftime("%Y %m %d %H %M %S"), currentTime, humidity, tempc, dewpointc, heatindex)
+            print "%s [Read Sensors] %s %s %s %s %s" % (Timestamp(), currentTime, humidity, tempc, dewpointc, heatindex)
 
 def ReadCfg(silent):
     global config_file
@@ -769,7 +760,9 @@ def CheckVariableName():
 
 def Timestamp():
     return datetime.datetime.fromtimestamp(time.time()).strftime('%Y %m %d %H %M %S')
- 
+
+ReadCfg(1)
+GPIOSetup()
 menu()
 usage()
 sys.exit(0)
