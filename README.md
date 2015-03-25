@@ -239,9 +239,9 @@ This can be changed back with the following command if you wish to create more u
 <a name="cron"></a>
 ### Daemon Setup
 
-The following will enable automatic logging and relay control.
+Set the proper pin numbers in config/mycodo.cfg by referencing the GPIO BCM numbering for your particular board. These should be connected from your GPIO pins to your relay control pins.
 
-Once the following init is set, the relays may become energized, depending on what the ranges are set. Check that the sensors are properly working by testing if the script 'sudo mycodo.py -r SENSOR' can display sensor data, as well as if gpio can alter the GPIO, with 'sudo mycodo.py -c [pin] --state [value], where pin is the GPIO pin and value is 1=on or 0=off.
+Once the following init is set and the device is rebooted, the relays may become energized, depending on what the ranges are set. Check that the sensors are properly working by testing if the script 'sudo mycodo.py -r SENSOR' can display sensor data, as well as if the GPIO can be altered with 'sudo mycodo.py -c [RELAY] --state [ON/OFF/X], where RELAY is the relay number and the state is either ON, OFF, or an integer greater than 1 (for turning the relay on for X number of seconds).
 
 `sudo cp /var/www/mycodo/init.d/mycodo /etc/init.d/`
 
@@ -257,6 +257,10 @@ Open crontab with `sudo crontab -e`, add the following lines, then sanve with `C
 @reboot /usr/bin/python /var/www/mycodo/cgi-bin/GPIO-initialize.py &
 @reboot /var/www/mycodo/cgi-bin/mycodo-auto.sh &
 ```
+
+Reboot to allow everything to start up
+
+`sudo apt-get shutdown -r`
 
 <a name="web-interface"></a>
 ### Web Interface Login
