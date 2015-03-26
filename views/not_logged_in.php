@@ -13,7 +13,9 @@
     <input type="submit" name="login" value="<?php echo WORDING_LOGIN; ?>" />
 </form>
 
-<?php /*<a href="register.php"><?php echo WORDING_REGISTER_NEW_ACCOUNT; ?></a>*/ ?>
+<?php
+	/*<a href="register.php"><?php echo WORDING_REGISTER_NEW_ACCOUNT; ?></a>*/
+?>
 <a href="password_reset.php"><?php echo WORDING_FORGOT_MY_PASSWORD; ?></a>
 
 <?php include('_footer.php'); ?>

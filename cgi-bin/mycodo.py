@@ -467,6 +467,10 @@ def Daemon():
                 SyncPrint("%s [Client command] Change: setTemp: %.1f°C, setHum: %.1f, webOR: %s" % (Timestamp(), setTemp, setHum, webOR), 1)
                 SyncPrint("%s [Client command] Change: Temperature: P: %.1f, I: %.1f D: %.1f, factorTempSeconds: %s" % (Timestamp(), Temp_P, Temp_I, Temp_D, factorTempSeconds), 1)
                 SyncPrint("%s [Client command] Change: Humidity:    P: %.1f, I: %.1f D: %.1f, factorHumSeconds:  %s" % (Timestamp(), Hum_P, Hum_I, Hum_D, factorHumSeconds), 1)
+                p_hum = Humidity_PID(Hum_P,Hum_I,Hum_D)
+                p_hum.setPoint(setHum)
+                p_temp = Temperature_PID(Temp_P,Temp_I,Temp_D)
+                p_temp.setPoint(setTemp)
                 WriteCfg()
             elif ClientQue == 'RelayOnSec':
                 SyncPrint("%s [Client command] Set Relay %s on for %s seconds" % (Timestamp(), ClientArg1, ClientArg2), 1)
