@@ -14,7 +14,7 @@
     - [TempFS Setup](#tempfs)
     - [Apache2 Setup](#apache2)
     - [MySQL and User Setup](#mysql)
-    - [Cron Setup](#cron)
+    - [Daemon Setup](#cron)
 + [Web Interface login](#web-interface)
 + [Useful Links](#links)
 
@@ -239,7 +239,7 @@ This can be changed back with the following command if you wish to create more u
 <a name="cron"></a>
 ### Daemon Setup
 
-Set the proper pin numbers in config/mycodo.cfg by referencing the GPIO BCM numbering for your particular board. These should be connected from your GPIO pins to your relay control pins.
+Set the proper pin numbers in config/mycodo.cfg by referencing the GPIO BCM numbering for your particular board. These GPIO pins should be connected to your relay control pins.
 
 Once the following init is set and the device is rebooted, the relays may become energized, depending on what the ranges are set. Check that the sensors are properly working by testing if the script 'sudo mycodo.py -r SENSOR' can display sensor data, as well as if the GPIO can be altered with 'sudo mycodo.py -c [RELAY] --state [ON/OFF/X], where RELAY is the relay number and the state is either ON, OFF, or an integer greater than 1 (for turning the relay on for X number of seconds).
 
@@ -251,7 +251,7 @@ Once the following init is set and the device is rebooted, the relays may become
 
 Set up the daemon to automatically log sensor data and alter relays with the following commands
 
-Open crontab with `sudo crontab -e`, add the following lines, then sanve with `Ctrl+e`
+Open crontab with `sudo crontab -e`, add the following lines, then save with `Ctrl+e`
 
 ```
 @reboot /usr/bin/python /var/www/mycodo/cgi-bin/GPIO-initialize.py &
@@ -274,7 +274,6 @@ Congratulations on using my software, however it may not be the latest version, 
 
 https://github.com/kizniche/Automated-Mushroom-Cultivator  
 http://KyleGabriel.com
-
 
 								- Kyle Gabriel -
 								
