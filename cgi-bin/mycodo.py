@@ -96,6 +96,10 @@ ClientArg1 = ''
 ClientArg2 = ''
 
 class ComServer(rpyc.Service):
+    def exposed_Terminate(self, remoteCommand):
+        global ClientQue
+        ClientQue = 'TerminateServer'
+        return 1
     def exposed_ChangeRelay(self, remoteCommand, remoteCommand2):
         global ClientQue
         global ClientArg1
@@ -103,10 +107,6 @@ class ComServer(rpyc.Service):
         ClientArg1 = int(float(remoteCommand))
         ClientArg2 = int(float(remoteCommand2))
         ClientQue = 'ChangeRelay'
-        return 1
-    def exposed_Terminate(self, remoteCommand):
-        global ClientQue
-        ClientQue = 'TerminateServer'
         return 1
     def exposed_RelayOnSec(self, remoteCommand, remoteCommand2):
         global ClientQue
@@ -143,12 +143,12 @@ class RelayOnSecThread(threading.Thread):
         self.relaySelect = relaySelect
         self.relaySeconds = relaySeconds
     def run(self):
-        if GPIO.input(relayPin[self.relaySelect]) == 0:
+        if GPIO.input(relayPin[self.relaySelect]) == 1:
             WriteRelayLog(self.relaySelect, self.relaySeconds)
             print '%s [Relay Duration] Turning relay %s (%s) on for %s seconds' % (Timestamp(), self.relaySelect, relayName[self.relaySelect], self.relaySeconds)
-            GPIO.output(relayPin[self.relaySelect], 1)
-            time.sleep(self.relaySeconds)
             GPIO.output(relayPin[self.relaySelect], 0)
+            time.sleep(self.relaySeconds)
+            GPIO.output(relayPin[self.relaySelect], 1)
             print '%s [Relay Duration] Turning relay %s (%s) off (was on for %s seconds)' % (Timestamp(), self.relaySelect, relayName[self.relaySelect], self.relaySeconds)
         else:
             print "%s [Relay Duration] Abort: Requested relay %s (%s) on for %s seconds, but it's already on!" % (Timestamp(), self.relaySelect, relayName[self.relaySelect], self.relaySeconds)
