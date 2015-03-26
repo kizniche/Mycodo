@@ -37,10 +37,20 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
     $dp_f = $dp_c * (9/5) + 32;
     
     $mintemp = substr(`cat $config_file | grep mintemp | cut -d' ' -f3`, 0, -1);
-    $maxtemp = substr(`cat $config_file | grep maxtemp | cut -d' ' -f3`, 0, -1);
+    $settemp = substr(`cat $config_file | grep settemp | cut -d' ' -f3`, 0, -1);
     $minhum = substr(`cat $config_file | grep minhum | cut -d' ' -f3`, 0, -1);
-    $maxhum = substr(`cat $config_file | grep maxhum | cut -d' ' -f3`, 0, -1);
+    $sethum = substr(`cat $config_file | grep sethum | cut -d' ' -f3`, 0, -1);
     $webor = substr(`cat $config_file | grep webor | cut -d' ' -f3`, 0, -1);
+    
+    $temp_p  = substr(`cat $config_file | grep temp_p | cut -d' ' -f3`, 0, -1);
+    $temp_i  = substr(`cat $config_file | grep temp_i | cut -d' ' -f3`, 0, -1);
+    $temp_d  = substr(`cat $config_file | grep temp_d | cut -d' ' -f3`, 0, -1);
+    $hum_p  = substr(`cat $config_file | grep hum_p | cut -d' ' -f3`, 0, -1);
+    $hum_i  = substr(`cat $config_file | grep hum_i | cut -d' ' -f3`, 0, -1);
+    $hum_d  = substr(`cat $config_file | grep hum_d | cut -d' ' -f3`, 0, -1);
+    
+    $factorhumseconds = substr(`cat $config_file | grep factorhumseconds | cut -d' ' -f3`, 0, -1);
+    $factortempseconds = substr(`cat $config_file | grep factortempseconds | cut -d' ' -f3`, 0, -1);
         
 	for ($p = 1; $p <= 8; $p++) {
         // Relay has been selected to be turned on or off
@@ -80,18 +90,22 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
     if (isset($_POST['OR'])) {
 		if ($_POST['OR']) $t = 1;
 		else $t = 0;
-		$editconfig = "$mycodo_client --configure $mintemp $maxtemp $minhum $maxhum $t";
-        echo "<pre>test${editconfig}test</pre>";
+		$editconfig = "$mycodo_client --webor $t";
         shell_exec($editconfig);
     }
-
-    if ($_POST['ChangeCond']) {
-		$mintemp  = $_POST['minTemp'];
-		$maxtemp  = $_POST['maxTemp'];
-		$minhum  = $_POST['minHum'];
-        $maxhum  = $_POST['maxHum'];
-		$webor  = $_POST['webor'];
-		$editconfig = "$mycodo_client --configure $mintemp $maxtemp $minhum $maxhum $webor";
+    
+    if ($_POST['ChangePID']) {
+        $settemp  = $_POST['setTemp'];
+		$temp_p  = $_POST['Temp_P'];
+		$temp_i  = $_POST['Temp_I'];
+        $temp_d  = $_POST['Temp_D'];
+        $sethum  = $_POST['setHum'];
+        $hum_p  = $_POST['Hum_P'];
+        $hum_i  = $_POST['Hum_I'];
+        $hum_d  = $_POST['Hum_D'];
+        $factorhumseconds = $_POST['factorHumSeconds'];
+        $factortempseconds = $_POST['factorTempSeconds'];
+		$editconfig = "$mycodo_client --conditions $settemp $temp_p $temp_i $temp_d $sethum $hum_p $hum_i $hum_d $factortempseconds $factorhumseconds";
 		shell_exec($editconfig);
 	}
 ?>
@@ -133,7 +147,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 		?>
 	    </div>
 	    <FORM action="" method="POST">
-		<div style="padding: 5px 0 10px 0;">
+        <div style="padding: 5px 0 10px 0;">
 		    Web Override: <b>
             <?php
                 if ($webor == 1) echo "ON";
@@ -142,6 +156,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
             </b>
 		    [<button type="submit" name="OR" value="1">ON</button> <button type="submit" name="OR" value="0">OFF</button>]
 		</div>
+        <div>
 		<?php
 		    for ($i = 1; $i <= 8; $i++) {
 		    ?>
@@ -160,46 +175,93 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 		    <?php 
 		    }
 		?>
-		<table style="margin: 0 auto; padding-top: 10px;">
+        </div>
+        <table style="margin: 0 auto; padding-top: 10px;">
 		    <tr>
-			<td>
-			    MinT
+			<th colspan="5" style="border-style: none none solid none;">
+                Temp
+            </th>
+            <td>
+            </td>
+            <th colspan="5" style="border-style: none none solid none">
+                Hum
+            </th>
+            </tr>
+            <tr>
+            <td>
+			    Set
+			</td>
+            <td>
+			    P
 			</td>
 			<td>
-			    MaxT
+			    I
 			</td>
 			<td>
-			    MinH
+			    D
 			</td>
 			<td>
-			    MaxH
+			    Sec
 			</td>
 			<td>
-			    wOR
+			    &nbsp
+			</td>
+            <td>
+			    Set
+			</td>
+			<td>
+			    P
+			</td>
+			<td>
+			    I
+			</td>
+			<td>
+			    D
+			</td>
+			<td>
+			    Sec
 			</td>
             <td>
 			</td>
 		    </tr>
 		    <tr>
 			<td>
-			    <input type="text" value="<?php echo $mintemp; ?>" maxlength=2 size=2 name="minTemp" />
+			    <input type="text" value="<?php echo $settemp; ?>" maxlength=4 size=1 name="setTemp" />
 			</td>
 			<td>
-			    <input type="text" value="<?php echo $maxtemp; ?>" maxlength=2 size=2 name="maxTemp" />
+			    <input type="text" value="<?php echo $temp_p; ?>" maxlength=3 size=1 name="Temp_P" />
 			</td>
 			<td>
-			    <input type="text" value="<?php echo $minhum; ?>" maxlength=2 size=2 name="minHum" />
+			    <input type="text" value="<?php echo $temp_i; ?>" maxlength=3 size=1 name="Temp_I" />
 			</td>
 			<td>
-			    <input type="text" value="<?php echo $maxhum; ?>" maxlength=2 size=2 name="maxHum" />
+			    <input type="text" value="<?php echo $temp_d; ?>" maxlength=3 size=1 name="Temp_D" />
 			</td>
 			<td>
-			    <input type="text" value="<?php echo $webor; ?>" maxlength=2 size=2 name="webor" />
+			    <input type="text" value="<?php echo $factortempseconds; ?>" maxlength=3 size=1 name="factorTempSeconds" />
+			</td>
+			<td>
+			    &nbsp
+			</td>
+			<td>
+			    <input type="text" value="<?php echo $sethum; ?>" maxlength=4 size=1 name="setHum" />
+			</td>
+			<td>
+			    <input type="text" value="<?php echo $hum_p; ?>" maxlength=3 size=1 name="Hum_P" />
+			</td>
+			<td>
+			    <input type="text" value="<?php echo $hum_i; ?>" maxlength=3 size=1 name="Hum_I" />
+			</td>
+			<td>
+			    <input type="text" value="<?php echo $hum_d; ?>" maxlength=3 size=1 name="Hum_D" />
+			</td>
+			<td>
+			    <input type="text" value="<?php echo $factorhumseconds; ?>" maxlength=3 size=1 name="factorHumSeconds" />
 			</td>
             <td>
-			    <input type="submit" name="ChangeCond" value="Set">
+			    <input type="submit" name="ChangePID" value="Set">
 			</td>
-		    </tr>
+		    </tr>             
 		</table>
 	    </FORM>
 	</div>

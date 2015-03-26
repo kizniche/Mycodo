@@ -20,8 +20,10 @@ def usage():
     print 'mycodo-client.py: Communicates with the daemonized mycodo.py.\n'
     print 'Usage:  ', __file__, '[OPTION]...\n'
     print 'Options:'
-    print '    -c  --configure='
-    print '           Set '
+    print '    -c  --conditions [minTemp] [maxTemp] [minHum] [maxHum] [webOR}'
+    print '           Set min and max Temperature and Humidity and webOR'
+    print '    -p  --pid [Temp_P] [Temp_I] [Temp_D] [Hum_P] [Hum_I] [Hum_D] [ factorTempSeconds] [factorHumSeconds]'
+    print '           SET P, I, and D for temperature and humidity controllers'
     print '    -r  --relay [RELAY] [1/0]'
     print '           Set RELAY pin high (1) or low (0)'
     print '    -s  --set='
@@ -37,14 +39,17 @@ def menu():
         sys.exit(1)
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'c:r:s:t', ["configure=", "relay=", "seconds=", "set=", "terminate"])
+        opts, args = getopt.getopt(sys.argv[1:], 'c:p:r:s:t', ["conditions=", "pid=", "relay=", "seconds=", "set=", "terminate", "webor="])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
         sys.exit(2)
     for opt, arg in opts:
-        if opt in ("-c", "--configure"):
-            c.root.ChangeConditions(int(float(sys.argv[2])), int(float(sys.argv[3])), int(float(sys.argv[4])), int(float(sys.argv[5])), int(float(sys.argv[6])))
+        if opt in ("-p", "--conditions"):
+            c.root.ChangeConditions(float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), float(sys.argv[5]), float(sys.argv[6]), float(sys.argv[7]), float(sys.argv[8]), float(sys.argv[9]), int(float(sys.argv[10])), int(float(sys.argv[11])))
+            sys.exit(0)
+        elif opt == "--webor":
+            c.root.ChangeWebOR(int(float(sys.argv[2])))
             sys.exit(0)
         elif opt in ("-r", "--relay"):
             if RepresentsInt(sys.argv[2]) and int(float(sys.argv[2])) < 9 and int(float(sys.argv[2])) > 0:
