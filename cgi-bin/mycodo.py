@@ -63,19 +63,19 @@ humidity = ''
 dewpointc = ''
 heatindexc =  ''
 
-# Constraints
+#PID
+relayTemp =''
+relayHum = ''
 setTemp = ''
 setHum = ''
-
-# Relay overrides
-relay1o = ''
-relay2o = ''
-relay3o = ''
-relay4o = ''
-relay5o = ''
-relay6o = ''
-relay7o = ''
-relay8o = ''
+Hum_P = ''
+Hum_I = ''
+Hum_D = ''
+Temp_P = ''
+Temp_I = ''
+Temp_D = ''
+factorHumSeconds = ''
+factorTempSeconds = ''
 
 # Control States
 tempState = ''
@@ -87,15 +87,15 @@ HumOR = ''
 timerOneSeconds = ''
 timerSecWriteLog = ''
 
-#PID
-Hum_P = ''
-Hum_I = ''
-Hum_D = ''
-Temp_P = ''
-Temp_I = ''
-Temp_D = ''
-factorHumSeconds = ''
-factorTempSeconds = ''
+# Relay overrides
+relay1o = ''
+relay2o = ''
+relay3o = ''
+relay4o = ''
+relay5o = ''
+relay6o = ''
+relay7o = ''
+relay8o = ''
 
 # Miscellaneous
 currentTime = ''
@@ -136,8 +136,10 @@ class ComServer(rpyc.Service):
         HumOR = humor
         ClientQue = 'ChangeOverride'
         return 1
-    def exposed_ChangeConditions(self, settemp, temp_p, temp_i, temp_d, sethum, hum_p, hum_i, hum_d, factortempseconds, factorhumseconds):
+    def exposed_ChangeConditions(self, relaytemp, settemp, temp_p, temp_i, temp_d, relayhum, sethum, hum_p, hum_i, hum_d, factortempseconds, factorhumseconds):
         global ClientQue
+        global relayTemp
+        global relayHum
         global setTemp
         global setHum
         global Temp_P
@@ -148,6 +150,8 @@ class ComServer(rpyc.Service):
         global Hum_D
         global factorTempSeconds
         global factorHumSeconds
+        relayTemp = relaytemp
+        relayHum = relayhum
         setTemp = settemp
         setHum = sethum
         Hum_P = hum_p
@@ -459,6 +463,7 @@ def Daemon():
                 ChangeRelay(ClientArg1, ClientArg2)
                 GPIORead()
             elif ClientQue == 'ChangeConditions':
+                SyncPrint("%s [Client command] Change: relayTemp: %s, relayHum: %s" % (Timestamp(), relayTemp, relayHum), 1)
                 SyncPrint("%s [Client command] Change: setTemp: %.1f°C, setHum: %.1f, TemoOR: %s, HumOR: %s" % (Timestamp(), setTemp, setHum, TempOR, HumOR), 1)
                 SyncPrint("%s [Client command] Change: Temperature: P: %.1f, I: %.1f D: %.1f, factorTempSeconds: %s" % (Timestamp(), Temp_P, Temp_I, Temp_D, factorTempSeconds), 1)
                 SyncPrint("%s [Client command] Change: Humidity:    P: %.1f, I: %.1f D: %.1f, factorHumSeconds:  %s" % (Timestamp(), Hum_P, Hum_I, Hum_D, factorHumSeconds), 1)
@@ -511,7 +516,7 @@ def TemperatureMonitor():
                     SyncPrint("%s [PID Temperature] Temperature lower than setTemp (%.2f°C < %.2f°C)" % (Timestamp(), tempc, setTemp), 1)
                     SyncPrint("%s [PID Temperature] PID = %s (Seconds to run heater)" % (Timestamp(), PIDTemp), 1)
                     if (PIDTemp > 0 and tempc < setTemp):
-                        rod = threading.Thread(target = RelayOnDuration, args = (2, PIDTemp,))
+                        rod = threading.Thread(target = RelayOnDuration, args = (relayTemp, PIDTemp,))
                         rod.start() # Run RelayOnDuration as non-daemon thread (will turn off relay before terminating)
                     timerTemp = int(time.time()) + PIDTemp + factorTempSeconds
                 else:
@@ -542,7 +547,7 @@ def HumidityMonitor():
                     SyncPrint("%s [PID Humidity] Humidity lower than setHum (%.2f%% < %.2f%%)" % (Timestamp(), humidity, setHum), 1)
                     SyncPrint("%s [PID Humidity] PID = %s (Seconds to run humidifier)" % (Timestamp(), PIDHum), 1)
                     if (PIDHum > 0 and humidity < setHum):
-                        rod = threading.Thread(target = RelayOnDuration, args = (5, PIDHum,))
+                        rod = threading.Thread(target = RelayOnDuration, args = (relayHum, PIDHum,))
                         rod.start() # Run RelayOnDuration as non-daemon thread (will turn off relay before terminating)
                     timerHum = int(time.time()) + PIDHum + factorTempSeconds
                 else:
@@ -679,7 +684,7 @@ def ReadSensors(silent):
         else:
             chktemp = 0
             if not silent: SyncPrint("%s [Read Sensors] Successive readings < 1 difference: keeping." % Timestamp(), 1)
-            tempf = float(tempc) * 9 / 5 + 32
+            tempf = float(tempc) * 9.0 / 5.0 + 32.0
             dewpointc = tempc - ((100 - humidity)/ 5)
             #dewpointf = dewpointc * 9 / 5 + 32
             heatindexf =  -42.379 + 2.04901523 * tempf + 10.14333127 * humidity - 0.22475541 * tempf * humidity - 6.83783 * 10**-3 * tempf**2 - 5.481717 * 10**-2 * humidity**2 + 1.22874 * 10**-3 * tempf**2 * humidity + 8.5282 * 10**-4 * tempf * humidity**2 - 1.99 * 10**-6 * tempf**2 * humidity**2
@@ -692,6 +697,8 @@ def ReadCfg(silent):
     global config_file
     global relayName
     global relayPin
+    global relayTemp
+    global relayHum
     global setTemp
     global setHum
     global TempOR
@@ -737,10 +744,12 @@ def ReadCfg(silent):
     relayPin[7] = config.getint('RelayPins', 'relay7pin')
     relayPin[8] = config.getint('RelayPins', 'relay8pin')
 
-    TempOR = config.getint('PID', 'tempor')
-    HumOR = config.getint('PID', 'humor')
+    relayTemp = config.getfloat('PID', 'relaytemp')
+    relayHum = config.getfloat('PID', 'relayhum')
     setTemp = config.getfloat('PID', 'settemp')
     setHum = config.getfloat('PID', 'sethum')
+    TempOR = config.getint('PID', 'tempor')
+    HumOR = config.getint('PID', 'humor')
     Hum_P = config.getfloat('PID', 'hum_p')
     Hum_I = config.getfloat('PID', 'hum_i')
     Hum_D = config.getfloat('PID', 'hum_d')
@@ -823,6 +832,8 @@ def WriteCfg():
             config.set('RelayPins', 'relay8pin', relayPin[8])
 
             config.add_section('PID')
+            config.set('PID', 'relaytemp', relayTemp)
+            config.set('PID', 'relayhum', relayHum)
             config.set('PID', 'tempor', TempOR)
             config.set('PID', 'humor', HumOR)
             config.set('PID', 'settemp', setTemp)

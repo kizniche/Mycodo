@@ -20,7 +20,7 @@ def usage():
     print 'mycodo-client.py: Communicates with the daemonized mycodo.py.\n'
     print 'Usage:  ', __file__, '[OPTION]...\n'
     print 'Options:'
-    print '    -c  --conditions [setTemp] [T_P] [T_I] [T_D] [T_sec] [setHum] [H_P] [H_I] [H_D] [H_Sec]'
+    print '    -c  --conditions {relayT] [setTemp] [T_P] [T_I] [T_D] [T_sec] [relayHum] [setHum] [H_P] [H_I] [H_D] [H_Sec]'
     print '           Set P, I, I'
     print '    -o  --override [TempOR] [HumOR]'
     print '           Set Temperature and Humidity overrides. PID controller stops operating when set to 1'
@@ -48,7 +48,7 @@ def menu():
         sys.exit(2)
     for opt, arg in opts:
         if opt in ("-p", "--conditions"):
-            c.root.ChangeConditions(float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), float(sys.argv[5]), float(sys.argv[6]), float(sys.argv[7]), float(sys.argv[8]), float(sys.argv[9]), int(float(sys.argv[10])), int(float(sys.argv[11])))
+            c.root.ChangeConditions(int(float(sys.argv[2])), float(sys.argv[3]), float(sys.argv[4]), float(sys.argv[5]), float(sys.argv[6]), int(float(sys.argv[7])), float(sys.argv[8]), float(sys.argv[9]), float(sys.argv[10]), float(sys.argv[11]), int(float(sys.argv[12])), int(float(sys.argv[13])))
             sys.exit(0)
         elif opt in ("-o", "--override"):
             c.root.ChangeOverride(int(float(sys.argv[2])), int(float(sys.argv[3])))
