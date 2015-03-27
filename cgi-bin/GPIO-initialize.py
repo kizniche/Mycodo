@@ -4,7 +4,11 @@
 import RPi.GPIO as GPIO
 import ConfigParser
 
-config_file = '/var/www/mycodo/config/mycodo.cfg'
+#### Configure Install Directory ####
+install_directory = "/var/www/mycodo"
+
+
+config_file = "%s/config/mycodo.cfg" % install_directory
 
 # GPIO pins (BCM numbering) and name of devices attached to relay
 relayPin = [0] * 9

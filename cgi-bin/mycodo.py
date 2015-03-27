@@ -53,10 +53,8 @@ relayName = [0] * 9
 # Sensor data
 chktemp = ''
 tempc = ''
-tempf = ''
 humidity = ''
 dewpointc = ''
-dewpointf = ''
 heatindexc =  ''
 
 # Constraints
@@ -649,10 +647,8 @@ def WriteRelayLog(relayNumber, relaySeconds):
 # Read the temperature and humidity from the DHT22 sensor
 def ReadSensors():
     global tempc
-    global tempf
     global humidity
     global dewpointc
-    global dewpointf
     global heatindexc
     global currentTime
     global chktemp

@@ -50,7 +50,7 @@ if ($login->isUserLoggedIn() == true) {
                 $Lines = $_POST['Lines'];
                 echo `tail -n $Lines $sensor_log`;
             } else {
-                echo `tail -n 20 $sensor_log`;
+                echo `tail -n 30 $sensor_log`;
             }
 	    }
 
@@ -60,7 +60,7 @@ if ($login->isUserLoggedIn() == true) {
                 $Lines = $_POST['Lines'];
                 echo `tail -n $Lines $relay_log`;
             } else {
-                echo `tail -n 20 $relay_log`;
+                echo `tail -n 30 $relay_log`;
             }
 	    }
 
@@ -70,7 +70,7 @@ if ($login->isUserLoggedIn() == true) {
                 $Lines = $_POST['Lines'];
                 echo `tail -n $Lines $auth_log`;
             } else {
-                echo `tail -n 20 $auth_log`;
+                echo `tail -n 30 $auth_log`;
             }
 	    }
 	    if(isset($_POST['Daemon'])) {
@@ -78,7 +78,7 @@ if ($login->isUserLoggedIn() == true) {
                 $Lines = $_POST['Lines'];
                 echo `tail -n $Lines $daemon_log`;
             } else {
-                echo `tail -n 20 $daemon_log`;
+                echo `tail -n 30 $daemon_log`;
             }
 	    }
 	?>
