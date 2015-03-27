@@ -40,7 +40,8 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
     $settemp = substr(`cat $config_file | grep settemp | cut -d' ' -f3`, 0, -1);
     $minhum = substr(`cat $config_file | grep minhum | cut -d' ' -f3`, 0, -1);
     $sethum = substr(`cat $config_file | grep sethum | cut -d' ' -f3`, 0, -1);
-    $webor = substr(`cat $config_file | grep webor | cut -d' ' -f3`, 0, -1);
+    $tempor = substr(`cat $config_file | grep tempor | cut -d' ' -f3`, 0, -1);
+    $humor = substr(`cat $config_file | grep humor | cut -d' ' -f3`, 0, -1);
     
     $temp_p  = substr(`cat $config_file | grep temp_p | cut -d' ' -f3`, 0, -1);
     $temp_i  = substr(`cat $config_file | grep temp_i | cut -d' ' -f3`, 0, -1);
@@ -87,10 +88,16 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
     }
     
     // Check if Web Override has been selected to be turned on or off
-    if (isset($_POST['OR'])) {
-		if ($_POST['OR']) $t = 1;
-		else $t = 0;
-		$editconfig = "$mycodo_client --webor $t";
+    if (isset($_POST['TempOR']) || isset($_POST['HumOR'])) {
+		if (isset($_POST['TempOR'])) {
+            if ($_POST['TempOR']) $tempor = 1;
+            else $tempor = 0;
+        }
+        if (isset($_POST['HumOR'])) {
+            if ($_POST['HumOR']) $humor = 1;
+            else $humor = 0;
+        }
+		$editconfig = "$mycodo_client --override $tempor $humor";
         shell_exec($editconfig);
     }
     
@@ -115,6 +122,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 	<title>
 	    Relay Control and Configuration
 	</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 	<link rel="stylesheet"  href="style.css" type="text/css" media="all" />
 	<?php 
 	    if (isset($_GET['r']) && $_GET['r'] == 1) echo '<META HTTP-EQUIV="refresh" CONTENT="90">';
@@ -147,15 +155,6 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 		?>
 	    </div>
 	    <FORM action="" method="POST">
-        <div style="padding: 5px 0 10px 0;">
-		    Web Override: <b>
-            <?php
-                if ($webor == 1) echo "ON";
-                else echo "OFF";
-            ?>
-            </b>
-		    [<button type="submit" name="OR" value="1">ON</button> <button type="submit" name="OR" value="0">OFF</button>]
-		</div>
         <div>
 		<?php
 		    for ($i = 1; $i <= 8; $i++) {
@@ -169,7 +168,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                     if (shell_exec($read) == 1) echo "OFF";
                     else echo "ON";
                 ?></b>
-                [<button type="submit" name="R<?php echo $i; ?>" value="1">OFF</button> <button type="submit" name="R<?php echo $i; ?>" value="0">ON</button>] [<input type="text" maxlength=3 size=3 name="sR<?php echo $i; ?>" /> sec 
+                [<button type="submit" name="R<?php echo $i; ?>" value="1">OFF</button> <button type="submit" name="R<?php echo $i; ?>" value="0">ON</button>] [<input type="text" maxlength=3 size=3 name="sR<?php echo $i; ?>" title="Number of seconds to turn this relay on"/> sec 
                 <input type="submit" name="<?php echo $i; ?>secON" value="ON">]
 		    </div>
 		    <?php 
@@ -179,46 +178,46 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
         <table style="margin: 0 auto; padding-top: 10px;">
 		    <tr>
 			<th colspan="5" style="border-style: none none solid none;">
-                Temp
+                Temperature
             </th>
             <td>
             </td>
             <th colspan="5" style="border-style: none none solid none">
-                Hum
+                Humumidity
             </th>
             </tr>
             <tr>
-            <td>
-			    Set
+            <td align=center>
+			    Set°C
 			</td>
-            <td>
+            <td align=center>
 			    P
 			</td>
-			<td>
+			<td align=center>
 			    I
 			</td>
-			<td>
+			<td align=center>
 			    D
 			</td>
-			<td>
+			<td align=center>
 			    Sec
 			</td>
 			<td>
 			    &nbsp
 			</td>
-            <td>
-			    Set
+            <td align=center>
+			    Set%
 			</td>
-			<td>
+			<td align=center>
 			    P
 			</td>
-			<td>
+			<td align=center>
 			    I
 			</td>
-			<td>
+			<td align=center>
 			    D
 			</td>
-			<td>
+			<td align=center>
 			    Sec
 			</td>
             <td>
@@ -226,42 +225,67 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 		    </tr>
 		    <tr>
 			<td>
-			    <input type="text" value="<?php echo $settemp; ?>" maxlength=4 size=1 name="setTemp" />
+			    <input type="text" value="<?php echo $settemp; ?>" maxlength=4 size=1 name="setTemp" title="This is the desired temperature"/>
 			</td>
 			<td>
-			    <input type="text" value="<?php echo $temp_p; ?>" maxlength=3 size=1 name="Temp_P" />
+			    <input type="text" value="<?php echo $temp_p; ?>" maxlength=3 size=1 name="Temp_P" title="This is the proportional value of the PID"/>
 			</td>
 			<td>
-			    <input type="text" value="<?php echo $temp_i; ?>" maxlength=3 size=1 name="Temp_I" />
+			    <input type="text" value="<?php echo $temp_i; ?>" maxlength=3 size=1 name="Temp_I" title="This is the integral value of the the PID"/>
 			</td>
 			<td>
-			    <input type="text" value="<?php echo $temp_d; ?>" maxlength=3 size=1 name="Temp_D" />
+			    <input type="text" value="<?php echo $temp_d; ?>" maxlength=3 size=1 name="Temp_D" title="This is the derivative value of the PID"/>
 			</td>
 			<td>
-			    <input type="text" value="<?php echo $factortempseconds; ?>" maxlength=3 size=1 name="factorTempSeconds" />
+			    <input type="text" value="<?php echo $factortempseconds; ?>" maxlength=3 size=1 name="factorTempSeconds" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/>
 			</td>
 			<td>
 			    &nbsp
 			</td>
 			<td>
-			    <input type="text" value="<?php echo $sethum; ?>" maxlength=4 size=1 name="setHum" />
+			    <input type="text" value="<?php echo $sethum; ?>" maxlength=4 size=1 name="setHum" title="This is the desired humidity"/>
 			</td>
 			<td>
-			    <input type="text" value="<?php echo $hum_p; ?>" maxlength=3 size=1 name="Hum_P" />
+			    <input type="text" value="<?php echo $hum_p; ?>" maxlength=3 size=1 name="Hum_P" title="This is the proportional value of the PID"/>
 			</td>
 			<td>
-			    <input type="text" value="<?php echo $hum_i; ?>" maxlength=3 size=1 name="Hum_I" />
+			    <input type="text" value="<?php echo $hum_i; ?>" maxlength=3 size=1 name="Hum_I" title="This is the integral value of the the PID"/>
 			</td>
 			<td>
-			    <input type="text" value="<?php echo $hum_d; ?>" maxlength=3 size=1 name="Hum_D" />
+			    <input type="text" value="<?php echo $hum_d; ?>" maxlength=3 size=1 name="Hum_D" title="This is the derivative value of the PID"/>
 			</td>
 			<td>
-			    <input type="text" value="<?php echo $factorhumseconds; ?>" maxlength=3 size=1 name="factorHumSeconds" />
+			    <input type="text" value="<?php echo $factorhumseconds; ?>" maxlength=3 size=1 name="factorHumSeconds" title="This is the number of seconds to wait after the relay has been turned off before taking another humidity reading and applying the PID"/>
 			</td>
             <td>
 			    <input type="submit" name="ChangePID" value="Set">
 			</td>
-		    </tr>             
+		    </tr>
+            <tr>
+            <th colspan="5">
+                <div style="margin-top: 10px;">
+                    Override: <b>
+                    <?php
+                        if ($tempor == 1) echo "ON";
+                        else echo "OFF";
+                    ?>
+                    </b>
+                    [<button type="submit" name="TempOR" value="1">ON</button> <button type="submit" name="TempOR" value="0">OFF</button>]
+                </div>
+            </th>
+            <td>
+            </td>
+            <th colspan="5">
+                <div style="margin-top: 10px;">
+                    Override: <b>
+                    <?php
+                        if ($humor == 1) echo "ON";
+                        else echo "OFF";
+                    ?>
+                    </b>
+                    [<button type="submit" name="HumOR" value="1">ON</button> <button type="submit" name="HumOR" value="0">OFF</button>]
+                </div>
+            </th>
 		</table>
 	    </FORM>
 	</div>
