@@ -12,6 +12,12 @@
 # Output to log file: sudo stdbuf -oL python ./mycodo.py -d >> /var/log/some.log 2>&1 &
 #
 
+"""
+##############################################################
+# TODO: Remove seconds timestamp from log writes (redundant) #
+############################################################## 
+"""
+
 #### Configure Install Directory ####
 install_directory = "/var/www/mycodo"
 
@@ -558,21 +564,6 @@ def RelayOnDuration(relay, seconds):
         SyncPrint("%s [Relay Duration] Abort: Requested relay %s (%s) on for %s seconds, but it's already on!" % (Timestamp(), relay, relayName[relay], seconds), 1)
         return 0
 
-# Change GPIO (Select) to a specific state (State)
-def ChangeRelay(Select, State):
-    SyncPrint("%s [GPIO Write] Setting relay %s (%s) to %s (was %s)" % (Timestamp(), Select, relayName[Select], State, GPIO.input(relayPin[Select])), 1)
-    GPIO.output(relayPin[Select], State)
-
-# Read states (HIGH/LOW) of GPIO pins
-def GPIORead():
-    SyncPrint("%s [GPIO Read]" % Timestamp(), 0)
-    for x in range(1, 9):
-        SyncPrint("Relay %s:" % x, 0)
-        if GPIO.input(relayPin[x]): SyncPrint("OFF,", 0)
-        else: SyncPrint("ON, ", 0)
-        if x == 4: SyncPrint("\n%s [GPIO Read]" % Timestamp(), 0)
-        if x == 8: SyncPrint("", 1)
-
 # Append sensor data to the log file
 def WriteSensorLog():
     sensor_lock_path = lock_directory + sensor_log_lock
@@ -723,10 +714,6 @@ def ReadCfg(silent):
     global relay6o
     global relay7o
     global relay8o
-    global RHeatTS
-    global RHumTS
-    global RHepaTS
-    global RFanTS
     global timerSecWriteLog
 
     config = ConfigParser.RawConfigParser()
@@ -787,7 +774,7 @@ def ReadCfg(silent):
                 SyncPrint("%s[%s][%s]" % (x, relayName[x], relayPin[x]), 0)
         SyncPrint("\n%s [Read Config] %s %s %s %s %s %s %s %s %s %s %s" % (Timestamp(), tempState, humState, relay1o, relay2o, relay3o, relay4o, relay5o, relay6o, relay7o, relay8o, timerSecWriteLog), 1)
 
-# Write variables to the configuration file
+# Write variables to configuration file
 def WriteCfg():
     config_lock_path = lock_directory + config_lock
     config = ConfigParser.RawConfigParser()
@@ -871,6 +858,21 @@ def WriteCfg():
     else:
         SyncPrint("%s [Write Config] Unable to remove lock file %s because it doesn't exist!" % (Timestamp(), config_lock_path), 1)
 
+# Change GPIO (Select) to a specific state (State)
+def ChangeRelay(Select, State):
+    SyncPrint("%s [GPIO Write] Setting relay %s (%s) to %s (was %s)" % (Timestamp(), Select, relayName[Select], State, GPIO.input(relayPin[Select])), 1)
+    GPIO.output(relayPin[Select], State)
+
+# Read states (HIGH/LOW) of GPIO pins
+def GPIORead():
+    SyncPrint("%s [GPIO Read]" % Timestamp(), 0)
+    for x in range(1, 9):
+        SyncPrint("Relay %s:" % x, 0)
+        if GPIO.input(relayPin[x]): SyncPrint("OFF,", 0)
+        else: SyncPrint("ON, ", 0)
+        if x == 4: SyncPrint("\n%s [GPIO Read]" % Timestamp(), 0)
+        if x == 8: SyncPrint("", 1)
+
 # all terminal/log output is piped through here to ensure prints are synchronized among threads
 def SyncPrint(msg, newline):
     thread_name = threading.current_thread().name
@@ -878,7 +880,7 @@ def SyncPrint(msg, newline):
     else: line = '%s' % msg
     print >>sys.stderr, line, # Use trailing , to indicate no implicit end-of-line
 
-# Create lock file so no over mycodo.py instance can write to a specific file (such as mycodo.cfg) while it's currently being written to
+# Create lock file to prevent other instances from attempting to write while a file is currently being written to
 def lockFile(lockfile):
     fd = os.open(lockfile, os.O_CREAT | os.O_TRUNC | os.O_WRONLY)
     try: # Request exclusive (EX) non-blocking (NB) advisory lock.
@@ -903,9 +905,9 @@ def RepresentsFloat(s):
     except ValueError:
         return False
 
-# Checks if a string is a variable name, for mycodo-client.py modifying variables
+# Check if a string is a variable name in config_file, for mycodo-client.py modifying variables
 def CheckVariableName():
-    namesOfVariables = ['config_file',
+    namesOfVariables = [
     'tempc',
     'humidity',
     'setTemp',
@@ -954,6 +956,7 @@ def CheckVariableName():
             return 1
     return 0
 
+# Timestamp format used in sensor and relay logs
 def Timestamp():
     return datetime.datetime.fromtimestamp(time.time()).strftime('%Y %m %d %H %M %S')
 
