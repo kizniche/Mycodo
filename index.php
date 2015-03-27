@@ -194,7 +194,6 @@ if ($login->isUserLoggedIn() == true) {
 		    </table>
 		</td>
 		<td width="830" valign="top">
-
 		    <?php
 			if (isset($_GET['page'])) {
 			    switch ($_GET['page']) {
