@@ -503,7 +503,7 @@ def Daemon():
                 if (tempc >= setTemp): tempState = 1
                 if (tempc < setTemp): tempState = 0
                 if (tempState == 0):
-                    pid_temp = round(p_temp.update(float(tempc)),1)
+                    pid_temp = round(p_temp.update(float(tempc)), 1)
                     SyncPrint("%s [PID Temperature] Temperature lower than setTemp (%.2f°C < %.2f°C)" % (Timestamp(), tempc, setTemp), 1)
                     SyncPrint("%s [PID Temperature] PID = %s (Seconds to run heater)" % (Timestamp(), pid_temp), 1)
                     if (pid_temp > 0 and tempc < setTemp):
@@ -511,6 +511,7 @@ def Daemon():
                         rod.start()
                 else:
                     SyncPrint("%s [PID Temperature] Temperature hasn't fallen below setTemp, waiting 60 seconds" % Timestamp(), 1)
+                    p_temp.update(float(tempc))
                     pid_temp = 60
                 timerTwo = 0
             timerTwo+=1
@@ -523,14 +524,15 @@ def Daemon():
                 if (humidity >= setHum): humState = 1
                 if (humidity < setHum): humState = 0
                 if (humState == 0):
-                    pid_hum = round(p_hum.update(float(humidity)),1)
+                    pid_hum = round(p_hum.update(float(humidity)), 1)
                     SyncPrint("%s [PID Humidity] Humidity lower than setHum (%.2f%% < %.2f%%)" % (Timestamp(), humidity, setHum), 1)
                     SyncPrint("%s [PID Humidity] PID = %s (Seconds to run humidifier)" % (Timestamp(), pid_hum), 1)
                     if (pid_hum > 0 and humidity < setHum):
-                        rod = threading.Thread(target = RelayOnDuration, args = (1, pid_hum,))
+                        rod = threading.Thread(target = RelayOnDuration, args = (5, pid_hum,))
                         rod.start()
                 else:
                     SyncPrint("%s [PID Humidity] Humidity hasn't fallen below setHum, waiting 60 seconds" % Timestamp(), 1)
+                    p_hum.update(float(humidity))
                     pid_hum = 60
                 timerThree = 0
             timerThree+=1
@@ -688,8 +690,7 @@ def ReadSensors():
             #dewpointf = dewpointc * 9 / 5 + 32
             heatindexf =  -42.379 + 2.04901523 * tempf + 10.14333127 * humidity - 0.22475541 * tempf * humidity - 6.83783 * 10**-3 * tempf**2 - 5.481717 * 10**-2 * humidity**2 + 1.22874 * 10**-3 * tempf**2 * humidity + 8.5282 * 10**-4 * tempf * humidity**2 - 1.99 * 10**-6 * tempf**2 * humidity**2
             heatindexc = (heatindexf - 32) * (5.0 / 9.0)
-            currentTime = time.time()
-            SyncPrint("%s [Read Sensors] %.0f Hum: %.2f%%, Temp: %.2f°C, DP: %.2f°C, HI: %.2f°C" % (Timestamp(), currentTime, humidity, tempc, dewpointc, heatindexc), 1)
+            SyncPrint("%s [Read Sensors] Temp: %.2f°C, Hum: %.2f%%, DP: %.2f°C, HI: %.2f°C" % (Timestamp(), tempc, humidity, dewpointc, heatindexc), 1)
 
 # Read variables from the configuration file
 def ReadCfg(silent):

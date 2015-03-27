@@ -59,10 +59,14 @@ unset key
 plot \"$sensor_lines$LOGPATH/sensor.log\" u 1:8 index 0 title \" RH\" w lp ls 1 axes x1y1, \\
      \"\" using 1:9 index 0 title \"T\" w lp ls 2 axes x1y2, \\
      \"\" using 1:10 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
-     \"$relay_lines$LOGPATH/relay.log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
-     \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\
-     \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\
-     \"\" using 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1" | gnuplot
+     \"$relay_lines$LOGPATH/relay.log\" u 1:7 index 0 title \"XXXX\" w impulses ls 4 axes x1y1, \\
+     \"\" using 1:8 index 0 title \"XXXX\" w impulses ls 5 axes x1y1, \\
+     \"\" using 1:9 index 0 title \"XXXX\" w impulses ls 6 axes x1y1, \\
+     \"\" using 1:10 index 0 title \"XXXX\" w impulses ls 7 axes x1y1, \\
+     \"\" using 1:11 index 0 title \"HUMI\" w impulses ls 8 axes x1y1, \\
+     \"\" using 1:12 index 0 title \"CFAN\" w impulses ls 9 axes x1y1, \\
+     \"\" using 1:13 index 0 title \"XXXX\" w impulses ls 10 axes x1y1, \\
+     \"\" using 1:14 index 0 title \"XXXX\" w impulses ls 11 axes x1y1" | gnuplot
 }
 
 if [ -n "$2" ]
