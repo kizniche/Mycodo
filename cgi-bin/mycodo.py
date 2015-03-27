@@ -80,10 +80,6 @@ TempOR = ''
 HumOR = ''
 
 # Timers
-RHeatTS = ''
-RHumTS = ''
-RHepaTS = ''
-RFanTS = ''
 timerOneSeconds = ''
 timerSecWriteLog = ''
 
@@ -99,15 +95,14 @@ factorTempSeconds = ''
 
 # Miscellaneous
 currentTime = ''
-wfactor = ''
 server = ''
 variableName = ''
 variableValue = ''
-
 ClientQue = '0'
 ClientArg1 = ''
 ClientArg2 = ''
 
+# Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
     def exposed_Terminate(self, remoteCommand):
         global ClientQue
@@ -268,7 +263,8 @@ class Temperature_PID:
 		return self.Integrator
 	def getDerivator(self):
 		return self.Derivator
-            
+
+# Displays the program usage
 def usage():
     SyncPrint("mycodo.py: Reads temperature and humidity from sensors, writes log file, and operates relays as a daemon to maintain set environmental conditions.\n", 1)
     SyncPrint("Usage:  ', __file__, '[OPTION]...\n", 1)
@@ -311,7 +307,8 @@ def GPIOSetup():
     GPIO.setup(relayPin[6], GPIO.OUT)
     GPIO.setup(relayPin[7], GPIO.OUT)
     GPIO.setup(relayPin[8], GPIO.OUT)
-  
+
+# Checks user options and arguments for validity
 def menu():
     if len(sys.argv) == 1: # No arguments given
         usage()
@@ -424,20 +421,21 @@ def menu():
         else:
             assert False, "Fail"
 
+# Main loop that reads sensors, modifies relays based on sensor values, writes
+# sensor/relay logs, and receives/executes commands from mycodo-client.py
 def Daemon():
     global ClientQue
     global humState
     global tempState
 
     SyncPrint("%s [Daemon] Mycodo daemon started" % Timestamp(), 1)
-
+    SyncPrint("%s [Daemon] Start communication server as daemonized thread" % Timestamp(), 1)
     ct = ComThread()
     ct.daemon = True
     ct.start()
-    SyncPrint("%s [Daemon] Communication server started as daemon thread" % Timestamp(), 1)
 
-    ReadCfg(1)
     SyncPrint("%s [Daemon] Initial configuration read to set variables" % Timestamp(), 1)
+    ReadCfg(1)
 
     timerOne = 0
     timerTwo = 0
@@ -447,6 +445,7 @@ def Daemon():
     
     ReadSensors()
 
+    # Set P, I, D, and set points for Temp and Hum PID controllers
     if (humidity < setHum): humState = 0
     else: humState = 1
     p_hum = Humidity_PID(Hum_P,Hum_I,Hum_D)
@@ -457,9 +456,8 @@ def Daemon():
     p_temp = Temperature_PID(Temp_P,Temp_I,Temp_D)
     p_temp.setPoint(setTemp)
 
-    while True:
-        # Run remote commands issued from mycodo-client.py
-        if ClientQue != '0':
+    while True: # Main loop of the daemon
+        if ClientQue != '0': # Run remote commands issued from mycodo-client.py
             if ClientQue == 'ChangeOverride':
                 SyncPrint("%s [Client command] Change Overrides: TempOR %s, HumOR: %s" % (Timestamp(), TempOR, HumOR), 1)
                 WriteCfg()
@@ -489,15 +487,15 @@ def Daemon():
             ClientQue = '0'
         
         # Write sensor log
-        if timerOne > timerSecWriteLog:
+        if int(time.time()) > timerOne:
             SyncPrint("%s [Daemon] %s-second timer expired: Sensor Log Write" % (Timestamp(), timerSecWriteLog), 1)
             ReadSensors()
             WriteSensorLog()
-            timerOne = 0
+            timerOne = int(time.time()) + timerSecWriteLog
 
+        # Temperature modulation by PID control
         if TempOR == 0:
-            # Temperature modulation by PID control
-            if timerTwo > pid_temp + factorTempSeconds:
+            if int(time.time()) > timerTwo:
                 SyncPrint("%s [PID Temperature] Reading temperature..." % Timestamp(), 1)
                 ReadSensors()
                 if (tempc >= setTemp): tempState = 1
@@ -508,17 +506,16 @@ def Daemon():
                     SyncPrint("%s [PID Temperature] PID = %s (Seconds to run heater)" % (Timestamp(), pid_temp), 1)
                     if (pid_temp > 0 and tempc < setTemp):
                         rod = threading.Thread(target = RelayOnDuration, args = (2, pid_temp,))
-                        rod.start()
+                        rod.start() # Run RelayOnDuration as non-daemon thread (will turn off relay before terminating)
+                    timerTwo = int(time.time()) + pid_temp + factorTempSeconds
                 else:
                     SyncPrint("%s [PID Temperature] Temperature hasn't fallen below setTemp, waiting 60 seconds" % Timestamp(), 1)
                     p_temp.update(float(tempc))
-                    pid_temp = 60
-                timerTwo = 0
-            timerTwo+=1
+                    timerTwo = int(time.time()) + 60
 
+        # Humidity modulation by PID control
         if HumOR == 0:
-            # Humidity modulation by PID control
-            if timerThree > pid_hum + factorHumSeconds:
+            if int(time.time()) > timerThree:
                 SyncPrint("%s [PID Humidity] Reading humidity..." % Timestamp(), 1)
                 ReadSensors()
                 if (humidity >= setHum): humState = 1
@@ -529,15 +526,13 @@ def Daemon():
                     SyncPrint("%s [PID Humidity] PID = %s (Seconds to run humidifier)" % (Timestamp(), pid_hum), 1)
                     if (pid_hum > 0 and humidity < setHum):
                         rod = threading.Thread(target = RelayOnDuration, args = (5, pid_hum,))
-                        rod.start()
+                        rod.start() # Run RelayOnDuration as non-daemon thread (will turn off relay before terminating)
+                    timerThree = int(time.time()) + pid_temp + factorTempSeconds
                 else:
                     SyncPrint("%s [PID Humidity] Humidity hasn't fallen below setHum, waiting 60 seconds" % Timestamp(), 1)
                     p_hum.update(float(humidity))
-                    pid_hum = 60
-                timerThree = 0
-            timerThree+=1
+                    timerThree = int(time.time()) + 60
 
-        timerOne+=1
         time.sleep(1)
 
 # Set a specific GPIO to LOW (LOW = relay ON) for a specific duration of seconds
@@ -559,7 +554,7 @@ def ChangeRelay(Select, State):
     SyncPrint("%s [GPIO Write] Setting relay %s (%s) to %s (was %s)" % (Timestamp(), Select, relayName[Select], State, GPIO.input(relayPin[Select])), 1)
     GPIO.output(relayPin[Select], State)
 
-# Read state (HIGH/LOW) of GPIO pins
+# Read states (HIGH/LOW) of GPIO pins
 def GPIORead():
     SyncPrint("%s [GPIO Read]" % Timestamp(), 0)
     for x in range(1, 9):
@@ -569,7 +564,7 @@ def GPIORead():
         if x == 4: SyncPrint("\n%s [GPIO Read]" % Timestamp(), 0)
         if x == 8: SyncPrint("", 1)
 
-# Append sensor data to log file
+# Append sensor data to the log file
 def WriteSensorLog():
     sensor_lock_path = lock_directory + sensor_log_lock
     config = ConfigParser.RawConfigParser()
@@ -690,6 +685,7 @@ def ReadSensors():
             #dewpointf = dewpointc * 9 / 5 + 32
             heatindexf =  -42.379 + 2.04901523 * tempf + 10.14333127 * humidity - 0.22475541 * tempf * humidity - 6.83783 * 10**-3 * tempf**2 - 5.481717 * 10**-2 * humidity**2 + 1.22874 * 10**-3 * tempf**2 * humidity + 8.5282 * 10**-4 * tempf * humidity**2 - 1.99 * 10**-6 * tempf**2 * humidity**2
             heatindexc = (heatindexf - 32) * (5.0 / 9.0)
+            currentTime = time.time()
             SyncPrint("%s [Read Sensors] Temp: %.2f°C, Hum: %.2f%%, DP: %.2f°C, HI: %.2f°C" % (Timestamp(), tempc, humidity, dewpointc, heatindexc), 1)
 
 # Read variables from the configuration file
@@ -723,7 +719,6 @@ def ReadCfg(silent):
     global RHumTS
     global RHepaTS
     global RFanTS
-    global wfactor
     global timerSecWriteLog
 
     config = ConfigParser.RawConfigParser()
@@ -884,7 +879,7 @@ def lockFile(lockfile):
         return False
     return True
 
-# Check if string represents and integer
+# Check if string represents an integer value
 def RepresentsInt(s):
     try: 
         int(s)
@@ -892,7 +887,7 @@ def RepresentsInt(s):
     except ValueError:
         return False
         
-# Check if string represents and integer
+# Check if string represents a float value
 def RepresentsFloat(s):
     try: 
         float(s)
