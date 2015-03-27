@@ -375,7 +375,7 @@ def menu():
             sys.exit(0)
         elif opt in ("-r", "--read"):
             if arg == 'SENSOR':
-                ReadSensors()
+                ReadSensors(0)
                 sys.exit(0)
             elif arg == 'CONFIG':
                 ReadCfg(0)
@@ -413,7 +413,7 @@ def menu():
                 SyncPrint("%s [Write Log] No log file specified, using default: %s" % (Timestamp(), sensor_log_file), 1)
             else:
                 sensor_log_file = arg
-            ReadSensors()
+            ReadSensors(0)
             WriteSensorLog()
             sys.exit(0)
         else:
@@ -423,8 +423,7 @@ def menu():
 # sensor/relay logs, and receives/executes commands from mycodo-client.py
 def Daemon():
     global ClientQue
-    global humState
-    global tempState
+    timerSensorLog = 0
 
     SyncPrint("%s [Daemon] Mycodo daemon started" % Timestamp(), 1)
     SyncPrint("%s [Daemon] Start communication server as daemonized thread" % Timestamp(), 1)
@@ -434,25 +433,15 @@ def Daemon():
 
     SyncPrint("%s [Daemon] Initial configuration read to set variables" % Timestamp(), 1)
     ReadCfg(1)
-
-    timerOne = 0
-    timerTwo = 0
-    timerThree = 0
-    pid_hum = 0
-    pid_temp = 0
+    ReadSensors(0)
     
-    ReadSensors()
-
-    # Set P, I, D, and set points for Temp and Hum PID controllers
-    if (humidity < setHum): humState = 0
-    else: humState = 1
-    p_hum = Humidity_PID(Hum_P,Hum_I,Hum_D)
-    p_hum.setPoint(setHum)
+    tm = threading.Thread(target = TemperatureMonitor)
+    tm.daemon = True
+    tm.start()
     
-    if (tempc < setTemp): tempState = 0
-    else: tempState = 1
-    p_temp = Temperature_PID(Temp_P,Temp_I,Temp_D)
-    p_temp.setPoint(setTemp)
+    hm = threading.Thread(target = HumidityMonitor)
+    hm.daemon = True
+    hm.start()
 
     while True: # Main loop of the daemon
         if ClientQue != '0': # Run remote commands issued from mycodo-client.py
@@ -485,54 +474,76 @@ def Daemon():
             ClientQue = '0'
         
         # Write sensor log
-        if int(time.time()) > timerOne:
+        if int(time.time()) > timerSensorLog:
             SyncPrint("%s [Daemon] %s-second timer expired: Sensor Log Write" % (Timestamp(), timerSecWriteLog), 1)
-            ReadSensors()
+            ReadSensors(0)
             WriteSensorLog()
-            timerOne = int(time.time()) + timerSecWriteLog
-
-        # Temperature modulation by PID control
-        if TempOR == 0:
-            if int(time.time()) > timerTwo:
-                SyncPrint("%s [PID Temperature] Reading temperature..." % Timestamp(), 1)
-                ReadSensors()
-                if (tempc >= setTemp): tempState = 1
-                if (tempc < setTemp): tempState = 0
-                if (tempState == 0):
-                    pid_temp = round(p_temp.update(float(tempc)), 1)
-                    SyncPrint("%s [PID Temperature] Temperature lower than setTemp (%.2f°C < %.2f°C)" % (Timestamp(), tempc, setTemp), 1)
-                    SyncPrint("%s [PID Temperature] PID = %s (Seconds to run heater)" % (Timestamp(), pid_temp), 1)
-                    if (pid_temp > 0 and tempc < setTemp):
-                        rod = threading.Thread(target = RelayOnDuration, args = (2, pid_temp,))
-                        rod.start() # Run RelayOnDuration as non-daemon thread (will turn off relay before terminating)
-                    timerTwo = int(time.time()) + pid_temp + factorTempSeconds
-                else:
-                    SyncPrint("%s [PID Temperature] Temperature hasn't fallen below setTemp, waiting 60 seconds" % Timestamp(), 1)
-                    p_temp.update(float(tempc))
-                    timerTwo = int(time.time()) + 60
-
-        # Humidity modulation by PID control
-        if HumOR == 0:
-            if int(time.time()) > timerThree:
-                SyncPrint("%s [PID Humidity] Reading humidity..." % Timestamp(), 1)
-                ReadSensors()
-                if (humidity >= setHum): humState = 1
-                if (humidity < setHum): humState = 0
-                if (humState == 0):
-                    pid_hum = round(p_hum.update(float(humidity)), 1)
-                    SyncPrint("%s [PID Humidity] Humidity lower than setHum (%.2f%% < %.2f%%)" % (Timestamp(), humidity, setHum), 1)
-                    SyncPrint("%s [PID Humidity] PID = %s (Seconds to run humidifier)" % (Timestamp(), pid_hum), 1)
-                    if (pid_hum > 0 and humidity < setHum):
-                        rod = threading.Thread(target = RelayOnDuration, args = (5, pid_hum,))
-                        rod.start() # Run RelayOnDuration as non-daemon thread (will turn off relay before terminating)
-                    timerThree = int(time.time()) + pid_temp + factorTempSeconds
-                else:
-                    SyncPrint("%s [PID Humidity] Humidity hasn't fallen below setHum, waiting 60 seconds" % Timestamp(), 1)
-                    p_hum.update(float(humidity))
-                    timerThree = int(time.time()) + 60
+            timerSensorLog = int(time.time()) + timerSecWriteLog
 
         time.sleep(1)
 
+# Temperature modulation by PID control
+def TemperatureMonitor():
+    global tempState
+    timerTemp = 0
+    PIDTemp = 0
+    
+    if (tempc < setTemp): tempState = 0
+    else: tempState = 1
+    p_temp = Temperature_PID(Temp_P, Temp_I, Temp_D)
+    p_temp.setPoint(setTemp)
+    
+    while True:
+        if TempOR == 0:
+            if int(time.time()) > timerTemp:
+                SyncPrint("%s [PID Temperature] Reading temperature..." % Timestamp(), 1)
+                ReadSensors(1)
+                if (tempc >= setTemp): tempState = 1
+                if (tempc < setTemp): tempState = 0
+                if (tempState == 0):
+                    PIDTemp = round(p_temp.update(float(tempc)), 1)
+                    SyncPrint("%s [PID Temperature] Temperature lower than setTemp (%.2f°C < %.2f°C)" % (Timestamp(), tempc, setTemp), 1)
+                    SyncPrint("%s [PID Temperature] PID = %s (Seconds to run heater)" % (Timestamp(), PIDTemp), 1)
+                    if (PIDTemp > 0 and tempc < setTemp):
+                        rod = threading.Thread(target = RelayOnDuration, args = (2, PIDTemp,))
+                        rod.start() # Run RelayOnDuration as non-daemon thread (will turn off relay before terminating)
+                    timerTemp = int(time.time()) + PIDTemp + factorTempSeconds
+                else:
+                    SyncPrint("%s [PID Temperature] Temperature hasn't fallen below setTemp, waiting 60 seconds" % Timestamp(), 1)
+                    p_temp.update(float(tempc))
+                    timerTemp = int(time.time()) + 60
+
+# Humidity modulation by PID control
+def HumidityMonitor():
+    global humState
+    timerHum = 0
+    PIDHum = 0
+
+    if (humidity < setHum): humState = 0
+    else: humState = 1
+    p_hum = Humidity_PID(Hum_P,Hum_I,Hum_D)
+    p_hum.setPoint(setHum)
+
+    while True:
+        if HumOR == 0:
+            if int(time.time()) > timerHum:
+                SyncPrint("%s [PID Humidity] Reading humidity..." % Timestamp(), 1)
+                ReadSensors(1)
+                if (humidity >= setHum): humState = 1
+                if (humidity < setHum): humState = 0
+                if (humState == 0):
+                    PIDHum = round(p_hum.update(float(humidity)), 1)
+                    SyncPrint("%s [PID Humidity] Humidity lower than setHum (%.2f%% < %.2f%%)" % (Timestamp(), humidity, setHum), 1)
+                    SyncPrint("%s [PID Humidity] PID = %s (Seconds to run humidifier)" % (Timestamp(), PIDHum), 1)
+                    if (PIDHum > 0 and humidity < setHum):
+                        rod = threading.Thread(target = RelayOnDuration, args = (5, PIDHum,))
+                        rod.start() # Run RelayOnDuration as non-daemon thread (will turn off relay before terminating)
+                    timerHum = int(time.time()) + PIDHum + factorTempSeconds
+                else:
+                    SyncPrint("%s [PID Humidity] Humidity hasn't fallen below setHum, waiting 60 seconds" % Timestamp(), 1)
+                    p_hum.update(float(humidity))
+                    timerHum = int(time.time()) + 60
+        
 # Set a specific GPIO to LOW (LOW = relay ON) for a specific duration of seconds
 def RelayOnDuration(relay, seconds):
     if GPIO.input(relayPin[relay]) == 1:
@@ -645,7 +656,7 @@ def WriteRelayLog(relayNumber, relaySeconds):
         SyncPrint("%s [Write Relay Log] Unable to remove lock file %s because it doesn't exist!" % (Timestamp(), relay_lock_path), 1)
 
 # Read the temperature and humidity from the DHT22 sensor
-def ReadSensors():
+def ReadSensors(silent):
     global tempc
     global humidity
     global dewpointc
@@ -654,35 +665,36 @@ def ReadSensors():
     global chktemp
     chktemp = 1
 
-    SyncPrint("%s [Read Sensors] Taking first Temperature/humidity reading" % Timestamp(), 1)
+    if not silent: SyncPrint("%s [Read Sensors] Taking first Temperature/humidity reading" % Timestamp(), 1)
     sys.stdout.flush()
     humidity2, tempc2 = Adafruit_DHT.read_retry(sensor, dhtPin)
-    SyncPrint("%s [Read Sensors] %.2f°C, %.2f%%" % (Timestamp(), tempc2, humidity2), 1)
+    if not silent: SyncPrint("%s [Read Sensors] %.2f°C, %.2f%%" % (Timestamp(), tempc2, humidity2), 1)
     time.sleep(2);
-    SyncPrint("%s [Read Sensors] Taking second Temperature/humidity reading" % Timestamp(), 1)
+    if not silent: SyncPrint("%s [Read Sensors] Taking second Temperature/humidity reading" % Timestamp(), 1)
     sys.stdout.flush()
 
     while(chktemp):
         humidity, tempc = Adafruit_DHT.read_retry(sensor, dhtPin)
-        SyncPrint("%s [Read Sensors] %.2f°C, %.2f%%" % (Timestamp(), tempc, humidity), 1)
-        SyncPrint("%s [Read Sensors] Differences: %.2f°C, %.2f%%" % (Timestamp(), abs(tempc2-tempc), abs(humidity2-humidity)), 1)
+        if not silent: 
+            SyncPrint("%s [Read Sensors] %.2f°C, %.2f%%" % (Timestamp(), tempc, humidity), 1)
+            SyncPrint("%s [Read Sensors] Differences: %.2f°C, %.2f%%" % (Timestamp(), abs(tempc2-tempc), abs(humidity2-humidity)), 1)
         if abs(tempc2-tempc) > 1 or abs(humidity2-humidity) > 1:
             tempc2 = tempc
             humidity2 = humidity
             chktemp = 1
-            SyncPrint("%s [Read Sensors] Successive readings > 1 difference: Rereading" % Timestamp(), 1)
+            if not silent: SyncPrint("%s [Read Sensors] Successive readings > 1 difference: Rereading" % Timestamp(), 1)
             sys.stdout.flush()
             time.sleep(2)
         else:
             chktemp = 0
-            SyncPrint("%s [Read Sensors] Successive readings < 1 difference: keeping." % Timestamp(), 1)
+            if not silent: SyncPrint("%s [Read Sensors] Successive readings < 1 difference: keeping." % Timestamp(), 1)
             tempf = float(tempc) * 9 / 5 + 32
             dewpointc = tempc - ((100 - humidity)/ 5)
             #dewpointf = dewpointc * 9 / 5 + 32
             heatindexf =  -42.379 + 2.04901523 * tempf + 10.14333127 * humidity - 0.22475541 * tempf * humidity - 6.83783 * 10**-3 * tempf**2 - 5.481717 * 10**-2 * humidity**2 + 1.22874 * 10**-3 * tempf**2 * humidity + 8.5282 * 10**-4 * tempf * humidity**2 - 1.99 * 10**-6 * tempf**2 * humidity**2
             heatindexc = (heatindexf - 32) * (5.0 / 9.0)
             currentTime = time.time()
-            SyncPrint("%s [Read Sensors] Temp: %.2f°C, Hum: %.2f%%, DP: %.2f°C, HI: %.2f°C" % (Timestamp(), tempc, humidity, dewpointc, heatindexc), 1)
+            if not silent: SyncPrint("%s [Read Sensors] Temp: %.2f°C, Hum: %.2f%%, DP: %.2f°C, HI: %.2f°C" % (Timestamp(), tempc, humidity, dewpointc, heatindexc), 1)
 
 # Read variables from the configuration file
 def ReadCfg(silent):
