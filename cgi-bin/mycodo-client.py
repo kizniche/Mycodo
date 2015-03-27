@@ -20,8 +20,10 @@ def usage():
     print 'mycodo-client.py: Communicates with the daemonized mycodo.py.\n'
     print 'Usage:  ', __file__, '[OPTION]...\n'
     print 'Options:'
-    print '    -c  --conditions [minTemp] [maxTemp] [minHum] [maxHum] [webOR}'
-    print '           Set min and max Temperature and Humidity and webOR'
+    print '    -c  --conditions [setTemp] [T_P] [T_I] [T_D] [T_sec] [setHum] [H_P] [H_I] [H_D] [H_Sec]'
+    print '           Set P, I, I'
+    print '    -o  --override [TempOR] [HumOR]'
+    print '           Set Temperature and Humidity overrides. PID controller stops operating when set to 1'
     print '    -p  --pid [Temp_P] [Temp_I] [Temp_D] [Hum_P] [Hum_I] [Hum_D] [ factorTempSeconds] [factorHumSeconds]'
     print '           SET P, I, and D for temperature and humidity controllers'
     print '    -r  --relay [RELAY] [1/0]'
@@ -39,7 +41,7 @@ def menu():
         sys.exit(1)
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'c:p:r:s:t', ["conditions=", "pid=", "relay=", "seconds=", "set=", "terminate", "webor="])
+        opts, args = getopt.getopt(sys.argv[1:], 'c:o:p:r:s:t', ["conditions=", "override=", "pid=", "relay=", "seconds=", "set=", "terminate"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -48,8 +50,8 @@ def menu():
         if opt in ("-p", "--conditions"):
             c.root.ChangeConditions(float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), float(sys.argv[5]), float(sys.argv[6]), float(sys.argv[7]), float(sys.argv[8]), float(sys.argv[9]), int(float(sys.argv[10])), int(float(sys.argv[11])))
             sys.exit(0)
-        elif opt == "--webor":
-            c.root.ChangeWebOR(int(float(sys.argv[2])))
+        elif opt in ("-o", "--override"):
+            c.root.ChangeOverride(int(float(sys.argv[2])), int(float(sys.argv[3])))
             sys.exit(0)
         elif opt in ("-r", "--relay"):
             if RepresentsInt(sys.argv[2]) and int(float(sys.argv[2])) < 9 and int(float(sys.argv[2])) > 0:

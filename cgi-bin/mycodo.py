@@ -76,7 +76,8 @@ relay8o = ''
 # Control States
 tempState = ''
 humState = ''
-webOR = ''
+TempOR = ''
+HumOR = ''
 
 # Timers
 RHeatTS = ''
@@ -128,11 +129,13 @@ class ComServer(rpyc.Service):
         ClientArg2 = int(float(remoteCommand2))
         ClientQue = 'RelayOnSec'
         return 1
-    def exposed_ChangeWebOR(self, webor):
+    def exposed_ChangeOverride(self, tempor, humor):
         global ClientQue
-        global webOR
-        webOR = webor
-        ClientQue = 'ChangeWebOR'
+        global TempOR
+        global HumOR
+        TempOR = tempor
+        HumOR = humor
+        ClientQue = 'ChangeOverride'
         return 1
     def exposed_ChangeConditions(self, settemp, temp_p, temp_i, temp_d, sethum, hum_p, hum_i, hum_d, factortempseconds, factorhumseconds):
         global ClientQue
@@ -290,8 +293,8 @@ def usage():
     SyncPrint("           Display status of the GPIO pins (HIGH or LOW)", 1)
     SyncPrint("    -r  --read=[SENSOR/CONFIG]", 1)
     SyncPrint("           Read and display sensor data or config settings", 1)
-    SyncPrint("    -s, --set setTemp setHum webOV", 1)
-    SyncPrint("           Change operating parameters (must give all options as int, the last must be 0 or 1)", 1)
+    SyncPrint("    -s, --set setTemp setHum TempOR HumOR", 1)
+    SyncPrint("           Change operating parameters (must give all options as int, overrides must be 0 or 1)", 1)
     SyncPrint("    -w, --write=FILE", 1)
     SyncPrint("           Write sensor data to log file\n", 1)
 
@@ -387,25 +390,27 @@ def menu():
                 usage()
                 sys.exit(1)
         elif opt in ("-s", "--set"):
-            if len(sys.argv) != 7:
+            if len(sys.argv) != 6:
                 SyncPrint("Error: Too many or not enough options. --set only accepts 5 options", 1)
                 sys.exit(1)
-            elif not RepresentsFloat(sys.argv[2]) and not RepresentsFloat(sys.argv[3]) and not RepresentsInt(sys.argv[4]):
-                SyncPrint("Error: --set: temperature and humidity requires one decimal place and webOV needds to be either 1 or 0", 1)
+            elif not RepresentsFloat(sys.argv[2]) and not RepresentsFloat(sys.argv[3]) and not RepresentsInt(sys.argv[4]) and not RepresentsInt(sys.argv[5]):
+                SyncPrint("Error: --set: temperature and humidity requires one decimal place and overrides need to be either 1 or 0", 1)
                 sys.exit(1)
-            elif sys.argv[6] != '0' and sys.argv[6] != '1':
+            elif (sys.argv[4] != '0' and sys.argv[4] != '1') or (sys.argv[5] != '0' and sys.argv[5] != '1'):
                 SyncPrint("Error: The last option of --set must be 0 or 1", 1)
                 sys.exit(0)
-            SyncPrint("%s [Set Conditions] Desired values: setTemp: %s, setHum: %s, WebOR: %s" % (Timestamp(), sys.argv[2], sys.argv[3], sys.argv[4]), 1)
+            SyncPrint("%s [Set Conditions] Desired values: setTemp: %s, setHum: %s, TempOR: %s, HumOR: %s" % (Timestamp(), sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5]), 1)
             ReadCfg(0)
             global setTemp
             global setHum
-            global webOR
-            setTemp = int(float(sys.argv[3]))
-            setHum = int(float(sys.argv[5]))
-            webOR = int(float(sys.argv[6]))
+            global TempOR
+            global HumOR
+            setTemp = int(float(sys.argv[2]))
+            setHum = int(float(sys.argv[3]))
+            TempOR = int(float(sys.argv[4]))
+            HumOR = int(float(sys.argv[5]))
             WriteCfg()
-            SyncPrint("%s [Set Conditions] New Values: setTemp: %.1f°C, setHum: %.1f%%, WebOR: %s" % (Timestamp(), setTemp, setHum, webOR), 1)
+            SyncPrint("%s [Set Conditions] New Values: setTemp: %.1f°C, setHum: %.1f%%, TempOR: %s, HumOR: %s" % (Timestamp(), setTemp, setHum, TempOR, HumOR), 1)
             sys.exit(0)
         elif opt in ("-w", "--write"):
             global sensor_log_file
@@ -423,7 +428,6 @@ def Daemon():
     global ClientQue
     global humState
     global tempState
-    global webOR
 
     SyncPrint("%s [Daemon] Mycodo daemon started" % Timestamp(), 1)
 
@@ -456,15 +460,15 @@ def Daemon():
     while True:
         # Run remote commands issued from mycodo-client.py
         if ClientQue != '0':
-            if ClientQue == 'ChangeWebOR':
-                SyncPrint("%s [Client command] Change: webOR: %s" % (Timestamp(), webOR), 1)
+            if ClientQue == 'ChangeOverride':
+                SyncPrint("%s [Client command] Change Overrides: TempOR %s, HumOR: %s" % (Timestamp(), TempOR, HumOR), 1)
                 WriteCfg()
             elif ClientQue == 'ChangeRelay':
                 SyncPrint("%s [Client command] Set Relay %s GPIO to %s" % (Timestamp(), ClientArg1, ClientArg1), 1)
                 ChangeRelay(ClientArg1, ClientArg2)
                 GPIORead()
             elif ClientQue == 'ChangeConditions':
-                SyncPrint("%s [Client command] Change: setTemp: %.1f°C, setHum: %.1f, webOR: %s" % (Timestamp(), setTemp, setHum, webOR), 1)
+                SyncPrint("%s [Client command] Change: setTemp: %.1f°C, setHum: %.1f, TemoOR: %s, HumOR: %s" % (Timestamp(), setTemp, setHum, TempOR, HumOR), 1)
                 SyncPrint("%s [Client command] Change: Temperature: P: %.1f, I: %.1f D: %.1f, factorTempSeconds: %s" % (Timestamp(), Temp_P, Temp_I, Temp_D, factorTempSeconds), 1)
                 SyncPrint("%s [Client command] Change: Humidity:    P: %.1f, I: %.1f D: %.1f, factorHumSeconds:  %s" % (Timestamp(), Hum_P, Hum_I, Hum_D, factorHumSeconds), 1)
                 p_hum = Humidity_PID(Hum_P,Hum_I,Hum_D)
@@ -490,8 +494,28 @@ def Daemon():
             ReadSensors()
             WriteSensorLog()
             timerOne = 0
-        
-        if webOR == 0:
+
+        if TempOR == 0:
+            # Temperature modulation by PID control
+            if timerTwo > pid_temp + factorTempSeconds:
+                SyncPrint("%s [PID Temperature] Reading temperature..." % Timestamp(), 1)
+                ReadSensors()
+                if (tempc >= setTemp): tempState = 1
+                if (tempc < setTemp): tempState = 0
+                if (tempState == 0):
+                    pid_temp = round(p_temp.update(float(tempc)),1)
+                    SyncPrint("%s [PID Temperature] Temperature lower than setTemp (%.2f°C < %.2f°C)" % (Timestamp(), tempc, setTemp), 1)
+                    SyncPrint("%s [PID Temperature] PID = %s (Seconds to run heater)" % (Timestamp(), pid_temp), 1)
+                    if (pid_temp > 0 and tempc < setTemp):
+                        rod = threading.Thread(target = RelayOnDuration, args = (2, pid_temp,))
+                        rod.start()
+                else:
+                    SyncPrint("%s [PID Temperature] Temperature hasn't fallen below setTemp, waiting 60 seconds" % Timestamp(), 1)
+                    pid_temp = 60
+                timerTwo = 0
+            timerTwo+=1
+
+        if HumOR == 0:
             # Humidity modulation by PID control
             if timerThree > pid_hum + factorHumSeconds:
                 SyncPrint("%s [PID Humidity] Reading humidity..." % Timestamp(), 1)
@@ -508,27 +532,7 @@ def Daemon():
                 else:
                     SyncPrint("%s [PID Humidity] Humidity hasn't fallen below setHum, waiting 60 seconds" % Timestamp(), 1)
                     pid_hum = 60
-                timerTwo = 0
-
-            # Temperature modulation by PID control
-            if timerThree > pid_temp + factorTempSeconds:
-                SyncPrint("%s [PID Temperature] Reading temperature..." % Timestamp(), 1)
-                ReadSensors()
-                if (tempc >= setTemp): tempState = 1
-                if (tempc < setTemp): tempState = 0
-                if (tempState == 0):
-                    pid_temp = round(p_temp.update(float(tempc)),1)
-                    SyncPrint("%s [PID Temperature] Temperature lower than setTemp (%.2f°C < %.2f°C)" % (Timestamp(), tempc, setTemp), 1)
-                    SyncPrint("%s [PID Temperature] PID = %s (Seconds to run heater)" % (Timestamp(), pid_temp), 1)
-                    if (pid_temp > 0 and tempc < setTemp):
-                        rod = threading.Thread(target = RelayOnDuration, args = (2, pid_temp,))
-                        rod.start()
-                else:
-                    SyncPrint("%s [PID Temperature] Temperature hasn't fallen below setTemp, waiting 60 seconds" % Timestamp(), 1)
-                    pid_temp = 60
                 timerThree = 0
-
-            timerTwo+=1
             timerThree+=1
 
         timerOne+=1
@@ -694,7 +698,8 @@ def ReadCfg(silent):
     global relayPin
     global setTemp
     global setHum
-    global webOR
+    global TempOR
+    global HumOR
     global Hum_P
     global Hum_I
     global Hum_D
@@ -741,7 +746,8 @@ def ReadCfg(silent):
     relayPin[7] = config.getint('RelayPins', 'relay7pin')
     relayPin[8] = config.getint('RelayPins', 'relay8pin')
 
-    webOR = config.getint('PID', 'webor')
+    TempOR = config.getint('PID', 'tempor')
+    HumOR = config.getint('PID', 'humor')
     setTemp = config.getfloat('PID', 'settemp')
     setHum = config.getfloat('PID', 'sethum')
     Hum_P = config.getfloat('PID', 'hum_p')
@@ -763,15 +769,10 @@ def ReadCfg(silent):
     relay6o = config.getint('States', 'relay6o')
     relay7o = config.getint('States', 'relay7o')
     relay8o = config.getint('States', 'relay8o')
-    RHeatTS = config.getint('States', 'rheatts')
-    RHumTS = config.getint('States', 'rhumts')
-    RHepaTS = config.getint('States', 'rhepats')
-    RFanTS = config.getint('States', 'rfants')
-    wfactor = config.getfloat('States', 'wfactor')
     timerSecWriteLog = config.getint('States', 'timersecwritelog')
 
     if not silent:
-        SyncPrint("%s [Read Config] setTemp: %.1f°C, setHum: %.1f%%, webOR: %s" % (Timestamp(), setTemp, setHum, webOR), 1)
+        SyncPrint("%s [Read Config] setTemp: %.1f°C, setHum: %.1f%%, TempOR: %s, HumOR: %s" % (Timestamp(), setTemp, setHum, TempOR, HumOR), 1)
         SyncPrint("%s [Read Config] RelayNum[Name][Pin]:" % Timestamp(), 0)
         for x in range(1,9):
             if x == 5:
@@ -780,7 +781,7 @@ def ReadCfg(silent):
                 SyncPrint("%s[%s][%s ]" % (x, relayName[x], relayPin[x]), 0)
             else:
                 SyncPrint("%s[%s][%s]" % (x, relayName[x], relayPin[x]), 0)
-        SyncPrint("\n%s [Read Config] %s %s %s %s %s %s %s %s %s %s %s %s %s %s %.1f %s %s" % (Timestamp(), tempState, humState, relay1o, relay2o, relay3o, relay4o, relay5o, relay6o, relay7o, relay8o, RHeatTS, RHumTS, RHepaTS, RFanTS, wfactor, timerOneSeconds, timerSecWriteLog), 1)
+        SyncPrint("\n%s [Read Config] %s %s %s %s %s %s %s %s %s %s %s" % (Timestamp(), tempState, humState, relay1o, relay2o, relay3o, relay4o, relay5o, relay6o, relay7o, relay8o, timerSecWriteLog), 1)
 
 # Write variables to the configuration file
 def WriteCfg():
@@ -831,7 +832,8 @@ def WriteCfg():
             config.set('RelayPins', 'relay8pin', relayPin[8])
 
             config.add_section('PID')
-            config.set('PID', 'webor', webOR)
+            config.set('PID', 'tempor', TempOR)
+            config.set('PID', 'humor', HumOR)
             config.set('PID', 'settemp', setTemp)
             config.set('PID', 'sethum', setHum)
             config.set('PID', 'hum_p', Hum_P)
@@ -854,11 +856,6 @@ def WriteCfg():
             config.set('States', 'relay6o', relay6o)
             config.set('States', 'relay7o', relay7o)
             config.set('States', 'relay8o', relay8o)
-            config.set('States', 'rheatts', RHeatTS)
-            config.set('States', 'rhumts', RHumTS)
-            config.set('States', 'rhepats', RHepaTS)
-            config.set('States', 'rfants', RFanTS)
-            config.set('States', 'wfactor', wfactor)
             config.set('States', 'timersecwritelog', timerSecWriteLog)
 
             with open(config_file, 'wb') as configfile:
@@ -909,7 +906,8 @@ def CheckVariableName():
     'humidity',
     'setTemp',
     'setHum',
-    'webOR',
+    'TempOR',
+    'HumOR',
     'tempState',
     'humState',
     'relay1o',
@@ -920,11 +918,6 @@ def CheckVariableName():
     'relay6o',
     'relay7o',
     'relay8o',
-    'RHeatTS',
-    'RHumTS',
-    'RHepaTS',
-    'RFanTS',
-    'wfactor',
     'timerOneSeconds',
     'timerSecWriteLog',
     'Hum_P',
