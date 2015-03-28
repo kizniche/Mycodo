@@ -15,12 +15,13 @@
 + [Todo](#future)
 + [Hardware Brief](#hard-brief)
 + [Software Brief](#soft-brief)
-+ [Install Instructions](#instructions)
-    - [Software Setup](#soft-setup)
-    - [TempFS Setup](#tempfs)
-    - [Apache2 Setup](#apache2)
-    - [MySQL and User Setup](#mysql)
-    - [Daemon Setup](#cron)
++ [Installation](#instructions)
+    - [Software](#soft-setup)
+    - [TempFS](#tempfs)
+    - [Apache2](#apache2)
+    - [MySQL and User Login](#mysql)
+    - [Sensor and Relay](#sensor-relay)
+    - [Daemon](#cron)
 + [Web Interface login](#web-interface)
 + [Useful Links](#links)
 
@@ -93,12 +94,12 @@ The following software is required
 * WiringPi (gpio)
 
 <a name="instructions"></a>
-# Install Instructions
+# Installation
 
 This installation assumes you are starting with a fresh install of Raspbian linux on a Raspberry Pi. If not, adjust your installation accordingly.
 
 <a name="soft-setup"></a>
-### Software Setup
+### Software
 
 `sudo apt-get update`
 
@@ -173,7 +174,7 @@ Set www permissions
 `sudo chmod 660 /var/www/mycodo/config/* /var/www/mycodo/images/*.png /var/www/mycodo/log/*.log`
 
 <a name="tempfs"></a>
-### TempFS Setup
+### TempFS
 
 A temporary filesystem in RAM is created for areas of the disk that are written often, preserving the life of the SD card and speeding up disk read/writes. Keep in mind all contents will be deleted upon reboot. If you need to analyze logs, remember to disable these lines in fstab before doing so.
 
@@ -196,7 +197,7 @@ Apache does not start if there is not a proper directory structure set up in /va
 `sudo update-rc.d apache2-tmpfs defaults 90 10`
 
 <a name="apache2"></a>
-### Apache2 Setup
+### Web Server
 
 To resolve the IP address in the auth.log, the following line in /etc/apache2/apache2.conf needs to be changed from 'Off' to 'On', without the quotes:
 
@@ -220,7 +221,7 @@ Add the following to /etc/apache2/sites-avalable/default-ssl (or just 'default' 
     </Directory>
 
 <a name="mysql"></a>
-### MySQL and User Setup
+### MySQL and User Login
 
 Download the files in source/php-login-mysql-install to your local computer. Go to http://127.0.0.1/phpmyadmin and login with root and the password you created. Click 'Import' and select 01-create-database.sql, then click 'OK'. Repeat with the file 02-create-user-table.sql. This will wet up your MySQL database to allow user registration.
 
@@ -236,12 +237,14 @@ This can be changed back with the following command if you wish to create more u
 
 `sudo chmod 640 /var/www/mycodo/register.php`
 
-<a name="cron"></a>
-###Sensor and Relay Setup
+<a name="sensor-relay"></a>
+### Sensors and Relays
 
 Before starting the daemon, check that the sensors can be properly accessed. Edit config/mycodo.cfg and change the values of dhtsensor and dhtpin to match your configuration. Options for dhtsensor are 'DHT11', 'DHT22', and 'AM2302' (without the quotes). The default is DHT22 on pin 4. If set up correctly, the following command should display temperature and humidity:
 
 `sudo mycodo.py -r SENSOR`
+
+Connect any GPIOs to your relays that are not normally HIGH or LOW upon boot. The GPIO-initialize.py script that's installed next will set the pins to output and HIGH. See the comment in the section below if your relays are normally energized when HIGH (instead of when LOW).
 
 <a name="cron"></a>
 ### Daemon Setup
@@ -269,7 +272,7 @@ Reboot to allow everything to start up
 
 Go to http://127.0.0.1/mycodo/index.php and log in with the credentials created earlier. You should see the menu to the left displaying the current humidity and temperature, and a graph to the right with the corresponding values.
 
-Select the "Configure Settings" from the menu and set up the proper pin numbers for your connected relays by referencing the GPIO BCM numbering for your particular board. These GPIO pins should be connected to your relay control pins. Keep in mind that a HIGH GPIO corresponds to the relay being OFF and LOW corresponds to the relay being ON. If you have relays that are opposite or are mixing different relays that utilize both configurations, you will need to alter the GPIO-initialize.py script as well as mycodo.py to ensure your relays operate properly.
+Select the "Configure Settings" from the menu and set up the proper pin numbers for your connected relays by referencing the GPIO BCM numbering for your particular board. These GPIO pins should be connected to your relay control pins. Keep in mind that a HIGH GPIO corresponds to the relay being OFF and a LOW GPIO corresponds to the relay being ON. If you have relays that are opposite or are mixing different relays that utilize both configurations, you will need to alter the GPIO-initialize.py script as well as mycodo.py to ensure your relays operate properly.
 
 <a name="links"></a>
 ### Useful Links
