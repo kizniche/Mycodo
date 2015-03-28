@@ -50,7 +50,7 @@ I'm since upgraded to a new set of hardware that support 8 individually-switchab
     * Using official PHP password hashing functions and the most modern password hashing/salting web standards
     * Optional "remember me" cookie to keep session authenticated
     * Profile edit (change user name, password, or email address)
-    * Gravitar support (if email used in registration is the same as on gravitar.com)
+    * Gravatar support (if email used in registration is the same as on gravatar.com)
     * Lost/forgot password reset via email
     * Guest account for viewing only (user: guest, password: anonymous)
     * Authorization log of successful and unsuccessful login attempts
