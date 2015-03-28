@@ -19,6 +19,7 @@ case "${1:-''}" in
    ;;
   'stop')
    /var/www/mycodo/cgi-bin/mycodo-client.py -t
+   sleep 3 && kill -9 ${ps aux | grep '[m]ycodo.py -d' | awk '{print $2}'}
    ;;
   'restart')
    ;;
