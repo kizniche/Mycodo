@@ -9,8 +9,27 @@ a:visited { color: #000000; }
 a:active { color: #0000FF; }
 a:hover { color: black; }
 
+table.relays {
+	display: inline-block;
+}
+
 table.relays td {
-    padding: 2px;
+    padding: 3px 8px 3px 8px;
+}
+
+table.pid {
+    padding-top: 15px;
+	margin: 0 auto;
+	display: inline-block;
+}
+
+table.pid td {
+	padding: 2px 3px 2px 3px;
+}
+
+.table-header {
+	border-style: none none solid none;
+	border-width: 1px;
 }
 
 /*** Menu ***/
@@ -102,11 +121,16 @@ table.relays td {
     padding: 0 0 10px 5px;
 }
 
-/* Changemode.php relay state text */
-.relay-state {
-    font-family: monospace;
-    font-size: 13px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 4px;
+/* Changemode.php */
+.state {
+    font-size: 16px;
+	font-weight: bold;
+} 
+
+.on {
+    color: green
+}
+
+.off {
+    color: red
 } 

@@ -39,7 +39,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
     $relaytemp = substr(`cat $config_file | grep relaytemp | cut -d' ' -f3`, 0, -1);
     $relayhum = substr(`cat $config_file | grep relayhum | cut -d' ' -f3`, 0, -1);
     $settemp = substr(`cat $config_file | grep settemp | cut -d' ' -f3`, 0, -1);
-    $sethum = substr(`cat $config_file | grep sethum | cut -d' ' -f3`, 0, -1);
+    $sethum = substr(`cat $config_file | grep sethum | cut -d' ' -f3 `, 0, -1);
     $tempor = substr(`cat $config_file | grep tempor | cut -d' ' -f3`, 0, -1);
     $humor = substr(`cat $config_file | grep humor | cut -d' ' -f3`, 0, -1);
     
@@ -167,7 +167,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
         <div style="text-align: center;">
             <div style="padding-top: 5px; font-size: 20px;">
                 <?php
-                    echo "Temp: $t_c&deg;C ($t_f&deg;F) &nbsp; &nbsp; RH: ${hum}% &nbsp; &nbsp; DP: $dp_c &deg;C ($dp_f&deg;F)";
+                    echo "Temp: $t_c&deg;C ($t_f&deg;F) &nbsp; &nbsp; RH: ${hum}% &nbsp; &nbsp; DP: $dp_c&deg;C ($dp_f&deg;F)";
                 ?>
             </div>
             <FORM action="" method="POST">
@@ -213,22 +213,21 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
             </div>
             <div style="clear: both;"></div>
             <div>
-                <center>
                 <table class="relays" style="padding-top: 15px;">
                     <tr>
-                        <td align=center style="border-style: none none solid none;">
+                        <td align=center class="table-header">
                             Relay
                         </td>
-                        <td align=center style="border-style: none none solid none;">
+                        <td align=center class="table-header">
                             Name
                         </td>
-                        <td align=center style="border-style: none none solid none;">
+                        <td align=center class="table-header">
                             GPIO Pin
                         </td>
-                        <th colspan=2  align=center style="border-style: none none solid none;">
+                        <th colspan=2  align=center class="table-header">
                             State
                         </th>
-                        <td align=center style="border-style: none none solid none; margin: 0 10px 0 10px;">
+                        <td align=center class="table-header">
                             Seconds On
                         </td>
                     </tr>
@@ -251,22 +250,16 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                         <?php
                             if (shell_exec($read) == 1) {
                                 ?>
-                                <td align=right>
-                                    <span style="font-size: 16px; font-weight: bold; color: red">OFF</span> |
-                                </td>
-                                <td>
-                                    <button style="width: 40px;" type="submit" name="R<?php echo $i; ?>" value="0">ON</button>
+                                <th colspan=2 align=right>
+                                    <span class="state off">OFF</span> | <button style="width: 40px;" type="submit" name="R<?php echo $i; ?>" value="0">ON</button>
                                 </td>
                                 </th>
                                 <?php
                             } else {
                                 ?>
-                                <td align=right>
-                                    <span style="font-size: 16px; font-weight: bold; color: green">ON</span> |
-                                </td>
-                                <td>
-                                    <button style="width: 40px;" type="submit" name="R<?php echo $i; ?>" value="1">OFF</button>
-                                </td>
+                                <th colspan=2 align=right>
+                                    <span class="state on">ON</span> | <button style="width: 40px;" type="submit" name="R<?php echo $i; ?>" value="1">OFF</button>
+                                </th>
                                 <?php
                             }
                         ?>
@@ -281,31 +274,28 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                         <td>
                         </td>
                         <td align=center>
-                            <button style="width: 55px;" type="submit" name="ModName" value="1" title="Change relay names to the ones specified above">Mod
-                            Name</button>
+                            <button type="submit" name="ModName" value="1" title="Change relay names to the ones specified above">Mod</button>
                         </td>
                         <td align=center>
-                            <button style="width: 55px;" type="submit" name="ModPin" value="1" title="Change the GPIO pins attached to relays to the ones specified above">Mod
-                            Pin</button>
+                            <button type="submit" name="ModPin" value="1" title="Change the (BCM) GPIO pins attached to relays to the ones specified above">Mod</button>
                         </td>
                     </tr>
                 </table>
-                </center>
             </div>
             <div>
-                <table style="margin: 0 auto; padding-top: 15px; display: inline-block;">
+                <table class="pid">
                     <tr>
-                        <th colspan="3" style="border-style: none none solid none;">
+                        <th colspan="3" class="table-header">
                             <div style="margin: 5px 0 5px 0;">
                                 Temp:
                                 <?php
                                     if ($tempor == 1) {
                                         ?>
-                                        <span style="font-size: 16px; font-weight: bold; color: red">OFF</span> | <button type="submit" name="TempOR" value="0">ON</button>
+                                        <span class="state off">OFF</span> | <button type="submit" name="TempOR" value="0">ON</button>
                                         <?php
                                     } else {
                                         ?>
-                                        <button type="submit" name="TempOR" value="1">OFF</button> | <span style="font-size: 16px; font-weight: bold; color: green">ON</span>
+                                        <span class="state on">ON</span> | <button type="submit" name="TempOR" value="1">OFF</button>
                                         <?php
                                     }
                                 ?>
@@ -362,19 +352,20 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                         </th>
                     </tr>
                 </table>
-                <table style="margin: 0 auto; padding: 15px 0 0 25px; display: inline-block;">
+				&nbsp; &nbsp; &nbsp;
+                <table class="pid">
                     <tr>
-                        <th colspan="3" style="border-style: none none solid none;">
+                        <th colspan="3" class="table-header">
                             <div style="margin: 5px 0 5px 0;">
                                 Hum:
                                 <?php
                                     if ($humor == 1) {
                                         ?>
-                                        <span style="font-size: 16px; font-weight: bold; color: red">OFF</span> | <button type="submit" name="HumOR" value="0">ON</button>
+                                        <span class="state off">OFF</span> | <button type="submit" name="HumOR" value="0">ON</button>
                                         <?php
                                     } else {
                                         ?>
-                                        <button type="submit" name="HumOR" value="1">OFF</button> | <span style="font-size: 16px; font-weight: bold; color: green">ON</span>
+                                        <span class="state on">ON</span> | <button type="submit" name="HumOR" value="1">OFF</button>
                                         <?php
                                     }
                                 ?>
