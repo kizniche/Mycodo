@@ -105,8 +105,8 @@ variableValue = ''
 ClientQue = '0'
 ClientArg1 = ''
 ClientArg2 = ''
-UpdateTempPID = 0
-UpdateHumPID = 0
+TAlive = 1
+HAlive = 1
 
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
@@ -467,20 +467,22 @@ def Daemon():
     global ClientQue
     timerSensorLog = 0
 
-    SyncPrint("%s [Daemon] Mycodo daemon started" % Timestamp(), 1)
-    SyncPrint("%s [Daemon] Start communication server as daemonized thread" % Timestamp(), 1)
-    ct = ComThread()
-    ct.daemon = True
-    ct.start()
-
+    SyncPrint("%s [Daemon] Daemon started" % Timestamp(), 1)
     SyncPrint("%s [Daemon] Initial configuration read to set variables" % Timestamp(), 1)
     ReadCfg(1)
     ReadSensors(0)
     
+    SyncPrint("%s [Communication Server] Starting Thread" % Timestamp(), 1)
+    ct = ComThread()
+    ct.daemon = True
+    ct.start()
+    
+    SyncPrint("%s [PID Temperature Controller] Starting Thread" % Timestamp(), 1)
     tm = threading.Thread(target = TemperatureMonitor)
     tm.daemon = True
     tm.start()
     
+    SyncPrint("%s [PID Humidity Controller] Starting Thread" % Timestamp(), 1)
     hm = threading.Thread(target = HumidityMonitor)
     hm.daemon = True
     hm.start()
@@ -505,15 +507,30 @@ def Daemon():
                 SyncPrint("%s [Client command] Change Relay Pins: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s" % (Timestamp(), relayPin[1], relayPin[2], relayPin[3], relayPin[4], relayPin[5], relayPin[6], relayPin[7], relayPin[8]), 1)
                 WriteCfg()
             elif ClientQue == 'ChangeConditions':
-                global UpdateTempPID
-                global UpdateHumPID
+                global HAlive
+                global TAlive
                 SyncPrint("%s [Client command] Change: relayTemp: %s, relayHum: %s" % (Timestamp(), relayTemp, relayHum), 1)
                 SyncPrint("%s [Client command] Change: setTemp: %.1f°C, setHum: %.1f, TemoOR: %s, HumOR: %s" % (Timestamp(), setTemp, setHum, TempOR, HumOR), 1)
                 SyncPrint("%s [Client command] Change: Temperature: P: %.1f, I: %.1f D: %.1f, factorTempSeconds: %s" % (Timestamp(), Temp_P, Temp_I, Temp_D, factorTempSeconds), 1)
                 SyncPrint("%s [Client command] Change: Humidity:    P: %.1f, I: %.1f D: %.1f, factorHumSeconds:  %s" % (Timestamp(), Hum_P, Hum_I, Hum_D, factorHumSeconds), 1)
-                UpdateTempPID = 1
-                UpdateHumPID = 1
                 WriteCfg()
+                SyncPrint("%s [PID Controller] Issuing commands to stop PID threads, waiting for reply..." % Timestamp(), 1)
+                TAlive = 0
+                HAlive= 0
+                while TAlive != 2 and HAlive != 2:
+                    time.sleep(1)
+                time.sleep(1)
+                TAlive = 1
+                HAlive = 1
+                SyncPrint("%s [PID Controller] Temperature and Humidity PID Controllers successfully shut down" % Timestamp(), 1)
+                SyncPrint("%s [PID Controller] Starting Temperature PID Thread" % Timestamp(), 1)
+                tm = threading.Thread(target = TemperatureMonitor)
+                tm.daemon = True
+                tm.start()
+                SyncPrint("%s [PID Controller] Starting Humidity PID Thread" % Timestamp(), 1)
+                hm = threading.Thread(target = HumidityMonitor)
+                hm.daemon = True
+                hm.start()
             elif ClientQue == 'RelayOnSec':
                 SyncPrint("%s [Client command] Set Relay %s on for %s seconds" % (Timestamp(), ClientArg1, ClientArg2), 1)
                 RelayOnDuration(ClientArg1, ClientArg2)
@@ -538,7 +555,7 @@ def Daemon():
 # Temperature modulation by PID control
 def TemperatureMonitor():
     global tempState
-    global UpdateTempPID
+    global TAlive
     timerTemp = 0
     PIDTemp = 0
     
@@ -547,11 +564,7 @@ def TemperatureMonitor():
     p_temp = Temperature_PID(Temp_P, Temp_I, Temp_D)
     p_temp.setPoint(setTemp)
     
-    while True:
-        if UpdateTempPID == 1:
-            p_temp = Temperature_PID(Temp_P, Temp_I, Temp_D)
-            p_temp.setPoint(setTemp)
-            UpdateTempPID = 0
+    while TAlive == 1:
         if TempOR == 0:
             if int(time.time()) > timerTemp:
                 SyncPrint("%s [PID Temperature] Reading temperature..." % Timestamp(), 1)
@@ -570,11 +583,13 @@ def TemperatureMonitor():
                     SyncPrint("%s [PID Temperature] Temperature hasn't fallen below setTemp, waiting 60 seconds" % Timestamp(), 1)
                     p_temp.update(float(tempc))
                     timerTemp = int(time.time()) + 60
+    SyncPrint("%s [PID Temperature] Shutting Down Thread" % Timestamp(), 1)
+    TAlive = 2
 
 # Humidity modulation by PID control
 def HumidityMonitor():
     global humState
-    global UpdateHumPID
+    global HAlive
     timerHum = 0
     PIDHum = 0
 
@@ -583,11 +598,7 @@ def HumidityMonitor():
     p_hum = Humidity_PID(Hum_P,Hum_I,Hum_D)
     p_hum.setPoint(setHum)
 
-    while True:
-        if UpdateHumPID == 1:
-            p_hum = Humidity_PID(Hum_P,Hum_I,Hum_D)
-            p_hum.setPoint(setHum)
-            UpdateHumPID = 0
+    while HAlive == 1:
         if HumOR == 0:
             if int(time.time()) > timerHum:
                 SyncPrint("%s [PID Humidity] Reading humidity..." % Timestamp(), 1)
@@ -606,7 +617,9 @@ def HumidityMonitor():
                     SyncPrint("%s [PID Humidity] Humidity hasn't fallen below setHum, waiting 60 seconds" % Timestamp(), 1)
                     p_hum.update(float(humidity))
                     timerHum = int(time.time()) + 60
-        
+    SyncPrint("%s [PID Humidity] Shutting Down Thread" % Timestamp(), 1)
+    HAlive = 2
+
 # Set a specific GPIO to LOW (LOW = relay ON) for a specific duration of seconds
 def RelayOnDuration(relay, seconds):
     if GPIO.input(relayPin[relay]) == 1:
