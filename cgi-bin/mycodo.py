@@ -464,6 +464,9 @@ def menu():
 # Main loop that reads sensors, modifies relays based on sensor values, writes
 # sensor/relay logs, and receives/executes commands from mycodo-client.py
 def Daemon():
+    global server
+    global HAlive
+    global TAlive
     global ClientQue
     timerSensorLog = 0
 
@@ -507,8 +510,6 @@ def Daemon():
                 SyncPrint("%s [Client command] Change Relay Pins: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s" % (Timestamp(), relayPin[1], relayPin[2], relayPin[3], relayPin[4], relayPin[5], relayPin[6], relayPin[7], relayPin[8]), 1)
                 WriteCfg()
             elif ClientQue == 'ChangeConditions':
-                global HAlive
-                global TAlive
                 SyncPrint("%s [Client command] Change: relayTemp: %s, relayHum: %s" % (Timestamp(), relayTemp, relayHum), 1)
                 SyncPrint("%s [Client command] Change: setTemp: %.1f°C, setHum: %.1f, TemoOR: %s, HumOR: %s" % (Timestamp(), setTemp, setHum, TempOR, HumOR), 1)
                 SyncPrint("%s [Client command] Change: Temperature: P: %.1f, I: %.1f D: %.1f, factorTempSeconds: %s" % (Timestamp(), Temp_P, Temp_I, Temp_D, factorTempSeconds), 1)
@@ -518,8 +519,7 @@ def Daemon():
                 TAlive = 0
                 HAlive= 0
                 while TAlive != 2 and HAlive != 2:
-                    time.sleep(1)
-                time.sleep(1)
+                    time.sleep(0.1)
                 TAlive = 1
                 HAlive = 1
                 SyncPrint("%s [PID Controller] Temperature and Humidity PID Controllers successfully shut down" % Timestamp(), 1)
@@ -535,9 +535,12 @@ def Daemon():
                 SyncPrint("%s [Client command] Set Relay %s on for %s seconds" % (Timestamp(), ClientArg1, ClientArg2), 1)
                 RelayOnDuration(ClientArg1, ClientArg2)
             elif ClientQue == 'TerminateServer':
-                global server
                 SyncPrint("%s [Client command] Terminate threads and shut down" % Timestamp(), 1)
-                SyncPrint("%s [Shutdown] Terminating server thread" % Timestamp(), 1)
+                TAlive = 0
+                HAlive = 0
+                while TAlive != 2 and HAlive != 2:
+                    time.sleep(0.1)
+                SyncPrint("%s [Communication Server] Shutting Down Thread" % Timestamp(), 1)
                 server.close()
                 SyncPrint("%s [Shutdown] Exiting Python" % Timestamp(), 1)
                 sys.exit(0)
