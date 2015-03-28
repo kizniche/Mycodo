@@ -136,7 +136,33 @@ class ComServer(rpyc.Service):
         HumOR = humor
         ClientQue = 'ChangeOverride'
         return 1
-    def exposed_ChangeConditions(self, relaytemp, settemp, temp_p, temp_i, temp_d, relayhum, sethum, hum_p, hum_i, hum_d, factortempseconds, factorhumseconds):
+    def exposed_ChangeRelayNames(self, relayname1, relayname2, relayname3, relayname4, relayname5, relayname6, relayname7, relayname8):
+        global ClientQue
+        global relayName
+        relayName[1] = relayname1
+        relayName[2] = relayname2
+        relayName[3] = relayname3
+        relayName[4] = relayname4
+        relayName[5] = relayname5
+        relayName[6] = relayname6
+        relayName[7] = relayname7
+        relayName[8] = relayname8
+        ClientQue = 'ChangeRelayNames'
+        return 1
+    def exposed_ChangeRelayPins(self, relaypin1, relaypin2, relaypin3, relaypin4, relaypin5, relaypin6, relaypin7, relaypin8):
+        global ClientQue
+        global relayPin
+        relayPin[1] = relaypin1
+        relayPin[2] = relaypin2
+        relayPin[3] = relaypin3
+        relayPin[4] = relaypin4
+        relayPin[5] = relaypin5
+        relayPin[6] = relaypin6
+        relayPin[7] = relaypin7
+        relayPin[8] = relaypin8
+        ClientQue = 'ChangeRelayPins'
+        return 1
+    def exposed_ChangeConditions(self, relaytemp, settemp, temp_p, temp_i, temp_d, factortempseconds, relayhum, sethum, hum_p, hum_i, hum_d, factorhumseconds):
         global ClientQue
         global relayTemp
         global relayHum
@@ -163,6 +189,10 @@ class ComServer(rpyc.Service):
         factorTempSeconds = factortempseconds
         factorHumSeconds = factorhumseconds
         ClientQue = 'ChangeConditions'
+        return 1
+    def exposed_WriteSensorLog(self):
+        global ClientQue
+        ClientQue = 'WriteSensorLog'
         return 1
 
 class ComThread(threading.Thread):
@@ -458,10 +488,20 @@ def Daemon():
             if ClientQue == 'ChangeOverride':
                 SyncPrint("%s [Client command] Change Overrides: TempOR %s, HumOR: %s" % (Timestamp(), TempOR, HumOR), 1)
                 WriteCfg()
+            elif ClientQue == 'WriteSensorLog':
+                SyncPrint("%s [Client command] Write Sensor Log" % Timestamp(), 1)
+                ReadSensors(0)
+                WriteSensorLog()
             elif ClientQue == 'ChangeRelay':
                 SyncPrint("%s [Client command] Set Relay %s GPIO to %s" % (Timestamp(), ClientArg1, ClientArg1), 1)
                 ChangeRelay(ClientArg1, ClientArg2)
                 GPIORead()
+            elif ClientQue == 'ChangeRelayNames':
+                SyncPrint("%s [Client command] Change Relay Names: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s" % (Timestamp(), relayName[1], relayName[2], relayName[3], relayName[4], relayName[5], relayName[6], relayName[7], relayName[8]), 1)
+                WriteCfg()
+            elif ClientQue == 'ChangeRelayPins':
+                SyncPrint("%s [Client command] Change Relay Pins: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s" % (Timestamp(), relayPin[1], relayPin[2], relayPin[3], relayPin[4], relayPin[5], relayPin[6], relayPin[7], relayPin[8]), 1)
+                WriteCfg()
             elif ClientQue == 'ChangeConditions':
                 SyncPrint("%s [Client command] Change: relayTemp: %s, relayHum: %s" % (Timestamp(), relayTemp, relayHum), 1)
                 SyncPrint("%s [Client command] Change: setTemp: %.1f°C, setHum: %.1f, TemoOR: %s, HumOR: %s" % (Timestamp(), setTemp, setHum, TempOR, HumOR), 1)

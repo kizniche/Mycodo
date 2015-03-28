@@ -9,9 +9,8 @@ a:visited { color: #000000; }
 a:active { color: #0000FF; }
 a:hover { color: black; }
 
-hr {
-    margin: 15px 0 5px 0;
-    width: 60%;
+table.relays td {
+    padding: 2px;
 }
 
 /*** Menu ***/

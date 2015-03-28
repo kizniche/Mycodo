@@ -87,6 +87,34 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 		}
     }
     
+    if (isset($_POST['WriteSensorLog'])) {
+		$editconfig = "$mycodo_client -w";
+        shell_exec($editconfig);
+        sleep(6);
+    }
+    
+    if (isset($_POST['ModName'])) {
+		for ($i = 1; $i <= 8; $i++) {
+            if (isset($_POST['relay' . $i . 'name'])) {
+                $relayName[$i] = $_POST['relay' . $i . 'name'];
+            }
+        }
+        $editconfig = "$mycodo_client --modnames $relayName[1] $relayName[2] $relayName[3] $relayName[4] $relayName[5] $relayName[6] $relayName[7] $relayName[8]";
+        shell_exec($editconfig);
+        sleep(6);
+    }
+    
+    if (isset($_POST['ModPin'])) {
+		for ($i = 1; $i <= 8; $i++) {
+            if (isset($_POST['relay' . $i . 'pin'])) {
+                $relayPin[$i] = $_POST['relay' . $i . 'pin'];
+            }
+        }
+        $editconfig = "$mycodo_client --modpins $relayPin[1] $relayPin[2] $relayPin[3] $relayPin[4] $relayPin[5] $relayPin[6] $relayPin[7] $relayPin[8]";
+        shell_exec($editconfig);
+        sleep(6);
+    }
+    
     // Check if Web Override has been selected to be turned on or off
     if (isset($_POST['TempOR']) || isset($_POST['HumOR'])) {
 		if (isset($_POST['TempOR'])) {
@@ -108,8 +136,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 		$temp_i  = $_POST['Temp_I'];
         $temp_d  = $_POST['Temp_D'];
         $factortempseconds = $_POST['factorTempSeconds'];
-		$editconfig = "$mycodo_client --conditions $relaytemp $settemp $temp_p $temp_i $temp_d $relayhum $sethum $hum_p $hum_i $hum_d $factortempseconds $factorhumseconds";
-        print $editconfig;
+		$editconfig = "$mycodo_client --conditions $relaytemp $settemp $temp_p $temp_i $temp_d $factortempseconds $relayhum $sethum $hum_p $hum_i $hum_d $factorhumseconds";
 		shell_exec($editconfig);
 	}
     
@@ -120,205 +147,286 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
         $hum_i  = $_POST['Hum_I'];
         $hum_d  = $_POST['Hum_D'];
         $factorhumseconds = $_POST['factorHumSeconds'];
-		$editconfig = "$mycodo_client --conditions $relaytemp $settemp $temp_p $temp_i $temp_d $relayhum $sethum $hum_p $hum_i $hum_d $factortempseconds $factorhumseconds";
+		$editconfig = "$mycodo_client --conditions $relaytemp $settemp $temp_p $temp_i $temp_d $factortempseconds $relayhum $sethum $hum_p $hum_i $hum_d $factorhumseconds";
 		shell_exec($editconfig);
 	}
 ?>
 
 <html>
     <head>
-	<title>
-	    Relay Control and Configuration
-	</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-	<link rel="stylesheet"  href="style.css" type="text/css" media="all" />
-	<?php 
-	    if (isset($_GET['r']) && $_GET['r'] == 1) echo '<META HTTP-EQUIV="refresh" CONTENT="90">';
-	?>
+        <title>
+            Relay Control and Configuration
+        </title>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+        <link rel="stylesheet" href="style.css" type="text/css" media="all" />
+        <?php 
+            if (isset($_GET['r']) && $_GET['r'] == 1) echo '<META HTTP-EQUIV="refresh" CONTENT="300">';
+        ?>
     </head>
     <body>
-	<div style="text-align: center;">
-	    <div style="display: inline-block;">
-		<div style="float: left;" align=right>
-		    <div>Current time: <?php echo `date +'%Y-%m-%d %H:%M:%S'`; ?></div>
-		    <div>
-			Last read: <?php 
-			    $time_last = `tail -n 1 $sensor_log | cut -d' ' -f1,2,3,4,5,6`;
-			    $time_last[4] = '-';
-			    $time_last[7] = '-';
-			    $time_last[13] = ':';
-			    $time_last[16] = ':';
-			    echo $time_last;
-			?>
-		    </div>
-		</div>
-		<div style="float: left; padding-left: 10px;">
-		    <a href="changemode.php">Refresh</a>
-		</div>
-	    </div>
-	    <div style="clear: both;"></div>
-	    <div style="padding: 10px 0 10px 0;">
-		<?php
-            echo "$t_c&deg;C / $t_f&deg;F | ${hum}% RH | $dp_c &deg;C / $dp_f&deg;F DP";
-		?>
-	    </div>
-	    <FORM action="" method="POST">
-        <div>
-		<?php
-		    for ($i = 1; $i <= 8; $i++) {
-		    ?>
-		    <div class="relay-state"> 
+        <div style="text-align: center;">
+            <FORM action="" method="POST">
+            <div style="display: inline-block;">
+                <div style="float: left;" align=right>
+                    <div>
+                        Current time: <?php echo `date +'%Y-%m-%d %H:%M:%S'`; ?>
+                    </div>
+                    <div>
+                    Last read: <?php 
+                        $time_last = `tail -n 1 $sensor_log | cut -d' ' -f1,2,3,4,5,6`;
+                        $time_last[4] = '-';
+                        $time_last[7] = '-';
+                        $time_last[13] = ':';
+                        $time_last[16] = ':';
+                        echo $time_last;
+                    ?>
+                    </div>
+                </div>
+                <div style="float: left; padding-left: 15px;">
+                    <div>
+                        Auto Refresh
+                    </div>
+                    <div>
+                        <?php
+                            if (isset($_GET['r'])) {
+                                if ($_GET['r'] == 1) echo "<b><font color=\"green\">On</font></b> | <a href=\"changemode.php\">Turn Off</a>";
+                                else echo "<b><font color=\"red\">Off</font></b> | <a href=\"changemode.php?r=1\">Turn On</a>";
+                            } else echo "<b><font color=\"red\">Off</font></b> | <a href=\"changemode.php?r=1\">Turn On</a>";
+                        ?>
+                    </div>
+                </div>
+                <div style="float: left; padding-left: 15px;">
+                    <?php
+                        if (isset($_GET['r'])) {
+                            echo "<input type=\"button\" onclick=\"location.href='changemode.php?r=1'\" value=\"Refresh&#10;Page\">";
+                        } else echo "<input type=\"button\" onclick=\"location.href='changemode.php'\" value=\"Refresh&#10;Page\">";
+                    ?>
+                </div>
+                <div style="float: left; padding-left: 15px;">
+                    <input type="submit" name="WriteSensorLog" value="Update&#10;Sensors" title="Take a new temperature and humidity reading">
+                </div>
+            </div>
+            <div style="clear: both;"></div>
+            <div style="padding-top: 15px; font-size: 20px;">
                 <?php
-                    $name = substr(`cat $config_file | grep relay${i}name | cut -d' ' -f3`, 0, -1);
-                    $pin = substr(`cat $config_file | grep relay${i}pin | cut -d' ' -f3`, 0, -1);
-                    $read = "$gpio_path -g read $pin";
-                    echo "Relay ${i}: ${name}: pin ${pin}: <b>";
-                    if (shell_exec($read) == 1) echo "OFF";
-                    else echo "ON";
-                ?></b>
-                [<button type="submit" name="R<?php echo $i; ?>" value="1">OFF</button> <button type="submit" name="R<?php echo $i; ?>" value="0">ON</button>] [<input type="text" maxlength=3 size=3 name="sR<?php echo $i; ?>" title="Number of seconds to turn this relay on"/> sec 
-                <input type="submit" name="<?php echo $i; ?>secON" value="ON">]
-		    </div>
-		    <?php 
-		    }
-		?>
-        </div>
-        <div>
-            <table style="margin: 0 auto; padding-top: 15px;">
-                <tr>
-                <th colspan="6">
-                    Temperature
-                </th>
-                </tr>
-                <tr>
-                <th colspan="6" style="border-style: solid none solid none;">
-                    <div style="margin: 5px 0 5px 0;">
-                        PID Control: <b>
+                    echo "Temp: $t_c&deg;C ($t_f&deg;F) &nbsp; &nbsp; RH: ${hum}% &nbsp; &nbsp; DP: $dp_c &deg;C ($dp_f&deg;F)";
+                ?>
+            </div>
+            <div>
+                <center>
+                <table class="relays" style="padding-top: 15px;">
+                    <tr>
+                        <td align=center style="border-style: none none solid none;">
+                            Relay
+                        </td>
+                        <td align=center style="border-style: none none solid none;">
+                            Name
+                        </td>
+                        <td align=center style="border-style: none none solid none;">
+                            GPIO Pin
+                        </td>
+                        <th colspan=2  align=center style="border-style: none none solid none;">
+                            State
+                        </th>
+                        <td align=center style="border-style: none none solid none; margin: 0 10px 0 10px;">
+                            Seconds On
+                        </td>
+                    </tr>
+                    <?php
+                        for ($i = 1; $i <= 8; $i++) {
+                            $name = substr(`cat $config_file | grep relay${i}name | cut -d' ' -f3`, 0, -1);
+                            $pin = substr(`cat $config_file | grep relay${i}pin | cut -d' ' -f3`, 0, -1);
+                            $read = "$gpio_path -g read $pin";
+                    ?>
+                    <tr>
+                        <td align=center>
+                            <?php echo ${i}; ?>
+                        </td>
+                        <td align=center>
+                            <input type="text" value="<?php echo $name; ?>" maxlength=4 size=2 name="relay<?php echo $i; ?>name" title="Name of relay <?php echo $i; ?>"/>
+                        </td>
+                        <td align=center>
+                            <input type="text" value="<?php echo $pin; ?>" maxlength=2 size=1 name="relay<?php echo $i; ?>pin" title="GPIO pin using BCM numbering, connected to relay <?php echo $i; ?>"/>
+                        </td>
                         <?php
-                            if ($tempor == 1) echo "OFF";
-                            else echo "ON";
+                            if (shell_exec($read) == 1) {
+                                ?>
+                                <th colspan=2 align=center>
+                                    &nbsp; <span style="font-size: 16px; font-weight: bold; color: red">OFF</span> | <button type="submit" name="R<?php echo $i; ?>" value="0">ON</button> &nbsp;
+                                </th>
+                                <?php
+                            } else {
+                                ?>
+                                <th colspan=2 align=center>
+                                    &nbsp; <button type="submit" name="R<?php echo $i; ?>" value="1">OFF</button> | <span style="font-size: 16px; font-weight: bold; color: green">ON</span> &nbsp;
+                                </th>
+                                <?php
+                            }
                         ?>
-                        </b>
-                        [<button type="submit" name="TempOR" value="1">OFF</button> <button type="submit" name="TempOR" value="0">ON</button>]
-                    </div>
-                </th>
-                </tr>
-                <tr>
-                <td align=center>
-                    Relay
-                </td>
-                <td align=center>
-                    Set°C
-                </td>
-                <td align=center>
-                    P
-                </td>
-                <td align=center>
-                    I
-                </td>
-                <td align=center>
-                    D
-                </td>
-                <td align=center>
-                    Sec
-                </td>
-                <td>
-                </td>
-                </tr>
-                <tr>
-                <td>
-                    <input type="text" value="<?php echo $relaytemp; ?>" maxlength=1 size=1 name="relayTemp" title="This is the desired temperature"/>
-                </td>
-                <td>
-                    <input type="text" value="<?php echo $settemp; ?>" maxlength=4 size=1 name="setTemp" title="This is the desired temperature"/>
-                </td>
-                <td>
-                    <input type="text" value="<?php echo $temp_p; ?>" maxlength=4 size=1 name="Temp_P" title="This is the proportional value of the PID"/>
-                </td>
-                <td>
-                    <input type="text" value="<?php echo $temp_i; ?>" maxlength=4 size=1 name="Temp_I" title="This is the integral value of the the PID"/>
-                </td>
-                <td>
-                    <input type="text" value="<?php echo $temp_d; ?>" maxlength=4 size=1 name="Temp_D" title="This is the derivative value of the PID"/>
-                </td>
-                <td>
-                    <input type="text" value="<?php echo $factortempseconds; ?>" maxlength=4 size=1 name="factorTempSeconds" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/>
-                </td>
-                <td style="padding-left: 5px;">
-                    <input type="submit" name="ChangeTempPID" value="Set">
-                </td>
-                </tr>
-            </table>
-        </div>
-        <div>
-            <table style="margin: 0 auto; padding-top: 10px;">
-                <tr>
-                <th colspan="6">
-                    Humumidity
-                </th>
-                </tr>
-                <tr>
-                <th colspan="6" style="border-style: solid none solid none;">
-                    <div style="margin: 5px 0 5px 0;">
-                        PID Control: <b>
-                        <?php
-                            if ($humor == 1) echo "OFF";
-                            else echo "ON";
-                        ?>
-                        </b>
-                        [<button type="submit" name="HumOR" value="1">OFF</button> <button type="submit" name="HumOR" value="0">ON</button>]
-                    </div>
-                </th>
-                </tr>
-                <tr>
-                <td align=center>
-                    Relay
-                </td>
-                <td align=center>
-                    Set%
-                </td>
-                <td align=center>
-                    P
-                </td>
-                <td align=center>
-                    I
-                </td>
-                <td align=center>
-                    D
-                </td>
-                <td align=center>
-                    Sec
-                </td>
-                <td>
-                </td>
-                </tr>
-                <tr>
-                <td>
-                    <input type="text" value="<?php echo $relayhum; ?>" maxlength=1 size=1 name="relayHum" title="This is the desired temperature"/>
-                </td>
-                <td>
-                    <input type="text" value="<?php echo $sethum; ?>" maxlength=4 size=1 name="setHum" title="This is the desired humidity"/>
-                </td>
-                <td>
-                    <input type="text" value="<?php echo $hum_p; ?>" maxlength=4 size=1 name="Hum_P" title="This is the proportional value of the PID"/>
-                </td>
-                <td>
-                    <input type="text" value="<?php echo $hum_i; ?>" maxlength=4 size=1 name="Hum_I" title="This is the integral value of the the PID"/>
-                </td>
-                <td>
-                    <input type="text" value="<?php echo $hum_d; ?>" maxlength=4 size=1 name="Hum_D" title="This is the derivative value of the PID"/>
-                </td>
-                <td>
-                    <input type="text" value="<?php echo $factorhumseconds; ?>" maxlength=4 size=1 name="factorHumSeconds" title="This is the number of seconds to wait after the relay has been turned off before taking another humidity reading and applying the PID"/>
-                </td>
-                <td style="padding-left: 5px;">
-                    <input type="submit" name="ChangeHumPID" value="Set">
-                </td>
-                </tr>
+                        <td>
+                             &nbsp; <input type="text" maxlength=3 size=1 name="sR<?php echo $i; ?>" title="Number of seconds to turn this relay on"/> sec <input type="submit" name="<?php echo $i; ?>secON" value="ON"> &nbsp;
+                        </td>
+                    </tr>
+                    <?php 
+                    }
+                    ?>
+                    <tr>
+                        <td>
+                        </td>
+                        <td align=center>
+                            <button style="width: 55px;" type="submit" name="ModName" value="1" title="Change relay names to the ones specified above">Mod
+                            Name</button>
+                        </td>
+                        <td align=center>
+                            <button style="width: 55px;" type="submit" name="ModPin" value="1" title="Change the GPIO pins attached to relays to the ones specified above">Mod
+                            Pin</button>
+                        </td>
+                    </tr>
+                </table>
+                </center>
+            </div>
+            <div>
+                <table style="margin: 0 auto; padding-top: 15px; display: inline-block;">
+                    <tr>
+                        <th colspan="3" style="border-style: none none solid none;">
+                            <div style="margin: 5px 0 5px 0;">
+                                Temp:
+                                <?php
+                                    if ($tempor == 1) {
+                                        ?>
+                                        <span style="font-size: 16px; font-weight: bold; color: red">OFF</span> | <button type="submit" name="TempOR" value="0">ON</button>
+                                        <?php
+                                    } else {
+                                        ?>
+                                        <button type="submit" name="TempOR" value="1">OFF</button> | <span style="font-size: 16px; font-weight: bold; color: green">ON</span>
+                                        <?php
+                                    }
+                                ?>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td align=center>
+                            Relay
+                        </td>
+                        <td align=center>
+                            Set°C
+                        </td>
+                        <td align=center>
+                            Sec
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" value="<?php echo $relaytemp; ?>" maxlength=1 size=1 name="relayTemp" title="This is the desired temperature"/>
+                        </td>
+                        <td>
+                            <input type="text" value="<?php echo $settemp; ?>" maxlength=4 size=1 name="setTemp" title="This is the desired temperature"/>
+                        </td>
+                        <td>
+                            <input type="text" value="<?php echo $factortempseconds; ?>" maxlength=4 size=1 name="factorTempSeconds" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align=center>
+                            P
+                        </td>
+                        <td align=center>
+                            I
+                        </td>
+                        <td align=center>
+                            D
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" value="<?php echo $temp_p; ?>" maxlength=4 size=1 name="Temp_P" title="This is the proportional value of the PID"/>
+                        </td>
+                        <td>
+                            <input type="text" value="<?php echo $temp_i; ?>" maxlength=4 size=1 name="Temp_I" title="This is the integral value of the the PID"/>
+                        </td>
+                        <td>
+                            <input type="text" value="<?php echo $temp_d; ?>" maxlength=4 size=1 name="Temp_D" title="This is the derivative value of the PID"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th colspan=3 style="padding-top: 5px;">
+                            <input type="submit" name="ChangeTempPID" value="Set">
+                        </th>
+                    </tr>
+                </table>
+                <table style="margin: 0 auto; padding: 15px 0 0 25px; display: inline-block;">
+                    <tr>
+                        <th colspan="3" style="border-style: none none solid none;">
+                            <div style="margin: 5px 0 5px 0;">
+                                Hum:
+                                <?php
+                                    if ($humor == 1) {
+                                        ?>
+                                        <span style="font-size: 16px; font-weight: bold; color: red">OFF</span> | <button type="submit" name="HumOR" value="0">ON</button>
+                                        <?php
+                                    } else {
+                                        ?>
+                                        <button type="submit" name="HumOR" value="1">OFF</button> | <span style="font-size: 16px; font-weight: bold; color: green">ON</span>
+                                        <?php
+                                    }
+                                ?>
+                            </div>
+                        </th>
+                    </tr>
+                        <tr>
+                        <td align=center>
+                            Relay
+                        </td>
+                        <td align=center>
+                            Set%
+                        </td>
+                        <td align=center>
+                            Sec
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" value="<?php echo $relayhum; ?>" maxlength=1 size=1 name="relayHum" title="This is the desired temperature"/>
+                        </td>
+                        <td>
+                            <input type="text" value="<?php echo $sethum; ?>" maxlength=4 size=1 name="setHum" title="This is the desired humidity"/>
+                        </td>
+                        <td>
+                            <input type="text" value="<?php echo $factorhumseconds; ?>" maxlength=4 size=1 name="factorHumSeconds" title="This is the number of seconds to wait after the relay has been turned off before taking another humidity reading and applying the PID"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align=center>
+                            P
+                        </td>
+                        <td align=center>
+                            I
+                        </td>
+                        <td align=center>
+                            D
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" value="<?php echo $hum_p; ?>" maxlength=4 size=1 name="Hum_P" title="This is the proportional value of the PID"/>
+                        </td>
+                        <td>
+                            <input type="text" value="<?php echo $hum_i; ?>" maxlength=4 size=1 name="Hum_I" title="This is the integral value of the the PID"/>
+                        </td>
+                        <td>
+                            <input type="text" value="<?php echo $hum_d; ?>" maxlength=4 size=1 name="Hum_D" title="This is the derivative value of the PID"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th colspan=3  style="padding-top: 5px;">
+                            <input type="submit" name="ChangeHumPID" value="Set">
+                        </th>
+                    </tr>
                 </table>
             </div>
-	    </FORM>
-	</div>
+            </FORM>
+        </div>
     </body>
 </html>
 

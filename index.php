@@ -52,7 +52,7 @@ if ($login->isUserLoggedIn() == true) {
         <link rel="stylesheet"  href="style.css" type="text/css" media="all" />
         <script type="text/javascript">
             function open_chmode() {
-                window.open("changemode.php","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=530, height=630");
+                window.open("changemode.php","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=620, height=640");
             }
             function open_legend() {
                 window.open("image.php?span=legend","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=190, height=210");
@@ -62,16 +62,14 @@ if ($login->isUserLoggedIn() == true) {
             }
         </script>
         <?php
-            if (isset($_GET['r'])) {
-                if ($_GET['r'] == 1) echo "<META HTTP-EQUIV=\"refresh\" CONTENT=\"90\">";
-            }
+            if (isset($_GET['r']) && ($_GET['r'] == 1)) echo "<META HTTP-EQUIV=\"refresh\" CONTENT=\"90\">";
         ?>
     </head>
     <body bgcolor="white">
         <table>
             <tr>
-                <td width="165px" valign="top">
-                    <table width="165px">
+                <td width="160px" valign="top">
+                    <table width="160px">
                     <tr>
                         <td align=center>
                             <div class="time">
