@@ -105,6 +105,8 @@ variableValue = ''
 ClientQue = '0'
 ClientArg1 = ''
 ClientArg2 = ''
+UpdateTempPID = 0
+UpdateHumPID = 0
 
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
@@ -503,14 +505,14 @@ def Daemon():
                 SyncPrint("%s [Client command] Change Relay Pins: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s" % (Timestamp(), relayPin[1], relayPin[2], relayPin[3], relayPin[4], relayPin[5], relayPin[6], relayPin[7], relayPin[8]), 1)
                 WriteCfg()
             elif ClientQue == 'ChangeConditions':
+                global UpdateTempPID
+                global UpdateHumPID
                 SyncPrint("%s [Client command] Change: relayTemp: %s, relayHum: %s" % (Timestamp(), relayTemp, relayHum), 1)
                 SyncPrint("%s [Client command] Change: setTemp: %.1f°C, setHum: %.1f, TemoOR: %s, HumOR: %s" % (Timestamp(), setTemp, setHum, TempOR, HumOR), 1)
                 SyncPrint("%s [Client command] Change: Temperature: P: %.1f, I: %.1f D: %.1f, factorTempSeconds: %s" % (Timestamp(), Temp_P, Temp_I, Temp_D, factorTempSeconds), 1)
                 SyncPrint("%s [Client command] Change: Humidity:    P: %.1f, I: %.1f D: %.1f, factorHumSeconds:  %s" % (Timestamp(), Hum_P, Hum_I, Hum_D, factorHumSeconds), 1)
-                p_hum = Humidity_PID(Hum_P,Hum_I,Hum_D)
-                p_hum.setPoint(setHum)
-                p_temp = Temperature_PID(Temp_P,Temp_I,Temp_D)
-                p_temp.setPoint(setTemp)
+                UpdateTempPID = 1
+                UpdateHumPID = 1
                 WriteCfg()
             elif ClientQue == 'RelayOnSec':
                 SyncPrint("%s [Client command] Set Relay %s on for %s seconds" % (Timestamp(), ClientArg1, ClientArg2), 1)
@@ -536,6 +538,7 @@ def Daemon():
 # Temperature modulation by PID control
 def TemperatureMonitor():
     global tempState
+    global UpdateTempPID
     timerTemp = 0
     PIDTemp = 0
     
@@ -545,6 +548,10 @@ def TemperatureMonitor():
     p_temp.setPoint(setTemp)
     
     while True:
+        if UpdateTempPID == 1:
+            p_temp = Temperature_PID(Temp_P, Temp_I, Temp_D)
+            p_temp.setPoint(setTemp)
+            UpdateTempPID = 0
         if TempOR == 0:
             if int(time.time()) > timerTemp:
                 SyncPrint("%s [PID Temperature] Reading temperature..." % Timestamp(), 1)
@@ -554,7 +561,7 @@ def TemperatureMonitor():
                 if (tempState == 0):
                     PIDTemp = round(p_temp.update(float(tempc)), 1)
                     SyncPrint("%s [PID Temperature] Temperature lower than setTemp (%.2f°C < %.2f°C)" % (Timestamp(), tempc, setTemp), 1)
-                    SyncPrint("%s [PID Temperature] PID = %s (Seconds to run heater)" % (Timestamp(), PIDTemp), 1)
+                    SyncPrint("%s [PID Temperature] PID = %.1f (Seconds to run heater)" % (Timestamp(), PIDTemp), 1)
                     if (PIDTemp > 0 and tempc < setTemp):
                         rod = threading.Thread(target = RelayOnDuration, args = (relayTemp, PIDTemp,))
                         rod.start() # Run RelayOnDuration as non-daemon thread (will turn off relay before terminating)
@@ -567,6 +574,7 @@ def TemperatureMonitor():
 # Humidity modulation by PID control
 def HumidityMonitor():
     global humState
+    global UpdateHumPID
     timerHum = 0
     PIDHum = 0
 
@@ -576,6 +584,10 @@ def HumidityMonitor():
     p_hum.setPoint(setHum)
 
     while True:
+        if UpdateHumPID == 1:
+            p_hum = Humidity_PID(Hum_P,Hum_I,Hum_D)
+            p_hum.setPoint(setHum)
+            UpdateHumPID = 0
         if HumOR == 0:
             if int(time.time()) > timerHum:
                 SyncPrint("%s [PID Humidity] Reading humidity..." % Timestamp(), 1)
@@ -585,7 +597,7 @@ def HumidityMonitor():
                 if (humState == 0):
                     PIDHum = round(p_hum.update(float(humidity)), 1)
                     SyncPrint("%s [PID Humidity] Humidity lower than setHum (%.2f%% < %.2f%%)" % (Timestamp(), humidity, setHum), 1)
-                    SyncPrint("%s [PID Humidity] PID = %s (Seconds to run humidifier)" % (Timestamp(), PIDHum), 1)
+                    SyncPrint("%s [PID Humidity] PID = %.1f (Seconds to run humidifier)" % (Timestamp(), PIDHum), 1)
                     if (PIDHum > 0 and humidity < setHum):
                         rod = threading.Thread(target = RelayOnDuration, args = (relayHum, PIDHum,))
                         rod.start() # Run RelayOnDuration as non-daemon thread (will turn off relay before terminating)
@@ -784,8 +796,8 @@ def ReadCfg(silent):
     relayPin[7] = config.getint('RelayPins', 'relay7pin')
     relayPin[8] = config.getint('RelayPins', 'relay8pin')
 
-    relayTemp = config.getfloat('PID', 'relaytemp')
-    relayHum = config.getfloat('PID', 'relayhum')
+    relayTemp = config.getint('PID', 'relaytemp')
+    relayHum = config.getint('PID', 'relayhum')
     setTemp = config.getfloat('PID', 'settemp')
     setHum = config.getfloat('PID', 'sethum')
     TempOR = config.getint('PID', 'tempor')

@@ -165,8 +165,13 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
     </head>
     <body>
         <div style="text-align: center;">
+            <div style="padding-top: 5px; font-size: 20px;">
+                <?php
+                    echo "Temp: $t_c&deg;C ($t_f&deg;F) &nbsp; &nbsp; RH: ${hum}% &nbsp; &nbsp; DP: $dp_c &deg;C ($dp_f&deg;F)";
+                ?>
+            </div>
             <FORM action="" method="POST">
-            <div style="display: inline-block;">
+            <div style="display: inline-block; padding-top: 10px;">
                 <div style="float: left;" align=right>
                     <div>
                         Current time: <?php echo `date +'%Y-%m-%d %H:%M:%S'`; ?>
@@ -207,11 +212,6 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                 </div>
             </div>
             <div style="clear: both;"></div>
-            <div style="padding-top: 15px; font-size: 20px;">
-                <?php
-                    echo "Temp: $t_c&deg;C ($t_f&deg;F) &nbsp; &nbsp; RH: ${hum}% &nbsp; &nbsp; DP: $dp_c &deg;C ($dp_f&deg;F)";
-                ?>
-            </div>
             <div>
                 <center>
                 <table class="relays" style="padding-top: 15px;">
@@ -251,15 +251,22 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                         <?php
                             if (shell_exec($read) == 1) {
                                 ?>
-                                <th colspan=2 align=center>
-                                    &nbsp; <span style="font-size: 16px; font-weight: bold; color: red">OFF</span> | <button type="submit" name="R<?php echo $i; ?>" value="0">ON</button> &nbsp;
+                                <td align=right>
+                                    <span style="font-size: 16px; font-weight: bold; color: red">OFF</span> |
+                                </td>
+                                <td>
+                                    <button style="width: 40px;" type="submit" name="R<?php echo $i; ?>" value="0">ON</button>
+                                </td>
                                 </th>
                                 <?php
                             } else {
                                 ?>
-                                <th colspan=2 align=center>
-                                    &nbsp; <button type="submit" name="R<?php echo $i; ?>" value="1">OFF</button> | <span style="font-size: 16px; font-weight: bold; color: green">ON</span> &nbsp;
-                                </th>
+                                <td align=right>
+                                    <span style="font-size: 16px; font-weight: bold; color: green">ON</span> |
+                                </td>
+                                <td>
+                                    <button style="width: 40px;" type="submit" name="R<?php echo $i; ?>" value="1">OFF</button>
+                                </td>
                                 <?php
                             }
                         ?>

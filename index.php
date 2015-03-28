@@ -52,7 +52,7 @@ if ($login->isUserLoggedIn() == true) {
         <link rel="stylesheet"  href="style.css" type="text/css" media="all" />
         <script type="text/javascript">
             function open_chmode() {
-                window.open("changemode.php","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=620, height=640");
+                window.open("changemode.php","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=560, height=620");
             }
             function open_legend() {
                 window.open("image.php?span=legend","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=190, height=210");
