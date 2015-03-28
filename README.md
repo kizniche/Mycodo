@@ -58,6 +58,7 @@ I'm since upgraded to a new set of hardware that support 8 individually-switchab
 <a name="future"></a>
 ### Todo
 
+- [ ] Take series of photos at different ISOs, combine to make HDR photo
 - [ ] Timelapse video creation ability (define start, end, duration between, etc.)  
 - [ ] Automatic log file backup when a certain size is reached  
 - [ ] Support for more than one temperature/humidity sensor  
