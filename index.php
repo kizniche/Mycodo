@@ -31,13 +31,13 @@ $login = new Login();
 
 if ($login->isUserLoggedIn() == true) {
     $page = isset($_GET['page']) ? $_GET['page'] : 'Main';
-    $t_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f9`, 0, -1);
+    $t_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f7`, 0, -1);
     $t_f = round($t_c * (9 / 5) + 32, 1);
     $hum = substr(`tail -n 1 $sensor_log | cut -d' ' -f8`, 0, -1);
     $settemp = substr(`cat $config_file | grep settemp | cut -d' ' -f3`, 0, -1);
     $settemp_f = round($settemp * (9 / 5) + 32, 1);
     $sethum = substr(`cat $config_file | grep sethum | cut -d' ' -f3`, 0, -1);
-    $dp_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f10`, 0, -1);
+    $dp_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f9`, 0, -1);
     $dp_f = round($dp_c * (9 / 5) + 32, 1);
     $time_now = `date +"%Y-%m-%d %H:%M:%S"`;
     $time_last = `tail -n 1 $sensor_log | cut -d' ' -f1,2,3,4,5,6`;

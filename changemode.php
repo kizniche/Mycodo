@@ -29,11 +29,17 @@ require_once("classes/Login.php");
 $login = new Login();
 
 if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
-    
-    $t_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f9`, 0, -1);
+
+    if (isset($_POST['WriteSensorLog'])) {
+		$editconfig = "$mycodo_client -w";
+        shell_exec($editconfig);
+        sleep(6);
+    }
+
+    $t_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f7`, 0, -1);
     $t_f = round(($t_c * (9 / 5) + 32), 1);
     $hum = substr(`tail -n 1 $sensor_log | cut -d' ' -f8`, 0, -1);
-    $dp_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f10`, 0, -1);
+    $dp_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f9`, 0, -1);
     $dp_f = round(($dp_c * (9 / 5) + 32), 1);
     
     $relaytemp = substr(`cat $config_file | grep relaytemp | cut -d' ' -f3`, 0, -1);
@@ -85,12 +91,6 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                 shell_exec($relay_on_sec);
             }
 		}
-    }
-    
-    if (isset($_POST['WriteSensorLog'])) {
-		$editconfig = "$mycodo_client -w";
-        shell_exec($editconfig);
-        sleep(6);
     }
     
     if (isset($_POST['ModName'])) {

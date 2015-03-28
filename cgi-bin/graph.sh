@@ -10,8 +10,10 @@ LOGPATH="$(dirname "$PATHC")/log"
 IMAGEPATH="$(dirname "$PATHC")/images"
 Y1MIN=0
 Y1MAX=100
-Y2MIN=5
-Y2MAX=30
+Y2MIN=0
+Y2MAX=35
+
+graph_colors=("#FF3100" "#0772A1" "#00B74A" "#91180B" "#582557" "#04834C" "#DC32E6" "#957EF9" "#CC8D9C" "#717412" "#0B479B")
 
 usage() {
   echo Usage: $0 "[OPTION]"
@@ -47,18 +49,22 @@ set border 3 back ls 11
 set tics nomirror
 set style line 12 lc rgb '#808080' lt 0 lw 1
 set grid xtics ytics back ls 12
-set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 2
-set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 2
-set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 2
-set style line 4 lc rgb '#ffa500' pt 0 ps 1 lt 1 lw 1
-set style line 5 lc rgb '#a101a6' pt 0 ps 1 lt 1 lw 1
-set style line 6 lc rgb '#48dd00' pt 0 ps 1 lt 1 lw 1
-set style line 7 lc rgb '#d30068' pt 0 ps 1 lt 1 lw 1
+set style line 1 lc rgb '${graph_colors[0]}' pt 0 ps 1 lt 1 lw 2
+set style line 2 lc rgb '${graph_colors[1]}' pt 0 ps 1 lt 1 lw 2
+set style line 3 lc rgb '${graph_colors[2]}' pt 0 ps 1 lt 1 lw 2
+set style line 4 lc rgb '${graph_colors[3]}' pt 0 ps 1 lt 1 lw 1
+set style line 5 lc rgb '${graph_colors[4]}' pt 0 ps 1 lt 1 lw 1
+set style line 6 lc rgb '${graph_colors[5]}' pt 0 ps 1 lt 1 lw 1
+set style line 7 lc rgb '${graph_colors[6]}' pt 0 ps 1 lt 1 lw 1
+set style line 8 lc rgb '${graph_colors[7]}' pt 0 ps 1 lt 1 lw 1
+set style line 9 lc rgb '${graph_colors[8]}' pt 0 ps 1 lt 1 lw 1
+set style line 10 lc rgb '${graph_colors[9]}' pt 0 ps 1 lt 1 lw 1
+set style line 11 lc rgb '${graph_colors[10]}' pt 0 ps 1 lt 1 lw 1
 set title \"$time: `date --date="$time ago" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
 unset key
-plot \"$sensor_lines$LOGPATH/sensor.log\" u 1:8 index 0 title \" RH\" w lp ls 1 axes x1y1, \\
-     \"\" using 1:9 index 0 title \"T\" w lp ls 2 axes x1y2, \\
-     \"\" using 1:10 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
+plot \"$sensor_lines$LOGPATH/sensor.log\" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, \\
+     \"\" using 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, \\
+     \"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
      \"$relay_lines$LOGPATH/relay.log\" u 1:7 index 0 title \"XXXX\" w impulses ls 4 axes x1y1, \\
      \"\" using 1:8 index 0 title \"XXXX\" w impulses ls 5 axes x1y1, \\
      \"\" using 1:9 index 0 title \"XXXX\" w impulses ls 6 axes x1y1, \\
@@ -94,16 +100,16 @@ unset border
 unset tics
 unset grid
 set yrange [0:400]
-set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 2
-set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 2
+set style line 1 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 2
+set style line 2 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 2
 set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 2
 set style line 4 lc rgb '#ffa500' pt 0 ps 1 lt 1 lw 2
 set style line 5 lc rgb '#a101a6' pt 0 ps 1 lt 1 lw 2
 set style line 6 lc rgb '#48dd00' pt 0 ps 1 lt 1 lw 2
 set style line 7 lc rgb '#d30068' pt 0 ps 1 lt 1 lw 2
 set key center center box
-plot \"$LOGPATH/sensor.log\" index 0 title \" RH\" w lp ls 1, \\
-     \"\" index 0 title \"T\" w lp ls 2, \\
+plot \"$LOGPATH/sensor.log\" index 0 title \"T\" w lp ls 1, \\
+     \"\" index 0 title \"RH\" w lp ls 2, \\
      \"\" index 0 title \"DP\" w lp ls 3, \\
      \"$LOGPATH/relay.log\" index 0 title \"HEPA\" w impulses ls 4, \\
      \"\" index 0 title \"HUM\" w impulses ls 5, \\
@@ -131,17 +137,21 @@ set border 3 back ls 11
 set tics nomirror
 set style line 12 lc rgb '#808080' lt 0 lw 1
 set grid xtics ytics back ls 12
-set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 2
-set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 2
-set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 2
-set style line 4 lc rgb '#ffa500' pt 0 ps 1 lt 1 lw 2
-set style line 5 lc rgb '#a101a6' pt 0 ps 1 lt 1 lw 2
-set style line 6 lc rgb '#48dd00' pt 0 ps 1 lt 1 lw 2
-set style line 7 lc rgb '#d30068' pt 0 ps 1 lt 1 lw 2
+set style line 1 lc rgb '${graph_colors[0]}' pt 0 ps 1 lt 1 lw 2
+set style line 2 lc rgb '${graph_colors[1]}' pt 0 ps 1 lt 1 lw 2
+set style line 3 lc rgb '${graph_colors[2]}' pt 0 ps 1 lt 1 lw 2
+set style line 4 lc rgb '${graph_colors[3]}' pt 0 ps 1 lt 1 lw 1
+set style line 5 lc rgb '${graph_colors[4]}' pt 0 ps 1 lt 1 lw 1
+set style line 6 lc rgb '${graph_colors[5]}' pt 0 ps 1 lt 1 lw 1
+set style line 7 lc rgb '${graph_colors[6]}' pt 0 ps 1 lt 1 lw 1
+set style line 8 lc rgb '${graph_colors[7]}' pt 0 ps 1 lt 1 lw 1
+set style line 9 lc rgb '${graph_colors[8]}' pt 0 ps 1 lt 1 lw 1
+set style line 10 lc rgb '${graph_colors[9]}' pt 0 ps 1 lt 1 lw 1
+set style line 11 lc rgb '${graph_colors[10]}' pt 0 ps 1 lt 1 lw 1
 set key top left box
-plot \"$LOGPATH/sensor.log\" u 1:8 index 0 title \" RH\" w lp ls 1 axes x1y1, \\
-     \"\" u 1:9 index 0 title \"T\" w lp ls 2 axes x1y2, \\
-     \"\" u 1:12 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
+plot \"$LOGPATH/sensor.log\" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, \\
+     \"\" u 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, \\
+     \"\" u 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
      \"$LOGPATH/relay.log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
      \"\" u 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\
      \"\" u 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\
@@ -199,13 +209,17 @@ set border 3 back ls 11
 set tics nomirror
 set style line 12 lc rgb '#808080' lt 0 lw 1
 set grid xtics ytics back ls 12
-set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 2
-set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 2
-set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 2
-set style line 4 lc rgb '#ffa500' pt 0 ps 1 lt 1 lw 1
-set style line 5 lc rgb '#a101a6' pt 0 ps 1 lt 1 lw 1
-set style line 6 lc rgb '#48dd00' pt 0 ps 1 lt 1 lw 1
-set style line 7 lc rgb '#d30068' pt 0 ps 1 lt 1 lw 1
+set style line 1 lc rgb '${graph_colors[0]}' pt 0 ps 1 lt 1 lw 2
+set style line 2 lc rgb '${graph_colors[1]}' pt 0 ps 1 lt 1 lw 2
+set style line 3 lc rgb '${graph_colors[2]}' pt 0 ps 1 lt 1 lw 2
+set style line 4 lc rgb '${graph_colors[3]}' pt 0 ps 1 lt 1 lw 1
+set style line 5 lc rgb '${graph_colors[4]}' pt 0 ps 1 lt 1 lw 1
+set style line 6 lc rgb '${graph_colors[5]}' pt 0 ps 1 lt 1 lw 1
+set style line 7 lc rgb '${graph_colors[6]}' pt 0 ps 1 lt 1 lw 1
+set style line 8 lc rgb '${graph_colors[7]}' pt 0 ps 1 lt 1 lw 1
+set style line 9 lc rgb '${graph_colors[8]}' pt 0 ps 1 lt 1 lw 1
+set style line 10 lc rgb '${graph_colors[9]}' pt 0 ps 1 lt 1 lw 1
+set style line 11 lc rgb '${graph_colors[10]}' pt 0 ps 1 lt 1 lw 1
 # set xlabel \"\"
 #set ylabel \"%\"
 #set y2label \"Degrees C\"
@@ -214,13 +228,17 @@ set multiplot layout 1,3
 # Top graph - day
 set size 1.0,0.48
 set origin 0.0,0.5
-plot \"< tail -720 $LOGPATH/sensor.log\" using 1:8 index 0 title \" RH\" w lp ls 1 axes x1y1, \\
-     \"\" using 1:9 index 0 title \"T\" w lp ls 2 axes x1y2, \\
-     \"\" using 1:10 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
+plot \"< tail -720 $LOGPATH/sensor.log\" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, \\
+     \"\" using 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, \\
+     \"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
      \"< tail -1090 $LOGPATH/relay.log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
      \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\
      \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\
-     \"\" using 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1
+     \"\" using 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1, \\
+     \"\" using 1:11 index 0 title \"HUMI\" w impulses ls 8 axes x1y1, \\
+     \"\" using 1:12 index 0 title \"CFAN\" w impulses ls 9 axes x1y1, \\
+     \"\" using 1:13 index 0 title \"XXXX\" w impulses ls 10 axes x1y1, \\
+     \"\" using 1:14 index 0 title \"XXXX\" w impulses ls 11 axes x1y1
 # Bottom graph - week
 set size 1.0,0.48
 set origin 0.0,0.0
@@ -228,11 +246,7 @@ set format x \"%a\n%m/%d\"
 set xrange [\"`date --date="last week" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
 plot \"< tail -4970 $LOGPATH/sensor.log\" using 1:8 index 0 notitle w lp ls 1 axes x1y1, \\
      \"\" using 1:9 index 0 notitle w lp ls 2 axes x1y2, \\
-     \"\" using 1:10 index 0 notitle w lp ls 3 axes x1y2, \\
-     \"< tail -5050 $LOGPATH/relay.log\" u 1:7 index 0 notitle w impulses ls 4 axes x1y1, \\
-     \"\" using 1:8 index 0 notitle w impulses ls 5 axes x1y1, \\
-     \"\" using 1:9 index 0 notitle w impulses ls 6 axes x1y1, \\
-     \"\" using 1:10 index 0 notitle w impulses ls 7 axes x1y1
+     \"\" using 1:10 index 0 notitle w lp ls 3 axes x1y2
 unset multiplot" | gnuplot
       ;;
     all)
@@ -261,13 +275,17 @@ set border 3 back ls 11
 set tics nomirror
 set style line 12 lc rgb '#808080' lt 0 lw 1
 set grid xtics y2tics back ls 12
-set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 2
-set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 2
-set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 2
-set style line 4 lc rgb '#ffa500' pt 0 ps 1 lt 1 lw 1
-set style line 5 lc rgb '#a101a6' pt 0 ps 1 lt 1 lw 1
-set style line 6 lc rgb '#48dd00' pt 0 ps 1 lt 1 lw 1
-set style line 7 lc rgb '#d30068' pt 0 ps 1 lt 1 lw 1
+set style line 1 lc rgb '${graph_colors[0]}' pt 0 ps 1 lt 1 lw 2
+set style line 2 lc rgb '${graph_colors[1]}' pt 0 ps 1 lt 1 lw 2
+set style line 3 lc rgb '${graph_colors[2]}' pt 0 ps 1 lt 1 lw 2
+set style line 4 lc rgb '${graph_colors[3]}' pt 0 ps 1 lt 1 lw 1
+set style line 5 lc rgb '${graph_colors[4]}' pt 0 ps 1 lt 1 lw 1
+set style line 6 lc rgb '${graph_colors[5]}' pt 0 ps 1 lt 1 lw 1
+set style line 7 lc rgb '${graph_colors[6]}' pt 0 ps 1 lt 1 lw 1
+set style line 8 lc rgb '${graph_colors[7]}' pt 0 ps 1 lt 1 lw 1
+set style line 9 lc rgb '${graph_colors[8]}' pt 0 ps 1 lt 1 lw 1
+set style line 10 lc rgb '${graph_colors[9]}' pt 0 ps 1 lt 1 lw 1
+set style line 11 lc rgb '${graph_colors[10]}' pt 0 ps 1 lt 1 lw 1
 set title \"Past 6 Hours: `date --date="6 hours ago" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
 unset key
 plot \"$LOGPATH/sensor.log\" u 1:8 index 0 title \" RH\" w lp ls 1 axes x1y1, \\
@@ -297,13 +315,17 @@ set border 3 back ls 11
 set tics nomirror
 set style line 12 lc rgb '#808080' lt 0 lw 1
 set grid xtics y2tics back ls 12
-set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 2
-set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 2
-set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 2
-set style line 4 lc rgb '#ffa500' pt 0 ps 1 lt 1 lw 1
-set style line 5 lc rgb '#a101a6' pt 0 ps 1 lt 1 lw 1
-set style line 6 lc rgb '#48dd00' pt 0 ps 1 lt 1 lw 1
-set style line 7 lc rgb '#d30068' pt 0 ps 1 lt 1 lw 1
+set style line 1 lc rgb '${graph_colors[0]}' pt 0 ps 1 lt 1 lw 2
+set style line 2 lc rgb '${graph_colors[1]}' pt 0 ps 1 lt 1 lw 2
+set style line 3 lc rgb '${graph_colors[2]}' pt 0 ps 1 lt 1 lw 2
+set style line 4 lc rgb '${graph_colors[3]}' pt 0 ps 1 lt 1 lw 1
+set style line 5 lc rgb '${graph_colors[4]}' pt 0 ps 1 lt 1 lw 1
+set style line 6 lc rgb '${graph_colors[5]}' pt 0 ps 1 lt 1 lw 1
+set style line 7 lc rgb '${graph_colors[6]}' pt 0 ps 1 lt 1 lw 1
+set style line 8 lc rgb '${graph_colors[7]}' pt 0 ps 1 lt 1 lw 1
+set style line 9 lc rgb '${graph_colors[8]}' pt 0 ps 1 lt 1 lw 1
+set style line 10 lc rgb '${graph_colors[9]}' pt 0 ps 1 lt 1 lw 1
+set style line 11 lc rgb '${graph_colors[10]}' pt 0 ps 1 lt 1 lw 1
 set title \"Past Day: `date --date=yesterday +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
 unset key
 plot \"$LOGPATH/sensor.log\" using 1:8 index 0 title \" RH\" w lp ls 1 axes x1y1, \\
@@ -332,13 +354,17 @@ set border 3 back ls 11
 set tics nomirror
 set style line 12 lc rgb '#808080' lt 0 lw 1
 set grid xtics y2tics back ls 12
-set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 2
-set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 2
-set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 2
-set style line 4 lc rgb '#ffa500' pt 0 ps 1 lt 1 lw 1
-set style line 5 lc rgb '#a101a6' pt 0 ps 1 lt 1 lw 1
-set style line 6 lc rgb '#48dd00' pt 0 ps 1 lt 1 lw 1
-set style line 7 lc rgb '#d30068' pt 0 ps 1 lt 1 lw 1
+set style line 1 lc rgb '${graph_colors[0]}' pt 0 ps 1 lt 1 lw 2
+set style line 2 lc rgb '${graph_colors[1]}' pt 0 ps 1 lt 1 lw 2
+set style line 3 lc rgb '${graph_colors[2]}' pt 0 ps 1 lt 1 lw 2
+set style line 4 lc rgb '${graph_colors[3]}' pt 0 ps 1 lt 1 lw 1
+set style line 5 lc rgb '${graph_colors[4]}' pt 0 ps 1 lt 1 lw 1
+set style line 6 lc rgb '${graph_colors[5]}' pt 0 ps 1 lt 1 lw 1
+set style line 7 lc rgb '${graph_colors[6]}' pt 0 ps 1 lt 1 lw 1
+set style line 8 lc rgb '${graph_colors[7]}' pt 0 ps 1 lt 1 lw 1
+set style line 9 lc rgb '${graph_colors[8]}' pt 0 ps 1 lt 1 lw 1
+set style line 10 lc rgb '${graph_colors[9]}' pt 0 ps 1 lt 1 lw 1
+set style line 11 lc rgb '${graph_colors[10]}' pt 0 ps 1 lt 1 lw 1
 #set xlabel \"Date and Time\"
 #set ylabel \"% Humidity\"
 unset key
