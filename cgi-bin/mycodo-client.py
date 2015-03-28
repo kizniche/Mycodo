@@ -27,6 +27,8 @@ def usage():
     print '           Modify relay names (Restrict to a maximum of 5 characters each)'
     print '        --modpins [r1PIN] [r2PIN] [r3PIN] [r4PIN] [r5PIN] [r6PIN] [r7PIN] [r8PIN]'
     print '           Modify relay pins (Using BCM numbering)'
+    print '        --modsensor [SENSOR] [PIN]'
+    print '           Modify the DHT sensor and pin'
     print '    -o, --override [TempOR] [HumOR]'
     print '           Set Temperature and Humidity overrides. PID controller stops operating when set to 1'
     print '    -r, --relay [RELAY] [1/0]'
@@ -46,7 +48,7 @@ def menu():
         sys.exit(1)
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'c:o:p:r:s:tw', ["conditions=", "modnames=", "modpins=", "override=", "pid=", "relay=", "seconds=", "set=", "terminate", "writelog"])
+        opts, args = getopt.getopt(sys.argv[1:], 'c:o:p:r:s:tw', ["conditions=", "modnames=", "modpins=", "modsensor=", "override=", "pid=", "relay=", "seconds=", "set=", "terminate", "writelog"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -62,21 +64,28 @@ def menu():
                 print 'Fail'
             sys.exit(0)
         elif opt == "--modnames":
-            print '%s [Remote command] Set Names: %s %s %s %s %s %s %s %s Server returned:' % (Timestamp(), sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9]),
+            print '%s [Remote command] Set Names: %s %s %s %s %s %s %s %s: Server returned:' % (Timestamp(), sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9]),
             if c.root.ChangeRelayNames(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9]) == 1:
                 print 'Success'
             else:
                 print 'Fail'
             sys.exit(0)
         elif opt == "--modpins":
-            print '%s [Remote command] Set Pins: %s %s %s %s %s %s %s %s Server returned:' % (Timestamp(), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6]), int(sys.argv[7]), int(sys.argv[8]), int(sys.argv[9])),
+            print '%s [Remote command] Set Pins: %s %s %s %s %s %s %s %s: Server returned:' % (Timestamp(), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6]), int(sys.argv[7]), int(sys.argv[8]), int(sys.argv[9])),
             if c.root.ChangeRelayPins(int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6]), int(sys.argv[7]), int(sys.argv[8]), int(sys.argv[9])) == 1:
                 print 'Success'
             else:
                 print 'Fail'
             sys.exit(0)
+        elif opt == "--modsensor":
+            print '%s [Remote command] Set DHT Sensor: %s, Pin: %s: Server returned:' % (Timestamp(), sys.argv[2], int(sys.argv[3]))
+            if c.root.ChangeSensor(sys.argv[2], int(sys.argv[3])) == 1:
+                print 'Success'
+            else:
+                print 'Fail'
+            sys.exit(0)
         elif opt in ("-o", "--override"):
-            print '%s [Remote command] Set overrides: TempOR: %s, HumOR: %s : Server returned:' % (Timestamp(), int(float(sys.argv[2])), int(float(sys.argv[3])))
+            print '%s [Remote command] Set overrides: TempOR: %s, HumOR: %s: Server returned:' % (Timestamp(), int(float(sys.argv[2])), int(float(sys.argv[3])))
             if c.root.ChangeOverride(int(float(sys.argv[2])), int(float(sys.argv[3]))) == 1:
                 print 'Success'
             else:

@@ -1,6 +1,12 @@
 # Mycodo
 
-   A system designed around the Raspberry Pi, for regulating the temperature and humidity of an airspace. It has been specifically adapted for mushroom cultivation. It utilizes a DHT22 temperature/humidity sensor to monitor the enviroment(s) and relays to control a set of devices to alter the enviroment(s).
+   Originally design for gourmet mushroom cultivation, Mycodo is a system designed to regulate the temperature and humidity of an airspace with PID control. It utilizes a temperature/humidity sensor to monitor the environment and software PID controllers to modulate 8 relays that control devices to alter the environment. A web-interface allows viewing of current and past conditions as well as graph generation, configuration modification, and image and video acquisition, to name a few.
+   
+   The main application, mycodo.py, runs in the background as a daemon. It performs all crucial tasks, such as periodically reading sensors, writing sensor and relay logs, turning relays on and off, running PID controllers for temperature and humidity regulation, and reading and writing to the configuration file, among others.
+   
+   The client application, mycodo-client.py, communicates and issues commands for the daemonized mycodo.py to carry out, such as specific configuration changes, relay changes, turning automation on and off, to name a few.
+   
+   The HTTP control interface runs on a common LAMP system (Linux, Apache, MySQL, and PHP).
 
 #### Index
 
@@ -19,23 +25,26 @@
 + [Useful Links](#links)
 
 <a name="history"></a>
-### History of Mycodo
+### History
 
-This started out as a small project to regulate the temperature and humidity of a chamber I grew gourmet mushrooms in. At that time, in 2010, I used an ATMega that was interfaced to a computer via USB. When the Raspberry Pi was introduced in 2012, I decided to migrate my code from the ATMega and my linux computer to work on this one compact device. My first relay bank consisted of 4 relays, controlling a heater, humidifier, circulatory fan, and HEPA-filtered exhaust fan.
+This started out as a small project to regulate the temperature and humidity of a growth chamber I used for cultivating gourmet mushrooms. At that time (2010), I used an ATMega interfaced to a network-connected computer running linux. When the Raspberry Pi was introduced in 2012, I decided to migrate my code from the ATMega and my linux computer to work on this one compact device. My first relay bank consisted of 4 relays, controlling a heater, humidifier, circulatory fan, and HEPA-filtered exhaust fan.
 
-I'm currently working on a new set of hardware that will support a range of new features. As such, until I unveil the new hardware, this code will be undergoing lots of updates. I hope to keep everything working throughout the update process.
+I'm since upgraded to a new set of hardware that support 8 individually-switchable 120-volt AC outlets. The majority of the code has undergone drastic changes and feature additions.
 
 <a name="feat"></a>
 ### Features
 
-* Logging temperature, humidity, and relay states
-* Configurable minimum and maximum allowable temperature and humidity
-* Automatic operation of connected devices to raise/lower temperature and humidity
-* Web-control interface
-  * View raw data as well as generate graphs of current and past data
-  * Acquire images or stream live video from a camera
-  * Change modes of operation, such as minimum and maximum temperature/humidity
-  * Independently control connected devices (turn on, off, on for [x] seconds)
+* Temperature, humidity, and relay state logging
+* Temperature and humidity regulation with software PID controllers
+* Automatic and manual operation of 8 different 120-volt AC devices
+* Web Interface
+  * View historical temperature and humidity data 
+  * Generate custom graphs of current and past data, with presets for common time periods
+  * Acquire images or stream live video (Raspberry Pi Camera Module)
+  * Change modes of operation
+    * Assign a common name and GPIO pin to each of the 8 relays
+    * Switch from PID control (automatic) to manual operation (turn Off, turn On, On for [x] seconds)
+    * Set desired temperature/humidity as well as respective P, I, and D variables of the PID controllers
   * Login Authentication (written by php-login.net)
     * Using official PHP password hashing functions and the most modern password hashing/salting web standards
     * Optional "remember me" cookie to keep session authenticated
@@ -50,7 +59,6 @@ I'm currently working on a new set of hardware that will support a range of new 
 
 - [ ] Timelapse video creation ability (define start, end, duration between, etc.)  
 - [ ] Automatic log file backup when a certain size is reached  
-- [ ] Support naming/renaming relay identifier from the web interface  
 - [ ] Support for more than one temperature/humidity sensor  
 - [ ] Update user interface  
   - [ ] Tabs instead of link menus  
@@ -60,23 +68,13 @@ I'm currently working on a new set of hardware that will support a range of new 
 <a name="hard-brief"></a>
 ### Hardware
 
-
-
 * Raspberry Pi
 * Temperature/humidity sensor (DHT22)
-* Relays (2x Crydom 1240 and 1x Keyes Funduino relay board)
+* Relays (2x Crydom 1240 and 1x Keyes Funduino 8-relay board)
 * Humidifier
 * Heater
 * Circulatory Fan
-* Exhaust Fan, HEPA-filtered
-
-Relay1, Exhaust Fan: GPIO 23, pin 16  
-Relay2, Humidifier: GPIO 22, pin 15  
-Relay3, Circulatory Fan: GPIO 18, pin 12  
-Relay4, Heater: GPIO 17, pin 11  
-DHT22 sensor: GPIO 4, pin 7  
-DHT22 Power: 3.3v, pin 1  
-Relays and DHT22 Ground: Ground, pin 6  
+* Exhaust Fan (preferably with a HEPA filter)
 
 <a name="soft-brief"></a>
 ### Software
@@ -88,7 +86,7 @@ The following software is required
 * gnuplot
 * mysql
 * php >= 5.3.7
-* phpmyadmin
+* phpmyadmin (optional but recommended)
 * python
 * Python_DHT (Adafruit)
 * wget
@@ -97,7 +95,7 @@ The following software is required
 <a name="instructions"></a>
 # Install Instructions
 
-   This installation assumes you are starting with a fresh install of Raspbian linux on your Raspberry Pi. If not, please adjust your install accordingly.
+This installation assumes you are starting with a fresh install of Raspbian linux on a Raspberry Pi. If not, adjust your installation accordingly.
 
 <a name="soft-setup"></a>
 ### Software Setup
@@ -200,13 +198,15 @@ Apache does not start if there is not a proper directory structure set up in /va
 <a name="apache2"></a>
 ### Apache2 Setup
 
-To resolve the IP address in the auth.log, the following line in /etc/apache2/apache2.conf needs to be changed from 'Off' to 'On' without the quotes.
+To resolve the IP address in the auth.log, the following line in /etc/apache2/apache2.conf needs to be changed from 'Off' to 'On', without the quotes:
 
 `HostnameLookups On`
 
-There is an `.htaccess` file in each directory that denys web access to these folders. It is strongly recommended that you make sure this works properly, to ensure no one can read from these directories, as log, configuration, and graph images, and other potentially sensitive imformation is stored there.
+There is an `.htaccess` file in each directory that denies web access to these folders. It is strongly recommended that you make sure this works properly (or alternatively configure your web server to accomplish the same result), to ensure no one can read from these directories, as log, configuration, graph images, and other potentially sensitive information is stored there.
 
-Generate an SSL certificate, enable SSL/HTTPS in apache, then add the following to /etc/apache2/sites-avalable/default-ssl (or just 'default' if not using SSL), or modify to suit your needs.
+Optionally for higher security, generate an SSL certificate and enable SSL/HTTPS in apache.
+
+Add the following to /etc/apache2/sites-avalable/default-ssl (or just 'default' if not using SSL), or modify to suit your needs.
 
     DocumentRoot /var/www
     <Directory />
@@ -222,26 +222,31 @@ Generate an SSL certificate, enable SSL/HTTPS in apache, then add the following 
 <a name="mysql"></a>
 ### MySQL and User Setup
 
-Download the files in source/php-login-mysql-install to your local computer. Go to http://127.0.0.1/phpmyadmin and login with root and the password you created. Click 'Import' and select 01-create-database.sql, then click 'OK'. Repeat with the file 02-create-user-table.sql. This will wet up your MySQL database to allow registering users.
+Download the files in source/php-login-mysql-install to your local computer. Go to http://127.0.0.1/phpmyadmin and login with root and the password you created. Click 'Import' and select 01-create-database.sql, then click 'OK'. Repeat with the file 02-create-user-table.sql. This will wet up your MySQL database to allow user registration.
 
-Edit the file /var/www/mycodo/config/db.php and change 'password' for the defined DB-PASS to the password you created when you installed MySQL. Fill out Cookie and SMTP section. The SMTP section is important because you will need to receive a verification email after registration. As of 3/19/2015, gmail works as a SMTP server. Just create a new account and enter the credentials in as the config file instructs.
+Edit the file /var/www/mycodo/config/config.php and change 'password' for the defined DB-PASS to the password you created when you installed MySQL. Completely fill out the Cookie and SMTP sections. The cookie section ensures proper cookie creation and authentication. The SMTP section is important because you will need to receive a verification email after registration. As of 3/28/2015, GMail works as a SMTP server. Just create a new account and enter the credentials in as the config file instructs.
 
-Go to http://127.0.0.1/mycodo/register.php, enter your desired login information, then click Register and hope there are no errors reported. You will be sent an email to verify your login information. Once you get this email and click the link, you are able to login. You can verify this new user in MyPHPAdmin. It will appear in the MySQL database created earlier.
+Go to http://127.0.0.1/mycodo/register.php, enter your desired login information, click 'Register' and hope there are no errors reported. You will be sent an email to activate your user.
 
-Revoke read access to register.php to prevent further users from being created.
+Revoke read access to register.php to prevent further users from being created. If this is not done, anyone can access the user registration page and create users to log in to the system.
 
 `sudo chmod 000 /var/www/mycodo/register.php`
 
-This can be changed back with the following command if you wish to create more users.
+This can be changed back with the following command if you wish to create more users in the future.
 
 `sudo chmod 640 /var/www/mycodo/register.php`
 
 <a name="cron"></a>
+###Sensor and Relay Setup
+
+Before starting the daemon, check that the sensors can be properly accessed. Edit config/mycodo.cfg and change the values of dhtsensor and dhtpin to match your configuration. Options for dhtsensor are 'DHT11', 'DHT22', and 'AM2302' (without the quotes). The default is DHT22 on pin 4. If set up correctly, the following command should display temperature and humidity:
+
+`sudo mycodo.py -r SENSOR`
+
+<a name="cron"></a>
 ### Daemon Setup
 
-Set the proper pin numbers in config/mycodo.cfg by referencing the GPIO BCM numbering for your particular board. These GPIO pins should be connected to your relay control pins.
-
-Once the following init is set and the device is rebooted, the relays may become energized, depending on what the ranges are set. Check that the sensors are properly working by testing if the script 'sudo mycodo.py -r SENSOR' can display sensor data, as well as if the GPIO can be altered with 'sudo mycodo.py -c [RELAY] --state [ON/OFF/X], where RELAY is the relay number and the state is either ON, OFF, or an integer greater than 1 (for turning the relay on for X number of seconds).
+If you are properly receiving temperature and humidity data, set up the daemon to automatically log sensor data with the following commands:
 
 `sudo cp /var/www/mycodo/init.d/mycodo /etc/init.d/`
 
@@ -249,13 +254,10 @@ Once the following init is set and the device is rebooted, the relays may become
 
 `sudo update-rc.d mycodo defaults`
 
-Set up the daemon to automatically log sensor data and alter relays with the following commands
-
 Open crontab with `sudo crontab -e`, add the following lines, then save with `Ctrl+e`
 
 ```
 @reboot /usr/bin/python /var/www/mycodo/cgi-bin/GPIO-initialize.py &
-@reboot /var/www/mycodo/cgi-bin/mycodo-auto.sh &
 ```
 
 Reboot to allow everything to start up
@@ -263,9 +265,11 @@ Reboot to allow everything to start up
 `sudo apt-get shutdown -r`
 
 <a name="web-interface"></a>
-### Web Interface Login
+### Web Interface
 
 Go to http://127.0.0.1/mycodo/index.php and log in with the credentials created earlier. You should see the menu to the left displaying the current humidity and temperature, and a graph to the right with the corresponding values.
+
+Select the "Configure Settings" from the menu and set up the proper pin numbers for your connected relays by referencing the GPIO BCM numbering for your particular board. These GPIO pins should be connected to your relay control pins. Keep in mind that a HIGH GPIO corresponds to the relay being OFF and LOW corresponds to the relay being ON. If you have relays that are opposite or are mixing different relays that utilize both configurations, you will need to alter the GPIO-initialize.py script as well as mycodo.py to ensure your relays operate properly.
 
 <a name="links"></a>
 ### Useful Links

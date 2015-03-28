@@ -35,7 +35,10 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
         shell_exec($editconfig);
         sleep(6);
     }
-
+    
+    $dhtsensor = substr(`cat $config_file | grep dhtsensor | cut -d' ' -f3`, 0, -1);
+    $dhtpin = substr(`cat $config_file | grep dhtpin | cut -d' ' -f3`, 0, -1);
+    
     $t_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f7`, 0, -1);
     $t_f = round(($t_c * (9 / 5) + 32), 1);
     $hum = substr(`tail -n 1 $sensor_log | cut -d' ' -f8`, 0, -1);
@@ -127,6 +130,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
         }
 		$editconfig = "$mycodo_client --override $tempor $humor";
         shell_exec($editconfig);
+        sleep(6);
     }
     
     if (isset($_POST['ChangeTempPID'])) {
@@ -138,6 +142,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
         $factortempseconds = $_POST['factorTempSeconds'];
 		$editconfig = "$mycodo_client --conditions $relaytemp $settemp $temp_p $temp_i $temp_d $factortempseconds $relayhum $sethum $hum_p $hum_i $hum_d $factorhumseconds";
 		shell_exec($editconfig);
+        sleep(6);
 	}
     
     if (isset($_POST['ChangeHumPID'])) {
@@ -149,7 +154,16 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
         $factorhumseconds = $_POST['factorHumSeconds'];
 		$editconfig = "$mycodo_client --conditions $relaytemp $settemp $temp_p $temp_i $temp_d $factortempseconds $relayhum $sethum $hum_p $hum_i $hum_d $factorhumseconds";
 		shell_exec($editconfig);
+        sleep(6);
 	}
+    
+    if (isset($_POST['ChangeSensor'])) {
+		$dhtsensor = $_POST['DHTSensor'];
+        $dhtpin = $_POST['DHTPin'];
+        $editconfig = "$mycodo_client --modsensor $dhtsensor $dhtpin";
+        shell_exec($editconfig);
+        sleep(6);
+    }
 ?>
 
 <html>
@@ -417,8 +431,41 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                         </td>
                     </tr>
                     <tr>
-                        <th colspan=3  style="padding-top: 5px;">
+                        <th colspan=3 style="padding-top: 5px;">
                             <input type="submit" name="ChangeHumPID" value="Set">
+                        </th>
+                    </tr>
+                </table>
+                &nbsp; &nbsp; &nbsp;
+                <table class="pid">
+                    <tr>
+                        <th colspan=2 style="padding-bottom: 2px;" class="table-header">
+                            DHT Sensor
+                        </th>
+                    </tr>
+                    <tr>
+                        <td align=center>
+                            Sensor
+                        </td>
+                        <td align=center>
+                            Pin
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <select style="width: 70px;" name="DHTSensor">
+                                <option <?php if ($dhtsensor == 'DHT11') echo "selected=\"selected\""; ?> value="DHT11">DHT11</option>
+                                <option <?php if ($dhtsensor == 'DHT22') echo "selected=\"selected\""; ?> value="DHT22">DHT22</option>
+                                <option <?php if ($dhtsensor == 'AM2302') echo "selected=\"selected\""; ?> value="AM2302">AM2302</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" value="<?php echo $dhtpin; ?>" maxlength=2 size=1 name="DHTPin" title="This is the GPIO pin connected to the DHT sensor"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th colspan=2 style="padding-top: 4px;">
+                            <input type="submit" name="ChangeSensor" value="Set">
                         </th>
                     </tr>
                 </table>

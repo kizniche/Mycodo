@@ -12,21 +12,11 @@
 # Output to log file: sudo stdbuf -oL python ./mycodo.py -d >> /var/log/some.log 2>&1 &
 #
 
-"""
-##############################################################
-# TODO: Remove seconds timestamp from log writes (redundant) #
-############################################################## 
-"""
-
 #### Configure Install Directory ####
 install_directory = "/var/www/mycodo"
 
-# Change the following sensor and pin to your configuration
-# Sensor value can be Adafruit_DHT.DHT11, Adafruit_DHT.DHT22, or Adafruit_DHT.AM2302
-import Adafruit_DHT
-sensor = Adafruit_DHT.DHT22
-dhtPin = 4
 
+import Adafruit_DHT
 import subprocess
 import re
 import os
@@ -97,8 +87,11 @@ relay6o = ''
 relay7o = ''
 relay8o = ''
 
+# Sensor
+DHTSensor = ''
+DHTPin = ''
+
 # Miscellaneous
-currentTime = ''
 server = ''
 variableName = ''
 variableValue = ''
@@ -113,6 +106,14 @@ class ComServer(rpyc.Service):
     def exposed_Terminate(self, remoteCommand):
         global ClientQue
         ClientQue = 'TerminateServer'
+        return 1
+    def exposed_ChangeSensor(self, sensortype, sensorpin):
+        global ClientQue
+        global DHTSensor
+        global DHTPin
+        DHTSensor = sensortype
+        DHTPin = sensorpin
+        ClientQue = 'ChangeSensor'
         return 1
     def exposed_ChangeRelay(self, remoteCommand, remoteCommand2):
         global ClientQue
@@ -495,6 +496,9 @@ def Daemon():
             if ClientQue == 'ChangeOverride':
                 SyncPrint("%s [Client command] Change Overrides: TempOR %s, HumOR: %s" % (Timestamp(), TempOR, HumOR), 1)
                 WriteCfg()
+            elif ClientQue == 'ChangeSensor':
+                SyncPrint("%s [Client command] Change DHT Sensor: %s, Pin %s" % (Timestamp(), DHTSensor, DHTPin), 1)
+                WriteCfg()
             elif ClientQue == 'WriteSensorLog':
                 SyncPrint("%s [Client command] Write Sensor Log" % Timestamp(), 1)
                 ReadSensors(0)
@@ -598,7 +602,7 @@ def HumidityMonitor():
 
     if (humidity < setHum): humState = 0
     else: humState = 1
-    p_hum = Humidity_PID(Hum_P,Hum_I,Hum_D)
+    p_hum = Humidity_PID(Hum_P, Hum_I, Hum_D)
     p_hum.setPoint(setHum)
 
     while HAlive == 1:
@@ -665,7 +669,7 @@ def WriteSensorLog():
             waitingForLock = 0
             SyncPrint("%s [Write Sensor Log] Gained lock: %s" % (Timestamp(), sensor_lock_path), 1)
             try:
-                open(sensor_log_file, 'ab').write('{0} {1:.0f} {2:.1f} {3:.1f} {4:.1f} {5:.1f}\n'.format(datetime.datetime.now().strftime("%Y %m %d %H %M %S"), currentTime, humidity, tempc, dewpointc, heatindexc))
+                open(sensor_log_file, 'ab').write('{0} {1:.1f} {2:.1f} {3:.1f}\n'.format(datetime.datetime.now().strftime("%Y %m %d %H %M %S"), tempc, humidity, dewpointc))
                 SyncPrint("%s [Write Sensor Log] Data appended to %s" % (Timestamp(), sensor_log_file), 1)
             except:
                 SyncPrint("%s [Write Sensor Log] Unable to append data to %s" % (Timestamp(), sensor_log_file), 1)
@@ -725,20 +729,21 @@ def ReadSensors(silent):
     global humidity
     global dewpointc
     global heatindexc
-    global currentTime
     global chktemp
     chktemp = 1
+    
+    if (DHTSensor == 'DHT11'): sensor = Adafruit_DHT.DHT11
+    elif (DHTSensor == 'DHT22'): sensor = Adafruit_DHT.DHT22
+    elif (DHTSensor == 'AM2302'): sensor = Adafruit_DHT.AM2302
 
     if not silent: SyncPrint("%s [Read Sensors] Taking first Temperature/humidity reading" % Timestamp(), 1)
-    sys.stdout.flush()
-    humidity2, tempc2 = Adafruit_DHT.read_retry(sensor, dhtPin)
+    humidity2, tempc2 = Adafruit_DHT.read_retry(sensor, DHTPin)
     if not silent: SyncPrint("%s [Read Sensors] %.2f°C, %.2f%%" % (Timestamp(), tempc2, humidity2), 1)
     time.sleep(2);
     if not silent: SyncPrint("%s [Read Sensors] Taking second Temperature/humidity reading" % Timestamp(), 1)
-    sys.stdout.flush()
 
     while(chktemp):
-        humidity, tempc = Adafruit_DHT.read_retry(sensor, dhtPin)
+        humidity, tempc = Adafruit_DHT.read_retry(sensor, DHTPin)
         if not silent: 
             SyncPrint("%s [Read Sensors] %.2f°C, %.2f%%" % (Timestamp(), tempc, humidity), 1)
             SyncPrint("%s [Read Sensors] Differences: %.2f°C, %.2f%%" % (Timestamp(), abs(tempc2-tempc), abs(humidity2-humidity)), 1)
@@ -747,7 +752,6 @@ def ReadSensors(silent):
             humidity2 = humidity
             chktemp = 1
             if not silent: SyncPrint("%s [Read Sensors] Successive readings > 1 difference: Rereading" % Timestamp(), 1)
-            sys.stdout.flush()
             time.sleep(2)
         else:
             chktemp = 0
@@ -755,14 +759,15 @@ def ReadSensors(silent):
             tempf = float(tempc) * 9.0 / 5.0 + 32.0
             dewpointc = tempc - ((100 - humidity)/ 5)
             #dewpointf = dewpointc * 9 / 5 + 32
-            heatindexf =  -42.379 + 2.04901523 * tempf + 10.14333127 * humidity - 0.22475541 * tempf * humidity - 6.83783 * 10**-3 * tempf**2 - 5.481717 * 10**-2 * humidity**2 + 1.22874 * 10**-3 * tempf**2 * humidity + 8.5282 * 10**-4 * tempf * humidity**2 - 1.99 * 10**-6 * tempf**2 * humidity**2
-            heatindexc = (heatindexf - 32) * (5.0 / 9.0)
-            currentTime = time.time()
-            if not silent: SyncPrint("%s [Read Sensors] Temp: %.2f°C, Hum: %.2f%%, DP: %.2f°C, HI: %.2f°C" % (Timestamp(), tempc, humidity, dewpointc, heatindexc), 1)
+            #heatindexf =  -42.379 + 2.04901523 * tempf + 10.14333127 * humidity - 0.22475541 * tempf * humidity - 6.83783 * 10**-3 * tempf**2 - 5.481717 * 10**-2 * humidity**2 + 1.22874 * 10**-3 * tempf**2 * humidity + 8.5282 * 10**-4 * tempf * humidity**2 - 1.99 * 10**-6 * tempf**2 * humidity**2
+            #heatindexc = (heatindexf - 32) * (5.0 / 9.0)
+            if not silent: SyncPrint("%s [Read Sensors] Temp: %.2f°C, Hum: %.2f%%, DP: %.2f°C" % (Timestamp(), tempc, humidity, dewpointc), 1)
 
 # Read variables from the configuration file
 def ReadCfg(silent):
     global config_file
+    global DHTSensor
+    global DHTPin
     global relayName
     global relayPin
     global relayTemp
@@ -793,6 +798,9 @@ def ReadCfg(silent):
 
     config = ConfigParser.RawConfigParser()
     config.read(config_file)
+    
+    DHTSensor = config.get('Sensor', 'dhtsensor')
+    DHTPin = config.getint('Sensor', 'dhtpin')
 
     relayName[1] = config.get('RelayNames', 'relay1name')
     relayName[2] = config.get('RelayNames', 'relay2name')
@@ -879,6 +887,11 @@ def WriteCfg():
             waitingForLock = 0
             SyncPrint("%s [Write Config] Gained lock: %s" % (Timestamp(), config_lock_path), 1)
             SyncPrint("%s [Write Config] Writing config file %s" % (Timestamp(), config_file), 1)
+            
+            config.add_section('Sensor')
+            config.set('Sensor', 'dhtsensor', DHTSensor)
+            config.set('Sensor', 'dhtpin', DHTPin)
+            
             config.add_section('RelayNames')
             config.set('RelayNames', 'relay1name', relayName[1])
             config.set('RelayNames', 'relay2name', relayName[2])
