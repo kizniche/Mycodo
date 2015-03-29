@@ -30,7 +30,7 @@ $login = new Login();
 
 function readconfig($var) {
     global $config_file;
-    $value = substr(`cat $config_file | grep $var |  cut -d' ' -f3`, 0, -1);
+    $value = substr(`cat $config_file | grep $var | cut -d' ' -f3`, 0, -1);
     return $value;
 }
 
@@ -42,21 +42,22 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
         sleep(6);
     }
     
-    $t_c = `tail -n 1 $sensor_log | awk '{print $7}'`;
+    $t_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f7`, 0, -1);
     $t_f = round(($t_c * (9 / 5) + 32), 1);
-    $hum = `tail -n 1 $sensor_log | awk '{print $8}'`;
-    $dp_c = `tail -n 1 $sensor_log | awk '{print $9}'`;
+    $hum = substr(`tail -n 1 $sensor_log | cut -d' ' -f8`, 0, -1);
+    $dp_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f9`, 0, -1);
     $dp_f = round(($dp_c * (9 / 5) + 32), 1);
 
     $dhtsensor = readconfig("dhtsensor");
     $dhtpin = readconfig("dhtpin");
+    $dhtseconds = readconfig("timersecwritelog");
     
     $relaytemp = readconfig("relaytemp");
     $relayhum = readconfig("relayhum");
     $settemp = readconfig("settemp");
     $sethum = readconfig("sethum");
     $tempor = readconfig("tempor");
-    $humor = readconfig("grep humor");
+    $humor = readconfig("humor");
     
     $temp_p  = readconfig("temp_p");
     $temp_i  = readconfig("temp_i");
@@ -92,7 +93,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
             $seconds_on = $_POST['sR' . $p];
             
 			if (!is_numeric($seconds_on) || $seconds_on < 2 || $seconds_on != round($seconds_on)) {
-                   echo "<div class=\"error\">Error: Relay $p ($name): Seconds must be a positive integer >1</div>";
+                echo "<div class=\"error\">Error: Relay $p ($name): Seconds must be a positive integer >1</div>";
 			} else if (shell_exec($actual_state) == 0) {
                 echo "<div class=\"error\">Error: Relay $p ($name): Can't turn on for $seconds_on seconds, it's already ON</div>";
 			} else {
@@ -105,7 +106,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
     if (isset($_POST['ModName'])) {
 		for ($i = 1; $i <= 8; $i++) {
             if (isset($_POST['relay' . $i . 'name'])) {
-                $relayName[$i] = $_POST['relay' . $i . 'name'];
+                $relayName[$i] = str_replace(' ', '', $_POST['relay' . $i . 'name']);
             }
         }
         $editconfig = "$mycodo_client --modnames $relayName[1] $relayName[2] $relayName[3] $relayName[4] $relayName[5] $relayName[6] $relayName[7] $relayName[8]";
@@ -164,9 +165,10 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 	}
     
     if (isset($_POST['ChangeSensor'])) {
+        $dhtseconds = $_POST['DHTSecs'];
 		$dhtsensor = $_POST['DHTSensor'];
         $dhtpin = $_POST['DHTPin'];
-        $editconfig = "$mycodo_client --modsensor $dhtsensor $dhtpin";
+        $editconfig = "$mycodo_client --modsensor $dhtsensor $dhtpin $dhtseconds";
         shell_exec($editconfig);
         sleep(6);
     }
@@ -294,7 +296,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                         <td>
                         </td>
                         <td align=center>
-                            <button type="submit" name="ModName" value="1" title="Change relay names to the ones specified above">Mod</button>
+                            <button type="submit" name="ModName" value="1" title="Change relay names to the ones specified above (Do not use spaces)">Mod</button>
                         </td>
                         <td align=center>
                             <button type="submit" name="ModPin" value="1" title="Change the (BCM) GPIO pins attached to relays to the ones specified above">Mod</button>
@@ -458,7 +460,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                         </td>
                     </tr>
                     <tr>
-                        <td>
+                        <td style="padding-bottom: 6px;">
                             <select style="width: 80px;" name="DHTSensor">
                                 <option <?php if ($dhtsensor == 'DHT11') echo "selected=\"selected\""; ?> value="DHT11">DHT11</option>
                                 <option <?php if ($dhtsensor == 'DHT22') echo "selected=\"selected\""; ?> value="DHT22">DHT22</option>
@@ -468,6 +470,16 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                         <td>
                             <input type="text" value="<?php echo $dhtpin; ?>" maxlength=2 size=1 name="DHTPin" title="This is the GPIO pin connected to the DHT sensor"/>
                         </td>
+                    </tr>
+                    <tr>
+                        <th colspan=2>
+                            Sensor read period
+                        </th>
+                    </tr>
+                    <tr>
+                        <th colspan=2 align=left>
+                            <input type="text" value="<?php echo $dhtseconds; ?>" maxlength=3 size=1 name="DHTSecs" title="The number of seconds between writing sensor readings to the log"/> seconds
+                        </th>
                     </tr>
                     <tr>
                         <th colspan=2 style="padding-top: 4px;">

@@ -160,15 +160,15 @@ plot \"$LOGPATH/sensor.log\" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, \\
     1h)
       file="1h"
       time="1 hour"
-      sensor_lines="< tail -31 "
-      relay_lines="< tail -50 "
+      #sensor_lines="< tail -31 "
+      #relay_lines="< tail -50 "
       graph_single
       ;;
     6h)
       file="6h"
       time="6 hours"
-      sensor_lines="< tail -180 "
-      relay_lines="< tail -280 "
+      #sensor_lines="< tail -180 "
+      #relay_lines="< tail -280 "
       graph_single
       ;;
     day)

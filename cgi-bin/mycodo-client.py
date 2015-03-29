@@ -19,7 +19,7 @@ c = rpyc.connect("localhost", 18812)
 
 def usage():
     print 'mycodo-client.py: Communicates with the daemonized mycodo.py.\n'
-    print 'Usage:  ', __file__, '[OPTION]...\n'
+    print 'Usage:  mycodo-client.py [OPTION]...\n'
     print 'Options:'
     print '    -c, --conditions [relayT] [setTemp] [T_P] [T_I] [T_D] [T_sec] [relayHum] [setHum] [H_P] [H_I] [H_D] [H_Sec]'
     print '           Set P, I, I'
@@ -27,7 +27,7 @@ def usage():
     print '           Modify relay names (Restrict to a maximum of 5 characters each)'
     print '        --modpins [r1PIN] [r2PIN] [r3PIN] [r4PIN] [r5PIN] [r6PIN] [r7PIN] [r8PIN]'
     print '           Modify relay pins (Using BCM numbering)'
-    print '        --modsensor [SENSOR] [PIN]'
+    print '        --modsensor [SENSOR] [PIN] [SECONDS]'
     print '           Modify the DHT sensor and pin'
     print '    -o, --override [TempOR] [HumOR]'
     print '           Set Temperature and Humidity overrides. PID controller stops operating when set to 1'
@@ -78,8 +78,8 @@ def menu():
                 print 'Fail'
             sys.exit(0)
         elif opt == "--modsensor":
-            print '%s [Remote command] Set DHT Sensor: %s, Pin: %s: Server returned:' % (Timestamp(), sys.argv[2], int(sys.argv[3]))
-            if c.root.ChangeSensor(sys.argv[2], int(sys.argv[3])) == 1:
+            print '%s [Remote command] Set DHT Sensor: %s, Pin: %s, Secs: %s: Server returned:' % (Timestamp(), sys.argv[2], int(sys.argv[3]), int(sys.argv[4]))
+            if c.root.ChangeSensor(sys.argv[2], int(sys.argv[3]), int(sys.argv[4])) == 1:
                 print 'Success'
             else:
                 print 'Fail'

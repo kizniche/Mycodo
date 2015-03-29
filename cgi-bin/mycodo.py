@@ -1,15 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-#  mycodo.py - Read sensors, write log, read configuration file, write configuration
-#              file, and modulate relays to maintain set environmental conditions
-#              (currently temperature and humidity)
+#  mycodo.py - Read sensors, write log, read configuration file, write
+#              configuration file, and modulate relays to regulate temperature
+#              and humidity.
 #
 #  Kyle Gabriel (2012 - 2015)
 #
 # Start with:
-# Output to terminal: sudo stdbuf -oL python ./mycodo.py -d | tee log
-# Output to log file: sudo stdbuf -oL python ./mycodo.py -d >> /var/log/some.log 2>&1 &
+# sudo stdbuf -oL python ./mycodo.py -d | tee /var/log/some.log
+# sudo stdbuf -oL python ./mycodo.py -d >> /var/log/some.log 2>&1 &
 #
 
 #### Configure Install Directory ####
@@ -74,7 +74,6 @@ TempOR = ''
 HumOR = ''
 
 # Timers
-timerOneSeconds = ''
 timerSecWriteLog = ''
 
 # Relay overrides
@@ -107,10 +106,12 @@ class ComServer(rpyc.Service):
         global ClientQue
         ClientQue = 'TerminateServer'
         return 1
-    def exposed_ChangeSensor(self, sensortype, sensorpin):
+    def exposed_ChangeSensor(self, sensortype, sensorpin, sensorsec):
         global ClientQue
         global DHTSensor
         global DHTPin
+        global timerSecWriteLog
+        timerSecWriteLog = sensorsec
         DHTSensor = sensortype
         DHTPin = sensorpin
         ClientQue = 'ChangeSensor'
@@ -139,7 +140,8 @@ class ComServer(rpyc.Service):
         HumOR = humor
         ClientQue = 'ChangeOverride'
         return 1
-    def exposed_ChangeRelayNames(self, relayname1, relayname2, relayname3, relayname4, relayname5, relayname6, relayname7, relayname8):
+    def exposed_ChangeRelayNames(self, relayname1, relayname2, relayname3,
+            relayname4, relayname5, relayname6, relayname7, relayname8):
         global ClientQue
         global relayName
         relayName[1] = relayname1
@@ -152,7 +154,8 @@ class ComServer(rpyc.Service):
         relayName[8] = relayname8
         ClientQue = 'ChangeRelayNames'
         return 1
-    def exposed_ChangeRelayPins(self, relaypin1, relaypin2, relaypin3, relaypin4, relaypin5, relaypin6, relaypin7, relaypin8):
+    def exposed_ChangeRelayPins(self, relaypin1, relaypin2, relaypin3,
+            relaypin4, relaypin5, relaypin6, relaypin7, relaypin8):
         global ClientQue
         global relayPin
         relayPin[1] = relaypin1
@@ -165,7 +168,9 @@ class ComServer(rpyc.Service):
         relayPin[8] = relaypin8
         ClientQue = 'ChangeRelayPins'
         return 1
-    def exposed_ChangeConditions(self, relaytemp, settemp, temp_p, temp_i, temp_d, factortempseconds, relayhum, sethum, hum_p, hum_i, hum_d, factorhumseconds):
+    def exposed_ChangeConditions(self,
+            relaytemp, settemp, temp_p, temp_i, temp_d, factortempseconds,
+            relayhum, sethum, hum_p, hum_i, hum_d, factorhumseconds):
         global ClientQue
         global relayTemp
         global relayHum
@@ -206,113 +211,114 @@ class ComThread(threading.Thread):
 
 # PID controller for humidity
 class Humidity_PID:
-	def __init__(self, P=2.0, I=0.0, D=1.0, Derivator=0, Integrator=0, Integrator_max=500, Integrator_min=-500):
-		self.Kp=P
-		self.Ki=I
-		self.Kd=D
-		self.Derivator=Derivator
-		self.Integrator=Integrator
-		self.Integrator_max=Integrator_max
-		self.Integrator_min=Integrator_min
-		self.set_point=0.0
-		self.error=0.0
-	def update(self,current_value):
-		"""Calculate PID output value for given reference input and feedback"""
-		self.error = self.set_point - current_value
-		self.P_value = self.Kp * self.error
-		self.D_value = self.Kd * ( self.error - self.Derivator)
-		self.Derivator = self.error
-       
-		self.Integrator = self.Integrator + self.error
-		if self.Integrator > self.Integrator_max:
-			self.Integrator = self.Integrator_max
-		elif self.Integrator < self.Integrator_min:
-			self.Integrator = self.Integrator_min
-		self.I_value = self.Integrator * self.Ki
-		PID = self.P_value + self.I_value + self.D_value
-		return PID
-	def setPoint(self,set_point):
-		"""Initilize the setpoint of PID"""
-		self.set_point = set_point
-		self.Integrator=0
-		self.Derivator=0
-	def setIntegrator(self, Integrator):
-		self.Integrator = Integrator
-	def setDerivator(self, Derivator):
-		self.Derivator = Derivator
-	def setKp(self,P):
-		self.Kp=P
-	def setKi(self,I):
-		self.Ki=I
-	def setKd(self,D):
-		self.Kd=D
-	def getPoint(self):
-		return self.set_point
-	def getError(self):
-		return self.error
-	def getIntegrator(self):
-		return self.Integrator
-	def getDerivator(self):
-		return self.Derivator
+    def __init__(self, P=2.0, I=0.0, D=1.0, Derivator=0, Integrator=0,
+            Integrator_max=500, Integrator_min=-500):
+        self.Kp=P
+        self.Ki=I
+        self.Kd=D
+        self.Derivator=Derivator
+        self.Integrator=Integrator
+        self.Integrator_max=Integrator_max
+        self.Integrator_min=Integrator_min
+        self.set_point=0.0
+        self.error=0.0
+    def update(self, current_value):
+        """Calculate PID output value for given reference input and feedback"""
+        self.error = self.set_point - current_value
+        self.P_value = self.Kp * self.error
+        self.D_value = self.Kd * ( self.error - self.Derivator)
+        self.Derivator = self.error
+        self.Integrator = self.Integrator + self.error
+        if self.Integrator > self.Integrator_max:
+            self.Integrator = self.Integrator_max
+        elif self.Integrator < self.Integrator_min:
+            self.Integrator = self.Integrator_min
+        self.I_value = self.Integrator * self.Ki
+        PID = self.P_value + self.I_value + self.D_value
+        return PID
+    def setPoint(self, set_point):
+        """Initilize the setpoint of PID"""
+        self.set_point = set_point
+        self.Integrator=0
+        self.Derivator=0
+    def setIntegrator(self, Integrator):
+        self.Integrator = Integrator
+    def setDerivator(self, Derivator):
+        self.Derivator = Derivator
+    def setKp(self,P):
+        self.Kp=P
+    def setKi(self,I):
+        self.Ki=I
+    def setKd(self,D):
+        self.Kd=D
+    def getPoint(self):
+        return self.set_point
+    def getError(self):
+        return self.error
+    def getIntegrator(self):
+        return self.Integrator
+    def getDerivator(self):
+        return self.Derivator
 
 # PID controller for temperature
 class Temperature_PID:
-	def __init__(self, P=2.0, I=0.0, D=1.0, Derivator=0, Integrator=0, Integrator_max=500, Integrator_min=-500):
-		self.Kp=P
-		self.Ki=I
-		self.Kd=D
-		self.Derivator=Derivator
-		self.Integrator=Integrator
-		self.Integrator_max=Integrator_max
-		self.Integrator_min=Integrator_min
-		self.set_point=0.0
-		self.error=0.0
-	def update(self,current_value):
-		"""Calculate PID output value for given reference input and feedback"""
-		self.error = self.set_point - current_value
-		self.P_value = self.Kp * self.error
-		self.D_value = self.Kd * ( self.error - self.Derivator)
-		self.Derivator = self.error
-		self.Integrator = self.Integrator + self.error
-		if self.Integrator > self.Integrator_max:
-			self.Integrator = self.Integrator_max
-		elif self.Integrator < self.Integrator_min:
-			self.Integrator = self.Integrator_min
-		self.I_value = self.Integrator * self.Ki
-		PID = self.P_value + self.I_value + self.D_value
-		return PID
-	def setPoint(self,set_point):
-		"""Initilize the setpoint of PID"""
-		self.set_point = set_point
-		self.Integrator=0
-		self.Derivator=0
-	def setIntegrator(self, Integrator):
-		self.Integrator = Integrator
-	def setDerivator(self, Derivator):
-		self.Derivator = Derivator
-	def setKp(self,P):
-		self.Kp=P
-	def setKi(self,I):
-		self.Ki=I
-	def setKd(self,D):
-		self.Kd=D
-	def getPoint(self):
-		return self.set_point
-	def getError(self):
-		return self.error
-	def getIntegrator(self):
-		return self.Integrator
-	def getDerivator(self):
-		return self.Derivator
+    def __init__(self, P=2.0, I=0.0, D=1.0, Derivator=0, Integrator=0,
+            Integrator_max=500, Integrator_min=-500):
+        self.Kp=P
+        self.Ki=I
+        self.Kd=D
+        self.Derivator=Derivator
+        self.Integrator=Integrator
+        self.Integrator_max=Integrator_max
+        self.Integrator_min=Integrator_min
+        self.set_point=0.0
+        self.error=0.0
+    def update(self,current_value):
+        """Calculate PID output value for given reference input and feedback"""
+        self.error = self.set_point - current_value
+        self.P_value = self.Kp * self.error
+        self.D_value = self.Kd * ( self.error - self.Derivator)
+        self.Derivator = self.error
+        self.Integrator = self.Integrator + self.error
+        if self.Integrator > self.Integrator_max:
+            self.Integrator = self.Integrator_max
+        elif self.Integrator < self.Integrator_min:
+            self.Integrator = self.Integrator_min
+        self.I_value = self.Integrator * self.Ki
+        PID = self.P_value + self.I_value + self.D_value
+        return PID
+    def setPoint(self,set_point):
+        """Initilize the setpoint of PID"""
+        self.set_point = set_point
+        self.Integrator=0
+        self.Derivator=0
+    def setIntegrator(self, Integrator):
+        self.Integrator = Integrator
+    def setDerivator(self, Derivator):
+        self.Derivator = Derivator
+    def setKp(self,P):
+        self.Kp=P
+    def setKi(self,I):
+        self.Ki=I
+    def setKd(self,D):
+        self.Kd=D
+    def getPoint(self):
+        return self.set_point
+    def getError(self):
+        return self.error
+    def getIntegrator(self):
+        return self.Integrator
+    def getDerivator(self):
+        return self.Derivator
 
 # Displays the program usage
 def usage():
     SyncPrint("mycodo.py: Reads temperature and humidity from sensors, writes log file, and operates relays as a daemon to maintain set environmental conditions.\n", 1)
-    SyncPrint("Usage:  ', __file__, '[OPTION]...\n", 1)
-    SyncPrint("Example:', __file__, '-w /var/www/mycodo/log/sensor.log", 1)
-    SyncPrint("        ', __file__, '-c 1 -s 0", 1)
-    SyncPrint("        ', __file__, '-n relay1Name --value Banana", 1)
-    SyncPrint("        ', __file__, '--daemon\n", 1)
+    SyncPrint("Usage:   mycodo.py [OPTION]...\n", 1)
+    SyncPrint("Example: mycodo.py -w /var/www/mycodo/log/sensor.log", 1)
+    SyncPrint("         mycodo.py -c 1 -s 0", 1)
+    SyncPrint("         mycodo.py -n relay1Name --value Banana", 1)
+    SyncPrint("         mycodo.py --daemon\n", 1)
     SyncPrint("Options:", 1)
     SyncPrint("    -c, --change=RELAY", 1)
     SyncPrint("           Change the state of a relay (--state required)", 1)
@@ -335,20 +341,6 @@ def usage():
     SyncPrint("    -w, --write=FILE", 1)
     SyncPrint("           Write sensor data to log file\n", 1)
 
-# GPIO-initialize.py is executed once at bootup to set all pins HIGH (relays off)
-def GPIOSetup():
-    SyncPrint("%s [GPIO Initialize] Set GPIO mode to BCM numbering, all as output" % Timestamp(), 1)
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setwarnings(False)
-    GPIO.setup(relayPin[1], GPIO.OUT)
-    GPIO.setup(relayPin[2], GPIO.OUT)
-    GPIO.setup(relayPin[3], GPIO.OUT)
-    GPIO.setup(relayPin[4], GPIO.OUT)
-    GPIO.setup(relayPin[5], GPIO.OUT)
-    GPIO.setup(relayPin[6], GPIO.OUT)
-    GPIO.setup(relayPin[7], GPIO.OUT)
-    GPIO.setup(relayPin[8], GPIO.OUT)
-
 # Checks user options and arguments for validity
 def menu():
     if len(sys.argv) == 1: # No arguments given
@@ -356,7 +348,9 @@ def menu():
         sys.exit(1)
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'c:dhpr:s:tn:w', ["change=", "daemon", "help", "name=", "pin", "read=", "set=", "state=", "value=", "write="])
+        opts, args = getopt.getopt(sys.argv[1:], 'c:dhpr:s:tn:w',
+            ["change=", "daemon", "help", "name=", "pin",
+            "read=", "set=", "state=", "value=", "write="])
     except getopt.GetoptError as err:
         print(err) # will SyncPrint("option -a not recognized"
         usage()
@@ -406,11 +400,13 @@ def menu():
                 SyncPrint("Error: Variable '%s' does not exist" % variableName, 1)
                 sys.exit(1)
             else:
-                SyncPrint("%s [Change Value] Changing variable '%s' value to %s" % (Timestamp(), variableName, variableValue), 1)
+                SyncPrint("%s [Change Value] Changing variable '%s' value to %s" % (
+                    Timestamp(), variableName, variableValue), 1)
                 ReadCfg(0)
                 globals()[variableName] = variableValue
                 WriteCfg()
-                SyncPrint("%s [Change Value] Variable '%s' value changed to %s" % (Timestamp(), variableName, variableValue), 1)
+                SyncPrint("%s [Change Value] Variable '%s' value changed to %s" % (
+                    Timestamp(), variableName, variableValue), 1)
                 sys.exit(0)
         elif opt in ("-p", "--pin"):
             ReadCfg(0)
@@ -437,7 +433,8 @@ def menu():
             elif (sys.argv[4] != '0' and sys.argv[4] != '1') or (sys.argv[5] != '0' and sys.argv[5] != '1'):
                 SyncPrint("Error: The last option of --set must be 0 or 1", 1)
                 sys.exit(0)
-            SyncPrint("%s [Set Conditions] Desired values: setTemp: %s, setHum: %s, TempOR: %s, HumOR: %s" % (Timestamp(), sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5]), 1)
+            SyncPrint("%s [Set Conditions] Desired values: setTemp: %s, setHum: %s, TempOR: %s, HumOR: %s" % (
+                Timestamp(), sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5]), 1)
             ReadCfg(0)
             global setTemp
             global setHum
@@ -448,12 +445,14 @@ def menu():
             TempOR = int(float(sys.argv[4]))
             HumOR = int(float(sys.argv[5]))
             WriteCfg()
-            SyncPrint("%s [Set Conditions] New Values: setTemp: %.1f°C, setHum: %.1f%%, TempOR: %s, HumOR: %s" % (Timestamp(), setTemp, setHum, TempOR, HumOR), 1)
+            SyncPrint("%s [Set Conditions] New Values: setTemp: %.1f°C, setHum: %.1f%%, TempOR: %s, HumOR: %s" % (
+                Timestamp(), setTemp, setHum, TempOR, HumOR), 1)
             sys.exit(0)
         elif opt in ("-w", "--write"):
             global sensor_log_file
             if arg == '':
-                SyncPrint("%s [Write Log] No log file specified, using default: %s" % (Timestamp(), sensor_log_file), 1)
+                SyncPrint("%s [Write Log] No log file specified, using default: %s" % (
+                    Timestamp(), sensor_log_file), 1)
             else:
                 sensor_log_file = arg
             ReadSensors(0)
@@ -497,7 +496,7 @@ def Daemon():
                 SyncPrint("%s [Client command] Change Overrides: TempOR %s, HumOR: %s" % (Timestamp(), TempOR, HumOR), 1)
                 WriteCfg()
             elif ClientQue == 'ChangeSensor':
-                SyncPrint("%s [Client command] Change DHT Sensor: %s, Pin %s" % (Timestamp(), DHTSensor, DHTPin), 1)
+                SyncPrint("%s [Client command] Change DHT Sensor: %s, Pin %s: LogSec: %s" % (Timestamp(), DHTSensor, DHTPin, timerSecWriteLog), 1)
                 WriteCfg()
             elif ClientQue == 'WriteSensorLog':
                 SyncPrint("%s [Client command] Write Sensor Log" % Timestamp(), 1)
@@ -760,7 +759,7 @@ def ReadSensors(silent):
             dewpointc = tempc - ((100 - humidity)/ 5)
             #dewpointf = dewpointc * 9 / 5 + 32
             #heatindexf =  -42.379 + 2.04901523 * tempf + 10.14333127 * humidity - 0.22475541 * tempf * humidity - 6.83783 * 10**-3 * tempf**2 - 5.481717 * 10**-2 * humidity**2 + 1.22874 * 10**-3 * tempf**2 * humidity + 8.5282 * 10**-4 * tempf * humidity**2 - 1.99 * 10**-6 * tempf**2 * humidity**2
-            #heatindexc = (heatindexf - 32) * (5.0 / 9.0)
+            #heatindexc = (heatindexf - 32) * (5 / 9)
             if not silent: SyncPrint("%s [Read Sensors] Temp: %.2f°C, Hum: %.2f%%, DP: %.2f°C" % (Timestamp(), tempc, humidity, dewpointc), 1)
 
 # Read variables from the configuration file
@@ -955,6 +954,20 @@ def ChangeRelay(Select, State):
     SyncPrint("%s [GPIO Write] Setting relay %s (%s) to %s (was %s)" % (Timestamp(), Select, relayName[Select], State, GPIO.input(relayPin[Select])), 1)
     GPIO.output(relayPin[Select], State)
 
+# Initialize GPIO
+def GPIOSetup():
+    SyncPrint("%s [GPIO Initialize] Set GPIO mode to BCM numbering, all as output" % Timestamp(), 1)
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
+    GPIO.setup(relayPin[1], GPIO.OUT)
+    GPIO.setup(relayPin[2], GPIO.OUT)
+    GPIO.setup(relayPin[3], GPIO.OUT)
+    GPIO.setup(relayPin[4], GPIO.OUT)
+    GPIO.setup(relayPin[5], GPIO.OUT)
+    GPIO.setup(relayPin[6], GPIO.OUT)
+    GPIO.setup(relayPin[7], GPIO.OUT)
+    GPIO.setup(relayPin[8], GPIO.OUT)
+
 # Read states (HIGH/LOW) of GPIO pins
 def GPIORead():
     SyncPrint("%s [GPIO Read]" % Timestamp(), 0)
@@ -1016,7 +1029,6 @@ def CheckVariableName():
     'relay6o',
     'relay7o',
     'relay8o',
-    'timerOneSeconds',
     'timerSecWriteLog',
     'Hum_P',
     'Hum_I',
