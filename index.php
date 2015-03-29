@@ -29,14 +29,22 @@ require_once('libraries/PHPMailer.php');
 require_once("classes/Login.php");
 $login = new Login();
 
+function readconfig($var) {
+    global $config_file;
+    $value = substr(`cat $config_file | grep $var | cut -d' ' -f3`, 0, -1);
+    return $value;
+}
+
 if ($login->isUserLoggedIn() == true) {
     $page = isset($_GET['page']) ? $_GET['page'] : 'Main';
     $t_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f7`, 0, -1);
     $t_f = round($t_c * (9 / 5) + 32, 1);
     $hum = substr(`tail -n 1 $sensor_log | cut -d' ' -f8`, 0, -1);
-    $settemp = substr(`cat $config_file | grep settemp | cut -d' ' -f3`, 0, -1);
+    $settemp = readconfig("settemp");
     $settemp_f = round($settemp * (9 / 5) + 32, 1);
-    $sethum = substr(`cat $config_file | grep sethum | cut -d' ' -f3`, 0, -1);
+    $sethum = readconfig("sethum");
+    $tempor = readconfig("tempor");
+    $humor = readconfig("humor");
     $dp_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f9`, 0, -1);
     $dp_f = round($dp_c * (9 / 5) + 32, 1);
     $time_now = `date +"%Y-%m-%d %H:%M:%S"`;
@@ -86,24 +94,38 @@ if ($login->isUserLoggedIn() == true) {
                     </tr>
                     <tr class="link">
                         <td>
-                        <div class="sensor-block">
-                            <div class="sensor-title">
-                                Temperature
+                            <div class="sensor-block">
+                                <div class="sensor-title">
+                                    <?php
+                                        if ($tempor == 1) {
+                                                echo "<span class=\"state off\">OFF</span>";
+                                            } else {
+                                                echo "<span class=\"state on\">ON</span>";
+                                            }
+                                    ?> 
+                                    Temperature 
+                                </div>
+                                <div class="sensor-values">
+                                    <?php echo "Now: ${t_c}&deg;C (${t_f}&deg;F)"; ?>
+                                </div>
+                                <div class="setpoint">
+                                    <?php echo "Set: ${settemp}&deg;C (${settemp_f}&deg;F)"; ?>
+                                </div>
                             </div>
-                            <div class="sensor-values">
-                                <?php echo "Now: ${t_c}&deg;C (${t_f}&deg;F)"; ?>
-                            </div>
-                            <div class="setpoint">
-                                <?php echo "Set: ${settemp}&deg;C (${settemp_f}&deg;F)"; ?>
-                            </div>
-                        </div>
                         </td>
                     </tr>
                     <tr class="link">
                         <td>
                             <div class="sensor-block">
                                 <div class="sensor-title">
-                                    Relative Humidity
+                                    <?php
+                                        if ($humor == 1) {
+                                                echo "<span class=\"state off\">OFF</span>";
+                                            } else {
+                                                echo "<span class=\"state on\">ON</span>";
+                                            }
+                                    ?> 
+                                    Humidity (Rel)
                                 </div>
                                 <div class="sensor-values">
                                     <?php echo "Now: ${hum}%"; ?>

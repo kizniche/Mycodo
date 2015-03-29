@@ -1,7 +1,6 @@
-# And add:
 #!/bin/bash
 ### BEGIN INIT INFO
-# provides:          mycodo-auto
+# provides:          mycodo
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Required-Start:   
@@ -11,24 +10,76 @@
 ### END INIT INFO
 
 case "${1:-''}" in
-  'start')
-   # create the /var/log/apache2/error.log needed by apache
-   touch /var/log/mycodo.log
-   chmod 777 /var/log/mycodo.log
-   stdbuf -oL python /var/www/mycodo/cgi-bin/mycodo.py -d >> /var/log/mycodo.log 2>&1 &
-   ;;
-  'stop')
-   /var/www/mycodo/cgi-bin/mycodo-client.py -t
-   sleep 3 && kill -9 ${ps aux | grep '[m]ycodo.py -d' | awk '{print $2}'}
-   ;;
-  'restart')
-   ;;
-  'reload'|'force-reload')
-   ;;
-  'status')
-   ;;
-  *)
-   echo "Usage: $SELF start|stop"
-   exit 1
-   ;;
+    'start')
+        mkdir -p /var/log/mycodo
+        
+        if [ ! -e /var/log/mycodo/sensor.log ]; then
+            touch /var/log/mycodo/sensor.log
+            chmod 770 /var/log/mycodo/sensor.log
+            chown www-data.www-data /var/log/mycodo/sensor.log
+        fi
+        
+        if [ ! -h /var/www/mycodo/log/sensor.log ]; then
+            ln -s /var/log/mycodo/sensor.log /var/www/mycodo/log/sensor.log
+        fi
+        
+        if [ ! -e /var/log/mycodo/relay.log ]; then
+            touch /var/log/mycodo/relay.log
+            chmod 770 /var/log/mycodo/relay.log
+            chown www-data.www-data /var/log/mycodo/relay.log
+        fi
+        
+        if [ ! -h /var/www/mycodo/log/relay.log ]; then
+            ln -s /var/log/mycodo/relay.log /var/www/mycodo/log/relay.log
+        fi
+        
+        touch /var/log/mycodo/mycodo.log
+        chmod 777 /var/log/mycodo/mycodo.log
+        
+        stdbuf -oL python /var/www/mycodo/cgi-bin/mycodo.py -d >> /var/log/mycodo/mycodo.log 2>&1 &
+        ;;
+    'stop')
+        /var/www/mycodo/cgi-bin/mycodo-client.py -t
+        
+        sleep 4
+        
+        if ps aux | grep '[m]ycodo.py -d'
+        then
+            echo "Server is still running"
+
+            PID=`ps aux | grep '[m]ycodo.py -d' | awk '{print $2}'`
+            WAIT_SECONDS=10
+            count=0
+
+            while kill $PID > /dev/null
+            do
+                sleep 1
+                ((count++))
+
+                # Has the process been killed?
+                if ! ps -p $PID > /dev/null ; then
+                    break
+                fi
+
+                # Have we exceeded $WAIT_SECONDS?
+                if [ $count -gt $WAIT_SECONDS ]; then
+                    kill -9 $PID
+                    break
+                fi
+            done
+            echo "Process with pid $PID has been killed after $count seconds."    
+        else
+           echo "Server has stopped"
+        fi
+        ;;
+    'restart')
+        ;;
+    'reload'|'force-reload')
+        ;;
+    'status')
+        ;;
+    *)
+        echo "Usage: $SELF start|stop"
+        exit 1
+        ;;
 esac
