@@ -28,6 +28,12 @@ require_once('libraries/PHPMailer.php');
 require_once("classes/Login.php");
 $login = new Login();
 
+function readconfig($var) {
+    global $config_file;
+    $value = `cat $config_file | grep $var | awk '{print $3}'`;
+    return $value;
+}
+
 if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 
     if (isset($_POST['WriteSensorLog'])) {
@@ -36,37 +42,37 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
         sleep(6);
     }
     
-    $dhtsensor = substr(`cat $config_file | grep dhtsensor | cut -d' ' -f3`, 0, -1);
-    $dhtpin = substr(`cat $config_file | grep dhtpin | cut -d' ' -f3`, 0, -1);
-    
-    $t_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f7`, 0, -1);
+    $t_c = `tail -n 1 $sensor_log | awk '{print $7}'`;
     $t_f = round(($t_c * (9 / 5) + 32), 1);
-    $hum = substr(`tail -n 1 $sensor_log | cut -d' ' -f8`, 0, -1);
-    $dp_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f9`, 0, -1);
+    $hum = `tail -n 1 $sensor_log | awk '{print $8}'`;
+    $dp_c = `tail -n 1 $sensor_log | awk '{print $9}'`;
     $dp_f = round(($dp_c * (9 / 5) + 32), 1);
+
+    $dhtsensor = readconfig("dhtsensor");
+    $dhtpin = readconfig("dhtpin");
     
-    $relaytemp = substr(`cat $config_file | grep relaytemp | cut -d' ' -f3`, 0, -1);
-    $relayhum = substr(`cat $config_file | grep relayhum | cut -d' ' -f3`, 0, -1);
-    $settemp = substr(`cat $config_file | grep settemp | cut -d' ' -f3`, 0, -1);
-    $sethum = substr(`cat $config_file | grep sethum | cut -d' ' -f3 `, 0, -1);
-    $tempor = substr(`cat $config_file | grep tempor | cut -d' ' -f3`, 0, -1);
-    $humor = substr(`cat $config_file | grep humor | cut -d' ' -f3`, 0, -1);
+    $relaytemp = readconfig("relaytemp");
+    $relayhum = readconfig("relayhum");
+    $settemp = readconfig("settemp");
+    $sethum = readconfig("sethum");
+    $tempor = readconfig("tempor");
+    $humor = readconfig("humor");
     
-    $temp_p  = substr(`cat $config_file | grep temp_p | cut -d' ' -f3`, 0, -1);
-    $temp_i  = substr(`cat $config_file | grep temp_i | cut -d' ' -f3`, 0, -1);
-    $temp_d  = substr(`cat $config_file | grep temp_d | cut -d' ' -f3`, 0, -1);
-    $hum_p  = substr(`cat $config_file | grep hum_p | cut -d' ' -f3`, 0, -1);
-    $hum_i  = substr(`cat $config_file | grep hum_i | cut -d' ' -f3`, 0, -1);
-    $hum_d  = substr(`cat $config_file | grep hum_d | cut -d' ' -f3`, 0, -1);
+    $temp_p  = readconfig("temp_p");
+    $temp_i  = readconfig("temp_i");
+    $temp_d  = readconfig("temp_d");
+    $hum_p  = readconfig("hum_p");
+    $hum_i  = readconfig("hum_i");
+    $hum_d  = readconfig("hum_d");
     
-    $factorhumseconds = substr(`cat $config_file | grep factorhumseconds | cut -d' ' -f3`, 0, -1);
-    $factortempseconds = substr(`cat $config_file | grep factortempseconds | cut -d' ' -f3`, 0, -1);
+    $factorhumseconds = readconfig("factorhumseconds");
+    $factortempseconds = readconfig("factortempseconds");
         
 	for ($p = 1; $p <= 8; $p++) {
         // Relay has been selected to be turned on or off
 		if (isset($_POST['R' . $p])) {
-			$name = substr(`cat $config_file | grep relay${p}name | cut -d' ' -f3`, 0, -1);
-            $pin = substr(`cat $config_file | grep relay${p}pin | cut -d' ' -f3`,0, -1);
+			$name = readconfig("relay${p}name");
+            $pin = readconfig("relay${p}pin");
             $actual_state = "$gpio_path -g read $pin";
             $desired_state = $_POST['R' . $p];
             
@@ -80,8 +86,8 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
         
         // Relay has been selected to be turned on for a number of seconds
         if (isset($_POST[$p . 'secON'])) {
-            $name = substr(`cat $config_file | grep relay${p}name | cut -d' ' -f3`, 0, -1);
-            $pin = substr(`cat $config_file | grep relay${p}pin | cut -d' ' -f3`,0, -1);
+            $name = readconfig("relay${p}name");
+            $pin = readconfig("relay${p}pin");
 			$actual_state = "$gpio_path -g read $pin";
             $seconds_on = $_POST['sR' . $p];
             
@@ -247,8 +253,8 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                     </tr>
                     <?php
                         for ($i = 1; $i <= 8; $i++) {
-                            $name = substr(`cat $config_file | grep relay${i}name | cut -d' ' -f3`, 0, -1);
-                            $pin = substr(`cat $config_file | grep relay${i}pin | cut -d' ' -f3`, 0, -1);
+                            $name = readconfig("relay${i}name");
+                            $pin = readconfig("relay${i}pin");
                             $read = "$gpio_path -g read $pin";
                     ?>
                     <tr>
