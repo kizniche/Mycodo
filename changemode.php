@@ -30,7 +30,7 @@ $login = new Login();
 
 function readconfig($var) {
     global $config_file;
-    $value = `cat $config_file | grep $var | awk '{print $3}'`;
+    $value = substr(`cat $config_file | grep $var |  cut -d' ' -f3`, 0, -1);
     return $value;
 }
 
@@ -55,8 +55,8 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
     $relayhum = readconfig("relayhum");
     $settemp = readconfig("settemp");
     $sethum = readconfig("sethum");
-    $tempor = substr(`cat $config_file | grep tempor | cut -d' ' -f3`, 0, -1);
-    $humor = substr(`cat $config_file | grep humor | cut -d' ' -f3`, 0, -1);
+    $tempor = readconfig("tempor");
+    $humor = readconfig("grep humor");
     
     $temp_p  = readconfig("temp_p");
     $temp_i  = readconfig("temp_i");
