@@ -12,11 +12,15 @@
 case "${1:-''}" in
     'start')
         mkdir -p /var/log/mycodo
+        mkdir -p /var/log/mycodo/images
         
+        if [ ! -h /var/www/mycodo/images ]; then
+            ln -s /var/log/mycodo/images /var/www/mycodo/images
+            chown www-data.www-data /var/www/mycodo/images
+        fi
+
         if [ ! -e /var/log/mycodo/sensor.log ]; then
             touch /var/log/mycodo/sensor.log
-            chmod 770 /var/log/mycodo/sensor.log
-            chown www-data.www-data /var/log/mycodo/sensor.log
         fi
         
         if [ ! -h /var/www/mycodo/log/sensor.log ]; then
@@ -25,16 +29,22 @@ case "${1:-''}" in
         
         if [ ! -e /var/log/mycodo/relay.log ]; then
             touch /var/log/mycodo/relay.log
-            chmod 770 /var/log/mycodo/relay.log
-            chown www-data.www-data /var/log/mycodo/relay.log
         fi
         
         if [ ! -h /var/www/mycodo/log/relay.log ]; then
             ln -s /var/log/mycodo/relay.log /var/www/mycodo/log/relay.log
         fi
         
-        touch /var/log/mycodo/mycodo.log
-        chmod 777 /var/log/mycodo/mycodo.log
+        if [ ! -e /var/log/mycodo/mycodo.log ]; then
+            touch /var/log/mycodo/mycodo.log
+        fi
+        
+        if [ ! -h /var/www/mycodo/log/mycodo.log ]; then
+            ln -s /var/log/mycodo/mycodo.log /var/www/mycodo/log/mycodo.log
+        fi
+        
+        chmod -R 770 /var/log/mycodo
+        chown -R www-data.www-data /var/log/mycodo
         
         stdbuf -oL python /var/www/mycodo/cgi-bin/mycodo.py -d >> /var/log/mycodo/mycodo.log 2>&1 &
         ;;
