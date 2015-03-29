@@ -97,13 +97,18 @@ variableValue = ''
 ClientQue = '0'
 ClientArg1 = ''
 ClientArg2 = ''
+Terminate = False
 TAlive = 1
 HAlive = 1
+p_temp = ''
+p_hum = ''
 
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
     def exposed_Terminate(self, remoteCommand):
         global ClientQue
+        global Terminate
+        Terminate = True
         ClientQue = 'TerminateServer'
         return 1
     def exposed_ChangeSensor(self, sensortype, sensorpin, sensorsec):
@@ -168,35 +173,51 @@ class ComServer(rpyc.Service):
         relayPin[8] = relaypin8
         ClientQue = 'ChangeRelayPins'
         return 1
-    def exposed_ChangeConditions(self,
-            relaytemp, settemp, temp_p, temp_i, temp_d, factortempseconds,
-            relayhum, sethum, hum_p, hum_i, hum_d, factorhumseconds):
+    def exposed_ChangeTempOR(self, tempor):
+        global ClientQue
+        global TempOR
+        TempOR = tempor
+        ClientQue = 'ChangeTempOR'
+        return 1
+    def exposed_ChangeHumOR(self, humor):
+        global ClientQue
+        global HumOR
+        HumOR = humor
+        ClientQue = 'ChangeHumOR'
+        return 1
+    def exposed_ChangeConditionsTemp(self, relaytemp, settemp,
+            temp_p, temp_i, temp_d, factortempseconds):
         global ClientQue
         global relayTemp
-        global relayHum
         global setTemp
-        global setHum
         global Temp_P
         global Temp_I
         global Temp_D
-        global Hum_P
-        global Hum_I
-        global Hum_D
         global factorTempSeconds
-        global factorHumSeconds
         relayTemp = relaytemp
-        relayHum = relayhum
         setTemp = settemp
-        setHum = sethum
-        Hum_P = hum_p
-        Hum_I = hum_i
-        Hum_D = hum_d
         Temp_P = temp_p
         Temp_I = temp_i
         Temp_D = temp_d
         factorTempSeconds = factortempseconds
+        ClientQue = 'ChangeConditionsTemp'
+        return 1
+    def exposed_ChangeConditionsHum(self, relayhum, sethum,
+            hum_p, hum_i, hum_d, factorhumseconds):
+        global ClientQue
+        global relayHum
+        global setHum
+        global Hum_P
+        global Hum_I
+        global Hum_D
+        global factorHumSeconds
+        relayHum = relayhum
+        setHum = sethum
+        Hum_P = hum_p
+        Hum_I = hum_i
+        Hum_D = hum_d
         factorHumSeconds = factorhumseconds
-        ClientQue = 'ChangeConditions'
+        ClientQue = 'ChangeConditionsHum'
         return 1
     def exposed_WriteSensorLog(self):
         global ClientQue
@@ -484,94 +505,117 @@ def Daemon():
     global HAlive
     global TAlive
     global ClientQue
-    timerSensorLog = 0
-
-    SyncPrint("%s [Daemon] Daemon started" % Timestamp(), 1)
-    SyncPrint("%s [Daemon] Initial configuration read to set variables"
-        % Timestamp(), 1)
-    ReadCfg(1)
-    ReadSensors(0)
     
+    SyncPrint("%s [Daemon] Daemon Started" % Timestamp(), 1)
     SyncPrint("%s [Communication Server] Starting Thread"
         % Timestamp(), 1)
     ct = ComThread()
     ct.daemon = True
     ct.start()
-    
-    SyncPrint("%s [PID Temperature Controller] Starting Thread"
+
+    SyncPrint("%s [Daemon] Initial configuration read to set variables"
         % Timestamp(), 1)
-    tm = threading.Thread(target = TemperatureMonitor)
+    ReadCfg(1)
+    ReadSensors(0)
+    timerSensorLog = int(time.time()) + timerSecWriteLog
+   
+    tm = threading.Thread(target = TemperatureMonitor)   
     tm.daemon = True
     tm.start()
     
-    SyncPrint("%s [PID Humidity Controller] Starting Thread"
-        % Timestamp(), 1)
     hm = threading.Thread(target = HumidityMonitor)
     hm.daemon = True
     hm.start()
 
     while True: # Main loop of the daemon
         if ClientQue != '0': # Run remote commands issued by mycodo-client.py
-            if ClientQue == 'ChangeOverride':
-                SyncPrint("%s [Client command] Change Overrides: "
-                    "TempOR %s, HumOR: %s" % (Timestamp(), TempOR, HumOR), 1)
-                WriteCfg()
-            elif ClientQue == 'ChangeSensor':
+            if ClientQue == 'ChangeSensor':
                 SyncPrint("%s [Client command] Change DHT: "
                     "Sensor: %s, Pin %s: LogSec: %s" % (Timestamp(), 
                     DHTSensor, DHTPin, timerSecWriteLog), 1)
                 WriteCfg()
             elif ClientQue == 'WriteSensorLog':
-                SyncPrint("%s [Client command] Write Sensor Log"
-                    % Timestamp(), 1)
+                SyncPrint("%s [Client command] Write Sensor Log" % (
+                    Timestamp()), 1)
                 ReadSensors(0)
                 WriteSensorLog()
             elif ClientQue == 'ChangeRelay':
-                SyncPrint("%s [Client command] Set Relay %s GPIO to %s" 
-                    % (Timestamp(), ClientArg1, ClientArg1), 1)
+                SyncPrint("%s [Client command] Set Relay %s GPIO to %s" % (
+                    Timestamp(), ClientArg1, ClientArg1), 1)
                 ChangeRelay(ClientArg1, ClientArg2)
                 GPIORead()
             elif ClientQue == 'ChangeRelayNames':
-                SyncPrint("%s [Client command] Change Relay Names: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s" 
-                    % (Timestamp(),
+                SyncPrint("%s [Client command] Change Relay Names: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s" % (
+                    Timestamp(),
                     relayName[1], relayName[2], relayName[3], relayName[4],
                     relayName[5], relayName[6], relayName[7], relayName[8]), 1)
                 WriteCfg()
             elif ClientQue == 'ChangeRelayPins':
-                SyncPrint("%s [Client command] Change Relay Pins: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s" 
-                    % (Timestamp(),
+                SyncPrint("%s [Client command] Change Relay Pins: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s" % (
+                    Timestamp(),
                     relayPin[1], relayPin[2], relayPin[3], relayPin[4],
                     relayPin[5], relayPin[6], relayPin[7], relayPin[8]), 1)
                 WriteCfg()
-            elif ClientQue == 'ChangeConditions':
-                SyncPrint("%s [Client command] Change Relays: relayTemp: %s, relayHum: %s" 
-                    % (Timestamp(), relayTemp, relayHum), 1)
-                SyncPrint("%s [Client command] Change Sets: setTemp: %.1f°C, setHum: %.1f, TemoOR: %s, HumOR: %s"
-                    % (Timestamp(), setTemp, setHum, TempOR, HumOR), 1)
-                SyncPrint("%s [Client command] Change PID: Temp: P: %.1f, I: %.1f D: %.1f, TempSec: %s"
-                    % (Timestamp(), Temp_P, Temp_I, Temp_D, 
+            elif ClientQue == 'ChangeTempOR':
+                SyncPrint("%s [Client command] Change Temperature Override to %s" % (
+                    Timestamp(), TempOR), 1)
+                WriteCfg()
+                
+                if not TempOR:
+                    if tm.isAlive():
+                        SyncPrint("%s [Daemon] Restarting Temperature PID thread" 
+                            % Timestamp(), 1)
+                        TAlive = 0
+                        while TAlive != 2:
+                            time.sleep(0.1)
+                        TAlive = 1
+                    tm = threading.Thread(target = TemperatureMonitor)  
+                    tm.daemon = True
+                    tm.start()
+            elif ClientQue == 'ChangeHumOR':
+                SyncPrint("%s [Client command] Change Humidity Override to %s" % (
+                    Timestamp(), HumOR), 1)
+                WriteCfg()
+                
+                if not HumOR:
+                    SyncPrint("%s [Daemon] Restarting Humidity PID thread" 
+                        % Timestamp(), 1)
+                    HAlive = 0
+                    while HAlive != 2:
+                        time.sleep(0.1)
+                    HAlive = 1
+                    hm = threading.Thread(target = HumidityMonitor)
+                    hm.daemon = True
+                    hm.start()
+            elif ClientQue == 'ChangeConditionsTemp':
+                SyncPrint("%s [Client command] Change Temperature: relay: %s set: %.1f°C" % (
+                    Timestamp(), relayTemp, setTemp), 1)
+                SyncPrint("%s [Client command] Change Temp PID: P: %.1f, I: %.1f D: %.1f, Sec: %s" % (
+                    Timestamp(), Temp_P, Temp_I, Temp_D,
                     factorTempSeconds), 1)
-                SyncPrint("%s [Client command] Change PID: Hum: P: %.1f, I: %.1f D: %.1f, factorHumSeconds:  %s" 
+                WriteCfg()
+                SyncPrint("%s [Daemon] Restarting Temperature PID thread" 
+                    % Timestamp(), 1)
+                TAlive = 0
+                while TAlive != 2:
+                    time.sleep(0.1)
+                TAlive = 1
+                tm = threading.Thread(target = TemperatureMonitor)  
+                tm.daemon = True
+                tm.start()
+            elif ClientQue == 'ChangeConditionsHum':
+                SyncPrint("%s [Client command] Change Humidity: relay: %s, set: %.1f" 
+                    % (Timestamp(), relayHum, setHum), 1)
+                SyncPrint("%s [Client command] Change PID: Hum: P: %.1f, I: %.1f D: %.1f, Sec: %s" 
                     % (Timestamp(), Hum_P, Hum_I, Hum_D, 
                     factorHumSeconds), 1)
                 WriteCfg()
-                SyncPrint("%s [PID Controller] Issuing command to stop PID threads, waiting for reply..." 
+                SyncPrint("%s [Daemon] Restarting Humidity PID thread" 
                     % Timestamp(), 1)
-                TAlive = 0
-                HAlive= 0
-                while TAlive != 2 and HAlive != 2:
+                HAlive = 0
+                while HAlive != 2:
                     time.sleep(0.1)
-                TAlive = 1
                 HAlive = 1
-                SyncPrint("%s [PID Controller] Temperature and Humidity PID Controllers successfully shut down" 
-                    % Timestamp(), 1)
-                SyncPrint("%s [PID Controller] Starting Temperature PID Thread" 
-                    % Timestamp(), 1)
-                tm = threading.Thread(target = TemperatureMonitor)
-                tm.daemon = True
-                tm.start()
-                SyncPrint("%s [PID Controller] Starting Humidity PID Thread"
-                    % Timestamp(), 1)
                 hm = threading.Thread(target = HumidityMonitor)
                 hm.daemon = True
                 hm.start()
@@ -583,19 +627,19 @@ def Daemon():
                 SyncPrint("%s [Client command] Terminate threads and shut down"
                     % Timestamp(), 1)
                 TAlive = 0
-                HAlive = 0
-                while TAlive != 2 and HAlive != 2:
+                while TAlive != 2:
                     time.sleep(0.1)
-                SyncPrint("%s [Communication Server] Shutting Down Thread" 
-                    % Timestamp(), 1)
+                HAlive = 0
+                while HAlive != 2:
+                    time.sleep(0.1)
                 server.close()
-                SyncPrint("%s [Shutdown] Exiting Python" % Timestamp(), 1)
+                SyncPrint("%s [Daemon] Exiting Python" % Timestamp(), 1)
                 sys.exit(0)
             ClientQue = '0'
         
         # Write sensor log
         if int(time.time()) > timerSensorLog:
-            SyncPrint("%s [Daemon] %s-second timer expired: Sensor Log Write" 
+            SyncPrint("%s [Timer Expiration] Run every %s seconds: Write sensor log" 
                 % (Timestamp(), timerSecWriteLog), 1)
             ReadSensors(0)
             WriteSensorLog()
@@ -609,7 +653,8 @@ def TemperatureMonitor():
     global TAlive
     timerTemp = 0
     PIDTemp = 0
-    
+    SyncPrint("%s [PID Temperature] Starting Thread"
+                    % Timestamp(), 1)
     if (tempc < setTemp): tempState = 0
     else: tempState = 1
     p_temp = Temperature_PID(Temp_P, Temp_I, Temp_D)
@@ -625,7 +670,7 @@ def TemperatureMonitor():
                 if (tempc < setTemp): tempState = 0
                 if (tempState == 0):
                     PIDTemp = round(p_temp.update(float(tempc)), 1)
-                    SyncPrint("%s [PID Temperature] Temperature (%.2f°C) < setTemp (%.2f°C)" 
+                    SyncPrint("%s [PID Temperature] Temperature (%.1f°C) < setTemp (%.1f°C)" 
                         % (Timestamp(), tempc, setTemp), 1)
                     SyncPrint("%s [PID Temperature] PID = %.1f (seconds)" 
                         % (Timestamp(), PIDTemp), 1)
@@ -635,8 +680,8 @@ def TemperatureMonitor():
                         rod.start()
                     timerTemp = int(time.time()) + PIDTemp + factorTempSeconds
                 else:
-                    SyncPrint("%s [PID Temperature] Temperature not < setTemp, waiting 60 seconds" 
-                        % Timestamp(), 1)
+                    SyncPrint("%s [PID Temperature] Temperature (%.1f°C) > setTemp (%.1f°C), waiting 60 seconds" 
+                        % (Timestamp(), tempc, setTemp), 1)
                     p_temp.update(float(tempc))
                     timerTemp = int(time.time()) + 60
     SyncPrint("%s [PID Temperature] Shutting Down Thread" % Timestamp(), 1)
@@ -649,6 +694,8 @@ def HumidityMonitor():
     timerHum = 0
     PIDHum = 0
 
+    SyncPrint("%s [PID Humidity] Starting Thread" 
+        % Timestamp(), 1)
     if (humidity < setHum): humState = 0
     else: humState = 1
     p_hum = Humidity_PID(Hum_P, Hum_I, Hum_D)
@@ -664,7 +711,7 @@ def HumidityMonitor():
                 if (humidity < setHum): humState = 0
                 if (humState == 0):
                     PIDHum = round(p_hum.update(float(humidity)), 1)
-                    SyncPrint("%s [PID Humidity] Humidity (%.2f%%) < setHum (%.2f%%)" 
+                    SyncPrint("%s [PID Humidity] Humidity (%.1f%%) < setHum (%.1f%%)" 
                         % (Timestamp(), humidity, setHum), 1)
                     SyncPrint("%s [PID Humidity] PID = %.1f (seconds)" 
                         % (Timestamp(), PIDHum), 1)
@@ -674,8 +721,8 @@ def HumidityMonitor():
                         rod.start()
                     timerHum = int(time.time()) + PIDHum + factorTempSeconds
                 else:
-                    SyncPrint("%s [PID Humidity] Humidity not < setHum, waiting 60 seconds" 
-                        % Timestamp(), 1)
+                    SyncPrint("%s [PID Humidity] Humidity (%.1f%%) > setHum (%.1f%%), waiting 60 seconds" 
+                        % (Timestamp(), humidity, setHum), 1)
                     p_hum.update(float(humidity))
                     timerHum = int(time.time()) + 60
     SyncPrint("%s [PID Humidity] Shutting Down Thread" % Timestamp(), 1)
@@ -709,8 +756,8 @@ def WriteSensorLog():
     waitingForLock = 1
     errorOnce = 1
     lockWaitCount = 1
-    while waitingForLock:
-        if not lockFile(sensor_lock_path):
+    while waitingForLock and not Terminate:
+        if not lockFile(sensor_lock_path) and not Terminate:
             if errorOnce:
                 SyncPrint("%s [Write Sensor Log] Cannot gain lock (already locked): Waiting to gain lock..." 
                     % Timestamp(), 1)
@@ -725,7 +772,7 @@ def WriteSensorLog():
                     % (Timestamp(), lockWaitCount), 1)
             time.sleep(1)
             lockWaitCount+=1
-        else:
+        elif not Terminate:
             waitingForLock = 0
             SyncPrint("%s [Write Sensor Log] Gained lock: %s" 
                 % (Timestamp(), sensor_lock_path), 1)
@@ -758,8 +805,8 @@ def WriteRelayLog(relayNumber, relaySeconds):
     waitingForLock = 1
     errorOnce = 1
     lockWaitCount = 1
-    while waitingForLock:
-        if not lockFile(relay_lock_path):
+    while waitingForLock and not Terminate:
+        if not lockFile(relay_lock_path) and not Terminate:
             if errorOnce:
                 SyncPrint("%s [Write Relay Log] Cannot gain lock: Already locked: Waiting to gain lock..." 
                     % Timestamp(), 1)
@@ -774,7 +821,7 @@ def WriteRelayLog(relayNumber, relaySeconds):
                     % (Timestamp(), lockWaitCount), 1)
             time.sleep(1)
             lockWaitCount+=1
-        else:
+        elif not Terminate:
             waitingForLock = 0
             SyncPrint("%s [Write Relay Log] Gained lock: %s" 
                 % (Timestamp(), relay_lock_path), 1)
@@ -814,26 +861,29 @@ def ReadSensors(silent):
     elif (DHTSensor == 'DHT22'): sensor = Adafruit_DHT.DHT22
     elif (DHTSensor == 'AM2302'): sensor = Adafruit_DHT.AM2302
 
-    if not silent:
+    if not silent and not Terminate:
         SyncPrint("%s [Read Sensors] Taking first Temperature/humidity reading" 
             % Timestamp(), 1)
-    humidity2, tempc2 = Adafruit_DHT.read_retry(sensor, DHTPin)
-    if not silent:
-        SyncPrint("%s [Read Sensors] %.2f°C, %.2f%%" 
-            % (Timestamp(), tempc2, humidity2), 1)
-    time.sleep(2);
-    if not silent: 
-        SyncPrint("%s [Read Sensors] Taking second Temperature/humidity reading" 
-            % Timestamp(), 1)
-
-    while(chktemp):
-        humidity, tempc = Adafruit_DHT.read_retry(sensor, DHTPin)
+    if not Terminate:
+        humidity2, tempc2 = Adafruit_DHT.read_retry(sensor, DHTPin)
+        if not silent:
+            SyncPrint("%s [Read Sensors] %.1f°C, %.1f%%" 
+                % (Timestamp(), tempc2, humidity2), 1)
+    if not Terminate:
+        time.sleep(2);
         if not silent: 
-            SyncPrint("%s [Read Sensors] %.2f°C, %.2f%%" 
+            SyncPrint("%s [Read Sensors] Taking second Temperature/humidity reading" 
+                % Timestamp(), 1)
+
+    while chktemp and not Terminate:
+        if not Terminate:
+            humidity, tempc = Adafruit_DHT.read_retry(sensor, DHTPin)
+        if not silent and not Terminate: 
+            SyncPrint("%s [Read Sensors] %.1f°C, %.1f%%" 
                 % (Timestamp(), tempc, humidity), 1)
-            SyncPrint("%s [Read Sensors] Differences: %.2f°C, %.2f%%" 
+            SyncPrint("%s [Read Sensors] Differences: %.1f°C, %.1f%%" 
                 % (Timestamp(), abs(tempc2-tempc), abs(humidity2-humidity)), 1)
-        if abs(tempc2-tempc) > 1 or abs(humidity2-humidity) > 1:
+        if abs(tempc2-tempc) > 1 or abs(humidity2-humidity) > 1 and not Terminate:
             tempc2 = tempc
             humidity2 = humidity
             chktemp = 1
@@ -841,7 +891,7 @@ def ReadSensors(silent):
                 SyncPrint("%s [Read Sensors] Successive readings > 1 difference: Rereading" 
                     % Timestamp(), 1)
             time.sleep(2)
-        else:
+        elif not Terminate:
             chktemp = 0
             if not silent: 
                 SyncPrint("%s [Read Sensors] Successive readings < 1 difference: keeping." 

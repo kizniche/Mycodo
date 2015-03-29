@@ -45,32 +45,54 @@ def usage():
 def menu():
     try:
         opts, args = getopt.getopt(
-            sys.argv[1:], 'c:o:p:r:s:tw', 
-            ["conditions=", "modnames=", "modpins=", "modsensor=", 
-            "override=", "pid=", "relay=", "seconds=", "set=", 
-            "terminate", "writelog"])
+            sys.argv[1:], 'o:p:r:s:tw', 
+            ["changetempor=", "changehumor=", "conditionstemp=", 
+            "conditionshum=", "modnames=", "modpins=", "modsensor=",
+            "pid=", "relay=", "seconds=", "set=", "terminate","writelog"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
         sys.exit(2)
 
     for opt, arg in opts:
-        if opt in ("-p", "--conditions"):
-            print "%s [Remote command] Set conditions: relayT: %s, set: %.1f°C, P: %.1f, I: %.1f, D: %.1f, sec: %s" % (
+        if opt == "--changetempor":
+            print "%s [Remote command] Change TempOR to %s: Server returned:" % (
+                Timestamp(), sys.argv[2]),
+            if c.root.ChangeTempOR(int(float(sys.argv[2]))) == 1:
+                print "Success"
+            else:
+                print "Fail"
+        elif opt == "--changehumor":
+            print "%s [Remote command] Change HumOR to %s: Server returned:" % (
+                Timestamp(), sys.argv[2]),
+            if c.root.ChangeHumOR(int(float(sys.argv[2]))) == 1:
+                print "Success"
+            else:
+                print "Fail"
+        elif opt == "--conditionstemp":
+            print "%s [Remote command] Set Temp conditions: relay: %s, set: %.1f°C, P: %.1f, I: %.1f, D: %.1f, sec: %s" % (
                 Timestamp(), int(float(sys.argv[2])), float(sys.argv[3]), 
-                float(sys.argv[4]), float(sys.argv[5]), float(sys.argv[6]), 
-                int(float(sys.argv[7])))
-            print "%s [Remote command] Set conditions: relayH: %s, set: %.1f%%,  P: %.1f, I: %.1f, D: %.1f, Sec: %s" % (
-                Timestamp(),int(float(sys.argv[8])), float(sys.argv[9]), 
-                float(sys.argv[10]), float(sys.argv[11]), float(sys.argv[12]), 
-                int(float(sys.argv[13])))
+                float(sys.argv[4]), float(sys.argv[5]), 
+                float(sys.argv[6]), int(float(sys.argv[7])))
             print "%s [Remote command] Server returned:" % Timestamp(),
-            if c.root.ChangeConditions(
+            if c.root.ChangeConditionsTemp(
                 int(float(sys.argv[2])), float(sys.argv[3]), 
-                float(sys.argv[4]), float(sys.argv[5]), float(sys.argv[6]),
-                int(float(sys.argv[7])), int(float(sys.argv[8])), 
-                float(sys.argv[9]), float(sys.argv[10]), float(sys.argv[11]),
-                float(sys.argv[12]), int(float(sys.argv[13]))) == 1:
+                float(sys.argv[4]), float(sys.argv[5]), 
+                float(sys.argv[6]), int(float(sys.argv[7]))) == 1:
+                print "Success"
+            else:
+                print "Fail"
+            sys.exit(0)
+        if opt == "--conditionshum":
+            print "%s [Remote command] Set Hum conditions: relay: %s, set: %.1f%%, P: %.1f, I: %.1f, D: %.1f, sec: %s" % (
+                Timestamp(), int(float(sys.argv[2])), float(sys.argv[3]), 
+                float(sys.argv[4]), float(sys.argv[5]), 
+                float(sys.argv[6]), int(float(sys.argv[7])))
+            print "%s [Remote command] Server returned:" % Timestamp(),
+            if c.root.ChangeConditionsHum(
+                int(float(sys.argv[2])), float(sys.argv[3]), 
+                float(sys.argv[4]), float(sys.argv[5]), 
+                float(sys.argv[6]), int(float(sys.argv[7]))) == 1:
                 print "Success"
             else:
                 print "Fail"

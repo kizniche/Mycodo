@@ -43,31 +43,10 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
     }
     
     $t_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f7`, 0, -1);
-    $t_f = round(($t_c * (9 / 5) + 32), 1);
+    $t_f = round(($t_c * (9/5) + 32), 1);
     $hum = substr(`tail -n 1 $sensor_log | cut -d' ' -f8`, 0, -1);
     $dp_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f9`, 0, -1);
-    $dp_f = round(($dp_c * (9 / 5) + 32), 1);
-
-    $dhtsensor = readconfig("dhtsensor");
-    $dhtpin = readconfig("dhtpin");
-    $dhtseconds = readconfig("timersecwritelog");
-    
-    $relaytemp = readconfig("relaytemp");
-    $relayhum = readconfig("relayhum");
-    $settemp = readconfig("settemp");
-    $sethum = readconfig("sethum");
-    $tempor = readconfig("tempor");
-    $humor = readconfig("humor");
-    
-    $temp_p  = readconfig("temp_p");
-    $temp_i  = readconfig("temp_i");
-    $temp_d  = readconfig("temp_d");
-    $hum_p  = readconfig("hum_p");
-    $hum_i  = readconfig("hum_i");
-    $hum_d  = readconfig("hum_d");
-    
-    $factorhumseconds = readconfig("factorhumseconds");
-    $factortempseconds = readconfig("factortempseconds");
+    $dp_f = round(($dp_c * (9/5) + 32), 1);
         
 	for ($p = 1; $p <= 8; $p++) {
         // Relay has been selected to be turned on or off
@@ -126,52 +105,96 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
     }
     
     // Check if Web Override has been selected to be turned on or off
-    if (isset($_POST['TempOR']) || isset($_POST['HumOR'])) {
-		if (isset($_POST['TempOR'])) {
-            if ($_POST['TempOR']) $tempor = 1;
-            else $tempor = 0;
-        }
-        if (isset($_POST['HumOR'])) {
-            if ($_POST['HumOR']) $humor = 1;
-            else $humor = 0;
-        }
-		$editconfig = "$mycodo_client --override $tempor $humor";
+    if (isset($_POST['TempOR'])) {
+        if ($_POST['TempOR']) $tempor = 1;
+        else $tempor = 0;
+        $editconfig = "$mycodo_client --changetempor $tempor";
+        shell_exec($editconfig);
+        sleep(6);
+    }
+    if (isset($_POST['HumOR'])) {
+        if ($_POST['HumOR']) $humor = 1;
+        else $humor = 0;
+        $editconfig = "$mycodo_client --changehumor $humor";
         shell_exec($editconfig);
         sleep(6);
     }
     
-    if (isset($_POST['ChangeTempPID'])) {
-        $relaytemp  = $_POST['relayTemp'];
-        $settemp  = $_POST['setTemp'];
-		$temp_p  = $_POST['Temp_P'];
-		$temp_i  = $_POST['Temp_I'];
-        $temp_d  = $_POST['Temp_D'];
-        $factortempseconds = $_POST['factorTempSeconds'];
-		$editconfig = "$mycodo_client --conditions $relaytemp $settemp $temp_p $temp_i $temp_d $factortempseconds $relayhum $sethum $hum_p $hum_i $hum_d $factorhumseconds";
-		shell_exec($editconfig);
-        sleep(6);
-	}
+    if (isset($_POST['ChangeTempPID']) || isset($_POST['ChangeHumPID'])) {
+        $relaytemp = readconfig("relaytemp");
+        $settemp = readconfig("settemp");
+        $temp_p  = readconfig("temp_p");
+        $temp_i  = readconfig("temp_i");
+        $temp_d  = readconfig("temp_d");
+        $factortempseconds = readconfig("factortempseconds");
+        
+        $relayhum = readconfig("relayhum");
+        $sethum = readconfig("sethum");
+        $hum_p  = readconfig("hum_p");
+        $hum_i  = readconfig("hum_i");
+        $hum_d  = readconfig("hum_d");
+        $factorhumseconds = readconfig("factorhumseconds");
     
-    if (isset($_POST['ChangeHumPID'])) {
-        $relayhum  = $_POST['relayHum'];
-        $sethum  = $_POST['setHum'];
-        $hum_p  = $_POST['Hum_P'];
-        $hum_i  = $_POST['Hum_I'];
-        $hum_d  = $_POST['Hum_D'];
-        $factorhumseconds = $_POST['factorHumSeconds'];
-		$editconfig = "$mycodo_client --conditions $relaytemp $settemp $temp_p $temp_i $temp_d $factortempseconds $relayhum $sethum $hum_p $hum_i $hum_d $factorhumseconds";
-		shell_exec($editconfig);
-        sleep(6);
-	}
+        if (isset($_POST['ChangeTempPID'])) {
+            $relaytemp  = $_POST['relayTemp'];
+            $settemp  = $_POST['setTemp'];
+            $temp_p  = $_POST['Temp_P'];
+            $temp_i  = $_POST['Temp_I'];
+            $temp_d  = $_POST['Temp_D'];
+            $factortempseconds = $_POST['factorTempSeconds'];
+            
+            $editconfig = "$mycodo_client --conditionstemp $relaytemp $settemp $temp_p $temp_i $temp_d $factortempseconds";
+            shell_exec($editconfig);
+            sleep(6);
+        }
+        if (isset($_POST['ChangeHumPID'])) {
+            $relayhum  = $_POST['relayHum'];
+            $sethum  = $_POST['setHum'];
+            $hum_p  = $_POST['Hum_P'];
+            $hum_i  = $_POST['Hum_I'];
+            $hum_d  = $_POST['Hum_D'];
+            $factorhumseconds = $_POST['factorHumSeconds'];
+
+            $editconfig = "$mycodo_client --conditionshum $relayhum $sethum $hum_p $hum_i $hum_d $factorhumseconds";
+            shell_exec($editconfig);
+            sleep(6);
+        }
+    }
     
     if (isset($_POST['ChangeSensor'])) {
-        $dhtseconds = $_POST['DHTSecs'];
+        $dhtsensor = readconfig("dhtsensor");
+        $dhtpin = readconfig("dhtpin");
+        $dhtseconds = readconfig("timersecwritelog");
+    
 		$dhtsensor = $_POST['DHTSensor'];
         $dhtpin = $_POST['DHTPin'];
+        $dhtseconds = $_POST['DHTSecs'];
+        
         $editconfig = "$mycodo_client --modsensor $dhtsensor $dhtpin $dhtseconds";
         shell_exec($editconfig);
         sleep(6);
     }
+    
+    $dhtsensor = readconfig("dhtsensor");
+    $dhtpin = readconfig("dhtpin");
+    $dhtseconds = readconfig("timersecwritelog");
+    
+    $relaytemp = readconfig("relaytemp");
+    $relayhum = readconfig("relayhum");
+    $settemp = readconfig("settemp");
+    $sethum = readconfig("sethum");
+    $tempor = readconfig("tempor");
+    $humor = readconfig("humor");
+    
+    $temp_p  = readconfig("temp_p");
+    $temp_i  = readconfig("temp_i");
+    $temp_d  = readconfig("temp_d");
+    $hum_p  = readconfig("hum_p");
+    $hum_i  = readconfig("hum_i");
+    $hum_d  = readconfig("hum_d");
+    
+    $factorhumseconds = readconfig("factorhumseconds");
+    $factortempseconds = readconfig("factortempseconds");
 ?>
 
 <html>
