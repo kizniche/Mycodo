@@ -55,8 +55,8 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
     $relayhum = readconfig("relayhum");
     $settemp = readconfig("settemp");
     $sethum = readconfig("sethum");
-    $tempor = readconfig("tempor");
-    $humor = readconfig("humor");
+    $tempor = substr(`cat $config_file | grep tempor | cut -d' ' -f3`, 0, -1);
+    $humor = substr(`cat $config_file | grep humor | cut -d' ' -f3`, 0, -1);
     
     $temp_p  = readconfig("temp_p");
     $temp_i  = readconfig("temp_i");
@@ -262,7 +262,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                             <?php echo ${i}; ?>
                         </td>
                         <td align=center>
-                            <input type="text" value="<?php echo $name; ?>" maxlength=4 size=2 name="relay<?php echo $i; ?>name" title="Name of relay <?php echo $i; ?>"/>
+                            <input type="text" value="<?php echo $name; ?>" maxlength=12 size=8 name="relay<?php echo $i; ?>name" title="Name of relay <?php echo $i; ?>"/>
                         </td>
                         <td align=center>
                             <input type="text" value="<?php echo $pin; ?>" maxlength=2 size=1 name="relay<?php echo $i; ?>pin" title="GPIO pin using BCM numbering, connected to relay <?php echo $i; ?>"/>
@@ -271,14 +271,14 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                             if (shell_exec($read) == 1) {
                                 ?>
                                 <th colspan=2 align=right>
-                                    <span class="state off">OFF</span> | <button style="width: 40px;" type="submit" name="R<?php echo $i; ?>" value="0">ON</button>
+                                    <button class="linkon" type="submit" name="R<?php echo $i; ?>" value="1">OFF</button> | <button style="width: 40px;" type="submit" name="R<?php echo $i; ?>" value="0">ON</button>
                                 </td>
                                 </th>
                                 <?php
                             } else {
                                 ?>
                                 <th colspan=2 align=right>
-                                    <span class="state on">ON</span> | <button style="width: 40px;" type="submit" name="R<?php echo $i; ?>" value="1">OFF</button>
+                                    <button class="linkoff" type="submit" name="R<?php echo $i; ?>" value="0">ON</button> | <button style="width: 40px;" type="submit" name="R<?php echo $i; ?>" value="1">OFF</button>
                                 </th>
                                 <?php
                             }
@@ -372,7 +372,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                         </th>
                     </tr>
                 </table>
-				&nbsp; &nbsp; &nbsp;
+				&nbsp; &nbsp; 
                 <table class="pid">
                     <tr>
                         <th colspan="3" class="table-header">
@@ -442,7 +442,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                         </th>
                     </tr>
                 </table>
-                &nbsp; &nbsp; &nbsp;
+                &nbsp; &nbsp; 
                 <table class="pid">
                     <tr>
                         <th colspan=2 style="padding-bottom: 2px;" class="table-header">
@@ -459,7 +459,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                     </tr>
                     <tr>
                         <td>
-                            <select style="width: 70px;" name="DHTSensor">
+                            <select style="width: 80px;" name="DHTSensor">
                                 <option <?php if ($dhtsensor == 'DHT11') echo "selected=\"selected\""; ?> value="DHT11">DHT11</option>
                                 <option <?php if ($dhtsensor == 'DHT22') echo "selected=\"selected\""; ?> value="DHT22">DHT22</option>
                                 <option <?php if ($dhtsensor == 'AM2302') echo "selected=\"selected\""; ?> value="AM2302">AM2302</option>
