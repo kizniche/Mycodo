@@ -100,8 +100,8 @@ ClientArg2 = ''
 Terminate = False
 TAlive = 1
 HAlive = 1
-p_temp = ''
-p_hum = ''
+holderTempOR = ''
+holderHumOR = ''
 
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
@@ -137,14 +137,6 @@ class ComServer(rpyc.Service):
         ClientArg2 = int(float(remoteCommand2))
         ClientQue = 'RelayOnSec'
         return 1
-    def exposed_ChangeOverride(self, tempor, humor):
-        global ClientQue
-        global TempOR
-        global HumOR
-        TempOR = tempor
-        HumOR = humor
-        ClientQue = 'ChangeOverride'
-        return 1
     def exposed_ChangeRelayNames(self, relayname1, relayname2, relayname3,
             relayname4, relayname5, relayname6, relayname7, relayname8):
         global ClientQue
@@ -175,14 +167,16 @@ class ComServer(rpyc.Service):
         return 1
     def exposed_ChangeTempOR(self, tempor):
         global ClientQue
-        global TempOR
-        TempOR = tempor
+        # The overrides cannot be changed right now.
+        # If they were, the monitor threads may turn on prematurely.
+        global holderTempOR
+        holderTempOR = tempor
         ClientQue = 'ChangeTempOR'
         return 1
     def exposed_ChangeHumOR(self, humor):
         global ClientQue
-        global HumOR
-        HumOR = humor
+        global holderHumOR
+        holderHumOR = humor
         ClientQue = 'ChangeHumOR'
         return 1
     def exposed_ChangeConditionsTemp(self, relaytemp, settemp,
@@ -507,7 +501,7 @@ def Daemon():
     global ClientQue
     
     SyncPrint("%s [Daemon] Daemon Started" % Timestamp(), 1)
-    SyncPrint("%s [Communication Server] Starting Thread"
+    SyncPrint("%s [Comm Server] Starting Thread"
         % Timestamp(), 1)
     ct = ComThread()
     ct.daemon = True
@@ -557,11 +551,8 @@ def Daemon():
                     relayPin[5], relayPin[6], relayPin[7], relayPin[8]), 1)
                 WriteCfg()
             elif ClientQue == 'ChangeTempOR':
-                SyncPrint("%s [Client command] Change Temperature Override to %s" % (
-                    Timestamp(), TempOR), 1)
-                WriteCfg()
-                
-                if not TempOR:
+                global TempOR
+                if not holderTempOR:
                     if tm.isAlive():
                         SyncPrint("%s [Daemon] Restarting Temperature PID thread" 
                             % Timestamp(), 1)
@@ -572,12 +563,13 @@ def Daemon():
                     tm = threading.Thread(target = TemperatureMonitor)  
                     tm.daemon = True
                     tm.start()
-            elif ClientQue == 'ChangeHumOR':
-                SyncPrint("%s [Client command] Change Humidity Override to %s" % (
-                    Timestamp(), HumOR), 1)
+                SyncPrint("%s [Client command] Change Temperature Override to %s" % (
+                    Timestamp(), holderTempOR), 1)
+                TempOR = holderTempOR
                 WriteCfg()
-                
-                if not HumOR:
+            elif ClientQue == 'ChangeHumOR':
+                global HumOR
+                if not holderHumOR:
                     SyncPrint("%s [Daemon] Restarting Humidity PID thread" 
                         % Timestamp(), 1)
                     HAlive = 0
@@ -587,6 +579,10 @@ def Daemon():
                     hm = threading.Thread(target = HumidityMonitor)
                     hm.daemon = True
                     hm.start()
+                SyncPrint("%s [Client command] Change Humidity Override to %s" % (
+                    Timestamp(), holderHumOR), 1)
+                HumOR = holderHumOR
+                WriteCfg()
             elif ClientQue == 'ChangeConditionsTemp':
                 SyncPrint("%s [Client command] Change Temperature: relay: %s set: %.1f°C" % (
                     Timestamp(), relayTemp, setTemp), 1)
