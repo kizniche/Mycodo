@@ -96,14 +96,13 @@ if ($login->isUserLoggedIn() == true) {
                         <td>
                             <div class="sensor-block">
                                 <div class="sensor-title">
-                                    <?php
+                                    Temperature: PID <?php
                                         if ($tempor == 1) {
-                                                echo "<span class=\"state off\">OFF</span>";
+                                                echo "<span class=\"off\">OFF</span>";
                                             } else {
-                                                echo "<span class=\"state on\">ON</span>";
+                                                echo "<span class=\"on\">ON</span>";
                                             }
                                     ?> 
-                                    Temperature 
                                 </div>
                                 <div class="sensor-values">
                                     <?php echo "Now: ${t_c}&deg;C (${t_f}&deg;F)"; ?>
@@ -118,14 +117,13 @@ if ($login->isUserLoggedIn() == true) {
                         <td>
                             <div class="sensor-block">
                                 <div class="sensor-title">
-                                    <?php
+                                    Humidity (RH): PID <?php
                                         if ($humor == 1) {
-                                                echo "<span class=\"state off\">OFF</span>";
+                                                echo "<span class=\"off\">OFF</span>";
                                             } else {
-                                                echo "<span class=\"state on\">ON</span>";
+                                                echo "<span class=\"on\">ON</span>";
                                             }
                                     ?> 
-                                    Humidity (Rel)
                                 </div>
                                 <div class="sensor-values">
                                     <?php echo "Now: ${hum}%"; ?>

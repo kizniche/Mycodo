@@ -9,24 +9,6 @@ a:visited { color: #000000; }
 a:active { color: #0000FF; }
 a:hover { color: black; }
 
-button.linkon {
-    background: none !important;
-    border: none; 
-    padding: 0 !important;
-    font: inherit;
-    color: red;
-    cursor: pointer;
-}
-
-button.linkoff {
-    background: none !important;
-    border: none; 
-    padding: 0 !important;
-    font: inherit;
-    color: green;
-    cursor: pointer;
-}
-
 table.relays {
 	display: inline-block;
 }
@@ -151,4 +133,22 @@ table.pid td {
 
 .off {
     color: red
-} 
+}
+
+button.linkon {
+    background: none !important;
+    border: none; 
+    padding: 0 !important;
+    font: inherit;
+    color: red;
+    cursor: pointer;
+}
+
+button.linkoff {
+    background: none !important;
+    border: none; 
+    padding: 0 !important;
+    font: inherit;
+    color: green;
+    cursor: pointer;
+}

@@ -41,13 +41,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
         shell_exec($editconfig);
         sleep(6);
     }
-    
-    $t_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f7`, 0, -1);
-    $t_f = round(($t_c * (9/5) + 32), 1);
-    $hum = substr(`tail -n 1 $sensor_log | cut -d' ' -f8`, 0, -1);
-    $dp_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f9`, 0, -1);
-    $dp_f = round(($dp_c * (9/5) + 32), 1);
-        
+ 
 	for ($p = 1; $p <= 8; $p++) {
         // Relay has been selected to be turned on or off
 		if (isset($_POST['R' . $p])) {
@@ -195,6 +189,12 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
     
     $factorhumseconds = readconfig("factorhumseconds");
     $factortempseconds = readconfig("factortempseconds");
+    
+    $t_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f7`, 0, -1);
+    $t_f = round(($t_c * (9/5) + 32), 1);
+    $hum = substr(`tail -n 1 $sensor_log | cut -d' ' -f8`, 0, -1);
+    $dp_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f9`, 0, -1);
+    $dp_f = round(($dp_c * (9/5) + 32), 1);
 ?>
 
 <html>
