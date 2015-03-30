@@ -102,14 +102,14 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
     if (isset($_POST['TempOR'])) {
         if ($_POST['TempOR']) $tempor = 1;
         else $tempor = 0;
-        $editconfig = "$mycodo_client --changetempor $tempor";
+        $editconfig = "$mycodo_client --modvar TempOR $tempor";
         shell_exec($editconfig);
         sleep(6);
     }
     if (isset($_POST['HumOR'])) {
         if ($_POST['HumOR']) $humor = 1;
         else $humor = 0;
-        $editconfig = "$mycodo_client --changehumor $humor";
+        $editconfig = "$mycodo_client --modvar HumOR $humor";
         shell_exec($editconfig);
         sleep(6);
     }
@@ -137,7 +137,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
             $temp_d  = $_POST['Temp_D'];
             $factortempseconds = $_POST['factorTempSeconds'];
             
-            $editconfig = "$mycodo_client --conditionstemp $relaytemp $settemp $temp_p $temp_i $temp_d $factortempseconds";
+            $editconfig = "$mycodo_client --modVar relayTemp $relaytemp setTemp $settemp Temp_P $temp_p Temp_I $temp_i Temp_D $temp_d factorTempSeconds $factortempseconds";
             shell_exec($editconfig);
             sleep(6);
         }
@@ -149,7 +149,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
             $hum_d  = $_POST['Hum_D'];
             $factorhumseconds = $_POST['factorHumSeconds'];
 
-            $editconfig = "$mycodo_client --conditionshum $relayhum $sethum $hum_p $hum_i $hum_d $factorhumseconds";
+            $editconfig = "$mycodo_client --modvar relayHum $relayhum setHum $sethum Hum_P $hum_p Hum_I $hum_i Hum_D $hum_d factorHumSeconds $factorhumseconds";
             shell_exec($editconfig);
             sleep(6);
         }
@@ -165,13 +165,11 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
         $dhtseconds = $_POST['DHTSecs'];
         
         if ($dhtsensor == 'Other') {
-            $enable_overrides = "$mycodo_client --changetempor 1";
-            shell_exec($enable_overrides);
-            $enable_overrides = "$mycodo_client --changehumor 1";
+            $enable_overrides = "$mycodo_client --modvar TempOR 1 HumOR 1";
             shell_exec($enable_overrides);
         }
         
-        $editconfig = "$mycodo_client --modsensor $dhtsensor $dhtpin $dhtseconds";
+        $editconfig = "$mycodo_client --modvar DHTSensor $dhtsensor DHTPin $dhtpin DHTSeconds $dhtseconds";
         shell_exec($editconfig);
         sleep(6);
     }

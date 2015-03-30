@@ -102,24 +102,23 @@ TAlive = 1
 HAlive = 1
 holderTempOR = ''
 holderHumOR = ''
+Temp_PID_restart = 0
+Hum_PID_restart = 0
 
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
+    def exposed_Modify_Variables(self, *variable_list):
+        read_config(0)
+        print_sync("%s [Client command] Request to change variables" % (
+            timestamp()), 1)
+        modify_var(*variable_list)
+        read_config(0)
+        return 1
     def exposed_Terminate(self, remoteCommand):
         global ClientQue
         global Terminate
         Terminate = True
         ClientQue = 'TerminateServer'
-        return 1
-    def exposed_ChangeSensor(self, sensortype, sensorpin, sensorsec):
-        global ClientQue
-        global DHTSensor
-        global DHTPin
-        global timerSecWriteLog
-        timerSecWriteLog = sensorsec
-        DHTSensor = sensortype
-        DHTPin = sensorpin
-        ClientQue = 'ChangeSensor'
         return 1
     def exposed_ChangeGPIO(self, remoteCommand, remoteCommand2):
         global ClientQue
@@ -139,7 +138,6 @@ class ComServer(rpyc.Service):
         return 1
     def exposed_ChangeRelayNames(self, relayname1, relayname2, relayname3,
             relayname4, relayname5, relayname6, relayname7, relayname8):
-        global ClientQue
         global relayName
         relayName[1] = relayname1
         relayName[2] = relayname2
@@ -149,11 +147,14 @@ class ComServer(rpyc.Service):
         relayName[6] = relayname6
         relayName[7] = relayname7
         relayName[8] = relayname8
-        ClientQue = 'gpio_changeNames'
+        print_sync("%s [Client command] Change Relay Names: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s" % (
+            timestamp(),
+            relayName[1], relayName[2], relayName[3], relayName[4],
+            relayName[5], relayName[6], relayName[7], relayName[8]), 1)
+        write_config()
         return 1
     def exposed_ChangeRelayPins(self, relaypin1, relaypin2, relaypin3,
             relaypin4, relaypin5, relaypin6, relaypin7, relaypin8):
-        global ClientQue
         global relayPin
         relayPin[1] = relaypin1
         relayPin[2] = relaypin2
@@ -163,55 +164,11 @@ class ComServer(rpyc.Service):
         relayPin[6] = relaypin6
         relayPin[7] = relaypin7
         relayPin[8] = relaypin8
-        ClientQue = 'gpio_changePins'
-        return 1
-    def exposed_ChangeTempOR(self, tempor):
-        global ClientQue
-        # The overrides cannot be changed right now.
-        # If they were, the monitor threads may turn on prematurely.
-        global holderTempOR
-        holderTempOR = tempor
-        ClientQue = 'ChangeTempOR'
-        return 1
-    def exposed_ChangeHumOR(self, humor):
-        global ClientQue
-        global holderHumOR
-        holderHumOR = humor
-        ClientQue = 'ChangeHumOR'
-        return 1
-    def exposed_ChangeConditionsTemp(self, relaytemp, settemp,
-            temp_p, temp_i, temp_d, factortempseconds):
-        global ClientQue
-        global relayTemp
-        global setTemp
-        global Temp_P
-        global Temp_I
-        global Temp_D
-        global factorTempSeconds
-        relayTemp = relaytemp
-        setTemp = settemp
-        Temp_P = temp_p
-        Temp_I = temp_i
-        Temp_D = temp_d
-        factorTempSeconds = factortempseconds
-        ClientQue = 'ChangeConditionsTemp'
-        return 1
-    def exposed_ChangeConditionsHum(self, relayhum, sethum,
-            hum_p, hum_i, hum_d, factorhumseconds):
-        global ClientQue
-        global relayHum
-        global setHum
-        global Hum_P
-        global Hum_I
-        global Hum_D
-        global factorHumSeconds
-        relayHum = relayhum
-        setHum = sethum
-        Hum_P = hum_p
-        Hum_I = hum_i
-        Hum_D = hum_d
-        factorHumSeconds = factorhumseconds
-        ClientQue = 'ChangeConditionsHum'
+        print_sync("%s [Client command] Change Relay Pins: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s" % (
+            timestamp(),
+            relayPin[1], relayPin[2], relayPin[3], relayPin[4],
+            relayPin[5], relayPin[6], relayPin[7], relayPin[8]), 1)
+        write_config()
         return 1
     def exposed_WriteSensorLog(self):
         global ClientQue
@@ -365,9 +322,9 @@ def menu():
         sys.exit(1)
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'c:dhpr:s:tn:w',
-            ["change=", "daemon", "help", "name=", "pin",
-            "read=", "set=", "state=", "value=", "write="])
+        opts, args = getopt.getopt(sys.argv[1:], 'c:dhpr:s:tw',
+            ["change=", "daemon", "help", "pin",
+            "read=", "set=", "state=", "write="])
     except getopt.GetoptError as err:
         print(err) # will print_sync("option -a not recognized"
         usage()
@@ -413,25 +370,6 @@ def menu():
         elif opt in ("-h", "--help"):
             usage()
             sys.exit(0)
-        elif opt in ("-n", "--name"):
-            global variableName
-            variableName = arg
-        elif opt == "--value":
-            global variableValue
-            variableValue = arg
-            if not verify_name():
-                print_sync("Error: Variable '%s' does not exist" 
-                    % variableName, 1)
-                sys.exit(1)
-            else:
-                print_sync("%s [Change Value] Changing variable '%s' value to %s"
-                    % (timestamp(), variableName, variableValue), 1)
-                read_config(0)
-                globals()[variableName] = variableValue
-                write_config()
-                print_sync("%s [Change Value] Variable '%s' value changed to %s" 
-                    % (timestamp(), variableName, variableValue), 1)
-                sys.exit(0)
         elif opt in ("-p", "--pin"):
             read_config(0)
             gpio_read()
@@ -495,6 +433,8 @@ def menu():
 # Main loop that reads sensors, modifies relays based on sensor values, writes
 # sensor/relay logs, and receives/executes commands from mycodo-client.py
 def daemon():
+    global Temp_PID_restart
+    global Hum_PID_restart
     global server
     global HAlive
     global TAlive
@@ -526,12 +466,7 @@ def daemon():
 
     while True: # Main loop of the daemon
         if ClientQue != '0': # Run remote commands issued by mycodo-client.py
-            if ClientQue == 'ChangeSensor':
-                print_sync("%s [Client command] Change DHT: "
-                    "Sensor: %s, Pin: %s LogSec: %s" % (timestamp(), 
-                    DHTSensor, DHTPin, timerSecWriteLog), 1)
-                write_config()
-            elif ClientQue == 'write_sensor_log':
+            if ClientQue == 'write_sensor_log':
                 print_sync("%s [Client command] Write Sensor Log" % (
                     timestamp()), 1)
                 read_sensors(0)
@@ -541,83 +476,6 @@ def daemon():
                     timestamp(), ClientArg1, ClientArg1), 1)
                 gpio_change(ClientArg1, ClientArg2)
                 gpio_read()
-            elif ClientQue == 'gpio_changeNames':
-                print_sync("%s [Client command] Change Relay Names: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s" % (
-                    timestamp(),
-                    relayName[1], relayName[2], relayName[3], relayName[4],
-                    relayName[5], relayName[6], relayName[7], relayName[8]), 1)
-                write_config()
-            elif ClientQue == 'gpio_changePins':
-                print_sync("%s [Client command] Change Relay Pins: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s" % (
-                    timestamp(),
-                    relayPin[1], relayPin[2], relayPin[3], relayPin[4],
-                    relayPin[5], relayPin[6], relayPin[7], relayPin[8]), 1)
-                write_config()
-            elif ClientQue == 'ChangeTempOR':
-                global TempOR
-                if not holderTempOR:
-                    if tm.isAlive():
-                        print_sync("%s [Daemon] Restarting Temperature PID thread" 
-                            % timestamp(), 1)
-                        TAlive = 0
-                        while TAlive != 2:
-                            time.sleep(0.1)
-                        TAlive = 1
-                    tm = threading.Thread(target = temperature_monitor)  
-                    tm.daemon = True
-                    tm.start()
-                print_sync("%s [Client command] Change Temperature Override to %s" % (
-                    timestamp(), holderTempOR), 1)
-                TempOR = holderTempOR
-                write_config()
-            elif ClientQue == 'ChangeHumOR':
-                global HumOR
-                if not holderHumOR:
-                    print_sync("%s [Daemon] Restarting Humidity PID thread" 
-                        % timestamp(), 1)
-                    HAlive = 0
-                    while HAlive != 2:
-                        time.sleep(0.1)
-                    HAlive = 1
-                    hm = threading.Thread(target = humidity_monitor)
-                    hm.daemon = True
-                    hm.start()
-                print_sync("%s [Client command] Change Humidity Override to %s" % (
-                    timestamp(), holderHumOR), 1)
-                HumOR = holderHumOR
-                write_config()
-            elif ClientQue == 'ChangeConditionsTemp':
-                print_sync("%s [Client command] Change Temperature: relay: %s set: %.1f°C" % (
-                    timestamp(), relayTemp, setTemp), 1)
-                print_sync("%s [Client command] Change Temp PID: P: %.1f, I: %.1f D: %.1f, Sec: %s" % (
-                    timestamp(), Temp_P, Temp_I, Temp_D,
-                    factorTempSeconds), 1)
-                write_config()
-                print_sync("%s [Daemon] Restarting Temperature PID thread" 
-                    % timestamp(), 1)
-                TAlive = 0
-                while TAlive != 2:
-                    time.sleep(0.1)
-                TAlive = 1
-                tm = threading.Thread(target = temperature_monitor)  
-                tm.daemon = True
-                tm.start()
-            elif ClientQue == 'ChangeConditionsHum':
-                print_sync("%s [Client command] Change Humidity: relay: %s, set: %.1f" 
-                    % (timestamp(), relayHum, setHum), 1)
-                print_sync("%s [Client command] Change PID: Hum: P: %.1f, I: %.1f D: %.1f, Sec: %s" 
-                    % (timestamp(), Hum_P, Hum_I, Hum_D, 
-                    factorHumSeconds), 1)
-                write_config()
-                print_sync("%s [Daemon] Restarting Humidity PID thread" 
-                    % timestamp(), 1)
-                HAlive = 0
-                while HAlive != 2:
-                    time.sleep(0.1)
-                HAlive = 1
-                hm = threading.Thread(target = humidity_monitor)
-                hm.daemon = True
-                hm.start()
             elif ClientQue == 'RelayOnSec':
                 print_sync("%s [Client command] Set Relay %s on for %s seconds"
                     % (timestamp(), ClientArg1, ClientArg2), 1)
@@ -634,6 +492,33 @@ def daemon():
                 server.close()
                 print_sync("%s [Daemon] Exiting Python" % timestamp(), 1)
                 sys.exit(0)
+            
+            if Temp_PID_restart == 1:
+                if tm.isAlive():
+                    print_sync("%s [Daemon] Restarting Temperature PID thread" 
+                        % timestamp(), 1)
+                    TAlive = 0
+                    while TAlive != 2:
+                        time.sleep(0.1)
+                    TAlive = 1
+                tm = threading.Thread(target = temperature_monitor)  
+                tm.daemon = True
+                tm.start()
+                Temp_PID_restart = 0
+            
+            if Hum_PID_restart:
+                if hm.isAlive():
+                    print_sync("%s [Daemon] Restarting Humidity PID thread" 
+                        % timestamp(), 1)
+                    HAlive = 0
+                    while HAlive != 2:
+                        time.sleep(0.1)
+                    HAlive = 1
+                hm = threading.Thread(target = humidity_monitor)
+                hm.daemon = True
+                hm.start()
+                Hum_PID_restart = 0
+                
             ClientQue = '0'
         
         # Write sensor log
@@ -654,13 +539,16 @@ def temperature_monitor():
     PIDTemp = 0
     print_sync("%s [PID Temperature] Starting Thread"
                     % timestamp(), 1)
-    if (tempc < setTemp): tempState = 0
-    else: tempState = 1
+    if (tempc < setTemp):
+        tempState = 0
+    else: 
+        tempState = 1
+        gpio_change(relayTemp, 1)
     p_temp = Temperature_PID(Temp_P, Temp_I, Temp_D)
     p_temp.setPoint(setTemp)
     
     while TAlive == 1:
-        if TempOR == 0:
+        if TempOR == 0 and Temp_PID_restart:
             if int(time.time()) > timerTemp:
                 print_sync("%s [PID Temperature] Reading temperature..."
                     % timestamp(), 1)
@@ -695,13 +583,16 @@ def humidity_monitor():
 
     print_sync("%s [PID Humidity] Starting Thread" 
         % timestamp(), 1)
-    if (humidity < setHum): humState = 0
-    else: humState = 1
+    if (humidity < setHum):
+        humState = 0
+    else:
+        humState = 1
+        gpio_change(relayHum, 1)
     p_hum = Humidity_PID(Hum_P, Hum_I, Hum_D)
     p_hum.setPoint(setHum)
 
     while HAlive == 1:
-        if HumOR == 0:
+        if HumOR == 0 and Hum_PID_restart:
             if int(time.time()) > timerHum:
                 print_sync("%s [PID Humidity] Reading humidity..." 
                     % timestamp(), 1)
@@ -726,23 +617,6 @@ def humidity_monitor():
                     timerHum = int(time.time()) + 60
     print_sync("%s [PID Humidity] Shutting Down Thread" % timestamp(), 1)
     HAlive = 2
-
-# Set GPIO LOW (= relay ON) for a specific duration
-def relay_on_duration(relay, seconds):
-    if GPIO.input(relayPin[relay]) == 1:
-        write_relay_log(relay, seconds)
-        print_sync("%s [Relay Duration] Relay %s (%s) ON for %s seconds" 
-            % (timestamp(), relay, relayName[relay], seconds), 1)
-        GPIO.output(relayPin[relay], 0)
-        time.sleep(seconds)
-        GPIO.output(relayPin[relay], 1)
-        print_sync("%s [Relay Duration] Relay %s (%s) OFF (was ON for %s sec)"
-            % (timestamp(), relay, relayName[relay], seconds), 1)
-        return 1
-    else:
-        print_sync("%s [Relay Duration] Abort: Requested relay %s (%s) ON for %s seconds, but it's already on!" 
-            % (timestamp(), relay, relayName[relay], seconds), 1)
-        return 0
 
 # Append sensor data to the log file
 def write_sensor_log():
@@ -1137,6 +1011,23 @@ def gpio_change(Select, State):
         State, GPIO.input(relayPin[Select])), 1)
     GPIO.output(relayPin[Select], State)
 
+# Set GPIO LOW (= relay ON) for a specific duration
+def relay_on_duration(relay, seconds):
+    if GPIO.input(relayPin[relay]) == 1:
+        write_relay_log(relay, seconds)
+        print_sync("%s [Relay Duration] Relay %s (%s) ON for %s seconds" 
+            % (timestamp(), relay, relayName[relay], seconds), 1)
+        GPIO.output(relayPin[relay], 0)
+        time.sleep(seconds)
+        GPIO.output(relayPin[relay], 1)
+        print_sync("%s [Relay Duration] Relay %s (%s) OFF (was ON for %s sec)"
+            % (timestamp(), relay, relayName[relay], seconds), 1)
+        return 1
+    else:
+        print_sync("%s [Relay Duration] Abort: Requested relay %s (%s) ON for %s seconds, but it's already on!" 
+            % (timestamp(), relay, relayName[relay], seconds), 1)
+        return 0
+
 # all terminal/log output is piped through to ensure prints are synchronized
 def print_sync(msg, newline):
     thread_name = threading.current_thread().name
@@ -1170,14 +1061,31 @@ def represents_float(s):
         return False
 
 # Check if a variable name in config_file matches a string
-def verify_name():
+def modify_var(*names_and_values):
+    global Temp_PID_restart
+    global Hum_PID_restart
+    global ClientQue
+
     namesOfVariables = [
-    'tempc',
-    'humidity',
+    'DHTSensor',
+    'DHTPin.'
+    'relayName',
+    'relayPin',
+    'relayTemp',
+    'relayHum',
     'setTemp',
     'setHum',
     'TempOR',
     'HumOR',
+    'timerSecWriteLog',
+    'Hum_P',
+    'Hum_I',
+    'Hum_D',
+    'Temp_P',
+    'Temp_I',
+    'Temp_D',
+    'factorHumSeconds',
+    'factorTempSeconds',
     'tempState',
     'humState',
     'relay1o',
@@ -1188,15 +1096,6 @@ def verify_name():
     'relay6o',
     'relay7o',
     'relay8o',
-    'timerSecWriteLog',
-    'Hum_P',
-    'Hum_I',
-    'Hum_D',
-    'Temp_P',
-    'Temp_I',
-    'Temp_D',
-    'factorHumSeconds',
-    'factorTempSeconds',
     'relay1Pin',
     'relay2Pin',
     'relay3Pin',
@@ -1213,11 +1112,21 @@ def verify_name():
     'relay6Name',
     'relay7Name',
     'relay8Name',]
-
-    for variable in namesOfVariables:
-        if variableName == variable:
-            return 1
-    return 0
+    
+    for i in range(1, len(names_and_values), 2):
+        for variable in namesOfVariables:
+            if names_and_values[i] == variable:
+                #print "Variable:", names_and_values[i], "Value:", names_and_values[i+1]
+                if names_and_values[i] == 'TempOR' or names_and_values[i] == 'Temp_P' or names_and_values[i] == 'Temp_I' or names_and_values[i] == 'Temp_D' or names_and_values[i] == 'setTemp':
+                    ClientQue = '1'
+                    Temp_PID_restart = 1
+                if names_and_values[i] == 'HumOR' or names_and_values[i] == 'Hum_P' or names_and_values[i] == 'Hum_I' or names_and_values[i] == 'Hum_D' or names_and_values[i] == 'setHum':
+                    ClientQue = '1'
+                    Hum_PID_restart = 1
+                globals()[names_and_values[i]] = names_and_values[i+1]
+                    
+    write_config()
+    return 1
 
 # Timestamp format used in sensor and relay logs
 def timestamp():

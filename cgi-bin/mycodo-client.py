@@ -48,20 +48,32 @@ def menu():
             sys.argv[1:], 'o:p:r:s:tw', 
             ["changetempor=", "changehumor=", "conditionstemp=", 
             "conditionshum=", "modnames=", "modpins=", "modsensor=",
-            "pid=", "relay=", "seconds=", "set=", "terminate","writelog"])
+            "modvar=", "pid=", "relay=", "seconds=", "set=", "terminate", 
+            "writelog"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
         sys.exit(2)
 
     for opt, arg in opts:
-        if opt == "--changetempor":
+        if opt == "--modvar":
+            print "%s [Remote command] Mod Vars: %s" % (
+                Timestamp(), sys.argv[1:])
+            print "%s [Remote command] Server returned:" % (
+                Timestamp()),
+            if c.root.Modify_Variables(*sys.argv[1:]) == 1:
+                print "Success"
+            else:
+                print "Fail"
+            sys.exit(0)
+        elif opt == "--changetempor":
             print "%s [Remote command] Change TempOR to %s: Server returned:" % (
                 Timestamp(), sys.argv[2]),
             if c.root.ChangeTempOR(int(float(sys.argv[2]))) == 1:
                 print "Success"
             else:
                 print "Fail"
+            sys.exit(0)
         elif opt == "--changehumor":
             print "%s [Remote command] Change HumOR to %s: Server returned:" % (
                 Timestamp(), sys.argv[2]),
@@ -69,6 +81,7 @@ def menu():
                 print "Success"
             else:
                 print "Fail"
+            sys.exit(0)
         elif opt == "--conditionstemp":
             print "%s [Remote command] Set Temp conditions: relay: %s, set: %.1f°C, P: %.1f, I: %.1f, D: %.1f, sec: %s" % (
                 Timestamp(), int(float(sys.argv[2])), float(sys.argv[3]), 
@@ -83,7 +96,7 @@ def menu():
             else:
                 print "Fail"
             sys.exit(0)
-        if opt == "--conditionshum":
+        elif opt == "--conditionshum":
             print "%s [Remote command] Set Hum conditions: relay: %s, set: %.1f%%, P: %.1f, I: %.1f, D: %.1f, sec: %s" % (
                 Timestamp(), int(float(sys.argv[2])), float(sys.argv[3]), 
                 float(sys.argv[4]), float(sys.argv[5]), 
