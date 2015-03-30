@@ -326,7 +326,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                         <td>
                         </td>
                         <td align=left>
-                            <button type="submit" name="ModName" value="1" title="Change relay names to the ones specified above (Do not use spaces)">Mod</button>
+                            <button type="submit" name="ModName" value="1" title="Change relay names to the ones specified above (Do not use spaces)">Rename</button>
                         </td>
                         <td align=left>
                             <button type="submit" name="ModPin" value="1" title="Change the (BCM) GPIO pins attached to relays to the ones specified above">Mod</button>
@@ -338,7 +338,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                 <table class="pid">
                     <tr class="shade">
                         <th rowspan=2 colspan=2>
-                            PID Controller
+                            PID Control
                         </th>
                         <th colspan=2 align=center>
                             Sensor
@@ -372,7 +372,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                             <input type="submit" name="ChangeSensor" value="Set">
                         </td>
                     </tr>
-                    <tr style="height: 5px !important; background-color: #FFFFFF;">
+                    <tr style="height: 4px !important;">
                         <td colspan="8"></td>
                     </tr>
                     <?php
@@ -437,7 +437,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                             <input type="submit" name="ChangeTempPID" value="Set">
                         </td>
                     </tr>
-                    <tr style="height: 5px !important; background-color: #FFFFFF;">
+                    <tr style="height: 4px !important;">
                         <td colspan="8"></td>
                     </tr>
                     <tr class="shade">

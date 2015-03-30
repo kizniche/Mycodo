@@ -121,7 +121,7 @@ class ComServer(rpyc.Service):
         DHTPin = sensorpin
         ClientQue = 'ChangeSensor'
         return 1
-    def exposed_gpio_change(self, remoteCommand, remoteCommand2):
+    def exposed_ChangeGPIO(self, remoteCommand, remoteCommand2):
         global ClientQue
         global ClientArg1
         global ClientArg2
@@ -137,7 +137,7 @@ class ComServer(rpyc.Service):
         ClientArg2 = int(float(remoteCommand2))
         ClientQue = 'RelayOnSec'
         return 1
-    def exposed_gpio_changeNames(self, relayname1, relayname2, relayname3,
+    def exposed_ChangeRelayNames(self, relayname1, relayname2, relayname3,
             relayname4, relayname5, relayname6, relayname7, relayname8):
         global ClientQue
         global relayName
@@ -151,7 +151,7 @@ class ComServer(rpyc.Service):
         relayName[8] = relayname8
         ClientQue = 'gpio_changeNames'
         return 1
-    def exposed_gpio_changePins(self, relaypin1, relaypin2, relaypin3,
+    def exposed_ChangeRelayPins(self, relaypin1, relaypin2, relaypin3,
             relaypin4, relaypin5, relaypin6, relaypin7, relaypin8):
         global ClientQue
         global relayPin
@@ -213,7 +213,7 @@ class ComServer(rpyc.Service):
         factorHumSeconds = factorhumseconds
         ClientQue = 'ChangeConditionsHum'
         return 1
-    def exposed_write_sensor_log(self):
+    def exposed_WriteSensorLog(self):
         global ClientQue
         ClientQue = 'write_sensor_log'
         return 1
