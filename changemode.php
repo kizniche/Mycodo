@@ -35,7 +35,20 @@ function readconfig($var) {
 }
 
 if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
-
+    
+    $config_contents = file_get_contents($config_file);
+    $config_rows = explode("\n", $config_contents);
+    array_shift($config_rows);
+    foreach($config_rows as $row => $data) {
+        $row_data = explode(' = ', $data);
+        if (!empty($row_data[1])) {
+            ${$row_data[0]} = $row_data[1];
+        }
+    }
+    
+    $last_sensor = `tail -n 1 $sensor_log`;
+    $sensor_explode = explode(" ", $last_sensor);
+    
     if (isset($_POST['WriteSensorLog'])) {
 		$editconfig = "$mycodo_client -w";
         shell_exec($editconfig);
@@ -45,8 +58,8 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
 	for ($p = 1; $p <= 8; $p++) {
         // Relay has been selected to be turned on or off
 		if (isset($_POST['R' . $p])) {
-			$name = readconfig("relay${p}name");
-            $pin = readconfig("relay${p}pin");
+			$name = ${"relay" . $p . "name"};
+            $pin = ${"relay" . $p . "pin"};
             $actual_state = "$gpio_path -g read $pin";
             $desired_state = $_POST['R' . $p];
             
@@ -60,8 +73,8 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
         
         // Relay has been selected to be turned on for a number of seconds
         if (isset($_POST[$p . 'secON'])) {
-            $name = readconfig("relay${p}name");
-            $pin = readconfig("relay${p}pin");
+            $name = ${"relay" . $p . "name"};
+            $pin = ${"relay" . $p . "pin"};
 			$actual_state = "$gpio_path -g read $pin";
             $seconds_on = $_POST['sR' . $p];
             
@@ -115,20 +128,6 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
     }
     
     if (isset($_POST['ChangeTempPID']) || isset($_POST['ChangeHumPID'])) {
-        $relaytemp = readconfig("relaytemp");
-        $settemp = readconfig("settemp");
-        $temp_p  = readconfig("temp_p");
-        $temp_i  = readconfig("temp_i");
-        $temp_d  = readconfig("temp_d");
-        $factortempseconds = readconfig("factortempseconds");
-        
-        $relayhum = readconfig("relayhum");
-        $sethum = readconfig("sethum");
-        $hum_p  = readconfig("hum_p");
-        $hum_i  = readconfig("hum_i");
-        $hum_d  = readconfig("hum_d");
-        $factorhumseconds = readconfig("factorhumseconds");
-    
         if (isset($_POST['ChangeTempPID'])) {
             $relaytemp  = $_POST['relayTemp'];
             $settemp  = $_POST['setTemp'];
@@ -156,13 +155,9 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
     }
     
     if (isset($_POST['ChangeSensor'])) {
-        $dhtsensor = readconfig("dhtsensor");
-        $dhtpin = readconfig("dhtpin");
-        $dhtseconds = readconfig("timersecwritelog");
-    
 		$dhtsensor = $_POST['DHTSensor'];
         $dhtpin = $_POST['DHTPin'];
-        $dhtseconds = $_POST['DHTSecs'];
+        $dhtseconds = $_POST['DHTSec'];
         
         if ($dhtsensor == 'Other') {
             $enable_overrides = "$mycodo_client --modvar TempOR 1 HumOR 1";
@@ -174,32 +169,29 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
         sleep(6);
     }
     
-    $dhtsensor = readconfig("dhtsensor");
-    $dhtpin = readconfig("dhtpin");
-    $dhtseconds = readconfig("timersecwritelog");
+    $config_contents = file_get_contents($config_file);
+    $config_rows = explode("\n", $config_contents);
+    array_shift($config_rows);
+
+    foreach($config_rows as $row => $data) {
+        $row_data = explode(' = ', $data);
+        if (!empty($row_data[1])) {
+            ${$row_data[0]} = $row_data[1];
+        }
+    }
     
-    $relaytemp = readconfig("relaytemp");
-    $relayhum = readconfig("relayhum");
-    $settemp = readconfig("settemp");
-    $sethum = readconfig("sethum");
-    $tempor = readconfig("tempor");
-    $humor = readconfig("humor");
-    
-    $temp_p  = readconfig("temp_p");
-    $temp_i  = readconfig("temp_i");
-    $temp_d  = readconfig("temp_d");
-    $hum_p  = readconfig("hum_p");
-    $hum_i  = readconfig("hum_i");
-    $hum_d  = readconfig("hum_d");
-    
-    $factorhumseconds = readconfig("factorhumseconds");
-    $factortempseconds = readconfig("factortempseconds");
-    
-    $t_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f7`, 0, -1);
+    $last_sensor = `tail -n 1 $sensor_log`;
+    $sensor_explode = explode(" ", $last_sensor);
+
+    $t_c = $sensor_explode[6];
     $t_f = round(($t_c * (9/5) + 32), 1);
-    $hum = substr(`tail -n 1 $sensor_log | cut -d' ' -f8`, 0, -1);
-    $dp_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f9`, 0, -1);
+    $hum = $sensor_explode[7];
+    $dp_c = substr($sensor_explode[8], 0, -1);
     $dp_f = round(($dp_c * (9/5) + 32), 1);
+    
+    $time_last = `tail -n 1 $sensor_log`;
+    $time_explode = explode(" ", $time_last);
+    $time_last = $time_explode[0] . '-' . $time_explode[1] . '-' . $time_explode[2] . ' ' . $time_explode[3] . ':' . $time_explode[4] . ':' . $time_explode[5];
 ?>
 
 <html>
@@ -227,14 +219,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                         Current: <?php echo `date +'%Y-%m-%d %H:%M:%S'`; ?>
                     </div>
                     <div>
-                    Last read: <?php 
-                        $time_last = `tail -n 1 $sensor_log | cut -d' ' -f1,2,3,4,5,6`;
-                        $time_last[4] = '-';
-                        $time_last[7] = '-';
-                        $time_last[13] = ':';
-                        $time_last[16] = ':';
-                        echo $time_last;
-                    ?>
+                    Last read: <?php echo $time_last; ?>
                     </div>
                 </div>
                 <div style="float: left; padding-left: 7px;">
@@ -244,9 +229,9 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                     <div>
                         <?php
                             if (isset($_GET['r'])) {
-                                if ($_GET['r'] == 1) echo "<b><font color=\"green\">On</font></b> | <a href=\"changemode.php\">Turn Off</a>";
-                                else echo "<b><font color=\"red\">Off</font></b> | <a href=\"changemode.php?r=1\">Turn On</a>";
-                            } else echo "<b><font color=\"red\">Off</font></b> | <a href=\"changemode.php?r=1\">Turn On</a>";
+                                if ($_GET['r'] == 1) echo "<b><font color=\"green\">ON</font></b> | <a href=\"changemode.php\">OFF</a>";
+                                else echo "<b><font color=\"red\">OFF</font></b> | <a href=\"changemode.php?r=1\">ON</a>";
+                            } else echo "<b><font color=\"red\">OFF</font></b> | <a href=\"changemode.php?r=1\">ON</a>";
                         ?>
                     </div>
                 </div>
@@ -283,8 +268,8 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                     </tr>
                     <?php
                         for ($i = 1; $i <= 8; $i++) {
-                            $name = readconfig("relay${i}name");
-                            $pin = readconfig("relay${i}pin");
+                            $name = ${"relay" . $i . "name"};
+                            $pin = ${"relay" . $i . "pin"};
                             $read = "$gpio_path -g read $pin";
                     ?>
                     <tr>
