@@ -14,17 +14,29 @@ table.relays {
 }
 
 table.relays td {
-    padding: 3px 8px 3px 8px;
+    padding: 3px 7px 3px 7px;
 }
 
-table.pid {
+table.relays tr:nth-child(odd) {
+    background-color: #EBEBEB;
+}
+
+.pid-wrapper {
     padding-top: 15px;
 	margin: 0 auto;
 	display: inline-block;
 }
 
+table.pid {
+    border: 2px solid #EBEBEB;
+}
+
 table.pid td {
 	padding: 2px 3px 2px 3px;
+}
+
+.shade {
+    background-color: #EBEBEB;
 }
 
 .table-header {

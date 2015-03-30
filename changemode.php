@@ -164,6 +164,13 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
         $dhtpin = $_POST['DHTPin'];
         $dhtseconds = $_POST['DHTSecs'];
         
+        if ($dhtsensor == 'Other') {
+            $enable_overrides = "$mycodo_client --changetempor 1";
+            shell_exec($enable_overrides);
+            $enable_overrides = "$mycodo_client --changehumor 1";
+            shell_exec($enable_overrides);
+        }
+        
         $editconfig = "$mycodo_client --modsensor $dhtsensor $dhtpin $dhtseconds";
         shell_exec($editconfig);
         sleep(6);
@@ -210,7 +217,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
     </head>
     <body>
         <div style="text-align: center;">
-            <div style="padding-top: 5px; font-size: 20px;">
+            <div style="padding-top: 5px; font-size: 18px;">
                 <?php
                     echo "Temp: $t_c&deg;C ($t_f&deg;F) &nbsp; &nbsp; RH: ${hum}% &nbsp; &nbsp; DP: $dp_c&deg;C ($dp_f&deg;F)";
                 ?>
@@ -219,7 +226,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
             <div style="display: inline-block; padding-top: 10px;">
                 <div style="float: left;" align=right>
                     <div>
-                        Current time: <?php echo `date +'%Y-%m-%d %H:%M:%S'`; ?>
+                        Current: <?php echo `date +'%Y-%m-%d %H:%M:%S'`; ?>
                     </div>
                     <div>
                     Last read: <?php 
@@ -232,7 +239,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                     ?>
                     </div>
                 </div>
-                <div style="float: left; padding-left: 15px;">
+                <div style="float: left; padding-left: 7px;">
                     <div>
                         Auto Refresh
                     </div>
@@ -245,14 +252,14 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                         ?>
                     </div>
                 </div>
-                <div style="float: left; padding-left: 15px;">
+                <div style="float: left; padding-left: 7px;">
                     <?php
                         if (isset($_GET['r'])) {
                             echo "<input type=\"button\" onclick=\"location.href='changemode.php?r=1'\" value=\"Refresh&#10;Page\">";
                         } else echo "<input type=\"button\" onclick=\"location.href='changemode.php'\" value=\"Refresh&#10;Page\">";
                     ?>
                 </div>
-                <div style="float: left; padding-left: 15px;">
+                <div style="float: left; padding-left: 7px;">
                     <input type="submit" name="WriteSensorLog" value="Update&#10;Sensors" title="Take a new temperature and humidity reading">
                 </div>
             </div>
@@ -263,16 +270,16 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                         <td align=center class="table-header">
                             Relay
                         </td>
-                        <td align=center class="table-header">
+                        <td align=left class="table-header">
                             Name
                         </td>
-                        <td align=center class="table-header">
-                            GPIO Pin
+                        <td align=left class="table-header">
+                            GPIO
                         </td>
                         <th colspan=2  align=center class="table-header">
                             State
                         </th>
-                        <td align=center class="table-header">
+                        <td align=left class="table-header">
                             Seconds On
                         </td>
                     </tr>
@@ -309,7 +316,7 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                             }
                         ?>
                         <td>
-                             &nbsp; <input type="text" maxlength=3 size=1 name="sR<?php echo $i; ?>" title="Number of seconds to turn this relay on"/> sec <input type="submit" name="<?php echo $i; ?>secON" value="ON"> &nbsp;
+                             <input type="text" maxlength=3 size=1 name="sR<?php echo $i; ?>" title="Number of seconds to turn this relay on"/> sec <input type="submit" name="<?php echo $i; ?>secON" value="ON">
                         </td>
                     </tr>
                     <?php 
@@ -318,36 +325,63 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                     <tr>
                         <td>
                         </td>
-                        <td align=center>
+                        <td align=left>
                             <button type="submit" name="ModName" value="1" title="Change relay names to the ones specified above (Do not use spaces)">Mod</button>
                         </td>
-                        <td align=center>
+                        <td align=left>
                             <button type="submit" name="ModPin" value="1" title="Change the (BCM) GPIO pins attached to relays to the ones specified above">Mod</button>
                         </td>
                     </tr>
                 </table>
             </div>
-            <div>
+            <div class="pid-wrapper">
                 <table class="pid">
-                    <tr>
-                        <th colspan="3" class="table-header">
-                            <div style="margin: 5px 0 5px 0;">
-                                Temp:
-                                <?php
-                                    if ($tempor == 1) {
-                                        ?>
-                                        <span class="state off">OFF</span> | <button type="submit" name="TempOR" value="0">ON</button>
-                                        <?php
-                                    } else {
-                                        ?>
-                                        <span class="state on">ON</span> | <button type="submit" name="TempOR" value="1">OFF</button>
-                                        <?php
-                                    }
-                                ?>
-                            </div>
+                    <tr class="shade">
+                        <th rowspan=2 colspan=2>
+                            PID Controller
                         </th>
+                        <th colspan=2 align=center>
+                            Sensor
+                        </th>
+                        <td align=center>
+                            Pin
+                        </td>
+                        <th colspan=2>
+                            Read Period
+                        </td>
                     </tr>
                     <tr>
+                        <th colspan=2>
+                            <select style="width: 80px;" name="DHTSensor">
+                                <option <?php if ($dhtsensor == 'DHT11') echo "selected=\"selected\""; ?> value="DHT11">DHT11</option>
+                                <option <?php if ($dhtsensor == 'DHT22') echo "selected=\"selected\""; ?> value="DHT22">DHT22</option>
+                                <option <?php if ($dhtsensor == 'AM2302') echo "selected=\"selected\""; ?> value="AM2302">AM2302</option>
+                                <option <?php if ($dhtsensor == 'Other') echo "selected=\"selected\""; ?>value="Other">Other</option>
+                            </select>
+                        </th>
+                        <td>
+                            <input type="text" value="<?php echo $dhtpin; ?>" maxlength=2 size=1 name="DHTPin" title="This is the GPIO pin connected to the DHT sensor"/>
+                        </td>
+                        <td>
+                            <input type="text" value="<?php echo $dhtseconds; ?>" maxlength=3 size=1 name="DHTSecs" title="The number of seconds between writing sensor readings to the log"/>
+                        </td>
+                        <td>
+                            Sec
+                        </td>
+                        <td>
+                            <input type="submit" name="ChangeSensor" value="Set">
+                        </td>
+                    </tr>
+                    <tr style="height: 5px !important; background-color: #FFFFFF;">
+                        <td colspan="8"></td>
+                    </tr>
+                    <?php
+                        if ($dhtsensor == 'DHT11' || $dhtsensor == 'DHT22' || $dhtsensor == 'AM2302') {
+                    ?>
+                    <tr class="shade">
+                        <td align=center>
+                            Temperature
+                        </td>
                         <td align=center>
                             Relay
                         </td>
@@ -357,8 +391,30 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                         <td align=center>
                             Sec
                         </td>
+                        <td align=center>
+                            P
+                        </td>
+                        <td align=center>
+                            I
+                        </td>
+                        <td align=center>
+                            D
+                        </td>
                     </tr>
                     <tr>
+                        <td>
+                            <?php
+                                if ($tempor == 1) {
+                                    ?>
+                                    <span class="state off">OFF</span> | <button type="submit" name="TempOR" value="0">ON</button>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <span class="state on">ON</span> | <button type="submit" name="TempOR" value="1">OFF</button>
+                                    <?php
+                                }
+                            ?>
+                        </td>
                         <td>
                             <input type="text" value="<?php echo $relaytemp; ?>" maxlength=1 size=1 name="relayTemp" title="This is the desired temperature"/>
                         </td>
@@ -368,19 +424,6 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                         <td>
                             <input type="text" value="<?php echo $factortempseconds; ?>" maxlength=4 size=1 name="factorTempSeconds" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/>
                         </td>
-                    </tr>
-                    <tr>
-                        <td align=center>
-                            P
-                        </td>
-                        <td align=center>
-                            I
-                        </td>
-                        <td align=center>
-                            D
-                        </td>
-                    </tr>
-                    <tr>
                         <td>
                             <input type="text" value="<?php echo $temp_p; ?>" maxlength=4 size=1 name="Temp_P" title="This is the proportional value of the PID"/>
                         </td>
@@ -390,34 +433,17 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                         <td>
                             <input type="text" value="<?php echo $temp_d; ?>" maxlength=4 size=1 name="Temp_D" title="This is the derivative value of the PID"/>
                         </td>
-                    </tr>
-                    <tr>
-                        <th colspan=3 style="padding-top: 5px;">
+                        <td>
                             <input type="submit" name="ChangeTempPID" value="Set">
-                        </th>
+                        </td>
                     </tr>
-                </table>
-				&nbsp; &nbsp; 
-                <table class="pid">
-                    <tr>
-                        <th colspan="3" class="table-header">
-                            <div style="margin: 5px 0 5px 0;">
-                                Hum:
-                                <?php
-                                    if ($humor == 1) {
-                                        ?>
-                                        <span class="state off">OFF</span> | <button type="submit" name="HumOR" value="0">ON</button>
-                                        <?php
-                                    } else {
-                                        ?>
-                                        <span class="state on">ON</span> | <button type="submit" name="HumOR" value="1">OFF</button>
-                                        <?php
-                                    }
-                                ?>
-                            </div>
-                        </th>
+                    <tr style="height: 5px !important; background-color: #FFFFFF;">
+                        <td colspan="8"></td>
                     </tr>
-                        <tr>
+                    <tr class="shade">
+                        <td align=center>
+                            Humidity
+                        </td>
                         <td align=center>
                             Relay
                         </td>
@@ -427,19 +453,6 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                         <td align=center>
                             Sec
                         </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="text" value="<?php echo $relayhum; ?>" maxlength=1 size=1 name="relayHum" title="This is the desired temperature"/>
-                        </td>
-                        <td>
-                            <input type="text" value="<?php echo $sethum; ?>" maxlength=4 size=1 name="setHum" title="This is the desired humidity"/>
-                        </td>
-                        <td>
-                            <input type="text" value="<?php echo $factorhumseconds; ?>" maxlength=4 size=1 name="factorHumSeconds" title="This is the number of seconds to wait after the relay has been turned off before taking another humidity reading and applying the PID"/>
-                        </td>
-                    </tr>
-                    <tr>
                         <td align=center>
                             P
                         </td>
@@ -452,6 +465,28 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                     </tr>
                     <tr>
                         <td>
+                        <?php
+                            if ($humor == 1) {
+                                ?>
+                                <span class="state off">OFF</span> | <button type="submit" name="HumOR" value="0">ON</button>
+                                <?php
+                            } else {
+                                ?>
+                                <span class="state on">ON</span> | <button type="submit" name="HumOR" value="1">OFF</button>
+                                <?php
+                            }
+                        ?>
+                        </td>
+                        <td>
+                            <input type="text" value="<?php echo $relayhum; ?>" maxlength=1 size=1 name="relayHum" title="This is the desired temperature"/>
+                        </td>
+                        <td>
+                            <input type="text" value="<?php echo $sethum; ?>" maxlength=4 size=1 name="setHum" title="This is the desired humidity"/>
+                        </td>
+                        <td>
+                            <input type="text" value="<?php echo $factorhumseconds; ?>" maxlength=4 size=1 name="factorHumSeconds" title="This is the number of seconds to wait after the relay has been turned off before taking another humidity reading and applying the PID"/>
+                        </td>
+                        <td>
                             <input type="text" value="<?php echo $hum_p; ?>" maxlength=4 size=1 name="Hum_P" title="This is the proportional value of the PID"/>
                         </td>
                         <td>
@@ -460,55 +495,21 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
                         <td>
                             <input type="text" value="<?php echo $hum_d; ?>" maxlength=4 size=1 name="Hum_D" title="This is the derivative value of the PID"/>
                         </td>
-                    </tr>
-                    <tr>
-                        <th colspan=3 style="padding-top: 5px;">
-                            <input type="submit" name="ChangeHumPID" value="Set">
-                        </th>
-                    </tr>
-                </table>
-                &nbsp; &nbsp; 
-                <table class="pid">
-                    <tr>
-                        <th colspan=2 style="padding-bottom: 2px;" class="table-header">
-                            DHT Sensor
-                        </th>
-                    </tr>
-                    <tr>
-                        <td align=center>
-                            Sensor
-                        </td>
-                        <td align=center>
-                            Pin
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding-bottom: 6px;">
-                            <select style="width: 80px;" name="DHTSensor">
-                                <option <?php if ($dhtsensor == 'DHT11') echo "selected=\"selected\""; ?> value="DHT11">DHT11</option>
-                                <option <?php if ($dhtsensor == 'DHT22') echo "selected=\"selected\""; ?> value="DHT22">DHT22</option>
-                                <option <?php if ($dhtsensor == 'AM2302') echo "selected=\"selected\""; ?> value="AM2302">AM2302</option>
-                            </select>
-                        </td>
                         <td>
-                            <input type="text" value="<?php echo $dhtpin; ?>" maxlength=2 size=1 name="DHTPin" title="This is the GPIO pin connected to the DHT sensor"/>
+                            <input type="submit" name="ChangeHumPID" value="Set">
                         </td>
                     </tr>
-                    <tr>
-                        <th colspan=2>
-                            Sensor read period
-                        </th>
+                    <?php
+                        } else {
+                    ?>
+                    <tr style="height: 10px !important; background-color: #FFFFFF;">
+                        <td colspan="8">
+                            There is only built-in support for sensors on the list.
+                        </td>
                     </tr>
-                    <tr>
-                        <th colspan=2 align=left>
-                            <input type="text" value="<?php echo $dhtseconds; ?>" maxlength=3 size=1 name="DHTSecs" title="The number of seconds between writing sensor readings to the log"/> seconds
-                        </th>
-                    </tr>
-                    <tr>
-                        <th colspan=2 style="padding-top: 4px;">
-                            <input type="submit" name="ChangeSensor" value="Set">
-                        </th>
-                    </tr>
+                    <?php
+                        }
+                    ?>
                 </table>
             </div>
             </FORM>

@@ -60,7 +60,7 @@ if ($login->isUserLoggedIn() == true) {
         <link rel="stylesheet"  href="style.css" type="text/css" media="all" />
         <script type="text/javascript">
             function open_chmode() {
-                window.open("changemode.php","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=560, height=630");
+                window.open("changemode.php","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=500, height=630");
             }
             function open_legend() {
                 window.open("image.php?span=legend","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=190, height=210");
@@ -96,13 +96,13 @@ if ($login->isUserLoggedIn() == true) {
                         <td>
                             <div class="sensor-block">
                                 <div class="sensor-title">
-                                    Temperature: PID <?php
+                                    Temperature (PID <?php
                                         if ($tempor == 1) {
                                                 echo "<span class=\"off\">OFF</span>";
                                             } else {
                                                 echo "<span class=\"on\">ON</span>";
                                             }
-                                    ?> 
+                                    ?>)
                                 </div>
                                 <div class="sensor-values">
                                     <?php echo "Now: ${t_c}&deg;C (${t_f}&deg;F)"; ?>
@@ -117,13 +117,13 @@ if ($login->isUserLoggedIn() == true) {
                         <td>
                             <div class="sensor-block">
                                 <div class="sensor-title">
-                                    Humidity (RH): PID <?php
+                                    Humidity (PID <?php
                                         if ($humor == 1) {
                                                 echo "<span class=\"off\">OFF</span>";
                                             } else {
                                                 echo "<span class=\"on\">ON</span>";
                                             }
-                                    ?> 
+                                    ?>)
                                 </div>
                                 <div class="sensor-values">
                                     <?php echo "Now: ${hum}%"; ?>
@@ -164,10 +164,9 @@ if ($login->isUserLoggedIn() == true) {
                     <tr>
                         <td class=link>Refresh (90s): 
                             <?php
-                                if (isset($_GET['r'])) {
-                                if ($_GET['r'] == 1) echo '<b>On</b> / <a href="index.php?page=$page">Off</a>';
-                                else echo '<a href="index.php?page=$page&r=1">On</a> / <b>Off</b>';
-                                } else echo '<a href="index.php?page=$page&r=1">On</a> / <b>Off</b>';
+                                if (isset($_GET['r']) && $_GET['r'] == 1) {
+                                    echo '<span class="on"><b>On</b></span> / <a href="index.php?page=$page">Off</a>';
+                                } else echo '<a href="index.php?page=$page&r=1">On</a> / <span class="off"><b>Off</b></span>';
                             ?>
                         </td>
                     </tr>

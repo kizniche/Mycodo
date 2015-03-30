@@ -14,7 +14,7 @@
 
 #### Configure Install Directory ####
 install_directory = "/var/www/mycodo"
-
+#### Configure Install Directory ####
 
 import Adafruit_DHT
 import subprocess
@@ -121,13 +121,13 @@ class ComServer(rpyc.Service):
         DHTPin = sensorpin
         ClientQue = 'ChangeSensor'
         return 1
-    def exposed_ChangeRelay(self, remoteCommand, remoteCommand2):
+    def exposed_gpio_change(self, remoteCommand, remoteCommand2):
         global ClientQue
         global ClientArg1
         global ClientArg2
         ClientArg1 = int(float(remoteCommand))
         ClientArg2 = int(float(remoteCommand2))
-        ClientQue = 'ChangeRelay'
+        ClientQue = 'gpio_change'
         return 1
     def exposed_RelayOnSec(self, remoteCommand, remoteCommand2):
         global ClientQue
@@ -137,7 +137,7 @@ class ComServer(rpyc.Service):
         ClientArg2 = int(float(remoteCommand2))
         ClientQue = 'RelayOnSec'
         return 1
-    def exposed_ChangeRelayNames(self, relayname1, relayname2, relayname3,
+    def exposed_gpio_changeNames(self, relayname1, relayname2, relayname3,
             relayname4, relayname5, relayname6, relayname7, relayname8):
         global ClientQue
         global relayName
@@ -149,9 +149,9 @@ class ComServer(rpyc.Service):
         relayName[6] = relayname6
         relayName[7] = relayname7
         relayName[8] = relayname8
-        ClientQue = 'ChangeRelayNames'
+        ClientQue = 'gpio_changeNames'
         return 1
-    def exposed_ChangeRelayPins(self, relaypin1, relaypin2, relaypin3,
+    def exposed_gpio_changePins(self, relaypin1, relaypin2, relaypin3,
             relaypin4, relaypin5, relaypin6, relaypin7, relaypin8):
         global ClientQue
         global relayPin
@@ -163,7 +163,7 @@ class ComServer(rpyc.Service):
         relayPin[6] = relaypin6
         relayPin[7] = relaypin7
         relayPin[8] = relaypin8
-        ClientQue = 'ChangeRelayPins'
+        ClientQue = 'gpio_changePins'
         return 1
     def exposed_ChangeTempOR(self, tempor):
         global ClientQue
@@ -213,9 +213,9 @@ class ComServer(rpyc.Service):
         factorHumSeconds = factorhumseconds
         ClientQue = 'ChangeConditionsHum'
         return 1
-    def exposed_WriteSensorLog(self):
+    def exposed_write_sensor_log(self):
         global ClientQue
-        ClientQue = 'WriteSensorLog'
+        ClientQue = 'write_sensor_log'
         return 1
 
 class ComThread(threading.Thread):
@@ -328,35 +328,35 @@ class Temperature_PID:
 
 # Displays the program usage
 def usage():
-    SyncPrint("mycodo.py: Reads temperature and humidity from sensors, "
+    print_sync("mycodo.py: Reads temperature and humidity from sensors, "
         "writes log file, and operates relays as a daemon to maintain "
         "set environmental conditions.\n", 1)
-    SyncPrint("Usage:   mycodo.py [OPTION]...\n", 1)
-    SyncPrint("Example: mycodo.py -w /var/www/mycodo/log/sensor.log", 1)
-    SyncPrint("         mycodo.py -c 1 -s 0", 1)
-    SyncPrint("         mycodo.py -n relay1Name --value Banana", 1)
-    SyncPrint("         mycodo.py --daemon\n", 1)
-    SyncPrint("Options:", 1)
-    SyncPrint("    -c, --change=RELAY", 1)
-    SyncPrint("           Change the state of a relay (--state required)", 1)
-    SyncPrint("        --state=[ON/OFF/X]", 1)
-    SyncPrint("           Change the state of RELAY to ON, OFF, or (X) number of seconds on", 1)
-    SyncPrint("    -d, --daemon", 1)
-    SyncPrint("           Start program as daemon that monitors conditions and modulates relays", 1)
-    SyncPrint("    -h, --help", 1)
-    SyncPrint("           Display this help and exit", 1)
-    SyncPrint("    -n, --name=VARIABLE", 1)
-    SyncPrint("           Change the VALUE of a single VARIABLE (--value required)", 1)
-    SyncPrint("        --value=VALUE", 1)
-    SyncPrint("           Change the VALUE of variable NAME (-n required)", 1)
-    SyncPrint("    -p, --pin", 1)
-    SyncPrint("           Display status of the GPIO pins (HIGH or LOW)", 1)
-    SyncPrint("    -r  --read=[SENSOR/CONFIG]", 1)
-    SyncPrint("           Read and display sensor data or config settings", 1)
-    SyncPrint("    -s, --set setTemp setHum TempOR HumOR", 1)
-    SyncPrint("           Change operating parameters (must give all options as int, overrides must be 0 or 1)", 1)
-    SyncPrint("    -w, --write=FILE", 1)
-    SyncPrint("           Write sensor data to log file\n", 1)
+    print_sync("Usage:   mycodo.py [OPTION]...\n", 1)
+    print_sync("Example: mycodo.py -w /var/www/mycodo/log/sensor.log", 1)
+    print_sync("         mycodo.py -c 1 -s 0", 1)
+    print_sync("         mycodo.py -n relay1Name --value Banana", 1)
+    print_sync("         mycodo.py --daemon\n", 1)
+    print_sync("Options:", 1)
+    print_sync("    -c, --change=RELAY", 1)
+    print_sync("           Change the state of a relay (--state required)", 1)
+    print_sync("        --state=[ON/OFF/X]", 1)
+    print_sync("           Change the state of RELAY to ON, OFF, or (X) number of seconds on", 1)
+    print_sync("    -d, --daemon", 1)
+    print_sync("           Start program as daemon that monitors conditions and modulates relays", 1)
+    print_sync("    -h, --help", 1)
+    print_sync("           Display this help and exit", 1)
+    print_sync("    -n, --name=VARIABLE", 1)
+    print_sync("           Change the VALUE of a single VARIABLE (--value required)", 1)
+    print_sync("        --value=VALUE", 1)
+    print_sync("           Change the VALUE of variable NAME (-n required)", 1)
+    print_sync("    -p, --pin", 1)
+    print_sync("           Display status of the GPIO pins (HIGH or LOW)", 1)
+    print_sync("    -r  --read=[SENSOR/CONFIG]", 1)
+    print_sync("           Read and display sensor data or config settings", 1)
+    print_sync("    -s, --set setTemp setHum TempOR HumOR", 1)
+    print_sync("           Change operating parameters (must give all options as int, overrides must be 0 or 1)", 1)
+    print_sync("    -w, --write=FILE", 1)
+    print_sync("           Write sensor data to log file\n", 1)
 
 # Checks user options and arguments for validity
 def menu():
@@ -369,46 +369,46 @@ def menu():
             ["change=", "daemon", "help", "name=", "pin",
             "read=", "set=", "state=", "value=", "write="])
     except getopt.GetoptError as err:
-        print(err) # will SyncPrint("option -a not recognized"
+        print(err) # will print_sync("option -a not recognized"
         usage()
         sys.exit(2)
     for opt, arg in opts:
         if opt in ("-c", "--change"):
-            if not RepresentsInt(arg) or \
+            if not represents_int(arg) or \
                     int(float(arg)) > 8 or \
                     int(float(arg)) < 1:
-                SyncPrint("Error: --change only accepts integers 1 though 8", 1)
+                print_sync("Error: --change only accepts integers 1 though 8", 1)
                 sys.exit(1)
             else:
                 global relaySelect
                 relaySelect = arg
         elif opt == "--state":
-            if RepresentsInt(arg) and int(float(arg)) > 1 or \
+            if represents_int(arg) and int(float(arg)) > 1 or \
                     (arg == 'OFF' or arg == 'ON'):
-                ReadCfg(0)
+                read_config(0)
                 if arg == 'ON':
-                    SyncPrint("%s [GPIO Write] Relay %s ON" % (
-                        Timestamp(), relaySelect), 1)
-                    ChangeRelay(int(float(relaySelect)), 0)
-                    GPIORead()
+                    print_sync("%s [GPIO Write] Relay %s ON" % (
+                        timestamp(), relaySelect), 1)
+                    gpio_change(int(float(relaySelect)), 0)
+                    gpio_read()
                     sys.exit(0)
                 if arg == 'OFF':
-                    SyncPrint("%s [GPIO Write] Relay %s OFF" % (
-                        Timestamp(), relaySelect), 1)
-                    ChangeRelay(int(float(relaySelect)), 1)
-                    GPIORead()
+                    print_sync("%s [GPIO Write] Relay %s OFF" % (
+                        timestamp(), relaySelect), 1)
+                    gpio_change(int(float(relaySelect)), 1)
+                    gpio_read()
                     sys.exit(0)
                 elif int(float(arg)) > 1:
-                    SyncPrint("%s [GPIO Write] Relay %s ON for %s seconds" % (
-                        Timestamp(), int(float(arg))), 1)
-                    RelayOnDuration(int(float(relaySelect)), int(float(arg)))
+                    print_sync("%s [GPIO Write] Relay %s ON for %s seconds" % (
+                        timestamp(), int(float(arg))), 1)
+                    relay_on_duration(int(float(relaySelect)), int(float(arg)))
                     sys.exit(0)
                 else:
-                    SyncPrint("--state only accepts ON, OFF, integers > 1", 1)
+                    print_sync("--state only accepts ON, OFF, integers > 1", 1)
                     usage()
                     sys.exit(1)
         elif opt in ("-d", "--daemon"):
-            Daemon()
+            daemon()
             sys.exit(0)
         elif opt in ("-h", "--help"):
             usage()
@@ -419,53 +419,53 @@ def menu():
         elif opt == "--value":
             global variableValue
             variableValue = arg
-            if not CheckVariableName():
-                SyncPrint("Error: Variable '%s' does not exist" 
+            if not verify_name():
+                print_sync("Error: Variable '%s' does not exist" 
                     % variableName, 1)
                 sys.exit(1)
             else:
-                SyncPrint("%s [Change Value] Changing variable '%s' value to %s"
-                    % (Timestamp(), variableName, variableValue), 1)
-                ReadCfg(0)
+                print_sync("%s [Change Value] Changing variable '%s' value to %s"
+                    % (timestamp(), variableName, variableValue), 1)
+                read_config(0)
                 globals()[variableName] = variableValue
-                WriteCfg()
-                SyncPrint("%s [Change Value] Variable '%s' value changed to %s" 
-                    % (Timestamp(), variableName, variableValue), 1)
+                write_config()
+                print_sync("%s [Change Value] Variable '%s' value changed to %s" 
+                    % (timestamp(), variableName, variableValue), 1)
                 sys.exit(0)
         elif opt in ("-p", "--pin"):
-            ReadCfg(0)
-            GPIORead()
+            read_config(0)
+            gpio_read()
             sys.exit(0)
         elif opt in ("-r", "--read"):
             if arg == 'SENSOR':
-                ReadSensors(0)
+                read_sensors(0)
                 sys.exit(0)
             elif arg == 'CONFIG':
-                ReadCfg(0)
+                read_config(0)
                 sys.exit(0)
             else:
-                SyncPrint("Error: Invalid option for --read", 1)
+                print_sync("Error: Invalid option for --read", 1)
                 usage()
                 sys.exit(1)
         elif opt in ("-s", "--set"):
             if len(sys.argv) != 6:
-                SyncPrint("Error: Too many/not enough options", 1)
+                print_sync("Error: Too many/not enough options", 1)
                 sys.exit(1)
-            elif not RepresentsFloat(sys.argv[2]) and \
-                    not RepresentsFloat(sys.argv[3]) and \
-                    not RepresentsInt(sys.argv[4]) and \
-                    not RepresentsInt(sys.argv[5]):
-                SyncPrint("Error: --set: temperature and humidity requires one decimal place and overrides need to be either 1 or 0", 1)
+            elif not represents_float(sys.argv[2]) and \
+                    not represents_float(sys.argv[3]) and \
+                    not represents_int(sys.argv[4]) and \
+                    not represents_int(sys.argv[5]):
+                print_sync("Error: --set: temperature and humidity requires one decimal place and overrides need to be either 1 or 0", 1)
                 sys.exit(1)
             elif (sys.argv[4] != '0' and sys.argv[4] != '1') or \
                     (sys.argv[5] != '0' and sys.argv[5] != '1'):
-                SyncPrint("Error: Last option of --set must be 0 or 1", 1)
+                print_sync("Error: Last option of --set must be 0 or 1", 1)
                 sys.exit(0)
-            SyncPrint("%s [Set Conditions] Desired values: "
+            print_sync("%s [Set Conditions] Desired values: "
                     "setTemp: %s, setHum: %s, TempOR: %s, HumOR: %s" 
-                    % (Timestamp(),
+                    % (timestamp(),
                     sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5]), 1)
-            ReadCfg(0)
+            read_config(0)
             global setTemp
             global setHum
             global TempOR
@@ -474,154 +474,157 @@ def menu():
             setHum = int(float(sys.argv[3]))
             TempOR = int(float(sys.argv[4]))
             HumOR = int(float(sys.argv[5]))
-            WriteCfg()
-            SyncPrint("%s [Set Conditions] New Values: "
+            write_config()
+            print_sync("%s [Set Conditions] New Values: "
                 "setTemp: %.1f°C, setHum: %.1f%%, TempOR: %s, HumOR: %s" 
-                % (Timestamp(), setTemp, setHum, TempOR, HumOR), 1)
+                % (timestamp(), setTemp, setHum, TempOR, HumOR), 1)
             sys.exit(0)
         elif opt in ("-w", "--write"):
             global sensor_log_file
             if arg == '':
-                SyncPrint("%s [Write Log] No file specified, using default: %s" 
-                    % (Timestamp(), sensor_log_file), 1)
+                print_sync("%s [Write Log] No file specified, using default: %s" 
+                    % (timestamp(), sensor_log_file), 1)
             else:
                 sensor_log_file = arg
-            ReadSensors(0)
-            WriteSensorLog()
+            read_sensors(0)
+            write_sensor_log()
             sys.exit(0)
         else:
             assert False, "Fail"
 
 # Main loop that reads sensors, modifies relays based on sensor values, writes
 # sensor/relay logs, and receives/executes commands from mycodo-client.py
-def Daemon():
+def daemon():
     global server
     global HAlive
     global TAlive
     global ClientQue
     
-    SyncPrint("%s [Daemon] Daemon Started" % Timestamp(), 1)
-    SyncPrint("%s [Comm Server] Starting Thread"
-        % Timestamp(), 1)
+    print_sync("%s [Daemon] Daemon Started" % timestamp(), 1)
+    print_sync("%s [Comm Server] Starting Thread"
+        % timestamp(), 1)
     ct = ComThread()
     ct.daemon = True
     ct.start()
 
-    SyncPrint("%s [Daemon] Initial configuration read to set variables"
-        % Timestamp(), 1)
-    ReadCfg(1)
-    ReadSensors(0)
+    print_sync("%s [Daemon] Initial configuration read to set variables"
+        % timestamp(), 1)
+    read_config(1)
+    
+    if DHTSensor != 'Other':
+        read_sensors(0)
+    
     timerSensorLog = int(time.time()) + timerSecWriteLog
    
-    tm = threading.Thread(target = TemperatureMonitor)   
+    tm = threading.Thread(target = temperature_monitor)   
     tm.daemon = True
     tm.start()
     
-    hm = threading.Thread(target = HumidityMonitor)
+    hm = threading.Thread(target = humidity_monitor)
     hm.daemon = True
     hm.start()
 
     while True: # Main loop of the daemon
         if ClientQue != '0': # Run remote commands issued by mycodo-client.py
             if ClientQue == 'ChangeSensor':
-                SyncPrint("%s [Client command] Change DHT: "
-                    "Sensor: %s, Pin %s: LogSec: %s" % (Timestamp(), 
+                print_sync("%s [Client command] Change DHT: "
+                    "Sensor: %s, Pin: %s LogSec: %s" % (timestamp(), 
                     DHTSensor, DHTPin, timerSecWriteLog), 1)
-                WriteCfg()
-            elif ClientQue == 'WriteSensorLog':
-                SyncPrint("%s [Client command] Write Sensor Log" % (
-                    Timestamp()), 1)
-                ReadSensors(0)
-                WriteSensorLog()
-            elif ClientQue == 'ChangeRelay':
-                SyncPrint("%s [Client command] Set Relay %s GPIO to %s" % (
-                    Timestamp(), ClientArg1, ClientArg1), 1)
-                ChangeRelay(ClientArg1, ClientArg2)
-                GPIORead()
-            elif ClientQue == 'ChangeRelayNames':
-                SyncPrint("%s [Client command] Change Relay Names: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s" % (
-                    Timestamp(),
+                write_config()
+            elif ClientQue == 'write_sensor_log':
+                print_sync("%s [Client command] Write Sensor Log" % (
+                    timestamp()), 1)
+                read_sensors(0)
+                write_sensor_log()
+            elif ClientQue == 'gpio_change':
+                print_sync("%s [Client command] Set Relay %s GPIO to %s" % (
+                    timestamp(), ClientArg1, ClientArg1), 1)
+                gpio_change(ClientArg1, ClientArg2)
+                gpio_read()
+            elif ClientQue == 'gpio_changeNames':
+                print_sync("%s [Client command] Change Relay Names: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s" % (
+                    timestamp(),
                     relayName[1], relayName[2], relayName[3], relayName[4],
                     relayName[5], relayName[6], relayName[7], relayName[8]), 1)
-                WriteCfg()
-            elif ClientQue == 'ChangeRelayPins':
-                SyncPrint("%s [Client command] Change Relay Pins: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s" % (
-                    Timestamp(),
+                write_config()
+            elif ClientQue == 'gpio_changePins':
+                print_sync("%s [Client command] Change Relay Pins: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s" % (
+                    timestamp(),
                     relayPin[1], relayPin[2], relayPin[3], relayPin[4],
                     relayPin[5], relayPin[6], relayPin[7], relayPin[8]), 1)
-                WriteCfg()
+                write_config()
             elif ClientQue == 'ChangeTempOR':
                 global TempOR
                 if not holderTempOR:
                     if tm.isAlive():
-                        SyncPrint("%s [Daemon] Restarting Temperature PID thread" 
-                            % Timestamp(), 1)
+                        print_sync("%s [Daemon] Restarting Temperature PID thread" 
+                            % timestamp(), 1)
                         TAlive = 0
                         while TAlive != 2:
                             time.sleep(0.1)
                         TAlive = 1
-                    tm = threading.Thread(target = TemperatureMonitor)  
+                    tm = threading.Thread(target = temperature_monitor)  
                     tm.daemon = True
                     tm.start()
-                SyncPrint("%s [Client command] Change Temperature Override to %s" % (
-                    Timestamp(), holderTempOR), 1)
+                print_sync("%s [Client command] Change Temperature Override to %s" % (
+                    timestamp(), holderTempOR), 1)
                 TempOR = holderTempOR
-                WriteCfg()
+                write_config()
             elif ClientQue == 'ChangeHumOR':
                 global HumOR
                 if not holderHumOR:
-                    SyncPrint("%s [Daemon] Restarting Humidity PID thread" 
-                        % Timestamp(), 1)
+                    print_sync("%s [Daemon] Restarting Humidity PID thread" 
+                        % timestamp(), 1)
                     HAlive = 0
                     while HAlive != 2:
                         time.sleep(0.1)
                     HAlive = 1
-                    hm = threading.Thread(target = HumidityMonitor)
+                    hm = threading.Thread(target = humidity_monitor)
                     hm.daemon = True
                     hm.start()
-                SyncPrint("%s [Client command] Change Humidity Override to %s" % (
-                    Timestamp(), holderHumOR), 1)
+                print_sync("%s [Client command] Change Humidity Override to %s" % (
+                    timestamp(), holderHumOR), 1)
                 HumOR = holderHumOR
-                WriteCfg()
+                write_config()
             elif ClientQue == 'ChangeConditionsTemp':
-                SyncPrint("%s [Client command] Change Temperature: relay: %s set: %.1f°C" % (
-                    Timestamp(), relayTemp, setTemp), 1)
-                SyncPrint("%s [Client command] Change Temp PID: P: %.1f, I: %.1f D: %.1f, Sec: %s" % (
-                    Timestamp(), Temp_P, Temp_I, Temp_D,
+                print_sync("%s [Client command] Change Temperature: relay: %s set: %.1f°C" % (
+                    timestamp(), relayTemp, setTemp), 1)
+                print_sync("%s [Client command] Change Temp PID: P: %.1f, I: %.1f D: %.1f, Sec: %s" % (
+                    timestamp(), Temp_P, Temp_I, Temp_D,
                     factorTempSeconds), 1)
-                WriteCfg()
-                SyncPrint("%s [Daemon] Restarting Temperature PID thread" 
-                    % Timestamp(), 1)
+                write_config()
+                print_sync("%s [Daemon] Restarting Temperature PID thread" 
+                    % timestamp(), 1)
                 TAlive = 0
                 while TAlive != 2:
                     time.sleep(0.1)
                 TAlive = 1
-                tm = threading.Thread(target = TemperatureMonitor)  
+                tm = threading.Thread(target = temperature_monitor)  
                 tm.daemon = True
                 tm.start()
             elif ClientQue == 'ChangeConditionsHum':
-                SyncPrint("%s [Client command] Change Humidity: relay: %s, set: %.1f" 
-                    % (Timestamp(), relayHum, setHum), 1)
-                SyncPrint("%s [Client command] Change PID: Hum: P: %.1f, I: %.1f D: %.1f, Sec: %s" 
-                    % (Timestamp(), Hum_P, Hum_I, Hum_D, 
+                print_sync("%s [Client command] Change Humidity: relay: %s, set: %.1f" 
+                    % (timestamp(), relayHum, setHum), 1)
+                print_sync("%s [Client command] Change PID: Hum: P: %.1f, I: %.1f D: %.1f, Sec: %s" 
+                    % (timestamp(), Hum_P, Hum_I, Hum_D, 
                     factorHumSeconds), 1)
-                WriteCfg()
-                SyncPrint("%s [Daemon] Restarting Humidity PID thread" 
-                    % Timestamp(), 1)
+                write_config()
+                print_sync("%s [Daemon] Restarting Humidity PID thread" 
+                    % timestamp(), 1)
                 HAlive = 0
                 while HAlive != 2:
                     time.sleep(0.1)
                 HAlive = 1
-                hm = threading.Thread(target = HumidityMonitor)
+                hm = threading.Thread(target = humidity_monitor)
                 hm.daemon = True
                 hm.start()
             elif ClientQue == 'RelayOnSec':
-                SyncPrint("%s [Client command] Set Relay %s on for %s seconds"
-                    % (Timestamp(), ClientArg1, ClientArg2), 1)
-                RelayOnDuration(ClientArg1, ClientArg2)
+                print_sync("%s [Client command] Set Relay %s on for %s seconds"
+                    % (timestamp(), ClientArg1, ClientArg2), 1)
+                relay_on_duration(ClientArg1, ClientArg2)
             elif ClientQue == 'TerminateServer':
-                SyncPrint("%s [Client command] Terminate threads and shut down"
-                    % Timestamp(), 1)
+                print_sync("%s [Client command] Terminate threads and shut down"
+                    % timestamp(), 1)
                 TAlive = 0
                 while TAlive != 2:
                     time.sleep(0.1)
@@ -629,28 +632,28 @@ def Daemon():
                 while HAlive != 2:
                     time.sleep(0.1)
                 server.close()
-                SyncPrint("%s [Daemon] Exiting Python" % Timestamp(), 1)
+                print_sync("%s [Daemon] Exiting Python" % timestamp(), 1)
                 sys.exit(0)
             ClientQue = '0'
         
         # Write sensor log
-        if int(time.time()) > timerSensorLog:
-            SyncPrint("%s [Timer Expiration] Run every %s seconds: Write sensor log" 
-                % (Timestamp(), timerSecWriteLog), 1)
-            ReadSensors(0)
-            WriteSensorLog()
+        if int(time.time()) > timerSensorLog and DHTSensor != 'Other':
+            print_sync("%s [Timer Expiration] Run every %s seconds: Write sensor log" 
+                % (timestamp(), timerSecWriteLog), 1)
+            read_sensors(0)
+            write_sensor_log()
             timerSensorLog = int(time.time()) + timerSecWriteLog
 
         time.sleep(1)
 
 # Temperature modulation by PID control
-def TemperatureMonitor():
+def temperature_monitor():
     global tempState
     global TAlive
     timerTemp = 0
     PIDTemp = 0
-    SyncPrint("%s [PID Temperature] Starting Thread"
-                    % Timestamp(), 1)
+    print_sync("%s [PID Temperature] Starting Thread"
+                    % timestamp(), 1)
     if (tempc < setTemp): tempState = 0
     else: tempState = 1
     p_temp = Temperature_PID(Temp_P, Temp_I, Temp_D)
@@ -659,39 +662,39 @@ def TemperatureMonitor():
     while TAlive == 1:
         if TempOR == 0:
             if int(time.time()) > timerTemp:
-                SyncPrint("%s [PID Temperature] Reading temperature..."
-                    % Timestamp(), 1)
-                ReadSensors(1)
+                print_sync("%s [PID Temperature] Reading temperature..."
+                    % timestamp(), 1)
+                read_sensors(1)
                 if (tempc >= setTemp): tempState = 1
                 if (tempc < setTemp): tempState = 0
                 if (tempState == 0):
                     PIDTemp = round(p_temp.update(float(tempc)), 1)
-                    SyncPrint("%s [PID Temperature] Temperature (%.1f°C) < setTemp (%.1f°C)" 
-                        % (Timestamp(), tempc, setTemp), 1)
-                    SyncPrint("%s [PID Temperature] PID = %.1f (seconds)" 
-                        % (Timestamp(), PIDTemp), 1)
+                    print_sync("%s [PID Temperature] Temperature (%.1f°C) < setTemp (%.1f°C)" 
+                        % (timestamp(), tempc, setTemp), 1)
+                    print_sync("%s [PID Temperature] PID = %.1f (seconds)" 
+                        % (timestamp(), PIDTemp), 1)
                     if (PIDTemp > 0 and tempc < setTemp):
-                        rod = threading.Thread(target = RelayOnDuration, 
+                        rod = threading.Thread(target = relay_on_duration, 
                             args = (relayTemp, PIDTemp,))
                         rod.start()
                     timerTemp = int(time.time()) + PIDTemp + factorTempSeconds
                 else:
-                    SyncPrint("%s [PID Temperature] Temperature (%.1f°C) > setTemp (%.1f°C), waiting 60 seconds" 
-                        % (Timestamp(), tempc, setTemp), 1)
+                    print_sync("%s [PID Temperature] Temperature (%.1f°C) > setTemp (%.1f°C), waiting 60 seconds" 
+                        % (timestamp(), tempc, setTemp), 1)
                     p_temp.update(float(tempc))
                     timerTemp = int(time.time()) + 60
-    SyncPrint("%s [PID Temperature] Shutting Down Thread" % Timestamp(), 1)
+    print_sync("%s [PID Temperature] Shutting Down Thread" % timestamp(), 1)
     TAlive = 2
 
 # Humidity modulation by PID control
-def HumidityMonitor():
+def humidity_monitor():
     global humState
     global HAlive
     timerHum = 0
     PIDHum = 0
 
-    SyncPrint("%s [PID Humidity] Starting Thread" 
-        % Timestamp(), 1)
+    print_sync("%s [PID Humidity] Starting Thread" 
+        % timestamp(), 1)
     if (humidity < setHum): humState = 0
     else: humState = 1
     p_hum = Humidity_PID(Hum_P, Hum_I, Hum_D)
@@ -700,49 +703,49 @@ def HumidityMonitor():
     while HAlive == 1:
         if HumOR == 0:
             if int(time.time()) > timerHum:
-                SyncPrint("%s [PID Humidity] Reading humidity..." 
-                    % Timestamp(), 1)
-                ReadSensors(1)
+                print_sync("%s [PID Humidity] Reading humidity..." 
+                    % timestamp(), 1)
+                read_sensors(1)
                 if (humidity >= setHum): humState = 1
                 if (humidity < setHum): humState = 0
                 if (humState == 0):
                     PIDHum = round(p_hum.update(float(humidity)), 1)
-                    SyncPrint("%s [PID Humidity] Humidity (%.1f%%) < setHum (%.1f%%)" 
-                        % (Timestamp(), humidity, setHum), 1)
-                    SyncPrint("%s [PID Humidity] PID = %.1f (seconds)" 
-                        % (Timestamp(), PIDHum), 1)
+                    print_sync("%s [PID Humidity] Humidity (%.1f%%) < setHum (%.1f%%)" 
+                        % (timestamp(), humidity, setHum), 1)
+                    print_sync("%s [PID Humidity] PID = %.1f (seconds)" 
+                        % (timestamp(), PIDHum), 1)
                     if (PIDHum > 0 and humidity < setHum):
                         rod = threading.Thread(
-                            target = RelayOnDuration, args=(relayHum, PIDHum,))
+                            target = relay_on_duration, args=(relayHum, PIDHum,))
                         rod.start()
                     timerHum = int(time.time()) + PIDHum + factorTempSeconds
                 else:
-                    SyncPrint("%s [PID Humidity] Humidity (%.1f%%) > setHum (%.1f%%), waiting 60 seconds" 
-                        % (Timestamp(), humidity, setHum), 1)
+                    print_sync("%s [PID Humidity] Humidity (%.1f%%) > setHum (%.1f%%), waiting 60 seconds" 
+                        % (timestamp(), humidity, setHum), 1)
                     p_hum.update(float(humidity))
                     timerHum = int(time.time()) + 60
-    SyncPrint("%s [PID Humidity] Shutting Down Thread" % Timestamp(), 1)
+    print_sync("%s [PID Humidity] Shutting Down Thread" % timestamp(), 1)
     HAlive = 2
 
 # Set GPIO LOW (= relay ON) for a specific duration
-def RelayOnDuration(relay, seconds):
+def relay_on_duration(relay, seconds):
     if GPIO.input(relayPin[relay]) == 1:
-        WriteRelayLog(relay, seconds)
-        SyncPrint("%s [Relay Duration] Relay %s (%s) ON for %s seconds" 
-            % (Timestamp(), relay, relayName[relay], seconds), 1)
+        write_relay_log(relay, seconds)
+        print_sync("%s [Relay Duration] Relay %s (%s) ON for %s seconds" 
+            % (timestamp(), relay, relayName[relay], seconds), 1)
         GPIO.output(relayPin[relay], 0)
         time.sleep(seconds)
         GPIO.output(relayPin[relay], 1)
-        SyncPrint("%s [Relay Duration] Relay %s (%s) OFF (was ON for %s sec)"
-            % (Timestamp(), relay, relayName[relay], seconds), 1)
+        print_sync("%s [Relay Duration] Relay %s (%s) OFF (was ON for %s sec)"
+            % (timestamp(), relay, relayName[relay], seconds), 1)
         return 1
     else:
-        SyncPrint("%s [Relay Duration] Abort: Requested relay %s (%s) ON for %s seconds, but it's already on!" 
-            % (Timestamp(), relay, relayName[relay], seconds), 1)
+        print_sync("%s [Relay Duration] Abort: Requested relay %s (%s) ON for %s seconds, but it's already on!" 
+            % (timestamp(), relay, relayName[relay], seconds), 1)
         return 0
 
 # Append sensor data to the log file
-def WriteSensorLog():
+def write_sensor_log():
     sensor_lock_path = lock_directory + sensor_log_lock
     config = ConfigParser.RawConfigParser()
 
@@ -753,45 +756,45 @@ def WriteSensorLog():
     errorOnce = 1
     lockWaitCount = 1
     while waitingForLock and not Terminate:
-        if not lockFile(sensor_lock_path) and not Terminate:
+        if not lock_file(sensor_lock_path) and not Terminate:
             if errorOnce:
-                SyncPrint("%s [Write Sensor Log] Cannot gain lock (already locked): Waiting to gain lock..." 
-                    % Timestamp(), 1)
+                print_sync("%s [Write Sensor Log] Cannot gain lock (already locked): Waiting to gain lock..." 
+                    % timestamp(), 1)
                 errorOnce = 0
             if lockWaitCount == 60:
-                SyncPrint("%s [Write Sensor Log] 60 seconds waiting to gain lock (too long): Breaking lock."
-                    % Timestamp(), 1)
+                print_sync("%s [Write Sensor Log] 60 seconds waiting to gain lock (too long): Breaking lock."
+                    % timestamp(), 1)
                 os.remove(sensor_lock_path)
                 lockWaitCount+=1
             if lockWaitCount % 10 == 0:
-                SyncPrint("%s [Write Sensor Log] Waiting to gain lock for %s seconds..." 
-                    % (Timestamp(), lockWaitCount), 1)
+                print_sync("%s [Write Sensor Log] Waiting to gain lock for %s seconds..." 
+                    % (timestamp(), lockWaitCount), 1)
             time.sleep(1)
             lockWaitCount+=1
         elif not Terminate:
             waitingForLock = 0
-            SyncPrint("%s [Write Sensor Log] Gained lock: %s" 
-                % (Timestamp(), sensor_lock_path), 1)
+            print_sync("%s [Write Sensor Log] Gained lock: %s" 
+                % (timestamp(), sensor_lock_path), 1)
             try:
                 open(sensor_log_file, 'ab').write('{0} {1:.1f} {2:.1f} {3:.1f}\n'.format(
                     datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
                     tempc, humidity, dewpointc))
-                SyncPrint("%s [Write Sensor Log] Data appended to %s" 
-                    % (Timestamp(), sensor_log_file), 1)
+                print_sync("%s [Write Sensor Log] Data appended to %s" 
+                    % (timestamp(), sensor_log_file), 1)
             except:
-                SyncPrint("%s [Write Sensor Log] Unable to append data to %s" 
-                    % (Timestamp(), sensor_log_file), 1)
+                print_sync("%s [Write Sensor Log] Unable to append data to %s" 
+                    % (timestamp(), sensor_log_file), 1)
                 
     if os.path.isfile(sensor_lock_path):
-        SyncPrint("%s [Write Sensor Log] Removing lock: %s" 
-            % (Timestamp(), sensor_lock_path), 1)
+        print_sync("%s [Write Sensor Log] Removing lock: %s" 
+            % (timestamp(), sensor_lock_path), 1)
         os.remove(sensor_lock_path)
     else:
-        SyncPrint("%s [Write Sensor Log] Unable to remove lock file %s: It doesn't exist!" 
-            % (Timestamp(), sensor_lock_path), 1)
+        print_sync("%s [Write Sensor Log] Unable to remove lock file %s: It doesn't exist!" 
+            % (timestamp(), sensor_lock_path), 1)
 
 # Append the duration the relay has been on to the log file
-def WriteRelayLog(relayNumber, relaySeconds):
+def write_relay_log(relayNumber, relaySeconds):
     relay_lock_path = lock_directory + relay_log_lock
     config = ConfigParser.RawConfigParser()
 
@@ -802,25 +805,25 @@ def WriteRelayLog(relayNumber, relaySeconds):
     errorOnce = 1
     lockWaitCount = 1
     while waitingForLock and not Terminate:
-        if not lockFile(relay_lock_path) and not Terminate:
+        if not lock_file(relay_lock_path) and not Terminate:
             if errorOnce:
-                SyncPrint("%s [Write Relay Log] Cannot gain lock: Already locked: Waiting to gain lock..." 
-                    % Timestamp(), 1)
+                print_sync("%s [Write Relay Log] Cannot gain lock: Already locked: Waiting to gain lock..." 
+                    % timestamp(), 1)
                 errorOnce = 0
             if lockWaitCount == 60:
-                SyncPrint("%s [Write Relay Log] 60 sec waiting to gain lock (too long): Breaking lock." 
-                    % Timestamp(), 1)
+                print_sync("%s [Write Relay Log] 60 sec waiting to gain lock (too long): Breaking lock." 
+                    % timestamp(), 1)
                 os.remove(relay_lock_path)
                 lockWaitCount+=1
             if lockWaitCount % 10 == 0:
-                SyncPrint("%s [Write Relay Log] Waiting to gain lock for %s seconds..." 
-                    % (Timestamp(), lockWaitCount), 1)
+                print_sync("%s [Write Relay Log] Waiting to gain lock for %s seconds..." 
+                    % (timestamp(), lockWaitCount), 1)
             time.sleep(1)
             lockWaitCount+=1
         elif not Terminate:
             waitingForLock = 0
-            SyncPrint("%s [Write Relay Log] Gained lock: %s" 
-                % (Timestamp(), relay_lock_path), 1)
+            print_sync("%s [Write Relay Log] Gained lock: %s" 
+                % (timestamp(), relay_lock_path), 1)
             relay = [0] * 9
             for n in range(1, 9):
                 if n == relayNumber:
@@ -830,22 +833,22 @@ def WriteRelayLog(relayNumber, relaySeconds):
                     datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
                     relay[1], relay[2], relay[3], relay[4],
                     relay[5], relay[6], relay[7], relay[8]))
-                SyncPrint("%s [Write Relay Log] Data appended to %s" 
-                    % (Timestamp(), relay_log_file), 1)
+                print_sync("%s [Write Relay Log] Data appended to %s" 
+                    % (timestamp(), relay_log_file), 1)
             except:
-                SyncPrint("%s [Write Relay Log] Unable to append data to %s" 
-                    % (Timestamp(), relay_log_file), 1)
+                print_sync("%s [Write Relay Log] Unable to append data to %s" 
+                    % (timestamp(), relay_log_file), 1)
                 
     if os.path.isfile(relay_lock_path):
-        SyncPrint("%s [Write Relay Log] Removing lock file %s" 
-            % (Timestamp(), relay_lock_path), 1)
+        print_sync("%s [Write Relay Log] Removing lock file %s" 
+            % (timestamp(), relay_lock_path), 1)
         os.remove(relay_lock_path)
     else:
-        SyncPrint("%s [Write Relay Log] Unable to remove lock file %s: It doesn't exist!" 
-            % (Timestamp(), relay_lock_path), 1)
+        print_sync("%s [Write Relay Log] Unable to remove lock file %s: It doesn't exist!" 
+            % (timestamp(), relay_lock_path), 1)
 
 # Read the temperature and humidity from the DHT22 sensor
-def ReadSensors(silent):
+def read_sensors(silent):
     global tempc
     global humidity
     global dewpointc
@@ -856,53 +859,54 @@ def ReadSensors(silent):
     if (DHTSensor == 'DHT11'): sensor = Adafruit_DHT.DHT11
     elif (DHTSensor == 'DHT22'): sensor = Adafruit_DHT.DHT22
     elif (DHTSensor == 'AM2302'): sensor = Adafruit_DHT.AM2302
+    else: sensor = 'Other'
 
     if not silent and not Terminate:
-        SyncPrint("%s [Read Sensors] Taking first Temperature/humidity reading" 
-            % Timestamp(), 1)
+        print_sync("%s [Read Sensors] Taking first Temperature/humidity reading" 
+            % timestamp(), 1)
     if not Terminate:
         humidity2, tempc2 = Adafruit_DHT.read_retry(sensor, DHTPin)
         if not silent:
-            SyncPrint("%s [Read Sensors] %.1f°C, %.1f%%" 
-                % (Timestamp(), tempc2, humidity2), 1)
+            print_sync("%s [Read Sensors] %.1f°C, %.1f%%" 
+                % (timestamp(), tempc2, humidity2), 1)
     if not Terminate:
         time.sleep(2);
         if not silent: 
-            SyncPrint("%s [Read Sensors] Taking second Temperature/humidity reading" 
-                % Timestamp(), 1)
+            print_sync("%s [Read Sensors] Taking second Temperature/humidity reading" 
+                % timestamp(), 1)
 
     while chktemp and not Terminate:
         if not Terminate:
             humidity, tempc = Adafruit_DHT.read_retry(sensor, DHTPin)
         if not silent and not Terminate: 
-            SyncPrint("%s [Read Sensors] %.1f°C, %.1f%%" 
-                % (Timestamp(), tempc, humidity), 1)
-            SyncPrint("%s [Read Sensors] Differences: %.1f°C, %.1f%%" 
-                % (Timestamp(), abs(tempc2-tempc), abs(humidity2-humidity)), 1)
+            print_sync("%s [Read Sensors] %.1f°C, %.1f%%" 
+                % (timestamp(), tempc, humidity), 1)
+            print_sync("%s [Read Sensors] Differences: %.1f°C, %.1f%%" 
+                % (timestamp(), abs(tempc2-tempc), abs(humidity2-humidity)), 1)
         if abs(tempc2-tempc) > 1 or abs(humidity2-humidity) > 1 and not Terminate:
             tempc2 = tempc
             humidity2 = humidity
             chktemp = 1
             if not silent:
-                SyncPrint("%s [Read Sensors] Successive readings > 1 difference: Rereading" 
-                    % Timestamp(), 1)
+                print_sync("%s [Read Sensors] Successive readings > 1 difference: Rereading" 
+                    % timestamp(), 1)
             time.sleep(2)
         elif not Terminate:
             chktemp = 0
             if not silent: 
-                SyncPrint("%s [Read Sensors] Successive readings < 1 difference: keeping." 
-                    % Timestamp(), 1)
+                print_sync("%s [Read Sensors] Successive readings < 1 difference: keeping." 
+                    % timestamp(), 1)
             tempf = float(tempc)*9.0/5.0 + 32.0
             dewpointc = tempc - ((100-humidity) / 5)
             #dewpointf = dewpointc * 9 / 5 + 32
             #heatindexf =  -42.379 + 2.04901523 * tempf + 10.14333127 * humidity - 0.22475541 * tempf * humidity - 6.83783 * 10**-3 * tempf**2 - 5.481717 * 10**-2 * humidity**2 + 1.22874 * 10**-3 * tempf**2 * humidity + 8.5282 * 10**-4 * tempf * humidity**2 - 1.99 * 10**-6 * tempf**2 * humidity**2
             #heatindexc = (heatindexf - 32) * (5 / 9)
             if not silent: 
-                SyncPrint("%s [Read Sensors] Temp: %.2f°C, Hum: %.2f%%, DP: %.2f°C" 
-                    % (Timestamp(), tempc, humidity, dewpointc), 1)
+                print_sync("%s [Read Sensors] Temp: %.2f°C, Hum: %.2f%%, DP: %.2f°C" 
+                    % (timestamp(), tempc, humidity, dewpointc), 1)
 
 # Read variables from the configuration file
-def ReadCfg(silent):
+def read_config(silent):
     global config_file
     global DHTSensor
     global DHTPin
@@ -986,25 +990,25 @@ def ReadCfg(silent):
     timerSecWriteLog = config.getint('States', 'timersecwritelog')
 
     if not silent:
-        SyncPrint("%s [Read Config] setTemp: %.1f°C, setHum: %.1f%%, TempOR: %s, HumOR: %s" 
-            % (Timestamp(), setTemp, setHum, TempOR, HumOR), 1)
-        SyncPrint("%s [Read Config] RelayNum[Name][Pin]:" % Timestamp(), 0)
+        print_sync("%s [Read Config] setTemp: %.1f°C, setHum: %.1f%%, TempOR: %s, HumOR: %s" 
+            % (timestamp(), setTemp, setHum, TempOR, HumOR), 1)
+        print_sync("%s [Read Config] RelayNum[Name][Pin]:" % timestamp(), 0)
         for x in range(1,9):
             if x == 5:
-                SyncPrint("\n%s [Read Config] RelayNum[Name][Pin]:" 
-                    % Timestamp(), 0)
+                print_sync("\n%s [Read Config] RelayNum[Name][Pin]:" 
+                    % timestamp(), 0)
             if relayPin[x] < 10:
-                SyncPrint("%s[%s][%s ]" % (x, relayName[x], relayPin[x]), 0)
+                print_sync("%s[%s][%s ]" % (x, relayName[x], relayPin[x]), 0)
             else:
-                SyncPrint("%s[%s][%s]" % (x, relayName[x], relayPin[x]), 0)
-        SyncPrint("\n%s [Read Config] %s %s %s %s %s %s %s %s %s %s %s" 
-            % (Timestamp(), tempState, humState, 
+                print_sync("%s[%s][%s]" % (x, relayName[x], relayPin[x]), 0)
+        print_sync("\n%s [Read Config] %s %s %s %s %s %s %s %s %s %s %s" 
+            % (timestamp(), tempState, humState, 
             relay1o, relay2o, relay3o, relay4o, 
             relay5o, relay6o, relay7o, relay8o, 
             timerSecWriteLog), 1)
 
 # Write variables to configuration file
-def WriteCfg():
+def write_config():
     config_lock_path = lock_directory + config_lock
     config = ConfigParser.RawConfigParser()
 
@@ -1015,27 +1019,27 @@ def WriteCfg():
     errorOnce = 1
     lockWaitCount = 1
     while waitingForLock:
-        if not lockFile(config_lock_path):
+        if not lock_file(config_lock_path):
             if errorOnce:
-                SyncPrint("%s [Write Config] Cannot gain lock: Already locked: Waiting to gain lock..."
-                    % Timestamp(), 1)
+                print_sync("%s [Write Config] Cannot gain lock: Already locked: Waiting to gain lock..."
+                    % timestamp(), 1)
                 errorOnce = 0
             if lockWaitCount == 60:
-                SyncPrint("%s [Write Config] 60 sec waiting to gain lock: Breaking lock." 
-                    % Timestamp(), 1)
+                print_sync("%s [Write Config] 60 sec waiting to gain lock: Breaking lock." 
+                    % timestamp(), 1)
                 os.remove(config_lock_path)
                 lockWaitCount+=1
             if lockWaitCount % 10 == 0:
-                SyncPrint("%s [Write Config] Waiting to gain lock for %s seconds..." 
-                    % (Timestamp(), lockWaitCount), 1)
+                print_sync("%s [Write Config] Waiting to gain lock for %s seconds..." 
+                    % (timestamp(), lockWaitCount), 1)
             time.sleep(1)
             lockWaitCount+=1
         else:
             waitingForLock = 0
-            SyncPrint("%s [Write Config] Gained lock: %s" 
-                % (Timestamp(), config_lock_path), 1)
-            SyncPrint("%s [Write Config] Writing config file %s" 
-                % (Timestamp(), config_file), 1)
+            print_sync("%s [Write Config] Gained lock: %s" 
+                % (timestamp(), config_lock_path), 1)
+            print_sync("%s [Write Config] Writing config file %s" 
+                % (timestamp(), config_file), 1)
             
             config.add_section('Sensor')
             config.set('Sensor', 'dhtsensor', DHTSensor)
@@ -1094,24 +1098,17 @@ def WriteCfg():
                 config.write(configfile)
 
     if os.path.isfile(config_lock_path):
-        SyncPrint("%s [Write Config] Removing lock file %s" 
-            % (Timestamp(), config_lock_path), 1)
+        print_sync("%s [Write Config] Removing lock file %s" 
+            % (timestamp(), config_lock_path), 1)
         os.remove(config_lock_path)
     else:
-        SyncPrint("%s [Write Config] Unable to remove lock file %s: It doesn't exist!" 
-            % (Timestamp(), config_lock_path), 1)
-
-# Change GPIO (Select) to a specific state (State)
-def ChangeRelay(Select, State):
-    SyncPrint("%s [GPIO Write] Setting relay %s (%s) to %s (was %s)" 
-        % (Timestamp(), Select, relayName[Select], 
-        State, GPIO.input(relayPin[Select])), 1)
-    GPIO.output(relayPin[Select], State)
+        print_sync("%s [Write Config] Unable to remove lock file %s: It doesn't exist!" 
+            % (timestamp(), config_lock_path), 1)
 
 # Initialize GPIO
-def GPIOSetup():
-    SyncPrint("%s [GPIO Initialize] Set GPIO mode to BCM numbering, all as output" 
-        % Timestamp(), 1)
+def gpio_initialize():
+    print_sync("%s [GPIO Initialize] Set GPIO mode to BCM numbering, all as output" 
+        % timestamp(), 1)
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
     GPIO.setup(relayPin[1], GPIO.OUT)
@@ -1124,24 +1121,31 @@ def GPIOSetup():
     GPIO.setup(relayPin[8], GPIO.OUT)
 
 # Read states (HIGH/LOW) of GPIO pins
-def GPIORead():
-    SyncPrint("%s [GPIO Read]" % Timestamp(), 0)
+def gpio_read():
+    print_sync("%s [GPIO Read]" % timestamp(), 0)
     for x in range(1, 9):
-        SyncPrint("Relay %s:" % x, 0)
-        if GPIO.input(relayPin[x]): SyncPrint("OFF,", 0)
-        else: SyncPrint("ON, ", 0)
-        if x == 4: SyncPrint("\n%s [GPIO Read]" % Timestamp(), 0)
-        if x == 8: SyncPrint("", 1)
+        print_sync("Relay %s:" % x, 0)
+        if GPIO.input(relayPin[x]): print_sync("OFF,", 0)
+        else: print_sync("ON, ", 0)
+        if x == 4: print_sync("\n%s [GPIO Read]" % timestamp(), 0)
+        if x == 8: print_sync("", 1)
+
+# Change GPIO (Select) to a specific state (State)
+def gpio_change(Select, State):
+    print_sync("%s [GPIO Write] Setting relay %s (%s) to %s (was %s)" 
+        % (timestamp(), Select, relayName[Select], 
+        State, GPIO.input(relayPin[Select])), 1)
+    GPIO.output(relayPin[Select], State)
 
 # all terminal/log output is piped through to ensure prints are synchronized
-def SyncPrint(msg, newline):
+def print_sync(msg, newline):
     thread_name = threading.current_thread().name
     if newline: line = '%s\n' % msg
     else: line = '%s' % msg
     print >>sys.stderr, line, # Trailing , indicates no implicit end-of-line
 
 # Lock file to prevent other instances from writing while file is open
-def lockFile(lockfile):
+def lock_file(lockfile):
     fd = os.open(lockfile, os.O_CREAT | os.O_TRUNC | os.O_WRONLY)
     try: # Request exclusive (EX) non-blocking (NB) advisory lock.
         fcntl.lockf(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -1150,7 +1154,7 @@ def lockFile(lockfile):
     return True
 
 # Check if string represents an integer value
-def RepresentsInt(s):
+def represents_int(s):
     try: 
         int(s)
         return True
@@ -1158,7 +1162,7 @@ def RepresentsInt(s):
         return False
         
 # Check if string represents a float value
-def RepresentsFloat(s):
+def represents_float(s):
     try: 
         float(s)
         return True
@@ -1166,7 +1170,7 @@ def RepresentsFloat(s):
         return False
 
 # Check if a variable name in config_file matches a string
-def CheckVariableName():
+def verify_name():
     namesOfVariables = [
     'tempc',
     'humidity',
@@ -1216,11 +1220,11 @@ def CheckVariableName():
     return 0
 
 # Timestamp format used in sensor and relay logs
-def Timestamp():
+def timestamp():
     return datetime.datetime.fromtimestamp(time.time()).strftime('%Y %m %d %H %M %S')
 
-ReadCfg(1)
-GPIOSetup()
+read_config(1)
+gpio_initialize()
 menu()
 usage()
 sys.exit(0)
