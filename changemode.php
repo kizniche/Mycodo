@@ -46,9 +46,6 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
         }
     }
     
-    $last_sensor = `tail -n 1 $sensor_log`;
-    $sensor_explode = explode(" ", $last_sensor);
-    
     if (isset($_POST['WriteSensorLog'])) {
 		$editconfig = "$mycodo_client -w";
         shell_exec($editconfig);
@@ -169,10 +166,6 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
         sleep(6);
     }
     
-    $config_contents = file_get_contents($config_file);
-    $config_rows = explode("\n", $config_contents);
-    array_shift($config_rows);
-
     foreach($config_rows as $row => $data) {
         $row_data = explode(' = ', $data);
         if (!empty($row_data[1])) {
@@ -182,7 +175,6 @@ if ($login->isUserLoggedIn() == true && $_SESSION['user_name'] != guest) {
     
     $last_sensor = `tail -n 1 $sensor_log`;
     $sensor_explode = explode(" ", $last_sensor);
-
     $t_c = $sensor_explode[6];
     $t_f = round(($t_c * (9/5) + 32), 1);
     $hum = $sensor_explode[7];

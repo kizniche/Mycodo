@@ -37,22 +37,29 @@ function readconfig($var) {
 
 if ($login->isUserLoggedIn() == true) {
     $page = isset($_GET['page']) ? $_GET['page'] : 'Main';
-    $t_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f7`, 0, -1);
-    $t_f = round($t_c * (9 / 5) + 32, 1);
-    $hum = substr(`tail -n 1 $sensor_log | cut -d' ' -f8`, 0, -1);
-    $settemp = readconfig("settemp");
-    $settemp_f = round($settemp * (9 / 5) + 32, 1);
-    $sethum = readconfig("sethum");
-    $tempor = readconfig("tempor");
-    $humor = readconfig("humor");
-    $dp_c = substr(`tail -n 1 $sensor_log | cut -d' ' -f9`, 0, -1);
-    $dp_f = round($dp_c * (9 / 5) + 32, 1);
+
+    $config_contents = file_get_contents($config_file);
+    $config_rows = explode("\n", $config_contents);
+    array_shift($config_rows);
+    foreach($config_rows as $row => $data) {
+        $row_data = explode(' = ', $data);
+        if (!empty($row_data[1])) {
+            ${$row_data[0]} = $row_data[1];
+        }
+    }
+    
+    $last_sensor = `tail -n 1 $sensor_log`;
+    $sensor_explode = explode(" ", $last_sensor);
+    $t_c = $sensor_explode[6];
+    $t_f = round(($t_c * (9/5) + 32), 1);
+    $hum = $sensor_explode[7];
+    $dp_c = substr($sensor_explode[8], 0, -1);
+    $dp_f = round(($dp_c * (9/5) + 32), 1);
+    
     $time_now = `date +"%Y-%m-%d %H:%M:%S"`;
-    $time_last = `tail -n 1 $sensor_log | cut -d' ' -f1,2,3,4,5,6`;
-    $time_last[4] = '-';
-    $time_last[7] = '-';
-    $time_last[13] = ':';
-    $time_last[16] = ':';
+    $time_last = `tail -n 1 $sensor_log`;
+    $time_explode = explode(" ", $time_last);
+    $time_last = $time_explode[0] . '-' . $time_explode[1] . '-' . $time_explode[2] . ' ' . $time_explode[3] . ':' . $time_explode[4] . ':' . $time_explode[5];
 ?>
 <html>
     <head>
