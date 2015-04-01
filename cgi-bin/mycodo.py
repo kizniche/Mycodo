@@ -651,7 +651,7 @@ def write_sensor_log():
                 % (timestamp(), sensor_lock_path), 1)
             try:
                 with open(sensor_log_file, "ab") as sensorlog:
-                    relaylog.write('{0} {1:.1f} {2:.1f} {3:.1f}\n'.format(
+                    sensorlog.write('{0} {1:.1f} {2:.1f} {3:.1f}\n'.format(
                         datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
                         tempc, humidity, dewpointc))
                     print_sync("%s [Write Sensor Log] Data appended to %s" 
