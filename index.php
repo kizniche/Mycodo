@@ -302,6 +302,9 @@ if ($login->isUserLoggedIn() == true) {
             window.open("image.php?span=legend-full","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=600, height=385");
         }
     </script>
+    <?php
+        if (isset($_GET['r']) && ($_GET['r'] == 1)) echo "<META HTTP-EQUIV=\"refresh\" CONTENT=\"90\">";
+    ?>
 </head>
 <body>
 <div class="cd-tabs">
