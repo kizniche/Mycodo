@@ -111,7 +111,7 @@ function DateSelector($inName, $useDate=0) {
 }
 
 function displayform() {
-        echo "<div style=\"padding-left: 15px;\"><div style=\"display: inline-block;\"><FORM action=\"?tab=graph\" method=\"POST\">";
+        echo "<div style=\"padding: 10px 0 0 15px;\"><div style=\"display: inline-block;\"><FORM action=\"?tab=graph\" method=\"POST\">";
 		echo "<div style=\"padding-bottom: 5px; text-align: right;\">START: ";
 		DateSelector("start");
 		echo "</div><div style=\"text-align: right;\">END: ";
@@ -380,7 +380,7 @@ if ($login->isUserLoggedIn() == true) {
 	</nav>
 	<ul class="cd-tabs-content">
 		<li data-content="main" <?php if (!isset($_GET['tab']) || (isset($_GET['tab']) && $_GET['tab'] == 'main')) echo "class=\"selected\""; ?>>
-            <div>
+            <div style="padding-top: 5px;">
                 <div style="float: left; padding: 8px 45px 10px 0;">
                     <?php
                     if (isset($_GET['r']) && $_GET['r'] == 1) {
@@ -470,7 +470,7 @@ if ($login->isUserLoggedIn() == true) {
 
 		<li data-content="configure" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'config') echo "class=\"selected\""; ?>>
             <FORM action="?tab=config<?php if (isset($_GET['r'])) echo "&r=" . $_GET['r']; ?>" method="POST">
-            <div style="float: left;">
+            <div style="float: left; padding-top: 5px;">
                 <div style="float: left; padding: 8px 15px 0 0;">
                         <?php
                         if (isset($_GET['r'])) {
@@ -562,7 +562,7 @@ if ($login->isUserLoggedIn() == true) {
                     </table>
                 </div>
 
-                <div style="float:  left;">
+                <div style="float: left;">
                     <div style="float: left;">
                         <table class="pid">
                             <tr class="shade">
@@ -802,7 +802,7 @@ if ($login->isUserLoggedIn() == true) {
 		</li>
         
 		<li data-content="camera" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'camera') echo "class=\"selected\""; ?>>
-            <div style="padding: 5px 0 15px 15px;">
+            <div style="padding: 10px 0 15px 15px;">
                 <form action="?tab=camera" method="POST">
                 <table class="camera">
                     <tr>
@@ -850,56 +850,58 @@ if ($login->isUserLoggedIn() == true) {
 		</li>
 
 		<li data-content="log" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'log') echo "class=\"selected\""; ?>>
-			<div style="padding: 5px 0 15px 0;">
-                <FORM action="?tab=log" method="POST">
-                    Lines: <input type="text" maxlength=8 size=8 name="Lines" /> 
-                    <input type="submit" name="Sensor" value="Sensor"> 
-                    <input type="submit" name="Relay" value="Relay"> 
-                    <input type="submit" name="Auth" value="Auth">
-                    <input type="submit" name="Daemon" value="Daemon">
-                </FORM>
-            </div>
-            <div style="font-family: monospace; padding-top: 15px;">
-                <pre><?php
-                    if(isset($_POST['Sensor'])) {
-                        echo 'Year Mo Day Hour Min Sec Timestamp Tc RH DPc<br> <br>';
-                        if ($_POST['Lines'] != '') {
-                            $Lines = $_POST['Lines'];
-                            echo `tail -n $Lines $sensor_log`;
-                        } else {
-                            echo `tail -n 30 $sensor_log`;
+			<div style="padding: 10px 0 0 15px;">
+                <div style="padding-bottom: 15px;">
+                    <FORM action="?tab=log" method="POST">
+                        Lines: <input type="text" maxlength=8 size=8 name="Lines" /> 
+                        <input type="submit" name="Sensor" value="Sensor"> 
+                        <input type="submit" name="Relay" value="Relay"> 
+                        <input type="submit" name="Auth" value="Auth">
+                        <input type="submit" name="Daemon" value="Daemon">
+                    </FORM>
+                </div>
+                <div style="font-family: monospace;">
+                    <pre><?php
+                        if(isset($_POST['Sensor'])) {
+                            echo 'Year Mo Day Hour Min Sec Timestamp Tc RH DPc<br> <br>';
+                            if ($_POST['Lines'] != '') {
+                                $Lines = $_POST['Lines'];
+                                echo `tail -n $Lines $sensor_log`;
+                            } else {
+                                echo `tail -n 30 $sensor_log`;
+                            }
                         }
-                    }
 
-                    if(isset($_POST['Relay'])) {
-                        echo 'Year Mo Day Hour Min Sec R1Sec R2Sec R3Sec R4Sec R5Sec R6Sec R7Sec R8Sec<br> <br>';
-                        if ($_POST['Lines'] != '') {
-                            $Lines = $_POST['Lines'];
-                            echo `tail -n $Lines $relay_log`;
-                        } else {
-                            echo `tail -n 30 $relay_log`;
+                        if(isset($_POST['Relay'])) {
+                            echo 'Year Mo Day Hour Min Sec R1Sec R2Sec R3Sec R4Sec R5Sec R6Sec R7Sec R8Sec<br> <br>';
+                            if ($_POST['Lines'] != '') {
+                                $Lines = $_POST['Lines'];
+                                echo `tail -n $Lines $relay_log`;
+                            } else {
+                                echo `tail -n 30 $relay_log`;
+                            }
                         }
-                    }
 
-                    if(isset($_POST['Auth'])) {
-                        echo 'Time, Type of auth, user, IP, Hostname, Referral, Browser<br> <br>';
-                        if ($_POST['Lines'] != '') {
-                            $Lines = $_POST['Lines'];
-                            echo `tail -n $Lines $auth_log`;
-                        } else {
-                            echo `tail -n 30 $auth_log`;
+                        if(isset($_POST['Auth'])) {
+                            echo 'Time, Type of auth, user, IP, Hostname, Referral, Browser<br> <br>';
+                            if ($_POST['Lines'] != '') {
+                                $Lines = $_POST['Lines'];
+                                echo `tail -n $Lines $auth_log`;
+                            } else {
+                                echo `tail -n 30 $auth_log`;
+                            }
                         }
-                    }
-                    if(isset($_POST['Daemon'])) {
-                        if ($_POST['Lines'] != '') {
-                            $Lines = $_POST['Lines'];
-                            echo `tail -n $Lines $daemon_log`;
-                        } else {
-                            echo `tail -n 30 $daemon_log`;
+                        if(isset($_POST['Daemon'])) {
+                            if ($_POST['Lines'] != '') {
+                                $Lines = $_POST['Lines'];
+                                echo `tail -n $Lines $daemon_log`;
+                            } else {
+                                echo `tail -n 30 $daemon_log`;
+                            }
                         }
-                    }
-                ?>
-                </pre>
+                    ?>
+                    </pre>
+                </div>
             </div>
 		</li>
 
