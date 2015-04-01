@@ -20,6 +20,7 @@ $relay_log = $install_path . "/log/relay.log";
 $auth_log = $install_path . "/log/auth.log";
 $daemon_log = $install_path . "/log/mycodo.log";
 $images = $install_path . "/images";
+$mycodo_client = $install_path . "/cgi-bin/mycodo-client.py";
 $graph_exec = $install_path . "/cgi-bin/graph.sh";
 $still_exec = $install_path . "/cgi-bin/camera-still.sh";
 $stream_exec = $install_path . "/cgi-bin/camera-stream.sh";
@@ -223,7 +224,7 @@ if ($login->isUserLoggedIn() == true) {
                 $temp_i  = $_POST['Temp_I'];
                 $temp_d  = $_POST['Temp_D'];
                 $factortempseconds = $_POST['factorTempSeconds'];
-                $editconfig = "$mycodo_client --modVar relayTemp $relaytemp setTemp $settemp Temp_P $temp_p Temp_I $temp_i Temp_D $temp_d factorTempSeconds $factortempseconds";
+                $editconfig = "$mycodo_client --modvar relayTemp $relaytemp setTemp $settemp Temp_P $temp_p Temp_I $temp_i Temp_D $temp_d factorTempSeconds $factortempseconds";
                 shell_exec($editconfig);
                 sleep(6);
             }
