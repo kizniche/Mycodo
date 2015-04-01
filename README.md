@@ -63,7 +63,6 @@ I'm since upgraded to a new set of hardware that support 8 individually-switchab
 - [ ] Automatic log file backup when a certain size is reached  
 - [ ] Support for more than one temperature/humidity sensor  
 - [ ] Update user interface  
-  - [ ] Tabs instead of link menus  
   - [ ] Graphics (temperature, humidity, time, date, etc.)  
   - [ ] Touch screen improvements
 

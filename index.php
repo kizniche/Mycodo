@@ -362,7 +362,7 @@ if ($login->isUserLoggedIn() == true) {
              <?php echo number_format((float)$sethum, 1, '.', '') . "% Set"; ?>
         </div>
     </div>
-    <div class="header">
+    <div style="float: left; padding-top: 5px;">
         <div style="padding-bottom: 3px;">
             <u>Dew Point</u>
         </div>
@@ -409,7 +409,7 @@ if ($login->isUserLoggedIn() == true) {
                 <div style="float: left; padding: 0 45px 10px 0">
                     <?php
                         menu_item('Main', 'Main', $page);
-                        menu_item('Hour', 'Hour', $page);
+                        menu_item('Hour', '1 Hour', $page);
                         menu_item('6Hours', '6 Hours', $page);
                         menu_item('Day', 'Day', $page);
                         menu_item('Week', 'Week', $page);
