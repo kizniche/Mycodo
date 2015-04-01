@@ -265,7 +265,7 @@ Open crontab with `sudo crontab -e`, add the following lines, then save with `Ct
 
 Reboot to allow everything to start up
 
-`sudo apt-get shutdown -r`
+`sudo shutdown now -r`
 
 <a name="web-interface"></a>
 ### Web Interface
