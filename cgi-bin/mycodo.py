@@ -74,7 +74,7 @@ TempOR = ''
 HumOR = ''
 
 # Timers
-timerSecWriteLog = ''
+DHTSeconds = ''
 
 # Relay overrides
 relay1o = ''
@@ -454,7 +454,7 @@ def daemon():
     if DHTSensor != 'Other':
         read_sensors(0)
     
-    timerSensorLog = int(time.time()) + timerSecWriteLog
+    timerSensorLog = int(time.time()) + DHTSeconds
    
     tm = threading.Thread(target = temperature_monitor)   
     tm.daemon = True
@@ -492,7 +492,7 @@ def daemon():
                 server.close()
                 print_sync("%s [Daemon] Exiting Python" % timestamp(), 1)
                 sys.exit(0)
-            
+
             if Temp_PID_restart == 1:
                 if tm.isAlive():
                     print_sync("%s [Daemon] Restarting Temperature PID thread" 
@@ -524,10 +524,10 @@ def daemon():
         # Write sensor log
         if int(time.time()) > timerSensorLog and DHTSensor != 'Other':
             print_sync("%s [Timer Expiration] Run every %s seconds: Write sensor log" 
-                % (timestamp(), timerSecWriteLog), 1)
+                % (timestamp(), DHTSeconds), 1)
             read_sensors(0)
             write_sensor_log()
-            timerSensorLog = int(time.time()) + timerSecWriteLog
+            timerSensorLog = int(time.time()) + DHTSeconds
 
         time.sleep(1)
 
@@ -548,7 +548,7 @@ def temperature_monitor():
     p_temp.setPoint(setTemp)
     
     while TAlive == 1:
-        if TempOR == 0 and Temp_PID_restart:
+        if TempOR == 0 and Temp_PID_restart == 0:
             if int(time.time()) > timerTemp:
                 print_sync("%s [PID Temperature] Reading temperature..."
                     % timestamp(), 1)
@@ -592,7 +592,7 @@ def humidity_monitor():
     p_hum.setPoint(setHum)
 
     while HAlive == 1:
-        if HumOR == 0 and Hum_PID_restart:
+        if HumOR == 0 and Hum_PID_restart == 0:
             if int(time.time()) > timerHum:
                 print_sync("%s [PID Humidity] Reading humidity..." 
                     % timestamp(), 1)
@@ -784,6 +784,7 @@ def read_config(silent):
     global config_file
     global DHTSensor
     global DHTPin
+    global DHTSeconds
     global relayName
     global relayPin
     global relayTemp
@@ -810,13 +811,13 @@ def read_config(silent):
     global relay6o
     global relay7o
     global relay8o
-    global timerSecWriteLog
 
     config = ConfigParser.RawConfigParser()
     config.read(config_file)
     
     DHTSensor = config.get('Sensor', 'dhtsensor')
     DHTPin = config.getint('Sensor', 'dhtpin')
+    DHTSeconds = config.getint('Sensor', 'dhtseconds')
 
     relayName[1] = config.get('RelayNames', 'relay1name')
     relayName[2] = config.get('RelayNames', 'relay2name')
@@ -861,7 +862,6 @@ def read_config(silent):
     relay6o = config.getint('States', 'relay6o')
     relay7o = config.getint('States', 'relay7o')
     relay8o = config.getint('States', 'relay8o')
-    timerSecWriteLog = config.getint('States', 'timersecwritelog')
 
     if not silent:
         print_sync("%s [Read Config] setTemp: %.1f°C, setHum: %.1f%%, TempOR: %s, HumOR: %s" 
@@ -879,7 +879,7 @@ def read_config(silent):
             % (timestamp(), tempState, humState, 
             relay1o, relay2o, relay3o, relay4o, 
             relay5o, relay6o, relay7o, relay8o, 
-            timerSecWriteLog), 1)
+            DHTSeconds), 1)
 
 # Write variables to configuration file
 def write_config():
@@ -918,6 +918,7 @@ def write_config():
             config.add_section('Sensor')
             config.set('Sensor', 'dhtsensor', DHTSensor)
             config.set('Sensor', 'dhtpin', DHTPin)
+            config.set('Sensor', 'dhtseconds', DHTSeconds)
             
             config.add_section('RelayNames')
             config.set('RelayNames', 'relay1name', relayName[1])
@@ -966,8 +967,7 @@ def write_config():
             config.set('States', 'relay6o', relay6o)
             config.set('States', 'relay7o', relay7o)
             config.set('States', 'relay8o', relay8o)
-            config.set('States', 'timersecwritelog', timerSecWriteLog)
-
+            
             with open(config_file, 'wb') as configfile:
                 config.write(configfile)
 
@@ -1069,6 +1069,7 @@ def modify_var(*names_and_values):
     namesOfVariables = [
     'DHTSensor',
     'DHTPin.'
+    'DHTSeconds',
     'relayName',
     'relayPin',
     'relayTemp',
@@ -1077,7 +1078,6 @@ def modify_var(*names_and_values):
     'setHum',
     'TempOR',
     'HumOR',
-    'timerSecWriteLog',
     'Hum_P',
     'Hum_I',
     'Hum_D',
@@ -1120,9 +1120,11 @@ def modify_var(*names_and_values):
                 if names_and_values[i] == 'TempOR' or names_and_values[i] == 'Temp_P' or names_and_values[i] == 'Temp_I' or names_and_values[i] == 'Temp_D' or names_and_values[i] == 'setTemp':
                     ClientQue = '1'
                     Temp_PID_restart = 1
+                    time.sleep(1)
                 if names_and_values[i] == 'HumOR' or names_and_values[i] == 'Hum_P' or names_and_values[i] == 'Hum_I' or names_and_values[i] == 'Hum_D' or names_and_values[i] == 'setHum':
                     ClientQue = '1'
                     Hum_PID_restart = 1
+                    time.sleep(1)
                 globals()[names_and_values[i]] = names_and_values[i+1]
                     
     write_config()
