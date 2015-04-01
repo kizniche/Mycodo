@@ -650,11 +650,12 @@ def write_sensor_log():
             print_sync("%s [Write Sensor Log] Gained lock: %s" 
                 % (timestamp(), sensor_lock_path), 1)
             try:
-                open(sensor_log_file, 'ab').write('{0} {1:.1f} {2:.1f} {3:.1f}\n'.format(
-                    datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
-                    tempc, humidity, dewpointc))
-                print_sync("%s [Write Sensor Log] Data appended to %s" 
-                    % (timestamp(), sensor_log_file), 1)
+                with open(sensor_log_file, "ab") as sensorlog:
+                    relaylog.write('{0} {1:.1f} {2:.1f} {3:.1f}\n'.format(
+                        datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
+                        tempc, humidity, dewpointc))
+                    print_sync("%s [Write Sensor Log] Data appended to %s" 
+                        % (timestamp(), sensor_log_file), 1)
             except:
                 print_sync("%s [Write Sensor Log] Unable to append data to %s" 
                     % (timestamp(), sensor_log_file), 1)
@@ -703,12 +704,11 @@ def write_relay_log(relayNumber, relaySeconds):
                 if n == relayNumber:
                     relay[relayNumber] = relaySeconds
             try:
-                open(relay_log_file, 'ab').write('{0} {1} {2} {3} {4} {5} {6} {7} {8}\n'.format(
-                    datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
-                    relay[1], relay[2], relay[3], relay[4],
-                    relay[5], relay[6], relay[7], relay[8]))
-                print_sync("%s [Write Relay Log] Data appended to %s" 
-                    % (timestamp(), relay_log_file), 1)
+                with open(relay_log_file, "ab") as relaylog:
+                    relaylog.write('{0} {1} {2} {3} {4} {5} {6} {7} {8}\n'.format(
+                        datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
+                        relay[1], relay[2], relay[3], relay[4],
+                        relay[5], relay[6], relay[7], relay[8]))
             except:
                 print_sync("%s [Write Relay Log] Unable to append data to %s" 
                     % (timestamp(), relay_log_file), 1)
