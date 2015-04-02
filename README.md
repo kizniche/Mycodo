@@ -225,8 +225,8 @@ Early in development I discovered that apache (www-data) was reaching the maximu
 To alleviate this problem, I raised the soft and hard limits by adding the following to /etc/security/limits.conf:
 
 ```
-www-data soft nofile 4096
-www-data hard nofile 10240
+* soft nofile 4096
+* hard nofile 8192
 ```
     
 <a name="mysql"></a>
