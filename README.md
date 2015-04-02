@@ -197,7 +197,7 @@ Apache does not start if there is not a proper directory structure set up in /va
 `sudo update-rc.d apache2-tmpfs defaults 90 10`
 
 <a name="apache2"></a>
-### Web Server
+### Apache
 
 To resolve the IP address in the auth.log, the following line in /etc/apache2/apache2.conf needs to be changed from 'Off' to 'On', without the quotes:
 
@@ -220,6 +220,15 @@ Add the following to /etc/apache2/sites-avalable/default-ssl (or just 'default' 
         allow from all
     </Directory>
 
+Early in development I discovered that apache (www-data) was reaching the maximum number of files that were allowed to be opened after about a day of running the mycodo.py daemon. I could not find any files left open in any of the scripts being run, therefore I decided to increase this limit. On my system, this default was set to 1024 soft and 4096 hard. With no users connected, Apache had 861 files open, which is very close to the soft limit (enforced per session/process). You can see how many files are open with `sudo lsof -u www-data | wc -l` and the soft and hard limits with `sudo su -c "ulimit -Sn" www-data && sudo su -c "ulimit -Hn" www-data`
+
+To alleviate this problem, I raised the soft and hard limits by adding the following to /etc/security/limits.conf:
+
+```
+www-data soft nofile 4096
+www-data hard nofile 10240
+```
+    
 <a name="mysql"></a>
 ### MySQL and User Login
 
