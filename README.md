@@ -88,10 +88,11 @@ The following software is required
 * mysql
 * php >= 5.3.7
 * phpmyadmin (optional but recommended)
-* python
-* Python_DHT (Adafruit)
+* python and modules
+  * Adafruit_Python_DHT
+  * LockFile
+  * WiringPi
 * wget
-* WiringPi (gpio)
 
 <a name="instructions"></a>
 # Installation
@@ -107,14 +108,6 @@ This installation assumes you are starting with a fresh install of Raspbian linu
 
 `sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev php5 libapache2-mod-php5`
 
-Download the latest code for the controller/web interface, WireingPi, and Adafruit_Python_DHT
-
-`sudo git clone https://github.com/kizniche/Automated-Mushroom-Cultivator /var/www/mycodo`
-
-`sudo git clone git://git.drogon.net/wiringPi /var/www/mycodo/source/WiringPi`
-
-`sudo git clone https://github.com/adafruit/Adafruit_Python_DHT /var/www/mycodo/source/Python_DHT`
-
 Set up MySQL with the following command and create a password when prompted.
 
 `sudo apt-get install mysql-server mysql-client`
@@ -123,21 +116,35 @@ To set up PHPMyAdmin, use the following command, then select to configure Apache
 
 `sudo apt-get install phpmyadmin`
 
-Compile WiringPi and DHT python library
+Download the latest code for the controller/web interface, WireingPi, and Adafruit_Python_DHT
+
+`sudo git clone https://github.com/kizniche/Automated-Mushroom-Cultivator /var/www/mycodo`
+
+`sudo git clone git://git.drogon.net/wiringPi /var/www/mycodo/source/WiringPi`
+
+`sudo git clone https://github.com/adafruit/Adafruit_Python_DHT /var/www/mycodo/source/Adafruit_Python_DHT`
+
+`sudo wget https://pypi.python.org/packages/source/l/lockfile/lockfile-0.10.2.tar.gz /var/www/mycodo/source/`
+
+Install WiringPi
 
 `cd /var/www/mycodo/source/WiringPi`
 
 `sudo ./build`
 
-Compile relay controller
+Install Adafruit_Python_DHT
 
-`cd /var/www/mycodo/source/mycodo/2.0/ && sudo make`
+`cd /var/www/mycodo/source/Adafruit_Python_DHT`
 
-`sudo mv mycodo ../../../cgi-bin/`
+`sudo python setup.py install`
 
-Install Python_DHT
+Install LockFile
 
-`cd /var/www/mycodo/source/Python_DHT`
+`cd /var/www/mycodo/source`
+
+`sudo tar xzvf lockfile-0.10.2.tar.gz`
+
+`cd lockfile-0.10.2`
 
 `sudo python setup.py install`
 

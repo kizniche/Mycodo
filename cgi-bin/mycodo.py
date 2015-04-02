@@ -30,6 +30,7 @@ import ConfigParser
 import threading
 import rpyc
 from rpyc.utils.server import ThreadedServer
+from lockfile import LockFile
 from array import *
 
 config_file = "%s/config/mycodo.cfg" % install_directory
@@ -38,9 +39,9 @@ relay_log_file = "%s/log/relay.log" % install_directory
 relay_script = "%s/cgi-bin/relay.sh" % install_directory
 
 lock_directory = "/var/lock/mycodo/"
-config_lock = "config.lock"
-sensor_log_lock = "sensorlog.lock"
-relay_log_lock = "relaylog.lock"
+config_lock = "config"
+sensor_log_lock = "sensorlog"
+relay_log_lock = "relaylog"
 
 # GPIO pins (BCM numbering) and name of devices attached to relay
 relayPin = [0] * 9
@@ -625,48 +626,33 @@ def write_sensor_log():
 
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
-
-    waitingForLock = 1
-    errorOnce = 1
-    lockWaitCount = 1
-    while waitingForLock and not Terminate:
-        if not lock_file(sensor_lock_path) and not Terminate:
-            if errorOnce:
-                print_sync("%s [Write Sensor Log] Cannot gain lock (already locked): Waiting to gain lock..." 
-                    % timestamp(), 1)
-                errorOnce = 0
-            if lockWaitCount == 60:
-                print_sync("%s [Write Sensor Log] 60 seconds waiting to gain lock (too long): Breaking lock."
-                    % timestamp(), 1)
-                os.remove(sensor_lock_path)
-                lockWaitCount+=1
-            if lockWaitCount % 10 == 0:
-                print_sync("%s [Write Sensor Log] Waiting to gain lock for %s seconds..." 
-                    % (timestamp(), lockWaitCount), 1)
-            time.sleep(1)
-            lockWaitCount+=1
-        elif not Terminate:
-            waitingForLock = 0
-            print_sync("%s [Write Sensor Log] Gained lock: %s" 
-                % (timestamp(), sensor_lock_path), 1)
+    if not Terminate:
+        lock = LockFile(sensor_lock_path)
+        while not lock.i_am_locking():
             try:
-                with open(sensor_log_file, "ab") as sensorlog:
-                    sensorlog.write('{0} {1:.1f} {2:.1f} {3:.1f}\n'.format(
-                        datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
-                        tempc, humidity, dewpointc))
-                    print_sync("%s [Write Sensor Log] Data appended to %s" 
-                        % (timestamp(), sensor_log_file), 1)
+                print_sync("%s [Write Sensor Log] Acquiring Lock: %s" 
+                    % (timestamp(), lock.path), 1)
+                lock.acquire(timeout=60)    # wait up to 60 seconds
             except:
-                print_sync("%s [Write Sensor Log] Unable to append data to %s" 
+                print_sync("%s [Write Sensor Log] Breaking Lock to Acquire: %s" 
+                    % (timestamp(), lock.path), 1)
+                lock.break_lock()
+                lock.acquire()
+        print_sync("%s [Write Sensor Log] Gained lock: %s" 
+            % (timestamp(), lock.path), 1)
+        try:
+            with open(sensor_log_file, "ab") as sensorlog:
+                sensorlog.write('{0} {1:.1f} {2:.1f} {3:.1f}\n'.format(
+                    datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
+                    tempc, humidity, dewpointc))
+                print_sync("%s [Write Sensor Log] Data appended to %s" 
                     % (timestamp(), sensor_log_file), 1)
-                
-    if os.path.isfile(sensor_lock_path):
+        except:
+            print_sync("%s [Write Sensor Log] Unable to append data to %s" 
+                % (timestamp(), sensor_log_file), 1)
         print_sync("%s [Write Sensor Log] Removing lock: %s" 
-            % (timestamp(), sensor_lock_path), 1)
-        os.remove(sensor_lock_path)
-    else:
-        print_sync("%s [Write Sensor Log] Unable to remove lock file %s: It doesn't exist!" 
-            % (timestamp(), sensor_lock_path), 1)
+            % (timestamp(), lock.path), 1)
+        lock.release()
 
 # Append the duration the relay has been on to the log file
 def write_relay_log(relayNumber, relaySeconds):
@@ -675,51 +661,36 @@ def write_relay_log(relayNumber, relaySeconds):
 
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
-
-    waitingForLock = 1
-    errorOnce = 1
-    lockWaitCount = 1
-    while waitingForLock and not Terminate:
-        if not lock_file(relay_lock_path) and not Terminate:
-            if errorOnce:
-                print_sync("%s [Write Relay Log] Cannot gain lock: Already locked: Waiting to gain lock..." 
-                    % timestamp(), 1)
-                errorOnce = 0
-            if lockWaitCount == 60:
-                print_sync("%s [Write Relay Log] 60 sec waiting to gain lock (too long): Breaking lock." 
-                    % timestamp(), 1)
-                os.remove(relay_lock_path)
-                lockWaitCount+=1
-            if lockWaitCount % 10 == 0:
-                print_sync("%s [Write Relay Log] Waiting to gain lock for %s seconds..." 
-                    % (timestamp(), lockWaitCount), 1)
-            time.sleep(1)
-            lockWaitCount+=1
-        elif not Terminate:
-            waitingForLock = 0
-            print_sync("%s [Write Relay Log] Gained lock: %s" 
-                % (timestamp(), relay_lock_path), 1)
-            relay = [0] * 9
-            for n in range(1, 9):
-                if n == relayNumber:
-                    relay[relayNumber] = relaySeconds
+    if not Terminate:
+        lock = LockFile(relay_lock_path)
+        while not lock.i_am_locking():
             try:
-                with open(relay_log_file, "ab") as relaylog:
-                    relaylog.write('{0} {1} {2} {3} {4} {5} {6} {7} {8}\n'.format(
-                        datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
-                        relay[1], relay[2], relay[3], relay[4],
-                        relay[5], relay[6], relay[7], relay[8]))
+                print_sync("%s [Write Relay Log] Acquiring Lock: %s" 
+                    % (timestamp(), lock.path), 1)
+                lock.acquire(timeout=60)    # wait up to 60 seconds
             except:
-                print_sync("%s [Write Relay Log] Unable to append data to %s" 
-                    % (timestamp(), relay_log_file), 1)
-                
-    if os.path.isfile(relay_lock_path):
-        print_sync("%s [Write Relay Log] Removing lock file %s" 
-            % (timestamp(), relay_lock_path), 1)
-        os.remove(relay_lock_path)
-    else:
-        print_sync("%s [Write Relay Log] Unable to remove lock file %s: It doesn't exist!" 
-            % (timestamp(), relay_lock_path), 1)
+                print_sync("%s [Write Relay Log] Breaking Lock to Acquire: %s" 
+                    % (timestamp(), lock.path), 1)
+                lock.break_lock()
+                lock.acquire()
+        print_sync("%s [Write Relay Log] Gained lock: %s" 
+            % (timestamp(), lock.path), 1)
+        relay = [0] * 9
+        for n in range(1, 9):
+            if n == relayNumber:
+                relay[relayNumber] = relaySeconds
+        try:
+            with open(relay_log_file, "ab") as relaylog:
+                relaylog.write('{0} {1} {2} {3} {4} {5} {6} {7} {8}\n'.format(
+                    datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
+                    relay[1], relay[2], relay[3], relay[4],
+                    relay[5], relay[6], relay[7], relay[8]))
+        except:
+            print_sync("%s [Write Relay Log] Unable to append data to %s" 
+                % (timestamp(), relay_log_file), 1)
+        print_sync("%s [Write Relay Log] Removing lock: %s" 
+            % (timestamp(), lock.path), 1)
+        lock.release()
 
 # Read the temperature and humidity from the DHT22 sensor
 def read_sensors(silent):
@@ -744,7 +715,7 @@ def read_sensors(silent):
             print_sync("%s [Read Sensors] %.1f°C, %.1f%%" 
                 % (timestamp(), tempc2, humidity2), 1)
     if not Terminate:
-        time.sleep(2);
+        time.sleep(2)
         if not silent: 
             print_sync("%s [Read Sensors] Taking second Temperature/humidity reading" 
                 % timestamp(), 1)
@@ -889,95 +860,81 @@ def write_config():
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
 
-    waitingForLock = 1
-    errorOnce = 1
-    lockWaitCount = 1
-    while waitingForLock:
-        if not lock_file(config_lock_path):
-            if errorOnce:
-                print_sync("%s [Write Config] Cannot gain lock: Already locked: Waiting to gain lock..."
-                    % timestamp(), 1)
-                errorOnce = 0
-            if lockWaitCount == 60:
-                print_sync("%s [Write Config] 60 sec waiting to gain lock: Breaking lock." 
-                    % timestamp(), 1)
-                os.remove(config_lock_path)
-                lockWaitCount+=1
-            if lockWaitCount % 10 == 0:
-                print_sync("%s [Write Config] Waiting to gain lock for %s seconds..." 
-                    % (timestamp(), lockWaitCount), 1)
-            time.sleep(1)
-            lockWaitCount+=1
-        else:
-            waitingForLock = 0
-            print_sync("%s [Write Config] Gained lock: %s" 
-                % (timestamp(), config_lock_path), 1)
-            print_sync("%s [Write Config] Writing config file %s" 
-                % (timestamp(), config_file), 1)
-            
-            config.add_section('Sensor')
-            config.set('Sensor', 'dhtsensor', DHTSensor)
-            config.set('Sensor', 'dhtpin', DHTPin)
-            config.set('Sensor', 'dhtseconds', DHTSeconds)
-            
-            config.add_section('RelayNames')
-            config.set('RelayNames', 'relay1name', relayName[1])
-            config.set('RelayNames', 'relay2name', relayName[2])
-            config.set('RelayNames', 'relay3name', relayName[3])
-            config.set('RelayNames', 'relay4name', relayName[4])
-            config.set('RelayNames', 'relay5name', relayName[5])
-            config.set('RelayNames', 'relay6name', relayName[6])
-            config.set('RelayNames', 'relay7name', relayName[7])
-            config.set('RelayNames', 'relay8name', relayName[8])
-            
-            config.add_section('RelayPins')
-            config.set('RelayPins', 'relay1pin', relayPin[1])
-            config.set('RelayPins', 'relay2pin', relayPin[2])
-            config.set('RelayPins', 'relay3pin', relayPin[3])
-            config.set('RelayPins', 'relay4pin', relayPin[4])
-            config.set('RelayPins', 'relay5pin', relayPin[5])
-            config.set('RelayPins', 'relay6pin', relayPin[6])
-            config.set('RelayPins', 'relay7pin', relayPin[7])
-            config.set('RelayPins', 'relay8pin', relayPin[8])
+    lock = LockFile(config_lock_path)
+    while not lock.i_am_locking():
+        try:
+            print_sync("%s [Write Config] Waiting, Acquiring Lock: %s" 
+                % (timestamp(), lock.path), 1)
+            lock.acquire(timeout=60)    # wait up to 60 seconds
+        except:
+            print_sync("%s [Write Config] Breaking Lock to Acquire: %s" 
+                % (timestamp(), lock.path), 1)
+            lock.break_lock()
+            lock.acquire()
+    print_sync("%s [Write Config] Gained lock: %s" 
+         % (timestamp(), lock.path), 1)
+    print_sync("%s [Write Config] Writing config file %s" 
+        % (timestamp(), config_file), 1)
+    
+    config.add_section('Sensor')
+    config.set('Sensor', 'dhtsensor', DHTSensor)
+    config.set('Sensor', 'dhtpin', DHTPin)
+    config.set('Sensor', 'dhtseconds', DHTSeconds)
+    
+    config.add_section('RelayNames')
+    config.set('RelayNames', 'relay1name', relayName[1])
+    config.set('RelayNames', 'relay2name', relayName[2])
+    config.set('RelayNames', 'relay3name', relayName[3])
+    config.set('RelayNames', 'relay4name', relayName[4])
+    config.set('RelayNames', 'relay5name', relayName[5])
+    config.set('RelayNames', 'relay6name', relayName[6])
+    config.set('RelayNames', 'relay7name', relayName[7])
+    config.set('RelayNames', 'relay8name', relayName[8])
+    
+    config.add_section('RelayPins')
+    config.set('RelayPins', 'relay1pin', relayPin[1])
+    config.set('RelayPins', 'relay2pin', relayPin[2])
+    config.set('RelayPins', 'relay3pin', relayPin[3])
+    config.set('RelayPins', 'relay4pin', relayPin[4])
+    config.set('RelayPins', 'relay5pin', relayPin[5])
+    config.set('RelayPins', 'relay6pin', relayPin[6])
+    config.set('RelayPins', 'relay7pin', relayPin[7])
+    config.set('RelayPins', 'relay8pin', relayPin[8])
 
-            config.add_section('PID')
-            config.set('PID', 'relaytemp', relayTemp)
-            config.set('PID', 'relayhum', relayHum)
-            config.set('PID', 'tempor', TempOR)
-            config.set('PID', 'humor', HumOR)
-            config.set('PID', 'settemp', setTemp)
-            config.set('PID', 'sethum', setHum)
-            config.set('PID', 'hum_p', Hum_P)
-            config.set('PID', 'hum_i', Hum_I)
-            config.set('PID', 'hum_d', Hum_D)
-            config.set('PID', 'temp_p', Temp_P)
-            config.set('PID', 'temp_i', Temp_I)
-            config.set('PID', 'temp_d', Temp_D)
-            config.set('PID', 'factorhumseconds', factorHumSeconds)
-            config.set('PID', 'factortempseconds', factorTempSeconds)
+    config.add_section('PID')
+    config.set('PID', 'relaytemp', relayTemp)
+    config.set('PID', 'relayhum', relayHum)
+    config.set('PID', 'tempor', TempOR)
+    config.set('PID', 'humor', HumOR)
+    config.set('PID', 'settemp', setTemp)
+    config.set('PID', 'sethum', setHum)
+    config.set('PID', 'hum_p', Hum_P)
+    config.set('PID', 'hum_i', Hum_I)
+    config.set('PID', 'hum_d', Hum_D)
+    config.set('PID', 'temp_p', Temp_P)
+    config.set('PID', 'temp_i', Temp_I)
+    config.set('PID', 'temp_d', Temp_D)
+    config.set('PID', 'factorhumseconds', factorHumSeconds)
+    config.set('PID', 'factortempseconds', factorTempSeconds)
 
-            config.add_section('States')
-            config.set('States', 'tempstate', tempState)
-            config.set('States', 'humstate', humState)
-            config.set('States', 'relay1o', relay1o)
-            config.set('States', 'relay2o', relay2o)
-            config.set('States', 'relay3o', relay3o)
-            config.set('States', 'relay4o', relay4o)
-            config.set('States', 'relay5o', relay5o)
-            config.set('States', 'relay6o', relay6o)
-            config.set('States', 'relay7o', relay7o)
-            config.set('States', 'relay8o', relay8o)
-            
-            with open(config_file, 'wb') as configfile:
-                config.write(configfile)
+    config.add_section('States')
+    config.set('States', 'tempstate', tempState)
+    config.set('States', 'humstate', humState)
+    config.set('States', 'relay1o', relay1o)
+    config.set('States', 'relay2o', relay2o)
+    config.set('States', 'relay3o', relay3o)
+    config.set('States', 'relay4o', relay4o)
+    config.set('States', 'relay5o', relay5o)
+    config.set('States', 'relay6o', relay6o)
+    config.set('States', 'relay7o', relay7o)
+    config.set('States', 'relay8o', relay8o)
+    
+    with open(config_file, 'wb') as configfile:
+        config.write(configfile)
 
-    if os.path.isfile(config_lock_path):
-        print_sync("%s [Write Config] Removing lock file %s" 
-            % (timestamp(), config_lock_path), 1)
-        os.remove(config_lock_path)
-    else:
-        print_sync("%s [Write Config] Unable to remove lock file %s: It doesn't exist!" 
-            % (timestamp(), config_lock_path), 1)
+    print_sync("%s [Write Config] Removing lock: %s" 
+        % (timestamp(), lock.path), 1)
+    lock.release()
 
 # Initialize GPIO
 def gpio_initialize():
@@ -1034,15 +991,6 @@ def print_sync(msg, newline):
     if newline: line = '%s\n' % msg
     else: line = '%s' % msg
     print >>sys.stderr, line, # Trailing , indicates no implicit end-of-line
-
-# Lock file to prevent other instances from writing while file is open
-def lock_file(lockfile):
-    fd = os.open(lockfile, os.O_CREAT | os.O_TRUNC | os.O_WRONLY)
-    try: # Request exclusive (EX) non-blocking (NB) advisory lock.
-        fcntl.lockf(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except IOError:
-        return False
-    return True
 
 # Check if string represents an integer value
 def represents_int(s):
