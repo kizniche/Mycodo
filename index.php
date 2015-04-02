@@ -10,6 +10,7 @@
 ####### Configure Edit Here #######
 
 $install_path = "/var/www/mycodo";
+$lock_path = "/var/lock";
 $gpio_path = "/usr/local/bin/gpio";
 
 ########## End Configure ##########
@@ -24,8 +25,8 @@ $mycodo_client = $install_path . "/cgi-bin/mycodo-client.py";
 $graph_exec = $install_path . "/cgi-bin/graph.sh";
 $still_exec = $install_path . "/cgi-bin/camera-still.sh";
 $stream_exec = $install_path . "/cgi-bin/camera-stream.sh";
-$lock_raspistill = "/var/lock/mycodo_raspistill";
-$lock_mjpg_streamer = "/var/lock/mycodo_mjpg_streamer";
+$lock_raspistill = $lock_path . "/mycodo_raspistill";
+$lock_mjpg_streamer = $lock_path . "/mycodo_mjpg_streamer";
 
 if (version_compare(PHP_VERSION, '5.3.7', '<')) {
     exit("PHP Login does not run on PHP versions before 5.3.7, please update your version of PHP");
@@ -49,12 +50,6 @@ function menu_item($id, $title, $current) {
     } else echo '<div class="active">' . $title . '</div>';
 }
 
-function readconfig($var) {
-    global $config_file;
-    $value = substr(`cat $config_file | grep $var | cut -d' ' -f3`, 0, -1);
-    return $value;
-}
-
 function DateSelector($inName, $useDate=0) {
     /* create array to name months */
     $monthName = array(1=> "January", "February", "March",
@@ -65,9 +60,7 @@ function DateSelector($inName, $useDate=0) {
 
     echo "<SELECT NAME=" . $inName . "Month>\n";
 	for($currentMonth = 1; $currentMonth <= 12; $currentMonth++) {
-	    echo "<OPTION VALUE=\"";
-	    echo intval($currentMonth);
-	    echo "\"";
+	    echo "<OPTION VALUE=\"" . intval($currentMonth) . "\"";
 	    if(intval(date( "m", $useDate))==$currentMonth) echo " SELECTED";
 	    echo ">" . $monthName[$currentMonth] . "\n";
 	}
@@ -82,10 +75,10 @@ function DateSelector($inName, $useDate=0) {
 	echo "</SELECT> / ";
 
     echo "<SELECT NAME=" . $inName . "Year>\n";
-	$startYear = date( "Y", $useDate);
-	for($currentYear = $startYear - 5; $currentYear <= $startYear+5;$currentYear++) {
+	$startYear = date("Y", $useDate);
+	for($currentYear = $startYear-5; $currentYear <= $startYear+5; $currentYear++) {
 	    echo "<OPTION VALUE=\"$currentYear\"";
-	    if(date( "Y", $useDate)==$currentYear) echo " SELECTED";
+	    if(date("Y", $useDate) == $currentYear) echo " SELECTED";
 	    echo ">$currentYear\n";
 	}
 	echo "</SELECT>&nbsp;&nbsp;&nbsp;";
@@ -93,26 +86,28 @@ function DateSelector($inName, $useDate=0) {
     echo "<SELECT NAME=" . $inName . "Hour>\n";
 	for($currentHour=0; $currentHour <= 23; $currentHour++) {
 	    if($currentHour < 10) echo "<OPTION VALUE=\"0$currentHour\"";
-	    else { echo "<OPTION VALUE=\"$currentHour\""; }
-	    if(intval(date( "H", $useDate))==$currentHour) echo " SELECTED";
+	    else echo "<OPTION VALUE=\"$currentHour\"";
+	    if(intval(date("H", $useDate)) == $currentHour) echo " SELECTED";
 	    if($currentHour < 10) echo ">0$currentHour\n";
-	    else { echo ">$currentHour\n";}
+	    else echo ">$currentHour\n";
 	}
 	echo "</SELECT> : ";
 
     echo "<SELECT NAME=" . $inName . "Minute>\n";
 	for($currentMinute=0; $currentMinute <= 59; $currentMinute++) {
 	    if($currentMinute < 10) echo "<OPTION VALUE=\"0$currentMinute\"";
-	    else { echo "<OPTION VALUE=\"$currentMinute\"";}
-	    if(intval(date( "i", $useDate))==$currentMinute) echo " SELECTED";
+	    else echo "<OPTION VALUE=\"$currentMinute\"";
+	    if(intval(date( "i", $useDate)) == $currentMinute) echo " SELECTED";
 	    if($currentMinute < 10) echo ">0$currentMinute\n";
-	    else { echo ">$currentMinute\n";}
+	    else echo ">$currentMinute\n";
 	}
 	echo "</SELECT>";
 }
 
 function displayform() {
-        echo "<div style=\"padding: 10px 0 0 15px;\"><div style=\"display: inline-block;\"><FORM action=\"?tab=graph\" method=\"POST\">";
+        echo "<div style=\"padding: 10px 0 0 15px;\">";
+        echo "<div style=\"display: inline-block;\">";
+        echo "<FORM action=\"?tab=graph\" method=\"POST\">";
 		echo "<div style=\"padding-bottom: 5px; text-align: right;\">START: ";
 		DateSelector("start");
 		echo "</div><div style=\"text-align: right;\">END: ";
@@ -123,17 +118,16 @@ function displayform() {
 if ($login->isUserLoggedIn() == true) {
     $page = isset($_GET['page']) ? $_GET['page'] : 'Main';
 
+    // Read config file, for each row set variable to value
     $config_contents = file_get_contents($config_file);
     $config_rows = explode("\n", $config_contents);
     array_shift($config_rows);
     foreach($config_rows as $row => $data) {
         $row_data = explode(' = ', $data);
-        if (!empty($row_data[1])) {
-            ${$row_data[0]} = $row_data[1];
-        }
+        if (!empty($row_data[1])) ${$row_data[0]} = $row_data[1];
     }
 
-    // All commands that elevated (!=guest) privileges are required
+    // All commands that elevated (!= guest) privileges are required
     for ($p = 1; $p <= 8; $p++) {
         // Relay has been selected to be turned on or off
         if (isset($_POST['R' . $p]) && $_SESSION['user_name'] != guest) {
@@ -174,12 +168,14 @@ if ($login->isUserLoggedIn() == true) {
             isset($_POST['ModPin']) || isset($_POST['ModName'])) {
         if ($_SESSION['user_name'] != guest) {
             
+            // Request a sensor read and sensor log write
              if (isset($_POST['WriteSensorLog'])) {
                 $editconfig = "$mycodo_client -w";
                 shell_exec($editconfig);
                 sleep(6);
             }
             
+            // Request the relay name(s) be renamed
             if (isset($_POST['ModName'])) {
                 for ($i = 1; $i <= 8; $i++) {
                     if (isset($_POST['relay' . $i . 'name'])) {
@@ -190,6 +186,8 @@ if ($login->isUserLoggedIn() == true) {
                 shell_exec($editconfig);
                 sleep(6);
             }
+            
+            // Request the relay pin(s) be renumbered
             if (isset($_POST['ModPin'])) {
                 for ($i = 1; $i <= 8; $i++) {
                     if (isset($_POST['relay' . $i . 'pin'])) {
@@ -201,7 +199,7 @@ if ($login->isUserLoggedIn() == true) {
                 sleep(6);
             }
             
-            // Check if Web Override has been selected to be turned on or off
+            // Request PID override to be turned on or off
             if (isset($_POST['TempOR'])) {
                 if ($_POST['TempOR']) $tempor = 1;
                 else $tempor = 0;
@@ -217,6 +215,7 @@ if ($login->isUserLoggedIn() == true) {
                 sleep(6);
             }
             
+            // Request the PID variables be changed
             if (isset($_POST['ChangeTempPID'])) {
                 $relaytemp  = $_POST['relayTemp'];
                 $settemp  = $_POST['setTemp'];
@@ -240,6 +239,7 @@ if ($login->isUserLoggedIn() == true) {
                 sleep(6);
             }
             
+            // Request the sensor configuration be changed
             if (isset($_POST['ChangeSensor'])) {
                 $dhtsensor = $_POST['DHTSensor'];
                 $dhtpin = $_POST['DHTPin'];
@@ -255,11 +255,12 @@ if ($login->isUserLoggedIn() == true) {
         } else $guest_error = 1;
     }
     
-    if ($guest_error) { // Ensures error only displayed once
+    // Ensures error only displayed once
+    if ($guest_error) {
         echo "<span class=\"error\">You do not have the proper privileges to perform that task!</span>";
         $guest_error = 0;
     }
-        
+    
     foreach($config_rows as $row => $data) {
         $row_data = explode(' = ', $data);
         if (!empty($row_data[1])) {
@@ -336,7 +337,7 @@ if ($login->isUserLoggedIn() == true) {
         <div style="text-align: right; padding-top: 5px;">Sensor: <?php echo $time_last; ?></div>
     </div>
     <div class="header">
-        <div style="padding-bottom: 3px;">
+        <div class="header-title">
             <u>Temperature</u> <?php if ($tempor == 1) echo " <span class=\"off\">OFF</span>";
                 else echo " <span class=\"on\">ON</span>"; ?>
         </div>
@@ -351,7 +352,7 @@ if ($login->isUserLoggedIn() == true) {
         </div>
     </div>
     <div class="header">
-        <div style="padding-bottom: 3px;">
+        <div class="header-title">
             <u>Humidity</u> <?php  if ($humor == 1) echo " <span class=\"off\">OFF</span>";
                 else echo " <span class=\"on\">ON</span>"; ?>
         </div>
@@ -363,7 +364,7 @@ if ($login->isUserLoggedIn() == true) {
         </div>
     </div>
     <div style="float: left; padding-top: 5px;">
-        <div style="padding-bottom: 3px;">
+        <div class="header-title">
             <u>Dew Point</u>
         </div>
         <div>
@@ -384,6 +385,7 @@ if ($login->isUserLoggedIn() == true) {
 	</nav>
 	<ul class="cd-tabs-content">
 		<li data-content="main" <?php if (!isset($_GET['tab']) || (isset($_GET['tab']) && $_GET['tab'] == 'main')) echo "class=\"selected\""; ?>>
+            <div>
             <div style="padding-top: 5px;">
                 <div style="float: left; padding: 8px 45px 10px 0;">
                     <?php
@@ -423,53 +425,56 @@ if ($login->isUserLoggedIn() == true) {
                 </div>
             </div>
             <div style="clear: both;"></div>
-            <center>
+            <div>
             <?php
+            echo "<img class=\"main-image\" src=image.php?span=";
+            
             if (isset($_GET['page'])) {
                 switch ($_GET['page']) {
                 case 'Main':
                 shell_exec($graph_exec . ' dayweek');
-                echo "<img src=image.php?span=main>";
+                echo "main>";
                 break;
                 case 'Hour':
                 shell_exec($graph_exec . ' 1h');
-                echo "<img src=image.php?span=1h>";
+                echo "1h>";
                 break;
                 case '6Hours':
                 shell_exec($graph_exec . ' 6h');
-                echo "<img src=image.php?span=6h>";
+                echo "6h>";
                 break;
                 case 'Day':
                 shell_exec($graph_exec . ' day');
-                echo "<img src=image.php?span=day>";
+                echo "day>";
                 break;
                 case 'Week':
                 shell_exec($graph_exec . ' week');
-                echo "<img src=image.php?span=week>";
+                echo "week>";
                 break;
                 case 'Month':
                 shell_exec($graph_exec . ' month');
-                echo "<img src=image.php?span=month>";
+                echo "month>";
                 break;
                 case 'Year':
                 shell_exec($graph_exec . ' year');
-                echo "<img src=image.php?span=year>";
+                echo "year>";
                 break;
                 case 'All':
                 shell_exec($graph_exec . ' all');
-                echo "<img src=image.php?span=1h><p><img src=image.php?span=6h></p><p><img src=image.php?span=day></p><p><img src=image.php?span=week></p><p><img src=image.php?span=month></p><p><img src=image.php?span=year></p>";
+                echo "1h><p><img class=\"main-image\" src=image.php?span=6h></p><p><img class=\"main-image\" src=image.php?span=day></p><p><img class=\"main-image\" src=image.php?span=week></p><p><img class=\"main-image\" src=image.php?span=month></p><p><img class=\"main-image\" src=image.php?span=year></p>";
                 break;
                 default:
                 shell_exec($graph_exec . ' dayweek');
-                echo "<img src=image.php?span=main>";
+                echo "main>";
                 break;
                 }
             } else {
                 shell_exec($graph_exec . ' dayweek');
-                echo "<img src=image.php?span=main>";
+                echo "main>";
             }
             ?>
-            </center>
+            </div>
+            </div>
 		</li>
 
 		<li data-content="configure" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'config') echo "class=\"selected\""; ?>>
