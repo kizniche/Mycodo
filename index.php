@@ -386,94 +386,94 @@ if ($login->isUserLoggedIn() == true) {
 	<ul class="cd-tabs-content">
 		<li data-content="main" <?php if (!isset($_GET['tab']) || (isset($_GET['tab']) && $_GET['tab'] == 'main')) echo "class=\"selected\""; ?>>
             <div>
-            <div style="padding-top: 5px;">
-                <div style="float: left; padding: 8px 45px 10px 0;">
-                    <?php
-                    if (isset($_GET['r']) && $_GET['r'] == 1) {
-                            if (empty($page)) echo '<input type="button" onclick=\'location.href="?tab=main&r=1"\' value="Refresh">';
-                            echo '<input type="button" onclick=\'location.href="?tab=main&page=' . $page . '&r=1"\' value="Refresh">';
-                        } else {
-                            if (empty($page)) echo '<input type="button" onclick=\'location.href="?tab=main"\' value="Refresh">';
-                            echo '<input type="button" onclick=\'location.href="?tab=main&page=' . $page . '"\' value="Refresh">';
-                        }
-                    ?>
-                    
-                    Auto: <?php
+                <div style="padding-top: 5px;">
+                    <div style="float: left; padding: 8px 45px 10px 0;">
+                        <?php
                         if (isset($_GET['r']) && $_GET['r'] == 1) {
-                            if (empty($page)) echo '<a href="?tab=main">OFF</a> | <span class="on">ON</span>';
-                            else echo '<a href="?tab=main&page=' . $page . '">OFF</a> | <span class="on">ON</span>';
-                        } else {
-                            if (empty($page)) echo '<span class="off">OFF</span> | <a href="?tab=main&r=1">ON</a>';
-                            echo '<span class="off">OFF</span> | <a href="?tab=main&page=' . $page . '&r=1">ON</a>';
-                        }
-                    ?>
+                                if (empty($page)) echo '<input type="button" onclick=\'location.href="?tab=main&r=1"\' value="Refresh">';
+                                echo '<input type="button" onclick=\'location.href="?tab=main&page=' . $page . '&r=1"\' value="Refresh">';
+                            } else {
+                                if (empty($page)) echo '<input type="button" onclick=\'location.href="?tab=main"\' value="Refresh">';
+                                echo '<input type="button" onclick=\'location.href="?tab=main&page=' . $page . '"\' value="Refresh">';
+                            }
+                        ?>
+                        
+                        Auto: <?php
+                            if (isset($_GET['r']) && $_GET['r'] == 1) {
+                                if (empty($page)) echo '<a href="?tab=main">OFF</a> | <span class="on">ON</span>';
+                                else echo '<a href="?tab=main&page=' . $page . '">OFF</a> | <span class="on">ON</span>';
+                            } else {
+                                if (empty($page)) echo '<span class="off">OFF</span> | <a href="?tab=main&r=1">ON</a>';
+                                echo '<span class="off">OFF</span> | <a href="?tab=main&page=' . $page . '&r=1">ON</a>';
+                            }
+                        ?>
+                    </div>
+                    <div style="float: left; padding: 0 45px 10px 0">
+                        <?php
+                            menu_item('Main', 'Main', $page);
+                            menu_item('Hour', '1 Hour', $page);
+                            menu_item('6Hours', '6 Hours', $page);
+                            menu_item('Day', 'Day', $page);
+                            menu_item('Week', 'Week', $page);
+                            menu_item('Month', 'Month', $page);
+                            menu_item('Year', 'Year', $page);
+                            menu_item('All', 'All', $page);
+                        ?>
+                    </div>
+                    <div style="float: left; padding: 8px 0 10px 0;">
+                        Legend: <a href="javascript:open_legend()">Brief</a> / <a href="javascript:open_legend_full()">Full</a>
+                    </div>
                 </div>
-                <div style="float: left; padding: 0 45px 10px 0">
+                <div style="clear: both;"></div>
+                <div>
                     <?php
-                        menu_item('Main', 'Main', $page);
-                        menu_item('Hour', '1 Hour', $page);
-                        menu_item('6Hours', '6 Hours', $page);
-                        menu_item('Day', 'Day', $page);
-                        menu_item('Week', 'Week', $page);
-                        menu_item('Month', 'Month', $page);
-                        menu_item('Year', 'Year', $page);
-                        menu_item('All', 'All', $page);
+                    echo "<img class=\"main-image\" src=image.php?span=";
+                    
+                    if (isset($_GET['page'])) {
+                        switch ($_GET['page']) {
+                        case 'Main':
+                        shell_exec($graph_exec . ' dayweek');
+                        echo "main>";
+                        break;
+                        case 'Hour':
+                        shell_exec($graph_exec . ' 1h');
+                        echo "1h>";
+                        break;
+                        case '6Hours':
+                        shell_exec($graph_exec . ' 6h');
+                        echo "6h>";
+                        break;
+                        case 'Day':
+                        shell_exec($graph_exec . ' day');
+                        echo "day>";
+                        break;
+                        case 'Week':
+                        shell_exec($graph_exec . ' week');
+                        echo "week>";
+                        break;
+                        case 'Month':
+                        shell_exec($graph_exec . ' month');
+                        echo "month>";
+                        break;
+                        case 'Year':
+                        shell_exec($graph_exec . ' year');
+                        echo "year>";
+                        break;
+                        case 'All':
+                        shell_exec($graph_exec . ' all');
+                        echo "1h><p><img class=\"main-image\" src=image.php?span=6h></p><p><img class=\"main-image\" src=image.php?span=day></p><p><img class=\"main-image\" src=image.php?span=week></p><p><img class=\"main-image\" src=image.php?span=month></p><p><img class=\"main-image\" src=image.php?span=year></p>";
+                        break;
+                        default:
+                        shell_exec($graph_exec . ' dayweek');
+                        echo "main>";
+                        break;
+                        }
+                    } else {
+                        shell_exec($graph_exec . ' dayweek');
+                        echo "main>";
+                    }
                     ?>
                 </div>
-                <div style="float: left; padding: 8px 0 10px 0;">
-                    Legend: <a href="javascript:open_legend()">Brief</a> / <a href="javascript:open_legend_full()">Full</a>
-                </div>
-            </div>
-            <div style="clear: both;"></div>
-            <div>
-            <?php
-            echo "<img class=\"main-image\" src=image.php?span=";
-            
-            if (isset($_GET['page'])) {
-                switch ($_GET['page']) {
-                case 'Main':
-                shell_exec($graph_exec . ' dayweek');
-                echo "main>";
-                break;
-                case 'Hour':
-                shell_exec($graph_exec . ' 1h');
-                echo "1h>";
-                break;
-                case '6Hours':
-                shell_exec($graph_exec . ' 6h');
-                echo "6h>";
-                break;
-                case 'Day':
-                shell_exec($graph_exec . ' day');
-                echo "day>";
-                break;
-                case 'Week':
-                shell_exec($graph_exec . ' week');
-                echo "week>";
-                break;
-                case 'Month':
-                shell_exec($graph_exec . ' month');
-                echo "month>";
-                break;
-                case 'Year':
-                shell_exec($graph_exec . ' year');
-                echo "year>";
-                break;
-                case 'All':
-                shell_exec($graph_exec . ' all');
-                echo "1h><p><img class=\"main-image\" src=image.php?span=6h></p><p><img class=\"main-image\" src=image.php?span=day></p><p><img class=\"main-image\" src=image.php?span=week></p><p><img class=\"main-image\" src=image.php?span=month></p><p><img class=\"main-image\" src=image.php?span=year></p>";
-                break;
-                default:
-                shell_exec($graph_exec . ' dayweek');
-                echo "main>";
-                break;
-                }
-            } else {
-                shell_exec($graph_exec . ' dayweek');
-                echo "main>";
-            }
-            ?>
-            </div>
             </div>
 		</li>
 

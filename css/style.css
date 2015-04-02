@@ -234,19 +234,7 @@ Main components
   background: #f8f7ee;
   box-shadow: inset 0 -2px 3px rgba(203, 196, 130, 0.06);
 }
-@media only screen and (min-width: 768px) {
-  .cd-tabs::after {
-    display: none;
-  }
-  .cd-tabs nav {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 2.5em;
-    box-shadow: inset -2px 0 3px rgba(203, 196, 130, 0.06);
-    z-index: 1;
-  }
-}
+
 @media only screen and (min-width: 960px) {
   .cd-tabs nav {
     position: relative;
@@ -337,24 +325,7 @@ Main components
 .cd-tabs-navigation a[data-content='menu2'].selected::before {
   background-position: -7.143em -1.429em;
 }
-@media only screen and (min-width: 768px) {
-  .cd-tabs-navigation {
-    /* move the nav to the left on medium sized devices */
-    width: 5.714em;
-    float: left;
-  }
-  .cd-tabs-navigation a {
-    height: 5.714em;
-    width: 5.714em;
-    padding-top: 3.286em;
-  }
-  .cd-tabs-navigation a.selected {
-    box-shadow: inset 2px 0 0 #f05451;
-  }
-  .cd-tabs-navigation a::before {
-    top: 1.571em;
-  }
-}
+
 @media only screen and (min-width: 960px) {
   .cd-tabs-navigation {
     /* tabbed on top on big devices */
