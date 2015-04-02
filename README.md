@@ -220,9 +220,7 @@ Add the following to /etc/apache2/sites-avalable/default-ssl (or just 'default' 
         allow from all
     </Directory>
 
-Early in development I discovered that apache (www-data) was reaching the maximum number of files that were allowed to be opened after about a day of running the mycodo.py daemon. I could not find any files left open in any of the scripts being run, therefore I decided to increase this limit. On my system, this default was set to 1024 soft and 4096 hard. With no users connected, Apache had 861 files open, which is very close to the soft limit (enforced per session/process). You can see how many files are open with `sudo lsof -u www-data | wc -l` and the soft and hard limits with `sudo su -c "ulimit -Sn" www-data && sudo su -c "ulimit -Hn" www-data`
-
-To alleviate this problem, I raised the soft and hard limits by adding the following to /etc/security/limits.conf:
+Early in development I began receiving "[Errno 24] Too many open files: '/proc/cpuinfo'". This occurred after about a day of the mycodo.py daemon running, and was traced to an open file request in the pi_version() function of platform_detect.py (Adafruit_DHT). For reasons that still elude me, and despite this function set to only run a maximum of 15 attempts to retrieve a good humidity/temperature reading, this is the only time I have ever received this error. I could not find any files left open in any of the code and could not detect any aberrant increase in open files over time, so I increased the number of open files limit. On my system, this default was set to 1024 soft and 4096 hard. I raised the soft and hard limits by adding the following to /etc/security/limits.conf and rebooting:
 
 ```
 * soft nofile 4096
