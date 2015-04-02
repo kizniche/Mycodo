@@ -219,13 +219,6 @@ Add the following to /etc/apache2/sites-avalable/default-ssl (or just 'default' 
         Order allow,deny
         allow from all
     </Directory>
-
-Early in development I began receiving "[Errno 24] Too many open files: '/proc/cpuinfo'". This occurred after about a day of the mycodo.py daemon running, and was traced to an open file request in the pi_version() function of platform_detect.py (Adafruit_DHT). For reasons that still elude me, and despite this function set to only run a maximum of 15 attempts to retrieve a good humidity/temperature reading, this is the only time I have ever received this error. I could not find any files left open in any of the code and could not detect any aberrant increase in open files over time, so I increased the number of open files limit. On my system, this default was set to 1024 soft and 4096 hard. I raised the soft and hard limits by adding the following to /etc/security/limits.conf and rebooting:
-
-```
-* soft nofile 4096
-* hard nofile 8192
-```
     
 <a name="mysql"></a>
 ### MySQL and User Login
