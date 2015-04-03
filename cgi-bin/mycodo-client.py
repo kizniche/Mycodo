@@ -21,22 +21,17 @@ def usage():
     print 'mycodo-client.py: Communicates with the daemonized mycodo.py.\n'
     print 'Usage:  mycodo-client.py [OPTION]...\n'
     print 'Options:'
-    print '    -c, --conditions [relayT] [setTemp] [T_P] [T_I] [T_D] [T_sec] [relayHum] [setHum] [H_P] [H_I] [H_D] [H_Sec]'
-    print '           Set P, I, I'
     print '        --modnames [r1NAME] [r2NAME] [r3NAME] [r4NAME] [r5NAME] [r6NAME] [r7NAME] [r8NAME]'
     print '           Modify relay names (Restrict to a maximum of 5 characters each)'
     print '        --modpins [r1PIN] [r2PIN] [r3PIN] [r4PIN] [r5PIN] [r6PIN] [r7PIN] [r8PIN]'
     print '           Modify relay pins (Using BCM numbering)'
-    print '        --modsensor [SENSOR] [PIN] [SECONDS]'
-    print '           Modify the DHT sensor and pin'
-    print '    -o, --override [TempOR] [HumOR]'
-    print '           Set Temperature and Humidity overrides. PID controller stops operating when set to 1'
+    print '        --modtrigger [r1T] [r2T] [r3T] [r4T] [r5T] [r6T] [r7T] [r8T]'
+    print '           Modify the trigger state of relays'
     print '    -r, --relay [RELAY] [1/0]'
     print '           Set RELAY pin high (1) or low (0)'
-    print '    -s, --set='
-    print '           Set'
-    print '        --seconds='
-    print '           Set'
+    print '    -s, --set [RELAY] [SECONDS] [TRIGGER]'
+    print '           Set relay on for a number of seconds'
+    print '           for [TRIGGER], if ON is High/5vDC set to 1, if on is LOW-0vDC set to 0)'
     print '    -t, --terminate'
     print '           Terminate the communication service and daemon\n'
     print '    -w, --writelog'
@@ -46,9 +41,8 @@ def menu():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:], 'o:p:r:s:tw', 
-            ["changetempor=", "changehumor=", "conditionstemp=", 
-            "conditionshum=", "modnames=", "modpins=", "modsensor=",
-            "modvar=", "pid=", "relay=", "seconds=", "set=", "terminate", 
+            ["modnames=", "modpins=", "modtrigger=",
+            "modvar=", "pid=", "relay=", "set=", "terminate",
             "writelog"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
@@ -82,34 +76,6 @@ def menu():
             else:
                 print "Fail"
             sys.exit(0)
-        elif opt == "--conditionstemp":
-            print "%s [Remote command] Set Temp conditions: relay: %s, set: %.1f°C, P: %.1f, I: %.1f, D: %.1f, sec: %s" % (
-                Timestamp(), int(float(sys.argv[2])), float(sys.argv[3]), 
-                float(sys.argv[4]), float(sys.argv[5]), 
-                float(sys.argv[6]), int(float(sys.argv[7])))
-            print "%s [Remote command] Server returned:" % Timestamp(),
-            if c.root.ChangeConditionsTemp(
-                int(float(sys.argv[2])), float(sys.argv[3]), 
-                float(sys.argv[4]), float(sys.argv[5]), 
-                float(sys.argv[6]), int(float(sys.argv[7]))) == 1:
-                print "Success"
-            else:
-                print "Fail"
-            sys.exit(0)
-        elif opt == "--conditionshum":
-            print "%s [Remote command] Set Hum conditions: relay: %s, set: %.1f%%, P: %.1f, I: %.1f, D: %.1f, sec: %s" % (
-                Timestamp(), int(float(sys.argv[2])), float(sys.argv[3]), 
-                float(sys.argv[4]), float(sys.argv[5]), 
-                float(sys.argv[6]), int(float(sys.argv[7])))
-            print "%s [Remote command] Server returned:" % Timestamp(),
-            if c.root.ChangeConditionsHum(
-                int(float(sys.argv[2])), float(sys.argv[3]), 
-                float(sys.argv[4]), float(sys.argv[5]), 
-                float(sys.argv[6]), int(float(sys.argv[7]))) == 1:
-                print "Success"
-            else:
-                print "Fail"
-            sys.exit(0)
         elif opt == "--modnames":
             print "%s [Remote command] Set Names: %s %s %s %s %s %s %s %s: Server returned:" % (
                 Timestamp(), 
@@ -135,19 +101,18 @@ def menu():
             else: 
                 print "Fail"
             sys.exit(0)
-        elif opt == "--modsensor":
-            print "%s [Remote command] Set DHT Sensor: %s, Pin: %s, Secs: %s: Server returned:" % (
-                Timestamp(), sys.argv[2], int(sys.argv[3]), int(sys.argv[4]))
-            if c.root.ChangeSensor(sys.argv[2], int(sys.argv[3]), 
-                int(sys.argv[4])) == 1: print 'Success'
-            else: print 'Fail'
-            sys.exit(0)
-        elif opt in ("-o", "--override"):
-            print "%s [Remote command] Set overrides: TempOR: %s, HumOR: %s: Server returned:" % (
-                Timestamp(), int(float(sys.argv[2])), int(float(sys.argv[3])))
-            if c.root.ChangeOverride(int(float(sys.argv[2])), 
-                int(float(sys.argv[3]))) == 1: print "Success"
-            else: print "Fail"
+        elif opt == "--modtrigger":
+            print "%s [Remote command] Set Triggers: %s %s %s %s %s %s %s %s: Server returned:" % (
+                Timestamp(), int(sys.argv[2]), int(sys.argv[3]), 
+                int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6]), 
+                int(sys.argv[7]), int(sys.argv[8]), int(sys.argv[9])),
+            if c.root.ChangeRelayTriggers(
+                int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), 
+                int(sys.argv[5]), int(sys.argv[6]), int(sys.argv[7]), 
+                int(sys.argv[8]), int(sys.argv[9])) == 1: 
+                print "Success"
+            else: 
+                print "Fail"
             sys.exit(0)
         elif opt in ("-r", "--relay"):
             if RepresentsInt(sys.argv[2]) and \
@@ -165,14 +130,15 @@ def menu():
                 print 'Error: input must be an integer between 1 and 8'
                 sys.exit(1)
         elif opt in ("-s", "--set"):
-            relaySelect = arg
-        elif opt == "--seconds":
-            relaySeconds = arg
-            print '%s [Remote command] Relay %s on for %s seconds: Server returned:' % (
-                Timestamp(), relaySelect, relaySeconds),
-            if c.root.RelayOnSec(int(float(relaySelect)), 
-                int(float(relaySeconds))) == 1: print "Success"
-            else: print "Fail"
+            relaySelect = int(float(sys.argv[2]))
+            relaySeconds = int(float(sys.argv[3]))
+            print '%s [Remote command] Relay %s ON for %s seconds: Server returned:' % (
+                Timestamp(), int(float(sys.argv[2])), int(float(sys.argv[3]))),
+            if c.root.RelayOnSec(int(float(sys.argv[2])),
+                    int(float(sys.argv[3]))) == 1:
+                print "Success"
+            else:
+                print "Fail"
             sys.exit(0)
         elif opt in ("-t", "--terminate"):
             print "%s [Remote command] Terminate all threads and daemon: Server returned:" % (

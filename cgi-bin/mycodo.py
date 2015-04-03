@@ -46,6 +46,7 @@ relay_log_lock = "relaylog"
 # GPIO pins (BCM numbering) and name of devices attached to relay
 relayPin = [0] * 9
 relayName = [0] * 9
+relayTrigger = [0] * 9
 
 # Sensor data
 chktemp = ''
@@ -133,8 +134,8 @@ class ComServer(rpyc.Service):
         global ClientQue
         global ClientArg1
         global ClientArg2
-        ClientArg1 = int(float(remoteCommand))
-        ClientArg2 = int(float(remoteCommand2))
+        ClientArg1 = remoteCommand
+        ClientArg2 = remoteCommand2
         ClientQue = 'RelayOnSec'
         return 1
     def exposed_ChangeRelayNames(self, relayname1, relayname2, relayname3,
@@ -169,6 +170,23 @@ class ComServer(rpyc.Service):
             timestamp(),
             relayPin[1], relayPin[2], relayPin[3], relayPin[4],
             relayPin[5], relayPin[6], relayPin[7], relayPin[8]), 1)
+        write_config()
+        return 1
+    def exposed_ChangeRelayTriggers(self, relaytrigger1, relaytrigger2, relaytrigger3,
+            relaytrigger4, relaytrigger5, relaytrigger6, relaytrigger7, relaytrigger8):
+        global relayTrigger
+        relayTrigger[1] = relaytrigger1
+        relayTrigger[2] = relaytrigger2
+        relayTrigger[3] = relaytrigger3
+        relayTrigger[4] = relaytrigger4
+        relayTrigger[5] = relaytrigger5
+        relayTrigger[6] = relaytrigger6
+        relayTrigger[7] = relaytrigger7
+        relayTrigger[8] = relaytrigger8
+        print_sync("%s [Client command] Change Relay Triggers: 1: %s, 2: %s, 3: %s, 4: %s, 5: %s, 6: %s, 7: %s, 8: %s" % (
+            timestamp(),
+            relayTrigger[1], relayTrigger[2], relayTrigger[3], relayTrigger[4],
+            relayTrigger[5], relayTrigger[6], relayTrigger[7], relayTrigger[8]), 1)
         write_config()
         return 1
     def exposed_WriteSensorLog(self):
@@ -295,10 +313,9 @@ def usage():
     print_sync("         mycodo.py -n relay1Name --value Banana", 1)
     print_sync("         mycodo.py --daemon\n", 1)
     print_sync("Options:", 1)
-    print_sync("    -c, --change=RELAY", 1)
-    print_sync("           Change the state of a relay (--state required)", 1)
-    print_sync("        --state=[ON/OFF/X]", 1)
-    print_sync("           Change the state of RELAY to ON, OFF, or (X) number of seconds on", 1)
+    print_sync("    -c, --change [RELAY] [ON/OFF/X] [TRIGGER]", 1)
+    print_sync("           Change the state of a relay", 1)
+    print_sync("           RELAY to ON, OFF, or (X) number of seconds on", 1)
     print_sync("    -d, --daemon", 1)
     print_sync("           Start program as daemon that monitors conditions and modulates relays", 1)
     print_sync("    -h, --help", 1)
@@ -325,41 +342,42 @@ def menu():
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'c:dhpr:s:tw',
             ["change=", "daemon", "help", "pin",
-            "read=", "set=", "state=", "write="])
+            "read=", "set=", "write="])
     except getopt.GetoptError as err:
         print(err) # will print_sync("option -a not recognized"
         usage()
         sys.exit(2)
     for opt, arg in opts:
         if opt in ("-c", "--change"):
-            if not represents_int(arg) or \
-                    int(float(arg)) > 8 or \
-                    int(float(arg)) < 1:
+            if not represents_int(sys.argv[2]) or \
+                    int(float(sys.argv[2])) > 8 or \
+                    int(float(sys.argv[2])) < 1:
                 print_sync("Error: --change only accepts integers 1 though 8", 1)
                 sys.exit(1)
             else:
                 global relaySelect
-                relaySelect = arg
-        elif opt == "--state":
-            if represents_int(arg) and int(float(arg)) > 1 or \
-                    (arg == 'OFF' or arg == 'ON'):
+                relaySelect = int(float(sys.argv[2]))
+            if represents_int(sys.argv[3]) and int(float(sys.argv[3])) > 1 or \
+                    (sys.argv[3] == 'OFF' or sys.argv[3] == 'ON'):
                 read_config(0)
-                if arg == 'ON':
+                if sys.argv[3] == 'ON':
                     print_sync("%s [GPIO Write] Relay %s ON" % (
                         timestamp(), relaySelect), 1)
-                    gpio_change(int(float(relaySelect)), 0)
+                    if (relayTrigger[int(float(sys.argv[2]))] == 1): gpio_change(relaySelect, 1)
+                    else: gpio_change(relaySelect, 0)
                     gpio_read()
                     sys.exit(0)
-                if arg == 'OFF':
+                if sys.argv[3] == 'OFF':
                     print_sync("%s [GPIO Write] Relay %s OFF" % (
                         timestamp(), relaySelect), 1)
-                    gpio_change(int(float(relaySelect)), 1)
+                    if (relayTrigger[int(float(sys.argv[2]))] == 1): gpio_change(relaySelect, 0)
+                    else: gpio_change(relaySelect, 1)
                     gpio_read()
                     sys.exit(0)
-                elif int(float(arg)) > 1:
+                elif int(float(sys.argv[3])) > 1:
                     print_sync("%s [GPIO Write] Relay %s ON for %s seconds" % (
                         timestamp(), int(float(arg))), 1)
-                    relay_on_duration(int(float(relaySelect)), int(float(arg)))
+                    relay_on_duration(int(float(sys.argv[2])), int(float(sys.argv[3])))
                     sys.exit(0)
                 else:
                     print_sync("--state only accepts ON, OFF, integers > 1", 1)
@@ -544,7 +562,8 @@ def temperature_monitor():
         tempState = 0
     else: 
         tempState = 1
-        gpio_change(relayTemp, 1)
+        if (relayTrigger[relayTemp] == 0): gpio_change(relayTemp, 1)
+        gpio_change(relayTemp, 0)
     p_temp = Temperature_PID(Temp_P, Temp_I, Temp_D)
     p_temp.setPoint(setTemp)
     
@@ -588,7 +607,8 @@ def humidity_monitor():
         humState = 0
     else:
         humState = 1
-        gpio_change(relayHum, 1)
+        if (relayTrigger[relayHum] == 0): gpio_change(relayHum, 1)
+        else: gpio_change(relayHum, 1)
     p_hum = Humidity_PID(Hum_P, Hum_I, Hum_D)
     p_hum.setPoint(setHum)
 
@@ -607,8 +627,8 @@ def humidity_monitor():
                     print_sync("%s [PID Humidity] PID = %.1f (seconds)" 
                         % (timestamp(), PIDHum), 1)
                     if (PIDHum > 0 and humidity < setHum):
-                        rod = threading.Thread(
-                            target = relay_on_duration, args=(relayHum, PIDHum,))
+                        rod = threading.Thread(target = relay_on_duration,
+                            args=(relayHum, PIDHum,))
                         rod.start()
                     timerHum = int(time.time()) + PIDHum + factorTempSeconds
                 else:
@@ -758,6 +778,7 @@ def read_config(silent):
     global DHTSeconds
     global relayName
     global relayPin
+    global relayTrigger
     global relayTemp
     global relayHum
     global setTemp
@@ -807,6 +828,15 @@ def read_config(silent):
     relayPin[6] = config.getint('RelayPins', 'relay6pin')
     relayPin[7] = config.getint('RelayPins', 'relay7pin')
     relayPin[8] = config.getint('RelayPins', 'relay8pin')
+    
+    relayTrigger[1] = config.getint('RelayTriggers', 'relay1trigger')
+    relayTrigger[2] = config.getint('RelayTriggers', 'relay2trigger')
+    relayTrigger[3] = config.getint('RelayTriggers', 'relay3trigger')
+    relayTrigger[4] = config.getint('RelayTriggers', 'relay4trigger')
+    relayTrigger[5] = config.getint('RelayTriggers', 'relay5trigger')
+    relayTrigger[6] = config.getint('RelayTriggers', 'relay6trigger')
+    relayTrigger[7] = config.getint('RelayTriggers', 'relay7trigger')
+    relayTrigger[8] = config.getint('RelayTriggers', 'relay8trigger')
 
     relayTemp = config.getint('PID', 'relaytemp')
     relayHum = config.getint('PID', 'relayhum')
@@ -900,6 +930,16 @@ def write_config():
     config.set('RelayPins', 'relay6pin', relayPin[6])
     config.set('RelayPins', 'relay7pin', relayPin[7])
     config.set('RelayPins', 'relay8pin', relayPin[8])
+    
+    config.add_section('RelayTriggers')
+    config.set('RelayTriggers', 'relay1trigger', relayTrigger[1])
+    config.set('RelayTriggers', 'relay2trigger', relayTrigger[2])
+    config.set('RelayTriggers', 'relay3trigger', relayTrigger[3])
+    config.set('RelayTriggers', 'relay4trigger', relayTrigger[4])
+    config.set('RelayTriggers', 'relay5trigger', relayTrigger[5])
+    config.set('RelayTriggers', 'relay6trigger', relayTrigger[6])
+    config.set('RelayTriggers', 'relay7trigger', relayTrigger[7])
+    config.set('RelayTriggers', 'relay8trigger', relayTrigger[8])
 
     config.add_section('PID')
     config.set('PID', 'relaytemp', relayTemp)
@@ -974,9 +1014,10 @@ def relay_on_duration(relay, seconds):
         write_relay_log(relay, seconds)
         print_sync("%s [Relay Duration] Relay %s (%s) ON for %s seconds" 
             % (timestamp(), relay, relayName[relay], seconds), 1)
-        GPIO.output(relayPin[relay], 0)
+        GPIO.output(relayPin[relay], relayTrigger[relay])
         time.sleep(seconds)
-        GPIO.output(relayPin[relay], 1)
+        if relayTrigger[relay] == 0: GPIO.output(relayPin[relay], 1)
+        else: GPIO.output(relayPin[relay], 0)
         print_sync("%s [Relay Duration] Relay %s (%s) OFF (was ON for %s sec)"
             % (timestamp(), relay, relayName[relay], seconds), 1)
         return 1
@@ -1020,6 +1061,7 @@ def modify_var(*names_and_values):
     'DHTSeconds',
     'relayName',
     'relayPin',
+    'relayTrigger',
     'relayTemp',
     'relayHum',
     'setTemp',

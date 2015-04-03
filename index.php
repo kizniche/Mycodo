@@ -133,39 +133,61 @@ if ($login->isUserLoggedIn() == true) {
         if (isset($_POST['R' . $p]) && $_SESSION['user_name'] != guest) {
             $name = ${"relay" . $p . "name"};
             $pin = ${"relay" . $p . "pin"};
-            $actual_state = "$gpio_path -g read $pin";
-            $desired_state = $_POST['R' . $p];
+            if(${"relay" . $p . "trigger"} == 0) $trigger_state = 'LOW';
+            else $trigger_state = 'HIGH';
+            if ($_POST['R' . $p] == 0) $desired_state = 'LOW';
+            else $desired_state = 'HIGH';
             
-            if (shell_exec($actual_state) == 0 && $desired_state == 0) {
-                echo "<div class=\"error\">Error: Relay $p ($name): Can't turn on, it's already ON</div>";
+            $GPIO_state = shell_exec("$gpio_path -g read $pin");
+            if ($GPIO_state == 0 && $trigger_state == 'HIGH') $actual_state = 'LOW';
+            else if ($GPIO_state == 0 && $trigger_state == 'LOW') $actual_state = 'HIGH';
+            else if ($GPIO_state == 1 && $trigger_state == 'HIGH') $actual_state = 'HIGH';    
+            else if ($GPIO_state == 1 && $trigger_state == 'LOW') $actual_state = 'LOW';
+            
+            if ($actual_state == 'LOW' && $desired_state == 'LOW') {
+                $error_code = 'already_off';
+            } else if ($actual_state == 'HIGH' && $desired_state == 'HIGH') {
+                $error_code = 'already_on';
             } else {
+                if ($GPIO_state == 1) $desired_state = 0;
+                else $desired_state = 1;
                 $gpio_write = "$gpio_path -g write $pin $desired_state";
                 shell_exec($gpio_write);
             }
-        } else if (isset($_POST['R' . $p]) && $_SESSION['user_name'] == guest) $guest_error = 1;
+        } else if (isset($_POST['R' . $p]) && $_SESSION['user_name'] == guest) $error_code = 'guest';
         
         // Relay has been selected to be turned on for a number of seconds
         if (isset($_POST[$p . 'secON']) && $_SESSION['user_name'] != guest) {
             $name = ${"relay" . $p . "name"};
             $pin = ${"relay" . $p . "pin"};
-            $actual_state = "$gpio_path -g read $pin";
+            if(${"relay" . $p . "trigger"} == 0) $trigger_state = 'LOW';
+            else $trigger_state = 'HIGH';
+            if ($_POST['R' . $p] == 0) $desired_state = 'LOW';
+            else $desired_state = 'HIGH';
+            
+            $GPIO_state = shell_exec("$gpio_path -g read $pin");
+            if ($GPIO_state == 0 && $trigger_state == 'HIGH') $actual_state = 'LOW';
+            else if ($GPIO_state == 0 && $trigger_state == 'LOW') $actual_state = 'HIGH';
+            else if ($GPIO_state == 1 && $trigger_state == 'HIGH') $actual_state = 'HIGH';    
+            else if ($GPIO_state == 1 && $trigger_state == 'LOW') $actual_state = 'LOW';
             $seconds_on = $_POST['sR' . $p];
             
             if (!is_numeric($seconds_on) || $seconds_on < 2 || $seconds_on != round($seconds_on)) {
                 echo "<div class=\"error\">Error: Relay $p ($name): Seconds must be a positive integer >1</div>";
-            } else if (shell_exec($actual_state) == 0) {
-                echo "<div class=\"error\">Error: Relay $p ($name): Can't turn on for $seconds_on seconds, it's already ON</div>";
+            } else if ($actual_state == 'HIGH' && $desired_state == 'HIGH') {
+                $error_code = 'already_on';
             } else {
-                $relay_on_sec = "$mycodo_client --set $p --seconds $seconds_on";
+                $relay_on_sec = "$mycodo_client --set $p $seconds_on";
                 shell_exec($relay_on_sec);
             }
-        } else if (isset($_POST[$p . 'secON']) && $_SESSION['user_name'] == guest) $guest_error = 1;
+        } else if (isset($_POST[$p . 'secON']) && $_SESSION['user_name'] == guest) $error_code = 'guest';
     }
         
     if (isset($_POST['WriteSensorLog']) || isset($_POST['ChangeSensor']) ||
             isset($_POST['ChangeTempPID']) || isset($_POST['ChangeHumPID']) ||
             isset($_POST['TempOR']) || isset($_POST['HumOR']) ||
-            isset($_POST['ModPin']) || isset($_POST['ModName'])) {
+            isset($_POST['ModPin']) || isset($_POST['ModName']) ||
+            isset($_POST['ModTrigger'])) {
         if ($_SESSION['user_name'] != guest) {
             
             // Request a sensor read and sensor log write
@@ -179,10 +201,10 @@ if ($login->isUserLoggedIn() == true) {
             if (isset($_POST['ModName'])) {
                 for ($i = 1; $i <= 8; $i++) {
                     if (isset($_POST['relay' . $i . 'name'])) {
-                        $relayName[$i] = str_replace(' ', '', $_POST['relay' . $i . 'name']);
+                        ${'relay' . $i . 'name'} = str_replace(' ', '', $_POST['relay' . $i . 'name']);
                     }
                 }
-                $editconfig = "$mycodo_client --modnames $relayName[1] $relayName[2] $relayName[3] $relayName[4] $relayName[5] $relayName[6] $relayName[7] $relayName[8]";
+                $editconfig = "$mycodo_client --modnames $relay1name $relay2name $relay3name $relay4name $relay5name $relay6name $relay7name $relay8name";
                 shell_exec($editconfig);
                 sleep(6);
             }
@@ -191,10 +213,22 @@ if ($login->isUserLoggedIn() == true) {
             if (isset($_POST['ModPin'])) {
                 for ($i = 1; $i <= 8; $i++) {
                     if (isset($_POST['relay' . $i . 'pin'])) {
-                        $relayPin[$i] = $_POST['relay' . $i . 'pin'];
+                        ${'relay' . $i . 'pin'} = $_POST['relay' . $i . 'pin'];
                     }
                 }
-                $editconfig = "$mycodo_client --modpins $relayPin[1] $relayPin[2] $relayPin[3] $relayPin[4] $relayPin[5] $relayPin[6] $relayPin[7] $relayPin[8]";
+                $editconfig = "$mycodo_client --modpins $relay1pin $relay2pin $relay3pin $relay4pin $relay5pin $relay6pin $relay7pin $relay8pin";
+                shell_exec($editconfig);
+                sleep(6);
+            }
+            
+            // Request the relay pin(s) be renumbered
+            if (isset($_POST['ModTrigger'])) {
+                for ($i = 1; $i <= 8; $i++) {
+                    if (isset($_POST['relay' . $i . 'trigger'])) {
+                        ${'relay' . $i . 'trigger'} = $_POST['relay' . $i . 'trigger'];
+                    }
+                }
+                $editconfig = "$mycodo_client --modtrigger $relay1trigger $relay2trigger $relay3trigger $relay4trigger $relay5trigger $relay6trigger $relay7trigger $relay8trigger";
                 shell_exec($editconfig);
                 sleep(6);
             }
@@ -252,15 +286,11 @@ if ($login->isUserLoggedIn() == true) {
                 shell_exec($editconfig);
                 sleep(6);
             }
-        } else $guest_error = 1;
+        } else $error_code = 'guest';
     }
-    
-    // Ensures error only displayed once
-    if ($guest_error) {
-        echo "<span class=\"error\">You do not have the proper privileges to perform that task!</span>";
-        $guest_error = 0;
-    }
-    
+      
+    $config_contents = file_get_contents($config_file);
+    $config_rows = explode("\n", $config_contents);
     foreach($config_rows as $row => $data) {
         $row_data = explode(' = ', $data);
         if (!empty($row_data[1])) {
@@ -309,6 +339,19 @@ if ($login->isUserLoggedIn() == true) {
 </head>
 <body>
 <div class="cd-tabs">
+<?php
+// Ensures error only displayed once
+
+switch ($error_code) {
+    case 'guest':
+        echo "<span class=\"error\">You do not have the proper privileges to perform that task!</span>";
+    case 'already_on':
+        echo "<div class=\"error\">Error: Can't turn relay On, it's already On</div>";
+    case 'already_off':
+        echo "<div class=\"error\">Error: Can't turn relay Off, it's already Off</div>";
+}
+$error_code = 0;
+?>
 <div class="main-wrapper">
     <div class="header">
         <div style="float: left;">
@@ -503,26 +546,18 @@ if ($login->isUserLoggedIn() == true) {
                 <div style="float: left; padding-right: 15px;">
                     <table class="relays">
                         <tr>
-                            <td align=center class="table-header">
-                                Relay
-                            </td>
-                            <td align=left class="table-header">
-                                Name
-                            </td>
-                            <td align=left class="table-header">
-                                GPIO
-                            </td>
-                            <th colspan=2  align=center class="table-header">
-                                State
-                            </th>
-                            <td align=left class="table-header">
-                                Seconds On
-                            </td>
+                            <td align=center class="table-header">Relay<br>No.</td>
+                            <td align=center class="table-header">Relay<br>Name</td>
+                            <th colspan=2  align=center class="table-header">Current<br>State</th>
+                            <td align=center class="table-header">Seconds<br>On</td>
+                            <td align=center class="table-header">GPIO<br>Pin</td>
+                            <td align=center class="table-header">Trigger<br>ON</td>
                         </tr>
                         <?php
                             for ($i = 1; $i <= 8; $i++) {
                                 $name = ${"relay" . $i . "name"};
                                 $pin = ${"relay" . $i . "pin"};
+                                $trigger = ${"relay" . $i . "trigger"};
                                 $read = "$gpio_path -g read $pin";
                         ?>
                         <tr>
@@ -532,27 +567,33 @@ if ($login->isUserLoggedIn() == true) {
                             <td align=center>
                                 <input type="text" value="<?php echo $name; ?>" maxlength=12 size=10 name="relay<?php echo $i; ?>name" title="Name of relay <?php echo $i; ?>"/>
                             </td>
-                            <td align=center>
-                                <input type="text" value="<?php echo $pin; ?>" maxlength=2 size=1 name="relay<?php echo $i; ?>pin" title="GPIO pin using BCM numbering, connected to relay <?php echo $i; ?>"/>
-                            </td>
                             <?php
                                 if (shell_exec($read) == 1) {
                                     ?>
                                     <th colspan=2 align=right>
-                                        <button class="linkon" type="submit" name="R<?php echo $i; ?>" value="1">OFF</button> | <button style="width: 40px;" type="submit" name="R<?php echo $i; ?>" value="0">ON</button>
+                                        <nobr><button class="linkoff" type="submit" name="R<?php echo $i; ?>" value="0">OFF</button> | <button style="width: 40px;" type="submit" name="R<?php echo $i; ?>" value="1">ON</button></nobr>
                                     </td>
                                     </th>
                                     <?php
                                 } else {
                                     ?>
                                     <th colspan=2 align=right>
-                                        <button class="linkoff" type="submit" name="R<?php echo $i; ?>" value="0">ON</button> | <button style="width: 40px;" type="submit" name="R<?php echo $i; ?>" value="1">OFF</button>
+                                        <nobr><button class="linkon" type="submit" name="R<?php echo $i; ?>" value="1">ON</button> | <button style="width: 40px;" type="submit" name="R<?php echo $i; ?>" value="0">OFF</button></nobr>
                                     </th>
                                     <?php
                                 }
                             ?>
                             <td>
-                                 <input type="text" maxlength=3 size=1 name="sR<?php echo $i; ?>" title="Number of seconds to turn this relay on"/> sec <input type="submit" name="<?php echo $i; ?>secON" value="ON">
+                                 [<input type="text" maxlength=3 size=1 name="sR<?php echo $i; ?>" title="Number of seconds to turn this relay on"/><input type="submit" name="<?php echo $i; ?>secON" value="ON">]
+                            </td>
+                            <td align=center>
+                                <input type="text" value="<?php echo $pin; ?>" maxlength=2 size=1 name="relay<?php echo $i; ?>pin" title="GPIO pin using BCM numbering, connected to relay <?php echo $i; ?>"/>
+                            </td>
+                            <td align=center>
+                                <select style="width: 65px;" name="relay<?php echo $i; ?>trigger">
+                                    <option <?php if ($trigger == 1) echo "selected=\"selected\""; ?> value="1">HIGH</option>
+                                    <option <?php if ($trigger == 0) echo "selected=\"selected\""; ?> value="0">LOW</option>
+                                </select>
                             </td>
                         </tr>
                         <?php 
@@ -564,8 +605,17 @@ if ($login->isUserLoggedIn() == true) {
                             <td align=left>
                                 <button type="submit" name="ModName" value="1" title="Change relay names to the ones specified above (Do not use spaces)">Rename</button>
                             </td>
-                            <td align=left>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td align=center>
                                 <button type="submit" name="ModPin" value="1" title="Change the (BCM) GPIO pins attached to relays to the ones specified above">Mod</button>
+                            </td>
+                            <td align=center>
+                                <button type="submit" name="ModTrigger" value="1" title="Change the ON trigger state of the relays.">Mod</button>
                             </td>
                         </tr>
                     </table>
