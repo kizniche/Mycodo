@@ -21,7 +21,7 @@ table.relays {
 }
 
 table.relays td {
-    padding: 0.7em;
+    padding: 0.5em 0.45em 0.5em 0.45em;
 }
 
 table.relays tr:nth-child(odd) {
@@ -34,12 +34,8 @@ table.relays tr:nth-child(odd) {
 	display: inline-block;
 }
 
-table.pid {
-    border: 2px solid #EBEBEB;
-}
-
 table.pid td {
-	padding: 0.4em;
+	padding: 0.4em 0.3em 0.4em 0.3em;
 }
 
 .shade {
@@ -97,7 +93,7 @@ button.linkon {
     border: none; 
     padding: 0 !important;
     font: inherit;
-    color: red;
+    color: green;
     cursor: pointer;
 }
 
@@ -107,7 +103,7 @@ button.linkoff {
     border: none; 
     padding: 0 !important;
     font: inherit;
-    color: green;
+    color: red;
     cursor: pointer;
 }
 
