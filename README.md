@@ -1,6 +1,6 @@
 # Mycodo
 
-   Originally design for gourmet mushroom cultivation, Mycodo is a system designed to regulate the temperature and humidity of an airspace with PID control. It utilizes a temperature/humidity sensor to monitor the environment and software PID controllers to modulate 8 relays that control devices to alter the environment. A web-interface allows viewing of current and past conditions as well as graph generation, configuration modification, and image and video acquisition, to name a few.
+   Originally design for gourmet mushroom cultivation, Mycodo is a system designed to regulate the temperature and humidity of an airspace with PID control. It utilizes a temperature/humidity sensor to monitor the environment and software PID controllers to modulate 8 relays that control devices to alter the environment. A web-interface features viewing of current and past conditions as well as graph generation, configuration modification, and image and video acquisition, to name a few.
    
    The main application, mycodo.py, runs in the background as a daemon. It performs all crucial tasks, such as periodically reading sensors, writing sensor and relay logs, turning relays on and off, running PID controllers for temperature and humidity regulation, and reading and writing to the configuration file, among others.
    
