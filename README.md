@@ -38,14 +38,17 @@ I'm since upgraded to a new set of hardware that support 8 individually-switchab
 * Temperature, humidity, and relay state logging
 * Temperature and humidity regulation with software PID controllers
 * Automatic and manual operation of 8 different 120-volt AC devices
+* TempFS to reduce writes to and extend the life of the SD card
+* Lock files to prevent more than one instance from writing to files at the same time 
 * Web Interface
-  * View historical temperature and humidity data 
-  * Generate custom graphs of current and past data, with presets for common time periods
+  * View historical temperature and humidity data as text and graphs
+  * Generate custom graphs of current and past data, or use presets of pre-defined time periods
   * Acquire images or stream live video (Raspberry Pi Camera Module)
   * Change modes of operation
-    * Assign a common name and GPIO pin to each of the 8 relays
-    * Switch from PID control (automatic) to manual operation (turn Off, turn On, On for [x] seconds)
+    * For each of the 8 relays: assign name, GPIO pin, and which state triggers the relay on (High/Low)
+    * Select DHT sensor being used and pin (current options are DHT11, DHT22, and AM2302)
     * Set desired temperature/humidity as well as respective P, I, and D variables of the PID controllers
+    * Switch from PID control (automatic) to manual operation (turn Off, turn On, On for [x] seconds)
   * Login Authentication (written by php-login.net)
     * Using official PHP password hashing functions and the most modern password hashing/salting web standards
     * Optional "remember me" cookie to keep session authenticated
@@ -58,13 +61,17 @@ I'm since upgraded to a new set of hardware that support 8 individually-switchab
 <a name="future"></a>
 ### Todo
 
+- [ ] Alarm if a critical failure has occurred (daemon stopped, critical temperature/humidity, etc.)
 - [ ] Take series of photos at different ISOs, combine to make HDR photo
 - [ ] Timelapse video creation ability (define start, end, duration between, etc.)  
-- [ ] Automatic log file backup when a certain size is reached  
-- [ ] Support for more than one temperature/humidity sensor  
-- [ ] Update user interface  
+- [X] Logs written to TempFS and periodically concatenated with SD card logs
+  - [ ] Automatic log file backup when a certain size is reached  
+- [X] Support for more than one temperature/humidity sensor  
+  - [ ] Expand support for sensors (limited to when/if I get sensors to test)
+- [X] Update user interface  
   - [ ] Graphics (temperature, humidity, time, date, etc.)  
   - [ ] Touch screen improvements
+  - [X] Tabbed interface
 
 <a name="hard-brief"></a>
 ### Hardware
