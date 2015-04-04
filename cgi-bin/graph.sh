@@ -6,7 +6,7 @@
 #
 
 PATHC=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-LOGPATH="$(dirname "$PATHC")/log"
+LOGPATH="/var/tmp"
 IMAGEPATH="$(dirname "$PATHC")/images"
 Y1MIN=0
 Y1MAX=100

@@ -20,6 +20,8 @@ import Adafruit_DHT
 import ConfigParser
 import datetime
 import fcntl
+import filecmp
+import fileinput
 import getopt
 import logging
 import os
@@ -35,20 +37,24 @@ from lockfile import LockFile
 from rpyc.utils.server import ThreadedServer
 
 config_file = "%s/config/mycodo.cfg" % install_directory
+daemon_log_file_tmp = "%s/log/daemon-tmp.log" % install_directory
 daemon_log_file = "%s/log/daemon.log" % install_directory
+sensor_log_file_tmp = "%s/log/sensor-tmp.log" % install_directory
 sensor_log_file = "%s/log/sensor.log" % install_directory
+relay_log_file_tmp = "%s/log/relay-tmp.log" % install_directory
 relay_log_file = "%s/log/relay.log" % install_directory
 relay_script = "%s/cgi-bin/relay.sh" % install_directory
 
 logging.basicConfig(
-    filename=daemon_log_file,
+    filename=daemon_log_file_tmp,
     level=logging.DEBUG,
     format='%(asctime)s [%(levelname)s] %(message)s')
 
-lock_directory = "/var/lock/mycodo/"
-config_lock = "config"
-sensor_log_lock = "sensorlog"
-relay_log_lock = "relaylog"
+lock_directory = "/var/lock/mycodo"
+config_lock_path = "%s/config" % lock_directory
+daemon_lock_path = "%s/daemon" % lock_directory
+sensor_lock_path = "%s/sensor" % lock_directory
+relay_lock_path = "%s/relay" % lock_directory
 
 # GPIO pins (BCM numbering) and name of devices attached to relay
 relayPin = [0] * 9
@@ -429,12 +435,12 @@ def menu():
                 timestamp(), setTemp, setHum, TempOR, HumOR)
             sys.exit(0)
         elif opt in ("-w", "--write"):
-            global sensor_log_file
+            global sensor_log_file_tmp
             if arg == '':
                 print "[Write Log] No file specified, using default: %s" % (
-                    sensor_log_file)
+                    sensor_log_file_tmp)
             else:
-                sensor_log_file = arg
+                sensor_log_file_tmp = arg
             read_sensors(0)
             write_sensor_log()
             sys.exit(0)
@@ -471,6 +477,7 @@ def daemon(output):
     if DHTSensor != 'Other':
         read_sensors(0)
     
+    timerLogBackup = int(time.time()) + 21600 # 21600 seconds = 6 hours
     timerSensorLog = int(time.time()) + DHTSeconds
    
     tm = threading.Thread(target = temperature_monitor)   
@@ -538,6 +545,83 @@ def daemon(output):
             read_sensors(0)
             write_sensor_log()
             timerSensorLog = int(time.time()) + DHTSeconds
+        
+        # Concatenate local log with tempfs log every 6 hours
+        if int(time.time()) > timerLogBackup:
+            logging.info("[Timer Expiration] Run every 6 hours: Concatenate logs")
+            if not filecmp.cmp(daemon_log_file_tmp, daemon_log_file):
+                logging.info("[Daemon Log] Concatenating daemon logs to %s", daemon_log_file)
+                lock = LockFile(daemon_lock_path)
+                while not lock.i_am_locking():
+                    try:
+                        logging.info("[Daemon Log] Acquiring Lock: %s", lock.path)
+                        lock.acquire(timeout=60)    # wait up to 60 seconds
+                    except:
+                        logging.warning("[Daemon Log] Breaking Lock to Acquire: %s", lock.path)
+                        lock.break_lock()
+                        lock.acquire()
+                logging.info("[Daemon Log] Gained lock: %s", lock.path)
+                try:
+                    with open(daemon_log_file, 'a') as fout:
+                        for line in fileinput.input(daemon_log_file_tmp):
+                            fout.write(line)
+                    logging.info("[Daemon Log] Appended data to %s", daemon_log_file)
+                except:
+                    logging.warning("[Daemon Log] Unable to append data to %s", daemon_log_file)
+                open(daemon_log_file_tmp, 'w').close()
+                logging.info("[Daemon Log] Removing lock: %s", lock.path)
+                lock.release()
+            else:
+                logging.info("[Daemon Log] Daemon logs the same, skipping.")
+            if not filecmp.cmp(sensor_log_file_tmp, sensor_log_file):
+                logging.info("[Sensor Log] Concatenating sensor logs to %s", sensor_log_file)
+                lock = LockFile(sensor_lock_path)
+                while not lock.i_am_locking():
+                    try:
+                        logging.info("[Sensor Log] Acquiring Lock: %s", lock.path)
+                        lock.acquire(timeout=60)    # wait up to 60 seconds
+                    except:
+                        logging.warning("[Sensor Log] Breaking Lock to Acquire: %s", lock.path)
+                        lock.break_lock()
+                        lock.acquire()
+                logging.info("[Sensor Log] Gained lock: %s", lock.path)
+                try:
+                    with open(sensor_log_file, 'a') as fout:
+                        for line in fileinput.input(sensor_log_file_tmp):
+                            fout.write(line)
+                    logging.info("[Daemon Log] Appended data to %s", sensor_log_file)
+                except:
+                    logging.warning("[Sensor Log] Unable to append data to %s", sensor_log_file)
+                open(sensor_log_file_tmp, 'w').close()
+                logging.info("[Sensor Log] Removing lock: %s", lock.path)
+                lock.release()
+            else:
+                logging.info("[Sensor Log] Sensor logs the same, skipping.")
+            if not filecmp.cmp(relay_log_file_tmp, relay_log_file):
+                logging.info("[Relay Log] Concatenating relay logs to %s", relay_log_file)
+                lock = LockFile(relay_lock_path)
+                while not lock.i_am_locking():
+                    try:
+                        logging.info("[Relay Log] Acquiring Lock: %s", lock.path)
+                        lock.acquire(timeout=60)    # wait up to 60 seconds
+                    except:
+                        logging.warning("[Relay Log] Breaking Lock to Acquire: %s", lock.path)
+                        lock.break_lock()
+                        lock.acquire()
+                logging.info("[Relay Log] Gained lock: %s", lock.path)
+                try:
+                    with open(relay_log_file, 'a') as fout:
+                        for line in fileinput.input(relay_log_file_tmp):
+                            fout.write(line)
+                    logging.info("[Daemon Log] Appended data to %s", relay_log_file)
+                except:
+                    logging.warning("[Relay Log] Unable to append data to %s", relay_log_file)
+                open(relay_log_file_tmp, 'w').close()
+                logging.info("[Relay Log] Removing lock: %s", lock.path)
+                lock.release()
+            else:
+                logging.info("[Relay Log] Relay logs the same, skipping.")
+            timerLogBackup = int(time.time()) + 21600
 
         time.sleep(1)
 
@@ -622,7 +706,6 @@ def humidity_monitor():
 
 # Append sensor data to the log file
 def write_sensor_log():
-    sensor_lock_path = lock_directory + sensor_log_lock
     config = ConfigParser.RawConfigParser()
 
     if not os.path.exists(lock_directory):
@@ -639,19 +722,18 @@ def write_sensor_log():
                 lock.acquire()
         logging.info("[Write Sensor Log] Gained lock: %s", lock.path)
         try:
-            with open(sensor_log_file, "ab") as sensorlog:
+            with open(sensor_log_file_tmp, "ab") as sensorlog:
                 sensorlog.write('{0} {1:.1f} {2:.1f} {3:.1f}\n'.format(
                     datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
                     tempc, humidity, dewpointc))
-                logging.info("[Write Sensor Log] Data appended to %s", sensor_log_file)
+                logging.info("[Write Sensor Log] Data appended to %s", sensor_log_file_tmp)
         except:
-            logging.warning("[Write Sensor Log] Unable to append data to %s", sensor_log_file)
+            logging.warning("[Write Sensor Log] Unable to append data to %s", sensor_log_file_tmp)
         logging.info("[Write Sensor Log] Removing lock: %s", lock.path)
         lock.release()
 
 # Append the duration the relay has been on to the log file
 def write_relay_log(relayNumber, relaySeconds):
-    relay_lock_path = lock_directory + relay_log_lock
     config = ConfigParser.RawConfigParser()
 
     if not os.path.exists(lock_directory):
@@ -672,13 +754,13 @@ def write_relay_log(relayNumber, relaySeconds):
             if n == relayNumber:
                 relay[relayNumber] = relaySeconds
         try:
-            with open(relay_log_file, "ab") as relaylog:
+            with open(relay_log_file_tmp, "ab") as relaylog:
                 relaylog.write('{0} {1} {2} {3} {4} {5} {6} {7} {8}\n'.format(
                     datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
                     relay[1], relay[2], relay[3], relay[4],
                     relay[5], relay[6], relay[7], relay[8]))
         except:
-            logging.warning("[Write Relay Log] Unable to append data to %s", relay_log_file)
+            logging.warning("[Write Relay Log] Unable to append data to %s", relay_log_file_tmp)
         logging.info("[Write Relay Log] Removing lock: %s", lock.path)
         lock.release()
 
@@ -838,7 +920,6 @@ def read_config(silent):
 
 # Write variables to configuration file
 def write_config():
-    config_lock_path = lock_directory + config_lock
     config = ConfigParser.RawConfigParser()
 
     if not os.path.exists(lock_directory):
@@ -922,8 +1003,8 @@ def write_config():
     try:
         with open(config_file, 'wb') as configfile:
             config.write(configfile)
-        except:
-            logging.warning("[Write Config] Unable to write config: %s", config_lock_path)
+    except:
+        logging.warning("[Write Config] Unable to write config: %s", config_lock_path)
         
     logging.info("[Write Config] Removing lock: %s", lock.path)
     lock.release()

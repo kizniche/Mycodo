@@ -19,28 +19,34 @@ case "${1:-''}" in
             chown www-data.www-data /var/www/mycodo/images
         fi
 
-        if [ ! -e /var/log/mycodo/sensor.log ]; then
-            touch /var/log/mycodo/sensor.log
+        if [ ! -e /var/log/mycodo/sensor-tmp.log ]; then
+            touch /var/log/mycodo/sensor-tmp.log
+        fi
+        if [ ! -e /var/www/mycodo/log/sensor.log ]; then
+            touch /var/www/mycodo/log/sensor.log
+        fi
+        if [ ! -h /var/www/mycodo/log/sensor-tmp.log ]; then
+            ln -s /var/log/mycodo/sensor-tmp.log /var/www/mycodo/log/sensor-tmp.log
         fi
         
-        if [ ! -h /var/www/mycodo/log/sensor.log ]; then
-            ln -s /var/log/mycodo/sensor.log /var/www/mycodo/log/sensor.log
+        if [ ! -e /var/log/mycodo/relay-tmp.log ]; then
+            touch /var/log/mycodo/relay-tmp.log
+        fi
+        if [ ! -e /var/www/mycodo/log/relay.log ]; then
+            touch /var/www/mycodo/log/relay.log
+        fi
+        if [ ! -h /var/www/mycodo/log/relay-tmp.log ]; then
+            ln -s /var/log/mycodo/relay-tmp.log /var/www/mycodo/log/relay-tmp.log
         fi
         
-        if [ ! -e /var/log/mycodo/relay.log ]; then
-            touch /var/log/mycodo/relay.log
+        if [ ! -e /var/log/mycodo/daemon-tmp.log ]; then
+            touch /var/log/mycodo/daemon-tmp.log
         fi
-        
-        if [ ! -h /var/www/mycodo/log/relay.log ]; then
-            ln -s /var/log/mycodo/relay.log /var/www/mycodo/log/relay.log
+        if [ ! -e /var/www/mycodo/log/daemon.log ]; then
+            touch /var/www/mycodo/log/daemon.log
         fi
-        
-        if [ ! -e /var/log/mycodo/daemon.log ]; then
-            touch /var/log/mycodo/daemon.log
-        fi
-        
-        if [ ! -h /var/www/mycodo/log/daemon.log ]; then
-            ln -s /var/log/mycodo/daemon.log /var/www/mycodo/log/daemon.log
+        if [ ! -h /var/www/mycodo/log/daemon-tmp.log ]; then
+            ln -s /var/log/mycodo/daemon-tmp.log /var/www/mycodo/log/daemon-tmp.log
         fi
         
         chmod -R 770 /var/log/mycodo

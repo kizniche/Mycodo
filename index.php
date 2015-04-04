@@ -15,11 +15,15 @@ $gpio_path = "/usr/local/bin/gpio";
 
 ########## End Configure ##########
 
+`cat /var/www/mycodo/log/daemon.log /var/www/mycodo/log/daemon-tmp.log > /var/tmp/daemon.log`;
+`cat /var/www/mycodo/log/sensor.log /var/www/mycodo/log/sensor-tmp.log > /var/tmp/sensor.log`;
+`cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log > /var/tmp/relay.log`;
+
 $config_file = $install_path . "/config/mycodo.cfg";
-$sensor_log = $install_path . "/log/sensor.log";
-$relay_log = $install_path . "/log/relay.log";
 $auth_log = $install_path . "/log/auth.log";
-$daemon_log = $install_path . "/log/mycodo.log";
+$sensor_log = "/var/tmp/sensor.log";
+$relay_log = "/va/tmp/relay.log";
+$daemon_log = "/var/tmp/daemon.log";
 $images = $install_path . "/images";
 $mycodo_client = $install_path . "/cgi-bin/mycodo-client.py";
 $graph_exec = $install_path . "/cgi-bin/graph.sh";
