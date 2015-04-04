@@ -35,18 +35,18 @@ case "${1:-''}" in
             ln -s /var/log/mycodo/relay.log /var/www/mycodo/log/relay.log
         fi
         
-        if [ ! -e /var/log/mycodo/mycodo.log ]; then
-            touch /var/log/mycodo/mycodo.log
+        if [ ! -e /var/log/mycodo/daemon.log ]; then
+            touch /var/log/mycodo/daemon.log
         fi
         
-        if [ ! -h /var/www/mycodo/log/mycodo.log ]; then
-            ln -s /var/log/mycodo/mycodo.log /var/www/mycodo/log/mycodo.log
+        if [ ! -h /var/www/mycodo/log/daemon.log ]; then
+            ln -s /var/log/mycodo/daemon.log /var/www/mycodo/log/daemon.log
         fi
         
         chmod -R 770 /var/log/mycodo
         chown -R www-data.www-data /var/log/mycodo
         
-        stdbuf -oL python /var/www/mycodo/cgi-bin/mycodo.py -d >> /var/log/mycodo/mycodo.log 2>&1 &
+        python /var/www/mycodo/cgi-bin/mycodo.py -d s 2>&1 &
         ;;
     'stop')
         /var/www/mycodo/cgi-bin/mycodo-client.py -t

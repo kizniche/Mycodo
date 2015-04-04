@@ -17,26 +17,33 @@ install_directory = "/var/www/mycodo"
 #### Configure Install Directory ####
 
 import Adafruit_DHT
-import subprocess
-import re
-import os
-import fcntl
-import sys
-import time
-import datetime
-import getopt
-import RPi.GPIO as GPIO
 import ConfigParser
-import threading
+import datetime
+import fcntl
+import getopt
+import logging
+import os
+import re
 import rpyc
-from rpyc.utils.server import ThreadedServer
-from lockfile import LockFile
+import RPi.GPIO as GPIO
+import subprocess
+import sys
+import threading
+import time
 from array import *
+from lockfile import LockFile
+from rpyc.utils.server import ThreadedServer
 
 config_file = "%s/config/mycodo.cfg" % install_directory
+daemon_log_file = "%s/log/daemon.log" % install_directory
 sensor_log_file = "%s/log/sensor.log" % install_directory
 relay_log_file = "%s/log/relay.log" % install_directory
 relay_script = "%s/cgi-bin/relay.sh" % install_directory
+
+logging.basicConfig(
+    filename=daemon_log_file,
+    level=logging.DEBUG,
+    format='%(asctime)s [%(levelname)s] %(message)s')
 
 lock_directory = "/var/lock/mycodo/"
 config_lock = "config"
@@ -111,8 +118,7 @@ Hum_PID_restart = 0
 class ComServer(rpyc.Service):
     def exposed_Modify_Variables(self, *variable_list):
         read_config(0)
-        print_sync("%s [Client command] Request to change variables" % (
-            timestamp()), 1)
+        logging.info("[Client command] Request to change variables")
         modify_var(*variable_list)
         read_config(0)
         return 1
@@ -149,10 +155,9 @@ class ComServer(rpyc.Service):
         relayName[6] = relayname6
         relayName[7] = relayname7
         relayName[8] = relayname8
-        print_sync("%s [Client command] Change Relay Names: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s" % (
-            timestamp(),
+        logging.info("[Client command] Change Relay Names: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s",
             relayName[1], relayName[2], relayName[3], relayName[4],
-            relayName[5], relayName[6], relayName[7], relayName[8]), 1)
+            relayName[5], relayName[6], relayName[7], relayName[8])
         write_config()
         return 1
     def exposed_ChangeRelayPins(self, relaypin1, relaypin2, relaypin3,
@@ -166,10 +171,9 @@ class ComServer(rpyc.Service):
         relayPin[6] = relaypin6
         relayPin[7] = relaypin7
         relayPin[8] = relaypin8
-        print_sync("%s [Client command] Change Relay Pins: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s" % (
-            timestamp(),
+        logging.info("[Client command] Change Relay Pins: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s",
             relayPin[1], relayPin[2], relayPin[3], relayPin[4],
-            relayPin[5], relayPin[6], relayPin[7], relayPin[8]), 1)
+            relayPin[5], relayPin[6], relayPin[7], relayPin[8])
         write_config()
         return 1
     def exposed_ChangeRelayTriggers(self, relaytrigger1, relaytrigger2, relaytrigger3,
@@ -183,10 +187,9 @@ class ComServer(rpyc.Service):
         relayTrigger[6] = relaytrigger6
         relayTrigger[7] = relaytrigger7
         relayTrigger[8] = relaytrigger8
-        print_sync("%s [Client command] Change Relay Triggers: 1: %s, 2: %s, 3: %s, 4: %s, 5: %s, 6: %s, 7: %s, 8: %s" % (
-            timestamp(),
+        logging.info("[Client command] Change Relay Triggers: 1: %s, 2: %s, 3: %s, 4: %s, 5: %s, 6: %s, 7: %s, 8: %s",
             relayTrigger[1], relayTrigger[2], relayTrigger[3], relayTrigger[4],
-            relayTrigger[5], relayTrigger[6], relayTrigger[7], relayTrigger[8]), 1)
+            relayTrigger[5], relayTrigger[6], relayTrigger[7], relayTrigger[8])
         write_config()
         return 1
     def exposed_WriteSensorLog(self):
@@ -304,34 +307,31 @@ class Temperature_PID:
 
 # Displays the program usage
 def usage():
-    print_sync("mycodo.py: Reads temperature and humidity from sensors, "
-        "writes log file, and operates relays as a daemon to maintain "
-        "set environmental conditions.\n", 1)
-    print_sync("Usage:   mycodo.py [OPTION]...\n", 1)
-    print_sync("Example: mycodo.py -w /var/www/mycodo/log/sensor.log", 1)
-    print_sync("         mycodo.py -c 1 -s 0", 1)
-    print_sync("         mycodo.py -n relay1Name --value Banana", 1)
-    print_sync("         mycodo.py --daemon\n", 1)
-    print_sync("Options:", 1)
-    print_sync("    -c, --change [RELAY] [ON/OFF/X] [TRIGGER]", 1)
-    print_sync("           Change the state of a relay", 1)
-    print_sync("           RELAY to ON, OFF, or (X) number of seconds on", 1)
-    print_sync("    -d, --daemon", 1)
-    print_sync("           Start program as daemon that monitors conditions and modulates relays", 1)
-    print_sync("    -h, --help", 1)
-    print_sync("           Display this help and exit", 1)
-    print_sync("    -n, --name=VARIABLE", 1)
-    print_sync("           Change the VALUE of a single VARIABLE (--value required)", 1)
-    print_sync("        --value=VALUE", 1)
-    print_sync("           Change the VALUE of variable NAME (-n required)", 1)
-    print_sync("    -p, --pin", 1)
-    print_sync("           Display status of the GPIO pins (HIGH or LOW)", 1)
-    print_sync("    -r  --read=[SENSOR/CONFIG]", 1)
-    print_sync("           Read and display sensor data or config settings", 1)
-    print_sync("    -s, --set setTemp setHum TempOR HumOR", 1)
-    print_sync("           Change operating parameters (must give all options as int, overrides must be 0 or 1)", 1)
-    print_sync("    -w, --write=FILE", 1)
-    print_sync("           Write sensor data to log file\n", 1)
+    print "mycodo.py: Reads temperature and humidity from sensors, " \
+        "writes log file, and operates relays as a daemon to maintain " \
+        "set environmental conditions.\n"
+    print "Usage:   mycodo.py [OPTION]...\n"
+    print "Example: mycodo.py -w /var/www/mycodo/log/sensor.log"
+    print "         mycodo.py -d s"
+    print "         mycodo.py -n relay1Name --value Banana"
+    print "         mycodo.py --read\n"
+    print "Options:"
+    print "    -c, --change [RELAY] [ON/OFF/X] [TRIGGER]"
+    print "           Change the state of a relay"
+    print "           RELAY to ON, OFF, or (X) number of seconds on"
+    print "    -d, --daemon [v/s]"
+    print "           Start program as daemon that monitors conditions and modulates relays"
+    print "           If ""v"" is set, then log output is sent tot the console, ""s"" for silent"
+    print "    -h, --help"
+    print "           Display this help and exit"
+    print "    -p, --pin"
+    print "           Display status of the GPIO pins (HIGH or LOW)"
+    print "    -r  --read"
+    print "           Read and display sensor data"
+    print "    -s, --set setTemp setHum TempOR HumOR"
+    print "           Change operating parameters (must give all options as int, overrides must be 0 or 1)"
+    print "    -w, --write=FILE"
+    print "           Write sensor data to log file\n"
 
 # Checks user options and arguments for validity
 def menu():
@@ -340,11 +340,11 @@ def menu():
         sys.exit(1)
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'c:dhpr:s:tw',
+        opts, args = getopt.getopt(sys.argv[1:], 'c:dhprs:tw',
             ["change=", "daemon", "help", "pin",
-            "read=", "set=", "write="])
+            "read", "set=", "write="])
     except getopt.GetoptError as err:
-        print(err) # will print_sync("option -a not recognized"
+        print(err) # will print "option -a not recognized"
         usage()
         sys.exit(2)
     for opt, arg in opts:
@@ -352,7 +352,7 @@ def menu():
             if not represents_int(sys.argv[2]) or \
                     int(float(sys.argv[2])) > 8 or \
                     int(float(sys.argv[2])) < 1:
-                print_sync("Error: --change only accepts integers 1 though 8", 1)
+                print "Error: --change only accepts integers 1 though 8"
                 sys.exit(1)
             else:
                 global relaySelect
@@ -361,30 +361,31 @@ def menu():
                     (sys.argv[3] == 'OFF' or sys.argv[3] == 'ON'):
                 read_config(0)
                 if sys.argv[3] == 'ON':
-                    print_sync("%s [GPIO Write] Relay %s ON" % (
-                        timestamp(), relaySelect), 1)
+                    print "%s [GPIO Write] Relay %s ON" % (
+                        timestamp(), relaySelect)
                     if (relayTrigger[int(float(sys.argv[2]))] == 1): gpio_change(relaySelect, 1)
                     else: gpio_change(relaySelect, 0)
                     gpio_read()
                     sys.exit(0)
                 if sys.argv[3] == 'OFF':
-                    print_sync("%s [GPIO Write] Relay %s OFF" % (
-                        timestamp(), relaySelect), 1)
+                    print "%s [GPIO Write] Relay %s OFF" % (
+                        timestamp(), relaySelect)
                     if (relayTrigger[int(float(sys.argv[2]))] == 1): gpio_change(relaySelect, 0)
                     else: gpio_change(relaySelect, 1)
                     gpio_read()
                     sys.exit(0)
                 elif int(float(sys.argv[3])) > 1:
-                    print_sync("%s [GPIO Write] Relay %s ON for %s seconds" % (
-                        timestamp(), int(float(arg))), 1)
+                    print "%s [GPIO Write] Relay %s ON for %s seconds" % (
+                        timestamp(), int(float(arg)))
                     relay_on_duration(int(float(sys.argv[2])), int(float(sys.argv[3])))
                     sys.exit(0)
                 else:
-                    print_sync("--state only accepts ON, OFF, integers > 1", 1)
+                    print "--state only accepts ON, OFF, integers > 1"
                     usage()
                     sys.exit(1)
         elif opt in ("-d", "--daemon"):
-            daemon()
+            if (sys.argv[2] == '-v'): daemon('verbose')
+            else: daemon('silent')
             sys.exit(0)
         elif opt in ("-h", "--help"):
             usage()
@@ -394,34 +395,25 @@ def menu():
             gpio_read()
             sys.exit(0)
         elif opt in ("-r", "--read"):
-            if arg == 'SENSOR':
-                read_sensors(0)
-                sys.exit(0)
-            elif arg == 'CONFIG':
-                read_config(0)
-                sys.exit(0)
-            else:
-                print_sync("Error: Invalid option for --read", 1)
-                usage()
-                sys.exit(1)
+            read_sensors(0)
+            sys.exit(0)
         elif opt in ("-s", "--set"):
             if len(sys.argv) != 6:
-                print_sync("Error: Too many/not enough options", 1)
+                print "Error: Too many/not enough options"
                 sys.exit(1)
             elif not represents_float(sys.argv[2]) and \
                     not represents_float(sys.argv[3]) and \
                     not represents_int(sys.argv[4]) and \
                     not represents_int(sys.argv[5]):
-                print_sync("Error: --set: temperature and humidity requires one decimal place and overrides need to be either 1 or 0", 1)
+                print "Error: --set: temperature and humidity requires one decimal place and overrides need to be either 1 or 0"
                 sys.exit(1)
             elif (sys.argv[4] != '0' and sys.argv[4] != '1') or \
                     (sys.argv[5] != '0' and sys.argv[5] != '1'):
-                print_sync("Error: Last option of --set must be 0 or 1", 1)
+                print "Error: Last option of --set must be 0 or 1"
                 sys.exit(0)
-            print_sync("%s [Set Conditions] Desired values: "
-                    "setTemp: %s, setHum: %s, TempOR: %s, HumOR: %s" 
-                    % (timestamp(),
-                    sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5]), 1)
+            print "[Set Conditions] Desired values: " \
+                "setTemp: %s, setHum: %s, TempOR: %s, HumOR: %s" % (
+                sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
             read_config(0)
             global setTemp
             global setHum
@@ -432,15 +424,15 @@ def menu():
             TempOR = int(float(sys.argv[4]))
             HumOR = int(float(sys.argv[5]))
             write_config()
-            print_sync("%s [Set Conditions] New Values: "
-                "setTemp: %.1f°C, setHum: %.1f%%, TempOR: %s, HumOR: %s" 
-                % (timestamp(), setTemp, setHum, TempOR, HumOR), 1)
+            print "[Set Conditions] New Values: " \
+                "setTemp: %.1f°C, setHum: %.1f%%, TempOR: %s, HumOR: %s" % (
+                timestamp(), setTemp, setHum, TempOR, HumOR)
             sys.exit(0)
         elif opt in ("-w", "--write"):
             global sensor_log_file
             if arg == '':
-                print_sync("%s [Write Log] No file specified, using default: %s" 
-                    % (timestamp(), sensor_log_file), 1)
+                print "[Write Log] No file specified, using default: %s" % (
+                    sensor_log_file)
             else:
                 sensor_log_file = arg
             read_sensors(0)
@@ -451,7 +443,7 @@ def menu():
 
 # Main loop that reads sensors, modifies relays based on sensor values, writes
 # sensor/relay logs, and receives/executes commands from mycodo-client.py
-def daemon():
+def daemon(output):
     global Temp_PID_restart
     global Hum_PID_restart
     global server
@@ -459,15 +451,21 @@ def daemon():
     global TAlive
     global ClientQue
     
-    print_sync("%s [Daemon] Daemon Started" % timestamp(), 1)
-    print_sync("%s [Comm Server] Starting Thread"
-        % timestamp(), 1)
+    if (output == 'verbose'):
+        # define a Handler which writes INFO messages or higher to the sys.stderr
+        console = logging.StreamHandler()
+        console.setLevel(logging.INFO)
+        # add the handler to the root logger
+        logging.getLogger('').addHandler(console)
+    
+    logging.info("[Daemon] Daemon Started")
+    logging.info("[Daemon} Communication server thread starting")
     ct = ComThread()
     ct.daemon = True
     ct.start()
-
-    print_sync("%s [Daemon] Initial configuration read to set variables"
-        % timestamp(), 1)
+    time.sleep(1)
+    
+    logging.info("[Daemon] Reading configuration file and initializing variables")
     read_config(1)
     
     if DHTSensor != 'Other':
@@ -486,22 +484,18 @@ def daemon():
     while True: # Main loop of the daemon
         if ClientQue != '0': # Run remote commands issued by mycodo-client.py
             if ClientQue == 'write_sensor_log':
-                print_sync("%s [Client command] Write Sensor Log" % (
-                    timestamp()), 1)
+                logging.info("[Client command] Write Sensor Log")
                 read_sensors(0)
                 write_sensor_log()
             elif ClientQue == 'gpio_change':
-                print_sync("%s [Client command] Set Relay %s GPIO to %s" % (
-                    timestamp(), ClientArg1, ClientArg1), 1)
+                logging.info("[Client command] Set Relay %s GPIO to %s", ClientArg1, ClientArg1)
                 gpio_change(ClientArg1, ClientArg2)
                 gpio_read()
             elif ClientQue == 'RelayOnSec':
-                print_sync("%s [Client command] Set Relay %s on for %s seconds"
-                    % (timestamp(), ClientArg1, ClientArg2), 1)
+                logging.info("[Client command] Set Relay %s on for %s seconds", ClientArg1, ClientArg2)
                 relay_on_duration(ClientArg1, ClientArg2)
             elif ClientQue == 'TerminateServer':
-                print_sync("%s [Client command] Terminate threads and shut down"
-                    % timestamp(), 1)
+                logging.info("[Client command] Terminate threads and shut down")
                 TAlive = 0
                 while TAlive != 2:
                     time.sleep(0.1)
@@ -509,13 +503,12 @@ def daemon():
                 while HAlive != 2:
                     time.sleep(0.1)
                 server.close()
-                print_sync("%s [Daemon] Exiting Python" % timestamp(), 1)
+                logging.info("[Daemon] Exiting Python")
                 sys.exit(0)
 
             if Temp_PID_restart == 1:
                 if tm.isAlive():
-                    print_sync("%s [Daemon] Restarting Temperature PID thread" 
-                        % timestamp(), 1)
+                    logging.info("[Daemon] Restarting Temperature PID thread")
                     TAlive = 0
                     while TAlive != 2:
                         time.sleep(0.1)
@@ -527,8 +520,7 @@ def daemon():
             
             if Hum_PID_restart:
                 if hm.isAlive():
-                    print_sync("%s [Daemon] Restarting Humidity PID thread" 
-                        % timestamp(), 1)
+                    logging.info("[Daemon] Restarting Humidity PID thread")
                     HAlive = 0
                     while HAlive != 2:
                         time.sleep(0.1)
@@ -542,8 +534,7 @@ def daemon():
         
         # Write sensor log
         if int(time.time()) > timerSensorLog and DHTSensor != 'Other':
-            print_sync("%s [Timer Expiration] Run every %s seconds: Write sensor log" 
-                % (timestamp(), DHTSeconds), 1)
+            logging.info("[Timer Expiration] Run every %s seconds: Write sensor log", DHTSeconds)
             read_sensors(0)
             write_sensor_log()
             timerSensorLog = int(time.time()) + DHTSeconds
@@ -556,8 +547,7 @@ def temperature_monitor():
     global TAlive
     timerTemp = 0
     PIDTemp = 0
-    print_sync("%s [PID Temperature] Starting Thread"
-                    % timestamp(), 1)
+    logging.info("[PID Temperature] Starting Thread")
     if (tempc < setTemp):
         tempState = 0
     else: 
@@ -570,28 +560,24 @@ def temperature_monitor():
     while TAlive == 1:
         if TempOR == 0 and Temp_PID_restart == 0:
             if int(time.time()) > timerTemp:
-                print_sync("%s [PID Temperature] Reading temperature..."
-                    % timestamp(), 1)
+                logging.info("[PID Temperature] Reading temperature...")
                 read_sensors(1)
                 if (tempc >= setTemp): tempState = 1
                 if (tempc < setTemp): tempState = 0
                 if (tempState == 0):
                     PIDTemp = round(p_temp.update(float(tempc)), 1)
-                    print_sync("%s [PID Temperature] Temperature (%.1f°C) < setTemp (%.1f°C)" 
-                        % (timestamp(), tempc, setTemp), 1)
-                    print_sync("%s [PID Temperature] PID = %.1f (seconds)" 
-                        % (timestamp(), PIDTemp), 1)
+                    logging.info("[PID Temperature] Temperature (%.1f°C) < setTemp (%.1f°C)", tempc, setTemp)
+                    logging.info("[PID Temperature] PID = %.1f (seconds)", PIDTemp)
                     if (PIDTemp > 0 and tempc < setTemp):
                         rod = threading.Thread(target = relay_on_duration, 
                             args = (relayTemp, PIDTemp,))
                         rod.start()
                     timerTemp = int(time.time()) + PIDTemp + factorTempSeconds
                 else:
-                    print_sync("%s [PID Temperature] Temperature (%.1f°C) > setTemp (%.1f°C), waiting 60 seconds" 
-                        % (timestamp(), tempc, setTemp), 1)
+                    logging.info("[PID Temperature] Temperature (%.1f°C) > setTemp (%.1f°C), waiting 60 seconds", tempc, setTemp)
                     p_temp.update(float(tempc))
                     timerTemp = int(time.time()) + 60
-    print_sync("%s [PID Temperature] Shutting Down Thread" % timestamp(), 1)
+    logging.info("[PID Temperature] Shutting Down Thread")
     TAlive = 2
 
 # Humidity modulation by PID control
@@ -601,8 +587,7 @@ def humidity_monitor():
     timerHum = 0
     PIDHum = 0
 
-    print_sync("%s [PID Humidity] Starting Thread" 
-        % timestamp(), 1)
+    logging.info("[PID Humidity] Starting Thread")
     if (humidity < setHum):
         humState = 0
     else:
@@ -615,28 +600,24 @@ def humidity_monitor():
     while HAlive == 1:
         if HumOR == 0 and Hum_PID_restart == 0:
             if int(time.time()) > timerHum:
-                print_sync("%s [PID Humidity] Reading humidity..." 
-                    % timestamp(), 1)
+                logging.info("[PID Humidity] Reading humidity...")
                 read_sensors(1)
                 if (humidity >= setHum): humState = 1
                 if (humidity < setHum): humState = 0
                 if (humState == 0):
                     PIDHum = round(p_hum.update(float(humidity)), 1)
-                    print_sync("%s [PID Humidity] Humidity (%.1f%%) < setHum (%.1f%%)" 
-                        % (timestamp(), humidity, setHum), 1)
-                    print_sync("%s [PID Humidity] PID = %.1f (seconds)" 
-                        % (timestamp(), PIDHum), 1)
+                    logging.info("%s [PID Humidity] Humidity (%.1f%%) < setHum (%.1f%%)", humidity, setHum)
+                    logging.info("%s [PID Humidity] PID = %.1f (seconds)", PIDHum)
                     if (PIDHum > 0 and humidity < setHum):
                         rod = threading.Thread(target = relay_on_duration,
                             args=(relayHum, PIDHum,))
                         rod.start()
                     timerHum = int(time.time()) + PIDHum + factorTempSeconds
                 else:
-                    print_sync("%s [PID Humidity] Humidity (%.1f%%) > setHum (%.1f%%), waiting 60 seconds" 
-                        % (timestamp(), humidity, setHum), 1)
+                    logging.info("[PID Humidity] Humidity (%.1f%%) > setHum (%.1f%%), waiting 60 seconds", humidity, setHum)
                     p_hum.update(float(humidity))
                     timerHum = int(time.time()) + 60
-    print_sync("%s [PID Humidity] Shutting Down Thread" % timestamp(), 1)
+    logging.info("[PID Humidity] Shutting Down Thread")
     HAlive = 2
 
 # Append sensor data to the log file
@@ -650,28 +631,22 @@ def write_sensor_log():
         lock = LockFile(sensor_lock_path)
         while not lock.i_am_locking():
             try:
-                print_sync("%s [Write Sensor Log] Acquiring Lock: %s" 
-                    % (timestamp(), lock.path), 1)
+                logging.info("[Write Sensor Log] Acquiring Lock: %s", lock.path)
                 lock.acquire(timeout=60)    # wait up to 60 seconds
             except:
-                print_sync("%s [Write Sensor Log] Breaking Lock to Acquire: %s" 
-                    % (timestamp(), lock.path), 1)
+                logging.warning("[Write Sensor Log] Breaking Lock to Acquire: %s", lock.path)
                 lock.break_lock()
                 lock.acquire()
-        print_sync("%s [Write Sensor Log] Gained lock: %s" 
-            % (timestamp(), lock.path), 1)
+        logging.info("[Write Sensor Log] Gained lock: %s", lock.path)
         try:
             with open(sensor_log_file, "ab") as sensorlog:
                 sensorlog.write('{0} {1:.1f} {2:.1f} {3:.1f}\n'.format(
                     datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
                     tempc, humidity, dewpointc))
-                print_sync("%s [Write Sensor Log] Data appended to %s" 
-                    % (timestamp(), sensor_log_file), 1)
+                logging.info("[Write Sensor Log] Data appended to %s", sensor_log_file)
         except:
-            print_sync("%s [Write Sensor Log] Unable to append data to %s" 
-                % (timestamp(), sensor_log_file), 1)
-        print_sync("%s [Write Sensor Log] Removing lock: %s" 
-            % (timestamp(), lock.path), 1)
+            logging.warning("[Write Sensor Log] Unable to append data to %s", sensor_log_file)
+        logging.info("[Write Sensor Log] Removing lock: %s", lock.path)
         lock.release()
 
 # Append the duration the relay has been on to the log file
@@ -685,16 +660,13 @@ def write_relay_log(relayNumber, relaySeconds):
         lock = LockFile(relay_lock_path)
         while not lock.i_am_locking():
             try:
-                print_sync("%s [Write Relay Log] Acquiring Lock: %s" 
-                    % (timestamp(), lock.path), 1)
+                logging.info("[Write Relay Log] Acquiring Lock: %s", lock.path)
                 lock.acquire(timeout=60)    # wait up to 60 seconds
             except:
-                print_sync("%s [Write Relay Log] Breaking Lock to Acquire: %s" 
-                    % (timestamp(), lock.path), 1)
+                logging.warning("[Write Relay Log] Breaking Lock to Acquire: %s", lock.path)
                 lock.break_lock()
                 lock.acquire()
-        print_sync("%s [Write Relay Log] Gained lock: %s" 
-            % (timestamp(), lock.path), 1)
+        logging.info("[Write Relay Log] Gained lock: %s", lock.path)
         relay = [0] * 9
         for n in range(1, 9):
             if n == relayNumber:
@@ -706,10 +678,8 @@ def write_relay_log(relayNumber, relaySeconds):
                     relay[1], relay[2], relay[3], relay[4],
                     relay[5], relay[6], relay[7], relay[8]))
         except:
-            print_sync("%s [Write Relay Log] Unable to append data to %s" 
-                % (timestamp(), relay_log_file), 1)
-        print_sync("%s [Write Relay Log] Removing lock: %s" 
-            % (timestamp(), lock.path), 1)
+            logging.warning("[Write Relay Log] Unable to append data to %s", relay_log_file)
+        logging.info("[Write Relay Log] Removing lock: %s", lock.path)
         lock.release()
 
 # Read the temperature and humidity from the DHT22 sensor
@@ -727,48 +697,40 @@ def read_sensors(silent):
     else: sensor = 'Other'
 
     if not silent and not Terminate:
-        print_sync("%s [Read Sensors] Taking first Temperature/humidity reading" 
-            % timestamp(), 1)
+        logging.info("[Read Sensors] Taking first Temperature/humidity reading")
     if not Terminate:
         humidity2, tempc2 = Adafruit_DHT.read_retry(sensor, DHTPin)
         if not silent:
-            print_sync("%s [Read Sensors] %.1f°C, %.1f%%" 
-                % (timestamp(), tempc2, humidity2), 1)
+            logging.info("[Read Sensors] %.1f°C, %.1f%%", tempc2, humidity2)
     if not Terminate:
         time.sleep(2)
         if not silent: 
-            print_sync("%s [Read Sensors] Taking second Temperature/humidity reading" 
-                % timestamp(), 1)
+            logging.info("[Read Sensors] Taking second Temperature/humidity reading")
 
     while chktemp and not Terminate:
         if not Terminate:
             humidity, tempc = Adafruit_DHT.read_retry(sensor, DHTPin)
         if not silent and not Terminate: 
-            print_sync("%s [Read Sensors] %.1f°C, %.1f%%" 
-                % (timestamp(), tempc, humidity), 1)
-            print_sync("%s [Read Sensors] Differences: %.1f°C, %.1f%%" 
-                % (timestamp(), abs(tempc2-tempc), abs(humidity2-humidity)), 1)
+            logging.info("[Read Sensors] %.1f°C, %.1f%%", tempc, humidity)
+            logging.info("[Read Sensors] Differences: %.1f°C, %.1f%%", abs(tempc2-tempc), abs(humidity2-humidity))
         if abs(tempc2-tempc) > 1 or abs(humidity2-humidity) > 1 and not Terminate:
             tempc2 = tempc
             humidity2 = humidity
             chktemp = 1
             if not silent:
-                print_sync("%s [Read Sensors] Successive readings > 1 difference: Rereading" 
-                    % timestamp(), 1)
+                logging.info("[Read Sensors] Successive readings > 1 difference: Rereading")
             time.sleep(2)
         elif not Terminate:
             chktemp = 0
             if not silent: 
-                print_sync("%s [Read Sensors] Successive readings < 1 difference: keeping." 
-                    % timestamp(), 1)
+                logging.info("[Read Sensors] Successive readings < 1 difference: keeping.")
             tempf = float(tempc)*9.0/5.0 + 32.0
             dewpointc = tempc - ((100-humidity) / 5)
             #dewpointf = dewpointc * 9 / 5 + 32
             #heatindexf =  -42.379 + 2.04901523 * tempf + 10.14333127 * humidity - 0.22475541 * tempf * humidity - 6.83783 * 10**-3 * tempf**2 - 5.481717 * 10**-2 * humidity**2 + 1.22874 * 10**-3 * tempf**2 * humidity + 8.5282 * 10**-4 * tempf * humidity**2 - 1.99 * 10**-6 * tempf**2 * humidity**2
             #heatindexc = (heatindexf - 32) * (5 / 9)
             if not silent: 
-                print_sync("%s [Read Sensors] Temp: %.2f°C, Hum: %.2f%%, DP: %.2f°C" 
-                    % (timestamp(), tempc, humidity, dewpointc), 1)
+                logging.info("[Read Sensors] Temp: %.2f°C, Hum: %.2f%%, DP: %.2f°C", tempc, humidity, dewpointc)
 
 # Read variables from the configuration file
 def read_config(silent):
@@ -865,22 +827,14 @@ def read_config(silent):
     relay8o = config.getint('States', 'relay8o')
 
     if not silent:
-        print_sync("%s [Read Config] setTemp: %.1f°C, setHum: %.1f%%, TempOR: %s, HumOR: %s" 
-            % (timestamp(), setTemp, setHum, TempOR, HumOR), 1)
-        print_sync("%s [Read Config] RelayNum[Name][Pin]:" % timestamp(), 0)
+        logging.info("[Read Config] setTemp: %.1f°C, setHum: %.1f%%, TempOR: %s, HumOR: %s", setTemp, setHum, TempOR, HumOR)
         for x in range(1,9):
-            if x == 5:
-                print_sync("\n%s [Read Config] RelayNum[Name][Pin]:" 
-                    % timestamp(), 0)
-            if relayPin[x] < 10:
-                print_sync("%s[%s][%s ]" % (x, relayName[x], relayPin[x]), 0)
-            else:
-                print_sync("%s[%s][%s]" % (x, relayName[x], relayPin[x]), 0)
-        print_sync("\n%s [Read Config] %s %s %s %s %s %s %s %s %s %s %s" 
-            % (timestamp(), tempState, humState, 
+            logging.info("[Read Config] RelayNum[Name][Pin]: %s[%s][%s]", x, relayName[x], relayPin[x])
+        logging.info("[Read Config] %s %s %s %s %s %s %s %s %s %s %s", 
+            tempState, humState, 
             relay1o, relay2o, relay3o, relay4o, 
             relay5o, relay6o, relay7o, relay8o, 
-            DHTSeconds), 1)
+            DHTSeconds)
 
 # Write variables to configuration file
 def write_config():
@@ -893,18 +847,14 @@ def write_config():
     lock = LockFile(config_lock_path)
     while not lock.i_am_locking():
         try:
-            print_sync("%s [Write Config] Waiting, Acquiring Lock: %s" 
-                % (timestamp(), lock.path), 1)
+            logging.info("[Write Config] Waiting, Acquiring Lock: %s", lock.path)
             lock.acquire(timeout=60)    # wait up to 60 seconds
         except:
-            print_sync("%s [Write Config] Breaking Lock to Acquire: %s" 
-                % (timestamp(), lock.path), 1)
+            logging.warning("[Write Config] Breaking Lock to Acquire: %s", lock.path)
             lock.break_lock()
             lock.acquire()
-    print_sync("%s [Write Config] Gained lock: %s" 
-         % (timestamp(), lock.path), 1)
-    print_sync("%s [Write Config] Writing config file %s" 
-        % (timestamp(), config_file), 1)
+    logging.info("[Write Config] Gained lock: %s", lock.path)
+    logging.info("[Write Config] Writing config file %s", config_file)
     
     config.add_section('Sensor')
     config.set('Sensor', 'dhtsensor', DHTSensor)
@@ -969,17 +919,18 @@ def write_config():
     config.set('States', 'relay7o', relay7o)
     config.set('States', 'relay8o', relay8o)
     
-    with open(config_file, 'wb') as configfile:
-        config.write(configfile)
-
-    print_sync("%s [Write Config] Removing lock: %s" 
-        % (timestamp(), lock.path), 1)
+    try:
+        with open(config_file, 'wb') as configfile:
+            config.write(configfile)
+        except:
+            logging.warning("[Write Config] Unable to write config: %s", config_lock_path)
+        
+    logging.info("[Write Config] Removing lock: %s", lock.path)
     lock.release()
 
 # Initialize GPIO
 def gpio_initialize():
-    print_sync("%s [GPIO Initialize] Set GPIO mode to BCM numbering, all as output" 
-        % timestamp(), 1)
+    logging.info("[GPIO Initialize] Set GPIO mode to BCM numbering, all as output")
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
     GPIO.setup(relayPin[1], GPIO.OUT)
@@ -993,45 +944,34 @@ def gpio_initialize():
 
 # Read states (HIGH/LOW) of GPIO pins
 def gpio_read():
-    print_sync("%s [GPIO Read]" % timestamp(), 0)
     for x in range(1, 9):
-        print_sync("Relay %s:" % x, 0)
-        if GPIO.input(relayPin[x]): print_sync("OFF,", 0)
-        else: print_sync("ON, ", 0)
-        if x == 4: print_sync("\n%s [GPIO Read]" % timestamp(), 0)
-        if x == 8: print_sync("", 1)
+        if GPIO.input(relayPin[x]): logging.info("[GPIO Read] Relay %s: OFF", x)
+        else: logging.info("[GPIO Read] Relay %s: ON", x)
 
 # Change GPIO (Select) to a specific state (State)
 def gpio_change(Select, State):
-    print_sync("%s [GPIO Write] Setting relay %s (%s) to %s (was %s)" 
-        % (timestamp(), Select, relayName[Select], 
-        State, GPIO.input(relayPin[Select])), 1)
+    logging.info("[GPIO Write] Setting relay %s (%s) to %s (was %s)", 
+        Select, relayName[Select], 
+        State, GPIO.input(relayPin[Select]))
     GPIO.output(relayPin[Select], State)
 
 # Set GPIO LOW (= relay ON) for a specific duration
 def relay_on_duration(relay, seconds):
     if GPIO.input(relayPin[relay]) == 1:
         write_relay_log(relay, seconds)
-        print_sync("%s [Relay Duration] Relay %s (%s) ON for %s seconds" 
-            % (timestamp(), relay, relayName[relay], seconds), 1)
+        logging.info("[Relay Duration] Relay %s (%s) ON for %s seconds", 
+            relay, relayName[relay], seconds)
         GPIO.output(relayPin[relay], relayTrigger[relay])
         time.sleep(seconds)
         if relayTrigger[relay] == 0: GPIO.output(relayPin[relay], 1)
         else: GPIO.output(relayPin[relay], 0)
-        print_sync("%s [Relay Duration] Relay %s (%s) OFF (was ON for %s sec)"
-            % (timestamp(), relay, relayName[relay], seconds), 1)
+        logging.info("[Relay Duration] Relay %s (%s) OFF (was ON for %s sec)", 
+            relay, relayName[relay], seconds)
         return 1
     else:
-        print_sync("%s [Relay Duration] Abort: Requested relay %s (%s) ON for %s seconds, but it's already on!" 
-            % (timestamp(), relay, relayName[relay], seconds), 1)
+        logging.warning("[Relay Duration] Abort: Requested relay %s (%s) ON for %s seconds, but it's already on!", 
+            relay, relayName[relay], seconds)
         return 0
-
-# all terminal/log output is piped through to ensure prints are synchronized
-def print_sync(msg, newline):
-    thread_name = threading.current_thread().name
-    if newline: line = '%s\n' % msg
-    else: line = '%s' % msg
-    print >>sys.stderr, line, # Trailing , indicates no implicit end-of-line
 
 # Check if string represents an integer value
 def represents_int(s):
