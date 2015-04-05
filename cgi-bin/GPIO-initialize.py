@@ -16,6 +16,7 @@ relayTrigger = [0] * 9
 
 def ReadCfg():
     global relayPin
+    global relayTrigger
 
     config = ConfigParser.RawConfigParser()
     config.read(config_file)
@@ -41,26 +42,12 @@ def ReadCfg():
 ReadCfg()
 
 for i in range(1, 9):
-    if relayTrigger[i] == 0: relayTrigger[i] == 1;
-    else: relayTrigger[i] == 0
+    if relayTrigger[i] == 0: relayTrigger[i] = 1;
+    else: relayTrigger[i] = 0
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-GPIO.setup(relayPin[1], GPIO.OUT)
-GPIO.setup(relayPin[2], GPIO.OUT)
-GPIO.setup(relayPin[3], GPIO.OUT)
-GPIO.setup(relayPin[4], GPIO.OUT)
-GPIO.setup(relayPin[5], GPIO.OUT)
-GPIO.setup(relayPin[6], GPIO.OUT)
-GPIO.setup(relayPin[7], GPIO.OUT)
-GPIO.setup(relayPin[8], GPIO.OUT)
-
-GPIO.output(relayPin[1], relayTrigger[1])
-GPIO.output(relayPin[2], relayTrigger[2])
-GPIO.output(relayPin[3], relayTrigger[3])
-GPIO.output(relayPin[4], relayTrigger[4])
-GPIO.output(relayPin[5], relayTrigger[5])
-GPIO.output(relayPin[6], relayTrigger[6])
-GPIO.output(relayPin[7], relayTrigger[7])
-GPIO.output(relayPin[8], relayTrigger[8])
+for i in range(1, 9):
+    GPIO.setup(relayPin[i], GPIO.OUT)
+    GPIO.output(relayPin[i], relayTrigger[i])
