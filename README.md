@@ -6,7 +6,7 @@
    
    The client application, mycodo-client.py, communicates and issues commands for the daemonized mycodo.py to carry out, such as specific configuration changes, relay changes, turning automation on and off, to name a few.
    
-   The HTTP control interface runs on a common LAMP system (Linux, Apache, MySQL, and PHP).
+   The HTTP control interface runs on a common LAMP system (Linux, Apache, MySQL, and PHP/Python).
 
 #### Index
 
@@ -44,6 +44,7 @@ I'm since upgraded to a new set of hardware that support 8 individually-switchab
   * View historical temperature and humidity data as text and graphs
   * Generate custom graphs of current and past data, or use presets of pre-defined time periods
   * Acquire images or stream live video (Raspberry Pi Camera Module)
+  * View authorization, daemon, sensor, and relay logs
   * Change modes of operation
     * For each of the 8 relays: assign name, GPIO pin, and which state triggers the relay on (High/Low)
     * Select DHT sensor being used and pin (current options are DHT11, DHT22, and AM2302)
@@ -256,9 +257,9 @@ This can be changed back with the following command if you wish to create more u
 
 Before starting the daemon, check that the sensors can be properly accessed. Edit config/mycodo.cfg and change the values of dhtsensor and dhtpin to match your configuration. Options for dhtsensor are 'DHT11', 'DHT22', and 'AM2302' (without the quotes). The default is DHT22 on pin 4. If set up correctly, the following command should display temperature and humidity:
 
-`sudo mycodo.py -r SENSOR`
+`sudo mycodo.py -r`
 
-Connect any GPIOs to your relays that are not normally HIGH or LOW upon boot. The GPIO-initialize.py script that's installed next will set the pins to output and HIGH. See the comment in the section below if your relays are normally energized when HIGH (instead of when LOW).
+Connect any GPIOs to your relays that are not normally HIGH or LOW upon boot. The GPIO-initialize.py script that's installed next will set the pins to output the opposite of that is specified in mycodo.cfg as their on state (that is, if you select HIGH as the on state, the initialization script will set them to LOW at boot). This should either be manually set in the congif file or through the web interface.
 
 <a name="cron"></a>
 ### Daemon Setup
@@ -286,7 +287,7 @@ Reboot to allow everything to start up
 
 Go to http://127.0.0.1/mycodo/index.php and log in with the credentials created earlier. You should see the menu to the left displaying the current humidity and temperature, and a graph to the right with the corresponding values.
 
-Select the "Configure Settings" from the menu and set up the proper pin numbers for your connected relays by referencing the GPIO BCM numbering for your particular board. These GPIO pins should be connected to your relay control pins. Keep in mind that a HIGH GPIO corresponds to the relay being OFF and a LOW GPIO corresponds to the relay being ON. If you have relays that are opposite or are mixing different relays that utilize both configurations, you will need to alter the GPIO-initialize.py script as well as mycodo.py to ensure your relays operate properly.
+Select the "Config" tab and set up the proper GPIO pin numbers for your connected relays by referencing the GPIO BCM numbering for your particular board. These GPIO pins should be connected to your relay control pins. Ensure you select the proper HIGH/LOW state for when the relay turns on. For instance, if the relay turns on when there is a HIGH signal sent to it (5 volts), select HIGH, otherwise if it is energized when a LOW signal (0 volts) is sent to it, select LOW.
 
 <a name="links"></a>
 ### Useful Links

@@ -15,6 +15,7 @@ $gpio_path = "/usr/local/bin/gpio";
 
 ########## End Configure ##########
 
+# Concatenate log files (to TempFS) to ensure the latest data is being used
 `cat /var/www/mycodo/log/daemon.log /var/www/mycodo/log/daemon-tmp.log > /var/tmp/daemon.log`;
 `cat /var/www/mycodo/log/sensor.log /var/www/mycodo/log/sensor-tmp.log > /var/tmp/sensor.log`;
 `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log > /var/tmp/relay.log`;
