@@ -62,6 +62,7 @@ I'm since upgraded to a new set of hardware that support 8 individually-switchab
 <a name="future"></a>
 ### Todo
 
+- [ ] Allow setting the maximum current draw of device(s) connected to each relay to ensure no combination of devices are ever activated that surpass the limit of the wiring/breaker (commonly 15 amps)
 - [ ] Alarm if a critical failure has occurred (daemon stopped, critical temperature/humidity, etc.)
 - [ ] Take series of photos at different ISOs, combine to make HDR photo
 - [ ] Timelapse video creation ability (define start, end, duration between, etc.)  
