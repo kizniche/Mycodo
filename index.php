@@ -871,6 +871,12 @@ $error_code = 0;
                 <table class="camera">
                     <tr>
                         <td>
+                            <input type="checkbox" name="lighton" value="1" <?php if (isset($_POST['lighton'])) echo "checked=\"checked\""; ?>> Light on for photo?</button>
+                        </td>
+                        <td>
+                            <input type="text" value="<?php echo $cameralight; ?>" maxlength=4 size=1 name="lightrelay" title=""/> Light relay</button>
+                        </td>
+                        <td>
                             <button name="Capture" type="submit" value="">Capture Still</button>
                         </td>
                         <td>
@@ -883,7 +889,12 @@ $error_code = 0;
                             <?php
                             if (isset($_POST['Capture'])) {
                                 if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) shell_exec("$stream_exec stop");
-                                $capture_output = shell_exec("$still_exec 2>&1; echo $?");
+                                if (isset($_POST['lighton'])) {
+                                    $lightrelay = $_POST['lightrelay'];
+                                    if (${"relay" . $lightrelay . "trigger"} == 1) $trigger = 1;
+                                    else $trigger = 0;
+                                    $capture_output = shell_exec("$still_exec " . ${'relay' . $lightrelay . "pin"} . " $trigger 2>&1; echo $?");
+                                } else $capture_output = shell_exec("$still_exec 2>&1; echo $?");
                             }
                             if (isset($_POST['start-stream'])) {
                                 if (file_exists($lock_raspistill) || file_exists($lock_mjpg_streamer)) {

@@ -106,6 +106,7 @@ DHTSensor = ''
 DHTPin = ''
 
 # Miscellaneous
+cameraLight = ''
 server = ''
 variableName = ''
 variableValue = ''
@@ -847,6 +848,7 @@ def read_config(silent):
     global relay6o
     global relay7o
     global relay8o
+    global cameraLight
 
     config = ConfigParser.RawConfigParser()
     config.read(config_file)
@@ -907,6 +909,8 @@ def read_config(silent):
     relay6o = config.getint('States', 'relay6o')
     relay7o = config.getint('States', 'relay7o')
     relay8o = config.getint('States', 'relay8o')
+    
+    cameraLight = config.getint('Misc', 'cameralight')
 
     if not silent:
         logging.info("[Read Config] setTemp: %.1f°C, setHum: %.1f%%, TempOR: %s, HumOR: %s", setTemp, setHum, TempOR, HumOR)
@@ -999,6 +1003,9 @@ def write_config():
     config.set('States', 'relay6o', relay6o)
     config.set('States', 'relay7o', relay7o)
     config.set('States', 'relay8o', relay8o)
+    
+    config.add_section('Misc')
+    config.set('Misc', 'cameralight', cameraLight)
     
     try:
         with open(config_file, 'wb') as configfile:
