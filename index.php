@@ -871,7 +871,7 @@ $error_code = 0;
                 <table class="camera">
                     <tr>
                         <td>
-                            <input type="checkbox" name="lighton" value="1" <?php if (isset($_POST['lighton'])) echo "checked=\"checked\""; ?>> Light on for photo?</button>
+                            <input type="checkbox" name="lighton" value="1" <?php if (isset($_POST['lighton'])) echo "checked=\"checked\""; ?>> Light on for still/stream?</button>
                         </td>
                         <td>
                             <input type="text" value="<?php echo $cameralight; ?>" maxlength=4 size=1 name="lightrelay" title=""/> Light relay</button>
@@ -900,11 +900,27 @@ $error_code = 0;
                                 if (file_exists($lock_raspistill) || file_exists($lock_mjpg_streamer)) {
                                 echo 'Lock files already present. Press \'Stop Stream\' to kill processes and remove lock files.<br>';
                                 } else {
-                                shell_exec("$stream_exec start > /dev/null &");
-                                sleep(1);
+                                    if (isset($_POST['lighton'])) {
+                                        $lightrelay = $_POST['lightrelay'];
+                                        if (${"relay" . $lightrelay . "trigger"} == 1) $trigger = 1;
+                                        else $trigger = 0;
+                                        shell_exec("$stream_exec start " . ${'relay' . $lightrelay . "pin"} . " $trigger > /dev/null &");
+                                        sleep(1);
+                                    } else {
+                                        shell_exec("$stream_exec start > /dev/null &");
+                                        sleep(1);
+                                    }
                                 }
                             }
-                            if (isset($_POST['stop-stream'])) shell_exec("$stream_exec stop");
+                            if (isset($_POST['stop-stream'])) {
+                                if (isset($_POST['lighton'])) {
+                                    $lightrelay = $_POST['lightrelay'];
+                                    if (${"relay" . $lightrelay . "trigger"} == 1) $trigger = 0;
+                                    else $trigger = 1;
+                                    shell_exec("$stream_exec stop " . ${'relay' . $lightrelay . "pin"} . " $trigger > /dev/null &");
+                                } else shell_exec("$stream_exec stop");
+                                sleep(1);
+                            }
                             if (!file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer)) echo 'Stream <span class="off">OFF</span>';
                             else echo 'Stream <span class="on">ON</span>';
                             ?>
