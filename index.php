@@ -122,6 +122,7 @@ function displayform() {
 
 if ($login->isUserLoggedIn() == true) {
     $page = isset($_GET['page']) ? $_GET['page'] : 'Main';
+    $tab = isset($_GET['tab']) ? $_GET['tab'] : 'Unset';
 
     // Read config file, for each row set variable to value
     $config_contents = file_get_contents($config_file);
@@ -381,8 +382,13 @@ $error_code = 0;
         </div>
     </div>
     <div class="header">
-        <div style="text-align: right; padding-top: 5px;">Time: <?php echo $time_now; ?></div>
-        <div style="text-align: right; padding-top: 5px;">Sensor: <?php echo $time_last; ?></div>
+        <div style="text-align: right; padding-top: 3px;">Time: <?php echo $time_now; ?></div>
+        <div style="text-align: right; padding-top: 3px;">Sensor: <?php echo $time_last; ?></div>
+        <div style="text-align: right; padding-top: 3px;"><?php
+            if (isset($_GET['r'])) {
+                echo "Auto Refresh <span class=\"on\">On</span> ($tab)";
+            } else echo "Auto Refresh <span class=\"off\">Off</span>";
+        ?></div>
     </div>
     <div class="header">
         <div class="header-title">
@@ -435,7 +441,7 @@ $error_code = 0;
 		<li data-content="main" <?php if (!isset($_GET['tab']) || (isset($_GET['tab']) && $_GET['tab'] == 'main')) echo "class=\"selected\""; ?>>
             <div>
                 <div style="padding-top: 5px;">
-                    <div style="float: left; padding: 8px 45px 10px 0;">
+                    <div style="float: left; padding: 8px 15px 10px 0;">
                         <?php
                         if (isset($_GET['r']) && $_GET['r'] == 1) {
                                 if (empty($page)) echo '<input type="button" onclick=\'location.href="?tab=main&r=1"\' value="Refresh">';
@@ -456,6 +462,9 @@ $error_code = 0;
                             }
                         ?>
                     </div>
+                    <div style="float: left; padding: 6px 35px 0 0;">
+                        <input type="submit" name="WriteSensorLog" value="Update Sensors" title="Take a new temperature and humidity reading">
+                    </div>
                     <div style="float: left; padding: 0 45px 10px 0">
                         <?php
                             menu_item('Main', 'Main', $page);
@@ -467,9 +476,6 @@ $error_code = 0;
                             menu_item('Year', 'Year', $page);
                             menu_item('All', 'All', $page);
                         ?>
-                    </div>
-                    <div style="float: left; padding: 8px 0 10px 0;">
-                        Legend: <a href="javascript:open_legend()">Brief</a> / <a href="javascript:open_legend_full()">Full</a>
                     </div>
                 </div>
                 <div style="clear: both;"></div>
@@ -522,6 +528,9 @@ $error_code = 0;
                     }
                     ?>
                 </div>
+                <div style="width: 100%; padding: 1em 0 0 0; text-align: center;">
+                        Legend: <a href="javascript:open_legend()">Brief</a> / <a href="javascript:open_legend_full()">Full</a>
+                </div>
             </div>
 		</li>
 
@@ -547,7 +556,7 @@ $error_code = 0;
             </div>
             
             <div style="clear: both;"></div>
-            <div style="padding-top: 25px;">
+            <div style="padding-top: 35px;">
                 <div style="float: left; padding-right: 15px;">
                     <table class="relays">
                         <tr>
@@ -871,10 +880,10 @@ $error_code = 0;
                 <table class="camera">
                     <tr>
                         <td>
-                            <input type="checkbox" name="lighton" value="1" <?php if (isset($_POST['lighton'])) echo "checked=\"checked\""; ?>> Light on for still/stream?</button>
+                            Light On? <input type="checkbox" name="lighton" value="1" <?php if (isset($_POST['lighton'])) echo "checked=\"checked\""; ?>>
                         </td>
                         <td>
-                            <input type="text" value="<?php echo $cameralight; ?>" maxlength=4 size=1 name="lightrelay" title=""/> Light relay</button>
+                            Light Relay: <input type="text" value="<?php echo $cameralight; ?>" maxlength=4 size=1 name="lightrelay" title=""/>
                         </td>
                         <td>
                             <button name="Capture" type="submit" value="">Capture Still</button>

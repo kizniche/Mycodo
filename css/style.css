@@ -21,7 +21,7 @@ table.relays {
 }
 
 table.relays td {
-    padding: 0.5em 0.45em 0.5em 0.45em;
+    padding: 0.5em 0.4em 0.5em 0.4em;
 }
 
 table.relays tr:nth-child(odd) {
