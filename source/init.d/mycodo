@@ -57,7 +57,7 @@ case "${1:-''}" in
     'stop')
         /var/www/mycodo/cgi-bin/mycodo-client.py -t
         
-        sleep 4
+        sleep 10
         
         if ps aux | grep '[m]ycodo.py -d'
         then
