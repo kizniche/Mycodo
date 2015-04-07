@@ -523,10 +523,10 @@ def daemon(output):
                     while TAlive != 2:
                         time.sleep(0.1)
                     TAlive = 1
+                Temp_PID_restart = 0
                 tm = threading.Thread(target = temperature_monitor)  
                 tm.daemon = True
                 tm.start()
-                Temp_PID_restart = 0
             
             if Hum_PID_restart:
                 if hm.isAlive():
@@ -535,10 +535,10 @@ def daemon(output):
                     while HAlive != 2:
                         time.sleep(0.1)
                     HAlive = 1
+                Hum_PID_restart = 0
                 hm = threading.Thread(target = humidity_monitor)
                 hm.daemon = True
                 hm.start()
-                Hum_PID_restart = 0
                 
             ClientQue = '0'
         
@@ -621,8 +621,8 @@ def humidity_monitor():
                 if (humidity < setHum): humState = 0
                 if (humState == 0):
                     PIDHum = round(p_hum.update(float(humidity)), 1)
-                    logging.info("%s [PID Humidity] Humidity (%.1f%%) < setHum (%.1f%%)", humidity, setHum)
-                    logging.info("%s [PID Humidity] PID = %.1f (seconds)", PIDHum)
+                    logging.info("[PID Humidity] Humidity (%.1f%%) < setHum (%.1f%%)", humidity, setHum)
+                    logging.info("[PID Humidity] PID = %.1f (seconds)", PIDHum)
                     if (PIDHum > 0 and humidity < setHum):
                         rod = threading.Thread(target = relay_on_duration,
                             args=(relayHum, PIDHum,))
