@@ -300,7 +300,7 @@ Main components
 .cd-tabs-navigation a[data-content='configure']::before {
   background-position: -5.714em 0;
 }
-.cd-tabs-navigation a[data-content='menu2']::before {
+.cd-tabs-navigation a[data-content='advanced']::before {
   background-position: -7.143em 0;
 }
 .cd-tabs-navigation a[data-content='log'].selected::before {
@@ -318,7 +318,7 @@ Main components
 .cd-tabs-navigation a[data-content='configure'].selected::before {
   background-position: -5.714em -1.429em;
 }
-.cd-tabs-navigation a[data-content='menu2'].selected::before {
+.cd-tabs-navigation a[data-content='advanced'].selected::before {
   background-position: -7.143em -1.429em;
 }
 

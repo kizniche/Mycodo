@@ -434,11 +434,15 @@ $error_code = 0;
 			<li><a data-content="graph" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'graph') echo "class=\"selected\""; ?> href="#0">Graphs</a></li>
 			<li><a data-content="camera" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'camera') echo "class=\"selected\""; ?> href="#0">Camera</a></li>
 			<li><a data-content="log" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'log') echo "class=\"selected\""; ?> href="#0">Log</a></li>
-			<li><a data-content="menu2" href="#0">Menu2</a></li>
+			<li><a data-content="advanced" href="#0">Advanced</a></li>
 		</ul> <!-- cd-tabs-navigation -->
 	</nav>
 	<ul class="cd-tabs-content">
 		<li data-content="main" <?php if (!isset($_GET['tab']) || (isset($_GET['tab']) && $_GET['tab'] == 'main')) echo "class=\"selected\""; ?>>
+        <FORM action="?tab=main<?php 
+            if (isset($_GET['r'])) echo "&r=" . $_GET['r'];
+            if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
+            ?>" method="POST">
             <div>
                 <div style="padding-top: 5px;">
                     <div style="float: left; padding: 8px 15px 10px 0;">
@@ -532,6 +536,7 @@ $error_code = 0;
                         Legend: <a href="javascript:open_legend()">Brief</a> / <a href="javascript:open_legend_full()">Full</a>
                 </div>
             </div>
+            </form>
 		</li>
 
 		<li data-content="configure" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'config') echo "class=\"selected\""; ?>>
@@ -1005,8 +1010,8 @@ $error_code = 0;
             </div>
 		</li>
 
-		<li data-content="menu2">
-			<p>Empty Menu2</p>
+		<li data-content="advanced">
+			<p>Advanced</p>
 		</li>
 	</ul> <!-- cd-tabs-content -->
 </div> <!-- cd-tabs -->

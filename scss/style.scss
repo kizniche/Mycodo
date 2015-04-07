@@ -194,7 +194,7 @@ header {
 			background-position: -80px 0;
 		}
 
-		&[data-content='menu2']::before {
+		&[data-content='advanced']::before {
 			background-position: -100px 0;
 		}
 
@@ -218,7 +218,7 @@ header {
 			background-position: -80px -20px;
 		}
 
-		&[data-content='menu2'].selected::before {
+		&[data-content='advanced'].selected::before {
 			background-position: -100px -20px;
 		}
 	}
