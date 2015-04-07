@@ -23,7 +23,7 @@ $gpio_path = "/usr/local/bin/gpio";
 $config_file = $install_path . "/config/mycodo.cfg";
 $auth_log = $install_path . "/log/auth.log";
 $sensor_log = "/var/tmp/sensor.log";
-$relay_log = "/va/tmp/relay.log";
+$relay_log = "/var/tmp/relay.log";
 $daemon_log = "/var/tmp/daemon.log";
 $images = $install_path . "/images";
 $mycodo_client = $install_path . "/cgi-bin/mycodo-client.py";
@@ -873,8 +873,8 @@ $error_code = 0;
                 \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\\\
                 \"\" using 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1" | gnuplot`;
                 displayform();
-                echo "<img src=image.php?span=cus>";
-                echo "<p><a href='javascript:open_legend()'>Brief Graph Legend</a> - <a href='javascript:open_legend_full()'>Full Graph Legend</a>";
+                echo "<center><img src=image.php?span=cus>";
+                echo "<p><a href='javascript:open_legend()'>Brief Graph Legend</a> - <a href='javascript:open_legend_full()'>Full Graph Legend</a></p></center>";
             } else displayform();
             ?>
 		</li>
@@ -943,6 +943,7 @@ $error_code = 0;
                 </table>
                 </form>
             </div>
+            <center>
             <?php
                 if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) {
                     echo '<img src="http://' . $_SERVER[HTTP_HOST] . ':8080/?action=stream" />';
@@ -952,6 +953,7 @@ $error_code = 0;
                     else echo '<p><img src=image.php?span=cam-still></p>';
                 }
             ?>
+            </center>
 		</li>
 
 		<li data-content="log" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'log') echo "class=\"selected\""; ?>>
