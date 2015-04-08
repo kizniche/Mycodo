@@ -33,6 +33,10 @@ $stream_exec = $install_path . "/cgi-bin/camera-stream.sh";
 $lock_raspistill = $lock_path . "/mycodo_raspistill";
 $lock_mjpg_streamer = $lock_path . "/mycodo_mjpg_streamer";
 
+$daemon_check = `ps aux | grep "[m]ycodo.py -d"`;
+if (empty($daemon_check)) $daemon_check = 0;
+else $daemon_check = 1;
+
 if (version_compare(PHP_VERSION, '5.3.7', '<')) {
     exit("PHP Login does not run on PHP versions before 5.3.7, please update your version of PHP");
 } else if (version_compare(PHP_VERSION, '5.5.0', '<')) {
@@ -385,9 +389,11 @@ $error_code = 0;
         <div style="text-align: right; padding-top: 3px;">Time: <?php echo $time_now; ?></div>
         <div style="text-align: right; padding-top: 3px;">Sensor: <?php echo $time_last; ?></div>
         <div style="text-align: right; padding-top: 3px;"><?php
+            if ($daemon_check) echo "Daemon <span class=\"on\">On</span>";
+            else echo "Daemon <span class=\"off\">Off</span>";
             if (isset($_GET['r'])) {
-                echo "Auto Refresh <span class=\"on\">On</span> ($tab)";
-            } else echo "Auto Refresh <span class=\"off\">Off</span>";
+            echo " | Refresh <span class=\"on\">On</span> ($tab)";
+            } else echo " | Refresh <span class=\"off\">Off</span>";
         ?></div>
     </div>
     <div class="header">
@@ -838,7 +844,7 @@ $error_code = 0;
                 $daye = $_POST['endDay'];
                 $mone = $_POST['endMonth'];
                 $yeare = $_POST['endYear'];
-                echo `echo "set terminal png size 830,490
+                echo `echo "set terminal png size 900,490
                 set xdata time
                 set timefmt \"%Y %m %d %H %M %S\"
                 set output \"$images/graph-cus.png\"
@@ -854,24 +860,32 @@ $error_code = 0;
                 set tics nomirror
                 set style line 12 lc rgb '#808080' lt 0 lw 1
                 set grid xtics ytics back ls 12
-                set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 2
-                set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 2
-                set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 2
-                set style line 4 lc rgb '#ffa500' pt 0 ps 1 lt 1 lw 1
-                set style line 5 lc rgb '#a101a6' pt 0 ps 1 lt 1 lw 1
-                set style line 6 lc rgb '#48dd00' pt 0 ps 1 lt 1 lw 1
-                set style line 7 lc rgb '#d30068' pt 0 ps 1 lt 1 lw 1
+                set style line 1 lc rgb '#FF3100' pt 0 ps 1 lt 1 lw 2
+                set style line 2 lc rgb '#0772A1' pt 0 ps 1 lt 1 lw 2
+                set style line 3 lc rgb '#00B74A' pt 0 ps 1 lt 1 lw 2
+                set style line 4 lc rgb '#91180B' pt 0 ps 1 lt 1 lw 1
+                set style line 5 lc rgb '#582557' pt 0 ps 1 lt 1 lw 1
+                set style line 6 lc rgb '#04834C' pt 0 ps 1 lt 1 lw 1
+                set style line 7 lc rgb '#DC32E6' pt 0 ps 1 lt 1 lw 1
+                set style line 8 lc rgb '#957EF9' pt 0 ps 1 lt 1 lw 1
+                set style line 9 lc rgb '#CC8D9C' pt 0 ps 1 lt 1 lw 1
+                set style line 10 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1
+                set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1
                 #set xlabel \"Date and Time\"
                 #set ylabel \"% Humidity\"
                 set title \"$monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
                 unset key
-                plot \"$sensor_log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, \\\\
-                \"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, \\\\
-                \"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, \\\\
-                \"$relay_log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\\\
-                \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\\\
-                \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\\\
-                \"\" using 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1" | gnuplot`;
+                plot \"$sensor_log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
+                \"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, \\
+                \"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
+                \"$relay_log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
+                \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\
+                \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\
+                \"\" using 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1, \\
+                \"\" using 1:11 index 0 title \"HUMI\" w impulses ls 8 axes x1y1, \\
+                \"\" using 1:12 index 0 title \"CFAN\" w impulses ls 9 axes x1y1, \\
+                \"\" using 1:13 index 0 title \"XXXX\" w impulses ls 10 axes x1y1, \\
+                \"\" using 1:14 index 0 title \"XXXX\" w impulses ls 11 axes x1y1" | gnuplot`;
                 displayform();
                 echo "<center><img src=image.php?span=cus>";
                 echo "<p><a href='javascript:open_legend()'>Brief Graph Legend</a> - <a href='javascript:open_legend_full()'>Full Graph Legend</a></p></center>";

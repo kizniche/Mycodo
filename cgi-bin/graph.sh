@@ -33,7 +33,7 @@ usage() {
 
 graph_single() {
 echo "reset
-set terminal png size 830,490
+set terminal png size 900,490
 set xdata time
 set timefmt \"%Y %m %d %H %M %S\"
 set output \"$IMAGEPATH/graph-$file.png\"
@@ -192,7 +192,7 @@ plot \"$LOGPATH/sensor.log\" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, \\
       graph_single
       ;;
     dayweek)
-echo "set terminal png size 830,1000
+echo "set terminal png size 900,1000
 set xdata time
 set timefmt \"%Y %m %d %H %M %S\"
 set output \"$IMAGEPATH/graph-main.png\"
@@ -258,7 +258,7 @@ unset multiplot" | gnuplot
       $0 year
       ;;
     6h-mobile)
-echo "set terminal png size 800,850
+echo "set terminal png size 900,850
 set xdata time
 set timefmt \"%Y %m %d %H %M %S\"
 set output \"$IMAGEPATH/graph-6h-mobile.png\"
@@ -297,7 +297,7 @@ plot \"$LOGPATH/sensor.log\" u 1:8 index 0 title \" RH\" w lp ls 1 axes x1y1, \\
      \"\" using 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1" | gnuplot
       ;;
     day-mobile)
-echo "set terminal png size 800,850
+echo "set terminal png size 900,850
 set xdata time
 set timefmt \"%Y %m %d %H %M %S\"
 set output \"$IMAGEPATH/graph-day-mobile.png\"
@@ -337,7 +337,7 @@ plot \"$LOGPATH/sensor.log\" using 1:8 index 0 title \" RH\" w lp ls 1 axes x1y1
      \"\" using 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1" | gnuplot
       ;;
     main-mobile)
-echo "set terminal png size 800,850
+echo "set terminal png size 900,850
 set xdata time
 set timefmt \"%Y %m %d %H %M %S\"
 set output \"$IMAGEPATH/graph-main-mobile.png\"
