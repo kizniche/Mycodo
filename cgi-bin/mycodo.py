@@ -554,7 +554,7 @@ def daemon(output):
             Concatenate_Logs()
             timerLogBackup = int(time.time()) + 21600
 
-        time.sleep(1)
+        time.sleep(0.1)
 
 # Temperature modulation by PID control
 def temperature_monitor():
@@ -572,7 +572,7 @@ def temperature_monitor():
     p_temp = Temperature_PID(Temp_P, Temp_I, Temp_D)
     p_temp.setPoint(setTemp)
     
-    while TAlive == 1:
+    while (TAlive):
         if TempOR == 0 and Temp_PID_restart == 0:
             if int(time.time()) > timerTemp:
                 logging.info("[PID Temperature] Reading temperature...")
@@ -581,7 +581,7 @@ def temperature_monitor():
                 if (tempc < setTemp): tempState = 0
                 if (tempState == 0):
                     PIDTemp = round(p_temp.update(float(tempc)), 1)
-                    logging.info("[PID Temperature] Temperature (%.1f°C) < setTemp (%.1f°C)", tempc, setTemp)
+                    logging.info("[PID Temperature] Temperature (%.1f°C) < (%.1f°C) setTemp", tempc, setTemp)
                     logging.info("[PID Temperature] PID = %.1f (seconds)", PIDTemp)
                     if (PIDTemp > 0 and tempc < setTemp):
                         rod = threading.Thread(target = relay_on_duration, 
@@ -592,7 +592,7 @@ def temperature_monitor():
                     logging.info("[PID Temperature] Temperature (%.1f°C) >= (%.1f°C) setTemp, waiting 60 seconds", tempc, setTemp)
                     p_temp.update(float(tempc))
                     timerTemp = int(time.time()) + 60
-        time.sleep(1)
+        time.sleep(0.1)
     logging.info("[PID Temperature] Shutting Down Thread")
     TAlive = 2
 
@@ -613,7 +613,7 @@ def humidity_monitor():
     p_hum = Humidity_PID(Hum_P, Hum_I, Hum_D)
     p_hum.setPoint(setHum)
 
-    while HAlive == 1:
+    while (HAlive):
         if HumOR == 0 and Hum_PID_restart == 0:
             if int(time.time()) > timerHum:
                 logging.info("[PID Humidity] Reading humidity...")
@@ -622,7 +622,7 @@ def humidity_monitor():
                 if (humidity < setHum): humState = 0
                 if (humState == 0):
                     PIDHum = round(p_hum.update(float(humidity)), 1)
-                    logging.info("[PID Humidity] Humidity (%.1f%%) < setHum (%.1f%%)", humidity, setHum)
+                    logging.info("[PID Humidity] Humidity (%.1f%%) < (%.1f%%) setHum", humidity, setHum)
                     logging.info("[PID Humidity] PID = %.1f (seconds)", PIDHum)
                     if (PIDHum > 0 and humidity < setHum):
                         rod = threading.Thread(target = relay_on_duration,
@@ -633,7 +633,7 @@ def humidity_monitor():
                     logging.info("[PID Humidity] Humidity (%.1f%%) >= (%.1f%%) setHum, waiting 60 seconds", humidity, setHum)
                     p_hum.update(float(humidity))
                     timerHum = int(time.time()) + 60
-        time.sleep(1)
+        time.sleep(0.1)
     logging.info("[PID Humidity] Shutting Down Thread")
     HAlive = 2
 
@@ -821,7 +821,7 @@ def read_sensors(silent):
             #heatindexf =  -42.379 + 2.04901523 * tempf + 10.14333127 * humidity - 0.22475541 * tempf * humidity - 6.83783 * 10**-3 * tempf**2 - 5.481717 * 10**-2 * humidity**2 + 1.22874 * 10**-3 * tempf**2 * humidity + 8.5282 * 10**-4 * tempf * humidity**2 - 1.99 * 10**-6 * tempf**2 * humidity**2
             #heatindexc = (heatindexf - 32) * (5 / 9)
             if not silent: 
-                logging.info("[Read Sensors] Temp: %.2f°C, Hum: %.2f%%, DP: %.2f°C", tempc, humidity, dewpointc)
+                logging.info("[Read Sensors] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", tempc, humidity, dewpointc)
 
 # Read variables from the configuration file
 def read_config(silent):
