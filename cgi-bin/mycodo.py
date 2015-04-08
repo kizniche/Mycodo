@@ -589,9 +589,10 @@ def temperature_monitor():
                         rod.start()
                     timerTemp = int(time.time()) + PIDTemp + factorTempSeconds
                 else:
-                    logging.info("[PID Temperature] Temperature (%.1f°C) > setTemp (%.1f°C), waiting 60 seconds", tempc, setTemp)
+                    logging.info("[PID Temperature] Temperature (%.1f°C) >= setTemp (%.1f°C), waiting 60 seconds", tempc, setTemp)
                     p_temp.update(float(tempc))
                     timerTemp = int(time.time()) + 60
+        time.sleep(1)
     logging.info("[PID Temperature] Shutting Down Thread")
     TAlive = 2
 
@@ -629,9 +630,10 @@ def humidity_monitor():
                         rod.start()
                     timerHum = int(time.time()) + PIDHum + factorTempSeconds
                 else:
-                    logging.info("[PID Humidity] Humidity (%.1f%%) > setHum (%.1f%%), waiting 60 seconds", humidity, setHum)
+                    logging.info("[PID Humidity] Humidity (%.1f%%) >= setHum (%.1f%%), waiting 60 seconds", humidity, setHum)
                     p_hum.update(float(humidity))
                     timerHum = int(time.time()) + 60
+        time.sleep(1)
     logging.info("[PID Humidity] Shutting Down Thread")
     HAlive = 2
 
