@@ -201,7 +201,7 @@ if ($login->isUserLoggedIn() == true) {
             isset($_POST['ModPin']) || isset($_POST['ModName']) ||
             isset($_POST['ModTrigger']) || isset($_POST['Auth']) || 
             isset($_POST['Capture']) || isset($_POST['start-stream']) ||
-            isset($_POST['stop-stream'])) {
+            isset($_POST['stop-stream']) || isset($_POST['ChangeNoTimers'])) {
         if ($_SESSION['user_name'] != guest) {
             
             // Request a sensor read and sensor log write
@@ -299,6 +299,13 @@ if ($login->isUserLoggedIn() == true) {
                 $editconfig = "$mycodo_client --modvar DHTSensor $dhtsensor DHTPin $dhtpin DHTSeconds $dhtseconds";
                 shell_exec($editconfig);
                 sleep(6);
+            }
+            
+            // Change number of custom timers **working on**
+            if (isset($_POST['ChangeNoTimers'])) {
+                $numtimers = $_POST['numtimers'];
+                $editconfig = "$mycodo_client --modvar numtimers";
+                shell_exec($editconfig);
             }
         } else $error_code = 'guest';
     }
@@ -453,7 +460,7 @@ $error_code = 0;
 			<li><a data-content="graph" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'graph') echo "class=\"selected\""; ?> href="#0">Graphs</a></li>
 			<li><a data-content="camera" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'camera') echo "class=\"selected\""; ?> href="#0">Camera</a></li>
 			<li><a data-content="log" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'log') echo "class=\"selected\""; ?> href="#0">Log</a></li>
-			<li><a data-content="advanced" href="#0">Advanced</a></li>
+			<li><a data-content="advanced" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'adv') echo "class=\"selected\""; ?> href="#0">Advanced</a></li>
 		</ul> <!-- cd-tabs-navigation -->
 	</nav>
 	<ul class="cd-tabs-content">
@@ -1041,8 +1048,61 @@ $error_code = 0;
             </div>
 		</li>
 
-		<li data-content="advanced">
-			<p>Advanced</p>
+		<li data-content="advanced" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'adv') echo "class=\"selected\""; ?>>
+<p>Advanced Options</p>
+
+            <?php /*<FORM action="?tab=adv" method="POST">
+			<div style="padding: 1em 0 2em 1em;">
+            Number of Timers 
+            <select name="numtimers">
+                <option value="1" <?php if ($numtimers == 1) echo "selected=\"selected\""; ?>>1</option>
+                <option value="2" <?php if ($numtimers == 2) echo "selected=\"selected\""; ?>>2</option>
+                <option value="3" <?php if ($numtimers == 3) echo "selected=\"selected\""; ?>>3</option>
+                <option value="4" <?php if ($numtimers == 4) echo "selected=\"selected\""; ?>>4</option>
+                <option value="5" <?php if ($numtimers == 5) echo "selected=\"selected\""; ?>>5</option>
+            </select>
+            <input type="submit" name="ChangeNoTimers" value="Save">
+            </div>
+            <div>
+                <?php for ($i = 1; $i <= $numtimers; $i++) { ?>
+                    <table class="timers">
+                    <tr>
+                    <td>
+                        Timer
+                    </td>
+                    <td>
+                        Relay
+                    </td>
+                    <td>
+                        On
+                    </td>
+                    <td>
+                        Off
+                    </td>
+                    <td>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <?php echo $i; ?>
+                    </td>
+                    <td>
+                        <input type="text" value="<?php echo $i; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>Relay" title="This is the relay number for timer <?php echo $i; ?>"/>
+                    </td>
+                    <td>
+                        <input type="text" value="<?php echo $i; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>On" title="This is On duration of timer <?php echo $i; ?>"/>
+                    </td>
+                    <td>
+                        <input type="text" value="<?php echo $i; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>Off" title="This is Off duration for timer <?php echo $i; ?>"/>
+                    </td>
+                    <td>
+                        <input type="submit" name="ChangeTimer<?php echo $i; ?>" value="Save">
+                    </td>
+                    </table>
+                <?php } ?>
+            </div>
+            </FORM>
+            */ ?>
 		</li>
 	</ul> <!-- cd-tabs-content -->
 </div> <!-- cd-tabs -->
