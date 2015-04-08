@@ -197,7 +197,9 @@ if ($login->isUserLoggedIn() == true) {
             isset($_POST['ChangeTempPID']) || isset($_POST['ChangeHumPID']) ||
             isset($_POST['TempOR']) || isset($_POST['HumOR']) ||
             isset($_POST['ModPin']) || isset($_POST['ModName']) ||
-            isset($_POST['ModTrigger'])) {
+            isset($_POST['ModTrigger']) || isset($_POST['Auth']) || 
+            isset($_POST['Capture']) || isset($_POST['start-stream']) ||
+            isset($_POST['stop-stream'])) {
         if ($_SESSION['user_name'] != guest) {
             
             // Request a sensor read and sensor log write
@@ -354,7 +356,7 @@ if ($login->isUserLoggedIn() == true) {
 
 switch ($error_code) {
     case 'guest':
-        echo "<span class=\"error\">You do not have the proper privileges to perform that task!</span>";
+        echo "<span class=\"error\">You cannot perform that task as a guest</span>";
     case 'already_on':
         echo "<div class=\"error\">Error: Can't turn relay On, it's already On</div>";
     case 'already_off':
@@ -462,7 +464,7 @@ $error_code = 0;
                             }
                         ?>
                         
-                        Auto: <?php
+                        Auto Refresh: <?php
                             if (isset($_GET['r']) && $_GET['r'] == 1) {
                                 if (empty($page)) echo '<a href="?tab=main">OFF</a> | <span class="on">ON</span>';
                                 else echo '<a href="?tab=main&page=' . $page . '">OFF</a> | <span class="on">ON</span>';
@@ -475,7 +477,7 @@ $error_code = 0;
                     <div style="float: left; padding: 6px 35px 0 0;">
                         <input type="submit" name="WriteSensorLog" value="Update Sensors" title="Take a new temperature and humidity reading">
                     </div>
-                    <div style="float: left; padding: 0 45px 10px 0">
+                    <div style="float: left; padding: 0 0 10px 0">
                         <?php
                             menu_item('Main', 'Main', $page);
                             menu_item('Hour', '1 Hour', $page);
@@ -553,7 +555,7 @@ $error_code = 0;
                         if (isset($_GET['r'])) {
                             echo "<input type=\"button\" onclick=\"location.href='?tab=config&r=1'\" value=\"Refresh\">";
                         } else echo "<input type=\"button\" onclick=\"location.href='?tab=config'\" value=\"Refresh\">";
-                        ?> Auto: 
+                        ?> Auto Refresh: 
                         <?php
                             if (isset($_GET['r'])) {
                                 if ($_GET['r'] == 1) echo "<a href=\"?tab=config\">OFF</a> | <span class=\"on\">ON</span>";
@@ -915,39 +917,41 @@ $error_code = 0;
                         </td>
                         <td>
                             <?php
-                            if (isset($_POST['Capture'])) {
-                                if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) shell_exec("$stream_exec stop");
-                                if (isset($_POST['lighton'])) {
-                                    $lightrelay = $_POST['lightrelay'];
-                                    if (${"relay" . $lightrelay . "trigger"} == 1) $trigger = 1;
-                                    else $trigger = 0;
-                                    $capture_output = shell_exec("$still_exec " . ${'relay' . $lightrelay . "pin"} . " $trigger 2>&1; echo $?");
-                                } else $capture_output = shell_exec("$still_exec 2>&1; echo $?");
-                            }
-                            if (isset($_POST['start-stream'])) {
-                                if (file_exists($lock_raspistill) || file_exists($lock_mjpg_streamer)) {
-                                echo 'Lock files already present. Press \'Stop Stream\' to kill processes and remove lock files.<br>';
-                                } else {
+                            if ($_SESSION['user_name'] != guest) {
+                                if (isset($_POST['Capture'])) {
+                                    if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) shell_exec("$stream_exec stop");
                                     if (isset($_POST['lighton'])) {
                                         $lightrelay = $_POST['lightrelay'];
                                         if (${"relay" . $lightrelay . "trigger"} == 1) $trigger = 1;
                                         else $trigger = 0;
-                                        shell_exec("$stream_exec start " . ${'relay' . $lightrelay . "pin"} . " $trigger > /dev/null &");
-                                        sleep(1);
+                                        $capture_output = shell_exec("$still_exec " . ${'relay' . $lightrelay . "pin"} . " $trigger 2>&1; echo $?");
+                                    } else $capture_output = shell_exec("$still_exec 2>&1; echo $?");
+                                }
+                                if (isset($_POST['start-stream'])) {
+                                    if (file_exists($lock_raspistill) || file_exists($lock_mjpg_streamer)) {
+                                    echo 'Lock files already present. Press \'Stop Stream\' to kill processes and remove lock files.<br>';
                                     } else {
-                                        shell_exec("$stream_exec start > /dev/null &");
-                                        sleep(1);
+                                        if (isset($_POST['lighton'])) {
+                                            $lightrelay = $_POST['lightrelay'];
+                                            if (${"relay" . $lightrelay . "trigger"} == 1) $trigger = 1;
+                                            else $trigger = 0;
+                                            shell_exec("$stream_exec start " . ${'relay' . $lightrelay . "pin"} . " $trigger > /dev/null &");
+                                            sleep(1);
+                                        } else {
+                                            shell_exec("$stream_exec start > /dev/null &");
+                                            sleep(1);
+                                        }
                                     }
                                 }
-                            }
-                            if (isset($_POST['stop-stream'])) {
-                                if (isset($_POST['lighton'])) {
-                                    $lightrelay = $_POST['lightrelay'];
-                                    if (${"relay" . $lightrelay . "trigger"} == 1) $trigger = 0;
-                                    else $trigger = 1;
-                                    shell_exec("$stream_exec stop " . ${'relay' . $lightrelay . "pin"} . " $trigger > /dev/null &");
-                                } else shell_exec("$stream_exec stop");
-                                sleep(1);
+                                if (isset($_POST['stop-stream'])) {
+                                    if (isset($_POST['lighton'])) {
+                                        $lightrelay = $_POST['lightrelay'];
+                                        if (${"relay" . $lightrelay . "trigger"} == 1) $trigger = 0;
+                                        else $trigger = 1;
+                                        shell_exec("$stream_exec stop " . ${'relay' . $lightrelay . "pin"} . " $trigger > /dev/null &");
+                                    } else shell_exec("$stream_exec stop");
+                                    sleep(1);
+                                }
                             }
                             if (!file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer)) echo 'Stream <span class="off">OFF</span>';
                             else echo 'Stream <span class="on">ON</span>';
@@ -962,7 +966,7 @@ $error_code = 0;
                 if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) {
                     echo '<img src="http://' . $_SERVER[HTTP_HOST] . ':8080/?action=stream" />';
                 }
-                if (isset($_POST['Capture'])) {
+                if (isset($_POST['Capture']) && $_SESSION['user_name'] != guest) {
                     if ($capture_output != 0) echo 'Abnormal output (possibly error): ' . $capture_output . '<br>';
                     else echo '<p><img src=image.php?span=cam-still></p>';
                 }
@@ -1003,7 +1007,7 @@ $error_code = 0;
                             }
                         }
 
-                        if(isset($_POST['Auth'])) {
+                        if(isset($_POST['Auth']) && $_SESSION['user_name'] != guest) {
                             echo 'Time, Type of auth, user, IP, Hostname, Referral, Browser<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
