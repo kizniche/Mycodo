@@ -37,6 +37,8 @@ $daemon_check = `ps aux | grep "[m]ycodo.py -d"`;
 if (empty($daemon_check)) $daemon_check = 0;
 else $daemon_check = 1;
 
+$uptime = `uptime`;
+
 if (version_compare(PHP_VERSION, '5.3.7', '<')) {
     exit("PHP Login does not run on PHP versions before 5.3.7, please update your version of PHP");
 } else if (version_compare(PHP_VERSION, '5.5.0', '<')) {
@@ -388,19 +390,8 @@ $error_code = 0;
         </div>
     </div>
     <div class="header">
-        <div style="text-align: right; padding-top: 3px;">Time: <?php echo $time_now; ?></div>
-        <div style="text-align: right; padding-top: 3px;">Sensor: <?php echo $time_last; ?></div>
-        <div style="text-align: right; padding-top: 3px;"><?php
-            if ($daemon_check) echo "Daemon <span class=\"on\">On</span>";
-            else echo "Daemon <span class=\"off\">Off</span>";
-            if (isset($_GET['r'])) {
-            echo " | Refresh <span class=\"on\">On</span> ($tab)";
-            } else echo " | Refresh <span class=\"off\">Off</span>";
-        ?></div>
-    </div>
-    <div class="header">
         <div class="header-title">
-            <u>Temperature</u> <?php if ($tempor == 1) echo " <span class=\"off\">OFF</span>";
+            <u>Temperature PID</u> <?php if ($tempor == 1) echo " <span class=\"off\">OFF</span>";
                 else echo " <span class=\"on\">ON</span>"; ?>
         </div>
         <div>
@@ -415,7 +406,7 @@ $error_code = 0;
     </div>
     <div class="header">
         <div class="header-title">
-            <u>Humidity</u> <?php  if ($humor == 1) echo " <span class=\"off\">OFF</span>";
+            <u>Humidity PID</u> <?php  if ($humor == 1) echo " <span class=\"off\">OFF</span>";
                 else echo " <span class=\"on\">ON</span>"; ?>
         </div>
         <div>
@@ -425,13 +416,32 @@ $error_code = 0;
              <?php echo number_format((float)$sethum, 1, '.', '') . "% Set"; ?>
         </div>
     </div>
-    <div style="float: left; padding-top: 5px;">
+    <div class="header">
         <div class="header-title">
             <u>Dew Point</u>
         </div>
         <div>
             <?php echo "${dp_c}&deg;C (${dp_f}&deg;F)"; ?>
         </div>
+    </div>
+    <div class="header">
+        <div style="text-align: right;"><?php
+            if ($daemon_check) echo "Daemon <span class=\"on\">On</span>";
+            else echo "Daemon <span class=\"off\">Off</span>";
+            ?></div>    
+        <div style="text-align: right;">
+            <?php
+            if (isset($_GET['r'])) { ?>
+                <div style="display:inline-block; padding-right: 0.3em;">
+                    <div>Refresh</div>
+                    <div><span style="font-size: 0.7em">(<?php echo $tab; ?>)</span></div>
+                </div><div style="display:inline-block; vertical-align:top;"><span class="on">On</span></div><?php 
+            } else echo "Refresh <span class=\"off\">Off</span>"; ?></div>
+    </div>
+    <div style="display:inline-block; vertical-align:top; padding-top: 0.3em;">
+        <div style="text-align: right; padding-top: 3px;">Time: <?php echo $time_now; ?></div>
+        <div style="text-align: right; padding-top: 3px;">Sensor: <?php echo $time_last; ?></div>
+        <div style="text-align: right; padding-top: 3px; font-size: 0.55em;"><?php echo $uptime; ?></div>
     </div>
 </div>
 <div style="clear: both; padding-top: 15px;"></div>
