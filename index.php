@@ -391,8 +391,8 @@ $error_code = 0;
     </div>
     <div class="header">
         <div class="header-title">
-            <u>Temperature PID</u> <?php if ($tempor == 1) echo " <span class=\"off\">OFF</span>";
-                else echo " <span class=\"on\">ON</span>"; ?>
+            <u>Temperature PID</u> <?php if ($tempor == 1) echo " <img class=\"img-off\" alt=\"Off\" title=\"Off\">";
+                else echo " <img class=\"img-on\" alt=\"On\" title=\"On\">"; ?>
         </div>
         <div>
             <?php echo number_format((float)$t_c, 1, '.', '') . "&deg;C (" . number_format((float)$t_f, 1, '.', '') . "&deg;F) Now"; ?>
@@ -406,8 +406,8 @@ $error_code = 0;
     </div>
     <div class="header">
         <div class="header-title">
-            <u>Humidity PID</u> <?php  if ($humor == 1) echo " <span class=\"off\">OFF</span>";
-                else echo " <span class=\"on\">ON</span>"; ?>
+            <u>Humidity PID</u> <?php  if ($humor == 1) echo " <img class=\"img-off\" alt=\"Off\" title=\"Off\">";
+                else echo " <img class=\"img-on\" alt=\"On\" title=\"On\">"; ?>
         </div>
         <div>
             <?php echo number_format((float)$hum, 1, '.', '') . "% Now"; ?>
@@ -426,21 +426,22 @@ $error_code = 0;
     </div>
     <div class="header">
         <div style="text-align: right;"><?php
-            if ($daemon_check) echo "Daemon <span class=\"on\">On</span>";
-            else echo "Daemon <span class=\"off\">Off</span>";
+            //if ($daemon_check) echo "Daemon <span class=\"on\">On</span>";
+            if ($daemon_check) echo "Daemon <img class=\"img-on\" alt=\"On\" title=\"On\">";
+            else echo "Daemon <img class=\"img-off\" alt=\"Off\" title=\"Off\">";
             ?></div>    
-        <div style="text-align: right;">
-            <?php
+            <div style="text-align: right;">Stream <?php if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) {
+                    echo "<img class=\"img-on\" alt=\"On\" title=\"On\">";
+                } else echo "<img class=\"img-off\" alt=\"Off\" title=\"Off\">";?>
+            </div>
+        <div style="text-align: right;"><?php
             if (isset($_GET['r'])) { ?>
-                <div style="display:inline-block; padding-right: 0.3em;">
-                    <div>Refresh</div>
-                    <div><span style="font-size: 0.7em">(<?php echo $tab; ?>)</span></div>
-                </div><div style="display:inline-block; vertical-align:top;"><span class="on">On</span></div><?php 
-            } else echo "Refresh <span class=\"off\">Off</span>"; ?></div>
+                <div style="display:inline-block; padding-right: 0.3em;"><div>Refresh</div><div><span style="font-size: 0.7em">(<?php echo $tab; ?>)</span></div></div><div style="display:inline-block; vertical-align:top;"><img class="img-on" alt="On" title="On"></div><?php 
+            } else echo "Refresh <img class=\"img-off\" alt=\"Off\" title=\"Off\">"; ?></div>
     </div>
-    <div style="display:inline-block; vertical-align:top; padding-top: 0.3em;">
-        <div style="text-align: right; padding-top: 3px;">Time: <?php echo $time_now; ?></div>
-        <div style="text-align: right; padding-top: 3px;">Sensor: <?php echo $time_last; ?></div>
+    <div style="float: left; vertical-align:top; padding-top: 0.3em;">
+        <div style="text-align: right; padding-top: 3px; font-size: 0.9em;">Time now: <?php echo $time_now; ?></div>
+        <div style="text-align: right; padding-top: 3px; font-size: 0.9em;">Last read: <?php echo $time_last; ?></div>
         <div style="text-align: right; padding-top: 3px; font-size: 0.55em;"><?php echo $uptime; ?></div>
     </div>
 </div>
@@ -608,14 +609,14 @@ $error_code = 0;
                                 if (shell_exec($read) == 1) {
                                     ?>
                                     <th colspan=2 align=right>
-                                        <nobr><button class="linkoff" type="submit" name="R<?php echo $i; ?>" value="0">OFF</button> | <button style="width: 40px;" type="submit" name="R<?php echo $i; ?>" value="1">ON</button></nobr>
+                                        <nobr><input type="image" style="height: 0.9em;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="R<?php echo $i; ?>" value="0"> | <button style="width: 40px;" type="submit" name="R<?php echo $i; ?>" value="1">ON</button></nobr>
                                     </td>
                                     </th>
                                     <?php
                                 } else {
                                     ?>
                                     <th colspan=2 align=right>
-                                        <nobr><button class="linkon" type="submit" name="R<?php echo $i; ?>" value="1">ON</button> | <button style="width: 40px;" type="submit" name="R<?php echo $i; ?>" value="0">OFF</button></nobr>
+                                        <nobr><input type="image" style="height: 0.9em;" src="/mycodo/img/on.jpg" alt="On" title="On" name="R<?php echo $i; ?>" value="1"> | <button style="width: 40px;" type="submit" name="R<?php echo $i; ?>" value="0">OFF</button></nobr>
                                     </th>
                                     <?php
                                 }
@@ -731,11 +732,11 @@ $error_code = 0;
                                     <?php
                                         if ($tempor == 1) {
                                             ?>
-                                            <span class="state off">OFF</span> | <button type="submit" name="TempOR" value="0">ON</button>
+                                            <img class="img-off"> | <button type="submit" name="TempOR" value="0">ON</button>
                                             <?php
                                         } else {
                                             ?>
-                                            <span class="state on">ON</span> | <button type="submit" name="TempOR" value="1">OFF</button>
+                                            <img class="img-on"> | <button type="submit" name="TempOR" value="1">OFF</button>
                                             <?php
                                         }
                                     ?>
@@ -793,11 +794,11 @@ $error_code = 0;
                                 <?php
                                     if ($humor == 1) {
                                         ?>
-                                        <span class="state off">OFF</span> | <button type="submit" name="HumOR" value="0">ON</button>
+                                        <img class="img-off"> | <button type="submit" name="HumOR" value="0">ON</button>
                                         <?php
                                     } else {
                                         ?>
-                                        <span class="state on">ON</span> | <button type="submit" name="HumOR" value="1">OFF</button>
+                                        <img class="img-on"> | <button type="submit" name="HumOR" value="1">OFF</button>
                                         <?php
                                     }
                                 ?>
