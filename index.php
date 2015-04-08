@@ -204,6 +204,41 @@ if ($login->isUserLoggedIn() == true) {
             isset($_POST['stop-stream']) || isset($_POST['ChangeNoTimers'])) {
         if ($_SESSION['user_name'] != guest) {
             
+             if (isset($_POST['Capture'])) {
+                if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) shell_exec("$stream_exec stop");
+                if (isset($_POST['lighton'])) {
+                    $lightrelay = $_POST['lightrelay'];
+                    if (${"relay" . $lightrelay . "trigger"} == 1) $trigger = 1;
+                    else $trigger = 0;
+                    $capture_output = shell_exec("$still_exec " . ${'relay' . $lightrelay . "pin"} . " $trigger 2>&1; echo $?");
+                } else $capture_output = shell_exec("$still_exec 2>&1; echo $?");
+            }
+            if (isset($_POST['start-stream'])) {
+                if (file_exists($lock_raspistill) || file_exists($lock_mjpg_streamer)) {
+                echo 'Lock files already present. Press \'Stop Stream\' to kill processes and remove lock files.<br>';
+                } else {
+                    if (isset($_POST['lighton'])) {
+                        $lightrelay = $_POST['lightrelay'];
+                        if (${"relay" . $lightrelay . "trigger"} == 1) $trigger = 1;
+                        else $trigger = 0;
+                        shell_exec("$stream_exec start " . ${'relay' . $lightrelay . "pin"} . " $trigger > /dev/null &");
+                        sleep(1);
+                    } else {
+                        shell_exec("$stream_exec start > /dev/null &");
+                        sleep(1);
+                    }
+                }
+            }
+            if (isset($_POST['stop-stream'])) {
+                if (isset($_POST['lighton'])) {
+                    $lightrelay = $_POST['lightrelay'];
+                    if (${"relay" . $lightrelay . "trigger"} == 1) $trigger = 0;
+                    else $trigger = 1;
+                    shell_exec("$stream_exec stop " . ${'relay' . $lightrelay . "pin"} . " $trigger > /dev/null &");
+                } else shell_exec("$stream_exec stop");
+                sleep(1);
+            }
+            
             // Request a sensor read and sensor log write
              if (isset($_POST['WriteSensorLog'])) {
                 $editconfig = "$mycodo_client -w";
@@ -935,42 +970,6 @@ $error_code = 0;
                         </td>
                         <td>
                             <?php
-                            if ($_SESSION['user_name'] != guest) {
-                                if (isset($_POST['Capture'])) {
-                                    if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) shell_exec("$stream_exec stop");
-                                    if (isset($_POST['lighton'])) {
-                                        $lightrelay = $_POST['lightrelay'];
-                                        if (${"relay" . $lightrelay . "trigger"} == 1) $trigger = 1;
-                                        else $trigger = 0;
-                                        $capture_output = shell_exec("$still_exec " . ${'relay' . $lightrelay . "pin"} . " $trigger 2>&1; echo $?");
-                                    } else $capture_output = shell_exec("$still_exec 2>&1; echo $?");
-                                }
-                                if (isset($_POST['start-stream'])) {
-                                    if (file_exists($lock_raspistill) || file_exists($lock_mjpg_streamer)) {
-                                    echo 'Lock files already present. Press \'Stop Stream\' to kill processes and remove lock files.<br>';
-                                    } else {
-                                        if (isset($_POST['lighton'])) {
-                                            $lightrelay = $_POST['lightrelay'];
-                                            if (${"relay" . $lightrelay . "trigger"} == 1) $trigger = 1;
-                                            else $trigger = 0;
-                                            shell_exec("$stream_exec start " . ${'relay' . $lightrelay . "pin"} . " $trigger > /dev/null &");
-                                            sleep(1);
-                                        } else {
-                                            shell_exec("$stream_exec start > /dev/null &");
-                                            sleep(1);
-                                        }
-                                    }
-                                }
-                                if (isset($_POST['stop-stream'])) {
-                                    if (isset($_POST['lighton'])) {
-                                        $lightrelay = $_POST['lightrelay'];
-                                        if (${"relay" . $lightrelay . "trigger"} == 1) $trigger = 0;
-                                        else $trigger = 1;
-                                        shell_exec("$stream_exec stop " . ${'relay' . $lightrelay . "pin"} . " $trigger > /dev/null &");
-                                    } else shell_exec("$stream_exec stop");
-                                    sleep(1);
-                                }
-                            }
                             if (!file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer)) echo 'Stream <span class="off">OFF</span>';
                             else echo 'Stream <span class="on">ON</span>';
                             ?>
