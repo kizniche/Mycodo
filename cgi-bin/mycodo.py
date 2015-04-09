@@ -28,11 +28,13 @@ import os
 import re
 import rpyc
 import RPi.GPIO as GPIO
+import smtplib
 import subprocess
 import sys
 import threading
 import time
 from array import *
+from email.mime.text import MIMEText
 from lockfile import LockFile
 from rpyc.utils.server import ThreadedServer
 
@@ -96,6 +98,15 @@ timerState = [0] * 9
 timerDurationOn = [0] * 9
 timerDurationOff = [0] * 9
 timerChange = 0
+
+# SMTP notify
+smtp_host = ''
+smtp_ssl = ''
+smtp_port = ''
+smtp_user = ''
+smtp_pass = ''
+email_from = ''
+email_to = ''
 
 # Relay overrides
 relay1o = ''
@@ -906,6 +917,7 @@ def read_config(silent):
     global timerDurationOn
     global timerDurationOff
     global smtp_host
+    global smtp_ssl
     global smtp_port
     global smtp_user
     global smtp_pass
@@ -1323,10 +1335,13 @@ def modify_var(*names_and_values):
 
 def email():
     # At First we have to get the current CPU-Temperature with this defined function
-    server = smtplib.SMTP(smtp_host, smtp_port)
-    #if your using gmail: smtp.gmail.com
-    server.ehlo()
-    server.starttls()
+    if (smtp_ssl):
+        server = smtplib.SMTP_SSL(smtp_host, smtp_port)
+        server.ehlo()
+    else:
+        server = smtplib.SMTP(smtp_host, smtp_port)
+        server.ehlo()
+        server.starttls()
     server.ehlo
     server.login(smtp_user, smtp_pass)
 
