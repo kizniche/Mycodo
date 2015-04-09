@@ -85,8 +85,6 @@ factorHumSeconds = ''
 factorTempSeconds = ''
 
 # Control States
-tempState = ''
-humState = ''
 TempOR = ''
 HumOR = ''
 
@@ -107,16 +105,6 @@ smtp_user = ''
 smtp_pass = ''
 email_from = ''
 email_to = ''
-
-# Relay overrides
-relay1o = ''
-relay2o = ''
-relay3o = ''
-relay4o = ''
-relay5o = ''
-relay6o = ''
-relay7o = ''
-relay8o = ''
 
 # Sensor
 DHTSensor = ''
@@ -359,7 +347,7 @@ def usage():
     print "    -r, --relay [Relay Number] [0/1/X]"
     print "           Change the state of a relay"
     print "           0=OFF, 1=ON, or X number of seconds On"
-    print "    -s  --sensor"
+    print "    -s,  --sensor"
     print "           Read and display sensor data"
     print "    -w, --write=FILE"
     print "           Write sensor data to log file\n"
@@ -565,15 +553,11 @@ def daemon(output):
 
 # Temperature modulation by PID control
 def temperature_monitor():
-    global tempState
     global TAlive
     timerTemp = 0
     PIDTemp = 0
     logging.info("[PID Temperature] Starting Thread")
     if (tempc < setTemp):
-        tempState = 0
-    else: 
-        tempState = 1
         if (relayTrigger[relayTemp] == 0): gpio_change(relayTemp, 1)
         else: gpio_change(relayTemp, 0)
     p_temp = Temperature_PID(Temp_P, Temp_I, Temp_D)
@@ -584,11 +568,9 @@ def temperature_monitor():
             if int(time.time()) > timerTemp:
                 logging.info("[PID Temperature] Reading temperature...")
                 read_sensors(1)
-                if (tempc >= setTemp): tempState = 1
-                if (tempc < setTemp): tempState = 0
-                if (tempState == 0):
-                    PIDTemp = round(p_temp.update(float(tempc)), 1)
+                if (tempc < setTemp):
                     logging.info("[PID Temperature] Temperature (%.1f°C) < (%.1f°C) setTemp", tempc, setTemp)
+                    PIDTemp = round(p_temp.update(float(tempc)), 1)
                     logging.info("[PID Temperature] PID = %.1f (seconds)", PIDTemp)
                     if (PIDTemp > 0 and tempc < setTemp):
                         rod = threading.Thread(target = relay_on_duration, 
@@ -597,7 +579,6 @@ def temperature_monitor():
                     timerTemp = int(time.time()) + PIDTemp + factorTempSeconds
                 else:
                     logging.info("[PID Temperature] Temperature (%.1f°C) >= (%.1f°C) setTemp, waiting 60 seconds", tempc, setTemp)
-                    p_temp.update(float(tempc))
                     timerTemp = int(time.time()) + 60
         time.sleep(0.1)
     logging.info("[PID Temperature] Shutting Down Thread")
@@ -605,16 +586,12 @@ def temperature_monitor():
 
 # Humidity modulation by PID control
 def humidity_monitor():
-    global humState
     global HAlive
     timerHum = 0
     PIDHum = 0
 
     logging.info("[PID Humidity] Starting Thread")
-    if (humidity < setHum):
-        humState = 0
-    else:
-        humState = 1
+    if (humidity > setHum):
         if (relayTrigger[relayHum] == 0): gpio_change(relayHum, 1)
         else: gpio_change(relayHum, 1)
     p_hum = Humidity_PID(Hum_P, Hum_I, Hum_D)
@@ -625,11 +602,9 @@ def humidity_monitor():
             if int(time.time()) > timerHum:
                 logging.info("[PID Humidity] Reading humidity...")
                 read_sensors(1)
-                if (humidity >= setHum): humState = 1
-                if (humidity < setHum): humState = 0
-                if (humState == 0):
-                    PIDHum = round(p_hum.update(float(humidity)), 1)
+                if (humidity < setHum):
                     logging.info("[PID Humidity] Humidity (%.1f%%) < (%.1f%%) setHum", humidity, setHum)
+                    PIDHum = round(p_hum.update(float(humidity)), 1)
                     logging.info("[PID Humidity] PID = %.1f (seconds)", PIDHum)
                     if (PIDHum > 0 and humidity < setHum):
                         rod = threading.Thread(target = relay_on_duration,
@@ -638,7 +613,6 @@ def humidity_monitor():
                     timerHum = int(time.time()) + PIDHum + factorTempSeconds
                 else:
                     logging.info("[PID Humidity] Humidity (%.1f%%) >= (%.1f%%) setHum, waiting 60 seconds", humidity, setHum)
-                    p_hum.update(float(humidity))
                     timerHum = int(time.time()) + 60
         time.sleep(0.1)
     logging.info("[PID Humidity] Shutting Down Thread")
@@ -853,16 +827,6 @@ def read_config(silent):
     global Temp_D
     global factorHumSeconds
     global factorTempSeconds
-    global tempState
-    global humState
-    global relay1o
-    global relay2o
-    global relay3o
-    global relay4o
-    global relay5o
-    global relay6o
-    global relay7o
-    global relay8o
     global cameraLight
     global numTimers
     global timerRelay
@@ -926,17 +890,6 @@ def read_config(silent):
     factorHumSeconds = config.getint('PID', 'factorhumseconds')
     factorTempSeconds = config.getint('PID', 'factortempseconds')
     
-    tempState = config.getint('States', 'tempstate')
-    humState = config.getint('States', 'humstate')
-    relay1o = config.getint('States', 'relay1o')
-    relay2o = config.getint('States', 'relay2o')
-    relay3o = config.getint('States', 'relay3o')
-    relay4o = config.getint('States', 'relay4o')
-    relay5o = config.getint('States', 'relay5o')
-    relay6o = config.getint('States', 'relay6o')
-    relay7o = config.getint('States', 'relay7o')
-    relay8o = config.getint('States', 'relay8o')
-    
     numTimers = config.get('Misc', 'numtimers')
     cameraLight = config.getint('Misc', 'cameralight')
     
@@ -987,11 +940,6 @@ def read_config(silent):
         logging.info("[Read Config] setTemp: %.1f°C, setHum: %.1f%%, TempOR: %s, HumOR: %s", setTemp, setHum, TempOR, HumOR)
         for x in range(1,9):
             logging.info("[Read Config] RelayNum[Name][Pin]: %s[%s][%s]", x, relayName[x], relayPin[x])
-        logging.info("[Read Config] %s %s %s %s %s %s %s %s %s %s %s", 
-            tempState, humState, 
-            relay1o, relay2o, relay3o, relay4o, 
-            relay5o, relay6o, relay7o, relay8o, 
-            DHTSeconds)
 
 # Write variables to configuration file
 def write_config():
@@ -1062,18 +1010,6 @@ def write_config():
     config.set('PID', 'temp_d', Temp_D)
     config.set('PID', 'factorhumseconds', factorHumSeconds)
     config.set('PID', 'factortempseconds', factorTempSeconds)
-
-    config.add_section('States')
-    config.set('States', 'tempstate', tempState)
-    config.set('States', 'humstate', humState)
-    config.set('States', 'relay1o', relay1o)
-    config.set('States', 'relay2o', relay2o)
-    config.set('States', 'relay3o', relay3o)
-    config.set('States', 'relay4o', relay4o)
-    config.set('States', 'relay5o', relay5o)
-    config.set('States', 'relay6o', relay6o)
-    config.set('States', 'relay7o', relay7o)
-    config.set('States', 'relay8o', relay8o)
     
     config.add_section('Misc')
     config.set('Misc', 'numtimers', numTimers)
@@ -1176,21 +1112,26 @@ def gpio_change(relay, State):
 
 # Set GPIO LOW (= relay ON) for a specific duration
 def relay_on_duration(relay, seconds):
-    if GPIO.input(relayPin[relay]) == 1:
-        write_relay_log(relay, seconds)
+    if (relayTrigger[relay] == 0 and GPIO.input(relayPin[relay]) == 0) or (
+            relayTrigger[relay] == 1 and GPIO.input(relayPin[relay]) == 1):
+        logging.warning("[Relay Duration] Relay %s (%s) is already On. Turning off in %s seconds.", 
+            relay, relayName[relay], seconds)
+    else:
         logging.info("[Relay Duration] Relay %s (%s) ON for %s seconds", 
             relay, relayName[relay], seconds)
-        GPIO.output(relayPin[relay], relayTrigger[relay])
-        time.sleep(seconds)
-        if relayTrigger[relay] == 0: GPIO.output(relayPin[relay], 1)
-        else: GPIO.output(relayPin[relay], 0)
-        logging.info("[Relay Duration] Relay %s (%s) OFF (was ON for %s sec)", 
-            relay, relayName[relay], seconds)
-        return 1
-    else:
-        logging.warning("[Relay Duration] Abort: Requested relay %s (%s) ON for %s seconds, but it's already on!", 
-            relay, relayName[relay], seconds)
-        return 0
+   
+    GPIO.output(relayPin[relay], relayTrigger[relay]) # Turn relay on    
+    timer_on = int(time.time()) + seconds
+    write_relay_log(relay, seconds)
+    
+    while (ClientQue != 'TerminateServer' and timer_on > int(time.time())):
+        time.sleep(0.1)
+        
+    if relayTrigger[relay] == 0: GPIO.output(relayPin[relay], 1) # Turn relay off
+    else: GPIO.output(relayPin[relay], 0) # Turn relay off
+    logging.info("[Relay Duration] Relay %s (%s) Off (was On for %s sec)", 
+        relay, relayName[relay], seconds)
+    return 1
 
 # Check if string represents an integer value
 def represents_int(s):
@@ -1235,16 +1176,6 @@ def modify_var(*names_and_values):
     'Temp_D',
     'factorHumSeconds',
     'factorTempSeconds',
-    'tempState',
-    'humState',
-    'relay1o',
-    'relay2o',
-    'relay3o',
-    'relay4o',
-    'relay5o',
-    'relay6o',
-    'relay7o',
-    'relay8o',
     'relay1Pin',
     'relay2Pin',
     'relay3Pin',
