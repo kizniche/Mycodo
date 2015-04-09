@@ -18,33 +18,33 @@ import datetime
 c = rpyc.connect("localhost", 18812)
 
 def usage():
-    print 'mycodo-client.py: Communicates with mycodo.py, which must be running in daemon mode (-d) in toder to use this program.\n'
+    print 'mycodo-client.py: Client for mycodo.py (must be running in daemon mode -d).\n'
     print 'Usage:  mycodo-client.py [OPTION]...\n'
     print 'Options:'
-    print '        --modnames [r1NAME] [r2NAME] [r3NAME] [r4NAME] [r5NAME] [r6NAME] [r7NAME] [r8NAME]'
+    print '        --modnames [r1Name] [r2Name] [r3Name] [r4Name] [r5Name] [r6Name] [r7Name] [r8Name]'
     print '           Modify relay names (Restrict to a maximum of 5 characters each)'
-    print '        --modpins [r1PIN] [r2PIN] [r3PIN] [r4PIN] [r5PIN] [r6PIN] [r7PIN] [r8PIN]'
+    print '        --modpins [r1Pin] [r2Pin] [r3Pin] [r4Pin] [r5Pin] [r6Pin] [r7Pin] [r8Pin]'
     print '           Modify relay pins (Using BCM numbering)'
-    print '        --modtrigger [r1T] [r2T] [r3T] [r4T] [r5T] [r6T] [r7T] [r8T]'
+    print '        --modtrigger [r1Trig] [r2Trig] [r3Trig] [r4Trig] [r5Trig] [r6Trig] [r7Trig] [r8Trig]'
     print '           Modify the trigger state of relays'
-    print '        --modtimer [Timer Number=1-8] [State=0/1] [Relay=1-8] [Duration On=seconds] [Duration Off=sedonds]'
-    print '           Modify custom timer'
-    print '    -r, --relay [RELAY] [1/0]'
-    print '           Set RELAY pin high (1) or low (0)'
-    print '    -s, --set [RELAY] [SECONDS] [TRIGGER]'
-    print '           Set relay on for a number of seconds'
-    print '           for [TRIGGER]: If On is High (5vDC), set to 1. If On is LOW (0vDC), set to 0.'
+    print '        --modtimer [Timer Number] [State] [Relay Number] [Duration On] [Duration Off]'
+    print '           Modify custom timers, State: 0=off 1=on, durations in seconds'
+    print '        --modvar [Var1Name] [Var1Value] [Var2Name] [Var2Value]...'
+    print '           Modify any configuration variable or variables (multiple allowed, must be paired input)'
+    print "    -r, --relay [Relay Number] [0/1/X]"
+    print "           Change the state of a relay"
+    print "           0=OFF, 1=ON, or X number of seconds On"
     print '    -t, --terminate'
-    print '           Terminate the communication service and daemon\n'
+    print '           Terminate the communication service and daemon'
     print '    -w, --writelog'
-    print '           Read sensor and append log file'    
+    print '           Read sensor and append log file\n'    
 
 def menu():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:], 'o:p:r:s:tw', 
             ["modnames=", "modpins=", "modtimer=", "modtrigger=",
-            "modvar=", "pid=", "relay=", "set=", "terminate",
+            "modvar=", "pid=", "relay=", "terminate",
             "writelog"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
@@ -129,30 +129,28 @@ def menu():
             sys.exit(0)
         elif opt in ("-r", "--relay"):
             if RepresentsInt(sys.argv[2]) and \
-                int(float(sys.argv[2])) < 9 and \
                 int(float(sys.argv[2])) > 0:
-                print sys.argv[2]
-                print sys.argv[3]
-                print "%s [Remote command] Set relay %s GPIO to %s: Server returned:" % (
-                    Timestamp(), int(float(sys.argv[2])), int(float(sys.argv[3]))),
-                if c.root.ChangeRelay(int(float(sys.argv[2])), 
-                    int(float(sys.argv[3]))) == 1: print 'success'
-                else: print 'fail'
-                sys.exit(0)
+                if (int(float(sys.argv[2])) == 0 or int(float(sys.argv[2])) == 1):
+                    print "%s [Remote command] Set relay %s GPIO to %s: Server returned:" % (
+                        Timestamp(), int(float(sys.argv[2])), int(float(sys.argv[3]))),
+                    if c.root.ChangeGPIO(int(float(sys.argv[2])), 
+                            int(float(sys.argv[3]))) == 1:
+                        print 'success'
+                    else:
+                        print 'fail'
+                    sys.exit(0)
+                if (int(float(sys.argv[2])) > 1):
+                    print '%s [Remote command] Relay %s ON for %s seconds: Server returned:' % (
+                        Timestamp(), int(float(sys.argv[2])), int(float(sys.argv[3]))),
+                    if c.root.RelayOnSec(int(float(sys.argv[2])),
+                            int(float(sys.argv[3]))) == 1:
+                        print "Success"
+                    else:
+                        print "Fail"
+                    sys.exit(0)
             else:
-                print 'Error: input must be an integer between 1 and 8'
+                print 'Error: second input must be an integer greater than 0'
                 sys.exit(1)
-        elif opt in ("-s", "--set"):
-            relaySelect = int(float(sys.argv[2]))
-            relaySeconds = int(float(sys.argv[3]))
-            print '%s [Remote command] Relay %s ON for %s seconds: Server returned:' % (
-                Timestamp(), int(float(sys.argv[2])), int(float(sys.argv[3]))),
-            if c.root.RelayOnSec(int(float(sys.argv[2])),
-                    int(float(sys.argv[3]))) == 1:
-                print "Success"
-            else:
-                print "Fail"
-            sys.exit(0)
         elif opt in ("-t", "--terminate"):
             print "%s [Remote command] Terminate all threads and daemon: Server returned:" % (
                 Timestamp()),

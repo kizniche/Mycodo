@@ -152,21 +152,16 @@ class ComServer(rpyc.Service):
         Terminate = True
         ClientQue = 'TerminateServer'
         return 1
-    def exposed_ChangeGPIO(self, remoteCommand, remoteCommand2):
-        global ClientQue
-        global ClientArg1
-        global ClientArg2
-        ClientArg1 = int(float(remoteCommand))
-        ClientArg2 = int(float(remoteCommand2))
-        ClientQue = 'gpio_change'
-        return 1
-    def exposed_RelayOnSec(self, remoteCommand, remoteCommand2):
-        global ClientQue
-        global ClientArg1
-        global ClientArg2
-        ClientArg1 = remoteCommand
-        ClientArg2 = remoteCommand2
-        ClientQue = 'RelayOnSec'
+    def exposed_ChangeRelay(self, relay, state):
+        if (state == 'HIGH'):
+            logging.info("[Client command] Changing Relay %s to HIGH", relay)
+            relay_onoff(relay, state)
+        if (state == 'LOW'):
+            logging.info("[Client command] Changing Relay %s to LOW", relay)
+            relay_onoff(relay, state)
+        else:
+            logging.info("[Client command] Turning Relay %s On for %s seconds", relay, state)
+            relay_on_duration(relay, state)
         return 1
     def exposed_ChangeTimer(self, timernumber, timerstate, timerrelay,
             timerdurationon, timerdurationoff):
@@ -350,31 +345,28 @@ class Temperature_PID:
 
 # Displays the program usage
 def usage():
-    print "mycodo.py: Reads temperature and humidity from sensors, " \
-        "writes log file, and operates relays as a daemon to maintain " \
-        "set environmental conditions.\n"
-    print "Usage:   mycodo.py [OPTION]...\n"
-    print "Example: mycodo.py -w /var/www/mycodo/log/sensor.log"
-    print "         mycodo.py -d s"
-    print "         mycodo.py -n relay1Name --value Banana"
-    print "         mycodo.py --read\n"
+    print "mycodo.py: Reads sensors, writes logs, and operates relays to" \
+        " maintain set environmental conditions.\n"
+    print "Usage:  mycodo.py [OPTION]...\n"
     print "Options:"
-    print "    -c, --change [RELAY] [ON/OFF/X]"
-    print "           Change the state of a relay RELAY"
-    print "           to ON, OFF, or (X) number of seconds on"
     print "    -d, --daemon [v/s]"
     print "           Start program as daemon that monitors conditions and modulates relays"
-    print "           If ""v"" is set, then log output is sent tot the console, ""s"" for silent"
+    print "           If ""v"" enables log output to the console, ""s"" silences this"
     print "    -h, --help"
     print "           Display this help and exit"
     print "    -p, --pin"
     print "           Display status of the GPIO pins (HIGH or LOW)"
-    print "    -r  --read"
+    print "    -r, --relay [Relay Number] [0/1/X]"
+    print "           Change the state of a relay"
+    print "           0=OFF, 1=ON, or X number of seconds On"
+    print "    -s  --sensor"
     print "           Read and display sensor data"
-    print "    -s, --set setTemp setHum TempOR HumOR"
-    print "           Change operating parameters (must give all options as int, overrides must be 0 or 1)"
     print "    -w, --write=FILE"
     print "           Write sensor data to log file\n"
+    print "Examples: mycodo.py -w /var/www/mycodo/log/sensor.log"
+    print "          mycodo.py -d s"
+    print "          mycodo.py --read"
+    print "          mycodo.py -c 4 OFF\n"
 
 # Checks user options and arguments for validity
 def menu():
@@ -383,34 +375,33 @@ def menu():
         sys.exit(1)
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'c:dhprs:tw',
-            ["change=", "daemon", "help", "pin",
-            "read", "set=", "write="])
+        opts, args = getopt.getopt(sys.argv[1:], 'r:dhpstw',
+            ["relay=", "daemon", "help", "pin",
+            "sensor", "write="])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
         sys.exit(2)
     for opt, arg in opts:
-        if opt in ("-c", "--change"):
+        if opt in ("-r", "--relay"):
             if not represents_int(sys.argv[2]) or \
                     int(float(sys.argv[2])) > 8 or \
                     int(float(sys.argv[2])) < 1:
-                print "Error: --change only accepts integers 1 though 8"
+                print "Error: --relay only accepts integers 1 though 8"
                 sys.exit(1)
             else:
                 global relaySelect
                 relaySelect = int(float(sys.argv[2]))
-            if represents_int(sys.argv[3]) and int(float(sys.argv[3])) > 1 or \
-                    (sys.argv[3] == 'OFF' or sys.argv[3] == 'ON'):
+            if represents_int(sys.argv[3]) and int(float(sys.argv[3])):
                 read_config(0)
-                if sys.argv[3] == 'ON':
+                if sys.argv[3] == 1:
                     print "%s [GPIO Write] Relay %s ON" % (
                         timestamp(), relaySelect)
                     if (relayTrigger[int(float(sys.argv[2]))] == 1): gpio_change(relaySelect, 1)
                     else: gpio_change(relaySelect, 0)
                     gpio_read()
                     sys.exit(0)
-                if sys.argv[3] == 'OFF':
+                elif sys.argv[3] == 0:
                     print "%s [GPIO Write] Relay %s OFF" % (
                         timestamp(), relaySelect)
                     if (relayTrigger[int(float(sys.argv[2]))] == 1): gpio_change(relaySelect, 0)
@@ -439,37 +430,6 @@ def menu():
             sys.exit(0)
         elif opt in ("-r", "--read"):
             read_sensors(0)
-            sys.exit(0)
-        elif opt in ("-s", "--set"):
-            if len(sys.argv) != 6:
-                print "Error: Too many/not enough options"
-                sys.exit(1)
-            elif not represents_float(sys.argv[2]) and \
-                    not represents_float(sys.argv[3]) and \
-                    not represents_int(sys.argv[4]) and \
-                    not represents_int(sys.argv[5]):
-                print "Error: --set: temperature and humidity requires one decimal place and overrides need to be either 1 or 0"
-                sys.exit(1)
-            elif (sys.argv[4] != '0' and sys.argv[4] != '1') or \
-                    (sys.argv[5] != '0' and sys.argv[5] != '1'):
-                print "Error: Last option of --set must be 0 or 1"
-                sys.exit(0)
-            print "[Set Conditions] Desired values: " \
-                "setTemp: %s, setHum: %s, TempOR: %s, HumOR: %s" % (
-                sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
-            read_config(0)
-            global setTemp
-            global setHum
-            global TempOR
-            global HumOR
-            setTemp = int(float(sys.argv[2]))
-            setHum = int(float(sys.argv[3]))
-            TempOR = int(float(sys.argv[4]))
-            HumOR = int(float(sys.argv[5]))
-            write_config()
-            print "[Set Conditions] New Values: " \
-                "setTemp: %.1f°C, setHum: %.1f%%, TempOR: %s, HumOR: %s" % (
-                timestamp(), setTemp, setHum, TempOR, HumOR)
             sys.exit(0)
         elif opt in ("-w", "--write"):
             global sensor_log_file_tmp
@@ -534,13 +494,6 @@ def daemon(output):
                 logging.info("[Client command] Write Sensor Log")
                 read_sensors(0)
                 write_sensor_log()
-            elif ClientQue == 'gpio_change':
-                logging.info("[Client command] Set Relay %s GPIO to %s", ClientArg1, ClientArg1)
-                gpio_change(ClientArg1, ClientArg2)
-                gpio_read()
-            elif ClientQue == 'RelayOnSec':
-                logging.info("[Client command] Set Relay %s on for %s seconds", ClientArg1, ClientArg2)
-                relay_on_duration(ClientArg1, ClientArg2)
             elif ClientQue == 'TerminateServer':
                 logging.info("[Client command] Terminate threads and shut down")
                 Concatenate_Logs()
