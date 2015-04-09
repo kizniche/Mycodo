@@ -10,6 +10,50 @@ a:visited { color: #000000; }
 a:active { color: #0000FF; }
 a:hover { color: black; }
 
+/*** views/edit.php ***/
+.edit-title {
+    padding-bottom: 0.3em;
+}
+
+
+/*** Advanced Options ***/
+div.advanced {
+    float: left;
+    padding: 1.5em 2em 0 0;
+}
+
+table.timers td {
+    padding: 0.3em 0.3em 0.3em 0.3em;
+}
+
+table.timers tr:nth-child(odd) {
+    background-color: #EBEBEB;
+}
+
+.notify-title {
+    padding: 0 0 1em 1em;
+}
+
+.notify {
+    margin-top: 0.3em
+}
+
+label {
+    display: inline-block;
+    float: left;
+    clear: left;
+    width: 6em;
+    text-align: right;
+    padding-right: 0.5em;
+}
+
+input.smtp {
+    display: inline-block;
+    float: left;
+}
+
+
+
 img.main-image {
     display: block;
     margin-left: auto;
@@ -75,7 +119,17 @@ table.pid td {
 .state {
     font-size: 0.875em;
 	font-weight: bold;
-} 
+}
+
+.img-on {
+	content:url("/mycodo/img/on.jpg");
+    height: 0.9em;
+}
+
+.img-off {
+	content:url("/mycodo/img/off.jpg");
+    height: 0.9em;
+}
 
 .on {
     font-weight: bold;
@@ -169,7 +223,8 @@ div {
 .header {
     height: 3.5em;
     float: left;
-    padding: 0.3em 3.5em 0 0.6em;
+    vertical-align:top;
+    padding: 0.3em 1.3em 0 0.6em;
 }
 
 .camera td {

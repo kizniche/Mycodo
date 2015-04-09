@@ -18,7 +18,7 @@ import datetime
 c = rpyc.connect("localhost", 18812)
 
 def usage():
-    print 'mycodo-client.py: Communicates with the daemonized mycodo.py.\n'
+    print 'mycodo-client.py: Communicates with mycodo.py, which must be running in daemon mode (-d) in toder to use this program.\n'
     print 'Usage:  mycodo-client.py [OPTION]...\n'
     print 'Options:'
     print '        --modnames [r1NAME] [r2NAME] [r3NAME] [r4NAME] [r5NAME] [r6NAME] [r7NAME] [r8NAME]'
@@ -27,11 +27,13 @@ def usage():
     print '           Modify relay pins (Using BCM numbering)'
     print '        --modtrigger [r1T] [r2T] [r3T] [r4T] [r5T] [r6T] [r7T] [r8T]'
     print '           Modify the trigger state of relays'
+    print '        --modtimer [Timer Number=1-8] [State=0/1] [Relay=1-8] [Duration On=seconds] [Duration Off=sedonds]'
+    print '           Modify custom timer'
     print '    -r, --relay [RELAY] [1/0]'
     print '           Set RELAY pin high (1) or low (0)'
     print '    -s, --set [RELAY] [SECONDS] [TRIGGER]'
     print '           Set relay on for a number of seconds'
-    print '           for [TRIGGER], if ON is High/5vDC set to 1, if on is LOW-0vDC set to 0)'
+    print '           for [TRIGGER]: If On is High (5vDC), set to 1. If On is LOW (0vDC), set to 0.'
     print '    -t, --terminate'
     print '           Terminate the communication service and daemon\n'
     print '    -w, --writelog'
@@ -41,7 +43,7 @@ def menu():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:], 'o:p:r:s:tw', 
-            ["modnames=", "modpins=", "modtrigger=",
+            ["modnames=", "modpins=", "modtimer=", "modtrigger=",
             "modvar=", "pid=", "relay=", "set=", "terminate",
             "writelog"])
     except getopt.GetoptError as err:
@@ -97,6 +99,17 @@ def menu():
                 int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), 
                 int(sys.argv[5]), int(sys.argv[6]), int(sys.argv[7]), 
                 int(sys.argv[8]), int(sys.argv[9])) == 1: 
+                print "Success"
+            else: 
+                print "Fail"
+            sys.exit(0)
+        elif opt == "--modtimer":
+            print "%s [Remote command] Set Timer %s: State: %s Relay: %s DurOn: %s DurOff: %s: Server returned:" % (
+                Timestamp(), int(sys.argv[2]), int(sys.argv[3]), 
+                int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6])),
+            if c.root.ChangeTimer(
+                int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), 
+                int(sys.argv[5]), int(sys.argv[6])) == 1: 
                 print "Success"
             else: 
                 print "Fail"

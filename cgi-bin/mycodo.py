@@ -90,6 +90,12 @@ HumOR = ''
 
 # Timers
 DHTSeconds = ''
+numTimers = ''
+timerRelay = [0] * 9
+timerState = [0] * 9
+timerDurationOn = [0] * 9
+timerDurationOff = [0] * 9
+timerChange = 0
 
 # Relay overrides
 relay1o = ''
@@ -150,6 +156,25 @@ class ComServer(rpyc.Service):
         ClientArg1 = remoteCommand
         ClientArg2 = remoteCommand2
         ClientQue = 'RelayOnSec'
+        return 1
+    def exposed_ChangeTimer(self, timernumber, timerstate, timerrelay,
+            timerdurationon, timerdurationoff):
+        global ClientQue
+        global timerRelay
+        global timerState
+        global timerDurationOn
+        global timerDurationOff
+        global timerChange
+        timerRelay[timernumber] = timerrelay
+        timerState[timernumber] = timerstate
+        timerDurationOn[timernumber] = timerdurationon
+        timerDurationOff[timernumber] = timerdurationoff
+        timerChange = timernumber
+        logging.info("[Client command] Change Timer: %s, State: %s, Relay: %s, On: %s, Off %s",
+            timernumber, timerstate, timerrelay,
+            timerdurationon, timerdurationoff)
+        write_config()
+        ClientQue = 'TimerChange'
         return 1
     def exposed_ChangeRelayNames(self, relayname1, relayname2, relayname3,
             relayname4, relayname5, relayname6, relayname7, relayname8):
@@ -457,6 +482,7 @@ def daemon(output):
     global HAlive
     global TAlive
     global ClientQue
+    timer_time = [0] * 9
     
     if (output == 'verbose'):
         # define a Handler which writes INFO messages or higher to the sys.stderr
@@ -480,6 +506,8 @@ def daemon(output):
     
     timerLogBackup = int(time.time()) + 21600 # 21600 seconds = 6 hours
     timerSensorLog = int(time.time()) + DHTSeconds
+    for i in range(1, 9):
+        timer_time[i] = int(time.time())
    
     tm = threading.Thread(target = temperature_monitor)   
     tm.daemon = True
@@ -515,6 +543,10 @@ def daemon(output):
                 server.close()
                 logging.info("[Daemon] Exiting Python")
                 sys.exit(0)
+            elif ClientQue == 'TimerChange':
+                timer_time[timerChange] = 0
+                if (timerState[timerChange] == 0 and timerRelay[timerChange] != 0):
+                    relay_onoff(timerRelay[timerChange], 0)
 
             if Temp_PID_restart == 1:
                 if tm.isAlive():
@@ -553,6 +585,17 @@ def daemon(output):
         if int(time.time()) > timerLogBackup:
             Concatenate_Logs()
             timerLogBackup = int(time.time()) + 21600
+        
+        # Handle timers
+        for i in range(1, 9):
+            if int(time.time()) > timer_time[i]:
+                if timerState[i] == 1:
+                    logging.info("[Timer Expiration] Timer %s: Turn Relay %s on for %s seconds, off %s seconds.", i, timerRelay[i], timerDurationOn[i], timerDurationOff[i])
+                    rod = threading.Thread(target = relay_on_duration, 
+                        args = (timerRelay[i], timerDurationOn[i],))
+                    rod.start()
+                    timer_time[i] = int(time.time()) + timerDurationOn[i] + timerDurationOff[i]
+                
 
         time.sleep(0.1)
 
@@ -857,6 +900,17 @@ def read_config(silent):
     global relay7o
     global relay8o
     global cameraLight
+    global numTimers
+    global timerRelay
+    global timerState
+    global timerDurationOn
+    global timerDurationOff
+    global smtp_host
+    global smtp_port
+    global smtp_user
+    global smtp_pass
+    global email_from
+    global email_to
 
     config = ConfigParser.RawConfigParser()
     config.read(config_file)
@@ -918,7 +972,51 @@ def read_config(silent):
     relay7o = config.getint('States', 'relay7o')
     relay8o = config.getint('States', 'relay8o')
     
+    numTimers = config.get('Misc', 'numtimers')
     cameraLight = config.getint('Misc', 'cameralight')
+    
+    timerState[1] = config.getint('TimerState', 'timer1state')
+    timerState[2] = config.getint('TimerState', 'timer2state')
+    timerState[3] = config.getint('TimerState', 'timer3state')
+    timerState[4] = config.getint('TimerState', 'timer4state')
+    timerState[5] = config.getint('TimerState', 'timer5state')
+    timerState[6] = config.getint('TimerState', 'timer6state')
+    timerState[7] = config.getint('TimerState', 'timer7state')
+    timerState[8] = config.getint('TimerState', 'timer8state')
+    
+    timerRelay[1] = config.getint('TimerRelay', 'timer1relay')
+    timerRelay[2] = config.getint('TimerRelay', 'timer2relay')
+    timerRelay[3] = config.getint('TimerRelay', 'timer3relay')
+    timerRelay[4] = config.getint('TimerRelay', 'timer4relay')
+    timerRelay[5] = config.getint('TimerRelay', 'timer5relay')
+    timerRelay[6] = config.getint('TimerRelay', 'timer6relay')
+    timerRelay[7] = config.getint('TimerRelay', 'timer7relay')
+    timerRelay[8] = config.getint('TimerRelay', 'timer8relay')
+    
+    timerDurationOn[1] = config.getint('TimerDurationOn', 'timer1durationon')
+    timerDurationOn[2] = config.getint('TimerDurationOn', 'timer2durationon')
+    timerDurationOn[3] = config.getint('TimerDurationOn', 'timer3durationon')
+    timerDurationOn[4] = config.getint('TimerDurationOn', 'timer4durationon')
+    timerDurationOn[5] = config.getint('TimerDurationOn', 'timer5durationon')
+    timerDurationOn[6] = config.getint('TimerDurationOn', 'timer6durationon')
+    timerDurationOn[7] = config.getint('TimerDurationOn', 'timer7durationon')
+    timerDurationOn[8] = config.getint('TimerDurationOn', 'timer8durationon')
+    
+    timerDurationOff[1] = config.getint('TimerDurationOff', 'timer1durationoff')
+    timerDurationOff[2] = config.getint('TimerDurationOff', 'timer2durationoff')
+    timerDurationOff[3] = config.getint('TimerDurationOff', 'timer3durationoff')
+    timerDurationOff[4] = config.getint('TimerDurationOff', 'timer4durationoff')
+    timerDurationOff[5] = config.getint('TimerDurationOff', 'timer5durationoff')
+    timerDurationOff[6] = config.getint('TimerDurationOff', 'timer6durationoff')
+    timerDurationOff[7] = config.getint('TimerDurationOff', 'timer7durationoff')
+    timerDurationOff[8] = config.getint('TimerDurationOff', 'timer8durationoff')
+    
+    smtp_host = config.get('Notification', 'smtp_host')
+    smtp_port = config.get('Notification', 'smtp_port')
+    smtp_user = config.get('Notification', 'smtp_user')
+    smtp_pass = config.get('Notification', 'smtp_pass')
+    email_from = config.get('Notification', 'email_from')
+    email_to = config.get('Notification', 'email_to')
 
     if not silent:
         logging.info("[Read Config] setTemp: %.1f°C, setHum: %.1f%%, TempOR: %s, HumOR: %s", setTemp, setHum, TempOR, HumOR)
@@ -1013,7 +1111,56 @@ def write_config():
     config.set('States', 'relay8o', relay8o)
     
     config.add_section('Misc')
+    config.set('Misc', 'numtimers', numTimers)
     config.set('Misc', 'cameralight', cameraLight)
+    
+    config.add_section('TimerState')
+    config.set('TimerState', 'timer1state', timerState[1])
+    config.set('TimerState', 'timer2state', timerState[2])
+    config.set('TimerState', 'timer3state', timerState[3])
+    config.set('TimerState', 'timer4state', timerState[4])
+    config.set('TimerState', 'timer5state', timerState[5])
+    config.set('TimerState', 'timer6state', timerState[6])
+    config.set('TimerState', 'timer7state', timerState[7])
+    config.set('TimerState', 'timer8state', timerState[8])
+    
+    config.add_section('TimerRelay')
+    config.set('TimerRelay', 'timer1relay', timerRelay[1])
+    config.set('TimerRelay', 'timer2relay', timerRelay[2])
+    config.set('TimerRelay', 'timer3relay', timerRelay[3])
+    config.set('TimerRelay', 'timer4relay', timerRelay[4])
+    config.set('TimerRelay', 'timer5relay', timerRelay[5])
+    config.set('TimerRelay', 'timer6relay', timerRelay[6])
+    config.set('TimerRelay', 'timer7relay', timerRelay[7])
+    config.set('TimerRelay', 'timer8relay', timerRelay[8])
+    
+    config.add_section('TimerDurationOn')
+    config.set('TimerDurationOn', 'timer1durationon', timerDurationOn[1])
+    config.set('TimerDurationOn', 'timer2durationon', timerDurationOn[2])
+    config.set('TimerDurationOn', 'timer3durationon', timerDurationOn[3])
+    config.set('TimerDurationOn', 'timer4durationon', timerDurationOn[4])
+    config.set('TimerDurationOn', 'timer5durationon', timerDurationOn[5])
+    config.set('TimerDurationOn', 'timer6durationon', timerDurationOn[6])
+    config.set('TimerDurationOn', 'timer7durationon', timerDurationOn[7])
+    config.set('TimerDurationOn', 'timer8durationon', timerDurationOn[8])
+    
+    config.add_section('TimerDurationOff')
+    config.set('TimerDurationOff', 'timer1durationoff', timerDurationOff[1])
+    config.set('TimerDurationOff', 'timer2durationoff', timerDurationOff[2])
+    config.set('TimerDurationOff', 'timer3durationoff', timerDurationOff[3])
+    config.set('TimerDurationOff', 'timer4durationoff', timerDurationOff[4])
+    config.set('TimerDurationOff', 'timer5durationoff', timerDurationOff[5])
+    config.set('TimerDurationOff', 'timer6durationoff', timerDurationOff[6])
+    config.set('TimerDurationOff', 'timer7durationoff', timerDurationOff[7])
+    config.set('TimerDurationOff', 'timer8durationoff', timerDurationOff[8])
+  
+    config.add_section('Notification')
+    config.set('Notification', 'smtp_host', smtp_host)
+    config.set('Notification', 'smtp_port', smtp_port)
+    config.set('Notification', 'smtp_user', smtp_user)
+    config.set('Notification', 'smtp_pass', smtp_pass)
+    config.set('Notification', 'email_from', email_from)
+    config.set('Notification', 'email_to', email_to)
     
     try:
         with open(config_file, 'wb') as configfile:
@@ -1044,12 +1191,23 @@ def gpio_read():
         if GPIO.input(relayPin[x]): logging.info("[GPIO Read] Relay %s: OFF", x)
         else: logging.info("[GPIO Read] Relay %s: ON", x)
 
+# Turn relay on or off (accounts for trigger)
+def relay_onoff(relay, state):
+    if (relayTrigger[relay] == 1 and state == 1):
+        gpio_change(relay, 1)
+    elif (relayTrigger[relay] == 1 and state == 0):
+        gpio_change(relay, 0)
+    elif (relayTrigger[relay] == 0 and state == 1):
+        gpio_change(relay, 0)
+    elif (relayTrigger[relay] == 0 and state == 0):
+        gpio_change(relay, 1)
+        
 # Change GPIO (Select) to a specific state (State)
-def gpio_change(Select, State):
+def gpio_change(relay, State):
     logging.info("[GPIO Write] Setting relay %s (%s) to %s (was %s)", 
-        Select, relayName[Select], 
-        State, GPIO.input(relayPin[Select]))
-    GPIO.output(relayPin[Select], State)
+        relay, relayName[relay], 
+        State, GPIO.input(relayPin[relay]))
+    GPIO.output(relayPin[relay], State)
 
 # Set GPIO LOW (= relay ON) for a specific duration
 def relay_on_duration(relay, seconds):
@@ -1137,7 +1295,14 @@ def modify_var(*names_and_values):
     'relay5Name',
     'relay6Name',
     'relay7Name',
-    'relay8Name',]
+    'relay8Name',
+    'numTimers',
+    'smtp_host',
+    'smtp_port',
+    'smtp_user',
+    'smtp_pass',
+    'email_from',
+    'email_to']
     
     for i in range(1, len(names_and_values), 2):
         for variable in namesOfVariables:
@@ -1155,6 +1320,24 @@ def modify_var(*names_and_values):
                     
     write_config()
     return 1
+
+def email():
+    # At First we have to get the current CPU-Temperature with this defined function
+    server = smtplib.SMTP(smtp_host, smtp_port)
+    #if your using gmail: smtp.gmail.com
+    server.ehlo()
+    server.starttls()
+    server.ehlo
+    server.login(smtp_user, smtp_pass)
+
+    message = "Critical warning!!!"
+    
+    msg = MIMEText(message)
+    msg['Subject'] = "Critical warning!"
+    msg['From'] = "Raspberry Pi"
+    msg['To'] = email_from
+    server.sendmail(email_from, email_to, msg.as_string())
+    server.quit()
 
 # Timestamp format used in sensor and relay logs
 def timestamp():

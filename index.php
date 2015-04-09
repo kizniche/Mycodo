@@ -136,7 +136,7 @@ if ($login->isUserLoggedIn() == true) {
     array_shift($config_rows);
     foreach($config_rows as $row => $data) {
         $row_data = explode(' = ', $data);
-        if (!empty($row_data[1])) ${$row_data[0]} = $row_data[1];
+        if ($row_data[1] != '') ${$row_data[0]} = $row_data[1];
     }
 
     // All commands that elevated (!= guest) privileges are required
@@ -193,6 +193,27 @@ if ($login->isUserLoggedIn() == true) {
                 shell_exec($relay_on_sec);
             }
         } else if (isset($_POST[$p . 'secON']) && $_SESSION['user_name'] == guest) $error_code = 'guest';
+        
+        if ((isset($_POST['ChangeTimer' . $p]) || isset($_POST['Timer' . $p . 'StateChange'])) && $_SESSION['user_name'] != guest) {
+            
+            $timerrelay = $_POST['Timer' . $p . 'Relay'];
+            $timeron = $_POST['Timer' . $p . 'On'];
+            $timeroff = $_POST['Timer' . $p . 'Off'];
+                
+             // Set timer variables
+            if (isset($_POST['ChangeTimer' . $p])) {
+                $timerstate = ${'timer' . $p . 'state'};
+                $changetimer = "$mycodo_client --modtimer $p $timerstate $timerrelay $timeron $timeroff";
+                shell_exec($changetimer);
+            } else if (isset($_POST['ChangeTimer' . $p]) && $_SESSION['user_name'] == guest) $error_code = 'guest';
+            
+            // Set timer state
+            if (isset($_POST['Timer' . $p . 'StateChange'])) {
+                $timerstate = $_POST['Timer' . $p . 'StateChange'];
+                $changetimer = "$mycodo_client --modtimer $p $timerstate $timerrelay $timeron $timeroff";
+                shell_exec($changetimer);
+            }
+        } else if (isset($_POST['Timer' . $p . 'State']) && $_SESSION['user_name'] == guest) $error_code = 'guest';
     }
         
     if (isset($_POST['WriteSensorLog']) || isset($_POST['ChangeSensor']) ||
@@ -201,10 +222,11 @@ if ($login->isUserLoggedIn() == true) {
             isset($_POST['ModPin']) || isset($_POST['ModName']) ||
             isset($_POST['ModTrigger']) || isset($_POST['Auth']) || 
             isset($_POST['Capture']) || isset($_POST['start-stream']) ||
-            isset($_POST['stop-stream']) || isset($_POST['ChangeNoTimers'])) {
+            isset($_POST['stop-stream']) || isset($_POST['ChangeNoTimers']) ||
+            isset($_POST['ChangeNotify'])) {
         if ($_SESSION['user_name'] != guest) {
             
-             if (isset($_POST['Capture'])) {
+            if (isset($_POST['Capture'])) {
                 if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) shell_exec("$stream_exec stop");
                 if (isset($_POST['lighton'])) {
                     $lightrelay = $_POST['lightrelay'];
@@ -339,8 +361,21 @@ if ($login->isUserLoggedIn() == true) {
             // Change number of custom timers **working on**
             if (isset($_POST['ChangeNoTimers'])) {
                 $numtimers = $_POST['numtimers'];
-                $editconfig = "$mycodo_client --modvar numtimers";
+                $editconfig = "$mycodo_client --modvar numTimers $numtimers";
                 shell_exec($editconfig);
+            }
+            
+            // Change email notify settings
+            if (isset($_POST['ChangeNotify'])) {
+                $smtp_host  = $_POST['smtp_host'];
+                $smtp_port  = $_POST['smtp_port'];
+                $smtp_user  = $_POST['smtp_user'];
+                $smtp_pass  = $_POST['smtp_pass'];
+                $smtp_from  = $_POST['smtp_from'];
+                $smtp_to  = $_POST['smtp_to'];
+                $editconfig = "$mycodo_client --modvar smtp_host $smtp_host smtp_port $smtp_port smtp_user $smtp_user smtp_pass $smtp_pass smtp_from $smtp_from smtp_to $smtp_to";
+                shell_exec($editconfig);
+                sleep(6);
             }
         } else $error_code = 'guest';
     }
@@ -349,7 +384,7 @@ if ($login->isUserLoggedIn() == true) {
     $config_rows = explode("\n", $config_contents);
     foreach($config_rows as $row => $data) {
         $row_data = explode(' = ', $data);
-        if (!empty($row_data[1])) {
+        if ($row_data[1] != '') {
             ${$row_data[0]} = $row_data[1];
         }
     }
@@ -1048,60 +1083,112 @@ $error_code = 0;
 		</li>
 
 		<li data-content="advanced" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'adv') echo "class=\"selected\""; ?>>
-<p>Advanced Options</p>
-
-            <?php /*<FORM action="?tab=adv" method="POST">
-			<div style="padding: 1em 0 2em 1em;">
-            Number of Timers 
-            <select name="numtimers">
-                <option value="1" <?php if ($numtimers == 1) echo "selected=\"selected\""; ?>>1</option>
-                <option value="2" <?php if ($numtimers == 2) echo "selected=\"selected\""; ?>>2</option>
-                <option value="3" <?php if ($numtimers == 3) echo "selected=\"selected\""; ?>>3</option>
-                <option value="4" <?php if ($numtimers == 4) echo "selected=\"selected\""; ?>>4</option>
-                <option value="5" <?php if ($numtimers == 5) echo "selected=\"selected\""; ?>>5</option>
-            </select>
-            <input type="submit" name="ChangeNoTimers" value="Save">
-            </div>
-            <div>
-                <?php for ($i = 1; $i <= $numtimers; $i++) { ?>
+            <div class="advanced">
+                <FORM action="?tab=adv" method="POST">
+                <div style="padding: 0 0 2em 1em;">
+                Number of Timers 
+                <select name="numtimers">
+                    <option value="1" <?php if ($numtimers == 1) echo "selected=\"selected\""; ?>>1</option>
+                    <option value="2" <?php if ($numtimers == 2) echo "selected=\"selected\""; ?>>2</option>
+                    <option value="3" <?php if ($numtimers == 3) echo "selected=\"selected\""; ?>>3</option>
+                    <option value="4" <?php if ($numtimers == 4) echo "selected=\"selected\""; ?>>4</option>
+                    <option value="5" <?php if ($numtimers == 5) echo "selected=\"selected\""; ?>>5</option>
+                    <option value="6" <?php if ($numtimers == 6) echo "selected=\"selected\""; ?>>6</option>
+                    <option value="7" <?php if ($numtimers == 7) echo "selected=\"selected\""; ?>>7</option>
+                    <option value="8" <?php if ($numtimers == 8) echo "selected=\"selected\""; ?>>8</option>
+                </select>
+                <input type="submit" name="ChangeNoTimers" value="Save">
+                </div>
+                <?php if ($numtimers > 0) { ?>
+                <div>
+                    
                     <table class="timers">
-                    <tr>
-                    <td>
-                        Timer
-                    </td>
-                    <td>
-                        Relay
-                    </td>
-                    <td>
-                        On
-                    </td>
-                    <td>
-                        Off
-                    </td>
-                    <td>
-                    </td>
-                    </tr>
-                    <tr>
-                    <td>
-                        <?php echo $i; ?>
-                    </td>
-                    <td>
-                        <input type="text" value="<?php echo $i; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>Relay" title="This is the relay number for timer <?php echo $i; ?>"/>
-                    </td>
-                    <td>
-                        <input type="text" value="<?php echo $i; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>On" title="This is On duration of timer <?php echo $i; ?>"/>
-                    </td>
-                    <td>
-                        <input type="text" value="<?php echo $i; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>Off" title="This is Off duration for timer <?php echo $i; ?>"/>
-                    </td>
-                    <td>
-                        <input type="submit" name="ChangeTimer<?php echo $i; ?>" value="Save">
-                    </td>
+                        <tr>
+                        <td>
+                            Timer
+                        </td>
+                        <th align="center" colspan="2">
+                            State
+                        </th>
+                        <td>
+                            Relay
+                        </td>
+                        <td>
+                            On (sec)
+                        </td>
+                        <td>
+                            Off (sec)
+                        </td>
+                        <td>
+                        </td>
+                        </tr>
+                        <?php for ($i = 1; $i <= $numtimers; $i++) { ?>
+                        <tr>
+                        <td>
+                            <?php echo $i; ?>
+                        </td>
+                            <?php if (${'timer'. $i . 'state'} == 0) { ?>
+                                <th colspan=2 align=right>
+                                    <nobr><input type="image" style="height: 0.9em;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="Timer<?php echo $i; ?>StateChange" value="0"> | <button style="width: 40px;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">ON</button></nobr>
+                                </td>
+                                </th>
+                                <?php
+                            } else {
+                                ?>
+                                <th colspan=2 align=right>
+                                    <nobr><input type="image" style="height: 0.9em;" src="/mycodo/img/on.jpg" alt="On" title="On" name="Timer<?php echo $i; ?>StateChange" value="1"> | <button style="width: 40px;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="0">OFF</button></nobr>
+                                </th>
+                            <?php
+                            }
+                            ?>
+                        <td>
+                            <input type="text" value="<?php echo ${'timer'. $i . 'relay'}; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>Relay" title="This is the relay number for timer <?php echo $i; ?>"/>
+                        </td>
+                        <td>
+                            <input type="text" value="<?php echo ${'timer'. $i . 'durationon'}; ?>" maxlength=7 size=4 name="Timer<?php echo $i; ?>On" title="This is On duration of timer <?php echo $i; ?>"/>
+                        </td>
+                        <td>
+                            <input type="text" value="<?php echo ${'timer'. $i . 'durationoff'}; ?>" maxlength=7 size=4 name="Timer<?php echo $i; ?>Off" title="This is Off duration for timer <?php echo $i; ?>"/>
+                        </td>
+                        <td>
+                            <input type="submit" name="ChangeTimer<?php echo $i; ?>" value="Save">
+                        </td>
+                        </tr>
+                        <?php } ?>
                     </table>
+                </div>
+                </FORM>
                 <?php } ?>
             </div>
-            </FORM>
-            */ ?>
+            
+            <div class="advanced">
+                <FORM action="?tab=adv" method="POST">
+                <div class="notify-title">
+                    Email Notification Settings
+                </div>
+                <div class="notify">
+                    <label>SMTP Host</label><input class="smtp" type="text" value="<?php echo $smtp_host; ?>" maxlength=30 size=20 name="smtp_host" title=""/>
+                </div>
+                <div class="notify">
+                    <label>SMTP Port</label><input class="smtp" type="text" value="<?php echo $smtp_port; ?>" maxlength=30 size=20 name="smtp_port" title=""/>
+                </div>
+                <div class="notify">
+                    <label>User</label><input class="smtp" type="text" value="<?php echo $smtp_user; ?>" maxlength=30 size=20 name="smtp_user" title=""/>
+                </div>
+                <div class="notify">
+                    <label>Password</label><input class="smtp" type="text" value="<?php echo $smtp_pass; ?>" maxlength=30 size=20 name="smtp_pass" title=""/>
+                </div>
+                <div class="notify">
+                    <label>From</label><input class="smtp" type="text" value="<?php echo $email_from; ?>" maxlength=30 size=20 name="email_from" title=""/>
+                </div>
+                <div class="notify">
+                    <label>To</label><input class="smtp" type="text" value="<?php echo $email_to; ?>" maxlength=30 size=20 name="email_to" title=""/>
+                </div>
+                <div class="notify">
+                    <input type="submit" name="ChangeNotify" value="Save">
+                </div>
+                </FORM>
+            </div>
 		</li>
 	</ul> <!-- cd-tabs-content -->
 </div> <!-- cd-tabs -->
