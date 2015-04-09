@@ -1085,7 +1085,7 @@ $error_code = 0;
 		<li data-content="advanced" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'adv') echo "class=\"selected\""; ?>>
             <div class="advanced">
                 <FORM action="?tab=adv" method="POST">
-                <div style="padding: 0 0 2em 1em;">
+                <div style="padding: 0 0 1em 1em;">
                 Number of Timers 
                 <select name="numtimers">
                     <option value="1" <?php if ($numtimers == 1) echo "selected=\"selected\""; ?>>1</option>
@@ -1176,7 +1176,7 @@ $error_code = 0;
                     <label>User</label><input class="smtp" type="text" value="<?php echo $smtp_user; ?>" maxlength=30 size=20 name="smtp_user" title=""/>
                 </div>
                 <div class="notify">
-                    <label>Password</label><input class="smtp" type="text" value="<?php echo $smtp_pass; ?>" maxlength=30 size=20 name="smtp_pass" title=""/>
+                    <label>Password</label><input class="smtp" type="password" value="<?php echo $smtp_pass; ?>" maxlength=30 size=20 name="smtp_pass" title=""/>
                 </div>
                 <div class="notify">
                     <label>From</label><input class="smtp" type="text" value="<?php echo $email_from; ?>" maxlength=30 size=20 name="email_from" title=""/>
