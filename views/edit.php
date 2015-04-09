@@ -1,5 +1,5 @@
-<?php include('_header.php'); ?>
-<?php
+<?php include('_header.php'); 
+
 if ($_SESSION['user_name'] != guest) {
 ?>
 <img style="float: left; padding-right: 10px;" src="<?php echo $login->user_gravatar_image_tag; ?>">
@@ -10,6 +10,7 @@ if ($_SESSION['user_name'] != guest) {
     Image can be changed at gravatar.com
 </div>
 <div style="clear: both; padding: 0 0 5px 0;"></div>
+<div style="padding: 1em 0 1em 0;">
 <form method="post" action="edit.php" name="user_edit_form_name">
     <div class="edit-title">
         <label for="user_name">
@@ -19,7 +20,8 @@ if ($_SESSION['user_name'] != guest) {
     <input id="user_name" type="text" name="user_name" pattern="[a-zA-Z0-9]{2,64}" required />
     <input type="submit" name="user_edit_submit_name" value="<?php echo WORDING_CHANGE_USERNAME; ?> " /> <?php echo WORDING_NEW_USERNAME; ?>
 </form>
-
+</div>
+<div style="padding: 0 0 1em 0;">
 <form method="post" action="edit.php" name="user_edit_form_email">
     <div class="edit-title">
         <label for="user_email">
@@ -29,7 +31,7 @@ if ($_SESSION['user_name'] != guest) {
     <input id="user_email" type="email" name="user_email" required /> 
     <input type="submit" name="user_edit_submit_email" value="<?php echo WORDING_CHANGE_EMAIL; ?>" />
 </form>
-
+</div>
 <form method="post" action="edit.php" name="user_edit_form_password">
     <div class="edit-title">
         <label for="user_password_new">
@@ -50,7 +52,7 @@ if ($_SESSION['user_name'] != guest) {
     </div>
 </form>
 <?php } else { ?>
-Profile editing disabled for guest.<p>
+<p>Profile editing disabled for guest.<p/>
 <?php } ?>
 <a href="index.php"><?php echo WORDING_BACK_TO_LOGIN; ?></a>
 

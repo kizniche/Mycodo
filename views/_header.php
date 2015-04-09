@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Mycodo</title>
-    <link rel="stylesheet"  href="style.css" type="text/css" media="all" />
+    <link rel="stylesheet"  href="css/style.css" type="text/css" media="all" />
 </head>
 <body>
 
