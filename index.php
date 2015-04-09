@@ -371,9 +371,9 @@ if ($login->isUserLoggedIn() == true) {
                 $smtp_port  = $_POST['smtp_port'];
                 $smtp_user  = $_POST['smtp_user'];
                 $smtp_pass  = $_POST['smtp_pass'];
-                $smtp_from  = $_POST['smtp_from'];
-                $smtp_to  = $_POST['smtp_to'];
-                $editconfig = "$mycodo_client --modvar smtp_host $smtp_host smtp_port $smtp_port smtp_user $smtp_user smtp_pass $smtp_pass smtp_from $smtp_from smtp_to $smtp_to";
+                $email_from  = $_POST['email_from'];
+                $email_to  = $_POST['email_to'];
+                $editconfig = "$mycodo_client --modvar smtp_host $smtp_host smtp_port $smtp_port smtp_user $smtp_user smtp_pass $smtp_pass email_from $email_from email_to $email_to";
                 shell_exec($editconfig);
                 sleep(6);
             }
