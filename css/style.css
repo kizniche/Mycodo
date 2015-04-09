@@ -38,7 +38,7 @@ table.timers tr:nth-child(odd) {
     margin-top: 0.3em
 }
 
-label {
+label.notify {
     display: inline-block;
     float: left;
     clear: left;
@@ -116,6 +116,10 @@ table.pid td {
 }
 
 /* Config */
+.onoff {
+    text-align: center;
+}
+
 .state {
     font-size: 0.875em;
 	font-weight: bold;
@@ -123,12 +127,12 @@ table.pid td {
 
 .img-on {
 	content:url("/mycodo/img/on.jpg");
-    height: 0.9em;
+    height: 0.95em;
 }
 
 .img-off {
 	content:url("/mycodo/img/off.jpg");
-    height: 0.9em;
+    height: 0.95em;
 }
 
 .on {
@@ -224,7 +228,7 @@ div {
     height: 3.5em;
     float: left;
     vertical-align:top;
-    padding: 0.3em 1.3em 0 0.6em;
+    padding: 0.3em 1.1em 0 0.3em;
 }
 
 .camera td {
