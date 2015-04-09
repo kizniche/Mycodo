@@ -53,7 +53,7 @@ $login = new Login();
 function menu_item($id, $title, $current) {
     $class = ($current == $id) ? "active" : "inactive";
     if ($current != $id) {
-        echo '<a href="?tab=main&';
+        echo '<a href="?Refresh=1&tab=main&';
         if (isset($_GET['r'])){
             if ($_GET['r'] == 1) echo 'r=1&';
         }
@@ -501,7 +501,6 @@ $error_code = 0;
     </div>
     <div class="header">
         <div style="padding-bottom: 0.1em;"><?php
-            //if ($daemon_check) echo "Daemon <span class=\"on\">On</span>";
             if ($daemon_check) echo "<img class=\"img-on\" alt=\"On\" title=\"On\"> Daemon";
             else echo "<img class=\"img-off\" alt=\"Off\" title=\"Off\"> Daemon";
             ?></div>
@@ -542,18 +541,8 @@ $error_code = 0;
             if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
             ?>" method="POST">
             <div>
-                <div style="padding-top: 5px;">
-                    <div style="float: left; padding: 8px 15px 10px 0;">
-                        <?php
-                        if (isset($_GET['r']) && $_GET['r'] == 1) {
-                                if (empty($page)) echo '<input type="button" onclick=\'location.href="?tab=main&r=1"\' value="Refresh">';
-                                echo '<input type="button" onclick=\'location.href="?tab=main&page=' . $page . '&r=1"\' value="Refresh">';
-                            } else {
-                                if (empty($page)) echo '<input type="button" onclick=\'location.href="?tab=main"\' value="Refresh">';
-                                echo '<input type="button" onclick=\'location.href="?tab=main&page=' . $page . '"\' value="Refresh">';
-                            }
-                        ?>
-                        
+                <div style="padding-top: 0.5em;">
+                    <div style="float: left; padding: 1em 1.5em 1em 0;">
                         Auto Refresh: <?php
                             if (isset($_GET['r']) && $_GET['r'] == 1) {
                                 if (empty($page)) echo '<a href="?tab=main">OFF</a> | <span class="on">ON</span>';
@@ -564,10 +553,18 @@ $error_code = 0;
                             }
                         ?>
                     </div>
-                    <div style="float: left; padding: 6px 35px 0 0;">
-                        <input type="submit" name="WriteSensorLog" value="Update Sensors" title="Take a new temperature and humidity reading">
+                    <div style="float: left; padding: 0.0em 0.5em 1em 0;">
+                    <div style="text-align: center; padding-bottom: 0.2em;">Update</div>
+                    <div>
+                    <div style="float: left; padding-right: 0.1em;">
+                        <input type="submit" name="Refresh" value="Graph" title="Refresh Graph">
                     </div>
-                    <div style="float: left; padding: 0 0 10px 0">
+                    <div style="float: left;">
+                        <input type="submit" name="WriteSensorLog" value="Sensors" title="Take a new temperature and humidity reading">
+                    </div>
+                    </div>
+                    </div>
+                    <div style="float: left; padding: 0.2em 0 0.5em 1.5em">
                         <?php
                             menu_item('Main', 'Main', $page);
                             menu_item('Hour', '1 Hour', $page);
@@ -588,44 +585,44 @@ $error_code = 0;
                     if (isset($_GET['page'])) {
                         switch ($_GET['page']) {
                         case 'Main':
-                        shell_exec($graph_exec . ' dayweek');
+                        if (isset($_POST['Refresh']) || isset($_GET['r']) || isset($_GET['Refresh']) || !isset($_GET['tab'])) shell_exec($graph_exec . ' dayweek');
                         echo "main>";
                         break;
                         case 'Hour':
-                        shell_exec($graph_exec . ' 1h');
+                        if (isset($_POST['Refresh']) || isset($_GET['r']) || isset($_GET['Refresh'])) shell_exec($graph_exec . ' 1h');
                         echo "1h>";
                         break;
                         case '6Hours':
-                        shell_exec($graph_exec . ' 6h');
+                        if (isset($_POST['Refresh']) || isset($_GET['r']) || isset($_GET['Refresh'])) shell_exec($graph_exec . ' 6h');
                         echo "6h>";
                         break;
                         case 'Day':
-                        shell_exec($graph_exec . ' day');
+                        if (isset($_POST['Refresh']) || isset($_GET['r']) || isset($_GET['Refresh'])) shell_exec($graph_exec . ' day');
                         echo "day>";
                         break;
                         case 'Week':
-                        shell_exec($graph_exec . ' week');
+                        if (isset($_POST['Refresh']) || isset($_GET['r']) || isset($_GET['Refresh'])) shell_exec($graph_exec . ' week');
                         echo "week>";
                         break;
                         case 'Month':
-                        shell_exec($graph_exec . ' month');
+                        if (isset($_POST['Refresh']) || isset($_GET['r']) || isset($_GET['Refresh'])) shell_exec($graph_exec . ' month');
                         echo "month>";
                         break;
                         case 'Year':
-                        shell_exec($graph_exec . ' year');
+                        if (isset($_POST['Refresh']) || isset($_GET['r']) || isset($_GET['Refresh'])) shell_exec($graph_exec . ' year');
                         echo "year>";
                         break;
                         case 'All':
-                        shell_exec($graph_exec . ' all');
+                        if (isset($_POST['Refresh']) || isset($_GET['r']) || isset($_GET['Refresh'])) shell_exec($graph_exec . ' all');
                         echo "1h><p><img class=\"main-image\" src=image.php?span=6h></p><p><img class=\"main-image\" src=image.php?span=day></p><p><img class=\"main-image\" src=image.php?span=week></p><p><img class=\"main-image\" src=image.php?span=month></p><p><img class=\"main-image\" src=image.php?span=year></p>";
                         break;
                         default:
-                        shell_exec($graph_exec . ' dayweek');
+                        if (isset($_POST['Refresh']) || isset($_GET['r']) || isset($_GET['Refresh'])) shell_exec($graph_exec . ' dayweek');
                         echo "main>";
                         break;
                         }
                     } else {
-                        shell_exec($graph_exec . ' dayweek');
+                        if (isset($_POST['Refresh']) || isset($_GET['r']) || isset($_GET['Refresh']) || !isset($_GET['tab'])) shell_exec($graph_exec . ' dayweek');
                         echo "main>";
                     }
                     ?>
@@ -639,13 +636,9 @@ $error_code = 0;
 
 		<li data-content="configure" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'config') echo "class=\"selected\""; ?>>
             <FORM action="?tab=config<?php if (isset($_GET['r'])) echo "&r=" . $_GET['r']; ?>" method="POST">
-            <div style="float: left; padding-top: 5px;">
-                <div style="float: left; padding: 8px 15px 0 0;">
-                        <?php
-                        if (isset($_GET['r'])) {
-                            echo "<input type=\"button\" onclick=\"location.href='?tab=config&r=1'\" value=\"Refresh\">";
-                        } else echo "<input type=\"button\" onclick=\"location.href='?tab=config'\" value=\"Refresh\">";
-                        ?> Auto Refresh: 
+            <div style="padding-top: 0.5em;">
+                    <div style="float: left; padding: 1em 1.5em 1em 0;">
+                        Auto Refresh: 
                         <?php
                             if (isset($_GET['r'])) {
                                 if ($_GET['r'] == 1) echo "<a href=\"?tab=config\">OFF</a> | <span class=\"on\">ON</span>";
@@ -653,14 +646,22 @@ $error_code = 0;
                             } else echo "<span class=\"off\">OFF</span> | <a href=\"?tab=config&r=1\">ON</a>";
                         ?>
                 </div>
-                <div style="float: left; padding-top: 6px;">
-                    <input type="submit" name="WriteSensorLog" value="Update Sensors" title="Take a new temperature and humidity reading">
+                <div style="float: left; padding: 0.0em 0.5em 1em 0;">
+                    <div style="text-align: center; padding-bottom: 0.2em;">Update</div>
+                    <div>
+                    <div style="float: left; padding-right: 0.1em;">
+                        <input type="submit" name="Refresh" value="Graph" title="Refresh Graph">
+                    </div>
+                    <div style="float: left;">
+                        <input type="submit" name="WriteSensorLog" value="Sensors" title="Take a new temperature and humidity reading">
+                    </div>
+                    </div>
                 </div>
             </div>
             
             <div style="clear: both;"></div>
-            <div style="padding-top: 35px;">
-                <div style="float: left; padding-right: 15px;">
+            <div style="padding-top: 1.2em;">
+                <div style="float: left; padding-right: 1em;">
                     <table class="relays">
                         <tr>
                             <td align=center class="table-header">Relay<br>No.</td>
@@ -873,11 +874,11 @@ $error_code = 0;
                                 <?php
                                     if ($humor == 1) {
                                         ?>
-                                        <img class="img-off"> | <button style="width: 3em;" type="submit" name="HumOR" value="0">ON</button>
+                                        <img style="vertical-align: middle;" class="img-off"> | <button style="width: 3em;" type="submit" name="HumOR" value="0">ON</button>
                                         <?php
                                     } else {
                                         ?>
-                                        <img class="img-on"> | <button style="width: 3em;" type="submit" name="HumOR" value="1">OFF</button>
+                                        <img style="vertical-align: middle;" class="img-on"> | <button style="width: 3em;" type="submit" name="HumOR" value="1">OFF</button>
                                         <?php
                                     }
                                 ?>
@@ -991,10 +992,10 @@ $error_code = 0;
                 <table class="camera">
                     <tr>
                         <td>
-                            Light On? <input type="checkbox" name="lighton" value="1" <?php if (isset($_POST['lighton'])) echo "checked=\"checked\""; ?>>
+                            Light Relay: <input type="text" value="<?php echo $cameralight; ?>" maxlength=4 size=1 name="lightrelay" title=""/>
                         </td>
                         <td>
-                            Light Relay: <input type="text" value="<?php echo $cameralight; ?>" maxlength=4 size=1 name="lightrelay" title=""/>
+                            Light On? <input type="checkbox" name="lighton" value="1" <?php if (isset($_POST['lighton'])) echo "checked=\"checked\""; ?>>
                         </td>
                         <td>
                             <button name="Capture" type="submit" value="">Capture Still</button>
