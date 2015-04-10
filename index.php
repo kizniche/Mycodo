@@ -105,7 +105,9 @@ function DateSelector($inName, $useDate=0) {
 function displayform() {
         echo "<div style=\"padding: 10px 0 0 15px;\">";
         echo "<div style=\"display: inline-block;\">";
-        echo "<FORM action=\"?tab=graph\" method=\"POST\">";
+        echo "<FORM action=\"?tab=graph";
+        if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
+        echo "\" method=\"POST\">";
 		echo "<div style=\"padding-bottom: 5px; text-align: right;\">START: ";
 		DateSelector("start");
 		echo "</div><div style=\"text-align: right;\">END: ";
@@ -676,7 +678,10 @@ $error_code = 0;
 		</li>
 
 		<li data-content="configure" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'config') echo "class=\"selected\""; ?>>
-            <FORM action="?tab=config<?php if (isset($_GET['r'])) echo "&r=" . $_GET['r']; ?>" method="POST">
+            <FORM action="?tab=config<?php
+                if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
+                if (isset($_GET['r'])) echo "&r=" . $_GET['r'];
+            ?>" method="POST">
             <div style="padding-top: 0.5em;">
                 <div style="float: left; padding: 0.0em 0.5em 1em 0;">
                     <div style="text-align: center; padding-bottom: 0.2em;">Auto Refresh</div>
@@ -692,10 +697,7 @@ $error_code = 0;
                     <div style="text-align: center; padding-bottom: 0.2em;">Refresh</div>
                     <div>
                     <div style="float: left; padding-right: 0.1em;">
-                        <?php if ($_GET['r'] == 1) {
-                            echo '<input type="button" onclick=\'location.href="?tab=config&r=1"\' value="Page">';
-                        } else echo '<input type="button" onclick=\'location.href="?tab=config"\' value="Page">';
-                        ?>
+                        <input type="submit" name="Refresh" value="Page" title="Refresh page">
                     </div>
                     <div style="float: left;">
                         <input type="submit" name="WriteSensorLog" value="Sensors" title="Take a new temperature and humidity reading">
@@ -1033,7 +1035,9 @@ $error_code = 0;
         
 		<li data-content="camera" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'camera') echo "class=\"selected\""; ?>>
             <div style="padding: 10px 0 15px 15px;">
-                <form action="?tab=camera" method="POST">
+                <form action="?tab=camera<?php
+                    if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
+                ?>" method="POST">
                 <table class="camera">
                     <tr>
                         <td>
@@ -1077,7 +1081,9 @@ $error_code = 0;
 		<li data-content="log" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'log') echo "class=\"selected\""; ?>>
 			<div style="padding: 10px 0 0 15px;">
                 <div style="padding-bottom: 15px;">
-                    <FORM action="?tab=log" method="POST">
+                    <FORM action="?tab=log<?php
+                        if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
+                    ?>" method="POST">
                         Lines: <input type="text" maxlength=8 size=8 name="Lines" /> 
                         <input type="submit" name="Sensor" value="Sensor"> 
                         <input type="submit" name="Relay" value="Relay"> 
@@ -1132,7 +1138,9 @@ $error_code = 0;
 
 		<li data-content="advanced" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'adv') echo "class=\"selected\""; ?>>
             <div class="advanced">
-                <FORM action="?tab=adv" method="POST">
+                <FORM action="?tab=adv<?php
+                    if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
+                ?>" method="POST">
                 <div style="padding: 0 0 1em 1em;">
                 Number of Timers 
                 <select name="numtimers">
