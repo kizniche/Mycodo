@@ -1,14 +1,15 @@
 /*** General ***/
 body {
     background:#FFF;
-    text: black;
+    color: black;
     font-size: 0.875em;
 }
 
 a:link { color: #000000; }
 a:visited { color: #000000; }
-a:active { color: #0000FF; }
-a:hover { color: black; }
+a:active { color: #F2273B; }
+a:hover { color: #F2273B; }
+
 
 /*** views/edit.php ***/
 .edit-title {
@@ -16,50 +17,28 @@ a:hover { color: black; }
 }
 
 
-/*** Advanced Options ***/
-div.advanced {
+/*** Header ***/
+
+.header {
+    height: 4em;
     float: left;
-    padding: 1.5em 2em 0 0;
+    vertical-align:top;
+    padding: 1em 1em 0 0.3em;
 }
 
-table.timers td {
-    padding: 0.3em 0.3em 0.3em 0.3em;
+.header-title {
+    padding-bottom: 0.3em;
 }
 
-table.timers tr:nth-child(odd) {
-    background-color: #EBEBEB;
-}
-
-.notify-title {
-    padding: 0 0 1em 1em;
-}
-
-.notify {
-    margin-top: 0.3em
-}
-
-label.notify {
-    display: inline-block;
-    float: left;
-    clear: left;
-    width: 6em;
-    text-align: right;
-    padding-right: 0.5em;
-}
-
-input.smtp {
-    display: inline-block;
-    float: left;
-}
-
-
-
+/*** main ***/
 img.main-image {
     display: block;
     margin-left: auto;
     margin-right: auto;
 }
 
+
+/*** config ***/
 table.relays {
 	display: inline-block;
 }
@@ -91,36 +70,11 @@ table.pid td {
 	border-width: 1px;
 }
 
-/*** Menu ***/
-.header-title {
-    padding-bottom: 0.3em;
-}
-
-.link {
-    background: #F2C5A1;
-}
-
-.link a, .link-profile a {
-    color: blue;
-}
-
-.link-profile {
-    background: #E18944;
-    padding: 0.2em 0.2em 0 0;
-}
-
 input.indicate {
     height: 0.95em;
     vertical-align: middle;
 }
 
-/* Warnings and errors */
-.error {
-    color: red;
-    padding: 0 0 0.5em 0.3em;
-}
-
-/* Config */
 .onoff {
     text-align: center;
 }
@@ -169,6 +123,58 @@ button.linkoff {
     color: red;
     cursor: pointer;
 }
+
+
+/*** Camera ***/
+.camera td {
+    padding: 0 0.3em 0.6em 0.3em;
+}
+
+
+/*** Advanced Options ***/
+div.advanced {
+    float: left;
+    padding: 1.5em 2em 0 0;
+}
+
+table.timers td {
+    padding: 0.3em 0.3em 0.3em 0.3em;
+}
+
+table.timers tr:nth-child(odd) {
+    background-color: #EBEBEB;
+}
+
+.notify-title {
+    padding: 0 0 1em 1em;
+}
+
+.notify {
+    margin-top: 0.3em
+}
+
+label.notify {
+    display: inline-block;
+    float: left;
+    clear: left;
+    width: 6em;
+    text-align: right;
+    padding-right: 0.5em;
+}
+
+input.smtp {
+    display: inline-block;
+    float: left;
+}
+
+
+/* Warnings and errors */
+.error {
+    color: red;
+    padding: 0 0 0.5em 0.3em;
+}
+
+
 
 /* -------------------------------- 
 
@@ -229,21 +235,7 @@ div {
     background-color: #874611;
 }
 
-.header {
-    height: 3.5em;
-    float: left;
-    vertical-align:top;
-    padding: 0.3em 1.1em 0 0.3em;
-}
 
-.camera td {
-    padding: 0 0.3em 0.6em 0.3em;
-}
-
-.error {
-    color: red;
-    padding: 0 0 0.6em 0.3em;
-}
 /* -------------------------------- 
 
 Main components 
@@ -295,7 +287,7 @@ Main components
   box-shadow: inset 0 -2px 3px rgba(203, 196, 130, 0.06);
 }
 
-@media only screen and (min-width: 960px) {
+@media only screen and (min-width: 65em) {
   .cd-tabs nav {
     position: relative;
     float: none;
@@ -386,7 +378,7 @@ Main components
   background-position: -7.143em -1.429em;
 }
 
-@media only screen and (min-width: 960px) {
+@media only screen and (min-width: 65em) {
   .cd-tabs-navigation {
     /* tabbed on top on big devices */
     width: auto;
@@ -399,7 +391,7 @@ Main components
     width: auto;
     text-align: left;
     font-size: 0.875em;
-    padding: 0 3.6em 0 4.5em;
+    padding: 0 3.7em 0 4.6em;
   }
   .cd-tabs-navigation a.selected {
     box-shadow: inset 0 2px 0 #f05451;
@@ -436,10 +428,10 @@ Main components
     min-height: 34.286em;
   }
   .cd-tabs-content li {
-    padding: 2em 2em 2em 7em;
+    padding: 0.5em 0.5em 0.5em 0.5em;
   }
 }
-@media only screen and (min-width: 960px) {
+@media only screen and (min-width: 65em) {
   .cd-tabs-content {
     min-height: 0;
   }
