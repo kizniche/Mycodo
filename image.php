@@ -11,7 +11,7 @@
 $install_path = "/var/www/mycodo";
 
 
-
+$graph_exec = $install_path . "/cgi-bin/graph.sh";
 $image_dir = $install_path . "/images/";
 $still_dir = $install_path . "/camera-stills/";
 $hdr_dir = $install_path . "/camera-hdr/";
@@ -33,54 +33,58 @@ if ($login->isUserLoggedIn() == true) {
 	header('Content-Type: image/jpeg');
 	switch ($_GET['span']) {
 	    case 'cam-still':
-	    $files = scandir($still_dir, SCANDIR_SORT_DESCENDING);
-	    $newest_file = $files[0];
-	    readfile($still_dir . $newest_file);
-	    break;
+            $files = scandir($still_dir, SCANDIR_SORT_DESCENDING);
+            $newest_file = $files[0];
+            readfile($still_dir . $newest_file);
+            break;
         case 'cam-hdr':
-	    $files = scandir($still_dir, SCANDIR_SORT_DESCENDING);
-	    $newest_file = $files[0];
-	    readfile($still_dir . $newest_file);
-	    break;
+            $files = scandir($still_dir, SCANDIR_SORT_DESCENDING);
+            $newest_file = $files[0];
+            readfile($still_dir . $newest_file);
+            break;
 	    case 'main':
-	    readfile($image_dir . 'graph-main-' . $_GET['mod'] . '.png');
-	    break;
+            readfile($image_dir . 'graph-main-' . $_GET['mod'] . '.png');
+            break;
 	    case 'main-mobile':
-	    readfile($image_dir . 'graph-main-mobile.png');
-	    break;
+            readfile($image_dir . 'graph-main-mobile.png');
+            break;
 	    case '1h':
-	    readfile($image_dir . 'graph-1h-' . $_GET['mod'] . '.png');
-	    break;
+            readfile($image_dir . 'graph-1h-' . $_GET['mod'] . '.png');
+            break;
 	    case '6h':
-	    readfile($image_dir . 'graph-6h-' . $_GET['mod'] . '.png');
-	    break;
+            readfile($image_dir . 'graph-6h-' . $_GET['mod'] . '.png');
+            break;
 	    case '6h-mobile':
-	    readfile($image_dir . 'graph-6h-' . $_GET['mod'] . '-mobile.png');
-	    break;
+            readfile($image_dir . 'graph-6h-' . $_GET['mod'] . '-mobile.png');
+            break;
 	    case 'day':
-	    readfile($image_dir . 'graph-day-' . $_GET['mod'] . '.png');
-	    break;
+            readfile($image_dir . 'graph-day-' . $_GET['mod'] . '.png');
+            break;
 	    case 'day-mobile':
-	    readfile($image_dir . 'graph-day-mobile.png');
-	    break;
+            readfile($image_dir . 'graph-day-mobile.png');
+            break;
 	    case 'week':
-	    readfile($image_dir . 'graph-week-' . $_GET['mod'] . '.png');
-	    break;
+            readfile($image_dir . 'graph-week-' . $_GET['mod'] . '.png');
+            break;
 	    case 'month':
-	    readfile($image_dir . 'graph-month-' . $_GET['mod'] . '.png');
-	    break;
+            readfile($image_dir . 'graph-month-' . $_GET['mod'] . '.png');
+            break;
 	    case 'year':
-	    readfile($image_dir . 'graph-year-' . $_GET['mod'] . '.png');
-	    break;
+            readfile($image_dir . 'graph-year-' . $_GET['mod'] . '.png');
+            break;
 	    case 'cus':
-	    readfile($image_dir . 'graph-cus-' . $_GET['mod'] . '.png');
-	    break;
+            readfile($image_dir . 'graph-cus-' . $_GET['mod'] . '.png');
+            break;
 	    case 'legend':
-	    readfile($image_dir . 'graph-legend.png');
-	    break;
+            $id = uniqid();
+            shell_exec($graph_exec . ' legend ' . $id);
+            readfile($image_dir . 'graph-legend-' . $id . '.png');
+            break;
 	    case 'legend-full':
-	    readfile($image_dir . 'graph-legend-full.png');
-	    break;
+            $id = uniqid();
+            shell_exec($graph_exec . ' legend-full ' . $id);
+            readfile($image_dir . 'graph-legend-full-' . $id . '.png');
+            break;
 	}
     }
 }

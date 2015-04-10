@@ -438,10 +438,10 @@ if ($login->isUserLoggedIn() == true) {
             window.open("changemode.php","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=500, height=630");
         }
         function open_legend() {
-            window.open("image.php?span=legend","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=190, height=210");
+            window.open("image.php?span=legend","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=250, height=300");
         }
         function open_legend_full() {
-            window.open("image.php?span=legend-full","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=600, height=385");
+            window.open("image.php?span=legend-full","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=800, height=500");
         }
     </script>
     <?php include_once("analyticstracking.php") ?>
@@ -541,7 +541,7 @@ $error_code = 0;
             if (isset($_GET['r'])) { ?><div style="display:inline-block; vertical-align:top;"><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="" value="0"></div><div style="display:inline-block; padding-left: 0.3em;"><div>Refresh</div><div><span style="font-size: 0.7em">(<?php echo $tab; ?>)</span></div></div><?php 
             } else echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="" value="0"> Refresh'; ?></div>
     </div>
-    <div style="float: left; vertical-align:top; padding-top: 0.3em;">
+    <div style="float: left; vertical-align:top; padding-top: 1em;">
         <div style="text-align: right; padding-top: 3px; font-size: 0.9em;">Time now: <?php echo $time_now; ?></div>
         <div style="text-align: right; padding-top: 3px; font-size: 0.9em;">Last read: <?php echo $time_last; ?></div>
         <div style="text-align: right; padding-top: 3px; font-size: 0.9em;"><?php echo $uptime; ?></div>
@@ -567,7 +567,7 @@ $error_code = 0;
             ?>" method="POST">
             <div>
                 <div style="padding-top: 0.5em;">
-                    <div style="float: left; padding: 0.0em 0.5em 1em 0;">
+                    <div style="float: left; padding: 0 1.5em 1em 0.5em;">
                         <div style="text-align: center; padding-bottom: 0.2em;">Auto Refresh</div>
                         <div style="text-align: center;"><?php
                             if (isset($_GET['r']) && $_GET['r'] == 1) {
@@ -580,7 +580,7 @@ $error_code = 0;
                         ?>
                         </div>
                     </div>
-                    <div style="float: left; padding: 0.0em 0.5em 1em 0;">
+                    <div style="float: left; padding: 0 2em 1em 0.5em;">
                         <div style="text-align: center; padding-bottom: 0.2em;">Refresh</div>
                         <div>
                             <div style="float: left; padding-right: 0.1em;">
@@ -599,7 +599,7 @@ $error_code = 0;
                             </div>
                         </div>
                     </div>
-                    <div style="float: left; padding: 0.2em 0 0.5em 1.5em">
+                    <div style="float: left; padding: 0.2em 0 1em 0.5em">
                         <?php
                             menu_item('Main', 'Main', $page);
                             menu_item('Hour', '1 Hour', $page);
@@ -621,10 +621,11 @@ $error_code = 0;
                         shell_exec($graph_exec . ' dayweek ' . $id);
                         echo "<img class=\"main-image\" src=image.php?span=main&mod=" . $id . ">";
                     } else {
-                        echo "<img class=\"main-image\" src=image.php?span=";
                         $id = $_SESSION["ID"];
                         if (isset($_GET['Refresh']) == 1) $ref = 1;
                         else $ref = 0;
+                        
+                        echo "<img class=\"main-image\" src=image.php?span=";
                         if (isset($_GET['page'])) {
                             switch ($_GET['page']) {
                             case 'Main':
@@ -672,7 +673,8 @@ $error_code = 0;
                     ?>
                 </div>
                 <div style="width: 100%; padding: 1em 0 0 0; text-align: center;">
-                        Legend: <a href="javascript:open_legend()">Brief</a> / <a href="javascript:open_legend_full()">Full</a>
+                    Legend: <a href="javascript:open_legend()">Brief</a> / <a href="javascript:open_legend_full()">Full</a>
+                    <div style="text-align: center; padding-top: 0.5em;"><a href="https://github.com/kizniche/Automated-Mushroom-Cultivator" target="_blank">Mycodo on GitHub</a></div>
                 </div>
             </div>
             </form>
@@ -1139,6 +1141,7 @@ $error_code = 0;
 		</li>
 
 		<li data-content="advanced" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'adv') echo "class=\"selected\""; ?>>
+            <div style="padding-left:1em;">
             <div class="advanced">
                 <FORM action="?tab=adv<?php
                     if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
@@ -1246,6 +1249,7 @@ $error_code = 0;
                     <input type="submit" name="ChangeNotify" value="Save">
                 </div>
                 </FORM>
+            </div>
             </div>
 		</li>
 	</ul> <!-- cd-tabs-content -->
