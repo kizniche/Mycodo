@@ -975,6 +975,7 @@ $error_code = 0;
             <?php
             /* DateSelector*Author: Leon Atkinson */
             if($_POST['SubmitDates']) {
+                $id2 = uniqid();
                 $minb = $_POST['startMinute'];
                 $hourb = $_POST['startHour'];
                 $dayb = $_POST['startDay'];
@@ -988,7 +989,7 @@ $error_code = 0;
                 echo `echo "set terminal png size 900,490
                 set xdata time
                 set timefmt \"%Y %m %d %H %M %S\"
-                set output \"$images/graph-cus.png\"
+                set output \"$images/graph-cus-$id2.png\"
                 set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]
                 set format x \"%H:%M\n%m/%d\"
                 set yrange [0:100]
@@ -1028,7 +1029,7 @@ $error_code = 0;
                 \"\" using 1:13 index 0 title \"XXXX\" w impulses ls 10 axes x1y1, \\
                 \"\" using 1:14 index 0 title \"XXXX\" w impulses ls 11 axes x1y1" | gnuplot`;
                 displayform();
-                echo "<center><img src=image.php?span=cus>";
+                echo "<center><img src=image.php?span=cus&mod=" . $id2 . ">";
                 echo "<p><a href='javascript:open_legend()'>Brief Graph Legend</a> - <a href='javascript:open_legend_full()'>Full Graph Legend</a></p></center>";
             } else displayform();
             ?>
