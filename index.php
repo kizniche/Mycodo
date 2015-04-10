@@ -117,7 +117,7 @@ function displayform() {
 
 if ($login->isUserLoggedIn() == true) {
     
-    // Delete all generated graphs except for the 20 latest
+    // Delete all generated graphs except for the 30 latest
     $dir = "/var/log/mycodo/images/";
     if (is_dir($dir)) {
         if ($dh = opendir($dir)) {
@@ -129,11 +129,10 @@ if ($login->isUserLoggedIn() == true) {
         }
         // Now sort by timestamp (just an integer) from oldest to newest
         asort($files, SORT_NUMERIC);
-        // Loop over all but the 5 newest files and delete them
-        // Only need the array keys (filenames) since we don't care about timestamps now as the array will be in order
+        // Loop over all but the 30 newest files and delete them
+        // Only need the array keys (filenames) since we don't care about timestamps now the array is in order
         $files = array_keys($files);
-        for ($i = 0; $i < (count($files) - 20); $i++) {
-            // You'll probably want to check the return value of this too
+        for ($i = 0; $i < (count($files) - 30); $i++) {
             unlink($files[$i]);
         }
     }
@@ -616,57 +615,59 @@ $error_code = 0;
                 <div style="clear: both;"></div>
                 <div>
                     <?php
-                    echo "<img class=\"main-image\" src=image.php?span=";
-                    if (isset($_GET['page'])) {
-                        if (isset($_GET['Refresh']) == 1) {
-                            $id = uniqid();
-                            $_SESSION["ID"] = $id;
-                            $ref = 1;
-                        } else {
-                            $ref = 0;
-                            $id = $_SESSION["ID"];
-                        }
-                        switch ($_GET['page']) {
-                        case 'Main':
-                        if ($ref) shell_exec($graph_exec . ' dayweek ' . $id);
-                        echo "main&mod=" . $id . ">";
-                        break;
-                        case 'Hour':
-                        if ($ref) shell_exec($graph_exec . ' 1h ' . $id);
-                        echo "1h&mod=" . $id . ">";
-                        break;
-                        case '6Hours':
-                        if ($ref) shell_exec($graph_exec . ' 6h ' . $id);
-                        echo "6h&mod=" . $id . ">";
-                        break;
-                        case 'Day':
-                        if ($ref) shell_exec($graph_exec . ' day ' . $id);
-                        echo "day&mod=" . $id . ">";
-                        break;
-                        case 'Week':
-                        if ($ref) shell_exec($graph_exec . ' week ' . $id);
-                        echo "week&mod=" . $id . ">";
-                        break;
-                        case 'Month':
-                        if ($ref) shell_exec($graph_exec . ' month ' . $id);
-                        echo "month&mod=" . $id . ">";
-                        break;
-                        case 'Year':
-                        if ($ref) shell_exec($graph_exec . ' year ' . $id);
-                        echo "year&mod=" . $id . ">";
-                        break;
-                        case 'All':
-                        if ($ref) shell_exec($graph_exec . ' all ' . $id);
-                        echo "1h&mod=" . $id . "><p><img class=\"main-image\" src=image.php?span=6h&mod=" . $id . "></p><p><img class=\"main-image\" src=image.php?span=day&mod=" . $id . "></p><p><img class=\"main-image\" src=image.php?span=week&mod=" . $id . "></p><p><img class=\"main-image\" src=image.php?span=month&mod=" . $id . "></p><p><img class=\"main-image\" src=image.php?span=year&mod=" . $id . "></p>";
-                        break;
-                        default:
-                        if ($ref) shell_exec($graph_exec . ' dayweek ' . $id);
-                        echo "main&mod=" . $id . ">";
-                        break;
-                        }
+                    if (!isset($_SESSION["ID"])) {
+                        $id = uniqid();
+                        $_SESSION["ID"] = $id;
+                        shell_exec($graph_exec . ' dayweek ' . $id);
+                        echo "<img class=\"main-image\" src=image.php?span=main&mod=" . $id . ">";
                     } else {
-                        if ($ref) shell_exec($graph_exec . ' dayweek ' . $id);
-                        echo "main&mod=" . $id . ">";
+                        echo "<img class=\"main-image\" src=image.php?span=";
+                        $id = $_SESSION["ID"];
+                        if (isset($_GET['Refresh']) == 1) $ref = 1;
+                        else $ref = 0;
+                        if (isset($_GET['page'])) {
+                            switch ($_GET['page']) {
+                            case 'Main':
+                            if ($ref) shell_exec($graph_exec . ' dayweek ' . $id);
+                            echo "main&mod=" . $id . ">";
+                            break;
+                            case 'Hour':
+                            if ($ref) shell_exec($graph_exec . ' 1h ' . $id);
+                            echo "1h&mod=" . $id . ">";
+                            break;
+                            case '6Hours':
+                            if ($ref) shell_exec($graph_exec . ' 6h ' . $id);
+                            echo "6h&mod=" . $id . ">";
+                            break;
+                            case 'Day':
+                            if ($ref) shell_exec($graph_exec . ' day ' . $id);
+                            echo "day&mod=" . $id . ">";
+                            break;
+                            case 'Week':
+                            if ($ref) shell_exec($graph_exec . ' week ' . $id);
+                            echo "week&mod=" . $id . ">";
+                            break;
+                            case 'Month':
+                            if ($ref) shell_exec($graph_exec . ' month ' . $id);
+                            echo "month&mod=" . $id . ">";
+                            break;
+                            case 'Year':
+                            if ($ref) shell_exec($graph_exec . ' year ' . $id);
+                            echo "year&mod=" . $id . ">";
+                            break;
+                            case 'All':
+                            if ($ref) shell_exec($graph_exec . ' all ' . $id);
+                            echo "1h&mod=" . $id . "><p><img class=\"main-image\" src=image.php?span=6h&mod=" . $id . "></p><p><img class=\"main-image\" src=image.php?span=day&mod=" . $id . "></p><p><img class=\"main-image\" src=image.php?span=week&mod=" . $id . "></p><p><img class=\"main-image\" src=image.php?span=month&mod=" . $id . "></p><p><img class=\"main-image\" src=image.php?span=year&mod=" . $id . "></p>";
+                            break;
+                            default:
+                            if ($ref) shell_exec($graph_exec . ' dayweek ' . $id);
+                            echo "main&mod=" . $id . ">";
+                            break;
+                            }
+                        } else {
+                            if ($ref) shell_exec($graph_exec . ' dayweek ' . $id);
+                            echo "main&mod=" . $id . ">";
+                        }
                     }
                     ?>
                 </div>
