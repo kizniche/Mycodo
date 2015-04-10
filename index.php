@@ -42,11 +42,9 @@ $login = new Login();
 function menu_item($id, $title, $current) {
     $class = ($current == $id) ? "active" : "inactive";
     if ($current != $id) {
-        echo '<a href="?Refresh=1&tab=main&';
-        if (isset($_GET['r'])){
-            if ($_GET['r'] == 1) echo 'r=1&';
-        }
-        echo 'page=' . $id. '"><div class="inactive">' . $title . '</div></a>';
+        echo '<a href="?tab=main&page=' . $id. '&Refresh=1';
+        if (isset($_GET['r']) && ($_GET['r'] == 1)) echo '&r=1';
+        echo '"><div class="inactive">' . $title . '</div></a>';
     } else echo '<div class="active">' . $title . '</div>';
 }
 
@@ -116,32 +114,23 @@ function displayform() {
 }
 
 if ($login->isUserLoggedIn() == true) {
-    /*if (is_dir("/etc/")) {
-        if ($dh = opendir("/etc/")) {
+    
+    // Delete all generated graphs except for the 20 latest
+    $dir = "/var/log/mycodo/images/";
+    if (is_dir($dir)) {
+        if ($dh = opendir($dir)) {
+            $files = array();
             while (($file = readdir($dh)) !== false) {
-                echo "filename: $file : filetype: " . filetype("/etc/" . $file) . "\n";
+                $files[$dir . $file] = filemtime($dir . $file);
             }
             closedir($dh);
         }
-    }*/
-    // Delete everything from images folder except the 5 newest files
-    if ($handle = opendir('/var/log/mycodo/images/')) {
-        $files = array();
-        while (false !== ($file = readdir($handle))) {
-            if (!is_dir($file)) {
-                // You'll want to check the return value here rather than just blindly adding to the array
-                $files[$file] = filemtime($file);
-                echo filemtime($file);
-            }
-        }
-
         // Now sort by timestamp (just an integer) from oldest to newest
         asort($files, SORT_NUMERIC);
-
         // Loop over all but the 5 newest files and delete them
         // Only need the array keys (filenames) since we don't care about timestamps now as the array will be in order
         $files = array_keys($files);
-        for ($i = 0; $i < (count($files) - 5); $i++) {
+        for ($i = 0; $i < (count($files) - 20); $i++) {
             // You'll probably want to check the return value of this too
             unlink($files[$i]);
         }
@@ -571,8 +560,9 @@ $error_code = 0;
 	<ul class="cd-tabs-content">
 		<li data-content="main" <?php if (!isset($_GET['tab']) || (isset($_GET['tab']) && $_GET['tab'] == 'main')) echo "class=\"selected\""; ?>>
         <FORM action="?tab=main<?php 
-            if (isset($_GET['r'])) echo "&r=" . $_GET['r'];
             if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
+            if (isset($_GET['Refresh']) || isset($_POST['Refresh'])) echo "&Refresh=1";
+            if (isset($_GET['r'])) echo "&r=" . $_GET['r'];
             ?>" method="POST">
             <div>
                 <div style="padding-top: 0.5em;">
@@ -583,8 +573,8 @@ $error_code = 0;
                                 if (empty($page)) echo '<a href="?tab=main">OFF</a> | <span class="on">ON</span>';
                                 else echo '<a href="?tab=main&page=' . $page . '">OFF</a> | <span class="on">ON</span>';
                             } else {
-                                if (empty($page)) echo '<span class="off">OFF</span> | <a href="?tab=main&r=1">ON</a>';
-                                echo '<span class="off">OFF</span> | <a href="?tab=main&page=' . $page . '&r=1">ON</a>';
+                                if (empty($page)) echo '<span class="off">OFF</span> | <a href="?tab=main&Refresh=1&r=1">ON</a>';
+                                echo '<span class="off">OFF</span> | <a href="?tab=main&page=' . $page . '&Refresh=1&r=1">ON</a>';
                             }
                         ?>
                         </div>
@@ -593,17 +583,15 @@ $error_code = 0;
                         <div style="text-align: center; padding-bottom: 0.2em;">Refresh</div>
                         <div>
                             <div style="float: left; padding-right: 0.1em;">
-                                <input type="submit" name="Refresh" value="Graph" title="Refresh Graph">
+                                <input type="button" onclick='location.href="?tab=main<?php
+                                if ($_GET['page']) echo "&page=" . $page; 
+                                echo "&Refresh=1";
+                                if ($_GET['r'] == 1) echo "&r=1"; ?>"' value="Graph">
                             </div>
                             <div style="float: left; padding-right: 0.1em;">
-                                <?php if ($_GET['r'] == 1) {
-                                    if (empty($page)) echo '<input type="button" onclick=\'location.href="?tab=main&r=1"\' value="Page">';
-                                    echo '<input type="button" onclick=\'location.href="?tab=main&page=' . $page . '&r=1"\' value="Page">';
-                                } else {
-                                    if (empty($page)) echo '<input type="button" onclick=\'location.href="?tab=main"\' value="Page">';
-                                    echo '<input type="button" onclick=\'location.href="?tab=main&page=' . $page . '"\' value="Page">';
-                                }
-                                ?>
+                                <input type="button" onclick='location.href="?tab=main<?php
+                                if ($_GET['page']) echo "&page=" . $page; 
+                                if ($_GET['r'] == 1) echo "&r=1"; ?>"' value="Page">
                             </div>
                             <div style="float: left;">
                                 <input type="submit" name="WriteSensorLog" value="Sensors" title="Take a new temperature and humidity reading">
@@ -627,10 +615,15 @@ $error_code = 0;
                 <div>
                     <?php
                     echo "<img class=\"main-image\" src=image.php?span=";
-                    if (isset($_POST['Refresh']) || isset($_GET['Refresh']) || (isset($_GET['r']) and $_GET['tab'] == 'main') || !isset($_GET['tab'])) $ref = 1;
-                    else $ref = 0;
-                    if (isset($_GET['page']) && isset($_GET['Refresh']) == 1) {
-                        $id = uniqid();
+                    if (isset($_GET['page'])) {
+                        if (isset($_GET['Refresh']) == 1) {
+                            $id = uniqid();
+                            $_SESSION["ID"] = $id;
+                            $ref = 1;
+                        } else {
+                            $ref = 0;
+                            $id = $_SESSION["ID"];
+                        }
                         switch ($_GET['page']) {
                         case 'Main':
                         if ($ref) shell_exec($graph_exec . ' dayweek ' . $id);
