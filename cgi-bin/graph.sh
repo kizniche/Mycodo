@@ -96,6 +96,7 @@ then
    echo -e "use" $0 "--help for usage\n"
   exit
 else
+  id=$2
   case $1 in
     -h|--help)
     usage
@@ -103,7 +104,7 @@ else
     legend)
 echo "reset
 set terminal png size 250,300
-set output \"$IMAGEPATH/graph-legend-$2.png\"
+set output \"$IMAGEPATH/graph-legend-$id.png\"
 unset border
 unset tics
 unset grid
@@ -134,7 +135,7 @@ plot \"$LOGPATH/sensor.log\" index 0 title \"T\" w lp ls 1, \\
       ;;
     legend-full)
 echo "reset
-set output \"$IMAGEPATH/graph-legend-full-$2.png\"
+set output \"$IMAGEPATH/graph-legend-full-$id.png\"
 set xdata time
 set timefmt \"%Y %m %d %H %M %S\"
 set xrange [\"`date --date="2 hours ago" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
@@ -215,7 +216,7 @@ plot \"$LOGPATH/sensor.log\" u 1:7 index 0 title \"Temperature\" w lp ls 1 axes 
 echo "set terminal png size 900,1000
 set xdata time
 set timefmt \"%Y %m %d %H %M %S\"
-set output \"$IMAGEPATH/graph-main-$2.png\"
+set output \"$IMAGEPATH/graph-main-$id.png\"
 set xrange [\"`date --date=yesterday +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
 set format x \"%H:%M\n%m/%d\"
 set yrange [$Y1MIN:$Y1MAX]
