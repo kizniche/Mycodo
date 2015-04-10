@@ -101,7 +101,8 @@ class Login
 
         // login with cookie
         } elseif (isset($_COOKIE['rememberme'])) {
-            $this->loginWithCookieData();
+            if (strcasecmp($_POST['user_name'], guest) == 0) echo "Cookies disabled for guest.<p>";
+            else $this->loginWithCookieData();
 
         // if user just submitted a login form
         } elseif (isset($_POST["login"])) {

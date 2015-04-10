@@ -36,7 +36,7 @@ echo "reset
 set terminal png size 900,490
 set xdata time
 set timefmt \"%Y %m %d %H %M %S\"
-set output \"$IMAGEPATH/graph-$file.png\"
+set output \"$IMAGEPATH/graph-$file-$id.png\"
 set xrange [\"`date --date="$time ago" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
 set format x \"%H:%M\n%m/%d\"
 set yrange [$Y1MIN:$Y1MAX]
@@ -75,9 +75,9 @@ plot \"$sensor_lines$LOGPATH/sensor.log\" u 1:7 index 0 title \"T\" w lp ls 1 ax
      \"\" using 1:14 index 0 title \"XXXX\" w impulses ls 11 axes x1y1" | gnuplot
 }
 
-if [ -n "$2" ]
+if [ -n "$3" ]
 then
-  echo "too many imputs: only one parameter is allowed"
+  echo "too many imputs: only two parameter is allowed"
   echo -e "use" $0 "--help for usage\n"
   exit
 fi
@@ -88,6 +88,7 @@ then
    echo -e "use" $0 "--help for usage\n"
   exit
 else
+  id=$2
   case $1 in
     -h|--help)
     usage
@@ -195,7 +196,7 @@ plot \"$LOGPATH/sensor.log\" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, \\
 echo "set terminal png size 900,1000
 set xdata time
 set timefmt \"%Y %m %d %H %M %S\"
-set output \"$IMAGEPATH/graph-main.png\"
+set output \"$IMAGEPATH/graph-main-$2.png\"
 set xrange [\"`date --date=yesterday +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
 set format x \"%H:%M\n%m/%d\"
 set yrange [$Y1MIN:$Y1MAX]
@@ -250,12 +251,12 @@ plot \"$LOGPATH/sensor.log\" using 1:7 index 0 notitle w lp ls 1 axes x1y2, \\
 unset multiplot" | gnuplot
       ;;
     all)
-      $0 1h
-      $0 6h
-      $0 day
-      $0 week
-      $0 month
-      $0 year
+      $0 1h $2
+      $0 6h $2
+      $0 day $2
+      $0 week $2
+      $0 month $2
+      $0 year $2
       ;;
     6h-mobile)
 echo "set terminal png size 900,850

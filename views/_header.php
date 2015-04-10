@@ -6,7 +6,7 @@
     <link rel="stylesheet"  href="css/style.css" type="text/css" media="all" />
 </head>
 <body>
-
+<?php include_once("analyticstracking.php") ?>
 <?php
 // show potential errors / feedback (from login object)
 if (isset($login)) {

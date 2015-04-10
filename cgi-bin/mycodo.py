@@ -129,10 +129,8 @@ Hum_PID_restart = 0
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
     def exposed_Modify_Variables(self, *variable_list):
-        read_config(0)
         logging.info("[Client command] Request to change variables")
         modify_var(*variable_list)
-        read_config(0)
         return 1
     def exposed_Terminate(self, remoteCommand):
         global ClientQue
@@ -221,6 +219,10 @@ class ComServer(rpyc.Service):
     def exposed_WriteSensorLog(self):
         global ClientQue
         ClientQue = 'write_sensor_log'
+        global change_sensor_log
+        change_sensor_log = 1
+        while (change_sensor_log):
+            time.sleep(0.1)
         return 1
 
 class ComThread(threading.Thread):
@@ -435,6 +437,7 @@ def menu():
 # Main loop that reads sensors, modifies relays based on sensor values, writes
 # sensor/relay logs, and receives/executes commands from mycodo-client.py
 def daemon(output):
+    global change_sensor_log
     global Temp_PID_restart
     global Hum_PID_restart
     global server
@@ -482,6 +485,7 @@ def daemon(output):
                 logging.info("[Client command] Write Sensor Log")
                 read_sensors(0)
                 write_sensor_log()
+                change_sensor_log = 0
             elif ClientQue == 'TerminateServer':
                 logging.info("[Client command] Terminate threads and shut down")
                 Concatenate_Logs()
@@ -558,8 +562,8 @@ def temperature_monitor():
     PIDTemp = 0
     logging.info("[PID Temperature] Starting Thread")
     if (tempc < setTemp):
-        if (relayTrigger[relayTemp] == 0): gpio_change(relayTemp, 1)
-        else: gpio_change(relayTemp, 0)
+        if (relayTrigger[relayTemp] == 0): gpio_change(int(relayTemp), 1)
+        else: gpio_change(int(relayTemp), 0)
     p_temp = Temperature_PID(Temp_P, Temp_I, Temp_D)
     p_temp.setPoint(setTemp)
     
@@ -592,8 +596,8 @@ def humidity_monitor():
 
     logging.info("[PID Humidity] Starting Thread")
     if (humidity > setHum):
-        if (relayTrigger[relayHum] == 0): gpio_change(relayHum, 1)
-        else: gpio_change(relayHum, 1)
+        if (relayTrigger[relayHum] == 0): gpio_change(int(relayHum), 1)
+        else: gpio_change(int(relayHum), 1)
     p_hum = Humidity_PID(Hum_P, Hum_I, Hum_D)
     p_hum.setPoint(setHum)
 
@@ -772,37 +776,40 @@ def read_sensors(silent):
         logging.info("[Read Sensors] Taking first Temperature/humidity reading")
     if not Terminate:
         humidity2, tempc2 = Adafruit_DHT.read_retry(sensor, DHTPin)
-        if not silent:
+        if humidity2 == None or tempc2 == None:
+            logging.warning("[Read Sensors] Could not read temperature/humidity!")
+        if not silent and humidity2 != None and tempc2 != None:
             logging.info("[Read Sensors] %.1f°C, %.1f%%", tempc2, humidity2)
     if not Terminate:
         time.sleep(2)
         if not silent: 
             logging.info("[Read Sensors] Taking second Temperature/humidity reading")
-
-    while chktemp and not Terminate:
+    while chktemp and not Terminate and humidity2 != None and tempc2 != None:
         if not Terminate:
             humidity, tempc = Adafruit_DHT.read_retry(sensor, DHTPin)
-        if not silent and not Terminate: 
-            logging.info("[Read Sensors] %.1f°C, %.1f%%", tempc, humidity)
-            logging.info("[Read Sensors] Differences: %.1f°C, %.1f%%", abs(tempc2-tempc), abs(humidity2-humidity))
-        if abs(tempc2-tempc) > 1 or abs(humidity2-humidity) > 1 and not Terminate:
-            tempc2 = tempc
-            humidity2 = humidity
-            chktemp = 1
-            if not silent:
-                logging.info("[Read Sensors] Successive readings > 1 difference: Rereading")
-            time.sleep(2)
-        elif not Terminate:
-            chktemp = 0
-            if not silent: 
-                logging.info("[Read Sensors] Successive readings < 1 difference: keeping.")
-            tempf = float(tempc)*9.0/5.0 + 32.0
-            dewpointc = tempc - ((100-humidity) / 5)
-            #dewpointf = dewpointc * 9 / 5 + 32
-            #heatindexf =  -42.379 + 2.04901523 * tempf + 10.14333127 * humidity - 0.22475541 * tempf * humidity - 6.83783 * 10**-3 * tempf**2 - 5.481717 * 10**-2 * humidity**2 + 1.22874 * 10**-3 * tempf**2 * humidity + 8.5282 * 10**-4 * tempf * humidity**2 - 1.99 * 10**-6 * tempf**2 * humidity**2
-            #heatindexc = (heatindexf - 32) * (5 / 9)
-            if not silent: 
-                logging.info("[Read Sensors] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", tempc, humidity, dewpointc)
+        if humidity != 'None' or tempc != 'None':
+            if not silent and not Terminate: 
+                logging.info("[Read Sensors] %.1f°C, %.1f%%", tempc, humidity)
+                logging.info("[Read Sensors] Differences: %.1f°C, %.1f%%", abs(tempc2-tempc), abs(humidity2-humidity))
+            if abs(tempc2-tempc) > 1 or abs(humidity2-humidity) > 1 and not Terminate:
+                tempc2 = tempc
+                humidity2 = humidity
+                chktemp = 1
+                if not silent:
+                    logging.info("[Read Sensors] Successive readings > 1 difference: Rereading")
+                time.sleep(2)
+            elif not Terminate:
+                chktemp = 0
+                if not silent: 
+                    logging.info("[Read Sensors] Successive readings < 1 difference: keeping.")
+                tempf = float(tempc)*9.0/5.0 + 32.0
+                dewpointc = tempc - ((100-humidity) / 5)
+                #dewpointf = dewpointc * 9 / 5 + 32
+                #heatindexf =  -42.379 + 2.04901523 * tempf + 10.14333127 * humidity - 0.22475541 * tempf * humidity - 6.83783 * 10**-3 * tempf**2 - 5.481717 * 10**-2 * humidity**2 + 1.22874 * 10**-3 * tempf**2 * humidity + 8.5282 * 10**-4 * tempf * humidity**2 - 1.99 * 10**-6 * tempf**2 * humidity**2
+                #heatindexc = (heatindexf - 32) * (5 / 9)
+                if not silent: 
+                    logging.info("[Read Sensors] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", tempc, humidity, dewpointc)
+        else: logging.warning("[Read Sensors] Could not read temperature/humidity!")
 
 # Read variables from the configuration file
 def read_config(silent):
@@ -1203,7 +1210,11 @@ def modify_var(*names_and_values):
     for i in range(1, len(names_and_values), 2):
         for variable in namesOfVariables:
             if names_and_values[i] == variable:
-                #print "Variable:", names_and_values[i], "Value:", names_and_values[i+1]
+                # Log variable name: previous value -> new value
+                logging.info("[Change Variable] %s: %s -> %s", 
+                    names_and_values[i], 
+                    globals()[names_and_values[i]], 
+                    names_and_values[i+1])
                 if names_and_values[i] == 'TempOR' or names_and_values[i] == 'Temp_P' or names_and_values[i] == 'Temp_I' or names_and_values[i] == 'Temp_D' or names_and_values[i] == 'setTemp':
                     ClientQue = '1'
                     Temp_PID_restart = 1

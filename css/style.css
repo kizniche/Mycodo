@@ -109,6 +109,11 @@ table.pid td {
     padding: 0.2em 0.2em 0 0;
 }
 
+input.indicate {
+    height: 0.95em;
+    vertical-align: middle;
+}
+
 /* Warnings and errors */
 .error {
     color: red;

@@ -15,11 +15,6 @@ $gpio_path = "/usr/local/bin/gpio";
 
 ########## End Configure ##########
 
-# Concatenate log files (to TempFS) to ensure the latest data is being used
-`cat /var/www/mycodo/log/daemon.log /var/www/mycodo/log/daemon-tmp.log > /var/tmp/daemon.log`;
-`cat /var/www/mycodo/log/sensor.log /var/www/mycodo/log/sensor-tmp.log > /var/tmp/sensor.log`;
-`cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log > /var/tmp/relay.log`;
-
 $config_file = $install_path . "/config/mycodo.cfg";
 $auth_log = $install_path . "/log/auth.log";
 $sensor_log = "/var/tmp/sensor.log";
@@ -32,12 +27,6 @@ $still_exec = $install_path . "/cgi-bin/camera-still.sh";
 $stream_exec = $install_path . "/cgi-bin/camera-stream.sh";
 $lock_raspistill = $lock_path . "/mycodo_raspistill";
 $lock_mjpg_streamer = $lock_path . "/mycodo_mjpg_streamer";
-
-$daemon_check = `ps aux | grep "[m]ycodo.py -d"`;
-if (empty($daemon_check)) $daemon_check = 0;
-else $daemon_check = 1;
-
-$uptime = `uptime | grep -ohe 'load average[s:][: ].*' `;
 
 if (version_compare(PHP_VERSION, '5.3.7', '<')) {
     exit("PHP Login does not run on PHP versions before 5.3.7, please update your version of PHP");
@@ -127,6 +116,48 @@ function displayform() {
 }
 
 if ($login->isUserLoggedIn() == true) {
+    /*if (is_dir("/etc/")) {
+        if ($dh = opendir("/etc/")) {
+            while (($file = readdir($dh)) !== false) {
+                echo "filename: $file : filetype: " . filetype("/etc/" . $file) . "\n";
+            }
+            closedir($dh);
+        }
+    }*/
+    // Delete everything from images folder except the 5 newest files
+    if ($handle = opendir('/var/log/mycodo/images/')) {
+        $files = array();
+        while (false !== ($file = readdir($handle))) {
+            if (!is_dir($file)) {
+                // You'll want to check the return value here rather than just blindly adding to the array
+                $files[$file] = filemtime($file);
+                echo filemtime($file);
+            }
+        }
+
+        // Now sort by timestamp (just an integer) from oldest to newest
+        asort($files, SORT_NUMERIC);
+
+        // Loop over all but the 5 newest files and delete them
+        // Only need the array keys (filenames) since we don't care about timestamps now as the array will be in order
+        $files = array_keys($files);
+        for ($i = 0; $i < (count($files) - 5); $i++) {
+            // You'll probably want to check the return value of this too
+            unlink($files[$i]);
+        }
+    }
+    
+    # Concatenate log files (to TempFS) to ensure the latest data is being used
+    `cat /var/www/mycodo/log/daemon.log /var/www/mycodo/log/daemon-tmp.log > /var/tmp/daemon.log`;
+    `cat /var/www/mycodo/log/sensor.log /var/www/mycodo/log/sensor-tmp.log > /var/tmp/sensor.log`;
+    `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log > /var/tmp/relay.log`;
+
+    $daemon_check = `ps aux | grep "[m]ycodo.py -d"`;
+    if (empty($daemon_check)) $daemon_check = 0;
+    else $daemon_check = 1;
+
+    $uptime = `uptime | grep -ohe 'load average[s:][: ].*' `;
+
     $page = isset($_GET['page']) ? $_GET['page'] : 'Main';
     $tab = isset($_GET['tab']) ? $_GET['tab'] : 'Unset';
 
@@ -142,80 +173,89 @@ if ($login->isUserLoggedIn() == true) {
     // All commands that elevated (!= guest) privileges are required
     for ($p = 1; $p <= 8; $p++) {
         // Relay has been selected to be turned on or off
-        if (isset($_POST['R' . $p]) && $_SESSION['user_name'] != guest) {
-            $name = ${"relay" . $p . "name"};
-            $pin = ${"relay" . $p . "pin"};
-            if(${"relay" . $p . "trigger"} == 0) $trigger_state = 'LOW';
-            else $trigger_state = 'HIGH';
-            if ($_POST['R' . $p] == 0) $desired_state = 'LOW';
-            else $desired_state = 'HIGH';
+        if (isset($_POST['R' . $p]) ||
+                isset($_POST[$p . 'secON']) ||
+                isset($_POST['ChangeTimer' . $p]) || 
+                isset($_POST['Timer' . $p . 'StateChange'])) {
+
+            if ($_SESSION['user_name'] != guest) {
             
-            $GPIO_state = shell_exec("$gpio_path -g read $pin");
-            if ($GPIO_state == 0 && $trigger_state == 'HIGH') $actual_state = 'LOW';
-            else if ($GPIO_state == 0 && $trigger_state == 'LOW') $actual_state = 'HIGH';
-            else if ($GPIO_state == 1 && $trigger_state == 'HIGH') $actual_state = 'HIGH';    
-            else if ($GPIO_state == 1 && $trigger_state == 'LOW') $actual_state = 'LOW';
-            
-            if ($actual_state == 'LOW' && $desired_state == 'LOW') {
-                $error_code = 'already_off';
-            } else if ($actual_state == 'HIGH' && $desired_state == 'HIGH') {
-                $error_code = 'already_on';
-            } else {
-                if ($GPIO_state == 1) $desired_state = 0;
-                else $desired_state = 1;
-                $gpio_write = "$gpio_path -g write $pin $desired_state";
-                shell_exec($gpio_write);
-            }
-        } else if (isset($_POST['R' . $p]) && $_SESSION['user_name'] == guest) $error_code = 'guest';
-        
-        // Relay has been selected to be turned on for a number of seconds
-        if (isset($_POST[$p . 'secON']) && $_SESSION['user_name'] != guest) {
-            $name = ${"relay" . $p . "name"};
-            $pin = ${"relay" . $p . "pin"};
-            if(${"relay" . $p . "trigger"} == 0) $trigger_state = 'LOW';
-            else $trigger_state = 'HIGH';
-            if ($_POST['R' . $p] == 0) $desired_state = 'LOW';
-            else $desired_state = 'HIGH';
-            
-            $GPIO_state = shell_exec("$gpio_path -g read $pin");
-            if ($GPIO_state == 0 && $trigger_state == 'HIGH') $actual_state = 'LOW';
-            else if ($GPIO_state == 0 && $trigger_state == 'LOW') $actual_state = 'HIGH';
-            else if ($GPIO_state == 1 && $trigger_state == 'HIGH') $actual_state = 'HIGH';    
-            else if ($GPIO_state == 1 && $trigger_state == 'LOW') $actual_state = 'LOW';
-            $seconds_on = $_POST['sR' . $p];
-            
-            if (!is_numeric($seconds_on) || $seconds_on < 2 || $seconds_on != round($seconds_on)) {
-                echo "<div class=\"error\">Error: Relay $p ($name): Seconds must be a positive integer >1</div>";
-            } else if ($actual_state == 'HIGH' && $desired_state == 'HIGH') {
-                $error_code = 'already_on';
-            } else {
-                $relay_on_sec = "$mycodo_client --set $p $seconds_on";
-                shell_exec($relay_on_sec);
-            }
-        } else if (isset($_POST[$p . 'secON']) && $_SESSION['user_name'] == guest) $error_code = 'guest';
-        
-        if ((isset($_POST['ChangeTimer' . $p]) || isset($_POST['Timer' . $p . 'StateChange'])) && $_SESSION['user_name'] != guest) {
-            
-            $timerrelay = $_POST['Timer' . $p . 'Relay'];
-            $timeron = $_POST['Timer' . $p . 'On'];
-            $timeroff = $_POST['Timer' . $p . 'Off'];
+                if (isset($_POST['R' . $p])) {
+                    $name = ${"relay" . $p . "name"};
+                    $pin = ${"relay" . $p . "pin"};
+                    if(${"relay" . $p . "trigger"} == 0) $trigger_state = 'LOW';
+                    else $trigger_state = 'HIGH';
+                    if ($_POST['R' . $p] == 0) $desired_state = 'LOW';
+                    else $desired_state = 'HIGH';
+                    
+                    $GPIO_state = shell_exec("$gpio_path -g read $pin");
+                    if ($GPIO_state == 0 && $trigger_state == 'HIGH') $actual_state = 'LOW';
+                    else if ($GPIO_state == 0 && $trigger_state == 'LOW') $actual_state = 'HIGH';
+                    else if ($GPIO_state == 1 && $trigger_state == 'HIGH') $actual_state = 'HIGH';    
+                    else if ($GPIO_state == 1 && $trigger_state == 'LOW') $actual_state = 'LOW';
+                    
+                    if ($actual_state == 'LOW' && $desired_state == 'LOW') {
+                        $error_code = 'already_off';
+                    } else if ($actual_state == 'HIGH' && $desired_state == 'HIGH') {
+                        $error_code = 'already_on';
+                    } else {
+                        if ($GPIO_state == 1) $desired_state = 0;
+                        else $desired_state = 1;
+                        $gpio_write = "$gpio_path -g write $pin $desired_state";
+                        shell_exec($gpio_write);
+                    }
+                }
                 
-             // Set timer variables
-            if (isset($_POST['ChangeTimer' . $p])) {
-                $timerstate = ${'timer' . $p . 'state'};
-                $changetimer = "$mycodo_client --modtimer $p $timerstate $timerrelay $timeron $timeroff";
-                shell_exec($changetimer);
-            } else if (isset($_POST['ChangeTimer' . $p]) && $_SESSION['user_name'] == guest) $error_code = 'guest';
-            
-            // Set timer state
-            if (isset($_POST['Timer' . $p . 'StateChange'])) {
-                $timerstate = $_POST['Timer' . $p . 'StateChange'];
-                $changetimer = "$mycodo_client --modtimer $p $timerstate $timerrelay $timeron $timeroff";
-                shell_exec($changetimer);
-            }
-        } else if (isset($_POST['Timer' . $p . 'State']) && $_SESSION['user_name'] == guest) $error_code = 'guest';
+                // Relay has been selected to be turned on for a number of seconds
+                if (isset($_POST[$p . 'secON'])) {
+                    $name = ${"relay" . $p . "name"};
+                    $pin = ${"relay" . $p . "pin"};
+                    if(${"relay" . $p . "trigger"} == 0) $trigger_state = 'LOW';
+                    else $trigger_state = 'HIGH';
+                    if ($_POST['R' . $p] == 0) $desired_state = 'LOW';
+                    else $desired_state = 'HIGH';
+                    
+                    $GPIO_state = shell_exec("$gpio_path -g read $pin");
+                    if ($GPIO_state == 0 && $trigger_state == 'HIGH') $actual_state = 'LOW';
+                    else if ($GPIO_state == 0 && $trigger_state == 'LOW') $actual_state = 'HIGH';
+                    else if ($GPIO_state == 1 && $trigger_state == 'HIGH') $actual_state = 'HIGH';    
+                    else if ($GPIO_state == 1 && $trigger_state == 'LOW') $actual_state = 'LOW';
+                    $seconds_on = $_POST['sR' . $p];
+                    
+                    if (!is_numeric($seconds_on) || $seconds_on < 2 || $seconds_on != round($seconds_on)) {
+                        echo "<div class=\"error\">Error: Relay $p ($name): Seconds must be a positive integer >1</div>";
+                    } else if ($actual_state == 'HIGH' && $desired_state == 'HIGH') {
+                        $error_code = 'already_on';
+                    } else {
+                        $relay_on_sec = "$mycodo_client --set $p $seconds_on";
+                        shell_exec($relay_on_sec);
+                    }
+                }
+                
+                if ((isset($_POST['ChangeTimer' . $p]) || isset($_POST['Timer' . $p . 'StateChange'])) && $_SESSION['user_name'] != guest) {
+                    
+                    $timerrelay = $_POST['Timer' . $p . 'Relay'];
+                    $timeron = $_POST['Timer' . $p . 'On'];
+                    $timeroff = $_POST['Timer' . $p . 'Off'];
+                        
+                     // Set timer variables
+                    if (isset($_POST['ChangeTimer' . $p])) {
+                        $timerstate = ${'timer' . $p . 'state'};
+                        $changetimer = "$mycodo_client --modtimer $p $timerstate $timerrelay $timeron $timeroff";
+                        shell_exec($changetimer);
+                    } else if (isset($_POST['ChangeTimer' . $p]) && $_SESSION['user_name'] == guest) $error_code = 'guest';
+                    
+                    // Set timer state
+                    if (isset($_POST['Timer' . $p . 'StateChange'])) {
+                        $timerstate = $_POST['Timer' . $p . 'StateChange'];
+                        $changetimer = "$mycodo_client --modtimer $p $timerstate $timerrelay $timeron $timeroff";
+                        shell_exec($changetimer);
+                    }
+                }
+            } else if ($_SESSION['user_name'] == guest) $error_code = 'guest';
+        }
     }
-        
+    
     if (isset($_POST['WriteSensorLog']) || isset($_POST['ChangeSensor']) ||
             isset($_POST['ChangeTempPID']) || isset($_POST['ChangeHumPID']) ||
             isset($_POST['TempOR']) || isset($_POST['HumOR']) ||
@@ -265,7 +305,6 @@ if ($login->isUserLoggedIn() == true) {
              if (isset($_POST['WriteSensorLog'])) {
                 $editconfig = "$mycodo_client -w";
                 shell_exec($editconfig);
-                sleep(6);
             }
             
             // Request the relay name(s) be renamed
@@ -277,7 +316,6 @@ if ($login->isUserLoggedIn() == true) {
                 }
                 $editconfig = "$mycodo_client --modnames $relay1name $relay2name $relay3name $relay4name $relay5name $relay6name $relay7name $relay8name";
                 shell_exec($editconfig);
-                sleep(6);
             }
             
             // Request the relay pin(s) be renumbered
@@ -289,7 +327,6 @@ if ($login->isUserLoggedIn() == true) {
                 }
                 $editconfig = "$mycodo_client --modpins $relay1pin $relay2pin $relay3pin $relay4pin $relay5pin $relay6pin $relay7pin $relay8pin";
                 shell_exec($editconfig);
-                sleep(6);
             }
             
             // Request the relay pin(s) be renumbered
@@ -301,7 +338,6 @@ if ($login->isUserLoggedIn() == true) {
                 }
                 $editconfig = "$mycodo_client --modtrigger $relay1trigger $relay2trigger $relay3trigger $relay4trigger $relay5trigger $relay6trigger $relay7trigger $relay8trigger";
                 shell_exec($editconfig);
-                sleep(6);
             }
             
             // Request PID override to be turned on or off
@@ -310,14 +346,12 @@ if ($login->isUserLoggedIn() == true) {
                 else $tempor = 0;
                 $editconfig = "$mycodo_client --modvar TempOR $tempor";
                 shell_exec($editconfig);
-                sleep(6);
             }
             if (isset($_POST['HumOR'])) {
                 if ($_POST['HumOR']) $humor = 1;
                 else $humor = 0;
                 $editconfig = "$mycodo_client --modvar HumOR $humor";
                 shell_exec($editconfig);
-                sleep(6);
             }
             
             // Request the PID variables be changed
@@ -330,7 +364,6 @@ if ($login->isUserLoggedIn() == true) {
                 $factortempseconds = $_POST['factorTempSeconds'];
                 $editconfig = "$mycodo_client --modvar relayTemp $relaytemp setTemp $settemp Temp_P $temp_p Temp_I $temp_i Temp_D $temp_d factorTempSeconds $factortempseconds";
                 shell_exec($editconfig);
-                sleep(6);
             }
             if (isset($_POST['ChangeHumPID'])) {
                 $relayhum  = $_POST['relayHum'];
@@ -341,7 +374,6 @@ if ($login->isUserLoggedIn() == true) {
                 $factorhumseconds = $_POST['factorHumSeconds'];
                 $editconfig = "$mycodo_client --modvar relayHum $relayhum setHum $sethum Hum_P $hum_p Hum_I $hum_i Hum_D $hum_d factorHumSeconds $factorhumseconds";
                 shell_exec($editconfig);
-                sleep(6);
             }
             
             // Request the sensor configuration be changed
@@ -355,7 +387,6 @@ if ($login->isUserLoggedIn() == true) {
                 }
                 $editconfig = "$mycodo_client --modvar DHTSensor $dhtsensor DHTPin $dhtpin DHTSeconds $dhtseconds";
                 shell_exec($editconfig);
-                sleep(6);
             }
             
             // Change number of custom timers **working on**
@@ -375,7 +406,6 @@ if ($login->isUserLoggedIn() == true) {
                 $email_to  = $_POST['email_to'];
                 $editconfig = "$mycodo_client --modvar smtp_host $smtp_host smtp_port $smtp_port smtp_user $smtp_user smtp_pass $smtp_pass email_from $email_from email_to $email_to";
                 shell_exec($editconfig);
-                sleep(6);
             }
         } else $error_code = 'guest';
     }
@@ -424,6 +454,7 @@ if ($login->isUserLoggedIn() == true) {
             window.open("image.php?span=legend-full","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=600, height=385");
         }
     </script>
+    <?php include_once("analyticstracking.php") ?>
     <?php
         if (isset($_GET['r']) && ($_GET['r'] == 1)) echo "<META HTTP-EQUIV=\"refresh\" CONTENT=\"90\">";
     ?>
@@ -436,10 +467,13 @@ if ($login->isUserLoggedIn() == true) {
 switch ($error_code) {
     case 'guest':
         echo "<span class=\"error\">You cannot perform that task as a guest</span>";
+        break;
     case 'already_on':
         echo "<div class=\"error\">Error: Can't turn relay On, it's already On</div>";
+        break;
     case 'already_off':
         echo "<div class=\"error\">Error: Can't turn relay Off, it's already Off</div>";
+        break;
 }
 $error_code = 0;
 ?>
@@ -501,21 +535,21 @@ $error_code = 0;
     </div>
     <div class="header">
         <div style="padding-bottom: 0.1em;"><?php
-            if ($daemon_check) echo "<img class=\"img-on\" alt=\"On\" title=\"On\"> Daemon";
-            else echo "<img class=\"img-off\" alt=\"Off\" title=\"Off\"> Daemon";
+            if ($daemon_check) echo '<input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="daemon_change" value="0"> Daemon';
+            else echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="daemon_change" value="1"> Daemon';
             ?></div>
-        <div style="padding-bottom: 0.1em;"><?php if ($tempor == 1) echo "<img class=\"img-off\" alt=\"Off\" title=\"Off\">";
-                else echo "<img class=\"img-on\" alt=\"On\" title=\"On\">"; ?> Temp PID</div>
-        <div><?php  if ($humor == 1) echo "<img class=\"img-off\" alt=\"Off\" title=\"Off\">";
-                else echo "<img class=\"img-on\" alt=\"On\" title=\"On\">"; ?> Hum PID</div>
+        <div style="padding-bottom: 0.1em;"><?php if ($tempor == 1) echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn On" name="TempOR" value="0">';
+                else echo '<input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="TempOR" value="1">'; ?> Temp PID</div>
+        <div><?php  if ($humor == 1) echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="HumOR" value="0">';
+                else echo '<input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="HumOR" value="1">'; ?> Hum PID</div>
     </div>
     <div class="header">
         <div style="padding-bottom: 0.1em;"><?php if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) {
-                    echo "<img class=\"img-on\" alt=\"On\" title=\"On\">";
-                } else echo "<img class=\"img-off\" alt=\"Off\" title=\"Off\">";?> Stream</div>
+                    echo '<input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="" value="0">';
+                } else echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="" value="0">';?> Stream</div>
         <div><?php
-            if (isset($_GET['r'])) { ?><div style="display:inline-block; vertical-align:top;"><img class="img-on" alt="On" title="On"></div><div style="display:inline-block; padding-right: 0.3em;"><div> Refresh</div><div><span style="font-size: 0.7em">(<?php echo $tab; ?>)</span></div></div><?php 
-            } else echo "<img class=\"img-off\" alt=\"Off\" title=\"Off\"> Refresh"; ?></div>
+            if (isset($_GET['r'])) { ?><div style="display:inline-block; vertical-align:top;"><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="" value="0"></div><div style="display:inline-block; padding-left: 0.3em;"><div>Refresh</div><div><span style="font-size: 0.7em">(<?php echo $tab; ?>)</span></div></div><?php 
+            } else echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="" value="0"> Refresh'; ?></div>
     </div>
     <div style="float: left; vertical-align:top; padding-top: 0.3em;">
         <div style="text-align: right; padding-top: 3px; font-size: 0.9em;">Time now: <?php echo $time_now; ?></div>
@@ -542,8 +576,9 @@ $error_code = 0;
             ?>" method="POST">
             <div>
                 <div style="padding-top: 0.5em;">
-                    <div style="float: left; padding: 1em 1.5em 1em 0;">
-                        Auto Refresh: <?php
+                    <div style="float: left; padding: 0.0em 0.5em 1em 0;">
+                        <div style="text-align: center; padding-bottom: 0.2em;">Auto Refresh</div>
+                        <div style="text-align: center;"><?php
                             if (isset($_GET['r']) && $_GET['r'] == 1) {
                                 if (empty($page)) echo '<a href="?tab=main">OFF</a> | <span class="on">ON</span>';
                                 else echo '<a href="?tab=main&page=' . $page . '">OFF</a> | <span class="on">ON</span>';
@@ -552,17 +587,28 @@ $error_code = 0;
                                 echo '<span class="off">OFF</span> | <a href="?tab=main&page=' . $page . '&r=1">ON</a>';
                             }
                         ?>
+                        </div>
                     </div>
                     <div style="float: left; padding: 0.0em 0.5em 1em 0;">
-                    <div style="text-align: center; padding-bottom: 0.2em;">Update</div>
-                    <div>
-                    <div style="float: left; padding-right: 0.1em;">
-                        <input type="submit" name="Refresh" value="Graph" title="Refresh Graph">
-                    </div>
-                    <div style="float: left;">
-                        <input type="submit" name="WriteSensorLog" value="Sensors" title="Take a new temperature and humidity reading">
-                    </div>
-                    </div>
+                        <div style="text-align: center; padding-bottom: 0.2em;">Refresh</div>
+                        <div>
+                            <div style="float: left; padding-right: 0.1em;">
+                                <input type="submit" name="Refresh" value="Graph" title="Refresh Graph">
+                            </div>
+                            <div style="float: left; padding-right: 0.1em;">
+                                <?php if ($_GET['r'] == 1) {
+                                    if (empty($page)) echo '<input type="button" onclick=\'location.href="?tab=main&r=1"\' value="Page">';
+                                    echo '<input type="button" onclick=\'location.href="?tab=main&page=' . $page . '&r=1"\' value="Page">';
+                                } else {
+                                    if (empty($page)) echo '<input type="button" onclick=\'location.href="?tab=main"\' value="Page">';
+                                    echo '<input type="button" onclick=\'location.href="?tab=main&page=' . $page . '"\' value="Page">';
+                                }
+                                ?>
+                            </div>
+                            <div style="float: left;">
+                                <input type="submit" name="WriteSensorLog" value="Sensors" title="Take a new temperature and humidity reading">
+                            </div>
+                        </div>
                     </div>
                     <div style="float: left; padding: 0.2em 0 0.5em 1.5em">
                         <?php
@@ -581,49 +627,51 @@ $error_code = 0;
                 <div>
                     <?php
                     echo "<img class=\"main-image\" src=image.php?span=";
-                    
-                    if (isset($_GET['page'])) {
+                    if (isset($_POST['Refresh']) || isset($_GET['Refresh']) || (isset($_GET['r']) and $_GET['tab'] == 'main') || !isset($_GET['tab'])) $ref = 1;
+                    else $ref = 0;
+                    if (isset($_GET['page']) && isset($_GET['Refresh']) == 1) {
+                        $id = uniqid();
                         switch ($_GET['page']) {
                         case 'Main':
-                        if (isset($_POST['Refresh']) || isset($_GET['r']) || isset($_GET['Refresh']) || !isset($_GET['tab'])) shell_exec($graph_exec . ' dayweek');
-                        echo "main>";
+                        if ($ref) shell_exec($graph_exec . ' dayweek ' . $id);
+                        echo "main&mod=" . $id . ">";
                         break;
                         case 'Hour':
-                        if (isset($_POST['Refresh']) || isset($_GET['r']) || isset($_GET['Refresh'])) shell_exec($graph_exec . ' 1h');
-                        echo "1h>";
+                        if ($ref) shell_exec($graph_exec . ' 1h ' . $id);
+                        echo "1h&mod=" . $id . ">";
                         break;
                         case '6Hours':
-                        if (isset($_POST['Refresh']) || isset($_GET['r']) || isset($_GET['Refresh'])) shell_exec($graph_exec . ' 6h');
-                        echo "6h>";
+                        if ($ref) shell_exec($graph_exec . ' 6h ' . $id);
+                        echo "6h&mod=" . $id . ">";
                         break;
                         case 'Day':
-                        if (isset($_POST['Refresh']) || isset($_GET['r']) || isset($_GET['Refresh'])) shell_exec($graph_exec . ' day');
-                        echo "day>";
+                        if ($ref) shell_exec($graph_exec . ' day ' . $id);
+                        echo "day&mod=" . $id . ">";
                         break;
                         case 'Week':
-                        if (isset($_POST['Refresh']) || isset($_GET['r']) || isset($_GET['Refresh'])) shell_exec($graph_exec . ' week');
-                        echo "week>";
+                        if ($ref) shell_exec($graph_exec . ' week ' . $id);
+                        echo "week&mod=" . $id . ">";
                         break;
                         case 'Month':
-                        if (isset($_POST['Refresh']) || isset($_GET['r']) || isset($_GET['Refresh'])) shell_exec($graph_exec . ' month');
-                        echo "month>";
+                        if ($ref) shell_exec($graph_exec . ' month ' . $id);
+                        echo "month&mod=" . $id . ">";
                         break;
                         case 'Year':
-                        if (isset($_POST['Refresh']) || isset($_GET['r']) || isset($_GET['Refresh'])) shell_exec($graph_exec . ' year');
-                        echo "year>";
+                        if ($ref) shell_exec($graph_exec . ' year ' . $id);
+                        echo "year&mod=" . $id . ">";
                         break;
                         case 'All':
-                        if (isset($_POST['Refresh']) || isset($_GET['r']) || isset($_GET['Refresh'])) shell_exec($graph_exec . ' all');
-                        echo "1h><p><img class=\"main-image\" src=image.php?span=6h></p><p><img class=\"main-image\" src=image.php?span=day></p><p><img class=\"main-image\" src=image.php?span=week></p><p><img class=\"main-image\" src=image.php?span=month></p><p><img class=\"main-image\" src=image.php?span=year></p>";
+                        if ($ref) shell_exec($graph_exec . ' all ' . $id);
+                        echo "1h&mod=" . $id . "><p><img class=\"main-image\" src=image.php?span=6h&mod=" . $id . "></p><p><img class=\"main-image\" src=image.php?span=day&mod=" . $id . "></p><p><img class=\"main-image\" src=image.php?span=week&mod=" . $id . "></p><p><img class=\"main-image\" src=image.php?span=month&mod=" . $id . "></p><p><img class=\"main-image\" src=image.php?span=year&mod=" . $id . "></p>";
                         break;
                         default:
-                        if (isset($_POST['Refresh']) || isset($_GET['r']) || isset($_GET['Refresh'])) shell_exec($graph_exec . ' dayweek');
-                        echo "main>";
+                        if ($ref) shell_exec($graph_exec . ' dayweek ' . $id);
+                        echo "main&mod=" . $id . ">";
                         break;
                         }
                     } else {
-                        if (isset($_POST['Refresh']) || isset($_GET['r']) || isset($_GET['Refresh']) || !isset($_GET['tab'])) shell_exec($graph_exec . ' dayweek');
-                        echo "main>";
+                        if ($ref) shell_exec($graph_exec . ' dayweek ' . $id);
+                        echo "main&mod=" . $id . ">";
                     }
                     ?>
                 </div>
@@ -637,20 +685,24 @@ $error_code = 0;
 		<li data-content="configure" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'config') echo "class=\"selected\""; ?>>
             <FORM action="?tab=config<?php if (isset($_GET['r'])) echo "&r=" . $_GET['r']; ?>" method="POST">
             <div style="padding-top: 0.5em;">
-                    <div style="float: left; padding: 1em 1.5em 1em 0;">
-                        Auto Refresh: 
-                        <?php
-                            if (isset($_GET['r'])) {
-                                if ($_GET['r'] == 1) echo "<a href=\"?tab=config\">OFF</a> | <span class=\"on\">ON</span>";
-                                else echo "<span class=\"off\">OFF</span> | <a href=\"?tab=config&?r=1\">ON</a>";
-                            } else echo "<span class=\"off\">OFF</span> | <a href=\"?tab=config&r=1\">ON</a>";
-                        ?>
+                <div style="float: left; padding: 0.0em 0.5em 1em 0;">
+                    <div style="text-align: center; padding-bottom: 0.2em;">Auto Refresh</div>
+                    <div style="text-align: center;"><?php
+                        if (isset($_GET['r'])) {
+                            if ($_GET['r'] == 1) echo "<a href=\"?tab=config\">OFF</a> | <span class=\"on\">ON</span>";
+                            else echo "<span class=\"off\">OFF</span> | <a href=\"?tab=config&?r=1\">ON</a>";
+                        } else echo "<span class=\"off\">OFF</span> | <a href=\"?tab=config&r=1\">ON</a>";
+                    ?>
+                    </div>
                 </div>
                 <div style="float: left; padding: 0.0em 0.5em 1em 0;">
-                    <div style="text-align: center; padding-bottom: 0.2em;">Update</div>
+                    <div style="text-align: center; padding-bottom: 0.2em;">Refresh</div>
                     <div>
                     <div style="float: left; padding-right: 0.1em;">
-                        <input type="submit" name="Refresh" value="Graph" title="Refresh Graph">
+                        <?php if ($_GET['r'] == 1) {
+                            echo '<input type="button" onclick=\'location.href="?tab=config&r=1"\' value="Page">';
+                        } else echo '<input type="button" onclick=\'location.href="?tab=config"\' value="Page">';
+                        ?>
                     </div>
                     <div style="float: left;">
                         <input type="submit" name="WriteSensorLog" value="Sensors" title="Take a new temperature and humidity reading">
@@ -812,11 +864,11 @@ $error_code = 0;
                                     <?php
                                         if ($tempor == 1) {
                                             ?>
-                                            <img style="vertical-align: middle;" class="img-off"> | <button style="width: 3em;" type="submit" name="TempOR" value="0">ON</button>
+                                            <input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="TempOR" value="0"> | <button style="width: 3em;" type="submit" name="TempOR" value="0">ON</button>
                                             <?php
                                         } else {
                                             ?>
-                                            <img style="vertical-align: middle;" class="img-on"> | <button style="width: 3em;" type="submit" name="TempOR" value="1">OFF</button>
+                                            <input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="TempOR" value="1"> | <button style="width: 3em;" type="submit" name="TempOR" value="1">OFF</button>
                                             <?php
                                         }
                                     ?>
@@ -874,11 +926,11 @@ $error_code = 0;
                                 <?php
                                     if ($humor == 1) {
                                         ?>
-                                        <img style="vertical-align: middle;" class="img-off"> | <button style="width: 3em;" type="submit" name="HumOR" value="0">ON</button>
+                                        <input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="HumOR" value="0"> | <button style="width: 3em;" type="submit" name="HumOR" value="0">ON</button>
                                         <?php
                                     } else {
                                         ?>
-                                        <img style="vertical-align: middle;" class="img-on"> | <button style="width: 3em;" type="submit" name="HumOR" value="1">OFF</button>
+                                        <input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="HumOR" value="1"> | <button style="width: 3em;" type="submit" name="HumOR" value="1">OFF</button>
                                         <?php
                                     }
                                 ?>
