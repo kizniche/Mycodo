@@ -123,8 +123,10 @@ TAlive = 1
 HAlive = 1
 holderTempOR = ''
 holderHumOR = ''
-Temp_PID_restart = 0
-Hum_PID_restart = 0
+Temp_PID_Down = 0
+Temp_PID_Up = 0
+Hum_PID_Down = 0
+Hum_PID_Up = 0
 
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
@@ -438,8 +440,10 @@ def menu():
 # sensor/relay logs, and receives/executes commands from mycodo-client.py
 def daemon(output):
     global change_sensor_log
-    global Temp_PID_restart
-    global Hum_PID_restart
+    global Temp_PID_Down
+    global Temp_PID_Up
+    global Hum_PID_Down
+    global Hum_PID_Up
     global server
     global HAlive
     global TAlive
@@ -503,32 +507,42 @@ def daemon(output):
                 timer_time[timerChange] = 0
                 if (timerState[timerChange] == 0 and timerRelay[timerChange] != 0):
                     relay_onoff(timerRelay[timerChange], 0)
-
-            if Temp_PID_restart == 1:
-                if tm.isAlive():
-                    logging.info("[Daemon] Restarting Temperature PID thread")
-                    TAlive = 0
-                    while TAlive != 2:
-                        time.sleep(0.1)
-                    TAlive = 1
-                Temp_PID_restart = 0
-                tm = threading.Thread(target = temperature_monitor)  
-                tm.daemon = True
-                tm.start()
-            
-            if Hum_PID_restart:
-                if hm.isAlive():
-                    logging.info("[Daemon] Restarting Humidity PID thread")
-                    HAlive = 0
-                    while HAlive != 2:
-                        time.sleep(0.1)
-                    HAlive = 1
-                Hum_PID_restart = 0
-                hm = threading.Thread(target = humidity_monitor)
-                hm.daemon = True
-                hm.start()
-                
+                    
             ClientQue = '0'
+
+        if Temp_PID_Down == 1:
+            if tm.isAlive():
+                logging.info("[Daemon] Shutting Down Temperature PID thread")
+                TAlive = 0
+                while TAlive != 2:
+                    time.sleep(0.1)
+                if (relayTrigger[int(relayTemp)] == 0): gpio_change(int(relayTemp), 1)
+                else: gpio_change(int(relayTemp), 0)
+                TAlive = 1
+            Temp_PID_Down = 0
+        if Temp_PID_Up == 1:
+            logging.info("[Daemon] Starting Temperature PID thread")
+            tm = threading.Thread(target = temperature_monitor)  
+            tm.daemon = True
+            tm.start()
+            Temp_PID_Up = 0
+            
+        if Hum_PID_Down:
+            if hm.isAlive():
+                logging.info("[Daemon] Shutting Down Humidity PID thread")
+                HAlive = 0
+                while HAlive != 2:
+                    time.sleep(0.1)
+                if (relayTrigger[int(relayHum)] == 0): gpio_change(int(relayHum), 1)
+                else: gpio_change(int(relayHum), 1)
+                HAlive = 1
+            Hum_PID_Down = 0
+        if Hum_PID_Up == 1:
+            logging.info("[Daemon] Starting Temperature PID thread")
+            hm = threading.Thread(target = humidity_monitor)
+            hm.daemon = True
+            hm.start()
+            Hum_PID_Up = 0
         
         # Write sensor log
         if int(time.time()) > timerSensorLog and DHTSensor != 'Other':
@@ -568,7 +582,7 @@ def temperature_monitor():
     p_temp.setPoint(setTemp)
     
     while (TAlive):
-        if TempOR == 0 and Temp_PID_restart == 0:
+        if TempOR == 0 and Temp_PID_Down == 0:
             if int(time.time()) > timerTemp:
                 logging.info("[PID Temperature] Reading temperature...")
                 read_sensors(1)
@@ -602,7 +616,7 @@ def humidity_monitor():
     p_hum.setPoint(setHum)
 
     while (HAlive):
-        if HumOR == 0 and Hum_PID_restart == 0:
+        if HumOR == 0 and Hum_PID_Down == 0:
             if int(time.time()) > timerHum:
                 logging.info("[PID Humidity] Reading humidity...")
                 read_sensors(1)
@@ -1158,9 +1172,13 @@ def represents_float(s):
 
 # Check if a variable name in config_file matches a string
 def modify_var(*names_and_values):
-    global Temp_PID_restart
-    global Hum_PID_restart
+    global Temp_PID_Down
+    global Temp_PID_Up
+    global Hum_PID_Down
+    global Hum_PID_Up
     global ClientQue
+    HumRes = 0
+    TempRes = 0
 
     namesOfVariables = [
     'DHTSensor',
@@ -1215,17 +1233,31 @@ def modify_var(*names_and_values):
                     names_and_values[i], 
                     globals()[names_and_values[i]], 
                     names_and_values[i+1])
-                if names_and_values[i] == 'TempOR' or names_and_values[i] == 'Temp_P' or names_and_values[i] == 'Temp_I' or names_and_values[i] == 'Temp_D' or names_and_values[i] == 'setTemp':
-                    ClientQue = '1'
-                    Temp_PID_restart = 1
-                    time.sleep(1)
-                if names_and_values[i] == 'HumOR' or names_and_values[i] == 'Hum_P' or names_and_values[i] == 'Hum_I' or names_and_values[i] == 'Hum_D' or names_and_values[i] == 'setHum':
-                    ClientQue = '1'
-                    Hum_PID_restart = 1
-                    time.sleep(1)
+                if TempRes == 0 and (names_and_values[i] == 'TempOR' or names_and_values[i] == 'Temp_P' or names_and_values[i] == 'Temp_I' or names_and_values[i] == 'Temp_D' or names_and_values[i] == 'setTemp'):
+                    TempRes = 1
+                    Temp_PID_Down = 1
+                    while Temp_PID_Down == 1:
+                        time.sleep(0.1)
+                if HumRes == 0 and (names_and_values[i] == 'HumOR' or names_and_values[i] == 'Hum_P' or names_and_values[i] == 'Hum_I' or names_and_values[i] == 'Hum_D' or names_and_values[i] == 'setHum'):
+                    HumRes = 1
+                    Hum_PID_Down = 1
+                    while Hum_PID_Down == 1:
+                        time.sleep(0.1)
                 globals()[names_and_values[i]] = names_and_values[i+1]
-                    
+                     
     write_config()
+    read_config(1)
+    
+    if TempRes:
+        Temp_PID_Up = 1
+        while Temp_PID_Up:
+            time.sleep(0.1)
+        
+    if HumRes:
+        Hum_PID_Up = 1
+        while Hum_PID_Up:
+            time.sleep(0.1)
+            
     return 1
 
 def email():
