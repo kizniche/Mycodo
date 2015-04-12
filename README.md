@@ -255,6 +255,18 @@ Add the following to /etc/apache2/sites-available/default-ssl (or just 'default'
 <a name="mysql"></a>
 ### MySQL and User Login
 
+Set up phpmyadmin to only allow trusted sources. Edit phpmyadmin.conf
+
+`sudo vi /etc/apache2/conf.d/phpmyadmin.conf`
+
+Add the following lines after `<Directory /usr/share/phpmyadmin>` and change YOUR-IP with the IP address you will be connecting from.
+
+```
+Order Allow,Deny
+Allow from 127.0.0.1
+Allow from YOUR-IP
+```
+
 Download the files in source/php-login-mysql-install to your local computer. Go to http://127.0.0.1/phpmyadmin and login with root and the password you created. Click 'Import' and select 01-create-database.sql, then click 'OK'. Repeat with the file 02-create-user-table.sql. This will wet up your MySQL database to allow user registration.
 
 Edit the file /var/www/mycodo/config/config.php and change 'password' for the defined DB-PASS to the password you created when you installed MySQL. Completely fill out the Cookie and SMTP sections. The cookie section ensures proper cookie creation and authentication. The SMTP section is important because you will need to receive a verification email after registration. As of 3/28/2015, GMail works as a SMTP server. Just create a new account and enter the credentials in as the config file instructs.
