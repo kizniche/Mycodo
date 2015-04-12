@@ -1233,12 +1233,12 @@ def modify_var(*names_and_values):
                     names_and_values[i], 
                     globals()[names_and_values[i]], 
                     names_and_values[i+1])
-                if TempRes == 0 and (names_and_values[i] == 'TempOR' or names_and_values[i] == 'Temp_P' or names_and_values[i] == 'Temp_I' or names_and_values[i] == 'Temp_D' or names_and_values[i] == 'setTemp'):
+                if TempRes == 0 and (names_and_values[i] == 'relayTemp' or names_and_values[i] == 'TempOR' or names_and_values[i] == 'Temp_P' or names_and_values[i] == 'Temp_I' or names_and_values[i] == 'Temp_D' or names_and_values[i] == 'setTemp'):
                     TempRes = 1
                     Temp_PID_Down = 1
                     while Temp_PID_Down == 1:
                         time.sleep(0.1)
-                if HumRes == 0 and (names_and_values[i] == 'HumOR' or names_and_values[i] == 'Hum_P' or names_and_values[i] == 'Hum_I' or names_and_values[i] == 'Hum_D' or names_and_values[i] == 'setHum'):
+                if HumRes == 0 and (names_and_values[i] == 'relayHum' or names_and_values[i] == 'HumOR' or names_and_values[i] == 'Hum_P' or names_and_values[i] == 'Hum_I' or names_and_values[i] == 'Hum_D' or names_and_values[i] == 'setHum'):
                     HumRes = 1
                     Hum_PID_Down = 1
                     while Hum_PID_Down == 1:
