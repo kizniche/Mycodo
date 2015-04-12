@@ -141,13 +141,13 @@ class ComServer(rpyc.Service):
     def exposed_ChangeRelay(self, relay, state):
         if (state == 'HIGH'):
             logging.info("[Client command] Changing Relay %s to HIGH", relay)
-            relay_onoff(relay, state)
+            relay_onoff(int(relay), state)
         if (state == 'LOW'):
             logging.info("[Client command] Changing Relay %s to LOW", relay)
-            relay_onoff(relay, state)
+            relay_onoff(int(relay), state)
         else:
             logging.info("[Client command] Turning Relay %s On for %s seconds", relay, state)
-            relay_on_duration(relay, state)
+            relay_on_duration(int(relay), int(state))
         return 1
     def exposed_ChangeTimer(self, timernumber, timerstate, timerrelay,
             timerdurationon, timerdurationoff):
@@ -487,9 +487,9 @@ def daemon(output):
                 write_sensor_log()
                 change_sensor_log = 0
             elif ClientQue == 'TerminateServer':
-                logging.info("[Client command] Terminate threads and shut down")
-                Concatenate_Logs()
                 logging.info("[Daemon] Backing up logs")
+                Concatenate_Logs()
+                logging.info("[Client command] Terminate threads and shut down")
                 TAlive = 0
                 while TAlive != 2:
                     time.sleep(0.1)
@@ -573,8 +573,8 @@ def temperature_monitor():
                 logging.info("[PID Temperature] Reading temperature...")
                 read_sensors(1)
                 if (tempc < setTemp):
-                    logging.info("[PID Temperature] Temperature (%.1f°C) < (%.1f°C) setTemp", tempc, setTemp)
-                    PIDTemp = round(p_temp.update(float(tempc)), 1)
+                    logging.info("[PID Temperature] Temperature (%.1f°C) < (%.1f°C) setTemp", tempc, float(setTemp))
+                    PIDTemp = p_temp.update(float(tempc))
                     logging.info("[PID Temperature] PID = %.1f (seconds)", PIDTemp)
                     if (PIDTemp > 0 and tempc < setTemp):
                         rod = threading.Thread(target = relay_on_duration, 
@@ -607,8 +607,8 @@ def humidity_monitor():
                 logging.info("[PID Humidity] Reading humidity...")
                 read_sensors(1)
                 if (humidity < setHum):
-                    logging.info("[PID Humidity] Humidity (%.1f%%) < (%.1f%%) setHum", humidity, setHum)
-                    PIDHum = round(p_hum.update(float(humidity)), 1)
+                    logging.info("[PID Humidity] Humidity (%.1f%%) < (%.1f%%) setHum", humidity, float(setHum))
+                    PIDHum = p_hum.update(float(humidity))
                     logging.info("[PID Humidity] PID = %.1f (seconds)", PIDHum)
                     if (PIDHum > 0 and humidity < setHum):
                         rod = threading.Thread(target = relay_on_duration,
@@ -1125,7 +1125,7 @@ def relay_on_duration(relay, seconds):
             relay, relayName[relay], seconds)
     else:
         logging.info("[Relay Duration] Relay %s (%s) ON for %s seconds", 
-            relay, relayName[relay], seconds)
+            relay, relayName[relay], round(seconds, 1))
    
     GPIO.output(relayPin[relay], relayTrigger[relay]) # Turn relay on    
     timer_on = int(time.time()) + seconds
@@ -1137,7 +1137,7 @@ def relay_on_duration(relay, seconds):
     if relayTrigger[relay] == 0: GPIO.output(relayPin[relay], 1) # Turn relay off
     else: GPIO.output(relayPin[relay], 0) # Turn relay off
     logging.info("[Relay Duration] Relay %s (%s) Off (was On for %s sec)", 
-        relay, relayName[relay], seconds)
+        relay, relayName[relay], round(seconds, 1))
     return 1
 
 # Check if string represents an integer value
