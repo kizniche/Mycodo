@@ -125,7 +125,7 @@ To set up PHPMyAdmin, use the following command, then select to configure Apache
 
 `sudo apt-get install phpmyadmin`
 
-Download the latest code for the controller/web interface, WireingPi, and Adafruit_Python_DHT
+Download the latest code for Mycodo along with the WireingPi, Adafruit_Python_DHT, LockFile, and RPyC python modules.
 
 `sudo git clone https://github.com/kizniche/Automated-Mushroom-Cultivator /var/www/mycodo`
 
@@ -134,6 +134,8 @@ Download the latest code for the controller/web interface, WireingPi, and Adafru
 `sudo git clone https://github.com/adafruit/Adafruit_Python_DHT /var/www/mycodo/source/Adafruit_Python_DHT`
 
 `sudo wget https://pypi.python.org/packages/source/l/lockfile/lockfile-0.10.2.tar.gz /var/www/mycodo/source/`
+
+`sudo wget https://pypi.python.org/packages/source/r/rpyc/rpyc-3.3.0.tar.gz /var/www/mycodo/source/`
 
 Install WiringPi
 
@@ -154,6 +156,16 @@ Install LockFile
 `sudo tar xzvf lockfile-0.10.2.tar.gz`
 
 `cd lockfile-0.10.2`
+
+`sudo python setup.py install`
+
+Install RPyC
+
+`cd /var/www/mycodo/source/`
+
+`sudo tar xzvf rpyc-3.3.0.tar.gz`
+
+`cd rpyc-3.3.0`
 
 `sudo python setup.py install`
 
@@ -223,7 +235,7 @@ There is an `.htaccess` file in each directory that denies web access to these f
 
 Optionally for higher security, generate an SSL certificate and enable SSL/HTTPS in apache.
 
-Add the following to /etc/apache2/sites-avalable/default-ssl (or just 'default' if not using SSL), or modify to suit your needs.
+Add the following to /etc/apache2/sites-available/default-ssl (or just 'default' if not using SSL), or modify to suit your needs.
 
     DocumentRoot /var/www
     <Directory />
