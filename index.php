@@ -541,7 +541,7 @@ $error_code = 0;
             if (isset($_GET['r'])) { ?><div style="display:inline-block; vertical-align:top;"><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="" value="0"></div><div style="display:inline-block; padding-left: 0.3em;"><div>Refresh</div><div><span style="font-size: 0.7em">(<?php echo $tab; ?>)</span></div></div><?php 
             } else echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="" value="0"> Refresh'; ?></div>
     </div>
-    <div style="float: left; vertical-align:top; padding-top: 1em;">
+    <div style="float: left; vertical-align:top; height: 4.5em; padding: 1em 0 0 0.3em;">
         <div style="text-align: right; padding-top: 3px; font-size: 0.9em;">Time now: <?php echo $time_now; ?></div>
         <div style="text-align: right; padding-top: 3px; font-size: 0.9em;">Last read: <?php echo $time_last; ?></div>
         <div style="text-align: right; padding-top: 3px; font-size: 0.9em;"><?php echo $uptime; ?></div>
