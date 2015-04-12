@@ -373,7 +373,18 @@ def menu():
         usage()
         sys.exit(2)
     for opt, arg in opts:
-        if opt in ("-r", "--relay"):
+        if opt in ("-d", "--daemon"):
+            if (sys.argv[2] == '-v'): daemon('verbose')
+            else: daemon('silent')
+            sys.exit(0)
+        elif opt in ("-h", "--help"):
+            usage()
+            sys.exit(0)
+        elif opt in ("-p", "--pin"):
+            read_config(0)
+            gpio_read()
+            sys.exit(0)
+        elif opt in ("-r", "--relay"):
             if not represents_int(sys.argv[2]) or \
                     int(float(sys.argv[2])) > 8 or \
                     int(float(sys.argv[2])) < 1:
@@ -407,18 +418,7 @@ def menu():
                     print "--state only accepts ON, OFF, integers > 1"
                     usage()
                     sys.exit(1)
-        elif opt in ("-d", "--daemon"):
-            if (sys.argv[2] == '-v'): daemon('verbose')
-            else: daemon('silent')
-            sys.exit(0)
-        elif opt in ("-h", "--help"):
-            usage()
-            sys.exit(0)
-        elif opt in ("-p", "--pin"):
-            read_config(0)
-            gpio_read()
-            sys.exit(0)
-        elif opt in ("-r", "--read"):
+        elif opt in ("-s", "--sensor"):
             read_sensors(0)
             sys.exit(0)
         elif opt in ("-w", "--write"):
@@ -562,7 +562,7 @@ def temperature_monitor():
     PIDTemp = 0
     logging.info("[PID Temperature] Starting Thread")
     if (tempc < setTemp):
-        if (relayTrigger[relayTemp] == 0): gpio_change(int(relayTemp), 1)
+        if (relayTrigger[int(relayTemp)] == 0): gpio_change(int(relayTemp), 1)
         else: gpio_change(int(relayTemp), 0)
     p_temp = Temperature_PID(Temp_P, Temp_I, Temp_D)
     p_temp.setPoint(setTemp)
@@ -580,7 +580,7 @@ def temperature_monitor():
                         rod = threading.Thread(target = relay_on_duration, 
                             args = (relayTemp, PIDTemp,))
                         rod.start()
-                    timerTemp = int(time.time()) + PIDTemp + factorTempSeconds
+                    timerTemp = int(time.time()) + int(PIDTemp) + int(factorTempSeconds)
                 else:
                     logging.info("[PID Temperature] Temperature (%.1f°C) >= (%.1f°C) setTemp, waiting 60 seconds", tempc, setTemp)
                     timerTemp = int(time.time()) + 60
@@ -596,7 +596,7 @@ def humidity_monitor():
 
     logging.info("[PID Humidity] Starting Thread")
     if (humidity > setHum):
-        if (relayTrigger[relayHum] == 0): gpio_change(int(relayHum), 1)
+        if (relayTrigger[int(relayHum)] == 0): gpio_change(int(relayHum), 1)
         else: gpio_change(int(relayHum), 1)
     p_hum = Humidity_PID(Hum_P, Hum_I, Hum_D)
     p_hum.setPoint(setHum)
@@ -614,7 +614,7 @@ def humidity_monitor():
                         rod = threading.Thread(target = relay_on_duration,
                             args=(relayHum, PIDHum,))
                         rod.start()
-                    timerHum = int(time.time()) + PIDHum + factorTempSeconds
+                    timerHum = int(time.time()) + int(PIDHum) + int(factorTempSeconds)
                 else:
                     logging.info("[PID Humidity] Humidity (%.1f%%) >= (%.1f%%) setHum, waiting 60 seconds", humidity, setHum)
                     timerHum = int(time.time()) + 60
