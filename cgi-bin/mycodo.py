@@ -343,7 +343,7 @@ def usage():
     print "Options:"
     print "    -d, --daemon [v/s]"
     print "           Start program as daemon that monitors conditions and modulates relays"
-    print "           If ""v"" enables log output to the console, ""s"" silences this"
+    print "           ""v"" enables log output to the console, ""s"" silences"
     print "    -h, --help"
     print "           Display this help and exit"
     print "    -p, --pin"
