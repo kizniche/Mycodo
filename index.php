@@ -114,7 +114,12 @@ function displayform() {
 		DateSelector("start");
 		echo "</div><div style=\"text-align: right;\">END: ";
 		DateSelector("end");
-		echo "</div></div><div style=\"display: inline-block;\">&nbsp;&nbsp;<input type=\"submit\" name=\"SubmitDates\" value=\"Submit\"></FORM></div></div>";
+        echo "</div></div><div style=\"display: inline-block; padding: 0 0.5em 0 1em;\"><input type=\"text\" value=\"900\" maxlength=4 size=4 name=\"graph-width\" title=\"Width of the generated graph\"> Width (pixels, max 4000)</div>";
+		echo "<div style=\"display: inline-block;\">&nbsp;&nbsp;<input type=\"submit\" name=\"SubmitDates\" value=\"Submit\"></FORM></div></div>";
+}
+
+function is_positive_integer($str) {
+    return (is_numeric($str) && $str > 0 && $str == round($str));
 }
 
 if ($login->isUserLoggedIn() == true) {
@@ -990,7 +995,10 @@ $error_code = "no";
                     $daye = $_POST['endDay'];
                     $mone = $_POST['endMonth'];
                     $yeare = $_POST['endYear'];
-                    echo `echo "set terminal png size 900,490
+                    if (is_positive_integer($_POST['graph-width']) and $_POST['graph-width'] <= 4000 and $_POST['graph-width']) {
+                        $graph_width = $_POST['graph-width'];
+                    } else $graph_width = 900;
+                    echo `echo "set terminal png size $graph_width,490
                     set xdata time
                     set timefmt \"%Y %m %d %H %M %S\"
                     set output \"$images/graph-cus-$id2.png\"
