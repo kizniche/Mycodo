@@ -436,6 +436,7 @@ if ($login->isUserLoggedIn() == true) {
     <title>Mycodo</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
 	<link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="css/reset.css">
 	<link rel="stylesheet" href="css/style.css">
@@ -982,7 +983,7 @@ $error_code = "no";
 		<li data-content="graph" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'graph') echo "class=\"selected\""; ?>>
             <?php
             /* DateSelector*Author: Leon Atkinson */
-            if (isset($_POST['SubmitDates'])) {
+            if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] != 'guest') {
                 if ($_POST['SubmitDates']) {
                     $id2 = uniqid();
                     $minb = $_POST['startMinute'];
@@ -1044,6 +1045,9 @@ $error_code = "no";
                     echo "<center><img src=image.php?span=cus&mod=" . $id2 . ">";
                     echo "<p><a href='javascript:open_legend()'>Brief Graph Legend</a> - <a href='javascript:open_legend_full()'>Full Graph Legend</a></p></center>";
                 }
+            } else if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] == 'guest') {
+                displayform();
+                echo "<div>Guest access has been revoked for graph generation until further notice (thank those who have been attempting bad stuff)";
             } else displayform();
             ?>
 		</li>
