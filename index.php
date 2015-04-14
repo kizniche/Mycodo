@@ -28,6 +28,8 @@ $stream_exec = $install_path . "/cgi-bin/camera-stream.sh";
 $lock_raspistill = $lock_path . "/mycodo_raspistill";
 $lock_mjpg_streamer = $lock_path . "/mycodo_mjpg_streamer";
 
+$error_code = "No";
+
 if (version_compare(PHP_VERSION, '5.3.7', '<')) {
     exit("PHP Login does not run on PHP versions before 5.3.7, please update your version of PHP");
 } else if (version_compare(PHP_VERSION, '5.5.0', '<')) {
@@ -133,7 +135,7 @@ if ($login->isUserLoggedIn() == true) {
         // Only need the array keys (filenames) since we don't care about timestamps now the array is in order
         $files = array_keys($files);
         for ($i = 0; $i < (count($files) - 30); $i++) {
-            unlink($files[$i]);
+            if (!is_dir($files[$i])) unlink($files[$i]);
         }
     }
     
@@ -157,7 +159,7 @@ if ($login->isUserLoggedIn() == true) {
     array_shift($config_rows);
     foreach($config_rows as $row => $data) {
         $row_data = explode(' = ', $data);
-        if ($row_data[1] != '') ${$row_data[0]} = $row_data[1];
+        if (isset($row_data[1])) ${$row_data[0]} = $row_data[1];
     }
 
     // All commands that elevated (!= guest) privileges are required
@@ -168,7 +170,7 @@ if ($login->isUserLoggedIn() == true) {
                 isset($_POST['ChangeTimer' . $p]) || 
                 isset($_POST['Timer' . $p . 'StateChange'])) {
 
-            if ($_SESSION['user_name'] != guest) {
+            if ($_SESSION['user_name'] != 'guest') {
             
                 if (isset($_POST['R' . $p])) {
                     $name = ${"relay" . $p . "name"};
@@ -222,7 +224,7 @@ if ($login->isUserLoggedIn() == true) {
                     }
                 }
                 
-                if ((isset($_POST['ChangeTimer' . $p]) || isset($_POST['Timer' . $p . 'StateChange'])) && $_SESSION['user_name'] != guest) {
+                if ((isset($_POST['ChangeTimer' . $p]) || isset($_POST['Timer' . $p . 'StateChange'])) && $_SESSION['user_name'] != 'guest') {
                     
                     $timerrelay = $_POST['Timer' . $p . 'Relay'];
                     $timeron = $_POST['Timer' . $p . 'On'];
@@ -233,7 +235,7 @@ if ($login->isUserLoggedIn() == true) {
                         $timerstate = ${'timer' . $p . 'state'};
                         $changetimer = "$mycodo_client --modtimer $p $timerstate $timerrelay $timeron $timeroff";
                         shell_exec($changetimer);
-                    } else if (isset($_POST['ChangeTimer' . $p]) && $_SESSION['user_name'] == guest) $error_code = 'guest';
+                    } else if (isset($_POST['ChangeTimer' . $p]) && $_SESSION['user_name'] == 'guest') $error_code = 'guest';
                     
                     // Set timer state
                     if (isset($_POST['Timer' . $p . 'StateChange'])) {
@@ -242,7 +244,7 @@ if ($login->isUserLoggedIn() == true) {
                         shell_exec($changetimer);
                     }
                 }
-            } else if ($_SESSION['user_name'] == guest) $error_code = 'guest';
+            } else $error_code = 'guest';
         }
     }
     
@@ -254,7 +256,7 @@ if ($login->isUserLoggedIn() == true) {
             isset($_POST['Capture']) || isset($_POST['start-stream']) ||
             isset($_POST['stop-stream']) || isset($_POST['ChangeNoTimers']) ||
             isset($_POST['ChangeNotify'])) {
-        if ($_SESSION['user_name'] != guest) {
+        if ($_SESSION['user_name'] != 'guest') {
             
             if (isset($_POST['Capture'])) {
                 if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) shell_exec("$stream_exec stop");
@@ -404,7 +406,7 @@ if ($login->isUserLoggedIn() == true) {
     $config_rows = explode("\n", $config_contents);
     foreach($config_rows as $row => $data) {
         $row_data = explode(' = ', $data);
-        if ($row_data[1] != '') {
+        if (isset($row_data[1])) {
             ${$row_data[0]} = $row_data[1];
         }
     }
@@ -453,19 +455,18 @@ if ($login->isUserLoggedIn() == true) {
 <div class="cd-tabs">
 <?php
 // Ensures error only displayed once
-
 switch ($error_code) {
-    case 'guest':
+    case "guest":
         echo "<span class=\"error\">You cannot perform that task as a guest</span>";
         break;
-    case 'already_on':
+    case "already_on":
         echo "<div class=\"error\">Error: Can't turn relay On, it's already On</div>";
         break;
-    case 'already_off':
+    case "already_off":
         echo "<div class=\"error\">Error: Can't turn relay Off, it's already Off</div>";
         break;
 }
-$error_code = 0;
+$error_code = "no";
 ?>
 <div class="main-wrapper">
     <div class="header">
@@ -476,7 +477,7 @@ $error_code = 0;
             <div>
                 User: <?php echo $_SESSION['user_name']; ?>
             </div>
-            <?php if ($_SESSION['user_name'] != guest) { ?>
+            <?php if ($_SESSION['user_name'] != 'guest') { ?>
             <div>
                 <a href="edit.php"><?php echo WORDING_EDIT_USER_DATA; ?></a>
             </div>
@@ -585,14 +586,14 @@ $error_code = 0;
                         <div>
                             <div style="float: left; padding-right: 0.1em;">
                                 <input type="button" onclick='location.href="?tab=main<?php
-                                if ($_GET['page']) echo "&page=" . $page; 
+                                if (isset($_GET['page'])) { if ($_GET['page']) echo "&page=" . $page; }
                                 echo "&Refresh=1";
-                                if ($_GET['r'] == 1) echo "&r=1"; ?>"' value="Graph">
+                                if (isset($_GET['r'])) { if ($_GET['r'] == 1) echo "&r=1"; } ?>"' value="Graph">
                             </div>
                             <div style="float: left; padding-right: 0.1em;">
                                 <input type="button" onclick='location.href="?tab=main<?php
-                                if ($_GET['page']) echo "&page=" . $page; 
-                                if ($_GET['r'] == 1) echo "&r=1"; ?>"' value="Page">
+                                if (isset($_GET['page'])) { if ($_GET['page']) echo "&page=" . $page; }
+                                if (isset($_GET['r'])) { if ($_GET['r'] == 1) echo "&r=1"; } ?>"' value="Page">
                             </div>
                             <div style="float: left;">
                                 <input type="submit" name="WriteSensorLog" value="Sensors" title="Take a new temperature and humidity reading">
@@ -619,13 +620,13 @@ $error_code = 0;
                         $id = uniqid();
                         $_SESSION["ID"] = $id;
                         shell_exec($graph_exec . ' dayweek ' . $id);
-                        echo "<img class=\"main-image\" src=image.php?span=main&mod=" . $id . ">";
+                        echo "<img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=main&mod=" . $id . ">";
                     } else {
                         $id = $_SESSION["ID"];
                         if (isset($_GET['Refresh']) == 1) $ref = 1;
                         else $ref = 0;
                         
-                        echo "<img class=\"main-image\" src=image.php?span=";
+                        echo "<img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
                         if (isset($_GET['page'])) {
                             switch ($_GET['page']) {
                             case 'Main':
@@ -730,7 +731,7 @@ $error_code = 0;
                         ?>
                         <tr>
                             <td align=center>
-                                <?php echo ${i}; ?>
+                                <?php echo ${'i'}; ?>
                             </td>
                             <td align=center>
                                 <input type="text" value="<?php echo $name; ?>" maxlength=12 size=10 name="relay<?php echo $i; ?>name" title="Name of relay <?php echo $i; ?>"/>
@@ -976,63 +977,65 @@ $error_code = 0;
 		<li data-content="graph" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'graph') echo "class=\"selected\""; ?>>
             <?php
             /* DateSelector*Author: Leon Atkinson */
-            if($_POST['SubmitDates']) {
-                $id2 = uniqid();
-                $minb = $_POST['startMinute'];
-                $hourb = $_POST['startHour'];
-                $dayb = $_POST['startDay'];
-                $monb = $_POST['startMonth'];
-                $yearb = $_POST['startYear'];
-                $mine = $_POST['endMinute'];
-                $houre = $_POST['endHour'];
-                $daye = $_POST['endDay'];
-                $mone = $_POST['endMonth'];
-                $yeare = $_POST['endYear'];
-                echo `echo "set terminal png size 900,490
-                set xdata time
-                set timefmt \"%Y %m %d %H %M %S\"
-                set output \"$images/graph-cus-$id2.png\"
-                set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]
-                set format x \"%H:%M\n%m/%d\"
-                set yrange [0:100]
-                set y2range [0:35]
-                set my2tics 10
-                set ytics 10
-                set y2tics 5
-                set style line 11 lc rgb '#808080' lt 1
-                set border 3 back ls 11
-                set tics nomirror
-                set style line 12 lc rgb '#808080' lt 0 lw 1
-                set grid xtics ytics back ls 12
-                set style line 1 lc rgb '#FF3100' pt 0 ps 1 lt 1 lw 2
-                set style line 2 lc rgb '#0772A1' pt 0 ps 1 lt 1 lw 2
-                set style line 3 lc rgb '#00B74A' pt 0 ps 1 lt 1 lw 2
-                set style line 4 lc rgb '#91180B' pt 0 ps 1 lt 1 lw 1
-                set style line 5 lc rgb '#582557' pt 0 ps 1 lt 1 lw 1
-                set style line 6 lc rgb '#04834C' pt 0 ps 1 lt 1 lw 1
-                set style line 7 lc rgb '#DC32E6' pt 0 ps 1 lt 1 lw 1
-                set style line 8 lc rgb '#957EF9' pt 0 ps 1 lt 1 lw 1
-                set style line 9 lc rgb '#CC8D9C' pt 0 ps 1 lt 1 lw 1
-                set style line 10 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1
-                set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1
-                #set xlabel \"Date and Time\"
-                #set ylabel \"% Humidity\"
-                set title \"$monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
-                unset key
-                plot \"$sensor_log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
-                \"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, \\
-                \"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
-                \"$relay_log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
-                \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\
-                \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\
-                \"\" using 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1, \\
-                \"\" using 1:11 index 0 title \"HUMI\" w impulses ls 8 axes x1y1, \\
-                \"\" using 1:12 index 0 title \"CFAN\" w impulses ls 9 axes x1y1, \\
-                \"\" using 1:13 index 0 title \"XXXX\" w impulses ls 10 axes x1y1, \\
-                \"\" using 1:14 index 0 title \"XXXX\" w impulses ls 11 axes x1y1" | gnuplot`;
-                displayform();
-                echo "<center><img src=image.php?span=cus&mod=" . $id2 . ">";
-                echo "<p><a href='javascript:open_legend()'>Brief Graph Legend</a> - <a href='javascript:open_legend_full()'>Full Graph Legend</a></p></center>";
+            if (isset($_POST['SubmitDates'])) {
+                if ($_POST['SubmitDates']) {
+                    $id2 = uniqid();
+                    $minb = $_POST['startMinute'];
+                    $hourb = $_POST['startHour'];
+                    $dayb = $_POST['startDay'];
+                    $monb = $_POST['startMonth'];
+                    $yearb = $_POST['startYear'];
+                    $mine = $_POST['endMinute'];
+                    $houre = $_POST['endHour'];
+                    $daye = $_POST['endDay'];
+                    $mone = $_POST['endMonth'];
+                    $yeare = $_POST['endYear'];
+                    echo `echo "set terminal png size 900,490
+                    set xdata time
+                    set timefmt \"%Y %m %d %H %M %S\"
+                    set output \"$images/graph-cus-$id2.png\"
+                    set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]
+                    set format x \"%H:%M\n%m/%d\"
+                    set yrange [0:100]
+                    set y2range [0:35]
+                    set my2tics 10
+                    set ytics 10
+                    set y2tics 5
+                    set style line 11 lc rgb '#808080' lt 1
+                    set border 3 back ls 11
+                    set tics nomirror
+                    set style line 12 lc rgb '#808080' lt 0 lw 1
+                    set grid xtics ytics back ls 12
+                    set style line 1 lc rgb '#FF3100' pt 0 ps 1 lt 1 lw 2
+                    set style line 2 lc rgb '#0772A1' pt 0 ps 1 lt 1 lw 2
+                    set style line 3 lc rgb '#00B74A' pt 0 ps 1 lt 1 lw 2
+                    set style line 4 lc rgb '#91180B' pt 0 ps 1 lt 1 lw 1
+                    set style line 5 lc rgb '#582557' pt 0 ps 1 lt 1 lw 1
+                    set style line 6 lc rgb '#04834C' pt 0 ps 1 lt 1 lw 1
+                    set style line 7 lc rgb '#DC32E6' pt 0 ps 1 lt 1 lw 1
+                    set style line 8 lc rgb '#957EF9' pt 0 ps 1 lt 1 lw 1
+                    set style line 9 lc rgb '#CC8D9C' pt 0 ps 1 lt 1 lw 1
+                    set style line 10 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1
+                    set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1
+                    #set xlabel \"Date and Time\"
+                    #set ylabel \"% Humidity\"
+                    set title \"$monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
+                    unset key
+                    plot \"$sensor_log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
+                    \"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, \\
+                    \"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
+                    \"$relay_log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
+                    \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\
+                    \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\
+                    \"\" using 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1, \\
+                    \"\" using 1:11 index 0 title \"HUMI\" w impulses ls 8 axes x1y1, \\
+                    \"\" using 1:12 index 0 title \"CFAN\" w impulses ls 9 axes x1y1, \\
+                    \"\" using 1:13 index 0 title \"XXXX\" w impulses ls 10 axes x1y1, \\
+                    \"\" using 1:14 index 0 title \"XXXX\" w impulses ls 11 axes x1y1" | gnuplot`;
+                    displayform();
+                    echo "<center><img src=image.php?span=cus&mod=" . $id2 . ">";
+                    echo "<p><a href='javascript:open_legend()'>Brief Graph Legend</a> - <a href='javascript:open_legend_full()'>Full Graph Legend</a></p></center>";
+                }
             } else displayform();
             ?>
 		</li>
@@ -1074,7 +1077,7 @@ $error_code = 0;
                 if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) {
                     echo '<img src="http://' . $_SERVER[HTTP_HOST] . ':8080/?action=stream" />';
                 }
-                if (isset($_POST['Capture']) && $_SESSION['user_name'] != guest) {
+                if (isset($_POST['Capture']) && $_SESSION['user_name'] != 'guest') {
                     if ($capture_output != 0) echo 'Abnormal output (possibly error): ' . $capture_output . '<br>';
                     else echo '<p><img src=image.php?span=cam-still></p>';
                 }
@@ -1117,7 +1120,7 @@ $error_code = 0;
                             }
                         }
 
-                        if(isset($_POST['Auth']) && $_SESSION['user_name'] != guest) {
+                        if(isset($_POST['Auth']) && $_SESSION['user_name'] != 'guest') {
                             echo 'Time, Type of auth, user, IP, Hostname, Referral, Browser<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
