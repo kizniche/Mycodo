@@ -175,7 +175,7 @@ Install RPyC
 
 Set permissions for www to use the RPi camera
 
-`sudo echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' > /etc/udev/rules.d/10-vchiq-permissions.rules`
+`echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' | sudo tee /etc/udev/rules.d/10-vchiq-permissions.rules`
 
 `sudo usermod -a -G video www-data`
 
