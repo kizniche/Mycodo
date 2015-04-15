@@ -586,9 +586,9 @@ def temperature_monitor():
             if int(time.time()) > timerTemp:
                 logging.info("[PID Temperature] Reading temperature...")
                 read_sensors(1)
+                PIDTemp = p_temp.update(float(tempc))
                 if (tempc < setTemp):
                     logging.info("[PID Temperature] Temperature (%.1f°C) < (%.1f°C) setTemp", tempc, float(setTemp))
-                    PIDTemp = p_temp.update(float(tempc))
                     logging.info("[PID Temperature] PID = %.1f (seconds)", PIDTemp)
                     if (PIDTemp > 0 and tempc < setTemp):
                         rod = threading.Thread(target = relay_on_duration, 
@@ -596,7 +596,6 @@ def temperature_monitor():
                         rod.start()
                     timerTemp = int(time.time()) + int(PIDTemp) + int(factorTempSeconds)
                 else:
-                    PIDTemp = p_temp.update(float(tempc))
                     logging.info("[PID Temperature] Temperature (%.1f°C) >= (%.1f°C) setTemp, waiting 60 seconds", tempc, setTemp)
                     logging.info("[PID Temperature] PID = %.1f (seconds)", PIDTemp)
                     timerTemp = int(time.time()) + 60
@@ -622,9 +621,9 @@ def humidity_monitor():
             if int(time.time()) > timerHum:
                 logging.info("[PID Humidity] Reading humidity...")
                 read_sensors(1)
+                PIDHum = p_hum.update(float(humidity))
                 if (humidity < setHum):
                     logging.info("[PID Humidity] Humidity (%.1f%%) < (%.1f%%) setHum", humidity, float(setHum))
-                    PIDHum = p_hum.update(float(humidity))
                     logging.info("[PID Humidity] PID = %.1f (seconds)", PIDHum)
                     if (PIDHum > 0 and humidity < setHum):
                         rod = threading.Thread(target = relay_on_duration,
@@ -632,7 +631,6 @@ def humidity_monitor():
                         rod.start()
                     timerHum = int(time.time()) + int(PIDHum) + int(factorTempSeconds)
                 else:
-                    PIDHum = p_hum.update(float(humidity))
                     logging.info("[PID Humidity] Humidity (%.1f%%) >= (%.1f%%) setHum, waiting 60 seconds", humidity, setHum)
                     logging.info("[PID Humidity] PID = %.1f (seconds)", PIDHum)
                     timerHum = int(time.time()) + 60
