@@ -13,9 +13,13 @@ case "${1:-''}" in
   'start')
    # create the /var/log/apache2/error.log needed by apache
    mkdir /var/log/apache2
-   chmod 777 /var/log/apache2
+   chmod 774 /var/log/apache2
    touch /var/log/apache2/error.log
-   chmod 777 /var/log/apache2/error.log
+   chmod 774 /var/log/apache2/error.log
+   
+   #For login logging
+   touch /var/log/lastlog
+   chmod 774 /var/log/lastlog
    ;;
   'stop')
    ;;
