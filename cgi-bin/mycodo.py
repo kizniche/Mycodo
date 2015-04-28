@@ -139,14 +139,15 @@ class ComServer(rpyc.Service):
         global Terminate
         Terminate = True
         ClientQue = 'TerminateServer'
+        logging.info("[Client command] Terminate threads and shut down")
         return 1
     def exposed_ChangeRelay(self, relay, state):
-        if (state == 'HIGH'):
+        if (state == 1):
             logging.info("[Client command] Changing Relay %s to HIGH", relay)
-            relay_onoff(int(relay), state)
-        if (state == 'LOW'):
+            relay_onoff(int(relay), 1)
+        elif (state == 0):
             logging.info("[Client command] Changing Relay %s to LOW", relay)
-            relay_onoff(int(relay), state)
+            relay_onoff(int(relay), 0)
         else:
             logging.info("[Client command] Turning Relay %s On for %s seconds", relay, state)
             relay_on_duration(int(relay), int(state))
@@ -505,7 +506,6 @@ def daemon(output, log):
             elif ClientQue == 'TerminateServer':
                 logging.info("[Daemon] Backing up logs")
                 Concatenate_Logs()
-                logging.info("[Client command] Terminate threads and shut down")
                 TAlive = 0
                 while TAlive != 2:
                     time.sleep(0.1)

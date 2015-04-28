@@ -196,9 +196,9 @@ if ($login->isUserLoggedIn() == true) {
                     } else if ($actual_state == 'HIGH' && $desired_state == 'HIGH') {
                         $error_code = 'already_on';
                     } else {
-                        if ($GPIO_state == 1) $desired_state = 0;
-                        else $desired_state = 1;
-                        $gpio_write = "$gpio_path -g write $pin $desired_state";
+                        if ($desired_state == 'HIGH') $desired_state = 1;
+                        else $desired_state = 0;
+                        $gpio_write = "$mycodo_client -r $p $desired_state";
                         shell_exec($gpio_write);
                     }
                 }
@@ -224,7 +224,7 @@ if ($login->isUserLoggedIn() == true) {
                     } else if ($actual_state == 'HIGH' && $desired_state == 'HIGH') {
                         $error_code = 'already_on';
                     } else {
-                        $relay_on_sec = "$mycodo_client --set $p $seconds_on";
+                        $relay_on_sec = "$mycodo_client -r $p $seconds_on";
                         shell_exec($relay_on_sec);
                     }
                 }

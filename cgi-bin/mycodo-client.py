@@ -130,19 +130,20 @@ def menu():
         elif opt in ("-r", "--relay"):
             if RepresentsInt(sys.argv[2]) and \
                 int(float(sys.argv[2])) > 0:
-                if (int(float(sys.argv[2])) == 0 or int(float(sys.argv[2])) == 1):
-                    print "%s [Remote command] Set relay %s GPIO to %s: Server returned:" % (
+                print sys.argv[3]
+                if (sys.argv[3] == '0' or sys.argv[3] == '1'):
+                    print "%s [Remote command] Set relay %s to %s: Server returned:" % (
                         Timestamp(), int(float(sys.argv[2])), int(float(sys.argv[3]))),
-                    if c.root.ChangeGPIO(int(float(sys.argv[2])), 
+                    if c.root.ChangeRelay(int(float(sys.argv[2])), 
                             int(float(sys.argv[3]))) == 1:
                         print 'success'
                     else:
                         print 'fail'
                     sys.exit(0)
-                if (int(float(sys.argv[2])) > 1):
+                if (sys.argv[2] > 1):
                     print '%s [Remote command] Relay %s ON for %s seconds: Server returned:' % (
                         Timestamp(), int(float(sys.argv[2])), int(float(sys.argv[3]))),
-                    if c.root.RelayOnSec(int(float(sys.argv[2])),
+                    if c.root.ChangeRelay(int(float(sys.argv[2])),
                             int(float(sys.argv[3]))) == 1:
                         print "Success"
                     else:
