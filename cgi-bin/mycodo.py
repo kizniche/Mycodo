@@ -48,9 +48,9 @@ relay_log_file = "%s/log/relay.log" % install_directory
 relay_script = "%s/cgi-bin/relay.sh" % install_directory
 
 logging.basicConfig(
-    filename=daemon_log_file_tmp,
-    level=logging.DEBUG,
-    format='%(asctime)s [%(levelname)s] %(message)s')
+    filename = daemon_log_file_tmp,
+    level = logging.WARNING,
+    format = '%(asctime)s [%(levelname)s] %(message)s')
 
 lock_directory = "/var/lock/mycodo"
 config_lock_path = "%s/config" % lock_directory
@@ -341,9 +341,10 @@ def usage():
         " maintain set environmental conditions.\n"
     print "Usage:  mycodo.py [OPTION]...\n"
     print "Options:"
-    print "    -d, --daemon [v/s]"
+    print "    -d, --daemon [v/s] [w/i]"
     print "           Start program as daemon that monitors conditions and modulates relays"
     print "           ""v"" enables log output to the console, ""s"" silences"
+    print "           ""w"" logs only warnings, ""i"" logs info and warnings"
     print "    -h, --help"
     print "           Display this help and exit"
     print "    -p, --pin"
@@ -376,8 +377,11 @@ def menu():
         sys.exit(2)
     for opt, arg in opts:
         if opt in ("-d", "--daemon"):
-            if (sys.argv[2] == '-v'): daemon('verbose')
-            else: daemon('silent')
+            if (sys.argv[2] == 'v'): a = 'verbose'
+            else: a = 'silent'
+            if (sys.argv[3] == 'w'): b = 'warning'
+            else: b = 'info'
+            daemon(a, b)
             sys.exit(0)
         elif opt in ("-h", "--help"):
             usage()
@@ -438,7 +442,7 @@ def menu():
 
 # Main loop that reads sensors, modifies relays based on sensor values, writes
 # sensor/relay logs, and receives/executes commands from mycodo-client.py
-def daemon(output):
+def daemon(output, log):
     global change_sensor_log
     global Temp_PID_Down
     global Temp_PID_Up
@@ -450,6 +454,11 @@ def daemon(output):
     global ClientQue
     timer_time = [0] * 9
     
+    if (log == 'warning'):
+        logging.getLogger().setLevel(logging.WARNING)
+    else:
+        logging.getLogger().setLevel(logging.INFO)
+
     if (output == 'verbose'):
         # define a Handler which writes INFO messages or higher to the sys.stderr
         console = logging.StreamHandler()
