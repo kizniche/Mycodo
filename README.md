@@ -296,7 +296,7 @@ Connect any GPIOs to your relays that are not normally HIGH or LOW upon boot. Th
 
 If you are properly receiving temperature and humidity data, set up the daemon to automatically log sensor data with the following commands:
 
-`sudo cp /var/www/mycodo/init.d/mycodo /etc/init.d/`
+`sudo cp /var/www/mycodo/source/init.d/mycodo /etc/init.d/`
 
 `sudo chmod 0755 /etc/init.d/mycodo`
 
