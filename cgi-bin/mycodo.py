@@ -49,7 +49,7 @@ relay_script = "%s/cgi-bin/relay.sh" % install_directory
 
 logging.basicConfig(
     filename = daemon_log_file_tmp,
-    level = logging.WARNING,
+    level = logging.INFO,
     format = '%(asctime)s [%(levelname)s] %(message)s')
 
 lock_directory = "/var/lock/mycodo"
