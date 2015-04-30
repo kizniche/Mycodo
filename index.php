@@ -845,11 +845,11 @@ $error_code = "no";
                     <div style="padding-bottom: 3em;">
                         <table class="pid">
                             <tr class="shade">
-                                <th colspan=2 align=center>
-                                    PID Control
+                                <th colspan=2 rowspan=2 align=center>
+                                    Sensor <?php echo $i; ?>
                                 </th>
                                 <th colspan=2 align=center>
-                                    Sensor
+                                    Device
                                 </th>
                                 <td align=center>
                                     Pin
@@ -860,9 +860,6 @@ $error_code = "no";
                             </tr>
                             <tr>
                                 <th colspan=2 align=center>
-                                    Sensor <?php echo $i; ?>
-                                </th>
-                                <th colspan=2>
                                     <select style="width: 80px;" name="DHTSensor">
                                         <option <?php if ($dhtsensor == 'DHT11') echo "selected=\"selected\""; ?> value="DHT11">DHT11</option>
                                         <option <?php if ($dhtsensor == 'DHT22') echo "selected=\"selected\""; ?> value="DHT22">DHT22</option>
