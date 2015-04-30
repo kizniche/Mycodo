@@ -116,13 +116,9 @@ server = ''
 variableName = ''
 variableValue = ''
 ClientQue = '0'
-ClientArg1 = ''
-ClientArg2 = ''
 Terminate = False
 TAlive = 1
 HAlive = 1
-holderTempOR = ''
-holderHumOR = ''
 Temp_PID_Down = 0
 Temp_PID_Up = 0
 Hum_PID_Down = 0
@@ -643,7 +639,7 @@ def humidity_monitor():
                         rod = threading.Thread(target = relay_on_duration,
                             args=(relayHum, PIDHum,))
                         rod.start()
-                    timerHum = int(time.time()) + int(PIDHum) + int(factorTempSeconds)
+                    timerHum = int(time.time()) + int(PIDHum) + int(factorHumSeconds)
                 else:
                     logging.debug("[PID Humidity] Humidity (%.1f%%) >= (%.1f%%) setHum, waiting 60 seconds", humidity, setHum)
                     logging.debug("[PID Humidity] PID = %.1f (seconds)", PIDHum)
