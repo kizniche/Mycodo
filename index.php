@@ -842,7 +842,7 @@ $error_code = "no";
                     </div>
                     <?php if ($numsensors > 0) { ?>
                     <?php for ($i = 1; $i <= $numsensors; $i++) { ?>
-                    <div style="padding-bottom: 2em;">
+                    <div style="padding-bottom: 3em;">
                         <table class="pid">
                             <tr class="shade">
                                 <th colspan=2 align=center>
