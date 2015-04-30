@@ -41,7 +41,7 @@ usage() {
 
 graph_single() {
 echo "reset
-set terminal png size 900,490
+set terminal png size 1000,490
 set xdata time
 set timefmt \"%Y %m %d %H %M %S\"
 set output \"$IMAGEPATH/graph-$file-$id.png\"
@@ -121,9 +121,9 @@ set style line 9 lc rgb '${graph_colors[8]}' pt 0 ps 1 lt 1 lw 1
 set style line 10 lc rgb '${graph_colors[9]}' pt 0 ps 1 lt 1 lw 1
 set style line 11 lc rgb '${graph_colors[10]}' pt 0 ps 1 lt 1 lw 1
 set key center center box
-plot \"$LOGPATH/sensor.log\" index 0 title \"T\" w lp ls 1, \\
-     \"\" index 0 title \"RH\" w lp ls 2, \\
-     \"\" index 0 title \"DP\" w lp ls 3, \\
+plot \"$LOGPATH/sensor.log\" index 0 title \"Temperature\" w lp ls 1, \\
+     \"\" u 1:8 index 0 title \"Rel. Humidity\" w lp ls 2, \\
+     \"\" u 1:9 index 0 title \"Dew Point\" w lp ls 3, \\
      \"$LOGPATH/relay.log\" u 1:7 index 0 title \"$relay1name\" w impulses ls 4, \\
      \"\" index 0 title \"$relay2name\" w impulses ls 5, \\
      \"\" index 0 title \"$relay3name\" w impulses ls 6, \\
@@ -213,7 +213,7 @@ plot \"$LOGPATH/sensor.log\" u 1:7 index 0 title \"Temperature\" w lp ls 1 axes 
       graph_single
       ;;
     dayweek)
-echo "set terminal png size 900,1000
+echo "set terminal png size 1000,1000
 set xdata time
 set timefmt \"%Y %m %d %H %M %S\"
 set output \"$IMAGEPATH/graph-main-$id.png\"
