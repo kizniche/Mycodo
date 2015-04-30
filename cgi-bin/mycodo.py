@@ -150,7 +150,9 @@ class ComServer(rpyc.Service):
             relay_onoff(int(relay), 0)
         else:
             logging.info("[Client command] Turning Relay %s On for %s seconds", relay, state)
-            relay_on_duration(int(relay), int(state))
+            rod = threading.Thread(target = relay_on_duration, 
+                args = (int(relay), int(state),))
+            rod.start()
         return 1
     def exposed_ChangeTimer(self, timernumber, timerstate, timerrelay,
             timerdurationon, timerdurationoff):

@@ -130,7 +130,6 @@ def menu():
         elif opt in ("-r", "--relay"):
             if RepresentsInt(sys.argv[2]) and \
                 int(float(sys.argv[2])) > 0:
-                print sys.argv[3]
                 if (sys.argv[3] == '0' or sys.argv[3] == '1'):
                     print "%s [Remote command] Set relay %s to %s: Server returned:" % (
                         Timestamp(), int(float(sys.argv[2])), int(float(sys.argv[3]))),
