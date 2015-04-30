@@ -59,38 +59,32 @@ sensor_lock_path = "%s/sensor" % lock_directory
 relay_lock_path = "%s/relay" % lock_directory
 
 # GPIO pins (BCM numbering) and name of devices attached to relay
+numRelays = None
 relayPin = [0] * 9
 relayName = [0] * 9
 relayTrigger = [0] * 9
 
-# Sensor data
-chktemp = ''
-tempc = ''
-humidity = ''
-dewpointc = ''
-heatindexc =  ''
-
 #PID
-relayTemp =''
-relayHum = ''
-setTemp = ''
-setHum = ''
-Hum_P = ''
-Hum_I = ''
-Hum_D = ''
-Temp_P = ''
-Temp_I = ''
-Temp_D = ''
-factorHumSeconds = ''
-factorTempSeconds = ''
+relayTemp =None
+relayHum = None
+setTemp = None
+setHum = None
+Hum_P = None
+Hum_I = None
+Hum_D = None
+Temp_P = None
+Temp_I = None
+Temp_D = None
+factorHumSeconds = None
+factorTempSeconds = None
 
 # Control States
-TempOR = ''
-HumOR = ''
+TempOR = None
+HumOR = None
 
 # Timers
-DHTSeconds = ''
-numTimers = ''
+DHTSeconds = None
+numTimers = None
 timerRelay = [0] * 9
 timerState = [0] * 9
 timerDurationOn = [0] * 9
@@ -98,23 +92,31 @@ timerDurationOff = [0] * 9
 timerChange = 0
 
 # SMTP notify
-smtp_host = ''
-smtp_ssl = ''
-smtp_port = ''
-smtp_user = ''
-smtp_pass = ''
-email_from = ''
-email_to = ''
+smtp_host = None
+smtp_ssl = None
+smtp_port = None
+smtp_user = None
+smtp_pass = None
+email_from = None
+email_to = None
 
-# Sensor
-DHTSensor = ''
-DHTPin = ''
+# Sensors
+numSensors = None
+DHTSensor = None
+DHTPin = None
+
+# Sensor data
+chktemp = None
+tempc = None
+humidity = None
+dewpointc = None
+heatindexc =  None
 
 # Miscellaneous
-cameraLight = ''
-server = ''
-variableName = ''
-variableValue = ''
+cameraLight = None
+server = None
+variableName = None
+variableValue = None
 ClientQue = '0'
 Terminate = False
 TAlive = 1
@@ -861,6 +863,8 @@ def read_config(silent):
     global factorHumSeconds
     global factorTempSeconds
     global cameraLight
+    global numRelays
+    global numSensors
     global numTimers
     global timerRelay
     global timerState
@@ -923,6 +927,8 @@ def read_config(silent):
     factorHumSeconds = config.getint('PID', 'factorhumseconds')
     factorTempSeconds = config.getint('PID', 'factortempseconds')
     
+    numRelays = config.get('Misc', 'numrelays')
+    numSensors = config.get('Misc', 'numsensors')
     numTimers = config.get('Misc', 'numtimers')
     cameraLight = config.getint('Misc', 'cameralight')
     
@@ -1045,6 +1051,8 @@ def write_config():
     config.set('PID', 'factortempseconds', factorTempSeconds)
     
     config.add_section('Misc')
+    config.set('Misc', 'numrelays', numRelays)
+    config.set('Misc', 'numsensors', numSensors)
     config.set('Misc', 'numtimers', numTimers)
     config.set('Misc', 'cameralight', cameraLight)
     
@@ -1229,6 +1237,8 @@ def modify_var(*names_and_values):
     'relay6Name',
     'relay7Name',
     'relay8Name',
+    'numRelays',
+    'numSensors',
     'numTimers',
     'smtp_host',
     'smtp_port',

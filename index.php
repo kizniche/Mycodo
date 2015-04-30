@@ -259,7 +259,8 @@ if ($login->isUserLoggedIn() == true) {
             isset($_POST['ModPin']) || isset($_POST['ModName']) ||
             isset($_POST['ModTrigger']) || isset($_POST['Auth']) || 
             isset($_POST['Capture']) || isset($_POST['start-stream']) ||
-            isset($_POST['stop-stream']) || isset($_POST['ChangeNoTimers']) ||
+            isset($_POST['stop-stream']) || isset($_POST['ChangeNoRelays']) ||
+            isset($_POST['ChangeNoSensors']) || isset($_POST['ChangeNoTimers']) ||
             isset($_POST['ChangeNotify'])) {
         if ($_SESSION['user_name'] != 'guest') {
             
@@ -386,7 +387,21 @@ if ($login->isUserLoggedIn() == true) {
                 shell_exec($editconfig);
             }
             
-            // Change number of custom timers **working on**
+            // Change number of relays
+            if (isset($_POST['ChangeNoRelays'])) {
+                $numrelays = $_POST['numrelays'];
+                $editconfig = "$mycodo_client --modvar numRelays $numrelays";
+                shell_exec($editconfig);
+            }
+            
+            // Change number of sensors
+            if (isset($_POST['ChangeNoSensors'])) {
+                $numsensors = $_POST['numsensors'];
+                $editconfig = "$mycodo_client --modvar numSensors $numsensors";
+                shell_exec($editconfig);
+            }
+            
+            // Change number of timers
             if (isset($_POST['ChangeNoTimers'])) {
                 $numtimers = $_POST['numtimers'];
                 $editconfig = "$mycodo_client --modvar numTimers $numtimers";
@@ -719,6 +734,21 @@ $error_code = "no";
             <div style="clear: both;"></div>
             <div style="padding-top: 1.2em;">
                 <div style="float: left; padding-right: 1em;">
+                    <div style="padding: 0 0 1em 1em;">
+                        Number of Relays 
+                        <select name="numrelays">
+                            <option value="1" <?php if ($numrelays == 1) echo "selected=\"selected\""; ?>>1</option>
+                            <option value="2" <?php if ($numrelays == 2) echo "selected=\"selected\""; ?>>2</option>
+                            <option value="3" <?php if ($numrelays == 3) echo "selected=\"selected\""; ?>>3</option>
+                            <option value="4" <?php if ($numrelays == 4) echo "selected=\"selected\""; ?>>4</option>
+                            <option value="5" <?php if ($numrelays == 5) echo "selected=\"selected\""; ?>>5</option>
+                            <option value="6" <?php if ($numrelays == 6) echo "selected=\"selected\""; ?>>6</option>
+                            <option value="7" <?php if ($numrelays == 7) echo "selected=\"selected\""; ?>>7</option>
+                            <option value="8" <?php if ($numrelays == 8) echo "selected=\"selected\""; ?>>8</option>
+                        </select>
+                        <input type="submit" name="ChangeNoRelays" value="Save">
+                    </div>
+                    <?php if ($numrelays > 0) { ?>
                     <table class="relays">
                         <tr>
                             <td align=center class="table-header">Relay<br>No.</td>
@@ -728,8 +758,7 @@ $error_code = "no";
                             <td align=center class="table-header">GPIO<br>Pin</td>
                             <td align=center class="table-header">Trigger<br>ON</td>
                         </tr>
-                        <?php
-                            for ($i = 1; $i <= 8; $i++) {
+                        <?php for ($i = 1; $i <= $numrelays; $i++) {
                                 $name = ${"relay" . $i . "name"};
                                 $pin = ${"relay" . $i . "pin"};
                                 $trigger = ${"relay" . $i . "trigger"};
@@ -772,7 +801,7 @@ $error_code = "no";
                             </td>
                         </tr>
                         <?php 
-                        }
+                        } }
                         ?>
                         <tr>
                             <td>
@@ -797,10 +826,26 @@ $error_code = "no";
                 </div>
 
                 <div style="float: left;">
-                    <div style="float: left;">
+                    <div style="padding: 0 0 1em 1em;">
+                        Number of Sensors 
+                        <select name="numsensors">
+                            <option value="1" <?php if ($numsensors == 1) echo "selected=\"selected\""; ?>>1</option>
+                            <option value="2" <?php if ($numsensors == 2) echo "selected=\"selected\""; ?>>2</option>
+                            <option value="3" <?php if ($numsensors == 3) echo "selected=\"selected\""; ?>>3</option>
+                            <option value="4" <?php if ($numsensors == 4) echo "selected=\"selected\""; ?>>4</option>
+                            <option value="5" <?php if ($numsensors == 5) echo "selected=\"selected\""; ?>>5</option>
+                            <option value="6" <?php if ($numsensors == 6) echo "selected=\"selected\""; ?>>6</option>
+                            <option value="7" <?php if ($numsensors == 7) echo "selected=\"selected\""; ?>>7</option>
+                            <option value="8" <?php if ($numsensors == 8) echo "selected=\"selected\""; ?>>8</option>
+                        </select>
+                        <input type="submit" name="ChangeNoSensors" value="Save">
+                    </div>
+                    <?php if ($numsensors > 0) { ?>
+                    <?php for ($i = 1; $i <= $numsensors; $i++) { ?>
+                    <div style="padding-bottom: 2em;">
                         <table class="pid">
                             <tr class="shade">
-                                <th rowspan=2 colspan=2 align=center>
+                                <th colspan=2 align=center>
                                     PID Control
                                 </th>
                                 <th colspan=2 align=center>
@@ -814,6 +859,9 @@ $error_code = "no";
                                 </td>
                             </tr>
                             <tr>
+                                <th colspan=2 align=center>
+                                    Sensor <?php echo $i; ?>
+                                </th>
                                 <th colspan=2>
                                     <select style="width: 80px;" name="DHTSensor">
                                         <option <?php if ($dhtsensor == 'DHT11') echo "selected=\"selected\""; ?> value="DHT11">DHT11</option>
@@ -971,10 +1019,13 @@ $error_code = "no";
                                 </td>
                             </tr>
                             <?php
-                                }
+                            }
                             ?>
                         </table>
                     </div>
+                    <?php
+                    } }
+                    ?>
                 </div>
             </div>
         </FORM>
@@ -1162,47 +1213,47 @@ $error_code = "no";
                     if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
                 ?>" method="POST">
                 <div style="padding: 0 0 1em 1em;">
-                Number of Timers 
-                <select name="numtimers">
-                    <option value="1" <?php if ($numtimers == 1) echo "selected=\"selected\""; ?>>1</option>
-                    <option value="2" <?php if ($numtimers == 2) echo "selected=\"selected\""; ?>>2</option>
-                    <option value="3" <?php if ($numtimers == 3) echo "selected=\"selected\""; ?>>3</option>
-                    <option value="4" <?php if ($numtimers == 4) echo "selected=\"selected\""; ?>>4</option>
-                    <option value="5" <?php if ($numtimers == 5) echo "selected=\"selected\""; ?>>5</option>
-                    <option value="6" <?php if ($numtimers == 6) echo "selected=\"selected\""; ?>>6</option>
-                    <option value="7" <?php if ($numtimers == 7) echo "selected=\"selected\""; ?>>7</option>
-                    <option value="8" <?php if ($numtimers == 8) echo "selected=\"selected\""; ?>>8</option>
-                </select>
-                <input type="submit" name="ChangeNoTimers" value="Save">
+                    Number of Timers 
+                    <select name="numtimers">
+                        <option value="1" <?php if ($numtimers == 1) echo "selected=\"selected\""; ?>>1</option>
+                        <option value="2" <?php if ($numtimers == 2) echo "selected=\"selected\""; ?>>2</option>
+                        <option value="3" <?php if ($numtimers == 3) echo "selected=\"selected\""; ?>>3</option>
+                        <option value="4" <?php if ($numtimers == 4) echo "selected=\"selected\""; ?>>4</option>
+                        <option value="5" <?php if ($numtimers == 5) echo "selected=\"selected\""; ?>>5</option>
+                        <option value="6" <?php if ($numtimers == 6) echo "selected=\"selected\""; ?>>6</option>
+                        <option value="7" <?php if ($numtimers == 7) echo "selected=\"selected\""; ?>>7</option>
+                        <option value="8" <?php if ($numtimers == 8) echo "selected=\"selected\""; ?>>8</option>
+                    </select>
+                    <input type="submit" name="ChangeNoTimers" value="Save">
                 </div>
                 <?php if ($numtimers > 0) { ?>
                 <div>
                     
                     <table class="timers">
                         <tr>
-                        <td>
-                            Timer
-                        </td>
-                        <th align="center" colspan="2">
-                            State
-                        </th>
-                        <td>
-                            Relay
-                        </td>
-                        <td>
-                            On (sec)
-                        </td>
-                        <td>
-                            Off (sec)
-                        </td>
-                        <td>
-                        </td>
+                            <td>
+                                Timer
+                            </td>
+                            <th align="center" colspan="2">
+                                State
+                            </th>
+                            <td>
+                                Relay
+                            </td>
+                            <td>
+                                On (sec)
+                            </td>
+                            <td>
+                                Off (sec)
+                            </td>
+                            <td>
+                            </td>
                         </tr>
                         <?php for ($i = 1; $i <= $numtimers; $i++) { ?>
                         <tr>
-                        <td>
-                            <?php echo $i; ?>
-                        </td>
+                            <td>
+                                <?php echo $i; ?>
+                            </td>
                             <?php if (${'timer'. $i . 'state'} == 0) { ?>
                                 <th colspan=2 align=right>
                                     <nobr><input type="image" style="height: 0.9em;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="Timer<?php echo $i; ?>StateChange" value="0"> | <button style="width: 40px;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">ON</button></nobr>
@@ -1217,18 +1268,18 @@ $error_code = "no";
                             <?php
                             }
                             ?>
-                        <td>
-                            <input type="text" value="<?php echo ${'timer'. $i . 'relay'}; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>Relay" title="This is the relay number for timer <?php echo $i; ?>"/>
-                        </td>
-                        <td>
-                            <input type="text" value="<?php echo ${'timer'. $i . 'durationon'}; ?>" maxlength=7 size=4 name="Timer<?php echo $i; ?>On" title="This is On duration of timer <?php echo $i; ?>"/>
-                        </td>
-                        <td>
-                            <input type="text" value="<?php echo ${'timer'. $i . 'durationoff'}; ?>" maxlength=7 size=4 name="Timer<?php echo $i; ?>Off" title="This is Off duration for timer <?php echo $i; ?>"/>
-                        </td>
-                        <td>
-                            <input type="submit" name="ChangeTimer<?php echo $i; ?>" value="Save">
-                        </td>
+                            <td>
+                                <input type="text" value="<?php echo ${'timer'. $i . 'relay'}; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>Relay" title="This is the relay number for timer <?php echo $i; ?>"/>
+                            </td>
+                            <td>
+                                <input type="text" value="<?php echo ${'timer'. $i . 'durationon'}; ?>" maxlength=7 size=4 name="Timer<?php echo $i; ?>On" title="This is On duration of timer <?php echo $i; ?>"/>
+                            </td>
+                            <td>
+                                <input type="text" value="<?php echo ${'timer'. $i . 'durationoff'}; ?>" maxlength=7 size=4 name="Timer<?php echo $i; ?>Off" title="This is Off duration for timer <?php echo $i; ?>"/>
+                            </td>
+                            <td>
+                                <input type="submit" name="ChangeTimer<?php echo $i; ?>" value="Save">
+                            </td>
                         </tr>
                         <?php } ?>
                     </table>
