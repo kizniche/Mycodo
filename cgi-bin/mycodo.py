@@ -129,7 +129,7 @@ Hum_PID_Up = 0
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
     def exposed_Modify_Variables(self, *variable_list):
-        logging.debug("[Client command] Request to change variables")
+        logging.info("[Client command] Request to change variables")
         modify_var(*variable_list)
         return 1
     def exposed_Terminate(self, remoteCommand):
@@ -222,6 +222,7 @@ class ComServer(rpyc.Service):
     def exposed_WriteSensorLog(self):
         global ClientQue
         ClientQue = 'write_sensor_log'
+        logging.info("[Client command] Read sensors and append log")
         global change_sensor_log
         change_sensor_log = 1
         while (change_sensor_log):
