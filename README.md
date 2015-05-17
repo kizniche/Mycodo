@@ -36,7 +36,8 @@ I'm since upgraded to a new set of hardware that support 8 individually-switchab
 ### Features
 
 * Temperature, humidity, and relay state logging
-* Temperature and humidity regulation with software PID controllers
+* Timer-operated relay operation
+* Temperature and/or humidity regulation with software PID control
 * Automatic and manual operation of 8 different 120-volt AC devices
 * TempFS to reduce writes to and extend the life of the SD card
 * Lock files to prevent more than one instance from writing to files at the same time 
