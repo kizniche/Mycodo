@@ -1,12 +1,12 @@
 # Mycodo
 
-   Originally designed for gourmet mushroom cultivation, Mycodo is a system designed to regulate the temperature and humidity of an airspace with PID control. It utilizes a temperature/humidity sensor to monitor the environment and software PID controllers to modulate 8 relays that control devices to alter the environment. A web-interface features viewing of current and past conditions as well as graph generation, configuration modification, and image and video acquisition, to name a few.
+   Originally designed for gourmet mushroom cultivation, Mycodo is a system that regulates the temperature and humidity of an airspace with PID control. It utilizes a temperature/humidity sensor to monitor the environment and software PID controllers to modulate any of 8 relays for powering devices to alter the environment. A web-interface features viewing of current and past conditions as well as graph generation, configuration modification, and image and video acquisition, to name a few (a full list of features is below).
    
-   The main application, mycodo.py, runs in the background as a daemon. It performs all crucial tasks, such as periodically reading sensors, writing sensor and relay logs, turning relays on and off, running PID controllers for temperature and humidity regulation, and reading and writing to the configuration file, among others.
+   The main application, mycodo.py, runs in the background as a daemon. It performs all crucial tasks, such as periodically reading sensors, writing sensor and relay logs, turning timer-activated relays on and off, running PID controllers for temperature and humidity regulation, and reading and writing to the configuration file, among others.
    
    The client application, mycodo-client.py, communicates and issues commands for the daemonized mycodo.py to carry out, such as specific configuration changes, relay changes, turning automation on and off, to name a few.
    
-   The HTTP control interface runs on a common LAMP system (Linux, Apache, MySQL, and PHP/Python).
+   The HTTP control interface runs on a common LAMP (Linux Apache MySQL PHP/Python) system.
 
 #### Index
 
