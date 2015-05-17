@@ -605,7 +605,7 @@ def temperature_monitor():
                     logging.debug("[PID Temperature] PID = %.1f (seconds)", PIDTemp)
                     if (PIDTemp > 0 and tempc < setTemp):
                         rod = threading.Thread(target = relay_on_duration, 
-                            args = (relayTemp, PIDTemp,))
+                            args = (relayTemp, round(PIDTemp,2),))
                         rod.start()
                     timerTemp = int(time.time()) + int(PIDTemp) + int(factorTempSeconds)
                 else:
@@ -640,7 +640,7 @@ def humidity_monitor():
                     logging.debug("[PID Humidity] PID = %.1f (seconds)", PIDHum)
                     if (PIDHum > 0 and humidity < setHum):
                         rod = threading.Thread(target = relay_on_duration,
-                            args=(relayHum, PIDHum,))
+                            args=(relayHum, round(PIDHum,2),))
                         rod.start()
                     timerHum = int(time.time()) + int(PIDHum) + int(factorHumSeconds)
                 else:
