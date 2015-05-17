@@ -1161,7 +1161,7 @@ $error_code = "no";
                 <div style="font-family: monospace;">
                     <pre><?php
                         if(isset($_POST['Sensor'])) {
-                            echo 'Year Mo Day Hour Min Sec Timestamp Tc RH DPc<br> <br>';
+                            echo 'Year Mo Day Hour Min Sec Tc RH DPc<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `tail -n $Lines $sensor_log`;
