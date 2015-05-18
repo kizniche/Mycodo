@@ -237,7 +237,23 @@ class ComServer(rpyc.Service):
             sensorName[5], sensorName[6], sensorName[7], sensorName[8])
         write_config()
         return 1
-    def exposed_ChangeRelayPins(self, sensorpin1, sensorpin2, sensorpin3,
+    def exposed_ChangeSensorDevices(self, sensordevice1, sensordevice2, sensordevice3,
+            sensordevice4, sensordevice5, sensordevice6, sensordevice7, sensordevice8):
+        global sensorDevice
+        sensorDevice[1] = sensordevice1
+        sensorDevice[2] = sensordevice2
+        sensorDevice[3] = sensordevice3
+        sensorDevice[4] = sensordevice4
+        sensorDevice[5] = sensordevice5
+        sensorDevice[6] = sensordevice6
+        sensorDevice[7] = sensordevice7
+        sensorDevice[8] = sensordevice8
+        logging.info("[Client command] Change Sensor Devices: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s",
+            sensorDevice[1], sensorDevice[2], sensorDevice[3], sensorDevice[4],
+            sensorDevice[5], sensorDevice[6], sensorDevice[7], sensorDevice[8])
+        write_config()
+        return 1
+    def exposed_ChangeSensorPins(self, sensorpin1, sensorpin2, sensorpin3,
             sensorpin4, sensorpin5, sensorpin6, sensorpin7, sensorpin8):
         global sensorPin
         sensorPin[1] = sensorpin1
@@ -961,9 +977,44 @@ def read_config(silent):
     cameraLight = config.getint('Misc', 'cameralight')
     
     sensorName[1] = config.get('Sensor1', 'sensor1name')
-    sensorDevice[1] = config.get('Sensor1', 'sensor1sensor')
+    sensorDevice[1] = config.get('Sensor1', 'sensor1device')
     sensorPin[1] = config.getint('Sensor1', 'sensor1pin')
     sensorPeriod[1] = config.getint('Sensor1', 'sensor1period')
+    
+    sensorName[2] = config.get('Sensor2', 'sensor2name')
+    sensorDevice[2] = config.get('Sensor2', 'sensor2device')
+    sensorPin[2] = config.getint('Sensor2', 'sensor2pin')
+    sensorPeriod[2] = config.getint('Sensor2', 'sensor2period')
+    
+    sensorName[3] = config.get('Sensor3', 'sensor3name')
+    sensorDevice[3] = config.get('Sensor3', 'sensor3device')
+    sensorPin[3] = config.getint('Sensor3', 'sensor3pin')
+    sensorPeriod[3] = config.getint('Sensor3', 'sensor3period')
+    
+    sensorName[4] = config.get('Sensor4', 'sensor4name')
+    sensorDevice[4] = config.get('Sensor4', 'sensor4device')
+    sensorPin[4] = config.getint('Sensor4', 'sensor4pin')
+    sensorPeriod[4] = config.getint('Sensor4', 'sensor4period')
+    
+    sensorName[5] = config.get('Sensor5', 'sensor5name')
+    sensorDevice[5] = config.get('Sensor5', 'sensor5device')
+    sensorPin[5] = config.getint('Sensor5', 'sensor5pin')
+    sensorPeriod[5] = config.getint('Sensor5', 'sensor5period')
+    
+    sensorName[6] = config.get('Sensor6', 'sensor6name')
+    sensorDevice[6] = config.get('Sensor6', 'sensor6device')
+    sensorPin[6] = config.getint('Sensor6', 'sensor6pin')
+    sensorPeriod[6] = config.getint('Sensor6', 'sensor6period')
+    
+    sensorName[7] = config.get('Sensor7', 'sensor7name')
+    sensorDevice[7] = config.get('Sensor7', 'sensor7device')
+    sensorPin[7] = config.getint('Sensor7', 'sensor7pin')
+    sensorPeriod[7] = config.getint('Sensor7', 'sensor7period')
+    
+    sensorName[8] = config.get('Sensor8', 'sensor8name')
+    sensorDevice[8] = config.get('Sensor8', 'sensor8device')
+    sensorPin[8] = config.getint('Sensor8', 'sensor8pin')
+    sensorPeriod[8] = config.getint('Sensor8', 'sensor8period')
 
     relayName[1] = config.get('Relay1', 'relay1name')
     relayPin[1] = config.getint('Relay1', 'relay1pin')
@@ -1093,9 +1144,51 @@ def write_config():
     
     config.add_section('Sensor1')
     config.set('Sensor1', 'sensor1name', sensorName[1])
-    config.set('Sensor1', 'sensor1sensor', sensorDevice[1])
+    config.set('Sensor1', 'sensor1device', sensorDevice[1])
     config.set('Sensor1', 'sensor1pin', sensorPin[1])
     config.set('Sensor1', 'sensor1period', sensorPeriod[1])
+    
+    config.add_section('Sensor2')
+    config.set('Sensor2', 'sensor2name', sensorName[2])
+    config.set('Sensor2', 'sensor2device', sensorDevice[2])
+    config.set('Sensor2', 'sensor2pin', sensorPin[2])
+    config.set('Sensor2', 'sensor2period', sensorPeriod[2])
+    
+    config.add_section('Sensor3')
+    config.set('Sensor3', 'sensor3name', sensorName[3])
+    config.set('Sensor3', 'sensor3device', sensorDevice[3])
+    config.set('Sensor3', 'sensor3pin', sensorPin[3])
+    config.set('Sensor3', 'sensor3period', sensorPeriod[3])
+    
+    config.add_section('Sensor4')
+    config.set('Sensor4', 'sensor4name', sensorName[4])
+    config.set('Sensor4', 'sensor4device', sensorDevice[4])
+    config.set('Sensor4', 'sensor4pin', sensorPin[4])
+    config.set('Sensor4', 'sensor4period', sensorPeriod[4])
+    
+    config.add_section('Sensor5')
+    config.set('Sensor5', 'sensor5name', sensorName[5])
+    config.set('Sensor5', 'sensor5device', sensorDevice[5])
+    config.set('Sensor5', 'sensor5pin', sensorPin[5])
+    config.set('Sensor5', 'sensor5period', sensorPeriod[5])
+    
+    config.add_section('Sensor6')
+    config.set('Sensor6', 'sensor6name', sensorName[6])
+    config.set('Sensor6', 'sensor6device', sensorDevice[6])
+    config.set('Sensor6', 'sensor6pin', sensorPin[6])
+    config.set('Sensor6', 'sensor6period', sensorPeriod[6])
+    
+    config.add_section('Sensor7')
+    config.set('Sensor7', 'sensor7name', sensorName[7])
+    config.set('Sensor7', 'sensor7device', sensorDevice[7])
+    config.set('Sensor7', 'sensor7pin', sensorPin[7])
+    config.set('Sensor7', 'sensor7period', sensorPeriod[7])
+    
+    config.add_section('Sensor8')
+    config.set('Sensor8', 'sensor8name', sensorName[8])
+    config.set('Sensor8', 'sensor8device', sensorDevice[8])
+    config.set('Sensor8', 'sensor8pin', sensorPin[8])
+    config.set('Sensor8', 'sensor8period', sensorPeriod[8])
     
     config.add_section('Relay1')
     config.set('Relay1', 'relay1name', relayName[1])

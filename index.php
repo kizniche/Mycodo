@@ -254,7 +254,8 @@ if ($login->isUserLoggedIn() == true) {
     if (isset($_POST['WriteSensorLog']) || isset($_POST['ChangeSensor']) ||
             isset($_POST['ChangeTempPID']) || isset($_POST['ChangeHumPID']) ||
             isset($_POST['TempOR']) || isset($_POST['HumOR']) ||
-            isset($_POST['ModSensorName']) || isset($_POST['ModSensorPin']) || isset($_POST['ModSensorPeriod']) ||
+            isset($_POST['ChangeSensorName']) || isset($_POST['ChangeSensorDevice']) ||
+            isset($_POST['ChangeSensorPin']) || isset($_POST['ChangeSensorPeriod']) ||
             isset($_POST['ModRelayPin']) || isset($_POST['ModRelayName']) || isset($_POST['ModRelayTrigger']) ||
             isset($_POST['Auth']) || isset($_POST['Capture']) ||
             isset($_POST['start-stream']) || isset($_POST['stop-stream']) ||
@@ -303,7 +304,7 @@ if ($login->isUserLoggedIn() == true) {
             }
             
             // Request the sensor name(s) be renamed
-            if (isset($_POST['ModSensorName'])) {
+            if (isset($_POST['ChangeSensorName'])) {
                 for ($i = 1; $i <= 8; $i++) {
                     if (isset($_POST['sensor' . $i . 'name'])) {
                         ${'sensor' . $i . 'name'} = str_replace(' ', '', $_POST['sensor' . $i . 'name']);
@@ -313,8 +314,19 @@ if ($login->isUserLoggedIn() == true) {
                 shell_exec($editconfig);
             }
             
+            // Request the sensor device(s) be changed
+            if (isset($_POST['ChangeSensorDevice'])) {
+                for ($i = 1; $i <= 8; $i++) {
+                    if (isset($_POST['sensor' . $i . 'device'])) {
+                        ${'sensor' . $i . 'device'} = str_replace(' ', '', $_POST['sensor' . $i . 'device']);
+                    }
+                }
+                $editconfig = "$mycodo_client --modsensordevices $sensor1device $sensor2device $sensor3device $sensor4device $sensor5device $sensor6device $sensor7device $sensor8device";
+                shell_exec($editconfig);
+            }
+            
             // Request the sensor pins(s) be renumbered
-            if (isset($_POST['ModSensorPins'])) {
+            if (isset($_POST['ChangeSensorPin'])) {
                 for ($i = 1; $i <= 8; $i++) {
                     if (isset($_POST['sensor' . $i . 'pin'])) {
                         ${'sensor' . $i . 'pin'} = str_replace(' ', '', $_POST['sensor' . $i . 'pin']);
@@ -325,7 +337,7 @@ if ($login->isUserLoggedIn() == true) {
             }
             
             // Request the sensor period(s) be reconfigured
-            if (isset($_POST['ModSensorPeriod'])) {
+            if (isset($_POST['ChangeSensorPeriod'])) {
                 for ($i = 1; $i <= 8; $i++) {
                     if (isset($_POST['sensor' . $i . 'period'])) {
                         ${'sensor' . $i . 'period'} = str_replace(' ', '', $_POST['sensor' . $i . 'period']);
@@ -858,9 +870,11 @@ $error_code = "no";
                     <div style="float: left; padding-bottom: 3em; padding-right: 1em;">
                         <div style="padding-bottom: 2em;">
                         <table class="pid">
-                        <?php for ($i = 1; $i <= $numsensors; $i++) { ?>
+                        <?php for ($i = 1; $i <= $numsensors; $i++) {
+                            $device = ${"sensor" . $i . "device"};
+                            ?>
                             <tr class="shade">
-                                <td align=center>No.</td>
+                                <td align=center>Sensor<br>No.</td>
                                 <td align=center>Sensor<br>Name</td>
                                 <td align=center>Sensor<br>Device</td>
                                 <td align=center>GPIO<br>Pin</td>
@@ -871,21 +885,21 @@ $error_code = "no";
                                     <?php echo $i; ?>
                                 </td>
                                 <td>
-                                    <input type="text" value="<?php echo ${"sensor" . $i . "name"}; ?>" maxlength=12 size=10 name="<?php echo $i; ?>DHTName" title="Name of area using sensor <?php echo $i; ?>"/>
+                                    <input type="text" value="<?php echo ${"sensor" . $i . "name"}; ?>" maxlength=12 size=10 name="<?php echo $i; ?>SensorName" title="Name of area using sensor <?php echo $i; ?>"/>
                                 </td>
                                 <td>
-                                    <select style="width: 80px;" name="<?php echo $i; ?>DHTSensor">
-                                        <option <?php if (${"sensor" . $i . "device"} == 'DHT11') echo "selected=\"selected\""; ?> value="DHT11">DHT11</option>
-                                        <option <?php if (${"sensor" . $i . "device"} == 'DHT22') echo "selected=\"selected\""; ?> value="DHT22">DHT22</option>
-                                        <option <?php if (${"sensor" . $i . "device"} == 'AM2302') echo "selected=\"selected\""; ?> value="AM2302">AM2302</option>
-                                        <option <?php if (${"sensor" . $i . "device"} == 'Other') echo "selected=\"selected\""; ?>value="Other">Other</option>
+                                    <select style="width: 80px;" name="<?php echo $i; ?>SensorDevice">
+                                        <option <?php if ($device == 'DHT11') echo "selected=\"selected\""; ?> value="DHT11">DHT11</option>
+                                        <option <?php if ($device == 'DHT22') echo "selected=\"selected\""; ?> value="DHT22">DHT22</option>
+                                        <option <?php if ($device == 'AM2302') echo "selected=\"selected\""; ?> value="AM2302">AM2302</option>
+                                        <option <?php if ($device == 'Other') echo "selected=\"selected\""; ?>value="Other">Other</option>
                                     </select>
                                 </td>
                                 <td>
-                                    <input type="text" value="<?php echo ${"sensor" . $i . "pin"}; ?>" maxlength=2 size=1 name="<?php echo $i; ?>DHTPin" title="This is the GPIO pin connected to the DHT sensor"/>
+                                    <input type="text" value="<?php echo ${"sensor" . $i . "pin"}; ?>" maxlength=2 size=1 name="<?php echo $i; ?>SensorPin" title="This is the GPIO pin connected to the DHT sensor"/>
                                 </td>
                                 <td>
-                                    <input type="text" value="<?php echo ${"sensor" . $i . "period"}; ?>" maxlength=3 size=1 name="<?php echo $i; ?>DHTSecs" title="The number of seconds between writing sensor readings to the log"/>
+                                    <input type="text" value="<?php echo ${"sensor" . $i . "period"}; ?>" maxlength=3 size=1 name="<?php echo $i; ?>SensorPeriod" title="The number of seconds between writing sensor readings to the log"/>
                                 </td>
                             </tr>
                             <?php if ($i == $numsensors) { ?>
@@ -893,16 +907,16 @@ $error_code = "no";
                                     <td>
                                     </td>
                                     <td align=center>
-                                        <input type="submit" name="Change<?php echo $i; ?>SensorName" value="Rename">
+                                        <input type="submit" name="ChangeSensorName" value="Rename">
                                     </td>
                                     <td align=center>
-                                        <input type="submit" name="Change<?php echo $i; ?>Sensor" value="Set">
+                                        <input type="submit" name="ChangeSensorDevice" value="Set">
                                     </td>
                                     <td align=center>
-                                        <input type="submit" name="Change<?php echo $i; ?>SensorPin" value="Set">
+                                        <input type="submit" name="ChangeSensorPin" value="Set">
                                     </td>
                                     <td align=center>
-                                        <input type="submit" name="Change<?php echo $i; ?>SensorPeriod" value="Set">
+                                        <input type="submit" name="ChangeSensorPeriod" value="Set">
                                     </td>
                                 </tr>
                             </table>

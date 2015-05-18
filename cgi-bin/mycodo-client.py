@@ -29,6 +29,8 @@ def usage():
     print '           Modify the trigger state of relays'
     print '        --modsensornames [Name1] [Name2] [Name3] [Name4] [Name5] [Name6] [Name7] [Name8]'
     print '           Modify sensor names (Restrict to a maximum of 12 characters each)'
+    print '        --modsensordevices [Device1] [Device2] [Device3] [Device4] [Device5] [Device6] [Device7] [Device8]'
+    print '           Modify sensor names (Restrict to a maximum of 12 characters each)'
     print '        --modsensorpins [Pin1] [Pin2] [Pin3] [Pin4] [Pin5] [Pin6] [Pin7] [Pin8]'
     print '           Modify sensor pins (Using BCM numbering)'
     print '        --modsensorperiods [Per1] [Per2] [Per3] [Per4] [Per5] [Per6] [Per7] [Per8]'
@@ -49,9 +51,9 @@ def menu():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:], 'o:p:r:s:tw', 
-            ["modrelaynames=", "modrelaypins=", "modtimer=", "modrelaytrigger=",
-            "modvar=", "pid=", "relay=", "terminate",
-            "writelog"])
+            ["modrelaynames=", "modrelaypins=", "modrelaytrigger=",
+            "modsensornames", "modsensordevices", "modsensorpins", "modsensorperiods",
+            "modtimer=", "modvar=", "pid=", "relay=", "terminate", "writelog"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -94,6 +96,19 @@ def menu():
                 sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9]) == 1:
                 print "Success"
             else:
+                print "Fail"
+            sys.exit(0)
+        elif opt == "--modsensordevices":
+            print "%s [Remote command] Set Sensor Devicess: %s %s %s %s %s %s %s %s: Server returned:" % (
+                Timestamp(), int(sys.argv[2]), int(sys.argv[3]), 
+                int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6]), 
+                int(sys.argv[7]), int(sys.argv[8]), int(sys.argv[9])),
+            if c.root.ChangeSensorDevices(
+                int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), 
+                int(sys.argv[5]), int(sys.argv[6]), int(sys.argv[7]), 
+                int(sys.argv[8]), int(sys.argv[9])) == 1: 
+                print "Success"
+            else: 
                 print "Fail"
             sys.exit(0)
         elif opt == "--modsensorpins":
