@@ -169,14 +169,12 @@ if ($login->isUserLoggedIn() == true) {
 
     // All commands that elevated (!= guest) privileges are required
     for ($p = 1; $p <= 8; $p++) {
-        // Relay has been selected to be turned on or off
         if (isset($_POST['R' . $p]) ||
                 isset($_POST[$p . 'secON']) ||
                 isset($_POST['ChangeTimer' . $p]) || 
                 isset($_POST['Timer' . $p . 'StateChange'])) {
-
             if ($_SESSION['user_name'] != 'guest') {
-            
+                // Relay has been selected to be turned on or off
                 if (isset($_POST['R' . $p])) {
                     $name = ${"relay" . $p . "name"};
                     $pin = ${"relay" . $p . "pin"};
@@ -256,14 +254,13 @@ if ($login->isUserLoggedIn() == true) {
     if (isset($_POST['WriteSensorLog']) || isset($_POST['ChangeSensor']) ||
             isset($_POST['ChangeTempPID']) || isset($_POST['ChangeHumPID']) ||
             isset($_POST['TempOR']) || isset($_POST['HumOR']) ||
-            isset($_POST['ModPin']) || isset($_POST['ModName']) ||
-            isset($_POST['ModTrigger']) || isset($_POST['Auth']) || 
-            isset($_POST['Capture']) || isset($_POST['start-stream']) ||
-            isset($_POST['stop-stream']) || isset($_POST['ChangeNoRelays']) ||
-            isset($_POST['ChangeNoSensors']) || isset($_POST['ChangeNoTimers']) ||
-            isset($_POST['ChangeNotify'])) {
+            isset($_POST['ModSensorName']) || isset($_POST['ModSensorPin']) || isset($_POST['ModSensorPeriod']) ||
+            isset($_POST['ModRelayPin']) || isset($_POST['ModRelayName']) || isset($_POST['ModRelayTrigger']) ||
+            isset($_POST['Auth']) || isset($_POST['Capture']) ||
+            isset($_POST['start-stream']) || isset($_POST['stop-stream']) ||
+            isset($_POST['ChangeNoRelays']) || isset($_POST['ChangeNoSensors']) ||
+            isset($_POST['ChangeNoTimers']) || isset($_POST['ChangeNotify'])) {
         if ($_SESSION['user_name'] != 'guest') {
-            
             if (isset($_POST['Capture'])) {
                 if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) shell_exec("$stream_exec stop");
                 if (isset($_POST['lighton'])) {
@@ -305,36 +302,69 @@ if ($login->isUserLoggedIn() == true) {
                 shell_exec($editconfig);
             }
             
+            // Request the sensor name(s) be renamed
+            if (isset($_POST['ModSensorName'])) {
+                for ($i = 1; $i <= 8; $i++) {
+                    if (isset($_POST['sensor' . $i . 'name'])) {
+                        ${'sensor' . $i . 'name'} = str_replace(' ', '', $_POST['sensor' . $i . 'name']);
+                    }
+                }
+                $editconfig = "$mycodo_client --modsensornames $sensor1name $sensor2name $sensor3name $sensor4name $sensor5name $sensor6name $sensor7name $sensor8name";
+                shell_exec($editconfig);
+            }
+            
+            // Request the sensor pins(s) be renumbered
+            if (isset($_POST['ModSensorPins'])) {
+                for ($i = 1; $i <= 8; $i++) {
+                    if (isset($_POST['sensor' . $i . 'pin'])) {
+                        ${'sensor' . $i . 'pin'} = str_replace(' ', '', $_POST['sensor' . $i . 'pin']);
+                    }
+                }
+                $editconfig = "$mycodo_client --modsensorpins $sensor1pin $sensor2pin $sensor3pin $sensor4pin $sensor5pin $sensor6pin $sensor7pin $sensor8pin";
+                shell_exec($editconfig);
+            }
+            
+            // Request the sensor period(s) be reconfigured
+            if (isset($_POST['ModSensorPeriod'])) {
+                for ($i = 1; $i <= 8; $i++) {
+                    if (isset($_POST['sensor' . $i . 'period'])) {
+                        ${'sensor' . $i . 'period'} = str_replace(' ', '', $_POST['sensor' . $i . 'period']);
+                    }
+                }
+                $editconfig = "$mycodo_client --modsensorperiods $sensor1period $sensor2period $sensor3period $sensor4period $sensor5period $sensor6period $sensor7period $sensor8period";
+                shell_exec($editconfig);
+            }
+            
             // Request the relay name(s) be renamed
-            if (isset($_POST['ModName'])) {
+            if (isset($_POST['ModRelayName'])) {
                 for ($i = 1; $i <= 8; $i++) {
                     if (isset($_POST['relay' . $i . 'name'])) {
                         ${'relay' . $i . 'name'} = str_replace(' ', '', $_POST['relay' . $i . 'name']);
                     }
                 }
-                $editconfig = "$mycodo_client --modnames $relay1name $relay2name $relay3name $relay4name $relay5name $relay6name $relay7name $relay8name";
+                $editconfig = "$mycodo_client --modrelaynames $relay1name $relay2name $relay3name $relay4name $relay5name $relay6name $relay7name $relay8name";
                 shell_exec($editconfig);
             }
             
             // Request the relay pin(s) be renumbered
-            if (isset($_POST['ModPin'])) {
+            if (isset($_POST['ModRelayPin'])) {
                 for ($i = 1; $i <= 8; $i++) {
                     if (isset($_POST['relay' . $i . 'pin'])) {
                         ${'relay' . $i . 'pin'} = $_POST['relay' . $i . 'pin'];
                     }
                 }
-                $editconfig = "$mycodo_client --modpins $relay1pin $relay2pin $relay3pin $relay4pin $relay5pin $relay6pin $relay7pin $relay8pin";
+                $editconfig = "$mycodo_client --modrelaypins $relay1pin $relay2pin $relay3pin $relay4pin $relay5pin $relay6pin $relay7pin $relay8pin";
                 shell_exec($editconfig);
             }
             
-            // Request the relay pin(s) be renumbered
-            if (isset($_POST['ModTrigger'])) {
+            // Request the relay trigger(s) be renumbered
+            if (isset($_POST['ModRelayTrigger'])) {
                 for ($i = 1; $i <= 8; $i++) {
                     if (isset($_POST['relay' . $i . 'trigger'])) {
                         ${'relay' . $i . 'trigger'} = $_POST['relay' . $i . 'trigger'];
                     }
                 }
-                $editconfig = "$mycodo_client --modtrigger $relay1trigger $relay2trigger $relay3trigger $relay4trigger $relay5trigger $relay6trigger $relay7trigger $relay8trigger";
+                $editconfig = "$mycodo_client --modrelaytrigger $relay1trigger $relay2trigger $relay3trigger $relay4trigger $relay5trigger $relay6trigger $relay7trigger $relay8trigger";
                 shell_exec($editconfig);
             }
             
@@ -371,19 +401,6 @@ if ($login->isUserLoggedIn() == true) {
                 $hum_d  = $_POST['Hum_D'];
                 $factorhumseconds = $_POST['factorHumSeconds'];
                 $editconfig = "$mycodo_client --modvar relayHum $relayhum setHum $sethum Hum_P $hum_p Hum_I $hum_i Hum_D $hum_d factorHumSeconds $factorhumseconds";
-                shell_exec($editconfig);
-            }
-            
-            // Request the sensor configuration be changed
-            if (isset($_POST['ChangeSensor'])) {
-                $dhtsensor = $_POST['DHTSensor'];
-                $dhtpin = $_POST['DHTPin'];
-                $dhtseconds = $_POST['DHTSec'];
-                if ($dhtsensor == 'Other') {
-                    $enable_overrides = "$mycodo_client --modvar TempOR 1 HumOR 1";
-                    shell_exec($enable_overrides);
-                }
-                $editconfig = "$mycodo_client --modvar DHTSensor $dhtsensor DHTPin $dhtpin DHTSeconds $dhtseconds";
                 shell_exec($editconfig);
             }
             
@@ -522,7 +539,6 @@ $error_code = "no";
         <div>
              <?php 
                 echo number_format((float)$settemp, 1, '.', '') . "&deg;C (" . number_format((float)$settemp_f, 1, '.', '') ."&deg;F) Set";
-                
             ?>
         </div>
     </div>
@@ -733,7 +749,7 @@ $error_code = "no";
             
             <div style="clear: both;"></div>
             <div style="padding-top: 1.2em;">
-                <div style="float: left; padding-right: 1em;">
+                <div style="float: left; padding-bottom: 2em; padding-right: 1em;">
                     <div style="padding: 0 0 1em 1em;">
                         Number of Relays 
                         <select name="numrelays">
@@ -753,7 +769,7 @@ $error_code = "no";
                         <tr>
                             <td align=center class="table-header">Relay<br>No.</td>
                             <td align=center class="table-header">Relay<br>Name</td>
-                            <th colspan=2  align=center class="table-header">Current<br>State</th>
+                            <th align=center class="table-header">Current<br>State</th>
                             <td align=center class="table-header">Seconds<br>On</td>
                             <td align=center class="table-header">GPIO<br>Pin</td>
                             <td align=center class="table-header">Trigger<br>ON</td>
@@ -774,16 +790,15 @@ $error_code = "no";
                             <?php
                                 if (shell_exec($read) == 1) {
                                     ?>
-                                    <th colspan=2 class="onoff">
+                                    <td class="onoff">
                                         <nobr><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="R<?php echo $i; ?>" value="0"> | <button style="width: 3em;" type="submit" name="R<?php echo $i; ?>" value="1">ON</button></nobr>
                                     </td>
-                                    </th>
                                     <?php
                                 } else {
                                     ?>
-                                    <th colspan=2 class="onoff">
+                                    <td class="onoff">
                                         <nobr><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/on.jpg" alt="On" title="On" name="R<?php echo $i; ?>" value="1"> | <button style="width: 3em;" type="submit" name="R<?php echo $i; ?>" value="0">OFF</button></nobr>
-                                    </th>
+                                    </td>
                                     <?php
                                 }
                             ?>
@@ -806,25 +821,23 @@ $error_code = "no";
                         <tr>
                             <td>
                             </td>
-                            <td align=left>
-                                <button type="submit" name="ModName" value="1" title="Change relay names to the ones specified above (Do not use spaces)">Rename</button>
-                            </td>
-                            <td>
+                            <td align=center>
+                                <button type="submit" name="ModRelayName" value="1" title="Change relay names to the ones specified above (Do not use spaces)">Rename</button>
                             </td>
                             <td>
                             </td>
                             <td>
                             </td>
                             <td align=center>
-                                <button type="submit" name="ModPin" value="1" title="Change the (BCM) GPIO pins attached to relays to the ones specified above">Set</button>
+                                <button type="submit" name="ModRelayPin" value="1" title="Change the (BCM) GPIO pins attached to relays to the ones specified above">Set</button>
                             </td>
                             <td align=center>
-                                <button type="submit" name="ModTrigger" value="1" title="Change the ON trigger state of the relays.">Set</button>
+                                <button type="submit" name="ModRelayTrigger" value="1" title="Change the ON trigger state of the relays.">Set</button>
                             </td>
                         </tr>
                     </table>
                 </div>
-
+                
                 <div style="float: left;">
                     <div style="padding: 0 0 1em 1em;">
                         Number of Sensors 
@@ -841,75 +854,86 @@ $error_code = "no";
                         <input type="submit" name="ChangeNoSensors" value="Save">
                     </div>
                     <?php if ($numsensors > 0) { ?>
+                    
+                    <div style="float: left; padding-bottom: 3em; padding-right: 1em;">
+                        <div style="padding-bottom: 2em;">
+                        <table class="pid">
+                        <?php for ($i = 1; $i <= $numsensors; $i++) { ?>
+                            <tr class="shade">
+                                <td align=center>No.</td>
+                                <td align=center>Sensor<br>Name</td>
+                                <td align=center>Sensor<br>Device</td>
+                                <td align=center>GPIO<br>Pin</td>
+                                <td align=center>Per.<br>(Sec.)</td>
+                            </tr>
+                            <tr style="height: 5em;">
+                                <td class="shade" style="vertical-align: middle;" align=center>
+                                    <?php echo $i; ?>
+                                </td>
+                                <td>
+                                    <input type="text" value="<?php echo ${"sensor" . $i . "name"}; ?>" maxlength=12 size=10 name="<?php echo $i; ?>DHTName" title="Name of area using sensor <?php echo $i; ?>"/>
+                                </td>
+                                <td>
+                                    <select style="width: 80px;" name="<?php echo $i; ?>DHTSensor">
+                                        <option <?php if (${"sensor" . $i . "device"} == 'DHT11') echo "selected=\"selected\""; ?> value="DHT11">DHT11</option>
+                                        <option <?php if (${"sensor" . $i . "device"} == 'DHT22') echo "selected=\"selected\""; ?> value="DHT22">DHT22</option>
+                                        <option <?php if (${"sensor" . $i . "device"} == 'AM2302') echo "selected=\"selected\""; ?> value="AM2302">AM2302</option>
+                                        <option <?php if (${"sensor" . $i . "device"} == 'Other') echo "selected=\"selected\""; ?>value="Other">Other</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" value="<?php echo ${"sensor" . $i . "pin"}; ?>" maxlength=2 size=1 name="<?php echo $i; ?>DHTPin" title="This is the GPIO pin connected to the DHT sensor"/>
+                                </td>
+                                <td>
+                                    <input type="text" value="<?php echo ${"sensor" . $i . "period"}; ?>" maxlength=3 size=1 name="<?php echo $i; ?>DHTSecs" title="The number of seconds between writing sensor readings to the log"/>
+                                </td>
+                            </tr>
+                            <?php if ($i == $numsensors) { ?>
+                                <tr>
+                                    <td>
+                                    </td>
+                                    <td align=center>
+                                        <input type="submit" name="Change<?php echo $i; ?>SensorName" value="Rename">
+                                    </td>
+                                    <td align=center>
+                                        <input type="submit" name="Change<?php echo $i; ?>Sensor" value="Set">
+                                    </td>
+                                    <td align=center>
+                                        <input type="submit" name="Change<?php echo $i; ?>SensorPin" value="Set">
+                                    </td>
+                                    <td align=center>
+                                        <input type="submit" name="Change<?php echo $i; ?>SensorPeriod" value="Set">
+                                    </td>
+                                </tr>
+                            </table>
+                            </div>
+                    <?php
+                            } else {
+                                echo '</table></div><div style="padding-bottom: 2em;"><table class="pid" style="height: 11em; padding-bottom: 2em;">';
+                            }
+                        }
+                    }
+                    ?>
+                    </div>
+                    
+                    <div style="float: left; padding-bottom: 2em; padding-right: 1em;">
                     <?php for ($i = 1; $i <= $numsensors; $i++) { ?>
-                    <div style="padding-bottom: 3em;">
+                        <div style="padding-bottom: 2em;">
                         <table class="pid">
                             <tr class="shade">
-                                <th colspan=2 rowspan=2 align=center>
-                                    Sensor <?php echo $i; ?>
-                                </th>
-                                <th colspan=2 align=center>
-                                    Device
-                                </th>
-                                <td align=center>
-                                    Pin
-                                </td>
-                                <th colspan=2>
-                                    Read Period
-                                </td>
+                                <td align=center>PID<br>Type</td>
+                                <td align=center>Current<br>State</td>
+                                <td style="vertical-align: middle;" align=center>Relay<br>No.</td>
+                                <td align=center>PID<br>Set</td>
+                                <td style="vertical-align: middle;" align=center>Per<br>(Sec.)</td>
+                                <td style="vertical-align: middle;" align=center>P</td>
+                                <td style="vertical-align: middle;" align=center>I</td>
+                                <td style="vertical-align: middle;" align=center>D</td>
                             </tr>
-                            <tr>
-                                <th colspan=2 align=center>
-                                    <select style="width: 80px;" name="DHTSensor">
-                                        <option <?php if ($dhtsensor == 'DHT11') echo "selected=\"selected\""; ?> value="DHT11">DHT11</option>
-                                        <option <?php if ($dhtsensor == 'DHT22') echo "selected=\"selected\""; ?> value="DHT22">DHT22</option>
-                                        <option <?php if ($dhtsensor == 'AM2302') echo "selected=\"selected\""; ?> value="AM2302">AM2302</option>
-                                        <option <?php if ($dhtsensor == 'Other') echo "selected=\"selected\""; ?>value="Other">Other</option>
-                                    </select>
-                                </th>
+                            <tr style="height: 2.5em;">
                                 <td>
-                                    <input type="text" value="<?php echo $dhtpin; ?>" maxlength=2 size=1 name="DHTPin" title="This is the GPIO pin connected to the DHT sensor"/>
+                                    Temp
                                 </td>
-                                <td>
-                                    <input type="text" value="<?php echo $dhtseconds; ?>" maxlength=3 size=1 name="DHTSecs" title="The number of seconds between writing sensor readings to the log"/>
-                                </td>
-                                <td>
-                                    Sec
-                                </td>
-                                <td>
-                                    <input type="submit" name="ChangeSensor" value="Set">
-                                </td>
-                            </tr>
-                            <tr style="height: 4px !important;">
-                                <td colspan="8"></td>
-                            </tr>
-                            <?php
-                                if ($dhtsensor == 'DHT11' || $dhtsensor == 'DHT22' || $dhtsensor == 'AM2302') {
-                            ?>
-                            <tr class="shade">
-                                <td align=center>
-                                    Temperature
-                                </td>
-                                <td align=center>
-                                    Relay
-                                </td>
-                                <td align=center>
-                                    Set°C
-                                </td>
-                                <td align=center>
-                                    Sec
-                                </td>
-                                <td align=center>
-                                    P
-                                </td>
-                                <td align=center>
-                                    I
-                                </td>
-                                <td align=center>
-                                    D
-                                </td>
-                            </tr>
-                            <tr>
                                 <td class="onoff">
                                     <?php
                                         if ($tempor == 1) {
@@ -927,7 +951,7 @@ $error_code = "no";
                                     <input type="text" value="<?php echo $relaytemp; ?>" maxlength=1 size=1 name="relayTemp" title="This is the relay connected to the heating device"/>
                                 </td>
                                 <td>
-                                    <input type="text" value="<?php echo $settemp; ?>" maxlength=4 size=2 name="setTemp" title="This is the desired temperature"/>
+                                    <input type="text" value="<?php echo $settemp; ?>" maxlength=4 size=2 name="setTemp" title="This is the desired temperature"/>°C
                                 </td>
                                 <td>
                                     <input type="text" value="<?php echo $factortempseconds; ?>" maxlength=4 size=1 name="factorTempSeconds" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/>
@@ -945,33 +969,10 @@ $error_code = "no";
                                     <input type="submit" name="ChangeTempPID" value="Set">
                                 </td>
                             </tr>
-                            <tr style="height: 4px !important;">
-                                <td colspan="8"></td>
-                            </tr>
-                            <tr class="shade">
-                                <td align=center>
-                                    Humidity
+                            <tr style="height: 2.5em;">
+                                <td>
+                                    Hum
                                 </td>
-                                <td align=center>
-                                    Relay
-                                </td>
-                                <td align=center>
-                                    Set%
-                                </td>
-                                <td align=center>
-                                    Sec
-                                </td>
-                                <td align=center>
-                                    P
-                                </td>
-                                <td align=center>
-                                    I
-                                </td>
-                                <td align=center>
-                                    D
-                                </td>
-                            </tr>
-                            <tr>
                                 <td class="onoff">
                                 <?php
                                     if ($humor == 1) {
@@ -989,7 +990,7 @@ $error_code = "no";
                                     <input type="text" value="<?php echo $relayhum; ?>" maxlength=1 size=1 name="relayHum" title="This is the relay connected to your humidifying device"/>
                                 </td>
                                 <td>
-                                    <input type="text" value="<?php echo $sethum; ?>" maxlength=4 size=2 name="setHum" title="This is the desired humidity"/>
+                                    <input type="text" value="<?php echo $sethum; ?>" maxlength=4 size=2 name="setHum" title="This is the desired humidity"/>%
                                 </td>
                                 <td>
                                     <input type="text" value="<?php echo $factorhumseconds; ?>" maxlength=4 size=1 name="factorHumSeconds" title="This is the number of seconds to wait after the relay has been turned off before taking another humidity reading and applying the PID"/>
@@ -1007,22 +1008,12 @@ $error_code = "no";
                                     <input type="submit" name="ChangeHumPID" value="Set">
                                 </td>
                             </tr>
-                            <?php
-                                } else {
-                            ?>
-                            <tr style="height: 10px !important; background-color: #FFFFFF;">
-                                <td colspan="8">
-                                    There is only built-in support for sensors on the list.
-                                </td>
-                            </tr>
-                            <?php
-                            }
-                            ?>
                         </table>
-                    </div>
+                        </div>
                     <?php
-                    } }
+                    }
                     ?>
+                    </div>
                 </div>
             </div>
         </FORM>

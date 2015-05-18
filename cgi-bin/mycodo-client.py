@@ -21,12 +21,18 @@ def usage():
     print 'mycodo-client.py: Client for mycodo.py (must be running in daemon mode -d).\n'
     print 'Usage:  mycodo-client.py [OPTION]...\n'
     print 'Options:'
-    print '        --modnames [r1Name] [r2Name] [r3Name] [r4Name] [r5Name] [r6Name] [r7Name] [r8Name]'
-    print '           Modify relay names (Restrict to a maximum of 5 characters each)'
-    print '        --modpins [r1Pin] [r2Pin] [r3Pin] [r4Pin] [r5Pin] [r6Pin] [r7Pin] [r8Pin]'
+    print '        --modrelaynames [Name1] [Name2] [Name3] [Name4] [Name5] [Name6] [Name7] [Name8]'
+    print '           Modify relay names (Restrict to a maximum of 12 characters each)'
+    print '        --modrelaypins [Pin1] [Pin2] [Pin3] [Pin4] [Pin5] [Pin6] [Pin7] [Pin8]'
     print '           Modify relay pins (Using BCM numbering)'
-    print '        --modtrigger [r1Trig] [r2Trig] [r3Trig] [r4Trig] [r5Trig] [r6Trig] [r7Trig] [r8Trig]'
+    print '        --modrelaytrigger [Trig1] [Trig2] [Trig3] [Trig4] [Trig5] [Trig6] [Trig7] [Trig8]'
     print '           Modify the trigger state of relays'
+    print '        --modsensornames [Name1] [Name2] [Name3] [Name4] [Name5] [Name6] [Name7] [Name8]'
+    print '           Modify sensor names (Restrict to a maximum of 12 characters each)'
+    print '        --modsensorpins [Pin1] [Pin2] [Pin3] [Pin4] [Pin5] [Pin6] [Pin7] [Pin8]'
+    print '           Modify sensor pins (Using BCM numbering)'
+    print '        --modsensorperiods [Per1] [Per2] [Per3] [Per4] [Per5] [Per6] [Per7] [Per8]'
+    print '           Modify the period between sensor reads'
     print '        --modtimer [Timer Number] [State] [Relay Number] [Duration On] [Duration Off]'
     print '           Modify custom timers, State: 0=off 1=on, durations in seconds'
     print '        --modvar [Var1Name] [Var1Value] [Var2Name] [Var2Value]...'
@@ -43,7 +49,7 @@ def menu():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:], 'o:p:r:s:tw', 
-            ["modnames=", "modpins=", "modtimer=", "modtrigger=",
+            ["modrelaynames=", "modrelaypins=", "modtimer=", "modrelaytrigger=",
             "modvar=", "pid=", "relay=", "terminate",
             "writelog"])
     except getopt.GetoptError as err:
@@ -78,8 +84,46 @@ def menu():
             else:
                 print "Fail"
             sys.exit(0)
-        elif opt == "--modnames":
-            print "%s [Remote command] Set Names: %s %s %s %s %s %s %s %s: Server returned:" % (
+        elif opt == "--modsensornames":
+            print "%s [Remote command] Set Sensor Names: %s %s %s %s %s %s %s %s: Server returned:" % (
+                Timestamp(), 
+                sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], 
+                sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9]),
+            if c.root.ChangeSensorNames(
+                sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], 
+                sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9]) == 1:
+                print "Success"
+            else:
+                print "Fail"
+            sys.exit(0)
+        elif opt == "--modsensorpins":
+            print "%s [Remote command] Set Sensor Pins: %s %s %s %s %s %s %s %s: Server returned:" % (
+                Timestamp(), int(sys.argv[2]), int(sys.argv[3]), 
+                int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6]), 
+                int(sys.argv[7]), int(sys.argv[8]), int(sys.argv[9])),
+            if c.root.ChangeSensorPins(
+                int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), 
+                int(sys.argv[5]), int(sys.argv[6]), int(sys.argv[7]), 
+                int(sys.argv[8]), int(sys.argv[9])) == 1: 
+                print "Success"
+            else: 
+                print "Fail"
+            sys.exit(0)
+        elif opt == "--modsensorperiods":
+            print "%s [Remote command] Set Sensor Periods: %s %s %s %s %s %s %s %s: Server returned:" % (
+                Timestamp(), int(sys.argv[2]), int(sys.argv[3]), 
+                int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6]), 
+                int(sys.argv[7]), int(sys.argv[8]), int(sys.argv[9])),
+            if c.root.ChangeSensorPeriods(
+                int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), 
+                int(sys.argv[5]), int(sys.argv[6]), int(sys.argv[7]), 
+                int(sys.argv[8]), int(sys.argv[9])) == 1: 
+                print "Success"
+            else: 
+                print "Fail"
+            sys.exit(0)
+        elif opt == "--modrelaynames":
+            print "%s [Remote command] Set Relay Names: %s %s %s %s %s %s %s %s: Server returned:" % (
                 Timestamp(), 
                 sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], 
                 sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9]),
@@ -90,8 +134,8 @@ def menu():
             else:
                 print "Fail"
             sys.exit(0)
-        elif opt == "--modpins":
-            print "%s [Remote command] Set Pins: %s %s %s %s %s %s %s %s: Server returned:" % (
+        elif opt == "--modrelaypins":
+            print "%s [Remote command] Set Relay Pins: %s %s %s %s %s %s %s %s: Server returned:" % (
                 Timestamp(), int(sys.argv[2]), int(sys.argv[3]), 
                 int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6]), 
                 int(sys.argv[7]), int(sys.argv[8]), int(sys.argv[9])),
@@ -114,8 +158,8 @@ def menu():
             else: 
                 print "Fail"
             sys.exit(0)
-        elif opt == "--modtrigger":
-            print "%s [Remote command] Set Triggers: %s %s %s %s %s %s %s %s: Server returned:" % (
+        elif opt == "--modrelaytrigger":
+            print "%s [Remote command] Set Relay Triggers: %s %s %s %s %s %s %s %s: Server returned:" % (
                 Timestamp(), int(sys.argv[2]), int(sys.argv[3]), 
                 int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6]), 
                 int(sys.argv[7]), int(sys.argv[8]), int(sys.argv[9])),

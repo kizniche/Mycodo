@@ -64,6 +64,13 @@ relayPin = [0] * 9
 relayName = [0] * 9
 relayTrigger = [0] * 9
 
+# Sensors
+numSensors = None
+sensorName = [0] * 9
+sensorDevice = [0] * 9
+sensorPin = [0] * 9
+sensorPeriod = [0] * 9
+
 #PID
 relayTemp =None
 relayHum = None
@@ -83,7 +90,7 @@ TempOR = None
 HumOR = None
 
 # Timers
-DHTSeconds = None
+
 numTimers = None
 timerRelay = [0] * 9
 timerState = [0] * 9
@@ -99,11 +106,6 @@ smtp_user = None
 smtp_pass = None
 email_from = None
 email_to = None
-
-# Sensors
-numSensors = None
-DHTSensor = None
-DHTPin = None
 
 # Sensor data
 chktemp = None
@@ -217,6 +219,54 @@ class ComServer(rpyc.Service):
         logging.info("[Client command] Change Relay Triggers: 1: %s, 2: %s, 3: %s, 4: %s, 5: %s, 6: %s, 7: %s, 8: %s",
             relayTrigger[1], relayTrigger[2], relayTrigger[3], relayTrigger[4],
             relayTrigger[5], relayTrigger[6], relayTrigger[7], relayTrigger[8])
+        write_config()
+        return 1
+    def exposed_ChangeSensorNames(self, sensorname1, sensorname2, sensorname3,
+            sensorname4, sensorname5, sensorname6, sensorname7, sensorname8):
+        global sensorName
+        sensorName[1] = sensorname1
+        sensorName[2] = sensorname2
+        sensorName[3] = sensorname3
+        sensorName[4] = sensorname4
+        sensorName[5] = sensorname5
+        sensorName[6] = sensorname6
+        sensorName[7] = sensorname7
+        sensorName[8] = sensorname8
+        logging.info("[Client command] Change Sensor Names: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s",
+            sensorName[1], sensorName[2], sensorName[3], sensorName[4],
+            sensorName[5], sensorName[6], sensorName[7], sensorName[8])
+        write_config()
+        return 1
+    def exposed_ChangeRelayPins(self, sensorpin1, sensorpin2, sensorpin3,
+            sensorpin4, sensorpin5, sensorpin6, sensorpin7, sensorpin8):
+        global sensorPin
+        sensorPin[1] = sensorpin1
+        sensorPin[2] = sensorpin2
+        sensorPin[3] = sensorpin3
+        sensorPin[4] = sensorpin4
+        sensorPin[5] = sensorpin5
+        sensorPin[6] = sensorpin6
+        sensorPin[7] = sensorpin7
+        sensorPin[8] = sensorpin8
+        logging.info("[Client command] Change Sensor Pins: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s",
+            sensorPin[1], sensorPin[2], sensorPin[3], sensorPin[4],
+            sensorPin[5], sensorPin[6], sensorPin[7], sensorPin[8])
+        write_config()
+        return 1   
+    def exposed_ChangeSensorPeriods(self, sensorperiod1, sensorperiod2, sensorperiod3,
+            sensorperiod4, sensorperiod5, sensorperiod6, sensorperiod7, sensorperiod8):
+        global sensorPeriod
+        sensorPeriod[1] = sensorperiod1
+        sensorPeriod[2] = sensorperiod2
+        sensorPeriod[3] = sensorperiod3
+        sensorPeriod[4] = sensorperiod4
+        sensorPeriod[5] = sensorperiod5
+        sensorPeriod[6] = sensorperiod6
+        sensorPeriod[7] = sensorperiod7
+        sensorPeriod[8] = sensorperiod8
+        logging.info("[Client command] Change Sensor Periods: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s",
+            sensorPeriod[1], sensorPeriod[2], sensorPeriod[3], sensorPeriod[4],
+            sensorPeriod[5], sensorPeriod[6], sensorPeriod[7], sensorPeriod[8])
         write_config()
         return 1
     def exposed_WriteSensorLog(self):
@@ -481,11 +531,11 @@ def daemon(output, log):
     logging.info("[Daemon] Reading configuration file and initializing variables")
     read_config(1)
     
-    if DHTSensor != 'Other':
+    if sensorDevice[1] != 'Other':
         read_sensors(0)
     
     timerLogBackup = int(time.time()) + 21600 # 21600 seconds = 6 hours
-    timerSensorLog = int(time.time()) + DHTSeconds
+    timerSensorLog = int(time.time()) + sensorPeriod[1]
     for i in range(1, 9):
         timer_time[i] = int(time.time())
    
@@ -558,11 +608,11 @@ def daemon(output, log):
             Hum_PID_Up = 0
         
         # Write sensor log
-        if int(time.time()) > timerSensorLog and DHTSensor != 'Other':
-            logging.debug("[Timer Expiration] Run every %s seconds: Write sensor log", DHTSeconds)
+        if int(time.time()) > timerSensorLog and sensorDevice[1] != 'Other':
+            logging.debug("[Timer Expiration] Run every %s seconds: Write sensor log", sensorPeriod[1])
             read_sensors(0)
             write_sensor_log()
-            timerSensorLog = int(time.time()) + DHTSeconds
+            timerSensorLog = int(time.time()) + sensorPeriod[1]
         
         # Concatenate local log with tempfs log every 6 hours
         if int(time.time()) > timerLogBackup:
@@ -796,15 +846,15 @@ def read_sensors(silent):
     global chktemp
     chktemp = 1
     
-    if (DHTSensor == 'DHT11'): sensor = Adafruit_DHT.DHT11
-    elif (DHTSensor == 'DHT22'): sensor = Adafruit_DHT.DHT22
-    elif (DHTSensor == 'AM2302'): sensor = Adafruit_DHT.AM2302
+    if (sensorDevice[1] == 'DHT11'): sensor = Adafruit_DHT.DHT11
+    elif (sensorDevice[1] == 'DHT22'): sensor = Adafruit_DHT.DHT22
+    elif (sensorDevice[1] == 'AM2302'): sensor = Adafruit_DHT.AM2302
     else: sensor = 'Other'
 
     if not silent and not Terminate:
         logging.debug("[Read Sensors] Taking first Temperature/humidity reading")
     if not Terminate:
-        humidity2, tempc2 = Adafruit_DHT.read_retry(sensor, DHTPin)
+        humidity2, tempc2 = Adafruit_DHT.read_retry(sensor, sensorPin[1])
         if humidity2 == None or tempc2 == None:
             logging.warning("[Read Sensors] Could not read temperature/humidity!")
         if not silent and humidity2 != None and tempc2 != None:
@@ -815,7 +865,7 @@ def read_sensors(silent):
             logging.debug("[Read Sensors] Taking second Temperature/humidity reading")
     while chktemp and not Terminate and humidity2 != None and tempc2 != None:
         if not Terminate:
-            humidity, tempc = Adafruit_DHT.read_retry(sensor, DHTPin)
+            humidity, tempc = Adafruit_DHT.read_retry(sensor, sensorPin[1])
         if humidity != 'None' or tempc != 'None':
             if not silent and not Terminate: 
                 logging.debug("[Read Sensors] %.1f°C, %.1f%%", tempc, humidity)
@@ -843,9 +893,10 @@ def read_sensors(silent):
 # Read variables from the configuration file
 def read_config(silent):
     global config_file
-    global DHTSensor
-    global DHTPin
-    global DHTSeconds
+    global sensorName
+    global sensorDevice
+    global sensorPin
+    global sensorPeriod
     global relayName
     global relayPin
     global relayTrigger
@@ -882,10 +933,6 @@ def read_config(silent):
     config = ConfigParser.RawConfigParser()
     config.read(config_file)
     
-    DHTSensor = config.get('Sensor', 'dhtsensor')
-    DHTPin = config.getint('Sensor', 'dhtpin')
-    DHTSeconds = config.getint('Sensor', 'dhtseconds')
-    
     relayTemp = config.getint('PID', 'relaytemp')
     relayHum = config.getint('PID', 'relayhum')
     setTemp = config.getfloat('PID', 'settemp')
@@ -912,6 +959,11 @@ def read_config(silent):
     numSensors = config.get('Misc', 'numsensors')
     numTimers = config.get('Misc', 'numtimers')
     cameraLight = config.getint('Misc', 'cameralight')
+    
+    sensorName[1] = config.get('Sensor1', 'sensor1name')
+    sensorDevice[1] = config.get('Sensor1', 'sensor1sensor')
+    sensorPin[1] = config.getint('Sensor1', 'sensor1pin')
+    sensorPeriod[1] = config.getint('Sensor1', 'sensor1period')
 
     relayName[1] = config.get('Relay1', 'relay1name')
     relayPin[1] = config.getint('Relay1', 'relay1pin')
@@ -1009,11 +1061,6 @@ def write_config():
     logging.debug("[Write Config] Gained lock: %s", lock.path)
     logging.debug("[Write Config] Writing config file %s", config_file)
     
-    config.add_section('Sensor')
-    config.set('Sensor', 'dhtsensor', DHTSensor)
-    config.set('Sensor', 'dhtpin', DHTPin)
-    config.set('Sensor', 'dhtseconds', DHTSeconds)
-    
     config.add_section('PID')
     config.set('PID', 'relaytemp', relayTemp)
     config.set('PID', 'relayhum', relayHum)
@@ -1043,6 +1090,12 @@ def write_config():
     config.set('Misc', 'numsensors', numSensors)
     config.set('Misc', 'numtimers', numTimers)
     config.set('Misc', 'cameralight', cameraLight)
+    
+    config.add_section('Sensor1')
+    config.set('Sensor1', 'sensor1name', sensorName[1])
+    config.set('Sensor1', 'sensor1sensor', sensorDevice[1])
+    config.set('Sensor1', 'sensor1pin', sensorPin[1])
+    config.set('Sensor1', 'sensor1period', sensorPeriod[1])
     
     config.add_section('Relay1')
     config.set('Relay1', 'relay1name', relayName[1])
@@ -1229,9 +1282,10 @@ def modify_var(*names_and_values):
     TempRes = 0
 
     namesOfVariables = [
-    'DHTSensor',
-    'DHTPin.'
-    'DHTSeconds',
+    'sensorName',
+    'sensorDevice',
+    'sensorPin.'
+    'sensorPeriod',
     'relayName',
     'relayPin',
     'relayTrigger',
@@ -1310,8 +1364,8 @@ def modify_var(*names_and_values):
             
     return 1
 
+# Email if temperature or humidity is outside of critical range
 def email():
-    # At First we have to get the current CPU-Temperature with this defined function
     if (smtp_ssl):
         server = smtplib.SMTP_SSL(smtp_host, smtp_port)
         server.ehlo()
@@ -1322,7 +1376,7 @@ def email():
     server.ehlo
     server.login(smtp_user, smtp_pass)
 
-    message = "Critical warning!!!"
+    message = "Critical warning!"
     
     msg = MIMEText(message)
     msg['Subject'] = "Critical warning!"
