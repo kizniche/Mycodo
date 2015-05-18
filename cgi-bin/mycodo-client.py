@@ -21,6 +21,14 @@ def usage():
     print 'mycodo-client.py: Client for mycodo.py (must be running in daemon mode -d).\n'
     print 'Usage:  mycodo-client.py [OPTION]...\n'
     print 'Options:'
+    print '        --modtempor [sensor no.] [override]'
+    print '           Modify TempOR for sensor number [sensor] to value [override]'
+    print '        --modtempPID [sensor no.] [relay no.] [set] [p] [i] [d] [period]'
+    print '           Change Temperature PID variables'
+    print '        --modhumor [sensor number] [override]'
+    print '           Modify HumOR for sensor number [sensor] to value [override]'
+    print '        --modhumPID [sensor no.] [relay no.] [set] [p] [i] [d] [period]'
+    print '           Change Humidity PID variables'
     print '        --modrelaynames [Name1] [Name2] [Name3] [Name4] [Name5] [Name6] [Name7] [Name8]'
     print '           Modify relay names (Restrict to a maximum of 12 characters each)'
     print '        --modrelaypins [Pin1] [Pin2] [Pin3] [Pin4] [Pin5] [Pin6] [Pin7] [Pin8]'
@@ -51,7 +59,7 @@ def menu():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:], 'o:p:r:s:tw', 
-            ["modrelaynames=", "modrelaypins=", "modrelaytrigger=",
+            ["modtempor", "modtempPID", "modhumor", "modhumPID", "modrelaynames=", "modrelaypins=", "modrelaytrigger=",
             "modsensornames", "modsensordevices", "modsensorpins", "modsensorperiods",
             "modtimer=", "modvar=", "pid=", "relay=", "terminate", "writelog"])
     except getopt.GetoptError as err:
@@ -70,18 +78,44 @@ def menu():
             else:
                 print "Fail"
             sys.exit(0)
-        elif opt == "--changetempor":
-            print "%s [Remote command] Change TempOR to %s: Server returned:" % (
-                Timestamp(), sys.argv[2]),
-            if c.root.ChangeTempOR(int(float(sys.argv[2]))) == 1:
+        elif opt == "--modtempor":
+            print "%s [Remote command] Change TempOR of sensor %s to %s: Server returned:" % (
+                Timestamp(), sys.argv[2], sys.argv[3]),
+            if c.root.ChangeTempOR(int(float(sys.argv[2])), int(float(sys.argv[3]))) == 1:
                 print "Success"
             else:
                 print "Fail"
             sys.exit(0)
-        elif opt == "--changehumor":
-            print "%s [Remote command] Change HumOR to %s: Server returned:" % (
-                Timestamp(), sys.argv[2]),
-            if c.root.ChangeHumOR(int(float(sys.argv[2]))) == 1:
+        elif opt == "--modtempPID":
+            print "%s [Remote command] Change Temp PID of sensor %s: relay: %s set: %s P: %s I: %s D: %s Period: %s Server returned:" % (
+                Timestamp(), sys.argv[2], sys.argv[3],
+                sys.argv[4], sys.argv[5], sys.argv[6],
+                sys.argv[7], sys.argv[8]),
+            if c.root.ChangeTempPID(int(float(sys.argv[2])),
+                int(float(sys.argv[3])), float(sys.argv[4]),
+                float(sys.argv[5]), float(sys.argv[6]),
+                float(sys.argv[7]), int(float(sys.argv[8]))) == 1:
+                print "Success"
+            else:
+                print "Fail"
+            sys.exit(0)
+        elif opt == "--modhumor":
+            print "%s [Remote command] Change HumOR of sensor %s to %s: Server returned:" % (
+                Timestamp(), sys.argv[2], sys.argv[3]),
+            if c.root.ChangeHumOR(int(float(sys.argv[2])), int(float(sys.argv[3]))) == 1:
+                print "Success"
+            else:
+                print "Fail"
+            sys.exit(0)
+        elif opt == "--modhumPID":
+            print "%s [Remote command] Change Hum PID of sensor %s: relay: %s set: %s P: %s I: %s D: %s Period: %s Server returned:" % (
+                Timestamp(), sys.argv[2], sys.argv[3],
+                sys.argv[4], sys.argv[5], sys.argv[6],
+                sys.argv[7], sys.argv[8]),
+            if c.root.ChangeHumPID(int(float(sys.argv[2])),
+            int(float(sys.argv[3])), float(sys.argv[4]),
+            float(sys.argv[5]), float(sys.argv[6]),
+            float(sys.argv[7]), int(float(sys.argv[8]))) == 1:
                 print "Success"
             else:
                 print "Fail"
