@@ -21,11 +21,11 @@ def usage():
     print 'mycodo-client.py: Client for mycodo.py (must be running in daemon mode -d).\n'
     print 'Usage:  mycodo-client.py [OPTION]...\n'
     print 'Options:'
-    print '        --modtempor [sensor no.] [override]'
+    print '        --modtempOR [sensor no.] [override]'
     print '           Modify TempOR for sensor number [sensor] to value [override]'
     print '        --modtempPID [sensor no.] [relay no.] [set] [p] [i] [d] [period]'
     print '           Change Temperature PID variables'
-    print '        --modhumor [sensor number] [override]'
+    print '        --modhumOR [sensor number] [override]'
     print '           Modify HumOR for sensor number [sensor] to value [override]'
     print '        --modhumPID [sensor no.] [relay no.] [set] [p] [i] [d] [period]'
     print '           Change Humidity PID variables'
@@ -35,13 +35,13 @@ def usage():
     print '           Modify relay pins (Using BCM numbering)'
     print '        --modrelaytrigger [Trig1] [Trig2] [Trig3] [Trig4] [Trig5] [Trig6] [Trig7] [Trig8]'
     print '           Modify the trigger state of relays'
-    print '        --modsensornames [Name1] [Name2] [Name3] [Name4] [Name5] [Name6] [Name7] [Name8]'
+    print '        --modsensornames [Name1] [Name2] [Name3] [Name4]'
     print '           Modify sensor names (Restrict to a maximum of 12 characters each)'
-    print '        --modsensordevices [Device1] [Device2] [Device3] [Device4] [Device5] [Device6] [Device7] [Device8]'
+    print '        --modsensordevices [Device1] [Device2] [Device3] [Device4]'
     print '           Modify sensor names (Restrict to a maximum of 12 characters each)'
-    print '        --modsensorpins [Pin1] [Pin2] [Pin3] [Pin4] [Pin5] [Pin6] [Pin7] [Pin8]'
+    print '        --modsensorpins [Pin1] [Pin2] [Pin3] [Pin4]'
     print '           Modify sensor pins (Using BCM numbering)'
-    print '        --modsensorperiods [Per1] [Per2] [Per3] [Per4] [Per5] [Per6] [Per7] [Per8]'
+    print '        --modsensorperiods [Per1] [Per2] [Per3] [Per4]'
     print '           Modify the period between sensor reads'
     print '        --modtimer [Timer Number] [State] [Relay Number] [Duration On] [Duration Off]'
     print '           Modify custom timers, State: 0=off 1=on, durations in seconds'
@@ -52,16 +52,16 @@ def usage():
     print "           0=OFF, 1=ON, or X number of seconds On"
     print '    -t, --terminate'
     print '           Terminate the communication service and daemon'
-    print '    -w, --writelog'
-    print '           Read sensor and append log file\n'    
+    print '    -w, --writelog SENSOR_NUMBER'
+    print '           Read sensor from SENSOR_NUMBER and append log file\n'    
 
 def menu():
     try:
         opts, args = getopt.getopt(
-            sys.argv[1:], 'o:p:r:s:tw', 
-            ["modtempor", "modtempPID", "modhumor", "modhumPID", "modrelaynames=", "modrelaypins=", "modrelaytrigger=",
+            sys.argv[1:], 'o:p:r:s:tw:', 
+            ["modtempOR", "modtempPID", "modhumOR", "modhumPID", "modrelaynames=", "modrelaypins=", "modrelaytrigger=",
             "modsensornames", "modsensordevices", "modsensorpins", "modsensorperiods",
-            "modtimer=", "modvar=", "pid=", "relay=", "terminate", "writelog"])
+            "modtimer=", "modvar=", "pid=", "relay=", "terminate", "writelog="])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -78,7 +78,7 @@ def menu():
             else:
                 print "Fail"
             sys.exit(0)
-        elif opt == "--modtempor":
+        elif opt == "--modtempOR":
             print "%s [Remote command] Change TempOR of sensor %s to %s: Server returned:" % (
                 Timestamp(), sys.argv[2], sys.argv[3]),
             if c.root.ChangeTempOR(int(float(sys.argv[2])), int(float(sys.argv[3]))) == 1:
@@ -99,7 +99,7 @@ def menu():
             else:
                 print "Fail"
             sys.exit(0)
-        elif opt == "--modhumor":
+        elif opt == "--modhumOR":
             print "%s [Remote command] Change HumOR of sensor %s to %s: Server returned:" % (
                 Timestamp(), sys.argv[2], sys.argv[3]),
             if c.root.ChangeHumOR(int(float(sys.argv[2])), int(float(sys.argv[3]))) == 1:
@@ -251,9 +251,9 @@ def menu():
             else: print "Fail"
             sys.exit(0)
         elif opt in ("-w", "--logwrite"):
-            print "%s [Remote Command] Append sensor log: Server returned:" % (
-                Timestamp()), 
-            if c.root.WriteSensorLog() == 1: print "Success"
+            print "%s [Remote Command] Append sensor log from sensor %s: Server returned:" % (
+                Timestamp(), sys.argv[2]), 
+            if c.root.WriteSensorLog(sys.argv[2]) == 1: print "Success"
             else: print "Fail"
             sys.exit(0)
         else:

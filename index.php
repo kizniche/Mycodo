@@ -857,10 +857,6 @@ $error_code = "no";
                             <option value="2" <?php if ($numsensors == 2) echo "selected=\"selected\""; ?>>2</option>
                             <option value="3" <?php if ($numsensors == 3) echo "selected=\"selected\""; ?>>3</option>
                             <option value="4" <?php if ($numsensors == 4) echo "selected=\"selected\""; ?>>4</option>
-                            <option value="5" <?php if ($numsensors == 5) echo "selected=\"selected\""; ?>>5</option>
-                            <option value="6" <?php if ($numsensors == 6) echo "selected=\"selected\""; ?>>6</option>
-                            <option value="7" <?php if ($numsensors == 7) echo "selected=\"selected\""; ?>>7</option>
-                            <option value="8" <?php if ($numsensors == 8) echo "selected=\"selected\""; ?>>8</option>
                         </select>
                         <input type="submit" name="ChangeNoSensors" value="Save">
                     </div>

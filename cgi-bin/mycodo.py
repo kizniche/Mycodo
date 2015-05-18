@@ -66,28 +66,28 @@ relayTrigger = [0] * 9
 
 # Sensors
 numSensors = None
-sensorName = [0] * 9
-sensorDevice = [0] * 9
-sensorPin = [0] * 9
-sensorPeriod = [0] * 9
+sensorName = [0] * 5
+sensorDevice = [0] * 5
+sensorPin = [0] * 5
+sensorPeriod = [0] * 5
 
 # Temperature PID
-relayTemp = [0] * 9
-setTemp = [0] * 9
-TempPeriod = [0] * 9
-Temp_P = [0] * 9
-Temp_I = [0] * 9
-Temp_D = [0] * 9
-TempOR = [0] * 9
+relayTemp = [0] * 5
+setTemp = [0] * 5
+TempPeriod = [0] * 5
+Temp_P = [0] * 5
+Temp_I = [0] * 5
+Temp_D = [0] * 5
+TempOR = [0] * 5
 
 # Humidity PID
-relayHum = [0] * 9
-setHum = [0] * 9
-HumPeriod = [0] * 9
-Hum_P = [0] * 9
-Hum_I = [0] * 9
-Hum_D = [0] * 9
-HumOR = [0] * 9
+relayHum = [0] * 5
+setHum = [0] * 5
+HumPeriod = [0] * 5
+Hum_P = [0] * 5
+Hum_I = [0] * 5
+Hum_D = [0] * 5
+HumOR = [0] * 5
 
 # Timers
 numTimers = None
@@ -108,10 +108,10 @@ email_to = None
 
 # Sensor data
 chktemp = None
-tempc = None
-humidity = None
-dewpointc = None
-heatindexc =  None
+tempc = [0] * 5
+humidity = [0] * 5
+dewpointc = [0] * 5
+heatindexc =  [0] * 5
 
 # Miscellaneous
 cameraLight = None
@@ -119,9 +119,10 @@ server = None
 variableName = None
 variableValue = None
 ClientQue = '0'
+ClientVar1 = None
 Terminate = False
-TAlive = [1] * 9
-HAlive = [1] * 9
+TAlive = [1] * 5
+HAlive = [1] * 5
 Temp_PID_Down = 0
 Temp_PID_Up = 0
 Hum_PID_Down = 0
@@ -152,7 +153,7 @@ class ComServer(rpyc.Service):
         else:
             logging.info("[Client command] Turning Relay %s On for %s seconds", relay, state)
             rod = threading.Thread(target = relay_on_duration, 
-                args = (int(relay), int(state),))
+                args = (int(relay), int(state), 0,))
             rod.start()
         return 1
     def exposed_ChangeTimer(self, timernumber, timerstate, timerrelay,
@@ -398,10 +399,12 @@ class ComServer(rpyc.Service):
             sensorPeriod[5], sensorPeriod[6], sensorPeriod[7], sensorPeriod[8])
         write_config()
         return 1
-    def exposed_WriteSensorLog(self):
+    def exposed_WriteSensorLog(self, sensor):
         global ClientQue
+        global ClientVar1
+        ClientVar1 = sensor
         ClientQue = 'write_sensor_log'
-        logging.info("[Client command] Read sensors and append log")
+        logging.info("[Client command] Read sensor number %s and append log", sensor)
         global change_sensor_log
         change_sensor_log = 1
         while (change_sensor_log):
@@ -522,7 +525,7 @@ def usage():
         " maintain set environmental conditions.\n"
     print "Usage:  mycodo.py [OPTION]...\n"
     print "Options:"
-    print "    -d, --daemon [v/s] [w/i/d]"
+    print "    -d, --daemon v/s w/i/d"
     print "           Start program as daemon that monitors conditions and modulates relays"
     print "           ""v"" enables log output to the console, ""s"" silences"
     print "           Log leve: ""w"": >= warnings, ""i"": >= info, ""d"": >= debug"
@@ -530,17 +533,15 @@ def usage():
     print "           Display this help and exit"
     print "    -p, --pin"
     print "           Display status of the GPIO pins (HIGH or LOW)"
-    print "    -r, --relay [Relay Number] [0/1/X]"
+    print "    -r, --relay RELAY_NUMBER 0/1/X"
     print "           Change the state of a relay"
     print "           0=OFF, 1=ON, or X number of seconds On"
-    print "    -s,  --sensor"
-    print "           Read and display sensor data"
-    print "    -w, --write=FILE"
-    print "           Write sensor data to log file\n"
-    print "Examples: mycodo.py -w /var/www/mycodo/log/sensor.log"
-    print "          mycodo.py -d s"
-    print "          mycodo.py --read"
-    print "          mycodo.py -c 4 OFF\n"
+    print "    -s,  --sensor SENSOR_NUMBER"
+    print "           Read and display sensor data from SENSOR_NUMBER"
+    print "    -w, --write SENSOR_NUMBER [FILE]"
+    print "           Write sensor data from SENSOR_NUMBER to log FILE\n"
+    print "Examples: mycodo.py -w 2 /var/www/mycodo/log/sensor.log"
+    print "          mycodo.py -d s w\n"
 
 # Checks user options and arguments for validity
 def menu():
@@ -549,9 +550,9 @@ def menu():
         sys.exit(1)
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'r:dhpstw',
+        opts, args = getopt.getopt(sys.argv[1:], 'r:dhps:tw:',
             ["relay=", "daemon", "help", "pin",
-            "sensor", "write="])
+            "sensor=", "write="])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -600,24 +601,24 @@ def menu():
                 elif int(float(sys.argv[3])) > 1:
                     print "%s [GPIO Write] Relay %s ON for %s seconds" % (
                         timestamp(), int(float(arg)))
-                    relay_on_duration(int(float(sys.argv[2])), int(float(sys.argv[3])))
+                    relay_on_duration(int(float(sys.argv[2])), int(float(sys.argv[3])), 0)
                     sys.exit(0)
                 else:
                     print "--state only accepts ON, OFF, integers > 1"
                     usage()
                     sys.exit(1)
         elif opt in ("-s", "--sensor"):
-            read_sensors(0)
+            read_sensors(0, sys.argv[2])
             sys.exit(0)
         elif opt in ("-w", "--write"):
             global sensor_log_file_tmp
-            if arg == '':
+            if sys.argv[3] == '':
                 print "[Write Log] No file specified, using default: %s" % (
                     sensor_log_file_tmp)
             else:
-                sensor_log_file_tmp = arg
-            read_sensors(0)
-            write_sensor_log()
+                sensor_log_file_tmp = sys.argv[3]
+            read_sensors(0, sys.argv[2])
+            write_sensor_log(sys.argv[2])
             sys.exit(0)
         else:
             assert False, "Fail"
@@ -635,6 +636,7 @@ def daemon(output, log):
     global TAlive
     global ClientQue
     timer_time = [0] * 9
+    timerSensorLog  = [0] * 5
     
     if (log == 'warning'):
         logging.getLogger().setLevel(logging.WARNING)
@@ -660,24 +662,30 @@ def daemon(output, log):
     logging.info("[Daemon] Reading configuration file and initializing variables")
     read_config(1)
     
-    if sensorDevice[1] != 'Other':
-        read_sensors(0)
+    # Initial sensor readings
+    logging.info("[Daemon] Conducting initial temperature/humidity sensor readings with %s sensors", numSensors)
+    for i in range(1, numSensors+1):
+        if sensorDevice[i] != 'Other':
+            read_sensors(0, i)
     
     timerLogBackup = int(time.time()) + 21600 # 21600 seconds = 6 hours
-    timerSensorLog = int(time.time()) + sensorPeriod[1]
+    
+    for i in range(1, numSensors+1):
+        timerSensorLog[i] = int(time.time()) + sensorPeriod[i]
+    
     for i in range(1, 9):
         timer_time[i] = int(time.time())
     
     threadst = []
     threadsh = []
     
-    for i in range(1, 9):
+    for i in range(1, 5):
         rod = threading.Thread(target = temperature_monitor, 
             args = ('Thread-%d' % i, i,))
         rod.start()
         threadst.append(rod)
 
-    for i in range(1, 9):
+    for i in range(1, 5):
         rod = threading.Thread(target = humidity_monitor, 
             args = ('Thread-%d' % i, i,))
         rod.start()
@@ -687,16 +695,16 @@ def daemon(output, log):
         if ClientQue != '0': # Run remote commands issued by mycodo-client.py
             if ClientQue == 'write_sensor_log':
                 logging.debug("[Client command] Write Sensor Log")
-                read_sensors(0)
-                write_sensor_log()
+                read_sensors(0, ClientVar1)
+                write_sensor_log(ClientVar1)
                 change_sensor_log = 0
             elif ClientQue == 'TerminateServer':
                 logging.info("[Daemon] Backing up logs")
                 Concatenate_Logs()
-                TAlive = [0] * 9
+                TAlive = [0] * 5
                 for t in threadst:
                     t.join()
-                HAlive = [0] * 9
+                HAlive = [0] * 5
                 for t in threadsh:
                     t.join()
                 server.close()
@@ -742,11 +750,12 @@ def daemon(output, log):
             Hum_PID_Up = 0
         
         # Write sensor log
-        if int(time.time()) > timerSensorLog and sensorDevice[1] != 'Other':
-            logging.debug("[Timer Expiration] Run every %s seconds: Write sensor log", sensorPeriod[1])
-            read_sensors(0)
-            write_sensor_log()
-            timerSensorLog = int(time.time()) + sensorPeriod[1]
+        for i in range(1, numSensors+1):
+            if int(time.time()) > timerSensorLog[i] and sensorDevice[i] != 'Other':
+                logging.debug("[Timer Expiration] Read sensor %s every %s seconds: Write sensor log", i, sensorPeriod[i])
+                read_sensors(0, i)
+                write_sensor_log(i)
+                timerSensorLog[i] = int(time.time()) + sensorPeriod[i]
         
         # Concatenate local log with tempfs log every 6 hours
         if int(time.time()) > timerLogBackup:
@@ -759,7 +768,7 @@ def daemon(output, log):
                 if timerState[i] == 1:
                     logging.debug("[Timer Expiration] Timer %s: Turn Relay %s on for %s seconds, off %s seconds.", i, timerRelay[i], timerDurationOn[i], timerDurationOff[i])
                     rod = threading.Thread(target = relay_on_duration, 
-                        args = (timerRelay[i], timerDurationOn[i],))
+                        args = (timerRelay[i], timerDurationOn[i], 0,))
                     rod.start()
                     timer_time[i] = int(time.time()) + timerDurationOn[i] + timerDurationOff[i]
                 
@@ -771,33 +780,35 @@ def temperature_monitor(ThreadName, sensor):
     global TAlive
     timerTemp = 0
     PIDTemp = 0
-    logging.info("[PID Temperature] Starting %s", ThreadName)
-    if (tempc < setTemp[sensor]):
-        if (relayTrigger[int(relayTemp[sensor])] == 0): gpio_change(int(relayTemp[sensor]), 1)
+    logging.info("[PID Temperature-%s] Starting %s", sensor, ThreadName)
+    
+    if relayTemp[sensor] != 0:
+        if relayTrigger[int(relayTemp[sensor])] == 0: gpio_change(int(relayTemp[sensor]), 1)
         else: gpio_change(int(relayTemp[sensor]), 0)
+    
     p_temp = Temperature_PID(Temp_P[sensor], Temp_I[sensor], Temp_D[sensor])
     p_temp.setPoint(setTemp[sensor])
     
     while (TAlive[sensor]):
-        if TempOR[sensor] == 0 and Temp_PID_Down == 0:
+        if TempOR[sensor] == 0 and Temp_PID_Down == 0 and relayTemp[sensor] != 0:
             if int(time.time()) > timerTemp:
-                logging.debug("[PID Temperature] Reading temperature...")
-                read_sensors(1)
-                PIDTemp = p_temp.update(float(tempc))
-                if (tempc < setTemp[sensor]):
-                    logging.debug("[PID Temperature] Temperature (%.1f°C) < (%.1f°C) setTemp", tempc, float(setTemp[sensor]))
-                    logging.debug("[PID Temperature] PID = %.1f (seconds)", PIDTemp[sensor])
-                    if (PIDTemp > 0 and tempc < setTemp[sensor]):
+                logging.debug("[PID Temperature-%s] Reading temperature...", sensor)
+                read_sensors(1, sensor)
+                PIDTemp = p_temp.update(float(tempc[sensor]))
+                if (tempc[sensor] < setTemp[sensor]):
+                    logging.debug("[PID Temperature-%s] Temperature (%.1f°C) < (%.1f°C) setTemp", sensor, tempc[sensor], float(setTemp[sensor]))
+                    logging.debug("[PID Temperature-%s] PID = %.1f (seconds)", sensor, PIDTemp)
+                    if (PIDTemp > 0 and tempc[sensor] < setTemp[sensor]):
                         rod = threading.Thread(target = relay_on_duration, 
-                            args = (relayTemp[sensor], round(PIDTemp[sensor],2),))
+                            args = (relayTemp[sensor], round(PIDTemp,2), sensor,))
                         rod.start()
-                    timerTemp = int(time.time()) + int(PIDTemp[sensor]) + int(TempPeriod[sensor])
+                    timerTemp = int(time.time()) + int(PIDTemp) + int(TempPeriod[sensor])
                 else:
-                    logging.debug("[PID Temperature] Temperature (%.1f°C) >= (%.1f°C) setTemp, waiting 60 seconds", tempc, setTemp[sensor])
-                    logging.debug("[PID Temperature] PID = %.1f (seconds)", PIDTemp[sensor])
+                    logging.debug("[PID Temperature-%s] Temperature (%.1f°C) >= (%.1f°C) setTemp, waiting 60 seconds", sensor, tempc[sensor], setTemp[sensor])
+                    logging.debug("[PID Temperature-%s] PID = %.1f (seconds)", sensor, PIDTemp)
                     timerTemp = int(time.time()) + 60
         time.sleep(0.1)
-    logging.info("[PID Temperature] Shutting Down %s", ThreadName)
+    logging.info("[PID Temperature-%s] Shutting Down %s", sensor, ThreadName)
     TAlive[sensor] = 2
 
 # Humidity modulation by PID control
@@ -806,37 +817,39 @@ def humidity_monitor(ThreadName, sensor):
     timerHum = 0
     PIDHum = 0
 
-    logging.info("[PID Humidity] Starting %s", ThreadName)
-    if (humidity > setHum[sensor]):
-        if (relayTrigger[int(relayHum[sensor])] == 0): gpio_change(int(relayHum[sensor]), 1)
+    logging.info("[PID Humidity-%s] Starting %s", sensor, ThreadName)
+
+    if relayHum[sensor] != 0:
+        if relayTrigger[int(relayHum[sensor])] == 0: gpio_change(int(relayHum[sensor]), 1)
         else: gpio_change(int(relayHum[sensor]), 1)
+    
     p_hum = Humidity_PID(Hum_P[sensor], Hum_I[sensor], Hum_D[sensor])
     p_hum.setPoint(setHum[sensor])
 
     while (HAlive[sensor]):
-        if HumOR == 0 and Hum_PID_Down == 0:
+        if HumOR[sensor] == 0 and Hum_PID_Down == 0 and relayHum[sensor] != 0:
             if int(time.time()) > timerHum:
-                logging.debug("[PID Humidity] Reading humidity...")
-                read_sensors(1)
+                logging.debug("[PID Humidity-%s] Reading humidity...", sensor)
+                read_sensors(1, sensor)
                 PIDHum = p_hum.update(float(humidity))
-                if (humidity < setHum[sensor]):
-                    logging.debug("[PID Humidity] Humidity (%.1f%%) < (%.1f%%) setHum", humidity, float(setHum[sensor]))
-                    logging.debug("[PID Humidity] PID = %.1f (seconds)", PIDHum[sensor])
-                    if (PIDHum[sensor] > 0 and humidity < setHum[sensor]):
+                if (humidity[sensor] < setHum[sensor]):
+                    logging.debug("[PID Humidity-%s] Humidity (%.1f%%) < (%.1f%%) setHum", sensor, humidity[sensor], float(setHum[sensor]))
+                    logging.debug("[PID Humidity-%s] PID = %.1f (seconds)", sensor, PIDHum)
+                    if (PIDHum > 0 and humidity[sensor] < setHum[sensor]):
                         rod = threading.Thread(target = relay_on_duration,
-                            args=(relayHum[sensor], round(PIDHum[sensor],2),))
+                            args=(relayHum[sensor], round(PIDHum,2), sensor,))
                         rod.start()
-                    timerHum = int(time.time()) + int(PIDHum[sensor]) + int(HumPeriod[sensor])
+                    timerHum = int(time.time()) + int(PIDHum) + int(HumPeriod[sensor])
                 else:
-                    logging.debug("[PID Humidity] Humidity (%.1f%%) >= (%.1f%%) setHum, waiting 60 seconds", humidity, setHum[sensor])
-                    logging.debug("[PID Humidity] PID = %.1f (seconds)", PIDHum[sensor])
+                    logging.debug("[PID Humidity-%s] Humidity (%.1f%%) >= (%.1f%%) setHum, waiting 60 seconds", sensor, humidity[sensor], setHum[sensor])
+                    logging.debug("[PID Humidity-%s] PID = %.1f (seconds)", sensor, PIDHum)
                     timerHum = int(time.time()) + 60
         time.sleep(0.1)
-    logging.info("[PID Humidity] Shutting Down %s", ThreadName)
+    logging.info("[PID Humidity-%s] Shutting Down %s", sensor,  ThreadName)
     HAlive[sensor] = 2
 
 # Append sensor data to the log file
-def write_sensor_log():
+def write_sensor_log(sensor):
     config = ConfigParser.RawConfigParser()
 
     if not os.path.exists(lock_directory):
@@ -854,9 +867,9 @@ def write_sensor_log():
         logging.debug("[Write Sensor Log] Gained lock: %s", lock.path)
         try:
             with open(sensor_log_file_tmp, "ab") as sensorlog:
-                sensorlog.write('{0} {1:.1f} {2:.1f} {3:.1f}\n'.format(
+                sensorlog.write('{0} {1:.1f} {2:.1f} {3:.1f} {4}\n'.format(
                     datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
-                    tempc, humidity, dewpointc))
+                    tempc[sensor], humidity[sensor], dewpointc[sensor], sensor))
                 logging.debug("[Write Sensor Log] Data appended to %s", sensor_log_file_tmp)
         except:
             logging.warning("[Write Sensor Log] Unable to append data to %s", sensor_log_file_tmp)
@@ -864,7 +877,7 @@ def write_sensor_log():
         lock.release()
 
 # Append the duration the relay has been on to the log file
-def write_relay_log(relayNumber, relaySeconds):
+def write_relay_log(relayNumber, relaySeconds, sensor):
     config = ConfigParser.RawConfigParser()
 
     if not os.path.exists(lock_directory):
@@ -886,10 +899,10 @@ def write_relay_log(relayNumber, relaySeconds):
                 relay[relayNumber] = relaySeconds
         try:
             with open(relay_log_file_tmp, "ab") as relaylog:
-                relaylog.write('{0} {1} {2} {3} {4} {5} {6} {7} {8}\n'.format(
-                    datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
+                relaylog.write('{0} {1} {2} {3} {4} {5} {6} {7} {8} {9}\n'.format(
+                    datetime.datetime.now().strftime("%Y %m %d %H %M %S"),
                     relay[1], relay[2], relay[3], relay[4],
-                    relay[5], relay[6], relay[7], relay[8]))
+                    relay[5], relay[6], relay[7], relay[8], sensor))
         except:
             logging.warning("[Write Relay Log] Unable to append data to %s", relay_log_file_tmp)
         logging.debug("[Write Relay Log] Removing lock: %s", lock.path)
@@ -972,57 +985,57 @@ def Concatenate_Logs():
         logging.debug("[Relay Log] Relay logs the same, skipping.")
 
 # Read the temperature and humidity from the DHT22 sensor
-def read_sensors(silent):
+def read_sensors(silent, sensor):
     global tempc
     global humidity
     global dewpointc
-    global heatindexc
+    #global heatindexc
     global chktemp
     chktemp = 1
     
-    if (sensorDevice[1] == 'DHT11'): sensor = Adafruit_DHT.DHT11
-    elif (sensorDevice[1] == 'DHT22'): sensor = Adafruit_DHT.DHT22
-    elif (sensorDevice[1] == 'AM2302'): sensor = Adafruit_DHT.AM2302
-    else: sensor = 'Other'
+    if (sensorDevice[1] == 'DHT11'): device = Adafruit_DHT.DHT11
+    elif (sensorDevice[1] == 'DHT22'): device = Adafruit_DHT.DHT22
+    elif (sensorDevice[1] == 'AM2302'): device = Adafruit_DHT.AM2302
+    else: device = 'Other'
 
     if not silent and not Terminate:
-        logging.debug("[Read Sensors] Taking first Temperature/humidity reading")
+        logging.debug("[Read Sensor-%s] Taking first Temperature/humidity reading", sensor)
     if not Terminate:
-        humidity2, tempc2 = Adafruit_DHT.read_retry(sensor, sensorPin[1])
+        humidity2, tempc2 = Adafruit_DHT.read_retry(device, sensorPin[1])
         if humidity2 == None or tempc2 == None:
-            logging.warning("[Read Sensors] Could not read temperature/humidity!")
+            logging.warning("[Read Sensor-%s] Could not read temperature/humidity!", sensor)
         if not silent and humidity2 != None and tempc2 != None:
-            logging.debug("[Read Sensors] %.1f°C, %.1f%%", tempc2, humidity2)
+            logging.debug("[Read Sensor-%s] %.1f°C, %.1f%%", sensor, tempc2, humidity2)
     if not Terminate:
         time.sleep(2)
         if not silent: 
-            logging.debug("[Read Sensors] Taking second Temperature/humidity reading")
+            logging.debug("[Read Sensor-%s] Taking second Temperature/humidity reading", sensor)
     while chktemp and not Terminate and humidity2 != None and tempc2 != None:
         if not Terminate:
-            humidity, tempc = Adafruit_DHT.read_retry(sensor, sensorPin[1])
-        if humidity != 'None' or tempc != 'None':
+            humidity[sensor], tempc[sensor] = Adafruit_DHT.read_retry(device, sensorPin[1])
+        if humidity[sensor] != 'None' or tempc[sensor] != 'None':
             if not silent and not Terminate: 
-                logging.debug("[Read Sensors] %.1f°C, %.1f%%", tempc, humidity)
-                logging.debug("[Read Sensors] Differences: %.1f°C, %.1f%%", abs(tempc2-tempc), abs(humidity2-humidity))
-            if abs(tempc2-tempc) > 1 or abs(humidity2-humidity) > 1 and not Terminate:
-                tempc2 = tempc
-                humidity2 = humidity
+                logging.debug("[Read Sensor-%s] %.1f°C, %.1f%%", sensor, tempc[sensor], humidity[sensor])
+                logging.debug("[Read Sensor-%s] Differences: %.1f°C, %.1f%%", sensor, abs(tempc2-tempc[sensor]), abs(humidity2-humidity[sensor]))
+            if abs(tempc2-tempc[sensor]) > 1 or abs(humidity2-humidity[sensor]) > 1 and not Terminate:
+                tempc2 = tempc[sensor]
+                humidity2 = humidity[sensor]
                 chktemp = 1
                 if not silent:
-                    logging.debug("[Read Sensors] Successive readings > 1 difference: Rereading")
+                    logging.debug("[Read Sensor-%s] Successive readings > 1 difference: Rereading", sensor)
                 time.sleep(2)
             elif not Terminate:
                 chktemp = 0
                 if not silent: 
-                    logging.debug("[Read Sensors] Successive readings < 1 difference: keeping.")
-                tempf = float(tempc)*9.0/5.0 + 32.0
-                dewpointc = tempc - ((100-humidity) / 5)
-                #dewpointf = dewpointc * 9 / 5 + 32
+                    logging.debug("[Read Sensor-%s] Successive readings < 1 difference: keeping.", sensor)
+                tempf = float(tempc[sensor])*9.0/5.0 + 32.0
+                dewpointc[sensor] = tempc[sensor] - ((100-humidity[sensor]) / 5)
+                #dewpointf[sensor] = dewpointc[sensor] * 9 / 5 + 32
                 #heatindexf =  -42.379 + 2.04901523 * tempf + 10.14333127 * humidity - 0.22475541 * tempf * humidity - 6.83783 * 10**-3 * tempf**2 - 5.481717 * 10**-2 * humidity**2 + 1.22874 * 10**-3 * tempf**2 * humidity + 8.5282 * 10**-4 * tempf * humidity**2 - 1.99 * 10**-6 * tempf**2 * humidity**2
-                #heatindexc = (heatindexf - 32) * (5 / 9)
+                #heatindexc[sensor] = (heatindexf - 32) * (5 / 9)
                 if not silent: 
-                    logging.debug("[Read Sensors] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", tempc, humidity, dewpointc)
-        else: logging.warning("[Read Sensors] Could not read temperature/humidity!")
+                    logging.debug("[Read Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", sensor, tempc[sensor], humidity[sensor], dewpointc[sensor])
+        else: logging.warning("[Read Sensor-%s] Could not read temperature/humidity!", sensor)
 
 # Read variables from the configuration file
 def read_config(silent):
@@ -1074,250 +1087,60 @@ def read_config(silent):
     email_from = config.get('Notification', 'email_from')
     email_to = config.get('Notification', 'email_to')
     
-    numRelays = config.get('Misc', 'numrelays')
-    numSensors = config.get('Misc', 'numsensors')
-    numTimers = config.get('Misc', 'numtimers')
+    numRelays = config.getint('Misc', 'numrelays')
+    numSensors = config.getint('Misc', 'numsensors')
+    numTimers = config.getint('Misc', 'numtimers')
     cameraLight = config.getint('Misc', 'cameralight')
     
-    TempPeriod[1] = config.getint('TempPID1', 'temp1period')
-    relayTemp[1] = config.getint('TempPID1', 'temp1relay')
-    setTemp[1] = config.getfloat('TempPID1', 'temp1set')
-    TempOR[1] = config.getint('TempPID1', 'temp1or')
-    Temp_P[1] = config.getfloat('TempPID1', 'temp1p')
-    Temp_I[1] = config.getfloat('TempPID1', 'temp1i')
-    Temp_D[1] = config.getfloat('TempPID1', 'temp1d')
-    
-    HumPeriod[1] = config.getint('HumPID1', 'hum1period')
-    relayHum[1] = config.getint('HumPID1', 'hum1relay')
-    setHum[1] = config.getfloat('HumPID1', 'hum1set')
-    HumOR[1] = config.getint('HumPID1', 'hum1or')
-    Hum_P[1] = config.getfloat('HumPID1', 'hum1p')
-    Hum_I[1] = config.getfloat('HumPID1', 'hum1i')
-    Hum_D[1] = config.getfloat('HumPID1', 'hum1d')
-    
-    TempPeriod[2] = config.getint('TempPID2', 'temp2period')
-    relayTemp[2] = config.getint('TempPID2', 'temp2relay')
-    setTemp[2] = config.getfloat('TempPID2', 'temp2set')
-    TempOR[2] = config.getint('TempPID2', 'temp2or')
-    Temp_P[2] = config.getfloat('TempPID2', 'temp2p')
-    Temp_I[2] = config.getfloat('TempPID2', 'temp2i')
-    Temp_D[2] = config.getfloat('TempPID2', 'temp2d')
-    
-    HumPeriod[2] = config.getint('HumPID2', 'hum2period')
-    relayHum[2] = config.getint('HumPID2', 'hum2relay')
-    setHum[2] = config.getfloat('HumPID2', 'hum2set')
-    HumOR[2] = config.getint('HumPID2', 'hum2or')
-    Hum_P[2] = config.getfloat('HumPID2', 'hum2p')
-    Hum_I[2] = config.getfloat('HumPID2', 'hum2i')
-    Hum_D[2] = config.getfloat('HumPID2', 'hum2d')
-    
-    TempPeriod[3] = config.getint('TempPID3', 'temp3period')
-    relayTemp[3] = config.getint('TempPID3', 'temp3relay')
-    setTemp[3] = config.getfloat('TempPID3', 'temp3set')
-    TempOR[3] = config.getint('TempPID3', 'temp3or')
-    Temp_P[3] = config.getfloat('TempPID3', 'temp3p')
-    Temp_I[3] = config.getfloat('TempPID3', 'temp3i')
-    Temp_D[3] = config.getfloat('TempPID3', 'temp3d')
-    
-    HumPeriod[3] = config.getint('HumPID3', 'hum3period')
-    relayHum[3] = config.getint('HumPID3', 'hum3relay')
-    setHum[3] = config.getfloat('HumPID3', 'hum3set')
-    HumOR[3] = config.getint('HumPID3', 'hum3or')
-    Hum_P[3] = config.getfloat('HumPID3', 'hum3p')
-    Hum_I[3] = config.getfloat('HumPID3', 'hum3i')
-    Hum_D[3] = config.getfloat('HumPID3', 'hum3d')
-    
-    TempPeriod[4] = config.getint('TempPID4', 'temp4period')
-    relayTemp[4] = config.getint('TempPID4', 'temp4relay')
-    setTemp[4] = config.getfloat('TempPID4', 'temp4set')
-    TempOR[4] = config.getint('TempPID4', 'temp4or')
-    Temp_P[4] = config.getfloat('TempPID4', 'temp4p')
-    Temp_I[4] = config.getfloat('TempPID4', 'temp4i')
-    Temp_D[4] = config.getfloat('TempPID4', 'temp4d')
-    
-    HumPeriod[4] = config.getint('HumPID4', 'hum4period')
-    relayHum[4] = config.getint('HumPID4', 'hum4relay')
-    setHum[4] = config.getfloat('HumPID4', 'hum4set')
-    HumOR[4] = config.getint('HumPID4', 'hum4or')
-    Hum_P[4] = config.getfloat('HumPID4', 'hum4p')
-    Hum_I[4] = config.getfloat('HumPID4', 'hum4i')
-    Hum_D[4] = config.getfloat('HumPID4', 'hum4d')
-    
-    TempPeriod[5] = config.getint('TempPID5', 'temp5period')
-    relayTemp[5] = config.getint('TempPID5', 'temp5relay')
-    setTemp[5] = config.getfloat('TempPID5', 'temp5set')
-    TempOR[5] = config.getint('TempPID5', 'temp5or')
-    Temp_P[5] = config.getfloat('TempPID5', 'temp5p')
-    Temp_I[5] = config.getfloat('TempPID5', 'temp5i')
-    Temp_D[5] = config.getfloat('TempPID5', 'temp5d')
-    
-    HumPeriod[5] = config.getint('HumPID5', 'hum5period')
-    relayHum[5] = config.getint('HumPID5', 'hum5relay')
-    setHum[5] = config.getfloat('HumPID5', 'hum5set')
-    HumOR[5] = config.getint('HumPID5', 'hum5or')
-    Hum_P[5] = config.getfloat('HumPID5', 'hum5p')
-    Hum_I[5] = config.getfloat('HumPID5', 'hum5i')
-    Hum_D[5] = config.getfloat('HumPID5', 'hum5d')
-    
-    TempPeriod[6] = config.getint('TempPID6', 'temp6period')
-    relayTemp[6] = config.getint('TempPID6', 'temp6relay')
-    setTemp[6] = config.getfloat('TempPID6', 'temp6set')
-    TempOR[6] = config.getint('TempPID6', 'temp6or')
-    Temp_P[6] = config.getfloat('TempPID6', 'temp6p')
-    Temp_I[6] = config.getfloat('TempPID6', 'temp6i')
-    Temp_D[6] = config.getfloat('TempPID6', 'temp6d')
-    
-    HumPeriod[6] = config.getint('HumPID6', 'hum6period')
-    relayHum[6] = config.getint('HumPID6', 'hum6relay')
-    setHum[6] = config.getfloat('HumPID6', 'hum6set')
-    HumOR[6] = config.getint('HumPID6', 'hum6or')
-    Hum_P[6] = config.getfloat('HumPID6', 'hum6p')
-    Hum_I[6] = config.getfloat('HumPID6', 'hum6i')
-    Hum_D[6] = config.getfloat('HumPID6', 'hum6d')
-    
-    TempPeriod[7] = config.getint('TempPID7', 'temp7period')
-    relayTemp[7] = config.getint('TempPID7', 'temp7relay')
-    setTemp[7] = config.getfloat('TempPID7', 'temp7set')
-    TempOR[7] = config.getint('TempPID7', 'temp7or')
-    Temp_P[7] = config.getfloat('TempPID7', 'temp7p')
-    Temp_I[7] = config.getfloat('TempPID7', 'temp7i')
-    Temp_D[7] = config.getfloat('TempPID7', 'temp7d')
-    
-    HumPeriod[7] = config.getint('HumPID7', 'hum7period')
-    relayHum[7] = config.getint('HumPID7', 'hum7relay')
-    setHum[7] = config.getfloat('HumPID7', 'hum7set')
-    HumOR[7] = config.getint('HumPID7', 'hum7or')
-    Hum_P[7] = config.getfloat('HumPID7', 'hum7p')
-    Hum_I[7] = config.getfloat('HumPID7', 'hum7i')
-    Hum_D[7] = config.getfloat('HumPID7', 'hum7d')
-    
-    TempPeriod[8] = config.getint('TempPID8', 'temp8period')
-    relayTemp[8] = config.getint('TempPID8', 'temp8relay')
-    setTemp[8] = config.getfloat('TempPID8', 'temp8set')
-    TempOR[8] = config.getint('TempPID8', 'temp8or')
-    Temp_P[8] = config.getfloat('TempPID8', 'temp8p')
-    Temp_I[8] = config.getfloat('TempPID8', 'temp8i')
-    Temp_D[8] = config.getfloat('TempPID8', 'temp8d')
-    
-    HumPeriod[8] = config.getint('HumPID8', 'hum8period')
-    relayHum[8] = config.getint('HumPID8', 'hum8relay')
-    setHum[8] = config.getfloat('HumPID8', 'hum8set')
-    HumOR[8] = config.getint('HumPID8', 'hum8or')
-    Hum_P[8] = config.getfloat('HumPID8', 'hum8p')
-    Hum_I[8] = config.getfloat('HumPID8', 'hum8i')
-    Hum_D[8] = config.getfloat('HumPID8', 'hum8d')
-    
-    sensorName[1] = config.get('Sensor1', 'sensor1name')
-    sensorDevice[1] = config.get('Sensor1', 'sensor1device')
-    sensorPin[1] = config.getint('Sensor1', 'sensor1pin')
-    sensorPeriod[1] = config.getint('Sensor1', 'sensor1period')
-    
-    sensorName[2] = config.get('Sensor2', 'sensor2name')
-    sensorDevice[2] = config.get('Sensor2', 'sensor2device')
-    sensorPin[2] = config.getint('Sensor2', 'sensor2pin')
-    sensorPeriod[2] = config.getint('Sensor2', 'sensor2period')
-    
-    sensorName[3] = config.get('Sensor3', 'sensor3name')
-    sensorDevice[3] = config.get('Sensor3', 'sensor3device')
-    sensorPin[3] = config.getint('Sensor3', 'sensor3pin')
-    sensorPeriod[3] = config.getint('Sensor3', 'sensor3period')
-    
-    sensorName[4] = config.get('Sensor4', 'sensor4name')
-    sensorDevice[4] = config.get('Sensor4', 'sensor4device')
-    sensorPin[4] = config.getint('Sensor4', 'sensor4pin')
-    sensorPeriod[4] = config.getint('Sensor4', 'sensor4period')
-    
-    sensorName[5] = config.get('Sensor5', 'sensor5name')
-    sensorDevice[5] = config.get('Sensor5', 'sensor5device')
-    sensorPin[5] = config.getint('Sensor5', 'sensor5pin')
-    sensorPeriod[5] = config.getint('Sensor5', 'sensor5period')
-    
-    sensorName[6] = config.get('Sensor6', 'sensor6name')
-    sensorDevice[6] = config.get('Sensor6', 'sensor6device')
-    sensorPin[6] = config.getint('Sensor6', 'sensor6pin')
-    sensorPeriod[6] = config.getint('Sensor6', 'sensor6period')
-    
-    sensorName[7] = config.get('Sensor7', 'sensor7name')
-    sensorDevice[7] = config.get('Sensor7', 'sensor7device')
-    sensorPin[7] = config.getint('Sensor7', 'sensor7pin')
-    sensorPeriod[7] = config.getint('Sensor7', 'sensor7period')
-    
-    sensorName[8] = config.get('Sensor8', 'sensor8name')
-    sensorDevice[8] = config.get('Sensor8', 'sensor8device')
-    sensorPin[8] = config.getint('Sensor8', 'sensor8pin')
-    sensorPeriod[8] = config.getint('Sensor8', 'sensor8period')
+    for i in range(1, 5):
+        TempPeriod[i] = config.getint('TempPID%d' % i, 'temp%dperiod' % i)
+        relayTemp[i] = config.getint('TempPID%d' % i, 'temp%drelay' % i)
+        setTemp[i] = config.getfloat('TempPID%d' % i, 'temp%dset' % i)
+        TempOR[i] = config.getint('TempPID%d' % i, 'temp%dor' % i)
+        Temp_P[i] = config.getfloat('TempPID%d' % i, 'temp%dp' % i)
+        Temp_I[i] = config.getfloat('TempPID%d' % i, 'temp%di' % i)
+        Temp_D[i] = config.getfloat('TempPID%d' % i, 'temp%dd' % i)
+        
+        HumPeriod[i] = config.getint('HumPID%d' % i, 'hum%dperiod' % i)
+        relayHum[i] = config.getint('HumPID%d' % i, 'hum%drelay' % i)
+        setHum[i] = config.getfloat('HumPID%d' % i, 'hum%dset' % i)
+        HumOR[i] = config.getint('HumPID%d' % i, 'hum%dor' % i)
+        Hum_P[i] = config.getfloat('HumPID%d' % i, 'hum%dp' % i)
+        Hum_I[i] = config.getfloat('HumPID%d' % i, 'hum%di' % i)
+        Hum_D[1] = config.getfloat('HumPID%d' % i, 'hum%dd' % i)
 
-    relayName[1] = config.get('Relay1', 'relay1name')
-    relayPin[1] = config.getint('Relay1', 'relay1pin')
-    relayTrigger[1] = config.getint('Relay1', 'relay1trigger')
+    for i in range(1, 5):
+        sensorName[i] = config.get('Sensor%d' % i, 'sensor%dname' % i)
+        sensorDevice[i] = config.get('Sensor%d' % i, 'sensor%ddevice' % i)
+        sensorPin[i] = config.getint('Sensor%d' % i, 'sensor%dpin' % i)
+        sensorPeriod[i] = config.getint('Sensor%d' % i, 'sensor%dperiod' % i)
+        
+        TempPeriod[i] = config.getint('TempPID%d' % i, 'temp%dperiod' % i)
+        relayTemp[i] = config.getint('TempPID%d' % i, 'temp%drelay' % i)
+        setTemp[i] = config.getfloat('TempPID%d' % i, 'temp%dset' % i)
+        TempOR[i] = config.getint('TempPID%d' % i, 'temp%dor' % i)
+        Temp_P[i] = config.getfloat('TempPID%d' % i, 'temp%dp' % i)
+        Temp_I[i] = config.getfloat('TempPID%d' % i, 'temp%di' % i)
+        Temp_D[i] = config.getfloat('TempPID%d' % i, 'temp%dd' % i)
+        
+        HumPeriod[i] = config.getint('HumPID%d' % i, 'hum%dperiod' % i)
+        relayHum[i] = config.getint('HumPID%d' % i, 'hum%drelay' % i)
+        setHum[i] = config.getfloat('HumPID%d' % i, 'hum%dset' % i)
+        HumOR[i] = config.getint('HumPID%d' % i, 'hum%dor' % i)
+        Hum_P[i] = config.getfloat('HumPID%d' % i, 'hum%dp' % i)
+        Hum_I[i] = config.getfloat('HumPID%d' % i, 'hum%di' % i)
+        Hum_D[i] = config.getfloat('HumPID%d' % i, 'hum%dd' % i)
+        
+    for i in range(1, 9):
+        relayName[i] = config.get('Relay%d' % i, 'relay%dname' % i)
+        relayPin[i] = config.getint('Relay%d' % i, 'relay%dpin' % i)
+        relayTrigger[i] = config.getint('Relay%d' % i, 'relay%dtrigger' % i)
     
-    relayName[2] = config.get('Relay2', 'relay2name')
-    relayPin[2] = config.getint('Relay2', 'relay2pin')
-    relayTrigger[2] = config.getint('Relay2', 'relay2trigger')
-    
-    relayName[3] = config.get('Relay3', 'relay3name')
-    relayPin[3] = config.getint('Relay3', 'relay3pin')
-    relayTrigger[3] = config.getint('Relay3', 'relay3trigger')
-    
-    relayName[4] = config.get('Relay4', 'relay4name')
-    relayPin[4] = config.getint('Relay4', 'relay4pin')
-    relayTrigger[4] = config.getint('Relay4', 'relay4trigger')
-    
-    relayName[5] = config.get('Relay5', 'relay5name')
-    relayPin[5] = config.getint('Relay5', 'relay5pin')
-    relayTrigger[5] = config.getint('Relay5', 'relay5trigger')
-    
-    relayName[6] = config.get('Relay6', 'relay6name')
-    relayPin[6] = config.getint('Relay6', 'relay6pin')
-    relayTrigger[6] = config.getint('Relay6', 'relay6trigger')
-    
-    relayName[7] = config.get('Relay7', 'relay7name')
-    relayPin[7] = config.getint('Relay7', 'relay7pin')
-    relayTrigger[7] = config.getint('Relay7', 'relay7trigger')
-    
-    relayName[8] = config.get('Relay8', 'relay8name')
-    relayPin[8] = config.getint('Relay8', 'relay8pin')
-    relayTrigger[8] = config.getint('Relay8', 'relay8trigger')
-    
-    timerState[1] = config.getint('Timer1', 'timer1state')
-    timerRelay[1] = config.getint('Timer1', 'timer1relay')
-    timerDurationOn[1] = config.getint('Timer1', 'timer1durationon')
-    timerDurationOff[1] = config.getint('Timer1', 'timer1durationoff')
-    
-    timerState[2] = config.getint('Timer2', 'timer2state')
-    timerRelay[2] = config.getint('Timer2', 'timer2relay')
-    timerDurationOn[2] = config.getint('Timer2', 'timer2durationon')
-    timerDurationOff[2] = config.getint('Timer2', 'timer2durationoff')
-    
-    timerState[3] = config.getint('Timer3', 'timer3state')
-    timerRelay[3] = config.getint('Timer3', 'timer3relay')
-    timerDurationOn[3] = config.getint('Timer3', 'timer3durationon')
-    timerDurationOff[3] = config.getint('Timer3', 'timer3durationoff')
-    
-    timerState[4] = config.getint('Timer4', 'timer4state')
-    timerRelay[4] = config.getint('Timer4', 'timer4relay')
-    timerDurationOn[4] = config.getint('Timer4', 'timer4durationon')
-    timerDurationOff[4] = config.getint('Timer4', 'timer4durationoff')
-    
-    timerState[5] = config.getint('Timer5', 'timer5state')
-    timerRelay[5] = config.getint('Timer5', 'timer5relay')
-    timerDurationOn[5] = config.getint('Timer5', 'timer5durationon')
-    timerDurationOff[5] = config.getint('Timer5', 'timer5durationoff')
-    
-    timerState[6] = config.getint('Timer6', 'timer6state')
-    timerRelay[6] = config.getint('Timer6', 'timer6relay')
-    timerDurationOn[6] = config.getint('Timer6', 'timer6durationon')
-    timerDurationOff[6] = config.getint('Timer6', 'timer6durationoff')
-    
-    timerState[7] = config.getint('Timer7', 'timer7state')
-    timerRelay[7] = config.getint('Timer7', 'timer7relay')
-    timerDurationOn[7] = config.getint('Timer7', 'timer7durationon')
-    timerDurationOff[7] = config.getint('Timer7', 'timer7durationoff')
-    
-    timerState[8] = config.getint('Timer8', 'timer8state')
-    timerRelay[8] = config.getint('Timer8', 'timer8relay')
-    timerDurationOn[8] = config.getint('Timer8', 'timer8durationon')
-    timerDurationOff[8] = config.getint('Timer8', 'timer8durationoff')
+    for i in range(1, 9):
+        timerState[i] = config.getint('Timer%d' % i, 'timer%dstate' % i)
+        timerRelay[i] = config.getint('Timer%d' % i, 'timer%drelay' % i)
+        timerDurationOn[i] = config.getint('Timer%d' % i, 'timer%ddurationon' % i)
+        timerDurationOff[i] = config.getint('Timer%d' % i, 'timer%ddurationoff' % i)
 
     if not silent:
         logging.debug("[Read Config] setTemp: %.1f°C, setHum: %.1f%%, TempOR: %s, HumOR: %s", setTemp[1], setHum[1], TempOR[1], HumOR[1])
@@ -1357,285 +1180,43 @@ def write_config():
     config.set('Misc', 'numtimers', numTimers)
     config.set('Misc', 'cameralight', cameraLight)
     
-    config.add_section('HumPID1')
-    config.set('HumPID1', 'hum1period', HumPeriod[1])
-    config.set('HumPID1', 'hum1relay', relayHum[1])
-    config.set('HumPID1', 'hum1or', HumOR[1])
-    config.set('HumPID1', 'hum1set', setHum[1])
-    config.set('HumPID1', 'hum1p', Hum_P[1])
-    config.set('HumPID1', 'hum1i', Hum_I[1])
-    config.set('HumPID1', 'hum1d', Hum_D[1])
+    for i in range(1, 5):
+        config.add_section('Sensor%d' % i)
+        config.set('Sensor%d' % i, 'sensor%dname' % i, sensorName[i])
+        config.set('Sensor%d' % i, 'sensor%ddevice' % i, sensorDevice[i])
+        config.set('Sensor%d' % i, 'sensor%dpin' % i, sensorPin[i])
+        config.set('Sensor%d' % i, 'sensor%dperiod' % i, sensorPeriod[i])
+        
+        config.add_section('TempPID%d' % i)
+        config.set('TempPID%d' % i, 'temp%dperiod' % i, TempPeriod[i])
+        config.set('TempPID%d' % i, 'temp%drelay' % i, relayTemp[i])
+        config.set('TempPID%d' % i, 'temp%dset' % i, setTemp[i])
+        config.set('TempPID%d' % i, 'temp%dor' % i, TempOR[i])
+        config.set('TempPID%d' % i, 'temp%dp' % i, Temp_P[i])
+        config.set('TempPID%d' % i, 'temp%di' % i, Temp_I[i])
+        config.set('TempPID%d' % i, 'temp%dd' % i, Temp_D[i])
+        
+        config.add_section('HumPID%d' % i)
+        config.set('HumPID%d' % i, 'hum%dperiod' % i, HumPeriod[i])
+        config.set('HumPID%d' % i, 'hum%drelay' % i, relayHum[i])
+        config.set('HumPID%d' % i, 'hum%dor' % i, HumOR[i])
+        config.set('HumPID%d' % i, 'hum%dset' % i, setHum[i])
+        config.set('HumPID%d' % i, 'hum%dp' % i, Hum_P[i])
+        config.set('HumPID%d' % i, 'hum%di' % i, Hum_I[i])
+        config.set('HumPID%d' % i, 'hum%dd' % i, Hum_D[i])
     
-    config.add_section('TempPID1')
-    config.set('TempPID1', 'temp1period', TempPeriod[1])
-    config.set('TempPID1', 'temp1relay', relayTemp[1])
-    config.set('TempPID1', 'temp1set', setTemp[1])
-    config.set('TempPID1', 'temp1or', TempOR[1])
-    config.set('TempPID1', 'temp1p', Temp_P[1])
-    config.set('TempPID1', 'temp1i', Temp_I[1])
-    config.set('TempPID1', 'temp1d', Temp_D[1])
+    for i in range(1, 9):
+        config.add_section('Relay%d' % i)
+        config.set('Relay%d' % i, 'relay%dname' % i, relayName[i])
+        config.set('Relay%d' % i, 'relay%dpin' % i, relayPin[i])
+        config.set('Relay%d' % i, 'relay%dtrigger' % i, relayTrigger[i])
     
-    config.add_section('HumPID2')
-    config.set('HumPID2', 'hum2period', HumPeriod[2])
-    config.set('HumPID2', 'hum2relay', relayHum[2])
-    config.set('HumPID2', 'hum2or', HumOR[2])
-    config.set('HumPID2', 'hum2set', setHum[2])
-    config.set('HumPID2', 'hum2p', Hum_P[2])
-    config.set('HumPID2', 'hum2i', Hum_I[2])
-    config.set('HumPID2', 'hum2d', Hum_D[2])
-    
-    config.add_section('TempPID2')
-    config.set('TempPID2', 'temp2period', TempPeriod[2])
-    config.set('TempPID2', 'temp2relay', relayTemp[2])
-    config.set('TempPID2', 'temp2set', setTemp[2])
-    config.set('TempPID2', 'temp2or', TempOR[2])
-    config.set('TempPID2', 'temp2p', Temp_P[2])
-    config.set('TempPID2', 'temp2i', Temp_I[2])
-    config.set('TempPID2', 'temp2d', Temp_D[2])
-    
-    config.add_section('HumPID3')
-    config.set('HumPID3', 'hum3period', HumPeriod[3])
-    config.set('HumPID3', 'hum3relay', relayHum[3])
-    config.set('HumPID3', 'hum3or', HumOR[3])
-    config.set('HumPID3', 'hum3set', setHum[3])
-    config.set('HumPID3', 'hum3p', Hum_P[3])
-    config.set('HumPID3', 'hum3i', Hum_I[3])
-    config.set('HumPID3', 'hum3d', Hum_D[3])
-    
-    config.add_section('TempPID3')
-    config.set('TempPID3', 'temp3period', TempPeriod[3])
-    config.set('TempPID3', 'temp3relay', relayTemp[3])
-    config.set('TempPID3', 'temp3set', setTemp[3])
-    config.set('TempPID3', 'temp3or', TempOR[3])
-    config.set('TempPID3', 'temp3p', Temp_P[3])
-    config.set('TempPID3', 'temp3i', Temp_I[3])
-    config.set('TempPID3', 'temp3d', Temp_D[3])
-    
-    config.add_section('HumPID4')
-    config.set('HumPID4', 'hum4period', HumPeriod[4])
-    config.set('HumPID4', 'hum4relay', relayHum[4])
-    config.set('HumPID4', 'hum4or', HumOR[4])
-    config.set('HumPID4', 'hum4set', setHum[4])
-    config.set('HumPID4', 'hum4p', Hum_P[4])
-    config.set('HumPID4', 'hum4i', Hum_I[4])
-    config.set('HumPID4', 'hum4d', Hum_D[4])
-    
-    config.add_section('TempPID4')
-    config.set('TempPID4', 'temp4period', TempPeriod[4])
-    config.set('TempPID4', 'temp4relay', relayTemp[4])
-    config.set('TempPID4', 'temp4set', setTemp[4])
-    config.set('TempPID4', 'temp4or', TempOR[4])
-    config.set('TempPID4', 'temp4p', Temp_P[4])
-    config.set('TempPID4', 'temp4i', Temp_I[4])
-    config.set('TempPID4', 'temp4d', Temp_D[4])
-    
-    config.add_section('HumPID5')
-    config.set('HumPID5', 'hum5period', HumPeriod[5])
-    config.set('HumPID5', 'hum5relay', relayHum[5])
-    config.set('HumPID5', 'hum5or', HumOR[5])
-    config.set('HumPID5', 'hum5set', setHum[5])
-    config.set('HumPID5', 'hum5p', Hum_P[5])
-    config.set('HumPID5', 'hum5i', Hum_I[5])
-    config.set('HumPID5', 'hum5d', Hum_D[5])
-    
-    config.add_section('TempPID5')
-    config.set('TempPID5', 'temp5period', TempPeriod[5])
-    config.set('TempPID5', 'temp5relay', relayTemp[5])
-    config.set('TempPID5', 'temp5set', setTemp[5])
-    config.set('TempPID5', 'temp5or', TempOR[5])
-    config.set('TempPID5', 'temp5p', Temp_P[5])
-    config.set('TempPID5', 'temp5i', Temp_I[5])
-    config.set('TempPID5', 'temp5d', Temp_D[5])
-    
-    config.add_section('HumPID6')
-    config.set('HumPID6', 'hum6period', HumPeriod[6])
-    config.set('HumPID6', 'hum6relay', relayHum[6])
-    config.set('HumPID6', 'hum6or', HumOR[6])
-    config.set('HumPID6', 'hum6set', setHum[6])
-    config.set('HumPID6', 'hum6p', Hum_P[6])
-    config.set('HumPID6', 'hum6i', Hum_I[6])
-    config.set('HumPID6', 'hum6d', Hum_D[6])
-    
-    config.add_section('TempPID6')
-    config.set('TempPID6', 'temp6period', TempPeriod[6])
-    config.set('TempPID6', 'temp6relay', relayTemp[6])
-    config.set('TempPID6', 'temp6set', setTemp[6])
-    config.set('TempPID6', 'temp6or', TempOR[6])
-    config.set('TempPID6', 'temp6p', Temp_P[6])
-    config.set('TempPID6', 'temp6i', Temp_I[6])
-    config.set('TempPID6', 'temp6d', Temp_D[6])
-    
-    config.add_section('HumPID7')
-    config.set('HumPID7', 'hum7period', HumPeriod[7])
-    config.set('HumPID7', 'hum7relay', relayHum[7])
-    config.set('HumPID7', 'hum7or', HumOR[7])
-    config.set('HumPID7', 'hum7set', setHum[7])
-    config.set('HumPID7', 'hum7p', Hum_P[7])
-    config.set('HumPID7', 'hum7i', Hum_I[7])
-    config.set('HumPID7', 'hum7d', Hum_D[7])
-    
-    config.add_section('TempPID7')
-    config.set('TempPID7', 'temp7period', TempPeriod[7])
-    config.set('TempPID7', 'temp7relay', relayTemp[7])
-    config.set('TempPID7', 'temp7set', setTemp[7])
-    config.set('TempPID7', 'temp7or', TempOR[7])
-    config.set('TempPID7', 'temp7p', Temp_P[7])
-    config.set('TempPID7', 'temp7i', Temp_I[7])
-    config.set('TempPID7', 'temp7d', Temp_D[7])
-    
-    config.add_section('HumPID8')
-    config.set('HumPID8', 'hum8period', HumPeriod[8])
-    config.set('HumPID8', 'hum8relay', relayHum[8])
-    config.set('HumPID8', 'hum8or', HumOR[8])
-    config.set('HumPID8', 'hum8set', setHum[8])
-    config.set('HumPID8', 'hum8p', Hum_P[8])
-    config.set('HumPID8', 'hum8i', Hum_I[8])
-    config.set('HumPID8', 'hum8d', Hum_D[8])
-    
-    config.add_section('TempPID8')
-    config.set('TempPID8', 'temp8period', TempPeriod[8])
-    config.set('TempPID8', 'temp8relay', relayTemp[8])
-    config.set('TempPID8', 'temp8set', setTemp[8])
-    config.set('TempPID8', 'temp8or', TempOR[8])
-    config.set('TempPID8', 'temp8p', Temp_P[8])
-    config.set('TempPID8', 'temp8i', Temp_I[8])
-    config.set('TempPID8', 'temp8d', Temp_D[8])
-    
-    config.add_section('Sensor1')
-    config.set('Sensor1', 'sensor1name', sensorName[1])
-    config.set('Sensor1', 'sensor1device', sensorDevice[1])
-    config.set('Sensor1', 'sensor1pin', sensorPin[1])
-    config.set('Sensor1', 'sensor1period', sensorPeriod[1])
-    
-    config.add_section('Sensor2')
-    config.set('Sensor2', 'sensor2name', sensorName[2])
-    config.set('Sensor2', 'sensor2device', sensorDevice[2])
-    config.set('Sensor2', 'sensor2pin', sensorPin[2])
-    config.set('Sensor2', 'sensor2period', sensorPeriod[2])
-    
-    config.add_section('Sensor3')
-    config.set('Sensor3', 'sensor3name', sensorName[3])
-    config.set('Sensor3', 'sensor3device', sensorDevice[3])
-    config.set('Sensor3', 'sensor3pin', sensorPin[3])
-    config.set('Sensor3', 'sensor3period', sensorPeriod[3])
-    
-    config.add_section('Sensor4')
-    config.set('Sensor4', 'sensor4name', sensorName[4])
-    config.set('Sensor4', 'sensor4device', sensorDevice[4])
-    config.set('Sensor4', 'sensor4pin', sensorPin[4])
-    config.set('Sensor4', 'sensor4period', sensorPeriod[4])
-    
-    config.add_section('Sensor5')
-    config.set('Sensor5', 'sensor5name', sensorName[5])
-    config.set('Sensor5', 'sensor5device', sensorDevice[5])
-    config.set('Sensor5', 'sensor5pin', sensorPin[5])
-    config.set('Sensor5', 'sensor5period', sensorPeriod[5])
-    
-    config.add_section('Sensor6')
-    config.set('Sensor6', 'sensor6name', sensorName[6])
-    config.set('Sensor6', 'sensor6device', sensorDevice[6])
-    config.set('Sensor6', 'sensor6pin', sensorPin[6])
-    config.set('Sensor6', 'sensor6period', sensorPeriod[6])
-    
-    config.add_section('Sensor7')
-    config.set('Sensor7', 'sensor7name', sensorName[7])
-    config.set('Sensor7', 'sensor7device', sensorDevice[7])
-    config.set('Sensor7', 'sensor7pin', sensorPin[7])
-    config.set('Sensor7', 'sensor7period', sensorPeriod[7])
-    
-    config.add_section('Sensor8')
-    config.set('Sensor8', 'sensor8name', sensorName[8])
-    config.set('Sensor8', 'sensor8device', sensorDevice[8])
-    config.set('Sensor8', 'sensor8pin', sensorPin[8])
-    config.set('Sensor8', 'sensor8period', sensorPeriod[8])
-    
-    config.add_section('Relay1')
-    config.set('Relay1', 'relay1name', relayName[1])
-    config.set('Relay1', 'relay1pin', relayPin[1])
-    config.set('Relay1', 'relay1trigger', relayTrigger[1])
-    
-    config.add_section('Relay2')
-    config.set('Relay2', 'relay2name', relayName[2])
-    config.set('Relay2', 'relay2pin', relayPin[2])
-    config.set('Relay2', 'relay2trigger', relayTrigger[2])
-    
-    config.add_section('Relay3')
-    config.set('Relay3', 'relay3name', relayName[3])
-    config.set('Relay3', 'relay3pin', relayPin[3])
-    config.set('Relay3', 'relay3trigger', relayTrigger[3])
-    
-    config.add_section('Relay4')
-    config.set('Relay4', 'relay4name', relayName[4])
-    config.set('Relay4', 'relay4pin', relayPin[4])
-    config.set('Relay4', 'relay4trigger', relayTrigger[4])
-    
-    config.add_section('Relay5')
-    config.set('Relay5', 'relay5name', relayName[5])
-    config.set('Relay5', 'relay5pin', relayPin[5])
-    config.set('Relay5', 'relay5trigger', relayTrigger[5])
-    
-    config.add_section('Relay6')
-    config.set('Relay6', 'relay6name', relayName[6])
-    config.set('Relay6', 'relay6pin', relayPin[6])
-    config.set('Relay6', 'relay6trigger', relayTrigger[6])
-    
-    config.add_section('Relay7')
-    config.set('Relay7', 'relay7name', relayName[7])
-    config.set('Relay7', 'relay7pin', relayPin[7])
-    config.set('Relay7', 'relay7trigger', relayTrigger[7])
-    
-    config.add_section('Relay8')
-    config.set('Relay8', 'relay8name', relayName[8])
-    config.set('Relay8', 'relay8pin', relayPin[8])
-    config.set('Relay8', 'relay8trigger', relayTrigger[8])
-    
-    config.add_section('Timer1')
-    config.set('Timer1', 'timer1state', timerState[1])
-    config.set('Timer1', 'timer1relay', timerRelay[1])
-    config.set('Timer1', 'timer1durationon', timerDurationOn[1])
-    config.set('Timer1', 'timer1durationoff', timerDurationOff[1])
-    
-    config.add_section('Timer2')
-    config.set('Timer2', 'timer2state', timerState[2])
-    config.set('Timer2', 'timer2relay', timerRelay[2])
-    config.set('Timer2', 'timer2durationon', timerDurationOn[2])
-    config.set('Timer2', 'timer2durationoff', timerDurationOff[2])
-    
-    config.add_section('Timer3')
-    config.set('Timer3', 'timer3state', timerState[3])
-    config.set('Timer3', 'timer3relay', timerRelay[3])
-    config.set('Timer3', 'timer3durationon', timerDurationOn[3])
-    config.set('Timer3', 'timer3durationoff', timerDurationOff[3])
-    
-    config.add_section('Timer4')
-    config.set('Timer4', 'timer4state', timerState[4])
-    config.set('Timer4', 'timer4relay', timerRelay[4])
-    config.set('Timer4', 'timer4durationon', timerDurationOn[4])
-    config.set('Timer4', 'timer4durationoff', timerDurationOff[4])
-    
-    config.add_section('Timer5')
-    config.set('Timer5', 'timer5state', timerState[5])
-    config.set('Timer5', 'timer5relay', timerRelay[5])
-    config.set('Timer5', 'timer5durationon', timerDurationOn[5])
-    config.set('Timer5', 'timer5durationoff', timerDurationOff[5])
-    
-    config.add_section('Timer6')
-    config.set('Timer6', 'timer6state', timerState[6])
-    config.set('Timer6', 'timer6relay', timerRelay[6])
-    config.set('Timer6', 'timer6durationon', timerDurationOn[6])
-    config.set('Timer6', 'timer6durationoff', timerDurationOff[6])
-    
-    config.add_section('Timer7')
-    config.set('Timer7', 'timer7state', timerState[7])
-    config.set('Timer7', 'timer7relay', timerRelay[7])
-    config.set('Timer7', 'timer7durationon', timerDurationOn[7])
-    config.set('Timer7', 'timer7durationoff', timerDurationOff[7])
-    
-    config.add_section('Timer8')
-    config.set('Timer8', 'timer8state', timerState[8])
-    config.set('Timer8', 'timer8relay', timerRelay[8])
-    config.set('Timer8', 'timer8durationon', timerDurationOn[8])
-    config.set('Timer8', 'timer8durationoff', timerDurationOff[8])
+    for i in range(1, 9):
+        config.add_section('Timer%d' % i)
+        config.set('Timer%d' % i, 'timer%dstate' % i, timerState[i])
+        config.set('Timer%d' % i, 'timer%drelay' % i, timerRelay[i])
+        config.set('Timer%d' % i, 'timer%ddurationon' % i, timerDurationOn[i])
+        config.set('Timer%d' % i, 'timer%ddurationoff' % i, timerDurationOff[i])
     
     try:
         with open(config_file, 'wb') as configfile:
@@ -1685,7 +1266,7 @@ def gpio_change(relay, State):
     GPIO.output(relayPin[relay], State)
 
 # Set GPIO LOW (= relay ON) for a specific duration
-def relay_on_duration(relay, seconds):
+def relay_on_duration(relay, seconds, sensor):
     if (relayTrigger[relay] == 0 and GPIO.input(relayPin[relay]) == 0) or (
             relayTrigger[relay] == 1 and GPIO.input(relayPin[relay]) == 1):
         logging.warning("[Relay Duration] Relay %s (%s) is already On. Turning off in %s seconds.", 
@@ -1696,7 +1277,7 @@ def relay_on_duration(relay, seconds):
    
     GPIO.output(relayPin[relay], relayTrigger[relay]) # Turn relay on    
     timer_on = int(time.time()) + seconds
-    write_relay_log(relay, seconds)
+    write_relay_log(relay, seconds, sensor)
     
     while (ClientQue != 'TerminateServer' and timer_on > int(time.time())):
         time.sleep(0.1)
@@ -1726,43 +1307,6 @@ def represents_float(s):
 # Check if a variable name in config_file matches a string
 def modify_var(*names_and_values):
     namesOfVariables = [
-    'sensorName',
-    'sensorDevice',
-    'sensorPin.'
-    'sensorPeriod',
-    'relayName',
-    'relayPin',
-    'relayTrigger',
-    'relayTemp',
-    'relayHum',
-    'setTemp',
-    'setHum',
-    'TempOR',
-    'HumOR',
-    'Hum_P',
-    'Hum_I',
-    'Hum_D',
-    'Temp_P',
-    'Temp_I',
-    'Temp_D',
-    'factorHumSeconds',
-    'factorTempSeconds',
-    'relay1Pin',
-    'relay2Pin',
-    'relay3Pin',
-    'relay4Pin',
-    'relay5Pin',
-    'relay6Pin',
-    'relay7Pin',
-    'relay8Pin',
-    'relay1Name',
-    'relay2Name',
-    'relay3Name',
-    'relay4Name',
-    'relay5Name',
-    'relay6Name',
-    'relay7Name',
-    'relay8Name',
     'numRelays',
     'numSensors',
     'numTimers',
