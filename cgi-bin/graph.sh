@@ -247,14 +247,14 @@ set style line 11 lc rgb '${graph_colors[10]}' pt 0 ps 1 lt 1 lw 1
 #set ylabel \"%\"
 #set y2label \"Degrees C\"
 unset key
-set multiplot layout 1,3 title \"Sensor $sensor:  Past Day (Top) and 7 Days (Bottom) from `date +"%Y-%m-%d %H:%M:%S"`\"
+set multiplot layout 1,3 title \"Sensor $sensor:  Past day (top) and 7 days (bottom) from `date +"%Y-%m-%d %H:%M:%S"`\"
 # Top graph - day
 set size 1.0,0.48
 set origin 0.0,0.5
 plot \"<awk '\$10 == $sensor' $LOGPATH/sensor.log\" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, \\
      \"\" using 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, \\
      \"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
-     \"$LOGPATH/relay.log\" u 1:7 index 0 title \"$relay1name\" w impulses ls 4 axes x1y1, \\
+     \"<awk '\$15 == $sensor' $LOGPATH/relay.log\" u 1:7 index 0 title \"$relay1name\" w impulses ls 4 axes x1y1, \\
      \"\" using 1:8 index 0 title \"$relay2name\" w impulses ls 5 axes x1y1, \\
      \"\" using 1:9 index 0 title \"$relay3name\" w impulses ls 6 axes x1y1, \\
      \"\" using 1:10 index 0 title \"$relay4name\" w impulses ls 7 axes x1y1, \\
@@ -267,7 +267,7 @@ set size 1.0,0.48
 set origin 0.0,0.0
 set format x \"%a\n%m/%d\"
 set xrange [\"`date --date="last week" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
-plot \"<awk '\$15 == $sensor' $LOGPATH/relay.log\" using 1:7 index 0 notitle w lp ls 1 axes x1y2, \\
+plot \"<awk '\$10 == $sensor' $LOGPATH/sensor.log\" using 1:7 index 0 notitle w lp ls 1 axes x1y2, \\
      \"\" using 1:8 index 0 notitle w lp ls 2 axes x1y1, \\
      \"\" using 1:9 index 0 notitle w lp ls 3 axes x1y2
 unset multiplot" | gnuplot
