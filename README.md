@@ -35,12 +35,12 @@ I'm since upgraded to a new set of hardware that support 8 individually-switchab
 <a name="feat"></a>
 ### Features
 
-* Temperature, humidity, and relay state logging
-* Timer-operated relay operation
-* Temperature and/or humidity regulation with software PID control
-* Automatic and manual operation of 8 different 120-volt AC devices
+* Temperature, humidity, and relay state-change logging
+* PID, simple timer, or manual operation of eight 120-volt AC relays
+* Software PID control for temperature and humidity regulation
+* Multi-sensor monitoring (currently up to 4) with each sensor having its own temp/hum PID
 * TempFS to reduce writes to and extend the life of the SD card
-* Lock files to prevent more than one instance from writing to files at the same time 
+* Lock files to prevent file access conflicts
 * Web Interface
   * View historical temperature and humidity data as text and graphs
   * Generate custom graphs of current and past data, or use presets of pre-defined time periods
