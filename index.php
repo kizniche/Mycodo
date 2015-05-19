@@ -667,8 +667,10 @@ $error_code = "no";
                     if (!isset($_SESSION["ID"])) {
                         $id = uniqid();
                         $_SESSION["ID"] = $id;
-                        shell_exec($graph_exec . ' dayweek ' . $id);
-                        echo "<img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=main&mod=" . $id . ">";
+                        for ($n = 1; $n <= $numsensors; $n++ ) {
+                            shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
+                            echo "<div style=\"padding-bottom: 4em;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=main&mod=" . $id . "&sensor=" . $n . "></div>";
+                        }
                     } else {
                         $id = $_SESSION["ID"];
                         if (isset($_GET['Refresh']) == 1) $ref = 1;
@@ -716,7 +718,7 @@ $error_code = "no";
                                 break;
                                 }
                             } else {
-                                echo "<img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
+                                echo "<div style=\"padding-bottom: 4em;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
                                 if ($ref) shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
                                 echo "main&mod=" . $id . "&sensor=" . $n . ">";
                             }
@@ -1038,7 +1040,6 @@ $error_code = "no";
             if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] != 'guest') {
                 if ($_POST['SubmitDates']) {
                     displayform();
-                    echo "<center>";
                     for ($n = 1; $n <= $numsensors; $n++) {
                         $id2 = uniqid();
                         $minb = $_POST['startMinute'];
@@ -1057,7 +1058,7 @@ $error_code = "no";
                         echo `echo "set terminal png size $graph_width,490
                         set xdata time
                         set timefmt \"%Y %m %d %H %M %S\"
-                        set output \"$images/graph-cus-$id-$n.png\"
+                        set output \"$images/graph-cus-$id2-$n.png\"
                         set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]
                         set format x \"%H:%M\n%m/%d\"
                         set yrange [0:100]
@@ -1083,12 +1084,12 @@ $error_code = "no";
                         set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1
                         #set xlabel \"Date and Time\"
                         #set ylabel \"% Humidity\"
-                        set title \"$monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
+                        set title \"Sensor $n: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
                         unset key
-                        plot \"<awk '\$10 == $sensor' $sensor_log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
+                        plot \"<awk '\\$10 == $n' $sensor_log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
                         \"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, \\
                         \"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
-                        \"<awk '\$15 == $sensor' $relay_log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
+                        \"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
                         \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\
                         \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\
                         \"\" using 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1, \\
@@ -1096,9 +1097,9 @@ $error_code = "no";
                         \"\" using 1:12 index 0 title \"CFAN\" w impulses ls 9 axes x1y1, \\
                         \"\" using 1:13 index 0 title \"XXXX\" w impulses ls 10 axes x1y1, \\
                         \"\" using 1:14 index 0 title \"XXXX\" w impulses ls 11 axes x1y1" | gnuplot`;
-                        echo "<img src=image.php?span=cus&mod=" . $id2 . "&sensor=" . $n . ">";
+                        echo "<div style=\"width: 100%; text-align: center; padding: 2em 0 2em 0;\"><img src=image.php?span=cus&mod=" . $id2 . "&sensor=" . $n . "></div>";
                     }
-                    echo "<p><a href='javascript:open_legend()'>Brief Graph Legend</a> - <a href='javascript:open_legend_full()'>Full Graph Legend</a></p></center>";
+                    echo "<div style=\"width: 100%; text-align: center;\"><a href='javascript:open_legend()'>Brief Graph Legend</a> - <a href='javascript:open_legend_full()'>Full Graph Legend</a></div>";
                 }
             } else if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] == 'guest') {
                 displayform();

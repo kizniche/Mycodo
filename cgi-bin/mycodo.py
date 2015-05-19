@@ -404,7 +404,10 @@ class ComServer(rpyc.Service):
         global ClientVar1
         ClientVar1 = sensor
         ClientQue = 'write_sensor_log'
-        logging.info("[Client command] Read sensor number %s and append log", sensor)
+        if sensor != 0:
+            logging.info("[Client command] Read sensor number %s and append log", sensor)
+        else:
+            logging.info("[Client command] Read all sensors and append log", sensor)
         global change_sensor_log
         change_sensor_log = 1
         while (change_sensor_log):
@@ -695,8 +698,13 @@ def daemon(output, log):
         if ClientQue != '0': # Run remote commands issued by mycodo-client.py
             if ClientQue == 'write_sensor_log':
                 logging.debug("[Client command] Write Sensor Log")
-                read_sensors(0, ClientVar1)
-                write_sensor_log(ClientVar1)
+                if (ClientVar1 == 0):
+                    read_sensors(0, ClientVar1)
+                    write_sensor_log(ClientVar1)
+                else:
+                    for i in range(1, int(numSensors)+1): 
+                        read_sensors(0, i)
+                        write_sensor_log(i)
                 change_sensor_log = 0
             elif ClientQue == 'TerminateServer':
                 logging.info("[Daemon] Backing up logs")
@@ -750,7 +758,7 @@ def daemon(output, log):
             Hum_PID_Up = 0
         
         # Write sensor log
-        for i in range(1, numSensors+1):
+        for i in range(1, int(numSensors)+1):
             if int(time.time()) > timerSensorLog[i] and sensorDevice[i] != 'Other':
                 logging.debug("[Timer Expiration] Read sensor %s every %s seconds: Write sensor log", i, sensorPeriod[i])
                 read_sensors(0, i)

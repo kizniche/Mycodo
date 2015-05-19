@@ -43,37 +43,37 @@ if ($login->isUserLoggedIn() == true) {
                 readfile($still_dir . $newest_file);
                 break;
             case 'main':
-                readfile($image_dir . 'graph-main-' . $_GET['mod'] . '.png');
+                readfile($image_dir . 'graph-main-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
             case 'main-mobile':
                 readfile($image_dir . 'graph-main-mobile.png');
                 break;
             case '1h':
-                readfile($image_dir . 'graph-1h-' . $_GET['mod'] . '.png');
+                readfile($image_dir . 'graph-1h-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
             case '6h':
-                readfile($image_dir . 'graph-6h-' . $_GET['mod'] . '.png');
+                readfile($image_dir . 'graph-6h-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
             case '6h-mobile':
                 readfile($image_dir . 'graph-6h-' . $_GET['mod'] . '-mobile.png');
                 break;
             case 'day':
-                readfile($image_dir . 'graph-day-' . $_GET['mod'] . '.png');
+                readfile($image_dir . 'graph-day-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
             case 'day-mobile':
                 readfile($image_dir . 'graph-day-mobile.png');
                 break;
             case 'week':
-                readfile($image_dir . 'graph-week-' . $_GET['mod'] . '.png');
+                readfile($image_dir . 'graph-week-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
             case 'month':
-                readfile($image_dir . 'graph-month-' . $_GET['mod'] . '.png');
+                readfile($image_dir . 'graph-month-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
             case 'year':
-                readfile($image_dir . 'graph-year-' . $_GET['mod'] . '.png');
+                readfile($image_dir . 'graph-year-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
             case 'cus':
-                readfile($image_dir . 'graph-cus-' . $_GET['mod'] . '.png');
+                readfile($image_dir . 'graph-cus-' . $_GET['mod'] .  '-' . $_GET['sensor'] . '.png');
                 break;
             case 'legend':
                 $id = uniqid();

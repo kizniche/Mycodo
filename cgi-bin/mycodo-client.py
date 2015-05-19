@@ -53,7 +53,7 @@ def usage():
     print '    -t, --terminate'
     print '           Terminate the communication service and daemon'
     print '    -w, --writelog SENSOR_NUMBER'
-    print '           Read sensor from SENSOR_NUMBER and append log file\n'    
+    print '           Read sensor from SENSOR_NUMBER and append log file. Use 0 to write all.\n'    
 
 def menu():
     try:
@@ -251,8 +251,12 @@ def menu():
             else: print "Fail"
             sys.exit(0)
         elif opt in ("-w", "--logwrite"):
-            print "%s [Remote Command] Append sensor log from sensor %s: Server returned:" % (
-                Timestamp(), sys.argv[2]), 
+            if sys.argv[2]:
+                print "%s [Remote Command] Append sensor log from sensor %s: Server returned:" % (
+                    Timestamp(), sys.argv[2]),
+            else:
+                print "%s [Remote Command] Append sensor log from all sensors: Server returned:" % (
+                    Timestamp()),
             if c.root.WriteSensorLog(sys.argv[2]) == 1: print "Success"
             else: print "Fail"
             sys.exit(0)
