@@ -105,17 +105,17 @@ function DateSelector($inName, $useDate=0) {
 }
 
 function displayform() {
-        echo "<div style=\"padding: 10px 0 0 15px;\">";
-        echo "<div style=\"display: inline-block;\">";
-        echo "<FORM action=\"?tab=graph";
-        if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
-        echo "\" method=\"POST\">";
-		echo "<div style=\"padding-bottom: 5px; text-align: right;\">START: ";
-		DateSelector("start");
-		echo "</div><div style=\"text-align: right;\">END: ";
-		DateSelector("end");
-        echo "</div></div><div style=\"display: inline-block; padding: 0 0.5em 0 1em;\"><input type=\"text\" value=\"900\" maxlength=4 size=4 name=\"graph-width\" title=\"Width of the generated graph\"> Width (pixels, max 4000)</div>";
-		echo "<div style=\"display: inline-block;\">&nbsp;&nbsp;<input type=\"submit\" name=\"SubmitDates\" value=\"Submit\"></FORM></div></div>";
+    echo "<div style=\"padding: 10px 0 0 15px;\">";
+    echo "<div style=\"display: inline-block;\">";
+    echo "<FORM action=\"?tab=graph";
+    if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
+    echo "\" method=\"POST\">";
+    echo "<div style=\"padding-bottom: 5px; text-align: right;\">START: ";
+    DateSelector("start");
+    echo "</div><div style=\"text-align: right;\">END: ";
+    DateSelector("end");
+    echo "</div></div><div style=\"display: inline-block; padding: 0 0.5em 0 1em;\"><input type=\"text\" value=\"900\" maxlength=4 size=4 name=\"graph-width\" title=\"Width of the generated graph\"> Width (pixels, max 4000)</div>";
+    echo "<div style=\"display: inline-block;\">&nbsp;&nbsp;<input type=\"submit\" name=\"SubmitDates\" value=\"Submit\"></FORM></div></div>";
 }
 
 function is_positive_integer($str) {
@@ -340,7 +340,7 @@ if ($login->isUserLoggedIn() == true) {
             
             // Request a sensor read and sensor log write
              if (isset($_POST['WriteSensorLog'])) {
-                $editconfig = "$mycodo_client -w";
+                $editconfig = "$mycodo_client -w 0";
                 shell_exec($editconfig);
             }
             
@@ -674,51 +674,53 @@ $error_code = "no";
                         if (isset($_GET['Refresh']) == 1) $ref = 1;
                         else $ref = 0;
                         
-                        echo "<img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                        if (isset($_GET['page'])) {
-                            switch ($_GET['page']) {
-                            case 'Main':
-                            if ($ref) shell_exec($graph_exec . ' dayweek ' . $id);
-                            echo "main&mod=" . $id . ">";
-                            break;
-                            case 'Hour':
-                            if ($ref) shell_exec($graph_exec . ' 1h ' . $id);
-                            echo "1h&mod=" . $id . ">";
-                            break;
-                            case '6Hours':
-                            if ($ref) shell_exec($graph_exec . ' 6h ' . $id);
-                            echo "6h&mod=" . $id . ">";
-                            break;
-                            case 'Day':
-                            if ($ref) shell_exec($graph_exec . ' day ' . $id);
-                            echo "day&mod=" . $id . ">";
-                            break;
-                            case 'Week':
-                            if ($ref) shell_exec($graph_exec . ' week ' . $id);
-                            echo "week&mod=" . $id . ">";
-                            break;
-                            case 'Month':
-                            if ($ref) shell_exec($graph_exec . ' month ' . $id);
-                            echo "month&mod=" . $id . ">";
-                            break;
-                            case 'Year':
-                            if ($ref) shell_exec($graph_exec . ' year ' . $id);
-                            echo "year&mod=" . $id . ">";
-                            break;
-                            case 'All':
-                            if ($ref) shell_exec($graph_exec . ' all ' . $id);
-                            echo "1h&mod=" . $id . "><p><img class=\"main-image\" src=image.php?span=6h&mod=" . $id . "></p><p><img class=\"main-image\" src=image.php?span=day&mod=" . $id . "></p><p><img class=\"main-image\" src=image.php?span=week&mod=" . $id . "></p><p><img class=\"main-image\" src=image.php?span=month&mod=" . $id . "></p><p><img class=\"main-image\" src=image.php?span=year&mod=" . $id . "></p>";
-                            break;
-                            default:
-                            if ($ref) shell_exec($graph_exec . ' dayweek ' . $id);
-                            echo "main&mod=" . $id . ">";
-                            break;
+                        for ($n = 1; $n <= $numsensors; $n++ ) {
+                            if (isset($_GET['page'])) {
+                                echo "<div style=\"padding-bottom: 4em;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
+                                switch ($_GET['page']) {
+                                case 'Main':
+                                if ($ref) shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
+                                echo "main&mod=" . $id . "&sensor=" . $n . ">";
+                                break;
+                                case 'Hour':
+                                if ($ref) shell_exec($graph_exec . ' 1h ' . $id . " " . $n);
+                                echo "1h&mod=" . $id . "&sensor=" . $n . ">";
+                                break;
+                                case '6Hours':
+                                if ($ref) shell_exec($graph_exec . ' 6h ' . $id . " " . $n);
+                                echo "6h&mod=" . $id . "&sensor=" . $n . ">";
+                                break;
+                                case 'Day':
+                                if ($ref) shell_exec($graph_exec . ' day ' . $id . " " . $n);
+                                echo "day&mod=" . $id . "&sensor=" . $n . ">";
+                                break;
+                                case 'Week':
+                                if ($ref) shell_exec($graph_exec . ' week ' . $id . " " . $n);
+                                echo "week&mod=" . $id . "&sensor=" . $n . ">";
+                                break;
+                                case 'Month':
+                                if ($ref) shell_exec($graph_exec . ' month ' . $id . " " . $n);
+                                echo "month&mod=" . $id . "&sensor=" . $n . ">";
+                                break;
+                                case 'Year':
+                                if ($ref) shell_exec($graph_exec . ' year ' . $id . " " . $n);
+                                echo "year&mod=" . $id . "&sensor=" . $n . ">";
+                                break;
+                                case 'All':
+                                if ($ref) shell_exec($graph_exec . ' all ' . $id . " " . $n);
+                                echo "1h&mod=" . $id . "&sensor=" . $n . "><p><img class=\"main-image\" src=image.php?span=6h&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=day&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=week&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=month&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=year&mod=" . $id . "&sensor=" . $n . "></p>";
+                                break;
+                                default:
+                                if ($ref) shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
+                                echo "main&mod=" . $id . "&sensor=" . $n . ">";
+                                break;
+                                }
+                            } else {
+                                echo "<img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
+                                if ($ref) shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
+                                echo "main&mod=" . $id . "&sensor=" . $n . ">";
                             }
-                        } else {
-                            if ($ref) shell_exec($graph_exec . ' dayweek ' . $id);
-                            echo "main&mod=" . $id . ">";
-                            echo "<img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=main1&mod=" . $id . ">";
-                            echo "<img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=main2&mod=" . $id . ">";
+                            echo "</div>";
                         }
                     }
                     ?>
@@ -1035,64 +1037,67 @@ $error_code = "no";
             /* DateSelector*Author: Leon Atkinson */
             if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] != 'guest') {
                 if ($_POST['SubmitDates']) {
-                    $id2 = uniqid();
-                    $minb = $_POST['startMinute'];
-                    $hourb = $_POST['startHour'];
-                    $dayb = $_POST['startDay'];
-                    $monb = $_POST['startMonth'];
-                    $yearb = $_POST['startYear'];
-                    $mine = $_POST['endMinute'];
-                    $houre = $_POST['endHour'];
-                    $daye = $_POST['endDay'];
-                    $mone = $_POST['endMonth'];
-                    $yeare = $_POST['endYear'];
-                    if (is_positive_integer($_POST['graph-width']) and $_POST['graph-width'] <= 4000 and $_POST['graph-width']) {
-                        $graph_width = $_POST['graph-width'];
-                    } else $graph_width = 900;
-                    echo `echo "set terminal png size $graph_width,490
-                    set xdata time
-                    set timefmt \"%Y %m %d %H %M %S\"
-                    set output \"$images/graph-cus-$id2.png\"
-                    set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]
-                    set format x \"%H:%M\n%m/%d\"
-                    set yrange [0:100]
-                    set y2range [0:35]
-                    set my2tics 10
-                    set ytics 10
-                    set y2tics 5
-                    set style line 11 lc rgb '#808080' lt 1
-                    set border 3 back ls 11
-                    set tics nomirror
-                    set style line 12 lc rgb '#808080' lt 0 lw 1
-                    set grid xtics ytics back ls 12
-                    set style line 1 lc rgb '#FF3100' pt 0 ps 1 lt 1 lw 2
-                    set style line 2 lc rgb '#0772A1' pt 0 ps 1 lt 1 lw 2
-                    set style line 3 lc rgb '#00B74A' pt 0 ps 1 lt 1 lw 2
-                    set style line 4 lc rgb '#91180B' pt 0 ps 1 lt 1 lw 1
-                    set style line 5 lc rgb '#582557' pt 0 ps 1 lt 1 lw 1
-                    set style line 6 lc rgb '#04834C' pt 0 ps 1 lt 1 lw 1
-                    set style line 7 lc rgb '#DC32E6' pt 0 ps 1 lt 1 lw 1
-                    set style line 8 lc rgb '#957EF9' pt 0 ps 1 lt 1 lw 1
-                    set style line 9 lc rgb '#CC8D9C' pt 0 ps 1 lt 1 lw 1
-                    set style line 10 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1
-                    set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1
-                    #set xlabel \"Date and Time\"
-                    #set ylabel \"% Humidity\"
-                    set title \"$monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
-                    unset key
-                    plot \"$sensor_log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
-                    \"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, \\
-                    \"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
-                    \"$relay_log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
-                    \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\
-                    \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\
-                    \"\" using 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1, \\
-                    \"\" using 1:11 index 0 title \"HUMI\" w impulses ls 8 axes x1y1, \\
-                    \"\" using 1:12 index 0 title \"CFAN\" w impulses ls 9 axes x1y1, \\
-                    \"\" using 1:13 index 0 title \"XXXX\" w impulses ls 10 axes x1y1, \\
-                    \"\" using 1:14 index 0 title \"XXXX\" w impulses ls 11 axes x1y1" | gnuplot`;
                     displayform();
-                    echo "<center><img src=image.php?span=cus&mod=" . $id2 . ">";
+                    echo "<center>";
+                    for ($n = 1; $n <= $numsensors; $n++) {
+                        $id2 = uniqid();
+                        $minb = $_POST['startMinute'];
+                        $hourb = $_POST['startHour'];
+                        $dayb = $_POST['startDay'];
+                        $monb = $_POST['startMonth'];
+                        $yearb = $_POST['startYear'];
+                        $mine = $_POST['endMinute'];
+                        $houre = $_POST['endHour'];
+                        $daye = $_POST['endDay'];
+                        $mone = $_POST['endMonth'];
+                        $yeare = $_POST['endYear'];
+                        if (is_positive_integer($_POST['graph-width']) and $_POST['graph-width'] <= 4000 and $_POST['graph-width']) {
+                            $graph_width = $_POST['graph-width'];
+                        } else $graph_width = 900;
+                        echo `echo "set terminal png size $graph_width,490
+                        set xdata time
+                        set timefmt \"%Y %m %d %H %M %S\"
+                        set output \"$images/graph-cus-$id-$n.png\"
+                        set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]
+                        set format x \"%H:%M\n%m/%d\"
+                        set yrange [0:100]
+                        set y2range [0:35]
+                        set my2tics 10
+                        set ytics 10
+                        set y2tics 5
+                        set style line 11 lc rgb '#808080' lt 1
+                        set border 3 back ls 11
+                        set tics nomirror
+                        set style line 12 lc rgb '#808080' lt 0 lw 1
+                        set grid xtics ytics back ls 12
+                        set style line 1 lc rgb '#FF3100' pt 0 ps 1 lt 1 lw 2
+                        set style line 2 lc rgb '#0772A1' pt 0 ps 1 lt 1 lw 2
+                        set style line 3 lc rgb '#00B74A' pt 0 ps 1 lt 1 lw 2
+                        set style line 4 lc rgb '#91180B' pt 0 ps 1 lt 1 lw 1
+                        set style line 5 lc rgb '#582557' pt 0 ps 1 lt 1 lw 1
+                        set style line 6 lc rgb '#04834C' pt 0 ps 1 lt 1 lw 1
+                        set style line 7 lc rgb '#DC32E6' pt 0 ps 1 lt 1 lw 1
+                        set style line 8 lc rgb '#957EF9' pt 0 ps 1 lt 1 lw 1
+                        set style line 9 lc rgb '#CC8D9C' pt 0 ps 1 lt 1 lw 1
+                        set style line 10 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1
+                        set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1
+                        #set xlabel \"Date and Time\"
+                        #set ylabel \"% Humidity\"
+                        set title \"$monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
+                        unset key
+                        plot \"<awk '\$10 == $sensor' $sensor_log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
+                        \"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, \\
+                        \"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
+                        \"<awk '\$15 == $sensor' $relay_log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
+                        \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\
+                        \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\
+                        \"\" using 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1, \\
+                        \"\" using 1:11 index 0 title \"HUMI\" w impulses ls 8 axes x1y1, \\
+                        \"\" using 1:12 index 0 title \"CFAN\" w impulses ls 9 axes x1y1, \\
+                        \"\" using 1:13 index 0 title \"XXXX\" w impulses ls 10 axes x1y1, \\
+                        \"\" using 1:14 index 0 title \"XXXX\" w impulses ls 11 axes x1y1" | gnuplot`;
+                        echo "<img src=image.php?span=cus&mod=" . $id2 . "&sensor=" . $n . ">";
+                    }
                     echo "<p><a href='javascript:open_legend()'>Brief Graph Legend</a> - <a href='javascript:open_legend_full()'>Full Graph Legend</a></p></center>";
                 }
             } else if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] == 'guest') {
