@@ -269,6 +269,91 @@ plot \"$LOGPATH/sensor.log\" using 1:7 index 0 notitle w lp ls 1 axes x1y2, \\
      \"\" using 1:8 index 0 notitle w lp ls 2 axes x1y1, \\
      \"\" using 1:9 index 0 notitle w lp ls 3 axes x1y2
 unset multiplot" | gnuplot
+
+echo "reset
+set terminal png size 1000,490
+set xdata time
+set timefmt \"%Y %m %d %H %M %S\"
+set output \"$IMAGEPATH/graph-main1-$id.png\"
+set xrange [\"`date --date=yesterday +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
+set format x \"%H:%M\n%m/%d\"
+set yrange [$Y1MIN:$Y1MAX]
+set y2range [$Y2MIN:$Y2MAX]
+set my2tics 10
+set ytics 10
+set y2tics 5
+set style line 11 lc rgb '#808080' lt 1
+set border 3 back ls 11
+set tics nomirror
+set style line 12 lc rgb '#808080' lt 0 lw 1
+set grid xtics ytics back ls 12
+set style line 1 lc rgb '${graph_colors[0]}' pt 0 ps 1 lt 1 lw 2
+set style line 2 lc rgb '${graph_colors[1]}' pt 0 ps 1 lt 1 lw 2
+set style line 3 lc rgb '${graph_colors[2]}' pt 0 ps 1 lt 1 lw 2
+set style line 4 lc rgb '${graph_colors[3]}' pt 0 ps 1 lt 1 lw 1
+set style line 5 lc rgb '${graph_colors[4]}' pt 0 ps 1 lt 1 lw 1
+set style line 6 lc rgb '${graph_colors[5]}' pt 0 ps 1 lt 1 lw 1
+set style line 7 lc rgb '${graph_colors[6]}' pt 0 ps 1 lt 1 lw 1
+set style line 8 lc rgb '${graph_colors[7]}' pt 0 ps 1 lt 1 lw 1
+set style line 9 lc rgb '${graph_colors[8]}' pt 0 ps 1 lt 1 lw 1
+set style line 10 lc rgb '${graph_colors[9]}' pt 0 ps 1 lt 1 lw 1
+set style line 11 lc rgb '${graph_colors[10]}' pt 0 ps 1 lt 1 lw 1
+set title \"Sensor 1: `date --date=yesterday +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
+unset key
+plot \"<awk '\$10 == 1' $LOGPATH/sensor.log\" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, \\
+     \"\" using 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, \\
+     \"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
+     \"<awk '\$15 == 1' $LOGPATH/relay.log\" u 1:7 index 0 title \"$relay1name\" w impulses ls 4 axes x1y1, \\
+     \"\" using 1:8 index 0 title \"$relay2name\" w impulses ls 5 axes x1y1, \\
+     \"\" using 1:9 index 0 title \"$relay3name\" w impulses ls 6 axes x1y1, \\
+     \"\" using 1:10 index 0 title \"$relay4name\" w impulses ls 7 axes x1y1, \\
+     \"\" using 1:11 index 0 title \"$relay5name\" w impulses ls 8 axes x1y1, \\
+     \"\" using 1:12 index 0 title \"$relay6name\" w impulses ls 9 axes x1y1, \\
+     \"\" using 1:13 index 0 title \"$relay7name\" w impulses ls 10 axes x1y1, \\
+     \"\" using 1:14 index 0 title \"$relay8name\" w impulses ls 11 axes x1y1" | gnuplot
+     
+echo "reset
+set terminal png size 1000,490
+set xdata time
+set timefmt \"%Y %m %d %H %M %S\"
+set output \"$IMAGEPATH/graph-main2-$id.png\"
+set xrange [\"`date --date=yesterday +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
+set format x \"%H:%M\n%m/%d\"
+set yrange [$Y1MIN:$Y1MAX]
+set y2range [$Y2MIN:$Y2MAX]
+set my2tics 10
+set ytics 10
+set y2tics 5
+set style line 11 lc rgb '#808080' lt 1
+set border 3 back ls 11
+set tics nomirror
+set style line 12 lc rgb '#808080' lt 0 lw 1
+set grid xtics ytics back ls 12
+set style line 1 lc rgb '${graph_colors[0]}' pt 0 ps 1 lt 1 lw 2
+set style line 2 lc rgb '${graph_colors[1]}' pt 0 ps 1 lt 1 lw 2
+set style line 3 lc rgb '${graph_colors[2]}' pt 0 ps 1 lt 1 lw 2
+set style line 4 lc rgb '${graph_colors[3]}' pt 0 ps 1 lt 1 lw 1
+set style line 5 lc rgb '${graph_colors[4]}' pt 0 ps 1 lt 1 lw 1
+set style line 6 lc rgb '${graph_colors[5]}' pt 0 ps 1 lt 1 lw 1
+set style line 7 lc rgb '${graph_colors[6]}' pt 0 ps 1 lt 1 lw 1
+set style line 8 lc rgb '${graph_colors[7]}' pt 0 ps 1 lt 1 lw 1
+set style line 9 lc rgb '${graph_colors[8]}' pt 0 ps 1 lt 1 lw 1
+set style line 10 lc rgb '${graph_colors[9]}' pt 0 ps 1 lt 1 lw 1
+set style line 11 lc rgb '${graph_colors[10]}' pt 0 ps 1 lt 1 lw 1
+set title \"Sensor 2: `date --date=yesterday +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
+unset key
+plot \"<awk '\$10 == 2' $LOGPATH/sensor.log\" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, \\
+     \"\" using 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, \\
+     \"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
+     \"<awk '\$15 == 2' $LOGPATH/relay.log\" u 1:7 index 0 title \"$relay1name\" w impulses ls 4 axes x1y1, \\
+     \"\" using 1:8 index 0 title \"$relay2name\" w impulses ls 5 axes x1y1, \\
+     \"\" using 1:9 index 0 title \"$relay3name\" w impulses ls 6 axes x1y1, \\
+     \"\" using 1:10 index 0 title \"$relay4name\" w impulses ls 7 axes x1y1, \\
+     \"\" using 1:11 index 0 title \"$relay5name\" w impulses ls 8 axes x1y1, \\
+     \"\" using 1:12 index 0 title \"$relay6name\" w impulses ls 9 axes x1y1, \\
+     \"\" using 1:13 index 0 title \"$relay7name\" w impulses ls 10 axes x1y1, \\
+     \"\" using 1:14 index 0 title \"$relay8name\" w impulses ls 11 axes x1y1" | gnuplot
+
       ;;
     all)
       $0 1h $2

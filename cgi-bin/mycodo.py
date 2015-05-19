@@ -65,7 +65,7 @@ relayName = [0] * 9
 relayTrigger = [0] * 9
 
 # Sensors
-numSensors = None
+numSensors = 0
 sensorName = [0] * 5
 sensorDevice = [0] * 5
 sensorPin = [0] * 5

@@ -717,6 +717,8 @@ $error_code = "no";
                         } else {
                             if ($ref) shell_exec($graph_exec . ' dayweek ' . $id);
                             echo "main&mod=" . $id . ">";
+                            echo "<img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=main1&mod=" . $id . ">";
+                            echo "<img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=main2&mod=" . $id . ">";
                         }
                     }
                     ?>
