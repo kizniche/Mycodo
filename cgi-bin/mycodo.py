@@ -70,6 +70,7 @@ sensorName = [0] * 5
 sensorDevice = [0] * 5
 sensorPin = [0] * 5
 sensorPeriod = [0] * 5
+sensorActivated = [0] * 5
 
 # Temperature PID
 relayTemp = [0] * 5
@@ -175,16 +176,29 @@ class ComServer(rpyc.Service):
         write_config()
         ClientQue = 'TimerChange'
         return 1
+    def exposed_ChangeSensor(self, sensornumber, sensorname, sensordevice, sensorpin, sensorperiod, sensoractivated):
+        global sensorName
+        global sensorDevice
+        global sensorPin
+        global sensorPeriod
+        global sensorActivated
+        logging.info("[Client command] Change sensor %s: %s: Device: %s Pin: %s Period: %s sec. Activated: %s",
+            sensornumber, sensorname, sensordevice, sensorpin, sensorperiod, sensoractivated)
+        sensorName[sensornumber] = sensorname
+        sensorDevice[sensornumber] = sensordevice
+        sensorPin[sensornumber] = sensorpin
+        sensorPeriod[sensornumber] = sensorperiod
+        sensorActivated[sensornumber] = sensoractivated
+        write_config()
+        return 1
     def exposed_ChangeTempOR(self, sensornum, override):
         global TempOR
         global Temp_PID_number
         global Temp_PID_Down
         global Temp_PID_Up
-        
-        TempOR[sensornum] = override
         logging.info("[Client command] Change TempOR for sensor %s to %s",
             sensornum, override)
-        
+        TempOR[sensornum] = override
         Temp_PID_number = sensornum
         TempRes = 1
         Temp_PID_Down = 1
@@ -208,7 +222,6 @@ class ComServer(rpyc.Service):
         global Temp_PID_number
         global Temp_PID_Down
         global Temp_PID_Up
-        
         logging.info("[Client command] Change Temp PID for sensor %s: Relay: %s Set: %s P: %s I: %s D: %s Period: %s",
             sensornum, relay, set, p , i, d, period)
         relayTemp[sensornum] = relay
@@ -229,14 +242,12 @@ class ComServer(rpyc.Service):
             Temp_PID_Up = 1
             while Temp_PID_Up:
                 time.sleep(0.1)
-
         return 1
     def exposed_ChangeHumOR(self, sensornum, override):
         global HumOR
         global Hum_PID_number
         global Hum_PID_Down
         global Hum_PID_Up
-        
         HumOR[sensornum] = override
         logging.info("[Client command] Change HumOR for sensor %s to %s",
             sensornum, override)
@@ -264,7 +275,6 @@ class ComServer(rpyc.Service):
         global Hum_PID_number
         global Hum_PID_Down
         global Hum_PID_Up
-        
         logging.info("[Client command] Change Hum PID for sensor %s: Relay: %s Set: %s P: %s I: %s D: %s Period: %s",
             sensornum, relay, set, p , i, d, period)
         relayHum[sensornum] = relay
@@ -285,7 +295,6 @@ class ComServer(rpyc.Service):
             Hum_PID_Up = 1
             while Hum_PID_Up:
                 time.sleep(0.1)
-                
         return 1
     def exposed_ChangeRelayNames(self, relayname1, relayname2, relayname3,
             relayname4, relayname5, relayname6, relayname7, relayname8):
@@ -333,70 +342,6 @@ class ComServer(rpyc.Service):
         logging.info("[Client command] Change Relay Triggers: 1: %s, 2: %s, 3: %s, 4: %s, 5: %s, 6: %s, 7: %s, 8: %s",
             relayTrigger[1], relayTrigger[2], relayTrigger[3], relayTrigger[4],
             relayTrigger[5], relayTrigger[6], relayTrigger[7], relayTrigger[8])
-        write_config()
-        return 1
-    def exposed_ChangeSensorNames(self, sensorname1, sensorname2, sensorname3,
-            sensorname4, sensorname5, sensorname6, sensorname7, sensorname8):
-        global sensorName
-        sensorName[1] = sensorname1
-        sensorName[2] = sensorname2
-        sensorName[3] = sensorname3
-        sensorName[4] = sensorname4
-        sensorName[5] = sensorname5
-        sensorName[6] = sensorname6
-        sensorName[7] = sensorname7
-        sensorName[8] = sensorname8
-        logging.info("[Client command] Change Sensor Names: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s",
-            sensorName[1], sensorName[2], sensorName[3], sensorName[4],
-            sensorName[5], sensorName[6], sensorName[7], sensorName[8])
-        write_config()
-        return 1
-    def exposed_ChangeSensorDevices(self, sensordevice1, sensordevice2, sensordevice3,
-            sensordevice4, sensordevice5, sensordevice6, sensordevice7, sensordevice8):
-        global sensorDevice
-        sensorDevice[1] = sensordevice1
-        sensorDevice[2] = sensordevice2
-        sensorDevice[3] = sensordevice3
-        sensorDevice[4] = sensordevice4
-        sensorDevice[5] = sensordevice5
-        sensorDevice[6] = sensordevice6
-        sensorDevice[7] = sensordevice7
-        sensorDevice[8] = sensordevice8
-        logging.info("[Client command] Change Sensor Devices: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s",
-            sensorDevice[1], sensorDevice[2], sensorDevice[3], sensorDevice[4],
-            sensorDevice[5], sensorDevice[6], sensorDevice[7], sensorDevice[8])
-        write_config()
-        return 1
-    def exposed_ChangeSensorPins(self, sensorpin1, sensorpin2, sensorpin3,
-            sensorpin4, sensorpin5, sensorpin6, sensorpin7, sensorpin8):
-        global sensorPin
-        sensorPin[1] = sensorpin1
-        sensorPin[2] = sensorpin2
-        sensorPin[3] = sensorpin3
-        sensorPin[4] = sensorpin4
-        sensorPin[5] = sensorpin5
-        sensorPin[6] = sensorpin6
-        sensorPin[7] = sensorpin7
-        sensorPin[8] = sensorpin8
-        logging.info("[Client command] Change Sensor Pins: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s",
-            sensorPin[1], sensorPin[2], sensorPin[3], sensorPin[4],
-            sensorPin[5], sensorPin[6], sensorPin[7], sensorPin[8])
-        write_config()
-        return 1   
-    def exposed_ChangeSensorPeriods(self, sensorperiod1, sensorperiod2, sensorperiod3,
-            sensorperiod4, sensorperiod5, sensorperiod6, sensorperiod7, sensorperiod8):
-        global sensorPeriod
-        sensorPeriod[1] = sensorperiod1
-        sensorPeriod[2] = sensorperiod2
-        sensorPeriod[3] = sensorperiod3
-        sensorPeriod[4] = sensorperiod4
-        sensorPeriod[5] = sensorperiod5
-        sensorPeriod[6] = sensorperiod6
-        sensorPeriod[7] = sensorperiod7
-        sensorPeriod[8] = sensorperiod8
-        logging.info("[Client command] Change Sensor Periods: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s",
-            sensorPeriod[1], sensorPeriod[2], sensorPeriod[3], sensorPeriod[4],
-            sensorPeriod[5], sensorPeriod[6], sensorPeriod[7], sensorPeriod[8])
         write_config()
         return 1
     def exposed_WriteSensorLog(self, sensor):
@@ -668,7 +613,7 @@ def daemon(output, log):
     # Initial sensor readings
     logging.info("[Daemon] Conducting initial temperature/humidity sensor readings with %s sensors", numSensors)
     for i in range(1, numSensors+1):
-        if sensorDevice[i] != 'Other':
+        if sensorDevice[i] != 'Other' and sensorActivated[i] == 1:
             read_sensors(0, i)
     
     timerLogBackup = int(time.time()) + 21600 # 21600 seconds = 6 hours
@@ -759,7 +704,7 @@ def daemon(output, log):
         
         # Write sensor log
         for i in range(1, int(numSensors)+1):
-            if int(time.time()) > timerSensorLog[i] and sensorDevice[i] != 'Other':
+            if int(time.time()) > timerSensorLog[i] and sensorDevice[i] != 'Other' and sensorActivated[i] == 1:
                 logging.debug("[Timer Expiration] Read sensor %s every %s seconds: Write sensor log", i, sensorPeriod[i])
                 read_sensors(0, i)
                 write_sensor_log(i)
@@ -798,7 +743,7 @@ def temperature_monitor(ThreadName, sensor):
     p_temp.setPoint(setTemp[sensor])
     
     while (TAlive[sensor]):
-        if TempOR[sensor] == 0 and Temp_PID_Down == 0 and relayTemp[sensor] != 0:
+        if TempOR[sensor] == 0 and Temp_PID_Down == 0 and relayTemp[sensor] != 0 and sensorActivated[sensor] == 1:
             if int(time.time()) > timerTemp:
                 logging.debug("[PID Temperature-%s] Reading temperature...", sensor)
                 read_sensors(1, sensor)
@@ -835,7 +780,7 @@ def humidity_monitor(ThreadName, sensor):
     p_hum.setPoint(setHum[sensor])
 
     while (HAlive[sensor]):
-        if HumOR[sensor] == 0 and Hum_PID_Down == 0 and relayHum[sensor] != 0:
+        if HumOR[sensor] == 0 and Hum_PID_Down == 0 and relayHum[sensor] != 0 and sensorActivated[sensor] == 1:
             if int(time.time()) > timerHum:
                 logging.debug("[PID Humidity-%s] Reading humidity...", sensor)
                 read_sensors(1, sensor)
@@ -1122,6 +1067,7 @@ def read_config(silent):
         sensorDevice[i] = config.get('Sensor%d' % i, 'sensor%ddevice' % i)
         sensorPin[i] = config.getint('Sensor%d' % i, 'sensor%dpin' % i)
         sensorPeriod[i] = config.getint('Sensor%d' % i, 'sensor%dperiod' % i)
+        sensorActivated[i] = config.getint('Sensor%d' % i, 'sensor%dactivated' % i)
         
         TempPeriod[i] = config.getint('TempPID%d' % i, 'temp%dperiod' % i)
         relayTemp[i] = config.getint('TempPID%d' % i, 'temp%drelay' % i)
@@ -1194,6 +1140,7 @@ def write_config():
         config.set('Sensor%d' % i, 'sensor%ddevice' % i, sensorDevice[i])
         config.set('Sensor%d' % i, 'sensor%dpin' % i, sensorPin[i])
         config.set('Sensor%d' % i, 'sensor%dperiod' % i, sensorPeriod[i])
+        config.set('Sensor%d' % i, 'sensor%dactivated' % i, sensorActivated[i])
         
         config.add_section('TempPID%d' % i)
         config.set('TempPID%d' % i, 'temp%dperiod' % i, TempPeriod[i])

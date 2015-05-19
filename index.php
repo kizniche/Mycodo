@@ -170,6 +170,7 @@ if ($login->isUserLoggedIn() == true) {
     // All commands that elevated (!= guest) privileges are required
     for ($p = 1; $p <= 8; $p++) {
         if (isset($_POST['R' . $p]) ||
+                isset($_POST['Change' . $p . 'Sensor']) ||
                 isset($_POST[$p . 'secON']) ||
                 isset($_POST['ChangeTimer' . $p]) || 
                 isset($_POST['Timer' . $p . 'StateChange']) ||
@@ -179,6 +180,18 @@ if ($login->isUserLoggedIn() == true) {
                 isset($_POST['Change' . $p . 'HumOR'])) {
             if ($_SESSION['user_name'] != 'guest') {
 
+                // Set sensor variables
+                if (isset($_POST['Change' . $p . 'Sensor'])) {
+                    $sensorname = str_replace(' ', '', $_POST['sensor' . $i . 'name']);
+                    $sensordevice = str_replace(' ', '', $_POST['sensor' . $i . 'device']);
+                    $sensorpin = str_replace(' ', '', $_POST['sensor' . $i . 'pin']);
+                    $sensorperiod = str_replace(' ', '', $_POST['sensor' . $i . 'period']);
+                    if (isset($_POST['sensor' . $i . 'activated'])) $sensoractivated = 1;
+                    else $sensoractivated = 0;
+                    $editconfig = "$mycodo_client --modsensor $i $sensorname $sensordevice $sensorpin $sensorperiod $sensoractivated";
+                    shell_exec($editconfig);
+                }
+            
                 // Request Temperature PID override to be turned on or off
                 if (isset($_POST['Change' . $p . 'TempOR'])) {
                     $tempor = $_POST['Change' . $p . 'TempOR'];
@@ -294,10 +307,8 @@ if ($login->isUserLoggedIn() == true) {
         }
     }
     
-    if (isset($_POST['WriteSensorLog']) || isset($_POST['ChangeSensor']) ||
-            isset($_POST['ChangeSensorName']) || isset($_POST['ChangeSensorDevice']) ||
-            isset($_POST['ChangeSensorPin']) || isset($_POST['ChangeSensorPeriod']) ||
-            isset($_POST['ModRelayPin']) || isset($_POST['ModRelayName']) || isset($_POST['ModRelayTrigger']) ||
+    if (isset($_POST['WriteSensorLog']) || isset($_POST['ModRelayPin']) ||
+            isset($_POST['ModRelayName']) || isset($_POST['ModRelayTrigger']) ||
             isset($_POST['Auth']) || isset($_POST['Capture']) ||
             isset($_POST['start-stream']) || isset($_POST['stop-stream']) ||
             isset($_POST['ChangeNoRelays']) || isset($_POST['ChangeNoSensors']) ||
@@ -341,50 +352,6 @@ if ($login->isUserLoggedIn() == true) {
             // Request a sensor read and sensor log write
              if (isset($_POST['WriteSensorLog'])) {
                 $editconfig = "$mycodo_client -w 0";
-                shell_exec($editconfig);
-            }
-            
-            // Request the sensor name(s) be renamed
-            if (isset($_POST['ChangeSensorName'])) {
-                for ($i = 1; $i <= 8; $i++) {
-                    if (isset($_POST['sensor' . $i . 'name'])) {
-                        ${'sensor' . $i . 'name'} = str_replace(' ', '', $_POST['sensor' . $i . 'name']);
-                    }
-                }
-                $editconfig = "$mycodo_client --modsensornames $sensor1name $sensor2name $sensor3name $sensor4name $sensor5name $sensor6name $sensor7name $sensor8name";
-                shell_exec($editconfig);
-            }
-            
-            // Request the sensor device(s) be changed
-            if (isset($_POST['ChangeSensorDevice'])) {
-                for ($i = 1; $i <= 8; $i++) {
-                    if (isset($_POST['sensor' . $i . 'device'])) {
-                        ${'sensor' . $i . 'device'} = str_replace(' ', '', $_POST['sensor' . $i . 'device']);
-                    }
-                }
-                $editconfig = "$mycodo_client --modsensordevices $sensor1device $sensor2device $sensor3device $sensor4device $sensor5device $sensor6device $sensor7device $sensor8device";
-                shell_exec($editconfig);
-            }
-            
-            // Request the sensor pins(s) be renumbered
-            if (isset($_POST['ChangeSensorPin'])) {
-                for ($i = 1; $i <= 8; $i++) {
-                    if (isset($_POST['sensor' . $i . 'pin'])) {
-                        ${'sensor' . $i . 'pin'} = str_replace(' ', '', $_POST['sensor' . $i . 'pin']);
-                    }
-                }
-                $editconfig = "$mycodo_client --modsensorpins $sensor1pin $sensor2pin $sensor3pin $sensor4pin $sensor5pin $sensor6pin $sensor7pin $sensor8pin";
-                shell_exec($editconfig);
-            }
-            
-            // Request the sensor period(s) be reconfigured
-            if (isset($_POST['ChangeSensorPeriod'])) {
-                for ($i = 1; $i <= 8; $i++) {
-                    if (isset($_POST['sensor' . $i . 'period'])) {
-                        ${'sensor' . $i . 'period'} = str_replace(' ', '', $_POST['sensor' . $i . 'period']);
-                    }
-                }
-                $editconfig = "$mycodo_client --modsensorperiods $sensor1period $sensor2period $sensor3period $sensor4period $sensor5period $sensor6period $sensor7period $sensor8period";
                 shell_exec($editconfig);
             }
             
@@ -875,19 +842,20 @@ $error_code = "no";
                     <?php if ($numsensors > 0) { ?>
                     
                     <div style="float: left; padding-bottom: 3em; padding-right: 1em;">
-                        <div style="padding-bottom: 2em;">
-                        <table class="pid">
                         <?php for ($i = 1; $i <= $numsensors; $i++) {
                             $device = ${"sensor" . $i . "device"};
                             ?>
+                            <div style="padding-bottom: 2em;">
+                            <table class="pid">
                             <tr class="shade">
                                 <td align=center>Sensor<br>No.</td>
                                 <td align=center>Sensor<br>Name</td>
                                 <td align=center>Sensor<br>Device</td>
                                 <td align=center>GPIO<br>Pin</td>
-                                <td align=center>Per.<br>(Sec.)</td>
+                                <td align=center>Write<br>(Sec.)</td>
+                                <td align=center>Use</td>
                             </tr>
-                            <tr style="height: 5em;">
+                            <tr style="height: 2.5em;">
                                 <td class="shade" style="vertical-align: middle;" align=center>
                                     <?php echo $i; ?>
                                 </td>
@@ -895,7 +863,7 @@ $error_code = "no";
                                     <input type="text" value="<?php echo ${"sensor" . $i . "name"}; ?>" maxlength=12 size=10 name="sensor<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
                                 </td>
                                 <td>
-                                    <select style="width: 80px;" name="<?php echo $i; ?>SensorDevice">
+                                    <select style="width: 80px;" name="sensor<?php echo $i; ?>device">
                                         <option <?php if ($device == 'DHT11') echo "selected=\"selected\""; ?> value="DHT11">DHT11</option>
                                         <option <?php if ($device == 'DHT22') echo "selected=\"selected\""; ?> value="DHT22">DHT22</option>
                                         <option <?php if ($device == 'AM2302') echo "selected=\"selected\""; ?> value="AM2302">AM2302</option>
@@ -908,32 +876,19 @@ $error_code = "no";
                                 <td>
                                     <input type="text" value="<?php echo ${"sensor" . $i . "period"}; ?>" maxlength=3 size=1 name="sensor<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
                                 </td>
+                                <td>
+                                    <input type="checkbox" name="sensor<?php echo $i; ?>activated" value="1" <?php if (${'sensor' . $i . 'activated'} == 1) echo "checked"; ?>> 
+                                </td>
                             </tr>
-                            <?php if ($i == $numsensors) { ?>
-                                <tr>
-                                    <td>
-                                    </td>
-                                    <td align=center>
-                                        <input type="submit" name="ChangeSensorName" value="Rename">
-                                    </td>
-                                    <td align=center>
-                                        <input type="submit" name="ChangeSensorDevice" value="Set">
-                                    </td>
-                                    <td align=center>
-                                        <input type="submit" name="ChangeSensorPin" value="Set">
-                                    </td>
-                                    <td align=center>
-                                        <input type="submit" name="ChangeSensorPeriod" value="Set">
-                                    </td>
-                                </tr>
-                            </table>
-                            </div>
+                            <tr style=" height: 2.5em;">
+                            <td colspan=6 align=center>
+                            <input type="submit" name="Change<?php echo $i; ?>Sensor" value="Set Sensor <?php echo $i; ?> Variables">
+                            </td>
+                            </tr>
+                        </table>
+                        </div>
                     <?php
-                            } else {
-                                echo '</table></div><div style="padding-bottom: 2em;"><table class="pid" style="height: 11em; padding-bottom: 2em;">';
-                            }
-                        }
-                    }
+                    } }
                     ?>
                     </div>
                     
@@ -946,7 +901,7 @@ $error_code = "no";
                                 <td align=center>Current<br>State</td>
                                 <td style="vertical-align: middle;" align=center>Relay<br>No.</td>
                                 <td align=center>PID<br>Set</td>
-                                <td style="vertical-align: middle;" align=center>Per<br>(Sec.)</td>
+                                <td style="vertical-align: middle;" align=center>Read<br>(Sec.)</td>
                                 <td style="vertical-align: middle;" align=center>P</td>
                                 <td style="vertical-align: middle;" align=center>I</td>
                                 <td style="vertical-align: middle;" align=center>D</td>

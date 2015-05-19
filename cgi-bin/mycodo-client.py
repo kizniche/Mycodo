@@ -35,14 +35,8 @@ def usage():
     print '           Modify relay pins (Using BCM numbering)'
     print '        --modrelaytrigger [Trig1] [Trig2] [Trig3] [Trig4] [Trig5] [Trig6] [Trig7] [Trig8]'
     print '           Modify the trigger state of relays'
-    print '        --modsensornames [Name1] [Name2] [Name3] [Name4]'
-    print '           Modify sensor names (Restrict to a maximum of 12 characters each)'
-    print '        --modsensordevices [Device1] [Device2] [Device3] [Device4]'
-    print '           Modify sensor names (Restrict to a maximum of 12 characters each)'
-    print '        --modsensorpins [Pin1] [Pin2] [Pin3] [Pin4]'
-    print '           Modify sensor pins (Using BCM numbering)'
-    print '        --modsensorperiods [Per1] [Per2] [Per3] [Per4]'
-    print '           Modify the period between sensor reads'
+    print '        --modsensor SENSOR_NUM NAME DEVICE PIN PERIOD ACTIVATED'
+    print '           Modify sensor variables'
     print '        --modtimer [Timer Number] [State] [Relay Number] [Duration On] [Duration Off]'
     print '           Modify custom timers, State: 0=off 1=on, durations in seconds'
     print '        --modvar [Var1Name] [Var1Value] [Var2Name] [Var2Value]...'
@@ -60,8 +54,7 @@ def menu():
         opts, args = getopt.getopt(
             sys.argv[1:], 'o:p:r:s:tw:', 
             ["modtempOR", "modtempPID", "modhumOR", "modhumPID", "modrelaynames=", "modrelaypins=", "modrelaytrigger=",
-            "modsensornames", "modsensordevices", "modsensorpins", "modsensorperiods",
-            "modtimer=", "modvar=", "pid=", "relay=", "terminate", "writelog="])
+            "modsensor", "modtimer=", "modvar=", "pid=", "relay=", "terminate", "writelog="])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -120,55 +113,16 @@ def menu():
             else:
                 print "Fail"
             sys.exit(0)
-        elif opt == "--modsensornames":
-            print "%s [Remote command] Set Sensor Names: %s %s %s %s %s %s %s %s: Server returned:" % (
+        elif opt == "--modsensor":
+            print "%s [Remote command] Set Sensor %s: %s %s %s %s %s: Server returned:" % (
                 Timestamp(), 
-                sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], 
-                sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9]),
-            if c.root.ChangeSensorNames(
-                sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], 
-                sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9]) == 1:
+                sys.argv[2], sys.argv[3], sys.argv[4],
+                sys.argv[5], sys.argv[6], sys.argv[7]),
+            if c.root.ChangeSensor(
+                int(float(sys.argv[2])), sys.argv[3], sys.argv[4],
+                int(float(sys.argv[5])), int(float(sys.argv[6])), int(float(sys.argv[7]))) == 1:
                 print "Success"
             else:
-                print "Fail"
-            sys.exit(0)
-        elif opt == "--modsensordevices":
-            print "%s [Remote command] Set Sensor Devicess: %s %s %s %s %s %s %s %s: Server returned:" % (
-                Timestamp(), int(sys.argv[2]), int(sys.argv[3]), 
-                int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6]), 
-                int(sys.argv[7]), int(sys.argv[8]), int(sys.argv[9])),
-            if c.root.ChangeSensorDevices(
-                int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), 
-                int(sys.argv[5]), int(sys.argv[6]), int(sys.argv[7]), 
-                int(sys.argv[8]), int(sys.argv[9])) == 1: 
-                print "Success"
-            else: 
-                print "Fail"
-            sys.exit(0)
-        elif opt == "--modsensorpins":
-            print "%s [Remote command] Set Sensor Pins: %s %s %s %s %s %s %s %s: Server returned:" % (
-                Timestamp(), int(sys.argv[2]), int(sys.argv[3]), 
-                int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6]), 
-                int(sys.argv[7]), int(sys.argv[8]), int(sys.argv[9])),
-            if c.root.ChangeSensorPins(
-                int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), 
-                int(sys.argv[5]), int(sys.argv[6]), int(sys.argv[7]), 
-                int(sys.argv[8]), int(sys.argv[9])) == 1: 
-                print "Success"
-            else: 
-                print "Fail"
-            sys.exit(0)
-        elif opt == "--modsensorperiods":
-            print "%s [Remote command] Set Sensor Periods: %s %s %s %s %s %s %s %s: Server returned:" % (
-                Timestamp(), int(sys.argv[2]), int(sys.argv[3]), 
-                int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6]), 
-                int(sys.argv[7]), int(sys.argv[8]), int(sys.argv[9])),
-            if c.root.ChangeSensorPeriods(
-                int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), 
-                int(sys.argv[5]), int(sys.argv[6]), int(sys.argv[7]), 
-                int(sys.argv[8]), int(sys.argv[9])) == 1: 
-                print "Success"
-            else: 
                 print "Fail"
             sys.exit(0)
         elif opt == "--modrelaynames":
