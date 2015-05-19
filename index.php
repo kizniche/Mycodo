@@ -465,14 +465,20 @@ if ($login->isUserLoggedIn() == true) {
         }
     }
     
-    $last_sensor = `tail -n 1 $sensor_log`;
-    $sensor_explode = explode(" ", $last_sensor);
-    $t_c = $sensor_explode[6];
-    $t_f = round(($t_c*(9/5) + 32), 1);
-    $settemp_f = round(($settemp*(9/5) + 32), 1);
-    $hum = $sensor_explode[7];
-    $dp_c = substr($sensor_explode[8], 0, -1);
-    $dp_f = round(($dp_c*(9/5) + 32), 1);
+    $last_sensor[1] = `awk '$10 == 1' /var/tmp/sensor.log | tail -n 1 $sensor_log`;
+    $last_sensor[2] = `awk '$10 == 2' /var/tmp/sensor.log | tail -n 1 $sensor_log`;
+    $last_sensor[3] = `awk '$10 == 3' /var/tmp/sensor.log | tail -n 1 $sensor_log`;
+    $last_sensor[4] = `awk '$10 == 4' /var/tmp/sensor.log | tail -n 1 $sensor_log`;
+    
+    for ($p = 1; $p <= $numsensors; $p++) {
+        $sensor_explode = explode(" ", $last_sensor[$p]);
+        $t_c[$p] = $sensor_explode[6];
+        $t_f[$p] = round(($t_c[$p]*(9/5) + 32), 1);
+        $hum[$p] = $sensor_explode[7];
+        $dp_c[$p] = substr($sensor_explode[8], 0, -1);
+        $dp_f[$p] = round(($dp_c[$p]*(9/5) + 32), 1);
+    }
+    $settemp_f = round(($temp1set*(9/5) + 32), 1);
     
     $time_now = `date +"%Y-%m-%d %H:%M:%S"`;
     $time_last = `tail -n 1 $sensor_log`;
@@ -548,34 +554,34 @@ $error_code = "no";
     </div>
     <div class="header">
         <div class="header-title">
-            <u>Temperature</u>
+            <u>Temperature (1)</u>
         </div>
         <div>
-            <?php echo number_format((float)$t_c, 1, '.', '') . "&deg;C (" . number_format((float)$t_f, 1, '.', '') . "&deg;F) Now"; ?>
+            <?php echo number_format((float)$t_c[1], 1, '.', '') . "&deg;C (" . number_format((float)$t_f[1], 1, '.', '') . "&deg;F) Now"; ?>
         </div>
         <div>
              <?php 
-                echo number_format((float)$settemp, 1, '.', '') . "&deg;C (" . number_format((float)$settemp_f, 1, '.', '') ."&deg;F) Set";
+                echo number_format((float)$temp1set, 1, '.', '') . "&deg;C (" . number_format((float)$settemp_f, 1, '.', '') ."&deg;F) Set";
             ?>
         </div>
     </div>
     <div class="header">
         <div class="header-title">
-            <u>Humidity</u>
+            <u>Humidity (1)</u>
         </div>
         <div>
-            <?php echo number_format((float)$hum, 1, '.', '') . "% Now"; ?>
+            <?php echo number_format((float)$hum[1], 1, '.', '') . "% Now"; ?>
         </div>
         <div>
-             <?php echo number_format((float)$sethum, 1, '.', '') . "% Set"; ?>
+             <?php echo number_format((float)$hum1set, 1, '.', '') . "% Set"; ?>
         </div>
     </div>
     <div class="header">
         <div class="header-title">
-            <u>Dew Point</u>
+            <u>Dew Point (1)</u>
         </div>
         <div>
-            <?php echo "${dp_c}&deg;C (${dp_f}&deg;F)"; ?>
+            <?php echo "${dp_c[1]}&deg;C (${dp_f[1]}&deg;F)"; ?>
         </div>
     </div>
     <div class="header">
@@ -669,7 +675,7 @@ $error_code = "no";
                         $_SESSION["ID"] = $id;
                         for ($n = 1; $n <= $numsensors; $n++ ) {
                             shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
-                            echo "<div style=\"padding-bottom: 4em;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=main&mod=" . $id . "&sensor=" . $n . "></div>";
+                            echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=main&mod=" . $id . "&sensor=" . $n . "></div>";
                         }
                     } else {
                         $id = $_SESSION["ID"];
@@ -678,7 +684,7 @@ $error_code = "no";
                         
                         for ($n = 1; $n <= $numsensors; $n++ ) {
                             if (isset($_GET['page'])) {
-                                echo "<div style=\"padding-bottom: 4em;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
+                                echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
                                 switch ($_GET['page']) {
                                 case 'Main':
                                 if ($ref) shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
@@ -718,7 +724,7 @@ $error_code = "no";
                                 break;
                                 }
                             } else {
-                                echo "<div style=\"padding-bottom: 4em;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
+                                echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
                                 if ($ref) shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
                                 echo "main&mod=" . $id . "&sensor=" . $n . ">";
                             }
@@ -1097,7 +1103,7 @@ $error_code = "no";
                         \"\" using 1:12 index 0 title \"CFAN\" w impulses ls 9 axes x1y1, \\
                         \"\" using 1:13 index 0 title \"XXXX\" w impulses ls 10 axes x1y1, \\
                         \"\" using 1:14 index 0 title \"XXXX\" w impulses ls 11 axes x1y1" | gnuplot`;
-                        echo "<div style=\"width: 100%; text-align: center; padding: 2em 0 2em 0;\"><img src=image.php?span=cus&mod=" . $id2 . "&sensor=" . $n . "></div>";
+                        echo "<div style=\"width: 100%; text-align: center; padding: 1em 0 3em 0;\"><img src=image.php?span=cus&mod=" . $id2 . "&sensor=" . $n . "></div>";
                     }
                     echo "<div style=\"width: 100%; text-align: center;\"><a href='javascript:open_legend()'>Brief Graph Legend</a> - <a href='javascript:open_legend_full()'>Full Graph Legend</a></div>";
                 }
