@@ -508,6 +508,7 @@ def menu():
         print(err) # will print "option -a not recognized"
         usage()
         sys.exit(2)
+
     for opt, arg in opts:
         if opt in ("-d", "--daemon"):
             if (sys.argv[2] == 'v'): a = 'verbose'
@@ -810,6 +811,7 @@ def write_sensor_log(sensor):
 
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
+        
     if not Terminate:
         lock = LockFile(sensor_lock_path)
         while not lock.i_am_locking():
@@ -820,7 +822,9 @@ def write_sensor_log(sensor):
                 logging.warning("[Write Sensor Log] Breaking Lock to Acquire: %s", lock.path)
                 lock.break_lock()
                 lock.acquire()
+
         logging.debug("[Write Sensor Log] Gained lock: %s", lock.path)
+
         try:
             with open(sensor_log_file_tmp, "ab") as sensorlog:
                 sensorlog.write('{0} {1:.1f} {2:.1f} {3:.1f} {4}\n'.format(
@@ -829,6 +833,7 @@ def write_sensor_log(sensor):
                 logging.debug("[Write Sensor Log] Data appended to %s", sensor_log_file_tmp)
         except:
             logging.warning("[Write Sensor Log] Unable to append data to %s", sensor_log_file_tmp)
+
         logging.debug("[Write Sensor Log] Removing lock: %s", lock.path)
         lock.release()
 
@@ -840,6 +845,7 @@ def write_relay_log(relayNumber, relaySeconds, sensor):
         os.makedirs(lock_directory)
     if not Terminate:
         lock = LockFile(relay_lock_path)
+
         while not lock.i_am_locking():
             try:
                 logging.debug("[Write Relay Log] Acquiring Lock: %s", lock.path)
@@ -848,11 +854,14 @@ def write_relay_log(relayNumber, relaySeconds, sensor):
                 logging.warning("[Write Relay Log] Breaking Lock to Acquire: %s", lock.path)
                 lock.break_lock()
                 lock.acquire()
+
         logging.debug("[Write Relay Log] Gained lock: %s", lock.path)
         relay = [0] * 9
+
         for n in range(1, 9):
             if n == relayNumber:
                 relay[relayNumber] = relaySeconds
+
         try:
             with open(relay_log_file_tmp, "ab") as relaylog:
                 relaylog.write('{0} {1} {2} {3} {4} {5} {6} {7} {8} {9}\n'.format(
@@ -861,15 +870,18 @@ def write_relay_log(relayNumber, relaySeconds, sensor):
                     relay[5], relay[6], relay[7], relay[8], sensor))
         except:
             logging.warning("[Write Relay Log] Unable to append data to %s", relay_log_file_tmp)
+
         logging.debug("[Write Relay Log] Removing lock: %s", lock.path)
         lock.release()
 
 # Combines the logs on the SD card with the logs on the temporary file system
 def Concatenate_Logs():
     logging.debug("[Timer Expiration] Run every 6 hours: Concatenate logs")
+
     if not filecmp.cmp(daemon_log_file_tmp, daemon_log_file):
         logging.debug("[Daemon Log] Concatenating daemon logs to %s", daemon_log_file)
         lock = LockFile(daemon_lock_path)
+
         while not lock.i_am_locking():
             try:
                 logging.debug("[Daemon Log] Acquiring Lock: %s", lock.path)
@@ -878,7 +890,9 @@ def Concatenate_Logs():
                 logging.warning("[Daemon Log] Breaking Lock to Acquire: %s", lock.path)
                 lock.break_lock()
                 lock.acquire()
+
         logging.debug("[Daemon Log] Gained lock: %s", lock.path)
+
         try:
             with open(daemon_log_file, 'a') as fout:
                 for line in fileinput.input(daemon_log_file_tmp):
@@ -886,14 +900,17 @@ def Concatenate_Logs():
             logging.debug("[Daemon Log] Appended data to %s", daemon_log_file)
         except:
             logging.warning("[Daemon Log] Unable to append data to %s", daemon_log_file)
+
         open(daemon_log_file_tmp, 'w').close()
         logging.debug("[Daemon Log] Removing lock: %s", lock.path)
         lock.release()
     else:
         logging.debug("[Daemon Log] Daemon logs the same, skipping.")
+
     if not filecmp.cmp(sensor_log_file_tmp, sensor_log_file):
         logging.debug("[Sensor Log] Concatenating sensor logs to %s", sensor_log_file)
         lock = LockFile(sensor_lock_path)
+
         while not lock.i_am_locking():
             try:
                 logging.debug("[Sensor Log] Acquiring Lock: %s", lock.path)
@@ -902,7 +919,9 @@ def Concatenate_Logs():
                 logging.warning("[Sensor Log] Breaking Lock to Acquire: %s", lock.path)
                 lock.break_lock()
                 lock.acquire()
+
         logging.debug("[Sensor Log] Gained lock: %s", lock.path)
+
         try:
             with open(sensor_log_file, 'a') as fout:
                 for line in fileinput.input(sensor_log_file_tmp):
@@ -910,14 +929,17 @@ def Concatenate_Logs():
             logging.debug("[Daemon Log] Appended data to %s", sensor_log_file)
         except:
             logging.warning("[Sensor Log] Unable to append data to %s", sensor_log_file)
+
         open(sensor_log_file_tmp, 'w').close()
         logging.debug("[Sensor Log] Removing lock: %s", lock.path)
         lock.release()
     else:
         logging.debug("[Sensor Log] Sensor logs the same, skipping.")
+
     if not filecmp.cmp(relay_log_file_tmp, relay_log_file):
         logging.debug("[Relay Log] Concatenating relay logs to %s", relay_log_file)
         lock = LockFile(relay_lock_path)
+
         while not lock.i_am_locking():
             try:
                 logging.debug("[Relay Log] Acquiring Lock: %s", lock.path)
@@ -926,7 +948,9 @@ def Concatenate_Logs():
                 logging.warning("[Relay Log] Breaking Lock to Acquire: %s", lock.path)
                 lock.break_lock()
                 lock.acquire()
+
         logging.debug("[Relay Log] Gained lock: %s", lock.path)
+
         try:
             with open(relay_log_file, 'a') as fout:
                 for line in fileinput.input(relay_log_file_tmp):
@@ -934,6 +958,7 @@ def Concatenate_Logs():
             logging.debug("[Daemon Log] Appended data to %s", relay_log_file)
         except:
             logging.warning("[Relay Log] Unable to append data to %s", relay_log_file)
+
         open(relay_log_file_tmp, 'w').close()
         logging.debug("[Relay Log] Removing lock: %s", lock.path)
         lock.release()
@@ -959,39 +984,51 @@ def read_sensors(silent, sensor):
         
     if not Terminate:
         humidity2, tempc2 = Adafruit_DHT.read_retry(device, sensorPin[sensor])
+        
         if humidity2 == None or tempc2 == None:
             logging.warning("[Read Sensor-%s] Could not read temperature/humidity!", sensor)
+            
         if not silent and humidity2 != None and tempc2 != None:
             logging.debug("[Read Sensor-%s] %.1f°C, %.1f%%", sensor, tempc2, humidity2)
+
         time.sleep(2)
+        
         if not silent: 
             logging.debug("[Read Sensor-%s] Taking second Temperature/humidity reading", sensor)
             
     while chktemp and not Terminate and humidity2 != None and tempc2 != None:
         if not Terminate:
             humidity[sensor], tempc[sensor] = Adafruit_DHT.read_retry(device, sensorPin[sensor])
+            
         if humidity[sensor] != 'None' or tempc[sensor] != 'None':
             if not silent and not Terminate: 
                 logging.debug("[Read Sensor-%s] %.1f°C, %.1f%%", sensor, tempc[sensor], humidity[sensor])
                 logging.debug("[Read Sensor-%s] Differences: %.1f°C, %.1f%%", sensor, abs(tempc2-tempc[sensor]), abs(humidity2-humidity[sensor]))
+                
             if abs(tempc2-tempc[sensor]) > 1 or abs(humidity2-humidity[sensor]) > 1 and not Terminate:
                 tempc2 = tempc[sensor]
                 humidity2 = humidity[sensor]
                 chktemp = 1
+                
                 if not silent:
                     logging.debug("[Read Sensor-%s] Successive readings > 1 difference: Rereading", sensor)
+                    
                 time.sleep(2)
             elif not Terminate:
                 chktemp = 0
+
                 if not silent: 
                     logging.debug("[Read Sensor-%s] Successive readings < 1 difference: keeping.", sensor)
+
                 tempf = float(tempc[sensor])*9.0/5.0 + 32.0
                 dewpointc[sensor] = tempc[sensor] - ((100-humidity[sensor]) / 5)
                 #dewpointf[sensor] = dewpointc[sensor] * 9 / 5 + 32
                 #heatindexf =  -42.379 + 2.04901523 * tempf + 10.14333127 * humidity - 0.22475541 * tempf * humidity - 6.83783 * 10**-3 * tempf**2 - 5.481717 * 10**-2 * humidity**2 + 1.22874 * 10**-3 * tempf**2 * humidity + 8.5282 * 10**-4 * tempf * humidity**2 - 1.99 * 10**-6 * tempf**2 * humidity**2
                 #heatindexc[sensor] = (heatindexf - 32) * (5 / 9)
+                
                 if not silent: 
                     logging.debug("[Read Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", sensor, tempc[sensor], humidity[sensor], dewpointc[sensor])
+                   
         else: logging.warning("[Read Sensor-%s] Could not read temperature/humidity!", sensor)
 
 # Read variables from the configuration file
@@ -1105,6 +1142,7 @@ def read_config(silent):
 
     if not silent:
         logging.debug("[Read Config] setTemp: %.1f°C, setHum: %.1f%%, TempOR: %s, HumOR: %s", setTemp[1], setHum[1], TempOR[1], HumOR[1])
+
         for x in range(1,9):
             logging.debug("[Read Config] RelayNum[Name][Pin]: %s[%s][%s]", x, relayName[x], relayPin[x])
 
@@ -1116,6 +1154,7 @@ def write_config():
         os.makedirs(lock_directory)
 
     lock = LockFile(config_lock_path)
+    
     while not lock.i_am_locking():
         try:
             logging.debug("[Write Config] Waiting, Acquiring Lock: %s", lock.path)
@@ -1124,6 +1163,7 @@ def write_config():
             logging.warning("[Write Config] Breaking Lock to Acquire: %s", lock.path)
             lock.break_lock()
             lock.acquire()
+            
     logging.debug("[Write Config] Gained lock: %s", lock.path)
     logging.debug("[Write Config] Writing config file %s", config_file)
     
@@ -1193,8 +1233,11 @@ def write_config():
 # Initialize GPIO
 def gpio_initialize():
     logging.info("[GPIO Initialize] Set GPIO mode to BCM numbering, all as output")
+    
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
+    
+    # Initialize and turn off
     for i in range(1, 9):
         GPIO.setup(relayPin[i], GPIO.OUT)
         if relayTrigger[i] == 0: GPIO.output(relayPin[i], 1)
@@ -1247,6 +1290,7 @@ def relay_on_duration(relay, seconds, sensor):
     
     logging.debug("[Relay Duration] Relay %s (%s) Off (was On for %s sec)", 
         relay, relayName[relay], round(seconds, 1))
+
     return 1
 
 # Check if string represents an integer value
@@ -1302,9 +1346,11 @@ def email():
         server = smtplib.SMTP(smtp_host, smtp_port)
         server.ehlo()
         server.starttls()
+
     server.ehlo
     server.login(smtp_user, smtp_pass)
 
+    # Body of email
     message = "Critical warning!"
     
     msg = MIMEText(message)
