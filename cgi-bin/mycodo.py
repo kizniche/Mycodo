@@ -355,7 +355,7 @@ class ComServer(rpyc.Service):
         if sensor:
             logging.info("[Client command] Read sensor number %s and append log", sensor)
         else:
-            logging.info("[Client command] Read all sensors and append log", sensor)
+            logging.info("[Client command] Read all sensors and append log")
         global change_sensor_log
         change_sensor_log = 1
         while (change_sensor_log):
@@ -656,6 +656,8 @@ def daemon(output, log):
                         write_sensor_log(i)
                 change_sensor_log = 0
             elif ClientQue == 'TerminateServer':
+                logging.info("[Daemon] Turning off relays")
+                Relays_Off()
                 logging.info("[Daemon] Backing up logs")
                 Concatenate_Logs()
                 TAlive = [0] * 5
@@ -1237,9 +1239,15 @@ def gpio_initialize():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
     
-    # Initialize and turn off
+    # Initialize
     for i in range(1, 9):
         GPIO.setup(relayPin[i], GPIO.OUT)
+    
+    Relays_Off()
+
+# Turn Relays Off
+def Relays_Off():
+    for i in range(1, 9):
         if relayTrigger[i] == 0: GPIO.output(relayPin[i], 1)
         else: GPIO.output(relayPin[i], 0)
 

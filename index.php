@@ -1042,7 +1042,7 @@ $error_code = "no";
                         set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1
                         #set xlabel \"Date and Time\"
                         #set ylabel \"% Humidity\"
-                        set title \"Sensor $n $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
+                        set title \"Sensor $n: ${'sensor' . $n . 'name'}  $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
                         unset key
                         plot \"<awk '\\$10 == $n' $sensor_log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
                         \"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, \\
