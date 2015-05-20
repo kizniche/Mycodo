@@ -434,16 +434,16 @@ if ($login->isUserLoggedIn() == true) {
         }
     }
     
-    $last_sensor[1] = `awk '$10 == 1' /var/tmp/sensor.log | tail -n 1 $sensor_log`;
-    $last_sensor[2] = `awk '$10 == 2' /var/tmp/sensor.log | tail -n 1 $sensor_log`;
-    $last_sensor[3] = `awk '$10 == 3' /var/tmp/sensor.log | tail -n 1 $sensor_log`;
-    $last_sensor[4] = `awk '$10 == 4' /var/tmp/sensor.log | tail -n 1 $sensor_log`;
+    $last_sensor[1] = `awk '$10 == 1' /var/tmp/sensor.log | tail -n 1`;
+    $last_sensor[2] = `awk '$10 == 2' /var/tmp/sensor.log | tail -n 1`;
+    $last_sensor[3] = `awk '$10 == 3' /var/tmp/sensor.log | tail -n 1`;
+    $last_sensor[4] = `awk '$10 == 4' /var/tmp/sensor.log | tail -n 1`;
     
     for ($p = 1; $p <= $numsensors; $p++) {
         $sensor_explode = explode(" ", $last_sensor[$p]);
         $t_c[$p] = $sensor_explode[6];
-        $t_f[$p] = round(($t_c[$p]*(9/5) + 32), 1);
         $hum[$p] = $sensor_explode[7];
+        $t_f[$p] = round(($t_c[$p]*(9/5) + 32), 1);
         $dp_c[$p] = substr($sensor_explode[8], 0, -1);
         $dp_f[$p] = round(($dp_c[$p]*(9/5) + 32), 1);
         $settemp_f[$p] = round((${'temp' . $p . 'set'}*(9/5) + 32), 1);
@@ -550,8 +550,8 @@ $error_code = "no";
         <tr>
             <td>
     <div style="font-size: 0.8em; padding-right: 0.5em;"><?php
-            echo "Now<br><span title=\"" . number_format((float)$t_f[1], 1, '.', '') . "&deg;F\">" . number_format((float)$t_c[1], 1, '.', '') . "&deg;C</span>";
-            echo "<br>" . number_format((float)$hum[1], 1, '.', '') . "%"; 
+            echo "Now<br><span title=\"" . number_format((float)$t_f[$s], 1, '.', '') . "&deg;F\">" . number_format((float)$t_c[$s], 1, '.', '') . "&deg;C</span>";
+            echo "<br>" . number_format((float)$hum[$s], 1, '.', '') . "%"; 
         ?>
     </div>
             </td>
