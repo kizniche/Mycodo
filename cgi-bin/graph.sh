@@ -14,7 +14,13 @@ Y2MIN=0
 Y2MAX=35
 
 graph_colors=("#FF3100" "#0772A1" "#00B74A" "#91180B" "#582557" "#04834C" "#DC32E6" "#957EF9" "#CC8D9C" "#717412" "#0B479B")
+
 numsensors="$(cat '/var/www/mycodo/config/mycodo.cfg' | grep 'numsensors' | cut -d' ' -f 3)"
+sensor1name="$(cat "/var/www/mycodo/config/mycodo.cfg" | grep "sensor1name" | cut -d' ' -f 3)"
+sensor2name="$(cat "/var/www/mycodo/config/mycodo.cfg" | grep "sensor2name" | cut -d' ' -f 3)"
+sensor3name="$(cat "/var/www/mycodo/config/mycodo.cfg" | grep "sensor3name" | cut -d' ' -f 3)"
+sensor4name="$(cat "/var/www/mycodo/config/mycodo.cfg" | grep "sensor4name" | cut -d' ' -f 3)"
+
 relay1name="$(cat "/var/www/mycodo/config/mycodo.cfg" | grep "relay1name" | cut -d' ' -f 3)"
 relay2name="$(cat '/var/www/mycodo/config/mycodo.cfg' | grep 'relay2name' | cut -d' ' -f 3)"
 relay3name="$(cat '/var/www/mycodo/config/mycodo.cfg' | grep 'relay3name' | cut -d' ' -f 3)"
@@ -41,8 +47,9 @@ usage() {
 }
 
 graph_single() {
+sensorname=sensor${sensor}name
 echo "reset
-set terminal png size 1000,490
+set terminal png size 1000,500
 set xdata time
 set timefmt \"%Y %m %d %H %M %S\"
 set output \"$IMAGEPATH/graph-$file-$id-$sensor.png\"
@@ -69,7 +76,7 @@ set style line 8 lc rgb '${graph_colors[7]}' pt 0 ps 1 lt 1 lw 1
 set style line 9 lc rgb '${graph_colors[8]}' pt 0 ps 1 lt 1 lw 1
 set style line 10 lc rgb '${graph_colors[9]}' pt 0 ps 1 lt 1 lw 1
 set style line 11 lc rgb '${graph_colors[10]}' pt 0 ps 1 lt 1 lw 1
-set title \"Sensor $sensor\n\n$time: `date --date="$time ago" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
+set title \"Sensor $sensor: ${!sensorname}\n\n$time: `date --date="$time ago" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
 unset key
 plot \"<awk '\$10 == $sensor' $LOGPATH/sensor.log\" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, \\
      \"\" using 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, \\
@@ -215,65 +222,66 @@ plot \"$LOGPATH/sensor.log\" u 1:7 index 0 title \"Temperature\" w lp ls 1 axes 
       graph_single
       ;;
     dayweek)
-echo "set terminal png size 1000,800
-set xdata time
-set timefmt \"%Y %m %d %H %M %S\"
-set output \"$IMAGEPATH/graph-main-$id-$sensor.png\"
-set xrange [\"`date --date=yesterday +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
-set format x \"%H:%M\n%m/%d\"
-set yrange [$Y1MIN:$Y1MAX]
-set y2range [$Y2MIN:$Y2MAX]
-set mytics 10
-set my2tics 5
-set ytics 0,20
-set y2tics 0,5
-set style line 11 lc rgb '#808080' lt 1
-set border 3 back ls 11
-set tics nomirror
-set style line 12 lc rgb '#808080' lt 0 lw 1
-set grid xtics ytics back ls 12
-set style line 1 lc rgb '${graph_colors[0]}' pt 0 ps 1 lt 1 lw 2
-set style line 2 lc rgb '${graph_colors[1]}' pt 0 ps 1 lt 1 lw 2
-set style line 3 lc rgb '${graph_colors[2]}' pt 0 ps 1 lt 1 lw 2
-set style line 4 lc rgb '${graph_colors[3]}' pt 0 ps 1 lt 1 lw 1
-set style line 5 lc rgb '${graph_colors[4]}' pt 0 ps 1 lt 1 lw 1
-set style line 6 lc rgb '${graph_colors[5]}' pt 0 ps 1 lt 1 lw 1
-set style line 7 lc rgb '${graph_colors[6]}' pt 0 ps 1 lt 1 lw 1
-set style line 8 lc rgb '${graph_colors[7]}' pt 0 ps 1 lt 1 lw 1
-set style line 9 lc rgb '${graph_colors[8]}' pt 0 ps 1 lt 1 lw 1
-set style line 10 lc rgb '${graph_colors[9]}' pt 0 ps 1 lt 1 lw 1
-set style line 11 lc rgb '${graph_colors[10]}' pt 0 ps 1 lt 1 lw 1
-#set xlabel \"\"
-#set ylabel \"% humidity / seconds on\"
-#set y2label \"°C\"
-unset key
-set origin 0.0,0.0
-set multiplot
-# Top graph - day
-set size 1.0,0.5
-set origin 0.0,0.5
-set title \"Sensor $sensor\n\n`date --date="yesterday" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
-plot \"<awk '\$10 == $sensor' $LOGPATH/sensor.log\" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, \\
-     \"\" using 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, \\
-     \"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
-     \"<awk '\$15 == $sensor' $LOGPATH/relay.log\" u 1:7 index 0 title \"$relay1name\" w impulses ls 4 axes x1y1, \\
-     \"\" using 1:8 index 0 title \"$relay2name\" w impulses ls 5 axes x1y1, \\
-     \"\" using 1:9 index 0 title \"$relay3name\" w impulses ls 6 axes x1y1, \\
-     \"\" using 1:10 index 0 title \"$relay4name\" w impulses ls 7 axes x1y1, \\
-     \"\" using 1:11 index 0 title \"$relay5name\" w impulses ls 8 axes x1y1, \\
-     \"\" using 1:12 index 0 title \"$relay6name\" w impulses ls 9 axes x1y1, \\
-     \"\" using 1:13 index 0 title \"$relay7name\" w impulses ls 10 axes x1y1, \\
-     \"\" using 1:14 index 0 title \"$relay8name\" w impulses ls 11 axes x1y1
-# Bottom graph - week
-set size 1.0,0.5
-set origin 0.0,0.0
-set title \"`date --date="7 days ago" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
-set format x \"%a\n%m/%d\"
-set xrange [\"`date --date="last week" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
-plot \"<awk '\$10 == $sensor' $LOGPATH/sensor.log\" using 1:7 index 0 notitle w lp ls 1 axes x1y2, \\
-     \"\" using 1:8 index 0 notitle w lp ls 2 axes x1y1, \\
-     \"\" using 1:9 index 0 notitle w lp ls 3 axes x1y2
-unset multiplot" | gnuplot
+    sensorname=sensor${sensor}name
+    echo "set terminal png size 1000,1000
+    set xdata time
+    set timefmt \"%Y %m %d %H %M %S\"
+    set output \"$IMAGEPATH/graph-main-$id-$sensor.png\"
+    set xrange [\"`date --date=yesterday +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
+    set format x \"%H:%M\n%m/%d\"
+    set yrange [$Y1MIN:$Y1MAX]
+    set y2range [$Y2MIN:$Y2MAX]
+    set mytics 10
+    set my2tics 5
+    set ytics 0,20
+    set y2tics 0,5
+    set style line 11 lc rgb '#808080' lt 1
+    set border 3 back ls 11
+    set tics nomirror
+    set style line 12 lc rgb '#808080' lt 0 lw 1
+    set grid xtics ytics back ls 12
+    set style line 1 lc rgb '${graph_colors[0]}' pt 0 ps 1 lt 1 lw 2
+    set style line 2 lc rgb '${graph_colors[1]}' pt 0 ps 1 lt 1 lw 2
+    set style line 3 lc rgb '${graph_colors[2]}' pt 0 ps 1 lt 1 lw 2
+    set style line 4 lc rgb '${graph_colors[3]}' pt 0 ps 1 lt 1 lw 1
+    set style line 5 lc rgb '${graph_colors[4]}' pt 0 ps 1 lt 1 lw 1
+    set style line 6 lc rgb '${graph_colors[5]}' pt 0 ps 1 lt 1 lw 1
+    set style line 7 lc rgb '${graph_colors[6]}' pt 0 ps 1 lt 1 lw 1
+    set style line 8 lc rgb '${graph_colors[7]}' pt 0 ps 1 lt 1 lw 1
+    set style line 9 lc rgb '${graph_colors[8]}' pt 0 ps 1 lt 1 lw 1
+    set style line 10 lc rgb '${graph_colors[9]}' pt 0 ps 1 lt 1 lw 1
+    set style line 11 lc rgb '${graph_colors[10]}' pt 0 ps 1 lt 1 lw 1
+    #set xlabel \"\"
+    #set ylabel \"% humidity / seconds on\"
+    #set y2label \"°C\"
+    unset key
+    set origin 0.0,0.0
+    set multiplot
+    # Top graph - day
+    set size 1.0,0.5
+    set origin 0.0,0.5
+    set title \"Sensor $sensor: ${!sensorname}\n\n`date --date="yesterday" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
+    plot \"<awk '\$10 == $sensor' $LOGPATH/sensor.log\" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, \\
+         \"\" using 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, \\
+         \"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
+         \"<awk '\$15 == $sensor' $LOGPATH/relay.log\" u 1:7 index 0 title \"$relay1name\" w impulses ls 4 axes x1y1, \\
+         \"\" using 1:8 index 0 title \"$relay2name\" w impulses ls 5 axes x1y1, \\
+         \"\" using 1:9 index 0 title \"$relay3name\" w impulses ls 6 axes x1y1, \\
+         \"\" using 1:10 index 0 title \"$relay4name\" w impulses ls 7 axes x1y1, \\
+         \"\" using 1:11 index 0 title \"$relay5name\" w impulses ls 8 axes x1y1, \\
+         \"\" using 1:12 index 0 title \"$relay6name\" w impulses ls 9 axes x1y1, \\
+         \"\" using 1:13 index 0 title \"$relay7name\" w impulses ls 10 axes x1y1, \\
+         \"\" using 1:14 index 0 title \"$relay8name\" w impulses ls 11 axes x1y1
+    # Bottom graph - week
+    set size 1.0,0.5
+    set origin 0.0,0.0
+    set title \"`date --date="7 days ago" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
+    set format x \"%a\n%m/%d\"
+    set xrange [\"`date --date="last week" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
+    plot \"<awk '\$10 == $sensor' $LOGPATH/sensor.log\" using 1:7 index 0 notitle w lp ls 1 axes x1y2, \\
+         \"\" using 1:8 index 0 notitle w lp ls 2 axes x1y1, \\
+         \"\" using 1:9 index 0 notitle w lp ls 3 axes x1y2
+    unset multiplot" | gnuplot
       ;;
     all)
       $0 1h $2

@@ -693,13 +693,13 @@ $error_code = "no";
                                     echo "main&mod=" . $id . "&sensor=" . $n . ">";
                                     break;
                                 }
+                                echo "</div>";
                             } else if (${'sensor' . $n . 'graph'} == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
                                 if ($ref) shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
-                                echo "main&mod=" . $id . "&sensor=" . $n . ">";
+                                echo "main&mod=" . $id . "&sensor=" . $n . "></div>";
                             }
                         }
-                        echo "</div>";
                     }
                     ?>
                 </div>
@@ -741,7 +741,7 @@ $error_code = "no";
             </div>
             
             <div style="clear: both;"></div>
-            <div style="padding-top: 1.2em;">
+            <div style="padding-top: 1.5em;">
                 <div style="padding-bottom: 3em; padding-right: 1em;">
                     <div style="padding: 0 0 1em 1em;">
                         Number of Relays 
@@ -901,7 +901,7 @@ $error_code = "no";
                                 <td align=center>Current<br>State</td>
                                 <td style="vertical-align: middle;" align=center>Relay<br>No.</td>
                                 <td align=center>PID<br>Set Point</td>
-                                <td style="vertical-align: middle;" align=center>Read Sensors<br>(seconds)</td>
+                                <td style="vertical-align: middle;" align=center>Interval<br>(seconds)</td>
                                 <td style="vertical-align: middle;" align=center>P</td>
                                 <td style="vertical-align: middle;" align=center>I</td>
                                 <td style="vertical-align: middle;" align=center>D</td>
@@ -925,7 +925,7 @@ $error_code = "no";
                                     <input type="text" value="<?php echo ${'temp' . $i . 'relay'}; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>TempRelay" title="This is the relay connected to the heating device"/>
                                 </td>
                                 <td>
-                                    <input type="text" value="<?php echo ${'temp' . $i . 'set'}; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>TempSet" title="This is the desired temperature"/>°C
+                                    <input type="text" value="<?php echo ${'temp' . $i . 'set'}; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>TempSet" title="This is the desired temperature"/> °C
                                 </td>
                                 <td align=center>
                                     <input type="text" value="<?php echo ${'temp' . $i . 'period'}; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/>
@@ -962,7 +962,7 @@ $error_code = "no";
                                     <input type="text" value="<?php echo ${'hum' . $i . 'relay'}; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>HumRelay" title="This is the relay connected to your humidifying device"/>
                                 </td>
                                 <td>
-                                    <input type="text" value="<?php echo ${'hum' . $i . 'set'}; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>HumSet" title="This is the desired humidity"/>%
+                                    <input type="text" value="<?php echo ${'hum' . $i . 'set'}; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>HumSet" title="This is the desired humidity"/> %
                                 </td>
                                 <td align=center>
                                     <input type="text" value="<?php echo ${'hum' . $i . 'period'}; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>HumPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another humidity reading and applying the PID"/>
