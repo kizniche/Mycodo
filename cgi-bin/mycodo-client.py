@@ -205,13 +205,13 @@ def menu():
             else: print "Fail"
             sys.exit(0)
         elif opt in ("-w", "--logwrite"):
-            if sys.argv[2]:
+            if int(float(sys.argv[2])):
                 print "%s [Remote Command] Append sensor log from sensor %s: Server returned:" % (
                     Timestamp(), sys.argv[2]),
             else:
                 print "%s [Remote Command] Append sensor log from all sensors: Server returned:" % (
                     Timestamp()),
-            if c.root.WriteSensorLog(sys.argv[2]) == 1: print "Success"
+            if c.root.WriteSensorLog(int(float(sys.argv[2]))) == 1: print "Success"
             else: print "Fail"
             sys.exit(0)
         else:

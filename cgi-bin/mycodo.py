@@ -352,7 +352,7 @@ class ComServer(rpyc.Service):
         global ClientVar1
         ClientVar1 = sensor
         ClientQue = 'write_sensor_log'
-        if sensor != 0:
+        if sensor:
             logging.info("[Client command] Read sensor number %s and append log", sensor)
         else:
             logging.info("[Client command] Read all sensors and append log", sensor)
@@ -560,7 +560,7 @@ def menu():
                     usage()
                     sys.exit(1)
         elif opt in ("-s", "--sensor"):
-            read_sensors(0, sys.argv[2])
+            read_sensors(0, int(float(sys.argv[2])))
             sys.exit(0)
         elif opt in ("-w", "--write"):
             global sensor_log_file_tmp
@@ -569,8 +569,8 @@ def menu():
                     sensor_log_file_tmp)
             else:
                 sensor_log_file_tmp = sys.argv[3]
-            read_sensors(0, sys.argv[2])
-            write_sensor_log(sys.argv[2])
+            read_sensors(0, int(float(sys.argv[2])))
+            write_sensor_log(int(float(sys.argv[2])))
             sys.exit(0)
         else:
             assert False, "Fail"
@@ -615,7 +615,7 @@ def daemon(output, log):
     read_config(1)
     
     # Initial sensor readings
-    logging.info("[Daemon] Conducting initial temperature/humidity sensor readings with %s sensors", sum(sensorActivated))
+    logging.info("[Daemon] Conducting initial sensor readings from %s sensors", sum(sensorActivated))
     for i in range(1, numSensors+1):
         if sensorDevice[i] != 'Other' and sensorActivated[i] == 1:
             read_sensors(0, i)
@@ -647,7 +647,7 @@ def daemon(output, log):
         if ClientQue != '0': # Run remote commands issued by mycodo-client.py
             if ClientQue == 'write_sensor_log':
                 logging.debug("[Client command] Write Sensor Log")
-                if (ClientVar1 == 0):
+                if (ClientVar1 != 0):
                     read_sensors(0, ClientVar1)
                     write_sensor_log(ClientVar1)
                 else:
@@ -788,7 +788,7 @@ def humidity_monitor(ThreadName, sensor):
             if int(time.time()) > timerHum:
                 logging.debug("[PID Humidity-%s] Reading humidity...", sensor)
                 read_sensors(1, sensor)
-                PIDHum = p_hum.update(float(humidity))
+                PIDHum = p_hum.update(float(humidity[sensor]))
                 if (humidity[sensor] < setHum[sensor]):
                     logging.debug("[PID Humidity-%s] Humidity (%.1f%%) < (%.1f%%) setHum", sensor, humidity[sensor], float(setHum[sensor]))
                     logging.debug("[PID Humidity-%s] PID = %.1f (seconds)", sensor, PIDHum)
