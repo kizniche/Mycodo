@@ -956,19 +956,20 @@ def read_sensors(silent, sensor):
 
     if not silent and not Terminate:
         logging.debug("[Read Sensor-%s] Taking first Temperature/humidity reading", sensor)
+        
     if not Terminate:
-        humidity2, tempc2 = Adafruit_DHT.read_retry(device, sensorPin[1])
+        humidity2, tempc2 = Adafruit_DHT.read_retry(device, sensorPin[sensor])
         if humidity2 == None or tempc2 == None:
             logging.warning("[Read Sensor-%s] Could not read temperature/humidity!", sensor)
         if not silent and humidity2 != None and tempc2 != None:
             logging.debug("[Read Sensor-%s] %.1f°C, %.1f%%", sensor, tempc2, humidity2)
-    if not Terminate:
         time.sleep(2)
         if not silent: 
             logging.debug("[Read Sensor-%s] Taking second Temperature/humidity reading", sensor)
+            
     while chktemp and not Terminate and humidity2 != None and tempc2 != None:
         if not Terminate:
-            humidity[sensor], tempc[sensor] = Adafruit_DHT.read_retry(device, sensorPin[1])
+            humidity[sensor], tempc[sensor] = Adafruit_DHT.read_retry(device, sensorPin[sensor])
         if humidity[sensor] != 'None' or tempc[sensor] != 'None':
             if not silent and not Terminate: 
                 logging.debug("[Read Sensor-%s] %.1f°C, %.1f%%", sensor, tempc[sensor], humidity[sensor])
@@ -1194,14 +1195,10 @@ def gpio_initialize():
     logging.info("[GPIO Initialize] Set GPIO mode to BCM numbering, all as output")
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
-    GPIO.setup(relayPin[1], GPIO.OUT)
-    GPIO.setup(relayPin[2], GPIO.OUT)
-    GPIO.setup(relayPin[3], GPIO.OUT)
-    GPIO.setup(relayPin[4], GPIO.OUT)
-    GPIO.setup(relayPin[5], GPIO.OUT)
-    GPIO.setup(relayPin[6], GPIO.OUT)
-    GPIO.setup(relayPin[7], GPIO.OUT)
-    GPIO.setup(relayPin[8], GPIO.OUT)
+    for i in range(1, 9):
+        GPIO.setup(relayPin[i], GPIO.OUT)
+        if relayTrigger[i] == 0: GPIO.output(relayPin[i], 1)
+        else: GPIO.output(relayPin[i], 0)
 
 # Read states (HIGH/LOW) of GPIO pins
 def gpio_read():
@@ -1227,7 +1224,7 @@ def gpio_change(relay, State):
         State, GPIO.input(relayPin[relay]))
     GPIO.output(relayPin[relay], State)
 
-# Set GPIO LOW (= relay ON) for a specific duration
+# Set relay on for a specific duration
 def relay_on_duration(relay, seconds, sensor):
     if (relayTrigger[relay] == 0 and GPIO.input(relayPin[relay]) == 0) or (
             relayTrigger[relay] == 1 and GPIO.input(relayPin[relay]) == 1):
@@ -1244,8 +1241,10 @@ def relay_on_duration(relay, seconds, sensor):
     while (ClientQue != 'TerminateServer' and timer_on > int(time.time())):
         time.sleep(0.1)
         
-    if relayTrigger[relay] == 0: GPIO.output(relayPin[relay], 1) # Turn relay off
-    else: GPIO.output(relayPin[relay], 0) # Turn relay off
+    # Turn relay off
+    if relayTrigger[relay] == 0: GPIO.output(relayPin[relay], 1)
+    else: GPIO.output(relayPin[relay], 0)
+    
     logging.debug("[Relay Duration] Relay %s (%s) Off (was On for %s sec)", 
         relay, relayName[relay], round(seconds, 1))
     return 1
