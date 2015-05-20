@@ -182,13 +182,15 @@ if ($login->isUserLoggedIn() == true) {
 
                 // Set sensor variables
                 if (isset($_POST['Change' . $p . 'Sensor'])) {
-                    $sensorname = str_replace(' ', '', $_POST['sensor' . $i . 'name']);
-                    $sensordevice = str_replace(' ', '', $_POST['sensor' . $i . 'device']);
-                    $sensorpin = str_replace(' ', '', $_POST['sensor' . $i . 'pin']);
-                    $sensorperiod = str_replace(' ', '', $_POST['sensor' . $i . 'period']);
-                    if (isset($_POST['sensor' . $i . 'activated'])) $sensoractivated = 1;
+                    $sensorname = str_replace(' ', '', $_POST['sensor' . $p . 'name']);
+                    $sensordevice = str_replace(' ', '', $_POST['sensor' . $p . 'device']);
+                    $sensorpin = str_replace(' ', '', $_POST['sensor' . $p . 'pin']);
+                    $sensorperiod = str_replace(' ', '', $_POST['sensor' . $p . 'period']);
+                    if (isset($_POST['sensor' . $p . 'activated'])) $sensoractivated = 1;
                     else $sensoractivated = 0;
-                    $editconfig = "$mycodo_client --modsensor $i $sensorname $sensordevice $sensorpin $sensorperiod $sensoractivated";
+                    if (isset($_POST['sensor' . $p . 'graph'])) $sensorgraph = 1;
+                    else $sensorgraph = 0;
+                    $editconfig = "$mycodo_client --modsensor $p $sensorname $sensordevice $sensorpin $sensorperiod $sensoractivated $sensorgraph";
                     shell_exec($editconfig);
                 }
             
@@ -444,8 +446,8 @@ if ($login->isUserLoggedIn() == true) {
         $hum[$p] = $sensor_explode[7];
         $dp_c[$p] = substr($sensor_explode[8], 0, -1);
         $dp_f[$p] = round(($dp_c[$p]*(9/5) + 32), 1);
+        $settemp_f[$p] = round((${'temp' . $p . 'set'}*(9/5) + 32), 1);
     }
-    $settemp_f = round(($temp1set*(9/5) + 32), 1);
     
     $time_now = `date +"%Y-%m-%d %H:%M:%S"`;
     $time_last = `tail -n 1 $sensor_log`;
@@ -499,7 +501,7 @@ $error_code = "no";
 <div class="main-wrapper">
     <div class="header">
         <div style="float: left;">
-            <img style="margin: 0 5px 0 5px; width: 50px; height: 50px;" src="<?php echo $login->user_gravatar_image_tag; ?>">
+            <img style="margin: 0 0.2em 0 0.2em; width: 50px; height: 50px;" src="<?php echo $login->user_gravatar_image_tag; ?>">
         </div>
         <div style="float: left;">
             <div>
@@ -520,38 +522,6 @@ $error_code = "no";
         </div>
     </div>
     <div class="header">
-        <div class="header-title">
-            <u>Temperature (1)</u>
-        </div>
-        <div>
-            <?php echo number_format((float)$t_c[1], 1, '.', '') . "&deg;C (" . number_format((float)$t_f[1], 1, '.', '') . "&deg;F) Now"; ?>
-        </div>
-        <div>
-             <?php 
-                echo number_format((float)$temp1set, 1, '.', '') . "&deg;C (" . number_format((float)$settemp_f, 1, '.', '') ."&deg;F) Set";
-            ?>
-        </div>
-    </div>
-    <div class="header">
-        <div class="header-title">
-            <u>Humidity (1)</u>
-        </div>
-        <div>
-            <?php echo number_format((float)$hum[1], 1, '.', '') . "% Now"; ?>
-        </div>
-        <div>
-             <?php echo number_format((float)$hum1set, 1, '.', '') . "% Set"; ?>
-        </div>
-    </div>
-    <div class="header">
-        <div class="header-title">
-            <u>Dew Point (1)</u>
-        </div>
-        <div>
-            <?php echo "${dp_c[1]}&deg;C (${dp_f[1]}&deg;F)"; ?>
-        </div>
-    </div>
-    <div class="header">
         <div style="padding-bottom: 0.1em;"><?php
             if ($daemon_check) echo '<input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="daemon_change" value="0"> Daemon';
             else echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="daemon_change" value="1"> Daemon';
@@ -563,11 +533,42 @@ $error_code = "no";
             if (isset($_GET['r'])) { ?><div style="display:inline-block; vertical-align:top;"><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="" value="0"></div><div style="display:inline-block; padding-left: 0.3em;"><div>Refresh</div><div><span style="font-size: 0.7em">(<?php echo $tab; ?>)</span></div></div><?php 
             } else echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="" value="0"> Refresh'; ?></div>
     </div>
-    <div style="float: left; vertical-align:top; height: 4.5em; padding: 1em 0 0 0.3em;">
+    <div style="float: left; vertical-align:top; height: 4.5em; padding: 1em 0.8em 0 0.3em;">
         <div style="text-align: right; padding-top: 3px; font-size: 0.9em;">Time now: <?php echo $time_now; ?></div>
         <div style="text-align: right; padding-top: 3px; font-size: 0.9em;">Last read: <?php echo $time_last; ?></div>
         <div style="text-align: right; padding-top: 3px; font-size: 0.9em;"><?php echo $uptime; ?></div>
     </div>
+    <?php
+    for ($s = 1; $s <= $numsensors; $s++) {
+        if (${'sensor' . $s . 'activated'} == 1) {
+    ?>
+    <div class="header">
+    <table>
+        <tr>
+            <td colspan=2 align=center style="border-bottom:1pt solid black;"><?php echo $s . ": " . ${'sensor' . $s . 'name'}; ?></td>
+        </tr>
+        <tr>
+            <td>
+    <div style="font-size: 0.8em; padding-right: 0.5em;"><?php
+            echo "Now<br><span title=\"" . number_format((float)$t_f[1], 1, '.', '') . "&deg;F\">" . number_format((float)$t_c[1], 1, '.', '') . "&deg;C</span>";
+            echo "<br>" . number_format((float)$hum[1], 1, '.', '') . "%"; 
+        ?>
+    </div>
+            </td>
+            <td>
+    <div style="font-size: 0.8em;"><?php
+            echo "Set<br><span title=\"" . number_format((float)$settemp_f[$s], 1, '.', '') ."&deg;F\">" . number_format((float)${'temp' . $s . 'set'}, 1, '.', '') . "&deg;C";
+            echo "<br>" . number_format((float)${'hum' . $s . 'set'}, 1, '.', '') . "%";
+            ?>
+    </div>
+            </td>
+        </tr>
+    </table>
+    </div>
+    <?php
+        }
+    }
+    ?>
 </div>
 <div style="clear: both; padding-top: 15px;"></div>
 	<nav>
@@ -641,8 +642,10 @@ $error_code = "no";
                         $id = uniqid();
                         $_SESSION["ID"] = $id;
                         for ($n = 1; $n <= $numsensors; $n++ ) {
-                            shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
-                            echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=main&mod=" . $id . "&sensor=" . $n . "></div>";
+                            if (${'sensor' . $n . 'graph'} == 1) {
+                                shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
+                                echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=main&mod=" . $id . "&sensor=" . $n . "></div>";
+                            }
                         }
                     } else {
                         $id = $_SESSION["ID"];
@@ -650,53 +653,53 @@ $error_code = "no";
                         else $ref = 0;
                         
                         for ($n = 1; $n <= $numsensors; $n++ ) {
-                            if (isset($_GET['page'])) {
+                            if (isset($_GET['page']) and ${'sensor' . $n . 'graph'} == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
                                 switch ($_GET['page']) {
-                                case 'Main':
-                                if ($ref) shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
-                                echo "main&mod=" . $id . "&sensor=" . $n . ">";
-                                break;
-                                case 'Hour':
-                                if ($ref) shell_exec($graph_exec . ' 1h ' . $id . " " . $n);
-                                echo "1h&mod=" . $id . "&sensor=" . $n . ">";
-                                break;
-                                case '6Hours':
-                                if ($ref) shell_exec($graph_exec . ' 6h ' . $id . " " . $n);
-                                echo "6h&mod=" . $id . "&sensor=" . $n . ">";
-                                break;
-                                case 'Day':
-                                if ($ref) shell_exec($graph_exec . ' day ' . $id . " " . $n);
-                                echo "day&mod=" . $id . "&sensor=" . $n . ">";
-                                break;
-                                case 'Week':
-                                if ($ref) shell_exec($graph_exec . ' week ' . $id . " " . $n);
-                                echo "week&mod=" . $id . "&sensor=" . $n . ">";
-                                break;
-                                case 'Month':
-                                if ($ref) shell_exec($graph_exec . ' month ' . $id . " " . $n);
-                                echo "month&mod=" . $id . "&sensor=" . $n . ">";
-                                break;
-                                case 'Year':
-                                if ($ref) shell_exec($graph_exec . ' year ' . $id . " " . $n);
-                                echo "year&mod=" . $id . "&sensor=" . $n . ">";
-                                break;
-                                case 'All':
-                                if ($ref) shell_exec($graph_exec . ' all ' . $id . " " . $n);
-                                echo "1h&mod=" . $id . "&sensor=" . $n . "><p><img class=\"main-image\" src=image.php?span=6h&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=day&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=week&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=month&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=year&mod=" . $id . "&sensor=" . $n . "></p>";
-                                break;
-                                default:
-                                if ($ref) shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
-                                echo "main&mod=" . $id . "&sensor=" . $n . ">";
-                                break;
+                                    case 'Main':
+                                    if ($ref) shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
+                                    echo "main&mod=" . $id . "&sensor=" . $n . ">";
+                                    break;
+                                    case 'Hour':
+                                    if ($ref) shell_exec($graph_exec . ' 1h ' . $id . " " . $n);
+                                    echo "1h&mod=" . $id . "&sensor=" . $n . ">";
+                                    break;
+                                    case '6Hours':
+                                    if ($ref) shell_exec($graph_exec . ' 6h ' . $id . " " . $n);
+                                    echo "6h&mod=" . $id . "&sensor=" . $n . ">";
+                                    break;
+                                    case 'Day':
+                                    if ($ref) shell_exec($graph_exec . ' day ' . $id . " " . $n);
+                                    echo "day&mod=" . $id . "&sensor=" . $n . ">";
+                                    break;
+                                    case 'Week':
+                                    if ($ref) shell_exec($graph_exec . ' week ' . $id . " " . $n);
+                                    echo "week&mod=" . $id . "&sensor=" . $n . ">";
+                                    break;
+                                    case 'Month':
+                                    if ($ref) shell_exec($graph_exec . ' month ' . $id . " " . $n);
+                                    echo "month&mod=" . $id . "&sensor=" . $n . ">";
+                                    break;
+                                    case 'Year':
+                                    if ($ref) shell_exec($graph_exec . ' year ' . $id . " " . $n);
+                                    echo "year&mod=" . $id . "&sensor=" . $n . ">";
+                                    break;
+                                    case 'All':
+                                    if ($ref) shell_exec($graph_exec . ' all ' . $id . " " . $n);
+                                    echo "1h&mod=" . $id . "&sensor=" . $n . "><p><img class=\"main-image\" src=image.php?span=6h&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=day&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=week&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=month&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=year&mod=" . $id . "&sensor=" . $n . "></p>";
+                                    break;
+                                    default:
+                                    if ($ref) shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
+                                    echo "main&mod=" . $id . "&sensor=" . $n . ">";
+                                    break;
                                 }
-                            } else {
+                            } else if (${'sensor' . $n . 'graph'} == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
                                 if ($ref) shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
                                 echo "main&mod=" . $id . "&sensor=" . $n . ">";
                             }
-                            echo "</div>";
                         }
+                        echo "</div>";
                     }
                     ?>
                 </div>
@@ -704,7 +707,7 @@ $error_code = "no";
                     Legend: <a href="javascript:open_legend()">Brief</a> / <a href="javascript:open_legend_full()">Full</a>
                     <div style="text-align: center; padding-top: 0.5em;"><a href="https://github.com/kizniche/Automated-Mushroom-Cultivator" target="_blank">Mycodo on GitHub</a></div>
                 </div>
-            </div>
+                </div>
             </form>
 		</li>
 
@@ -739,7 +742,7 @@ $error_code = "no";
             
             <div style="clear: both;"></div>
             <div style="padding-top: 1.2em;">
-                <div style="float: left; padding-bottom: 2em; padding-right: 1em;">
+                <div style="padding-bottom: 3em; padding-right: 1em;">
                     <div style="padding: 0 0 1em 1em;">
                         Number of Relays 
                         <select name="numrelays">
@@ -845,15 +848,17 @@ $error_code = "no";
                         <?php for ($i = 1; $i <= $numsensors; $i++) {
                             $device = ${"sensor" . $i . "device"};
                             ?>
-                            <div style="padding-bottom: 2em;">
-                            <table class="pid">
+                            <div style="padding-bottom: 0.5em;">
+                            <table class="pid" style="width: 42em;">
                             <tr class="shade">
                                 <td align=center>Sensor<br>No.</td>
                                 <td align=center>Sensor<br>Name</td>
                                 <td align=center>Sensor<br>Device</td>
                                 <td align=center>GPIO<br>Pin</td>
-                                <td align=center>Write<br>(Sec.)</td>
-                                <td align=center>Use</td>
+                                <td align=center>Log Interval<br>(seconds)</td>
+                                <td align=center>Activate<br>Logging</td>
+                                <td align=center>Activate<br>Graphing</td>
+                                </td></td>
                             </tr>
                             <tr style="height: 2.5em;">
                                 <td class="shade" style="vertical-align: middle;" align=center>
@@ -873,43 +878,36 @@ $error_code = "no";
                                 <td>
                                     <input type="text" value="<?php echo ${"sensor" . $i . "pin"}; ?>" maxlength=2 size=1 name="sensor<?php echo $i; ?>pin" title="This is the GPIO pin connected to the DHT sensor"/>
                                 </td>
-                                <td>
+                                <td align=center>
                                     <input type="text" value="<?php echo ${"sensor" . $i . "period"}; ?>" maxlength=3 size=1 name="sensor<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
                                 </td>
-                                <td>
+                                <td align=center>
                                     <input type="checkbox" name="sensor<?php echo $i; ?>activated" value="1" <?php if (${'sensor' . $i . 'activated'} == 1) echo "checked"; ?>> 
                                 </td>
-                            </tr>
-                            <tr style=" height: 2.5em;">
-                            <td colspan=6 align=center>
-                            <input type="submit" name="Change<?php echo $i; ?>Sensor" value="Set Sensor <?php echo $i; ?> Variables">
-                            </td>
+                                <td align=center>
+                                    <input type="checkbox" name="sensor<?php echo $i; ?>graph" value="1" <?php if (${'sensor' . $i . 'graph'} == 1) echo "checked"; ?>> 
+                                </td>
+                                <td>
+                                    <input type="submit" name="Change<?php echo $i; ?>Sensor" value="Set">
+                                </td>
                             </tr>
                         </table>
                         </div>
-                    <?php
-                    } }
-                    ?>
-                    </div>
-                    
-                    <div style="float: left; padding-bottom: 2em; padding-right: 1em;">
-                    <?php for ($i = 1; $i <= $numsensors; $i++) { ?>
+                   
                         <div style="padding-bottom: 2em;">
-                        <table class="pid">
+                        <table class="pid" style="width: 42em;">
                             <tr class="shade">
                                 <td align=center>PID<br>Type</td>
                                 <td align=center>Current<br>State</td>
                                 <td style="vertical-align: middle;" align=center>Relay<br>No.</td>
-                                <td align=center>PID<br>Set</td>
-                                <td style="vertical-align: middle;" align=center>Read<br>(Sec.)</td>
+                                <td align=center>PID<br>Set Point</td>
+                                <td style="vertical-align: middle;" align=center>Read Sensors<br>(seconds)</td>
                                 <td style="vertical-align: middle;" align=center>P</td>
                                 <td style="vertical-align: middle;" align=center>I</td>
                                 <td style="vertical-align: middle;" align=center>D</td>
                             </tr>
                             <tr style="height: 2.5em;">
-                                <td>
-                                    Temp
-                                </td>
+                                <td>Temperature</td>
                                 <td class="onoff">
                                     <?php
                                         if (${'temp' . $i . 'or'} == 1) {
@@ -929,7 +927,7 @@ $error_code = "no";
                                 <td>
                                     <input type="text" value="<?php echo ${'temp' . $i . 'set'}; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>TempSet" title="This is the desired temperature"/>°C
                                 </td>
-                                <td>
+                                <td align=center>
                                     <input type="text" value="<?php echo ${'temp' . $i . 'period'}; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/>
                                 </td>
                                 <td>
@@ -946,9 +944,7 @@ $error_code = "no";
                                 </td>
                             </tr>
                             <tr style="height: 2.5em;">
-                                <td>
-                                    Hum
-                                </td>
+                                <td>Humidity</td>
                                 <td class="onoff">
                                 <?php
                                     if (${'hum' . $i . 'or'} == 1) {
@@ -968,7 +964,7 @@ $error_code = "no";
                                 <td>
                                     <input type="text" value="<?php echo ${'hum' . $i . 'set'}; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>HumSet" title="This is the desired humidity"/>%
                                 </td>
-                                <td>
+                                <td align=center>
                                     <input type="text" value="<?php echo ${'hum' . $i . 'period'}; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>HumPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another humidity reading and applying the PID"/>
                                 </td>
                                 <td>
@@ -987,7 +983,7 @@ $error_code = "no";
                         </table>
                         </div>
                     <?php
-                    }
+                    } }
                     ?>
                     </div>
                 </div>
@@ -1002,6 +998,7 @@ $error_code = "no";
                 if ($_POST['SubmitDates']) {
                     displayform();
                     for ($n = 1; $n <= $numsensors; $n++) {
+                        if (${'sensor' . $n . 'graph'} == 1) {
                         $id2 = uniqid();
                         $minb = $_POST['startMinute'];
                         $hourb = $_POST['startHour'];
@@ -1045,7 +1042,7 @@ $error_code = "no";
                         set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1
                         #set xlabel \"Date and Time\"
                         #set ylabel \"% Humidity\"
-                        set title \"Sensor $n: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
+                        set title \"Sensor $n $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
                         unset key
                         plot \"<awk '\\$10 == $n' $sensor_log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
                         \"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, \\
@@ -1059,6 +1056,7 @@ $error_code = "no";
                         \"\" using 1:13 index 0 title \"XXXX\" w impulses ls 10 axes x1y1, \\
                         \"\" using 1:14 index 0 title \"XXXX\" w impulses ls 11 axes x1y1" | gnuplot`;
                         echo "<div style=\"width: 100%; text-align: center; padding: 1em 0 3em 0;\"><img src=image.php?span=cus&mod=" . $id2 . "&sensor=" . $n . "></div>";
+                        }
                     }
                     echo "<div style=\"width: 100%; text-align: center;\"><a href='javascript:open_legend()'>Brief Graph Legend</a> - <a href='javascript:open_legend_full()'>Full Graph Legend</a></div>";
                 }

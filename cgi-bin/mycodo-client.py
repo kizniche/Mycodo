@@ -21,33 +21,33 @@ def usage():
     print 'mycodo-client.py: Client for mycodo.py (must be running in daemon mode -d).\n'
     print 'Usage:  mycodo-client.py [OPTION]...\n'
     print 'Options:'
-    print '        --modtempOR [sensor no.] [override]'
-    print '           Modify TempOR for sensor number [sensor] to value [override]'
-    print '        --modtempPID [sensor no.] [relay no.] [set] [p] [i] [d] [period]'
+    print '        --modtempOR sensor state'
+    print '           Temperature PID control: 0=enable, 1=disable'
+    print '        --modtempPID sensor relay set p i d period'
     print '           Change Temperature PID variables'
-    print '        --modhumOR [sensor number] [override]'
-    print '           Modify HumOR for sensor number [sensor] to value [override]'
-    print '        --modhumPID [sensor no.] [relay no.] [set] [p] [i] [d] [period]'
+    print '        --modhumOR sensor state'
+    print '           Humidity PID control: 0=enable, 1=disable'
+    print '        --modhumPID sensor relay set p i d period'
     print '           Change Humidity PID variables'
-    print '        --modrelaynames [Name1] [Name2] [Name3] [Name4] [Name5] [Name6] [Name7] [Name8]'
+    print '        --modrelaynames name1 name2 name3 name4 name5 name6 name7 name8'
     print '           Modify relay names (Restrict to a maximum of 12 characters each)'
-    print '        --modrelaypins [Pin1] [Pin2] [Pin3] [Pin4] [Pin5] [Pin6] [Pin7] [Pin8]'
-    print '           Modify relay pins (Using BCM numbering)'
-    print '        --modrelaytrigger [Trig1] [Trig2] [Trig3] [Trig4] [Trig5] [Trig6] [Trig7] [Trig8]'
-    print '           Modify the trigger state of relays'
-    print '        --modsensor SENSOR_NUM NAME DEVICE PIN PERIOD ACTIVATED'
+    print '        --modrelaypins pin1 pin2 pin3 pin4 pin5 pin6 pin7 pin8'
+    print '           Modify relay pins Using BCM numbering)'
+    print '        --modrelaytrigger trig1 trig2 trig3 trig4 trig5 trig6 trig7 trig8'
+    print '           Modify the relay trigger states (0=low, 1=high; turns relay on)'
+    print '        --modsensor sensor name device pin period activated graph'
     print '           Modify sensor variables'
-    print '        --modtimer [Timer Number] [State] [Relay Number] [Duration On] [Duration Off]'
-    print '           Modify custom timers, State: 0=off 1=on, durations in seconds'
-    print '        --modvar [Var1Name] [Var1Value] [Var2Name] [Var2Value]...'
+    print '        --modtimer timer state relay on off'
+    print '           Modify custom timers, State can be 0=off 1=on, on/off durations in seconds'
+    print '        --modvar name1 value1 [name2] [value2]...'
     print '           Modify any configuration variable or variables (multiple allowed, must be paired input)'
-    print "    -r, --relay [Relay Number] [0/1/X]"
-    print "           Change the state of a relay"
+    print "    -r, --relay relay state"
+    print "           Turn a relay on or off. state can be 0, 1, or X."
     print "           0=OFF, 1=ON, or X number of seconds On"
     print '    -t, --terminate'
     print '           Terminate the communication service and daemon'
-    print '    -w, --writelog SENSOR_NUMBER'
-    print '           Read sensor from SENSOR_NUMBER and append log file. Use 0 to write all.\n'    
+    print '    -w, --writelog sensor'
+    print '           Read from sensor number and append log file, 0 to write all.\n'    
 
 def menu():
     try:
@@ -114,13 +114,13 @@ def menu():
                 print "Fail"
             sys.exit(0)
         elif opt == "--modsensor":
-            print "%s [Remote command] Set Sensor %s: %s %s %s %s %s: Server returned:" % (
+            print "%s [Remote command] Set Sensor %s: %s %s %s %s %s %s: Server returned:" % (
                 Timestamp(), 
                 sys.argv[2], sys.argv[3], sys.argv[4],
-                sys.argv[5], sys.argv[6], sys.argv[7]),
+                sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8]),
             if c.root.ChangeSensor(
                 int(float(sys.argv[2])), sys.argv[3], sys.argv[4],
-                int(float(sys.argv[5])), int(float(sys.argv[6])), int(float(sys.argv[7]))) == 1:
+                int(float(sys.argv[5])), int(float(sys.argv[6])), int(float(sys.argv[7])), int(float(sys.argv[8]))) == 1:
                 print "Success"
             else:
                 print "Fail"

@@ -71,6 +71,14 @@ sensorDevice = [0] * 5
 sensorPin = [0] * 5
 sensorPeriod = [0] * 5
 sensorActivated = [0] * 5
+sensorGraph = [0] * 5
+
+# Sensor data
+chktemp = None
+tempc = [0] * 5
+humidity = [0] * 5
+dewpointc = [0] * 5
+heatindexc =  [0] * 5
 
 # Temperature PID
 relayTemp = [0] * 5
@@ -106,13 +114,6 @@ smtp_user = None
 smtp_pass = None
 email_from = None
 email_to = None
-
-# Sensor data
-chktemp = None
-tempc = [0] * 5
-humidity = [0] * 5
-dewpointc = [0] * 5
-heatindexc =  [0] * 5
 
 # Miscellaneous
 cameraLight = None
@@ -176,19 +177,21 @@ class ComServer(rpyc.Service):
         write_config()
         ClientQue = 'TimerChange'
         return 1
-    def exposed_ChangeSensor(self, sensornumber, sensorname, sensordevice, sensorpin, sensorperiod, sensoractivated):
+    def exposed_ChangeSensor(self, sensornumber, sensorname, sensordevice, sensorpin, sensorperiod, sensoractivated, sensorgraph):
         global sensorName
         global sensorDevice
         global sensorPin
         global sensorPeriod
         global sensorActivated
-        logging.info("[Client command] Change sensor %s: %s: Device: %s Pin: %s Period: %s sec. Activated: %s",
-            sensornumber, sensorname, sensordevice, sensorpin, sensorperiod, sensoractivated)
+        global sensorGraph
+        logging.info("[Client command] Change sensor %s: %s: Device: %s Pin: %s Period: %s sec. Activated: %s Graph: %s",
+            sensornumber, sensorname, sensordevice, sensorpin, sensorperiod, sensoractivated, sensorgraph)
         sensorName[sensornumber] = sensorname
         sensorDevice[sensornumber] = sensordevice
         sensorPin[sensornumber] = sensorpin
         sensorPeriod[sensornumber] = sensorperiod
         sensorActivated[sensornumber] = sensoractivated
+        sensorGraph[sensornumber] = sensorgraph
         write_config()
         return 1
     def exposed_ChangeTempOR(self, sensornum, override):
@@ -611,7 +614,7 @@ def daemon(output, log):
     read_config(1)
     
     # Initial sensor readings
-    logging.info("[Daemon] Conducting initial temperature/humidity sensor readings with %s sensors", numSensors)
+    logging.info("[Daemon] Conducting initial temperature/humidity sensor readings with %s sensors", sum(sensorActivated))
     for i in range(1, numSensors+1):
         if sensorDevice[i] != 'Other' and sensorActivated[i] == 1:
             read_sensors(0, i)
@@ -997,6 +1000,8 @@ def read_config(silent):
     global sensorDevice
     global sensorPin
     global sensorPeriod
+    global sensorActivated
+    global sensorGraph
     global relayName
     global relayPin
     global relayTrigger
@@ -1068,6 +1073,7 @@ def read_config(silent):
         sensorPin[i] = config.getint('Sensor%d' % i, 'sensor%dpin' % i)
         sensorPeriod[i] = config.getint('Sensor%d' % i, 'sensor%dperiod' % i)
         sensorActivated[i] = config.getint('Sensor%d' % i, 'sensor%dactivated' % i)
+        sensorGraph[i] = config.getint('Sensor%d' % i, 'sensor%dgraph' % i)
         
         TempPeriod[i] = config.getint('TempPID%d' % i, 'temp%dperiod' % i)
         relayTemp[i] = config.getint('TempPID%d' % i, 'temp%drelay' % i)
@@ -1141,6 +1147,7 @@ def write_config():
         config.set('Sensor%d' % i, 'sensor%dpin' % i, sensorPin[i])
         config.set('Sensor%d' % i, 'sensor%dperiod' % i, sensorPeriod[i])
         config.set('Sensor%d' % i, 'sensor%dactivated' % i, sensorActivated[i])
+        config.set('Sensor%d' % i, 'sensor%dgraph' % i, sensorGraph[i])
         
         config.add_section('TempPID%d' % i)
         config.set('TempPID%d' % i, 'temp%dperiod' % i, TempPeriod[i])

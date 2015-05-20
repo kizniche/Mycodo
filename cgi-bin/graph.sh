@@ -69,7 +69,7 @@ set style line 8 lc rgb '${graph_colors[7]}' pt 0 ps 1 lt 1 lw 1
 set style line 9 lc rgb '${graph_colors[8]}' pt 0 ps 1 lt 1 lw 1
 set style line 10 lc rgb '${graph_colors[9]}' pt 0 ps 1 lt 1 lw 1
 set style line 11 lc rgb '${graph_colors[10]}' pt 0 ps 1 lt 1 lw 1
-set title \"Sensor $sensor: $time: `date --date="$time ago" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
+set title \"Sensor $sensor\n\n$time: `date --date="$time ago" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
 unset key
 plot \"<awk '\$10 == $sensor' $LOGPATH/sensor.log\" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, \\
      \"\" using 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, \\
@@ -215,7 +215,7 @@ plot \"$LOGPATH/sensor.log\" u 1:7 index 0 title \"Temperature\" w lp ls 1 axes 
       graph_single
       ;;
     dayweek)
-echo "set terminal png size 1000,1000
+echo "set terminal png size 1000,800
 set xdata time
 set timefmt \"%Y %m %d %H %M %S\"
 set output \"$IMAGEPATH/graph-main-$id-$sensor.png\"
@@ -243,14 +243,16 @@ set style line 8 lc rgb '${graph_colors[7]}' pt 0 ps 1 lt 1 lw 1
 set style line 9 lc rgb '${graph_colors[8]}' pt 0 ps 1 lt 1 lw 1
 set style line 10 lc rgb '${graph_colors[9]}' pt 0 ps 1 lt 1 lw 1
 set style line 11 lc rgb '${graph_colors[10]}' pt 0 ps 1 lt 1 lw 1
-# set xlabel \"\"
-#set ylabel \"%\"
-#set y2label \"Degrees C\"
+#set xlabel \"\"
+#set ylabel \"% humidity / seconds on\"
+#set y2label \"°C\"
 unset key
-set multiplot layout 1,3 title \"Sensor $sensor:  Past day (top) and 7 days (bottom) from `date +"%Y-%m-%d %H:%M:%S"`\"
+set origin 0.0,0.0
+set multiplot
 # Top graph - day
-set size 1.0,0.48
+set size 1.0,0.5
 set origin 0.0,0.5
+set title \"Sensor $sensor\n\n`date --date="yesterday" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
 plot \"<awk '\$10 == $sensor' $LOGPATH/sensor.log\" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, \\
      \"\" using 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, \\
      \"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
@@ -263,8 +265,9 @@ plot \"<awk '\$10 == $sensor' $LOGPATH/sensor.log\" using 1:7 index 0 title \"T\
      \"\" using 1:13 index 0 title \"$relay7name\" w impulses ls 10 axes x1y1, \\
      \"\" using 1:14 index 0 title \"$relay8name\" w impulses ls 11 axes x1y1
 # Bottom graph - week
-set size 1.0,0.48
+set size 1.0,0.5
 set origin 0.0,0.0
+set title \"`date --date="7 days ago" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
 set format x \"%a\n%m/%d\"
 set xrange [\"`date --date="last week" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
 plot \"<awk '\$10 == $sensor' $LOGPATH/sensor.log\" using 1:7 index 0 notitle w lp ls 1 axes x1y2, \\
