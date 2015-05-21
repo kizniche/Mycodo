@@ -189,36 +189,36 @@ plot \"$LOGPATH/sensor.log\" u 1:7 index 0 title \"Temperature\" w lp ls 1 axes 
       ;;
     1h)
       file="1h"
-      time="1 hour"
+      time="1 Hour"
       #sensor_lines="< tail -31 "
       #relay_lines="< tail -50 "
       graph_single
       ;;
     6h)
       file="6h"
-      time="6 hours"
+      time="6 Hours"
       #sensor_lines="< tail -180 "
       #relay_lines="< tail -280 "
       graph_single
       ;;
     day)
       file="day"
-      time="1 day"
+      time="1 Day"
       graph_single
       ;;
     week)
       file="week"
-      time="1 week"
+      time="1 Week"
       graph_single
       ;;
     month)
       file="month"
-      time="1 month"
+      time="1 Month"
       graph_single
       ;;
     year)
       file="year"
-      time="1 year"
+      time="1 Year"
       graph_single
       ;;
     dayweek)
@@ -260,7 +260,7 @@ plot \"$LOGPATH/sensor.log\" u 1:7 index 0 title \"Temperature\" w lp ls 1 axes 
     # Top graph - day
     set size 1.0,0.5
     set origin 0.0,0.5
-    set title \"Sensor $sensor: ${!sensorname}\n\n`date --date="yesterday" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
+    set title \"Sensor $sensor: ${!sensorname}\n\nPast Day: `date --date="yesterday" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
     plot \"<awk '\$10 == $sensor' $LOGPATH/sensor.log\" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, \\
          \"\" using 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, \\
          \"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
@@ -275,7 +275,7 @@ plot \"$LOGPATH/sensor.log\" u 1:7 index 0 title \"Temperature\" w lp ls 1 axes 
     # Bottom graph - week
     set size 1.0,0.5
     set origin 0.0,0.0
-    set title \"`date --date="7 days ago" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
+    set title \"Past Week: `date --date="7 days ago" +"%m/%d/%Y %H:%M:%S"` - `date +"%m/%d/%Y %H:%M:%S"`\"
     set format x \"%a\n%m/%d\"
     set xrange [\"`date --date="last week" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
     plot \"<awk '\$10 == $sensor' $LOGPATH/sensor.log\" using 1:7 index 0 notitle w lp ls 1 axes x1y2, \\

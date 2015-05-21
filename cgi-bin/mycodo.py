@@ -882,7 +882,7 @@ def generate_graph(graph_out_file, graph_id):
                             )
 
     proc.stdin.write('reset\n')
-    proc.stdin.write('set terminal png size 1000,490\n')
+    proc.stdin.write('set terminal png size 1000,700\n')
     proc.stdin.write('set xdata time\n')
     proc.stdin.write('set timefmt \"%Y %m %d %H %M %S\"\n')
     proc.stdin.write('set output \"' + image_path + '/graph-' + graph_out_file + '-' + graph_id + '.png\"\n')
