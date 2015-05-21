@@ -852,14 +852,14 @@ def generate_graph(graph_out_file, graph_id):
                 elif test[0] == 'relay8name': relay8name = test[2]
                 
     sensor_log_files_combine = [sensor_log_file, sensor_log_file_tmp]
-    sensor_log_generate = "%s/cgi-bin/sensor.log-tmp" % install_directory
+    sensor_log_generate = "/var/tmp/sensor-logs-combined.log" % install_directory
 
     with open(sensor_log_generate, 'w') as fout:
         for line in fileinput.input(sensor_log_files_combine):
             fout.write(line)
             
     relay_log_files_combine = [relay_log_file, relay_log_file_tmp]
-    relay_log_generate = "%s/cgi-bin/relay.log-tmp" % install_directory
+    relay_log_generate = "/var/tmp/relay-logs-combined.log"
 
     with open(relay_log_generate, 'w') as fout:
         for line in fileinput.input(relay_log_files_combine):
@@ -931,6 +931,9 @@ def generate_graph(graph_out_file, graph_id):
     proc.stdin.write('\"\" u 1:12 index 0 title \"' + relay6name + '\" w impulses ls 9 axes x1y1, ')
     proc.stdin.write('\"\" u 1:13 index 0 title \"' + relay7name + '\" w impulses ls 10 axes x1y1, ')
     proc.stdin.write('\"\" u 1:14 index 0 title \"' + relay8name + '\" w impulses ls 11 axes x1y1\n')
+    
+    os.remove(sensor_log_generate)
+    os.remove(relay_log_generate)
 
 # Append sensor data to the log file
 def write_sensor_log(sensor):
