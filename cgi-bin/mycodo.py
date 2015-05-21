@@ -913,23 +913,15 @@ def generate_graph(graph_out_file, graph_id):
     proc.stdin.write('unset key\n')
     
     if graph_out_file == 'alltemp':
-        if sensorGraph[1]:
-            proc.stdin.write('plot \"<awk \'$10 == 1\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 title \"T1\" w lp ls 1 axes x1y2, ')
-        if sensorGraph[2]:
-            proc.stdin.write('\"<awk \'$10 == 2\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T2\" w lp ls 2 axes x1y2, ')
-        if sensorGraph[3]:
-            proc.stdin.write('\"<awk \'$10 == 3\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T3\" w lp ls 3 axes x1y2, ')
-        if sensorGraph[4]:
-            proc.stdin.write('\"<awk \'$10 == 4\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T4\" w lp ls 4 axes x1y2, ')
+        proc.stdin.write('plot \"<awk \'$10 == 1\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 title \"T1\" w lp ls 1 axes x1y2, ')
+        if sensorGraph[2]: proc.stdin.write('\"<awk \'$10 == 2\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T2\" w lp ls 2 axes x1y2, ')
+        if sensorGraph[3]: proc.stdin.write('\"<awk \'$10 == 3\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T3\" w lp ls 3 axes x1y2, ')
+        if sensorGraph[4]: proc.stdin.write('\"<awk \'$10 == 4\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T4\" w lp ls 4 axes x1y2, ')
     elif graph_out_file == 'allhum':
-        if sensorGraph[1]:
-            proc.stdin.write('plot \"<awk \'$10 == 1\' ' + sensor_log_generate + sensor_head + '" using 1:8 index 0 title \"H1\" w lp ls 1 axes x1y1, ')
-        if sensorGraph[2]:
-            proc.stdin.write('\"<awk \'$10 == 2\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H2\" w lp ls 2 axes x1y1, ')
-        if sensorGraph[3]:
-            proc.stdin.write('\"<awk \'$10 == 3\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H3\" w lp ls 3 axes x1y1, ')
-        if sensorGraph[4]:
-            proc.stdin.write('\"<awk \'$10 == 4\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H4\" w lp ls 4 axes x1y1, ')
+        proc.stdin.write('plot \"<awk \'$10 == 1\' ' + sensor_log_generate + sensor_head + '" using 1:8 index 0 title \"H1\" w lp ls 1 axes x1y1, ')
+        if sensorGraph[2]: proc.stdin.write('\"<awk \'$10 == 2\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H2\" w lp ls 2 axes x1y1, ')
+        if sensorGraph[3]: proc.stdin.write('\"<awk \'$10 == 3\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H3\" w lp ls 3 axes x1y1, ')
+        if sensorGraph[4]: proc.stdin.write('\"<awk \'$10 == 4\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H4\" w lp ls 4 axes x1y1, ')
     
     proc.stdin.write('\"' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' +relay1name + '\" w impulses ls 4 axes x1y1, ')
     proc.stdin.write('\"\" u 1:8 index 0 title \"' + relay2name + '\" w impulses ls 5 axes x1y1, ')
