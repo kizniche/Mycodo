@@ -23,6 +23,7 @@ $daemon_log = "/var/tmp/daemon.log";
 $images = $install_path . "/images";
 $mycodo_client = $install_path . "/cgi-bin/mycodo-client.py";
 $graph_exec = $install_path . "/cgi-bin/graph.sh";
+$pygraph_exec = $install_path . "/cgi-bin/test-gnuplot.py";
 $still_exec = $install_path . "/cgi-bin/camera-still.sh";
 $stream_exec = $install_path . "/cgi-bin/camera-stream.sh";
 $lock_raspistill = $lock_path . "/mycodo_raspistill";
@@ -623,6 +624,7 @@ $error_code = "no";
                         </div>
                     </div>
                     <div style="float: left; padding: 0.2em 0 1em 0.5em">
+                        <div>
                         <?php
                             menu_item('Main', 'Main', $page);
                             menu_item('Hour', '1 Hour', $page);
@@ -633,6 +635,13 @@ $error_code = "no";
                             menu_item('Year', 'Year', $page);
                             menu_item('All', 'All', $page);
                         ?>
+                        </div>
+                        <div>
+                        <?php
+                            menu_item('AllTemp', 'AllTemp', $page);
+                            menu_item('AllHum', 'AllHum', $page);
+                        ?>
+                        </div>
                     </div>
                 </div>
                 <div style="clear: both;"></div>
@@ -641,10 +650,21 @@ $error_code = "no";
                     if (!isset($_SESSION["ID"])) {
                         $id = uniqid();
                         $_SESSION["ID"] = $id;
-                        for ($n = 1; $n <= $numsensors; $n++ ) {
-                            if (${'sensor' . $n . 'graph'} == 1) {
-                                shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
-                                echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=main&mod=" . $id . "&sensor=" . $n . "></div>";
+                        if ($_GET['page'] == 'AllTemp') {
+                            echo $pygraph_exec . ' -w alltemp ' . $id . ' 3';
+                            shell_exec('/usr/bin/python /var/www/mycodo/cgi-bin/test-gnuplot.py -w alltemp ' . $id . ' 3');
+                            echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=alltemp&mod=" . $id . ">";
+                        } else if ($_GET['page'] == 'AllHum') {
+                            $editconfig = $mycodo_client . ' --graph allhum ' . $id . ' 3';
+                            shell_exec($editconfig);
+                            sleep(3);
+                            echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=allhum&mod=" . $id . ">";
+                        } else {
+                            for ($n = 1; $n <= $numsensors; $n++ ) {
+                                if (${'sensor' . $n . 'graph'} == 1) {
+                                    shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
+                                    echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=main&mod=" . $id . "&sensor=" . $n . "></div>";
+                                }
                             }
                         }
                     } else {
@@ -652,53 +672,65 @@ $error_code = "no";
                         if (isset($_GET['Refresh']) == 1) $ref = 1;
                         else $ref = 0;
                         
-                        for ($n = 1; $n <= $numsensors; $n++ ) {
-                            if (isset($_GET['page']) and ${'sensor' . $n . 'graph'} == 1) {
-                                echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                                switch ($_GET['page']) {
-                                    case 'Main':
+                        if ($_GET['page'] == 'AllTemp') {
+                            $editconfig = $mycodo_client . ' --graph alltemp ' . $id . ' 3';
+                            shell_exec($editconfig);
+                            sleep(3);
+                            echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=alltemp&mod=" . $id . ">";
+                        } else if ($_GET['page'] == 'AllHum') {
+                            $editconfig = $mycodo_client . ' --graph allhum ' . $id . ' 3';
+                            shell_exec($editconfig);
+                            sleep(3);
+                            echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=allhum&mod=" . $id . ">";
+                        } else {
+                            for ($n = 1; $n <= $numsensors; $n++ ) {
+                                if (isset($_GET['page']) and ${'sensor' . $n . 'graph'} == 1) {
+                                    echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
+                                    switch ($_GET['page']) {
+                                        case 'Main':
+                                        if ($ref) shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
+                                        echo "main&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
+                                        case 'Hour':
+                                        if ($ref) shell_exec($graph_exec . ' 1h ' . $id . " " . $n);
+                                        echo "1h&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
+                                        case '6Hours':
+                                        if ($ref) shell_exec($graph_exec . ' 6h ' . $id . " " . $n);
+                                        echo "6h&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
+                                        case 'Day':
+                                        if ($ref) shell_exec($graph_exec . ' day ' . $id . " " . $n);
+                                        echo "day&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
+                                        case 'Week':
+                                        if ($ref) shell_exec($graph_exec . ' week ' . $id . " " . $n);
+                                        echo "week&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
+                                        case 'Month':
+                                        if ($ref) shell_exec($graph_exec . ' month ' . $id . " " . $n);
+                                        echo "month&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
+                                        case 'Year':
+                                        if ($ref) shell_exec($graph_exec . ' year ' . $id . " " . $n);
+                                        echo "year&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
+                                        case 'All':
+                                        if ($ref) shell_exec($graph_exec . ' all ' . $id . " " . $n);
+                                        echo "1h&mod=" . $id . "&sensor=" . $n . "><p><img class=\"main-image\" src=image.php?span=6h&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=day&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=week&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=month&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=year&mod=" . $id . "&sensor=" . $n . "></p>";
+                                        break;
+                                        default:
+                                        if ($ref) shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
+                                        echo "main&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
+                                    }
+                                    echo "</div>";
+                                } else if (${'sensor' . $n . 'graph'} == 1) {
+                                    echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
                                     if ($ref) shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
-                                    echo "main&mod=" . $id . "&sensor=" . $n . ">";
-                                    break;
-                                    case 'Hour':
-                                    if ($ref) shell_exec($graph_exec . ' 1h ' . $id . " " . $n);
-                                    echo "1h&mod=" . $id . "&sensor=" . $n . ">";
-                                    break;
-                                    case '6Hours':
-                                    if ($ref) shell_exec($graph_exec . ' 6h ' . $id . " " . $n);
-                                    echo "6h&mod=" . $id . "&sensor=" . $n . ">";
-                                    break;
-                                    case 'Day':
-                                    if ($ref) shell_exec($graph_exec . ' day ' . $id . " " . $n);
-                                    echo "day&mod=" . $id . "&sensor=" . $n . ">";
-                                    break;
-                                    case 'Week':
-                                    if ($ref) shell_exec($graph_exec . ' week ' . $id . " " . $n);
-                                    echo "week&mod=" . $id . "&sensor=" . $n . ">";
-                                    break;
-                                    case 'Month':
-                                    if ($ref) shell_exec($graph_exec . ' month ' . $id . " " . $n);
-                                    echo "month&mod=" . $id . "&sensor=" . $n . ">";
-                                    break;
-                                    case 'Year':
-                                    if ($ref) shell_exec($graph_exec . ' year ' . $id . " " . $n);
-                                    echo "year&mod=" . $id . "&sensor=" . $n . ">";
-                                    break;
-                                    case 'All':
-                                    if ($ref) shell_exec($graph_exec . ' all ' . $id . " " . $n);
-                                    echo "1h&mod=" . $id . "&sensor=" . $n . "><p><img class=\"main-image\" src=image.php?span=6h&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=day&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=week&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=month&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=year&mod=" . $id . "&sensor=" . $n . "></p>";
-                                    break;
-                                    default:
-                                    if ($ref) shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
-                                    echo "main&mod=" . $id . "&sensor=" . $n . ">";
-                                    break;
+                                    echo "main&mod=" . $id . "&sensor=" . $n . "></div>";
                                 }
-                                echo "</div>";
-                            } else if (${'sensor' . $n . 'graph'} == 1) {
-                                echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                                if ($ref) shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
-                                echo "main&mod=" . $id . "&sensor=" . $n . "></div>";
-                            }
+                            }   
                         }
                     }
                     ?>

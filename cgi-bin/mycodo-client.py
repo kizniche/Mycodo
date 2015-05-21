@@ -52,8 +52,8 @@ def usage():
 def menu():
     try:
         opts, args = getopt.getopt(
-            sys.argv[1:], 'o:p:r:s:tw:', 
-            ["modtempOR", "modtempPID", "modhumOR", "modhumPID", "modrelaynames=", "modrelaypins=", "modrelaytrigger=",
+            sys.argv[1:], 'g:o:p:r:s:tw:', 
+            ["graph", "modtempOR", "modtempPID", "modhumOR", "modhumPID", "modrelaynames=", "modrelaypins=", "modrelaytrigger=",
             "modsensor", "modtimer=", "modvar=", "pid=", "relay=", "terminate", "writelog="])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
@@ -61,7 +61,17 @@ def menu():
         sys.exit(2)
 
     for opt, arg in opts:
-        if opt == "--modvar":
+        if opt == "--graph":
+            print "%s [Remote command] Graph: %s %s" % (
+                Timestamp(), sys.argv[2], sys.argv[3])
+            print "%s [Remote command] Server returned:" % (
+                Timestamp()),
+            if c.root.GenerateGraph(sys.argv[2], sys.argv[3]) == 1:
+                print "Success"
+            else:
+                print "Fail"
+            sys.exit(0)
+        elif opt == "--modvar":
             print "%s [Remote command] Mod Vars: %s" % (
                 Timestamp(), sys.argv[1:])
             print "%s [Remote command] Server returned:" % (

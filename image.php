@@ -75,6 +75,12 @@ if ($login->isUserLoggedIn() == true) {
             case 'cus':
                 readfile($image_dir . 'graph-cus-' . $_GET['mod'] .  '-' . $_GET['sensor'] . '.png');
                 break;
+            case 'alltemp':
+                readfile($image_dir . 'graph-alltemp-' . $_GET['mod'] .  '.png');
+                break;
+            case 'allhum':
+                readfile($image_dir . 'graph-allhum-' . $_GET['mod'] .  '.png');
+                break;
             case 'legend':
                 $id = uniqid();
                 shell_exec($graph_exec . ' legend ' . $id);
