@@ -45,41 +45,44 @@ if ($login->isUserLoggedIn() == true) {
             case 'main':
                 readfile($image_dir . 'graph-main-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
-            case 'main-mobile':
-                readfile($image_dir . 'graph-main-mobile.png');
+            case 'separate1h':
+                readfile($image_dir . 'graph-separate1h-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
-            case '1h':
-                readfile($image_dir . 'graph-1h-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+            case 'separate6h':
+                readfile($image_dir . 'graph-separate6h-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
-            case '6h':
-                readfile($image_dir . 'graph-6h-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+            case 'separate1d':
+                readfile($image_dir . 'graph-separate1d-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
-            case '6h-mobile':
-                readfile($image_dir . 'graph-6h-' . $_GET['mod'] . '-mobile.png');
+            case 'separate1w':
+                readfile($image_dir . 'graph-separate1w-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
-            case 'day':
-                readfile($image_dir . 'graph-day-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+            case 'separate1m':
+                readfile($image_dir . 'graph-separate1m-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
-            case 'day-mobile':
-                readfile($image_dir . 'graph-day-mobile.png');
+            case 'separate6m':
+                readfile($image_dir . 'graph-separate6m-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
-            case 'week':
-                readfile($image_dir . 'graph-week-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+            case 'combined1h':
+                readfile($image_dir . 'graph-combined1h-' . $_GET['mod'] .  '.png');
                 break;
-            case 'month':
-                readfile($image_dir . 'graph-month-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+            case 'combined6h':
+                readfile($image_dir . 'graph-combined6h-' . $_GET['mod'] .  '.png');
                 break;
-            case 'year':
-                readfile($image_dir . 'graph-year-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+            case 'combined1d':
+                readfile($image_dir . 'graph-combined1d-' . $_GET['mod'] .  '.png');
+                break;
+            case 'combined1w':
+                readfile($image_dir . 'graph-combined1w-' . $_GET['mod'] .  '.png');
+                break;
+            case 'combined1m':
+                readfile($image_dir . 'graph-combined1m-' . $_GET['mod'] .  '.png');
+                break;
+            case 'combined6m':
+                readfile($image_dir . 'graph-combined6m-' . $_GET['mod'] .  '.png');
                 break;
             case 'cus':
                 readfile($image_dir . 'graph-cus-' . $_GET['mod'] .  '-' . $_GET['sensor'] . '.png');
-                break;
-            case 'alltemp':
-                readfile($image_dir . 'graph-alltemp-' . $_GET['mod'] .  '.png');
-                break;
-            case 'allhum':
-                readfile($image_dir . 'graph-allhum-' . $_GET['mod'] .  '.png');
                 break;
             case 'legend':
                 $id = uniqid();
@@ -90,6 +93,15 @@ if ($login->isUserLoggedIn() == true) {
                 $id = uniqid();
                 shell_exec($graph_exec . ' legend-full ' . $id);
                 readfile($image_dir . 'graph-legend-full-' . $id . '.png');
+                break;
+            case 'main-mobile':
+                readfile($image_dir . 'graph-main-mobile.png');
+                break;
+            case '6h-mobile':
+                readfile($image_dir . 'graph-6h-' . $_GET['mod'] . '-mobile.png');
+                break;
+            case 'day-mobile':
+                readfile($image_dir . 'graph-day-mobile.png');
                 break;
         }
     }

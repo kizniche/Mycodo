@@ -625,21 +625,28 @@ $error_code = "no";
                     </div>
                     <div style="float: left; padding: 0.2em 0 1em 0.5em">
                         <div>
-                        <?php
-                            menu_item('Main', 'Main', $page);
-                            menu_item('Hour', '1 Hour', $page);
-                            menu_item('6Hours', '6 Hours', $page);
-                            menu_item('Day', 'Day', $page);
-                            menu_item('Week', 'Week', $page);
-                            menu_item('Month', 'Month', $page);
-                            menu_item('Year', 'Year', $page);
+                            <div class="Row-title">Separate</div>
+                            <?php
+                            menu_item('SeparateMain', 'Main', $page);
+                            menu_item('Separate1h', '1 Hour', $page);
+                            menu_item('Separate6h', '6 Hours', $page);
+                            menu_item('Separate1d', '1 Day', $page);
+                            menu_item('Separate1w', '1 Week', $page);
+                            menu_item('Separate1m', '1 Month', $page);
+                            menu_item('Separate6m', '6 Months', $page);
                             menu_item('All', 'All', $page);
                         ?>
                         </div>
                         <div>
-                        <?php
-                            menu_item('AllTemp', 'AllTemp', $page);
-                            menu_item('AllHum', 'AllHum', $page);
+                            <div class="Row-title">Combined</div>
+                            <?php
+                            menu_item('CombinedMain', 'Main', $page);
+                            menu_item('Combined1h', '1 Hour', $page);
+                            menu_item('Combined6h', '6 Hours', $page);
+                            menu_item('Combined1d', '1 Day', $page);
+                            menu_item('Combined1w', '1 Week', $page);
+                            menu_item('Combined1m', '1 Month', $page);
+                            menu_item('Combined6m', '6 Months', $page);
                         ?>
                         </div>
                     </div>
@@ -650,21 +657,10 @@ $error_code = "no";
                     if (!isset($_SESSION["ID"])) {
                         $id = uniqid();
                         $_SESSION["ID"] = $id;
-                        if ($_GET['page'] == 'AllTemp') {
-                            echo $pygraph_exec . ' -w alltemp ' . $id . ' 3';
-                            shell_exec('/usr/bin/python /var/www/mycodo/cgi-bin/test-gnuplot.py -w alltemp ' . $id . ' 3');
-                            echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=alltemp&mod=" . $id . ">";
-                        } else if ($_GET['page'] == 'AllHum') {
-                            $editconfig = $mycodo_client . ' --graph allhum ' . $id . ' 3';
-                            shell_exec($editconfig);
-                            sleep(3);
-                            echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=allhum&mod=" . $id . ">";
-                        } else {
-                            for ($n = 1; $n <= $numsensors; $n++ ) {
-                                if (${'sensor' . $n . 'graph'} == 1) {
-                                    shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
-                                    echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=main&mod=" . $id . "&sensor=" . $n . "></div>";
-                                }
+                        for ($n = 1; $n <= $numsensors; $n++ ) {
+                            if (${'sensor' . $n . 'graph'} == 1) {
+                                shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
+                                echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=main&mod=" . $id . "&sensor=" . $n . "></div>";
                             }
                         }
                     } else {
@@ -672,16 +668,36 @@ $error_code = "no";
                         if (isset($_GET['Refresh']) == 1) $ref = 1;
                         else $ref = 0;
                         
-                        if ($_GET['page'] == 'AllTemp') {
-                            $editconfig = $mycodo_client . ' --graph alltemp ' . $id . ' 3';
-                            shell_exec($editconfig);
+                        
+                        if (strpos($_GET['page'], 'Combined') === 0) {
+                            echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
+                            if ($_GET['page'] == 'Combined1h') {
+                                $editconfig = $mycodo_client . ' --graph combined1h ' . $id . ' 0';
+                                if ($ref) shell_exec($editconfig);
+                                echo "combined1h&mod=" . $id . ">";
+                            } else if ($_GET['page'] == 'Combined6h') {
+                                $editconfig = $mycodo_client . ' --graph combined6h ' . $id . ' 0';
+                                if ($ref) shell_exec($editconfig);
+                                echo "combined6h&mod=" . $id . ">";
+                            } else if ($_GET['page'] == 'Combined1d') {
+                                $editconfig = $mycodo_client . ' --graph combined1d ' . $id . ' 0';
+                                if ($ref) shell_exec($editconfig);
+                                echo "combined1d&mod=" . $id . ">";
+                            } else if ($_GET['page'] == 'Combined1w') {
+                                $editconfig = $mycodo_client . ' --graph combined1w ' . $id . ' 0';
+                                if ($ref) shell_exec($editconfig);
+                                echo "combined1w&mod=" . $id . ">";
+                            } else if ($_GET['page'] == 'Combined1m') {
+                                $editconfig = $mycodo_client . ' --graph combined1m ' . $id . ' 0';
+                                if ($ref) shell_exec($editconfig);
+                                echo "combined1m&mod=" . $id . ">";
+                            } else if ($_GET['page'] == 'Combined6m') {
+                                $editconfig = $mycodo_client . ' --graph combined6m ' . $id . ' 0';
+                                if ($ref) shell_exec($editconfig);
+                                echo "combined6m&mod=" . $id . ">";
+                            }
                             sleep(3);
-                            echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=alltemp&mod=" . $id . ">";
-                        } else if ($_GET['page'] == 'AllHum') {
-                            $editconfig = $mycodo_client . ' --graph allhum ' . $id . ' 3';
-                            shell_exec($editconfig);
-                            sleep(3);
-                            echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=allhum&mod=" . $id . ">";
+                            echo "</div>";
                         } else {
                             for ($n = 1; $n <= $numsensors; $n++ ) {
                                 if (isset($_GET['page']) and ${'sensor' . $n . 'graph'} == 1) {
@@ -691,33 +707,33 @@ $error_code = "no";
                                         if ($ref) shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
                                         echo "main&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
-                                        case 'Hour':
-                                        if ($ref) shell_exec($graph_exec . ' 1h ' . $id . " " . $n);
-                                        echo "1h&mod=" . $id . "&sensor=" . $n . ">";
+                                        case 'Separate1h':
+                                        if ($ref) shell_exec($mycodo_client . ' --graph separate1h ' . $id . ' ' . $n);
+                                        echo "separate1h&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
-                                        case '6Hours':
-                                        if ($ref) shell_exec($graph_exec . ' 6h ' . $id . " " . $n);
-                                        echo "6h&mod=" . $id . "&sensor=" . $n . ">";
+                                        case 'Separate6h':
+                                        if ($ref) shell_exec($mycodo_client . ' --graph separate6h ' . $id . ' ' . $n);
+                                        echo "separate6h&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
-                                        case 'Day':
-                                        if ($ref) shell_exec($graph_exec . ' day ' . $id . " " . $n);
-                                        echo "day&mod=" . $id . "&sensor=" . $n . ">";
+                                        case 'Separate1d':
+                                        if ($ref) shell_exec($mycodo_client . ' --graph separate1d ' . $id . ' ' . $n);
+                                        echo "separate1d&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
-                                        case 'Week':
-                                        if ($ref) shell_exec($graph_exec . ' week ' . $id . " " . $n);
-                                        echo "week&mod=" . $id . "&sensor=" . $n . ">";
+                                        case 'Separate1w':
+                                        if ($ref) shell_exec($mycodo_client . ' --graph separate1w ' . $id . ' ' . $n);
+                                        echo "separate1w&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
-                                        case 'Month':
-                                        if ($ref) shell_exec($graph_exec . ' month ' . $id . " " . $n);
-                                        echo "month&mod=" . $id . "&sensor=" . $n . ">";
+                                        case 'Separate1m':
+                                        if ($ref) shell_exec($mycodo_client . ' --graph separate1m ' . $id . ' ' . $n);
+                                        echo "separate1m&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
-                                        case 'Year':
-                                        if ($ref) shell_exec($graph_exec . ' year ' . $id . " " . $n);
-                                        echo "year&mod=" . $id . "&sensor=" . $n . ">";
+                                        case 'Separate6m':
+                                        if ($ref) shell_exec($mycodo_client . ' --graph separate6m ' . $id . ' ' . $n);
+                                        echo "separate6m&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
                                         case 'All':
                                         if ($ref) shell_exec($graph_exec . ' all ' . $id . " " . $n);
-                                        echo "1h&mod=" . $id . "&sensor=" . $n . "><p><img class=\"main-image\" src=image.php?span=6h&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=day&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=week&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=month&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=year&mod=" . $id . "&sensor=" . $n . "></p>";
+                                        echo "1h&mod=" . $id . "&sensor=" . $n . "><p><img class=\"main-image\" src=image.php?span=Separate6h&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=Separate1d&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=Separate1w&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=Separate1m&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=Separate6m&mod=" . $id . "&sensor=" . $n . "></p>";
                                         break;
                                         default:
                                         if ($ref) shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);

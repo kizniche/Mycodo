@@ -62,11 +62,11 @@ def menu():
 
     for opt, arg in opts:
         if opt == "--graph":
-            print "%s [Remote command] Graph: %s %s" % (
-                Timestamp(), sys.argv[2], sys.argv[3])
+            print "%s [Remote command] Graph: %s %s %s" % (
+                Timestamp(), sys.argv[2], sys.argv[3], sys.argv[4])
             print "%s [Remote command] Server returned:" % (
                 Timestamp()),
-            if c.root.GenerateGraph(sys.argv[2], sys.argv[3]) == 1:
+            if c.root.GenerateGraph(sys.argv[2], sys.argv[3], sys.argv[4]) == 1:
                 print "Success"
             else:
                 print "Fail"

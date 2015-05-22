@@ -187,38 +187,38 @@ plot \"$LOGPATH/sensor.log\" u 1:7 index 0 title \"Temperature\" w lp ls 1 axes 
      \"\" using 1:13 index 0 title \"$relay7name\" w impulses ls 10 axes x1y1, \\
      \"\" using 1:14 index 0 title \"$relay8name\" w impulses ls 11 axes x1y1" | gnuplot
       ;;
-    1h)
-      file="1h"
+    separate1h)
+      file="separate1h"
       time="1 Hour"
       #sensor_lines="< tail -31 "
       #relay_lines="< tail -50 "
       graph_single
       ;;
-    6h)
-      file="6h"
+    separate6h)
+      file="separate6h"
       time="6 Hours"
       #sensor_lines="< tail -180 "
       #relay_lines="< tail -280 "
       graph_single
       ;;
-    day)
-      file="day"
+    separate1d)
+      file="separate1d"
       time="1 Day"
       graph_single
       ;;
-    week)
-      file="week"
+    separate1w)
+      file="separate1w"
       time="1 Week"
       graph_single
       ;;
-    month)
-      file="month"
+    separate1m)
+      file="separate1m"
       time="1 Month"
       graph_single
       ;;
-    year)
-      file="year"
-      time="1 Year"
+    separate6m)
+      file="separate6m"
+      time="6 Months"
       graph_single
       ;;
     dayweek)
