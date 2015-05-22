@@ -893,89 +893,52 @@ def generate_graph(graph_out_file, graph_id, sensorn):
                     '#CC8D9C', '#717412', '#0B479B'
                     ]
     
-    if "separate" in graph_out_file:
-        proc = subprocess.Popen(['gnuplot','-p'], 
-                                stdin=subprocess.PIPE,
-                                )
 
-        proc.stdin.write('reset\n')
-        proc.stdin.write('set terminal png size 1000,600\n')
-        proc.stdin.write('set xdata time\n')
-        proc.stdin.write('set timefmt \"%Y %m %d %H %M %S\"\n')
-        proc.stdin.write('set output \"' + image_path + '/graph-' + graph_out_file + '-' + graph_id + '-' + sensorn + '.png\"\n')
-        proc.stdin.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
-        proc.stdin.write('set format x \"%H:%M\\n%m/%d\"\n')
-        proc.stdin.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-        proc.stdin.write('set y2range [' + y2_min + ':' + y2_max + ']\n')
-        proc.stdin.write('set my2tics 10\n')
-        proc.stdin.write('set ytics 10\n')
-        proc.stdin.write('set y2tics 5\n')
-        proc.stdin.write('set style line 11 lc rgb \'#808080\' lt 1\n')
-        proc.stdin.write('set border 3 back ls 11\n')
-        proc.stdin.write('set tics nomirror\n')
-        proc.stdin.write('set style line 12 lc rgb \'#808080\' lt 0 lw 1\n')
-        proc.stdin.write('set grid xtics ytics back ls 12\n')
-        proc.stdin.write('set style line 1 lc rgb \'' + graph_colors[0] + '\' pt 0 ps 1 lt 1 lw 2\n')
-        proc.stdin.write('set style line 2 lc rgb \'' + graph_colors[1] + '\' pt 0 ps 1 lt 1 lw 2\n')
-        proc.stdin.write('set style line 3 lc rgb \'' + graph_colors[2] + '\' pt 0 ps 1 lt 1 lw 2\n')
-        proc.stdin.write('set style line 4 lc rgb \'' + graph_colors[3] + '\' pt 0 ps 1 lt 1 lw 1\n')
-        proc.stdin.write('set style line 5 lc rgb \'' + graph_colors[4] + '\' pt 0 ps 1 lt 1 lw 1\n')
-        proc.stdin.write('set style line 6 lc rgb \'' + graph_colors[5] + '\' pt 0 ps 1 lt 1 lw 1\n')
-        proc.stdin.write('set style line 7 lc rgb \'' + graph_colors[6] + '\' pt 0 ps 1 lt 1 lw 1\n')
-        proc.stdin.write('set style line 8 lc rgb \'' + graph_colors[7] + '\' pt 0 ps 1 lt 1 lw 1\n')
-        proc.stdin.write('set style line 9 lc rgb \'' + graph_colors[8] + '\' pt 0 ps 1 lt 1 lw 1\n')
-        proc.stdin.write('set style line 10 lc rgb \'' + graph_colors[9] + '\' pt 0 ps 1 lt 1 lw 1\n')
-        proc.stdin.write('set style line 11 lc rgb \'' + graph_colors[10] + '\' pt 0 ps 1 lt 1 lw 1\n')
-        proc.stdin.write('unset key\n')
-        proc.stdin.write('set title \"Sensor ' + sensorn + ': ' + sensorName[int(float(sensorn))] + '\\n\\n' + time_ago + ': ' + date_ago + ' - ' + date_now + '\"\n')
-        proc.stdin.write('plot \"<awk \'$10 == ' + sensorn + '\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
-        proc.stdin.write('\"\" u 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, ')
-        proc.stdin.write('\"\" u 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2\n')
-        #proc.stdin.write('\"' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' +relay1name + '\" w impulses ls 4 axes x1y1, ')
-        #proc.stdin.write('\"\" u 1:8 index 0 title \"' + relay2name + '\" w impulses ls 5 axes x1y1, ')
-        #proc.stdin.write('\"\" u 1:9 index 0 title \"' + relay3name + '\" w impulses ls 6 axes x1y1, ')
-        #proc.stdin.write('\"\" u 1:10 index 0 title \"' + relay4name + '\" w impulses ls 7 axes x1y1, ')
-        #proc.stdin.write('\"\" u 1:11 index 0 title \"' + relay5name + '\" w impulses ls 8 axes x1y1, ')
-        #proc.stdin.write('\"\" u 1:12 index 0 title \"' + relay6name + '\" w impulses ls 9 axes x1y1, ')
-        #proc.stdin.write('\"\" u 1:13 index 0 title \"' + relay7name + '\" w impulses ls 10 axes x1y1, ')
-        #proc.stdin.write('\"\" u 1:14 index 0 title \"' + relay8name + '\" w impulses ls 11 axes x1y1\n')
-        proc.communicate()[0]
-        proc.stdin.close()
+    proc = subprocess.Popen(['gnuplot','-p'], 
+                            stdin=subprocess.PIPE,
+                            )
+
+    proc.stdin.write('reset\n')
     
     if "combined" in graph_out_file:
-        proc = subprocess.Popen(['gnuplot','-p'], 
-                                stdin=subprocess.PIPE,
-                                )
-
-        proc.stdin.write('reset\n')
         proc.stdin.write('set terminal png size 1000,1000\n')
-        proc.stdin.write('set xdata time\n')
-        proc.stdin.write('set timefmt \"%Y %m %d %H %M %S\"\n')
+    elif "separate" in graph_out_file:
+        proc.stdin.write('set terminal png size 1000,600\n')
+        
+    proc.stdin.write('set xdata time\n')
+    proc.stdin.write('set timefmt \"%Y %m %d %H %M %S\"\n')
+    
+    if "combined" in graph_out_file:
         proc.stdin.write('set output \"' + image_path + '/graph-' + graph_out_file + '-' + graph_id + '.png\"\n')
-        proc.stdin.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
-        proc.stdin.write('set format x \"%H:%M\\n%m/%d\"\n')
-        proc.stdin.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-        proc.stdin.write('set y2range [' + y2_min + ':' + y2_max + ']\n')
-        proc.stdin.write('set my2tics 10\n')
-        proc.stdin.write('set ytics 10\n')
-        proc.stdin.write('set y2tics 5\n')
-        proc.stdin.write('set style line 11 lc rgb \'#808080\' lt 1\n')
-        proc.stdin.write('set border 3 back ls 11\n')
-        proc.stdin.write('set tics nomirror\n')
-        proc.stdin.write('set style line 12 lc rgb \'#808080\' lt 0 lw 1\n')
-        proc.stdin.write('set grid xtics ytics back ls 12\n')
-        proc.stdin.write('set style line 1 lc rgb \'' + graph_colors[0] + '\' pt 0 ps 1 lt 1 lw 2\n')
-        proc.stdin.write('set style line 2 lc rgb \'' + graph_colors[1] + '\' pt 0 ps 1 lt 1 lw 2\n')
-        proc.stdin.write('set style line 3 lc rgb \'' + graph_colors[2] + '\' pt 0 ps 1 lt 1 lw 2\n')
-        proc.stdin.write('set style line 4 lc rgb \'' + graph_colors[3] + '\' pt 0 ps 1 lt 1 lw 1\n')
-        proc.stdin.write('set style line 5 lc rgb \'' + graph_colors[4] + '\' pt 0 ps 1 lt 1 lw 1\n')
-        proc.stdin.write('set style line 6 lc rgb \'' + graph_colors[5] + '\' pt 0 ps 1 lt 1 lw 1\n')
-        proc.stdin.write('set style line 7 lc rgb \'' + graph_colors[6] + '\' pt 0 ps 1 lt 1 lw 1\n')
-        proc.stdin.write('set style line 8 lc rgb \'' + graph_colors[7] + '\' pt 0 ps 1 lt 1 lw 1\n')
-        proc.stdin.write('set style line 9 lc rgb \'' + graph_colors[8] + '\' pt 0 ps 1 lt 1 lw 1\n')
-        proc.stdin.write('set style line 10 lc rgb \'' + graph_colors[9] + '\' pt 0 ps 1 lt 1 lw 1\n')
-        proc.stdin.write('set style line 11 lc rgb \'' + graph_colors[10] + '\' pt 0 ps 1 lt 1 lw 1\n')
-        proc.stdin.write('unset key\n')
+    elif "separate" in graph_out_file:
+        proc.stdin.write('set output \"' + image_path + '/graph-' + graph_out_file + '-' + graph_id + '-' + sensorn + '.png\"\n')
+        
+    proc.stdin.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
+    proc.stdin.write('set format x \"%H:%M\\n%m/%d\"\n')
+    proc.stdin.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
+    proc.stdin.write('set y2range [' + y2_min + ':' + y2_max + ']\n')
+    proc.stdin.write('set my2tics 10\n')
+    proc.stdin.write('set ytics 10\n')
+    proc.stdin.write('set y2tics 5\n')
+    proc.stdin.write('set style line 11 lc rgb \'#808080\' lt 1\n')
+    proc.stdin.write('set border 3 back ls 11\n')
+    proc.stdin.write('set tics nomirror\n')
+    proc.stdin.write('set style line 12 lc rgb \'#808080\' lt 0 lw 1\n')
+    proc.stdin.write('set grid xtics ytics back ls 12\n')
+    proc.stdin.write('set style line 1 lc rgb \'' + graph_colors[0] + '\' pt 0 ps 1 lt 1 lw 2\n')
+    proc.stdin.write('set style line 2 lc rgb \'' + graph_colors[1] + '\' pt 0 ps 1 lt 1 lw 2\n')
+    proc.stdin.write('set style line 3 lc rgb \'' + graph_colors[2] + '\' pt 0 ps 1 lt 1 lw 2\n')
+    proc.stdin.write('set style line 4 lc rgb \'' + graph_colors[3] + '\' pt 0 ps 1 lt 1 lw 1\n')
+    proc.stdin.write('set style line 5 lc rgb \'' + graph_colors[4] + '\' pt 0 ps 1 lt 1 lw 1\n')
+    proc.stdin.write('set style line 6 lc rgb \'' + graph_colors[5] + '\' pt 0 ps 1 lt 1 lw 1\n')
+    proc.stdin.write('set style line 7 lc rgb \'' + graph_colors[6] + '\' pt 0 ps 1 lt 1 lw 1\n')
+    proc.stdin.write('set style line 8 lc rgb \'' + graph_colors[7] + '\' pt 0 ps 1 lt 1 lw 1\n')
+    proc.stdin.write('set style line 9 lc rgb \'' + graph_colors[8] + '\' pt 0 ps 1 lt 1 lw 1\n')
+    proc.stdin.write('set style line 10 lc rgb \'' + graph_colors[9] + '\' pt 0 ps 1 lt 1 lw 1\n')
+    proc.stdin.write('set style line 11 lc rgb \'' + graph_colors[10] + '\' pt 0 ps 1 lt 1 lw 1\n')
+    proc.stdin.write('unset key\n')
+        
+    if "combined" in graph_out_file:
         proc.stdin.write('set origin 0.0,0.0\n')
         proc.stdin.write('set multiplot\n')
         proc.stdin.write('set size 1.0,0.5\n')
@@ -1017,8 +980,24 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         if sensorGraph[4]:
             proc.stdin.write('\"<awk \'$10 == 4\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H4\" w lp ls 4 axes x1y1\n')
         proc.stdin.write('unset multiplot\n')
-        proc.communicate()[0]
-        proc.stdin.close()
+
+    if "separate" in graph_out_file:
+        proc.stdin.write('set title \"Sensor ' + sensorn + ': ' + sensorName[int(float(sensorn))] + '\\n\\n' + time_ago + ': ' + date_ago + ' - ' + date_now + '\"\n')
+        proc.stdin.write('plot \"<awk \'$10 == ' + sensorn + '\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
+        proc.stdin.write('\"\" u 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, ')
+        proc.stdin.write('\"\" u 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2\n')
+        
+        #proc.stdin.write('\"' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' +relay1name + '\" w impulses ls 4 axes x1y1, ')
+        #proc.stdin.write('\"\" u 1:8 index 0 title \"' + relay2name + '\" w impulses ls 5 axes x1y1, ')
+        #proc.stdin.write('\"\" u 1:9 index 0 title \"' + relay3name + '\" w impulses ls 6 axes x1y1, ')
+        #proc.stdin.write('\"\" u 1:10 index 0 title \"' + relay4name + '\" w impulses ls 7 axes x1y1, ')
+        #proc.stdin.write('\"\" u 1:11 index 0 title \"' + relay5name + '\" w impulses ls 8 axes x1y1, ')
+        #proc.stdin.write('\"\" u 1:12 index 0 title \"' + relay6name + '\" w impulses ls 9 axes x1y1, ')
+        #proc.stdin.write('\"\" u 1:13 index 0 title \"' + relay7name + '\" w impulses ls 10 axes x1y1, ')
+        #proc.stdin.write('\"\" u 1:14 index 0 title \"' + relay8name + '\" w impulses ls 11 axes x1y1\n')
+        
+    proc.communicate()[0]
+    proc.stdin.close()
 
 # Append sensor data to the log file
 def write_sensor_log(sensor):
