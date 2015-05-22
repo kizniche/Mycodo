@@ -89,6 +89,8 @@ case "${1:-''}" in
         fi
         ;;
     'restart')
+	stop
+	start
         ;;
     'reload'|'force-reload')
         ;;
