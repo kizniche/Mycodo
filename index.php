@@ -105,18 +105,36 @@ function DateSelector($inName, $useDate=0) {
 	echo "</SELECT>";
 }
 
-function displayform() {
-    echo "<div style=\"padding: 10px 0 0 15px;\">";
-    echo "<div style=\"display: inline-block;\">";
-    echo "<FORM action=\"?tab=graph";
-    if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
-    echo "\" method=\"POST\">";
-    echo "<div style=\"padding-bottom: 5px; text-align: right;\">START: ";
-    DateSelector("start");
-    echo "</div><div style=\"text-align: right;\">END: ";
-    DateSelector("end");
-    echo "</div></div><div style=\"display: inline-block; padding: 0 0.5em 0 1em;\"><input type=\"text\" value=\"900\" maxlength=4 size=4 name=\"graph-width\" title=\"Width of the generated graph\"> Width (pixels, max 4000)</div>";
-    echo "<div style=\"display: inline-block;\">&nbsp;&nbsp;<input type=\"submit\" name=\"SubmitDates\" value=\"Submit\"></FORM></div></div>";
+function displayform() { ?>
+    <FORM action="?tab=graph<?php if (isset($_GET['page'])) echo "&page=" . $_GET['page']; ?>" method="POST">
+    <div style="padding: 10px 0 0 15px;">
+        <div style="display: inline-block;">  
+            <div style="padding-bottom: 5px; text-align: right;">START: <?php DateSelector("start"); ?></div>
+            <div style="text-align: right;">END: <?php DateSelector("end"); ?></div>
+        </div>
+        <div style="display: inline-block;">
+            <div style="display: inline-block;">
+                <select name="MainType">
+                    <option value="Separate" <?php
+                        if (isset($_POST['MainType'])) {
+                            if ($_POST['MainType'] == 'Separate') echo 'selected="selected"'; 
+                        }
+                        ?>>Separate</option>
+                    <option value="Combined" <?php
+                        if (isset($_POST['MainType'])) {
+                            if ($_POST['MainType'] == 'Combined') echo 'selected="selected"'; 
+                        }
+                        ?>>Combined</option>
+                </select>
+                <input type="text" value="900" maxlength=4 size=4 name="graph-width" title="Width of the generated graph"> Width (pixels, max 4000)
+            </div>
+        </div>
+        <div style="display: inline-block;">
+            &nbsp;&nbsp;<input type="submit" name="SubmitDates" value="Submit">
+        </div>
+    </div>
+    </FORM>
+    <?php
 }
 
 function is_positive_integer($str) {
@@ -627,20 +645,19 @@ $error_code = "no";
                         <div>
                             <div class="Row-title">Separate</div>
                             <?php
-                            menu_item('SeparateMain', 'Main', $page);
+                            
                             menu_item('Separate1h', '1 Hour', $page);
                             menu_item('Separate6h', '6 Hours', $page);
                             menu_item('Separate1d', '1 Day', $page);
                             menu_item('Separate1w', '1 Week', $page);
                             menu_item('Separate1m', '1 Month', $page);
                             menu_item('Separate6m', '6 Months', $page);
-                            menu_item('All', 'All', $page);
+                            menu_item('SeparateMain', 'Main', $page);
                         ?>
                         </div>
                         <div>
                             <div class="Row-title">Combined</div>
                             <?php
-                            menu_item('CombinedMain', 'Main', $page);
                             menu_item('Combined1h', '1 Hour', $page);
                             menu_item('Combined6h', '6 Hours', $page);
                             menu_item('Combined1d', '1 Day', $page);
@@ -667,7 +684,6 @@ $error_code = "no";
                         $id = $_SESSION["ID"];
                         if (isset($_GET['Refresh']) == 1) $ref = 1;
                         else $ref = 0;
-                        
                         
                         if (strpos($_GET['page'], 'Combined') === 0) {
                             echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
@@ -1045,23 +1061,24 @@ $error_code = "no";
             if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] != 'guest') {
                 if ($_POST['SubmitDates']) {
                     displayform();
-                    for ($n = 1; $n <= $numsensors; $n++) {
-                        if (${'sensor' . $n . 'graph'} == 1) {
-                        $id2 = uniqid();
-                        $minb = $_POST['startMinute'];
-                        $hourb = $_POST['startHour'];
-                        $dayb = $_POST['startDay'];
-                        $monb = $_POST['startMonth'];
-                        $yearb = $_POST['startYear'];
-                        $mine = $_POST['endMinute'];
-                        $houre = $_POST['endHour'];
-                        $daye = $_POST['endDay'];
-                        $mone = $_POST['endMonth'];
-                        $yeare = $_POST['endYear'];
-                        if (is_positive_integer($_POST['graph-width']) and $_POST['graph-width'] <= 4000 and $_POST['graph-width']) {
-                            $graph_width = $_POST['graph-width'];
-                        } else $graph_width = 900;
-                        echo `echo "set terminal png size $graph_width,490
+                    $id2 = uniqid();
+                    $minb = $_POST['startMinute'];
+                    $hourb = $_POST['startHour'];
+                    $dayb = $_POST['startDay'];
+                    $monb = $_POST['startMonth'];
+                    $yearb = $_POST['startYear'];
+                    $mine = $_POST['endMinute'];
+                    $houre = $_POST['endHour'];
+                    $daye = $_POST['endDay'];
+                    $mone = $_POST['endMonth'];
+                    $yeare = $_POST['endYear'];
+                    
+                    if (is_positive_integer($_POST['graph-width']) and $_POST['graph-width'] <= 4000 and $_POST['graph-width']) {
+                        $graph_width = $_POST['graph-width'];
+                    } else $graph_width = 900;
+                    
+                    if ($_POST['MainType'] == 'Combined') {
+                        echo `echo "set terminal png size $graph_width,800
                         set xdata time
                         set timefmt \"%Y %m %d %H %M %S\"
                         set output \"$images/graph-cus-$id2-$n.png\"
@@ -1090,11 +1107,25 @@ $error_code = "no";
                         set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1
                         #set xlabel \"Date and Time\"
                         #set ylabel \"% Humidity\"
-                        set title \"Sensor $n: ${'sensor' . $n . 'name'}  $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
                         unset key
-                        plot \"<awk '\\$10 == $n' $sensor_log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
-                        \"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, \\
-                        \"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
+                        set origin 0.0,0.0
+                        set multiplot
+                        set size 1.0,0.5
+                        set origin 0.0,0.5
+                        set title \"Combined Temperatures: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
+                        plot \"<awk '\\$10 == 1' $sensor_log\" using 1:7 index 0 title \"T1\" w lp ls 1 axes x1y2, \\
+                        \"<awk '\\$10 == 2' $sensor_log\" using 1:7 index 0 title \"T2\" w lp ls 2 axes x1y2, \\
+                        \"<awk '\\$10 == 3' $sensor_log\" using 1:7 index 0 title \"T3\" w lp ls 3 axes x1y2, \\
+                        \"<awk '\\$10 == 4' $sensor_log\" using 1:7 index 0 title \"T4\" w lp ls 3 axes x1y2 \\
+                        set size 1.0,0.5
+                        set origin 0.0,0.0
+                        set title \"Combined Humidities: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
+                        set xrange [\"' + date_ago + '\":\"' + date_now + '\"]
+                        set format x \"%H:%M\\n%m/%d\"
+                        plot \"<awk '\\$10 == 1' $sensor_log\" using 1:8 index 0 title \"RH1\" w lp ls 1 axes x1y1, \\
+                        \"<awk '\\$10 == 2' $sensor_log\" using 1:8 index 0 title \"RH2\" w lp ls 2 axes x1y1, \\
+                        \"<awk '\\$10 == 3' $sensor_log\" using 1:8 index 0 title \"RH3\" w lp ls 3 axes x1y1, \\
+                        \"<awk '\\$10 == 4' $sensor_log\" using 1:8 index 0 title \"RH4\" w lp ls 3 axes x1y1, \\
                         \"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
                         \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\
                         \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\
@@ -1104,6 +1135,53 @@ $error_code = "no";
                         \"\" using 1:13 index 0 title \"XXXX\" w impulses ls 10 axes x1y1, \\
                         \"\" using 1:14 index 0 title \"XXXX\" w impulses ls 11 axes x1y1" | gnuplot`;
                         echo "<div style=\"width: 100%; text-align: center; padding: 1em 0 3em 0;\"><img src=image.php?span=cus&mod=" . $id2 . "&sensor=" . $n . "></div>";
+                    } else if ($_POST['MainType'] == 'Separate') {
+                        for ($n = 1; $n <= $numsensors; $n++) {
+                            if (${'sensor' . $n . 'graph'} == 1) {
+                                echo `echo "set terminal png size $graph_width,490
+                                set xdata time
+                                set timefmt \"%Y %m %d %H %M %S\"
+                                set output \"$images/graph-cus-$id2-$n.png\"
+                                set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]
+                                set format x \"%H:%M\n%m/%d\"
+                                set yrange [0:100]
+                                set y2range [0:35]
+                                set my2tics 10
+                                set ytics 10
+                                set y2tics 5
+                                set style line 11 lc rgb '#808080' lt 1
+                                set border 3 back ls 11
+                                set tics nomirror
+                                set style line 12 lc rgb '#808080' lt 0 lw 1
+                                set grid xtics ytics back ls 12
+                                set style line 1 lc rgb '#FF3100' pt 0 ps 1 lt 1 lw 2
+                                set style line 2 lc rgb '#0772A1' pt 0 ps 1 lt 1 lw 2
+                                set style line 3 lc rgb '#00B74A' pt 0 ps 1 lt 1 lw 2
+                                set style line 4 lc rgb '#91180B' pt 0 ps 1 lt 1 lw 1
+                                set style line 5 lc rgb '#582557' pt 0 ps 1 lt 1 lw 1
+                                set style line 6 lc rgb '#04834C' pt 0 ps 1 lt 1 lw 1
+                                set style line 7 lc rgb '#DC32E6' pt 0 ps 1 lt 1 lw 1
+                                set style line 8 lc rgb '#957EF9' pt 0 ps 1 lt 1 lw 1
+                                set style line 9 lc rgb '#CC8D9C' pt 0 ps 1 lt 1 lw 1
+                                set style line 10 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1
+                                set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1
+                                #set xlabel \"Date and Time\"
+                                #set ylabel \"% Humidity\"
+                                set title \"Sensor $n: ${'sensor' . $n . 'name'}  $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
+                                unset key
+                                plot \"<awk '\\$10 == $n' $sensor_log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
+                                \"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, \\
+                                \"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
+                                \"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\
+                                \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\
+                                \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\
+                                \"\" using 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1, \\
+                                \"\" using 1:11 index 0 title \"HUMI\" w impulses ls 8 axes x1y1, \\
+                                \"\" using 1:12 index 0 title \"CFAN\" w impulses ls 9 axes x1y1, \\
+                                \"\" using 1:13 index 0 title \"XXXX\" w impulses ls 10 axes x1y1, \\
+                                \"\" using 1:14 index 0 title \"XXXX\" w impulses ls 11 axes x1y1" | gnuplot`;
+                                echo "<div style=\"width: 100%; text-align: center; padding: 1em 0 3em 0;\"><img src=image.php?span=cus&mod=" . $id2 . "&sensor=" . $n . "></div>";
+                            }
                         }
                     }
                     echo "<div style=\"width: 100%; text-align: center;\"><a href='javascript:open_legend()'>Brief Graph Legend</a> - <a href='javascript:open_legend_full()'>Full Graph Legend</a></div>";
