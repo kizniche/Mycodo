@@ -81,8 +81,11 @@ if ($login->isUserLoggedIn() == true) {
             case 'combined6m':
                 readfile($image_dir . 'graph-combined6m-' . $_GET['mod'] .  '.png');
                 break;
-            case 'cus':
-                readfile($image_dir . 'graph-cus-' . $_GET['mod'] .  '-' . $_GET['sensor'] . '.png');
+            case 'cuscom':
+                readfile($image_dir . 'graph-cuscom-' . $_GET['mod'] .  '.png');
+                break;
+            case 'cussep':
+                readfile($image_dir . 'graph-cussep-' . $_GET['mod'] .  '-' . $_GET['sensor'] . '.png');
                 break;
             case 'legend':
                 $id = uniqid();

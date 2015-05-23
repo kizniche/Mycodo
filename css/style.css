@@ -26,6 +26,13 @@ a:hover { color: #F2273B; }
     padding: 1em 1em 0 0.3em;
 }
 
+.header-sense {
+    height: 4.5em;
+    float: left;
+    vertical-align:top;
+    padding: 1em 0.3em 0 0.3em;
+}
+
 .header-title {
     padding-bottom: 0.3em;
 }
@@ -40,11 +47,11 @@ img.main-image {
 
 /*** config ***/
 table.relays {
-	display: inline-block;
+    width: 42em;
 }
 
 table.relays td {
-    padding: 0.5em 0.4em 0.5em 0.4em;
+    padding: 0.5em 0.8em 0.5em 0.8em;
 }
 
 table.relays tr:nth-child(odd) {
@@ -58,7 +65,13 @@ table.relays tr:nth-child(odd) {
 }
 
 table.pid td {
-	padding: 0.4em 0.3em 0.4em 0.3em;
+    vertical-align: middle;
+	padding: 0.4em 0.6em 0.4em 0.6em;
+}
+
+table.pid th {
+    vertical-align: middle;
+	padding: 0.4em 0.6em 0.4em 0.6em;
 }
 
 .shade {
@@ -214,12 +227,22 @@ div {
     padding-bottom: 0.5em;
 }
 
+.Row-title {
+    float: left;
+    width: 6em;
+    display: block;
+    font-size: 0.875em;
+    color: #000;
+    padding: 0.6em 0.9em 0.6em 0.9em;
+    background-color: #FFF;
+}
+
 .inactive {
     float: left;
     display: block;
     font-size: 0.875em;
     color: white;
-    padding: 0.7em 1.1em 0.7em 1.1em;
+    padding: 0.6em 0.7em 0.6em 0.7em;
     border: 1px solid #C97D40;
     background-color: #E18944;
 }
@@ -230,7 +253,7 @@ div {
     font-weight: bold;
     font-size: 0.875em;
     color: white;
-    padding: 0.7em 1.1em 0.7em 1.1em;
+    padding: 0.6em 0.7em 0.6em 0.7em;
     border: 1px solid #6B370D;
     background-color: #874611;
 }

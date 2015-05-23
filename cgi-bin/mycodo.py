@@ -890,7 +890,8 @@ def generate_graph(graph_out_file, graph_id, sensorn):
 
     graph_colors = ['#FF3100', '#0772A1', '#00B74A', '#91180B',
                     '#582557', '#04834C', '#DC32E6', '#957EF9',
-                    '#CC8D9C', '#717412', '#0B479B'
+                    '#CC8D9C', '#717412', '#0B479B',
+                    '#7164a3', '#599e86', '#c3ae4f', '#c3744f',
                     ]
     
 
@@ -936,6 +937,10 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     proc.stdin.write('set style line 9 lc rgb \'' + graph_colors[8] + '\' pt 0 ps 1 lt 1 lw 1\n')
     proc.stdin.write('set style line 10 lc rgb \'' + graph_colors[9] + '\' pt 0 ps 1 lt 1 lw 1\n')
     proc.stdin.write('set style line 11 lc rgb \'' + graph_colors[10] + '\' pt 0 ps 1 lt 1 lw 1\n')
+    proc.stdin.write('set style line 12 lc rgb \'' + graph_colors[11] + '\' pt 0 ps 1 lt 1 lw 2\n')
+    proc.stdin.write('set style line 13 lc rgb \'' + graph_colors[12] + '\' pt 0 ps 1 lt 1 lw 2\n')
+    proc.stdin.write('set style line 14 lc rgb \'' + graph_colors[13] + '\' pt 0 ps 1 lt 1 lw 2\n')
+    proc.stdin.write('set style line 15 lc rgb \'' + graph_colors[14] + '\' pt 0 ps 1 lt 1 lw 2\n')
     proc.stdin.write('unset key\n')
         
     if "combined" in graph_out_file:
@@ -946,19 +951,19 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         proc.stdin.write('set title \"Combined Temperatures: ' + time_ago + ': ' + date_ago + ' - ' + date_now + '\"\n')
         proc.stdin.write('plot ')
         if sensorGraph[1]:
-            proc.stdin.write('\"<awk \'$10 == 1\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 title \"T1\" w lp ls 1 axes x1y2')
+            proc.stdin.write('\"<awk \'$10 == 1\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 title \"T1\" w lp ls 12 axes x1y2')
             if sensorGraph[2] or sensorGraph[3] or sensorGraph[4]: proc.stdin.write(', ')
             else: proc.stdin.write('\n')
         if sensorGraph[2]:
-            proc.stdin.write('\"<awk \'$10 == 2\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T2\" w lp ls 2 axes x1y2')
+            proc.stdin.write('\"<awk \'$10 == 2\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T2\" w lp ls 13 axes x1y2')
             if sensorGraph[3] or sensorGraph[4]: proc.stdin.write(', ')
             else: proc.stdin.write('\n')
         if sensorGraph[3]:
-            proc.stdin.write('\"<awk \'$10 == 3\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T3\" w lp ls 3 axes x1y2')
+            proc.stdin.write('\"<awk \'$10 == 3\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T3\" w lp ls 14 axes x1y2')
             if sensorGraph[4]: proc.stdin.write(', ')
             else: proc.stdin.write('\n')
         if sensorGraph[4]:
-            proc.stdin.write('\"<awk \'$10 == 4\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T4\" w lp ls 4 axes x1y2\n')
+            proc.stdin.write('\"<awk \'$10 == 4\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T4\" w lp ls 15 axes x1y2\n')
         proc.stdin.write('set size 1.0,0.5\n')
         proc.stdin.write('set origin 0.0,0.0\n')
         proc.stdin.write('set title \"Combined Humidities: ' + time_ago + ': ' + date_ago + ' - ' + date_now + '\"\n')
@@ -966,19 +971,19 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         proc.stdin.write('set format x \"%H:%M\\n%m/%d\"\n')
         proc.stdin.write('plot ')
         if sensorGraph[1]:
-            proc.stdin.write('\"<awk \'$10 == 1\' ' + sensor_log_generate + sensor_head + '" using 1:8 index 0 title \"H1\" w lp ls 1 axes x1y1')
+            proc.stdin.write('\"<awk \'$10 == 1\' ' + sensor_log_generate + sensor_head + '" using 1:8 index 0 title \"H1\" w lp ls 12 axes x1y1')
             if sensorGraph[2] or sensorGraph[3] or sensorGraph[4]: proc.stdin.write(', ')
             else: proc.stdin.write('\n')
         if sensorGraph[2]:
-            proc.stdin.write('\"<awk \'$10 == 2\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H2\" w lp ls 2 axes x1y1')
+            proc.stdin.write('\"<awk \'$10 == 2\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H2\" w lp ls 13 axes x1y1')
             if sensorGraph[3] or sensorGraph[4]: proc.stdin.write(', ')
             else: proc.stdin.write('\n')
         if sensorGraph[3]:
-            proc.stdin.write('\"<awk \'$10 == 3\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H3\" w lp ls 3 axes x1y1')
+            proc.stdin.write('\"<awk \'$10 == 3\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H3\" w lp ls 14 axes x1y1')
             if sensorGraph[4]: proc.stdin.write(', ')
             else: proc.stdin.write('\n')
         if sensorGraph[4]:
-            proc.stdin.write('\"<awk \'$10 == 4\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H4\" w lp ls 4 axes x1y1\n')
+            proc.stdin.write('\"<awk \'$10 == 4\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H4\" w lp ls 15 axes x1y1\n')
         proc.stdin.write('unset multiplot\n')
 
     if "separate" in graph_out_file:
