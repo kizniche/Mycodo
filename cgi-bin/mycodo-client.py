@@ -39,11 +39,14 @@ def usage():
     print '           Modify sensor variables'
     print '        --modtimer timer state relay on off'
     print '           Modify custom timers, State can be 0=off 1=on, on/off durations in seconds'
-    print '        --modvar name1 value1 [name2] [value2]...'
+    print '    -m, --modvar name1 value1 [name2] [value2]...'
     print '           Modify any configuration variable or variables (multiple allowed, must be paired input)'
-    print "    -r, --relay relay state"
-    print "           Turn a relay on or off. state can be 0, 1, or X."
-    print "           0=OFF, 1=ON, or X number of seconds On"
+    print '    -r, --relay relay state'
+    print '           Turn a relay on or off. state can be 0, 1, or X.'
+    print '           0=OFF, 1=ON, or X number of seconds On'
+    print '    -s, --sensor pin device'
+    print '           Returns the temperature and humidity of of the DHT sensor on GPIO pin'
+    print '           Device options are DHT22, DHT11, or AM2302'
     print '    -t, --terminate'
     print '           Terminate the communication service and daemon'
     print '    -w, --writelog sensor'
@@ -52,9 +55,9 @@ def usage():
 def menu():
     try:
         opts, args = getopt.getopt(
-            sys.argv[1:], 'g:o:p:r:s:tw:', 
-            ["graph", "modtempOR", "modtempPID", "modhumOR", "modhumPID", "modrelaynames=", "modrelaypins=", "modrelaytrigger=",
-            "modsensor", "modtimer=", "modvar=", "pid=", "relay=", "terminate", "writelog="])
+            sys.argv[1:], 'm:r:s:tw:', 
+            ["modtempOR", "modtempPID", "modhumOR", "modhumPID", "modrelaynames=", "modrelaypins=", "modrelaytrigger=",
+            "modsensor", "modtimer=", "modvar=", "relay=", "sensor=", "terminate", "writelog="])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -208,6 +211,12 @@ def menu():
             else:
                 print 'Error: second input must be an integer greater than 0'
                 sys.exit(1)
+        elif opt in ("-s", "--sensor"):
+            print "%s [Remote command] Read sensor %s on GPIO pin %s" % (
+                Timestamp(), sys.argv[3], int(float(sys.argv[2])))
+            temperature, humidity = c.root.ReadSensor(int(float(sys.argv[2])), sys.argv[3])
+            print "%s [Remote Command] Daemon Returned: Temperature: %s°C Humidity: %s%%" % (Timestamp(), round(temperature,2), round(humidity,2))
+            sys.exit(0)
         elif opt in ("-t", "--terminate"):
             print "%s [Remote command] Terminate all threads and daemon: Server returned:" % (
                 Timestamp()),

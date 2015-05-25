@@ -134,17 +134,6 @@ Hum_PID_number = None
 
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
-    def exposed_Modify_Variables(self, *variable_list):
-        logging.info("[Client command] Request to change variables")
-        modify_var(*variable_list)
-        return 1
-    def exposed_Terminate(self, remoteCommand):
-        global ClientQue
-        global Terminate
-        Terminate = True
-        ClientQue = 'TerminateServer'
-        logging.info("[Client command] Terminate threads and shut down")
-        return 1
     def exposed_ChangeRelay(self, relay, state):
         if (state == 1):
             logging.info("[Client command] Changing Relay %s to HIGH", relay)
@@ -350,6 +339,25 @@ class ComServer(rpyc.Service):
     def exposed_GenerateGraph(self, graph_out_file, id, sensor):
         logging.info("[Client command] Generate Graph: %s %s %s", graph_out_file, id, sensor)
         generate_graph(graph_out_file, id, sensor)
+        return 1
+    def exposed_Modify_Variables(self, *variable_list):
+        logging.info("[Client command] Request to change variables")
+        modify_var(*variable_list)
+        return 1
+    def exposed_ReadSensor(self, pin, sensor):
+        logging.info("[Client command] Read Sensor %s from GPIO pin %s", sensor, pin)
+        if (sensor == 'DHT11'): device = Adafruit_DHT.DHT11
+        elif (sensor == 'DHT22'): device = Adafruit_DHT.DHT22
+        elif (sensor == 'AM2302'): device = Adafruit_DHT.AM2302
+        else: return 0
+        hum, tc = Adafruit_DHT.read_retry(device, pin)
+        return (tc, hum)
+    def exposed_Terminate(self, remoteCommand):
+        global ClientQue
+        global Terminate
+        Terminate = True
+        ClientQue = 'TerminateServer'
+        logging.info("[Client command] Terminate threads and shut down")
         return 1
     def exposed_WriteSensorLog(self, sensor):
         global ClientQue
