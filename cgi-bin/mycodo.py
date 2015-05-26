@@ -491,20 +491,11 @@ def usage():
     print "    -d, --daemon v/s w/i/d"
     print "           Start program as daemon that monitors conditions and modulates relays"
     print "           ""v"" enables log output to the console, ""s"" silences"
-    print "           Log leve: ""w"": >= warnings, ""i"": >= info, ""d"": >= debug"
+    print "           Log level: ""w"": >= warnings, ""i"": >= info, ""d"": >= debug"
     print "    -h, --help"
-    print "           Display this help and exit"
-    print "    -p, --pin"
-    print "           Display status of the GPIO pins (HIGH or LOW)"
-    print "    -r, --relay RELAY_NUMBER 0/1/X"
-    print "           Change the state of a relay"
-    print "           0=OFF, 1=ON, or X number of seconds On"
-    print "    -s,  --sensor SENSOR_NUMBER"
-    print "           Read and display sensor data from SENSOR_NUMBER"
-    print "    -w, --write SENSOR_NUMBER [FILE]"
-    print "           Write sensor data from SENSOR_NUMBER to log FILE\n"
-    print "Examples: mycodo.py -w 2 /var/www/mycodo/log/sensor.log"
-    print "          mycodo.py -d s w\n"
+    print "           Display this help and exit\n"
+    print "Default: mycodo.py -d s w"
+    print "Debugging: mycodo.py -d v d\n"
 
 # Checks user options and arguments for validity
 def menu():
@@ -513,9 +504,8 @@ def menu():
         sys.exit(1)
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'r:dhps:tw:',
-            ["relay=", "daemon", "help", "pin",
-            "sensor=", "write="])
+        opts, args = getopt.getopt(sys.argv[1:], 'dh',
+            ["daemon", "help"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -532,57 +522,6 @@ def menu():
             sys.exit(0)
         elif opt in ("-h", "--help"):
             usage()
-            sys.exit(0)
-        elif opt in ("-p", "--pin"):
-            read_config(0)
-            gpio_read()
-            sys.exit(0)
-        elif opt in ("-r", "--relay"):
-            if not represents_int(sys.argv[2]) or \
-                    int(float(sys.argv[2])) > 8 or \
-                    int(float(sys.argv[2])) < 1:
-                print "Error: --relay only accepts integers 1 though 8"
-                sys.exit(1)
-            else:
-                global relaySelect
-                relaySelect = int(float(sys.argv[2]))
-            if represents_int(sys.argv[3]) and int(float(sys.argv[3])):
-                read_config(0)
-                if sys.argv[3] == 1:
-                    print "%s [GPIO Write] Relay %s ON" % (
-                        timestamp(), relaySelect)
-                    if (relayTrigger[int(float(sys.argv[2]))] == 1): gpio_change(relaySelect, 1)
-                    else: gpio_change(relaySelect, 0)
-                    gpio_read()
-                    sys.exit(0)
-                elif sys.argv[3] == 0:
-                    print "%s [GPIO Write] Relay %s OFF" % (
-                        timestamp(), relaySelect)
-                    if (relayTrigger[int(float(sys.argv[2]))] == 1): gpio_change(relaySelect, 0)
-                    else: gpio_change(relaySelect, 1)
-                    gpio_read()
-                    sys.exit(0)
-                elif int(float(sys.argv[3])) > 1:
-                    print "%s [GPIO Write] Relay %s ON for %s seconds" % (
-                        timestamp(), int(float(arg)))
-                    relay_on_duration(int(float(sys.argv[2])), int(float(sys.argv[3])), 0)
-                    sys.exit(0)
-                else:
-                    print "--state only accepts ON, OFF, integers > 1"
-                    usage()
-                    sys.exit(1)
-        elif opt in ("-s", "--sensor"):
-            read_sensors(0, int(float(sys.argv[2])))
-            sys.exit(0)
-        elif opt in ("-w", "--write"):
-            global sensor_log_file_tmp
-            if sys.argv[3] == '':
-                print "[Write Log] No file specified, using default: %s" % (
-                    sensor_log_file_tmp)
-            else:
-                sensor_log_file_tmp = sys.argv[3]
-            read_sensors(0, int(float(sys.argv[2])))
-            write_sensor_log(int(float(sys.argv[2])))
             sys.exit(0)
         else:
             assert False, "Fail"
@@ -1550,7 +1489,7 @@ def modify_var(*names_and_values):
     
     return 1
 
-# Email if temperature or humidity is outside of critical range
+# Email if temperature or humidity is outside of critical range (Not yet implemented)
 def email():
     if (smtp_ssl):
         server = smtplib.SMTP_SSL(smtp_host, smtp_port)
