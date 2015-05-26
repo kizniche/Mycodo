@@ -56,7 +56,7 @@ def menu():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:], 'm:r:s:tw:', 
-            ["modtempOR", "modtempPID", "modhumOR", "modhumPID", "modrelaynames=", "modrelaypins=", "modrelaytrigger=",
+            ["graph", "modtempOR", "modtempPID", "modhumOR", "modhumPID", "modrelaynames=", "modrelaypins=", "modrelaytrigger=",
             "modsensor", "modtimer=", "modvar=", "relay=", "sensor=", "terminate", "writelog="])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
