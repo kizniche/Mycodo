@@ -287,11 +287,29 @@ This can be changed back with the following command if you wish to create more u
 <a name="sensor-relay"></a>
 ### Sensors and Relays
 
-Before starting the daemon, check that the sensors can be properly accessed. Edit config/mycodo.cfg and change the values of dhtsensor and dhtpin to match your configuration. Options for dhtsensor are 'DHT11', 'DHT22', and 'AM2302' (without the quotes). The default is DHT22 on pin 4. If set up correctly, the following command should display temperature and humidity:
+A few variables need to be manually set in mycodo.cfg and tested before starting the daemon. Edit /var/www/mycodo/config/mycodo.cfg and change the values of sensor1sensor and sensor1pin. Options for sensor1device are ‘DHT11′, ‘DHT22′, and ‘AM2302′ (without the quotes) and refer to your specific RPi BCM GPIO numbering for the pin. The default is DHT22 on pin 4. After editing the config file, start up the daemon with sudo service mycodo start
 
-`sudo mycodo.py -r`
+If set up correctly, the daemon should start and begin logging sensor data.
 
-Connect any GPIOs to your relays that are not normally HIGH or LOW upon boot. The GPIO-initialize.py script that's installed next will set the pins to output the opposite of that is specified in mycodo.cfg as their on state (that is, if you select HIGH as the on state, the initialization script will set them to LOW at boot). This should either be manually set in the congif file or through the web interface.
+You can view the daemon log with
+
+`tail /var/www/mycodo/log/daemon-tmp.log`
+
+and the sensor log with
+
+`tail /var/www/mycodo/log/sensor-tmp.log`
+
+The following command should also retrieve a current temperature and humidity measurement. Change the values if your pin and device are different. Options for device are DHT11, DHT22, and AM2302.
+
+`/var/www/mycodo/cgi-bin/mycodo-client.py -s 4 DHT22`
+
+Connect the relays to any GPIOs that are not normally HIGH or LOW upon boot. Change the variables relayXpin and relayXtrigger, where X is the relay number. relayXpin is the BCM GPIO pin the relay is connected to, and relayXtrigger is the state at which the relay turns on, where 0 means it turns on when LOW (0-VDC) and 1 means it turns on when HIGH (5-VDC). The GPIO-initialize.py script will set the pins to output the opposite of relayXtrigger, that is if you select 1 (HIGH), the initialization script will set them to 0 (LOW) at boot.
+
+You can test the function of the relays with the following command, replacing [RELAY] with the relay number (1 – 8) and either 0 for off or 1 for on.
+
+sudo /var/www/mycodo/cgi-bin/mycodo-client.py [RELAY] [0/1]
+
+If you are receiving temperature and humidity data, and relays are turning on and off with mycodo.py, you can set the daemon to start at boot and begin using the web interface.
 
 <a name="cron"></a>
 ### Daemon Setup
