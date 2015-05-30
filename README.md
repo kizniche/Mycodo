@@ -307,7 +307,7 @@ Connect the relays to any GPIOs that are not normally HIGH or LOW upon boot. Cha
 
 You can test the function of the relays with the following command, replacing [RELAY] with the relay number (1 – 8) and either 0 for off or 1 for on.
 
-'/var/www/mycodo/cgi-bin/mycodo-client.py [RELAY] [0/1]'
+`/var/www/mycodo/cgi-bin/mycodo-client.py [RELAY] [0/1]`
 
 If you are receiving temperature and humidity data, and relays are turning on and off with mycodo-client.py, you can set the daemon to start at boot and begin using the web interface.
 
@@ -324,9 +324,7 @@ If you are properly receiving temperature and humidity data, set up the daemon t
 
 Open crontab with `sudo crontab -e`, add the following lines, then save with `Ctrl+e`
 
-```
-@reboot /usr/bin/python /var/www/mycodo/cgi-bin/GPIO-initialize.py &
-```
+`@reboot /usr/bin/python /var/www/mycodo/cgi-bin/GPIO-initialize.py &`
 
 Reboot to allow everything to start up
 
