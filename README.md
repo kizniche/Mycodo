@@ -287,7 +287,7 @@ This can be changed back with the following command if you wish to create more u
 <a name="sensor-relay"></a>
 ### Sensors and Relays
 
-A few variables need to be manually set in mycodo.cfg and tested before starting the daemon. Edit /var/www/mycodo/config/mycodo.cfg and change the values of sensor1sensor and sensor1pin. Options for sensor1device are ‘DHT11′, ‘DHT22′, and ‘AM2302′ (without the quotes) and refer to your specific RPi BCM GPIO numbering for the pin. The default is DHT22 on pin 4. After editing the config file, start up the daemon with sudo service mycodo start
+A few variables need to be manually set in mycodo.cfg and tested before starting the daemon. Edit /var/www/mycodo/config/mycodo.cfg and change the values of sensor1sensor and sensor1pin. Options for sensor1device are ‘DHT11′, ‘DHT22′, and ‘AM2302′ (without the quotes) and refer to your specific RPi BCM GPIO numbering for the pin. The default is DHT22 on pin 4. After editing the config file, start up the daemon with `/var/www/mycodo/cgi-bin/mycodo.py -d v d`
 
 If set up correctly, the daemon should start and begin logging sensor data.
 
@@ -309,7 +309,7 @@ You can test the function of the relays with the following command, replacing [R
 
 sudo /var/www/mycodo/cgi-bin/mycodo-client.py [RELAY] [0/1]
 
-If you are receiving temperature and humidity data, and relays are turning on and off with mycodo.py, you can set the daemon to start at boot and begin using the web interface.
+If you are receiving temperature and humidity data, and relays are turning on and off with mycodo-client.py, you can set the daemon to start at boot and begin using the web interface.
 
 <a name="cron"></a>
 ### Daemon Setup
