@@ -88,12 +88,10 @@ case "${1:-''}" in
            echo "Server has stopped"
         fi
         ;;
-    'restart')
-	stop
-	start
-        ;;
-    'reload'|'force-reload')
-        ;;
+    'restart'|'reload'|'force-reload')
+        $0 stop
+	$0 start
+	;;
     'status')
         ;;
     *)
