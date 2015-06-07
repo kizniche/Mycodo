@@ -549,7 +549,7 @@ def daemon(output, log):
         logging.getLogger().setLevel(logging.DEBUG)
 
     if (output == 'verbose'):
-        # define a Handler which writes INFO messages or higher to the sys.stderr
+        # define a Handler which writes DEBUG messages or higher to the sys.stderr
         console = logging.StreamHandler()
         console.setLevel(logging.DEBUG)
         # add the handler to the root logger
