@@ -1,7 +1,7 @@
 <?php
 /*
 *
-*  index.php - The main page of the control interface
+*  index.php - The Mycodo front-end and the main page of the control interface
 *  By Kyle Gabriel
 *  2012 - 2015
 *
@@ -143,7 +143,7 @@ function is_positive_integer($str) {
 
 if ($login->isUserLoggedIn() == true) {
     
-    // Delete all generated graphs except for the 30 latest
+    // Delete all generated graphs except for the 20 latest
     $dir = "/var/log/mycodo/images/";
     if (is_dir($dir)) {
         if ($dh = opendir($dir)) {
@@ -155,10 +155,10 @@ if ($login->isUserLoggedIn() == true) {
         }
         // Now sort by timestamp (just an integer) from oldest to newest
         asort($files, SORT_NUMERIC);
-        // Loop over all but the 30 newest files and delete them
+        // Loop over all but the 20 newest files and delete them
         // Only need the array keys (filenames) since we don't care about timestamps now the array is in order
         $files = array_keys($files);
-        for ($i = 0; $i < (count($files) - 30); $i++) {
+        for ($i = 0; $i < (count($files) - 20); $i++) {
             if (!is_dir($files[$i])) unlink($files[$i]);
         }
     }
@@ -649,6 +649,7 @@ $error_code = "no";
                             menu_item('Separate1h', '1 Hour', $page);
                             menu_item('Separate6h', '6 Hours', $page);
                             menu_item('Separate1d', '1 Day', $page);
+                            menu_item('Separate3d', '3 Days', $page);
                             menu_item('Separate1w', '1 Week', $page);
                             menu_item('Separate1m', '1 Month', $page);
                             menu_item('Separate6m', '6 Months', $page);
@@ -661,6 +662,7 @@ $error_code = "no";
                             menu_item('Combined1h', '1 Hour', $page);
                             menu_item('Combined6h', '6 Hours', $page);
                             menu_item('Combined1d', '1 Day', $page);
+                            menu_item('Combined3d', '3 Days', $page);
                             menu_item('Combined1w', '1 Week', $page);
                             menu_item('Combined1m', '1 Month', $page);
                             menu_item('Combined6m', '6 Months', $page);
@@ -699,6 +701,10 @@ $error_code = "no";
                                 $editconfig = $mycodo_client . ' --graph combined1d ' . $id . ' 0';
                                 if ($ref) shell_exec($editconfig);
                                 echo "combined1d&mod=" . $id . ">";
+                            } else if ($_GET['page'] == 'Combined3d') {
+                                $editconfig = $mycodo_client . ' --graph combined3d ' . $id . ' 0';
+                                if ($ref) shell_exec($editconfig);
+                                echo "combined3d&mod=" . $id . ">";
                             } else if ($_GET['page'] == 'Combined1w') {
                                 $editconfig = $mycodo_client . ' --graph combined1w ' . $id . ' 0';
                                 if ($ref) shell_exec($editconfig);
@@ -735,6 +741,10 @@ $error_code = "no";
                                         if ($ref) shell_exec($mycodo_client . ' --graph separate1d ' . $id . ' ' . $n);
                                         echo "separate1d&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
+                                        case 'Separate3d':
+                                        if ($ref) shell_exec($mycodo_client . ' --graph separate3d ' . $id . ' ' . $n);
+                                        echo "separate3d&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
                                         case 'Separate1w':
                                         if ($ref) shell_exec($mycodo_client . ' --graph separate1w ' . $id . ' ' . $n);
                                         echo "separate1w&mod=" . $id . "&sensor=" . $n . ">";
@@ -762,7 +772,8 @@ $error_code = "no";
                                     if ($ref) shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
                                     echo "main&mod=" . $id . "&sensor=" . $n . "></div>";
                                 }
-                            }   
+                                if ($n != $numsensors) { echo "<hr class=\"fade\"/>"; }
+                            }
                         }
                     }
                     ?>
@@ -1182,6 +1193,7 @@ $error_code = "no";
                                 \"\" using 1:14 index 0 title \"$relay8name\" w impulses ls 11 axes x1y1" | gnuplot`;
                                 echo "<div style=\"width: 100%; text-align: center; padding: 1em 0 3em 0;\"><img src=image.php?span=cussep&mod=" . $id2 . "&sensor=" . $n . "></div>";
                             }
+                            if ($n != $numsensors) { echo "<hr class=\"fade\"/>"; }
                         }
                     }
                     echo "<div style=\"width: 100%; text-align: center;\"><a href='javascript:open_legend()'>Brief Graph Legend</a> - <a href='javascript:open_legend_full()'>Full Graph Legend</a></div>";

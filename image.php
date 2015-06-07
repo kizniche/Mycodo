@@ -54,6 +54,9 @@ if ($login->isUserLoggedIn() == true) {
             case 'separate1d':
                 readfile($image_dir . 'graph-separate1d-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
+            case 'separate3d':
+                readfile($image_dir . 'graph-separate3d-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+                break;
             case 'separate1w':
                 readfile($image_dir . 'graph-separate1w-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
@@ -71,6 +74,9 @@ if ($login->isUserLoggedIn() == true) {
                 break;
             case 'combined1d':
                 readfile($image_dir . 'graph-combined1d-' . $_GET['mod'] .  '.png');
+                break;
+            case 'combined3d':
+                readfile($image_dir . 'graph-combined3d-' . $_GET['mod'] .  '.png');
                 break;
             case 'combined1w':
                 readfile($image_dir . 'graph-combined1w-' . $_GET['mod'] .  '.png');

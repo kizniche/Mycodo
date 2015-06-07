@@ -770,11 +770,9 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     sensor_log_file = "%s/log/sensor.log" % install_directory
     relay_log_file_tmp = "%s/log/relay-tmp.log" % install_directory
     relay_log_file = "%s/log/relay.log" % install_directory
-    image_path = "/var/www/mycodo/images"
+    image_path = "/var/log/mycodo/images"
     #graph_out_file = "alltemp"
     #graph_id = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(10)])
-
-    date_now = datetime.datetime.now().strftime("%Y %m %d %H %M %S") 
 
     if "1h" in graph_out_file:
         h = 1
@@ -785,6 +783,9 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     elif "1d" in graph_out_file:
         d = 1
         time_ago = '1 Day'
+    elif "3d" in graph_out_file:
+        d = 3
+        time_ago = '3 Days'
     elif "1w" in graph_out_file:
         d = 7
         time_ago = '1 Week'
@@ -795,7 +796,10 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         d = 182
         time_ago = '6 Months'
 
-    date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S") 
+    date_now = datetime.datetime.now().strftime("%Y %m %d %H %M %S")
+    date_now_disp = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S") 
+    date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
+    date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S") 
 
     y1_min = '0'
     y1_max = '100'
@@ -895,7 +899,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         proc.stdin.write('set multiplot\n')
         proc.stdin.write('set size 1.0,0.5\n')
         proc.stdin.write('set origin 0.0,0.5\n')
-        proc.stdin.write('set title \"Combined Temperatures: ' + time_ago + ': ' + date_ago + ' - ' + date_now + '\"\n')
+        proc.stdin.write('set title \"Combined Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
         proc.stdin.write('plot ')
         if sensorGraph[1]:
             proc.stdin.write('\"<awk \'$10 == 1\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 title \"T1\" w lp ls 12 axes x1y2')
@@ -934,7 +938,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         proc.stdin.write('unset multiplot\n')
 
     if "separate" in graph_out_file:
-        proc.stdin.write('set title \"Sensor ' + sensorn + ': ' + sensorName[int(float(sensorn))] + '\\n\\n' + time_ago + ': ' + date_ago + ' - ' + date_now + '\"\n')
+        proc.stdin.write('set title \"Sensor ' + sensorn + ': ' + sensorName[int(float(sensorn))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
         proc.stdin.write('plot \"<awk \'$10 == ' + sensorn + '\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
         proc.stdin.write('\"\" u 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, ')
         proc.stdin.write('\"\" u 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ')
