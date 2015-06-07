@@ -39,13 +39,15 @@ from lockfile import LockFile
 from rpyc.utils.server import ThreadedServer
 
 config_file = "%s/config/mycodo.cfg" % install_directory
-daemon_log_file_tmp = "%s/log/daemon-tmp.log" % install_directory
-daemon_log_file = "%s/log/daemon.log" % install_directory
-sensor_log_file_tmp = "%s/log/sensor-tmp.log" % install_directory
-sensor_log_file = "%s/log/sensor.log" % install_directory
-relay_log_file_tmp = "%s/log/relay-tmp.log" % install_directory
-relay_log_file = "%s/log/relay.log" % install_directory
 relay_script = "%s/cgi-bin/relay.sh" % install_directory
+image_path = "%s/images" % install_directory
+log_path = "%s/log" % install_directory
+daemon_log_file_tmp = "%s/daemon-tmp.log" % log_path
+daemon_log_file = "%s/daemon.log" % log_path
+sensor_log_file_tmp = "%s/sensor-tmp.log" % log_path
+sensor_log_file = "%s/sensor.log" % log_path
+relay_log_file_tmp = "%s/relay-tmp.log" % log_path
+relay_log_file = "%s/relay.log" % log_path
 
 logging.basicConfig(
     filename = daemon_log_file_tmp,
@@ -763,17 +765,6 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     h = 0
     d = 0
 
-    #### Configure Install Directory ####
-    install_directory = "/var/www/mycodo"
-    #### Configure Install Directory ####
-    sensor_log_file_tmp = "%s/log/sensor-tmp.log" % install_directory
-    sensor_log_file = "%s/log/sensor.log" % install_directory
-    relay_log_file_tmp = "%s/log/relay-tmp.log" % install_directory
-    relay_log_file = "%s/log/relay.log" % install_directory
-    image_path = "/var/log/mycodo/images"
-    #graph_out_file = "alltemp"
-    #graph_id = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(10)])
-
     if "1h" in graph_out_file:
         h = 1
         time_ago = '1 Hour'
@@ -844,11 +835,24 @@ def generate_graph(graph_out_file, graph_id, sensorn):
                     '#CC8D9C', '#717412', '#0B479B',
                     '#7164a3', '#599e86', '#c3ae4f', '#c3744f',
                     ]
-    
 
-    proc = subprocess.Popen(['gnuplot','-p'], 
-                            stdin=subprocess.PIPE,
-                            )
+    graph_stdout = "%s/graph-stdout.log" % log_path
+    graph_stderr = "%s/graph-stderr.log" % log_path
+    
+    if logging.getLogger().isEnabledFor(logging.DEBUG) is True:
+        with open(graph_stdout, "ab") as out, open(graph_stderr, "ab") as err:
+            proc = subprocess.Popen(['gnuplot','-p'], 
+                                    stdin=subprocess.PIPE,
+                                    stdout=out,
+                                    stderr=err
+                                    )
+    else:
+        with open(os.devnull, 'w') as fp:
+            proc = subprocess.Popen(['gnuplot','-p'], 
+                                    stdin=subprocess.PIPE,
+                                    stdout=fp,
+                                    stderr=fp
+                                    )
 
     proc.stdin.write('reset\n')
     
