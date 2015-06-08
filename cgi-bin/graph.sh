@@ -7,7 +7,7 @@
 
 PATHC=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 LOGPATH="/var/tmp"
-IMAGEPATH="$(dirname "$PATHC")/images"
+IMAGEPATH="/var/log/mycodo/images"
 Y1MIN=0
 Y1MAX=100
 Y2MIN=0
