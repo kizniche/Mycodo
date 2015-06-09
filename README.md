@@ -71,7 +71,7 @@ I'm since upgraded to a new set of hardware that support 8 individually-switchab
 - [X] Logs written to TempFS and periodically concatenated with SD card logs
   - [ ] Automatic log file backup when a certain size is reached  
 - [X] Support for more than one temperature/humidity sensor
-  - [ ] (Half complete) Support using multiple sensors at the same time
+  - [X] Support using multiple sensors at the same time (Maximum of 4 at the moment)
   - [ ] Expand support for sensors (limited to when/if I get sensors to test)
 - [X] Update user interface  
   - [ ] Graphics (temperature, humidity, time, date, etc.)  
