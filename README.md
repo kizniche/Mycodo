@@ -118,7 +118,7 @@ This installation assumes you are starting with a fresh install of Raspbian linu
 
 `sudo apt-get upgrade`
 
-`sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev php5 libapache2-mod-php5`
+`sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev php5 libapache2-mod-php5 vim`
 
 If you will have your RPi exposed to the internet with SSH access, I recommend installing fail2ban to monitor auth.log and ban IP addresses that fail a certain number of login attempts. This has successfully thwarted many script kiddies from mounting a useful attack on my RPi system.
 
@@ -202,7 +202,7 @@ Setup streaming capabilities
 
 `sudo cp output_http.so input_file.so /usr/local/lib/` 
 
-Set www permissions
+Set permissions
 
 `sudo chown -R www-data:www-data /var/www/mycodo`
 
@@ -213,7 +213,7 @@ Set www permissions
 
 A temporary filesystem in RAM is created for areas of the disk that are written often, preserving the life of the SD card and speeding up disk read/writes. Keep in mind all contents will be deleted upon reboot. If you need to analyze logs, remember to disable these lines in fstab before doing so.
 
-Edit fstab with `sudo vi /etc/fstab` add the following lines, then save.
+Edit fstab with `sudo vim /etc/fstab` add the following lines, then save.
 
 ```
 tmpfs    /tmp    tmpfs    defaults,noatime,nosuid,size=100m    0 0
@@ -260,7 +260,7 @@ Add the following to /etc/apache2/sites-available/default-ssl (or just 'default'
 
 Set up phpmyadmin to only allow trusted sources. Edit phpmyadmin.conf
 
-`sudo vi /etc/apache2/conf.d/phpmyadmin.conf`
+`sudo vim /etc/apache2/conf.d/phpmyadmin.conf`
 
 Add the following lines after `<Directory /usr/share/phpmyadmin>` and change YOUR-IP with the IP address you will be connecting from.
 
