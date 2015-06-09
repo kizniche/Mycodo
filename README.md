@@ -206,7 +206,7 @@ Set www permissions
 
 `sudo chown -R www-data:www-data /var/www/mycodo`
 
-`sudo chmod 660 /var/www/mycodo/config/* /var/www/mycodo/images/*.png /var/www/mycodo/log/*.log`
+`sudo chmod 660 /var/www/mycodo/config/* /var/www/mycodo/log/*.log`
 
 <a name="tempfs"></a>
 ### TempFS
