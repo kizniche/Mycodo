@@ -793,7 +793,8 @@ function write_auth_log($auth, $user) {
     else if ($auth == 0) $auth = 'NOPASS';
 
     $ip = $_SERVER['REMOTE_ADDR'];
-    $hostaddress = $_SERVER['REMOTE_HOST'];
+    if (isset($_SERVER['REMOTE_HOST'])) $hostaddress = $_SERVER['REMOTE_HOST'];
+    else $hostaddress = ' ';
     $referred = $_SERVER['HTTP_REFERER'];
     if ($referred == "") $referred = $auth_write . 'direct';
     $browser = $_SERVER['HTTP_USER_AGENT'];
