@@ -674,13 +674,14 @@ $error_code = "no";
                 <div style="clear: both;"></div>
                 <div>
                     <?php
+                    $ref = 0;
+                    if (isset($_GET['Refresh']) == 1) $ref = 1;
+                    
                     if (!isset($_SESSION["ID"])) {
                         $id = uniqid();
                         $_SESSION["ID"] = $id;
+                        $ref = 1;
                     } else $id = $_SESSION["ID"];
-                    
-                    if (isset($_GET['Refresh']) == 1) $ref = 1;
-                    else $ref = 0;
                     
                     if (strpos($_GET['page'], 'Combined') === 0) {
                         echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
@@ -757,14 +758,14 @@ $error_code = "no";
                                     echo "1h&mod=" . $id . "&sensor=" . $n . "><p><img class=\"main-image\" src=image.php?span=Separate6h&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=Separate1d&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=Separate1w&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=Separate1m&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=Separate6m&mod=" . $id . "&sensor=" . $n . "></p>";
                                     break;
                                     default:
-                                    if ($ref) shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
+                                    if ($ref) shell_exec($mycodo_client . ' --graph dayweek ' . $id . ' ' . $n);
                                     echo "main&mod=" . $id . "&sensor=" . $n . ">";
                                     break;
                                 }
                                 echo "</div>";
                             } else if (${'sensor' . $n . 'graph'} == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                                if ($ref) shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
+                                if ($ref) shell_exec($mycodo_client . ' --graph dayweek ' . $id . ' ' . $n);
                                 echo "main&mod=" . $id . "&sensor=" . $n . "></div>";
                             }
                             if ($n != $numsensors) { echo "<hr class=\"fade\"/>"; }

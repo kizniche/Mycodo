@@ -12,9 +12,8 @@
 # sudo stdbuf -oL python ./mycodo.py -d >> /var/log/some.log 2>&1 &
 #
 
-#### Configure Install Directory ####
+#### Configure Directories ####
 install_directory = "/var/www/mycodo"
-#### Configure Install Directory ####
 
 import Adafruit_DHT
 import ConfigParser
@@ -761,17 +760,19 @@ def humidity_monitor(ThreadName, sensor):
     HAlive[sensor] = 2
 
 # Generate gnuplot graph
-def generate_graph(graph_out_file, graph_id, sensorn):    
+def generate_graph(graph_out_file, graph_id, sensorn):
+    tmp_path = "/var/tmp"
     h = 0
     d = 0
 
+    # Calculate a past date from a number of hours or days ago
     if "1h" in graph_out_file:
         h = 1
         time_ago = '1 Hour'
     elif "6h" in graph_out_file:
         h = 6
         time_ago = '6 Hours'
-    elif "1d" in graph_out_file:
+    elif "1d" in graph_out_file or "dayweek" in graph_out_file:
         d = 1
         time_ago = '1 Day'
     elif "3d" in graph_out_file:
@@ -786,178 +787,209 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     elif "6m" in graph_out_file:
         d = 182
         time_ago = '6 Months'
-
     date_now = datetime.datetime.now().strftime("%Y %m %d %H %M %S")
     date_now_disp = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S") 
     date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
     date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S") 
 
-    y1_min = '0'
-    y1_max = '100'
-    y2_min = '0'
-    y2_max = '35'
-    
-    with open('/var/www/mycodo/config/mycodo.cfg','r') as f:
-        for line in f:
-            test = line.split()
-            if len(test) == 3:
-                if test[0] == 'relay1name': relay1name = test[2]
-                elif test[0] == 'relay2name': relay2name = test[2]
-                elif test[0] == 'relay3name': relay3name = test[2]
-                elif test[0] == 'relay4name': relay4name = test[2]
-                elif test[0] == 'relay5name': relay5name = test[2]
-                elif test[0] == 'relay6name': relay6name = test[2]
-                elif test[0] == 'relay7name': relay7name = test[2]
-                elif test[0] == 'relay8name': relay8name = test[2]
-                
+    # Combine sensor and relay logs on SD card with sensor and relay logs in /tmp
     sensor_log_files_combine = [sensor_log_file, sensor_log_file_tmp]
-    sensor_log_generate = "/var/tmp/sensor-logs-combined.log"
-
+    sensor_log_generate = "%s/sensor-logs-combined.log" % tmp_path
+    relay_log_files_combine = [relay_log_file, relay_log_file_tmp]
+    relay_log_generate = "%s/relay-logs-combined.log" % tmp_path
     with open(sensor_log_generate, 'w') as fout:
         for line in fileinput.input(sensor_log_files_combine):
             fout.write(line)
-            
-    relay_log_files_combine = [relay_log_file, relay_log_file_tmp]
-    relay_log_generate = "/var/tmp/relay-logs-combined.log"
-
     with open(relay_log_generate, 'w') as fout:
         for line in fileinput.input(relay_log_files_combine):
             fout.write(line)
 
-                
+    # Define how many lines to read in file (speeds processing large logs)
     sensor_head = ''
     #sensor_head = ' | head -n 180'
     relay_head = ''
     #relay_head = ' | head -n 180'
 
+    # Axes size constraints
+    y1_min = '0'
+    y1_max = '100'
+    y2_min = '0'
+    y2_max = '35'
+    
+    # Line colors (see comments further down with their use)
     graph_colors = ['#FF3100', '#0772A1', '#00B74A', '#91180B',
                     '#582557', '#04834C', '#DC32E6', '#957EF9',
                     '#CC8D9C', '#717412', '#0B479B',
                     '#7164a3', '#599e86', '#c3ae4f', '#c3744f',
                     ]
 
-    graph_stdout = "%s/graph-stdout.log" % log_path
-    graph_stderr = "%s/graph-stderr.log" % log_path
+    # Write the following output to a file that will be executed with gnuplot 
+    gnuplot_graph = "%s/plot-%s.gnuplot" % (tmp_path, sensorn)
+    plot = open(gnuplot_graph, 'w')
     
-    if logging.getLogger().isEnabledFor(logging.DEBUG) is True:
-        with open(graph_stdout, "ab") as out, open(graph_stderr, "ab") as err:
-            proc = subprocess.Popen(['gnuplot','-p'], 
-                                    stdin=subprocess.PIPE,
-                                    stdout=out,
-                                    stderr=err
-                                    )
+    plot.write('reset\n') 
+    plot.write('set xdata time\n')
+    plot.write('set timefmt \"%Y %m %d %H %M %S\"\n')
+    
+    if "combined" in graph_out_file:
+        plot.write('set terminal png size 1000,1000\n')
+        plot.write('set output \"' + image_path + '/graph-' + graph_out_file + '-' + graph_id + '.png\"\n')
+    elif "separate" in graph_out_file:
+        plot.write('set terminal png size 1000,600\n')
+        plot.write('set output \"' + image_path + '/graph-' + graph_out_file + '-' + graph_id + '-' + sensorn + '.png\"\n')
+    elif "dayweek" in graph_out_file:
+        plot.write('set terminal png size 1000,1000\n')
+        plot.write('set output \"' + image_path + '/graph-' + graph_out_file + '-' + graph_id + '-' + sensorn + '.png\"\n')
+        
+    plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
+    plot.write('set format x \"%H:%M\\n%m/%d\"\n')
+    plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
+    plot.write('set y2range [' + y2_min + ':' + y2_max + ']\n')
+    
+    if "day-week" in graph_out_file:
+        plot.write('set mytics 10\n')
+        plot.write('set my2tics 5\n')
+        plot.write('set ytics 0,20\n')
+        plot.write('set y2tics 0,5\n')
     else:
-        with open(os.devnull, 'w') as fp:
-            proc = subprocess.Popen(['gnuplot','-p'], 
-                                    stdin=subprocess.PIPE,
-                                    stdout=fp,
-                                    stderr=fp
-                                    )
-
-    proc.stdin.write('reset\n')
+        plot.write('set my2tics 10\n')
+        plot.write('set ytics 10\n')
+        plot.write('set y2tics 5\n') 
     
-    if "combined" in graph_out_file:
-        proc.stdin.write('set terminal png size 1000,1000\n')
-    elif "separate" in graph_out_file:
-        proc.stdin.write('set terminal png size 1000,600\n')
-        
-    proc.stdin.write('set xdata time\n')
-    proc.stdin.write('set timefmt \"%Y %m %d %H %M %S\"\n')
+    plot.write('set style line 11 lc rgb \'#808080\' lt 1\n')
+    plot.write('set border 3 back ls 11\n')
+    plot.write('set tics nomirror\n')
+    plot.write('set style line 12 lc rgb \'#808080\' lt 0 lw 1\n')
+    plot.write('set grid xtics ytics back ls 12\n')
+       
+    # Horizontal lines: separate temperature, humidity, and dewpoint
+    plot.write('set style line 1 lc rgb \'' + graph_colors[0] + '\' pt 0 ps 1 lt 1 lw 2\n')
+    plot.write('set style line 2 lc rgb \'' + graph_colors[1] + '\' pt 0 ps 1 lt 1 lw 2\n')
+    plot.write('set style line 3 lc rgb \'' + graph_colors[2] + '\' pt 0 ps 1 lt 1 lw 2\n')
     
+    # Vertical lines: relays 1 - 8
+    plot.write('set style line 4 lc rgb \'' + graph_colors[3] + '\' pt 0 ps 1 lt 1 lw 1\n')
+    plot.write('set style line 5 lc rgb \'' + graph_colors[4] + '\' pt 0 ps 1 lt 1 lw 1\n')
+    plot.write('set style line 6 lc rgb \'' + graph_colors[5] + '\' pt 0 ps 1 lt 1 lw 1\n')
+    plot.write('set style line 7 lc rgb \'' + graph_colors[6] + '\' pt 0 ps 1 lt 1 lw 1\n')
+    plot.write('set style line 8 lc rgb \'' + graph_colors[7] + '\' pt 0 ps 1 lt 1 lw 1\n')
+    plot.write('set style line 9 lc rgb \'' + graph_colors[8] + '\' pt 0 ps 1 lt 1 lw 1\n')
+    plot.write('set style line 10 lc rgb \'' + graph_colors[9] + '\' pt 0 ps 1 lt 1 lw 1\n')
+    plot.write('set style line 11 lc rgb \'' + graph_colors[10] + '\' pt 0 ps 1 lt 1 lw 1\n')
+    
+    # Horizontal lines: combined temperatures and humidities
+    plot.write('set style line 12 lc rgb \'' + graph_colors[11] + '\' pt 0 ps 1 lt 1 lw 2\n')
+    plot.write('set style line 13 lc rgb \'' + graph_colors[12] + '\' pt 0 ps 1 lt 1 lw 2\n')
+    plot.write('set style line 14 lc rgb \'' + graph_colors[13] + '\' pt 0 ps 1 lt 1 lw 2\n')
+    plot.write('set style line 15 lc rgb \'' + graph_colors[14] + '\' pt 0 ps 1 lt 1 lw 2\n')
+    plot.write('unset key\n')
+    
+    # Generate a graph with all temperatures and one graph with all humidities 
     if "combined" in graph_out_file:
-        proc.stdin.write('set output \"' + image_path + '/graph-' + graph_out_file + '-' + graph_id + '.png\"\n')
-    elif "separate" in graph_out_file:
-        proc.stdin.write('set output \"' + image_path + '/graph-' + graph_out_file + '-' + graph_id + '-' + sensorn + '.png\"\n')
-        
-    proc.stdin.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
-    proc.stdin.write('set format x \"%H:%M\\n%m/%d\"\n')
-    proc.stdin.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-    proc.stdin.write('set y2range [' + y2_min + ':' + y2_max + ']\n')
-    proc.stdin.write('set my2tics 10\n')
-    proc.stdin.write('set ytics 10\n')
-    proc.stdin.write('set y2tics 5\n')
-    proc.stdin.write('set style line 11 lc rgb \'#808080\' lt 1\n')
-    proc.stdin.write('set border 3 back ls 11\n')
-    proc.stdin.write('set tics nomirror\n')
-    proc.stdin.write('set style line 12 lc rgb \'#808080\' lt 0 lw 1\n')
-    proc.stdin.write('set grid xtics ytics back ls 12\n')
-    proc.stdin.write('set style line 1 lc rgb \'' + graph_colors[0] + '\' pt 0 ps 1 lt 1 lw 2\n')
-    proc.stdin.write('set style line 2 lc rgb \'' + graph_colors[1] + '\' pt 0 ps 1 lt 1 lw 2\n')
-    proc.stdin.write('set style line 3 lc rgb \'' + graph_colors[2] + '\' pt 0 ps 1 lt 1 lw 2\n')
-    proc.stdin.write('set style line 4 lc rgb \'' + graph_colors[3] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    proc.stdin.write('set style line 5 lc rgb \'' + graph_colors[4] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    proc.stdin.write('set style line 6 lc rgb \'' + graph_colors[5] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    proc.stdin.write('set style line 7 lc rgb \'' + graph_colors[6] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    proc.stdin.write('set style line 8 lc rgb \'' + graph_colors[7] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    proc.stdin.write('set style line 9 lc rgb \'' + graph_colors[8] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    proc.stdin.write('set style line 10 lc rgb \'' + graph_colors[9] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    proc.stdin.write('set style line 11 lc rgb \'' + graph_colors[10] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    proc.stdin.write('set style line 12 lc rgb \'' + graph_colors[11] + '\' pt 0 ps 1 lt 1 lw 2\n')
-    proc.stdin.write('set style line 13 lc rgb \'' + graph_colors[12] + '\' pt 0 ps 1 lt 1 lw 2\n')
-    proc.stdin.write('set style line 14 lc rgb \'' + graph_colors[13] + '\' pt 0 ps 1 lt 1 lw 2\n')
-    proc.stdin.write('set style line 15 lc rgb \'' + graph_colors[14] + '\' pt 0 ps 1 lt 1 lw 2\n')
-    proc.stdin.write('unset key\n')
-        
-    if "combined" in graph_out_file:
-        proc.stdin.write('set origin 0.0,0.0\n')
-        proc.stdin.write('set multiplot\n')
-        proc.stdin.write('set size 1.0,0.5\n')
-        proc.stdin.write('set origin 0.0,0.5\n')
-        proc.stdin.write('set title \"Combined Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-        proc.stdin.write('plot ')
+        plot.write('set origin 0.0,0.0\n')
+        plot.write('set multiplot\n')
+        plot.write('set size 1.0,0.5\n')
+        plot.write('set origin 0.0,0.5\n')
+        plot.write('set title \"Combined Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+        plot.write('plot ')
         if sensorGraph[1]:
-            proc.stdin.write('\"<awk \'$10 == 1\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 title \"T1\" w lp ls 12 axes x1y2')
-            if sensorGraph[2] or sensorGraph[3] or sensorGraph[4]: proc.stdin.write(', ')
-            else: proc.stdin.write('\n')
+            plot.write('\"<awk \'$10 == 1\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 title \"T1\" w lp ls 12 axes x1y2')
+            if sensorGraph[2] or sensorGraph[3] or sensorGraph[4]: plot.write(', ')
+            else: plot.write('\n')
         if sensorGraph[2]:
-            proc.stdin.write('\"<awk \'$10 == 2\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T2\" w lp ls 13 axes x1y2')
-            if sensorGraph[3] or sensorGraph[4]: proc.stdin.write(', ')
-            else: proc.stdin.write('\n')
+            plot.write('\"<awk \'$10 == 2\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T2\" w lp ls 13 axes x1y2')
+            if sensorGraph[3] or sensorGraph[4]: plot.write(', ')
+            else: plot.write('\n')
         if sensorGraph[3]:
-            proc.stdin.write('\"<awk \'$10 == 3\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T3\" w lp ls 14 axes x1y2')
-            if sensorGraph[4]: proc.stdin.write(', ')
-            else: proc.stdin.write('\n')
+            plot.write('\"<awk \'$10 == 3\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T3\" w lp ls 14 axes x1y2')
+            if sensorGraph[4]: plot.write(', ')
+            else: plot.write('\n')
         if sensorGraph[4]:
-            proc.stdin.write('\"<awk \'$10 == 4\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T4\" w lp ls 15 axes x1y2\n')
-        proc.stdin.write('set size 1.0,0.5\n')
-        proc.stdin.write('set origin 0.0,0.0\n')
-        proc.stdin.write('set title \"Combined Humidities: ' + time_ago + ': ' + date_ago + ' - ' + date_now + '\"\n')
-        proc.stdin.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
-        proc.stdin.write('set format x \"%H:%M\\n%m/%d\"\n')
-        proc.stdin.write('plot ')
+            plot.write('\"<awk \'$10 == 4\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T4\" w lp ls 15 axes x1y2\n')
+        plot.write('set size 1.0,0.5\n')
+        plot.write('set origin 0.0,0.0\n')
+        plot.write('set title \"Combined Humidities: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+        plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
+        plot.write('set format x \"%H:%M\\n%m/%d\"\n')
+        plot.write('plot ')
         if sensorGraph[1]:
-            proc.stdin.write('\"<awk \'$10 == 1\' ' + sensor_log_generate + sensor_head + '" using 1:8 index 0 title \"H1\" w lp ls 12 axes x1y1')
-            if sensorGraph[2] or sensorGraph[3] or sensorGraph[4]: proc.stdin.write(', ')
-            else: proc.stdin.write('\n')
+            plot.write('\"<awk \'$10 == 1\' ' + sensor_log_generate + sensor_head + '" using 1:8 index 0 title \"H1\" w lp ls 12 axes x1y1')
+            if sensorGraph[2] or sensorGraph[3] or sensorGraph[4]: plot.write(', ')
+            else: plot.write('\n')
         if sensorGraph[2]:
-            proc.stdin.write('\"<awk \'$10 == 2\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H2\" w lp ls 13 axes x1y1')
-            if sensorGraph[3] or sensorGraph[4]: proc.stdin.write(', ')
-            else: proc.stdin.write('\n')
+            plot.write('\"<awk \'$10 == 2\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H2\" w lp ls 13 axes x1y1')
+            if sensorGraph[3] or sensorGraph[4]: plot.write(', ')
+            else: plot.write('\n')
         if sensorGraph[3]:
-            proc.stdin.write('\"<awk \'$10 == 3\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H3\" w lp ls 14 axes x1y1')
-            if sensorGraph[4]: proc.stdin.write(', ')
-            else: proc.stdin.write('\n')
+            plot.write('\"<awk \'$10 == 3\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H3\" w lp ls 14 axes x1y1')
+            if sensorGraph[4]: plot.write(', ')
+            else: plot.write('\n')
         if sensorGraph[4]:
-            proc.stdin.write('\"<awk \'$10 == 4\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H4\" w lp ls 15 axes x1y1\n')
-        proc.stdin.write('unset multiplot\n')
+            plot.write('\"<awk \'$10 == 4\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H4\" w lp ls 15 axes x1y1\n')
+        plot.write('unset multiplot\n')
 
+    # Generate a graph with temp, hum, and dew point for a specific sensor
     if "separate" in graph_out_file:
-        proc.stdin.write('set title \"Sensor ' + sensorn + ': ' + sensorName[int(float(sensorn))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-        proc.stdin.write('plot \"<awk \'$10 == ' + sensorn + '\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
-        proc.stdin.write('\"\" u 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, ')
-        proc.stdin.write('\"\" u 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ')
+        plot.write('set title \"Sensor ' + sensorn + ': ' + sensorName[int(float(sensorn))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+        plot.write('plot \"<awk \'$10 == ' + sensorn + '\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
+        plot.write('\"\" u 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, ')
+        plot.write('\"\" u 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ')
         
-        proc.stdin.write('\"<awk \'$15 == ' + sensorn + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' +relay1name + '\" w impulses ls 4 axes x1y1, ')
-        proc.stdin.write('\"\" u 1:8 index 0 title \"' + relay2name + '\" w impulses ls 5 axes x1y1, ')
-        proc.stdin.write('\"\" u 1:9 index 0 title \"' + relay3name + '\" w impulses ls 6 axes x1y1, ')
-        proc.stdin.write('\"\" u 1:10 index 0 title \"' + relay4name + '\" w impulses ls 7 axes x1y1, ')
-        proc.stdin.write('\"\" u 1:11 index 0 title \"' + relay5name + '\" w impulses ls 8 axes x1y1, ')
-        proc.stdin.write('\"\" u 1:12 index 0 title \"' + relay6name + '\" w impulses ls 9 axes x1y1, ')
-        proc.stdin.write('\"\" u 1:13 index 0 title \"' + relay7name + '\" w impulses ls 10 axes x1y1, ')
-        proc.stdin.write('\"\" u 1:14 index 0 title \"' + relay8name + '\" w impulses ls 11 axes x1y1\n')
-        
-    proc.communicate()[0]
-    proc.stdin.close()
+        plot.write('\"<awk \'$15 == ' + sensorn + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relayName[1] + '\" w impulses ls 4 axes x1y1, ')
+        plot.write('\"\" u 1:8 index 0 title \"' + relayName[2] + '\" w impulses ls 5 axes x1y1, ')
+        plot.write('\"\" u 1:9 index 0 title \"' + relayName[3] + '\" w impulses ls 6 axes x1y1, ')
+        plot.write('\"\" u 1:10 index 0 title \"' + relayName[4] + '\" w impulses ls 7 axes x1y1, ')
+        plot.write('\"\" u 1:11 index 0 title \"' + relayName[5] + '\" w impulses ls 8 axes x1y1, ')
+        plot.write('\"\" u 1:12 index 0 title \"' + relayName[6] + '\" w impulses ls 9 axes x1y1, ')
+        plot.write('\"\" u 1:13 index 0 title \"' + relayName[7] + '\" w impulses ls 10 axes x1y1, ')
+        plot.write('\"\" u 1:14 index 0 title \"' + relayName[8] + '\" w impulses ls 11 axes x1y1\n')
+
+    # Generate a graph of the past day and week periods for each sensor 
+    if "dayweek" in graph_out_file:
+        plot.write('set origin 0.0,0.0\n')
+        plot.write('set multiplot\n')
+        # Top graph - day
+        plot.write('set size 1.0,0.5\n')
+        plot.write('set origin 0.0,0.5\n')
+        plot.write('set title \"Sensor ' + sensorn + ': ' + sensorName[int(float(sensorn))] + '\\n\\nPast Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+        plot.write('plot \"<awk \'$10 == ' + sensorn + '\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
+        plot.write('\"\" using 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, ')
+        plot.write('\"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ')
+        plot.write('\"<awk \'$15 == ' + sensorn + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"$relay1name\" w impulses ls 4 axes x1y1, ')
+        plot.write('\"\" using 1:8 index 0 title \"$relay2name\" w impulses ls 5 axes x1y1, ')
+        plot.write('\"\" using 1:9 index 0 title \"$relay3name\" w impulses ls 6 axes x1y1, ')
+        plot.write('\"\" using 1:10 index 0 title \"$relay4name\" w impulses ls 7 axes x1y1, ')
+        plot.write('\"\" using 1:11 index 0 title \"$relay5name\" w impulses ls 8 axes x1y1, ')
+        plot.write('\"\" using 1:12 index 0 title \"$relay6name\" w impulses ls 9 axes x1y1, ')
+        plot.write('\"\" using 1:13 index 0 title \"$relay7name\" w impulses ls 10 axes x1y1, ')
+        plot.write('\"\" using 1:14 index 0 title \"$relay8name\" w impulses ls 11 axes x1y1\n')
+        # Bottom graph - week
+        d = 7
+        time_ago = '1 Week'
+        date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
+        date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S") 
+        plot.write('set size 1.0,0.5\n')
+        plot.write('set origin 0.0,0.0\n')
+        plot.write('set title \"Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+        plot.write('set format x \"%a\\n%m/%d\"\n')
+        plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
+        plot.write('plot \"<awk \'$10 == ' + sensorn + '\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 notitle w lp ls 1 axes x1y2, ')
+        plot.write('\"\" using 1:8 index 0 notitle w lp ls 2 axes x1y1, ')
+        plot.write('\"\" using 1:9 index 0 notitle w lp ls 3 axes x1y2\n')
+        plot.write('unset multiplot\n')
+    plot.close()
+
+    # Generate graph with gnuplot with the above generated command sequence
+    if logging.getLogger().isEnabledFor(logging.DEBUG) is False:
+        subprocess.call(['gnuplot', gnuplot_graph])
+        os.remove(gnuplot_graph)
+        os.remove(sensor_log_generate)
+        os.remove(relay_log_generate)
+    else:
+        gnuplot_log = "%s/plot-%s.log" % (log_path, sensorn)
+        with open(gnuplot_log, 'ab') as errfile:
+            subprocess.call(['gnuplot', gnuplot_graph], stderr=errfile)
+
 
 # Append sensor data to the log file
 def write_sensor_log(sensor):

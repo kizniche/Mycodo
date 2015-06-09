@@ -43,7 +43,7 @@ if ($login->isUserLoggedIn() == true) {
                 readfile($still_dir . $newest_file);
                 break;
             case 'main':
-                readfile($image_dir . 'graph-main-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+                readfile($image_dir . 'graph-dayweek-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
             case 'separate1h':
                 readfile($image_dir . 'graph-separate1h-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
