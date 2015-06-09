@@ -722,7 +722,7 @@ $error_code = "no";
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
                                 switch ($_GET['page']) {
                                     case 'Main':
-                                    if ($ref) shell_exec($graph_exec . ' dayweek ' . $id . " " . $n);
+                                    if ($ref) shell_exec($mycodo_client . ' --graph dayweek ' . $id . ' ' . $n);
                                     echo "main&mod=" . $id . "&sensor=" . $n . ">";
                                     break;
                                     case 'Separate1h':
