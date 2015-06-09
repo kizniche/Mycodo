@@ -147,7 +147,7 @@ echo "reset
 set output \"$IMAGEPATH/graph-legend-full-$id.png\"
 set xdata time
 set timefmt \"%Y %m %d %H %M %S\"
-set xrange [\"`date --date="2 hours ago" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
+set xrange [\"`date --date="6 hours ago" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
 set format x \"%H:%M\"
 set terminal png size 800,500
 set yrange [0:100]
@@ -175,10 +175,10 @@ set style line 9 lc rgb '${graph_colors[8]}' pt 0 ps 1 lt 1 lw 1
 set style line 10 lc rgb '${graph_colors[9]}' pt 0 ps 1 lt 1 lw 1
 set style line 11 lc rgb '${graph_colors[10]}' pt 0 ps 1 lt 1 lw 1
 set key outside
-plot \"$LOGPATH/sensor.log\" u 1:7 index 0 title \"Temperature\" w lp ls 1 axes x1y2, \\
+plot \"<awk '\$10 == 1' $LOGPATH/sensor.log\" u 1:7 index 0 title \"Temperature\" w lp ls 1 axes x1y2, \\
      \"\" u 1:8 index 0 title \"Relative Humidity\" w lp ls 2 axes x1y1, \\
      \"\" u 1:9 index 0 title \"Dew Point\" w lp ls 3 axes x1y2, \\
-     \"$LOGPATH/relay.log\" u 1:7 index 0 title \"$relay1name\" w impulses ls 4 axes x1y1, \\
+     \"<awk '\$15 == 1' $LOGPATH/relay.log\" u 1:7 index 0 title \"$relay1name\" w impulses ls 4 axes x1y1, \\
      \"\" using 1:8 index 0 title \"$relay2name\" w impulses ls 5 axes x1y1, \\
      \"\" using 1:9 index 0 title \"$relay3name\" w impulses ls 6 axes x1y1, \\
      \"\" using 1:10 index 0 title \"$relay4name\" w impulses ls 7 axes x1y1, \\
