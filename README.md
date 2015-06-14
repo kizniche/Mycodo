@@ -193,7 +193,7 @@ Set permissions
 
 A temporary filesystem in RAM is created for areas of the disk that are written often, preserving the life of the SD card and speeding up disk read/writes. Keep in mind all contents will be deleted upon reboot. If you need to analyze logs, remember to disable these lines in fstab before doing so.
 
-Edit fstab with `sudo vim /etc/fstab` add the following lines, then save.
+Edit fstab with `sudo vi /etc/fstab` add the following lines, then save.
 
 ```
 tmpfs    /tmp    tmpfs    defaults,noatime,nosuid,size=100m    0 0
@@ -240,7 +240,7 @@ Add the following to /etc/apache2/sites-available/default-ssl (or just 'default'
 
 Set up phpmyadmin to only allow trusted sources. Edit phpmyadmin.conf
 
-`sudo vim /etc/apache2/conf.d/phpmyadmin.conf`
+`sudo vi /etc/apache2/conf.d/phpmyadmin.conf`
 
 Add the following lines after `<Directory /usr/share/phpmyadmin>` and change YOUR-IP with the IP address you will be connecting from.
 
