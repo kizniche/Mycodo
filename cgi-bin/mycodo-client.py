@@ -1,13 +1,27 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-#  mycodo-client.py - Client for mycodo.py. Communicates with daemonized mycodo.py to
-#                     execute commands and receive status. This allows only one
-#                     program to run, preventing possible "double-editing" of files
-#                     and other risky behavior.
+#  mycodo-client.py - Client for mycodo.py. Communicates with daemonized
+#                     mycodo.py to execute commands and receive status.
 #
-#  Kyle Gabriel (2012 - 2015)
+#  Copyright (C) 2015  Kyle T. Gabriel
 #
+#  This file is part of Mycodo
+#
+#  Mycodo is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Mycodo is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with Mycodo. If not, see <http://www.gnu.org/licenses/>.
+#
+#  Contact at kylegabriel.com
 
 import rpyc
 import time

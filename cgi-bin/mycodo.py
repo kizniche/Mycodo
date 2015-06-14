@@ -1,16 +1,27 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-#  mycodo.py - Read sensors, write log, read configuration file, write
-#              configuration file, and modulate relays to regulate temperature
-#              and humidity.
+#  mycodo.py - A temperature and humidity regulation system that allows
+#              easy configuration and monitoring through a web interface.
 #
-#  Kyle Gabriel (2012 - 2015)
+#  Copyright (C) 2015  Kyle T. Gabriel
 #
-# Start with:
-# sudo stdbuf -oL python ./mycodo.py -d | tee /var/log/some.log
-# sudo stdbuf -oL python ./mycodo.py -d >> /var/log/some.log 2>&1 &
+#  This file is part of Mycodo
 #
+#  Mycodo is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Mycodo is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with Mycodo. If not, see <http://www.gnu.org/licenses/>.
+#
+#  Contact at kylegabriel.com
 
 #### Configure Directories ####
 install_directory = "/var/www/mycodo"
@@ -571,6 +582,7 @@ def daemon(output, log):
     for i in range(1, numSensors+1):
         if sensorDevice[i] != 'Other' and sensorActivated[i] == 1:
             read_sensors(0, i)
+            time.sleep(2) # Ensure a minimum of 2 seconds between sensor reads
     
     timerLogBackup = int(time.time()) + 21600 # 21600 seconds = 6 hours
     
@@ -606,6 +618,7 @@ def daemon(output, log):
                     for i in range(1, int(numSensors)+1): 
                         read_sensors(0, i)
                         write_sensor_log(i)
+                        time.sleep(2)
                 change_sensor_log = 0
             elif ClientQue == 'TerminateServer':
                 logging.info("[Daemon] Turning off relays")
@@ -1177,7 +1190,7 @@ def read_sensors(silent, sensor):
         if not silent and humidity2 != None and tempc2 != None:
             logging.debug("[Read Sensor-%s] %.1f°C, %.1f%%", sensor, tempc2, humidity2)
 
-        time.sleep(2)
+        time.sleep(2) # Wait 2 seconds between sensor reads
         
         if not silent: 
             logging.debug("[Read Sensor-%s] Taking second Temperature/humidity reading", sensor)
@@ -1215,7 +1228,9 @@ def read_sensors(silent, sensor):
                 if not silent: 
                     logging.debug("[Read Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", sensor, tempc[sensor], humidity[sensor], dewpointc[sensor])
                    
-        else: logging.warning("[Read Sensor-%s] Could not read temperature/humidity!", sensor)
+        else:
+            logging.warning("[Read Sensor-%s] Could not read temperature/humidity!", sensor)
+            time.sleep(2) # Wait 2 seconds between sensor reads
 
 # Read variables from the configuration file
 def read_config(silent):

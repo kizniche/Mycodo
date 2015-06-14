@@ -1,12 +1,28 @@
-/* MycoDo - Regulate temperature and humidity with raspberryPi and DHT22 sensor
-   by Kyle Gabriel
-   KyleGabriel.com
-   2012 - 2015
-   
-   To compile: gcc mycodo.c -I/usr/local/include -L/usr/local/lib -lconfig -lwiringPi -o mycodo
-   To change relays: sudo mycodo `sudo /var/www/mycodo/mycodo-sense.py -d`
-   To write config: sudo mycodo w [minTemp] [maxTemp] [minHum] [maxHum] [webOR] [tempState] [humState]
- */
+/*
+*  Mycodo - Regulate temperature and humidity with raspberryPi and
+*           DHT22 sensor
+*
+*  Version: 1.9
+*
+*  Copyright (C) 2015  Kyle T. Gabriel
+*
+*  This file is part of Mycodo
+*
+*  Mycodo is free software: you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation, either version 3 of the License, or
+*  (at your option) any later version.
+*
+*  Mycodo is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with Mycodo. If not, see <http://www.gnu.org/licenses/>.
+*
+*  Contact at kylegabriel.com
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
