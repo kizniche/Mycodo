@@ -22,8 +22,6 @@ $relay_log = "/var/tmp/relay.log";
 $daemon_log = "/var/tmp/daemon.log";
 $images = $install_path . "/images";
 $mycodo_client = $install_path . "/cgi-bin/mycodo-client.py";
-$graph_exec = $install_path . "/cgi-bin/graph.sh";
-$pygraph_exec = $install_path . "/cgi-bin/test-gnuplot.py";
 $still_exec = $install_path . "/cgi-bin/camera-still.sh";
 $stream_exec = $install_path . "/cgi-bin/camera-stream.sh";
 $lock_raspistill = $lock_path . "/mycodo_raspistill";
@@ -752,10 +750,6 @@ $error_code = "no";
                                     case 'Separate6m':
                                     if ($ref) shell_exec($mycodo_client . ' --graph separate6m ' . $id . ' ' . $n);
                                     echo "separate6m&mod=" . $id . "&sensor=" . $n . ">";
-                                    break;
-                                    case 'All':
-                                    if ($ref) shell_exec($graph_exec . ' all ' . $id . " " . $n);
-                                    echo "1h&mod=" . $id . "&sensor=" . $n . "><p><img class=\"main-image\" src=image.php?span=Separate6h&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=Separate1d&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=Separate1w&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=Separate1m&mod=" . $id . "&sensor=" . $n . "></p><p><img class=\"main-image\" src=image.php?span=Separate6m&mod=" . $id . "&sensor=" . $n . "></p>";
                                     break;
                                     default:
                                     if ($ref) shell_exec($mycodo_client . ' --graph dayweek ' . $id . ' ' . $n);
