@@ -851,7 +851,7 @@ $error_code = "no";
                                 <input type="text" value="<?php echo $name; ?>" maxlength=12 size=10 name="relay<?php echo $i; ?>name" title="Name of relay <?php echo $i; ?>"/>
                             </td>
                             <?php
-                                if (shell_exec($read) == 1) {
+                                if ((shell_exec($read) == 1 && $trigger == 0) || (shell_exec($read) == 0 && $trigger == 1)) {
                                     ?>
                                     <td class="onoff">
                                         <nobr><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="R<?php echo $i; ?>" value="0"> | <button style="width: 3em;" type="submit" name="R<?php echo $i; ?>" value="1">ON</button></nobr>
