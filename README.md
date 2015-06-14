@@ -118,7 +118,7 @@ This installation assumes you are starting with a fresh install of Raspbian linu
 
 `sudo apt-get upgrade`
 
-`sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev php5 libapache2-mod-php5 vim`
+`sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev php5 libapache2-mod-php5 wget`
 
 If you will have your RPi exposed to the internet with SSH access, I recommend installing fail2ban to monitor auth.log and ban IP addresses that fail a certain number of login attempts. This has successfully thwarted many script kiddies from mounting a useful attack on my RPi system.
 
@@ -132,17 +132,13 @@ To set up PHPMyAdmin, use the following command, then select to configure Apache
 
 `sudo apt-get install phpmyadmin`
 
-Download the latest code for Mycodo along with the WireingPi, Adafruit_Python_DHT, LockFile, and RPyC python modules.
+Download the latest code for Mycodo along with python modules.
 
 `sudo git clone https://github.com/kizniche/Automated-Mushroom-Cultivator /var/www/mycodo`
 
 `sudo git clone git://git.drogon.net/wiringPi /var/www/mycodo/source/WiringPi`
 
 `sudo git clone https://github.com/adafruit/Adafruit_Python_DHT /var/www/mycodo/source/Adafruit_Python_DHT`
-
-`sudo wget https://pypi.python.org/packages/source/l/lockfile/lockfile-0.10.2.tar.gz /var/www/mycodo/source/`
-
-`sudo wget https://pypi.python.org/packages/source/r/rpyc/rpyc-3.3.0.tar.gz /var/www/mycodo/source/`
 
 Install WiringPi
 
@@ -156,25 +152,9 @@ Install Adafruit_Python_DHT
 
 `sudo python setup.py install`
 
-Install LockFile
+Install LockFile and RPyC
 
-`cd /var/www/mycodo/source`
-
-`sudo tar xzvf lockfile-0.10.2.tar.gz`
-
-`cd lockfile-0.10.2`
-
-`sudo python setup.py install`
-
-Install RPyC
-
-`cd /var/www/mycodo/source/`
-
-`sudo tar xzvf rpyc-3.3.0.tar.gz`
-
-`cd rpyc-3.3.0`
-
-`sudo python setup.py install`
+`pip install lockfile rpyc`
 
 Set permissions for www to use the RPi camera
 
@@ -184,7 +164,7 @@ Set permissions for www to use the RPi camera
 
 Setup streaming capabilities
 
-`sudo apt-get install libjpeg8-dev libv4l-dev wget`
+`sudo apt-get install libjpeg8-dev libv4l-dev`
 
 `sudo ln -s /usr/include/linux/videodev2.h /usr/include/linux/videodev.h`
 
