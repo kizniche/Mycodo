@@ -118,7 +118,7 @@ This installation assumes you are starting with a fresh install of Raspbian linu
 
 `sudo apt-get upgrade`
 
-`sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev php5 libapache2-mod-php5 wget`
+`sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev php5 libapache2-mod-php5`
 
 If you will have your RPi exposed to the internet with SSH access, I recommend installing fail2ban to monitor auth.log and ban IP addresses that fail a certain number of login attempts. This has successfully thwarted many script kiddies from mounting a useful attack on my RPi system.
 
@@ -164,7 +164,7 @@ Set permissions for www to use the RPi camera
 
 Setup streaming capabilities
 
-`sudo apt-get install libjpeg8-dev libv4l-dev`
+`sudo apt-get install libjpeg8-dev libv4l-dev wget`
 
 `sudo ln -s /usr/include/linux/videodev2.h /usr/include/linux/videodev.h`
 
