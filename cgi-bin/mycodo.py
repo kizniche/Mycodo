@@ -69,6 +69,7 @@ config_lock_path = "%s/config" % lock_directory
 daemon_lock_path = "%s/daemon" % lock_directory
 sensor_lock_path = "%s/sensor" % lock_directory
 relay_lock_path = "%s/relay" % lock_directory
+logs_lock_path = "%s/logs" % lock_directory
 
 # GPIO pins (BCM numbering) and name of devices attached to relay
 numRelays = None
@@ -513,7 +514,7 @@ def usage():
 def menu():
     if len(sys.argv) == 1: # No arguments given
         usage()
-        sys.exit(1)
+        return 0
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'dh',
@@ -521,7 +522,7 @@ def menu():
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
-        sys.exit(2)
+        return 2
 
     for opt, arg in opts:
         if opt in ("-d", "--daemon"):
@@ -531,15 +532,15 @@ def menu():
             elif (sys.argv[3] == 'i'): b = 'info'
             else: b = 'debug'
             daemon(a, b)
-            sys.exit(0)
+            return 0
         elif opt in ("-h", "--help"):
             usage()
-            sys.exit(0)
+            return 1
         else:
             assert False, "Fail"
 
 # Main loop that reads sensors, modifies relays based on sensor values, writes
-# sensor/relay logs, and receives/executes commands from mycodo-client.py
+# sensor/relay logs, and receives/executes certain commands via mycodo-client.py
 def daemon(output, log):
     global change_sensor_log
     global Temp_PID_Down
@@ -633,7 +634,7 @@ def daemon(output, log):
                     t.join()
                 server.close()
                 logging.info("[Daemon] Exiting Python")
-                sys.exit(0)
+                return 0
             elif ClientQue == 'TimerChange':
                 timer_time[timerChange] = 0
                 if (timerState[timerChange] == 0 and timerRelay[timerChange] != 0):
@@ -1006,8 +1007,6 @@ def generate_graph(graph_out_file, graph_id, sensorn):
 
 # Append sensor data to the log file
 def write_sensor_log(sensor):
-    config = ConfigParser.RawConfigParser()
-
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
         
@@ -1038,8 +1037,6 @@ def write_sensor_log(sensor):
 
 # Append the duration the relay has been on to the log file
 def write_relay_log(relayNumber, relaySeconds, sensor):
-    config = ConfigParser.RawConfigParser()
-
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
     if not Terminate:
@@ -1079,7 +1076,7 @@ def Concatenate_Logs():
 
     if not filecmp.cmp(daemon_log_file_tmp, daemon_log_file):
         logging.debug("[Daemon Log] Concatenating daemon logs to %s", daemon_log_file)
-        lock = LockFile(daemon_lock_path)
+        lock = LockFile(logs_lock_path)
 
         while not lock.i_am_locking():
             try:
@@ -1571,8 +1568,19 @@ def email():
 def timestamp():
     return datetime.datetime.fromtimestamp(time.time()).strftime('%Y %m %d %H %M %S')
 
+if not os.path.exists(lock_directory):
+    os.makedirs(lock_directory)
+    
+lock = LockFile(daemon_lock_path)
+while not lock.i_am_locking():
+    try:
+        lock.acquire(timeout=3)
+    except:
+        print "Error: Lock file present: %s" % lock.path
+        sys.exit(0)
+
 read_config(1)
 gpio_initialize()
 menu()
-usage()
+lock.release()
 sys.exit(0)
