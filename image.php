@@ -27,10 +27,10 @@
 $install_path = "/var/www/mycodo";
 
 
-$graph_exec = $install_path . "/cgi-bin/graph.sh";
 $image_dir = $install_path . "/images/";
 $still_dir = $install_path . "/camera-stills/";
 $hdr_dir = $install_path . "/camera-hdr/";
+$mycodo_client = $install_path . "/cgi-bin/mycodo-client.py";
 
 if (version_compare(PHP_VERSION, '5.3.7', '<')) {
     exit("Sorry, Simple PHP Login does not run on a PHP version smaller than 5.3.7 !");
@@ -109,24 +109,17 @@ if ($login->isUserLoggedIn() == true) {
             case 'cussep':
                 readfile($image_dir . 'graph-cussep-' . $_GET['mod'] .  '-' . $_GET['sensor'] . '.png');
                 break;
-            case 'legend':
+            case 'legend-small':
                 $id = uniqid();
-                shell_exec($graph_exec . ' legend ' . $id);
-                readfile($image_dir . 'graph-legend-' . $id . '.png');
+                $editconfig = $mycodo_client . ' --graph legend-small ' . $id . ' 0';
+                shell_exec($editconfig);
+                readfile($image_dir . 'graph-legend-small-' . $id . '.png');
                 break;
             case 'legend-full':
                 $id = uniqid();
-                shell_exec($graph_exec . ' legend-full ' . $id);
+                $editconfig = $mycodo_client . ' --graph legend-full ' . $id . ' 0';
+                shell_exec($editconfig);
                 readfile($image_dir . 'graph-legend-full-' . $id . '.png');
-                break;
-            case 'main-mobile':
-                readfile($image_dir . 'graph-main-mobile.png');
-                break;
-            case '6h-mobile':
-                readfile($image_dir . 'graph-6h-' . $_GET['mod'] . '-mobile.png');
-                break;
-            case 'day-mobile':
-                readfile($image_dir . 'graph-day-mobile.png');
                 break;
         }
     }

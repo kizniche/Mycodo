@@ -801,6 +801,9 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     elif "6m" in graph_out_file:
         d = 182
         time_ago = '6 Months'
+    elif "legend-full" in graph_out_file:
+        h = 6
+        time_ago = '6 Hours'
     date_now = datetime.datetime.now().strftime("%Y %m %d %H %M %S")
     date_now_disp = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S") 
     date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
@@ -854,11 +857,23 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     elif "dayweek" in graph_out_file:
         plot.write('set terminal png size 1000,1000\n')
         plot.write('set output \"' + image_path + '/graph-' + graph_out_file + '-' + graph_id + '-' + sensorn + '.png\"\n')
-        
-    plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
-    plot.write('set format x \"%H:%M\\n%m/%d\"\n')
-    plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-    plot.write('set y2range [' + y2_min + ':' + y2_max + ']\n')
+    elif "legend-small" in graph_out_file:
+        plot.write('set terminal png size 250,300\n')
+        plot.write('set output \"' + image_path + '/graph-' + graph_out_file + '-' + graph_id + '.png\"\n')
+    elif "legend-full" in graph_out_file:
+        plot.write('set terminal png size 800,500\n')
+        plot.write('set output \"' + image_path + '/graph-' + graph_out_file + '-' + graph_id + '.png\"\n')
+    
+    if "legend-small" not in graph_out_file:
+        plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
+        plot.write('set format x \"%H:%M\\n%m/%d\"\n')
+        plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
+        plot.write('set y2range [' + y2_min + ':' + y2_max + ']\n')
+        plot.write('set style line 11 lc rgb \'#808080\' lt 1\n')
+        plot.write('set border 3 back ls 11\n')
+        plot.write('set tics nomirror\n')
+        plot.write('set style line 12 lc rgb \'#808080\' lt 0 lw 1\n')
+        plot.write('set grid xtics ytics back ls 12\n')
     
     if "day-week" in graph_out_file:
         plot.write('set mytics 10\n')
@@ -868,14 +883,8 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     else:
         plot.write('set my2tics 10\n')
         plot.write('set ytics 10\n')
-        plot.write('set y2tics 5\n') 
-    
-    plot.write('set style line 11 lc rgb \'#808080\' lt 1\n')
-    plot.write('set border 3 back ls 11\n')
-    plot.write('set tics nomirror\n')
-    plot.write('set style line 12 lc rgb \'#808080\' lt 0 lw 1\n')
-    plot.write('set grid xtics ytics back ls 12\n')
-       
+        plot.write('set y2tics 5\n')
+
     # Horizontal lines: separate temperature, humidity, and dewpoint
     plot.write('set style line 1 lc rgb \'' + graph_colors[0] + '\' pt 0 ps 1 lt 1 lw 2\n')
     plot.write('set style line 2 lc rgb \'' + graph_colors[1] + '\' pt 0 ps 1 lt 1 lw 2\n')
@@ -969,14 +978,14 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         plot.write('plot \"<awk \'$10 == ' + sensorn + '\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
         plot.write('\"\" using 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, ')
         plot.write('\"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ')
-        plot.write('\"<awk \'$15 == ' + sensorn + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"$relay1name\" w impulses ls 4 axes x1y1, ')
-        plot.write('\"\" using 1:8 index 0 title \"$relay2name\" w impulses ls 5 axes x1y1, ')
-        plot.write('\"\" using 1:9 index 0 title \"$relay3name\" w impulses ls 6 axes x1y1, ')
-        plot.write('\"\" using 1:10 index 0 title \"$relay4name\" w impulses ls 7 axes x1y1, ')
-        plot.write('\"\" using 1:11 index 0 title \"$relay5name\" w impulses ls 8 axes x1y1, ')
-        plot.write('\"\" using 1:12 index 0 title \"$relay6name\" w impulses ls 9 axes x1y1, ')
-        plot.write('\"\" using 1:13 index 0 title \"$relay7name\" w impulses ls 10 axes x1y1, ')
-        plot.write('\"\" using 1:14 index 0 title \"$relay8name\" w impulses ls 11 axes x1y1\n')
+        plot.write('\"<awk \'$15 == ' + sensorn + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relayName[1] + '\" w impulses ls 4 axes x1y1, ')
+        plot.write('\"\" using 1:8 index 0 title \"' + relayName[2] + '\" w impulses ls 5 axes x1y1, ')
+        plot.write('\"\" using 1:9 index 0 title \"' + relayName[3] + '\" w impulses ls 6 axes x1y1, ')
+        plot.write('\"\" using 1:10 index 0 title \"' + relayName[4] + '\" w impulses ls 7 axes x1y1, ')
+        plot.write('\"\" using 1:11 index 0 title \"' + relayName[5] + '\" w impulses ls 8 axes x1y1, ')
+        plot.write('\"\" using 1:12 index 0 title \"' + relayName[6] + '\" w impulses ls 9 axes x1y1, ')
+        plot.write('\"\" using 1:13 index 0 title \"' + relayName[7] + '\" w impulses ls 10 axes x1y1, ')
+        plot.write('\"\" using 1:14 index 0 title \"' + relayName[8] + '\" w impulses ls 11 axes x1y1\n')
         # Bottom graph - week
         d = 7
         time_ago = '1 Week'
@@ -991,6 +1000,43 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         plot.write('\"\" using 1:8 index 0 notitle w lp ls 2 axes x1y1, ')
         plot.write('\"\" using 1:9 index 0 notitle w lp ls 3 axes x1y2\n')
         plot.write('unset multiplot\n')
+        
+    if "legend-small" in graph_out_file:
+        plot.write('unset border\n')
+        plot.write('unset tics\n')
+        plot.write('unset grid\n')
+        plot.write('set yrange [0:400]\n')
+        plot.write('set key center center box\n')
+        plot.write('plot sin(x) title \"Temperature\" w lp ls 1,')
+        plot.write('sin(x) title \"Rel. Humidity\" w lp ls 2,')
+        plot.write('sin(x) title \"Dew Point\" w lp ls 3,')
+        plot.write('sin(x) title \"' + relayName[1] + '\" w impulses ls 4, ')
+        plot.write('sin(x) title \"' + relayName[2] + '\" w impulses ls 5, ')
+        plot.write('sin(x) title \"' + relayName[3] + '\" w impulses ls 6, ')
+        plot.write('sin(x) title \"' + relayName[4] + '\" w impulses ls 7, ')
+        plot.write('sin(x) title \"' + relayName[5] + '\" w impulses ls 8, ')
+        plot.write('sin(x) title \"' + relayName[6] + '\" w impulses ls 9, ')
+        plot.write('sin(x) title \"' + relayName[7] + '\" w impulses ls 10, ')
+        plot.write('sin(x) title \"' + relayName[8] + '\" w impulses ls 11\n')
+        
+    if "legend-full" in graph_out_file:
+        plot.write('set xlabel \"Date and Time\"\n')
+        plot.write('set ylabel \"# of seconds relays on & humidity\"\n')
+        plot.write('set y2label \"Temperature & dew point (C)\"\n')
+        plot.write('set border 3 back ls 11\n')
+        plot.write('set tics nomirror\n')
+        plot.write('set key outside\n')
+        plot.write('plot \"<awk \'$10 == 1\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 title \"Temperature\" w lp ls 1 axes x1y2, ')
+        plot.write('\"\" using 1:8 index 0 title \"Rel. Humidity\" w lp ls 2 axes x1y1, ')
+        plot.write('\"\" using 1:9 index 0 title \"Dew Point\" w lp ls 3 axes x1y2, ')
+        plot.write('\"<awk \'$15 == 1\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relayName[1] + '\" w impulses ls 4 axes x1y1, ')
+        plot.write('\"\" using 1:8 index 0 title \"' + relayName[2] + '\" w impulses ls 5 axes x1y1, ')
+        plot.write('\"\" using 1:9 index 0 title \"' + relayName[3] + '\" w impulses ls 6 axes x1y1, ')
+        plot.write('\"\" using 1:10 index 0 title \"' + relayName[4] + '\" w impulses ls 7 axes x1y1, ')
+        plot.write('\"\" using 1:11 index 0 title \"' + relayName[5] + '\" w impulses ls 8 axes x1y1, ')
+        plot.write('\"\" using 1:12 index 0 title \"' + relayName[6] + '\" w impulses ls 9 axes x1y1, ')
+        plot.write('\"\" using 1:13 index 0 title \"' + relayName[7] + '\" w impulses ls 10 axes x1y1, ')
+        plot.write('\"\" using 1:14 index 0 title \"' + relayName[8] + '\" w impulses ls 11 axes x1y1\n')
     plot.close()
 
     # Generate graph with gnuplot with the above generated command sequence
@@ -1574,7 +1620,7 @@ if not os.path.exists(lock_directory):
 lock = LockFile(daemon_lock_path)
 while not lock.i_am_locking():
     try:
-        lock.acquire(timeout=3)
+        lock.acquire(timeout=1)
     except:
         print "Error: Lock file present: %s" % lock.path
         sys.exit(0)
