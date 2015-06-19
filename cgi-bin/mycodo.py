@@ -1022,7 +1022,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     if "legend-full" in graph_out_file:
         plot.write('set xlabel \"Date and Time\"\n')
         plot.write('set ylabel \"# of seconds relays on & humidity\"\n')
-        plot.write('set y2label \"Temperature & dew point (C)\"\n')
+        plot.write('set y2label \"Temperature, Humidity, and Dew Point\"\n')
         plot.write('set border 3 back ls 11\n')
         plot.write('set tics nomirror\n')
         plot.write('set key outside\n')
