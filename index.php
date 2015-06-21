@@ -664,7 +664,7 @@ $error_code = "no";
                             menu_item('Separate3d', '3 Days', $page);
                             menu_item('Separate1w', '1 Week', $page);
                             menu_item('Separate1m', '1 Month', $page);
-                            menu_item('Separate6m', '6 Months', $page);
+                            menu_item('Separate3m', '3 Months', $page);
                             menu_item('Main', 'Main', $page);
                         ?>
                         </div>
@@ -677,7 +677,7 @@ $error_code = "no";
                             menu_item('Combined3d', '3 Days', $page);
                             menu_item('Combined1w', '1 Week', $page);
                             menu_item('Combined1m', '1 Month', $page);
-                            menu_item('Combined6m', '6 Months', $page);
+                            menu_item('Combined3m', '3 Months', $page);
                         ?>
                         </div>
                     </div>
@@ -720,10 +720,10 @@ $error_code = "no";
                             $editconfig = $mycodo_client . ' --graph combined1m ' . $id . ' 0';
                             if ($ref) shell_exec($editconfig);
                             echo "combined1m&mod=" . $id . ">";
-                        } else if ($_GET['page'] == 'Combined6m') {
-                            $editconfig = $mycodo_client . ' --graph combined6m ' . $id . ' 0';
+                        } else if ($_GET['page'] == 'Combined3m') {
+                            $editconfig = $mycodo_client . ' --graph combined3m ' . $id . ' 0';
                             if ($ref) shell_exec($editconfig);
-                            echo "combined6m&mod=" . $id . ">";
+                            echo "combined3m&mod=" . $id . ">";
                         }
                         sleep(3);
                         echo "</div>";
@@ -760,9 +760,9 @@ $error_code = "no";
                                     if ($ref) shell_exec($mycodo_client . ' --graph separate1m ' . $id . ' ' . $n);
                                     echo "separate1m&mod=" . $id . "&sensor=" . $n . ">";
                                     break;
-                                    case 'Separate6m':
-                                    if ($ref) shell_exec($mycodo_client . ' --graph separate6m ' . $id . ' ' . $n);
-                                    echo "separate6m&mod=" . $id . "&sensor=" . $n . ">";
+                                    case 'Separate3m':
+                                    if ($ref) shell_exec($mycodo_client . ' --graph separate3m ' . $id . ' ' . $n);
+                                    echo "separate3m&mod=" . $id . "&sensor=" . $n . ">";
                                     break;
                                     default:
                                     if ($ref) shell_exec($mycodo_client . ' --graph dayweek ' . $id . ' ' . $n);

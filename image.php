@@ -79,8 +79,8 @@ if ($login->isUserLoggedIn() == true) {
             case 'separate1m':
                 readfile($image_dir . 'graph-separate1m-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
-            case 'separate6m':
-                readfile($image_dir . 'graph-separate6m-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+            case 'separate3m':
+                readfile($image_dir . 'graph-separate3m-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
             case 'combined1h':
                 readfile($image_dir . 'graph-combined1h-' . $_GET['mod'] .  '.png');
@@ -100,8 +100,8 @@ if ($login->isUserLoggedIn() == true) {
             case 'combined1m':
                 readfile($image_dir . 'graph-combined1m-' . $_GET['mod'] .  '.png');
                 break;
-            case 'combined6m':
-                readfile($image_dir . 'graph-combined6m-' . $_GET['mod'] .  '.png');
+            case 'combined3m':
+                readfile($image_dir . 'graph-combined3m-' . $_GET['mod'] .  '.png');
                 break;
             case 'cuscom':
                 readfile($image_dir . 'graph-cuscom-' . $_GET['mod'] .  '.png');

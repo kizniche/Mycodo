@@ -798,9 +798,9 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     elif "1m" in graph_out_file:
         d = 30
         time_ago = '1 Month'
-    elif "6m" in graph_out_file:
-        d = 182
-        time_ago = '6 Months'
+    elif "3m" in graph_out_file:
+        d = 90
+        time_ago = '3 Months'
     elif "legend-full" in graph_out_file:
         h = 6
         time_ago = '6 Hours'
