@@ -33,7 +33,7 @@ This started out as a small project to regulate the temperature and humidity of 
 I'm since upgraded to a new set of hardware that support 8 individually-switchable 120-volt AC outlets. The majority of the code has undergone drastic changes and feature additions.
 
 <a name="feat"></a>
-### Features
+### v3.0 Features (Stable)
 
 * Temperature, humidity, and relay state-change logging
 * PID, simple timer, or manual operation of eight 120-volt AC relays
@@ -59,6 +59,10 @@ I'm since upgraded to a new set of hardware that support 8 individually-switchab
     * Lost/forgot password reset via email
     * Guest account for viewing only (user: guest, password: anonymous)
     * Authorization log of successful and unsuccessful login attempts
+    
+### v4.0-beta Features (Unstable)
+
+* CO2 Sensor support
 
 <a name="future"></a>
 ### Todo
@@ -134,7 +138,7 @@ To set up PHPMyAdmin, use the following command, then select to configure Apache
 
 Download the latest code for Mycodo along with python modules.
 
-`sudo git clone https://github.com/kizniche/Automated-Mushroom-Cultivator /var/www/mycodo`
+`sudo git clone https://github.com/kizniche/Automated-Mushroom-Cultivator/3.0 /var/www/mycodo`
 
 `sudo git clone git://git.drogon.net/wiringPi /var/www/mycodo/source/WiringPi`
 
