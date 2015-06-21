@@ -138,7 +138,7 @@ To set up PHPMyAdmin, use the following command, then select to configure Apache
 
 Download the latest code for Mycodo along with python modules.
 
-`sudo git clone https://github.com/kizniche/Automated-Mushroom-Cultivator/3.0 /var/www/mycodo`
+`sudo svn checkout https://github.com/kizniche/Automated-Mushroom-Cultivator/trunk/3.0 /var/www/mycodo`
 
 `sudo git clone git://git.drogon.net/wiringPi /var/www/mycodo/source/WiringPi`
 
