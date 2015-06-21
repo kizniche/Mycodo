@@ -79,11 +79,21 @@ case "${1:-''}" in
     'stop')
         /var/www/mycodo/cgi-bin/mycodo-client.py -t
         
-        sleep 10
+        printf "Checking if daemon has stopped."
+        
+        sleep 1
+        
+        printf "."
+        
+        sleep 1
+        
+        printf "."
+        
+        sleep 1
         
         if ps aux | grep '[m]ycodo.py -d'
         then
-            echo "Server is still running"
+            printf " Daemon is still running. Attempting to stop... "
 
             PID=`ps aux | grep '[m]ycodo.py -d' | awk '{print $2}'`
             WAIT_SECONDS=10
@@ -105,9 +115,9 @@ case "${1:-''}" in
                     break
                 fi
             done
-            echo "Process with pid $PID has been killed after $count seconds."    
+            printf "mycodo.py (pid $PID) has been killed after $count seconds.\n"    
         else
-           echo "Server has stopped"
+           printf " No daemon running.\n"
         fi
         ;;
     'restart'|'reload'|'force-reload')

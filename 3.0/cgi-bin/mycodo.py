@@ -23,7 +23,7 @@
 #
 #  Contact at kylegabriel.com
 
-#### Configure Directories ####
+#### Configure Directory ####
 install_directory = "/var/www/mycodo"
 
 import Adafruit_DHT
@@ -144,6 +144,7 @@ Hum_PID_Down = 0
 Hum_PID_Up = 0
 Temp_PID_number = None
 Hum_PID_number = None
+Terminate_final = 1
 
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
@@ -368,9 +369,12 @@ class ComServer(rpyc.Service):
     def exposed_Terminate(self, remoteCommand):
         global ClientQue
         global Terminate
+        global Terminate_final
         Terminate = True
         ClientQue = 'TerminateServer'
         logging.info("[Client command] Terminate threads and shut down")
+        while Terminate_final: # Wait for program to actually terminate
+            time.sleep(0.1)
         return 1
     def exposed_WriteSensorLog(self, sensor):
         global ClientQue
@@ -551,6 +555,7 @@ def daemon(output, log):
     global HAlive
     global TAlive
     global ClientQue
+    global Terminate_final
     timer_time = [0] * 9
     timerSensorLog  = [0] * 5
     
@@ -632,6 +637,8 @@ def daemon(output, log):
                 HAlive = [0] * 5
                 for t in threadsh:
                     t.join()
+                Terminate_final = 0
+                time.sleep(0.5)
                 server.close()
                 logging.info("[Daemon] Exiting Python")
                 return 0
@@ -1615,7 +1622,9 @@ def timestamp():
     return datetime.datetime.fromtimestamp(time.time()).strftime('%Y %m %d %H %M %S')
 
 if not os.geteuid() == 0:
-    sys.exit('Script must be run as root')
+    print "Script must be run as root"
+    usage()
+    sys.exit(0)
 
 if not os.path.exists(lock_directory):
     os.makedirs(lock_directory)

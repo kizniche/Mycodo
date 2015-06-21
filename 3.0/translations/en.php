@@ -74,7 +74,7 @@ define("WORDING_REGISTRATION_PASSWORD", "Password (min. 6 characters!)");
 define("WORDING_REGISTRATION_PASSWORD_REPEAT", "Password repeat");
 define("WORDING_REGISTRATION_USERNAME", "Username (only letters and numbers, 2 to 64 characters)");
 define("WORDING_REMEMBER_ME", "Keep me logged in (for 2 weeks)");
-define("WORDING_REQUEST_PASSWORD_RESET", "Request a password reset. Enter your username and you'll get a mail with instructions:");
+define("WORDING_REQUEST_PASSWORD_RESET", "Request a password reset.<P>Enter your username and you'll get a mail with instructions:");
 define("WORDING_RESET_PASSWORD", "Reset my password");
 define("WORDING_SUBMIT_NEW_PASSWORD", "Submit new password");
 define("WORDING_USERNAME", "Username");
