@@ -1614,10 +1614,14 @@ def email():
 def timestamp():
     return datetime.datetime.fromtimestamp(time.time()).strftime('%Y %m %d %H %M %S')
 
+if not os.geteuid() == 0:
+    sys.exit('Script must be run as root')
+
 if not os.path.exists(lock_directory):
     os.makedirs(lock_directory)
-    
+
 lock = LockFile(daemon_lock_path)
+
 while not lock.i_am_locking():
     try:
         lock.acquire(timeout=1)
@@ -1628,5 +1632,6 @@ while not lock.i_am_locking():
 read_config(1)
 gpio_initialize()
 menu()
+
 lock.release()
 sys.exit(0)
