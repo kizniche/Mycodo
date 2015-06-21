@@ -122,7 +122,7 @@ This installation assumes you are starting with a fresh install of Raspbian linu
 
 `sudo apt-get upgrade`
 
-`sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev php5 libapache2-mod-php5`
+`sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev php5 libapache2-mod-php5 pip subversion`
 
 If you will have your RPi exposed to the internet with SSH access, I recommend installing fail2ban to monitor auth.log and ban IP addresses that fail a certain number of login attempts. This has successfully thwarted many script kiddies from mounting a useful attack on my RPi system.
 
