@@ -1,0 +1,133 @@
+#!/bin/bash
+#
+#  mycodo - script to start, stop, and restart the mycodo.py daemon
+#
+#  Copyright (C) 2015  Kyle T. Gabriel
+#
+#  This file is part of Mycodo
+#
+#  Mycodo is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Mycodo is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with Mycodo. If not, see <http://www.gnu.org/licenses/>.
+#
+#  Contact at kylegabriel.com
+
+### BEGIN INIT INFO
+# provides:          mycodo
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Required-Start:   
+# Required-Stop:    
+# Short-Description: Start|Stop mycodo.py daemon
+# Description:       Start|Stop mycodo.py daemon
+### END INIT INFO
+
+case "${1:-''}" in
+    'start')
+        mkdir -p /var/log/mycodo
+        mkdir -p /var/log/mycodo/images
+        
+        if [ ! -h /var/www/mycodo/images ]; then
+            ln -s /var/log/mycodo/images /var/www/mycodo/images
+            chown www-data.www-data /var/www/mycodo/images
+        fi
+
+        if [ ! -e /var/log/mycodo/sensor-tmp.log ]; then
+            touch /var/log/mycodo/sensor-tmp.log
+        fi
+        if [ ! -e /var/www/mycodo/log/sensor.log ]; then
+            touch /var/www/mycodo/log/sensor.log
+        fi
+        if [ ! -h /var/www/mycodo/log/sensor-tmp.log ]; then
+            ln -s /var/log/mycodo/sensor-tmp.log /var/www/mycodo/log/sensor-tmp.log
+        fi
+        
+        if [ ! -e /var/log/mycodo/relay-tmp.log ]; then
+            touch /var/log/mycodo/relay-tmp.log
+        fi
+        if [ ! -e /var/www/mycodo/log/relay.log ]; then
+            touch /var/www/mycodo/log/relay.log
+        fi
+        if [ ! -h /var/www/mycodo/log/relay-tmp.log ]; then
+            ln -s /var/log/mycodo/relay-tmp.log /var/www/mycodo/log/relay-tmp.log
+        fi
+        
+        if [ ! -e /var/log/mycodo/daemon-tmp.log ]; then
+            touch /var/log/mycodo/daemon-tmp.log
+        fi
+        if [ ! -e /var/www/mycodo/log/daemon.log ]; then
+            touch /var/www/mycodo/log/daemon.log
+        fi
+        if [ ! -h /var/www/mycodo/log/daemon-tmp.log ]; then
+            ln -s /var/log/mycodo/daemon-tmp.log /var/www/mycodo/log/daemon-tmp.log
+        fi
+        
+        chmod -R 770 /var/log/mycodo
+        chown -R www-data.www-data /var/log/mycodo
+        
+        python /var/www/mycodo/cgi-bin/mycodo.py -d s i 2>&1 &
+        ;;
+    'stop')
+        /var/www/mycodo/cgi-bin/mycodo-client.py -t
+        
+        printf "Checking if daemon has stopped."
+        
+        sleep 1
+        
+        printf "."
+        
+        sleep 1
+        
+        printf "."
+        
+        sleep 1
+        
+        if ps aux | grep '[m]ycodo.py -d'
+        then
+            printf " Daemon is still running. Attempting to stop... "
+
+            PID=`ps aux | grep '[m]ycodo.py -d' | awk '{print $2}'`
+            WAIT_SECONDS=10
+            count=0
+
+            while kill $PID > /dev/null
+            do
+                sleep 1
+                ((count++))
+
+                # Has the process been killed?
+                if ! ps -p $PID > /dev/null ; then
+                    break
+                fi
+
+                # Have we exceeded $WAIT_SECONDS?
+                if [ $count -gt $WAIT_SECONDS ]; then
+                    kill -9 $PID
+                    break
+                fi
+            done
+            printf "mycodo.py (pid $PID) has been killed after $count seconds.\n"    
+        else
+           printf " No daemon running.\n"
+        fi
+        ;;
+    'restart'|'reload'|'force-reload')
+        $0 stop
+	$0 start
+	;;
+    'status')
+        ;;
+    *)
+        echo "Usage: $SELF start|stop"
+        exit 1
+        ;;
+esac

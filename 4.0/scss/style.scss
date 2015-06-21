@@ -1,0 +1,324 @@
+@import 'bourbon'; // http://bourbon.io/
+
+@import '../partials/variables'; // colors, fonts etc...
+
+@import '../partials/mixins'; // custom mixins
+
+@import '../partials/layout'; // responsive grid and media queries
+
+/* -------------------------------- 
+
+Primary style
+
+-------------------------------- */
+
+*, *::after, *::before {
+	@include box-sizing(border-box);
+}
+
+*::after, *::before {
+	content: '';
+}
+
+body {
+	font: {
+		size: 100%;
+		family: $primary-font; // variables inside partials > _variables.scss
+	}
+	color: $color-1;
+	background-color: $color-3;
+}
+
+a {
+	color: $color-2;
+	text-decoration: none;
+}
+
+/* -------------------------------- 
+
+Main components 
+
+-------------------------------- */
+
+header {
+	position: relative;
+	height: 160px;
+	line-height: 180px;
+	text-align: center;
+	@include font-smoothing;
+
+	h1 {
+		@include font-size(20px);
+	}
+
+	@include MQ(M) {
+		height: 200px;
+		line-height: 225px;
+
+		h1 {
+			@include font-size(26px);
+		}
+	}
+}
+
+.cd-tabs {
+	position: relative;
+	width: 90%;
+	max-width: $L; // breakpoints inside partials > _layout.scss
+	margin: 2em auto;
+	@include clearfix;
+
+	&::after {
+		/* subtle gradient layer on top right - to indicate it's possible to scroll */
+		position: absolute;
+		top: 0;
+		right: 0;
+		height: $tabs-btn-height-S; // see variables inside partials > _variables.scss
+		width: 50px;
+		z-index: 1;
+		pointer-events: none;
+		@include background(linear-gradient(to left, $color-1, rgba($color-1, 0)));
+		visibility: visible;
+		opacity: 1;
+		-webkit-transition: opacity .3s 0s, visibility 0s 0s;
+		-moz-transition: opacity .3s 0s, visibility 0s 0s;
+		transition: opacity .3s 0s, visibility 0s 0s;
+
+		.no-cssgradients & {
+			display: none;
+		}
+	}
+
+	&.is-ended::after {
+		/* class added in jQuery - remove the gradient layer when it's no longer possible to scroll */
+		visibility: hidden;
+		opacity: 0;
+		-webkit-transition: opacity .3s 0s, visibility 0s .3s;
+		-moz-transition: opacity .3s 0s, visibility 0s .3s;
+		transition: opacity .3s 0s, visibility 0s .3s;
+	}
+
+	nav {
+		overflow: auto;
+		-webkit-overflow-scrolling: touch;
+		background: $color-1;
+		box-shadow: inset 0 -2px 3px rgba(darken($color-1, 30%), .06);
+	}
+
+	@include MQ(M) {
+		&::after {
+			display: none;
+		}
+
+		nav {
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 100%;
+			box-shadow: inset -2px 0 3px rgba(darken($color-1, 30%), .06);
+			z-index: 1;
+		}
+	}
+
+	@include MQ(L) {
+		nav {
+			position: relative;
+			float: none;
+			background: transparent;
+			box-shadow: none;
+		}
+	}
+}
+
+.cd-tabs-navigation {
+	width: $tabs-btn-width-S * $tabs-btn-number; // see variables inside partials > _variables.scss
+	@include clearfix;
+
+	li {
+		float: left;
+	}
+
+	a {
+		position: relative;
+		display: block;
+		height: $tabs-btn-height-S;
+		width: $tabs-btn-width-S;
+		text-align: center;
+		@include font-size(12px);
+		@include font-smoothing;
+		font-weight: 700;
+		color: $color-5;
+		padding-top: $tabs-btn-height-S - 26px;
+
+		.no-touch &:hover {
+			color: $color-3;
+			background-color: rgba(darken($color-1, 10%), .3);
+		}
+
+		&.selected {
+			background-color: $color-4 !important;
+			box-shadow: inset 0 2px 0 $color-2;
+			color: $color-3;
+		}
+
+		&::before {
+			/* icons */
+			position: absolute;
+			top: 12px;
+			left: 50%;
+			margin-left: -10px;
+			display: inline-block;
+			height: 20px;
+			width: 20px;
+			background-image: url('../img/vicons.svg');
+			background-repeat: no-repeat;
+		}
+
+		&[data-content='log']::before {
+			background-position: 0 0;
+		}
+
+		&[data-content='graph']::before {
+			background-position: -20px 0;
+		}
+
+		&[data-content='camera']::before {
+			background-position: -40px 0;
+		}
+
+		&[data-content='main']::before {
+			background-position: -60px 0;
+		}
+
+		&[data-content='configure']::before {
+			background-position: -80px 0;
+		}
+
+		&[data-content='advanced']::before {
+			background-position: -100px 0;
+		}
+
+		&[data-content='log'].selected::before {
+			background-position: 0 -20px;
+		}
+
+		&[data-content='graph'].selected::before {
+			background-position: -20px -20px;
+		}
+
+		&[data-content='camera'].selected::before {
+			background-position: -40px -20px;
+		}
+
+		&[data-content='main'].selected::before {
+			background-position: -60px -20px;
+		}
+
+		&[data-content='configure'].selected::before {
+			background-position: -80px -20px;
+		}
+
+		&[data-content='advanced'].selected::before {
+			background-position: -100px -20px;
+		}
+	}
+
+	@include MQ(M) {
+		/* move the nav to the left on medium sized devices */
+		width: $tabs-btn-width-M;
+		float: left;
+
+		a {
+			height: $tabs-btn-height-M;
+			width: $tabs-btn-width-M;
+			padding-top: $tabs-btn-height-M - 34px;
+
+			&.selected {
+				box-shadow: inset 2px 0 0 $color-2;
+			}
+
+			&::before {
+				top: 22px;
+			}
+		}
+	}
+
+	@include MQ(L) {
+		/* tabbed on top on big devices */
+		width: auto;
+		background-color: $color-1;
+		box-shadow: inset 0 -2px 3px rgba(darken($color-1, 30%), .06);
+
+		a {
+			height: $tabs-btn-height-L;
+			line-height: $tabs-btn-height-L;
+			width: $tabs-btn-width-L;
+			text-align: left;
+			@include font-size(14px);
+			padding: 0 2.8em 0 4.6em;
+
+			&.selected {
+				box-shadow: inset 0 2px 0 $color-2;
+			}
+
+			&::before {
+				top: 50%;
+				margin-top: -10px;
+				margin-left: 0;
+				left: 38px;
+			}
+		}
+	}
+}
+
+.cd-tabs-content {
+	background: $color-4;
+
+	li {
+		display: none;
+		padding: 1.4em;
+
+
+		&.selected {
+			display: block;
+			@include animation(cd-fade-in .5s);
+		}
+
+		p {
+			@include font-size(14px);
+			line-height: 1.6;
+			color: lighten($color-3, 40%);
+			margin-bottom: 2em;
+		}
+	}
+
+	@include MQ(M) {
+		min-height: $tabs-btn-height-M * $tabs-btn-number;
+
+		li {
+			padding: 2em 2em 2em 7em;
+		}
+	}
+
+	@include MQ(L) {
+		min-height: 0;
+
+		li {
+			padding: 3em;
+
+			p {
+				@include font-size(16px);
+			}
+		}
+	}
+}
+
+@include keyframes(cd-fade-in) {
+	0% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}
