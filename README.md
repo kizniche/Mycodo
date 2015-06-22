@@ -30,7 +30,7 @@
 
 This started out as a small project to regulate the temperature and humidity of a growth chamber I used for cultivating gourmet mushrooms. At that time (2010), I used an ATMega interfaced to a network-connected computer running linux. When the Raspberry Pi was introduced in 2012, I decided to migrate my code from the ATMega and my linux computer to work on this one compact device. My first relay bank consisted of 4 relays, controlling a heater, humidifier, circulatory fan, and HEPA-filtered exhaust fan.
 
-I'm since upgraded to a new set of hardware that support 8 individually-switchable 120-volt AC outlets. The majority of the code has undergone drastic changes and feature additions.
+I've since upgraded to a new set of hardware that support 8 individually-switchable 120-volt AC outlets. The majority of the code has undergone drastic changes and feature additions.
 
 <a name="feat"></a>
 ## Features
