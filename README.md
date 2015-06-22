@@ -35,9 +35,18 @@ I've since upgraded to a new set of hardware that support 8 individually-switcha
 <a name="feat"></a>
 ## Features
 
-### v2.0 (old)
+### v1.0
 
-* Supports the DHT22 digital humidity and temperature sensor
+* Read humidity & temperature sensor with an ATMega
+* ATMega connected by serial USB to a network-enabled computer running linux
+* Linux periodically read humidity/temperature sensor and write log
+* ATMega modulate relays for simple proportional humidity/temperature regulation
+* Simple web interface to view data and generate graphs with gnuplot
+
+### v2.0
+
+* All software running on a Raspberry Pi version 1 Model B
+* Support for the DHT22 digital humidity and temperature sensor
 * Manual or automatic switching of up to four 120-volt AC relays
 * Automatic operation by simple proportional temperature/humidity regulation
 * Temperature, humidity, and relay state-change logging
@@ -47,7 +56,7 @@ I've since upgraded to a new set of hardware that support 8 individually-switcha
     * Presets of pre-defined time periods (past 1 hour, 6 hours, 1 day, 3 days...)
     * Specify specific time period to generate graph
 
-### v3.0 (stable)
+### v3.0 (current-stable)
 
 * Switch up to eight 120-volt AC relays
 * Support for up to 8 simple timers (define on duration, off duration)
