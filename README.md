@@ -41,8 +41,8 @@ I'm since upgraded to a new set of hardware that support 8 individually-switchab
 * Basic web interface
   * View historical temperature and humidity data as text and graphs
   * Generate custom graphs of current and past data
-    *  Presets of pre-defined time periods (past 1 hour, 6 hours, 1 day, 3 days...)
-    *  Specify specific time period and define graph image width
+    * Presets of pre-defined time periods (past 1 hour, 6 hours, 1 day, 3 days...)
+    * Specify specific time period to generate graph
 
 <a name="feat"></a>
 ### Features - v3.0 (stable)
@@ -57,8 +57,9 @@ I'm since upgraded to a new set of hardware that support 8 individually-switchab
 * New web interface
   * Tabs allow everything to be loaded on one page
   * Generate new types of graphs
-    *  Combined: generate a graph combining all temperatures or humidities
-    *  Separate: generate a graph of the temperature, humidity, and dew point of each sensor
+    * Combined: generate a graph combining all temperatures or humidities
+    * Separate: generate a graph of the temperature, humidity, and dew point of each sensor
+    * Define graph image width (custom graph only)
   * Acquire still image or stream live video using the Raspberry Pi camera module
   * View authorization, daemon, sensor, and relay logs
   * Easy configuration changes through the web interface
