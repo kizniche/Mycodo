@@ -23,6 +23,7 @@
     - [Sensor and Relay](#sensor-relay)
     - [Daemon](#cron)
 + [Web Interface login](#web-interface)
++ [License](#license)
 + [Useful Links](#links)
 
 <a name="history"></a>
@@ -332,6 +333,13 @@ Reboot to allow everything to start up
 Go to http://127.0.0.1/mycodo/index.php and log in with the credentials created earlier. You should see the menu to the left displaying the current humidity and temperature, and a graph to the right with the corresponding values.
 
 Select the "Config" tab and set up the proper GPIO pin numbers for your connected relays by referencing the GPIO BCM numbering for your particular board. These GPIO pins should be connected to your relay control pins. Ensure you select the proper HIGH/LOW state for when the relay turns on. For instance, if the relay turns on when there is a HIGH signal sent to it (5 volts), select HIGH, otherwise if it is energized when a LOW signal (0 volts) is sent to it, select LOW.
+
+<a name="license"></a>
+### License
+
+Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+Mycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.en.html) for more details.
 
 <a name="links"></a>
 ### Useful Links
