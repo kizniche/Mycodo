@@ -1,0 +1,53 @@
+#!/bin/bash
+
+FILEPATH="/var/www/graph"
+
+usage() {
+  echo Usage: $0 "[RELAY] [SECONDS]"
+  echo "Turns relay (1, 2, 3, or 4) on for defined number of seconds, then turns it off\n"
+}
+
+if [ -n "$3" ]
+then
+  echo "too many imputs: only two parameters are allowed"
+  echo -e "use" $0 "--help for usage\n"
+  exit
+fi
+
+if [ -z "$1" ] || [  -z "$2" ]
+then
+  echo "invalid parameter: must enter two parameters"
+   echo -e "use" $0 "--help for usage\n"
+  exit
+else
+  case $1 in
+    -h|--help)
+    usage
+      ;;
+    1)
+      /usr/local/bin/gpio mode 4 out
+      /usr/local/bin/gpio write 4 1
+      /bin/sleep $2 && /usr/local/bin/gpio write 4 0 >/dev/null &
+      ;;
+    2)
+      /usr/local/bin/gpio mode 3 out
+      /usr/local/bin/gpio write 3 1
+      /bin/sleep $2 && /usr/local/bin/gpio write 3 0 >/dev/null &
+      ;;
+    3)
+      /usr/local/bin/gpio mode 1 out
+      /usr/local/bin/gpio write 1 1
+      /bin/sleep $2 && /usr/local/bin/gpio write 1 0 >/dev/null &
+      ;;
+    4)
+      /usr/local/bin/gpio mode 0 out
+      /usr/local/bin/gpio write 0 1
+      /bin/sleep $2 && /usr/local/bin/gpio write 0 0 >/dev/null &
+      ;;
+    *)
+      echo "invalid parameter: unrecognized parameter"
+      echo -e "use" $0 "--help for usage\n"
+      exit
+      ;;
+  esac
+fi

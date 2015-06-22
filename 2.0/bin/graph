@@ -1,0 +1,313 @@
+#!/bin/bash
+
+FILEPATH="/var/www/graph"
+
+usage() {
+  echo Usage: $0 "[OPTION]"
+  echo "Regular Options:"
+  echo "  6h              draw a gnuplot graph for the past 6 hours"
+  echo "  day             draw a gnuplot graph for the past day"
+  echo "  week            draw a gnuplot graph for the past week"
+  echo "  month           draw a gnuplot graph for the past month"
+  echo "  year            draw a gnuplot graph for the past year"
+  echo "  dayweek         draw a gnuplot graph for the past day and week"
+  echo "  all             draw a gnuplot graph for all the boave graphs"
+  echo "Special options:"
+  echo "  6h-mobile       draw a graph suitable for a mobile phone for the past 6 hours"
+  echo "  day-mobile      draw a graph suitable for a mobile phone for the past day"
+  echo -e "  dayweek-mobile  draw a graph suitable for a mobile phone for the past day and week\n"
+}
+
+if [ -n "$2" ]
+then
+  echo "too many imputs: only one parameter is allowed"
+  echo -e "use" $0 "--help for usage\n"
+  exit
+fi
+
+if [ -z "$1" ]
+then
+  echo "invalid parameter: must enter a parameter"
+   echo -e "use" $0 "--help for usage\n"
+  exit
+else
+  case $1 in
+    -h|--help)
+    usage
+    ;;
+    6h)
+echo "reset
+set terminal png size 1000,685
+set xdata time
+set timefmt \"%Y %m %d %H %M %S\"
+set output \"$FILEPATH/graph-6h.png\"
+set xrange [\"`date --date="6 hours ago" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
+set format x \"%H:%M\n%m/%d\"
+set yrange [25:100]
+set mytics 5
+set ytics 5
+set y2tics 5
+#set my2tics 5
+set style line 11 lc rgb '#808080' lt 1
+set border 3 back ls 11
+set tics nomirror
+set style line 12 lc rgb '#808080' lt 0 lw 1
+set grid back ls 12
+set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 2
+set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 2
+set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 2
+set title \"Past 6 Hours: `date --date="6 hours ago" +%m/%d/%Y-%H:%M:%S` - `date +%m/%d/%Y-%H:%M:%S`\"
+set key top left box
+plot \"$FILEPATH/PiSensorData\" u 1:8 index 0 title \" RH\" w lp ls 1, \\
+     \"\" using 1:10 index 0 title \"T\" w lp ls 2, \\
+     \"\" using 1:11 index 0 title \"DP\" w lp ls 3" | gnuplot
+      ;;
+    day)
+echo "set terminal png size 1000,685
+set xdata time
+set timefmt \"%Y %m %d %H %M %S\"
+set output \"$FILEPATH/graph-day.png\"
+set xrange [\"`date --date=yesterday +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
+set format x \"%H:%M\n%m/%d\"
+set yrange [25:100]
+set mytics 5
+set ytics 5
+set y2tics 5
+#set my2tics 5
+set style line 11 lc rgb '#808080' lt 1
+set border 3 back ls 11
+set tics nomirror
+set style line 12 lc rgb '#808080' lt 0 lw 1
+set grid back ls 12
+set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 2
+set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 2
+set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 2
+set title \"Past Day: `date --date=yesterday +%m/%d/%Y-%H:%M:%S` - `date +%m/%d/%Y-%H:%M:%S`\"
+set key left box
+plot \"$FILEPATH/PiSensorData\" using 1:8 index 0 title \" RH\" w lp ls 1, \\
+     \"\" using 1:10 index 0 title \"T\" w lp ls 2, \\
+     \"\" using 1:11 index 0 title \"DP\" w lp ls 3" | gnuplot
+      ;;
+    week)
+echo "set terminal png size 1000,685
+set xdata time
+set timefmt \"%Y %m %d %H %M %S\"
+set output \"$FILEPATH/graph-week.png\"
+set xrange [\"`date --date="last week" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
+set format x \"%a\n%m/%d\"
+set yrange [25:100]
+set mytics 5
+set ytics 5
+set y2tics 5
+#set my2tics 5
+set style line 11 lc rgb '#808080' lt 1
+set border 3 back ls 11
+set tics nomirror
+set style line 12 lc rgb '#808080' lt 0 lw 1
+set grid back ls 12
+set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 2
+set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 2
+set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 2
+set title \"Past Week: `date --date="last week" +%m/%d/%Y-%H:%M:%S` - `date +%m/%d/%Y-%H:%M:%S`\"
+set key left box
+plot \"$FILEPATH/PiSensorData\" using 1:8 index 0 title \" RH\" w lp ls 1, \\
+     \"\" using 1:10 index 0 title \"T\" w lp ls 2, \\
+     \"\" using 1:11 index 0 title \"DP\" w lp ls 3" | gnuplot
+      ;;
+    month)
+echo "set terminal png size 1000,685
+set xdata time
+set timefmt \"%Y %m %d %H %M %S\"
+set output \"$FILEPATH/graph-month.png\"
+set xrange [\"`date --date="last month" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
+set format x \"%a\n%m/%d\"
+set yrange [25:100]
+set mytics 5
+set ytics 5
+set y2tics 5
+#set my2tics 5
+set style line 11 lc rgb '#808080' lt 1
+set border 3 back ls 11
+set tics nomirror
+set style line 12 lc rgb '#808080' lt 0 lw 1
+set grid back ls 12
+set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 1
+set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 1
+set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 1
+set title \"Past Month: `date --date="last month" +%m/%d/%Y-%H:%M:%S` - `date +%m/%d/%Y-%H:%M:%S`\"
+set key left box
+plot \"$FILEPATH/PiSensorData\" using 1:8 index 0 title \" RH\" w lp ls 1, \\
+     \"\" using 1:10 index 0 title \"T\" w lp ls 2, \\
+     \"\" using 1:11 index 0 title \"DP\" w lp ls 3" | gnuplot
+      ;;
+    year)
+echo "set terminal png size 1000,685
+set xdata time
+set timefmt \"%Y %m %d %H %M %S\"
+set output \"$FILEPATH/graph-year.png\"
+set xrange [\"`date --date="last year" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
+set format x \"%b\n%m/%d/%y\"
+set yrange [40:100]
+set mytics 5
+set ytics 5
+set y2tics 5
+#set my2tics 5
+set style line 11 lc rgb '#808080' lt 1
+set border 3 back ls 11
+set tics nomirror
+set style line 12 lc rgb '#808080' lt 0 lw 1
+set grid back ls 12
+set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 1
+set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 1
+set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 1
+set title \"Past Year: `date --date="last year" +%m/%d/%Y-%H:%M:%S` - `date +%m/%d/%Y-%H:%M:%S`\"
+set key left box
+plot \"$FILEPATH/PiSensorData\" using 1:8 index 0 title \" RH\" w lp ls 1, \\
+     \"\" using 1:10 index 0 title \"T\" w lp ls 2, \\
+     \"\" using 1:11 index 0 title \"DP\" w lp ls 3" | gnuplot
+      ;;
+    dayweek)
+echo "set terminal png size 1000,1000
+set xdata time
+set timefmt \"%Y %m %d %H %M %S\"
+set output \"$FILEPATH/graph-main.png\"
+set xrange [\"`date --date=yesterday +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
+set format x \"%H:%M\n%m/%d\"
+set yrange [25:100]
+set mytics 2
+set y2tics 10,10
+#set my2tics 5
+set style line 11 lc rgb '#808080' lt 1
+set border 3 back ls 11
+set tics nomirror
+set style line 12 lc rgb '#808080' lt 0 lw 1
+set grid back ls 12
+set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 2
+set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 2
+set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 2
+#set xlabel \"Date and Time\"
+#set ylabel \"% Humidity\"
+set key left box
+set multiplot layout 1,3
+# Top graph - day
+set size 1.0,0.48
+set origin 0.0,0.5
+plot \"$FILEPATH/PiSensorData\" using 1:8 index 0 title \" RH\" w lp ls 1, \\
+     \"\" using 1:10 index 0 title \"T\" w lp ls 2, \\
+     \"\" using 1:11 index 0 title \"DP\" w lp ls 3
+# Bottom graph - week
+set size 1.0,0.48
+set origin 0.0,0.0
+set format x \"%a\n%m/%d\"
+set xrange [\"`date --date="last week" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
+plot \"$FILEPATH/PiSensorData\" using 1:8 index 0 notitle w lp ls 1, \\
+     \"\" using 1:10 index 0 notitle w lp ls 2, \\
+     \"\" using 1:11 index 0 notitle w lp ls 3
+unset multiplot" | gnuplot
+      ;;
+    all)
+      $0 6h
+      $0 day
+      $0 week
+      $0 month
+      $0 year
+      ;;
+    6h-mobile)
+echo "set terminal png size 800,850
+set xdata time
+set timefmt \"%Y %m %d %H %M %S\"
+set output \"$FILEPATH/graph-6h-mobile.png\"
+set xrange [\"`date --date="6 hours ago" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
+set format x \"%H:%M\n%m/%d\"
+set yrange [25:100]
+set mytics 5
+set ytics 5
+set y2tics 5
+#set my2tics 5
+set style line 11 lc rgb '#808080' lt 1
+set border 3 back ls 11
+set tics nomirror
+set style line 12 lc rgb '#808080' lt 0 lw 1
+set grid back ls 12
+set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 2
+set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 2
+set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 2
+set title \"Past 6 Hours: `date --date="6 hours ago" +%m/%d/%Y-%H:%M:%S` - `date +%m/%d/%Y-%H:%M:%S`\"
+set key top left box
+plot \"$FILEPATH/PiSensorData\" u 1:8 index 0 title \" RH\" w lp ls 1, \\
+     \"\" using 1:10 index 0 title \"T\" w lp ls 2, \\
+     \"\" using 1:11 index 0 title \"DP\" w lp ls 3" | gnuplot
+      ;;
+    day-mobile)
+echo "set terminal png size 800,850
+set xdata time
+set timefmt \"%Y %m %d %H %M %S\"
+set output \"$FILEPATH/graph-day-mobile.png\"
+set xrange [\"`date --date=yesterday +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
+set format x \"%H:%M\n%m/%d\"
+set yrange [25:100]
+set mytics 5
+set ytics 5
+set y2tics 5
+set my2tics 5
+#set my2tics 5
+set style line 11 lc rgb '#808080' lt 1
+set border 3 back ls 11
+set tics nomirror
+set style line 12 lc rgb '#808080' lt 0 lw 1
+set grid back ls 12
+set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 2
+set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 2
+set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 2
+set title \"Past Day: `date --date=yesterday +%m/%d/%Y-%H:%M:%S` - `date +%m/%d/%Y-%H:%M:%S`\"
+set key left box
+plot \"$FILEPATH/PiSensorData\" using 1:8 index 0 title \" RH\" w lp ls 1, \\
+     \"\" using 1:10 index 0 title \"T\" w lp ls 2, \\
+     \"\" using 1:11 index 0 title \"DP\" w lp ls 3" | gnuplot
+      ;;
+    dayweek-mobile)
+echo "set terminal png size 800,850
+set xdata time
+set timefmt \"%Y %m %d %H %M %S\"
+set output \"$FILEPATH/graph-main-mobile.png\"
+set xrange [\"`date --date=yesterday +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
+set format x \"%H:%M\n%m/%d\"
+set yrange [25:100]
+set mytics 2
+set y2tics 10,10
+#set my2tics 5
+set style line 11 lc rgb '#808080' lt 1
+set border 3 back ls 11
+set tics nomirror
+set style line 12 lc rgb '#808080' lt 0 lw 1
+set grid back ls 12
+set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 2
+set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 2
+set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 2
+#set xlabel \"Date and Time\"
+#set ylabel \"% Humidity\"
+set key left box
+set multiplot layout 1,3
+# Top graph - day
+set size 1.0,0.48
+set origin 0.0,0.5
+plot \"$FILEPATH/PiSensorData\" using 1:8 index 0 title \" RH\" w lp ls 1, \\
+     \"\" using 1:10 index 0 title \"T\" w lp ls 2, \\
+     \"\" using 1:11 index 0 title \"DP\" w lp ls 3
+# Bottom graph - week
+set size 1.0,0.48
+set origin 0.0,0.0
+set format x \"%a\n%m/%d\"
+set xrange [\"`date --date="last week" +"%Y %m %d %H %M %S"`\":\"`date +"%Y %m %d %H %M %S"`\"]
+plot \"$FILEPATH/PiSensorData\" using 1:8 index 0 notitle w lp ls 1, \\
+     \"\" using 1:10 index 0 notitle w lp ls 2, \\
+     \"\" using 1:11 index 0 notitle w lp ls 3
+unset multiplot" | gnuplot
+      ;;
+    *)
+      echo "invalid parameter: unrecognized parameter"
+      echo -e "use" $0 "--help for usage\n"
+      exit
+      ;;
+  esac
+fi
