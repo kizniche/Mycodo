@@ -42,7 +42,7 @@ I've since upgraded to a new set of hardware that support 8 individually-switcha
 * ATMega connected by serial USB to a network-enabled computer running linux
 * Linux periodically read humidity/temperature sensor and write log
 * ATMega modulate relays for simple proportional humidity/temperature regulation
-* Simple web interface to view data and generate graphs with gnuplot
+* Simple web interface to view historical data and generate graphs with gnuplot
 
 ### v2.0
 
@@ -52,7 +52,7 @@ I've since upgraded to a new set of hardware that support 8 individually-switcha
 * Automatic operation by simple proportional temperature/humidity regulation
 * Temperature, humidity, and relay state-change logging
 * Basic web interface
-  * View historical temperature and humidity data as text and graphs
+  * Configure variables related to sensor reading, log writing, and graph generation
   * Generate custom graphs of current and past data
     * Presets of pre-defined time periods (past 1 hour, 6 hours, 1 day, 3 days...)
     * Specify specific time period to generate graph
@@ -66,18 +66,16 @@ I've since upgraded to a new set of hardware that support 8 individually-switcha
 * Multi-sensors support to regulate multiple environments
 * TempFS to reduce writes to and extend the life of the SD card
 * Lock files to prevent sensor read and file access conflicts
+* New logs to view: login authorization, daemon, sensor, and relay logs
+* Generate new types of graphs
+  * Combined: generate a graph combining all temperatures or humidities
+  * Separate: generate a graph of the temperature, humidity, and dew point of each sensor
+  * Define graph image width (custom graph only)
+* Acquire still image or stream live video using the Raspberry Pi camera module
+  * Set relay (light) to be burned on while camera is capturing
 * New web interface
   * Tabs allow everything to be loaded on one page
-  * Generate new types of graphs
-    * Combined: generate a graph combining all temperatures or humidities
-    * Separate: generate a graph of the temperature, humidity, and dew point of each sensor
-    * Define graph image width (custom graph only)
-  * Acquire still image or stream live video using the Raspberry Pi camera module
-    * Set relay (light) to be burned on while camera is capturing
-  * View authorization, daemon, sensor, and relay logs
-  * Easy configuration changes through the web interface
-    * Edit all variables related to each sensor and relay (names, pins, durations, etc.)
-    * Set desired temperature/humidity as well as respective P, I, and D variables of each PID controller
+  * Easy change any variable in the configuration file
   * Login Authentication (written by php-login.net)
     * Optional cookie to keep session authenticated
     * Guest account for viewing only (no config changes permitted) (user: guest, password: anonymous)
