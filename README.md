@@ -63,6 +63,7 @@ I'm since upgraded to a new set of hardware that support 8 individually-switchab
     * Separate: generate a graph of the temperature, humidity, and dew point of each sensor
     * Define graph image width (custom graph only)
   * Acquire still image or stream live video using the Raspberry Pi camera module
+    * Set relay (light) to be burned on while camera is capturing
   * View authorization, daemon, sensor, and relay logs
   * Easy configuration changes through the web interface
     * Edit all variables related to each sensor and relay (names, pins, durations, etc.)
@@ -78,10 +79,9 @@ I'm since upgraded to a new set of hardware that support 8 individually-switchab
 
 - [ ] CO2 Sensor support (working on)
 - [ ] O2 Sensor support
-- [ ] Email notification if above/below certain values for each sensor
-- [ ] Allow setting the maximum current draw of device(s) connected to each relay to ensure no combination of devices are ever activated that surpass the limit of the wiring/breaker (commonly 15 amps)
-- [ ] Alarm if a critical failure has occurred (daemon stopped, critical temperature/humidity, etc.)
-- [ ] Take series of photos at different ISOs, combine to make HDR photo
+- [ ] Email notification or audible alarm if at a specific sensor value or detect a critical failure (working on)
+- [ ] Set electrical current draw of each device and prevent exceeding total current limit with different combinations of devices on
+- [ ] Capture series of photos at different ISOs, combine to make HDR photo
 - [ ] Timelapse video creation ability (define start, end, duration between, etc.) 
 
 <a name="hard-brief"></a>
@@ -110,6 +110,7 @@ The following software is required
   * Adafruit_Python_DHT
   * LockFile
   * WiringPi
+* subversion
 * wget
 
 <a name="instructions"></a>
