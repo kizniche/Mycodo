@@ -87,6 +87,13 @@ sensorCo2Pin = [0] * 5
 sensorCo2Period = [0] * 5
 sensorCo2Activated = [0] * 5
 sensorCo2Graph = [0] * 5
+relayCo2 = [0] * 5
+setCo2 = [0] * 5
+Co2Period = [0] * 5
+Co2_P = [0] * 5
+Co2_I = [0] * 5
+Co2_D = [0] * 5
+Co2OR = [0] * 5
 
 # Sensors
 numSensors = 0
@@ -565,6 +572,7 @@ def daemon(output, log):
     global HAlive
     global TAlive
     global ClientQue
+    #global Terminate_final
     timer_time = [0] * 9
     timerSensorLog  = [0] * 5
     timerCo2SensorLog  = [0] * 2
@@ -1275,7 +1283,7 @@ def Concatenate_Logs():
 
     if not filecmp.cmp(daemon_log_file_tmp, daemon_log_file):
         logging.debug("[Daemon Log] Concatenating daemon logs to %s", daemon_log_file)
-        lock = LockFile(daemon_lock_path)
+        lock = LockFile(logs_lock_path)
 
         while not lock.i_am_locking():
             try:
@@ -1369,6 +1377,22 @@ def read_config(silent):
     global sensorPeriod
     global sensorActivated
     global sensorGraph
+    
+    global sensorCo2Name
+    global sensorCo2Device
+    global sensorCo2Pin
+    global sensorCo2Period
+    global sensorCo2Activated
+    global sensorCo2Graph
+    
+    global Co2Period
+    global relayCo2
+    global setCo2
+    global Co2OR
+    global Co2_P
+    global Co2_I
+    global Co2_D
+    
     global relayName
     global relayPin
     global relayTrigger
@@ -1424,6 +1448,14 @@ def read_config(silent):
     sensorCo2Period[1] = config.getint('CO2Sensor%d' % 1, 'sensorco2%dperiod' % 1)
     sensorCo2Activated[1] = config.getint('CO2Sensor%d' % 1, 'sensorco2%dactivated' % 1)
     sensorCo2Graph[1] = config.getint('CO2Sensor%d' % 1, 'sensorco2%dgraph' % 1)
+    
+    Co2Period[1] = config.getint('Co2PID%d' % 1, 'co2%dperiod' % 1)
+    relayCo2[1] = config.getint('Co2PID%d' % 1, 'co2%drelay' % 1)
+    setCo2[1] = config.getfloat('Co2PID%d' % 1, 'co2%dset' % 1)
+    Co2OR[1] = config.getint('Co2PID%d' % 1, 'co2%dor' % 1)
+    Co2_P[1] = config.getfloat('Co2PID%d' % 1, 'co2%dp' % 1)
+    Co2_I[1] = config.getfloat('Co2PID%d' % 1, 'co2%di' % 1)
+    Co2_D[1] = config.getfloat('Co2PID%d' % 1, 'co2%dd' % 1)
         
     for i in range(1, 5):
         TempPeriod[i] = config.getint('TempPID%d' % i, 'temp%dperiod' % i)
@@ -1526,6 +1558,15 @@ def write_config():
     config.set('CO2Sensor%d' % 1, 'sensorco2%dperiod' % 1, sensorCo2Period[1])
     config.set('CO2Sensor%d' % 1, 'sensorco2%dactivated' % 1, sensorCo2Activated[1])
     config.set('CO2Sensor%d' % 1, 'sensorco2%dgraph' % 1, sensorCo2Graph[1])
+    
+    config.add_section('Co2PID%d' % 1)
+    config.set('Co2PID%d' % 1, 'co2%dperiod' % 1, Co2Period[1])
+    config.set('Co2PID%d' % 1, 'co2%drelay' % 1, relayCo2[1])
+    config.set('Co2PID%d' % 1, 'co2%dset' % 1, setCo2[1])
+    config.set('Co2PID%d' % 1, 'co2%dor' % 1, Co2OR[1])
+    config.set('Co2PID%d' % 1, 'co2%dp' % 1, Co2_P[1])
+    config.set('Co2PID%d' % 1, 'co2%di' % 1, Co2_I[1])
+    config.set('Co2PID%d' % 1, 'co2%dd' % 1, Co2_D[1])
     
     for i in range(1, 5):
         config.add_section('Sensor%d' % i)
@@ -1724,18 +1765,18 @@ if not os.geteuid() == 0:
 if not os.path.exists(lock_directory):
     os.makedirs(lock_directory)
 
-lock = LockFile(daemon_lock_path)
+runlock = LockFile(daemon_lock_path)
 
-while not lock.i_am_locking():
+while not runlock.i_am_locking():
     try:
-        lock.acquire(timeout=1)
+        runlock.acquire(timeout=1)
     except:
-        print "Error: Lock file present: %s" % lock.path
+        print "Error: Lock file present: %s" % runlock.path
         sys.exit(0)
 
 read_config(1)
 gpio_initialize()
 menu()
 
-lock.release()
+runlock.release()
 sys.exit(0)
