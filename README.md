@@ -32,35 +32,39 @@ This started out as a small project to regulate the temperature and humidity of 
 
 I'm since upgraded to a new set of hardware that support 8 individually-switchable 120-volt AC outlets. The majority of the code has undergone drastic changes and feature additions.
 
+### Features - v2.0 (old)
+
 <a name="feat"></a>
-### v3.0 Features (Stable)
+### Features - v3.0 (stable)
 
 * Temperature, humidity, and relay state-change logging
 * PID, simple timer, or manual operation of eight 120-volt AC relays
 * Software PID control for temperature and humidity regulation
-* Multi-sensor monitoring (currently up to 4) with each sensor having its own temp/hum PID
+* Support for different Humidity/Temperature sensors (DHT11, DHT22, and AM2302)
+* Monitor multiple sensors to regulate different environments (current max of 4)
 * TempFS to reduce writes to and extend the life of the SD card
 * Lock files to prevent file access conflicts
 * Web Interface
   * View historical temperature and humidity data as text and graphs
-  * Generate custom graphs of current and past data, or use presets of pre-defined time periods
-  * Acquire images or stream live video (Raspberry Pi Camera Module)
+  * Generate custom graphs of current and past data
+    *  Presets of pre-defined time periods (past 1 hour, 6 hours, 1 day, 3 days...)
+    *  Specify specific time period and define graph image width
+    *  Combined: generate a graph combining all temperatures or humidities
+    *  Separate: generate a graph of the temperature, humidity, and dew point of each sensor
+  * Acquire images or stream live video using the Raspberry Pi camera module
   * View authorization, daemon, sensor, and relay logs
-  * Change modes of operation
+  * Easy configuration changes through the web interface
     * For each of the 8 relays: assign name, GPIO pin, and which state triggers the relay on (High/Low)
-    * Select DHT sensor being used and pin (current options are DHT11, DHT22, and AM2302)
-    * Set desired temperature/humidity as well as respective P, I, and D variables of the PID controllers
-    * Switch from PID control (automatic) to manual operation (turn Off, turn On, On for [x] seconds)
+    * Select DHT sensors and pins (current options are DHT11, DHT22, and AM2302)
+    * Set desired temperature/humidity as well as respective P, I, and D variables of each PID controller
+    * Switch PID control (automatic) to manual operation (turn Off, turn On, On for [x] seconds)
   * Login Authentication (written by php-login.net)
-    * Using official PHP password hashing functions and the most modern password hashing/salting web standards
-    * Optional "remember me" cookie to keep session authenticated
-    * Profile edit (change user name, password, or email address)
-    * Gravatar support (if email used in registration is the same as on gravatar.com)
-    * Lost/forgot password reset via email
+    * Optional cookie to keep session authenticated
     * Guest account for viewing only (user: guest, password: anonymous)
     * Authorization log of successful and unsuccessful login attempts
+    * Profile edit, gravatar support (from email), lost/forgot password reset
     
-### v4.0-beta Features (Unstable)
+### Features - v4.0-beta (experimental)
 
 * CO2 Sensor support
 
