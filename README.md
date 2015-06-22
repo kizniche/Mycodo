@@ -32,7 +32,10 @@ This started out as a small project to regulate the temperature and humidity of 
 
 I'm since upgraded to a new set of hardware that support 8 individually-switchable 120-volt AC outlets. The majority of the code has undergone drastic changes and feature additions.
 
-### Features - v2.0 (old)
+<a name="feat"></a>
+## Features
+
+### v2.0 (old)
 
 * Supports the DHT22 digital humidity and temperature sensor
 * Manual or automatic switching of up to four 120-volt AC relays
@@ -44,8 +47,7 @@ I'm since upgraded to a new set of hardware that support 8 individually-switchab
     * Presets of pre-defined time periods (past 1 hour, 6 hours, 1 day, 3 days...)
     * Specify specific time period to generate graph
 
-<a name="feat"></a>
-### Features - v3.0 (stable)
+### v3.0 (stable)
 
 * Switch up to eight 120-volt AC relays
 * Support for up to 8 simple timers (define on duration, off duration)
@@ -72,7 +74,7 @@ I'm since upgraded to a new set of hardware that support 8 individually-switchab
     * User profile, gravatar support (from email), lost/forgot email password reset
    
 <a name="future"></a>   
-### Features - v4.0-beta (experimental)
+### v4.0-beta (experimental)
 
 - [ ] CO2 Sensor support (working on)
 - [ ] O2 Sensor support
@@ -83,7 +85,7 @@ I'm since upgraded to a new set of hardware that support 8 individually-switchab
 - [ ] Timelapse video creation ability (define start, end, duration between, etc.) 
 
 <a name="hard-brief"></a>
-### Hardware
+#### Hardware
 
 * Raspberry Pi
 * Temperature/humidity sensor (DHT22)
