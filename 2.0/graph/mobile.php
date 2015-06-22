@@ -74,17 +74,17 @@ else echo "<meta http-equiv='refresh' content='2;url=index.php'>";
 break;
 
 case 2:
-echo `/home/kiz/bin/graph 6h-mobile`;
+echo `/var/www/bin/graph 6h-mobile`;
 echo "<img src=graph-6h-mobile.png>";
 break;
 
 case 3:
-echo `/home/kiz/bin/graph day-mobile`;
+echo `/var/www/bin/graph day-mobile`;
 echo "<img src=graph-day-mobile.png>";
 break;
 
 default:
-echo `/home/kiz/bin/graph dayweek-mobile`;
+echo `/var/www/bin/graph dayweek-mobile`;
 echo "<img src=graph-main-mobile.png>";
 break; 
 }?>

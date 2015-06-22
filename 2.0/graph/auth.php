@@ -1,7 +1,7 @@
 <?php
 session_start();
 $User1 = "guest";
-$Password1 = "94cf5tb8f8d22a01a593c6a7f50972c6";
+$Password1 = "94vf5eg8f8d34a01a598c6a7950972c6";
 $User2 = "guest2";
 $Password2 = "4f2e364087944450572176ff1bfdeab6";
 
@@ -62,7 +62,7 @@ function displayform($error) {
   echo "<html><head><title></title></head><body><style>body,td,input { font-family: verdana; font-size: 8pt; }</style>";
   if($error) echo "<p><b>Wrong credentials</b></p>";
   echo "<form action=\"\" method=\"post\"><table width='400' border=0><tr><td width='100'>username:</td>";
-  echo "<td><input type='text' name='input_user'></td></tr><tr><td>password:</td><td><input type='password' name='input_password'></td></tr>";
+  echo "<td><input autofocus=\"\" type='text' name='input_user'></td></tr><tr><td>password:</td><td><input type='password' name='input_password'></td></tr>";
   echo "<tr><td colspan='2'><input type='Submit' value='Login&raquo;' name='loginbutton'></td></tr></table></form></body></html>";
   exit;
 }

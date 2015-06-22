@@ -1,6 +1,20 @@
 <?php include "auth.php";?>
-<HTML>
-<BODY>
+<html>
+<head>
+<title>Custom Graph</title>
+<script type="text/javascript">
+function open_legend()
+{
+window.open("graph-legend.png","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=190, height=210");
+}
+function open_legend_full()
+{
+window.open("graph-legend-full.png","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=600, height=385");
+}
+</script>
+</head>
+<body>
+<center>
 <?php
 /****************************************/
 /*DateSelector*Author: Leon Atkinson    */
@@ -23,28 +37,37 @@ set timefmt \"%Y %m %d %H %M %S\"
 set output \"/var/www/graph/graph-cus.png\"
 set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]
 set format x \"%H:%M\n%m/%d\"
-set yrange [25:100]
-set mytics 5
-set ytics 5
+set yrange [0:100]
+set y2range [10:30]
+set my2tics 10
+set ytics 10
 set y2tics 5
-#set my2tics 5
 set style line 11 lc rgb '#808080' lt 1
 set border 3 back ls 11
 set tics nomirror
 set style line 12 lc rgb '#808080' lt 0 lw 1
-set grid back ls 12
+set grid xtics ytics back ls 12
 set style line 1 lc rgb '#0772a1' pt 0 ps 1 lt 1 lw 2
 set style line 2 lc rgb '#ff3100' pt 0 ps 1 lt 1 lw 2
 set style line 3 lc rgb '#00b74a' pt 0 ps 1 lt 1 lw 2
+set style line 4 lc rgb '#ffa500' pt 0 ps 1 lt 1 lw 1
+set style line 5 lc rgb '#a101a6' pt 0 ps 1 lt 1 lw 1
+set style line 6 lc rgb '#48dd00' pt 0 ps 1 lt 1 lw 1
+set style line 7 lc rgb '#d30068' pt 0 ps 1 lt 1 lw 1
 #set xlabel \"Date and Time\"
 #set ylabel \"% Humidity\"
 set title \"$monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
-set key left box
-plot \"/var/www/graph/PiSensorData\" using 1:8 index 0 title \" RH\" w lp ls 1, \\\\
-     \"\" using 1:10 index 0 title \"T\" w lp ls 2, \\\\
-     \"\" using 1:11 index 0 title \"DP\" w lp ls 3" | gnuplot`;
+unset key
+plot \"/var/www/mycodo/PiSensorData\" using 1:8 index 0 title \" RH\" w lp ls 1 axes x1y1, \\\\
+     \"\" using 1:9 index 0 title \"T\" w lp ls 2 axes x1y2, \\\\
+     \"\" using 1:12 index 0 title \"DP\" w lp ls 3 axes x1y2, \\\\
+     \"/var/www/mycodo/PiRelayData\" u 1:7 index 0 title \"HEPA\" w impulses ls 4 axes x1y1, \\\\
+     \"\" using 1:8 index 0 title \"HUM\" w impulses ls 5 axes x1y1, \\\\
+     \"\" using 1:9 index 0 title \"FAN\" w impulses ls 6 axes x1y1, \\\\
+     \"\" using 1:10 index 0 title \"HEAT\" w impulses ls 7 axes x1y1" | gnuplot`;
 displayform2();
 echo "<img src=graph-cus.png>";
+echo "<p><a href='javascript:open_legend()'>Brief Graph Legend</a> - <a href='javascript:open_legend_full()'>Full Graph Legend</a>";
 }
 else displayform2();
 
@@ -129,5 +152,6 @@ for($currentMinute=0; $currentMinute <= 59; $currentMinute++) {
 echo "</SELECT>m";
 }
 ?>
-</BODY>
-</HTML>
+</center>
+</body>
+</html>
