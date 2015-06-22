@@ -330,6 +330,7 @@ Select the "Config" tab and set up the proper GPIO pin numbers for your connecte
 Congratulations on using my software, however it may not be the latest version, or it may have been altered if not obtained through an official distribution site. You should be able to find the latest version on github or my web site.
 
 https://github.com/kizniche/Mycodo
+
 http://KyleGabriel.com
 
 								- Kyle Gabriel -
