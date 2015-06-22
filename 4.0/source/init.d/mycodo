@@ -91,6 +91,14 @@ case "${1:-''}" in
         
         sleep 1
         
+        printf "."
+        
+        sleep 1
+        
+        printf "."
+        
+        sleep 1
+        
         if ps aux | grep '[m]ycodo.py -d'
         then
             printf " Daemon is still running. Attempting to stop... "
@@ -119,6 +127,11 @@ case "${1:-''}" in
         else
            printf " No daemon running.\n"
         fi
+        
+        if [ -e /var/lock/mycodo/daemon.lock ]; then
+            rm -f /var/lock/mycodo/daemon.lock
+        fi
+        
         ;;
     'restart'|'reload'|'force-reload')
         $0 stop

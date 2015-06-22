@@ -155,7 +155,7 @@ Hum_PID_Down = 0
 Hum_PID_Up = 0
 Temp_PID_number = None
 Hum_PID_number = None
-Terminate_final = 1
+#Terminate_final = 1
 
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
@@ -380,12 +380,12 @@ class ComServer(rpyc.Service):
     def exposed_Terminate(self, remoteCommand):
         global ClientQue
         global Terminate
-        global Terminate_final
+        #global Terminate_final
         Terminate = True
         ClientQue = 'TerminateServer'
         logging.info("[Client command] Terminate threads and shut down")
-        while Terminate_final: # Wait for program to actually terminate
-            time.sleep(0.1)
+        #while Terminate_final: # Wait for program to actually terminate
+        #    time.sleep(0.1)
         return 1
     def exposed_WriteSensorLog(self, sensor):
         global ClientQue
@@ -565,7 +565,6 @@ def daemon(output, log):
     global HAlive
     global TAlive
     global ClientQue
-    global Terminate_final
     timer_time = [0] * 9
     timerSensorLog  = [0] * 5
     timerCo2SensorLog  = [0] * 2
@@ -599,6 +598,8 @@ def daemon(output, log):
     for i in range(1, numSensors+1):
         if sensorDevice[i] != 'Other' and sensorActivated[i] == 1:
             read_dht_sensor(0, i)
+            time.sleep(2) # Ensure a minimum of 2 seconds between sensor reads
+        if sensorCo2Device[i] != 'Other' and sensorCo2Activated[1] == 1:
             read_co2_sensor(1)
             time.sleep(2) # Ensure a minimum of 2 seconds between sensor reads
     
@@ -652,8 +653,8 @@ def daemon(output, log):
                 HAlive = [0] * 5
                 for t in threadsh:
                     t.join()
-                Terminate_final = 0
-                time.sleep(0.5)
+                #Terminate_final = 0
+                #time.sleep(0.5)
                 server.close()
                 logging.info("[Daemon] Exiting Python")
                 return 0
@@ -884,7 +885,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     elif "dayweek" in graph_out_file:
         plot.write('set terminal png size 1000,1000\n')
         plot.write('set output \"' + image_path + '/graph-' + graph_out_file + '-' + graph_id + '-' + sensorn + '.png\"\n')
-        elif "legend-small" in graph_out_file:
+    elif "legend-small" in graph_out_file:
         plot.write('set terminal png size 250,300\n')
         plot.write('set output \"' + image_path + '/graph-' + graph_out_file + '-' + graph_id + '.png\"\n')
     elif "legend-full" in graph_out_file:
@@ -1033,6 +1034,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         plot.write('\"\" using 1:8 index 0 notitle w lp ls 2 axes x1y1, ')
         plot.write('\"\" using 1:9 index 0 notitle w lp ls 3 axes x1y2\n')
         plot.write('unset multiplot\n')
+
     if "legend-small" in graph_out_file:
         plot.write('unset border\n')
         plot.write('unset tics\n')
@@ -1730,8 +1732,10 @@ while not lock.i_am_locking():
     except:
         print "Error: Lock file present: %s" % lock.path
         sys.exit(0)
+
 read_config(1)
 gpio_initialize()
 menu()
+
 lock.release()
 sys.exit(0)
