@@ -1,8 +1,8 @@
 <?php
 session_start();
-$User1 = "kiz";
-$Password1 = "94cf5eb8f8d24a01a598c6a7950972c6";
-$User2 = "guest";
+$User1 = "guest";
+$Password1 = "94cf5tb8f8d22a01a593c6a7f50972c6";
+$User2 = "guest2";
 $Password2 = "4f2e364087944450572176ff1bfdeab6";
 
 switch ($_GET['id']) {
