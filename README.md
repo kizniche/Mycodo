@@ -53,7 +53,7 @@ I'm since upgraded to a new set of hardware that support 8 individually-switchab
 * Support more humidity & temperature sensors (DHT11, DHT22, and AM2302)
 * Multi-sensors support to regulate multiple environments
 * TempFS to reduce writes to and extend the life of the SD card
-* Lock files to prevent file access conflicts
+* Lock files to prevent sensor read and file access conflicts
 * New web interface
   * Tabs allow everything to be loaded on one page
   * Generate new types of graphs
@@ -70,28 +70,17 @@ I'm since upgraded to a new set of hardware that support 8 individually-switchab
     * Guest account for viewing only (no config changes permitted) (user: guest, password: anonymous)
     * Authorization log of successful and unsuccessful login attempts
     * User profile, gravatar support (from email), lost/forgot email password reset
-    
+   
+<a name="future"></a>   
 ### Features - v4.0-beta (experimental)
 
-* CO2 Sensor support
-
-<a name="future"></a>
-### Todo
-
+- [ ] CO2 Sensor support (working on)
+- [ ] O2 Sensor support
+- [ ] Email notification if above/below certain values for each sensor
 - [ ] Allow setting the maximum current draw of device(s) connected to each relay to ensure no combination of devices are ever activated that surpass the limit of the wiring/breaker (commonly 15 amps)
 - [ ] Alarm if a critical failure has occurred (daemon stopped, critical temperature/humidity, etc.)
-- [ ] Lock file for sensor reading (sensor reads too close together cause sensor instability)
 - [ ] Take series of photos at different ISOs, combine to make HDR photo
-- [ ] Timelapse video creation ability (define start, end, duration between, etc.)  
-- [X] Logs written to TempFS and periodically concatenated with SD card logs
-  - [ ] Automatic log file backup when a certain size is reached  
-- [X] Support for more than one temperature/humidity sensor
-  - [X] Support using multiple sensors at the same time (Maximum of 4 at the moment)
-  - [ ] Expand support for sensors (limited to when/if I get sensors to test)
-- [X] Update user interface  
-  - [ ] Graphics (temperature, humidity, time, date, etc.)  
-  - [ ] Touch screen improvements
-  - [X] Tabbed interface
+- [ ] Timelapse video creation ability (define start, end, duration between, etc.) 
 
 <a name="hard-brief"></a>
 ### Hardware
