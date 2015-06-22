@@ -1084,6 +1084,7 @@ $error_code = "no";
                 <?php
                 }
                 ?>
+
                 <?php if ($numco2sensors > 0) { ?>
                 <div style="padding: 1.5em 0 1em 0; font-weight: bold;">CO<sub>2</sub> Sensors (MUST MANUALLY EDIT CONFIG FILE FOR BELOW SETTINGS TO SAVE)</div>
                 <div style="padding-bottom: 3em; padding-right: 1em;">
@@ -1116,7 +1117,7 @@ $error_code = "no";
                                 </select>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${"sensorco2" . $i . "pin"}; ?>" maxlength=2 size=1 name="sensor<?php echo $i; ?>pin" title="This is the GPIO pin connected to the DHT sensor"/>
+                                <input type="text" value="<?php echo ${"sensorco2" . $i . "pin"}; ?>" maxlength=2 size=1 name="sensor<?php echo $i; ?>pin" title="This is the GPIO pin connected to the CO2 sensor"/>
                             </td>
                             <td align=center>
                                 <input type="text" value="<?php echo ${"sensorco2" . $i . "period"}; ?>" maxlength=3 size=1 name="sensor<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
@@ -1162,7 +1163,7 @@ $error_code = "no";
                                 ?>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${'co2' . $i . 'relay'}; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>Co2Relay" title="This is the relay connected to the X device"/>
+                                <input type="text" value="<?php echo ${'co2' . $i . 'relay'}; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>Co2Relay" title="This is the relay connected to the device that modulates CO2"/>
                             </td>
                             <td>
                                 <input type="text" value="<?php echo ${'co2' . $i . 'set'}; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>Co2Set" title="This is the desired CO2 level"/> ppmv
