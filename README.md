@@ -34,35 +34,41 @@ I'm since upgraded to a new set of hardware that support 8 individually-switchab
 
 ### Features - v2.0 (old)
 
-<a name="feat"></a>
-### Features - v3.0 (stable)
-
+* Supports the DHT22 digital humidity and temperature sensor
+* Manual or automatic switching of up to four 120-volt AC relays
+* Automatic operation by simple proportional temperature/humidity regulation
 * Temperature, humidity, and relay state-change logging
-* PID, simple timer, or manual operation of eight 120-volt AC relays
-* Software PID control for temperature and humidity regulation
-* Support for different Humidity/Temperature sensors (DHT11, DHT22, and AM2302)
-* Monitor multiple sensors to regulate different environments (current max of 4)
-* TempFS to reduce writes to and extend the life of the SD card
-* Lock files to prevent file access conflicts
-* Web Interface
+* Basic web interface
   * View historical temperature and humidity data as text and graphs
   * Generate custom graphs of current and past data
     *  Presets of pre-defined time periods (past 1 hour, 6 hours, 1 day, 3 days...)
     *  Specify specific time period and define graph image width
+
+<a name="feat"></a>
+### Features - v3.0 (stable)
+
+* Switch up to eight 120-volt AC relays
+* Support for up to 8 simple timers (define on duration, off duration)
+* True PID control for temperature and humidity regulation
+* Support more humidity & temperature sensors (DHT11, DHT22, and AM2302)
+* Multi-sensors support to regulate multiple environments
+* TempFS to reduce writes to and extend the life of the SD card
+* Lock files to prevent file access conflicts
+* New web interface
+  * Tabs allow everything to be loaded on one page
+  * Generate new types of graphs
     *  Combined: generate a graph combining all temperatures or humidities
     *  Separate: generate a graph of the temperature, humidity, and dew point of each sensor
-  * Acquire images or stream live video using the Raspberry Pi camera module
+  * Acquire still image or stream live video using the Raspberry Pi camera module
   * View authorization, daemon, sensor, and relay logs
   * Easy configuration changes through the web interface
-    * For each of the 8 relays: assign name, GPIO pin, and which state triggers the relay on (High/Low)
-    * Select DHT sensors and pins (current options are DHT11, DHT22, and AM2302)
+    * Edit all variables related to each sensor and relay (names, pins, durations, etc.)
     * Set desired temperature/humidity as well as respective P, I, and D variables of each PID controller
-    * Switch PID control (automatic) to manual operation (turn Off, turn On, On for [x] seconds)
   * Login Authentication (written by php-login.net)
     * Optional cookie to keep session authenticated
-    * Guest account for viewing only (user: guest, password: anonymous)
+    * Guest account for viewing only (no config changes permitted) (user: guest, password: anonymous)
     * Authorization log of successful and unsuccessful login attempts
-    * Profile edit, gravatar support (from email), lost/forgot password reset
+    * User profile, gravatar support (from email), lost/forgot email password reset
     
 ### Features - v4.0-beta (experimental)
 
