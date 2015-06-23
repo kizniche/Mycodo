@@ -41,14 +41,24 @@ case "${1:-''}" in
             chown www-data.www-data /var/www/mycodo/images
         fi
 
-        if [ ! -e /var/log/mycodo/sensor-tmp.log ]; then
-            touch /var/log/mycodo/sensor-tmp.log
+        if [ ! -e /var/log/mycodo/sensor-ht-tmp.log ]; then
+            touch /var/log/mycodo/sensor-ht-tmp.log
         fi
-        if [ ! -e /var/www/mycodo/log/sensor.log ]; then
-            touch /var/www/mycodo/log/sensor.log
+        if [ ! -e /var/www/mycodo/log/sensor-ht.log ]; then
+            touch /var/www/mycodo/log/sensor-ht.log
         fi
-        if [ ! -h /var/www/mycodo/log/sensor-tmp.log ]; then
-            ln -s /var/log/mycodo/sensor-tmp.log /var/www/mycodo/log/sensor-tmp.log
+        if [ ! -h /var/www/mycodo/log/sensor-ht-tmp.log ]; then
+            ln -s /var/log/mycodo/sensor-ht-tmp.log /var/www/mycodo/log/sensor-ht-tmp.log
+        fi
+        
+        if [ ! -e /var/log/mycodo/sensor-ht-tmp.log ]; then
+            touch /var/log/mycodo/sensor-ht-tmp.log
+        fi
+        if [ ! -e /var/www/mycodo/log/sensor-ht.log ]; then
+            touch /var/www/mycodo/log/sensor-ht.log
+        fi
+        if [ ! -h /var/www/mycodo/log/sensor-ht-tmp.log ]; then
+            ln -s /var/log/mycodo/sensor-ht-tmp.log /var/www/mycodo/log/sensor-ht-tmp.log
         fi
         
         if [ ! -e /var/log/mycodo/relay-tmp.log ]; then

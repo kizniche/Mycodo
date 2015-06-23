@@ -33,7 +33,8 @@ $gpio_path = "/usr/local/bin/gpio";
 
 $config_file = $install_path . "/config/mycodo.cfg";
 $auth_log = $install_path . "/log/auth.log";
-$sensor_log = "/var/tmp/sensor.log";
+$sensor_ht_log = "/var/tmp/sensor-ht.log";
+$sensor_co2_log = "/var/tmp/sensor-co2.log";
 $relay_log = "/var/tmp/relay.log";
 $daemon_log = "/var/tmp/daemon.log";
 $images = $install_path . "/images";
@@ -180,7 +181,8 @@ if ($login->isUserLoggedIn() == true) {
     
     # Concatenate log files (to TempFS) to ensure the latest data is being used
     `cat /var/www/mycodo/log/daemon.log /var/www/mycodo/log/daemon-tmp.log > /var/tmp/daemon.log`;
-    `cat /var/www/mycodo/log/sensor.log /var/www/mycodo/log/sensor-tmp.log > /var/tmp/sensor.log`;
+    `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
+    `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
     `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log > /var/tmp/relay.log`;
 
     $daemon_check = `ps aux | grep "[m]ycodo.py -d"`;
@@ -199,32 +201,50 @@ if ($login->isUserLoggedIn() == true) {
     foreach($config_rows as $row => $data) {
         $row_data = explode(' = ', $data);
         if (isset($row_data[1])) ${$row_data[0]} = $row_data[1];
+        // echo $row_data[0] . "=" . $row_data[1] . '<br>';
     }
 
     // All commands that elevated (!= guest) privileges are required
     for ($p = 1; $p <= 8; $p++) {
         if (isset($_POST['R' . $p]) ||
-                isset($_POST['Change' . $p . 'Sensor']) ||
+                isset($_POST['Change' . $p . 'HTSensor']) ||
+                isset($_POST['Change' . $p . 'Co2Sensor']) ||
                 isset($_POST[$p . 'secON']) ||
                 isset($_POST['ChangeTimer' . $p]) || 
                 isset($_POST['Timer' . $p . 'StateChange']) ||
                 isset($_POST['Change' . $p . 'TempPID']) ||
                 isset($_POST['Change' . $p . 'HumPID']) ||
+                isset($_POST['Change' . $p . 'Co2PID']) ||
                 isset($_POST['Change' . $p . 'TempOR']) ||
-                isset($_POST['Change' . $p . 'HumOR'])) {
+                isset($_POST['Change' . $p . 'HumOR']) ||
+                isset($_POST['Change' . $p . 'Co2OR'])) {
             if ($_SESSION['user_name'] != 'guest') {
 
-                // Set sensor variables
-                if (isset($_POST['Change' . $p . 'Sensor'])) {
-                    $sensorname = str_replace(' ', '', $_POST['sensor' . $p . 'name']);
-                    $sensordevice = str_replace(' ', '', $_POST['sensor' . $p . 'device']);
-                    $sensorpin = str_replace(' ', '', $_POST['sensor' . $p . 'pin']);
-                    $sensorperiod = str_replace(' ', '', $_POST['sensor' . $p . 'period']);
-                    if (isset($_POST['sensor' . $p . 'activated'])) $sensoractivated = 1;
+                // Set HT sensor variables
+                if (isset($_POST['Change' . $p . 'HTSensor'])) {
+                    $sensorname = str_replace(' ', '', $_POST['sensorht' . $p . 'name']);
+                    $sensordevice = str_replace(' ', '', $_POST['sensorht' . $p . 'device']);
+                    $sensorpin = str_replace(' ', '', $_POST['sensorht' . $p . 'pin']);
+                    $sensorperiod = str_replace(' ', '', $_POST['sensorht' . $p . 'period']);
+                    if (isset($_POST['sensorht' . $p . 'activated'])) $sensoractivated = 1;
                     else $sensoractivated = 0;
-                    if (isset($_POST['sensor' . $p . 'graph'])) $sensorgraph = 1;
+                    if (isset($_POST['sensorht' . $p . 'graph'])) $sensorgraph = 1;
                     else $sensorgraph = 0;
-                    $editconfig = "$mycodo_client --modsensor $p $sensorname $sensordevice $sensorpin $sensorperiod $sensoractivated $sensorgraph";
+                    $editconfig = "$mycodo_client --modhtsensor $p $sensorname $sensordevice $sensorpin $sensorperiod $sensoractivated $sensorgraph";
+                    shell_exec($editconfig);
+                }
+                
+                // Set CO2 sensor variables
+                if (isset($_POST['Change' . $p . 'Co2Sensor'])) {
+                    $sensorname = str_replace(' ', '', $_POST['sensorco2' . $p . 'name']);
+                    $sensordevice = str_replace(' ', '', $_POST['sensorco2' . $p . 'device']);
+                    $sensorpin = str_replace(' ', '', $_POST['sensorco2' . $p . 'pin']);
+                    $sensorperiod = str_replace(' ', '', $_POST['sensorco2' . $p . 'period']);
+                    if (isset($_POST['sensorco2' . $p . 'activated'])) $sensoractivated = 1;
+                    else $sensoractivated = 0;
+                    if (isset($_POST['sensorco2' . $p . 'graph'])) $sensorgraph = 1;
+                    else $sensorgraph = 0;
+                    $editconfig = "$mycodo_client --modco2sensor $p $sensorname $sensordevice $sensorpin $sensorperiod $sensoractivated $sensorgraph";
                     shell_exec($editconfig);
                 }
             
@@ -239,6 +259,13 @@ if ($login->isUserLoggedIn() == true) {
                 if (isset($_POST['Change' . $p . 'HumOR'])) {
                     $humor = $_POST['Change' . $p . 'HumOR'];
                     $editconfig = "$mycodo_client --modhumOR $p $humor";
+                    shell_exec($editconfig);
+                }
+                
+                // Request CO2 PID override to be turned on or off
+                if (isset($_POST['Change' . $p . 'Co2OR'])) {
+                    $co2or = $_POST['Change' . $p . 'Co2OR'];
+                    $editconfig = "$mycodo_client --modco2OR $p $co2or";
                     shell_exec($editconfig);
                 }
                 
@@ -263,6 +290,18 @@ if ($login->isUserLoggedIn() == true) {
                     $hum_d  = $_POST['Set' . $p . 'Hum_D'];
                     $humperiod = $_POST['Set' . $p . 'HumPeriod'];
                     $editconfig = "$mycodo_client --modhumPID $p $humrelay $humset $hum_p $hum_i $hum_d $humperiod";
+                    shell_exec($editconfig);
+                }
+                
+                // Request the CO2 PID variables be changed
+                if (isset($_POST['Change' . $p . 'Co2PID'])) {
+                    $co2relay  = $_POST['Set' . $p . 'Co2Relay'];
+                    $co2set  = $_POST['Set' . $p . 'Co2Set'];
+                    $co2_p  = $_POST['Set' . $p . 'Co2_P'];
+                    $co2_i  = $_POST['Set' . $p . 'Co2_I'];
+                    $co2_d  = $_POST['Set' . $p . 'Co2_D'];
+                    $co2period = $_POST['Set' . $p . 'Co2Period'];
+                    $editconfig = "$mycodo_client --modco2PID $p $co2relay $co2set $co2_p $co2_i $co2_d $co2period";
                     shell_exec($editconfig);
                 }
                 
@@ -343,11 +382,12 @@ if ($login->isUserLoggedIn() == true) {
         }
     }
     
-    if (isset($_POST['WriteSensorLog']) || isset($_POST['ModRelayPin']) ||
-            isset($_POST['ModRelayName']) || isset($_POST['ModRelayTrigger']) ||
-            isset($_POST['Auth']) || isset($_POST['Capture']) ||
-            isset($_POST['start-stream']) || isset($_POST['stop-stream']) ||
-            isset($_POST['ChangeNoRelays']) || isset($_POST['ChangeNoSensors']) ||
+    if (isset($_POST['WriteHTSensorLog']) || isset($_POST['WriteCo2SensorLog']) ||
+            isset($_POST['ModRelayPin']) || isset($_POST['ModRelayName']) ||
+            isset($_POST['ModRelayTrigger']) || isset($_POST['Auth']) ||
+            isset($_POST['Capture']) || isset($_POST['start-stream']) ||
+            isset($_POST['stop-stream']) || isset($_POST['ChangeNoRelays']) ||
+            isset($_POST['ChangeNoHTSensors']) || isset($_POST['ChangeNoCo2Sensors']) ||
             isset($_POST['ChangeNoTimers']) || isset($_POST['ChangeNotify'])) {
         if ($_SESSION['user_name'] != 'guest') {
             if (isset($_POST['Capture'])) {
@@ -385,9 +425,15 @@ if ($login->isUserLoggedIn() == true) {
                 sleep(1);
             }
             
-            // Request a sensor read and sensor log write
-             if (isset($_POST['WriteSensorLog'])) {
-                $editconfig = "$mycodo_client -w 0";
+            // Request HT sensor read log write
+             if (isset($_POST['WriteHTSensorLog'])) {
+                $editconfig = "$mycodo_client --writehtsensorlog 0";
+                shell_exec($editconfig);
+            }
+            
+            // Request CO2 sensor read and log write
+             if (isset($_POST['WriteCo2SensorLog'])) {
+                $editconfig = "$mycodo_client --writeco2sensorlog 0";
                 shell_exec($editconfig);
             }
             
@@ -431,10 +477,17 @@ if ($login->isUserLoggedIn() == true) {
                 shell_exec($editconfig);
             }
             
-            // Change number of sensors
-            if (isset($_POST['ChangeNoSensors'])) {
-                $numsensors = $_POST['numsensors'];
-                $editconfig = "$mycodo_client --modvar numSensors $numsensors";
+            // Change number of HT sensors
+            if (isset($_POST['ChangeNoHTSensors'])) {
+                $numhtsensors = $_POST['numhtsensors'];
+                $editconfig = "$mycodo_client --modvar numHTSensors $numhtsensors";
+                shell_exec($editconfig);
+            }
+            
+            // Change number of CO2 sensors
+            if (isset($_POST['ChangeNoCo2Sensors'])) {
+                $numco2sensors = $_POST['numco2sensors'];
+                $editconfig = "$mycodo_client --modvar numCo2Sensors $numco2sensors";
                 shell_exec($editconfig);
             }
             
@@ -468,13 +521,13 @@ if ($login->isUserLoggedIn() == true) {
         }
     }
     
-    $last_sensor[1] = `awk '$10 == 1' /var/tmp/sensor.log | tail -n 1`;
-    $last_sensor[2] = `awk '$10 == 2' /var/tmp/sensor.log | tail -n 1`;
-    $last_sensor[3] = `awk '$10 == 3' /var/tmp/sensor.log | tail -n 1`;
-    $last_sensor[4] = `awk '$10 == 4' /var/tmp/sensor.log | tail -n 1`;
+    $last_ht_sensor[1] = `awk '$10 == 1' /var/tmp/sensor-ht.log | tail -n 1`;
+    $last_ht_sensor[2] = `awk '$10 == 2' /var/tmp/sensor-ht.log | tail -n 1`;
+    $last_ht_sensor[3] = `awk '$10 == 3' /var/tmp/sensor-ht.log | tail -n 1`;
+    $last_ht_sensor[4] = `awk '$10 == 4' /var/tmp/sensor-ht.log | tail -n 1`;
     
-    for ($p = 1; $p <= $numsensors; $p++) {
-        $sensor_explode = explode(" ", $last_sensor[$p]);
+    for ($p = 1; $p <= $numhtsensors; $p++) {
+        $sensor_explode = explode(" ", $last_ht_sensor[$p]);
         $t_c[$p] = $sensor_explode[6];
         $hum[$p] = $sensor_explode[7];
         $t_f[$p] = round(($t_c[$p]*(9/5) + 32), 1);
@@ -483,8 +536,18 @@ if ($login->isUserLoggedIn() == true) {
         $settemp_f[$p] = round((${'temp' . $p . 'set'}*(9/5) + 32), 1);
     }
     
+    $last_co2_sensor[1] = `awk '$10 == 1' /var/tmp/sensor-co2.log | tail -n 1`;
+    $last_co2_sensor[2] = `awk '$10 == 2' /var/tmp/sensor-co2.log | tail -n 1`;
+    $last_co2_sensor[3] = `awk '$10 == 3' /var/tmp/sensor-co2.log | tail -n 1`;
+    $last_co2_sensor[4] = `awk '$10 == 4' /var/tmp/sensor-co2.log | tail -n 1`;
+    
+    for ($p = 1; $p <= $numco2sensors; $p++) {
+        $sensor_explode = explode(" ", $last_co2_sensor[$p]);
+        $co2[$p] = $sensor_explode[6];
+    }
+    
     $time_now = `date +"%Y-%m-%d %H:%M:%S"`;
-    $time_last = `tail -n 1 $sensor_log`;
+    $time_last = `tail -n 1 $sensor_ht_log`;
     $time_explode = explode(" ", $time_last);
     $time_last = $time_explode[0] . '-' . $time_explode[1] . '-' . $time_explode[2] . ' ' . $time_explode[3] . ':' . $time_explode[4] . ':' . $time_explode[5];
 ?>
@@ -570,13 +633,13 @@ $error_code = "no";
         <div style="text-align: right; padding-top: 3px; font-size: 0.9em;"><?php echo $uptime; ?></div>
     </div>
     <?php
-    for ($s = 1; $s <= $numsensors; $s++) {
-        if (${'sensor' . $s . 'activated'} == 1) {
+    for ($s = 1; $s <= $numhtsensors; $s++) {
+        if (${'sensorht' . $s . 'activated'} == 1) {
     ?>
     <div class="header">
     <table>
         <tr>
-            <td colspan=2 align=center style="border-bottom:1pt solid black;"><?php echo $s . ": " . ${'sensor' . $s . 'name'}; ?></td>
+            <td colspan=2 align=center style="border-bottom:1pt solid black;"><?php echo $s . ": " . ${'sensorht' . $s . 'name'}; ?></td>
         </tr>
         <tr>
             <td>
@@ -592,6 +655,32 @@ $error_code = "no";
             echo "<br>" . number_format((float)${'hum' . $s . 'set'}, 1, '.', '') . "%";
             ?>
     </div>
+            </td>
+        </tr>
+    </table>
+    </div>
+    <?php
+        }
+    }
+    ?>
+    
+    <?php
+    for ($s = 1; $s <= $numco2sensors; $s++) {
+        if (${'sensorco2' . $s . 'activated'} == 1) {
+    ?>
+    <div class="header">
+    <table>
+        <tr>
+            <td colspan=2 align=center style="border-bottom:1pt solid black;">
+                <?php echo $s . ": " . ${'sensorco2' . $s . 'name'}; ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div style="font-size: 0.8em; padding-right: 0.5em;"><?php echo "Now<br>" . $co2[$s]; ?></div>
+            </td>
+            <td>
+                <div style="font-size: 0.8em;"><?php echo "Set<br>" . ${'co2' . $s . 'set'}; ?></div>
             </td>
         </tr>
     </table>
@@ -728,8 +817,8 @@ $error_code = "no";
                         sleep(3);
                         echo "</div>";
                     } else {
-                        for ($n = 1; $n <= $numsensors; $n++ ) {
-                            if (isset($_GET['page']) and ${'sensor' . $n . 'graph'} == 1) {
+                        for ($n = 1; $n <= $numhtsensors; $n++ ) {
+                            if (isset($_GET['page']) and ${'sensorht' . $n . 'graph'} == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
                                 switch ($_GET['page']) {
                                     case 'Main':
@@ -770,12 +859,12 @@ $error_code = "no";
                                     break;
                                 }
                                 echo "</div>";
-                            } else if (${'sensor' . $n . 'graph'} == 1) {
+                            } else if (${'sensorht' . $n . 'graph'} == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
                                 if ($ref) shell_exec($mycodo_client . ' --graph dayweek ' . $id . ' ' . $n);
                                 echo "main&mod=" . $id . "&sensor=" . $n . "></div>";
                             }
-                            if ($n != $numsensors) { echo "<hr class=\"fade\"/>"; }
+                            if ($n != $numhtsensors) { echo "<hr class=\"fade\"/>"; }
                         }
                     }
                     ?>
@@ -840,20 +929,20 @@ $error_code = "no";
                                 <option value="0" selected="selected">0</option>
                                 <option value="1" selected="selected">1</option>
                             </select>
-                            <input type="submit" name="ChangeNoSensors" value="Save">
+                            <input type="submit" name="ChangeNoCo2Sensors" value="Save">
                         </div>
                     </div>
                     <div style="float: left;">
                         <div style="text-align: center; padding-bottom: 0.2em;">HT Sensors</div>
                         <div style="text-align: center;"">
-                            <select name="numsensors">
-                                <option value="0" <?php if ($numsensors == 0) echo "selected=\"selected\""; ?>>0</option>
-                                <option value="1" <?php if ($numsensors == 1) echo "selected=\"selected\""; ?>>1</option>
-                                <option value="2" <?php if ($numsensors == 2) echo "selected=\"selected\""; ?>>2</option>
-                                <option value="3" <?php if ($numsensors == 3) echo "selected=\"selected\""; ?>>3</option>
-                                <option value="4" <?php if ($numsensors == 4) echo "selected=\"selected\""; ?>>4</option>
+                            <select name="numhtsensors">
+                                <option value="0" <?php if ($numhtsensors == 0) echo "selected=\"selected\""; ?>>0</option>
+                                <option value="1" <?php if ($numhtsensors == 1) echo "selected=\"selected\""; ?>>1</option>
+                                <option value="2" <?php if ($numhtsensors == 2) echo "selected=\"selected\""; ?>>2</option>
+                                <option value="3" <?php if ($numhtsensors == 3) echo "selected=\"selected\""; ?>>3</option>
+                                <option value="4" <?php if ($numhtsensors == 4) echo "selected=\"selected\""; ?>>4</option>
                             </select>
-                            <input type="submit" name="ChangeNoSensors" value="Save">
+                            <input type="submit" name="ChangeNoHTSensors" value="Save">
                         </div>
                     </div>
                 </div>
@@ -937,11 +1026,11 @@ $error_code = "no";
                     </table>
                 </div>
                 
-                <?php if ($numsensors > 0) { ?>
+                <?php if ($numhtsensors > 0) { ?>
                 <div style="padding: 2.5em 0 1em 0; font-weight: bold;">Humidity & Temperature Sensors</div>
                 <div style="padding-right: 1em;">
-                    <?php for ($i = 1; $i <= $numsensors; $i++) {
-                        $device = ${"sensor" . $i . "device"};
+                    <?php for ($i = 1; $i <= $numhtsensors; $i++) {
+                        $device = ${"sensorht" . $i . "device"};
                         ?>
                     <div style="padding-bottom: 0.5em;">
                         <table class="pid" style="width: 42em;">
@@ -960,10 +1049,10 @@ $error_code = "no";
                                 <?php echo $i; ?>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${"sensor" . $i . "name"}; ?>" maxlength=12 size=10 name="sensor<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
+                                <input type="text" value="<?php echo ${"sensorht" . $i . "name"}; ?>" maxlength=12 size=10 name="sensorht<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
                             </td>
                             <td>
-                                <select style="width: 80px;" name="sensor<?php echo $i; ?>device">
+                                <select style="width: 80px;" name="sensorht<?php echo $i; ?>device">
                                     <option <?php if ($device == 'DHT11') echo "selected=\"selected\""; ?> value="DHT11">DHT11</option>
                                     <option <?php if ($device == 'DHT22') echo "selected=\"selected\""; ?> value="DHT22">DHT22</option>
                                     <option <?php if ($device == 'AM2302') echo "selected=\"selected\""; ?> value="AM2302">AM2302</option>
@@ -971,19 +1060,19 @@ $error_code = "no";
                                 </select>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${"sensor" . $i . "pin"}; ?>" maxlength=2 size=1 name="sensor<?php echo $i; ?>pin" title="This is the GPIO pin connected to the DHT sensor"/>
+                                <input type="text" value="<?php echo ${"sensorht" . $i . "pin"}; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>pin" title="This is the GPIO pin connected to the DHT sensor"/>
                             </td>
                             <td align=center>
-                                <input type="text" value="<?php echo ${"sensor" . $i . "period"}; ?>" maxlength=3 size=1 name="sensor<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
+                                <input type="text" value="<?php echo ${"sensorht" . $i . "period"}; ?>" maxlength=3 size=1 name="sensorht<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
                             </td>
                             <td align=center>
-                                <input type="checkbox" name="sensor<?php echo $i; ?>activated" value="1" <?php if (${'sensor' . $i . 'activated'} == 1) echo "checked"; ?>> 
+                                <input type="checkbox" name="sensorht<?php echo $i; ?>activated" value="1" <?php if (${'sensorht' . $i . 'activated'} == 1) echo "checked"; ?>> 
                             </td>
                             <td align=center>
-                                <input type="checkbox" name="sensor<?php echo $i; ?>graph" value="1" <?php if (${'sensor' . $i . 'graph'} == 1) echo "checked"; ?>> 
+                                <input type="checkbox" name="sensorht<?php echo $i; ?>graph" value="1" <?php if (${'sensorht' . $i . 'graph'} == 1) echo "checked"; ?>> 
                             </td>
                             <td>
-                                <input type="submit" name="Change<?php echo $i; ?>Sensor" value="Set">
+                                <input type="submit" name="Change<?php echo $i; ?>HTSensor" value="Set">
                             </td>
                         </tr>
                     </table>
@@ -1086,7 +1175,7 @@ $error_code = "no";
                 ?>
 
                 <?php if ($numco2sensors > 0) { ?>
-                <div style="padding: 1.5em 0 1em 0; font-weight: bold;">CO<sub>2</sub> Sensors (MUST MANUALLY EDIT CONFIG FILE FOR BELOW SETTINGS TO SAVE)</div>
+                <div style="padding: 1.5em 0 1em 0; font-weight: bold;">CO<sub>2</sub> Sensors</div>
                 <div style="padding-bottom: 3em; padding-right: 1em;">
                     <?php for ($i = 1; $i <= $numco2sensors; $i++) {
                         $device = ${"sensorco2" . $i . "device"};
@@ -1108,28 +1197,28 @@ $error_code = "no";
                                 <?php echo $i; ?>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${"sensorco2" . $i . "name"}; ?>" maxlength=12 size=10 name="sensor<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
+                                <input type="text" value="<?php echo ${"sensorco2" . $i . "name"}; ?>" maxlength=12 size=10 name="sensorco2<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
                             </td>
                             <td>
-                                <select style="width: 80px;" name="sensor<?php echo $i; ?>device">
+                                <select style="width: 80px;" name="sensorco2<?php echo $i; ?>device">
                                     <option <?php if ($device == 'K30') echo "selected=\"selected\""; ?> value="K30">K30</option>
                                     <option <?php if ($device == 'Other') echo "selected=\"selected\""; ?>value="Other">Other</option>
                                 </select>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${"sensorco2" . $i . "pin"}; ?>" maxlength=2 size=1 name="sensor<?php echo $i; ?>pin" title="This is the GPIO pin connected to the CO2 sensor"/>
+                                <input type="text" value="<?php echo ${"sensorco2" . $i . "pin"}; ?>" maxlength=2 size=1 name="sensorco2<?php echo $i; ?>pin" title="This is the GPIO pin connected to the CO2 sensor"/>
                             </td>
                             <td align=center>
-                                <input type="text" value="<?php echo ${"sensorco2" . $i . "period"}; ?>" maxlength=3 size=1 name="sensor<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
+                                <input type="text" value="<?php echo ${"sensorco2" . $i . "period"}; ?>" maxlength=3 size=1 name="sensorco2<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
                             </td>
                             <td align=center>
-                                <input type="checkbox" name="sensor<?php echo $i; ?>activated" value="1" <?php if (${'sensorco2' . $i . 'activated'} == 1) echo "checked"; ?>> 
+                                <input type="checkbox" name="sensorco2<?php echo $i; ?>activated" value="1" <?php if (${'sensorco2' . $i . 'activated'} == 1) echo "checked"; ?>> 
                             </td>
                             <td align=center>
-                                <input type="checkbox" name="sensor<?php echo $i; ?>graph" value="1" <?php if (${'sensorco2' . $i . 'graph'} == 1) echo "checked"; ?>> 
+                                <input type="checkbox" name="sensorco2<?php echo $i; ?>graph" value="1" <?php if (${'sensorco2' . $i . 'graph'} == 1) echo "checked"; ?>> 
                             </td>
                             <td>
-                                <input type="submit" name="Change<?php echo $i; ?>Sensor" value="Set">
+                                <input type="submit" name="Change<?php echo $i; ?>Co2Sensor" value="Set">
                             </td>
                         </tr>
                     </table>
@@ -1153,11 +1242,11 @@ $error_code = "no";
                                 <?php
                                     if (${'co2' . $i . 'or'} == 1) {
                                         ?>
-                                        <input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="Change<?php echo $i; ?>TempOR" value="0"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>TempOR" value="0">ON</button>
+                                        <input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="Change<?php echo $i; ?>Co2OR" value="0"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>Co2OR" value="0">ON</button>
                                         <?php
                                     } else {
                                         ?>
-                                        <input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="Change<?php echo $i; ?>TempOR" value="1"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>TempOR" value="1">OFF</button>
+                                        <input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="Change<?php echo $i; ?>Co2OR" value="1"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>Co2OR" value="1">OFF</button>
                                         <?php
                                     }
                                 ?>
@@ -1254,17 +1343,17 @@ $error_code = "no";
                         set multiplot layout 3, 1 title \"Combined Sensor Data - $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
                         set title \"Combined Temperatures\"
                         unset key
-                        plot \"<awk '\\$10 == 1' $sensor_log\" using 1:7 index 0 title \"T1\" w lp ls 1 axes x1y2, \\
-                        \"<awk '\\$10 == 2' $sensor_log\" using 1:7 index 0 title \"T2\" w lp ls 2 axes x1y2, \\
-                        \"<awk '\\$10 == 3' $sensor_log\" using 1:7 index 0 title \"T3\" w lp ls 3 axes x1y2, \\
-                        \"<awk '\\$10 == 4' $sensor_log\" using 1:7 index 0 title \"T4\" w lp ls 4 axes x1y2 \\
+                        plot \"<awk '\\$10 == 1' $sensor_ht_log\" using 1:7 index 0 title \"T1\" w lp ls 1 axes x1y2, \\
+                        \"<awk '\\$10 == 2' $sensor_ht_log\" using 1:7 index 0 title \"T2\" w lp ls 2 axes x1y2, \\
+                        \"<awk '\\$10 == 3' $sensor_ht_log\" using 1:7 index 0 title \"T3\" w lp ls 3 axes x1y2, \\
+                        \"<awk '\\$10 == 4' $sensor_ht_log\" using 1:7 index 0 title \"T4\" w lp ls 4 axes x1y2 \\
                         set key autotitle column
                         set title \"Combined Humidities\"
                         unset key
-                        plot \"<awk '\\$10 == 1' $sensor_log\" using 1:8 index 0 title \"RH1\" w lp ls 1 axes x1y1, \\
-                        \"<awk '\\$10 == 2' $sensor_log\" using 1:8 index 0 title \"RH2\" w lp ls 2 axes x1y1, \\
-                        \"<awk '\\$10 == 3' $sensor_log\" using 1:8 index 0 title \"RH3\" w lp ls 3 axes x1y1, \\
-                        \"<awk '\\$10 == 4' $sensor_log\" using 1:8 index 0 title \"RH4\" w lp ls 4 axes x1y1 \\
+                        plot \"<awk '\\$10 == 1' $sensor_ht_log\" using 1:8 index 0 title \"RH1\" w lp ls 1 axes x1y1, \\
+                        \"<awk '\\$10 == 2' $sensor_ht_log\" using 1:8 index 0 title \"RH2\" w lp ls 2 axes x1y1, \\
+                        \"<awk '\\$10 == 3' $sensor_ht_log\" using 1:8 index 0 title \"RH3\" w lp ls 3 axes x1y1, \\
+                        \"<awk '\\$10 == 4' $sensor_ht_log\" using 1:8 index 0 title \"RH4\" w lp ls 4 axes x1y1 \\
                         set key
                         set key autotitle column
                         set title \"Relay Run Time\"
@@ -1312,7 +1401,7 @@ $error_code = "no";
                                 #set ylabel \"% Humidity\"
                                 set title \"Sensor $n: ${'sensor' . $n . 'name'}  $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
                                 unset key
-                                plot \"<awk '\\$10 == $n' $sensor_log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
+                                plot \"<awk '\\$10 == $n' $sensor_ht_log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
                                 \"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, \\
                                 \"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
                                 \"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"$relay1name\" w impulses ls 4 axes x1y1, \\
@@ -1401,9 +1490,9 @@ $error_code = "no";
                             echo 'Year Mo Day Hour Min Sec Tc RH DPc<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `tail -n $Lines $sensor_log`;
+                                echo `tail -n $Lines $sensor_ht_log`;
                             } else {
-                                echo `tail -n 30 $sensor_log`;
+                                echo `tail -n 30 $sensor_ht_log`;
                             }
                         }
 

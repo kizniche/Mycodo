@@ -35,22 +35,30 @@ def usage():
     print 'mycodo-client.py: Client for mycodo.py (must be running in daemon mode -d).\n'
     print 'Usage:  mycodo-client.py [OPTION]...\n'
     print 'Options:'
-    print '        --modtempOR sensor state'
-    print '           Temperature PID control: 0=enable, 1=disable'
-    print '        --modtempPID sensor relay set p i d period'
-    print '           Change Temperature PID variables'
+    print '        --graph Duration ID Sensor'
+    print '           See documentation for options'
+    print '        --modco2OR sensor state'
+    print '           CO2 PID control: 0=enable, 1=disable'
+    print '        --modco2PID sensor relay set p i d period'
+    print '           Change CO2 PID variables'
     print '        --modhumOR sensor state'
     print '           Humidity PID control: 0=enable, 1=disable'
     print '        --modhumPID sensor relay set p i d period'
     print '           Change Humidity PID variables'
+    print '        --modtempOR sensor state'
+    print '           Temperature PID control: 0=enable, 1=disable'
+    print '        --modtempPID sensor relay set p i d period'
+    print '           Change Temperature PID variables'
     print '        --modrelaynames name1 name2 name3 name4 name5 name6 name7 name8'
     print '           Modify relay names (Restrict to a maximum of 12 characters each)'
     print '        --modrelaypins pin1 pin2 pin3 pin4 pin5 pin6 pin7 pin8'
     print '           Modify relay pins Using BCM numbering)'
     print '        --modrelaytrigger trig1 trig2 trig3 trig4 trig5 trig6 trig7 trig8'
     print '           Modify the relay trigger states (0=low, 1=high; turns relay on)'
-    print '        --modsensor sensor name device pin period activated graph'
-    print '           Modify sensor variables'
+    print '        --modco2sensor sensor name device pin period activated graph'
+    print '           Modify CO2 sensor variables'
+    print '        --modhtsensor sensor name device pin period activated graph'
+    print '           Modify Humidity/Temperature sensor variables'
     print '        --modtimer timer state relay on off'
     print '           Modify custom timers, State can be 0=off 1=on, on/off durations in seconds'
     print '    -m, --modvar name1 value1 [name2] [value2]...'
@@ -58,20 +66,24 @@ def usage():
     print '    -r, --relay relay state'
     print '           Turn a relay on or off. state can be 0, 1, or X.'
     print '           0=OFF, 1=ON, or X number of seconds On'
-    print '    -s, --sensor pin device'
-    print '           Returns the temperature and humidity of of the DHT sensor on GPIO pin'
+    print '        --sensorco2 pin device'
+    print '           Returns a reading from the CO2 sensor on GPIO pin'
+    print '           Device options are K30'
+    print '        --sensorht pin device'
+    print '           Returns a reading from the temperature and humidity sensor on GPIO pin'
     print '           Device options are DHT22, DHT11, or AM2302'
     print '    -t, --terminate'
     print '           Terminate the communication service and daemon'
-    print '    -w, --writelog sensor'
-    print '           Read from sensor number and append log file, 0 to write all.\n'    
+    print '        --writeco2log sensor'
+    print '           Read from CO2 sensor number and append log file, 0 to write all.'
+    print '        --writehtlog sensor'
+    print '           Read from HT sensor number and append log file, 0 to write all.\n'
 
 def menu():
     try:
         opts, args = getopt.getopt(
-            sys.argv[1:], 'm:r:s:tw:', 
-            ["graph", "modtempOR", "modtempPID", "modhumOR", "modhumPID", "modrelaynames=", "modrelaypins=", "modrelaytrigger=",
-            "modsensor", "modtimer=", "modvar=", "relay=", "sensor=", "terminate", "writelog="])
+            sys.argv[1:], 'm:r:t', 
+            ["graph", "modtempOR", "modtempPID", "modhumOR", "modhumPID", "modco2OR", "modco2PID", "modrelaynames=", "modrelaypins=", "modrelaytrigger=", "modhtsensor", "modco2sensor", "modtimer=", "modvar=", "relay=", "sensorht", "sensorco2", "terminate", "writehtlog", "writeco2log"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -94,6 +106,27 @@ def menu():
             print "%s [Remote command] Server returned:" % (
                 Timestamp()),
             if c.root.Modify_Variables(*sys.argv[1:]) == 1:
+                print "Success"
+            else:
+                print "Fail"
+            sys.exit(0)
+        elif opt == "--modco2OR":
+            print "%s [Remote command] Change CO2OR of sensor %s to %s: Server returned:" % (
+                Timestamp(), sys.argv[2], sys.argv[3]),
+            if c.root.ChangeCO2OR(int(float(sys.argv[2])), int(float(sys.argv[3]))) == 1:
+                print "Success"
+            else:
+                print "Fail"
+            sys.exit(0)
+        elif opt == "--modco2PID":
+            print "%s [Remote command] Change CO2 PID of sensor %s: relay: %s set: %s P: %s I: %s D: %s Period: %s Server returned:" % (
+                Timestamp(), sys.argv[2], sys.argv[3],
+                sys.argv[4], sys.argv[5], sys.argv[6],
+                sys.argv[7], sys.argv[8]),
+            if c.root.ChangeCO2PID(int(float(sys.argv[2])),
+            int(float(sys.argv[3])), float(sys.argv[4]),
+            float(sys.argv[5]), float(sys.argv[6]),
+            float(sys.argv[7]), int(float(sys.argv[8]))) == 1:
                 print "Success"
             else:
                 print "Fail"
@@ -140,12 +173,24 @@ def menu():
             else:
                 print "Fail"
             sys.exit(0)
-        elif opt == "--modsensor":
+        elif opt == "--modco2sensor":
             print "%s [Remote command] Set Sensor %s: %s %s %s %s %s %s: Server returned:" % (
                 Timestamp(), 
                 sys.argv[2], sys.argv[3], sys.argv[4],
                 sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8]),
-            if c.root.ChangeSensor(
+            if c.root.ChangeCO2Sensor(
+                int(float(sys.argv[2])), sys.argv[3], sys.argv[4],
+                int(float(sys.argv[5])), int(float(sys.argv[6])), int(float(sys.argv[7])), int(float(sys.argv[8]))) == 1:
+                print "Success"
+            else:
+                print "Fail"
+            sys.exit(0)
+        elif opt == "--modhtsensor":
+            print "%s [Remote command] Set Sensor %s: %s %s %s %s %s %s: Server returned:" % (
+                Timestamp(), 
+                sys.argv[2], sys.argv[3], sys.argv[4],
+                sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8]),
+            if c.root.ChangeHTSensor(
                 int(float(sys.argv[2])), sys.argv[3], sys.argv[4],
                 int(float(sys.argv[5])), int(float(sys.argv[6])), int(float(sys.argv[7])), int(float(sys.argv[8]))) == 1:
                 print "Success"
@@ -225,10 +270,16 @@ def menu():
             else:
                 print 'Error: second input must be an integer greater than 0'
                 sys.exit(1)
-        elif opt in ("-s", "--sensor"):
-            print "%s [Remote command] Read sensor %s on GPIO pin %s" % (
+        elif opt in ("--sensorco2"):
+            print "%s [Remote command] Read CO2 sensor %s on GPIO pin %s" % (
                 Timestamp(), sys.argv[3], int(float(sys.argv[2])))
-            temperature, humidity = c.root.ReadSensor(int(float(sys.argv[2])), sys.argv[3])
+            temperature, humidity = c.root.ReadCO2Sensor(int(float(sys.argv[2])), sys.argv[3])
+            print "%s [Remote Command] Daemon Returned: CO2: %s" % (Timestamp(), co2)
+            sys.exit(0)
+        elif opt in ("--sensorht"):
+            print "%s [Remote command] Read HT sensor %s on GPIO pin %s" % (
+                Timestamp(), sys.argv[3], int(float(sys.argv[2])))
+            temperature, humidity = c.root.ReadHTSensor(int(float(sys.argv[2])), sys.argv[3])
             print "%s [Remote Command] Daemon Returned: Temperature: %s°C Humidity: %s%%" % (Timestamp(), round(temperature,2), round(humidity,2))
             sys.exit(0)
         elif opt in ("-t", "--terminate"):
@@ -237,14 +288,24 @@ def menu():
             if c.root.Terminate(1) == 1: print "Success"
             else: print "Fail"
             sys.exit(0)
-        elif opt in ("-w", "--logwrite"):
+        elif opt in ("--writeco2log"):
             if int(float(sys.argv[2])):
-                print "%s [Remote Command] Append sensor log from sensor %s: Server returned:" % (
+                print "%s [Remote Command] Append CO2 sensor log from sensor %s: Server returned:" % (
                     Timestamp(), sys.argv[2]),
             else:
-                print "%s [Remote Command] Append sensor log from all sensors: Server returned:" % (
+                print "%s [Remote Command] Append CO2 sensor log from all sensors: Server returned:" % (
                     Timestamp()),
-            if c.root.WriteSensorLog(int(float(sys.argv[2]))) == 1: print "Success"
+            if c.root.WriteCO2SensorLog(int(float(sys.argv[2]))) == 1: print "Success"
+            else: print "Fail"
+            sys.exit(0)
+        elif opt in ("--writehtlog"):
+            if int(float(sys.argv[2])):
+                print "%s [Remote Command] Append HT sensor log from sensor %s: Server returned:" % (
+                    Timestamp(), sys.argv[2]),
+            else:
+                print "%s [Remote Command] Append HT sensor log from all sensors: Server returned:" % (
+                    Timestamp()),
+            if c.root.WriteHTSensorLog(int(float(sys.argv[2]))) == 1: print "Success"
             else: print "Fail"
             sys.exit(0)
         else:

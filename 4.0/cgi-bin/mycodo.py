@@ -55,8 +55,10 @@ image_path = "%s/images" % install_directory
 log_path = "%s/log" % install_directory
 daemon_log_file_tmp = "%s/daemon-tmp.log" % log_path
 daemon_log_file = "%s/daemon.log" % log_path
-sensor_log_file_tmp = "%s/sensor-tmp.log" % log_path
-sensor_log_file = "%s/sensor.log" % log_path
+sensor_ht_log_file_tmp = "%s/sensor-ht-tmp.log" % log_path
+sensor_ht_log_file = "%s/sensor-ht.log" % log_path
+sensor_co2_log_file_tmp = "%s/sensor-co2-tmp.log" % log_path
+sensor_co2_log_file = "%s/sensor-co2.log" % log_path
 relay_log_file_tmp = "%s/relay-tmp.log" % log_path
 relay_log_file = "%s/relay.log" % log_path
 
@@ -68,7 +70,8 @@ logging.basicConfig(
 lock_directory = "/var/lock/mycodo"
 config_lock_path = "%s/config" % lock_directory
 daemon_lock_path = "%s/daemon" % lock_directory
-sensor_lock_path = "%s/sensor" % lock_directory
+sensor_ht_lock_path = "%s/sensor-ht" % lock_directory
+sensor_co2_lock_path = "%s/sensor-co2" % lock_directory
 relay_lock_path = "%s/relay" % lock_directory
 logs_lock_path = "%s/logs" % lock_directory
 
@@ -78,33 +81,14 @@ relayPin = [0] * 9
 relayName = [0] * 9
 relayTrigger = [0] * 9
 
-# CO2
-co2 = 0
-numCo2Sensors = 0
-sensorCo2Name = [0] * 5
-sensorCo2Device = [0] * 5
-sensorCo2Pin = [0] * 5
-sensorCo2Period = [0] * 5
-sensorCo2Activated = [0] * 5
-sensorCo2Graph = [0] * 5
-relayCo2 = [0] * 5
-setCo2 = [0] * 5
-Co2Period = [0] * 5
-Co2_P = [0] * 5
-Co2_I = [0] * 5
-Co2_D = [0] * 5
-Co2OR = [0] * 5
-
-# Sensors
-numSensors = 0
-sensorName = [0] * 5
-sensorDevice = [0] * 5
-sensorPin = [0] * 5
-sensorPeriod = [0] * 5
-sensorActivated = [0] * 5
-sensorGraph = [0] * 5
-
-# Sensor data
+# Temperature & Humidity Sensors
+numHTSensors = 0
+sensorHTName = [0] * 5
+sensorHTDevice = [0] * 5
+sensorHTPin = [0] * 5
+sensorHTPeriod = [0] * 5
+sensorHTActivated = [0] * 5
+sensorHTGraph = [0] * 5
 chktemp = None
 tempc = [0] * 5
 humidity = [0] * 5
@@ -119,6 +103,10 @@ Temp_P = [0] * 5
 Temp_I = [0] * 5
 Temp_D = [0] * 5
 TempOR = [0] * 5
+TAlive = [1] * 5
+Temp_PID_Down = 0
+Temp_PID_Up = 0
+Temp_PID_number = None
 
 # Humidity PID
 relayHum = [0] * 5
@@ -128,6 +116,33 @@ Hum_P = [0] * 5
 Hum_I = [0] * 5
 Hum_D = [0] * 5
 HumOR = [0] * 5
+HAlive = [1] * 5
+Hum_PID_Down = 0
+Hum_PID_Up = 0
+Hum_PID_number = None
+
+# CO2 Sensors
+numCo2Sensors = 0
+sensorCo2Name = [0] * 5
+sensorCo2Device = [0] * 5
+sensorCo2Pin = [0] * 5
+sensorCo2Period = [0] * 5
+sensorCo2Activated = [0] * 5
+sensorCo2Graph = [0] * 5
+co2 = [0] * 5
+
+# CO2 PID
+relayCo2 = [0] * 5
+setCo2 = [0] * 5
+Co2Period = [0] * 5
+Co2_P = [0] * 5
+Co2_I = [0] * 5
+Co2_D = [0] * 5
+Co2OR = [0] * 5
+CAlive = [1] * 5
+Co2_PID_Down = 0
+Co2_PID_Up = 0
+Co2_PID_number = None
 
 # Timers
 numTimers = None
@@ -154,14 +169,6 @@ variableValue = None
 ClientQue = '0'
 ClientVar1 = None
 Terminate = False
-TAlive = [1] * 5
-HAlive = [1] * 5
-Temp_PID_Down = 0
-Temp_PID_Up = 0
-Hum_PID_Down = 0
-Hum_PID_Up = 0
-Temp_PID_number = None
-Hum_PID_number = None
 #Terminate_final = 1
 
 # Threaded server that receives commands from mycodo-client.py
@@ -198,22 +205,91 @@ class ComServer(rpyc.Service):
         write_config()
         ClientQue = 'TimerChange'
         return 1
-    def exposed_ChangeSensor(self, sensornumber, sensorname, sensordevice, sensorpin, sensorperiod, sensoractivated, sensorgraph):
-        global sensorName
-        global sensorDevice
-        global sensorPin
-        global sensorPeriod
-        global sensorActivated
-        global sensorGraph
-        logging.info("[Client command] Change sensor %s: %s: Device: %s Pin: %s Period: %s sec. Activated: %s Graph: %s",
+    def exposed_ChangeCO2Sensor(self, sensornumber, sensorname, sensordevice, sensorpin, sensorperiod, sensoractivated, sensorgraph):
+        global sensorCo2Name
+        global sensorCo2Device
+        global sensorCo2Pin
+        global sensorCo2Period
+        global sensorCo2Activated
+        global sensorCo2Graph
+        logging.info("[Client command] Change CO2 sensor %s: %s: Device: %s Pin: %s Period: %s sec. Activated: %s Graph: %s",
             sensornumber, sensorname, sensordevice, sensorpin, sensorperiod, sensoractivated, sensorgraph)
-        sensorName[sensornumber] = sensorname
-        sensorDevice[sensornumber] = sensordevice
-        sensorPin[sensornumber] = sensorpin
-        sensorPeriod[sensornumber] = sensorperiod
-        sensorActivated[sensornumber] = sensoractivated
-        sensorGraph[sensornumber] = sensorgraph
+        sensorCo2Name[sensornumber] = sensorname
+        sensorCo2Device[sensornumber] = sensordevice
+        sensorCo2Pin[sensornumber] = sensorpin
+        sensorCo2Period[sensornumber] = sensorperiod
+        sensorCo2Activated[sensornumber] = sensoractivated
+        sensorCo2Graph[sensornumber] = sensorgraph
         write_config()
+        return 1
+    def exposed_ChangeHTSensor(self, sensornumber, sensorname, sensordevice, sensorpin, sensorperiod, sensoractivated, sensorgraph):
+        global sensorHTName
+        global sensorHTDevice
+        global sensorHTPin
+        global sensorHTPeriod
+        global sensorHTActivated
+        global sensorHTGraph
+        logging.info("[Client command] Change HT sensor %s: %s: Device: %s Pin: %s Period: %s sec. Activated: %s Graph: %s",
+            sensornumber, sensorname, sensordevice, sensorpin, sensorperiod, sensoractivated, sensorgraph)
+        sensorHTName[sensornumber] = sensorname
+        sensorHTDevice[sensornumber] = sensordevice
+        sensorHTPin[sensornumber] = sensorpin
+        sensorHTPeriod[sensornumber] = sensorperiod
+        sensorHTActivated[sensornumber] = sensoractivated
+        sensorHTGraph[sensornumber] = sensorgraph
+        write_config()
+        return 1
+    def exposed_ChangeCO2OR(self, sensornum, override):
+        global Co2OR
+        global Co2_PID_number
+        global Co2_PID_Down
+        global Co2_PID_Up
+        logging.info("[Client command] Change CO2OR for sensor %s to %s",
+            sensornum, override)
+        Co2OR[sensornum] = override
+        Co2_PID_number = sensornum
+        Co2Res = 1
+        Co2_PID_Down = 1
+        while Co2_PID_Down == 1:
+            time.sleep(0.1)
+        write_config()
+        read_config(1)
+        if Co2Res:
+            Co2_PID_Up = 1
+            while Co2_PID_Up:
+                time.sleep(0.1)
+        return 1
+    def exposed_ChangeCO2PID(self, sensornum, relay, set, p, i, d, period):
+        global relayCo2
+        global setCo2
+        global Co2Period
+        global Co2_P
+        global Co2_I
+        global Co2_D
+        global Co2OR
+        global Co2_PID_number
+        global Co2_PID_Down
+        global Co2_PID_Up
+        logging.info("[Client command] Change Co2 PID for sensor %s: Relay: %s Set: %s P: %s I: %s D: %s Period: %s",
+            sensornum, relay, set, p , i, d, period)
+        relayCo2[sensornum] = relay
+        setCo2[sensornum] = set
+        Co2Period[sensornum] = period
+        Co2_P[sensornum] = p
+        Co2_I[sensornum] = i
+        Co2_D[sensornum] = d
+
+        Co2_PID_number = sensornum
+        Co2Res = 1
+        Co2_PID_Down = 1
+        while Co2_PID_Down == 1:
+            time.sleep(0.1)
+        write_config()
+        read_config(1)
+        if Co2Res:
+            Co2_PID_Up = 1
+            while Co2_PID_Up:
+                time.sleep(0.1)
         return 1
     def exposed_ChangeTempOR(self, sensornum, override):
         global TempOR
@@ -376,12 +452,19 @@ class ComServer(rpyc.Service):
         logging.info("[Client command] Request to change variables")
         modify_var(*variable_list)
         return 1
-    def exposed_ReadSensor(self, pin, sensor):
-        logging.info("[Client command] Read Sensor %s from GPIO pin %s", sensor, pin)
+    def exposed_ReadCO2Sensor(self, pin, sensor):
+        logging.info("[Client command] Read CO2 Sensor %s from GPIO pin %s", sensor, pin)
+        if (sensor == 'K30'):
+            read_co2_sensor(sensor)
+            return (co2)
+        else:
+            return 'Invalid Sensor Name'
+    def exposed_ReadHTSensor(self, pin, sensor):
+        logging.info("[Client command] Read HT Sensor %s from GPIO pin %s", sensor, pin)
         if (sensor == 'DHT11'): device = Adafruit_DHT.DHT11
         elif (sensor == 'DHT22'): device = Adafruit_DHT.DHT22
         elif (sensor == 'AM2302'): device = Adafruit_DHT.AM2302
-        else: return 0
+        else: return 'Invalid Sensor Name'
         hum, tc = Adafruit_DHT.read_retry(device, pin)
         return (tc, hum)
     def exposed_Terminate(self, remoteCommand):
@@ -394,15 +477,29 @@ class ComServer(rpyc.Service):
         #while Terminate_final: # Wait for program to actually terminate
         #    time.sleep(0.1)
         return 1
-    def exposed_WriteSensorLog(self, sensor):
+    def exposed_WriteHTSensorLog(self, sensor):
         global ClientQue
         global ClientVar1
         ClientVar1 = sensor
-        ClientQue = 'write_sensor_log'
+        ClientQue = 'write_ht_sensor_log'
         if sensor:
-            logging.info("[Client command] Read sensor number %s and append log", sensor)
+            logging.info("[Client command] Read HT sensor number %s and append log", sensor)
         else:
-            logging.info("[Client command] Read all sensors and append log")
+            logging.info("[Client command] Read all HT sensors and append log")
+        global change_sensor_log
+        change_sensor_log = 1
+        while (change_sensor_log):
+            time.sleep(0.1)
+        return 1
+    def exposed_WriteCO2SensorLog(self, sensor):
+        global ClientQue
+        global ClientVar1
+        ClientVar1 = sensor
+        ClientQue = 'write_co2_sensor_log'
+        if sensor:
+            logging.info("[Client command] Read CO2 sensor number %s and append log", sensor)
+        else:
+            logging.info("[Client command] Read all CO2 sensors and append log")
         global change_sensor_log
         change_sensor_log = 1
         while (change_sensor_log):
@@ -517,6 +614,57 @@ class Temperature_PID:
     def getDerivator(self):
         return self.Derivator
 
+# PID controller for CO2
+class CO2_PID:
+    def __init__(self, P=2.0, I=0.0, D=1.0, Derivator=0, Integrator=0,
+            Integrator_max=500, Integrator_min=-500):
+        self.Kp=P
+        self.Ki=I
+        self.Kd=D
+        self.Derivator=Derivator
+        self.Integrator=Integrator
+        self.Integrator_max=Integrator_max
+        self.Integrator_min=Integrator_min
+        self.set_point=0.0
+        self.error=0.0
+    def update(self, current_value):
+        """Calculate PID output value from reference input and feedback"""
+        self.error = self.set_point - current_value
+        self.P_value = self.Kp * self.error
+        self.D_value = self.Kd * ( self.error - self.Derivator)
+        self.Derivator = self.error
+        self.Integrator = self.Integrator + self.error
+        if self.Integrator > self.Integrator_max:
+            self.Integrator = self.Integrator_max
+        elif self.Integrator < self.Integrator_min:
+            self.Integrator = self.Integrator_min
+        self.I_value = self.Integrator * self.Ki
+        PID = self.P_value + self.I_value + self.D_value
+        return PID
+    def setPoint(self, set_point):
+        """Initilize the setpoint of PID"""
+        self.set_point = set_point
+        self.Integrator=0
+        self.Derivator=0
+    def setIntegrator(self, Integrator):
+        self.Integrator = Integrator
+    def setDerivator(self, Derivator):
+        self.Derivator = Derivator
+    def setKp(self,P):
+        self.Kp=P
+    def setKi(self,I):
+        self.Ki=I
+    def setKd(self,D):
+        self.Kd=D
+    def getPoint(self):
+        return self.set_point
+    def getError(self):
+        return self.error
+    def getIntegrator(self):
+        return self.Integrator
+    def getDerivator(self):
+        return self.Derivator
+
 # Displays the program usage
 def usage():
     print "mycodo.py: Reads sensors, writes logs, and operates relays to" \
@@ -563,18 +711,21 @@ def menu():
 # Main loop that reads sensors, modifies relays based on sensor values, writes
 # sensor/relay logs, and receives/executes certain commands via mycodo-client.py
 def daemon(output, log):
-    global change_sensor_log
+    global TAlive
     global Temp_PID_Down
     global Temp_PID_Up
+    global HAlive
     global Hum_PID_Down
     global Hum_PID_Up
+    global CAlive
+    global Co2_PID_Down
+    global Co2_PID_Up
+    global change_sensor_log
     global server
-    global HAlive
-    global TAlive
     global ClientQue
     #global Terminate_final
     timer_time = [0] * 9
-    timerSensorLog  = [0] * 5
+    timerHTSensorLog  = [0] * 5
     timerCo2SensorLog  = [0] * 2
     
     if (log == 'warning'):
@@ -602,29 +753,31 @@ def daemon(output, log):
     read_config(1)
     
     # Initial sensor readings
-    logging.info("[Daemon] Conducting initial sensor readings from %s dht and %s CO2 sensors", sum(sensorActivated), sum(sensorCo2Activated))
-    for i in range(1, numSensors+1):
-        if sensorDevice[i] != 'Other' and sensorActivated[i] == 1:
+    logging.info("[Daemon] Conducting initial sensor readings from %s HT and %s CO2 sensors", sum(sensorHTActivated), sum(sensorCo2Activated))
+    for i in range(1, numHTSensors+1):
+        if sensorHTDevice[i] != 'Other' and sensorHTActivated[i] == 1:
             read_dht_sensor(0, i)
             time.sleep(2) # Ensure a minimum of 2 seconds between sensor reads
     
-    if sensorCo2Device[1] != 'Other' and sensorCo2Activated[1] == 1:
-        read_co2_sensor(1)
-        time.sleep(2) # Ensure a minimum of 2 seconds between sensor reads
+    for i in range(1, numCo2Sensors+1):
+        if sensorCo2Device[i] != 'Other' and sensorCo2Activated[i] == 1:
+            read_co2_sensor(i)
+            time.sleep(2) # Ensure a minimum of 2 seconds between sensor reads
     
     timerLogBackup = int(time.time()) + 21600 # 21600 seconds = 6 hours
     
-    for i in range(1, numSensors+1):
-        timerSensorLog[i] = int(time.time()) + sensorPeriod[i]
+    for i in range(1, numHTSensors+1):
+        timerHTSensorLog[i] = int(time.time()) + sensorHTPeriod[i]
         
-    #for i in range(1, numCo2Sensors+1):
-    timerCo2SensorLog[1] = int(time.time()) + sensorCo2Period[1]
+    for i in range(1, numCo2Sensors+1):
+        timerCo2SensorLog[i] = int(time.time()) + sensorCo2Period[i]
     
     for i in range(1, 9):
         timer_time[i] = int(time.time())
     
     threadst = []
     threadsh = []
+    threadsc = []
     
     for i in range(1, 5):
         rod = threading.Thread(target = temperature_monitor, 
@@ -637,16 +790,33 @@ def daemon(output, log):
             args = ('Thread-%d' % i, i,))
         rod.start()
         threadsh.append(rod)
+        
+    for i in range(1, 5):
+        rod = threading.Thread(target = co2_monitor, 
+            args = ('Thread-%d' % i, i,))
+        rod.start()
+        threadsc.append(rod)
 
     while True: # Main loop of the daemon
         if ClientQue != '0': # Run remote commands issued by mycodo-client.py
-            if ClientQue == 'write_sensor_log':
-                logging.debug("[Client command] Write Sensor Log")
+            if ClientQue == 'write_co2_sensor_log':
+                logging.debug("[Client command] Write CO2 Sensor Log")
+                if (ClientVar1 != 0):
+                    read_co2_sensor(0, ClientVar1)
+                    write_co2_sensor_log(ClientVar1)
+                else:
+                    for i in range(1, int(numCo2Sensors)+1): 
+                        read_co2_sensor(0, i)
+                        write_co2_sensor_log(i)
+                        time.sleep(2)
+                change_sensor_log = 0
+            elif ClientQue == 'write_ht_sensor_log':
+                logging.debug("[Client command] Write HT Sensor Log")
                 if (ClientVar1 != 0):
                     read_dht_sensor(0, ClientVar1)
                     write_dht_sensor_log(ClientVar1)
                 else:
-                    for i in range(1, int(numSensors)+1): 
+                    for i in range(1, int(numHTSensors)+1): 
                         read_dht_sensor(0, i)
                         write_dht_sensor_log(i)
                         time.sleep(2)
@@ -705,20 +875,37 @@ def daemon(output, log):
                 args = ('Thread-%d' % Hum_PID_number, Hum_PID_number,))
             rod.start()
             Hum_PID_Up = 0
+            
+        if Co2_PID_Down:
+            logging.info("[Daemon] Shutting Down CO2 PID Thread-%s", Co2_PID_number)
+            CAlive[Co2_PID_number] = 0
+            while CAlive[Co2_PID_number] != 2:
+                time.sleep(0.1)
+            if (relayTrigger[int(relayCo2[1])] == 0): gpio_change(int(relayCo2[1]), 1)
+            else: gpio_change(int(relayCo2[1]), 0)
+            CAlive[Co2_PID_number] = 1
+            Co2_PID_Down = 0
+        if Co2_PID_Up == 1:
+            logging.info("[Daemon] Starting CO2 PID Thread-%s", Co2_PID_number)
+            rod = threading.Thread(target = co2_monitor, 
+                args = ('Thread-%d' % Co2_PID_number, Co2_PID_number,))
+            rod.start()
+            Co2_PID_Up = 0
 
         # Write temperature and humidity to sensor log
-        for i in range(1, int(numSensors)+1):
-            if int(time.time()) > timerSensorLog[i] and sensorDevice[i] != 'Other' and sensorActivated[i] == 1:
-                logging.debug("[Timer Expiration] Read sensor %s every %s seconds: Write sensor log", i, sensorPeriod[i])
+        for i in range(1, int(numHTSensors)+1):
+            if int(time.time()) > timerHTSensorLog[i] and sensorHTDevice[i] != 'Other' and sensorHTActivated[i] == 1:
+                logging.debug("[Timer Expiration] Read sensor %s every %s seconds: Write sensor log", i, sensorHTPeriod[i])
                 read_dht_sensor(0, i)
                 write_dht_sensor_log(i)
-                timerSensorLog[i] = int(time.time()) + sensorPeriod[i]
+                timerHTSensorLog[i] = int(time.time()) + sensorHTPeriod[i]
 
         # Write CO2 to sensor log
-        if int(time.time()) > timerCo2SensorLog[1] and sensorCo2Device[1] != 'Other' and sensorCo2Activated[1] == 1:
-            read_co2_sensor(1)
-            write_co2_sensor_log(1)
-            timerCo2SensorLog[1] = int(time.time()) + sensorCo2Period[1]
+        for i in range(1, int(numCo2Sensors)+1):
+            if int(time.time()) > timerCo2SensorLog[i] and sensorCo2Device[i] != 'Other' and sensorCo2Activated[i] == 1:
+                read_co2_sensor(i)
+                write_co2_sensor_log(i)
+                timerCo2SensorLog[i] = int(time.time()) + sensorCo2Period[i]
         
         # Concatenate local log with tempfs log every 6 hours
         if int(time.time()) > timerLogBackup:
@@ -752,7 +939,7 @@ def temperature_monitor(ThreadName, sensor):
     p_temp.setPoint(setTemp[sensor])
     
     while (TAlive[sensor]):
-        if TempOR[sensor] == 0 and Temp_PID_Down == 0 and relayTemp[sensor] != 0 and sensorActivated[sensor] == 1:
+        if TempOR[sensor] == 0 and Temp_PID_Down == 0 and relayTemp[sensor] != 0 and sensorHTActivated[sensor] == 1:
             if int(time.time()) > timerTemp:
                 logging.debug("[PID Temperature-%s] Reading temperature...", sensor)
                 read_dht_sensor(1, sensor)
@@ -789,7 +976,7 @@ def humidity_monitor(ThreadName, sensor):
     p_hum.setPoint(setHum[sensor])
 
     while (HAlive[sensor]):
-        if HumOR[sensor] == 0 and Hum_PID_Down == 0 and relayHum[sensor] != 0 and sensorActivated[sensor] == 1:
+        if HumOR[sensor] == 0 and Hum_PID_Down == 0 and relayHum[sensor] != 0 and sensorHTActivated[sensor] == 1:
             if int(time.time()) > timerHum:
                 logging.debug("[PID Humidity-%s] Reading humidity...", sensor)
                 read_dht_sensor(1, sensor)
@@ -809,6 +996,43 @@ def humidity_monitor(ThreadName, sensor):
         time.sleep(0.1)
     logging.info("[PID Humidity-%s] Shutting Down %s", sensor,  ThreadName)
     HAlive[sensor] = 2
+
+# CO2 modulation by PID control
+def co2_monitor(ThreadName, sensor):
+    global CAlive
+    timerCo2 = 0
+    PIDCo2 = 0
+
+    logging.info("[PID CO2-%s] Starting %s", sensor, ThreadName)
+
+    if relayCo2[sensor] != 0:
+        if relayTrigger[int(relayCo2[sensor])] == 0: gpio_change(int(relayCo2[sensor]), 1)
+        else: gpio_change(int(relayCo2[sensor]), 1)
+    
+    p_co2 = CO2_PID(Co2_P[sensor], Co2_I[sensor], Co2_D[sensor])
+    p_co2.setPoint(setCo2[sensor])
+
+    while (CAlive[sensor]):
+        if Co2OR[sensor] == 0 and Co2_PID_Down == 0 and relayCo2[sensor] != 0 and sensorCo2Activated[sensor] == 1:
+            if int(time.time()) > timerCo2:
+                logging.debug("[PID CO2-%s] Reading CO2...", sensor)
+                read_co2_sensor(1, sensor)
+                PIDCo2 = p_co2.update(float(co2[sensor]))
+                if (co2[sensor] > setCo2[sensor]):
+                    logging.debug("[PID CO2-%s] CO2 (%.1f%%) > (%.1f%%) setCO2", sensor, co2[sensor], setCo2[sensor])
+                    logging.debug("[PID CO2-%s] PID = %.1f (seconds)", sensor, PIDCo2)
+                    if (PIDCo2 > 0 and co2[sensor] > setCo2[sensor]):
+                        rod = threading.Thread(target = relay_on_duration,
+                            args=(relayCo2[sensor], round(PIDCo2,2), sensor,))
+                        rod.start()
+                    timerCo2 = int(time.time()) + int(PIDCo2) + int(Co2Period[sensor])
+                else:
+                    logging.debug("[PID CO2-%s] CO2 (%.1f%%) <= (%.1f%%) setCo2, waiting 60 seconds", sensor, co2[sensor], setCo2[sensor])
+                    logging.debug("[PID CO2-%s] PID = %.1f (seconds)", sensor, PIDCo2)
+                    timerCo2 = int(time.time()) + 60
+        time.sleep(0.1)
+    logging.info("[PID CO2-%s] Shutting Down %s", sensor,  ThreadName)
+    CAlive[sensor] = 2
 
 # Generate gnuplot graph
 def generate_graph(graph_out_file, graph_id, sensorn):
@@ -847,12 +1071,12 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S") 
 
     # Combine sensor and relay logs on SD card with sensor and relay logs in /tmp
-    sensor_log_files_combine = [sensor_log_file, sensor_log_file_tmp]
+    sensor_ht_log_files_combine = [sensor_ht_log_file, sensor_ht_log_file_tmp]
     sensor_log_generate = "%s/sensor-logs-combined.log" % tmp_path
     relay_log_files_combine = [relay_log_file, relay_log_file_tmp]
     relay_log_generate = "%s/relay-logs-combined.log" % tmp_path
     with open(sensor_log_generate, 'w') as fout:
-        for line in fileinput.input(sensor_log_files_combine):
+        for line in fileinput.input(sensor_ht_log_files_combine):
             fout.write(line)
     with open(relay_log_generate, 'w') as fout:
         for line in fileinput.input(relay_log_files_combine):
@@ -958,19 +1182,19 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         plot.write('set origin 0.0,0.5\n')
         plot.write('set title \"Combined Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
         plot.write('plot ')
-        if sensorGraph[1]:
+        if sensorHTGraph[1]:
             plot.write('\"<awk \'$10 == 1\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 title \"T1\" w lp ls 12 axes x1y2')
-            if sensorGraph[2] or sensorGraph[3] or sensorGraph[4]: plot.write(', ')
+            if sensorHTGraph[2] or sensorHTGraph[3] or sensorHTGraph[4]: plot.write(', ')
             else: plot.write('\n')
-        if sensorGraph[2]:
+        if sensorHTGraph[2]:
             plot.write('\"<awk \'$10 == 2\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T2\" w lp ls 13 axes x1y2')
-            if sensorGraph[3] or sensorGraph[4]: plot.write(', ')
+            if sensorHTGraph[3] or sensorHTGraph[4]: plot.write(', ')
             else: plot.write('\n')
-        if sensorGraph[3]:
+        if sensorHTGraph[3]:
             plot.write('\"<awk \'$10 == 3\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T3\" w lp ls 14 axes x1y2')
-            if sensorGraph[4]: plot.write(', ')
+            if sensorHTGraph[4]: plot.write(', ')
             else: plot.write('\n')
-        if sensorGraph[4]:
+        if sensorHTGraph[4]:
             plot.write('\"<awk \'$10 == 4\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T4\" w lp ls 15 axes x1y2\n')
         plot.write('set size 1.0,0.5\n')
         plot.write('set origin 0.0,0.0\n')
@@ -978,25 +1202,25 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
         plot.write('set format x \"%H:%M\\n%m/%d\"\n')
         plot.write('plot ')
-        if sensorGraph[1]:
+        if sensorHTGraph[1]:
             plot.write('\"<awk \'$10 == 1\' ' + sensor_log_generate + sensor_head + '" using 1:8 index 0 title \"H1\" w lp ls 12 axes x1y1')
-            if sensorGraph[2] or sensorGraph[3] or sensorGraph[4]: plot.write(', ')
+            if sensorHTGraph[2] or sensorHTGraph[3] or sensorHTGraph[4]: plot.write(', ')
             else: plot.write('\n')
-        if sensorGraph[2]:
+        if sensorHTGraph[2]:
             plot.write('\"<awk \'$10 == 2\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H2\" w lp ls 13 axes x1y1')
-            if sensorGraph[3] or sensorGraph[4]: plot.write(', ')
+            if sensorHTGraph[3] or sensorHTGraph[4]: plot.write(', ')
             else: plot.write('\n')
-        if sensorGraph[3]:
+        if sensorHTGraph[3]:
             plot.write('\"<awk \'$10 == 3\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H3\" w lp ls 14 axes x1y1')
-            if sensorGraph[4]: plot.write(', ')
+            if sensorHTGraph[4]: plot.write(', ')
             else: plot.write('\n')
-        if sensorGraph[4]:
+        if sensorHTGraph[4]:
             plot.write('\"<awk \'$10 == 4\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H4\" w lp ls 15 axes x1y1\n')
         plot.write('unset multiplot\n')
 
     # Generate a graph with temp, hum, and dew point for a specific sensor
     if "separate" in graph_out_file:
-        plot.write('set title \"Sensor ' + sensorn + ': ' + sensorName[int(float(sensorn))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+        plot.write('set title \"Sensor ' + sensorn + ': ' + sensorHTName[int(float(sensorn))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
         plot.write('plot \"<awk \'$10 == ' + sensorn + '\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
         plot.write('\"\" u 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, ')
         plot.write('\"\" u 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ')
@@ -1017,7 +1241,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         # Top graph - day
         plot.write('set size 1.0,0.5\n')
         plot.write('set origin 0.0,0.5\n')
-        plot.write('set title \"Sensor ' + sensorn + ': ' + sensorName[int(float(sensorn))] + '\\n\\nPast Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+        plot.write('set title \"Sensor ' + sensorn + ': ' + sensorHTName[int(float(sensorn))] + '\\n\\nPast Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
         plot.write('plot \"<awk \'$10 == ' + sensorn + '\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
         plot.write('\"\" using 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, ')
         plot.write('\"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ')
@@ -1097,7 +1321,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
 def read_co2_sensor(sensor):
     global co2
     
-    logging.info("[Read CO2-%s] Taking CO2 reading", sensor)
+    logging.info("[Read CO2 Sensor-%s] Taking CO2 reading", sensor)
     ser = serial.Serial("/dev/ttyAMA0")
     ser.flushInput()
     time.sleep(1)
@@ -1107,7 +1331,7 @@ def read_co2_sensor(sensor):
     high = ord(resp[3])
     low = ord(resp[4])
     co2 = (high*256) + low
-    logging.info("[Read K30] CO2 %s", str(co2))
+    logging.info("[Read CO2 Sensor] CO2: %s", str(co2))
 	
 # Append co2 sensor data to the log file
 def write_co2_sensor_log(sensor):
@@ -1117,7 +1341,7 @@ def write_co2_sensor_log(sensor):
         os.makedirs(lock_directory)
         
     if not Terminate:
-        lock = LockFile(sensor_lock_path)
+        lock = LockFile(sensor_co2_lock_path)
         while not lock.i_am_locking():
             try:
                 logging.debug("[Write CO2 Sensor Log] Acquiring Lock: %s", lock.path)
@@ -1130,13 +1354,13 @@ def write_co2_sensor_log(sensor):
         logging.debug("[Write CO2 Sensor Log] Gained lock: %s", lock.path)
 
         try:
-            with open(sensor_log_file_tmp, "ab") as sensorlog:
+            with open(sensor_co2_log_file_tmp, "ab") as sensorlog:
                 sensorlog.write('{0} co2 {1:.1f} {2}\n'.format(
                     datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
                     co2[sensor], sensor))
-                logging.debug("[Write CO2 Sensor Log] Data appended to %s", sensor_log_file_tmp)
+                logging.debug("[Write CO2 Sensor Log] Data appended to %s", sensor_co2_log_file_tmp)
         except:
-            logging.warning("[Write CO2 Sensor Log] Unable to append data to %s", sensor_log_file_tmp)
+            logging.warning("[Write CO2 Sensor Log] Unable to append data to %s", sensor_co2_log_file_tmp)
 
         logging.debug("[Write CO2 Sensor Log] Removing lock: %s", lock.path)
         lock.release()
@@ -1150,36 +1374,36 @@ def read_dht_sensor(silent, sensor):
     global chktemp
     chktemp = 1
     
-    if (sensorDevice[1] == 'DHT11'): device = Adafruit_DHT.DHT11
-    elif (sensorDevice[1] == 'DHT22'): device = Adafruit_DHT.DHT22
-    elif (sensorDevice[1] == 'AM2302'): device = Adafruit_DHT.AM2302
+    if (sensorHTDevice[1] == 'DHT11'): device = Adafruit_DHT.DHT11
+    elif (sensorHTDevice[1] == 'DHT22'): device = Adafruit_DHT.DHT22
+    elif (sensorHTDevice[1] == 'AM2302'): device = Adafruit_DHT.AM2302
     else: device = 'Other'
 
     if not silent and not Terminate:
-        logging.debug("[Read Sensor-%s] Taking first Temperature/humidity reading", sensor)
+        logging.debug("[Read HT Sensor-%s] Taking first Temperature/humidity reading", sensor)
         
     if not Terminate:
-        humidity2, tempc2 = Adafruit_DHT.read_retry(device, sensorPin[sensor])
+        humidity2, tempc2 = Adafruit_DHT.read_retry(device, sensorHTPin[sensor])
         
         if humidity2 == None or tempc2 == None:
-            logging.warning("[Read Sensor-%s] Could not read temperature/humidity!", sensor)
+            logging.warning("[Read HT Sensor-%s] Could not read temperature/humidity!", sensor)
             
         if not silent and humidity2 != None and tempc2 != None:
-            logging.debug("[Read Sensor-%s] %.1f°C, %.1f%%", sensor, tempc2, humidity2)
+            logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor, tempc2, humidity2)
 
         time.sleep(2) # Wait 2 seconds between sensor reads
         
         if not silent: 
-            logging.debug("[Read Sensor-%s] Taking second Temperature/humidity reading", sensor)
+            logging.debug("[Read HT Sensor-%s] Taking second Temperature/humidity reading", sensor)
             
     while chktemp and not Terminate and humidity2 != None and tempc2 != None:
         if not Terminate:
-            humidity[sensor], tempc[sensor] = Adafruit_DHT.read_retry(device, sensorPin[sensor])
+            humidity[sensor], tempc[sensor] = Adafruit_DHT.read_retry(device, sensorHTPin[sensor])
             
         if humidity[sensor] != 'None' or tempc[sensor] != 'None':
             if not silent and not Terminate: 
-                logging.debug("[Read Sensor-%s] %.1f°C, %.1f%%", sensor, tempc[sensor], humidity[sensor])
-                logging.debug("[Read Sensor-%s] Differences: %.1f°C, %.1f%%", sensor, abs(tempc2-tempc[sensor]), abs(humidity2-humidity[sensor]))
+                logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor, tempc[sensor], humidity[sensor])
+                logging.debug("[Read HT Sensor-%s] Differences: %.1f°C, %.1f%%", sensor, abs(tempc2-tempc[sensor]), abs(humidity2-humidity[sensor]))
                 
             if abs(tempc2-tempc[sensor]) > 1 or abs(humidity2-humidity[sensor]) > 1 and not Terminate:
                 tempc2 = tempc[sensor]
@@ -1187,14 +1411,14 @@ def read_dht_sensor(silent, sensor):
                 chktemp = 1
                 
                 if not silent:
-                    logging.debug("[Read Sensor-%s] Successive readings > 1 difference: Rereading", sensor)
+                    logging.debug("[Read HT Sensor-%s] Successive readings > 1 difference: Rereading", sensor)
                     
                 time.sleep(2)
             elif not Terminate:
                 chktemp = 0
 
                 if not silent: 
-                    logging.debug("[Read Sensor-%s] Successive readings < 1 difference: keeping.", sensor)
+                    logging.debug("[Read HT Sensor-%s] Successive readings < 1 difference: keeping.", sensor)
 
                 tempf = float(tempc[sensor])*9.0/5.0 + 32.0
                 dewpointc[sensor] = tempc[sensor] - ((100-humidity[sensor]) / 5)
@@ -1203,13 +1427,13 @@ def read_dht_sensor(silent, sensor):
                 #heatindexc[sensor] = (heatindexf - 32) * (5 / 9)
                 
                 if not silent: 
-                    logging.debug("[Read Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", sensor, tempc[sensor], humidity[sensor], dewpointc[sensor])
+                    logging.debug("[Read HT Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", sensor, tempc[sensor], humidity[sensor], dewpointc[sensor])
                    
         else:
             logging.warning("[Read Sensor-%s] Could not read temperature/humidity!", sensor)
             time.sleep(2) # Wait 2 seconds between sensor reads
            
-# Append sensor data to the log file
+# Append HT sensor data to the log file
 def write_dht_sensor_log(sensor):
     config = ConfigParser.RawConfigParser()
 
@@ -1217,7 +1441,7 @@ def write_dht_sensor_log(sensor):
         os.makedirs(lock_directory)
         
     if not Terminate:
-        lock = LockFile(sensor_lock_path)
+        lock = LockFile(sensor_ht_lock_path)
         while not lock.i_am_locking():
             try:
                 logging.debug("[Write Sensor Log] Acquiring Lock: %s", lock.path)
@@ -1230,13 +1454,13 @@ def write_dht_sensor_log(sensor):
         logging.debug("[Write Sensor Log] Gained lock: %s", lock.path)
 
         try:
-            with open(sensor_log_file_tmp, "ab") as sensorlog:
+            with open(sensor_ht_log_file_tmp, "ab") as sensorlog:
                 sensorlog.write('{0} {1:.1f} {2:.1f} {3:.1f} {4}\n'.format(
                     datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
                     tempc[sensor], humidity[sensor], dewpointc[sensor], sensor))
-                logging.debug("[Write Sensor Log] Data appended to %s", sensor_log_file_tmp)
+                logging.debug("[Write Sensor Log] Data appended to %s", sensor_ht_log_file_tmp)
         except:
-            logging.warning("[Write Sensor Log] Unable to append data to %s", sensor_log_file_tmp)
+            logging.warning("[Write Sensor Log] Unable to append data to %s", sensor_ht_log_file_tmp)
 
         logging.debug("[Write Sensor Log] Removing lock: %s", lock.path)
         lock.release()
@@ -1311,9 +1535,9 @@ def Concatenate_Logs():
     else:
         logging.debug("[Daemon Log] Daemon logs the same, skipping.")
 
-    if not filecmp.cmp(sensor_log_file_tmp, sensor_log_file):
-        logging.debug("[Sensor Log] Concatenating sensor logs to %s", sensor_log_file)
-        lock = LockFile(sensor_lock_path)
+    if not filecmp.cmp(sensor_ht_log_file_tmp, sensor_ht_log_file):
+        logging.debug("[Sensor Log] Concatenating HT sensor logs to %s", sensor_ht_log_file)
+        lock = LockFile(sensor_ht_lock_path)
 
         while not lock.i_am_locking():
             try:
@@ -1327,18 +1551,47 @@ def Concatenate_Logs():
         logging.debug("[Sensor Log] Gained lock: %s", lock.path)
 
         try:
-            with open(sensor_log_file, 'a') as fout:
-                for line in fileinput.input(sensor_log_file_tmp):
+            with open(sensor_ht_log_file, 'a') as fout:
+                for line in fileinput.input(sensor_ht_log_file_tmp):
                     fout.write(line)
-            logging.debug("[Daemon Log] Appended data to %s", sensor_log_file)
+            logging.debug("[Daemon Log] Appended HT data to %s", sensor_ht_log_file)
         except:
-            logging.warning("[Sensor Log] Unable to append data to %s", sensor_log_file)
+            logging.warning("[Sensor Log] Unable to append data to %s", sensor_ht_log_file)
 
-        open(sensor_log_file_tmp, 'w').close()
+        open(sensor_ht_log_file_tmp, 'w').close()
         logging.debug("[Sensor Log] Removing lock: %s", lock.path)
         lock.release()
     else:
-        logging.debug("[Sensor Log] Sensor logs the same, skipping.")
+        logging.debug("[Sensor Log] HT Sensor logs the same, skipping.")
+        
+    if not filecmp.cmp(sensor_co2_log_file_tmp, sensor_co2_log_file):
+        logging.debug("[Sensor Log] Concatenating CO2 sensor logs to %s", sensor_co2_log_file)
+        lock = LockFile(sensor_co2_lock_path)
+
+        while not lock.i_am_locking():
+            try:
+                logging.debug("[Sensor Log] Acquiring Lock: %s", lock.path)
+                lock.acquire(timeout=60)    # wait up to 60 seconds
+            except:
+                logging.warning("[Sensor Log] Breaking Lock to Acquire: %s", lock.path)
+                lock.break_lock()
+                lock.acquire()
+
+        logging.debug("[Sensor Log] Gained lock: %s", lock.path)
+
+        try:
+            with open(sensor_co2_log_file, 'a') as fout:
+                for line in fileinput.input(sensor_co2_log_file_tmp):
+                    fout.write(line)
+            logging.debug("[Daemon Log] Appended CO2 data to %s", sensor_co2_log_file)
+        except:
+            logging.warning("[Sensor Log] Unable to append data to %s", sensor_co2_log_file)
+
+        open(sensor_co2_log_file_tmp, 'w').close()
+        logging.debug("[Sensor Log] Removing lock: %s", lock.path)
+        lock.release()
+    else:
+        logging.debug("[Sensor Log] CO2 Sensor logs the same, skipping.")
 
     if not filecmp.cmp(relay_log_file_tmp, relay_log_file):
         logging.debug("[Relay Log] Concatenating relay logs to %s", relay_log_file)
@@ -1372,12 +1625,12 @@ def Concatenate_Logs():
 # Read variables from the configuration file
 def read_config(silent):
     global config_file
-    global sensorName
-    global sensorDevice
-    global sensorPin
-    global sensorPeriod
-    global sensorActivated
-    global sensorGraph
+    global sensorHTName
+    global sensorHTDevice
+    global sensorHTPin
+    global sensorHTPeriod
+    global sensorHTActivated
+    global sensorHTGraph
     
     global sensorCo2Name
     global sensorCo2Device
@@ -1397,23 +1650,27 @@ def read_config(silent):
     global relayName
     global relayPin
     global relayTrigger
-    global relayTemp
+    
     global relayHum
-    global setTemp
     global setHum
-    global TempOR
     global HumOR
     global Hum_P
     global Hum_I
     global Hum_D
+    
+    global relayTemp
+    global setTemp
+    global TempOR
     global Temp_P
     global Temp_I
     global Temp_D
+    
     global factorHumSeconds
     global factorTempSeconds
     global cameraLight
     global numRelays
-    global numSensors
+    global numHTSensors
+    global numCo2Sensors
     global numTimers
     global timerRelay
     global timerState
@@ -1439,24 +1696,25 @@ def read_config(silent):
     
     numRelays = config.getint('Misc', 'numrelays')
     numCo2Sensors = config.getint('Misc', 'numco2sensors')
-    numSensors = config.getint('Misc', 'numsensors')
+    numHTSensors = config.getint('Misc', 'numhtsensors')
     numTimers = config.getint('Misc', 'numtimers')
     cameraLight = config.getint('Misc', 'cameralight')
     
-    sensorCo2Name[1] = config.get('CO2Sensor%d' % 1, 'sensorco2%dname' % 1)
-    sensorCo2Device[1] = config.get('CO2Sensor%d' % 1, 'sensorco2%ddevice' % 1)
-    sensorCo2Pin[1] = config.getint('CO2Sensor%d' % 1, 'sensorco2%dpin' % 1)
-    sensorCo2Period[1] = config.getint('CO2Sensor%d' % 1, 'sensorco2%dperiod' % 1)
-    sensorCo2Activated[1] = config.getint('CO2Sensor%d' % 1, 'sensorco2%dactivated' % 1)
-    sensorCo2Graph[1] = config.getint('CO2Sensor%d' % 1, 'sensorco2%dgraph' % 1)
-    
-    Co2Period[1] = config.getint('Co2PID%d' % 1, 'co2%dperiod' % 1)
-    relayCo2[1] = config.getint('Co2PID%d' % 1, 'co2%drelay' % 1)
-    setCo2[1] = config.getfloat('Co2PID%d' % 1, 'co2%dset' % 1)
-    Co2OR[1] = config.getint('Co2PID%d' % 1, 'co2%dor' % 1)
-    Co2_P[1] = config.getfloat('Co2PID%d' % 1, 'co2%dp' % 1)
-    Co2_I[1] = config.getfloat('Co2PID%d' % 1, 'co2%di' % 1)
-    Co2_D[1] = config.getfloat('Co2PID%d' % 1, 'co2%dd' % 1)
+    for i in range(1, 5):
+        sensorCo2Name[i] = config.get('CO2Sensor%d' % i, 'sensorco2%dname' % i)
+        sensorCo2Device[i] = config.get('CO2Sensor%d' % i, 'sensorco2%ddevice' % i)
+        sensorCo2Pin[i] = config.getint('CO2Sensor%d' % i, 'sensorco2%dpin' % i)
+        sensorCo2Period[i] = config.getint('CO2Sensor%d' % i, 'sensorco2%dperiod' % i)
+        sensorCo2Activated[i] = config.getint('CO2Sensor%d' % i, 'sensorco2%dactivated' % i)
+        sensorCo2Graph[i] = config.getint('CO2Sensor%d' % i, 'sensorco2%dgraph' % i)
+        
+        Co2Period[i] = config.getint('Co2PID%d' % i, 'co2%dperiod' % i)
+        relayCo2[i] = config.getint('Co2PID%d' % i, 'co2%drelay' % i)
+        setCo2[i] = config.getfloat('Co2PID%d' % i, 'co2%dset' % i)
+        Co2OR[i] = config.getint('Co2PID%d' % i, 'co2%dor' % i)
+        Co2_P[i] = config.getfloat('Co2PID%d' % i, 'co2%dp' % i)
+        Co2_I[i] = config.getfloat('Co2PID%d' % i, 'co2%di' % i)
+        Co2_D[i] = config.getfloat('Co2PID%d' % i, 'co2%dd' % i)
         
     for i in range(1, 5):
         TempPeriod[i] = config.getint('TempPID%d' % i, 'temp%dperiod' % i)
@@ -1476,12 +1734,12 @@ def read_config(silent):
         Hum_D[1] = config.getfloat('HumPID%d' % i, 'hum%dd' % i)
 
     for i in range(1, 5):
-        sensorName[i] = config.get('Sensor%d' % i, 'sensor%dname' % i)
-        sensorDevice[i] = config.get('Sensor%d' % i, 'sensor%ddevice' % i)
-        sensorPin[i] = config.getint('Sensor%d' % i, 'sensor%dpin' % i)
-        sensorPeriod[i] = config.getint('Sensor%d' % i, 'sensor%dperiod' % i)
-        sensorActivated[i] = config.getint('Sensor%d' % i, 'sensor%dactivated' % i)
-        sensorGraph[i] = config.getint('Sensor%d' % i, 'sensor%dgraph' % i)
+        sensorHTName[i] = config.get('HTSensor%d' % i, 'sensorht%dname' % i)
+        sensorHTDevice[i] = config.get('HTSensor%d' % i, 'sensorht%ddevice' % i)
+        sensorHTPin[i] = config.getint('HTSensor%d' % i, 'sensorht%dpin' % i)
+        sensorHTPeriod[i] = config.getint('HTSensor%d' % i, 'sensorht%dperiod' % i)
+        sensorHTActivated[i] = config.getint('HTSensor%d' % i, 'sensorht%dactivated' % i)
+        sensorHTGraph[i] = config.getint('HTSensor%d' % i, 'sensorht%dgraph' % i)
         
         TempPeriod[i] = config.getint('TempPID%d' % i, 'temp%dperiod' % i)
         relayTemp[i] = config.getint('TempPID%d' % i, 'temp%drelay' % i)
@@ -1548,35 +1806,36 @@ def write_config():
     config.add_section('Misc')
     config.set('Misc', 'numrelays', numRelays)
     config.set('Misc', 'numco2sensors', numCo2Sensors)
-    config.set('Misc', 'numsensors', numSensors)
+    config.set('Misc', 'numhtsensors', numHTSensors)
     config.set('Misc', 'numtimers', numTimers)
     config.set('Misc', 'cameralight', cameraLight)
     
-    config.add_section('CO2Sensor%d' % 1)
-    config.set('CO2Sensor%d' % 1, 'sensorco2%dname' % 1, sensorCo2Name[1])
-    config.set('CO2Sensor%d' % 1, 'sensorco2%ddevice' % 1, sensorCo2Device[1])
-    config.set('CO2Sensor%d' % 1, 'sensorco2%dpin' % 1, sensorCo2Pin[1])
-    config.set('CO2Sensor%d' % 1, 'sensorco2%dperiod' % 1, sensorCo2Period[1])
-    config.set('CO2Sensor%d' % 1, 'sensorco2%dactivated' % 1, sensorCo2Activated[1])
-    config.set('CO2Sensor%d' % 1, 'sensorco2%dgraph' % 1, sensorCo2Graph[1])
-    
-    config.add_section('Co2PID%d' % 1)
-    config.set('Co2PID%d' % 1, 'co2%dperiod' % 1, Co2Period[1])
-    config.set('Co2PID%d' % 1, 'co2%drelay' % 1, relayCo2[1])
-    config.set('Co2PID%d' % 1, 'co2%dset' % 1, setCo2[1])
-    config.set('Co2PID%d' % 1, 'co2%dor' % 1, Co2OR[1])
-    config.set('Co2PID%d' % 1, 'co2%dp' % 1, Co2_P[1])
-    config.set('Co2PID%d' % 1, 'co2%di' % 1, Co2_I[1])
-    config.set('Co2PID%d' % 1, 'co2%dd' % 1, Co2_D[1])
+    for i in range(1, 5):
+        config.add_section('CO2Sensor%d' % i)
+        config.set('CO2Sensor%d' % i, 'sensorco2%dname' % i, sensorCo2Name[i])
+        config.set('CO2Sensor%d' % i, 'sensorco2%ddevice' % i, sensorCo2Device[i])
+        config.set('CO2Sensor%d' % i, 'sensorco2%dpin' % i, sensorCo2Pin[i])
+        config.set('CO2Sensor%d' % i, 'sensorco2%dperiod' % i, sensorCo2Period[i])
+        config.set('CO2Sensor%d' % i, 'sensorco2%dactivated' % i, sensorCo2Activated[i])
+        config.set('CO2Sensor%d' % i, 'sensorco2%dgraph' % i, sensorCo2Graph[i])
+        
+        config.add_section('Co2PID%d' % i)
+        config.set('Co2PID%d' % i, 'co2%dperiod' % i, Co2Period[i])
+        config.set('Co2PID%d' % i, 'co2%drelay' % i, relayCo2[i])
+        config.set('Co2PID%d' % i, 'co2%dset' % i, setCo2[i])
+        config.set('Co2PID%d' % i, 'co2%dor' % i, Co2OR[i])
+        config.set('Co2PID%d' % i, 'co2%dp' % i, Co2_P[i])
+        config.set('Co2PID%d' % i, 'co2%di' % i, Co2_I[i])
+        config.set('Co2PID%d' % i, 'co2%dd' % i, Co2_D[i])
     
     for i in range(1, 5):
-        config.add_section('Sensor%d' % i)
-        config.set('Sensor%d' % i, 'sensor%dname' % i, sensorName[i])
-        config.set('Sensor%d' % i, 'sensor%ddevice' % i, sensorDevice[i])
-        config.set('Sensor%d' % i, 'sensor%dpin' % i, sensorPin[i])
-        config.set('Sensor%d' % i, 'sensor%dperiod' % i, sensorPeriod[i])
-        config.set('Sensor%d' % i, 'sensor%dactivated' % i, sensorActivated[i])
-        config.set('Sensor%d' % i, 'sensor%dgraph' % i, sensorGraph[i])
+        config.add_section('HTSensor%d' % i)
+        config.set('HTSensor%d' % i, 'sensorht%dname' % i, sensorHTName[i])
+        config.set('HTSensor%d' % i, 'sensorht%ddevice' % i, sensorHTDevice[i])
+        config.set('HTSensor%d' % i, 'sensorht%dpin' % i, sensorHTPin[i])
+        config.set('HTSensor%d' % i, 'sensorht%dperiod' % i, sensorHTPeriod[i])
+        config.set('HTSensor%d' % i, 'sensorht%dactivated' % i, sensorHTActivated[i])
+        config.set('HTSensor%d' % i, 'sensorht%dgraph' % i, sensorHTGraph[i])
         
         config.add_section('TempPID%d' % i)
         config.set('TempPID%d' % i, 'temp%dperiod' % i, TempPeriod[i])
@@ -1707,7 +1966,7 @@ def represents_float(s):
 def modify_var(*names_and_values):
     namesOfVariables = [
     'numRelays',
-    'numSensors',
+    'numHTSensors',
     'numTimers',
     'smtp_host',
     'smtp_port',
