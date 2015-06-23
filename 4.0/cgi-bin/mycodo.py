@@ -607,9 +607,10 @@ def daemon(output, log):
         if sensorDevice[i] != 'Other' and sensorActivated[i] == 1:
             read_dht_sensor(0, i)
             time.sleep(2) # Ensure a minimum of 2 seconds between sensor reads
-        if sensorCo2Device[i] != 'Other' and sensorCo2Activated[1] == 1:
-            read_co2_sensor(1)
-            time.sleep(2) # Ensure a minimum of 2 seconds between sensor reads
+    
+    if sensorCo2Device[1] != 'Other' and sensorCo2Activated[1] == 1:
+        read_co2_sensor(1)
+        time.sleep(2) # Ensure a minimum of 2 seconds between sensor reads
     
     timerLogBackup = int(time.time()) + 21600 # 21600 seconds = 6 hours
     
@@ -704,13 +705,7 @@ def daemon(output, log):
                 args = ('Thread-%d' % Hum_PID_number, Hum_PID_number,))
             rod.start()
             Hum_PID_Up = 0
-        
-        # Write CO2 to sensor log
-        if int(time.time()) > timerCo2SensorLog[1] and sensorCo2Device[1] != 'Other' and sensorCo2Activated[1] == 1:
-            read_co2_sensor(1)
-            write_co2_sensor_log(1)
-            timerCo2SensorLog[1] = int(time.time()) + sensorCo2Period[1]
-        
+
         # Write temperature and humidity to sensor log
         for i in range(1, int(numSensors)+1):
             if int(time.time()) > timerSensorLog[i] and sensorDevice[i] != 'Other' and sensorActivated[i] == 1:
@@ -718,6 +713,12 @@ def daemon(output, log):
                 read_dht_sensor(0, i)
                 write_dht_sensor_log(i)
                 timerSensorLog[i] = int(time.time()) + sensorPeriod[i]
+
+        # Write CO2 to sensor log
+        if int(time.time()) > timerCo2SensorLog[1] and sensorCo2Device[1] != 'Other' and sensorCo2Activated[1] == 1:
+            read_co2_sensor(1)
+            write_co2_sensor_log(1)
+            timerCo2SensorLog[1] = int(time.time()) + sensorCo2Period[1]
         
         # Concatenate local log with tempfs log every 6 hours
         if int(time.time()) > timerLogBackup:
