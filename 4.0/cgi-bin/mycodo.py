@@ -1739,9 +1739,9 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     # Generate graph with gnuplot with the above generated command sequence
     if logging.getLogger().isEnabledFor(logging.DEBUG) is False:
         subprocess.call(['gnuplot', gnuplot_graph])
-        #os.remove(gnuplot_graph)
+        os.remove(gnuplot_graph)
         os.remove(sensor_ht_log_generate)
-        #os.remove(sensor_co2_log_generate)
+        os.remove(sensor_co2_log_generate)
         os.remove(relay_log_generate)
     else:
         gnuplot_log = "%s/plot-%s-%s.log" % (log_path, graph_out_file, sensorn)
