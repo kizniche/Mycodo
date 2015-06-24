@@ -1734,7 +1734,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         plot.write('set border 3 back ls 11\n')
         plot.write('set tics nomirror\n')
         plot.write('set key outside\n')
-        plot.write('plot \"<awk \'$10 == 1\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 title \"Temperature\" w lp ls 1 axes x1y2, ')
+        plot.write('plot \"<awk \'$10 == 1\' ' + sensor_ht_log_generate + sensor_head + '" using 1:7 index 0 title \"Temperature\" w lp ls 1 axes x1y2, ')
         plot.write('\"\" using 1:8 index 0 title \"Rel. Humidity\" w lp ls 2 axes x1y1, ')
         plot.write('\"\" using 1:9 index 0 title \"Dew Point\" w lp ls 3 axes x1y2, ')
         plot.write('\"<awk \'$15 == 1\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relayName[1] + '\" w impulses ls 4 axes x1y1, ')
@@ -2018,6 +2018,7 @@ def modify_var(*names_and_values):
     namesOfVariables = [
     'numRelays',
     'numHTSensors',
+    'numCo2Sensors',
     'numTimers',
     'smtp_host',
     'smtp_port',
