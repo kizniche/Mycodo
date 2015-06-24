@@ -1355,7 +1355,7 @@ def write_co2_sensor_log(sensor):
 
         try:
             with open(sensor_co2_log_file_tmp, "ab") as sensorlog:
-                sensorlog.write('{0} co2 {1:.1f} {2}\n'.format(
+                sensorlog.write('{0} {1} {2}\n'.format(
                     datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
                     co2[sensor], sensor))
                 logging.debug("[Write CO2 Sensor Log] Data appended to %s", sensor_co2_log_file_tmp)

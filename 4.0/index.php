@@ -1478,7 +1478,8 @@ $error_code = "no";
                         if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
                     ?>" method="POST">
                         Lines: <input type="text" maxlength=8 size=8 name="Lines" /> 
-                        <input type="submit" name="Sensor" value="Sensor"> 
+                        <input type="submit" name="HT Sensor" value="HTSensor"> 
+                        <input type="submit" name="CO2 Sensor" value="Co2Sensor"> 
                         <input type="submit" name="Relay" value="Relay"> 
                         <input type="submit" name="Auth" value="Auth">
                         <input type="submit" name="Daemon" value="Daemon">
@@ -1486,13 +1487,23 @@ $error_code = "no";
                 </div>
                 <div style="font-family: monospace;">
                     <pre><?php
-                        if(isset($_POST['Sensor'])) {
-                            echo 'Year Mo Day Hour Min Sec Tc RH DPc<br> <br>';
+                        if(isset($_POST['HTSensor'])) {
+                            echo 'Year Mo Day Hour Min Sec Tc RH DPc Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `tail -n $Lines $sensor_ht_log`;
                             } else {
                                 echo `tail -n 30 $sensor_ht_log`;
+                            }
+                        }
+                        
+                        if(isset($_POST['Co2Sensor'])) {
+                            echo 'Year Mo Day Hour Min Sec Co2 Sensor<br> <br>';
+                            if ($_POST['Lines'] != '') {
+                                $Lines = $_POST['Lines'];
+                                echo `tail -n $Lines $sensor_co2_log`;
+                            } else {
+                                echo `tail -n 30 $sensor_co2_log`;
                             }
                         }
 
