@@ -1052,10 +1052,8 @@ def read_co2_sensor(sensor):
     if co22 == None:
         logging.warning("[Read CO2 Sensor-%s] Could not read CO2!", sensor)
         return 0
-
-    time.sleep(2) # Wait 2 seconds between sensor reads
     
-    logging.debug("[Read CO2 Sensor-%s] %s", sensor, co22)
+    logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor, co22)
 
     while not Terminate:
         logging.debug("[Read CO2 Sensor-%s] Taking second CO2 reading", sensor)
@@ -1071,15 +1069,14 @@ def read_co2_sensor(sensor):
         if abs(co22-co2[sensor]) > 20 and not Terminate:
             co22 = co2[sensor]
             logging.debug("[Read CO2 Sensor-%s] Successive readings > 20 difference: Rereading", sensor)
-            time.sleep(2) # Wait 2 seconds between sensor reads
         elif not Terminate:
             logging.debug("[Read CO2 Sensor-%s] Successive readings < 20 difference: keeping.", sensor)
             logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor, co2[sensor])
             return 1
             
-            
 # Read K30 CO2 Sensor
 def read_K30():
+    time.sleep(2) # Ensure 2 seconds between sensor reads
     ser = serial.Serial("/dev/ttyAMA0", timeout=3) # Wait 3 seconds for reply
     ser.flushInput()
     time.sleep(1)
@@ -1170,7 +1167,7 @@ def read_dht_sensor(sensor):
             chktemp = 1
             
             logging.debug("[Read HT Sensor-%s] Successive readings > 1 difference: Rereading", sensor)
-            time.sleep(2)
+            time.sleep(2) # Wait 2 seconds between sensor reads
         else:
             chktemp = 0
 
@@ -1183,7 +1180,9 @@ def read_dht_sensor(sensor):
             #heatindexc[sensor] = (heatindexf - 32) * (5 / 9)
             
             logging.debug("[Read HT Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", sensor, tempc[sensor], humidity[sensor], dewpointc[sensor])
+            time.sleep(2) # Wait 2 seconds between sensor reads
             return 1
+
            
 # Append HT sensor data to the log file
 def write_dht_sensor_log(sensor):
