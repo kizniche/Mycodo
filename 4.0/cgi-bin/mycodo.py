@@ -1087,8 +1087,8 @@ def read_K30():
         return None
     high = ord(resp[3])
     low = ord(resp[4])
-    sensor_co2_read_co2 = (high*256) + low
-    return sensor_co2_read_co2
+    co2 = (high*256) + low
+    return co2
 
 # Read the temperature and sensor_ht_read_hum from sensor
 def read_dht_sensor(sensor):
@@ -1449,12 +1449,13 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     # Axes size constraints
     y1_min = '0'
     y1_max = '100'
-    y2_min = '0'
-    y2_max = '35'
     
-    if "sensor_co2_read_co2" in graph_out_file:
+    if "co2" in graph_out_file:
         y2_min = '0'
         y2_max = '5000'
+    else:
+        y2_min = '0'
+        y2_max = '35'
     
     # Line colors (see comments further down with their use)
     graph_colors = ['#FF3100', '#0772A1', '#00B74A', '#91180B',
@@ -1502,14 +1503,14 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         plot.write('set mytics 10\n')
         plot.write('set my2tics 5\n')
         plot.write('set ytics 0,20\n')
-        if "sensor_co2_read_co2" in graph_out_file:
+        if "co2" in graph_out_file:
             plot.write('set y2tics 500\n')
         else:
             plot.write('set y2tics 5\n')
     else:
         plot.write('set my2tics 10\n')
         plot.write('set ytics 10\n')
-        if "sensor_co2_read_co2" in graph_out_file:
+        if "co2" in graph_out_file:
             plot.write('set y2tics 500\n')
         else:
             plot.write('set y2tics 5\n')
@@ -1623,7 +1624,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         
     if "co2separate" in graph_out_file:
         plot.write('set title \"CO2 Sensor ' + sensorn + ': ' + sensor_co2_name[int(float(sensorn))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-        plot.write('plot \"<awk \'$8 == ' + sensorn + '\' ' + sensor_co2_log_generate + sensor_head + '" using 1:7 index 0 title \"CO2\" w lp ls 1 axes x1y2 ')
+        plot.write('plot \"<awk \'$8 == ' + sensorn + '\' ' + sensor_co2_log_generate + sensor_head + '" using 1:7 index 0 title \"CO2\" w lp ls 1 axes x1y2, ')
         
         plot.write('\"<awk \'$15 == ' + sensorn + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relay_name[1] + '\" w impulses ls 4 axes x1y1, ')
         plot.write('\"\" u 1:8 index 0 title \"' + relay_name[2] + '\" w impulses ls 5 axes x1y1, ')
@@ -1739,9 +1740,9 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     # Generate graph with gnuplot with the above generated command sequence
     if logging.getLogger().isEnabledFor(logging.DEBUG) is False:
         subprocess.call(['gnuplot', gnuplot_graph])
-        os.remove(gnuplot_graph)
+        #os.remove(gnuplot_graph)
         os.remove(sensor_ht_log_generate)
-        os.remove(sensor_co2_log_generate)
+        #os.remove(sensor_co2_log_generate)
         os.remove(relay_log_generate)
     else:
         gnuplot_log = "%s/plot-%s-%s.log" % (log_path, graph_out_file, sensorn)
