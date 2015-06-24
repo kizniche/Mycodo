@@ -898,15 +898,15 @@ def daemon(output, log):
         for i in range(1, int(numHTSensors)+1):
             if int(time.time()) > timerHTSensorLog[i] and sensorHTDevice[i] != 'Other' and sensorHTActivated[i] == 1:
                 logging.debug("[Timer Expiration] Read sensor %s every %s seconds: Write sensor log", i, sensorHTPeriod[i])
-                read_output = read_dht_sensor(i)
-                if read_output == 1: write_dht_sensor_log(i)
+                if read_dht_sensor(i) == 1:
+                    write_dht_sensor_log(i)
                 timerHTSensorLog[i] = int(time.time()) + sensorHTPeriod[i]
 
         # Write CO2 to sensor log
         for i in range(1, int(numCo2Sensors)+1):
             if int(time.time()) > timerCo2SensorLog[i] and sensorCo2Device[i] != 'Other' and sensorCo2Activated[i] == 1:
-                read_output = read_co2_sensor(i)
-                if read_output == 1: write_co2_sensor_log(i)
+                if read_co2_sensor(i) == 1:
+                    write_co2_sensor_log(i)
                 timerCo2SensorLog[i] = int(time.time()) + sensorCo2Period[i]
         
         # Concatenate local log with tempfs log every 6 hours
