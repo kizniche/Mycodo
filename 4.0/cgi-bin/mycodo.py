@@ -89,7 +89,6 @@ sensorHTPin = [0] * 5
 sensorHTPeriod = [0] * 5
 sensorHTActivated = [0] * 5
 sensorHTGraph = [0] * 5
-chktemp = None
 tempc = [0] * 5
 humidity = [0] * 5
 dewpointc = [0] * 5
@@ -455,7 +454,7 @@ class ComServer(rpyc.Service):
     def exposed_ReadCO2Sensor(self, pin, sensor):
         logging.info("[Client command] Read CO2 Sensor %s from GPIO pin %s", sensor, pin)
         if (sensor == 'K30'):
-            read_co2_sensor(sensor)
+            read_co2_sensor(0, sensor)
             return (co2)
         else:
             return 'Invalid Sensor Name'
@@ -761,7 +760,7 @@ def daemon(output, log):
     
     for i in range(1, numCo2Sensors+1):
         if sensorCo2Device[i] != 'Other' and sensorCo2Activated[i] == 1:
-            read_co2_sensor(i)
+            read_co2_sensor(0, i)
             time.sleep(2) # Ensure a minimum of 2 seconds between sensor reads
     
     timerLogBackup = int(time.time()) + 21600 # 21600 seconds = 6 hours
@@ -906,7 +905,7 @@ def daemon(output, log):
         # Write CO2 to sensor log
         for i in range(1, int(numCo2Sensors)+1):
             if int(time.time()) > timerCo2SensorLog[i] and sensorCo2Device[i] != 'Other' and sensorCo2Activated[i] == 1:
-                read_co2_sensor(i)
+                read_co2_sensor(0, i)
                 write_co2_sensor_log(i)
                 timerCo2SensorLog[i] = int(time.time()) + sensorCo2Period[i]
         
@@ -945,7 +944,7 @@ def temperature_monitor(ThreadName, sensor):
         if TempOR[sensor] == 0 and Temp_PID_Down == 0 and relayTemp[sensor] != 0 and sensorHTActivated[sensor] == 1:
             if int(time.time()) > timerTemp:
                 logging.debug("[PID Temperature-%s] Reading temperature...", sensor)
-                read_dht_sensor(1, sensor)
+                read_dht_sensor(0, sensor)
                 PIDTemp = p_temp.update(float(tempc[sensor]))
                 if (tempc[sensor] < setTemp[sensor]):
                     logging.debug("[PID Temperature-%s] Temperature (%.1f°C) < (%.1f°C) setTemp", sensor, tempc[sensor], float(setTemp[sensor]))
@@ -982,7 +981,7 @@ def humidity_monitor(ThreadName, sensor):
         if HumOR[sensor] == 0 and Hum_PID_Down == 0 and relayHum[sensor] != 0 and sensorHTActivated[sensor] == 1:
             if int(time.time()) > timerHum:
                 logging.debug("[PID Humidity-%s] Reading humidity...", sensor)
-                read_dht_sensor(1, sensor)
+                read_dht_sensor(0, sensor)
                 PIDHum = p_hum.update(float(humidity[sensor]))
                 if (humidity[sensor] < setHum[sensor]):
                     logging.debug("[PID Humidity-%s] Humidity (%.1f%%) < (%.1f%%) setHum", sensor, humidity[sensor], float(setHum[sensor]))
@@ -1019,7 +1018,7 @@ def co2_monitor(ThreadName, sensor):
         if Co2OR[sensor] == 0 and Co2_PID_Down == 0 and relayCo2[sensor] != 0 and sensorCo2Activated[sensor] == 1:
             if int(time.time()) > timerCo2:
                 logging.debug("[PID CO2-%s] Reading CO2...", sensor)
-                read_co2_sensor(1, sensor)
+                read_co2_sensor(0, sensor)
                 PIDCo2 = p_co2.update(float(co2[sensor]))
                 if (co2[sensor] > setCo2[sensor]):
                     logging.debug("[PID CO2-%s] CO2 (%.1f%%) > (%.1f%%) setCO2", sensor, co2[sensor], setCo2[sensor])
@@ -1036,6 +1035,364 @@ def co2_monitor(ThreadName, sensor):
         time.sleep(0.1)
     logging.info("[PID CO2-%s] Shutting Down %s", sensor,  ThreadName)
     CAlive[sensor] = 2
+
+# Read CO2 from sensor
+def read_co2_sensor(silent, sensor):
+    global co2
+    chkco2 = 1
+    
+    if not silent and not Terminate:
+        logging.debug("[Read CO2 Sensor-%s] Taking first CO2 reading", sensor)
+        
+    if not Terminate:
+        ser = serial.Serial("/dev/ttyAMA0")
+        ser.flushInput()
+        time.sleep(1)
+        ser.write("\xFE\x44\x00\x08\x02\x9F\x25")
+        time.sleep(.01)
+        resp = ser.read(7)
+        high = ord(resp[3])
+        low = ord(resp[4])
+        co22 = (high*256) + low
+        
+        if co22 == None:
+            logging.warning("[Read CO2 Sensor-%s] Could not read CO2!", sensor)
+            
+        if not silent and co22 != None:
+            logging.debug("[Read CO2 Sensor-%s] %s", sensor, co22)
+
+        time.sleep(2) # Wait 2 seconds between sensor reads
+        
+        if not silent: 
+            logging.debug("[Read CO2 Sensor-%s] Taking second CO2 reading", sensor)
+            
+    while chkco2 and not Terminate and co22 != None:
+        if not Terminate:
+            ser = serial.Serial("/dev/ttyAMA0")
+            ser.flushInput()
+            time.sleep(1)
+            ser.write("\xFE\x44\x00\x08\x02\x9F\x25")
+            time.sleep(.01)
+            resp = ser.read(7)
+            high = ord(resp[3])
+            low = ord(resp[4])
+            co2[sensor] = (high*256) + low
+            
+        if co2[sensor] != 'None':
+            if not silent and not Terminate: 
+                logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor, co2[sensor])
+                logging.debug("[Read CO2 Sensor-%s] Difference: %s", sensor, abs(co22-co2[sensor]))
+                
+            if abs(co22-co2[sensor]) > 20 and not Terminate:
+                co22 = co2[sensor]
+                chkco2 = 1
+                
+                if not silent:
+                    logging.debug("[Read CO2 Sensor-%s] Successive readings > 20 difference: Rereading", sensor)
+                    
+                time.sleep(2)
+            elif not Terminate:
+                chkco2 = 0
+
+                if not silent: 
+                    logging.debug("[Read CO2 Sensor-%s] Successive readings < 20 difference: keeping.", sensor)
+                    logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor, co2[sensor])
+                   
+        else:
+            logging.warning("[Read CO2 Sensor-%s] Could not read CO2!", sensor)
+            time.sleep(2) # Wait 2 seconds between sensor reads
+	
+# Append co2 sensor data to the log file
+def write_co2_sensor_log(sensor):
+    config = ConfigParser.RawConfigParser()
+
+    if not os.path.exists(lock_directory):
+        os.makedirs(lock_directory)
+        
+    if not Terminate:
+        lock = LockFile(sensor_co2_lock_path)
+        while not lock.i_am_locking():
+            try:
+                logging.debug("[Write CO2 Sensor Log] Acquiring Lock: %s", lock.path)
+                lock.acquire(timeout=60)    # wait up to 60 seconds
+            except:
+                logging.warning("[Write CO2 Sensor Log] Breaking Lock to Acquire: %s", lock.path)
+                lock.break_lock()
+                lock.acquire()
+
+        logging.debug("[Write CO2 Sensor Log] Gained lock: %s", lock.path)
+
+        try:
+            with open(sensor_co2_log_file_tmp, "ab") as sensorlog:
+                sensorlog.write('{0} {1} {2}\n'.format(
+                    datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
+                    co2[sensor], sensor))
+                logging.debug("[Write CO2 Sensor Log] Data appended to %s", sensor_co2_log_file_tmp)
+        except:
+            logging.warning("[Write CO2 Sensor Log] Unable to append data to %s", sensor_co2_log_file_tmp)
+
+        logging.debug("[Write CO2 Sensor Log] Removing lock: %s", lock.path)
+        lock.release()
+
+# Read the temperature and humidity from sensor
+def read_dht_sensor(silent, sensor):
+    global tempc
+    global humidity
+    global dewpointc
+    #global heatindexc
+    chktemp = 1
+    
+    if (sensorHTDevice[1] == 'DHT11'): device = Adafruit_DHT.DHT11
+    elif (sensorHTDevice[1] == 'DHT22'): device = Adafruit_DHT.DHT22
+    elif (sensorHTDevice[1] == 'AM2302'): device = Adafruit_DHT.AM2302
+    else: device = 'Other'
+
+    if not silent and not Terminate:
+        logging.debug("[Read HT Sensor-%s] Taking first Temperature/humidity reading", sensor)
+        
+    if not Terminate:
+        humidity2, tempc2 = Adafruit_DHT.read_retry(device, sensorHTPin[sensor])
+        
+        if humidity2 == None or tempc2 == None:
+            logging.warning("[Read HT Sensor-%s] Could not read temperature/humidity!", sensor)
+            
+        if not silent and humidity2 != None and tempc2 != None:
+            logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor, tempc2, humidity2)
+
+        time.sleep(2) # Wait 2 seconds between sensor reads
+        
+        if not silent: 
+            logging.debug("[Read HT Sensor-%s] Taking second Temperature/humidity reading", sensor)
+            
+    while chktemp and not Terminate and humidity2 != None and tempc2 != None:
+        if not Terminate:
+            humidity[sensor], tempc[sensor] = Adafruit_DHT.read_retry(device, sensorHTPin[sensor])
+            
+        if humidity[sensor] != 'None' or tempc[sensor] != 'None':
+            if not silent and not Terminate: 
+                logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor, tempc[sensor], humidity[sensor])
+                logging.debug("[Read HT Sensor-%s] Differences: %.1f°C, %.1f%%", sensor, abs(tempc2-tempc[sensor]), abs(humidity2-humidity[sensor]))
+                
+            if abs(tempc2-tempc[sensor]) > 1 or abs(humidity2-humidity[sensor]) > 1 and not Terminate:
+                tempc2 = tempc[sensor]
+                humidity2 = humidity[sensor]
+                chktemp = 1
+                
+                if not silent:
+                    logging.debug("[Read HT Sensor-%s] Successive readings > 1 difference: Rereading", sensor)
+                    
+                time.sleep(2)
+            elif not Terminate:
+                chktemp = 0
+
+                if not silent: 
+                    logging.debug("[Read HT Sensor-%s] Successive readings < 1 difference: keeping.", sensor)
+
+                tempf = float(tempc[sensor])*9.0/5.0 + 32.0
+                dewpointc[sensor] = tempc[sensor] - ((100-humidity[sensor]) / 5)
+                #dewpointf[sensor] = dewpointc[sensor] * 9 / 5 + 32
+                #heatindexf =  -42.379 + 2.04901523 * tempf + 10.14333127 * humidity - 0.22475541 * tempf * humidity - 6.83783 * 10**-3 * tempf**2 - 5.481717 * 10**-2 * humidity**2 + 1.22874 * 10**-3 * tempf**2 * humidity + 8.5282 * 10**-4 * tempf * humidity**2 - 1.99 * 10**-6 * tempf**2 * humidity**2
+                #heatindexc[sensor] = (heatindexf - 32) * (5 / 9)
+                
+                if not silent: 
+                    logging.debug("[Read HT Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", sensor, tempc[sensor], humidity[sensor], dewpointc[sensor])
+                   
+        else:
+            logging.warning("[Read HT Sensor-%s] Could not read temperature/humidity!", sensor)
+            time.sleep(2) # Wait 2 seconds between sensor reads
+           
+# Append HT sensor data to the log file
+def write_dht_sensor_log(sensor):
+    config = ConfigParser.RawConfigParser()
+
+    if not os.path.exists(lock_directory):
+        os.makedirs(lock_directory)
+        
+    if not Terminate:
+        lock = LockFile(sensor_ht_lock_path)
+        while not lock.i_am_locking():
+            try:
+                logging.debug("[Write Sensor Log] Acquiring Lock: %s", lock.path)
+                lock.acquire(timeout=60)    # wait up to 60 seconds
+            except:
+                logging.warning("[Write Sensor Log] Breaking Lock to Acquire: %s", lock.path)
+                lock.break_lock()
+                lock.acquire()
+
+        logging.debug("[Write Sensor Log] Gained lock: %s", lock.path)
+
+        try:
+            with open(sensor_ht_log_file_tmp, "ab") as sensorlog:
+                sensorlog.write('{0} {1:.1f} {2:.1f} {3:.1f} {4}\n'.format(
+                    datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
+                    tempc[sensor], humidity[sensor], dewpointc[sensor], sensor))
+                logging.debug("[Write Sensor Log] Data appended to %s", sensor_ht_log_file_tmp)
+        except:
+            logging.warning("[Write Sensor Log] Unable to append data to %s", sensor_ht_log_file_tmp)
+
+        logging.debug("[Write Sensor Log] Removing lock: %s", lock.path)
+        lock.release()
+
+# Log the relay duration
+def write_relay_log(relayNumber, relaySeconds, sensor):
+    config = ConfigParser.RawConfigParser()
+
+    if not os.path.exists(lock_directory):
+        os.makedirs(lock_directory)
+    if not Terminate:
+        lock = LockFile(relay_lock_path)
+
+        while not lock.i_am_locking():
+            try:
+                logging.debug("[Write Relay Log] Acquiring Lock: %s", lock.path)
+                lock.acquire(timeout=60)    # wait up to 60 seconds
+            except:
+                logging.warning("[Write Relay Log] Breaking Lock to Acquire: %s", lock.path)
+                lock.break_lock()
+                lock.acquire()
+
+        logging.debug("[Write Relay Log] Gained lock: %s", lock.path)
+        relay = [0] * 9
+
+        for n in range(1, 9):
+            if n == relayNumber:
+                relay[relayNumber] = relaySeconds
+
+        try:
+            with open(relay_log_file_tmp, "ab") as relaylog:
+                relaylog.write('{0} {1} {2} {3} {4} {5} {6} {7} {8} {9}\n'.format(
+                    datetime.datetime.now().strftime("%Y %m %d %H %M %S"),
+                    relay[1], relay[2], relay[3], relay[4],
+                    relay[5], relay[6], relay[7], relay[8], sensor))
+        except:
+            logging.warning("[Write Relay Log] Unable to append data to %s", relay_log_file_tmp)
+
+        logging.debug("[Write Relay Log] Removing lock: %s", lock.path)
+        lock.release()
+
+# Combines the logs on the SD card with the logs on the temporary file system
+def Concatenate_Logs():
+    logging.debug("[Timer Expiration] Run every 6 hours: Concatenate logs")
+
+    # Daemon Logs
+    if not filecmp.cmp(daemon_log_file_tmp, daemon_log_file):
+        logging.debug("[Daemon Log] Concatenating daemon logs to %s", daemon_log_file)
+        lock = LockFile(logs_lock_path)
+
+        while not lock.i_am_locking():
+            try:
+                logging.debug("[Daemon Log] Acquiring Lock: %s", lock.path)
+                lock.acquire(timeout=60)    # wait up to 60 seconds
+            except:
+                logging.warning("[Daemon Log] Breaking Lock to Acquire: %s", lock.path)
+                lock.break_lock()
+                lock.acquire()
+
+        logging.debug("[Daemon Log] Gained lock: %s", lock.path)
+
+        try:
+            with open(daemon_log_file, 'a') as fout:
+                for line in fileinput.input(daemon_log_file_tmp):
+                    fout.write(line)
+            logging.debug("[Daemon Log] Appended data to %s", daemon_log_file)
+        except:
+            logging.warning("[Daemon Log] Unable to append data to %s", daemon_log_file)
+
+        open(daemon_log_file_tmp, 'w').close()
+        logging.debug("[Daemon Log] Removing lock: %s", lock.path)
+        lock.release()
+    else:
+        logging.debug("[Daemon Log] Daemon logs the same, skipping.")
+
+    # Humidity & Temperature Logs
+    if not filecmp.cmp(sensor_ht_log_file_tmp, sensor_ht_log_file):
+        logging.debug("[Sensor Log] Concatenating HT sensor logs to %s", sensor_ht_log_file)
+        lock = LockFile(sensor_ht_lock_path)
+
+        while not lock.i_am_locking():
+            try:
+                logging.debug("[Sensor Log] Acquiring Lock: %s", lock.path)
+                lock.acquire(timeout=60)    # wait up to 60 seconds
+            except:
+                logging.warning("[Sensor Log] Breaking Lock to Acquire: %s", lock.path)
+                lock.break_lock()
+                lock.acquire()
+
+        logging.debug("[Sensor Log] Gained lock: %s", lock.path)
+
+        try:
+            with open(sensor_ht_log_file, 'a') as fout:
+                for line in fileinput.input(sensor_ht_log_file_tmp):
+                    fout.write(line)
+            logging.debug("[Daemon Log] Appended HT data to %s", sensor_ht_log_file)
+        except:
+            logging.warning("[Sensor Log] Unable to append data to %s", sensor_ht_log_file)
+
+        open(sensor_ht_log_file_tmp, 'w').close()
+        logging.debug("[Sensor Log] Removing lock: %s", lock.path)
+        lock.release()
+    else:
+        logging.debug("[Sensor Log] HT Sensor logs the same, skipping.")
+    
+    # CO2 Logs
+    if not filecmp.cmp(sensor_co2_log_file_tmp, sensor_co2_log_file):
+        logging.debug("[Sensor Log] Concatenating CO2 sensor logs to %s", sensor_co2_log_file)
+        lock = LockFile(sensor_co2_lock_path)
+
+        while not lock.i_am_locking():
+            try:
+                logging.debug("[Sensor Log] Acquiring Lock: %s", lock.path)
+                lock.acquire(timeout=60)    # wait up to 60 seconds
+            except:
+                logging.warning("[Sensor Log] Breaking Lock to Acquire: %s", lock.path)
+                lock.break_lock()
+                lock.acquire()
+
+        logging.debug("[Sensor Log] Gained lock: %s", lock.path)
+
+        try:
+            with open(sensor_co2_log_file, 'a') as fout:
+                for line in fileinput.input(sensor_co2_log_file_tmp):
+                    fout.write(line)
+            logging.debug("[Daemon Log] Appended CO2 data to %s", sensor_co2_log_file)
+        except:
+            logging.warning("[Sensor Log] Unable to append data to %s", sensor_co2_log_file)
+
+        open(sensor_co2_log_file_tmp, 'w').close()
+        logging.debug("[Sensor Log] Removing lock: %s", lock.path)
+        lock.release()
+    else:
+        logging.debug("[Sensor Log] CO2 Sensor logs the same, skipping.")
+
+    # Relay Logs
+    if not filecmp.cmp(relay_log_file_tmp, relay_log_file):
+        logging.debug("[Relay Log] Concatenating relay logs to %s", relay_log_file)
+        lock = LockFile(relay_lock_path)
+
+        while not lock.i_am_locking():
+            try:
+                logging.debug("[Relay Log] Acquiring Lock: %s", lock.path)
+                lock.acquire(timeout=60)    # wait up to 60 seconds
+            except:
+                logging.warning("[Relay Log] Breaking Lock to Acquire: %s", lock.path)
+                lock.break_lock()
+                lock.acquire()
+
+        logging.debug("[Relay Log] Gained lock: %s", lock.path)
+
+        try:
+            with open(relay_log_file, 'a') as fout:
+                for line in fileinput.input(relay_log_file_tmp):
+                    fout.write(line)
+            logging.debug("[Daemon Log] Appended data to %s", relay_log_file)
+        except:
+            logging.warning("[Relay Log] Unable to append data to %s", relay_log_file)
+
+        open(relay_log_file_tmp, 'w').close()
+        logging.debug("[Relay Log] Removing lock: %s", lock.path)
+        lock.release()
+    else:
+        logging.debug("[Relay Log] Relay logs the same, skipping.")
 
 # Generate gnuplot graph
 def generate_graph(graph_out_file, graph_id, sensorn):
@@ -1319,311 +1676,6 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         gnuplot_log = "%s/plot-%s.log" % (log_path, sensorn)
         with open(gnuplot_log, 'ab') as errfile:
             subprocess.call(['gnuplot', gnuplot_graph], stderr=errfile)
-
-# Read CO2 from sensor
-def read_co2_sensor(sensor):
-    global co2
-    
-    logging.info("[Read CO2 Sensor-%s] Taking CO2 reading", sensor)
-    ser = serial.Serial("/dev/ttyAMA0")
-    ser.flushInput()
-    time.sleep(1)
-    ser.write("\xFE\x44\x00\x08\x02\x9F\x25")
-    time.sleep(.01)
-    resp = ser.read(7)
-    high = ord(resp[3])
-    low = ord(resp[4])
-    co2[sensor] = (high*256) + low
-    logging.info("[Read CO2 Sensor] CO2: %s", str(co2[sensor]))
-	
-# Append co2 sensor data to the log file
-def write_co2_sensor_log(sensor):
-    config = ConfigParser.RawConfigParser()
-
-    if not os.path.exists(lock_directory):
-        os.makedirs(lock_directory)
-        
-    if not Terminate:
-        lock = LockFile(sensor_co2_lock_path)
-        while not lock.i_am_locking():
-            try:
-                logging.debug("[Write CO2 Sensor Log] Acquiring Lock: %s", lock.path)
-                lock.acquire(timeout=60)    # wait up to 60 seconds
-            except:
-                logging.warning("[Write CO2 Sensor Log] Breaking Lock to Acquire: %s", lock.path)
-                lock.break_lock()
-                lock.acquire()
-
-        logging.debug("[Write CO2 Sensor Log] Gained lock: %s", lock.path)
-
-        try:
-            with open(sensor_co2_log_file_tmp, "ab") as sensorlog:
-                sensorlog.write('{0} {1} {2}\n'.format(
-                    datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
-                    co2[sensor], sensor))
-                logging.debug("[Write CO2 Sensor Log] Data appended to %s", sensor_co2_log_file_tmp)
-        except:
-            logging.warning("[Write CO2 Sensor Log] Unable to append data to %s", sensor_co2_log_file_tmp)
-
-        logging.debug("[Write CO2 Sensor Log] Removing lock: %s", lock.path)
-        lock.release()
-
-# Read the temperature and humidity from sensor
-def read_dht_sensor(silent, sensor):
-    global tempc
-    global humidity
-    global dewpointc
-    #global heatindexc
-    global chktemp
-    chktemp = 1
-    
-    if (sensorHTDevice[1] == 'DHT11'): device = Adafruit_DHT.DHT11
-    elif (sensorHTDevice[1] == 'DHT22'): device = Adafruit_DHT.DHT22
-    elif (sensorHTDevice[1] == 'AM2302'): device = Adafruit_DHT.AM2302
-    else: device = 'Other'
-
-    if not silent and not Terminate:
-        logging.debug("[Read HT Sensor-%s] Taking first Temperature/humidity reading", sensor)
-        
-    if not Terminate:
-        humidity2, tempc2 = Adafruit_DHT.read_retry(device, sensorHTPin[sensor])
-        
-        if humidity2 == None or tempc2 == None:
-            logging.warning("[Read HT Sensor-%s] Could not read temperature/humidity!", sensor)
-            
-        if not silent and humidity2 != None and tempc2 != None:
-            logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor, tempc2, humidity2)
-
-        time.sleep(2) # Wait 2 seconds between sensor reads
-        
-        if not silent: 
-            logging.debug("[Read HT Sensor-%s] Taking second Temperature/humidity reading", sensor)
-            
-    while chktemp and not Terminate and humidity2 != None and tempc2 != None:
-        if not Terminate:
-            humidity[sensor], tempc[sensor] = Adafruit_DHT.read_retry(device, sensorHTPin[sensor])
-            
-        if humidity[sensor] != 'None' or tempc[sensor] != 'None':
-            if not silent and not Terminate: 
-                logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor, tempc[sensor], humidity[sensor])
-                logging.debug("[Read HT Sensor-%s] Differences: %.1f°C, %.1f%%", sensor, abs(tempc2-tempc[sensor]), abs(humidity2-humidity[sensor]))
-                
-            if abs(tempc2-tempc[sensor]) > 1 or abs(humidity2-humidity[sensor]) > 1 and not Terminate:
-                tempc2 = tempc[sensor]
-                humidity2 = humidity[sensor]
-                chktemp = 1
-                
-                if not silent:
-                    logging.debug("[Read HT Sensor-%s] Successive readings > 1 difference: Rereading", sensor)
-                    
-                time.sleep(2)
-            elif not Terminate:
-                chktemp = 0
-
-                if not silent: 
-                    logging.debug("[Read HT Sensor-%s] Successive readings < 1 difference: keeping.", sensor)
-
-                tempf = float(tempc[sensor])*9.0/5.0 + 32.0
-                dewpointc[sensor] = tempc[sensor] - ((100-humidity[sensor]) / 5)
-                #dewpointf[sensor] = dewpointc[sensor] * 9 / 5 + 32
-                #heatindexf =  -42.379 + 2.04901523 * tempf + 10.14333127 * humidity - 0.22475541 * tempf * humidity - 6.83783 * 10**-3 * tempf**2 - 5.481717 * 10**-2 * humidity**2 + 1.22874 * 10**-3 * tempf**2 * humidity + 8.5282 * 10**-4 * tempf * humidity**2 - 1.99 * 10**-6 * tempf**2 * humidity**2
-                #heatindexc[sensor] = (heatindexf - 32) * (5 / 9)
-                
-                if not silent: 
-                    logging.debug("[Read HT Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", sensor, tempc[sensor], humidity[sensor], dewpointc[sensor])
-                   
-        else:
-            logging.warning("[Read Sensor-%s] Could not read temperature/humidity!", sensor)
-            time.sleep(2) # Wait 2 seconds between sensor reads
-           
-# Append HT sensor data to the log file
-def write_dht_sensor_log(sensor):
-    config = ConfigParser.RawConfigParser()
-
-    if not os.path.exists(lock_directory):
-        os.makedirs(lock_directory)
-        
-    if not Terminate:
-        lock = LockFile(sensor_ht_lock_path)
-        while not lock.i_am_locking():
-            try:
-                logging.debug("[Write Sensor Log] Acquiring Lock: %s", lock.path)
-                lock.acquire(timeout=60)    # wait up to 60 seconds
-            except:
-                logging.warning("[Write Sensor Log] Breaking Lock to Acquire: %s", lock.path)
-                lock.break_lock()
-                lock.acquire()
-
-        logging.debug("[Write Sensor Log] Gained lock: %s", lock.path)
-
-        try:
-            with open(sensor_ht_log_file_tmp, "ab") as sensorlog:
-                sensorlog.write('{0} {1:.1f} {2:.1f} {3:.1f} {4}\n'.format(
-                    datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
-                    tempc[sensor], humidity[sensor], dewpointc[sensor], sensor))
-                logging.debug("[Write Sensor Log] Data appended to %s", sensor_ht_log_file_tmp)
-        except:
-            logging.warning("[Write Sensor Log] Unable to append data to %s", sensor_ht_log_file_tmp)
-
-        logging.debug("[Write Sensor Log] Removing lock: %s", lock.path)
-        lock.release()
-
-# Append the duration the relay has been on to the log file
-def write_relay_log(relayNumber, relaySeconds, sensor):
-    config = ConfigParser.RawConfigParser()
-
-    if not os.path.exists(lock_directory):
-        os.makedirs(lock_directory)
-    if not Terminate:
-        lock = LockFile(relay_lock_path)
-
-        while not lock.i_am_locking():
-            try:
-                logging.debug("[Write Relay Log] Acquiring Lock: %s", lock.path)
-                lock.acquire(timeout=60)    # wait up to 60 seconds
-            except:
-                logging.warning("[Write Relay Log] Breaking Lock to Acquire: %s", lock.path)
-                lock.break_lock()
-                lock.acquire()
-
-        logging.debug("[Write Relay Log] Gained lock: %s", lock.path)
-        relay = [0] * 9
-
-        for n in range(1, 9):
-            if n == relayNumber:
-                relay[relayNumber] = relaySeconds
-
-        try:
-            with open(relay_log_file_tmp, "ab") as relaylog:
-                relaylog.write('{0} {1} {2} {3} {4} {5} {6} {7} {8} {9}\n'.format(
-                    datetime.datetime.now().strftime("%Y %m %d %H %M %S"),
-                    relay[1], relay[2], relay[3], relay[4],
-                    relay[5], relay[6], relay[7], relay[8], sensor))
-        except:
-            logging.warning("[Write Relay Log] Unable to append data to %s", relay_log_file_tmp)
-
-        logging.debug("[Write Relay Log] Removing lock: %s", lock.path)
-        lock.release()
-
-# Combines the logs on the SD card with the logs on the temporary file system
-def Concatenate_Logs():
-    logging.debug("[Timer Expiration] Run every 6 hours: Concatenate logs")
-
-    if not filecmp.cmp(daemon_log_file_tmp, daemon_log_file):
-        logging.debug("[Daemon Log] Concatenating daemon logs to %s", daemon_log_file)
-        lock = LockFile(logs_lock_path)
-
-        while not lock.i_am_locking():
-            try:
-                logging.debug("[Daemon Log] Acquiring Lock: %s", lock.path)
-                lock.acquire(timeout=60)    # wait up to 60 seconds
-            except:
-                logging.warning("[Daemon Log] Breaking Lock to Acquire: %s", lock.path)
-                lock.break_lock()
-                lock.acquire()
-
-        logging.debug("[Daemon Log] Gained lock: %s", lock.path)
-
-        try:
-            with open(daemon_log_file, 'a') as fout:
-                for line in fileinput.input(daemon_log_file_tmp):
-                    fout.write(line)
-            logging.debug("[Daemon Log] Appended data to %s", daemon_log_file)
-        except:
-            logging.warning("[Daemon Log] Unable to append data to %s", daemon_log_file)
-
-        open(daemon_log_file_tmp, 'w').close()
-        logging.debug("[Daemon Log] Removing lock: %s", lock.path)
-        lock.release()
-    else:
-        logging.debug("[Daemon Log] Daemon logs the same, skipping.")
-
-    if not filecmp.cmp(sensor_ht_log_file_tmp, sensor_ht_log_file):
-        logging.debug("[Sensor Log] Concatenating HT sensor logs to %s", sensor_ht_log_file)
-        lock = LockFile(sensor_ht_lock_path)
-
-        while not lock.i_am_locking():
-            try:
-                logging.debug("[Sensor Log] Acquiring Lock: %s", lock.path)
-                lock.acquire(timeout=60)    # wait up to 60 seconds
-            except:
-                logging.warning("[Sensor Log] Breaking Lock to Acquire: %s", lock.path)
-                lock.break_lock()
-                lock.acquire()
-
-        logging.debug("[Sensor Log] Gained lock: %s", lock.path)
-
-        try:
-            with open(sensor_ht_log_file, 'a') as fout:
-                for line in fileinput.input(sensor_ht_log_file_tmp):
-                    fout.write(line)
-            logging.debug("[Daemon Log] Appended HT data to %s", sensor_ht_log_file)
-        except:
-            logging.warning("[Sensor Log] Unable to append data to %s", sensor_ht_log_file)
-
-        open(sensor_ht_log_file_tmp, 'w').close()
-        logging.debug("[Sensor Log] Removing lock: %s", lock.path)
-        lock.release()
-    else:
-        logging.debug("[Sensor Log] HT Sensor logs the same, skipping.")
-        
-    if not filecmp.cmp(sensor_co2_log_file_tmp, sensor_co2_log_file):
-        logging.debug("[Sensor Log] Concatenating CO2 sensor logs to %s", sensor_co2_log_file)
-        lock = LockFile(sensor_co2_lock_path)
-
-        while not lock.i_am_locking():
-            try:
-                logging.debug("[Sensor Log] Acquiring Lock: %s", lock.path)
-                lock.acquire(timeout=60)    # wait up to 60 seconds
-            except:
-                logging.warning("[Sensor Log] Breaking Lock to Acquire: %s", lock.path)
-                lock.break_lock()
-                lock.acquire()
-
-        logging.debug("[Sensor Log] Gained lock: %s", lock.path)
-
-        try:
-            with open(sensor_co2_log_file, 'a') as fout:
-                for line in fileinput.input(sensor_co2_log_file_tmp):
-                    fout.write(line)
-            logging.debug("[Daemon Log] Appended CO2 data to %s", sensor_co2_log_file)
-        except:
-            logging.warning("[Sensor Log] Unable to append data to %s", sensor_co2_log_file)
-
-        open(sensor_co2_log_file_tmp, 'w').close()
-        logging.debug("[Sensor Log] Removing lock: %s", lock.path)
-        lock.release()
-    else:
-        logging.debug("[Sensor Log] CO2 Sensor logs the same, skipping.")
-
-    if not filecmp.cmp(relay_log_file_tmp, relay_log_file):
-        logging.debug("[Relay Log] Concatenating relay logs to %s", relay_log_file)
-        lock = LockFile(relay_lock_path)
-
-        while not lock.i_am_locking():
-            try:
-                logging.debug("[Relay Log] Acquiring Lock: %s", lock.path)
-                lock.acquire(timeout=60)    # wait up to 60 seconds
-            except:
-                logging.warning("[Relay Log] Breaking Lock to Acquire: %s", lock.path)
-                lock.break_lock()
-                lock.acquire()
-
-        logging.debug("[Relay Log] Gained lock: %s", lock.path)
-
-        try:
-            with open(relay_log_file, 'a') as fout:
-                for line in fileinput.input(relay_log_file_tmp):
-                    fout.write(line)
-            logging.debug("[Daemon Log] Appended data to %s", relay_log_file)
-        except:
-            logging.warning("[Relay Log] Unable to append data to %s", relay_log_file)
-
-        open(relay_log_file_tmp, 'w').close()
-        logging.debug("[Relay Log] Removing lock: %s", lock.path)
-        lock.release()
-    else:
-        logging.debug("[Relay Log] Relay logs the same, skipping.")
 
 # Read variables from the configuration file
 def read_config(silent):
