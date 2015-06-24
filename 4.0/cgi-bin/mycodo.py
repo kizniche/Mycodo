@@ -1621,7 +1621,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     # Generate a graph with temp, hum, and dew point for a specific sensor
     if "separate" in graph_out_file:
         plot.write('set title \"Sensor ' + sensorn + ': ' + sensorHTName[int(float(sensorn))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-        plot.write('plot \"<awk \'$10 == ' + sensorn + '\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
+        plot.write('plot \"<awk \'$10 == ' + sensorn + '\' ' + sensor_ht_log_generate + sensor_head + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
         plot.write('\"\" u 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, ')
         plot.write('\"\" u 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ')
         
@@ -1641,7 +1641,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         # Top graph - day
         plot.write('set size 1.0,0.5\n')
         plot.write('set origin 0.0,0.5\n')
-        plot.write('set title \"Sensor ' + sensorn + ': ' + sensorHTName[int(float(sensorn))] + '\\n\\nPast Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+        plot.write('set title \"Hum/Temp Sensor ' + sensorn + ': ' + sensorHTName[int(float(sensorn))] + '\\n\\nPast Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
         plot.write('plot \"<awk \'$10 == ' + sensorn + '\' ' + sensor_ht_log_generate + sensor_head + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
         plot.write('\"\" using 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, ')
         plot.write('\"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ')
@@ -1675,7 +1675,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         # Top graph - day
         plot.write('set size 1.0,0.5\n')
         plot.write('set origin 0.0,0.5\n')
-        plot.write('set title \"Sensor ' + sensorn + ': ' + sensorCo2Name[int(float(sensorn))] + '\\n\\nPast Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+        plot.write('set title \"CO2 Sensor ' + sensorn + ': ' + sensorCo2Name[int(float(sensorn))] + '\\n\\nPast Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
         plot.write('plot \"<awk \'$8 == ' + sensorn + '\' ' + sensor_co2_log_generate + sensor_head + '" using 1:7 index 0 title \"CO2\" w lp ls 1 axes x1y2, ')
         plot.write('\"<awk \'$15 == ' + sensorn + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relayName[1] + '\" w impulses ls 4 axes x1y1, ')
         plot.write('\"\" using 1:8 index 0 title \"' + relayName[2] + '\" w impulses ls 5 axes x1y1, ')

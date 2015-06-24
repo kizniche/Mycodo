@@ -864,7 +864,8 @@ $error_code = "no";
                                 if ($ref) shell_exec($mycodo_client . ' --graph htdayweek ' . $id . ' ' . $n);
                                 echo "htmain&mod=" . $id . "&sensor=" . $n . "></div>";
                             }
-                            if ($n != $numhtsensors && $sensorco21graph == 0 && $sensorco22graph == 0 && $sensorco23graph == 0 && $sensorco24graph == 0) { echo "<hr class=\"fade\"/>"; }
+                            if ($n != $numhtsensors || $sensorco21graph == 1 || $sensorco22graph == 1 || $sensorco23graph == 1 || $sensorco24graph == 1) {
+                                echo "<hr class=\"fade\"/>"; }
                         }
                         for ($n = 1; $n <= $numco2sensors; $n++ ) {
                             if (isset($_GET['page']) and ${'sensorco2' . $n . 'graph'} == 1) {
@@ -908,12 +909,12 @@ $error_code = "no";
                                         break;
                                 }
                                 echo "</div>";
-                            } else if (${'sensorht' . $n . 'graph'} == 1) {
+                            } else if (${'sensorco2' . $n . 'graph'} == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
                                 if ($ref) shell_exec($mycodo_client . ' --graph co2dayweek ' . $id . ' ' . $n);
                                 echo "co2main&mod=" . $id . "&sensor=" . $n . "></div>";
                             }
-                            if ($n != $numhtsensors) { echo "<hr class=\"fade\"/>"; }
+                            if ($n != $numco2sensors) { echo "<hr class=\"fade\"/>"; }
                         }
                     }
                     ?>
