@@ -567,7 +567,7 @@ if ($login->isUserLoggedIn() == true) {
             window.open("image.php?span=legend-small","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=250, height=300");
         }
         function open_legend_full() {
-            window.open("image.php?span=legend-full","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=800, height=500");
+            window.open("image.php?span=legend-full","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=1000, height=700");
         }
     </script>
     <?php include_once("analyticstracking.php") ?>
@@ -976,8 +976,11 @@ $error_code = "no";
                         <div style="text-align: center; padding-bottom: 0.2em;">CO<sub>2</sub> Sensors</div>
                         <div style="text-align: center;">
                             <select name="numco2sensors">
-                                <option value="0" selected="selected">0</option>
-                                <option value="1" selected="selected">1</option>
+                                <option value="0" <?php if ($numco2sensors == 0) echo "selected=\"selected\""; ?>>0</option>
+                                <option value="1" <?php if ($numco2sensors == 1) echo "selected=\"selected\""; ?>>1</option>
+                                <option value="2" <?php if ($numco2sensors == 2) echo "selected=\"selected\""; ?>>2</option>
+                                <option value="3" <?php if ($numco2sensors == 3) echo "selected=\"selected\""; ?>>3</option>
+                                <option value="4" <?php if ($numco2sensors == 4) echo "selected=\"selected\""; ?>>4</option>
                             </select>
                             <input type="submit" name="ChangeNoCo2Sensors" value="Save">
                         </div>
@@ -1305,7 +1308,7 @@ $error_code = "no";
                                 <input type="text" value="<?php echo ${'co2' . $i . 'relay'}; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>Co2Relay" title="This is the relay connected to the device that modulates CO2"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${'co2' . $i . 'set'}; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>Co2Set" title="This is the desired CO2 level"/> ppmv
+                                <input type="text" value="<?php echo ${'co2' . $i . 'set'}; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>Co2Set" title="This is the desired CO2 level"/> ppm
                             </td>
                             <td align=center>
                                 <input type="text" value="<?php echo ${'co2' . $i . 'period'}; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Co2Period" title="This is the number of seconds to wait after the relay has been turned off before taking another CO2 reading and applying the PID"/>
