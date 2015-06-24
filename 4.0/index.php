@@ -1478,8 +1478,8 @@ $error_code = "no";
                         if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
                     ?>" method="POST">
                         Lines: <input type="text" maxlength=8 size=8 name="Lines" /> 
-                        <input type="submit" name="HT Sensor" value="HTSensor"> 
-                        <input type="submit" name="CO2 Sensor" value="Co2Sensor"> 
+                        <input type="submit" name="HTSensor" value="HT Sensor"> 
+                        <input type="submit" name="Co2Sensor" value="Co2 Sensor"> 
                         <input type="submit" name="Relay" value="Relay"> 
                         <input type="submit" name="Auth" value="Auth">
                         <input type="submit" name="Daemon" value="Daemon">
