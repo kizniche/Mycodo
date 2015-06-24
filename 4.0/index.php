@@ -822,47 +822,96 @@ $error_code = "no";
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
                                 switch ($_GET['page']) {
                                     case 'Main':
-                                    if ($ref) shell_exec($mycodo_client . ' --graph dayweek ' . $id . ' ' . $n);
-                                    echo "main&mod=" . $id . "&sensor=" . $n . ">";
-                                    break;
+                                        if ($ref) shell_exec($mycodo_client . ' --graph htdayweek ' . $id . ' ' . $n);
+                                        echo "htmain&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
                                     case 'Separate1h':
-                                    if ($ref) shell_exec($mycodo_client . ' --graph separate1h ' . $id . ' ' . $n);
-                                    echo "separate1h&mod=" . $id . "&sensor=" . $n . ">";
-                                    break;
+                                        if ($ref) shell_exec($mycodo_client . ' --graph htseparate1h ' . $id . ' ' . $n);
+                                        echo "htseparate1h&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
                                     case 'Separate6h':
-                                    if ($ref) shell_exec($mycodo_client . ' --graph separate6h ' . $id . ' ' . $n);
-                                    echo "separate6h&mod=" . $id . "&sensor=" . $n . ">";
-                                    break;
+                                        if ($ref) shell_exec($mycodo_client . ' --graph htseparate6h ' . $id . ' ' . $n);
+                                        echo "htseparate6h&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
                                     case 'Separate1d':
-                                    if ($ref) shell_exec($mycodo_client . ' --graph separate1d ' . $id . ' ' . $n);
-                                    echo "separate1d&mod=" . $id . "&sensor=" . $n . ">";
-                                    break;
+                                        if ($ref) shell_exec($mycodo_client . ' --graph htseparate1d ' . $id . ' ' . $n);
+                                        echo "htseparate1d&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
                                     case 'Separate3d':
-                                    if ($ref) shell_exec($mycodo_client . ' --graph separate3d ' . $id . ' ' . $n);
-                                    echo "separate3d&mod=" . $id . "&sensor=" . $n . ">";
-                                    break;
+                                        if ($ref) shell_exec($mycodo_client . ' --graph htseparate3d ' . $id . ' ' . $n);
+                                        echo "htseparate3d&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
                                     case 'Separate1w':
-                                    if ($ref) shell_exec($mycodo_client . ' --graph separate1w ' . $id . ' ' . $n);
-                                    echo "separate1w&mod=" . $id . "&sensor=" . $n . ">";
-                                    break;
+                                        if ($ref) shell_exec($mycodo_client . ' --graph htseparate1w ' . $id . ' ' . $n);
+                                        echo "htseparate1w&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
                                     case 'Separate1m':
-                                    if ($ref) shell_exec($mycodo_client . ' --graph separate1m ' . $id . ' ' . $n);
-                                    echo "separate1m&mod=" . $id . "&sensor=" . $n . ">";
-                                    break;
+                                        if ($ref) shell_exec($mycodo_client . ' --graph htseparate1m ' . $id . ' ' . $n);
+                                        echo "htseparate1m&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
                                     case 'Separate3m':
-                                    if ($ref) shell_exec($mycodo_client . ' --graph separate3m ' . $id . ' ' . $n);
-                                    echo "separate3m&mod=" . $id . "&sensor=" . $n . ">";
-                                    break;
+                                        if ($ref) shell_exec($mycodo_client . ' --graph htseparate3m ' . $id . ' ' . $n);
+                                        echo "htseparate3m&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
                                     default:
-                                    if ($ref) shell_exec($mycodo_client . ' --graph dayweek ' . $id . ' ' . $n);
-                                    echo "main&mod=" . $id . "&sensor=" . $n . ">";
-                                    break;
+                                        if ($ref) shell_exec($mycodo_client . ' --graph htdayweek ' . $id . ' ' . $n);
+                                        echo "htmain&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
                                 }
                                 echo "</div>";
                             } else if (${'sensorht' . $n . 'graph'} == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                                if ($ref) shell_exec($mycodo_client . ' --graph dayweek ' . $id . ' ' . $n);
-                                echo "main&mod=" . $id . "&sensor=" . $n . "></div>";
+                                if ($ref) shell_exec($mycodo_client . ' --graph htdayweek ' . $id . ' ' . $n);
+                                echo "htmain&mod=" . $id . "&sensor=" . $n . "></div>";
+                            }
+                            if ($n != $numhtsensors && $sensorco21graph == 0 && $sensorco22graph == 0 && $sensorco23graph == 0 && $sensorco24graph == 0) { echo "<hr class=\"fade\"/>"; }
+                        }
+                        for ($n = 1; $n <= $numco2sensors; $n++ ) {
+                            if (isset($_GET['page']) and ${'sensorco2' . $n . 'graph'} == 1) {
+                                echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
+                                switch ($_GET['page']) {
+                                    case 'Main':
+                                        if ($ref) shell_exec($mycodo_client . ' --graph co2dayweek ' . $id . ' ' . $n);
+                                        echo "co2main&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
+                                    case 'Separate1h':
+                                        if ($ref) shell_exec($mycodo_client . ' --graph co2separate1h ' . $id . ' ' . $n);
+                                        echo "co2separate1h&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
+                                    case 'Separate6h':
+                                        if ($ref) shell_exec($mycodo_client . ' --graph co2separate6h ' . $id . ' ' . $n);
+                                        echo "co2separate6h&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
+                                    case 'Separate1d':
+                                        if ($ref) shell_exec($mycodo_client . ' --graph co2separate1d ' . $id . ' ' . $n);
+                                        echo "co2separate1d&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
+                                    case 'Separate3d':
+                                        if ($ref) shell_exec($mycodo_client . ' --graph co2separate3d ' . $id . ' ' . $n);
+                                        echo "co2separate3d&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
+                                    case 'Separate1w':
+                                        if ($ref) shell_exec($mycodo_client . ' --graph co2separate1w ' . $id . ' ' . $n);
+                                        echo "co2separate1w&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
+                                    case 'Separate1m':
+                                        if ($ref) shell_exec($mycodo_client . ' --graph co2separate1m ' . $id . ' ' . $n);
+                                        echo "co2separate1m&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
+                                    case 'Separate3m':
+                                        if ($ref) shell_exec($mycodo_client . ' --graph co2separate3m ' . $id . ' ' . $n);
+                                        echo "co2separate3m&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
+                                    default:
+                                        if ($ref) shell_exec($mycodo_client . ' --graph co2dayweek ' . $id . ' ' . $n);
+                                        echo "co2main&mod=" . $id . "&sensor=" . $n . ">";
+                                        break;
+                                }
+                                echo "</div>";
+                            } else if (${'sensorht' . $n . 'graph'} == 1) {
+                                echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
+                                if ($ref) shell_exec($mycodo_client . ' --graph co2dayweek ' . $id . ' ' . $n);
+                                echo "co2main&mod=" . $id . "&sensor=" . $n . "></div>";
                             }
                             if ($n != $numhtsensors) { echo "<hr class=\"fade\"/>"; }
                         }

@@ -58,29 +58,53 @@ if ($login->isUserLoggedIn() == true) {
                 $newest_file = $files[0];
                 readfile($still_dir . $newest_file);
                 break;
-            case 'main':
-                readfile($image_dir . 'graph-dayweek-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+            case 'htmain':
+                readfile($image_dir . 'graph-htdayweek-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
-            case 'separate1h':
-                readfile($image_dir . 'graph-separate1h-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+            case 'htseparate1h':
+                readfile($image_dir . 'graph-htseparate1h-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
-            case 'separate6h':
-                readfile($image_dir . 'graph-separate6h-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+            case 'htseparate6h':
+                readfile($image_dir . 'graph-htseparate6h-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
-            case 'separate1d':
-                readfile($image_dir . 'graph-separate1d-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+            case 'htseparate1d':
+                readfile($image_dir . 'graph-htseparate1d-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
-            case 'separate3d':
-                readfile($image_dir . 'graph-separate3d-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+            case 'htseparate3d':
+                readfile($image_dir . 'graph-htseparate3d-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
-            case 'separate1w':
-                readfile($image_dir . 'graph-separate1w-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+            case 'htseparate1w':
+                readfile($image_dir . 'graph-htseparate1w-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
-            case 'separate1m':
-                readfile($image_dir . 'graph-separate1m-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+            case 'htseparate1m':
+                readfile($image_dir . 'graph-htseparate1m-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
-            case 'separate3m':
-                readfile($image_dir . 'graph-separate3m-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+            case 'htseparate3m':
+                readfile($image_dir . 'graph-htseparate3m-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+                break;
+            case 'co2main':
+                readfile($image_dir . 'graph-co2dayweek-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+                break;
+            case 'co2separate1h':
+                readfile($image_dir . 'graph-co2separate1h-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+                break;
+            case 'co2separate6h':
+                readfile($image_dir . 'graph-co2separate6h-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+                break;
+            case 'co2separate1d':
+                readfile($image_dir . 'graph-co2separate1d-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+                break;
+            case 'co2separate3d':
+                readfile($image_dir . 'graph-co2separate3d-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+                break;
+            case 'co2separate1w':
+                readfile($image_dir . 'graph-co2separate1w-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+                break;
+            case 'co2separate1m':
+                readfile($image_dir . 'graph-co2separate1m-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
+                break;
+            case 'co2separate3m':
+                readfile($image_dir . 'graph-co2separate3m-' . $_GET['mod'] . '-' . $_GET['sensor'] . '.png');
                 break;
             case 'combined1h':
                 readfile($image_dir . 'graph-combined1h-' . $_GET['mod'] .  '.png');

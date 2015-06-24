@@ -1434,12 +1434,19 @@ def generate_graph(graph_out_file, graph_id, sensorn):
 
     # Combine sensor and relay logs on SD card with sensor and relay logs in /tmp
     sensor_ht_log_files_combine = [sensor_ht_log_file, sensor_ht_log_file_tmp]
-    sensor_log_generate = "%s/sensor-logs-combined.log" % tmp_path
-    relay_log_files_combine = [relay_log_file, relay_log_file_tmp]
-    relay_log_generate = "%s/relay-logs-combined.log" % tmp_path
-    with open(sensor_log_generate, 'w') as fout:
+    sensor_ht_log_generate = "%s/sensor-ht-logs-combined.log" % tmp_path
+    with open(sensor_ht_log_generate, 'w') as fout:
         for line in fileinput.input(sensor_ht_log_files_combine):
             fout.write(line)
+            
+    sensor_co2_log_files_combine = [sensor_co2_log_file, sensor_co2_log_file_tmp]
+    sensor_co2_log_generate = "%s/sensor-co2-logs-combined.log" % tmp_path
+    with open(sensor_co2_log_generate, 'w') as fout:
+        for line in fileinput.input(sensor_co2_log_files_combine):
+            fout.write(line)
+            
+    relay_log_files_combine = [relay_log_file, relay_log_file_tmp]
+    relay_log_generate = "%s/relay-logs-combined.log" % tmp_path
     with open(relay_log_generate, 'w') as fout:
         for line in fileinput.input(relay_log_files_combine):
             fout.write(line)
@@ -1456,6 +1463,10 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     y2_min = '0'
     y2_max = '35'
     
+    if "co2" in graph_out_file:
+        y2_min = '0'
+        y2_max = '5000'
+    
     # Line colors (see comments further down with their use)
     graph_colors = ['#FF3100', '#0772A1', '#00B74A', '#91180B',
                     '#582557', '#04834C', '#DC32E6', '#957EF9',
@@ -1464,7 +1475,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
                     ]
 
     # Write the following output to a file that will be executed with gnuplot 
-    gnuplot_graph = "%s/plot-%s.gnuplot" % (tmp_path, sensorn)
+    gnuplot_graph = "%s/plot-%s-%s.gnuplot" % (tmp_path, graph_out_file, sensorn)
     plot = open(gnuplot_graph, 'w')
     
     plot.write('reset\n') 
@@ -1498,15 +1509,22 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         plot.write('set style line 12 lc rgb \'#808080\' lt 0 lw 1\n')
         plot.write('set grid xtics ytics back ls 12\n')
     
-    if "day-week" in graph_out_file:
+    if "dayweek" in graph_out_file:
         plot.write('set mytics 10\n')
         plot.write('set my2tics 5\n')
         plot.write('set ytics 0,20\n')
-        plot.write('set y2tics 0,5\n')
+        if "co2" in graph_out_file:
+            plot.write('set y2tics 500\n')
+        else:
+            plot.write('set y2tics 5\n')
     else:
         plot.write('set my2tics 10\n')
         plot.write('set ytics 10\n')
-        plot.write('set y2tics 5\n') 
+        if "co2" in graph_out_file:
+            plot.write('set y2tics 500\n')
+        else:
+            plot.write('set y2tics 5\n')
+            
     
     plot.write('set style line 11 lc rgb \'#808080\' lt 1\n')
     plot.write('set border 3 back ls 11\n')
@@ -1541,43 +1559,63 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         plot.write('set origin 0.0,0.0\n')
         plot.write('set multiplot\n')
         plot.write('set size 1.0,0.5\n')
-        plot.write('set origin 0.0,0.5\n')
+        plot.write('set origin 0.0,1.0\n')
         plot.write('set title \"Combined Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
         plot.write('plot ')
         if sensorHTGraph[1]:
-            plot.write('\"<awk \'$10 == 1\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 title \"T1\" w lp ls 12 axes x1y2')
+            plot.write('\"<awk \'$10 == 1\' ' + sensor_ht_log_generate + sensor_head + '" using 1:7 index 0 title \"T1\" w lp ls 12 axes x1y2')
             if sensorHTGraph[2] or sensorHTGraph[3] or sensorHTGraph[4]: plot.write(', ')
             else: plot.write('\n')
         if sensorHTGraph[2]:
-            plot.write('\"<awk \'$10 == 2\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T2\" w lp ls 13 axes x1y2')
+            plot.write('\"<awk \'$10 == 2\' ' + sensor_ht_log_generate + sensor_head + '" u 1:7 index 0 title \"T2\" w lp ls 13 axes x1y2')
             if sensorHTGraph[3] or sensorHTGraph[4]: plot.write(', ')
             else: plot.write('\n')
         if sensorHTGraph[3]:
-            plot.write('\"<awk \'$10 == 3\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T3\" w lp ls 14 axes x1y2')
+            plot.write('\"<awk \'$10 == 3\' ' + sensor_ht_log_generate + sensor_head + '" u 1:7 index 0 title \"T3\" w lp ls 14 axes x1y2')
             if sensorHTGraph[4]: plot.write(', ')
             else: plot.write('\n')
         if sensorHTGraph[4]:
-            plot.write('\"<awk \'$10 == 4\' ' + sensor_log_generate + sensor_head + '" u 1:7 index 0 title \"T4\" w lp ls 15 axes x1y2\n')
+            plot.write('\"<awk \'$10 == 4\' ' + sensor_ht_log_generate + sensor_head + '" u 1:7 index 0 title \"T4\" w lp ls 15 axes x1y2\n')
         plot.write('set size 1.0,0.5\n')
-        plot.write('set origin 0.0,0.0\n')
+        plot.write('set origin 0.0,0.5\n')
         plot.write('set title \"Combined Humidities: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
         plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
         plot.write('set format x \"%H:%M\\n%m/%d\"\n')
         plot.write('plot ')
         if sensorHTGraph[1]:
-            plot.write('\"<awk \'$10 == 1\' ' + sensor_log_generate + sensor_head + '" using 1:8 index 0 title \"H1\" w lp ls 12 axes x1y1')
+            plot.write('\"<awk \'$10 == 1\' ' + sensor_ht_log_generate + sensor_head + '" using 1:8 index 0 title \"H1\" w lp ls 12 axes x1y1')
             if sensorHTGraph[2] or sensorHTGraph[3] or sensorHTGraph[4]: plot.write(', ')
             else: plot.write('\n')
         if sensorHTGraph[2]:
-            plot.write('\"<awk \'$10 == 2\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H2\" w lp ls 13 axes x1y1')
+            plot.write('\"<awk \'$10 == 2\' ' + sensor_ht_log_generate + sensor_head + '" u 1:8 index 0 title \"H2\" w lp ls 13 axes x1y1')
             if sensorHTGraph[3] or sensorHTGraph[4]: plot.write(', ')
             else: plot.write('\n')
         if sensorHTGraph[3]:
-            plot.write('\"<awk \'$10 == 3\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H3\" w lp ls 14 axes x1y1')
+            plot.write('\"<awk \'$10 == 3\' ' + sensor_ht_log_generate + sensor_head + '" u 1:8 index 0 title \"H3\" w lp ls 14 axes x1y1')
             if sensorHTGraph[4]: plot.write(', ')
             else: plot.write('\n')
         if sensorHTGraph[4]:
-            plot.write('\"<awk \'$10 == 4\' ' + sensor_log_generate + sensor_head + '" u 1:8 index 0 title \"H4\" w lp ls 15 axes x1y1\n')
+            plot.write('\"<awk \'$10 == 4\' ' + sensor_ht_log_generate + sensor_head + '" u 1:8 index 0 title \"H4\" w lp ls 15 axes x1y1\n')
+        plot.write('set size 1.0,0.5\n')
+        plot.write('set origin 0.0, 0.0\n')
+        plot.write('set title \"Combined Humidities: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+        plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
+        plot.write('set format x \"%H:%M\\n%m/%d\"\n')
+        plot.write('plot ')
+        if sensorCo2Graph[1]:
+            plot.write('\"<awk \'$10 == 1\' ' + sensor_co2_log_generate + sensor_head + '" using 1:8 index 0 title \"H1\" w lp ls 12 axes x1y1')
+            if sensorCo2Graph[2] or sensorCo2Graph[3] or sensorCo2Graph[4]: plot.write(', ')
+            else: plot.write('\n')
+        if sensorCo2Graph[2]:
+            plot.write('\"<awk \'$10 == 2\' ' + sensor_co2_log_generate + sensor_head + '" u 1:8 index 0 title \"H2\" w lp ls 13 axes x1y1')
+            if sensorCo2Graph[3] or sensorCo2Graph[4]: plot.write(', ')
+            else: plot.write('\n')
+        if sensorCo2Graph[3]:
+            plot.write('\"<awk \'$10 == 3\' ' + sensor_co2_log_generate + sensor_head + '" u 1:8 index 0 title \"H3\" w lp ls 14 axes x1y1')
+            if sensorCo2Graph[4]: plot.write(', ')
+            else: plot.write('\n')
+        if sensorCo2Graph[4]:
+            plot.write('\"<awk \'$10 == 4\' ' + sensor_co2_log_generate + sensor_head + '" u 1:8 index 0 title \"H4\" w lp ls 15 axes x1y1\n')
         plot.write('unset multiplot\n')
 
     # Generate a graph with temp, hum, and dew point for a specific sensor
@@ -1596,15 +1634,15 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         plot.write('\"\" u 1:13 index 0 title \"' + relayName[7] + '\" w impulses ls 10 axes x1y1, ')
         plot.write('\"\" u 1:14 index 0 title \"' + relayName[8] + '\" w impulses ls 11 axes x1y1\n')
 
-    # Generate a graph of the past day and week periods for each sensor 
-    if "dayweek" in graph_out_file:
+    # Generate a graph of the past day and week periods for each HT sensor 
+    if "htdayweek" in graph_out_file:
         plot.write('set origin 0.0,0.0\n')
         plot.write('set multiplot\n')
         # Top graph - day
         plot.write('set size 1.0,0.5\n')
         plot.write('set origin 0.0,0.5\n')
         plot.write('set title \"Sensor ' + sensorn + ': ' + sensorHTName[int(float(sensorn))] + '\\n\\nPast Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-        plot.write('plot \"<awk \'$10 == ' + sensorn + '\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
+        plot.write('plot \"<awk \'$10 == ' + sensorn + '\' ' + sensor_ht_log_generate + sensor_head + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
         plot.write('\"\" using 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, ')
         plot.write('\"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ')
         plot.write('\"<awk \'$15 == ' + sensorn + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relayName[1] + '\" w impulses ls 4 axes x1y1, ')
@@ -1625,9 +1663,39 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         plot.write('set title \"Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
         plot.write('set format x \"%a\\n%m/%d\"\n')
         plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
-        plot.write('plot \"<awk \'$10 == ' + sensorn + '\' ' + sensor_log_generate + sensor_head + '" using 1:7 index 0 notitle w lp ls 1 axes x1y2, ')
+        plot.write('plot \"<awk \'$10 == ' + sensorn + '\' ' + sensor_ht_log_generate + sensor_head + '" using 1:7 index 0 notitle w lp ls 1 axes x1y2, ')
         plot.write('\"\" using 1:8 index 0 notitle w lp ls 2 axes x1y1, ')
         plot.write('\"\" using 1:9 index 0 notitle w lp ls 3 axes x1y2\n')
+        plot.write('unset multiplot\n')
+        
+    # Generate a graph of the past day and week periods for each CO2 sensor 
+    if "co2dayweek" in graph_out_file:
+        plot.write('set origin 0.0,0.0\n')
+        plot.write('set multiplot\n')
+        # Top graph - day
+        plot.write('set size 1.0,0.5\n')
+        plot.write('set origin 0.0,0.5\n')
+        plot.write('set title \"Sensor ' + sensorn + ': ' + sensorCo2Name[int(float(sensorn))] + '\\n\\nPast Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+        plot.write('plot \"<awk \'$8 == ' + sensorn + '\' ' + sensor_co2_log_generate + sensor_head + '" using 1:7 index 0 title \"CO2\" w lp ls 1 axes x1y2, ')
+        plot.write('\"<awk \'$15 == ' + sensorn + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relayName[1] + '\" w impulses ls 4 axes x1y1, ')
+        plot.write('\"\" using 1:8 index 0 title \"' + relayName[2] + '\" w impulses ls 5 axes x1y1, ')
+        plot.write('\"\" using 1:9 index 0 title \"' + relayName[3] + '\" w impulses ls 6 axes x1y1, ')
+        plot.write('\"\" using 1:10 index 0 title \"' + relayName[4] + '\" w impulses ls 7 axes x1y1, ')
+        plot.write('\"\" using 1:11 index 0 title \"' + relayName[5] + '\" w impulses ls 8 axes x1y1, ')
+        plot.write('\"\" using 1:12 index 0 title \"' + relayName[6] + '\" w impulses ls 9 axes x1y1, ')
+        plot.write('\"\" using 1:13 index 0 title \"' + relayName[7] + '\" w impulses ls 10 axes x1y1, ')
+        plot.write('\"\" using 1:14 index 0 title \"' + relayName[8] + '\" w impulses ls 11 axes x1y1\n')
+        # Bottom graph - week
+        d = 7
+        time_ago = '1 Week'
+        date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
+        date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S") 
+        plot.write('set size 1.0,0.5\n')
+        plot.write('set origin 0.0,0.0\n')
+        plot.write('set title \"Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+        plot.write('set format x \"%a\\n%m/%d\"\n')
+        plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
+        plot.write('plot \"<awk \'$8 == ' + sensorn + '\' ' + sensor_co2_log_generate + sensor_head + '" using 1:7 index 0 notitle w lp ls 1 axes x1y2\n')
         plot.write('unset multiplot\n')
 
     if "legend-small" in graph_out_file:
@@ -1671,11 +1739,12 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     # Generate graph with gnuplot with the above generated command sequence
     if logging.getLogger().isEnabledFor(logging.DEBUG) is False:
         subprocess.call(['gnuplot', gnuplot_graph])
-        os.remove(gnuplot_graph)
-        os.remove(sensor_log_generate)
+        #os.remove(gnuplot_graph)
+        os.remove(sensor_ht_log_generate)
+        #os.remove(sensor_co2_log_generate)
         os.remove(relay_log_generate)
     else:
-        gnuplot_log = "%s/plot-%s.log" % (log_path, sensorn)
+        gnuplot_log = "%s/plot-%s-%s.log" % (log_path, graph_out_file, sensorn)
         with open(gnuplot_log, 'ab') as errfile:
             subprocess.call(['gnuplot', gnuplot_graph], stderr=errfile)
 
