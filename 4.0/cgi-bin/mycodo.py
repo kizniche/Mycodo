@@ -454,7 +454,7 @@ class ComServer(rpyc.Service):
     def exposed_ReadCO2Sensor(self, pin, sensor):
         logging.info("[Client command] Read CO2 Sensor %s from GPIO pin %s", sensor, pin)
         if (sensor == 'K30'):
-            read_co2_sensor(0, sensor)
+            read_co2_sensor(sensor)
             return (co2)
         else:
             return 'Invalid Sensor Name'
@@ -755,12 +755,12 @@ def daemon(output, log):
     logging.info("[Daemon] Conducting initial sensor readings from %s HT and %s CO2 sensors", sum(sensorHTActivated), sum(sensorCo2Activated))
     for i in range(1, numHTSensors+1):
         if sensorHTDevice[i] != 'Other' and sensorHTActivated[i] == 1:
-            read_dht_sensor(0, i)
+            read_dht_sensor(i)
             time.sleep(2) # Ensure a minimum of 2 seconds between sensor reads
     
     for i in range(1, numCo2Sensors+1):
         if sensorCo2Device[i] != 'Other' and sensorCo2Activated[i] == 1:
-            read_co2_sensor(0, i)
+            read_co2_sensor(i)
             time.sleep(2) # Ensure a minimum of 2 seconds between sensor reads
     
     timerLogBackup = int(time.time()) + 21600 # 21600 seconds = 6 hours
@@ -801,22 +801,22 @@ def daemon(output, log):
             if ClientQue == 'write_co2_sensor_log':
                 logging.debug("[Client command] Write CO2 Sensor Log")
                 if (ClientVar1 != 0):
-                    read_co2_sensor(0, ClientVar1)
+                    read_co2_sensor(ClientVar1)
                     write_co2_sensor_log(ClientVar1)
                 else:
                     for i in range(1, int(numCo2Sensors)+1): 
-                        read_co2_sensor(0, i)
+                        read_co2_sensor(i)
                         write_co2_sensor_log(i)
                         time.sleep(2)
                 change_sensor_log = 0
             elif ClientQue == 'write_ht_sensor_log':
                 logging.debug("[Client command] Write HT Sensor Log")
                 if (ClientVar1 != 0):
-                    read_dht_sensor(0, ClientVar1)
+                    read_dht_sensor(ClientVar1)
                     write_dht_sensor_log(ClientVar1)
                 else:
                     for i in range(1, int(numHTSensors)+1): 
-                        read_dht_sensor(0, i)
+                        read_dht_sensor(i)
                         write_dht_sensor_log(i)
                         time.sleep(2)
                 change_sensor_log = 0
@@ -898,15 +898,15 @@ def daemon(output, log):
         for i in range(1, int(numHTSensors)+1):
             if int(time.time()) > timerHTSensorLog[i] and sensorHTDevice[i] != 'Other' and sensorHTActivated[i] == 1:
                 logging.debug("[Timer Expiration] Read sensor %s every %s seconds: Write sensor log", i, sensorHTPeriod[i])
-                read_dht_sensor(0, i)
-                write_dht_sensor_log(i)
+                read_output = read_dht_sensor(i)
+                if read_output == 1: write_dht_sensor_log(i)
                 timerHTSensorLog[i] = int(time.time()) + sensorHTPeriod[i]
 
         # Write CO2 to sensor log
         for i in range(1, int(numCo2Sensors)+1):
             if int(time.time()) > timerCo2SensorLog[i] and sensorCo2Device[i] != 'Other' and sensorCo2Activated[i] == 1:
-                read_co2_sensor(0, i)
-                write_co2_sensor_log(i)
+                read_output = read_co2_sensor(i)
+                if read_output == 1: write_co2_sensor_log(i)
                 timerCo2SensorLog[i] = int(time.time()) + sensorCo2Period[i]
         
         # Concatenate local log with tempfs log every 6 hours
@@ -944,7 +944,7 @@ def temperature_monitor(ThreadName, sensor):
         if TempOR[sensor] == 0 and Temp_PID_Down == 0 and relayTemp[sensor] != 0 and sensorHTActivated[sensor] == 1:
             if int(time.time()) > timerTemp:
                 logging.debug("[PID Temperature-%s] Reading temperature...", sensor)
-                read_dht_sensor(0, sensor)
+                read_dht_sensor(sensor)
                 PIDTemp = p_temp.update(float(tempc[sensor]))
                 if (tempc[sensor] < setTemp[sensor]):
                     logging.debug("[PID Temperature-%s] Temperature (%.1f°C) < (%.1f°C) setTemp", sensor, tempc[sensor], float(setTemp[sensor]))
@@ -981,7 +981,7 @@ def humidity_monitor(ThreadName, sensor):
         if HumOR[sensor] == 0 and Hum_PID_Down == 0 and relayHum[sensor] != 0 and sensorHTActivated[sensor] == 1:
             if int(time.time()) > timerHum:
                 logging.debug("[PID Humidity-%s] Reading humidity...", sensor)
-                read_dht_sensor(0, sensor)
+                read_dht_sensor(sensor)
                 PIDHum = p_hum.update(float(humidity[sensor]))
                 if (humidity[sensor] < setHum[sensor]):
                     logging.debug("[PID Humidity-%s] Humidity (%.1f%%) < (%.1f%%) setHum", sensor, humidity[sensor], float(setHum[sensor]))
@@ -1018,7 +1018,7 @@ def co2_monitor(ThreadName, sensor):
         if Co2OR[sensor] == 0 and Co2_PID_Down == 0 and relayCo2[sensor] != 0 and sensorCo2Activated[sensor] == 1:
             if int(time.time()) > timerCo2:
                 logging.debug("[PID CO2-%s] Reading CO2...", sensor)
-                read_co2_sensor(0, sensor)
+                read_co2_sensor(sensor)
                 PIDCo2 = p_co2.update(float(co2[sensor]))
                 if (co2[sensor] > setCo2[sensor]):
                     logging.debug("[PID CO2-%s] CO2 (%.1f%%) > (%.1f%%) setCO2", sensor, co2[sensor], setCo2[sensor])
@@ -1037,7 +1037,7 @@ def co2_monitor(ThreadName, sensor):
     CAlive[sensor] = 2
 
 # Read CO2 from sensor
-def read_co2_sensor(silent, sensor):
+def read_co2_sensor(sensor):
     global co2
     chkco2 = 1
     
@@ -1046,51 +1046,41 @@ def read_co2_sensor(silent, sensor):
         logging.warning("[Read CO2 Sensor-%s] Cannot read CO2 from an unknown device!", sensor)
         return 0
 
-    if not silent and not Terminate:
-        logging.debug("[Read CO2 Sensor-%s] Taking first CO2 reading", sensor)
+    logging.debug("[Read CO2 Sensor-%s] Taking first CO2 reading", sensor)
         
-    if not Terminate:
-        if device == 'K30': co22 = read_K30()
-        if co22 == None:
+    if device == 'K30': co22 = read_K30()
+    if co22 == None:
+        logging.warning("[Read CO2 Sensor-%s] Could not read CO2!", sensor)
+        return 0
+
+    time.sleep(2) # Wait 2 seconds between sensor reads
+    
+    logging.debug("[Read CO2 Sensor-%s] %s", sensor, co22)
+
+    while not Terminate:
+        logging.debug("[Read CO2 Sensor-%s] Taking second CO2 reading", sensor)
+        
+        if device == 'K30': co2[sensor] = read_K30()
+        if co2[sensor] == 'None':
             logging.warning("[Read CO2 Sensor-%s] Could not read CO2!", sensor)
             return 0
 
-        time.sleep(2) # Wait 2 seconds between sensor reads
-        if not silent and co22 != None:
-            logging.debug("[Read CO2 Sensor-%s] %s", sensor, co22)
-
-    while chkco2 and not Terminate:
-        if not silent: 
-            logging.debug("[Read CO2 Sensor-%s] Taking second CO2 reading", sensor)
-        
-        if not Terminate:
-            if device == 'K30':
-                co2[sensor] = read_K30()
+        logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor, co2[sensor])
+        logging.debug("[Read CO2 Sensor-%s] Difference: %s", sensor, abs(co22-co2[sensor]))
             
-        if co2[sensor] != 'None':
-            if not silent and not Terminate: 
-                logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor, co2[sensor])
-                logging.debug("[Read CO2 Sensor-%s] Difference: %s", sensor, abs(co22-co2[sensor]))
-                
-            if abs(co22-co2[sensor]) > 20 and not Terminate:
-                co22 = co2[sensor]
-                chkco2 = 1
-                if not silent:
-                    logging.debug("[Read CO2 Sensor-%s] Successive readings > 20 difference: Rereading", sensor)
-            elif not Terminate:
-                chkco2 = 0
-
-                if not silent: 
-                    logging.debug("[Read CO2 Sensor-%s] Successive readings < 20 difference: keeping.", sensor)
-                    logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor, co2[sensor])
-        else:
-            logging.warning("[Read CO2 Sensor-%s] Could not read CO2!", sensor)
-            return 0
-        time.sleep(2) # Wait 2 seconds between sensor reads
+        if abs(co22-co2[sensor]) > 20 and not Terminate:
+            co22 = co2[sensor]
+            logging.debug("[Read CO2 Sensor-%s] Successive readings > 20 difference: Rereading", sensor)
+            time.sleep(2) # Wait 2 seconds between sensor reads
+        elif not Terminate:
+            logging.debug("[Read CO2 Sensor-%s] Successive readings < 20 difference: keeping.", sensor)
+            logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor, co2[sensor])
+            return 1
+            
             
 # Read K30 CO2 Sensor
 def read_K30():
-    ser = serial.Serial("/dev/ttyAMA0", timeout=5) # Try for 5 seconds to read CO2
+    ser = serial.Serial("/dev/ttyAMA0", timeout=3) # Wait 3 seconds for reply
     ser.flushInput()
     time.sleep(1)
     ser.write("\xFE\x44\x00\x08\x02\x9F\x25")
@@ -1136,7 +1126,7 @@ def write_co2_sensor_log(sensor):
         lock.release()
 
 # Read the temperature and humidity from sensor
-def read_dht_sensor(silent, sensor):
+def read_dht_sensor(sensor):
     global tempc
     global humidity
     global dewpointc
@@ -1150,54 +1140,50 @@ def read_dht_sensor(silent, sensor):
         device = 'Other'
         return 'cannot read temperature/humidity from an unknown device'
 
-    if not silent and not Terminate:
-        logging.debug("[Read HT Sensor-%s] Taking first Temperature/humidity reading", sensor)
+    logging.debug("[Read HT Sensor-%s] Taking first Temperature/humidity reading", sensor)
         
-    if not Terminate:
-        humidity2, tempc2 = Adafruit_DHT.read_retry(device, sensorHTPin[sensor])
+    humidity2, tempc2 = Adafruit_DHT.read_retry(device, sensorHTPin[sensor])
+    
+    if humidity2 == None or tempc2 == None:
+        logging.warning("[Read HT Sensor-%s] Could not read temperature/humidity!", sensor)
+        return 0
         
-        if humidity2 == None or tempc2 == None:
-            logging.warning("[Read HT Sensor-%s] Could not read temperature/humidity!", sensor)
-            return 0
-            
-        if not silent:
-            logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor, tempc2, humidity2)
+    logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor, tempc2, humidity2)
 
-        time.sleep(2) # Wait 2 seconds between sensor reads
-        
-        if not silent: 
-            logging.debug("[Read HT Sensor-%s] Taking second Temperature/humidity reading", sensor)
+    time.sleep(2) # Wait 2 seconds between sensor reads
+    
+    logging.debug("[Read HT Sensor-%s] Taking second Temperature/humidity reading", sensor)
             
     while chktemp and not Terminate:
         humidity[sensor], tempc[sensor] = Adafruit_DHT.read_retry(device, sensorHTPin[sensor])
             
-        if humidity[sensor] != 'None' or tempc[sensor] != 'None':
-            if not silent and not Terminate: 
-                logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor, tempc[sensor], humidity[sensor])
-                logging.debug("[Read HT Sensor-%s] Differences: %.1f°C, %.1f%%", sensor, abs(tempc2-tempc[sensor]), abs(humidity2-humidity[sensor]))
-                
-            if abs(tempc2-tempc[sensor]) > 1 or abs(humidity2-humidity[sensor]) > 1 and not Terminate:
-                tempc2 = tempc[sensor]
-                humidity2 = humidity[sensor]
-                chktemp = 1
-                
-                if not silent:
-                    logging.debug("[Read HT Sensor-%s] Successive readings > 1 difference: Rereading", sensor)
-            elif not Terminate:
-                chktemp = 0
+        if humidity[sensor] == 'None' or tempc[sensor] == 'None':
+            logging.warning("[Read HT Sensor-%s] Could not read temperature/humidity!", sensor)
+            return 0
+        
+        logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor, tempc[sensor], humidity[sensor])
+        logging.debug("[Read HT Sensor-%s] Differences: %.1f°C, %.1f%%", sensor, abs(tempc2-tempc[sensor]), abs(humidity2-humidity[sensor]))
+            
+        if abs(tempc2-tempc[sensor]) > 1 or abs(humidity2-humidity[sensor]) > 1:
+            tempc2 = tempc[sensor]
+            humidity2 = humidity[sensor]
+            chktemp = 1
+            
+            logging.debug("[Read HT Sensor-%s] Successive readings > 1 difference: Rereading", sensor)
+            time.sleep(2)
+        else:
+            chktemp = 0
 
-                if not silent: 
-                    logging.debug("[Read HT Sensor-%s] Successive readings < 1 difference: keeping.", sensor)
+            logging.debug("[Read HT Sensor-%s] Successive readings < 1 difference: keeping.", sensor)
 
-                tempf = float(tempc[sensor])*9.0/5.0 + 32.0
-                dewpointc[sensor] = tempc[sensor] - ((100-humidity[sensor]) / 5)
-                #dewpointf[sensor] = dewpointc[sensor] * 9 / 5 + 32
-                #heatindexf =  -42.379 + 2.04901523 * tempf + 10.14333127 * humidity - 0.22475541 * tempf * humidity - 6.83783 * 10**-3 * tempf**2 - 5.481717 * 10**-2 * humidity**2 + 1.22874 * 10**-3 * tempf**2 * humidity + 8.5282 * 10**-4 * tempf * humidity**2 - 1.99 * 10**-6 * tempf**2 * humidity**2
-                #heatindexc[sensor] = (heatindexf - 32) * (5 / 9)
-                
-                if not silent: 
-                    logging.debug("[Read HT Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", sensor, tempc[sensor], humidity[sensor], dewpointc[sensor])
-        time.sleep(2)
+            tempf = float(tempc[sensor])*9.0/5.0 + 32.0
+            dewpointc[sensor] = tempc[sensor] - ((100-humidity[sensor]) / 5)
+            #dewpointf[sensor] = dewpointc[sensor] * 9 / 5 + 32
+            #heatindexf =  -42.379 + 2.04901523 * tempf + 10.14333127 * humidity - 0.22475541 * tempf * humidity - 6.83783 * 10**-3 * tempf**2 - 5.481717 * 10**-2 * humidity**2 + 1.22874 * 10**-3 * tempf**2 * humidity + 8.5282 * 10**-4 * tempf * humidity**2 - 1.99 * 10**-6 * tempf**2 * humidity**2
+            #heatindexc[sensor] = (heatindexf - 32) * (5 / 9)
+            
+            logging.debug("[Read HT Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", sensor, tempc[sensor], humidity[sensor], dewpointc[sensor])
+            return 1
            
 # Append HT sensor data to the log file
 def write_dht_sensor_log(sensor):
