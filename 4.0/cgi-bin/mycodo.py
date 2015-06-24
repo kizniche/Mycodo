@@ -1330,8 +1330,8 @@ def read_co2_sensor(sensor):
     resp = ser.read(7)
     high = ord(resp[3])
     low = ord(resp[4])
-    co2 = (high*256) + low
-    logging.info("[Read CO2 Sensor] CO2: %s", str(co2))
+    co2[sensor] = (high*256) + low
+    logging.info("[Read CO2 Sensor] CO2: %s", str(co2[sensor]))
 	
 # Append co2 sensor data to the log file
 def write_co2_sensor_log(sensor):
