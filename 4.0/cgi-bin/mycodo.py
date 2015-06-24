@@ -1483,7 +1483,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     plot.write('set timefmt \"%Y %m %d %H %M %S\"\n')
     
     if "combined" in graph_out_file:
-        plot.write('set terminal png size 1000,1000\n')
+        plot.write('set terminal png size 1000,1500\n')
         plot.write('set output \"' + image_path + '/graph-' + graph_out_file + '-' + graph_id + '.png\"\n')
     elif "separate" in graph_out_file:
         plot.write('set terminal png size 1000,600\n')
@@ -1556,10 +1556,8 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     
     # Generate a graph with all temperatures and one graph with all humidities 
     if "combined" in graph_out_file:
-        plot.write('set origin 0.0,0.0\n')
-        plot.write('set multiplot\n')
-        plot.write('set size 1.0,0.5\n')
-        plot.write('set origin 0.0,1.0\n')
+        plot.write('set multiplot layout 3,1\n')
+        plot.write('set origin 0.0,0.66\n')
         plot.write('set title \"Combined Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
         plot.write('plot ')
         if sensorHTGraph[1]:
@@ -1576,11 +1574,9 @@ def generate_graph(graph_out_file, graph_id, sensorn):
             else: plot.write('\n')
         if sensorHTGraph[4]:
             plot.write('\"<awk \'$10 == 4\' ' + sensor_ht_log_generate + sensor_head + '" u 1:7 index 0 title \"T4\" w lp ls 15 axes x1y2\n')
-        plot.write('set size 1.0,0.5\n')
-        plot.write('set origin 0.0,0.5\n')
+            
+        plot.write('set origin 0.0,0.33\n')
         plot.write('set title \"Combined Humidities: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-        plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
-        plot.write('set format x \"%H:%M\\n%m/%d\"\n')
         plot.write('plot ')
         if sensorHTGraph[1]:
             plot.write('\"<awk \'$10 == 1\' ' + sensor_ht_log_generate + sensor_head + '" using 1:8 index 0 title \"H1\" w lp ls 12 axes x1y1')
@@ -1596,34 +1592,49 @@ def generate_graph(graph_out_file, graph_id, sensorn):
             else: plot.write('\n')
         if sensorHTGraph[4]:
             plot.write('\"<awk \'$10 == 4\' ' + sensor_ht_log_generate + sensor_head + '" u 1:8 index 0 title \"H4\" w lp ls 15 axes x1y1\n')
-        plot.write('set size 1.0,0.5\n')
-        plot.write('set origin 0.0, 0.0\n')
-        plot.write('set title \"Combined Humidities: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-        plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
-        plot.write('set format x \"%H:%M\\n%m/%d\"\n')
+            
+        plot.write('set origin 0.0,0.0\n')
+        plot.write('set title \"Combined CO2s: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+        y2_min = '0'
+        y2_max = '5000'
+        plot.write('set y2range [' + y2_min + ':' + y2_max + ']\n')
+        plot.write('set y2tics 500\n')
         plot.write('plot ')
         if sensorCo2Graph[1]:
-            plot.write('\"<awk \'$10 == 1\' ' + sensor_co2_log_generate + sensor_head + '" using 1:8 index 0 title \"H1\" w lp ls 12 axes x1y1')
+            plot.write('\"<awk \'$8 == 1\' ' + sensor_co2_log_generate + sensor_head + '" using 1:7 index 0 title \"CO2-1\" w lp ls 12 axes x1y2')
             if sensorCo2Graph[2] or sensorCo2Graph[3] or sensorCo2Graph[4]: plot.write(', ')
             else: plot.write('\n')
         if sensorCo2Graph[2]:
-            plot.write('\"<awk \'$10 == 2\' ' + sensor_co2_log_generate + sensor_head + '" u 1:8 index 0 title \"H2\" w lp ls 13 axes x1y1')
+            plot.write('\"<awk \'$8 == 2\' ' + sensor_co2_log_generate + sensor_head + '" u 1:7 index 0 title \"CO2-2\" w lp ls 13 axes x1y2')
             if sensorCo2Graph[3] or sensorCo2Graph[4]: plot.write(', ')
             else: plot.write('\n')
         if sensorCo2Graph[3]:
-            plot.write('\"<awk \'$10 == 3\' ' + sensor_co2_log_generate + sensor_head + '" u 1:8 index 0 title \"H3\" w lp ls 14 axes x1y1')
+            plot.write('\"<awk \'$8 == 3\' ' + sensor_co2_log_generate + sensor_head + '" u 1:7 index 0 title \"CO2-3\" w lp ls 14 axes x1y2')
             if sensorCo2Graph[4]: plot.write(', ')
             else: plot.write('\n')
         if sensorCo2Graph[4]:
-            plot.write('\"<awk \'$10 == 4\' ' + sensor_co2_log_generate + sensor_head + '" u 1:8 index 0 title \"H4\" w lp ls 15 axes x1y1\n')
+            plot.write('\"<awk \'$8 == 4\' ' + sensor_co2_log_generate + sensor_head + '" u 1:7 index 0 title \"CO2-4\" w lp ls 15 axes x1y2\n')
         plot.write('unset multiplot\n')
 
     # Generate a graph with temp, hum, and dew point for a specific sensor
-    if "separate" in graph_out_file:
-        plot.write('set title \"Sensor ' + sensorn + ': ' + sensorHTName[int(float(sensorn))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+    if "htseparate" in graph_out_file:
+        plot.write('set title \"Hum/Temp Sensor ' + sensorn + ': ' + sensorHTName[int(float(sensorn))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
         plot.write('plot \"<awk \'$10 == ' + sensorn + '\' ' + sensor_ht_log_generate + sensor_head + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
         plot.write('\"\" u 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, ')
         plot.write('\"\" u 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ')
+        
+        plot.write('\"<awk \'$15 == ' + sensorn + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relayName[1] + '\" w impulses ls 4 axes x1y1, ')
+        plot.write('\"\" u 1:8 index 0 title \"' + relayName[2] + '\" w impulses ls 5 axes x1y1, ')
+        plot.write('\"\" u 1:9 index 0 title \"' + relayName[3] + '\" w impulses ls 6 axes x1y1, ')
+        plot.write('\"\" u 1:10 index 0 title \"' + relayName[4] + '\" w impulses ls 7 axes x1y1, ')
+        plot.write('\"\" u 1:11 index 0 title \"' + relayName[5] + '\" w impulses ls 8 axes x1y1, ')
+        plot.write('\"\" u 1:12 index 0 title \"' + relayName[6] + '\" w impulses ls 9 axes x1y1, ')
+        plot.write('\"\" u 1:13 index 0 title \"' + relayName[7] + '\" w impulses ls 10 axes x1y1, ')
+        plot.write('\"\" u 1:14 index 0 title \"' + relayName[8] + '\" w impulses ls 11 axes x1y1\n')
+        
+    if "co2separate" in graph_out_file:
+        plot.write('set title \"CO2 Sensor ' + sensorn + ': ' + sensorCo2Name[int(float(sensorn))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+        plot.write('plot \"<awk \'$8 == ' + sensorn + '\' ' + sensor_co2_log_generate + sensor_head + '" using 1:7 index 0 title \"CO2\" w lp ls 1 axes x1y2 ')
         
         plot.write('\"<awk \'$15 == ' + sensorn + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relayName[1] + '\" w impulses ls 4 axes x1y1, ')
         plot.write('\"\" u 1:8 index 0 title \"' + relayName[2] + '\" w impulses ls 5 axes x1y1, ')
