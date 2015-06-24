@@ -252,7 +252,7 @@ class ComServer(rpyc.Service):
         while Co2_PID_Down == 1:
             time.sleep(0.1)
         write_config()
-        read_config(1)
+        read_config()
         if Co2Res:
             Co2_PID_Up = 1
             while Co2_PID_Up:
@@ -284,7 +284,7 @@ class ComServer(rpyc.Service):
         while Co2_PID_Down == 1:
             time.sleep(0.1)
         write_config()
-        read_config(1)
+        read_config()
         if Co2Res:
             Co2_PID_Up = 1
             while Co2_PID_Up:
@@ -304,7 +304,7 @@ class ComServer(rpyc.Service):
         while Temp_PID_Down == 1:
             time.sleep(0.1)
         write_config()
-        read_config(1)
+        read_config()
         if TempRes:
             Temp_PID_Up = 1
             while Temp_PID_Up:
@@ -336,7 +336,7 @@ class ComServer(rpyc.Service):
         while Temp_PID_Down == 1:
             time.sleep(0.1)
         write_config()
-        read_config(1)
+        read_config()
         if TempRes:
             Temp_PID_Up = 1
             while Temp_PID_Up:
@@ -357,7 +357,7 @@ class ComServer(rpyc.Service):
         while Hum_PID_Down == 1:
             time.sleep(0.1)
         write_config()
-        read_config(1)
+        read_config()
         if HumRes:
             Hum_PID_Up = 1
             while Hum_PID_Up:
@@ -389,7 +389,7 @@ class ComServer(rpyc.Service):
         while Hum_PID_Down == 1:
             time.sleep(0.1)
         write_config()
-        read_config(1)
+        read_config()
         if HumRes:
             Hum_PID_Up = 1
             while Hum_PID_Up:
@@ -749,7 +749,7 @@ def daemon(output, log):
     time.sleep(1)
     
     logging.info("[Daemon] Reading configuration file and initializing variables")
-    read_config(1)
+    read_config()
     
     # Initial sensor readings
     logging.info("[Daemon] Conducting initial sensor readings from %s HT and %s CO2 sensors", sum(sensorHTActivated), sum(sensorCo2Activated))
@@ -1685,7 +1685,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
 #################################################
 
 # Read variables from the configuration file
-def read_config(silent):
+def read_config():
     global config_file
     global sensorHTName
     global sensorHTDevice
@@ -1830,12 +1830,6 @@ def read_config(silent):
         timerDurationOn[i] = config.getint('Timer%d' % i, 'timer%ddurationon' % i)
         timerDurationOff[i] = config.getint('Timer%d' % i, 'timer%ddurationoff' % i)
 
-    if not silent:
-        logging.debug("[Read Config] setTemp: %.1f°C, setHum: %.1f%%, TempOR: %s, HumOR: %s", setTemp[1], setHum[1], TempOR[1], HumOR[1])
-
-        for x in range(1,9):
-            logging.debug("[Read Config] RelayNum[Name][Pin]: %s[%s][%s]", x, relayName[x], relayPin[x])
-
 # Write variables to configuration file
 def write_config():
     config = ConfigParser.RawConfigParser()
@@ -1962,7 +1956,7 @@ def modify_var(*names_and_values):
                     names_and_values[i+1])
                 globals()[names_and_values[i]] = names_and_values[i+1]   
     write_config()
-    read_config(1)
+    read_config()
 
 
 #################################################
@@ -2111,7 +2105,7 @@ while not runlock.i_am_locking():
         print "Error: Lock file present: %s" % runlock.path
         sys.exit(0)
 
-read_config(1)
+read_config()
 gpio_initialize()
 menu()
 runlock.release()
