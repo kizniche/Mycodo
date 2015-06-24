@@ -51,14 +51,14 @@ case "${1:-''}" in
             ln -s /var/log/mycodo/sensor-ht-tmp.log /var/www/mycodo/log/sensor-ht-tmp.log
         fi
         
-        if [ ! -e /var/log/mycodo/sensor-ht-tmp.log ]; then
-            touch /var/log/mycodo/sensor-ht-tmp.log
+        if [ ! -e /var/log/mycodo/sensor-co2-tmp.log ]; then
+            touch /var/log/mycodo/sensor-co2-tmp.log
         fi
-        if [ ! -e /var/www/mycodo/log/sensor-ht.log ]; then
-            touch /var/www/mycodo/log/sensor-ht.log
+        if [ ! -e /var/www/mycodo/log/sensor-co2.log ]; then
+            touch /var/www/mycodo/log/sensor-co2.log
         fi
-        if [ ! -h /var/www/mycodo/log/sensor-ht-tmp.log ]; then
-            ln -s /var/log/mycodo/sensor-ht-tmp.log /var/www/mycodo/log/sensor-ht-tmp.log
+        if [ ! -h /var/www/mycodo/log/sensor-co2-tmp.log ]; then
+            ln -s /var/log/mycodo/sensor-co2-tmp.log /var/www/mycodo/log/sensor-co2-tmp.log
         fi
         
         if [ ! -e /var/log/mycodo/relay-tmp.log ]; then
