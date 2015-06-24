@@ -832,6 +832,9 @@ def daemon(output, log):
                 HAlive = [0] * 5
                 for t in threadsh:
                     t.join()
+                CAlive = [0] * 5
+                for t in threadsc:
+                    t.join()
                 #Terminate_final = 0
                 #time.sleep(0.5)
                 server.close()
