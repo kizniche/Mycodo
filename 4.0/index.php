@@ -536,10 +536,10 @@ if ($login->isUserLoggedIn() == true) {
         $settemp_f[$p] = round((${'temp' . $p . 'set'}*(9/5) + 32), 1);
     }
     
-    $last_co2_sensor[1] = `awk '$10 == 1' /var/tmp/sensor-co2.log | tail -n 1`;
-    $last_co2_sensor[2] = `awk '$10 == 2' /var/tmp/sensor-co2.log | tail -n 1`;
-    $last_co2_sensor[3] = `awk '$10 == 3' /var/tmp/sensor-co2.log | tail -n 1`;
-    $last_co2_sensor[4] = `awk '$10 == 4' /var/tmp/sensor-co2.log | tail -n 1`;
+    $last_co2_sensor[1] = `awk '$8 == 1' /var/tmp/sensor-co2.log | tail -n 1`;
+    $last_co2_sensor[2] = `awk '$8 == 2' /var/tmp/sensor-co2.log | tail -n 1`;
+    $last_co2_sensor[3] = `awk '$8 == 3' /var/tmp/sensor-co2.log | tail -n 1`;
+    $last_co2_sensor[4] = `awk '$8 == 4' /var/tmp/sensor-co2.log | tail -n 1`;
     
     for ($p = 1; $p <= $numco2sensors; $p++) {
         $sensor_explode = explode(" ", $last_co2_sensor[$p]);
