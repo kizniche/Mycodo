@@ -926,6 +926,11 @@ def daemon(output, log):
 
         time.sleep(0.1)
 
+
+#################################################
+#                  PID Control                  #
+#################################################
+
 # Temperature modulation by PID control
 def temperature_monitor(ThreadName, sensor):
     global TAlive
@@ -1036,7 +1041,12 @@ def co2_monitor(ThreadName, sensor):
     logging.info("[PID CO2-%s] Shutting Down %s", sensor,  ThreadName)
     CAlive[sensor] = 2
 
-# Read CO2 from sensor
+
+#################################################
+#                Sensor Reading                 #
+#################################################
+    
+# Read CO2 sensor
 def read_co2_sensor(sensor):
     global co2
     chkco2 = 1
@@ -1089,38 +1099,6 @@ def read_K30():
     low = ord(resp[4])
     co2 = (high*256) + low
     return co2
-
-# Append co2 sensor data to the log file
-def write_co2_sensor_log(sensor):
-    config = ConfigParser.RawConfigParser()
-
-    if not os.path.exists(lock_directory):
-        os.makedirs(lock_directory)
-        
-    if not Terminate:
-        lock = LockFile(sensor_co2_lock_path)
-        while not lock.i_am_locking():
-            try:
-                logging.debug("[Write CO2 Sensor Log] Acquiring Lock: %s", lock.path)
-                lock.acquire(timeout=60)    # wait up to 60 seconds
-            except:
-                logging.warning("[Write CO2 Sensor Log] Breaking Lock to Acquire: %s", lock.path)
-                lock.break_lock()
-                lock.acquire()
-
-        logging.debug("[Write CO2 Sensor Log] Gained lock: %s", lock.path)
-
-        try:
-            with open(sensor_co2_log_file_tmp, "ab") as sensorlog:
-                sensorlog.write('{0} {1} {2}\n'.format(
-                    datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
-                    co2[sensor], sensor))
-                logging.debug("[Write CO2 Sensor Log] Data appended to %s", sensor_co2_log_file_tmp)
-        except:
-            logging.warning("[Write CO2 Sensor Log] Unable to append data to %s", sensor_co2_log_file_tmp)
-
-        logging.debug("[Write CO2 Sensor Log] Removing lock: %s", lock.path)
-        lock.release()
 
 # Read the temperature and humidity from sensor
 def read_dht_sensor(sensor):
@@ -1183,8 +1161,12 @@ def read_dht_sensor(sensor):
             time.sleep(2) # Wait 2 seconds between sensor reads
             return 1
 
-           
-# Append HT sensor data to the log file
+
+#################################################
+#           Sensor and Relay Logging            #
+#################################################
+
+# Log temperature/humidity sensor reading
 def write_dht_sensor_log(sensor):
     config = ConfigParser.RawConfigParser()
 
@@ -1214,6 +1196,38 @@ def write_dht_sensor_log(sensor):
             logging.warning("[Write Sensor Log] Unable to append data to %s", sensor_ht_log_file_tmp)
 
         logging.debug("[Write Sensor Log] Removing lock: %s", lock.path)
+        lock.release()
+
+# Log CO2 sensor reading
+def write_co2_sensor_log(sensor):
+    config = ConfigParser.RawConfigParser()
+
+    if not os.path.exists(lock_directory):
+        os.makedirs(lock_directory)
+        
+    if not Terminate:
+        lock = LockFile(sensor_co2_lock_path)
+        while not lock.i_am_locking():
+            try:
+                logging.debug("[Write CO2 Sensor Log] Acquiring Lock: %s", lock.path)
+                lock.acquire(timeout=60)    # wait up to 60 seconds
+            except:
+                logging.warning("[Write CO2 Sensor Log] Breaking Lock to Acquire: %s", lock.path)
+                lock.break_lock()
+                lock.acquire()
+
+        logging.debug("[Write CO2 Sensor Log] Gained lock: %s", lock.path)
+
+        try:
+            with open(sensor_co2_log_file_tmp, "ab") as sensorlog:
+                sensorlog.write('{0} {1} {2}\n'.format(
+                    datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
+                    co2[sensor], sensor))
+                logging.debug("[Write CO2 Sensor Log] Data appended to %s", sensor_co2_log_file_tmp)
+        except:
+            logging.warning("[Write CO2 Sensor Log] Unable to append data to %s", sensor_co2_log_file_tmp)
+
+        logging.debug("[Write CO2 Sensor Log] Removing lock: %s", lock.path)
         lock.release()
 
 # Log the relay duration
@@ -1376,6 +1390,11 @@ def Concatenate_Logs():
         lock.release()
     else:
         logging.debug("[Relay Log] Relay logs the same, skipping.")
+
+
+#################################################
+#                Graph Generation               #
+#################################################
 
 # Generate gnuplot graph
 def generate_graph(graph_out_file, graph_id, sensorn):
@@ -1660,6 +1679,11 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         with open(gnuplot_log, 'ab') as errfile:
             subprocess.call(['gnuplot', gnuplot_graph], stderr=errfile)
 
+
+#################################################
+#        Configuration File Read/Write          #
+#################################################
+
 # Read variables from the configuration file
 def read_config(silent):
     global config_file
@@ -1915,6 +1939,36 @@ def write_config():
     logging.debug("[Write Config] Removing lock: %s", lock.path)
     lock.release()
 
+# Check if a variable name in config_file matches a string
+def modify_var(*names_and_values):
+    namesOfVariables = [
+    'numRelays',
+    'numHTSensors',
+    'numTimers',
+    'smtp_host',
+    'smtp_port',
+    'smtp_user',
+    'smtp_pass',
+    'email_from',
+    'email_to']
+    
+    for i in range(1, len(names_and_values), 2):
+        for variable in namesOfVariables:
+            if names_and_values[i] == variable:
+                # Log variable name: previous value -> new value
+                logging.info("[Change Variable] %s: %s -> %s", 
+                    names_and_values[i], 
+                    globals()[names_and_values[i]], 
+                    names_and_values[i+1])
+                globals()[names_and_values[i]] = names_and_values[i+1]   
+    write_config()
+    read_config(1)
+
+
+#################################################
+#               GPIO Manipulation               #
+#################################################
+    
 # Initialize GPIO
 def gpio_initialize():
     logging.info("[GPIO Initialize] Set GPIO mode to BCM numbering, all as output")
@@ -1927,6 +1981,13 @@ def gpio_initialize():
         GPIO.setup(relayPin[i], GPIO.OUT)
     
     Relays_Off()
+
+# Change GPIO (Select) to a specific state (State)
+def gpio_change(relay, State):
+    logging.debug("[GPIO Write] Setting relay %s (%s) to %s (was %s)", 
+        relay, relayName[relay], 
+        State, GPIO.input(relayPin[relay]))
+    GPIO.output(relayPin[relay], State)
 
 # Turn Relays Off
 def Relays_Off():
@@ -1950,13 +2011,6 @@ def relay_onoff(relay, state):
         gpio_change(relay, 0)
     elif (relayTrigger[relay] == 0 and state == 0):
         gpio_change(relay, 1)
-        
-# Change GPIO (Select) to a specific state (State)
-def gpio_change(relay, State):
-    logging.debug("[GPIO Write] Setting relay %s (%s) to %s (was %s)", 
-        relay, relayName[relay], 
-        State, GPIO.input(relayPin[relay]))
-    GPIO.output(relayPin[relay], State)
 
 # Set relay on for a specific duration
 def relay_on_duration(relay, seconds, sensor):
@@ -1981,52 +2035,11 @@ def relay_on_duration(relay, seconds, sensor):
     
     logging.debug("[Relay Duration] Relay %s (%s) Off (was On for %s sec)", 
         relay, relayName[relay], round(seconds, 1))
-
     return 1
 
-# Check if string represents an integer value
-def represents_int(s):
-    try: 
-        int(s)
-        return True
-    except ValueError:
-        return False
-        
-# Check if string represents a float value
-def represents_float(s):
-    try: 
-        float(s)
-        return True
-    except ValueError:
-        return False
-
-# Check if a variable name in config_file matches a string
-def modify_var(*names_and_values):
-    namesOfVariables = [
-    'numRelays',
-    'numHTSensors',
-    'numTimers',
-    'smtp_host',
-    'smtp_port',
-    'smtp_user',
-    'smtp_pass',
-    'email_from',
-    'email_to']
-    
-    for i in range(1, len(names_and_values), 2):
-        for variable in namesOfVariables:
-            if names_and_values[i] == variable:
-                # Log variable name: previous value -> new value
-                logging.info("[Change Variable] %s: %s -> %s", 
-                    names_and_values[i], 
-                    globals()[names_and_values[i]], 
-                    names_and_values[i+1])
-                globals()[names_and_values[i]] = names_and_values[i+1]
-                     
-    write_config()
-    read_config(1)
-    
-    return 1
+#################################################
+#                 Email Notify                  #
+#################################################
 
 # Email if temperature or humidity is outside of critical range (Not yet implemented)
 def email():
@@ -2051,9 +2064,35 @@ def email():
     server.sendmail(email_from, email_to, msg.as_string())
     server.quit()
 
+
+#################################################
+#                 Miscellaneous                 #
+#################################################
+
+# Check if string represents an integer value
+def represents_int(s):
+    try: 
+        int(s)
+        return True
+    except ValueError:
+        return False
+        
+# Check if string represents a float value
+def represents_float(s):
+    try: 
+        float(s)
+        return True
+    except ValueError:
+        return False
+
 # Timestamp format used in sensor and relay logs
 def timestamp():
     return datetime.datetime.fromtimestamp(time.time()).strftime('%Y %m %d %H %M %S')
+
+
+#################################################
+#                 Main Program                  #
+#################################################
 
 if not os.geteuid() == 0:
     print "Script must be run as root"
@@ -2075,6 +2114,4 @@ while not runlock.i_am_locking():
 read_config(1)
 gpio_initialize()
 menu()
-
 runlock.release()
-sys.exit(0)
