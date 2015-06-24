@@ -1043,26 +1043,23 @@ def read_co2_sensor(silent, sensor):
     
     if (sensorCo2Device[1] == 'K30'): device = 'K30'
     else:
-        logging.warning("[Read CO2 Sensor-%s] Cannot read temperature/humidity from an unknown device!", sensor)
+        logging.warning("[Read CO2 Sensor-%s] Cannot read CO2 from an unknown device!", sensor)
         return 0
 
     if not silent and not Terminate:
         logging.debug("[Read CO2 Sensor-%s] Taking first CO2 reading", sensor)
         
     if not Terminate:
-        if device == 'K30':
-            co22 = read_K30()
-        
+        if device == 'K30': co22 = read_K30()
         if co22 == None:
             logging.warning("[Read CO2 Sensor-%s] Could not read CO2!", sensor)
             return 0
-            
+
+        time.sleep(2) # Wait 2 seconds between sensor reads
         if not silent and co22 != None:
             logging.debug("[Read CO2 Sensor-%s] %s", sensor, co22)
 
-    while chkco2 and not Terminate and co22 != None:
-        time.sleep(2) # Wait 2 seconds between sensor reads
-        
+    while chkco2 and not Terminate:
         if not silent: 
             logging.debug("[Read CO2 Sensor-%s] Taking second CO2 reading", sensor)
         
@@ -1078,11 +1075,8 @@ def read_co2_sensor(silent, sensor):
             if abs(co22-co2[sensor]) > 20 and not Terminate:
                 co22 = co2[sensor]
                 chkco2 = 1
-                
                 if not silent:
                     logging.debug("[Read CO2 Sensor-%s] Successive readings > 20 difference: Rereading", sensor)
-                    
-                time.sleep(2)
             elif not Terminate:
                 chkco2 = 0
 
@@ -1090,7 +1084,8 @@ def read_co2_sensor(silent, sensor):
                     logging.debug("[Read CO2 Sensor-%s] Successive readings < 20 difference: keeping.", sensor)
                     logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor, co2[sensor])
         else:
-            return 
+            logging.warning("[Read CO2 Sensor-%s] Could not read CO2!", sensor)
+            return 0
         time.sleep(2) # Wait 2 seconds between sensor reads
             
 # Read K30 CO2 Sensor
