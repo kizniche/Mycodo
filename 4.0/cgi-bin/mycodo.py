@@ -1041,42 +1041,34 @@ def read_co2_sensor(silent, sensor):
     global co2
     chkco2 = 1
     
+    if (sensorCo2Device[1] == 'K30'): device = 'K30'
+    else:
+        logging.warning("[Read CO2 Sensor-%s] Cannot read temperature/humidity from an unknown device!", sensor)
+        return 0
+
     if not silent and not Terminate:
         logging.debug("[Read CO2 Sensor-%s] Taking first CO2 reading", sensor)
         
     if not Terminate:
-        ser = serial.Serial("/dev/ttyAMA0")
-        ser.flushInput()
-        time.sleep(1)
-        ser.write("\xFE\x44\x00\x08\x02\x9F\x25")
-        time.sleep(.01)
-        resp = ser.read(7)
-        high = ord(resp[3])
-        low = ord(resp[4])
-        co22 = (high*256) + low
+        if device == 'K30':
+            co22 = read_K30()
         
         if co22 == None:
             logging.warning("[Read CO2 Sensor-%s] Could not read CO2!", sensor)
+            return 0
             
         if not silent and co22 != None:
             logging.debug("[Read CO2 Sensor-%s] %s", sensor, co22)
 
+    while chkco2 and not Terminate and co22 != None:
         time.sleep(2) # Wait 2 seconds between sensor reads
         
         if not silent: 
             logging.debug("[Read CO2 Sensor-%s] Taking second CO2 reading", sensor)
-            
-    while chkco2 and not Terminate and co22 != None:
+        
         if not Terminate:
-            ser = serial.Serial("/dev/ttyAMA0")
-            ser.flushInput()
-            time.sleep(1)
-            ser.write("\xFE\x44\x00\x08\x02\x9F\x25")
-            time.sleep(.01)
-            resp = ser.read(7)
-            high = ord(resp[3])
-            low = ord(resp[4])
-            co2[sensor] = (high*256) + low
+            if device == 'K30':
+                co2[sensor] = read_K30()
             
         if co2[sensor] != 'None':
             if not silent and not Terminate: 
@@ -1097,11 +1089,25 @@ def read_co2_sensor(silent, sensor):
                 if not silent: 
                     logging.debug("[Read CO2 Sensor-%s] Successive readings < 20 difference: keeping.", sensor)
                     logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor, co2[sensor])
-                   
         else:
-            logging.warning("[Read CO2 Sensor-%s] Could not read CO2!", sensor)
-            time.sleep(2) # Wait 2 seconds between sensor reads
-	
+            return 
+        time.sleep(2) # Wait 2 seconds between sensor reads
+            
+# Read K30 CO2 Sensor
+def read_K30():
+    ser = serial.Serial("/dev/ttyAMA0", timeout=5) # Try for 5 seconds to read CO2
+    ser.flushInput()
+    time.sleep(1)
+    ser.write("\xFE\x44\x00\x08\x02\x9F\x25")
+    time.sleep(.01)
+    resp = ser.read(7)
+    if len(resp) == 0:
+        return None
+    high = ord(resp[3])
+    low = ord(resp[4])
+    co2 = (high*256) + low
+    return co2
+
 # Append co2 sensor data to the log file
 def write_co2_sensor_log(sensor):
     config = ConfigParser.RawConfigParser()
@@ -1145,7 +1151,9 @@ def read_dht_sensor(silent, sensor):
     if (sensorHTDevice[1] == 'DHT11'): device = Adafruit_DHT.DHT11
     elif (sensorHTDevice[1] == 'DHT22'): device = Adafruit_DHT.DHT22
     elif (sensorHTDevice[1] == 'AM2302'): device = Adafruit_DHT.AM2302
-    else: device = 'Other'
+    else:
+        device = 'Other'
+        return 'cannot read temperature/humidity from an unknown device'
 
     if not silent and not Terminate:
         logging.debug("[Read HT Sensor-%s] Taking first Temperature/humidity reading", sensor)
@@ -1155,8 +1163,9 @@ def read_dht_sensor(silent, sensor):
         
         if humidity2 == None or tempc2 == None:
             logging.warning("[Read HT Sensor-%s] Could not read temperature/humidity!", sensor)
+            return 0
             
-        if not silent and humidity2 != None and tempc2 != None:
+        if not silent:
             logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor, tempc2, humidity2)
 
         time.sleep(2) # Wait 2 seconds between sensor reads
@@ -1164,9 +1173,8 @@ def read_dht_sensor(silent, sensor):
         if not silent: 
             logging.debug("[Read HT Sensor-%s] Taking second Temperature/humidity reading", sensor)
             
-    while chktemp and not Terminate and humidity2 != None and tempc2 != None:
-        if not Terminate:
-            humidity[sensor], tempc[sensor] = Adafruit_DHT.read_retry(device, sensorHTPin[sensor])
+    while chktemp and not Terminate:
+        humidity[sensor], tempc[sensor] = Adafruit_DHT.read_retry(device, sensorHTPin[sensor])
             
         if humidity[sensor] != 'None' or tempc[sensor] != 'None':
             if not silent and not Terminate: 
@@ -1180,8 +1188,6 @@ def read_dht_sensor(silent, sensor):
                 
                 if not silent:
                     logging.debug("[Read HT Sensor-%s] Successive readings > 1 difference: Rereading", sensor)
-                    
-                time.sleep(2)
             elif not Terminate:
                 chktemp = 0
 
@@ -1196,10 +1202,7 @@ def read_dht_sensor(silent, sensor):
                 
                 if not silent: 
                     logging.debug("[Read HT Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", sensor, tempc[sensor], humidity[sensor], dewpointc[sensor])
-                   
-        else:
-            logging.warning("[Read HT Sensor-%s] Could not read temperature/humidity!", sensor)
-            time.sleep(2) # Wait 2 seconds between sensor reads
+        time.sleep(2)
            
 # Append HT sensor data to the log file
 def write_dht_sensor_log(sensor):
