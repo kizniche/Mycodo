@@ -1749,7 +1749,7 @@ def read_config(silent):
         
         Co2Period[i] = config.getint('Co2PID%d' % i, 'co2%dperiod' % i)
         relayCo2[i] = config.getint('Co2PID%d' % i, 'co2%drelay' % i)
-        setCo2[i] = config.getfloat('Co2PID%d' % i, 'co2%dset' % i)
+        setCo2[i] = config.getint('Co2PID%d' % i, 'co2%dset' % i)
         Co2OR[i] = config.getint('Co2PID%d' % i, 'co2%dor' % i)
         Co2_P[i] = config.getfloat('Co2PID%d' % i, 'co2%dp' % i)
         Co2_I[i] = config.getfloat('Co2PID%d' % i, 'co2%di' % i)
