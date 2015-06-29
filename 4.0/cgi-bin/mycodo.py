@@ -1417,9 +1417,9 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         h = 6
         time_ago = '6 Hours'
     date_now = datetime.datetime.now().strftime("%Y %m %d %H %M %S")
-    date_now_disp = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S") 
+    date_now_disp = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S") 
     date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
-    date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S") 
+    date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%d/%m/%Y %H:%M:%S") 
 
     # Combine sensor and relay logs on SD card with sensor and relay logs in /tmp
     sensor_ht_log_files_combine = [sensor_ht_log_file, sensor_ht_log_file_tmp]
