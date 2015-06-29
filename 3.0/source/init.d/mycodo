@@ -35,6 +35,7 @@ case "${1:-''}" in
     'start')
         mkdir -p /var/log/mycodo
         mkdir -p /var/log/mycodo/images
+        mkdir -p /var/www/mycodo/camera-stills
         
         if [ ! -h /var/www/mycodo/images ]; then
             ln -s /var/log/mycodo/images /var/www/mycodo/images
