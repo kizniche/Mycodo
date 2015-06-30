@@ -85,7 +85,7 @@ case "${1:-''}" in
         chmod -R 770 /var/log/mycodo
         chown -R www-data.www-data /var/log/mycodo
         
-        python /var/www/mycodo/cgi-bin/mycodo.py -d s i 2>&1 &
+        python /var/www/mycodo/cgi-bin/mycodo.py 2>&1 &
         ;;
     'stop')
         /var/www/mycodo/cgi-bin/mycodo-client.py -t

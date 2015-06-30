@@ -659,47 +659,50 @@ class CO2_PID:
 
 # Displays the program usage
 def usage():
-    print "mycodo.py: Reads sensors, writes logs, and operates relays to" \
-        " maintain set environmental conditions.\n"
+    print "mycodo.py: Daemon that reads sensors, writes logs, and operates " \
+          "relays to maintain set environmental conditions. Run as root.\n"
     print "Usage:  mycodo.py [OPTION]...\n"
     print "Options:"
-    print "    -d, --daemon v/s w/i/d"
-    print "           Start program as daemon that monitors conditions and modulates relays"
-    print "           ""v"" enables log output to the console, ""s"" silences"
-    print "           Log level: ""w"": >= warnings, ""i"": >= info, ""d"": >= debug"
     print "    -h, --help"
-    print "           Display this help and exit\n"
-    print "Default: mycodo.py -d s w"
+    print "           Display this help and exit"
+    print "    -l, --log level"
+    print "           Set logging level: w < i < d (default: warning and info)"
+    print "           Options:"
+    print "           ""w"": warnings only"
+    print "           ""d"": debug, info, and warnings"
+    print "    -v, --verbose"
+    print "           enables log output to the console\n"
+    print "Default: mycodo.py -d v i"
     print "Debugging: mycodo.py -d v d\n"
 
-# Checks user options and arguments for validity
+# Check for any command line options
 def menu():
-    if len(sys.argv) == 1: # No arguments given
-        usage()
-        return 0
+    a = 'silent'
+    b = 'info'
+    
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'dh',
-            ["daemon", "help"])
+        opts, args = getopt.getopt(sys.argv[1:], 'hl:v',
+            ["help", "log", "verbose"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
         return 2
 
     for opt, arg in opts:
-        if opt in ("-d", "--daemon"):
-            if (sys.argv[2] == 'v'): a = 'verbose'
-            else: a = 'silent'
-            if (sys.argv[3] == 'w'): b = 'warning'
-            elif (sys.argv[3] == 'i'): b = 'info'
-            else: b = 'debug'
-            daemon(a, b)
-            return 0
-        elif opt in ("-h", "--help"):
+        if opt in ("-h", "--help"):
             usage()
             return 1
+        elif opt in ("-l", "--log"):
+            if (arg == 'w'): b = 'warning'
+            elif (arg == 'd'): b = 'debug'
+        elif opt in ("-v", "--verbose"):
+            a = 'verbose'
         else:
             assert False, "Fail"
 
+    daemon(a, b)
+    return 1
+    
 # Main loop that reads sensors, modifies relays based on sensor values, writes
 # sensor/relay logs, and receives/executes certain commands via mycodo-client.py
 def daemon(output, log):
