@@ -1,4 +1,4 @@
-# Mycodo 4.0-beta (experimental)
+# Mycodo 3.5-beta (experimental)
 
 This is currently an experimental branch of mycodo. This will be a future stable release once a certain number of features have been added and when it's relatively bug-free. Unless I have been in direct contact with you regarding testing of this branch, I will not be providing technical support for any issues with this version. Instead, I recommend you check out the v3.0 stable branch.
 

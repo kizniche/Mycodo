@@ -57,7 +57,7 @@ I've since upgraded to a new set of hardware that support 8 individually-switcha
     * Presets of pre-defined time periods (past 1 hour, 6 hours, 1 day, 3 days...)
     * Specify specific time period to generate graph
 
-### v3.0 (current-stable)
+### v3.0-stable
 
 * Switch up to eight 120-volt AC relays
 * Support for up to 8 simple timers (define on duration, off duration)
@@ -83,9 +83,9 @@ I've since upgraded to a new set of hardware that support 8 individually-switcha
     * User profile, gravatar support (from email), lost/forgot email password reset
    
 <a name="future"></a>   
-### v4.0-beta (experimental)
+### v3.5-beta (experimental)
 
-- [ ] CO2 Sensor support (working on)
+- [ ] K30 CO2 Sensor support (working on)
 - [ ] O2 Sensor support
 - [ ] Email notification or audible alarm if at a specific sensor value or detect a critical failure (working on)
 - [ ] Set electrical current draw of each device and prevent exceeding total current limit with different combinations of devices on
