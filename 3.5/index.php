@@ -185,7 +185,7 @@ if ($login->isUserLoggedIn() == true) {
     `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
     `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log > /var/tmp/relay.log`;
 
-    $daemon_check = `ps aux | grep "[m]ycodo.py -d"`;
+    $daemon_check = `ps aux | grep "[m]ycodo.py"`;
     if (empty($daemon_check)) $daemon_check = 0;
     else $daemon_check = 1;
 
