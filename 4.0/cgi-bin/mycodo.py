@@ -659,21 +659,24 @@ class CO2_PID:
 
 # Displays the program usage
 def usage():
-    print "mycodo.py: Daemon that reads sensors, writes logs, and operates " \
-          "relays to maintain set environmental conditions. Run as root.\n"
+    print "mycodo.py: Daemon that reads sensors, writes logs, and operates"
+    print "           relays to maintain set environmental conditions."
+    print "           Run as root.\n"
     print "Usage:  mycodo.py [OPTION]...\n"
     print "Options:"
     print "    -h, --help"
     print "           Display this help and exit"
     print "    -l, --log level"
-    print "           Set logging level: w < i < d (default: warning and info)"
+    print "           Set logging level: w < i < d (default: ""i"")"
     print "           Options:"
     print "           ""w"": warnings only"
+    print "           ""i"": info and warnings"
     print "           ""d"": debug, info, and warnings"
     print "    -v, --verbose"
     print "           enables log output to the console\n"
-    print "Default: mycodo.py -d v i"
-    print "Debugging: mycodo.py -d v d\n"
+    print "Examples: mycodo.py"
+    print "          mycodo.py -l d"
+    print "          mycodo.py -l w -v\n"
 
 # Check for any command line options
 def menu():

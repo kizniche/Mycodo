@@ -32,9 +32,11 @@ import datetime
 c = rpyc.connect("localhost", 18812)
 
 def usage():
-    print 'mycodo-client.py: Client for mycodo.py (must be running in daemon mode -d).\n'
+    print 'mycodo-client.py: Client for mycodo.py daemon (daemon must be running).\n'
     print 'Usage:  mycodo-client.py [OPTION]...\n'
     print 'Options:'
+    print '    -h, --help'
+    print '           Display this help and exit'
     print '        --graph Duration ID Sensor'
     print '           See documentation for options'
     print '        --modco2OR sensor state'
@@ -77,20 +79,23 @@ def usage():
     print '        --writeco2log sensor'
     print '           Read from CO2 sensor number and append log file, 0 to write all.'
     print '        --writehtlog sensor'
-    print '           Read from HT sensor number and append log file, 0 to write all.\n'
+    print '           Read from HT sensor number and append log file, 0 to write all.'
 
 def menu():
     try:
         opts, args = getopt.getopt(
-            sys.argv[1:], 'm:r:t', 
-            ["graph", "modtempOR", "modtempPID", "modhumOR", "modhumPID", "modco2OR", "modco2PID", "modrelaynames=", "modrelaypins=", "modrelaytrigger=", "modhtsensor", "modco2sensor", "modtimer=", "modvar=", "relay=", "sensorht", "sensorco2", "terminate", "writehtlog", "writeco2log"])
+            sys.argv[1:], 'hm:r:t', 
+            ["help", "graph", "modtempOR", "modtempPID", "modhumOR", "modhumPID", "modco2OR", "modco2PID", "modrelaynames=", "modrelaypins=", "modrelaytrigger=", "modhtsensor", "modco2sensor", "modtimer=", "modvar=", "relay=", "sensorht", "sensorco2", "terminate", "writehtlog", "writeco2log"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
         sys.exit(2)
 
     for opt, arg in opts:
-        if opt == "--graph":
+        if opt in ("-h", "--help"):
+            usage()
+            return 1
+        elif opt == "--graph":
             print "%s [Remote command] Graph: %s %s %s" % (
                 Timestamp(), sys.argv[2], sys.argv[3], sys.argv[4])
             print "%s [Remote command] Server returned:" % (
@@ -310,6 +315,8 @@ def menu():
             sys.exit(0)
         else:
             assert False, "Fail"
+    usage()
+    sys.exit(1)
 
 def RepresentsInt(s):
     try: 
@@ -326,5 +333,4 @@ if len(sys.argv) == 1: # No arguments given
     sys.exit(1)
 
 menu()
-usage()
 sys.exit(0)
