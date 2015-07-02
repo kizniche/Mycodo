@@ -1,0 +1,2 @@
+#!/bin/sh
+echo T`date +%s` > /dev/ttyUSB0

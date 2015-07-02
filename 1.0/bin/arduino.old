@@ -1,0 +1,3 @@
+#!/bin/sh
+cd /home/kiz/tckimchi/Projects/2011\ Arduino\ Distiller/arduino-0022/
+./arduino &

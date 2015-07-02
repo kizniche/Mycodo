@@ -1,0 +1,263 @@
+Stable Library
+=========================================
+Native lib Version = RXTX-2.2pre2
+Java lib Version   = RXTX-2.1-7
+WARNING:  RXTX Version mismatch
+	Jar version = RXTX-2.1-7
+	native lib Version = RXTX-2.2pre2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Binary sketch size: 9620 bytes (of a 30720 byte maximum)
+Binary sketch size: 9620 bytes (of a 30720 byte maximum)
+T Hum  Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+1 Mode 6
+5 57.7 10 10 28.52 83.33 10 10 19.38 66.88 0 0  0 0 0 0 0 1
+Input accepted:  2: Serial Input Induced Mode
+32 Mode 2
+35 58.0 10 99 28.52 83.33 10 99 19.44 67.00 0 0  0 0 0 0 0 1
+Input accepted:  4: Serial Input Induced Mode
+36 Mode 4
+40 58.1 50 55 28.61 83.50 80 86 19.55 67.19 0 0  0 0 0 0 0 1
+Input accepted:  2: Serial Input Induced Mode
+41 Mode 2
+44 58.7 10 99 28.52 83.33 10 99 19.63 67.34 0 0  0 0 0 0 0 1
+Input accepted:  3: Serial Input Induced Mode
+45 Mode 3
+48 58.1 85 92 28.61 83.50 74 78 19.57 67.23 1 0  0 0 0 0 0 1
+Input accepted:  5: Serial Input Induced Mode
+50 Mode 5
+54 58.2 50 65 28.61 83.50 80 86 19.59 67.27 1 0  0 0 0 0 0 1
+Input accepted: 8: Status
+55 58.7 50 65 28.52 83.33 80 86 19.63 67.34 1 0  0 0 0 0 0 1
+Input accepted: 8: Status
+57 58.1 50 65 28.61 83.50 80 86 19.57 67.23 1 0  0 0 0 0 0 1
+Input accepted:  6: Serial Input Induced Mode
+Input accepted:  5: Serial Input Induced Mode
+60 Mode 5
+63 58.7 50 65 28.52 83.33 80 86 19.63 67.34 1 0  0 0 0 0 0 1
+154 58.4 50 65 28.52 83.33 80 86 19.57 67.22 1 0  0 0 0 0 0 1
+244 58.1 50 65 28.61 83.50 80 86 19.57 67.23 1 0  0 0 0 0 0 1
+334 58.2 50 65 28.61 83.50 80 86 19.59 67.27 1 0  0 0 0 0 0 1
+424 58.2 50 65 28.61 83.50 80 86 19.59 67.27 1 0  0 0 0 0 0 1
+514 58.7 50 65 28.61 83.50 80 86 19.74 67.53 1 0  0 0 0 0 0 1
+Binary sketch size: 9644 bytes (of a 30720 byte maximum)
+T Hum  Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+1 Mode 6
+5 58.3 10 10 28.52 83.33 10 10 19.52 67.15 0 0  0 0 0 0 0 1
+95 58.7 10 10 28.61 83.50 10 10 19.74 67.53 0 0  0 0 0 0 0 1
+Binary sketch size: 9632 bytes (of a 30720 byte maximum)
+Binary sketch size: 9648 bytes (of a 30720 byte maximum)
+T Hum  Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+1 Mode 6
+5 58.3 10 10 28.61 83.50 10 10 19.61 67.30 0 0  0 0 0 0 0 1
+9 Clock synced with: T1242345338 - 23:55:39 Thursday May 14 
+Time Weekday Month Day Hum  Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+23:55:40 Thursday May 14 58.2 10 10 28.61 83.50 10 10 19.59 67.27 0 0  0 0 0 0 0 1
+Binary sketch size: 9640 bytes (of a 30720 byte maximum)
+T Hum  Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+1 Mode 6
+5 58.3 10 10 28.61 83.50 10 10 19.61 67.30 0 0  0 0 0 0 0 1
+8 Clock synced with: T1242345422 - 23:57:03 Thursday May 14 
+Time Weekday Month Day Hum  Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+23:57:04 Thursday May 14 58.3 10 10 28.61 83.50 10 10 19.61 67.30 0 0  0 0 0 0 0 1
+Binary sketch size: 9656 bytes (of a 30720 byte maximum)
+T Hum  Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+1 Mode 6
+5 58.2 10 10 28.61 83.50 10 10 19.59 67.27 0 0  0 0 0 0 0 1
+here
+Binary sketch size: 9700 bytes (of a 30720 byte maximum)
+T Hum  Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+1 Mode 6
+5 58.2 10 10 28.61 83.50 10 10 19.59 67.27 0 0  0 0 0 0 0 1
+here
+50
+2
+Binary sketch size: 9700 bytes (of a 30720 byte maximum)
+T Hum  Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+1 Mode 6
+5 58.2 10 10 28.61 83.50 10 10 19.59 67.27 0 0  0 0 0 0 0 1
+here
+50
+2
+Input accepted:  2: Serial Input Induced Mode
+10 Mode 2
+12 58.3 10 99 28.61 83.50 10 99 19.61 67.30 0 0  0 0 0 0 0 1
+here
+56
+8
+Input accepted: 8: Status
+32 58.7 10 99 28.61 83.50 10 99 19.74 67.53 0 0  0 0 0 0 0 1
+here
+55
+7
+Input accepted: 7: Use Clocktower for Mode Adjustment
+122 58.7 10 99 28.61 83.50 10 99 19.74 67.53 0 0  0 0 0 0 0 1
+212 58.7 10 99 28.61 83.50 10 99 19.72 67.49 0 0  0 0 0 0 0 1
+Binary sketch size: 9680 bytes (of a 30720 byte maximum)
+T Hum  Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+1 Mode 6
+5 58.1 10 10 28.61 83.50 10 10 19.57 67.23 0 0  0 0 0 0 0 1
+9 Clock synced with: T1242345915 - 0:05:16 Friday May 15 
+Time Weekday Month Day Hum  Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+0:05:17 Friday May 15 58.1 10 10 28.61 83.50 10 10 19.57 67.23 0 0  0 0 0 0 0 1
+Input accepted: 8: Status
+0:06:01 Friday May 15 58.1 10 10 28.61 83.50 10 10 19.57 67.23 0 0  0 0 0 0 0 1
+Input Rejected: Unrecognized Command
+0:06:11 Friday May 15 58.6 10 10 28.61 83.50 10 10 19.70 67.46 0 0  0 0 0 0 0 1
+Input accepted: 2: Serial Input Induced Mode
+0:06:24 Friday May 15 Mode 2
+0:06:27 Friday May 15 58.1 10 99 28.61 83.50 10 99 19.55 67.19 0 0  0 0 0 0 0 1
+Input accepted: 4: Serial Input Induced Mode
+0:07:34 Friday May 15 Mode 4
+0:07:38 Friday May 15 58.6 50 55 28.70 83.66 80 86 19.78 67.61 0 0  0 0 0 0 0 1
+0:09:09 Friday May 15 58.0 50 55 28.61 83.50 80 86 19.53 67.15 0 0  0 0 0 0 0 1
+
+Binary sketch size: 9850 bytes (of a 30720 byte maximum)
+T Hum  Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+1 Mode 6
+5 57.8 10 10 28.70 83.66 10 10 19.57 67.23 0 0  0 0 0 0 0 1
+Input accepted: 4: Serial Input Induced Mode
+7 Mode 4
+10 58.3 50 55 28.70 83.66 80 86 19.70 67.46 0 0  0 0 0 0 0 1
+Input Rejected: Unrecognized Command
+19 58.3 50 55 28.70 83.66 80 86 19.70 67.46 0 0  0 0 0 0 0 1
+Binary sketch size: 9850 bytes (of a 30720 byte maximum)
+1 Mode 6
+5 57.8 10 10 28.61 83.50 10 10 19.48 67.08 0 0  0 0 0 0 0 1
+8 Clock synced with: T1242346525 - 0:15:26 Friday May 15 
+Time Weekday Month Day Hum Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+0:15:27 Friday May 15 57.8 10 10 28.70 83.66 10 10 19.57 67.23 0 0  0 0 0 0 0 1
+Input accepted: 8: Status
+0:15:32 Friday May 15 58.3 10 10 28.61 83.50 10 10 19.61 67.30 0 0  0 0 0 0 0 1
+Input accepted: 70 75 83 83 
+10 99 10 99 
+85 92 74 78 
+50 55 80 86 
+50 65 80 86 
+10 10 10 10 
+0:15:36 Friday May 15 57.8 10 10 28.70 83.66 10 10 19.57 67.23 0 0  0 0 0 0 0 1
+0:17:07 Friday May 15 57.7 10 10 28.70 83.66 10 10 19.53 67.16 0 0  0 0 0 0 0 1
+Binary sketch size: 9944 bytes (of a 30720 byte maximum)
+T Hum  Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+1 Mode 6
+5 57.8 10 10 28.70 83.66 10 10 19.55 67.19 0 0  0 0 0 0 0 1
+Input accepted: 9: Display Presets, Modes 1 - 6
+%Humi TempF
+Mn Mx Mn Mx
+70 75 83 83 
+10 99 10 99 
+85 92 74 78 
+50 55 80 86 
+50 65 80 86 
+10 10 10 10 
+8 57.7 10 10 28.70 83.66 10 10 19.53 67.16 0 0  0 0 0 0 0 1
+Binary sketch size: 9970 bytes (of a 30720 byte maximum)
+T Hum  Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+1 Mode 6
+5 57.7 10 10 28.70 83.66 10 10 19.53 67.16 0 0  0 0 0 0 0 1
+Input accepted: 9: Display Presets, Modes 1 - 6
+% Humid Temp F
+Min Max Min Max
+1 70  75  83  83  
+2 10  99  10  99  
+3 85  92  74  78  
+4 50  55  80  86  
+5 50  65  80  86  
+6 10  10  10  10  
+7 58.2 10 10 28.70 83.66 10 10 19.68 67.42 0 0  0 0 0 0 0 1
+Binary sketch size: 9974 bytes (of a 30720 byte maximum)
+5 57.7 10 10 28.70 83.66 10 10 19.53 67.16 0 0  0 0 0 0 0 1
+Input accepted: 9: Display Presets, Modes 1 - 6
+  %Humid  Temp F
+  Min Max Min Max
+1 70  75  83  83  
+2 10  99  10  99  
+3 85  92  74  78  
+4 50  55  80  86  
+5 50  65  80  86  
+6 10  10  10  10  
+8 57.7 10 10 28.70 83.66 10 10 19.53 67.16 0 0  0 0 0 0 0 1
+Binary sketch size: 10186 bytes (of a 30720 byte maximum)
+T Hum  Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+1 Mode 6
+5 56.3 10 10 28.61 83.50 10 10 19.06 66.30 0 0  0 0 0 0 0 1
+Input accepted: 6: Serial Input, Induced Mode
+10 56.3 10 10 28.61 83.50 10 10 19.06 66.30 0 0  0 0 0 0 0 1
+Input accepted: 5: Serial Input Induced Mode
+16 Mode 5
+19 56.8 50 65 28.61 83.50 80 86 19.21 66.58 0 0  0 0 0 0 0 1
+Input accepted: 7:Use Clocktower for Mode Adjustment
+28 Mode 6
+32 56.2 10 10 28.61 83.50 10 10 19.01 66.23 0 0  0 0 0 0 0 1
+122 56.9 10 10 28.61 83.50 10 10 19.23 66.62 0 0  0 0 0 0 0 1
+213 56.3 10 10 28.61 83.50 10 10 19.06 66.30 0 0  0 0 0 0 0 1
+Binary sketch size: 10294 bytes (of a 30720 byte maximum)
+T Hum  Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+1 Mode 6
+5 56.2 10 10 28.61 83.50 10 10 19.01 66.23 0 0  0 0 0 0 0 1
+9 Clock synced with: T1242350025 - 1:13:46 Friday May 15 
+Time Weekday Month Day Hum Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+1:13:47 Friday May 15 56.2 10 10 28.61 83.50 10 10 19.01 66.23 0 0  0 0 0 0 0 1
+Recognized Options:
+S0 Status
+S1 Override, use Mode 1
+S2 Override, use Mode 2
+S3 Override, use Mode 3
+S4 Override, use Mode 4
+S5 Override, use Mode 5
+S6 Override, use Mode 6
+S7 Reset Mode to Clocktower
+S8 Display Presets
+1:13:54 Friday May 15 56.6 10 10 28.61 83.50 10 10 19.14 66.46 0 0  0 0 0 0 0 1
+Input accepted: 9: Display Presets, Modes 1 - 6
+  %Humid  Temp F
+  Min Max Min Max
+1 70  75  83  83  
+2 10  99  10  99  
+3 85  92  74  78  
+4 50  55  80  86  
+5 50  65  80  86  
+6 10  10  10  10  
+1:14:01 Friday May 15 56.2 10 10 28.61 83.50 10 10 19.01 66.23 0 0  0 0 0 0 0 1
+Input accepted: 3: Serial Input Induced Mode
+1:14:08 Friday May 15 Mode 3
+1:14:11 Friday May 15 56.2 85 92 28.61 83.50 74 78 19.03 66.27 1 0  0 0 0 0 0 1
+Input accepted: 0: Status
+1:14:22 Friday May 15 56.3 85 92 28.61 83.50 74 78 19.06 66.30 1 0  0 0 0 0 0 1
+Binary sketch size: 10262 bytes (of a 30720 byte maximum)
+T Hum  Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+1 Mode 6
+5 56.4 10 10 28.61 83.50 10 10 19.08 66.34 0 0  0 0 0 0 0 1
+11 Clock synced with: T1242350401 - 1:20:02 Friday May 15 
+Time Weekday Month Day Hum Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+1:20:03 Friday May 15 56.3 10 10 28.61 83.50 10 10 19.06 66.30 0 0  0 0 0 0 0 1
+1:21:34 Friday May 15 56.9 10 10 28.61 83.50 10 10 19.23 66.62 0 0  0 0 0 0 0 1
+1:23:05 Friday May 15 56.3 10 10 28.61 83.50 10 10 19.06 66.30 0 0  0 0 0 0 0 1
+Binary sketch size: 10262 bytes (of a 30720 byte maximum)
+T Hum  Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+1 Mode 6
+T Hum  Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+1 Mode 6
+5 56.4 10 10 28.61 83.50 10 10 19.08 66.34 0 0  0 0 0 0 0 1
+12 Clock synced with: T1242350677 - 1:24:38 Friday May 15 
+Time Weekday Month Day Hum Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+1:24:39 Friday May 15 56.9 10 10 28.61 83.50 10 10 19.23 66.62 0 0  0 0 0 0 0 1

@@ -1,0 +1,8 @@
+#!/bin/sh
+PATH=$PATH:/home/kiz/bin
+graph-together
+graph-6h
+graph-day
+graph-week
+graph-month
+graph-year

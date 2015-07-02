@@ -1,0 +1,404 @@
+// Arduino Humidity and Temperature Sensing and adjusting
+//
+// Sensing: Turns on the exteranl 555 and counts the number of pulses on Digital Pin 5
+// using Timer 1 (1000 ms).  Then turns the 555 off to avoid the noise associated with this rail to rail
+// oscillation.  The raw relative humidity is then calculated.
+// An A/D conversion is performed to measure the voltage across the NTC thermistor in Analog Pin 3
+// the Rthermistor and the temperature is calculated.
+// The relative humidity is corrected for the measured temperature.
+// The Dew Point temperature is then calculated.
+// Sensor and Sensor Code: copyright, Peter H Anderson, Baltimore, MD, Nov, '07
+//
+// Output: Humidity and Temperature adjusting using relays
+// Relay 1 (humidifier) turns on until Max humidity is reached; stays off until Min humidity is reached
+// Relay 2 (heater) turns on until Max temperature is reached; stays off until Min temperature is reached
+// Dial used to select preset, changing Min and Max temperature and humidity
+// LED is a confirmation and power light
+// Kiz, May, 2009
+//
+// Humidity and Temperature Sensor Pins: Yellow-Analog 3, Blue-Digital 5, Red-Digital 2, Black-Ground(-)
+// 
+
+#include <avr/io.h>
+#include <math.h>
+#include <DateTime.h>
+#include <DateTimeStrings.h>
+
+#define TIME_MSG_LEN  11   // time sync to PC is HEADER followed by unix time_t as ten ascii digits
+#define TIME_HEADER  'T'   // Header tag for serial time sync message
+
+#define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
+#define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
+
+#define POWER_PIN 4	// OUTPUT Pin Digital 2, 555 Pulse (Blue)
+#define TEMP_PIN 2	// INPUT Pin Analog 5, Temperature sensor (Yellow)
+
+#define LED1 13		// Output Pin Digital 13, LED-1 
+#define HUM_PIN 3	// Output Pin Digital 11, Relay 1 Humidifier
+#define HEAT_PIN 2	// Output Pin Digital 10, Relay 2 Heater
+
+long previousmillis = 0; // will store last time updated
+long interval = 2000;    // interval at which to print status (milliseconds)
+int val = 0;             // variable for reading the pin status
+
+unsigned int count_transitions(int ms);
+unsigned long prevtime;
+
+void setup(){
+    Serial.begin(9600);
+    pinMode(LED1, OUTPUT);	// LED 1
+    pinMode(HUM_PIN, OUTPUT);	// Relay 1 Humidifier
+    pinMode(HEAT_PIN, OUTPUT);	// Relay 2 Heater
+    
+    //  Buttons
+    pinMode(6, INPUT);       // dial position 1
+    pinMode(7, INPUT);       // dial position 2
+    pinMode(8, INPUT);       // dial position 3
+    pinMode(9, INPUT);       // dial position 4
+    pinMode(10, INPUT);      // dial position 5
+    pinMode(11, INPUT);      // dial position 6
+    
+    digitalWrite(HUM_PIN, LOW);
+    digitalWrite(HEAT_PIN, LOW);
+}
+
+void  loop(){
+
+    float RH_raw, RH_corrected, Tc, Tf, Tc_dew_point, Tf_dew_point;
+    int stat = 0, time, h_plus = 0, t_plus = 0;       
+    
+    /* Grow Presets
+       1: Spawn Run: 10-14 days. Post Casing/Prepinning: 5-10 days.
+             Airflow: None, need High CO2. Light: Dark. Humidity: . Heat: 
+       2: Primordia Formation: 6-10 days
+             Airflow: Yes. Light: 12-16h/day, Diffuse natural or grow-lux peak at 480nm. Humidity: . Heat: 
+       3: Cropping: Harvest
+             Airflow: . Light: Indirect natural or above. Harvest when cap becomes convex and soon after partial veil ruptures. Humidity: . Heat: 
+       4:
+       5:
+       6:
+    */
+    
+    // Min Humidity, Max Hum, Min Temperature, Max Temp
+    int last = 0, s = 0, preset[6][4] = {{65, 69, 86, 86},        // Preset 1 
+         	                         {95, 99, 74, 78},        // Preset 2 
+          	                         {85, 92, 74, 78},        // Preset 3 
+            	                         {50, 65, 80, 86},        // Preset 4
+                                         {50, 65, 80, 86},        // Preset 5
+                                         {50, 51, 80, 86}};       // Preset 6
+            
+    Serial.println("T Hum  Mn Mx TempC Mn Mx TempF DewPc DewPf F H  1 2 3 4 5 6");
+    while(1)
+    {
+        RH_raw = measure_RH();
+        Tc = measTemperature(TEMP_PIN);
+	Tf = (Tc * 9) / 5 + 32;
+        RH_corrected = calc_RH_corrected(RH_raw, Tc);
+        Tc_dew_point = calc_dew_point(Tc, RH_corrected);
+        Tf_dew_point = (Tc_dew_point * 9) / 5 + 32;
+        
+        for (int i = 6; i < 12; i++) {     // Dial position initially read
+            val = digitalRead(i);
+            if (val == HIGH) {            // Check input for HIGH (1, Closed circuit, 100 ohm resistance) or LOW (0, 10k ohm resistance)
+                switch (i) {
+                    case 6:
+                        s = button(1, i, last);
+                        break;
+                    case 7:
+                        s = button(2, i, last);
+                        break;
+                    case 8:
+                        s = button(3, i, last);
+                        break;
+                    case 9:
+                        s = button(4, i, last);
+                        break;
+                    case 10:
+                        s = button(5, i, last);
+                        break;
+                    case 11:
+                        s = button(6, i, last);
+                        break;
+                }
+            last = i;
+            stat = 1;
+            }
+        }
+        
+        // Control Relays determined by mode
+	if (h_plus == 1 && (int) (RH_corrected) > preset[s][1]) {  // Turn off Relay 1 (Humidifier) at Max Humidity
+            digitalWrite(HUM_PIN, LOW);
+            stat = 1;
+	    h_plus = 0;
+	}
+	else if ((int) (RH_corrected) < preset[s][0] && digitalRead(HUM_PIN) != HIGH) {	 // Turn on Relay 1 at Min Humidity
+	    digitalWrite(HUM_PIN, HIGH);
+            stat = 1;
+	    h_plus = 1;
+	}
+           
+        if (t_plus == 1 && (int) (Tf) > preset[s][3]) {  // Turn off Relay 2 (Heater) at Max Temperature
+            digitalWrite(HEAT_PIN, LOW);
+            stat = 1;
+            t_plus = 0;
+        }
+        else if ((int) (Tf) < preset[s][2] && digitalRead(HEAT_PIN) != HIGH) {  // Turn of Relay 2 at Min Temperature
+            digitalWrite(HEAT_PIN, HIGH);
+            stat = 1;
+            t_plus = 1;
+        }
+        
+        if (getPCtime()) {  // try to get time sync from pc
+            Serial.print(abs(millis() / 1000));
+            Serial.print(" ");
+            Serial.print("Clock synced with UNIX time: ");
+            Serial.println(DateTime.now(),DEC);
+        }
+        
+        if (abs(millis() - previousmillis) > interval || stat == 1) {
+            previousmillis = millis();               // remember the last time status was checked
+
+            printtime();
+            print_float(RH_corrected, 1);
+            Serial.print(" ");
+            Serial.print(preset[s][0]);
+            Serial.print(" ");
+            Serial.print(preset[s][1]);
+            Serial.print(" ");
+            print_float(Tc, 2);
+            Serial.print(" ");
+	    print_float(Tf, 2);
+            Serial.print(" ");
+            Serial.print(preset[s][2]);
+            Serial.print(" ");
+            Serial.print(preset[s][3]);
+	    Serial.print(" ");
+            print_float(Tc_dew_point, 2);
+            Serial.print(" ");
+            print_float(Tf_dew_point, 2);
+            Serial.print(" ");
+            Serial.print(digitalRead(HUM_PIN));
+            Serial.print(" ");
+            Serial.print(digitalRead(HEAT_PIN));
+            Serial.print("  ");
+            Serial.print(digitalRead(6));
+            Serial.print(" ");
+            Serial.print(digitalRead(7));
+            Serial.print(" ");
+            Serial.print(digitalRead(8));
+            Serial.print(" ");
+            Serial.print(digitalRead(9));
+            Serial.print(" ");
+            Serial.print(digitalRead(10));
+            Serial.print(" ");
+            Serial.print(digitalRead(11));
+            Serial.println();
+            
+            stat = 0;
+        }
+    } 
+}
+
+void printtime() {
+    if(DateTime.available()) {               // update clocks if time has been synced
+        prevtime = DateTime.now();
+        while(prevtime == DateTime.now())    // wait for the second to rollover
+            ;
+        DateTime.available();                // refresh the Date and time properties
+        digitalClockDisplay();               // update digital clock
+                                             // send our time to any app at the other end of the serial port
+        // Serial.print(TIME_HEADER,BYTE);      // this is the header for the current time
+        // Serial.print(DateTime.now());        // this is the UNIX time
+    }
+    else Serial.print(abs(millis() / 1000));
+    Serial.print(" ");
+}
+
+int button(int mode, int i, int last) {
+    if (last != i) {
+        printtime();
+        Serial.print("Mode ");
+        Serial.println(mode);
+        blink(LED1, 10, 50);
+        delay(1000);
+        blink(LED1, mode, 200);
+    }
+    return(i - 6);
+}
+
+void blink(int LED, int num, int dur) {
+    for (int i = 1; i <= num; i++) {
+	digitalWrite(LED, HIGH);
+	delay(dur);
+	digitalWrite(LED, LOW);
+	delay(dur);
+    }
+}
+
+float calc_dew_point(float Tc, float RH)
+{
+     const float a = 17.27, b = 237.7;
+     float x, Tc_dew;
+
+     x = (a * Tc) / (b + Tc) + log(RH/100.0);
+     Tc_dew = (b * x) / (a - x);
+     return(Tc_dew);
+}
+
+float measure_RH(void) {
+     long RH_count;
+     float RH_raw;
+
+     pinMode(POWER_PIN, OUTPUT);
+     digitalWrite(POWER_PIN, HIGH);   	// power up the 555 cicuit
+     delay(500);   			// allow some time for the 555 to stabilize
+
+     RH_count = count_transitions(1000);
+     //Serial.println(RH_count); 	// for debugging
+     RH_raw = 557.7 - 0.0759 * RH_count;
+
+     digitalWrite(POWER_PIN, LOW); 	// turn off the 555
+     return(RH_raw);
+}
+
+float calc_RH_corrected(float RH_raw, float Tc)
+{
+    float T_diff, RH_corrected;
+
+    T_diff = Tc - 25.00;
+    RH_corrected = (1.0 + 0.001 * T_diff) * RH_raw;
+    return(RH_corrected);
+}
+
+unsigned int count_transitions(int ms)
+{				// configure Counter 1
+     cbi(TCCR1A, WGM11);
+     cbi(TCCR1A, WGM10);
+
+     cbi(TCCR1B, WGM12);	// WGM12::WGM10 000 - Normal mode
+
+     sbi(TCCR1B, CS12);		// CS12::CS10 111 - External clock, count on rising edge.
+     sbi(TCCR1B, CS11);
+     sbi(TCCR1B, CS10);
+
+     TCNT1 = 0x0000;		// note that TCNT1 is 16-bits
+     delay(1000);
+     				// not sure if should turn off the counter
+     return(TCNT1);
+}
+
+float measTemperature(int analog_channel)
+{
+    int ADVal;
+    float RThermistor, Tc;
+
+    ADVal = analogRead(analog_channel);
+    RThermistor = calcRthermistor(ADVal);
+    //Serial.println(analogRead(analog_channel));
+    Tc = calcTc(RThermistor);
+    return(Tc);
+}
+
+float calcRthermistor(int ADVal)
+{
+    float Rtherm;
+    if (ADVal <=0) // avoid trouble conditions
+    {
+       ADVal = 10;
+    }
+    Rtherm = 10.0e3 / (1024.0 /((float) ADVal) - 1.0);
+    //Serial.println(Rtherm);
+    return(Rtherm);
+}
+
+float calcTc(float RTherm)
+{
+  const float A_const = 3.354016e-3;
+  const float B_const = 2.569107e-4;
+  const float C_const = 2.626311e-6;
+  const float D_const = 0.675278e-7;
+
+  float x, TKelvin, Tc;
+
+  x = log(RTherm / 10.0e3);
+  TKelvin = 1.0 / (A_const + B_const * x
+              + C_const * square(x) + D_const * cube(x));
+  Tc = TKelvin - 273.15;
+  return(Tc);
+}
+
+float square(float x)
+{
+  return(x * x);
+}
+
+float cube(float x)
+{
+  return(square(x) * x);
+}
+
+void print_float(float f, int num_digits)
+{
+    int f_int;
+    int pows_of_ten[4] = {1, 10, 100, 1000};
+    int multiplier, whole, fract, d, n;
+
+    multiplier = pows_of_ten[num_digits];
+    if (f < 0.0)
+    {
+        f = -f;
+        Serial.print("-");
+    }
+    whole = (int) f;
+    fract = (int) (multiplier * (f - (float)whole));
+
+    Serial.print(whole);
+    Serial.print(".");
+
+    for (n=num_digits-1; n>=0; n--) // print each digit with no leading zero suppression
+    {
+         d = fract / pows_of_ten[n];
+         Serial.print(d);
+         fract = fract % pows_of_ten[n];
+    }
+}
+
+boolean getPCtime() {
+  // if time sync available from serial port, update time and return true
+  while(Serial.available() >=  TIME_MSG_LEN ){  // time message consists of a header and ten ascii digits
+    if( Serial.read() == TIME_HEADER ) {        
+      time_t pctime = 0;
+      for(int i=0; i < TIME_MSG_LEN -1; i++){   
+        char c= Serial.read();          
+        if( c >= '0' && c <= '9'){   
+          pctime = (10 * pctime) + (c - '0') ; // convert digits to a number    
+        }
+      }
+      pctime = pctime - 14400; // adjust from UTC for -4 hours (time zone difference)
+      DateTime.sync(pctime);   // Sync Arduino clock to the time received on the serial port
+      return true;             // return true if time message received on the serial port
+    }  
+  }
+  return false;                // if no message return false
+}
+
+void digitalClockDisplay(){
+  // digital clock display of current date and time
+  Serial.print(DateTime.Hour,DEC);
+  printDigits(DateTime.Minute);
+  printDigits(DateTime.Second);
+  Serial.print(" ");
+  Serial.print(DateTimeStrings.dayStr(DateTime.DayofWeek));
+  Serial.print(" ");
+  Serial.print(DateTimeStrings.monthStr(DateTime.Month));
+  Serial.print(" ");
+  Serial.print(DateTime.Day,DEC); 
+}
+
+void printDigits(byte digits){
+  // utility function for digital clock display: prints preceding colon and leading 0
+  Serial.print(":");
+  if(digits < 10)
+    Serial.print('0');
+  Serial.print(digits,DEC);
+}

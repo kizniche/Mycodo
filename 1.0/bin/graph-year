@@ -1,0 +1,23 @@
+#!/bin/sh
+
+FILEPATH="/var/www/graph"
+
+grep -Ih OO /home/kiz/arduino/output/* > $FILEPATH/datay
+echo "set terminal png size 1000,685
+set xdata time
+set timefmt \"%Y-%m-%d-%H:%M:%S\"
+set output \"$FILEPATH/graph-year.png\"
+set xrange [\"`date --date="last year" +%Y-%m-%d-%H:%M:%S`\":\"`date +%Y-%m-%d-%H:%M:%S`\"]
+set format x \"%b\\n%m/%d/%y\"
+set yrange [50:100]
+set mytics 5
+set ytics 5
+set y2tics 5
+set grid mytics y2tics xtics
+set title \"Past Year: `date --date="last year" +%m/%d/%Y-%H:%M:%S` - `date +%m/%d/%Y-%H:%M:%S`\"
+set key left box
+plot \"$FILEPATH/datay\" using 1:2 index 0 title \" RH\" with lines, \\
+     \"\" using 1:6 index 0 title \"T\" with lines, \\
+     \"\" using 1:10 index 0 title \"DP\" with lines, \\
+     \"\" using 1:11 index 0 title \"HI\" with lines" | gnuplot
+rm $FILEPATH/datay

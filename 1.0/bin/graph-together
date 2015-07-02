@@ -1,0 +1,40 @@
+#!/bin/sh
+
+FILEPATH="/var/www/graph"
+
+grep -Ih OO /home/kiz/arduino/output/* > $FILEPATH/datat
+echo "set terminal png size 1000,685
+set xdata time
+set timefmt \"%Y-%m-%d-%H:%M:%S\"
+set output \"$FILEPATH/graph-main.png\"
+set xrange [\"`date --date=yesterday +%Y-%m-%d-%H:%M:%S`\":\"`date +%Y-%m-%d-%H:%M:%S`\"]
+set format x \"%H:%M\\n%m/%d\"
+set yrange [50:100]
+set mytics 2
+set y2tics 10,10
+set grid mytics xtics y2tics
+#set xlabel \"Date and Time\"
+#set ylabel \"% Humidity\"
+set key left box
+set multiplot layout 1,3
+
+# Top graph - day
+set size 1.0,0.48
+set origin 0.0,0.5
+plot \"$FILEPATH/datat\" using 1:2 index 0 title \" RH\" with lines, \\
+     \"\" using 1:6 index 0 title \"T\" with lines, \\
+     \"\" using 1:10 index 0 title \"DP\" with lines, \\
+     \"\" using 1:11 index 0 title \"HI\" with lines
+
+# Middle graph - week
+set size 1.0,0.48
+set origin 0.0,0.0
+set format x \"%a\\n%m/%d\"
+set xrange [\"`date --date="last week" +%Y-%m-%d-%H:%M:%S`\":\"`date +%Y-%m-%d-%H:%M:%S`\"]
+plot \"$FILEPATH/datat\" using 1:2 index 0 notitle with lines, \\
+     \"\" using 1:6 index 0 notitle with lines, \\
+     \"\" using 1:10 index 0 notitle with lines, \\
+     \"\" using 1:11 index 0 notitle with lines
+
+unset multiplot" | gnuplot
+rm $FILEPATH/datat

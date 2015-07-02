@@ -1,0 +1,72 @@
+#!/bin/sh
+  case "$1" in
+    'S0')
+      echo "S0 sent"
+      echo "S0" > /dev/ttyUSB0
+    ;;
+    'S1')
+      echo "S1 sent"
+      echo "S1" > /dev/ttyUSB0
+    ;;
+    'S2')
+      echo "S2 sent"
+      echo "S2" > /dev/ttyUSB0
+    ;;
+    'S3')
+      echo "S3 sent"
+      echo "S3" > /dev/ttyUSB0
+    ;;
+    'S4')
+      echo "S4 sent"
+      echo "S4" > /dev/ttyUSB0
+    ;;
+    'S5')
+      echo "S5 sent"
+      echo "S5" > /dev/ttyUSB0
+    ;;
+    'S6')
+      echo "S6 sent"
+      echo "S6" > /dev/ttyUSB0
+    ;;
+    'S7')
+      echo "S7 sent"
+      echo "S7" > /dev/ttyUSB0
+    ;;
+    'S8')
+      echo "S8 sent"
+      echo "S8" > /dev/ttyUSB0
+    ;;
+    'R'*)
+      echo "$1 sent"
+      if [ `echo "$1" | wc -c` -eq 10 ]; then echo "$1" > /dev/ttyUSB0; fi
+    ;;
+    'T'*)
+      if [ `echo "$1" | wc -c` -eq 12 ]; then
+        echo "$1" > /dev/ttyUSB0
+        echo "$1 sent"
+      elif [ `echo "$1" | wc -c` -eq 2 ]; then
+        echo "T`date +%s`" > /dev/ttyUSB0
+        echo "T`date +%s` sent"
+      fi
+    ;;
+    'N'*)
+      if [ `echo "$1" | wc -c` -eq 12 ]; then echo "$1" > /dev/ttyUSB0; fi
+      echo "$1 sent"
+    ;;
+    *)
+      echo ""
+      echo "Commands:"
+      echo "  S0    - Print status"
+      echo "  S1-S6 - Set mode S[Mode]"
+      echo "  S7    - Use mode set by clocktower"
+      echo "  S8    - Display all defined modes"
+      echo "  R#    - Set custom mode 5 min/max humidity and temp (see below)"
+      echo "  T[]   - Sync arduino to pc clock or [Optional: U = 10 digit unix time]"
+      echo "  N[]   - Append [note] to end of status as marker"
+      echo ""
+      echo "  R[Min Humidity][Max Humidity][Min TempF][Max TempF]"
+      echo "  Example: R70858085"
+      echo ""
+    ;;
+  esac
+exit 0

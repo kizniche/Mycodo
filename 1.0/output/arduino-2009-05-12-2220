@@ -1,0 +1,11 @@
+Stable Library
+=========================================
+Native lib Version = RXTX-2.2pre2
+Java lib Version   = RXTX-2.1-7
+WARNING:  RXTX Version mismatch
+	Jar version = RXTX-2.1-7
+	native lib Version = RXTX-2.2pre2
+
+T Hum  Mn Mx TempC Tempf Mn Mx DewPc DewPf F H  1 2 3 4 5 6
+1 Mode 6
+5 63.8 10 10 28.06 82.51 10 10 20.56 69.01 0 0  0 0 0 0 0 1

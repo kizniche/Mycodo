@@ -1,0 +1,7 @@
+#!/bin/sh
+rm /media/sda2/Arduino/Output/arduino-conky
+awk '{print "Humidity: " $5 "%   Temperature: " $9 "F   Dew Point: " $13 "F"}' /media/sda2/Arduino/Output/arduino-2009-05-12-0332 | tail -n 2 > /media/sda2/Arduino/Output/arduino-conky1
+sed '$d' /media/sda2/Arduino/Output/arduino-conky1 > /media/sda2/Arduino/Output/arduino-conky
+rm /media/sda2/Arduino/Output/arduino-conky1
+cat /media/sda2/Arduino/Output/arduino-conky
+exit 0

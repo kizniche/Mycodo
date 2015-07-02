@@ -1,0 +1,16 @@
+#!/bin/sh
+
+if [ -z "`ps -ef | grep "[c]at /dev/ttyUSB0"`" ]; then
+   if [ -f /home/kiz/arduino/output/arduino-`date +%F` ]; then
+      stty -F /dev/ttyUSB0 cs8 9600 ignbrk -brkint -icrnl -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts -clocal
+      cat /dev/ttyUSB0 >> /home/kiz/arduino/output/arduino-`date +%F` &
+      sleep 5 && echo T`date +%s` > /dev/ttyUSB0 &
+   else
+      stty -F /dev/ttyUSB0 cs8 9600 ignbrk -brkint -icrnl -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts -clocal
+      cat /dev/ttyUSB0 > /home/kiz/arduino/output/arduino-`date +%F` &
+      sleep 5 && echo T`date +%s` > /dev/ttyUSB0 &
+   fi
+else
+   echo "Error: Already Logging: PID `pgrep -l -f 'cat /dev/ttyUSB0'`"
+fi
+exit 0

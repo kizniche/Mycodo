@@ -1,0 +1,1 @@
+cat /home/kiz/arduino/output/arduino-* && ls -al --time-style=full-iso /home/kiz/arduino/output/arduino-*

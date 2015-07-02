@@ -1,0 +1,276 @@
+// Arduino Humidity and Temperature Sensing and adjusting
+//
+// Sensing: Turns on the exteranl 555 and counts the number of pulses on Digital Pin 8
+// using Timer 1 (1000 ms).  Then turns the 555 off to avoid the noise associated with this rail to rail
+// oscillation.  The raw relative humidity is then calculated.
+// An A/D conversion is performed to measure the voltage across the NTC thermistor in Analog Pin 0 (Pin 14)
+// the Rthermistor and the temperature is calculated.
+// The relative humidity is corrected for the measured temperature.
+// The Dew Point temperature is then calculated.
+// Sensor and Sensor Code: copyright, Peter H Anderson, Baltimore, MD, Nov, '07
+//
+// Output: Humidity and Temperature adjusting using relays
+// Relay 1 (humidifier) turns on until Max humidity is reached; stays off until Min humidity is reached
+// Relay 2 (heater) turns on until Max temperature is reached; stays off until Min temperature is reached
+// Buttons used to switch presets, changing Min and Max temperature and humidity
+// LEDs is a status light (testing)
+// Kiz, April, 2009
+
+#include <avr/io.h>
+#include <math.h>
+
+#define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
+#define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
+
+#define POWER_PIN 8	// Input Pin Digital 8, 555 Pulse (Blue)
+#define TEMP_PIN 14	// Input Pin Analog 0, Temperature sensor (Yellow)
+
+#define LED1 13		// Output Pin Digital 13, LED-1 (Integrated)
+#define HUM_PIN 11	// Output Pin Digital 11, Relay 1 Humidifier
+#define HEAT_PIN 10	// Output Pin Digital 10, Relay 2 Heater
+
+long previousmillis = 0;  // will store last time updated
+long interval = 5000;     // interval at which to print status (milliseconds)
+int val = 0;              // variable for reading the pin status
+
+unsigned int count_transitions(int ms);
+
+void setup()
+{
+    Serial.begin(9600);
+    pinMode(LED1, OUTPUT);	// LED 1
+    pinMode(HUM_PIN, OUTPUT);	// Relay 1 Humidifier
+    pinMode(HEAT_PIN, OUTPUT);	// Relay 2 Heater
+    
+/*  Buttons connected with resistors, Digital Pins 1,2,3
+    pinMode(5, INPUT);       // Button 1
+    pinMode(6, INPUT);       // Button 2
+    pinMode(7, INPUT);       // Button 3 */
+    
+    digitalWrite(HUM_PIN, LOW);
+    digitalWrite(HEAT_PIN, LOW);
+}
+
+void loop()
+{
+    float RH_raw, RH_corrected, Tc, Tf, Tc_dew_point, Tf_dew_point;
+    int interval_sec, h_plus = 0, t_plus = 0, blinkx = 3;                 
+    int s = 0, preset[4][4] = {{95, 97, 30, 32},        // Preset 1 Min Humidity, Max Hum, Min Temperature, Max Temp
+         	               {80, 95, 28, 30},        // Preset 2
+          	               {65, 80, 26, 28},        // Preset 3
+            	               {50, 65, 24, 26}};       // Preset 4
+
+    while(1)
+    {
+        RH_raw = measure_RH();
+        Tc = measTemperature(TEMP_PIN);
+	Tf = (Tc * 9) / 5 + 32;
+        RH_corrected = calc_RH_corrected(RH_raw, Tc);
+        Tc_dew_point = calc_dew_point(Tc, RH_corrected);
+        Tf_dew_point = (Tc_dew_point * 9) / 5 + 32;
+        interval_sec = interval / 1000;
+        
+	// Print current delay, humidity, temperature, and dew point
+
+        if (abs(millis() - previousmillis) > interval) { 
+            previousmillis = millis();    // remember the last time status was checked
+
+            Serial.print("Print interval: ");
+            Serial.print(interval_sec);
+            Serial.print(" Seconds, Relative Humidity: ");
+            print_float(RH_corrected, 1);
+            Serial.print("%, Temperature: ");
+            print_float(Tc, 2);
+            Serial.print("°C, ");
+	    print_float(Tf, 2);
+	    Serial.print("°F, Dew Point: ");
+            print_float(Tc_dew_point, 2);
+            Serial.print("°C, ");
+            print_float(Tf_dew_point, 2);
+            Serial.print("°F");
+            Serial.println();
+
+         /* Serial.print("Button 1,2,3 state: ");  // Test buttons for proper state (LOW/HIGH) before using button control
+            Serial.print(digitalRead(5));
+            Serial.print(", ");
+            Serial.print(digitalRead(6));
+            Serial.print(", ");
+            Serial.print(digitalRead(7));
+            Serial.println(); */
+
+	    blink(LED1, blinkx, 250);	  // Blink LED1, blinkx times, 250ms delay
+        }
+        
+ /*
+        for (int i = 5; i < 8; i++) {     // Button Control
+            val = digitalRead(i);         // Read input value of Button, Digital Pin i
+            if (val == HIGH) {            // Check input for HIGH (Closed circuit, 5V). LOW input is 10K ohm resistor only
+                switch (i) {
+                    case 5:               // Use Preset 1, Button 1
+                        s = 0;
+                        break;
+                    case 6:               // Use Preset 2, Button 2
+                        s = 1
+                        break;
+                    case 7:               // Use Preset 3, Button 3
+                        s = 2
+                        break;
+                }
+            }
+        } */
+
+	                                                   // Control Relays depending on relaive humidity and temperature
+	if (h_plus == 1 && RH_corrected > preset[s][1]) {  // Turn off Relay 1 (Humidifier) at Max Humidity
+	    digitalWrite(HUM_PIN, LOW);
+	    h_plus = 0;
+	}
+	else if (RH_corrected < preset[s][0] && digitalRead(HUM_PIN) != HIGH) {	 // Turn on Relay 1 at Min Humidity
+	    digitalWrite(HUM_PIN, HIGH);
+	    h_plus = 1;
+	}
+
+        if (t_plus == 1 && Tc > preset[s][3]) {  // Turn off Relay 2 (Heater) at Max Temperature
+            digitalWrite(HEAT_PIN, LOW);
+            h_plus = 0;
+        }
+        else if (Tc < preset[s][2] && digitalRead(HEAT_PIN) != HIGH) {  // Turn of Relay 2 at Min Temperature
+            digitalWrite(HEAT_PIN, HIGH);
+            h_plus = 1;
+        }
+    }
+}
+
+void blink(int LED, int num, int dur) {
+    for (int i = 1; i <= num; i++) {
+	digitalWrite(LED, HIGH);
+	delay(dur);
+	digitalWrite(LED, LOW);
+	delay(dur);
+    }
+}
+
+float calc_dew_point(float Tc, float RH)
+{
+     const float a = 17.27, b = 237.7;
+     float x, Tc_dew;
+
+     x = (a * Tc) / (b + Tc) + log(RH/100.0);
+     Tc_dew = (b * x) / (a - x);
+     return(Tc_dew);
+}
+
+float measure_RH(void) {
+     long RH_count;
+     float RH_raw;
+
+     pinMode(POWER_PIN, OUTPUT);
+     digitalWrite(POWER_PIN, HIGH);   	// power up the 555 cicuit
+     delay(500);   			// allow some time for the 555 to stabilize
+
+     RH_count = count_transitions(1000);
+     //Serial.println(RH_count); 	// for debugging
+     RH_raw = 557.7 - 0.0759 * RH_count;
+
+     digitalWrite(POWER_PIN, LOW); 	// turn off the 555
+     return(RH_raw);
+}
+
+float calc_RH_corrected(float RH_raw, float Tc)
+{
+    float T_diff, RH_corrected;
+
+    T_diff = Tc - 25.00;
+    RH_corrected = (1.0 + 0.001 * T_diff) * RH_raw;
+    return(RH_corrected);
+}
+
+unsigned int count_transitions(int ms)
+{				// configure Counter 1
+     cbi(TCCR1A, WGM11);
+     cbi(TCCR1A, WGM10);
+
+     cbi(TCCR1B, WGM12);	// WGM12::WGM10 000 - Normal mode
+
+     sbi(TCCR1B, CS12);		// CS12::CS10 111 - External clock, count on rising edge.
+     sbi(TCCR1B, CS11);
+     sbi(TCCR1B, CS10);
+
+     TCNT1 = 0x0000;		// note that TCNT1 is 16-bits
+     delay(ms);
+     				// not sure if should turn off the counter
+     return(TCNT1);
+}
+
+float measTemperature(int analog_channel)
+{
+    int ADVal;
+    float RThermistor, Tc;
+
+    ADVal = analogRead(analog_channel);
+    RThermistor = calcRthermistor(ADVal);
+    Tc = calcTc(RThermistor);
+    return(Tc);
+}
+
+float calcRthermistor(int ADVal)
+{
+    float Rtherm;
+    if (ADVal <=0) // avoid trouble conditions
+    {
+       ADVal = 10;
+    }
+    Rtherm = 10.0e3 / (1024.0 /((float) ADVal) - 1.0);
+    return(Rtherm);
+}
+
+float calcTc(float RTherm)
+{
+  const float A_const = 3.354016e-3;
+  const float B_const = 2.569107e-4;
+  const float C_const = 2.626311e-6;
+  const float D_const = 0.675278e-7;
+
+  float x, TKelvin, Tc;
+
+  x = log(RTherm / 10.0e3);
+  TKelvin = 1.0 / (A_const + B_const * x
+              + C_const * square(x) + D_const * cube(x));
+  Tc = TKelvin - 273.15;
+  return(Tc);
+}
+
+float square(float x)
+{
+  return(x * x);
+}
+
+float cube(float x)
+{
+  return(square(x) * x);
+}
+
+void print_float(float f, int num_digits)
+{
+    int f_int;
+    int pows_of_ten[4] = {1, 10, 100, 1000};
+    int multiplier, whole, fract, d, n;
+
+    multiplier = pows_of_ten[num_digits];
+    if (f < 0.0)
+    {
+        f = -f;
+        Serial.print("-");
+    }
+    whole = (int) f;
+    fract = (int) (multiplier * (f - (float)whole));
+
+    Serial.print(whole);
+    Serial.print(".");
+
+    for (n=num_digits-1; n>=0; n--) // print each digit with no leading zero suppression
+    {
+         d = fract / pows_of_ten[n];
+         Serial.print(d);
+         fract = fract % pows_of_ten[n];
+    }
+}
