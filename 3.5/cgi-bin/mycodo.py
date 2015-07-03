@@ -243,16 +243,14 @@ class ComServer(rpyc.Service):
             sensornum, override)
         pid_co2_or[sensornum] = override
         pid_co2_number = sensornum
-        Co2Res = 1
         pid_co2_down = 1
         while pid_co2_down == 1:
             time.sleep(0.1)
         write_config()
         read_config()
-        if Co2Res:
-            pid_co2_up = 1
-            while pid_co2_up:
-                time.sleep(0.1)
+        pid_co2_up = 1
+        while pid_co2_up:
+            time.sleep(0.1)
         return 1
     def exposed_ChangeCO2PID(self, sensornum, relay, set, p, i, d, period):
         global pid_co2_relay
@@ -273,18 +271,15 @@ class ComServer(rpyc.Service):
         pid_co2_p[sensornum] = p
         pid_co2_i[sensornum] = i
         pid_co2_d[sensornum] = d
-
         pid_co2_number = sensornum
-        Co2Res = 1
         pid_co2_down = 1
         while pid_co2_down == 1:
             time.sleep(0.1)
         write_config()
         read_config()
-        if Co2Res:
-            pid_co2_up = 1
-            while pid_co2_up:
-                time.sleep(0.1)
+        pid_co2_up = 1
+        while pid_co2_up:
+            time.sleep(0.1)
         return 1
     def exposed_ChangeTempOR(self, sensornum, override):
         global pid_temp_or
@@ -295,16 +290,14 @@ class ComServer(rpyc.Service):
             sensornum, override)
         pid_temp_or[sensornum] = override
         pid_temp_number = sensornum
-        TempRes = 1
         pid_temp_down = 1
         while pid_temp_down == 1:
             time.sleep(0.1)
         write_config()
         read_config()
-        if TempRes:
-            pid_temp_up = 1
-            while pid_temp_up:
-                time.sleep(0.1)
+        pid_temp_up = 1
+        while pid_temp_up:
+            time.sleep(0.1)
         return 1
     def exposed_ChangeTempPID(self, sensornum, relay, set, p, i, d, period):
         global pid_temp_relay
@@ -325,18 +318,15 @@ class ComServer(rpyc.Service):
         pid_temp_p[sensornum] = p
         pid_temp_i[sensornum] = i
         pid_temp_d[sensornum] = d
-
         pid_temp_number = sensornum
-        TempRes = 1
         pid_temp_down = 1
         while pid_temp_down == 1:
             time.sleep(0.1)
         write_config()
         read_config()
-        if TempRes:
-            pid_temp_up = 1
-            while pid_temp_up:
-                time.sleep(0.1)
+        pid_temp_up = 1
+        while pid_temp_up:
+            time.sleep(0.1)
         return 1
     def exposed_ChangeHumOR(self, sensornum, override):
         global pid_hum_or
@@ -346,18 +336,15 @@ class ComServer(rpyc.Service):
         pid_hum_or[sensornum] = override
         logging.info("[Client command] Change pid_hum_or for sensor %s to %s",
             sensornum, override)
-        
         pid_hum_number = sensornum
-        HumRes = 1
         pid_hum_down = 1
         while pid_hum_down == 1:
             time.sleep(0.1)
         write_config()
         read_config()
-        if HumRes:
-            pid_hum_up = 1
-            while pid_hum_up:
-                time.sleep(0.1)
+        pid_hum_up = 1
+        while pid_hum_up:
+            time.sleep(0.1)
         return 1
     def exposed_ChangeHumPID(self, sensornum, relay, set, p, i, d, period):
         global pid_hum_relay
@@ -380,16 +367,14 @@ class ComServer(rpyc.Service):
         pid_hum_d[sensornum] = d
         
         pid_hum_number = sensornum
-        HumRes = 1
         pid_hum_down = 1
         while pid_hum_down == 1:
             time.sleep(0.1)
         write_config()
         read_config()
-        if HumRes:
-            pid_hum_up = 1
-            while pid_hum_up:
-                time.sleep(0.1)
+        pid_hum_up = 1
+        while pid_hum_up:
+            time.sleep(0.1)
         return 1
     def exposed_ChangeRelayNames(self, relayname1, relayname2, relayname3,
             relayname4, relayname5, relayname6, relayname7, relayname8):
