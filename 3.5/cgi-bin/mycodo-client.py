@@ -129,7 +129,7 @@ def menu():
                 sys.argv[4], sys.argv[5], sys.argv[6],
                 sys.argv[7], sys.argv[8]),
             if c.root.ChangeCO2PID(int(float(sys.argv[2])),
-            int(float(sys.argv[3])), float(sys.argv[4]),
+            int(float(sys.argv[3])), int(float(sys.argv[4])),
             float(sys.argv[5]), float(sys.argv[6]),
             float(sys.argv[7]), int(float(sys.argv[8]))) == 1:
                 print "Success"
