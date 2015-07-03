@@ -504,9 +504,10 @@ if ($login->isUserLoggedIn() == true) {
                 $smtp_port  = $_POST['smtp_port'];
                 $smtp_user  = $_POST['smtp_user'];
                 $smtp_pass  = $_POST['smtp_pass'];
-                $email_from  = $_POST['email_from'];
-                $email_to  = $_POST['email_to'];
-                $editconfig = "$mycodo_client --modvar smtp_host $smtp_host smtp_port $smtp_port smtp_user $smtp_user smtp_pass $smtp_pass email_from $email_from email_to $email_to";
+                $smtp_email_from  = $_POST['smtp_email_from'];
+                $smtp_email_to  = $_POST['smtp_email_to'];
+                $editconfig = "$mycodo_client --modvar smtp_host $smtp_host smtp_port $smtp_port smtp_user $smtp_user smtp_pass $smtp_pass smtp_email_from $smtp_email_from smtp_email_to $smtp_email_to";
+                echo $editconfig, $smtp_email_from, $smtp_email_to;
                 shell_exec($editconfig);
             }
         } else $error_code = 'guest';
@@ -1693,10 +1694,10 @@ $error_code = "no";
                     <label class="notify">Password</label><input class="smtp" type="password" value="<?php echo $smtp_pass; ?>" maxlength=30 size=20 name="smtp_pass" title=""/>
                 </div>
                 <div class="notify">
-                    <label class="notify">From</label><input class="smtp" type="text" value="<?php echo $email_from; ?>" maxlength=30 size=20 name="email_from" title=""/>
+                    <label class="notify">From</label><input class="smtp" type="text" value="<?php echo $smtp_email_from; ?>" maxlength=30 size=20 name="smtp_email_from" title=""/>
                 </div>
                 <div class="notify">
-                    <label class="notify">To</label><input class="smtp" type="text" value="<?php echo $email_to; ?>" maxlength=30 size=20 name="email_to" title=""/>
+                    <label class="notify">To</label><input class="smtp" type="text" value="<?php echo $smtp_email_to; ?>" maxlength=30 size=20 name="smtp_email_to" title=""/>
                 </div>
                 <div class="notify">
                     <input type="submit" name="ChangeNotify" value="Save">
