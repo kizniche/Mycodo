@@ -2101,7 +2101,7 @@ def relay_on_duration(relay, seconds, sensor):
 #################################################
 
 # Email if temperature or sensor_ht_read_hum is outside of critical range (Not yet implemented)
-def email():
+def email(message):
     if (smtp_ssl):
         server = smtplib.SMTP_SSL(smtp_host, smtp_port)
         server.ehlo()
@@ -2114,7 +2114,7 @@ def email():
     server.login(smtp_user, smtp_pass)
 
     # Body of email
-    message = "Critical warning!"
+    # message = "Critical warning!"
     
     msg = MIMEText(message)
     msg['Subject'] = "Critical warning!"
