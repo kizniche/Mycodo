@@ -705,9 +705,14 @@ def menu():
 
     daemon(a, b)
     return 1
+
     
-# Main loop that reads sensors, modifies relays based on sensor values, writes
-# sensor/relay logs, and receives/executes certain commands via mycodo-client.py
+#################################################
+#                    Daemon                     #
+#################################################
+
+# Read sensors, modify relays based on sensor values, write sensor/relay
+# logs, and receive/execute commands from mycodo-client.py
 def daemon(output, log):
     global pid_temp_alive
     global pid_temp_down
