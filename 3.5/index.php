@@ -507,7 +507,6 @@ if ($login->isUserLoggedIn() == true) {
                 $smtp_email_from  = $_POST['smtp_email_from'];
                 $smtp_email_to  = $_POST['smtp_email_to'];
                 $editconfig = "$mycodo_client --modvar smtp_host $smtp_host smtp_port $smtp_port smtp_user $smtp_user smtp_pass $smtp_pass smtp_email_from $smtp_email_from smtp_email_to $smtp_email_to";
-                echo $editconfig, $smtp_email_from, $smtp_email_to;
                 shell_exec($editconfig);
             }
         } else $error_code = 'guest';
