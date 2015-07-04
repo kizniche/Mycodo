@@ -26,20 +26,20 @@ $sqlite_db = "/var/www/mycodo/config/mycodo.sqlite3";
 
 $db = new SQLite3($sqlite_db);
 
-print "Table: Names<br>";
-$results = $db->query('SELECT row, column FROM Names');
+print "Table: Strings<br>";
+$results = $db->query('SELECT row, column FROM Strings');
 while ($row = $results->fetchArray()) {
     print $row[0] . " = " . $row[1] . "<br>";
 }
 
-print "<br>Table: Configuration<br>";
-$results = $db->query('SELECT row, column FROM Configuration');
+print "<br>Table: Integers<br>";
+$results = $db->query('SELECT row, column FROM Integers');
 while ($row = $results->fetchArray()) {
     print $row[0] . " = " . $row[1] . "<br>";
 }
 
-print "<br>Table: PID<br>";
-$results = $db->query('SELECT row, column FROM PID');
+print "<br>Table: Floats<br>";
+$results = $db->query('SELECT row, column FROM Floats');
 while ($row = $results->fetchArray()) {
     print $row[0] . " = " . number_format($row[1],1) . "<br>";
 }

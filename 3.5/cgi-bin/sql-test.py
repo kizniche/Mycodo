@@ -30,8 +30,8 @@ sql_database = '/var/www/mycodo/config/mycodo.sqlite3'
 
 def menu():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'a:druv',
-            ["add", "delete", "db-create", "db-delete", "db-recreate", "db-setup", "row", "update", "view"])
+        opts, args = getopt.getopt(sys.argv[1:], 'a:ruv',
+            ["add", "delete-rows", "delete-tables", "create-tables", "db-recreate", "db-setup", "row", "update", "view"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         return 2
@@ -39,28 +39,28 @@ def menu():
         if opt in ("-a", "--add"):
             add_columns(sys.argv[2], sys.argv[3], sys.argv[4])
             return 1
-        elif opt == "--db-create":
-            create_db()
-            return 1
-        elif opt == "--db-delete":
-            delete_db()
+        elif opt == "--create-tables":
+            create_all_tables()
             return 1
         elif opt == "--db-recreate":
             print "Recreate Database"
-            delete_db()
-            create_db()
+            delete_all_tables()
+            create_all_tables()
             return 1
         elif opt == "--db-setup":
             setup_db()
             return 1
-        elif opt in ("-d", "--delete"):
-            delete_all()
+        elif opt == "--delete-rows":
+            delete_all_rows()
+            return 1
+        elif opt == "--delete-tables":
+            delete_all_tables()
             return 1
         elif opt in ("-r", "--row"):
-            delete_row(sys.argv[2])
+            delete_row(sys.argv[2], sys.argv[3])
             return 1
         elif opt in ("-u", "--update"):
-            update_column(sys.argv[2], sys.argv[3], sys.argv[4])
+            update_value(sys.argv[2], sys.argv[3], sys.argv[4])
             return 1
         elif opt in ("-v", "--view"):
             print "View Values"
@@ -69,95 +69,95 @@ def menu():
         else:
             assert False, "Fail"
 
-def create_db():
-    print "Create Database"
+def create_all_tables():
+    print "Create All Tables"
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
-    cur.execute('CREATE TABLE Names (row TEXT, column TEXT)')
-    cur.execute('CREATE TABLE Configuration (row TEXT, column INTEGER)')
-    cur.execute('CREATE TABLE PID (row TEXT, column REAL)')
+    cur.execute('CREATE TABLE Strings (row TEXT, column TEXT)')
+    cur.execute('CREATE TABLE Integers (row TEXT, column INTEGER)')
+    cur.execute('CREATE TABLE Floats (row TEXT, column REAL)')
     conn.close()
     
-def delete_db():
-    print "Delete Database"
+def delete_all_tables():
+    print "Delete All Tables"
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
-    cur.execute('DROP TABLE IF EXISTS Names ')
-    cur.execute('DROP TABLE IF EXISTS Configuration ')
-    cur.execute('DROP TABLE IF EXISTS PID ')
+    cur.execute('DROP TABLE IF EXISTS Strings ')
+    cur.execute('DROP TABLE IF EXISTS Integers ')
+    cur.execute('DROP TABLE IF EXISTS Floats ')
     conn.close()
     
 def setup_db():
-    delete_db()
-    create_db()
+    delete_all_tables()
+    create_all_tables()
     
     for i in range(1, 9):
-        add_columns('Names', 'relay%dname' % i, 'Relay_%dName' % i)
-        add_columns('Configuration', 'relay%dpin' % i, 0)
-        add_columns('Configuration', 'relay%dtrigger' % i, 0)
+        add_columns('Strings', 'relay%dname' % i, 'Relay_%dName' % i)
+        add_columns('Integers', 'relay%dpin' % i, 0)
+        add_columns('Integers', 'relay%dtrigger' % i, 0)
         
     for i in range(1, 9):
-        add_columns('Configuration', 'timer%dstate' % i, 0)
-        add_columns('Configuration', 'timer%drelay' % i, 0)
-        add_columns('Configuration', 'timer%ddurationon' % i, 0)
-        add_columns('Configuration', 'timer%ddurationoff' % i, 0)
+        add_columns('Integers', 'timer%dstate' % i, 0)
+        add_columns('Integers', 'timer%drelay' % i, 0)
+        add_columns('Integers', 'timer%ddurationon' % i, 0)
+        add_columns('Integers', 'timer%ddurationoff' % i, 0)
         
     for i in range(1, 5):
-        add_columns('Names', 'sensorht%dname' % i, 'HT_%dName' % i)
-        add_columns('Configuration', 'sensorht%ddevice' % i, 0)
-        add_columns('Configuration', 'sensorht%dpin' % i, 0)
-        add_columns('Configuration', 'sensorht%dperiod' % i, 0)
-        add_columns('Configuration', 'sensorht%dactivated' % i, 0)
-        add_columns('Configuration', 'sensorht%dgraph' % i, 0)
-        add_columns('Configuration', 'temp%dperiod' % i, 0)
-        add_columns('Configuration', 'temp%drelay' % i, 0)
-        add_columns('Configuration', 'temp%dor' % i, 0)
-        add_columns('Configuration', 'hum%dperiod' % i, 0)
-        add_columns('Configuration', 'hum%drelay' % i, 0)
-        add_columns('Configuration', 'hum%dor' % i, 0)
-        add_columns('PID', 'temp%dset' % i, 0)
-        add_columns('PID', 'temp%dp' % i, 0)
-        add_columns('PID', 'temp%di' % i, 0)
-        add_columns('PID', 'temp%dd' % i, 0)
-        add_columns('PID', 'hum%dset' % i, 0)
-        add_columns('PID', 'hum%dp' % i, 0)
-        add_columns('PID', 'hum%di' % i, 0)
-        add_columns('PID', 'hum%dd' % i, 0)
+        add_columns('Strings', 'sensorht%dname' % i, 'HT_%dName' % i)
+        add_columns('Integers', 'sensorht%ddevice' % i, 0)
+        add_columns('Integers', 'sensorht%dpin' % i, 0)
+        add_columns('Integers', 'sensorht%dperiod' % i, 0)
+        add_columns('Integers', 'sensorht%dactivated' % i, 0)
+        add_columns('Integers', 'sensorht%dgraph' % i, 0)
+        add_columns('Integers', 'temp%dperiod' % i, 0)
+        add_columns('Integers', 'temp%drelay' % i, 0)
+        add_columns('Integers', 'temp%dor' % i, 0)
+        add_columns('Integers', 'hum%dperiod' % i, 0)
+        add_columns('Integers', 'hum%drelay' % i, 0)
+        add_columns('Integers', 'hum%dor' % i, 0)
+        add_columns('Floats', 'temp%dset' % i, 0)
+        add_columns('Floats', 'temp%dp' % i, 0)
+        add_columns('Floats', 'temp%di' % i, 0)
+        add_columns('Floats', 'temp%dd' % i, 0)
+        add_columns('Floats', 'hum%dset' % i, 0)
+        add_columns('Floats', 'hum%dp' % i, 0)
+        add_columns('Floats', 'hum%di' % i, 0)
+        add_columns('Floats', 'hum%dd' % i, 0)
     
     for i in range(1, 5):
-        add_columns('Names', 'sensorco2%dname' % i, 'CO2_%dName' % i)
-        add_columns('Configuration', 'sensorco2%ddevice' % i, 0)
-        add_columns('Configuration', 'sensorco2%dpin' % i, 0)
-        add_columns('Configuration', 'sensorco2%dperiod' % i, 0)
-        add_columns('Configuration', 'sensorco2%dactivated' % i, 0)
-        add_columns('Configuration', 'sensorco2%dgraph' % i, 0)
-        add_columns('Configuration', 'co2%dperiod' % i, 0)
-        add_columns('Configuration', 'co2%drelay' % i, 0)
-        add_columns('Configuration', 'co2%dor' % i, 0)
-        add_columns('PID', 'co2%dset' % i, 0)
-        add_columns('PID', 'co2%dp' % i, 0)
-        add_columns('PID', 'co2%di' % i, 0)
-        add_columns('PID', 'co2%dd' % i, 0)
+        add_columns('Strings', 'sensorco2%dname' % i, 'CO2_%dName' % i)
+        add_columns('Integers', 'sensorco2%ddevice' % i, 0)
+        add_columns('Integers', 'sensorco2%dpin' % i, 0)
+        add_columns('Integers', 'sensorco2%dperiod' % i, 0)
+        add_columns('Integers', 'sensorco2%dactivated' % i, 0)
+        add_columns('Integers', 'sensorco2%dgraph' % i, 0)
+        add_columns('Integers', 'co2%dperiod' % i, 0)
+        add_columns('Integers', 'co2%drelay' % i, 0)
+        add_columns('Integers', 'co2%dor' % i, 0)
+        add_columns('Floats', 'co2%dset' % i, 0)
+        add_columns('Floats', 'co2%dp' % i, 0)
+        add_columns('Floats', 'co2%di' % i, 0)
+        add_columns('Floats', 'co2%dd' % i, 0)
         
-    add_columns('Names', 'smtp_host', 'smtp_host')
-    add_columns('Names', 'smtp_port', 'smtp_port')
-    add_columns('Names', 'smtp_user', 'smtp_user')
-    add_columns('Names', 'smtp_pass', 'smtp_pass')
-    add_columns('Names', 'smtp_email_from', 'smtp_email_from')
-    add_columns('Names', 'smtp_email_to', 'smtp_email_to')
+    add_columns('Strings', 'smtp_host', 'smtp_host')
+    add_columns('Strings', 'smtp_port', 'smtp_port')
+    add_columns('Strings', 'smtp_user', 'smtp_user')
+    add_columns('Strings', 'smtp_pass', 'smtp_pass')
+    add_columns('Strings', 'smtp_email_from', 'smtp_email_from')
+    add_columns('Strings', 'smtp_email_to', 'smtp_email_to')
     
-    add_columns('Configuration', 'numrelays', 0)
-    add_columns('Configuration', 'numco2sensors', 0)
-    add_columns('Configuration', 'numhtsensors', 0)
-    add_columns('Configuration', 'numtimers', 0)
-    add_columns('Configuration', 'cameralight', 0)
+    add_columns('Integers', 'numrelays', 0)
+    add_columns('Integers', 'numco2sensors', 0)
+    add_columns('Integers', 'numhtsensors', 0)
+    add_columns('Integers', 'numtimers', 0)
+    add_columns('Integers', 'cameralight', 0)
     
 def add_columns(table, row, column):
     print "Add to Table: %s Variable: %s Value: %s" % (table, row, column)
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
-    if table == 'Names' or represents_int(column) or represents_float(column):
-        if table == 'Names':
+    if table == 'Strings' or represents_int(column) or represents_float(column):
+        if table == 'Strings':
             query = "INSERT INTO %s (row, column) VALUES ( '%s', '%s' )" % (table, row, column)
         else:
             query = "INSERT INTO %s (row, column) VALUES ( '%s', %s )" % (table, row, column)
@@ -169,18 +169,18 @@ def view_columns():
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
     
-    cur.execute('SELECT row, column FROM Names')
-    print "Table: Names"
+    cur.execute('SELECT row, column FROM Strings')
+    print "Table: Strings"
     for row in cur :
         print "Variable: %s Value: %s" % (row[0], row[1])
 
-    cur.execute('SELECT row, column FROM Configuration')
-    print "Table: Configuration"
+    cur.execute('SELECT row, column FROM Integers')
+    print "Table: Integers"
     for row in cur :
         print "Variable: %s Value: %s" % (row[0], row[1])
     
-    cur.execute('SELECT row, column FROM PID')
-    print "Table: PID"
+    cur.execute('SELECT row, column FROM Floats')
+    print "Table: Floats"
     for row in cur :
         print "Variable: %s Value: %s" % (row[0], row[1])
     
@@ -189,43 +189,52 @@ def view_columns():
 def load_global_db(verbose):
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
-    cur.execute('SELECT row, column FROM Names')
+    
+    # Check if tables exist in database
+    cur.execute("SELECT name FROM sqlite_master WHERE type = 'table'")
+    for table in cur:
+        print table
+        if table[0] != 'Strings' and table[0] != 'Integers' and table[0] != 'Floats':
+            print "Missing table(s): Cannot load database to global variables."
+            return 0
+  
+    cur.execute('SELECT row, column FROM Strings')
     for row in cur :
         if verbose:
             print "Load Global Variable: %s Value: %s" % (row[0], row[1])
         globals()[row[0]] = row[1]
-    cur.execute('SELECT row, column FROM Configuration')
+    cur.execute('SELECT row, column FROM Integers')
     for row in cur :
         if verbose:
             print "Load Global Variable: %s Value: %s" % (row[0], row[1])
         globals()[row[0]] = row[1]
-    cur.execute('SELECT row, column FROM PID')
+    cur.execute('SELECT row, column FROM Floats')
     for row in cur :
         if verbose:
             print "Load Global Variable: %s Value: %s" % (row[0], row[1])
         globals()[row[0]] = row[1]
     cur.close()
     
-def delete_all():
+def delete_all_rows():
     print "Delete All Rows"
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
-    cur.execute('DELETE FROM Names')
-    cur.execute('DELETE FROM Configuration')
-    cur.execute('DELETE FROM PID')
+    cur.execute('DELETE FROM Strings')
+    cur.execute('DELETE FROM Integers')
+    cur.execute('DELETE FROM Floats')
     conn.commit()
     cur.close()
     
-def delete_row(row):
+def delete_row(table, row):
     print "Delete Row: %s" % row
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
-    query = "DELETE FROM Configuration WHERE row = '%s' " % row
+    query = "DELETE FROM %s WHERE row = '%s' " % (table, row)
     cur.execute(query)
     conn.commit()
     cur.close()
     
-def update_column(table, row, column):
+def update_value(table, row, column):
     print "Update Table: %s Variable: %s Value: %s" % (table, row, column)
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
@@ -252,5 +261,5 @@ def represents_float(s):
     except ValueError:
         return False
     
-load_global_db(0)
+#load_global_db(0)
 menu()
