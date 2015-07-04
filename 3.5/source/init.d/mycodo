@@ -110,12 +110,12 @@ case "${1:-''}" in
         
         sleep 1
         
-        if ps aux | grep '[m]ycodo.py -d'
+        if ps aux | grep '[m]ycodo.py'
         then
             printf " Daemon is still running. Attempting to stop... "
 
-            PID=`ps aux | grep '[m]ycodo.py -d' | awk '{print $2}'`
-            WAIT_SECONDS=10
+            PID=`ps aux | grep '[m]ycodo.py' | awk '{print $2}'`
+            WAIT_SECONDS=5
             count=0
 
             while kill $PID > /dev/null
