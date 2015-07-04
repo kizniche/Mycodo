@@ -26,7 +26,13 @@ $sqlite_db = "/var/www/mycodo/config/mycodo.sqlite3";
 
 $db = new SQLite3($sqlite_db);
 
-print "Table: Configuration<br>";
+print "Table: Names<br>";
+$results = $db->query('SELECT row, column FROM Names');
+while ($row = $results->fetchArray()) {
+    print $row[0] . " = " . $row[1] . "<br>";
+}
+
+print "<br>Table: Configuration<br>";
 $results = $db->query('SELECT row, column FROM Configuration');
 while ($row = $results->fetchArray()) {
     print $row[0] . " = " . $row[1] . "<br>";
