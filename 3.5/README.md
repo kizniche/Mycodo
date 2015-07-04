@@ -11,3 +11,7 @@ This is an experimental branch of mycodo. Unless I have been in direct contact w
 - [ ] Set electrical current draw of each device and prevent exceeding total current limit with different combinations of devices on
 - [ ] Capture series of photos at different ISOs, combine to make HDR photo
 - [ ] Timelapse video creation ability (define start, end, duration between, etc.)
+
+### New Dependencies
+
+`sudo apt-get install php5-sqlite sqlite3`
