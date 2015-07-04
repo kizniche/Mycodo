@@ -1843,24 +1843,7 @@ def read_config():
         pid_co2_p[i] = config.getfloat('Co2PID%d' % i, 'co2%dp' % i)
         pid_co2_i[i] = config.getfloat('Co2PID%d' % i, 'co2%di' % i)
         pid_co2_d[i] = config.getfloat('Co2PID%d' % i, 'co2%dd' % i)
-        
-    for i in range(1, 5):
-        pid_temp_period[i] = config.getint('TempPID%d' % i, 'temp%dperiod' % i)
-        pid_temp_relay[i] = config.getint('TempPID%d' % i, 'temp%drelay' % i)
-        pid_temp_set[i] = config.getfloat('TempPID%d' % i, 'temp%dset' % i)
-        pid_temp_or[i] = config.getint('TempPID%d' % i, 'temp%dor' % i)
-        pid_temp_p[i] = config.getfloat('TempPID%d' % i, 'temp%dp' % i)
-        pid_temp_i[i] = config.getfloat('TempPID%d' % i, 'temp%di' % i)
-        pid_temp_d[i] = config.getfloat('TempPID%d' % i, 'temp%dd' % i)
-        
-        pid_hum_period[i] = config.getint('HumPID%d' % i, 'hum%dperiod' % i)
-        pid_hum_relay[i] = config.getint('HumPID%d' % i, 'hum%drelay' % i)
-        pid_hum_set[i] = config.getfloat('HumPID%d' % i, 'hum%dset' % i)
-        pid_hum_or[i] = config.getint('HumPID%d' % i, 'hum%dor' % i)
-        pid_hum_p[i] = config.getfloat('HumPID%d' % i, 'hum%dp' % i)
-        pid_hum_i[i] = config.getfloat('HumPID%d' % i, 'hum%di' % i)
-        pid_hum_d[1] = config.getfloat('HumPID%d' % i, 'hum%dd' % i)
-
+       
     for i in range(1, 5):
         sensor_ht_name[i] = config.get('HTSensor%d' % i, 'sensorht%dname' % i)
         sensor_ht_device[i] = config.get('HTSensor%d' % i, 'sensorht%ddevice' % i)
