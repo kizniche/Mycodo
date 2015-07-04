@@ -30,7 +30,7 @@ sql_database = '/var/www/mycodo/config/mycodo.sqlite3'
 
 def menu():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'a:cdruv',
+        opts, args = getopt.getopt(sys.argv[1:], 'a:druv',
             ["add", "delete", "db-create", "db-delete", "db-recreate", "db-setup", "row", "update", "view"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
@@ -93,6 +93,14 @@ def setup_db():
     
     for i in range(1, 9):
         add_columns('Names', 'relay%dname' % i, 'Relay_%dName' % i)
+        add_columns('Configuration', 'relay%dpin' % i, 0)
+        add_columns('Configuration', 'relay%dtrigger' % i, 0)
+        
+    for i in range(1, 9):
+        add_columns('Configuration', 'timer%dstate' % i, 0)
+        add_columns('Configuration', 'timer%drelay' % i, 0)
+        add_columns('Configuration', 'timer%ddurationon' % i, 0)
+        add_columns('Configuration', 'timer%ddurationoff' % i, 0)
         
     for i in range(1, 5):
         add_columns('Names', 'sensorht%dname' % i, 'HT_%dName' % i)
@@ -130,6 +138,19 @@ def setup_db():
         add_columns('PID', 'co2%dp' % i, 0)
         add_columns('PID', 'co2%di' % i, 0)
         add_columns('PID', 'co2%dd' % i, 0)
+        
+    add_columns('Names', 'smtp_host', 'smtp_host')
+    add_columns('Names', 'smtp_port', 'smtp_port')
+    add_columns('Names', 'smtp_user', 'smtp_user')
+    add_columns('Names', 'smtp_pass', 'smtp_pass')
+    add_columns('Names', 'smtp_email_from', 'smtp_email_from')
+    add_columns('Names', 'smtp_email_to', 'smtp_email_to')
+    
+    add_columns('Configuration', 'numrelays', 0)
+    add_columns('Configuration', 'numco2sensors', 0)
+    add_columns('Configuration', 'numhtsensors', 0)
+    add_columns('Configuration', 'numtimers', 0)
+    add_columns('Configuration', 'cameralight', 0)
     
 def add_columns(table, row, column):
     print "Add to Table: %s Variable: %s Value: %s" % (table, row, column)
