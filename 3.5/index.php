@@ -639,7 +639,7 @@ $error_code = "no";
     <div class="header">
     <table>
         <tr>
-            <td colspan=2 align=center style="border-bottom:1pt solid black;"><?php echo $s . ": " . ${'sensorht' . $s . 'name'}; ?></td>
+            <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo "HT" . $s . ": " . ${'sensorht' . $s . 'name'}; ?></td>
         </tr>
         <tr>
             <td>
@@ -671,8 +671,8 @@ $error_code = "no";
     <div class="header">
     <table>
         <tr>
-            <td colspan=2 align=center style="border-bottom:1pt solid black;">
-                <?php echo $s . ": " . ${'sensorco2' . $s . 'name'}; ?>
+            <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;">
+                <?php echo "CO<sub>2</sub>" . $s . ": " . ${'sensorco2' . $s . 'name'}; ?>
             </td>
         </tr>
         <tr>
