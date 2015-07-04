@@ -55,6 +55,13 @@ $results = $db->query('SELECT Id, Name, State, Relay, DurationOn, DurationOff FR
 while ($row = $results->fetchArray()) {
     print $row[0] . " " . $row[1] . " " . $row[2] . " " . $row[3] . " " . $row[4] . " " . $row[5] . "<br>";
 }
+
+print "<br>Table: SMTP<br>";
+$results = $db->query('SELECT Host, Port, User, Pass, Email_From, Email_To FROM SMTP');
+while ($row = $results->fetchArray()) {
+    print $row[0] . " " . $row[1] . " " . $row[2] . " " . $row[3] . " " . $row[4] . " " . $row[5] . "<br>";
+}
+
 /*
 print "<br>Table: Strings<br>";
 $results = $db->query('SELECT row, column FROM Strings');

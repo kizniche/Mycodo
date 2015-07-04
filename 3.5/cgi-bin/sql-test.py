@@ -88,6 +88,7 @@ def delete_all_tables():
     cur.execute('DROP TABLE IF EXISTS CO2Sensor ')
     cur.execute('DROP TABLE IF EXISTS Timers ')
     cur.execute('DROP TABLE IF EXISTS Numbers ')
+    cur.execute('DROP TABLE IF EXISTS SMTP ')
     
     cur.execute('DROP TABLE IF EXISTS Strings ')
     cur.execute('DROP TABLE IF EXISTS Integers ')
@@ -120,6 +121,9 @@ def setup_db():
     
     cur.execute("CREATE TABLE Numbers (Relays INT, HTSensors INT, CO2Sensors INT, Timers INT)")
     cur.execute("INSERT INTO Numbers VALUES(8, 3, 1, 4)")
+    
+    cur.execute("CREATE TABLE SMTP (Host TEXT, Port INT, User TEXT, Pass TEXT, Email_From TEXT, Email_To TEXT)")
+    cur.execute("INSERT INTO SMTP VALUES('smtp.gmail.com', 587, 'email@gmail.com', 'password', 'me@gmail.com', 'you@gmail.com')")
     
     conn.commit()
     cur.close()
