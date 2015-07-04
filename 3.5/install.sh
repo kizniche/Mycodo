@@ -34,7 +34,7 @@ apt-get update
 apt-get upgrade
 
 echo "#### Install required software ####" >&2
-apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev php5 libapache2-mod-php5 mysql-server mysql-client pip wget
+apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev php5 libapache2-mod-php5 mysql-server mysql-client php5-sqlite sqlite3 pip wget
 
 echo "#### Install phpmyadmin ####" >&2
 apt-get install phpmyadmin
