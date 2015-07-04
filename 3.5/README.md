@@ -4,7 +4,8 @@ This is an experimental branch of mycodo. Unless I have been in direct contact w
 
 ### Goals
 
-- [X] CO2 Sensor support
+- [X] K30 CO2 Sensor support
+- [ ] SQLite3 Database Support
 - [ ] O2 Sensor support
 - [ ] More graph generation options
 - [ ] Email notification or audible alarm if at a specific sensor value or detect a critical failure (working on)
