@@ -25,6 +25,7 @@
 import getopt
 import sqlite3
 import sys
+import time
 
 sql_database = '/var/www/mycodo/config/mycodo.sqlite3'
 
@@ -70,7 +71,7 @@ def menu():
             assert False, "Fail"
 
 def create_all_tables():
-    print "Create All Tables"
+    print "Create Tables"
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
     cur.execute('CREATE TABLE Strings (row TEXT, column TEXT)')
@@ -79,9 +80,15 @@ def create_all_tables():
     conn.close()
     
 def delete_all_tables():
-    print "Delete All Tables"
+    print "Delete Tables"
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
+    cur.execute('DROP TABLE IF EXISTS Relays ')
+    cur.execute('DROP TABLE IF EXISTS HTSensor ')
+    cur.execute('DROP TABLE IF EXISTS CO2Sensor ')
+    cur.execute('DROP TABLE IF EXISTS Timers ')
+    cur.execute('DROP TABLE IF EXISTS Numbers ')
+    
     cur.execute('DROP TABLE IF EXISTS Strings ')
     cur.execute('DROP TABLE IF EXISTS Integers ')
     cur.execute('DROP TABLE IF EXISTS Floats ')
@@ -90,6 +97,39 @@ def delete_all_tables():
 def setup_db():
     delete_all_tables()
     create_all_tables()
+    print "Create Rows and Columns"
+    
+    conn = sqlite3.connect(sql_database)
+    cur = conn.cursor()
+    
+    cur.execute("CREATE TABLE Relays (Id INT, Name TEXT, Pin INT, Trigger INT)")
+    for i in range(1, 9):
+        cur.execute("INSERT INTO Relays VALUES(%d, 'Relay%d', 0, 0)" % (i, i))
+        
+    cur.execute("CREATE TABLE HTSensor (Id INT, Name TEXT, Pin INT, Device TEXT, Relay INT, Period INT, Activated INT, Graph INT, Temp_OR INT, Temp_Set REAL, Temp_P REAL, Temp_I REAL, Temp_D, Hum_OR INT, Hum_Set REAL, Hum_P REAL, Hum_I REAL, Hum_D REAL)")
+    for i in range(1, 5):
+        cur.execute("INSERT INTO HTSensor VALUES(%d, 'HTSensor%d', 0, 'DHT22', 0, 10, 0, 0, 1, 25.0, 1.1, 1.2, 1.3, 1, 50.0, 1.1, 1.2, 1.3)" % (i, i))
+    
+    cur.execute("CREATE TABLE CO2Sensor (Id INT, Name TEXT, Pin INT, Device TEXT, Relay INT, Period INT, Activated INT, Graph INT, CO2_OR INT, CO2_Set INT, CO2_P REAL, CO2_I REAL, CO2_D REAL)")
+    for i in range(1, 5):
+        cur.execute("INSERT INTO CO2Sensor VALUES(%d, 'CO2Sensor%d', 0, 'K30', 0, 10, 0, 0, 1, 1000, 1.1, 1.2, 1.3)" % (i, i))
+
+    cur.execute("CREATE TABLE Timers (Id INT, Name TEXT, State INT, Relay INT, DurationOn INT, DurationOff INT)")
+    for i in range(1, 9):
+        cur.execute("INSERT INTO Timers VALUES(%d, 'Timer%d', 0, 0, 60, 360)" % (i, i))
+    
+    cur.execute("CREATE TABLE Numbers (Relays INT, HTSensors INT, CO2Sensors INT, Timers INT)")
+    cur.execute("INSERT INTO Numbers VALUES(8, 3, 1, 4)")
+    
+    conn.commit()
+    cur.close()
+    
+    '''
+    add_columns('Integers', 'numrelays', 0)
+    add_columns('Integers', 'numco2sensors', 0)
+    add_columns('Integers', 'numhtsensors', 0)
+    add_columns('Integers', 'numtimers', 0)
+    add_columns('Integers', 'cameralight', 0)
     
     for i in range(1, 9):
         add_columns('Strings', 'relay%dname' % i, 'Relay_%dName' % i)
@@ -139,21 +179,22 @@ def setup_db():
         add_columns('Floats', 'co2%di' % i, 0)
         add_columns('Floats', 'co2%dd' % i, 0)
         
-    add_columns('Strings', 'smtp_host', 'smtp_host')
-    add_columns('Strings', 'smtp_port', 'smtp_port')
-    add_columns('Strings', 'smtp_user', 'smtp_user')
-    add_columns('Strings', 'smtp_pass', 'smtp_pass')
-    add_columns('Strings', 'smtp_email_from', 'smtp_email_from')
-    add_columns('Strings', 'smtp_email_to', 'smtp_email_to')
+    add_columns('SMTP', 'smtp_host', 'smtp_host')
+    add_columns('SMTP', 'smtp_port', 'smtp_port')
+    add_columns('SMTP', 'smtp_user', 'smtp_user')
+    add_columns('SMTP', 'smtp_pass', 'smtp_pass')
+    add_columns('SMTP', 'smtp_email_from', 'smtp_email_from')
+    add_columns('SMTP', 'smtp_email_to', 'smtp_email_to')
     
     add_columns('Integers', 'numrelays', 0)
     add_columns('Integers', 'numco2sensors', 0)
     add_columns('Integers', 'numhtsensors', 0)
     add_columns('Integers', 'numtimers', 0)
     add_columns('Integers', 'cameralight', 0)
+    '''
     
 def add_columns(table, row, column):
-    print "Add to Table: %s Variable: %s Value: %s" % (table, row, column)
+    #print "Add to Table: %s Variable: %s Value: %s" % (table, row, column)
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
     if table == 'Strings' or represents_int(column) or represents_float(column):
@@ -166,6 +207,27 @@ def add_columns(table, row, column):
     cur.close()
 
 def view_columns():
+    conn = sqlite3.connect(sql_database)
+    cur = conn.cursor()
+    
+    cur.execute('SELECT row, column FROM Strings')
+    print "Table: Strings"
+    for row in cur :
+        print "Variable: %s Value: %s" % (row[0], row[1])
+
+    cur.execute('SELECT row, column FROM Integers')
+    print "Table: Integers"
+    for row in cur :
+        print "Variable: %s Value: %s" % (row[0], row[1])
+    
+    cur.execute('SELECT row, column FROM Floats')
+    print "Table: Floats"
+    for row in cur :
+        print "Variable: %s Value: %s" % (row[0], row[1])
+    
+    cur.close()
+    
+def db_value(table, row):
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
     
@@ -262,4 +324,7 @@ def represents_float(s):
         return False
     
 #load_global_db(0)
+start_time = time.time()
 menu()
+elapsed_time = time.time() - start_time
+print 'Completed in %.2f seconds' % elapsed_time
