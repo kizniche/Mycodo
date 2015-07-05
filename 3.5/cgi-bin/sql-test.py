@@ -61,7 +61,7 @@ def menu():
             delete_row(sys.argv[2], sys.argv[3])
             return 1
         elif opt in ("-u", "--update"):
-            update_value(sys.argv[2], sys.argv[3], sys.argv[4])
+            update_value(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
             return 1
         elif opt in ("-v", "--view"):
             print "View Values"
@@ -70,14 +70,10 @@ def menu():
         else:
             assert False, "Fail"
 
-def create_all_tables():
-    print "Create Tables"
-    conn = sqlite3.connect(sql_database)
-    cur = conn.cursor()
-    cur.execute('CREATE TABLE Strings (row TEXT, column TEXT)')
-    cur.execute('CREATE TABLE Integers (row TEXT, column INTEGER)')
-    cur.execute('CREATE TABLE Floats (row TEXT, column REAL)')
-    conn.close()
+def setup_db():
+    delete_all_tables()
+    create_all_tables()
+    create_rows_columns()
     
 def delete_all_tables():
     print "Delete Tables"
@@ -89,42 +85,40 @@ def delete_all_tables():
     cur.execute('DROP TABLE IF EXISTS Timers ')
     cur.execute('DROP TABLE IF EXISTS Numbers ')
     cur.execute('DROP TABLE IF EXISTS SMTP ')
-    
-    cur.execute('DROP TABLE IF EXISTS Strings ')
-    cur.execute('DROP TABLE IF EXISTS Integers ')
-    cur.execute('DROP TABLE IF EXISTS Floats ')
+    #cur.execute('DROP TABLE IF EXISTS Strings ')
+    #cur.execute('DROP TABLE IF EXISTS Integers ')
+    #cur.execute('DROP TABLE IF EXISTS Floats ')
     conn.close()
     
-def setup_db():
-    delete_all_tables()
-    create_all_tables()
-    print "Create Rows and Columns"
-    
+def create_all_tables():
+    print "Create Tables"
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
-    
     cur.execute("CREATE TABLE Relays (Id INT, Name TEXT, Pin INT, Trigger INT)")
+    cur.execute("CREATE TABLE HTSensor (Id INT, Name TEXT, Pin INT, Device TEXT, Relay INT, Period INT, Activated INT, Graph INT, Temp_OR INT, Temp_Set REAL, Temp_P REAL, Temp_I REAL, Temp_D, Hum_OR INT, Hum_Set REAL, Hum_P REAL, Hum_I REAL, Hum_D REAL)")
+    cur.execute("CREATE TABLE CO2Sensor (Id INT, Name TEXT, Pin INT, Device TEXT, Relay INT, Period INT, Activated INT, Graph INT, CO2_OR INT, CO2_Set INT, CO2_P REAL, CO2_I REAL, CO2_D REAL)")
+    cur.execute("CREATE TABLE Timers (Id INT, Name TEXT, State INT, Relay INT, DurationOn INT, DurationOff INT)")
+    cur.execute("CREATE TABLE Numbers (Relays INT, HTSensors INT, CO2Sensors INT, Timers INT)")
+    cur.execute("CREATE TABLE SMTP (Host TEXT, Port INT, User TEXT, Pass TEXT, Email_From TEXT, Email_To TEXT)")
+    #cur.execute('CREATE TABLE Strings (row TEXT, column TEXT)')
+    #cur.execute('CREATE TABLE Integers (row TEXT, column INTEGER)')
+    #cur.execute('CREATE TABLE Floats (row TEXT, column REAL)')
+    conn.close()
+    
+def create_rows_columns():
+    print "Create Rows and Columns"
+    conn = sqlite3.connect(sql_database)
+    cur = conn.cursor()
     for i in range(1, 9):
         cur.execute("INSERT INTO Relays VALUES(%d, 'Relay%d', 0, 0)" % (i, i))
-        
-    cur.execute("CREATE TABLE HTSensor (Id INT, Name TEXT, Pin INT, Device TEXT, Relay INT, Period INT, Activated INT, Graph INT, Temp_OR INT, Temp_Set REAL, Temp_P REAL, Temp_I REAL, Temp_D, Hum_OR INT, Hum_Set REAL, Hum_P REAL, Hum_I REAL, Hum_D REAL)")
     for i in range(1, 5):
         cur.execute("INSERT INTO HTSensor VALUES(%d, 'HTSensor%d', 0, 'DHT22', 0, 10, 0, 0, 1, 25.0, 1.1, 1.2, 1.3, 1, 50.0, 1.1, 1.2, 1.3)" % (i, i))
-    
-    cur.execute("CREATE TABLE CO2Sensor (Id INT, Name TEXT, Pin INT, Device TEXT, Relay INT, Period INT, Activated INT, Graph INT, CO2_OR INT, CO2_Set INT, CO2_P REAL, CO2_I REAL, CO2_D REAL)")
     for i in range(1, 5):
         cur.execute("INSERT INTO CO2Sensor VALUES(%d, 'CO2Sensor%d', 0, 'K30', 0, 10, 0, 0, 1, 1000, 1.1, 1.2, 1.3)" % (i, i))
-
-    cur.execute("CREATE TABLE Timers (Id INT, Name TEXT, State INT, Relay INT, DurationOn INT, DurationOff INT)")
     for i in range(1, 9):
         cur.execute("INSERT INTO Timers VALUES(%d, 'Timer%d', 0, 0, 60, 360)" % (i, i))
-    
-    cur.execute("CREATE TABLE Numbers (Relays INT, HTSensors INT, CO2Sensors INT, Timers INT)")
     cur.execute("INSERT INTO Numbers VALUES(8, 3, 1, 4)")
-    
-    cur.execute("CREATE TABLE SMTP (Host TEXT, Port INT, User TEXT, Pass TEXT, Email_From TEXT, Email_To TEXT)")
     cur.execute("INSERT INTO SMTP VALUES('smtp.gmail.com', 587, 'email@gmail.com', 'password', 'me@gmail.com', 'you@gmail.com')")
-    
     conn.commit()
     cur.close()
     
@@ -197,16 +191,15 @@ def setup_db():
     add_columns('Integers', 'cameralight', 0)
     '''
     
-def add_columns(table, row, column):
+def add_columns(table, variable, value):
     #print "Add to Table: %s Variable: %s Value: %s" % (table, row, column)
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
-    if table == 'Strings' or represents_int(column) or represents_float(column):
-        if table == 'Strings':
-            query = "INSERT INTO %s (row, column) VALUES ( '%s', '%s' )" % (table, row, column)
-        else:
-            query = "INSERT INTO %s (row, column) VALUES ( '%s', %s )" % (table, row, column)
-        cur.execute(query)
+    if represents_int(column) or represents_float(column):
+        query = "INSERT INTO %s (row) VALUES ( '%s' )" % (table, variable, value)
+    else:
+        query = "INSERT INTO %s (row) VALUES ( %s )" % (table, variable, value)
+    cur.execute(query)
     conn.commit()
     cur.close()
 
@@ -214,41 +207,35 @@ def view_columns():
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
     
-    cur.execute('SELECT row, column FROM Strings')
-    print "Table: Strings"
+    cur.execute('SELECT Id, Name, Pin, Trigger FROM Relays')
+    print "Table: Relays"
     for row in cur :
-        print "Variable: %s Value: %s" % (row[0], row[1])
+        print "%s %s %s %s" % (row[0], row[1], row[2], row[3])
 
-    cur.execute('SELECT row, column FROM Integers')
-    print "Table: Integers"
+    cur.execute('SELECT Id, Name, Pin, Device, Relay, Period, Activated, Graph, Temp_OR, Temp_Set, Temp_P, Temp_I, Temp_D, Hum_OR, Hum_Set, Hum_P, Hum_I, Hum_D FROM HTSensor')
+    print "Table: HTSensor"
     for row in cur :
-        print "Variable: %s Value: %s" % (row[0], row[1])
+        print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17])
     
-    cur.execute('SELECT row, column FROM Floats')
-    print "Table: Floats"
+    cur.execute('SELECT Id, Name, Pin, Device, Relay, Period, Activated, Graph, CO2_OR, CO2_Set, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
+    print "Table: CO2Sensor "
     for row in cur :
-        print "Variable: %s Value: %s" % (row[0], row[1])
+        print "%s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12])
     
-    cur.close()
-    
-def db_value(table, row):
-    conn = sqlite3.connect(sql_database)
-    cur = conn.cursor()
-    
-    cur.execute('SELECT row, column FROM Strings')
-    print "Table: Strings"
+    cur.execute('SELECT Id, Name, State, Relay, DurationOn, DurationOff FROM Timers ')
+    print "Table: Timers "
     for row in cur :
-        print "Variable: %s Value: %s" % (row[0], row[1])
-
-    cur.execute('SELECT row, column FROM Integers')
-    print "Table: Integers"
+        print "%s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5])
+        
+    cur.execute('SELECT Relays, HTSensors, CO2Sensors, Timers FROM Numbers ')
+    print "Table: Numbers "
     for row in cur :
-        print "Variable: %s Value: %s" % (row[0], row[1])
-    
-    cur.execute('SELECT row, column FROM Floats')
-    print "Table: Floats"
+        print "%s %s %s %s" % (row[0], row[1], row[2], row[3])
+        
+    cur.execute('SELECT Host, Port, User, Pass, Email_From, Email_To FROM SMTP ')
+    print "Table: SMTP "
     for row in cur :
-        print "Variable: %s Value: %s" % (row[0], row[1])
+        print "%s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5])
     
     cur.close()
     
@@ -300,16 +287,17 @@ def delete_row(table, row):
     conn.commit()
     cur.close()
     
-def update_value(table, row, column):
-    print "Update Table: %s Variable: %s Value: %s" % (table, row, column)
+def update_value(table, Id, variable, value):
+    print "Update Table: %s Id: %s Variable: %s Value: %s" % (table, Id, variable, value)
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
-    query = "UPDATE %s SET column = %s WHERE row = '%s' " % (table, column, row)
-    cur.execute(query)
+    if represents_int(value) or represents_float(value):
+        query = "UPDATE %s SET %s=%s WHERE Id=%s" % (table, variable, value, Id)
+    else:
+        query = "UPDATE %s SET %s='%s' WHERE Id=%s" % (table, variable, value, Id)
+    cur.execute(query) 
     conn.commit()
-    cur.close()
-    load_global_db(0)
-    
+    cur.close() 
 
 # Check if string represents an integer column
 def represents_int(s):
