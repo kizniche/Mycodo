@@ -250,7 +250,7 @@ class ComServer(rpyc.Service):
         while pid_co2_down == 1:
             time.sleep(0.1)
         write_sql()
-        read_config()
+        read_sql()
         pid_co2_up = 1
         while pid_co2_up:
             time.sleep(0.1)
@@ -279,7 +279,7 @@ class ComServer(rpyc.Service):
         while pid_co2_down == 1:
             time.sleep(0.1)
         write_sql()
-        read_config()
+        read_sql()
         pid_co2_up = 1
         while pid_co2_up:
             time.sleep(0.1)
@@ -297,7 +297,7 @@ class ComServer(rpyc.Service):
         while pid_temp_down == 1:
             time.sleep(0.1)
         write_sql()
-        read_config()
+        read_sql()
         pid_temp_up = 1
         while pid_temp_up:
             time.sleep(0.1)
@@ -326,7 +326,7 @@ class ComServer(rpyc.Service):
         while pid_temp_down == 1:
             time.sleep(0.1)
         write_sql()
-        read_config()
+        read_sql()
         pid_temp_up = 1
         while pid_temp_up:
             time.sleep(0.1)
@@ -344,7 +344,7 @@ class ComServer(rpyc.Service):
         while pid_hum_down == 1:
             time.sleep(0.1)
         write_sql()
-        read_config()
+        read_sql()
         pid_hum_up = 1
         while pid_hum_up:
             time.sleep(0.1)
@@ -374,7 +374,7 @@ class ComServer(rpyc.Service):
         while pid_hum_down == 1:
             time.sleep(0.1)
         write_sql()
-        read_config()
+        read_sql()
         pid_hum_up = 1
         while pid_hum_up:
             time.sleep(0.1)
@@ -739,8 +739,8 @@ def daemon(output, log):
     ct.start()
     time.sleep(1)
     
-    logging.info("[Daemon] Reading configuration file and initializing variables")
-    read_config()
+    logging.info("[Daemon] Reading SQL database and initializing variables")
+    read_sql()
     
     # Initial sensor readings
     logging.info("[Daemon] Conducting initial sensor readings from %s HT and %s CO2 sensors", sum(sensor_ht_log), sum(sensor_co2_log))
@@ -1754,7 +1754,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
 #################################################
 
 # Read variables from the configuration file
-def read_config():
+def read_sql():
     global sensor_ht_name
     global sensor_ht_device
     global sensor_ht_pin
@@ -2015,7 +2015,7 @@ def modify_var(*names_and_values):
                     names_and_values[i+1])
                 globals()[names_and_values[i]] = names_and_values[i+1]   
     write_sql()
-    read_config()
+    read_sql()
 
 
 #################################################
@@ -2164,7 +2164,7 @@ while not runlock.i_am_locking():
         print "Error: Lock file present: %s" % runlock.path
         sys.exit(0)
 
-read_config()
+read_sql()
 gpio_initialize()
 menu()
 runlock.release()
