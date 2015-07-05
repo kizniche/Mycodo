@@ -40,6 +40,7 @@ import rpyc
 import RPi.GPIO as GPIO
 import serial
 import smtplib
+import sqlite3
 import subprocess
 import sys
 import threading
@@ -49,6 +50,7 @@ from email.mime.text import MIMEText
 from lockfile import LockFile
 from rpyc.utils.server import ThreadedServer
 
+sql_database = "%s/config/mycodo.sqlite3" % install_directory
 config_file = "%s/config/mycodo.cfg" % install_directory
 relay_script = "%s/cgi-bin/relay.sh" % install_directory
 image_path = "%s/images" % install_directory
@@ -144,6 +146,7 @@ pid_co2_number = None
 
 # Timers
 timer_num = None
+timer_name = [0] * 9
 timer_relay = [0] * 9
 timer_state = [0] * 9
 timer_duration_on = [0] * 9
@@ -971,7 +974,7 @@ def humidity_monitor(ThreadName, sensor):
     while (pid_hum_alive[sensor]):
         if pid_hum_or[sensor] == 0 and pid_hum_down == 0 and pid_hum_relay[sensor] != 0 and sensor_ht_log[sensor] == 1:
             if int(time.time()) > timerHum:
-                logging.debug("[PID Humidity-%s] Reading sensor_ht_read_hum...", sensor)
+                logging.debug("[PID Humidity-%s] Reading Humidity...", sensor)
                 read_dht_sensor(sensor)
                 PIDHum = p_hum.update(float(sensor_ht_read_hum[sensor]))
                 if (sensor_ht_read_hum[sensor] < pid_hum_set[sensor]):
@@ -1098,27 +1101,27 @@ def read_dht_sensor(sensor):
     elif (sensor_ht_device[1] == 'AM2302'): device = Adafruit_DHT.AM2302
     else:
         device = 'Other'
-        return 'cannot read temperature/sensor_ht_read_hum from an unknown device'
+        return 'cannot read temperature/humidity from an unknown device'
 
-    logging.debug("[Read HT Sensor-%s] Taking first Temperature/sensor_ht_read_hum reading", sensor)
+    logging.debug("[Read HT Sensor-%s] Taking first Temperature/Humidity reading", sensor)
         
     humidity2, tempc2 = Adafruit_DHT.read_retry(device, sensor_ht_pin[sensor])
     
     if humidity2 == None or tempc2 == None:
-        logging.warning("[Read HT Sensor-%s] Could not read temperature/sensor_ht_read_hum!", sensor)
+        logging.warning("[Read HT Sensor-%s] Could not read temperature/humidity!", sensor)
         return 0
         
     logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor, tempc2, humidity2)
 
     time.sleep(2) # Wait 2 seconds between sensor reads
     
-    logging.debug("[Read HT Sensor-%s] Taking second Temperature/sensor_ht_read_hum reading", sensor)
+    logging.debug("[Read HT Sensor-%s] Taking second Temperature/Humidity reading", sensor)
             
     while chktemp and not terminate:
         sensor_ht_read_hum[sensor], sensor_ht_read_temp_c[sensor] = Adafruit_DHT.read_retry(device, sensor_ht_pin[sensor])
             
         if sensor_ht_read_hum[sensor] == 'None' or sensor_ht_read_temp_c[sensor] == 'None':
-            logging.warning("[Read HT Sensor-%s] Could not read temperature/sensor_ht_read_hum!", sensor)
+            logging.warning("[Read HT Sensor-%s] Could not read temperature/humidity!", sensor)
             return 0
         
         logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor, sensor_ht_read_temp_c[sensor], sensor_ht_read_hum[sensor])
@@ -1800,6 +1803,7 @@ def read_config():
     global sensor_ht_num
     global sensor_co2_num
     global timer_num
+    global timer_name
     global timer_relay
     global timer_state
     global timer_duration_on
@@ -1812,6 +1816,128 @@ def read_config():
     global smtp_email_from
     global smtp_email_to
 
+    verbose = 0
+    # Check if all required tables exist in the SQL database
+    conn = sqlite3.connect(sql_database)
+    cur = conn.cursor()
+    tables = ['Relays', 'HTSensor', 'CO2Sensor', 'Timers', 'Numbers', 'SMTP']
+    missing = []
+    for i in range(0, len(tables)):
+        query = "SELECT name FROM sqlite_master WHERE type='table' AND name='%s'" % tables[i]
+        cur.execute(query)
+        if cur.fetchone() == None: missing.append(tables[i])
+    if missing != []:
+        print "Missing required table(s):",
+        for i in range(0, len(missing)):
+            if len(missing) == 1:
+                print "%s" % missing[i]
+            elif len(missing) != 1 and i != len(missing)-1:
+                print "%s," % missing[i],
+            else:
+                print "%s" % missing[i]
+        print "Reinitialize database to correct."
+        return 0
+  
+    # Begin setting global variables from SQL database values
+    cur.execute('SELECT Id, Name, Pin, Trigger FROM Relays')
+    if verbose:
+            print "Table: Relays"
+    for row in cur :
+        if verbose:
+            print "%s %s %s %s" % (row[0], row[1], row[2], row[3])
+        relay_name[row[0]] = row[1]
+        relay_pin[row[0]] = row[2]
+        relay_trigger[row[0]] = row[3]
+
+    cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, Temp_Relay, Temp_OR, Temp_Set, Temp_P, Temp_I, Temp_D, Hum_Relay, Hum_OR, Hum_Set, Hum_P, Hum_I, Hum_D FROM HTSensor')
+    if verbose:
+            print "Table: HTSensor"
+    for row in cur :
+        if verbose:
+            print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s%s " % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18])
+        sensor_ht_name[row[0]] = row[1]
+        sensor_ht_pin[row[0]] = row[2]
+        sensor_ht_device[row[0]] = row[3]
+        sensor_ht_period[row[0]] = row[4]
+        sensor_ht_log[row[0]] = row[5]
+        sensor_ht_graph[row[0]] = row[6]
+        pid_temp_relay[row[0]] = row[7]
+        pid_temp_or[row[0]] = row[8]
+        pid_temp_set[row[0]] = row[9]
+        pid_temp_p[row[0]] = row[10]
+        pid_temp_i[row[0]] = row[11]
+        pid_temp_d[row[0]] = row[12]
+        pid_hum_relay[row[0]] = row[13]
+        pid_hum_or[row[0]] = row[14]
+        pid_hum_set[row[0]] = row[15]
+        pid_hum_p[row[0]] = row[16]
+        pid_hum_i[row[0]] = row[17]
+        pid_hum_d[row[0]] = row[18]
+    
+    cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, CO2_Relay, CO2_OR, CO2_Set, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
+    if verbose:
+            print "Table: CO2Sensor "
+    for row in cur :
+        if verbose:
+            print "%s %s %s %s %s %s %s %s %s %s %s %s %s" % (
+                row[0], row[1], row[2], row[3], row[4], row[5], row[6],
+                row[7], row[8], row[9], row[10], row[11], row[12])
+        sensor_co2_name[row[0]] = row[1]
+        sensor_co2_pin[row[0]] = row[2]
+        sensor_co2_device[row[0]] = row[3]
+        sensor_co2_period[row[0]] = row[4]
+        sensor_co2_log[row[0]] = row[5]
+        sensor_co2_graph[row[0]] = row[6]
+        pid_co2_relay[row[0]] = row[7]
+        pid_co2_or[row[0]] = row[8]
+        pid_co2_set[row[0]] = row[9]
+        pid_co2_p[row[0]] = row[10]
+        pid_co2_i[row[0]] = row[11]
+        pid_co2_d[row[0]] = row[12]
+    
+    cur.execute('SELECT Id, Name, Relay, State, DurationOn, DurationOff FROM Timers ')
+    if verbose:
+            print "Table: Timers "
+    for row in cur :
+        if verbose:
+            print "%s %s %s %s %s %s" % (
+                row[0], row[1], row[2], row[3], row[4], row[5])
+        timer_name[row[0]] = row[1]
+        timer_relay[row[0]] = row[2]
+        timer_state[row[0]] = row[3]
+        timer_duration_on[row[0]] = row[4]
+        timer_duration_off[row[0]] = row[5]
+        
+    cur.execute('SELECT Relays, HTSensors, CO2Sensors, Timers FROM Numbers ')
+    if verbose:
+            print "Table: Numbers "
+    for row in cur :
+        if verbose:
+            print "%s %s %s %s" % (
+                row[0], row[1], row[2], row[3])
+        relay_num = row[0]
+        sensor_ht_num = row[1]
+        sensor_co2_num = row[2]
+        timer_num = row[3]
+        
+    cur.execute('SELECT Host, SSL, Port, User, Pass, Email_From, Email_To FROM SMTP ')
+    if verbose:
+            print "Table: SMTP "
+    for row in cur :
+        if verbose:
+            print "%s %s %s %s %s %s %s" % (
+                row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+        smtp_host = row[0]
+        smtp_ssl = row[1]
+        smtp_port = row[2]
+        smtp_user = row[3]
+        smtp_pass = row[4]
+        smtp_email_from = row[5]
+        smtp_email_to = row[6]
+
+    cur.close()
+
+'''
     config = ConfigParser.RawConfigParser()
     config.read(config_file)
     
@@ -1878,6 +2004,7 @@ def read_config():
         timer_relay[i] = config.getint('Timer%d' % i, 'timer%drelay' % i)
         timer_duration_on[i] = config.getint('Timer%d' % i, 'timer%ddurationon' % i)
         timer_duration_off[i] = config.getint('Timer%d' % i, 'timer%ddurationoff' % i)
+'''
 
 # Write variables to configuration file
 def write_config():
