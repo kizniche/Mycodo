@@ -70,7 +70,7 @@ logging.basicConfig(
     format = '%(asctime)s [%(levelname)s] %(message)s')
 
 lock_directory = "/var/lock/mycodo"
-config_lock_path = "%s/config" % lock_directory
+sql_lock_path = "%s/config" % lock_directory
 daemon_lock_path = "%s/daemon" % lock_directory
 sensor_ht_lock_path = "%s/sensor-ht" % lock_directory
 sensor_co2_lock_path = "%s/sensor-co2" % lock_directory
@@ -200,7 +200,7 @@ class ComServer(rpyc.Service):
         logging.info("[Client command] Change Timer: %s, State: %s, Relay: %s, On: %s, Off %s",
             timernumber, timerstate, timerrelay,
             timerdurationon, timerdurationoff)
-        write_config()
+        write_sql()
         client_que = 'TimerChange'
         return 1
     def exposed_ChangeCO2Sensor(self, sensornumber, sensorname, sensordevice, sensorpin, sensorperiod, sensoractivated, sensorgraph):
@@ -218,7 +218,7 @@ class ComServer(rpyc.Service):
         sensor_co2_period[sensornumber] = sensorperiod
         sensor_co2_log[sensornumber] = sensoractivated
         sensor_co2_graph[sensornumber] = sensorgraph
-        write_config()
+        write_sql()
         return 1
     def exposed_ChangeHTSensor(self, sensornumber, sensorname, sensordevice, sensorpin, sensorperiod, sensoractivated, sensorgraph):
         global sensor_ht_name
@@ -235,7 +235,7 @@ class ComServer(rpyc.Service):
         sensor_ht_period[sensornumber] = sensorperiod
         sensor_ht_log[sensornumber] = sensoractivated
         sensor_ht_graph[sensornumber] = sensorgraph
-        write_config()
+        write_sql()
         return 1
     def exposed_ChangeCO2OR(self, sensornum, override):
         global pid_co2_or
@@ -249,7 +249,7 @@ class ComServer(rpyc.Service):
         pid_co2_down = 1
         while pid_co2_down == 1:
             time.sleep(0.1)
-        write_config()
+        write_sql()
         read_config()
         pid_co2_up = 1
         while pid_co2_up:
@@ -278,7 +278,7 @@ class ComServer(rpyc.Service):
         pid_co2_down = 1
         while pid_co2_down == 1:
             time.sleep(0.1)
-        write_config()
+        write_sql()
         read_config()
         pid_co2_up = 1
         while pid_co2_up:
@@ -296,7 +296,7 @@ class ComServer(rpyc.Service):
         pid_temp_down = 1
         while pid_temp_down == 1:
             time.sleep(0.1)
-        write_config()
+        write_sql()
         read_config()
         pid_temp_up = 1
         while pid_temp_up:
@@ -325,7 +325,7 @@ class ComServer(rpyc.Service):
         pid_temp_down = 1
         while pid_temp_down == 1:
             time.sleep(0.1)
-        write_config()
+        write_sql()
         read_config()
         pid_temp_up = 1
         while pid_temp_up:
@@ -343,7 +343,7 @@ class ComServer(rpyc.Service):
         pid_hum_down = 1
         while pid_hum_down == 1:
             time.sleep(0.1)
-        write_config()
+        write_sql()
         read_config()
         pid_hum_up = 1
         while pid_hum_up:
@@ -373,7 +373,7 @@ class ComServer(rpyc.Service):
         pid_hum_down = 1
         while pid_hum_down == 1:
             time.sleep(0.1)
-        write_config()
+        write_sql()
         read_config()
         pid_hum_up = 1
         while pid_hum_up:
@@ -393,7 +393,7 @@ class ComServer(rpyc.Service):
         logging.info("[Client command] Change Relay Names: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s",
             relay_name[1], relay_name[2], relay_name[3], relay_name[4],
             relay_name[5], relay_name[6], relay_name[7], relay_name[8])
-        write_config()
+        write_sql()
         return 1
     def exposed_ChangeRelayPins(self, relaypin1, relaypin2, relaypin3,
             relaypin4, relaypin5, relaypin6, relaypin7, relaypin8):
@@ -409,7 +409,7 @@ class ComServer(rpyc.Service):
         logging.info("[Client command] Change Relay Pins: 1 %s, 2 %s, 3 %s, 4 %s, 5 %s, 6 %s, 7 %s, 8 %s",
             relay_pin[1], relay_pin[2], relay_pin[3], relay_pin[4],
             relay_pin[5], relay_pin[6], relay_pin[7], relay_pin[8])
-        write_config()
+        write_sql()
         return 1
     def exposed_ChangeRelayTriggers(self, relaytrigger1, relaytrigger2, relaytrigger3,
             relaytrigger4, relaytrigger5, relaytrigger6, relaytrigger7, relaytrigger8):
@@ -425,7 +425,7 @@ class ComServer(rpyc.Service):
         logging.info("[Client command] Change Relay Triggers: 1: %s, 2: %s, 3: %s, 4: %s, 5: %s, 6: %s, 7: %s, 8: %s",
             relay_trigger[1], relay_trigger[2], relay_trigger[3], relay_trigger[4],
             relay_trigger[5], relay_trigger[6], relay_trigger[7], relay_trigger[8])
-        write_config()
+        write_sql()
         return 1
     def exposed_GenerateGraph(self, graph_out_file, id, sensor):
         logging.info("[Client command] Generate Graph: %s %s %s", graph_out_file, id, sensor)
@@ -1755,7 +1755,6 @@ def generate_graph(graph_out_file, graph_id, sensorn):
 
 # Read variables from the configuration file
 def read_config():
-    global config_file
     global sensor_ht_name
     global sensor_ht_device
     global sensor_ht_pin
@@ -1937,174 +1936,59 @@ def read_config():
 
     cur.close()
 
-'''
-    config = ConfigParser.RawConfigParser()
-    config.read(config_file)
-    
-    smtp_host = config.get('Notification', 'smtp_host')
-    smtp_port = config.get('Notification', 'smtp_port')
-    smtp_user = config.get('Notification', 'smtp_user')
-    smtp_pass = config.get('Notification', 'smtp_pass')
-    smtp_email_from = config.get('Notification', 'smtp_email_from')
-    smtp_email_to = config.get('Notification', 'smtp_email_to')
-    
-    relay_num = config.getint('Misc', 'numrelays')
-    sensor_co2_num = config.getint('Misc', 'numco2sensors')
-    sensor_ht_num = config.getint('Misc', 'numhtsensors')
-    timer_num = config.getint('Misc', 'numtimers')
-    camera_light = config.getint('Misc', 'cameralight')
-    
-    for i in range(1, 5):
-        sensor_co2_name[i] = config.get('CO2Sensor%d' % i, 'sensorco2%dname' % i)
-        sensor_co2_device[i] = config.get('CO2Sensor%d' % i, 'sensorco2%ddevice' % i)
-        sensor_co2_pin[i] = config.getint('CO2Sensor%d' % i, 'sensorco2%dpin' % i)
-        sensor_co2_period[i] = config.getint('CO2Sensor%d' % i, 'sensorco2%dperiod' % i)
-        sensor_co2_log[i] = config.getint('CO2Sensor%d' % i, 'sensorco2%dactivated' % i)
-        sensor_co2_graph[i] = config.getint('CO2Sensor%d' % i, 'sensorco2%dgraph' % i)
-        
-        pid_co2_period[i] = config.getint('Co2PID%d' % i, 'co2%dperiod' % i)
-        pid_co2_relay[i] = config.getint('Co2PID%d' % i, 'co2%drelay' % i)
-        pid_co2_set[i] = config.getint('Co2PID%d' % i, 'co2%dset' % i)
-        pid_co2_or[i] = config.getint('Co2PID%d' % i, 'co2%dor' % i)
-        pid_co2_p[i] = config.getfloat('Co2PID%d' % i, 'co2%dp' % i)
-        pid_co2_i[i] = config.getfloat('Co2PID%d' % i, 'co2%di' % i)
-        pid_co2_d[i] = config.getfloat('Co2PID%d' % i, 'co2%dd' % i)
-       
-    for i in range(1, 5):
-        sensor_ht_name[i] = config.get('HTSensor%d' % i, 'sensorht%dname' % i)
-        sensor_ht_device[i] = config.get('HTSensor%d' % i, 'sensorht%ddevice' % i)
-        sensor_ht_pin[i] = config.getint('HTSensor%d' % i, 'sensorht%dpin' % i)
-        sensor_ht_period[i] = config.getint('HTSensor%d' % i, 'sensorht%dperiod' % i)
-        sensor_ht_log[i] = config.getint('HTSensor%d' % i, 'sensorht%dactivated' % i)
-        sensor_ht_graph[i] = config.getint('HTSensor%d' % i, 'sensorht%dgraph' % i)
-        
-        pid_temp_period[i] = config.getint('TempPID%d' % i, 'temp%dperiod' % i)
-        pid_temp_relay[i] = config.getint('TempPID%d' % i, 'temp%drelay' % i)
-        pid_temp_set[i] = config.getfloat('TempPID%d' % i, 'temp%dset' % i)
-        pid_temp_or[i] = config.getint('TempPID%d' % i, 'temp%dor' % i)
-        pid_temp_p[i] = config.getfloat('TempPID%d' % i, 'temp%dp' % i)
-        pid_temp_i[i] = config.getfloat('TempPID%d' % i, 'temp%di' % i)
-        pid_temp_d[i] = config.getfloat('TempPID%d' % i, 'temp%dd' % i)
-        
-        pid_hum_period[i] = config.getint('HumPID%d' % i, 'hum%dperiod' % i)
-        pid_hum_relay[i] = config.getint('HumPID%d' % i, 'hum%drelay' % i)
-        pid_hum_set[i] = config.getfloat('HumPID%d' % i, 'hum%dset' % i)
-        pid_hum_or[i] = config.getint('HumPID%d' % i, 'hum%dor' % i)
-        pid_hum_p[i] = config.getfloat('HumPID%d' % i, 'hum%dp' % i)
-        pid_hum_i[i] = config.getfloat('HumPID%d' % i, 'hum%di' % i)
-        pid_hum_d[i] = config.getfloat('HumPID%d' % i, 'hum%dd' % i)
-        
-    for i in range(1, 9):
-        relay_name[i] = config.get('Relay%d' % i, 'relay%dname' % i)
-        relay_pin[i] = config.getint('Relay%d' % i, 'relay%dpin' % i)
-        relay_trigger[i] = config.getint('Relay%d' % i, 'relay%dtrigger' % i)
-    
-    for i in range(1, 9):
-        timer_state[i] = config.getint('Timer%d' % i, 'timer%dstate' % i)
-        timer_relay[i] = config.getint('Timer%d' % i, 'timer%drelay' % i)
-        timer_duration_on[i] = config.getint('Timer%d' % i, 'timer%ddurationon' % i)
-        timer_duration_off[i] = config.getint('Timer%d' % i, 'timer%ddurationoff' % i)
-'''
-
 # Write variables to configuration file
-def write_config():
-    config = ConfigParser.RawConfigParser()
-
+def write_sql():
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
 
-    lock = LockFile(config_lock_path)
+    lock = LockFile(sql_lock_path)
     
     while not lock.i_am_locking():
         try:
-            logging.debug("[Write Config] Waiting, Acquiring Lock: %s", lock.path)
+            logging.debug("[Write SQL] Waiting, Acquiring Lock: %s", lock.path)
             lock.acquire(timeout=60)    # wait up to 60 seconds
         except:
-            logging.warning("[Write Config] Breaking Lock to Acquire: %s", lock.path)
+            logging.warning("[Write SQL] Breaking Lock to Acquire: %s", lock.path)
             lock.break_lock()
             lock.acquire()
-            
-    logging.debug("[Write Config] Gained lock: %s", lock.path)
-    logging.debug("[Write Config] Writing config file %s", config_file)
-    
-    config.add_section('Notification')
-    config.set('Notification', 'smtp_host', smtp_host)
-    config.set('Notification', 'smtp_port', smtp_port)
-    config.set('Notification', 'smtp_user', smtp_user)
-    config.set('Notification', 'smtp_pass', smtp_pass)
-    config.set('Notification', 'smtp_email_from', smtp_email_from)
-    config.set('Notification', 'smtp_email_to', smtp_email_to)
-    
-    config.add_section('Misc')
-    config.set('Misc', 'numrelays', relay_num)
-    config.set('Misc', 'numco2sensors', sensor_co2_num)
-    config.set('Misc', 'numhtsensors', sensor_ht_num)
-    config.set('Misc', 'numtimers', timer_num)
-    config.set('Misc', 'cameralight', camera_light)
-    
-    for i in range(1, 5):
-        config.add_section('CO2Sensor%d' % i)
-        config.set('CO2Sensor%d' % i, 'sensorco2%dname' % i, sensor_co2_name[i])
-        config.set('CO2Sensor%d' % i, 'sensorco2%ddevice' % i, sensor_co2_device[i])
-        config.set('CO2Sensor%d' % i, 'sensorco2%dpin' % i, sensor_co2_pin[i])
-        config.set('CO2Sensor%d' % i, 'sensorco2%dperiod' % i, sensor_co2_period[i])
-        config.set('CO2Sensor%d' % i, 'sensorco2%dactivated' % i, sensor_co2_log[i])
-        config.set('CO2Sensor%d' % i, 'sensorco2%dgraph' % i, sensor_co2_graph[i])
-        
-        config.add_section('Co2PID%d' % i)
-        config.set('Co2PID%d' % i, 'co2%dperiod' % i, pid_co2_period[i])
-        config.set('Co2PID%d' % i, 'co2%drelay' % i, pid_co2_relay[i])
-        config.set('Co2PID%d' % i, 'co2%dset' % i, pid_co2_set[i])
-        config.set('Co2PID%d' % i, 'co2%dor' % i, pid_co2_or[i])
-        config.set('Co2PID%d' % i, 'co2%dp' % i, pid_co2_p[i])
-        config.set('Co2PID%d' % i, 'co2%di' % i, pid_co2_i[i])
-        config.set('Co2PID%d' % i, 'co2%dd' % i, pid_co2_d[i])
-    
-        config.add_section('HTSensor%d' % i)
-        config.set('HTSensor%d' % i, 'sensorht%dname' % i, sensor_ht_name[i])
-        config.set('HTSensor%d' % i, 'sensorht%ddevice' % i, sensor_ht_device[i])
-        config.set('HTSensor%d' % i, 'sensorht%dpin' % i, sensor_ht_pin[i])
-        config.set('HTSensor%d' % i, 'sensorht%dperiod' % i, sensor_ht_period[i])
-        config.set('HTSensor%d' % i, 'sensorht%dactivated' % i, sensor_ht_log[i])
-        config.set('HTSensor%d' % i, 'sensorht%dgraph' % i, sensor_ht_graph[i])
-        
-        config.add_section('TempPID%d' % i)
-        config.set('TempPID%d' % i, 'temp%dperiod' % i, pid_temp_period[i])
-        config.set('TempPID%d' % i, 'temp%drelay' % i, pid_temp_relay[i])
-        config.set('TempPID%d' % i, 'temp%dset' % i, pid_temp_set[i])
-        config.set('TempPID%d' % i, 'temp%dor' % i, pid_temp_or[i])
-        config.set('TempPID%d' % i, 'temp%dp' % i, pid_temp_p[i])
-        config.set('TempPID%d' % i, 'temp%di' % i, pid_temp_i[i])
-        config.set('TempPID%d' % i, 'temp%dd' % i, pid_temp_d[i])
-        
-        config.add_section('HumPID%d' % i)
-        config.set('HumPID%d' % i, 'hum%dperiod' % i, pid_hum_period[i])
-        config.set('HumPID%d' % i, 'hum%drelay' % i, pid_hum_relay[i])
-        config.set('HumPID%d' % i, 'hum%dor' % i, pid_hum_or[i])
-        config.set('HumPID%d' % i, 'hum%dset' % i, pid_hum_set[i])
-        config.set('HumPID%d' % i, 'hum%dp' % i, pid_hum_p[i])
-        config.set('HumPID%d' % i, 'hum%di' % i, pid_hum_i[i])
-        config.set('HumPID%d' % i, 'hum%dd' % i, pid_hum_d[i])
-    
-    for i in range(1, 9):
-        config.add_section('Relay%d' % i)
-        config.set('Relay%d' % i, 'relay%dname' % i, relay_name[i])
-        config.set('Relay%d' % i, 'relay%dpin' % i, relay_pin[i])
-        config.set('Relay%d' % i, 'relay%dtrigger' % i, relay_trigger[i])
+           
+    logging.debug("[Write SQL] Gained lock: %s", lock.path)
+    logging.debug("[Write SQL] Writing SQL Database %s", sql_database)
 
-        config.add_section('Timer%d' % i)
-        config.set('Timer%d' % i, 'timer%dstate' % i, timer_state[i])
-        config.set('Timer%d' % i, 'timer%drelay' % i, timer_relay[i])
-        config.set('Timer%d' % i, 'timer%ddurationon' % i, timer_duration_on[i])
-        config.set('Timer%d' % i, 'timer%ddurationoff' % i, timer_duration_off[i])
+    conn = sqlite3.connect(sql_database)
+    cur = conn.cursor()
+    cur.execute('DROP TABLE IF EXISTS Relays ')
+    cur.execute('DROP TABLE IF EXISTS HTSensor ')
+    cur.execute('DROP TABLE IF EXISTS CO2Sensor ')
+    cur.execute('DROP TABLE IF EXISTS Timers ')
+    cur.execute('DROP TABLE IF EXISTS Numbers ')
+    cur.execute('DROP TABLE IF EXISTS SMTP ')
+    cur.execute("CREATE TABLE Relays (Id INT, Name TEXT, Pin INT, Trigger INT)")
+    cur.execute("CREATE TABLE HTSensor (Id INT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay INT, Temp_OR INT, Temp_Set REAL, Temp_P REAL, Temp_I REAL, Temp_D, Hum_Relay INT, Hum_OR INT, Hum_Set REAL, Hum_P REAL, Hum_I REAL, Hum_D REAL)")
+    cur.execute("CREATE TABLE CO2Sensor (Id INT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, CO2_Relay INT, CO2_OR INT, CO2_Set INT, CO2_P REAL, CO2_I REAL, CO2_D REAL)")
+    cur.execute("CREATE TABLE Timers (Id INT, Name TEXT, Relay INT, State INT, DurationOn INT, DurationOff INT)")
+    cur.execute("CREATE TABLE Numbers (Relays INT, HTSensors INT, CO2Sensors INT, Timers INT)")
+    cur.execute("CREATE TABLE SMTP (Host TEXT, SSL INT, Port INT, User TEXT, Pass TEXT, Email_From TEXT, Email_To TEXT)")
+    for i in range(1, 9):
+        query = "INSERT INTO Relays VALUES(%d, '%s', %s, %s)" % (i, relay_name[i], relay_pin[i], relay_trigger[i])
+        cur.execute(query)
+    for i in range(1, 5):
+        query = "INSERT INTO HTSensor VALUES(%d, '%s', %s, '%s', %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)" % (i, sensor_ht_name[i], sensor_ht_pin[i], sensor_ht_device[i], sensor_ht_period[i], sensor_ht_log[i], sensor_ht_graph[i], pid_temp_relay[i], pid_temp_or[i], pid_temp_set[i], pid_temp_p[i], pid_temp_i[i], pid_temp_d[i], pid_hum_relay[i], pid_hum_or[i], pid_hum_set[i], pid_hum_p[i], pid_hum_i[i], pid_hum_d[i])
+        cur.execute(query)
+    for i in range(1, 5):
+        query = "INSERT INTO CO2Sensor VALUES(%d, '%s', %s, '%s', %s, %s, %s, %s, %s, %s, %s, %s, %s)" % (i, sensor_co2_name[i], sensor_co2_pin[i], sensor_co2_device[i], sensor_co2_period[i], sensor_co2_log[i], sensor_co2_graph[i], pid_co2_relay[i], pid_co2_or[i], pid_co2_set[i], pid_co2_p[i], pid_co2_i[i], pid_co2_d[i])
+        cur.execute(query)
+    for i in range(1, 9):
+        query = "INSERT INTO Timers VALUES(%d, '%s', %s, %s, %s, %s)" % (i, timer_name[i], timer_state[i], timer_relay[i], timer_duration_on[i], timer_duration_off[i])
+        cur.execute(query)
+    query = "INSERT INTO Numbers VALUES(%s, %s, %s, %s)" % (relay_num, sensor_ht_num, sensor_co2_num, timer_num)
+    cur.execute(query)
+    query = "INSERT INTO SMTP VALUES('%s', %s, %s, '%s', '%s', '%s', '%s')" % (smtp_host, smtp_ssl, smtp_port, smtp_user, smtp_pass, smtp_email_from, smtp_email_to)
+    cur.execute(query)
+    conn.commit()
+    cur.close()
     
-    try:
-        with open(config_file, 'wb') as configfile:
-            config.write(configfile)
-    except:
-        logging.warning("[Write Config] Unable to write config: %s", config_lock_path)
-        
-    logging.debug("[Write Config] Removing lock: %s", lock.path)
+    logging.debug("[Write SQL] Removing lock: %s", lock.path)
     lock.release()
 
 # Check if a variable name in config_file matches a string
@@ -2130,7 +2014,7 @@ def modify_var(*names_and_values):
                     globals()[names_and_values[i]], 
                     names_and_values[i+1])
                 globals()[names_and_values[i]] = names_and_values[i+1]   
-    write_config()
+    write_sql()
     read_config()
 
 
