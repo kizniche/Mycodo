@@ -335,13 +335,30 @@ def view_columns():
     cur.close()
     
 def load_global_db(verbose):
-    global config_file
+    global relay_name
+    global relay_pin
+    global relay_trigger
+    
     global sensor_ht_name
     global sensor_ht_device
     global sensor_ht_pin
     global sensor_ht_period
     global sensor_ht_log
     global sensor_ht_graph
+    
+    global pid_temp_relay
+    global pid_temp_set
+    global pid_temp_or
+    global pid_temp_p
+    global pid_temp_i
+    global pid_temp_d
+    
+    global pid_hum_relay
+    global pid_hum_set
+    global pid_hum_or
+    global pid_hum_p
+    global pid_hum_i
+    global pid_hum_d
     
     global sensor_co2_name
     global sensor_co2_device
@@ -358,35 +375,16 @@ def load_global_db(verbose):
     global pid_co2_i
     global pid_co2_d
     
-    global relay_name
-    global relay_pin
-    global relay_trigger
-    
-    global pid_hum_relay
-    global pid_hum_set
-    global pid_hum_or
-    global pid_hum_p
-    global pid_hum_i
-    global pid_hum_d
-    
-    global pid_temp_relay
-    global pid_temp_set
-    global pid_temp_or
-    global pid_temp_p
-    global pid_temp_i
-    global pid_temp_d
-    
-    global factorHumSeconds
-    global factorTempSeconds
-    global camera_light
     global relay_num
     global sensor_ht_num
     global sensor_co2_num
     global timer_num
+    
     global timer_relay
     global timer_state
     global timer_duration_on
     global timer_duration_off
+    
     global smtp_host
     global smtp_ssl
     global smtp_port
@@ -394,26 +392,35 @@ def load_global_db(verbose):
     global smtp_pass
     global smtp_email_from
     global smtp_email_to
+    
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
     
     # Check if tables exist in database
     cur.execute("SELECT name FROM sqlite_master WHERE type = 'table'")
     for table in cur:
-        print table
+        if verbose:
+            print table
         if table[0] != 'Relays' and table[0] != 'HTSensor' and table[0] != 'CO2Sensor' and table[0] != 'Timers' and table[0] != 'Numbers' and table[0] != 'SMTP':
             print "Missing table(s): Cannot load database to global variables."
             return 0
   
     cur.execute('SELECT Id, Name, Pin, Trigger FROM Relays')
-    print "Table: Relays"
+    if verbose:
+            print "Table: Relays"
     for row in cur :
-        print "%s %s %s %s" % (row[0], row[1], row[2], row[3])
+        if verbose:
+            print "%s %s %s %s" % (row[0], row[1], row[2], row[3])
+        relay_name[row[0]] = row[1]
+        relay_pin[row[0]] = row[2]
+        relay_trigger[row[0]] = row[3]
 
     cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, Temp_Relay, Temp_OR, Temp_Set, Temp_P, Temp_I, Temp_D, Hum_Relay, Hum_OR, Hum_Set, Hum_P, Hum_I, Hum_D FROM HTSensor')
-    print "Table: HTSensor"
+    if verbose:
+            print "Table: HTSensor"
     for row in cur :
-        print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s%s " % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18])
+        if verbose:
+            print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s%s " % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18])
         sensor_ht_name[row[0]] = row[1]
         sensor_ht_pin[row[0]] = row[2]
         sensor_ht_device[row[0]] = row[3]
@@ -434,9 +441,11 @@ def load_global_db(verbose):
         pid_hum_d[row[0]] = row[18]
     
     cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, CO2_Relay, CO2_OR, CO2_Set, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
-    print "Table: CO2Sensor "
+    if verbose:
+            print "Table: CO2Sensor "
     for row in cur :
-        print "%s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12])
+        if verbose:
+            print "%s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12])
         sensor_co2_name[row[0]] = row[1]
         sensor_co2_pin[row[0]] = row[2]
         sensor_co2_device[row[0]] = row[3]
@@ -451,9 +460,11 @@ def load_global_db(verbose):
         pid_co2_d[row[0]] = row[12]
     
     cur.execute('SELECT Id, Name, Relay, State, DurationOn, DurationOff FROM Timers ')
-    print "Table: Timers "
+    if verbose:
+            print "Table: Timers "
     for row in cur :
-        print "%s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5])
+        if verbose:
+            print "%s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5])
         timer_name[row[0]] = row[1]
         timer_relay[row[0]] = row[2]
         timer_state[row[0]] = row[3]
@@ -461,18 +472,22 @@ def load_global_db(verbose):
         timer_duration_off[row[0]] = row[5]
         
     cur.execute('SELECT Relays, HTSensors, CO2Sensors, Timers FROM Numbers ')
-    print "Table: Numbers "
+    if verbose:
+            print "Table: Numbers "
     for row in cur :
-        print "%s %s %s %s" % (row[0], row[1], row[2], row[3])
+        if verbose:
+            print "%s %s %s %s" % (row[0], row[1], row[2], row[3])
         relay_num = row[0]
         sensor_ht_num = row[1]
         sensor_co2_num = row[2]
         timer_num = row[3]
         
     cur.execute('SELECT Host, SSL, Port, User, Pass, Email_From, Email_To FROM SMTP ')
-    print "Table: SMTP "
+    if verbose:
+            print "Table: SMTP "
     for row in cur :
-        print "%s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+        if verbose:
+            print "%s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6])
         smtp_host = row[0]
         smtp_ssl = row[1]
         smtp_port = row[2]
