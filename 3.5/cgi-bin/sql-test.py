@@ -223,42 +223,50 @@ def add_columns(table, variable, value):
     conn.commit()
     cur.close()
 
+# Print all values in all tables
 def view_columns():
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
     
     cur.execute('SELECT Id, Name, Pin, Trigger FROM Relays')
     print "Table: Relays"
+    print "Id Name Pin Trigger"
     for row in cur :
         print "%s %s %s %s" % (row[0], row[1], row[2], row[3])
 
     cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, Temp_Relay, Temp_OR, Temp_Set, Temp_P, Temp_I, Temp_D, Hum_Relay, Hum_OR, Hum_Set, Hum_P, Hum_I, Hum_D FROM HTSensor')
-    print "Table: HTSensor"
+    print "\nTable: HTSensor"
+    print "Id Name Pin Device Period Activated Graph Temp_Relay Temp_OR Temp_Set Temp_P Temp_I Temp_D Hum_Relay Hum_OR Hum_Set Hum_P Hum_I Hum_D"
     for row in cur :
         print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18])
     
     cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, CO2_Relay, CO2_OR, CO2_Set, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
-    print "Table: CO2Sensor "
+    print "\nTable: CO2Sensor"
+    print "Id Name Pin Device Period Activated Graph CO2_Relay CO2_OR CO2_Set CO2_P CO2_I CO2_D"
     for row in cur :
         print "%s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12])
     
     cur.execute('SELECT Id, Name, State, Relay, DurationOn, DurationOff FROM Timers ')
-    print "Table: Timers "
+    print "\nTable: Timers"
+    print "Id Name State Relay DurationOn DurationOff"
     for row in cur :
         print "%s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5])
         
     cur.execute('SELECT Relays, HTSensors, CO2Sensors, Timers FROM Numbers ')
-    print "Table: Numbers "
+    print "\nTable: Numbers"
+    print "Relays HTSensors CO2Sensors Timers"
     for row in cur :
         print "%s %s %s %s" % (row[0], row[1], row[2], row[3])
         
     cur.execute('SELECT Host, SSL, Port, User, Pass, Email_From, Email_To FROM SMTP ')
-    print "Table: SMTP "
+    print "\nTable: SMTP"
+    print "Host SSL Port User Pass Email_From Email_To"
     for row in cur :
-        print "%s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+        print "%s %s %s %s %s %s %s\n" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6])
     
     cur.close()
-    
+
+# Set global variables from the SQL database
 def set_global_variables(verbose):
     global relay_name
     global relay_pin
@@ -318,10 +326,9 @@ def set_global_variables(verbose):
     global smtp_email_from
     global smtp_email_to
     
+    # Check if all required tables exist in the SQL database
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
-    
-    # Check if all required ables exist in database
     tables = ['Relays', 'HTSensor', 'CO2Sensor', 'Timers', 'Numbers', 'SMTP']
     missing = []
     for i in range(0, len(tables)):
@@ -340,6 +347,7 @@ def set_global_variables(verbose):
         print "Reinitialize database to correct."
         return 0
   
+    # Begin setting global variables from SQL database values
     cur.execute('SELECT Id, Name, Pin, Trigger FROM Relays')
     if verbose:
             print "Table: Relays"
