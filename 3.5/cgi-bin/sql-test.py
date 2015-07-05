@@ -150,7 +150,7 @@ def menu():
             delete_all_tables()
             return 1
         elif opt == "--load":
-            load_global_db(0)
+            set_global_variables(0)
             return 1
         elif opt in ("-r", "--row"):
             delete_row(sys.argv[2], sys.argv[3])
@@ -180,9 +180,6 @@ def delete_all_tables():
     cur.execute('DROP TABLE IF EXISTS Timers ')
     cur.execute('DROP TABLE IF EXISTS Numbers ')
     cur.execute('DROP TABLE IF EXISTS SMTP ')
-    #cur.execute('DROP TABLE IF EXISTS Strings ')
-    #cur.execute('DROP TABLE IF EXISTS Integers ')
-    #cur.execute('DROP TABLE IF EXISTS Floats ')
     conn.close()
     
 def create_all_tables():
@@ -195,9 +192,6 @@ def create_all_tables():
     cur.execute("CREATE TABLE Timers (Id INT, Name TEXT, Relay INT, State INT, DurationOn INT, DurationOff INT)")
     cur.execute("CREATE TABLE Numbers (Relays INT, HTSensors INT, CO2Sensors INT, Timers INT)")
     cur.execute("CREATE TABLE SMTP (Host TEXT, SSL INT, Port INT, User TEXT, Pass TEXT, Email_From TEXT, Email_To TEXT)")
-    #cur.execute('CREATE TABLE Strings (row TEXT, column TEXT)')
-    #cur.execute('CREATE TABLE Integers (row TEXT, column INTEGER)')
-    #cur.execute('CREATE TABLE Floats (row TEXT, column REAL)')
     conn.close()
     
 def create_rows_columns():
@@ -216,76 +210,7 @@ def create_rows_columns():
     cur.execute("INSERT INTO SMTP VALUES('smtp.gmail.com', 1, 587, 'email@gmail.com', 'password', 'me@gmail.com', 'you@gmail.com')")
     conn.commit()
     cur.close()
-    
-    '''
-    add_columns('Integers', 'numrelays', 0)
-    add_columns('Integers', 'numco2sensors', 0)
-    add_columns('Integers', 'numhtsensors', 0)
-    add_columns('Integers', 'numtimers', 0)
-    add_columns('Integers', 'cameralight', 0)
-    
-    for i in range(1, 9):
-        add_columns('Strings', 'relay%dname' % i, 'Relay_%dName' % i)
-        add_columns('Integers', 'relay%dpin' % i, 0)
-        add_columns('Integers', 'relay%dtrigger' % i, 0)
-        
-    for i in range(1, 9):
-        add_columns('Integers', 'timer%dstate' % i, 0)
-        add_columns('Integers', 'timer%drelay' % i, 0)
-        add_columns('Integers', 'timer%ddurationon' % i, 0)
-        add_columns('Integers', 'timer%ddurationoff' % i, 0)
-        
-    for i in range(1, 5):
-        add_columns('Strings', 'sensorht%dname' % i, 'HT_%dName' % i)
-        add_columns('Integers', 'sensorht%ddevice' % i, 0)
-        add_columns('Integers', 'sensorht%dpin' % i, 0)
-        add_columns('Integers', 'sensorht%dperiod' % i, 0)
-        add_columns('Integers', 'sensorht%dactivated' % i, 0)
-        add_columns('Integers', 'sensorht%dgraph' % i, 0)
-        add_columns('Integers', 'temp%dperiod' % i, 0)
-        add_columns('Integers', 'temp%drelay' % i, 0)
-        add_columns('Integers', 'temp%dor' % i, 0)
-        add_columns('Integers', 'hum%dperiod' % i, 0)
-        add_columns('Integers', 'hum%drelay' % i, 0)
-        add_columns('Integers', 'hum%dor' % i, 0)
-        add_columns('Floats', 'temp%dset' % i, 0)
-        add_columns('Floats', 'temp%dp' % i, 0)
-        add_columns('Floats', 'temp%di' % i, 0)
-        add_columns('Floats', 'temp%dd' % i, 0)
-        add_columns('Floats', 'hum%dset' % i, 0)
-        add_columns('Floats', 'hum%dp' % i, 0)
-        add_columns('Floats', 'hum%di' % i, 0)
-        add_columns('Floats', 'hum%dd' % i, 0)
-    
-    for i in range(1, 5):
-        add_columns('Strings', 'sensorco2%dname' % i, 'CO2_%dName' % i)
-        add_columns('Integers', 'sensorco2%ddevice' % i, 0)
-        add_columns('Integers', 'sensorco2%dpin' % i, 0)
-        add_columns('Integers', 'sensorco2%dperiod' % i, 0)
-        add_columns('Integers', 'sensorco2%dactivated' % i, 0)
-        add_columns('Integers', 'sensorco2%dgraph' % i, 0)
-        add_columns('Integers', 'co2%dperiod' % i, 0)
-        add_columns('Integers', 'co2%drelay' % i, 0)
-        add_columns('Integers', 'co2%dor' % i, 0)
-        add_columns('Floats', 'co2%dset' % i, 0)
-        add_columns('Floats', 'co2%dp' % i, 0)
-        add_columns('Floats', 'co2%di' % i, 0)
-        add_columns('Floats', 'co2%dd' % i, 0)
-        
-    add_columns('SMTP', 'smtp_host', 'smtp_host')
-    add_columns('SMTP', 'smtp_port', 'smtp_port')
-    add_columns('SMTP', 'smtp_user', 'smtp_user')
-    add_columns('SMTP', 'smtp_pass', 'smtp_pass')
-    add_columns('SMTP', 'smtp_email_from', 'smtp_email_from')
-    add_columns('SMTP', 'smtp_email_to', 'smtp_email_to')
-    
-    add_columns('Integers', 'numrelays', 0)
-    add_columns('Integers', 'numco2sensors', 0)
-    add_columns('Integers', 'numhtsensors', 0)
-    add_columns('Integers', 'numtimers', 0)
-    add_columns('Integers', 'cameralight', 0)
-    '''
-    
+
 def add_columns(table, variable, value):
     #print "Add to Table: %s Variable: %s Value: %s" % (table, row, column)
     conn = sqlite3.connect(sql_database)
@@ -334,7 +259,7 @@ def view_columns():
     
     cur.close()
     
-def load_global_db(verbose):
+def set_global_variables(verbose):
     global relay_name
     global relay_pin
     global relay_trigger
@@ -396,14 +321,24 @@ def load_global_db(verbose):
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
     
-    # Check if tables exist in database
-    cur.execute("SELECT name FROM sqlite_master WHERE type = 'table'")
-    for table in cur:
-        if verbose:
-            print table
-        if table[0] != 'Relays' and table[0] != 'HTSensor' and table[0] != 'CO2Sensor' and table[0] != 'Timers' and table[0] != 'Numbers' and table[0] != 'SMTP':
-            print "Missing table(s): Cannot load database to global variables."
-            return 0
+    # Check if all required ables exist in database
+    tables = ['Relays', 'HTSensor', 'CO2Sensor', 'Timers', 'Numbers', 'SMTP']
+    missing = []
+    for i in range(0, len(tables)):
+        query = "SELECT name FROM sqlite_master WHERE type='table' AND name='%s'" % tables[i]
+        cur.execute(query)
+        if cur.fetchone() == None: missing.append(tables[i])
+    if missing != []:
+        print "Missing required table(s):",
+        for i in range(0, len(missing)):
+            if len(missing) == 1:
+                print "%s" % missing[i]
+            elif len(missing) != 1 and i != len(missing)-1:
+                print "%s," % missing[i],
+            else:
+                print "%s" % missing[i]
+        print "Reinitialize database to correct."
+        return 0
   
     cur.execute('SELECT Id, Name, Pin, Trigger FROM Relays')
     if verbose:
@@ -445,7 +380,9 @@ def load_global_db(verbose):
             print "Table: CO2Sensor "
     for row in cur :
         if verbose:
-            print "%s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12])
+            print "%s %s %s %s %s %s %s %s %s %s %s %s %s" % (
+                row[0], row[1], row[2], row[3], row[4], row[5], row[6],
+                row[7], row[8], row[9], row[10], row[11], row[12])
         sensor_co2_name[row[0]] = row[1]
         sensor_co2_pin[row[0]] = row[2]
         sensor_co2_device[row[0]] = row[3]
@@ -464,7 +401,8 @@ def load_global_db(verbose):
             print "Table: Timers "
     for row in cur :
         if verbose:
-            print "%s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5])
+            print "%s %s %s %s %s %s" % (
+                row[0], row[1], row[2], row[3], row[4], row[5])
         timer_name[row[0]] = row[1]
         timer_relay[row[0]] = row[2]
         timer_state[row[0]] = row[3]
@@ -476,7 +414,8 @@ def load_global_db(verbose):
             print "Table: Numbers "
     for row in cur :
         if verbose:
-            print "%s %s %s %s" % (row[0], row[1], row[2], row[3])
+            print "%s %s %s %s" % (
+                row[0], row[1], row[2], row[3])
         relay_num = row[0]
         sensor_ht_num = row[1]
         sensor_co2_num = row[2]
@@ -487,7 +426,8 @@ def load_global_db(verbose):
             print "Table: SMTP "
     for row in cur :
         if verbose:
-            print "%s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+            print "%s %s %s %s %s %s %s" % (
+                row[0], row[1], row[2], row[3], row[4], row[5], row[6])
         smtp_host = row[0]
         smtp_ssl = row[1]
         smtp_port = row[2]
@@ -495,12 +435,6 @@ def load_global_db(verbose):
         smtp_pass = row[4]
         smtp_email_from = row[5]
         smtp_email_to = row[6]
-  
-    #cur.execute('SELECT row, column FROM Strings')
-    #for row in cur :
-    #    if verbose:
-    #        print "Load Global Variable: %s Value: %s" % (row[0], row[1])
-    #    globals()[row[0]] = row[1]
 
     cur.close()
     
@@ -514,9 +448,6 @@ def delete_all_rows():
     cur.execute('DELETE FROM Timers ')
     cur.execute('DELETE FROM Numbers ')
     cur.execute('DELETE FROM SMTP ')
-    #cur.execute('DELETE FROM Strings')
-    #cur.execute('DELETE FROM Integers')
-    #cur.execute('DELETE FROM Floats')
     conn.commit()
     cur.close()
     
@@ -530,13 +461,25 @@ def delete_row(table, Id):
     cur.close()
     
 def update_value(table, Id, variable, value):
-    print "Update Table: %s Id: %s Variable: %s Value: %s" % (table, Id, variable, value)
+    print "Update Table: %s Id: %s Variable: %s Value: %s" % (
+        table, Id, variable, value)
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
-    if represents_int(value) or represents_float(value):
-        query = "UPDATE %s SET %s=%s WHERE Id=%s" % (table, variable, value, Id)
+    
+    if Id is '0':
+        if represents_int(value) or represents_float(value):
+            query = "UPDATE %s SET %s=%s" % (
+                table, variable, value)
+        else:
+            query = "UPDATE %s SET %s='%s'" % (
+                table, variable, value)
     else:
-        query = "UPDATE %s SET %s='%s' WHERE Id=%s" % (table, variable, value, Id)
+        if represents_int(value) or represents_float(value):
+            query = "UPDATE %s SET %s=%s WHERE Id=%s" % (
+                table, variable, value, Id)
+        else:
+            query = "UPDATE %s SET %s='%s' WHERE Id=%s" % (
+                table, variable, value, Id)
     cur.execute(query)
     conn.commit()
     cur.close() 
@@ -557,7 +500,7 @@ def represents_float(s):
     except ValueError:
         return False
     
-#load_global_db(0)
+#set_global_variables(0)
 start_time = time.time()
 menu()
 elapsed_time = time.time() - start_time
