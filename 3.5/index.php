@@ -947,7 +947,7 @@ $error_code = "no";
                         echo "</div>";
                     } else {
                         for ($n = 1; $n <= $sensor_ht_num; $n++ ) {
-                            if (isset($_GET['page']) and ${'sensorht' . $n . 'graph'} == 1) {
+                            if (isset($_GET['page']) and $sensor_ht_graph[$n] == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
                                 switch ($_GET['page']) {
                                     case 'Main':
@@ -993,11 +993,11 @@ $error_code = "no";
                                 if ($ref) shell_exec($mycodo_client . ' --graph htdayweek ' . $id . ' ' . $n);
                                 echo "htmain&mod=" . $id . "&sensor=" . $n . "></div>";
                             }
-                            if ($n != $sensor_ht_num || $sensorco21graph == 1 || $sensorco22graph == 1 || $sensorco23graph == 1 || $sensorco24graph == 1) {
+                            if ($n != $sensor_ht_num || $sensor_co2_graph[1] == 1 || $sensor_co2_graph[2] == 1 || $sensor_co2_graph[3] == 1 || $sensor_co2_graph[4] == 1) {
                                 echo "<hr class=\"fade\"/>"; }
                         }
                         for ($n = 1; $n <= $sensor_co2_num; $n++ ) {
-                            if (isset($_GET['page']) and ${'sensorco2' . $n . 'graph'} == 1) {
+                            if (isset($_GET['page']) and $sensor_co2_graph[$n] == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
                                 switch ($_GET['page']) {
                                     case 'Main':
@@ -1038,7 +1038,7 @@ $error_code = "no";
                                         break;
                                 }
                                 echo "</div>";
-                            } else if (${'sensorco2' . $n . 'graph'} == 1) {
+                            } else if ($sensor_co2_graph[$n] == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
                                 if ($ref) shell_exec($mycodo_client . ' --graph co2dayweek ' . $id . ' ' . $n);
                                 echo "co2main&mod=" . $id . "&sensor=" . $n . "></div>";
