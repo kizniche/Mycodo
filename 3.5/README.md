@@ -4,11 +4,11 @@ This is an experimental branch of mycodo. Unless I have been in direct contact w
 
 ### Goals
 
-- [X] K30 CO2 Sensor support
-- [ ] SQLite3 Database Support
-- [ ] O2 Sensor support
+- [X] K30 CO2 sensor support (complete)
+- [X] SQLite database support (debugging)
+- [ ] Email notification or audible alarm during critical failure or condition (working on)
+- [ ] O2 sensor support
 - [ ] More graph generation options
-- [ ] Email notification or audible alarm if at a specific sensor value or detect a critical failure (working on)
 - [ ] Set electrical current draw of each device and prevent exceeding total current limit with different combinations of devices on
 - [ ] Capture series of photos at different ISOs, combine to make HDR photo
 - [ ] Timelapse video creation ability (define start, end, duration between, etc.)
