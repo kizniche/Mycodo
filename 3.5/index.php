@@ -32,7 +32,6 @@ $gpio_path = "/usr/local/bin/gpio";
 ########## End Configure ##########
 
 $sqlite_db = $install_path . "/config/mycodo.sqlite3";
-$config_file = $install_path . "/config/mycodo.cfg";
 $auth_log = $install_path . "/log/auth.log";
 $sensor_ht_log = "/var/tmp/sensor-ht.log";
 $sensor_co2_log = "/var/tmp/sensor-co2.log";
@@ -56,151 +55,14 @@ require_once('config/config.php');
 require_once('translations/en.php');
 require_once('libraries/PHPMailer.php');
 require_once("classes/Login.php");
+require_once("functions/functions.php");
 $login = new Login();
 
-function menu_item($id, $title, $current) {
-    global $page;
-    $class = ($current == $id) ? "active" : "inactive";
-    if ($current != $id) {
-        echo '<a href="?tab=main&page=' . $id. '&Refresh=1';
-        if (isset($_GET['r']) && ($_GET['r'] == 1)) echo '&r=1';
-        echo '"><div class="inactive">' . $title . '</div></a>';
-    } else echo '<div class="active">' . $title . '</div>';
-}
-
-function view_sql_db() {
-    global $sqlite_db;
-    $db = new SQLite3($sqlite_db);
-    print "Table: Numbers<br>";
-    print "Relays HTSensors CO2Sensors Timers<br>";
-    $results = $db->query('SELECT Relays, HTSensors, CO2Sensors, Timers FROM Numbers');
-    while ($row = $results->fetchArray()) {
-        print $row[0] . " " . $row[1] . " " . $row[2] . " " . $row[3] . "<br>";
-    }
-    print "<br>Table: Relays<br>";
-    print "Id Name Pin Trigger<br>";
-    $results = $db->query('SELECT Id, Name, Pin, Trigger FROM Relays');
-    while ($row = $results->fetchArray()) {
-        print $row[0] . " " . $row[1] . " " . $row[2] . " " . $row[3] . "<br>";
-    }
-    print "<br>Table: HTSensor<br>";
-    print "Id Name Pin Device Period Activated Graph Temp_Relay Temp_OR Temp_Set Temp_P Temp_I Temp_D Hum_Relay Hum_OR Hum_Set Hum_P Hum_I Hum_D<br>";
-    $results = $db->query('SELECT Id, Name, Pin, Device, Period, Activated, Graph, Temp_Relay, Temp_OR, Temp_Set, Temp_P, Temp_I, Temp_D, Hum_Relay, Hum_OR, Hum_Set, Hum_P, Hum_I, Hum_D FROM HTSensor');
-    while ($row = $results->fetchArray()) {
-        print $row[0] . " " . $row[1] . " " . $row[2] . " " . $row[3] . " " . $row[4] . " " . $row[5] . " " . $row[6] . " " . $row[7] . " " . $row[8] . " " . $row[9] . " " . $row[10] . " " . $row[11] . " " . $row[12] . " " . $row[13] . " " . $row[14] . " " . $row[15] . " " . $row[16] . " " . $row[17] . " " . $row[18] . "<br>";
-    }
-    print "<br>Table: CO2Sensor<br>";
-    print "Id Name Pin Device Period Activated Graph CO2_Relay CO2_OR CO2_Set CO2_P CO2_I CO2_D<br>";
-    $results = $db->query('SELECT Id, Name, Pin, Device, Period, Activated, Graph, CO2_Relay, CO2_OR, CO2_Set, CO2_P, CO2_I, CO2_D FROM CO2Sensor');
-    while ($row = $results->fetchArray()) {
-        print $row[0] . " " . $row[1] . " " . $row[2] . " " . $row[3] . " " . $row[4] . " " . $row[5] . " " . $row[6] . " " . $row[7] . " " . $row[8] . " " . $row[9] . " " . $row[10] . " " . $row[11] . " " . $row[12] . "<br>";
-    }
-    print "<br>Table: Timers<br>";
-    print "Id Name State Relay DurationOn DurationOff<br>";
-    $results = $db->query('SELECT Id, Name, State, Relay, DurationOn, DurationOff FROM Timers');
-    while ($row = $results->fetchArray()) {
-        print $row[0] . " " . $row[1] . " " . $row[2] . " " . $row[3] . " " . $row[4] . " " . $row[5] . "<br>";
-    }
-    print "<br>Table: SMTP<br>";
-    print "Host SSL Port User Pass Email_From Email_To<br>";
-    $results = $db->query('SELECT Host, SSL, Port, User, Pass, Email_From, Email_To FROM SMTP');
-    while ($row = $results->fetchArray()) {
-        print $row[0] . " " . $row[1] . " " . $row[2] . " " . $row[3] . " " . $row[4] . " " . $row[5] . " " . $row[6] ."<br>";
-    }
-}
-
-function DateSelector($inName, $useDate=0) {
-    /* create array to name months */
-    $monthName = array(1=> "January", "February", "March",
-    "April", "May", "June", "July", "August",
-    "September", "October", "November", "December");
-    /* if date invalid or not supplied, use current time */
-    if($useDate == 0) $useDate = Time();
-
-    echo "<SELECT NAME=" . $inName . "Month>\n";
-	for($currentMonth = 1; $currentMonth <= 12; $currentMonth++) {
-	    echo "<OPTION VALUE=\"" . intval($currentMonth) . "\"";
-	    if(intval(date( "m", $useDate))==$currentMonth) echo " SELECTED";
-	    echo ">" . $monthName[$currentMonth] . "\n";
-	}
-	echo "</SELECT> / ";
-
-    echo "<SELECT NAME=" . $inName . "Day>\n";
-	for($currentDay=1; $currentDay <= 31; $currentDay++) {
-	    echo "<OPTION VALUE=\"$currentDay\"";
-	    if(intval(date( "d", $useDate))==$currentDay) echo " SELECTED";
-	    echo ">$currentDay\n";
-	}
-	echo "</SELECT> / ";
-
-    echo "<SELECT NAME=" . $inName . "Year>\n";
-	$startYear = date("Y", $useDate);
-	for($currentYear = $startYear-5; $currentYear <= $startYear+5; $currentYear++) {
-	    echo "<OPTION VALUE=\"$currentYear\"";
-	    if(date("Y", $useDate) == $currentYear) echo " SELECTED";
-	    echo ">$currentYear\n";
-	}
-	echo "</SELECT>&nbsp;&nbsp;&nbsp;";
-
-    echo "<SELECT NAME=" . $inName . "Hour>\n";
-	for($currentHour=0; $currentHour <= 23; $currentHour++) {
-	    if($currentHour < 10) echo "<OPTION VALUE=\"0$currentHour\"";
-	    else echo "<OPTION VALUE=\"$currentHour\"";
-	    if(intval(date("H", $useDate)) == $currentHour) echo " SELECTED";
-	    if($currentHour < 10) echo ">0$currentHour\n";
-	    else echo ">$currentHour\n";
-	}
-	echo "</SELECT> : ";
-
-    echo "<SELECT NAME=" . $inName . "Minute>\n";
-	for($currentMinute=0; $currentMinute <= 59; $currentMinute++) {
-	    if($currentMinute < 10) echo "<OPTION VALUE=\"0$currentMinute\"";
-	    else echo "<OPTION VALUE=\"$currentMinute\"";
-	    if(intval(date( "i", $useDate)) == $currentMinute) echo " SELECTED";
-	    if($currentMinute < 10) echo ">0$currentMinute\n";
-	    else echo ">$currentMinute\n";
-	}
-	echo "</SELECT>";
-}
-
-function displayform() { ?>
-    <FORM action="?tab=graph<?php if (isset($_GET['page'])) echo "&page=" . $_GET['page']; ?>" method="POST">
-    <div style="padding: 10px 0 0 15px;">
-        <div style="display: inline-block;">  
-            <div style="padding-bottom: 5px; text-align: right;">START: <?php DateSelector("start"); ?></div>
-            <div style="text-align: right;">END: <?php DateSelector("end"); ?></div>
-        </div>
-        <div style="display: inline-block;">
-            <div style="display: inline-block;">
-                <select name="MainType">
-                    <option value="Separate" <?php
-                        if (isset($_POST['MainType'])) {
-                            if ($_POST['MainType'] == 'Separate') echo 'selected="selected"'; 
-                        }
-                        ?>>Separate</option>
-                    <option value="Combined" <?php
-                        if (isset($_POST['MainType'])) {
-                            if ($_POST['MainType'] == 'Combined') echo 'selected="selected"'; 
-                        }
-                        ?>>Combined</option>
-                </select>
-                <input type="text" value="900" maxlength=4 size=4 name="graph-width" title="Width of the generated graph"> Width (pixels, max 4000)
-            </div>
-        </div>
-        <div style="display: inline-block;">
-            &nbsp;&nbsp;<input type="submit" name="SubmitDates" value="Submit">
-        </div>
-    </div>
-    </FORM>
-    <?php
-}
-
-function is_positive_integer($str) {
-    return (is_numeric($str) && $str > 0 && $str == round($str));
-}
-
 if ($login->isUserLoggedIn() == true) {
-    
+    // Decalre SQLite database, then initial read of SQL database
+    $db = new SQLite3($sqlite_db);
+    require("functions/sql.php");
+
     // Delete all generated graphs except for the 20 latest
     $dir = "/var/log/mycodo/images/";
     if (is_dir($dir)) {
@@ -220,13 +82,8 @@ if ($login->isUserLoggedIn() == true) {
             if (!is_dir($files[$i])) unlink($files[$i]);
         }
     }
-    
-    # Concatenate log files (to TempFS) to ensure the latest data is being used
-    `cat /var/www/mycodo/log/daemon.log /var/www/mycodo/log/daemon-tmp.log > /var/tmp/daemon.log`;
-    `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
-    `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
-    `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log > /var/tmp/relay.log`;
 
+    // Check if daemon is running
     $daemon_check = `ps aux | grep "[m]ycodo.py"`;
     if (empty($daemon_check)) $daemon_check = 0;
     else $daemon_check = 1;
@@ -235,26 +92,17 @@ if ($login->isUserLoggedIn() == true) {
 
     $page = isset($_GET['page']) ? $_GET['page'] : 'Main';
     $tab = isset($_GET['tab']) ? $_GET['tab'] : 'Unset';
-    
-    // Read config file, for each row set variable to value
-    /*
-    $config_contents = file_get_contents($config_file);
-    $config_rows = explode("\n", $config_contents);
-    array_shift($config_rows);
-    foreach($config_rows as $row => $data) {
-        $row_data = explode(' = ', $data);
-        if (isset($row_data[1])) ${$row_data[0]} = $row_data[1];
-        // echo $row_data[0] . "=" . $row_data[1] . '<br>';
-    }
-    */
-    
+
+    $db = new SQLite3($sqlite_db);
     // All commands that elevated (!= guest) privileges are required
+    // Check form submissions
     for ($p = 1; $p <= 8; $p++) {
-        if (isset($_POST['R' . $p]) ||
+        // All commands that modify the SQLite database and require the daemon
+        // to reload variables
+        if (isset($_POST['Mod' . $p . 'Relay']) ||
                 isset($_POST['Change' . $p . 'HTSensor']) ||
                 isset($_POST['Change' . $p . 'Co2Sensor']) ||
-                isset($_POST[$p . 'secON']) ||
-                isset($_POST['ChangeTimer' . $p]) || 
+                isset($_POST['ChangeTimer' . $p]) ||
                 isset($_POST['Timer' . $p . 'StateChange']) ||
                 isset($_POST['Change' . $p . 'TempPID']) ||
                 isset($_POST['Change' . $p . 'HumPID']) ||
@@ -262,108 +110,165 @@ if ($login->isUserLoggedIn() == true) {
                 isset($_POST['Change' . $p . 'TempOR']) ||
                 isset($_POST['Change' . $p . 'HumOR']) ||
                 isset($_POST['Change' . $p . 'Co2OR'])) {
-            if ($_SESSION['user_name'] != 'guest') {
 
-                // Set HT sensor variables
-                if (isset($_POST['Change' . $p . 'HTSensor'])) {
-                    $sensorname = str_replace(' ', '', $_POST['sensorht' . $p . 'name']);
-                    $sensordevice = str_replace(' ', '', $_POST['sensorht' . $p . 'device']);
-                    $sensorpin = str_replace(' ', '', $_POST['sensorht' . $p . 'pin']);
-                    $sensorperiod = str_replace(' ', '', $_POST['sensorht' . $p . 'period']);
-                    if (isset($_POST['sensorht' . $p . 'activated'])) $sensoractivated = 1;
-                    else $sensoractivated = 0;
-                    if (isset($_POST['sensorht' . $p . 'graph'])) $sensorgraph = 1;
-                    else $sensorgraph = 0;
-                    $editconfig = "$mycodo_client --modhtsensor $p $sensorname $sensordevice $sensorpin $sensorperiod $sensoractivated $sensorgraph";
-                    shell_exec($editconfig);
+            if ($_SESSION['user_name'] != 'guest') {
+                // Set relay variables
+                if (isset($_POST['Mod' . $p . 'Relay'])) {
+                    $stmt = $db->prepare("UPDATE Relays SET Name=:name, Pin=:pin, Trigger=:trigger WHERE Id=:id");
+                    $stmt->bindValue(':name', $_POST['relay' . $p . 'name'], SQLITE3_TEXT);
+                    $stmt->bindValue(':pin', (int)$_POST['relay' . $p . 'pin'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':trigger', (int)$_POST['relay' . $p . 'trigger'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
+                    $stmt->execute();
                 }
-                
+
+                // Set Temperature/Humidity sensor variables
+                if (isset($_POST['Change' . $p . 'HTSensor'])) {
+                    $stmt = $db->prepare("UPDATE HTSensor SET Name=:name, Device=:device, Pin=:pin, Period=:period, Activated=:activated, Graph=:graph WHERE Id=:id");
+                    $stmt->bindValue(':name', str_replace(' ', '', $_POST['sensorht' . $p . 'name']), SQLITE3_TEXT);
+                    $stmt->bindValue(':device', str_replace(' ', '', $_POST['sensorht' . $p . 'device']), SQLITE3_TEXT);
+                    $stmt->bindValue(':pin', (int)$_POST['sensorht' . $p . 'pin'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':period', (int)$_POST['sensorht' . $p . 'period'], SQLITE3_INTEGER);
+                    if (isset($_POST['sensorht' . $p . 'activated'])) {
+                        $stmt->bindValue(':activated', 1, SQLITE3_INTEGER);
+                    } else {
+                        $stmt->bindValue(':activated', 0, SQLITE3_INTEGER);
+                    }
+                    if (isset($_POST['sensorht' . $p . 'graph'])) {
+                        $stmt->bindValue(':graph', 1, SQLITE3_INTEGER);
+                    } else {
+                        $stmt->bindValue(':graph', 0, SQLITE3_INTEGER);
+                    }
+                    $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
+                    $stmt->execute();
+                }
+
+                // Set Temperature PID variables
+                if (isset($_POST['Change' . $p . 'TempPID'])) {
+                    $stmt = $db->prepare("UPDATE HTSensor SET Temp_Relay=:temprelay, Temp_Set=:tempset, Temp_Period=:tempperiod, Temp_P=:tempp, Temp_I=:tempi, Temp_D=:tempd WHERE Id=:id");
+                    $stmt->bindValue(':temprelay', (int)$_POST['Set' . $p . 'TempRelay'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':tempset', (float)$_POST['Set' . $p . 'TempSet'], SQLITE3_FLOAT);
+                    $stmt->bindValue(':tempperiod', (int)$_POST['Set' . $p . 'TempPeriod'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':tempp', (float)$_POST['Set' . $p . 'Temp_P'], SQLITE3_FLOAT);
+                    $stmt->bindValue(':tempi', (float)$_POST['Set' . $p . 'Temp_I'], SQLITE3_FLOAT);
+                    $stmt->bindValue(':tempd', (float)$_POST['Set' . $p . 'Temp_D'], SQLITE3_FLOAT);
+                    $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
+                    $stmt->execute();
+                }
+
+                // Set Temperature PID override on or off
+                if (isset($_POST['Change' . $p . 'TempOR'])) {
+                    $stmt = $db->prepare("UPDATE HTSensor SET Temp_OR=:humor WHERE Id=:id");
+                    $stmt->bindValue(':humor', (int)$_POST['Change' . $p . 'TempOR'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
+                    $stmt->execute();
+                }
+
+                // Set Humidity PID variables
+                if (isset($_POST['Change' . $p . 'HumPID'])) {
+                    $stmt = $db->prepare("UPDATE HTSensor SET Hum_Relay=:humrelay, Hum_Set=:humset, Hum_Period=:humperiod, Hum_P=:hump, Hum_I=:humi, Hum_D=:humd WHERE Id=:id");
+                    $stmt->bindValue(':humrelay', (int)$_POST['Set' . $p . 'HumRelay'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':humset', (float)$_POST['Set' . $p . 'HumSet'], SQLITE3_FLOAT);
+                    $stmt->bindValue(':humperiod', (int)$_POST['Set' . $p . 'HumPeriod'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':hump', (float)$_POST['Set' . $p . 'Hum_P'], SQLITE3_FLOAT);
+                    $stmt->bindValue(':humi', (float)$_POST['Set' . $p . 'Hum_I'], SQLITE3_FLOAT);
+                    $stmt->bindValue(':humd', (float)$_POST['Set' . $p . 'Hum_D'], SQLITE3_FLOAT);
+                    $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
+                    $stmt->execute();
+                }
+
+                // Set Humidity PID override on or off
+                if (isset($_POST['Change' . $p . 'HumOR'])) {
+                    $stmt = $db->prepare("UPDATE HTSensor SET Hum_OR=:humor WHERE Id=:id");
+                    $stmt->bindValue(':humor', (int)$_POST['Change' . $p . 'HumOR'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
+                    $stmt->execute();
+                }
+
                 // Set CO2 sensor variables
                 if (isset($_POST['Change' . $p . 'Co2Sensor'])) {
-                    $sensorname = str_replace(' ', '', $_POST['sensorco2' . $p . 'name']);
-                    $sensordevice = str_replace(' ', '', $_POST['sensorco2' . $p . 'device']);
-                    $sensorpin = str_replace(' ', '', $_POST['sensorco2' . $p . 'pin']);
-                    $sensorperiod = str_replace(' ', '', $_POST['sensorco2' . $p . 'period']);
-                    if (isset($_POST['sensorco2' . $p . 'activated'])) $sensoractivated = 1;
-                    else $sensoractivated = 0;
-                    if (isset($_POST['sensorco2' . $p . 'graph'])) $sensorgraph = 1;
-                    else $sensorgraph = 0;
-                    $editconfig = "$mycodo_client --modco2sensor $p $sensorname $sensordevice $sensorpin $sensorperiod $sensoractivated $sensorgraph";
-                    shell_exec($editconfig);
+                    $stmt = $db->prepare("UPDATE CO2Sensor SET Name=:name, Device=:device, Pin=:pin, Period=:period, Activated=:activated, Graph=:graph WHERE Id=:id");
+                    $stmt->bindValue(':name', str_replace(' ', '', $_POST['sensorco2' . $p . 'name']), SQLITE3_TEXT);
+                    $stmt->bindValue(':device', str_replace(' ', '', $_POST['sensorco2' . $p . 'device']), SQLITE3_TEXT);
+                    $stmt->bindValue(':pin', (int)$_POST['sensorco2' . $p . 'pin'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':period', (int)$_POST['sensorco2' . $p . 'period'], SQLITE3_INTEGER);
+                    if (isset($_POST['sensorco2' . $p . 'activated'])) {
+                        $stmt->bindValue(':activated', 1, SQLITE3_INTEGER);
+                    } else {
+                        $stmt->bindValue(':activated', 0, SQLITE3_INTEGER);
+                    }
+                    if (isset($_POST['sensorco2' . $p . 'graph'])) {
+                        $stmt->bindValue(':graph', 1, SQLITE3_INTEGER);
+                    } else {
+                        $stmt->bindValue(':graph', 0, SQLITE3_INTEGER);
+                    }
+                    $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
+                    $stmt->execute();
                 }
-            
-                // Request Temperature PID override to be turned on or off
-                if (isset($_POST['Change' . $p . 'TempOR'])) {
-                    $tempor = $_POST['Change' . $p . 'TempOR'];
-                    $editconfig = "$mycodo_client --modtempOR $p $tempor";
-                    shell_exec($editconfig);
-                }
-                
-                // Request Humidity PID override to be turned on or off
-                if (isset($_POST['Change' . $p . 'HumOR'])) {
-                    $humor = $_POST['Change' . $p . 'HumOR'];
-                    $editconfig = "$mycodo_client --modhumOR $p $humor";
-                    shell_exec($editconfig);
-                }
-                
-                // Request CO2 PID override to be turned on or off
-                if (isset($_POST['Change' . $p . 'Co2OR'])) {
-                    $co2or = $_POST['Change' . $p . 'Co2OR'];
-                    $editconfig = "$mycodo_client --modco2OR $p $co2or";
-                    shell_exec($editconfig);
-                }
-                
-                // Request the Temperature PID variables be changed
-                if (isset($_POST['Change' . $p . 'TempPID'])) {
-                    $temprelay  = $_POST['Set' . $p . 'TempRelay'];
-                    $tempset  = $_POST['Set' . $p . 'TempSet'];
-                    $temp_p  = $_POST['Set' . $p . 'Temp_P'];
-                    $temp_i  = $_POST['Set' . $p . 'Temp_I'];
-                    $temp_d  = $_POST['Set' . $p . 'Temp_D'];
-                    $tempperiod = $_POST['Set' . $p . 'TempPeriod'];
-                    $editconfig = "$mycodo_client --modtempPID $p $temprelay $tempset $temp_p $temp_i $temp_d $tempperiod";
-                    shell_exec($editconfig);
-                }
-                
-                // Request the Humidity PID variables be changed
-                if (isset($_POST['Change' . $p . 'HumPID'])) {
-                    $humrelay  = $_POST['Set' . $p . 'HumRelay'];
-                    $humset  = $_POST['Set' . $p . 'HumSet'];
-                    $hum_p  = $_POST['Set' . $p . 'Hum_P'];
-                    $hum_i  = $_POST['Set' . $p . 'Hum_I'];
-                    $hum_d  = $_POST['Set' . $p . 'Hum_D'];
-                    $humperiod = $_POST['Set' . $p . 'HumPeriod'];
-                    $editconfig = "$mycodo_client --modhumPID $p $humrelay $humset $hum_p $hum_i $hum_d $humperiod";
-                    shell_exec($editconfig);
-                }
-                
-                // Request the CO2 PID variables be changed
+
+                // Set CO2 PID variables
                 if (isset($_POST['Change' . $p . 'Co2PID'])) {
-                    $co2relay  = $_POST['Set' . $p . 'Co2Relay'];
-                    $co2set  = $_POST['Set' . $p . 'Co2Set'];
-                    $co2_p  = $_POST['Set' . $p . 'Co2_P'];
-                    $co2_i  = $_POST['Set' . $p . 'Co2_I'];
-                    $co2_d  = $_POST['Set' . $p . 'Co2_D'];
-                    $co2period = $_POST['Set' . $p . 'Co2Period'];
-                    $editconfig = "$mycodo_client --modco2PID $p $co2relay $co2set $co2_p $co2_i $co2_d $co2period";
-                    shell_exec($editconfig);
+                    $stmt = $db->prepare("UPDATE CO2Sensor SET CO2_Relay=:co2relay, CO2_Set=:co2set, CO2_Period=:co2period, CO2_P=:co2p, CO2_I=:co2i, CO2_D=:co2d WHERE Id=:id");
+                    $stmt->bindValue(':co2relay', (int)$_POST['Set' . $p . 'Co2Relay'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':co2set', (float)$_POST['Set' . $p . 'Co2Set'], SQLITE3_FLOAT);
+                    $stmt->bindValue(':co2period', (int)$_POST['Set' . $p . 'Co2Period'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':co2p', (float)$_POST['Set' . $p . 'Co2_P'], SQLITE3_FLOAT);
+                    $stmt->bindValue(':co2i', (float)$_POST['Set' . $p . 'Co2_I'], SQLITE3_FLOAT);
+                    $stmt->bindValue(':co2d', (float)$_POST['Set' . $p . 'Co2_D'], SQLITE3_FLOAT);
+                    $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
+                    $stmt->execute();
                 }
-                
-                // Relay has been selected to be turned on or off
+
+                // Set CO2 PID override on or off
+                if (isset($_POST['Change' . $p . 'Co2OR'])) {
+                    $stmt = $db->prepare("UPDATE CO2Sensor SET CO2_OR=:co2or WHERE Id=:id");
+                    $stmt->bindValue(':co2or', (int)$_POST['Change' . $p . 'Co2OR'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
+                    $stmt->execute();
+                }
+
+                 // Set timer variables
+                if (isset($_POST['ChangeTimer' . $p])) {
+                    $stmt = $db->prepare("UPDATE Timers SET Name=:name, State=:state, Relay=:relay, DurationOn=:durationon, DurationOff=:durationoff WHERE Id=:id");
+                    $stmt->bindValue(':name', $_POST['Timer' . $p . 'Name'], SQLITE3_TEXT);
+                    $stmt->bindValue(':state', (int)$_POST['Timer' . $p . 'State'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':relay', (int)$_POST['Timer' . $p . 'Relay'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':durationon', (int)$_POST['Timer' . $p . 'On'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':durationoff', (int)$_POST['Timer' . $p . 'Off'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':id', $p, SQLITE3_TEXT);
+                    $stmt->execute();
+
+                } else if (isset($_POST['ChangeTimer' . $p]) && $_SESSION['user_name'] == 'guest') $error_code = 'guest';
+
+                // Set timer state
+                if (isset($_POST['Timer' . $p . 'StateChange'])) {
+                    $stmt = $db->prepare("UPDATE Timers SET State=:state WHERE Id=:id");
+                    $stmt->bindValue(':state', (int)$_POST['Timer' . $p . 'StateChange'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
+                    $stmt->execute();
+                }
+            } else $error_code = 'guest';
+        }
+
+        // All commands that do not modify the SQLite database
+        if (isset($_POST['R' . $p]) || isset($_POST[$p . 'secON'])) {
+            if ($_SESSION['user_name'] != 'guest') {
+
+                // Send client command to turn relay on or off
                 if (isset($_POST['R' . $p])) {
-                    $name = ${"relay" . $p . "name"};
-                    $pin = ${"relay" . $p . "pin"};
+                    $name = $_POST['relay' . $p . 'name'];
+                    $pin = $_POST['relay' . $p . 'pin'];
                     if(${"relay" . $p . "trigger"} == 0) $trigger_state = 'LOW';
                     else $trigger_state = 'HIGH';
                     if ($_POST['R' . $p] == 0) $desired_state = 'LOW';
                     else $desired_state = 'HIGH';
-                    
+
                     $GPIO_state = shell_exec("$gpio_path -g read $pin");
                     if ($GPIO_state == 0 && $trigger_state == 'HIGH') $actual_state = 'LOW';
                     else if ($GPIO_state == 0 && $trigger_state == 'LOW') $actual_state = 'HIGH';
-                    else if ($GPIO_state == 1 && $trigger_state == 'HIGH') $actual_state = 'HIGH';    
+                    else if ($GPIO_state == 1 && $trigger_state == 'HIGH') $actual_state = 'HIGH';
                     else if ($GPIO_state == 1 && $trigger_state == 'LOW') $actual_state = 'LOW';
-                    
+
                     if ($actual_state == 'LOW' && $desired_state == 'LOW') {
                         $error_code = 'already_off';
                     } else if ($actual_state == 'HIGH' && $desired_state == 'HIGH') {
@@ -375,8 +280,8 @@ if ($login->isUserLoggedIn() == true) {
                         shell_exec($gpio_write);
                     }
                 }
-                
-                // Relay has been selected to be turned on for a number of seconds
+
+                // Send client command to turn relay on for a number of seconds
                 if (isset($_POST[$p . 'secON'])) {
                     $name = ${"relay" . $p . "name"};
                     $pin = ${"relay" . $p . "pin"};
@@ -384,14 +289,14 @@ if ($login->isUserLoggedIn() == true) {
                     else $trigger_state = 'HIGH';
                     if ($_POST['R' . $p] == 0) $desired_state = 'LOW';
                     else $desired_state = 'HIGH';
-                    
+
                     $GPIO_state = shell_exec("$gpio_path -g read $pin");
                     if ($GPIO_state == 0 && $trigger_state == 'HIGH') $actual_state = 'LOW';
                     else if ($GPIO_state == 0 && $trigger_state == 'LOW') $actual_state = 'HIGH';
-                    else if ($GPIO_state == 1 && $trigger_state == 'HIGH') $actual_state = 'HIGH';    
+                    else if ($GPIO_state == 1 && $trigger_state == 'HIGH') $actual_state = 'HIGH';
                     else if ($GPIO_state == 1 && $trigger_state == 'LOW') $actual_state = 'LOW';
                     $seconds_on = $_POST['sR' . $p];
-                    
+
                     if (!is_numeric($seconds_on) || $seconds_on < 2 || $seconds_on != round($seconds_on)) {
                         echo "<div class=\"error\">Error: Relay $p ($name): Seconds must be a positive integer >1</div>";
                     } else if ($actual_state == 'HIGH' && $desired_state == 'HIGH') {
@@ -401,48 +306,45 @@ if ($login->isUserLoggedIn() == true) {
                         shell_exec($relay_on_sec);
                     }
                 }
-                
-                if ((isset($_POST['ChangeTimer' . $p]) || isset($_POST['Timer' . $p . 'StateChange'])) && $_SESSION['user_name'] != 'guest') {
-                    
-                    $timerrelay = $_POST['Timer' . $p . 'Relay'];
-                    $timeron = $_POST['Timer' . $p . 'On'];
-                    $timeroff = $_POST['Timer' . $p . 'Off'];
-                        
-                     // Set timer variables
-                    if (isset($_POST['ChangeTimer' . $p])) {
-                        $timerstate = ${'timer' . $p . 'state'};
-                        $changetimer = "$mycodo_client --modtimer $p $timerstate $timerrelay $timeron $timeroff";
-                        shell_exec($changetimer);
-                    } else if (isset($_POST['ChangeTimer' . $p]) && $_SESSION['user_name'] == 'guest') $error_code = 'guest';
-                    
-                    // Set timer state
-                    if (isset($_POST['Timer' . $p . 'StateChange'])) {
-                        $timerstate = $_POST['Timer' . $p . 'StateChange'];
-                        $changetimer = "$mycodo_client --modtimer $p $timerstate $timerrelay $timeron $timeroff";
-                        shell_exec($changetimer);
-                    }
-                }
             } else $error_code = 'guest';
         }
     }
-    
+
     if (isset($_POST['WriteHTSensorLog']) || isset($_POST['WriteCo2SensorLog']) ||
-            isset($_POST['ModRelayPin']) || isset($_POST['ModRelayName']) ||
-            isset($_POST['ModRelayTrigger']) || isset($_POST['Auth']) ||
+            isset($_POST['Auth']) ||
             isset($_POST['Capture']) || isset($_POST['start-stream']) ||
             isset($_POST['stop-stream']) || isset($_POST['ChangeNoRelays']) ||
             isset($_POST['ChangeNoHTSensors']) || isset($_POST['ChangeNoCo2Sensors']) ||
             isset($_POST['ChangeNoTimers']) || isset($_POST['ChangeNotify'])) {
         if ($_SESSION['user_name'] != 'guest') {
+
+            // Change email notify settings
+            if (isset($_POST['ChangeNotify'])) {
+                $stmt = $db->prepare("UPDATE SMTP SET Host=:host, SSL=:ssl, Port=:port, User=:user, Pass=:password, Email_From=:emailfrom, Email_To=:emailto");
+                $stmt->bindValue(':host', $_POST['smtp_host'], SQLITE3_TEXT);
+                $stmt->bindValue(':ssl', (int)$_POST['smtp_ssl'], SQLITE3_INTEGER);
+                $stmt->bindValue(':port', (int)$_POST['smtp_port'], SQLITE3_INTEGER);
+                $stmt->bindValue(':user', $_POST['smtp_user'], SQLITE3_TEXT);
+                $stmt->bindValue(':password', $_POST['smtp_pass'], SQLITE3_TEXT);
+                $stmt->bindValue(':emailfrom', $_POST['smtp_email_from'], SQLITE3_TEXT);
+                $stmt->bindValue(':emailto', $_POST['smtp_email_to'], SQLITE3_TEXT);
+                $stmt->execute();
+            }
+
+            // Capture still image from camera (with or without light activation)
             if (isset($_POST['Capture'])) {
                 if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) shell_exec("$stream_exec stop");
                 if (isset($_POST['lighton'])) {
                     $lightrelay = $_POST['lightrelay'];
-                    if (${"relay" . $lightrelay . "trigger"} == 1) $trigger = 1;
+                    $lightrelay_pin = $relay_pin[$lightrelay];
+                    $lightrelay_trigger = $_POST['relay' . $lightrelay . 'trigger'];
+                    if ($lightrelay_trigger == 1) $trigger = 1;
                     else $trigger = 0;
-                    $capture_output = shell_exec("$still_exec " . ${'relay' . $lightrelay . "pin"} . " $trigger 2>&1; echo $?");
+                    $capture_output = shell_exec("$still_exec " . $lightrelay_pin . " $trigger 2>&1; echo $?");
                 } else $capture_output = shell_exec("$still_exec 2>&1; echo $?");
             }
+
+            // Start/Stop video stream (with or without light)
             if (isset($_POST['start-stream'])) {
                 if (file_exists($lock_raspistill) || file_exists($lock_mjpg_streamer)) {
                 echo 'Lock files already present. Press \'Stop Stream\' to kill processes and remove lock files.<br>';
@@ -468,193 +370,58 @@ if ($login->isUserLoggedIn() == true) {
                 } else shell_exec("$stream_exec stop");
                 sleep(1);
             }
-            
+
             // Request HT sensor read log write
              if (isset($_POST['WriteHTSensorLog'])) {
                 $editconfig = "$mycodo_client --writehtsensorlog 0";
                 shell_exec($editconfig);
             }
-            
+
             // Request CO2 sensor read and log write
              if (isset($_POST['WriteCo2SensorLog'])) {
                 $editconfig = "$mycodo_client --writeco2sensorlog 0";
                 shell_exec($editconfig);
             }
-            
-            // Request the relay name(s) be renamed
-            if (isset($_POST['ModRelayName'])) {
-                for ($i = 1; $i <= 8; $i++) {
-                    if (isset($_POST['relay' . $i . 'name'])) {
-                        ${'relay' . $i . 'name'} = str_replace(' ', '', $_POST['relay' . $i . 'name']);
-                    }
-                }
-                $editconfig = "$mycodo_client --modrelaynames $relay1name $relay2name $relay3name $relay4name $relay5name $relay6name $relay7name $relay8name";
-                shell_exec($editconfig);
-            }
-            
-            // Request the relay pin(s) be renumbered
-            if (isset($_POST['ModRelayPin'])) {
-                for ($i = 1; $i <= 8; $i++) {
-                    if (isset($_POST['relay' . $i . 'pin'])) {
-                        ${'relay' . $i . 'pin'} = $_POST['relay' . $i . 'pin'];
-                    }
-                }
-                $editconfig = "$mycodo_client --modrelaypins $relay1pin $relay2pin $relay3pin $relay4pin $relay5pin $relay6pin $relay7pin $relay8pin";
-                shell_exec($editconfig);
-            }
-            
-            // Request the relay trigger(s) be renumbered
-            if (isset($_POST['ModRelayTrigger'])) {
-                for ($i = 1; $i <= 8; $i++) {
-                    if (isset($_POST['relay' . $i . 'trigger'])) {
-                        ${'relay' . $i . 'trigger'} = $_POST['relay' . $i . 'trigger'];
-                    }
-                }
-                $editconfig = "$mycodo_client --modrelaytrigger $relay1trigger $relay2trigger $relay3trigger $relay4trigger $relay5trigger $relay6trigger $relay7trigger $relay8trigger";
-                shell_exec($editconfig);
-            }
-            
+
             // Change number of relays
             if (isset($_POST['ChangeNoRelays'])) {
-                $relay_num = $_POST['numrelays'];
-                $editconfig = "$mycodo_client --modvar numRelays $relay_num";
-                shell_exec($editconfig);
+                $stmt = $db->prepare("UPDATE Numbers SET Relays=:relays");
+                $stmt->bindValue(':relays', (int)$_POST['numrelays'], SQLITE3_INTEGER);
+                $stmt->execute();
             }
-            
+
             // Change number of HT sensors
             if (isset($_POST['ChangeNoHTSensors'])) {
-                $sensor_ht_num = $_POST['numhtsensors'];
-                $editconfig = "$mycodo_client --modvar numHTSensors $sensor_ht_num";
-                shell_exec($editconfig);
+                $stmt = $db->prepare("UPDATE Numbers SET HTSensors=:htsensors");
+                $stmt->bindValue(':htsensors', (int)$_POST['numhtsensors'], SQLITE3_INTEGER);
+                $stmt->execute();
             }
-            
+
             // Change number of CO2 sensors
             if (isset($_POST['ChangeNoCo2Sensors'])) {
-                $sensor_co2_num = $_POST['numco2sensors'];
-                $editconfig = "$mycodo_client --modvar numCo2Sensors $sensor_co2_num";
-                shell_exec($editconfig);
+                $stmt = $db->prepare("UPDATE Numbers SET CO2Sensors=:co2sensors");
+                $stmt->bindValue(':co2sensors', (int)$_POST['numco2sensors'], SQLITE3_INTEGER);
+                $stmt->execute();
             }
-            
+
             // Change number of timers
             if (isset($_POST['ChangeNoTimers'])) {
-                $numtimers = $_POST['numtimers'];
-                $editconfig = "$mycodo_client --modvar numTimers $numtimers";
-                shell_exec($editconfig);
+                $stmt = $db->prepare("UPDATE Numbers SET Timers=:timers");
+                $stmt->bindValue(':timers', (int)$_POST['numtimers'], SQLITE3_INTEGER);
+                $stmt->execute();
             }
-            
-            // Change email notify settings
-            if (isset($_POST['ChangeNotify'])) {
-                $smtp_host  = $_POST['smtp_host'];
-                $smtp_port  = $_POST['smtp_port'];
-                $smtp_user  = $_POST['smtp_user'];
-                $smtp_pass  = $_POST['smtp_pass'];
-                $smtp_email_from  = $_POST['smtp_email_from'];
-                $smtp_email_to  = $_POST['smtp_email_to'];
-                $editconfig = "$mycodo_client --modvar smtp_host $smtp_host smtp_port $smtp_port smtp_user $smtp_user smtp_pass $smtp_pass smtp_email_from $smtp_email_from smtp_email_to $smtp_email_to";
-                shell_exec($editconfig);
-            }
+
         } else $error_code = 'guest';
     }
-    
-    /*    
-    $config_contents = file_get_contents($config_file);
-    $config_rows = explode("\n", $config_contents);
-    foreach($config_rows as $row => $data) {
-        $row_data = explode(' = ', $data);
-        if (isset($row_data[1])) {
-            ${$row_data[0]} = $row_data[1];
-        }
-    }
-    */
-    
-    // Read SQL database
-    $db = new SQLite3($sqlite_db);
-    $results = $db->query('SELECT Relays, HTSensors, CO2Sensors, Timers FROM Numbers');
-    while ($row = $results->fetchArray()) {
-        $relay_num = $row[0];
-        $sensor_ht_num = $row[1];
-        $sensor_co2_num = $row[2];
-        $timer_num = $row[3];
-    }
-    
-    $results = $db->query('SELECT Id, Name, Pin, Trigger FROM Relays');
-    while ($row = $results->fetchArray()) {
-        //print $row[0] . " " . $row[1] . " " . $row[2] . " " . $row[3] . "<br>";
-        $relay_name[$row[0]] = $row[1];
-        $relay_pin[$row[0]] = $row[2];
-        $relay_trigger[$row[0]] = $row[3];
-    }
-    
-    $results = $db->query('SELECT Id, Name, Pin, Device, Period, Activated, Graph, Temp_Relay, Temp_OR, Temp_Set, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relay, Hum_OR, Hum_Set, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensor');
-    while ($row = $results->fetchArray()) {
-        //print $row[0] . " " . $row[1] . " " . $row[2] . " " . $row[3] . " " . $row[4] . " " . $row[5] . " " . $row[6] . " " . $row[7] . " " . $row[8] . " " . $row[9] . " " . $row[10] . " " . $row[11] . " " . $row[12] . " " . $row[13] . " " . $row[14] . " " . $row[15] . " " . $row[16] . " " . $row[17] . " " . $row[18] . "<br>";
-        $sensor_ht_name[$row[0]] = $row[1];
-        $sensor_ht_pin[$row[0]] = $row[2];
-        $sensor_ht_device[$row[0]] = $row[3];
-        $sensor_ht_period[$row[0]] = $row[4];
-        $sensor_ht_activated[$row[0]] = $row[5];
-        $sensor_ht_graph[$row[0]] = $row[6];
-        $pid_temp_relay[$row[0]] = $row[7];
-        $pid_temp_or[$row[0]] = $row[8];
-        $pid_temp_set[$row[0]] = $row[9];
-        $pid_temp_period[$row[0]] = $row[10];
-        $pid_temp_p[$row[0]] = $row[11];
-        $pid_temp_i[$row[0]] = $row[12];
-        $pid_temp_d[$row[0]] = $row[13];
-        $pid_hum_relay[$row[0]] = $row[14];
-        $pid_hum_or[$row[0]] = $row[15];
-        $pid_hum_set[$row[0]] = $row[16];
-        $pid_hum_period[$row[0]] = $row[17];
-        $pid_hum_p[$row[0]] = $row[18];
-        $pid_hum_i[$row[0]] = $row[19];
-        $pid_hum_d[$row[0]] = $row[20];
-    }
-    
-    $results = $db->query('SELECT Id, Name, Pin, Device, Period, Activated, Graph, CO2_Relay, CO2_OR, CO2_Set, CO2_Period, CO2_P, CO2_I, CO2_D FROM CO2Sensor');
-    while ($row = $results->fetchArray()) {
-        //print $row[0] . " " . $row[1] . " " . $row[2] . " " . $row[3] . " " . $row[4] . " " . $row[5] . " " . $row[6] . " " . $row[7] . " " . $row[8] . " " . $row[9] . " " . $row[10] . " " . $row[11] . " " . $row[12] . "<br>";
-        $sensor_co2_name[$row[0]] = $row[1];
-        $sensor_co2_pin[$row[0]] = $row[2];
-        $sensor_co2_device[$row[0]] = $row[3];
-        $sensor_co2_period[$row[0]] = $row[4];
-        $sensor_co2_activated[$row[0]] = $row[5];
-        $sensor_co2_graph[$row[0]] = $row[6];
-        $pid_co2_relay[$row[0]] = $row[7];
-        $pid_co2_or[$row[0]] = $row[8];
-        $pid_co2_set[$row[0]] = $row[9];
-        $pid_co2_period[$row[0]] = $row[10];
-        $pid_co2_p[$row[0]] = $row[11];
-        $pid_co2_i[$row[0]] = $row[12];
-        $pid_co2_d[$row[0]] = $row[13];
-    }
-    
-    $results = $db->query('SELECT Id, Name, State, Relay, DurationOn, DurationOff FROM Timers');
-    while ($row = $results->fetchArray()) {
-        //print $row[0] . " " . $row[1] . " " . $row[2] . " " . $row[3] . " " . $row[4] . " " . $row[5] . "<br>";
-        $timer_name[$row[0]] = $row[1];
-        $timer_state[$row[0]] = $row[2];
-        $timer_relay[$row[0]] = $row[3];
-        $timer_duration_on[$row[0]] = $row[4];
-        $timer_duration_off[$row[0]] = $row[5];
-    }
-    
-    $results = $db->query('SELECT Host, SSL, Port, User, Pass, Email_From, Email_To FROM SMTP');
-    while ($row = $results->fetchArray()) {
-        //print $row[0] . " " . $row[1] . " " . $row[2] . " " . $row[3] . " " . $row[4] . " " . $row[5] . " " . $row[6] ."<br>";
-        $smtp_host = $row[0];
-        $smtp_ssl = $row[1];
-        $smtp_port = $row[2];
-        $smtp_user = $row[3];
-        $smtp_pass = $row[4];
-        $smtp_email_to = $row[5];
-        $smtp_email_from = $row[6];
-    }
-    
+
+    // Read SQL database (second time to catch changes made above)
+    require("functions/sql.php");
+
     $last_ht_sensor[1] = `awk '$10 == 1' /var/tmp/sensor-ht.log | tail -n 1`;
     $last_ht_sensor[2] = `awk '$10 == 2' /var/tmp/sensor-ht.log | tail -n 1`;
     $last_ht_sensor[3] = `awk '$10 == 3' /var/tmp/sensor-ht.log | tail -n 1`;
     $last_ht_sensor[4] = `awk '$10 == 4' /var/tmp/sensor-ht.log | tail -n 1`;
-    
+
     for ($p = 1; $p <= $sensor_ht_num; $p++) {
         $sensor_explode = explode(" ", $last_ht_sensor[$p]);
         $t_c[$p] = $sensor_explode[6];
@@ -664,17 +431,17 @@ if ($login->isUserLoggedIn() == true) {
         $dp_f[$p] = round(($dp_c[$p]*(9/5) + 32), 1);
         $settemp_f[$p] = round((${'temp' . $p . 'set'}*(9/5) + 32), 1);
     }
-    
+
     $last_co2_sensor[1] = `awk '$8 == 1' /var/tmp/sensor-co2.log | tail -n 1`;
     $last_co2_sensor[2] = `awk '$8 == 2' /var/tmp/sensor-co2.log | tail -n 1`;
     $last_co2_sensor[3] = `awk '$8 == 3' /var/tmp/sensor-co2.log | tail -n 1`;
     $last_co2_sensor[4] = `awk '$8 == 4' /var/tmp/sensor-co2.log | tail -n 1`;
-    
+
     for ($p = 1; $p <= $sensor_co2_num; $p++) {
         $sensor_explode = explode(" ", $last_co2_sensor[$p]);
         $co2[$p] = $sensor_explode[6];
     }
-    
+
     $time_now = `date +"%Y-%m-%d %H:%M:%S"`;
     $time_last = `tail -n 1 $sensor_ht_log`;
     $time_explode = explode(" ", $time_last);
@@ -707,7 +474,7 @@ if ($login->isUserLoggedIn() == true) {
 <body>
 <div class="cd-tabs">
 <?php
-// Ensures error only displayed once
+// Display any auth error that occurred
 switch ($error_code) {
     case "guest":
         echo "<span class=\"error\">You cannot perform that task as a guest</span>";
@@ -753,7 +520,7 @@ $error_code = "no";
                     echo '<input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="" value="0">';
                 } else echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="" value="0">';?> Stream</div>
         <div><?php
-            if (isset($_GET['r'])) { ?><div style="display:inline-block; vertical-align:top;"><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="" value="0"></div><div style="display:inline-block; padding-left: 0.3em;"><div>Refresh</div><div><span style="font-size: 0.7em">(<?php echo $tab; ?>)</span></div></div><?php 
+            if (isset($_GET['r'])) { ?><div style="display:inline-block; vertical-align:top;"><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="" value="0"></div><div style="display:inline-block; padding-left: 0.3em;"><div>Refresh</div><div><span style="font-size: 0.7em">(<?php echo $tab; ?>)</span></div></div><?php
             } else echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="" value="0"> Refresh'; ?></div>
     </div>
     <div style="float: left; vertical-align:top; height: 4.5em; padding: 1em 0.8em 0 0.3em;">
@@ -774,7 +541,7 @@ $error_code = "no";
             <td>
     <div style="font-size: 0.8em; padding-right: 0.5em;"><?php
             echo "Now<br><span title=\"" . number_format((float)$t_f[$i], 1, '.', '') . "&deg;F\">" . number_format((float)$t_c[$i], 1, '.', '') . "&deg;C</span>";
-            echo "<br>" . number_format((float)$hum[$i], 1, '.', '') . "%"; 
+            echo "<br>" . number_format((float)$hum[$i], 1, '.', '') . "%";
         ?>
     </div>
             </td>
@@ -792,7 +559,7 @@ $error_code = "no";
         }
     }
     ?>
-    
+
     <?php
     for ($i = 1; $i <= $sensor_co2_num; $i++) {
         if ($sensor_co2_activated[$i] == 1) {
@@ -832,7 +599,7 @@ $error_code = "no";
 	</nav>
 	<ul class="cd-tabs-content">
 		<li data-content="main" <?php if (!isset($_GET['tab']) || (isset($_GET['tab']) && $_GET['tab'] == 'main')) echo "class=\"selected\""; ?>>
-        <FORM action="?tab=main<?php 
+        <FORM action="?tab=main<?php
             if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
             if (isset($_GET['Refresh']) || isset($_POST['Refresh'])) echo "&Refresh=1";
             if (isset($_GET['r'])) echo "&r=" . $_GET['r'];
@@ -875,7 +642,7 @@ $error_code = "no";
                         <div>
                             <div class="Row-title">Separate</div>
                             <?php
-                            
+
                             menu_item('Separate1h', '1 Hour', $page);
                             menu_item('Separate6h', '6 Hours', $page);
                             menu_item('Separate1d', '1 Day', $page);
@@ -905,13 +672,13 @@ $error_code = "no";
                     <?php
                     $ref = 0;
                     if (isset($_GET['Refresh']) == 1) $ref = 1;
-                    
+
                     if (!isset($_SESSION["ID"])) {
                         $id = uniqid();
                         $_SESSION["ID"] = $id;
                         $ref = 1;
                     } else $id = $_SESSION["ID"];
-                    
+
                     if (strpos($_GET['page'], 'Combined') === 0) {
                         echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
                         if ($_GET['page'] == 'Combined1h') {
@@ -1129,7 +896,7 @@ $error_code = "no";
                     </div>
                 </div>
             </div>
-            
+
             <div style="clear: both;"></div>
             <div>
                 <div style="padding-top: 1em;">
@@ -1143,13 +910,14 @@ $error_code = "no";
                             <td align=center class="table-header">Seconds<br>On</td>
                             <td align=center class="table-header">GPIO<br>Pin</td>
                             <td align=center class="table-header">Trigger<br>ON</td>
+                            <td align=center class="table-header">Change<br>Values</td>
                         </tr>
                         <?php for ($i = 1; $i <= $relay_num; $i++) {
                             $read = "$gpio_path -g read $relay_pin[$i]";
                         ?>
                         <tr>
                             <td align=center>
-                                <?php echo ${'i'}; ?>
+                                <?php echo $i; ?>
                             </td>
                             <td align=center>
                                 <input type="text" value="<?php echo $relay_name[$i]; ?>" maxlength=12 size=10 name="relay<?php echo $i; ?>name" title="Name of relay <?php echo $i; ?>"/>
@@ -1181,30 +949,17 @@ $error_code = "no";
                                     <option <?php if ($relay_trigger[$i] == 0) echo "selected=\"selected\""; ?> value="0">LOW</option>
                                 </select>
                             </td>
-                        </tr>
-                        <?php 
-                        } }
-                        ?>
-                        <tr>
                             <td>
-                            </td>
-                            <td align=center>
-                                <button type="submit" name="ModRelayName" value="1" title="Change relay names to the ones specified above (Do not use spaces)">Rename</button>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td align=center>
-                                <button type="submit" name="ModRelayPin" value="1" title="Change the (BCM) GPIO pins attached to relays to the ones specified above">Set</button>
-                            </td>
-                            <td align=center>
-                                <button type="submit" name="ModRelayTrigger" value="1" title="Change the ON trigger state of the relays.">Set</button>
+                                <button type="submit" name="Mod<?php echo $i; ?>Relay" value="1" title="Change the ON trigger state of the relays.">Set</button>
                             </td>
                         </tr>
+                        <?php
+                        } ?>
                     </table>
+                    <?php }
+                        ?>
                 </div>
-                
+
                 <?php if ($sensor_ht_num > 0) { ?>
                 <div style="padding: 2.5em 0 1em 0; font-weight: bold;">Humidity & Temperature Sensors</div>
                 <div style="padding-right: 1em;">
@@ -1241,13 +996,13 @@ $error_code = "no";
                                 <input type="text" value="<?php echo $sensor_ht_pin[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>pin" title="This is the GPIO pin connected to the DHT sensor"/>
                             </td>
                             <td align=center>
-                                <input type="text" value="<?php echo $sensor_ht_period[$i]; ?>" maxlength=3 size=1 name="sensorht<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
+                                <input type="text" value="<?php echo $sensor_ht_period[$i]; ?>" maxlength=4 size=1 name="sensorht<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
                             </td>
                             <td align=center>
-                                <input type="checkbox" name="sensorht<?php echo $i; ?>activated" value="1" <?php if ($sensor_ht_activated[$i] == 1) echo "checked"; ?>> 
+                                <input type="checkbox" name="sensorht<?php echo $i; ?>activated" value="1" <?php if ($sensor_ht_activated[$i] == 1) echo "checked"; ?>>
                             </td>
                             <td align=center>
-                                <input type="checkbox" name="sensorht<?php echo $i; ?>graph" value="1" <?php if ($sensor_ht_graph[$i] == 1) echo "checked"; ?>> 
+                                <input type="checkbox" name="sensorht<?php echo $i; ?>graph" value="1" <?php if ($sensor_ht_graph[$i] == 1) echo "checked"; ?>>
                             </td>
                             <td>
                                 <input type="submit" name="Change<?php echo $i; ?>HTSensor" value="Set">
@@ -1255,7 +1010,7 @@ $error_code = "no";
                         </tr>
                     </table>
                     </div>
-               
+
                     <div style="padding-bottom: 2em;">
                     <table class="pid" style="width: 42em;">
                         <tr class="shade">
@@ -1386,13 +1141,13 @@ $error_code = "no";
                                 <input type="text" value="<?php echo $sensor_co2_pin[$i]; ?>" maxlength=2 size=1 name="sensorco2<?php echo $i; ?>pin" title="This is the GPIO pin connected to the CO2 sensor"/>
                             </td>
                             <td align=center>
-                                <input type="text" value="<?php echo $sensor_co2_period[$i]; ?>" maxlength=3 size=1 name="sensorco2<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
+                                <input type="text" value="<?php echo $sensor_co2_period[$i]; ?>" maxlength=4 size=1 name="sensorco2<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
                             </td>
                             <td align=center>
-                                <input type="checkbox" name="sensorco2<?php echo $i; ?>activated" value="1" <?php if ($sensor_co2_activated[$i] == 1) echo "checked"; ?>> 
+                                <input type="checkbox" name="sensorco2<?php echo $i; ?>activated" value="1" <?php if ($sensor_co2_activated[$i] == 1) echo "checked"; ?>>
                             </td>
                             <td align=center>
-                                <input type="checkbox" name="sensorco2<?php echo $i; ?>graph" value="1" <?php if ($sensor_co2_graph[$i] == 1) echo "checked"; ?>> 
+                                <input type="checkbox" name="sensorco2<?php echo $i; ?>graph" value="1" <?php if ($sensor_co2_graph[$i] == 1) echo "checked"; ?>>
                             </td>
                             <td>
                                 <input type="submit" name="Change<?php echo $i; ?>Co2Sensor" value="Set">
@@ -1400,7 +1155,7 @@ $error_code = "no";
                         </tr>
                     </table>
                     </div>
-               
+
                     <div style="padding-bottom: 2em;">
                     <table class="pid" style="width: 42em;">
                         <tr class="shade">
@@ -1459,7 +1214,7 @@ $error_code = "no";
                 <?php
                 }
                 ?>
-                
+
             </div>
         </FORM>
 		</li>
@@ -1481,11 +1236,11 @@ $error_code = "no";
                     $daye = $_POST['endDay'];
                     $mone = $_POST['endMonth'];
                     $yeare = $_POST['endYear'];
-                    
+
                     if (is_positive_integer($_POST['graph-width']) and $_POST['graph-width'] <= 4000 and $_POST['graph-width']) {
                         $graph_width = $_POST['graph-width'];
                     } else $graph_width = 900;
-                    
+
                     if ($_POST['MainType'] == 'Combined') {
                         echo `echo "set terminal png size $graph_width,1600
                         set xdata time
@@ -1602,7 +1357,7 @@ $error_code = "no";
             } else displayform();
             ?>
 		</li>
-        
+
 		<li data-content="camera" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'camera') echo "class=\"selected\""; ?>>
             <div style="padding: 10px 0 15px 15px;">
                 <form action="?tab=camera<?php
@@ -1611,7 +1366,7 @@ $error_code = "no";
                 <table class="camera">
                     <tr>
                         <td>
-                            Light Relay: <input type="text" value="<?php echo $cameralight; ?>" maxlength=4 size=1 name="lightrelay" title=""/>
+                            Light Relay: <input type="text" value="<?php echo $camera_relay; ?>" maxlength=4 size=1 name="lightrelay" title=""/>
                         </td>
                         <td>
                             Light On? <input type="checkbox" name="lighton" value="1" <?php if (isset($_POST['lighton'])) echo "checked=\"checked\""; ?>>
@@ -1620,7 +1375,7 @@ $error_code = "no";
                             <button name="Capture" type="submit" value="">Capture Still</button>
                         </td>
                         <td>
-                            <button name="start-stream" type="submit" value="">Start Stream</button> 
+                            <button name="start-stream" type="submit" value="">Start Stream</button>
                         </td>
                         <td>
                             <button name="stop-stream" type="submit" value="">Stop Stream</button>
@@ -1654,10 +1409,10 @@ $error_code = "no";
                     <FORM action="?tab=log<?php
                         if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
                     ?>" method="POST">
-                        Lines: <input type="text" maxlength=8 size=8 name="Lines" /> 
-                        <input type="submit" name="HTSensor" value="HT Sensor"> 
-                        <input type="submit" name="Co2Sensor" value="Co2 Sensor"> 
-                        <input type="submit" name="Relay" value="Relay"> 
+                        Lines: <input type="text" maxlength=8 size=8 name="Lines" />
+                        <input type="submit" name="HTSensor" value="HT Sensor">
+                        <input type="submit" name="Co2Sensor" value="Co2 Sensor">
+                        <input type="submit" name="Relay" value="Relay">
                         <input type="submit" name="Auth" value="Auth">
                         <input type="submit" name="Daemon" value="Daemon">
                         <input type="submit" name="SQL" value="SQL">
@@ -1666,6 +1421,8 @@ $error_code = "no";
                 <div style="font-family: monospace;">
                     <pre><?php
                         if(isset($_POST['HTSensor'])) {
+                            // Concatenate log files (to TempFS) to ensure the latest data is being used
+                            `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
                             echo 'Year Mo Day Hour Min Sec Tc RH DPc Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
@@ -1674,8 +1431,9 @@ $error_code = "no";
                                 echo `tail -n 30 $sensor_ht_log`;
                             }
                         }
-                        
+
                         if(isset($_POST['Co2Sensor'])) {
+                            `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
                             echo 'Year Mo Day Hour Min Sec Co2 Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
@@ -1686,6 +1444,7 @@ $error_code = "no";
                         }
 
                         if(isset($_POST['Relay'])) {
+                            `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log > /var/tmp/relay.log`;
                             echo 'Year Mo Day Hour Min Sec R1Sec R2Sec R3Sec R4Sec R5Sec R6Sec R7Sec R8Sec<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
@@ -1705,6 +1464,7 @@ $error_code = "no";
                             }
                         }
                         if(isset($_POST['Daemon'])) {
+                            `cat /var/www/mycodo/log/daemon.log /var/www/mycodo/log/daemon-tmp.log > /var/tmp/daemon.log`;
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `tail -n $Lines $daemon_log`;
@@ -1728,7 +1488,7 @@ $error_code = "no";
                     if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
                 ?>" method="POST">
                 <div style="padding: 0 0 1em 1em;">
-                    Number of Timers 
+                    Number of Timers
                     <select name="numtimers">
                         <option value="1" <?php if ($timer_num == 1) echo "selected=\"selected\""; ?>>1</option>
                         <option value="2" <?php if ($timer_num == 2) echo "selected=\"selected\""; ?>>2</option>
@@ -1743,7 +1503,7 @@ $error_code = "no";
                 </div>
                 <?php if ($timer_num > 0) { ?>
                 <div>
-                    
+
                     <table class="timers">
                         <tr>
                             <td>
@@ -1777,14 +1537,14 @@ $error_code = "no";
                             </td>
                             <?php if ($timer_state[$i] == 0) { ?>
                                 <th colspan=2 align=right>
-                                    <nobr><input type="image" style="height: 0.9em;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="Timer<?php echo $i; ?>StateChange" value="0"> | <button style="width: 40px;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">ON</button></nobr>
+                                    <nobr><input type="hidden" name="Timer<?php echo $i; ?>State" value="0"><input type="image" style="height: 0.9em;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="Timer<?php echo $i; ?>StateChange" value="0"> | <button style="width: 40px;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">ON</button></nobr>
                                 </td>
                                 </th>
                                 <?php
                             } else {
                                 ?>
                                 <th colspan=2 align=right>
-                                    <nobr><input type="image" style="height: 0.9em;" src="/mycodo/img/on.jpg" alt="On" title="On" name="Timer<?php echo $i; ?>StateChange" value="1"> | <button style="width: 40px;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="0">OFF</button></nobr>
+                                    <nobr><input type="hidden" name="Timer<?php echo $i; ?>State" value="1"><input type="image" style="height: 0.9em;" src="/mycodo/img/on.jpg" alt="On" title="On" name="Timer<?php echo $i; ?>StateChange" value="1"> | <button style="width: 40px;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="0">OFF</button></nobr>
                                 </th>
                             <?php
                             }
@@ -1808,7 +1568,7 @@ $error_code = "no";
                 </FORM>
                 <?php } ?>
             </div>
-            
+
             <div class="advanced">
                 <FORM action="?tab=adv" method="POST">
                 <div class="notify-title">

@@ -169,7 +169,7 @@ def setup_db():
     delete_all_tables()
     create_all_tables()
     create_rows_columns()
-    
+
 def delete_all_tables():
     print "Delete Tables"
     conn = sqlite3.connect(sql_database)
@@ -180,8 +180,9 @@ def delete_all_tables():
     cur.execute('DROP TABLE IF EXISTS Timers ')
     cur.execute('DROP TABLE IF EXISTS Numbers ')
     cur.execute('DROP TABLE IF EXISTS SMTP ')
+    cur.execute('DROP TABLE IF EXISTS Misc ')
     conn.close()
-    
+
 def create_all_tables():
     print "Create Tables"
     conn = sqlite3.connect(sql_database)
@@ -192,8 +193,9 @@ def create_all_tables():
     cur.execute("CREATE TABLE Timers (Id INT, Name TEXT, Relay INT, State INT, DurationOn INT, DurationOff INT)")
     cur.execute("CREATE TABLE Numbers (Relays INT, HTSensors INT, CO2Sensors INT, Timers INT)")
     cur.execute("CREATE TABLE SMTP (Host TEXT, SSL INT, Port INT, User TEXT, Pass TEXT, Email_From TEXT, Email_To TEXT)")
+    cur.execute("CREATE TABLE Misc (Camera_Relay INT)")
     conn.close()
-    
+
 def create_rows_columns():
     print "Create Rows and Columns"
     conn = sqlite3.connect(sql_database)
@@ -208,17 +210,18 @@ def create_rows_columns():
         cur.execute("INSERT INTO Timers VALUES(%d, 'Timer%d', 0, 0, 60, 360)" % (i, i))
     cur.execute("INSERT INTO Numbers VALUES(8, 3, 1, 4)")
     cur.execute("INSERT INTO SMTP VALUES('smtp.gmail.com', 1, 587, 'email@gmail.com', 'password', 'me@gmail.com', 'you@gmail.com')")
+    cur.execute("INSERT INTO Misc VALUES(0)")
     conn.commit()
     cur.close()
 
 def add_columns(table, variable, value):
-    #print "Add to Table: %s Variable: %s Value: %s" % (table, row, column)
+    #print "Add to Table: %s Variable: %s Value: %s" % (table, variable, value)
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
-    if represents_int(column) or represents_float(column):
-        query = "INSERT INTO %s (row) VALUES ( '%s' )" % (table, variable, value)
+    if represents_int(value) or represents_float(value):
+        query = "INSERT INTO %s (%s) VALUES ( '%s' )" % (table, variable, value)
     else:
-        query = "INSERT INTO %s (row) VALUES ( %s )" % (table, variable, value)
+        query = "INSERT INTO %s (%s) VALUES ( %s )" % (table, variable, value)
     cur.execute(query)
     conn.commit()
     cur.close()
@@ -227,7 +230,7 @@ def add_columns(table, variable, value):
 def view_columns():
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
-    
+
     cur.execute('SELECT Id, Name, Pin, Trigger FROM Relays')
     print "Table: Relays"
     print "Id Name Pin Trigger"
@@ -239,31 +242,37 @@ def view_columns():
     print "Id Name Pin Device Period Activated Graph Temp_Relay Temp_OR Temp_Set Temp_P Temp_I Temp_D Hum_Relay Hum_OR Hum_Set Hum_P Hum_I Hum_D"
     for row in cur :
         print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18])
-    
+
     cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, CO2_Relay, CO2_OR, CO2_Set, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
     print "\nTable: CO2Sensor"
     print "Id Name Pin Device Period Activated Graph CO2_Relay CO2_OR CO2_Set CO2_P CO2_I CO2_D"
     for row in cur :
         print "%s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12])
-    
+
     cur.execute('SELECT Id, Name, State, Relay, DurationOn, DurationOff FROM Timers ')
     print "\nTable: Timers"
     print "Id Name State Relay DurationOn DurationOff"
     for row in cur :
         print "%s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5])
-        
+
     cur.execute('SELECT Relays, HTSensors, CO2Sensors, Timers FROM Numbers ')
     print "\nTable: Numbers"
     print "Relays HTSensors CO2Sensors Timers"
     for row in cur :
         print "%s %s %s %s" % (row[0], row[1], row[2], row[3])
-        
+
     cur.execute('SELECT Host, SSL, Port, User, Pass, Email_From, Email_To FROM SMTP ')
     print "\nTable: SMTP"
     print "Host SSL Port User Pass Email_From Email_To"
     for row in cur :
         print "%s %s %s %s %s %s %s\n" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6])
-    
+
+    cur.execute('SELECT Camera_Relay FROM Misc')
+    print "\nTable: Misc"
+    print "Camera_Relay"
+    for row in cur :
+        print "%s\n" % row[0]
+
     cur.close()
 
 # Set global variables from the SQL database
@@ -271,35 +280,35 @@ def set_global_variables(verbose):
     global relay_name
     global relay_pin
     global relay_trigger
-    
+
     global sensor_ht_name
     global sensor_ht_device
     global sensor_ht_pin
     global sensor_ht_period
     global sensor_ht_log
     global sensor_ht_graph
-    
+
     global pid_temp_relay
     global pid_temp_set
     global pid_temp_or
     global pid_temp_p
     global pid_temp_i
     global pid_temp_d
-    
+
     global pid_hum_relay
     global pid_hum_set
     global pid_hum_or
     global pid_hum_p
     global pid_hum_i
     global pid_hum_d
-    
+
     global sensor_co2_name
     global sensor_co2_device
     global sensor_co2_pin
     global sensor_co2_period
     global sensor_co2_log
     global sensor_co2_graph
-    
+
     global pid_co2_period
     global pid_co2_relay
     global pid_co2_set
@@ -307,17 +316,17 @@ def set_global_variables(verbose):
     global pid_co2_p
     global pid_co2_i
     global pid_co2_d
-    
+
     global relay_num
     global sensor_ht_num
     global sensor_co2_num
     global timer_num
-    
+
     global timer_relay
     global timer_state
     global timer_duration_on
     global timer_duration_off
-    
+
     global smtp_host
     global smtp_ssl
     global smtp_port
@@ -325,7 +334,7 @@ def set_global_variables(verbose):
     global smtp_pass
     global smtp_email_from
     global smtp_email_to
-    
+
     # Check if all required tables exist in the SQL database
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
@@ -346,7 +355,7 @@ def set_global_variables(verbose):
                 print "%s" % missing[i]
         print "Reinitialize database to correct."
         return 0
-  
+
     # Begin setting global variables from SQL database values
     cur.execute('SELECT Id, Name, Pin, Trigger FROM Relays')
     if verbose:
@@ -382,7 +391,7 @@ def set_global_variables(verbose):
         pid_hum_p[row[0]] = row[16]
         pid_hum_i[row[0]] = row[17]
         pid_hum_d[row[0]] = row[18]
-    
+
     cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, CO2_Relay, CO2_OR, CO2_Set, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
     if verbose:
             print "Table: CO2Sensor "
@@ -403,7 +412,7 @@ def set_global_variables(verbose):
         pid_co2_p[row[0]] = row[10]
         pid_co2_i[row[0]] = row[11]
         pid_co2_d[row[0]] = row[12]
-    
+
     cur.execute('SELECT Id, Name, Relay, State, DurationOn, DurationOff FROM Timers ')
     if verbose:
             print "Table: Timers "
@@ -416,7 +425,7 @@ def set_global_variables(verbose):
         timer_state[row[0]] = row[3]
         timer_duration_on[row[0]] = row[4]
         timer_duration_off[row[0]] = row[5]
-        
+
     cur.execute('SELECT Relays, HTSensors, CO2Sensors, Timers FROM Numbers ')
     if verbose:
             print "Table: Numbers "
@@ -428,8 +437,8 @@ def set_global_variables(verbose):
         sensor_ht_num = row[1]
         sensor_co2_num = row[2]
         timer_num = row[3]
-        
-    cur.execute('SELECT Host, SSL, Port, User, Pass, Email_From, Email_To FROM SMTP ')
+
+    cur.execute('SELECT Host, SSL, Port, User, Pass, Email_From, Email_To FROM SMTP')
     if verbose:
             print "Table: SMTP "
     for row in cur :
@@ -445,7 +454,7 @@ def set_global_variables(verbose):
         smtp_email_to = row[6]
 
     cur.close()
-    
+
 def delete_all_rows():
     print "Delete All Rows"
     conn = sqlite3.connect(sql_database)
@@ -458,7 +467,7 @@ def delete_all_rows():
     cur.execute('DELETE FROM SMTP ')
     conn.commit()
     cur.close()
-    
+
 def delete_row(table, Id):
     print "Delete Row: %s" % row
     conn = sqlite3.connect(sql_database)
@@ -467,13 +476,13 @@ def delete_row(table, Id):
     cur.execute(query)
     conn.commit()
     cur.close()
-    
+
 def update_value(table, Id, variable, value):
     print "Update Table: %s Id: %s Variable: %s Value: %s" % (
         table, Id, variable, value)
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
-    
+
     if Id is '0':
         if represents_int(value) or represents_float(value):
             query = "UPDATE %s SET %s=%s" % (
@@ -494,20 +503,20 @@ def update_value(table, Id, variable, value):
 
 # Check if string represents an integer column
 def represents_int(s):
-    try: 
+    try:
         int(s)
         return True
     except ValueError:
         return False
-        
+
 # Check if string represents a float column
 def represents_float(s):
-    try: 
+    try:
         float(s)
         return True
     except ValueError:
         return False
-    
+
 #set_global_variables(0)
 start_time = time.time()
 menu()
