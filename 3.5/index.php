@@ -56,11 +56,13 @@ require_once('translations/en.php');
 require_once('libraries/PHPMailer.php');
 require_once("classes/Login.php");
 require_once("functions/functions.php");
+
 $login = new Login();
 
 if ($login->isUserLoggedIn() == true) {
-    // Decalre SQLite database, then initial read of SQL database
     $db = new SQLite3($sqlite_db);
+
+    // Initial read of SQL database
     require("functions/sql.php");
 
     // Delete all generated graphs except for the 20 latest
@@ -92,13 +94,12 @@ if ($login->isUserLoggedIn() == true) {
 
     $page = isset($_GET['page']) ? $_GET['page'] : 'Main';
     $tab = isset($_GET['tab']) ? $_GET['tab'] : 'Unset';
+    $daemon_reload = False;
+    $pid_reload = False;
 
-    $db = new SQLite3($sqlite_db);
-    // All commands that elevated (!= guest) privileges are required
     // Check form submissions
     for ($p = 1; $p <= 8; $p++) {
-        // All commands that modify the SQLite database and require the daemon
-        // to reload variables
+        // Modify the SQLite database and require the daemon to reload variables
         if (isset($_POST['Mod' . $p . 'Relay']) ||
                 isset($_POST['Change' . $p . 'HTSensor']) ||
                 isset($_POST['Change' . $p . 'Co2Sensor']) ||
@@ -110,7 +111,10 @@ if ($login->isUserLoggedIn() == true) {
                 isset($_POST['Change' . $p . 'TempOR']) ||
                 isset($_POST['Change' . $p . 'HumOR']) ||
                 isset($_POST['Change' . $p . 'Co2OR'])) {
+            $daemon_reload = True;
+            $pid_reload = True;
 
+            // All commands where elevated (!= guest) privileges are required
             if ($_SESSION['user_name'] != 'guest') {
                 // Set relay variables
                 if (isset($_POST['Mod' . $p . 'Relay'])) {
@@ -311,7 +315,6 @@ if ($login->isUserLoggedIn() == true) {
     }
 
     if (isset($_POST['WriteHTSensorLog']) || isset($_POST['WriteCo2SensorLog']) ||
-            isset($_POST['Auth']) ||
             isset($_POST['Capture']) || isset($_POST['start-stream']) ||
             isset($_POST['stop-stream']) || isset($_POST['ChangeNoRelays']) ||
             isset($_POST['ChangeNoHTSensors']) || isset($_POST['ChangeNoCo2Sensors']) ||
@@ -329,6 +332,39 @@ if ($login->isUserLoggedIn() == true) {
                 $stmt->bindValue(':emailfrom', $_POST['smtp_email_from'], SQLITE3_TEXT);
                 $stmt->bindValue(':emailto', $_POST['smtp_email_to'], SQLITE3_TEXT);
                 $stmt->execute();
+                $daemon_reload = True;
+            }
+
+            // Change number of relays
+            if (isset($_POST['ChangeNoRelays'])) {
+                $stmt = $db->prepare("UPDATE Numbers SET Relays=:relays");
+                $stmt->bindValue(':relays', (int)$_POST['numrelays'], SQLITE3_INTEGER);
+                $stmt->execute();
+                $daemon_reload = True;
+            }
+
+            // Change number of HT sensors
+            if (isset($_POST['ChangeNoHTSensors'])) {
+                $stmt = $db->prepare("UPDATE Numbers SET HTSensors=:htsensors");
+                $stmt->bindValue(':htsensors', (int)$_POST['numhtsensors'], SQLITE3_INTEGER);
+                $stmt->execute();
+                $daemon_reload = True;
+            }
+
+            // Change number of CO2 sensors
+            if (isset($_POST['ChangeNoCo2Sensors'])) {
+                $stmt = $db->prepare("UPDATE Numbers SET CO2Sensors=:co2sensors");
+                $stmt->bindValue(':co2sensors', (int)$_POST['numco2sensors'], SQLITE3_INTEGER);
+                $stmt->execute();
+                $daemon_reload = True;
+            }
+
+            // Change number of timers
+            if (isset($_POST['ChangeNoTimers'])) {
+                $stmt = $db->prepare("UPDATE Numbers SET Timers=:timers");
+                $stmt->bindValue(':timers', (int)$_POST['numtimers'], SQLITE3_INTEGER);
+                $stmt->execute();
+                $daemon_reload = True;
             }
 
             // Capture still image from camera (with or without light activation)
@@ -344,12 +380,12 @@ if ($login->isUserLoggedIn() == true) {
                 } else $capture_output = shell_exec("$still_exec 2>&1; echo $?");
             }
 
-            // Start/Stop video stream (with or without light)
+            // Start video stream
             if (isset($_POST['start-stream'])) {
                 if (file_exists($lock_raspistill) || file_exists($lock_mjpg_streamer)) {
                 echo 'Lock files already present. Press \'Stop Stream\' to kill processes and remove lock files.<br>';
                 } else {
-                    if (isset($_POST['lighton'])) {
+                    if (isset($_POST['lighton'])) { // Turn light on
                         $lightrelay = $_POST['lightrelay'];
                         if (${"relay" . $lightrelay . "trigger"} == 1) $trigger = 1;
                         else $trigger = 0;
@@ -361,8 +397,10 @@ if ($login->isUserLoggedIn() == true) {
                     }
                 }
             }
+
+            // Stop video stream
             if (isset($_POST['stop-stream'])) {
-                if (isset($_POST['lighton'])) {
+                if (isset($_POST['lighton'])) { // Turn light off
                     $lightrelay = $_POST['lightrelay'];
                     if (${"relay" . $lightrelay . "trigger"} == 1) $trigger = 0;
                     else $trigger = 1;
@@ -382,40 +420,19 @@ if ($login->isUserLoggedIn() == true) {
                 $editconfig = "$mycodo_client --writeco2sensorlog 0";
                 shell_exec($editconfig);
             }
-
-            // Change number of relays
-            if (isset($_POST['ChangeNoRelays'])) {
-                $stmt = $db->prepare("UPDATE Numbers SET Relays=:relays");
-                $stmt->bindValue(':relays', (int)$_POST['numrelays'], SQLITE3_INTEGER);
-                $stmt->execute();
-            }
-
-            // Change number of HT sensors
-            if (isset($_POST['ChangeNoHTSensors'])) {
-                $stmt = $db->prepare("UPDATE Numbers SET HTSensors=:htsensors");
-                $stmt->bindValue(':htsensors', (int)$_POST['numhtsensors'], SQLITE3_INTEGER);
-                $stmt->execute();
-            }
-
-            // Change number of CO2 sensors
-            if (isset($_POST['ChangeNoCo2Sensors'])) {
-                $stmt = $db->prepare("UPDATE Numbers SET CO2Sensors=:co2sensors");
-                $stmt->bindValue(':co2sensors', (int)$_POST['numco2sensors'], SQLITE3_INTEGER);
-                $stmt->execute();
-            }
-
-            // Change number of timers
-            if (isset($_POST['ChangeNoTimers'])) {
-                $stmt = $db->prepare("UPDATE Numbers SET Timers=:timers");
-                $stmt->bindValue(':timers', (int)$_POST['numtimers'], SQLITE3_INTEGER);
-                $stmt->execute();
-            }
-
         } else $error_code = 'guest';
     }
 
-    // Read SQL database (second time to catch changes made above)
-    require("functions/sql.php");
+    if ($daemon_reload) {
+        // Reread SQL database to catch any changes made above
+        require("functions/sql.php");
+        
+        // TODO: Send mycodo-client.py command to reload SQLite database
+    }
+
+    if ($pid_reload) {
+        // TODO: Send mycodo-client.py command to restart PID
+    }
 
     $last_ht_sensor[1] = `awk '$10 == 1' /var/tmp/sensor-ht.log | tail -n 1`;
     $last_ht_sensor[2] = `awk '$10 == 2' /var/tmp/sensor-ht.log | tail -n 1`;
