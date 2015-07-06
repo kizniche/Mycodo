@@ -235,8 +235,9 @@ if ($login->isUserLoggedIn() == true) {
 
     $page = isset($_GET['page']) ? $_GET['page'] : 'Main';
     $tab = isset($_GET['tab']) ? $_GET['tab'] : 'Unset';
-
+    
     // Read config file, for each row set variable to value
+    /*
     $config_contents = file_get_contents($config_file);
     $config_rows = explode("\n", $config_contents);
     array_shift($config_rows);
@@ -245,7 +246,8 @@ if ($login->isUserLoggedIn() == true) {
         if (isset($row_data[1])) ${$row_data[0]} = $row_data[1];
         // echo $row_data[0] . "=" . $row_data[1] . '<br>';
     }
-
+    */
+    
     // All commands that elevated (!= guest) privileges are required
     for ($p = 1; $p <= 8; $p++) {
         if (isset($_POST['R' . $p]) ||
@@ -514,22 +516,22 @@ if ($login->isUserLoggedIn() == true) {
             
             // Change number of relays
             if (isset($_POST['ChangeNoRelays'])) {
-                $numrelays = $_POST['numrelays'];
-                $editconfig = "$mycodo_client --modvar numRelays $numrelays";
+                $relay_num = $_POST['numrelays'];
+                $editconfig = "$mycodo_client --modvar numRelays $relay_num";
                 shell_exec($editconfig);
             }
             
             // Change number of HT sensors
             if (isset($_POST['ChangeNoHTSensors'])) {
-                $numhtsensors = $_POST['numhtsensors'];
-                $editconfig = "$mycodo_client --modvar numHTSensors $numhtsensors";
+                $sensor_ht_num = $_POST['numhtsensors'];
+                $editconfig = "$mycodo_client --modvar numHTSensors $sensor_ht_num";
                 shell_exec($editconfig);
             }
             
             // Change number of CO2 sensors
             if (isset($_POST['ChangeNoCo2Sensors'])) {
-                $numco2sensors = $_POST['numco2sensors'];
-                $editconfig = "$mycodo_client --modvar numCo2Sensors $numco2sensors";
+                $sensor_co2_num = $_POST['numco2sensors'];
+                $editconfig = "$mycodo_client --modvar numCo2Sensors $sensor_co2_num";
                 shell_exec($editconfig);
             }
             
@@ -553,7 +555,8 @@ if ($login->isUserLoggedIn() == true) {
             }
         } else $error_code = 'guest';
     }
-      
+    
+    /*    
     $config_contents = file_get_contents($config_file);
     $config_rows = explode("\n", $config_contents);
     foreach($config_rows as $row => $data) {
@@ -562,13 +565,97 @@ if ($login->isUserLoggedIn() == true) {
             ${$row_data[0]} = $row_data[1];
         }
     }
+    */
+    
+    // Read SQL database
+    $db = new SQLite3($sqlite_db);
+    $results = $db->query('SELECT Relays, HTSensors, CO2Sensors, Timers FROM Numbers');
+    while ($row = $results->fetchArray()) {
+        $relay_num = $row[0];
+        $sensor_ht_num = $row[1];
+        $sensor_co2_num = $row[2];
+        $timer_num = $row[3];
+    }
+    
+    $results = $db->query('SELECT Id, Name, Pin, Trigger FROM Relays');
+    while ($row = $results->fetchArray()) {
+        //print $row[0] . " " . $row[1] . " " . $row[2] . " " . $row[3] . "<br>";
+        $relay_name[$row[0]] = $row[1];
+        $relay_pin[$row[0]] = $row[2];
+        $relay_trigger[$row[0]] = $row[3];
+    }
+    
+    $results = $db->query('SELECT Id, Name, Pin, Device, Period, Activated, Graph, Temp_Relay, Temp_OR, Temp_Set, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relay, Hum_OR, Hum_Set, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensor');
+    while ($row = $results->fetchArray()) {
+        //print $row[0] . " " . $row[1] . " " . $row[2] . " " . $row[3] . " " . $row[4] . " " . $row[5] . " " . $row[6] . " " . $row[7] . " " . $row[8] . " " . $row[9] . " " . $row[10] . " " . $row[11] . " " . $row[12] . " " . $row[13] . " " . $row[14] . " " . $row[15] . " " . $row[16] . " " . $row[17] . " " . $row[18] . "<br>";
+        $sensor_ht_name[$row[0]] = $row[1];
+        $sensor_ht_pin[$row[0]] = $row[2];
+        $sensor_ht_device[$row[0]] = $row[3];
+        $sensor_ht_period[$row[0]] = $row[4];
+        $sensor_ht_activated[$row[0]] = $row[5];
+        $sensor_ht_graph[$row[0]] = $row[6];
+        $pid_temp_relay[$row[0]] = $row[7];
+        $pid_temp_or[$row[0]] = $row[8];
+        $pid_temp_set[$row[0]] = $row[9];
+        $pid_temp_period[$row[0]] = $row[10];
+        $pid_temp_p[$row[0]] = $row[11];
+        $pid_temp_i[$row[0]] = $row[12];
+        $pid_temp_d[$row[0]] = $row[13];
+        $pid_hum_relay[$row[0]] = $row[14];
+        $pid_hum_or[$row[0]] = $row[15];
+        $pid_hum_set[$row[0]] = $row[16];
+        $pid_hum_period[$row[0]] = $row[17];
+        $pid_hum_p[$row[0]] = $row[18];
+        $pid_hum_i[$row[0]] = $row[19];
+        $pid_hum_d[$row[0]] = $row[20];
+    }
+    
+    $results = $db->query('SELECT Id, Name, Pin, Device, Period, Activated, Graph, CO2_Relay, CO2_OR, CO2_Set, CO2_Period, CO2_P, CO2_I, CO2_D FROM CO2Sensor');
+    while ($row = $results->fetchArray()) {
+        //print $row[0] . " " . $row[1] . " " . $row[2] . " " . $row[3] . " " . $row[4] . " " . $row[5] . " " . $row[6] . " " . $row[7] . " " . $row[8] . " " . $row[9] . " " . $row[10] . " " . $row[11] . " " . $row[12] . "<br>";
+        $sensor_co2_name[$row[0]] = $row[1];
+        $sensor_co2_pin[$row[0]] = $row[2];
+        $sensor_co2_device[$row[0]] = $row[3];
+        $sensor_co2_period[$row[0]] = $row[4];
+        $sensor_co2_activated[$row[0]] = $row[5];
+        $sensor_co2_graph[$row[0]] = $row[6];
+        $pid_co2_relay[$row[0]] = $row[7];
+        $pid_co2_or[$row[0]] = $row[8];
+        $pid_co2_set[$row[0]] = $row[9];
+        $pid_co2_period[$row[0]] = $row[10];
+        $pid_co2_p[$row[0]] = $row[11];
+        $pid_co2_i[$row[0]] = $row[12];
+        $pid_co2_d[$row[0]] = $row[13];
+    }
+    
+    $results = $db->query('SELECT Id, Name, State, Relay, DurationOn, DurationOff FROM Timers');
+    while ($row = $results->fetchArray()) {
+        //print $row[0] . " " . $row[1] . " " . $row[2] . " " . $row[3] . " " . $row[4] . " " . $row[5] . "<br>";
+        $timer_name[$row[0]] = $row[1];
+        $timer_state[$row[0]] = $row[2];
+        $timer_relay[$row[0]] = $row[3];
+        $timer_duration_on[$row[0]] = $row[4];
+        $timer_duration_off[$row[0]] = $row[5];
+    }
+    
+    $results = $db->query('SELECT Host, SSL, Port, User, Pass, Email_From, Email_To FROM SMTP');
+    while ($row = $results->fetchArray()) {
+        //print $row[0] . " " . $row[1] . " " . $row[2] . " " . $row[3] . " " . $row[4] . " " . $row[5] . " " . $row[6] ."<br>";
+        $smtp_host = $row[0];
+        $smtp_ssl = $row[1];
+        $smtp_port = $row[2];
+        $smtp_user = $row[3];
+        $smtp_pass = $row[4];
+        $smtp_email_to = $row[5];
+        $smtp_email_from = $row[6];
+    }
     
     $last_ht_sensor[1] = `awk '$10 == 1' /var/tmp/sensor-ht.log | tail -n 1`;
     $last_ht_sensor[2] = `awk '$10 == 2' /var/tmp/sensor-ht.log | tail -n 1`;
     $last_ht_sensor[3] = `awk '$10 == 3' /var/tmp/sensor-ht.log | tail -n 1`;
     $last_ht_sensor[4] = `awk '$10 == 4' /var/tmp/sensor-ht.log | tail -n 1`;
     
-    for ($p = 1; $p <= $numhtsensors; $p++) {
+    for ($p = 1; $p <= $sensor_ht_num; $p++) {
         $sensor_explode = explode(" ", $last_ht_sensor[$p]);
         $t_c[$p] = $sensor_explode[6];
         $hum[$p] = $sensor_explode[7];
@@ -583,7 +670,7 @@ if ($login->isUserLoggedIn() == true) {
     $last_co2_sensor[3] = `awk '$8 == 3' /var/tmp/sensor-co2.log | tail -n 1`;
     $last_co2_sensor[4] = `awk '$8 == 4' /var/tmp/sensor-co2.log | tail -n 1`;
     
-    for ($p = 1; $p <= $numco2sensors; $p++) {
+    for ($p = 1; $p <= $sensor_co2_num; $p++) {
         $sensor_explode = explode(" ", $last_co2_sensor[$p]);
         $co2[$p] = $sensor_explode[6];
     }
@@ -675,26 +762,26 @@ $error_code = "no";
         <div style="text-align: right; padding-top: 3px; font-size: 0.9em;"><?php echo $uptime; ?></div>
     </div>
     <?php
-    for ($s = 1; $s <= $numhtsensors; $s++) {
-        if (${'sensorht' . $s . 'activated'} == 1) {
+    for ($i = 1; $i <= $sensor_ht_num; $i++) {
+        if ($sensor_ht_activated[$i] == 1) {
     ?>
     <div class="header">
     <table>
         <tr>
-            <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo "HT" . $s . ": " . ${'sensorht' . $s . 'name'}; ?></td>
+            <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo "HT" . $i . ": " . $sensor_ht_name[$i]; ?></td>
         </tr>
         <tr>
             <td>
     <div style="font-size: 0.8em; padding-right: 0.5em;"><?php
-            echo "Now<br><span title=\"" . number_format((float)$t_f[$s], 1, '.', '') . "&deg;F\">" . number_format((float)$t_c[$s], 1, '.', '') . "&deg;C</span>";
-            echo "<br>" . number_format((float)$hum[$s], 1, '.', '') . "%"; 
+            echo "Now<br><span title=\"" . number_format((float)$t_f[$i], 1, '.', '') . "&deg;F\">" . number_format((float)$t_c[$i], 1, '.', '') . "&deg;C</span>";
+            echo "<br>" . number_format((float)$hum[$i], 1, '.', '') . "%"; 
         ?>
     </div>
             </td>
             <td>
     <div style="font-size: 0.8em;"><?php
-            echo "Set<br><span title=\"" . number_format((float)$settemp_f[$s], 1, '.', '') ."&deg;F\">" . number_format((float)${'temp' . $s . 'set'}, 1, '.', '') . "&deg;C";
-            echo "<br>" . number_format((float)${'hum' . $s . 'set'}, 1, '.', '') . "%";
+            echo "Set<br><span title=\"" . number_format((float)$settemp_f[$i], 1, '.', '') ."&deg;F\">" . number_format((float)$pid_temp_set[$i], 1, '.', '') . "&deg;C";
+            echo "<br>" . number_format((float)$pid_hum_set[$i], 1, '.', '') . "%";
             ?>
     </div>
             </td>
@@ -707,22 +794,22 @@ $error_code = "no";
     ?>
     
     <?php
-    for ($s = 1; $s <= $numco2sensors; $s++) {
-        if (${'sensorco2' . $s . 'activated'} == 1) {
+    for ($i = 1; $i <= $sensor_co2_num; $i++) {
+        if ($sensor_co2_activated[$i] == 1) {
     ?>
     <div class="header">
     <table>
         <tr>
             <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;">
-                <?php echo "CO<sub>2</sub>" . $s . ": " . ${'sensorco2' . $s . 'name'}; ?>
+                <?php echo "CO<sub>2</sub>" . $i . ": " . $sensor_co2_name[$i]; ?>
             </td>
         </tr>
         <tr>
             <td>
-                <div style="font-size: 0.8em; padding-right: 0.5em;"><?php echo "Now<br>" . $co2[$s]; ?></div>
+                <div style="font-size: 0.8em; padding-right: 0.5em;"><?php echo "Now<br>" . $co2[$i]; ?></div>
             </td>
             <td>
-                <div style="font-size: 0.8em;"><?php echo "Set<br>" . ${'co2' . $s . 'set'}; ?></div>
+                <div style="font-size: 0.8em;"><?php echo "Set<br>" . $pid_co2_set[$i]; ?></div>
             </td>
         </tr>
     </table>
@@ -859,7 +946,7 @@ $error_code = "no";
                         sleep(3);
                         echo "</div>";
                     } else {
-                        for ($n = 1; $n <= $numhtsensors; $n++ ) {
+                        for ($n = 1; $n <= $sensor_ht_num; $n++ ) {
                             if (isset($_GET['page']) and ${'sensorht' . $n . 'graph'} == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
                                 switch ($_GET['page']) {
@@ -906,10 +993,10 @@ $error_code = "no";
                                 if ($ref) shell_exec($mycodo_client . ' --graph htdayweek ' . $id . ' ' . $n);
                                 echo "htmain&mod=" . $id . "&sensor=" . $n . "></div>";
                             }
-                            if ($n != $numhtsensors || $sensorco21graph == 1 || $sensorco22graph == 1 || $sensorco23graph == 1 || $sensorco24graph == 1) {
+                            if ($n != $sensor_ht_num || $sensorco21graph == 1 || $sensorco22graph == 1 || $sensorco23graph == 1 || $sensorco24graph == 1) {
                                 echo "<hr class=\"fade\"/>"; }
                         }
-                        for ($n = 1; $n <= $numco2sensors; $n++ ) {
+                        for ($n = 1; $n <= $sensor_co2_num; $n++ ) {
                             if (isset($_GET['page']) and ${'sensorco2' . $n . 'graph'} == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
                                 switch ($_GET['page']) {
@@ -956,7 +1043,7 @@ $error_code = "no";
                                 if ($ref) shell_exec($mycodo_client . ' --graph co2dayweek ' . $id . ' ' . $n);
                                 echo "co2main&mod=" . $id . "&sensor=" . $n . "></div>";
                             }
-                            if ($n != $numco2sensors) { echo "<hr class=\"fade\"/>"; }
+                            if ($n != $sensor_co2_num) { echo "<hr class=\"fade\"/>"; }
                         }
                     }
                     ?>
@@ -1000,15 +1087,15 @@ $error_code = "no";
                             <div style="text-align: center; padding-bottom: 0.2em;">Relays</div>
                             <div>
                                 <select name="numrelays">
-                                    <option value="0" <?php if ($numrelays == 0) echo "selected=\"selected\""; ?>>0</option>
-                                    <option value="1" <?php if ($numrelays == 1) echo "selected=\"selected\""; ?>>1</option>
-                                    <option value="2" <?php if ($numrelays == 2) echo "selected=\"selected\""; ?>>2</option>
-                                    <option value="3" <?php if ($numrelays == 3) echo "selected=\"selected\""; ?>>3</option>
-                                    <option value="4" <?php if ($numrelays == 4) echo "selected=\"selected\""; ?>>4</option>
-                                    <option value="5" <?php if ($numrelays == 5) echo "selected=\"selected\""; ?>>5</option>
-                                    <option value="6" <?php if ($numrelays == 6) echo "selected=\"selected\""; ?>>6</option>
-                                    <option value="7" <?php if ($numrelays == 7) echo "selected=\"selected\""; ?>>7</option>
-                                    <option value="8" <?php if ($numrelays == 8) echo "selected=\"selected\""; ?>>8</option>
+                                    <option value="0" <?php if ($relay_num == 0) echo "selected=\"selected\""; ?>>0</option>
+                                    <option value="1" <?php if ($relay_num == 1) echo "selected=\"selected\""; ?>>1</option>
+                                    <option value="2" <?php if ($relay_num == 2) echo "selected=\"selected\""; ?>>2</option>
+                                    <option value="3" <?php if ($relay_num == 3) echo "selected=\"selected\""; ?>>3</option>
+                                    <option value="4" <?php if ($relay_num == 4) echo "selected=\"selected\""; ?>>4</option>
+                                    <option value="5" <?php if ($relay_num == 5) echo "selected=\"selected\""; ?>>5</option>
+                                    <option value="6" <?php if ($relay_num == 6) echo "selected=\"selected\""; ?>>6</option>
+                                    <option value="7" <?php if ($relay_num == 7) echo "selected=\"selected\""; ?>>7</option>
+                                    <option value="8" <?php if ($relay_num == 8) echo "selected=\"selected\""; ?>>8</option>
                                 </select>
                                 <input type="submit" name="ChangeNoRelays" value="Save">
                             </div>
@@ -1018,11 +1105,11 @@ $error_code = "no";
                         <div style="text-align: center; padding-bottom: 0.2em;">CO<sub>2</sub> Sensors</div>
                         <div style="text-align: center;">
                             <select name="numco2sensors">
-                                <option value="0" <?php if ($numco2sensors == 0) echo "selected=\"selected\""; ?>>0</option>
-                                <option value="1" <?php if ($numco2sensors == 1) echo "selected=\"selected\""; ?>>1</option>
-                                <option value="2" <?php if ($numco2sensors == 2) echo "selected=\"selected\""; ?>>2</option>
-                                <option value="3" <?php if ($numco2sensors == 3) echo "selected=\"selected\""; ?>>3</option>
-                                <option value="4" <?php if ($numco2sensors == 4) echo "selected=\"selected\""; ?>>4</option>
+                                <option value="0" <?php if ($sensor_co2_num == 0) echo "selected=\"selected\""; ?>>0</option>
+                                <option value="1" <?php if ($sensor_co2_num == 1) echo "selected=\"selected\""; ?>>1</option>
+                                <option value="2" <?php if ($sensor_co2_num == 2) echo "selected=\"selected\""; ?>>2</option>
+                                <option value="3" <?php if ($sensor_co2_num == 3) echo "selected=\"selected\""; ?>>3</option>
+                                <option value="4" <?php if ($sensor_co2_num == 4) echo "selected=\"selected\""; ?>>4</option>
                             </select>
                             <input type="submit" name="ChangeNoCo2Sensors" value="Save">
                         </div>
@@ -1031,11 +1118,11 @@ $error_code = "no";
                         <div style="text-align: center; padding-bottom: 0.2em;">HT Sensors</div>
                         <div style="text-align: center;"">
                             <select name="numhtsensors">
-                                <option value="0" <?php if ($numhtsensors == 0) echo "selected=\"selected\""; ?>>0</option>
-                                <option value="1" <?php if ($numhtsensors == 1) echo "selected=\"selected\""; ?>>1</option>
-                                <option value="2" <?php if ($numhtsensors == 2) echo "selected=\"selected\""; ?>>2</option>
-                                <option value="3" <?php if ($numhtsensors == 3) echo "selected=\"selected\""; ?>>3</option>
-                                <option value="4" <?php if ($numhtsensors == 4) echo "selected=\"selected\""; ?>>4</option>
+                                <option value="0" <?php if ($sensor_ht_num == 0) echo "selected=\"selected\""; ?>>0</option>
+                                <option value="1" <?php if ($sensor_ht_num == 1) echo "selected=\"selected\""; ?>>1</option>
+                                <option value="2" <?php if ($sensor_ht_num == 2) echo "selected=\"selected\""; ?>>2</option>
+                                <option value="3" <?php if ($sensor_ht_num == 3) echo "selected=\"selected\""; ?>>3</option>
+                                <option value="4" <?php if ($sensor_ht_num == 4) echo "selected=\"selected\""; ?>>4</option>
                             </select>
                             <input type="submit" name="ChangeNoHTSensors" value="Save">
                         </div>
@@ -1047,7 +1134,7 @@ $error_code = "no";
             <div>
                 <div style="padding-top: 1em;">
                     <div style="padding: 0 0 1em 0; font-weight: bold;">Relays</div>
-                    <?php if ($numrelays > 0) { ?>
+                    <?php if ($relay_num > 0) { ?>
                     <table class="relays">
                         <tr>
                             <td align=center class="table-header">Relay<br>No.</td>
@@ -1057,21 +1144,18 @@ $error_code = "no";
                             <td align=center class="table-header">GPIO<br>Pin</td>
                             <td align=center class="table-header">Trigger<br>ON</td>
                         </tr>
-                        <?php for ($i = 1; $i <= $numrelays; $i++) {
-                                $name = ${"relay" . $i . "name"};
-                                $pin = ${"relay" . $i . "pin"};
-                                $trigger = ${"relay" . $i . "trigger"};
-                                $read = "$gpio_path -g read $pin";
+                        <?php for ($i = 1; $i <= $relay_num; $i++) {
+                            $read = "$gpio_path -g read $relay_pin[$i]";
                         ?>
                         <tr>
                             <td align=center>
                                 <?php echo ${'i'}; ?>
                             </td>
                             <td align=center>
-                                <input type="text" value="<?php echo $name; ?>" maxlength=12 size=10 name="relay<?php echo $i; ?>name" title="Name of relay <?php echo $i; ?>"/>
+                                <input type="text" value="<?php echo $relay_name[$i]; ?>" maxlength=12 size=10 name="relay<?php echo $i; ?>name" title="Name of relay <?php echo $i; ?>"/>
                             </td>
                             <?php
-                                if ((shell_exec($read) == 1 && $trigger == 0) || (shell_exec($read) == 0 && $trigger == 1)) {
+                                if ((shell_exec($read) == 1 && $relay_trigger[$i] == 0) || (shell_exec($read) == 0 && $relay_trigger[$i] == 1)) {
                                     ?>
                                     <td class="onoff">
                                         <nobr><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="R<?php echo $i; ?>" value="0"> | <button style="width: 3em;" type="submit" name="R<?php echo $i; ?>" value="1">ON</button></nobr>
@@ -1089,12 +1173,12 @@ $error_code = "no";
                                  [<input type="text" maxlength=3 size=1 name="sR<?php echo $i; ?>" title="Number of seconds to turn this relay on"/><input type="submit" name="<?php echo $i; ?>secON" value="ON">]
                             </td>
                             <td align=center>
-                                <input type="text" value="<?php echo $pin; ?>" maxlength=2 size=1 name="relay<?php echo $i; ?>pin" title="GPIO pin using BCM numbering, connected to relay <?php echo $i; ?>"/>
+                                <input type="text" value="<?php echo $relay_pin[$i]; ?>" maxlength=2 size=1 name="relay<?php echo $i; ?>pin" title="GPIO pin using BCM numbering, connected to relay <?php echo $i; ?>"/>
                             </td>
                             <td align=center>
                                 <select style="width: 65px;" name="relay<?php echo $i; ?>trigger">
-                                    <option <?php if ($trigger == 1) echo "selected=\"selected\""; ?> value="1">HIGH</option>
-                                    <option <?php if ($trigger == 0) echo "selected=\"selected\""; ?> value="0">LOW</option>
+                                    <option <?php if ($relay_trigger[$i] == 1) echo "selected=\"selected\""; ?> value="1">HIGH</option>
+                                    <option <?php if ($relay_trigger[$i] == 0) echo "selected=\"selected\""; ?> value="0">LOW</option>
                                 </select>
                             </td>
                         </tr>
@@ -1121,11 +1205,10 @@ $error_code = "no";
                     </table>
                 </div>
                 
-                <?php if ($numhtsensors > 0) { ?>
+                <?php if ($sensor_ht_num > 0) { ?>
                 <div style="padding: 2.5em 0 1em 0; font-weight: bold;">Humidity & Temperature Sensors</div>
                 <div style="padding-right: 1em;">
-                    <?php for ($i = 1; $i <= $numhtsensors; $i++) {
-                        $device = ${"sensorht" . $i . "device"};
+                    <?php for ($i = 1; $i <= $sensor_ht_num; $i++) {
                         ?>
                     <div style="padding-bottom: 0.5em;">
                         <table class="pid" style="width: 42em;">
@@ -1144,27 +1227,27 @@ $error_code = "no";
                                 <?php echo $i; ?>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${"sensorht" . $i . "name"}; ?>" maxlength=12 size=10 name="sensorht<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
+                                <input type="text" value="<?php echo $sensor_ht_name[$i]; ?>" maxlength=12 size=10 name="sensorht<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
                             </td>
                             <td>
                                 <select style="width: 80px;" name="sensorht<?php echo $i; ?>device">
-                                    <option <?php if ($device == 'DHT11') echo "selected=\"selected\""; ?> value="DHT11">DHT11</option>
-                                    <option <?php if ($device == 'DHT22') echo "selected=\"selected\""; ?> value="DHT22">DHT22</option>
-                                    <option <?php if ($device == 'AM2302') echo "selected=\"selected\""; ?> value="AM2302">AM2302</option>
-                                    <option <?php if ($device == 'Other') echo "selected=\"selected\""; ?>value="Other">Other</option>
+                                    <option <?php if ($sensor_ht_device[$i] == 'DHT11') echo "selected=\"selected\""; ?> value="DHT11">DHT11</option>
+                                    <option <?php if ($sensor_ht_device[$i] == 'DHT22') echo "selected=\"selected\""; ?> value="DHT22">DHT22</option>
+                                    <option <?php if ($sensor_ht_device[$i] == 'AM2302') echo "selected=\"selected\""; ?> value="AM2302">AM2302</option>
+                                    <option <?php if ($sensor_ht_device[$i] == 'Other') echo "selected=\"selected\""; ?>value="Other">Other</option>
                                 </select>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${"sensorht" . $i . "pin"}; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>pin" title="This is the GPIO pin connected to the DHT sensor"/>
+                                <input type="text" value="<?php echo $sensor_ht_pin[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>pin" title="This is the GPIO pin connected to the DHT sensor"/>
                             </td>
                             <td align=center>
-                                <input type="text" value="<?php echo ${"sensorht" . $i . "period"}; ?>" maxlength=3 size=1 name="sensorht<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
+                                <input type="text" value="<?php echo $sensor_ht_period[$i]; ?>" maxlength=3 size=1 name="sensorht<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
                             </td>
                             <td align=center>
-                                <input type="checkbox" name="sensorht<?php echo $i; ?>activated" value="1" <?php if (${'sensorht' . $i . 'activated'} == 1) echo "checked"; ?>> 
+                                <input type="checkbox" name="sensorht<?php echo $i; ?>activated" value="1" <?php if ($sensor_ht_activated[$i] == 1) echo "checked"; ?>> 
                             </td>
                             <td align=center>
-                                <input type="checkbox" name="sensorht<?php echo $i; ?>graph" value="1" <?php if (${'sensorht' . $i . 'graph'} == 1) echo "checked"; ?>> 
+                                <input type="checkbox" name="sensorht<?php echo $i; ?>graph" value="1" <?php if ($sensor_ht_graph[$i] == 1) echo "checked"; ?>> 
                             </td>
                             <td>
                                 <input type="submit" name="Change<?php echo $i; ?>HTSensor" value="Set">
@@ -1189,7 +1272,7 @@ $error_code = "no";
                             <td>Temperature</td>
                             <td class="onoff">
                                 <?php
-                                    if (${'temp' . $i . 'or'} == 1) {
+                                    if ($pid_temp_or[$i] == 1) {
                                         ?>
                                         <input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="Change<?php echo $i; ?>TempOR" value="0"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>TempOR" value="0">ON</button>
                                         <?php
@@ -1201,22 +1284,22 @@ $error_code = "no";
                                 ?>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${'temp' . $i . 'relay'}; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>TempRelay" title="This is the relay connected to the heating device"/>
+                                <input type="text" value="<?php echo $pid_temp_relay[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>TempRelay" title="This is the relay connected to the heating device"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${'temp' . $i . 'set'}; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>TempSet" title="This is the desired temperature"/> °C
+                                <input type="text" value="<?php echo $pid_temp_set[$i]; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>TempSet" title="This is the desired temperature"/> °C
                             </td>
                             <td align=center>
-                                <input type="text" value="<?php echo ${'temp' . $i . 'period'}; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/>
+                                <input type="text" value="<?php echo $pid_temp_period[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${'temp' . $i . 'p'}; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Temp_P" title="This is the Proportional value of the PID"/>
+                                <input type="text" value="<?php echo $pid_temp_p[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Temp_P" title="This is the Proportional value of the PID"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${'temp' . $i . 'i'}; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Temp_I" title="This is the Integral value of the the PID"/>
+                                <input type="text" value="<?php echo $pid_temp_i[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Temp_I" title="This is the Integral value of the the PID"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${'temp' . $i . 'd'}; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Temp_D" title="This is the Derivative value of the PID"/>
+                                <input type="text" value="<?php echo $pid_temp_d[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Temp_D" title="This is the Derivative value of the PID"/>
                             </td>
                             <td>
                                 <input type="submit" name="Change<?php echo $i; ?>TempPID" value="Set">
@@ -1226,7 +1309,7 @@ $error_code = "no";
                             <td>Humidity</td>
                             <td class="onoff">
                             <?php
-                                if (${'hum' . $i . 'or'} == 1) {
+                                if ($pid_hum_or[$i] == 1) {
                                     ?>
                                     <input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="Change<?php echo $i; ?>HumOR" value="0"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>HumOR" value="0">ON</button>
                                     <?php
@@ -1238,22 +1321,22 @@ $error_code = "no";
                             ?>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${'hum' . $i . 'relay'}; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>HumRelay" title="This is the relay connected to your humidifying device"/>
+                                <input type="text" value="<?php echo $pid_hum_relay[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>HumRelay" title="This is the relay connected to your humidifying device"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${'hum' . $i . 'set'}; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>HumSet" title="This is the desired humidity"/> %
+                                <input type="text" value="<?php echo $pid_hum_set[$i]; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>HumSet" title="This is the desired humidity"/> %
                             </td>
                             <td align=center>
-                                <input type="text" value="<?php echo ${'hum' . $i . 'period'}; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>HumPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another humidity reading and applying the PID"/>
+                                <input type="text" value="<?php echo $pid_hum_period[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>HumPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another humidity reading and applying the PID"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${'hum' . $i . 'p'}; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Hum_P" title="This is the Proportional value of the PID"/>
+                                <input type="text" value="<?php echo $pid_hum_p[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Hum_P" title="This is the Proportional value of the PID"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${'hum' . $i . 'i'}; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Hum_I" title="This is the Integral value of the the PID"/>
+                                <input type="text" value="<?php echo $pid_hum_i[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Hum_I" title="This is the Integral value of the the PID"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${'hum' . $i . 'd'}; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Hum_D" title="This is the Derivative value of the PID"/>
+                                <input type="text" value="<?php echo $pid_hum_d[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Hum_D" title="This is the Derivative value of the PID"/>
                             </td>
                             <td>
                                 <input type="submit" name="Change<?php echo $i; ?>HumPID" value="Set">
@@ -1269,11 +1352,10 @@ $error_code = "no";
                 }
                 ?>
 
-                <?php if ($numco2sensors > 0) { ?>
+                <?php if ($sensor_co2_num > 0) { ?>
                 <div style="padding: 1.5em 0 1em 0; font-weight: bold;">CO<sub>2</sub> Sensors</div>
                 <div style="padding-bottom: 3em; padding-right: 1em;">
-                    <?php for ($i = 1; $i <= $numco2sensors; $i++) {
-                        $device = ${"sensorco2" . $i . "device"};
+                    <?php for ($i = 1; $i <= $sensor_co2_num; $i++) {
                         ?>
                     <div style="padding-bottom: 0.5em;">
                         <table class="pid" style="width: 42em;">
@@ -1292,25 +1374,25 @@ $error_code = "no";
                                 <?php echo $i; ?>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${"sensorco2" . $i . "name"}; ?>" maxlength=12 size=10 name="sensorco2<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
+                                <input type="text" value="<?php echo $sensor_co2_name[$i]; ?>" maxlength=12 size=10 name="sensorco2<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
                             </td>
                             <td>
                                 <select style="width: 80px;" name="sensorco2<?php echo $i; ?>device">
-                                    <option <?php if ($device == 'K30') echo "selected=\"selected\""; ?> value="K30">K30</option>
-                                    <option <?php if ($device == 'Other') echo "selected=\"selected\""; ?>value="Other">Other</option>
+                                    <option <?php if ($sensor_co2_device[$i] == 'K30') echo "selected=\"selected\""; ?> value="K30">K30</option>
+                                    <option <?php if ($sensor_co2_device[$i] == 'Other') echo "selected=\"selected\""; ?>value="Other">Other</option>
                                 </select>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${"sensorco2" . $i . "pin"}; ?>" maxlength=2 size=1 name="sensorco2<?php echo $i; ?>pin" title="This is the GPIO pin connected to the CO2 sensor"/>
+                                <input type="text" value="<?php echo $sensor_co2_pin[$i]; ?>" maxlength=2 size=1 name="sensorco2<?php echo $i; ?>pin" title="This is the GPIO pin connected to the CO2 sensor"/>
                             </td>
                             <td align=center>
-                                <input type="text" value="<?php echo ${"sensorco2" . $i . "period"}; ?>" maxlength=3 size=1 name="sensorco2<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
+                                <input type="text" value="<?php echo $sensor_co2_period[$i]; ?>" maxlength=3 size=1 name="sensorco2<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
                             </td>
                             <td align=center>
-                                <input type="checkbox" name="sensorco2<?php echo $i; ?>activated" value="1" <?php if (${'sensorco2' . $i . 'activated'} == 1) echo "checked"; ?>> 
+                                <input type="checkbox" name="sensorco2<?php echo $i; ?>activated" value="1" <?php if ($sensor_co2_activated[$i] == 1) echo "checked"; ?>> 
                             </td>
                             <td align=center>
-                                <input type="checkbox" name="sensorco2<?php echo $i; ?>graph" value="1" <?php if (${'sensorco2' . $i . 'graph'} == 1) echo "checked"; ?>> 
+                                <input type="checkbox" name="sensorco2<?php echo $i; ?>graph" value="1" <?php if ($sensor_co2_graph[$i] == 1) echo "checked"; ?>> 
                             </td>
                             <td>
                                 <input type="submit" name="Change<?php echo $i; ?>Co2Sensor" value="Set">
@@ -1335,7 +1417,7 @@ $error_code = "no";
                             <td>CO<sub>2</sub></td>
                             <td class="onoff">
                                 <?php
-                                    if (${'co2' . $i . 'or'} == 1) {
+                                    if ($pid_co2_or[$i] == 1) {
                                         ?>
                                         <input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="Change<?php echo $i; ?>Co2OR" value="0"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>Co2OR" value="0">ON</button>
                                         <?php
@@ -1347,22 +1429,22 @@ $error_code = "no";
                                 ?>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${'co2' . $i . 'relay'}; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>Co2Relay" title="This is the relay connected to the device that modulates CO2"/>
+                                <input type="text" value="<?php echo $pid_co2_relay[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>Co2Relay" title="This is the relay connected to the device that modulates CO2"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${'co2' . $i . 'set'}; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>Co2Set" title="This is the desired CO2 level"/> ppm
+                                <input type="text" value="<?php echo $pid_co2_set[$i]; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>Co2Set" title="This is the desired CO2 level"/> ppm
                             </td>
                             <td align=center>
-                                <input type="text" value="<?php echo ${'co2' . $i . 'period'}; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Co2Period" title="This is the number of seconds to wait after the relay has been turned off before taking another CO2 reading and applying the PID"/>
+                                <input type="text" value="<?php echo $pid_co2_period[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Co2Period" title="This is the number of seconds to wait after the relay has been turned off before taking another CO2 reading and applying the PID"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${'co2' . $i . 'p'}; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Co2_P" title="This is the Proportional value of the PID"/>
+                                <input type="text" value="<?php echo $pid_co2_p[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Co2_P" title="This is the Proportional value of the PID"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${'co2' . $i . 'i'}; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Co2_I" title="This is the Integral value of the the PID"/>
+                                <input type="text" value="<?php echo $pid_co2_i[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Co2_I" title="This is the Integral value of the the PID"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${'co2' . $i . 'd'}; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Co2_D" title="This is the Derivative value of the PID"/>
+                                <input type="text" value="<?php echo $pid_co2_d[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Co2_D" title="This is the Derivative value of the PID"/>
                             </td>
                             <td>
                                 <input type="submit" name="Change<?php echo $i; ?>Co2PID" value="Set">
@@ -1648,24 +1730,27 @@ $error_code = "no";
                 <div style="padding: 0 0 1em 1em;">
                     Number of Timers 
                     <select name="numtimers">
-                        <option value="1" <?php if ($numtimers == 1) echo "selected=\"selected\""; ?>>1</option>
-                        <option value="2" <?php if ($numtimers == 2) echo "selected=\"selected\""; ?>>2</option>
-                        <option value="3" <?php if ($numtimers == 3) echo "selected=\"selected\""; ?>>3</option>
-                        <option value="4" <?php if ($numtimers == 4) echo "selected=\"selected\""; ?>>4</option>
-                        <option value="5" <?php if ($numtimers == 5) echo "selected=\"selected\""; ?>>5</option>
-                        <option value="6" <?php if ($numtimers == 6) echo "selected=\"selected\""; ?>>6</option>
-                        <option value="7" <?php if ($numtimers == 7) echo "selected=\"selected\""; ?>>7</option>
-                        <option value="8" <?php if ($numtimers == 8) echo "selected=\"selected\""; ?>>8</option>
+                        <option value="1" <?php if ($timer_num == 1) echo "selected=\"selected\""; ?>>1</option>
+                        <option value="2" <?php if ($timer_num == 2) echo "selected=\"selected\""; ?>>2</option>
+                        <option value="3" <?php if ($timer_num == 3) echo "selected=\"selected\""; ?>>3</option>
+                        <option value="4" <?php if ($timer_num == 4) echo "selected=\"selected\""; ?>>4</option>
+                        <option value="5" <?php if ($timer_num == 5) echo "selected=\"selected\""; ?>>5</option>
+                        <option value="6" <?php if ($timer_num == 6) echo "selected=\"selected\""; ?>>6</option>
+                        <option value="7" <?php if ($timer_num == 7) echo "selected=\"selected\""; ?>>7</option>
+                        <option value="8" <?php if ($timer_num == 8) echo "selected=\"selected\""; ?>>8</option>
                     </select>
                     <input type="submit" name="ChangeNoTimers" value="Save">
                 </div>
-                <?php if ($numtimers > 0) { ?>
+                <?php if ($timer_num > 0) { ?>
                 <div>
                     
                     <table class="timers">
                         <tr>
                             <td>
                                 Timer
+                            </td>
+                            <td>
+                                Name
                             </td>
                             <th align="center" colspan="2">
                                 State
@@ -1682,12 +1767,15 @@ $error_code = "no";
                             <td>
                             </td>
                         </tr>
-                        <?php for ($i = 1; $i <= $numtimers; $i++) { ?>
+                        <?php for ($i = 1; $i <= $timer_num; $i++) { ?>
                         <tr>
                             <td>
                                 <?php echo $i; ?>
                             </td>
-                            <?php if (${'timer'. $i . 'state'} == 0) { ?>
+                            <td>
+                                <input type="text" value="<?php echo $timer_name[$i]; ?>" maxlength=5 size=5 name="Timer<?php echo $i; ?>Name" title="This is the relay name for timer <?php echo $i; ?>"/>
+                            </td>
+                            <?php if ($timer_state[$i] == 0) { ?>
                                 <th colspan=2 align=right>
                                     <nobr><input type="image" style="height: 0.9em;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="Timer<?php echo $i; ?>StateChange" value="0"> | <button style="width: 40px;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">ON</button></nobr>
                                 </td>
@@ -1702,13 +1790,13 @@ $error_code = "no";
                             }
                             ?>
                             <td>
-                                <input type="text" value="<?php echo ${'timer'. $i . 'relay'}; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>Relay" title="This is the relay number for timer <?php echo $i; ?>"/>
+                                <input type="text" value="<?php echo $timer_relay[$i]; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>Relay" title="This is the relay number for timer <?php echo $i; ?>"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${'timer'. $i . 'durationon'}; ?>" maxlength=7 size=4 name="Timer<?php echo $i; ?>On" title="This is On duration of timer <?php echo $i; ?>"/>
+                                <input type="text" value="<?php echo $timer_duration_on[$i]; ?>" maxlength=7 size=4 name="Timer<?php echo $i; ?>On" title="This is On duration of timer <?php echo $i; ?>"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo ${'timer'. $i . 'durationoff'}; ?>" maxlength=7 size=4 name="Timer<?php echo $i; ?>Off" title="This is Off duration for timer <?php echo $i; ?>"/>
+                                <input type="text" value="<?php echo $timer_duration_off[$i]; ?>" maxlength=7 size=4 name="Timer<?php echo $i; ?>Off" title="This is Off duration for timer <?php echo $i; ?>"/>
                             </td>
                             <td>
                                 <input type="submit" name="ChangeTimer<?php echo $i; ?>" value="Save">
