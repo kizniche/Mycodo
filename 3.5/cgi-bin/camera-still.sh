@@ -42,4 +42,6 @@ if [ "$1" != 0 ]; then
 /usr/local/bin/gpio -g write $1 $TRIGGEROFF
 fi
 
-convert /var/www/mycodo/camera-stills/$DATE.jpg -pointsize 14 -fill white -annotate +20+20 %[exif:DateTimeOriginal] /var/www/mycodo/camera-stills/$DATE.jpg
+convert /var/www/mycodo/camera-stills/$DATE.jpg -pointsize 14 -fill white \
+    -annotate +20+20 %[exif:DateTimeOriginal] \
+    /var/www/mycodo/camera-stills/$DATE.jpg
