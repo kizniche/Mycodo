@@ -89,7 +89,7 @@ sensor_ht_name = [0] * 5
 sensor_ht_device = [0] * 5
 sensor_ht_pin = [0] * 5
 sensor_ht_period = [0] * 5
-sensor_ht_log = [0] * 5
+sensor_ht_activated = [0] * 5
 sensor_ht_graph = [0] * 5
 sensor_ht_read_temp_c = [0] * 5
 sensor_ht_read_hum = [0] * 5
@@ -127,7 +127,7 @@ sensor_co2_name = [0] * 5
 sensor_co2_device = [0] * 5
 sensor_co2_pin = [0] * 5
 sensor_co2_period = [0] * 5
-sensor_co2_log = [0] * 5
+sensor_co2_activated = [0] * 5
 sensor_co2_graph = [0] * 5
 sensor_co2_read_co2 = [0] * 5
 
@@ -208,7 +208,7 @@ class ComServer(rpyc.Service):
         global sensor_co2_device
         global sensor_co2_pin
         global sensor_co2_period
-        global sensor_co2_log
+        global sensor_co2_activated
         global sensor_co2_graph
         logging.info("[Client command] Change CO2 sensor %s: %s: Device: %s Pin: %s Period: %s sec. Activated: %s Graph: %s",
             sensornumber, sensorname, sensordevice, sensorpin, sensorperiod, sensoractivated, sensorgraph)
@@ -216,7 +216,7 @@ class ComServer(rpyc.Service):
         sensor_co2_device[sensornumber] = sensordevice
         sensor_co2_pin[sensornumber] = sensorpin
         sensor_co2_period[sensornumber] = sensorperiod
-        sensor_co2_log[sensornumber] = sensoractivated
+        sensor_co2_activated[sensornumber] = sensoractivated
         sensor_co2_graph[sensornumber] = sensorgraph
         write_sql()
         return 1
@@ -225,7 +225,7 @@ class ComServer(rpyc.Service):
         global sensor_ht_device
         global sensor_ht_pin
         global sensor_ht_period
-        global sensor_ht_log
+        global sensor_ht_activated
         global sensor_ht_graph
         logging.info("[Client command] Change HT sensor %s: %s: Device: %s Pin: %s Period: %s sec. Activated: %s Graph: %s",
             sensornumber, sensorname, sensordevice, sensorpin, sensorperiod, sensoractivated, sensorgraph)
@@ -233,7 +233,7 @@ class ComServer(rpyc.Service):
         sensor_ht_device[sensornumber] = sensordevice
         sensor_ht_pin[sensornumber] = sensorpin
         sensor_ht_period[sensornumber] = sensorperiod
-        sensor_ht_log[sensornumber] = sensoractivated
+        sensor_ht_activated[sensornumber] = sensoractivated
         sensor_ht_graph[sensornumber] = sensorgraph
         write_sql()
         return 1
@@ -743,14 +743,14 @@ def daemon(output, log):
     read_sql()
     
     # Initial sensor readings
-    logging.info("[Daemon] Conducting initial sensor readings from %s HT and %s CO2 sensors", sum(sensor_ht_log), sum(sensor_co2_log))
+    logging.info("[Daemon] Conducting initial sensor readings from %s HT and %s CO2 sensors", sum(sensor_ht_activated), sum(sensor_co2_activated))
     for i in range(1, sensor_ht_num+1):
-        if sensor_ht_device[i] != 'Other' and sensor_ht_log[i] == 1:
+        if sensor_ht_device[i] != 'Other' and sensor_ht_activated[i] == 1:
             read_dht_sensor(i)
             time.sleep(2) # Ensure a minimum of 2 seconds between sensor reads
     
     for i in range(1, sensor_co2_num+1):
-        if sensor_co2_device[i] != 'Other' and sensor_co2_log[i] == 1:
+        if sensor_co2_device[i] != 'Other' and sensor_co2_activated[i] == 1:
             read_co2_sensor(i)
             time.sleep(2) # Ensure a minimum of 2 seconds between sensor reads
     
@@ -885,7 +885,7 @@ def daemon(output, log):
 
         # Write temperature and sensor_ht_read_hum to sensor log
         for i in range(1, int(sensor_ht_num)+1):
-            if int(time.time()) > timerHTSensorLog[i] and sensor_ht_device[i] != 'Other' and sensor_ht_log[i] == 1:
+            if int(time.time()) > timerHTSensorLog[i] and sensor_ht_device[i] != 'Other' and sensor_ht_activated[i] == 1:
                 logging.debug("[Timer Expiration] Read sensor %s every %s seconds: Write sensor log", i, sensor_ht_period[i])
                 if read_dht_sensor(i) == 1:
                     write_dht_sensor_log(i)
@@ -893,7 +893,7 @@ def daemon(output, log):
 
         # Write CO2 to sensor log
         for i in range(1, int(sensor_co2_num)+1):
-            if int(time.time()) > timerCo2SensorLog[i] and sensor_co2_device[i] != 'Other' and sensor_co2_log[i] == 1:
+            if int(time.time()) > timerCo2SensorLog[i] and sensor_co2_device[i] != 'Other' and sensor_co2_activated[i] == 1:
                 if read_co2_sensor(i) == 1:
                     write_co2_sensor_log(i)
                 timerCo2SensorLog[i] = int(time.time()) + sensor_co2_period[i]
@@ -935,7 +935,7 @@ def temperature_monitor(ThreadName, sensor):
     p_temp.setPoint(pid_temp_set[sensor])
     
     while (pid_temp_alive[sensor]):
-        if pid_temp_or[sensor] == 0 and pid_temp_down == 0 and pid_temp_relay[sensor] != 0 and sensor_ht_log[sensor] == 1:
+        if pid_temp_or[sensor] == 0 and pid_temp_down == 0 and pid_temp_relay[sensor] != 0 and sensor_ht_activated[sensor] == 1:
             if int(time.time()) > timerTemp:
                 logging.debug("[PID Temperature-%s] Reading temperature...", sensor)
                 read_dht_sensor(sensor)
@@ -972,7 +972,7 @@ def humidity_monitor(ThreadName, sensor):
     p_hum.setPoint(pid_hum_set[sensor])
 
     while (pid_hum_alive[sensor]):
-        if pid_hum_or[sensor] == 0 and pid_hum_down == 0 and pid_hum_relay[sensor] != 0 and sensor_ht_log[sensor] == 1:
+        if pid_hum_or[sensor] == 0 and pid_hum_down == 0 and pid_hum_relay[sensor] != 0 and sensor_ht_activated[sensor] == 1:
             if int(time.time()) > timerHum:
                 logging.debug("[PID Humidity-%s] Reading Humidity...", sensor)
                 read_dht_sensor(sensor)
@@ -1009,7 +1009,7 @@ def co2_monitor(ThreadName, sensor):
     p_co2.setPoint(pid_co2_set[sensor])
 
     while (pid_co2_alive[sensor]):
-        if pid_co2_or[sensor] == 0 and pid_co2_down == 0 and pid_co2_relay[sensor] != 0 and sensor_co2_log[sensor] == 1:
+        if pid_co2_or[sensor] == 0 and pid_co2_down == 0 and pid_co2_relay[sensor] != 0 and sensor_co2_activated[sensor] == 1:
             if int(time.time()) > timerCo2:
                 logging.debug("[PID CO2-%s] Reading CO2...", sensor)
                 read_co2_sensor(sensor)
@@ -1759,14 +1759,14 @@ def read_sql():
     global sensor_ht_device
     global sensor_ht_pin
     global sensor_ht_period
-    global sensor_ht_log
+    global sensor_ht_activated
     global sensor_ht_graph
     
     global sensor_co2_name
     global sensor_co2_device
     global sensor_co2_pin
     global sensor_co2_period
-    global sensor_co2_log
+    global sensor_co2_activated
     global sensor_co2_graph
     
     global pid_co2_period
@@ -1848,32 +1848,34 @@ def read_sql():
         relay_pin[row[0]] = row[2]
         relay_trigger[row[0]] = row[3]
 
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, Temp_Relay, Temp_OR, Temp_Set, Temp_P, Temp_I, Temp_D, Hum_Relay, Hum_OR, Hum_Set, Hum_P, Hum_I, Hum_D FROM HTSensor')
+    cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, Temp_Relay, Temp_OR, Temp_Set, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relay, Hum_OR, Hum_Set, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensor')
     if verbose:
             print "Table: HTSensor"
     for row in cur :
         if verbose:
-            print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s%s " % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18])
+            print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19], row[20])
         sensor_ht_name[row[0]] = row[1]
         sensor_ht_pin[row[0]] = row[2]
         sensor_ht_device[row[0]] = row[3]
         sensor_ht_period[row[0]] = row[4]
-        sensor_ht_log[row[0]] = row[5]
+        sensor_ht_activated[row[0]] = row[5]
         sensor_ht_graph[row[0]] = row[6]
         pid_temp_relay[row[0]] = row[7]
         pid_temp_or[row[0]] = row[8]
         pid_temp_set[row[0]] = row[9]
-        pid_temp_p[row[0]] = row[10]
-        pid_temp_i[row[0]] = row[11]
-        pid_temp_d[row[0]] = row[12]
-        pid_hum_relay[row[0]] = row[13]
-        pid_hum_or[row[0]] = row[14]
-        pid_hum_set[row[0]] = row[15]
-        pid_hum_p[row[0]] = row[16]
-        pid_hum_i[row[0]] = row[17]
-        pid_hum_d[row[0]] = row[18]
+        pid_temp_period[row[0]] = row[10]
+        pid_temp_p[row[0]] = row[11]
+        pid_temp_i[row[0]] = row[12]
+        pid_temp_d[row[0]] = row[13]
+        pid_hum_relay[row[0]] = row[14]
+        pid_hum_or[row[0]] = row[15]
+        pid_hum_set[row[0]] = row[16]
+        pid_hum_period[row[0]] = row[17]
+        pid_hum_p[row[0]] = row[18]
+        pid_hum_i[row[0]] = row[19]
+        pid_hum_d[row[0]] = row[20]
     
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, CO2_Relay, CO2_OR, CO2_Set, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
+    cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, CO2_Relay, CO2_OR, CO2_Set, CO2_Period, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
     if verbose:
             print "Table: CO2Sensor "
     for row in cur :
@@ -1885,14 +1887,15 @@ def read_sql():
         sensor_co2_pin[row[0]] = row[2]
         sensor_co2_device[row[0]] = row[3]
         sensor_co2_period[row[0]] = row[4]
-        sensor_co2_log[row[0]] = row[5]
+        sensor_co2_activated[row[0]] = row[5]
         sensor_co2_graph[row[0]] = row[6]
         pid_co2_relay[row[0]] = row[7]
         pid_co2_or[row[0]] = row[8]
         pid_co2_set[row[0]] = row[9]
-        pid_co2_p[row[0]] = row[10]
-        pid_co2_i[row[0]] = row[11]
-        pid_co2_d[row[0]] = row[12]
+        pid_co2_period[row[0]] = row[10]
+        pid_co2_p[row[0]] = row[11]
+        pid_co2_i[row[0]] = row[12]
+        pid_co2_d[row[0]] = row[13]
     
     cur.execute('SELECT Id, Name, Relay, State, DurationOn, DurationOff FROM Timers ')
     if verbose:
@@ -1964,8 +1967,8 @@ def write_sql():
     cur.execute('DROP TABLE IF EXISTS Numbers ')
     cur.execute('DROP TABLE IF EXISTS SMTP ')
     cur.execute("CREATE TABLE Relays (Id INT, Name TEXT, Pin INT, Trigger INT)")
-    cur.execute("CREATE TABLE HTSensor (Id INT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay INT, Temp_OR INT, Temp_Set REAL, Temp_P REAL, Temp_I REAL, Temp_D, Hum_Relay INT, Hum_OR INT, Hum_Set REAL, Hum_P REAL, Hum_I REAL, Hum_D REAL)")
-    cur.execute("CREATE TABLE CO2Sensor (Id INT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, CO2_Relay INT, CO2_OR INT, CO2_Set INT, CO2_P REAL, CO2_I REAL, CO2_D REAL)")
+    cur.execute("CREATE TABLE HTSensor (Id INT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay INT, Temp_OR INT, Temp_Set REAL, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D, Hum_Relay INT, Hum_OR INT, Hum_Set REAL, Hum_Period INT, Hum_P REAL, Hum_I REAL, Hum_D REAL)")
+    cur.execute("CREATE TABLE CO2Sensor (Id INT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, CO2_Relay INT, CO2_OR INT, CO2_Set INT, CO2_Period INT, CO2_P REAL, CO2_I REAL, CO2_D REAL)")
     cur.execute("CREATE TABLE Timers (Id INT, Name TEXT, Relay INT, State INT, DurationOn INT, DurationOff INT)")
     cur.execute("CREATE TABLE Numbers (Relays INT, HTSensors INT, CO2Sensors INT, Timers INT)")
     cur.execute("CREATE TABLE SMTP (Host TEXT, SSL INT, Port INT, User TEXT, Pass TEXT, Email_From TEXT, Email_To TEXT)")
@@ -1973,10 +1976,10 @@ def write_sql():
         query = "INSERT INTO Relays VALUES(%d, '%s', %s, %s)" % (i, relay_name[i], relay_pin[i], relay_trigger[i])
         cur.execute(query)
     for i in range(1, 5):
-        query = "INSERT INTO HTSensor VALUES(%d, '%s', %s, '%s', %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)" % (i, sensor_ht_name[i], sensor_ht_pin[i], sensor_ht_device[i], sensor_ht_period[i], sensor_ht_log[i], sensor_ht_graph[i], pid_temp_relay[i], pid_temp_or[i], pid_temp_set[i], pid_temp_p[i], pid_temp_i[i], pid_temp_d[i], pid_hum_relay[i], pid_hum_or[i], pid_hum_set[i], pid_hum_p[i], pid_hum_i[i], pid_hum_d[i])
+        query = "INSERT INTO HTSensor VALUES(%d, '%s', %s, '%s', %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)" % (i, sensor_ht_name[i], sensor_ht_pin[i], sensor_ht_device[i], sensor_ht_period[i], sensor_ht_activated[i], sensor_ht_graph[i], pid_temp_relay[i], pid_temp_or[i], pid_temp_set[i], pid_temp_period[i], pid_temp_p[i], pid_temp_i[i], pid_temp_d[i], pid_hum_relay[i], pid_hum_or[i], pid_hum_set[i], pid_hum_period[i], pid_hum_p[i], pid_hum_i[i], pid_hum_d[i])
         cur.execute(query)
     for i in range(1, 5):
-        query = "INSERT INTO CO2Sensor VALUES(%d, '%s', %s, '%s', %s, %s, %s, %s, %s, %s, %s, %s, %s)" % (i, sensor_co2_name[i], sensor_co2_pin[i], sensor_co2_device[i], sensor_co2_period[i], sensor_co2_log[i], sensor_co2_graph[i], pid_co2_relay[i], pid_co2_or[i], pid_co2_set[i], pid_co2_p[i], pid_co2_i[i], pid_co2_d[i])
+        query = "INSERT INTO CO2Sensor VALUES(%d, '%s', %s, '%s', %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)" % (i, sensor_co2_name[i], sensor_co2_pin[i], sensor_co2_device[i], sensor_co2_period[i], sensor_co2_activated[i], sensor_co2_graph[i], pid_co2_relay[i], pid_co2_or[i], pid_co2_set[i], pid_co2_period[i], pid_co2_p[i], pid_co2_i[i], pid_co2_d[i])
         cur.execute(query)
     for i in range(1, 9):
         query = "INSERT INTO Timers VALUES(%d, '%s', %s, %s, %s, %s)" % (i, timer_name[i], timer_state[i], timer_relay[i], timer_duration_on[i], timer_duration_off[i])
