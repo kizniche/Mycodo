@@ -187,8 +187,8 @@ def create_all_tables():
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
     cur.execute("CREATE TABLE Relays (Id INT, Name TEXT, Pin INT, Trigger INT)")
-    cur.execute("CREATE TABLE HTSensor (Id INT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay INT, Temp_OR INT, Temp_Set REAL, Temp_P REAL, Temp_I REAL, Temp_D, Hum_Relay INT, Hum_OR INT, Hum_Set REAL, Hum_P REAL, Hum_I REAL, Hum_D REAL)")
-    cur.execute("CREATE TABLE CO2Sensor (Id INT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, CO2_Relay INT, CO2_OR INT, CO2_Set INT, CO2_P REAL, CO2_I REAL, CO2_D REAL)")
+    cur.execute("CREATE TABLE HTSensor (Id INT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay INT, Temp_OR INT, Temp_Set REAL, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D, Hum_Relay INT, Hum_OR INT, Hum_Set REAL, Hum_Period INT, Hum_P REAL, Hum_I REAL, Hum_D REAL)")
+    cur.execute("CREATE TABLE CO2Sensor (Id INT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, CO2_Relay INT, CO2_OR INT, CO2_Set INT, CO2_Period INT, CO2_P REAL, CO2_I REAL, CO2_D REAL)")
     cur.execute("CREATE TABLE Timers (Id INT, Name TEXT, Relay INT, State INT, DurationOn INT, DurationOff INT)")
     cur.execute("CREATE TABLE Numbers (Relays INT, HTSensors INT, CO2Sensors INT, Timers INT)")
     cur.execute("CREATE TABLE SMTP (Host TEXT, SSL INT, Port INT, User TEXT, Pass TEXT, Email_From TEXT, Email_To TEXT)")
@@ -201,9 +201,9 @@ def create_rows_columns():
     for i in range(1, 9):
         cur.execute("INSERT INTO Relays VALUES(%d, 'Relay%d', 0, 0)" % (i, i))
     for i in range(1, 5):
-        cur.execute("INSERT INTO HTSensor VALUES(%d, 'HTSensor%d', 0, 'DHT22', 10, 0, 0, 0, 1, 25.0, 1.1, 1.2, 1.3, 0, 1, 50.0, 1.1, 1.2, 1.3)" % (i, i))
+        cur.execute("INSERT INTO HTSensor VALUES(%d, 'HTSensor%d', 0, 'DHT22', 10, 0, 0, 0, 1, 25.0, 90, 1.1, 1.2, 1.3, 0, 1, 50.0, 90, 1.1, 1.2, 1.3)" % (i, i))
     for i in range(1, 5):
-        cur.execute("INSERT INTO CO2Sensor VALUES(%d, 'CO2Sensor%d', 0, 'K30', 10, 0, 0, 0, 1, 1000, 1.1, 1.2, 1.3)" % (i, i))
+        cur.execute("INSERT INTO CO2Sensor VALUES(%d, 'CO2Sensor%d', 0, 'K30', 10, 0, 0, 0, 1, 1000, 90, 1.1, 1.2, 1.3)" % (i, i))
     for i in range(1, 9):
         cur.execute("INSERT INTO Timers VALUES(%d, 'Timer%d', 0, 0, 60, 360)" % (i, i))
     cur.execute("INSERT INTO Numbers VALUES(8, 3, 1, 4)")
@@ -490,7 +490,7 @@ def update_value(table, Id, variable, value):
                 table, variable, value, Id)
     cur.execute(query)
     conn.commit()
-    cur.close() 
+    cur.close()
 
 # Check if string represents an integer column
 def represents_int(s):
