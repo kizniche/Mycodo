@@ -104,9 +104,6 @@ pid_temp_i = [0] * 5
 pid_temp_d = [0] * 5
 pid_temp_or = [0] * 5
 pid_temp_alive = [1] * 5
-pid_temp_down = 0
-pid_temp_up = 0
-pid_temp_number = None
 
 # Humidity PID
 pid_hum_relay = [0] * 5
@@ -117,9 +114,6 @@ pid_hum_i = [0] * 5
 pid_hum_d = [0] * 5
 pid_hum_or = [0] * 5
 pid_hum_alive = [1] * 5
-pid_hum_down = 0
-pid_hum_up = 0
-pid_hum_number = None
 
 # CO2 Sensors
 sensor_co2_num = 0
@@ -140,9 +134,15 @@ pid_co2_i = [0] * 5
 pid_co2_d = [0] * 5
 pid_co2_or = [0] * 5
 pid_co2_alive = [1] * 5
+
+# PID Restarting
+pid_number = None
+pid_temp_down = 0
+pid_temp_up = 0
+pid_hum_down = 0
+pid_hum_up = 0
 pid_co2_down = 0
 pid_co2_up = 0
-pid_co2_number = None
 
 # Timers
 timer_num = None
@@ -180,7 +180,7 @@ class ComServer(rpyc.Service):
             relay_onoff(int(relay), 0)
         else:
             logging.info("[Client command] Turning Relay %s On for %s seconds", relay, state)
-            rod = threading.Thread(target = relay_on_duration, 
+            rod = threading.Thread(target = relay_on_duration,
                 args = (int(relay), int(state), 0,))
             rod.start()
         return 1
@@ -239,13 +239,13 @@ class ComServer(rpyc.Service):
         return 1
     def exposed_ChangeCO2OR(self, sensornum, override):
         global pid_co2_or
-        global pid_co2_number
+        global pid_number
         global pid_co2_down
         global pid_co2_up
         logging.info("[Client command] Change CO2OR for sensor %s to %s",
             sensornum, override)
         pid_co2_or[sensornum] = override
-        pid_co2_number = sensornum
+        pid_number = sensornum
         pid_co2_down = 1
         while pid_co2_down == 1:
             time.sleep(0.1)
@@ -263,7 +263,7 @@ class ComServer(rpyc.Service):
         global pid_co2_i
         global pid_co2_d
         global pid_co2_or
-        global pid_co2_number
+        global pid_number
         global pid_co2_down
         global pid_co2_up
         logging.info("[Client command] Change Co2 PID for sensor %s: Relay: %s Set: %s P: %s I: %s D: %s Period: %s",
@@ -274,7 +274,7 @@ class ComServer(rpyc.Service):
         pid_co2_p[sensornum] = p
         pid_co2_i[sensornum] = i
         pid_co2_d[sensornum] = d
-        pid_co2_number = sensornum
+        pid_number = sensornum
         pid_co2_down = 1
         while pid_co2_down == 1:
             time.sleep(0.1)
@@ -286,13 +286,13 @@ class ComServer(rpyc.Service):
         return 1
     def exposed_ChangeTempOR(self, sensornum, override):
         global pid_temp_or
-        global pid_temp_number
+        global pid_number
         global pid_temp_down
         global pid_temp_up
         logging.info("[Client command] Change pid_temp_or for sensor %s to %s",
             sensornum, override)
         pid_temp_or[sensornum] = override
-        pid_temp_number = sensornum
+        pid_number = sensornum
         pid_temp_down = 1
         while pid_temp_down == 1:
             time.sleep(0.1)
@@ -310,7 +310,7 @@ class ComServer(rpyc.Service):
         global pid_temp_i
         global pid_temp_d
         global pid_temp_or
-        global pid_temp_number
+        global pid_number
         global pid_temp_down
         global pid_temp_up
         logging.info("[Client command] Change Temp PID for sensor %s: Relay: %s Set: %s P: %s I: %s D: %s Period: %s",
@@ -321,7 +321,7 @@ class ComServer(rpyc.Service):
         pid_temp_p[sensornum] = p
         pid_temp_i[sensornum] = i
         pid_temp_d[sensornum] = d
-        pid_temp_number = sensornum
+        pid_number = sensornum
         pid_temp_down = 1
         while pid_temp_down == 1:
             time.sleep(0.1)
@@ -333,13 +333,13 @@ class ComServer(rpyc.Service):
         return 1
     def exposed_ChangeHumOR(self, sensornum, override):
         global pid_hum_or
-        global pid_hum_number
+        global pid_number
         global pid_hum_down
         global pid_hum_up
         pid_hum_or[sensornum] = override
         logging.info("[Client command] Change pid_hum_or for sensor %s to %s",
             sensornum, override)
-        pid_hum_number = sensornum
+        pid_number = sensornum
         pid_hum_down = 1
         while pid_hum_down == 1:
             time.sleep(0.1)
@@ -357,7 +357,7 @@ class ComServer(rpyc.Service):
         global pid_hum_i
         global pid_hum_d
         global pid_hum_or
-        global pid_hum_number
+        global pid_number
         global pid_hum_down
         global pid_hum_up
         logging.info("[Client command] Change Hum PID for sensor %s: Relay: %s Set: %s P: %s I: %s D: %s Period: %s",
@@ -368,8 +368,8 @@ class ComServer(rpyc.Service):
         pid_hum_p[sensornum] = p
         pid_hum_i[sensornum] = i
         pid_hum_d[sensornum] = d
-        
-        pid_hum_number = sensornum
+
+        pid_number = sensornum
         pid_hum_down = 1
         while pid_hum_down == 1:
             time.sleep(0.1)
@@ -435,6 +435,49 @@ class ComServer(rpyc.Service):
         logging.info("[Client command] Request to change variables")
         modify_var(*variable_list)
         return 1
+    def exposed_PIDReload(self, PIDController, PIDNumber):
+        global pid_number
+        pid_number = PIDNumber
+
+        if (PIDController == 'Temp' and pid_temp_or[PIDNumber] == 0) or \
+            (PIDController == 'Hum' and pid_hum_or[PIDNumber] == 0) or \
+            (PIDController == 'CO2' and pid_co2_or[PIDNumber] == 0):
+            logging.info("[Client command] Reload %s PID %s", PIDController, PIDNumber)
+        else:
+            logging.info("[Client command] PID reload request denied: Cannot restart non-active PID.")
+            return 'Cannot restart non-active PID.'
+
+        if PIDController == 'Temp':
+            global pid_temp_down
+            global pid_temp_up
+            pid_temp_down = 1
+            while pid_temp_down == 1:
+                time.sleep(0.1)
+            pid_temp_up = 1
+            while pid_temp_up:
+                time.sleep(0.1)
+            return 1
+        elif PIDController == 'Hum':
+            global pid_hum_down
+            global pid_hum_up
+            pid_hum_down = 1
+            while pid_hum_down == 1:
+                time.sleep(0.1)
+            pid_hum_up = 1
+            while pid_hum_up:
+                time.sleep(0.1)
+            return 1
+        elif PIDController == 'CO2':
+            global pid_co2_down
+            global pid_co2_up
+            pid_co2_down = 1
+            while pid_co2_down == 1:
+                time.sleep(0.1)
+            pid_co2_up = 1
+            while pid_co2_up:
+                time.sleep(0.1)
+            return 1
+
     def exposed_ReadCO2Sensor(self, pin, sensor):
         logging.info("[Client command] Read CO2 Sensor %s from GPIO pin %s", sensor, pin)
         if (sensor == 'K30'):
@@ -450,6 +493,10 @@ class ComServer(rpyc.Service):
         else: return 'Invalid Sensor Name'
         hum, tc = Adafruit_DHT.read_retry(device, pin)
         return (tc, hum)
+    def exposed_SQLReload(self):
+        logging.info("[Client command] Reload SQLite database")
+        read_sql()
+        return 1
     def exposed_Terminate(self, remoteCommand):
         global client_que
         global terminate
@@ -670,7 +717,7 @@ def usage():
 def menu():
     a = 'silent'
     b = 'info'
-    
+
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'hl:v',
             ["help", "log", "verbose"])
@@ -694,7 +741,7 @@ def menu():
     daemon(a, b)
     return 1
 
-    
+
 #################################################
 #                    Daemon                     #
 #################################################
@@ -717,7 +764,7 @@ def daemon(output, log):
     timer_time = [0] * 9
     timerHTSensorLog  = [0] * 5
     timerCo2SensorLog  = [0] * 2
-    
+
     if (log == 'warning'):
         logging.getLogger().setLevel(logging.WARNING)
     elif (log == 'info'):
@@ -731,58 +778,58 @@ def daemon(output, log):
         console.setLevel(logging.DEBUG)
         # add the handler to the root logger
         logging.getLogger('').addHandler(console)
-    
+
     logging.info("[Daemon] Daemon Started")
     logging.info("[Daemon} Communication server thread starting")
     ct = ComThread()
     ct.daemon = True
     ct.start()
     time.sleep(1)
-    
+
     logging.info("[Daemon] Reading SQL database and initializing variables")
     read_sql()
-    
+
     # Initial sensor readings
     logging.info("[Daemon] Conducting initial sensor readings from %s HT and %s CO2 sensors", sum(sensor_ht_activated), sum(sensor_co2_activated))
     for i in range(1, sensor_ht_num+1):
         if sensor_ht_device[i] != 'Other' and sensor_ht_activated[i] == 1:
             read_dht_sensor(i)
             time.sleep(2) # Ensure a minimum of 2 seconds between sensor reads
-    
+
     for i in range(1, sensor_co2_num+1):
         if sensor_co2_device[i] != 'Other' and sensor_co2_activated[i] == 1:
             read_co2_sensor(i)
             time.sleep(2) # Ensure a minimum of 2 seconds between sensor reads
-    
+
     timerLogBackup = int(time.time()) + 21600 # 21600 seconds = 6 hours
-    
+
     for i in range(1, sensor_ht_num+1):
         timerHTSensorLog[i] = int(time.time()) + sensor_ht_period[i]
-        
+
     for i in range(1, sensor_co2_num+1):
         timerCo2SensorLog[i] = int(time.time()) + sensor_co2_period[i]
-    
+
     for i in range(1, 9):
         timer_time[i] = int(time.time())
-    
+
     threadst = []
     threadsh = []
     threadsc = []
-    
+
     for i in range(1, 5):
-        rod = threading.Thread(target = temperature_monitor, 
+        rod = threading.Thread(target = temperature_monitor,
             args = ('Thread-%d' % i, i,))
         rod.start()
         threadst.append(rod)
 
     for i in range(1, 5):
-        rod = threading.Thread(target = humidity_monitor, 
+        rod = threading.Thread(target = humidity_monitor,
             args = ('Thread-%d' % i, i,))
         rod.start()
         threadsh.append(rod)
-        
+
     for i in range(1, 5):
-        rod = threading.Thread(target = co2_monitor, 
+        rod = threading.Thread(target = co2_monitor,
             args = ('Thread-%d' % i, i,))
         rod.start()
         threadsc.append(rod)
@@ -795,7 +842,7 @@ def daemon(output, log):
                     read_co2_sensor(client_var)
                     write_co2_sensor_log(client_var)
                 else:
-                    for i in range(1, int(sensor_co2_num)+1): 
+                    for i in range(1, int(sensor_co2_num)+1):
                         read_co2_sensor(i)
                         write_co2_sensor_log(i)
                         time.sleep(2)
@@ -806,7 +853,7 @@ def daemon(output, log):
                     read_dht_sensor(client_var)
                     write_dht_sensor_log(client_var)
                 else:
-                    for i in range(1, int(sensor_ht_num)+1): 
+                    for i in range(1, int(sensor_ht_num)+1):
                         read_dht_sensor(i)
                         write_dht_sensor_log(i)
                         time.sleep(2)
@@ -832,54 +879,54 @@ def daemon(output, log):
                 timer_time[timer_change] = 0
                 if (timer_state[timer_change] == 0 and timer_relay[timer_change] != 0):
                     relay_onoff(timer_relay[timer_change], 0)
-                    
+
             client_que = '0'
 
         if pid_temp_down:
-            logging.info("[Daemon] Shutting Down Temperature PID Thread-%s", pid_temp_number)
-            pid_temp_alive[pid_temp_number] = 0
-            while pid_temp_alive[pid_temp_number] != 2:
+            logging.info("[Daemon] Shutting Down Temperature PID Thread-%s", pid_number)
+            pid_temp_alive[pid_number] = 0
+            while pid_temp_alive[pid_number] != 2:
                 time.sleep(0.1)
-            if (relay_trigger[int(pid_temp_relay[1])] == 0): gpio_change(int(pid_temp_relay[1]), 1)
-            else: gpio_change(int(pid_temp_relay[1]), 0)
-            pid_temp_alive[pid_temp_number] = 1
+            if (relay_trigger[int(pid_temp_relay[pid_number])] == 0): gpio_change(int(pid_temp_relay[pid_number]), 1)
+            else: gpio_change(int(pid_temp_relay[pid_number]), 0)
+            pid_temp_alive[pid_number] = 1
             pid_temp_down = 0
         if pid_temp_up == 1:
-            logging.info("[Daemon] Starting Temperature PID Thread-%s", pid_temp_number)
-            rod = threading.Thread(target = temperature_monitor, 
-                args = ('Thread-%d' % pid_temp_number, pid_temp_number,))
+            logging.info("[Daemon] Starting Temperature PID Thread-%s", pid_number)
+            rod = threading.Thread(target = temperature_monitor,
+                args = ('Thread-%d' % pid_number, pid_number,))
             rod.start()
             pid_temp_up = 0
-            
+
         if pid_hum_down:
-            logging.info("[Daemon] Shutting Down Humidity PID Thread-%s", pid_hum_number)
-            pid_hum_alive[pid_hum_number] = 0
-            while pid_hum_alive[pid_hum_number] != 2:
+            logging.info("[Daemon] Shutting Down Humidity PID Thread-%s", pid_number)
+            pid_hum_alive[pid_number] = 0
+            while pid_hum_alive[pid_number] != 2:
                 time.sleep(0.1)
             if (relay_trigger[int(pid_hum_relay[1])] == 0): gpio_change(int(pid_hum_relay[1]), 1)
             else: gpio_change(int(pid_hum_relay[1]), 1)
-            pid_hum_alive[pid_hum_number] = 1
+            pid_hum_alive[pid_number] = 1
             pid_hum_down = 0
         if pid_hum_up == 1:
-            logging.info("[Daemon] Starting Temperature PID Thread-%s", pid_hum_number)
-            rod = threading.Thread(target = humidity_monitor, 
-                args = ('Thread-%d' % pid_hum_number, pid_hum_number,))
+            logging.info("[Daemon] Starting Temperature PID Thread-%s", pid_number)
+            rod = threading.Thread(target = humidity_monitor,
+                args = ('Thread-%d' % pid_number, pid_number,))
             rod.start()
             pid_hum_up = 0
-            
+
         if pid_co2_down:
-            logging.info("[Daemon] Shutting Down CO2 PID Thread-%s", pid_co2_number)
-            pid_co2_alive[pid_co2_number] = 0
-            while pid_co2_alive[pid_co2_number] != 2:
+            logging.info("[Daemon] Shutting Down CO2 PID Thread-%s", pid_number)
+            pid_co2_alive[pid_number] = 0
+            while pid_co2_alive[pid_number] != 2:
                 time.sleep(0.1)
             if (relay_trigger[int(pid_co2_relay[1])] == 0): gpio_change(int(pid_co2_relay[1]), 1)
             else: gpio_change(int(pid_co2_relay[1]), 0)
-            pid_co2_alive[pid_co2_number] = 1
+            pid_co2_alive[pid_number] = 1
             pid_co2_down = 0
         if pid_co2_up == 1:
-            logging.info("[Daemon] Starting CO2 PID Thread-%s", pid_co2_number)
-            rod = threading.Thread(target = co2_monitor, 
-                args = ('Thread-%d' % pid_co2_number, pid_co2_number,))
+            logging.info("[Daemon] Starting CO2 PID Thread-%s", pid_number)
+            rod = threading.Thread(target = co2_monitor,
+                args = ('Thread-%d' % pid_number, pid_number,))
             rod.start()
             pid_co2_up = 0
 
@@ -897,18 +944,18 @@ def daemon(output, log):
                 if read_co2_sensor(i) == 1:
                     write_co2_sensor_log(i)
                 timerCo2SensorLog[i] = int(time.time()) + sensor_co2_period[i]
-        
+
         # Concatenate local log with tempfs log every 6 hours
         if int(time.time()) > timerLogBackup:
             Concatenate_Logs()
             timerLogBackup = int(time.time()) + 21600
-        
+
         # Handle timers
         for i in range(1, 9):
             if int(time.time()) > timer_time[i]:
                 if timer_state[i] == 1:
                     logging.debug("[Timer Expiration] Timer %s: Turn Relay %s on for %s seconds, off %s seconds.", i, timer_relay[i], timer_duration_on[i], timer_duration_off[i])
-                    rod = threading.Thread(target = relay_on_duration, 
+                    rod = threading.Thread(target = relay_on_duration,
                         args = (timer_relay[i], timer_duration_on[i], 0,))
                     rod.start()
                     timer_time[i] = int(time.time()) + timer_duration_on[i] + timer_duration_off[i]
@@ -926,14 +973,14 @@ def temperature_monitor(ThreadName, sensor):
     timerTemp = 0
     PIDTemp = 0
     logging.info("[PID Temperature-%s] Starting %s", sensor, ThreadName)
-    
+
     if pid_temp_relay[sensor] != 0:
         if relay_trigger[int(pid_temp_relay[sensor])] == 0: gpio_change(int(pid_temp_relay[sensor]), 1)
         else: gpio_change(int(pid_temp_relay[sensor]), 0)
-    
+
     p_temp = Temperature_PID(pid_temp_p[sensor], pid_temp_i[sensor], pid_temp_d[sensor])
     p_temp.setPoint(pid_temp_set[sensor])
-    
+
     while (pid_temp_alive[sensor]):
         if pid_temp_or[sensor] == 0 and pid_temp_down == 0 and pid_temp_relay[sensor] != 0 and sensor_ht_activated[sensor] == 1:
             if int(time.time()) > timerTemp:
@@ -944,7 +991,7 @@ def temperature_monitor(ThreadName, sensor):
                     logging.debug("[PID Temperature-%s] Temperature (%.1f°C) < (%.1f°C) pid_temp_set", sensor, sensor_ht_read_temp_c[sensor], float(pid_temp_set[sensor]))
                     logging.debug("[PID Temperature-%s] PID = %.1f (seconds)", sensor, PIDTemp)
                     if (PIDTemp > 0 and sensor_ht_read_temp_c[sensor] < pid_temp_set[sensor]):
-                        rod = threading.Thread(target = relay_on_duration, 
+                        rod = threading.Thread(target = relay_on_duration,
                             args = (pid_temp_relay[sensor], round(PIDTemp,2), sensor,))
                         rod.start()
                     timerTemp = int(time.time()) + int(PIDTemp) + int(pid_temp_period[sensor])
@@ -967,7 +1014,7 @@ def humidity_monitor(ThreadName, sensor):
     if pid_hum_relay[sensor] != 0:
         if relay_trigger[int(pid_hum_relay[sensor])] == 0: gpio_change(int(pid_hum_relay[sensor]), 1)
         else: gpio_change(int(pid_hum_relay[sensor]), 1)
-    
+
     p_hum = Humidity_PID(pid_hum_p[sensor], pid_hum_i[sensor], pid_hum_d[sensor])
     p_hum.setPoint(pid_hum_set[sensor])
 
@@ -1004,7 +1051,7 @@ def co2_monitor(ThreadName, sensor):
     if pid_co2_relay[sensor] != 0:
         if relay_trigger[int(pid_co2_relay[sensor])] == 0: gpio_change(int(pid_co2_relay[sensor]), 1)
         else: gpio_change(int(pid_co2_relay[sensor]), 1)
-    
+
     p_co2 = CO2_PID(pid_co2_p[sensor], pid_co2_i[sensor], pid_co2_d[sensor])
     p_co2.setPoint(pid_co2_set[sensor])
 
@@ -1034,29 +1081,29 @@ def co2_monitor(ThreadName, sensor):
 #################################################
 #                Sensor Reading                 #
 #################################################
-    
+
 # Read CO2 sensor
 def read_co2_sensor(sensor):
     global sensor_co2_read_co2
     chkco2 = 1
-    
+
     if (sensor_co2_device[1] == 'K30'): device = 'K30'
     else:
         logging.warning("[Read CO2 Sensor-%s] Cannot read CO2 from an unknown device!", sensor)
         return 0
 
     logging.debug("[Read CO2 Sensor-%s] Taking first CO2 reading", sensor)
-        
+
     if device == 'K30': co22 = read_K30()
     if co22 == None:
         logging.warning("[Read CO2 Sensor-%s] Could not read CO2!", sensor)
         return 0
-    
+
     logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor, co22)
 
     while not terminate:
         logging.debug("[Read CO2 Sensor-%s] Taking second CO2 reading", sensor)
-        
+
         if device == 'K30': sensor_co2_read_co2[sensor] = read_K30()
         if sensor_co2_read_co2[sensor] == 'None':
             logging.warning("[Read CO2 Sensor-%s] Could not read CO2!", sensor)
@@ -1064,7 +1111,7 @@ def read_co2_sensor(sensor):
 
         logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor, sensor_co2_read_co2[sensor])
         logging.debug("[Read CO2 Sensor-%s] Difference: %s", sensor, abs(co22-sensor_co2_read_co2[sensor]))
-            
+
         if abs(co22-sensor_co2_read_co2[sensor]) > 20 and not terminate:
             co22 = sensor_co2_read_co2[sensor]
             logging.debug("[Read CO2 Sensor-%s] Successive readings > 20 difference: Rereading", sensor)
@@ -1072,7 +1119,7 @@ def read_co2_sensor(sensor):
             logging.debug("[Read CO2 Sensor-%s] Successive readings < 20 difference: keeping.", sensor)
             logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor, sensor_co2_read_co2[sensor])
             return 1
-            
+
 # Read K30 CO2 Sensor
 def read_K30():
     time.sleep(2) # Ensure 2 seconds between sensor reads
@@ -1095,7 +1142,7 @@ def read_dht_sensor(sensor):
     global sensor_ht_read_hum
     global sensor_ht_dewpt_c
     chktemp = 1
-    
+
     if (sensor_ht_device[1] == 'DHT11'): device = Adafruit_DHT.DHT11
     elif (sensor_ht_device[1] == 'DHT22'): device = Adafruit_DHT.DHT22
     elif (sensor_ht_device[1] == 'AM2302'): device = Adafruit_DHT.AM2302
@@ -1104,34 +1151,34 @@ def read_dht_sensor(sensor):
         return 'cannot read temperature/humidity from an unknown device'
 
     logging.debug("[Read HT Sensor-%s] Taking first Temperature/Humidity reading", sensor)
-        
+
     humidity2, tempc2 = Adafruit_DHT.read_retry(device, sensor_ht_pin[sensor])
-    
+
     if humidity2 == None or tempc2 == None:
         logging.warning("[Read HT Sensor-%s] Could not read temperature/humidity!", sensor)
         return 0
-        
+
     logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor, tempc2, humidity2)
 
     time.sleep(2) # Wait 2 seconds between sensor reads
-    
+
     logging.debug("[Read HT Sensor-%s] Taking second Temperature/Humidity reading", sensor)
-            
+
     while chktemp and not terminate:
         sensor_ht_read_hum[sensor], sensor_ht_read_temp_c[sensor] = Adafruit_DHT.read_retry(device, sensor_ht_pin[sensor])
-            
+
         if sensor_ht_read_hum[sensor] == 'None' or sensor_ht_read_temp_c[sensor] == 'None':
             logging.warning("[Read HT Sensor-%s] Could not read temperature/humidity!", sensor)
             return 0
-        
+
         logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor, sensor_ht_read_temp_c[sensor], sensor_ht_read_hum[sensor])
         logging.debug("[Read HT Sensor-%s] Differences: %.1f°C, %.1f%%", sensor, abs(tempc2-sensor_ht_read_temp_c[sensor]), abs(humidity2-sensor_ht_read_hum[sensor]))
-            
+
         if abs(tempc2-sensor_ht_read_temp_c[sensor]) > 1 or abs(humidity2-sensor_ht_read_hum[sensor]) > 1:
             tempc2 = sensor_ht_read_temp_c[sensor]
             humidity2 = sensor_ht_read_hum[sensor]
             chktemp = 1
-            
+
             logging.debug("[Read HT Sensor-%s] Successive readings > 1 difference: Rereading", sensor)
             time.sleep(2) # Wait 2 seconds between sensor reads
         else:
@@ -1144,7 +1191,7 @@ def read_dht_sensor(sensor):
             #sensor_ht_dewpt_f[sensor] = sensor_ht_dewpt_c[sensor] * 9 / 5 + 32
             #sensor_ht_heatindex_f = -42.379 + 2.04901523 * temperature_f + 10.14333127 * sensor_ht_read_hum - 0.22475541 * temperature_f * sensor_ht_read_hum - 6.83783 * 10**-3 * temperature_f**2 - 5.481717 * 10**-2 * sensor_ht_read_hum**2 + 1.22874 * 10**-3 * temperature_f**2 * sensor_ht_read_hum + 8.5282 * 10**-4 * temperature_f * sensor_ht_read_hum**2 - 1.99 * 10**-6 * temperature_f**2 * sensor_ht_read_hum**2
             #sensor_ht_heatindex_c[sensor] = (heatindexf - 32) * (5 / 9)
-            
+
             logging.debug("[Read HT Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", sensor, sensor_ht_read_temp_c[sensor], sensor_ht_read_hum[sensor], sensor_ht_dewpt_c[sensor])
             time.sleep(2) # Wait 2 seconds between sensor reads
             return 1
@@ -1160,7 +1207,7 @@ def write_dht_sensor_log(sensor):
 
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
-        
+
     if not terminate:
         lock = LockFile(sensor_ht_lock_path)
         while not lock.i_am_locking():
@@ -1177,7 +1224,7 @@ def write_dht_sensor_log(sensor):
         try:
             with open(sensor_ht_log_file_tmp, "ab") as sensorlog:
                 sensorlog.write('{0} {1:.1f} {2:.1f} {3:.1f} {4}\n'.format(
-                    datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
+                    datetime.datetime.now().strftime("%Y %m %d %H %M %S"),
                     sensor_ht_read_temp_c[sensor], sensor_ht_read_hum[sensor], sensor_ht_dewpt_c[sensor], sensor))
                 logging.debug("[Write Sensor Log] Data appended to %s", sensor_ht_log_file_tmp)
         except:
@@ -1192,7 +1239,7 @@ def write_co2_sensor_log(sensor):
 
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
-        
+
     if not terminate:
         lock = LockFile(sensor_co2_lock_path)
         while not lock.i_am_locking():
@@ -1209,7 +1256,7 @@ def write_co2_sensor_log(sensor):
         try:
             with open(sensor_co2_log_file_tmp, "ab") as sensorlog:
                 sensorlog.write('{0} {1} {2}\n'.format(
-                    datetime.datetime.now().strftime("%Y %m %d %H %M %S"), 
+                    datetime.datetime.now().strftime("%Y %m %d %H %M %S"),
                     sensor_co2_read_co2[sensor], sensor))
                 logging.debug("[Write CO2 Sensor Log] Data appended to %s", sensor_co2_log_file_tmp)
         except:
@@ -1318,7 +1365,7 @@ def Concatenate_Logs():
         lock.release()
     else:
         logging.debug("[Sensor Log] HT Sensor logs the same, skipping.")
-    
+
     # CO2 Logs
     if not filecmp.cmp(sensor_co2_log_file_tmp, sensor_co2_log_file):
         logging.debug("[Sensor Log] Concatenating CO2 sensor logs to %s", sensor_co2_log_file)
@@ -1416,9 +1463,9 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         h = 6
         time_ago = '6 Hours'
     date_now = datetime.datetime.now().strftime("%Y %m %d %H %M %S")
-    date_now_disp = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S") 
+    date_now_disp = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
-    date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%d/%m/%Y %H:%M:%S") 
+    date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%d/%m/%Y %H:%M:%S")
 
     # Combine sensor and relay logs on SD card with sensor and relay logs in /tmp
     sensor_ht_log_files_combine = [sensor_ht_log_file, sensor_ht_log_file_tmp]
@@ -1426,13 +1473,13 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     with open(sensor_ht_log_generate, 'w') as fout:
         for line in fileinput.input(sensor_ht_log_files_combine):
             fout.write(line)
-            
+
     sensor_co2_log_files_combine = [sensor_co2_log_file, sensor_co2_log_file_tmp]
     sensor_co2_log_generate = "%s/sensor-co2-logs-combined.log" % tmp_path
     with open(sensor_co2_log_generate, 'w') as fout:
         for line in fileinput.input(sensor_co2_log_files_combine):
             fout.write(line)
-            
+
     relay_log_files_combine = [relay_log_file, relay_log_file_tmp]
     relay_log_generate = "%s/relay-logs-combined.log" % tmp_path
     with open(relay_log_generate, 'w') as fout:
@@ -1448,14 +1495,14 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     # Axes size constraints
     y1_min = '0'
     y1_max = '100'
-    
+
     if "co2" in graph_out_file:
         y2_min = '0'
         y2_max = '5000'
     else:
         y2_min = '0'
         y2_max = '35'
-    
+
     # Line colors (see comments further down with their use)
     graph_colors = ['#FF3100', '#0772A1', '#00B74A', '#91180B',
                     '#582557', '#04834C', '#DC32E6', '#957EF9',
@@ -1463,14 +1510,14 @@ def generate_graph(graph_out_file, graph_id, sensorn):
                     '#7164a3', '#599e86', '#c3ae4f', '#c3744f',
                     ]
 
-    # Write the following output to a file that will be executed with gnuplot 
+    # Write the following output to a file that will be executed with gnuplot
     gnuplot_graph = "%s/plot-%s-%s.gnuplot" % (tmp_path, graph_out_file, sensorn)
     plot = open(gnuplot_graph, 'w')
-    
-    plot.write('reset\n') 
+
+    plot.write('reset\n')
     plot.write('set xdata time\n')
     plot.write('set timefmt \"%Y %m %d %H %M %S\"\n')
-    
+
     if "combined" in graph_out_file:
         plot.write('set terminal png size 1000,1500\n')
         plot.write('set output \"' + image_path + '/graph-' + graph_out_file + '-' + graph_id + '.png\"\n')
@@ -1486,7 +1533,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     elif "legend-full" in graph_out_file:
         plot.write('set terminal png size 800,500\n')
         plot.write('set output \"' + image_path + '/graph-' + graph_out_file + '-' + graph_id + '.png\"\n')
-    
+
     if "legend-small" not in graph_out_file:
         plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
         plot.write('set format x \"%H:%M\\n%m/%d\"\n')
@@ -1497,7 +1544,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         plot.write('set tics nomirror\n')
         plot.write('set style line 12 lc rgb \'#808080\' lt 0 lw 1\n')
         plot.write('set grid xtics ytics back ls 12\n')
-    
+
     if "dayweek" in graph_out_file:
         plot.write('set mytics 10\n')
         plot.write('set my2tics 5\n')
@@ -1513,19 +1560,19 @@ def generate_graph(graph_out_file, graph_id, sensorn):
             plot.write('set y2tics 500\n')
         else:
             plot.write('set y2tics 5\n')
-            
-    
+
+
     plot.write('set style line 11 lc rgb \'#808080\' lt 1\n')
     plot.write('set border 3 back ls 11\n')
     plot.write('set tics nomirror\n')
     plot.write('set style line 12 lc rgb \'#808080\' lt 0 lw 1\n')
     plot.write('set grid xtics ytics back ls 12\n')
-       
+
     # Horizontal lines: separate temperature, sensor_ht_read_hum, and dewpoint
     plot.write('set style line 1 lc rgb \'' + graph_colors[0] + '\' pt 0 ps 1 lt 1 lw 2\n')
     plot.write('set style line 2 lc rgb \'' + graph_colors[1] + '\' pt 0 ps 1 lt 1 lw 2\n')
     plot.write('set style line 3 lc rgb \'' + graph_colors[2] + '\' pt 0 ps 1 lt 1 lw 2\n')
-    
+
     # Vertical lines: relays 1 - 8
     plot.write('set style line 4 lc rgb \'' + graph_colors[3] + '\' pt 0 ps 1 lt 1 lw 1\n')
     plot.write('set style line 5 lc rgb \'' + graph_colors[4] + '\' pt 0 ps 1 lt 1 lw 1\n')
@@ -1535,15 +1582,15 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     plot.write('set style line 9 lc rgb \'' + graph_colors[8] + '\' pt 0 ps 1 lt 1 lw 1\n')
     plot.write('set style line 10 lc rgb \'' + graph_colors[9] + '\' pt 0 ps 1 lt 1 lw 1\n')
     plot.write('set style line 11 lc rgb \'' + graph_colors[10] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    
+
     # Horizontal lines: combined temperatures and humidities
     plot.write('set style line 12 lc rgb \'' + graph_colors[11] + '\' pt 0 ps 1 lt 1 lw 2\n')
     plot.write('set style line 13 lc rgb \'' + graph_colors[12] + '\' pt 0 ps 1 lt 1 lw 2\n')
     plot.write('set style line 14 lc rgb \'' + graph_colors[13] + '\' pt 0 ps 1 lt 1 lw 2\n')
     plot.write('set style line 15 lc rgb \'' + graph_colors[14] + '\' pt 0 ps 1 lt 1 lw 2\n')
     plot.write('unset key\n')
-    
-    # Generate a graph with all temperatures and one graph with all humidities 
+
+    # Generate a graph with all temperatures and one graph with all humidities
     if "combined" in graph_out_file:
         plot.write('set multiplot layout 3,1\n')
         plot.write('set origin 0.0,0.66\n')
@@ -1563,7 +1610,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
             else: plot.write('\n')
         if sensor_ht_graph[4]:
             plot.write('\"<awk \'$10 == 4\' ' + sensor_ht_log_generate + sensor_head + '" u 1:7 index 0 title \"T4\" w lp ls 15 axes x1y2\n')
-            
+
         plot.write('set origin 0.0,0.33\n')
         plot.write('set title \"Combined Humidities: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
         plot.write('plot ')
@@ -1581,7 +1628,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
             else: plot.write('\n')
         if sensor_ht_graph[4]:
             plot.write('\"<awk \'$10 == 4\' ' + sensor_ht_log_generate + sensor_head + '" u 1:8 index 0 title \"H4\" w lp ls 15 axes x1y1\n')
-            
+
         plot.write('set origin 0.0,0.0\n')
         plot.write('set title \"Combined CO2s: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
         y2_min = '0'
@@ -1611,20 +1658,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         plot.write('plot \"<awk \'$10 == ' + sensorn + '\' ' + sensor_ht_log_generate + sensor_head + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
         plot.write('\"\" u 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, ')
         plot.write('\"\" u 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ')
-        
-        plot.write('\"<awk \'$15 == ' + sensorn + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relay_name[1] + '\" w impulses ls 4 axes x1y1, ')
-        plot.write('\"\" u 1:8 index 0 title \"' + relay_name[2] + '\" w impulses ls 5 axes x1y1, ')
-        plot.write('\"\" u 1:9 index 0 title \"' + relay_name[3] + '\" w impulses ls 6 axes x1y1, ')
-        plot.write('\"\" u 1:10 index 0 title \"' + relay_name[4] + '\" w impulses ls 7 axes x1y1, ')
-        plot.write('\"\" u 1:11 index 0 title \"' + relay_name[5] + '\" w impulses ls 8 axes x1y1, ')
-        plot.write('\"\" u 1:12 index 0 title \"' + relay_name[6] + '\" w impulses ls 9 axes x1y1, ')
-        plot.write('\"\" u 1:13 index 0 title \"' + relay_name[7] + '\" w impulses ls 10 axes x1y1, ')
-        plot.write('\"\" u 1:14 index 0 title \"' + relay_name[8] + '\" w impulses ls 11 axes x1y1\n')
-        
-    if "co2separate" in graph_out_file:
-        plot.write('set title \"CO2 Sensor ' + sensorn + ': ' + sensor_co2_name[int(float(sensorn))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-        plot.write('plot \"<awk \'$8 == ' + sensorn + '\' ' + sensor_co2_log_generate + sensor_head + '" using 1:7 index 0 title \"CO2\" w lp ls 1 axes x1y2, ')
-        
+
         plot.write('\"<awk \'$15 == ' + sensorn + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relay_name[1] + '\" w impulses ls 4 axes x1y1, ')
         plot.write('\"\" u 1:8 index 0 title \"' + relay_name[2] + '\" w impulses ls 5 axes x1y1, ')
         plot.write('\"\" u 1:9 index 0 title \"' + relay_name[3] + '\" w impulses ls 6 axes x1y1, ')
@@ -1634,7 +1668,20 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         plot.write('\"\" u 1:13 index 0 title \"' + relay_name[7] + '\" w impulses ls 10 axes x1y1, ')
         plot.write('\"\" u 1:14 index 0 title \"' + relay_name[8] + '\" w impulses ls 11 axes x1y1\n')
 
-    # Generate a graph of the past day and week periods for each HT sensor 
+    if "co2separate" in graph_out_file:
+        plot.write('set title \"CO2 Sensor ' + sensorn + ': ' + sensor_co2_name[int(float(sensorn))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+        plot.write('plot \"<awk \'$8 == ' + sensorn + '\' ' + sensor_co2_log_generate + sensor_head + '" using 1:7 index 0 title \"CO2\" w lp ls 1 axes x1y2, ')
+
+        plot.write('\"<awk \'$15 == ' + sensorn + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relay_name[1] + '\" w impulses ls 4 axes x1y1, ')
+        plot.write('\"\" u 1:8 index 0 title \"' + relay_name[2] + '\" w impulses ls 5 axes x1y1, ')
+        plot.write('\"\" u 1:9 index 0 title \"' + relay_name[3] + '\" w impulses ls 6 axes x1y1, ')
+        plot.write('\"\" u 1:10 index 0 title \"' + relay_name[4] + '\" w impulses ls 7 axes x1y1, ')
+        plot.write('\"\" u 1:11 index 0 title \"' + relay_name[5] + '\" w impulses ls 8 axes x1y1, ')
+        plot.write('\"\" u 1:12 index 0 title \"' + relay_name[6] + '\" w impulses ls 9 axes x1y1, ')
+        plot.write('\"\" u 1:13 index 0 title \"' + relay_name[7] + '\" w impulses ls 10 axes x1y1, ')
+        plot.write('\"\" u 1:14 index 0 title \"' + relay_name[8] + '\" w impulses ls 11 axes x1y1\n')
+
+    # Generate a graph of the past day and week periods for each HT sensor
     if "htdayweek" in graph_out_file:
         plot.write('set origin 0.0,0.0\n')
         plot.write('set multiplot\n')
@@ -1657,7 +1704,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         d = 7
         time_ago = '1 Week'
         date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
-        date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S") 
+        date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S")
         plot.write('set size 1.0,0.5\n')
         plot.write('set origin 0.0,0.0\n')
         plot.write('set title \"Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
@@ -1667,8 +1714,8 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         plot.write('\"\" using 1:8 index 0 notitle w lp ls 2 axes x1y1, ')
         plot.write('\"\" using 1:9 index 0 notitle w lp ls 3 axes x1y2\n')
         plot.write('unset multiplot\n')
-        
-    # Generate a graph of the past day and week periods for each CO2 sensor 
+
+    # Generate a graph of the past day and week periods for each CO2 sensor
     if "co2dayweek" in graph_out_file:
         plot.write('set origin 0.0,0.0\n')
         plot.write('set multiplot\n')
@@ -1689,7 +1736,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         d = 7
         time_ago = '1 Week'
         date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
-        date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S") 
+        date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S")
         plot.write('set size 1.0,0.5\n')
         plot.write('set origin 0.0,0.0\n')
         plot.write('set title \"Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
@@ -1715,7 +1762,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         plot.write('sqrt(-1) title \"' + relay_name[6] + '\" w impulses ls 9, ')
         plot.write('sqrt(-1) title \"' + relay_name[7] + '\" w impulses ls 10, ')
         plot.write('sqrt(-1) title \"' + relay_name[8] + '\" w impulses ls 11\n')
-        
+
     if "legend-full" in graph_out_file:
         plot.write('set xlabel \"Date and Time\"\n')
         plot.write('set ylabel \"# Seconds Relays On and % Humidity\"\n')
@@ -1761,14 +1808,14 @@ def read_sql():
     global sensor_ht_period
     global sensor_ht_activated
     global sensor_ht_graph
-    
+
     global sensor_co2_name
     global sensor_co2_device
     global sensor_co2_pin
     global sensor_co2_period
     global sensor_co2_activated
     global sensor_co2_graph
-    
+
     global pid_co2_period
     global pid_co2_relay
     global pid_co2_set
@@ -1776,25 +1823,25 @@ def read_sql():
     global pid_co2_p
     global pid_co2_i
     global pid_co2_d
-    
+
     global relay_name
     global relay_pin
     global relay_trigger
-    
+
     global pid_hum_relay
     global pid_hum_set
     global pid_hum_or
     global pid_hum_p
     global pid_hum_i
     global pid_hum_d
-    
+
     global pid_temp_relay
     global pid_temp_set
     global pid_temp_or
     global pid_temp_p
     global pid_temp_i
     global pid_temp_d
-    
+
     global factorHumSeconds
     global factorTempSeconds
     global camera_light
@@ -1836,7 +1883,7 @@ def read_sql():
                 print "%s" % missing[i]
         print "Reinitialize database to correct."
         return 0
-  
+
     # Begin setting global variables from SQL database values
     cur.execute('SELECT Id, Name, Pin, Trigger FROM Relays')
     if verbose:
@@ -1874,7 +1921,7 @@ def read_sql():
         pid_hum_p[row[0]] = row[18]
         pid_hum_i[row[0]] = row[19]
         pid_hum_d[row[0]] = row[20]
-    
+
     cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, CO2_Relay, CO2_OR, CO2_Set, CO2_Period, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
     if verbose:
             print "Table: CO2Sensor "
@@ -1896,7 +1943,7 @@ def read_sql():
         pid_co2_p[row[0]] = row[11]
         pid_co2_i[row[0]] = row[12]
         pid_co2_d[row[0]] = row[13]
-    
+
     cur.execute('SELECT Id, Name, Relay, State, DurationOn, DurationOff FROM Timers ')
     if verbose:
             print "Table: Timers "
@@ -1909,7 +1956,7 @@ def read_sql():
         timer_state[row[0]] = row[3]
         timer_duration_on[row[0]] = row[4]
         timer_duration_off[row[0]] = row[5]
-        
+
     cur.execute('SELECT Relays, HTSensors, CO2Sensors, Timers FROM Numbers ')
     if verbose:
             print "Table: Numbers "
@@ -1921,7 +1968,7 @@ def read_sql():
         sensor_ht_num = row[1]
         sensor_co2_num = row[2]
         timer_num = row[3]
-        
+
     cur.execute('SELECT Host, SSL, Port, User, Pass, Email_From, Email_To FROM SMTP ')
     if verbose:
             print "Table: SMTP "
@@ -1945,7 +1992,7 @@ def write_sql():
         os.makedirs(lock_directory)
 
     lock = LockFile(sql_lock_path)
-    
+
     while not lock.i_am_locking():
         try:
             logging.debug("[Write SQL] Waiting, Acquiring Lock: %s", lock.path)
@@ -1954,7 +2001,7 @@ def write_sql():
             logging.warning("[Write SQL] Breaking Lock to Acquire: %s", lock.path)
             lock.break_lock()
             lock.acquire()
-           
+
     logging.debug("[Write SQL] Gained lock: %s", lock.path)
     logging.debug("[Write SQL] Writing SQL Database %s", sql_database)
 
@@ -1990,7 +2037,7 @@ def write_sql():
     cur.execute(query)
     conn.commit()
     cur.close()
-    
+
     logging.debug("[Write SQL] Removing lock: %s", lock.path)
     lock.release()
 
@@ -2007,16 +2054,16 @@ def modify_var(*names_and_values):
     'smtp_pass',
     'smtp_email_from',
     'smtp_email_to']
-    
+
     for i in range(1, len(names_and_values), 2):
         for variable in namesOfVariables:
             if names_and_values[i] == variable:
                 # Log variable name: previous value -> new value
-                logging.info("[Change Variable] %s: %s -> %s", 
-                    names_and_values[i], 
-                    globals()[names_and_values[i]], 
+                logging.info("[Change Variable] %s: %s -> %s",
+                    names_and_values[i],
+                    globals()[names_and_values[i]],
                     names_and_values[i+1])
-                globals()[names_and_values[i]] = names_and_values[i+1]   
+                globals()[names_and_values[i]] = names_and_values[i+1]
     write_sql()
     read_sql()
 
@@ -2024,24 +2071,24 @@ def modify_var(*names_and_values):
 #################################################
 #               GPIO Manipulation               #
 #################################################
-    
+
 # Initialize GPIO
 def gpio_initialize():
     logging.info("[GPIO Initialize] Set GPIO mode to BCM numbering, all as output")
-    
+
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
-    
+
     # Initialize
     for i in range(1, 9):
         GPIO.setup(relay_pin[i], GPIO.OUT)
-    
+
     Relays_Off()
 
 # Change GPIO (Select) to a specific state (State)
 def gpio_change(relay, State):
-    logging.debug("[GPIO Write] Setting relay %s (%s) to %s (was %s)", 
-        relay, relay_name[relay], 
+    logging.debug("[GPIO Write] Setting relay %s (%s) to %s (was %s)",
+        relay, relay_name[relay],
         State, GPIO.input(relay_pin[relay]))
     GPIO.output(relay_pin[relay], State)
 
@@ -2072,24 +2119,24 @@ def relay_onoff(relay, state):
 def relay_on_duration(relay, seconds, sensor):
     if (relay_trigger[relay] == 0 and GPIO.input(relay_pin[relay]) == 0) or (
             relay_trigger[relay] == 1 and GPIO.input(relay_pin[relay]) == 1):
-        logging.warning("[Relay Duration] Relay %s (%s) is already On. Turning off in %s seconds.", 
+        logging.warning("[Relay Duration] Relay %s (%s) is already On. Turning off in %s seconds.",
             relay, relay_name[relay], seconds)
     else:
-        logging.debug("[Relay Duration] Relay %s (%s) ON for %s seconds", 
+        logging.debug("[Relay Duration] Relay %s (%s) ON for %s seconds",
             relay, relay_name[relay], round(seconds, 1))
-   
-    GPIO.output(relay_pin[relay], relay_trigger[relay]) # Turn relay on    
+
+    GPIO.output(relay_pin[relay], relay_trigger[relay]) # Turn relay on
     timer_on = int(time.time()) + seconds
     write_relay_log(relay, seconds, sensor)
-    
+
     while (client_que != 'TerminateServer' and timer_on > int(time.time())):
         time.sleep(0.1)
-        
+
     # Turn relay off
     if relay_trigger[relay] == 0: GPIO.output(relay_pin[relay], 1)
     else: GPIO.output(relay_pin[relay], 0)
-    
-    logging.debug("[Relay Duration] Relay %s (%s) Off (was On for %s sec)", 
+
+    logging.debug("[Relay Duration] Relay %s (%s) Off (was On for %s sec)",
         relay, relay_name[relay], round(seconds, 1))
     return 1
 
@@ -2112,7 +2159,7 @@ def email(message):
 
     # Body of email
     # message = "Critical warning!"
-    
+
     msg = MIMEText(message)
     msg['Subject'] = "Critical warning!"
     msg['From'] = "Raspberry Pi"
@@ -2127,15 +2174,15 @@ def email(message):
 
 # Check if string represents an integer value
 def represents_int(s):
-    try: 
+    try:
         int(s)
         return True
     except ValueError:
         return False
-        
+
 # Check if string represents a float value
 def represents_float(s):
-    try: 
+    try:
         float(s)
         return True
     except ValueError:

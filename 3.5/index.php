@@ -94,8 +94,7 @@ if ($login->isUserLoggedIn() == true) {
 
     $page = isset($_GET['page']) ? $_GET['page'] : 'Main';
     $tab = isset($_GET['tab']) ? $_GET['tab'] : 'Unset';
-    $daemon_reload = False;
-    $pid_reload = False;
+    $sql_reload = False;
 
     // Check form submissions
     for ($p = 1; $p <= 8; $p++) {
@@ -111,8 +110,7 @@ if ($login->isUserLoggedIn() == true) {
                 isset($_POST['Change' . $p . 'TempOR']) ||
                 isset($_POST['Change' . $p . 'HumOR']) ||
                 isset($_POST['Change' . $p . 'Co2OR'])) {
-            $daemon_reload = True;
-            $pid_reload = True;
+            $sql_reload = True;
 
             // All commands where elevated (!= guest) privileges are required
             if ($_SESSION['user_name'] != 'guest') {
@@ -158,6 +156,9 @@ if ($login->isUserLoggedIn() == true) {
                     $stmt->bindValue(':tempd', (float)$_POST['Set' . $p . 'Temp_D'], SQLITE3_FLOAT);
                     $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
                     $stmt->execute();
+                    if ($pid_temp_or[$p] == 0) {
+                        pid_reload($mycodo_client, 'Temp', $p);
+                    }
                 }
 
                 // Set Temperature PID override on or off
@@ -179,6 +180,9 @@ if ($login->isUserLoggedIn() == true) {
                     $stmt->bindValue(':humd', (float)$_POST['Set' . $p . 'Hum_D'], SQLITE3_FLOAT);
                     $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
                     $stmt->execute();
+                    if ($pid_hum_or[$p] == 0) {
+                        pid_reload($mycodo_client, 'Hum', $p);
+                    }
                 }
 
                 // Set Humidity PID override on or off
@@ -221,6 +225,9 @@ if ($login->isUserLoggedIn() == true) {
                     $stmt->bindValue(':co2d', (float)$_POST['Set' . $p . 'Co2_D'], SQLITE3_FLOAT);
                     $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
                     $stmt->execute();
+                    if ($pid_co2_or[$p] == 0) {
+                        pid_reload($mycodo_client, 'CO2', $p);
+                    }
                 }
 
                 // Set CO2 PID override on or off
@@ -332,7 +339,7 @@ if ($login->isUserLoggedIn() == true) {
                 $stmt->bindValue(':emailfrom', $_POST['smtp_email_from'], SQLITE3_TEXT);
                 $stmt->bindValue(':emailto', $_POST['smtp_email_to'], SQLITE3_TEXT);
                 $stmt->execute();
-                $daemon_reload = True;
+                $sql_reload = True;
             }
 
             // Change number of relays
@@ -340,7 +347,7 @@ if ($login->isUserLoggedIn() == true) {
                 $stmt = $db->prepare("UPDATE Numbers SET Relays=:relays");
                 $stmt->bindValue(':relays', (int)$_POST['numrelays'], SQLITE3_INTEGER);
                 $stmt->execute();
-                $daemon_reload = True;
+                $sql_reload = True;
             }
 
             // Change number of HT sensors
@@ -348,7 +355,7 @@ if ($login->isUserLoggedIn() == true) {
                 $stmt = $db->prepare("UPDATE Numbers SET HTSensors=:htsensors");
                 $stmt->bindValue(':htsensors', (int)$_POST['numhtsensors'], SQLITE3_INTEGER);
                 $stmt->execute();
-                $daemon_reload = True;
+                $sql_reload = True;
             }
 
             // Change number of CO2 sensors
@@ -356,7 +363,7 @@ if ($login->isUserLoggedIn() == true) {
                 $stmt = $db->prepare("UPDATE Numbers SET CO2Sensors=:co2sensors");
                 $stmt->bindValue(':co2sensors', (int)$_POST['numco2sensors'], SQLITE3_INTEGER);
                 $stmt->execute();
-                $daemon_reload = True;
+                $sql_reload = True;
             }
 
             // Change number of timers
@@ -364,7 +371,7 @@ if ($login->isUserLoggedIn() == true) {
                 $stmt = $db->prepare("UPDATE Numbers SET Timers=:timers");
                 $stmt->bindValue(':timers', (int)$_POST['numtimers'], SQLITE3_INTEGER);
                 $stmt->execute();
-                $daemon_reload = True;
+                $sql_reload = True;
             }
 
             // Capture still image from camera (with or without light activation)
@@ -423,15 +430,12 @@ if ($login->isUserLoggedIn() == true) {
         } else $error_code = 'guest';
     }
 
-    if ($daemon_reload) {
+    if ($sql_reload) {
         // Reread SQL database to catch any changes made above
         require("functions/sql.php");
-        
-        // TODO: Send mycodo-client.py command to reload SQLite database
-    }
 
-    if ($pid_reload) {
-        // TODO: Send mycodo-client.py command to restart PID
+        $editconfig = "$mycodo_client --sqlreload";
+        shell_exec($editconfig);
     }
 
     $last_ht_sensor[1] = `awk '$10 == 1' /var/tmp/sensor-ht.log | tail -n 1`;

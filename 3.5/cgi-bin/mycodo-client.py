@@ -29,8 +29,6 @@ import sys
 import getopt
 import datetime
 
-c = rpyc.connect("localhost", 18812)
-
 def usage():
     print 'mycodo-client.py: Client for mycodo.py daemon (daemon must be running).\n'
     print 'Usage:  mycodo-client.py [OPTION]...\n'
@@ -65,6 +63,8 @@ def usage():
     print '           Modify custom timers, State can be 0=off 1=on, on/off durations in seconds'
     print '    -m, --modvar name1 value1 [name2] [value2]...'
     print '           Modify any configuration variable or variables (multiple allowed, must be paired input)'
+    print '        --pidreload Coctroller'
+    print '           Restart PID Controller, Options=Temp, Hum, CO2'
     print '    -r, --relay relay state'
     print '           Turn a relay on or off. state can be 0, 1, or X.'
     print '           0=OFF, 1=ON, or X number of seconds On'
@@ -74,6 +74,8 @@ def usage():
     print '        --sensorht pin device'
     print '           Returns a reading from the temperature and humidity sensor on GPIO pin'
     print '           Device options are DHT22, DHT11, or AM2302'
+    print '        --sqlreload'
+    print '           Reload the SQLite database'
     print '    -t, --terminate'
     print '           Terminate the communication service and daemon'
     print '        --writeco2log sensor'
@@ -84,12 +86,14 @@ def usage():
 def menu():
     try:
         opts, args = getopt.getopt(
-            sys.argv[1:], 'hm:r:t', 
-            ["help", "graph", "modtempOR", "modtempPID", "modhumOR", "modhumPID", "modco2OR", "modco2PID", "modrelaynames=", "modrelaypins=", "modrelaytrigger=", "modhtsensor", "modco2sensor", "modtimer=", "modvar=", "relay=", "sensorht", "sensorco2", "terminate", "writehtlog", "writeco2log"])
+            sys.argv[1:], 'hm:r:t',
+            ["help", "graph", "modtempOR", "modtempPID", "modhumOR", "modhumPID", "modco2OR", "modco2PID", "modrelaynames=", "modrelaypins=", "modrelaytrigger=", "modhtsensor", "modco2sensor", "modtimer=", "modvar=", "pidreload=", "relay=", "sensorht", "sensorco2", "sqlreload", "terminate", "writehtlog", "writeco2log"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
         sys.exit(2)
+
+    c = rpyc.connect("localhost", 18812)
 
     for opt, arg in opts:
         if opt in ("-h", "--help"):
@@ -180,7 +184,7 @@ def menu():
             sys.exit(0)
         elif opt == "--modco2sensor":
             print "%s [Remote command] Set Sensor %s: %s %s %s %s %s %s: Server returned:" % (
-                Timestamp(), 
+                Timestamp(),
                 sys.argv[2], sys.argv[3], sys.argv[4],
                 sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8]),
             if c.root.ChangeCO2Sensor(
@@ -192,7 +196,7 @@ def menu():
             sys.exit(0)
         elif opt == "--modhtsensor":
             print "%s [Remote command] Set Sensor %s: %s %s %s %s %s %s: Server returned:" % (
-                Timestamp(), 
+                Timestamp(),
                 sys.argv[2], sys.argv[3], sys.argv[4],
                 sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8]),
             if c.root.ChangeHTSensor(
@@ -204,11 +208,11 @@ def menu():
             sys.exit(0)
         elif opt == "--modrelaynames":
             print "%s [Remote command] Set Relay Names: %s %s %s %s %s %s %s %s: Server returned:" % (
-                Timestamp(), 
-                sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], 
+                Timestamp(),
+                sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5],
                 sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9]),
             if c.root.ChangeRelayNames(
-                sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], 
+                sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5],
                 sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9]) == 1:
                 print "Success"
             else:
@@ -216,48 +220,63 @@ def menu():
             sys.exit(0)
         elif opt == "--modrelaypins":
             print "%s [Remote command] Set Relay Pins: %s %s %s %s %s %s %s %s: Server returned:" % (
-                Timestamp(), int(sys.argv[2]), int(sys.argv[3]), 
-                int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6]), 
+                Timestamp(), int(sys.argv[2]), int(sys.argv[3]),
+                int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6]),
                 int(sys.argv[7]), int(sys.argv[8]), int(sys.argv[9])),
             if c.root.ChangeRelayPins(
-                int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), 
-                int(sys.argv[5]), int(sys.argv[6]), int(sys.argv[7]), 
-                int(sys.argv[8]), int(sys.argv[9])) == 1: 
+                int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]),
+                int(sys.argv[5]), int(sys.argv[6]), int(sys.argv[7]),
+                int(sys.argv[8]), int(sys.argv[9])) == 1:
                 print "Success"
-            else: 
+            else:
                 print "Fail"
             sys.exit(0)
         elif opt == "--modtimer":
             print "%s [Remote command] Set Timer %s: State: %s Relay: %s DurOn: %s DurOff: %s: Server returned:" % (
-                Timestamp(), int(sys.argv[2]), int(sys.argv[3]), 
+                Timestamp(), int(sys.argv[2]), int(sys.argv[3]),
                 int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6])),
             if c.root.ChangeTimer(
-                int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), 
-                int(sys.argv[5]), int(sys.argv[6])) == 1: 
+                int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]),
+                int(sys.argv[5]), int(sys.argv[6])) == 1:
                 print "Success"
-            else: 
+            else:
                 print "Fail"
             sys.exit(0)
         elif opt == "--modrelaytrigger":
             print "%s [Remote command] Set Relay Triggers: %s %s %s %s %s %s %s %s: Server returned:" % (
-                Timestamp(), int(sys.argv[2]), int(sys.argv[3]), 
-                int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6]), 
+                Timestamp(), int(sys.argv[2]), int(sys.argv[3]),
+                int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6]),
                 int(sys.argv[7]), int(sys.argv[8]), int(sys.argv[9])),
             if c.root.ChangeRelayTriggers(
-                int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), 
-                int(sys.argv[5]), int(sys.argv[6]), int(sys.argv[7]), 
-                int(sys.argv[8]), int(sys.argv[9])) == 1: 
+                int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]),
+                int(sys.argv[5]), int(sys.argv[6]), int(sys.argv[7]),
+                int(sys.argv[8]), int(sys.argv[9])) == 1:
                 print "Success"
-            else: 
+            else:
                 print "Fail"
             sys.exit(0)
+        elif opt == "--pidreload":
+            if (sys.argv[2] != 'Temp' and sys.argv[2] != 'Hum' and sys.argv[2] != 'CO2'):
+                print "'%s' is not a valid option. Use 'Temp', 'Hum', or 'CO2'" % sys.argv[2]
+                sys.exit(0)
+            if (int(float(sys.argv[3])) > 4 or int(float(sys.argv[3])) < 1):
+                print "'%s' is not a valid option. Use 'Temp', 'Hum', or 'CO2'" % sys.argv[3]
+                sys.exit(0)
+            print "%s [Remote command] Reload %s PID controller %s: Server returned:" % (
+                Timestamp(), sys.argv[2], sys.argv[3]),
+            reload_status = c.root.PIDReload(sys.argv[2], int(float(sys.argv[3])))
+            if reload_status == 1:
+                print "Success"
+            else:
+                print "Fail, %s" % reload_status
+            sys.exit(1)
         elif opt in ("-r", "--relay"):
             if RepresentsInt(sys.argv[2]) and \
                 int(float(sys.argv[2])) > 0:
                 if (sys.argv[3] == '0' or sys.argv[3] == '1'):
                     print "%s [Remote command] Set relay %s to %s: Server returned:" % (
                         Timestamp(), int(float(sys.argv[2])), int(float(sys.argv[3]))),
-                    if c.root.ChangeRelay(int(float(sys.argv[2])), 
+                    if c.root.ChangeRelay(int(float(sys.argv[2])),
                             int(float(sys.argv[3]))) == 1:
                         print 'success'
                     else:
@@ -286,6 +305,14 @@ def menu():
                 Timestamp(), sys.argv[3], int(float(sys.argv[2])))
             temperature, humidity = c.root.ReadHTSensor(int(float(sys.argv[2])), sys.argv[3])
             print "%s [Remote Command] Daemon Returned: Temperature: %s°C Humidity: %s%%" % (Timestamp(), round(temperature,2), round(humidity,2))
+            sys.exit(0)
+        elif opt == "--sqlreload":
+            print "%s [Remote command] Reload SQLite database: Server returned:" % (
+                Timestamp()),
+            if c.root.SQLReload() == 1:
+                print "Success"
+            else:
+                print "Fail"
             sys.exit(0)
         elif opt in ("-t", "--terminate"):
             print "%s [Remote command] Terminate all threads and daemon: Server returned:" % (
@@ -319,7 +346,7 @@ def menu():
     sys.exit(1)
 
 def RepresentsInt(s):
-    try: 
+    try:
         int(s)
         return True
     except ValueError:
