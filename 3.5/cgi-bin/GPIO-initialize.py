@@ -24,52 +24,38 @@
 #  Contact at kylegabriel.com
 
 import RPi.GPIO as GPIO
-import ConfigParser
+import sqlite3
 
 #### Configure Install Directory ####
 install_directory = "/var/www/mycodo"
 #### Configure Install Directory ####
 
-config_file = "%s/config/mycodo.cfg" % install_directory
+sql_database = '/var/www/mycodo/config/mycodo.sqlite3'
 
 # GPIO pins (BCM numbering) and name of devices attached to relay
-relayPin = [0] * 9
-relayTrigger = [0] * 9
+relay_pin = [0] * 9
+relay_trigger = [0] * 9
 
-def ReadCfg():
-    global relayPin
-    global relayTrigger
+def ReadSQL():
+    global relay_pin
+    global relay_trigger
+    conn = sqlite3.connect(sql_database)
+    cur = conn.cursor()
+    cur.execute('SELECT Id, Pin, Trigger FROM Relays')
+    for row in cur :
+        # print "%s %s %s" % (row[0], row[1], row[2])
+        relay_pin[row[0]] = row[1]
+        relay_trigger[row[0]] = row[2]
 
-    config = ConfigParser.RawConfigParser()
-    config.read(config_file)
-
-    relayPin[1] = config.getint('RelayPins', 'relay1pin')
-    relayPin[2] = config.getint('RelayPins', 'relay2pin')
-    relayPin[3] = config.getint('RelayPins', 'relay3pin')
-    relayPin[4] = config.getint('RelayPins', 'relay4pin')
-    relayPin[5] = config.getint('RelayPins', 'relay5pin')
-    relayPin[6] = config.getint('RelayPins', 'relay6pin')
-    relayPin[7] = config.getint('RelayPins', 'relay7pin')
-    relayPin[8] = config.getint('RelayPins', 'relay8pin')
-    
-    relayTrigger[1] = config.getint('RelayTriggers', 'relay1trigger')
-    relayTrigger[2] = config.getint('RelayTriggers', 'relay2trigger')
-    relayTrigger[3] = config.getint('RelayTriggers', 'relay3trigger')
-    relayTrigger[4] = config.getint('RelayTriggers', 'relay4trigger')
-    relayTrigger[5] = config.getint('RelayTriggers', 'relay5trigger')
-    relayTrigger[6] = config.getint('RelayTriggers', 'relay6trigger')
-    relayTrigger[7] = config.getint('RelayTriggers', 'relay7trigger')
-    relayTrigger[8] = config.getint('RelayTriggers', 'relay8trigger')
-
-ReadCfg()
+ReadSQL()
 
 for i in range(1, 9):
-    if relayTrigger[i] == 0: relayTrigger[i] = 1;
-    else: relayTrigger[i] = 0
+    if relay_trigger[i] == 0: relay_trigger[i] = 1;
+    else: relay_trigger[i] = 0
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 for i in range(1, 9):
-    GPIO.setup(relayPin[i], GPIO.OUT)
-    GPIO.output(relayPin[i], relayTrigger[i])
+    GPIO.setup(relay_pin[i], GPIO.OUT)
+    GPIO.output(relay_pin[i], relay_trigger[i])
