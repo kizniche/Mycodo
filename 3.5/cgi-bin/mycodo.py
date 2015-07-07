@@ -1201,8 +1201,6 @@ def read_dht_sensor(sensor):
 
 # Log temperature/sensor_ht_read_hum sensor reading
 def write_dht_sensor_log(sensor):
-    config = ConfigParser.RawConfigParser()
-
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
 
@@ -1233,8 +1231,6 @@ def write_dht_sensor_log(sensor):
 
 # Log CO2 sensor reading
 def write_co2_sensor_log(sensor):
-    config = ConfigParser.RawConfigParser()
-
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
 
@@ -1265,8 +1261,6 @@ def write_co2_sensor_log(sensor):
 
 # Log the relay duration
 def write_relay_log(relayNumber, relaySeconds, sensor):
-    config = ConfigParser.RawConfigParser()
-
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
     if not terminate:
@@ -1795,10 +1789,10 @@ def generate_graph(graph_out_file, graph_id, sensorn):
 
 
 #################################################
-#        Configuration File Read/Write          #
+#          SQLite Database Read/Write           #
 #################################################
 
-# Read variables from the configuration file
+# Read variables from the SQLite database
 def read_sql():
     global sensor_ht_name
     global sensor_ht_device
@@ -1984,7 +1978,7 @@ def read_sql():
 
     cur.close()
 
-# Write variables to configuration file
+# Write variables to the SQLite database
 def write_sql():
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
@@ -2039,7 +2033,7 @@ def write_sql():
     logging.debug("[Write SQL] Removing lock: %s", lock.path)
     lock.release()
 
-# Check if a variable name in config_file matches a string
+# Check if a variable name matches a string
 def modify_var(*names_and_values):
     namesOfVariables = [
     'relay_num',
