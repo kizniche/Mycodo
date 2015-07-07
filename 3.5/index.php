@@ -703,13 +703,6 @@ $error_code = "no";
                 <div style="clear: both;"></div>
                 <div>
                     <?php
-
-                    //if (!isset($_SESSION["ID"])) {
-                    //    $id = uniqid();
-                    //    $_SESSION["ID"] = $id;
-                    //    $ref = 1;
-                    //} else $id = $_SESSION["ID"];
-
                     if (strpos($_GET['page'], 'Combined') === 0) {
                         echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
                         if ($_GET['page'] == 'Combined1h') {
