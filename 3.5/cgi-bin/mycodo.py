@@ -987,7 +987,7 @@ def temperature_monitor(ThreadName, sensor):
                 read_dht_sensor(sensor)
                 PIDTemp = p_temp.update(float(sensor_ht_read_temp_c[sensor]))
                 if (sensor_ht_read_temp_c[sensor] < pid_temp_set[sensor]):
-                    logging.debug("[PID Temperature-%s] Temperature (%.1f°C) < (%.1f°C) pid_temp_set", sensor, sensor_ht_read_temp_c[sensor], float(pid_temp_set[sensor]))
+                    logging.debug("[PID Temperature-%s] Temperature: %.1f°C now < %.1f°C set", sensor, sensor_ht_read_temp_c[sensor], float(pid_temp_set[sensor]))
                     logging.debug("[PID Temperature-%s] PID = %.1f (seconds)", sensor, PIDTemp)
                     if (PIDTemp > 0 and sensor_ht_read_temp_c[sensor] < pid_temp_set[sensor]):
                         rod = threading.Thread(target = relay_on_duration,
@@ -995,7 +995,7 @@ def temperature_monitor(ThreadName, sensor):
                         rod.start()
                     timerTemp = int(time.time()) + int(PIDTemp) + int(pid_temp_period[sensor])
                 else:
-                    logging.debug("[PID Temperature-%s] Temperature (%.1f°C) >= (%.1f°C) pid_temp_set, waiting 60 seconds", sensor, sensor_ht_read_temp_c[sensor], pid_temp_set[sensor])
+                    logging.debug("[PID Temperature-%s] Temperature: %.1f°C now >= %.1f°C set, waiting 60 seconds", sensor, sensor_ht_read_temp_c[sensor], pid_temp_set[sensor])
                     logging.debug("[PID Temperature-%s] PID = %.1f (seconds)", sensor, PIDTemp)
                     timerTemp = int(time.time()) + 60
         time.sleep(0.1)
@@ -1024,7 +1024,7 @@ def humidity_monitor(ThreadName, sensor):
                 read_dht_sensor(sensor)
                 PIDHum = p_hum.update(float(sensor_ht_read_hum[sensor]))
                 if (sensor_ht_read_hum[sensor] < pid_hum_set[sensor]):
-                    logging.debug("[PID Humidity-%s] Humidity (%.1f%%) < (%.1f%%) pid_hum_set", sensor, sensor_ht_read_hum[sensor], float(pid_hum_set[sensor]))
+                    logging.debug("[PID Humidity-%s] Humidity: %.1f%% now < %.1f%% set", sensor, sensor_ht_read_hum[sensor], float(pid_hum_set[sensor]))
                     logging.debug("[PID Humidity-%s] PID = %.1f (seconds)", sensor, PIDHum)
                     if (PIDHum > 0 and sensor_ht_read_hum[sensor] < pid_hum_set[sensor]):
                         rod = threading.Thread(target = relay_on_duration,
@@ -1032,7 +1032,7 @@ def humidity_monitor(ThreadName, sensor):
                         rod.start()
                     timerHum = int(time.time()) + int(PIDHum) + int(pid_hum_period[sensor])
                 else:
-                    logging.debug("[PID Humidity-%s] Humidity (%.1f%%) >= (%.1f%%) pid_hum_set, waiting 60 seconds", sensor, sensor_ht_read_hum[sensor], pid_hum_set[sensor])
+                    logging.debug("[PID Humidity-%s] Humidity: %.1f%% now >= %.1f%% set, waiting 60 seconds", sensor, sensor_ht_read_hum[sensor], pid_hum_set[sensor])
                     logging.debug("[PID Humidity-%s] PID = %.1f (seconds)", sensor, PIDHum)
                     timerHum = int(time.time()) + 60
         time.sleep(0.1)
@@ -1061,16 +1061,16 @@ def co2_monitor(ThreadName, sensor):
                 read_co2_sensor(sensor)
                 PIDCo2 = p_co2.update(float(sensor_co2_read_co2[sensor]))
                 if (sensor_co2_read_co2[sensor] > pid_co2_set[sensor]):
-                    logging.debug("[PID CO2-%s] CO2 (%.1f%%) > (%.1f%%) setCO2", sensor, sensor_co2_read_co2[sensor], pid_co2_set[sensor])
-                    logging.debug("[PID CO2-%s] PID = %.1f (seconds)", sensor, PIDCo2)
+                    logging.debug("[PID CO2-%s] CO2: %s ppm now > %s ppm set", sensor, sensor_co2_read_co2[sensor], pid_co2_set[sensor])
+                    logging.debug("[PID CO2-%s] PID = %.1f (seconds)", sensor, abs(PIDCo2))
                     if (PIDCo2 > 0 and sensor_co2_read_co2[sensor] > pid_co2_set[sensor]):
                         rod = threading.Thread(target = relay_on_duration,
-                            args=(pid_co2_relay[sensor], round(PIDCo2,2), sensor,))
+                            args=(pid_co2_relay[sensor], round(abs(PIDCo2),2), sensor,))
                         rod.start()
                     timerCo2 = int(time.time()) + int(PIDCo2) + int(pid_co2_period[sensor])
                 else:
-                    logging.debug("[PID CO2-%s] CO2 (%.1f%%) <= (%.1f%%) pid_co2_set, waiting 60 seconds", sensor, sensor_co2_read_co2[sensor], pid_co2_set[sensor])
-                    logging.debug("[PID CO2-%s] PID = %.1f (seconds)", sensor, PIDCo2)
+                    logging.debug("[PID CO2-%s] CO2: %s ppm now <= %s ppm set, waiting 60 seconds", sensor, sensor_co2_read_co2[sensor], pid_co2_set[sensor])
+                    logging.debug("[PID CO2-%s] PID = %.1f (seconds)", sensor, abs(PIDCo2))
                     timerCo2 = int(time.time()) + 60
         time.sleep(0.1)
     logging.info("[PID CO2-%s] Shutting Down %s", sensor,  ThreadName)
@@ -1094,7 +1094,7 @@ def read_co2_sensor(sensor):
     logging.debug("[Read CO2 Sensor-%s] Taking first CO2 reading", sensor)
 
     if device == 'K30': co22 = read_K30()
-    if co22 == None:
+    if co22 is None:
         logging.warning("[Read CO2 Sensor-%s] Could not read CO2!", sensor)
         return 0
 
@@ -1104,14 +1104,14 @@ def read_co2_sensor(sensor):
         logging.debug("[Read CO2 Sensor-%s] Taking second CO2 reading", sensor)
 
         if device == 'K30': sensor_co2_read_co2[sensor] = read_K30()
-        if sensor_co2_read_co2[sensor] == 'None':
+        if sensor_co2_read_co2[sensor] is None:
             logging.warning("[Read CO2 Sensor-%s] Could not read CO2!", sensor)
             return 0
 
         logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor, sensor_co2_read_co2[sensor])
-        logging.debug("[Read CO2 Sensor-%s] Difference: %s", sensor, abs(co22-sensor_co2_read_co2[sensor]))
+        logging.debug("[Read CO2 Sensor-%s] Difference: %s", sensor, abs(co22 - sensor_co2_read_co2[sensor]))
 
-        if abs(co22-sensor_co2_read_co2[sensor]) > 20 and not terminate:
+        if abs(co22 - sensor_co2_read_co2[sensor]) > 20 and not terminate:
             co22 = sensor_co2_read_co2[sensor]
             logging.debug("[Read CO2 Sensor-%s] Successive readings > 20 difference: Rereading", sensor)
         elif not terminate:
