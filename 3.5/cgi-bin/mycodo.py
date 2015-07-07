@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-#  mycodo.py - A temperature and sensor_ht_read_hum regulation system that allows
+#  mycodo.py - A temperature and humidity regulation system that allows
 #              easy configuration and monitoring through a web interface.
 #
 #  Copyright (C) 2015  Kyle T. Gabriel
@@ -837,25 +837,27 @@ def daemon(output, log):
         if client_que != '0': # Run remote commands issued by mycodo-client.py
             if client_que == 'write_co2_sensor_log':
                 logging.debug("[Client command] Write CO2 Sensor Log")
-                if (client_var != 0):
+                if (client_var != 0 and sensor_co2_activated[client_var]):
                     read_co2_sensor(client_var)
                     write_co2_sensor_log(client_var)
                 else:
                     for i in range(1, int(sensor_co2_num)+1):
-                        read_co2_sensor(i)
-                        write_co2_sensor_log(i)
-                        time.sleep(2)
+                        if sensor_co2_activated[i]:
+                            read_co2_sensor(i)
+                            write_co2_sensor_log(i)
+                            time.sleep(1)
                 change_sensor_log = 0
             elif client_que == 'write_ht_sensor_log':
                 logging.debug("[Client command] Write HT Sensor Log")
-                if (client_var != 0):
+                if (client_var != 0 and sensor_ht_activated[client_var]):
                     read_dht_sensor(client_var)
                     write_dht_sensor_log(client_var)
                 else:
-                    for i in range(1, int(sensor_ht_num)+1):
-                        read_dht_sensor(i)
-                        write_dht_sensor_log(i)
-                        time.sleep(2)
+                    if sensor_ht_activated:
+                        for i in range(1, int(sensor_ht_num)+1):
+                            read_dht_sensor(i)
+                            write_dht_sensor_log(i)
+                            time.sleep(1)
                 change_sensor_log = 0
             elif client_que == 'TerminateServer':
                 logging.info("[Daemon] Turning off relays")
@@ -929,7 +931,7 @@ def daemon(output, log):
             rod.start()
             pid_co2_up = 0
 
-        # Write temperature and sensor_ht_read_hum to sensor log
+        # Write temperature and humidity to sensor log
         for i in range(1, 5):
             if int(time.time()) > timerHTSensorLog[i] and sensor_ht_device[i] != 'Other' and sensor_ht_activated[i] == 1:
                 logging.debug("[Timer Expiration] Read sensor %s every %s seconds: Write sensor log", i, sensor_ht_period[i])
@@ -1135,7 +1137,7 @@ def read_K30():
     co2 = (high*256) + low
     return co2
 
-# Read the temperature and sensor_ht_read_hum from sensor
+# Read the temperature and humidity from sensor
 def read_dht_sensor(sensor):
     global sensor_ht_read_temp_c
     global sensor_ht_read_hum
@@ -1200,7 +1202,7 @@ def read_dht_sensor(sensor):
 #           Sensor and Relay Logging            #
 #################################################
 
-# Log temperature/sensor_ht_read_hum sensor reading
+# Log temperature/humidity sensor reading
 def write_dht_sensor_log(sensor):
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
@@ -1561,7 +1563,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     plot.write('set style line 12 lc rgb \'#808080\' lt 0 lw 1\n')
     plot.write('set grid xtics ytics back ls 12\n')
 
-    # Horizontal lines: separate temperature, sensor_ht_read_hum, and dewpoint
+    # Horizontal lines: separate temperature, humidity, and dewpoint
     plot.write('set style line 1 lc rgb \'' + graph_colors[0] + '\' pt 0 ps 1 lt 1 lw 2\n')
     plot.write('set style line 2 lc rgb \'' + graph_colors[1] + '\' pt 0 ps 1 lt 1 lw 2\n')
     plot.write('set style line 3 lc rgb \'' + graph_colors[2] + '\' pt 0 ps 1 lt 1 lw 2\n')
@@ -2137,7 +2139,7 @@ def relay_on_duration(relay, seconds, sensor):
 #                 Email Notify                  #
 #################################################
 
-# Email if temperature or sensor_ht_read_hum is outside of critical range (Not yet implemented)
+# Email if temperature or humidity is outside of critical range (Not yet implemented)
 def email(message):
     if (smtp_ssl):
         server = smtplib.SMTP_SSL(smtp_host, smtp_port)

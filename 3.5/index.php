@@ -60,6 +60,17 @@ require_once("functions/functions.php");
 $login = new Login();
 
 if ($login->isUserLoggedIn() == true) {
+    // Graph-generation cookie of unique ID for graphs
+    $ref = 0;
+    if (isset($_GET['Refresh']) == 1 or !isset($_COOKIE['id'])) {
+        $uniqueid = uniqid();
+        setcookie('id', $uniqueid);
+        $id  = $uniqueid;
+        $ref = 1;
+    } else {
+        $id = $_COOKIE['id'];
+    }
+
     $db = new SQLite3($sqlite_db);
 
     // Initial read of SQL database
@@ -322,7 +333,7 @@ if ($login->isUserLoggedIn() == true) {
         }
     }
 
-    if (isset($_POST['WriteHTSensorLog']) || isset($_POST['WriteCo2SensorLog']) ||
+    if (isset($_POST['WriteSensorLog']) ||
             isset($_POST['Capture']) || isset($_POST['start-stream']) ||
             isset($_POST['stop-stream']) || isset($_POST['ChangeNoRelays']) ||
             isset($_POST['ChangeNoHTSensors']) || isset($_POST['ChangeNoCo2Sensors']) ||
@@ -417,15 +428,11 @@ if ($login->isUserLoggedIn() == true) {
                 sleep(1);
             }
 
-            // Request HT sensor read log write
-             if (isset($_POST['WriteHTSensorLog'])) {
-                $editconfig = "$mycodo_client --writehtsensorlog 0";
+            // Request sensor read and log write
+             if (isset($_POST['WriteSensorLog'])) {
+                $editconfig = "$mycodo_client --writehtlog 0";
                 shell_exec($editconfig);
-            }
-
-            // Request CO2 sensor read and log write
-             if (isset($_POST['WriteCo2SensorLog'])) {
-                $editconfig = "$mycodo_client --writeco2sensorlog 0";
+                $editconfig = "$mycodo_client --writeco2log 0";
                 shell_exec($editconfig);
             }
         } else $error_code = 'guest';
@@ -442,7 +449,7 @@ if ($login->isUserLoggedIn() == true) {
     // Concatenate Sensor log files (to TempFS) to ensure the latest data is being used
     `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
     `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
-    
+
     $last_ht_sensor[1] = `awk '$10 == 1' /var/tmp/sensor-ht.log | tail -n 1`;
     $last_ht_sensor[2] = `awk '$10 == 2' /var/tmp/sensor-ht.log | tail -n 1`;
     $last_ht_sensor[3] = `awk '$10 == 3' /var/tmp/sensor-ht.log | tail -n 1`;
@@ -660,7 +667,7 @@ $error_code = "no";
                                 if (isset($_GET['r'])) { if ($_GET['r'] == 1) echo "&r=1"; } ?>"' value="Page">
                             </div>
                             <div style="float: left;">
-                                <input type="submit" name="WriteSensorLog" value="Sensors" title="Take a new temperature and humidity reading">
+                                <input type="submit" name="WriteSensorLog" value="Sensors" title="Reread all sensors and write logs">
                             </div>
                         </div>
                     </div>
@@ -696,14 +703,12 @@ $error_code = "no";
                 <div style="clear: both;"></div>
                 <div>
                     <?php
-                    $ref = 0;
-                    if (isset($_GET['Refresh']) == 1) $ref = 1;
 
-                    if (!isset($_SESSION["ID"])) {
-                        $id = uniqid();
-                        $_SESSION["ID"] = $id;
-                        $ref = 1;
-                    } else $id = $_SESSION["ID"];
+                    //if (!isset($_SESSION["ID"])) {
+                    //    $id = uniqid();
+                    //    $_SESSION["ID"] = $id;
+                    //    $ref = 1;
+                    //} else $id = $_SESSION["ID"];
 
                     if (strpos($_GET['page'], 'Combined') === 0) {
                         echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
@@ -872,14 +877,14 @@ $error_code = "no";
                             <input type="submit" name="Refresh" value="Page" title="Refresh page">
                         </div>
                         <div style="float: left;">
-                            <input type="submit" name="WriteSensorLog" value="Sensors" title="Take a new temperature and humidity reading">
+                            <input type="submit" name="WriteSensorLog" value="Sensors" title="Reread all sensors and write logs">
                         </div>
                     </div>
                 </div>
             </div>
 
             <div style="clear: both;"></div>
-            
+
             <div>
                 <div style="padding: 1em 0;">
                     <div style="float: left; padding-right: 1em;">
@@ -899,7 +904,7 @@ $error_code = "no";
                     <div style="float: left; font-weight: bold;">Relays</div>
                     <div style="clear: both;"></div>
                 </div>
-                
+
                 <?php if ($relay_num > 0) { ?>
                 <div style="padding-bottom: 1em;">
                     <table class="relays">
@@ -959,7 +964,7 @@ $error_code = "no";
                 </div>
                 <?php }
                     ?>
-                
+
                 <div style="padding: 1em 0;">
                     <div style="float: left; padding-right: 1em;">
                         <input type="submit" name="ChangeNoHTSensors" value="Save ->">
@@ -974,7 +979,7 @@ $error_code = "no";
                     <div style="float: left; font-weight: bold;">Humidity & Temperature Sensors</div>
                     <div style="clear: both;"></div>
                 </div>
-                
+
                 <?php if ($sensor_ht_num > 0) { ?>
                 <div style="padding-right: 1em;">
                     <?php for ($i = 1; $i <= $sensor_ht_num; $i++) {
@@ -1139,9 +1144,9 @@ $error_code = "no";
                     <div style="float: left; font-weight: bold;">CO<sub>2</sub> Sensors</div>
                     <div style="clear: both;"></div>
                 </div>
-                
+
                 <?php if ($sensor_co2_num > 0) { ?>
-                
+
                 <div>
                     <?php for ($i = 1; $i <= $sensor_co2_num; $i++) {
                         ?>
