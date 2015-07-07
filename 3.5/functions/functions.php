@@ -10,6 +10,11 @@ function menu_item($id, $title, $current) {
     } else echo '<div class="active">' . $title . '</div>';
 }
 
+function pid_reload($mycodo_client, $controller, $pid) {
+    $editconfig = "$mycodo_client --pidreload $controller $pid";
+    shell_exec($editconfig);
+}
+
 // Display Log tab SQL database tables, names, and variables
 function view_sql_db() {
     global $sqlite_db;
