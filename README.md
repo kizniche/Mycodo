@@ -1,11 +1,11 @@
 # Mycodo
 
    Originally designed for gourmet mushroom cultivation, Mycodo is a system that regulates the temperature and humidity of an airspace with PID control. It utilizes a temperature/humidity sensor to monitor the environment and software PID controllers to modulate any of 8 relays for powering devices to alter the environment. A web-interface features viewing of current and past conditions as well as graph generation, configuration modification, and image and video acquisition, to name a few (a full list of features is below).
-   
+
    The main application, mycodo.py, runs in the background as a daemon. It performs all crucial tasks, such as periodically reading sensors, writing sensor and relay logs, turning timer-activated relays on and off, running PID controllers for temperature and humidity regulation, and reading and writing to the configuration file, among others.
-   
+
    The client application, mycodo-client.py, communicates and issues commands for the daemonized mycodo.py to carry out, such as specific configuration changes, relay changes, turning automation on and off, to name a few.
-   
+
    The HTTP control interface runs on a common LAMP (Linux Apache MySQL PHP/Python) system.
 
 #### Index
@@ -81,19 +81,19 @@ I've since upgraded to a new set of hardware that support 8 individually-switcha
     * Guest account for viewing only (no config changes permitted) (user: guest, password: anonymous)
     * Authorization log of successful and unsuccessful login attempts
     * User profile, gravatar support (from email), lost/forgot email password reset
-   
-<a name="future"></a>   
+
+<a name="future"></a>
 ### v3.5-beta (experimental)
 
 This is an experimental branch of mycodo. This will be a future stable release once a certain number of features have been added and when it's relatively bug-free. Unless I have been in direct contact with you regarding testing of this branch, I will not be providing technical support for any issues with this version. Instead, I recommend you check out the v3.0 stable branch (install instructions below).
 
-- [X] K30 CO2 sensor support (complete)
-- [X] SQLite database support (currently debugging)
+- [X] K30 CO2 sensor support (debugging)
+- [X] SQLite database support (debugging)
 - [ ] Email notification or audible alarm during critical failure or condition (currently working on)
 - [ ] O2 sensor support
 - [ ] Set electrical current draw of each device and prevent exceeding total current limit with different combinations of devices on
 - [ ] Capture series of photos at different ISOs, combine to make HDR photo
-- [ ] Timelapse video creation ability (define start, end, duration between, etc.) 
+- [ ] Timelapse video creation ability (define start, end, duration between, etc.)
 
 <a name="hard-brief"></a>
 #### Hardware
@@ -198,7 +198,7 @@ Setup streaming capabilities
 
 `sudo cp mjpg_streamer /usr/local/bin`
 
-`sudo cp output_http.so input_file.so /usr/local/lib/` 
+`sudo cp output_http.so input_file.so /usr/local/lib/`
 
 Set permissions
 
@@ -252,7 +252,7 @@ Add the following to /etc/apache2/sites-available/default-ssl (or just 'default'
         Order allow,deny
         allow from all
     </Directory>
-    
+
 <a name="mysql"></a>
 ### MySQL and User Login
 
@@ -354,4 +354,3 @@ https://github.com/kizniche/Mycodo
 http://KyleGabriel.com
 
 								- Kyle Gabriel -
-								

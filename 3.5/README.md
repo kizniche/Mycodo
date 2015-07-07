@@ -4,7 +4,7 @@ This is an experimental branch of mycodo. Unless I have been in direct contact w
 
 ### Goals
 
-- [X] K30 CO2 sensor support (complete)
+- [X] K30 CO2 sensor support (debugging)
 - [X] SQLite database support (debugging)
 - [ ] Email notification or audible alarm during critical failure or condition (working on)
 - [ ] O2 sensor support
