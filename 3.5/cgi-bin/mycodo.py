@@ -763,7 +763,7 @@ def daemon(output, log):
     global client_que
     timer_time = [0] * 9
     timerHTSensorLog  = [0] * 5
-    timerCo2SensorLog  = [0] * 2
+    timerCo2SensorLog  = [0] * 5
 
     if (log == 'warning'):
         logging.getLogger().setLevel(logging.WARNING)
@@ -803,10 +803,10 @@ def daemon(output, log):
 
     timerLogBackup = int(time.time()) + 21600 # 21600 seconds = 6 hours
 
-    for i in range(1, sensor_ht_num+1):
+    for i in range(1, 5):
         timerHTSensorLog[i] = int(time.time()) + sensor_ht_period[i]
 
-    for i in range(1, sensor_co2_num+1):
+    for i in range(1, 5):
         timerCo2SensorLog[i] = int(time.time()) + sensor_co2_period[i]
 
     for i in range(1, 9):
@@ -931,7 +931,7 @@ def daemon(output, log):
             pid_co2_up = 0
 
         # Write temperature and sensor_ht_read_hum to sensor log
-        for i in range(1, int(sensor_ht_num)+1):
+        for i in range(1, 5):
             if int(time.time()) > timerHTSensorLog[i] and sensor_ht_device[i] != 'Other' and sensor_ht_activated[i] == 1:
                 logging.debug("[Timer Expiration] Read sensor %s every %s seconds: Write sensor log", i, sensor_ht_period[i])
                 if read_dht_sensor(i) == 1:
@@ -939,7 +939,7 @@ def daemon(output, log):
                 timerHTSensorLog[i] = int(time.time()) + sensor_ht_period[i]
 
         # Write CO2 to sensor log
-        for i in range(1, int(sensor_co2_num)+1):
+        for i in range(1, 5):
             if int(time.time()) > timerCo2SensorLog[i] and sensor_co2_device[i] != 'Other' and sensor_co2_activated[i] == 1:
                 if read_co2_sensor(i) == 1:
                     write_co2_sensor_log(i)

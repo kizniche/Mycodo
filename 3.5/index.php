@@ -110,10 +110,11 @@ if ($login->isUserLoggedIn() == true) {
                 isset($_POST['Change' . $p . 'TempOR']) ||
                 isset($_POST['Change' . $p . 'HumOR']) ||
                 isset($_POST['Change' . $p . 'Co2OR'])) {
-            $sql_reload = True;
 
             // All commands where elevated (!= guest) privileges are required
             if ($_SESSION['user_name'] != 'guest') {
+                $sql_reload = True;
+                
                 // Set relay variables
                 if (isset($_POST['Mod' . $p . 'Relay'])) {
                     $stmt = $db->prepare("UPDATE Relays SET Name=:name, Pin=:pin, Trigger=:trigger WHERE Id=:id");
