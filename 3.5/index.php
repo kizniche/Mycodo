@@ -114,7 +114,7 @@ if ($login->isUserLoggedIn() == true) {
             // All commands where elevated (!= guest) privileges are required
             if ($_SESSION['user_name'] != 'guest') {
                 $sql_reload = True;
-                
+
                 // Set relay variables
                 if (isset($_POST['Mod' . $p . 'Relay'])) {
                     $stmt = $db->prepare("UPDATE Relays SET Name=:name, Pin=:pin, Trigger=:trigger WHERE Id=:id");
@@ -439,6 +439,10 @@ if ($login->isUserLoggedIn() == true) {
         shell_exec($editconfig);
     }
 
+    // Concatenate Sensor log files (to TempFS) to ensure the latest data is being used
+    `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
+    `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
+    
     $last_ht_sensor[1] = `awk '$10 == 1' /var/tmp/sensor-ht.log | tail -n 1`;
     $last_ht_sensor[2] = `awk '$10 == 2' /var/tmp/sensor-ht.log | tail -n 1`;
     $last_ht_sensor[3] = `awk '$10 == 3' /var/tmp/sensor-ht.log | tail -n 1`;
@@ -1443,8 +1447,6 @@ $error_code = "no";
                 <div style="font-family: monospace;">
                     <pre><?php
                         if(isset($_POST['HTSensor'])) {
-                            // Concatenate log files (to TempFS) to ensure the latest data is being used
-                            `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
                             echo 'Year Mo Day Hour Min Sec Tc RH DPc Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
@@ -1455,7 +1457,6 @@ $error_code = "no";
                         }
 
                         if(isset($_POST['Co2Sensor'])) {
-                            `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
                             echo 'Year Mo Day Hour Min Sec Co2 Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
