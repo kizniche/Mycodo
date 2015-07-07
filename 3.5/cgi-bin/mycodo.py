@@ -27,7 +27,6 @@
 install_directory = "/var/www/mycodo"
 
 import Adafruit_DHT
-import ConfigParser
 import datetime
 import fcntl
 import filecmp
@@ -51,7 +50,6 @@ from lockfile import LockFile
 from rpyc.utils.server import ThreadedServer
 
 sql_database = "%s/config/mycodo.sqlite3" % install_directory
-config_file = "%s/config/mycodo.cfg" % install_directory
 relay_script = "%s/cgi-bin/relay.sh" % install_directory
 image_path = "%s/images" % install_directory
 log_path = "%s/log" % install_directory
