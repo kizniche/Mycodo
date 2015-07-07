@@ -40,6 +40,7 @@ import RPi.GPIO as GPIO
 import serial
 import smtplib
 import sqlite3
+import traceback
 import subprocess
 import sys
 import threading
@@ -2188,25 +2189,30 @@ def timestamp():
 #################################################
 #                 Main Program                  #
 #################################################
-
-if not os.geteuid() == 0:
-    print "Script must be run as root"
-    usage()
-    sys.exit(0)
-
-if not os.path.exists(lock_directory):
-    os.makedirs(lock_directory)
-
-runlock = LockFile(daemon_lock_path)
-
-while not runlock.i_am_locking():
-    try:
-        runlock.acquire(timeout=1)
-    except:
-        print "Error: Lock file present: %s" % runlock.path
+def main():
+    if not os.geteuid() == 0:
+        print "Script must be run as root"
+        usage()
         sys.exit(0)
 
-read_sql()
-gpio_initialize()
-menu()
-runlock.release()
+    if not os.path.exists(lock_directory):
+        os.makedirs(lock_directory)
+
+    runlock = LockFile(daemon_lock_path)
+
+    while not runlock.i_am_locking():
+        try:
+            runlock.acquire(timeout=1)
+        except:
+            print "Error: Lock file present: %s" % runlock.path
+            sys.exit(0)
+
+    read_sql()
+    gpio_initialize()
+    menu()
+    runlock.release()
+
+try:
+    main()
+except:
+    logging.exception(1)
