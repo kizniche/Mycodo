@@ -875,59 +875,33 @@ $error_code = "no";
                             <input type="submit" name="WriteSensorLog" value="Sensors" title="Take a new temperature and humidity reading">
                         </div>
                     </div>
-                    <div style="float: left; padding-right: 1em;">
-                        <div style="float: left; padding: 0 0 1em 1em;">
-                            <div style="text-align: center; padding-bottom: 0.2em;">Relays</div>
-                            <div>
-                                <select name="numrelays">
-                                    <option value="0" <?php if ($relay_num == 0) echo "selected=\"selected\""; ?>>0</option>
-                                    <option value="1" <?php if ($relay_num == 1) echo "selected=\"selected\""; ?>>1</option>
-                                    <option value="2" <?php if ($relay_num == 2) echo "selected=\"selected\""; ?>>2</option>
-                                    <option value="3" <?php if ($relay_num == 3) echo "selected=\"selected\""; ?>>3</option>
-                                    <option value="4" <?php if ($relay_num == 4) echo "selected=\"selected\""; ?>>4</option>
-                                    <option value="5" <?php if ($relay_num == 5) echo "selected=\"selected\""; ?>>5</option>
-                                    <option value="6" <?php if ($relay_num == 6) echo "selected=\"selected\""; ?>>6</option>
-                                    <option value="7" <?php if ($relay_num == 7) echo "selected=\"selected\""; ?>>7</option>
-                                    <option value="8" <?php if ($relay_num == 8) echo "selected=\"selected\""; ?>>8</option>
-                                </select>
-                                <input type="submit" name="ChangeNoRelays" value="Save">
-                            </div>
-                        </div>
-                    </div>
-                    <div style="float: left; padding-right: 1em;">
-                        <div style="text-align: center; padding-bottom: 0.2em;">CO<sub>2</sub> Sensors</div>
-                        <div style="text-align: center;">
-                            <select name="numco2sensors">
-                                <option value="0" <?php if ($sensor_co2_num == 0) echo "selected=\"selected\""; ?>>0</option>
-                                <option value="1" <?php if ($sensor_co2_num == 1) echo "selected=\"selected\""; ?>>1</option>
-                                <option value="2" <?php if ($sensor_co2_num == 2) echo "selected=\"selected\""; ?>>2</option>
-                                <option value="3" <?php if ($sensor_co2_num == 3) echo "selected=\"selected\""; ?>>3</option>
-                                <option value="4" <?php if ($sensor_co2_num == 4) echo "selected=\"selected\""; ?>>4</option>
-                            </select>
-                            <input type="submit" name="ChangeNoCo2Sensors" value="Save">
-                        </div>
-                    </div>
-                    <div style="float: left;">
-                        <div style="text-align: center; padding-bottom: 0.2em;">HT Sensors</div>
-                        <div style="text-align: center;"">
-                            <select name="numhtsensors">
-                                <option value="0" <?php if ($sensor_ht_num == 0) echo "selected=\"selected\""; ?>>0</option>
-                                <option value="1" <?php if ($sensor_ht_num == 1) echo "selected=\"selected\""; ?>>1</option>
-                                <option value="2" <?php if ($sensor_ht_num == 2) echo "selected=\"selected\""; ?>>2</option>
-                                <option value="3" <?php if ($sensor_ht_num == 3) echo "selected=\"selected\""; ?>>3</option>
-                                <option value="4" <?php if ($sensor_ht_num == 4) echo "selected=\"selected\""; ?>>4</option>
-                            </select>
-                            <input type="submit" name="ChangeNoHTSensors" value="Save">
-                        </div>
-                    </div>
                 </div>
             </div>
 
             <div style="clear: both;"></div>
+            
             <div>
-                <div style="padding-top: 1em;">
-                    <div style="padding: 0 0 1em 0; font-weight: bold;">Relays</div>
-                    <?php if ($relay_num > 0) { ?>
+                <div style="padding: 1em 0;">
+                    <div style="float: left; padding-right: 1em;">
+                        <input type="submit" name="ChangeNoRelays" value="Save ->">
+                        <select name="numrelays">
+                            <option value="0" <?php if ($relay_num == 0) echo "selected=\"selected\""; ?>>0</option>
+                            <option value="1" <?php if ($relay_num == 1) echo "selected=\"selected\""; ?>>1</option>
+                            <option value="2" <?php if ($relay_num == 2) echo "selected=\"selected\""; ?>>2</option>
+                            <option value="3" <?php if ($relay_num == 3) echo "selected=\"selected\""; ?>>3</option>
+                            <option value="4" <?php if ($relay_num == 4) echo "selected=\"selected\""; ?>>4</option>
+                            <option value="5" <?php if ($relay_num == 5) echo "selected=\"selected\""; ?>>5</option>
+                            <option value="6" <?php if ($relay_num == 6) echo "selected=\"selected\""; ?>>6</option>
+                            <option value="7" <?php if ($relay_num == 7) echo "selected=\"selected\""; ?>>7</option>
+                            <option value="8" <?php if ($relay_num == 8) echo "selected=\"selected\""; ?>>8</option>
+                        </select>
+                    </div>
+                    <div style="float: left; font-weight: bold;">Relays</div>
+                    <div style="clear: both;"></div>
+                </div>
+                
+                <?php if ($relay_num > 0) { ?>
+                <div style="padding-bottom: 1em;">
                     <table class="relays">
                         <tr>
                             <td align=center class="table-header">Relay<br>No.</td>
@@ -982,12 +956,26 @@ $error_code = "no";
                         <?php
                         } ?>
                     </table>
-                    <?php }
-                        ?>
                 </div>
-
+                <?php }
+                    ?>
+                
+                <div style="padding: 1em 0;">
+                    <div style="float: left; padding-right: 1em;">
+                        <input type="submit" name="ChangeNoHTSensors" value="Save ->">
+                        <select name="numhtsensors">
+                            <option value="0" <?php if ($sensor_ht_num == 0) echo "selected=\"selected\""; ?>>0</option>
+                            <option value="1" <?php if ($sensor_ht_num == 1) echo "selected=\"selected\""; ?>>1</option>
+                            <option value="2" <?php if ($sensor_ht_num == 2) echo "selected=\"selected\""; ?>>2</option>
+                            <option value="3" <?php if ($sensor_ht_num == 3) echo "selected=\"selected\""; ?>>3</option>
+                            <option value="4" <?php if ($sensor_ht_num == 4) echo "selected=\"selected\""; ?>>4</option>
+                        </select>
+                    </div>
+                    <div style="float: left; font-weight: bold;">Humidity & Temperature Sensors</div>
+                    <div style="clear: both;"></div>
+                </div>
+                
                 <?php if ($sensor_ht_num > 0) { ?>
-                <div style="padding: 2.5em 0 1em 0; font-weight: bold;">Humidity & Temperature Sensors</div>
                 <div style="padding-right: 1em;">
                     <?php for ($i = 1; $i <= $sensor_ht_num; $i++) {
                         ?>
@@ -1037,7 +1025,11 @@ $error_code = "no";
                     </table>
                     </div>
 
-                    <div style="padding-bottom: 2em;">
+                    <?php if ($i == $sensor_ht_num) {
+                        echo '<div style="padding-bottom: 1em;">';
+                    } else {
+                        echo '<div style="padding-bottom: 2em;">';
+                    } ?>
                     <table class="pid" style="width: 42em;">
                         <tr class="shade">
                             <td align=center>PID<br>Type</td>
@@ -1133,9 +1125,24 @@ $error_code = "no";
                 }
                 ?>
 
+                <div style="padding: 1em 0;">
+                    <div style="float: left; padding-right: 1em;">
+                        <input type="submit" name="ChangeNoCo2Sensors" value="Save ->">
+                        <select name="numco2sensors">
+                            <option value="0" <?php if ($sensor_co2_num == 0) echo "selected=\"selected\""; ?>>0</option>
+                            <option value="1" <?php if ($sensor_co2_num == 1) echo "selected=\"selected\""; ?>>1</option>
+                            <option value="2" <?php if ($sensor_co2_num == 2) echo "selected=\"selected\""; ?>>2</option>
+                            <option value="3" <?php if ($sensor_co2_num == 3) echo "selected=\"selected\""; ?>>3</option>
+                            <option value="4" <?php if ($sensor_co2_num == 4) echo "selected=\"selected\""; ?>>4</option>
+                        </select>
+                    </div>
+                    <div style="float: left; font-weight: bold;">CO<sub>2</sub> Sensors</div>
+                    <div style="clear: both;"></div>
+                </div>
+                
                 <?php if ($sensor_co2_num > 0) { ?>
-                <div style="padding: 1.5em 0 1em 0; font-weight: bold;">CO<sub>2</sub> Sensors</div>
-                <div style="padding-bottom: 3em; padding-right: 1em;">
+                
+                <div>
                     <?php for ($i = 1; $i <= $sensor_co2_num; $i++) {
                         ?>
                     <div style="padding-bottom: 0.5em;">
