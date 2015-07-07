@@ -908,7 +908,7 @@ $error_code = "no";
                             <td align=center class="table-header">Seconds<br>On</td>
                             <td align=center class="table-header">GPIO<br>Pin</td>
                             <td align=center class="table-header">Trigger<br>ON</td>
-                            <td align=center class="table-header">Change<br>Values</td>
+                            <td align=center class="table-header"></td>
                         </tr>
                         <?php for ($i = 1; $i <= $relay_num; $i++) {
                             $read = "$gpio_path -g read $relay_pin[$i]";
@@ -948,7 +948,7 @@ $error_code = "no";
                                 </select>
                             </td>
                             <td>
-                                <button type="submit" name="Mod<?php echo $i; ?>Relay" value="1" title="Change the ON trigger state of the relays.">Set</button>
+                                <input type="submit" name="Mod<?php echo $i; ?>Relay" value="Set">
                             </td>
                         </tr>
                         <?php
@@ -1515,8 +1515,8 @@ $error_code = "no";
                 <FORM action="?tab=adv<?php
                     if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
                 ?>" method="POST">
-                <div style="padding: 0 0 1em 1em;">
-                    Number of Timers
+                <div style="padding-bottom: 1em;">
+                    <input type="submit" name="ChangeNoTimers" value="Save ->">
                     <select name="numtimers">
                         <option value="1" <?php if ($timer_num == 1) echo "selected=\"selected\""; ?>>1</option>
                         <option value="2" <?php if ($timer_num == 2) echo "selected=\"selected\""; ?>>2</option>
@@ -1527,7 +1527,7 @@ $error_code = "no";
                         <option value="7" <?php if ($timer_num == 7) echo "selected=\"selected\""; ?>>7</option>
                         <option value="8" <?php if ($timer_num == 8) echo "selected=\"selected\""; ?>>8</option>
                     </select>
-                    <input type="submit" name="ChangeNoTimers" value="Save">
+                    Timers
                 </div>
                 <?php if ($timer_num > 0) { ?>
                 <div>
@@ -1587,7 +1587,7 @@ $error_code = "no";
                                 <input type="text" value="<?php echo $timer_duration_off[$i]; ?>" maxlength=7 size=4 name="Timer<?php echo $i; ?>Off" title="This is Off duration for timer <?php echo $i; ?>"/>
                             </td>
                             <td>
-                                <input type="submit" name="ChangeTimer<?php echo $i; ?>" value="Save">
+                                <input type="submit" name="ChangeTimer<?php echo $i; ?>" value="Set">
                             </td>
                         </tr>
                         <?php } ?>
