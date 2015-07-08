@@ -44,8 +44,6 @@ $stream_exec = $install_path . "/cgi-bin/camera-stream.sh";
 $lock_raspistill = $lock_path . "/mycodo_raspistill";
 $lock_mjpg_streamer = $lock_path . "/mycodo_mjpg_streamer";
 
-$error_code = "No";
-
 if (version_compare(PHP_VERSION, '5.3.7', '<')) {
     exit("PHP Login does not run on PHP versions before 5.3.7, please update your version of PHP");
 } else if (version_compare(PHP_VERSION, '5.5.0', '<')) {
@@ -60,7 +58,8 @@ require_once("functions/functions.php");
 $login = new Login();
 
 if ($login->isUserLoggedIn() == true) {
-    // Graph-generation cookie of unique ID for graphs
+
+    // Set cookie of unique ID, for graph-generation
     $ref = 0;
     if (isset($_GET['Refresh']) == 1 or !isset($_COOKIE['id'])) {
         $uniqueid = uniqid();
@@ -71,30 +70,29 @@ if ($login->isUserLoggedIn() == true) {
         $id = $_COOKIE['id'];
     }
 
-    // Initial read of SQL database
+    // Initial SQL database load to variables
     require("functions/load_sql_database.php");
 
-    // Delete graphs if number of files exceeds 20
+    // Delete graph image files if quantity exceeds 20 (delete oldest)
     delete_graphs();
 
-    // Check if daemon is running
+    // Check if mycodo.py daemon is running
     $daemon_check = `ps aux | grep "[m]ycodo.py"`;
     if (empty($daemon_check)) $daemon_check = 0;
     else $daemon_check = 1;
 
-    $uptime = `uptime | grep -ohe 'load average[s:][: ].*' `;
-
+    // Set GET defaults if not already set
     $page = isset($_GET['page']) ? $_GET['page'] : 'Main';
     $tab = isset($_GET['tab']) ? $_GET['tab'] : 'Unset';
-    $sql_reload = False;
 
     // Check form submission and modify system
+    $sql_reload = False;
+    $error_code = False;
     require("functions/check_form_submission.php");
 
+    // Reload SQL database if changed by check_form_submission.php
     if ($sql_reload) {
-        // Reread SQL database to catch any changes made above
         require("functions/load_sql_database.php");
-
         $editconfig = "$mycodo_client --sqlreload";
         shell_exec($editconfig);
     }
@@ -103,11 +101,17 @@ if ($login->isUserLoggedIn() == true) {
     `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
     `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
 
+    // Separate sensor data from log files
     $last_ht_sensor[1] = `awk '$10 == 1' /var/tmp/sensor-ht.log | tail -n 1`;
     $last_ht_sensor[2] = `awk '$10 == 2' /var/tmp/sensor-ht.log | tail -n 1`;
     $last_ht_sensor[3] = `awk '$10 == 3' /var/tmp/sensor-ht.log | tail -n 1`;
     $last_ht_sensor[4] = `awk '$10 == 4' /var/tmp/sensor-ht.log | tail -n 1`;
+    $last_co2_sensor[1] = `awk '$8 == 1' /var/tmp/sensor-co2.log | tail -n 1`;
+    $last_co2_sensor[2] = `awk '$8 == 2' /var/tmp/sensor-co2.log | tail -n 1`;
+    $last_co2_sensor[3] = `awk '$8 == 3' /var/tmp/sensor-co2.log | tail -n 1`;
+    $last_co2_sensor[4] = `awk '$8 == 4' /var/tmp/sensor-co2.log | tail -n 1`;
 
+    // explode() the sensor data array to extract and set variables
     for ($p = 1; $p <= $sensor_ht_num; $p++) {
         $sensor_explode = explode(" ", $last_ht_sensor[$p]);
         $t_c[$p] = $sensor_explode[6];
@@ -117,17 +121,15 @@ if ($login->isUserLoggedIn() == true) {
         $dp_f[$p] = round(($dp_c[$p]*(9/5) + 32), 1);
         $settemp_f[$p] = round((${'temp' . $p . 'set'}*(9/5) + 32), 1);
     }
-
-    $last_co2_sensor[1] = `awk '$8 == 1' /var/tmp/sensor-co2.log | tail -n 1`;
-    $last_co2_sensor[2] = `awk '$8 == 2' /var/tmp/sensor-co2.log | tail -n 1`;
-    $last_co2_sensor[3] = `awk '$8 == 3' /var/tmp/sensor-co2.log | tail -n 1`;
-    $last_co2_sensor[4] = `awk '$8 == 4' /var/tmp/sensor-co2.log | tail -n 1`;
-
     for ($p = 1; $p <= $sensor_co2_num; $p++) {
         $sensor_explode = explode(" ", $last_co2_sensor[$p]);
         $co2[$p] = $sensor_explode[6];
     }
 
+    // Grab current time
+    $uptime = `uptime | grep -ohe 'load average[s:][: ].*' `;
+
+    // Grab the time of the last sensor read
     $time_now = `date +"%Y-%m-%d %H:%M:%S"`;
     $time_last = `tail -n 1 $sensor_ht_log`;
     $time_explode = explode(" ", $time_last);
@@ -172,7 +174,7 @@ switch ($error_code) {
         echo "<div class=\"error\">Error: Can't turn relay Off, it's already Off</div>";
         break;
 }
-$error_code = "no";
+$error_code = False;
 ?>
 <div class="main-wrapper">
     <div class="header">

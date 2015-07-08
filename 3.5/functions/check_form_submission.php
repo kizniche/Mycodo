@@ -1,13 +1,18 @@
 <?php
 // All commands where elevated (!= guest) privileges are required
-
-// Check for form submission and respond (write SQLite database)
 if ($_SERVER['REQUEST_METHOD'] == 'POST' &&
     $_SESSION['user_name'] == 'guest') {
     $error_code = 'guest';
-} else {
+} else if ($_SERVER['REQUEST_METHOD'] == 'POST' &&
+    $_SESSION['user_name'] != 'guest') {
+
+    //
+    // Check for form submission and respond (SQL Section)
+    //
+
     $sql_reload = True;
 
+    // Check for changes to relay and timer variables (up to 8)
     for ($p = 1; $p <= 8; $p++) {
         // Set relay variables
         if (isset($_POST['Mod' . $p . 'Relay'])) {
@@ -19,6 +24,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' &&
             $stmt->execute();
         }
 
+        // Set timer variables
+        if (isset($_POST['ChangeTimer' . $p])) {
+            $stmt = $db->prepare("UPDATE Timers SET Name=:name, State=:state, Relay=:relay, DurationOn=:durationon, DurationOff=:durationoff WHERE Id=:id");
+            $stmt->bindValue(':name', $_POST['Timer' . $p . 'Name'], SQLITE3_TEXT);
+            $stmt->bindValue(':state', (int)$_POST['Timer' . $p . 'State'], SQLITE3_INTEGER);
+            $stmt->bindValue(':relay', (int)$_POST['Timer' . $p . 'Relay'], SQLITE3_INTEGER);
+            $stmt->bindValue(':durationon', (int)$_POST['Timer' . $p . 'On'], SQLITE3_INTEGER);
+            $stmt->bindValue(':durationoff', (int)$_POST['Timer' . $p . 'Off'], SQLITE3_INTEGER);
+            $stmt->bindValue(':id', $p, SQLITE3_TEXT);
+            $stmt->execute();
+
+        } else if (isset($_POST['ChangeTimer' . $p]) && $_SESSION['user_name'] == 'guest') $error_code = 'guest';
+
+        // Set timer state
+        if (isset($_POST['Timer' . $p . 'StateChange'])) {
+            $stmt = $db->prepare("UPDATE Timers SET State=:state WHERE Id=:id");
+            $stmt->bindValue(':state', (int)$_POST['Timer' . $p . 'StateChange'], SQLITE3_INTEGER);
+            $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
+            $stmt->execute();
+        }
+    }
+
+    // Check for changes to sensor variables (up to 4)
+    for ($p = 1; $p <= 4; $p++) {
         // Set Temperature/Humidity sensor variables
         if (isset($_POST['Change' . $p . 'HTSensor'])) {
             $stmt = $db->prepare("UPDATE HTSensor SET Name=:name, Device=:device, Pin=:pin, Period=:period, Activated=:activated, Graph=:graph WHERE Id=:id");
@@ -132,27 +161,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' &&
             $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
             $stmt->execute();
         }
-
-         // Set timer variables
-        if (isset($_POST['ChangeTimer' . $p])) {
-            $stmt = $db->prepare("UPDATE Timers SET Name=:name, State=:state, Relay=:relay, DurationOn=:durationon, DurationOff=:durationoff WHERE Id=:id");
-            $stmt->bindValue(':name', $_POST['Timer' . $p . 'Name'], SQLITE3_TEXT);
-            $stmt->bindValue(':state', (int)$_POST['Timer' . $p . 'State'], SQLITE3_INTEGER);
-            $stmt->bindValue(':relay', (int)$_POST['Timer' . $p . 'Relay'], SQLITE3_INTEGER);
-            $stmt->bindValue(':durationon', (int)$_POST['Timer' . $p . 'On'], SQLITE3_INTEGER);
-            $stmt->bindValue(':durationoff', (int)$_POST['Timer' . $p . 'Off'], SQLITE3_INTEGER);
-            $stmt->bindValue(':id', $p, SQLITE3_TEXT);
-            $stmt->execute();
-
-        } else if (isset($_POST['ChangeTimer' . $p]) && $_SESSION['user_name'] == 'guest') $error_code = 'guest';
-
-        // Set timer state
-        if (isset($_POST['Timer' . $p . 'StateChange'])) {
-            $stmt = $db->prepare("UPDATE Timers SET State=:state WHERE Id=:id");
-            $stmt->bindValue(':state', (int)$_POST['Timer' . $p . 'StateChange'], SQLITE3_INTEGER);
-            $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
-            $stmt->execute();
-        }
     }
 
     // Change email notify settings
@@ -200,13 +208,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' &&
         $stmt->execute();
         $sql_reload = True;
     }
-}
 
-// Check for form submission and respond (no sql)
-if ($_SERVER['REQUEST_METHOD'] == 'POST' &&
-    $_SESSION['user_name'] == 'guest') {
-    $error_code = 'guest';
-} else {
+    //
+    // Check for form submission and respond (Non-SQL Section)
+    //
+
     for ($p = 1; $p <= 8; $p++) {
         // Send client command to turn relay on or off
         if (isset($_POST['R' . $p])) {
