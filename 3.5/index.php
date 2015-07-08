@@ -634,7 +634,7 @@ if ($output_error) {
                                 <?php echo $i; ?>
                             </td>
                             <td align=center>
-                                <input type="text" value="<?php echo $relay_name[$i]; ?>" maxlength=12 size=10 name="relay<?php echo $i; ?>name" title="Name of relay <?php echo $i; ?>"/>
+                                <input type="text" value="<?php echo $relay_name[$i]; ?>" maxlength=13 size=10 name="relay<?php echo $i; ?>name" title="Name of relay <?php echo $i; ?>"/>
                             </td>
                             <?php
                                 if ((shell_exec($read) == 1 && $relay_trigger[$i] == 0) || (shell_exec($read) == 0 && $relay_trigger[$i] == 1)) {
@@ -658,7 +658,7 @@ if ($output_error) {
                                 <input type="text" value="<?php echo $relay_pin[$i]; ?>" maxlength=2 size=1 name="relay<?php echo $i; ?>pin" title="GPIO pin using BCM numbering, connected to relay <?php echo $i; ?>"/>
                             </td>
                             <td align=center>
-                                <select style="width: 65px;" name="relay<?php echo $i; ?>trigger">
+                                <select style="width: 65px;" title="Does this relay activate with a LOW (0-volt) or HIGH (5-volt) signal?" name="relay<?php echo $i; ?>trigger">
                                     <option<?php
                                         if ($relay_trigger[$i] == 1) {
                                             echo " selected=\"selected\"";

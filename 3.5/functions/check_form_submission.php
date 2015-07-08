@@ -44,8 +44,8 @@ for ($p = 1; $p <= 4; $p++) {
     // Set Temperature/Humidity sensor variables
     if (isset($_POST['Change' . $p . 'HTSensor'])) {
         $stmt = $db->prepare("UPDATE HTSensor SET Name=:name, Device=:device, Pin=:pin, Period=:period, Activated=:activated, Graph=:graph WHERE Id=:id");
-        $stmt->bindValue(':name', str_replace(' ', '', $_POST['sensorht' . $p . 'name']), SQLITE3_TEXT);
-        $stmt->bindValue(':device', str_replace(' ', '', $_POST['sensorht' . $p . 'device']), SQLITE3_TEXT);
+        $stmt->bindValue(':name', $_POST['sensorht' . $p . 'name'], SQLITE3_TEXT);
+        $stmt->bindValue(':device', $_POST['sensorht' . $p . 'device'], SQLITE3_TEXT);
         $stmt->bindValue(':pin', (int)$_POST['sensorht' . $p . 'pin'], SQLITE3_INTEGER);
         $stmt->bindValue(':period', (int)$_POST['sensorht' . $p . 'period'], SQLITE3_INTEGER);
         if (isset($_POST['sensorht' . $p . 'activated'])) {
@@ -113,8 +113,8 @@ for ($p = 1; $p <= 4; $p++) {
     // Set CO2 sensor variables
     if (isset($_POST['Change' . $p . 'Co2Sensor'])) {
         $stmt = $db->prepare("UPDATE CO2Sensor SET Name=:name, Device=:device, Pin=:pin, Period=:period, Activated=:activated, Graph=:graph WHERE Id=:id");
-        $stmt->bindValue(':name', str_replace(' ', '', $_POST['sensorco2' . $p . 'name']), SQLITE3_TEXT);
-        $stmt->bindValue(':device', str_replace(' ', '', $_POST['sensorco2' . $p . 'device']), SQLITE3_TEXT);
+        $stmt->bindValue(':name', $_POST['sensorco2' . $p . 'name'], SQLITE3_TEXT);
+        $stmt->bindValue(':device', $_POST['sensorco2' . $p . 'device'], SQLITE3_TEXT);
         $stmt->bindValue(':pin', (int)$_POST['sensorco2' . $p . 'pin'], SQLITE3_INTEGER);
         $stmt->bindValue(':period', (int)$_POST['sensorco2' . $p . 'period'], SQLITE3_INTEGER);
         if (isset($_POST['sensorco2' . $p . 'activated'])) {
