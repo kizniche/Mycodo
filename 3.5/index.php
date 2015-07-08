@@ -537,23 +537,35 @@ if ($error_code) {
                     Legend: <a href="javascript:open_legend()">Brief</a> / <a href="javascript:open_legend_full()">Full</a>
                     <div style="text-align: center; padding-top: 0.5em;"><a href="https://github.com/kizniche/Automated-Mushroom-Cultivator" target="_blank">Mycodo on GitHub</a></div>
                 </div>
-                </div>
+            </div>
             </form>
 		</li>
 
-		<li data-content="configure" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'config') echo "class=\"selected\""; ?>>
+		<li data-content="configure" <?php
+            if (isset($_GET['tab']) && $_GET['tab'] == 'config') {
+                echo "class=\"selected\"";
+            } ?>>
             <FORM action="?tab=config<?php
-                if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
-                if (isset($_GET['r'])) echo "&r=" . $_GET['r'];
-            ?>" method="POST">
+                if (isset($_GET['page'])) {
+                    echo "&page=" . $_GET['page'];
+                }
+                if (isset($_GET['r'])) {
+                    echo "&r=" . $_GET['r'];
+                }
+                ?>" method="POST">
             <div style="padding-top: 0.5em;">
                 <div style="float: left; padding: 0.0em 0.5em 1em 0;">
                     <div style="text-align: center; padding-bottom: 0.2em;">Auto Refresh</div>
                     <div style="text-align: center;"><?php
                         if (isset($_GET['r'])) {
-                            if ($_GET['r'] == 1) echo "<a href=\"?tab=config\">OFF</a> | <span class=\"on\">ON</span>";
-                            else echo "<span class=\"off\">OFF</span> | <a href=\"?tab=config&?r=1\">ON</a>";
-                        } else echo "<span class=\"off\">OFF</span> | <a href=\"?tab=config&r=1\">ON</a>";
+                            if ($_GET['r'] == 1) {
+                                echo "<a href=\"?tab=config\">OFF</a> | <span class=\"on\">ON</span>";
+                            } else {
+                                echo "<span class=\"off\">OFF</span> | <a href=\"?tab=config&?r=1\">ON</a>";
+                            }
+                        } else {
+                            echo "<span class=\"off\">OFF</span> | <a href=\"?tab=config&r=1\">ON</a>";
+                        }
                     ?>
                     </div>
                 </div>
@@ -592,8 +604,9 @@ if ($error_code) {
                     <div style="clear: both;"></div>
                 </div>
 
-                <?php if ($relay_num > 0) { ?>
-                <div style="padding-bottom: 1em;">
+                <?php
+                if ($relay_num > 0) {
+                ?><div style="padding-bottom: 1em;">
                     <table class="relays">
                         <tr>
                             <td align=center class="table-header">Relay<br>No.</td>
@@ -637,8 +650,14 @@ if ($error_code) {
                             </td>
                             <td align=center>
                                 <select style="width: 65px;" name="relay<?php echo $i; ?>trigger">
-                                    <option <?php if ($relay_trigger[$i] == 1) echo "selected=\"selected\""; ?> value="1">HIGH</option>
-                                    <option <?php if ($relay_trigger[$i] == 0) echo "selected=\"selected\""; ?> value="0">LOW</option>
+                                    <option<?php
+                                        if ($relay_trigger[$i] == 1) {
+                                            echo " selected=\"selected\"";
+                                        } ?> value="1">HIGH</option>
+                                    <option<?php
+                                        if ($relay_trigger[$i] == 0) {
+                                            echo " selected=\"selected\"";
+                                        } ?> value="0">LOW</option>
                                 </select>
                             </td>
                             <td>
@@ -649,18 +668,34 @@ if ($error_code) {
                         } ?>
                     </table>
                 </div>
-                <?php }
-                    ?>
+                <?php
+                }
+                ?>
 
                 <div style="padding: 1em 0;">
                     <div style="float: left; padding-right: 1em;">
                         <input type="submit" name="ChangeNoHTSensors" value="Save ->">
                         <select name="numhtsensors">
-                            <option value="0" <?php if ($sensor_ht_num == 0) echo "selected=\"selected\""; ?>>0</option>
-                            <option value="1" <?php if ($sensor_ht_num == 1) echo "selected=\"selected\""; ?>>1</option>
-                            <option value="2" <?php if ($sensor_ht_num == 2) echo "selected=\"selected\""; ?>>2</option>
-                            <option value="3" <?php if ($sensor_ht_num == 3) echo "selected=\"selected\""; ?>>3</option>
-                            <option value="4" <?php if ($sensor_ht_num == 4) echo "selected=\"selected\""; ?>>4</option>
+                            <option value="0"<?php
+                                if ($sensor_ht_num == 0) {
+                                    echo " selected=\"selected\"";
+                                } ?>>0</option>
+                            <option value="1"<?php
+                                if ($sensor_ht_num == 1) {
+                                    echo " selected=\"selected\"";
+                                } ?>>1</option>
+                            <option value="2"<?php
+                                if ($sensor_ht_num == 2) {
+                                    echo " selected=\"selected\"";
+                                } ?>>2</option>
+                            <option value="3"<?php
+                                if ($sensor_ht_num == 3) {
+                                    echo " selected=\"selected\"";
+                                } ?>>3</option>
+                            <option value="4"<?php
+                                if ($sensor_ht_num == 4) {
+                                    echo " selected=\"selected\"";
+                                } ?>>4</option>
                         </select>
                     </div>
                     <div style="float: left; font-weight: bold;">Humidity & Temperature Sensors</div>
@@ -669,8 +704,9 @@ if ($error_code) {
 
                 <?php if ($sensor_ht_num > 0) { ?>
                 <div style="padding-right: 1em;">
-                    <?php for ($i = 1; $i <= $sensor_ht_num; $i++) {
-                        ?>
+                    <?php
+                    for ($i = 1; $i <= $sensor_ht_num; $i++) {
+                    ?>
                     <div style="padding-bottom: 0.5em;">
                         <table class="pid" style="width: 42em;">
                         <tr class="shade">
@@ -692,10 +728,22 @@ if ($error_code) {
                             </td>
                             <td>
                                 <select style="width: 80px;" name="sensorht<?php echo $i; ?>device">
-                                    <option <?php if ($sensor_ht_device[$i] == 'DHT11') echo "selected=\"selected\""; ?> value="DHT11">DHT11</option>
-                                    <option <?php if ($sensor_ht_device[$i] == 'DHT22') echo "selected=\"selected\""; ?> value="DHT22">DHT22</option>
-                                    <option <?php if ($sensor_ht_device[$i] == 'AM2302') echo "selected=\"selected\""; ?> value="AM2302">AM2302</option>
-                                    <option <?php if ($sensor_ht_device[$i] == 'Other') echo "selected=\"selected\""; ?>value="Other">Other</option>
+                                    <option<?php
+                                        if ($sensor_ht_device[$i] == 'DHT11') {
+                                            echo " selected=\"selected\"";
+                                        } ?> value="DHT11">DHT11</option>
+                                    <option<?php
+                                        if ($sensor_ht_device[$i] == 'DHT22') {
+                                            echo " selected=\"selected\"";
+                                        } ?> value="DHT22">DHT22</option>
+                                    <option<?php
+                                        if ($sensor_ht_device[$i] == 'AM2302') {
+                                            echo " selected=\"selected\"";
+                                        } ?> value="AM2302">AM2302</option>
+                                    <option<?php
+                                        if ($sensor_ht_device[$i] == 'Other') {
+                                            echo " selected=\"selected\"";
+                                        } ?> value="Other">Other</option>
                                 </select>
                             </td>
                             <td>
@@ -717,11 +765,7 @@ if ($error_code) {
                     </table>
                     </div>
 
-                    <?php if ($i == $sensor_ht_num) {
-                        echo '<div style="padding-bottom: 1em;">';
-                    } else {
-                        echo '<div style="padding-bottom: 2em;">';
-                    } ?>
+                    <div style="padding-bottom: <?php if ($i == $sensor_ht_num) echo '1'; else echo '2'; ?>em;">
                     <table class="pid" style="width: 42em;">
                         <tr class="shade">
                             <td align=center>PID<br>Type</td>
@@ -737,15 +781,13 @@ if ($error_code) {
                             <td>Temperature</td>
                             <td class="onoff">
                                 <?php
-                                    if ($pid_temp_or[$i] == 1) {
-                                        ?>
-                                        <input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="Change<?php echo $i; ?>TempOR" value="0"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>TempOR" value="0">ON</button>
-                                        <?php
-                                    } else {
-                                        ?>
-                                        <input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="Change<?php echo $i; ?>TempOR" value="1"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>TempOR" value="1">OFF</button>
-                                        <?php
-                                    }
+                                if ($pid_temp_or[$i] == 1) {
+                                    ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="Change<?php echo $i; ?>TempOR" value="0"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>TempOR" value="0">ON</button>
+                                    <?php
+                                } else {
+                                    ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="Change<?php echo $i; ?>TempOR" value="1"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>TempOR" value="1">OFF</button>
+                                <?php
+                                }
                                 ?>
                             </td>
                             <td>
@@ -773,17 +815,15 @@ if ($error_code) {
                         <tr style="height: 2.5em;">
                             <td>Humidity</td>
                             <td class="onoff">
-                            <?php
+                                <?php
                                 if ($pid_hum_or[$i] == 1) {
-                                    ?>
-                                    <input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="Change<?php echo $i; ?>HumOR" value="0"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>HumOR" value="0">ON</button>
+                                    ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="Change<?php echo $i; ?>HumOR" value="0"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>HumOR" value="0">ON</button>
                                     <?php
                                 } else {
-                                    ?>
-                                    <input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="Change<?php echo $i; ?>HumOR" value="1"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>HumOR" value="1">OFF</button>
-                                    <?php
+                                    ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="Change<?php echo $i; ?>HumOR" value="1"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>HumOR" value="1">OFF</button>
+                                <?php
                                 }
-                            ?>
+                                ?>
                             </td>
                             <td>
                                 <input type="text" value="<?php echo $pid_hum_relay[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>HumRelay" title="This is the relay connected to your humidifying device"/>
@@ -809,9 +849,9 @@ if ($error_code) {
                         </tr>
                     </table>
                     </div>
-                <?php
-                }
-                ?>
+                    <?php
+                    }
+                    ?>
                 </div>
                 <?php
                 }
@@ -821,22 +861,40 @@ if ($error_code) {
                     <div style="float: left; padding-right: 1em;">
                         <input type="submit" name="ChangeNoCo2Sensors" value="Save ->">
                         <select name="numco2sensors">
-                            <option value="0" <?php if ($sensor_co2_num == 0) echo "selected=\"selected\""; ?>>0</option>
-                            <option value="1" <?php if ($sensor_co2_num == 1) echo "selected=\"selected\""; ?>>1</option>
-                            <option value="2" <?php if ($sensor_co2_num == 2) echo "selected=\"selected\""; ?>>2</option>
-                            <option value="3" <?php if ($sensor_co2_num == 3) echo "selected=\"selected\""; ?>>3</option>
-                            <option value="4" <?php if ($sensor_co2_num == 4) echo "selected=\"selected\""; ?>>4</option>
+                            <option value="0"<?php
+                                if ($sensor_co2_num == 0) {
+                                    echo " selected=\"selected\"";
+                                } ?>>0</option>
+                            <option value="1"<?php
+                                if ($sensor_co2_num == 1) {
+                                    echo " selected=\"selected\"";
+                                } ?>>1</option>
+                            <option value="2"<?php
+                                if ($sensor_co2_num == 2) {
+                                    echo " selected=\"selected\"";
+                                } ?>>2</option>
+                            <option value="3"<?php
+                                if ($sensor_co2_num == 3) {
+                                    echo " selected=\"selected\"";
+                                } ?>>3</option>
+                            <option value="4"<?php
+                                if ($sensor_co2_num == 4) {
+                                    echo " selected=\"selected\"";
+                                } ?>>4</option>
                         </select>
                     </div>
                     <div style="float: left; font-weight: bold;">CO<sub>2</sub> Sensors</div>
                     <div style="clear: both;"></div>
                 </div>
 
-                <?php if ($sensor_co2_num > 0) { ?>
+                <?php
+                if ($sensor_co2_num > 0) {
+                ?>
 
                 <div>
-                    <?php for ($i = 1; $i <= $sensor_co2_num; $i++) {
-                        ?>
+                    <?php
+                    for ($i = 1; $i <= $sensor_co2_num; $i++) {
+                    ?>
                     <div style="padding-bottom: 0.5em;">
                         <table class="pid" style="width: 42em;">
                         <tr class="shade">
@@ -858,8 +916,14 @@ if ($error_code) {
                             </td>
                             <td>
                                 <select style="width: 80px;" name="sensorco2<?php echo $i; ?>device">
-                                    <option <?php if ($sensor_co2_device[$i] == 'K30') echo "selected=\"selected\""; ?> value="K30">K30</option>
-                                    <option <?php if ($sensor_co2_device[$i] == 'Other') echo "selected=\"selected\""; ?>value="Other">Other</option>
+                                    <option<?php
+                                        if ($sensor_co2_device[$i] == 'K30') {
+                                            echo " selected=\"selected\"";
+                                        } ?> value="K30">K30</option>
+                                    <option<?php
+                                        if ($sensor_co2_device[$i] == 'Other') {
+                                            echo " selected=\"selected\"";
+                                        } ?> value="Other">Other</option>
                                 </select>
                             </td>
                             <td>
@@ -897,15 +961,13 @@ if ($error_code) {
                             <td>CO<sub>2</sub></td>
                             <td class="onoff">
                                 <?php
-                                    if ($pid_co2_or[$i] == 1) {
-                                        ?>
-                                        <input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="Change<?php echo $i; ?>Co2OR" value="0"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>Co2OR" value="0">ON</button>
-                                        <?php
-                                    } else {
-                                        ?>
-                                        <input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="Change<?php echo $i; ?>Co2OR" value="1"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>Co2OR" value="1">OFF</button>
-                                        <?php
-                                    }
+                                if ($pid_co2_or[$i] == 1) {
+                                    ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="Change<?php echo $i; ?>Co2OR" value="0"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>Co2OR" value="0">ON</button>
+                                    <?php
+                                } else {
+                                    ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="Change<?php echo $i; ?>Co2OR" value="1"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>Co2OR" value="1">OFF</button>
+                                    <?php
+                                }
                                 ?>
                             </td>
                             <td>
@@ -932,19 +994,21 @@ if ($error_code) {
                         </tr>
                     </table>
                     </div>
-                <?php
-                }
-                ?>
+                    <?php
+                    }
+                    ?>
                 </div>
                 <?php
                 }
                 ?>
-
             </div>
         </FORM>
 		</li>
 
-		<li data-content="graph" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'graph') echo "class=\"selected\""; ?>>
+		<li data-content="graph" <?php
+            if (isset($_GET['tab']) && $_GET['tab'] == 'graph') {
+                echo "class=\"selected\"";
+            } ?>>
             <?php
             /* DateSelector*Author: Leon Atkinson */
             if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] != 'guest') {
@@ -1083,18 +1147,25 @@ if ($error_code) {
             ?>
 		</li>
 
-		<li data-content="camera" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'camera') echo "class=\"selected\""; ?>>
+		<li data-content="camera" <?php
+            if (isset($_GET['tab']) && $_GET['tab'] == 'camera') {
+                echo "class=\"selected\"";
+            } ?>>
             <div style="padding: 10px 0 15px 15px;">
                 <form action="?tab=camera<?php
-                    if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
-                ?>" method="POST">
+                    if (isset($_GET['page'])) {
+                        echo "&page=" . $_GET['page'];
+                    } ?>" method="POST">
                 <table class="camera">
                     <tr>
                         <td>
                             Light Relay: <input type="text" value="<?php echo $camera_relay; ?>" maxlength=4 size=1 name="lightrelay" title=""/>
                         </td>
                         <td>
-                            Light On? <input type="checkbox" name="lighton" value="1" <?php if (isset($_POST['lighton'])) echo "checked=\"checked\""; ?>>
+                            Light On? <input type="checkbox" name="lighton" value="1" <?php
+                                if (isset($_POST['lighton'])) {
+                                    echo "checked=\"checked\"";
+                                } ?>>
                         </td>
                         <td>
                             <button name="Capture" type="submit" value="">Capture Still</button>
@@ -1107,8 +1178,11 @@ if ($error_code) {
                         </td>
                         <td>
                             <?php
-                            if (!file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer)) echo 'Stream <span class="off">OFF</span>';
-                            else echo 'Stream <span class="on">ON</span>';
+                            if (!file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer)) {
+                                echo 'Stream <span class="off">OFF</span>';
+                            } else {
+                                echo 'Stream <span class="on">ON</span>';
+                            }
                             ?>
                         </td>
                     </tr>
@@ -1121,19 +1195,26 @@ if ($error_code) {
                     echo '<img src="http://' . $_SERVER[HTTP_HOST] . ':8080/?action=stream" />';
                 }
                 if (isset($_POST['Capture']) && $_SESSION['user_name'] != 'guest') {
-                    if ($capture_output != 0) echo 'Abnormal output (possibly error): ' . $capture_output . '<br>';
-                    else echo '<p><img src=image.php?span=cam-still></p>';
+                    if ($capture_output != 0) {
+                        echo 'Abnormal output (possibly error): ' . $capture_output . '<br>';
+                    } else {
+                        echo '<p><img src=image.php?span=cam-still></p>';
+                    }
                 }
             ?>
             </center>
 		</li>
 
-		<li data-content="log" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'log') echo "class=\"selected\""; ?>>
+		<li data-content="log" <?php
+            if (isset($_GET['tab']) && $_GET['tab'] == 'log') {
+                echo "class=\"selected\"";
+            } ?>>
 			<div style="padding: 10px 0 0 15px;">
                 <div style="padding-bottom: 15px;">
                     <FORM action="?tab=log<?php
-                        if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
-                    ?>" method="POST">
+                        if (isset($_GET['page'])) {
+                            echo "&page=" . $_GET['page'];
+                        } ?>" method="POST">
                         Lines: <input type="text" maxlength=8 size=8 name="Lines" />
                         <input type="submit" name="HTSensor" value="HT Sensor">
                         <input type="submit" name="Co2Sensor" value="Co2 Sensor">
@@ -1203,12 +1284,16 @@ if ($error_code) {
             </div>
 		</li>
 
-		<li data-content="advanced" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'adv') echo "class=\"selected\""; ?>>
+		<li data-content="advanced" <?php
+            if (isset($_GET['tab']) && $_GET['tab'] == 'adv') {
+                echo "class=\"selected\"";
+            } ?>>
             <div style="padding-left:1em;">
             <div class="advanced">
                 <FORM action="?tab=adv<?php
-                    if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
-                ?>" method="POST">
+                    if (isset($_GET['page'])) {
+                        echo "&page=" . $_GET['page'];
+                    } ?>" method="POST">
                 <div style="padding-bottom: 1em;">
                     <input type="submit" name="ChangeNoTimers" value="Save ->">
                     <select name="numtimers">
@@ -1223,9 +1308,10 @@ if ($error_code) {
                     </select>
                     Timers
                 </div>
-                <?php if ($timer_num > 0) { ?>
+                <?php
+                if ($timer_num > 0) {
+                ?>
                 <div>
-
                     <table class="timers">
                         <tr>
                             <td>
@@ -1249,7 +1335,9 @@ if ($error_code) {
                             <td>
                             </td>
                         </tr>
-                        <?php for ($i = 1; $i <= $timer_num; $i++) { ?>
+                        <?php
+                        for ($i = 1; $i <= $timer_num; $i++) {
+                        ?>
                         <tr>
                             <td>
                                 <?php echo $i; ?>
@@ -1257,14 +1345,16 @@ if ($error_code) {
                             <td>
                                 <input type="text" value="<?php echo $timer_name[$i]; ?>" maxlength=5 size=5 name="Timer<?php echo $i; ?>Name" title="This is the relay name for timer <?php echo $i; ?>"/>
                             </td>
-                            <?php if ($timer_state[$i] == 0) { ?>
+                            <?php
+                            if ($timer_state[$i] == 0) {
+                            ?>
                                 <th colspan=2 align=right>
                                     <nobr><input type="hidden" name="Timer<?php echo $i; ?>State" value="0"><input type="image" style="height: 0.9em;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="Timer<?php echo $i; ?>StateChange" value="0"> | <button style="width: 40px;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">ON</button></nobr>
                                 </td>
                                 </th>
-                                <?php
+                            <?php
                             } else {
-                                ?>
+                            ?>
                                 <th colspan=2 align=right>
                                     <nobr><input type="hidden" name="Timer<?php echo $i; ?>State" value="1"><input type="image" style="height: 0.9em;" src="/mycodo/img/on.jpg" alt="On" title="On" name="Timer<?php echo $i; ?>StateChange" value="1"> | <button style="width: 40px;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="0">OFF</button></nobr>
                                 </th>
@@ -1284,11 +1374,15 @@ if ($error_code) {
                                 <input type="submit" name="ChangeTimer<?php echo $i; ?>" value="Set">
                             </td>
                         </tr>
-                        <?php } ?>
+                        <?php
+                        }
+                        ?>
                     </table>
                 </div>
                 </FORM>
-                <?php } ?>
+                <?php
+                }
+                ?>
             </div>
 
             <div class="advanced">
@@ -1328,5 +1422,7 @@ if ($error_code) {
 </body>
 </html>
 <?php
-} else include("views/not_logged_in.php");
+} else {
+    include("views/not_logged_in.php");
+}
 ?>
