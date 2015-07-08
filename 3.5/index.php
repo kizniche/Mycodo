@@ -95,9 +95,11 @@ if ($login->isUserLoggedIn() == true) {
         // Reload SQL database if changed by check_form_submission.php
         if ($sql_reload) {
             require("functions/load_sql_database.php");
-            shell_exec($mycodo_client . ' --sqlreload');
+            
             if ($gpio_initialize) {
-                shell_exec($mycodo_client . ' --gpioinit ' . $gpio_initialize);
+                shell_exec($mycodo_client . ' --sqlreload ' . $gpio_initialize);
+            } else {
+                shell_exec($mycodo_client . ' --sqlreload 0');
             }
         }
     }

@@ -491,13 +491,12 @@ class ComServer(rpyc.Service):
         else: return 'Invalid Sensor Name'
         hum, tc = Adafruit_DHT.read_retry(device, pin)
         return (tc, hum)
-    def exposed_SQLReload(self):
+    def exposed_SQLReload(self, relay):
         logging.info("[Client command] Reload SQLite database")
         read_sql()
-        return 1
-    def exposed_Init_GPIO(self, relay):
-        logging.info("[Client command] GPIO pin changed in SQL database, initializing relay %s", relay)
-        initialize_gpio(relay)
+        if relay:
+            logging.info("[Client command] GPIO pin changed in SQL database, initializing relay %s", relay)
+            initialize_gpio(relay)
         return 1
     def exposed_Terminate(self, remoteCommand):
         global client_que
