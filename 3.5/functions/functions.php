@@ -154,6 +154,28 @@ function DateSelector($inName, $useDate=0) {
 	echo "</SELECT>";
 }
 
+// Delete all generated graphs except for the 20 latest
+function delete_graphs() {
+    $dir = "/var/log/mycodo/images/";
+    if (is_dir($dir)) {
+        if ($dh = opendir($dir)) {
+            $files = array();
+            while (($file = readdir($dh)) !== false) {
+                $files[$dir . $file] = filemtime($dir . $file);
+            }
+            closedir($dh);
+        }
+        // Now sort by timestamp (just an integer) from oldest to newest
+        asort($files, SORT_NUMERIC);
+        // Loop over all but the 20 newest files and delete them
+        // Only need the array keys (filenames) since we don't care about timestamps now the array is in order
+        $files = array_keys($files);
+        for ($i = 0; $i < (count($files) - 20); $i++) {
+            if (!is_dir($files[$i])) unlink($files[$i]);
+        }
+    }
+}
+
 function is_positive_integer($str) {
     return (is_numeric($str) && $str > 0 && $str == round($str));
 }
