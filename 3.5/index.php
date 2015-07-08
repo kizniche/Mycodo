@@ -72,7 +72,7 @@ if ($login->isUserLoggedIn() == true) {
     }
 
     // Initial read of SQL database
-    require("functions/load_sql.php");
+    require("functions/load_sql_database.php");
 
     // Delete graphs if number of files exceeds 20
     delete_graphs();
@@ -93,7 +93,7 @@ if ($login->isUserLoggedIn() == true) {
 
     if ($sql_reload) {
         // Reread SQL database to catch any changes made above
-        require("functions/load_sql.php");
+        require("functions/load_sql_database.php");
 
         $editconfig = "$mycodo_client --sqlreload";
         shell_exec($editconfig);
