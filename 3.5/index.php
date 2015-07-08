@@ -58,14 +58,18 @@ require_once("functions/functions.php");
 $login = new Login();
 
 if ($login->isUserLoggedIn() == true) {
-
+    // Reset variables
+    $sql_reload = False;
+    $gpio_initialize = False;
+    $output_error = False;
+    $generate_graph = False;
+    
     // Set cookie of unique ID, for graph-generation
-    $ref = 0;
     if (isset($_GET['Refresh']) == 1 or !isset($_COOKIE['id'])) {
         $uniqueid = uniqid();
         setcookie('id', $uniqueid);
         $id  = $uniqueid;
-        $ref = 1;
+        $generate_graph = True;
     } else {
         $id = $_COOKIE['id'];
     }
@@ -80,28 +84,25 @@ if ($login->isUserLoggedIn() == true) {
     $page = isset($_GET['page']) ? $_GET['page'] : 'Main';
     $tab = isset($_GET['tab']) ? $_GET['tab'] : 'Unset';
 
-    // Check form submission and modify system
-    $sql_reload = False;
-    $gpio_initialize = False;
-    $error_code = False;
-    
     // All commands where elevated (!= guest) privileges are required
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_name'] == 'guest') {
-        $error_code = 'guest';
+        $output_error = 'guest';
     } else if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_name'] != 'guest') {
+        // Form submission detected. Update SQLite database accordingly
         $sql_reload = True;
         require("functions/check_form_submission.php");
-    }
-
-    // Reload SQL database if changed by check_form_submission.php
-    if ($sql_reload) {
-        require("functions/load_sql_database.php");
-        echo "test11";
-        shell_exec($mycodo_client . ' --sqlreload');
-        if ($gpio_initialize) {
-            shell_exec($mycodo_client . ' --gpioinit ' . $gpio_initialize);
+        
+        // Reload SQL database if changed by check_form_submission.php
+        if ($sql_reload) {
+            require("functions/load_sql_database.php");
+            shell_exec($mycodo_client . ' --sqlreload');
+            if ($gpio_initialize) {
+                shell_exec($mycodo_client . ' --gpioinit ' . $gpio_initialize);
+            }
         }
     }
+
+    
 
     // Concatenate Sensor log files (to TempFS) to ensure the latest data is being used
     `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
@@ -165,8 +166,8 @@ if ($login->isUserLoggedIn() == true) {
 <div class="cd-tabs">
 <?php
 // Display an error that occurred
-if ($error_code) {
-    switch ($error_code) {
+if ($output_error) {
+    switch ($output_error) {
         case "guest":
             echo "<span class=\"error\">You cannot perform that task as a guest</span>";
             break;
@@ -177,7 +178,7 @@ if ($error_code) {
             echo "<div class=\"error\">Error: Can't turn relay Off, it's already Off</div>";
             break;
     }
-    $error_code = False;
+    $output_error = False;
 }
 ?>
 <!-- Begin Header -->
@@ -404,21 +405,21 @@ if ($error_code) {
                 <div>
                     <?php
                     // If auto refresh is on, redraw graphs
-                    if (isset($_GET['Refresh']) == 1) $ref = 1;
+                    if (isset($_GET['Refresh']) == 1) $generate_graph = True;
 
                     // Main preset: Display graphs of past day and week
                     if (strpos($page, 'Main') === 0) {
                         for ($n = 1; $n <= $sensor_ht_num; $n++ ) {
                             if ($sensor_ht_graph[$n] == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                                if ($ref) shell_exec($mycodo_client . ' --graph htdayweek ' . $id . ' ' . $n);
+                                if ($generate_graph) shell_exec($mycodo_client . ' --graph htdayweek ' . $id . ' ' . $n);
                                 echo "htmain&mod=" . $id . "&sensor=" . $n . "></div>";
                             }
                         }
                         for ($n = 1; $n <= $sensor_co2_num; $n++ ) {
                             if ($sensor_co2_graph[$n] == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                                if ($ref) shell_exec($mycodo_client . ' --graph co2dayweek ' . $id . ' ' . $n);
+                                if ($generate_graph) shell_exec($mycodo_client . ' --graph co2dayweek ' . $id . ' ' . $n);
                                 echo "co2main&mod=" . $id . "&sensor=" . $n . "></div>";
                             }
                         }
@@ -429,31 +430,31 @@ if ($error_code) {
                         echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
                         switch ($page) {
                             case 'Combined1h':
-                                if ($ref) shell_exec($mycodo_client . ' --graph combined1h ' . $id . ' 0');
+                                if ($generate_graph) shell_exec($mycodo_client . ' --graph combined1h ' . $id . ' 0');
                                 echo "combined1h&mod=" . $id . ">";
                                 break;
                             case 'Combined6h':
-                                if ($ref) shell_exec($mycodo_client . ' --graph combined6h ' . $id . ' 0');
+                                if ($generate_graph) shell_exec($mycodo_client . ' --graph combined6h ' . $id . ' 0');
                                 echo "combined6h&mod=" . $id . ">";
                                 break;
                             case 'Combined1d':
-                                if ($ref) shell_exec($mycodo_client . ' --graph combined1d ' . $id . ' 0');
+                                if ($generate_graph) shell_exec($mycodo_client . ' --graph combined1d ' . $id . ' 0');
                                 echo "combined1d&mod=" . $id . ">";
                                 break;
                             case 'Combined3d':
-                                if ($ref) shell_exec($mycodo_client . ' --graph combined3d ' . $id . ' 0');
+                                if ($generate_graph) shell_exec($mycodo_client . ' --graph combined3d ' . $id . ' 0');
                                 echo "combined3d&mod=" . $id . ">";
                                 break;
                             case 'Combined1w':
-                                if ($ref) shell_exec($mycodo_client . ' --graph combined1w ' . $id . ' 0');
+                                if ($generate_graph) shell_exec($mycodo_client . ' --graph combined1w ' . $id . ' 0');
                                 echo "combined1w&mod=" . $id . ">";
                                 break;
                             case 'Combined1m':
-                                if ($ref) shell_exec($mycodo_client . ' --graph combined1m ' . $id . ' 0');
+                                if ($generate_graph) shell_exec($mycodo_client . ' --graph combined1m ' . $id . ' 0');
                                 echo "combined1m&mod=" . $id . ">";
                                 break;
                             case 'Combined3m':
-                                if ($ref) shell_exec($mycodo_client . ' --graph combined3m ' . $id . ' 0');
+                                if ($generate_graph) shell_exec($mycodo_client . ' --graph combined3m ' . $id . ' 0');
                                 echo "combined3m&mod=" . $id . ">";
                                 break;
                         }
@@ -467,31 +468,31 @@ if ($error_code) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
                                 switch ($page) {
                                     case 'Separate1h':
-                                        if ($ref) shell_exec($mycodo_client . ' --graph htseparate1h ' . $id . ' ' . $n);
+                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph htseparate1h ' . $id . ' ' . $n);
                                         echo "htseparate1h&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
                                     case 'Separate6h':
-                                        if ($ref) shell_exec($mycodo_client . ' --graph htseparate6h ' . $id . ' ' . $n);
+                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph htseparate6h ' . $id . ' ' . $n);
                                         echo "htseparate6h&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
                                     case 'Separate1d':
-                                        if ($ref) shell_exec($mycodo_client . ' --graph htseparate1d ' . $id . ' ' . $n);
+                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph htseparate1d ' . $id . ' ' . $n);
                                         echo "htseparate1d&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
                                     case 'Separate3d':
-                                        if ($ref) shell_exec($mycodo_client . ' --graph htseparate3d ' . $id . ' ' . $n);
+                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph htseparate3d ' . $id . ' ' . $n);
                                         echo "htseparate3d&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
                                     case 'Separate1w':
-                                        if ($ref) shell_exec($mycodo_client . ' --graph htseparate1w ' . $id . ' ' . $n);
+                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph htseparate1w ' . $id . ' ' . $n);
                                         echo "htseparate1w&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
                                     case 'Separate1m':
-                                        if ($ref) shell_exec($mycodo_client . ' --graph htseparate1m ' . $id . ' ' . $n);
+                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph htseparate1m ' . $id . ' ' . $n);
                                         echo "htseparate1m&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
                                     case 'Separate3m':
-                                        if ($ref) shell_exec($mycodo_client . ' --graph htseparate3m ' . $id . ' ' . $n);
+                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph htseparate3m ' . $id . ' ' . $n);
                                         echo "htseparate3m&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
                                 }
@@ -507,31 +508,31 @@ if ($error_code) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
                                 switch ($page) {
                                     case 'Separate1h':
-                                        if ($ref) shell_exec($mycodo_client . ' --graph co2separate1h ' . $id . ' ' . $n);
+                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph co2separate1h ' . $id . ' ' . $n);
                                         echo "co2separate1h&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
                                     case 'Separate6h':
-                                        if ($ref) shell_exec($mycodo_client . ' --graph co2separate6h ' . $id . ' ' . $n);
+                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph co2separate6h ' . $id . ' ' . $n);
                                         echo "co2separate6h&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
                                     case 'Separate1d':
-                                        if ($ref) shell_exec($mycodo_client . ' --graph co2separate1d ' . $id . ' ' . $n);
+                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph co2separate1d ' . $id . ' ' . $n);
                                         echo "co2separate1d&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
                                     case 'Separate3d':
-                                        if ($ref) shell_exec($mycodo_client . ' --graph co2separate3d ' . $id . ' ' . $n);
+                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph co2separate3d ' . $id . ' ' . $n);
                                         echo "co2separate3d&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
                                     case 'Separate1w':
-                                        if ($ref) shell_exec($mycodo_client . ' --graph co2separate1w ' . $id . ' ' . $n);
+                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph co2separate1w ' . $id . ' ' . $n);
                                         echo "co2separate1w&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
                                     case 'Separate1m':
-                                        if ($ref) shell_exec($mycodo_client . ' --graph co2separate1m ' . $id . ' ' . $n);
+                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph co2separate1m ' . $id . ' ' . $n);
                                         echo "co2separate1m&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
                                     case 'Separate3m':
-                                        if ($ref) shell_exec($mycodo_client . ' --graph co2separate3m ' . $id . ' ' . $n);
+                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph co2separate3m ' . $id . ' ' . $n);
                                         echo "co2separate3m&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
                                 }
