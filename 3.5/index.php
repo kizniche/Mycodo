@@ -59,6 +59,7 @@ $login = new Login();
 
 if ($login->isUserLoggedIn() == true) {
     // Reset variables
+    $sql_reload = False;
     $gpio_initialize = False;
     $output_error = False;
     $generate_graph = False;
@@ -91,13 +92,16 @@ if ($login->isUserLoggedIn() == true) {
         // Elevated (!= guest) privileges required to check form data and modify SQLite database
         require("functions/check_form_submission.php");
         
-        // Reload SQL database if changed by check_form_submission.php
+        // Reload SQLite database if changed by check_form_submission.php
         require("functions/load_sql_database.php");
-        
-        if ($gpio_initialize) {
-            shell_exec($mycodo_client . ' --sqlreload ' . $gpio_initialize);
-        } else {
-            shell_exec($mycodo_client . ' --sqlreload 0');
+
+        // Request mycodo.py to reload the SQLite database
+        if ($sql_reload) {
+            if ($gpio_initialize) { // Initialize GPIO also
+                shell_exec($mycodo_client . ' --sqlreload ' . $gpio_initialize);
+            } else {
+                shell_exec($mycodo_client . ' --sqlreload 0');
+            }
         }
     }
 
