@@ -1,5 +1,6 @@
 <?php
 $db = new SQLite3($sqlite_db);
+
 $results = $db->query('SELECT Relays, HTSensors, CO2Sensors, Timers FROM Numbers');
 while ($row = $results->fetchArray()) {
     $relay_num = $row[0];
@@ -86,4 +87,3 @@ while ($row = $results->fetchArray()) {
     //print $row[0] . "<br>";
     $camera_relay = $row[0];
 }
-?>
