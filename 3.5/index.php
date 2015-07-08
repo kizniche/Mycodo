@@ -59,7 +59,6 @@ $login = new Login();
 
 if ($login->isUserLoggedIn() == true) {
     // Reset variables
-    $sql_reload = False;
     $gpio_initialize = False;
     $output_error = False;
     $generate_graph = False;
@@ -84,27 +83,23 @@ if ($login->isUserLoggedIn() == true) {
     $page = isset($_GET['page']) ? $_GET['page'] : 'Main';
     $tab = isset($_GET['tab']) ? $_GET['tab'] : 'Unset';
 
-    // All commands where elevated (!= guest) privileges are required
+    // Form submission detected. 
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_name'] == 'guest') {
+        // If a guest user is attempting to modify the configuration, output an error
         $output_error = 'guest';
     } else if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_name'] != 'guest') {
-        // Form submission detected. Update SQLite database accordingly
-        $sql_reload = True;
+        // Elevated (!= guest) privileges required to check form data and modify SQLite database
         require("functions/check_form_submission.php");
         
         // Reload SQL database if changed by check_form_submission.php
-        if ($sql_reload) {
-            require("functions/load_sql_database.php");
-            
-            if ($gpio_initialize) {
-                shell_exec($mycodo_client . ' --sqlreload ' . $gpio_initialize);
-            } else {
-                shell_exec($mycodo_client . ' --sqlreload 0');
-            }
+        require("functions/load_sql_database.php");
+        
+        if ($gpio_initialize) {
+            shell_exec($mycodo_client . ' --sqlreload ' . $gpio_initialize);
+        } else {
+            shell_exec($mycodo_client . ' --sqlreload 0');
         }
     }
-
-    
 
     // Concatenate Sensor log files (to TempFS) to ensure the latest data is being used
     `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;

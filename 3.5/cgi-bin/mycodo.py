@@ -495,7 +495,7 @@ class ComServer(rpyc.Service):
         logging.info("[Client command] Reload SQLite database")
         read_sql()
         if relay:
-            logging.info("[Client command] Relay GPIO pin changed, initialize relay %s and turn off", relay)
+            logging.info("[Client command] Relay %s GPIO pin changed to %s, initialize and turn off", relay, relay_pin[relay])
             initialize_gpio(relay)
         return 1
     def exposed_Terminate(self, remoteCommand):
@@ -2085,7 +2085,7 @@ def initialize_all_gpio():
 
 # Initialize specified GPIO pin
 def initialize_gpio(relay):
-    logging.info("[GPIO Initialize] Set GPIO mode to BCM numbering, relay %s as output", relay)
+    logging.info("[GPIO Initialize] Set GPIO mode to BCM numbering, pin %s as output", relay_pin[relay])
 
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
