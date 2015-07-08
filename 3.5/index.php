@@ -105,7 +105,7 @@ if ($login->isUserLoggedIn() == true) {
     `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
     `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
 
-    // Separate sensor data from log files
+    // Grab last entry for each sensor from log files
     $last_ht_sensor[1] = `awk '$10 == 1' /var/tmp/sensor-ht.log | tail -n 1`;
     $last_ht_sensor[2] = `awk '$10 == 2' /var/tmp/sensor-ht.log | tail -n 1`;
     $last_ht_sensor[3] = `awk '$10 == 3' /var/tmp/sensor-ht.log | tail -n 1`;
@@ -115,7 +115,7 @@ if ($login->isUserLoggedIn() == true) {
     $last_co2_sensor[3] = `awk '$8 == 3' /var/tmp/sensor-co2.log | tail -n 1`;
     $last_co2_sensor[4] = `awk '$8 == 4' /var/tmp/sensor-co2.log | tail -n 1`;
 
-    // explode() the sensor data array to extract and set variables
+    // explode() the last sensor entry to extract data
     for ($p = 1; $p <= $sensor_ht_num; $p++) {
         $sensor_explode = explode(" ", $last_ht_sensor[$p]);
         $t_c[$p] = $sensor_explode[6];
@@ -878,18 +878,6 @@ if ($output_error) {
                                 if ($sensor_co2_num == 1) {
                                     echo " selected=\"selected\"";
                                 } ?>>1</option>
-                            <option value="2"<?php
-                                if ($sensor_co2_num == 2) {
-                                    echo " selected=\"selected\"";
-                                } ?>>2</option>
-                            <option value="3"<?php
-                                if ($sensor_co2_num == 3) {
-                                    echo " selected=\"selected\"";
-                                } ?>>3</option>
-                            <option value="4"<?php
-                                if ($sensor_co2_num == 4) {
-                                    echo " selected=\"selected\"";
-                                } ?>>4</option>
                         </select>
                     </div>
                     <div style="float: left; font-weight: bold;">CO<sub>2</sub> Sensors</div>
@@ -936,7 +924,17 @@ if ($output_error) {
                                 </select>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo $sensor_co2_pin[$i]; ?>" maxlength=2 size=1 name="sensorco2<?php echo $i; ?>pin" title="This is the GPIO pin connected to the CO2 sensor"/>
+                                <?php
+                                if ($sensor_co2_device[$i] == 'K30') {
+                                ?>
+                                    Tx/Rx
+                                <?php
+                                } else {
+                                ?>
+                                    <input type="text" value="<?php echo $sensor_co2_pin[$i]; ?>" maxlength=2 size=1 name="sensorco2<?php echo $i; ?>pin" title="This is the GPIO pin connected to the CO2 sensor"/>
+                                <?php
+                                }
+                                ?>
                             </td>
                             <td align=center>
                                 <input type="text" value="<?php echo $sensor_co2_period[$i]; ?>" maxlength=4 size=1 name="sensorco2<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
@@ -989,13 +987,13 @@ if ($output_error) {
                                 <input type="text" value="<?php echo $pid_co2_period[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Co2Period" title="This is the number of seconds to wait after the relay has been turned off before taking another CO2 reading and applying the PID"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo $pid_co2_p[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Co2_P" title="This is the Proportional value of the PID"/>
+                                <input type="text" value="<?php echo $pid_co2_p[$i]; ?>" maxlength=5 size=1 name="Set<?php echo $i; ?>Co2_P" title="This is the Proportional value of the PID"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo $pid_co2_i[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Co2_I" title="This is the Integral value of the the PID"/>
+                                <input type="text" value="<?php echo $pid_co2_i[$i]; ?>" maxlength=5 size=1 name="Set<?php echo $i; ?>Co2_I" title="This is the Integral value of the the PID"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo $pid_co2_d[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Co2_D" title="This is the Derivative value of the PID"/>
+                                <input type="text" value="<?php echo $pid_co2_d[$i]; ?>" maxlength=5 size=1 name="Set<?php echo $i; ?>Co2_D" title="This is the Derivative value of the PID"/>
                             </td>
                             <td>
                                 <input type="submit" name="Change<?php echo $i; ?>Co2PID" value="Set">
