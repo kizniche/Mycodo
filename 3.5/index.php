@@ -399,19 +399,15 @@ if ($error_code) {
                         for ($n = 1; $n <= $sensor_ht_num; $n++ ) {
                             if ($sensor_ht_graph[$n] == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                                if ($ref) {
-                                    shell_exec($mycodo_client . ' --graph htdayweek ' . $id . ' ' . $n);
-                                    echo "htmain&mod=" . $id . "&sensor=" . $n . "></div>";
-                                }
+                                if ($ref) shell_exec($mycodo_client . ' --graph htdayweek ' . $id . ' ' . $n);
+                                echo "htmain&mod=" . $id . "&sensor=" . $n . "></div>";
                             }
                         }
                         for ($n = 1; $n <= $sensor_co2_num; $n++ ) {
                             if ($sensor_co2_graph[$n] == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                                if ($ref) {
-                                    shell_exec($mycodo_client . ' --graph co2dayweek ' . $id . ' ' . $n);
-                                    echo "co2main&mod=" . $id . "&sensor=" . $n . "></div>";
-                                }
+                                if ($ref) shell_exec($mycodo_client . ' --graph co2dayweek ' . $id . ' ' . $n);
+                                echo "co2main&mod=" . $id . "&sensor=" . $n . "></div>";
                             }
                         }
                     }
