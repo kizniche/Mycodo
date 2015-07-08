@@ -476,7 +476,6 @@ class ComServer(rpyc.Service):
             while pid_co2_up:
                 time.sleep(0.1)
             return 1
-
     def exposed_ReadCO2Sensor(self, pin, sensor):
         logging.info("[Client command] Read CO2 Sensor %s from GPIO pin %s", sensor, pin)
         if (sensor == 'K30'):
@@ -495,6 +494,10 @@ class ComServer(rpyc.Service):
     def exposed_SQLReload(self):
         logging.info("[Client command] Reload SQLite database")
         read_sql()
+        return 1
+    def exposed_Init_GPIO(self, relay):
+        logging.info("[Client command] GPIO pin changed in SQL database, initializing relay %s", relay)
+        initialize_gpio(relay)
         return 1
     def exposed_Terminate(self, remoteCommand):
         global client_que
@@ -2067,18 +2070,31 @@ def modify_var(*names_and_values):
 #               GPIO Manipulation               #
 #################################################
 
-# Initialize GPIO
-def gpio_initialize():
+# Initialize aLL GPIO pins
+def initialize_all_gpio():
     logging.info("[GPIO Initialize] Set GPIO mode to BCM numbering, all as output")
 
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
 
-    # Initialize
+    # Initialize GPIOs from all 8 relays
     for i in range(1, 9):
-        GPIO.setup(relay_pin[i], GPIO.OUT)
+        if relay_pin[i] is not 0:
+            GPIO.setup(relay_pin[i], GPIO.OUT)
 
     Relays_Off()
+
+# Initialize one specific GPIO pin
+def initialize_gpio(relay):
+    logging.info("[GPIO Initialize] Set GPIO mode to BCM numbering, relay %s as output", relay)
+
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
+
+    #initialize one GPIO
+    if relay_pin[relay] is not 0:
+        GPIO.setup(relay_pin[relay], GPIO.OUT)
+        relay_onoff(relay, 0)
 
 # Change GPIO (Select) to a specific state (State)
 def gpio_change(relay, State):
@@ -2210,7 +2226,7 @@ def main():
             sys.exit(0)
 
     read_sql()
-    gpio_initialize()
+    initialize_all_gpio()
     menu()
     runlock.release()
 

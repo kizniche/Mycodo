@@ -35,6 +35,8 @@ def usage():
     print 'Options:'
     print '    -h, --help'
     print '           Display this help and exit'
+    print '        --gpioinit relay'
+    print '           Initialize relay'
     print '        --graph Duration ID Sensor'
     print '           See documentation for options'
     print '        --modco2OR sensor state'
@@ -87,7 +89,7 @@ def menu():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:], 'hm:r:t',
-            ["help", "graph", "modtempOR", "modtempPID", "modhumOR", "modhumPID", "modco2OR", "modco2PID", "modrelaynames=", "modrelaypins=", "modrelaytrigger=", "modhtsensor", "modco2sensor", "modtimer=", "modvar=", "pidreload=", "relay=", "sensorht", "sensorco2", "sqlreload", "terminate", "writehtlog", "writeco2log"])
+            ["help", "gpioinit=", "graph", "modtempOR", "modtempPID", "modhumOR", "modhumPID", "modco2OR", "modco2PID", "modrelaynames=", "modrelaypins=", "modrelaytrigger=", "modhtsensor", "modco2sensor", "modtimer=", "modvar=", "pidreload=", "relay=", "sensorht", "sensorco2", "sqlreload", "terminate", "writehtlog", "writeco2log"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -99,6 +101,19 @@ def menu():
         if opt in ("-h", "--help"):
             usage()
             return 1
+        elif opt == "--gpioinit":
+            if int(float(sys.argv[2])) > 8 and int(float(sys.argv[2])) < 1:
+                print "Error: Relay selection out of range. Must be 1-8."
+            else:
+                print "%s [Remote command] Initialize GPIO pin for relay %s" % (
+                    Timestamp(), int(float(sys.argv[2])))
+                print "%s [Remote command] Server returned:" % (
+                    Timestamp()),
+                if c.root.Init_GPIO(int(float(sys.argv[2]))) == 1:
+                    print "Success"
+                else:
+                    print "Fail"
+            sys.exit(0)
         elif opt == "--graph":
             print "%s [Remote command] Graph: %s %s %s" % (
                 Timestamp(), sys.argv[2], sys.argv[3], sys.argv[4])

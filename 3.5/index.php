@@ -82,14 +82,25 @@ if ($login->isUserLoggedIn() == true) {
 
     // Check form submission and modify system
     $sql_reload = False;
+    $gpio_initialize = False;
     $error_code = False;
-    require("functions/check_form_submission.php");
+    
+    // All commands where elevated (!= guest) privileges are required
+    if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_name'] == 'guest') {
+        $error_code = 'guest';
+    } else if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_name'] != 'guest') {
+        $sql_reload = True;
+        require("functions/check_form_submission.php");
+    }
 
     // Reload SQL database if changed by check_form_submission.php
     if ($sql_reload) {
         require("functions/load_sql_database.php");
-        $editconfig = "$mycodo_client --sqlreload";
-        shell_exec($editconfig);
+        echo "test11";
+        shell_exec($mycodo_client . ' --sqlreload');
+        if ($gpio_initialize) {
+            shell_exec($mycodo_client . ' --gpioinit ' . $gpio_initialize);
+        }
     }
 
     // Concatenate Sensor log files (to TempFS) to ensure the latest data is being used
