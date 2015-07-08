@@ -1,4 +1,8 @@
 <?php
+//
+// Main
+//
+
 // Display Main tab graph-generation preset links
 function menu_item($id, $title, $current) {
     global $page;
@@ -10,10 +14,19 @@ function menu_item($id, $title, $current) {
     } else echo '<div class="active">' . $title . '</div>';
 }
 
+//
+// Configuration
+//
+
+// Instruct mycodo.py daemon to reload a specific PID controller
 function pid_reload($mycodo_client, $controller, $pid) {
     $editconfig = "$mycodo_client --pidreload $controller $pid";
     shell_exec($editconfig);
 }
+
+//
+// Logging
+//
 
 // Display Log tab SQL database tables, names, and variables
 function view_sql_db() {
@@ -65,6 +78,10 @@ function view_sql_db() {
         print $row[0] . "<br>";
     }
 }
+
+//
+// Graphing
+//
 
 // Display Graphs tab form
 function displayform() { ?>
@@ -174,6 +191,17 @@ function delete_graphs() {
             if (!is_dir($files[$i])) unlink($files[$i]);
         }
     }
+}
+
+//
+// Miscellaneous
+//
+
+// Check if mycodo.py daemon is running
+function daemon_active() {
+    $daemon_check = `ps aux | grep "[m]ycodo.py"`;
+    if (empty($daemon_check)) return 0;
+    else return 1;
 }
 
 function is_positive_integer($str) {
