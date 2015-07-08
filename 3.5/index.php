@@ -319,6 +319,7 @@ if ($error_code) {
                             } else {
                                 if (empty($page)) {
                                     echo '<span class="off">OFF</span> | <a href="?tab=main&Refresh=1&r=1">ON</a>';
+                                } else {
                                     echo '<span class="off">OFF</span> | <a href="?tab=main&page=' . $page . '&Refresh=1&r=1">ON</a>';
                                 }
                             }
