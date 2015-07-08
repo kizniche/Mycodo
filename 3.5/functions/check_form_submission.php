@@ -34,8 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' &&
             $stmt->bindValue(':durationoff', (int)$_POST['Timer' . $p . 'Off'], SQLITE3_INTEGER);
             $stmt->bindValue(':id', $p, SQLITE3_TEXT);
             $stmt->execute();
-
-        } else if (isset($_POST['ChangeTimer' . $p]) && $_SESSION['user_name'] == 'guest') $error_code = 'guest';
+        }
 
         // Set timer state
         if (isset($_POST['Timer' . $p . 'StateChange'])) {
