@@ -76,11 +76,6 @@ if ($login->isUserLoggedIn() == true) {
     // Delete graph image files if quantity exceeds 20 (delete oldest)
     delete_graphs();
 
-    // Check if mycodo.py daemon is running
-    $daemon_check = `ps aux | grep "[m]ycodo.py"`;
-    if (empty($daemon_check)) $daemon_check = 0;
-    else $daemon_check = 1;
-
     // Set GET defaults if not already set
     $page = isset($_GET['page']) ? $_GET['page'] : 'Main';
     $tab = isset($_GET['tab']) ? $_GET['tab'] : 'Unset';
@@ -126,9 +121,6 @@ if ($login->isUserLoggedIn() == true) {
         $co2[$p] = $sensor_explode[6];
     }
 
-    // Grab current time
-    $uptime = `uptime | grep -ohe 'load average[s:][: ].*' `;
-
     // Grab the time of the last sensor read
     $time_now = `date +"%Y-%m-%d %H:%M:%S"`;
     $time_last = `tail -n 1 $sensor_ht_log`;
@@ -154,7 +146,6 @@ if ($login->isUserLoggedIn() == true) {
             window.open("image.php?span=legend-full","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=820, height=550");
         }
     </script>
-    <?php include_once("analyticstracking.php") ?>
     <?php
         if (isset($_GET['r']) && ($_GET['r'] == 1)) echo "<META HTTP-EQUIV=\"refresh\" CONTENT=\"90\">";
     ?>
@@ -162,20 +153,23 @@ if ($login->isUserLoggedIn() == true) {
 <body>
 <div class="cd-tabs">
 <?php
-// Display any auth error that occurred
-switch ($error_code) {
-    case "guest":
-        echo "<span class=\"error\">You cannot perform that task as a guest</span>";
-        break;
-    case "already_on":
-        echo "<div class=\"error\">Error: Can't turn relay On, it's already On</div>";
-        break;
-    case "already_off":
-        echo "<div class=\"error\">Error: Can't turn relay Off, it's already Off</div>";
-        break;
+// Display an error that occurred
+if ($error_code) {
+    switch ($error_code) {
+        case "guest":
+            echo "<span class=\"error\">You cannot perform that task as a guest</span>";
+            break;
+        case "already_on":
+            echo "<div class=\"error\">Error: Can't turn relay On, it's already On</div>";
+            break;
+        case "already_off":
+            echo "<div class=\"error\">Error: Can't turn relay Off, it's already Off</div>";
+            break;
+    }
+    $error_code = False;
 }
-$error_code = False;
 ?>
+<!-- Begin Header -->
 <div class="main-wrapper">
     <div class="header">
         <div style="float: left;">
@@ -189,120 +183,144 @@ $error_code = False;
             <div>
                 <a href="edit.php"><?php echo WORDING_EDIT_USER_DATA; ?></a>
             </div>
-            <div>
-                <a href="index.php?logout"><?php echo WORDING_LOGOUT; ?></a>
-            </div>
-            <?php } else { ?>
-            <div>
-                <a href="index.php?logout"><?php echo WORDING_LOGOUT; ?></a>
-            </div>
             <?php } ?>
+            <div>
+                <a href="index.php?logout"><?php echo WORDING_LOGOUT; ?></a>
+            </div>
         </div>
     </div>
     <div class="header">
         <div style="padding-bottom: 0.1em;"><?php
-            if ($daemon_check) echo '<input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="daemon_change" value="0"> Daemon';
+            if (daemon_active()) echo '<input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="daemon_change" value="0"> Daemon';
             else echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="daemon_change" value="1"> Daemon';
             ?></div>
-        <div style="padding-bottom: 0.1em;"><?php if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) {
-                    echo '<input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="" value="0">';
-                } else echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="" value="0">';?> Stream</div>
+        <div style="padding-bottom: 0.1em;"><?php
+            if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) {
+                echo '<input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="" value="0">';
+            } else {
+                echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="" value="0">';
+            }
+            ?> Stream</div>
         <div><?php
-            if (isset($_GET['r'])) { ?><div style="display:inline-block; vertical-align:top;"><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="" value="0"></div><div style="display:inline-block; padding-left: 0.3em;"><div>Refresh</div><div><span style="font-size: 0.7em">(<?php echo $tab; ?>)</span></div></div><?php
-            } else echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="" value="0"> Refresh'; ?></div>
+            if (isset($_GET['r'])) {
+                ?><div style="display:inline-block; vertical-align:top;"><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="" value="0">
+                </div>
+                <div style="display:inline-block; padding-left: 0.3em;">
+                    <div>Refresh <span style="font-size: 0.7em">(<?php echo $tab; ?>)</span></div>
+                </div><?php
+            } else {
+                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="" value="0"> Refresh<?php
+            }
+        ?></div>
     </div>
     <div style="float: left; vertical-align:top; height: 4.5em; padding: 1em 0.8em 0 0.3em;">
         <div style="text-align: right; padding-top: 3px; font-size: 0.9em;">Time now: <?php echo $time_now; ?></div>
         <div style="text-align: right; padding-top: 3px; font-size: 0.9em;">Last read: <?php echo $time_last; ?></div>
-        <div style="text-align: right; padding-top: 3px; font-size: 0.9em;"><?php echo $uptime; ?></div>
+        <div style="text-align: right; padding-top: 3px; font-size: 0.9em;"><?php echo `uptime | grep -ohe 'load average[s:][: ].*' `; ?></div>
     </div>
     <?php
+    // Display brief Temp/Hum sensor and PID data in header
     for ($i = 1; $i <= $sensor_ht_num; $i++) {
-        if ($sensor_ht_activated[$i] == 1) {
-    ?>
-    <div class="header">
-    <table>
-        <tr>
-            <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo "HT" . $i . ": " . $sensor_ht_name[$i]; ?></td>
-        </tr>
-        <tr>
-            <td>
-    <div style="font-size: 0.8em; padding-right: 0.5em;"><?php
-            echo "Now<br><span title=\"" . number_format((float)$t_f[$i], 1, '.', '') . "&deg;F\">" . number_format((float)$t_c[$i], 1, '.', '') . "&deg;C</span>";
-            echo "<br>" . number_format((float)$hum[$i], 1, '.', '') . "%";
-        ?>
-    </div>
-            </td>
-            <td>
-    <div style="font-size: 0.8em;"><?php
-            echo "Set<br><span title=\"" . number_format((float)$settemp_f[$i], 1, '.', '') ."&deg;F\">" . number_format((float)$pid_temp_set[$i], 1, '.', '') . "&deg;C";
-            echo "<br>" . number_format((float)$pid_hum_set[$i], 1, '.', '') . "%";
-            ?>
-    </div>
-            </td>
-        </tr>
-    </table>
-    </div>
-    <?php
+        if ($sensor_ht_activated[$i] == 1) { ?>
+            <div class="header">
+                <table>
+                    <tr>
+                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo "HT" . $i . ": " . $sensor_ht_name[$i]; ?></td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 0.8em; padding-right: 0.5em;"><?php
+                            echo "Now<br><span title=\"" . number_format((float)$t_f[$i], 1, '.', '') . "&deg;F\">" . number_format((float)$t_c[$i], 1, '.', '') . "&deg;C</span>";
+                            echo "<br>" . number_format((float)$hum[$i], 1, '.', '') . "%";
+                        ?></td>
+                        <td style="font-size: 0.8em;"><?php
+                            echo "Set<br><span title=\"" . number_format((float)$settemp_f[$i], 1, '.', '') ."&deg;F\">" . number_format((float)$pid_temp_set[$i], 1, '.', '') . "&deg;C";
+                            echo "<br>" . number_format((float)$pid_hum_set[$i], 1, '.', '') . "%";
+                        ?></td>
+                    </tr>
+                </table>
+            </div><?php
         }
     }
-    ?>
-
-    <?php
+    // Display brief CO2 sensor and PID data in header
     for ($i = 1; $i <= $sensor_co2_num; $i++) {
         if ($sensor_co2_activated[$i] == 1) {
-    ?>
-    <div class="header">
-    <table>
-        <tr>
-            <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;">
-                <?php echo "CO<sub>2</sub>" . $i . ": " . $sensor_co2_name[$i]; ?>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div style="font-size: 0.8em; padding-right: 0.5em;"><?php echo "Now<br>" . $co2[$i]; ?></div>
-            </td>
-            <td>
-                <div style="font-size: 0.8em;"><?php echo "Set<br>" . $pid_co2_set[$i]; ?></div>
-            </td>
-        </tr>
-    </table>
-    </div>
-    <?php
+            ?><div class="header">
+                <table>
+                    <tr>
+                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo "CO<sub>2</sub>" . $i . ": " . $sensor_co2_name[$i]; ?></td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 0.8em; padding-right: 0.5em;"><?php echo "Now<br>" . $co2[$i]; ?></td>
+                        <td style="font-size: 0.8em;"><?php echo "Set<br>" . $pid_co2_set[$i]; ?></td>
+                    </tr>
+                </table>
+            </div><?php
         }
     }
     ?>
 </div>
+<!-- End Header -->
+<!-- Begin Tab Navigation -->
 <div style="clear: both; padding-top: 15px;"></div>
 	<nav>
 		<ul class="cd-tabs-navigation">
-			<li><a data-content="main" <?php if (!isset($_GET['tab']) || (isset($_GET['tab']) && $_GET['tab'] == 'main')) echo "class=\"selected\""; ?> href="#0">Main</a></li>
-			<li><a data-content="configure" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'config') echo "class=\"selected\""; ?> href="#0">Configure</a></li>
-			<li><a data-content="graph" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'graph') echo "class=\"selected\""; ?> href="#0">Graphs</a></li>
-			<li><a data-content="camera" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'camera') echo "class=\"selected\""; ?> href="#0">Camera</a></li>
-			<li><a data-content="log" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'log') echo "class=\"selected\""; ?> href="#0">Log</a></li>
-			<li><a data-content="advanced" <?php if (isset($_GET['tab']) && $_GET['tab'] == 'adv') echo "class=\"selected\""; ?> href="#0">Advanced</a></li>
-		</ul> <!-- cd-tabs-navigation -->
+			<li><a data-content="main" <?php
+                if (!isset($_GET['tab']) || (isset($_GET['tab']) && $_GET['tab'] == 'main')) {
+                    echo "class=\"selected\"";
+                } ?> href="#0">Main</a></li>
+			<li><a data-content="configure" <?php
+                if (isset($_GET['tab']) && $_GET['tab'] == 'config') {
+                    echo "class=\"selected\"";
+                } ?> href="#0">Configure</a></li>
+			<li><a data-content="graph" <?php
+                if (isset($_GET['tab']) && $_GET['tab'] == 'graph') {
+                    echo "class=\"selected\"";
+                } ?> href="#0">Graphs</a></li>
+			<li><a data-content="camera" <?php
+                if (isset($_GET['tab']) && $_GET['tab'] == 'camera') {
+                    echo "class=\"selected\"";
+                } ?> href="#0">Camera</a></li>
+			<li><a data-content="log" <?php
+                if (isset($_GET['tab']) && $_GET['tab'] == 'log') {
+                    echo "class=\"selected\"";
+                } ?> href="#0">Log</a></li>
+			<li><a data-content="advanced" <?php
+                if (isset($_GET['tab']) && $_GET['tab'] == 'adv') {
+                    echo "class=\"selected\"";
+                } ?> href="#0">Advanced</a></li>
+		</ul>
 	</nav>
 	<ul class="cd-tabs-content">
-		<li data-content="main" <?php if (!isset($_GET['tab']) || (isset($_GET['tab']) && $_GET['tab'] == 'main')) echo "class=\"selected\""; ?>>
-        <FORM action="?tab=main<?php
-            if (isset($_GET['page'])) echo "&page=" . $_GET['page'];
-            if (isset($_GET['Refresh']) || isset($_POST['Refresh'])) echo "&Refresh=1";
-            if (isset($_GET['r'])) echo "&r=" . $_GET['r'];
-            ?>" method="POST">
+		<li data-content="main" <?php
+            if (!isset($_GET['tab']) || (isset($_GET['tab']) && $_GET['tab'] == 'main')) {
+                echo "class=\"selected\"";
+            } ?>>
+            <FORM action="?tab=main<?php
+            if (isset($_GET['page'])) {
+                echo "&page=" . $_GET['page'];
+            }
+            if (isset($_GET['Refresh']) || isset($_POST['Refresh'])) {
+                echo "&Refresh=1";
+            }
+            if (isset($_GET['r'])) {
+                echo "&r=" . $_GET['r'];
+            } ?>" method="POST">
             <div>
                 <div style="padding-top: 0.5em;">
                     <div style="float: left; padding: 0 1.5em 1em 0.5em;">
                         <div style="text-align: center; padding-bottom: 0.2em;">Auto Refresh</div>
                         <div style="text-align: center;"><?php
                             if (isset($_GET['r']) && $_GET['r'] == 1) {
-                                if (empty($page)) echo '<a href="?tab=main">OFF</a> | <span class="on">ON</span>';
-                                else echo '<a href="?tab=main&page=' . $page . '">OFF</a> | <span class="on">ON</span>';
+                                if (empty($page)) {
+                                    echo '<a href="?tab=main">OFF</a> | <span class="on">ON</span>';
+                                } else {
+                                    echo '<a href="?tab=main&page=' . $page . '">OFF</a> | <span class="on">ON</span>';
+                                }
                             } else {
-                                if (empty($page)) echo '<span class="off">OFF</span> | <a href="?tab=main&Refresh=1&r=1">ON</a>';
-                                echo '<span class="off">OFF</span> | <a href="?tab=main&page=' . $page . '&Refresh=1&r=1">ON</a>';
+                                if (empty($page)) {
+                                    echo '<span class="off">OFF</span> | <a href="?tab=main&Refresh=1&r=1">ON</a>';
+                                    echo '<span class="off">OFF</span> | <a href="?tab=main&page=' . $page . '&Refresh=1&r=1">ON</a>';
+                                }
                             }
                         ?>
                         </div>
@@ -312,14 +330,30 @@ $error_code = False;
                         <div>
                             <div style="float: left; padding-right: 0.1em;">
                                 <input type="button" onclick='location.href="?tab=main<?php
-                                if (isset($_GET['page'])) { if ($_GET['page']) echo "&page=" . $page; }
+                                if (isset($_GET['page'])) {
+                                    if ($_GET['page']) {
+                                        echo "&page=" . $page;
+                                    }
+                                }
                                 echo "&Refresh=1";
-                                if (isset($_GET['r'])) { if ($_GET['r'] == 1) echo "&r=1"; } ?>"' value="Graph">
+                                if (isset($_GET['r'])) {
+                                    if ($_GET['r'] == 1) {
+                                        echo "&r=1";
+                                    }
+                                } ?>"' value="Graph">
                             </div>
                             <div style="float: left; padding-right: 0.1em;">
                                 <input type="button" onclick='location.href="?tab=main<?php
-                                if (isset($_GET['page'])) { if ($_GET['page']) echo "&page=" . $page; }
-                                if (isset($_GET['r'])) { if ($_GET['r'] == 1) echo "&r=1"; } ?>"' value="Page">
+                                if (isset($_GET['page'])) {
+                                    if ($_GET['page']) {
+                                        echo "&page=" . $page;
+                                    }
+                                }
+                                if (isset($_GET['r'])) {
+                                    if ($_GET['r'] == 1) {
+                                        echo "&r=1";
+                                    }
+                                } ?>"' value="Page">
                             </div>
                             <div style="float: left;">
                                 <input type="submit" name="WriteSensorLog" value="Sensors" title="Reread all sensors and write logs">
@@ -330,7 +364,6 @@ $error_code = False;
                         <div>
                             <div class="Row-title">Separate</div>
                             <?php
-
                             menu_item('Separate1h', '1 Hour', $page);
                             menu_item('Separate6h', '6 Hours', $page);
                             menu_item('Separate1d', '1 Day', $page);
@@ -339,7 +372,7 @@ $error_code = False;
                             menu_item('Separate1m', '1 Month', $page);
                             menu_item('Separate3m', '3 Months', $page);
                             menu_item('Main', 'Main', $page);
-                        ?>
+                            ?>
                         </div>
                         <div>
                             <div class="Row-title">Combined</div>
@@ -351,55 +384,80 @@ $error_code = False;
                             menu_item('Combined1w', '1 Week', $page);
                             menu_item('Combined1m', '1 Month', $page);
                             menu_item('Combined3m', '3 Months', $page);
-                        ?>
+                            ?>
                         </div>
                     </div>
                 </div>
                 <div style="clear: both;"></div>
                 <div>
                     <?php
-                    if (strpos($_GET['page'], 'Combined') === 0) {
-                        echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                        if ($_GET['page'] == 'Combined1h') {
-                            $editconfig = $mycodo_client . ' --graph combined1h ' . $id . ' 0';
-                            if ($ref) shell_exec($editconfig);
-                            echo "combined1h&mod=" . $id . ">";
-                        } else if ($_GET['page'] == 'Combined6h') {
-                            $editconfig = $mycodo_client . ' --graph combined6h ' . $id . ' 0';
-                            if ($ref) shell_exec($editconfig);
-                            echo "combined6h&mod=" . $id . ">";
-                        } else if ($_GET['page'] == 'Combined1d') {
-                            $editconfig = $mycodo_client . ' --graph combined1d ' . $id . ' 0';
-                            if ($ref) shell_exec($editconfig);
-                            echo "combined1d&mod=" . $id . ">";
-                        } else if ($_GET['page'] == 'Combined3d') {
-                            $editconfig = $mycodo_client . ' --graph combined3d ' . $id . ' 0';
-                            if ($ref) shell_exec($editconfig);
-                            echo "combined3d&mod=" . $id . ">";
-                        } else if ($_GET['page'] == 'Combined1w') {
-                            $editconfig = $mycodo_client . ' --graph combined1w ' . $id . ' 0';
-                            if ($ref) shell_exec($editconfig);
-                            echo "combined1w&mod=" . $id . ">";
-                        } else if ($_GET['page'] == 'Combined1m') {
-                            $editconfig = $mycodo_client . ' --graph combined1m ' . $id . ' 0';
-                            if ($ref) shell_exec($editconfig);
-                            echo "combined1m&mod=" . $id . ">";
-                        } else if ($_GET['page'] == 'Combined3m') {
-                            $editconfig = $mycodo_client . ' --graph combined3m ' . $id . ' 0';
-                            if ($ref) shell_exec($editconfig);
-                            echo "combined3m&mod=" . $id . ">";
-                        }
-                        sleep(3);
-                        echo "</div>";
-                    } else {
+                    // If auto refresh is on, redraw graphs
+                    if (isset($_GET['Refresh']) == 1) $ref = 1;
+
+                    // Main preset: Display graphs of past day and week
+                    if (strpos($page, 'Main') === 0) {
                         for ($n = 1; $n <= $sensor_ht_num; $n++ ) {
-                            if (isset($_GET['page']) and $sensor_ht_graph[$n] == 1) {
+                            if ($sensor_ht_graph[$n] == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                                switch ($_GET['page']) {
-                                    case 'Main':
-                                        if ($ref) shell_exec($mycodo_client . ' --graph htdayweek ' . $id . ' ' . $n);
-                                        echo "htmain&mod=" . $id . "&sensor=" . $n . ">";
-                                        break;
+                                if ($ref) {
+                                    shell_exec($mycodo_client . ' --graph htdayweek ' . $id . ' ' . $n);
+                                    echo "htmain&mod=" . $id . "&sensor=" . $n . "></div>";
+                                }
+                            }
+                        }
+                        for ($n = 1; $n <= $sensor_co2_num; $n++ ) {
+                            if ($sensor_co2_graph[$n] == 1) {
+                                echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
+                                if ($ref) {
+                                    shell_exec($mycodo_client . ' --graph co2dayweek ' . $id . ' ' . $n);
+                                    echo "co2main&mod=" . $id . "&sensor=" . $n . "></div>";
+                                }
+                            }
+                        }
+                    }
+
+                    // Combined preset: Generate combined graphs
+                    if (strpos($page, 'Combined') === 0) {
+                        echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
+                        switch ($page) {
+                            case 'Combined1h':
+                                if ($ref) shell_exec($mycodo_client . ' --graph combined1h ' . $id . ' 0');
+                                echo "combined1h&mod=" . $id . ">";
+                                break;
+                            case 'Combined6h':
+                                if ($ref) shell_exec($mycodo_client . ' --graph combined6h ' . $id . ' 0');
+                                echo "combined6h&mod=" . $id . ">";
+                                break;
+                            case 'Combined1d':
+                                if ($ref) shell_exec($mycodo_client . ' --graph combined1d ' . $id . ' 0');
+                                echo "combined1d&mod=" . $id . ">";
+                                break;
+                            case 'Combined3d':
+                                if ($ref) shell_exec($mycodo_client . ' --graph combined3d ' . $id . ' 0');
+                                echo "combined3d&mod=" . $id . ">";
+                                break;
+                            case 'Combined1w':
+                                if ($ref) shell_exec($mycodo_client . ' --graph combined1w ' . $id . ' 0');
+                                echo "combined1w&mod=" . $id . ">";
+                                break;
+                            case 'Combined1m':
+                                if ($ref) shell_exec($mycodo_client . ' --graph combined1m ' . $id . ' 0');
+                                echo "combined1m&mod=" . $id . ">";
+                                break;
+                            case 'Combined3m':
+                                if ($ref) shell_exec($mycodo_client . ' --graph combined3m ' . $id . ' 0');
+                                echo "combined3m&mod=" . $id . ">";
+                                break;
+                        }
+                        echo "</div>";
+                    }
+
+                    // Combined preset: Generate separate graphs
+                    if (strpos($page, 'Separate') === 0) {
+                        for ($n = 1; $n <= $sensor_ht_num; $n++ ) {
+                            if ($sensor_ht_graph[$n] == 1) {
+                                echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
+                                switch ($page) {
                                     case 'Separate1h':
                                         if ($ref) shell_exec($mycodo_client . ' --graph htseparate1h ' . $id . ' ' . $n);
                                         echo "htseparate1h&mod=" . $id . "&sensor=" . $n . ">";
@@ -428,28 +486,18 @@ $error_code = False;
                                         if ($ref) shell_exec($mycodo_client . ' --graph htseparate3m ' . $id . ' ' . $n);
                                         echo "htseparate3m&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
-                                    default:
-                                        if ($ref) shell_exec($mycodo_client . ' --graph htdayweek ' . $id . ' ' . $n);
-                                        echo "htmain&mod=" . $id . "&sensor=" . $n . ">";
-                                        break;
                                 }
                                 echo "</div>";
-                            } else if (${'sensorht' . $n . 'graph'} == 1) {
-                                echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                                if ($ref) shell_exec($mycodo_client . ' --graph htdayweek ' . $id . ' ' . $n);
-                                echo "htmain&mod=" . $id . "&sensor=" . $n . "></div>";
                             }
                             if ($n != $sensor_ht_num || $sensor_co2_graph[1] == 1 || $sensor_co2_graph[2] == 1 || $sensor_co2_graph[3] == 1 || $sensor_co2_graph[4] == 1) {
-                                echo "<hr class=\"fade\"/>"; }
+                                echo "<hr class=\"fade\"/>";
+                            }
                         }
+
                         for ($n = 1; $n <= $sensor_co2_num; $n++ ) {
-                            if (isset($_GET['page']) and $sensor_co2_graph[$n] == 1) {
+                            if ($sensor_co2_graph[$n] == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                                switch ($_GET['page']) {
-                                    case 'Main':
-                                        if ($ref) shell_exec($mycodo_client . ' --graph co2dayweek ' . $id . ' ' . $n);
-                                        echo "co2main&mod=" . $id . "&sensor=" . $n . ">";
-                                        break;
+                                switch ($page) {
                                     case 'Separate1h':
                                         if ($ref) shell_exec($mycodo_client . ' --graph co2separate1h ' . $id . ' ' . $n);
                                         echo "co2separate1h&mod=" . $id . "&sensor=" . $n . ">";
@@ -478,18 +526,12 @@ $error_code = False;
                                         if ($ref) shell_exec($mycodo_client . ' --graph co2separate3m ' . $id . ' ' . $n);
                                         echo "co2separate3m&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
-                                    default:
-                                        if ($ref) shell_exec($mycodo_client . ' --graph co2dayweek ' . $id . ' ' . $n);
-                                        echo "co2main&mod=" . $id . "&sensor=" . $n . ">";
-                                        break;
                                 }
                                 echo "</div>";
-                            } else if ($sensor_co2_graph[$n] == 1) {
-                                echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                                if ($ref) shell_exec($mycodo_client . ' --graph co2dayweek ' . $id . ' ' . $n);
-                                echo "co2main&mod=" . $id . "&sensor=" . $n . "></div>";
                             }
-                            if ($n != $sensor_co2_num) { echo "<hr class=\"fade\"/>"; }
+                            if ($n != $sensor_co2_num) {
+                                echo "<hr class=\"fade\"/>";
+                            }
                         }
                     }
                     ?>
