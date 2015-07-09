@@ -51,6 +51,12 @@ hr.fade {
 }
 
 /*** config ***/
+.config-title {
+    float: left;
+    font-weight: bold;
+    padding-top: 0.1em;
+}
+
 table.relays {
     width: 42em;
 }
@@ -164,11 +170,12 @@ table.timers tr:nth-child(odd) {
 }
 
 .notify-title {
-    padding: 0 0 1em 1em;
+    padding: 0.5em 0 0.5em 1em;
+    font-weight: bold;
 }
 
 .notify {
-    margin-top: 0.3em
+    margin-top: 0.3em;
 }
 
 label.notify {
@@ -178,6 +185,15 @@ label.notify {
     width: 6em;
     text-align: right;
     padding-right: 0.5em;
+}
+
+.manageusers-title {
+    margin-top: 0.1em;
+    font-weight: bold;
+}
+
+.manageusers {
+    margin-top: 0.1em;
 }
 
 input.smtp {

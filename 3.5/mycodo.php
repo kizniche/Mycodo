@@ -53,13 +53,13 @@ $output_error = False;
 $generate_graph = False;
 
 // Set cookie of unique ID, for graph-generation
-if (isset($_GET['Refresh']) == 1 || !isset($_COOKIE['id'])) {
+if (isset($_GET['Refresh']) == 1 || !isset($_COOKIE['graph_id'])) {
     $uniqueid = uniqid();
-    setcookie('id', $uniqueid);
+    setcookie('graph_id', $uniqueid);
     $id  = $uniqueid;
     $generate_graph = True;
 } else {
-    $id = $_COOKIE['id'];
+    $id = $_COOKIE['graph_id'];
 }
 
 // Initial SQL database load to variables
@@ -528,7 +528,7 @@ if ($output_error) {
                 </div>
                 <div style="width: 100%; padding: 1em 0 0 0; text-align: center;">
                     Legend: <a href="javascript:open_legend()">Brief</a> / <a href="javascript:open_legend_full()">Full</a>
-                    <div style="text-align: center; padding-top: 0.5em;"><a href="https://github.com/kizniche/Automated-Mushroom-Cultivator" target="_blank">Mycodo on GitHub</a></div>
+                    <div style="text-align: center; padding-top: 0.5em;"><a href="https://github.com/kizniche/Mycodo" target="_blank">Mycodo on GitHub</a></div>
                 </div>
             </div>
             </form>
@@ -593,7 +593,7 @@ if ($output_error) {
                             <option value="8" <?php if ($relay_num == 8) echo "selected=\"selected\""; ?>>8</option>
                         </select>
                     </div>
-                    <div style="float: left; font-weight: bold;">Relays</div>
+                    <div class="config-title">Relays</div>
                     <div style="clear: both;"></div>
                 </div>
 
@@ -691,7 +691,7 @@ if ($output_error) {
                                 } ?>>4</option>
                         </select>
                     </div>
-                    <div style="float: left; font-weight: bold;">Humidity & Temperature Sensors</div>
+                    <div class="config-title">Humidity & Temperature Sensors</div>
                     <div style="clear: both;"></div>
                 </div>
 
@@ -864,7 +864,7 @@ if ($output_error) {
                                 } ?>>1</option>
                         </select>
                     </div>
-                    <div style="float: left; font-weight: bold;">CO<sub>2</sub> Sensors</div>
+                    <div class="config-title">CO<sub>2</sub> Sensors</div>
                     <div style="clear: both;"></div>
                 </div>
 
@@ -1211,7 +1211,7 @@ if ($output_error) {
                         <input type="submit" name="Co2Sensor" value="Co2 Sensor">
                         <input type="submit" name="Relay" value="Relay">
                         <input type="submit" name="Users" value="Users">
-                        <input type="submit" name="Auth" value="Auth">
+                        <input type="submit" name="Auth" value="Login">
                         <input type="submit" name="Daemon" value="Daemon">
                         <input type="submit" name="SQL" value="SQL">
                     </FORM>
@@ -1293,7 +1293,7 @@ if ($output_error) {
                     if (isset($_GET['page'])) {
                         echo "&page=" . $_GET['page'];
                     } ?>" method="POST">
-                <div style="padding-bottom: 1em;">
+                <div style="padding-bottom: 1em; font-weight: bold;">
                     <input type="submit" name="ChangeNoTimers" value="Save ->">
                     <select name="numtimers">
                         <option value="1" <?php if ($timer_num == 1) echo "selected=\"selected\""; ?>>1</option>
@@ -1305,7 +1305,7 @@ if ($output_error) {
                         <option value="7" <?php if ($timer_num == 7) echo "selected=\"selected\""; ?>>7</option>
                         <option value="8" <?php if ($timer_num == 8) echo "selected=\"selected\""; ?>>8</option>
                     </select>
-                    Timers
+                    <strong>Timers</strong>
                 </div>
                 <?php
                 if ($timer_num > 0) {
@@ -1418,42 +1418,58 @@ if ($output_error) {
             <div class="advanced">
                 <?php if ($this->feedback) echo $this->feedback; ?>
                     <div style="padding-bottom: 1em;">
-                        Create User
-                        <form method="post" action="?tab=adv" name="userform">
-                        <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" /><label for="login_input_username">Username (only letters and numbers, 2 to 64 characters)</label>
-                        <br>
-                        <input id="login_input_email" type="email" name="user_email" /> <label for="login_input_email">User's email</label>
-                        <br>
-                        <input id="login_input_password_new" class="login_input" type="password" name="user_password_new" pattern=".{6,}" required autocomplete="off" />
-                        <label for="login_input_password_new">Password (min. 6 characters)</label>
-                        <br>
-                        <input id="login_input_password_repeat" class="login_input" type="password" name="user_password_repeat" pattern=".{6,}" required autocomplete="off" />
-                        <label for="login_input_password_repeat">Repeat password</label>
-                        <br>
-                        <input type="submit" name="register" value="Create User" />
+                        <form method="post" action="?tab=adv" name="addform">
+                        <div class="manageusers-title">
+                        Add User
+                        </div>
+                        <div class="manageusers">
+                        <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" /> <label for="login_input_username">User name (only letters and numbers, 2 to 64 characters)</label>
+                        </div>
+                        <div class="manageusers">
+                        <input id="login_input_email" type="email" name="user_email" /> <label for="login_input_email">Email</label>
+                        </div>
+                        <div class="manageusers">
+                        <input id="login_input_password_new" class="login_input" type="password" name="user_password_new" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_new">Password (min. 6 characters)</label>
+                        </div>
+                        <div class="manageusers">
+                        <input id="login_input_password_repeat" class="login_input" type="password" name="user_password_repeat" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_repeat">Repeat password</label>
+                        </div>
+                        <div class="manageusers">
+                        <input type="submit" name="register" value="Add User" />
+                        </div>
                         </form>
                     </div>
                     <div style="padding-bottom: 1em;">
+                        <form method="post" action="?tab=adv" name="changeform">
+                        <div class="manageusers-title">
                         Change Password
-                        <form method="post" action="?tab=adv" name="passform">
-                        <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
-                        <label for="login_input_username">Username</label>
-                        <br>
+                        </div>
+                        <div class="manageusers">
+                        <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" /> <label for="login_input_username">User name</label>
+                        </div>
+                        <div class="manageusers">
                         <input id="login_input_password_new" class="login_input" type="password" name="new_password" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_new">New Password (min. 6 characters)</label>
-                        <br>
-                        <input id="login_input_password_repeat" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" required autocomplete="off" />
-                        <label for="login_input_password_repeat">Repeat New password</label>
-                        <br>
+                        </div>
+                        <div class="manageusers">
+                        <input id="login_input_password_repeat" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_repeat">Repeat New password</label>
+                        </div>
+                        <div class="manageusers">
                         <input type="submit" name="changepassword" value="Change Password" />
+                        </div>
                         </form>
                     </div>
                     <div>
-                        Delete User
                         <form method="post" action="?tab=adv" name="delform">
+                        <div class="manageusers-title">
+                        Delete User
+                        </div>
+                        <div class="manageusers">
                         <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
-                        <label for="login_input_username">Username</label>
-                        <br>
+                        <label for="login_input_username">User name</label>
+                        </div>
+                        <div class="manageusers">
                         <input type="submit" name="deleteuser" value="Delete User" />
+                        </div>
                         </form>
                     </div>
                 </div>

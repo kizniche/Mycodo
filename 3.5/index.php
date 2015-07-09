@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Class OneFileLoginApplication
  *
@@ -11,39 +10,25 @@
  * @link https://github.com/panique/php-login-one-file/
  * @license http://opensource.org/licenses/MIT MIT License
  */
-class OneFileLoginApplication
-{
-    /**
-     * @var string Type of used database (currently only SQLite, but feel free to expand this with mysql etc)
-     */
+class OneFileLoginApplication {
+    // @var string Type of database used
     private $db_type = "sqlite"; //
 
-    /**
-     * @var string Path of the database file (create this with _install.php)
-     */
+    // @var string Path of the database file
     private $db_sqlite_path = "./config/users.db";
 
-    /**
-     * @var object Database connection
-     */
+    // @var object Database connection
     private $db_connection = null;
 
-    /**
-     * @var bool Login status of user
-     */
+    // @var bool Login status of user
     private $user_is_logged_in = false;
 
-    /**
-     * @var string System messages, likes errors, notices, etc.
-     */
+    // @var string System messages, likes errors, notices, etc.
     public $feedback = "";
 
 
-    /**
-     * Does necessary checks for PHP version and PHP password compatibility library and runs the application
-     */
-    public function __construct()
-    {
+    // Checks for PHP version and PHP password compatibility library and runs the application
+    public function __construct() {
         if ($this->performMinimumRequirementsCheck()) {
             $this->runApplication();
         }
@@ -56,8 +41,7 @@ class OneFileLoginApplication
      * (this library adds the PHP 5.5 password hashing functions to older versions of PHP)
      * @return bool Success status of minimum requirements check, default is false
      */
-    private function performMinimumRequirementsCheck()
-    {
+    private function performMinimumRequirementsCheck() {
         if (version_compare(PHP_VERSION, '5.3.7', '<')) {
             echo "Sorry, Simple PHP Login does not run on a PHP version older than 5.3.7 !";
         } elseif (version_compare(PHP_VERSION, '5.5.0', '<')) {
@@ -70,11 +54,8 @@ class OneFileLoginApplication
         return false;
     }
 
-    /**
-     * This is basically the controller that handles the entire flow of the application.
-     */
-    public function runApplication()
-    {
+    // controller that handles the entire flow of the application.
+    public function runApplication() {
         if (isset($_POST["register"])) {
             if ($this->checkRegistrationData()) {
                 if ($this->createDatabaseConnection()) {
@@ -82,7 +63,7 @@ class OneFileLoginApplication
                 }
             }
         } else if (isset($_POST["changepassword"])) {
-            if ($this->checkPasswordData()) {
+            if ($this->checkPasswordChangeData()) {
                 if ($this->createDatabaseConnection()) {
                     $this->changePassword();
                 }
@@ -95,11 +76,11 @@ class OneFileLoginApplication
             }
         }
 
-        // start the session, always needed!
+        // start the session (required)
         $this->doStartSession();
-        // check for possible user interactions (login with session/post data or logout)
+        // check for possible user interactions (login with cookie/session/post data or logout)
         $this->performUserLoginAction();
-        // show "page", according to user's login status
+        // show page based on user's login status
         if ($this->getUserLoginStatus()) {
             $this->showPageLoggedIn();
         } else {
@@ -111,8 +92,7 @@ class OneFileLoginApplication
      * Creates a PDO database connection (in this case to a SQLite flat-file database)
      * @return bool Database creation success status, false by default
      */
-    private function createDatabaseConnection()
-    {
+    private function createDatabaseConnection() {
         try {
             $this->db_connection = new PDO($this->db_type . ':' . $this->db_sqlite_path);
             return true;
@@ -124,15 +104,11 @@ class OneFileLoginApplication
         return false;
     }
 
-    /**
-     * Handles the flow of the login/logout process. According to the circumstances, a logout, a login with session
-     * data or a login with post data will be performed
-     */
-    private function performUserLoginAction()
-    {
+    // Handles the flow of the login/logout process.
+    private function performUserLoginAction() {
         if (isset($_GET["action"]) && $_GET["action"] == "logout") {
             $this->doLogout();
-        } elseif (isset($_COOKIE['loggedin'])) {
+        } elseif (isset($_COOKIE['login_user'])) {
             // remember: the user can log in with username or email address
             $this->createDatabaseConnection();
             $sql = 'SELECT user_name, user_email, user_password_hash
@@ -140,15 +116,16 @@ class OneFileLoginApplication
                     WHERE user_name = :user_name OR user_email = :user_name
                     LIMIT 1';
             $query = $this->db_connection->prepare($sql);
-            $query->bindValue(':user_name', $_COOKIE['username']);
+            $query->bindValue(':user_name', $_COOKIE['login_user']);
             $query->execute();
             $result_row = $query->fetchObject();
-            if ($_COOKIE['hash'] == $result_row->user_password_hash) {
+            if ($_COOKIE['login_hash'] == $result_row->user_password_hash) {
                 $_SESSION['user_name'] = $result_row->user_name;
                 $_SESSION['user_email'] = $result_row->user_email;
                 $_SESSION['user_is_logged_in'] = true;
                 $this->doLoginWithCookieData();
             } else {
+                $this->feedback = "Invalid cookie data.";
                 return false;
             }
         } elseif (!empty($_SESSION['user_name']) && ($_SESSION['user_is_logged_in'])) {
@@ -158,36 +135,23 @@ class OneFileLoginApplication
         }
     }
 
-    /**
-     * Simply starts the session.
-     * It's cleaner to put this into a method than writing it directly into runApplication()
-     */
-    private function doStartSession()
-    {
+    // Start the session.
+    private function doStartSession() {
         session_start();
     }
 
-    /**
-     * Process flow with cookie data
-     */
-    private function doLoginWithCookieData()
-    {
-        $this->user_is_logged_in = true; // ?
+    // Process flow with cookie data
+    private function doLoginWithCookieData() {
+        $this->user_is_logged_in = true;
     }
 
-    /**
-     * Set a marker (NOTE: is this method necessary ?)
-     */
-    private function doLoginWithSessionData()
-    {
-        $this->user_is_logged_in = true; // ?
+    // Set a marker (NOTE: is this method necessary ?)
+    private function doLoginWithSessionData() {
+        $this->user_is_logged_in = true;
     }
 
-    /**
-     * Process flow of login with POST data
-     */
-    private function doLoginWithPostData()
-    {
+    // Process flow of login with POST data
+    private function doLoginWithPostData() {
         if ($this->checkLoginFormDataNotEmpty()) {
             if ($this->createDatabaseConnection()) {
                 $this->checkPasswordCorrectnessAndLogin();
@@ -195,15 +159,11 @@ class OneFileLoginApplication
         }
     }
 
-    /**
-     * Logs the user out
-     */
-    private function doLogout()
-    {
+    // Logs the user out
+    private function doLogout() {
         $_SESSION = array();
-        setcookie("loggedin", "", time() - 3600, '/');
-        setcookie("username", "", time() - 3600, '/');
-        setcookie("hash", "", time() - 3600, '/');
+        setcookie("login_user", "", time() - 3600, '/');
+        setcookie("login_hash", "", time() - 3600, '/');
         session_destroy();
         $this->user_is_logged_in = false;
         $this->feedback = "Successfully logged out.";
@@ -222,7 +182,6 @@ class OneFileLoginApplication
         } elseif (empty($_POST['user_password'])) {
             $this->feedback = "Password field was empty.";
         }
-        // default return
         return false;
     }
 
@@ -230,9 +189,7 @@ class OneFileLoginApplication
      * Checks if user exits, if so: check if provided password matches the one in the database
      * @return bool User login success status
      */
-    private function checkPasswordCorrectnessAndLogin()
-    {
-        // remember: the user can log in with username or email address
+    private function checkPasswordCorrectnessAndLogin() {
         $sql = 'SELECT user_name, user_email, user_password_hash
                 FROM users
                 WHERE user_name = :user_name OR user_email = :user_name
@@ -240,13 +197,6 @@ class OneFileLoginApplication
         $query = $this->db_connection->prepare($sql);
         $query->bindValue(':user_name', $_POST['user_name']);
         $query->execute();
-
-        // Btw that's the weird way to get num_rows in PDO with SQLite:
-        // if (count($query->fetchAll(PDO::FETCH_NUM)) == 1) {
-        // Holy! But that's how it is. $result->numRows() works with SQLite pure, but not with SQLite PDO.
-        // This is so crappy, but that's how PDO works.
-        // As there is no numRows() in SQLite/PDO (!!) we have to do it this way:
-        // If you meet the inventor of PDO, punch him. Seriously.
         $result_row = $query->fetchObject();
         if ($result_row) {
             // using PHP 5.5's password_verify() function to check password
@@ -254,9 +204,8 @@ class OneFileLoginApplication
                 if (isset($_POST['cookie'])) {
                     if ($_POST['cookie'] == 1) {
                         // make cookies, 86400 = 1 day
-                        setcookie('loggedin', 1, time() + (86400 * 30), "/"); // 30 days
-                        setcookie('username', $result_row->user_name, time() + (86400 * 30), "/");
-                        setcookie('hash', $result_row->user_password_hash, time() + (86400 * 30), "/");
+                        setcookie('login_user', $result_row->user_name, time() + (86400 * 30), "/");
+                        setcookie('login_hash', $result_row->user_password_hash, time() + (86400 * 30), "/");
                     }
                 }
                 // write user data into PHP SESSION [a file on your server]
@@ -274,20 +223,19 @@ class OneFileLoginApplication
             $this->feedback = "Invalid user or password.";
             $this->writeAuthLog(2, $_POST['user_name']);
         }
-        // default return
         return false;
     }
 
     /**
-     * Simply returns the current status of the user's login
+     * Returns the current status of the user's login
      * @return bool User's login status
      */
     public function getUserLoginStatus() {
         return $this->user_is_logged_in;
     }
 
+    // Validate the input
     private function checkRegistrationData() {
-        // validating the input
         if (!empty($_POST['user_name'])
             && strlen($_POST['user_name']) <= 64
             && strlen($_POST['user_name']) >= 2
@@ -322,8 +270,6 @@ class OneFileLoginApplication
         } else {
             $this->feedback = "An unknown error occurred.";
         }
-
-        // default return
         return false;
     }
 
@@ -332,7 +278,7 @@ class OneFileLoginApplication
         $user_name = htmlentities($_POST['user_name'], ENT_QUOTES);
         $user_email = htmlentities($_POST['user_email'], ENT_QUOTES);
         $user_password = $_POST['user_password_new'];
-        // crypt the user's password with the PHP 5.5's password_hash() function, results in a 60 char hash string.
+        // Encrypt the user's password with the PHP 5.5's password_hash() function, results in a 60 char hash string.
         // the constant PASSWORD_DEFAULT comes from PHP 5.5 or the password_compatibility_library
         $user_password_hash = password_hash($user_password, PASSWORD_DEFAULT);
 
@@ -342,8 +288,6 @@ class OneFileLoginApplication
         $query->bindValue(':user_email', $user_email);
         $query->execute();
 
-        // As there is no numRows() in SQLite/PDO (!!) we have to do it this way:
-        // If you meet the inventor of PDO, punch him. Seriously.
         $result_row = $query->fetchObject();
         if ($result_row) {
             $this->feedback = "Sorry, that username / email is already taken. Please choose another one.";
@@ -365,11 +309,10 @@ class OneFileLoginApplication
                 $this->feedback = "Registration failed.";
             }
         }
-        // default return
         return false;
     }
 
-    private function checkPasswordData() {
+    private function checkPasswordChangeData() {
         if (!empty($_POST['user_name'])
             && strlen($_POST['user_name']) <= 64
             && strlen($_POST['user_name']) >= 2
@@ -400,7 +343,7 @@ class OneFileLoginApplication
         // remove html code etc. from username and email
         $user_name = htmlentities($_POST['user_name'], ENT_QUOTES);
         $user_password = $_POST['new_password'];
-        // crypt the user's password with the PHP 5.5's password_hash() function, results in a 60 char hash string.
+        // Encrypt the user's password with the PHP 5.5's password_hash() function, results in a 60 char hash string.
         // the constant PASSWORD_DEFAULT comes from PHP 5.5 or the password_compatibility_library
         $user_password_hash = password_hash($user_password, PASSWORD_DEFAULT);
 
@@ -416,7 +359,6 @@ class OneFileLoginApplication
         } else {
             $this->feedback = "Password chage failed.";
         }
-        // default return
         return false;
     }
 
@@ -478,11 +420,8 @@ class OneFileLoginApplication
         fclose($fh);
     }
 
-    /**
-     * Login page
-     */
-    private function showPageLoginForm()
-    {
+    // Login page
+    private function showPageLoginForm() {
         if ($this->feedback) echo $this->feedback . "<br/>";
         echo '<h2>Mycodo Login</h2>';
         echo '<form method="post" action="' . $_SERVER['SCRIPT_NAME'] . '" name="loginform">';
@@ -513,15 +452,11 @@ class OneFileLoginApplication
         }
     }
 
-    /**
-     * Main page when logged in
-     */
-    private function showPageLoggedIn()
-    {
-        
+    // Main page when logged in. What to display when the user is successfully authenticated.
+    private function showPageLoggedIn() {
         require_once("mycodo.php");
     }
 }
 
-// run the application
+// Run the application
 $application = new OneFileLoginApplication();
