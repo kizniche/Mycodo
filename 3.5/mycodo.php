@@ -1078,10 +1078,10 @@ if ($output_error) {
                         \"\" using 1:13 index 0 title \"$relay7name\" w impulses ls 11 axes x1y1, \\
                         \"\" using 1:14 index 0 title \"$relay8name\" w impulses ls 12 axes x1y1 \\
                         unset multiplot" | gnuplot`;
-                        echo "<div style=\"width: 100%; text-align: center; padding: 1em 0 3em 0;\"><img src=image.php?span=cuscom&mod=" . $id2 . "&sensor=" . $n . "></div>";
+                        echo "<div style=\"width: 100%; text-align: center; padding: 1em 0 3em 0;\"><img src=image.php?span=cuscom&mod=" . $id2 . "></div>";
                     } else if ($_POST['MainType'] == 'Separate') {
-                        for ($n = 1; $n <= $numsensors; $n++) {
-                            if (${'sensor' . $n . 'graph'} == 1) {
+                        for ($n = 1; $n <= $sensor_ht_num; $n++) {
+                            if ($sensor_ht_graph[$n] == 1) {
                                 echo `echo "set terminal png size $graph_width,490
                                 set xdata time
                                 set timefmt \"%Y %m %d %H %M %S\"
@@ -1430,14 +1430,14 @@ if ($output_error) {
                         <input id="login_input_password_repeat" class="login_input" type="password" name="user_password_repeat" pattern=".{6,}" required autocomplete="off" />
                         <label for="login_input_password_repeat">Repeat password</label>
                         <br>
-                        <input type="submit" name="register" value="Register" />
+                        <input type="submit" name="register" value="Create User" />
                         </form>
                     </div>
                     <div style="padding-bottom: 1em;">
                         Change Password
                         <form method="post" action="?tab=adv" name="passform">
                         <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
-                        <label for="login_input_username">Username (only letters and numbers, 2 to 64 characters)</label>
+                        <label for="login_input_username">Username</label>
                         <br>
                         <input id="login_input_password_new" class="login_input" type="password" name="new_password" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_new">New Password (min. 6 characters)</label>
                         <br>
@@ -1451,7 +1451,7 @@ if ($output_error) {
                         Delete User
                         <form method="post" action="?tab=adv" name="delform">
                         <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
-                        <label for="login_input_username">Username (only letters and numbers, 2 to 64 characters)</label>
+                        <label for="login_input_username">Username</label>
                         <br>
                         <input type="submit" name="deleteuser" value="Delete User" />
                         </form>
