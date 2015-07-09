@@ -115,7 +115,7 @@ for ($p = 1; $p <= $sensor_ht_num; $p++) {
     $t_f[$p] = round(($t_c[$p]*(9/5) + 32), 1);
     $dp_c[$p] = substr($sensor_explode[8], 0, -1);
     $dp_f[$p] = round(($dp_c[$p]*(9/5) + 32), 1);
-    $settemp_f[$p] = round((${'temp' . $p . 'set'}*(9/5) + 32), 1);
+    $settemp_f[$p] = round($pid_temp_set[$p]*(9/5)+32, 1);
 }
 for ($p = 1; $p <= $sensor_co2_num; $p++) {
     $sensor_explode = explode(" ", $last_co2_sensor[$p]);
@@ -1210,6 +1210,7 @@ if ($output_error) {
                         <input type="submit" name="HTSensor" value="HT Sensor">
                         <input type="submit" name="Co2Sensor" value="Co2 Sensor">
                         <input type="submit" name="Relay" value="Relay">
+                        <input type="submit" name="Users" value="Users">
                         <input type="submit" name="Auth" value="Auth">
                         <input type="submit" name="Daemon" value="Daemon">
                         <input type="submit" name="SQL" value="SQL">
@@ -1247,7 +1248,14 @@ if ($output_error) {
                                 echo `tail -n 30 $relay_log`;
                             }
                         }
-
+                        if(isset($_POST['Users']) && $_SESSION['user_name'] != 'guest') {
+                            echo 'User, Email, Password hash<br> <br>';
+                            $db = new SQLite3("./config/users.db");
+                            $results = $db->query('SELECT user_name, user_email, user_password_hash FROM users');
+                            while ($row = $results->fetchArray()) {
+                                print $row[0] . " " . $row[1] . " " . $row[2] . "<br>";
+                            }
+                        }
                         if(isset($_POST['Auth']) && $_SESSION['user_name'] != 'guest') {
                             echo 'Time, Type of auth, user, IP, Hostname, Referral, Browser<br> <br>';
                             if ($_POST['Lines'] != '') {
@@ -1267,7 +1275,7 @@ if ($output_error) {
                             }
                         }
                         if(isset($_POST['SQL'])) {
-                            view_sql_db();
+                            view_sql_db($sqlite_db);
                         }
                     ?>
                     </pre>

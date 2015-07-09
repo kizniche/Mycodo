@@ -206,7 +206,7 @@ class OneFileLoginApplication
         setcookie("hash", "", time() - 3600, '/');
         session_destroy();
         $this->user_is_logged_in = false;
-        $this->feedback = "You were just logged out.";
+        $this->feedback = "Successfully logged out.";
     }
 
     /**

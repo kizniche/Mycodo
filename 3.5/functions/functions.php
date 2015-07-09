@@ -29,9 +29,7 @@ function pid_reload($mycodo_client, $controller, $pid) {
 //
 
 // Display Log tab SQL database tables, names, and variables
-function view_sql_db() {
-    global $sqlite_db;
-
+function view_sql_db($sqlite_db) {
     $db = new SQLite3($sqlite_db);
     print "Table: Numbers<br>Relays HTSensors CO2Sensors Timers<br>";
     $results = $db->query('SELECT Relays, HTSensors, CO2Sensors, Timers FROM Numbers');
