@@ -148,6 +148,8 @@ class OneFileLoginApplication
                 $_SESSION['user_email'] = $result_row->user_email;
                 $_SESSION['user_is_logged_in'] = true;
                 $this->doLoginWithCookieData();
+            } else {
+                return false;
             }
         } elseif (!empty($_SESSION['user_name']) && ($_SESSION['user_is_logged_in'])) {
             $this->doLoginWithSessionData();
@@ -199,9 +201,9 @@ class OneFileLoginApplication
     private function doLogout()
     {
         $_SESSION = array();
-        setcookie('loggedin', "", time() - 3600);
-        setcookie('username', "", time() - 3600);
-        setcookie('hash', "", time() - 3600);
+        setcookie("loggedin", "", time() - 3600, '/');
+        setcookie("username", "", time() - 3600, '/');
+        setcookie("hash", "", time() - 3600, '/');
         session_destroy();
         $this->user_is_logged_in = false;
         $this->feedback = "You were just logged out.";
@@ -262,12 +264,15 @@ class OneFileLoginApplication
                 $_SESSION['user_email'] = $result_row->user_email;
                 $_SESSION['user_is_logged_in'] = true;
                 $this->user_is_logged_in = true;
+                $this->writeAuthLog(1, $_POST['user_name']);
                 return true;
             } else {
-                $this->feedback = "Wrong password.";
+                $this->feedback = "Invalid user or password.";
+                $this->writeAuthLog(0, $_POST['user_name']);
             }
         } else {
-            $this->feedback = "This user does not exist.";
+            $this->feedback = "Invalid user or password.";
+            $this->writeAuthLog(2, $_POST['user_name']);
         }
         // default return
         return false;
@@ -453,6 +458,24 @@ class OneFileLoginApplication
         }
         // default return
         return false;
+    }
+
+    private function writeAuthLog($auth, $user) {
+        $auth_file = getcwd() . "/log/auth.log";
+        $date = new DateTime();
+        if ($auth == 2) $auth = 'NOUSER';
+        else if ($auth == 1) $auth = 'LOGIN';
+        else if ($auth == 0) $auth = 'NOPASS';
+        $ip = $_SERVER['REMOTE_ADDR'];
+        if (isset($_SERVER['REMOTE_HOST'])) $hostaddress = $_SERVER['REMOTE_HOST'];
+        else $hostaddress = ' ';
+        $referred = $_SERVER['HTTP_REFERER'];
+        if ($referred == "") $referred = $auth_write . 'direct';
+        $browser = $_SERVER['HTTP_USER_AGENT'];
+        $auth_write = $date->format('Y m d H:i:s') . ', ' . $auth . ', ' . $user . ', ' . $ip . ', ' . $hostaddress . ', ' . $referred . ', ' . $browser . "\n";
+        $fh = fopen($auth_file, 'a') or die("Error: Can't find/open " . $auth_file);
+        fwrite($fh, $auth_write);
+        fclose($fh);
     }
 
     /**
