@@ -87,9 +87,10 @@ I've since upgraded to a new set of hardware that support 8 individually-switcha
 
 This is an experimental branch of mycodo. This will be a future stable release once a certain number of features have been added and when it's relatively bug-free. Unless I have been in direct contact with you regarding testing of this branch, I will not be providing technical support for any issues with this version. Instead, I recommend you check out the v3.0 stable branch (install instructions below).
 
+- [X] New login authentication with SQLite user database
+- [X] Configuration stored in SQLite database (debugging)
 - [X] K30 CO2 sensor support (debugging)
-- [X] SQLite database support (debugging)
-- [ ] Email notification or audible alarm during critical failure or condition (currently working on)
+- [ ] Email notification or audible alarm during critical failure or condition (working on)
 - [ ] O2 sensor support
 - [ ] Set electrical current draw of each device and prevent exceeding total current limit with different combinations of devices on
 - [ ] Capture series of photos at different ISOs, combine to make HDR photo

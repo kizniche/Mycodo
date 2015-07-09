@@ -4,8 +4,9 @@ This is an experimental branch of mycodo. Unless I have been in direct contact w
 
 ### Goals
 
+- [X] New login authentication with SQLite user database
+- [X] Configuration stored in SQLite database (debugging)
 - [X] K30 CO2 sensor support (debugging)
-- [X] SQLite database support (debugging)
 - [ ] Email notification or audible alarm during critical failure or condition (working on)
 - [ ] O2 sensor support
 - [ ] More graph generation options
@@ -16,3 +17,7 @@ This is an experimental branch of mycodo. Unless I have been in direct contact w
 ### New Dependencies
 
 `sudo apt-get install php5-sqlite sqlite3`
+
+### Install
+
+For connecting a K30 CO2 sensor, see http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip 
