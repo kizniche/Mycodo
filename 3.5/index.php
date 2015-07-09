@@ -460,11 +460,9 @@ class OneFileLoginApplication
      */
     private function showPageLoginForm()
     {
-        if ($this->feedback) {
-            echo $this->feedback . "<br/><br/>";
-        }
-
+        if ($this->feedback) echo $this->feedback . "<br/>";
         echo '<h2>Login</h2>';
+        echo '(Default user: admin password: mycodo)';
         echo '<form method="post" action="' . $_SERVER['SCRIPT_NAME'] . '" name="loginform">';
         echo '<p><input id="login_input_username" type="text" name="user_name" required /> ';
         echo ' <label for="login_input_username">Username (or email)</label></p>';
