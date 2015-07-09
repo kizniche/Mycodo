@@ -484,8 +484,7 @@ class OneFileLoginApplication
     private function showPageLoginForm()
     {
         if ($this->feedback) echo $this->feedback . "<br/>";
-        echo '<h2>Login</h2>';
-        echo '(Default user: admin password: mycodo)';
+        echo '<h2>Mycodo Login</h2>';
         echo '<form method="post" action="' . $_SERVER['SCRIPT_NAME'] . '" name="loginform">';
         echo '<p><input id="login_input_username" type="text" name="user_name" required /> ';
         echo ' <label for="login_input_username">Username (or email)</label></p>';
@@ -494,6 +493,24 @@ class OneFileLoginApplication
         echo '<p><input type="checkbox" name="cookie" value="1"> Cookie (30 days)</p>';
         echo '<p><input type="submit"  name="login" value="Log in" /></p>';
         echo '</form>';
+
+        $this->createDatabaseConnection();
+        $sql = 'SELECT user_email
+                FROM users
+                WHERE user_name = :user_name
+                LIMIT 1';
+        $query = $this->db_connection->prepare($sql);
+        $query->bindValue(':user_name', 'notice');
+        $query->execute();
+        $result_row = $query->fetchObject();
+        if (!empty($result_row->user_email)) {
+            echo "<h2 style=\"padding-top: 1em;\">WARNING</h2>";
+            echo "The default user (name 'admin' password 'mycodo') has full read/write privileges";
+            echo "<br>The guest user (name 'guest' password 'anonymous') only has read privileges";
+            echo "<br>For security, it is recommended to change the passwords of both 'admin' and 'guest'.";
+            echo "<br>User management is under the Advanced tab and a user list is under the Log tab.";
+            echo "<br>This notice will dissapear if the user 'notice' is deleted.";
+        }
     }
 
     /**
