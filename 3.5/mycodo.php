@@ -411,71 +411,20 @@ if ($output_error) {
                         }
                     } else if ($graph_type == 'combined') { // Combined preset: Generate combined graphs
                         echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                        switch ($graph_span) {
-                            case '1h':
-                                if ($generate_graph) shell_exec($mycodo_client . ' --graph combined1h ' . $id . ' 0');
-                                echo "combined1h&mod=" . $id . ">";
-                                break;
-                            case '6h':
-                                if ($generate_graph) shell_exec($mycodo_client . ' --graph combined6h ' . $id . ' 0');
-                                echo "combined6h&mod=" . $id . ">";
-                                break;
-                            case '1d':
-                                if ($generate_graph) shell_exec($mycodo_client . ' --graph combined1d ' . $id . ' 0');
-                                echo "combined1d&mod=" . $id . ">";
-                                break;
-                            case '3d':
-                                if ($generate_graph) shell_exec($mycodo_client . ' --graph combined3d ' . $id . ' 0');
-                                echo "combined3d&mod=" . $id . ">";
-                                break;
-                            case '1w':
-                                if ($generate_graph) shell_exec($mycodo_client . ' --graph combined1w ' . $id . ' 0');
-                                echo "combined1w&mod=" . $id . ">";
-                                break;
-                            case '1m':
-                                if ($generate_graph) shell_exec($mycodo_client . ' --graph combined1m ' . $id . ' 0');
-                                echo "combined1m&mod=" . $id . ">";
-                                break;
-                            case '3m':
-                                if ($generate_graph) shell_exec($mycodo_client . ' --graph combined3m ' . $id . ' 0');
-                                echo "combined3m&mod=" . $id . ">";
-                                break;
+                        if ($generate_graph) {
+                            shell_exec($mycodo_client . ' --graph ' . $graph_type . $graph_span . ' ' . $id . ' 0');
                         }
+                        echo "combined" . $graph_span ."&mod=" . $id . ">";
                         echo "</div>";
                     } else if ($graph_type == 'separate') { // Combined preset: Generate separate graphs
                         for ($n = 1; $n <= $sensor_ht_num; $n++ ) {
                             if ($sensor_ht_graph[$n] == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                                switch ($graph_span) {
-                                    case '1h':
-                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph htseparate1h ' . $id . ' ' . $n);
-                                        echo "htseparate1h&mod=" . $id . "&sensor=" . $n . ">";
-                                        break;
-                                    case '6h':
-                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph htseparate6h ' . $id . ' ' . $n);
-                                        echo "htseparate6h&mod=" . $id . "&sensor=" . $n . ">";
-                                        break;
-                                    case '1d':
-                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph htseparate1d ' . $id . ' ' . $n);
-                                        echo "htseparate1d&mod=" . $id . "&sensor=" . $n . ">";
-                                        break;
-                                    case '3d':
-                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph htseparate3d ' . $id . ' ' . $n);
-                                        echo "htseparate3d&mod=" . $id . "&sensor=" . $n . ">";
-                                        break;
-                                    case '1w':
-                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph htseparate1w ' . $id . ' ' . $n);
-                                        echo "htseparate1w&mod=" . $id . "&sensor=" . $n . ">";
-                                        break;
-                                    case '1m':
-                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph htseparate1m ' . $id . ' ' . $n);
-                                        echo "htseparate1m&mod=" . $id . "&sensor=" . $n . ">";
-                                        break;
-                                    case '3m':
-                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph htseparate3m ' . $id . ' ' . $n);
-                                        echo "htseparate3m&mod=" . $id . "&sensor=" . $n . ">";
-                                        break;
+                                
+                                if ($generate_graph) {
+                                    shell_exec($mycodo_client . ' --graph ht' . $graph_type . $graph_span . ' ' . $id . ' ' . $n);
                                 }
+                                echo "htseparate" . $graph_span . "&mod=" . $id . "&sensor=" . $n . ">";
                                 echo "</div>";
                             }
                             if ($n != $sensor_ht_num || $sensor_co2_graph[1] == 1 || $sensor_co2_graph[2] == 1 || $sensor_co2_graph[3] == 1 || $sensor_co2_graph[4] == 1) {
@@ -486,36 +435,10 @@ if ($output_error) {
                         for ($n = 1; $n <= $sensor_co2_num; $n++ ) {
                             if ($sensor_co2_graph[$n] == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                                switch ($graph_span) {
-                                    case '1h':
-                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph co2separate1h ' . $id . ' ' . $n);
-                                        echo "co2separate1h&mod=" . $id . "&sensor=" . $n . ">";
-                                        break;
-                                    case '6h':
-                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph co2separate6h ' . $id . ' ' . $n);
-                                        echo "co2separate6h&mod=" . $id . "&sensor=" . $n . ">";
-                                        break;
-                                    case '1d':
-                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph co2separate1d ' . $id . ' ' . $n);
-                                        echo "co2separate1d&mod=" . $id . "&sensor=" . $n . ">";
-                                        break;
-                                    case '3d':
-                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph co2separate3d ' . $id . ' ' . $n);
-                                        echo "co2separate3d&mod=" . $id . "&sensor=" . $n . ">";
-                                        break;
-                                    case '1w':
-                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph co2separate1w ' . $id . ' ' . $n);
-                                        echo "co2separate1w&mod=" . $id . "&sensor=" . $n . ">";
-                                        break;
-                                    case '1m':
-                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph co2separate1m ' . $id . ' ' . $n);
-                                        echo "co2separate1m&mod=" . $id . "&sensor=" . $n . ">";
-                                        break;
-                                    case '3m':
-                                        if ($generate_graph) shell_exec($mycodo_client . ' --graph co2separate3m ' . $id . ' ' . $n);
-                                        echo "co2separate3m&mod=" . $id . "&sensor=" . $n . ">";
-                                        break;
+                                if ($generate_graph) {
+                                    shell_exec($mycodo_client . ' --graph co2' . $graph_type . $graph_span . ' ' . $id . ' ' . $n);
                                 }
+                                echo "co2separate" . $graph_span . "&mod=" . $id . "&sensor=" . $n . ">";
                                 echo "</div>";
                             }
                             if ($n != $sensor_co2_num) {
