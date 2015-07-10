@@ -402,13 +402,7 @@ if ($output_error) {
                     if ($graph_span == 'default') {
                         for ($n = 1; $n <= $sensor_ht_num; $n++ ) {
                             if ($sensor_ht_graph[$n] == 1) {
-                                global $id;
-                                if (!file_exists('/var/www/mycodo/images/graph-htdefaultdefault-' . $graph_id . '-' . $n . '.png')) {
-                                    echo '/var/www/mycodo/images/graph-htdefaultdefault-' . $graph_id . '-' . $n . '.png<br>';
-                                    global $generate_graph;
-                                    $generate_graph = True;
-                                }
-                                if ($generate_graph) {
+                                if (!file_exists('/var/www/mycodo/images/graph-ht' . $graph_type . $graph_span . '-' . $graph_id . '-' . $n . '.png')) {
                                     shell_exec($mycodo_client . ' --graph ht ' . $graph_span . ' default ' . $graph_id . ' ' . $n);
                                 }
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?";
@@ -422,11 +416,7 @@ if ($output_error) {
                         }
                         for ($n = 1; $n <= $sensor_co2_num; $n++ ) {
                             if ($sensor_co2_graph[$n] == 1) {
-                                if (!file_exists('/var/www/mycodo/images/graph-co2defaultdefault-' . $graph_id . '-' . $n . '.png')) {
-                                    global $generate_graph;
-                                    $generate_graph = True;
-                                }
-                                if ($generate_graph) {
+                                if (!file_exists('/var/www/mycodo/images/graph-co2' . $graph_type . $graph_span . '-' . $graph_id . '-' . $n . '.png')) {
                                     shell_exec($mycodo_client . ' --graph co2 ' . $graph_span . ' default ' . $graph_id . ' ' . $n);
                                 }
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?";
@@ -440,10 +430,6 @@ if ($output_error) {
                         }
                     } else if ($graph_type == 'combined') { // Combined preset: Generate combined graphs
                         if (!file_exists('/var/www/mycodo/images/graph-xcombined' . $graph_span . '-' . $graph_id . '-0.png')) {
-                            global $generate_graph;
-                            $generate_graph = True;
-                        }
-                        if ($generate_graph) {
                             shell_exec($mycodo_client . ' --graph x ' . $graph_type . ' ' . $graph_span . ' ' . $graph_id . ' 0');
                         }
                         echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?";
@@ -457,10 +443,6 @@ if ($output_error) {
                         for ($n = 1; $n <= $sensor_ht_num; $n++ ) {
                             if ($sensor_ht_graph[$n] == 1) {
                                 if (!file_exists('/var/www/mycodo/images/graph-htseparate' . $graph_span . '-' .  $graph_id . '-' . $n . '.png')) {
-                                    global $generate_graph;
-                                    $generate_graph = True;
-                                }
-                                if ($generate_graph) {
                                     shell_exec($mycodo_client . ' --graph ht ' . $graph_type . ' ' . $graph_span . ' ' . $graph_id . ' ' . $n);
                                 }
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?";
@@ -479,10 +461,6 @@ if ($output_error) {
                         for ($n = 1; $n <= $sensor_co2_num; $n++ ) {
                             if ($sensor_co2_graph[$n] == 1) {
                                 if (!file_exists('/var/www/mycodo/images/graph-co2separate' . $graph_span . '-' .  $graph_id . '-' . $n . '.png')) {
-                                    global $generate_graph;
-                                    $generate_graph = True;
-                                }
-                                if ($generate_graph) {
                                     shell_exec($mycodo_client . ' --graph co2 ' . $graph_type . ' ' . $graph_span . ' ' . $graph_id . ' ' . $n);
                                 }
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?";

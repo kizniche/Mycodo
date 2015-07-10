@@ -1,7 +1,6 @@
 <?php
-/**
-  * Cookie handling
-  *
+/*
+ *  Cookie handling
  */
 
 function set_new_graph_id() {
@@ -49,6 +48,7 @@ function menu_item($id, $title, $current) {
     } else echo '<div class="active">' . $title . '</div>';
 }
 
+
 //
 // Configuration
 //
@@ -58,6 +58,7 @@ function pid_reload($mycodo_client, $controller, $pid) {
     $editconfig = "$mycodo_client --pidreload $controller $pid";
     shell_exec($editconfig);
 }
+
 
 //
 // Logging
@@ -111,6 +112,7 @@ function view_sql_db($sqlite_db) {
         print $row[0] . "<br>";
     }
 }
+
 
 //
 // Graphing
@@ -225,6 +227,7 @@ function delete_graphs() {
         }
     }
 }
+
 
 //
 // Miscellaneous
