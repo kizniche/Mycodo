@@ -54,10 +54,9 @@ $generate_graph = False;
 
 // Set cookie of unique ID, for graph-generation
 if (isset($_GET['Refresh']) == 1 || !isset($_COOKIE['graph_id'])) {
-    $uniqueid = uniqid();
-    setcookie('graph_id', $uniqueid, time() + (86400 * 10), "/" );
+    setcookie('graph_id', uniqid(), time() + (86400 * 10), "/" );
     global $id;
-    $id = $uniqueid;
+    $id = $_COOKIE['graph_id'];
 } else {
     global $id;
     $id = $_COOKIE['graph_id'];
@@ -66,10 +65,9 @@ if (isset($_GET['Refresh']) == 1 || !isset($_COOKIE['graph_id'])) {
 if(!isset($_COOKIE['graph_type']) || !isset($_COOKIE['graph_span'])) {
     setcookie('graph_type', 'default', time() + (86400 * 10), "/" );
     setcookie('graph_span', 'default', time() + (86400 * 10), "/" );
+    setcookie('graph_id', uniqid(), time() + (86400 * 10), "/" );
     global $graph_type;
     global $graph_span;
-    global $id;
-    $id = uniqid();
     $graph_type = $_COOKIE['graph_type'];
     $graph_span = $_COOKIE['graph_span'];
 } else {
@@ -89,7 +87,7 @@ delete_graphs();
 $tab = isset($_GET['tab']) ? $_GET['tab'] : 'Unset';
 
 // Form submission detected.
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_name'] == 'guest') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_name'] == 'guest' && !isset($_POST['Graph']) && !isset($_POST['login'])) {
     // If a guest user is attempting to modify the configuration, output an error
     $output_error = 'guest';
 } else if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_name'] != 'guest') {
@@ -107,6 +105,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_name'] == 'guest') {
             shell_exec($mycodo_client . ' --sqlreload 0');
         }
     }
+}
+
+// Save graph preset preference
+if (isset($_POST['Graph'])) {
+    setcookie('graph_type', $_POST['graph_type'], time() + (86400 * 10), "/" );
+    setcookie('graph_span', $_POST['graph_span'], time() + (86400 * 10), "/" );
+    setcookie('graph_id', uniqid(), time() + (86400 * 10), "/" );
+    global $id;
+    global $graph_type;
+    global $graph_span;
+    $id = $_COOKIE['graph_id'];
+    $graph_type = $_POST['graph_type'];
+    $graph_span = $_POST['graph_span'];
 }
 
 // Concatenate Sensor log files (to TempFS) to ensure the latest data is being used
@@ -409,8 +420,9 @@ if ($output_error) {
                     <?php
                     // If auto refresh is on, redraw graphs
                     if (isset($_GET['Refresh']) == 1) {
+                        setcookie('graph_id', uniqid(), time() + (86400 * 10), "/" );
                         global $id;
-                        $id = uniqid();
+                        $id = $_COOKIE['graph_id'];
                     }
 
                     // Main preset: Display graphs of past day and week

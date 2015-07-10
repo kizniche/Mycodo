@@ -322,15 +322,5 @@ if (isset($_POST['stop-stream'])) {
     shell_exec($editconfig);
 }
 
-// Save graph preset preference
-if (isset($_POST['Graph'])) {
-    setcookie('graph_type', $_POST['graph_type'], time() + (86400 * 10), "/" );
-    setcookie('graph_span', $_POST['graph_span'], time() + (86400 * 10), "/" );
-    global $graph_type;
-    global $graph_span;
-    global $id;
-    $graph_type = $_POST['graph_type'];
-    $graph_span = $_POST['graph_span'];
-    $id = uniqid();
-}
+
 ?>
