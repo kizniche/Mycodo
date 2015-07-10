@@ -55,7 +55,7 @@ $generate_graph = False;
 // Set cookie of unique ID, for graph-generation
 if (isset($_GET['Refresh']) == 1 || !isset($_COOKIE['graph_id'])) {
     $uniqueid = uniqid();
-    setcookie('graph_id', $uniqueid);
+    setcookie('graph_id', $uniqueid, time() + (86400 * 10), "/" );
     $id  = $uniqueid;
     $generate_graph = True;
 } else {
@@ -69,7 +69,6 @@ require("functions/load_sql_database.php");
 delete_graphs();
 
 // Set GET defaults if not already set
-$page = isset($_GET['page']) ? $_GET['page'] : 'Main';
 $tab = isset($_GET['tab']) ? $_GET['tab'] : 'Unset';
 
 // Form submission detected.
@@ -329,20 +328,6 @@ if ($output_error) {
                                         echo "&page=" . $page;
                                     }
                                 }
-                                echo "&Refresh=1";
-                                if (isset($_GET['r'])) {
-                                    if ($_GET['r'] == 1) {
-                                        echo "&r=1";
-                                    }
-                                } ?>"' value="Graph">
-                            </div>
-                            <div style="float: left; padding-right: 0.1em;">
-                                <input type="button" onclick='location.href="?tab=main<?php
-                                if (isset($_GET['page'])) {
-                                    if ($_GET['page']) {
-                                        echo "&page=" . $page;
-                                    }
-                                }
                                 if (isset($_GET['r'])) {
                                     if ($_GET['r'] == 1) {
                                         echo "&r=1";
@@ -355,30 +340,52 @@ if ($output_error) {
                         </div>
                     </div>
                     <div style="float: left; padding: 0.2em 0 1em 0.5em">
-                        <div>
-                            <div class="Row-title">Separate</div>
-                            <?php
-                            menu_item('Separate1h', '1 Hour', $page);
-                            menu_item('Separate6h', '6 Hours', $page);
-                            menu_item('Separate1d', '1 Day', $page);
-                            menu_item('Separate3d', '3 Days', $page);
-                            menu_item('Separate1w', '1 Week', $page);
-                            menu_item('Separate1m', '1 Month', $page);
-                            menu_item('Separate3m', '3 Months', $page);
-                            menu_item('Main', 'Main', $page);
-                            ?>
+                        <div style="float: left; padding-right: 0.5em;">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <input type="radio" name="graph_type" value="separate" <?php
+                                        if ($graph_span != 'default' && $graph_type == 'separate') {
+                                            echo "checked"; 
+                                        }
+                                        ?>>
+                                    </td>
+                                    <td>
+                                        Separate
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input type="radio" name="graph_type" value="combined" <?php 
+                                        if ($graph_span != 'default' && $graph_type == 'combined') {
+                                            echo "checked"; 
+                                        }
+                                        ?>>
+                                    </td>
+                                    <td>
+                                        Combined
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
-                        <div>
-                            <div class="Row-title">Combined</div>
-                            <?php
-                            menu_item('Combined1h', '1 Hour', $page);
-                            menu_item('Combined6h', '6 Hours', $page);
-                            menu_item('Combined1d', '1 Day', $page);
-                            menu_item('Combined3d', '3 Days', $page);
-                            menu_item('Combined1w', '1 Week', $page);
-                            menu_item('Combined1m', '1 Month', $page);
-                            menu_item('Combined3m', '3 Months', $page);
-                            ?>
+                        <div style="float: left; padding-right: 0.5em;">
+                            Duration
+                            <br>
+                            <select name="graph_span">
+                                <option value="default" <?php if ($graph_span == 'default') echo "selected=\"selected\""; ?>>Default</option>
+                                <option value="1h" <?php if ($graph_span == '1h') echo "selected=\"selected\""; ?>>1 Hour</option>
+                                <option value="6h" <?php if ($graph_span == '6h') echo "selected=\"selected\""; ?>>6 Hours</option>
+                                <option value="12h" <?php if ($graph_span == '12h') echo "selected=\"selected\""; ?>>12 Hours</option>
+                                <option value="1d" <?php if ($graph_span == '1d') echo "selected=\"selected\""; ?>>1 Day</option>
+                                <option value="3d" <?php if ($graph_span == '3d') echo "selected=\"selected\""; ?>>3 Days</option>
+                                <option value="1w" <?php if ($graph_span == '1w') echo "selected=\"selected\""; ?>>1 Week</option>
+                                <option value="1m" <?php if ($graph_span == '1m') echo "selected=\"selected\""; ?>>1 Month</option>
+                                <option value="3m" <?php if ($graph_span == '3m') echo "selected=\"selected\""; ?>>3 Months</option>
+                                <option value="6m" <?php if ($graph_span == '6m') echo "selected=\"selected\""; ?>>6 Months</option>
+                            </select>
+                        </div>
+                        <div style="float: left; padding-top: 0.9em;">
+                            <input type="submit" name="Graph" value="Generate Graph">
                         </div>
                     </div>
                 </div>
@@ -389,7 +396,7 @@ if ($output_error) {
                     if (isset($_GET['Refresh']) == 1) $generate_graph = True;
 
                     // Main preset: Display graphs of past day and week
-                    if (strpos($page, 'Main') === 0) {
+                    if ($graph_span == 'default') {
                         for ($n = 1; $n <= $sensor_ht_num; $n++ ) {
                             if ($sensor_ht_graph[$n] == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
@@ -404,75 +411,69 @@ if ($output_error) {
                                 echo "co2main&mod=" . $id . "&sensor=" . $n . "></div>";
                             }
                         }
-                    }
-
-                    // Combined preset: Generate combined graphs
-                    if (strpos($page, 'Combined') === 0) {
+                    } else if ($graph_type == 'combined') { // Combined preset: Generate combined graphs
                         echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                        switch ($page) {
-                            case 'Combined1h':
+                        switch ($graph_span) {
+                            case '1h':
                                 if ($generate_graph) shell_exec($mycodo_client . ' --graph combined1h ' . $id . ' 0');
                                 echo "combined1h&mod=" . $id . ">";
                                 break;
-                            case 'Combined6h':
+                            case '6h':
                                 if ($generate_graph) shell_exec($mycodo_client . ' --graph combined6h ' . $id . ' 0');
                                 echo "combined6h&mod=" . $id . ">";
                                 break;
-                            case 'Combined1d':
+                            case '1d':
                                 if ($generate_graph) shell_exec($mycodo_client . ' --graph combined1d ' . $id . ' 0');
                                 echo "combined1d&mod=" . $id . ">";
                                 break;
-                            case 'Combined3d':
+                            case '3d':
                                 if ($generate_graph) shell_exec($mycodo_client . ' --graph combined3d ' . $id . ' 0');
                                 echo "combined3d&mod=" . $id . ">";
                                 break;
-                            case 'Combined1w':
+                            case '1w':
                                 if ($generate_graph) shell_exec($mycodo_client . ' --graph combined1w ' . $id . ' 0');
                                 echo "combined1w&mod=" . $id . ">";
                                 break;
-                            case 'Combined1m':
+                            case '1m':
                                 if ($generate_graph) shell_exec($mycodo_client . ' --graph combined1m ' . $id . ' 0');
                                 echo "combined1m&mod=" . $id . ">";
                                 break;
-                            case 'Combined3m':
+                            case '3m':
                                 if ($generate_graph) shell_exec($mycodo_client . ' --graph combined3m ' . $id . ' 0');
                                 echo "combined3m&mod=" . $id . ">";
                                 break;
                         }
                         echo "</div>";
-                    }
-
-                    // Combined preset: Generate separate graphs
-                    if (strpos($page, 'Separate') === 0) {
+                    } else if ($graph_type == 'separate') { // Combined preset: Generate separate graphs
                         for ($n = 1; $n <= $sensor_ht_num; $n++ ) {
                             if ($sensor_ht_graph[$n] == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                                switch ($page) {
-                                    case 'Separate1h':
+                                switch ($graph_span) {
+                                    case '1h':
                                         if ($generate_graph) shell_exec($mycodo_client . ' --graph htseparate1h ' . $id . ' ' . $n);
                                         echo "htseparate1h&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
-                                    case 'Separate6h':
+                                    case '6h':
                                         if ($generate_graph) shell_exec($mycodo_client . ' --graph htseparate6h ' . $id . ' ' . $n);
                                         echo "htseparate6h&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
-                                    case 'Separate1d':
+                                    case '1d':
                                         if ($generate_graph) shell_exec($mycodo_client . ' --graph htseparate1d ' . $id . ' ' . $n);
                                         echo "htseparate1d&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
-                                    case 'Separate3d':
+                                    case '3d':
                                         if ($generate_graph) shell_exec($mycodo_client . ' --graph htseparate3d ' . $id . ' ' . $n);
                                         echo "htseparate3d&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
-                                    case 'Separate1w':
+                                    case '1w':
                                         if ($generate_graph) shell_exec($mycodo_client . ' --graph htseparate1w ' . $id . ' ' . $n);
                                         echo "htseparate1w&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
-                                    case 'Separate1m':
+                                    case '1m':
                                         if ($generate_graph) shell_exec($mycodo_client . ' --graph htseparate1m ' . $id . ' ' . $n);
                                         echo "htseparate1m&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
-                                    case 'Separate3m':
+                                    case '3m':
                                         if ($generate_graph) shell_exec($mycodo_client . ' --graph htseparate3m ' . $id . ' ' . $n);
                                         echo "htseparate3m&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
@@ -487,32 +488,32 @@ if ($output_error) {
                         for ($n = 1; $n <= $sensor_co2_num; $n++ ) {
                             if ($sensor_co2_graph[$n] == 1) {
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                                switch ($page) {
-                                    case 'Separate1h':
+                                switch ($graph_span) {
+                                    case '1h':
                                         if ($generate_graph) shell_exec($mycodo_client . ' --graph co2separate1h ' . $id . ' ' . $n);
                                         echo "co2separate1h&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
-                                    case 'Separate6h':
+                                    case '6h':
                                         if ($generate_graph) shell_exec($mycodo_client . ' --graph co2separate6h ' . $id . ' ' . $n);
                                         echo "co2separate6h&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
-                                    case 'Separate1d':
+                                    case '1d':
                                         if ($generate_graph) shell_exec($mycodo_client . ' --graph co2separate1d ' . $id . ' ' . $n);
                                         echo "co2separate1d&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
-                                    case 'Separate3d':
+                                    case '3d':
                                         if ($generate_graph) shell_exec($mycodo_client . ' --graph co2separate3d ' . $id . ' ' . $n);
                                         echo "co2separate3d&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
-                                    case 'Separate1w':
+                                    case '1w':
                                         if ($generate_graph) shell_exec($mycodo_client . ' --graph co2separate1w ' . $id . ' ' . $n);
                                         echo "co2separate1w&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
-                                    case 'Separate1m':
+                                    case '1m':
                                         if ($generate_graph) shell_exec($mycodo_client . ' --graph co2separate1m ' . $id . ' ' . $n);
                                         echo "co2separate1m&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
-                                    case 'Separate3m':
+                                    case '3m':
                                         if ($generate_graph) shell_exec($mycodo_client . ' --graph co2separate3m ' . $id . ' ' . $n);
                                         echo "co2separate3m&mod=" . $id . "&sensor=" . $n . ">";
                                         break;
@@ -524,12 +525,20 @@ if ($output_error) {
                             }
                         }
                     }
+                    echo '</div>';
+
+                    if (array_sum($sensor_ht_graph) + array_sum($sensor_co2_graph)) {
+                        echo '<div style="width: 100%; padding: 1em 0 0 0; text-align: center;">';
+                        echo 'Legend: <a href="javascript:open_legend()">Brief</a> / <a href="javascript:open_legend_full()">Full</a>';
+                        echo '<div style="text-align: center; padding-top: 0.5em;"><a href="https://github.com/kizniche/Mycodo" target="_blank">Mycodo on GitHub</a></div>';
+                        echo '</div>';
+                    } else {
+                        echo '<div style="width: 100%; padding: 2em 0 0 0; text-align: center;">';
+                        echo 'There are currently 0 sensors activated for graphing.';
+                        echo '<br>Sensors can be activated for logging and graphing in the Configure tab.';
+                        echo '</div>';
+                    }
                     ?>
-                </div>
-                <div style="width: 100%; padding: 1em 0 0 0; text-align: center;">
-                    Legend: <a href="javascript:open_legend()">Brief</a> / <a href="javascript:open_legend_full()">Full</a>
-                    <div style="text-align: center; padding-top: 0.5em;"><a href="https://github.com/kizniche/Mycodo" target="_blank">Mycodo on GitHub</a></div>
-                </div>
             </div>
             </form>
 		</li>
@@ -547,7 +556,7 @@ if ($output_error) {
                 }
                 ?>" method="POST">
             <div style="padding-top: 0.5em;">
-                <div style="float: left; padding: 0.0em 0.5em 1em 0;">
+                <div style="float: left; padding: 0 1.5em 1em 0.5em;">
                     <div style="text-align: center; padding-bottom: 0.2em;">Auto Refresh</div>
                     <div style="text-align: center;"><?php
                         if (isset($_GET['r'])) {
@@ -562,10 +571,10 @@ if ($output_error) {
                     ?>
                     </div>
                 </div>
-                <div style="float: left; padding: 0.0em 0.5em 1em 0;">
-                    <div style="float: left; padding-right: 2em;">
-                        <div style="text-align: center; padding-bottom: 0.2em;">Refresh</div>
-                        <div style="float: left;">
+                <div style="float: left; padding: 0 2em 1em 0.5em;">
+                    <div style="text-align: center; padding-bottom: 0.2em;">Refresh</div>
+                    <div>
+                        <div style="float: left; padding-right: 0.1em;">
                             <input type="submit" name="Refresh" value="Page" title="Refresh page">
                         </div>
                         <div style="float: left;">
@@ -1211,9 +1220,9 @@ if ($output_error) {
                         <input type="submit" name="Co2Sensor" value="Co2 Sensor">
                         <input type="submit" name="Relay" value="Relay">
                         <input type="submit" name="Users" value="Users">
-                        <input type="submit" name="Auth" value="Login">
+                        <input type="submit" name="Login" value="Login">
                         <input type="submit" name="Daemon" value="Daemon">
-                        <input type="submit" name="SQL" value="SQL">
+                        <input type="submit" name="Database" value="Database">
                     </FORM>
                 </div>
                 <div style="font-family: monospace;">
@@ -1256,7 +1265,7 @@ if ($output_error) {
                                 print $row[0] . " " . $row[1] . " " . $row[2] . "<br>";
                             }
                         }
-                        if(isset($_POST['Auth']) && $_SESSION['user_name'] != 'guest') {
+                        if(isset($_POST['Login']) && $_SESSION['user_name'] != 'guest') {
                             echo 'Time, Type of auth, user, IP, Hostname, Referral, Browser<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
@@ -1274,7 +1283,7 @@ if ($output_error) {
                                 echo `tail -n 30 $daemon_log`;
                             }
                         }
-                        if(isset($_POST['SQL'])) {
+                        if(isset($_POST['Database'])) {
                             view_sql_db($sqlite_db);
                         }
                     ?>

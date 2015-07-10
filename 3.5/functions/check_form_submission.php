@@ -213,6 +213,14 @@ if (isset($_POST['ChangeNoTimers'])) {
     $sql_reload = True;
 }
 
+if (isset($_POST['Graph'])) {
+    $stmt = $db->prepare("UPDATE Misc SET Graph_Type=:type, Graph_Span=:span");
+    $stmt->bindValue(':type', $_POST['graph_type'], SQLITE3_TEXT);
+    $stmt->bindValue(':span', $_POST['graph_span'], SQLITE3_TEXT);
+    $stmt->execute();
+    $generate_graph = True;
+}
+
 //
 // Check for form submission and respond (Non-SQL Section)
 //
