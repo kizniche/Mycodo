@@ -37,32 +37,6 @@ def usage():
     print '           Display this help and exit'
     print '        --graph Duration ID Sensor'
     print '           See documentation for options'
-    print '        --modco2OR sensor state'
-    print '           CO2 PID control: 0=enable, 1=disable'
-    print '        --modco2PID sensor relay set p i d period'
-    print '           Change CO2 PID variables'
-    print '        --modhumOR sensor state'
-    print '           Humidity PID control: 0=enable, 1=disable'
-    print '        --modhumPID sensor relay set p i d period'
-    print '           Change Humidity PID variables'
-    print '        --modtempOR sensor state'
-    print '           Temperature PID control: 0=enable, 1=disable'
-    print '        --modtempPID sensor relay set p i d period'
-    print '           Change Temperature PID variables'
-    print '        --modrelaynames name1 name2 name3 name4 name5 name6 name7 name8'
-    print '           Modify relay names (Restrict to a maximum of 12 characters each)'
-    print '        --modrelaypins pin1 pin2 pin3 pin4 pin5 pin6 pin7 pin8'
-    print '           Modify relay pins Using BCM numbering)'
-    print '        --modrelaytrigger trig1 trig2 trig3 trig4 trig5 trig6 trig7 trig8'
-    print '           Modify the relay trigger states (0=low, 1=high; turns relay on)'
-    print '        --modco2sensor sensor name device pin period activated graph'
-    print '           Modify CO2 sensor variables'
-    print '        --modhtsensor sensor name device pin period activated graph'
-    print '           Modify Humidity/Temperature sensor variables'
-    print '        --modtimer timer state relay on off'
-    print '           Modify custom timers, State can be 0=off 1=on, on/off durations in seconds'
-    print '    -m, --modvar name1 value1 [name2] [value2]...'
-    print '           Modify any configuration variable or variables (multiple allowed, must be paired input)'
     print '        --pidstart Coctroller Number'
     print '           Start PID Controller, Controller=Temp, Hum, CO2 and Number=1-4'
     print '        --pidstop Coctroller Number'
@@ -88,8 +62,8 @@ def usage():
 def menu():
     try:
         opts, args = getopt.getopt(
-            sys.argv[1:], 'hm:r:t',
-            ["help", "graph", "modtempOR", "modtempPID", "modhumOR", "modhumPID", "modco2OR", "modco2PID", "modrelaynames=", "modrelaypins=", "modrelaytrigger=", "modhtsensor", "modco2sensor", "modtimer=", "modvar=", "pidstart=", "pidstop=", "relay=", "sensorht", "sensorco2", "sqlreload", "terminate", "writehtlog", "writeco2log"])
+            sys.argv[1:], 'hr:t',
+            ["help", "graph", "pidstart=", "pidstop=", "relay=", "sensorht", "sensorco2", "sqlreload", "terminate", "writehtlog", "writeco2log"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -107,152 +81,6 @@ def menu():
             print "%s [Remote command] Server returned:" % (
                 Timestamp()),
             if c.root.GenerateGraph(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6]) == 1:
-                print "Success"
-            else:
-                print "Fail"
-            sys.exit(0)
-        elif opt == "--modvar":
-            print "%s [Remote command] Mod Vars: %s" % (
-                Timestamp(), sys.argv[1:])
-            print "%s [Remote command] Server returned:" % (
-                Timestamp()),
-            if c.root.Modify_Variables(*sys.argv[1:]) == 1:
-                print "Success"
-            else:
-                print "Fail"
-            sys.exit(0)
-        elif opt == "--modco2OR":
-            print "%s [Remote command] Change CO2OR of sensor %s to %s: Server returned:" % (
-                Timestamp(), sys.argv[2], sys.argv[3]),
-            if c.root.ChangeCO2OR(int(float(sys.argv[2])), int(float(sys.argv[3]))) == 1:
-                print "Success"
-            else:
-                print "Fail"
-            sys.exit(0)
-        elif opt == "--modco2PID":
-            print "%s [Remote command] Change CO2 PID of sensor %s: relay: %s set: %s P: %s I: %s D: %s Period: %s Server returned:" % (
-                Timestamp(), sys.argv[2], sys.argv[3],
-                sys.argv[4], sys.argv[5], sys.argv[6],
-                sys.argv[7], sys.argv[8]),
-            if c.root.ChangeCO2PID(int(float(sys.argv[2])),
-            int(float(sys.argv[3])), int(float(sys.argv[4])),
-            float(sys.argv[5]), float(sys.argv[6]),
-            float(sys.argv[7]), int(float(sys.argv[8]))) == 1:
-                print "Success"
-            else:
-                print "Fail"
-            sys.exit(0)
-        elif opt == "--modtempOR":
-            print "%s [Remote command] Change TempOR of sensor %s to %s: Server returned:" % (
-                Timestamp(), sys.argv[2], sys.argv[3]),
-            if c.root.ChangeTempOR(int(float(sys.argv[2])), int(float(sys.argv[3]))) == 1:
-                print "Success"
-            else:
-                print "Fail"
-            sys.exit(0)
-        elif opt == "--modtempPID":
-            print "%s [Remote command] Change Temp PID of sensor %s: relay: %s set: %s P: %s I: %s D: %s Period: %s Server returned:" % (
-                Timestamp(), sys.argv[2], sys.argv[3],
-                sys.argv[4], sys.argv[5], sys.argv[6],
-                sys.argv[7], sys.argv[8]),
-            if c.root.ChangeTempPID(int(float(sys.argv[2])),
-                int(float(sys.argv[3])), float(sys.argv[4]),
-                float(sys.argv[5]), float(sys.argv[6]),
-                float(sys.argv[7]), int(float(sys.argv[8]))) == 1:
-                print "Success"
-            else:
-                print "Fail"
-            sys.exit(0)
-        elif opt == "--modhumOR":
-            print "%s [Remote command] Change HumOR of sensor %s to %s: Server returned:" % (
-                Timestamp(), sys.argv[2], sys.argv[3]),
-            if c.root.ChangeHumOR(int(float(sys.argv[2])), int(float(sys.argv[3]))) == 1:
-                print "Success"
-            else:
-                print "Fail"
-            sys.exit(0)
-        elif opt == "--modhumPID":
-            print "%s [Remote command] Change Hum PID of sensor %s: relay: %s set: %s P: %s I: %s D: %s Period: %s Server returned:" % (
-                Timestamp(), sys.argv[2], sys.argv[3],
-                sys.argv[4], sys.argv[5], sys.argv[6],
-                sys.argv[7], sys.argv[8]),
-            if c.root.ChangeHumPID(int(float(sys.argv[2])),
-            int(float(sys.argv[3])), float(sys.argv[4]),
-            float(sys.argv[5]), float(sys.argv[6]),
-            float(sys.argv[7]), int(float(sys.argv[8]))) == 1:
-                print "Success"
-            else:
-                print "Fail"
-            sys.exit(0)
-        elif opt == "--modco2sensor":
-            print "%s [Remote command] Set Sensor %s: %s %s %s %s %s %s: Server returned:" % (
-                Timestamp(),
-                sys.argv[2], sys.argv[3], sys.argv[4],
-                sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8]),
-            if c.root.ChangeCO2Sensor(
-                int(float(sys.argv[2])), sys.argv[3], sys.argv[4],
-                int(float(sys.argv[5])), int(float(sys.argv[6])), int(float(sys.argv[7])), int(float(sys.argv[8]))) == 1:
-                print "Success"
-            else:
-                print "Fail"
-            sys.exit(0)
-        elif opt == "--modhtsensor":
-            print "%s [Remote command] Set Sensor %s: %s %s %s %s %s %s: Server returned:" % (
-                Timestamp(),
-                sys.argv[2], sys.argv[3], sys.argv[4],
-                sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8]),
-            if c.root.ChangeHTSensor(
-                int(float(sys.argv[2])), sys.argv[3], sys.argv[4],
-                int(float(sys.argv[5])), int(float(sys.argv[6])), int(float(sys.argv[7])), int(float(sys.argv[8]))) == 1:
-                print "Success"
-            else:
-                print "Fail"
-            sys.exit(0)
-        elif opt == "--modrelaynames":
-            print "%s [Remote command] Set Relay Names: %s %s %s %s %s %s %s %s: Server returned:" % (
-                Timestamp(),
-                sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5],
-                sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9]),
-            if c.root.ChangeRelayNames(
-                sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5],
-                sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9]) == 1:
-                print "Success"
-            else:
-                print "Fail"
-            sys.exit(0)
-        elif opt == "--modrelaypins":
-            print "%s [Remote command] Set Relay Pins: %s %s %s %s %s %s %s %s: Server returned:" % (
-                Timestamp(), int(sys.argv[2]), int(sys.argv[3]),
-                int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6]),
-                int(sys.argv[7]), int(sys.argv[8]), int(sys.argv[9])),
-            if c.root.ChangeRelayPins(
-                int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]),
-                int(sys.argv[5]), int(sys.argv[6]), int(sys.argv[7]),
-                int(sys.argv[8]), int(sys.argv[9])) == 1:
-                print "Success"
-            else:
-                print "Fail"
-            sys.exit(0)
-        elif opt == "--modtimer":
-            print "%s [Remote command] Set Timer %s: State: %s Relay: %s DurOn: %s DurOff: %s: Server returned:" % (
-                Timestamp(), int(sys.argv[2]), int(sys.argv[3]),
-                int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6])),
-            if c.root.ChangeTimer(
-                int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]),
-                int(sys.argv[5]), int(sys.argv[6])) == 1:
-                print "Success"
-            else:
-                print "Fail"
-            sys.exit(0)
-        elif opt == "--modrelaytrigger":
-            print "%s [Remote command] Set Relay Triggers: %s %s %s %s %s %s %s %s: Server returned:" % (
-                Timestamp(), int(sys.argv[2]), int(sys.argv[3]),
-                int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6]),
-                int(sys.argv[7]), int(sys.argv[8]), int(sys.argv[9])),
-            if c.root.ChangeRelayTriggers(
-                int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]),
-                int(sys.argv[5]), int(sys.argv[6]), int(sys.argv[7]),
-                int(sys.argv[8]), int(sys.argv[9])) == 1:
                 print "Success"
             else:
                 print "Fail"
