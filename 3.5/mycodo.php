@@ -99,14 +99,14 @@ require("functions/check_forms_public.php");
 `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
 
 // Grab last entry for each sensor from log files
-$last_ht_sensor[1] = `awk '$10 == 1' /var/tmp/sensor-ht.log | tail -n 1`;
-$last_ht_sensor[2] = `awk '$10 == 2' /var/tmp/sensor-ht.log | tail -n 1`;
-$last_ht_sensor[3] = `awk '$10 == 3' /var/tmp/sensor-ht.log | tail -n 1`;
-$last_ht_sensor[4] = `awk '$10 == 4' /var/tmp/sensor-ht.log | tail -n 1`;
-$last_co2_sensor[1] = `awk '$8 == 1' /var/tmp/sensor-co2.log | tail -n 1`;
-$last_co2_sensor[2] = `awk '$8 == 2' /var/tmp/sensor-co2.log | tail -n 1`;
-$last_co2_sensor[3] = `awk '$8 == 3' /var/tmp/sensor-co2.log | tail -n 1`;
-$last_co2_sensor[4] = `awk '$8 == 4' /var/tmp/sensor-co2.log | tail -n 1`;
+$last_ht_sensor[1] = `awk '($10 == 1){exit}END{print}' /var/tmp/sensor-ht.log`;
+$last_ht_sensor[2] = `awk '($10 == 2){exit}END{print}' /var/tmp/sensor-ht.log`;
+$last_ht_sensor[3] = `awk '($10 == 3){exit}END{print}' /var/tmp/sensor-ht.log`;
+$last_ht_sensor[4] = `awk '($10 == 4){exit}END{print}' /var/tmp/sensor-ht.log`;
+$last_co2_sensor[1] = `awk '($8 == 1){exit}END{print}' /var/tmp/sensor-co2.log`;
+$last_co2_sensor[2] = `awk '($8 == 2){exit}END{print}' /var/tmp/sensor-co2.log`;
+$last_co2_sensor[3] = `awk '($8 == 3){exit}END{print}' /var/tmp/sensor-co2.log`;
+$last_co2_sensor[4] = `awk '($8 == 4){exit}END{print}' /var/tmp/sensor-co2.log`;
 
 // explode() the last sensor entry to extract data
 for ($p = 1; $p <= $sensor_ht_num; $p++) {
@@ -398,29 +398,29 @@ if ($output_error) {
                     $graph_span = get_graph_span();
                     
                     if ($graph_span == 'default') {
-                        for ($n = 1; $n <= $sensor_ht_num; $n++ ) {
+                        for ($n = 1; $n <= $sensor_ht_num; $n++) {
                             if ($sensor_ht_graph[$n] == 1) {
-                                if (!file_exists('/var/www/mycodo/images/graph-ht' . $graph_type . $graph_span . '-' . $graph_id . '-' . $n . '.png')) {
-                                    shell_exec($mycodo_client . ' --graph ht ' . $graph_span . ' default ' . $graph_id . ' ' . $n);
+                                if (!file_exists('/var/www/mycodo/images/graph-htdefaultdefault-' . $graph_id . '-' . $n . '.png')) {
+                                    shell_exec($mycodo_client . ' --graph ht ' . $graph_type . ' ' . $graph_span . ' ' . $graph_id . ' ' . $n);
                                 }
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?";
                                 echo "sensortype=ht";
                                 echo "&sensornumber=" . $n;
-                                echo "&graphspan=" . $graph_span;
                                 echo "&graphtype=default";
+                                echo "&graphspan=default";
                                 echo "&id=" . $graph_id . ">";
                                 echo "</div>";
                             }
                         }
-                        for ($n = 1; $n <= $sensor_co2_num; $n++ ) {
+                        for ($n = 1; $n <= $sensor_co2_num; $n++) {
                             if ($sensor_co2_graph[$n] == 1) {
-                                if (!file_exists('/var/www/mycodo/images/graph-co2' . $graph_type . $graph_span . '-' . $graph_id . '-' . $n . '.png')) {
+                                if (!file_exists('/var/www/mycodo/images/graph-co2defaultdefault-' . $graph_id . '-' . $n . '.png')) {
                                     shell_exec($mycodo_client . ' --graph co2 ' . $graph_span . ' default ' . $graph_id . ' ' . $n);
                                 }
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?";
                                 echo "sensortype=co2";
                                 echo "&sensornumber=" . $n;
-                                echo "&graphspan=" . $graph_span;
+                                echo "&graphspan=default";
                                 echo "&graphtype=default";
                                 echo "&id=" . $graph_id . ">";
                                 echo "</div>";
