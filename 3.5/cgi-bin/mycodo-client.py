@@ -100,11 +100,11 @@ def menu():
             usage()
             return 1
         elif opt == "--graph":
-            print "%s [Remote command] Graph: %s %s %s" % (
-                Timestamp(), sys.argv[2], sys.argv[3], sys.argv[4])
+            print "%s [Remote command] Graph: %s %s %s %s %s" % (
+                Timestamp(), sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
             print "%s [Remote command] Server returned:" % (
                 Timestamp()),
-            if c.root.GenerateGraph(sys.argv[2], sys.argv[3], sys.argv[4]) == 1:
+            if c.root.GenerateGraph(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6]) == 1:
                 print "Success"
             else:
                 print "Fail"

@@ -426,9 +426,9 @@ class ComServer(rpyc.Service):
             relay_trigger[5], relay_trigger[6], relay_trigger[7], relay_trigger[8])
         write_sql()
         return 1
-    def exposed_GenerateGraph(self, graph_out_file, id, sensor):
-        logging.info("[Client command] Generate Graph: %s %s %s", graph_out_file, id, sensor)
-        generate_graph(graph_out_file, id, sensor)
+    def exposed_GenerateGraph(self, sensor_type, graph_type, graph_span, graph_id, sensor_number):
+        logging.info("[Client command] Generate Graph: %s %s %s %s %s", sensor_type, graph_type, graph_span, graph_id, sensor_number)
+        generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number)
         return 1
     def exposed_Modify_Variables(self, *variable_list):
         logging.info("[Client command] Request to change variables")
@@ -1429,34 +1429,34 @@ def Concatenate_Logs():
 #################################################
 
 # Generate gnuplot graph
-def generate_graph(graph_out_file, graph_id, sensorn):
+def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number):
     tmp_path = "/var/tmp"
     h = 0
     d = 0
 
     # Calculate a past date from a number of hours or days ago
-    if "1h" in graph_out_file:
+    if graph_span == "1h":
         h = 1
         time_ago = '1 Hour'
-    elif "6h" in graph_out_file:
+    elif graph_span == "6h":
         h = 6
         time_ago = '6 Hours'
-    elif "1d" in graph_out_file or "dayweek" in graph_out_file:
+    elif graph_span == "1d" or graph_span == "default":
         d = 1
         time_ago = '1 Day'
-    elif "3d" in graph_out_file:
+    elif graph_span == "3d":
         d = 3
         time_ago = '3 Days'
-    elif "1w" in graph_out_file:
+    elif graph_span == "1w":
         d = 7
         time_ago = '1 Week'
-    elif "1m" in graph_out_file:
+    elif graph_span == "1m":
         d = 30
         time_ago = '1 Month'
-    elif "3m" in graph_out_file:
+    elif graph_span == "3m":
         d = 90
         time_ago = '3 Months'
-    elif "legend-full" in graph_out_file:
+    elif graph_span == "legend-full":
         h = 6
         time_ago = '6 Hours'
     date_now = datetime.datetime.now().strftime("%Y %m %d %H %M %S")
@@ -1493,7 +1493,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     y1_min = '0'
     y1_max = '100'
 
-    if "co2" in graph_out_file:
+    if sensor_type == "co2":
         y2_min = '0'
         y2_max = '5000'
     else:
@@ -1508,30 +1508,27 @@ def generate_graph(graph_out_file, graph_id, sensorn):
                     ]
 
     # Write the following output to a file that will be executed with gnuplot
-    gnuplot_graph = "%s/plot-%s-%s.gnuplot" % (tmp_path, graph_out_file, sensorn)
+    gnuplot_graph = "%s/plot-%s-%s-%s-%s.gnuplot" % (tmp_path, sensor_type, graph_type, graph_span, sensor_number)
     plot = open(gnuplot_graph, 'w')
 
     plot.write('reset\n')
     plot.write('set xdata time\n')
     plot.write('set timefmt \"%Y %m %d %H %M %S\"\n')
 
-    if "combined" in graph_out_file:
+    if graph_type == "combined":
         plot.write('set terminal png size 1000,1500\n')
-        plot.write('set output \"' + image_path + '/graph-' + graph_out_file + '-' + graph_id + '.png\"\n')
-    elif "separate" in graph_out_file:
+    elif graph_type == "separate":
         plot.write('set terminal png size 1000,600\n')
-        plot.write('set output \"' + image_path + '/graph-' + graph_out_file + '-' + graph_id + '-' + sensorn + '.png\"\n')
-    elif "dayweek" in graph_out_file:
+    elif graph_type == "default":
         plot.write('set terminal png size 1000,1000\n')
-        plot.write('set output \"' + image_path + '/graph-' + graph_out_file + '-' + graph_id + '-' + sensorn + '.png\"\n')
-    elif "legend-small" in graph_out_file:
+    elif graph_type == "legend-small":
         plot.write('set terminal png size 250,300\n')
-        plot.write('set output \"' + image_path + '/graph-' + graph_out_file + '-' + graph_id + '.png\"\n')
-    elif "legend-full" in graph_out_file:
+    elif graph_type == "legend-full":
         plot.write('set terminal png size 800,500\n')
-        plot.write('set output \"' + image_path + '/graph-' + graph_out_file + '-' + graph_id + '.png\"\n')
 
-    if "legend-small" not in graph_out_file:
+    plot.write('set output \"' + image_path + '/graph-' + sensor_type + graph_type + graph_span + '-' + graph_id + '-' + sensor_number + '.png\"\n')
+
+    if graph_type != "legend-small":
         plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
         plot.write('set format x \"%H:%M\\n%m/%d\"\n')
         plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
@@ -1542,18 +1539,18 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         plot.write('set style line 12 lc rgb \'#808080\' lt 0 lw 1\n')
         plot.write('set grid xtics ytics back ls 12\n')
 
-    if "dayweek" in graph_out_file:
+    if graph_type == "default":
         plot.write('set mytics 10\n')
         plot.write('set my2tics 5\n')
         plot.write('set ytics 0,20\n')
-        if "co2" in graph_out_file:
+        if sensor_type == "co2":
             plot.write('set y2tics 500\n')
         else:
             plot.write('set y2tics 5\n')
     else:
         plot.write('set my2tics 10\n')
         plot.write('set ytics 10\n')
-        if "co2" in graph_out_file:
+        if sensor_type == "co2":
             plot.write('set y2tics 500\n')
         else:
             plot.write('set y2tics 5\n')
@@ -1588,7 +1585,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     plot.write('unset key\n')
 
     # Generate a graph with all temperatures and one graph with all humidities
-    if "combined" in graph_out_file:
+    if graph_type == "combined":
         plot.write('set multiplot layout 3,1\n')
         plot.write('set origin 0.0,0.66\n')
         plot.write('set title \"Combined Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
@@ -1650,13 +1647,13 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         plot.write('unset multiplot\n')
 
     # Generate a graph with temp, hum, and dew point for a specific sensor
-    if "htseparate" in graph_out_file:
-        plot.write('set title \"Hum/Temp Sensor ' + sensorn + ': ' + sensor_ht_name[int(float(sensorn))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-        plot.write('plot \"<awk \'$10 == ' + sensorn + '\' ' + sensor_ht_log_generate + sensor_head + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
+    if sensor_type == "ht" and graph_type == "separate":
+        plot.write('set title \"Hum/Temp Sensor ' + sensor_number + ': ' + sensor_ht_name[int(float(sensor_number))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+        plot.write('plot \"<awk \'$10 == ' + sensor_number + '\' ' + sensor_ht_log_generate + sensor_head + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
         plot.write('\"\" u 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, ')
         plot.write('\"\" u 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ')
 
-        plot.write('\"<awk \'$15 == ' + sensorn + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relay_name[1] + '\" w impulses ls 4 axes x1y1, ')
+        plot.write('\"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relay_name[1] + '\" w impulses ls 4 axes x1y1, ')
         plot.write('\"\" u 1:8 index 0 title \"' + relay_name[2] + '\" w impulses ls 5 axes x1y1, ')
         plot.write('\"\" u 1:9 index 0 title \"' + relay_name[3] + '\" w impulses ls 6 axes x1y1, ')
         plot.write('\"\" u 1:10 index 0 title \"' + relay_name[4] + '\" w impulses ls 7 axes x1y1, ')
@@ -1665,11 +1662,11 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         plot.write('\"\" u 1:13 index 0 title \"' + relay_name[7] + '\" w impulses ls 10 axes x1y1, ')
         plot.write('\"\" u 1:14 index 0 title \"' + relay_name[8] + '\" w impulses ls 11 axes x1y1\n')
 
-    if "co2separate" in graph_out_file:
-        plot.write('set title \"CO2 Sensor ' + sensorn + ': ' + sensor_co2_name[int(float(sensorn))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-        plot.write('plot \"<awk \'$8 == ' + sensorn + '\' ' + sensor_co2_log_generate + sensor_head + '" using 1:7 index 0 title \"CO2\" w lp ls 1 axes x1y2, ')
+    if sensor_type == "co2" and graph_type == "separate":
+        plot.write('set title \"CO2 Sensor ' + sensor_number + ': ' + sensor_co2_name[int(float(sensor_number))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+        plot.write('plot \"<awk \'$8 == ' + sensor_number + '\' ' + sensor_co2_log_generate + sensor_head + '" using 1:7 index 0 title \"CO2\" w lp ls 1 axes x1y2, ')
 
-        plot.write('\"<awk \'$15 == ' + sensorn + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relay_name[1] + '\" w impulses ls 4 axes x1y1, ')
+        plot.write('\"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relay_name[1] + '\" w impulses ls 4 axes x1y1, ')
         plot.write('\"\" u 1:8 index 0 title \"' + relay_name[2] + '\" w impulses ls 5 axes x1y1, ')
         plot.write('\"\" u 1:9 index 0 title \"' + relay_name[3] + '\" w impulses ls 6 axes x1y1, ')
         plot.write('\"\" u 1:10 index 0 title \"' + relay_name[4] + '\" w impulses ls 7 axes x1y1, ')
@@ -1679,17 +1676,17 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         plot.write('\"\" u 1:14 index 0 title \"' + relay_name[8] + '\" w impulses ls 11 axes x1y1\n')
 
     # Generate a graph of the past day and week periods for each HT sensor
-    if "htdayweek" in graph_out_file:
+    if sensor_type == "ht" and graph_type == "default":
         plot.write('set origin 0.0,0.0\n')
         plot.write('set multiplot\n')
         # Top graph - day
         plot.write('set size 1.0,0.5\n')
         plot.write('set origin 0.0,0.5\n')
-        plot.write('set title \"Hum/Temp Sensor ' + sensorn + ': ' + sensor_ht_name[int(float(sensorn))] + '\\n\\nPast Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-        plot.write('plot \"<awk \'$10 == ' + sensorn + '\' ' + sensor_ht_log_generate + sensor_head + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
+        plot.write('set title \"Hum/Temp Sensor ' + sensor_number + ': ' + sensor_ht_name[int(float(sensor_number))] + '\\n\\nPast Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+        plot.write('plot \"<awk \'$10 == ' + sensor_number + '\' ' + sensor_ht_log_generate + sensor_head + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
         plot.write('\"\" using 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, ')
         plot.write('\"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ')
-        plot.write('\"<awk \'$15 == ' + sensorn + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relay_name[1] + '\" w impulses ls 4 axes x1y1, ')
+        plot.write('\"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relay_name[1] + '\" w impulses ls 4 axes x1y1, ')
         plot.write('\"\" using 1:8 index 0 title \"' + relay_name[2] + '\" w impulses ls 5 axes x1y1, ')
         plot.write('\"\" using 1:9 index 0 title \"' + relay_name[3] + '\" w impulses ls 6 axes x1y1, ')
         plot.write('\"\" using 1:10 index 0 title \"' + relay_name[4] + '\" w impulses ls 7 axes x1y1, ')
@@ -1707,21 +1704,21 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         plot.write('set title \"Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
         plot.write('set format x \"%a\\n%m/%d\"\n')
         plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
-        plot.write('plot \"<awk \'$10 == ' + sensorn + '\' ' + sensor_ht_log_generate + sensor_head + '" using 1:7 index 0 notitle w lp ls 1 axes x1y2, ')
+        plot.write('plot \"<awk \'$10 == ' + sensor_number + '\' ' + sensor_ht_log_generate + sensor_head + '" using 1:7 index 0 notitle w lp ls 1 axes x1y2, ')
         plot.write('\"\" using 1:8 index 0 notitle w lp ls 2 axes x1y1, ')
         plot.write('\"\" using 1:9 index 0 notitle w lp ls 3 axes x1y2\n')
         plot.write('unset multiplot\n')
 
     # Generate a graph of the past day and week periods for each CO2 sensor
-    if "co2dayweek" in graph_out_file:
+    if sensor_type == "co2" and graph_type == "default":
         plot.write('set origin 0.0,0.0\n')
         plot.write('set multiplot\n')
         # Top graph - day
         plot.write('set size 1.0,0.5\n')
         plot.write('set origin 0.0,0.5\n')
-        plot.write('set title \"CO2 Sensor ' + sensorn + ': ' + sensor_co2_name[int(float(sensorn))] + '\\n\\nPast Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-        plot.write('plot \"<awk \'$8 == ' + sensorn + '\' ' + sensor_co2_log_generate + sensor_head + '" using 1:7 index 0 title \"CO2\" w lp ls 1 axes x1y2, ')
-        plot.write('\"<awk \'$15 == ' + sensorn + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relay_name[1] + '\" w impulses ls 4 axes x1y1, ')
+        plot.write('set title \"CO2 Sensor ' + sensor_number + ': ' + sensor_co2_name[int(float(sensor_number))] + '\\n\\nPast Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+        plot.write('plot \"<awk \'$8 == ' + sensor_number + '\' ' + sensor_co2_log_generate + sensor_head + '" using 1:7 index 0 title \"CO2\" w lp ls 1 axes x1y2, ')
+        plot.write('\"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relay_name[1] + '\" w impulses ls 4 axes x1y1, ')
         plot.write('\"\" using 1:8 index 0 title \"' + relay_name[2] + '\" w impulses ls 5 axes x1y1, ')
         plot.write('\"\" using 1:9 index 0 title \"' + relay_name[3] + '\" w impulses ls 6 axes x1y1, ')
         plot.write('\"\" using 1:10 index 0 title \"' + relay_name[4] + '\" w impulses ls 7 axes x1y1, ')
@@ -1739,10 +1736,10 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         plot.write('set title \"Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
         plot.write('set format x \"%a\\n%m/%d\"\n')
         plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
-        plot.write('plot \"<awk \'$8 == ' + sensorn + '\' ' + sensor_co2_log_generate + sensor_head + '" using 1:7 index 0 notitle w lp ls 1 axes x1y2\n')
+        plot.write('plot \"<awk \'$8 == ' + sensor_number + '\' ' + sensor_co2_log_generate + sensor_head + '" using 1:7 index 0 notitle w lp ls 1 axes x1y2\n')
         plot.write('unset multiplot\n')
 
-    if "legend-small" in graph_out_file:
+    if graph_type == "legend-small":
         plot.write('unset border\n')
         plot.write('unset tics\n')
         plot.write('unset grid\n')
@@ -1760,7 +1757,7 @@ def generate_graph(graph_out_file, graph_id, sensorn):
         plot.write('sqrt(-1) title \"' + relay_name[7] + '\" w impulses ls 10, ')
         plot.write('sqrt(-1) title \"' + relay_name[8] + '\" w impulses ls 11\n')
 
-    if "legend-full" in graph_out_file:
+    if graph_type == "legend-full":
         plot.write('set xlabel \"Date and Time\"\n')
         plot.write('set ylabel \"# Seconds Relays On and % Humidity\"\n')
         plot.write('set y2label \"Temperature and Dew Point\"\n')
@@ -1781,14 +1778,14 @@ def generate_graph(graph_out_file, graph_id, sensorn):
     plot.close()
 
     # Generate graph with gnuplot with the above generated command sequence
-    if logging.getLogger().isEnabledFor(logging.DEBUG) is False:
+    if logging.getLogger().isEnabledFor(logging.DEBUG) == False:
         subprocess.call(['gnuplot', gnuplot_graph])
-        os.remove(gnuplot_graph)
+        #os.remove(gnuplot_graph)
         os.remove(sensor_ht_log_generate)
         os.remove(sensor_co2_log_generate)
         os.remove(relay_log_generate)
     else:
-        gnuplot_log = "%s/plot-%s-%s.log" % (log_path, graph_out_file, sensorn)
+        gnuplot_log = "%s/plot-%s-%s-%s-%s.log" % (log_path, sensor_type, graph_type, graph_span, sensor_number)
         with open(gnuplot_log, 'ab') as errfile:
             subprocess.call(['gnuplot', gnuplot_graph], stderr=errfile)
 

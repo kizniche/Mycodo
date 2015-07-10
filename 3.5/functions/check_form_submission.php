@@ -213,14 +213,6 @@ if (isset($_POST['ChangeNoTimers'])) {
     $sql_reload = True;
 }
 
-if (isset($_POST['Graph'])) {
-    $stmt = $db->prepare("UPDATE Misc SET Graph_Type=:type, Graph_Span=:span");
-    $stmt->bindValue(':type', $_POST['graph_type'], SQLITE3_TEXT);
-    $stmt->bindValue(':span', $_POST['graph_span'], SQLITE3_TEXT);
-    $stmt->execute();
-    $generate_graph = True;
-}
-
 //
 // Check for form submission and respond (Non-SQL Section)
 //
@@ -328,5 +320,17 @@ if (isset($_POST['stop-stream'])) {
     shell_exec($editconfig);
     $editconfig = "$mycodo_client --writeco2log 0";
     shell_exec($editconfig);
+}
+
+// Save graph preset preference
+if (isset($_POST['Graph'])) {
+    setcookie('graph_type', $_POST['graph_type'], time() + (86400 * 10), "/" );
+    setcookie('graph_span', $_POST['graph_span'], time() + (86400 * 10), "/" );
+    global $graph_type;
+    global $graph_span;
+    global $generate_graph;
+    $graph_type = $_POST['graph_type'];
+    $graph_span = $_POST['graph_span'];
+    $generate_graph = True;
 }
 ?>

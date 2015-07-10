@@ -82,10 +82,8 @@ while ($row = $results->fetchArray()) {
     $smtp_email_from = $row[6];
 }
 
-$results = $db->query('SELECT Camera_Relay, Graph_Type, Graph_Span FROM Misc');
+$results = $db->query('SELECT Camera_Relay FROM Misc');
 while ($row = $results->fetchArray()) {
     //print $row[0] . "<br>";
     $camera_relay = $row[0];
-    $graph_type = $row[1];
-    $graph_span = $row[2];
 }

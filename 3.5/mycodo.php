@@ -56,10 +56,26 @@ $generate_graph = False;
 if (isset($_GET['Refresh']) == 1 || !isset($_COOKIE['graph_id'])) {
     $uniqueid = uniqid();
     setcookie('graph_id', $uniqueid, time() + (86400 * 10), "/" );
-    $id  = $uniqueid;
+    $id = $uniqueid;
     $generate_graph = True;
 } else {
     $id = $_COOKIE['graph_id'];
+}
+
+if(!isset($_COOKIE['graph_type']) || !isset($_COOKIE['graph_span'])) {
+    setcookie('graph_type', 'default', time() + (86400 * 10), "/" );
+    setcookie('graph_span', 'default', time() + (86400 * 10), "/" );
+    global $graph_type;
+    global $graph_span;
+    global $generate_graph;
+    $generate_graph = True;
+    $graph_type = $_COOKIE['graph_type'];
+    $graph_span = $_COOKIE['graph_span'];
+} else {
+    global $graph_type;
+    global $graph_span;
+    $graph_type = $_COOKIE['graph_type'];
+    $graph_span = $_COOKIE['graph_span'];
 }
 
 // Initial SQL database load to variables
@@ -369,10 +385,10 @@ if ($output_error) {
                             </table>
                         </div>
                         <div style="float: left; padding-right: 0.5em;">
-                            Duration
+                            Time Span
                             <br>
                             <select name="graph_span">
-                                <option value="default" <?php if ($graph_span == 'default') echo "selected=\"selected\""; ?>>Default</option>
+                                <option value="default" <?php if ($graph_span == 'default') echo "selected=\"selected\""; ?>>Day/Week</option>
                                 <option value="1h" <?php if ($graph_span == '1h') echo "selected=\"selected\""; ?>>1 Hour</option>
                                 <option value="6h" <?php if ($graph_span == '6h') echo "selected=\"selected\""; ?>>6 Hours</option>
                                 <option value="1d" <?php if ($graph_span == '1d') echo "selected=\"selected\""; ?>>1 Day</option>
@@ -397,34 +413,68 @@ if ($output_error) {
                     if ($graph_span == 'default') {
                         for ($n = 1; $n <= $sensor_ht_num; $n++ ) {
                             if ($sensor_ht_graph[$n] == 1) {
-                                echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                                if ($generate_graph) shell_exec($mycodo_client . ' --graph htdayweek ' . $id . ' ' . $n);
-                                echo "htmain&mod=" . $id . "&sensor=" . $n . "></div>";
+                                if (!file_exists('/var/www/mycodo/images/graph-htdefaultdefault-' . $id . '-' . $n . '.png')) {
+                                    echo '/var/www/mycodo/images/graph-htdefaultdefault-' . $id . '-' . $n;
+                                    $generate_graph = True;
+                                }
+                                if ($generate_graph) {
+                                    shell_exec($mycodo_client . ' --graph ht ' . $graph_span . ' default ' . $id . ' ' . $n);
+                                }
+                                echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?";
+                                echo "sensortype=ht";
+                                echo "&sensornumber=" . $n;
+                                echo "&graphspan=" . $graph_span;
+                                echo "&graphtype=default";
+                                echo "&id=" . $id . ">";
+                                echo "</div>";
                             }
                         }
                         for ($n = 1; $n <= $sensor_co2_num; $n++ ) {
                             if ($sensor_co2_graph[$n] == 1) {
-                                echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                                if ($generate_graph) shell_exec($mycodo_client . ' --graph co2dayweek ' . $id . ' ' . $n);
-                                echo "co2main&mod=" . $id . "&sensor=" . $n . "></div>";
+                                if (!file_exists('/var/www/mycodo/images/graph-co2defaultdefault-' . $id . '-' . $n . '.png')) {
+                                    $generate_graph = True;
+                                }
+                                if ($generate_graph) {
+                                    shell_exec($mycodo_client . ' --graph co2 ' . $graph_span . ' default ' . $id . ' ' . $n);
+                                }
+                                echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?";
+                                echo "sensortype=co2";
+                                echo "&sensornumber=" . $n;
+                                echo "&graphspan=" . $graph_span;
+                                echo "&graphtype=default";
+                                echo "&id=" . $id . ">";
+                                echo "</div>";
                             }
                         }
                     } else if ($graph_type == 'combined') { // Combined preset: Generate combined graphs
-                        echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                        if ($generate_graph) {
-                            shell_exec($mycodo_client . ' --graph ' . $graph_type . $graph_span . ' ' . $id . ' 0');
+                        if (!file_exists('/var/www/mycodo/images/graph-xcombined' . $graph_span . '-' . $id . '-0.png')) {
+                            $generate_graph = True;
                         }
-                        echo "combined" . $graph_span ."&mod=" . $id . ">";
-                        echo "</div>";
+                        if ($generate_graph) {
+                            shell_exec($mycodo_client . ' --graph x ' . $graph_type . ' ' . $graph_span . ' ' . $id . ' 0');
+                        }
+                        echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?";
+                                echo "sensortype=x";
+                                echo "&sensornumber=0";
+                                echo "&graphspan=" . $graph_span;
+                                echo "&graphtype=" . $graph_type;
+                                echo "&id=" . $id . ">";
+                                echo "</div>";
                     } else if ($graph_type == 'separate') { // Combined preset: Generate separate graphs
                         for ($n = 1; $n <= $sensor_ht_num; $n++ ) {
                             if ($sensor_ht_graph[$n] == 1) {
-                                echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                                
-                                if ($generate_graph) {
-                                    shell_exec($mycodo_client . ' --graph ht' . $graph_type . $graph_span . ' ' . $id . ' ' . $n);
+                                if (!file_exists('/var/www/mycodo/images/graph-htseparate' . $graph_span . '-' .  $id . '-' . $n . '.png')) {
+                                    $generate_graph = True;
                                 }
-                                echo "htseparate" . $graph_span . "&mod=" . $id . "&sensor=" . $n . ">";
+                                if ($generate_graph) {
+                                    shell_exec($mycodo_client . ' --graph ht ' . $graph_type . ' ' . $graph_span . ' ' . $id . ' ' . $n);
+                                }
+                                echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?";
+                                echo "sensortype=ht";
+                                echo "&sensornumber=" . $n;
+                                echo "&graphspan=" . $graph_span;
+                                echo "&graphtype=" . $graph_type;
+                                echo "&id=" . $id . ">";
                                 echo "</div>";
                             }
                             if ($n != $sensor_ht_num || $sensor_co2_graph[1] == 1 || $sensor_co2_graph[2] == 1 || $sensor_co2_graph[3] == 1 || $sensor_co2_graph[4] == 1) {
@@ -434,11 +484,18 @@ if ($output_error) {
 
                         for ($n = 1; $n <= $sensor_co2_num; $n++ ) {
                             if ($sensor_co2_graph[$n] == 1) {
-                                echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?span=";
-                                if ($generate_graph) {
-                                    shell_exec($mycodo_client . ' --graph co2' . $graph_type . $graph_span . ' ' . $id . ' ' . $n);
+                                if (!file_exists('/var/www/mycodo/images/graph-co2separate' . $graph_span . '-' .  $id . '-' . $n . '.png')) {
+                                    $generate_graph = True;
                                 }
-                                echo "co2separate" . $graph_span . "&mod=" . $id . "&sensor=" . $n . ">";
+                                if ($generate_graph) {
+                                    shell_exec($mycodo_client . ' --graph co2 ' . $graph_type . ' ' . $graph_span . ' ' . $id . ' ' . $n);
+                                }
+                                echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?";
+                                echo "sensortype=co2";
+                                echo "&sensornumber=" . $n;
+                                echo "&graphspan=" . $graph_span;
+                                echo "&graphtype=" . $graph_type;
+                                echo "&id=" . $id . ">";
                                 echo "</div>";
                             }
                             if ($n != $sensor_co2_num) {
@@ -955,7 +1012,7 @@ if ($output_error) {
                         echo `echo "set terminal png size $graph_width,1600
                         set xdata time
                         set timefmt \"%Y %m %d %H %M %S\"
-                        set output \"$images/graph-cuscom-$id2.png\"
+                        set output \"$images/graph-custom-combined-$id2.png\"
                         set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]
                         set format x \"%H:%M\n%m/%d\"
                         set yrange [0:100]
@@ -1008,14 +1065,17 @@ if ($output_error) {
                         \"\" using 1:13 index 0 title \"$relay7name\" w impulses ls 11 axes x1y1, \\
                         \"\" using 1:14 index 0 title \"$relay8name\" w impulses ls 12 axes x1y1 \\
                         unset multiplot" | gnuplot`;
-                        echo "<div style=\"width: 100%; text-align: center; padding: 1em 0 3em 0;\"><img src=image.php?span=cuscom&mod=" . $id2 . "></div>";
+                        echo "<div style=\"width: 100%; text-align: center; padding: 1em 0 3em 0;\"><img src=image.php?";
+                        echo "graphtype=custom-combined";
+                        echo "&id=" . $id2 . ">";
+                        echo "</div>";
                     } else if ($_POST['MainType'] == 'Separate') {
                         for ($n = 1; $n <= $sensor_ht_num; $n++) {
                             if ($sensor_ht_graph[$n] == 1) {
                                 echo `echo "set terminal png size $graph_width,490
                                 set xdata time
                                 set timefmt \"%Y %m %d %H %M %S\"
-                                set output \"$images/graph-cussep-$id2-$n.png\"
+                                set output \"$images/graph-custom-separate-$id2-$n.png\"
                                 set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]
                                 set format x \"%H:%M\n%m/%d\"
                                 set yrange [0:100]
@@ -1054,7 +1114,11 @@ if ($output_error) {
                                 \"\" using 1:12 index 0 title \"$relay6name\" w impulses ls 9 axes x1y1, \\
                                 \"\" using 1:13 index 0 title \"$relay7name\" w impulses ls 10 axes x1y1, \\
                                 \"\" using 1:14 index 0 title \"$relay8name\" w impulses ls 11 axes x1y1" | gnuplot`;
-                                echo "<div style=\"width: 100%; text-align: center; padding: 1em 0 3em 0;\"><img src=image.php?span=cussep&mod=" . $id2 . "&sensor=" . $n . "></div>";
+                                echo "<div style=\"width: 100%; text-align: center; padding: 1em 0 3em 0;\"><img src=image.php?";
+                                echo "graphtype=custom-separate";
+                                echo "&id=" . $id2;
+                                echo "&sensornumber=" . $n . ">";
+                                echo "</div>";
                             }
                             if ($n != $numsensors) { echo "<hr class=\"fade\"/>"; }
                         }
