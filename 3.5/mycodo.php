@@ -51,40 +51,20 @@ $sql_reload = False;
 $gpio_initialize = False;
 $output_error = False;
 $generate_graph = False;
-
-// Set cookie of unique ID, for graph-generation
-if (isset($_GET['Refresh']) == 1 || !isset($_COOKIE['graph_id'])) {
-    setcookie('graph_id', uniqid(), time() + (86400 * 10), "/" );
-    global $id;
-    $id = $_COOKIE['graph_id'];
-} else {
-    global $id;
-    $id = $_COOKIE['graph_id'];
-}
-
-if(!isset($_COOKIE['graph_type']) || !isset($_COOKIE['graph_span'])) {
-    setcookie('graph_type', 'default', time() + (86400 * 10), "/" );
-    setcookie('graph_span', 'default', time() + (86400 * 10), "/" );
-    setcookie('graph_id', uniqid(), time() + (86400 * 10), "/" );
-    global $graph_type;
-    global $graph_span;
-    $graph_type = $_COOKIE['graph_type'];
-    $graph_span = $_COOKIE['graph_span'];
-} else {
-    global $graph_type;
-    global $graph_span;
-    $graph_type = $_COOKIE['graph_type'];
-    $graph_span = $_COOKIE['graph_span'];
-}
-
-// Initial SQL database load to variables
-require("functions/load_sql_database.php");
+$graph_type = NULL;
+$graph_span = NULL;
 
 // Delete graph image files if quantity exceeds 20 (delete oldest)
 delete_graphs();
 
 // Set GET defaults if not already set
 $tab = isset($_GET['tab']) ? $_GET['tab'] : 'Unset';
+
+// Set cookie of unique ID, for graph-generation
+if (isset($_GET['Refresh'])) set_new_graph_id();
+
+// Initial SQL database load to variables
+require("functions/load_sql_database.php");
 
 // Form submission detected.
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_name'] == 'guest' && !isset($_POST['Graph']) && !isset($_POST['login'])) {
@@ -111,13 +91,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_name'] == 'guest' &&
 if (isset($_POST['Graph'])) {
     setcookie('graph_type', $_POST['graph_type'], time() + (86400 * 10), "/" );
     setcookie('graph_span', $_POST['graph_span'], time() + (86400 * 10), "/" );
-    setcookie('graph_id', uniqid(), time() + (86400 * 10), "/" );
-    global $id;
-    global $graph_type;
-    global $graph_span;
-    $id = $_COOKIE['graph_id'];
-    $graph_type = $_POST['graph_type'];
-    $graph_span = $_POST['graph_span'];
+    $_POST['graph_type'] = $_POST['graph_type'];
+    $_POST['graph_span'] = $_POST['graph_span'];
+    set_new_graph_id();
 }
 
 // Concatenate Sensor log files (to TempFS) to ensure the latest data is being used
@@ -418,78 +394,81 @@ if ($output_error) {
                 <div style="clear: both;"></div>
                 <div>
                     <?php
-                    // If auto refresh is on, redraw graphs
-                    if (isset($_GET['Refresh']) == 1) {
-                        setcookie('graph_id', uniqid(), time() + (86400 * 10), "/" );
-                        global $id;
-                        $id = $_COOKIE['graph_id'];
-                    }
-
                     // Main preset: Display graphs of past day and week
+                    $graph_id = get_graph_id();
+                    $graph_type = get_graph_type();
+                    $graph_span = get_graph_span();
+                    
                     if ($graph_span == 'default') {
                         for ($n = 1; $n <= $sensor_ht_num; $n++ ) {
                             if ($sensor_ht_graph[$n] == 1) {
-                                if (!file_exists('/var/www/mycodo/images/graph-htdefaultdefault-' . $id . '-' . $n . '.png')) {
+                                global $id;
+                                if (!file_exists('/var/www/mycodo/images/graph-htdefaultdefault-' . $graph_id . '-' . $n . '.png')) {
+                                    echo '/var/www/mycodo/images/graph-htdefaultdefault-' . $graph_id . '-' . $n . '.png<br>';
+                                    global $generate_graph;
                                     $generate_graph = True;
                                 }
                                 if ($generate_graph) {
-                                    shell_exec($mycodo_client . ' --graph ht ' . $graph_span . ' default ' . $id . ' ' . $n);
+                                    shell_exec($mycodo_client . ' --graph ht ' . $graph_span . ' default ' . $graph_id . ' ' . $n);
                                 }
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?";
                                 echo "sensortype=ht";
                                 echo "&sensornumber=" . $n;
                                 echo "&graphspan=" . $graph_span;
                                 echo "&graphtype=default";
-                                echo "&id=" . $id . ">";
+                                echo "&id=" . $graph_id . ">";
                                 echo "</div>";
                             }
                         }
                         for ($n = 1; $n <= $sensor_co2_num; $n++ ) {
                             if ($sensor_co2_graph[$n] == 1) {
-                                if (!file_exists('/var/www/mycodo/images/graph-co2defaultdefault-' . $id . '-' . $n . '.png')) {
+                                if (!file_exists('/var/www/mycodo/images/graph-co2defaultdefault-' . $graph_id . '-' . $n . '.png')) {
+                                    global $generate_graph;
                                     $generate_graph = True;
                                 }
                                 if ($generate_graph) {
-                                    shell_exec($mycodo_client . ' --graph co2 ' . $graph_span . ' default ' . $id . ' ' . $n);
+                                    shell_exec($mycodo_client . ' --graph co2 ' . $graph_span . ' default ' . $graph_id . ' ' . $n);
                                 }
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?";
                                 echo "sensortype=co2";
                                 echo "&sensornumber=" . $n;
                                 echo "&graphspan=" . $graph_span;
                                 echo "&graphtype=default";
-                                echo "&id=" . $id . ">";
+                                echo "&id=" . $graph_id . ">";
                                 echo "</div>";
                             }
                         }
                     } else if ($graph_type == 'combined') { // Combined preset: Generate combined graphs
-                        if (!file_exists('/var/www/mycodo/images/graph-xcombined' . $graph_span . '-' . $id . '-0.png')) {
+                        if (!file_exists('/var/www/mycodo/images/graph-xcombined' . $graph_span . '-' . $graph_id . '-0.png')) {
+                            global $generate_graph;
                             $generate_graph = True;
                         }
                         if ($generate_graph) {
-                            shell_exec($mycodo_client . ' --graph x ' . $graph_type . ' ' . $graph_span . ' ' . $id . ' 0');
+                            shell_exec($mycodo_client . ' --graph x ' . $graph_type . ' ' . $graph_span . ' ' . $graph_id . ' 0');
                         }
                         echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?";
                                 echo "sensortype=x";
                                 echo "&sensornumber=0";
                                 echo "&graphspan=" . $graph_span;
                                 echo "&graphtype=" . $graph_type;
-                                echo "&id=" . $id . ">";
+                                echo "&id=" . $graph_id . ">";
                                 echo "</div>";
                     } else if ($graph_type == 'separate') { // Combined preset: Generate separate graphs
                         for ($n = 1; $n <= $sensor_ht_num; $n++ ) {
                             if ($sensor_ht_graph[$n] == 1) {
-                                if (!file_exists('/var/www/mycodo/images/graph-htseparate' . $graph_span . '-' .  $id . '-' . $n . '.png')) {
+                                if (!file_exists('/var/www/mycodo/images/graph-htseparate' . $graph_span . '-' .  $graph_id . '-' . $n . '.png')) {
+                                    global $generate_graph;
                                     $generate_graph = True;
                                 }
                                 if ($generate_graph) {
-                                    shell_exec($mycodo_client . ' --graph ht ' . $graph_type . ' ' . $graph_span . ' ' . $id . ' ' . $n);
+                                    shell_exec($mycodo_client . ' --graph ht ' . $graph_type . ' ' . $graph_span . ' ' . $graph_id . ' ' . $n);
                                 }
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?";
                                 echo "sensortype=ht";
                                 echo "&sensornumber=" . $n;
                                 echo "&graphspan=" . $graph_span;
                                 echo "&graphtype=" . $graph_type;
-                                echo "&id=" . $id . ">";
+                                echo "&id=" . $graph_id . ">";
                                 echo "</div>";
                             }
                             if ($n != $sensor_ht_num || $sensor_co2_graph[1] == 1 || $sensor_co2_graph[2] == 1 || $sensor_co2_graph[3] == 1 || $sensor_co2_graph[4] == 1) {
@@ -499,18 +478,19 @@ if ($output_error) {
 
                         for ($n = 1; $n <= $sensor_co2_num; $n++ ) {
                             if ($sensor_co2_graph[$n] == 1) {
-                                if (!file_exists('/var/www/mycodo/images/graph-co2separate' . $graph_span . '-' .  $id . '-' . $n . '.png')) {
+                                if (!file_exists('/var/www/mycodo/images/graph-co2separate' . $graph_span . '-' .  $graph_id . '-' . $n . '.png')) {
+                                    global $generate_graph;
                                     $generate_graph = True;
                                 }
                                 if ($generate_graph) {
-                                    shell_exec($mycodo_client . ' --graph co2 ' . $graph_type . ' ' . $graph_span . ' ' . $id . ' ' . $n);
+                                    shell_exec($mycodo_client . ' --graph co2 ' . $graph_type . ' ' . $graph_span . ' ' . $graph_id . ' ' . $n);
                                 }
                                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?";
                                 echo "sensortype=co2";
                                 echo "&sensornumber=" . $n;
                                 echo "&graphspan=" . $graph_span;
                                 echo "&graphtype=" . $graph_type;
-                                echo "&id=" . $id . ">";
+                                echo "&id=" . $graph_id . ">";
                                 echo "</div>";
                             }
                             if ($n != $sensor_co2_num) {

@@ -1,4 +1,39 @@
 <?php
+/**
+  * Cookie handling
+  *
+ */
+
+function set_new_graph_id() {
+    $unique_id = uniqid();
+    setcookie('graph_id', $unique_id, time() + (86400 * 10), "/" );
+    $_COOKIE['graph_id'] = $unique_id;
+    return $id;
+}
+
+function get_graph_id() {
+    if (isset($_COOKIE['graph_id'])) return $_COOKIE['graph_id'];
+    else set_new_graph_id();
+}
+
+function get_graph_type() {
+    if (isset($_COOKIE['graph_type'])) return $_COOKIE['graph_type'];
+    else {
+        setcookie('graph_type', 'default', time() + (86400 * 10), "/" );
+        $_COOKIE['graph_type'] = 'default';
+        return $_COOKIE['graph_type'];
+    }
+}
+
+function get_graph_span() {
+    if (isset($_COOKIE['graph_span'])) return $_COOKIE['graph_span'];
+    else {
+        setcookie('graph_span', 'default', time() + (86400 * 10), "/" );
+        $_COOKIE['graph_span'] = 'default';
+        return $_COOKIE['graph_span'];
+    }
+}
+
 //
 // Main
 //

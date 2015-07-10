@@ -460,3 +460,4 @@ class OneFileLoginApplication {
 
 // Run the application
 $application = new OneFileLoginApplication();
+?>
