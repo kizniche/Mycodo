@@ -50,9 +50,6 @@ require_once("functions/functions.php");
 $sql_reload = False;
 $gpio_initialize = False;
 $output_error = False;
-$generate_graph = False;
-$graph_type = NULL;
-$graph_span = NULL;
 
 // Delete graph image files if quantity exceeds 20 (delete oldest)
 delete_graphs();
@@ -66,15 +63,22 @@ if (isset($_GET['Refresh'])) set_new_graph_id();
 // Initial SQL database load to variables
 require("functions/load_sql_database.php");
 
-// Form submission detected.
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_name'] == 'guest' && !isset($_POST['Graph']) && !isset($_POST['login'])) {
-    // If a guest user is attempting to modify the configuration, output an error
+// Handle form submissions when they come from a guest user
+if ($_SERVER['REQUEST_METHOD'] == 'POST' &&
+    $_SESSION['user_name'] == 'guest' &&
+    !isset($_POST['Graph']) &&
+    !isset($_POST['login'])) {
+        
+    // Output an error if the user guest attempts to submit certain forms
     $output_error = 'guest';
+    
 } else if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_name'] != 'guest') {
-    // Elevated (!= guest) privileges required to check form data and modify SQLite database
-    require("functions/check_form_submission.php");
+    // Only non-guest users may perform these actions
+    
+    // Handle form submissions that modify the configuration
+    require("functions/check_forms_restricted.php");
 
-    // Reload SQLite database if changed by check_form_submission.php
+    // Reload SQLite database if changed by check_forms_restricted.php
     require("functions/load_sql_database.php");
 
     // Request mycodo.py to reload the SQLite database
@@ -87,14 +91,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_name'] == 'guest' &&
     }
 }
 
-// Save graph preset preference
-if (isset($_POST['Graph'])) {
-    setcookie('graph_type', $_POST['graph_type'], time() + (86400 * 10), "/" );
-    setcookie('graph_span', $_POST['graph_span'], time() + (86400 * 10), "/" );
-    $_POST['graph_type'] = $_POST['graph_type'];
-    $_POST['graph_span'] = $_POST['graph_span'];
-    set_new_graph_id();
-}
+// Handle form submissions that any user may perform
+require("functions/check_forms_public.php");
 
 // Concatenate Sensor log files (to TempFS) to ensure the latest data is being used
 `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
