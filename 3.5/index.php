@@ -10,6 +10,7 @@
  * @link https://github.com/panique/php-login-one-file/
  * @license http://opensource.org/licenses/MIT MIT License
  */
+
 class OneFileLoginApplication {
     // @var string Type of database used
     private $db_type = "sqlite"; //
@@ -460,4 +461,3 @@ class OneFileLoginApplication {
 
 // Run the application
 $application = new OneFileLoginApplication();
-?>

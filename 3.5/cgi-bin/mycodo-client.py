@@ -63,8 +63,10 @@ def usage():
     print '           Modify custom timers, State can be 0=off 1=on, on/off durations in seconds'
     print '    -m, --modvar name1 value1 [name2] [value2]...'
     print '           Modify any configuration variable or variables (multiple allowed, must be paired input)'
-    print '        --pidreload Coctroller'
-    print '           Restart PID Controller, Options=Temp, Hum, CO2'
+    print '        --pidstart Coctroller Number'
+    print '           Start PID Controller, Controller=Temp, Hum, CO2 and Number=1-4'
+    print '        --pidstop Coctroller Number'
+    print '           Stop PID Controller, Controller=Temp, Hum, CO2 and Number=1-4'
     print '    -r, --relay relay state'
     print '           Turn a relay on or off. state can be 0, 1, or X.'
     print '           0=OFF, 1=ON, or X number of seconds On'
@@ -87,7 +89,7 @@ def menu():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:], 'hm:r:t',
-            ["help", "graph", "modtempOR", "modtempPID", "modhumOR", "modhumPID", "modco2OR", "modco2PID", "modrelaynames=", "modrelaypins=", "modrelaytrigger=", "modhtsensor", "modco2sensor", "modtimer=", "modvar=", "pidreload=", "relay=", "sensorht", "sensorco2", "sqlreload", "terminate", "writehtlog", "writeco2log"])
+            ["help", "graph", "modtempOR", "modtempPID", "modhumOR", "modhumPID", "modco2OR", "modco2PID", "modrelaynames=", "modrelaypins=", "modrelaytrigger=", "modhtsensor", "modco2sensor", "modtimer=", "modvar=", "pidstart=", "pidstop=", "relay=", "sensorht", "sensorco2", "sqlreload", "terminate", "writehtlog", "writeco2log"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -255,16 +257,31 @@ def menu():
             else:
                 print "Fail"
             sys.exit(0)
-        elif opt == "--pidreload":
+        elif opt == "--pidstart":
             if (sys.argv[2] != 'Temp' and sys.argv[2] != 'Hum' and sys.argv[2] != 'CO2'):
                 print "'%s' is not a valid option. Use 'Temp', 'Hum', or 'CO2'" % sys.argv[2]
                 sys.exit(0)
             if (int(float(sys.argv[3])) > 4 or int(float(sys.argv[3])) < 1):
-                print "'%s' is not a valid option. Use 'Temp', 'Hum', or 'CO2'" % sys.argv[3]
+                print "'%s' is not a valid option. Options are 1-4." % sys.argv[3]
                 sys.exit(0)
-            print "%s [Remote command] Reload %s PID controller %s: Server returned:" % (
+            print "%s [Remote command] Start %s PID controller number %s: Server returned:" % (
                 Timestamp(), sys.argv[2], sys.argv[3]),
-            reload_status = c.root.PIDReload(sys.argv[2], int(float(sys.argv[3])))
+            reload_status = c.root.PID_start(sys.argv[2], int(float(sys.argv[3])))
+            if reload_status == 1:
+                print "Success"
+            else:
+                print "Fail, %s" % reload_status
+            sys.exit(1)
+        elif opt == "--pidstop":
+            if (sys.argv[2] != 'Temp' and sys.argv[2] != 'Hum' and sys.argv[2] != 'CO2'):
+                print "'%s' is not a valid option. Use 'Temp', 'Hum', or 'CO2'" % sys.argv[2]
+                sys.exit(0)
+            if (int(float(sys.argv[3])) > 4 or int(float(sys.argv[3])) < 1):
+                print "'%s' is not a valid option. Options are 1-4." % sys.argv[3]
+                sys.exit(0)
+            print "%s [Remote command] Stop %s PID controller number %s: Server returned:" % (
+                Timestamp(), sys.argv[2], sys.argv[3]),
+            reload_status = c.root.PID_stop(sys.argv[2], int(float(sys.argv[3])))
             if reload_status == 1:
                 print "Success"
             else:

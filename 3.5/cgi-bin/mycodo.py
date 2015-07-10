@@ -173,10 +173,10 @@ class ComServer(rpyc.Service):
     def exposed_ChangeRelay(self, relay, state):
         if (state == 1):
             logging.info("[Client command] Changing Relay %s to HIGH", relay)
-            relay_onoff(int(relay), 1)
+            relay_onoff(int(relay), 'on')
         elif (state == 0):
             logging.info("[Client command] Changing Relay %s to LOW", relay)
-            relay_onoff(int(relay), 0)
+            relay_onoff(int(relay), 'off')
         else:
             logging.info("[Client command] Turning Relay %s On for %s seconds", relay, state)
             rod = threading.Thread(target = relay_on_duration,
@@ -434,48 +434,11 @@ class ComServer(rpyc.Service):
         logging.info("[Client command] Request to change variables")
         modify_var(*variable_list)
         return 1
-    def exposed_PIDReload(self, PIDController, PIDNumber):
-        global pid_number
-        pid_number = PIDNumber
-
-        if (PIDController == 'Temp' and pid_temp_or[PIDNumber] == 0) or \
-            (PIDController == 'Hum' and pid_hum_or[PIDNumber] == 0) or \
-            (PIDController == 'CO2' and pid_co2_or[PIDNumber] == 0):
-            logging.info("[Client command] Reload %s PID %s", PIDController, PIDNumber)
-        else:
-            logging.info("[Client command] PID reload request denied: Cannot restart non-active PID.")
-            return 'Cannot restart non-active PID.'
-
-        if PIDController == 'Temp':
-            global pid_temp_down
-            global pid_temp_up
-            pid_temp_down = 1
-            while pid_temp_down == 1:
-                time.sleep(0.1)
-            pid_temp_up = 1
-            while pid_temp_up:
-                time.sleep(0.1)
-            return 1
-        elif PIDController == 'Hum':
-            global pid_hum_down
-            global pid_hum_up
-            pid_hum_down = 1
-            while pid_hum_down == 1:
-                time.sleep(0.1)
-            pid_hum_up = 1
-            while pid_hum_up:
-                time.sleep(0.1)
-            return 1
-        elif PIDController == 'CO2':
-            global pid_co2_down
-            global pid_co2_up
-            pid_co2_down = 1
-            while pid_co2_down == 1:
-                time.sleep(0.1)
-            pid_co2_up = 1
-            while pid_co2_up:
-                time.sleep(0.1)
-            return 1
+    def exposed_PID_start(self, pidtype, number):
+        PID_start(pidtype, number)
+    def exposed_PID_stop(self, pidtype, number):
+        PID_stop(pidtype, number)
+        return 1
     def exposed_ReadCO2Sensor(self, pin, sensor):
         logging.info("[Client command] Read CO2 Sensor %s from GPIO pin %s", sensor, pin)
         if (sensor == 'K30'):
@@ -818,22 +781,25 @@ def daemon(output, log):
     threadsc = []
 
     for i in range(1, 5):
-        rod = threading.Thread(target = temperature_monitor,
-            args = ('Thread-%d' % i, i,))
-        rod.start()
-        threadst.append(rod)
+        if (pid_temp_or[i] == 0):
+            rod = threading.Thread(target = temperature_monitor,
+                args = ('Thread-%d' % i, i,))
+            rod.start()
+            threadst.append(rod)
 
     for i in range(1, 5):
-        rod = threading.Thread(target = humidity_monitor,
-            args = ('Thread-%d' % i, i,))
-        rod.start()
-        threadsh.append(rod)
+        if (pid_hum_or[i] == 0):
+            rod = threading.Thread(target = humidity_monitor,
+                args = ('Thread-%d' % i, i,))
+            rod.start()
+            threadsh.append(rod)
 
     for i in range(1, 5):
-        rod = threading.Thread(target = co2_monitor,
-            args = ('Thread-%d' % i, i,))
-        rod.start()
-        threadsc.append(rod)
+        if (pid_co2_or[i] == 0):
+            rod = threading.Thread(target = co2_monitor,
+                args = ('Thread-%d' % i, i,))
+            rod.start()
+            threadsc.append(rod)
 
     while True: # Main loop of the daemon
         if client_que != '0': # Run remote commands issued by mycodo-client.py
@@ -881,7 +847,7 @@ def daemon(output, log):
             elif client_que == 'TimerChange':
                 timer_time[timer_change] = 0
                 if (timer_state[timer_change] == 0 and timer_relay[timer_change] != 0):
-                    relay_onoff(timer_relay[timer_change], 0)
+                    relay_onoff(timer_relay[timer_change], 'off')
 
             client_que = '0'
 
@@ -890,11 +856,11 @@ def daemon(output, log):
             pid_temp_alive[pid_number] = 0
             while pid_temp_alive[pid_number] != 2:
                 time.sleep(0.1)
-            if (relay_trigger[int(pid_temp_relay[pid_number])] == 0): gpio_change(int(pid_temp_relay[pid_number]), 1)
-            else: gpio_change(int(pid_temp_relay[pid_number]), 0)
+            relay_onoff(int(pid_temp_relay[pid_number]), 'off')
             pid_temp_alive[pid_number] = 1
             pid_temp_down = 0
-        if pid_temp_up == 1:
+
+        if pid_temp_up:
             logging.info("[Daemon] Starting Temperature PID Thread-%s", pid_number)
             rod = threading.Thread(target = temperature_monitor,
                 args = ('Thread-%d' % pid_number, pid_number,))
@@ -906,11 +872,11 @@ def daemon(output, log):
             pid_hum_alive[pid_number] = 0
             while pid_hum_alive[pid_number] != 2:
                 time.sleep(0.1)
-            if (relay_trigger[int(pid_hum_relay[1])] == 0): gpio_change(int(pid_hum_relay[1]), 1)
-            else: gpio_change(int(pid_hum_relay[1]), 1)
+            relay_onoff(int(pid_hum_relay[1]), 'off')
             pid_hum_alive[pid_number] = 1
             pid_hum_down = 0
-        if pid_hum_up == 1:
+
+        if pid_hum_up:
             logging.info("[Daemon] Starting Temperature PID Thread-%s", pid_number)
             rod = threading.Thread(target = humidity_monitor,
                 args = ('Thread-%d' % pid_number, pid_number,))
@@ -922,11 +888,11 @@ def daemon(output, log):
             pid_co2_alive[pid_number] = 0
             while pid_co2_alive[pid_number] != 2:
                 time.sleep(0.1)
-            if (relay_trigger[int(pid_co2_relay[1])] == 0): gpio_change(int(pid_co2_relay[1]), 1)
-            else: gpio_change(int(pid_co2_relay[1]), 0)
+            relay_onoff(int(pid_co2_relay[1]), 'off')
             pid_co2_alive[pid_number] = 1
             pid_co2_down = 0
-        if pid_co2_up == 1:
+
+        if pid_co2_up:
             logging.info("[Daemon] Starting CO2 PID Thread-%s", pid_number)
             rod = threading.Thread(target = co2_monitor,
                 args = ('Thread-%d' % pid_number, pid_number,))
@@ -978,14 +944,13 @@ def temperature_monitor(ThreadName, sensor):
     logging.info("[PID Temperature-%s] Starting %s", sensor, ThreadName)
 
     if pid_temp_relay[sensor] != 0:
-        if relay_trigger[int(pid_temp_relay[sensor])] == 0: gpio_change(int(pid_temp_relay[sensor]), 1)
-        else: gpio_change(int(pid_temp_relay[sensor]), 0)
+        relay_onoff(int(pid_temp_relay[sensor]), 'off')
 
     p_temp = Temperature_PID(pid_temp_p[sensor], pid_temp_i[sensor], pid_temp_d[sensor])
     p_temp.setPoint(pid_temp_set[sensor])
 
     while (pid_temp_alive[sensor]):
-        if pid_temp_or[sensor] == 0 and pid_temp_down == 0 and pid_temp_relay[sensor] != 0 and sensor_ht_activated[sensor] == 1:
+        if pid_temp_relay[sensor] != 0 and pid_temp_or[sensor] == 0 and pid_temp_down == 0 and pid_temp_relay[sensor] != 0 and sensor_ht_activated[sensor] == 1:
             if int(time.time()) > timerTemp:
                 logging.debug("[PID Temperature-%s] Reading temperature...", sensor)
                 read_dht_sensor(sensor)
@@ -1015,14 +980,13 @@ def humidity_monitor(ThreadName, sensor):
     logging.info("[PID Humidity-%s] Starting %s", sensor, ThreadName)
 
     if pid_hum_relay[sensor] != 0:
-        if relay_trigger[int(pid_hum_relay[sensor])] == 0: gpio_change(int(pid_hum_relay[sensor]), 1)
-        else: gpio_change(int(pid_hum_relay[sensor]), 1)
+        relay_onoff(int(pid_hum_relay[sensor]), 'off')
 
     p_hum = Humidity_PID(pid_hum_p[sensor], pid_hum_i[sensor], pid_hum_d[sensor])
     p_hum.setPoint(pid_hum_set[sensor])
 
     while (pid_hum_alive[sensor]):
-        if pid_hum_or[sensor] == 0 and pid_hum_down == 0 and pid_hum_relay[sensor] != 0 and sensor_ht_activated[sensor] == 1:
+        if pid_hum_relay[sensor] != 0 and pid_hum_or[sensor] == 0 and pid_hum_down == 0 and pid_hum_relay[sensor] != 0 and sensor_ht_activated[sensor] == 1:
             if int(time.time()) > timerHum:
                 logging.debug("[PID Humidity-%s] Reading Humidity...", sensor)
                 read_dht_sensor(sensor)
@@ -1052,14 +1016,13 @@ def co2_monitor(ThreadName, sensor):
     logging.info("[PID CO2-%s] Starting %s", sensor, ThreadName)
 
     if pid_co2_relay[sensor] != 0:
-        if relay_trigger[int(pid_co2_relay[sensor])] == 0: gpio_change(int(pid_co2_relay[sensor]), 1)
-        else: gpio_change(int(pid_co2_relay[sensor]), 1)
+        relay_onoff(int(pid_co2_relay[sensor]), 'off')
 
     p_co2 = CO2_PID(pid_co2_p[sensor], pid_co2_i[sensor], pid_co2_d[sensor])
     p_co2.setPoint(pid_co2_set[sensor])
 
     while (pid_co2_alive[sensor]):
-        if pid_co2_or[sensor] == 0 and pid_co2_down == 0 and pid_co2_relay[sensor] != 0 and sensor_co2_activated[sensor] == 1:
+        if pid_co2_relay[sensor] != 0 and pid_co2_or[sensor] == 0 and pid_co2_down == 0 and pid_co2_relay[sensor] != 0 and sensor_co2_activated[sensor] == 1:
             if int(time.time()) > timerCo2:
                 logging.debug("[PID CO2-%s] Reading CO2...", sensor)
                 read_co2_sensor(sensor)
@@ -1079,6 +1042,47 @@ def co2_monitor(ThreadName, sensor):
         time.sleep(0.1)
     logging.info("[PID CO2-%s] Shutting Down %s", sensor,  ThreadName)
     pid_co2_alive[sensor] = 2
+
+
+def PID_start(type, number):
+    global pid_number
+    pid_number = number
+    if type == 'Temp':
+        global pid_temp_up
+        pid_temp_up = 1
+        while pid_temp_up:
+            time.sleep(0.1)
+    elif type == 'Hum':
+        global pid_hum_up
+        pid_hum_up = 1
+        while pid_hum_up:
+            time.sleep(0.1)
+    elif type == 'CO2':
+        global pid_co2_up
+        pid_co2_up = 1
+        while pid_co2_up:
+            time.sleep(0.1)
+    return 1
+
+def PID_stop(type, number):
+    global pid_number
+    pid_number = number
+    if type == 'Temp':
+        global pid_temp_down
+        pid_temp_down = 1
+        while pid_temp_down == 1:
+            time.sleep(0.1)
+    if type == 'Hum':
+        global pid_hum_down
+        pid_hum_down = 1
+        while pid_hum_down == 1:
+            time.sleep(0.1)
+    if type == 'CO2':
+        global pid_co2_down
+        pid_co2_down = 1
+        while pid_co2_down == 1:
+            time.sleep(0.1)
+    return 1
 
 
 #################################################
@@ -2090,14 +2094,7 @@ def initialize_gpio(relay):
     #initialize one GPIO
     if relay_pin[relay] > 0:
         GPIO.setup(relay_pin[relay], GPIO.OUT)
-        relay_onoff(relay, 0)
-
-# Change GPIO (Select) to a specific state (State)
-def gpio_change(relay, State):
-    logging.debug("[GPIO Write] Setting relay %s (%s) to %s (was %s)",
-        relay, relay_name[relay],
-        State, GPIO.input(relay_pin[relay]))
-    GPIO.output(relay_pin[relay], State)
+        relay_onoff(relay, 'off')
 
 # Turn Relays Off
 def Relays_Off():
@@ -2111,15 +2108,25 @@ def gpio_read():
         if GPIO.input(relay_pin[x]): logging.info("[GPIO Read] Relay %s: OFF", x)
         else: logging.info("[GPIO Read] Relay %s: ON", x)
 
+# Change GPIO (Select) to a specific state (State)
+def gpio_change(relay, State):
+    if relay == 0:
+        logging.warning("[GPIO Write] 0 is an invalid relay number. Check your configuration.")
+    else:
+        logging.debug("[GPIO Write] Setting relay %s (%s) to %s (was %s)",
+            relay, relay_name[relay],
+            State, GPIO.input(relay_pin[relay]))
+        GPIO.output(relay_pin[relay], State)
+
 # Turn relay on or off (accounts for trigger)
 def relay_onoff(relay, state):
-    if (relay_trigger[relay] == 1 and state == 1):
+    if (relay_trigger[relay] == 1 and state == 'on'):
         gpio_change(relay, 1)
-    elif (relay_trigger[relay] == 1 and state == 0):
+    elif (relay_trigger[relay] == 1 and state == 'off'):
         gpio_change(relay, 0)
-    elif (relay_trigger[relay] == 0 and state == 1):
+    elif (relay_trigger[relay] == 0 and state == 'on'):
         gpio_change(relay, 0)
-    elif (relay_trigger[relay] == 0 and state == 0):
+    elif (relay_trigger[relay] == 0 and state == 'off'):
         gpio_change(relay, 1)
 
 # Set relay on for a specific duration

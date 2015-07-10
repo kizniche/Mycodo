@@ -44,6 +44,8 @@ $stream_exec = $install_path . "/cgi-bin/camera-stream.sh";
 $lock_raspistill = $lock_path . "/mycodo_raspistill";
 $lock_mjpg_streamer = $lock_path . "/mycodo_mjpg_streamer";
 
+session_start();
+
 require_once("functions/functions.php");
 
 // Reset variables
@@ -83,16 +85,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' &&
 
     // Request mycodo.py to reload the SQLite database
     if ($sql_reload) {
-        if ($gpio_initialize) { // Initialize GPIO also
-            shell_exec($mycodo_client . ' --sqlreload ' . $gpio_initialize);
-        } else {
-            shell_exec($mycodo_client . ' --sqlreload 0');
-        }
+        shell_exec($mycodo_client . ' --sqlreload 0');
     }
 }
 
 // Handle form submissions that any user may perform
 require("functions/check_forms_public.php");
+
+$graph_id = get_graph_id();
+$graph_type = get_graph_type();
+$graph_span = get_graph_span();
 
 // Concatenate Sensor log files (to TempFS) to ensure the latest data is being used
 `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
@@ -393,10 +395,6 @@ if ($output_error) {
                 <div>
                     <?php
                     // Main preset: Display graphs of past day and week
-                    $graph_id = get_graph_id();
-                    $graph_type = get_graph_type();
-                    $graph_span = get_graph_span();
-                    
                     if ($graph_span == 'default') {
                         for ($n = 1; $n <= $sensor_ht_num; $n++) {
                             if ($sensor_ht_graph[$n] == 1) {

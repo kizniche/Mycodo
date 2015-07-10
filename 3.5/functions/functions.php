@@ -55,8 +55,9 @@ function menu_item($id, $title, $current) {
 
 // Instruct mycodo.py daemon to reload a specific PID controller
 function pid_reload($mycodo_client, $controller, $pid) {
-    $editconfig = "$mycodo_client --pidreload $controller $pid";
-    shell_exec($editconfig);
+    shell_exec($mycodo_client . ' --pidstop ' . $controller . ' ' . $p);
+    shell_exec($mycodo_client . ' --sqlreload 0');
+    shell_exec($mycodo_client . ' --pidstart ' . $controller . ' ' . $p);
 }
 
 

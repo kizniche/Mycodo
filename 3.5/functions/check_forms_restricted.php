@@ -14,9 +14,8 @@ for ($p = 1; $p <= 8; $p++) {
         $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
         $stmt->execute();
         if ($_POST['relay' . $p . 'pin'] != $relay_pin[$p]) {
-            $gpio_initialize = $p;
+            shell_exec($mycodo_client . ' --sqlreload ' . $p);
         }
-        $sql_reload = True;
     }
 
     // Set timer variables
@@ -80,7 +79,6 @@ for ($p = 1; $p <= 4; $p++) {
         if ($pid_temp_or[$p] == 0) {
             pid_reload($mycodo_client, 'Temp', $p);
         }
-        $sql_reload = True;
     }
 
     // Set Temperature PID override on or off
@@ -89,7 +87,13 @@ for ($p = 1; $p <= 4; $p++) {
         $stmt->bindValue(':humor', (int)$_POST['Change' . $p . 'TempOR'], SQLITE3_INTEGER);
         $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
         $stmt->execute();
-        $sql_reload = True;
+        if ((int)$_POST['Change' . $p . 'TempOR']) {
+            shell_exec($mycodo_client . ' --pidstop Temp ' . $p);
+            shell_exec($mycodo_client . ' --sqlreload 0');
+        } else {
+            shell_exec($mycodo_client . ' --sqlreload 0');
+            shell_exec($mycodo_client . ' --pidstart Temp ' . $p);
+        }
     }
 
     // Set Humidity PID variables
@@ -106,7 +110,6 @@ for ($p = 1; $p <= 4; $p++) {
         if ($pid_hum_or[$p] == 0) {
             pid_reload($mycodo_client, 'Hum', $p);
         }
-        $sql_reload = True;
     }
 
     // Set Humidity PID override on or off
@@ -115,7 +118,13 @@ for ($p = 1; $p <= 4; $p++) {
         $stmt->bindValue(':humor', (int)$_POST['Change' . $p . 'HumOR'], SQLITE3_INTEGER);
         $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
         $stmt->execute();
-        $sql_reload = True;
+        if ((int)$_POST['Change' . $p . 'HumOR']) {
+            shell_exec($mycodo_client . ' --pidstop Hum ' . $p);
+            shell_exec($mycodo_client . ' --sqlreload 0');
+        } else {
+            shell_exec($mycodo_client . ' --sqlreload 0');
+            shell_exec($mycodo_client . ' --pidstart Hum ' . $p);
+        }
     }
 
     // Set CO2 sensor variables
@@ -154,7 +163,6 @@ for ($p = 1; $p <= 4; $p++) {
         if ($pid_co2_or[$p] == 0) {
             pid_reload($mycodo_client, 'CO2', $p);
         }
-        $sql_reload = True;
     }
 
     // Set CO2 PID override on or off
@@ -163,7 +171,13 @@ for ($p = 1; $p <= 4; $p++) {
         $stmt->bindValue(':co2or', (int)$_POST['Change' . $p . 'Co2OR'], SQLITE3_INTEGER);
         $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
         $stmt->execute();
-        $sql_reload = True;
+        if ((int)$_POST['Change' . $p . 'Co2OR']) {
+            shell_exec($mycodo_client . ' --pidstop CO2 ' . $p);
+            shell_exec($mycodo_client . ' --sqlreload 0');
+        } else {
+            shell_exec($mycodo_client . ' --sqlreload 0');
+            shell_exec($mycodo_client . ' --pidstart CO2 ' . $p);
+        }
     }
 }
 
