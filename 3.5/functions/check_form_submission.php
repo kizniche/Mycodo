@@ -328,9 +328,9 @@ if (isset($_POST['Graph'])) {
     setcookie('graph_span', $_POST['graph_span'], time() + (86400 * 10), "/" );
     global $graph_type;
     global $graph_span;
-    global $generate_graph;
+    global $id;
     $graph_type = $_POST['graph_type'];
     $graph_span = $_POST['graph_span'];
-    $generate_graph = True;
+    $id = uniqid();
 }
 ?>

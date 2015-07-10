@@ -56,9 +56,10 @@ $generate_graph = False;
 if (isset($_GET['Refresh']) == 1 || !isset($_COOKIE['graph_id'])) {
     $uniqueid = uniqid();
     setcookie('graph_id', $uniqueid, time() + (86400 * 10), "/" );
+    global $id;
     $id = $uniqueid;
-    $generate_graph = True;
 } else {
+    global $id;
     $id = $_COOKIE['graph_id'];
 }
 
@@ -67,8 +68,8 @@ if(!isset($_COOKIE['graph_type']) || !isset($_COOKIE['graph_span'])) {
     setcookie('graph_span', 'default', time() + (86400 * 10), "/" );
     global $graph_type;
     global $graph_span;
-    global $generate_graph;
-    $generate_graph = True;
+    global $id;
+    $id = uniqid();
     $graph_type = $_COOKIE['graph_type'];
     $graph_span = $_COOKIE['graph_span'];
 } else {
@@ -407,14 +408,16 @@ if ($output_error) {
                 <div>
                     <?php
                     // If auto refresh is on, redraw graphs
-                    if (isset($_GET['Refresh']) == 1) $generate_graph = True;
+                    if (isset($_GET['Refresh']) == 1) {
+                        global $id;
+                        $id = uniqid();
+                    }
 
                     // Main preset: Display graphs of past day and week
                     if ($graph_span == 'default') {
                         for ($n = 1; $n <= $sensor_ht_num; $n++ ) {
                             if ($sensor_ht_graph[$n] == 1) {
                                 if (!file_exists('/var/www/mycodo/images/graph-htdefaultdefault-' . $id . '-' . $n . '.png')) {
-                                    echo '/var/www/mycodo/images/graph-htdefaultdefault-' . $id . '-' . $n;
                                     $generate_graph = True;
                                 }
                                 if ($generate_graph) {
