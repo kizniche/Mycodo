@@ -167,6 +167,9 @@ server = None
 client_que = '0'
 client_var = None
 terminate = False
+pid_temp_active = [0] * 5
+pid_hum_active = [0] * 5
+pid_c02_active = [0] * 2
 
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
@@ -475,6 +478,9 @@ def daemon(output, log):
     global pid_co2_alive
     global pid_co2_down
     global pid_co2_up
+    global pid_temp_active
+    global pid_hum_active
+    global pid_c02_active
     global change_sensor_log
     global server
     global client_que
@@ -518,6 +524,8 @@ def daemon(output, log):
             read_co2_sensor(i)
             time.sleep(2) # Ensure a minimum of 2 seconds between sensor reads
 
+    logging.info("[Daemon] Initial sensor readings complete")
+
     timerLogBackup = int(time.time()) + 21600 # 21600 seconds = 6 hours
 
     for i in range(1, 5):
@@ -535,6 +543,7 @@ def daemon(output, log):
 
     for i in range(1, 5):
         if (pid_temp_or[i] == 0):
+            pid_temp_active[i] = 1
             rod = threading.Thread(target = temperature_monitor,
                 args = ('Thread-%d' % i, i,))
             rod.start()
@@ -542,6 +551,7 @@ def daemon(output, log):
 
     for i in range(1, 5):
         if (pid_hum_or[i] == 0):
+            pid_hum_active[i] = 1
             rod = threading.Thread(target = humidity_monitor,
                 args = ('Thread-%d' % i, i,))
             rod.start()
@@ -549,6 +559,7 @@ def daemon(output, log):
 
     for i in range(1, 5):
         if (pid_co2_or[i] == 0):
+            pid_co2_active[i] = 1
             rod = threading.Thread(target = co2_monitor,
                 args = ('Thread-%d' % i, i,))
             rod.start()
@@ -605,51 +616,75 @@ def daemon(output, log):
             client_que = '0'
 
         if pid_temp_down:
-            logging.info("[Daemon] Shutting Down Temperature PID Thread-%s", pid_number)
-            pid_temp_alive[pid_number] = 0
-            while pid_temp_alive[pid_number] != 2:
-                time.sleep(0.1)
-            relay_onoff(int(pid_temp_relay[pid_number]), 'off')
-            pid_temp_alive[pid_number] = 1
+            if pid_temp_active[pid_number] == 1:
+                logging.info("[Daemon] Shutting Down Temperature PID Thread-%s", pid_number)
+                pid_temp_alive[pid_number] = 0
+                while pid_temp_alive[pid_number] != 2:
+                    time.sleep(0.1)
+                relay_onoff(int(pid_temp_relay[pid_number]), 'off')
+                pid_temp_alive[pid_number] = 1
+                pid_temp_active[pid_number] = 0
+            else:
+                logging.warning("[Daemon] Cannot Shut Down Temperature PID Thread-%s: It isn't running.", pid_number)
             pid_temp_down = 0
 
         if pid_temp_up:
-            logging.info("[Daemon] Starting Temperature PID Thread-%s", pid_number)
-            rod = threading.Thread(target = temperature_monitor,
-                args = ('Thread-%d' % pid_number, pid_number,))
-            rod.start()
+            if pid_temp_active[pid_number] == 0:
+                logging.info("[Daemon] Starting Temperature PID Thread-%s", pid_number)
+                rod = threading.Thread(target = temperature_monitor,
+                    args = ('Thread-%d' % pid_number, pid_number,))
+                rod.start()
+                pid_temp_active[pid_number] = 1
+            else:
+                logging.warning("[Daemon] Cannot Start Temperature PID Thread-%s: It's already running.", pid_number)
             pid_temp_up = 0
 
         if pid_hum_down:
-            logging.info("[Daemon] Shutting Down Humidity PID Thread-%s", pid_number)
-            pid_hum_alive[pid_number] = 0
-            while pid_hum_alive[pid_number] != 2:
-                time.sleep(0.1)
-            relay_onoff(int(pid_hum_relay[1]), 'off')
-            pid_hum_alive[pid_number] = 1
+            if pid_hum_active[pid_number] == 1:
+                logging.info("[Daemon] Shutting Down Humidity PID Thread-%s", pid_number)
+                pid_hum_alive[pid_number] = 0
+                while pid_hum_alive[pid_number] != 2:
+                    time.sleep(0.1)
+                relay_onoff(int(pid_hum_relay[1]), 'off')
+                pid_hum_alive[pid_number] = 1
+                pid_hum_active[pid_number] = 0
+            else:
+                logging.warning("[Daemon] Cannot Shut Down Humidity PID Thread-%s: It isn't running.", pid_number)
             pid_hum_down = 0
 
         if pid_hum_up:
-            logging.info("[Daemon] Starting Temperature PID Thread-%s", pid_number)
-            rod = threading.Thread(target = humidity_monitor,
-                args = ('Thread-%d' % pid_number, pid_number,))
-            rod.start()
+            if pid_hum_active[pid_number] == 0:
+                logging.info("[Daemon] Starting Humidity PID Thread-%s", pid_number)
+                rod = threading.Thread(target = humidity_monitor,
+                    args = ('Thread-%d' % pid_number, pid_number,))
+                rod.start()
+                pid_hum_active[pid_number] = 1
+            else:
+                logging.warning("[Daemon] Cannot Start Humidity PID Thread-%s: It's already running.", pid_number)
             pid_hum_up = 0
 
         if pid_co2_down:
-            logging.info("[Daemon] Shutting Down CO2 PID Thread-%s", pid_number)
-            pid_co2_alive[pid_number] = 0
-            while pid_co2_alive[pid_number] != 2:
-                time.sleep(0.1)
-            relay_onoff(int(pid_co2_relay[1]), 'off')
-            pid_co2_alive[pid_number] = 1
+            if pid_co2_active[pid_number] == 1:
+                logging.info("[Daemon] Shutting Down CO2 PID Thread-%s", pid_number)
+                pid_co2_alive[pid_number] = 0
+                while pid_co2_alive[pid_number] != 2:
+                    time.sleep(0.1)
+                relay_onoff(int(pid_co2_relay[1]), 'off')
+                pid_co2_alive[pid_number] = 1
+                pid_co2_active[pid_number] = 0
+            else:
+                logging.warning("[Daemon] Cannot Shut Down CO2 PID Thread-%s: It isn't running.", pid_number)
             pid_co2_down = 0
 
         if pid_co2_up:
-            logging.info("[Daemon] Starting CO2 PID Thread-%s", pid_number)
-            rod = threading.Thread(target = co2_monitor,
-                args = ('Thread-%d' % pid_number, pid_number,))
-            rod.start()
+            if pid_co2_active[pid_number] == 0:
+                logging.info("[Daemon] Starting CO2 PID Thread-%s", pid_number)
+                rod = threading.Thread(target = co2_monitor,
+                    args = ('Thread-%d' % pid_number, pid_number,))
+                rod.start()
+                pid_co2_active[pid_number] = 1
+            else:
+                logging.warning("[Daemon] Cannot Start CO2 PID Thread-%s: It's already running.", pid_number)
             pid_co2_up = 0
 
         # Write temperature and humidity to sensor log
@@ -1791,7 +1826,7 @@ def write_sql():
 
     logging.debug("[Write SQL] Removing lock: %s", lock.path)
     lock.release()
-    
+
 
 #################################################
 #               GPIO Manipulation               #
