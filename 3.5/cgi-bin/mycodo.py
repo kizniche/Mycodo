@@ -1308,7 +1308,10 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number)
     plot.write('set timefmt \"%Y %m %d %H %M %S\"\n')
 
     if graph_type == "combined":
-        plot.write('set terminal png size 1000,1500\n')
+        if sensor_co2_graph[1] or sensor_co2_graph[2] or sensor_co2_graph[3] or sensor_co2_graph[4]:
+            plot.write('set terminal png size 1000,1500\n')
+        else:
+            plot.write('set terminal png size 1000,1000\n')
     elif graph_type == "separate":
         plot.write('set terminal png size 1000,600\n')
     elif graph_type == "default":
@@ -1378,8 +1381,13 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number)
 
     # Generate a graph with all temperatures and one graph with all humidities
     if graph_type == "combined":
-        plot.write('set multiplot layout 3,1\n')
-        plot.write('set origin 0.0,0.66\n')
+        if sensor_co2_graph[1] or sensor_co2_graph[2] or sensor_co2_graph[3] or sensor_co2_graph[4]:
+            plot.write('set multiplot layout 3,1\n')
+            plot.write('set origin 0.0,0.66\n')
+        else:
+            plot.write('set multiplot layout 2,1\n')
+            plot.write('set origin 0.0,0.5\n')
+
         plot.write('set title \"Combined Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
         plot.write('plot ')
         if sensor_ht_graph[1]:
@@ -1397,7 +1405,11 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number)
         if sensor_ht_graph[4]:
             plot.write('\"<awk \'$10 == 4\' ' + sensor_ht_log_generate + sensor_head + '" u 1:7 index 0 title \"T4\" w lp ls 15 axes x1y2\n')
 
-        plot.write('set origin 0.0,0.33\n')
+        if sensor_co2_graph[1] or sensor_co2_graph[2] or sensor_co2_graph[3] or sensor_co2_graph[4]:
+            plot.write('set origin 0.0,0.33\n')
+        else:
+            plot.write('set origin 0.0,0.0\n')
+
         plot.write('set title \"Combined Humidities: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
         plot.write('plot ')
         if sensor_ht_graph[1]:
@@ -1415,13 +1427,14 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number)
         if sensor_ht_graph[4]:
             plot.write('\"<awk \'$10 == 4\' ' + sensor_ht_log_generate + sensor_head + '" u 1:8 index 0 title \"H4\" w lp ls 15 axes x1y1\n')
 
-        plot.write('set origin 0.0,0.0\n')
-        plot.write('set title \"Combined CO2s: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-        y2_min = '0'
-        y2_max = '5000'
-        plot.write('set y2range [' + y2_min + ':' + y2_max + ']\n')
-        plot.write('set y2tics 500\n')
-        plot.write('plot ')
+        if sensor_co2_graph[1] or sensor_co2_graph[2] or sensor_co2_graph[3] or sensor_co2_graph[4]:
+            plot.write('set origin 0.0,0.0\n')
+            plot.write('set title \"Combined CO2s: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            y2_min = '0'
+            y2_max = '5000'
+            plot.write('set y2range [' + y2_min + ':' + y2_max + ']\n')
+            plot.write('set y2tics 500\n')
+            plot.write('plot ')
         if sensor_co2_graph[1]:
             plot.write('\"<awk \'$8 == 1\' ' + sensor_co2_log_generate + sensor_head + '" using 1:7 index 0 title \"CO2-1\" w lp ls 12 axes x1y2')
             if sensor_co2_graph[2] or sensor_co2_graph[3] or sensor_co2_graph[4]: plot.write(', ')

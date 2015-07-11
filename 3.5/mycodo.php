@@ -44,13 +44,8 @@ $stream_exec = $install_path . "/cgi-bin/camera-stream.sh";
 $lock_raspistill = $lock_path . "/mycodo_raspistill";
 $lock_mjpg_streamer = $lock_path . "/mycodo_mjpg_streamer";
 
-session_start();
-
 require_once("functions/functions.php");
 
-// Reset variables
-$sql_reload = False;
-$gpio_initialize = False;
 $output_error = False;
 
 // Delete graph image files if quantity exceeds 20 (delete oldest)
@@ -82,11 +77,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' &&
 
     // Reload SQLite database if changed by check_forms_restricted.php
     require("functions/load_sql_database.php");
-
-    // Request mycodo.py to reload the SQLite database
-    if ($sql_reload) {
-        shell_exec($mycodo_client . ' --sqlreload 0');
-    }
 }
 
 // Handle form submissions that any user may perform
