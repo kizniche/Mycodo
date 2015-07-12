@@ -11,30 +11,28 @@
  * @license http://opensource.org/licenses/MIT MIT License
  */
 
+function start_profiler() {
+    declare(ticks=1);
+    require_once('./SimpleProfiler.class.php');
+    SimpleProfiler::start_profile();
+}
+
 if (isset($_POST['debug'])) {
     if ($_POST['debug'] == 1) {
         setcookie('debug', True, time() + (86400 * 10), "/" );
         $_COOKIE['debug'] = True;
-        $debug = True;
+        start_profiler();
     } else {
         setcookie('debug', False, time() + (86400 * 10), "/" );
         $_COOKIE['debug'] = False;
-        $debug = False;
     }
 } else if (isset($_COOKIE['debug'])) {
     if ($_COOKIE['debug'] == True) {
-        $debug = True;
+        start_profiler();
     } else $debug = False;
 } else {
     setcookie('debug', False, time() + (86400 * 10), "/" );
     $_COOKIE['debug'] = False;
-    $debug = False;
-}
-
-if ($debug) {
-    declare(ticks=1);
-    require_once('./SimpleProfiler.class.php');
-    SimpleProfiler::start_profile();
 }
 
 class OneFileLoginApplication {
