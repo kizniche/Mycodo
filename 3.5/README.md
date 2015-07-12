@@ -2,10 +2,11 @@
 
 This is an experimental branch of mycodo. Unless I have been in direct contact with you regarding testing of this branch, I will not be providing technical support for any issues with this version. Instead, I recommend you check out the v3.0 stable branch.
 
-### Goals
+### Progress
 
-- [X] New login authentication with SQLite user database
-- [X] Configuration stored in SQLite database (debugging)
+- [X] Change configuration storage (from config file to SQLite database)
+- [X] Change login authentication (from MySQL to SQLite database)
+- [X] Add log parsing (40%-70% speed increase in graph generation)
 - [X] K30 CO2 sensor support (debugging)
 - [ ] Email notification or audible alarm during critical failure or condition (working on)
 - [ ] O2 sensor support
