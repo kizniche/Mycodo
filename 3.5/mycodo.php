@@ -1369,10 +1369,10 @@ if ($output_error) {
                     Debugging
                 </div>
                 <div>
-                    Enable PHP Profiler
+                    Compile Debugging Information
                     <input type="hidden" name="debug" value="0" />
                     <input type="checkbox" id="debug" name="debug" value="1"<?php if (isset($_COOKIE['debug'])) if ($_COOKIE['debug'] == True) echo ' checked'; ?>/>
-                    <input type="submit" value="Set">
+                    <input type="submit" value="Save">
                 </div>
                 </form>
             </div>
@@ -1447,11 +1447,35 @@ if ($output_error) {
 <?php
 if (isset($_COOKIE['debug'])) {
     if ($_COOKIE['debug'] == True) {
-        echo '<div style="clear: both;"></div>';
-        echo '<div style="padding: 2em;"><pre>';
-        SimpleProfiler::stop_profile();
-        print_r(SimpleProfiler::get_profile());
-        echo '</pre></div>';
+        ?>
+        <div style="clear: both;"></div>        
+        
+        <div style="padding: 4em 0 2em 2em;">
+            <div style="padding-bottom: 1em; font-weight: bold; font-size: 1.5em;">
+                Debug Information
+            </div>
+            <div style="padding-bottom: 2em;">
+                <div style="padding: 1em 0; font-weight: bold; font-size: 1.2em;">
+                    PHP Profile
+                </div><pre><?php 
+                    SimpleProfiler::stop_profile();
+                    print_r(SimpleProfiler::get_profile());
+                    ?></pre>
+            </div>
+
+            <div style="padding-bottom: 2em;">
+                <div style="padding: 1em 0; font-weight: bold; font-size: 1.2em;">
+                    Cookies
+                </div><pre><?php print_r($_COOKIE); ?></pre>
+            </div>
+
+            <div style="padding-bottom: 2em;">
+                <div style="padding: 1em 0; font-weight: bold; font-size: 1.2em;">
+                    SQLite Database
+                </div><pre><?php exec('sqlite3 ' . $sqlite_db . ' .dump', $output); print_r($output); ?></pre>
+            </div>
+        </div>
+        <?php
     }
 }
 ?>
