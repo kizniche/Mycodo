@@ -31,7 +31,7 @@ $gpio_path = "/usr/local/bin/gpio";
 
 ########## End Configure ##########
 
-$sqlite_db = $install_path . "/config/mycodo.sqlite3";
+$sqlite_db = $install_path . "/config/mycodo.db";
 $auth_log = $install_path . "/log/auth.log";
 $sensor_ht_log = "/var/tmp/sensor-ht.log";
 $sensor_co2_log = "/var/tmp/sensor-co2.log";
@@ -46,59 +46,43 @@ $lock_mjpg_streamer = $lock_path . "/mycodo_mjpg_streamer";
 
 require_once("functions/functions.php");
 
-$output_error = False;
-
-// Delete graph image files if quantity exceeds 20 (delete oldest)
-delete_graphs();
-
-// Set GET defaults if not already set
-$tab = isset($_GET['tab']) ? $_GET['tab'] : 'Unset';
-
-// Set cookie of unique ID, for graph-generation
-if (isset($_GET['Refresh'])) set_new_graph_id();
-
 // Initial SQL database load to variables
 require("functions/load_sql_database.php");
 
-// Handle form submissions when they come from a guest user
-if ($_SERVER['REQUEST_METHOD'] == 'POST' &&
-    $_SESSION['user_name'] == 'guest' &&
-    !isset($_POST['Graph']) &&
-    !isset($_POST['login'])) {
-        
-    // Output an error if the user guest attempts to submit certain forms
+// Output an error if the user guest attempts to submit certain forms
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_name'] == 'guest' &&
+    !isset($_POST['Graph']) && !isset($_POST['login'])) {
     $output_error = 'guest';
-    
 } else if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_name'] != 'guest') {
     // Only non-guest users may perform these actions
-    
-    // Handle form submissions that modify the configuration
-    require("functions/check_forms_restricted.php");
-
-    // Reload SQLite database if changed by check_forms_restricted.php
-    require("functions/load_sql_database.php");
+    require("functions/check_forms_restricted.php"); // Configuration changes
+    require("functions/load_sql_database.php"); // Reload SQLite database
 }
+require("functions/check_forms_public.php"); // Handle remaining forms
 
-// Handle form submissions that any user may perform
-require("functions/check_forms_public.php");
 
+//
+// Grph management
+//
+
+if (isset($_GET['Refresh'])) set_new_graph_id(); // Signal to re-generate graph
+
+delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete oldest)
+
+// Set variables from cookies (remember me function for displaying graphs)
 $graph_id = get_graph_id();
 $graph_type = get_graph_type();
 $graph_span = get_graph_span();
 
-// Concatenate Sensor log files (to TempFS) to ensure the latest data is being used
-`cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
-`cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
-
-// Grab last entry for each sensor from log files
-$last_ht_sensor[1] = `awk '($10 == 1){exit}END{print}' /var/tmp/sensor-ht.log`;
-$last_ht_sensor[2] = `awk '($10 == 2){exit}END{print}' /var/tmp/sensor-ht.log`;
-$last_ht_sensor[3] = `awk '($10 == 3){exit}END{print}' /var/tmp/sensor-ht.log`;
-$last_ht_sensor[4] = `awk '($10 == 4){exit}END{print}' /var/tmp/sensor-ht.log`;
-$last_co2_sensor[1] = `awk '($8 == 1){exit}END{print}' /var/tmp/sensor-co2.log`;
-$last_co2_sensor[2] = `awk '($8 == 2){exit}END{print}' /var/tmp/sensor-co2.log`;
-$last_co2_sensor[3] = `awk '($8 == 3){exit}END{print}' /var/tmp/sensor-co2.log`;
-$last_co2_sensor[4] = `awk '($8 == 4){exit}END{print}' /var/tmp/sensor-co2.log`;
+// Grab last entry for each sensor from the respective log file
+$last_ht_sensor[1] = `awk '($10 == 1){exit}END{print}' /var/www/mycodo/log/sensor-ht-tmp.log`;
+$last_ht_sensor[2] = `awk '($10 == 2){exit}END{print}' /var/www/mycodo/log/sensor-ht-tmp.log`;
+$last_ht_sensor[3] = `awk '($10 == 3){exit}END{print}' /var/www/mycodo/log/sensor-ht-tmp.log`;
+$last_ht_sensor[4] = `awk '($10 == 4){exit}END{print}' /var/www/mycodo/log/sensor-ht-tmp.log`;
+$last_co2_sensor[1] = `awk '($8 == 1){exit}END{print}' /var/www/mycodo/log/sensor-co2-tmp.log`;
+$last_co2_sensor[2] = `awk '($8 == 2){exit}END{print}' /var/www/mycodo/log/sensor-co2-tmp.log`;
+$last_co2_sensor[3] = `awk '($8 == 3){exit}END{print}' /var/www/mycodo/log/sensor-co2-tmp.log`;
+$last_co2_sensor[4] = `awk '($8 == 4){exit}END{print}' /var/www/mycodo/log/sensor-co2-tmp.log`;
 
 // explode() the last sensor entry to extract data
 for ($p = 1; $p <= $sensor_ht_num; $p++) {
@@ -117,9 +101,13 @@ for ($p = 1; $p <= $sensor_co2_num; $p++) {
 
 // Grab the time of the last sensor read
 $time_now = `date +"%Y-%m-%d %H:%M:%S"`;
-$time_last = `tail -n 1 $sensor_ht_log`;
+$time_last = `tail -n 1 /var/www/mycodo/log/sensor-ht-tmp.log`;
 $time_explode = explode(" ", $time_last);
 $time_last = $time_explode[0] . '-' . $time_explode[1] . '-' . $time_explode[2] . ' ' . $time_explode[3] . ':' . $time_explode[4] . ':' . $time_explode[5];
+
+// Load the tab that the form was submitted from
+$tab = isset($_GET['tab']) ? $_GET['tab'] : 'Unset';
+
 ?>
 <!doctype html>
 <html lang="en" class="no-js">
@@ -381,7 +369,9 @@ if ($output_error) {
                         </div>
                     </div>
                 </div>
+
                 <div style="clear: both;"></div>
+
                 <div>
                     <?php
                     // Main preset: Display graphs of past day and week
@@ -943,12 +933,17 @@ if ($output_error) {
 		</li>
 
 		<li data-content="graph" <?php
-            if (isset($_GET['tab']) && $_GET['tab'] == 'graph') {
-                echo "class=\"selected\"";
+            if (isset($_GET['tab'])) {
+                if ($_GET['tab'] == 'graph') {
+                    echo "class=\"selected\"";
+                }
             } ?>>
             <?php
             /* DateSelector*Author: Leon Atkinson */
             if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] != 'guest') {
+                
+                concatenate_logs();
+
                 if ($_POST['SubmitDates']) {
                     displayform();
                     $id2 = uniqid();
@@ -1172,6 +1167,7 @@ if ($output_error) {
                 <div style="font-family: monospace;">
                     <pre><?php
                         if(isset($_POST['HTSensor'])) {
+                            concatenate_logs();
                             echo 'Year Mo Day Hour Min Sec Tc RH DPc Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
@@ -1182,6 +1178,7 @@ if ($output_error) {
                         }
 
                         if(isset($_POST['Co2Sensor'])) {
+                            concatenate_logs();
                             echo 'Year Mo Day Hour Min Sec Co2 Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
@@ -1366,71 +1363,97 @@ if ($output_error) {
                 </FORM>
             </div>
 
+            <div class="advanced" style="padding: 1.5em 2em 0 1em;">
+                <form method="post" action="?tab=adv" name="debug">
+                <div style="font-weight: bold; padding-bottom: 0.5em;">
+                    Debugging
+                </div>
+                <div>
+                    Enable PHP Profiler
+                    <input type="hidden" name="debug" value="0" />
+                    <input type="checkbox" id="debug" name="debug" value="1"<?php if (isset($_COOKIE['debug'])) if ($_COOKIE['debug'] == True) echo ' checked'; ?>/>
+                    <input type="submit" value="Set">
+                </div>
+                </form>
+            </div>
+
             <div style="clear: both;"></div>
 
             <div class="advanced">
                 <?php if ($this->feedback) echo $this->feedback; ?>
-                    <div style="padding-bottom: 1em;">
-                        <form method="post" action="?tab=adv" name="addform">
-                        <div class="manageusers-title">
-                        Add User
-                        </div>
-                        <div class="manageusers">
-                        <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" /> <label for="login_input_username">User name (only letters and numbers, 2 to 64 characters)</label>
-                        </div>
-                        <div class="manageusers">
-                        <input id="login_input_email" type="email" name="user_email" /> <label for="login_input_email">Email</label>
-                        </div>
-                        <div class="manageusers">
-                        <input id="login_input_password_new" class="login_input" type="password" name="user_password_new" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_new">Password (min. 6 characters)</label>
-                        </div>
-                        <div class="manageusers">
-                        <input id="login_input_password_repeat" class="login_input" type="password" name="user_password_repeat" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_repeat">Repeat password</label>
-                        </div>
-                        <div class="manageusers">
-                        <input type="submit" name="register" value="Add User" />
-                        </div>
-                        </form>
+                <div style="padding-bottom: 1em;">
+                    <form method="post" action="?tab=adv" name="addform">
+                    <div class="manageusers-title">
+                    Add User
                     </div>
-                    <div style="padding-bottom: 1em;">
-                        <form method="post" action="?tab=adv" name="changeform">
-                        <div class="manageusers-title">
-                        Change Password
-                        </div>
-                        <div class="manageusers">
-                        <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" /> <label for="login_input_username">User name</label>
-                        </div>
-                        <div class="manageusers">
-                        <input id="login_input_password_new" class="login_input" type="password" name="new_password" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_new">New Password (min. 6 characters)</label>
-                        </div>
-                        <div class="manageusers">
-                        <input id="login_input_password_repeat" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_repeat">Repeat New password</label>
-                        </div>
-                        <div class="manageusers">
-                        <input type="submit" name="changepassword" value="Change Password" />
-                        </div>
-                        </form>
+                    <div class="manageusers">
+                    <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" /> <label for="login_input_username">User name (only letters and numbers, 2 to 64 characters)</label>
                     </div>
-                    <div>
-                        <form method="post" action="?tab=adv" name="delform">
-                        <div class="manageusers-title">
-                        Delete User
-                        </div>
-                        <div class="manageusers">
-                        <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
-                        <label for="login_input_username">User name</label>
-                        </div>
-                        <div class="manageusers">
-                        <input type="submit" name="deleteuser" value="Delete User" />
-                        </div>
-                        </form>
+                    <div class="manageusers">
+                    <input id="login_input_email" type="email" name="user_email" /> <label for="login_input_email">Email</label>
                     </div>
+                    <div class="manageusers">
+                    <input id="login_input_password_new" class="login_input" type="password" name="user_password_new" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_new">Password (min. 6 characters)</label>
+                    </div>
+                    <div class="manageusers">
+                    <input id="login_input_password_repeat" class="login_input" type="password" name="user_password_repeat" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_repeat">Repeat password</label>
+                    </div>
+                    <div class="manageusers">
+                    <input type="submit" name="register" value="Add User" />
+                    </div>
+                    </form>
                 </div>
+                <div style="padding-bottom: 1em;">
+                    <form method="post" action="?tab=adv" name="changeform">
+                    <div class="manageusers-title">
+                    Change Password
+                    </div>
+                    <div class="manageusers">
+                    <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" /> <label for="login_input_username">User name</label>
+                    </div>
+                    <div class="manageusers">
+                    <input id="login_input_password_new" class="login_input" type="password" name="new_password" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_new">New Password (min. 6 characters)</label>
+                    </div>
+                    <div class="manageusers">
+                    <input id="login_input_password_repeat" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_repeat">Repeat New password</label>
+                    </div>
+                    <div class="manageusers">
+                    <input type="submit" name="changepassword" value="Change Password" />
+                    </div>
+                    </form>
+                </div>
+                <div>
+                    <form method="post" action="?tab=adv" name="delform">
+                    <div class="manageusers-title">
+                    Delete User
+                    </div>
+                    <div class="manageusers">
+                    <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
+                    <label for="login_input_username">User name</label>
+                    </div>
+                    <div class="manageusers">
+                    <input type="submit" name="deleteuser" value="Delete User" />
+                    </div>
+                    </form>
+                </div>
+            </div>
+
             </div>
 		</li>
 	</ul> <!-- cd-tabs-content -->
 </div> <!-- cd-tabs -->
 <script src="js/jquery-2.1.1.js"></script>
 <script src="js/main.js"></script> <!-- Resource jQuery -->
+<?php
+if (isset($_COOKIE['debug'])) {
+    if ($_COOKIE['debug'] == True) {
+        echo '<div style="clear: both;"></div>';
+        echo '<div style="padding: 2em;"><pre>';
+        SimpleProfiler::stop_profile();
+        print_r(SimpleProfiler::get_profile());
+        echo '</pre></div>';
+    }
+}
+?>
 </body>
 </html>

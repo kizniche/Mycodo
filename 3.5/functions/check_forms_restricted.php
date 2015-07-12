@@ -336,5 +336,4 @@ if (isset($_POST['stop-stream'])) {
     shell_exec($editconfig);
 }
 
-
 ?>

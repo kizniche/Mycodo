@@ -65,6 +65,12 @@ function pid_reload($mycodo_client, $controller, $pid) {
 // Logging
 //
 
+function concatenate_logs() {
+    // Concatenate Sensor log files (to TempFS) to ensure the latest data is being used
+    `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
+    `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
+}
+
 // Display Log tab SQL database tables, names, and variables
 function view_sql_db($sqlite_db) {
     $db = new SQLite3($sqlite_db);
