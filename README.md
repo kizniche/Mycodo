@@ -87,7 +87,7 @@ I've since upgraded to a new set of hardware that support 8 individually-switcha
 
 This is an experimental branch of mycodo. This will be a future stable release once a certain number of features have been added and when it's relatively bug-free. Unless I have been in direct contact with you regarding testing of this branch, I will not be providing technical support for any issues with this version. Instead, I recommend you check out the v3.0 stable branch (install instructions below).
 
-See /3.5/README.md for progress updates
+See [/3.5/README.md](../3.5/README.md) for progress updates
 
 <a name="hard-brief"></a>
 #### Hardware
