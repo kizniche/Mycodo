@@ -23,6 +23,8 @@
 *  Contact at kylegabriel.com
 */
 
+$version = "3.5.50";
+
 ####### Configure Edit Here #######
 
 $install_path = "/var/www/mycodo";
@@ -155,6 +157,9 @@ if ($output_error) {
 <div class="main-wrapper">
     <div class="header">
         <div style="float: left;">
+            <div>
+                v<?php echo $version; ?>
+            </div>
             <div>
                 User: <?php echo $_SESSION['user_name']; ?>
             </div>
@@ -376,6 +381,25 @@ if ($output_error) {
                     <?php
                     // Main preset: Display graphs of past day and week
                     if ($graph_span == 'default') {
+
+                        # Concatenate log files
+                        if ($sensor_ht_graph[1] == 1 || $sensor_ht_graph[2] == 1 || $sensor_ht_graph[3] == 1 || $sensor_ht_graph[4] == 1) {
+                            $sensor_ht_log_file_tmp = "/var/www/mycodo/log/sensor-ht-tmp.log";
+                            $sensor_ht_log_file = "/var/www/mycodo/log/sensor-ht.log";
+                            $sensor_ht_log_generate = "/var/tmp/sensor-ht-logs-default.log";
+                            $cmd = "cat " . $sensor_ht_log_file . " " . $sensor_ht_log_file_tmp . " > " . $sensor_ht_log_generate;
+                            system($cmd);
+                        }
+
+                        # Concatenate log files
+                        if ($sensor_co2_graph[1] == 1 || $sensor_co2_graph[2] == 1 || $sensor_co2_graph[3] == 1 || $sensor_co2_graph[4] == 1) {
+                            $sensor_co2_log_file_tmp = "/var/www/mycodo/log/sensor-co2-tmp.log";
+                            $sensor_co2_log_file = "/var/www/mycodo/log/sensor-co2.log";
+                            $sensor_co2_log_generate = "/var/tmp/sensor-co2-logs-default.log";
+                            $cmd = "cat " . $sensor_co2_log_file . " " . $sensor_co2_log_file_tmp . " > " . $sensor_co2_log_generate;
+                            system($cmd);
+                        }
+
                         for ($n = 1; $n <= $sensor_ht_num; $n++) {
                             if ($sensor_ht_graph[$n] == 1) {
                                 if (!file_exists('/var/www/mycodo/images/graph-htdefaultdefault-' . $graph_id . '-' . $n . '.png')) {
@@ -416,6 +440,16 @@ if ($output_error) {
                                 echo "&id=" . $graph_id . ">";
                                 echo "</div>";
                     } else if ($graph_type == 'separate') { // Combined preset: Generate separate graphs
+
+                        # Concatenate log files
+                        if ($sensor_ht_graph[1] == 1 || $sensor_ht_graph[2] == 1 || $sensor_ht_graph[3] == 1 || $sensor_ht_graph[4] == 1) {
+                            $sensor_ht_log_file_tmp = "/var/www/mycodo/log/sensor-ht-tmp.log";
+                            $sensor_ht_log_file = "/var/www/mycodo/log/sensor-ht.log";
+                            $sensor_ht_log_generate = "/var/tmp/sensor-ht-logs-separate.log";
+                            $cmd = "cat " . $sensor_ht_log_file . " " . $sensor_ht_log_file_tmp . " > " . $sensor_ht_log_generate;
+                            system($cmd);
+                        }
+
                         for ($n = 1; $n <= $sensor_ht_num; $n++ ) {
                             if ($sensor_ht_graph[$n] == 1) {
                                 if (!file_exists('/var/www/mycodo/images/graph-htseparate' . $graph_span . '-' .  $graph_id . '-' . $n . '.png')) {
@@ -432,6 +466,15 @@ if ($output_error) {
                             if ($n != $sensor_ht_num || $sensor_co2_graph[1] == 1 || $sensor_co2_graph[2] == 1 || $sensor_co2_graph[3] == 1 || $sensor_co2_graph[4] == 1) {
                                 echo "<hr class=\"fade\"/>";
                             }
+                        }
+
+                        # Concatenate log files
+                        if ($sensor_co2_graph[1] == 1 || $sensor_co2_graph[2] == 1 || $sensor_co2_graph[3] == 1 || $sensor_co2_graph[4] == 1) {
+                            $sensor_co2_log_file_tmp = "/var/www/mycodo/log/sensor-co2-tmp.log";
+                            $sensor_co2_log_file = "/var/www/mycodo/log/sensor-co2.log";
+                            $sensor_co2_log_generate = "/var/tmp/sensor-co2-logs-separate.log";
+                            $cmd = "cat " . $sensor_co2_log_file . " " . $sensor_co2_log_file_tmp . " > " . $sensor_co2_log_generate;
+                            system($cmd);
                         }
 
                         for ($n = 1; $n <= $sensor_co2_num; $n++ ) {

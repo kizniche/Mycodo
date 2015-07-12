@@ -16,5 +16,9 @@ if (isset($_POST['Graph'])) {
     setcookie('graph_span', $_POST['graph_span'], time() + (86400 * 10), "/" );
     $_COOKIE['graph_span'] = $_POST['graph_span'];
     set_new_graph_id();
+
+    /*
+    * @TODO execute tail and awk, or shell script to shrink log file
+	*/
 }
 ?>
