@@ -13,7 +13,7 @@
 
 function start_profiler() {
     declare(ticks=1);
-    require_once('./SimpleProfiler.class.php');
+    require_once('./classes/SimpleProfiler.php');
     SimpleProfiler::start_profile();
 }
 
