@@ -82,7 +82,7 @@ case "${1:-''}" in
             ln -s /var/log/mycodo/daemon-tmp.log /var/www/mycodo/log/daemon-tmp.log
         fi
         
-        chmod -R 660 /var/log/mycodo
+        chmod -R 770 /var/log/mycodo
         chown -R www-data.www-data /var/www/mycodo
         chown -R www-data.www-data /var/log/mycodo
         
@@ -139,8 +139,8 @@ case "${1:-''}" in
         ;;
     'restart'|'reload'|'force-reload')
         $0 stop
-	$0 start
-	;;
+	    $0 start
+	    ;;
     'status')
         ;;
     *)
