@@ -451,7 +451,7 @@ class OneFileLoginApplication {
         ?>
         <div style="padding-top: 2em; width: 14em; margin: 8 auto; text-align: left; ">
             <div style="padding-bottom: 0.6em; text-align: center; font-size: 1.8em;">Mycodo</div>
-            <form method="post" action="' . $_SERVER['SCRIPT_NAME'] . '" name="loginform">
+            <form method="post" action="<?php echo $_SERVER['SCRIPT_NAME']; ?>" name="loginform">
             <table>
                 <tr>
                     <td>
@@ -482,16 +482,23 @@ class OneFileLoginApplication {
             </form>
         </div>
         <?php
-        $this->createDatabaseConnection();
-        $sql = 'SELECT user_email
-                FROM users
-                WHERE user_name = :user_name
-                LIMIT 1';
-        $query = $this->db_connection->prepare($sql);
-        $query->bindValue(':user_name', 'notice');
-        $query->execute();
-        $result_row = $query->fetchObject();
-        if (!empty($result_row->user_email)) {
+        $install_path = "/var/www/mycodo";
+        $sqlite_db = $install_path . "/config/mycodo.db";
+        $db = new SQLite3($sqlite_db);
+
+        // Dismiss Notification
+        if (isset($_POST['dismiss'])) {
+            $stmt = $db->prepare("UPDATE Misc SET Dismiss_Notification=:dismiss");
+            $stmt->bindValue(':dismiss', 1, SQLITE3_INTEGER);
+            $stmt->execute();
+        }
+
+        $stmt = $db->query('SELECT Dismiss_Notification FROM Misc');
+        while ($row = $stmt->fetchArray()) {
+            $dismiss = $row[0];
+        }
+
+        if (!$dismiss) {
             ?>
             <div style="padding-top: 1em; width: 33em; margin: 8 auto; text-align: justify; ">
                 <div style="padding: 0.5em 0 0.3em 0; text-align: center; font-size: 1.5em; font-weight: bold; color: red;">WARNING</div>
@@ -503,6 +510,12 @@ class OneFileLoginApplication {
                 Mycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
                 <br>
                 You should have received a copy of the GNU General Public License along with Mycodo. If not, see &lt;<a href="http://www.gnu.org/licenses/" target="_blank">http://www.gnu.org/licenses/</a>&gt;.
+                <form method="post" action="<?php echo $_SERVER['SCRIPT_NAME']; ?>" name="dismiss">
+                    <div style="text-align: center; padding-top:1em;">
+                        <input type="hidden" name="dismiss" value="dismiss">
+                        <input type="submit" name="dismiss" value="Dismiss Notice" />
+                    </div>
+                </form>
             </div>
             <?php
         }
