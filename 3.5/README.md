@@ -18,6 +18,7 @@ This is an experimental branch of mycodo. Unless I have been in direct contact w
 ### New Dependencies
 
 php5-sqlite
+
 sqlite3
 
 ### Install
@@ -30,21 +31,21 @@ For connecting a K30 CO2 sensor, see http://www.co2meters.com/Documentation/AppN
 
 `sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev php5 libapache2-mod-php5 pip subversion php5-sqlite sqlite3`
 
-`svn checkout https://github.com/kizniche/Mycodo/trunk/3.0 /var/www/mycodo`
+`svn checkout https://github.com/kizniche/Mycodo/trunk/3.5 /var/www/mycodo`
 
-`sudo git clone git://git.drogon.net/wiringPi /var/www/mycodo/source/WiringPi`
+`sudo git clone git://git.drogon.net/wiringPi ~/WiringPi`
 
-`sudo git clone https://github.com/adafruit/Adafruit_Python_DHT /var/www/mycodo/source/Adafruit_Python_DHT`
+`sudo git clone https://github.com/adafruit/Adafruit_Python_DHT ~/Adafruit_Python_DHT`
 
 Install WiringPi
 
-`cd /var/www/mycodo/source/WiringPi`
+`cd ~/WiringPi`
 
 `sudo ./build`
 
 Install Adafruit_Python_DHT
 
-`cd /var/www/mycodo/source/Adafruit_Python_DHT`
+`cd ~/Adafruit_Python_DHT`
 
 `sudo python setup.py install`
 
@@ -64,15 +65,15 @@ Install video streaming capabilities
 
 `sudo ln -s /usr/include/linux/videodev2.h /usr/include/linux/videodev.h`
 
-`sudo wget -P /var/www/mycodo/source http://sourceforge.net/code-snapshots/svn/m/mj/mjpg-streamer/code/mjpg-streamer-code-182.zip`
+`sudo wget -P ~/ http://sourceforge.net/code-snapshots/svn/m/mj/mjpg-streamer/code/mjpg-streamer-code-182.zip`
 
-`cd /var/www/mycodo/source`
+`cd ~`
 
-`sudo unzip mjpg-streamer-code-182.zip`
+`unzip mjpg-streamer-code-182.zip`
 
 `cd mjpg-streamer-code-182/mjpg-streamer`
 
-`sudo make mjpg_streamer input_file.so output_http.so`
+`make mjpg_streamer input_file.so output_http.so`
 
 `sudo cp mjpg_streamer /usr/local/bin`
 
@@ -82,7 +83,7 @@ Set www permissions
 
 `sudo chown -R www-data:www-data /var/www/mycodo`
 
-`sudo chmod 660 /var/www/mycodo/config/* /var/www/mycodo/log/*.log`
+`sudo chmod 660 /var/www/mycodo/config/* /var/www/mycodo/log/*`
 
 With a supported usb wifi dongle, setting up a wireless connection is as simple as the next few commands and a reboot. Consult documentation for your wireless card or google if this doesn’t work. Edit wpa_supplicant.conf with `sudo vi /etc/wpa_supplicant/wpa_supplicant.conf` and add the following, then change the name and password.
 
@@ -107,7 +108,7 @@ tmpfs    /var/spool/mqueue    tmpfs    defaults,noatime,nosuid,mode=0700,gid=12,
 
 Using a tempfs does create some issues with certain software. Apache does not start if there is no directory structure in /var/log, and the designation of /var/log as a tempfs means that at every bootup this directory is empty. This init script will ensure that the proper directory structure is created at every boot, prior to Apache starting.
 
-`sudo cp /var/www/mycodo/source/init.d/apache2-tmpfs /etc/init.d/`
+`sudo cp /var/www/mycodo/init.d/apache2-tmpfs /etc/init.d/`
 
 `sudo chmod 0755 /etc/init.d/apache2-tmpfs`
 
@@ -135,17 +136,17 @@ Add the following to /etc/apache2/sites-available/default-ssl (or just ‘defaul
     </Directory>
 ```
 
-Last, set up the daemon to start at boot
+To initialize GPIO pins at startup, open crontab with `sudo crontab -e` and add the following lines, then save with `Ctrl+e`
 
-`sudo cp /var/www/mycodo/source/init.d/mycodo /etc/init.d/`
+`@reboot /usr/bin/python /var/www/mycodo/cgi-bin/GPIO-initialize.py &`
+
+Last, set the daemon to automatically start
+
+`sudo cp /var/www/mycodo/init.d/mycodo /etc/init.d/`
 
 `sudo chmod 0755 /etc/init.d/mycodo`
 
 `sudo update-rc.d mycodo defaults`
-
-Open crontab with `sudo crontab -e` and add the following lines, then save with `Ctrl+e`
-
-`@reboot /usr/bin/python /var/www/mycodo/cgi-bin/GPIO-initialize.py &`
 
 Reboot to allow everything to start up
 
