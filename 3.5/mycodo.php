@@ -1242,7 +1242,7 @@ if ($output_error) {
                             }
                         }
                         if(isset($_POST['Users']) && $_SESSION['user_name'] != 'guest') {
-                            echo 'User, Email, Password hash<br> <br>';
+                            echo 'User Email Password_Hash<br> <br>';
                             $db = new SQLite3("./config/users.db");
                             $results = $db->query('SELECT user_name, user_email, user_password_hash FROM users');
                             while ($row = $results->fetchArray()) {

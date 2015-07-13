@@ -34,20 +34,17 @@ apt-get update
 apt-get upgrade
 
 echo "#### Install required software ####" >&2
-apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev php5 libapache2-mod-php5 mysql-server mysql-client php5-sqlite sqlite3 pip wget
-
-echo "#### Install phpmyadmin ####" >&2
-apt-get install phpmyadmin
+apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev php5 libapache2-mod-php5 php5-sqlite sqlite3 pip wget
 
 echo "#### Download required software ####" >&2
-git clone git://git.drogon.net/wiringPi /var/www/mycodo/source/WiringPi
-git clone https://github.com/adafruit/Adafruit_Python_DHT /var/www/mycodo/source/Adafruit_Python_DHT
+git clone git://git.drogon.net/wiringPi ~/WiringPi
+git clone https://github.com/adafruit/Adafruit_Python_DHT ~/Adafruit_Python_DHT
 
 echo "#### Install software ####" >&2
-cd /var/www/mycodo/source/WiringPi
+cd ~/WiringPi
 ./build
 
-cd /var/www/mycodo/source/Adafruit_Python_DHT
+cd ~/Adafruit_Python_DHT
 python setup.py install
 
 pip install lockfile rpyc
@@ -73,20 +70,31 @@ fi
 echo "#### Set up directories and links ####" >&2
 mkdir -p /var/log/mycodo
 mkdir -p /var/log/mycodo/images
+mkdir -p /var/www/mycodo/camera-stills
 
 if [ ! -h /var/www/mycodo/images ]; then
     ln -s /var/log/mycodo/images /var/www/mycodo/images
     chown www-data.www-data /var/www/mycodo/images
 fi
 
-if [ ! -e /var/log/mycodo/sensor-tmp.log ]; then
-    touch /var/log/mycodo/sensor-tmp.log
+if [ ! -e /var/log/mycodo/sensor-ht-tmp.log ]; then
+    touch /var/log/mycodo/sensor-ht-tmp.log
 fi
-if [ ! -e /var/www/mycodo/log/sensor.log ]; then
-    touch /var/www/mycodo/log/sensor.log
+if [ ! -e /var/www/mycodo/log/sensor-ht.log ]; then
+    touch /var/www/mycodo/log/sensor-ht.log
 fi
-if [ ! -h /var/www/mycodo/log/sensor-tmp.log ]; then
-    ln -s /var/log/mycodo/sensor-tmp.log /var/www/mycodo/log/sensor-tmp.log
+if [ ! -h /var/www/mycodo/log/sensor-ht-tmp.log ]; then
+    ln -s /var/log/mycodo/sensor-ht-tmp.log /var/www/mycodo/log/sensor-ht-tmp.log
+fi
+
+if [ ! -e /var/log/mycodo/sensor-co2-tmp.log ]; then
+    touch /var/log/mycodo/sensor-co2-tmp.log
+fi
+if [ ! -e /var/www/mycodo/log/sensor-co2.log ]; then
+    touch /var/www/mycodo/log/sensor-co2.log
+fi
+if [ ! -h /var/www/mycodo/log/sensor-co2-tmp.log ]; then
+    ln -s /var/log/mycodo/sensor-co2-tmp.log /var/www/mycodo/log/sensor-co2-tmp.log
 fi
 
 if [ ! -e /var/log/mycodo/relay-tmp.log ]; then
@@ -109,11 +117,11 @@ if [ ! -h /var/www/mycodo/log/daemon-tmp.log ]; then
     ln -s /var/log/mycodo/daemon-tmp.log /var/www/mycodo/log/daemon-tmp.log
 fi
 
-chown -R www-data.www-data /var/log/mycodo
 chmod -R 660 /var/log/mycodo
+chmod 660 /var/www/mycodo/config/* /var/www/mycodo/log/*
 
 chown -R www-data:www-data /var/www/mycodo
-chmod 660 /var/www/mycodo/config/* /var/www/mycodo/log/*.log
+chown -R www-data.www-data /var/log/mycodo
 
 read -p "Alter /etc/fstab to use tempfs (recommended)? [y/n] " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]
@@ -123,12 +131,12 @@ then
     echo 'tmpfs    /var/log    tmpfs    defaults,noatime,nosuid,mode=0755,size=100m    0 0' >> /etc/fstab
     echo 'tmpfs    /var/run    tmpfs    defaults,noatime,nosuid,mode=0755,size=2m    0 0' >> /etc/fstab
     echo 'tmpfs    /var/spool/mqueue    tmpfs    defaults,noatime,nosuid,mode=0700,gid=12,size=30m    0 0' >> /etc/fstab
-    cp /var/www/mycodo/source/init.d/apache2-tmpfs /etc/init.d/
+    cp /var/www/mycodo/init.d/apache2-tmpfs /etc/init.d/
     chmod 0755 /etc/init.d/apache2-tmpfs
     update-rc.d apache2-tmpfs defaults 90 10
 fi
 
-cp /var/www/mycodo/source/init.d/mycodo /etc/init.d/
+cp /var/www/mycodo/init.d/mycodo /etc/init.d/
 chmod 0755 /etc/init.d/mycodo
 update-rc.d mycodo defaults
 
@@ -141,4 +149,6 @@ then
     rm mycron
 fi
 
-cd $STARTDIR/source/init.d
+cd $STARTDIR
+
+echo "#### Install finished. Reboot, then go to http://yourserver/mycodo ####" >&2

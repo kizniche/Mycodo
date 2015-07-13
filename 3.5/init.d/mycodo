@@ -82,7 +82,7 @@ case "${1:-''}" in
             ln -s /var/log/mycodo/daemon-tmp.log /var/www/mycodo/log/daemon-tmp.log
         fi
         
-        chmod -R 770 /var/log/mycodo
+        chmod -R 660 /var/log/mycodo
         chown -R www-data.www-data /var/log/mycodo
         
         python /var/www/mycodo/cgi-bin/mycodo.py 2>&1 &
