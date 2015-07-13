@@ -585,8 +585,8 @@ def daemon(output, log):
                     read_dht_sensor(client_var)
                     write_dht_sensor_log(client_var)
                 else:
-                    if sensor_ht_activated:
-                        for i in range(1, int(sensor_ht_num)+1):
+                    for i in range(1, int(sensor_ht_num)+1):
+                        if sensor_ht_activated[i]:
                             read_dht_sensor(i)
                             write_dht_sensor_log(i)
                             time.sleep(1)
