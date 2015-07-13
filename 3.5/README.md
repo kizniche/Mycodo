@@ -131,6 +131,7 @@ Add the following to /etc/apache2/sites-available/default-ssl (or just ‘defaul
     </Directory>
 	<Directory /var/www/mycodo>
         Options Indexes FollowSymLinks MultiViews
+        AllowOverride All
         Order allow,deny
         allow from all
     </Directory>
