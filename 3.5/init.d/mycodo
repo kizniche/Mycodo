@@ -83,6 +83,7 @@ case "${1:-''}" in
         fi
         
         chmod -R 660 /var/log/mycodo
+        chown -R www-data.www-data /var/www/mycodo
         chown -R www-data.www-data /var/log/mycodo
         
         python /var/www/mycodo/cgi-bin/mycodo.py 2>&1 &
