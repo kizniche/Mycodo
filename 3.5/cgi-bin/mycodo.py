@@ -191,7 +191,10 @@ class ComServer(rpyc.Service):
             rod.start()
         return 1
     def exposed_GenerateGraph(self, sensor_type, graph_type, graph_span, graph_id, sensor_number):
-        logging.info("[Client command] Generate Graph: %s %s %s %s %s", sensor_type, graph_type, graph_span, graph_id, sensor_number)
+        if (graph_span == 'default'):
+            logging.info("[Client command] Generate Graph: %s %s %s %s", sensor_type, graph_span, graph_id, sensor_number)
+        else:
+            logging.info("[Client command] Generate Graph: %s %s %s %s %s", sensor_type, graph_type, graph_span, graph_id, sensor_number)
         generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number)
         return 1
     def exposed_PID_start(self, pidtype, number):
