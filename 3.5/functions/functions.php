@@ -113,10 +113,10 @@ function view_sql_db($sqlite_db) {
     }
 
     print "<br>Table: Misc<br>";
-    print "Camera_Relay<br>";
-    $results = $db->query('SELECT Camera_Relay FROM Misc');
+    print "Camera_Relay Dismiss_Notification<br>";
+    $results = $db->query('SELECT Camera_Relay, Dismiss_Notification FROM Misc');
     while ($row = $results->fetchArray()) {
-        print $row[0] . "<br>";
+        print $row[0] . " " . $row[1] . "<br>";
     }
 }
 
