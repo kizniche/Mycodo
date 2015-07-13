@@ -76,29 +76,29 @@ $graph_id = get_graph_id();
 $graph_type = get_graph_type();
 $graph_span = get_graph_span();
 
-// Grab last entry for each sensor from the respective log file
-$last_ht_sensor[1] = `awk '($10 == 1){exit}END{print}' /var/www/mycodo/log/sensor-ht-tmp.log`;
-$last_ht_sensor[2] = `awk '($10 == 2){exit}END{print}' /var/www/mycodo/log/sensor-ht-tmp.log`;
-$last_ht_sensor[3] = `awk '($10 == 3){exit}END{print}' /var/www/mycodo/log/sensor-ht-tmp.log`;
-$last_ht_sensor[4] = `awk '($10 == 4){exit}END{print}' /var/www/mycodo/log/sensor-ht-tmp.log`;
-$last_co2_sensor[1] = `awk '($8 == 1){exit}END{print}' /var/www/mycodo/log/sensor-co2-tmp.log`;
-$last_co2_sensor[2] = `awk '($8 == 2){exit}END{print}' /var/www/mycodo/log/sensor-co2-tmp.log`;
-$last_co2_sensor[3] = `awk '($8 == 3){exit}END{print}' /var/www/mycodo/log/sensor-co2-tmp.log`;
-$last_co2_sensor[4] = `awk '($8 == 4){exit}END{print}' /var/www/mycodo/log/sensor-co2-tmp.log`;
+$last_ht_sensor = array();
+$last_co2_sensor = array();
 
+// Grab last entry for each sensor from the respective log file
 // explode() the last sensor entry to extract data
 for ($p = 1; $p <= $sensor_ht_num; $p++) {
-    $sensor_explode = explode(" ", $last_ht_sensor[$p]);
-    $t_c[$p] = $sensor_explode[6];
-    $hum[$p] = $sensor_explode[7];
-    $t_f[$p] = round(($t_c[$p]*(9/5) + 32), 1);
-    $dp_c[$p] = substr($sensor_explode[8], 0, -1);
-    $dp_f[$p] = round(($dp_c[$p]*(9/5) + 32), 1);
-    $settemp_f[$p] = round($pid_temp_set[$p]*(9/5)+32, 1);
+    if ($sensor_ht_activated[$p]) {
+        $last_ht_sensor[$p] = `awk '($10 == 1){exit}END{print}' /var/www/mycodo/log/sensor-ht-tmp.log`;
+        $sensor_explode = explode(" ", $last_ht_sensor[$p]);
+        $t_c[$p] = $sensor_explode[6];
+        $hum[$p] = $sensor_explode[7];
+        $t_f[$p] = round(($t_c[$p]*(9/5) + 32), 1);
+        $dp_c[$p] = substr($sensor_explode[8], 0, -1);
+        $dp_f[$p] = round(($dp_c[$p]*(9/5) + 32), 1);
+        $settemp_f[$p] = round($pid_temp_set[$p]*(9/5)+32, 1);
+    }
 }
 for ($p = 1; $p <= $sensor_co2_num; $p++) {
-    $sensor_explode = explode(" ", $last_co2_sensor[$p]);
-    $co2[$p] = $sensor_explode[6];
+    if ($sensor_co2_activated[$p]) {
+        $last_co2_sensor[$p] = `awk '($8 == 1){exit}END{print}' /var/www/mycodo/log/sensor-co2-tmp.log`;
+        $sensor_explode = explode(" ", $last_co2_sensor[$p]);
+        $co2[$p] = $sensor_explode[6];
+    }
 }
 
 // Grab the time of the last sensor read
