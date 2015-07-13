@@ -23,8 +23,6 @@ sqlite3
 
 ### Install
 
-For connecting a K30 CO2 sensor, see http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip 
-
 `sudo apt-get update`
 
 `sudo apt-get upgrade`
@@ -159,13 +157,13 @@ Login with the login and password given to you at the login page, then go to the
 
 Select the number of relays that are connected and save.
 
-Change the `GPIO Pin` and `Trigger ON` of each relay. The `GPIO Pin` is the pin on the raspberry pi (Use BCM numbering, not board numbering) and the `Trigger ON` is the required signal to activate the relay (close the circuit). If your relay activates when it receives a LOW (0 volt, ground) signal, set the `Trigger ON` to LOW, otherwise set it HIGH. Save all your changes.
+Change the `GPIO Pin` and `Trigger ON` of each relay. The `GPIO Pin` is the pin on the raspberry pi (using BCM numbering, not board numbering) and the `Trigger ON` is the required signal to activate the relay (close the circuit). If your relay activates when it receives a LOW (0 volt, ground) signal, set the `Trigger ON` to LOW, otherwise set it HIGH. Save all your changes.
 
 Select the number of Temperature/Humidity sensors that are connected and save.
 
 Change the `Sensor Device` and `GPIO Pin` for each sensor. Once these have been set, you can activate logging and/or graphing. When logging is activated, a log entry will be written to a file at the duration defined under `Log Interval` and when graphing is activated, the `Generate Graph` button on the main tab will generate preset graphs with the data logged with that particular sensor.
 
-Repeat the above steps for any CO2 sensors that are connected.
+Repeat the above steps for any CO2 sensors that are connected. For connecting a K30 CO2 sensor, read this [http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zi](configuration guide).
 
 For any PID controllers that are desired to be used, ensure you have set the `Relay No.`, `PID Set Point`, `P`, `I`, and `D` before attempting to activate it. The `Relay No.` is the number found under Relays that you would like to be controlled by the PID. The `PID Set point` is the desired condition (temperature, humidity, or co2 concentration, depending on which PID controller). The `P`, `I`, and `D` are the most crucial variables of the controller. It is advised to set `I` and `D` to 0 until the controller can reasonably stabilize with the `P` alone. That exact value will depend on the size of your system and degree of impact the device connected to the relay has on the system, but it is generally advisable to start low and work your way higher until you find something that works.
 
