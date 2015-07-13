@@ -448,16 +448,40 @@ class OneFileLoginApplication {
     // Login page
     private function showPageLoginForm() {
         if ($this->feedback) echo $this->feedback . "<br/>";
-        echo '<h2>Mycodo Login</h2>';
-        echo '<form method="post" action="' . $_SERVER['SCRIPT_NAME'] . '" name="loginform">';
-        echo '<p><input id="login_input_username" type="text" name="user_name" required /> ';
-        echo ' <label for="login_input_username">Username (or email)</label></p>';
-        echo '<p><input id="login_input_password" type="password" name="user_password" required /> ';
-        echo ' <label for="login_input_password">Password</label></p>';
-        echo '<p><input type="checkbox" name="cookie" value="1"> Cookie (30 days)</p>';
-        echo '<p><input type="submit"  name="login" value="Log in" /></p>';
-        echo '</form>';
-
+        ?>
+        <div style="padding-top: 5em; width: 14em; margin: 8 auto; text-align: left; ">
+            <div style="padding-bottom: 0.5em; text-align: center; font-size: 1.8em;">Mycodo</div>
+            <form method="post" action="' . $_SERVER['SCRIPT_NAME'] . '" name="loginform">
+            <table>
+                <tr>
+                    <td>
+                        <label for="login_input_username">Username</label>
+                    </td>
+                    <td>
+                        <input id="login_input_username" type="text" name="user_name" title="Username or Email" required /> 
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="login_input_password">Password</label>
+                    </td>
+                    <td>
+                        <input id="login_input_password" type="password" name="user_password" required />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan=2 style="text-align: center; padding-top:0.5em;">
+                        <input type="checkbox" name="cookie" value="1"> Remember me (30 days)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan=2 style="text-align: center; padding-top:1em;">
+                        <input type="submit"  name="login" value="Log in" />
+                    </td>
+            </table>
+            </form>
+        </div>
+        <?php
         $this->createDatabaseConnection();
         $sql = 'SELECT user_email
                 FROM users
@@ -468,12 +492,12 @@ class OneFileLoginApplication {
         $query->execute();
         $result_row = $query->fetchObject();
         if (!empty($result_row->user_email)) {
-            echo "<h2 style=\"padding-top: 1em;\">WARNING</h2>";
-            echo "The default user (name 'admin' password 'mycodo') has full read/write privileges";
-            echo "<br>The guest user (name 'guest' password 'anonymous') only has read privileges";
-            echo "<br>For security, it is recommended to change the passwords of both 'admin' and 'guest'.";
-            echo "<br>User management is under the Advanced tab and a user list is under the Log tab.";
-            echo "<br>This notice will dissapear if the user 'notice' is deleted.";
+            ?>
+            <div style="padding-top: 1.5em; width: 33em; margin: 8 auto; text-align: justify; ">
+                <div style="padding: 0.5em 0; text-align: center; font-size: 1.5em; font-weight: bold; color: red;">WARNING</div>
+                <span style="color: red">If this system is remotely accessible from the internet, you may be at risk of unauthorized access.</span> The default user (username 'admin' password 'mycodo') has full read/write privileges. The guest user (username 'guest' password 'anonymous') only has read privileges. For security, it is strongly recommended that you change the default passwords of both 'admin' and 'guest'. Password changes can be made from the Advanced tab. This notice will dissapear once the user 'notice' is deleted. A list of registered users can be viewed with Users button under the Log tab.
+            </div>
+            <?php
         }
     }
 
