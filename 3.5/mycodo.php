@@ -1430,7 +1430,7 @@ if ($output_error) {
                     Add User
                     </div>
                     <div class="manageusers">
-                    <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" /> <label for="login_input_username">User name (only letters and numbers, 2 to 64 characters)</label>
+                    <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" /> <label for="login_input_username">Username (only letters and numbers, 2 to 64 characters)</label>
                     </div>
                     <div class="manageusers">
                     <input id="login_input_email" type="email" name="user_email" /> <label for="login_input_email">Email</label>
@@ -1452,7 +1452,7 @@ if ($output_error) {
                     Change Password
                     </div>
                     <div class="manageusers">
-                    <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" /> <label for="login_input_username">User name</label>
+                    <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" /> <label for="login_input_username">Username</label>
                     </div>
                     <div class="manageusers">
                     <input id="login_input_password_new" class="login_input" type="password" name="new_password" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_new">New Password (min. 6 characters)</label>
@@ -1472,7 +1472,7 @@ if ($output_error) {
                     </div>
                     <div class="manageusers">
                     <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
-                    <label for="login_input_username">User name</label>
+                    <label for="login_input_username">Username</label>
                     </div>
                     <div class="manageusers">
                     <input type="submit" name="deleteuser" value="Delete User" />
