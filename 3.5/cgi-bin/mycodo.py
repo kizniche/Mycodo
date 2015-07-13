@@ -23,7 +23,7 @@
 #
 #  Contact at kylegabriel.com
 
-#### Configure Directories ####
+#### Install Directory ####
 install_directory = "/var/www/mycodo"
 
 import Adafruit_DHT
@@ -50,17 +50,20 @@ from email.mime.text import MIMEText
 from lockfile import LockFile
 from rpyc.utils.server import ThreadedServer
 
-sql_database = "%s/config/mycodo.db" % install_directory
-relay_script = "%s/cgi-bin/relay.sh" % install_directory
-image_path = "%s/images" % install_directory
-log_path = "%s/log" % install_directory
+mycodo_database = "%s/config/mycodo.db" % install_directory # SQLite database
+image_path = "%s/images" % install_directory # Where generated graphs are stored
+log_path = "%s/log" % install_directory # Where generated logs are stored
+
+# Logs that are on the tempfs and are written to every sensor read
 daemon_log_file_tmp = "%s/daemon-tmp.log" % log_path
-daemon_log_file = "%s/daemon.log" % log_path
 sensor_ht_log_file_tmp = "%s/sensor-ht-tmp.log" % log_path
-sensor_ht_log_file = "%s/sensor-ht.log" % log_path
 sensor_co2_log_file_tmp = "%s/sensor-co2-tmp.log" % log_path
-sensor_co2_log_file = "%s/sensor-co2.log" % log_path
 relay_log_file_tmp = "%s/relay-tmp.log" % log_path
+
+# Logs that are periodically concatenated (every 6 hours) to the SD card
+daemon_log_file = "%s/daemon.log" % log_path
+sensor_ht_log_file = "%s/sensor-ht.log" % log_path
+sensor_co2_log_file = "%s/sensor-co2.log" % log_path
 relay_log_file = "%s/relay.log" % log_path
 
 logging.basicConfig(
@@ -68,6 +71,7 @@ logging.basicConfig(
     level = logging.INFO,
     format = '%(asctime)s [%(levelname)s] %(message)s')
 
+# Where lockfiles are stored for certain processes
 lock_directory = "/var/lock/mycodo"
 sql_lock_path = "%s/config" % lock_directory
 daemon_lock_path = "%s/daemon" % lock_directory
@@ -103,6 +107,7 @@ pid_temp_i = [0] * 5
 pid_temp_d = [0] * 5
 pid_temp_or = [0] * 5
 pid_temp_alive = [1] * 5
+pid_temp_active = [0] * 5
 
 # Humidity PID
 pid_hum_relay = [0] * 5
@@ -113,6 +118,7 @@ pid_hum_i = [0] * 5
 pid_hum_d = [0] * 5
 pid_hum_or = [0] * 5
 pid_hum_alive = [1] * 5
+pid_hum_active = [0] * 5
 
 # CO2 Sensors
 sensor_co2_num = 0
@@ -133,6 +139,7 @@ pid_co2_i = [0] * 5
 pid_co2_d = [0] * 5
 pid_co2_or = [0] * 5
 pid_co2_alive = [1] * 5
+pid_c02_active = [0] * 2
 
 # PID Restarting
 pid_number = None
@@ -167,9 +174,6 @@ server = None
 client_que = '0'
 client_var = None
 terminate = False
-pid_temp_active = [0] * 5
-pid_hum_active = [0] * 5
-pid_c02_active = [0] * 2
 
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
@@ -1780,7 +1784,7 @@ def read_sql():
 
     verbose = 0
     # Check if all required tables exist in the SQL database
-    conn = sqlite3.connect(sql_database)
+    conn = sqlite3.connect(mycodo_database)
     cur = conn.cursor()
     tables = ['Relays', 'HTSensor', 'CO2Sensor', 'Timers', 'Numbers', 'SMTP']
     missing = []
@@ -1919,9 +1923,9 @@ def write_sql():
             lock.acquire()
 
     logging.debug("[Write SQL] Gained lock: %s", lock.path)
-    logging.debug("[Write SQL] Writing SQL Database %s", sql_database)
+    logging.debug("[Write SQL] Writing SQL Database %s", mycodo_database)
 
-    conn = sqlite3.connect(sql_database)
+    conn = sqlite3.connect(mycodo_database)
     cur = conn.cursor()
     cur.execute('DROP TABLE IF EXISTS Relays ')
     cur.execute('DROP TABLE IF EXISTS HTSensor ')
