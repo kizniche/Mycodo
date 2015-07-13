@@ -449,8 +449,8 @@ class OneFileLoginApplication {
     private function showPageLoginForm() {
         if ($this->feedback) echo $this->feedback . "<br/>";
         ?>
-        <div style="padding-top: 5em; width: 14em; margin: 8 auto; text-align: left; ">
-            <div style="padding-bottom: 0.5em; text-align: center; font-size: 1.8em;">Mycodo</div>
+        <div style="padding-top: 2em; width: 14em; margin: 8 auto; text-align: left; ">
+            <div style="padding-bottom: 0.6em; text-align: center; font-size: 1.8em;">Mycodo</div>
             <form method="post" action="' . $_SERVER['SCRIPT_NAME'] . '" name="loginform">
             <table>
                 <tr>
@@ -493,9 +493,16 @@ class OneFileLoginApplication {
         $result_row = $query->fetchObject();
         if (!empty($result_row->user_email)) {
             ?>
-            <div style="padding-top: 1.5em; width: 33em; margin: 8 auto; text-align: justify; ">
-                <div style="padding: 0.5em 0; text-align: center; font-size: 1.5em; font-weight: bold; color: red;">WARNING</div>
-                <span style="color: red">If this system is remotely accessible from the internet, you may be at risk of unauthorized access.</span> The default user (username 'admin' password 'mycodo') has full read/write privileges. The guest user (username 'guest' password 'anonymous') only has read privileges. For security, it is strongly recommended that you change the default passwords of both 'admin' and 'guest'. Password changes can be made from the Advanced tab. This notice will dissapear once the user 'notice' is deleted. A list of registered users can be viewed with Users button under the Log tab.
+            <div style="padding-top: 1em; width: 33em; margin: 8 auto; text-align: justify; ">
+                <div style="padding: 0.5em 0 0.3em 0; text-align: center; font-size: 1.5em; font-weight: bold; color: red;">WARNING</div>
+                <span style="color: red">If this system is remotely accessible from the internet, you may be at risk of unauthorized access.</span> The default user (username 'admin' password 'mycodo') has full read/write privileges. The guest user (username 'guest' password 'anonymous') only has read privileges. For security, it is strongly recommended that you change the default passwords of both 'admin' and 'guest'. Password changes can be made from the Advanced tab. <span style="color: red">This notice will dissapear once the user 'notice' is deleted.</span> A list of registered users can be viewed with Users button under the Log tab.
+
+                <div style="padding: 1em 0 0.3em 0; text-align: center; font-size: 1.5em; font-weight: bold; ">NO WARRANTY NOTICE</div>
+                Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+                <br>
+                Mycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+                <br>
+                You should have received a copy of the GNU General Public License along with Mycodo. If not, see &lt;<a href="http://www.gnu.org/licenses/" target="_blank">http://www.gnu.org/licenses/</a>&gt;.
             </div>
             <?php
         }
