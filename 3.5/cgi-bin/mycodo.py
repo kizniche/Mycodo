@@ -486,7 +486,7 @@ def daemon(output, log):
     global pid_co2_up
     global pid_temp_active
     global pid_hum_active
-    global pid_c02_active
+    global pid_co2_active
     global change_sensor_log
     global server
     global client_que
