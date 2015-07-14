@@ -119,7 +119,10 @@ To allow resolving of IP addresses in the login log, edit /etc/apache2/apache2.c
 
 In each web directory is an.htaccess which denies access to those folders. It is strongly recommended that you ensure this works properly (or alternatively, configure your web server to accomplish the same result), to ensure no one has direct access to these directories, as log, configuration, graph images, and other potentially sensitive information is stored there. Optionally, for higher security, enable SSL/HTTPS.
 
-Add the following to /etc/apache2/sites-available/default-ssl (or just ‘default’ if not using SSL), or modify to suit your needs.
+
+## ATTENTION
+
+This is a crucial step if you will have your web server publically accessible. You must either block access to mycodo.php and directories or allow the use of the included .htaccess files with the addition of `AllowOverride All` in your apache2 config, by modifying /etc/apache2/sites-available/default-ssl (or just ‘default’ if not using SSL):
 
 ```
     DocumentRoot /var/www
