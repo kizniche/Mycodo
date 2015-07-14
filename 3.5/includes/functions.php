@@ -221,7 +221,7 @@ function get_graph_cookie($name) {
     switch($name) {
         case 'id': // Check if cookie exists with properly-formatted graph ID
             if (isset($_COOKIE['graph_id'])) {
-                if (!preg_match('/[^A-Za-z0-9]/', $_COOKIE['graph_id']) &&
+                if (ctype_alnum($_COOKIE['graph_id']) &&
                     !isset($_GET['Refresh'])) { // Generate graph if auto-refresh is on
                     return $_COOKIE['graph_id'];
                 }
