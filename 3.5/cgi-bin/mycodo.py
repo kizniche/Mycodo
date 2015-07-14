@@ -138,7 +138,7 @@ pid_co2_i = [0] * 5
 pid_co2_d = [0] * 5
 pid_co2_or = [0] * 5
 pid_co2_alive = [1] * 5
-pid_c02_active = [0] * 2
+pid_co2_active = [0] * 2
 
 # PID Restarting
 pid_number = None
