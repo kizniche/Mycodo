@@ -538,7 +538,7 @@ class OneFileLoginApplication {
 
     // Main page when logged in. What to display when the user is successfully authenticated.
     private function showPageLoggedIn() {
-        require_once("mycodo.php");
+        require_once("includes/mycodo.php");
     }
 }
 
