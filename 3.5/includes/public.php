@@ -23,11 +23,9 @@
 */
 
 // Grab last entry for each sensor from the respective log file
-$last_ht_sensor = array();
-$last_co2_sensor = array();
 for ($p = 1; $p <= $sensor_ht_num; $p++) {
     if ($sensor_ht_activated[$p]) {
-        $last_ht_sensor[$p] = `awk '($10 == 1){exit}END{print}' /var/www/mycodo/log/sensor-ht-tmp.log`;
+        $last_ht_sensor[$p] = `awk '$10 == $p {print}' /var/www/mycodo/log/sensor-ht-tmp.log | tail -n 1`;
         $sensor_explode = explode(" ", $last_ht_sensor[$p]);
         $t_c[$p] = $sensor_explode[6];
         $hum[$p] = $sensor_explode[7];
@@ -39,7 +37,7 @@ for ($p = 1; $p <= $sensor_ht_num; $p++) {
 }
 for ($p = 1; $p <= $sensor_co2_num; $p++) {
     if ($sensor_co2_activated[$p]) {
-        $last_co2_sensor[$p] = `awk '($8 == 1){exit}END{print}' /var/www/mycodo/log/sensor-co2-tmp.log`;
+        $last_co2_sensor[$p] = `awk '$8 == $p {print}' /var/www/mycodo/log/sensor-ht-tmp.log | tail -n 1`;
         $sensor_explode = explode(" ", $last_co2_sensor[$p]);
         $co2[$p] = $sensor_explode[6];
     }
