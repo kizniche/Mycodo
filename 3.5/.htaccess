@@ -1,4 +1,9 @@
-<Files ~ "\mycodo.php">
-    Order allow,deny
-    Deny from all
-</Files>
+Order allow,deny
+Deny from All
+
+<FilesMatch "^(index\.php)?$">
+        Allow from All
+</FilesMatch>
+<FilesMatch "^(image\.php)?$">
+        Allow from All
+</FilesMatch>

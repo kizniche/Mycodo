@@ -26,7 +26,6 @@
 ####### Configure #######
 $install_path = "/var/www/mycodo";
 
-
 $image_dir = $install_path . "/images/";
 $still_dir = $install_path . "/camera-stills/";
 $hdr_dir = $install_path . "/camera-hdr/";
@@ -34,32 +33,39 @@ $mycodo_client = $install_path . "/cgi-bin/mycodo-client.py";
 
 header('Content-Type: image/jpeg');
 
-if ($_GET['graphtype'] == 'separate' || $_GET['graphtype'] == 'combined' || $_GET['graphtype'] == 'default') {
-    readfile($image_dir . 'graph-' . $_GET['sensortype'] . $_GET['graphtype'] . $_GET['graphspan'] . '-' . $_GET['id'] . '-' . $_GET['sensornumber'] . '.png');
-} elseif ($_GET['graphtype'] == 'custom-combined') {
-    readfile($image_dir . 'graph-' . $_GET['graphtype'] . '-' . $_GET['id'] . '.png');
-} elseif ($_GET['graphtype'] == 'custom-separate') {
-    readfile($image_dir . 'graph-' . $_GET['graphtype'] . '-' . $_GET['id'] .  '-' . $_GET['sensornumber'] . '.png');
-} elseif ($_GET['graphtype'] == 'legend-small') {
-    $id = uniqid();
-    shell_exec($mycodo_client . ' --graph mone legend-small none' . $id . ' 0');
-    readfile($image_dir . 'graph-' . $_GET['graphtype'] . '-' . $id . '.png');
-} elseif ($_GET['graphtype'] == 'legend-full') {
-    $id = uniqid();
-    shell_exec($mycodo_client . ' --graph none legend-full none' . $id . ' 0');
-    readfile($image_dir . 'graph-' . $_GET['graphtype'] . '-' . $id . '.png');
-} else {
+if (isset($_GET['span'])) {
     switch ($_GET['span']) {
-    case 'cam-still':
-        $files = scandir($still_dir, SCANDIR_SORT_DESCENDING);
-        $newest_file = $files[0];
-        readfile($still_dir . $newest_file);
-        break;
-    case 'cam-hdr':
-        $files = scandir($still_dir, SCANDIR_SORT_DESCENDING);
-        $newest_file = $files[0];
-        readfile($still_dir . $newest_file);
-        break;
-    }
+        case 'cam-still':
+            $files = scandir($still_dir, SCANDIR_SORT_DESCENDING);
+            $newest_file = $files[0];
+            readfile($still_dir . $newest_file);
+            break;
+        case 'cam-hdr':
+            $files = scandir($still_dir, SCANDIR_SORT_DESCENDING);
+            $newest_file = $files[0];
+            readfile($still_dir . $newest_file);
+            break;
+        }
+} else if (ctype_alnum($_GET['id']) && is_int((int)$_GET['sensornumber']) &&
+        ($_GET['sensortype'] == 'ht' || $_GET['sensortype'] == 'co2')) {
+
+    if ($_GET['graphtype'] == 'separate' ||
+        $_GET['graphtype'] == 'combined' ||
+        $_GET['graphtype'] == 'default') {
+        
+        readfile($image_dir . 'graph-' . $_GET['sensortype'] . $_GET['graphtype'] . $_GET['graphspan'] . '-' . $_GET['id'] . '-' . $_GET['sensornumber'] . '.png');
+    } elseif ($_GET['graphtype'] == 'custom-combined') {
+        readfile($image_dir . 'graph-' . $_GET['graphtype'] . '-' . $_GET['id'] . '.png');
+    } elseif ($_GET['graphtype'] == 'custom-separate') {
+        readfile($image_dir . 'graph-' . $_GET['graphtype'] . '-' . $_GET['id'] .  '-' . $_GET['sensornumber'] . '.png');
+    } elseif ($_GET['graphtype'] == 'legend-small') {
+        $id = uniqid();
+        shell_exec($mycodo_client . ' --graph mone legend-small none' . $id . ' 0');
+        readfile($image_dir . 'graph-' . $_GET['graphtype'] . '-' . $id . '.png');
+    } elseif ($_GET['graphtype'] == 'legend-full') {
+        $id = uniqid();
+        shell_exec($mycodo_client . ' --graph none legend-full none' . $id . ' 0');
+        readfile($image_dir . 'graph-' . $_GET['graphtype'] . '-' . $id . '.png');
+    } 
 }
 ?>
