@@ -205,7 +205,6 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
             }
         }
     }
-    echo '</div>';
 }
 
 // Create new graph ID. Instructs a new graph to be generated
@@ -297,7 +296,7 @@ function DateSelector($inName, $useDate=0) {
     for($currentMonth = 1; $currentMonth <= 12; $currentMonth++) {
         echo "<OPTION VALUE=\"" . intval($currentMonth) . "\"";
         if(intval(date( "m", $useDate))==$currentMonth) echo " SELECTED";
-        echo ">" . $monthName[$currentMonth] . "\n";
+        echo ">" . $monthName[$currentMonth] . "</OPTION>\n";
     }
     echo "</SELECT> / ";
 
@@ -305,7 +304,7 @@ function DateSelector($inName, $useDate=0) {
     for($currentDay=1; $currentDay <= 31; $currentDay++) {
         echo "<OPTION VALUE=\"$currentDay\"";
         if(intval(date( "d", $useDate))==$currentDay) echo " SELECTED";
-        echo ">$currentDay\n";
+        echo ">$currentDay</OPTION>\n";
     }
     echo "</SELECT> / ";
 
@@ -314,7 +313,7 @@ function DateSelector($inName, $useDate=0) {
     for($currentYear = $startYear-5; $currentYear <= $startYear+5; $currentYear++) {
         echo "<OPTION VALUE=\"$currentYear\"";
         if(date("Y", $useDate) == $currentYear) echo " SELECTED";
-        echo ">$currentYear\n";
+        echo ">$currentYear</OPTION>\n";
     }
     echo "</SELECT>&nbsp;&nbsp;&nbsp;";
 
@@ -323,8 +322,8 @@ function DateSelector($inName, $useDate=0) {
         if($currentHour < 10) echo "<OPTION VALUE=\"0$currentHour\"";
         else echo "<OPTION VALUE=\"$currentHour\"";
         if(intval(date("H", $useDate)) == $currentHour) echo " SELECTED";
-        if($currentHour < 10) echo ">0$currentHour\n";
-        else echo ">$currentHour\n";
+        if($currentHour < 10) echo ">0$currentHour</OPTION>\n";
+        else echo ">$currentHour</OPTION>\n";
     }
     echo "</SELECT> : ";
 
@@ -333,8 +332,8 @@ function DateSelector($inName, $useDate=0) {
         if($currentMinute < 10) echo "<OPTION VALUE=\"0$currentMinute\"";
         else echo "<OPTION VALUE=\"$currentMinute\"";
         if(intval(date( "i", $useDate)) == $currentMinute) echo " SELECTED";
-        if($currentMinute < 10) echo ">0$currentMinute\n";
-        else echo ">$currentMinute\n";
+        if($currentMinute < 10) echo ">0$currentMinute</OPTION>\n";
+        else echo ">$currentMinute</OPTION>\n";
     }
     echo "</SELECT>";
 }

@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.51";
+$version = "3.5.52";
 
 ######### Start Edit Configure #########
 
@@ -170,7 +170,7 @@ if ($output_error) {
                             echo "<br>" . number_format((float)$hum[$i], 1, '.', '') . "%";
                         ?></td>
                         <td style="font-size: 0.8em;"><?php
-                            echo "Set<br><span title=\"" . number_format((float)$settemp_f[$i], 1, '.', '') ."&deg;F\">" . number_format((float)$pid_temp_set[$i], 1, '.', '') . "&deg;C";
+                            echo "Set<br><span title=\"" . number_format((float)$settemp_f[$i], 1, '.', '') ."&deg;F\">" . number_format((float)$pid_temp_set[$i], 1, '.', '') . "&deg;C</span>";
                             echo "<br>" . number_format((float)$pid_hum_set[$i], 1, '.', '') . "%";
                         ?></td>
                     </tr>
@@ -341,16 +341,20 @@ if ($output_error) {
                     generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_ht_num, $sensor_co2_num, $sensor_ht_graph, $sensor_co2_graph);
 
                     // If any graphs are to be displayed, show links to the legends
-                    if (array_sum($sensor_ht_graph) + array_sum($sensor_co2_graph)) {
-                        echo '<div style="width: 100%; padding: 1em 0 0 0; text-align: center;">';
-                        echo 'Legend: <a href="javascript:open_legend()">Brief</a> / <a href="javascript:open_legend_full()">Full</a>';
-                        echo '<div style="text-align: center; padding-top: 0.5em;"><a href="https://github.com/kizniche/Mycodo" target="_blank">Mycodo on GitHub</a></div>';
-                        echo '</div>';
-                    } else {
-                        echo '<div style="width: 100%; padding: 2em 0 0 0; text-align: center;">';
-                        echo 'There are currently 0 sensors activated for graphing.';
-                        echo '<br>Sensors can be activated for logging and graphing in the Configure tab.';
-                        echo '</div>';
+                    if (array_sum($sensor_ht_graph) + array_sum($sensor_co2_graph)) { ?>
+                        <div style="width: 100%; padding: 1em 0 0 0; text-align: center;">
+                            Legend: <a href="javascript:open_legend()">Brief</a> / <a href="javascript:open_legend_full()">Full</a>
+                            <div style="text-align: center; padding-top: 0.5em;">
+                                <a href="https://github.com/kizniche/Mycodo" target="_blank">Mycodo on GitHub</a>
+                            </div>
+                        </div>
+                    <?php
+                    } else { ?>
+                        <div style="width: 100%; padding: 2em 0 0 0; text-align: center;">
+                            There are currently 0 sensors activated for graphing.
+                            <br>Sensors can be activated for logging and graphing in the Configure tab.
+                        </div>
+                    <?php
                     }
                     ?>
             </div>
@@ -1125,206 +1129,205 @@ if ($output_error) {
                 echo "class=\"selected\"";
             } ?>>
             <div style="padding-left:1em;">
-            <div class="advanced">
-                <FORM action="?tab=adv<?php
-                    if (isset($_GET['page'])) {
-                        echo "&page=" . $_GET['page'];
-                    } ?>" method="POST">
-                <div style="padding-bottom: 1em; font-weight: bold;">
-                    <input type="submit" name="ChangeNoTimers" value="Save ->">
-                    <select name="numtimers">
-                        <option value="1" <?php if ($timer_num == 1) echo "selected=\"selected\""; ?>>1</option>
-                        <option value="2" <?php if ($timer_num == 2) echo "selected=\"selected\""; ?>>2</option>
-                        <option value="3" <?php if ($timer_num == 3) echo "selected=\"selected\""; ?>>3</option>
-                        <option value="4" <?php if ($timer_num == 4) echo "selected=\"selected\""; ?>>4</option>
-                        <option value="5" <?php if ($timer_num == 5) echo "selected=\"selected\""; ?>>5</option>
-                        <option value="6" <?php if ($timer_num == 6) echo "selected=\"selected\""; ?>>6</option>
-                        <option value="7" <?php if ($timer_num == 7) echo "selected=\"selected\""; ?>>7</option>
-                        <option value="8" <?php if ($timer_num == 8) echo "selected=\"selected\""; ?>>8</option>
-                    </select>
-                    <strong>Timers</strong>
-                </div>
-                <?php
-                if ($timer_num > 0) {
-                ?>
-                <div>
-                    <table class="timers">
-                        <tr>
-                            <td>
-                                Timer
-                            </td>
-                            <td>
-                                Name
-                            </td>
-                            <th align="center" colspan="2">
-                                State
-                            </th>
-                            <td>
-                                Relay
-                            </td>
-                            <td>
-                                On (sec)
-                            </td>
-                            <td>
-                                Off (sec)
-                            </td>
-                            <td>
-                            </td>
-                        </tr>
-                        <?php
-                        for ($i = 1; $i <= $timer_num; $i++) {
-                        ?>
-                        <tr>
-                            <td>
-                                <?php echo $i; ?>
-                            </td>
-                            <td>
-                                <input type="text" value="<?php echo $timer_name[$i]; ?>" maxlength=5 size=5 name="Timer<?php echo $i; ?>Name" title="This is the relay name for timer <?php echo $i; ?>"/>
-                            </td>
-                            <?php
-                            if ($timer_state[$i] == 0) {
-                            ?>
-                                <th colspan=2 align=right>
-                                    <nobr><input type="hidden" name="Timer<?php echo $i; ?>State" value="0"><input type="image" style="height: 0.9em;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="Timer<?php echo $i; ?>StateChange" value="0"> | <button style="width: 40px;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">ON</button></nobr>
+                <div class="advanced">
+                    <FORM action="?tab=adv<?php
+                        if (isset($_GET['page'])) {
+                            echo "&page=" . $_GET['page'];
+                        } ?>" method="POST">
+                    <div style="padding-bottom: 1em; font-weight: bold;">
+                        <input type="submit" name="ChangeNoTimers" value="Save ->">
+                        <select name="numtimers">
+                            <option value="1" <?php if ($timer_num == 1) echo "selected=\"selected\""; ?>>1</option>
+                            <option value="2" <?php if ($timer_num == 2) echo "selected=\"selected\""; ?>>2</option>
+                            <option value="3" <?php if ($timer_num == 3) echo "selected=\"selected\""; ?>>3</option>
+                            <option value="4" <?php if ($timer_num == 4) echo "selected=\"selected\""; ?>>4</option>
+                            <option value="5" <?php if ($timer_num == 5) echo "selected=\"selected\""; ?>>5</option>
+                            <option value="6" <?php if ($timer_num == 6) echo "selected=\"selected\""; ?>>6</option>
+                            <option value="7" <?php if ($timer_num == 7) echo "selected=\"selected\""; ?>>7</option>
+                            <option value="8" <?php if ($timer_num == 8) echo "selected=\"selected\""; ?>>8</option>
+                        </select>
+                        <strong>Timers</strong>
+                    </div>
+                    <?php
+                    if ($timer_num > 0) {
+                    ?>
+                    <div>
+                        <table class="timers">
+                            <tr>
+                                <td>
+                                    Timer
                                 </td>
+                                <td>
+                                    Name
+                                </td>
+                                <th align="center" colspan="2">
+                                    State
                                 </th>
+                                <td>
+                                    Relay
+                                </td>
+                                <td>
+                                    On (sec)
+                                </td>
+                                <td>
+                                    Off (sec)
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
                             <?php
-                            } else {
+                            for ($i = 1; $i <= $timer_num; $i++) {
                             ?>
-                                <th colspan=2 align=right>
-                                    <nobr><input type="hidden" name="Timer<?php echo $i; ?>State" value="1"><input type="image" style="height: 0.9em;" src="/mycodo/img/on.jpg" alt="On" title="On" name="Timer<?php echo $i; ?>StateChange" value="1"> | <button style="width: 40px;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="0">OFF</button></nobr>
-                                </th>
+                            <tr>
+                                <td>
+                                    <?php echo $i; ?>
+                                </td>
+                                <td>
+                                    <input type="text" value="<?php echo $timer_name[$i]; ?>" maxlength=5 size=5 name="Timer<?php echo $i; ?>Name" title="This is the relay name for timer <?php echo $i; ?>"/>
+                                </td>
+                                <?php
+                                if ($timer_state[$i] == 0) {
+                                ?>
+                                    <th colspan=2 align=right>
+                                        <nobr><input type="hidden" name="Timer<?php echo $i; ?>State" value="0"><input type="image" style="height: 0.9em;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="Timer<?php echo $i; ?>StateChange" value="0"> | <button style="width: 40px;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">ON</button></nobr>
+                                    </td>
+                                    </th>
+                                <?php
+                                } else {
+                                ?>
+                                    <th colspan=2 align=right>
+                                        <nobr><input type="hidden" name="Timer<?php echo $i; ?>State" value="1"><input type="image" style="height: 0.9em;" src="/mycodo/img/on.jpg" alt="On" title="On" name="Timer<?php echo $i; ?>StateChange" value="1"> | <button style="width: 40px;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="0">OFF</button></nobr>
+                                    </th>
+                                <?php
+                                }
+                                ?>
+                                <td>
+                                    <input type="text" value="<?php echo $timer_relay[$i]; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>Relay" title="This is the relay number for timer <?php echo $i; ?>"/>
+                                </td>
+                                <td>
+                                    <input type="text" value="<?php echo $timer_duration_on[$i]; ?>" maxlength=7 size=4 name="Timer<?php echo $i; ?>On" title="This is On duration of timer <?php echo $i; ?>"/>
+                                </td>
+                                <td>
+                                    <input type="text" value="<?php echo $timer_duration_off[$i]; ?>" maxlength=7 size=4 name="Timer<?php echo $i; ?>Off" title="This is Off duration for timer <?php echo $i; ?>"/>
+                                </td>
+                                <td>
+                                    <input type="submit" name="ChangeTimer<?php echo $i; ?>" value="Set">
+                                </td>
+                            </tr>
                             <?php
                             }
                             ?>
-                            <td>
-                                <input type="text" value="<?php echo $timer_relay[$i]; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>Relay" title="This is the relay number for timer <?php echo $i; ?>"/>
-                            </td>
-                            <td>
-                                <input type="text" value="<?php echo $timer_duration_on[$i]; ?>" maxlength=7 size=4 name="Timer<?php echo $i; ?>On" title="This is On duration of timer <?php echo $i; ?>"/>
-                            </td>
-                            <td>
-                                <input type="text" value="<?php echo $timer_duration_off[$i]; ?>" maxlength=7 size=4 name="Timer<?php echo $i; ?>Off" title="This is Off duration for timer <?php echo $i; ?>"/>
-                            </td>
-                            <td>
-                                <input type="submit" name="ChangeTimer<?php echo $i; ?>" value="Set">
-                            </td>
-                        </tr>
-                        <?php
-                        }
-                        ?>
-                    </table>
+                        </table>
+                    </div>
+                    </FORM>
+                    <?php
+                    }
+                    ?>
                 </div>
-                </FORM>
-                <?php
-                }
-                ?>
-            </div>
 
-            <div class="advanced">
-                <FORM action="?tab=adv" method="POST">
-                <div class="notify-title">
-                    Email Notification Settings
+                <div class="advanced">
+                    <FORM action="?tab=adv" method="POST">
+                    <div class="notify-title">
+                        Email Notification Settings
+                    </div>
+                    <div class="notify">
+                        <label class="notify">SMTP Host</label><input class="smtp" type="text" value="<?php echo $smtp_host; ?>" maxlength=30 size=20 name="smtp_host" title=""/>
+                    </div>
+                    <div class="notify">
+                        <label class="notify">SMTP Port</label><input class="smtp" type="text" value="<?php echo $smtp_port; ?>" maxlength=30 size=20 name="smtp_port" title=""/>
+                    </div>
+                    <div class="notify">
+                        <label class="notify">User</label><input class="smtp" type="text" value="<?php echo $smtp_user; ?>" maxlength=30 size=20 name="smtp_user" title=""/>
+                    </div>
+                    <div class="notify">
+                        <label class="notify">Password</label><input class="smtp" type="password" value="<?php echo $smtp_pass; ?>" maxlength=30 size=20 name="smtp_pass" title=""/>
+                    </div>
+                    <div class="notify">
+                        <label class="notify">From</label><input class="smtp" type="text" value="<?php echo $smtp_email_from; ?>" maxlength=30 size=20 name="smtp_email_from" title=""/>
+                    </div>
+                    <div class="notify">
+                        <label class="notify">To</label><input class="smtp" type="text" value="<?php echo $smtp_email_to; ?>" maxlength=30 size=20 name="smtp_email_to" title=""/>
+                    </div>
+                    <div class="notify">
+                        <input type="submit" name="ChangeNotify" value="Save">
+                    </div>
+                    </FORM>
                 </div>
-                <div class="notify">
-                    <label class="notify">SMTP Host</label><input class="smtp" type="text" value="<?php echo $smtp_host; ?>" maxlength=30 size=20 name="smtp_host" title=""/>
-                </div>
-                <div class="notify">
-                    <label class="notify">SMTP Port</label><input class="smtp" type="text" value="<?php echo $smtp_port; ?>" maxlength=30 size=20 name="smtp_port" title=""/>
-                </div>
-                <div class="notify">
-                    <label class="notify">User</label><input class="smtp" type="text" value="<?php echo $smtp_user; ?>" maxlength=30 size=20 name="smtp_user" title=""/>
-                </div>
-                <div class="notify">
-                    <label class="notify">Password</label><input class="smtp" type="password" value="<?php echo $smtp_pass; ?>" maxlength=30 size=20 name="smtp_pass" title=""/>
-                </div>
-                <div class="notify">
-                    <label class="notify">From</label><input class="smtp" type="text" value="<?php echo $smtp_email_from; ?>" maxlength=30 size=20 name="smtp_email_from" title=""/>
-                </div>
-                <div class="notify">
-                    <label class="notify">To</label><input class="smtp" type="text" value="<?php echo $smtp_email_to; ?>" maxlength=30 size=20 name="smtp_email_to" title=""/>
-                </div>
-                <div class="notify">
-                    <input type="submit" name="ChangeNotify" value="Save">
-                </div>
-                </FORM>
-            </div>
 
-            <div class="advanced" style="padding: 1.5em 2em 0 1em;">
-                <form method="post" action="?tab=adv" name="debug">
-                <div style="font-weight: bold; padding-bottom: 0.5em;">
-                    Debugging
-                </div>
-                <div>
-                    Compile Debugging Information
-                    <input type="hidden" name="debug" value="0" />
-                    <input type="checkbox" id="debug" name="debug" value="1"<?php if (isset($_COOKIE['debug'])) if ($_COOKIE['debug'] == True) echo ' checked'; ?>/>
-                    <input type="submit" value="Save">
-                </div>
-                </form>
-            </div>
-
-            <div style="clear: both;"></div>
-
-            <div class="advanced">
-                <?php if ($this->feedback) echo $this->feedback; ?>
-                <div style="padding-bottom: 1em;">
-                    <form method="post" action="?tab=adv" name="addform">
-                    <div class="manageusers-title">
-                    Add User
+                <div class="advanced" style="padding: 1.5em 2em 0 1em;">
+                    <form method="post" action="?tab=adv" name="debug">
+                    <div style="font-weight: bold; padding-bottom: 0.5em;">
+                        Debugging
                     </div>
-                    <div class="manageusers">
-                    <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" /> <label for="login_input_username">Username (only letters and numbers, 2 to 64 characters)</label>
-                    </div>
-                    <div class="manageusers">
-                    <input id="login_input_email" type="email" name="user_email" /> <label for="login_input_email">Email</label>
-                    </div>
-                    <div class="manageusers">
-                    <input id="login_input_password_new" class="login_input" type="password" name="user_password_new" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_new">Password (min. 6 characters)</label>
-                    </div>
-                    <div class="manageusers">
-                    <input id="login_input_password_repeat" class="login_input" type="password" name="user_password_repeat" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_repeat">Repeat password</label>
-                    </div>
-                    <div class="manageusers">
-                    <input type="submit" name="register" value="Add User" />
+                    <div>
+                        Compile Debugging Information
+                        <input type="hidden" name="debug" value="0" />
+                        <input type="checkbox" id="debug" name="debug" value="1"<?php if (isset($_COOKIE['debug'])) if ($_COOKIE['debug'] == True) echo ' checked'; ?>/>
+                        <input type="submit" value="Save">
                     </div>
                     </form>
                 </div>
-                <div style="padding-bottom: 1em;">
-                    <form method="post" action="?tab=adv" name="changeform">
-                    <div class="manageusers-title">
-                    Change Password
-                    </div>
-                    <div class="manageusers">
-                    <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" /> <label for="login_input_username">Username</label>
-                    </div>
-                    <div class="manageusers">
-                    <input id="login_input_password_new" class="login_input" type="password" name="new_password" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_new">New Password (min. 6 characters)</label>
-                    </div>
-                    <div class="manageusers">
-                    <input id="login_input_password_repeat" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_repeat">Repeat New password</label>
-                    </div>
-                    <div class="manageusers">
-                    <input type="submit" name="changepassword" value="Change Password" />
-                    </div>
-                    </form>
-                </div>
-                <div>
-                    <form method="post" action="?tab=adv" name="delform">
-                    <div class="manageusers-title">
-                    Delete User
-                    </div>
-                    <div class="manageusers">
-                    <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
-                    <label for="login_input_username">Username</label>
-                    </div>
-                    <div class="manageusers">
-                    <input type="submit" name="deleteuser" value="Delete User" />
-                    </div>
-                    </form>
-                </div>
-            </div>
 
+                <div style="clear: both;"></div>
+
+                <div class="advanced">
+                    <?php if ($this->feedback) echo $this->feedback; ?>
+                    <div style="padding-bottom: 1em;">
+                        <form method="post" action="?tab=adv" name="addform">
+                        <div class="manageusers-title">
+                            Add User
+                        </div>
+                        <div class="manageusers">
+                            <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" /> <label for="login_input_username">Username (only letters and numbers, 2 to 64 characters)</label>
+                        </div>
+                        <div class="manageusers">
+                            <input id="login_input_email" type="email" name="user_email" /> <label for="login_input_email">Email</label>
+                        </div>
+                        <div class="manageusers">
+                            <input id="login_input_password_new" class="login_input" type="password" name="user_password_new" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_new">Password (min. 6 characters)</label>
+                        </div>
+                        <div class="manageusers">
+                            <input id="login_input_password_repeat" class="login_input" type="password" name="user_password_repeat" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_repeat">Repeat password</label>
+                        </div>
+                        <div class="manageusers">
+                            <input type="submit" name="register" value="Add User" />
+                        </div>
+                        </form>
+                    </div>
+                    <div style="padding-bottom: 1em;">
+                        <form method="post" action="?tab=adv" name="changeform">
+                        <div class="manageusers-title">
+                            Change Password
+                        </div>
+                        <div class="manageusers">
+                            <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" /> <label for="login_input_username">Username</label>
+                        </div>
+                        <div class="manageusers">
+                            <input id="login_input_password_new" class="login_input" type="password" name="new_password" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_new">New Password (min. 6 characters)</label>
+                        </div>
+                        <div class="manageusers">
+                            <input id="login_input_password_repeat" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_repeat">Repeat New password</label>
+                        </div>
+                        <div class="manageusers">
+                            <input type="submit" name="changepassword" value="Change Password" />
+                        </div>
+                        </form>
+                    </div>
+                    <div>
+                        <form method="post" action="?tab=adv" name="delform">
+                        <div class="manageusers-title">
+                            Delete User
+                        </div>
+                        <div class="manageusers">
+                            <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
+                            <label for="login_input_username">Username</label>
+                        </div>
+                            <div class="manageusers">
+                            <input type="submit" name="deleteuser" value="Delete User" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
             </div>
 		</li>
 	</ul> <!-- cd-tabs-content -->
@@ -1344,22 +1347,26 @@ if (isset($_COOKIE['debug'])) {
             <div style="padding-bottom: 2em;">
                 <div style="padding: 1em 0; font-weight: bold; font-size: 1.2em;">
                     PHP Profile
-                </div><pre><?php 
+                </div>
+                <pre><?php 
                     SimpleProfiler::stop_profile();
                     print_r(SimpleProfiler::get_profile());
-                    ?></pre>
+                    ?>
+                </pre>
             </div>
 
             <div style="padding-bottom: 2em;">
                 <div style="padding: 1em 0; font-weight: bold; font-size: 1.2em;">
                     Cookies
-                </div><pre><?php print_r($_COOKIE); ?></pre>
+                </div>
+                <pre><?php print_r($_COOKIE); ?></pre>
             </div>
 
             <div style="padding-bottom: 2em;">
                 <div style="padding: 1em 0; font-weight: bold; font-size: 1.2em;">
                     SQLite Database
-                </div><pre><?php exec('sqlite3 ' . $sqlite_db . ' .dump', $output); print_r($output); ?></pre>
+                </div>
+                <pre><?php exec('sqlite3 ' . $sqlite_db . ' .dump', $output); print_r($output); ?></pre>
             </div>
         </div>
         <?php

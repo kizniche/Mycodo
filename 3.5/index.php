@@ -46,6 +46,9 @@ if (isset($_POST['debug'])) {
 }
 
 class OneFileLoginApplication {
+    // Mycodo SQLite database
+    private $mycodo_db = "config/mycodo.db";
+
     // @var string Type of database used
     private $db_type = "sqlite"; //
 
@@ -494,7 +497,7 @@ class OneFileLoginApplication {
             </form>
         </div>
         <?php
-        $mycodo_db = "config/mycodo.db";
+        
         $db = new SQLite3($mycodo_db);
 
         // Dismiss Notification
