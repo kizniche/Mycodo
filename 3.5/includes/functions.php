@@ -38,6 +38,7 @@ function concatenate_logs() {
     // Concatenate Sensor log files (to TempFS) to ensure the latest data is being used
     `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
     `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
+    `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log > /var/tmp/relay.log`;
 }
 
 // Display Log tab SQL database tables, names, and variables

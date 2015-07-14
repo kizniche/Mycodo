@@ -1063,9 +1063,9 @@ if ($output_error) {
                             echo 'Year Mo Day Hour Min Sec Tc RH DPc Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `tail -n $Lines $sensor_ht_log`;
+                                echo `tail -n $Lines /var/tmp/sensor-ht.log`;
                             } else {
-                                echo `tail -n 30 $sensor_ht_log`;
+                                echo `tail -n 30 /var/tmp/sensor-ht.log`;
                             }
                         }
 
@@ -1074,20 +1074,20 @@ if ($output_error) {
                             echo 'Year Mo Day Hour Min Sec Co2 Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `tail -n $Lines $sensor_co2_log`;
+                                echo `tail -n $Lines /var/tmp/sensor-co2.log`;
                             } else {
-                                echo `tail -n 30 $sensor_co2_log`;
+                                echo `tail -n 30 /var/tmp/sensor-co2.log`;
                             }
                         }
 
                         if(isset($_POST['Relay'])) {
-                            `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log > /var/tmp/relay.log`;
+                            concatenate_logs();
                             echo 'Year Mo Day Hour Min Sec R1Sec R2Sec R3Sec R4Sec R5Sec R6Sec R7Sec R8Sec<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `tail -n $Lines $relay_log`;
+                                echo `tail -n $Lines /var/tmp/relay.log`;
                             } else {
-                                echo `tail -n 30 $relay_log`;
+                                echo `tail -n 30 /var/tmp/relay.log`;
                             }
                         }
                         if(isset($_POST['Users']) && $_SESSION['user_name'] != 'guest') {
@@ -1111,9 +1111,9 @@ if ($output_error) {
                             `cat /var/www/mycodo/log/daemon.log /var/www/mycodo/log/daemon-tmp.log > /var/tmp/daemon.log`;
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `tail -n $Lines $daemon_log`;
+                                echo `tail -n $Lines /var/tmp/daemon.log`;
                             } else {
-                                echo `tail -n 30 $daemon_log`;
+                                echo `tail -n 30 /var/tmp/daemon.log`;
                             }
                         }
                         if(isset($_POST['Database'])) {
@@ -1260,7 +1260,7 @@ if ($output_error) {
                         Debugging
                     </div>
                     <div>
-                        Compile Debugging Information
+                        Display Debugging Information
                         <input type="hidden" name="debug" value="0" />
                         <input type="checkbox" id="debug" name="debug" value="1"<?php if (isset($_COOKIE['debug'])) if ($_COOKIE['debug'] == True) echo ' checked'; ?>/>
                         <input type="submit" value="Save">
