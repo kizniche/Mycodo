@@ -358,7 +358,9 @@ if ($output_error) {
                     }
                     ?>
             </div>
+            </div>
             </form>
+
 		</li>
 
 		<li data-content="configure" <?php
@@ -1190,7 +1192,6 @@ if ($output_error) {
                                 ?>
                                     <th colspan=2 align=right>
                                         <nobr><input type="hidden" name="Timer<?php echo $i; ?>State" value="0"><input type="image" style="height: 0.9em;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="Timer<?php echo $i; ?>StateChange" value="0"> | <button style="width: 40px;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">ON</button></nobr>
-                                    </td>
                                     </th>
                                 <?php
                                 } else {
