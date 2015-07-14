@@ -1,7 +1,7 @@
 <?php
-//
-// Check for form submission and respond (SQL Section)
-//
+/*
+ * The following code can only be executed by non-guest users
+ */
 
 // Check for changes to relay and timer variables (up to 8)
 for ($p = 1; $p <= 8; $p++) {
@@ -226,10 +226,6 @@ if (isset($_POST['ChangeNoTimers'])) {
     $stmt->execute();
     shell_exec($mycodo_client . ' --sqlreload 0');
 }
-
-//
-// Check for form submission and respond (Non-SQL Section)
-//
 
 for ($p = 1; $p <= 8; $p++) {
     // Send client command to turn relay on or off
