@@ -122,7 +122,7 @@ In each web directory is an.htaccess which denies access to those folders. It is
 
 ## ATTENTION
 
-This is a crucial step if you will have your web server publically accessible. If you do not perform this step, mycodo.php will be accessible and anyone can bypass the authentication script. You must either block access to mycodo.php and directories or allow the use of the included .htaccess files with the addition of `AllowOverride All` in your apache2 config. Modify /etc/apache2/sites-available/default-ssl (or just ‘default’ if not using SSL) to appear as below:
+This is a crucial step if you will have your web server publically accessible. If you do not perform this step, sensitive files will be accessible to anyone. It's imperative that `AllowOverride All` is added to your apache2 config to allow the .htaccess files throughout mycodo to restrict access to certain filders. Modify /etc/apache2/sites-available/default-ssl (or just ‘default’ if not using SSL) to appear as below:
 
 ```
     DocumentRoot /var/www
@@ -142,7 +142,7 @@ Then restart apache with
 
 `sudo service apache2 restart`
 
-I highly recommend testing whether the configuration change actually worked. This can be tested by going to http://yourwebaddress/mycodo/mycodo.php with your browser, and if you get an error, "Forbidden: You don't have permission to access /mycodo/mycodo.php on this server," then everything is working correctly. If the page actually loads (or patially loads) or there is any other error than "forbidden", there is a problem and you will need to diagnose the issue before opening your server to beyond your local network.
+I highly recommend testing whether the configuration change actually worked. This can be tested by going to http://yourwebaddress/mycodo/includes/ with your browser, and if you get an error, "Forbidden: You don't have permission to access /mycodo/includes on this server," then everything is working correctly. If the page actually loads or there is any other error than "forbidden", there is a problem and you will need to diagnose the issue before opening your server to beyond your local network.
 
 To initialize GPIO pins at startup, open crontab with `sudo crontab -e` and add the following lines, then save with `Ctrl+e`
 
