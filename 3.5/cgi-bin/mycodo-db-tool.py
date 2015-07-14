@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-#  sql-test.py - Development code for Mycodo SQL database use
+#  mycodo-database-tool.py - Tool for editing the Mycodo SQLite database
 #
 #  Copyright (C) 2015  Kyle T. Gabriel
 #

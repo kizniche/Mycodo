@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-#  mycodo.py - A temperature and humidity regulation system that allows
-#              easy configuration and monitoring through a web interface.
+#  mycodo.py - The Mycodo deamon (back-end)
 #
 #  Copyright (C) 2015  Kyle T. Gabriel
 #

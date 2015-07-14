@@ -1,7 +1,6 @@
 <?php
 /*
-*  index.php - The Mycodo front-end and the main page of the web control
-*              interface
+*  mycodo.php - The Mycodo web control interface (front-end)
 *
 *  Copyright (C) 2015  Kyle T. Gabriel
 *

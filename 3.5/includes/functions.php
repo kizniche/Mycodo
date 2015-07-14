@@ -1,7 +1,26 @@
 <?php
 /*
- * PID
- */
+*  functions.php - Mycodo functions
+*
+*  Copyright (C) 2015  Kyle T. Gabriel
+*
+*  This file is part of Mycodo
+*
+*  Mycodo is free software: you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation, either version 3 of the License, or
+*  (at your option) any later version.
+*
+*  Mycodo is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with Mycodo. If not, see <http://www.gnu.org/licenses/>.
+*
+*  Contact at kylegabriel.com
+*/
 
 // Instruct mycodo.py daemon to reload a specific PID controller
 function pid_reload($mycodo_client, $controller, $pid) {
@@ -275,49 +294,49 @@ function DateSelector($inName, $useDate=0) {
     if($useDate == 0) $useDate = Time();
 
     echo "<SELECT NAME=" . $inName . "Month>\n";
-	for($currentMonth = 1; $currentMonth <= 12; $currentMonth++) {
-	    echo "<OPTION VALUE=\"" . intval($currentMonth) . "\"";
-	    if(intval(date( "m", $useDate))==$currentMonth) echo " SELECTED";
-	    echo ">" . $monthName[$currentMonth] . "\n";
-	}
-	echo "</SELECT> / ";
+    for($currentMonth = 1; $currentMonth <= 12; $currentMonth++) {
+        echo "<OPTION VALUE=\"" . intval($currentMonth) . "\"";
+        if(intval(date( "m", $useDate))==$currentMonth) echo " SELECTED";
+        echo ">" . $monthName[$currentMonth] . "\n";
+    }
+    echo "</SELECT> / ";
 
     echo "<SELECT NAME=" . $inName . "Day>\n";
-	for($currentDay=1; $currentDay <= 31; $currentDay++) {
-	    echo "<OPTION VALUE=\"$currentDay\"";
-	    if(intval(date( "d", $useDate))==$currentDay) echo " SELECTED";
-	    echo ">$currentDay\n";
-	}
-	echo "</SELECT> / ";
+    for($currentDay=1; $currentDay <= 31; $currentDay++) {
+        echo "<OPTION VALUE=\"$currentDay\"";
+        if(intval(date( "d", $useDate))==$currentDay) echo " SELECTED";
+        echo ">$currentDay\n";
+    }
+    echo "</SELECT> / ";
 
     echo "<SELECT NAME=" . $inName . "Year>\n";
-	$startYear = date("Y", $useDate);
-	for($currentYear = $startYear-5; $currentYear <= $startYear+5; $currentYear++) {
-	    echo "<OPTION VALUE=\"$currentYear\"";
-	    if(date("Y", $useDate) == $currentYear) echo " SELECTED";
-	    echo ">$currentYear\n";
-	}
-	echo "</SELECT>&nbsp;&nbsp;&nbsp;";
+    $startYear = date("Y", $useDate);
+    for($currentYear = $startYear-5; $currentYear <= $startYear+5; $currentYear++) {
+        echo "<OPTION VALUE=\"$currentYear\"";
+        if(date("Y", $useDate) == $currentYear) echo " SELECTED";
+        echo ">$currentYear\n";
+    }
+    echo "</SELECT>&nbsp;&nbsp;&nbsp;";
 
     echo "<SELECT NAME=" . $inName . "Hour>\n";
-	for($currentHour=0; $currentHour <= 23; $currentHour++) {
-	    if($currentHour < 10) echo "<OPTION VALUE=\"0$currentHour\"";
-	    else echo "<OPTION VALUE=\"$currentHour\"";
-	    if(intval(date("H", $useDate)) == $currentHour) echo " SELECTED";
-	    if($currentHour < 10) echo ">0$currentHour\n";
-	    else echo ">$currentHour\n";
-	}
-	echo "</SELECT> : ";
+    for($currentHour=0; $currentHour <= 23; $currentHour++) {
+        if($currentHour < 10) echo "<OPTION VALUE=\"0$currentHour\"";
+        else echo "<OPTION VALUE=\"$currentHour\"";
+        if(intval(date("H", $useDate)) == $currentHour) echo " SELECTED";
+        if($currentHour < 10) echo ">0$currentHour\n";
+        else echo ">$currentHour\n";
+    }
+    echo "</SELECT> : ";
 
     echo "<SELECT NAME=" . $inName . "Minute>\n";
-	for($currentMinute=0; $currentMinute <= 59; $currentMinute++) {
-	    if($currentMinute < 10) echo "<OPTION VALUE=\"0$currentMinute\"";
-	    else echo "<OPTION VALUE=\"$currentMinute\"";
-	    if(intval(date( "i", $useDate)) == $currentMinute) echo " SELECTED";
-	    if($currentMinute < 10) echo ">0$currentMinute\n";
-	    else echo ">$currentMinute\n";
-	}
-	echo "</SELECT>";
+    for($currentMinute=0; $currentMinute <= 59; $currentMinute++) {
+        if($currentMinute < 10) echo "<OPTION VALUE=\"0$currentMinute\"";
+        else echo "<OPTION VALUE=\"$currentMinute\"";
+        if(intval(date( "i", $useDate)) == $currentMinute) echo " SELECTED";
+        if($currentMinute < 10) echo ">0$currentMinute\n";
+        else echo ">$currentMinute\n";
+    }
+    echo "</SELECT>";
 }
 
 // Delete all graph images except for the last 40 created
