@@ -14,6 +14,16 @@
 $install_path = "/var/www/mycodo";
 $mycodo_db = $install_path . "/config/mycodo.db";
 
+// Security Measures
+// Set utf-8 character set
+header('Content-type: text/plain; charset=utf-8');
+// Prevents javascript XSS attacks aimed to steal the session ID
+ini_set('session.cookie_httponly', 1);
+// Session ID cannot be passed through URLs
+ini_set('session.use_only_cookies', 1);
+// Uses a secure connection (HTTPS) if possible
+ini_set('session.cookie_secure', 1);
+
 $db = new SQLite3($mycodo_db);
 
 function start_profiler() {
@@ -471,7 +481,7 @@ class OneFileLoginApplication {
                         <label for="login_input_password">Password</label>
                     </td>
                     <td>
-                        <input id="login_input_password" type="password" name="user_password" required />
+                        <input id="login_input_password" type="password" name="user_password" autocomplete="off" required />
                     </td>
                 </tr>
                 <tr>
