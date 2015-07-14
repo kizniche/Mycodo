@@ -11,20 +11,15 @@
  * @license http://opensource.org/licenses/MIT MIT License
  */
 
-$install_path = "/var/www/mycodo";
-$mycodo_db = $install_path . "/config/mycodo.db";
-
 // Security Measures
 // Set utf-8 character set
-header('Content-type: text/plain; charset=utf-8');
+header('charset=utf-8');
 // Prevents javascript XSS attacks aimed to steal the session ID
 ini_set('session.cookie_httponly', 1);
-// Session ID cannot be passed through URLs
+// // Session ID cannot be passed through URLs
 ini_set('session.use_only_cookies', 1);
-// Uses a secure connection (HTTPS) if possible
+// // Uses a secure connection (HTTPS) if possible
 ini_set('session.cookie_secure', 1);
-
-$db = new SQLite3($mycodo_db);
 
 function start_profiler() {
     declare(ticks=1);
@@ -464,6 +459,8 @@ class OneFileLoginApplication {
     private function showPageLoginForm() {
         if ($this->feedback) echo $this->feedback . "<br/>";
         ?>
+        <html>
+        <body>
         <div style="padding-top: 2em; width: 14em; margin: 8 auto; text-align: left; ">
             <div style="padding-bottom: 0.6em; text-align: center; font-size: 1.8em;">Mycodo</div>
             <form method="post" action="<?php echo $_SERVER['SCRIPT_NAME']; ?>" name="loginform">
@@ -497,6 +494,9 @@ class OneFileLoginApplication {
             </form>
         </div>
         <?php
+        $mycodo_db = "config/mycodo.db";
+        $db = new SQLite3($mycodo_db);
+
         // Dismiss Notification
         if (isset($_POST['dismiss'])) {
             $stmt = $db->prepare("UPDATE Misc SET Dismiss_Notification=:dismiss");
@@ -530,6 +530,7 @@ class OneFileLoginApplication {
             </div>
             <?php
         }
+        echo '</body></html>';
     }
 
     // Main page when logged in. What to display when the user is successfully authenticated.
