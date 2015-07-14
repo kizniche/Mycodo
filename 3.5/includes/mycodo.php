@@ -48,11 +48,6 @@ $lock_raspistill = $lock_path . "/mycodo_raspistill";
 $lock_mjpg_streamer = $lock_path . "/mycodo_mjpg_streamer";
 
 require_once("includes/functions.php"); // Mycodo functions
-
-$graph_id = get_graph_cookie('id');
-$graph_type = get_graph_cookie('type');
-$graph_time_span = get_graph_cookie('span');
-
 require("includes/database.php"); // Initial SQL database load to variables
 
 // Output an error if the user guest attempts to submit certain forms
@@ -66,6 +61,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_name'] == 'guest' &&
     require("includes/database.php"); // Reload SQLite database
 }
 require_once("includes/public.php"); // Handle remaining forms
+// Retrieve graph-generation variables (must come after running public.php)
+$graph_id = get_graph_cookie('id');
+$graph_type = get_graph_cookie('type');
+$graph_time_span = get_graph_cookie('span');
 
 delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete oldest)
 ?>
