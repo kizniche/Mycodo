@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.52";
+$version = "3.5.53";
 
 ######### Start Edit Configure #########
 
@@ -854,11 +854,11 @@ if ($output_error) {
                         $graph_width = $_POST['graph-width'];
                     } else $graph_width = 900;
 
-                    if ($_POST['MainType'] == 'Combined') {
+                    if ($_POST['custom_type'] == 'Combined') {
                         echo `echo "set terminal png size $graph_width,1600
                         set xdata time
                         set timefmt \"%Y %m %d %H %M %S\"
-                        set output \"$images/graph-custom-combined-$id2.png\"
+                        set output \"$images/graph-custom-combined-$id2-0.png\"
                         set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]
                         set format x \"%H:%M\n%m/%d\"
                         set yrange [0:100]
@@ -883,45 +883,50 @@ if ($output_error) {
                         set style line 10 lc rgb '#CC8D9C' pt 0 ps 1 lt 1 lw 1
                         set style line 11 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1
                         set style line 12 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1
+                        unset key
                         #set xlabel \"Date and Time\"
                         #set ylabel \"% Humidity\"
-                        set multiplot layout 3, 1 title \"Combined Sensor Data - $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
+                        set multiplot layout 4, 1 title \"Combined Sensor Data - $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
                         set title \"Combined Temperatures\"
+                        plot \"<awk '\\$10 == 1' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \"T1\" w lp ls 1 axes x1y2, \\
+                        \"<awk '\\$10 == 2' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \"T2\" w lp ls 2 axes x1y2, \\
+                        \"<awk '\\$10 == 3' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \"T3\" w lp ls 3 axes x1y2, \\
+                        \"<awk '\\$10 == 4' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \"T4\" w lp ls 4 axes x1y2 \\
                         unset key
-                        plot \"<awk '\\$10 == 1' $sensor_ht_log\" using 1:7 index 0 title \"T1\" w lp ls 1 axes x1y2, \\
-                        \"<awk '\\$10 == 2' $sensor_ht_log\" using 1:7 index 0 title \"T2\" w lp ls 2 axes x1y2, \\
-                        \"<awk '\\$10 == 3' $sensor_ht_log\" using 1:7 index 0 title \"T3\" w lp ls 3 axes x1y2, \\
-                        \"<awk '\\$10 == 4' $sensor_ht_log\" using 1:7 index 0 title \"T4\" w lp ls 4 axes x1y2 \\
-                        set key autotitle column
                         set title \"Combined Humidities\"
+                        plot \"<awk '\\$10 == 1' /var/tmp/sensor-ht.log\" using 1:8 index 0 title \"RH1\" w lp ls 1 axes x1y1, \\
+                        \"<awk '\\$10 == 2' /var/tmp/sensor-ht.log\" using 1:8 index 0 title \"RH2\" w lp ls 2 axes x1y1, \\
+                        \"<awk '\\$10 == 3' /var/tmp/sensor-ht.log\" using 1:8 index 0 title \"RH3\" w lp ls 3 axes x1y1, \\
+                        \"<awk '\\$10 == 4' /var/tmp/sensor-ht.log\" using 1:8 index 0 title \"RH4\" w lp ls 4 axes x1y1 \\
                         unset key
-                        plot \"<awk '\\$10 == 1' $sensor_ht_log\" using 1:8 index 0 title \"RH1\" w lp ls 1 axes x1y1, \\
-                        \"<awk '\\$10 == 2' $sensor_ht_log\" using 1:8 index 0 title \"RH2\" w lp ls 2 axes x1y1, \\
-                        \"<awk '\\$10 == 3' $sensor_ht_log\" using 1:8 index 0 title \"RH3\" w lp ls 3 axes x1y1, \\
-                        \"<awk '\\$10 == 4' $sensor_ht_log\" using 1:8 index 0 title \"RH4\" w lp ls 4 axes x1y1 \\
-                        set key
-                        set key autotitle column
+                        set title \"Combined CO2s\"
+                        plot \"<awk '\\$15 == 1' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"RH1\" w lp ls 1 axes x1y1, \\
+                        \"<awk '\\$15 == 2' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"RH2\" w lp ls 2 axes x1y1, \\
+                        \"<awk '\\$15 == 3' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"RH3\" w lp ls 3 axes x1y1, \\
+                        \"<awk '\\$15 == 4' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"RH4\" w lp ls 4 axes x1y1 \\
+                        unset key
                         set title \"Relay Run Time\"
-                        plot \"$relay_log\" u 1:7 index 0 title \"$relay1name\" w impulses ls 5 axes x1y1, \\
-                        \"\" using 1:8 index 0 title \"$relay2name\" w impulses ls 6 axes x1y1, \\
-                        \"\" using 1:9 index 0 title \"$relay3name\" w impulses ls 7 axes x1y1, \\
-                        \"\" using 1:10 index 0 title \"$relay4name\" w impulses ls 8 axes x1y1, \\
-                        \"\" using 1:11 index 0 title \"$relay5name\" w impulses ls 9 axes x1y1, \\
-                        \"\" using 1:12 index 0 title \"$relay6name\" w impulses ls 10 axes x1y1, \\
-                        \"\" using 1:13 index 0 title \"$relay7name\" w impulses ls 11 axes x1y1, \\
-                        \"\" using 1:14 index 0 title \"$relay8name\" w impulses ls 12 axes x1y1 \\
+                        plot \"$relay_log\" u 1:7 index 0 title \"$relay_name[1]\" w impulses ls 5 axes x1y1, \\
+                        \"\" using 1:8 index 0 title \"$relay_name[2]\" w impulses ls 6 axes x1y1, \\
+                        \"\" using 1:9 index 0 title \"$relay_name[3]\" w impulses ls 7 axes x1y1, \\
+                        \"\" using 1:10 index 0 title \"$relay_name[4]\" w impulses ls 8 axes x1y1, \\
+                        \"\" using 1:11 index 0 title \"$relay_name[5]\" w impulses ls 9 axes x1y1, \\
+                        \"\" using 1:12 index 0 title \"$relay_name[6]\" w impulses ls 10 axes x1y1, \\
+                        \"\" using 1:13 index 0 title \"$relay_name[7]\" w impulses ls 11 axes x1y1, \\
+                        \"\" using 1:14 index 0 title \"$relay_name[8]\" w impulses ls 12 axes x1y1 \\
                         unset multiplot" | gnuplot`;
                         echo "<div style=\"width: 100%; text-align: center; padding: 1em 0 3em 0;\"><img src=image.php?";
                         echo "graphtype=custom-combined";
-                        echo "&id=" . $id2 . ">";
+                        echo "&id=" . $id2;
+                        echo "&sensornumber=0>";
                         echo "</div>";
-                    } else if ($_POST['MainType'] == 'Separate') {
+                    } else if ($_POST['custom_type'] == 'Separate') {
                         for ($n = 1; $n <= $sensor_ht_num; $n++) {
                             if ($sensor_ht_graph[$n] == 1) {
                                 echo `echo "set terminal png size $graph_width,490
                                 set xdata time
                                 set timefmt \"%Y %m %d %H %M %S\"
-                                set output \"$images/graph-custom-separate-$id2-$n.png\"
+                                set output \"$images/graph-ht-custom-separate-$id2-$n.png\"
                                 set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]
                                 set format x \"%H:%M\n%m/%d\"
                                 set yrange [0:100]
@@ -945,35 +950,87 @@ if ($output_error) {
                                 set style line 9 lc rgb '#CC8D9C' pt 0 ps 1 lt 1 lw 1
                                 set style line 10 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1
                                 set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1
+                                unset key
                                 #set xlabel \"Date and Time\"
                                 #set ylabel \"% Humidity\"
-                                set title \"Sensor $n: ${'sensor' . $n . 'name'}  $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
-                                unset key
-                                plot \"<awk '\\$10 == $n' $sensor_ht_log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
+                                set title \"Sensor $n: $sensor_ht_name[$n]: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
+                                plot \"<awk '\\$10 == $n' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
                                 \"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, \\
                                 \"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
-                                \"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"$relay1name\" w impulses ls 4 axes x1y1, \\
-                                \"\" using 1:8 index 0 title \"$relay2name\" w impulses ls 5 axes x1y1, \\
-                                \"\" using 1:9 index 0 title \"$relay3name\" w impulses ls 6 axes x1y1, \\
-                                \"\" using 1:10 index 0 title \"$relay4name\" w impulses ls 7 axes x1y1, \\
-                                \"\" using 1:11 index 0 title \"$relay5name\" w impulses ls 8 axes x1y1, \\
-                                \"\" using 1:12 index 0 title \"$relay6name\" w impulses ls 9 axes x1y1, \\
-                                \"\" using 1:13 index 0 title \"$relay7name\" w impulses ls 10 axes x1y1, \\
-                                \"\" using 1:14 index 0 title \"$relay8name\" w impulses ls 11 axes x1y1" | gnuplot`;
+                                \"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"$relay_name[1]\" w impulses ls 4 axes x1y1, \\
+                                \"\" using 1:8 index 0 title \"$relay_name[2]\" w impulses ls 5 axes x1y1, \\
+                                \"\" using 1:9 index 0 title \"$relay_name[3]\" w impulses ls 6 axes x1y1, \\
+                                \"\" using 1:10 index 0 title \"$relay_name[4]\" w impulses ls 7 axes x1y1, \\
+                                \"\" using 1:11 index 0 title \"$relay_name[5]\" w impulses ls 8 axes x1y1, \\
+                                \"\" using 1:12 index 0 title \"$relay_name[6]\" w impulses ls 9 axes x1y1, \\
+                                \"\" using 1:13 index 0 title \"$relay_name[7]\" w impulses ls 10 axes x1y1, \\
+                                \"\" using 1:14 index 0 title \"$relay_name[8]\" w impulses ls 11 axes x1y1" | gnuplot`;
                                 echo "<div style=\"width: 100%; text-align: center; padding: 1em 0 3em 0;\"><img src=image.php?";
                                 echo "graphtype=custom-separate";
+                                echo "&sensortype=ht";
                                 echo "&id=" . $id2;
                                 echo "&sensornumber=" . $n . ">";
                                 echo "</div>";
                             }
-                            if ($n != $numsensors) { echo "<hr class=\"fade\"/>"; }
+                            if ($n != $sensor_ht_num || ($n == $sensor_ht_num && array_sum($sensor_co2_graph))) { echo "<hr class=\"fade\"/>"; }
+                        }
+                        for ($n = 1; $n <= $sensor_co2_num; $n++) {
+                            if ($sensor_co2_graph[$n] == 1) {
+                                echo `echo "set terminal png size $graph_width,490
+                                set xdata time
+                                set timefmt \"%Y %m %d %H %M %S\"
+                                set output \"$images/graph-co2-custom-separate-$id2-$n.png\"
+                                set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]
+                                set format x \"%H:%M\n%m/%d\"
+                                set yrange [0:100]
+                                set y2range [0:35]
+                                set my2tics 10
+                                set ytics 10
+                                set y2tics 5
+                                set style line 11 lc rgb '#808080' lt 1
+                                set border 3 back ls 11
+                                set tics nomirror
+                                set style line 12 lc rgb '#808080' lt 0 lw 1
+                                set grid xtics ytics back ls 12
+                                set style line 1 lc rgb '#FF3100' pt 0 ps 1 lt 1 lw 2
+                                set style line 2 lc rgb '#0772A1' pt 0 ps 1 lt 1 lw 2
+                                set style line 3 lc rgb '#00B74A' pt 0 ps 1 lt 1 lw 2
+                                set style line 4 lc rgb '#91180B' pt 0 ps 1 lt 1 lw 1
+                                set style line 5 lc rgb '#582557' pt 0 ps 1 lt 1 lw 1
+                                set style line 6 lc rgb '#04834C' pt 0 ps 1 lt 1 lw 1
+                                set style line 7 lc rgb '#DC32E6' pt 0 ps 1 lt 1 lw 1
+                                set style line 8 lc rgb '#957EF9' pt 0 ps 1 lt 1 lw 1
+                                set style line 9 lc rgb '#CC8D9C' pt 0 ps 1 lt 1 lw 1
+                                set style line 10 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1
+                                set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1
+                                unset key
+                                #set xlabel \"Date and Time\"
+                                #set ylabel \"ppm CO2\"
+                                set title \"Sensor $n: $sensor_co2_name[$n]: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
+                                plot \"<awk '\\$10 == $n' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
+                                \"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"$relay_name[1]\" w impulses ls 4 axes x1y1, \\
+                                \"\" using 1:8 index 0 title \"$relay_name[2]\" w impulses ls 5 axes x1y1, \\
+                                \"\" using 1:9 index 0 title \"$relay_name[3]\" w impulses ls 6 axes x1y1, \\
+                                \"\" using 1:10 index 0 title \"$relay_name[4]\" w impulses ls 7 axes x1y1, \\
+                                \"\" using 1:11 index 0 title \"$relay_name[5]\" w impulses ls 8 axes x1y1, \\
+                                \"\" using 1:12 index 0 title \"$relay_name[6]\" w impulses ls 9 axes x1y1, \\
+                                \"\" using 1:13 index 0 title \"$relay_name[7]\" w impulses ls 10 axes x1y1, \\
+                                \"\" using 1:14 index 0 title \"$relay_name[8]\" w impulses ls 11 axes x1y1" | gnuplot`;
+                                echo "<div style=\"width: 100%; text-align: center; padding: 1em 0 3em 0;\"><img src=image.php?";
+                                echo "graphtype=custom-separate";
+                                echo "&sensortype=co2";
+                                echo "&id=" . $id2;
+                                echo "&sensornumber=" . $n . ">";
+                                echo "</div>";
+                            }
+                            if ($n != $sensor_co2_num) { echo "<hr class=\"fade\"/>"; }
                         }
                     }
                     echo "<div style=\"width: 100%; text-align: center;\"><a href='javascript:open_legend()'>Brief Graph Legend</a> - <a href='javascript:open_legend_full()'>Full Graph Legend</a></div>";
                 }
             } else if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] == 'guest') {
                 displayform();
-                echo "<div>Guest access has been revoked for graph generation until further notice (thank those who have been attempting bad stuff)";
+                echo "<div>Guest access has been revoked for graph generation.";
             } else displayform();
             ?>
 		</li>

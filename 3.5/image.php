@@ -33,7 +33,15 @@ $mycodo_client = $install_path . "/cgi-bin/mycodo-client.py";
 
 header('Content-Type: image/jpeg');
 
-if (isset($_GET['span'])) {
+if (isset($_GET['graphtype']) && ($_GET['graphtype'] == 'custom-separate' || $_GET['graphtype'] == 'custom-combined')) {
+    // Generate custom graph (Graph tab)
+    if (isset($_GET['sensortype'])) {
+        readfile($image_dir . 'graph-' . $_GET['sensortype'] . "-" . $_GET['graphtype'] . '-' . $_GET['id'] . '-' . $_GET['sensornumber'] . '.png');
+    } else {
+        readfile($image_dir . 'graph-' . $_GET['graphtype'] . '-' . $_GET['id'] . '-' . $_GET['sensornumber'] . '.png');
+    }
+} else if (isset($_GET['span'])) {
+    // Display still image from RPi camera (Camera tab)
     switch ($_GET['span']) {
         case 'cam-still':
             $files = scandir($still_dir, SCANDIR_SORT_DESCENDING);
@@ -48,7 +56,7 @@ if (isset($_GET['span'])) {
         }
 } else if (ctype_alnum($_GET['id']) && is_int((int)$_GET['sensornumber']) &&
         ($_GET['sensortype'] == 'ht' || $_GET['sensortype'] == 'co2')) {
-
+    // Generate preset graphs (Main tab)
     if ($_GET['graphtype'] == 'separate' ||
         $_GET['graphtype'] == 'combined' ||
         $_GET['graphtype'] == 'default') {

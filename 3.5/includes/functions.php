@@ -35,7 +35,7 @@ function pid_reload($mycodo_client, $controller, $pid) {
  */
 
 function concatenate_logs() {
-    // Concatenate Sensor log files (to TempFS) to ensure the latest data is being used
+    // Concatenate sensor and relay log files (to TempFS) to ensure the latest data is being used
     `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
     `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
     `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log > /var/tmp/relay.log`;
@@ -259,25 +259,21 @@ function displayform() { ?>
             <div style="padding-bottom: 5px; text-align: right;">START: <?php DateSelector("start"); ?></div>
             <div style="text-align: right;">END: <?php DateSelector("end"); ?></div>
         </div>
-        <div style="display: inline-block;">
-            <div style="display: inline-block;">
-                <select name="MainType">
-                    <option value="Separate" <?php
-                        if (isset($_POST['MainType'])) {
-                            if ($_POST['MainType'] == 'Separate') echo 'selected="selected"';
-                        }
-                        ?>>Separate</option>
-                    <option value="Combined" <?php
-                        if (isset($_POST['MainType'])) {
-                            if ($_POST['MainType'] == 'Combined') echo 'selected="selected"';
-                        }
-                        ?>>Combined</option>
-                </select>
-                <input type="text" value="900" maxlength=4 size=4 name="graph-width" title="Width of the generated graph"> Width (pixels, max 4000)
-            </div>
-        </div>
-        <div style="display: inline-block;">
-            &nbsp;&nbsp;<input type="submit" name="SubmitDates" value="Submit">
+        <div style="display: inline-block; vertical-align: top;">
+            <select name="custom_type">
+                <option value="Separate" <?php
+                    if (isset($_POST['custom_type'])) {
+                        if ($_POST['custom_type'] == 'Separate') echo 'selected="selected"';
+                    }
+                    ?>>Separate</option>
+                <option value="Combined" <?php
+                    if (isset($_POST['custom_type'])) {
+                        if ($_POST['custom_type'] == 'Combined') echo 'selected="selected"';
+                    }
+                    ?>>Combined</option>
+            </select>
+            <input type="text" value="900" maxlength=4 size=4 name="graph-width" title="Width of the generated graph"> Width (pixels, max 4000)
+            <input type="submit" name="SubmitDates" value="Submit">
         </div>
     </div>
     </FORM>
