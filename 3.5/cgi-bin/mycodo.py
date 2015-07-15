@@ -894,7 +894,7 @@ def PID_stop(type, number):
 # Read CO2 sensor
 def read_co2_sensor(sensor):
     global sensor_co2_read_co2
-    chkco2 = 1
+    chkco2 = 0
 
     if (sensor_co2_device[1] == 'K30'): device = 'K30'
     else:
@@ -940,10 +940,13 @@ def read_co2_sensor(sensor):
         if abs(co22 - sensor_co2_read_co2[sensor]) > 20 and not terminate:
             co22 = sensor_co2_read_co2[sensor]
             logging.debug("[Read CO2 Sensor-%s] Successive readings > 20 difference: Rereading", sensor)
+            chkco2 += 1
         elif not terminate:
             logging.debug("[Read CO2 Sensor-%s] Successive readings < 20 difference: keeping.", sensor)
             logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor, sensor_co2_read_co2[sensor])
             return 1
+        if chkco2 > 4:
+            logging.warning("[Read CO2 Sensor] Could not get two CO2 measurements that were consistent! (tried 4 times)")
 
 # Read K30 CO2 Sensor
 def read_K30():
@@ -966,7 +969,7 @@ def read_dht_sensor(sensor):
     global sensor_ht_read_temp_c
     global sensor_ht_read_hum
     global sensor_ht_dewpt_c
-    chktemp = 1
+    chkht = 1
 
     if (sensor_ht_device[1] == 'DHT11'): device = Adafruit_DHT.DHT11
     elif (sensor_ht_device[1] == 'DHT22'): device = Adafruit_DHT.DHT22
@@ -989,7 +992,7 @@ def read_dht_sensor(sensor):
 
     logging.debug("[Read HT Sensor-%s] Taking second Temperature/Humidity reading", sensor)
 
-    while chktemp and not terminate:
+    while not terminate:
         sensor_ht_read_hum[sensor], sensor_ht_read_temp_c[sensor] = Adafruit_DHT.read_retry(device, sensor_ht_pin[sensor])
 
         if sensor_ht_read_hum[sensor] == 'None' or sensor_ht_read_temp_c[sensor] == 'None':
@@ -1002,13 +1005,11 @@ def read_dht_sensor(sensor):
         if abs(tempc2-sensor_ht_read_temp_c[sensor]) > 1 or abs(humidity2-sensor_ht_read_hum[sensor]) > 1:
             tempc2 = sensor_ht_read_temp_c[sensor]
             humidity2 = sensor_ht_read_hum[sensor]
-            chktemp = 1
 
             logging.debug("[Read HT Sensor-%s] Successive readings > 1 difference: Rereading", sensor)
             time.sleep(2) # Wait 2 seconds between sensor reads
+            chkht += 1
         else:
-            chktemp = 0
-
             logging.debug("[Read HT Sensor-%s] Successive readings < 1 difference: keeping.", sensor)
 
             temperature_f = float(sensor_ht_read_temp_c[sensor])*9.0/5.0 + 32.0
@@ -1020,6 +1021,8 @@ def read_dht_sensor(sensor):
             logging.debug("[Read HT Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", sensor, sensor_ht_read_temp_c[sensor], sensor_ht_read_hum[sensor], sensor_ht_dewpt_c[sensor])
             time.sleep(2) # Wait 2 seconds between sensor reads
             return 1
+        if chkht > 4:
+            logging.warning("[Read Temp Sensor] Could not get two Temp measurements that were consistent! (tried 4 times)")
 
 
 #################################################
