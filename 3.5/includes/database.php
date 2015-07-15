@@ -109,4 +109,5 @@ $results = $db->query('SELECT Camera_Relay FROM Misc');
 while ($row = $results->fetchArray()) {
     //print $row[0] . "<br>";
     $camera_relay = $row[0];
+    //$dismiss = $row[1];
 }

@@ -246,6 +246,14 @@ if (isset($_POST['ChangeNoTimers'])) {
     shell_exec($mycodo_client . ' --sqlreload 0');
 }
 
+// Change light relay
+if (isset($_POST['save_lightrelay'])) {
+    $stmt = $db->prepare("UPDATE Misc SET Camera_Relay=:lightrelay");
+    $stmt->bindValue(':lightrelay', (int)$_POST['lightrelay'], SQLITE3_INTEGER);
+    $stmt->execute();
+    shell_exec($mycodo_client . ' --sqlreload 0');
+}
+
 for ($p = 1; $p <= 8; $p++) {
     // Send client command to turn relay on or off
     if (isset($_POST['R' . $p])) {
@@ -305,12 +313,9 @@ for ($p = 1; $p <= 8; $p++) {
 if (isset($_POST['Capture'])) {
     if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) shell_exec("$stream_exec stop");
     if (isset($_POST['lighton'])) {
-        $lightrelay = $_POST['lightrelay'];
-        $lightrelay_pin = $relay_pin[$lightrelay];
-        $lightrelay_trigger = $_POST['relay' . $lightrelay . 'trigger'];
-        if ($lightrelay_trigger == 1) $trigger = 1;
+        if ($relay_trigger[$camera_relay] == 1) $trigger = 1;
         else $trigger = 0;
-        $capture_output = shell_exec("$still_exec " . $lightrelay_pin . " $trigger 2>&1; echo $?");
+        $capture_output = shell_exec("$still_exec " . $relay_pin[$camera_relay] . " " . $trigger . " 2>&1; echo $?");
     } else $capture_output = shell_exec("$still_exec 2>&1; echo $?");
 }
 
@@ -320,10 +325,9 @@ if (isset($_POST['start-stream'])) {
     echo 'Lock files already present. Press \'Stop Stream\' to kill processes and remove lock files.<br>';
     } else {
         if (isset($_POST['lighton'])) { // Turn light on
-            $lightrelay = $_POST['lightrelay'];
-            if (${"relay" . $lightrelay . "trigger"} == 1) $trigger = 1;
+            if ($relay_trigger[$camera_relay] == 1) $trigger = 1;
             else $trigger = 0;
-            shell_exec("$stream_exec start " . ${'relay' . $lightrelay . "pin"} . " $trigger > /dev/null &");
+            shell_exec("$stream_exec start " . $relay_pin[$camera_relay] . " " . $trigger . " > /dev/null &");
             sleep(1);
         } else {
             shell_exec("$stream_exec start > /dev/null &");
@@ -335,11 +339,39 @@ if (isset($_POST['start-stream'])) {
 // Stop video stream
 if (isset($_POST['stop-stream'])) {
     if (isset($_POST['lighton'])) { // Turn light off
-        $lightrelay = $_POST['lightrelay'];
-        if (${"relay" . $lightrelay . "trigger"} == 1) $trigger = 0;
+        if ($relay_trigger[$camera_relay] == 1) $trigger = 0;
         else $trigger = 1;
-        shell_exec("$stream_exec stop " . ${'relay' . $lightrelay . "pin"} . " $trigger > /dev/null &");
+        shell_exec("$stream_exec stop " . $relay_pin[$camera_relay] . " " . $trigger . " > /dev/null &");
     } else shell_exec("$stream_exec stop");
+    sleep(1);
+}
+
+// Start time-lapse
+if (isset($_POST['start-timelapse'])) {
+    if (isset($_POST['timelapse_duration']) && isset($_POST['timelapse_runtime'])) {
+        if (file_exists($lock_raspistill) || file_exists($lock_time_lapse)) {
+        echo 'Lock files already present. Press \'Stop Timelapse\' to kill processes and remove lock files.<br>';
+        } else {
+            if (isset($_POST['timelapse_lighton'])) { // Turn light on
+                if ($relay_trigger[$camera_relay] == 1) $trigger = 1;
+                else $trigger = 0;
+                shell_exec("$mycodo_client --timelapse start " . $relay_pin[$camera_relay] . " " . $trigger . " > /dev/null &");
+                sleep(1);
+            } else {
+                shell_exec("$mycodo_client --timelapse start > /dev/null &");
+                sleep(1);
+            }
+        }
+    }
+}
+
+// Stop time-lapse
+if (isset($_POST['stop-timelapse'])) {
+    if (isset($_POST['timelapse_lighton'])) { // Turn light off
+        if ($relay_trigger[$camera_relay] == 1) $trigger = 0;
+        else $trigger = 1;
+        shell_exec("$mycodo_client --timelapse stop " . $relay_pin[$camera_relay] . " " . $trigger . " > /dev/null &");
+    } else shell_exec("$mycodo_client --timelapse stop");
     sleep(1);
 }
 

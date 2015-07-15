@@ -156,13 +156,9 @@ button.linkoff {
 
 
 /*** Advanced Options ***/
-div.advanced {
-    float: left;
-    padding: 1.5em 2em 0 0;
-}
 
 table.timers td {
-    padding: 0.3em 0.3em 0.3em 0.3em;
+    padding: 0.6em 0.5em 0.6em 0.8em;
 }
 
 table.timers tr:nth-child(odd) {
@@ -192,13 +188,8 @@ label.notify {
     font-weight: bold;
 }
 
-.manageusers {
+.adv {
     margin-top: 0.1em;
-}
-
-input.smtp {
-    display: inline-block;
-    float: left;
 }
 
 

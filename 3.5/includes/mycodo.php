@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.53";
+$version = "3.5.54";
 
 ######### Start Edit Configure #########
 
@@ -35,6 +35,7 @@ $gpio_path = "/usr/local/bin/gpio";
 $mycodo_client = $install_path . "/cgi-bin/mycodo-client.py";
 $still_exec = $install_path . "/cgi-bin/camera-still.sh";
 $stream_exec = $install_path . "/cgi-bin/camera-stream.sh";
+$timelapse_exec = $install_path . "/cgi-bin/camera-timelapse.sh";
 $sqlite_db = $install_path . "/config/mycodo.db";
 
 $daemon_log = $install_path . "/log/daemon.log";
@@ -46,6 +47,7 @@ $relay_log = $install_path . "/log/relay.log";
 $images = $install_path . "/images";
 $lock_raspistill = $lock_path . "/mycodo_raspistill";
 $lock_mjpg_streamer = $lock_path . "/mycodo_mjpg_streamer";
+$lock_time_lapse = $lock_path . "/mycodo_time_lapse";
 
 require_once("includes/functions.php"); // Mycodo functions
 require("includes/database.php"); // Initial SQL database load to variables
@@ -405,7 +407,7 @@ if ($output_error) {
 
             <div style="clear: both;"></div>
 
-            <div>
+            <div style="width: 45em; padding-left: 3em; padding-top: 1em;">
                 <div style="padding: 1em 0;">
                     <div style="float: left; padding-right: 1em;">
                         <input type="submit" name="ChangeNoRelays" value="Save ->">
@@ -427,7 +429,7 @@ if ($output_error) {
 
                 <?php
                 if ($relay_num > 0) {
-                ?><div style="padding-bottom: 1em;">
+                ?><div style="padding-bottom: 3em;">
                     <table class="relays">
                         <tr>
                             <td align=center class="table-header">Relay<br>No.</td>
@@ -446,7 +448,7 @@ if ($output_error) {
                                 <?php echo $i; ?>
                             </td>
                             <td align=center>
-                                <input type="text" value="<?php echo $relay_name[$i]; ?>" maxlength=13 size=10 name="relay<?php echo $i; ?>name" title="Name of relay <?php echo $i; ?>"/>
+                                <input style="width: 10em;" type="text" value="<?php echo $relay_name[$i]; ?>" maxlength=13 size=10 name="relay<?php echo $i; ?>name" title="Name of relay <?php echo $i; ?>"/>
                             </td>
                             <?php
                                 if ((shell_exec($read) == 1 && $relay_trigger[$i] == 0) || (shell_exec($read) == 0 && $relay_trigger[$i] == 1)) {
@@ -464,10 +466,10 @@ if ($output_error) {
                                 }
                             ?>
                             <td>
-                                 [<input type="text" maxlength=3 size=1 name="sR<?php echo $i; ?>" title="Number of seconds to turn this relay on"/><input type="submit" name="<?php echo $i; ?>secON" value="ON">]
+                                 [<input style="width: 4em;" type="number" min="1" max="99999" name="sR<?php echo $i; ?>" title="Number of seconds to turn this relay on"/><input type="submit" name="<?php echo $i; ?>secON" value="ON">]
                             </td>
                             <td align=center>
-                                <input type="text" value="<?php echo $relay_pin[$i]; ?>" maxlength=2 size=1 name="relay<?php echo $i; ?>pin" title="GPIO pin using BCM numbering, connected to relay <?php echo $i; ?>"/>
+                                <input style="width: 3em;" type="number" min="1" max="40" value="<?php echo $relay_pin[$i]; ?>" name="relay<?php echo $i; ?>pin" title="GPIO pin using BCM numbering, connected to relay <?php echo $i; ?>"/>
                             </td>
                             <td align=center>
                                 <select style="width: 65px;" title="Does this relay activate with a LOW (0-volt) or HIGH (5-volt) signal?" name="relay<?php echo $i; ?>trigger">
@@ -524,7 +526,7 @@ if ($output_error) {
                 </div>
 
                 <?php if ($sensor_ht_num > 0) { ?>
-                <div style="padding-right: 1em;">
+                <div style="padding-bottom: 3em;">
                     <?php
                     for ($i = 1; $i <= $sensor_ht_num; $i++) {
                     ?>
@@ -545,7 +547,7 @@ if ($output_error) {
                                 <?php echo $i; ?>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo $sensor_ht_name[$i]; ?>" maxlength=12 size=10 name="sensorht<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
+                                <input style="width: 10em;" type="text" value="<?php echo $sensor_ht_name[$i]; ?>" maxlength=12 size=10 name="sensorht<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
                             </td>
                             <td>
                                 <select style="width: 80px;" name="sensorht<?php echo $i; ?>device">
@@ -568,10 +570,10 @@ if ($output_error) {
                                 </select>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo $sensor_ht_pin[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>pin" title="This is the GPIO pin connected to the DHT sensor"/>
+                                <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_ht_pin[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>pin" title="This is the GPIO pin connected to the DHT sensor"/>
                             </td>
                             <td align=center>
-                                <input type="text" value="<?php echo $sensor_ht_period[$i]; ?>" maxlength=4 size=1 name="sensorht<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
+                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_ht_period[$i]; ?>" name="sensorht<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
                             </td>
                             <td align=center>
                                 <input type="checkbox" name="sensorht<?php echo $i; ?>activated" value="1" <?php if ($sensor_ht_activated[$i] == 1) echo "checked"; ?>>
@@ -612,22 +614,22 @@ if ($output_error) {
                                 ?>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo $pid_temp_relay[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>TempRelay" title="This is the relay connected to the heating device"/>
+                                <input style="width: 2em;" type="number" min="0" max="8" value="<?php echo $pid_temp_relay[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>TempRelay" title="This is the relay connected to the heating device"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo $pid_temp_set[$i]; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>TempSet" title="This is the desired temperature"/> °C
+                                <input style="width: 3em;" type="number" step="any" value="<?php echo $pid_temp_set[$i]; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>TempSet" title="This is the desired temperature"/> °C
                             </td>
                             <td align=center>
-                                <input type="text" value="<?php echo $pid_temp_period[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/>
+                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_temp_period[$i]; ?>" name="Set<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo $pid_temp_p[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Temp_P" title="This is the Proportional value of the PID"/>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_temp_p[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Temp_P" title="This is the Proportional value of the PID"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo $pid_temp_i[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Temp_I" title="This is the Integral value of the the PID"/>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_temp_i[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Temp_I" title="This is the Integral value of the the PID"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo $pid_temp_d[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Temp_D" title="This is the Derivative value of the PID"/>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_temp_d[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Temp_D" title="This is the Derivative value of the PID"/>
                             </td>
                             <td>
                                 <input type="submit" name="Change<?php echo $i; ?>TempPID" value="Set">
@@ -647,22 +649,22 @@ if ($output_error) {
                                 ?>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo $pid_hum_relay[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>HumRelay" title="This is the relay connected to your humidifying device"/>
+                                <input style="width: 2em;" type="number" min="0" max="8" value="<?php echo $pid_hum_relay[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>HumRelay" title="This is the relay connected to your humidifying device"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo $pid_hum_set[$i]; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>HumSet" title="This is the desired humidity"/> %
+                                <input style="width: 3em;" type="number" step="any" value="<?php echo $pid_hum_set[$i]; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>HumSet" title="This is the desired humidity"/> %
                             </td>
                             <td align=center>
-                                <input type="text" value="<?php echo $pid_hum_period[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>HumPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another humidity reading and applying the PID"/>
+                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_hum_period[$i]; ?>" name="Set<?php echo $i; ?>HumPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another humidity reading and applying the PID"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo $pid_hum_p[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Hum_P" title="This is the Proportional value of the PID"/>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_hum_p[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Hum_P" title="This is the Proportional value of the PID"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo $pid_hum_i[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Hum_I" title="This is the Integral value of the the PID"/>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_hum_i[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Hum_I" title="This is the Integral value of the the PID"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo $pid_hum_d[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Hum_D" title="This is the Derivative value of the PID"/>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_hum_d[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Hum_D" title="This is the Derivative value of the PID"/>
                             </td>
                             <td>
                                 <input type="submit" name="Change<?php echo $i; ?>HumPID" value="Set">
@@ -678,7 +680,7 @@ if ($output_error) {
                 }
                 ?>
 
-                <div style="padding: 1em 0;">
+                <div style="padding-bottom: 1em;">
                     <div style="float: left; padding-right: 1em;">
                         <input type="submit" name="ChangeNoCo2Sensors" value="Save ->">
                         <select name="numco2sensors">
@@ -721,7 +723,7 @@ if ($output_error) {
                                 <?php echo $i; ?>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo $sensor_co2_name[$i]; ?>" maxlength=12 size=10 name="sensorco2<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
+                                <input style="width: 7em;" type="text" value="<?php echo $sensor_co2_name[$i]; ?>" maxlength=12 size=10 name="sensorco2<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
                             </td>
                             <td>
                                 <select style="width: 80px;" name="sensorco2<?php echo $i; ?>device">
@@ -743,13 +745,13 @@ if ($output_error) {
                                 <?php
                                 } else {
                                 ?>
-                                    <input type="text" value="<?php echo $sensor_co2_pin[$i]; ?>" maxlength=2 size=1 name="sensorco2<?php echo $i; ?>pin" title="This is the GPIO pin connected to the CO2 sensor"/>
+                                    <input type="number" value="<?php echo $sensor_co2_pin[$i]; ?>" maxlength=2 size=1 name="sensorco2<?php echo $i; ?>pin" title="This is the GPIO pin connected to the CO2 sensor"/>
                                 <?php
                                 }
                                 ?>
                             </td>
                             <td align=center>
-                                <input type="text" value="<?php echo $sensor_co2_period[$i]; ?>" maxlength=4 size=1 name="sensorco2<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
+                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_co2_period[$i]; ?>" name="sensorco2<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
                             </td>
                             <td align=center>
                                 <input type="checkbox" name="sensorco2<?php echo $i; ?>activated" value="1" <?php if ($sensor_co2_activated[$i] == 1) echo "checked"; ?>>
@@ -790,22 +792,22 @@ if ($output_error) {
                                 ?>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo $pid_co2_relay[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>Co2Relay" title="This is the relay connected to the device that modulates CO2"/>
+                                <input  style="width: 2em;" type="number" min="0" max="8" value="<?php echo $pid_co2_relay[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>Co2Relay" title="This is the relay connected to the device that modulates CO2"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo $pid_co2_set[$i]; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>Co2Set" title="This is the desired CO2 level"/> ppm
+                                <input style="width: 3em;" type="number" step="any" value="<?php echo $pid_co2_set[$i]; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>Co2Set" title="This is the desired CO2 level"/> ppm
                             </td>
                             <td align=center>
-                                <input type="text" value="<?php echo $pid_co2_period[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Co2Period" title="This is the number of seconds to wait after the relay has been turned off before taking another CO2 reading and applying the PID"/>
+                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_co2_period[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Co2Period" title="This is the number of seconds to wait after the relay has been turned off before taking another CO2 reading and applying the PID"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo $pid_co2_p[$i]; ?>" maxlength=5 size=1 name="Set<?php echo $i; ?>Co2_P" title="This is the Proportional value of the PID"/>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_p[$i]; ?>" maxlength=5 size=1 name="Set<?php echo $i; ?>Co2_P" title="This is the Proportional value of the PID"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo $pid_co2_i[$i]; ?>" maxlength=5 size=1 name="Set<?php echo $i; ?>Co2_I" title="This is the Integral value of the the PID"/>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_i[$i]; ?>" maxlength=5 size=1 name="Set<?php echo $i; ?>Co2_I" title="This is the Integral value of the the PID"/>
                             </td>
                             <td>
-                                <input type="text" value="<?php echo $pid_co2_d[$i]; ?>" maxlength=5 size=1 name="Set<?php echo $i; ?>Co2_D" title="This is the Derivative value of the PID"/>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_d[$i]; ?>" maxlength=5 size=1 name="Set<?php echo $i; ?>Co2_D" title="This is the Derivative value of the PID"/>
                             </td>
                             <td>
                                 <input type="submit" name="Change<?php echo $i; ?>Co2PID" value="Set">
@@ -1039,44 +1041,68 @@ if ($output_error) {
             if (isset($_GET['tab']) && $_GET['tab'] == 'camera') {
                 echo "class=\"selected\"";
             } ?>>
-            <div style="padding: 10px 0 15px 15px;">
-                <form action="?tab=camera<?php
-                    if (isset($_GET['page'])) {
-                        echo "&page=" . $_GET['page'];
-                    } ?>" method="POST">
-                <table class="camera">
-                    <tr>
-                        <td>
-                            Light Relay: <input type="text" value="<?php echo $camera_relay; ?>" maxlength=4 size=1 name="lightrelay" title=""/>
-                        </td>
-                        <td>
-                            Light On? <input type="checkbox" name="lighton" value="1" <?php
-                                if (isset($_POST['lighton'])) {
-                                    echo "checked=\"checked\"";
-                                } ?>>
-                        </td>
-                        <td>
-                            <button name="Capture" type="submit" value="">Capture Still</button>
-                        </td>
-                        <td>
-                            <button name="start-stream" type="submit" value="">Start Stream</button>
-                        </td>
-                        <td>
-                            <button name="stop-stream" type="submit" value="">Stop Stream</button>
-                        </td>
-                        <td>
-                            <?php
-                            if (!file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer)) {
-                                echo 'Stream <span class="off">OFF</span>';
-                            } else {
-                                echo 'Stream <span class="on">ON</span>';
-                            }
-                            ?>
-                        </td>
-                    </tr>
-                </table>
+
+            <form action="?tab=camera" method="POST">
+
+            <div style="float: left;  padding: 0.5em;">
+                Light Relay: <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $camera_relay; ?>" maxlength=4 size=1 name="lightrelay" title=""/> <button name="save_lightrelay" type="submit" value="">Save</button>
+            </div>
+            <div style="float: left; padding: 0.5em;">
+                Use Light? <input type="checkbox" name="lighton" value="1">
+            </div>
+
+            <div style="clear: both;"></div>
+
+            <div style="float: left; padding: 0.5em;">
+                <button name="Capture" type="submit" value="">Capture Still</button>
+            </div>
+
+            <div style="clear: both;"></div>
+
+            <div>
+                <div>
+                    <div style="float: left; padding: 0.5em;">
+                        <button name="start-stream" type="submit" value="">Start Stream</button>
+                        <button name="stop-stream" type="submit" value="">Stop Stream</button>
+                    </div>
+                    <div style="float: left; font-weight: bold; padding: 0.5em 1em 0.5em 0.5em;">
+                        Stream <?php
+                        if (!file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer)) {
+                            echo '(<span class="off">OFF</span>)';
+                        } else {
+                            echo '(<span class="on">ON</span>)';
+                        }
+                        ?>
+                    </div>
+                    
+                    
+                </div>
+                <div style="clear: both;"></div>
+                <div>
+                    <div style="float: left; padding: 0.5em;">
+                        <button name="start-timelapse" type="submit" value="">Start Timelapse</button>
+                        <button name="stop-timelapse" type="submit" value="">Stop Timelapse</button>
+                    </div>
+                    <div style="float: left; font-weight: bold; padding: 0.5em;">
+                        Timelapse <?php
+                        if (!file_exists($lock_raspistill) && !file_exists($lock_time_lapse)) {
+                            echo '(<span class="off">OFF</span>)';
+                        } else {
+                            echo '(<span class="on">ON</span>)';
+                        }
+                        ?>
+                    </div>
+                    <div style="float: left; padding: 0.5em;">
+                        Duration: <input style="width: 4em;" type="number" value="60" max="99999" min="1" name="timelapse_duration"> min
+                    </div>
+                    <div style="float: left; padding: 0.5em;">
+                       Total run time: <input style="width: 4em;" type="number" value="600" max="99999" min="1" name="timelapse_runtime"> min
+                    </div>
+                </div>
                 </form>
             </div>
+            <div style="clear: both;"></div>
+            <p>&nbsp;</p>
             <center>
             <?php
                 if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) {
@@ -1186,12 +1212,12 @@ if ($output_error) {
             if (isset($_GET['tab']) && $_GET['tab'] == 'adv') {
                 echo "class=\"selected\"";
             } ?>>
-            <div style="padding-left:1em;">
-                <div class="advanced">
-                    <FORM action="?tab=adv<?php
-                        if (isset($_GET['page'])) {
-                            echo "&page=" . $_GET['page'];
-                        } ?>" method="POST">
+
+            <?php if ($this->feedback) echo $this->feedback; ?>
+
+            <div style="padding:1.5em 0 0 3em;">
+                <div class="adv" style="padding-bottom: 2.5em;">
+                    <form action="?tab=adv" method="POST">
                     <div style="padding-bottom: 1em; font-weight: bold;">
                         <input type="submit" name="ChangeNoTimers" value="Save ->">
                         <select name="numtimers">
@@ -1237,11 +1263,11 @@ if ($output_error) {
                             for ($i = 1; $i <= $timer_num; $i++) {
                             ?>
                             <tr>
-                                <td>
+                                <td align="center">
                                     <?php echo $i; ?>
                                 </td>
                                 <td>
-                                    <input type="text" value="<?php echo $timer_name[$i]; ?>" maxlength=5 size=5 name="Timer<?php echo $i; ?>Name" title="This is the relay name for timer <?php echo $i; ?>"/>
+                                    <input style="width: 7em;" type="text" value="<?php echo $timer_name[$i]; ?>" maxlength=10 size=5 name="Timer<?php echo $i; ?>Name" title="This is the relay name for timer <?php echo $i; ?>"/>
                                 </td>
                                 <?php
                                 if ($timer_state[$i] == 0) {
@@ -1259,13 +1285,13 @@ if ($output_error) {
                                 }
                                 ?>
                                 <td>
-                                    <input type="text" value="<?php echo $timer_relay[$i]; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>Relay" title="This is the relay number for timer <?php echo $i; ?>"/>
+                                    <input  style="width: 3em;" type="number" min="0" max="8" value="<?php echo $timer_relay[$i]; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>Relay" title="This is the relay number for timer <?php echo $i; ?>"/>
                                 </td>
                                 <td>
-                                    <input type="text" value="<?php echo $timer_duration_on[$i]; ?>" maxlength=7 size=4 name="Timer<?php echo $i; ?>On" title="This is On duration of timer <?php echo $i; ?>"/>
+                                    <input style="width: 5em;" type="number" min="1" max="99999" value="<?php echo $timer_duration_on[$i]; ?>" name="Timer<?php echo $i; ?>On" title="This is On duration of timer <?php echo $i; ?>"/>
                                 </td>
                                 <td>
-                                    <input type="text" value="<?php echo $timer_duration_off[$i]; ?>" maxlength=7 size=4 name="Timer<?php echo $i; ?>Off" title="This is Off duration for timer <?php echo $i; ?>"/>
+                                    <input style="width: 5em;" type="number" min="0" max="99999" value="<?php echo $timer_duration_off[$i]; ?>" name="Timer<?php echo $i; ?>Off" title="This is Off duration for timer <?php echo $i; ?>"/>
                                 </td>
                                 <td>
                                     <input type="submit" name="ChangeTimer<?php echo $i; ?>" value="Set">
@@ -1276,44 +1302,17 @@ if ($output_error) {
                             ?>
                         </table>
                     </div>
-                    </FORM>
+                    </form>
                     <?php
                     }
                     ?>
                 </div>
 
-                <div class="advanced">
-                    <FORM action="?tab=adv" method="POST">
-                    <div class="notify-title">
-                        Email Notification Settings
-                    </div>
-                    <div class="notify">
-                        <label class="notify">SMTP Host</label><input class="smtp" type="text" value="<?php echo $smtp_host; ?>" maxlength=30 size=20 name="smtp_host" title=""/>
-                    </div>
-                    <div class="notify">
-                        <label class="notify">SMTP Port</label><input class="smtp" type="text" value="<?php echo $smtp_port; ?>" maxlength=30 size=20 name="smtp_port" title=""/>
-                    </div>
-                    <div class="notify">
-                        <label class="notify">User</label><input class="smtp" type="text" value="<?php echo $smtp_user; ?>" maxlength=30 size=20 name="smtp_user" title=""/>
-                    </div>
-                    <div class="notify">
-                        <label class="notify">Password</label><input class="smtp" type="password" value="<?php echo $smtp_pass; ?>" maxlength=30 size=20 name="smtp_pass" title=""/>
-                    </div>
-                    <div class="notify">
-                        <label class="notify">From</label><input class="smtp" type="text" value="<?php echo $smtp_email_from; ?>" maxlength=30 size=20 name="smtp_email_from" title=""/>
-                    </div>
-                    <div class="notify">
-                        <label class="notify">To</label><input class="smtp" type="text" value="<?php echo $smtp_email_to; ?>" maxlength=30 size=20 name="smtp_email_to" title=""/>
-                    </div>
-                    <div class="notify">
-                        <input type="submit" name="ChangeNotify" value="Save">
-                    </div>
-                    </FORM>
-                </div>
+                <div style="clear: both;"></div>
 
-                <div class="advanced" style="padding: 1.5em 2em 0 1em;">
+                <div class="advanced" style="padding-bottom: 2em;">
                     <form method="post" action="?tab=adv" name="debug">
-                    <div style="font-weight: bold; padding-bottom: 0.5em;">
+                    <div style="font-weight: bold; padding: 0.5em 0;">
                         Debugging
                     </div>
                     <div>
@@ -1327,59 +1326,91 @@ if ($output_error) {
 
                 <div style="clear: both;"></div>
 
+                <div style="padding-bottom: 2em;">
+                    <form method="post" action="?tab=adv" name="smtp">
+                    <div>
+                        <div style="font-weight: bold; padding: 0.5em 0;">
+                            Email Notification
+                        </div>
+                        <div class="adv">
+                            <input class="smtp" type="text" value="<?php echo $smtp_host; ?>" maxlength=30 size=20 name="smtp_host" title=""/> SMTP Host
+                        </div>
+                        <div class="adv">
+                            <input class="smtp" type="number" value="<?php echo $smtp_port; ?>" maxlength=30 size=20 name="smtp_port" title=""/> SMTP Port
+                        </div>
+                        <div class="adv">
+                            <input class="smtp" type="text" value="<?php echo $smtp_user; ?>" maxlength=30 size=20 name="smtp_user" title=""/> User
+                        </div>
+                        <div class="adv">
+                            <input class="smtp" type="password" value="<?php echo $smtp_pass; ?>" maxlength=30 size=20 name="smtp_pass" title=""/> Password
+                        </div>
+                        <div class="adv">
+                            <input class="smtp" type="text" value="<?php echo $smtp_email_from; ?>" maxlength=30 size=20 name="smtp_email_from" title=""/> From
+                        </div>
+                        <div class="adv">
+                            <input class="smtp" type="text" value="<?php echo $smtp_email_to; ?>" maxlength=30 size=20 name="smtp_email_to" title=""/> To
+                        </div>
+                        <div class="adv">
+                            <input type="submit" name="ChangeNotify" value="Save">
+                        </div>
+                    </div>
+                    </form>
+                </div>
+
+                <div style="clear: both;"></div>
+
                 <div class="advanced">
-                    <?php if ($this->feedback) echo $this->feedback; ?>
                     <div style="padding-bottom: 1em;">
                         <form method="post" action="?tab=adv" name="addform">
-                        <div class="manageusers-title">
+                        <div style="font-weight: bold; padding: 0.5em 0;">
                             Add User
                         </div>
-                        <div class="manageusers">
+                        <div class="adv">
                             <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" /> <label for="login_input_username">Username (only letters and numbers, 2 to 64 characters)</label>
                         </div>
-                        <div class="manageusers">
+                        <div class="adv">
                             <input id="login_input_email" type="email" name="user_email" /> <label for="login_input_email">Email</label>
                         </div>
-                        <div class="manageusers">
+                        <div class="adv">
                             <input id="login_input_password_new" class="login_input" type="password" name="user_password_new" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_new">Password (min. 6 characters)</label>
                         </div>
-                        <div class="manageusers">
+                        <div class="adv">
                             <input id="login_input_password_repeat" class="login_input" type="password" name="user_password_repeat" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_repeat">Repeat password</label>
                         </div>
-                        <div class="manageusers">
+                        <div class="adv">
                             <input type="submit" name="register" value="Add User" />
                         </div>
                         </form>
                     </div>
                     <div style="padding-bottom: 1em;">
                         <form method="post" action="?tab=adv" name="changeform">
-                        <div class="manageusers-title">
+                        <div style="font-weight: bold; padding: 0.5em 0;">
                             Change Password
                         </div>
-                        <div class="manageusers">
+                        <div class="adv">
                             <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" /> <label for="login_input_username">Username</label>
                         </div>
-                        <div class="manageusers">
+                        <div class="adv">
                             <input id="login_input_password_new" class="login_input" type="password" name="new_password" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_new">New Password (min. 6 characters)</label>
                         </div>
-                        <div class="manageusers">
+                        <div class="adv">
                             <input id="login_input_password_repeat" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_repeat">Repeat New password</label>
                         </div>
-                        <div class="manageusers">
+                        <div class="adv">
                             <input type="submit" name="changepassword" value="Change Password" />
                         </div>
                         </form>
                     </div>
                     <div>
                         <form method="post" action="?tab=adv" name="delform">
-                        <div class="manageusers-title">
+                        <div style="font-weight: bold; padding: 0.5em 0;">
                             Delete User
                         </div>
-                        <div class="manageusers">
+                        <div class="adv">
                             <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
                             <label for="login_input_username">Username</label>
                         </div>
-                            <div class="manageusers">
+                            <div class="adv">
                             <input type="submit" name="deleteuser" value="Delete User" />
                         </div>
                         </form>
