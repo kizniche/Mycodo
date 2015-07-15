@@ -894,25 +894,25 @@ def PID_stop(type, number):
 # Read CO2 sensor
 def read_co2_sensor(sensor):
     global sensor_co2_read_co2
+    co2_read_tries = 5
     chkco2 = 0
 
-    if (sensor_co2_device[1] == 'K30'): device = 'K30'
-    else:
+    if (sensor_co2_device[sensor] != 'K30'):
         logging.warning("[Read CO2 Sensor-%s] Cannot read CO2 from an unknown device!", sensor)
         return 0
 
     logging.debug("[Read CO2 Sensor-%s] Taking first CO2 reading", sensor)
 
     # Begin K30 Sensor
-    if device == 'K30':
-        for i in range(1, 5): # 4 attempts to get first reading
+    if sensor_co2_device[sensor] == 'K30':
+        for i in range(1, co2_read_tries): # Multiple attempts to get first reading
             co22 = read_K30()
             if co22 != None:
                 break
     # End K30 Sensor
 
     if co22 == None:
-        logging.warning("[Read CO2 Sensor-%s] Could not read first CO2 measurement!", sensor)
+        logging.warning("[Read CO2 Sensor-%s] Could not read first CO2 measurement! (of %s tries)", sensor, co2_read_tries)
         return 0
 
     logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor, co22)
@@ -923,15 +923,15 @@ def read_co2_sensor(sensor):
         logging.debug("[Read CO2 Sensor-%s] Taking second CO2 reading", sensor)
 
         # Begin K30 Sensor
-        if device == 'K30':
-            for i in range(1, 5): # 4 attempts to get second reading
+        if sensor_co2_device[sensor] == 'K30':
+            for i in range(1, co2_read_tries): # Multiple attempts to get second reading
                 sensor_co2_read_co2[sensor] = read_K30()
                 if sensor_co2_read_co2[sensor] != None:
                     break
         # End K30 Sensor
 
         if sensor_co2_read_co2[sensor] == None:
-            logging.warning("[Read CO2 Sensor-%s] Could not read second CO2 measurement!", sensor)
+            logging.warning("[Read CO2 Sensor-%s] Could not read second CO2 measurement! (of %s tries)", sensor, co2_read_tries)
             return 0
 
         logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor, sensor_co2_read_co2[sensor])
@@ -946,12 +946,12 @@ def read_co2_sensor(sensor):
             logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor, sensor_co2_read_co2[sensor])
             return 1
         if chkco2 > 4:
-            logging.warning("[Read CO2 Sensor] Could not get two CO2 measurements that were consistent! (tried 4 times)")
+            logging.warning("[Read CO2 Sensor-%s] Could not get two CO2 measurements that were consistent!", sensor)
 
 # Read K30 CO2 Sensor
 def read_K30():
     time.sleep(2) # Ensure 2 seconds between sensor reads
-    ser = serial.Serial("/dev/ttyAMA0", timeout=3) # Wait 3 seconds for reply
+    ser = serial.Serial("/dev/ttyAMA0", timeout=1) # Wait 1 second for reply
     ser.flushInput()
     time.sleep(1)
     ser.write("\xFE\x44\x00\x08\x02\x9F\x25")
