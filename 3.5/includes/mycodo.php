@@ -1096,7 +1096,7 @@ if ($output_error) {
                         Duration: <input style="width: 4em;" type="number" value="60" max="99999" min="1" name="timelapse_duration"> min
                     </div>
                     <div style="float: left; padding: 0.5em;">
-                       Total run time: <input style="width: 4em;" type="number" value="600" max="99999" min="1" name="timelapse_runtime"> min
+                       Total run time: <input style="width: 4em;" type="number" value="600" max="99999" min="1" name="timelapse_runtime"> min (<-- Currently not working)
                     </div>
                 </div>
                 </form>
