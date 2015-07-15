@@ -1063,7 +1063,7 @@ if ($output_error) {
                 </div>
                 <div style="float: left; font-weight: bold; padding: 0.7em 1em 0.5em 0;">
                     Timelapse <?php
-                    if (!file_exists($lock_raspistill) && !file_exists($lock_time_lapse)) {
+                    if (!file_exists($lock_time_lapse)) {
                         echo '(<span class="off">OFF</span>)';
                     } else {
                         echo '(<span class="on">ON</span>)';
@@ -1087,7 +1087,7 @@ if ($output_error) {
                 </div>
                 <div style="float: left; font-weight: bold; padding: 0.7em 1em 0.5em 0;">
                     Stream <?php
-                    if (!file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer)) {
+                    if (!file_exists($lock_mjpg_streamer)) {
                         echo '(<span class="off">OFF</span>)';
                     } else {
                         echo '(<span class="on">ON</span>)';
@@ -1099,7 +1099,7 @@ if ($output_error) {
             </form>
 
             <div style="clear: both;"></div>
-            <p>&nbsp;</p>
+            <div style="padding-top:1em;"></div>
             <center>
             <?php
                 if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) {
