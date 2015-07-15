@@ -911,7 +911,7 @@ def read_co2_sensor(sensor):
                 break
     # End K30 Sensor
 
-    if co22 == 0:
+    if co22 == None:
         logging.warning("[Read CO2 Sensor-%s] Could not read first CO2 measurement!", sensor)
         return 0
 
