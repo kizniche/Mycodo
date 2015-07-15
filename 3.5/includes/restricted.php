@@ -247,7 +247,7 @@ if (isset($_POST['ChangeNoTimers'])) {
 }
 
 // Change light relay
-if (isset($_POST['save_lightrelay'])) {
+if (isset($_POST['ChangeCamera'])) {
     $stmt = $db->prepare("UPDATE Misc SET Camera_Relay=:lightrelay");
     $stmt->bindValue(':lightrelay', (int)$_POST['lightrelay'], SQLITE3_INTEGER);
     $stmt->execute();

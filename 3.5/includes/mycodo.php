@@ -1043,12 +1043,8 @@ if ($output_error) {
             } ?>>
 
             <form action="?tab=camera" method="POST">
-
-            <div style="float: left;  padding: 0.5em;">
-                Light Relay: <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $camera_relay; ?>" maxlength=4 size=1 name="lightrelay" title=""/> <button name="save_lightrelay" type="submit" value="">Save</button>
-            </div>
             <div style="float: left; padding: 0.5em;">
-                Use Light? <input type="checkbox" name="lighton" value="1">
+                Use light during capture? <input type="checkbox" name="lighton" value="1">
             </div>
             <div style="float: left; padding: 0.5em;">
                 <button name="Capture" type="submit" value="">Capture Still</button>
@@ -1058,10 +1054,15 @@ if ($output_error) {
 
             <div>
                 <div style="float: left; padding: 0.5em;">
-                    <button name="start-timelapse" type="submit" value="">Start</button>
-                    <button name="stop-timelapse" type="submit" value="">Stop</button>
+                    <?php
+                    if (!file_exists($lock_time_lapse)) {
+                        echo '<button name="start-timelapse" type="submit" value="">Start</button>';
+                    } else {
+                        echo '<button name="stop-timelapse" type="submit" value="">Stop</button>';
+                    }
+                    ?>
                 </div>
-                <div style="float: left; font-weight: bold; padding: 0.7em 1em 0.5em 0;">
+                <div style="float: left; font-weight: bold; padding: 0.8em 1em 0.5em 0;">
                     Timelapse <?php
                     if (!file_exists($lock_time_lapse)) {
                         echo '(<span class="off">OFF</span>)';
@@ -1082,11 +1083,16 @@ if ($output_error) {
 
             <div>
                 <div style="float: left; padding: 0.5em;">
-                    <button name="start-stream" type="submit" value="">Start</button>
-                    <button name="stop-stream" type="submit" value="">Stop</button>
+                    <?php
+                    if (!file_exists($lock_mjpg_streamer)) {
+                        echo '<button name="start-stream" type="submit" value="">Start</button>';
+                    } else {
+                        echo '<button name="stop-stream" type="submit" value="">Stop</button>';
+                    }
+                    ?>
                 </div>
-                <div style="float: left; font-weight: bold; padding: 0.7em 1em 0.5em 0;">
-                    Stream <?php
+                <div style="float: left; font-weight: bold; padding: 0.8em 1em 0.5em 0;">
+                    Video Stream <?php
                     if (!file_exists($lock_mjpg_streamer)) {
                         echo '(<span class="off">OFF</span>)';
                     } else {
@@ -1323,9 +1329,31 @@ if ($output_error) {
 
                 <div style="clear: both;"></div>
 
-                <div style="padding-bottom: 2em;">
+                <div class="advanced">
+                    <div style="padding-bottom: 2em;">
+                        <form method="post" action="?tab=adv" name="smtp">
+                        <div>
+                            <div style="font-weight: bold; padding: 0.5em 0;">
+                                Camera
+                            </div>
+                            <div class="adv">
+                                Light Relay: <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $camera_relay; ?>" maxlength=4 size=1 name="lightrelay" title=""/>
+                            </div>
+                            <div class="adv">
+                                ANother variable3
+                            </div>
+                            <div class="adv">
+                                <button name="ChangeCamera" type="submit" value="">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="clear: both;"></div>
+
+                <div <div class="advanced">
                     <form method="post" action="?tab=adv" name="smtp">
-                    <div>
+                    <div style="padding-bottom: 2em;">
                         <div style="font-weight: bold; padding: 0.5em 0;">
                             Email Notification
                         </div>
