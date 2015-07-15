@@ -903,11 +903,13 @@ def read_co2_sensor(sensor):
 
     logging.debug("[Read CO2 Sensor-%s] Taking first CO2 reading", sensor)
 
+    # Begin K30 Sensor
     if device == 'K30':
         for i in range(1, 5): # 4 attempts to get first reading
             co22 = read_K30()
             if co22 != None:
                 break
+    # End K30 Sensor
 
     if co22 == 0:
         logging.warning("[Read CO2 Sensor-%s] Could not read first CO2 measurement!", sensor)
@@ -920,11 +922,13 @@ def read_co2_sensor(sensor):
     while not terminate:
         logging.debug("[Read CO2 Sensor-%s] Taking second CO2 reading", sensor)
 
+        # Begin K30 Sensor
         if device == 'K30':
             for i in range(1, 5): # 4 attempts to get second reading
                 sensor_co2_read_co2[sensor] = read_K30()
                 if sensor_co2_read_co2[sensor] != None:
                     break
+        # End K30 Sensor
 
         if sensor_co2_read_co2[sensor] == None:
             logging.warning("[Read CO2 Sensor-%s] Could not read second CO2 measurement!", sensor)
