@@ -1050,9 +1050,6 @@ if ($output_error) {
             <div style="float: left; padding: 0.5em;">
                 Use Light? <input type="checkbox" name="lighton" value="1">
             </div>
-
-            <div style="clear: both;"></div>
-
             <div style="float: left; padding: 0.5em;">
                 <button name="Capture" type="submit" value="">Capture Still</button>
             </div>
@@ -1060,47 +1057,47 @@ if ($output_error) {
             <div style="clear: both;"></div>
 
             <div>
-                <div>
-                    <div style="float: left; padding: 0.5em;">
-                        <button name="start-stream" type="submit" value="">Start Stream</button>
-                        <button name="stop-stream" type="submit" value="">Stop Stream</button>
-                    </div>
-                    <div style="float: left; font-weight: bold; padding: 0.5em 1em 0.5em 0.5em;">
-                        Stream <?php
-                        if (!file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer)) {
-                            echo '(<span class="off">OFF</span>)';
-                        } else {
-                            echo '(<span class="on">ON</span>)';
-                        }
-                        ?>
-                    </div>
-                    
-                    
+                <div style="float: left; padding: 0.5em;">
+                    <button name="start-timelapse" type="submit" value="">Start</button>
+                    <button name="stop-timelapse" type="submit" value="">Stop</button>
                 </div>
-                <div style="clear: both;"></div>
-                <div>
-                    <div style="float: left; padding: 0.5em;">
-                        <button name="start-timelapse" type="submit" value="">Start Timelapse</button>
-                        <button name="stop-timelapse" type="submit" value="">Stop Timelapse</button>
-                    </div>
-                    <div style="float: left; font-weight: bold; padding: 0.5em;">
-                        Timelapse <?php
-                        if (!file_exists($lock_raspistill) && !file_exists($lock_time_lapse)) {
-                            echo '(<span class="off">OFF</span>)';
-                        } else {
-                            echo '(<span class="on">ON</span>)';
-                        }
-                        ?>
-                    </div>
-                    <div style="float: left; padding: 0.5em;">
-                        Duration: <input style="width: 4em;" type="number" value="60" max="99999" min="1" name="timelapse_duration"> min
-                    </div>
-                    <div style="float: left; padding: 0.5em;">
-                       Total run time: <input style="width: 4em;" type="number" value="600" max="99999" min="1" name="timelapse_runtime"> min (<-- Currently not working)
-                    </div>
+                <div style="float: left; font-weight: bold; padding: 0.7em 1em 0.5em 0;">
+                    Timelapse <?php
+                    if (!file_exists($lock_raspistill) && !file_exists($lock_time_lapse)) {
+                        echo '(<span class="off">OFF</span>)';
+                    } else {
+                        echo '(<span class="on">ON</span>)';
+                    }
+                    ?>
                 </div>
-                </form>
+                <div style="float: left; padding: 0.5em;">
+                    Duration: <input style="width: 4em;" type="number" value="60" max="99999" min="1" name="timelapse_duration"> min
+                </div>
+                <div style="float: left; padding: 0.5em;">
+                   Run time: <input style="width: 4em;" type="number" value="600" max="99999" min="1" name="timelapse_runtime"> min (<-- Currently not working)
+                </div>
             </div>
+
+            <div style="clear: both;"></div>
+
+            <div>
+                <div style="float: left; padding: 0.5em;">
+                    <button name="start-stream" type="submit" value="">Start</button>
+                    <button name="stop-stream" type="submit" value="">Stop</button>
+                </div>
+                <div style="float: left; font-weight: bold; padding: 0.7em 1em 0.5em 0;">
+                    Stream <?php
+                    if (!file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer)) {
+                        echo '(<span class="off">OFF</span>)';
+                    } else {
+                        echo '(<span class="on">ON</span>)';
+                    }
+                    ?>
+                </div>
+            </div>
+
+            </form>
+
             <div style="clear: both;"></div>
             <p>&nbsp;</p>
             <center>
