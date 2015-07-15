@@ -576,13 +576,17 @@ def daemon(output, log):
             if client_que == 'write_co2_sensor_log':
                 logging.debug("[Client command] Write CO2 Sensor Log")
                 if (client_var != 0 and sensor_co2_activated[client_var]):
-                    read_co2_sensor(client_var)
-                    write_co2_sensor_log(client_var)
+                    if read_co2_sensor(client_var) == 1:
+                        write_co2_sensor_log(client_var)
+                    else:
+                        logging.warning("Could not read CO2 sensor, not writing to seneor log")
                 else:
                     for i in range(1, int(sensor_co2_num)+1):
                         if sensor_co2_activated[i]:
-                            read_co2_sensor(i)
-                            write_co2_sensor_log(i)
+                            if read_co2_sensor(i) == 1:
+                                write_co2_sensor_log(i)
+                            else:
+                                logging.warning("Could not read CO2-%s sensor, not writing to seneor log", i)
                             time.sleep(1)
                 change_sensor_log = 0
             elif client_que == 'write_ht_sensor_log':
@@ -706,6 +710,8 @@ def daemon(output, log):
             if int(time.time()) > timerCo2SensorLog[i] and sensor_co2_device[i] != 'Other' and sensor_co2_activated[i] == 1:
                 if read_co2_sensor(i) == 1:
                     write_co2_sensor_log(i)
+                else:
+                    logging.warning("Could not read CO2 sensor, not writing to seneor log")
                 timerCo2SensorLog[i] = int(time.time()) + sensor_co2_period[i]
 
         # Concatenate local log with tempfs log every 6 hours
@@ -819,20 +825,22 @@ def co2_monitor(ThreadName, sensor):
         if pid_co2_relay[sensor] != 0 and pid_co2_or[sensor] == 0 and pid_co2_down == 0 and pid_co2_relay[sensor] != 0 and sensor_co2_activated[sensor] == 1:
             if int(time.time()) > timerCo2:
                 logging.debug("[PID CO2-%s] Reading CO2...", sensor)
-                read_co2_sensor(sensor)
-                PIDCo2 = p_co2.update(float(sensor_co2_read_co2[sensor]))
-                if (sensor_co2_read_co2[sensor] > pid_co2_set[sensor]):
-                    logging.debug("[PID CO2-%s] CO2: %s ppm now > %s ppm set", sensor, sensor_co2_read_co2[sensor], pid_co2_set[sensor])
-                    logging.debug("[PID CO2-%s] PID = %.1f (seconds)", sensor, abs(PIDCo2))
-                    if (PIDCo2 > 0 and sensor_co2_read_co2[sensor] > pid_co2_set[sensor]):
-                        rod = threading.Thread(target = relay_on_duration,
-                            args=(pid_co2_relay[sensor], round(abs(PIDCo2),2), sensor,))
-                        rod.start()
-                    timerCo2 = int(time.time()) + int(PIDCo2) + int(pid_co2_period[sensor])
+                if read_co2_sensor(sensor) == 1:
+                    PIDCo2 = p_co2.update(float(sensor_co2_read_co2[sensor]))
+                    if (sensor_co2_read_co2[sensor] > pid_co2_set[sensor]):
+                        logging.debug("[PID CO2-%s] CO2: %s ppm now > %s ppm set", sensor, sensor_co2_read_co2[sensor], pid_co2_set[sensor])
+                        logging.debug("[PID CO2-%s] PID = %.1f (seconds)", sensor, abs(PIDCo2))
+                        if (PIDCo2 > 0 and sensor_co2_read_co2[sensor] > pid_co2_set[sensor]):
+                            rod = threading.Thread(target = relay_on_duration,
+                                args=(pid_co2_relay[sensor], round(abs(PIDCo2),2), sensor,))
+                            rod.start()
+                        timerCo2 = int(time.time()) + int(PIDCo2) + int(pid_co2_period[sensor])
+                    else:
+                        logging.debug("[PID CO2-%s] CO2: %s ppm now <= %s ppm set, waiting 60 seconds", sensor, sensor_co2_read_co2[sensor], pid_co2_set[sensor])
+                        logging.debug("[PID CO2-%s] PID = %.1f (seconds)", sensor, abs(PIDCo2))
+                        timerCo2 = int(time.time()) + 60
                 else:
-                    logging.debug("[PID CO2-%s] CO2: %s ppm now <= %s ppm set, waiting 60 seconds", sensor, sensor_co2_read_co2[sensor], pid_co2_set[sensor])
-                    logging.debug("[PID CO2-%s] PID = %.1f (seconds)", sensor, abs(PIDCo2))
-                    timerCo2 = int(time.time()) + 60
+                    logging.warning("Could not read CO2 sensor, not updating PID")
         time.sleep(0.1)
     logging.info("[PID CO2-%s] Shutting Down %s", sensor,  ThreadName)
     pid_co2_alive[sensor] = 2
@@ -895,19 +903,31 @@ def read_co2_sensor(sensor):
 
     logging.debug("[Read CO2 Sensor-%s] Taking first CO2 reading", sensor)
 
-    if device == 'K30': co22 = read_K30()
-    if co22 is None:
-        logging.warning("[Read CO2 Sensor-%s] Could not read CO2!", sensor)
+    if device == 'K30':
+        for i in range(1, 5): # 4 attempts to get first reading
+            co22 = read_K30()
+            if co22 != None:
+                break
+
+    if co22 == 0:
+        logging.warning("[Read CO2 Sensor-%s] Could not read first CO2 measurement!", sensor)
         return 0
 
     logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor, co22)
 
+    time.sleep(1)
+
     while not terminate:
         logging.debug("[Read CO2 Sensor-%s] Taking second CO2 reading", sensor)
 
-        if device == 'K30': sensor_co2_read_co2[sensor] = read_K30()
-        if sensor_co2_read_co2[sensor] is None:
-            logging.warning("[Read CO2 Sensor-%s] Could not read CO2!", sensor)
+        if device == 'K30':
+            for i in range(1, 5): # 4 attempts to get second reading
+                sensor_co2_read_co2[sensor] = read_K30()
+                if sensor_co2_read_co2[sensor] != None:
+                    break
+
+        if sensor_co2_read_co2[sensor] == None:
+            logging.warning("[Read CO2 Sensor-%s] Could not read second CO2 measurement!", sensor)
             return 0
 
         logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor, sensor_co2_read_co2[sensor])
