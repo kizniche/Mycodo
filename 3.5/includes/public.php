@@ -37,7 +37,7 @@ for ($p = 1; $p <= $sensor_ht_num; $p++) {
 }
 for ($p = 1; $p <= $sensor_co2_num; $p++) {
     if ($sensor_co2_activated[$p]) {
-        $last_co2_sensor[$p] = `awk '$8 == $p {print}' /var/www/mycodo/log/sensor-ht-tmp.log | tail -n 1`;
+        $last_co2_sensor[$p] = `awk '$8 == $p {print}' /var/www/mycodo/log/sensor-co2-tmp.log | tail -n 1`;
         $sensor_explode = explode(" ", $last_co2_sensor[$p]);
         $co2[$p] = $sensor_explode[6];
     }
