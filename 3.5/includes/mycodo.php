@@ -81,9 +81,9 @@ delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete olde
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex">
-	<link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" href="css/reset.css">
-	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/fonts.css" type="text/css">
+	<link rel="stylesheet" href="css/reset.css" type="text/css">
+	<link rel="stylesheet" href="css/style.css" type="text/css">
 	<script src="js/modernizr.js"></script>
     <script type="text/javascript">
         function open_legend() {
@@ -1350,7 +1350,7 @@ if ($output_error) {
                                 Light Relay: <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $camera_relay; ?>" maxlength=4 size=1 name="lightrelay" title=""/>
                             </div>
                             <div class="adv">
-                                ANother variable3
+                                Another variable
                             </div>
                             <div class="adv">
                                 <button name="ChangeCamera" type="submit" value="">Save</button>
