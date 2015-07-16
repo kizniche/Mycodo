@@ -51,6 +51,8 @@ $lock_mjpg_streamer_light = $lock_path . "/mycodo-stream-light";
 $lock_time_lapse = $lock_path . "/mycodo_time_lapse";
 $lock_time_lapse_light = $lock_path . "/mycodo-timelapse-light";
 
+$camera_error = NULL;
+
 require_once("includes/functions.php"); // Mycodo functions
 require("includes/database.php"); // Initial SQL database load to variables
 
@@ -1044,6 +1046,12 @@ if ($output_error) {
                 echo "class=\"selected\"";
             } ?>>
 
+            <?php
+            if ($camera_error != NULL) {
+                echo '<div style="color: red;">' . $camera_error . '</div>';
+            }
+            ?>
+
             <form action="?tab=camera" method="POST">
             <div style="float: left; padding: 0.5em;">
                 Use light during capture? <input type="checkbox" name="lighton" value="1">
@@ -1110,7 +1118,7 @@ if ($output_error) {
             <div style="padding-top:1em;"></div>
             <center>
             <?php
-                if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) {
+                if (file_exists($lock_mjpg_streamer)) {
                     echo '<img src="http://' . $_SERVER['HTTP_HOST'] . ':8080/?action=stream" />';
                 }
                 if (isset($_POST['Capture']) && $_SESSION['user_name'] != 'guest') {

@@ -309,31 +309,40 @@ for ($p = 1; $p <= 8; $p++) {
     }
 }
 
+// Camera error check
+if (isset($_POST['Capture']) || isset($_POST['start-stream']) || isset($_POST['start-timelapse'])) {
+    if (file_exists($lock_raspistill)) {
+        $camera_error = 'Error: Still image lock file present. This shouldn\'t happem. Remove lock file.';
+    } else if (file_exists($lock_mjpg_streamer)) {
+        $camera_error = 'Error: Stream lock file present. Stop stream to kill processes and remove lock files.';
+    } else if (file_exists($lock_time_lapse)) {
+        $camera_error = 'Error: Timelapse lock file present. Stop time-lapse to kill processes and remove lock files.';
+    }
+}
+
 // Capture still image from camera (with or without light activation)
-if (isset($_POST['Capture'])) {
-    if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) shell_exec("$stream_exec stop");
+if (isset($_POST['Capture']) && !file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer) && !file_exists($lock_time_lapse)) {
+    shell_exec("touch " . $lock_raspistill);
     if (isset($_POST['lighton'])) {
         if ($relay_trigger[$camera_relay] == 1) $trigger = 1;
         else $trigger = 0;
         $capture_output = shell_exec("$still_exec " . $relay_pin[$camera_relay] . " " . $trigger . " 2>&1; echo $?");
     } else $capture_output = shell_exec("$still_exec 2>&1; echo $?");
+    shell_exec("rm -f " . $lock_raspistill);
 }
 
 // Start video stream
-if (isset($_POST['start-stream'])) {
-    if (file_exists($lock_raspistill) || file_exists($lock_mjpg_streamer)) {
-    echo 'Lock files already present. Press \'Stop Stream\' to kill processes and remove lock files.<br>';
+if (isset($_POST['start-stream']) && !file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer) && !file_exists($lock_time_lapse)) {
+    shell_exec("touch " . $lock_mjpg_streamer);
+    if (isset($_POST['lighton'])) { // Turn light on
+        if ($relay_trigger[$camera_relay] == 1) $trigger = 1;
+        else $trigger = 0;
+        shell_exec("touch " . $lock_mjpg_streamer_light);
+        shell_exec("$stream_exec start " . $relay_pin[$camera_relay] . " " . $trigger . " > /dev/null &");
+        sleep(1);
     } else {
-        if (isset($_POST['lighton'])) { // Turn light on
-            if ($relay_trigger[$camera_relay] == 1) $trigger = 1;
-            else $trigger = 0;
-            shell_exec("touch " . $lock_mjpg_streamer_light);
-            shell_exec("$stream_exec start " . $relay_pin[$camera_relay] . " " . $trigger . " > /dev/null &");
-            sleep(1);
-        } else {
-            shell_exec("$stream_exec start > /dev/null &");
-            sleep(1);
-        }
+        shell_exec("$stream_exec start > /dev/null &");
+        sleep(1);
     }
 }
 
@@ -345,25 +354,23 @@ if (isset($_POST['stop-stream'])) {
         shell_exec("rm -f " . $lock_mjpg_streamer_light);
         shell_exec("$stream_exec stop " . $relay_pin[$camera_relay] . " " . $trigger . " > /dev/null &");
     } else shell_exec("$stream_exec stop");
+    shell_exec("rm -f " . $lock_mjpg_streamer);
     sleep(1);
 }
 
 // Start time-lapse
 if (isset($_POST['start-timelapse'])) {
-    if (isset($_POST['timelapse_duration']) && isset($_POST['timelapse_runtime'])) {
-        if (file_exists($lock_raspistill) || file_exists($lock_time_lapse)) {
-        echo 'Lock files already present. Press \'Stop Timelapse\' to kill processes and remove lock files.<br>';
+    if (isset($_POST['timelapse_duration']) && isset($_POST['timelapse_runtime']) && !file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer) && !file_exists($lock_time_lapse)) {
+        shell_exec("touch " . $lock_time_lapse);
+        if (isset($_POST['timelapse_lighton'])) { // Turn light on
+            if ($relay_trigger[$camera_relay] == 1) $trigger = 1;
+            else $trigger = 0;
+            shell_exec("touch " . $lock_time_lapse_light);
+            shell_exec("$mycodo_client --timelapse start " . $relay_pin[$camera_relay] . " " . $trigger . " > /dev/null &");
+            sleep(1);
         } else {
-            if (isset($_POST['timelapse_lighton'])) { // Turn light on
-                if ($relay_trigger[$camera_relay] == 1) $trigger = 1;
-                else $trigger = 0;
-                shell_exec("touch " . $lock_time_lapse_light);
-                shell_exec("$mycodo_client --timelapse start " . $relay_pin[$camera_relay] . " " . $trigger . " > /dev/null &");
-                sleep(1);
-            } else {
-                shell_exec("$mycodo_client --timelapse start > /dev/null &");
-                sleep(1);
-            }
+            shell_exec("$mycodo_client --timelapse start > /dev/null &");
+            sleep(1);
         }
     }
 }
@@ -376,6 +383,7 @@ if (isset($_POST['stop-timelapse'])) {
         shell_exec("rm -f " . $lock_time_lapse_light);
         shell_exec("$mycodo_client --timelapse stop " . $relay_pin[$camera_relay] . " " . $trigger . " > /dev/null &");
     } else shell_exec("$mycodo_client --timelapse stop");
+    shell_exec("rm -f " . $lock_time_lapse);
     sleep(1);
 }
 
