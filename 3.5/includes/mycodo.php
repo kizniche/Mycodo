@@ -551,7 +551,7 @@ if ($output_error) {
                                 <?php echo $i; ?>
                             </td>
                             <td>
-                                <input style="width: 10em;" type="text" value="<?php echo $sensor_ht_name[$i]; ?>" maxlength=12 size=10 name="sensorht<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
+                                <input style="width: 11em;" type="text" value="<?php echo $sensor_ht_name[$i]; ?>" maxlength=12 size=10 name="sensorht<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
                             </td>
                             <td>
                                 <select style="width: 80px;" name="sensorht<?php echo $i; ?>device">
@@ -618,10 +618,10 @@ if ($output_error) {
                                 ?>
                             </td>
                             <td>
-                                <input style="width: 2em;" type="number" min="0" max="8" value="<?php echo $pid_temp_relay[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>TempRelay" title="This is the relay connected to the heating device"/>
+                                <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_temp_relay[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>TempRelay" title="This is the relay connected to the heating device"/>
                             </td>
                             <td>
-                                <input style="width: 3em;" type="number" step="any" value="<?php echo $pid_temp_set[$i]; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>TempSet" title="This is the desired temperature"/> °C
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_temp_set[$i]; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>TempSet" title="This is the desired temperature"/> °C
                             </td>
                             <td align=center>
                                 <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_temp_period[$i]; ?>" name="Set<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/>
@@ -653,10 +653,10 @@ if ($output_error) {
                                 ?>
                             </td>
                             <td>
-                                <input style="width: 2em;" type="number" min="0" max="8" value="<?php echo $pid_hum_relay[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>HumRelay" title="This is the relay connected to your humidifying device"/>
+                                <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_hum_relay[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>HumRelay" title="This is the relay connected to your humidifying device"/>
                             </td>
                             <td>
-                                <input style="width: 3em;" type="number" step="any" value="<?php echo $pid_hum_set[$i]; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>HumSet" title="This is the desired humidity"/> %
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_hum_set[$i]; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>HumSet" title="This is the desired humidity"/> %
                             </td>
                             <td align=center>
                                 <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_hum_period[$i]; ?>" name="Set<?php echo $i; ?>HumPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another humidity reading and applying the PID"/>
@@ -796,10 +796,10 @@ if ($output_error) {
                                 ?>
                             </td>
                             <td>
-                                <input  style="width: 2em;" type="number" min="0" max="8" value="<?php echo $pid_co2_relay[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>Co2Relay" title="This is the relay connected to the device that modulates CO2"/>
+                                <input  style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_co2_relay[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>Co2Relay" title="This is the relay connected to the device that modulates CO2"/>
                             </td>
                             <td>
-                                <input style="width: 3em;" type="number" step="any" value="<?php echo $pid_co2_set[$i]; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>Co2Set" title="This is the desired CO2 level"/> ppm
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_set[$i]; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>Co2Set" title="This is the desired CO2 level"/> ppm
                             </td>
                             <td align=center>
                                 <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_co2_period[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Co2Period" title="This is the number of seconds to wait after the relay has been turned off before taking another CO2 reading and applying the PID"/>

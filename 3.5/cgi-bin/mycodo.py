@@ -1343,16 +1343,16 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number)
             lines = 86400
             sensor_ht_log_final[1] = "%s/sensor-%s-logs-%s-%s-%s-day.log" %  (
                 tmp_path, sensor_type, graph_span, graph_id, sensor_number)
-            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s" % (
-                sensor_number, lines, sensor_ht_log_generate, sensor_ht_log_final[1])
+            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
+                sensor_number, sensor_type, lines, sensor_ht_log_generate, sensor_ht_log_final[1])
             logging.debug("[Generate Graph] cmd: %s", cmd)
             os.system(cmd)
 
             lines = 604800
             sensor_ht_log_final[2] = "%s/sensor-%s-logs-%s-%s-%s-week.log" %  (
                 tmp_path, sensor_type, graph_span, graph_id, sensor_number)
-            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s" % (
-                sensor_number, lines, sensor_ht_log_generate, sensor_ht_log_final[2])
+            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
+                sensor_number, sensor_type, lines, sensor_ht_log_generate, sensor_ht_log_final[2])
             logging.debug("[Generate Graph] cmd: %s", cmd)
             os.system(cmd)
 
@@ -1360,18 +1360,18 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number)
             sensor_co2_log_generate = "%s/sensor-%s-logs-%s.log" % (
                 tmp_path, sensor_type, graph_span)
             lines = 86400
-            sensor_co2_log_final[1] = "%s/sensor-%s-logs-%s-%s-%s.log" %  (
+            sensor_co2_log_final[1] = "%s/sensor-%s-logs-%s-%s-%s-day.log" %  (
                 tmp_path, sensor_type, graph_span, graph_id, sensor_number)
-            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s" % (
-                sensor_number, lines, sensor_co2_log_generate, sensor_co2_log_final[1])
+            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
+                sensor_number, sensor_type, lines, sensor_co2_log_generate, sensor_co2_log_final[1])
             logging.debug("[Generate Graph] cmd: %s", cmd)
             os.system(cmd)
 
             lines = 604800
-            sensor_co2_log_final[2] = "%s/sensor-%s-logs-%s-%s-%s.log" %  (
+            sensor_co2_log_final[2] = "%s/sensor-%s-logs-%s-%s-%s-week.log" %  (
                 tmp_path, sensor_type, graph_span, graph_id, sensor_number)
-            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s" % (
-                sensor_number, lines, sensor_co2_log_generate, sensor_co2_log_final[2])
+            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
+                sensor_number, sensor_type, lines, sensor_co2_log_generate, sensor_co2_log_final[2])
             logging.debug("[Generate Graph] cmd: %s", cmd)
             os.system(cmd)
 
@@ -1379,7 +1379,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number)
         # Combine sensor and relay logs on SD card with sensor and relay logs in /tmp
         if sensor_ht_graph[1] or sensor_ht_graph[2] or sensor_ht_graph[3] or sensor_ht_graph[4]:
             sensor_ht_log_files_combine = [sensor_ht_log_file, sensor_ht_log_file_tmp]
-            sensor_ht_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, sensor_type, graph_type)
+            sensor_ht_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, 'ht', graph_type)
             with open(sensor_ht_log_generate, 'w') as fout:
                 for line in fileinput.input(sensor_ht_log_files_combine):
                     fout.write(line)
@@ -1388,7 +1388,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number)
 
         if sensor_co2_graph[1] or sensor_co2_graph[2] or sensor_co2_graph[3] or sensor_co2_graph[4]:
             sensor_co2_log_files_combine = [sensor_co2_log_file, sensor_co2_log_file_tmp]
-            sensor_co2_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, sensor_type, graph_type)
+            sensor_co2_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, 'co2', graph_type)
             with open(sensor_co2_log_generate, 'w') as fout:
                 for line in fileinput.input(sensor_co2_log_files_combine):
                     fout.write(line)
@@ -1399,9 +1399,9 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number)
             lines = seconds/sensor_ht_period[i]
             if sensor_ht_graph[i]:
                 sensor_ht_log_final[i] = "%s/sensor-%s-logs-%s-%s-%s.log" %  (
-                    tmp_path, sensor_type, graph_type, graph_id, i)
-                cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s" % (
-                    i, lines, sensor_ht_log_generate, sensor_ht_log_final[i])
+                    tmp_path, 'ht', graph_type, graph_id, i)
+                cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
+                    i, 'ht', lines, sensor_ht_log_generate, sensor_ht_log_final[i])
                 logging.debug("[Generate Graph] cmd: %s", cmd)
                 os.system(cmd)
 
@@ -1409,25 +1409,26 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number)
             lines = seconds/sensor_co2_period[i]
             if sensor_co2_graph[i]:
                 sensor_co2_log_final[i] = "%s/sensor-%s-logs-%s-%s-%s.log" %  (
-                    tmp_path, sensor_type, graph_type, graph_id, i)
-                cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s" % (
-                    i, lines, sensor_co2_log_generate, sensor_co2_log_final[i])
+                    tmp_path, 'co2', graph_type, graph_id, i)
+                cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
+                    i, 'co2', lines, sensor_co2_log_generate, sensor_co2_log_final[i])
                 logging.debug("[Generate Graph] cmd: %s", cmd)
                 os.system(cmd)
 
     elif graph_type == "separate":
-        sensor_ht_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, sensor_type, graph_type)
-        lines = seconds/sensor_ht_period[int(sensor_number)]
+        sensor_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, sensor_type, graph_type)
         if sensor_type == "ht":
+            lines = seconds/sensor_ht_period[int(sensor_number)]
             sensor_ht_log_final[1] = "%s/sensor-%s-logs-%s-%s-%s.log" % (
                 tmp_path, sensor_type, graph_type, graph_id, sensor_number)
-            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s" % (
-                sensor_number, lines, sensor_ht_log_generate, sensor_ht_log_final[1])
+            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
+                sensor_number, sensor_type, lines, sensor_log_generate, sensor_ht_log_final[1])
         if sensor_type == "co2":
+            lines = seconds/sensor_co2_period[int(sensor_number)]
             sensor_co2_log_final[1] = "%s/sensor-%s-logs-%s-%s-%s.log" % (
                 tmp_path, sensor_type, graph_type, graph_id, sensor_number)
-            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s" % (
-                sensor_number, lines, sensor_ht_log_generate, sensor_ht_log_final[1])
+            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
+                sensor_number, sensor_type, lines, sensor_log_generate, sensor_co2_log_final[1])
         logging.debug("[Generate Graph] cmd: %s", cmd)
         os.system(cmd)
 
