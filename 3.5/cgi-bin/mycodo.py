@@ -1383,6 +1383,8 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number)
             with open(sensor_ht_log_generate, 'w') as fout:
                 for line in fileinput.input(sensor_ht_log_files_combine):
                     fout.write(line)
+        else:
+            sensor_ht_log_generate = None
 
         if sensor_co2_graph[1] or sensor_co2_graph[2] or sensor_co2_graph[3] or sensor_co2_graph[4]:
             sensor_co2_log_files_combine = [sensor_co2_log_file, sensor_co2_log_file_tmp]
@@ -1390,6 +1392,8 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number)
             with open(sensor_co2_log_generate, 'w') as fout:
                 for line in fileinput.input(sensor_co2_log_files_combine):
                     fout.write(line)
+        else:
+            sensor_co2_log_generate = None
 
         for i in range(1, 5):
             lines = seconds/sensor_ht_period[i]
@@ -1769,7 +1773,6 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number)
         gnuplot_log = "%s/plot-%s-%s-%s-%s.log" % (log_path, sensor_type, graph_type, graph_span, sensor_number)
         with open(gnuplot_log, 'ab') as errfile:
             subprocess.call(['gnuplot', gnuplot_graph], stderr=errfile)
-
 
 #################################################
 #          SQLite Database Read/Write           #

@@ -55,11 +55,11 @@ if (isset($_GET['graphtype']) && ($_GET['graphtype'] == 'custom-separate' || $_G
             break;
         }
 } else if (ctype_alnum($_GET['id']) && is_int((int)$_GET['sensornumber']) &&
-        ($_GET['sensortype'] == 'ht' || $_GET['sensortype'] == 'co2')) {
+        ($_GET['sensortype'] == 'ht' || $_GET['sensortype'] == 'co2' || $_GET['sensortype'] == 'x')) {
     // Generate preset graphs (Main tab)
     if ($_GET['graphtype'] == 'separate' ||
         $_GET['graphtype'] == 'combined' ||
-        $_GET['graphtype'] == 'default') {
+        $_GET['graphspan'] == 'default') {
         
         readfile($image_dir . 'graph-' . $_GET['sensortype'] . $_GET['graphtype'] . $_GET['graphspan'] . '-' . $_GET['id'] . '-' . $_GET['sensornumber'] . '.png');
     } elseif ($_GET['graphtype'] == 'custom-combined') {
