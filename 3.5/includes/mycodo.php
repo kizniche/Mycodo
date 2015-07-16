@@ -47,7 +47,9 @@ $relay_log = $install_path . "/log/relay.log";
 $images = $install_path . "/images";
 $lock_raspistill = $lock_path . "/mycodo_raspistill";
 $lock_mjpg_streamer = $lock_path . "/mycodo_mjpg_streamer";
+$lock_mjpg_streamer_light = $lock_path . "/mycodo-stream-light";
 $lock_time_lapse = $lock_path . "/mycodo_time_lapse";
+$lock_time_lapse_light = $lock_path . "/mycodo-timelapse-light";
 
 require_once("includes/functions.php"); // Mycodo functions
 require("includes/database.php"); // Initial SQL database load to variables
@@ -1109,7 +1111,7 @@ if ($output_error) {
             <center>
             <?php
                 if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) {
-                    echo '<img src="http://' . $_SERVER[HTTP_HOST] . ':8080/?action=stream" />';
+                    echo '<img src="http://' . $_SERVER['HTTP_HOST'] . ':8080/?action=stream" />';
                 }
                 if (isset($_POST['Capture']) && $_SESSION['user_name'] != 'guest') {
                     if ($capture_output != 0) {
