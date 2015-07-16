@@ -241,10 +241,14 @@ class OneFileLoginApplication {
             if (password_verify($_POST['user_password'], $result_row->user_password_hash)) {
                 if (isset($_POST['cookie'])) {
                     if ($_POST['cookie'] == 1) {
-                        // make cookies, 86400 = 1 day
+                        // make cookies, expire in 30 days
                         setcookie('login_user', $result_row->user_name, time() + (86400 * 30), "/");
                         setcookie('login_hash', $result_row->user_password_hash, time() + (86400 * 30), "/");
                     }
+                } else {
+                    // make cookies, expire when browser closed
+                    setcookie('login_user', $result_row->user_name, 0, "/");
+                    setcookie('login_hash', $result_row->user_password_hash, 0, "/");
                 }
                 // write user data into PHP SESSION [a file on your server]
                 $_SESSION['user_name'] = $result_row->user_name;
