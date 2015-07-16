@@ -327,7 +327,7 @@ if (isset($_POST['start-stream'])) {
         if (isset($_POST['lighton'])) { // Turn light on
             if ($relay_trigger[$camera_relay] == 1) $trigger = 1;
             else $trigger = 0;
-            shell_exec("touch /var/lock/mycodo-stream-light");
+            shell_exec("touch " . $lock_mjpg_streamer_light);
             shell_exec("$stream_exec start " . $relay_pin[$camera_relay] . " " . $trigger . " > /dev/null &");
             sleep(1);
         } else {
@@ -339,10 +339,10 @@ if (isset($_POST['start-stream'])) {
 
 // Stop video stream
 if (isset($_POST['stop-stream'])) {
-    if (file_exists("/var/lock/mycodo-stream-light")) { // Turn light off
+    if (file_exists($lock_mjpg_streamer_light)) { // Turn light off
         if ($relay_trigger[$camera_relay] == 1) $trigger = 0;
         else $trigger = 1;
-        shell_exec("rm -f /var/lock/mycodo-stream-light");
+        shell_exec("rm -f " . $lock_mjpg_streamer_light);
         shell_exec("$stream_exec stop " . $relay_pin[$camera_relay] . " " . $trigger . " > /dev/null &");
     } else shell_exec("$stream_exec stop");
     sleep(1);
@@ -357,7 +357,7 @@ if (isset($_POST['start-timelapse'])) {
             if (isset($_POST['timelapse_lighton'])) { // Turn light on
                 if ($relay_trigger[$camera_relay] == 1) $trigger = 1;
                 else $trigger = 0;
-                shell_exec("touch /var/lock/mycodo-timelapse-light");
+                shell_exec("touch " . $lock_time_lapse_light);
                 shell_exec("$mycodo_client --timelapse start " . $relay_pin[$camera_relay] . " " . $trigger . " > /dev/null &");
                 sleep(1);
             } else {
@@ -373,7 +373,7 @@ if (isset($_POST['stop-timelapse'])) {
     if (file_exists("/var/lock/mycodo-timelapse-light")) { // Turn light off
         if ($relay_trigger[$camera_relay] == 1) $trigger = 0;
         else $trigger = 1;
-        shell_exec("rm -f /var/lock/mycodo-timelapse-light");
+        shell_exec("rm -f " . $lock_time_lapse_light);
         shell_exec("$mycodo_client --timelapse stop " . $relay_pin[$camera_relay] . " " . $trigger . " > /dev/null &");
     } else shell_exec("$mycodo_client --timelapse stop");
     sleep(1);
