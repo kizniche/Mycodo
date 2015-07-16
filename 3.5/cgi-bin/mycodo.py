@@ -840,7 +840,7 @@ def co2_monitor(ThreadName, sensor):
                     if (sensor_co2_read_co2[sensor] > pid_co2_set[sensor]):
                         logging.debug("[PID CO2-%s] CO2: %s ppm now > %s ppm set", sensor, sensor_co2_read_co2[sensor], pid_co2_set[sensor])
                         logging.debug("[PID CO2-%s] PID = %.1f (seconds)", sensor, abs(PIDCo2))
-                        if (PIDCo2 > 0 and sensor_co2_read_co2[sensor] > pid_co2_set[sensor]):
+                        if (abs(PIDCo2) > 0 and sensor_co2_read_co2[sensor] > pid_co2_set[sensor]):
                             rod = threading.Thread(target = relay_on_duration,
                                 args=(pid_co2_relay[sensor], round(abs(PIDCo2),2), sensor,))
                             rod.start()
