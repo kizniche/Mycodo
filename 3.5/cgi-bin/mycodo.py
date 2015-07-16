@@ -844,7 +844,7 @@ def co2_monitor(ThreadName, sensor):
                             rod = threading.Thread(target = relay_on_duration,
                                 args=(pid_co2_relay[sensor], round(abs(PIDCo2),2), sensor,))
                             rod.start()
-                        timerCo2 = int(time.time()) + int(PIDCo2) + int(pid_co2_period[sensor])
+                        timerCo2 = int(time.time()) + int(abs(PIDCo2)) + int(pid_co2_period[sensor])
                     else:
                         logging.debug("[PID CO2-%s] CO2: %s ppm now <= %s ppm set, waiting 60 seconds", sensor, sensor_co2_read_co2[sensor], pid_co2_set[sensor])
                         logging.debug("[PID CO2-%s] PID = %.1f (seconds)", sensor, abs(PIDCo2))
