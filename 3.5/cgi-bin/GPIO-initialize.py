@@ -57,5 +57,6 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 for i in range(1, 9):
-    GPIO.setup(relay_pin[i], GPIO.OUT)
-    GPIO.output(relay_pin[i], relay_trigger[i])
+    if relay_pin[i] != 0:
+        GPIO.setup(relay_pin[i], GPIO.OUT)
+        GPIO.output(relay_pin[i], relay_trigger[i])
