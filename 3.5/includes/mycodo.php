@@ -1119,7 +1119,7 @@ if ($output_error) {
             <center>
             <?php
                 if (file_exists($lock_mjpg_streamer)) {
-                    echo '<img src="http://' . $_SERVER['HTTP_HOST'] . ':8080/?action=stream" />';
+                    echo '<img src="stream.php">';
                 }
                 if (isset($_POST['Capture']) && $_SESSION['user_name'] != 'guest') {
                     if ($capture_output != 0) {
