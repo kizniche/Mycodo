@@ -279,7 +279,7 @@ Main components
 .cd-tabs {
   position: relative;
   width: 95%;
-  max-width: 61.5em;
+  max-width: 63em;
   margin: 0.5em auto;
 }
 .cd-tabs:after {
