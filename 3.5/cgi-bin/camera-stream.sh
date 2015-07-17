@@ -31,7 +31,7 @@ start() {
     
     /usr/bin/raspistill --nopreview --burst --contrast 20 --sharpness 60 --awb auto --quality 20 --vflip --hflip --width 800 --height 600 -o /tmp/stream/pic.jpg --timelapse 500 --timeout 9999999 --thumb 0:0:0 &
 
-    LD_LIBRARY_PATH=/usr/local/lib /usr/local/bin/mjpg_streamer -i "input_file.so -f /tmp/stream -n pic.jpg" -o "output_http.so -w /var/www/mycodo" &
+    LD_LIBRARY_PATH=/usr/local/lib /usr/local/bin/mjpg_streamer -i "input_file.so -f /tmp/stream -n pic.jpg" -o "output_http.so -w /var/www/mycodo/ -p 6926" &
 }
 stop() {
     if [ -n "$1" ]; then
