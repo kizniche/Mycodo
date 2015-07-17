@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$db = new SQLite3($sqlite_db);
+$db = new SQLite3($mycodo_db);
 
 $results = $db->query('SELECT Relays, HTSensors, CO2Sensors, Timers FROM Numbers');
 while ($row = $results->fetchArray()) {

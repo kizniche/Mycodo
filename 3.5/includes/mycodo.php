@@ -36,7 +36,7 @@ $mycodo_client = $install_path . "/cgi-bin/mycodo-client.py";
 $still_exec = $install_path . "/cgi-bin/camera-still.sh";
 $stream_exec = $install_path . "/cgi-bin/camera-stream.sh";
 $timelapse_exec = $install_path . "/cgi-bin/camera-timelapse.sh";
-$sqlite_db = $install_path . "/config/mycodo.db";
+$mycodo_db = $install_path . "/config/mycodo.db";
 
 $daemon_log = $install_path . "/log/daemon.log";
 $auth_log = $install_path . "/log/auth.log";
@@ -137,7 +137,7 @@ if ($output_error) {
             else echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="daemon_change" value="1"> Daemon';
             ?></div>
         <div style="padding-bottom: 0.1em;"><?php
-            if (file_exists($lock_raspistill) && file_exists($lock_mjpg_streamer)) {
+            if (file_exists($lock_mjpg_streamer)) {
                 echo '<input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="" value="0">';
             } else {
                 echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="" value="0">';
@@ -1213,7 +1213,7 @@ if ($output_error) {
                             }
                         }
                         if(isset($_POST['Database'])) {
-                            view_sql_db($sqlite_db);
+                            view_sql_db($mycodo_db);
                         }
                     ?>
                     </pre>
@@ -1489,7 +1489,7 @@ if (isset($_COOKIE['debug'])) {
                 <div style="padding: 1em 0; font-weight: bold; font-size: 1.2em;">
                     SQLite Database
                 </div>
-                <pre><?php exec('sqlite3 ' . $sqlite_db . ' .dump', $output); print_r($output); ?></pre>
+                <pre><?php exec('sqlite3 ' . $mycodo_db . ' .dump', $output); print_r($output); ?></pre>
             </div>
         </div>
         <?php
