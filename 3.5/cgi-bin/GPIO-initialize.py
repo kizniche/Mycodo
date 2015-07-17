@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-#  GPIO-initializa.py - Initialize GPIO pins connected to relays and
+#  GPIO-initialize.py - Initialize GPIO pins connected to relays and
 #                       sets them off.
 #
 #  Copyright (C) 2015  Kyle T. Gabriel
@@ -30,7 +30,7 @@ import sqlite3
 install_directory = "/var/www/mycodo"
 #### Configure Install Directory ####
 
-sql_database = '/var/www/mycodo/config/mycodo.sqlite3'
+sql_database = '/var/www/mycodo/config/mycodo.db'
 
 # GPIO pins (BCM numbering) and name of devices attached to relay
 relay_pin = [0] * 9
