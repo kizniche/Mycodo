@@ -1189,7 +1189,7 @@ if ($output_error) {
 
             <?php if ($this->feedback) echo $this->feedback; ?>
 
-            <div class="advanced">
+            <div class="advanced" style="padding-top: 1em;">
                 <form action="?tab=settings" method="POST">
                 <div style="padding: 1em 0;">
                     <div style="float: left; padding-right: 1em;">
@@ -1217,9 +1217,9 @@ if ($output_error) {
                 <div>
                     <table class="relays">
                         <tr>
-                            <td align=center class="table-header">Relay<br>No.</td>
-                            <td align=center class="table-header">Relay<br>Name</td>
-                            <th align=center class="table-header">State<br><img style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off" title="Off"> = off</th>
+                            <td align=center class="table-header">&nbsp;<br>Relay</td>
+                            <td class="table-header">&nbsp;<br>Name</td>
+                            <td align=center class="table-header">State<br><img style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off" title="Off"> = off</td>
                             <td align=center class="table-header">Seconds<br>On</td>
                             <td align=center class="table-header">GPIO<br>Pin</td>
                             <td align=center class="table-header">Signal<br>ON</td>
@@ -1232,8 +1232,8 @@ if ($output_error) {
                             <td align=center>
                                 <?php echo $i; ?>
                             </td>
-                            <td align=center>
-                                <input style="width: 10em;" type="text" value="<?php echo $relay_name[$i]; ?>" maxlength=13 size=10 name="relay<?php echo $i; ?>name" title="Name of relay <?php echo $i; ?>"/>
+                            <td>
+                                <input style="width: 10em;" type="text" value="<?php echo $relay_name[$i]; ?>" maxlength=13 name="relay<?php echo $i; ?>name" title="Name of relay <?php echo $i; ?>"/>
                             </td>
                             <?php
                                 if ((shell_exec($read) == 1 && $relay_trigger[$i] == 0) || (shell_exec($read) == 0 && $relay_trigger[$i] == 1)) {
@@ -1303,28 +1303,15 @@ if ($output_error) {
                 if ($timer_num > 0) {
                 ?>
                 <div>
-                    <table class="timers">
+                    <table class="relays">
                         <tr>
-                            <td>
-                                Timer
-                            </td>
-                            <td>
-                                Name
-                            </td>
-                            <th align="center" colspan="2">
-                                State
-                            </th>
-                            <td>
-                                Relay
-                            </td>
-                            <td>
-                                On (sec)
-                            </td>
-                            <td>
-                                Off (sec)
-                            </td>
-                            <td>
-                            </td>
+                            <td align=center class="table-header">Timer</td>
+                            <td class="table-header">Name</td>
+                            <th align=center class="table-header">State</th>
+                            <td align=center class="table-header">Relay</td>
+                            <td align=center class="table-header">On (sec)</td>
+                            <td align=center class="table-header">Off (sec)</td>
+                            <td align=center class="table-header"></td>
                         </tr>
                         <?php
                         for ($i = 1; $i <= $timer_num; $i++) {
@@ -1334,19 +1321,19 @@ if ($output_error) {
                                 <?php echo $i; ?>
                             </td>
                             <td>
-                                <input style="width: 7em;" type="text" value="<?php echo $timer_name[$i]; ?>" maxlength=10 size=5 name="Timer<?php echo $i; ?>Name" title="This is the relay name for timer <?php echo $i; ?>"/>
+                                <input style="width: 10em;" type="text" value="<?php echo $timer_name[$i]; ?>" maxlength=13 name="Timer<?php echo $i; ?>Name" title="This is the relay name for timer <?php echo $i; ?>"/>
                             </td>
                             <?php
                             if ($timer_state[$i] == 0) {
                             ?>
-                                <th colspan=2 align=right>
-                                    <nobr><input type="hidden" name="Timer<?php echo $i; ?>State" value="0"><input type="image" style="height: 0.9em;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="Timer<?php echo $i; ?>StateChange" value="0"> | <button style="width: 40px;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">ON</button></nobr>
+                                <td class="onoff">
+                                    <nobr><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="Timer<?php echo $i; ?>StateChange" value="0"> | <button style="width: 3em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">ON</button></nobr>
                                 </th>
                             <?php
                             } else {
                             ?>
-                                <th colspan=2 align=right>
-                                    <nobr><input type="hidden" name="Timer<?php echo $i; ?>State" value="1"><input type="image" style="height: 0.9em;" src="/mycodo/img/on.jpg" alt="On" title="On" name="Timer<?php echo $i; ?>StateChange" value="1"> | <button style="width: 40px;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="0">OFF</button></nobr>
+                                <td class="onoff">
+                                    <nobr><input type="image" style="height: 0.95em;" src="/mycodo/img/on.jpg" alt="On" title="On" name="Timer<?php echo $i; ?>StateChange" value="1"> | <button style="width: 3em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="0">OFF</button></nobr>
                                 </th>
                             <?php
                             }
@@ -1369,10 +1356,10 @@ if ($output_error) {
                         ?>
                     </table>
                 </div>
-                </form>
                 <?php
                 }
                 ?>
+            </form>
             </div>
 
             <div class="advanced">
@@ -1523,6 +1510,7 @@ if ($output_error) {
                     </form>
                 </div>
             </div>
+            <div style="padding-top: 3em;"></div>
 		</li>
 	</ul> <!-- cd-tabs-content -->
 </div> <!-- cd-tabs -->
