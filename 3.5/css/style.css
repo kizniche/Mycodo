@@ -192,8 +192,12 @@ label.notify {
     font-weight: bold;
 }
 
+.advanced {
+  padding: 2em 0 0 2em;
+}
+
 .adv {
-    margin-top: 0.1em;
+    margin: 0.3em 0 0.3em 0;
 }
 
 

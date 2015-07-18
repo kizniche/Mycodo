@@ -155,7 +155,7 @@ if ($output_error) {
         <div style="float: left;">
             <div><?php
                 if (isset($_GET['r'])) {
-                    ?><div style="display:inline-block; vertical-align:top;"><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="" value="0">
+                    ?><div style="display:inline-block; vertical-align:top;"><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On" name="" value="0">
                     </div>
                     <div style="display:inline-block; padding-left: 0.3em;">
                         <div>Refresh <span style="font-size: 0.7em">(<?php echo $tab; ?>)</span></div>
@@ -429,7 +429,7 @@ if ($output_error) {
 
             <?php
             if ($relay_num != 0) { ?>
-                <div style="padding: 1em 0 1em 3em;">
+                <div style="padding: 0.5em 0 0.5em 3em;">
                 <div style="padding: 0.5em 0 0.5em 0;">Relays</div>
                 <div style="padding-left: 0.2em;">
                 <table class="relay-display">
@@ -1006,7 +1006,7 @@ if ($output_error) {
 
             <form action="?tab=camera" method="POST">
             <div style="float: left; padding: 0.5em;">
-                Activate relay during capture? <input type="checkbox" name="lighton" title="Light relay is configurable in the Advanced tab" value="1"> <?php
+                Activate relay during capture/timelapse/stream? <input type="checkbox" name="lighton" title="Light relay is configurable in the Advanced tab" value="1"> <?php
                 if ($camera_relay == 0) {
                     echo '<span style="color: red; padding: 0 0 0 0.5em; font-size: 0.9em;">Relay unconfigured. Change this in the Settings.</span>';
                 } else {
@@ -1189,7 +1189,7 @@ if ($output_error) {
 
             <?php if ($this->feedback) echo $this->feedback; ?>
 
-            <div style="padding:1.5em 0 0 2em;">
+            <div class="advanced">
                 <form action="?tab=settings" method="POST">
                 <div style="padding: 1em 0;">
                     <div style="float: left; padding-right: 1em;">
@@ -1214,7 +1214,7 @@ if ($output_error) {
                 if ($relay_num > 0) {
                 ?>
             
-                <div class="adv" style="padding-bottom: 2.5em;">
+                <div>
                     <table class="relays">
                         <tr>
                             <td align=center class="table-header">Relay<br>No.</td>
@@ -1281,228 +1281,246 @@ if ($output_error) {
             ?>
             </form>
             </div>
-            <div style="clear: both;"></div>
 
-            <div style="padding:1.5em 0 0 2em;">
-                <div class="adv" style="padding-bottom: 2.5em;">
-                    <form action="?tab=settings" method="POST">
-                    <div style="padding-bottom: 1em; font-weight: bold;">
-                        <input type="submit" name="ChangeNoTimers" value="Set">
-                        <select name="numtimers">
-                            <option value="0" <?php if ($timer_num == 1) echo "selected=\"selected\""; ?>>0</option>
-                            <option value="1" <?php if ($timer_num == 1) echo "selected=\"selected\""; ?>>1</option>
-                            <option value="2" <?php if ($timer_num == 2) echo "selected=\"selected\""; ?>>2</option>
-                            <option value="3" <?php if ($timer_num == 3) echo "selected=\"selected\""; ?>>3</option>
-                            <option value="4" <?php if ($timer_num == 4) echo "selected=\"selected\""; ?>>4</option>
-                            <option value="5" <?php if ($timer_num == 5) echo "selected=\"selected\""; ?>>5</option>
-                            <option value="6" <?php if ($timer_num == 6) echo "selected=\"selected\""; ?>>6</option>
-                            <option value="7" <?php if ($timer_num == 7) echo "selected=\"selected\""; ?>>7</option>
-                            <option value="8" <?php if ($timer_num == 8) echo "selected=\"selected\""; ?>>8</option>
-                        </select>
-                        <strong>Timers</strong>
-                    </div>
-                    <?php
-                    if ($timer_num > 0) {
-                    ?>
-                    <div>
-                        <table class="timers">
-                            <tr>
-                                <td>
-                                    Timer
-                                </td>
-                                <td>
-                                    Name
-                                </td>
-                                <th align="center" colspan="2">
-                                    State
-                                </th>
-                                <td>
-                                    Relay
-                                </td>
-                                <td>
-                                    On (sec)
-                                </td>
-                                <td>
-                                    Off (sec)
-                                </td>
-                                <td>
-                                </td>
-                            </tr>
+            <div class="advanced">
+                <form action="?tab=settings" method="POST">
+                <div style="padding-bottom: 1em; font-weight: bold;">
+                    <input type="submit" name="ChangeNoTimers" value="Set">
+                    <select name="numtimers">
+                        <option value="0" <?php if ($timer_num == 1) echo "selected=\"selected\""; ?>>0</option>
+                        <option value="1" <?php if ($timer_num == 1) echo "selected=\"selected\""; ?>>1</option>
+                        <option value="2" <?php if ($timer_num == 2) echo "selected=\"selected\""; ?>>2</option>
+                        <option value="3" <?php if ($timer_num == 3) echo "selected=\"selected\""; ?>>3</option>
+                        <option value="4" <?php if ($timer_num == 4) echo "selected=\"selected\""; ?>>4</option>
+                        <option value="5" <?php if ($timer_num == 5) echo "selected=\"selected\""; ?>>5</option>
+                        <option value="6" <?php if ($timer_num == 6) echo "selected=\"selected\""; ?>>6</option>
+                        <option value="7" <?php if ($timer_num == 7) echo "selected=\"selected\""; ?>>7</option>
+                        <option value="8" <?php if ($timer_num == 8) echo "selected=\"selected\""; ?>>8</option>
+                    </select>
+                    <strong>Timers</strong>
+                </div>
+                <?php
+                if ($timer_num > 0) {
+                ?>
+                <div>
+                    <table class="timers">
+                        <tr>
+                            <td>
+                                Timer
+                            </td>
+                            <td>
+                                Name
+                            </td>
+                            <th align="center" colspan="2">
+                                State
+                            </th>
+                            <td>
+                                Relay
+                            </td>
+                            <td>
+                                On (sec)
+                            </td>
+                            <td>
+                                Off (sec)
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        <?php
+                        for ($i = 1; $i <= $timer_num; $i++) {
+                        ?>
+                        <tr>
+                            <td align="center">
+                                <?php echo $i; ?>
+                            </td>
+                            <td>
+                                <input style="width: 7em;" type="text" value="<?php echo $timer_name[$i]; ?>" maxlength=10 size=5 name="Timer<?php echo $i; ?>Name" title="This is the relay name for timer <?php echo $i; ?>"/>
+                            </td>
                             <?php
-                            for ($i = 1; $i <= $timer_num; $i++) {
+                            if ($timer_state[$i] == 0) {
                             ?>
-                            <tr>
-                                <td align="center">
-                                    <?php echo $i; ?>
-                                </td>
-                                <td>
-                                    <input style="width: 7em;" type="text" value="<?php echo $timer_name[$i]; ?>" maxlength=10 size=5 name="Timer<?php echo $i; ?>Name" title="This is the relay name for timer <?php echo $i; ?>"/>
-                                </td>
-                                <?php
-                                if ($timer_state[$i] == 0) {
-                                ?>
-                                    <th colspan=2 align=right>
-                                        <nobr><input type="hidden" name="Timer<?php echo $i; ?>State" value="0"><input type="image" style="height: 0.9em;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="Timer<?php echo $i; ?>StateChange" value="0"> | <button style="width: 40px;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">ON</button></nobr>
-                                    </th>
-                                <?php
-                                } else {
-                                ?>
-                                    <th colspan=2 align=right>
-                                        <nobr><input type="hidden" name="Timer<?php echo $i; ?>State" value="1"><input type="image" style="height: 0.9em;" src="/mycodo/img/on.jpg" alt="On" title="On" name="Timer<?php echo $i; ?>StateChange" value="1"> | <button style="width: 40px;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="0">OFF</button></nobr>
-                                    </th>
-                                <?php
-                                }
-                                ?>
-                                <td>
-                                    <input  style="width: 3em;" type="number" min="0" max="8" value="<?php echo $timer_relay[$i]; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>Relay" title="This is the relay number for timer <?php echo $i; ?>"/>
-                                </td>
-                                <td>
-                                    <input style="width: 5em;" type="number" min="1" max="99999" value="<?php echo $timer_duration_on[$i]; ?>" name="Timer<?php echo $i; ?>On" title="This is On duration of timer <?php echo $i; ?>"/>
-                                </td>
-                                <td>
-                                    <input style="width: 5em;" type="number" min="0" max="99999" value="<?php echo $timer_duration_off[$i]; ?>" name="Timer<?php echo $i; ?>Off" title="This is Off duration for timer <?php echo $i; ?>"/>
-                                </td>
-                                <td>
-                                    <input type="submit" name="ChangeTimer<?php echo $i; ?>" value="Set">
-                                </td>
-                            </tr>
+                                <th colspan=2 align=right>
+                                    <nobr><input type="hidden" name="Timer<?php echo $i; ?>State" value="0"><input type="image" style="height: 0.9em;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="Timer<?php echo $i; ?>StateChange" value="0"> | <button style="width: 40px;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">ON</button></nobr>
+                                </th>
+                            <?php
+                            } else {
+                            ?>
+                                <th colspan=2 align=right>
+                                    <nobr><input type="hidden" name="Timer<?php echo $i; ?>State" value="1"><input type="image" style="height: 0.9em;" src="/mycodo/img/on.jpg" alt="On" title="On" name="Timer<?php echo $i; ?>StateChange" value="1"> | <button style="width: 40px;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="0">OFF</button></nobr>
+                                </th>
                             <?php
                             }
                             ?>
-                        </table>
-                    </div>
-                    </form>
-                    <?php
-                    }
-                    ?>
+                            <td>
+                                <input  style="width: 3em;" type="number" min="0" max="8" value="<?php echo $timer_relay[$i]; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>Relay" title="This is the relay number for timer <?php echo $i; ?>"/>
+                            </td>
+                            <td>
+                                <input style="width: 5em;" type="number" min="1" max="99999" value="<?php echo $timer_duration_on[$i]; ?>" name="Timer<?php echo $i; ?>On" title="This is On duration of timer <?php echo $i; ?>"/>
+                            </td>
+                            <td>
+                                <input style="width: 5em;" type="number" min="0" max="99999" value="<?php echo $timer_duration_off[$i]; ?>" name="Timer<?php echo $i; ?>Off" title="This is Off duration for timer <?php echo $i; ?>"/>
+                            </td>
+                            <td>
+                                <input type="submit" name="ChangeTimer<?php echo $i; ?>" value="Set">
+                            </td>
+                        </tr>
+                        <?php
+                        }
+                        ?>
+                    </table>
                 </div>
+                </form>
+                <?php
+                }
+                ?>
+            </div>
 
-                <div style="clear: both;"></div>
+            <div class="advanced">
+                <form method="post" action="?tab=settings" name="debug">
+                <div style="font-weight: bold; padding: 0.5em 0;">
+                    Debugging
+                </div>
+                <div class="adv">
+                    Display Debugging Information <input type="hidden" name="debug" value="0" /><input type="checkbox" id="debug" name="debug" value="1"<?php if (isset($_COOKIE['debug'])) if ($_COOKIE['debug'] == True) echo ' checked'; ?> title="Display debugging information at the bottom of every page."/>
+                </div>
+                <div class="adv">
+                    <input type="submit" value="Save">
+                </div>
+                </form>
+            </div>
 
-                <div class="advanced" style="padding-bottom: 2em;">
-                    <form method="post" action="?tab=settings" name="debug">
+            <div class="advanced">
+                <form method="post" action="?tab=settings" name="smtp">
+                <div style="font-weight: bold; padding: 0.5em 0;">
+                    Camera
+                </div>
+                <div class="adv">
+                    Relay to activate during capture: <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $camera_relay; ?>" maxlength=4 size=1 name="lightrelay" title="A relay can be set to activate duting a still image, stream, or timelapse capture. Enable/disable on the camera tab."/>
+                </div>
+                <div class="adv">
+                    Extra parameters for camera (raspistill) <input style="width: 22em;" type="text" value="" maxlength=200 name="" title=""/>
+                </div>
+                <div class="adv">
+                    <button name="ChangeCamera" type="submit" value="">Save</button>
+                </div>
+                </form>
+            </div>
+
+            <div class="advanced">
+                <form method="post" action="?tab=settings" name="smtp">
+                <div style="font-weight: bold; padding: 0.5em 0;">
+                    Timelapse
+                </div>
+                <div class="adv">
+                    Photo save path <input style="width: 19em;" type="text" value="/var/www/mycodo/camera-timelapse" maxlength=50 name="timelapse-save-path" title=""/>
+                </div>
+                <div class="adv">
+                    Photo filename prefix <input style="width: 7em;" type="text" value="Timelapse-" maxlength=20 name="timelapse-prefix" title=""/>
+                </div>
+                <div class="adv">
+                    Use unique ID in filename <input type="hidden" name="" value="0" /><input type="checkbox" id="" name="timelapse-id" value="1"<?php if (1) echo ' checked'; ?> title=""/>
+                </div>
+                <div class="adv">
+                    Use timestamp in filename <input type="hidden" name="" value="0" /><input type="checkbox" id="" name="timelapse-timestamp" value="1"<?php if (1) echo ' checked'; ?> title=""/>
+                </div>
+                <div class="adv">
+                    Enable experimental auto-exposure mode <input type="hidden" name="" value="0" /><input type="checkbox" id="" name="timelapse-auto-exp" value="1"<?php if (1) echo ' checked'; ?> title=""/>
+                </div>
+                <div class="adv" style="padding: 0.3em 0 0.2em 0;">
+                    Example filename: Timelapse-20150719140601-55a9da474bb74.jpg
+                </div>
+                <div class="adv">
+                    <button name="ChangeTimelapse" type="submit" value="">Save</button>
+                </div>
+                </form>
+            </div>
+
+            <div style="clear: both;"></div>
+
+            <div <div class="advanced">
+                <form method="post" action="?tab=settings" name="smtp">
+                <div style="font-weight: bold; padding: 0.5em 0;">
+                    Email Notification
+                </div>
+                <div class="adv">
+                    <input class="smtp" type="text" value="<?php echo $smtp_host; ?>" maxlength=30 size=20 name="smtp_host" title=""/> SMTP Host
+                </div>
+                <div class="adv">
+                    <input class="smtp" type="number" value="<?php echo $smtp_port; ?>" maxlength=30 size=20 name="smtp_port" title=""/> SMTP Port
+                </div>
+                <div class="adv">
+                    <input class="smtp" type="text" value="<?php echo $smtp_user; ?>" maxlength=30 size=20 name="smtp_user" title=""/> User
+                </div>
+                <div class="adv">
+                    <input class="smtp" type="password" value="<?php echo $smtp_pass; ?>" maxlength=30 size=20 name="smtp_pass" title=""/> Password
+                </div>
+                <div class="adv">
+                    <input class="smtp" type="text" value="<?php echo $smtp_email_from; ?>" maxlength=30 size=20 name="smtp_email_from" title=""/> From
+                </div>
+                <div class="adv">
+                    <input class="smtp" type="text" value="<?php echo $smtp_email_to; ?>" maxlength=30 size=20 name="smtp_email_to" title=""/> To
+                </div>
+                <div class="adv">
+                    <input type="submit" name="ChangeNotify" value="Save">
+                </div>
+                </form>
+            </div>
+
+            <div class="advanced">
+                <div style="padding-bottom: 1em;">
+                    <form method="post" action="?tab=settings" name="addform">
                     <div style="font-weight: bold; padding: 0.5em 0;">
-                        Debugging
+                        Add User
                     </div>
-                    <div>
-                        Display Debugging Information
-                        <input type="hidden" name="debug" value="0" />
-                        <input type="checkbox" id="debug" name="debug" value="1"<?php if (isset($_COOKIE['debug'])) if ($_COOKIE['debug'] == True) echo ' checked'; ?> title="Display debugging information at the bottom of every page."/>
-                        <input type="submit" value="Save">
+                    <div class="adv">
+                        <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" /> <label for="login_input_username">Username (only letters and numbers, 2 to 64 characters)</label>
                     </div>
-                    </form>
-                </div>
-
-                <div style="clear: both;"></div>
-
-                <div class="advanced">
-                    <div style="padding-bottom: 2em;">
-                        <form method="post" action="?tab=settings" name="smtp">
-                        <div>
-                            <div style="font-weight: bold; padding: 0.5em 0;">
-                                Camera
-                            </div>
-                            <div class="adv">
-                                Activate relay during capture: <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $camera_relay; ?>" maxlength=4 size=1 name="lightrelay" title="A relay can be set to activate duting a still image, stream, or timelapse capture. Enable/disable on the camera tab."/>
-                            </div>
-                            <div class="adv">
-                                <button name="ChangeCamera" type="submit" value="">Save</button>
-                            </div>
-                        </div>
+                    <div class="adv">
+                        <input id="login_input_email" type="email" name="user_email" /> <label for="login_input_email">Email</label>
                     </div>
-                </div>
-
-                <div style="clear: both;"></div>
-
-                <div <div class="advanced">
-                    <form method="post" action="?tab=settings" name="smtp">
-                    <div style="padding-bottom: 2em;">
-                        <div style="font-weight: bold; padding: 0.5em 0;">
-                            Email Notification
-                        </div>
-                        <div class="adv">
-                            <input class="smtp" type="text" value="<?php echo $smtp_host; ?>" maxlength=30 size=20 name="smtp_host" title=""/> SMTP Host
-                        </div>
-                        <div class="adv">
-                            <input class="smtp" type="number" value="<?php echo $smtp_port; ?>" maxlength=30 size=20 name="smtp_port" title=""/> SMTP Port
-                        </div>
-                        <div class="adv">
-                            <input class="smtp" type="text" value="<?php echo $smtp_user; ?>" maxlength=30 size=20 name="smtp_user" title=""/> User
-                        </div>
-                        <div class="adv">
-                            <input class="smtp" type="password" value="<?php echo $smtp_pass; ?>" maxlength=30 size=20 name="smtp_pass" title=""/> Password
-                        </div>
-                        <div class="adv">
-                            <input class="smtp" type="text" value="<?php echo $smtp_email_from; ?>" maxlength=30 size=20 name="smtp_email_from" title=""/> From
-                        </div>
-                        <div class="adv">
-                            <input class="smtp" type="text" value="<?php echo $smtp_email_to; ?>" maxlength=30 size=20 name="smtp_email_to" title=""/> To
-                        </div>
-                        <div class="adv">
-                            <input type="submit" name="ChangeNotify" value="Save">
-                        </div>
+                    <div class="adv">
+                        <input id="login_input_password_new" class="login_input" type="password" name="user_password_new" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_new">Password (min. 6 characters)</label>
+                    </div>
+                    <div class="adv">
+                        <input id="login_input_password_repeat" class="login_input" type="password" name="user_password_repeat" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_repeat">Repeat password</label>
+                    </div>
+                    <div class="adv">
+                        <input type="submit" name="register" value="Add User" />
                     </div>
                     </form>
                 </div>
-
-                <div style="clear: both;"></div>
-
-                <div class="advanced">
-                    <div style="padding-bottom: 1em;">
-                        <form method="post" action="?tab=settings" name="addform">
-                        <div style="font-weight: bold; padding: 0.5em 0;">
-                            Add User
-                        </div>
-                        <div class="adv">
-                            <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" /> <label for="login_input_username">Username (only letters and numbers, 2 to 64 characters)</label>
-                        </div>
-                        <div class="adv">
-                            <input id="login_input_email" type="email" name="user_email" /> <label for="login_input_email">Email</label>
-                        </div>
-                        <div class="adv">
-                            <input id="login_input_password_new" class="login_input" type="password" name="user_password_new" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_new">Password (min. 6 characters)</label>
-                        </div>
-                        <div class="adv">
-                            <input id="login_input_password_repeat" class="login_input" type="password" name="user_password_repeat" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_repeat">Repeat password</label>
-                        </div>
-                        <div class="adv">
-                            <input type="submit" name="register" value="Add User" />
-                        </div>
-                        </form>
+                <div style="padding-bottom: 1em;">
+                    <form method="post" action="?tab=settings" name="changeform">
+                    <div style="font-weight: bold; padding: 0.5em 0;">
+                        Change Password
                     </div>
-                    <div style="padding-bottom: 1em;">
-                        <form method="post" action="?tab=settings" name="changeform">
-                        <div style="font-weight: bold; padding: 0.5em 0;">
-                            Change Password
-                        </div>
-                        <div class="adv">
-                            <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" /> <label for="login_input_username">Username</label>
-                        </div>
-                        <div class="adv">
-                            <input id="login_input_password_new" class="login_input" type="password" name="new_password" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_new">New Password (min. 6 characters)</label>
-                        </div>
-                        <div class="adv">
-                            <input id="login_input_password_repeat" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_repeat">Repeat New password</label>
-                        </div>
-                        <div class="adv">
-                            <input type="submit" name="changepassword" value="Change Password" />
-                        </div>
-                        </form>
+                    <div class="adv">
+                        <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" /> <label for="login_input_username">Username</label>
                     </div>
-                    <div>
-                        <form method="post" action="?tab=settings" name="delform">
-                        <div style="font-weight: bold; padding: 0.5em 0;">
-                            Delete User
-                        </div>
-                        <div class="adv">
-                            <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
-                            <label for="login_input_username">Username</label>
-                        </div>
-                            <div class="adv">
-                            <input type="submit" name="deleteuser" value="Delete User" />
-                        </div>
-                        </form>
+                    <div class="adv">
+                        <input id="login_input_password_new" class="login_input" type="password" name="new_password" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_new">New Password (min. 6 characters)</label>
                     </div>
+                    <div class="adv">
+                        <input id="login_input_password_repeat" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_repeat">Repeat New password</label>
+                    </div>
+                    <div class="adv">
+                        <input type="submit" name="changepassword" value="Change Password" />
+                    </div>
+                    </form>
+                </div>
+                <div>
+                    <form method="post" action="?tab=settings" name="delform">
+                    <div style="font-weight: bold; padding: 0.5em 0;">
+                        Delete User
+                    </div>
+                    <div class="adv">
+                        <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
+                        <label for="login_input_username">Username</label>
+                    </div>
+                        <div class="adv">
+                        <input type="submit" name="deleteuser" value="Delete User" />
+                    </div>
+                    </form>
                 </div>
             </div>
 		</li>
