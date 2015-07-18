@@ -363,13 +363,6 @@ function delete_graphs() {
  * Miscellaneous
  */
 
-// Check if mycodo.py daemon is running
-function daemon_active() {
-    $daemon_check = `ps aux | grep "[m]ycodo.py"`;
-    if (empty($daemon_check)) return 0;
-    else return 1;
-}
-
 function is_positive_integer($str) {
     return (is_numeric($str) && $str > 0 && $str == round($str));
 }

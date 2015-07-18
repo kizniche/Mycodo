@@ -45,6 +45,7 @@ $sensor_co2_log = $install_path . "/log/sensor-co2.log";
 $relay_log = $install_path . "/log/relay.log";
 
 $images = $install_path . "/images";
+$lock_daemon = $lock_path . "/mycodo/daemon.lock";
 $lock_raspistill = $lock_path . "/mycodo_raspistill";
 $lock_mjpg_streamer = $lock_path . "/mycodo_mjpg_streamer";
 $lock_mjpg_streamer_light = $lock_path . "/mycodo-stream-light";
@@ -134,7 +135,7 @@ if ($output_error) {
     <div class="header">
         <div style="float: left;">
             <div style="padding-bottom: 0.1em;"><?php
-                if (daemon_active()) echo '<input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On" name="daemon_change" value="0"> Daemon';
+                if (file_exists($lock_daemon)) echo '<input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On" name="daemon_change" value="0"> Daemon';
                 else echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="daemon_change" value="1"> Daemon';
                 ?></div>
             <div style="padding-bottom: 0.1em;"><?php
@@ -1549,13 +1550,13 @@ if (isset($_COOKIE['debug'])) {
                     Event
                     </td>
                     <td>
-                    Event (sec)
+                    Event (seconds)
                     </td>
                     <td>
-                    Up to event (sec)
+                    Up to event
                     </td>
                     <td>
-                    Including event (sec)
+                    Including event
                     </td>
                     </tr>';
                     foreach($profile as $array => $next) {
@@ -1588,8 +1589,8 @@ if (isset($_COOKIE['debug'])) {
                     }
                     echo '
                     <tr>
-                    <td colspan="4" style="font-weight: bold; font-size: 1.5em;">
-                    Total: ' . number_format($total, 10) . ' seconds
+                    <td colspan="4" style="font-weight: bold; font-size: 1.3em;">
+                    Total: ' . number_format($total, 10) . '
                     </td>
                     </tr>
                     </table>';
