@@ -203,6 +203,8 @@ Then restart apache with
 
 I highly recommend testing whether the configuration change actually worked. This can be tested by going to https://yourwebaddress/mycodo/includes/ with your browser, and if you get an error, "Forbidden: You don't have permission to access /mycodo/includes on this server," then everything is working correctly. If the page actually loads or there is any other error than "forbidden", there is a problem and you will need to diagnose the issue before opening your server to beyond your local network.
 
+### Final Steps
+
 To initialize GPIO pins at startup, open crontab with `sudo crontab -e` and add the following lines, then save with `Ctrl+e`
 
 `@reboot /usr/bin/python /var/www/mycodo/cgi-bin/GPIO-initialize.py &`

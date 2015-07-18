@@ -50,27 +50,12 @@ hr.fade {
     background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
 }
 
-/*** config ***/
+/*** PID tab ***/
+
 .config-title {
     float: left;
     font-weight: bold;
     padding-top: 0.1em;
-}
-
-table.relays {
-    width: 42em;
-}
-
-table.relays td {
-    padding: 0.5em 0.8em 0.5em 0.8em;
-}
-
-table.relays tr:nth-child(odd) {
-    background-color: #EBEBEB;
-}
-
-table.relay-display td {
-    padding: 0.15em 0.8em 0.15em 0.8em;
 }
 
 .pid-wrapper {
@@ -153,13 +138,29 @@ button.linkoff {
 }
 
 
-/*** Camera ***/
+/*** Camera tab ***/
 .camera td {
     padding: 0 0.3em 0.6em 0.3em;
 }
 
 
-/*** Advanced Options ***/
+/*** Settings tab ***/
+
+table.relays {
+    width: 42em;
+}
+
+table.relays td {
+    padding: 0.5em 0.8em 0.5em 0.8em;
+}
+
+table.relays tr:nth-child(odd) {
+    background-color: #EBEBEB;
+}
+
+table.relay-display td {
+    padding: 0.15em 0.8em 0.15em 0.8em;
+}
 
 table.timers td {
     padding: 0.6em 0.5em 0.6em 0.8em;
@@ -207,6 +208,11 @@ label.notify {
     padding: 0 0 0.5em 0.3em;
 }
 
+/* debug */
+
+table.debug-profiler td {
+    padding: 0.35em 1em 0.25em 0;
+}
 
 
 /* -------------------------------- 

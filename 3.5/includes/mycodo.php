@@ -1538,9 +1538,66 @@ if (isset($_COOKIE['debug'])) {
                 <div style="padding: 1em 0; font-weight: bold; font-size: 1.2em;">
                     PHP Profile
                 </div>
-                <pre><?php 
+                <?php 
                     SimpleProfiler::stop_profile();
-                    print_r(SimpleProfiler::get_profile());
+                    $profile = SimpleProfiler::get_profile();
+
+                    echo '
+                    <table class="debug-profiler">
+                    <tr>
+                    <td>
+                    Event
+                    </td>
+                    <td>
+                    Event (sec)
+                    </td>
+                    <td>
+                    Up to event (sec)
+                    </td>
+                    <td>
+                    Including event (sec)
+                    </td>
+                    </tr>';
+                    foreach($profile as $array => $next) {
+                        echo '
+                        <tr>
+                        <td style="padding-top: 0.5em; text-align: left; font-weight: bold;">
+                        ' . $array . '
+                        </td>
+                        </tr>';
+                        foreach($next as $key => $value) {
+                            if ($key == "") $key = "-------->";
+                            $pre = $total;
+                            $total += $value;
+                            echo '
+                            <tr style="border-bottom:1pt solid black;">
+                            <td style="">
+                            ' . $key . '
+                            </td>
+                            <td>
+                            ' . number_format($value, 10) . '
+                            </td>
+                            <td>
+                            ' . number_format($pre, 10) . '
+                            </td>
+                            <td>
+                            ' . number_format($total, 10) . '
+                            </td>
+                            </tr>';
+                        }
+                    }
+                    echo '
+                    <tr>
+                    <td colspan="4" style="font-weight: bold; font-size: 1.5em;">
+                    Total: ' . number_format($total, 10) . ' seconds
+                    </td>
+                    </tr>
+                    </table>';
+                    echo '<p style="padding: 2em 0 1em 0; font-weight: bold;">Raw Profile<p>
+                    <pre>';
+                    print_r($profile);
+                    echo '</pre>
+                    <br>';
                     ?>
                 </pre>
             </div>
