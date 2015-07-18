@@ -95,7 +95,7 @@ delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete olde
         }
     </script>
     <?php
-        if (isset($_GET['r']) && ($_GET['r'] == 1)) echo "<META HTTP-EQUIV=\"refresh\" CONTENT=\"90\">";
+        if (isset($_GET['r']) && ($_GET['r'] == 1)) echo '<META HTTP-EQUIV="refresh" CONTENT="90">';
     ?>
 </head>
 <body>
@@ -105,13 +105,13 @@ delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete olde
 if ($output_error) {
     switch ($output_error) {
         case "guest":
-            echo "<span class=\"error\">You cannot perform that task as a guest</span>";
+            echo '<span class="error">You cannot perform that task as a guest</span>';
             break;
         case "already_on":
-            echo "<div class=\"error\">Error: Can't turn relay On, it's already On</div>";
+            echo '<div class="error">Error: Can\'t turn relay On, it\'s already On</div>';
             break;
         case "already_off":
-            echo "<div class=\"error\">Error: Can't turn relay Off, it's already Off</div>";
+            echo '<div class="error">Error: Can\'t turn relay Off, it\'s already Off</div>';
             break;
     }
     $output_error = False;
@@ -179,16 +179,16 @@ if ($output_error) {
             <div class="header">
                 <table>
                     <tr>
-                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo "HT" . $i . ": " . $sensor_ht_name[$i]; ?></td>
+                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'HT' , $i , ': ' , $sensor_ht_name[$i]; ?></td>
                     </tr>
                     <tr>
                         <td style="font-size: 0.8em; padding-right: 0.5em;"><?php
-                            echo "Now<br><span title=\"" . number_format((float)$t_f[$i], 1, '.', '') . "&deg;F\">" . number_format((float)$t_c[$i], 1, '.', '') . "&deg;C</span>";
-                            echo "<br>" . number_format((float)$hum[$i], 1, '.', '') . "%";
+                            echo 'Now<br><span title="' , number_format((float)$t_f[$i], 1, '.', '') , '&deg;F">' , number_format((float)$t_c[$i], 1, '.', '') , '&deg;C</span>';
+                            echo '<br>' , number_format((float)$hum[$i], 1, '.', '') , '%';
                         ?></td>
                         <td style="font-size: 0.8em;"><?php
-                            echo "Set<br><span title=\"" . number_format((float)$settemp_f[$i], 1, '.', '') ."&deg;F\">" . number_format((float)$pid_temp_set[$i], 1, '.', '') . "&deg;C</span>";
-                            echo "<br>" . number_format((float)$pid_hum_set[$i], 1, '.', '') . "%";
+                            echo 'Set<br><span title="' , number_format((float)$settemp_f[$i], 1, '.', '') , '&deg;F">' , number_format((float)$pid_temp_set[$i], 1, '.', '') , '&deg;C</span>';
+                            echo '<br>' , number_format((float)$pid_hum_set[$i], 1, '.', '') , '%';
                         ?></td>
                     </tr>
                 </table>
@@ -201,11 +201,11 @@ if ($output_error) {
             ?><div class="header">
                 <table>
                     <tr>
-                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo "CO<sub>2</sub>" . $i . ": " . $sensor_co2_name[$i]; ?></td>
+                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'CO<sub>2</sub>' , $i , ': ' , $sensor_co2_name[$i]; ?></td>
                     </tr>
                     <tr>
-                        <td style="font-size: 0.8em; padding-right: 0.5em;"><?php echo "Now<br>" . $co2[$i]; ?></td>
-                        <td style="font-size: 0.8em;"><?php echo "Set<br>" . $pid_co2_set[$i]; ?></td>
+                        <td style="font-size: 0.8em; padding-right: 0.5em;"><?php echo 'Now<br>' , $co2[$i]; ?></td>
+                        <td style="font-size: 0.8em;"><?php echo 'Set<br>' , $pid_co2_set[$i]; ?></td>
                     </tr>
                 </table>
             </div><?php
@@ -220,44 +220,44 @@ if ($output_error) {
 		<ul class="cd-tabs-navigation">
 			<li><a data-content="main" <?php
                 if (!isset($_GET['tab']) || (isset($_GET['tab']) && $_GET['tab'] == 'main')) {
-                    echo "class=\"selected\"";
+                    echo 'class="selected"';
                 } ?> href="#0">Main</a></li>
 			<li><a data-content="pid" <?php
                 if (isset($_GET['tab']) && $_GET['tab'] == 'pid') {
-                    echo "class=\"selected\"";
+                    echo 'class="selected"';
                 } ?> href="#0">PID</a></li>
 			<li><a data-content="graph" <?php
                 if (isset($_GET['tab']) && $_GET['tab'] == 'graph') {
-                    echo "class=\"selected\"";
+                    echo 'class="selected"';
                 } ?> href="#0">Graph</a></li>
 			<li><a data-content="camera" <?php
                 if (isset($_GET['tab']) && $_GET['tab'] == 'camera') {
-                    echo "class=\"selected\"";
+                    echo 'class="selected"';
                 } ?> href="#0">Camera</a></li>
 			<li><a data-content="data" <?php
                 if (isset($_GET['tab']) && $_GET['tab'] == 'data') {
-                    echo "class=\"selected\"";
+                    echo 'class="selected"';
                 } ?> href="#0">Data</a></li>
 			<li><a data-content="settings" <?php
                 if (isset($_GET['tab']) && $_GET['tab'] == 'settings') {
-                    echo "class=\"selected\"";
+                    echo 'class="selected"';
                 } ?> href="#0">Settings</a></li>
 		</ul>
 	</nav>
 	<ul class="cd-tabs-content">
 		<li data-content="main" <?php
             if (!isset($_GET['tab']) || (isset($_GET['tab']) && $_GET['tab'] == 'main')) {
-                echo "class=\"selected\"";
+                echo 'class="selected"';
             } ?>>
             <FORM action="?tab=main<?php
             if (isset($_GET['page'])) {
-                echo "&page=" . $_GET['page'];
+                echo '&page=' , $_GET['page'];
             }
             if (isset($_GET['Refresh']) || isset($_POST['Refresh'])) {
-                echo "&Refresh=1";
+                echo '&Refresh=1';
             }
             if (isset($_GET['r'])) {
-                echo "&r=" . $_GET['r'];
+                echo '&r=' , $_GET['r'];
             } ?>" method="POST">
             <div>
                 <div style="padding-top: 0.5em;">
@@ -268,13 +268,13 @@ if ($output_error) {
                                 if (empty($page)) {
                                     echo '<a href="?tab=main">OFF</a> | <span class="on">ON</span>';
                                 } else {
-                                    echo '<a href="?tab=main&page=' . $page . '">OFF</a> | <span class="on">ON</span>';
+                                    echo '<a href="?tab=main&page=' , $page , '">OFF</a> | <span class="on">ON</span>';
                                 }
                             } else {
                                 if (empty($page)) {
                                     echo '<span class="off">OFF</span> | <a href="?tab=main&Refresh=1&r=1">ON</a>';
                                 } else {
-                                    echo '<span class="off">OFF</span> | <a href="?tab=main&page=' . $page . '&Refresh=1&r=1">ON</a>';
+                                    echo '<span class="off">OFF</span> | <a href="?tab=main&page=' , $page , '&Refresh=1&r=1">ON</a>';
                                 }
                             }
                         ?>
@@ -287,12 +287,12 @@ if ($output_error) {
                                 <input type="button" onclick='location.href="?tab=main<?php
                                 if (isset($_GET['page'])) {
                                     if ($_GET['page']) {
-                                        echo "&page=" . $page;
+                                        echo '&page=' , $page;
                                     }
                                 }
                                 if (isset($_GET['r'])) {
                                     if ($_GET['r'] == 1) {
-                                        echo "&r=1";
+                                        echo '&r=1';
                                     }
                                 } ?>"' value="Page">
                             </div>
@@ -308,7 +308,7 @@ if ($output_error) {
                                     <td>
                                         <input type="radio" name="graph_type" value="separate" <?php
                                         if ($graph_time_span != 'default' && $graph_type == 'separate') {
-                                            echo "checked"; 
+                                            echo 'checked'; 
                                         }
                                         ?>>
                                     </td>
@@ -320,7 +320,7 @@ if ($output_error) {
                                     <td>
                                         <input type="radio" name="graph_type" value="combined" <?php 
                                         if ($graph_time_span != 'default' && $graph_type == 'combined') {
-                                            echo "checked"; 
+                                            echo 'checked'; 
                                         }
                                         ?>>
                                     </td>
@@ -334,14 +334,14 @@ if ($output_error) {
                             Time Span
                             <br>
                             <select name="graph_time_span">
-                                <option value="default" <?php if ($graph_time_span == 'default') echo "selected=\"selected\""; ?>>Day/Week</option>
-                                <option value="1h" <?php if ($graph_time_span == '1h') echo "selected=\"selected\""; ?>>1 Hour</option>
-                                <option value="6h" <?php if ($graph_time_span == '6h') echo "selected=\"selected\""; ?>>6 Hours</option>
-                                <option value="1d" <?php if ($graph_time_span == '1d') echo "selected=\"selected\""; ?>>1 Day</option>
-                                <option value="3d" <?php if ($graph_time_span == '3d') echo "selected=\"selected\""; ?>>3 Days</option>
-                                <option value="1w" <?php if ($graph_time_span == '1w') echo "selected=\"selected\""; ?>>1 Week</option>
-                                <option value="1m" <?php if ($graph_time_span == '1m') echo "selected=\"selected\""; ?>>1 Month</option>
-                                <option value="3m" <?php if ($graph_time_span == '3m') echo "selected=\"selected\""; ?>>3 Months</option>
+                                <option value="default" <?php if ($graph_time_span == 'default') echo 'selected="selected"'; ?>>Day/Week</option>
+                                <option value="1h" <?php if ($graph_time_span == '1h') echo 'selected="selected"'; ?>>1 Hour</option>
+                                <option value="6h" <?php if ($graph_time_span == '6h') echo 'selected="selected"'; ?>>6 Hours</option>
+                                <option value="1d" <?php if ($graph_time_span == '1d') echo 'selected="selected"'; ?>>1 Day</option>
+                                <option value="3d" <?php if ($graph_time_span == '3d') echo 'selected="selected"'; ?>>3 Days</option>
+                                <option value="1w" <?php if ($graph_time_span == '1w') echo 'selected="selected"'; ?>>1 Week</option>
+                                <option value="1m" <?php if ($graph_time_span == '1m') echo 'selected="selected"'; ?>>1 Month</option>
+                                <option value="3m" <?php if ($graph_time_span == '3m') echo 'selected="selected"'; ?>>3 Months</option>
                             </select>
                         </div>
                         <div style="float: left; padding-top: 0.9em;">
@@ -382,14 +382,14 @@ if ($output_error) {
 
 		<li data-content="pid" <?php
             if (isset($_GET['tab']) && $_GET['tab'] == 'pid') {
-                echo "class=\"selected\"";
+                echo 'class="selected"';
             } ?>>
             <FORM action="?tab=pid<?php
                 if (isset($_GET['page'])) {
-                    echo "&page=" . $_GET['page'];
+                    echo '&page=' , $_GET['page'];
                 }
                 if (isset($_GET['r'])) {
-                    echo "&r=" . $_GET['r'];
+                    echo '&r=' , $_GET['r'];
                 }
                 ?>" method="POST">
             <div style="padding-top: 0.5em;">
@@ -403,12 +403,12 @@ if ($output_error) {
                     <div style="text-align: center;"><?php
                         if (isset($_GET['r'])) {
                             if ($_GET['r'] == 1) {
-                                echo "<a href=\"?tab=pid\">OFF</a> | <span class=\"on\">ON</span>";
+                                echo '<a href="?tab=pid">OFF</a> | <span class="on">ON</span>';
                             } else {
-                                echo "<span class=\"off\">OFF</span> | <a href=\"?tab=pid&?r=1\">ON</a>";
+                                echo '<span class="off">OFF</span> | <a href="?tab=pid&?r=1">ON</a>';
                             }
                         } else {
-                            echo "<span class=\"off\">OFF</span> | <a href=\"?tab=pid&r=1\">ON</a>";
+                            echo '<span class="off">OFF</span> | <a href="?tab=pid&r=1">ON</a>';
                         }
                     ?>
                     </div>
@@ -446,7 +446,7 @@ if ($output_error) {
                 for ($i = 1; $i <= $relay_num; $i++) {
                     $read = "$gpio_path -g read $relay_pin[$i]";
                     $row = $results->fetchArray();
-                    echo '<tr><td>' . $row[0] . '</td><td>' . $row[1] . '</td><td>' . $row[2] . '</td><td>' . $row[3] . '</td><td>';
+                    echo '<tr><td>' , $row[0] , '</td><td>' , $row[1] , '</td><td>' , $row[2] , '</td><td>' , $row[3] , '</td><td>';
                     if ((shell_exec($read) == 1 && $relay_trigger[$i] == 0) || (shell_exec($read) == 0 && $relay_trigger[$i] == 1)) {
                         echo '<span style="color: red;">Off</span>';
                     } else {
@@ -466,23 +466,23 @@ if ($output_error) {
                         <select name="numhtsensors">
                             <option value="0"<?php
                                 if ($sensor_ht_num == 0) {
-                                    echo " selected=\"selected\"";
+                                    echo ' selected="selected"';
                                 } ?>>0</option>
                             <option value="1"<?php
                                 if ($sensor_ht_num == 1) {
-                                    echo " selected=\"selected\"";
+                                    echo ' selected="selected"';
                                 } ?>>1</option>
                             <option value="2"<?php
                                 if ($sensor_ht_num == 2) {
-                                    echo " selected=\"selected\"";
+                                    echo ' selected="selected"';
                                 } ?>>2</option>
                             <option value="3"<?php
                                 if ($sensor_ht_num == 3) {
-                                    echo " selected=\"selected\"";
+                                    echo ' selected="selected"';
                                 } ?>>3</option>
                             <option value="4"<?php
                                 if ($sensor_ht_num == 4) {
-                                    echo " selected=\"selected\"";
+                                    echo ' selected="selected"';
                                 } ?>>4</option>
                         </select>
                     </div>
@@ -518,19 +518,19 @@ if ($output_error) {
                                 <select style="width: 80px;" name="sensorht<?php echo $i; ?>device">
                                     <option<?php
                                         if ($sensor_ht_device[$i] == 'DHT11') {
-                                            echo " selected=\"selected\"";
+                                            echo ' selected="selected"';
                                         } ?> value="DHT11">DHT11</option>
                                     <option<?php
                                         if ($sensor_ht_device[$i] == 'DHT22') {
-                                            echo " selected=\"selected\"";
+                                            echo ' selected="selected"';
                                         } ?> value="DHT22">DHT22</option>
                                     <option<?php
                                         if ($sensor_ht_device[$i] == 'AM2302') {
-                                            echo " selected=\"selected\"";
+                                            echo ' selected="selected"';
                                         } ?> value="AM2302">AM2302</option>
                                     <option<?php
                                         if ($sensor_ht_device[$i] == 'Other') {
-                                            echo " selected=\"selected\"";
+                                            echo ' selected="selected"';
                                         } ?> value="Other">Other</option>
                                 </select>
                             </td>
@@ -541,10 +541,10 @@ if ($output_error) {
                                 <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_ht_period[$i]; ?>" name="sensorht<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
                             </td>
                             <td align=center>
-                                <input type="checkbox" name="sensorht<?php echo $i; ?>activated" value="1" <?php if ($sensor_ht_activated[$i] == 1) echo "checked"; ?>>
+                                <input type="checkbox" name="sensorht<?php echo $i; ?>activated" value="1" <?php if ($sensor_ht_activated[$i] == 1) echo 'checked'; ?>>
                             </td>
                             <td align=center>
-                                <input type="checkbox" name="sensorht<?php echo $i; ?>graph" value="1" <?php if ($sensor_ht_graph[$i] == 1) echo "checked"; ?>>
+                                <input type="checkbox" name="sensorht<?php echo $i; ?>graph" value="1" <?php if ($sensor_ht_graph[$i] == 1) echo 'checked'; ?>>
                             </td>
                             <td>
                                 <input type="submit" name="Change<?php echo $i; ?>HTSensor" value="Set">
@@ -651,11 +651,11 @@ if ($output_error) {
                         <select name="numco2sensors">
                             <option value="0"<?php
                                 if ($sensor_co2_num == 0) {
-                                    echo " selected=\"selected\"";
+                                    echo ' selected="selected"';
                                 } ?>>0</option>
                             <option value="1"<?php
                                 if ($sensor_co2_num == 1) {
-                                    echo " selected=\"selected\"";
+                                    echo ' selected="selected"';
                                 } ?>>1</option>
                         </select>
                     </div>
@@ -694,11 +694,11 @@ if ($output_error) {
                                 <select style="width: 80px;" name="sensorco2<?php echo $i; ?>device">
                                     <option<?php
                                         if ($sensor_co2_device[$i] == 'K30') {
-                                            echo " selected=\"selected\"";
+                                            echo ' selected="selected"';
                                         } ?> value="K30">K30</option>
                                     <option<?php
                                         if ($sensor_co2_device[$i] == 'Other') {
-                                            echo " selected=\"selected\"";
+                                            echo ' selected="selected"';
                                         } ?> value="Other">Other</option>
                                 </select>
                             </td>
@@ -719,10 +719,10 @@ if ($output_error) {
                                 <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_co2_period[$i]; ?>" name="sensorco2<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
                             </td>
                             <td align=center>
-                                <input type="checkbox" name="sensorco2<?php echo $i; ?>activated" value="1" <?php if ($sensor_co2_activated[$i] == 1) echo "checked"; ?>>
+                                <input type="checkbox" name="sensorco2<?php echo $i; ?>activated" value="1" <?php if ($sensor_co2_activated[$i] == 1) echo 'checked'; ?>>
                             </td>
                             <td align=center>
-                                <input type="checkbox" name="sensorco2<?php echo $i; ?>graph" value="1" <?php if ($sensor_co2_graph[$i] == 1) echo "checked"; ?>>
+                                <input type="checkbox" name="sensorco2<?php echo $i; ?>graph" value="1" <?php if ($sensor_co2_graph[$i] == 1) echo 'checked'; ?>>
                             </td>
                             <td>
                                 <input type="submit" name="Change<?php echo $i; ?>Co2Sensor" value="Set">
@@ -794,7 +794,7 @@ if ($output_error) {
 		<li data-content="graph" <?php
             if (isset($_GET['tab'])) {
                 if ($_GET['tab'] == 'graph') {
-                    echo "class=\"selected\"";
+                    echo 'class="selected"';
                 }
             } ?>>
             <?php
@@ -882,11 +882,11 @@ if ($output_error) {
                         \"\" using 1:13 index 0 title \"$relay_name[7]\" w impulses ls 11 axes x1y1, \\
                         \"\" using 1:14 index 0 title \"$relay_name[8]\" w impulses ls 12 axes x1y1 \\
                         unset multiplot" | gnuplot`;
-                        echo "<div style=\"width: 100%; text-align: center; padding: 1em 0 3em 0;\"><img src=image.php?";
-                        echo "graphtype=custom-combined";
-                        echo "&id=" . $id2;
-                        echo "&sensornumber=0>";
-                        echo "</div>";
+                        echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
+                        echo 'graphtype=custom-combined';
+                        echo '&id=' , $id2;
+                        echo '&sensornumber=0>';
+                        echo '</div>';
                     } else if ($_POST['custom_type'] == 'Separate') {
                         for ($n = 1; $n <= $sensor_ht_num; $n++) {
                             if ($sensor_ht_graph[$n] == 1) {
@@ -932,14 +932,14 @@ if ($output_error) {
                                 \"\" using 1:12 index 0 title \"$relay_name[6]\" w impulses ls 9 axes x1y1, \\
                                 \"\" using 1:13 index 0 title \"$relay_name[7]\" w impulses ls 10 axes x1y1, \\
                                 \"\" using 1:14 index 0 title \"$relay_name[8]\" w impulses ls 11 axes x1y1" | gnuplot`;
-                                echo "<div style=\"width: 100%; text-align: center; padding: 1em 0 3em 0;\"><img src=image.php?";
-                                echo "graphtype=custom-separate";
-                                echo "&sensortype=ht";
-                                echo "&id=" . $id2;
-                                echo "&sensornumber=" . $n . ">";
-                                echo "</div>";
+                                echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
+                                echo 'graphtype=custom-separate';
+                                echo '&sensortype=ht';
+                                echo '&id=' , $id2;
+                                echo '&sensornumber=' , $n , '>';
+                                echo '</div>';
                             }
-                            if ($n != $sensor_ht_num || ($n == $sensor_ht_num && array_sum($sensor_co2_graph))) { echo "<hr class=\"fade\"/>"; }
+                            if ($n != $sensor_ht_num || ($n == $sensor_ht_num && array_sum($sensor_co2_graph))) { echo '<hr class="fade"/>'; }
                         }
                         for ($n = 1; $n <= $sensor_co2_num; $n++) {
                             if ($sensor_co2_graph[$n] == 1) {
@@ -983,28 +983,28 @@ if ($output_error) {
                                 \"\" using 1:12 index 0 title \"$relay_name[6]\" w impulses ls 9 axes x1y1, \\
                                 \"\" using 1:13 index 0 title \"$relay_name[7]\" w impulses ls 10 axes x1y1, \\
                                 \"\" using 1:14 index 0 title \"$relay_name[8]\" w impulses ls 11 axes x1y1" | gnuplot`;
-                                echo "<div style=\"width: 100%; text-align: center; padding: 1em 0 3em 0;\"><img src=image.php?";
-                                echo "graphtype=custom-separate";
-                                echo "&sensortype=co2";
-                                echo "&id=" . $id2;
-                                echo "&sensornumber=" . $n . ">";
-                                echo "</div>";
+                                echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
+                                echo 'graphtype=custom-separate';
+                                echo '&sensortype=co2';
+                                echo '&id=' , $id2;
+                                echo '&sensornumber=' , $n , '>';
+                                echo '</div>';
                             }
-                            if ($n != $sensor_co2_num) { echo "<hr class=\"fade\"/>"; }
+                            if ($n != $sensor_co2_num) { echo '<hr class="fade"/>'; }
                         }
                     }
-                    echo "<div style=\"width: 100%; text-align: center;\"><a href='javascript:open_legend()'>Brief Graph Legend</a> - <a href='javascript:open_legend_full()'>Full Graph Legend</a></div>";
+                    echo '<div style="width: 100%; text-align: center;"><a href=\'javascript:open_legend()\'>Brief Graph Legend</a> - <a href=\'javascript:open_legend_full()\'>Full Graph Legend</a></div>';
                 }
             } else if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] == 'guest') {
                 displayform();
-                echo "<div>Guest access has been revoked for graph generation.";
+                echo '<div>Guest access has been revoked for graph generation.';
             } else displayform();
             ?>
 		</li>
 
 		<li data-content="camera" <?php
             if (isset($_GET['tab']) && $_GET['tab'] == 'camera') {
-                echo "class=\"selected\"";
+                echo 'class="selected"';
             } ?>>
 
             <?php
@@ -1019,7 +1019,7 @@ if ($output_error) {
                 if ($camera_relay == 0) {
                     echo '<span style="color: red; padding: 0 0 0 0.5em; font-size: 0.9em;">Relay unconfigured. Change this in the Settings.</span>';
                 } else {
-                    echo 'Relay: ' . $camera_relay . ' (' . $relay_name[$camera_relay] . ')';
+                    echo 'Relay ' , $camera_relay , ' (' , $relay_name[$camera_relay] , ')';
                 }
                 ?>
             </div>
@@ -1093,7 +1093,7 @@ if ($output_error) {
                 }
                 if (isset($_POST['Capture']) && $_SESSION['user_name'] != 'guest') {
                     if ($capture_output != 0) {
-                        echo 'Abnormal output (possibly error): ' . $capture_output . '<br>';
+                        echo 'Abnormal output (possibly error): ' , $capture_output , '<br>';
                     } else {
                         echo '<p><img src=image.php?span=cam-still></p>';
                     }
@@ -1104,13 +1104,13 @@ if ($output_error) {
 
 		<li data-content="data" <?php
             if (isset($_GET['tab']) && $_GET['tab'] == 'data') {
-                echo "class=\"selected\"";
+                echo 'class="selected"';
             } ?>>
 			<div style="padding: 10px 0 0 15px;">
                 <div style="padding-bottom: 15px;">
                     <FORM action="?tab=data<?php
                         if (isset($_GET['page'])) {
-                            echo "&page=" . $_GET['page'];
+                            echo '&page=' , $_GET['page'];
                         } ?>" method="POST">
                         Lines: <input type="text" maxlength=8 size=8 name="Lines" />
                         <input type="submit" name="HTSensor" value="HT Sensor">
@@ -1161,7 +1161,7 @@ if ($output_error) {
                             $db = new SQLite3("./config/users.db");
                             $results = $db->query('SELECT user_name, user_email, user_password_hash FROM users');
                             while ($row = $results->fetchArray()) {
-                                print $row[0] . " " . $row[1] . " " . $row[2] . "<br>";
+                                echo $row[0] , ' ' , $row[1] , ' ' , $row[2] , '<br>';
                             }
                         }
                         if(isset($_POST['Login']) && $_SESSION['user_name'] != 'guest') {
@@ -1193,7 +1193,7 @@ if ($output_error) {
 
 		<li data-content="settings" <?php
             if (isset($_GET['tab']) && $_GET['tab'] == 'settings') {
-                echo "class=\"selected\"";
+                echo 'class="selected"';
             } ?>>
 
             <?php if ($this->feedback) echo $this->feedback; ?>
@@ -1204,15 +1204,15 @@ if ($output_error) {
                     <div style="float: left; padding-right: 1em;">
                         <input type="submit" name="ChangeNoRelays" value="Set">
                         <select name="numrelays">
-                            <option value="0" <?php if ($relay_num == 0) echo "selected=\"selected\""; ?>>0</option>
-                            <option value="1" <?php if ($relay_num == 1) echo "selected=\"selected\""; ?>>1</option>
-                            <option value="2" <?php if ($relay_num == 2) echo "selected=\"selected\""; ?>>2</option>
-                            <option value="3" <?php if ($relay_num == 3) echo "selected=\"selected\""; ?>>3</option>
-                            <option value="4" <?php if ($relay_num == 4) echo "selected=\"selected\""; ?>>4</option>
-                            <option value="5" <?php if ($relay_num == 5) echo "selected=\"selected\""; ?>>5</option>
-                            <option value="6" <?php if ($relay_num == 6) echo "selected=\"selected\""; ?>>6</option>
-                            <option value="7" <?php if ($relay_num == 7) echo "selected=\"selected\""; ?>>7</option>
-                            <option value="8" <?php if ($relay_num == 8) echo "selected=\"selected\""; ?>>8</option>
+                            <option value="0" <?php if ($relay_num == 0) echo 'selected="selected"'; ?>>0</option>
+                            <option value="1" <?php if ($relay_num == 1) echo 'selected="selected"'; ?>>1</option>
+                            <option value="2" <?php if ($relay_num == 2) echo 'selected="selected"'; ?>>2</option>
+                            <option value="3" <?php if ($relay_num == 3) echo 'selected="selected"'; ?>>3</option>
+                            <option value="4" <?php if ($relay_num == 4) echo 'selected="selected"'; ?>>4</option>
+                            <option value="5" <?php if ($relay_num == 5) echo 'selected="selected"'; ?>>5</option>
+                            <option value="6" <?php if ($relay_num == 6) echo 'selected="selected"'; ?>>6</option>
+                            <option value="7" <?php if ($relay_num == 7) echo 'selected="selected"'; ?>>7</option>
+                            <option value="8" <?php if ($relay_num == 8) echo 'selected="selected"'; ?>>8</option>
                         </select>
                     </div>
                     <div class="config-title">Relays</div>
@@ -1269,11 +1269,11 @@ if ($output_error) {
                                 <select style="width: 65px;" title="Does this relay activate with a LOW (0-volt) or HIGH (5-volt) signal?" name="relay<?php echo $i; ?>trigger">
                                     <option<?php
                                         if ($relay_trigger[$i] == 1) {
-                                            echo " selected=\"selected\"";
+                                            echo ' selected="selected"';
                                         } ?> value="1">HIGH</option>
                                     <option<?php
                                         if ($relay_trigger[$i] == 0) {
-                                            echo " selected=\"selected\"";
+                                            echo ' selected="selected"';
                                         } ?> value="0">LOW</option>
                                 </select>
                             </td>
@@ -1296,15 +1296,15 @@ if ($output_error) {
                 <div style="padding-bottom: 1em; font-weight: bold;">
                     <input type="submit" name="ChangeNoTimers" value="Set">
                     <select name="numtimers">
-                        <option value="0" <?php if ($timer_num == 1) echo "selected=\"selected\""; ?>>0</option>
-                        <option value="1" <?php if ($timer_num == 1) echo "selected=\"selected\""; ?>>1</option>
-                        <option value="2" <?php if ($timer_num == 2) echo "selected=\"selected\""; ?>>2</option>
-                        <option value="3" <?php if ($timer_num == 3) echo "selected=\"selected\""; ?>>3</option>
-                        <option value="4" <?php if ($timer_num == 4) echo "selected=\"selected\""; ?>>4</option>
-                        <option value="5" <?php if ($timer_num == 5) echo "selected=\"selected\""; ?>>5</option>
-                        <option value="6" <?php if ($timer_num == 6) echo "selected=\"selected\""; ?>>6</option>
-                        <option value="7" <?php if ($timer_num == 7) echo "selected=\"selected\""; ?>>7</option>
-                        <option value="8" <?php if ($timer_num == 8) echo "selected=\"selected\""; ?>>8</option>
+                        <option value="0" <?php if ($timer_num == 1) echo 'selected="selected"'; ?>>0</option>
+                        <option value="1" <?php if ($timer_num == 1) echo 'selected="selected"'; ?>>1</option>
+                        <option value="2" <?php if ($timer_num == 2) echo 'selected="selected"'; ?>>2</option>
+                        <option value="3" <?php if ($timer_num == 3) echo 'selected="selected"'; ?>>3</option>
+                        <option value="4" <?php if ($timer_num == 4) echo 'selected="selected"'; ?>>4</option>
+                        <option value="5" <?php if ($timer_num == 5) echo 'selected="selected"'; ?>>5</option>
+                        <option value="6" <?php if ($timer_num == 6) echo 'selected="selected"'; ?>>6</option>
+                        <option value="7" <?php if ($timer_num == 7) echo 'selected="selected"'; ?>>7</option>
+                        <option value="8" <?php if ($timer_num == 8) echo 'selected="selected"'; ?>>8</option>
                     </select>
                     <strong>Timers</strong>
                 </div>
@@ -1563,7 +1563,7 @@ if (isset($_COOKIE['debug'])) {
                         echo '
                         <tr>
                         <td style="padding-top: 0.5em; text-align: left; font-weight: bold;">
-                        ' . $array . '
+                        ' , $array , '
                         </td>
                         </tr>';
                         foreach($next as $key => $value) {
@@ -1573,16 +1573,16 @@ if (isset($_COOKIE['debug'])) {
                             echo '
                             <tr style="border-bottom:1pt solid black;">
                             <td style="">
-                            ' . $key . '
+                            ' , $key , '
                             </td>
                             <td>
-                            ' . number_format($value, 10) . '
+                            ' , number_format($value, 10) , '
                             </td>
                             <td>
-                            ' . number_format($pre, 10) . '
+                            ' , number_format($pre, 10) , '
                             </td>
                             <td>
-                            ' . number_format($total, 10) . '
+                            ' , number_format($total, 10) , '
                             </td>
                             </tr>';
                         }
@@ -1590,7 +1590,7 @@ if (isset($_COOKIE['debug'])) {
                     echo '
                     <tr>
                     <td colspan="4" style="font-weight: bold; font-size: 1.3em;">
-                    Total: ' . number_format($total, 10) . '
+                    Total: ' , number_format($total, 10) , '
                     </td>
                     </tr>
                     </table>';

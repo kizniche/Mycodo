@@ -94,7 +94,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
     // Main preset: Display graphs of past day and week
     if ($graph_time_span == 'default') {
         // Concatenate log files
-        if ($sensor_ht_graph[1] == 1 || $sensor_ht_graph[2] == 1 || $sensor_ht_graph[3] == 1 || $sensor_ht_graph[4] == 1) {
+        if (array_sum($sensor_ht_graph)) {
             $sensor_ht_log_file_tmp = "/var/www/mycodo/log/sensor-ht-tmp.log";
             $sensor_ht_log_file = "/var/www/mycodo/log/sensor-ht.log";
             $sensor_ht_log_generate = "/var/tmp/sensor-ht-logs-default.log";
@@ -103,7 +103,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
         }
 
         # Concatenate log files
-        if ($sensor_co2_graph[1] == 1 || $sensor_co2_graph[2] == 1 || $sensor_co2_graph[3] == 1 || $sensor_co2_graph[4] == 1) {
+        if (array_sum($sensor_co2_graph)) {
             $sensor_co2_log_file_tmp = "/var/www/mycodo/log/sensor-co2-tmp.log";
             $sensor_co2_log_file = "/var/www/mycodo/log/sensor-co2.log";
             $sensor_co2_log_generate = "/var/tmp/sensor-co2-logs-default.log";
@@ -118,10 +118,10 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                 }
                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?";
                 echo "sensortype=ht";
-                echo "&sensornumber=" . $n;
+                echo "&sensornumber=" , $n;
                 echo "&graphtype=default";
                 echo "&graphspan=default";
-                echo "&id=" . $graph_id . ">";
+                echo "&id=" , $graph_id , ">";
                 echo "</div>";
             }
         }
@@ -132,10 +132,10 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                 }
                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?";
                 echo "sensortype=co2";
-                echo "&sensornumber=" . $n;
+                echo "&sensornumber=" , $n;
                 echo "&graphspan=default";
                 echo "&graphtype=default";
-                echo "&id=" . $graph_id . ">";
+                echo "&id=" , $graph_id , ">";
                 echo "</div>";
             }
         }
@@ -146,14 +146,14 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
         echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?";
                 echo "sensortype=x";
                 echo "&sensornumber=0";
-                echo "&graphspan=" . $graph_time_span;
-                echo "&graphtype=" . $graph_type;
-                echo "&id=" . $graph_id . ">";
+                echo "&graphspan=" , $graph_time_span;
+                echo "&graphtype=" , $graph_type;
+                echo "&id=" , $graph_id , ">";
                 echo "</div>";
     } else if ($graph_type == 'separate') { // Combined preset: Generate separate graphs
 
         # Concatenate log files
-        if ($sensor_ht_graph[1] == 1 || $sensor_ht_graph[2] == 1 || $sensor_ht_graph[3] == 1 || $sensor_ht_graph[4] == 1) {
+        if (array_sum($sensor_ht_graph)) {
             $sensor_ht_log_file_tmp = "/var/www/mycodo/log/sensor-ht-tmp.log";
             $sensor_ht_log_file = "/var/www/mycodo/log/sensor-ht.log";
             $sensor_ht_log_generate = "/var/tmp/sensor-ht-logs-separate.log";
@@ -168,19 +168,19 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                 }
                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?";
                 echo "sensortype=ht";
-                echo "&sensornumber=" . $n;
-                echo "&graphspan=" . $graph_time_span;
-                echo "&graphtype=" . $graph_type;
-                echo "&id=" . $graph_id . ">";
+                echo "&sensornumber=" , $n;
+                echo "&graphspan=" , $graph_time_span;
+                echo "&graphtype=" , $graph_type;
+                echo "&id=" , $graph_id , ">";
                 echo "</div>";
             }
-            if ($n != $sensor_ht_num || $sensor_co2_graph[1] == 1 || $sensor_co2_graph[2] == 1 || $sensor_co2_graph[3] == 1 || $sensor_co2_graph[4] == 1) {
+            if ($n != $sensor_ht_num || array_sum($sensor_co2_graph)) {
                 echo "<hr class=\"fade\"/>";
             }
         }
 
         # Concatenate log files
-        if ($sensor_co2_graph[1] == 1 || $sensor_co2_graph[2] == 1 || $sensor_co2_graph[3] == 1 || $sensor_co2_graph[4] == 1) {
+        if (array_sum($sensor_co2_graph)) {
             $sensor_co2_log_file_tmp = "/var/www/mycodo/log/sensor-co2-tmp.log";
             $sensor_co2_log_file = "/var/www/mycodo/log/sensor-co2.log";
             $sensor_co2_log_generate = "/var/tmp/sensor-co2-logs-separate.log";
@@ -195,10 +195,10 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                 }
                 echo "<div style=\"padding: 1em 0 3em 0;\"><img class=\"main-image\" style=\"max-width:100%;height:auto;\" src=image.php?";
                 echo "sensortype=co2";
-                echo "&sensornumber=" . $n;
-                echo "&graphspan=" . $graph_time_span;
-                echo "&graphtype=" . $graph_type;
-                echo "&id=" . $graph_id . ">";
+                echo "&sensornumber=" , $n;
+                echo "&graphspan=" , $graph_time_span;
+                echo "&graphtype=" , $graph_type;
+                echo "&id=" , $graph_id , ">";
                 echo "</div>";
             }
             if ($n != $sensor_co2_num) {

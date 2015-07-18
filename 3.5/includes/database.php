@@ -34,7 +34,6 @@ while ($row = $results->fetchArray()) {
 
 $results = $db->query('SELECT Id, Name, Pin, Trigger FROM Relays');
 while ($row = $results->fetchArray()) {
-    //print $row[0] . " " . $row[1] . " " . $row[2] . " " . $row[3] . "<br>";
     $relay_name[$row[0]] = $row[1];
     $relay_pin[$row[0]] = $row[2];
     $relay_trigger[$row[0]] = $row[3];
@@ -42,7 +41,6 @@ while ($row = $results->fetchArray()) {
 
 $results = $db->query('SELECT Id, Name, Pin, Device, Period, Activated, Graph, Temp_Relay, Temp_OR, Temp_Set, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relay, Hum_OR, Hum_Set, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensor');
 while ($row = $results->fetchArray()) {
-    //print $row[0] . " " . $row[1] . " " . $row[2] . " " . $row[3] . " " . $row[4] . " " . $row[5] . " " . $row[6] . " " . $row[7] . " " . $row[8] . " " . $row[9] . " " . $row[10] . " " . $row[11] . " " . $row[12] . " " . $row[13] . " " . $row[14] . " " . $row[15] . " " . $row[16] . " " . $row[17] . " " . $row[18] . "<br>";
     $sensor_ht_name[$row[0]] = $row[1];
     $sensor_ht_pin[$row[0]] = $row[2];
     $sensor_ht_device[$row[0]] = $row[3];
@@ -67,7 +65,6 @@ while ($row = $results->fetchArray()) {
 
 $results = $db->query('SELECT Id, Name, Pin, Device, Period, Activated, Graph, CO2_Relay, CO2_OR, CO2_Set, CO2_Period, CO2_P, CO2_I, CO2_D FROM CO2Sensor');
 while ($row = $results->fetchArray()) {
-    //print $row[0] . " " . $row[1] . " " . $row[2] . " " . $row[3] . " " . $row[4] . " " . $row[5] . " " . $row[6] . " " . $row[7] . " " . $row[8] . " " . $row[9] . " " . $row[10] . " " . $row[11] . " " . $row[12] . "<br>";
     $sensor_co2_name[$row[0]] = $row[1];
     $sensor_co2_pin[$row[0]] = $row[2];
     $sensor_co2_device[$row[0]] = $row[3];
@@ -85,7 +82,6 @@ while ($row = $results->fetchArray()) {
 
 $results = $db->query('SELECT Id, Name, State, Relay, DurationOn, DurationOff FROM Timers');
 while ($row = $results->fetchArray()) {
-    //print $row[0] . " " . $row[1] . " " . $row[2] . " " . $row[3] . " " . $row[4] . " " . $row[5] . "<br>";
     $timer_name[$row[0]] = $row[1];
     $timer_state[$row[0]] = $row[2];
     $timer_relay[$row[0]] = $row[3];
@@ -95,7 +91,6 @@ while ($row = $results->fetchArray()) {
 
 $results = $db->query('SELECT Host, SSL, Port, User, Pass, Email_From, Email_To FROM SMTP');
 while ($row = $results->fetchArray()) {
-    //print $row[0] . " " . $row[1] . " " . $row[2] . " " . $row[3] . " " . $row[4] . " " . $row[5] . " " . $row[6] ."<br>";
     $smtp_host = $row[0];
     $smtp_ssl = $row[1];
     $smtp_port = $row[2];
@@ -107,7 +102,5 @@ while ($row = $results->fetchArray()) {
 
 $results = $db->query('SELECT Camera_Relay FROM Misc');
 while ($row = $results->fetchArray()) {
-    //print $row[0] . "<br>";
     $camera_relay = $row[0];
-    //$dismiss = $row[1];
 }
