@@ -122,11 +122,15 @@ In each web directory is an.htaccess which denies access to those folders. It is
 
 ## ATTENTION
 
+### SSL
+
 It is recommended to enable apache's SSL and force the user to use it. If your server is not remotely accessible (cannot be seen from the internet), you can skip this step and the next that enables .htaccess overrides.
 
 `sudo apt-get install openssl`
 
 `sudo mkdir /etc/ssl/localcerts`
+
+Generate your self-signed certificate with the following command. You will be prompted for information (which can be left blank), however it is recommended that if you have a fully-qualified domain name (FQDN) to enter that when prompted, to prevent a browser warning of a FQDN that doesn't match the certificate.
 
 `openssl req -new -x509 -sha256 -days 365 -nodes -out /etc/ssl/localcerts/apache.pem -keyout /etc/ssl/localcerts/apache.key`
 
@@ -173,6 +177,10 @@ Ensure SSL is enabled in apache2 and restart the server
 
 `sudo service apache2 restart`
 
+You will need to add the self-signed certificate to your browser as trusted in order not to receive warnings. This is different for every browser, so I will not detail how to do it. In any case, you should be able to dismiss the warning and access the site, however adding your certificate to your browser is recommended to increase security.
+
+### .htaccess
+
 If your server is accessible from the internet but you don't want to enable SSL (this was enabled with SSL, above), this is a crucial step that will ensure sensitive files (images/logs/databases) will not be accessible to anyone. If your server is not publically accessible, you can skip this step. Otherwise, it's imperative that `AllowOverride All` is added to your apache2 config to allow the .htaccess files throughout mycodo to restrict access to certain files and folders. Modify /etc/apache2/sites-enabled/000-default to appear as below:
 
 ```
@@ -193,7 +201,7 @@ Then restart apache with
 
 `sudo service apache2 restart`
 
-I highly recommend testing whether the configuration change actually worked. This can be tested by going to http://yourwebaddress/mycodo/includes/ with your browser, and if you get an error, "Forbidden: You don't have permission to access /mycodo/includes on this server," then everything is working correctly. If the page actually loads or there is any other error than "forbidden", there is a problem and you will need to diagnose the issue before opening your server to beyond your local network.
+I highly recommend testing whether the configuration change actually worked. This can be tested by going to https://yourwebaddress/mycodo/includes/ with your browser, and if you get an error, "Forbidden: You don't have permission to access /mycodo/includes on this server," then everything is working correctly. If the page actually loads or there is any other error than "forbidden", there is a problem and you will need to diagnose the issue before opening your server to beyond your local network.
 
 To initialize GPIO pins at startup, open crontab with `sudo crontab -e` and add the following lines, then save with `Ctrl+e`
 
