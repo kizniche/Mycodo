@@ -167,6 +167,12 @@ DocumentRoot /var/www/
 </Directory>
 ```
 
+Ensure SSL is enabled in apache2 and restart the server
+
+`sudo a2enmod ssl`
+
+`sudo service apache2 restart`
+
 If your server is accessible from the internet but you don't want to enable SSL (this was enabled with SSL, above), this is a crucial step that will ensure sensitive files (images/logs/databases) will not be accessible to anyone. If your server is not publically accessible, you can skip this step. Otherwise, it's imperative that `AllowOverride All` is added to your apache2 config to allow the .htaccess files throughout mycodo to restrict access to certain files and folders. Modify /etc/apache2/sites-enabled/000-default to appear as below:
 
 ```
@@ -182,8 +188,6 @@ If your server is accessible from the internet but you don't want to enable SSL 
         allow from all
     </Directory>
 ```
-
-
 
 Then restart apache with
 
