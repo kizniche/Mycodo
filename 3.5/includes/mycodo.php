@@ -427,6 +427,29 @@ if ($output_error) {
 
             <div style="clear: both;"></div>
 
+            <?php
+            if ($relay_num != 0) { ?>
+                <div style="padding: 1em 0 1em 3em;">
+                <div style="padding: 0.5em 0 0.5em 0;">Relays</div>
+                <div style="padding-left: 0.2em;">
+                <table class="relay-display">
+                    <tr>
+                        <td style="padding-bottom: 0.3em;">No.</td>
+                        <td>Name</td>
+                        <td>Pin</td>
+                        <td>Signal On</td>
+                    </tr>
+                <?php
+                $results = $db->query('SELECT Id, Name, Pin, Trigger FROM Relays');
+                for ($i = 1; $i <= $relay_num; $i++) {
+                    $row = $results->fetchArray();
+                    echo '<tr><td>' . $row[0] . '</td><td>' . $row[1] . '</td><td>' . $row[2] . '</td><td>' . $row[3] . '</td></tr>';
+                }
+                echo '</table></div></div><div style="clear: both;"></div>';
+            }
+            ?>
+           
+
             <div style="width: 45em; padding-left: 3em; padding-top: 1em;">
                 <div style="padding: 1em 0;">
                     <div style="float: left; padding-right: 1em;">
@@ -1199,7 +1222,7 @@ if ($output_error) {
                             <th align=center class="table-header">State<br><img style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off" title="Off"> = off</th>
                             <td align=center class="table-header">Seconds<br>On</td>
                             <td align=center class="table-header">GPIO<br>Pin</td>
-                            <td align=center class="table-header">Trigger<br>ON</td>
+                            <td align=center class="table-header">Signal<br>ON</td>
                             <td align=center class="table-header"></td>
                         </tr>
                         <?php for ($i = 1; $i <= $relay_num; $i++) {

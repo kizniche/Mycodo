@@ -69,6 +69,10 @@ table.relays tr:nth-child(odd) {
     background-color: #EBEBEB;
 }
 
+table.relay-display td {
+    padding: 0.15em 0.8em 0.15em 0.8em;
+}
+
 .pid-wrapper {
     padding-top: 0.8px;
 	margin: 0 auto;
@@ -279,7 +283,7 @@ Main components
 .cd-tabs {
   position: relative;
   width: 95%;
-  max-width: 63em;
+  max-width: 59.59em;
   margin: 0.5em auto;
 }
 .cd-tabs:after {
