@@ -120,9 +120,9 @@ To allow resolving of IP addresses in the login log, edit /etc/apache2/apache2.c
 In each web directory is an.htaccess which denies access to those folders. It is strongly recommended that you ensure this works properly (or alternatively, configure your web server to accomplish the same result), to ensure no one has direct access to these directories, as log, configuration, graph images, and other potentially sensitive information is stored there. Optionally, for higher security, enable SSL/HTTPS.
 
 
-## ATTENTION
+### ATTENTION
 
-### SSL
+#### SSL
 
 It is recommended to enable apache's SSL and force the user to use it. If your server is not remotely accessible (cannot be seen from the internet), you can skip this step and the next that enables .htaccess overrides.
 
@@ -179,7 +179,7 @@ Ensure SSL is enabled in apache2 and restart the server
 
 You will need to add the self-signed certificate to your browser as trusted in order not to receive warnings. This is different for every browser, so I will not detail how to do it. In any case, you should be able to dismiss the warning and access the site, however adding your certificate to your browser is recommended to increase security.
 
-### .htaccess
+#### .htaccess
 
 If your server is accessible from the internet but you don't want to enable SSL (this was enabled with SSL, above), this is a crucial step that will ensure sensitive files (images/logs/databases) will not be accessible to anyone. If your server is not publically accessible, you can skip this step. Otherwise, it's imperative that `AllowOverride All` is added to your apache2 config to allow the .htaccess files throughout mycodo to restrict access to certain files and folders. Modify /etc/apache2/sites-enabled/000-default to appear as below:
 
