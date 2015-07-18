@@ -726,14 +726,15 @@ def daemon(output, log):
             timerLogBackup = int(time.time()) + 21600
 
         # Handle timers
-        for i in range(1, 9):
-            if int(time.time()) > timer_time[i]:
-                if timer_state[i] == 1:
-                    logging.debug("[Timer Expiration] Timer %s: Turn Relay %s on for %s seconds, off %s seconds.", i, timer_relay[i], timer_duration_on[i], timer_duration_off[i])
-                    rod = threading.Thread(target = relay_on_duration,
-                        args = (timer_relay[i], timer_duration_on[i], 0,))
-                    rod.start()
-                    timer_time[i] = int(time.time()) + timer_duration_on[i] + timer_duration_off[i]
+        if timer_num != 0:
+            for i in range(1, 9):
+                if int(time.time()) > timer_time[i]:
+                    if timer_state[i] == 1:
+                        logging.debug("[Timer Expiration] Timer %s: Turn Relay %s on for %s seconds, off %s seconds.", i, timer_relay[i], timer_duration_on[i], timer_duration_off[i])
+                        rod = threading.Thread(target = relay_on_duration,
+                            args = (timer_relay[i], timer_duration_on[i], 0,))
+                        rod.start()
+                        timer_time[i] = int(time.time()) + timer_duration_on[i] + timer_duration_off[i]
 
         time.sleep(0.1)
 

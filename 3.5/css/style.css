@@ -376,7 +376,7 @@ Main components
   background-image: url("../img/vicons.svg");
   background-repeat: no-repeat;
 }
-.cd-tabs-navigation a[data-content='log']::before {
+.cd-tabs-navigation a[data-content='data']::before {
   background-position: 0 0;
 }
 .cd-tabs-navigation a[data-content='graph']::before {
@@ -388,13 +388,13 @@ Main components
 .cd-tabs-navigation a[data-content='main']::before {
   background-position: -4.286em 0;
 }
-.cd-tabs-navigation a[data-content='configure']::before {
+.cd-tabs-navigation a[data-content='pid']::before {
   background-position: -5.714em 0;
 }
-.cd-tabs-navigation a[data-content='advanced']::before {
+.cd-tabs-navigation a[data-content='settings']::before {
   background-position: -7.143em 0;
 }
-.cd-tabs-navigation a[data-content='log'].selected::before {
+.cd-tabs-navigation a[data-content='data'].selected::before {
   background-position: 0 -1.429em;
 }
 .cd-tabs-navigation a[data-content='graph'].selected::before {
@@ -406,10 +406,10 @@ Main components
 .cd-tabs-navigation a[data-content='main'].selected::before {
   background-position: -4.286 -1.429em;
 }
-.cd-tabs-navigation a[data-content='configure'].selected::before {
+.cd-tabs-navigation a[data-content='pid'].selected::before {
   background-position: -5.714em -1.429em;
 }
-.cd-tabs-navigation a[data-content='advanced'].selected::before {
+.cd-tabs-navigation a[data-content='settings'].selected::before {
   background-position: -7.143em -1.429em;
 }
 

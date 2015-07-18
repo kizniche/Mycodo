@@ -174,7 +174,7 @@ header {
 			background-repeat: no-repeat;
 		}
 
-		&[data-content='log']::before {
+		&[data-content='data']::before {
 			background-position: 0 0;
 		}
 
@@ -190,15 +190,15 @@ header {
 			background-position: -60px 0;
 		}
 
-		&[data-content='configure']::before {
+		&[data-content='pid']::before {
 			background-position: -80px 0;
 		}
 
-		&[data-content='advanced']::before {
+		&[data-content='settings']::before {
 			background-position: -100px 0;
 		}
 
-		&[data-content='log'].selected::before {
+		&[data-content='data'].selected::before {
 			background-position: 0 -20px;
 		}
 
@@ -214,11 +214,11 @@ header {
 			background-position: -60px -20px;
 		}
 
-		&[data-content='configure'].selected::before {
+		&[data-content='pid'].selected::before {
 			background-position: -80px -20px;
 		}
 
-		&[data-content='advanced'].selected::before {
+		&[data-content='settings'].selected::before {
 			background-position: -100px -20px;
 		}
 	}

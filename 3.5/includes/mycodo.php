@@ -132,28 +132,39 @@ if ($output_error) {
         </div>
     </div>
     <div class="header">
-        <div style="padding-bottom: 0.1em;"><?php
-            if (daemon_active()) echo '<input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="daemon_change" value="0"> Daemon';
-            else echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="daemon_change" value="1"> Daemon';
+        <div style="float: left;">
+            <div style="padding-bottom: 0.1em;"><?php
+                if (daemon_active()) echo '<input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On" name="daemon_change" value="0"> Daemon';
+                else echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="daemon_change" value="1"> Daemon';
+                ?></div>
+            <div style="padding-bottom: 0.1em;"><?php
+                if (file_exists($lock_mjpg_streamer)) {
+                    echo '<input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="" value="0">';
+                } else {
+                    echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="" value="0">';
+                }
+                ?> Stream</div>
+            <div style="padding-bottom: 0.1em;"><?php
+                if (file_exists($lock_time_lapse)) {
+                    echo '<input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="" value="0">';
+                } else {
+                    echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="" value="0">';
+                }
+                ?> Timelapse</div>
+        </div>
+        <div style="float: left;">
+            <div><?php
+                if (isset($_GET['r'])) {
+                    ?><div style="display:inline-block; vertical-align:top;"><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="" value="0">
+                    </div>
+                    <div style="display:inline-block; padding-left: 0.3em;">
+                        <div>Refresh <span style="font-size: 0.7em">(<?php echo $tab; ?>)</span></div>
+                    </div><?php
+                } else {
+                    ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="" value="0"> Refresh<?php
+                }
             ?></div>
-        <div style="padding-bottom: 0.1em;"><?php
-            if (file_exists($lock_mjpg_streamer)) {
-                echo '<input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="" value="0">';
-            } else {
-                echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="" value="0">';
-            }
-            ?> Stream</div>
-        <div><?php
-            if (isset($_GET['r'])) {
-                ?><div style="display:inline-block; vertical-align:top;"><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="" value="0">
-                </div>
-                <div style="display:inline-block; padding-left: 0.3em;">
-                    <div>Refresh <span style="font-size: 0.7em">(<?php echo $tab; ?>)</span></div>
-                </div><?php
-            } else {
-                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="" value="0"> Refresh<?php
-            }
-        ?></div>
+        </div>
     </div>
     <div style="float: left; vertical-align:top; height: 4.5em; padding: 1em 0.8em 0 0.3em;">
         <div style="text-align: right; padding-top: 3px; font-size: 0.9em;">Time now: <?php echo $time_now; ?></div>
@@ -210,26 +221,26 @@ if ($output_error) {
                 if (!isset($_GET['tab']) || (isset($_GET['tab']) && $_GET['tab'] == 'main')) {
                     echo "class=\"selected\"";
                 } ?> href="#0">Main</a></li>
-			<li><a data-content="configure" <?php
-                if (isset($_GET['tab']) && $_GET['tab'] == 'config') {
+			<li><a data-content="pid" <?php
+                if (isset($_GET['tab']) && $_GET['tab'] == 'pid') {
                     echo "class=\"selected\"";
-                } ?> href="#0">Configure</a></li>
+                } ?> href="#0">PID</a></li>
 			<li><a data-content="graph" <?php
                 if (isset($_GET['tab']) && $_GET['tab'] == 'graph') {
                     echo "class=\"selected\"";
-                } ?> href="#0">Graphs</a></li>
+                } ?> href="#0">Graph</a></li>
 			<li><a data-content="camera" <?php
                 if (isset($_GET['tab']) && $_GET['tab'] == 'camera') {
                     echo "class=\"selected\"";
                 } ?> href="#0">Camera</a></li>
-			<li><a data-content="log" <?php
-                if (isset($_GET['tab']) && $_GET['tab'] == 'log') {
+			<li><a data-content="data" <?php
+                if (isset($_GET['tab']) && $_GET['tab'] == 'data') {
                     echo "class=\"selected\"";
-                } ?> href="#0">Log</a></li>
-			<li><a data-content="advanced" <?php
-                if (isset($_GET['tab']) && $_GET['tab'] == 'adv') {
+                } ?> href="#0">Data</a></li>
+			<li><a data-content="settings" <?php
+                if (isset($_GET['tab']) && $_GET['tab'] == 'settings') {
                     echo "class=\"selected\"";
-                } ?> href="#0">Advanced</a></li>
+                } ?> href="#0">Settings</a></li>
 		</ul>
 	</nav>
 	<ul class="cd-tabs-content">
@@ -368,11 +379,11 @@ if ($output_error) {
 
 		</li>
 
-		<li data-content="configure" <?php
-            if (isset($_GET['tab']) && $_GET['tab'] == 'config') {
+		<li data-content="pid" <?php
+            if (isset($_GET['tab']) && $_GET['tab'] == 'pid') {
                 echo "class=\"selected\"";
             } ?>>
-            <FORM action="?tab=config<?php
+            <FORM action="?tab=pid<?php
                 if (isset($_GET['page'])) {
                     echo "&page=" . $_GET['page'];
                 }
@@ -381,17 +392,22 @@ if ($output_error) {
                 }
                 ?>" method="POST">
             <div style="padding-top: 0.5em;">
+                <?php
+                    if ($relay_num == 0) {
+                        echo '<div style="color: red; padding: 0.5em 0 1em 0.5em; font-size: 0.9em;">Attention: There are 0 Relays configured. Change this in the Settings before activating a PID.</div>';
+                    }
+                ?>
                 <div style="float: left; padding: 0 1.5em 1em 0.5em;">
                     <div style="text-align: center; padding-bottom: 0.2em;">Auto Refresh</div>
                     <div style="text-align: center;"><?php
                         if (isset($_GET['r'])) {
                             if ($_GET['r'] == 1) {
-                                echo "<a href=\"?tab=config\">OFF</a> | <span class=\"on\">ON</span>";
+                                echo "<a href=\"?tab=pid\">OFF</a> | <span class=\"on\">ON</span>";
                             } else {
-                                echo "<span class=\"off\">OFF</span> | <a href=\"?tab=config&?r=1\">ON</a>";
+                                echo "<span class=\"off\">OFF</span> | <a href=\"?tab=pid&?r=1\">ON</a>";
                             }
                         } else {
-                            echo "<span class=\"off\">OFF</span> | <a href=\"?tab=config&r=1\">ON</a>";
+                            echo "<span class=\"off\">OFF</span> | <a href=\"?tab=pid&r=1\">ON</a>";
                         }
                     ?>
                     </div>
@@ -414,94 +430,7 @@ if ($output_error) {
             <div style="width: 45em; padding-left: 3em; padding-top: 1em;">
                 <div style="padding: 1em 0;">
                     <div style="float: left; padding-right: 1em;">
-                        <input type="submit" name="ChangeNoRelays" value="Save ->">
-                        <select name="numrelays">
-                            <option value="0" <?php if ($relay_num == 0) echo "selected=\"selected\""; ?>>0</option>
-                            <option value="1" <?php if ($relay_num == 1) echo "selected=\"selected\""; ?>>1</option>
-                            <option value="2" <?php if ($relay_num == 2) echo "selected=\"selected\""; ?>>2</option>
-                            <option value="3" <?php if ($relay_num == 3) echo "selected=\"selected\""; ?>>3</option>
-                            <option value="4" <?php if ($relay_num == 4) echo "selected=\"selected\""; ?>>4</option>
-                            <option value="5" <?php if ($relay_num == 5) echo "selected=\"selected\""; ?>>5</option>
-                            <option value="6" <?php if ($relay_num == 6) echo "selected=\"selected\""; ?>>6</option>
-                            <option value="7" <?php if ($relay_num == 7) echo "selected=\"selected\""; ?>>7</option>
-                            <option value="8" <?php if ($relay_num == 8) echo "selected=\"selected\""; ?>>8</option>
-                        </select>
-                    </div>
-                    <div class="config-title">Relays</div>
-                    <div style="clear: both;"></div>
-                </div>
-
-                <?php
-                if ($relay_num > 0) {
-                ?><div style="padding-bottom: 3em;">
-                    <table class="relays">
-                        <tr>
-                            <td align=center class="table-header">Relay<br>No.</td>
-                            <td align=center class="table-header">Relay<br>Name</td>
-                            <th align=center class="table-header">Current<br>State</th>
-                            <td align=center class="table-header">Seconds<br>On</td>
-                            <td align=center class="table-header">GPIO<br>Pin</td>
-                            <td align=center class="table-header">Trigger<br>ON</td>
-                            <td align=center class="table-header"></td>
-                        </tr>
-                        <?php for ($i = 1; $i <= $relay_num; $i++) {
-                            $read = "$gpio_path -g read $relay_pin[$i]";
-                        ?>
-                        <tr>
-                            <td align=center>
-                                <?php echo $i; ?>
-                            </td>
-                            <td align=center>
-                                <input style="width: 10em;" type="text" value="<?php echo $relay_name[$i]; ?>" maxlength=13 size=10 name="relay<?php echo $i; ?>name" title="Name of relay <?php echo $i; ?>"/>
-                            </td>
-                            <?php
-                                if ((shell_exec($read) == 1 && $relay_trigger[$i] == 0) || (shell_exec($read) == 0 && $relay_trigger[$i] == 1)) {
-                                    ?>
-                                    <td class="onoff">
-                                        <nobr><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="R<?php echo $i; ?>" value="0"> | <button style="width: 3em;" type="submit" name="R<?php echo $i; ?>" value="1">ON</button></nobr>
-                                    </td>
-                                    <?php
-                                } else {
-                                    ?>
-                                    <td class="onoff">
-                                        <nobr><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/on.jpg" alt="On" title="On" name="R<?php echo $i; ?>" value="1"> | <button style="width: 3em;" type="submit" name="R<?php echo $i; ?>" value="0">OFF</button></nobr>
-                                    </td>
-                                    <?php
-                                }
-                            ?>
-                            <td>
-                                 [<input style="width: 4em;" type="number" min="1" max="99999" name="sR<?php echo $i; ?>" title="Number of seconds to turn this relay on"/><input type="submit" name="<?php echo $i; ?>secON" value="ON">]
-                            </td>
-                            <td align=center>
-                                <input style="width: 3em;" type="number" min="1" max="40" value="<?php echo $relay_pin[$i]; ?>" name="relay<?php echo $i; ?>pin" title="GPIO pin using BCM numbering, connected to relay <?php echo $i; ?>"/>
-                            </td>
-                            <td align=center>
-                                <select style="width: 65px;" title="Does this relay activate with a LOW (0-volt) or HIGH (5-volt) signal?" name="relay<?php echo $i; ?>trigger">
-                                    <option<?php
-                                        if ($relay_trigger[$i] == 1) {
-                                            echo " selected=\"selected\"";
-                                        } ?> value="1">HIGH</option>
-                                    <option<?php
-                                        if ($relay_trigger[$i] == 0) {
-                                            echo " selected=\"selected\"";
-                                        } ?> value="0">LOW</option>
-                                </select>
-                            </td>
-                            <td>
-                                <input type="submit" name="Mod<?php echo $i; ?>Relay" value="Set">
-                            </td>
-                        </tr>
-                        <?php
-                        } ?>
-                    </table>
-                </div>
-                <?php
-                }
-                ?>
-
-                <div style="padding: 1em 0;">
-                    <div style="float: left; padding-right: 1em;">
-                        <input type="submit" name="ChangeNoHTSensors" value="Save ->">
+                        <input type="submit" name="ChangeNoHTSensors" value="Set">
                         <select name="numhtsensors">
                             <option value="0"<?php
                                 if ($sensor_ht_num == 0) {
@@ -686,7 +615,7 @@ if ($output_error) {
 
                 <div style="padding-bottom: 1em;">
                     <div style="float: left; padding-right: 1em;">
-                        <input type="submit" name="ChangeNoCo2Sensors" value="Save ->">
+                        <input type="submit" name="ChangeNoCo2Sensors" value="Set">
                         <select name="numco2sensors">
                             <option value="0"<?php
                                 if ($sensor_co2_num == 0) {
@@ -1054,7 +983,13 @@ if ($output_error) {
 
             <form action="?tab=camera" method="POST">
             <div style="float: left; padding: 0.5em;">
-                Activate relay during capture? Relay: <?php echo $camera_relay . ' (' . $relay_name[$camera_relay] . ')'; ?> <input type="checkbox" name="lighton" title="Light relay is configurable in the Advanced tab" value="1">
+                Activate relay during capture? <input type="checkbox" name="lighton" title="Light relay is configurable in the Advanced tab" value="1"> <?php
+                if ($camera_relay == 0) {
+                    echo '<span style="color: red; padding: 0 0 0 0.5em; font-size: 0.9em;">Relay unconfigured. Change this in the Settings.</span>';
+                } else {
+                    echo 'Relay: ' . $camera_relay . ' (' . $relay_name[$camera_relay] . ')';
+                }
+                ?>
             </div>
 
             <div style="clear: both;"></div>
@@ -1135,13 +1070,13 @@ if ($output_error) {
             </center>
 		</li>
 
-		<li data-content="log" <?php
-            if (isset($_GET['tab']) && $_GET['tab'] == 'log') {
+		<li data-content="data" <?php
+            if (isset($_GET['tab']) && $_GET['tab'] == 'data') {
                 echo "class=\"selected\"";
             } ?>>
 			<div style="padding: 10px 0 0 15px;">
                 <div style="padding-bottom: 15px;">
-                    <FORM action="?tab=log<?php
+                    <FORM action="?tab=data<?php
                         if (isset($_GET['page'])) {
                             echo "&page=" . $_GET['page'];
                         } ?>" method="POST">
@@ -1224,19 +1159,114 @@ if ($output_error) {
             </div>
 		</li>
 
-		<li data-content="advanced" <?php
-            if (isset($_GET['tab']) && $_GET['tab'] == 'adv') {
+		<li data-content="settings" <?php
+            if (isset($_GET['tab']) && $_GET['tab'] == 'settings') {
                 echo "class=\"selected\"";
             } ?>>
 
             <?php if ($this->feedback) echo $this->feedback; ?>
 
-            <div style="padding:1.5em 0 0 3em;">
+            <div style="padding:1.5em 0 0 2em;">
+                <form action="?tab=settings" method="POST">
+                <div style="padding: 1em 0;">
+                    <div style="float: left; padding-right: 1em;">
+                        <input type="submit" name="ChangeNoRelays" value="Set">
+                        <select name="numrelays">
+                            <option value="0" <?php if ($relay_num == 0) echo "selected=\"selected\""; ?>>0</option>
+                            <option value="1" <?php if ($relay_num == 1) echo "selected=\"selected\""; ?>>1</option>
+                            <option value="2" <?php if ($relay_num == 2) echo "selected=\"selected\""; ?>>2</option>
+                            <option value="3" <?php if ($relay_num == 3) echo "selected=\"selected\""; ?>>3</option>
+                            <option value="4" <?php if ($relay_num == 4) echo "selected=\"selected\""; ?>>4</option>
+                            <option value="5" <?php if ($relay_num == 5) echo "selected=\"selected\""; ?>>5</option>
+                            <option value="6" <?php if ($relay_num == 6) echo "selected=\"selected\""; ?>>6</option>
+                            <option value="7" <?php if ($relay_num == 7) echo "selected=\"selected\""; ?>>7</option>
+                            <option value="8" <?php if ($relay_num == 8) echo "selected=\"selected\""; ?>>8</option>
+                        </select>
+                    </div>
+                    <div class="config-title">Relays</div>
+                    <div style="clear: both;"></div>
+                </div>
+
+                <?php
+                if ($relay_num > 0) {
+                ?>
+            
                 <div class="adv" style="padding-bottom: 2.5em;">
-                    <form action="?tab=adv" method="POST">
+                    <table class="relays">
+                        <tr>
+                            <td align=center class="table-header">Relay<br>No.</td>
+                            <td align=center class="table-header">Relay<br>Name</td>
+                            <th align=center class="table-header">State<br><img style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off" title="Off"> = off</th>
+                            <td align=center class="table-header">Seconds<br>On</td>
+                            <td align=center class="table-header">GPIO<br>Pin</td>
+                            <td align=center class="table-header">Trigger<br>ON</td>
+                            <td align=center class="table-header"></td>
+                        </tr>
+                        <?php for ($i = 1; $i <= $relay_num; $i++) {
+                            $read = "$gpio_path -g read $relay_pin[$i]";
+                        ?>
+                        <tr>
+                            <td align=center>
+                                <?php echo $i; ?>
+                            </td>
+                            <td align=center>
+                                <input style="width: 10em;" type="text" value="<?php echo $relay_name[$i]; ?>" maxlength=13 size=10 name="relay<?php echo $i; ?>name" title="Name of relay <?php echo $i; ?>"/>
+                            </td>
+                            <?php
+                                if ((shell_exec($read) == 1 && $relay_trigger[$i] == 0) || (shell_exec($read) == 0 && $relay_trigger[$i] == 1)) {
+                                    ?>
+                                    <td class="onoff">
+                                        <nobr><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="R<?php echo $i; ?>" value="0"> | <button style="width: 3em;" type="submit" name="R<?php echo $i; ?>" value="1">ON</button></nobr>
+                                    </td>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <td class="onoff">
+                                        <nobr><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/on.jpg" alt="On" title="On" name="R<?php echo $i; ?>" value="1"> | <button style="width: 3em;" type="submit" name="R<?php echo $i; ?>" value="0">OFF</button></nobr>
+                                    </td>
+                                    <?php
+                                }
+                            ?>
+                            <td>
+                                 [<input style="width: 4em;" type="number" min="1" max="99999" name="sR<?php echo $i; ?>" title="Number of seconds to turn this relay on"/><input type="submit" name="<?php echo $i; ?>secON" value="ON">]
+                            </td>
+                            <td align=center>
+                                <input style="width: 3em;" type="number" min="1" max="40" value="<?php echo $relay_pin[$i]; ?>" name="relay<?php echo $i; ?>pin" title="GPIO pin using BCM numbering, connected to relay <?php echo $i; ?>"/>
+                            </td>
+                            <td align=center>
+                                <select style="width: 65px;" title="Does this relay activate with a LOW (0-volt) or HIGH (5-volt) signal?" name="relay<?php echo $i; ?>trigger">
+                                    <option<?php
+                                        if ($relay_trigger[$i] == 1) {
+                                            echo " selected=\"selected\"";
+                                        } ?> value="1">HIGH</option>
+                                    <option<?php
+                                        if ($relay_trigger[$i] == 0) {
+                                            echo " selected=\"selected\"";
+                                        } ?> value="0">LOW</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="submit" name="Mod<?php echo $i; ?>Relay" value="Set">
+                            </td>
+                        </tr>
+                        <?php
+                        } ?>
+                    </table>
+                </div>
+            <?php
+            }
+            ?>
+            </form>
+            </div>
+            <div style="clear: both;"></div>
+
+            <div style="padding:1.5em 0 0 2em;">
+                <div class="adv" style="padding-bottom: 2.5em;">
+                    <form action="?tab=settings" method="POST">
                     <div style="padding-bottom: 1em; font-weight: bold;">
-                        <input type="submit" name="ChangeNoTimers" value="Save ->">
+                        <input type="submit" name="ChangeNoTimers" value="Set">
                         <select name="numtimers">
+                            <option value="0" <?php if ($timer_num == 1) echo "selected=\"selected\""; ?>>0</option>
                             <option value="1" <?php if ($timer_num == 1) echo "selected=\"selected\""; ?>>1</option>
                             <option value="2" <?php if ($timer_num == 2) echo "selected=\"selected\""; ?>>2</option>
                             <option value="3" <?php if ($timer_num == 3) echo "selected=\"selected\""; ?>>3</option>
@@ -1327,7 +1357,7 @@ if ($output_error) {
                 <div style="clear: both;"></div>
 
                 <div class="advanced" style="padding-bottom: 2em;">
-                    <form method="post" action="?tab=adv" name="debug">
+                    <form method="post" action="?tab=settings" name="debug">
                     <div style="font-weight: bold; padding: 0.5em 0;">
                         Debugging
                     </div>
@@ -1344,16 +1374,13 @@ if ($output_error) {
 
                 <div class="advanced">
                     <div style="padding-bottom: 2em;">
-                        <form method="post" action="?tab=adv" name="smtp">
+                        <form method="post" action="?tab=settings" name="smtp">
                         <div>
                             <div style="font-weight: bold; padding: 0.5em 0;">
                                 Camera
                             </div>
                             <div class="adv">
                                 Activate relay during capture: <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $camera_relay; ?>" maxlength=4 size=1 name="lightrelay" title="A relay can be set to activate duting a still image, stream, or timelapse capture. Enable/disable on the camera tab."/>
-                            </div>
-                            <div class="adv">
-                                Another variable
                             </div>
                             <div class="adv">
                                 <button name="ChangeCamera" type="submit" value="">Save</button>
@@ -1365,7 +1392,7 @@ if ($output_error) {
                 <div style="clear: both;"></div>
 
                 <div <div class="advanced">
-                    <form method="post" action="?tab=adv" name="smtp">
+                    <form method="post" action="?tab=settings" name="smtp">
                     <div style="padding-bottom: 2em;">
                         <div style="font-weight: bold; padding: 0.5em 0;">
                             Email Notification
@@ -1399,7 +1426,7 @@ if ($output_error) {
 
                 <div class="advanced">
                     <div style="padding-bottom: 1em;">
-                        <form method="post" action="?tab=adv" name="addform">
+                        <form method="post" action="?tab=settings" name="addform">
                         <div style="font-weight: bold; padding: 0.5em 0;">
                             Add User
                         </div>
@@ -1421,7 +1448,7 @@ if ($output_error) {
                         </form>
                     </div>
                     <div style="padding-bottom: 1em;">
-                        <form method="post" action="?tab=adv" name="changeform">
+                        <form method="post" action="?tab=settings" name="changeform">
                         <div style="font-weight: bold; padding: 0.5em 0;">
                             Change Password
                         </div>
@@ -1440,7 +1467,7 @@ if ($output_error) {
                         </form>
                     </div>
                     <div>
-                        <form method="post" action="?tab=adv" name="delform">
+                        <form method="post" action="?tab=settings" name="delform">
                         <div style="font-weight: bold; padding: 0.5em 0;">
                             Delete User
                         </div>
