@@ -57,7 +57,7 @@ If using the Raspberry Pi camera module:
 
 `sudo usermod -a -G video www-data`
 
-Install video streaming capabilities
+Install video streaming capabilities (Note that it is recommended to require SSL on your web server to prevent potential viewing of video streams by unautorized users, details on forcing SSL below)
 
 `sudo apt-get install libjpeg8-dev libv4l-dev wget`
 
@@ -122,7 +122,52 @@ In each web directory is an.htaccess which denies access to those folders. It is
 
 ## ATTENTION
 
-This is a crucial step if you will have your web server publically accessible. If you do not perform this step, sensitive files will be accessible to anyone. It's imperative that `AllowOverride All` is added to your apache2 config to allow the .htaccess files throughout mycodo to restrict access to certain filders. Modify /etc/apache2/sites-available/default-ssl (or just ‘default’ if not using SSL) to appear as below:
+It is recommended to enable apache's SSL and force the user to use it. If your server is not remotely accessible (cannot be seen from the internet), you can skip this step and the next that enables .htaccess overrides.
+
+`sudo apt-get install openssl`
+
+`sudo mkdir /etc/ssl/localcerts`
+
+`openssl req -new -x509 -sha256 -days 365 -nodes -out /etc/ssl/localcerts/apache.pem -keyout /etc/ssl/localcerts/apache.key`
+
+`sudo chmod 600 /etc/ssl/localcerts/apache`
+
+Change the symlink from non-SSL to SSL
+
+`sudo ln -sf /etc/apache2/sites-available/default-ssl /etc/apache2/sites-enabled/000-default`
+
+Edit /etc/apache2/sites-enabled/000-default and make sure the top looks similar to this:
+
+```
+<IfModule mod_ssl.c>
+<VirtualHost *:80>
+        RewriteEngine on
+        RewriteCond  %{HTTPS} !=on
+        RewriteCond  %{HTTP_HOST} ^(.*)$
+        RewriteRule  ^(.*)/? https://%1$1 [L,R]
+</VirtualHost>
+        
+<VirtualHost _default_:443>
+SSLEngine On
+SSLCertificateFile /etc/ssl/localcerts/apache.pem
+SSLCertificateKeyFile /etc/ssl/localcerts/apache.key
+
+ServerAdmin webmaster@localhost
+
+DocumentRoot /var/www/
+<Directory />
+        Options FollowSymLinks
+        AllowOverride None
+</Directory>
+<Directory /var/www/>
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride All
+        Order allow,deny
+        allow from all
+</Directory>
+```
+
+If your server is accessible from the internet but you don't want to enable SSL (this was enabled with SSL, above), this is a crucial step that will ensure sensitive files (images/logs/databases) will not be accessible to anyone. If your server is not publically accessible, you can skip this step. Otherwise, it's imperative that `AllowOverride All` is added to your apache2 config to allow the .htaccess files throughout mycodo to restrict access to certain files and folders. Modify /etc/apache2/sites-enabled/000-default to appear as below:
 
 ```
     DocumentRoot /var/www
@@ -130,13 +175,15 @@ This is a crucial step if you will have your web server publically accessible. I
          Order deny,allow
          Deny from all
     </Directory>
-	<Directory /var/www/mycodo>
+	<Directory /var/www>
         Options Indexes FollowSymLinks MultiViews
         AllowOverride All
         Order allow,deny
         allow from all
     </Directory>
 ```
+
+
 
 Then restart apache with
 

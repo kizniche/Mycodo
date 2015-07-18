@@ -32,7 +32,7 @@
 ### END INIT INFO
 
 case "${1:-''}" in
-    'start')
+    'initialize')
         mkdir -p /var/log/mycodo
         mkdir -p /var/log/mycodo/images
         mkdir -p /var/www/mycodo/camera-stills
@@ -96,7 +96,9 @@ case "${1:-''}" in
         chown -R www-data.www-data /var/log/mycodo
 
         chmod -R 770 /var/log/mycodo
-        
+        ;;
+    'start')
+        $0 initialize
         python /var/www/mycodo/cgi-bin/mycodo.py 2>&1 &
         ;;
     'stop')
@@ -147,16 +149,18 @@ case "${1:-''}" in
            printf " No daemon running.\n"
         fi
         
-        if [ -e /var/lock/mycodo/daemon.lock ]; then
-            rm -f /var/lock/mycodo/daemon.lock
-        fi
-        
+        $0 unlock
         ;;
     'restart'|'reload'|'force-reload')
         $0 stop
-	    $0 start
-	    ;;
+        $0 start
+        ;;
     'status')
+        ;;
+    'unlock')
+        if [ -e /var/lock/mycodo/daemon.lock ]; then
+            rm -f /var/lock/mycodo/daemon.lock
+        fi
         ;;
     *)
         echo "Usage: $SELF start|stop"

@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.54";
+$version = "3.5.55";
 
 ######### Start Edit Configure #########
 
@@ -438,12 +438,20 @@ if ($output_error) {
                         <td>Name</td>
                         <td>Pin</td>
                         <td>Signal On</td>
+                        <td>Current State</td>
                     </tr>
                 <?php
                 $results = $db->query('SELECT Id, Name, Pin, Trigger FROM Relays');
                 for ($i = 1; $i <= $relay_num; $i++) {
+                    $read = "$gpio_path -g read $relay_pin[$i]";
                     $row = $results->fetchArray();
-                    echo '<tr><td>' . $row[0] . '</td><td>' . $row[1] . '</td><td>' . $row[2] . '</td><td>' . $row[3] . '</td></tr>';
+                    echo '<tr><td>' . $row[0] . '</td><td>' . $row[1] . '</td><td>' . $row[2] . '</td><td>' . $row[3] . '</td><td>';
+                    if ((shell_exec($read) == 1 && $relay_trigger[$i] == 0) || (shell_exec($read) == 0 && $relay_trigger[$i] == 1)) {
+                        echo '<span style="color: red;">Off</span>';
+                    } else {
+                        echo '<span style="color: green;">On</span>';
+                    }
+                    echo '</td></tr>';
                 }
                 echo '</table></div></div><div style="clear: both;"></div>';
             }
@@ -1328,13 +1336,13 @@ if ($output_error) {
                             ?>
                                 <td class="onoff">
                                     <nobr><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="Timer<?php echo $i; ?>StateChange" value="0"> | <button style="width: 3em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">ON</button></nobr>
-                                </th>
+                                </td>
                             <?php
                             } else {
                             ?>
                                 <td class="onoff">
                                     <nobr><input type="image" style="height: 0.95em;" src="/mycodo/img/on.jpg" alt="On" title="On" name="Timer<?php echo $i; ?>StateChange" value="1"> | <button style="width: 3em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="0">OFF</button></nobr>
-                                </th>
+                                </td>
                             <?php
                             }
                             ?>
@@ -1542,6 +1550,13 @@ if (isset($_COOKIE['debug'])) {
                     Cookies
                 </div>
                 <pre><?php print_r($_COOKIE); ?></pre>
+            </div>
+
+            <div style="padding-bottom: 2em;">
+                <div style="padding: 1em 0; font-weight: bold; font-size: 1.2em;">
+                    Session
+                </div>
+                <pre><?php print_r($_SESSION); ?></pre>
             </div>
 
             <div style="padding-bottom: 2em;">
