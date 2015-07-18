@@ -139,32 +139,32 @@ Change the symlink from non-SSL to SSL
 Edit /etc/apache2/sites-enabled/000-default and make sure the top looks similar to this:
 
 ```
-<IfModule mod_ssl.c>
-<VirtualHost *:80>
-        RewriteEngine on
-        RewriteCond  %{HTTPS} !=on
-        RewriteCond  %{HTTP_HOST} ^(.*)$
-        RewriteRule  ^(.*)/? https://%1$1 [L,R]
-</VirtualHost>
-        
-<VirtualHost _default_:443>
-SSLEngine On
-SSLCertificateFile /etc/ssl/localcerts/apache.pem
-SSLCertificateKeyFile /etc/ssl/localcerts/apache.key
+    <IfModule mod_ssl.c>
+    <VirtualHost *:80>
+            RewriteEngine on
+            RewriteCond  %{HTTPS} !=on
+            RewriteCond  %{HTTP_HOST} ^(.*)$
+            RewriteRule  ^(.*)/? https://%1$1 [L,R]
+    </VirtualHost>
+            
+    <VirtualHost _default_:443>
+    SSLEngine On
+    SSLCertificateFile /etc/ssl/localcerts/apache.pem
+    SSLCertificateKeyFile /etc/ssl/localcerts/apache.key
 
-ServerAdmin webmaster@localhost
+    ServerAdmin webmaster@localhost
 
-DocumentRoot /var/www/
-<Directory />
-        Options FollowSymLinks
-        AllowOverride None
-</Directory>
-<Directory /var/www/>
-        Options Indexes FollowSymLinks MultiViews
-        AllowOverride All
-        Order allow,deny
-        allow from all
-</Directory>
+    DocumentRoot /var/www/
+    <Directory />
+            Options FollowSymLinks
+            AllowOverride None
+    </Directory>
+    <Directory /var/www/>
+            Options Indexes FollowSymLinks MultiViews
+            AllowOverride All
+            Order allow,deny
+            allow from all
+    </Directory>
 ```
 
 Ensure SSL is enabled in apache2 and restart the server
