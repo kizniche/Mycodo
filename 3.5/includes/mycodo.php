@@ -1054,8 +1054,11 @@ if ($output_error) {
 
             <form action="?tab=camera" method="POST">
             <div style="float: left; padding: 0.5em;">
-                Use light during capture? <input type="checkbox" name="lighton" value="1">
+                Activate relay during capture? Relay: <?php echo $camera_relay . ' (' . $relay_name[$camera_relay] . ')'; ?> <input type="checkbox" name="lighton" title="Light relay is configurable in the Advanced tab" value="1">
             </div>
+
+            <div style="clear: both;"></div>
+
             <div style="float: left; padding: 0.5em;">
                 <button name="Capture" type="submit" value="">Capture Still</button>
             </div>
@@ -1331,7 +1334,7 @@ if ($output_error) {
                     <div>
                         Display Debugging Information
                         <input type="hidden" name="debug" value="0" />
-                        <input type="checkbox" id="debug" name="debug" value="1"<?php if (isset($_COOKIE['debug'])) if ($_COOKIE['debug'] == True) echo ' checked'; ?>/>
+                        <input type="checkbox" id="debug" name="debug" value="1"<?php if (isset($_COOKIE['debug'])) if ($_COOKIE['debug'] == True) echo ' checked'; ?> title="Display debugging information at the bottom of every page."/>
                         <input type="submit" value="Save">
                     </div>
                     </form>
@@ -1347,7 +1350,7 @@ if ($output_error) {
                                 Camera
                             </div>
                             <div class="adv">
-                                Light Relay: <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $camera_relay; ?>" maxlength=4 size=1 name="lightrelay" title=""/>
+                                Activate relay during capture: <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $camera_relay; ?>" maxlength=4 size=1 name="lightrelay" title="A relay can be set to activate duting a still image, stream, or timelapse capture. Enable/disable on the camera tab."/>
                             </div>
                             <div class="adv">
                                 Another variable
