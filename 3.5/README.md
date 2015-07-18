@@ -120,19 +120,19 @@ To allow resolving of IP addresses in the login log, edit /etc/apache2/apache2.c
 In each web directory is an.htaccess which denies access to those folders. It is strongly recommended that you ensure this works properly (or alternatively, configure your web server to accomplish the same result), to ensure no one has direct access to these directories, as log, configuration, graph images, and other potentially sensitive information is stored there. Optionally, for higher security, enable SSL/HTTPS.
 
 
-### ATTENTION
+### Security
+
+If your system is remotely accessible or publically available on the internet, it is strongly recommended to enable both SSL and .htaccess overrides. If your server is not, you can skip the next two steps.
 
 #### SSL
-
-It is recommended to enable apache's SSL and force the user to use it. If your server is not remotely accessible (cannot be seen from the internet), you can skip this step and the next that enables .htaccess overrides.
 
 `sudo apt-get install openssl`
 
 `sudo mkdir /etc/ssl/localcerts`
 
-Generate your self-signed certificate with the following command. You will be prompted for information (which can be left blank), however it is recommended that if you have a fully-qualified domain name (FQDN) to enter that when prompted, to prevent a browser warning of a FQDN that doesn't match the certificate.
+Generate your self-signed certificate with the following command. You will be prompted for information (which can be left blank), however it is recommended that if you have a fully-qualified domain name (FQDN) to enter that when prompted, to prevent a browser warning of a FQDN that doesn't match the certificate. The -days option specifies the certificate's expiration will be in 365 days.
 
-`openssl req -new -x509 -sha256 -days 365 -nodes -out /etc/ssl/localcerts/apache.pem -keyout /etc/ssl/localcerts/apache.key`
+`sudo openssl req -new -x509 -sha256 -days 365 -nodes -out /etc/ssl/localcerts/apache.pem -keyout /etc/ssl/localcerts/apache.key`
 
 `sudo chmod 600 /etc/ssl/localcerts/apache`
 
@@ -177,7 +177,7 @@ Ensure SSL is enabled in apache2 and restart the server
 
 `sudo service apache2 restart`
 
-You will need to add the self-signed certificate to your browser as trusted in order not to receive warnings. This is different for every browser, so I will not detail how to do it. In any case, you should be able to dismiss the warning and access the site, however adding your certificate to your browser is recommended to increase security.
+You will need to add the self-signed certificate that was created (/etc/ssl/localcerts/apache.pem) to your browser as trusted in order not to receive warnings. You can copy this from the /etc/ssl/localcerts/ directory or it can be obtained by visiting your server with your browser. The process for adding this file to your browser as trusted may be different for each browser, however there are many resources online that detail how to do so. Adding your certificate to your browser is highly recommended to ensure the site's certificate is what it's supposed to be, however you will still be able to access your site without adding the certificate, but you may receive a warning stating your site's security may be compromised.
 
 #### .htaccess
 
