@@ -961,7 +961,7 @@ def read_co2_sensor(sensor):
                 sensor_co2_read_co2[sensor] = co2
                 return 1
 
-    logging.warning("[Read CO2 Sensor-%s] Could not get two CO2 measurements that were consistent!", sensor)
+    logging.warning("[Read CO2 Sensor-%s] Could not get two consecutive CO2 measurements that were consistent.", sensor)
     return 0
 
 # Read K30 CO2 Sensor
@@ -1075,7 +1075,7 @@ def read_dht_sensor(sensor):
                 sensor_ht_read_temp_c[sensor] = tempc
                 return 1
 
-    logging.warning("[Read HT Sensor-%s] Could not get two Hum/Temp measurements that were consistent!", sensor)
+    logging.warning("[Read HT Sensor-%s] Could not get two consecutive Hum/Temp measurements that were consistent.", sensor)
     return 0
 
 # Obtain reading form DHT sensor
@@ -2222,9 +2222,10 @@ def timestamp():
 #################################################
 def main():
     if not os.geteuid() == 0:
-        print "Script must be run as root"
+        print "\nScript must be executed as root\n"
+        logging.warning("Must be executed as root.")
         usage()
-        sys.exit(0)
+        sys.exit("Must be executed as root")
 
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
@@ -2235,8 +2236,10 @@ def main():
         try:
             runlock.acquire(timeout=1)
         except:
-            print "Error: Lock file present: %s" % runlock.path
-            sys.exit(0)
+            logging.warning("Lock file present: %s. Delete it or run 'sudo service mycodo restart'", runlock.path)
+            error = "Error: Lock file present: %s" % runlock.path
+            print error
+            sys.exit(error)
 
     read_sql()
     initialize_all_gpio()

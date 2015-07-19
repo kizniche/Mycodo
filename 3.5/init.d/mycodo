@@ -99,7 +99,7 @@ case "${1:-''}" in
         ;;
     'start')
         $0 initialize
-        python /var/www/mycodo/cgi-bin/mycodo.py 2>&1 &
+        python /var/www/mycodo/cgi-bin/mycodo.py 2>/dev/null &
         ;;
     'stop')
         /var/www/mycodo/cgi-bin/mycodo-client.py -t
