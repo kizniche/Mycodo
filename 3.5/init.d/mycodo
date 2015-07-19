@@ -144,7 +144,11 @@ case "${1:-''}" in
                     break
                 fi
             done
-            printf "mycodo.py (pid $PID) has been killed after $count seconds.\n"    
+            printf "mycodo.py (pid $PID) has been killed after $count seconds.\n"
+
+            printf "Because daemon had to be killed, turning off all GPIOs\n"
+            /var/www/mycodo/cgi-bin/GPIO-initialize.py
+
         else
            printf " No daemon running.\n"
         fi
