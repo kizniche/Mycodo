@@ -100,7 +100,9 @@ while ($row = $results->fetchArray()) {
     $smtp_email_from = $row[6];
 }
 
-$results = $db->query('SELECT Camera_Relay FROM Misc');
+$results = $db->query('SELECT Camera_Relay, Display_Last, Display_Timestamp FROM Misc');
 while ($row = $results->fetchArray()) {
     $camera_relay = $row[0];
+    $display_last = $row[1];
+    $display_timestamp = $row[2];
 }

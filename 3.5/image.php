@@ -49,6 +49,7 @@ if ($_COOKIE['login_hash'] == $user_hash) {
             case 'cam-still':
                 $files = scandir($still_dir, SCANDIR_SORT_DESCENDING);
                 $newest_file = $files[0];
+                error_log($still_dir . $newest_file);
                 readfile($still_dir . $newest_file);
                 break;
             case 'cam-hdr':

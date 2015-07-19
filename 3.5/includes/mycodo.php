@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.55";
+$version = "3.5.56";
 
 ######### Start Edit Configure #########
 
@@ -1027,7 +1027,7 @@ if ($output_error) {
             <div style="clear: both;"></div>
 
             <div style="float: left; padding: 0.5em;">
-                <button name="Capture" type="submit" value="">Capture Still</button>
+                <button name="CaptureStill" type="submit" value="">Capture Still</button>
             </div>
 
             <div style="clear: both;"></div>
@@ -1055,7 +1055,7 @@ if ($output_error) {
                     Duration: <input style="width: 4em;" type="number" value="60" max="99999" min="1" name="timelapse_duration"> min
                 </div>
                 <div style="float: left; padding: 0.5em;">
-                   Run time: <input style="width: 4em;" type="number" value="600" max="99999" min="1" name="timelapse_runtime"> min (<-- Currently not working)
+                   Run time: <input style="width: 4em;" type="number" value="600" max="99999" min="1" name="timelapse_runtime"> min (Time-lapse currently not working)
                 </div>
             </div>
 
@@ -1089,13 +1089,28 @@ if ($output_error) {
             <center>
             <?php
                 if (file_exists($lock_mjpg_streamer)) {
-                    echo '<img src="stream.php">';
+                    echo '
+                    <div style="padding-bottom: 0.5em;">
+                        Video Stream
+                    </div>
+                    <div style="padding-bottom: 2em;">
+                        <img src="stream.php">
+                    </div>
+                    ';
                 }
-                if (isset($_POST['Capture']) && $_SESSION['user_name'] != 'guest') {
-                    if ($capture_output != 0) {
-                        echo 'Abnormal output (possibly error): ' , $capture_output , '<br>';
-                    } else {
-                        echo '<p><img src=image.php?span=cam-still></p>';
+
+                if ($_SESSION['user_name'] != 'guest') {
+                    $cam_stills_path = $install_path . '/camera-stills';
+                    $cam_stills_dir = (count(glob("$cam_stills_path/*")) === 0) ? 'Empty' : 'Not empty';
+                    if ($cam_stills_dir == 'Not empty' && (isset($_POST['CaptureStill']) || $display_last)) {
+                        echo '
+                        <div style="padding-bottom: 0.5em;">
+                            Last Image Captured
+                        </div>
+                        <div style="padding-bottom: 2em;">
+                            <img src=image.php?span=cam-still>
+                        </div>
+                        ';
                     }
                 }
             ?>
@@ -1391,7 +1406,13 @@ if ($output_error) {
                     Camera
                 </div>
                 <div class="adv">
-                    Relay to activate during capture: <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $camera_relay; ?>" maxlength=4 size=1 name="lightrelay" title="A relay can be set to activate duting a still image, stream, or timelapse capture. Enable/disable on the camera tab."/>
+                    Capture relay <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $camera_relay; ?>" maxlength=4 size=1 name="camRelay" title="A relay can be set to activate duting a still image, stream, or timelapse capture. Enable/disable on the camera tab."/>
+                </div>
+                <div class="adv">
+                    Add timestamp to image <input type="hidden" name="camDisplayTimestamp" value="0" /><input type="checkbox" id="camDisplayTimestamp" name="camDisplayTimestamp" value="1"<?php if ($display_timestamp) echo ' checked'; ?> title="Add a timestamp to the captured image."/>
+                </div>
+                <div class="adv">
+                    Always display last still image <input type="hidden" name="camDisplayLast" value="0" /><input type="checkbox" id="camDisplayLast" name="camDisplayLast" value="1"<?php if ($display_last) echo ' checked'; ?> title="Always display the last image acquired or only after clicking 'Capture Still'."/>
                 </div>
                 <div class="adv">
                     Extra parameters for camera (raspistill) <input style="width: 22em;" type="text" value="" maxlength=200 name="" title=""/>

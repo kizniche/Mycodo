@@ -248,8 +248,10 @@ if (isset($_POST['ChangeNoTimers'])) {
 
 // Change light relay
 if (isset($_POST['ChangeCamera'])) {
-    $stmt = $db->prepare("UPDATE Misc SET Camera_Relay=:lightrelay");
-    $stmt->bindValue(':lightrelay', (int)$_POST['lightrelay'], SQLITE3_INTEGER);
+    $stmt = $db->prepare("UPDATE Misc SET Camera_Relay=:camrelay, Display_Last=:displaylast, Display_Timestamp=:displayts");
+    $stmt->bindValue(':camrelay', (int)$_POST['camRelay'], SQLITE3_INTEGER);
+    $stmt->bindValue(':displaylast', (int)$_POST['camDisplayLast'], SQLITE3_INTEGER);
+    $stmt->bindValue(':displayts', (int)$_POST['camDisplayTimestamp'], SQLITE3_INTEGER);
     $stmt->execute();
     shell_exec($mycodo_client . ' --sqlreload 0');
 }
@@ -310,7 +312,7 @@ for ($p = 1; $p <= 8; $p++) {
 }
 
 // Camera error check
-if (isset($_POST['Capture']) || isset($_POST['start-stream']) || isset($_POST['start-timelapse'])) {
+if (isset($_POST['CaptureStill']) || isset($_POST['start-stream']) || isset($_POST['start-timelapse'])) {
     if (file_exists($lock_raspistill)) {
         $camera_error = 'Error: Still image lock file present. This shouldn\'t happem. Remove lock file.';
     } else if (file_exists($lock_mjpg_streamer)) {
@@ -321,13 +323,24 @@ if (isset($_POST['Capture']) || isset($_POST['start-stream']) || isset($_POST['s
 }
 
 // Capture still image from camera (with or without light activation)
-if (isset($_POST['Capture']) && !file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer) && !file_exists($lock_time_lapse)) {
+if (isset($_POST['CaptureStill']) && !file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer) && !file_exists($lock_time_lapse)) {
     shell_exec("touch " . $lock_raspistill);
     if (isset($_POST['lighton'])) {
         if ($relay_trigger[$camera_relay] == 1) $trigger = 1;
         else $trigger = 0;
-        $capture_output = shell_exec("$still_exec " . $relay_pin[$camera_relay] . " " . $trigger . " 2>&1; echo $?");
-    } else $capture_output = shell_exec("$still_exec 2>&1; echo $?");
+        if ($display_timestamp) {
+            $cmd = "$still_exec " . $relay_pin[$camera_relay] . " " . $trigger . " 1 2>&1; echo $?";
+        } else {
+            $cmd = "$still_exec " . $relay_pin[$camera_relay] . " " . $trigger . " 0 2>&1; echo $?";
+        }
+    } else {
+        if ($display_timestamp) {
+            $cmd = "$still_exec 0 0 1 2>&1; echo $?";
+        } else {
+            $cmd = "$still_exec 0 0 0 2>&1; echo $?";
+        }
+    }
+    shell_exec($cmd);
     shell_exec("rm -f " . $lock_raspistill);
 }
 

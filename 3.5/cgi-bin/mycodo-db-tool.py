@@ -174,12 +174,12 @@ def delete_all_tables():
     print "Delete Tables"
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
-    # cur.execute('DROP TABLE IF EXISTS Relays ')
-    # cur.execute('DROP TABLE IF EXISTS HTSensor ')
-    # cur.execute('DROP TABLE IF EXISTS CO2Sensor ')
-    # cur.execute('DROP TABLE IF EXISTS Timers ')
-    # cur.execute('DROP TABLE IF EXISTS Numbers ')
-    # cur.execute('DROP TABLE IF EXISTS SMTP ')
+    cur.execute('DROP TABLE IF EXISTS Relays ')
+    cur.execute('DROP TABLE IF EXISTS HTSensor ')
+    cur.execute('DROP TABLE IF EXISTS CO2Sensor ')
+    cur.execute('DROP TABLE IF EXISTS Timers ')
+    cur.execute('DROP TABLE IF EXISTS Numbers ')
+    cur.execute('DROP TABLE IF EXISTS SMTP ')
     cur.execute('DROP TABLE IF EXISTS Misc ')
     conn.close()
 
@@ -187,30 +187,30 @@ def create_all_tables():
     print "Create Tables"
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
-    # cur.execute("CREATE TABLE Relays (Id INT, Name TEXT, Pin INT, Trigger INT)")
-    # cur.execute("CREATE TABLE HTSensor (Id INT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay INT, Temp_OR INT, Temp_Set REAL, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D, Hum_Relay INT, Hum_OR INT, Hum_Set REAL, Hum_Period INT, Hum_P REAL, Hum_I REAL, Hum_D REAL)")
-    # cur.execute("CREATE TABLE CO2Sensor (Id INT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, CO2_Relay INT, CO2_OR INT, CO2_Set INT, CO2_Period INT, CO2_P REAL, CO2_I REAL, CO2_D REAL)")
-    # cur.execute("CREATE TABLE Timers (Id INT, Name TEXT, Relay INT, State INT, DurationOn INT, DurationOff INT)")
-    # cur.execute("CREATE TABLE Numbers (Relays INT, HTSensors INT, CO2Sensors INT, Timers INT)")
-    # cur.execute("CREATE TABLE SMTP (Host TEXT, SSL INT, Port INT, User TEXT, Pass TEXT, Email_From TEXT, Email_To TEXT)")
-    cur.execute("CREATE TABLE Misc (Camera_Relay INT, Dismiss_Notification INT)")
+    cur.execute("CREATE TABLE Relays (Id INT, Name TEXT, Pin INT, Trigger INT)")
+    cur.execute("CREATE TABLE HTSensor (Id INT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay INT, Temp_OR INT, Temp_Set REAL, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D, Hum_Relay INT, Hum_OR INT, Hum_Set REAL, Hum_Period INT, Hum_P REAL, Hum_I REAL, Hum_D REAL)")
+    cur.execute("CREATE TABLE CO2Sensor (Id INT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, CO2_Relay INT, CO2_OR INT, CO2_Set INT, CO2_Period INT, CO2_P REAL, CO2_I REAL, CO2_D REAL)")
+    cur.execute("CREATE TABLE Timers (Id INT, Name TEXT, Relay INT, State INT, DurationOn INT, DurationOff INT)")
+    cur.execute("CREATE TABLE Numbers (Relays INT, HTSensors INT, CO2Sensors INT, Timers INT)")
+    cur.execute("CREATE TABLE SMTP (Host TEXT, SSL INT, Port INT, User TEXT, Pass TEXT, Email_From TEXT, Email_To TEXT)")
+    cur.execute("CREATE TABLE Misc (Camera_Relay INT, Display_Last INT, Display_Timestamp INT)")
     conn.close()
 
 def create_rows_columns():
     print "Create Rows and Columns"
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
-    # for i in range(1, 9):
-    #     cur.execute("INSERT INTO Relays VALUES(%d, 'Relay%d', 0, 0)" % (i, i))
-    # for i in range(1, 5):
-    #     cur.execute("INSERT INTO HTSensor VALUES(%d, 'HTSensor%d', 0, 'DHT22', 10, 0, 0, 0, 1, 25.0, 90, 0, 0, 0, 0, 1, 50.0, 90, 0, 0, 0)" % (i, i))
-    # for i in range(1, 5):
-    #     cur.execute("INSERT INTO CO2Sensor VALUES(%d, 'CO2Sensor%d', 0, 'K30', 10, 0, 0, 0, 1, 1000, 90, 0, 0, 0)" % (i, i))
-    # for i in range(1, 9):
-    #     cur.execute("INSERT INTO Timers VALUES(%d, 'Timer%d', 0, 0, 60, 360)" % (i, i))
-    # cur.execute("INSERT INTO Numbers VALUES(0, 0, 0, 4)")
-    # cur.execute("INSERT INTO SMTP VALUES('smtp.gmail.com', 1, 587, 'email@gmail.com', 'password', 'me@gmail.com', 'you@gmail.com')")
-    cur.execute("INSERT INTO Misc VALUES(0, 0)")
+    for i in range(1, 9):
+        cur.execute("INSERT INTO Relays VALUES(%d, 'Relay%d', 0, 0)" % (i, i))
+    for i in range(1, 5):
+        cur.execute("INSERT INTO HTSensor VALUES(%d, 'HTSensor%d', 0, 'DHT22', 120, 0, 0, 0, 1, 25.0, 90, 0, 0, 0, 0, 1, 50.0, 90, 0, 0, 0)" % (i, i))
+    for i in range(1, 5):
+        cur.execute("INSERT INTO CO2Sensor VALUES(%d, 'CO2Sensor%d', 0, 'K30', 120, 0, 0, 0, 1, 1000, 90, 0, 0, 0)" % (i, i))
+    for i in range(1, 9):
+        cur.execute("INSERT INTO Timers VALUES(%d, 'Timer%d', 0, 0, 60, 360)" % (i, i))
+    cur.execute("INSERT INTO Numbers VALUES(0, 0, 0, 0)")
+    cur.execute("INSERT INTO SMTP VALUES('smtp.gmail.com', 1, 587, 'email@gmail.com', 'password', 'me@gmail.com', 'you@gmail.com')")
+    cur.execute("INSERT INTO Misc VALUES(0, 1, 1)")
     conn.commit()
     cur.close()
 

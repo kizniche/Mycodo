@@ -171,6 +171,8 @@ Edit /etc/apache2/sites-enabled/000-default and make sure the top looks similar 
     </Directory>
 ```
 
+Add `ServerName your.domain.com` to /etc/apache2/apache2.conf
+
 Ensure SSL is enabled in apache2 and restart the server
 
 `sudo a2enmod ssl`
