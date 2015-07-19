@@ -132,7 +132,7 @@ If your system is remotely accessible or publically available on the internet, i
 
 Generate your self-signed certificate with the following command. You will be prompted for information (which can be left blank), however it is recommended that if you have a fully-qualified domain name (FQDN) to enter that when prompted, to prevent a browser warning of a FQDN that doesn't match the certificate. The -days option specifies the certificate's expiration will be in 365 days.
 
-`sudo openssl req -new -x509 -sha256 -days 365 -nodes -out /etc/ssl/localcerts/apache.pem -keyout /etc/ssl/localcerts/apache.key`
+`sudo openssl req -new -x509 -sha256 -days 365 -nodes -out /etc/ssl/localcerts/apache.crt -keyout /etc/ssl/localcerts/apache.key`
 
 `sudo chmod 600 /etc/ssl/localcerts/apache`
 
@@ -153,7 +153,7 @@ Edit /etc/apache2/sites-enabled/000-default and make sure the top looks similar 
             
     <VirtualHost _default_:443>
     SSLEngine On
-    SSLCertificateFile /etc/ssl/localcerts/apache.pem
+    SSLCertificateFile /etc/ssl/localcerts/apache.crt
     SSLCertificateKeyFile /etc/ssl/localcerts/apache.key
 
     ServerAdmin webmaster@localhost

@@ -54,8 +54,8 @@ $lock_time_lapse_light = $lock_path . "/mycodo-timelapse-light";
 
 $camera_error = NULL;
 
-require_once("includes/functions.php"); // Mycodo functions
-require("includes/database.php"); // Initial SQL database load to variables
+require($install_path . "/includes/functions.php"); // Mycodo functions
+require($install_path . "/includes/database.php"); // Initial SQL database load to variables
 
 // Output an error if the user guest attempts to submit certain forms
 $output_error = NULL;
@@ -64,10 +64,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_name'] == 'guest' &&
     $output_error = 'guest';
 } else if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_name'] != 'guest') {
     // Only non-guest users may perform these actions
-    require_once("includes/restricted.php"); // Configuration changes
-    require("includes/database.php"); // Reload SQLite database
+    require($install_path . "/includes/restricted.php"); // Configuration changes
+    require($install_path . "/includes/database.php"); // Reload SQLite database
 }
-require_once("includes/public.php"); // Handle remaining forms
+require($install_path . "/includes/public.php"); // Handle remaining forms
 // Retrieve graph-generation variables (must come after running public.php)
 $graph_id = get_graph_cookie('id');
 $graph_type = get_graph_cookie('type');
@@ -1542,7 +1542,7 @@ if (isset($_COOKIE['debug'])) {
                 <?php 
                     SimpleProfiler::stop_profile();
                     $profile = SimpleProfiler::get_profile();
-
+                    $total = 0.0;
                     echo '
                     <table class="debug-profiler">
                     <tr>

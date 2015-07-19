@@ -107,7 +107,7 @@ class SimpleProfiler {
      * @return void
      */
     public static function do_profile() {
-
+        $frame = NULL;
         // Get the backtrace, keep the object in case we need to reflect
         // upon it to find the original source file
         if ( version_compare( PHP_VERSION, '5.3.6' ) < 0 ) {
