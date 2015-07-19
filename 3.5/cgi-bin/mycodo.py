@@ -25,6 +25,10 @@
 #### Install Directory ####
 install_directory = "/var/www/mycodo"
 
+# Mycodo modules
+import mycodoGraph
+
+# Other modules
 import Adafruit_DHT
 import datetime
 import fcntl
@@ -196,7 +200,7 @@ class ComServer(rpyc.Service):
             logging.info("[Client command] Generate Graph: %s %s %s %s", sensor_type, graph_span, graph_id, sensor_number)
         else:
             logging.info("[Client command] Generate Graph: %s %s %s %s %s", sensor_type, graph_type, graph_span, graph_id, sensor_number)
-        generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number)
+        mycodoGraph.generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number, sensor_ht_name, sensor_ht_graph, sensor_ht_period, sensor_co2_name, sensor_co2_graph, sensor_co2_period, relay_name)
         return 1
     def exposed_PID_start(self, pidtype, number):
         PID_start(pidtype, number)
@@ -1329,506 +1333,6 @@ def Concatenate_Logs():
 
 
 #################################################
-#                Graph Generation               #
-#################################################
-
-# Generate gnuplot graph
-def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number):
-    logging.debug("[Generate Graph] Parsing logs...")
-    sensor_ht_log_final = [0] * 5
-    sensor_co2_log_final = [0] * 5
-    tmp_path = "/var/tmp"
-    h = 0
-    d = 0
-    seconds = None
-    cmd = None
-
-    # Calculate a past date from a number of hours or days ago
-    if graph_span == "1h":
-        h = 1
-        seconds = 3600
-        time_ago = '1 Hour'
-    elif graph_span == "6h":
-        h = 6
-        seconds = 21600
-        time_ago = '6 Hours'
-    elif graph_span == "1d" or graph_span == "default":
-        d = 1
-        seconds = 86400
-        time_ago = '1 Day'
-    elif graph_span == "3d":
-        d = 3
-        seconds = 259200
-        time_ago = '3 Days'
-    elif graph_span == "1w":
-        d = 7
-        seconds = 604800
-        time_ago = '1 Week'
-    elif graph_span == "1m":
-        d = 30
-        seconds = 2592000
-        time_ago = '1 Month'
-    elif graph_span == "3m":
-        d = 90
-        seconds = 7776000
-        time_ago = '3 Months'
-    elif graph_span == "legend-full":
-        h = 6
-        seconds = 21600
-        time_ago = '6 Hours'
-    date_now = datetime.datetime.now().strftime("%Y %m %d %H %M %S")
-    date_now_disp = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
-    date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%d/%m/%Y %H:%M:%S")
-
-    relay_log_files_combine = [relay_log_file, relay_log_file_tmp]
-    relay_log_generate = "%s/relay-logs-combined.log" % tmp_path
-    with open(relay_log_generate, 'w') as fout:
-        for line in fileinput.input(relay_log_files_combine):
-            fout.write(line)
-
-    # only combined graphs get logs concatentated here. Separate graph logs are 
-    # concatenated by the php code (to prevent redundant combining of log data)
-    if graph_span == "default":
-        if sensor_type == "ht":
-            sensor_ht_log_generate = "%s/sensor-%s-logs-%s.log" % (
-                tmp_path, sensor_type, graph_span)
-            lines = 86400
-            sensor_ht_log_final[1] = "%s/sensor-%s-logs-%s-%s-%s-day.log" %  (
-                tmp_path, sensor_type, graph_span, graph_id, sensor_number)
-            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                sensor_number, sensor_type, lines, sensor_ht_log_generate, sensor_ht_log_final[1])
-            logging.debug("[Generate Graph] cmd: %s", cmd)
-            os.system(cmd)
-
-            lines = 604800
-            sensor_ht_log_final[2] = "%s/sensor-%s-logs-%s-%s-%s-week.log" %  (
-                tmp_path, sensor_type, graph_span, graph_id, sensor_number)
-            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                sensor_number, sensor_type, lines, sensor_ht_log_generate, sensor_ht_log_final[2])
-            logging.debug("[Generate Graph] cmd: %s", cmd)
-            os.system(cmd)
-
-        if sensor_type == "co2":
-            sensor_co2_log_generate = "%s/sensor-%s-logs-%s.log" % (
-                tmp_path, sensor_type, graph_span)
-            lines = 86400
-            sensor_co2_log_final[1] = "%s/sensor-%s-logs-%s-%s-%s-day.log" %  (
-                tmp_path, sensor_type, graph_span, graph_id, sensor_number)
-            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                sensor_number, sensor_type, lines, sensor_co2_log_generate, sensor_co2_log_final[1])
-            logging.debug("[Generate Graph] cmd: %s", cmd)
-            os.system(cmd)
-
-            lines = 604800
-            sensor_co2_log_final[2] = "%s/sensor-%s-logs-%s-%s-%s-week.log" %  (
-                tmp_path, sensor_type, graph_span, graph_id, sensor_number)
-            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                sensor_number, sensor_type, lines, sensor_co2_log_generate, sensor_co2_log_final[2])
-            logging.debug("[Generate Graph] cmd: %s", cmd)
-            os.system(cmd)
-
-    elif graph_type == "combined":
-        # Combine sensor and relay logs on SD card with sensor and relay logs in /tmp
-        if sensor_ht_graph[1] or sensor_ht_graph[2] or sensor_ht_graph[3] or sensor_ht_graph[4]:
-            sensor_ht_log_files_combine = [sensor_ht_log_file, sensor_ht_log_file_tmp]
-            sensor_ht_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, 'ht', graph_type)
-            with open(sensor_ht_log_generate, 'w') as fout:
-                for line in fileinput.input(sensor_ht_log_files_combine):
-                    fout.write(line)
-        else:
-            sensor_ht_log_generate = None
-
-        if sensor_co2_graph[1] or sensor_co2_graph[2] or sensor_co2_graph[3] or sensor_co2_graph[4]:
-            sensor_co2_log_files_combine = [sensor_co2_log_file, sensor_co2_log_file_tmp]
-            sensor_co2_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, 'co2', graph_type)
-            with open(sensor_co2_log_generate, 'w') as fout:
-                for line in fileinput.input(sensor_co2_log_files_combine):
-                    fout.write(line)
-        else:
-            sensor_co2_log_generate = None
-
-        for i in range(1, 5):
-            lines = seconds/sensor_ht_period[i]
-            if sensor_ht_graph[i]:
-                sensor_ht_log_final[i] = "%s/sensor-%s-logs-%s-%s-%s.log" %  (
-                    tmp_path, 'ht', graph_type, graph_id, i)
-                cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                    i, 'ht', lines, sensor_ht_log_generate, sensor_ht_log_final[i])
-                logging.debug("[Generate Graph] cmd: %s", cmd)
-                os.system(cmd)
-
-        for i in range(1, 5):
-            lines = seconds/sensor_co2_period[i]
-            if sensor_co2_graph[i]:
-                sensor_co2_log_final[i] = "%s/sensor-%s-logs-%s-%s-%s.log" %  (
-                    tmp_path, 'co2', graph_type, graph_id, i)
-                cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                    i, 'co2', lines, sensor_co2_log_generate, sensor_co2_log_final[i])
-                logging.debug("[Generate Graph] cmd: %s", cmd)
-                os.system(cmd)
-
-    elif graph_type == "separate":
-        sensor_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, sensor_type, graph_type)
-        if sensor_type == "ht":
-            lines = seconds/sensor_ht_period[int(sensor_number)]
-            sensor_ht_log_final[1] = "%s/sensor-%s-logs-%s-%s-%s.log" % (
-                tmp_path, sensor_type, graph_type, graph_id, sensor_number)
-            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                sensor_number, sensor_type, lines, sensor_log_generate, sensor_ht_log_final[1])
-        if sensor_type == "co2":
-            lines = seconds/sensor_co2_period[int(sensor_number)]
-            sensor_co2_log_final[1] = "%s/sensor-%s-logs-%s-%s-%s.log" % (
-                tmp_path, sensor_type, graph_type, graph_id, sensor_number)
-            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                sensor_number, sensor_type, lines, sensor_log_generate, sensor_co2_log_final[1])
-        logging.debug("[Generate Graph] cmd: %s", cmd)
-        os.system(cmd)
-
-    logging.debug("[Generate Graph] Generating Graph...")
-
-    # Define how many lines to read in file (speeds processing large logs)
-    sensor_head = ''
-    #sensor_head = ' | head -n 180'
-    relay_head = ''
-    #relay_head = ' | head -n 180'
-
-    # Axes size constraints
-    y1_min = '0'
-    y1_max = '100'
-
-    if sensor_type == "co2":
-        y2_min = '0'
-        y2_max = '5000'
-    else:
-        y2_min = '0'
-        y2_max = '35'
-
-    # Line colors (see comments further down with their use)
-    graph_colors = ['#FF3100', '#0772A1', '#00B74A', '#91180B',
-                    '#582557', '#04834C', '#DC32E6', '#957EF9',
-                    '#CC8D9C', '#717412', '#0B479B',
-                    '#7164a3', '#599e86', '#c3ae4f', '#c3744f',
-                    ]
-
-    # Write the following output to a file that will be executed with gnuplot
-    gnuplot_graph = "%s/plot-%s-%s-%s-%s-%s.gnuplot" % (
-        tmp_path, sensor_type, graph_type, graph_span, graph_id, sensor_number)
-    plot = open(gnuplot_graph, 'w')
-
-    plot.write('reset\n')
-    plot.write('set xdata time\n')
-    plot.write('set timefmt \"%Y %m %d %H %M %S\"\n')
-
-    if graph_span == "default":
-        plot.write('set terminal png size 1000,1000\n')
-    elif graph_type == "combined":
-        if sensor_co2_graph[1] or sensor_co2_graph[2] or sensor_co2_graph[3] or sensor_co2_graph[4]:
-            plot.write('set terminal png size 1000,1500\n')
-        else:
-            plot.write('set terminal png size 1000,1000\n')
-    elif graph_type == "separate":
-        plot.write('set terminal png size 1000,600\n')
-    elif graph_type == "legend-small":
-        plot.write('set terminal png size 250,300\n')
-    elif graph_type == "legend-full":
-        plot.write('set terminal png size 800,500\n')
-
-    if graph_span == "default":
-        plot.write('set output \"' + image_path + '/graph-' + sensor_type + 'default' + graph_span + '-' + graph_id + '-' + sensor_number + '.png\"\n')
-    else:
-        plot.write('set output \"' + image_path + '/graph-' + sensor_type + graph_type + graph_span + '-' + graph_id + '-' + sensor_number + '.png\"\n')
-
-    if graph_type != "legend-small":
-        plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
-        plot.write('set format x \"%H:%M\\n%m/%d\"\n')
-        plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-        plot.write('set y2range [' + y2_min + ':' + y2_max + ']\n')
-        plot.write('set style line 11 lc rgb \'#808080\' lt 1\n')
-        plot.write('set border 3 back ls 11\n')
-        plot.write('set tics nomirror\n')
-        plot.write('set style line 12 lc rgb \'#808080\' lt 0 lw 1\n')
-        plot.write('set grid xtics ytics back ls 12\n')
-
-    if graph_span == "default":
-        plot.write('set mytics 10\n')
-        plot.write('set my2tics 5\n')
-        plot.write('set ytics 0,20\n')
-        if sensor_type == "co2":
-            plot.write('set y2tics 500\n')
-        else:
-            plot.write('set y2tics 5\n')
-    else:
-        plot.write('set my2tics 10\n')
-        plot.write('set ytics 10\n')
-        if sensor_type == "co2":
-            plot.write('set y2tics 500\n')
-        else:
-            plot.write('set y2tics 5\n')
-
-
-    plot.write('set style line 11 lc rgb \'#808080\' lt 1\n')
-    plot.write('set border 3 back ls 11\n')
-    plot.write('set tics nomirror\n')
-    plot.write('set style line 12 lc rgb \'#808080\' lt 0 lw 1\n')
-    plot.write('set grid xtics ytics back ls 12\n')
-
-    # Horizontal lines: separate temperature, humidity, and dewpoint
-    plot.write('set style line 1 lc rgb \'' + graph_colors[0] + '\' pt 0 ps 1 lt 1 lw 2\n')
-    plot.write('set style line 2 lc rgb \'' + graph_colors[1] + '\' pt 0 ps 1 lt 1 lw 2\n')
-    plot.write('set style line 3 lc rgb \'' + graph_colors[2] + '\' pt 0 ps 1 lt 1 lw 2\n')
-
-    # Vertical lines: relays 1 - 8
-    plot.write('set style line 4 lc rgb \'' + graph_colors[3] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    plot.write('set style line 5 lc rgb \'' + graph_colors[4] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    plot.write('set style line 6 lc rgb \'' + graph_colors[5] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    plot.write('set style line 7 lc rgb \'' + graph_colors[6] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    plot.write('set style line 8 lc rgb \'' + graph_colors[7] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    plot.write('set style line 9 lc rgb \'' + graph_colors[8] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    plot.write('set style line 10 lc rgb \'' + graph_colors[9] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    plot.write('set style line 11 lc rgb \'' + graph_colors[10] + '\' pt 0 ps 1 lt 1 lw 1\n')
-
-    # Horizontal lines: combined temperatures and humidities
-    plot.write('set style line 12 lc rgb \'' + graph_colors[11] + '\' pt 0 ps 1 lt 1 lw 2\n')
-    plot.write('set style line 13 lc rgb \'' + graph_colors[12] + '\' pt 0 ps 1 lt 1 lw 2\n')
-    plot.write('set style line 14 lc rgb \'' + graph_colors[13] + '\' pt 0 ps 1 lt 1 lw 2\n')
-    plot.write('set style line 15 lc rgb \'' + graph_colors[14] + '\' pt 0 ps 1 lt 1 lw 2\n')
-    plot.write('unset key\n')
-
-    # Generate a graph with all temperatures and one graph with all humidities
-    if graph_type == "combined" and  graph_span != "default":
-        if sensor_co2_graph[1] or sensor_co2_graph[2] or sensor_co2_graph[3] or sensor_co2_graph[4]:
-            plot.write('set multiplot layout 3,1\n')
-            plot.write('set origin 0.0,0.66\n')
-        else:
-            plot.write('set multiplot layout 2,1\n')
-            plot.write('set origin 0.0,0.5\n')
-
-        plot.write('set title \"Combined Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-        plot.write('plot ')
-        if sensor_ht_graph[1]:
-            plot.write('\"' + sensor_ht_log_final[1] + sensor_head + '" using 1:7 index 0 title \"T1\" w lp ls 12 axes x1y2')
-            if sensor_ht_graph[2] or sensor_ht_graph[3] or sensor_ht_graph[4]: plot.write(', ')
-            else: plot.write('\n')
-        if sensor_ht_graph[2]:
-            plot.write('\"' + sensor_ht_log_final[2] + sensor_head + '" u 1:7 index 0 title \"T2\" w lp ls 13 axes x1y2')
-            if sensor_ht_graph[3] or sensor_ht_graph[4]: plot.write(', ')
-            else: plot.write('\n')
-        if sensor_ht_graph[3]:
-            plot.write('\"' + sensor_ht_log_final[3] + sensor_head + '" u 1:7 index 0 title \"T3\" w lp ls 14 axes x1y2')
-            if sensor_ht_graph[4]: plot.write(', ')
-            else: plot.write('\n')
-        if sensor_ht_graph[4]:
-            plot.write('\"' + sensor_ht_log_final[4] + sensor_head + '" u 1:7 index 0 title \"T4\" w lp ls 15 axes x1y2\n')
-
-        if sensor_co2_graph[1] or sensor_co2_graph[2] or sensor_co2_graph[3] or sensor_co2_graph[4]:
-            plot.write('set origin 0.0,0.33\n')
-        else:
-            plot.write('set origin 0.0,0.0\n')
-
-        plot.write('set title \"Combined Humidities: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-        plot.write('plot ')
-        if sensor_ht_graph[1]:
-            plot.write('\"' + sensor_ht_log_final[1] + sensor_head + '" using 1:8 index 0 title \"H1\" w lp ls 12 axes x1y1')
-            if sensor_ht_graph[2] or sensor_ht_graph[3] or sensor_ht_graph[4]: plot.write(', ')
-            else: plot.write('\n')
-        if sensor_ht_graph[2]:
-            plot.write('\"' + sensor_ht_log_final[2] + sensor_head + '" u 1:8 index 0 title \"H2\" w lp ls 13 axes x1y1')
-            if sensor_ht_graph[3] or sensor_ht_graph[4]: plot.write(', ')
-            else: plot.write('\n')
-        if sensor_ht_graph[3]:
-            plot.write('\"' + sensor_ht_log_final[3] + sensor_head + '" u 1:8 index 0 title \"H3\" w lp ls 14 axes x1y1')
-            if sensor_ht_graph[4]: plot.write(', ')
-            else: plot.write('\n')
-        if sensor_ht_graph[4]:
-            plot.write('\"' + sensor_ht_log_final[4] + sensor_head + '" u 1:8 index 0 title \"H4\" w lp ls 15 axes x1y1\n')
-
-        if sensor_co2_graph[1] or sensor_co2_graph[2] or sensor_co2_graph[3] or sensor_co2_graph[4]:
-            plot.write('set origin 0.0,0.0\n')
-            plot.write('set title \"Combined CO2s: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-            y2_min = '0'
-            y2_max = '5000'
-            plot.write('set y2range [' + y2_min + ':' + y2_max + ']\n')
-            plot.write('set y2tics 500\n')
-            plot.write('plot ')
-        if sensor_co2_graph[1]:
-            plot.write('\"' + sensor_co2_log_final[1] + sensor_head + '" using 1:7 index 0 title \"CO2-1\" w lp ls 12 axes x1y2')
-            if sensor_co2_graph[2] or sensor_co2_graph[3] or sensor_co2_graph[4]: plot.write(', ')
-            else: plot.write('\n')
-        if sensor_co2_graph[2]:
-            plot.write('\"' + sensor_co2_log_final[2] + sensor_head + '" u 1:7 index 0 title \"CO2-2\" w lp ls 13 axes x1y2')
-            if sensor_co2_graph[3] or sensor_co2_graph[4]: plot.write(', ')
-            else: plot.write('\n')
-        if sensor_co2_graph[3]:
-            plot.write('\"' + sensor_co2_log_final[3] + sensor_head + '" u 1:7 index 0 title \"CO2-3\" w lp ls 14 axes x1y2')
-            if sensor_co2_graph[4]: plot.write(', ')
-            else: plot.write('\n')
-        if sensor_co2_graph[4]:
-            plot.write('\"' + sensor_co2_log_final[4] + sensor_head + '" u 1:7 index 0 title \"CO2-4\" w lp ls 15 axes x1y2\n')
-        plot.write('unset multiplot\n')
-
-    # Generate a graph with temp, hum, and dew point for a specific sensor
-    if sensor_type == "ht" and graph_type == "separate" and  graph_span != "default":
-        plot.write('set title \"Hum/Temp Sensor ' + sensor_number + ': ' + sensor_ht_name[int(float(sensor_number))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-        plot.write('plot \"' + sensor_ht_log_final[1] + sensor_head + '\" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
-        plot.write('\"\" u 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, ')
-        plot.write('\"\" u 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ')
-
-        plot.write('\"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relay_name[1] + '\" w impulses ls 4 axes x1y1, ')
-        plot.write('\"\" u 1:8 index 0 title \"' + relay_name[2] + '\" w impulses ls 5 axes x1y1, ')
-        plot.write('\"\" u 1:9 index 0 title \"' + relay_name[3] + '\" w impulses ls 6 axes x1y1, ')
-        plot.write('\"\" u 1:10 index 0 title \"' + relay_name[4] + '\" w impulses ls 7 axes x1y1, ')
-        plot.write('\"\" u 1:11 index 0 title \"' + relay_name[5] + '\" w impulses ls 8 axes x1y1, ')
-        plot.write('\"\" u 1:12 index 0 title \"' + relay_name[6] + '\" w impulses ls 9 axes x1y1, ')
-        plot.write('\"\" u 1:13 index 0 title \"' + relay_name[7] + '\" w impulses ls 10 axes x1y1, ')
-        plot.write('\"\" u 1:14 index 0 title \"' + relay_name[8] + '\" w impulses ls 11 axes x1y1\n')
-
-    if sensor_type == "co2" and graph_type == "separate" and  graph_span != "default":
-        plot.write('set title \"CO2 Sensor ' + sensor_number + ': ' + sensor_co2_name[int(float(sensor_number))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-        plot.write('plot \"' + sensor_co2_log_final[1] + sensor_head + '" using 1:7 index 0 title \"CO2\" w lp ls 1 axes x1y2, ')
-
-        plot.write('\"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relay_name[1] + '\" w impulses ls 4 axes x1y1, ')
-        plot.write('\"\" u 1:8 index 0 title \"' + relay_name[2] + '\" w impulses ls 5 axes x1y1, ')
-        plot.write('\"\" u 1:9 index 0 title \"' + relay_name[3] + '\" w impulses ls 6 axes x1y1, ')
-        plot.write('\"\" u 1:10 index 0 title \"' + relay_name[4] + '\" w impulses ls 7 axes x1y1, ')
-        plot.write('\"\" u 1:11 index 0 title \"' + relay_name[5] + '\" w impulses ls 8 axes x1y1, ')
-        plot.write('\"\" u 1:12 index 0 title \"' + relay_name[6] + '\" w impulses ls 9 axes x1y1, ')
-        plot.write('\"\" u 1:13 index 0 title \"' + relay_name[7] + '\" w impulses ls 10 axes x1y1, ')
-        plot.write('\"\" u 1:14 index 0 title \"' + relay_name[8] + '\" w impulses ls 11 axes x1y1\n')
-
-    # Generate a graph of the past day and week periods for each HT sensor
-    if sensor_type == "ht" and graph_span == "default":
-        plot.write('set origin 0.0,0.0\n')
-        plot.write('set multiplot\n')
-        # Top graph - day
-        plot.write('set size 1.0,0.5\n')
-        plot.write('set origin 0.0,0.5\n')
-        plot.write('set title \"Hum/Temp Sensor ' + sensor_number + ': ' + sensor_ht_name[int(float(sensor_number))] + '\\n\\nPast Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-        plot.write('plot \"' + sensor_ht_log_final[1] + sensor_head + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
-        plot.write('\"\" using 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, ')
-        plot.write('\"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ')
-        plot.write('\"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relay_name[1] + '\" w impulses ls 4 axes x1y1, ')
-        plot.write('\"\" using 1:8 index 0 title \"' + relay_name[2] + '\" w impulses ls 5 axes x1y1, ')
-        plot.write('\"\" using 1:9 index 0 title \"' + relay_name[3] + '\" w impulses ls 6 axes x1y1, ')
-        plot.write('\"\" using 1:10 index 0 title \"' + relay_name[4] + '\" w impulses ls 7 axes x1y1, ')
-        plot.write('\"\" using 1:11 index 0 title \"' + relay_name[5] + '\" w impulses ls 8 axes x1y1, ')
-        plot.write('\"\" using 1:12 index 0 title \"' + relay_name[6] + '\" w impulses ls 9 axes x1y1, ')
-        plot.write('\"\" using 1:13 index 0 title \"' + relay_name[7] + '\" w impulses ls 10 axes x1y1, ')
-        plot.write('\"\" using 1:14 index 0 title \"' + relay_name[8] + '\" w impulses ls 11 axes x1y1\n')
-        # Bottom graph - week
-        d = 7
-        time_ago = '1 Week'
-        date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
-        date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S")
-        plot.write('set size 1.0,0.5\n')
-        plot.write('set origin 0.0,0.0\n')
-        plot.write('set title \"Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-        plot.write('set format x \"%a\\n%m/%d\"\n')
-        plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
-        plot.write('plot \"' + sensor_ht_log_final[2] + sensor_head + '" using 1:7 index 0 notitle w lp ls 1 axes x1y2, ')
-        plot.write('\"\" using 1:8 index 0 notitle w lp ls 2 axes x1y1, ')
-        plot.write('\"\" using 1:9 index 0 notitle w lp ls 3 axes x1y2\n')
-        plot.write('unset multiplot\n')
-
-    # Generate a graph of the past day and week periods for each CO2 sensor
-    if sensor_type == "co2" and graph_span == "default":
-        plot.write('set origin 0.0,0.0\n')
-        plot.write('set multiplot\n')
-        # Top graph - day
-        plot.write('set size 1.0,0.5\n')
-        plot.write('set origin 0.0,0.5\n')
-        plot.write('set title \"CO2 Sensor ' + sensor_number + ': ' + sensor_co2_name[int(float(sensor_number))] + '\\n\\nPast Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-        plot.write('plot \"' + sensor_co2_log_final[1] + sensor_head + '" using 1:7 index 0 title \"CO2\" w lp ls 1 axes x1y2, ')
-        plot.write('\"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relay_name[1] + '\" w impulses ls 4 axes x1y1, ')
-        plot.write('\"\" using 1:8 index 0 title \"' + relay_name[2] + '\" w impulses ls 5 axes x1y1, ')
-        plot.write('\"\" using 1:9 index 0 title \"' + relay_name[3] + '\" w impulses ls 6 axes x1y1, ')
-        plot.write('\"\" using 1:10 index 0 title \"' + relay_name[4] + '\" w impulses ls 7 axes x1y1, ')
-        plot.write('\"\" using 1:11 index 0 title \"' + relay_name[5] + '\" w impulses ls 8 axes x1y1, ')
-        plot.write('\"\" using 1:12 index 0 title \"' + relay_name[6] + '\" w impulses ls 9 axes x1y1, ')
-        plot.write('\"\" using 1:13 index 0 title \"' + relay_name[7] + '\" w impulses ls 10 axes x1y1, ')
-        plot.write('\"\" using 1:14 index 0 title \"' + relay_name[8] + '\" w impulses ls 11 axes x1y1\n')
-        # Bottom graph - week
-        d = 7
-        time_ago = '1 Week'
-        date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
-        date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S")
-        plot.write('set size 1.0,0.5\n')
-        plot.write('set origin 0.0,0.0\n')
-        plot.write('set title \"Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-        plot.write('set format x \"%a\\n%m/%d\"\n')
-        plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
-        plot.write('plot \"' + sensor_co2_log_final[2] + sensor_head + '" using 1:7 index 0 notitle w lp ls 1 axes x1y2\n')
-        plot.write('unset multiplot\n')
-
-    if graph_type == "legend-small":
-        plot.write('unset border\n')
-        plot.write('unset tics\n')
-        plot.write('unset grid\n')
-        plot.write('set yrange [0:400]\n')
-        plot.write('set key center center box\n')
-        plot.write('plot sqrt(-1) title \"Temperature\" w lp ls 1,')
-        plot.write('sqrt(-1) title \"Rel. Humidity\" w lp ls 2,')
-        plot.write('sqrt(-1) title \"Dew Point\" w lp ls 3,')
-        plot.write('sqrt(-1) title \"' + relay_name[1] + '\" w impulses ls 4, ')
-        plot.write('sqrt(-1) title \"' + relay_name[2] + '\" w impulses ls 5, ')
-        plot.write('sqrt(-1) title \"' + relay_name[3] + '\" w impulses ls 6, ')
-        plot.write('sqrt(-1) title \"' + relay_name[4] + '\" w impulses ls 7, ')
-        plot.write('sqrt(-1) title \"' + relay_name[5] + '\" w impulses ls 8, ')
-        plot.write('sqrt(-1) title \"' + relay_name[6] + '\" w impulses ls 9, ')
-        plot.write('sqrt(-1) title \"' + relay_name[7] + '\" w impulses ls 10, ')
-        plot.write('sqrt(-1) title \"' + relay_name[8] + '\" w impulses ls 11\n')
-
-    if graph_type == "legend-full":
-        plot.write('set xlabel \"Date and Time\"\n')
-        plot.write('set ylabel \"# Seconds Relays On and % Humidity\"\n')
-        plot.write('set y2label \"Temperature and Dew Point\"\n')
-        plot.write('set border 3 back ls 11\n')
-        plot.write('set tics nomirror\n')
-        plot.write('set key outside\n')
-        plot.write('plot \"<awk \'$10 == 1\' ' + sensor_ht_log_generate + sensor_head + '" using 1:7 index 0 title \"Temperature\" w lp ls 1 axes x1y2, ')
-        plot.write('\"\" using 1:8 index 0 title \"Rel. Humidity\" w lp ls 2 axes x1y1, ')
-        plot.write('\"\" using 1:9 index 0 title \"Dew Point\" w lp ls 3 axes x1y2, ')
-        plot.write('\"<awk \'$15 == 1\' ' + relay_log_generate + relay_head + '" u 1:7 index 0 title \"' + relay_name[1] + '\" w impulses ls 4 axes x1y1, ')
-        plot.write('\"\" using 1:8 index 0 title \"' + relay_name[2] + '\" w impulses ls 5 axes x1y1, ')
-        plot.write('\"\" using 1:9 index 0 title \"' + relay_name[3] + '\" w impulses ls 6 axes x1y1, ')
-        plot.write('\"\" using 1:10 index 0 title \"' + relay_name[4] + '\" w impulses ls 7 axes x1y1, ')
-        plot.write('\"\" using 1:11 index 0 title \"' + relay_name[5] + '\" w impulses ls 8 axes x1y1, ')
-        plot.write('\"\" using 1:12 index 0 title \"' + relay_name[6] + '\" w impulses ls 9 axes x1y1, ')
-        plot.write('\"\" using 1:13 index 0 title \"' + relay_name[7] + '\" w impulses ls 10 axes x1y1, ')
-        plot.write('\"\" using 1:14 index 0 title \"' + relay_name[8] + '\" w impulses ls 11 axes x1y1\n')
-    plot.close()
-
-    logging.debug("[Generate Graph] Finished.")
-
-    # Generate graph with gnuplot with the above generated command sequence
-    if logging.getLogger().isEnabledFor(logging.DEBUG) == False:
-        subprocess.call(['gnuplot', gnuplot_graph])
-
-        # Delete all temporary files
-        os.remove(gnuplot_graph)
-        os.remove(relay_log_generate)
-        if graph_span == "default":
-            os.remove(sensor_ht_log_final[1])
-            os.remove(sensor_ht_log_final[2])
-            os.remove(sensor_co2_log_final[1])
-            os.remove(sensor_co2_log_final[2])
-        elif graph_type == "combined":
-            os.remove(sensor_ht_log_generate)
-            os.remove(sensor_co2_log_generate)
-            for i in range(1, 5):
-                if sensor_ht_graph[i]:
-                    os.remove(sensor_ht_log_final[i])
-                if sensor_co2_graph[i]:
-                    os.remove(sensor_co2_log_final[i])
-        elif graph_type == "separate":
-            os.remove(sensor_ht_log_final[1])
-            os.remove(sensor_co2_log_final[1])
-    else:
-        gnuplot_log = "%s/plot-%s-%s-%s-%s.log" % (log_path, sensor_type, graph_type, graph_span, sensor_number)
-        with open(gnuplot_log, 'ab') as errfile:
-            subprocess.call(['gnuplot', gnuplot_graph], stderr=errfile)
-
-#################################################
 #          SQLite Database Read/Write           #
 #################################################
 
@@ -1903,7 +1407,8 @@ def read_sql():
     for i in range(0, len(tables)):
         query = "SELECT name FROM sqlite_master WHERE type='table' AND name='%s'" % tables[i]
         cur.execute(query)
-        if cur.fetchone() == None: missing.append(tables[i])
+        if cur.fetchone() == None:
+            missing.append(tables[i])
     if missing != []:
         print "Missing required table(s):",
         for i in range(0, len(missing)):
@@ -1919,7 +1424,7 @@ def read_sql():
     # Begin setting global variables from SQL database values
     cur.execute('SELECT Id, Name, Pin, Trigger FROM Relays')
     if verbose:
-            print "Table: Relays"
+        print "Table: Relays"
     for row in cur :
         if verbose:
             print "%s %s %s %s" % (row[0], row[1], row[2], row[3])
@@ -1929,7 +1434,7 @@ def read_sql():
 
     cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, Temp_Relay, Temp_OR, Temp_Set, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relay, Hum_OR, Hum_Set, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensor')
     if verbose:
-            print "Table: HTSensor"
+        print "Table: HTSensor"
     for row in cur :
         if verbose:
             print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19], row[20])
@@ -1956,7 +1461,7 @@ def read_sql():
 
     cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, CO2_Relay, CO2_OR, CO2_Set, CO2_Period, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
     if verbose:
-            print "Table: CO2Sensor "
+        print "Table: CO2Sensor "
     for row in cur :
         if verbose:
             print "%s %s %s %s %s %s %s %s %s %s %s %s %s" % (
@@ -1978,7 +1483,7 @@ def read_sql():
 
     cur.execute('SELECT Id, Name, Relay, State, DurationOn, DurationOff FROM Timers ')
     if verbose:
-            print "Table: Timers "
+        print "Table: Timers "
     for row in cur :
         if verbose:
             print "%s %s %s %s %s %s" % (
@@ -1991,7 +1496,7 @@ def read_sql():
 
     cur.execute('SELECT Relays, HTSensors, CO2Sensors, Timers FROM Numbers ')
     if verbose:
-            print "Table: Numbers "
+        print "Table: Numbers "
     for row in cur :
         if verbose:
             print "%s %s %s %s" % (
@@ -2003,7 +1508,7 @@ def read_sql():
 
     cur.execute('SELECT Host, SSL, Port, User, Pass, Email_From, Email_To FROM SMTP ')
     if verbose:
-            print "Table: SMTP "
+        print "Table: SMTP "
     for row in cur :
         if verbose:
             print "%s %s %s %s %s %s %s" % (
