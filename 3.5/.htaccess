@@ -1,6 +1,8 @@
 Order allow,deny
 Deny from All
 
+DirectoryIndex index.php
+
 <FilesMatch "^(index\.php)?$">
         Allow from All
 </FilesMatch>
