@@ -23,6 +23,8 @@
 #
 #  Contact at kylegabriel.com
 
+# Server status check
+
 import rpyc
 import time
 import sys
@@ -52,6 +54,8 @@ def usage():
     print '           Device options are DHT22, DHT11, or AM2302'
     print '        --sqlreload relay'
     print '           Reload the SQLite database, initialize GPIO if relay=1-8'
+    print '    -s, --status'
+    print '           Return the status of the server'
     print '    -t, --terminate'
     print '           Terminate the communication service and daemon'
     print '        --writeco2log sensor'
@@ -62,8 +66,8 @@ def usage():
 def menu():
     try:
         opts, args = getopt.getopt(
-            sys.argv[1:], 'hr:t',
-            ["help", "graph", "pidstart=", "pidstop=", "relay=", "sensorht", "sensorco2", "sqlreload", "terminate", "writehtlog", "writeco2log"])
+            sys.argv[1:], 'hr:st',
+            ["help", "graph", "pidstart=", "pidstop=", "relay=", "sensorht", "sensorco2", "sqlreload", "status", "terminate", "writehtlog", "writeco2log"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -139,13 +143,13 @@ def menu():
             else:
                 print 'Error: second input must be an integer greater than 0'
                 sys.exit(1)
-        elif opt in ("--sensorco2"):
+        elif opt == "--sensorco2":
             print "%s [Remote command] Read CO2 sensor %s on GPIO pin %s" % (
                 Timestamp(), sys.argv[3], int(float(sys.argv[2])))
             temperature, humidity = c.root.ReadCO2Sensor(int(float(sys.argv[2])), sys.argv[3])
             print "%s [Remote Command] Daemon Returned: CO2: %s" % (Timestamp(), co2)
             sys.exit(0)
-        elif opt in ("--sensorht"):
+        elif opt == "--sensorht":
             print "%s [Remote command] Read HT sensor %s on GPIO pin %s" % (
                 Timestamp(), sys.argv[3], int(float(sys.argv[2])))
             temperature, humidity = c.root.ReadHTSensor(int(float(sys.argv[2])), sys.argv[3])
@@ -169,6 +173,14 @@ def menu():
                     print "Success"
                 else:
                     print "Fail"
+            sys.exit(0)
+        elif opt in ("-s", "--status"):
+            print "%s [Remote command] Request Status Report: Server returned:" % (
+                Timestamp()),
+            output = c.root.Status(1)
+            if output[:1] == '1': print "Success"
+            else: print "Fail"
+            print output
             sys.exit(0)
         elif opt in ("-t", "--terminate"):
             print "%s [Remote command] Terminate all threads and daemon: Server returned:" % (

@@ -36,6 +36,31 @@ relay_name = [0] * 9
 relay_trigger = [0] * 9
 
 # Temperature & Humidity Sensors
+sensor_t_num = 0
+sensor_t_name = [0] * 5
+sensor_t_device = [0] * 5
+sensor_t_pin = [0] * 5
+sensor_t_period = [0] * 5
+sensor_t_log = [0] * 5
+sensor_t_graph = [0] * 5
+sensor_t_read_temp_c = [0] * 5
+sensor_t_read_hum = [0] * 5
+sensor_t_dewpt_c = [0] * 5
+
+# Temperature Sensor Temperature PID
+pid_t_temp_relay = [0] * 5
+pid_t_temp_set = [0] * 5
+pid_t_temp_period = [0] * 5
+pid_t_temp_p = [0] * 5
+pid_t_temp_i = [0] * 5
+pid_t_temp_d = [0] * 5
+pid_t_temp_or = [0] * 5
+pid_t_temp_alive = [1] * 5
+pid_t_temp_down = 0
+pid_t_temp_up = 0
+pid_t_temp_number = None
+
+# Temperature & Humidity Sensors
 sensor_ht_num = 0
 sensor_ht_name = [0] * 5
 sensor_ht_device = [0] * 5
@@ -47,31 +72,31 @@ sensor_ht_read_temp_c = [0] * 5
 sensor_ht_read_hum = [0] * 5
 sensor_ht_dewpt_c = [0] * 5
 
-# Temperature PID
-pid_temp_relay = [0] * 5
-pid_temp_set = [0] * 5
-pid_temp_period = [0] * 5
-pid_temp_p = [0] * 5
-pid_temp_i = [0] * 5
-pid_temp_d = [0] * 5
-pid_temp_or = [0] * 5
-pid_temp_alive = [1] * 5
-pid_temp_down = 0
-pid_temp_up = 0
-pid_temp_number = None
+# HT Sensor Temperature PID
+pid_ht_temp_relay = [0] * 5
+pid_ht_temp_set = [0] * 5
+pid_ht_temp_period = [0] * 5
+pid_ht_temp_p = [0] * 5
+pid_ht_temp_i = [0] * 5
+pid_ht_temp_d = [0] * 5
+pid_ht_temp_or = [0] * 5
+pid_ht_temp_alive = [1] * 5
+pid_ht_temp_down = 0
+pid_ht_temp_up = 0
+pid_ht_temp_number = None
 
-# Humidity PID
-pid_hum_relay = [0] * 5
-pid_hum_set = [0] * 5
-pid_hum_period = [0] * 5
-pid_hum_p = [0] * 5
-pid_hum_i = [0] * 5
-pid_hum_d = [0] * 5
-pid_hum_or = [0] * 5
-pid_hum_alive = [1] * 5
-pid_hum_down = 0
-pid_hum_up = 0
-pid_hum_number = None
+# HT Sensor Humidity PID
+pid_ht_hum_relay = [0] * 5
+pid_ht_hum_set = [0] * 5
+pid_ht_hum_period = [0] * 5
+pid_ht_hum_p = [0] * 5
+pid_ht_hum_i = [0] * 5
+pid_ht_hum_d = [0] * 5
+pid_ht_hum_or = [0] * 5
+pid_ht_hum_alive = [1] * 5
+pid_ht_hum_down = 0
+pid_ht_hum_up = 0
+pid_ht_hum_number = None
 
 # CO2 Sensors
 sensor_co2_num = 0
@@ -175,6 +200,7 @@ def delete_all_tables():
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
     cur.execute('DROP TABLE IF EXISTS Relays ')
+    cur.execute('DROP TABLE IF EXISTS TSensor ')
     cur.execute('DROP TABLE IF EXISTS HTSensor ')
     cur.execute('DROP TABLE IF EXISTS CO2Sensor ')
     cur.execute('DROP TABLE IF EXISTS Timers ')
@@ -188,10 +214,11 @@ def create_all_tables():
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
     cur.execute("CREATE TABLE Relays (Id INT, Name TEXT, Pin INT, Trigger INT)")
-    cur.execute("CREATE TABLE HTSensor (Id INT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay INT, Temp_OR INT, Temp_Set REAL, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D, Hum_Relay INT, Hum_OR INT, Hum_Set REAL, Hum_Period INT, Hum_P REAL, Hum_I REAL, Hum_D REAL)")
+    cur.execute("CREATE TABLE TSensor (Id INT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay INT, Temp_OR INT, Temp_Set REAL, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D REAL)")
+    cur.execute("CREATE TABLE HTSensor (Id INT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay INT, Temp_OR INT, Temp_Set REAL, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D REAL, Hum_Relay INT, Hum_OR INT, Hum_Set REAL, Hum_Period INT, Hum_P REAL, Hum_I REAL, Hum_D REAL)")
     cur.execute("CREATE TABLE CO2Sensor (Id INT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, CO2_Relay INT, CO2_OR INT, CO2_Set INT, CO2_Period INT, CO2_P REAL, CO2_I REAL, CO2_D REAL)")
     cur.execute("CREATE TABLE Timers (Id INT, Name TEXT, Relay INT, State INT, DurationOn INT, DurationOff INT)")
-    cur.execute("CREATE TABLE Numbers (Relays INT, HTSensors INT, CO2Sensors INT, Timers INT)")
+    cur.execute("CREATE TABLE Numbers (Relays INT, TSensors INT, HTSensors INT, CO2Sensors INT, Timers INT)")
     cur.execute("CREATE TABLE SMTP (Host TEXT, SSL INT, Port INT, User TEXT, Pass TEXT, Email_From TEXT, Email_To TEXT)")
     cur.execute("CREATE TABLE Misc (Camera_Relay INT, Display_Last INT, Display_Timestamp INT)")
     conn.close()
@@ -203,12 +230,14 @@ def create_rows_columns():
     for i in range(1, 9):
         cur.execute("INSERT INTO Relays VALUES(%d, 'Relay%d', 0, 0)" % (i, i))
     for i in range(1, 5):
+        cur.execute("INSERT INTO TSensor VALUES(%d, 'TSensor%d', 0, 'DS18B20', 120, 0, 0, 0, 1, 25.0, 90, 0, 0, 0)" % (i, i))
+    for i in range(1, 5):
         cur.execute("INSERT INTO HTSensor VALUES(%d, 'HTSensor%d', 0, 'DHT22', 120, 0, 0, 0, 1, 25.0, 90, 0, 0, 0, 0, 1, 50.0, 90, 0, 0, 0)" % (i, i))
     for i in range(1, 5):
         cur.execute("INSERT INTO CO2Sensor VALUES(%d, 'CO2Sensor%d', 0, 'K30', 120, 0, 0, 0, 1, 1000, 90, 0, 0, 0)" % (i, i))
     for i in range(1, 9):
         cur.execute("INSERT INTO Timers VALUES(%d, 'Timer%d', 0, 0, 60, 360)" % (i, i))
-    cur.execute("INSERT INTO Numbers VALUES(0, 0, 0, 0)")
+    cur.execute("INSERT INTO Numbers VALUES(0, 0, 0, 0, 0)")
     cur.execute("INSERT INTO SMTP VALUES('smtp.gmail.com', 1, 587, 'email@gmail.com', 'password', 'me@gmail.com', 'you@gmail.com')")
     cur.execute("INSERT INTO Misc VALUES(0, 1, 1)")
     conn.commit()
@@ -288,19 +317,19 @@ def set_global_variables(verbose):
     global sensor_ht_log
     global sensor_ht_graph
 
-    global pid_temp_relay
-    global pid_temp_set
-    global pid_temp_or
-    global pid_temp_p
-    global pid_temp_i
-    global pid_temp_d
+    global pid_ht_temp_relay
+    global pid_ht_temp_set
+    global pid_ht_temp_or
+    global pid_ht_temp_p
+    global pid_ht_temp_i
+    global pid_ht_temp_d
 
-    global pid_hum_relay
-    global pid_hum_set
-    global pid_hum_or
-    global pid_hum_p
-    global pid_hum_i
-    global pid_hum_d
+    global pid_ht_hum_relay
+    global pid_ht_hum_set
+    global pid_ht_hum_or
+    global pid_ht_hum_p
+    global pid_ht_hum_i
+    global pid_ht_hum_d
 
     global sensor_co2_name
     global sensor_co2_device
@@ -379,18 +408,18 @@ def set_global_variables(verbose):
         sensor_ht_period[row[0]] = row[4]
         sensor_ht_log[row[0]] = row[5]
         sensor_ht_graph[row[0]] = row[6]
-        pid_temp_relay[row[0]] = row[7]
-        pid_temp_or[row[0]] = row[8]
-        pid_temp_set[row[0]] = row[9]
-        pid_temp_p[row[0]] = row[10]
-        pid_temp_i[row[0]] = row[11]
-        pid_temp_d[row[0]] = row[12]
-        pid_hum_relay[row[0]] = row[13]
-        pid_hum_or[row[0]] = row[14]
-        pid_hum_set[row[0]] = row[15]
-        pid_hum_p[row[0]] = row[16]
-        pid_hum_i[row[0]] = row[17]
-        pid_hum_d[row[0]] = row[18]
+        pid_ht_temp_relay[row[0]] = row[7]
+        pid_ht_temp_or[row[0]] = row[8]
+        pid_ht_temp_set[row[0]] = row[9]
+        pid_ht_temp_p[row[0]] = row[10]
+        pid_ht_temp_i[row[0]] = row[11]
+        pid_ht_temp_d[row[0]] = row[12]
+        pid_ht_hum_relay[row[0]] = row[13]
+        pid_ht_hum_or[row[0]] = row[14]
+        pid_ht_hum_set[row[0]] = row[15]
+        pid_ht_hum_p[row[0]] = row[16]
+        pid_ht_hum_i[row[0]] = row[17]
+        pid_ht_hum_d[row[0]] = row[18]
 
     cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, CO2_Relay, CO2_OR, CO2_Set, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
     if verbose:
