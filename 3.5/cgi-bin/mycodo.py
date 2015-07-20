@@ -1066,9 +1066,9 @@ def read_t_sensor(sensor):
             if terminate:
                 return 0
 
-            # Begin HT Sensor
+            # Begin T Sensor
             tempc2 = read_t(sensor, device, sensor_t_pin[sensor])
-            # End HT Sensor
+            # End T Sensor
 
             if tempc2 != None:
                 break
@@ -1085,9 +1085,9 @@ def read_t_sensor(sensor):
             if terminate:
                 return 0
             
-            # Begin HT Sensor
+            # Begin T Sensor
             tempc = read_ht(sensor, device, sensor_t_pin[sensor])
-            # End HT Sensor
+            # End T Sensor
            
             if tempc != None:
                 break
@@ -1115,7 +1115,54 @@ def read_t_sensor(sensor):
 
 # Obtain reading form T sensor
 def read_t(sensor, device, pin):
-    time.sleep(2) # Wait 2 seconds between sensor reads
+    time.sleep(1) # Wait 1 seconds between sensor reads
+
+    if not os.path.exists(lock_directory):
+        os.makedirs(lock_directory)
+
+    lock = LockFile(sensor_t_lock_path)
+    while not lock.i_am_locking():
+        try:
+            logging.debug("[Read HT Sensor-%s] Acquiring Lock: %s", sensor, lock.path)
+            lock.acquire(timeout=60)    # wait up to 60 seconds
+        except:
+            logging.warning("[Read HT Sensor-%s] Breaking Lock to Acquire: %s", sensor, lock.path)
+            lock.break_lock()
+            lock.acquire()
+
+    logging.debug("[Read HT Sensor-%s] Gained lock: %s", sensor, lock.path)
+
+    # Begin DS18B20 Sensor
+    if device == 'DS18B20':
+        import glob
+        os.system('modprobe w1-gpio')
+        os.system('modprobe w1-therm')
+        base_dir = '/sys/bus/w1/devices/'
+        #device_folder = glob.glob(base_dir + '28*')[0]
+        device_file = base_dir + '28-' + pin + '/w1_slave'
+        def read_temp_raw():
+            f = open(device_file, 'r')
+            lines = f.readlines()
+            f.close()
+            return lines
+
+        lines = read_temp_raw()
+        while lines[0].strip()[-3:] != 'YES':
+            time.sleep(0.2)
+            lines = read_temp_raw()
+        equals_pos = lines[1].find('t=')
+    if equals_pos != -1:
+        temp_string = lines[1][equals_pos+2:]
+        tempc = float(temp_string) / 1000.0
+        #temp_f = temp_c * 9.0 / 5.0 + 32.0
+    else:
+        return None
+    # End DS18B20 Sensor
+
+    logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor, lock.path)
+    lock.release()
+
+    return tempc
 
 # Read the temperature and humidity from sensor
 def read_ht_sensor(sensor):
