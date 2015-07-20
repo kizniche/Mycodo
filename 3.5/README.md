@@ -26,15 +26,15 @@ sqlite3
 
 ##### Temperature
 
-[DS18B20 Sensor setup guide](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing)
+[DS18B20](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing)
 
 ##### Humidity & Temperature
 
-[DHT11, DHT22 and AM2302 Sensor setup guide](https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring)
+[DHT11, DHT22 and AM2302](https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring)
 
 ##### CO2
 
-[K30 Sensor setup guide](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip)
+[K30](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip)
 
 ### Install
 
