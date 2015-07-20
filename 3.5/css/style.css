@@ -58,10 +58,16 @@ hr.fade {
     padding-top: 0.1em;
 }
 
+.sensor-title {
+  font-size: 1.2em;
+  font-weight: bold;
+  padding: 0 0 0.5em 0.3em;
+}
+
 .pid-wrapper {
-    padding-top: 0.8px;
-	margin: 0 auto;
-	display: inline-block;
+  padding-top: 0.8px;
+  margin: 0 auto;
+  display: inline-block;
 }
 
 table.pid td {
