@@ -252,6 +252,20 @@ class ComServer(rpyc.Service):
         client_que = 'TerminateServer'
         logging.info("[Client command] terminate threads and shut down")
         return 1
+    def exposed_WriteTSensorLog(self, sensor):
+        global client_que
+        global client_var
+        client_var = sensor
+        client_que = 'write_t_sensor_log'
+        if sensor:
+            logging.info("[Client command] Read T sensor number %s and append log", sensor)
+        else:
+            logging.info("[Client command] Read all T sensors and append log")
+        global change_sensor_log
+        change_sensor_log = 1
+        while (change_sensor_log):
+            time.sleep(0.1)
+        return 1
     def exposed_WriteHTSensorLog(self, sensor):
         global client_que
         global client_var
@@ -546,7 +560,7 @@ def daemon(output, log):
     read_sql()
 
     # Initial sensor readings
-    logging.info("[Daemon] Conducting initial sensor readings from %s HT and %s CO2 sensors", sum(sensor_ht_activated), sum(sensor_co2_activated))
+    logging.info("[Daemon] Conducting initial sensor readings from %s T, %s HT, and %s CO2 sensors", sum(sensor_t_activated), sum(sensor_ht_activated), sum(sensor_co2_activated))
 
     for i in range(1, sensor_t_num+1):
         if sensor_t_device[i] != 'Other' and sensor_t_activated[i] == 1:

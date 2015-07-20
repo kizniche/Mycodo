@@ -60,6 +60,8 @@ def usage():
     print '           Terminate the communication service and daemon'
     print '        --writeco2log sensor'
     print '           Read from CO2 sensor number and append log file, 0 to write all.'
+    print '        --writetlog sensor'
+    print '           Read from T sensor number and append log file, 0 to write all.'
     print '        --writehtlog sensor'
     print '           Read from HT sensor number and append log file, 0 to write all.'
 
@@ -67,7 +69,7 @@ def menu():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:], 'hr:st',
-            ["help", "graph", "pidstart=", "pidstop=", "relay=", "sensorht", "sensorco2", "sqlreload", "status", "terminate", "writehtlog", "writeco2log"])
+            ["help", "graph", "pidstart=", "pidstop=", "relay=", "sensorht", "sensorco2", "sqlreload", "status", "terminate", "writetlog", "writehtlog", "writeco2log"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -196,6 +198,16 @@ def menu():
                 print "%s [Remote Command] Append CO2 sensor log from all sensors: Server returned:" % (
                     Timestamp()),
             if c.root.WriteCO2SensorLog(int(float(sys.argv[2]))) == 1: print "Success"
+            else: print "Fail"
+            sys.exit(0)
+        elif opt in ("--writetlog"):
+            if int(float(sys.argv[2])):
+                print "%s [Remote Command] Append T sensor log from sensor %s: Server returned:" % (
+                    Timestamp(), sys.argv[2]),
+            else:
+                print "%s [Remote Command] Append T sensor log from all sensors: Server returned:" % (
+                    Timestamp()),
+            if c.root.WriteTSensorLog(int(float(sys.argv[2]))) == 1: print "Success"
             else: print "Fail"
             sys.exit(0)
         elif opt in ("--writehtlog"):

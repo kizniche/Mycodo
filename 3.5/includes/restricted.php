@@ -463,6 +463,8 @@ if (isset($_POST['stop-timelapse'])) {
 
 // Request sensor read and log write
  if (isset($_POST['WriteSensorLog'])) {
+    $editconfig = "$mycodo_client --writetlog 0";
+    shell_exec($editconfig);
     $editconfig = "$mycodo_client --writehtlog 0";
     shell_exec($editconfig);
     $editconfig = "$mycodo_client --writeco2log 0";
