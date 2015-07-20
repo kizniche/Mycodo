@@ -67,7 +67,7 @@ for ($p = 1; $p <= 4; $p++) {
         $stmt = $db->prepare("UPDATE TSensor SET Name=:name, Device=:device, Pin=:pin, Period=:period, Activated=:activated, Graph=:graph WHERE Id=:id");
         $stmt->bindValue(':name', $_POST['sensort' . $p . 'name'], SQLITE3_TEXT);
         $stmt->bindValue(':device', $_POST['sensort' . $p . 'device'], SQLITE3_TEXT);
-        $stmt->bindValue(':pin', (int)$_POST['sensort' . $p . 'pin'], SQLITE3_INTEGER);
+        $stmt->bindValue(':pin', $_POST['sensort' . $p . 'pin'], SQLITE3_TEXT);
         $stmt->bindValue(':period', (int)$_POST['sensort' . $p . 'period'], SQLITE3_INTEGER);
         if (isset($_POST['sensort' . $p . 'activated'])) {
             $stmt->bindValue(':activated', 1, SQLITE3_INTEGER);

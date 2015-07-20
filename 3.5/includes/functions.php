@@ -36,6 +36,7 @@ function pid_reload($mycodo_client, $controller, $pid) {
 
 function concatenate_logs() {
     // Concatenate sensor and relay log files (to TempFS) to ensure the latest data is being used
+    `cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log > /var/tmp/sensor-t.log`;
     `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
     `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
     `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log > /var/tmp/relay.log`;

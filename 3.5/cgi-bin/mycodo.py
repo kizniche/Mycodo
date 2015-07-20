@@ -68,6 +68,7 @@ logging.basicConfig(
 lock_directory = "/var/lock/mycodo"
 sql_lock_path = "%s/config" % lock_directory
 daemon_lock_path = "%s/daemon" % lock_directory
+sensor_t_lock_path = "%s/sensor-t" % lock_directory
 sensor_ht_lock_path = "%s/sensor-ht" % lock_directory
 sensor_co2_lock_path = "%s/sensor-co2" % lock_directory
 
@@ -550,24 +551,21 @@ def daemon(output, log):
     for i in range(1, sensor_t_num+1):
         if sensor_t_device[i] != 'Other' and sensor_t_activated[i] == 1:
             read_t_sensor(i)
-            time.sleep(2) # Ensure a minimum of 2 seconds between sensor reads
 
     for i in range(1, sensor_ht_num+1):
         if sensor_ht_device[i] != 'Other' and sensor_ht_activated[i] == 1:
             read_ht_sensor(i)
-            time.sleep(2) # Ensure a minimum of 2 seconds between sensor reads
 
     for i in range(1, sensor_co2_num+1):
         if sensor_co2_device[i] != 'Other' and sensor_co2_activated[i] == 1:
             read_co2_sensor(i)
-            time.sleep(2) # Ensure a minimum of 2 seconds between sensor reads
 
     logging.info("[Daemon] Initial sensor readings complete")
 
     timerLogBackup = int(time.time()) + 21600 # 21600 seconds = 6 hours
 
     for i in range(1, 5):
-        timerTSensorLog[i] = int(time.time()) + sensor_ht_period[i]
+        timerTSensorLog[i] = int(time.time()) + sensor_t_period[i]
 
     for i in range(1, 5):
         timerHTSensorLog[i] = int(time.time()) + sensor_ht_period[i]
@@ -1054,10 +1052,10 @@ def read_t_sensor(sensor):
     t_read_tries = 5
 
     for r in range(0, t_read_tries): # Multiple attempts to get similar consecutive readings
-        logging.debug("[Read HT Sensor-%s] Taking first Temperature/Humidity reading", sensor)
+        logging.debug("[Read T Sensor-%s] Taking first Temperature/Humidity reading", sensor)
 
         # Begin HT Sensor
-        if (sensor_t_device[1] == 'DS18B20'): device = 'DS18B20'
+        if (sensor_t_device[sensor] == 'DS18B20'): device = 'DS18B20'
         else:
             device = 'Other'
             return 0
@@ -1086,7 +1084,7 @@ def read_t_sensor(sensor):
                 return 0
             
             # Begin T Sensor
-            tempc = read_ht(sensor, device, sensor_t_pin[sensor])
+            tempc = read_t(sensor, device, sensor_t_pin[sensor])
             # End T Sensor
            
             if tempc != None:
@@ -1123,14 +1121,14 @@ def read_t(sensor, device, pin):
     lock = LockFile(sensor_t_lock_path)
     while not lock.i_am_locking():
         try:
-            logging.debug("[Read HT Sensor-%s] Acquiring Lock: %s", sensor, lock.path)
+            logging.debug("[Read T Sensor-%s] Acquiring Lock: %s", sensor, lock.path)
             lock.acquire(timeout=60)    # wait up to 60 seconds
         except:
-            logging.warning("[Read HT Sensor-%s] Breaking Lock to Acquire: %s", sensor, lock.path)
+            logging.warning("[Read T Sensor-%s] Breaking Lock to Acquire: %s", sensor, lock.path)
             lock.break_lock()
             lock.acquire()
 
-    logging.debug("[Read HT Sensor-%s] Gained lock: %s", sensor, lock.path)
+    logging.debug("[Read T Sensor-%s] Gained lock: %s", sensor, lock.path)
 
     # Begin DS18B20 Sensor
     if device == 'DS18B20':
@@ -1159,7 +1157,7 @@ def read_t(sensor, device, pin):
         return None
     # End DS18B20 Sensor
 
-    logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor, lock.path)
+    logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor, lock.path)
     lock.release()
 
     return tempc
@@ -1179,9 +1177,9 @@ def read_ht_sensor(sensor):
         logging.debug("[Read HT Sensor-%s] Taking first Temperature/Humidity reading", sensor)
 
         # Begin HT Sensor
-        if (sensor_ht_device[1] == 'DHT11'): device = Adafruit_DHT.DHT11
-        elif (sensor_ht_device[1] == 'DHT22'): device = Adafruit_DHT.DHT22
-        elif (sensor_ht_device[1] == 'AM2302'): device = Adafruit_DHT.AM2302
+        if (sensor_ht_device[sensor] == 'DHT11'): device = Adafruit_DHT.DHT11
+        elif (sensor_ht_device[sensor] == 'DHT22'): device = Adafruit_DHT.DHT22
+        elif (sensor_ht_device[sensor] == 'AM2302'): device = Adafruit_DHT.AM2302
         else:
             device = 'Other'
             return 0
@@ -1427,6 +1425,7 @@ def read_sql():
     global factorTempSeconds
     global camera_light
     global relay_num
+    global sensor_t_num
     global sensor_ht_num
     global sensor_co2_num
     global timer_num

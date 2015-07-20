@@ -42,6 +42,16 @@ case "${1:-''}" in
             ln -s /var/log/mycodo/images /var/www/mycodo/images
         fi
 
+        if [ ! -e /var/log/mycodo/sensor-t-tmp.log ]; then
+            touch /var/log/mycodo/sensor-t-tmp.log
+        fi
+        if [ ! -e /var/www/mycodo/log/sensor-t.log ]; then
+            touch /var/www/mycodo/log/sensor-t.log
+        fi
+        if [ ! -h /var/www/mycodo/log/sensor-t-tmp.log ]; then
+            ln -s /var/log/mycodo/sensor-t-tmp.log /var/www/mycodo/log/sensor-t-tmp.log
+        fi
+
         if [ ! -e /var/log/mycodo/sensor-ht-tmp.log ]; then
             touch /var/log/mycodo/sensor-ht-tmp.log
         fi
@@ -82,6 +92,9 @@ case "${1:-''}" in
             ln -s /var/log/mycodo/daemon-tmp.log /var/www/mycodo/log/daemon-tmp.log
         fi
 
+        if [ ! -e /var/tmp/sensor-t.log ]; then
+            touch /var/tmp/sensor-t.log
+        fi
         if [ ! -e /var/tmp/sensor-ht.log ]; then
             touch /var/tmp/sensor-ht.log
         fi
@@ -89,6 +102,7 @@ case "${1:-''}" in
             touch /var/tmp/sensor-co2.log
         fi
 
+        chown www-data.www-data /var/tmp/sensor-t.log
         chown www-data.www-data /var/tmp/sensor-ht.log
         chown www-data.www-data /var/tmp/sensor-co2.log
         

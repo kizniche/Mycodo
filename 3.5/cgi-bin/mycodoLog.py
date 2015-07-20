@@ -78,7 +78,7 @@ def write_t_sensor_log(sensor_t_read_temp_c, sensor):
 
     try:
         with open(sensor_t_log_file_tmp, "ab") as sensorlog:
-            sensorlog.write('{0} {1:.1f} {2:.1f} {3:.1f} {4}\n'.format(
+            sensorlog.write('{0} {1:.1f} {2}\n'.format(
                 datetime.datetime.now().strftime("%Y %m %d %H %M %S"),
                 sensor_t_read_temp_c[sensor], sensor))
             logging.debug("[Write Sensor Log] Data appended to %s", sensor_t_log_file_tmp)
