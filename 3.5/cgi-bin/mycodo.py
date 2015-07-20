@@ -578,6 +578,7 @@ def daemon(output, log):
     for i in range(1, 9):
         timer_time[i] = int(time.time())
 
+    threads_t_t = []
     threads_ht_t = []
     threads_ht_h = []
     threads_co2 = []
@@ -1048,6 +1049,73 @@ def PID_stop(type, number):
 # Read the temperature and humidity from sensor
 def read_t_sensor(sensor):
     global sensor_t_read_temp_c
+    tempc = None
+    tempc2 = None
+    t_read_tries = 5
+
+    for r in range(0, t_read_tries): # Multiple attempts to get similar consecutive readings
+        logging.debug("[Read HT Sensor-%s] Taking first Temperature/Humidity reading", sensor)
+
+        # Begin HT Sensor
+        if (sensor_t_device[1] == 'DS18B20'): device = 'DS18B20'
+        else:
+            device = 'Other'
+            return 0
+
+        for i in range(0, t_read_tries):
+            if terminate:
+                return 0
+
+            # Begin HT Sensor
+            tempc2 = read_t(sensor, device, sensor_t_pin[sensor])
+            # End HT Sensor
+
+            if tempc2 != None:
+                break
+
+        if tempc2 == None:
+            logging.warning("[Read T Sensor-%s] Could not read first Temp measurement! (%s tries)", sensor, ht_read_tries)
+            return 0
+        else:
+            logging.debug("[Read T Sensor-%s] %.1f°C", sensor, tempc2)
+            logging.debug("[Read T Sensor-%s] Taking second Temperature reading", sensor)
+
+        
+        for i in range(0, t_read_tries): # Multiple attempts to get first reading
+            if terminate:
+                return 0
+            
+            # Begin HT Sensor
+            tempc = read_ht(sensor, device, sensor_t_pin[sensor])
+            # End HT Sensor
+           
+            if tempc != None:
+                break
+        
+
+        if tempc == None:
+            logging.warning("[Read T Sensor-%s] Could not read Temperature!", sensor)
+            return 0
+        else:
+            logging.debug("[Read T Sensor-%s] %.1f°C", sensor, tempc)
+            logging.debug("[Read T Sensor-%s] Differences: %.1f°C", sensor, abs(tempc2-tempc))
+
+            if abs(tempc2-tempc) > 1:
+                tempc2 = tempc
+                logging.debug("[Read T Sensor-%s] Successive readings > 1 difference: Rereading", sensor)
+            else:
+                logging.debug("[Read T Sensor-%s] Successive readings < 1 difference: keeping.", sensor)
+                temperature_f = float(tempc)*9.0/5.0 + 32.0
+                logging.debug("[Read T Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", sensor, tempc)
+                sensor_t_read_temp_c[sensor] = tempc
+                return 1
+
+    logging.warning("[Read T Sensor-%s] Could not get two consecutive Temp measurements that were consistent.", sensor)
+    return 0
+
+# Obtain reading form T sensor
+def read_t(sensor, device, pin):
+    time.sleep(2) # Wait 2 seconds between sensor reads
 
 # Read the temperature and humidity from sensor
 def read_ht_sensor(sensor):
@@ -1110,8 +1178,8 @@ def read_ht_sensor(sensor):
             logging.debug("[Read HT Sensor-%s] Differences: %.1f°C, %.1f%%", sensor, abs(tempc2-tempc), abs(humidity2-humidity))
 
             if abs(tempc2-tempc) > 1 or abs(humidity2-humidity) > 1:
-                tempc2 = humidity
-                humidity2 = tempc
+                tempc2 = tempc
+                humidity2 = humidity
                 logging.debug("[Read HT Sensor-%s] Successive readings > 1 difference: Rereading", sensor)
             else:
                 logging.debug("[Read HT Sensor-%s] Successive readings < 1 difference: keeping.", sensor)
@@ -1128,7 +1196,7 @@ def read_ht_sensor(sensor):
     logging.warning("[Read HT Sensor-%s] Could not get two consecutive Hum/Temp measurements that were consistent.", sensor)
     return 0
 
-# Obtain reading form DHT sensor
+# Obtain reading form HT sensor
 def read_ht(sensor, device, pin):
     time.sleep(2) # Wait 2 seconds between sensor reads
 

@@ -502,7 +502,13 @@ if ($output_error) {
                             <td align=center>Sensor<br>No.</td>
                             <td align=center>Sensor<br>Name</td>
                             <td align=center>Sensor<br>Device</td>
-                            <td align=center>GPIO<br>Pin</td>
+                            <?php 
+                            if ($sensor_t_device[$i] == 'DS18B20') {
+                                echo '<td align=center>Serial No<br>28-xxx</td>';
+                            } else {
+                                echo '<td align=center>GPIO<br>Pin</td>';
+                            }
+                            ?>
                             <td align=center>Log Interval<br>(seconds)</td>
                             <td align=center>Activate<br>Logging</td>
                             <td align=center>Activate<br>Graphing</td>
@@ -513,25 +519,32 @@ if ($output_error) {
                                 <?php echo $i; ?>
                             </td>
                             <td>
-                                <input style="width: 10em;" type="text" value="<?php echo $sensor_t_name[$i]; ?>" maxlength=12 size=10 name="sensorht<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
+                                <input style="width: <?php if ($sensor_t_device[$i] == 'DS18B20') echo '6em'; else echo '10em'; ?>;" type="text" value="<?php echo $sensor_t_name[$i]; ?>" maxlength=12 size=10 name="sensort<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
                             </td>
                             <td>
                                 <select style="width: 6.5em;" name="sensort<?php echo $i; ?>device">
                                     <option<?php
-                                        if ($sensor_ht_device[$i] == 'DS18B20') {
+                                        if ($sensor_t_device[$i] == 'DS18B20') {
                                             echo ' selected="selected"';
                                         } ?> value="DS18B20">DS18B20</option>
                                     <option<?php
-                                        if ($sensor_ht_device[$i] == 'Other') {
+                                        if ($sensor_t_device[$i] == 'Other') {
                                             echo ' selected="selected"';
                                         } ?> value="Other">Other</option>
                                 </select>
                             </td>
                             <td>
-                                <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_t_pin[$i]; ?>" maxlength=2 size=1 name="sensort<?php echo $i; ?>pin" title="This is the GPIO pin connected to the temperature sensor"/>
+                                <?php 
+                                if ($sensor_t_device[$i] == 'DS18B20') {
+                                    echo '<input style="width: 7em;" type="text" value="' , $sensor_t_pin[$i] . '" maxlength=10 name="sensort' , $i , 'pin" title="This is the serial number found at /sys/bus/w1/devices/28-x where x is the serial number of your connected DS18B20."/>';
+                                } else {
+                                    echo '<input style="width: 3em;" type="number" min="0" max="40" value="' , $sensor_t_pin[$i] , '" maxlength=2 name="sensort' , $i , 'pin" title="This is the GPIO pin connected to the temperature sensor"/>';
+                                }
+                                ?>
+                                
                             </td>
                             <td align=center>
-                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_t_period[$i]; ?>" name="sensorht<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
+                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_t_period[$i]; ?>" name="sensort<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
                             </td>
                             <td align=center>
                                 <input type="checkbox" name="sensort<?php echo $i; ?>activated" value="1" <?php if ($sensor_t_activated[$i] == 1) echo 'checked'; ?>>
