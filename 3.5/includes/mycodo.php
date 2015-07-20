@@ -238,18 +238,18 @@ if ($output_error) {
 <div style="clear: both; padding-top: 15px;"></div>
     <nav>
         <ul class="cd-tabs-navigation">
-            <li><a data-content="main" <?php
-                if (!isset($_GET['tab']) || (isset($_GET['tab']) && $_GET['tab'] == 'main')) {
-                    echo 'class="selected"';
-                } ?> href="#0">Main</a></li>
-            <li><a data-content="pid" <?php
-                if (isset($_GET['tab']) && $_GET['tab'] == 'pid') {
-                    echo 'class="selected"';
-                } ?> href="#0">PID</a></li>
             <li><a data-content="graph" <?php
-                if (isset($_GET['tab']) && $_GET['tab'] == 'graph') {
+                if (!isset($_GET['tab']) || (isset($_GET['tab']) && $_GET['tab'] == 'graph')) {
                     echo 'class="selected"';
                 } ?> href="#0">Graph</a></li>
+            <li><a data-content="sensor" <?php
+                if (isset($_GET['tab']) && $_GET['tab'] == 'sensor') {
+                    echo 'class="selected"';
+                } ?> href="#0">Sensor</a></li>
+            <li><a data-content="custom" <?php
+                if (isset($_GET['tab']) && $_GET['tab'] == 'custom') {
+                    echo 'class="selected"';
+                } ?> href="#0">Custom</a></li>
             <li><a data-content="camera" <?php
                 if (isset($_GET['tab']) && $_GET['tab'] == 'camera') {
                     echo 'class="selected"';
@@ -265,11 +265,11 @@ if ($output_error) {
         </ul>
     </nav>
     <ul class="cd-tabs-content">
-        <li data-content="main" <?php
-            if (!isset($_GET['tab']) || (isset($_GET['tab']) && $_GET['tab'] == 'main')) {
+        <li data-content="graph" <?php
+            if (!isset($_GET['tab']) || (isset($_GET['tab']) && $_GET['tab'] == 'graph')) {
                 echo 'class="selected"';
             } ?>>
-            <FORM action="?tab=main<?php
+            <form action="?tab=graph<?php
             if (isset($_GET['page'])) {
                 echo '&page=' , $_GET['page'];
             }
@@ -286,15 +286,15 @@ if ($output_error) {
                         <div style="text-align: center;"><?php
                             if (isset($_GET['r']) && $_GET['r'] == 1) {
                                 if (empty($page)) {
-                                    echo '<a href="?tab=main">OFF</a> | <span class="on">ON</span>';
+                                    echo '<a href="?tab=graph">OFF</a> | <span class="on">ON</span>';
                                 } else {
-                                    echo '<a href="?tab=main&page=' , $page , '">OFF</a> | <span class="on">ON</span>';
+                                    echo '<a href="?tab=graph&page=' , $page , '">OFF</a> | <span class="on">ON</span>';
                                 }
                             } else {
                                 if (empty($page)) {
-                                    echo '<span class="off">OFF</span> | <a href="?tab=main&Refresh=1&r=1">ON</a>';
+                                    echo '<span class="off">OFF</span> | <a href="?tab=graph&Refresh=1&r=1">ON</a>';
                                 } else {
-                                    echo '<span class="off">OFF</span> | <a href="?tab=main&page=' , $page , '&Refresh=1&r=1">ON</a>';
+                                    echo '<span class="off">OFF</span> | <a href="?tab=graph&page=' , $page , '&Refresh=1&r=1">ON</a>';
                                 }
                             }
                         ?>
@@ -304,7 +304,7 @@ if ($output_error) {
                         <div style="text-align: center; padding-bottom: 0.2em;">Refresh</div>
                         <div>
                             <div style="float: left; padding-right: 0.1em;">
-                                <input type="button" onclick='location.href="?tab=main<?php
+                                <input type="button" onclick='location.href="?tab=graph<?php
                                 if (isset($_GET['page'])) {
                                     if ($_GET['page']) {
                                         echo '&page=' , $page;
@@ -400,11 +400,12 @@ if ($output_error) {
 
         </li>
 
-        <li data-content="pid" <?php
-            if (isset($_GET['tab']) && $_GET['tab'] == 'pid') {
+        <li data-content="sensor" <?php
+            if (isset($_GET['tab']) && $_GET['tab'] == 'sensor') {
                 echo 'class="selected"';
             } ?>>
-            <FORM action="?tab=pid<?php
+
+            <form action="?tab=sensor<?php
                 if (isset($_GET['page'])) {
                     echo '&page=' , $_GET['page'];
                 }
@@ -423,12 +424,12 @@ if ($output_error) {
                     <div style="text-align: center;"><?php
                         if (isset($_GET['r'])) {
                             if ($_GET['r'] == 1) {
-                                echo '<a href="?tab=pid">OFF</a> | <span class="on">ON</span>';
+                                echo '<a href="?tab=sensor">OFF</a> | <span class="on">ON</span>';
                             } else {
-                                echo '<span class="off">OFF</span> | <a href="?tab=pid&?r=1">ON</a>';
+                                echo '<span class="off">OFF</span> | <a href="?tab=sensor&?r=1">ON</a>';
                             }
                         } else {
-                            echo '<span class="off">OFF</span> | <a href="?tab=pid&r=1">ON</a>';
+                            echo '<span class="off">OFF</span> | <a href="?tab=sensor&r=1">ON</a>';
                         }
                     ?>
                     </div>
@@ -965,15 +966,14 @@ if ($output_error) {
                 }
                 ?>
             </div>
-        </FORM>
+        </form>
         </li>
 
-        <li data-content="graph" <?php
-            if (isset($_GET['tab'])) {
-                if ($_GET['tab'] == 'graph') {
-                    echo 'class="selected"';
-                }
+        <li data-content="custom" <?php
+            if (isset($_GET['tab']) && $_GET['tab'] == 'custom') {
+                echo 'class="selected"';
             } ?>>
+
             <?php
             /* DateSelector*Author: Leon Atkinson */
             if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] != 'guest') {
@@ -1298,9 +1298,10 @@ if ($output_error) {
             if (isset($_GET['tab']) && $_GET['tab'] == 'data') {
                 echo 'class="selected"';
             } ?>>
+
             <div style="padding: 10px 0 0 15px;">
                 <div style="padding-bottom: 15px;">
-                    <FORM action="?tab=data<?php
+                    <form action="?tab=data<?php
                         if (isset($_GET['page'])) {
                             echo '&page=' , $_GET['page'];
                         } ?>" method="POST">
@@ -1313,7 +1314,7 @@ if ($output_error) {
                         <input type="submit" name="Login" value="Login">
                         <input type="submit" name="Daemon" value="Daemon">
                         <input type="submit" name="Database" value="Database">
-                    </FORM>
+                    </form>
                 </div>
                 <div style="font-family: monospace;">
                     <pre><?php

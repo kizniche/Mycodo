@@ -178,7 +178,7 @@ header {
 			background-position: 0 0;
 		}
 
-		&[data-content='graph']::before {
+		&[data-content='custom']::before {
 			background-position: -20px 0;
 		}
 
@@ -186,11 +186,11 @@ header {
 			background-position: -40px 0;
 		}
 
-		&[data-content='main']::before {
+		&[data-content='graph']::before {
 			background-position: -60px 0;
 		}
 
-		&[data-content='pid']::before {
+		&[data-content='sensor']::before {
 			background-position: -80px 0;
 		}
 
@@ -202,7 +202,7 @@ header {
 			background-position: 0 -20px;
 		}
 
-		&[data-content='graph'].selected::before {
+		&[data-content='custom'].selected::before {
 			background-position: -20px -20px;
 		}
 
@@ -210,11 +210,11 @@ header {
 			background-position: -40px -20px;
 		}
 
-		&[data-content='main'].selected::before {
+		&[data-content='graph'].selected::before {
 			background-position: -60px -20px;
 		}
 
-		&[data-content='pid'].selected::before {
+		&[data-content='sensor'].selected::before {
 			background-position: -80px -20px;
 		}
 

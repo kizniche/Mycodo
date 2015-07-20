@@ -254,7 +254,7 @@ function get_graph_cookie($name) {
 
 // Display Graphs tab form tpo generate a graph with a custom time span
 function displayform() { ?>
-    <FORM action="?tab=graph<?php if (isset($_GET['page'])) echo "&page=" . $_GET['page']; ?>" method="POST">
+    <form action="?tab=custom<?php if (isset($_GET['page'])) echo "&page=" . $_GET['page']; ?>" method="POST">
     <div style="padding: 10px 0 0 15px;">
         <div style="display: inline-block;">
             <div style="padding-bottom: 5px; text-align: right;">START: <?php DateSelector("start"); ?></div>
@@ -277,7 +277,7 @@ function displayform() { ?>
             <input type="submit" name="SubmitDates" value="Submit">
         </div>
     </div>
-    </FORM>
+    </form>
     <?php
 }
 

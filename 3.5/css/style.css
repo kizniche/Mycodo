@@ -399,16 +399,16 @@ Main components
 .cd-tabs-navigation a[data-content='data']::before {
   background-position: 0 0;
 }
-.cd-tabs-navigation a[data-content='graph']::before {
+.cd-tabs-navigation a[data-content='custom']::before {
   background-position: -1.429em 0;
 }
 .cd-tabs-navigation a[data-content='camera']::before {
   background-position: -2.857em 0;
 }
-.cd-tabs-navigation a[data-content='main']::before {
+.cd-tabs-navigation a[data-content='graph']::before {
   background-position: -4.286em 0;
 }
-.cd-tabs-navigation a[data-content='pid']::before {
+.cd-tabs-navigation a[data-content='sensor']::before {
   background-position: -5.714em 0;
 }
 .cd-tabs-navigation a[data-content='settings']::before {
@@ -417,16 +417,16 @@ Main components
 .cd-tabs-navigation a[data-content='data'].selected::before {
   background-position: 0 -1.429em;
 }
-.cd-tabs-navigation a[data-content='graph'].selected::before {
+.cd-tabs-navigation a[data-content='custom'].selected::before {
   background-position: -1.429em -1.429em;
 }
 .cd-tabs-navigation a[data-content='camera'].selected::before {
   background-position: -2.857em -1.429em;
 }
-.cd-tabs-navigation a[data-content='main'].selected::before {
+.cd-tabs-navigation a[data-content='graph'].selected::before {
   background-position: -4.286em -1.429em;
 }
-.cd-tabs-navigation a[data-content='pid'].selected::before {
+.cd-tabs-navigation a[data-content='sensor'].selected::before {
   background-position: -5.714em -1.429em;
 }
 .cd-tabs-navigation a[data-content='settings'].selected::before {

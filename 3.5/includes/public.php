@@ -38,7 +38,7 @@ for ($p = 1; $p <= $sensor_ht_num; $p++) {
         $sensor_explode = explode(" ", $last_ht_sensor[$p]);
         $ht_temp_c[$p] = $sensor_explode[6];
         $hum[$p] = $sensor_explode[7];
-        $ht_temp_f[$p] = round(($ht_hemp_c[$p]*(9/5) + 32), 1);
+        $ht_temp_f[$p] = round(($ht_temp_c[$p]*(9/5) + 32), 1);
         $dp_c[$p] = substr($sensor_explode[8], 0, -1);
         $dp_f[$p] = round(($dp_c[$p]*(9/5) + 32), 1);
         $settemp_ht_f[$p] = round($pid_ht_temp_set[$p]*(9/5)+32, 1);
