@@ -7,13 +7,14 @@ This is an experimental branch of mycodo. Unless I have been in direct contact w
 - [X] Change configuration storage (from config file to SQLite database)
 - [X] Change login authentication (from MySQL to SQLite database)
 - [X] Add log parsing (40%-70% speed increase in graph generation)
-- [X] K30 CO2 sensor support (debugging)
+- [X] K30 CO2 sensor support
+- [X] DS18B20 Temperature sensor support
+- [ ] Timelapse (Working on)
 - [ ] Email notification or audible alarm during critical failure or condition (working on)
 - [ ] O2 sensor support
 - [ ] More graph generation options
 - [ ] Set electrical current draw of each device and prevent exceeding total current limit with different combinations of devices on
-- [ ] Capture series of photos at different ISOs, combine to make HDR photo
-- [ ] Timelapse video creation ability (define start, end, duration between, etc.)
+- [ ] HDR Photo creation (capture series of photos at different ISOs and combine) (Initial testing was slow: 3 photos = 15 minutes processing)
 
 ### New Dependencies
 
