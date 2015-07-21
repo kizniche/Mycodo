@@ -394,7 +394,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             for i in range(1, sensor_t_num+1):
                 if int(pid_t_temp_relay[i]) != 0:
                     plot.write(', \"<awk \'$15 == ' + str(i) + '\' ' + relay_log_generate + '" using 1:' + str(pid_t_temp_relay[i]+6) + ' index 0 title \"' + relay_name[int(pid_t_temp_relay[i])] + '\" w impulses ls ' + str(i+3) + ' axes x1y1 ')
-            plot.write('\n')
+            plot.write(' \n')
 
         if sum(sensor_ht_graph):
             plot.write('\nset origin 0.0,%.2f\n' % float(1-((1/float(num_graphs))*float(multiplot_num))))
@@ -410,7 +410,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             for i in range(1, sensor_ht_num+1):
                 if int(pid_ht_temp_relay[i]) != 0:
                     plot.write(', \"<awk \'$15 == ' + str(i) + '\' ' + relay_log_generate + '" using 1:' + str(pid_ht_temp_relay[i]+6) + ' index 0 title \"' + relay_name[int(pid_ht_temp_relay[i])] + '\" w impulses ls ' + str(i+3) + ' axes x1y1 ')
-            plot.write('\n')
+            plot.write(' \n')
 
         if sum(sensor_ht_graph):
             plot.write('\nset origin 0.0,%.2f\n' % float(1-((1/float(num_graphs))*float(multiplot_num))))
@@ -426,7 +426,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             for i in range(1, sensor_ht_num+1):
                 if int(pid_ht_hum_relay[i]) != 0:
                     plot.write(', \"<awk \'$15 == ' + str(i) + '\' ' + relay_log_generate + '" using 1:' + str(pid_ht_hum_relay[i]+6) + ' index 0 title \"' + relay_name[int(pid_ht_hum_relay[i])] + '\" w impulses ls ' + str(i+3) + ' axes x1y1 ')
-            plot.write('\n')
+            plot.write(' \n')
 
         if sum(sensor_co2_graph):
             y2_min = '0'
@@ -446,7 +446,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             for i in range(1, sensor_co2_num+1):
                 if int(pid_co2_relay[i]) != 0:
                     plot.write(', \"<awk \'$15 == ' + str(i) + '\' ' + relay_log_generate + '" using 1:' + str(pid_co2_relay[i]+6) + ' index 0 title \"' + relay_name[int(pid_co2_relay[i])] + '\" w impulses ls ' + str(i+3) + ' axes x1y1 ')
-            plot.write('\n')
+            plot.write(' \n')
 
         plot.write('unset multiplot\n')
 
@@ -461,7 +461,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             if int(pid_t_temp_relay[int(sensor_number)]) != 0:
                 plot.write(', \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '" using 1:' + str(pid_t_temp_relay[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_t_temp_relay[int(sensor_number)])] + '\" w impulses ls 4 axes x1y1\n')
             else:
-                plot.write('\n')
+                plot.write(' \n')
 
         if sensor_type == "ht":
             plot.write('set title \"Hum/Temp Sensor ' + sensor_number + ': ' + sensor_ht_name[int(float(sensor_number))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
@@ -479,7 +479,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 elif pid_ht_hum_relay[int(sensor_number)]:
                     plot.write('using 1:' + str(int(pid_ht_hum_relay[int(sensor_number)])+6) + ' index 0 title \"' + relay_name[int(pid_ht_hum_relay[int(sensor_number)])] + '\" w impulses ls 4 axes x1y1\n')
             else:
-                plot.write('\n')
+                plot.write(' \n')
 
         if sensor_type == "co2":
             plot.write('set title \"CO2 Sensor ' + sensor_number + ': ' + sensor_co2_name[int(float(sensor_number))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
@@ -487,7 +487,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             if int(pid_co2_relay[int(sensor_number)]) != 0:
                 plot.write(', \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '" using 1:' + str(pid_co2_relay[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_co2_relay[int(sensor_number)])] + '\" w impulses ls 4 axes x1y1\n')
             else:
-                plot.write('\n')
+                plot.write(' \n')
 
     #
     # Default: Generate a graph of the past day and week periods for each sensor
@@ -505,7 +505,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             if int(pid_t_temp_relay[int(sensor_number)]) != 0:
                 plot.write(', \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '" using 1:' + str(pid_t_temp_relay[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_t_temp_relay[int(sensor_number)])] + '\" w impulses ls 4 axes x1y1\n')
             else:
-                plot.write('\n')
+                plot.write(' \n')
 
             # Bottom graph - week
             d = 7
@@ -541,7 +541,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 elif int(pid_ht_hum_relay[int(sensor_number)]):
                     plot.write('using 1:' + str(int(pid_ht_hum_relay[int(sensor_number)])+6) + ' index 0 title \"' + relay_name[int(pid_ht_hum_relay[int(sensor_number)])] + '\" w impulses ls 4 axes x1y1\n')
             else:
-                plot.write('\n')
+                plot.write(' \n')
             # Bottom graph - week
             d = 7
             time_ago = '1 Week'
@@ -568,7 +568,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             if int(pid_co2_relay[int(sensor_number)]) != 0:
                 plot.write(', \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '" using 1:' + str(pid_co2_relay[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_co2_relay[int(sensor_number)])] + '\" w impulses ls 4 axes x1y1\n')
             else:
-                plot.write('\n')
+                plot.write(' \n')
 
             # Bottom graph - week
             d = 7
