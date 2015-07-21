@@ -36,7 +36,7 @@ for ($p = 1; $p <= $sensor_ht_num; $p++) {
     if ($sensor_ht_activated[$p]) {
         $last_ht_sensor[$p] = `awk '$10 == $p {print}' /var/www/mycodo/log/sensor-ht-tmp.log | tail -n 1`;
         $sensor_explode = explode(" ", $last_ht_sensor[$p]);
-        $ht_temp_c[$p] = $sensor_explode[6];
+        $ht_temp_c[$p] = floatval($sensor_explode[6]);
         $hum[$p] = $sensor_explode[7];
         $ht_temp_f[$p] = round(($ht_temp_c[$p]*(9/5) + 32), 1);
         $dp_c[$p] = substr($sensor_explode[8], 0, -1);
@@ -55,11 +55,23 @@ for ($p = 1; $p <= $sensor_co2_num; $p++) {
 
 // Grab the time of the last sensor read
 $time_now = `date +"%Y-%m-%d %H:%M:%S"`;
-$time_last = `tail -n 1 /var/www/mycodo/log/sensor-ht-tmp.log`;
-$time_explode = explode(" ", $time_last);
-$time_last = $time_explode[0] . '-' . $time_explode[1] . '-' . 
-            $time_explode[2] . ' ' . $time_explode[3] . ':' . 
-            $time_explode[4] . ':' . $time_explode[5];
+
+$time_last_t = `tail -n 1 /var/www/mycodo/log/sensor-t-tmp.log`;
+$time_explode = explode(" ", $time_last_t);
+$time_last_t = $time_explode[0] . '-' . $time_explode[1] . '-' . $time_explode[2] . ' ' .
+               $time_explode[3] . ':' . $time_explode[4] . ':' . $time_explode[5];
+
+$time_last_ht = `tail -n 1 /var/www/mycodo/log/sensor-ht-tmp.log`;
+$time_explode = explode(" ", $time_last_ht);
+$time_last_ht = $time_explode[0] . '-' . $time_explode[1] . '-' . $time_explode[2] . ' ' .
+                $time_explode[3] . ':' . $time_explode[4] . ':' . $time_explode[5];
+
+$time_last_co2 = `tail -n 1 /var/www/mycodo/log/sensor-co2-tmp.log`;
+$time_explode = explode(" ", $time_last_co2);
+$time_last_co2 = $time_explode[0] . '-' . $time_explode[1] . '-' . $time_explode[2] . ' ' .
+                 $time_explode[3] . ':' . $time_explode[4] . ':' . $time_explode[5];
+
+$time_last = max($time_last_t, $time_last_ht, $time_last_co2);
 
 
 // Request to generate a graph

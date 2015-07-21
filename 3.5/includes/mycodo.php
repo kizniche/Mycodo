@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.58";
+$version = "3.5.59";
 
 ######### Start Edit Configure #########
 
@@ -179,7 +179,7 @@ if ($output_error) {
             <div class="header">
                 <table>
                     <tr>
-                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'HT' , $i , ': ' , $sensor_t_name[$i]; ?></td>
+                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'T' , $i , ': ' , $sensor_t_name[$i]; ?></td>
                     </tr>
                     <tr>
                         <td style="font-size: 0.8em; padding-right: 0.5em;"><?php
@@ -375,10 +375,10 @@ if ($output_error) {
                 <div>
                     <?php
                     // Generate and display Main tab graphs
-                    generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_ht_num, $sensor_co2_num, $sensor_ht_graph, $sensor_co2_graph);
+                    generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_num, $sensor_t_graph, $sensor_ht_num, $sensor_ht_graph, $sensor_co2_num, $sensor_co2_graph);
 
                     // If any graphs are to be displayed, show links to the legends
-                    if (array_sum($sensor_ht_graph) + array_sum($sensor_co2_graph)) { ?>
+                    if (array_sum($sensor_t_graph) + array_sum($sensor_ht_graph) + array_sum($sensor_co2_graph)) { ?>
                         <div style="width: 100%; padding: 1em 0 0 0; text-align: center;">
                             Legend: <a href="javascript:open_legend()">Brief</a> / <a href="javascript:open_legend_full()">Full</a>
                             <div style="text-align: center; padding-top: 0.5em;">
@@ -1732,15 +1732,10 @@ if ($output_error) {
             <div style="padding-top: 3em;"></div>
         </li>
     </ul> <!-- cd-tabs-content -->
-</div> <!-- cd-tabs -->
-<script src="js/jquery-2.1.1.js"></script>
-<script src="js/main.js"></script> <!-- Resource jQuery -->
-<?php
-if (isset($_COOKIE['debug'])) {
-    if ($_COOKIE['debug'] == True) {
+
+    <?php
+    if (isset($_COOKIE['debug']) && $_COOKIE['debug'] == True) {
         ?>
-        <div style="clear: both;"></div>        
-        
         <div style="padding: 4em 0 2em 2em;">
             <div style="padding-bottom: 1em; font-weight: bold; font-size: 1.5em;">
                 Debug Information
@@ -1812,21 +1807,24 @@ if (isset($_COOKIE['debug'])) {
                     ?>
                 </pre>
             </div>
-
             <div style="padding-bottom: 2em;">
                 <div style="padding: 1em 0; font-weight: bold; font-size: 1.2em;">
                     Cookies
                 </div>
                 <pre><?php print_r($_COOKIE); ?></pre>
             </div>
-
             <div style="padding-bottom: 2em;">
                 <div style="padding: 1em 0; font-weight: bold; font-size: 1.2em;">
                     Session
                 </div>
                 <pre><?php print_r($_SESSION); ?></pre>
             </div>
-
+            <div style="padding-bottom: 2em;">
+                <div style="padding: 1em 0; font-weight: bold; font-size: 1.2em;">
+                    Server
+                </div>
+                <pre><?php print_r($_SERVER); ?></pre>
+            </div>
             <div style="padding-bottom: 2em;">
                 <div style="padding: 1em 0; font-weight: bold; font-size: 1.2em;">
                     SQLite Database
@@ -1834,9 +1832,14 @@ if (isset($_COOKIE['debug'])) {
                 <pre><?php exec('sqlite3 ' . $mycodo_db . ' .dump', $output); print_r($output); ?></pre>
             </div>
         </div>
-        <?php
+    <?php
     }
-}
-?>
+    ?>
+
+</div> <!-- cd-tabs -->
+
+<script src="js/jquery-2.1.1.js"></script>
+<script src="js/main.js"></script> <!-- Resource jQuery -->
+
 </body>
 </html>

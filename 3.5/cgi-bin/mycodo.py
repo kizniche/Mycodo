@@ -212,7 +212,7 @@ class ComServer(rpyc.Service):
             logging.info("[Client command] Generate Graph: %s %s %s %s", sensor_type, graph_span, graph_id, sensor_number)
         else:
             logging.info("[Client command] Generate Graph: %s %s %s %s %s", sensor_type, graph_type, graph_span, graph_id, sensor_number)
-        mycodoGraph.generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number, sensor_ht_name, sensor_ht_graph, sensor_ht_period, sensor_co2_name, sensor_co2_graph, sensor_co2_period, relay_name)
+        mycodoGraph.generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number, sensor_t_num, sensor_t_name, sensor_t_graph, sensor_t_period, sensor_ht_num, sensor_ht_name, sensor_ht_graph, sensor_ht_period, sensor_co2_num, sensor_co2_name, sensor_co2_graph, sensor_co2_period, relay_name)
         return 1
     def exposed_PID_start(self, pidtype, number):
         PID_start(pidtype, number)
@@ -1381,6 +1381,7 @@ def read_K30(sensor):
 
 # Read variables from the SQLite database
 def read_sql():
+    global sensor_t_num
     global sensor_t_name
     global sensor_t_device
     global sensor_t_pin
@@ -1395,6 +1396,7 @@ def read_sql():
     global pid_t_temp_i
     global pid_t_temp_d
 
+    global sensor_ht_num
     global sensor_ht_name
     global sensor_ht_device
     global sensor_ht_pin
@@ -1416,6 +1418,7 @@ def read_sql():
     global pid_ht_hum_i
     global pid_ht_hum_d
 
+    global sensor_co2_num
     global sensor_co2_name
     global sensor_co2_device
     global sensor_co2_pin
@@ -1439,9 +1442,6 @@ def read_sql():
     global factorTempSeconds
     global camera_light
     global relay_num
-    global sensor_t_num
-    global sensor_ht_num
-    global sensor_co2_num
     global timer_num
     global timer_name
     global timer_relay

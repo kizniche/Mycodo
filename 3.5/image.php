@@ -59,7 +59,7 @@ if ($_COOKIE['login_hash'] == $user_hash) {
                 break;
             }
     } else if (ctype_alnum($_GET['id']) && is_int((int)$_GET['sensornumber']) &&
-            ($_GET['sensortype'] == 'ht' || $_GET['sensortype'] == 'co2' || $_GET['sensortype'] == 'x')) {
+            ($_GET['sensortype'] == 't' || $_GET['sensortype'] == 'ht' || $_GET['sensortype'] == 'co2' || $_GET['sensortype'] == 'x')) {
         // Generate preset graphs (Main tab)
         if ($_GET['graphtype'] == 'separate' ||
             $_GET['graphtype'] == 'combined' ||
