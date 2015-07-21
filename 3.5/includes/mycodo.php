@@ -844,7 +844,7 @@ if ($output_error) {
                 ?>
 
                 <?php if ($sensor_co2_num > 0) { ?>
-                <div class="sensor-title">CO2 Sensors</div>
+                <div class="sensor-title">CO<sub>2</sub> Sensors</div>
                 <div>
                     <?php
                     for ($i = 1; $i <= $sensor_co2_num; $i++) {

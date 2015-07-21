@@ -36,7 +36,7 @@ sqlite3
 
 [K30](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip)
 
-### Install
+### Mycodo Setup
 
 `sudo apt-get update`
 

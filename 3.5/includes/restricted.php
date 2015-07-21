@@ -97,6 +97,8 @@ for ($p = 1; $p <= 4; $p++) {
         $stmt->execute();
         if ($pid_ht_temp_or[$p] == 0) {
             pid_reload($mycodo_client, 'TTemp', $p);
+        } else {
+            shell_exec($mycodo_client . ' --sqlreload 0');
         }
     }
 
@@ -150,6 +152,8 @@ for ($p = 1; $p <= 4; $p++) {
         $stmt->execute();
         if ($pid_ht_temp_or[$p] == 0) {
             pid_reload($mycodo_client, 'HTTemp', $p);
+        } else {
+            shell_exec($mycodo_client . ' --sqlreload 0');
         }
     }
 
@@ -181,6 +185,8 @@ for ($p = 1; $p <= 4; $p++) {
         $stmt->execute();
         if ($pid_ht_hum_or[$p] == 0) {
             pid_reload($mycodo_client, 'HTHum', $p);
+        } else {
+            shell_exec($mycodo_client . ' --sqlreload 0');
         }
     }
 
@@ -234,6 +240,8 @@ for ($p = 1; $p <= 4; $p++) {
         $stmt->execute();
         if ($pid_co2_or[$p] == 0) {
             pid_reload($mycodo_client, 'CO2', $p);
+        } else {
+            shell_exec($mycodo_client . ' --sqlreload 0');
         }
     }
 

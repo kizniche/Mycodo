@@ -50,7 +50,7 @@ relay_log_file = "%s/relay.log" % log_path
 #################################################
 
 # Generate gnuplot graph
-def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number, sensor_t_num, sensor_t_name, sensor_t_graph, sensor_t_period, sensor_ht_num, sensor_ht_name, sensor_ht_graph, sensor_ht_period, sensor_co2_num, sensor_co2_name, sensor_co2_graph, sensor_co2_period, relay_name):
+def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number, sensor_t_num, sensor_t_name, sensor_t_graph, sensor_t_period, pid_t_temp_relay, sensor_ht_num, sensor_ht_name, sensor_ht_graph, sensor_ht_period, pid_ht_temp_relay, pid_ht_hum_relay, sensor_co2_num, sensor_co2_name, sensor_co2_graph, sensor_co2_period, pid_co2_relay, relay_name):
     logging.debug("[Generate Graph] Parsing logs...")
     sensor_t_log_final = [0] * 5
     sensor_ht_log_final = [0] * 5
@@ -368,7 +368,8 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
     plot.write('set style line 13 lc rgb \'' + graph_colors[12] + '\' pt 0 ps 1 lt 1 lw 2\n')
     plot.write('set style line 14 lc rgb \'' + graph_colors[13] + '\' pt 0 ps 1 lt 1 lw 2\n')
     plot.write('set style line 15 lc rgb \'' + graph_colors[14] + '\' pt 0 ps 1 lt 1 lw 2\n')
-    plot.write('unset key\n')
+    #plot.write('unset key\n')
+    plot.write('set key left top\n')
 
 
     #
@@ -383,16 +384,20 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             multiplot_num += 1
             plot.write('set title \"Combined T Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot ')
+
             for i in range(1, sensor_t_num+1):
                 if sensor_t_graph[i]:
                     plot.write('\"' + sensor_t_log_final[i] + '" using 1:7 index 0 title \"HT-T' + str(i) + '\" w lp ls ' + str(i+11) + ' axes x1y2')
                 if i != (len(sensor_t_graph) - 1) - sensor_t_graph[::-1].index(1):
                     plot.write(', ')
-                else:
-                    plot.write('\n')
+
+            for i in range(1, sensor_t_num+1):
+                if int(pid_t_temp_relay[i]) != 0:
+                    plot.write(', \"<awk \'$15 == ' + str(i) + '\' ' + relay_log_generate + '" using 1:' + str(pid_t_temp_relay[i]+6) + ' index 0 title \"' + relay_name[int(pid_t_temp_relay[i])] + '\" w impulses ls ' + str(i+3) + ' axes x1y1 ')
+            plot.write('\n')
 
         if sum(sensor_ht_graph):
-            plot.write('set origin 0.0,%.2f\n' % float(1-((1/float(num_graphs))*float(multiplot_num))))
+            plot.write('\nset origin 0.0,%.2f\n' % float(1-((1/float(num_graphs))*float(multiplot_num))))
             multiplot_num += 1
             plot.write('set title \"Combined HT Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot ')
@@ -401,11 +406,14 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                     plot.write('\"' + sensor_ht_log_final[i] + '" using 1:7 index 0 title \"HT-T' + str(i) + '\" w lp ls ' + str(i+11) + ' axes x1y2')
                 if i != (len(sensor_ht_graph) - 1) - sensor_ht_graph[::-1].index(1):
                     plot.write(', ')
-                else:
-                    plot.write('\n')
+
+            for i in range(1, sensor_ht_num+1):
+                if int(pid_ht_temp_relay[i]) != 0:
+                    plot.write(', \"<awk \'$15 == ' + str(i) + '\' ' + relay_log_generate + '" using 1:' + str(pid_ht_temp_relay[i]+6) + ' index 0 title \"' + relay_name[int(pid_ht_temp_relay[i])] + '\" w impulses ls ' + str(i+3) + ' axes x1y1 ')
+            plot.write('\n')
 
         if sum(sensor_ht_graph):
-            plot.write('set origin 0.0,%.2f\n' % float(1-((1/float(num_graphs))*float(multiplot_num))))
+            plot.write('\nset origin 0.0,%.2f\n' % float(1-((1/float(num_graphs))*float(multiplot_num))))
             multiplot_num += 1
             plot.write('set title \"Combined HT Humidities: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot ')
@@ -414,8 +422,11 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                     plot.write('\"' + sensor_ht_log_final[i] + '" using 1:8 index 0 title \"HT-H' + str(i) + '\" w lp ls ' + str(i+11) + ' axes x1y1')
                 if i != (len(sensor_ht_graph) - 1) - sensor_ht_graph[::-1].index(1):
                     plot.write(', ')
-                else:
-                    plot.write('\n')
+
+            for i in range(1, sensor_ht_num+1):
+                if int(pid_ht_hum_relay[i]) != 0:
+                    plot.write(', \"<awk \'$15 == ' + str(i) + '\' ' + relay_log_generate + '" using 1:' + str(pid_ht_hum_relay[i]+6) + ' index 0 title \"' + relay_name[int(pid_ht_hum_relay[i])] + '\" w impulses ls ' + str(i+3) + ' axes x1y1 ')
+            plot.write('\n')
 
         if sum(sensor_co2_graph):
             y2_min = '0'
@@ -431,8 +442,11 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                     plot.write('\"' + sensor_co2_log_final[i] + '" using 1:7 index 0 title \"CO2-' + str(i) + '\" w lp ls ' + str(i+11) + ' axes x1y2')
                 if i != (len(sensor_co2_graph) - 1) - sensor_co2_graph[::-1].index(1):
                     plot.write(', ')
-                else:
-                    plot.write('\n')
+
+            for i in range(1, sensor_co2_num+1):
+                if int(pid_co2_relay[i]) != 0:
+                    plot.write(', \"<awk \'$15 == ' + str(i) + '\' ' + relay_log_generate + '" using 1:' + str(pid_co2_relay[i]+6) + ' index 0 title \"' + relay_name[int(pid_co2_relay[i])] + '\" w impulses ls ' + str(i+3) + ' axes x1y1 ')
+            plot.write('\n')
 
         plot.write('unset multiplot\n')
 
@@ -443,44 +457,37 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
     if graph_type == "separate" and  graph_span != "default":
         if sensor_type == "t":
             plot.write('set title \"Temp Sensor ' + sensor_number + ': ' + sensor_t_name[int(float(sensor_number))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-            plot.write('plot \"' + sensor_t_log_final[1] + '\" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
-
-            plot.write('\"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '" u 1:7 index 0 title \"' + relay_name[1] + '\" w impulses ls 4 axes x1y1, ')
-            plot.write('\"\" u 1:8 index 0 title \"' + relay_name[2] + '\" w impulses ls 5 axes x1y1, ')
-            plot.write('\"\" u 1:9 index 0 title \"' + relay_name[3] + '\" w impulses ls 6 axes x1y1, ')
-            plot.write('\"\" u 1:10 index 0 title \"' + relay_name[4] + '\" w impulses ls 7 axes x1y1, ')
-            plot.write('\"\" u 1:11 index 0 title \"' + relay_name[5] + '\" w impulses ls 8 axes x1y1, ')
-            plot.write('\"\" u 1:12 index 0 title \"' + relay_name[6] + '\" w impulses ls 9 axes x1y1, ')
-            plot.write('\"\" u 1:13 index 0 title \"' + relay_name[7] + '\" w impulses ls 10 axes x1y1, ')
-            plot.write('\"\" u 1:14 index 0 title \"' + relay_name[8] + '\" w impulses ls 11 axes x1y1\n')
+            plot.write('plot \"' + sensor_t_log_final[1] + '\" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2')
+            if int(pid_t_temp_relay[int(sensor_number)]) != 0:
+                plot.write(', \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '" using 1:' + str(pid_t_temp_relay[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_t_temp_relay[int(sensor_number)])] + '\" w impulses ls 4 axes x1y1\n')
+            else:
+                plot.write('\n')
 
         if sensor_type == "ht":
             plot.write('set title \"Hum/Temp Sensor ' + sensor_number + ': ' + sensor_ht_name[int(float(sensor_number))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot \"' + sensor_ht_log_final[1] + '\" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
             plot.write('\"\" u 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, ')
-            plot.write('\"\" u 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ')
-
-            plot.write('\"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '" u 1:7 index 0 title \"' + relay_name[1] + '\" w impulses ls 4 axes x1y1, ')
-            plot.write('\"\" u 1:8 index 0 title \"' + relay_name[2] + '\" w impulses ls 5 axes x1y1, ')
-            plot.write('\"\" u 1:9 index 0 title \"' + relay_name[3] + '\" w impulses ls 6 axes x1y1, ')
-            plot.write('\"\" u 1:10 index 0 title \"' + relay_name[4] + '\" w impulses ls 7 axes x1y1, ')
-            plot.write('\"\" u 1:11 index 0 title \"' + relay_name[5] + '\" w impulses ls 8 axes x1y1, ')
-            plot.write('\"\" u 1:12 index 0 title \"' + relay_name[6] + '\" w impulses ls 9 axes x1y1, ')
-            plot.write('\"\" u 1:13 index 0 title \"' + relay_name[7] + '\" w impulses ls 10 axes x1y1, ')
-            plot.write('\"\" u 1:14 index 0 title \"' + relay_name[8] + '\" w impulses ls 11 axes x1y1\n')
+            plot.write('\"\" u 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2')
+            if int(pid_ht_temp_relay[int(sensor_number)]) != 0 or int(pid_ht_hum_relay[int(sensor_number)]) != 0:
+                plot.write(', \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '" ')
+                if pid_ht_temp_relay[int(sensor_number)]:
+                    if pid_ht_hum_relay[int(sensor_number)] == 0:
+                        plot.write('using 1:' + str(pid_ht_temp_relay[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_ht_temp_relay[int(sensor_number)])] + '\" w impulses ls 4 axes x1y1\n')
+                    else:
+                        plot.write('using 1:' + str(int(pid_ht_temp_relay[int(sensor_number)])+6) + ' index 0 title \"' + relay_name[int(pid_ht_temp_relay[int(sensor_number)])] + '\" w impulses ls 4 axes x1y1, ')
+                        plot.write('\"\" using 1:' + str(int(pid_ht_hum_relay[int(sensor_number)])+6) + ' index 0 title \"' + relay_name[int(pid_ht_hum_relay[int(sensor_number)])] + '\" w impulses ls 5 axes x1y1\n')
+                elif pid_ht_hum_relay[int(sensor_number)]:
+                    plot.write('using 1:' + str(int(pid_ht_hum_relay[int(sensor_number)])+6) + ' index 0 title \"' + relay_name[int(pid_ht_hum_relay[int(sensor_number)])] + '\" w impulses ls 4 axes x1y1\n')
+            else:
+                plot.write('\n')
 
         if sensor_type == "co2":
             plot.write('set title \"CO2 Sensor ' + sensor_number + ': ' + sensor_co2_name[int(float(sensor_number))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-            plot.write('plot \"' + sensor_co2_log_final[1] + '" using 1:7 index 0 title \"CO2\" w lp ls 1 axes x1y2, ')
-
-            plot.write('\"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '" u 1:7 index 0 title \"' + relay_name[1] + '\" w impulses ls 4 axes x1y1, ')
-            plot.write('\"\" u 1:8 index 0 title \"' + relay_name[2] + '\" w impulses ls 5 axes x1y1, ')
-            plot.write('\"\" u 1:9 index 0 title \"' + relay_name[3] + '\" w impulses ls 6 axes x1y1, ')
-            plot.write('\"\" u 1:10 index 0 title \"' + relay_name[4] + '\" w impulses ls 7 axes x1y1, ')
-            plot.write('\"\" u 1:11 index 0 title \"' + relay_name[5] + '\" w impulses ls 8 axes x1y1, ')
-            plot.write('\"\" u 1:12 index 0 title \"' + relay_name[6] + '\" w impulses ls 9 axes x1y1, ')
-            plot.write('\"\" u 1:13 index 0 title \"' + relay_name[7] + '\" w impulses ls 10 axes x1y1, ')
-            plot.write('\"\" u 1:14 index 0 title \"' + relay_name[8] + '\" w impulses ls 11 axes x1y1\n')
+            plot.write('plot \"' + sensor_co2_log_final[1] + '" using 1:7 index 0 title \"CO2\" w lp ls 1 axes x1y2')
+            if int(pid_co2_relay[int(sensor_number)]) != 0:
+                plot.write(', \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '" using 1:' + str(pid_co2_relay[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_co2_relay[int(sensor_number)])] + '\" w impulses ls 4 axes x1y1\n')
+            else:
+                plot.write('\n')
 
     #
     # Default: Generate a graph of the past day and week periods for each sensor
@@ -493,15 +500,13 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write('set size 1.0,0.5\n')
             plot.write('set origin 0.0,0.5\n')
             plot.write('set title \"Temp Sensor ' + sensor_number + ': ' + sensor_t_name[int(float(sensor_number))] + '\\n\\nPast Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-            plot.write('plot \"' + sensor_t_log_final[1] + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
-            plot.write('\"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '" u 1:7 index 0 title \"' + relay_name[1] + '\" w impulses ls 4 axes x1y1, ')
-            plot.write('\"\" using 1:8 index 0 title \"' + relay_name[2] + '\" w impulses ls 5 axes x1y1, ')
-            plot.write('\"\" using 1:9 index 0 title \"' + relay_name[3] + '\" w impulses ls 6 axes x1y1, ')
-            plot.write('\"\" using 1:10 index 0 title \"' + relay_name[4] + '\" w impulses ls 7 axes x1y1, ')
-            plot.write('\"\" using 1:11 index 0 title \"' + relay_name[5] + '\" w impulses ls 8 axes x1y1, ')
-            plot.write('\"\" using 1:12 index 0 title \"' + relay_name[6] + '\" w impulses ls 9 axes x1y1, ')
-            plot.write('\"\" using 1:13 index 0 title \"' + relay_name[7] + '\" w impulses ls 10 axes x1y1, ')
-            plot.write('\"\" using 1:14 index 0 title \"' + relay_name[8] + '\" w impulses ls 11 axes x1y1\n')
+
+            plot.write('plot \"' + sensor_t_log_final[1] + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2')
+            if int(pid_t_temp_relay[int(sensor_number)]) != 0:
+                plot.write(', \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '" using 1:' + str(pid_t_temp_relay[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_t_temp_relay[int(sensor_number)])] + '\" w impulses ls 4 axes x1y1\n')
+            else:
+                plot.write('\n')
+
             # Bottom graph - week
             d = 7
             time_ago = '1 Week'
@@ -524,15 +529,19 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write('set title \"Hum/Temp Sensor ' + sensor_number + ': ' + sensor_ht_name[int(float(sensor_number))] + '\\n\\nPast Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot \"' + sensor_ht_log_final[1] + '" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
             plot.write('\"\" using 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, ')
-            plot.write('\"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ')
-            plot.write('\"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '" u 1:7 index 0 title \"' + relay_name[1] + '\" w impulses ls 4 axes x1y1, ')
-            plot.write('\"\" using 1:8 index 0 title \"' + relay_name[2] + '\" w impulses ls 5 axes x1y1, ')
-            plot.write('\"\" using 1:9 index 0 title \"' + relay_name[3] + '\" w impulses ls 6 axes x1y1, ')
-            plot.write('\"\" using 1:10 index 0 title \"' + relay_name[4] + '\" w impulses ls 7 axes x1y1, ')
-            plot.write('\"\" using 1:11 index 0 title \"' + relay_name[5] + '\" w impulses ls 8 axes x1y1, ')
-            plot.write('\"\" using 1:12 index 0 title \"' + relay_name[6] + '\" w impulses ls 9 axes x1y1, ')
-            plot.write('\"\" using 1:13 index 0 title \"' + relay_name[7] + '\" w impulses ls 10 axes x1y1, ')
-            plot.write('\"\" using 1:14 index 0 title \"' + relay_name[8] + '\" w impulses ls 11 axes x1y1\n')
+            plot.write('\"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2')
+            if int(pid_ht_temp_relay[int(sensor_number)]) != 0 or int(pid_ht_hum_relay[int(sensor_number)]) != 0:
+                plot.write(', \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '" ')
+                if int(pid_ht_temp_relay[int(sensor_number)]):
+                    if int(pid_ht_hum_relay[int(sensor_number)]) == 0:
+                        plot.write('using 1:' + str(pid_ht_temp_relay[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_ht_temp_relay[int(sensor_number)])] + '\" w impulses ls 4 axes x1y1\n')
+                    else:
+                        plot.write('using 1:' + str(int(pid_ht_temp_relay[int(sensor_number)])+6) + ' index 0 title \"' + relay_name[int(pid_ht_temp_relay[int(sensor_number)])] + '\" w impulses ls 4 axes x1y1, ')
+                        plot.write('\"\" using 1:' + str(int(pid_ht_hum_relay[int(sensor_number)])+6) + ' index 0 title \"' + relay_name[int(pid_ht_hum_relay[int(sensor_number)])] + '\" w impulses ls 5 axes x1y1\n')
+                elif int(pid_ht_hum_relay[int(sensor_number)]):
+                    plot.write('using 1:' + str(int(pid_ht_hum_relay[int(sensor_number)])+6) + ' index 0 title \"' + relay_name[int(pid_ht_hum_relay[int(sensor_number)])] + '\" w impulses ls 4 axes x1y1\n')
+            else:
+                plot.write('\n')
             # Bottom graph - week
             d = 7
             time_ago = '1 Week'
@@ -555,15 +564,12 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write('set size 1.0,0.5\n')
             plot.write('set origin 0.0,0.5\n')
             plot.write('set title \"CO2 Sensor ' + sensor_number + ': ' + sensor_co2_name[int(float(sensor_number))] + '\\n\\nPast Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-            plot.write('plot \"' + sensor_co2_log_final[1] + '" using 1:7 index 0 title \"CO2\" w lp ls 1 axes x1y2, ')
-            plot.write('\"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '" u 1:7 index 0 title \"' + relay_name[1] + '\" w impulses ls 4 axes x1y1, ')
-            plot.write('\"\" using 1:8 index 0 title \"' + relay_name[2] + '\" w impulses ls 5 axes x1y1, ')
-            plot.write('\"\" using 1:9 index 0 title \"' + relay_name[3] + '\" w impulses ls 6 axes x1y1, ')
-            plot.write('\"\" using 1:10 index 0 title \"' + relay_name[4] + '\" w impulses ls 7 axes x1y1, ')
-            plot.write('\"\" using 1:11 index 0 title \"' + relay_name[5] + '\" w impulses ls 8 axes x1y1, ')
-            plot.write('\"\" using 1:12 index 0 title \"' + relay_name[6] + '\" w impulses ls 9 axes x1y1, ')
-            plot.write('\"\" using 1:13 index 0 title \"' + relay_name[7] + '\" w impulses ls 10 axes x1y1, ')
-            plot.write('\"\" using 1:14 index 0 title \"' + relay_name[8] + '\" w impulses ls 11 axes x1y1\n')
+            plot.write('plot \"' + sensor_co2_log_final[1] + '" using 1:7 index 0 title \"CO2\" w lp ls 1 axes x1y2')
+            if int(pid_co2_relay[int(sensor_number)]) != 0:
+                plot.write(', \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '" using 1:' + str(pid_co2_relay[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_co2_relay[int(sensor_number)])] + '\" w impulses ls 4 axes x1y1\n')
+            else:
+                plot.write('\n')
+
             # Bottom graph - week
             d = 7
             time_ago = '1 Week'
