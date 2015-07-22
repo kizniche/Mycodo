@@ -455,21 +455,45 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
     # Separate: Generate a graph with temp, hum, and dew point for each sensor
     #
     if graph_type == "separate" and  graph_span != "default":
+        
+
         if sensor_type == "t":
+            if int(pid_t_temp_relay[int(sensor_number)]) != 0:
+                plot.write('set multiplot\n')
+                plot.write('set size 1.0,0.6\n')
+                plot.write('set origin 0.0,0.4\n')
+
             plot.write('set title \"Temp Sensor ' + sensor_number + ': ' + sensor_t_name[int(float(sensor_number))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot \"' + sensor_t_log_final[1] + '\" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2')
+
             if int(pid_t_temp_relay[int(sensor_number)]) != 0:
-                plot.write(', \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '" using 1:' + str(pid_t_temp_relay[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_t_temp_relay[int(sensor_number)])] + '\" w impulses ls 4 axes x1y1\n')
+                plot.write('set size 1.0,0.4\n')
+                plot.write('set origin 0.0,0.0\n')
+                plot.write('set title \"Relays\"\n')
+                plot.write('plot \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '" using 1:' + str(pid_t_temp_relay[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_t_temp_relay[int(sensor_number)])] + '\" w impulses ls 4 axes x1y1\n')
             else:
                 plot.write(' \n')
 
         if sensor_type == "ht":
+            if int(pid_ht_temp_relay[int(sensor_number)]) != 0 or int(pid_ht_hum_relay[int(sensor_number)]) != 0:
+                plot.write('set multiplot\n')
+                plot.write('set size 1.0,0.6\n')
+                plot.write('set origin 0.0,0.4\n')
+
             plot.write('set title \"Hum/Temp Sensor ' + sensor_number + ': ' + sensor_ht_name[int(float(sensor_number))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot \"' + sensor_ht_log_final[1] + '\" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ')
             plot.write('\"\" u 1:8 index 0 title \"RH\" w lp ls 2 axes x1y1, ')
-            plot.write('\"\" u 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2')
+            plot.write('\"\" u 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2\n')
+            
             if int(pid_ht_temp_relay[int(sensor_number)]) != 0 or int(pid_ht_hum_relay[int(sensor_number)]) != 0:
-                plot.write(', \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '" ')
+                plot.write('set size 1.0,0.4\n')
+                plot.write('set origin 0.0,0.0\n')
+                plot.write('set y2tics 20\n')
+                plot.write('set ytics 20\n')
+                y2_max = '100'
+                plot.write('set y2range [' + y2_min + ':' + y2_max + ']\n')
+                plot.write('set title \"Relays\"\n')
+                plot.write('plot \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '" ')
                 if pid_ht_temp_relay[int(sensor_number)]:
                     if pid_ht_hum_relay[int(sensor_number)] == 0:
                         plot.write('using 1:' + str(pid_ht_temp_relay[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_ht_temp_relay[int(sensor_number)])] + '\" w impulses ls 4 axes x1y1\n')
@@ -478,6 +502,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                         plot.write('\"\" using 1:' + str(int(pid_ht_hum_relay[int(sensor_number)])+6) + ' index 0 title \"' + relay_name[int(pid_ht_hum_relay[int(sensor_number)])] + '\" w impulses ls 5 axes x1y1\n')
                 elif pid_ht_hum_relay[int(sensor_number)]:
                     plot.write('using 1:' + str(int(pid_ht_hum_relay[int(sensor_number)])+6) + ' index 0 title \"' + relay_name[int(pid_ht_hum_relay[int(sensor_number)])] + '\" w impulses ls 4 axes x1y1\n')
+                plot.write('unset multiplot\n')
             else:
                 plot.write(' \n')
 
@@ -488,6 +513,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write(', \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '" using 1:' + str(pid_co2_relay[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_co2_relay[int(sensor_number)])] + '\" w impulses ls 4 axes x1y1\n')
             else:
                 plot.write(' \n')
+
 
     #
     # Default: Generate a graph of the past day and week periods for each sensor
