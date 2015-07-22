@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-#  mycodo-database-tool.py - Tool for editing the Mycodo SQLite database
+#  setup-database.py - Tool for creating Mycodo SQLite databases
 #
 #  Copyright (C) 2015  Kyle T. Gabriel
 #
