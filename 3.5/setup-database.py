@@ -155,8 +155,8 @@ def menu():
         return 1
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'ad:hi:',
-            ["adduser", "deleteuser=",  "install-db="])
+        opts, args = getopt.getopt(sys.argv[1:], 'ad:hip::',
+            ["adduser", "deleteuser=", "help", "install-db=", "pwchange="])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -178,6 +178,9 @@ def menu():
                 print 'Error: One option required: mycodo-db.py --db-setup [all, user, mycodo]'
                 return 0
             return 1
+        elif opt in ("-p", "--pwchange"):
+            password_change(sys.argv[2])
+            return 1
         else:
             assert False, "Fail"
 
@@ -193,6 +196,8 @@ def usage():
     print '           Display this help and exit'
     print '    -i, --install-db user/mycodo/all'
     print '           Create new users.db, mycodo.db. or both'
+    print '    -p, --pwchange user'
+    print '           Create a new password for user'
     print '\nExample: setup-database.py -i all'
 
 def add_user():
@@ -234,6 +239,24 @@ def delete_user(user_name):
         conn = sqlite3.connect(sql_database_user)
         cur = conn.cursor()
         cur.execute("DELETE FROM users WHERE user_name = '%s' " % user_name)
+        conn.commit()
+        cur.close()
+
+def password_change(user_name):
+    if query_yes_no("Confirm change password of user '%s' from /var/www/mycodo/config/users.db" % user_name):
+        pass_checks = True
+        while pass_checks:
+            user_password = raw_input('password: ')
+            user_password_again = raw_input('password (again): ')
+            if user_password != user_password_again:
+                print "Passwords don't match"
+            elif test_password(user_password):
+                    user_password_hash = subprocess.check_output(["php", "includes/hash.php", "hash", user_password])
+                    pass_checks = False
+
+        conn = sqlite3.connect(sql_database_user)
+        cur = conn.cursor()
+        cur.execute("UPDATE users SET user_password_hash='%s' WHERE user_name='%s'" % (user_password_hash, user_name))
         conn.commit()
         cur.close()
 
@@ -334,8 +357,7 @@ def create_rows_columns_user():
         admin_password_again = raw_input('Password (again): ')
         if admin_password != admin_password_again:
             print "Passwords don't match"
-        else:
-            if test_password(admin_password):
+        elif test_password(admin_password):
                 admin_password_hash = subprocess.check_output(["php", "includes/hash.php", "hash", admin_password])
                 pass_checks = False
 
@@ -366,8 +388,7 @@ def create_rows_columns_user():
             user_password_again = raw_input('password (again): ')
             if user_password != user_password_again:
                 print "Passwords don't match"
-            else:
-                if test_password(user_password):
+            elif test_password(user_password):
                     user_password_hash = subprocess.check_output(["php", "includes/hash.php", "hash", user_password])
                     pass_checks = False
 
@@ -392,8 +413,7 @@ def create_rows_columns_user():
             user_password_again = raw_input('password (again): ')
             if user_password != user_password_again:
                 print "Passwords don't match"
-            else:
-                if test_password(user_password):
+            elif test_password(user_password):
                     user_password_hash = subprocess.check_output(["php", "/var/www/mycodo/includes/hash.php", "hash", user_password])
                     pass_checks = False
 
