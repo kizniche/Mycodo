@@ -389,7 +389,7 @@ if ($output_error) {
                     } else { ?>
                         <div style="width: 100%; padding: 2em 0 0 0; text-align: center;">
                             There are currently 0 sensors activated for graphing.
-                            <br>Sensors can be activated for logging and graphing in the Configure tab.
+                            <br>Sensors can be activated for logging and graphing from the Sensor tab.
                         </div>
                     <?php
                     }
