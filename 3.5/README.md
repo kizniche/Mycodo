@@ -222,6 +222,18 @@ I highly recommend testing whether the configuration change actually worked. Thi
 
 ### Final Steps
 
+#### Databse Creation
+
+Create the databases with the following commands
+
+`cd /var/www/mycodo/`
+
+`./setup-databases.py -i`
+
+Follow the prompts to create an admin password, optionally create another user, and enable/disable guest access.
+
+#### Starting the Daemon
+
 To initialize GPIO pins at startup, open crontab with `sudo crontab -e` and add the following lines, then save with `Ctrl+e`
 
 `@reboot /usr/bin/python /var/www/mycodo/cgi-bin/GPIO-initialize.py &`
@@ -240,13 +252,13 @@ Reboot to allow everything to start up
 
 After the system is back up, go to http://your.rpi.address/mycodo
 
-Login with the login and password given to you at the login page, then go to the config tab.
+Login with the credentials you created with setup-database.py, then go to the Settings tab.
 
 Select the number of relays that are connected and save.
 
 Change the `GPIO Pin` and `Trigger ON` of each relay. The `GPIO Pin` is the pin on the raspberry pi (using BCM numbering, not board numbering) and the `Trigger ON` is the required signal to activate the relay (close the circuit). If your relay activates when it receives a LOW (0 volt, ground) signal, set the `Trigger ON` to LOW, otherwise set it HIGH. Save all your changes.
 
-Select the number of each type of sensors that are connected and save. T=Temperature Sensors, HT=Humidity/Temperature Sensors, and CO2=CO2 Sensors.
+In the Sensors tab, select the number of each type of sensors that are connected and save. T=Temperature Sensors, HT=Humidity/Temperature Sensors, and CO2=CO2 Sensors.
 
 Change the `Sensor Device` and `GPIO Pin` for each sensor. Once these have been set, you can activate logging and/or graphing. When logging is activated, a log entry will be written to a file at the duration defined under `Log Interval` and when graphing is activated, the `Generate Graph` button on the main tab will generate preset graphs with the data logged with that particular sensor.
 

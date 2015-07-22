@@ -205,7 +205,7 @@ def usage():
     print '           Create new users.db, mycodo.db. or both'
     print '    -p, --pwchange'
     print '           Create a new password for user\n'
-    print 'Examples: setup-database.py -install-db'
+    print 'Examples: setup-database.py -i'
     print '          setup-database.py -p /var/www/mycodo/config/users.db'
 
 def add_user(db):
@@ -294,9 +294,6 @@ def db_exists_mycodo(db):
         sys.exit(0)
 
 def setup_db():
-    global sql_database_mycodo
-    global sql_database_user
-    print "Setting up database(s) in %s" % db_directory
     target = raw_input("Generate which database? 'user', 'mycodo', or 'all'? ")
     if target == 'all' or target == 'mycodo':
         delete_all_tables_mycodo()
