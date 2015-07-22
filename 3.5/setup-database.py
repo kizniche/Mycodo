@@ -452,7 +452,7 @@ def create_rows_columns_user():
 
 
 def is_email(email):
-    pattern = '[\.\w]{1,}[@]\w+[.]\w+'
+    pattern = '[^@]+@[^@]+\.[^@]+'
     if re.match(pattern, email):
         return True
     else:

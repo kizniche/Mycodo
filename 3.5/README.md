@@ -42,7 +42,7 @@ sqlite3
 
 `sudo apt-get upgrade`
 
-`sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev php5 libapache2-mod-php5 pip subversion php5-sqlite sqlite3`
+`sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev php5 libapache2-mod-php5 python-pip subversion php5-sqlite sqlite3`
 
 `svn checkout https://github.com/kizniche/Mycodo/trunk/3.5 /var/www/mycodo`
 
@@ -222,13 +222,13 @@ I highly recommend testing whether the configuration change actually worked. Thi
 
 ### Final Steps
 
-#### Databse Creation
+#### Database Creation
 
 Create the databases with the following commands
 
 `cd /var/www/mycodo/`
 
-`./setup-databases.py -i`
+`sudo ./setup-databases.py -i`
 
 Follow the prompts to create an admin password, optionally create another user, and enable/disable guest access.
 
@@ -258,7 +258,7 @@ Select the number of relays that are connected and save.
 
 Change the `GPIO Pin` and `Trigger ON` of each relay. The `GPIO Pin` is the pin on the raspberry pi (using BCM numbering, not board numbering) and the `Trigger ON` is the required signal to activate the relay (close the circuit). If your relay activates when it receives a LOW (0 volt, ground) signal, set the `Trigger ON` to LOW, otherwise set it HIGH. Save all your changes.
 
-In the Sensors tab, select the number of each type of sensors that are connected and save. T=Temperature Sensors, HT=Humidity/Temperature Sensors, and CO2=CO2 Sensors.
+Go to the Sensors tab and select the number of each type of sensors that are connected and save. T=Temperature Sensors, HT=Humidity/Temperature Sensors, and CO2=CO2 Sensors.
 
 Change the `Sensor Device` and `GPIO Pin` for each sensor. Once these have been set, you can activate logging and/or graphing. When logging is activated, a log entry will be written to a file at the duration defined under `Log Interval` and when graphing is activated, the `Generate Graph` button on the main tab will generate preset graphs with the data logged with that particular sensor.
 
