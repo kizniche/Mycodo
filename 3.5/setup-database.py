@@ -23,11 +23,14 @@
 #  Contact at kylegabriel.com
 
 import getopt
+import re
 import sqlite3
+import subprocess
 import sys
 import time
 
-sql_database = '/var/www/mycodo/config/mycodo.db'
+sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
+sql_database_user = '/var/www/mycodo/config/users.db'
 
 # GPIO pins (BCM numbering) and name of devices attached to relay
 relay_num = None
@@ -148,8 +151,8 @@ terminate = False
 
 def menu():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'a:ruv',
-            ["add", "delete-rows", "delete-tables", "create-tables", "db-recreate", "db-setup", "load", "row", "update", "view"])
+        opts, args = getopt.getopt(sys.argv[1:], 'a:druv',
+            ["add", "delete-rows", "delete-tables", "add-tables", "db-setup", "load", "row", "update", "view"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         return 2
@@ -157,22 +160,21 @@ def menu():
         if opt in ("-a", "--add"):
             add_columns(sys.argv[2], sys.argv[3], sys.argv[4])
             return 1
-        elif opt == "--create-tables":
-            create_all_tables()
+        elif opt == "--add-tables":
+            create_all_tables_mycodo()
             return 1
-        elif opt == "--db-recreate":
-            print "Recreate Database"
-            delete_all_tables()
-            create_all_tables()
-            return 1
-        elif opt == "--db-setup":
-            setup_db()
+        elif opt in ("-d", "--db-setup"):
+            if sys.argv[2] == 'all' or sys.argv[2] == 'user' or sys.argv[2] == 'mycodo':
+                setup_db(sys.argv[2])
+            else:
+                print 'Error: One option required: mycodo-db.py --db-setup [all, user, mycodo]'
+                return 0
             return 1
         elif opt == "--delete-rows":
             delete_all_rows()
             return 1
         elif opt == "--delete-tables":
-            delete_all_tables()
+            delete_all_tables_mycodo()
             return 1
         elif opt == "--load":
             set_global_variables(0)
@@ -188,16 +190,28 @@ def menu():
             view_columns()
             return 1
         else:
-            assert False, "Fail"
+            setup_db('all')
 
-def setup_db():
-    delete_all_tables()
-    create_all_tables()
-    create_rows_columns()
+def setup_db(target):
+    global sql_database_mycodo
+    global sql_database_user
 
-def delete_all_tables():
-    print "Delete Tables"
-    conn = sqlite3.connect(sql_database)
+    if target == 'all' or target == 'mycodo':
+        if not query_yes_no('Use default save path /var/www/mycodo/config/mycodo.db?'):
+            sql_database_mycodo = input('user.db save path: ')
+        delete_all_tables_mycodo()
+        create_all_tables_mycodo()
+        create_rows_columns_mycodo()
+    if target == 'all' or target == 'user':
+        if not query_yes_no('Use default save path /var/www/mycodo/config/user.db?'):
+            sql_database_user = input('user.db save path: ')
+        delete_all_tables_user()
+        create_all_tables_user()
+        create_rows_columns_user()
+
+def delete_all_tables_mycodo():
+    print "mydoco.db: Delete all tables"
+    conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
     cur.execute('DROP TABLE IF EXISTS Relays ')
     cur.execute('DROP TABLE IF EXISTS TSensor ')
@@ -209,9 +223,9 @@ def delete_all_tables():
     cur.execute('DROP TABLE IF EXISTS Misc ')
     conn.close()
 
-def create_all_tables():
-    print "Create Tables"
-    conn = sqlite3.connect(sql_database)
+def create_all_tables_mycodo():
+    print "mycodo.db: Create all tables"
+    conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
     cur.execute("CREATE TABLE Relays (Id INT, Name TEXT, Pin INT, Trigger INT)")
     cur.execute("CREATE TABLE TSensor (Id INT, Name TEXT, Pin TEXT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay INT, Temp_OR INT, Temp_Set REAL, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D REAL)")
@@ -223,9 +237,9 @@ def create_all_tables():
     cur.execute("CREATE TABLE Misc (Camera_Relay INT, Display_Last INT, Display_Timestamp INT)")
     conn.close()
 
-def create_rows_columns():
-    print "Create Rows and Columns"
-    conn = sqlite3.connect(sql_database)
+def create_rows_columns_mycodo():
+    print "mydodo.db: Create all rows and columns"
+    conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
     for i in range(1, 9):
         cur.execute("INSERT INTO Relays VALUES(%d, 'Relay%d', 0, 0)" % (i, i))
@@ -243,9 +257,191 @@ def create_rows_columns():
     conn.commit()
     cur.close()
 
+
+def delete_all_tables_user():
+    print "user.db: Delete all tables"
+    conn = sqlite3.connect(sql_database_user)
+    cur = conn.cursor()
+    cur.execute('DROP TABLE IF EXISTS `users` ')
+    conn.close()
+
+
+def create_all_tables_user():
+    print "user.db: Create all tables"
+    conn = sqlite3.connect(sql_database_user)
+    cur = conn.cursor()
+
+    cur.execute("CREATE TABLE IF NOT EXISTS `users` (`user_id` INTEGER PRIMARY KEY, `user_name` varchar(64), `user_password_hash` varchar(255), `user_email` varchar(64))")
+    cur.execute("CREATE UNIQUE INDEX `user_name_UNIQUE` ON `users` (`user_name` ASC)")
+    cur.execute("CREATE UNIQUE INDEX `user_email_UNIQUE` ON `users` (`user_email` ASC)")
+    conn.close()
+
+
+def create_rows_columns_user():
+    print "user.db: Create all rows and columns"
+    conn = sqlite3.connect(sql_database_user)
+    cur = conn.cursor()
+
+    pass_checks = True
+    print "\nPassword for user 'admin' (minimum 6 charachters in length)"
+    while pass_checks:
+        admin_password = raw_input('password: ')
+        admin_password_again = raw_input('password (again): ')
+        if admin_password != admin_password_again:
+            print "Passwords don't match"
+        else:
+            if test_password(admin_password):
+                admin_password_hash = subprocess.check_output(["php", "/var/www/mycodo/includes/hash.php", "hash", admin_password])
+                pass_checks = False
+
+    pass_checks = True
+    print "\nEmail for user 'admin'"
+    while pass_checks:
+        admin_email = raw_input('email: ')
+        if is_email(admin_email):
+            pass_checks = False
+        else:
+            print 'Not a properly-formatted email\n'
+
+    cur.execute("INSERT INTO users (user_name, user_password_hash, user_email) VALUES ('{user_name}', '{user_password_hash}', '{user_email}')".\
+        format(user_name='admin', user_password_hash=admin_password_hash, user_email=admin_email))
+
+    if query_yes_no('\nCreate additional user account?'):
+        pass_checks = True
+        print "\nCreate user (a-z, A-Z, 2-64 characters)"
+        while pass_checks:
+            user_name = raw_input('username: ')
+            if test_username(user_name):
+                pass_checks = False
+
+        pass_checks = True
+        print "\nPassword for user '" + user_name + "'"
+        while pass_checks:
+            user_password = raw_input('password: ')
+            user_password_again = raw_input('password (again): ')
+            if user_password != user_password_again:
+                print "Passwords don't match"
+            else:
+                if test_password(user_password):
+                    user_password_hash = subprocess.check_output(["php", "/var/www/mycodo/includes/hash.php", "hash", user_password])
+                    pass_checks = False
+
+        pass_checks = True
+        print "\nEmail for user '" + user_name + "'"
+        while pass_checks:
+            user_email = raw_input('email: ')
+            if is_email(user_email):
+                pass_checks = False
+            else:
+                print 'Not a properly-formatted email\n'
+
+        cur.execute("INSERT INTO users (user_name, user_password_hash, user_email) VALUES ('{user_name}', '{user_password_hash}', '{user_email}')".\
+            format(user_name=user_name, user_password_hash=user_password_hash, user_email=user_email))
+
+    if query_yes_no("\nAllow 'guest' access (view but not modify)?"):
+
+        pass_checks = True
+        print "\nPassword for user 'guest'"
+        while pass_checks:
+            user_password = raw_input('password: ')
+            user_password_again = raw_input('password (again): ')
+            if user_password != user_password_again:
+                print "Passwords don't match"
+            else:
+                if test_password(user_password):
+                    user_password_hash = subprocess.check_output(["php", "/var/www/mycodo/includes/hash.php", "hash", user_password])
+                    pass_checks = False
+
+        cur.execute("INSERT INTO users (user_name, user_password_hash, user_email) VALUES ('{user_name}', '{user_password_hash}', '{user_email}')".\
+            format(user_name='guest', user_password_hash=user_password_hash, user_email='guest@guest.com'))
+
+    conn.commit()
+    cur.close()
+
+
+def is_email(email):
+    pattern = '[\.\w]{1,}[@]\w+[.]\w+'
+    if re.match(pattern, email):
+        return True
+    else:
+        return False
+
+
+def pass_length_min(pw):
+    'Password must be at least 6 characters\n'
+    return len(pw) >= 6
+
+def test_password(pw, tests=[pass_length_min]):
+    for test in tests:
+        if not test(pw):
+            print(test.__doc__)
+            return False
+    return True
+
+
+def characters(un):
+    'User name must be only letters and numbers\n'
+    return re.match("^[A-Za-z0-9_-]+$", un)
+
+def user_length_min(un):
+    'Password must be at least 2 characters\n'
+    return len(un) >= 2
+
+def user_length_max(un):
+    'Password cannot be more than 64 characters\n'
+    return len(un) <= 64
+
+def test_username(un, tests=[characters, user_length_min, user_length_max]):
+    for test in tests:
+        if not test(un):
+            print(test.__doc__)
+            return False
+    return True
+
+
+def query_yes_no(question, default="yes"):
+    """Ask a yes/no question via raw_input() and return their answer.
+
+    "question" is a string that is presented to the user.
+    "default" is the presumed answer if the user just hits <Enter>.
+        It must be "yes" (the default), "no" or None (meaning
+        an answer is required of the user).
+
+    The "answer" return value is True for "yes" or False for "no".
+    """
+    valid = {"yes": True, "y": True, "ye": True,
+             "no": False, "n": False}
+    if default is None:
+        prompt = " [y/n] "
+    elif default == "yes":
+        prompt = " [Y/n] "
+    elif default == "no":
+        prompt = " [y/N] "
+    else:
+        raise ValueError("invalid default answer: '%s'" % default)
+
+    while True:
+        sys.stdout.write(question + prompt)
+        choice = raw_input().lower()
+        if default is not None and choice == '':
+            return valid[default]
+        elif choice in valid:
+            return valid[choice]
+        else:
+            sys.stdout.write("Please respond with 'y' or 'n').\n")
+
+
+
+
+#
+#
+# Old code (may be used)
+#
+# 
+
 def add_columns(table, variable, value):
     #print "Add to Table: %s Variable: %s Value: %s" % (table, variable, value)
-    conn = sqlite3.connect(sql_database)
+    conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
     if represents_int(value) or represents_float(value):
         query = "INSERT INTO %s (%s) VALUES ( '%s' )" % (table, variable, value)
@@ -257,7 +453,7 @@ def add_columns(table, variable, value):
 
 # Print all values in all tables
 def view_columns():
-    conn = sqlite3.connect(sql_database)
+    conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
 
     cur.execute('SELECT Id, Name, Pin, Trigger FROM Relays')
@@ -304,189 +500,9 @@ def view_columns():
 
     cur.close()
 
-# Set global variables from the SQL database
-def set_global_variables(verbose):
-    global relay_name
-    global relay_pin
-    global relay_trigger
-
-    global sensor_ht_name
-    global sensor_ht_device
-    global sensor_ht_pin
-    global sensor_ht_period
-    global sensor_ht_log
-    global sensor_ht_graph
-
-    global pid_ht_temp_relay
-    global pid_ht_temp_set
-    global pid_ht_temp_or
-    global pid_ht_temp_p
-    global pid_ht_temp_i
-    global pid_ht_temp_d
-
-    global pid_ht_hum_relay
-    global pid_ht_hum_set
-    global pid_ht_hum_or
-    global pid_ht_hum_p
-    global pid_ht_hum_i
-    global pid_ht_hum_d
-
-    global sensor_co2_name
-    global sensor_co2_device
-    global sensor_co2_pin
-    global sensor_co2_period
-    global sensor_co2_log
-    global sensor_co2_graph
-
-    global pid_co2_period
-    global pid_co2_relay
-    global pid_co2_set
-    global pid_co2_or
-    global pid_co2_p
-    global pid_co2_i
-    global pid_co2_d
-
-    global relay_num
-    global sensor_ht_num
-    global sensor_co2_num
-    global timer_num
-
-    global timer_relay
-    global timer_state
-    global timer_duration_on
-    global timer_duration_off
-
-    global smtp_host
-    global smtp_ssl
-    global smtp_port
-    global smtp_user
-    global smtp_pass
-    global smtp_email_from
-    global smtp_email_to
-
-    # Check if all required tables exist in the SQL database
-    conn = sqlite3.connect(sql_database)
-    cur = conn.cursor()
-    tables = ['Relays', 'HTSensor', 'CO2Sensor', 'Timers', 'Numbers', 'SMTP']
-    missing = []
-    for i in range(0, len(tables)):
-        query = "SELECT name FROM sqlite_master WHERE type='table' AND name='%s'" % tables[i]
-        cur.execute(query)
-        if cur.fetchone() == None: missing.append(tables[i])
-    if missing != []:
-        print "Missing required table(s):",
-        for i in range(0, len(missing)):
-            if len(missing) == 1:
-                print "%s" % missing[i]
-            elif len(missing) != 1 and i != len(missing)-1:
-                print "%s," % missing[i],
-            else:
-                print "%s" % missing[i]
-        print "Reinitialize database to correct."
-        return 0
-
-    # Begin setting global variables from SQL database values
-    cur.execute('SELECT Id, Name, Pin, Trigger FROM Relays')
-    if verbose:
-            print "Table: Relays"
-    for row in cur :
-        if verbose:
-            print "%s %s %s %s" % (row[0], row[1], row[2], row[3])
-        relay_name[row[0]] = row[1]
-        relay_pin[row[0]] = row[2]
-        relay_trigger[row[0]] = row[3]
-
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, Temp_Relay, Temp_OR, Temp_Set, Temp_P, Temp_I, Temp_D, Hum_Relay, Hum_OR, Hum_Set, Hum_P, Hum_I, Hum_D FROM HTSensor')
-    if verbose:
-            print "Table: HTSensor"
-    for row in cur :
-        if verbose:
-            print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s%s " % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18])
-        sensor_ht_name[row[0]] = row[1]
-        sensor_ht_pin[row[0]] = row[2]
-        sensor_ht_device[row[0]] = row[3]
-        sensor_ht_period[row[0]] = row[4]
-        sensor_ht_log[row[0]] = row[5]
-        sensor_ht_graph[row[0]] = row[6]
-        pid_ht_temp_relay[row[0]] = row[7]
-        pid_ht_temp_or[row[0]] = row[8]
-        pid_ht_temp_set[row[0]] = row[9]
-        pid_ht_temp_p[row[0]] = row[10]
-        pid_ht_temp_i[row[0]] = row[11]
-        pid_ht_temp_d[row[0]] = row[12]
-        pid_ht_hum_relay[row[0]] = row[13]
-        pid_ht_hum_or[row[0]] = row[14]
-        pid_ht_hum_set[row[0]] = row[15]
-        pid_ht_hum_p[row[0]] = row[16]
-        pid_ht_hum_i[row[0]] = row[17]
-        pid_ht_hum_d[row[0]] = row[18]
-
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, CO2_Relay, CO2_OR, CO2_Set, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
-    if verbose:
-            print "Table: CO2Sensor "
-    for row in cur :
-        if verbose:
-            print "%s %s %s %s %s %s %s %s %s %s %s %s %s" % (
-                row[0], row[1], row[2], row[3], row[4], row[5], row[6],
-                row[7], row[8], row[9], row[10], row[11], row[12])
-        sensor_co2_name[row[0]] = row[1]
-        sensor_co2_pin[row[0]] = row[2]
-        sensor_co2_device[row[0]] = row[3]
-        sensor_co2_period[row[0]] = row[4]
-        sensor_co2_log[row[0]] = row[5]
-        sensor_co2_graph[row[0]] = row[6]
-        pid_co2_relay[row[0]] = row[7]
-        pid_co2_or[row[0]] = row[8]
-        pid_co2_set[row[0]] = row[9]
-        pid_co2_p[row[0]] = row[10]
-        pid_co2_i[row[0]] = row[11]
-        pid_co2_d[row[0]] = row[12]
-
-    cur.execute('SELECT Id, Name, Relay, State, DurationOn, DurationOff FROM Timers ')
-    if verbose:
-            print "Table: Timers "
-    for row in cur :
-        if verbose:
-            print "%s %s %s %s %s %s" % (
-                row[0], row[1], row[2], row[3], row[4], row[5])
-        timer_name[row[0]] = row[1]
-        timer_relay[row[0]] = row[2]
-        timer_state[row[0]] = row[3]
-        timer_duration_on[row[0]] = row[4]
-        timer_duration_off[row[0]] = row[5]
-
-    cur.execute('SELECT Relays, HTSensors, CO2Sensors, Timers FROM Numbers ')
-    if verbose:
-            print "Table: Numbers "
-    for row in cur :
-        if verbose:
-            print "%s %s %s %s" % (
-                row[0], row[1], row[2], row[3])
-        relay_num = row[0]
-        sensor_ht_num = row[1]
-        sensor_co2_num = row[2]
-        timer_num = row[3]
-
-    cur.execute('SELECT Host, SSL, Port, User, Pass, Email_From, Email_To FROM SMTP')
-    if verbose:
-            print "Table: SMTP "
-    for row in cur :
-        if verbose:
-            print "%s %s %s %s %s %s %s" % (
-                row[0], row[1], row[2], row[3], row[4], row[5], row[6])
-        smtp_host = row[0]
-        smtp_ssl = row[1]
-        smtp_port = row[2]
-        smtp_user = row[3]
-        smtp_pass = row[4]
-        smtp_email_from = row[5]
-        smtp_email_to = row[6]
-
-    cur.close()
-
 def delete_all_rows():
     print "Delete All Rows"
-    conn = sqlite3.connect(sql_database)
+    conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
     cur.execute('DELETE FROM Relays ')
     cur.execute('DELETE FROM HTSensor ')
@@ -499,7 +515,7 @@ def delete_all_rows():
 
 def delete_row(table, Id):
     print "Delete Row: %s" % row
-    conn = sqlite3.connect(sql_database)
+    conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
     query = "DELETE FROM %s WHERE Id = '%s' " % (table, Id)
     cur.execute(query)
@@ -509,7 +525,7 @@ def delete_row(table, Id):
 def update_value(table, Id, variable, value):
     print "Update Table: %s Id: %s Variable: %s Value: %s" % (
         table, Id, variable, value)
-    conn = sqlite3.connect(sql_database)
+    conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
 
     if Id is '0':
@@ -550,4 +566,4 @@ def represents_float(s):
 start_time = time.time()
 menu()
 elapsed_time = time.time() - start_time
-print 'Completed in %.2f seconds' % elapsed_time
+print '\nCompleted in %.2f seconds' % elapsed_time
