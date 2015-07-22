@@ -598,7 +598,7 @@ def daemon(output, log):
     for i in range(1, 5):
         if (pid_t_temp_or[i] == 0):
             pid_t_temp_active[i] = 1
-            rod = threading.Thread(target = ht_sensor_temperature_monitor,
+            rod = threading.Thread(target = t_sensor_temperature_monitor,
                 args = ('Thread-T-T-%d' % i, i,))
             rod.start()
             threads_t_t.append(rod)
