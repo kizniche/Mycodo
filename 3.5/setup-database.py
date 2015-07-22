@@ -23,14 +23,12 @@
 #  Contact at kylegabriel.com
 
 import getopt
+import os.path
 import re
 import sqlite3
 import subprocess
 import sys
 import time
-
-sql_database_mycodo = 'config/mycodo.db'
-sql_database_user = 'config/users.db'
 
 # GPIO pins (BCM numbering) and name of devices attached to relay
 relay_num = None
@@ -155,56 +153,66 @@ def menu():
         return 1
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'ad:hip::',
-            ["adduser", "deleteuser=", "help", "install-db=", "pwchange="])
+        opts, args = getopt.getopt(sys.argv[1:], 'adhip',
+            ["adduser", "deleteuser", "help", "install-db", "pwchange"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
         return 2
     for opt, arg in opts:
         if opt in ("-a", "--adduser"):
-            add_user()
+            if database != None:
+                if db_exists_user(database):
+                    add_user(database)
+            else:
+                add_user(sql_database_user)
             return 1
         elif opt in ("-d", "--deleteuser"):
-            delete_user(sys.argv[2])
+            if database != None:
+                if db_exists_user(database):
+                    delete_user(database)
+            else:
+                delete_user(sql_database_user)
             return 1
         elif opt in ("-h", "--help"):
             usage()
             return 1
         elif opt in ("-i", "--install-db"):
-            if sys.argv[2] == 'all' or sys.argv[2] == 'user' or sys.argv[2] == 'mycodo':
-                setup_db(sys.argv[2])
-            else:
-                print 'Error: One option required: mycodo-db.py --db-setup [all, user, mycodo]'
-                return 0
+            setup_db()
             return 1
         elif opt in ("-p", "--pwchange"):
-            password_change(sys.argv[2])
+            if database != None:
+                if db_exists_user(database):
+                    password_change(database)
+            else:
+                password_change(sql_database_user)
             return 1
         else:
             assert False, "Fail"
 
 def usage():
-    print 'setup-database.py: Create and manage Mycodo databases.\n'
-    print 'Usage:  setup-database.py [OPTION]...\n'
+    print 'Usage: setup-database.py [OPTION] [FILE]...'
+    print 'Create and manage Mycodo databases (if no database is specified, the'
+    print 'default users.db and mycodo.db in /var/www/mycodo/config will be used)\n'
     print 'Options:'
     print '    -a, --adduser'
     print '           Add user to existing users.db database'
-    print '    -d, --deleteuser user'
+    print '    -d, --deleteuser'
     print '           Delete user from existing users.db database'
     print '    -h, --help'
     print '           Display this help and exit'
-    print '    -i, --install-db user/mycodo/all'
+    print "    -i, --install-db"
     print '           Create new users.db, mycodo.db. or both'
-    print '    -p, --pwchange user'
-    print '           Create a new password for user'
-    print '\nExample: setup-database.py -i all'
+    print '    -p, --pwchange'
+    print '           Create a new password for user\n'
+    print 'Examples: setup-database.py -install-db'
+    print '          setup-database.py -p /var/www/mycodo/config/users.db'
 
-def add_user():
-    print 'Add user to users.db'
+def add_user(db):
+    print 'Add user to %s' % db
     pass_checks = True
     while pass_checks:
-        user_name = raw_input('\nUsername (a-z, A-Z, 2-64 chars): ')
+        user_name = raw_input('User (a-z, A-Z, 2-64 chars): ')
         if test_username(user_name):
             pass_checks = False
 
@@ -227,52 +235,74 @@ def add_user():
         else:
             print 'Not a properly-formatted email\n'
 
-    conn = sqlite3.connect(sql_database_user)
+    conn = sqlite3.connect(db)
     cur = conn.cursor()
     cur.execute("INSERT INTO users (user_name, user_password_hash, user_email) VALUES ('{user_name}', '{user_password_hash}', '{user_email}')".\
         format(user_name=user_name, user_password_hash=user_password_hash, user_email=user_email))
     conn.commit()
     cur.close()
 
-def delete_user(user_name):
-    if query_yes_no("Confirm delete user '%s' from /var/www/mycodo/config/users.db" % user_name):
-        conn = sqlite3.connect(sql_database_user)
-        cur = conn.cursor()
-        cur.execute("DELETE FROM users WHERE user_name = '%s' " % user_name)
-        conn.commit()
-        cur.close()
+def delete_user(db):
+    print 'Delete user from %s' % db
+    while 1:
+        user_name = raw_input('User: ')
+        if test_username(user_name):
+            if query_yes_no("Confirm delete user '%s' from /var/www/mycodo/config/users.db" % user_name):
+                conn = sqlite3.connect(sql_database_user)
+                cur = conn.cursor()
+                cur.execute("DELETE FROM users WHERE user_name = '%s' " % user_name)
+                conn.commit()
+                cur.close()
+                return 1
+            else:
+                return 0
 
-def password_change(user_name):
-    if query_yes_no("Confirm change password of user '%s' from /var/www/mycodo/config/users.db" % user_name):
-        pass_checks = True
-        while pass_checks:
-            user_password = raw_input('password: ')
-            user_password_again = raw_input('password (again): ')
-            if user_password != user_password_again:
-                print "Passwords don't match"
-            elif test_password(user_password):
-                    user_password_hash = subprocess.check_output(["php", "includes/hash.php", "hash", user_password])
-                    pass_checks = False
+def password_change(db):
+    print 'Change password of user from %s' % db
+    pass_checks = True
+    while pass_checks:
+        user_name = raw_input('User: ')
+        if test_username(user_name):
+            pass_checks = False
 
-        conn = sqlite3.connect(sql_database_user)
-        cur = conn.cursor()
-        cur.execute("UPDATE users SET user_password_hash='%s' WHERE user_name='%s'" % (user_password_hash, user_name))
-        conn.commit()
-        cur.close()
+    while 1:
+        user_password = raw_input('New password: ')
+        user_password_again = raw_input('New password (again): ')
+        if user_password != user_password_again:
+            print "Passwords don't match"
+        elif test_password(user_password):
+            user_password_hash = subprocess.check_output(["php", "includes/hash.php", "hash", user_password])
+            conn = sqlite3.connect(sql_database_user)
+            cur = conn.cursor()
+            cur.execute("UPDATE users SET user_password_hash='%s' WHERE user_name='%s'" % (user_password_hash, user_name))
+            conn.commit()
+            cur.close()
+            return 1
 
-def setup_db(target):
+def db_exists_user(db):
+    if os.path.isfile(db):
+        return 1
+    else:
+        print 'database %s not found' % db
+        sys.exit(0)
+
+def db_exists_mycodo(db):
+    if os.path.isfile(db):
+        return 1
+    else:
+        print 'database %s not found' % db
+        sys.exit(0)
+
+def setup_db():
     global sql_database_mycodo
     global sql_database_user
-
+    print "Setting up database(s) in %s" % db_directory
+    target = raw_input("Generate which database? 'user', 'mycodo', or 'all'? ")
     if target == 'all' or target == 'mycodo':
-        if not query_yes_no('Use default save path /var/www/mycodo/config/mycodo.db?'):
-            sql_database_mycodo = input('user.db save path: ')
         delete_all_tables_mycodo()
         create_all_tables_mycodo()
         create_rows_columns_mycodo()
     if target == 'all' or target == 'user':
-        if not query_yes_no('Use default save path /var/www/mycodo/config/user.db?'):
-            sql_database_user = input('user.db save path: ')
         delete_all_tables_user()
         create_all_tables_user()
         create_rows_columns_user()
@@ -629,6 +659,18 @@ def represents_float(s):
 
 #set_global_variables(0)
 #start_time = time.time()
+
+database = None
+
+if len(sys.argv) == 3:
+    database = sys.argv[2]
+elif len(sys.argv) > 3:
+    print 'Too Many arguments'
+    sys.exit(0)
+
+sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
+sql_database_user = '/var/www/mycodo/config/users.db'
+
 menu()
 #elapsed_time = time.time() - start_time
 #print '\nScript Completed in %.2f seconds' % elapsed_time
