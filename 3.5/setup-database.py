@@ -29,8 +29,8 @@ import subprocess
 import sys
 import time
 
-sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
-sql_database_user = '/var/www/mycodo/config/users.db'
+sql_database_mycodo = 'config/mycodo.db'
+sql_database_user = 'config/users.db'
 
 # GPIO pins (BCM numbering) and name of devices attached to relay
 relay_num = None
@@ -150,47 +150,92 @@ client_var = None
 terminate = False
 
 def menu():
+    if len(sys.argv) == 1:
+        usage()
+        return 1
+
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'a:druv',
-            ["add", "delete-rows", "delete-tables", "add-tables", "db-setup", "load", "row", "update", "view"])
+        opts, args = getopt.getopt(sys.argv[1:], 'ad:hi:',
+            ["adduser", "deleteuser=",  "install-db="])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
+        usage()
         return 2
     for opt, arg in opts:
-        if opt in ("-a", "--add"):
-            add_columns(sys.argv[2], sys.argv[3], sys.argv[4])
+        if opt in ("-a", "--adduser"):
+            add_user()
             return 1
-        elif opt == "--add-tables":
-            create_all_tables_mycodo()
+        elif opt in ("-d", "--deleteuser"):
+            delete_user(sys.argv[2])
             return 1
-        elif opt in ("-d", "--db-setup"):
+        elif opt in ("-h", "--help"):
+            usage()
+            return 1
+        elif opt in ("-i", "--install-db"):
             if sys.argv[2] == 'all' or sys.argv[2] == 'user' or sys.argv[2] == 'mycodo':
                 setup_db(sys.argv[2])
             else:
                 print 'Error: One option required: mycodo-db.py --db-setup [all, user, mycodo]'
                 return 0
             return 1
-        elif opt == "--delete-rows":
-            delete_all_rows()
-            return 1
-        elif opt == "--delete-tables":
-            delete_all_tables_mycodo()
-            return 1
-        elif opt == "--load":
-            set_global_variables(0)
-            return 1
-        elif opt in ("-r", "--row"):
-            delete_row(sys.argv[2], sys.argv[3])
-            return 1
-        elif opt in ("-u", "--update"):
-            update_value(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
-            return 1
-        elif opt in ("-v", "--view"):
-            print "View Values"
-            view_columns()
-            return 1
         else:
-            setup_db('all')
+            assert False, "Fail"
+
+def usage():
+    print 'setup-database.py: Create and manage Mycodo databases.\n'
+    print 'Usage:  setup-database.py [OPTION]...\n'
+    print 'Options:'
+    print '    -a, --adduser'
+    print '           Add user to existing users.db database'
+    print '    -d, --deleteuser user'
+    print '           Delete user from existing users.db database'
+    print '    -h, --help'
+    print '           Display this help and exit'
+    print '    -i, --install-db user/mycodo/all'
+    print '           Create new users.db, mycodo.db. or both'
+    print '\nExample: setup-database.py -i all'
+
+def add_user():
+    print 'Add user to users.db'
+    pass_checks = True
+    while pass_checks:
+        user_name = raw_input('\nUsername (a-z, A-Z, 2-64 chars): ')
+        if test_username(user_name):
+            pass_checks = False
+
+    pass_checks = True
+    while pass_checks:
+        user_password = raw_input('Password: ')
+        user_password_again = raw_input('Password (again): ')
+        if user_password != user_password_again:
+            print "Passwords don't match"
+        else:
+            if test_password(user_password):
+                user_password_hash = subprocess.check_output(["php", "includes/hash.php", "hash", user_password])
+                pass_checks = False
+
+    pass_checks = True
+    while pass_checks:
+        user_email = raw_input('Email: ')
+        if is_email(user_email):
+            pass_checks = False
+        else:
+            print 'Not a properly-formatted email\n'
+
+    conn = sqlite3.connect(sql_database_user)
+    cur = conn.cursor()
+    cur.execute("INSERT INTO users (user_name, user_password_hash, user_email) VALUES ('{user_name}', '{user_password_hash}', '{user_email}')".\
+        format(user_name=user_name, user_password_hash=user_password_hash, user_email=user_email))
+    conn.commit()
+    cur.close()
+
+def delete_user(user_name):
+    if query_yes_no("Confirm delete user '%s' from /var/www/mycodo/config/users.db" % user_name):
+        conn = sqlite3.connect(sql_database_user)
+        cur = conn.cursor()
+        cur.execute("DELETE FROM users WHERE user_name = '%s' " % user_name)
+        conn.commit()
+        cur.close()
 
 def setup_db(target):
     global sql_database_mycodo
@@ -285,13 +330,13 @@ def create_rows_columns_user():
     pass_checks = True
     print "\nPassword for user 'admin' (minimum 6 charachters in length)"
     while pass_checks:
-        admin_password = raw_input('password: ')
-        admin_password_again = raw_input('password (again): ')
+        admin_password = raw_input('Password: ')
+        admin_password_again = raw_input('Password (again): ')
         if admin_password != admin_password_again:
             print "Passwords don't match"
         else:
             if test_password(admin_password):
-                admin_password_hash = subprocess.check_output(["php", "/var/www/mycodo/includes/hash.php", "hash", admin_password])
+                admin_password_hash = subprocess.check_output(["php", "includes/hash.php", "hash", admin_password])
                 pass_checks = False
 
     pass_checks = True
@@ -323,7 +368,7 @@ def create_rows_columns_user():
                 print "Passwords don't match"
             else:
                 if test_password(user_password):
-                    user_password_hash = subprocess.check_output(["php", "/var/www/mycodo/includes/hash.php", "hash", user_password])
+                    user_password_hash = subprocess.check_output(["php", "includes/hash.php", "hash", user_password])
                     pass_checks = False
 
         pass_checks = True
@@ -563,7 +608,7 @@ def represents_float(s):
         return False
 
 #set_global_variables(0)
-start_time = time.time()
+#start_time = time.time()
 menu()
-elapsed_time = time.time() - start_time
-print '\nCompleted in %.2f seconds' % elapsed_time
+#elapsed_time = time.time() - start_time
+#print '\nScript Completed in %.2f seconds' % elapsed_time
