@@ -299,25 +299,34 @@ function get_graph_cookie($name) {
 function displayform() { ?>
     <form action="?tab=custom<?php if (isset($_GET['page'])) echo "&page=" . $_GET['page']; ?>" method="POST">
     <div style="padding: 10px 0 0 15px;">
-        <div style="display: inline-block;">
-            <div style="padding-bottom: 5px; text-align: right;">START: <?php DateSelector("start"); ?></div>
-            <div style="text-align: right;">END: <?php DateSelector("end"); ?></div>
+        <div style="display: inline-block; padding-right:0.5em;">
+            <div style="padding-bottom: 5px; text-align: right;">Start: <?php DateSelector("start"); ?></div>
+            <div style="text-align: right;">End: <?php DateSelector("end"); ?></div>
         </div>
-        <div style="display: inline-block; vertical-align: top;">
-            <select name="custom_type">
-                <option value="Separate" <?php
-                    if (isset($_POST['custom_type'])) {
-                        if ($_POST['custom_type'] == 'Separate') echo 'selected="selected"';
-                    }
-                    ?>>Separate</option>
-                <option value="Combined" <?php
-                    if (isset($_POST['custom_type'])) {
-                        if ($_POST['custom_type'] == 'Combined') echo 'selected="selected"';
-                    }
-                    ?>>Combined</option>
-            </select>
-            <input type="text" value="900" maxlength=4 size=4 name="graph-width" title="Width of the generated graph"> Width (pixels, max 4000)
-            <input type="submit" name="SubmitDates" value="Submit">
+        <div style="display: inline-block; padding-right:0.5em; vertical-align: top;">
+            <div style="display: inline-block; padding-right:0.5em;">
+                <select name="custom_type">
+                    <option value="Separate" <?php
+                        if (isset($_POST['custom_type'])) {
+                            if ($_POST['custom_type'] == 'Separate') echo 'selected="selected"';
+                        }
+                        ?>>Separate</option>
+                    <option value="Combined" <?php
+                        if (isset($_POST['custom_type'])) {
+                            if ($_POST['custom_type'] == 'Combined') echo 'selected="selected"';
+                        }
+                        ?>>Combined</option>
+                </select>
+            </div>
+            <div style="display: inline-block; padding-right:0.5em;">
+                Width: <input type="text" value="900" maxlength=4 size=4 name="graph-width" title="Width of the generated graph"> px (4000 max)
+            </div>
+            <div style="display: inline-block; padding-right:0.5em;">
+                Show Key: <input type="hidden" name="key" value="0" /><input type="checkbox" id="key" name="key" value="1"<?php if (isset($_POST['key'])) if ($_POST['key'] == 1) echo ' checked'; ?> title="Generate graph with legend/key."/>
+            </div>
+        </div>
+        <div style="display: inline-block;">
+            <input type="submit" name="SubmitDates" value="Generate">
         </div>
     </div>
     </form>

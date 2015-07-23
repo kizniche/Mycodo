@@ -380,7 +380,6 @@ if ($output_error) {
                     // If any graphs are to be displayed, show links to the legends
                     if (array_sum($sensor_t_graph) + array_sum($sensor_ht_graph) + array_sum($sensor_co2_graph)) { ?>
                         <div style="width: 100%; padding: 1em 0 0 0; text-align: center;">
-                            Legend: <a href="javascript:open_legend()">Brief</a> / <a href="javascript:open_legend_full()">Full</a>
                             <div style="text-align: center; padding-top: 0.5em;">
                                 <a href="https://github.com/kizniche/Mycodo" target="_blank">Mycodo on GitHub</a>
                             </div>
@@ -633,11 +632,11 @@ if ($output_error) {
                     <div style="padding-bottom: <?php if ($i == $sensor_t_num) echo '1'; else echo '2'; ?>em;">
                     <table class="pid" style="width: 42em;">
                         <tr class="shade">
-                            <td align=center>PID<br>Type</td>
+                            <td align=center>Sensor<br>Measurement</td>
                             <td align=center>Current<br>State</td>
                             <td align=center>PID<br>Set Point</td>
-                            <td align=center>PID<br>Set Dir</td>
-                            <td align=center>PID<br>Set Buf</td>
+                            <td align=center>PID<br>Regulate</td>
+                            <td align=center>PID<br>Buffer</td>
                             <td align=center>Interval<br>(seconds)</td>
                             <td align=center>Relay<br>No.</td>
                             <td style="vertical-align: middle;" align=center>P</td>
@@ -677,13 +676,13 @@ if ($output_error) {
                                 </select>
                             </td>
                             <td rowspan=2>
-                                <input style="width: 3em;" type="number" step="any" value="<?php echo $pid_t_temp_set_buf[$i]; ?>" maxlength=4 size=2 name="SetT<?php echo $i; ?>TempSetBuf" title="This is the zone surounding the Set Point that the PID controller will not activate relays (i.e. regulation is paused). For example, if the Set Point is 30°C and the Set Buff is 3°C, the Relay High will only activate once the temperature rises above 33°C to lower the temperature and the Relay Low will only activate once the temperature falls below 27°C."/> °C
+                                <input style="width: 3em;" type="number" step="any" value="<?php echo $pid_t_temp_set_buf[$i]; ?>" maxlength=4 size=2 name="SetT<?php echo $i; ?>TempSetBuf" title="This is the zone surounding the Set Point that the PID controller will not activate relays (i.e. regulation is paused). For example, if the Set Point is 30°C and the Buffer is 3°C, the Relay High will only activate once the temperature rises above 33°C to lower the temperature and the Relay Low will only activate once the temperature falls below 27°C."/> °C
                             </td>
                             <td rowspan=2>
                                 <input style="width: 3em;" type="number" min="1" max="99999" value="<?php echo $pid_t_temp_period[$i]; ?>" name="SetT<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/>
                             </td>
                             <td>
-                                ▼ <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_t_temp_relay_high[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempRelayHigh" title="This relay is used to decrease temperature. When the measured temperature reaches the upper set buffer (Upper Set Buffer = Set Point + Set Buf) then the PID controller will modulate this relay until the temperature falls below it."/>
+                                ▼ <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_t_temp_relay_high[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempRelayHigh" title="This relay is used to decrease temperature. When the measured temperature reaches the upper set buffer (Upper Buffer = Set Point + Buffer) then the PID controller will modulate this relay until the temperature falls below it."/>
                             </td>
                             <td>
                                 <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_p_high[$i]; ?>" maxlength=4 size=1 name="SetT<?php echo $i; ?>Temp_P_High" title="This is the Proportional value of the PID"/>
@@ -700,7 +699,7 @@ if ($output_error) {
                         </tr>
                         <tr>
                             <td>
-                                ▲ <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_t_temp_relay_low[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempRelayLow" title="This relay is used to increase temperature. When the measured temperature reaches the lower set buffer (Lower Set Buffer = Set Point - Set Buf) then the PID controller will modulate this relay until the temperature rises above it."/>
+                                ▲ <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_t_temp_relay_low[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempRelayLow" title="This relay is used to increase temperature. When the measured temperature reaches the lower set buffer (Lower Buffer = Set Point - Buffer) then the PID controller will modulate this relay until the temperature rises above it."/>
                             </td>
                             <td>
                                 <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_p_low[$i]; ?>" maxlength=4 size=1 name="SetT<?php echo $i; ?>Temp_P_Low" title="This is the Proportional value of the PID"/>
@@ -789,11 +788,11 @@ if ($output_error) {
                     <div style="padding-bottom: <?php if ($i == $sensor_ht_num) echo '1'; else echo '2'; ?>em;">
                     <table class="pid" style="width: 42em;">
                         <tr class="shade">
-                            <td align=center>PID<br>Type</td>
+                            <td align=center>Sensor<br>Measurement</td>
                             <td align=center>Current<br>State</td>
                             <td align=center>PID<br>Set Point</td>
-                            <td align=center>PID<br>Set Dir</td>
-                            <td align=center>PID<br>Set Buf</td>
+                            <td align=center>PID<br>Regulate</td>
+                            <td align=center>PID<br>Buffer</td>
                             <td align=center>Interval<br>(seconds)</td>
                             <td align=center>Relay<br>No.</td>
                             <td style="vertical-align: middle;" align=center>P</td>
@@ -833,14 +832,14 @@ if ($output_error) {
                                 </select>
                             </td>
                             <td rowspan=2>
-                                <input style="width: 3em;" type="number" step="any" value="<?php echo $pid_ht_temp_set_buf[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>TempSetBuf" title="This is the zone surounding the Set Point that the PID controller will not activate relays (i.e. regulation is paused). For example, if the Set Point is 30°C and the Set Buff is 3°C, the Relay High will only activate once the temperature rises above 33°C, to lower the temperature, and the Relay Low will only activate once the temperature falls below 27°C, to increase the temperature."/> °C
+                                <input style="width: 3em;" type="number" step="any" value="<?php echo $pid_ht_temp_set_buf[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>TempSetBuf" title="This is the zone surounding the Set Point that the PID controller will not activate relays (i.e. regulation is paused). For example, if the Set Point is 30°C and the Buffer is 3°C, the Relay High will only activate once the temperature rises above 33°C, to lower the temperature, and the Relay Low will only activate once the temperature falls below 27°C, to increase the temperature."/> °C
                             </td>
                             <td rowspan=2 align=center>
                                 <input style="width: 3em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_temp_period[$i]; ?>" name="SetHT<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/>
                             </td>
 
                             <td>
-                                ▼ <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_ht_temp_relay_high[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>TempRelayHigh" title="This relay is used to decrease temperature. When the measured temperature reaches the upper set buffer (Upper Set Buffer = Set Point + Set Buf) then the PID controller will modulate this relay until the temperature falls below it."/>
+                                ▼ <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_ht_temp_relay_high[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>TempRelayHigh" title="This relay is used to decrease temperature. When the measured temperature reaches the upper set buffer (Upper Buffer = Set Point + Buffer) then the PID controller will modulate this relay until the temperature falls below it."/>
                             </td>
                             <td>
                                 <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_temp_p_high[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Temp_P_High" title="This is the Proportional value of the PID"/>
@@ -857,7 +856,7 @@ if ($output_error) {
                         </tr>
                         <tr>
                             <td>
-                                ▲ <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_ht_temp_relay_low[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>TempRelayLow" title="This relay is used to increase temperature. When the measured temperature reaches the lower set buffer (Lower Set Buffer = Set Point - Set Buf) then the PID controller will modulate this relay until the temperature rises above it."/>
+                                ▲ <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_ht_temp_relay_low[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>TempRelayLow" title="This relay is used to increase temperature. When the measured temperature reaches the lower set buffer (Lower Buffer = Set Point - Buffer) then the PID controller will modulate this relay until the temperature rises above it."/>
                             </td>
                             <td>
                                 <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_temp_p_low[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Temp_P_Low" title="This is the Proportional value of the PID"/>
@@ -903,13 +902,13 @@ if ($output_error) {
                                 </select>
                             </td>
                             <td rowspan=2>
-                                <input style="width: 3em;" type="number" step="any" value="<?php echo $pid_ht_hum_set_buf[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>HumSetBuf" title="This is the zone surounding the Set Point that the PID controller will not activate relays (i.e. regulation is paused). For example, if the Set Point is 60% and the Set Buff is 5%, the Relay High will only activate once the humidity rises above 65%, to lower the humidity, and the Relay Low will only activate once the humidity falls below 55%, to raise the humidity."/> %
+                                <input style="width: 3em;" type="number" step="any" value="<?php echo $pid_ht_hum_set_buf[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>HumSetBuf" title="This is the zone surounding the Set Point that the PID controller will not activate relays (i.e. regulation is paused). For example, if the Set Point is 60% and the Buffer is 5%, the Relay High will only activate once the humidity rises above 65%, to lower the humidity, and the Relay Low will only activate once the humidity falls below 55%, to raise the humidity."/> %
                             </td>
                             <td rowspan=2 align=center>
                                 <input style="width: 3em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_hum_period[$i]; ?>" name="SetHT<?php echo $i; ?>HumPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another humidity reading and applying the PID"/>
                             </td>
                             <td>
-                                ▼ <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_ht_hum_relay_high[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>HumRelayHigh" title="This relay is used to decrease humidity. When the measured humidity reaches the upper set buffer (Upper Set Buffer = Set Point + Set Buf) then the PID controller will modulate this relay until the humidity falls below it."/>
+                                ▼ <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_ht_hum_relay_high[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>HumRelayHigh" title="This relay is used to decrease humidity. When the measured humidity reaches the upper set buffer (Upper Buffer = Set Point + Buffer) then the PID controller will modulate this relay until the humidity falls below it."/>
                             </td>
                             <td>
                                 <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_p_high[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Hum_P_High" title="This is the Proportional value of the PID"/>
@@ -926,7 +925,7 @@ if ($output_error) {
                         </tr>
                         <tr>
                             <td>
-                                ▲ <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_ht_hum_relay_low[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>HumRelayLow" title="This relay is used to increase humidity. When the measured humidity reaches the lower set buffer (Lower Set Buffer = Set Point - Set Buf) then the PID controller will modulate this relay until the humidity rises above it."/>
+                                ▲ <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_ht_hum_relay_low[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>HumRelayLow" title="This relay is used to increase humidity. When the measured humidity reaches the lower set buffer (Lower Buffer = Set Point - Buffer) then the PID controller will modulate this relay until the humidity rises above it."/>
                             </td>
                             <td>
                                 <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_p_low[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Hum_P_Low" title="This is the Proportional value of the PID"/>
@@ -1017,11 +1016,11 @@ if ($output_error) {
                     <div style="padding-bottom: 2em;">
                     <table class="pid" style="width: 42em;">
                         <tr class="shade">
-                            <td align=center>PID<br>Type</td>
+                            <td align=center>Sensor<br>Measurement</td>
                             <td align=center>Current<br>State</td>
                             <td align=center>PID<br>Set Point</td>
-                            <td align=center>PID<br>Set Dir</td>
-                            <td align=center>PID<br>Set Buf</td>
+                            <td align=center>PID<br>Regulate</td>
+                            <td align=center>PID<br>Buffer</td>
                             <td align=center>Interval<br>(seconds)</td>
                             <td align=center>Relay<br>No.</td>
                             <td style="vertical-align: middle;" align=center>P</td>
@@ -1061,13 +1060,13 @@ if ($output_error) {
                                 </select>
                             </td>
                             <td rowspan=2>
-                                <input style="width: 3em;" type="number" step="any" value="<?php echo $pid_co2_set_buf[$i]; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>Co2SetBuf" title="This is the zone surounding the Set Point that the PID controller will not activate relays (i.e. regulation is paused). For example, if the Set Point is 2000 ppm and the Set Buff is 250 ppm, the Relay High will only activate once the CO2 rises above 2250 ppm, to lower the CO2, and the Relay Low will only activate once the CO2 falls below 1750, to increase the CO2."/> ppm
+                                <input style="width: 3em;" type="number" step="any" value="<?php echo $pid_co2_set_buf[$i]; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>Co2SetBuf" title="This is the zone surounding the Set Point that the PID controller will not activate relays (i.e. regulation is paused). For example, if the Set Point is 2000 ppm and the Buffer is 250 ppm, the Relay High will only activate once the CO2 rises above 2250 ppm, to lower the CO2, and the Relay Low will only activate once the CO2 falls below 1750, to increase the CO2."/> ppm
                             </td>
                             <td rowspan=2 align=center>
                                 <input style="width: 3em;" type="number" min="1" max="99999" value="<?php echo $pid_co2_period[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Co2Period" title="This is the number of seconds to wait after the relay has been turned off before taking another CO2 reading and applying the PID"/>
                             </td>
                             <td>
-                                ▼ <input  style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_co2_relay_high[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>Co2RelayHigh" title="This relay is used to decrease CO2. When the measured CO2 reaches the upper set buffer (Upper Set Buffer = Set Point + Set Buf) then the PID controller will modulate this relay until the CO2 falls below it."/>
+                                ▼ <input  style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_co2_relay_high[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>Co2RelayHigh" title="This relay is used to decrease CO2. When the measured CO2 reaches the upper set buffer (Upper Buffer = Set Point + Buffer) then the PID controller will modulate this relay until the CO2 falls below it."/>
                             </td>
                             <td>
                                 <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_p_high[$i]; ?>" maxlength=5 size=1 name="Set<?php echo $i; ?>Co2_P_High" title="This is the Proportional value of the PID"/>
@@ -1084,7 +1083,7 @@ if ($output_error) {
                         </tr>
                         <tr>
                             <td>
-                                ▲ <input  style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_co2_relay_low[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>Co2RelayLow" title="This relay is used to increase CO2. When the measured CO2 reaches the lower set buffer (Lower Set Buffer = Set Point - Set Buf) then the PID controller will modulate this relay until the CO2 rises above it."/>
+                                ▲ <input  style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_co2_relay_low[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>Co2RelayLow" title="This relay is used to increase CO2. When the measured CO2 reaches the lower set buffer (Lower Buffer = Set Point - Buffer) then the PID controller will modulate this relay until the CO2 rises above it."/>
                             </td>
                             <td>
                                 <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_p_low[$i]; ?>" maxlength=5 size=1 name="Set<?php echo $i; ?>Co2_P_Low" title="This is the Proportional value of the PID"/>
@@ -1139,116 +1138,206 @@ if ($output_error) {
                     } else $graph_width = 900;
 
                     if ($_POST['custom_type'] == 'Combined') {
-                        echo `echo "set terminal png size $graph_width,1600
-                        set xdata time
-                        set timefmt \"%Y %m %d %H %M %S\"
-                        set output \"$images/graph-custom-combined-$id2-0.png\"
-                        set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]
-                        set format x \"%H:%M\n%m/%d\"
-                        set yrange [0:100]
-                        set y2range [0:35]
-                        set my2tics 10
-                        set ytics 10
-                        set y2tics 5
-                        set style line 11 lc rgb '#808080' lt 1
-                        set border 3 back ls 11
-                        set tics nomirror
-                        set style line 12 lc rgb '#808080' lt 0 lw 1
-                        set grid xtics ytics back ls 12
-                        set style line 1 lc rgb '#7164a3' pt 0 ps 1 lt 1 lw 2
-                        set style line 2 lc rgb '#599e86' pt 0 ps 1 lt 1 lw 2
-                        set style line 3 lc rgb '#c3ae4f' pt 0 ps 1 lt 1 lw 2
-                        set style line 4 lc rgb '#c3744f' pt 0 ps 1 lt 1 lw 2
-                        set style line 5 lc rgb '#91180B' pt 0 ps 1 lt 1 lw 1
-                        set style line 6 lc rgb '#582557' pt 0 ps 1 lt 1 lw 1
-                        set style line 7 lc rgb '#04834C' pt 0 ps 1 lt 1 lw 1
-                        set style line 8 lc rgb '#DC32E6' pt 0 ps 1 lt 1 lw 1
-                        set style line 9 lc rgb '#957EF9' pt 0 ps 1 lt 1 lw 1
-                        set style line 10 lc rgb '#CC8D9C' pt 0 ps 1 lt 1 lw 1
-                        set style line 11 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1
-                        set style line 12 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1
-                        unset key
-                        #set xlabel \"Date and Time\"
-                        #set ylabel \"% Humidity\"
-                        set multiplot layout 4, 1 title \"Combined Sensor Data - $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
-                        set title \"Combined Temperatures\"
-                        plot \"<awk '\\$10 == 1' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \"T1\" w lp ls 1 axes x1y2, \\
-                        \"<awk '\\$10 == 2' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \"T2\" w lp ls 2 axes x1y2, \\
-                        \"<awk '\\$10 == 3' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \"T3\" w lp ls 3 axes x1y2, \\
-                        \"<awk '\\$10 == 4' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \"T4\" w lp ls 4 axes x1y2 \\
-                        unset key
-                        set title \"Combined Humidities\"
-                        plot \"<awk '\\$10 == 1' /var/tmp/sensor-ht.log\" using 1:8 index 0 title \"RH1\" w lp ls 1 axes x1y1, \\
-                        \"<awk '\\$10 == 2' /var/tmp/sensor-ht.log\" using 1:8 index 0 title \"RH2\" w lp ls 2 axes x1y1, \\
-                        \"<awk '\\$10 == 3' /var/tmp/sensor-ht.log\" using 1:8 index 0 title \"RH3\" w lp ls 3 axes x1y1, \\
-                        \"<awk '\\$10 == 4' /var/tmp/sensor-ht.log\" using 1:8 index 0 title \"RH4\" w lp ls 4 axes x1y1 \\
-                        unset key
-                        set title \"Combined CO2s\"
-                        plot \"<awk '\\$15 == 1' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"RH1\" w lp ls 1 axes x1y1, \\
-                        \"<awk '\\$15 == 2' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"RH2\" w lp ls 2 axes x1y1, \\
-                        \"<awk '\\$15 == 3' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"RH3\" w lp ls 3 axes x1y1, \\
-                        \"<awk '\\$15 == 4' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"RH4\" w lp ls 4 axes x1y1 \\
-                        unset key
-                        set title \"Relay Run Time\"
-                        plot \"$relay_log\" u 1:7 index 0 title \"$relay_name[1]\" w impulses ls 5 axes x1y1, \\
-                        \"\" using 1:8 index 0 title \"$relay_name[2]\" w impulses ls 6 axes x1y1, \\
-                        \"\" using 1:9 index 0 title \"$relay_name[3]\" w impulses ls 7 axes x1y1, \\
-                        \"\" using 1:10 index 0 title \"$relay_name[4]\" w impulses ls 8 axes x1y1, \\
-                        \"\" using 1:11 index 0 title \"$relay_name[5]\" w impulses ls 9 axes x1y1, \\
-                        \"\" using 1:12 index 0 title \"$relay_name[6]\" w impulses ls 10 axes x1y1, \\
-                        \"\" using 1:13 index 0 title \"$relay_name[7]\" w impulses ls 11 axes x1y1, \\
-                        \"\" using 1:14 index 0 title \"$relay_name[8]\" w impulses ls 12 axes x1y1 \\
-                        unset multiplot" | gnuplot`;
+
+                        $cus_graph = '/var/tmp/plot-cus-combined.gnuplot';
+                        $f = fopen($cus_graph, "w");
+
+                        fwrite($f, "set terminal png size $graph_width,1600\n");
+                        fwrite($f, "set xdata time\n");
+                        fwrite($f, "set timefmt \"%Y %m %d %H %M %S\"\n");
+                        fwrite($f, "set output \"$images/graph-custom-combined-$id2-0.png\"\n");
+                        fwrite($f, "set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]\n");
+                        fwrite($f, "set format x \"%H:%M\\n%m/%d\"\n");
+                        fwrite($f, "set yrange [0:100]\n");
+                        fwrite($f, "set y2range [0:35]\n");
+                        fwrite($f, "set my2tics 10\n");
+                        fwrite($f, "set ytics 10\n");
+                        fwrite($f, "set y2tics 5\n");
+                        fwrite($f, "set style line 11 lc rgb '#808080' lt 1\n");
+                        fwrite($f, "set border 3 back ls 11\n");
+                        fwrite($f, "set tics nomirror\n");
+                        fwrite($f, "set style line 12 lc rgb '#808080' lt 0 lw 1\n");
+                        fwrite($f, "set grid xtics ytics back ls 12\n");
+                        fwrite($f, "set style line 1 lc rgb '#7164a3' pt 0 ps 1 lt 1 lw 2\n");
+                        fwrite($f, "set style line 2 lc rgb '#599e86' pt 0 ps 1 lt 1 lw 2\n");
+                        fwrite($f, "set style line 3 lc rgb '#c3ae4f' pt 0 ps 1 lt 1 lw 2\n");
+                        fwrite($f, "set style line 4 lc rgb '#c3744f' pt 0 ps 1 lt 1 lw 2\n");
+                        fwrite($f, "set style line 5 lc rgb '#91180B' pt 0 ps 1 lt 1 lw 1\n");
+                        fwrite($f, "set style line 6 lc rgb '#582557' pt 0 ps 1 lt 1 lw 1\n");
+                        fwrite($f, "set style line 7 lc rgb '#04834C' pt 0 ps 1 lt 1 lw 1\n");
+                        fwrite($f, "set style line 8 lc rgb '#DC32E6' pt 0 ps 1 lt 1 lw 1\n");
+                        fwrite($f, "set style line 9 lc rgb '#957EF9' pt 0 ps 1 lt 1 lw 1\n");
+                        fwrite($f, "set style line 10 lc rgb '#CC8D9C' pt 0 ps 1 lt 1 lw 1\n");
+                        fwrite($f, "set style line 11 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1\n");
+                        fwrite($f, "set style line 12 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1\n");
+
+                        fwrite($f, "set multiplot layout 4, 1 title \"Combined Sensor Data - $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
+
+                        if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
+                        else fwrite($f, "unset key\n");
+                        fwrite($f, "set title \"Combined Temperatures\"\n");
+                        fwrite($f, "plot \"<awk '\\$10 == 1' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \"T1\" w lp ls 1 axes x1y2, ");
+                        fwrite($f, "\"<awk '\\$10 == 2' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \"T2\" w lp ls 2 axes x1y2, ");
+                        fwrite($f, "\"<awk '\\$10 == 3' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \"T3\" w lp ls 3 axes x1y2, ");
+                        fwrite($f, "\"<awk '\\$10 == 4' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \"T4\" w lp ls 4 axes x1y2\n");
+
+                        if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
+                        else fwrite($f, "unset key\n");
+                        fwrite($f, "set title \"Combined Humidities\"\n");
+                        fwrite($f, "plot \"<awk '\\$10 == 1' /var/tmp/sensor-ht.log\" using 1:8 index 0 title \"RH1\" w lp ls 1 axes x1y1, ");
+                        fwrite($f, "\"<awk '\\$10 == 2' /var/tmp/sensor-ht.log\" using 1:8 index 0 title \"RH2\" w lp ls 2 axes x1y1, ");
+                        fwrite($f, "\"<awk '\\$10 == 3' /var/tmp/sensor-ht.log\" using 1:8 index 0 title \"RH3\" w lp ls 3 axes x1y1, ");
+                        fwrite($f, "\"<awk '\\$10 == 4' /var/tmp/sensor-ht.log\" using 1:8 index 0 title \"RH4\" w lp ls 4 axes x1y1\n");
+
+                        if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
+                        else fwrite($f, "unset key\n");
+                        fwrite($f, "set title \"Combined CO2s\"\n");
+                        fwrite($f, "plot \"<awk '\\$15 == 1' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"RH1\" w lp ls 1 axes x1y1, ");
+                        fwrite($f, "\"<awk '\\$15 == 2' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"RH2\" w lp ls 2 axes x1y1, ");
+                        fwrite($f, "\"<awk '\\$15 == 3' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"RH3\" w lp ls 3 axes x1y1, ");
+                        fwrite($f, "\"<awk '\\$15 == 4' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"RH4\" w lp ls 4 axes x1y1\n");
+
+                        if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left top\n");
+                        else fwrite($f, "unset key\n");
+                        fwrite($f, "set title \"Relay Run Time\"\n");
+                        fwrite($f, "plot \"$relay_log\" u 1:7 index 0 title \"$relay_name[1]\" w impulses ls 5 axes x1y1, ");
+                        fwrite($f, "\"\" using 1:8 index 0 title \"$relay_name[2]\" w impulses ls 6 axes x1y1, ");
+                        fwrite($f, "\"\" using 1:9 index 0 title \"$relay_name[3]\" w impulses ls 7 axes x1y1, ");
+                        fwrite($f, "\"\" using 1:10 index 0 title \"$relay_name[4]\" w impulses ls 8 axes x1y1, ");
+                        fwrite($f, "\"\" using 1:11 index 0 title \"$relay_name[5]\" w impulses ls 9 axes x1y1, ");
+                        fwrite($f, "\"\" using 1:12 index 0 title \"$relay_name[6]\" w impulses ls 10 axes x1y1, ");
+                        fwrite($f, "\"\" using 1:13 index 0 title \"$relay_name[7]\" w impulses ls 11 axes x1y1, ");
+                        fwrite($f, "\"\" using 1:14 index 0 title \"$relay_name[8]\" w impulses ls 12 axes x1y1\n");
+                        fwrite($f, "unset multiplot\n");
+
+                        fclose($f);
+                        $cmd = "gnuplot $cus_graph";
+                        exec($cmd);
+                        unlink($cus_graph);
+
                         echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
                         echo 'graphtype=custom-combined';
                         echo '&id=' , $id2;
                         echo '&sensornumber=0>';
                         echo '</div>';
                     } else if ($_POST['custom_type'] == 'Separate') {
+                        
+                        for ($n = 1; $n <= $sensor_t_num; $n++) {
+                            if ($sensor_t_graph[$n] == 1) {
+
+                                $cus_graph = "/var/tmp/plot-cus-t-separate-$n.gnuplot";
+                                $f = fopen($cus_graph, "w");
+
+                                fwrite($f, "set terminal png size $graph_width,490\n");
+                                fwrite($f, "set xdata time\n");
+                                fwrite($f, "set timefmt \"%Y %m %d %H %M %S\"\n");
+                                fwrite($f, "set output \"$images/graph-t-custom-separate-$id2-$n.png\"\n");
+                                fwrite($f, "set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]\n");
+                                fwrite($f, "set format x \"%H:%M\\n%m/%d\"\n");
+                                fwrite($f, "set yrange [0:100]\n");
+                                fwrite($f, "set y2range [0:35]\n");
+                                fwrite($f, "set my2tics 10\n");
+                                fwrite($f, "set ytics 10\n");
+                                fwrite($f, "set y2tics 5\n");
+                                fwrite($f, "set style line 11 lc rgb '#808080' lt 1\n");
+                                fwrite($f, "set border 3 back ls 11\n");
+                                fwrite($f, "set tics nomirror\n");
+                                fwrite($f, "set style line 12 lc rgb '#808080' lt 0 lw 1\n");
+                                fwrite($f, "set grid xtics ytics back ls 12\n");
+                                fwrite($f, "set style line 1 lc rgb '#FF3100' pt 0 ps 1 lt 1 lw 2\n");
+                                fwrite($f, "set style line 2 lc rgb '#0772A1' pt 0 ps 1 lt 1 lw 2\n");
+                                fwrite($f, "set style line 3 lc rgb '#00B74A' pt 0 ps 1 lt 1 lw 2\n");
+                                fwrite($f, "set style line 4 lc rgb '#91180B' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 5 lc rgb '#582557' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 6 lc rgb '#04834C' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 7 lc rgb '#DC32E6' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 8 lc rgb '#957EF9' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 9 lc rgb '#CC8D9C' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 10 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1\n");
+                                if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
+                                else fwrite($f, "unset key\n");
+                                fwrite($f, "set title \"Sensor $n: $sensor_t_name[$n]: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
+                                fwrite($f, "plot \"<awk '\\$10 == $n' /var/tmp/sensor-t.log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, ");
+                                fwrite($f, "\"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ");
+                                fwrite($f, "\"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"$relay_name[1]\" w impulses ls 4 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:8 index 0 title \"$relay_name[2]\" w impulses ls 5 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:9 index 0 title \"$relay_name[3]\" w impulses ls 6 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:10 index 0 title \"$relay_name[4]\" w impulses ls 7 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:11 index 0 title \"$relay_name[5]\" w impulses ls 8 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:12 index 0 title \"$relay_name[6]\" w impulses ls 9 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:13 index 0 title \"$relay_name[7]\" w impulses ls 10 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:14 index 0 title \"$relay_name[8]\" w impulses ls 11 axes x1y1");
+
+                                fclose($f);
+                                $cmd = "gnuplot $cus_graph";
+                                exec($cmd);
+                                unlink($cus_graph);
+
+                                echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
+                                echo 'graphtype=custom-separate';
+                                echo '&sensortype=t';
+                                echo '&id=' , $id2;
+                                echo '&sensornumber=' , $n , '>';
+                                echo '</div>';
+                            }
+                            if ($n != $sensor_ht_num || ($n == $sensor_ht_num && array_sum($sensor_co2_graph))) { echo '<hr class="fade"/>'; }
+                        }
+
                         for ($n = 1; $n <= $sensor_ht_num; $n++) {
                             if ($sensor_ht_graph[$n] == 1) {
-                                echo `echo "set terminal png size $graph_width,490
-                                set xdata time
-                                set timefmt \"%Y %m %d %H %M %S\"
-                                set output \"$images/graph-ht-custom-separate-$id2-$n.png\"
-                                set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]
-                                set format x \"%H:%M\n%m/%d\"
-                                set yrange [0:100]
-                                set y2range [0:35]
-                                set my2tics 10
-                                set ytics 10
-                                set y2tics 5
-                                set style line 11 lc rgb '#808080' lt 1
-                                set border 3 back ls 11
-                                set tics nomirror
-                                set style line 12 lc rgb '#808080' lt 0 lw 1
-                                set grid xtics ytics back ls 12
-                                set style line 1 lc rgb '#FF3100' pt 0 ps 1 lt 1 lw 2
-                                set style line 2 lc rgb '#0772A1' pt 0 ps 1 lt 1 lw 2
-                                set style line 3 lc rgb '#00B74A' pt 0 ps 1 lt 1 lw 2
-                                set style line 4 lc rgb '#91180B' pt 0 ps 1 lt 1 lw 1
-                                set style line 5 lc rgb '#582557' pt 0 ps 1 lt 1 lw 1
-                                set style line 6 lc rgb '#04834C' pt 0 ps 1 lt 1 lw 1
-                                set style line 7 lc rgb '#DC32E6' pt 0 ps 1 lt 1 lw 1
-                                set style line 8 lc rgb '#957EF9' pt 0 ps 1 lt 1 lw 1
-                                set style line 9 lc rgb '#CC8D9C' pt 0 ps 1 lt 1 lw 1
-                                set style line 10 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1
-                                set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1
-                                unset key
-                                #set xlabel \"Date and Time\"
-                                #set ylabel \"% Humidity\"
-                                set title \"Sensor $n: $sensor_ht_name[$n]: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
-                                plot \"<awk '\\$10 == $n' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
-                                \"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, \\
-                                \"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, \\
-                                \"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"$relay_name[1]\" w impulses ls 4 axes x1y1, \\
-                                \"\" using 1:8 index 0 title \"$relay_name[2]\" w impulses ls 5 axes x1y1, \\
-                                \"\" using 1:9 index 0 title \"$relay_name[3]\" w impulses ls 6 axes x1y1, \\
-                                \"\" using 1:10 index 0 title \"$relay_name[4]\" w impulses ls 7 axes x1y1, \\
-                                \"\" using 1:11 index 0 title \"$relay_name[5]\" w impulses ls 8 axes x1y1, \\
-                                \"\" using 1:12 index 0 title \"$relay_name[6]\" w impulses ls 9 axes x1y1, \\
-                                \"\" using 1:13 index 0 title \"$relay_name[7]\" w impulses ls 10 axes x1y1, \\
-                                \"\" using 1:14 index 0 title \"$relay_name[8]\" w impulses ls 11 axes x1y1" | gnuplot`;
+
+                                $cus_graph = "/var/tmp/plot-cus-ht-separate-$n.gnuplot";
+                                $f = fopen($cus_graph, "w");
+
+                                fwrite($f, "set terminal png size $graph_width,490\n");
+                                fwrite($f, "set xdata time\n");
+                                fwrite($f, "set timefmt \"%Y %m %d %H %M %S\"\n");
+                                fwrite($f, "set output \"$images/graph-ht-custom-separate-$id2-$n.png\"\n");
+                                fwrite($f, "set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]\n");
+                                fwrite($f, "set format x \"%H:%M\\n%m/%d\"\n");
+                                fwrite($f, "set yrange [0:100]\n");
+                                fwrite($f, "set y2range [0:35]\n");
+                                fwrite($f, "set my2tics 10\n");
+                                fwrite($f, "set ytics 10\n");
+                                fwrite($f, "set y2tics 5\n");
+                                fwrite($f, "set style line 11 lc rgb '#808080' lt 1\n");
+                                fwrite($f, "set border 3 back ls 11\n");
+                                fwrite($f, "set tics nomirror\n");
+                                fwrite($f, "set style line 12 lc rgb '#808080' lt 0 lw 1\n");
+                                fwrite($f, "set grid xtics ytics back ls 12\n");
+                                fwrite($f, "set style line 1 lc rgb '#FF3100' pt 0 ps 1 lt 1 lw 2\n");
+                                fwrite($f, "set style line 2 lc rgb '#0772A1' pt 0 ps 1 lt 1 lw 2\n");
+                                fwrite($f, "set style line 3 lc rgb '#00B74A' pt 0 ps 1 lt 1 lw 2\n");
+                                fwrite($f, "set style line 4 lc rgb '#91180B' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 5 lc rgb '#582557' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 6 lc rgb '#04834C' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 7 lc rgb '#DC32E6' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 8 lc rgb '#957EF9' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 9 lc rgb '#CC8D9C' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 10 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1\n");
+                                if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
+                                else fwrite($f, "unset key\n");
+                                fwrite($f, "set title \"Sensor $n: $sensor_ht_name[$n]: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
+                                fwrite($f, "plot \"<awk '\\$10 == $n' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, ");
+                                fwrite($f, "\"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ");
+                                fwrite($f, "\"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"$relay_name[1]\" w impulses ls 4 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:8 index 0 title \"$relay_name[2]\" w impulses ls 5 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:9 index 0 title \"$relay_name[3]\" w impulses ls 6 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:10 index 0 title \"$relay_name[4]\" w impulses ls 7 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:11 index 0 title \"$relay_name[5]\" w impulses ls 8 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:12 index 0 title \"$relay_name[6]\" w impulses ls 9 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:13 index 0 title \"$relay_name[7]\" w impulses ls 10 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:14 index 0 title \"$relay_name[8]\" w impulses ls 11 axes x1y1");
+
+                                fclose($f);
+                                $cmd = "gnuplot $cus_graph";
+                                exec($cmd);
+                                unlink($cus_graph);
+
                                 echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
                                 echo 'graphtype=custom-separate';
                                 echo '&sensortype=ht';
@@ -1258,48 +1347,58 @@ if ($output_error) {
                             }
                             if ($n != $sensor_ht_num || ($n == $sensor_ht_num && array_sum($sensor_co2_graph))) { echo '<hr class="fade"/>'; }
                         }
+
                         for ($n = 1; $n <= $sensor_co2_num; $n++) {
                             if ($sensor_co2_graph[$n] == 1) {
-                                echo `echo "set terminal png size $graph_width,490
-                                set xdata time
-                                set timefmt \"%Y %m %d %H %M %S\"
-                                set output \"$images/graph-co2-custom-separate-$id2-$n.png\"
-                                set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]
-                                set format x \"%H:%M\n%m/%d\"
-                                set yrange [0:100]
-                                set y2range [0:35]
-                                set my2tics 10
-                                set ytics 10
-                                set y2tics 5
-                                set style line 11 lc rgb '#808080' lt 1
-                                set border 3 back ls 11
-                                set tics nomirror
-                                set style line 12 lc rgb '#808080' lt 0 lw 1
-                                set grid xtics ytics back ls 12
-                                set style line 1 lc rgb '#FF3100' pt 0 ps 1 lt 1 lw 2
-                                set style line 2 lc rgb '#0772A1' pt 0 ps 1 lt 1 lw 2
-                                set style line 3 lc rgb '#00B74A' pt 0 ps 1 lt 1 lw 2
-                                set style line 4 lc rgb '#91180B' pt 0 ps 1 lt 1 lw 1
-                                set style line 5 lc rgb '#582557' pt 0 ps 1 lt 1 lw 1
-                                set style line 6 lc rgb '#04834C' pt 0 ps 1 lt 1 lw 1
-                                set style line 7 lc rgb '#DC32E6' pt 0 ps 1 lt 1 lw 1
-                                set style line 8 lc rgb '#957EF9' pt 0 ps 1 lt 1 lw 1
-                                set style line 9 lc rgb '#CC8D9C' pt 0 ps 1 lt 1 lw 1
-                                set style line 10 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1
-                                set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1
-                                unset key
-                                #set xlabel \"Date and Time\"
-                                #set ylabel \"ppm CO2\"
-                                set title \"Sensor $n: $sensor_co2_name[$n]: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"
-                                plot \"<awk '\\$10 == $n' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, \\
-                                \"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"$relay_name[1]\" w impulses ls 4 axes x1y1, \\
-                                \"\" using 1:8 index 0 title \"$relay_name[2]\" w impulses ls 5 axes x1y1, \\
-                                \"\" using 1:9 index 0 title \"$relay_name[3]\" w impulses ls 6 axes x1y1, \\
-                                \"\" using 1:10 index 0 title \"$relay_name[4]\" w impulses ls 7 axes x1y1, \\
-                                \"\" using 1:11 index 0 title \"$relay_name[5]\" w impulses ls 8 axes x1y1, \\
-                                \"\" using 1:12 index 0 title \"$relay_name[6]\" w impulses ls 9 axes x1y1, \\
-                                \"\" using 1:13 index 0 title \"$relay_name[7]\" w impulses ls 10 axes x1y1, \\
-                                \"\" using 1:14 index 0 title \"$relay_name[8]\" w impulses ls 11 axes x1y1" | gnuplot`;
+
+                                $cus_graph = "/var/tmp/plot-cus-co2-separate-$n.gnuplot";
+                                $f = fopen($cus_graph, "w");
+
+                                fwrite($f, "set terminal png size $graph_width,490\n");
+                                fwrite($f, "set xdata time\n");
+                                fwrite($f, "set timefmt \"%Y %m %d %H %M %S\"\n");
+                                fwrite($f, "set output \"$images/graph-co2-custom-separate-$id2-$n.png\"\n");
+                                fwrite($f, "set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]\n");
+                                fwrite($f, "set format x \"%H:%M\\n%m/%d\"\n");
+                                fwrite($f, "set yrange [0:100]\n");
+                                fwrite($f, "set y2range [0:35]\n");
+                                fwrite($f, "set my2tics 10\n");
+                                fwrite($f, "set ytics 10\n");
+                                fwrite($f, "set y2tics 5\n");
+                                fwrite($f, "set style line 11 lc rgb '#808080' lt 1\n");
+                                fwrite($f, "set border 3 back ls 11\n");
+                                fwrite($f, "set tics nomirror\n");
+                                fwrite($f, "set style line 12 lc rgb '#808080' lt 0 lw 1\n");
+                                fwrite($f, "set grid xtics ytics back ls 12\n");
+                                fwrite($f, "set style line 1 lc rgb '#FF3100' pt 0 ps 1 lt 1 lw 2\n");
+                                fwrite($f, "set style line 2 lc rgb '#0772A1' pt 0 ps 1 lt 1 lw 2\n");
+                                fwrite($f, "set style line 3 lc rgb '#00B74A' pt 0 ps 1 lt 1 lw 2\n");
+                                fwrite($f, "set style line 4 lc rgb '#91180B' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 5 lc rgb '#582557' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 6 lc rgb '#04834C' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 7 lc rgb '#DC32E6' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 8 lc rgb '#957EF9' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 9 lc rgb '#CC8D9C' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 10 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1\n");
+                                if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
+                                else fwrite($f, "unset key\n");
+                                fwrite($f, "set title \"Sensor $n: $sensor_co2_name[$n]: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
+                                fwrite($f, "plot \"<awk '\\$10 == $n' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, ");
+                                fwrite($f, "\"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"$relay_name[1]\" w impulses ls 4 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:8 index 0 title \"$relay_name[2]\" w impulses ls 5 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:9 index 0 title \"$relay_name[3]\" w impulses ls 6 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:10 index 0 title \"$relay_name[4]\" w impulses ls 7 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:11 index 0 title \"$relay_name[5]\" w impulses ls 8 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:12 index 0 title \"$relay_name[6]\" w impulses ls 9 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:13 index 0 title \"$relay_name[7]\" w impulses ls 10 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:14 index 0 title \"$relay_name[8]\" w impulses ls 11 axes x1y1\n");
+
+                                fclose($f);
+                                $cmd = "gnuplot $cus_graph";
+                                exec($cmd);
+                                unlink($cus_graph);
+
                                 echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
                                 echo 'graphtype=custom-separate';
                                 echo '&sensortype=co2';
@@ -1310,7 +1409,6 @@ if ($output_error) {
                             if ($n != $sensor_co2_num) { echo '<hr class="fade"/>'; }
                         }
                     }
-                    echo '<div style="width: 100%; text-align: center;"><a href=\'javascript:open_legend()\'>Brief Graph Legend</a> - <a href=\'javascript:open_legend_full()\'>Full Graph Legend</a></div>';
                 }
             } else if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] == 'guest') {
                 displayform();
