@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.59";
+$version = "3.5.60";
 
 ######### Start Edit Configure #########
 
@@ -559,7 +559,7 @@ if ($output_error) {
             ?>
            
 
-            <div style="width: 45em; padding-left: 3em; padding-top: 2em;">
+            <div style="width: 45em; padding-left: 1.5em; padding-top: 2em;">
                 
                 <?php if ($sensor_t_num > 0) { ?>
                 <div class="sensor-title">Temperature Sensors</div>
@@ -635,16 +635,18 @@ if ($output_error) {
                         <tr class="shade">
                             <td align=center>PID<br>Type</td>
                             <td align=center>Current<br>State</td>
-                            <td style="vertical-align: middle;" align=center>Relay<br>No.</td>
                             <td align=center>PID<br>Set Point</td>
-                            <td style="vertical-align: middle;" align=center>Interval<br>(seconds)</td>
+                            <td align=center>PID<br>Set Dir</td>
+                            <td align=center>PID<br>Set Buf</td>
+                            <td align=center>Interval<br>(seconds)</td>
+                            <td align=center>Relay<br>No.</td>
                             <td style="vertical-align: middle;" align=center>P</td>
                             <td style="vertical-align: middle;" align=center>I</td>
                             <td style="vertical-align: middle;" align=center>D</td>
                         </tr>
                         <tr style="height: 2.5em;">
-                            <td>Temperature</td>
-                            <td class="onoff">
+                            <td rowspan=2>Temperature</td>
+                            <td rowspan=2 class="onoff">
                                 <?php
                                 if ($pid_ht_temp_or[$i] == 1) {
                                     ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangeT<?php echo $i; ?>TempOR" value="0"> | <button style="width: 3em;" type="submit" name="ChangeT<?php echo $i; ?>TempOR" value="0">ON</button>
@@ -655,26 +657,59 @@ if ($output_error) {
                                 }
                                 ?>
                             </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_t_temp_relay[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempRelay" title="This is the relay connected to the heating device"/>
+                            <td rowspan=2>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_set[$i]; ?>" maxlength=4 size=2 name="SetT<?php echo $i; ?>TempSet" title="This is the desired temperature in °C."/> °C
+                            </td>
+                            <td rowspan=2>
+                                <select style="width: 5em;" name="SetT<?php echo $i; ?>TempSetDir" title="Which direction should the PID regulate. 'Up' will ensure the temperature is regulated above a certain temperature. 'Down' will ensure the temperature is regulates below a certain point. 'Both' will ensure the temperature is regulated both up and down to maintain a specific temperature."/>
+                                    <option value="0"<?php
+                                        if ($pid_t_temp_set_dir[$i] == 0) {
+                                            echo ' selected="selected"';
+                                        } ?>>Both</option>
+                                    <option value="1"<?php
+                                        if ($pid_t_temp_set_dir[$i] == 1) {
+                                            echo ' selected="selected"';
+                                        } ?>>Up</option>
+                                    <option value="-1"<?php
+                                        if ($pid_t_temp_set_dir[$i] == -1) {
+                                            echo ' selected="selected"';
+                                        } ?>>Down</option>
+                                </select>
+                            </td>
+                            <td rowspan=2>
+                                <input style="width: 3em;" type="number" step="any" value="<?php echo $pid_t_temp_set_buf[$i]; ?>" maxlength=4 size=2 name="SetT<?php echo $i; ?>TempSetBuf" title="This is the zone surounding the Set Point that the PID controller will not activate relays (i.e. regulation is paused). For example, if the Set Point is 30°C and the Set Buff is 3°C, the Relay High will only activate once the temperature rises above 33°C to lower the temperature and the Relay Low will only activate once the temperature falls below 27°C."/> °C
+                            </td>
+                            <td rowspan=2>
+                                <input style="width: 3em;" type="number" min="1" max="99999" value="<?php echo $pid_t_temp_period[$i]; ?>" name="SetT<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/>
                             </td>
                             <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_set[$i]; ?>" maxlength=4 size=2 name="SetT<?php echo $i; ?>TempSet" title="This is the desired temperature"/> °C
-                            </td>
-                            <td align=center>
-                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_t_temp_period[$i]; ?>" name="SetT<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/>
+                                ▼ <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_t_temp_relay_high[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempRelayHigh" title="This relay is used to decrease temperature. When the measured temperature reaches the upper set buffer (Upper Set Buffer = Set Point + Set Buf) then the PID controller will modulate this relay until the temperature falls below it."/>
                             </td>
                             <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_p[$i]; ?>" maxlength=4 size=1 name="SetT<?php echo $i; ?>Temp_P" title="This is the Proportional value of the PID"/>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_p_high[$i]; ?>" maxlength=4 size=1 name="SetT<?php echo $i; ?>Temp_P_High" title="This is the Proportional value of the PID"/>
                             </td>
                             <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_i[$i]; ?>" maxlength=4 size=1 name="SetT<?php echo $i; ?>Temp_I" title="This is the Integral value of the the PID"/>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_i_high[$i]; ?>" maxlength=4 size=1 name="SetT<?php echo $i; ?>Temp_I_High" title="This is the Integral value of the the PID"/>
                             </td>
                             <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_d[$i]; ?>" maxlength=4 size=1 name="SetT<?php echo $i; ?>Temp_D" title="This is the Derivative value of the PID"/>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_d_high[$i]; ?>" maxlength=4 size=1 name="SetT<?php echo $i; ?>Temp_D_High" title="This is the Derivative value of the PID"/>
                             </td>
-                            <td>
+                            <td rowspan=2>
                                 <input type="submit" name="ChangeT<?php echo $i; ?>TempPID" value="Set">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                ▲ <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_t_temp_relay_low[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempRelayLow" title="This relay is used to increase temperature. When the measured temperature reaches the lower set buffer (Lower Set Buffer = Set Point - Set Buf) then the PID controller will modulate this relay until the temperature rises above it."/>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_p_low[$i]; ?>" maxlength=4 size=1 name="SetT<?php echo $i; ?>Temp_P_Low" title="This is the Proportional value of the PID"/>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_i_low[$i]; ?>" maxlength=4 size=1 name="SetT<?php echo $i; ?>Temp_I_Low" title="This is the Integral value of the the PID"/>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_d_low[$i]; ?>" maxlength=4 size=1 name="SetT<?php echo $i; ?>Temp_D_low" title="This is the Derivative value of the PID"/>
                             </td>
                         </tr>
                     </table>
@@ -736,7 +771,7 @@ if ($output_error) {
                                 <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_ht_pin[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>pin" title="This is the GPIO pin connected to the DHT sensor"/>
                             </td>
                             <td align=center>
-                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_ht_period[$i]; ?>" name="sensorht<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
+                                <input style="width: 4m;" type="number" min="1" max="99999" value="<?php echo $sensor_ht_period[$i]; ?>" name="sensorht<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
                             </td>
                             <td align=center>
                                 <input type="checkbox" name="sensorht<?php echo $i; ?>activated" value="1" <?php if ($sensor_ht_activated[$i] == 1) echo 'checked'; ?>>
@@ -756,16 +791,18 @@ if ($output_error) {
                         <tr class="shade">
                             <td align=center>PID<br>Type</td>
                             <td align=center>Current<br>State</td>
-                            <td style="vertical-align: middle;" align=center>Relay<br>No.</td>
                             <td align=center>PID<br>Set Point</td>
-                            <td style="vertical-align: middle;" align=center>Interval<br>(seconds)</td>
+                            <td align=center>PID<br>Set Dir</td>
+                            <td align=center>PID<br>Set Buf</td>
+                            <td align=center>Interval<br>(seconds)</td>
+                            <td align=center>Relay<br>No.</td>
                             <td style="vertical-align: middle;" align=center>P</td>
                             <td style="vertical-align: middle;" align=center>I</td>
                             <td style="vertical-align: middle;" align=center>D</td>
                         </tr>
                         <tr style="height: 2.5em;">
-                            <td>Temperature</td>
-                            <td class="onoff">
+                            <td rowspan=2>Temperature</td>
+                            <td rowspan=2 class="onoff">
                                 <?php
                                 if ($pid_ht_temp_or[$i] == 1) {
                                     ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangeHT<?php echo $i; ?>TempOR" value="0"> | <button style="width: 3em;" type="submit" name="ChangeHT<?php echo $i; ?>TempOR" value="0">ON</button>
@@ -776,31 +813,66 @@ if ($output_error) {
                                 }
                                 ?>
                             </td>
+                            <td rowspan=2>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_temp_set[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>TempSet" title="This is the desired temperature in °C."/> °C
+                            </td>
+                            <td rowspan=2>
+                                <select style="width: 5em;" name="SetHT<?php echo $i; ?>TempSetDir" title="Which direction should the PID regulate. 'Up' will ensure the temperature is regulated above a certain temperature. 'Down' will ensure the temperature is regulates below a certain point. 'Both' will ensure the temperature is regulated both up and down to maintain a specific temperature."/>
+                                    <option value="0"<?php
+                                        if ($pid_ht_temp_set_dir[$i] == 0) {
+                                            echo ' selected="selected"';
+                                        } ?>>Both</option>
+                                    <option value="1"<?php
+                                        if ($pid_ht_temp_set_dir[$i] == 1) {
+                                            echo ' selected="selected"';
+                                        } ?>>Up</option>
+                                    <option value="-1"<?php
+                                        if ($pid_ht_temp_set_dir[$i] == -1) {
+                                            echo ' selected="selected"';
+                                        } ?>>Down</option>
+                                </select>
+                            </td>
+                            <td rowspan=2>
+                                <input style="width: 3em;" type="number" step="any" value="<?php echo $pid_ht_temp_set_buf[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>TempSetBuf" title="This is the zone surounding the Set Point that the PID controller will not activate relays (i.e. regulation is paused). For example, if the Set Point is 30°C and the Set Buff is 3°C, the Relay High will only activate once the temperature rises above 33°C, to lower the temperature, and the Relay Low will only activate once the temperature falls below 27°C, to increase the temperature."/> °C
+                            </td>
+                            <td rowspan=2 align=center>
+                                <input style="width: 3em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_temp_period[$i]; ?>" name="SetHT<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/>
+                            </td>
+
                             <td>
-                                <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_ht_temp_relay[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>TempRelay" title="This is the relay connected to the heating device"/>
+                                ▼ <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_ht_temp_relay_high[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>TempRelayHigh" title="This relay is used to decrease temperature. When the measured temperature reaches the upper set buffer (Upper Set Buffer = Set Point + Set Buf) then the PID controller will modulate this relay until the temperature falls below it."/>
                             </td>
                             <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_temp_set[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>TempSet" title="This is the desired temperature"/> °C
-                            </td>
-                            <td align=center>
-                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_temp_period[$i]; ?>" name="SetHT<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_temp_p_high[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Temp_P_High" title="This is the Proportional value of the PID"/>
                             </td>
                             <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_temp_p[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Temp_P" title="This is the Proportional value of the PID"/>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_temp_i_high[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Temp_I_High" title="This is the Integral value of the the PID"/>
                             </td>
                             <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_temp_i[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Temp_I" title="This is the Integral value of the the PID"/>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_temp_d_high[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Temp_D_High" title="This is the Derivative value of the PID"/>
                             </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_temp_d[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Temp_D" title="This is the Derivative value of the PID"/>
-                            </td>
-                            <td>
+                            <td rowspan=2>
                                 <input type="submit" name="ChangeHT<?php echo $i; ?>TempPID" value="Set">
                             </td>
                         </tr>
+                        <tr>
+                            <td>
+                                ▲ <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_ht_temp_relay_low[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>TempRelayLow" title="This relay is used to increase temperature. When the measured temperature reaches the lower set buffer (Lower Set Buffer = Set Point - Set Buf) then the PID controller will modulate this relay until the temperature rises above it."/>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_temp_p_low[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Temp_P_Low" title="This is the Proportional value of the PID"/>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_temp_i_low[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Temp_I_Low" title="This is the Integral value of the the PID"/>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_temp_d_low[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Temp_D_Low" title="This is the Derivative value of the PID"/>
+                            </td>
+                            
+                        </tr>
                         <tr style="height: 2.5em;">
-                            <td>Humidity</td>
-                            <td class="onoff">
+                            <td rowspan=2>Humidity</td>
+                            <td rowspan=2 class="onoff">
                                 <?php
                                 if ($pid_ht_hum_or[$i] == 1) {
                                     ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangeHT<?php echo $i; ?>HumOR" value="0"> | <button style="width: 3em;" type="submit" name="ChangeHT<?php echo $i; ?>HumOR" value="0">ON</button>
@@ -811,26 +883,59 @@ if ($output_error) {
                                 }
                                 ?>
                             </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_ht_hum_relay[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>HumRelay" title="This is the relay connected to your humidifying device"/>
+                            <td rowspan=2>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_set[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>HumSet" title="This is the desired relative humidity in percent."/> %
+                            </td>
+                            <td rowspan=2>
+                                <select style="width: 5em;" name="SetHT<?php echo $i; ?>HumSetDir" title="Which direction should the PID regulate. 'Up' will ensure the humidity is regulated above a certain humidity. 'Down' will ensure the humidity is regulates below a certain point. 'Both' will ensure the humidity is regulated both up and down to maintain a specific humidity."/>
+                                    <option value="0"<?php
+                                        if ($pid_ht_hum_set_dir[$i] == 0) {
+                                            echo ' selected="selected"';
+                                        } ?>>Both</option>
+                                    <option value="1"<?php
+                                        if ($pid_ht_hum_set_dir[$i] == 1) {
+                                            echo ' selected="selected"';
+                                        } ?>>Up</option>
+                                    <option value="-1"<?php
+                                        if ($pid_ht_hum_set_dir[$i] == -1) {
+                                            echo ' selected="selected"';
+                                        } ?>>Down</option>
+                                </select>
+                            </td>
+                            <td rowspan=2>
+                                <input style="width: 3em;" type="number" step="any" value="<?php echo $pid_ht_hum_set_buf[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>HumSetBuf" title="This is the zone surounding the Set Point that the PID controller will not activate relays (i.e. regulation is paused). For example, if the Set Point is 60% and the Set Buff is 5%, the Relay High will only activate once the humidity rises above 65%, to lower the humidity, and the Relay Low will only activate once the humidity falls below 55%, to raise the humidity."/> %
+                            </td>
+                            <td rowspan=2 align=center>
+                                <input style="width: 3em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_hum_period[$i]; ?>" name="SetHT<?php echo $i; ?>HumPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another humidity reading and applying the PID"/>
                             </td>
                             <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_set[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>HumSet" title="This is the desired humidity"/> %
-                            </td>
-                            <td align=center>
-                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_hum_period[$i]; ?>" name="SetHT<?php echo $i; ?>HumPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another humidity reading and applying the PID"/>
+                                ▼ <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_ht_hum_relay_high[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>HumRelayHigh" title="This relay is used to decrease humidity. When the measured humidity reaches the upper set buffer (Upper Set Buffer = Set Point + Set Buf) then the PID controller will modulate this relay until the humidity falls below it."/>
                             </td>
                             <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_p[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Hum_P" title="This is the Proportional value of the PID"/>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_p_high[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Hum_P_High" title="This is the Proportional value of the PID"/>
                             </td>
                             <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_i[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Hum_I" title="This is the Integral value of the the PID"/>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_i_high[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Hum_I_High" title="This is the Integral value of the the PID"/>
                             </td>
                             <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_d[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Hum_D" title="This is the Derivative value of the PID"/>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_d_high[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Hum_D_High" title="This is the Derivative value of the PID"/>
                             </td>
-                            <td>
+                            <td rowspan=2>
                                 <input type="submit" name="ChangeHT<?php echo $i; ?>HumPID" value="Set">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                ▲ <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_ht_hum_relay_low[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>HumRelayLow" title="This relay is used to increase humidity. When the measured humidity reaches the lower set buffer (Lower Set Buffer = Set Point - Set Buf) then the PID controller will modulate this relay until the humidity rises above it."/>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_p_low[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Hum_P_Low" title="This is the Proportional value of the PID"/>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_i_low[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Hum_I_Low" title="This is the Integral value of the the PID"/>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_d_low[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Hum_D_Low" title="This is the Derivative value of the PID"/>
                             </td>
                         </tr>
                     </table>
@@ -914,16 +1019,18 @@ if ($output_error) {
                         <tr class="shade">
                             <td align=center>PID<br>Type</td>
                             <td align=center>Current<br>State</td>
-                            <td style="vertical-align: middle;" align=center>Relay<br>No.</td>
                             <td align=center>PID<br>Set Point</td>
-                            <td style="vertical-align: middle;" align=center>Interval<br>(seconds)</td>
+                            <td align=center>PID<br>Set Dir</td>
+                            <td align=center>PID<br>Set Buf</td>
+                            <td align=center>Interval<br>(seconds)</td>
+                            <td align=center>Relay<br>No.</td>
                             <td style="vertical-align: middle;" align=center>P</td>
                             <td style="vertical-align: middle;" align=center>I</td>
                             <td style="vertical-align: middle;" align=center>D</td>
                         </tr>
                         <tr style="height: 2.5em;">
-                            <td>CO<sub>2</sub></td>
-                            <td class="onoff">
+                            <td rowspan=2>CO<sub>2</sub></td>
+                            <td rowspan=2 class="onoff">
                                 <?php
                                 if ($pid_co2_or[$i] == 1) {
                                     ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="Change<?php echo $i; ?>Co2OR" value="0"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>Co2OR" value="0">ON</button>
@@ -934,26 +1041,59 @@ if ($output_error) {
                                 }
                                 ?>
                             </td>
-                            <td>
-                                <input  style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_co2_relay[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>Co2Relay" title="This is the relay connected to the device that modulates CO2"/>
+                            <td rowspan=2>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_set[$i]; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>Co2Set" title="This is the desired CO2 concentration in ppm."/> ppm
+                            </td>
+                            <td rowspan=2>
+                                <select style="width: 5em;" name="Set<?php echo $i; ?>CO2SetDir" title="Which direction should the PID regulate. 'Up' will ensure the CO2 is regulated above a certain CO2. 'Down' will ensure the CO2 is regulates below a certain point. 'Both' will ensure the CO2 is regulated both up and down to maintain a specific CO2."/>
+                                    <option value="0"<?php
+                                        if ($pid_co2_set_dir[$i] == 0) {
+                                            echo ' selected="selected"';
+                                        } ?>>Both</option>
+                                    <option value="1"<?php
+                                        if ($pid_co2_set_dir[$i] == 1) {
+                                            echo ' selected="selected"';
+                                        } ?>>Up</option>
+                                    <option value="-1"<?php
+                                        if ($pid_co2_set_dir[$i] == -1) {
+                                            echo ' selected="selected"';
+                                        } ?>>Down</option>
+                                </select>
+                            </td>
+                            <td rowspan=2>
+                                <input style="width: 3em;" type="number" step="any" value="<?php echo $pid_co2_set_buf[$i]; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>Co2SetBuf" title="This is the zone surounding the Set Point that the PID controller will not activate relays (i.e. regulation is paused). For example, if the Set Point is 2000 ppm and the Set Buff is 250 ppm, the Relay High will only activate once the CO2 rises above 2250 ppm, to lower the CO2, and the Relay Low will only activate once the CO2 falls below 1750, to increase the CO2."/> ppm
+                            </td>
+                            <td rowspan=2 align=center>
+                                <input style="width: 3em;" type="number" min="1" max="99999" value="<?php echo $pid_co2_period[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Co2Period" title="This is the number of seconds to wait after the relay has been turned off before taking another CO2 reading and applying the PID"/>
                             </td>
                             <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_set[$i]; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>Co2Set" title="This is the desired CO2 level"/> ppm
-                            </td>
-                            <td align=center>
-                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_co2_period[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Co2Period" title="This is the number of seconds to wait after the relay has been turned off before taking another CO2 reading and applying the PID"/>
+                                ▼ <input  style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_co2_relay_high[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>Co2RelayHigh" title="This relay is used to decrease CO2. When the measured CO2 reaches the upper set buffer (Upper Set Buffer = Set Point + Set Buf) then the PID controller will modulate this relay until the CO2 falls below it."/>
                             </td>
                             <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_p[$i]; ?>" maxlength=5 size=1 name="Set<?php echo $i; ?>Co2_P" title="This is the Proportional value of the PID"/>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_p_high[$i]; ?>" maxlength=5 size=1 name="Set<?php echo $i; ?>Co2_P_High" title="This is the Proportional value of the PID"/>
                             </td>
                             <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_i[$i]; ?>" maxlength=5 size=1 name="Set<?php echo $i; ?>Co2_I" title="This is the Integral value of the the PID"/>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_i_high[$i]; ?>" maxlength=5 size=1 name="Set<?php echo $i; ?>Co2_I_High" title="This is the Integral value of the the PID"/>
                             </td>
                             <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_d[$i]; ?>" maxlength=5 size=1 name="Set<?php echo $i; ?>Co2_D" title="This is the Derivative value of the PID"/>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_d_high[$i]; ?>" maxlength=5 size=1 name="Set<?php echo $i; ?>Co2_D_High" title="This is the Derivative value of the PID"/>
                             </td>
-                            <td>
+                            <td rowspan=2>
                                 <input type="submit" name="Change<?php echo $i; ?>Co2PID" value="Set">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                ▲ <input  style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_co2_relay_low[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>Co2RelayLow" title="This relay is used to increase CO2. When the measured CO2 reaches the lower set buffer (Lower Set Buffer = Set Point - Set Buf) then the PID controller will modulate this relay until the CO2 rises above it."/>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_p_low[$i]; ?>" maxlength=5 size=1 name="Set<?php echo $i; ?>Co2_P_Low" title="This is the Proportional value of the PID"/>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_i_low[$i]; ?>" maxlength=5 size=1 name="Set<?php echo $i; ?>Co2_I_Low" title="This is the Integral value of the the PID"/>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_d_low[$i]; ?>" maxlength=5 size=1 name="Set<?php echo $i; ?>Co2_D_Low" title="This is the Derivative value of the PID"/>
                             </td>
                         </tr>
                     </table>

@@ -92,8 +92,8 @@ def menu():
                 print "Fail"
             sys.exit(0)
         elif opt == "--pidstart":
-            if (sys.argv[2] != 'Temp' and sys.argv[2] != 'Hum' and sys.argv[2] != 'CO2'):
-                print "'%s' is not a valid option. Use 'Temp', 'Hum', or 'CO2'" % sys.argv[2]
+            if (sys.argv[2] != 'TTemp' and sys.argv[2] != 'HTTemp' and sys.argv[2] != 'HTHum' and sys.argv[2] != 'CO2'):
+                print "'%s' is not a valid option. Use 'TTemp', 'HTTemp', 'HTHum', or 'CO2'" % sys.argv[2]
                 sys.exit(0)
             if (int(float(sys.argv[3])) > 4 or int(float(sys.argv[3])) < 1):
                 print "'%s' is not a valid option. Options are 1-4." % sys.argv[3]
@@ -107,8 +107,8 @@ def menu():
                 print "Fail, %s" % reload_status
             sys.exit(1)
         elif opt == "--pidstop":
-            if (sys.argv[2] != 'Temp' and sys.argv[2] != 'Hum' and sys.argv[2] != 'CO2'):
-                print "'%s' is not a valid option. Use 'Temp', 'Hum', or 'CO2'" % sys.argv[2]
+            if (sys.argv[2] != 'TTemp' and sys.argv[2] != 'HTTemp' and sys.argv[2] != 'HTHum' and sys.argv[2] != 'CO2'):
+                print "'%s' is not a valid option. Use 'TTemp', 'HTTemp', 'HTHum', or 'CO2'" % sys.argv[2]
                 sys.exit(0)
             if (int(float(sys.argv[3])) > 4 or int(float(sys.argv[3])) < 1):
                 print "'%s' is not a valid option. Options are 1-4." % sys.argv[3]

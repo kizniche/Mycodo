@@ -96,12 +96,12 @@ hr.fade {
 
 table.pid td {
     vertical-align: middle;
-	padding: 0.4em 0.6em 0.4em 0.6em;
+	padding: 0.3em 0.5em 0.3em 0.5em;
 }
 
 table.pid th {
     vertical-align: middle;
-	padding: 0.4em 0.6em 0.4em 0.6em;
+	padding: 0.3em 0.5em 0.3em 0.5em;
 }
 
 .shade {
@@ -224,7 +224,7 @@ label.notify {
 }
 
 .advanced {
-  padding: 2em 0 0 2em;
+  padding: 2em 0 0 1em;
 }
 
 .adv {

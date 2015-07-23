@@ -86,13 +86,19 @@ for ($p = 1; $p <= 4; $p++) {
 
     // Set Temperature PID variables
     if (isset($_POST['ChangeT' . $p . 'TempPID'])) {
-        $stmt = $db->prepare("UPDATE TSensor SET Temp_Relay=:temprelay, Temp_Set=:tempset, Temp_Period=:tempperiod, Temp_P=:tempp, Temp_I=:tempi, Temp_D=:tempd WHERE Id=:id");
-        $stmt->bindValue(':temprelay', (int)$_POST['SetT' . $p . 'TempRelay'], SQLITE3_INTEGER);
+        $stmt = $db->prepare("UPDATE TSensor SET Temp_Relay_High=:temprelayhigh, Temp_Relay_Low=:temprelaylow, Temp_Set=:tempset, Temp_Set_Direction=:tempsetdir, Temp_Set_Buffer=:tempsetbuf, Temp_Period=:tempperiod, Temp_P_High=:tempphigh, Temp_I_High=:tempihigh, Temp_D_High=:tempdhigh, Temp_P_Low=:tempplow, Temp_I_Low=:tempilow, Temp_D_Low=:tempdlow WHERE Id=:id");
+        $stmt->bindValue(':temprelayhigh', (int)$_POST['SetT' . $p . 'TempRelayHigh'], SQLITE3_INTEGER);
+        $stmt->bindValue(':temprelaylow', (int)$_POST['SetT' . $p . 'TempRelayLow'], SQLITE3_INTEGER);
         $stmt->bindValue(':tempset', (float)$_POST['SetT' . $p . 'TempSet'], SQLITE3_FLOAT);
+        $stmt->bindValue(':tempsetdir', (float)$_POST['SetT' . $p . 'TempSetDir'], SQLITE3_INTEGER);
+        $stmt->bindValue(':tempsetbuf', (float)$_POST['SetT' . $p . 'TempSetBuf'], SQLITE3_FLOAT);
         $stmt->bindValue(':tempperiod', (int)$_POST['SetT' . $p . 'TempPeriod'], SQLITE3_INTEGER);
-        $stmt->bindValue(':tempp', (float)$_POST['SetT' . $p . 'Temp_P'], SQLITE3_FLOAT);
-        $stmt->bindValue(':tempi', (float)$_POST['SetT' . $p . 'Temp_I'], SQLITE3_FLOAT);
-        $stmt->bindValue(':tempd', (float)$_POST['SetT' . $p . 'Temp_D'], SQLITE3_FLOAT);
+        $stmt->bindValue(':tempphigh', (float)$_POST['SetT' . $p . 'Temp_P_High'], SQLITE3_FLOAT);
+        $stmt->bindValue(':tempihigh', (float)$_POST['SetT' . $p . 'Temp_I_High'], SQLITE3_FLOAT);
+        $stmt->bindValue(':tempdhig', (float)$_POST['SetT' . $p . 'Temp_D_High'], SQLITE3_FLOAT);
+        $stmt->bindValue(':tempplow', (float)$_POST['SetT' . $p . 'Temp_P_Low'], SQLITE3_FLOAT);
+        $stmt->bindValue(':tempilow', (float)$_POST['SetT' . $p . 'Temp_I_Low'], SQLITE3_FLOAT);
+        $stmt->bindValue(':tempdlow', (float)$_POST['SetT' . $p . 'Temp_D_Low'], SQLITE3_FLOAT);
         $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
         $stmt->execute();
         if ($pid_ht_temp_or[$p] == 0) {
@@ -104,7 +110,7 @@ for ($p = 1; $p <= 4; $p++) {
 
     // Set Temperature PID override on or off
     if (isset($_POST['ChangeT' . $p . 'TempOR'])) {
-        $stmt = $db->prepare("UPDATE HTSensor SET Temp_OR=:humor WHERE Id=:id");
+        $stmt = $db->prepare("UPDATE TSensor SET Temp_OR=:humor WHERE Id=:id");
         $stmt->bindValue(':humor', (int)$_POST['ChangeT' . $p . 'TempOR'], SQLITE3_INTEGER);
         $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
         $stmt->execute();
@@ -141,13 +147,19 @@ for ($p = 1; $p <= 4; $p++) {
 
     // Set Temperature PID variables
     if (isset($_POST['ChangeHT' . $p . 'TempPID'])) {
-        $stmt = $db->prepare("UPDATE HTSensor SET Temp_Relay=:temprelay, Temp_Set=:tempset, Temp_Period=:tempperiod, Temp_P=:tempp, Temp_I=:tempi, Temp_D=:tempd WHERE Id=:id");
-        $stmt->bindValue(':temprelay', (int)$_POST['SetHT' . $p . 'TempRelay'], SQLITE3_INTEGER);
+        $stmt = $db->prepare("UPDATE HTSensor SET Temp_Relay_High=:temprelayhigh, Temp_Relay_Low=:temprelaylow, Temp_Set=:tempset, Temp_Set_Direction=:tempsetdir, Temp_Set_Buffer=:tempsetbuf, Temp_Period=:tempperiod, Temp_P_High=:tempphigh, Temp_I_High=:tempihigh, Temp_D_High=:tempdhigh, Temp_P_Low=:tempplow, Temp_I_Low=:tempilow, Temp_D_Low=:tempdlow WHERE Id=:id");
+        $stmt->bindValue(':temprelayhigh', (int)$_POST['SetHT' . $p . 'TempRelayHigh'], SQLITE3_INTEGER);
+        $stmt->bindValue(':temprelaylow', (int)$_POST['SetHT' . $p . 'TempRelayLow'], SQLITE3_INTEGER);
         $stmt->bindValue(':tempset', (float)$_POST['SetHT' . $p . 'TempSet'], SQLITE3_FLOAT);
+        $stmt->bindValue(':tempsetdir', (float)$_POST['SetHT' . $p . 'TempSetDir'], SQLITE3_INTEGER);
+        $stmt->bindValue(':tempsetbuf', (float)$_POST['SetHT' . $p . 'TempSetBuf'], SQLITE3_FLOAT);
         $stmt->bindValue(':tempperiod', (int)$_POST['SetHT' . $p . 'TempPeriod'], SQLITE3_INTEGER);
-        $stmt->bindValue(':tempp', (float)$_POST['SetHT' . $p . 'Temp_P'], SQLITE3_FLOAT);
-        $stmt->bindValue(':tempi', (float)$_POST['SetHT' . $p . 'Temp_I'], SQLITE3_FLOAT);
-        $stmt->bindValue(':tempd', (float)$_POST['SetHT' . $p . 'Temp_D'], SQLITE3_FLOAT);
+        $stmt->bindValue(':tempphigh', (float)$_POST['SetHT' . $p . 'Temp_P_High'], SQLITE3_FLOAT);
+        $stmt->bindValue(':tempihigh', (float)$_POST['SetHT' . $p . 'Temp_I_High'], SQLITE3_FLOAT);
+        $stmt->bindValue(':tempdhigh', (float)$_POST['SetHT' . $p . 'Temp_D_High'], SQLITE3_FLOAT);
+        $stmt->bindValue(':tempplow', (float)$_POST['SetHT' . $p . 'Temp_P_Low'], SQLITE3_FLOAT);
+        $stmt->bindValue(':tempilow', (float)$_POST['SetHT' . $p . 'Temp_I_Low'], SQLITE3_FLOAT);
+        $stmt->bindValue(':tempdlow', (float)$_POST['SetHT' . $p . 'Temp_D_Low'], SQLITE3_FLOAT);
         $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
         $stmt->execute();
         if ($pid_ht_temp_or[$p] == 0) {
@@ -174,13 +186,19 @@ for ($p = 1; $p <= 4; $p++) {
 
     // Set Humidity PID variables
     if (isset($_POST['ChangeHT' . $p . 'HumPID'])) {
-        $stmt = $db->prepare("UPDATE HTSensor SET Hum_Relay=:humrelay, Hum_Set=:humset, Hum_Period=:humperiod, Hum_P=:hump, Hum_I=:humi, Hum_D=:humd WHERE Id=:id");
-        $stmt->bindValue(':humrelay', (int)$_POST['SetHT' . $p . 'HumRelay'], SQLITE3_INTEGER);
+        $stmt = $db->prepare("UPDATE HTSensor SET Hum_Relay_High=:humrelayhigh, Hum_Relay_Low=:humrelaylow, Hum_Set=:humset, Hum_Set_Direction=:humsetdir, Hum_Set_Buffer=:humsetbuf, Hum_Period=:humperiod, Hum_P_High=:humphigh, Hum_I_High=:humihigh, Hum_D_High=:humdhigh, Hum_P_Low=:humplow, Hum_I_Low=:humilow, Hum_D_Low=:humdlow WHERE Id=:id");
+        $stmt->bindValue(':humrelayhigh', (int)$_POST['SetHT' . $p . 'HumRelayHigh'], SQLITE3_INTEGER);
+        $stmt->bindValue(':humrelaylow', (int)$_POST['SetHT' . $p . 'HumRelayLow'], SQLITE3_INTEGER);
         $stmt->bindValue(':humset', (float)$_POST['SetHT' . $p . 'HumSet'], SQLITE3_FLOAT);
+        $stmt->bindValue(':humsetdir', (float)$_POST['SetHT' . $p . 'HumSetDir'], SQLITE3_INTEGER);
+        $stmt->bindValue(':humsetbuf', (float)$_POST['SetHT' . $p . 'HumSetBuf'], SQLITE3_FLOAT);
         $stmt->bindValue(':humperiod', (int)$_POST['SetHT' . $p . 'HumPeriod'], SQLITE3_INTEGER);
-        $stmt->bindValue(':hump', (float)$_POST['SetHT' . $p . 'Hum_P'], SQLITE3_FLOAT);
-        $stmt->bindValue(':humi', (float)$_POST['SetHT' . $p . 'Hum_I'], SQLITE3_FLOAT);
-        $stmt->bindValue(':humd', (float)$_POST['SetHT' . $p . 'Hum_D'], SQLITE3_FLOAT);
+        $stmt->bindValue(':humphigh', (float)$_POST['SetHT' . $p . 'Hum_P_High'], SQLITE3_FLOAT);
+        $stmt->bindValue(':humihigh', (float)$_POST['SetHT' . $p . 'Hum_I_High'], SQLITE3_FLOAT);
+        $stmt->bindValue(':humdhigh', (float)$_POST['SetHT' . $p . 'Hum_D_High'], SQLITE3_FLOAT);
+        $stmt->bindValue(':humplow', (float)$_POST['SetHT' . $p . 'Hum_P_Low'], SQLITE3_FLOAT);
+        $stmt->bindValue(':humilow', (float)$_POST['SetHT' . $p . 'Hum_I_Low'], SQLITE3_FLOAT);
+        $stmt->bindValue(':humdlow', (float)$_POST['SetHT' . $p . 'Hum_D_Low'], SQLITE3_FLOAT);
         $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
         $stmt->execute();
         if ($pid_ht_hum_or[$p] == 0) {
@@ -229,13 +247,19 @@ for ($p = 1; $p <= 4; $p++) {
 
     // Set CO2 PID variables
     if (isset($_POST['Change' . $p . 'Co2PID'])) {
-        $stmt = $db->prepare("UPDATE CO2Sensor SET CO2_Relay=:co2relay, CO2_Set=:co2set, CO2_Period=:co2period, CO2_P=:co2p, CO2_I=:co2i, CO2_D=:co2d WHERE Id=:id");
-        $stmt->bindValue(':co2relay', (int)$_POST['Set' . $p . 'Co2Relay'], SQLITE3_INTEGER);
+        $stmt = $db->prepare("UPDATE CO2Sensor SET CO2_Relay_High=:co2relayhigh, CO2_Relay_Low=:co2relaylow, CO2_Set=:co2set, CO2_Set_Direction=:co2setdir, CO2_Set_Buffer=:co2setbuf, CO2_Period=:co2period, CO2_P_High=:co2phigh, CO2_I_High=:co2ihigh, CO2_D_High=:co2dhigh, CO2_P_Low=:co2plow, CO2_I_Low=:co2ilow, CO2_D_Low=:co2dlow WHERE Id=:id");
+        $stmt->bindValue(':co2relayhigh', (int)$_POST['Set' . $p . 'Co2RelayHigh'], SQLITE3_INTEGER);
+        $stmt->bindValue(':co2relaylow', (int)$_POST['Set' . $p . 'Co2RelayLow'], SQLITE3_INTEGER);
         $stmt->bindValue(':co2set', (float)$_POST['Set' . $p . 'Co2Set'], SQLITE3_FLOAT);
+        $stmt->bindValue(':co2setdir', (float)$_POST['Set' . $p . 'Co2SetDir'], SQLITE3_INTEGER);
+        $stmt->bindValue(':co2setbuf', (float)$_POST['Set' . $p . 'Co2SetBuf'], SQLITE3_FLOAT);
         $stmt->bindValue(':co2period', (int)$_POST['Set' . $p . 'Co2Period'], SQLITE3_INTEGER);
-        $stmt->bindValue(':co2p', (float)$_POST['Set' . $p . 'Co2_P'], SQLITE3_FLOAT);
-        $stmt->bindValue(':co2i', (float)$_POST['Set' . $p . 'Co2_I'], SQLITE3_FLOAT);
-        $stmt->bindValue(':co2d', (float)$_POST['Set' . $p . 'Co2_D'], SQLITE3_FLOAT);
+        $stmt->bindValue(':co2phigh', (float)$_POST['Set' . $p . 'Co2_P_High'], SQLITE3_FLOAT);
+        $stmt->bindValue(':co2ihigh', (float)$_POST['Set' . $p . 'Co2_I_High'], SQLITE3_FLOAT);
+        $stmt->bindValue(':co2dhigh', (float)$_POST['Set' . $p . 'Co2_D_High'], SQLITE3_FLOAT);
+        $stmt->bindValue(':co2plow', (float)$_POST['Set' . $p . 'Co2_P_Low'], SQLITE3_FLOAT);
+        $stmt->bindValue(':co2ilow', (float)$_POST['Set' . $p . 'Co2_I_Low'], SQLITE3_FLOAT);
+        $stmt->bindValue(':co2dlow', (float)$_POST['Set' . $p . 'Co2_D_Low'], SQLITE3_FLOAT);
         $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
         $stmt->execute();
         if ($pid_co2_or[$p] == 0) {
