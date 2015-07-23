@@ -329,7 +329,7 @@ def create_all_tables_mycodo():
     cur.execute("CREATE TABLE Timers (Id INT, Name TEXT, Relay INT, State INT, DurationOn INT, DurationOff INT)")
     cur.execute("CREATE TABLE Numbers (Relays INT, TSensors INT, HTSensors INT, CO2Sensors INT, Timers INT)")
     cur.execute("CREATE TABLE SMTP (Host TEXT, SSL INT, Port INT, User TEXT, Pass TEXT, Email_From TEXT, Email_To TEXT)")
-    cur.execute("CREATE TABLE Misc (Camera_Relay INT, Display_Last INT, Display_Timestamp INT)")
+    cur.execute("CREATE TABLE Misc (Camera_Relay INT, Display_Last INT, Display_Timestamp INT, Dismiss_Notification INT)")
     conn.close()
     #
     # Add set-point buffer for addition of both-way PID
@@ -351,7 +351,7 @@ def create_rows_columns_mycodo():
         cur.execute("INSERT INTO Timers VALUES(%d, 'Timer%d', 0, 0, 60, 360)" % (i, i))
     cur.execute("INSERT INTO Numbers VALUES(0, 0, 0, 0, 0)")
     cur.execute("INSERT INTO SMTP VALUES('smtp.gmail.com', 1, 587, 'email@gmail.com', 'password', 'me@gmail.com', 'you@gmail.com')")
-    cur.execute("INSERT INTO Misc VALUES(0, 1, 1)")
+    cur.execute("INSERT INTO Misc VALUES(0, 1, 1, 0)")
     conn.commit()
     cur.close()
 

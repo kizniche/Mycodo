@@ -291,7 +291,17 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
     elif graph_type == "combined":
         plot.write('set terminal png size 1000,%d\n' % (500*num_graphs))
     elif graph_type == "separate":
-        plot.write('set terminal png size 1000,600\n')
+        if (int(pid_t_temp_relay_high[int(sensor_number)]) != 0 or
+            int(pid_t_temp_relay_low[int(sensor_number)]) != 0 or
+            int(pid_ht_temp_relay_high[int(sensor_number)]) != 0 or
+            int(pid_ht_temp_relay_low[int(sensor_number)]) != 0 or 
+            int(pid_ht_hum_relay_high[int(sensor_number)]) != 0 or
+            int(pid_ht_hum_relay_low[int(sensor_number)]) != 0 or
+            int(pid_co2_relay_high[int(sensor_number)]) != 0 or
+            int(pid_co2_relay_low[int(sensor_number)]) != 0 or):
+            plot.write('set terminal png size 1000,900\n')
+        else:
+            plot.write('set terminal png size 1000,500\n')
     elif graph_type == "legend-small":
         plot.write('set terminal png size 250,300\n')
     elif graph_type == "legend-full":
@@ -533,8 +543,8 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set size 1.0,0.6\n')
                 plot.write('set origin 0.0,0.4\n')
                 
-                plot.write('set title \"CO2 Sensor ' + sensor_number + ': ' + sensor_co2_name[int(float(sensor_number))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-                plot.write('plot \"' + sensor_co2_log_final[1] + '" using 1:7 index 0 title \"CO2\" w lp ls 1 axes x1y2\n')
+            plot.write('set title \"CO2 Sensor ' + sensor_number + ': ' + sensor_co2_name[int(float(sensor_number))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            plot.write('plot \"' + sensor_co2_log_final[1] + '" using 1:7 index 0 title \"CO2\" w lp ls 1 axes x1y2\n')
 
             if (int(pid_co2_relay_high[int(sensor_number)]) != 0 or
                 int(pid_co2_relay_low[int(sensor_number)]) != 0):
@@ -676,6 +686,8 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                         plot.write(' \n')
                 else:
                     plot.write(' using 1:' + str(pid_co2_relay_low[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_co2_relay_low[int(sensor_number)])] + '\" w impulses ls 4 axes x1y1\n')
+            else:
+                plot.write(' \n')
 
             # Bottom graph - week
             d = 7
