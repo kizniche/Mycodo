@@ -222,10 +222,12 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                 echo "&graphtype=" , $graph_type;
                 echo "&id=" , $graph_id , ">";
                 echo "</div>";
+
+                if ($n != $sensor_t_num || array_sum($sensor_ht_graph) || array_sum($sensor_co2_graph)) {
+                    echo "<hr class=\"fade\"/>";
+                }
             }
-            if ($n != $sensor_t_num || array_sum($sensor_ht_graph) || array_sum($sensor_co2_graph)) {
-                echo "<hr class=\"fade\"/>";
-            }
+            
         }
         for ($n = 1; $n <= $sensor_ht_num; $n++ ) {
             if ($sensor_ht_graph[$n] == 1) {
@@ -239,10 +241,12 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                 echo "&graphtype=" , $graph_type;
                 echo "&id=" , $graph_id , ">";
                 echo "</div>";
+
+                if ($n != $sensor_ht_num || array_sum($sensor_co2_graph)) {
+                    echo "<hr class=\"fade\"/>";
+                }
             }
-            if ($n != $sensor_ht_num || array_sum($sensor_co2_graph)) {
-                echo "<hr class=\"fade\"/>";
-            }
+            
         }
         for ($n = 1; $n <= $sensor_co2_num; $n++ ) {
             if ($sensor_co2_graph[$n] == 1) {

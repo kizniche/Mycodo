@@ -582,7 +582,9 @@ if ($output_error) {
                             <td align=center>Log Interval<br>(seconds)</td>
                             <td align=center>Activate<br>Logging</td>
                             <td align=center>Activate<br>Graphing</td>
-                            </td></td>
+                            <td rowspan="2" style="padding: 0 2em;">
+                                <input type="submit" name="Change<?php echo $i; ?>TSensor" value="Save">
+                            </td>
                         </tr>
                         <tr style="height: 2.5em;">
                             <td class="shade" style="vertical-align: middle;" align=center>
@@ -621,9 +623,6 @@ if ($output_error) {
                             </td>
                             <td align=center>
                                 <input type="checkbox" name="sensort<?php echo $i; ?>graph" value="1" <?php if ($sensor_t_graph[$i] == 1) echo 'checked'; ?>>
-                            </td>
-                            <td>
-                                <input type="submit" name="Change<?php echo $i; ?>TSensor" value="Set">
                             </td>
                         </tr>
                     </table>
@@ -693,9 +692,6 @@ if ($output_error) {
                             <td>
                                 <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_d_high[$i]; ?>" maxlength=4 size=1 name="SetT<?php echo $i; ?>Temp_D_High" title="This is the Derivative value of the PID"/>
                             </td>
-                            <td rowspan=2>
-                                <input type="submit" name="ChangeT<?php echo $i; ?>TempPID" value="Set">
-                            </td>
                         </tr>
                         <tr>
                             <td>
@@ -737,7 +733,9 @@ if ($output_error) {
                             <td align=center>Log Interval<br>(seconds)</td>
                             <td align=center>Activate<br>Logging</td>
                             <td align=center>Activate<br>Graphing</td>
-                            </td></td>
+                            <td rowspan=2 style="padding: 0 2em;">
+                                <input type="submit" name="Change<?php echo $i; ?>HTSensor" value="Save">
+                            </td>
                         </tr>
                         <tr style="height: 2.5em;">
                             <td class="shade" style="vertical-align: middle;" align=center>
@@ -770,16 +768,13 @@ if ($output_error) {
                                 <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_ht_pin[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>pin" title="This is the GPIO pin connected to the DHT sensor"/>
                             </td>
                             <td align=center>
-                                <input style="width: 4m;" type="number" min="1" max="99999" value="<?php echo $sensor_ht_period[$i]; ?>" name="sensorht<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
+                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_ht_period[$i]; ?>" name="sensorht<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
                             </td>
                             <td align=center>
                                 <input type="checkbox" name="sensorht<?php echo $i; ?>activated" value="1" <?php if ($sensor_ht_activated[$i] == 1) echo 'checked'; ?>>
                             </td>
                             <td align=center>
                                 <input type="checkbox" name="sensorht<?php echo $i; ?>graph" value="1" <?php if ($sensor_ht_graph[$i] == 1) echo 'checked'; ?>>
-                            </td>
-                            <td>
-                                <input type="submit" name="Change<?php echo $i; ?>HTSensor" value="Set">
                             </td>
                         </tr>
                     </table>
@@ -850,9 +845,6 @@ if ($output_error) {
                             <td>
                                 <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_temp_d_high[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Temp_D_High" title="This is the Derivative value of the PID"/>
                             </td>
-                            <td rowspan=2>
-                                <input type="submit" name="ChangeHT<?php echo $i; ?>TempPID" value="Set">
-                            </td>
                         </tr>
                         <tr>
                             <td>
@@ -919,9 +911,6 @@ if ($output_error) {
                             <td>
                                 <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_d_high[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Hum_D_High" title="This is the Derivative value of the PID"/>
                             </td>
-                            <td rowspan=2>
-                                <input type="submit" name="ChangeHT<?php echo $i; ?>HumPID" value="Set">
-                            </td>
                         </tr>
                         <tr>
                             <td>
@@ -963,7 +952,9 @@ if ($output_error) {
                             <td align=center>Log Interval<br>(seconds)</td>
                             <td align=center>Activate<br>Logging</td>
                             <td align=center>Activate<br>Graphing</td>
-                            </td></td>
+                            <td rowspan="2" style="padding: 0 2em;">
+                                <input type="submit" name="Change<?php echo $i; ?>Co2Sensor" value="Save">
+                            </td>
                         </tr>
                         <tr style="height: 2.5em;">
                             <td class="shade" style="vertical-align: middle;" align=center>
@@ -1005,9 +996,6 @@ if ($output_error) {
                             </td>
                             <td align=center>
                                 <input type="checkbox" name="sensorco2<?php echo $i; ?>graph" value="1" <?php if ($sensor_co2_graph[$i] == 1) echo 'checked'; ?>>
-                            </td>
-                            <td>
-                                <input type="submit" name="Change<?php echo $i; ?>Co2Sensor" value="Set">
                             </td>
                         </tr>
                     </table>
@@ -1076,9 +1064,6 @@ if ($output_error) {
                             </td>
                             <td>
                                 <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_d_high[$i]; ?>" maxlength=5 size=1 name="Set<?php echo $i; ?>Co2_D_High" title="This is the Derivative value of the PID"/>
-                            </td>
-                            <td rowspan=2>
-                                <input type="submit" name="Change<?php echo $i; ?>Co2PID" value="Set">
                             </td>
                         </tr>
                         <tr>

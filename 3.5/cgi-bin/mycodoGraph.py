@@ -22,6 +22,15 @@
 #
 #  Contact at kylegabriel.com
 
+
+####
+####
+#### TODO
+####
+#### Add options in settings:
+#### relay y min max, temperature y min max, humidity y min max, co2 y min max
+####
+
 install_directory = "/var/www/mycodo"
 
 import datetime
@@ -431,8 +440,8 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write('set ytics 500\n')
             plot.write('unset y2tics\n')
             plot.write('set origin 0.0,%.2f\n' % float(1-((1/float(num_graphs))*float(multiplot_num))))
-            #multiplot_num += 1
-            plot.write('set title \"Combined CO2s: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            plot.write('set termopt enhanced\n') 
+            plot.write('set title \"Combined CO_2s: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot ')
             for i in range(1, sensor_co2_num+1):
                 if sensor_co2_graph[i]:
@@ -456,14 +465,18 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set multiplot\n')
                 plot.write('set size 0.989,0.6\n')
                 plot.write('set origin 0.011,0.4\n')
-
-            plot.write('set title \"Temp Sensor ' + sensor_number + ': ' + sensor_t_name[int(float(sensor_number))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+                plot.write('set format x \"\"\n')
+                
+            plot.write('set key at graph 0.02, graph 0.98\n')
+            plot.write('set title \"Temp Sensor ' + sensor_number + ': ' + sensor_t_name[int(float(sensor_number))] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot \"' + sensor_t_log_final[1] + '\" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1\n')
 
             if (int(pid_t_temp_relay_high[int(sensor_number)]) != 0 or
                 int(pid_t_temp_relay_low[int(sensor_number)]) != 0):
                 plot.write('set size 1.0,0.4\n')
                 plot.write('set origin 0.0,0.0\n')
+                plot.write('set key at graph 0.0, graph 0.97\n')
+                plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                 plot.write('unset y2tics\n')
                 plot.write('set ytics 20\n')
                 plot.write('set mytics 4\n')
@@ -493,10 +506,12 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set multiplot\n')
                 plot.write('set size 0.989,0.6\n')
                 plot.write('set origin 0.011,0.4\n')
+                plot.write('set format x \"\"\n')
                 plot.write('set mytics 5\n')
                 plot.write('set my2tics 5\n')
 
-            plot.write('set title \"Hum/Temp Sensor ' + sensor_number + ': ' + sensor_ht_name[int(float(sensor_number))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            plot.write('set key at graph 0.02, graph 0.98\n')
+            plot.write('set title \"Hum/Temp Sensor ' + sensor_number + ': ' + sensor_ht_name[int(float(sensor_number))] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot \"' + sensor_ht_log_final[1] + '\" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1, \\\n')
             plot.write('\"\" u 1:8 index 0 title \"RH\" w lp ls 2 axes x1y2, \\\n')
             plot.write('\"\" u 1:9 index 0 title \"DP\" w lp ls 3 axes x1y1\n')
@@ -507,6 +522,8 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 int(pid_ht_hum_relay_low[int(sensor_number)]) != 0):
                 plot.write('set size 0.93,0.4\n')
                 plot.write('set origin 0.0,0.0\n')
+                plot.write('set format x \"%H:%M\\n%m/%d\"\n')
+                plot.write('set key at graph 0.01, graph 0.97\n')
                 plot.write('set ytics 20\n')
                 plot.write('set mytics 4\n')
                 plot.write('unset y2tics\n')
@@ -545,14 +562,19 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set multiplot\n')
                 plot.write('set size 1.0,0.6\n')
                 plot.write('set origin 0.0,0.4\n')
-                
-            plot.write('set title \"CO2 Sensor ' + sensor_number + ': ' + sensor_co2_name[int(float(sensor_number))] + '\\n\\n' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-            plot.write('plot \"' + sensor_co2_log_final[1] + '" u 1:7 index 0 title \"CO2\" w lp ls 1 axes x1y1\n')
+                plot.write('set format x \"\"\n')
+
+            plot.write('set termopt enhanced\n')
+            plot.write('set key at graph 0.035, graph 0.98\n')
+            plot.write('set title \"CO_2 Sensor ' + sensor_number + ': ' + sensor_co2_name[int(float(sensor_number))] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            plot.write('plot \"' + sensor_co2_log_final[1] + '" u 1:7 index 0 title \"CO_2\" w lp ls 1 axes x1y1\n')
 
             if (int(pid_co2_relay_high[int(sensor_number)]) != 0 or
                 int(pid_co2_relay_low[int(sensor_number)]) != 0):
                 plot.write('set size 0.989,0.4\n')
                 plot.write('set origin 0.011,0.0\n')
+                plot.write('set format x \"%H:%M\\n%m/%d\"\n')
+                plot.write('set key at graph 0.01, graph 0.97\n')
                 plot.write('unset y2tics\n')
                 plot.write('set ytics 20\n')
                 plot.write('set mytics 4\n')
@@ -586,10 +608,13 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 int(pid_t_temp_relay_low[int(sensor_number)]) != 0):
                 plot.write('set size 0.989,0.4\n')
                 plot.write('set origin 0.011,0.6\n')
+                plot.write('set key at graph 0.025, graph 0.98\n')
                 plot.write('set format x ""\n')
             else:
                 plot.write('set size 1.0,0.5\n')
                 plot.write('set origin 0.0,0.5\n')
+                plot.write('set key at graph 0.025, graph 0.98\n')
+
             plot.write('set title \"Temp Sensor ' + sensor_number + ': ' + sensor_t_name[int(float(sensor_number))] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot \"' + sensor_t_log_final[1] + '" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1\n')
 
@@ -597,6 +622,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 int(pid_t_temp_relay_low[int(sensor_number)]) != 0):
                 plot.write('set size 1.0,0.2\n')
                 plot.write('set origin 0.0,0.4\n')
+                plot.write('set key at graph 0.015, graph 0.95\n')
                 plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                 y1_max = '100'
                 plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
@@ -634,6 +660,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             else:
                 plot.write('set size 1.0,0.5\n')
                 plot.write('set origin 0.0,0.0\n')
+
             plot.write('set title \"Temp Sensor ' + sensor_number + ': ' + sensor_t_name[int(float(sensor_number))] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('set format x \"%a\\n%m/%d\"\n')
             plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
@@ -650,10 +677,13 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 int(pid_ht_hum_relay_low[int(sensor_number)]) != 0):
                 plot.write('set size 0.989,0.4\n')
                 plot.write('set origin 0.011,0.6\n')
+                plot.write('set key at graph 0.025, graph 0.98\n')
                 plot.write('set format x ""\n')
             else:
                 plot.write('set size 1.0,0.5\n')
                 plot.write('set origin 0.0,0.5\n')
+                plot.write('set key at graph 0.025, graph 0.98\n')
+
             plot.write('set title \"Hum/Temp Sensor ' + sensor_number + ': ' + sensor_ht_name[int(float(sensor_number))] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot \"' + sensor_ht_log_final[1] + '" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1, ')
             plot.write('\"\" u 1:8 index 0 title \"RH\" w lp ls 2 axes x1y2, ')
@@ -665,6 +695,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 int(pid_ht_hum_relay_low[int(sensor_number)]) != 0):
                 plot.write('set size 0.935,0.2\n')
                 plot.write('set origin 0.0,0.4\n')
+                plot.write('set key at graph 0.01, graph 0.95\n')
                 plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                 y1_max = '100'
                 plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
@@ -718,6 +749,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             else:
                 plot.write('set size 1.0,0.5\n')
                 plot.write('set origin 0.0,0.0\n')
+
             plot.write('set title \"Hum/Temp Sensor ' + sensor_number + ': ' + sensor_ht_name[int(float(sensor_number))] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('set format x \"%a\\n%m/%d\"\n')
             plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
@@ -734,17 +766,22 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 int(pid_co2_relay_low[int(sensor_number)]) != 0):
                 plot.write('set size 1.0,0.4\n')
                 plot.write('set origin 0.0,0.6\n')
+                plot.write('set key at graph 0.035, graph 0.98\n')
                 plot.write('set format x ""\n')
             else:
                 plot.write('set size 1.0,0.5\n')
                 plot.write('set origin 0.0,0.5\n')
-            plot.write('set title \"CO2 Sensor ' + sensor_number + ': ' + sensor_co2_name[int(float(sensor_number))] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-            plot.write('plot \"' + sensor_co2_log_final[1] + '" u 1:7 index 0 title \"CO2\" w lp ls 1 axes x1y1\n')
+                plot.write('set key at graph 0.035, graph 0.98\n')
+
+            plot.write('set termopt enhanced\n')
+            plot.write('set title \"CO_2 Sensor ' + sensor_number + ': ' + sensor_co2_name[int(float(sensor_number))] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            plot.write('plot \"' + sensor_co2_log_final[1] + '" u 1:7 index 0 title \"CO_2\" w lp ls 1 axes x1y1\n')
 
             if (int(pid_co2_relay_high[int(sensor_number)]) != 0 or
                 int(pid_co2_relay_low[int(sensor_number)]) != 0):
                 plot.write('set size 0.989,0.2\n')
                 plot.write('set origin 0.011,0.4\n')
+                plot.write('set key at graph 0.01, graph 0.95\n')
                 plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                 y1_max = '100'
                 plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
@@ -772,8 +809,8 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S")
             if (int(pid_co2_relay_high[int(sensor_number)]) != 0 or
                 int(pid_co2_relay_low[int(sensor_number)]) != 0):
-                plot.write('set size 0.989,0.4\n')
-                plot.write('set origin 0.011,0.0\n')
+                plot.write('set size 1.0,0.4\n')
+                plot.write('set origin 0.0,0.0\n')
                 y1_max = '5000'
                 plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
                 plot.write('set ytics 500\n')
@@ -781,7 +818,8 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             else:
                 plot.write('set size 1.0,0.5\n')
                 plot.write('set origin 0.0,0.0\n')
-            plot.write('set title \"CO2 Sensor ' + sensor_number + ': ' + sensor_co2_name[int(float(sensor_number))] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+
+            plot.write('set title \"CO_2 Sensor ' + sensor_number + ': ' + sensor_co2_name[int(float(sensor_number))] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('set format x \"%a\\n%m/%d\"\n')
             plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
             plot.write('plot \"' + sensor_co2_log_final[2] + '" u 1:7 index 0 notitle w lp ls 1 axes x1y1\n')
