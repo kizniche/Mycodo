@@ -282,15 +282,15 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
     elif graph_type == "separate":
         if (sensor_type == "t") and (int(pid_t_temp_relay_high[int(sensor_number)]) != 0 or
             int(pid_t_temp_relay_low[int(sensor_number)]) != 0):
-            plot.write('set terminal png size 1000,900\n')
+            plot.write('set terminal png size 1000,800\n')
         elif (sensor_type == "ht") and (int(pid_ht_temp_relay_high[int(sensor_number)]) != 0 or
             int(pid_ht_temp_relay_low[int(sensor_number)]) != 0 or 
             int(pid_ht_hum_relay_high[int(sensor_number)]) != 0 or
             int(pid_ht_hum_relay_low[int(sensor_number)]) != 0):
-            plot.write('set terminal png size 1000,900\n')
+            plot.write('set terminal png size 1000,800\n')
         elif (sensor_type == "co2") and (int(pid_co2_relay_high[int(sensor_number)]) != 0 or
             int(pid_co2_relay_low[int(sensor_number)]) != 0):
-            plot.write('set terminal png size 1000,900\n')
+            plot.write('set terminal png size 1000,800\n')
         else:
             plot.write('set terminal png size 1000,600\n')
 
@@ -476,7 +476,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set mytics 4\n')
                 y1_max = '100'
                 plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-                plot.write('set title \"Relays\"\n')
+                plot.write('unset title\n')
                 plot.write('plot \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '"')
 
                 first = True
@@ -518,6 +518,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set mytics 4\n')
                 plot.write('unset y2tics\n')
                 y1_max = '100'
+                plot.write('unset title\n')
                 plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
                 plot.write('plot \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '"')
                 
@@ -564,7 +565,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set mytics 4\n')
                 y1_max = '100'
                 plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-                plot.write('set title \"Relays\"\n')
+                plot.write('unset title\n')
                 plot.write('plot \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '"')
                 
                 first = True
