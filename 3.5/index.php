@@ -46,9 +46,6 @@ if (isset($_POST['debug'])) {
 }
 
 class OneFileLoginApplication {
-    // Mycodo SQLite database
-    private $mycodo_db = "./config/mycodo.db";
-
     // @var string Type of database used
     private $db_type = "sqlite"; //
 
@@ -468,7 +465,7 @@ class OneFileLoginApplication {
         ?>
         <html>
         <body>
-        <div style="padding-top: 2em; width: 14em; margin: 8 auto; text-align: left; ">
+        <div style="padding-top: 2em; width: 15em; margin: 8 auto; text-align: left; ">
             <div style="padding-bottom: 0.6em; text-align: center; font-size: 1.8em;">Mycodo</div>
             <form method="post" action="<?php echo $_SERVER['SCRIPT_NAME']; ?>" name="loginform">
             <table>
@@ -501,7 +498,7 @@ class OneFileLoginApplication {
             </form>
         </div>
         <?php
-        
+        $mycodo_db = "config/mycodo.db";
         $db = new SQLite3($mycodo_db);
 
         // Dismiss Notification

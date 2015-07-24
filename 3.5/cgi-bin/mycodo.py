@@ -1355,7 +1355,7 @@ def read_t_sensor(sensor):
             else:
                 logging.debug("[Read T Sensor-%s] Successive readings < 1 difference: keeping.", sensor)
                 temperature_f = float(tempc)*9.0/5.0 + 32.0
-                logging.debug("[Read T Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", sensor, tempc)
+                logging.debug("[Read T Sensor-%s] Temp: %.1f°C", sensor, tempc)
                 sensor_t_read_temp_c[sensor] = tempc
                 return 1
 
