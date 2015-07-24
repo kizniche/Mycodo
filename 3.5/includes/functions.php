@@ -132,6 +132,10 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                 echo "&graphspan=default";
                 echo "&id=" , $graph_id , ">";
                 echo "</div>";
+
+                if ($n != $sensor_t_num || array_sum($sensor_ht_graph) || array_sum($sensor_co2_graph)) {
+                    echo "<hr class=\"fade\"/>";
+                }
             }
         }
         for ($n = 1; $n <= $sensor_ht_num; $n++) {
@@ -146,6 +150,10 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                 echo "&graphspan=default";
                 echo "&id=" , $graph_id , ">";
                 echo "</div>";
+
+                if ($n != $sensor_ht_num || array_sum($sensor_co2_graph)) {
+                    echo "<hr class=\"fade\"/>";
+                }
             }
         }
         for ($n = 1; $n <= $sensor_co2_num; $n++) {
@@ -160,6 +168,10 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                 echo "&graphtype=default";
                 echo "&id=" , $graph_id , ">";
                 echo "</div>";
+
+                if ($n != $sensor_co2_num) {
+                    echo "<hr class=\"fade\"/>";
+                }
             }
         }
     } else if ($graph_type == 'combined') { // Combined preset: Generate combined graphs
