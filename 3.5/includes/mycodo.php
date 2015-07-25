@@ -566,7 +566,7 @@ if ($output_error) {
                     <?php
                     for ($i = 1; $i <= $sensor_t_num; $i++) {
                     ?>
-                    <div style="width: 54em; padding-bottom: 0.35em; border: 0.7em solid #EBEBEB; border-top: 0;">
+                    <div style="width: 54em; border: 0.7em solid #EBEBEB; border-top: 0;">
                         <table class="pid" style="width: 100%;">
                         <tr class="shade">
                             <td>Sensor<br>No.</td>
@@ -586,7 +586,7 @@ if ($output_error) {
                                 <input style="height: 2.5em;" type="submit" name="Change<?php echo $i; ?>TSensor" value="Save">
                             </td>
                         </tr>
-                        <tr style="height: 2.5em;">
+                        <tr class="shade" style="height: 2.5em;">
                             <td class="shade" style="vertical-align: middle;" align=center>
                                 <?php echo $i; ?>
                             </td>
@@ -627,7 +627,7 @@ if ($output_error) {
                         </tr>
                     </table>
 
-                    <table class="pid" style="width: 100%;">
+                    <table class="pid" style="width: 100%; margin-top: 0.1em;">
                         <tr class="shade">
                             <td style="text-align: left;">Regulation</td>
                             <td>Current<br>State</td>
@@ -644,7 +644,7 @@ if ($output_error) {
                             <td rowspan=2 style="text-align: left;">Temperature</td>
                             <td rowspan=2 class="onoff">
                                 <?php
-                                if ($pid_ht_temp_or[$i] == 1) {
+                                if ($pid_t_temp_or[$i] == 1) {
                                     ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangeT<?php echo $i; ?>TempOR" value="0"> | <button style="width: 3em;" type="submit" name="ChangeT<?php echo $i; ?>TempOR" value="0">ON</button>
                                     <?php
                                 } else {
@@ -722,7 +722,7 @@ if ($output_error) {
                     <?php
                     for ($i = 1; $i <= $sensor_ht_num; $i++) {
                     ?>
-                    <div style="width: 54em; padding-bottom: 0.35em; border: 0.7em solid #EBEBEB; border-top: 0;">
+                    <div style="width: 54em; border: 0.7em solid #EBEBEB; border-top: 0;">
                         <table class="pid" style="width: 100%;">
                             <tr class="shade">
                                 <td>Sensor<br>No.</td>
@@ -736,7 +736,7 @@ if ($output_error) {
                                     <input style="height: 2.5em;" type="submit" name="Change<?php echo $i; ?>HTSensor" value="Save">
                                 </td>
                             </tr>
-                            <tr style="height: 2.5em;">
+                            <tr class="shade" style="height: 2.5em;">
                                 <td class="shade" style="vertical-align: middle;">
                                     <?php echo $i; ?>
                                 </td>
@@ -778,7 +778,7 @@ if ($output_error) {
                             </tr>
                         </table>
 
-                        <table class="pid" style="width: 100%;">
+                        <table class="pid" style="width: 100%; margin-top: 0.1em;">
                             <tr class="shade">
                                 <td style="text-align: left;">Regulation</td>
                                 <td>Current<br>State</td>
@@ -940,7 +940,7 @@ if ($output_error) {
                     <?php
                     for ($i = 1; $i <= $sensor_co2_num; $i++) {
                     ?>
-                    <div style="width: 54em; padding-bottom: 0.35em; border: 0.7em solid #EBEBEB; border-top: 0;">
+                    <div style="width: 54em; border: 0.7em solid #EBEBEB; border-top: 0;">
                     <table class="pid" style="width: 100%;">
                         <tr class="shade">
                             <td>Sensor<br>No.</td>
@@ -954,7 +954,7 @@ if ($output_error) {
                                 <input style="height: 2.5em;" type="submit" name="Change<?php echo $i; ?>Co2Sensor" value="Save">
                             </td>
                         </tr>
-                        <tr style="height: 2.5em;">
+                        <tr class="shade" style="height: 2.5em;">
                             <td align=center class="shade" style="vertical-align: middle;">
                                 <?php echo $i; ?>
                             </td>
@@ -998,7 +998,7 @@ if ($output_error) {
                         </tr>
                     </table>
 
-                    <table class="pid" style="width: 100%;">
+                    <table class="pid" style="width: 100%; margin-top: 0.1em;">
                         <tr class="shade">
                             <td style="text-align: left;">Regulation</td>
                             <td>Current<br>State</td>
