@@ -84,25 +84,26 @@ hr.fade {
 }
 
 .sensor-title {
-  font-size: 1.2em;
-  font-weight: bold;
-  padding: 0 0 0.5em 0.3em;
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 0 0 0.5em 0.3em;
 }
 
 .pid-wrapper {
-  padding-top: 0.8px;
-  margin: 0 auto;
-  display: inline-block;
+    padding-top: 0.8px;
+    margin: 0 auto;
+    display: inline-block;
 }
 
 table.pid td {
+    text-align: center;
     vertical-align: middle;
-	padding: 0.3em 0.5em 0.3em 0.5em;
+    padding: 0.3em 0.5em 0.3em 0.5em;
 }
 
 table.pid th {
     vertical-align: middle;
-	padding: 0.3em 0.5em 0.3em 0.5em;
+    padding: 0.3em 0.5em 0.3em 0.5em;
 }
 
 .shade {
@@ -110,8 +111,8 @@ table.pid th {
 }
 
 .table-header {
-	border-style: none none solid none;
-	border-width: 1px;
+    border-style: none none solid none;
+    border-width: 1px;
 }
 
 input.indicate {
@@ -125,16 +126,16 @@ input.indicate {
 
 .state {
     font-size: 0.875em;
-	font-weight: bold;
+  font-weight: bold;
 }
 
 .img-on {
-	content:url("/mycodo/img/on.jpg");
+  content:url("/mycodo/img/on.jpg");
     height: 0.95em;
 }
 
 .img-off {
-	content:url("/mycodo/img/off.jpg");
+  content:url("/mycodo/img/off.jpg");
     height: 0.95em;
 }
 
