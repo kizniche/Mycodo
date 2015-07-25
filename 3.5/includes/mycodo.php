@@ -566,7 +566,7 @@ if ($output_error) {
                     <?php
                     for ($i = 1; $i <= $sensor_t_num; $i++) {
                     ?>
-                    <div style="width: 54em; padding-bottom: 0.35em; border: 0.7em solid #EBEBEB;;">
+                    <div style="width: 54em; padding-bottom: 0.35em; border: 0.7em solid #EBEBEB; border-top: 0;">
                         <table class="pid" style="width: 100%;">
                         <tr class="shade">
                             <td>Sensor<br>No.</td>
@@ -722,7 +722,7 @@ if ($output_error) {
                     <?php
                     for ($i = 1; $i <= $sensor_ht_num; $i++) {
                     ?>
-                    <div style="width: 54em; padding-bottom: 0.35em; border: 0.7em solid #EBEBEB;">
+                    <div style="width: 54em; padding-bottom: 0.35em; border: 0.7em solid #EBEBEB; border-top: 0;">
                         <table class="pid" style="width: 100%;">
                             <tr class="shade">
                                 <td>Sensor<br>No.</td>
@@ -940,7 +940,7 @@ if ($output_error) {
                     <?php
                     for ($i = 1; $i <= $sensor_co2_num; $i++) {
                     ?>
-                    <div style="width: 54em; padding-bottom: 0.35em; border: 0.7em solid #EBEBEB;;">
+                    <div style="width: 54em; padding-bottom: 0.35em; border: 0.7em solid #EBEBEB; border-top: 0;">
                     <table class="pid" style="width: 100%;">
                         <tr class="shade">
                             <td>Sensor<br>No.</td>
