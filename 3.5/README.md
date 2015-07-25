@@ -9,6 +9,7 @@ This is an experimental branch of mycodo. Unless I have been in direct contact w
 - [X] Add log parsing (40%-70% speed increase in graph generation)
 - [X] K30 CO2 sensor support
 - [X] DS18B20 Temperature sensor support
+- [X] Both up and down pid regulation
 - [ ] Timelapse (Working on)
 - [ ] Email notification or audible alarm during critical failure or condition (working on)
 - [ ] O2 sensor support
