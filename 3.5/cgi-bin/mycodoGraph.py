@@ -22,15 +22,6 @@
 #
 #  Contact at kylegabriel.com
 
-
-####
-####
-#### TODO
-####
-#### Add options in settings:
-#### relay y min max, temperature y min max, humidity y min max, co2 y min max
-####
-
 install_directory = "/var/www/mycodo"
 
 import datetime
