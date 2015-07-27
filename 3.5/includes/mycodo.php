@@ -53,6 +53,8 @@ $lock_time_lapse = $lock_path . "/mycodo_time_lapse";
 $lock_time_lapse_light = $lock_path . "/mycodo-timelapse-light";
 
 $camera_error = NULL;
+$time_now = NULL;
+$time_last = NULL;
 
 require($install_path . "/includes/functions.php"); // Mycodo functions
 require($install_path . "/includes/database.php"); // Initial SQL database load to variables

@@ -57,19 +57,25 @@ for ($p = 1; $p <= $sensor_co2_num; $p++) {
 $time_now = `date +"%Y-%m-%d %H:%M:%S"`;
 
 $time_last_t = `tail -n 1 /var/www/mycodo/log/sensor-t-tmp.log`;
-$time_explode = explode(" ", $time_last_t);
-$time_last_t = $time_explode[0] . '-' . $time_explode[1] . '-' . $time_explode[2] . ' ' .
-               $time_explode[3] . ':' . $time_explode[4] . ':' . $time_explode[5];
+if ($time_last_t != '') {
+    $time_explode = explode(" ", $time_last_t);
+    $time_last_t = $time_explode[0] . '-' . $time_explode[1] . '-' . $time_explode[2] . ' ' .
+                   $time_explode[3] . ':' . $time_explode[4] . ':' . $time_explode[5];
+}
 
 $time_last_ht = `tail -n 1 /var/www/mycodo/log/sensor-ht-tmp.log`;
-$time_explode = explode(" ", $time_last_ht);
-$time_last_ht = $time_explode[0] . '-' . $time_explode[1] . '-' . $time_explode[2] . ' ' .
-                $time_explode[3] . ':' . $time_explode[4] . ':' . $time_explode[5];
+if ($time_last_ht != '') {
+    $time_explode = explode(" ", $time_last_ht);
+    $time_last_ht = $time_explode[0] . '-' . $time_explode[1] . '-' . $time_explode[2] . ' ' .
+                    $time_explode[3] . ':' . $time_explode[4] . ':' . $time_explode[5];
+}
 
 $time_last_co2 = `tail -n 1 /var/www/mycodo/log/sensor-co2-tmp.log`;
-$time_explode = explode(" ", $time_last_co2);
-$time_last_co2 = $time_explode[0] . '-' . $time_explode[1] . '-' . $time_explode[2] . ' ' .
-                 $time_explode[3] . ':' . $time_explode[4] . ':' . $time_explode[5];
+if ($time_last_co2 != '') {
+    $time_explode = explode(" ", $time_last_co2);
+    $time_last_co2 = $time_explode[0] . '-' . $time_explode[1] . '-' . $time_explode[2] . ' ' .
+                     $time_explode[3] . ':' . $time_explode[4] . ':' . $time_explode[5];
+}
 
 $time_last = max($time_last_t, $time_last_ht, $time_last_co2);
 
