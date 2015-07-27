@@ -324,12 +324,11 @@ if (isset($_POST['ChangeCamera'])) {
 for ($p = 1; $p <= 8; $p++) {
     // Send client command to turn relay on or off
     if (isset($_POST['R' . $p])) {
-        $name = $_POST['relay' . $p . 'name'];
-        $pin = $_POST['relay' . $p . 'pin'];
-        if(${"relay" . $p . "trigger"} == 0) $trigger_state = 'LOW';
+        $pin = $relay_pin[$p];
+        if($relay_trigger[$p] == 0) $trigger_state = 'LOW';
         else $trigger_state = 'HIGH';
-        if ($_POST['R' . $p] == 0) $desired_state = 'LOW';
-        else $desired_state = 'HIGH';
+        if ($_POST['R' . $p] == 0) $desired_state = 'OFF';
+        else $desired_state = 'ON';
 
         $GPIO_state = shell_exec("$gpio_path -g read $pin");
         if ($GPIO_state == 0 && $trigger_state == 'HIGH') $actual_state = 'LOW';
@@ -337,12 +336,12 @@ for ($p = 1; $p <= 8; $p++) {
         else if ($GPIO_state == 1 && $trigger_state == 'HIGH') $actual_state = 'HIGH';
         else if ($GPIO_state == 1 && $trigger_state == 'LOW') $actual_state = 'LOW';
 
-        if ($actual_state == 'LOW' && $desired_state == 'LOW') {
-            $error_code = 'already_off';
-        } else if ($actual_state == 'HIGH' && $desired_state == 'HIGH') {
-            $error_code = 'already_on';
+        if ($actual_state == 'LOW' && $desired_state == 'OFF') {
+            $output_error = 'already_off';
+        } else if ($actual_state == 'HIGH' && $desired_state == 'ON') {
+            $output_error = 'already_on';
         } else {
-            if ($desired_state == 'HIGH') $desired_state = 1;
+            if ($desired_state == 'ON') $desired_state = 1;
             else $desired_state = 0;
             $gpio_write = "$mycodo_client -r $p $desired_state";
             shell_exec($gpio_write);
@@ -351,9 +350,9 @@ for ($p = 1; $p <= 8; $p++) {
 
     // Send client command to turn relay on for a number of seconds
     if (isset($_POST[$p . 'secON'])) {
-        $name = ${"relay" . $p . "name"};
-        $pin = ${"relay" . $p . "pin"};
-        if(${"relay" . $p . "trigger"} == 0) $trigger_state = 'LOW';
+        $name = $relay_name[$p];
+        $pin = $relay_pin[$p];
+        if($relay_trigger[$p] == 0) $trigger_state = 'LOW';
         else $trigger_state = 'HIGH';
         if ($_POST['R' . $p] == 0) $desired_state = 'LOW';
         else $desired_state = 'HIGH';
@@ -366,9 +365,9 @@ for ($p = 1; $p <= 8; $p++) {
         $seconds_on = $_POST['sR' . $p];
 
         if (!is_numeric($seconds_on) || $seconds_on < 2 || $seconds_on != round($seconds_on)) {
-            echo "<div class=\"error\">Error: Relay $p ($name): Seconds must be a positive integer >1</div>";
+            echo "<div class=\"error\">Error: Relay $p ($name): Seconds must be a positive integer and > 1</div>";
         } else if ($actual_state == 'HIGH' && $desired_state == 'HIGH') {
-            $error_code = 'already_on';
+            $output_error = 'already_on';
         } else {
             $relay_on_sec = "$mycodo_client -r $p $seconds_on";
             shell_exec($relay_on_sec);
