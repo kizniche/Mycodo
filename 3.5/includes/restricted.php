@@ -474,5 +474,3 @@ if (isset($_POST['stop-timelapse'])) {
     $editconfig = "$mycodo_client --writeco2log 0";
     shell_exec($editconfig);
 }
-
-?>

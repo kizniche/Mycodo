@@ -435,4 +435,3 @@ function delete_graphs() {
 function is_positive_integer($str) {
     return (is_numeric($str) && $str > 0 && $str == round($str));
 }
-?>

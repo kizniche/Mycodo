@@ -44,4 +44,3 @@ while ($row = $results->fetchArray()) {
 	$user_name = $row[1];
 	$user_hash = $row[2];
 }
-?>

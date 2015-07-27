@@ -87,4 +87,3 @@ if (isset($_POST['Graph'])) {
     $_COOKIE['graph_span'] = $_POST['graph_time_span'];
     set_new_graph_id();
 }
-?>
