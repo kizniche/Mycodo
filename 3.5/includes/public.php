@@ -26,29 +26,35 @@
 for ($p = 1; $p <= $sensor_t_num; $p++) {
     if ($sensor_t_activated[$p]) {
         $last_t_sensor[$p] = `awk '$8 == $p {print}' /var/www/mycodo/log/sensor-t-tmp.log | tail -n 1`;
-        $sensor_explode = explode(" ", $last_t_sensor[$p]);
-        $t_temp_c[$p] = $sensor_explode[6];
-        $t_temp_f[$p] = round(($t_temp_c[$p]*(9/5) + 32), 1);
-        $settemp_t_f[$p] = round($pid_t_temp_set[$p]*(9/5)+32, 1);
+        if ($last_t_sensor[$p] != '') {
+            $sensor_explode = explode(" ", $last_t_sensor[$p]);
+            $t_temp_c[$p] = $sensor_explode[6];
+            $t_temp_f[$p] = round(($t_temp_c[$p]*(9/5) + 32), 1);
+            $settemp_t_f[$p] = round($pid_t_temp_set[$p]*(9/5)+32, 1);
+        }
     }
 }
 for ($p = 1; $p <= $sensor_ht_num; $p++) {
     if ($sensor_ht_activated[$p]) {
         $last_ht_sensor[$p] = `awk '$10 == $p {print}' /var/www/mycodo/log/sensor-ht-tmp.log | tail -n 1`;
-        $sensor_explode = explode(" ", $last_ht_sensor[$p]);
-        $ht_temp_c[$p] = floatval($sensor_explode[6]);
-        $hum[$p] = $sensor_explode[7];
-        $ht_temp_f[$p] = round(($ht_temp_c[$p]*(9/5) + 32), 1);
-        $dp_c[$p] = substr($sensor_explode[8], 0, -1);
-        $dp_f[$p] = round(($dp_c[$p]*(9/5) + 32), 1);
-        $settemp_ht_f[$p] = round($pid_ht_temp_set[$p]*(9/5)+32, 1);
+        if ($last_ht_sensor[$p] != '') {
+            $sensor_explode = explode(" ", $last_ht_sensor[$p]);
+            $ht_temp_c[$p] = floatval($sensor_explode[6]);
+            $hum[$p] = $sensor_explode[7];
+            $ht_temp_f[$p] = round(($ht_temp_c[$p]*(9/5) + 32), 1);
+            $dp_c[$p] = substr($sensor_explode[8], 0, -1);
+            $dp_f[$p] = round(($dp_c[$p]*(9/5) + 32), 1);
+            $settemp_ht_f[$p] = round($pid_ht_temp_set[$p]*(9/5)+32, 1);
+        }
     }
 }
 for ($p = 1; $p <= $sensor_co2_num; $p++) {
     if ($sensor_co2_activated[$p]) {
         $last_co2_sensor[$p] = `awk '$8 == $p {print}' /var/www/mycodo/log/sensor-co2-tmp.log | tail -n 1`;
-        $sensor_explode = explode(" ", $last_co2_sensor[$p]);
-        $co2[$p] = $sensor_explode[6];
+        if ($last_co2_sensor[$p] != '') {
+            $sensor_explode = explode(" ", $last_co2_sensor[$p]);
+            $co2[$p] = $sensor_explode[6];
+        }
     }
 }
 

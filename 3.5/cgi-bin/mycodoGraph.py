@@ -686,7 +686,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 int(pid_ht_hum_relay_low[int(sensor_number)]) != 0):
                 plot.write('set size 0.935,0.2\n')
                 plot.write('set origin 0.0,0.4\n')
-                plot.write('set key at graph 0.01, graph 0.95\n')
+                plot.write('set key at graph 0.0, graph 0.95\n')
                 plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                 y1_max = '100'
                 plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')

@@ -325,8 +325,8 @@ class ComThread(threading.Thread):
         server = ThreadedServer(ComServer, port = 18812)
         server.start()
 
-# PID controller for sensor_ht_read_hum
-class Humidity_PID:
+# PID controller
+class PID:
     def __init__(self, P=2.0, I=0.0, D=1.0, Derivator=0, Integrator=0,
             Integrator_max=500, Integrator_min=-500):
         self.Kp=P
@@ -376,107 +376,6 @@ class Humidity_PID:
     def getDerivator(self):
         return self.Derivator
 
-# PID controller for temperature
-class Temperature_PID:
-    def __init__(self, P=2.0, I=0.0, D=1.0, Derivator=0, Integrator=0,
-            Integrator_max=500, Integrator_min=-500):
-        self.Kp=P
-        self.Ki=I
-        self.Kd=D
-        self.Derivator=Derivator
-        self.Integrator=Integrator
-        self.Integrator_max=Integrator_max
-        self.Integrator_min=Integrator_min
-        self.set_point=0.0
-        self.error=0.0
-    def update(self,current_value):
-        """Calculate PID output value from reference input and feedback"""
-        self.error = self.set_point - current_value
-        self.P_value = self.Kp * self.error
-        self.D_value = self.Kd * ( self.error - self.Derivator)
-        self.Derivator = self.error
-        self.Integrator = self.Integrator + self.error
-        if self.Integrator > self.Integrator_max:
-            self.Integrator = self.Integrator_max
-        elif self.Integrator < self.Integrator_min:
-            self.Integrator = self.Integrator_min
-        self.I_value = self.Integrator * self.Ki
-        PID = self.P_value + self.I_value + self.D_value
-        return PID
-    def setPoint(self,set_point):
-        """Initilize the setpoint of PID"""
-        self.set_point = set_point
-        self.Integrator=0
-        self.Derivator=0
-    def setIntegrator(self, Integrator):
-        self.Integrator = Integrator
-    def setDerivator(self, Derivator):
-        self.Derivator = Derivator
-    def setKp(self,P):
-        self.Kp=P
-    def setKi(self,I):
-        self.Ki=I
-    def setKd(self,D):
-        self.Kd=D
-    def getPoint(self):
-        return self.set_point
-    def getError(self):
-        return self.error
-    def getIntegrator(self):
-        return self.Integrator
-    def getDerivator(self):
-        return self.Derivator
-
-# PID controller for CO2
-class CO2_PID:
-    def __init__(self, P=2.0, I=0.0, D=1.0, Derivator=0, Integrator=0,
-            Integrator_max=500, Integrator_min=-500):
-        self.Kp=P
-        self.Ki=I
-        self.Kd=D
-        self.Derivator=Derivator
-        self.Integrator=Integrator
-        self.Integrator_max=Integrator_max
-        self.Integrator_min=Integrator_min
-        self.set_point=0.0
-        self.error=0.0
-    def update(self, current_value):
-        """Calculate PID output value from reference input and feedback"""
-        self.error = self.set_point - current_value
-        self.P_value = self.Kp * self.error
-        self.D_value = self.Kd * ( self.error - self.Derivator)
-        self.Derivator = self.error
-        self.Integrator = self.Integrator + self.error
-        if self.Integrator > self.Integrator_max:
-            self.Integrator = self.Integrator_max
-        elif self.Integrator < self.Integrator_min:
-            self.Integrator = self.Integrator_min
-        self.I_value = self.Integrator * self.Ki
-        PID = self.P_value + self.I_value + self.D_value
-        return PID
-    def setPoint(self, set_point):
-        """Initilize the setpoint of PID"""
-        self.set_point = set_point
-        self.Integrator=0
-        self.Derivator=0
-    def setIntegrator(self, Integrator):
-        self.Integrator = Integrator
-    def setDerivator(self, Derivator):
-        self.Derivator = Derivator
-    def setKp(self,P):
-        self.Kp=P
-    def setKi(self,I):
-        self.Ki=I
-    def setKd(self,D):
-        self.Kd=D
-    def getPoint(self):
-        return self.set_point
-    def getError(self):
-        return self.error
-    def getIntegrator(self):
-        return self.Integrator
-    def getDerivator(self):
-        return self.Derivator
 
 # Displays the program usage
 def usage():
@@ -896,9 +795,9 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
     high = pid_t_temp_set[sensor] + pid_t_temp_set_buf[sensor]
     low = pid_t_temp_set[sensor] - pid_t_temp_set_buf[sensor]
 
-    p_temp_high = Temperature_PID(pid_t_temp_p_high[sensor], pid_t_temp_i_high[sensor], pid_t_temp_d_high[sensor])
+    p_temp_high = PID(pid_t_temp_p_high[sensor], pid_t_temp_i_high[sensor], pid_t_temp_d_high[sensor])
     p_temp_high.setPoint(high)
-    p_temp_low = Temperature_PID(pid_t_temp_p_low[sensor], pid_t_temp_i_low[sensor], pid_t_temp_d_low[sensor])
+    p_temp_low = PID(pid_t_temp_p_low[sensor], pid_t_temp_i_low[sensor], pid_t_temp_d_low[sensor])
     p_temp_low.setPoint(low)
 
     while (pid_t_temp_alive[sensor]):
@@ -986,10 +885,10 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
     high = pid_ht_temp_set[sensor] + pid_ht_temp_set_buf[sensor]
     low = pid_ht_temp_set[sensor] - pid_ht_temp_set_buf[sensor]
 
-    p_temp_high = Temperature_PID(pid_ht_temp_p_high[sensor], pid_ht_temp_i_high[sensor], pid_ht_temp_d_high[sensor])
+    p_temp_high = PID(pid_ht_temp_p_high[sensor], pid_ht_temp_i_high[sensor], pid_ht_temp_d_high[sensor])
     p_temp_high.setPoint(high)
 
-    p_temp_low = Temperature_PID(pid_ht_temp_p_low[sensor], pid_ht_temp_i_low[sensor], pid_ht_temp_d_low[sensor])
+    p_temp_low = PID(pid_ht_temp_p_low[sensor], pid_ht_temp_i_low[sensor], pid_ht_temp_d_low[sensor])
     p_temp_low.setPoint(low)
 
     while (pid_ht_temp_alive[sensor]):
@@ -1078,9 +977,9 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
     high = pid_ht_hum_set[sensor] + pid_ht_hum_set_buf[sensor]
     low = pid_ht_hum_set[sensor] - pid_ht_hum_set_buf[sensor]
 
-    p_hum_high = Humidity_PID(pid_ht_hum_p_high[sensor], pid_ht_hum_i_high[sensor], pid_ht_hum_d_high[sensor])
+    p_hum_high = PID(pid_ht_hum_p_high[sensor], pid_ht_hum_i_high[sensor], pid_ht_hum_d_high[sensor])
     p_hum_high.setPoint(high)
-    p_hum_low = Humidity_PID(pid_ht_hum_p_low[sensor], pid_ht_hum_i_low[sensor], pid_ht_hum_d_low[sensor])
+    p_hum_low = PID(pid_ht_hum_p_low[sensor], pid_ht_hum_i_low[sensor], pid_ht_hum_d_low[sensor])
     p_hum_low.setPoint(low)
 
     while (pid_ht_hum_alive[sensor]):
@@ -1168,9 +1067,9 @@ def co2_monitor(ThreadName, sensor):
     high = pid_co2_set[sensor] + pid_co2_set_buf[sensor]
     low = pid_co2_set[sensor] - pid_co2_set_buf[sensor]
 
-    p_co2_high = CO2_PID(pid_co2_p_high[sensor], pid_co2_i_high[sensor], pid_co2_d_high[sensor])
+    p_co2_high = PID(pid_co2_p_high[sensor], pid_co2_i_high[sensor], pid_co2_d_high[sensor])
     p_co2_high.setPoint(high)
-    p_co2_low = CO2_PID(pid_co2_p_low[sensor], pid_co2_i_low[sensor], pid_co2_d_low[sensor])
+    p_co2_low = PID(pid_co2_p_low[sensor], pid_co2_i_low[sensor], pid_co2_d_low[sensor])
     p_co2_low.setPoint(low)
 
     while (pid_co2_alive[sensor]):

@@ -1609,7 +1609,9 @@ if ($output_error) {
                             }
                         }
                         if(isset($_POST['Database'])) {
-                            view_sql_db($mycodo_db);
+                            echo '<pre>';
+                            exec('sqlite3 ' . $mycodo_db . ' .dump', $output); print_r($output);
+                            echo '</pre>';
                         }
                     ?>
                     </pre>
@@ -2046,12 +2048,6 @@ if ($output_error) {
                     Server
                 </div>
                 <pre><?php print_r($_SERVER); ?></pre>
-            </div>
-            <div style="padding-bottom: 2em;">
-                <div style="padding: 1em 0; font-weight: bold; font-size: 1.2em;">
-                    SQLite Database
-                </div>
-                <pre><?php exec('sqlite3 ' . $mycodo_db . ' .dump', $output); print_r($output); ?></pre>
             </div>
         </div>
     <?php
