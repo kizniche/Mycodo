@@ -208,85 +208,85 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                 echo '</div>';
     } else if ($graph_type == 'separate') { // Combined preset: Generate separate graphs
 
-        # Concatenate log files
         if (array_sum($sensor_t_graph)) {
             $sensor_t_log_file_tmp = "/var/www/mycodo/log/sensor-t-tmp.log";
             $sensor_t_log_file = "/var/www/mycodo/log/sensor-t.log";
             $sensor_t_log_generate = "/var/tmp/sensor-t-logs-separate.log";
             system("cat $sensor_t_log_file $sensor_t_log_file_tmp > $sensor_t_log_generate");
+
+            for ($n = 1; $n <= $sensor_t_num; $n++ ) {
+                if ($sensor_t_graph[$n] == 1) {
+                    if (!file_exists("/var/www/mycodo/images/graph-tseparate$graph_time_span-$graph_id-$n.png")) {
+                        shell_exec("$mycodo_client --graph t $graph_type $graph_time_span $graph_id $n");
+                    }
+                    echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                    echo 'sensortype=t';
+                    echo "&sensornumber=$n";
+                    echo "&graphspan=$graph_time_span";
+                    echo "&graphtype=$graph_type";
+                    echo "&id=$graph_id>";
+                    echo '</div>';
+
+                    if ($n != $sensor_t_num || array_sum($sensor_ht_graph) || array_sum($sensor_co2_graph)) {
+                        echo '<hr class="fade"/>';
+                    }
+                } 
+            }
+            unlink($sensor_t_log_generate);
         }
+
         if (array_sum($sensor_ht_graph)) {
             $sensor_ht_log_file_tmp = "/var/www/mycodo/log/sensor-ht-tmp.log";
             $sensor_ht_log_file = "/var/www/mycodo/log/sensor-ht.log";
             $sensor_ht_log_generate = "/var/tmp/sensor-ht-logs-separate.log";
             system("cat $sensor_ht_log_file $sensor_ht_log_file_tmp > $sensor_ht_log_generate");
+
+            for ($n = 1; $n <= $sensor_ht_num; $n++ ) {
+                if ($sensor_ht_graph[$n] == 1) {
+                    if (!file_exists("/var/www/mycodo/images/graph-htseparate$graph_time_span-$graph_id-$n.png")) {
+                        shell_exec("$mycodo_client --graph ht $graph_type $graph_time_span $graph_id $n");
+                    }
+                    echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                    echo 'sensortype=ht';
+                    echo "&sensornumber=$n";
+                    echo "&graphspan=$graph_time_span";
+                    echo "&graphtype=$graph_type";
+                    echo "&id=$graph_id>";
+                    echo '</div>';
+
+                    if ($n != $sensor_ht_num || array_sum($sensor_co2_graph)) {
+                        echo '<hr class="fade"/>';
+                    }
+                }
+            }
+            unlink($sensor_ht_log_generate);
         }
+
         if (array_sum($sensor_co2_graph)) {
             $sensor_co2_log_file_tmp = "/var/www/mycodo/log/sensor-co2-tmp.log";
             $sensor_co2_log_file = "/var/www/mycodo/log/sensor-co2.log";
             $sensor_co2_log_generate = "/var/tmp/sensor-co2-logs-separate.log";
             system("cat $sensor_co2_log_file $sensor_co2_log_file_tmp > $sensor_co2_log_generate");
-        }
-
-        for ($n = 1; $n <= $sensor_t_num; $n++ ) {
-            if ($sensor_t_graph[$n] == 1) {
-                if (!file_exists("/var/www/mycodo/images/graph-tseparate$graph_time_span-$graph_id-$n.png")) {
-                    shell_exec("$mycodo_client --graph t $graph_type $graph_time_span $graph_id $n");
+            
+            for ($n = 1; $n <= $sensor_co2_num; $n++ ) {
+                if ($sensor_co2_graph[$n] == 1) {
+                    if (!file_exists("/var/www/mycodo/images/graph-co2separate$graph_time_span-$graph_id-$n.png")) {
+                        shell_exec("$mycodo_client --graph co2 $graph_type $graph_time_span $graph_id $n");
+                    }
+                    echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                    echo 'sensortype=co2';
+                    echo "&sensornumber=$n";
+                    echo "&graphspan=$graph_time_span";
+                    echo "&graphtype=$graph_type";
+                    echo "&id=$graph_id>";
+                    echo '</div>';
                 }
-                echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
-                echo 'sensortype=t';
-                echo "&sensornumber=$n";
-                echo "&graphspan=$graph_time_span";
-                echo "&graphtype=$graph_type";
-                echo "&id=$graph_id>";
-                echo '</div>';
-
-                if ($n != $sensor_t_num || array_sum($sensor_ht_graph) || array_sum($sensor_co2_graph)) {
+                if ($n != $sensor_co2_num) {
                     echo '<hr class="fade"/>';
                 }
             }
-            
+            unlink($sensor_co2_log_generate);
         }
-        for ($n = 1; $n <= $sensor_ht_num; $n++ ) {
-            if ($sensor_ht_graph[$n] == 1) {
-                if (!file_exists("/var/www/mycodo/images/graph-htseparate$graph_time_span-$graph_id-$n.png")) {
-                    shell_exec("$mycodo_client --graph ht $graph_type $graph_time_span $graph_id $n");
-                }
-                echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
-                echo 'sensortype=ht';
-                echo "&sensornumber=$n";
-                echo "&graphspan=$graph_time_span";
-                echo "&graphtype=$graph_type";
-                echo "&id=$graph_id>";
-                echo '</div>';
-
-                if ($n != $sensor_ht_num || array_sum($sensor_co2_graph)) {
-                    echo '<hr class="fade"/>';
-                }
-            }
-            
-        }
-        for ($n = 1; $n <= $sensor_co2_num; $n++ ) {
-            if ($sensor_co2_graph[$n] == 1) {
-                if (!file_exists("/var/www/mycodo/images/graph-co2separate$graph_time_span-$graph_id-$n.png")) {
-                    shell_exec("$mycodo_client --graph co2 $graph_type $graph_time_span $graph_id $n");
-                }
-                echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
-                echo 'sensortype=co2';
-                echo "&sensornumber=$n";
-                echo "&graphspan=$graph_time_span";
-                echo "&graphtype=$graph_type";
-                echo "&id=$graph_id>";
-                echo '</div>';
-            }
-            if ($n != $sensor_co2_num) {
-                echo '<hr class="fade"/>';
-            }
-        }
-
-        unlink($sensor_t_log_generate);
-        unlink($sensor_ht_log_generate);
-        unlink($sensor_co2_log_generate);
     }
 }
 
