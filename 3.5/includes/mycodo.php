@@ -1168,11 +1168,19 @@ if (isset($output_error)) {
                         fwrite($f, "set style line 11 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1\n");
                         fwrite($f, "set style line 12 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1\n");
 
-                        fwrite($f, "set multiplot layout 4, 1 title \"Combined Sensor Data - $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
+                        fwrite($f, "set multiplot layout 5, 1 title \"Combined Sensor Data - $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
+
+                    if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
+                        else fwrite($f, "unset key\n");
+                        fwrite($f, "set title \"T Sensor: Combined Temperatures\"\n");
+                        fwrite($f, "plot \"<awk '\\$10 == 1' /var/tmp/sensor-t.log\" using 1:7 index 0 title \"T1\" w lp ls 1 axes x1y2, ");
+                        fwrite($f, "\"<awk '\\$10 == 2' /var/tmp/sensor-t.log\" using 1:7 index 0 title \"T2\" w lp ls 2 axes x1y2, ");
+                        fwrite($f, "\"<awk '\\$10 == 3' /var/tmp/sensor-t.log\" using 1:7 index 0 title \"T3\" w lp ls 3 axes x1y2, ");
+                        fwrite($f, "\"<awk '\\$10 == 4' /var/tmp/sensor-t.log\" using 1:7 index 0 title \"T4\" w lp ls 4 axes x1y2\n");
 
                         if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
                         else fwrite($f, "unset key\n");
-                        fwrite($f, "set title \"Combined Temperatures\"\n");
+                        fwrite($f, "set title \"HT Sensor: Combined Temperatures\"\n");
                         fwrite($f, "plot \"<awk '\\$10 == 1' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \"T1\" w lp ls 1 axes x1y2, ");
                         fwrite($f, "\"<awk '\\$10 == 2' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \"T2\" w lp ls 2 axes x1y2, ");
                         fwrite($f, "\"<awk '\\$10 == 3' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \"T3\" w lp ls 3 axes x1y2, ");
@@ -1180,7 +1188,7 @@ if (isset($output_error)) {
 
                         if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
                         else fwrite($f, "unset key\n");
-                        fwrite($f, "set title \"Combined Humidities\"\n");
+                        fwrite($f, "set title \"HT Sensor: Combined Humidities\"\n");
                         fwrite($f, "plot \"<awk '\\$10 == 1' /var/tmp/sensor-ht.log\" using 1:8 index 0 title \"RH1\" w lp ls 1 axes x1y1, ");
                         fwrite($f, "\"<awk '\\$10 == 2' /var/tmp/sensor-ht.log\" using 1:8 index 0 title \"RH2\" w lp ls 2 axes x1y1, ");
                         fwrite($f, "\"<awk '\\$10 == 3' /var/tmp/sensor-ht.log\" using 1:8 index 0 title \"RH3\" w lp ls 3 axes x1y1, ");
@@ -1188,7 +1196,7 @@ if (isset($output_error)) {
 
                         if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
                         else fwrite($f, "unset key\n");
-                        fwrite($f, "set title \"Combined CO2s\"\n");
+                        fwrite($f, "set title \"CO2 Sensor: Combined CO2s\"\n");
                         fwrite($f, "plot \"<awk '\\$15 == 1' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"CO21\" w lp ls 1 axes x1y1, ");
                         fwrite($f, "\"<awk '\\$15 == 2' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"CO22\" w lp ls 2 axes x1y1, ");
                         fwrite($f, "\"<awk '\\$15 == 3' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"CO23\" w lp ls 3 axes x1y1, ");
