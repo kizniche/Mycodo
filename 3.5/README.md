@@ -10,7 +10,7 @@ This is an experimental branch of mycodo. Unless I have been in direct contact w
 - [X] K30 CO2 sensor support
 - [X] DS18B20 Temperature sensor support
 - [X] Both up and down pid regulation
-- [ ] Timelapse (Working on)
+- [X] Timelapse
 - [ ] More graph options (y-axis min/max, select sensors to be graphed)
 - [ ] Email notification or audible alarm during critical failure or condition (working on)
 - [ ] O2 sensor support

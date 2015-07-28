@@ -33,7 +33,7 @@ for ($p = 1; $p <= 8; $p++) {
         $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
         $stmt->execute();
         if ($_POST['relay' . $p . 'pin'] != $relay_pin[$p]) {
-            shell_exec($mycodo_client . ' --sqlreload ' . $p);
+            shell_exec("$mycodo_client --sqlreload $p");
         }
     }
 
@@ -47,7 +47,7 @@ for ($p = 1; $p <= 8; $p++) {
         $stmt->bindValue(':durationoff', (int)$_POST['Timer' . $p . 'Off'], SQLITE3_INTEGER);
         $stmt->bindValue(':id', $p, SQLITE3_TEXT);
         $stmt->execute();
-        shell_exec($mycodo_client . ' --sqlreload 0');
+        shell_exec("$mycodo_client --sqlreload 0");
     }
 
     // Set timer state
@@ -56,7 +56,7 @@ for ($p = 1; $p <= 8; $p++) {
         $stmt->bindValue(':state', (int)$_POST['Timer' . $p . 'StateChange'], SQLITE3_INTEGER);
         $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
         $stmt->execute();
-        shell_exec($mycodo_client . ' --sqlreload 0');
+        shell_exec("$mycodo_client --sqlreload 0");
     }
 }
 
@@ -97,7 +97,7 @@ for ($p = 1; $p <= 4; $p++) {
         if ($pid_t_temp_or[$p] == 0) {
             pid_reload($mycodo_client, 'TTemp', $p);
         } else {
-            shell_exec($mycodo_client . ' --sqlreload 0');
+            shell_exec("$mycodo_client --sqlreload 0");
         }
     }
 
@@ -108,11 +108,11 @@ for ($p = 1; $p <= 4; $p++) {
         $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
         $stmt->execute();
         if ((int)$_POST['ChangeT' . $p . 'TempOR']) {
-            shell_exec($mycodo_client . ' --pidstop TTemp ' . $p);
-            shell_exec($mycodo_client . ' --sqlreload 0');
+            shell_exec("$mycodo_client --pidstop TTemp $p");
+            shell_exec("$mycodo_client --sqlreload 0");
         } else {
-            shell_exec($mycodo_client . ' --sqlreload 0');
-            shell_exec($mycodo_client . ' --pidstart TTemp ' . $p);
+            shell_exec("$mycodo_client --sqlreload 0");
+            shell_exec("$mycodo_client --pidstart TTemp $p");
         }
     }
 
@@ -167,7 +167,7 @@ for ($p = 1; $p <= 4; $p++) {
             pid_reload($mycodo_client, 'HTHum', $p);
         }
         if  ($pid_ht_temp_or[$p] != 0 or $pid_ht_hum_or[$p] != 0) {
-            shell_exec($mycodo_client . ' --sqlreload 0');
+            shell_exec("$mycodo_client --sqlreload 0");
         }
 
     }
@@ -179,11 +179,11 @@ for ($p = 1; $p <= 4; $p++) {
         $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
         $stmt->execute();
         if ((int)$_POST['ChangeHT' . $p . 'TempOR']) {
-            shell_exec($mycodo_client . ' --pidstop HTTemp ' . $p);
-            shell_exec($mycodo_client . ' --sqlreload 0');
+            shell_exec("$mycodo_client --pidstop HTTemp $p");
+            shell_exec("$mycodo_client --sqlreload 0");
         } else {
-            shell_exec($mycodo_client . ' --sqlreload 0');
-            shell_exec($mycodo_client . ' --pidstart HTTemp ' . $p);
+            shell_exec("$mycodo_client --sqlreload 0");
+            shell_exec("$mycodo_client --pidstart HTTemp $p");
         }
     }
 
@@ -194,11 +194,11 @@ for ($p = 1; $p <= 4; $p++) {
         $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
         $stmt->execute();
         if ((int)$_POST['ChangeHT' . $p . 'HumOR']) {
-            shell_exec($mycodo_client . ' --pidstop HTHum ' . $p);
-            shell_exec($mycodo_client . ' --sqlreload 0');
+            shell_exec("$mycodo_client --pidstop HTHum $p");
+            shell_exec("$mycodo_client --sqlreload 0");
         } else {
-            shell_exec($mycodo_client . ' --sqlreload 0');
-            shell_exec($mycodo_client . ' --pidstart HTHum ' . $p);
+            shell_exec("$mycodo_client --sqlreload 0");
+            shell_exec("$mycodo_client --pidstart HTHum $p");
         }
     }
 
@@ -237,7 +237,7 @@ for ($p = 1; $p <= 4; $p++) {
         if ($pid_co2_or[$p] == 0) {
             pid_reload($mycodo_client, 'CO2', $p);
         } else {
-            shell_exec($mycodo_client . ' --sqlreload 0');
+            shell_exec("$mycodo_client --sqlreload 0");
         }
     }
 
@@ -248,11 +248,11 @@ for ($p = 1; $p <= 4; $p++) {
         $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
         $stmt->execute();
         if ((int)$_POST['Change' . $p . 'Co2OR']) {
-            shell_exec($mycodo_client . ' --pidstop CO2 ' . $p);
-            shell_exec($mycodo_client . ' --sqlreload 0');
+            shell_exec("$mycodo_client --pidstop CO2 $p");
+            shell_exec("$mycodo_client --sqlreload 0");
         } else {
-            shell_exec($mycodo_client . ' --sqlreload 0');
-            shell_exec($mycodo_client . ' --pidstart CO2 ' . $p);
+            shell_exec("$mycodo_client --sqlreload 0");
+            shell_exec("$mycodo_client --pidstart CO2 $p");
         }
     }
 }
@@ -268,7 +268,7 @@ if (isset($_POST['ChangeNotify'])) {
     $stmt->bindValue(':emailfrom', $_POST['smtp_email_from'], SQLITE3_TEXT);
     $stmt->bindValue(':emailto', $_POST['smtp_email_to'], SQLITE3_TEXT);
     $stmt->execute();
-    shell_exec($mycodo_client . ' --sqlreload 0');
+    shell_exec("$mycodo_client --sqlreload 0");
 }
 
 // Change number of relays
@@ -276,7 +276,7 @@ if (isset($_POST['ChangeNoRelays'])) {
     $stmt = $db->prepare("UPDATE Numbers SET Relays=:relays");
     $stmt->bindValue(':relays', (int)$_POST['numrelays'], SQLITE3_INTEGER);
     $stmt->execute();
-    shell_exec($mycodo_client . ' --sqlreload 0');
+    shell_exec("$mycodo_client --sqlreload 0");
 }
 
 // Change number of HT sensors
@@ -284,7 +284,7 @@ if (isset($_POST['ChangeNoTSensors'])) {
     $stmt = $db->prepare("UPDATE Numbers SET TSensors=:tsensors");
     $stmt->bindValue(':tsensors', (int)$_POST['numtsensors'], SQLITE3_INTEGER);
     $stmt->execute();
-    shell_exec($mycodo_client . ' --sqlreload 0');
+    shell_exec("$mycodo_client --sqlreload 0");
 }
 
 // Change number of HT sensors
@@ -292,7 +292,7 @@ if (isset($_POST['ChangeNoHTSensors'])) {
     $stmt = $db->prepare("UPDATE Numbers SET HTSensors=:htsensors");
     $stmt->bindValue(':htsensors', (int)$_POST['numhtsensors'], SQLITE3_INTEGER);
     $stmt->execute();
-    shell_exec($mycodo_client . ' --sqlreload 0');
+    shell_exec("$mycodo_client --sqlreload 0");
 }
 
 // Change number of CO2 sensors
@@ -300,7 +300,7 @@ if (isset($_POST['ChangeNoCo2Sensors'])) {
     $stmt = $db->prepare("UPDATE Numbers SET CO2Sensors=:co2sensors");
     $stmt->bindValue(':co2sensors', (int)$_POST['numco2sensors'], SQLITE3_INTEGER);
     $stmt->execute();
-    shell_exec($mycodo_client . ' --sqlreload 0');
+    shell_exec("$mycodo_client --sqlreload 0");
 }
 
 // Change number of timers
@@ -308,17 +308,40 @@ if (isset($_POST['ChangeNoTimers'])) {
     $stmt = $db->prepare("UPDATE Numbers SET Timers=:timers");
     $stmt->bindValue(':timers', (int)$_POST['numtimers'], SQLITE3_INTEGER);
     $stmt->execute();
-    shell_exec($mycodo_client . ' --sqlreload 0');
+    shell_exec("$mycodo_client --sqlreload 0");
 }
 
-// Change light relay
-if (isset($_POST['ChangeCamera'])) {
-    $stmt = $db->prepare("UPDATE Misc SET Camera_Relay=:camrelay, Display_Last=:displaylast, Display_Timestamp=:displayts");
-    $stmt->bindValue(':camrelay', (int)$_POST['camRelay'], SQLITE3_INTEGER);
-    $stmt->bindValue(':displaylast', (int)$_POST['camDisplayLast'], SQLITE3_INTEGER);
-    $stmt->bindValue(':displayts', (int)$_POST['camDisplayTimestamp'], SQLITE3_INTEGER);
+// Change camera still image settings
+if (isset($_POST['ChangeStill'])) {
+    $stmt = $db->prepare("UPDATE CameraStill SET Relay=:relay, Timestamp=:timestamp, Display_Last=:displaylast, Extra_Parameters=:extra");
+    $stmt->bindValue(':relay', (int)$_POST['Still_Relay'], SQLITE3_INTEGER);
+    $stmt->bindValue(':timestamp', (int)$_POST['Still_Timestamp'], SQLITE3_INTEGER);
+    $stmt->bindValue(':displaylast', (int)$_POST['Still_DisplayLast'], SQLITE3_INTEGER);
+    $stmt->bindValue(':extra', $_POST['Still_Extra_Parameters'], SQLITE3_TEXT);
     $stmt->execute();
-    shell_exec($mycodo_client . ' --sqlreload 0');
+    shell_exec("$mycodo_client --sqlreload 0");
+}
+
+// Change camera video stream settings
+if (isset($_POST['ChangeStream'])) {
+    $stmt = $db->prepare("UPDATE CameraStream SET Relay=:relay, Extra_Parameters=:extra");
+    $stmt->bindValue(':relay', (int)$_POST['Stream_Relay'], SQLITE3_INTEGER);
+    $stmt->bindValue(':extra', $_POST['Stream_Extra_Parameters'], SQLITE3_TEXT);
+    $stmt->execute();
+    shell_exec("$mycodo_client --sqlreload 0");
+}
+
+// Change camera timelapse settings
+if (isset($_POST['ChangeTimelapse'])) {
+    $stmt = $db->prepare("UPDATE CameraTimelapse SET Relay=:relay, Path=:path, Prefix=:prefix, File_Timestamp=:timestamp, Display_Last=:displaylast, Extra_Parameters=:extra");
+    $stmt->bindValue(':relay', (int)$_POST['Timelapse_Relay'], SQLITE3_INTEGER);
+    $stmt->bindValue(':path', $_POST['Timelapse_Path'], SQLITE3_TEXT);
+    $stmt->bindValue(':prefix', $_POST['Timelapse_Prefix'], SQLITE3_TEXT);
+    $stmt->bindValue(':timestamp', (int)$_POST['Timelapse_Timestamp'], SQLITE3_INTEGER);
+    $stmt->bindValue(':displaylast', (int)$_POST['Timelapse_DisplayLast'], SQLITE3_INTEGER);
+    $stmt->bindValue(':extra', $_POST['Timelapse_Extra_Parameters'], SQLITE3_TEXT);
+    $stmt->execute();
+    shell_exec("$mycodo_client --sqlreload 0");
 }
 
 for ($p = 1; $p <= 8; $p++) {
@@ -337,14 +360,13 @@ for ($p = 1; $p <= 8; $p++) {
         else if ($GPIO_state == 1 && $trigger_state == 'LOW') $actual_state = 'LOW';
 
         if ($actual_state == 'LOW' && $desired_state == 'OFF') {
-            $output_error = 'already_off';
+            $settings_error = "Error: Can't turn relay $p Off, it's already Off";
         } else if ($actual_state == 'HIGH' && $desired_state == 'ON') {
-            $output_error = 'already_on';
+            $settings_error = "Error: Can't turn relay $p On, it's already On";
         } else {
             if ($desired_state == 'ON') $desired_state = 1;
             else $desired_state = 0;
-            $gpio_write = "$mycodo_client -r $p $desired_state";
-            shell_exec($gpio_write);
+            shell_exec("$mycodo_client -r $p $desired_state");
         }
     }
 
@@ -365,12 +387,11 @@ for ($p = 1; $p <= 8; $p++) {
         $seconds_on = $_POST['sR' . $p];
 
         if (!is_numeric($seconds_on) || $seconds_on < 2 || $seconds_on != round($seconds_on)) {
-            echo "<div class=\"error\">Error: Relay $p ($name): Seconds must be a positive integer and > 1</div>";
+            $settings_error = "Error: Relay $p ($name): Seconds On must be a positive integer and > 1</div>";
         } else if ($actual_state == 'HIGH' && $desired_state == 'HIGH') {
-            $output_error = 'already_on';
+            $settings_error = "Error: Can't turn relay $p On, it's already On";
         } else {
-            $relay_on_sec = "$mycodo_client -r $p $seconds_on";
-            shell_exec($relay_on_sec);
+            shell_exec("$mycodo_client -r $p $seconds_on");
         }
     }
 }
@@ -378,24 +399,24 @@ for ($p = 1; $p <= 8; $p++) {
 // Camera error check
 if (isset($_POST['CaptureStill']) || isset($_POST['start-stream']) || isset($_POST['start-timelapse'])) {
     if (file_exists($lock_raspistill)) {
-        $camera_error = 'Error: Still image lock file present. This shouldn\'t happem. Remove lock file.';
+        $camera_error = "Error: Still image lock file present. Kill raspistill process and remove lock file: $lock_raspistill";
     } else if (file_exists($lock_mjpg_streamer)) {
-        $camera_error = 'Error: Stream lock file present. Stop stream to kill processes and remove lock files.';
-    } else if (file_exists($lock_time_lapse)) {
-        $camera_error = 'Error: Timelapse lock file present. Stop time-lapse to kill processes and remove lock files.';
+        $camera_error = "Error: Stream lock file present. Stop stream to kill processes and remove lock file $lock_mjpg_streamer";
+    } else if (file_exists($lock_timelapse)) {
+        $camera_error = "Error: Timelapse lock file present. Stop time-lapse to kill processes and remove lock files $lock_timelapse";
     }
 }
 
 // Capture still image from camera (with or without light activation)
-if (isset($_POST['CaptureStill']) && !file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer) && !file_exists($lock_time_lapse)) {
-    shell_exec("touch " . $lock_raspistill);
-    if (isset($_POST['lighton'])) {
+if (isset($_POST['CaptureStill']) && !file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer) && !file_exists($lock_timelapse)) {
+    shell_exec("touch $lock_raspistill");
+    if ($still_relay) {
         if ($relay_trigger[$camera_relay] == 1) $trigger = 1;
         else $trigger = 0;
         if ($display_timestamp) {
-            $cmd = "$still_exec " . $relay_pin[$camera_relay] . " " . $trigger . " 1 2>&1; echo $?";
+            $cmd = "$still_exec $relay_pin[$camera_relay] $trigger 1 2>&1; echo $?";
         } else {
-            $cmd = "$still_exec " . $relay_pin[$camera_relay] . " " . $trigger . " 0 2>&1; echo $?";
+            $cmd = "$still_exec $relay_pin[$camera_relay] $trigger 0 2>&1; echo $?";
         }
     } else {
         if ($display_timestamp) {
@@ -405,17 +426,17 @@ if (isset($_POST['CaptureStill']) && !file_exists($lock_raspistill) && !file_exi
         }
     }
     shell_exec($cmd);
-    shell_exec("rm -f " . $lock_raspistill);
+    shell_exec("rm -f $lock_raspistill");
 }
 
 // Start video stream
-if (isset($_POST['start-stream']) && !file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer) && !file_exists($lock_time_lapse)) {
-    shell_exec("touch " . $lock_mjpg_streamer);
-    if (isset($_POST['lighton'])) { // Turn light on
-        if ($relay_trigger[$camera_relay] == 1) $trigger = 1;
+if (isset($_POST['start-stream']) && !file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer) && !file_exists($lock_timelapse)) {
+    shell_exec("touch $lock_mjpg_streamer");
+    if ($stream_relay) { // Turn light on
+        if ($relay_trigger[$stream_relay] == 1) $trigger = 1;
         else $trigger = 0;
-        shell_exec("touch " . $lock_mjpg_streamer_light);
-        shell_exec("$stream_exec start " . $relay_pin[$camera_relay] . " " . $trigger . " > /dev/null &");
+        shell_exec("touch $lock_mjpg_streamer_relay");
+        shell_exec("$stream_exec start $relay_pin[$stream_relay] $trigger > /dev/null &");
         sleep(1);
     } else {
         shell_exec("$stream_exec start > /dev/null &");
@@ -425,51 +446,57 @@ if (isset($_POST['start-stream']) && !file_exists($lock_raspistill) && !file_exi
 
 // Stop video stream
 if (isset($_POST['stop-stream'])) {
-    if (file_exists($lock_mjpg_streamer_light)) { // Turn light off
-        if ($relay_trigger[$camera_relay] == 1) $trigger = 0;
+    if (file_exists($lock_mjpg_streamer_relay)) { // Turn light off
+        if ($relay_trigger[$stream_relay] == 1) $trigger = 0;
         else $trigger = 1;
-        shell_exec("rm -f " . $lock_mjpg_streamer_light);
-        shell_exec("$stream_exec stop " . $relay_pin[$camera_relay] . " " . $trigger . " > /dev/null &");
+        shell_exec("rm -f $lock_mjpg_streamer_relay");
+        shell_exec("$stream_exec stop $relay_pin[$stream_relay] $trigger > /dev/null &");
     } else shell_exec("$stream_exec stop");
-    shell_exec("rm -f " . $lock_mjpg_streamer);
+    shell_exec("rm -f $lock_mjpg_streamer");
     sleep(1);
 }
 
 // Start time-lapse
 if (isset($_POST['start-timelapse'])) {
-    if (isset($_POST['timelapse_duration']) && isset($_POST['timelapse_runtime']) && !file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer) && !file_exists($lock_time_lapse)) {
-        shell_exec("touch " . $lock_time_lapse);
-        if (isset($_POST['timelapse_lighton'])) { // Turn light on
-            if ($relay_trigger[$camera_relay] == 1) $trigger = 1;
+    if (isset($_POST['timelapse_duration']) && isset($_POST['timelapse_runtime']) && !file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer) && !file_exists($lock_timelapse)) {
+
+        if ($timelapse_relay) $pin = $relay_pin[$timelapse_relay];
+        else $pin = 0;
+
+        if ($timelapse_relay) {
+            if ($relay_trigger[$timelapse_relay] == 1) $trigger = 1;
             else $trigger = 0;
-            shell_exec("touch " . $lock_time_lapse_light);
-            shell_exec("$mycodo_client --timelapse start " . $relay_pin[$camera_relay] . " " . $trigger . " > /dev/null &");
-            sleep(1);
-        } else {
-            shell_exec("$mycodo_client --timelapse start > /dev/null &");
-            sleep(1);
-        }
+        } else $trigger = 0;
+
+        if ($timelapse_timestamp) $timestamp = substr(`date +"%Y%m%d%H%M%S"`, 0, -1);
+        else $timelapse = 0;
+
+        $duration = $_POST['timelapse_duration'] * 60 * 1000;
+        $timeout = $_POST['timelapse_runtime'] * 60 * 1000;
+
+        shell_exec("touch $lock_timelapse");
+
+        if ($timelapse_relay) shell_exec("touch $lock_timelapse_light");
+
+        shell_exec("$timelapse_exec start $timelapse_relay $timelapse_path $timelapse_prefix $timestamp $duration $timeout > /dev/null &");
+
+        sleep(1);
     }
 }
 
 // Stop time-lapse
 if (isset($_POST['stop-timelapse'])) {
-    if (file_exists("/var/lock/mycodo-timelapse-light")) { // Turn light off
-        if ($relay_trigger[$camera_relay] == 1) $trigger = 0;
-        else $trigger = 1;
-        shell_exec("rm -f " . $lock_time_lapse_light);
-        shell_exec("$mycodo_client --timelapse stop " . $relay_pin[$camera_relay] . " " . $trigger . " > /dev/null &");
-    } else shell_exec("$mycodo_client --timelapse stop");
-    shell_exec("rm -f " . $lock_time_lapse);
+    if (file_exists($lock_timelapse_light)) { // Turn light off
+        shell_exec("rm -f $lock_timelapse_light");
+        shell_exec("$timelapse_exec stop $timelapse_relay > /dev/null &");
+    } else shell_exec("$timelapse_exec stop > /dev/null &");
+    shell_exec("rm -f $lock_timelapse");
     sleep(1);
 }
 
 // Request sensor read and log write
  if (isset($_POST['WriteSensorLog'])) {
-    $editconfig = "$mycodo_client --writetlog 0";
-    shell_exec($editconfig);
-    $editconfig = "$mycodo_client --writehtlog 0";
-    shell_exec($editconfig);
-    $editconfig = "$mycodo_client --writeco2log 0";
-    shell_exec($editconfig);
+    shell_exec("$mycodo_client --writetlog 0");
+    shell_exec("$mycodo_client --writehtlog 0");
+    shell_exec("$mycodo_client --writeco2log 0");
 }

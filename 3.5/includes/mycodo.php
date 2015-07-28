@@ -48,19 +48,14 @@ $images = $install_path . "/images";
 $lock_daemon = $lock_path . "/mycodo/daemon.lock";
 $lock_raspistill = $lock_path . "/mycodo_raspistill";
 $lock_mjpg_streamer = $lock_path . "/mycodo_mjpg_streamer";
-$lock_mjpg_streamer_light = $lock_path . "/mycodo-stream-light";
-$lock_time_lapse = $lock_path . "/mycodo_time_lapse";
-$lock_time_lapse_light = $lock_path . "/mycodo-timelapse-light";
-
-$camera_error = NULL;
-$time_now = NULL;
-$time_last = NULL;
+$lock_mjpg_streamer_relay = $lock_path . "/mycodo-stream-light";
+$lock_timelapse = $lock_path . "/mycodo_time_lapse";
+$lock_timelapse_light = $lock_path . "/mycodo-timelapse-light";
 
 require($install_path . "/includes/functions.php"); // Mycodo functions
 require($install_path . "/includes/database.php"); // Initial SQL database load to variables
 
 // Output an error if the user guest attempts to submit certain forms
-$output_error = NULL;
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_name'] == 'guest' &&
     !isset($_POST['Graph']) && !isset($_POST['login'])) {
     $output_error = 'guest';
@@ -103,20 +98,14 @@ delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete olde
 <body>
 <div class="cd-tabs">
 <?php
-// Display an error that occurred
-if ($output_error) {
+// Display general error that occurred (top of page)
+if (isset($output_error)) {
     switch ($output_error) {
         case "guest":
             echo '<span class="error">You cannot perform that task as a guest</span>';
             break;
-        case "already_on":
-            echo '<div class="error">Error: Can\'t turn relay On, it\'s already On</div>';
-            break;
-        case "already_off":
-            echo '<div class="error">Error: Can\'t turn relay Off, it\'s already Off</div>';
-            break;
     }
-    $output_error = False;
+    $output_error = NULL;
 }
 ?>
 <!-- Begin Header -->
@@ -148,7 +137,12 @@ if ($output_error) {
                 }
                 ?> Stream</div>
             <div style="padding-bottom: 0.1em;"><?php
-                if (file_exists($lock_time_lapse)) {
+                if (file_exists($lock_timelapse)) { // Check if timelapse is running, delete lockfile if not
+                    $timelapse_running = shell_exec("ps aux | grep [r]aspistill | grep -Eo 'timelapse'");
+                    if ($timelapse_running == NULL) unlink($lock_timelapse);
+                }
+
+                if (file_exists($lock_timelapse)) {
                     echo '<input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="" value="0">';
                 } else {
                     echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="" value="0">';
@@ -271,6 +265,13 @@ if ($output_error) {
             if (!isset($_GET['tab']) || (isset($_GET['tab']) && $_GET['tab'] == 'graph')) {
                 echo 'class="selected"';
             } ?>>
+
+            <?php
+            if (isset($graph_error)) {
+                echo '<div style="color: red;">' . $graph_error . '</div>';
+            }
+            ?>
+
             <form action="?tab=graph<?php
             if (isset($_GET['page'])) {
                 echo '&page=' , $_GET['page'];
@@ -405,6 +406,12 @@ if ($output_error) {
             if (isset($_GET['tab']) && $_GET['tab'] == 'sensor') {
                 echo 'class="selected"';
             } ?>>
+
+            <?php
+            if (isset($sensor_error)) {
+                echo '<div style="color: red;">' . $sensor_error . '</div>';
+            }
+            ?>
 
             <form action="?tab=sensor<?php
                 if (isset($_GET['page'])) {
@@ -1098,6 +1105,12 @@ if ($output_error) {
             } ?>>
 
             <?php
+            if (isset($custom_error)) {
+                echo '<div style="color: red;">' . $custom_error . '</div>';
+            }
+            ?>
+
+            <?php
             /* DateSelector*Author: Leon Atkinson */
             if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] != 'guest') {
                 
@@ -1407,24 +1420,12 @@ if ($output_error) {
             } ?>>
 
             <?php
-            if ($camera_error != NULL) {
+            if (isset($camera_error)) {
                 echo '<div style="color: red;">' . $camera_error . '</div>';
             }
             ?>
 
             <form action="?tab=camera" method="POST">
-            <div style="float: left; padding: 0.5em;">
-                Activate relay during capture/timelapse/stream? <input type="checkbox" name="lighton" title="Light relay is configurable in the Advanced tab" value="1"> <?php
-                if ($camera_relay == 0) {
-                    echo '<span style="color: red; padding: 0 0 0 0.5em; font-size: 0.9em;">Relay unconfigured. Change this in the Settings.</span>';
-                } else {
-                    echo 'Relay ' , $camera_relay , ' (' , $relay_name[$camera_relay] , ')';
-                }
-                ?>
-            </div>
-
-            <div style="clear: both;"></div>
-
             <div style="float: left; padding: 0.5em;">
                 <button name="CaptureStill" type="submit" value="">Capture Still</button>
             </div>
@@ -1434,7 +1435,7 @@ if ($output_error) {
             <div>
                 <div style="float: left; padding: 0.5em;">
                     <?php
-                    if (!file_exists($lock_time_lapse)) {
+                    if (!file_exists($lock_timelapse)) {
                         echo '<button name="start-timelapse" type="submit" value="">Start</button>';
                     } else {
                         echo '<button name="stop-timelapse" type="submit" value="">Stop</button>';
@@ -1443,18 +1444,18 @@ if ($output_error) {
                 </div>
                 <div style="float: left; font-weight: bold; padding: 0.8em 1em 0.5em 0;">
                     Timelapse <?php
-                    if (!file_exists($lock_time_lapse)) {
+                    if (!file_exists($lock_timelapse)) {
                         echo '(<span class="off">OFF</span>)';
                     } else {
                         echo '(<span class="on">ON</span>)';
                     }
                     ?>
                 </div>
-                <div style="float: left; padding: 0.5em;">
+                <div style="float: left; padding: 0.65em 0.5em 0 0.5em;">
                     Duration: <input style="width: 4em;" type="number" value="60" max="99999" min="1" name="timelapse_duration"> min
                 </div>
-                <div style="float: left; padding: 0.5em;">
-                   Run time: <input style="width: 4em;" type="number" value="600" max="99999" min="1" name="timelapse_runtime"> min (Time-lapse currently not working)
+                <div style="float: left; padding: 0.65em 0.5em 0 0.5em;">
+                   Run time: <input style="width: 4em;" type="number" value="600" max="99999" min="1" name="timelapse_runtime"> min
                 </div>
             </div>
 
@@ -1484,8 +1485,53 @@ if ($output_error) {
             </form>
 
             <div style="clear: both;"></div>
+
             <div style="padding-top:1em;"></div>
             <center>
+
+            <?php
+            $timelapse_dir = (count(glob("$timelapse_path/*")) === 0) ? 'Empty' : 'Not empty';
+
+            if (file_exists($lock_timelapse) || ($timelapse_display_last && $timelapse_dir == 'Not empty')) {
+                echo '
+                <div style="padding-bottom: 0.5em;">
+                    Timelapse
+                </div>
+                ';
+
+                if (file_exists($lock_timelapse)) {
+                    $duration = `ps aux | grep '[r]aspistill' | grep timelapse | grep -oP "(?<=--timelapse )[^ ]+"`;
+                    $duration = $duration / 1000 / 60;
+                    $runtime = `ps aux | grep '[r]aspistill' | grep timelapse | grep -oP "(?<=--timeout )[^ ]+"`;
+                    $runtime = $runtime / 1000 / 60;
+                    echo "Duration: $duration min<br>";
+                    echo "Run Time: $runtime min<br>";
+
+                    $start_time = filemtime($lock_timelapse);
+                    echo 'Start Time: ' , date("F d Y H:i:s", $start_time) , '<br>';
+                }
+
+                
+                if ($timelapse_dir == 'Not empty') {
+                    $files = scandir($timelapse_path, SCANDIR_SORT_DESCENDING);
+                    $newest_file = $files[0];
+                    $latest_file = filectime("$timelapse_path/$newest_file");
+                    echo 'Latest File: ' , date("F d Y H:i:s", $latest_file) , '<br>';
+                    echo '
+                    <div style="padding-bottom: 2em;">
+                        <img src=image.php?span=cam-timelapse>
+                    </div>
+                    ';
+                } else if (file_exists($lock_timelapse)) {
+                    echo '
+                    <div style="padding: 0.5em 0 1.5em 0;">
+                        Waiting for first timelapse image to be captured.
+                    </div>
+                    ';
+                }
+            }
+            ?>
+
             <?php
                 if (file_exists($lock_mjpg_streamer)) {
                     echo '
@@ -1501,11 +1547,19 @@ if ($output_error) {
                 if ($_SESSION['user_name'] != 'guest') {
                     $cam_stills_path = $install_path . '/camera-stills';
                     $cam_stills_dir = (count(glob("$cam_stills_path/*")) === 0) ? 'Empty' : 'Not empty';
-                    if ($cam_stills_dir == 'Not empty' && (isset($_POST['CaptureStill']) || $display_last)) {
+                    if ($cam_stills_dir == 'Not empty' && (isset($_POST['CaptureStill']) || $still_display_last)) {
                         echo '
                         <div style="padding-bottom: 0.5em;">
-                            Last Image Captured
+                            Still Image
                         </div>
+                        ';
+
+                        $files = scandir($cam_stills_path, SCANDIR_SORT_DESCENDING);
+                        $newest_file = $files[0];
+                        $latest_file = filemtime("$cam_stills_path/$newest_file");
+                        echo 'Latest File: ' , date("F d Y H:i:s.", $latest_file) , '<br>';
+
+                        echo '
                         <div style="padding-bottom: 2em;">
                             <img src=image.php?span=cam-still>
                         </div>
@@ -1520,6 +1574,12 @@ if ($output_error) {
             if (isset($_GET['tab']) && $_GET['tab'] == 'data') {
                 echo 'class="selected"';
             } ?>>
+
+            <?php
+            if (isset($data_error)) {
+                echo '<div style="color: red;">' . $data_error . '</div>';
+            }
+            ?>
 
             <div style="padding: 10px 0 0 15px;">
                 <div style="padding-bottom: 15px;">
@@ -1623,6 +1683,12 @@ if ($output_error) {
             if (isset($_GET['tab']) && $_GET['tab'] == 'settings') {
                 echo 'class="selected"';
             } ?>>
+
+            <?php
+            if (isset($settings_error)) {
+                echo '<div style="color: red;">' . $settings_error . '</div>';
+            }
+            ?>
 
             <?php if ($this->feedback) echo $this->feedback; ?>
 
@@ -1816,22 +1882,22 @@ if ($output_error) {
             <div class="advanced">
                 <form method="post" action="?tab=settings" name="smtp">
                 <div style="font-weight: bold; padding: 0.5em 0;">
-                    Camera
+                    Camera: Still Capture
                 </div>
                 <div class="adv">
-                    Capture relay <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $camera_relay; ?>" maxlength=4 size=1 name="camRelay" title="A relay can be set to activate duting a still image, stream, or timelapse capture. Enable/disable on the camera tab."/>
+                    Relay (0 to disable) <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $still_relay; ?>" maxlength=4 size=1 name="Still_Relay" title="A relay can be set to activate during the still image capture."/>
                 </div>
                 <div class="adv">
-                    Add timestamp to image <input type="hidden" name="camDisplayTimestamp" value="0" /><input type="checkbox" id="camDisplayTimestamp" name="camDisplayTimestamp" value="1"<?php if ($display_timestamp) echo ' checked'; ?> title="Add a timestamp to the captured image."/>
+                    Add timestamp to image <input type="hidden" name="Still_Timestamp" value="0" /><input type="checkbox" id="Still_Timestamp" name="Still_Timestamp" value="1"<?php if ($still_timestamp) echo ' checked'; ?> title="Add a timestamp to the captured image."/>
                 </div>
                 <div class="adv">
-                    Always display last still image <input type="hidden" name="camDisplayLast" value="0" /><input type="checkbox" id="camDisplayLast" name="camDisplayLast" value="1"<?php if ($display_last) echo ' checked'; ?> title="Always display the last image acquired or only after clicking 'Capture Still'."/>
+                    Always display last still image <input type="hidden" name="Still_DisplayLast" value="0" /><input type="checkbox" id="Still_DisplayLast" name="Still_DisplayLast" value="1"<?php if ($still_display_last) echo ' checked'; ?> title="Always display the last image acquired or only after clicking 'Capture Still'."/>
                 </div>
                 <div class="adv">
-                    Extra parameters for camera (raspistill) <input style="width: 22em;" type="text" value="" maxlength=200 name="" title=""/>
+                    Extra parameters for camera (raspistill) <input style="width: 22em;" type="text" value="<?php echo $still_extra_parameters; ?>" maxlength=200 name="Still_Extra_Parameters" title=""/>
                 </div>
                 <div class="adv">
-                    <button name="ChangeCamera" type="submit" value="">Save</button>
+                    <button name="ChangeStill" type="submit" value="">Save</button>
                 </div>
                 </form>
             </div>
@@ -1839,25 +1905,55 @@ if ($output_error) {
             <div class="advanced">
                 <form method="post" action="?tab=settings" name="smtp">
                 <div style="font-weight: bold; padding: 0.5em 0;">
-                    Timelapse
+                    Camera: Video Stream
                 </div>
                 <div class="adv">
-                    Photo save path <input style="width: 19em;" type="text" value="/var/www/mycodo/camera-timelapse" maxlength=50 name="timelapse-save-path" title=""/>
+                    Relay (0 to disable) <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $stream_relay; ?>" maxlength=4 size=1 name="Stream_Relay" title="A relay can be set to activate during the video stream. Enable/disable on the camera tab."/>
                 </div>
                 <div class="adv">
-                    Photo filename prefix <input style="width: 7em;" type="text" value="Timelapse-" maxlength=20 name="timelapse-prefix" title=""/>
+                    Extra parameters for camera (raspistill) <input style="width: 22em;" type="text" value="<?php echo $stream_extra_parameters; ?>" maxlength=200 name="Stream_Extra_Parameters" title=""/>
                 </div>
                 <div class="adv">
-                    Use unique ID in filename <input type="hidden" name="" value="0" /><input type="checkbox" id="" name="timelapse-id" value="1"<?php if (1) echo ' checked'; ?> title=""/>
+                    <button name="ChangeStream" type="submit" value="">Save</button>
+                </div>
+                </form>
+            </div>
+
+            <div class="advanced">
+                <form method="post" action="?tab=settings" name="smtp">
+                <div style="font-weight: bold; padding: 0.5em 0;">
+                    Camera: Timelapse
                 </div>
                 <div class="adv">
-                    Use timestamp in filename <input type="hidden" name="" value="0" /><input type="checkbox" id="" name="timelapse-timestamp" value="1"<?php if (1) echo ' checked'; ?> title=""/>
+                    Relay (0 to disable) <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $timelapse_relay; ?>" maxlength=4 size=1 name="Timelapse_Relay" title="A relay can be set to activate during a timelapse capture. Enable/disable on the camera tab."/>
+                </div>
+                <div class="adv">
+                    Photo save path <input style="width: 19em;" type="text" value="<?php echo $timelapse_path; ?>" maxlength=50 name="Timelapse_Path" title=""/>
+                </div>
+                <div class="adv">
+                    Photo filename prefix <input style="width: 7em;" type="text" value="<?php echo $timelapse_prefix; ?>" maxlength=20 name="Timelapse_Prefix" title=""/>
+                </div>
+                <div class="adv">
+                    Use start time in filename <input type="hidden" name="" value="0" /><input type="checkbox" id="" name="Timelapse_Timestamp" value="1"<?php if ($timelapse_timestamp) echo ' checked'; ?> title=""/>
+                </div>
+                <div class="adv">
+                    Always display last timelapse image <input type="hidden" name="Timelapse_DisplayLast" value="0" /><input type="checkbox" id="Timelapse_DisplayLast" name="Timelapse_DisplayLast" value="1"<?php if ($timelapse_display_last) echo ' checked'; ?> title="Always display the last timelapse image or only while a timelapse is running."/>
+                </div>
+                <div class="adv">
+                    Extra parameters for camera (raspistill) <input style="width: 22em;" type="text" value="<?php echo $timelapse_extra_parameters; ?>" maxlength=200 name="Timelapse_Extra_Parameters" title=""/>
                 </div>
                 <div class="adv">
                     Enable experimental auto-exposure mode <input type="hidden" name="" value="0" /><input type="checkbox" id="" name="timelapse-auto-exp" value="1"<?php if (1) echo ' checked'; ?> title=""/>
                 </div>
                 <div class="adv" style="padding: 0.3em 0 0.2em 0;">
-                    Example filename: Timelapse-20150719140601-55a9da474bb74.jpg
+                    <?php
+                    if ($timelapse_timestamp) {
+                        $timelapse_tstamp = substr(`date +"%Y%m%d%H%M%S"`, 0, -1);
+                        echo "Output file series: $timelapse_path/$timelapse_prefix$timelapse_tstamp-00001.jpg";
+                    } else {
+                        echo "Output file series: $timelapse_path/$timelapse_prefix-00001.jpg";
+                    }
+                     ?>
                 </div>
                 <div class="adv">
                     <button name="ChangeTimelapse" type="submit" value="">Save</button>

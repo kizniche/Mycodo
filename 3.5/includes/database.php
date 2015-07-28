@@ -142,9 +142,26 @@ while ($row = $results->fetchArray()) {
     $smtp_email_from = $row[6];
 }
 
-$results = $db->query('SELECT Camera_Relay, Display_Last, Display_Timestamp FROM Misc');
+$results = $db->query('SELECT Relay, Timestamp, Display_Last, Extra_Parameters FROM CameraStill');
 while ($row = $results->fetchArray()) {
-    $camera_relay = $row[0];
-    $display_last = $row[1];
-    $display_timestamp = $row[2];
+    $still_relay = $row[0];
+    $still_timestamp = $row[1];
+    $still_display_last = $row[2];
+    $still_extra_parameters = $row[3];
+}
+
+$results = $db->query('SELECT Relay, Extra_Parameters FROM CameraStream');
+while ($row = $results->fetchArray()) {
+    $stream_relay = $row[0];
+    $stream_extra_parameters = $row[1];
+}
+
+$results = $db->query('SELECT Relay, Path, Prefix, File_Timestamp, Display_Last, Extra_Parameters FROM CameraTimelapse');
+while ($row = $results->fetchArray()) {
+    $timelapse_relay = $row[0];
+    $timelapse_path = $row[1];
+    $timelapse_prefix = $row[2];
+    $timelapse_timestamp = $row[3];
+    $timelapse_display_last = $row[4];
+    $timelapse_extra_parameters = $row[5];
 }

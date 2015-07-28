@@ -28,6 +28,7 @@ $install_path = "/var/www/mycodo";
 
 $image_dir = $install_path . "/images/";
 $still_dir = $install_path . "/camera-stills/";
+$timelapse_dir = $install_path . "/camera-timelapse/";
 $hdr_dir = $install_path . "/camera-hdr/";
 $mycodo_client = $install_path . "/cgi-bin/mycodo-client.py";
 
@@ -49,8 +50,12 @@ if ($_COOKIE['login_hash'] == $user_hash) {
             case 'cam-still':
                 $files = scandir($still_dir, SCANDIR_SORT_DESCENDING);
                 $newest_file = $files[0];
-                error_log($still_dir . $newest_file);
                 readfile($still_dir . $newest_file);
+                break;
+            case 'cam-timelapse':
+                $files = scandir($timelapse_dir, SCANDIR_SORT_DESCENDING);
+                $newest_file = $files[0];
+                readfile($timelapse_dir . $newest_file);
                 break;
             case 'cam-hdr':
                 $files = scandir($still_dir, SCANDIR_SORT_DESCENDING);
