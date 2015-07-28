@@ -411,15 +411,15 @@ if (isset($_POST['CaptureStill']) || isset($_POST['start-stream']) || isset($_PO
 if (isset($_POST['CaptureStill']) && !file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer) && !file_exists($lock_timelapse)) {
     shell_exec("touch $lock_raspistill");
     if ($still_relay) {
-        if ($relay_trigger[$camera_relay] == 1) $trigger = 1;
+        if ($relay_trigger[$still_relay] == 1) $trigger = 1;
         else $trigger = 0;
-        if ($display_timestamp) {
-            $cmd = "$still_exec $relay_pin[$camera_relay] $trigger 1 2>&1; echo $?";
+        if ($still_timestamp) {
+            $cmd = "$still_exec $relay_pin[$still_relay] $trigger 1 2>&1; echo $?";
         } else {
-            $cmd = "$still_exec $relay_pin[$camera_relay] $trigger 0 2>&1; echo $?";
+            $cmd = "$still_exec $relay_pin[$still_relay] $trigger 0 2>&1; echo $?";
         }
     } else {
-        if ($display_timestamp) {
+        if ($still_timestamp) {
             $cmd = "$still_exec 0 0 1 2>&1; echo $?";
         } else {
             $cmd = "$still_exec 0 0 0 2>&1; echo $?";
