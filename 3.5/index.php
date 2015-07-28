@@ -96,6 +96,8 @@ class OneFileLoginApplication {
 
     // controller that handles the entire flow of the application.
     public function runApplication() {
+        if (!file_exists($this->db_sqlite_path)) exit("User database does not exist. Run '/var/www/mycodo/setup-database.py -i' to creeate required database.");
+        
         if (isset($_POST["register"])) {
             if ($this->checkRegistrationData()) {
                 if ($this->createDatabaseConnection()) {

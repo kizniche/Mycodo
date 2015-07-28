@@ -53,6 +53,8 @@ $lock_timelapse = $lock_path . "/mycodo_time_lapse";
 $lock_timelapse_light = $lock_path . "/mycodo-timelapse-light";
 
 require($install_path . "/includes/functions.php"); // Mycodo functions
+
+if (!file_exists($mycodo_db)) exit("Mycodo database does not exist. Run '/var/www/mycodo/setup-database.py -i' to create required database.");
 require($install_path . "/includes/database.php"); // Initial SQL database load to variables
 
 // Output an error if the user guest attempts to submit certain forms
