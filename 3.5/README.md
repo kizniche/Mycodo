@@ -14,7 +14,6 @@ This is an experimental branch of mycodo. Unless I have been in direct contact w
 - [ ] More graph options (y-axis min/max, select sensors to be graphed)
 - [ ] Email notification or audible alarm during critical failure or condition (working on)
 - [ ] O2 sensor support
-- [ ] More graph generation options
 - [ ] Set electrical current draw of each device and prevent exceeding total current limit with different combinations of devices on
 - [ ] HDR Photo creation (capture series of photos at different ISOs and combine) (Initial testing was slow: 3 photos = 15 minutes processing)
 
