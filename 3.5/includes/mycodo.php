@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.60";
+$version = "3.5.61";
 
 ######### Start Edit Configure #########
 
@@ -1557,7 +1557,7 @@ if (isset($output_error)) {
                         $files = scandir($cam_stills_path, SCANDIR_SORT_DESCENDING);
                         $newest_file = $files[0];
                         $latest_file = filemtime("$cam_stills_path/$newest_file");
-                        echo 'Latest File: ' , date("F d Y H:i:s.", $latest_file) , '<br>';
+                        echo 'Latest File: ' , date("F d Y H:i:s", $latest_file) , '<br>';
 
                         echo '
                         <div style="padding-bottom: 2em;">
