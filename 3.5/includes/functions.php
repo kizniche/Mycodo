@@ -34,12 +34,31 @@ function pid_reload($mycodo_client, $controller, $pid) {
  * Logging
  */
 
-function concatenate_logs() {
-    // Concatenate sensor and relay log files (to TempFS) to ensure the latest data is being used
-    `cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log > /var/tmp/sensor-t.log`;
-    `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
-    `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
-    `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log > /var/tmp/relay.log`;
+// Concatenate sensor and relay log files (to TempFS) to ensure the latest data is being used
+function concatenate_logs($type) {
+    switch($type) {
+        case 't':
+            `cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log > /var/tmp/sensor-t.log`;
+            break;
+        case 'ht':
+            `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
+            break;
+        case 'co2':
+            `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
+            break;
+        case 'relay':
+            `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log > /var/tmp/relay.log`;
+            break;
+        case 'daemon':
+            `cat /var/www/mycodo/log/daemon.log /var/www/mycodo/log/daemon-tmp.log > /var/tmp/daemon.log`;
+            break;
+        case 'all':
+            `cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log > /var/tmp/sensor-t.log`;
+            `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
+            `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
+            `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log > /var/tmp/relay.log`;
+            break;
+    }
 }
 
 // Display Log tab SQL database tables, names, and variables
@@ -171,6 +190,11 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                 }
             }
         }
+
+        unlink($sensor_t_log_generate);
+        unlink($sensor_ht_log_generate);
+        unlink($sensor_co2_log_generate);
+
     } else if ($graph_type == 'combined') { // Combined preset: Generate combined graphs
         if (!file_exists("/var/www/mycodo/images/graph-xcombined$graph_time_span-$graph_id-0.png")) {
             shell_exec("$mycodo_client --graph x $graph_type $graph_time_span $graph_id 0");
@@ -259,6 +283,10 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                 echo '<hr class="fade"/>';
             }
         }
+
+        unlink($sensor_t_log_generate);
+        unlink($sensor_ht_log_generate);
+        unlink($sensor_co2_log_generate);
     }
 }
 

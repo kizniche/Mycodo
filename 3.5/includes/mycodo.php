@@ -1114,7 +1114,7 @@ if (isset($output_error)) {
             /* DateSelector*Author: Leon Atkinson */
             if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] != 'guest') {
                 
-                concatenate_logs();
+                concatenate_logs('all');
 
                 if ($_POST['SubmitDates']) {
                     displayform();
@@ -1189,10 +1189,10 @@ if (isset($output_error)) {
                         if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
                         else fwrite($f, "unset key\n");
                         fwrite($f, "set title \"Combined CO2s\"\n");
-                        fwrite($f, "plot \"<awk '\\$15 == 1' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"RH1\" w lp ls 1 axes x1y1, ");
-                        fwrite($f, "\"<awk '\\$15 == 2' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"RH2\" w lp ls 2 axes x1y1, ");
-                        fwrite($f, "\"<awk '\\$15 == 3' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"RH3\" w lp ls 3 axes x1y1, ");
-                        fwrite($f, "\"<awk '\\$15 == 4' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"RH4\" w lp ls 4 axes x1y1\n");
+                        fwrite($f, "plot \"<awk '\\$15 == 1' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"CO21\" w lp ls 1 axes x1y1, ");
+                        fwrite($f, "\"<awk '\\$15 == 2' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"CO22\" w lp ls 2 axes x1y1, ");
+                        fwrite($f, "\"<awk '\\$15 == 3' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"CO23\" w lp ls 3 axes x1y1, ");
+                        fwrite($f, "\"<awk '\\$15 == 4' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"CO24\" w lp ls 4 axes x1y1\n");
 
                         if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left top\n");
                         else fwrite($f, "unset key\n");
@@ -1601,46 +1601,58 @@ if (isset($output_error)) {
                 <div style="font-family: monospace;">
                     <pre><?php
                         if(isset($_POST['TSensor'])) {
-                            concatenate_logs();
+                            concatenate_logs('t');
+                            $log = '/var/tmp/sensor-t.log';
+
                             echo 'Year Mo Day Hour Min Sec Tc Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `tail -n $Lines /var/tmp/sensor-t.log`;
+                                echo `tail -n $Lines $log`;
                             } else {
-                                echo `tail -n 30 /var/tmp/sensor-t.log`;
+                                echo `tail -n 30 $log`;
                             }
+                            unlink($log);
                         }
                         if(isset($_POST['HTSensor'])) {
-                            concatenate_logs();
+                            concatenate_logs('ht');
+                            $log = '/var/tmp/sensor-ht.log';
+
                             echo 'Year Mo Day Hour Min Sec Tc RH DPc Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `tail -n $Lines /var/tmp/sensor-ht.log`;
+                                echo `tail -n $Lines $log`;
                             } else {
-                                echo `tail -n 30 /var/tmp/sensor-ht.log`;
+                                echo `tail -n 30 $log`;
                             }
+                            unlink($log);
                         }
 
                         if(isset($_POST['Co2Sensor'])) {
-                            concatenate_logs();
+                            concatenate_logs('co2');
+                            $log = '/var/tmp/sensor-co2.log';
+
                             echo 'Year Mo Day Hour Min Sec Co2 Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `tail -n $Lines /var/tmp/sensor-co2.log`;
+                                echo `tail -n $Lines $log`;
                             } else {
-                                echo `tail -n 30 /var/tmp/sensor-co2.log`;
+                                echo `tail -n 30 $log`;
                             }
+                            unlink($log);
                         }
 
                         if(isset($_POST['Relay'])) {
-                            concatenate_logs();
+                            concatenate_logs('relay');
+                            $log = '/var/tmp/relay.log';
+
                             echo 'Year Mo Day Hour Min Sec R1Sec R2Sec R3Sec R4Sec R5Sec R6Sec R7Sec R8Sec<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `tail -n $Lines /var/tmp/relay.log`;
+                                echo `tail -n $Lines $log`;
                             } else {
-                                echo `tail -n 30 /var/tmp/relay.log`;
+                                echo `tail -n 30 $log`;
                             }
+                            unlink($log);
                         }
                         if(isset($_POST['Users']) && $_SESSION['user_name'] != 'guest') {
                             echo 'User Email Password_Hash<br> <br>';
@@ -1660,13 +1672,16 @@ if (isset($output_error)) {
                             }
                         }
                         if(isset($_POST['Daemon'])) {
-                            `cat /var/www/mycodo/log/daemon.log /var/www/mycodo/log/daemon-tmp.log > /var/tmp/daemon.log`;
+                            concatenate_logs('daemon');
+                            $log = '/var/tmp/daemon.log';
+
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `tail -n $Lines /var/tmp/daemon.log`;
+                                echo `tail -n $Lines $log`;
                             } else {
-                                echo `tail -n 30 /var/tmp/daemon.log`;
+                                echo `tail -n 30 $log`;
                             }
+                            unlink($log);
                         }
                         if(isset($_POST['Database'])) {
                             echo '<pre>';

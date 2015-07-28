@@ -826,16 +826,29 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
         os.remove(gnuplot_graph)
         os.remove(relay_log_generate)
         if graph_span == "default":
-            os.remove(sensor_ht_log_final[1])
-            os.remove(sensor_ht_log_final[2])
-            os.remove(sensor_co2_log_final[1])
-            os.remove(sensor_co2_log_final[2])
+            if sensor_type == "t":
+                os.remove(sensor_t_log_final[1])
+                os.remove(sensor_t_log_final[2])
+            if sensor_type == "ht":
+                os.remove(sensor_ht_log_final[1])
+                os.remove(sensor_ht_log_final[2])
+            if sensor_type == "co2":
+                os.remove(sensor_co2_log_final[1])
+                os.remove(sensor_co2_log_final[2])
         elif graph_type == "combined":
-            os.remove(sensor_ht_log_generate)
-            os.remove(sensor_co2_log_generate)
-            for i in range(1, 5):
+            if sum(sensor_t_graph):
+                os.remove(sensor_t_log_generate)
+            if sum(sensor_ht_graph):
+                os.remove(sensor_ht_log_generate)
+            if sum(sensor_co2_graph):
+                os.remove(sensor_co2_log_generate)
+            for i in range(1, sensor_t_num+1):
+                if sensor_t_graph[i]:
+                    os.remove(sensor_t_log_final[i])
+            for i in range(1, sensor_ht_num+1):
                 if sensor_ht_graph[i]:
                     os.remove(sensor_ht_log_final[i])
+            for i in range(1, sensor_co2_num+1):
                 if sensor_co2_graph[i]:
                     os.remove(sensor_co2_log_final[i])
         elif graph_type == "separate":
