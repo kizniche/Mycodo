@@ -258,12 +258,9 @@ See [/3.5/README.md](3.5/README.md) for progress updates
 ## Hardware
 
 * Raspberry Pi
-* Temperature/humidity sensor (DHT22)
-* Relays (2x Crydom 1240 and 1x Keyes Funduino 8-relay board)
-* Humidifier
-* Heater
-* Circulatory Fan
-* Exhaust Fan (preferably with a HEPA filter)
+* Sensors
+* Relays
+* Environmental manipulating devices (humidifier, heater, circulatory fan, exhaust fan, etc)
 
 <a name="soft-brief"></a>
 ## Software
@@ -283,6 +280,8 @@ The following software is required
 * subversion
 * wget
 
+Note: v3.5 replaces mysql with sqlite
+
 <a name="license"></a>
 ## License
 
@@ -295,7 +294,7 @@ A full copy of the GNU General Public License can be found at <a href="http://ww
 <a name="links"></a>
 ## Useful Links
 
-Congratulations on using my software, however it may not be the latest version, or it may have been altered if not obtained through an official distribution site. You should be able to find the latest version on github or my web site.
+Thanks for using and supporting my software, however it may not be the latest version or it may have been altered if not obtained through an official distribution site. You should be able to find the latest version on github or my web site.
 
 https://github.com/kizniche/Mycodo
 
