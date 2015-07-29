@@ -255,7 +255,7 @@ This is an experimental branch of mycodo. This will be a future stable release o
 See [/3.5/README.md](3.5/README.md) for progress updates
 
 <a name="hard-brief"></a>
-#### Hardware
+## Hardware
 
 * Raspberry Pi
 * Temperature/humidity sensor (DHT22)
@@ -266,7 +266,7 @@ See [/3.5/README.md](3.5/README.md) for progress updates
 * Exhaust Fan (preferably with a HEPA filter)
 
 <a name="soft-brief"></a>
-### Software
+## Software
 
 The following software is required
 
@@ -284,7 +284,7 @@ The following software is required
 * wget
 
 <a name="license"></a>
-### License
+## License
 
 Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
@@ -293,7 +293,7 @@ Mycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRAN
 A full copy of the GNU General Public License can be found at <a href="http://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">http://www.gnu.org/licenses/gpl-3.0.en.html</a>
 
 <a name="links"></a>
-### Useful Links
+## Useful Links
 
 Congratulations on using my software, however it may not be the latest version, or it may have been altered if not obtained through an official distribution site. You should be able to find the latest version on github or my web site.
 
