@@ -265,15 +265,15 @@ The PID controller is the most common controller found in industrial settings, b
 
 #### P
 
-The proportaional path takes the error (the difference between the actual position and the desired position) and multiplies it by a constant, Kp, to yield an output value. When the error is large, there will be a large proportional output.
+The proportaional path takes the error (the difference between the actual position and the desired position) and multiplies it by a constant, K<sub>p</sub>, to yield an output value. When the error is large, there will be a large proportional output.
 
 #### I
 
-The integral path takes the error and multiplies it by Ki, then integrates it. As the error changes over time, the integral will continually sum it and multiply it by the constant Ki. It integral is used to remove constant errors in the control system. If using P alone produces an output that allows a constant error, the integral will increase the output until the error decreases.
+The integral path takes the error and multiplies it by K<sub>i</sub>, then integrates it (K<sub>i</sub> · 1/s). As the error changes over time, the integral will continually sum it and multiply it by the constant K<sub>i</sub>. It integral is used to remove constant errors in the control system. If using P alone produces an output that allows a constant error, the integral will increase the output until the error decreases.
 
 #### D
 
-Last, the derivative path multiplies the error by Kd, then differentiates it. When the error rate changes over time, the output signal will change. The faster the change in error, the larger the derivative path becomes, decreasing the output rate of change.
+Last, the derivative path multiplies the error by K<sub>d</sub>, then differentiates it (K<sub>d</sub> · s). When the error rate changes over time, the output signal will change. The faster the change in error, the larger the derivative path becomes, decreasing the output rate of change.
 
 #### Configurations
 
