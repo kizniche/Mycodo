@@ -1,6 +1,6 @@
 # Mycodo 3.5-beta (experimental)
 
-This is an experimental branch of mycodo. It is undergoing constant changes and may or may not work at any time (although it has matured somewhat and is relatively stable at the moment). If you are looking for a stable version, I recommend you check out the [v3.0 branch](https://github.com/kizniche/Mycodo/tree/master/3.0).
+This is an experimental branch of mycodo. It is undergoing constant changes and may or may not work at any time (although it has matured somewhat and is relatively stable at the moment). If you are looking for a stable version, I recommend you check out the [v3.0 branch](../3.0).
 
 ## Progress
 
@@ -9,8 +9,8 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 - [X] Added Feature: Log parsing (40%-70% speed increase in graph-generation)
 - [X] Added Sensor: K30 CO<sub>2</sub> sensor
 - [X] Added Sensor: DS18B20 temperature sensor
-- [X] New configuration storage (from config file to SQLite database)
-- [X] New login authentication (from MySQL to SQLite database)
+- [X] New configuration database (from plain-text file to SQLite)
+- [X] New user database (from MySQL to SQLite)
 - [ ] More graph options (y-axis min/max, select sensors to be graphed)
 - [ ] Email notification or audible alarm during critical failure or condition (working on)
 - [ ] Convert time-lapse images to video

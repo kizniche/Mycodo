@@ -300,5 +300,3 @@ Congratulations on using my software, however it may not be the latest version, 
 https://github.com/kizniche/Mycodo
 
 http://KyleGabriel.com
-
-								- Kyle Gabriel -
