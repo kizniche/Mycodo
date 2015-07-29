@@ -645,7 +645,7 @@ if (isset($output_error)) {
                             <td>PID<br>Set Point</td>
                             <td>PID<br>Regulate</td>
                             <td>PID<br>Buffer</td>
-                            <td>Interval<br>(seconds)</td>
+                            <td>Read Interval<br>(seconds)</td>
                             <td>Relay<br>No.</td>
                             <td>P</td>
                             <td>I</td>
@@ -796,7 +796,7 @@ if (isset($output_error)) {
                                 <td>PID<br>Set Point</td>
                                 <td>PID<br>Regulate</td>
                                 <td>PID<br>Buffer</td>
-                                <td>Interval<br>(seconds)</td>
+                                <td>Read Interval<br>(seconds)</td>
                                 <td>Relay<br>No.</td>
                                 <td>P</td>
                                 <td>I</td>
@@ -1016,7 +1016,7 @@ if (isset($output_error)) {
                             <td>PID<br>Set Point</td>
                             <td>PID<br>Regulate</td>
                             <td>PID<br>Buffer</td>
-                            <td>Interval<br>(seconds)</td>
+                            <td>Read Interval<br>(seconds)</td>
                             <td>Relay<br>No.</td>
                             <td>P</td>
                             <td>I</td>

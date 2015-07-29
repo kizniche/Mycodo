@@ -2,7 +2,7 @@
 
 This is an experimental branch of mycodo. Unless I have been in direct contact with you regarding testing of this branch, I will not be providing technical support for any issues with this version. Instead, I recommend you check out the v3.0 stable branch.
 
-### Progress
+## Progress
 
 - [X] Change configuration storage (from config file to SQLite database)
 - [X] Change login authentication (from MySQL to SQLite database)
@@ -17,27 +17,29 @@ This is an experimental branch of mycodo. Unless I have been in direct contact w
 - [ ] Set electrical current draw of each device and prevent exceeding total current limit with different combinations of devices on
 - [ ] HDR Photo creation (capture series of photos at different ISOs and combine) (Initial testing was slow: 3 photos = 15 minutes processing)
 
-### New Dependencies
+## New Dependencies
 
 php5-sqlite
 
 sqlite3
 
-### Supported Sensors
+## Supported Sensors
 
-##### Temperature
+### Temperature
 
 [DS18B20](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing)
 
-##### Humidity & Temperature
+### Humidity & Temperature
 
 [DHT11, DHT22 and AM2302](https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring)
 
-##### CO2
+### CO2
 
 [K30](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip)
 
-### Mycodo Setup
+## Software Install
+
+### Prerequisites
 
 `sudo apt-get update`
 
@@ -93,11 +95,7 @@ Install video streaming capabilities (Note that it is recommended to require SSL
 
 `sudo cp output_http.so input_file.so /usr/local/lib/`
 
-Set www permissions
-
-`sudo chown -R www-data:www-data /var/www/mycodo`
-
-`sudo chmod 660 /var/www/mycodo/config/* /var/www/mycodo/log/*`
+### Wifi
 
 With a supported usb wifi dongle, setting up a wireless connection is as simple as the next few commands and a reboot. Consult documentation for your wireless card or google if this doesn’t work. Edit wpa_supplicant.conf with `sudo vi /etc/wpa_supplicant/wpa_supplicant.conf` and add the following, then change the name and password.
 
@@ -107,6 +105,8 @@ network={
     psk="PASSWORD"
 }
 ```
+
+### TempFS
 
 A temporary file system in RAM can be created for areas of the disk that are written often, prolonging the life of the SD card and speeding up disk read/writes. Keep in mind that all content on temporary file systems will be lost upon reboot. If you need to analyze logs, remember to disable these lines in /etc/fstab before doing so.
 
@@ -128,19 +128,19 @@ Using a tempfs does create some issues with certain software. Apache does not st
 
 `sudo update-rc.d apache2-tmpfs defaults 90 10`
 
+### Resolve Hostnames
 
 To allow resolving of IP addresses in the login log, edit /etc/apache2/apache2.conf with `sudo vi /etc/apache2/apache2.conf` and find and change HostnameLookups to match the following line
 
 `HostnameLookups On`
 
-In each web directory is an.htaccess which denies access to those folders. It is strongly recommended that you ensure this works properly (or alternatively, configure your web server to accomplish the same result), to ensure no one has direct access to these directories, as log, configuration, graph images, and other potentially sensitive information is stored there. Optionally, for higher security, enable SSL/HTTPS.
-
-
 ### Security
 
-If your system is remotely accessible or publically available on the internet, it is strongly recommended to enable both SSL and .htaccess overrides. If your server is not, you can skip the next two steps.
+In each web-accessible directory is a file (.htaccess) which denies access to certain files and folders (such as the user database, sensor data, and camera photos). It is strongly recommended that you ensure this works properly (or alternatively, configure your web server to accomplish the same result), to ensure no one has direct access to these directories, as potentially sensitive information may be able to be accessed otherwise. Optionally, for higher security, enable SSL/HTTPS.
 
-#### SSL
+If your system is remotely accessible or publically available on the internet, it is strongly recommended to enable both SSL and .htaccess use. If your server is not, you can skip the next two steps.
+
+#### Enable SSL
 
 `sudo apt-get install openssl`
 
@@ -197,7 +197,7 @@ Ensure SSL is enabled in apache2 and restart the server
 
 You will need to add the self-signed certificate that was created (/etc/ssl/localcerts/apache.pem) to your browser as trusted in order not to receive warnings. You can copy this from the /etc/ssl/localcerts/ directory or it can be obtained by visiting your server with your browser. The process for adding this file to your browser as trusted may be different for each browser, however there are many resources online that detail how to do so. Adding your certificate to your browser is highly recommended to ensure the site's certificate is what it's supposed to be, however you will still be able to access your site without adding the certificate, but you may receive a warning stating your site's security may be compromised.
 
-#### .htaccess
+#### Enable .htaccess
 
 If your server is accessible from the internet but you don't want to enable SSL (this was enabled with SSL, above), this is a crucial step that will ensure sensitive files (images/logs/databases) will not be accessible to anyone. If your server is not publically accessible, you can skip this step. Otherwise, it's imperative that `AllowOverride All` is added to your apache2 config to allow the .htaccess files throughout mycodo to restrict access to certain files and folders. Modify /etc/apache2/sites-enabled/000-default to appear as below:
 
@@ -219,13 +219,11 @@ Then restart apache with
 
 `sudo service apache2 restart`
 
-I highly recommend testing whether the configuration change actually worked. This can be tested by going to https://yourwebaddress/mycodo/includes/ with your browser, and if you get an error, "Forbidden: You don't have permission to access /mycodo/includes on this server," then everything is working correctly. If the page actually loads or there is any other error than "forbidden", there is a problem and you will need to diagnose the issue before opening your server to beyond your local network.
+It is highly recommended that the configuration change be tested to determine if they actually worked. This can be done by going to https://yourwebaddress/mycodo/includes/ with your browser, and if you get an error, "Forbidden: You don't have permission to access /mycodo/includes on this server," or similar, then everything is working correctly. If the page actually loads or there is any other error than "forbidden", there is a problem and you should diagnose the issue before opening your server to beyond your local network.
 
-### Final Steps
+### Database Creation
 
-#### Database Creation
-
-Create the databases with the following commands
+Use the following commands and type 'all' when prompted to create databases
 
 `cd /var/www/mycodo/`
 
@@ -233,7 +231,7 @@ Create the databases with the following commands
 
 Follow the prompts to create an admin password, optionally create another user, and enable/disable guest access.
 
-#### Starting the Daemon
+### Starting the Daemon
 
 To initialize GPIO pins at startup, open crontab with `sudo crontab -e` and add the following lines, then save with `Ctrl+e`
 
@@ -251,18 +249,78 @@ Reboot to allow everything to start up
 
 `sudo shutdown now -r`
 
-After the system is back up, go to http://your.rpi.address/mycodo
+## Usage
 
-Login with the credentials you created with setup-database.py, then go to the Settings tab.
+### Web Interface
 
-Select the number of relays that are connected and save.
+After the system is back up, go to http://your.rpi.address/mycodo and log in with the credentials you created with setup-database.py. Input fields of the web interface will display descriptions or instructions when the mouse is hovered over them.
 
-Change the `GPIO Pin` and `Trigger ON` of each relay. The `GPIO Pin` is the pin on the raspberry pi (using BCM numbering, not board numbering) and the `Trigger ON` is the required signal to activate the relay (close the circuit). If your relay activates when it receives a LOW (0 volt, ground) signal, set the `Trigger ON` to LOW, otherwise set it HIGH. Save all your changes.
+Ensure the Daemon indicator at the top-left is blue, indicating the daemon is running. If it is not, PID regulation cannot operate.
 
-Go to the Sensors tab and select the number of each type of sensors that are connected and save. T=Temperature Sensors, HT=Humidity/Temperature Sensors, and CO2=CO2 Sensors.
+Additionally, relays must be properly set up before PID regulation can be achieved. Change the number of relays in the Settings tab and configure them. Change the `GPIO Pin` and `Signal ON` of each relay. The `GPIO Pin` is the pin on the raspberry pi (using BCM numbering, not board numbering) and the `Signal ON` is the required signal to activate the relay (close the circuit). If your relay activates when it receives a LOW (0 volt, ground) signal, set the `Signal ON` to LOW, otherwise set it HIGH.
 
-Change the `Sensor Device` and `GPIO Pin` for each sensor. Once these have been set, you can activate logging and/or graphing. When logging is activated, a log entry will be written to a file at the duration defined under `Log Interval` and when graphing is activated, the `Generate Graph` button on the main tab will generate preset graphs with the data logged with that particular sensor.
+### PID Control
 
-For any PID controllers that are desired to be used, ensure you have set the `Relay No.`, `PID Set Point`, `P`, `I`, and `D` before attempting to activate it. The `Relay No.` is the number found under Relays that you would like to be controlled by the PID. The `PID Set point` is the desired condition (temperature, humidity, or co2 concentration, depending on which PID controller). The `P`, `I`, and `D` are the most crucial variables of the controller. It is advised to set `I` and `D` to 0 until the controller can reasonably stabilize with the `P` alone. That exact value will depend on the size of your system and degree of impact the device connected to the relay has on the system, but it is generally advisable to start low and work your way higher until you find something that works.
+The PID controller is the most common controller found in industrial settings, both for its simplicity and its complexity. PID stands for Proportional Integral Derivative.
 
-My current optimal temperature PID values are P=30, I=1.0, and D=0.5 and my humidity PID values are P=1.0, I=0.2, and D=0.5, however this may not be the case for your system. I'm merely providing an example of how ideal values can vary.
+#### P
+
+The proportaional path takes the error (the difference between the actual position and the desired position) and multiplies it by a constant, Kp, to yield an output value. When the error is large, there will be a large proportional output.
+
+#### I
+
+The integral path takes the error and multiplies it by Ki, then integrates it. As the error changes over time, the integral will continually sum it and multiply it by the constant Ki. It integral is used to remove constant errors in the control system. If using P alone produces an output that allows a constant error, the integral will increase the output until the error decreases.
+
+#### D
+
+Last, the derivative path multiplies the error by Kd, then differentiates it. When the error rate changes over time, the output signal will change. The faster the change in error, the larger the derivative path becomes, decreasing the output rate of change.
+
+#### Configurations
+
+These K terms are called gains, and by adjusting them, the sensitivity of the system to each path is affected. When all three paths are summed, the PID output is produced. This output is used to turn on connected relays for certain durations of time, and hence, affect the environment.
+
+Implementing a controller that effectively utilizes P, I, and D can be challenging (and is often unnecessary). For instance, the I and D can be set to 0, effectively turning them off and producing a P controller. Also popular is the PI controller. It is recommended to start with only P, then experiment with PI, before finally using PID.
+
+Because systems will vary (e.g. airspace volume to regulate, degree of insulation, and the efficacy of the connected device(s) to modify the environment, etc.), each path will need to be adjusted to produce an effective output that attains the set point in both a reasonable amount of time and with as little oscillation possible around the set point. As such, your particular configuration will need to be determined through experimentation.
+
+### Quick Set-up Examples
+
+These example setups are meant to illustrate how to configure regulation in particular directions, and not how to properly configure your P, I, and D variables. There are a number of techniques and methods that have been developed to determine ideal PID setups, and it is recommended to conduct your own research to understand and implement them.
+
+#### High-Humidity Regulation
+
+This will set up the system to raise the humidity to a certain level with one regulatory device (one that can raise the humidity).
+
+Select the number of Humidity & Temperature (HT) sensors that are connected. Select the proper device and GPIO pin for each sensor and activate logging and graphing.
+
+*** Stop here. Wait 10 minutes, then go the Main tab and generate a graph. If the graph generates with data on it, continue. If not, stop and investigate why there is no sensor data. The controller will not function if there is not sensor data being acquired. ***
+
+Under the Humidity PID for an active sensor, change `PID Set Point` to the desired humidity, `PID Regulate` to 'Up', and `PID Buffer` to '0'.
+
+Set the `Relay No.` of the up-regulating PID (represented by an Up arrow) to the relay attached to your humidification device.
+
+Set `P` to 1, `I` to 0, `D` to 0, then turn the Humidity PID on with the ON button.
+
+At this point, the humidifier should be turning on and off at some interval. Generate '6 Hour Seperate' graphs from the Main tab to identify how well the humidity is regulated to the set point. What is meant by well-regulated will vary, depending on your specific application and tollerances. Most applications would like to see the proper humidity attained within a reasonable amount of time and not oscillate (go higher and lower) too much from the set point.
+
+If the humidity is not reaching the set point after a reasonable amount of time, increase the P value until it does. Experiment with different configurations involving `Read Interval` and `P` to achieve an acceptable regulation. Avoid changing the `I` and `D` from 0 until a working regulation is achieved with P alone.
+
+Once regulation is achieved, experiment by reducing P slightly and increasing `I` by a low amount to start, such as 0.1 (or lower), then observe how the controller regulates. Slowly increase I until regulation becomes both quick yet there is little oscillation once regulation is achieved. At this point, you should be fairly familiar with experimenting with the system and the D value can be experimented with.
+
+#### Low-Temperature Regulation
+
+This will set up the system to lower the temperature to a certain level with one regulatory device (one that can lower the temperature).
+
+Use the same configuration as the High-Humidity Regulation example, except change `PID Regulate` to 'Down' and change the `Relay No.` and `P`, `I`, and `D` values of the down-regulating PID (represented by a Down arrow).
+
+#### Exact Temperature Regulation
+
+This will set up the system to raise and lower the temperature to a certain level with two regulatory devices (one that can raise and one that can lower the temperature).
+
+Use the same configuration as the High-Humidity Regulation example, except change PID Regulate to 'Both' and change `Relay No.`, `P`, `I`, and `D` variables for both the up and down regluation of the PID controller. It may be necessary to increase the `PID Buffer` to prevent aggressive competition between up and down regluation (See the section below about the buffer).
+
+### Tips
+
+#### PID Buffer
+
+If regulation is set to 'Both' ways (up and down), the devices that regulate each direction may turn on excessively, essentially competing to maintain regulation of a precise set point. This is where the `PID Buffer` may be effective at reducing relay activity. By setting the PID Buffer, a zone is formed (Set Point ± Buffer) where relays will not activate while the environmental condition is measured within this range.
