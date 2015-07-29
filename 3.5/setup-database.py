@@ -35,6 +35,7 @@ relay_num = None
 relay_pin = [0] * 9
 relay_name = [0] * 9
 relay_trigger = [0] * 9
+relay_start_state = [0] * 9
 
 # Temperature & Humidity Sensors
 sensor_t_num = 0
@@ -332,7 +333,7 @@ def create_all_tables_mycodo():
     print "mycodo.db: Create all tables"
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("CREATE TABLE Relays (Id INT, Name TEXT, Pin INT, Trigger INT)")
+    cur.execute("CREATE TABLE Relays (Id INT, Name TEXT, Pin INT, Trigger INT, Start_State INT)")
     cur.execute("CREATE TABLE TSensor (Id INT, Name TEXT, Pin TEXT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay_High INT, Temp_Relay_Low INT, Temp_OR INT, Temp_Set REAL, Temp_Set_Direction INT, Temp_Set_Buffer REAL, Temp_Period INT, Temp_P_high REAL, Temp_I_High REAL, Temp_D_High REAL, Temp_P_Low REAL, Temp_I_Low REAL, Temp_D_Low REAL)")
     cur.execute("CREATE TABLE HTSensor (Id INT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay_High INT, Temp_Relay_Low INT, Temp_OR INT, Temp_Set REAL, Temp_Set_Direction INT, Temp_Set_Buffer REAL, Temp_Period INT, Temp_P_High REAL, Temp_I_High REAL, Temp_D_High REAL, Temp_P_Low REAL, Temp_I_Low REAL, Temp_D_Low REAL, Hum_Relay_High INT, Hum_Relay_Low INT, Hum_OR INT, Hum_Set REAL, Hum_Set_Direction INT, Hum_Set_Buffer REAL, Hum_Period INT, Hum_P_High REAL, Hum_I_High REAL, Hum_D_High REAL, Hum_P_Low REAL, Hum_I_Low REAL, Hum_D_Low REAL)")
     cur.execute("CREATE TABLE CO2Sensor (Id INT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, CO2_Relay_High INT, CO2_Relay_Low INT, CO2_OR INT, CO2_Set REAL, CO2_Set_Direction INT, CO2_Set_Buffer REAL, CO2_Period INT, CO2_P_High REAL, CO2_I_High REAL, CO2_D_High REAL, CO2_P_Low REAL, CO2_I_Low REAL, CO2_D_Low REAL)")
@@ -353,7 +354,7 @@ def create_rows_columns_mycodo():
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
     for i in range(1, 9):
-        cur.execute("INSERT INTO Relays VALUES(%d, 'Relay%d', 0, 0)" % (i, i))
+        cur.execute("INSERT INTO Relays VALUES(%d, 'Relay%d', 0, 0, 0)" % (i, i))
     for i in range(1, 5):
         cur.execute("INSERT INTO TSensor VALUES(%d, 'T-S%d', '0', 'DS18B20', 120, 0, 0, 0, 0, 1, 25.0, 0, 2.5, 90, 0, 0, 0, 0, 0, 0)" % (i, i))
     for i in range(1, 5):

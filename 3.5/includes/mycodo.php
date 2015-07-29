@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.61";
+$version = "3.5.62";
 
 ######### Start Edit Configure #########
 
@@ -1751,6 +1751,7 @@ if (isset($output_error)) {
                             <td align=center class="table-header">Seconds<br>On</td>
                             <td align=center class="table-header">GPIO<br>Pin</td>
                             <td align=center class="table-header">Signal<br>ON</td>
+                            <td align=center class="table-header">Startup<br>State</td>
                             <td align=center class="table-header"></td>
                         </tr>
                         <?php for ($i = 1; $i <= $relay_num; $i++) {
@@ -1789,11 +1790,23 @@ if (isset($output_error)) {
                                     <option<?php
                                         if ($relay_trigger[$i] == 1) {
                                             echo ' selected="selected"';
-                                        } ?> value="1">HIGH</option>
+                                        } ?> value="1">High</option>
                                     <option<?php
                                         if ($relay_trigger[$i] == 0) {
                                             echo ' selected="selected"';
-                                        } ?> value="0">LOW</option>
+                                        } ?> value="0">Low</option>
+                                </select>
+                            </td>
+                            <td align=center>
+                                <select style="width: 65px;" title="Should the relay be On or Off at startup?" name="relay<?php echo $i; ?>startstate">
+                                    <option<?php
+                                        if ($relay_start_state[$i] == 1) {
+                                            echo ' selected="selected"';
+                                        } ?> value="1">On</option>
+                                    <option<?php
+                                        if ($relay_start_state[$i] == 0) {
+                                            echo ' selected="selected"';
+                                        } ?> value="0">Off</option>
                                 </select>
                             </td>
                             <td>

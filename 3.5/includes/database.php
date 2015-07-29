@@ -33,11 +33,12 @@ while ($row = $results->fetchArray()) {
     $timer_num = $row[4];
 }
 
-$results = $db->query('SELECT Id, Name, Pin, Trigger FROM Relays');
+$results = $db->query('SELECT Id, Name, Pin, Trigger, Start_State FROM Relays');
 while ($row = $results->fetchArray()) {
     $relay_name[$row[0]] = $row[1];
     $relay_pin[$row[0]] = $row[2];
     $relay_trigger[$row[0]] = $row[3];
+    $relay_start_state[$row[0]] = $row[4];
 }
 
 $results = $db->query('SELECT Id, Name, Pin, Device, Period, Activated, Graph, Temp_Relay_High, Temp_Relay_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Set_Buffer, Temp_Period, Temp_P_High, Temp_I_High, Temp_D_High, Temp_P_Low, Temp_I_Low, Temp_D_Low FROM TSensor');

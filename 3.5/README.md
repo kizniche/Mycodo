@@ -4,9 +4,10 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 ## Progress
 
-- [X] Added Feature: Image time-lapse
-- [X] Added Feature: Both up and down PID regulation
-- [X] Added Feature: Log parsing (40%-70% speed increase in graph-generation)
+- [X] Added Feature: Set desired startup state of relay (on or off)
+- [X] Added Feature: Time-lapse image acquisition
+- [X] Added Feature: PID regulation up, down, or both (previously only up)
+- [X] Added Feature: Log parsing (40%-70% increase in graph-generation speed)
 - [X] Added Sensor: K30 CO<sub>2</sub> sensor
 - [X] Added Sensor: DS18B20 temperature sensor
 - [X] New configuration database (from plain-text file to SQLite)

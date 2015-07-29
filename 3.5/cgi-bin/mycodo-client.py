@@ -48,10 +48,13 @@ def usage():
     print '           0=OFF, 1=ON, or X number of seconds On'
     print '        --sensorco2 pin device'
     print '           Returns a reading from the CO2 sensor on GPIO pin'
-    print '           Device options are K30'
+    print '           Device options: K30'
     print '        --sensorht pin device'
     print '           Returns a reading from the temperature and humidity sensor on GPIO pin'
-    print '           Device options are DHT22, DHT11, or AM2302'
+    print '           Device options: DHT22, DHT11, or AM2302'
+    print '        --sensort pin device'
+    print '           Returns a reading from the temperature and humidity sensor on GPIO pin'
+    print '           Device options: DS18B20'
     print '        --sqlreload relay'
     print '           Reload the SQLite database, initialize GPIO if relay=1-8'
     print '    -s, --status'
@@ -69,7 +72,7 @@ def menu():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:], 'hr:st',
-            ["help", "graph", "pidstart=", "pidstop=", "relay=", "sensorht", "sensorco2", "sqlreload", "status", "terminate", "writetlog", "writehtlog", "writeco2log"])
+            ["help", "graph", "pidstart=", "pidstop=", "relay=", "sensorco2", "sensorht", "sensort", "sqlreload", "status", "terminate", "writetlog", "writehtlog", "writeco2log"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -156,6 +159,12 @@ def menu():
                 Timestamp(), sys.argv[3], int(float(sys.argv[2])))
             temperature, humidity = c.root.ReadHTSensor(int(float(sys.argv[2])), sys.argv[3])
             print "%s [Remote Command] Daemon Returned: Temperature: %s°C Humidity: %s%%" % (Timestamp(), round(temperature,2), round(humidity,2))
+            sys.exit(0)
+        elif opt == "--sensort":
+            print "%s [Remote command] Read T sensor %s on GPIO pin %s" % (
+                Timestamp(), sys.argv[3], int(float(sys.argv[2])))
+            temperature, humidity = c.root.ReadHTSensor(int(float(sys.argv[2])), sys.argv[3])
+            print "%s [Remote Command] Daemon Returned: Temperature: %s°C" % (Timestamp(), round(temperature,2))
             sys.exit(0)
         elif opt == "--sqlreload":
             if int(float(sys.argv[2])):

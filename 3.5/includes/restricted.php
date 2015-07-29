@@ -26,10 +26,11 @@
 for ($p = 1; $p <= 8; $p++) {
     // Set relay variables
     if (isset($_POST['Mod' . $p . 'Relay'])) {
-        $stmt = $db->prepare("UPDATE Relays SET Name=:name, Pin=:pin, Trigger=:trigger WHERE Id=:id");
+        $stmt = $db->prepare("UPDATE Relays SET Name=:name, Pin=:pin, Trigger=:trigger, Start_State=:startstate WHERE Id=:id");
         $stmt->bindValue(':name', $_POST['relay' . $p . 'name'], SQLITE3_TEXT);
         $stmt->bindValue(':pin', (int)$_POST['relay' . $p . 'pin'], SQLITE3_INTEGER);
         $stmt->bindValue(':trigger', (int)$_POST['relay' . $p . 'trigger'], SQLITE3_INTEGER);
+        $stmt->bindValue(':startstate', (int)$_POST['relay' . $p . 'startstate'], SQLITE3_INTEGER);
         $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
         $stmt->execute();
         if ($_POST['relay' . $p . 'pin'] != $relay_pin[$p]) {

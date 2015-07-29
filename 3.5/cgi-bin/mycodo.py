@@ -247,7 +247,7 @@ class ComServer(rpyc.Service):
         logging.info("[Client command] Read CO2 Sensor %s from GPIO pin %s", sensor, pin)
         if (sensor == 'K30'):
             read_co2_sensor(sensor)
-            return (sensor_co2_read_co2)
+            return sensor_co2_read_co2
         else:
             return 'Invalid Sensor Name'
     def exposed_ReadHTSensor(self, pin, sensor):
@@ -255,9 +255,16 @@ class ComServer(rpyc.Service):
         if (sensor == 'DHT11'): device = Adafruit_DHT.DHT11
         elif (sensor == 'DHT22'): device = Adafruit_DHT.DHT22
         elif (sensor == 'AM2302'): device = Adafruit_DHT.AM2302
-        else: return 'Invalid Sensor Name'
+        else:
+            return 'Invalid Sensor Name'
         hum, tc = Adafruit_DHT.read_retry(device, pin)
         return (tc, hum)
+    def exposed_ReadTSensor(self, pin, device):
+        logging.info("[Client command] Read T Sensor %s from GPIO pin %s", sensor, pin)
+        if (sensor == 'DS18B20'):
+            return read_t(0, device, pin)
+        else:
+            return 'Invalid Sensor Name'
     def exposed_SQLReload(self, relay):
         logging.info("[Client command] Reload SQLite database")
         read_sql()

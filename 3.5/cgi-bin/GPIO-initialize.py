@@ -41,17 +41,26 @@ def ReadSQL():
     global relay_trigger
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
-    cur.execute('SELECT Id, Pin, Trigger FROM Relays')
+    cur.execute('SELECT Id, Pin, Trigger, Start_State FROM Relays')
     for row in cur :
-        # print "%s %s %s" % (row[0], row[1], row[2])
         relay_pin[row[0]] = row[1]
         relay_trigger[row[0]] = row[2]
+        relay_start_state[row[0]] = row[3]
 
 ReadSQL()
 
+# Turn all relays off
+# Set all relays to be turned off at startup
 for i in range(1, 9):
     if relay_trigger[i] == 0: relay_trigger[i] = 1;
     else: relay_trigger[i] = 0
+
+# Turn specific relays on
+# If relay is set to be turned on, reverse the trigger
+for i in range(1, 9):
+    if relay_start_state[i]:
+        if relay_trigger[i] == 0: relay_trigger[i] = 1;
+        else: relay_trigger[i] = 0
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
