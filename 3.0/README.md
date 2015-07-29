@@ -10,7 +10,7 @@ This installation assumes you are starting with a fresh install of Raspbian linu
 
 `sudo apt-get upgrade`
 
-`sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev php5 libapache2-mod-php5 pip subversion`
+`sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev php5 libapache2-mod-php5 python-pip subversion`
 
 If you will have your RPi exposed to the internet with SSH access, I recommend installing fail2ban to monitor auth.log and ban IP addresses that fail a certain number of login attempts. This has successfully thwarted many script kiddies from mounting a useful attack on my RPi system.
 
@@ -54,7 +54,7 @@ Set permissions for www to use the RPi camera
 
 `sudo usermod -a -G video www-data`
 
-Setup streaming capabilities
+### Setup streaming capabilities
 
 `sudo apt-get install libjpeg8-dev libv4l-dev wget`
 
@@ -74,7 +74,7 @@ Setup streaming capabilities
 
 `sudo cp output_http.so input_file.so /usr/local/lib/`
 
-Set permissions
+### Set permissions
 
 `sudo chown -R www-data:www-data /var/www/mycodo`
 
@@ -102,13 +102,17 @@ Apache does not start if there is not a proper directory structure set up in /va
 
 `sudo update-rc.d apache2-tmpfs defaults 90 10`
 
-### Apache
+### Resolve Hostnames
 
 To resolve the IP address in the auth.log, the following line in /etc/apache2/apache2.conf needs to be changed from 'Off' to 'On', without the quotes:
 
 `HostnameLookups On`
 
+### Enable .htaccess
+
 There is an `.htaccess` file in each directory that denies web access to these folders. It is strongly recommended that you make sure this works properly (or alternatively configure your web server to accomplish the same result), to ensure no one can read from these directories, as log, configuration, graph images, and other potentially sensitive information is stored there.
+
+### Enable SSL
 
 Optionally for higher security, generate an SSL certificate and enable SSL/HTTPS in apache.
 
