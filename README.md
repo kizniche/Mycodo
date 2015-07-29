@@ -1,6 +1,6 @@
 # Mycodo
 
-   Mycodo is designed to monitor and regulate an environmental system with PID control. Sensors monitor environmental conditions (currently temperature, humidity, and CO<sub>2</sub>) and software PID controllers modulate relays that power devices to alter the environment. A web-interface features viewing of current and past conditions as well as graph generation, configuration modification, and image/video/timelapse acquisition, to name a few (full feature list below).
+   Mycodo is a system designed to monitor and regulate a microclimate of an environment with PID control. Sensors monitor environmental conditions (currently temperature, humidity, and CO<sub>2</sub>) and software PID controllers modulate relays that power devices to alter the environment. A web-interface features viewing of current and past conditions as well as graph generation, configuration modification, and image/video/timelapse acquisition, to name a few (full feature list below).
 
    A daemon performs all crucial tasks, including periodically reading sensors, writing sensor and relay logs, PID controller regulation, scheduling timer-activated relays, generating graphs, among others. A client application communicates with the daemon to carry out user-defined tasks, such as relay changes and turning PID regulation on and off, to name a few.
 
@@ -18,9 +18,9 @@
 <a name="history"></a>
 ## History
 
-Mycodo originated from a small project to regulate the temperature and humidity of a growth chamber used for cultivating gourmet mushrooms. At that time (2010), the system was comprised of an ATMega that was interfaced to a network-connected computer running linux. When the Raspberry Pi was introduced in 2012, I decided to port my code from the ATMega and my linux computer to this one compact device. My first relay bank consisted of 4 relays, controlling a heater, humidifier, circulatory fan, and HEPA-filtered exhaust fan.
+Mycodo started as a small project desgined to regulate the temperature and humidity of a growth chamber used for cultivating gourmet mushrooms. It has since developed into a feature-rich system that has been used by mushroom-growers as well as for other purposes, including growing plants and aging cheeses.
 
-I've since upgraded to a new set of hardware that support 8 individually-switchable 120-volt AC outlets, however the latest software (v3.5) aims to support as many sensors and relays that can be connected. Additionally, the current software skeleton supports the ability to efficiently add support for new sensors (sensor-testers wanted!).
+With its inception in 2010, the first system was comprised of an ATMega interfaced to a network-connected computer running linux. My first relay bank consisted of 4 relays, controlling a heater, humidifier, circulatory fan, and HEPA-filtered exhaust fan. When the Raspberry Pi was introduced in 2012, I decided to port the code from the ATMega and my linux computer to the Pi. I've since upgraded to a new set of hardware that support 8 individually-switchable 120-volt AC outlets, however the latest software (v3.5) aims to support as many sensors and relays as can be connected. Additionally, the current software skeleton supports the ability to efficiently add support for new sensors. If you have a sensor you would like to see incorporated, let me know and you can become a beta-tester for a new sensor.
 
 <a name="feat"></a>
 ## Features
