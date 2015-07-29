@@ -1,19 +1,21 @@
 # Mycodo 3.5-beta (experimental)
 
-This is an experimental branch of mycodo. Unless I have been in direct contact with you regarding testing of this branch, I will not be providing technical support for any issues with this version. Instead, I recommend you check out the v3.0 stable branch.
+This is an experimental branch of mycodo. It is undergoing constant changes and may or may not work at any time (although it has matured somewhat and is relatively stable at the moment). If you are looking for a stable version, I recommend you check out the [v3.0 branch](https://github.com/kizniche/Mycodo/tree/master/3.0).
 
 ## Progress
 
-- [X] Change configuration storage (from config file to SQLite database)
-- [X] Change login authentication (from MySQL to SQLite database)
-- [X] Add log parsing (40%-70% speed increase in graph generation)
-- [X] K30 CO2 sensor support
-- [X] DS18B20 Temperature sensor support
-- [X] Both up and down pid regulation
-- [X] Timelapse
+- [X] Added Feature: Image time-lapse
+- [X] Added Feature: Both up and down PID regulation
+- [X] Added Feature: Log parsing (40%-70% speed increase in graph-generation)
+- [X] Added Sensor: K30 CO<sub>2</sub> sensor
+- [X] Added Sensor: DS18B20 temperature sensor
+- [X] New configuration storage (from config file to SQLite database)
+- [X] New login authentication (from MySQL to SQLite database)
 - [ ] More graph options (y-axis min/max, select sensors to be graphed)
 - [ ] Email notification or audible alarm during critical failure or condition (working on)
-- [ ] O2 sensor support
+- [ ] Convert time-lapse images to video
+- [ ] Barometric Pressure sensor support
+- [ ] O<sub>2</sub> sensor support
 - [ ] Set electrical current draw of each device and prevent exceeding total current limit with different combinations of devices on
 - [ ] HDR Photo creation (capture series of photos at different ISOs and combine) (Initial testing was slow: 3 photos = 15 minutes processing)
 
@@ -27,15 +29,15 @@ sqlite3
 
 ### Temperature
 
-[DS18B20](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing)
+> [DS18B20](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing)
 
 ### Humidity & Temperature
 
-[DHT11, DHT22 and AM2302](https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring)
+> [DHT11, DHT22 and AM2302](https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring)
 
 ### CO2
 
-[K30](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip)
+> [K30](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip)
 
 ## Software Install
 
@@ -75,7 +77,7 @@ If using the Raspberry Pi camera module:
 
 `sudo usermod -a -G video www-data`
 
-Install video streaming capabilities (Note that it is recommended to require SSL on your web server to prevent potential viewing of video streams by unautorized users, details on forcing SSL below)
+Install video streaming capabilities (Note that it is recommended to require SSL on your web server to prevent potential viewing of video streams by unauthorized users, details on forcing SSL below)
 
 `sudo apt-get install libjpeg8-dev libv4l-dev wget`
 
@@ -207,7 +209,7 @@ If your server is accessible from the internet but you don't want to enable SSL 
          Order deny,allow
          Deny from all
     </Directory>
-	<Directory /var/www>
+    <Directory /var/www>
         Options Indexes FollowSymLinks MultiViews
         AllowOverride All
         Order allow,deny
@@ -265,7 +267,7 @@ The PID controller is the most common controller found in industrial settings, b
 
 #### P
 
-The proportaional path takes the error (the difference between the actual position and the desired position) and multiplies it by a constant, K<sub>p</sub>, to yield an output value. When the error is large, there will be a large proportional output.
+The proportional path takes the error (the difference between the actual position and the desired position) and multiplies it by a constant, K<sub>p</sub>, to yield an output value. When the error is large, there will be a large proportional output.
 
 #### I
 
@@ -293,15 +295,15 @@ This will set up the system to raise the humidity to a certain level with one re
 
 Select the number of Humidity & Temperature (HT) sensors that are connected. Select the proper device and GPIO pin for each sensor and activate logging and graphing.
 
-*** Stop here. Wait 10 minutes, then go the Main tab and generate a graph. If the graph generates with data on it, continue. If not, stop and investigate why there is no sensor data. The controller will not function if there is not sensor data being acquired. ***
+***Stop here. Wait 10 minutes, then go the Main tab and generate a graph. If the graph generates with data on it, continue. If not, stop and investigate why there is no sensor data. The controller will not function if there is not sensor data being acquired.***
 
-Under the Humidity PID for an active sensor, change `PID Set Point` to the desired humidity, `PID Regulate` to 'Up', and `PID Buffer` to '0'.
+Under the Humidity PID for an active sensor, change `PID Set Point` to the desired humidity, `PID Regulate` to 'Up', and `PID Buffer` to 0.
 
 Set the `Relay No.` of the up-regulating PID (represented by an Up arrow) to the relay attached to your humidification device.
 
 Set `P` to 1, `I` to 0, `D` to 0, then turn the Humidity PID on with the ON button.
 
-At this point, the humidifier should be turning on and off at some interval. Generate '6 Hour Seperate' graphs from the Main tab to identify how well the humidity is regulated to the set point. What is meant by well-regulated will vary, depending on your specific application and tollerances. Most applications would like to see the proper humidity attained within a reasonable amount of time and not oscillate (go higher and lower) too much from the set point.
+At this point, the humidifier should be turning on and off at some interval. Generate '6 Hour Seperate' graphs from the Main tab to identify how well the humidity is regulated to the set point. What is meant by well-regulated will vary, depending on your specific application and tolerances. Most applications would like to see the proper humidity attained within a reasonable amount of time and not oscillate (go higher and lower) too much from the set point.
 
 If the humidity is not reaching the set point after a reasonable amount of time, increase the P value until it does. Experiment with different configurations involving `Read Interval` and `P` to achieve an acceptable regulation. Avoid changing the `I` and `D` from 0 until a working regulation is achieved with P alone.
 
@@ -317,10 +319,10 @@ Use the same configuration as the High-Humidity Regulation example, except chang
 
 This will set up the system to raise and lower the temperature to a certain level with two regulatory devices (one that can raise and one that can lower the temperature).
 
-Use the same configuration as the High-Humidity Regulation example, except change PID Regulate to 'Both' and change `Relay No.`, `P`, `I`, and `D` variables for both the up and down regluation of the PID controller. It may be necessary to increase the `PID Buffer` to prevent aggressive competition between up and down regluation (See the section below about the buffer).
+Use the same configuration as the High-Humidity Regulation example, except change PID Regulate to 'Both' and change `Relay No.`, `P`, `I`, and `D` variables for both the up and down regulation of the PID controller. It may be necessary to increase the `PID Buffer` to prevent aggressive competition between up and down regulation (See the section below about the buffer).
 
 ### Tips
 
 #### PID Buffer
 
-If regulation is set to 'Both' ways (up and down), the devices that regulate each direction may turn on excessively, essentially competing to maintain regulation of a precise set point. This is where the `PID Buffer` may be effective at reducing relay activity. By setting the PID Buffer, a zone is formed (Set Point ± Buffer) where relays will not activate while the environmental condition is measured within this range.
+> If regulation is set to 'Both' ways (up and down), the devices that regulate each direction may turn on excessively, essentially competing to maintain regulation of a precise set point. This is where the `PID Buffer` may be effective at reducing relay activity. By setting the PID Buffer, a zone is formed (Set Point ± Buffer) where relays will not activate while the environmental condition is measured within this range.
