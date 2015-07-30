@@ -671,8 +671,10 @@ def daemon(output, log):
                 pid_t_temp_alive[pid_number] = 0
                 while pid_t_temp_alive[pid_number] != 2:
                     time.sleep(0.1)
-                relay_onoff(int(pid_t_temp_relay_high[pid_number]), 'off')
-                relay_onoff(int(pid_t_temp_relay_low[pid_number]), 'off')
+                if int(pid_t_temp_relay_high[pid_number]):
+                    relay_onoff(int(pid_t_temp_relay_high[pid_number]), 'off')
+                if int(pid_t_temp_relay_low[pid_number]):
+                    relay_onoff(int(pid_t_temp_relay_low[pid_number]), 'off')
                 pid_t_temp_alive[pid_number] = 1
                 pid_t_temp_active[pid_number] = 0
             else:
@@ -696,8 +698,10 @@ def daemon(output, log):
                 pid_ht_temp_alive[pid_number] = 0
                 while pid_ht_temp_alive[pid_number] != 2:
                     time.sleep(0.1)
-                relay_onoff(int(pid_ht_temp_relay_high[pid_number]), 'off')
-                relay_onoff(int(pid_ht_temp_relay_low[pid_number]), 'off')
+                if int(pid_ht_temp_relay_high[pid_number]):
+                    relay_onoff(int(pid_ht_temp_relay_high[pid_number]), 'off')
+                if int(pid_ht_temp_relay_low[pid_number]):
+                    relay_onoff(int(pid_ht_temp_relay_low[pid_number]), 'off')
                 pid_ht_temp_alive[pid_number] = 1
                 pid_ht_temp_active[pid_number] = 0
             else:
@@ -721,8 +725,10 @@ def daemon(output, log):
                 pid_ht_hum_alive[pid_number] = 0
                 while pid_ht_hum_alive[pid_number] != 2:
                     time.sleep(0.1)
-                relay_onoff(int(pid_ht_hum_relay_high[pid_number]), 'off')
-                relay_onoff(int(pid_ht_hum_relay_low[pid_number]), 'off')
+                if int(pid_ht_hum_relay_high[pid_number]):
+                    relay_onoff(int(pid_ht_hum_relay_high[pid_number]), 'off')
+                if int(pid_ht_hum_relay_low[pid_number]):
+                    relay_onoff(int(pid_ht_hum_relay_low[pid_number]), 'off')
                 pid_ht_hum_alive[pid_number] = 1
                 pid_ht_hum_active[pid_number] = 0
             else:
@@ -746,8 +752,10 @@ def daemon(output, log):
                 pid_co2_alive[pid_number] = 0
                 while pid_co2_alive[pid_number] != 2:
                     time.sleep(0.1)
-                relay_onoff(int(pid_co2_relay_high[pid_number]), 'off')
-                relay_onoff(int(pid_co2_relay_low[pid_number]), 'off')
+                if int(pid_co2_relay_high[pid_number]):
+                    relay_onoff(int(pid_co2_relay_high[pid_number]), 'off')
+                if int(pid_co2_relay_low[pid_number]):
+                    relay_onoff(int(pid_co2_relay_low[pid_number]), 'off')
                 pid_co2_alive[pid_number] = 1
                 pid_co2_active[pid_number] = 0
             else:
@@ -826,9 +834,9 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
     logging.info("[PID T-Temperature-%s] Starting %s", sensor, ThreadName)
 
     # Turn activated PID relays off
-    if pid_t_temp_relay_high[sensor] != 0:
+    if pid_t_temp_relay_high[sensor]:
         relay_onoff(int(pid_t_temp_relay_high[sensor]), 'off')
-    if pid_t_temp_relay_low[sensor] != 0:
+    if pid_t_temp_relay_low[sensor]:
         relay_onoff(int(pid_t_temp_relay_low[sensor]), 'off')
 
     # Add buffer to PID set point to create a low and high margin
@@ -918,9 +926,9 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
 
     logging.info("[PID HT-Temperature-%s] Starting %s", sensor, ThreadName)
 
-    if pid_ht_temp_relay_high[sensor] != 0:
+    if pid_ht_temp_relay_high[sensor]:
         relay_onoff(int(pid_ht_temp_relay_high[sensor]), 'off')
-    if pid_ht_temp_relay_low[sensor] != 0:
+    if pid_ht_temp_relay_low[sensor]:
         relay_onoff(int(pid_ht_temp_relay_low[sensor]), 'off')
 
     high = pid_ht_temp_set[sensor] + pid_ht_temp_set_buf[sensor]
@@ -1010,9 +1018,9 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
 
     logging.info("[PID HT-Humidity-%s] Starting %s", sensor, ThreadName)
 
-    if pid_ht_hum_relay_high[sensor] != 0:
+    if pid_ht_hum_relay_high[sensor]:
         relay_onoff(int(pid_ht_hum_relay_high[sensor]), 'off')
-    if pid_ht_hum_relay_low[sensor] != 0:
+    if pid_ht_hum_relay_low[sensor]:
         relay_onoff(int(pid_ht_hum_relay_low[sensor]), 'off')
 
     high = pid_ht_hum_set[sensor] + pid_ht_hum_set_buf[sensor]
@@ -1100,9 +1108,9 @@ def co2_monitor(ThreadName, sensor):
 
     logging.info("[PID CO2-%s] Starting %s", sensor, ThreadName)
 
-    if pid_co2_relay_high[sensor] != 0:
+    if pid_co2_relay_high[sensor]:
         relay_onoff(int(pid_co2_relay_high[sensor]), 'off')
-    if pid_co2_relay_low[sensor] != 0:
+    if pid_co2_relay_low[sensor]:
         relay_onoff(int(pid_co2_relay_low[sensor]), 'off')
 
     high = pid_co2_set[sensor] + pid_co2_set_buf[sensor]
