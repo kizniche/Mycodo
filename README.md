@@ -265,7 +265,7 @@ See [/3.5/README.md](3.5/README.md) for progress updates
 <a name="soft-brief"></a>
 ## Software
 
-The following software is required
+The following software is required for version 3.0 (stable)
 
 * apache2
 * git
@@ -280,7 +280,7 @@ The following software is required
 * subversion
 * wget
 
-Note: v3.5 replaces mysql with sqlite
+Note: version 3.5 replaces mysql with sqlite
 
 <a name="license"></a>
 ## License
