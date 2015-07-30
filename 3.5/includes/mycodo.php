@@ -684,7 +684,7 @@ if (isset($output_error)) {
                                 </select>
                             </td>
                             <td rowspan=2>
-                                <input style="width: 3em;" type="number" step="any" value="<?php echo $pid_t_temp_set_buf[$i]; ?>" maxlength=4 size=2 name="SetT<?php echo $i; ?>TempSetBuf" title="This is the zone surounding the Set Point that the PID controller will not activate relays (i.e. regulation is paused). For example, if the Set Point is 30°C and the Buffer is 3°C, the Relay High will only activate once the temperature rises above 33°C to lower the temperature and the Relay Low will only activate once the temperature falls below 27°C."/> °C
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_set_buf[$i]; ?>" maxlength=4 size=2 name="SetT<?php echo $i; ?>TempSetBuf" title="This is the zone surounding the Set Point that the PID controller will not activate relays (i.e. regulation is paused). For example, if the Set Point is 30°C and the Buffer is 3°C, the Relay High will only activate once the temperature rises above 33°C to lower the temperature and the Relay Low will only activate once the temperature falls below 27°C."/> °C
                             </td>
                             <td rowspan=2>
                                 <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_t_temp_period[$i]; ?>" name="SetT<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/> sec
@@ -835,7 +835,7 @@ if (isset($output_error)) {
                                     </select>
                                 </td>
                                 <td rowspan=2>
-                                    <input style="width: 3em;" type="number" step="any" value="<?php echo $pid_ht_temp_set_buf[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>TempSetBuf" title="This is the zone surounding the Set Point that the PID controller will not activate relays (i.e. regulation is paused). For example, if the Set Point is 30°C and the Buffer is 3°C, the Relay High will only activate once the temperature rises above 33°C, to lower the temperature, and the Relay Low will only activate once the temperature falls below 27°C, to increase the temperature."/> °C
+                                    <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_temp_set_buf[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>TempSetBuf" title="This is the zone surounding the Set Point that the PID controller will not activate relays (i.e. regulation is paused). For example, if the Set Point is 30°C and the Buffer is 3°C, the Relay High will only activate once the temperature rises above 33°C, to lower the temperature, and the Relay Low will only activate once the temperature falls below 27°C, to increase the temperature."/> °C
                                 </td>
                                 <td rowspan=2>
                                     <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_temp_period[$i]; ?>" name="SetHT<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/> sec
@@ -902,10 +902,10 @@ if (isset($output_error)) {
                                     </select>
                                 </td>
                                 <td rowspan=2>
-                                    <input style="width: 3em;" type="number" step="any" value="<?php echo $pid_ht_hum_set_buf[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>HumSetBuf" title="This is the zone surounding the Set Point that the PID controller will not activate relays (i.e. regulation is paused). For example, if the Set Point is 60% and the Buffer is 5%, the Relay High will only activate once the humidity rises above 65%, to lower the humidity, and the Relay Low will only activate once the humidity falls below 55%, to raise the humidity."/> %
+                                    <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_set_buf[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>HumSetBuf" title="This is the zone surounding the Set Point that the PID controller will not activate relays (i.e. regulation is paused). For example, if the Set Point is 60% and the Buffer is 5%, the Relay High will only activate once the humidity rises above 65%, to lower the humidity, and the Relay Low will only activate once the humidity falls below 55%, to raise the humidity."/> %
                                 </td>
                                 <td rowspan=2>
-                                    <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_hum_period[$i]; ?>" name="SetHT<?php echo $i; ?>HumPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another humidity reading and applying the PID"/>
+                                    <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_hum_period[$i]; ?>" name="SetHT<?php echo $i; ?>HumPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another humidity reading and applying the PID"/> sec
                                 </td>
                                 <td>
                                     ▼ <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_ht_hum_relay_high[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>HumRelayHigh" title="This relay is used to decrease humidity. When the measured humidity reaches the upper set buffer (Upper Buffer = Set Point + Buffer) then the PID controller will modulate this relay until the humidity falls below it."/>
