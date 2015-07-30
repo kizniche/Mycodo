@@ -904,7 +904,7 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
                             if sensor_t_read_temp_c[sensor] > high:
                                 logging.debug("[PID T-Temperature-%s] %.1f°C now >= %.1f°C high, wait %s seconds", sensor, sensor_t_read_temp_c[sensor], high, pid_t_temp_period[sensor])
 
-                            timerTemp = int(time.time()) + pid_ht_temp_period[sensor]
+                            timerTemp = int(time.time()) + pid_t_temp_period[sensor]
 
                     else:
                         logging.debug("[PID T-Temperature-%s] %.1f°C low <= %.1f°C now <= %.1f°C high, wait %s seconds", sensor, low, sensor_t_read_temp_c[sensor], high, pid_t_temp_period[sensor])
