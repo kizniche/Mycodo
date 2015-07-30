@@ -35,6 +35,7 @@ sql_database = '/var/www/mycodo/config/mycodo.db'
 # GPIO pins (BCM numbering) and name of devices attached to relay
 relay_pin = [0] * 9
 relay_trigger = [0] * 9
+relay_start_state = [0] * 9
 
 def ReadSQL():
     global relay_pin

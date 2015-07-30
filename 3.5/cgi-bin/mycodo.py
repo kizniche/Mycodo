@@ -77,6 +77,7 @@ relay_num = None
 relay_pin = [0] * 9
 relay_name = [0] * 9
 relay_trigger = [0] * 9
+relay_start_state = [0] * 9
 
 # Temperature & Humidity Sensors
 sensor_t_num = 0
@@ -1607,6 +1608,7 @@ def read_sql():
     global relay_name
     global relay_pin
     global relay_trigger
+    global relay_start_state
 
     global factorHumSeconds
     global factorTempSeconds
@@ -1650,7 +1652,7 @@ def read_sql():
         return 0
 
     # Begin setting global variables from SQL database values
-    cur.execute('SELECT Id, Name, Pin, Trigger FROM Relays')
+    cur.execute('SELECT Id, Name, Pin, Trigger, Start_State FROM Relays')
     if verbose:
         print "Table: Relays"
     for row in cur :
@@ -1659,6 +1661,7 @@ def read_sql():
         relay_name[row[0]] = row[1]
         relay_pin[row[0]] = row[2]
         relay_trigger[row[0]] = row[3]
+        relay_start_state[row[0]] = row[4]
 
     cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, Temp_Relay_High, Temp_Relay_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Set_Buffer, Temp_Period, Temp_P_High, Temp_I_High, Temp_D_High, Temp_P_Low, Temp_I_Low, Temp_D_Low FROM TSensor')
     if verbose:

@@ -590,7 +590,7 @@ if (isset($output_error)) {
                                 echo '<td align=center>GPIO<br>Pin</td>';
                             }
                             ?>
-                            <td>Log Interval<br>(seconds)</td>
+                            <td>Log<br>Interval</td>
                             <td>Activate<br>Logging</td>
                             <td>Activate<br>Graphing</td>
                             <td rowspan="2" style="padding: 0 2em;">
@@ -627,7 +627,7 @@ if (isset($output_error)) {
                                 
                             </td>
                             <td>
-                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_t_period[$i]; ?>" name="sensort<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
+                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_t_period[$i]; ?>" name="sensort<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/> sec
                             </td>
                             <td>
                                 <input type="checkbox" name="sensort<?php echo $i; ?>activated" value="1" <?php if ($sensor_t_activated[$i] == 1) echo 'checked'; ?>>
@@ -645,7 +645,7 @@ if (isset($output_error)) {
                             <td>PID<br>Set Point</td>
                             <td>PID<br>Regulate</td>
                             <td>PID<br>Buffer</td>
-                            <td>Read Interval<br>(seconds)</td>
+                            <td>Sensor Read<br>Interval</td>
                             <td>Relay<br>No.</td>
                             <td>P</td>
                             <td>I</td>
@@ -687,7 +687,7 @@ if (isset($output_error)) {
                                 <input style="width: 3em;" type="number" step="any" value="<?php echo $pid_t_temp_set_buf[$i]; ?>" maxlength=4 size=2 name="SetT<?php echo $i; ?>TempSetBuf" title="This is the zone surounding the Set Point that the PID controller will not activate relays (i.e. regulation is paused). For example, if the Set Point is 30°C and the Buffer is 3°C, the Relay High will only activate once the temperature rises above 33°C to lower the temperature and the Relay Low will only activate once the temperature falls below 27°C."/> °C
                             </td>
                             <td rowspan=2>
-                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_t_temp_period[$i]; ?>" name="SetT<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/>
+                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_t_temp_period[$i]; ?>" name="SetT<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/> sec
                             </td>
                             <td>
                                 ▼ <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_t_temp_relay_high[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempRelayHigh" title="This relay is used to decrease temperature. When the measured temperature reaches the upper set buffer (Upper Buffer = Set Point + Buffer) then the PID controller will modulate this relay until the temperature falls below it."/>
@@ -740,7 +740,7 @@ if (isset($output_error)) {
                                 <td>Sensor<br>Name</td>
                                 <td>Sensor<br>Device</td>
                                 <td>GPIO<br>Pin</td>
-                                <td>Log Interval<br>(seconds)</td>
+                                <td>Log<br>Interval</td>
                                 <td>Activate<br>Logging</td>
                                 <td>Activate<br>Graphing</td>
                                 <td rowspan=2 style="padding: 0 1.5em;">
@@ -778,7 +778,7 @@ if (isset($output_error)) {
                                     <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_ht_pin[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>pin" title="This is the GPIO pin connected to the DHT sensor"/>
                                 </td>
                                 <td>
-                                    <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_ht_period[$i]; ?>" name="sensorht<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
+                                    <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_ht_period[$i]; ?>" name="sensorht<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/> sec
                                 </td>
                                 <td>
                                     <input type="checkbox" name="sensorht<?php echo $i; ?>activated" value="1" <?php if ($sensor_ht_activated[$i] == 1) echo 'checked'; ?>>
@@ -796,7 +796,7 @@ if (isset($output_error)) {
                                 <td>PID<br>Set Point</td>
                                 <td>PID<br>Regulate</td>
                                 <td>PID<br>Buffer</td>
-                                <td>Read Interval<br>(seconds)</td>
+                                <td>Sensor Read<br>Interval</td>
                                 <td>Relay<br>No.</td>
                                 <td>P</td>
                                 <td>I</td>
@@ -838,7 +838,7 @@ if (isset($output_error)) {
                                     <input style="width: 3em;" type="number" step="any" value="<?php echo $pid_ht_temp_set_buf[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>TempSetBuf" title="This is the zone surounding the Set Point that the PID controller will not activate relays (i.e. regulation is paused). For example, if the Set Point is 30°C and the Buffer is 3°C, the Relay High will only activate once the temperature rises above 33°C, to lower the temperature, and the Relay Low will only activate once the temperature falls below 27°C, to increase the temperature."/> °C
                                 </td>
                                 <td rowspan=2>
-                                    <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_temp_period[$i]; ?>" name="SetHT<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/>
+                                    <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_temp_period[$i]; ?>" name="SetHT<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/> sec
                                 </td>
 
                                 <td>
@@ -958,7 +958,7 @@ if (isset($output_error)) {
                             <td>Sensor<br>Name</td>
                             <td>Sensor<br>Device</td>
                             <td>GPIO<br>Pin</td>
-                            <td>Log Interval<br>(seconds)</td>
+                            <td>Log<br>Interval</td>
                             <td>Activate<br>Logging</td>
                             <td>Activate<br>Graphing</td>
                             <td rowspan="2" style="padding: 0 2em;">
@@ -998,7 +998,7 @@ if (isset($output_error)) {
                                 ?>
                             </td>
                             <td>
-                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_co2_period[$i]; ?>" name="sensorco2<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/>
+                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_co2_period[$i]; ?>" name="sensorco2<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/> sec
                             </td>
                             <td>
                                 <input type="checkbox" name="sensorco2<?php echo $i; ?>activated" value="1" <?php if ($sensor_co2_activated[$i] == 1) echo 'checked'; ?>>
@@ -1016,7 +1016,7 @@ if (isset($output_error)) {
                             <td>PID<br>Set Point</td>
                             <td>PID<br>Regulate</td>
                             <td>PID<br>Buffer</td>
-                            <td>Read Interval<br>(seconds)</td>
+                            <td>Sensor Read<br>Interval</td>
                             <td>Relay<br>No.</td>
                             <td>P</td>
                             <td>I</td>
@@ -1058,7 +1058,7 @@ if (isset($output_error)) {
                                 <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_set_buf[$i]; ?>" maxlength=4 size=2 name="Set<?php echo $i; ?>Co2SetBuf" title="This is the zone surounding the Set Point that the PID controller will not activate relays (i.e. regulation is paused). For example, if the Set Point is 2000 ppm and the Buffer is 250 ppm, the Relay High will only activate once the CO2 rises above 2250 ppm, to lower the CO2, and the Relay Low will only activate once the CO2 falls below 1750, to increase the CO2."/> ppm
                             </td>
                             <td rowspan=2>
-                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_co2_period[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Co2Period" title="This is the number of seconds to wait after the relay has been turned off before taking another CO2 reading and applying the PID"/>
+                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_co2_period[$i]; ?>" maxlength=4 size=1 name="Set<?php echo $i; ?>Co2Period" title="This is the number of seconds to wait after the relay has been turned off before taking another CO2 reading and applying the PID"/> sec
                             </td>
                             <td>
                                 ▼ <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $pid_co2_relay_high[$i]; ?>" maxlength=1 size=1 name="Set<?php echo $i; ?>Co2RelayHigh" title="This relay is used to decrease CO2. When the measured CO2 reaches the upper set buffer (Upper Buffer = Set Point + Buffer) then the PID controller will modulate this relay until the CO2 falls below it."/>
