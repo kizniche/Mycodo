@@ -215,7 +215,6 @@ camera_light = None
 server = None
 client_que = '0'
 client_var = None
-terminate = False
 
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
@@ -279,8 +278,6 @@ class ComServer(rpyc.Service):
         return "1 Test1 Test2"
     def exposed_Terminate(self, remoteCommand):
         global client_que
-        global terminate
-        terminate = True
         client_que = 'TerminateServer'
         logging.info("[Client command] terminate threads and shut down")
         return 1
@@ -442,22 +439,26 @@ def menu():
 # Read sensors, modify relays based on sensor values, write sensor/relay
 # logs, and receive/execute commands from mycodo-client.py
 def daemon(output, log):
+    global pid_t_temp_active
     global pid_t_temp_alive
     global pid_t_temp_down
     global pid_t_temp_up
+
+    global pid_ht_temp_active
     global pid_ht_temp_alive
     global pid_ht_temp_down
     global pid_ht_temp_up
+
+    global pid_ht_hum_active
     global pid_ht_hum_alive
     global pid_ht_hum_down
     global pid_ht_hum_up
+
+    global pid_co2_active
     global pid_co2_alive
     global pid_co2_down
     global pid_co2_up
-    global pid_t_temp_active
-    global pid_ht_temp_active
-    global pid_ht_hum_active
-    global pid_co2_active
+    
     global change_sensor_log
     global server
     global client_que
@@ -466,6 +467,7 @@ def daemon(output, log):
     timerHTSensorLog  = [0] * 5
     timerCo2SensorLog  = [0] * 5
 
+    # Set log level based on startup argument
     if (log == 'warning'):
         logging.getLogger().setLevel(logging.WARNING)
     elif (log == 'info'):
@@ -481,6 +483,7 @@ def daemon(output, log):
         logging.getLogger('').addHandler(console)
 
     logging.info("[Daemon] Daemon Started")
+
     logging.info("[Daemon} Communication server thread starting")
     ct = ComThread()
     ct.daemon = True
@@ -490,8 +493,7 @@ def daemon(output, log):
     logging.info("[Daemon] Reading SQL database and initializing variables")
     read_sql()
 
-    # Initial sensor readings
-    logging.info("[Daemon] Conducting initial sensor readings from %s T, %s HT, and %s CO2 sensors", sum(sensor_t_activated), sum(sensor_ht_activated), sum(sensor_co2_activated))
+    logging.info("[Daemon] Conducting initial sensor readings: %s T, %s HT, and %s CO2", sum(sensor_t_activated), sum(sensor_ht_activated), sum(sensor_co2_activated))
 
     for i in range(1, sensor_t_num+1):
         if sensor_t_device[i] != 'Other' and sensor_t_activated[i] == 1:
@@ -507,7 +509,8 @@ def daemon(output, log):
 
     logging.info("[Daemon] Initial sensor readings complete")
 
-    timerLogBackup = int(time.time()) + 21600 # 21600 seconds = 6 hours
+    # How often to backup all logs to SD card
+    timerLogBackup = int(time.time()) + 21600  # 21600 seconds = 6 hours
 
     for i in range(1, 5):
         timerTSensorLog[i] = int(time.time()) + sensor_t_period[i]
@@ -609,23 +612,50 @@ def daemon(output, log):
                             time.sleep(0.1)
                 change_sensor_log = 0
             elif client_que == 'TerminateServer':
-                logging.info("[Daemon] Turning off relays")
-                Relays_Off()
                 logging.info("[Daemon] Backing up logs")
                 mycodoLog.Concatenate_Logs()
+
+                logging.info("[Daemon] Commanding all PIDs to turn off")
                 pid_t_temp_alive = [0] * 5
+                pid_ht_temp_alive =  [0] * 5
+                pid_ht_hum_alive =  [0] * 5
+                pid_co2_alive =  [0] * 5
+
                 for t in threads_t_t:
                     t.join()
-                pid_ht_temp_alive = [0] * 5
                 for t in threads_ht_t:
                     t.join()
-                pid_ht_hum_alive = [0] * 5
                 for t in threads_ht_h:
                     t.join()
-                pid_co2_alive = [0] * 5
                 for t in threads_co2:
                     t.join()
                 server.close()
+
+                logging.info("[Daemon] Waiting for all PIDs to turn off")
+                for i in range(1, 5):
+                    if pid_t_temp_or[i] == 0:
+                        while pid_t_temp_alive[i] == 0:
+                            time.sleep(0.1)
+
+                for i in range(1, 5):
+                    if pid_ht_temp_or[i] == 0:
+                        while pid_ht_temp_alive[i] == 0:
+                            time.sleep(0.1)
+
+                for i in range(1, 5):
+                    if pid_ht_hum_or[i] == 0:
+                        while pid_ht_hum_alive[i] == 0:
+                            time.sleep(0.1)
+
+                for i in range(1, 5):
+                    if pid_co2_or[i] == 0:
+                        while pid_co2_alive[i] == 0:
+                            time.sleep(0.1)
+                logging.info("[Daemon] All PIDs have turned off")
+
+                logging.info("[Daemon] Turning off all relays")
+                Relays_Off()
+
                 logging.info("[Daemon] Exiting Python")
                 return 0
             elif client_que == 'TimerChange':
@@ -795,14 +825,17 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
 
     logging.info("[PID T-Temperature-%s] Starting %s", sensor, ThreadName)
 
+    # Turn activated PID relays off
     if pid_t_temp_relay_high[sensor] != 0:
         relay_onoff(int(pid_t_temp_relay_high[sensor]), 'off')
     if pid_t_temp_relay_low[sensor] != 0:
         relay_onoff(int(pid_t_temp_relay_low[sensor]), 'off')
 
+    # Add buffer to PID set point to create a low and high margin
     high = pid_t_temp_set[sensor] + pid_t_temp_set_buf[sensor]
     low = pid_t_temp_set[sensor] - pid_t_temp_set_buf[sensor]
 
+    # Create a low and high PID from buffer
     p_temp_high = PID(pid_t_temp_p_high[sensor], pid_t_temp_i_high[sensor], pid_t_temp_d_high[sensor])
     p_temp_high.setPoint(high)
     p_temp_low = PID(pid_t_temp_p_low[sensor], pid_t_temp_i_low[sensor], pid_t_temp_d_low[sensor])
@@ -1219,7 +1252,7 @@ def read_t_sensor(sensor):
             return 0
 
         for i in range(0, t_read_tries):
-            if terminate:
+            if not pid_t_temp_alive[sensor]:
                 return 0
 
             # Begin T Sensor
@@ -1238,7 +1271,7 @@ def read_t_sensor(sensor):
 
         
         for i in range(0, t_read_tries): # Multiple attempts to get first reading
-            if terminate:
+            if not pid_t_temp_alive[sensor]:
                 return 0
             
             # Begin T Sensor
@@ -1343,7 +1376,7 @@ def read_ht_sensor(sensor):
             return 0
 
         for i in range(0, ht_read_tries):
-            if terminate:
+            if not pid_ht_temp_alive[sensor] and not pid_ht_hum_alive[sensor]:
                 return 0
 
             # Begin HT Sensor
@@ -1362,7 +1395,8 @@ def read_ht_sensor(sensor):
 
         
         for i in range(0, ht_read_tries): # Multiple attempts to get first reading
-            if terminate:
+            logging.debug("[TEST Sensor-%s] %s %s %s", sensor, pid_ht_temp_alive[sensor], pid_ht_hum_alive[sensor], (not pid_ht_temp_alive[sensor] and not pid_ht_hum_alive[sensor]))
+            if not pid_ht_temp_alive[sensor] and not pid_ht_hum_alive[sensor]:
                 return 0
             
             # Begin HT Sensor
@@ -1441,7 +1475,7 @@ def read_co2_sensor(sensor):
         # Begin K30 Sensor
         if sensor_co2_device[sensor] == 'K30':
             for i in range(1, co2_read_tries): # Multiple attempts to get first reading
-                if terminate:
+                if not pid_co2_alive[sensor]:
                     return 0
                 co22 = read_K30(sensor)
                 if co22 != None:
@@ -1458,7 +1492,7 @@ def read_co2_sensor(sensor):
         # Begin K30 Sensor
         if sensor_co2_device[sensor] == 'K30':
             for i in range(0, co2_read_tries): # Multiple attempts to get second reading
-                if terminate:
+                if not pid_co2_alive[sensor]:
                     return 0
                 co2 = read_K30(sensor)
                 if co2 != None:
