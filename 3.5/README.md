@@ -290,7 +290,7 @@ Because systems will vary (e.g. airspace volume to regulate, degree of insulatio
 
 These example setups are meant to illustrate how to configure regulation in particular directions, and not how to properly configure your P, I, and D variables. There are a number of online resources that discuss techniques and methods that have been developed to determine ideal PID values, and since here are no universal values that will work for every system, it is recommended to conduct your own research to understand and implement them.
 
-Provided merely as an example of the variance of PID values between sensors and environments, one of my setups had temperature PID values (up regulation) of P=30, I=1.0, and D=0.5, and humidity PID values (up regulation) of P=1.0, I=0.2, and D=0.5. Furthermore, these values may not have been optimal but they worked well for the conditions of my environmental chamber.
+Provided merely as an example of the variance of PID values, one of my setups had temperature PID values (up regulation) of P=30, I=1.0, and D=0.5, and humidity PID values (up regulation) of P=1.0, I=0.2, and D=0.5. Furthermore, these values may not have been optimal but they worked well for the conditions of my environmental chamber.
 
 #### High-Humidity Regulation
 
