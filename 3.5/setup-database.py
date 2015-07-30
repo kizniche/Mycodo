@@ -23,6 +23,7 @@
 #  Contact at kylegabriel.com
 
 import getopt
+import getpass
 import os.path
 import re
 import sqlite3
@@ -226,8 +227,8 @@ def add_user(db):
 
     pass_checks = True
     while pass_checks:
-        user_password = raw_input('Password: ')
-        user_password_again = raw_input('Password (again): ')
+        user_password = getpass.getpass('Password: ')
+        user_password_again = getpass.getpass('Password (again): ')
         if user_password != user_password_again:
             print "Passwords don't match"
         else:
@@ -274,8 +275,8 @@ def password_change(db):
             pass_checks = False
 
     while 1:
-        user_password = raw_input('New password: ')
-        user_password_again = raw_input('New password (again): ')
+        user_password = getpass.getpass('New password: ')
+        user_password_again = getpass.getpass('New password (again): ')
         if user_password != user_password_again:
             print "Passwords don't match"
         elif test_password(user_password):
@@ -400,8 +401,8 @@ def create_rows_columns_user():
     pass_checks = True
     print "\nPassword for user 'admin' (minimum 6 charachters in length)"
     while pass_checks:
-        admin_password = raw_input('Password: ')
-        admin_password_again = raw_input('Password (again): ')
+        admin_password = getpass.getpass('Password: ')
+        admin_password_again = getpass.getpass('Password (again): ')
         if admin_password != admin_password_again:
             print "Passwords don't match"
         elif test_password(admin_password):
@@ -431,8 +432,8 @@ def create_rows_columns_user():
         pass_checks = True
         print "\nPassword for user '" + user_name + "'"
         while pass_checks:
-            user_password = raw_input('password: ')
-            user_password_again = raw_input('password (again): ')
+            user_password = getpass.getpass('password: ')
+            user_password_again = getpass.getpass('password (again): ')
             if user_password != user_password_again:
                 print "Passwords don't match"
             elif test_password(user_password):
@@ -456,8 +457,8 @@ def create_rows_columns_user():
         pass_checks = True
         print "\nPassword for user 'guest'"
         while pass_checks:
-            user_password = raw_input('password: ')
-            user_password_again = raw_input('password (again): ')
+            user_password = getpass.getpass('password: ')
+            user_password_again = getpass.getpass('password (again): ')
             if user_password != user_password_again:
                 print "Passwords don't match"
             elif test_password(user_password):
