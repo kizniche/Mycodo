@@ -829,7 +829,8 @@ def daemon(output, log):
 def t_sensor_temperature_monitor(ThreadName, sensor):
     global pid_t_temp_alive
     timerTemp = 0
-    PIDTemp = 0
+    PIDTempHigh = 0
+    PIDTempLow = 0
 
     logging.info("[PID T-Temperature-%s] Starting %s", sensor, ThreadName)
 
@@ -1014,7 +1015,8 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
 def ht_sensor_humidity_monitor(ThreadName, sensor):
     global pid_ht_hum_alive
     timerHum = 0
-    PIDHum = 0
+    PIDHumHigh = 0
+    PIDHumLow = 0
 
     logging.info("[PID HT-Humidity-%s] Starting %s", sensor, ThreadName)
 
@@ -1052,39 +1054,39 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
 
                 if read_ht_sensor(sensor) == 1:
 
-                    PIDTempHigh = abs(p_temp_high.update(float(sensor_ht_read_hum[sensor])))
-                    PIDTempLow = abs(p_temp_low.update(float(sensor_ht_read_hum[sensor])))
+                    PIDHumHigh = abs(p_hum_high.update(float(sensor_ht_read_hum[sensor])))
+                    PIDHumLow = abs(p_hum_low.update(float(sensor_ht_read_hum[sensor])))
 
                     if (sensor_ht_read_hum[sensor] > high) or (sensor_ht_read_hum[sensor] < low):
 
                         if (sensor_ht_read_hum[sensor] > high) and (pid_ht_hum_set_dir[sensor] < 1):
 
                             logging.debug("[PID HT-Humidity-%s] Humidity: %.1f°C now > %.1f°C set_high", sensor, sensor_ht_read_hum[sensor], high)
-                            logging.debug("[PID HT-Humidity-%s] PID = %.1f (seconds)", sensor, PIDTempHigh)
+                            logging.debug("[PID HT-Humidity-%s] PID = %.1f (seconds)", sensor, PIDHumHigh)
 
-                            if (PIDTempHigh > 0):
+                            if (PIDHumHigh > 0):
                                 rod = threading.Thread(target = relay_on_duration,
-                                    args = (pid_ht_hum_relay_high[sensor], round(PIDTempHigh,2), sensor,))
+                                    args = (pid_ht_hum_relay_high[sensor], round(PIDHumHigh,2), sensor,))
                                 rod.start()
-                            timerHum = int(time.time()) + int(PIDTempHigh) + int(pid_ht_hum_period[sensor])
+                            timerHum = int(time.time()) + int(PIDHumHigh) + int(pid_ht_hum_period[sensor])
 
                         elif (sensor_ht_read_hum[sensor] < low) and (pid_ht_hum_set_dir[sensor] > -1):
 
                             logging.debug("[PID HT-Humidity-%s] Humidity: %.1f°C now < %.1f°C set_low", sensor, sensor_ht_read_hum[sensor], low)
-                            logging.debug("[PID HT-Humidity-%s] PID = %.1f (seconds)", sensor, PIDTempLow)
+                            logging.debug("[PID HT-Humidity-%s] PID = %.1f (seconds)", sensor, PIDHumLow)
 
-                            if (PIDTempLow > 0):
+                            if (PIDHumLow > 0):
                                 rod = threading.Thread(target = relay_on_duration,
-                                    args = (pid_ht_hum_relay_low[sensor], round(PIDTempLow,2), sensor,))
+                                    args = (pid_ht_hum_relay_low[sensor], round(PIDHumLow,2), sensor,))
                                 rod.start()
-                            timerHum = int(time.time()) + int(PIDTempLow) + pid_ht_hum_period[sensor]
+                            timerHum = int(time.time()) + int(PIDHumLow) + pid_ht_hum_period[sensor]
 
                         else:
 
                             if sensor_ht_read_hum_c[sensor] < low:
-                                logging.debug("[PID HT-Temperature-%s] %.1f%% now <= %.1f%% low, wait %s seconds", sensor, sensor_ht_read_hum_c[sensor], low, pid_ht_hum_period[sensor])
+                                logging.debug("[PID HT-Humidity-%s] %.1f%% now <= %.1f%% low, wait %s seconds", sensor, sensor_ht_read_hum_c[sensor], low, pid_ht_hum_period[sensor])
                             if sensor_ht_read_hum_c[sensor] > high:
-                                logging.debug("[PID HT-Temperature-%s] %.1f%% now >= %.1f%% high, wait %s seconds", sensor, sensor_ht_read_hum_c[sensor], high, pid_ht_hum_period[sensor])
+                                logging.debug("[PID HT-Humidity-%s] %.1f%% now >= %.1f%% high, wait %s seconds", sensor, sensor_ht_read_hum_c[sensor], high, pid_ht_hum_period[sensor])
 
                             timerHum = int(time.time()) + pid_ht_hum_period[sensor]
 
@@ -1104,7 +1106,8 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
 def co2_monitor(ThreadName, sensor):
     global pid_co2_alive
     timerCO2 = 0
-    PIDCo2 = 0
+    PIDCO2High = 0
+    PIDCO2Low = 0
 
     logging.info("[PID CO2-%s] Starting %s", sensor, ThreadName)
 
@@ -1141,39 +1144,39 @@ def co2_monitor(ThreadName, sensor):
 
                 if read_co2_sensor(sensor) == 1:
 
-                    PIDTempHigh = abs(p_temp_high.update(float(sensor_co2_read_co2[sensor])))
-                    PIDTempLow = abs(p_temp_low.update(float(sensor_co2_read_co2[sensor])))
+                    PIDCO2High = abs(p_co2_high.update(float(sensor_co2_read_co2[sensor])))
+                    PIDCO2Low = abs(p_co2_low.update(float(sensor_co2_read_co2[sensor])))
 
                     if (sensor_co2_read_co2[sensor] > high) or (sensor_co2_read_co2[sensor] < low):
 
                         if (sensor_co2_read_co2[sensor] > high) and (pid_co2_set_dir[sensor] < 1):
 
                             logging.debug("[PID CO2-%s] CO2: %.1f ppm now > %.1f ppm set_high", sensor, sensor_co2_read_co2[sensor], high)
-                            logging.debug("[PID CO2-%s] PID = %.1f (seconds)", sensor, PIDTempHigh)
+                            logging.debug("[PID CO2-%s] PID = %.1f (seconds)", sensor, PIDCO2High)
 
-                            if (PIDTempHigh > 0):
+                            if (PIDCO2High > 0):
                                 rod = threading.Thread(target = relay_on_duration,
-                                    args = (pid_co2_relay_high[sensor], round(PIDTempHigh,2), sensor,))
+                                    args = (pid_co2_relay_high[sensor], round(PIDCO2High,2), sensor,))
                                 rod.start()
-                            timerCO2 = int(time.time()) + int(PIDTempHigh) + int(pid_co2_period[sensor])
+                            timerCO2 = int(time.time()) + int(PIDCO2High) + int(pid_co2_period[sensor])
 
                         elif (sensor_co2_read_co2[sensor] < low) and (pid_co2_set_dir[sensor] > -1):
 
                             logging.debug("[PID CO2-%s] CO2: %.1f ppm now < %.1f ppm set_low", sensor, sensor_co2_read_co2[sensor], low)
-                            logging.debug("[PID CO2-%s] PID = %.1f (seconds)", sensor, PIDTempLow)
+                            logging.debug("[PID CO2-%s] PID = %.1f (seconds)", sensor, PIDCO2Low)
 
-                            if (PIDTempLow > 0):
+                            if (PIDCO2Low > 0):
                                 rod = threading.Thread(target = relay_on_duration,
-                                    args = (pid_co2_relay_low[sensor], round(PIDTempLow,2), sensor,))
+                                    args = (pid_co2_relay_low[sensor], round(PIDCO2Low,2), sensor,))
                                 rod.start()
-                            timerCO2 = int(time.time()) + int(PIDTempLow) + pid_co2_period[sensor]
+                            timerCO2 = int(time.time()) + int(PIDCO2Low) + pid_co2_period[sensor]
 
                         else:
 
                             if sensor_co2_read_co2[sensor] < low:
-                                logging.debug("[PID HT-Temperature-%s] %.1f ppm now <= %.1f ppm low, wait %s seconds", sensor, sensor_co2_read_co2[sensor], low, pid_co2_period[sensor])
+                                logging.debug("[PID CO2-%s] %.1f ppm now <= %.1f ppm low, wait %s seconds", sensor, sensor_co2_read_co2[sensor], low, pid_co2_period[sensor])
                             if sensor_co2_read_co2[sensor] > high:
-                                logging.debug("[PID HT-Temperature-%s] %.1f ppm now >= %.1f ppm high, wait %s seconds", sensor, sensor_co2_read_co2[sensor], high, pid_co2_period[sensor])
+                                logging.debug("[PID CO2-%s] %.1f ppm now >= %.1f ppm high, wait %s seconds", sensor, sensor_co2_read_co2[sensor], high, pid_co2_period[sensor])
 
                             timerCO2 = int(time.time()) + pid_co2_period[sensor]
 
