@@ -58,14 +58,19 @@ if (!file_exists($mycodo_db)) exit("Mycodo database does not exist. Run '/var/ww
 require($install_path . "/includes/database.php"); // Initial SQL database load to variables
 
 // Output an error if the user guest attempts to submit certain forms
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_name'] == 'guest' &&
-    !isset($_POST['Graph']) && !isset($_POST['login'])) {
-    $output_error = 'guest';
-} else if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_name'] != 'guest') {
-    // Only non-guest users may perform these actions
-    require($install_path . "/includes/restricted.php"); // Configuration changes
-    require($install_path . "/includes/database.php"); // Reload SQLite database
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if ($_SESSION['user_name'] == 'guest' && !isset($_POST['Graph']) && !isset($_POST['login'])) {
+        $output_error = 'guest';
+    } else if ($_SESSION['user_name'] != 'guest') {
+        // Only non-guest users may perform these actions
+        require($install_path . "/includes/restricted.php"); // Configuration changes
+        require($install_path . "/includes/database.php"); // Reload SQLite database
+    }
+} else {
+    if ((isset($_GET['r']) && $_GET['r'] == 1) && 
+        (isset($_GET['tab']) && $_GET['tab'] == 'graph')) set_new_graph_id();
 }
+
 require($install_path . "/includes/public.php"); // Handle remaining forms
 // Retrieve graph-generation variables (must come after running public.php)
 $graph_id = get_graph_cookie('id');
@@ -73,6 +78,7 @@ $graph_type = get_graph_cookie('type');
 $graph_time_span = get_graph_cookie('span');
 
 delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete oldest)
+
 ?>
 <!doctype html>
 <html lang="en" class="no-js">
@@ -94,7 +100,9 @@ delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete olde
         }
     </script>
     <?php
-        if (isset($_GET['r']) && ($_GET['r'] == 1)) echo '<META HTTP-EQUIV="refresh" CONTENT="90">';
+    if (isset($_GET['r']) && ($_GET['r'] == 1)) {
+        echo '<META HTTP-EQUIV="refresh" CONTENT="' , $refresh_time , '">';
+    }
     ?>
 </head>
 <body>
@@ -157,7 +165,7 @@ if (isset($output_error)) {
                     ?><div style="display:inline-block; vertical-align:top;"><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On" name="" value="0">
                     </div>
                     <div style="display:inline-block; padding-left: 0.3em;">
-                        <div>Refresh <span style="font-size: 0.7em">(<?php echo $tab; ?>)</span></div>
+                        <div>Refresh<br><span style="font-size: 0.7em">(<?php echo $_GET['tab']; ?>)</span></div>
                     </div><?php
                 } else {
                     ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="" value="0"> Refresh<?php
@@ -278,9 +286,6 @@ if (isset($output_error)) {
             if (isset($_GET['page'])) {
                 echo '&page=' , $_GET['page'];
             }
-            if (isset($_GET['Refresh']) || isset($_POST['Refresh'])) {
-                echo '&Refresh=1';
-            }
             if (isset($_GET['r'])) {
                 echo '&r=' , $_GET['r'];
             } ?>" method="POST">
@@ -290,40 +295,16 @@ if (isset($output_error)) {
                         <div style="text-align: center; padding-bottom: 0.2em;">Auto Refresh</div>
                         <div style="text-align: center;"><?php
                             if (isset($_GET['r']) && $_GET['r'] == 1) {
-                                if (empty($page)) {
-                                    echo '<a href="?tab=graph">OFF</a> | <span class="on">ON</span>';
-                                } else {
-                                    echo '<a href="?tab=graph&page=' , $page , '">OFF</a> | <span class="on">ON</span>';
-                                }
+                                echo '<a href="?tab=graph">OFF</a> | <span class="on">ON</span>';
                             } else {
-                                if (empty($page)) {
-                                    echo '<span class="off">OFF</span> | <a href="?tab=graph&Refresh=1&r=1">ON</a>';
-                                } else {
-                                    echo '<span class="off">OFF</span> | <a href="?tab=graph&page=' , $page , '&Refresh=1&r=1">ON</a>';
-                                }
+                                echo '<span class="off">OFF</span> | <a href="?tab=graph&r=1">ON</a>';
                             }
                         ?>
                         </div>
                     </div>
                     <div style="float: left; padding: 0 2em 1em 0.5em;">
-                        <div style="text-align: center; padding-bottom: 0.2em;">Refresh</div>
-                        <div>
-                            <div style="float: left; padding-right: 0.1em;">
-                                <input type="button" onclick='location.href="?tab=graph<?php
-                                if (isset($_GET['page'])) {
-                                    if ($_GET['page']) {
-                                        echo '&page=' , $page;
-                                    }
-                                }
-                                if (isset($_GET['r'])) {
-                                    if ($_GET['r'] == 1) {
-                                        echo '&r=1';
-                                    }
-                                } ?>"' value="Page">
-                            </div>
-                            <div style="float: left;">
-                                <input type="submit" name="WriteSensorLog" value="Sensors" title="Reread all sensors and write logs">
-                            </div>
+                        <div style="float: left; padding-right: 0.1em;">
+                            <input type="submit" name="Refresh" value="Refresh&#10;Page" title="Refresh page">
                         </div>
                     </div>
                     <div style="float: left; padding: 0.2em 0 1em 0.5em">
@@ -445,18 +426,12 @@ if (isset($output_error)) {
                     </div>
                 </div>
                 <div style="float: left; padding: 0 2em 1em 0.5em;">
-                    <div style="text-align: center; padding-bottom: 0.2em;">Refresh</div>
-                    <div>
-                        <div style="float: left; padding-right: 0.1em;">
-                            <input type="submit" name="Refresh" value="Page" title="Refresh page">
-                        </div>
-                        <div style="float: left;">
-                            <input type="submit" name="WriteSensorLog" value="Sensors" title="Reread all sensors and write logs">
-                        </div>
+                    <div style="float: left; padding-right: 0.1em;">
+                        <input type="submit" name="Refresh" value="Refresh&#10;Page" title="Refresh page">
                     </div>
                 </div>
 
-                <div style="float: left; margin: 0 0.5em; padding: 1.2em 0;">
+                <div style="float: left; margin: 0 0.5em; padding: 0.5em 0;">
                     <div style="float: left; padding-right: 1em;">
                         <input type="submit" name="ChangeNoTSensors" value="Set">
                         <select name="numtsensors">
@@ -486,7 +461,7 @@ if (isset($output_error)) {
                     <div style="clear: both;"></div>
                 </div>
 
-                <div style="float: left; margin: 0 0.5em; padding: 1.2em 0;">
+                <div style="float: left; margin: 0 0.5em; padding: 0.5em 0;">
                     <div style="float: left; padding-right: 1em;">
                         <input type="submit" name="ChangeNoHTSensors" value="Set">
                         <select name="numhtsensors">
@@ -516,7 +491,7 @@ if (isset($output_error)) {
                     <div style="clear: both;"></div>
                 </div>
 
-                <div style="float: left; margin: 0 0.5em; padding: 1.2em 0;">
+                <div style="float: left; margin: 0 0.5em; padding: 0.5em 0;">
                     <div style="float: left; padding-right: 1em;">
                         <input type="submit" name="ChangeNoCo2Sensors" value="Set">
                         <select name="numco2sensors">
@@ -1435,60 +1410,78 @@ if (isset($output_error)) {
             }
             ?>
 
-            <form action="?tab=camera" method="POST">
-            <div style="float: left; padding: 0.5em;">
-                <button name="CaptureStill" type="submit" value="">Capture Still</button>
-            </div>
+            <form action="?tab=camera<?php
+            if (isset($_GET['page'])) {
+                echo '&page=' , $_GET['page'];
+            }
+            if (isset($_GET['r'])) {
+                echo '&r=' , $_GET['r'];
+            } ?>" method="POST">
 
-            <div style="clear: both;"></div>
-
-            <div>
-                <div style="float: left; padding: 0.5em;">
-                    <?php
-                    if (!file_exists($lock_timelapse)) {
-                        echo '<button name="start-timelapse" type="submit" value="">Start</button>';
-                    } else {
-                        echo '<button name="stop-timelapse" type="submit" value="">Stop</button>';
-                    }
+            <div style="float: left; padding-top: 0.5em;">
+                <div style="float: left; padding: 0 1.5em 1em 0.5em;">
+                    <div style="text-align: center; padding-bottom: 0.2em;">Auto Refresh</div>
+                    <div style="text-align: center;"><?php
+                        if (isset($_GET['r']) && $_GET['r'] == 1) {
+                            echo '<a href="?tab=camera">OFF</a> | <span class="on">ON</span>';
+                        } else {
+                            echo '<span class="off">OFF</span> | <a href="?tab=camera&r=1">ON</a>';
+                        }
                     ?>
+                    </div>
                 </div>
-                <div style="float: left; font-weight: bold; padding: 0.8em 1em 0.5em 0;">
-                    Timelapse <?php
-                    if (!file_exists($lock_timelapse)) {
-                        echo '(<span class="off">OFF</span>)';
-                    } else {
-                        echo '(<span class="on">ON</span>)';
-                    }
-                    ?>
-                </div>
-                <div style="float: left; padding: 0.65em 0.5em 0 0.5em;">
-                    Duration: <input style="width: 4em;" type="number" value="60" max="99999" min="1" name="timelapse_duration"> min
-                </div>
-                <div style="float: left; padding: 0.65em 0.5em 0 0.5em;">
-                   Run time: <input style="width: 4em;" type="number" value="600" max="99999" min="1" name="timelapse_runtime"> min
+                <div style="float: left; padding: 0 2em 1em 0.5em;">
+                    <div style="float: left; padding-right: 0.1em;">
+                        <input type="submit" name="Refresh" value="Refresh&#10;Page" title="Refresh page">
+                    </div>
                 </div>
             </div>
 
-            <div style="clear: both;"></div>
-
             <div>
-                <div style="float: left; padding: 0.5em;">
-                    <?php
-                    if (!file_exists($lock_mjpg_streamer)) {
-                        echo '<button name="start-stream" type="submit" value="">Start</button>';
-                    } else {
-                        echo '<button name="stop-stream" type="submit" value="">Stop</button>';
-                    }
-                    ?>
+                <div style="float: left; padding: 1em 1.5em;">
+                    <button name="CaptureStill" type="submit" value="">Capture Still</button>
                 </div>
-                <div style="float: left; font-weight: bold; padding: 0.8em 1em 0.5em 0;">
-                    Video Stream <?php
-                    if (!file_exists($lock_mjpg_streamer)) {
-                        echo '(<span class="off">OFF</span>)';
-                    } else {
-                        echo '(<span class="on">ON</span>)';
-                    }
-                    ?>
+
+                <div style="float: left; padding: 1em 1.5em;">
+                    <div>
+                        <?php
+                        if (!file_exists($lock_mjpg_streamer)) {
+                            echo '<button name="start-stream" type="submit" value="">Start</button>';
+                        } else {
+                            echo '<button name="stop-stream" type="submit" value="">Stop</button>';
+                        }
+                        ?> Video Stream <?php
+                        if (!file_exists($lock_mjpg_streamer)) {
+                            echo '(<span class="off">OFF</span>)';
+                        } else {
+                            echo '(<span class="on">ON</span>)';
+                        }
+                        ?>
+                    </div>
+                </div>
+
+                <div style="float: left; padding: 1em 1.5em;">
+                    <div>
+                        <?php
+                        if (!file_exists($lock_timelapse)) {
+                            echo '<button name="start-timelapse" type="submit" value="">Start</button>';
+                        } else {
+                            echo '<button name="stop-timelapse" type="submit" value="">Stop</button>';
+                        }
+                        ?> Timelapse <?php
+                        if (!file_exists($lock_timelapse)) {
+                            echo '(<span class="off">OFF</span>)';
+                        } else {
+                            echo '(<span class="on">ON</span>)';
+                        }
+                        ?>
+                    </div>
+                    <div style="padding: 0.65em 0.5em 0 0.5em;">
+                        Duration: <input style="width: 4em;" type="number" value="60" max="99999" min="1" name="timelapse_duration"> min
+                    </div>
+                    <div style="padding: 0.65em 0.5em 0 0.5em;">
+                       Run time: <input style="width: 4em;" type="number" value="600" max="99999" min="1" name="timelapse_runtime"> min
+                    </div>
                 </div>
             </div>
 
@@ -1913,6 +1906,20 @@ if (isset($output_error)) {
                 </div>
                 <div class="adv">
                     <input type="submit" value="Save">
+                </div>
+                </form>
+            </div>
+
+            <div class="advanced">
+                <form method="post" action="?tab=settings" name="interface">
+                <div style="font-weight: bold; padding: 0.5em 0;">
+                    Web Interface
+                </div>
+                <div class="adv">
+                    Automatic refresh time <input style="width: 4em;" type="number" min="1" max="999999" value="<?php echo $refresh_time; ?>" maxlength=4 size=1 name="refresh_time" title="The number of seconds between automatic page refreshing."/>
+                </div>
+                <div class="adv">
+                    <button name="ChangeInterface" type="submit" value="">Save</button>
                 </div>
                 </form>
             </div>

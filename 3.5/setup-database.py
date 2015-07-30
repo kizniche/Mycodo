@@ -344,7 +344,7 @@ def create_all_tables_mycodo():
     cur.execute("CREATE TABLE CameraStill (Relay INT, Timestamp INT, Display_Last INT, Extra_Parameters TEXT)")
     cur.execute("CREATE TABLE CameraStream (Relay INT, Extra_Parameters TEXT)")
     cur.execute("CREATE TABLE CameraTimelapse (Relay INT, Path TEXT, Prefix TEXT, File_Timestamp INT, Display_Last INT, Extra_Parameters TEXT)")
-    cur.execute("CREATE TABLE Misc (Dismiss_Notification INT)")
+    cur.execute("CREATE TABLE Misc (Dismiss_Notification INT, Refresh_Time INT)")
     conn.close()
     #
     # Add set-point buffer for addition of both-way PID
@@ -369,7 +369,7 @@ def create_rows_columns_mycodo():
     cur.execute("INSERT INTO CameraStill VALUES(0, 1, 1, '')")
     cur.execute("INSERT INTO CameraStream VALUES(0, '')")
     cur.execute("INSERT INTO CameraTimelapse VALUES(0, '/var/www/mycodo/camera-timelapse', 'Timelapse-', 1, 1, '')")
-    cur.execute("INSERT INTO Misc VALUES(0)")
+    cur.execute("INSERT INTO Misc VALUES(0, 300)")
     conn.commit()
     cur.close()
 

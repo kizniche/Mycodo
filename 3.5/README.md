@@ -272,7 +272,7 @@ The proportional path takes the error (the difference between the actual positio
 
 #### I
 
-The integral path takes the error and multiplies it by K<sub>i</sub>, then integrates it (K<sub>i</sub> · 1/s). As the error changes over time, the integral will continually sum it and multiply it by the constant K<sub>i</sub>. It integral is used to remove constant errors in the control system. If using P alone produces an output that allows a constant error, the integral will increase the output until the error decreases.
+The integral path takes the error and multiplies it by K<sub>i</sub>, then integrates it (K<sub>i</sub> · 1/s). As the error changes over time, the integral will continually sum it and multiply it by the constant K<sub>i</sub>. The integral is used to remove perpetual error in the control system. If using P alone produces an output that produces a perpetual error (if the measured sensor value never reaches the set point), the integral will increase the output until the error decreases and the set point is reached.
 
 #### D
 

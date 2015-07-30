@@ -166,3 +166,8 @@ while ($row = $results->fetchArray()) {
     $timelapse_display_last = $row[4];
     $timelapse_extra_parameters = $row[5];
 }
+
+$results = $db->query('SELECT Refresh_Time FROM Misc');
+while ($row = $results->fetchArray()) {
+    $refresh_time = $row[0];
+}

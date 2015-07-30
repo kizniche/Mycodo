@@ -345,6 +345,13 @@ if (isset($_POST['ChangeTimelapse'])) {
     shell_exec("$mycodo_client --sqlreload 0");
 }
 
+// Change interface settings
+if (isset($_POST['ChangeInterface'])) {
+    $stmt = $db->prepare("UPDATE Misc SET Refresh_Time=:refreshtime");
+    $stmt->bindValue(':refreshtime', (int)$_POST['refresh_time'], SQLITE3_INTEGER);
+    $stmt->execute();
+}
+
 for ($p = 1; $p <= 8; $p++) {
     // Send client command to turn relay on or off
     if (isset($_POST['R' . $p])) {
