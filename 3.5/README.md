@@ -36,7 +36,7 @@ sqlite3
 
 > [DHT11, DHT22 and AM2302](https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring)
 
-### CO2
+### CO<sub>2</sub>
 
 > [K30](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip)
 
@@ -288,7 +288,9 @@ Because systems will vary (e.g. airspace volume to regulate, degree of insulatio
 
 ### Quick Set-up Examples
 
-These example setups are meant to illustrate how to configure regulation in particular directions, and not how to properly configure your P, I, and D variables. There are a number of techniques and methods that have been developed to determine ideal PID setups, and it is recommended to conduct your own research to understand and implement them.
+These example setups are meant to illustrate how to configure regulation in particular directions, and not how to properly configure your P, I, and D variables. There are a number of online resources that discuss techniques and methods that have been developed to determine ideal PID values, and since here are no universal values that will work for every system, it is recommended to conduct your own research to understand and implement them.
+
+Provided merely as an example of the variance of PID values between sensors and environments, one of my setups had temperature PID values (up regulation) of P=30, I=1.0, and D=0.5, and humidity PID values (up regulation) of P=1.0, I=0.2, and D=0.5. Furthermore, these values may not have been optimal but they worked well for the conditions of my environmental chamber.
 
 #### High-Humidity Regulation
 
@@ -326,4 +328,4 @@ Use the same configuration as the High-Humidity Regulation example, except chang
 
 #### PID Buffer
 
-> If regulation is set to 'Both' ways (up and down), the devices that regulate each direction may turn on excessively, essentially competing to maintain regulation of a precise set point. This is where the `PID Buffer` may be effective at reducing relay activity. By setting the PID Buffer, a zone is formed (Set Point ± Buffer) where relays will not activate while the environmental condition is measured within this range.
+If regulation is set to 'Both' ways (up and down), the devices that regulate each direction may turn on excessively, essentially competing to maintain regulation of a precise set point. This is where the `PID Buffer` may be effective at reducing relay activity. By setting the PID Buffer, a zone is formed (Set Point ± Buffer) where relays will not activate while the environmental condition is measured within this range.
