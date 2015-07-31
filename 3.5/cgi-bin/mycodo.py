@@ -1083,10 +1083,10 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
 
                         else:
 
-                            if sensor_ht_read_hum_c[sensor] < low:
-                                logging.debug("[PID HT-Humidity-%s] %.1f%% now <= %.1f%% low, wait %s seconds", sensor, sensor_ht_read_hum_c[sensor], low, pid_ht_hum_period[sensor])
-                            if sensor_ht_read_hum_c[sensor] > high:
-                                logging.debug("[PID HT-Humidity-%s] %.1f%% now >= %.1f%% high, wait %s seconds", sensor, sensor_ht_read_hum_c[sensor], high, pid_ht_hum_period[sensor])
+                            if sensor_ht_read_hum[sensor] < low:
+                                logging.debug("[PID HT-Humidity-%s] %.1f%% now <= %.1f%% low, wait %s seconds", sensor, sensor_ht_read_hum[sensor], low, pid_ht_hum_period[sensor])
+                            if sensor_ht_read_hum[sensor] > high:
+                                logging.debug("[PID HT-Humidity-%s] %.1f%% now >= %.1f%% high, wait %s seconds", sensor, sensor_ht_read_hum[sensor], high, pid_ht_hum_period[sensor])
 
                             timerHum = int(time.time()) + pid_ht_hum_period[sensor]
 
@@ -1922,6 +1922,7 @@ def initialize_all_gpio():
             GPIO.setup(relay_pin[i], GPIO.OUT)
 
     Relays_Off()
+    Relays_Start()
 
 # Initialize specified GPIO pin
 def initialize_gpio(relay):
@@ -1935,6 +1936,7 @@ def initialize_gpio(relay):
         GPIO.setup(relay_pin[relay], GPIO.OUT)
         relay_onoff(relay, 'off')
 
+
 # Turn Relays Off
 def Relays_Off():
     for i in range(1, 9):
@@ -1942,6 +1944,23 @@ def Relays_Off():
             if relay_trigger[i] == 0:
                 GPIO.output(relay_pin[i], 1)
             else: GPIO.output(relay_pin[i], 0)
+
+
+# Turn Select Relays On
+def Relays_Start():
+    for i in range(1, 9):
+        if relay_pin[i] > 0:
+            if relay_trigger[i] == 0:
+                if relay_start_state[i] == 1:
+                    GPIO.output(relay_pin[i], 0)
+                else:
+                    GPIO.output(relay_pin[i], 1)
+            else: 
+                if relay_start_state[i] == 1:
+                    GPIO.output(relay_pin[i], 1)
+                else:
+                    GPIO.output(relay_pin[i], 0)
+
 
 # Read states (HIGH/LOW) of GPIO pins
 def gpio_read():
