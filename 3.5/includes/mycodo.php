@@ -157,7 +157,7 @@ if (isset($output_error)) {
                 } else {
                     echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="" value="0">';
                 }
-                ?> Timelapse</div>
+                ?> Time-lapse</div>
         </div>
         <div style="float: left;">
             <div><?php
@@ -431,7 +431,7 @@ if (isset($output_error)) {
                     </div>
                 </div>
 
-                <div style="float: left; margin: 0 0.5em; padding: 0.5em 0;">
+                <div style="float: left; margin: 0 0.5em; padding: 0.5em;">
                     <div style="float: left; padding-right: 1em;">
                         <input type="submit" name="ChangeNoTSensors" value="Set">
                         <select name="numtsensors">
@@ -461,7 +461,7 @@ if (isset($output_error)) {
                     <div style="clear: both;"></div>
                 </div>
 
-                <div style="float: left; margin: 0 0.5em; padding: 0.5em 0;">
+                <div style="float: left; margin: 0 0.5em; padding: 0.5em;">
                     <div style="float: left; padding-right: 1em;">
                         <input type="submit" name="ChangeNoHTSensors" value="Set">
                         <select name="numhtsensors">
@@ -491,7 +491,7 @@ if (isset($output_error)) {
                     <div style="clear: both;"></div>
                 </div>
 
-                <div style="float: left; margin: 0 0.5em; padding: 0.5em 0;">
+                <div style="float: left; margin: 0 0.5em; padding: 0.5em;">
                     <div style="float: left; padding-right: 1em;">
                         <input type="submit" name="ChangeNoCo2Sensors" value="Set">
                         <select name="numco2sensors">
@@ -1468,7 +1468,7 @@ if (isset($output_error)) {
                         } else {
                             echo '<button name="stop-timelapse" type="submit" value="">Stop</button>';
                         }
-                        ?> Timelapse <?php
+                        ?> Time-lapse <?php
                         if (!file_exists($lock_timelapse)) {
                             echo '(<span class="off">OFF</span>)';
                         } else {
@@ -1476,12 +1476,8 @@ if (isset($output_error)) {
                         }
                         ?>
                     </div>
-                    <div style="padding: 0.65em 0.5em 0 0.5em;">
-                        Duration: <input style="width: 4em;" type="number" value="60" max="99999" min="1" name="timelapse_duration"> min
-                    </div>
-                    <div style="padding: 0.65em 0.5em 0 0.5em;">
-                       Run time: <input style="width: 4em;" type="number" value="600" max="99999" min="1" name="timelapse_runtime"> min
-                    </div>
+                    <div style="padding: 0.65em 0.5em 0 0.5em;">Duration: <input style="width: 4em;" type="number" value="60" max="99999" min="1" name="timelapse_duration"> min</div>
+                    <div style="padding: 0.65em 0.5em 0 0.5em;">Run time: <input style="width: 4em;" type="number" value="600" max="99999" min="1" name="timelapse_runtime"> min</div>
                 </div>
             </div>
 
@@ -1897,202 +1893,344 @@ if (isset($output_error)) {
             </div>
 
             <div class="advanced">
-                <form method="post" action="?tab=settings" name="debug">
-                <div style="font-weight: bold; padding: 0.5em 0;">
-                    Debugging
-                </div>
-                <div class="adv">
-                    Display Debugging Information <input type="hidden" name="debug" value="0" /><input type="checkbox" id="debug" name="debug" value="1"<?php if (isset($_COOKIE['debug'])) if ($_COOKIE['debug'] == True) echo ' checked'; ?> title="Display debugging information at the bottom of every page."/>
-                </div>
-                <div class="adv">
-                    <input type="submit" value="Save">
-                </div>
-                </form>
-            </div>
-
-            <div class="advanced">
-                <form method="post" action="?tab=settings" name="interface">
-                <div style="font-weight: bold; padding: 0.5em 0;">
-                    Web Interface
-                </div>
-                <div class="adv">
-                    Automatic refresh time <input style="width: 4em;" type="number" min="1" max="999999" value="<?php echo $refresh_time; ?>" maxlength=4 size=1 name="refresh_time" title="The number of seconds between automatic page refreshing."/>
-                </div>
-                <div class="adv">
-                    <button name="ChangeInterface" type="submit" value="">Save</button>
-                </div>
-                </form>
-            </div>
-
-            <div class="advanced">
-                <form method="post" action="?tab=settings" name="smtp">
-                <div style="font-weight: bold; padding: 0.5em 0;">
-                    Camera: Still Capture
-                </div>
-                <div class="adv">
-                    Relay (0 to disable) <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $still_relay; ?>" maxlength=4 size=1 name="Still_Relay" title="A relay can be set to activate during the still image capture."/>
-                </div>
-                <div class="adv">
-                    Add timestamp to image <input type="hidden" name="Still_Timestamp" value="0" /><input type="checkbox" id="Still_Timestamp" name="Still_Timestamp" value="1"<?php if ($still_timestamp) echo ' checked'; ?> title="Add a timestamp to the captured image."/>
-                </div>
-                <div class="adv">
-                    Always display last still image <input type="hidden" name="Still_DisplayLast" value="0" /><input type="checkbox" id="Still_DisplayLast" name="Still_DisplayLast" value="1"<?php if ($still_display_last) echo ' checked'; ?> title="Always display the last image acquired or only after clicking 'Capture Still'."/>
-                </div>
-                <div class="adv">
-                    Extra parameters for camera (raspistill) <input style="width: 22em;" type="text" value="<?php echo $still_extra_parameters; ?>" maxlength=200 name="Still_Extra_Parameters" title=""/>
-                </div>
-                <div class="adv">
-                    <button name="ChangeStill" type="submit" value="">Save</button>
-                </div>
-                </form>
-            </div>
-
-            <div class="advanced">
-                <form method="post" action="?tab=settings" name="smtp">
-                <div style="font-weight: bold; padding: 0.5em 0;">
-                    Camera: Video Stream
-                </div>
-                <div class="adv">
-                    Relay (0 to disable) <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $stream_relay; ?>" maxlength=4 size=1 name="Stream_Relay" title="A relay can be set to activate during the video stream. Enable/disable on the camera tab."/>
-                </div>
-                <div class="adv">
-                    Extra parameters for camera (raspistill) <input style="width: 22em;" type="text" value="<?php echo $stream_extra_parameters; ?>" maxlength=200 name="Stream_Extra_Parameters" title=""/>
-                </div>
-                <div class="adv">
-                    <button name="ChangeStream" type="submit" value="">Save</button>
-                </div>
-                </form>
-            </div>
-
-            <div class="advanced">
-                <form method="post" action="?tab=settings" name="smtp">
-                <div style="font-weight: bold; padding: 0.5em 0;">
-                    Camera: Timelapse
-                </div>
-                <div class="adv">
-                    Relay (0 to disable) <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $timelapse_relay; ?>" maxlength=4 size=1 name="Timelapse_Relay" title="A relay can be set to activate during a timelapse capture. Enable/disable on the camera tab."/>
-                </div>
-                <div class="adv">
-                    Photo save path <input style="width: 19em;" type="text" value="<?php echo $timelapse_path; ?>" maxlength=50 name="Timelapse_Path" title=""/>
-                </div>
-                <div class="adv">
-                    Photo filename prefix <input style="width: 7em;" type="text" value="<?php echo $timelapse_prefix; ?>" maxlength=20 name="Timelapse_Prefix" title=""/>
-                </div>
-                <div class="adv">
-                    Use start time in filename <input type="hidden" name="" value="0" /><input type="checkbox" id="" name="Timelapse_Timestamp" value="1"<?php if ($timelapse_timestamp) echo ' checked'; ?> title=""/>
-                </div>
-                <div class="adv">
-                    Always display last timelapse image <input type="hidden" name="Timelapse_DisplayLast" value="0" /><input type="checkbox" id="Timelapse_DisplayLast" name="Timelapse_DisplayLast" value="1"<?php if ($timelapse_display_last) echo ' checked'; ?> title="Always display the last timelapse image or only while a timelapse is running."/>
-                </div>
-                <div class="adv">
-                    Extra parameters for camera (raspistill) <input style="width: 22em;" type="text" value="<?php echo $timelapse_extra_parameters; ?>" maxlength=200 name="Timelapse_Extra_Parameters" title=""/>
-                </div>
-                <div class="adv">
-                    Enable experimental auto-exposure mode <input type="hidden" name="" value="0" /><input type="checkbox" id="" name="timelapse-auto-exp" value="1"<?php if (1) echo ' checked'; ?> title=""/>
-                </div>
-                <div class="adv" style="padding: 0.3em 0 0.2em 0;">
-                    <?php
+                <form method="post" action="?tab=settings">
+                <table>
+                    <tr>
+                        <td class="setting-title">
+                            Debugging
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Display Debugging Information
+                        </td>
+                        <td class="setting-value">
+                            <input type="hidden" name="debug" value="0" /><input type="checkbox" id="debug" name="debug" value="1"<?php if (isset($_COOKIE['debug'])) if ($_COOKIE['debug'] == True) echo ' checked'; ?> title="Display debugging information at the bottom of every page."/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-save">
+                            <button name="debug" type="submit" value="">Save</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-title">
+                            Web Interface
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Automatic refresh rate (seconds)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 4em;" type="number" min="1" max="999999" value="<?php echo $refresh_time; ?>" maxlength=4 size=1 name="refresh_time" title="The number of seconds between automatic page refreshing."/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-save">
+                            <button name="ChangeInterface" type="submit" value="">Save</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-title">
+                            Camera: Still Capture
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relay to activate during capture (0 to disable)
+                        </td>
+                        <td class="setting-value">
+                    <input style="width: 4em;" type="number" min="0" max="8" value="<?php echo $still_relay; ?>" maxlength=4 size=1 name="Still_Relay" title="A relay can be set to activate during the still image capture."/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Add timestamp to image
+                        </td>
+                        <td class="setting-value">
+                    <input type="hidden" name="Still_Timestamp" value="0" /><input type="checkbox" id="Still_Timestamp" name="Still_Timestamp" value="1"<?php if ($still_timestamp) echo ' checked'; ?> title="Add a timestamp to the captured image."/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Always display last still image on Camera tab
+                        </td>
+                        <td class="setting-value">
+                    <input type="hidden" name="Still_DisplayLast" value="0" /><input type="checkbox" id="Still_DisplayLast" name="Still_DisplayLast" value="1"<?php if ($still_display_last) echo ' checked'; ?> title="Always display the last image acquired or only after clicking 'Capture Still'."/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Extra parameters for camera (raspistill)
+                        </td>
+                        <td class="setting-value">
+                    <input style="width: 18em;" type="text" value="<?php echo $still_extra_parameters; ?>" maxlength=200 name="Still_Extra_Parameters" title=""/> 
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-save">
+                            <button name="ChangeStill" type="submit" value="">Save</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-title">
+                            Camera: Video Stream
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relay to activate during capture (0 to disable)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 4em;" type="number" min="0" max="8" value="<?php echo $stream_relay; ?>" maxlength=4 size=1 name="Stream_Relay" title="A relay can be set to activate during the video stream. Enable/disable on the camera tab."/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Extra parameters for camera (raspistill)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $stream_extra_parameters; ?>" maxlength=200 name="Stream_Extra_Parameters" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-save">
+                            <button name="ChangeStream" type="submit" value="">Save</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-title">
+                            Camera: Time-lapse
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relay to activate during capture (0 to disable)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 4em;" type="number" min="0" max="8" value="<?php echo $timelapse_relay; ?>" maxlength=4 size=1 name="Timelapse_Relay" title="A relay can be set to activate during a timelapse capture. Enable/disable on the camera tab."/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Photo save path
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $timelapse_path; ?>" maxlength=50 name="Timelapse_Path" title=""/> 
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Photo filename prefix
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $timelapse_prefix; ?>" maxlength=20 name="Timelapse_Prefix" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Time-lapse start time in filename
+                        </td>
+                        <td class="setting-value">
+                            <input type="hidden" name="Timelapse_Timestamp" value="0" /><input type="checkbox" id="" name="Timelapse_Timestamp" value="1"<?php if ($timelapse_timestamp) echo ' checked'; ?> title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Always display last time-lapse image on Camera tab
+                        </td>
+                        <td class="setting-value">
+                            <input type="hidden" name="Timelapse_DisplayLast" value="0" /><input type="checkbox" id="Timelapse_DisplayLast" name="Timelapse_DisplayLast" value="1"<?php if ($timelapse_display_last) echo ' checked'; ?> title="Always display the last timelapse image or only while a timelapse is running."/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Extra parameters for camera (raspistill)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $timelapse_extra_parameters; ?>" maxlength=200 name="Timelapse_Extra_Parameters" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Enable experimental auto-exposure mode (currently not enabled)
+                        </td>
+                        <td class="setting-value">
+                            <input type="hidden" name="" value="0" /><input type="checkbox" id="" name="timelapse-auto-exp" value="1"<?php if (1) echo ' checked'; ?> title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="setting-value">
+                            <?php
                     if ($timelapse_timestamp) {
                         $timelapse_tstamp = substr(`date +"%Y%m%d%H%M%S"`, 0, -1);
-                        echo "Output file series: $timelapse_path/$timelapse_prefix$timelapse_tstamp-00001.jpg";
+                        echo 'Output file series: ' , $timelapse_path , '/' , $timelapse_prefix , $timelapse_tstamp , '-00001.jpg';
                     } else {
-                        echo "Output file series: $timelapse_path/$timelapse_prefix-00001.jpg";
+                        echo 'Output file series: ' , $timelapse_path , '/' , $timelapse_prefix , '00001.jpg';
                     }
                      ?>
-                </div>
-                <div class="adv">
-                    <button name="ChangeTimelapse" type="submit" value="">Save</button>
-                </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-save">
+                            <button name="ChangeTimelapse" type="submit" value="">Save</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-title">
+                            Email Notification
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            SMTP Host
+                        </td>
+                        <td class="setting-value">
+                            <input class="smtp" type="text" value="<?php echo $smtp_host; ?>" maxlength=30 size=20 name="smtp_host" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            SMTP Port
+                        </td>
+                        <td class="setting-value">
+                            <input class="smtp" type="number" value="<?php echo $smtp_port; ?>" maxlength=30 size=20 name="smtp_port" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            User
+                        </td>
+                        <td class="setting-value">
+                            <input class="smtp" type="text" value="<?php echo $smtp_user; ?>" maxlength=30 size=20 name="smtp_user" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Password
+                        </td>
+                        <td class="setting-value">
+                            <input class="smtp" type="password" value="<?php echo $smtp_pass; ?>" maxlength=30 size=20 name="smtp_pass" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            From
+                        </td>
+                        <td class="setting-value">
+                            <input class="smtp" type="text" value="<?php echo $smtp_email_from; ?>" maxlength=30 size=20 name="smtp_email_from" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            To
+                        </td>
+                        <td class="setting-value">
+                            <input class="smtp" type="text" value="<?php echo $smtp_email_to; ?>" maxlength=30 size=20 name="smtp_email_to" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-save">
+                            <input type="submit" name="ChangeNotify" value="Save">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-title">
+                            Add User
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Username (only letters and numbers, 2 to 64 characters)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Email
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" id="login_input_email" type="email" name="user_email" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Password (min. 6 characters)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" id="login_input_password_new" class="login_input" type="password" name="user_password_new" pattern=".{6,}" required autocomplete="off" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Repeat password
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" id="login_input_password_repeat" class="login_input" type="password" name="user_password_repeat" pattern=".{6,}" required autocomplete="off" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-save">
+                            <input type="submit" name="register" value="Add User" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-title">
+                            Change Password
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Username
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Password (min. 6 characters)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" id="login_input_password_new" class="login_input" type="password" name="new_password" pattern=".{6,}" required autocomplete="off" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Repeat New password
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" id="login_input_password_repeat" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_repeat">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-save">
+                            <input type="submit" name="changepassword" value="Change Password" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-title">
+                            Delete User
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Username
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-save">
+                            <input type="submit" name="deleteuser" value="Delete User" />
+                        </td>
+                    </tr>
+                </table>
                 </form>
-            </div>
-
-            <div style="clear: both;"></div>
-
-            <div <div class="advanced">
-                <form method="post" action="?tab=settings" name="smtp">
-                <div style="font-weight: bold; padding: 0.5em 0;">
-                    Email Notification
-                </div>
-                <div class="adv">
-                    <input class="smtp" type="text" value="<?php echo $smtp_host; ?>" maxlength=30 size=20 name="smtp_host" title=""/> SMTP Host
-                </div>
-                <div class="adv">
-                    <input class="smtp" type="number" value="<?php echo $smtp_port; ?>" maxlength=30 size=20 name="smtp_port" title=""/> SMTP Port
-                </div>
-                <div class="adv">
-                    <input class="smtp" type="text" value="<?php echo $smtp_user; ?>" maxlength=30 size=20 name="smtp_user" title=""/> User
-                </div>
-                <div class="adv">
-                    <input class="smtp" type="password" value="<?php echo $smtp_pass; ?>" maxlength=30 size=20 name="smtp_pass" title=""/> Password
-                </div>
-                <div class="adv">
-                    <input class="smtp" type="text" value="<?php echo $smtp_email_from; ?>" maxlength=30 size=20 name="smtp_email_from" title=""/> From
-                </div>
-                <div class="adv">
-                    <input class="smtp" type="text" value="<?php echo $smtp_email_to; ?>" maxlength=30 size=20 name="smtp_email_to" title=""/> To
-                </div>
-                <div class="adv">
-                    <input type="submit" name="ChangeNotify" value="Save">
-                </div>
-                </form>
-            </div>
-
-            <div class="advanced">
-                <div style="padding-bottom: 1em;">
-                    <form method="post" action="?tab=settings" name="addform">
-                    <div style="font-weight: bold; padding: 0.5em 0;">
-                        Add User
-                    </div>
-                    <div class="adv">
-                        <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" /> <label for="login_input_username">Username (only letters and numbers, 2 to 64 characters)</label>
-                    </div>
-                    <div class="adv">
-                        <input id="login_input_email" type="email" name="user_email" /> <label for="login_input_email">Email</label>
-                    </div>
-                    <div class="adv">
-                        <input id="login_input_password_new" class="login_input" type="password" name="user_password_new" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_new">Password (min. 6 characters)</label>
-                    </div>
-                    <div class="adv">
-                        <input id="login_input_password_repeat" class="login_input" type="password" name="user_password_repeat" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_repeat">Repeat password</label>
-                    </div>
-                    <div class="adv">
-                        <input type="submit" name="register" value="Add User" />
-                    </div>
-                    </form>
-                </div>
-                <div style="padding-bottom: 1em;">
-                    <form method="post" action="?tab=settings" name="changeform">
-                    <div style="font-weight: bold; padding: 0.5em 0;">
-                        Change Password
-                    </div>
-                    <div class="adv">
-                        <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" /> <label for="login_input_username">Username</label>
-                    </div>
-                    <div class="adv">
-                        <input id="login_input_password_new" class="login_input" type="password" name="new_password" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_new">New Password (min. 6 characters)</label>
-                    </div>
-                    <div class="adv">
-                        <input id="login_input_password_repeat" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_repeat">Repeat New password</label>
-                    </div>
-                    <div class="adv">
-                        <input type="submit" name="changepassword" value="Change Password" />
-                    </div>
-                    </form>
-                </div>
-                <div>
-                    <form method="post" action="?tab=settings" name="delform">
-                    <div style="font-weight: bold; padding: 0.5em 0;">
-                        Delete User
-                    </div>
-                    <div class="adv">
-                        <input id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
-                        <label for="login_input_username">Username</label>
-                    </div>
-                        <div class="adv">
-                        <input type="submit" name="deleteuser" value="Delete User" />
-                    </div>
-                    </form>
-                </div>
             </div>
             <div style="padding-top: 3em;"></div>
         </li>
