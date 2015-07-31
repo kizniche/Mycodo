@@ -1893,8 +1893,8 @@ if (isset($output_error)) {
             </div>
 
             <div class="advanced">
-                <form method="post" action="?tab=settings">
                 <table>
+                    <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
                             Debugging
@@ -1910,9 +1910,11 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td class="setting-save">
-                            <button name="debug" type="submit" value="">Save</button>
+                            <button name="save" type="submit" value="">Save</button>
                         </td>
                     </tr>
+                    </form>
+                    <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
                             Web Interface
@@ -1931,6 +1933,8 @@ if (isset($output_error)) {
                             <button name="ChangeInterface" type="submit" value="">Save</button>
                         </td>
                     </tr>
+                    </form>
+                    <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
                             Camera: Still Capture
@@ -1973,6 +1977,8 @@ if (isset($output_error)) {
                             <button name="ChangeStill" type="submit" value="">Save</button>
                         </td>
                     </tr>
+                    </form>
+                    <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
                             Camera: Video Stream
@@ -1999,6 +2005,8 @@ if (isset($output_error)) {
                             <button name="ChangeStream" type="submit" value="">Save</button>
                         </td>
                     </tr>
+                    </form>
+                    <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
                             Camera: Time-lapse
@@ -2077,6 +2085,8 @@ if (isset($output_error)) {
                             <button name="ChangeTimelapse" type="submit" value="">Save</button>
                         </td>
                     </tr>
+                    </form>
+                    <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
                             Email Notification
@@ -2135,6 +2145,8 @@ if (isset($output_error)) {
                             <input type="submit" name="ChangeNotify" value="Save">
                         </td>
                     </tr>
+                    </form>
+                    <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
                             Add User
@@ -2177,6 +2189,8 @@ if (isset($output_error)) {
                             <input type="submit" name="register" value="Add User" />
                         </td>
                     </tr>
+                    </form>
+                    <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
                             Change Password
@@ -2211,6 +2225,8 @@ if (isset($output_error)) {
                             <input type="submit" name="changepassword" value="Change Password" />
                         </td>
                     </tr>
+                    </form>
+                    <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
                             Delete User
@@ -2229,8 +2245,8 @@ if (isset($output_error)) {
                             <input type="submit" name="deleteuser" value="Delete User" />
                         </td>
                     </tr>
+                    </form>
                 </table>
-                </form>
             </div>
             <div style="padding-top: 3em;"></div>
         </li>
