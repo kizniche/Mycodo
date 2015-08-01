@@ -13,18 +13,16 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
   + [TempFS](#tempfs)
   + [Resolve Hosnames](#resolve-hostnames)
   + [Security](#security)
-    + [SSL](#enable-ssl)
-    + [.htaccess](#enable-htaccess)
+    + [Enable SSL](#enable-ssl)
+    + [Enable .htaccess](#enable-htaccess)
   + [Database Creation](#database-creation)
   + [Daemon](#daemon)
 + [Usage](#usage)
   + [Web Interface](#web-interface)
   + [PID Control](#pid-control)
-  + [Configurations](#configuration)
   + [Quick Setup Examples](#quick-set-up-examples)
-    + [High-Humidity Regulation](#high-humidity-regulation)
-    + [Low-Temperature Regulation](#low-temperature-regulation)
     + [Exact-Temperature Regulation](#exact-temperature-regulation)
+    + [High-Temperature Regulation](#high-humidity-regulation)
     + [Tips](#tips)
 + [License](#license)
 + [Useful Links](#useful-links)
@@ -40,6 +38,7 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 - [X] Added Sensor: DS18B20 temperature sensor
 - [X] New configuration database (from plain-text file to SQLite)
 - [X] New user database (from MySQL to SQLite)
+- [ ] Add maximum allowed PID output (turn relay on for a maximum of X seconds)
 - [ ] More graph options (y-axis min/max, select sensors to be graphed)
 - [ ] Email notification or audible alarm during critical failure or condition (working on)
 - [ ] Convert time-lapse images to video
@@ -264,7 +263,7 @@ Use the following commands and type 'all' when prompted to create databases
 
 Follow the prompts to create an admin password, optionally create another user, and enable/disable guest access.
 
-### Starting the Daemon
+### Daemon
 
 To initialize GPIO pins at startup, open crontab with `sudo crontab -e` and add the following lines, then save with `Ctrl+e`
 
@@ -286,79 +285,69 @@ Reboot to allow everything to start up
 
 ### Web Interface
 
-After the system is back up, go to http://your.rpi.address/mycodo and log in with the credentials you created with setup-database.py. Input fields of the web interface will display descriptions or instructions when the mouse is hovered over them.
+After the system is back up, go to http://your.rpi.address/mycodo and log in with the credentials you created with setup-database.py. **Input fields of the web interface will display descriptions or instructions when the mouse is hovered over them.**
 
 Ensure the Daemon indicator at the top-left is blue, indicating the daemon is running. If it is not, PID regulation cannot operate.
 
-Additionally, relays must be properly set up before PID regulation can be achieved. Change the number of relays in the Settings tab and configure them. Change the `GPIO Pin` and `Signal ON` of each relay. The `GPIO Pin` is the pin on the raspberry pi (using BCM numbering, not board numbering) and the `Signal ON` is the required signal to activate the relay (close the circuit). If your relay activates when it receives a LOW (0 volt, ground) signal, set the `Signal ON` to LOW, otherwise set it HIGH.
+Additionally, relays must be properly set up before PID regulation can be achieved. Change the number of relays in the Settings tab and configure them. Change the `GPIO Pin` and `Signal ON` of each relay. The `GPIO Pin` is the pin on the raspberry pi (using BCM numbering, not board numbering) and the `Signal ON` is the required signal to activate the relay (close the circuit). If your relay activates when it receives a LOW signal (0-volt, Ground), set the `Signal ON` to 'Low', otherwise set it 'High'.
 
 ### PID Control
 
-The PID controller is the most common controller found in industrial settings, both for its simplicity and its complexity. PID stands for Proportional Integral Derivative.
+The PID controller is the most common regulatory controller found in industrial settings, both for its simplicity and its complexity. PID stands for Proportional Integral Derivative, and these are the three components of the controller. An input is given, the error, which is the distance between the measured sensor value and the desired value. This error is manipulated by each of the three PID components to produce an output. 
 
-#### P
+To allow control of how much each path contributes to the output value, each path is multiplied by a value between 0 and 1 (0% - 100%). These are called gains (represented as K, below), and by adjusting them, the sensitivity of the system to each path is affected. When all three paths are summed, the PID output is produced.
 
-The proportional path takes the error (the difference between the actual position and the desired position) and multiplies it by a constant, K<sub>p</sub>, to yield an output value. When the error is large, there will be a large proportional output.
+> **P**roportional: This path takes the error and multiplies it by the constant K<sub>p</sub>, to yield an output value. When the error is large, there will be a large proportional output.
 
-#### I
+> **I**ntegral: This path takes the error and multiplies it by K<sub>i</sub>, then integrates it (K<sub>i</sub> · 1/s). As the error changes over time, the integral will continually sum it and multiply it by the constant K<sub>i</sub>. The integral is used to remove perpetual error in the control system. If using P alone produces an output that produces a perpetual error (if the measured sensor value never reaches the Set Point), the integral will increase the output until the error decreases and the Set Point is reached.
 
-The integral path takes the error and multiplies it by K<sub>i</sub>, then integrates it (K<sub>i</sub> · 1/s). As the error changes over time, the integral will continually sum it and multiply it by the constant K<sub>i</sub>. The integral is used to remove perpetual error in the control system. If using P alone produces an output that produces a perpetual error (if the measured sensor value never reaches the set point), the integral will increase the output until the error decreases and the set point is reached.
+> **D**erivative: This path multiplies the error by K<sub>d</sub>, then differentiates it (K<sub>d</sub> · s). When the error rate changes over time, the output signal will change. The faster the change in error, the larger the derivative path becomes, decreasing the output rate of change.
 
-#### D
+This output can be used a number of ways (as an on duration, a duty cycle, an aperature, an intensity of light, etc.), however the controller was designed to use the ouput to somehow affect the value that is being sensed and given to the PID controller as input. This feedback loop, given proper calibration, should be able to bring the actual value to the desired value (reduce the error to 0) in a reasonable amount of time and maintain the desired value without much oscillation around it.
 
-Last, the derivative path multiplies the error by K<sub>d</sub>, then differentiates it (K<sub>d</sub> · s). When the error rate changes over time, the output signal will change. The faster the change in error, the larger the derivative path becomes, decreasing the output rate of change.
+Therefor, if one would be regulating temperature, the sensor would be a temperature sensor and the feedback device(s) would be able to heat and cool. If the temperature is lower than the Set Point, the output value would be positive and a heater would activate. The temperature would rise toward the desired temperature, causing the error to decrease and a lower output to be produced. This feedback loop would continue until the error reaches 0 (at which point the output would be 0). If the temperature continues to rise past the Set Point (this is usually aceptable, depending on the degree of overshooting the Set Point), the PID would produce a negative output, which could be used by the cooling device to bring the temperature back down, reducing the error. If the temperature would normally lower without the aid of a cooling device, then the system can be simplified by omitting a cooler and allowing it to lower on its own. 
 
-#### Configurations
-
-These K terms are called gains, and by adjusting them, the sensitivity of the system to each path is affected. When all three paths are summed, the PID output is produced. This output is used to turn on connected relays for certain durations of time, and hence, affect the environment.
-
-Implementing a controller that effectively utilizes P, I, and D can be challenging (and is often unnecessary). For instance, the I and D can be set to 0, effectively turning them off and producing a P controller. Also popular is the PI controller. It is recommended to start with only P, then experiment with PI, before finally using PID.
-
-Because systems will vary (e.g. airspace volume to regulate, degree of insulation, and the efficacy of the connected device(s) to modify the environment, etc.), each path will need to be adjusted to produce an effective output that attains the set point in both a reasonable amount of time and with as little oscillation possible around the set point. As such, your particular configuration will need to be determined through experimentation.
+Implementing a controller that effectively utilizes P, I, and D can be challenging. Furthermore, it is often unnecessary. For instance, the I and D can be set to 0, effectively turning them off and producing the very popular and simple P controller. Also popular is the PI controller. It is recommended to start with only P activated, then experiment with PI, before finally using PID. Because systems will vary (e.g. airspace volume, degree of insulation, and the degree of impact from the connected device, etc.), each path will need to be adjusted through experimentation to produce an effective output.
 
 ### Quick Set-up Examples
 
-These example setups are meant to illustrate how to configure regulation in particular directions, and not how to properly configure your P, I, and D variables. There are a number of online resources that discuss techniques and methods that have been developed to determine ideal PID values, and since here are no universal values that will work for every system, it is recommended to conduct your own research to understand and implement them.
+These example setups are meant to illustrate how to configure regulation in particular directions, and not to achieve ideal values to configure your P, I, and D variables. There are a number of online resources that discuss techniques and methods that have been developed to determine ideal PID values, and since here are no universal values that will work for every system, it is recommended to conduct your own research to understand and implement them.
 
 Provided merely as an example of the variance of PID values, one of my setups had temperature PID values (up regulation) of P=30, I=1.0, and D=0.5, and humidity PID values (up regulation) of P=1.0, I=0.2, and D=0.5. Furthermore, these values may not have been optimal but they worked well for the conditions of my environmental chamber.
 
-#### High-Humidity Regulation
+#### Exact Temperature Regulation
 
-This will set up the system to raise the humidity to a certain level with one regulatory device (one that can raise the humidity).
+This will set up the system to raise and lower the temperature to a certain level with two regulatory devices (one that heats and one that cools).
 
-Select the number of Humidity & Temperature (HT) sensors that are connected. Select the proper device and GPIO pin for each sensor and activate logging and graphing.
+Select the number of sensors that are connected. Select the proper device and GPIO pin for each sensor and activate logging and graphing.
 
 ***Stop here. Wait 10 minutes, then go the Main tab and generate a graph. If the graph generates with data on it, continue. If not, stop and investigate why there is no sensor data. The controller will not function if there is not sensor data being acquired.***
 
-Under the Humidity PID for an active sensor, change `PID Set Point` to the desired humidity, `PID Regulate` to 'Up', and `PID Buffer` to 0.
+Under the Temperature PID for an active sensor, change `PID Set Point` to the desired temperature, `PID Regulate` to 'Both', and `PID Buffer` to 0 or 1. The Buffer will prevent PID regulation (i.e. not allow relays to operate), when the temperature falls within the Set Point ± Buffer range. For instance, if the Set Point is 30°C and the Buffer is 1, this range would be 30°C ± 1 = 29°C and 31°C.
 
-Set the `Relay No.` of the up-regulating PID (represented by an Up arrow) to the relay attached to your humidification device.
+Set the `Relay No.` of the up-regulating PID (represented by an Up arrow) to the relay attached to the heating device and the down-regulating PID to the relay attached to the coolong device.
 
-Set `P` to 1, `I` to 0, `D` to 0, then turn the Humidity PID on with the ON button.
+Set `P` to 1, `I` to 0, `D` to 0, then turn the Temperature PID on with the ON button.
 
-At this point, the humidifier should be turning on and off at some interval. Generate '6 Hour Seperate' graphs from the Main tab to identify how well the humidity is regulated to the set point. What is meant by well-regulated will vary, depending on your specific application and tolerances. Most applications would like to see the proper humidity attained within a reasonable amount of time and not oscillate (go higher and lower) too much from the set point.
+If the temperature is lower than the Set Point, the heater should activate at some interval determined by the PID controller until the temperature rises to the set point. If the temperature goes higher than the Set Point (or Set Point + Buffer), the cooling device will activate until the temperature returns to the set point.
 
-If the humidity is not reaching the set point after a reasonable amount of time, increase the P value until it does. Experiment with different configurations involving `Read Interval` and `P` to achieve an acceptable regulation. Avoid changing the `I` and `D` from 0 until a working regulation is achieved with P alone.
+Generate '6 Hour Seperate' graphs from the Main tab to identify how well the temperature is regulated to the Set Point. What is meant by well-regulated will vary, depending on your specific application and tolerances. Most applications of a PID controller would like to see the proper temperature attained within a reasonable amount of time and not oscillate (go higher and lower) too much from the Set Point.
 
-Once regulation is achieved, experiment by reducing P slightly and increasing `I` by a low amount to start, such as 0.1 (or lower), then observe how the controller regulates. Slowly increase I until regulation becomes both quick yet there is little oscillation once regulation is achieved. At this point, you should be fairly familiar with experimenting with the system and the D value can be experimented with.
+If the temperature is not reaching the Set Point after a reasonable amount of time, increase the P value and see how that affects the system. Experiment with different configurations involving only `Read Interval` and `P` to achieve a good regulation without much oscillation. Avoid changing the `I` and `D` from 0 until a working regulation is achieved with P alone.
 
-#### Low-Temperature Regulation
+Once regulation is achieved, experiment by reducing P slightly (~25%) and increasing `I` by a low amount to start, such as 0.1 (or lower), then observe how the controller regulates. Slowly increase I until regulation becomes both quick yet there is little oscillation once regulation is achieved. At this point, you should be fairly familiar with experimenting with the system and the D value can be experimented with.
 
-This will set up the system to lower the temperature to a certain level with one regulatory device (one that can lower the temperature).
+#### High Temperature Regulation
 
-Use the same configuration as the High-Humidity Regulation example, except change `PID Regulate` to 'Down' and change the `Relay No.` and `P`, `I`, and `D` values of the down-regulating PID (represented by a Down arrow).
+Often the system can be simplified if two-way regulation is not needed. For instance, if cooling is unnecessary, this can be removed from the system and only up-regulation can be used.
 
-#### Exact Temperature Regulation
-
-This will set up the system to raise and lower the temperature to a certain level with two regulatory devices (one that can raise and one that can lower the temperature).
-
-Use the same configuration as the High-Humidity Regulation example, except change PID Regulate to 'Both' and change `Relay No.`, `P`, `I`, and `D` variables for both the up and down regulation of the PID controller. It may be necessary to increase the `PID Buffer` to prevent aggressive competition between up and down regulation (See the section below about the buffer).
+Use the same configuration as the <a href="#exact-temperature-regulation">Exact Temperature Regulation</a> example, except change `PID Regulate` to 'Up' and change the `Relay No.` and `P`, `I`, and `D` values of the up-regulating PID (represented by an Up arrow). Buffer should be set to 0 when 'Both' is not used.
 
 ### Tips
 
 #### PID Buffer
 
-If regulation is set to 'Both' ways (up and down), the devices that regulate each direction may turn on excessively, essentially competing to maintain regulation of a precise set point. This is where the `PID Buffer` may be effective at reducing relay activity. By setting the PID Buffer, a zone is formed (Set Point ± Buffer) where relays will not activate while the environmental condition is measured within this range.
+If regulation is set to 'Both' ways (up and down), the devices that regulate each direction may turn on excessively, essentially competing to maintain regulation of a precise Set Point. This is where the `PID Buffer` may be effective at reducing relay activity. By setting the PID Buffer greater than 0, a zone is formed (Set Point ± Buffer) where relays will not activate while the environmental condition is measured within this range. For instance, if the Set Point is 30°C and the Buffer is 1, this range would be 30°C ± 1 = 29°C and 31°C.
 
 ## License
 
