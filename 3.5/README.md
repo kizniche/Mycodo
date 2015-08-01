@@ -23,7 +23,7 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
   + [Quick Setup Examples](#quick-set-up-examples)
     + [Exact-Temperature Regulation](#exact-temperature-regulation)
     + [High-Temperature Regulation](#high-humidity-regulation)
-    + [Tips](#tips)
+  + [Tips](#tips)
 + [License](#license)
 + [Useful Links](#useful-links)
 
@@ -329,11 +329,9 @@ Set the `Relay No.` of the up-regulating PID (represented by an Up arrow) to the
 
 Set `P` to 1, `I` to 0, `D` to 0, then turn the Temperature PID on with the ON button.
 
-If the temperature is lower than the Set Point, the heater should activate at some interval determined by the PID controller until the temperature rises to the set point. If the temperature goes higher than the Set Point (or Set Point + Buffer), the cooling device will activate until the temperature returns to the set point.
+If the temperature is lower than the Set Point, the heater should activate at some interval determined by the PID controller until the temperature rises to the set point. If the temperature goes higher than the Set Point (or Set Point + Buffer), the cooling device will activate until the temperature returns to the set point. If the temperature is not reaching the Set Point after a reasonable amount of time, increase the P value and see how that affects the system. Experiment with different configurations involving only `Read Interval` and `P` to achieve a good regulation without much oscillation. Avoid changing the `I` and `D` from 0 until a working regulation is achieved with P alone.
 
 Generate '6 Hour Seperate' graphs from the Main tab to identify how well the temperature is regulated to the Set Point. What is meant by well-regulated will vary, depending on your specific application and tolerances. Most applications of a PID controller would like to see the proper temperature attained within a reasonable amount of time and not oscillate (go higher and lower) too much from the Set Point.
-
-If the temperature is not reaching the Set Point after a reasonable amount of time, increase the P value and see how that affects the system. Experiment with different configurations involving only `Read Interval` and `P` to achieve a good regulation without much oscillation. Avoid changing the `I` and `D` from 0 until a working regulation is achieved with P alone.
 
 Once regulation is achieved, experiment by reducing P slightly (~25%) and increasing `I` by a low amount to start, such as 0.1 (or lower), then observe how the controller regulates. Slowly increase I until regulation becomes both quick yet there is little oscillation once regulation is achieved. At this point, you should be fairly familiar with experimenting with the system and the D value can be experimented with.
 
