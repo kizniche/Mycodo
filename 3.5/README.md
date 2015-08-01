@@ -2,6 +2,34 @@
 
 This is an experimental branch of mycodo. It is undergoing constant changes and may or may not work at any time (although it has matured somewhat and is relatively stable at the moment). If you are looking for a stable version, I recommend you check out the [v3.0 branch](../3.0).
 
+## Index
+
++ [Progress](#progress)
++ [New Dependencies](#new-dependencies)
++ [Supported Sensors](#supported-sensors)
++ [Software Install](#soft-install)
+ + [Prerequisites](#prerequisites)
+ + [Wifi](#wifi)
+ + [TempFS](#tempfs)
+ + [Resolve Hosnames](#hostnames)
+ + [Security](#security)
+  + [SSL](#ssl)
+  + [.htaccess](#htaccess)
+ + [Database Creation](#databases)
+ + [Daemon](#daemon)
++ [Usage](#usage)
+ + [Web Interface](#webinterface)
+ + [PID Control](#PID)
+ + [Configurations](#configuration)
+ + [Quick Setup Examples](#quick-setup)
+  + [High-Humidity Regulation](#high-humidity)
+  + [Low-Temperature Regulation](#low-temperature)
+  + [Exact-Temperature Regulation](#exact-temperature)
+  + [Tips](#tips)
++ [License](#license)
++ [Useful Links](#links)
+
+<a name="progress"></a>
 ## Progress
 
 - [X] Added Feature: Set desired startup state of relay (on or off)
@@ -20,12 +48,14 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 - [ ] Set electrical current draw of each device and prevent exceeding total current limit with different combinations of devices on
 - [ ] HDR Photo creation (capture series of photos at different ISOs and combine) (Initial testing was slow: 3 photos = 15 minutes processing)
 
+<a name="#new-dependencies"></a>
 ## New Dependencies
 
 php5-sqlite
 
 sqlite3
 
+<a name="#supported-sensors"></a>
 ## Supported Sensors
 
 ### Temperature
@@ -40,8 +70,12 @@ sqlite3
 
 > [K30](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip)
 
+<a name="#soft-install"></a>
 ## Software Install
 
+This installation assumes you are starting with a fresh install of Raspbian linux on a Raspberry Pi. If not, adjust your installation accordingly.
+
+<a name="#prerequisites"></a>
 ### Prerequisites
 
 `sudo apt-get update`
@@ -98,6 +132,7 @@ Install video streaming capabilities (Note that it is recommended to require SSL
 
 `sudo cp output_http.so input_file.so /usr/local/lib/`
 
+<a name="#wifi"></a>
 ### Wifi
 
 With a supported usb wifi dongle, setting up a wireless connection is as simple as the next few commands and a reboot. Consult documentation for your wireless card or google if this doesn’t work. Edit wpa_supplicant.conf with `sudo vi /etc/wpa_supplicant/wpa_supplicant.conf` and add the following, then change the name and password.
@@ -109,6 +144,7 @@ network={
 }
 ```
 
+<a name="#tempfs"></a>
 ### TempFS
 
 A temporary file system in RAM can be created for areas of the disk that are written often, prolonging the life of the SD card and speeding up disk read/writes. Keep in mind that all content on temporary file systems will be lost upon reboot. If you need to analyze logs, remember to disable these lines in /etc/fstab before doing so.
@@ -131,18 +167,21 @@ Using a tempfs does create some issues with certain software. Apache does not st
 
 `sudo update-rc.d apache2-tmpfs defaults 90 10`
 
+<a name="#hostnames"></a>
 ### Resolve Hostnames
 
 To allow resolving of IP addresses in the login log, edit /etc/apache2/apache2.conf with `sudo vi /etc/apache2/apache2.conf` and find and change HostnameLookups to match the following line
 
 `HostnameLookups On`
 
+<a name="#security"></a>
 ### Security
 
 In each web-accessible directory is a file (.htaccess) which denies access to certain files and folders (such as the user database, sensor data, and camera photos). It is strongly recommended that you ensure this works properly (or alternatively, configure your web server to accomplish the same result), to ensure no one has direct access to these directories, as potentially sensitive information may be able to be accessed otherwise. Optionally, for higher security, enable SSL/HTTPS.
 
 If your system is remotely accessible or publically available on the internet, it is strongly recommended to enable both SSL and .htaccess use. If your server is not, you can skip the next two steps.
 
+<a name="#ssl"></a>
 #### Enable SSL
 
 `sudo apt-get install openssl`
@@ -200,6 +239,7 @@ Ensure SSL is enabled in apache2 and restart the server
 
 You will need to add the self-signed certificate that was created (/etc/ssl/localcerts/apache.pem) to your browser as trusted in order not to receive warnings. You can copy this from the /etc/ssl/localcerts/ directory or it can be obtained by visiting your server with your browser. The process for adding this file to your browser as trusted may be different for each browser, however there are many resources online that detail how to do so. Adding your certificate to your browser is highly recommended to ensure the site's certificate is what it's supposed to be, however you will still be able to access your site without adding the certificate, but you may receive a warning stating your site's security may be compromised.
 
+<a name="#htaccess"></a>
 #### Enable .htaccess
 
 If your server is accessible from the internet but you don't want to enable SSL (this was enabled with SSL, above), this is a crucial step that will ensure sensitive files (images/logs/databases) will not be accessible to anyone. If your server is not publically accessible, you can skip this step. Otherwise, it's imperative that `AllowOverride All` is added to your apache2 config to allow the .htaccess files throughout mycodo to restrict access to certain files and folders. Modify /etc/apache2/sites-enabled/000-default to appear as below:
@@ -224,6 +264,7 @@ Then restart apache with
 
 It is highly recommended that the configuration change be tested to determine if they actually worked. This can be done by going to https://yourwebaddress/mycodo/includes/ with your browser, and if you get an error, "Forbidden: You don't have permission to access /mycodo/includes on this server," or similar, then everything is working correctly. If the page actually loads or there is any other error than "forbidden", there is a problem and you should diagnose the issue before opening your server to beyond your local network.
 
+<a name="#databases"></a>
 ### Database Creation
 
 Use the following commands and type 'all' when prompted to create databases
@@ -234,6 +275,7 @@ Use the following commands and type 'all' when prompted to create databases
 
 Follow the prompts to create an admin password, optionally create another user, and enable/disable guest access.
 
+<a name="#daemon"></a>
 ### Starting the Daemon
 
 To initialize GPIO pins at startup, open crontab with `sudo crontab -e` and add the following lines, then save with `Ctrl+e`
@@ -252,8 +294,10 @@ Reboot to allow everything to start up
 
 `sudo shutdown now -r`
 
+<a name="#usage"></a>
 ## Usage
 
+<a name="#webinterface"></a>
 ### Web Interface
 
 After the system is back up, go to http://your.rpi.address/mycodo and log in with the credentials you created with setup-database.py. Input fields of the web interface will display descriptions or instructions when the mouse is hovered over them.
@@ -262,6 +306,7 @@ Ensure the Daemon indicator at the top-left is blue, indicating the daemon is ru
 
 Additionally, relays must be properly set up before PID regulation can be achieved. Change the number of relays in the Settings tab and configure them. Change the `GPIO Pin` and `Signal ON` of each relay. The `GPIO Pin` is the pin on the raspberry pi (using BCM numbering, not board numbering) and the `Signal ON` is the required signal to activate the relay (close the circuit). If your relay activates when it receives a LOW (0 volt, ground) signal, set the `Signal ON` to LOW, otherwise set it HIGH.
 
+<a name="#PID"></a>
 ### PID Control
 
 The PID controller is the most common controller found in industrial settings, both for its simplicity and its complexity. PID stands for Proportional Integral Derivative.
@@ -278,6 +323,7 @@ The integral path takes the error and multiplies it by K<sub>i</sub>, then integ
 
 Last, the derivative path multiplies the error by K<sub>d</sub>, then differentiates it (K<sub>d</sub> · s). When the error rate changes over time, the output signal will change. The faster the change in error, the larger the derivative path becomes, decreasing the output rate of change.
 
+<a name="#configuration"></a>
 #### Configurations
 
 These K terms are called gains, and by adjusting them, the sensitivity of the system to each path is affected. When all three paths are summed, the PID output is produced. This output is used to turn on connected relays for certain durations of time, and hence, affect the environment.
@@ -286,12 +332,14 @@ Implementing a controller that effectively utilizes P, I, and D can be challengi
 
 Because systems will vary (e.g. airspace volume to regulate, degree of insulation, and the efficacy of the connected device(s) to modify the environment, etc.), each path will need to be adjusted to produce an effective output that attains the set point in both a reasonable amount of time and with as little oscillation possible around the set point. As such, your particular configuration will need to be determined through experimentation.
 
+<a name="#quick-setup"></a>
 ### Quick Set-up Examples
 
 These example setups are meant to illustrate how to configure regulation in particular directions, and not how to properly configure your P, I, and D variables. There are a number of online resources that discuss techniques and methods that have been developed to determine ideal PID values, and since here are no universal values that will work for every system, it is recommended to conduct your own research to understand and implement them.
 
 Provided merely as an example of the variance of PID values, one of my setups had temperature PID values (up regulation) of P=30, I=1.0, and D=0.5, and humidity PID values (up regulation) of P=1.0, I=0.2, and D=0.5. Furthermore, these values may not have been optimal but they worked well for the conditions of my environmental chamber.
 
+<a name="#high-humidity"></a>
 #### High-Humidity Regulation
 
 This will set up the system to raise the humidity to a certain level with one regulatory device (one that can raise the humidity).
@@ -312,20 +360,41 @@ If the humidity is not reaching the set point after a reasonable amount of time,
 
 Once regulation is achieved, experiment by reducing P slightly and increasing `I` by a low amount to start, such as 0.1 (or lower), then observe how the controller regulates. Slowly increase I until regulation becomes both quick yet there is little oscillation once regulation is achieved. At this point, you should be fairly familiar with experimenting with the system and the D value can be experimented with.
 
+<a name="#low-temperature"></a>
 #### Low-Temperature Regulation
 
 This will set up the system to lower the temperature to a certain level with one regulatory device (one that can lower the temperature).
 
 Use the same configuration as the High-Humidity Regulation example, except change `PID Regulate` to 'Down' and change the `Relay No.` and `P`, `I`, and `D` values of the down-regulating PID (represented by a Down arrow).
 
+<a name="#exact-temperature"></a>
 #### Exact Temperature Regulation
 
 This will set up the system to raise and lower the temperature to a certain level with two regulatory devices (one that can raise and one that can lower the temperature).
 
 Use the same configuration as the High-Humidity Regulation example, except change PID Regulate to 'Both' and change `Relay No.`, `P`, `I`, and `D` variables for both the up and down regulation of the PID controller. It may be necessary to increase the `PID Buffer` to prevent aggressive competition between up and down regulation (See the section below about the buffer).
 
+<a name="#tips"></a>
 ### Tips
 
 #### PID Buffer
 
 If regulation is set to 'Both' ways (up and down), the devices that regulate each direction may turn on excessively, essentially competing to maintain regulation of a precise set point. This is where the `PID Buffer` may be effective at reducing relay activity. By setting the PID Buffer, a zone is formed (Set Point ± Buffer) where relays will not activate while the environmental condition is measured within this range.
+
+<a name="license"></a>
+## License
+
+Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+Mycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.en.html) for more details.
+
+A full copy of the GNU General Public License can be found at <a href="http://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">http://www.gnu.org/licenses/gpl-3.0.en.html</a>
+
+<a name="links"></a>
+## Useful Links
+
+Thanks for using and supporting my software, however it may not be the latest version or it may have been altered if not obtained through an official distribution site. You should be able to find the latest version on github or my web site.
+
+https://github.com/kizniche/Mycodo
+
+http://KyleGabriel.com
