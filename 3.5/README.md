@@ -8,24 +8,24 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 + [New Dependencies](#new-dependencies)
 + [Supported Sensors](#supported-sensors)
 + [Software Install](#software-install)
- + [Prerequisites](#prerequisites)
- + [Wifi](#wifi)
- + [TempFS](#tempfs)
- + [Resolve Hosnames](#resolve-hostnames)
- + [Security](#security)
-  + [SSL](#enable-ssl)
-  + [.htaccess](#enable-htaccess)
- + [Database Creation](#database-creation)
- + [Daemon](#daemon)
+  + [Prerequisites](#prerequisites)
+  + [Wifi](#wifi)
+  + [TempFS](#tempfs)
+  + [Resolve Hosnames](#resolve-hostnames)
+  + [Security](#security)
+    + [SSL](#enable-ssl)
+    + [.htaccess](#enable-htaccess)
+  + [Database Creation](#database-creation)
+  + [Daemon](#daemon)
 + [Usage](#usage)
- + [Web Interface](#web-interface)
- + [PID Control](#pid-control)
- + [Configurations](#configuration)
- + [Quick Setup Examples](#quick-set-up-examples)
-  + [High-Humidity Regulation](#high-humidity-regulation)
-  + [Low-Temperature Regulation](#low-temperature-regulation)
-  + [Exact-Temperature Regulation](#exact-temperature-regulation)
-  + [Tips](#tips)
+  + [Web Interface](#web-interface)
+  + [PID Control](#pid-control)
+  + [Configurations](#configuration)
+  + [Quick Setup Examples](#quick-set-up-examples)
+    + [High-Humidity Regulation](#high-humidity-regulation)
+    + [Low-Temperature Regulation](#low-temperature-regulation)
+    + [Exact-Temperature Regulation](#exact-temperature-regulation)
+    + [Tips](#tips)
 + [License](#license)
 + [Useful Links](#useful-links)
 
@@ -69,6 +69,8 @@ sqlite3
 > [K30](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip)
 
 ## Software Install
+
+This installation assumes you are starting with a fresh install of Raspbian linux on a Raspberry Pi. If not, adjust your installation accordingly.
 
 ### Prerequisites
 
