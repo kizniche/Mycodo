@@ -622,9 +622,9 @@ if (isset($output_error)) {
                             <td>PID<br>Buffer</td>
                             <td>Sensor Read<br>Interval</td>
                             <td>Relay<br>No.</td>
-                            <td>P</td>
-                            <td>I</td>
-                            <td>D</td>
+                            <td>K<sub>p</sub></td>
+                            <td>K<sub>i</sub></td>
+                            <td>K<sub>d</sub></td>
                         </tr>
                         <tr style="height: 2.5em;">
                             <td rowspan=2 style="text-align: left;">Temperature</td>
@@ -773,9 +773,9 @@ if (isset($output_error)) {
                                 <td>PID<br>Buffer</td>
                                 <td>Sensor Read<br>Interval</td>
                                 <td>Relay<br>No.</td>
-                                <td>P</td>
-                                <td>I</td>
-                                <td>D</td>
+                                <td>K<sub>p</sub></td>
+                                <td>K<sub>i</sub></td>
+                                <td>K<sub>d</sub></td>
                             </tr>
                             <tr style="height: 2.5em;">
                                 <td rowspan=2 style="text-align: left;">Temperature</td>
@@ -993,9 +993,9 @@ if (isset($output_error)) {
                             <td>PID<br>Buffer</td>
                             <td>Sensor Read<br>Interval</td>
                             <td>Relay<br>No.</td>
-                            <td>P</td>
-                            <td>I</td>
-                            <td>D</td>
+                            <td>K<sub>p</sub></td>
+                            <td>K<sub>i</sub></td>
+                            <td>K<sub>d</sub></td>
                         </tr>
                         <tr style="height: 2.5em;">
                             <td rowspan=2 style="text-align: left;">CO<sub>2</sub></td>
@@ -1989,7 +1989,7 @@ if (isset($output_error)) {
                             Relay to activate during capture (0 to disable)
                         </td>
                         <td class="setting-value">
-                            <input style="width: 4em;" type="number" min="0" max="8" value="<?php echo $stream_relay; ?>" maxlength=4 size=1 name="Stream_Relay" title="A relay can be set to activate during the video stream. Enable/disable on the camera tab."/>
+                            <input style="width: 4em;" type="number" min="0" max="8" value="<?php echo $stream_relay; ?>" maxlength=4 size=1 name="Stream_Relay" title="A relay can be set to activate during the video stream."/>
                         </td>
                     </tr>
                     <tr>
@@ -2017,7 +2017,7 @@ if (isset($output_error)) {
                             Relay to activate during capture (0 to disable)
                         </td>
                         <td class="setting-value">
-                            <input style="width: 4em;" type="number" min="0" max="8" value="<?php echo $timelapse_relay; ?>" maxlength=4 size=1 name="Timelapse_Relay" title="A relay can be set to activate during a timelapse capture. Enable/disable on the camera tab."/>
+                            <input style="width: 4em;" type="number" min="0" max="8" value="<?php echo $timelapse_relay; ?>" maxlength=4 size=1 name="Timelapse_Relay" title="A relay can be set to activate during a timelapse capture."/>
                         </td>
                     </tr>
                     <tr>
