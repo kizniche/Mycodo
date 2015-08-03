@@ -207,7 +207,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                 echo "&id=$graph_id>";
                 echo '</div>';
     } else if ($graph_type == 'separate') { // Combined preset: Generate separate graphs
-        $first == 0;
+        $first = 0;
         if (array_sum($sensor_t_graph)) {
             $sensor_t_log_file_tmp = "/var/www/mycodo/log/sensor-t-tmp.log";
             $sensor_t_log_file = "/var/www/mycodo/log/sensor-t.log";
