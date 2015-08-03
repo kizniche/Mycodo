@@ -321,9 +321,9 @@ function get_graph_cookie($name) {
         case 'span': // Check if cookie exists for graph time span
             if (isset($_COOKIE['graph_span'])) {
                 if ($_COOKIE['graph_span'] == '1h' || $_COOKIE['graph_span'] == '6h' ||
-                    $_COOKIE['graph_span'] == '1d' || $_COOKIE['graph_span'] == '3d' ||
-                    $_COOKIE['graph_span'] == '1w' || $_COOKIE['graph_span'] == '1m' ||
-                    $_COOKIE['graph_span'] == '3m') {
+                    $_COOKIE['graph_span'] == '12h' || $_COOKIE['graph_span'] == '1d' ||
+                    $_COOKIE['graph_span'] == '3d' || $_COOKIE['graph_span'] == '1w' ||
+                    $_COOKIE['graph_span'] == '1m' || $_COOKIE['graph_span'] == '3m') {
                     return $_COOKIE['graph_span'];
                 }
             }

@@ -70,6 +70,10 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
         h = 6
         seconds = 21600
         time_ago = '6 Hours'
+    elif graph_span == "12h":
+        h = 12
+        seconds = 43200
+        time_ago = '12 Hours'
     elif graph_span == "1d" or graph_span == "default":
         d = 1
         seconds = 86400

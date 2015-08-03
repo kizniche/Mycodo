@@ -343,6 +343,7 @@ if (isset($output_error)) {
                                 <option value="default" <?php if ($graph_time_span == 'default') echo 'selected="selected"'; ?>>Day/Week</option>
                                 <option value="1h" <?php if ($graph_time_span == '1h') echo 'selected="selected"'; ?>>1 Hour</option>
                                 <option value="6h" <?php if ($graph_time_span == '6h') echo 'selected="selected"'; ?>>6 Hours</option>
+                                <option value="12h" <?php if ($graph_time_span == '12h') echo 'selected="selected"'; ?>>12 Hours</option>
                                 <option value="1d" <?php if ($graph_time_span == '1d') echo 'selected="selected"'; ?>>1 Day</option>
                                 <option value="3d" <?php if ($graph_time_span == '3d') echo 'selected="selected"'; ?>>3 Days</option>
                                 <option value="1w" <?php if ($graph_time_span == '1w') echo 'selected="selected"'; ?>>1 Week</option>
