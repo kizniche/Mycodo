@@ -35,13 +35,13 @@ a:active { color: #F2273B; }
 a:hover { color: #F2273B; }
 
 
-/*** views/edit.php ***/
-.edit-title {
-    padding-bottom: 0.3em;
-}
-
-
 /*** Header ***/
+
+.error {
+    margin: 0.5em 0;
+    color: red;
+    font-weight: bold;
+}
 
 .header {
     height: 4.5em;
@@ -93,6 +93,10 @@ hr.fade {
     padding-top: 0.8px;
     margin: 0 auto;
     display: inline-block;
+}
+
+.pid {
+  border-collapse: initial;
 }
 
 table.pid td {
