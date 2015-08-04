@@ -100,6 +100,13 @@ while ($row = $results->fetchArray()) {
     $pid_ht_hum_d_low[$row[0]] = $row[32];
 }
 
+$sensor_ht_preset = [];
+$results = $db->query('SELECT Preset FROM HTSensorPreset');
+while ($row = $results->fetchArray()) {
+    $sensor_ht_preset[] = $row[0];
+}
+
+
 $results = $db->query('SELECT Id, Name, Pin, Device, Period, Activated, Graph, CO2_Relay_High, CO2_Relay_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Set_Buffer, CO2_Period, CO2_P_High, CO2_I_High, CO2_D_High, CO2_P_Low, CO2_I_Low, CO2_D_Low FROM CO2Sensor');
 while ($row = $results->fetchArray()) {
     $sensor_co2_name[$row[0]] = $row[1];
