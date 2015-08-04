@@ -289,66 +289,50 @@ for ($p = 1; $p <= 4; $p++) {
         }
     }
 
-    // Save New Temperature/Humidity sensor and PID variables to preset
+    // Save Temperature/Humidity sensor and PID variables to a new preset
     if (isset($_POST['Change' . $p . 'HTSensorNewPreset']) && $_POST['sensorht' . $p . 'presetname'] != '') {
-        $stmt = $db->prepare('SELECT Name, Pin, Device, Period, Activated, Graph, Temp_Relay_High, Temp_Relay_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Set_Buffer, Temp_Period, Temp_P_High, Temp_I_High, Temp_D_High, Temp_P_Low, Temp_I_Low, Temp_D_Low, Hum_Relay_High, Hum_Relay_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Set_Buffer, Hum_Period, Hum_P_High, Hum_I_High, Hum_D_High, Hum_P_Low, Hum_I_Low, Hum_D_low FROM HTSensor WHERE ID=:id');
-        $stmt->bindValue(':id', $p);
-        $result = $stmt->execute();
-        $row = $result->fetchArray();
 
-        $stmt = $db->prepare("INSERT INTO HTSensorPreset (Preset, Name, Pin, Device, Period, Activated, Graph, Temp_Relay_High, Temp_Relay_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Set_Buffer, Temp_Period, Temp_P_High, Temp_I_High, Temp_D_High, Temp_P_Low, Temp_I_Low, Temp_D_Low, Hum_Relay_High, Hum_Relay_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Set_Buffer, Hum_Period, Hum_P_High, Hum_I_High, Hum_D_High, Hum_P_Low, Hum_I_Low, Hum_D_Low) VALUES(:preset, :name, :pin, :device, :period, :activated, :graph, :temprelayhigh, :temprelaylow, :tempor, :tempset, :tempsetdir, :tempsetbuf, :tempperiod, :tempphigh, :tempihigh, :tempdhigh, :tempplow, :tempilow, :tempdlow, :humrelayhigh, :humrelaylow, :humor, :humset, :humsetdir, :humsetbuf, :humperiod, :humphigh, :humihigh, :humdhigh, :humplow, :humilow, :humdlow)");
-        $stmt->bindValue(':name', $row['Name'], SQLITE3_TEXT);
-        $stmt->bindValue(':device', $row['Device'], SQLITE3_TEXT);
-        $stmt->bindValue(':pin', $row['Pin'], SQLITE3_INTEGER);
-        $stmt->bindValue(':period', $row['Period'], SQLITE3_INTEGER);
-        if ($row['Activated']) {
+        $stmt = $db->prepare("INSERT INTO HTSensorPreset (Preset, Name, Pin, Device, Period, Activated, Graph, Temp_Relay_High, Temp_Relay_Low, Temp_Set, Temp_Set_Direction, Temp_Set_Buffer, Temp_Period, Temp_P_High, Temp_I_High, Temp_D_High, Temp_P_Low, Temp_I_Low, Temp_D_Low, Hum_Relay_High, Hum_Relay_Low, Hum_Set, Hum_Set_Direction, Hum_Set_Buffer, Hum_Period, Hum_P_High, Hum_I_High, Hum_D_High, Hum_P_Low, Hum_I_Low, Hum_D_Low) VALUES(:preset, :name, :pin, :device, :period, :activated, :graph, :temprelayhigh, :temprelaylow, :tempset, :tempsetdir, :tempsetbuf, :tempperiod, :tempphigh, :tempihigh, :tempdhigh, :tempplow, :tempilow, :tempdlow, :humrelayhigh, :humrelaylow, :humset, :humsetdir, :humsetbuf, :humperiod, :humphigh, :humihigh, :humdhigh, :humplow, :humilow, :humdlow)");
+        $stmt->bindValue(':preset', $_POST['sensorht' . $p . 'presetname'], SQLITE3_TEXT);
+        $stmt->bindValue(':name', $_POST['sensorht' . $p . 'name'], SQLITE3_TEXT);
+        $stmt->bindValue(':device', $_POST['sensorht' . $p . 'device'], SQLITE3_TEXT);
+        $stmt->bindValue(':pin', (int)$_POST['sensorht' . $p . 'pin'], SQLITE3_INTEGER);
+        $stmt->bindValue(':period', (int)$_POST['sensorht' . $p . 'period'], SQLITE3_INTEGER);
+        if (isset($_POST['sensorht' . $p . 'activated'])) {
             $stmt->bindValue(':activated', 1, SQLITE3_INTEGER);
         } else {
             $stmt->bindValue(':activated', 0, SQLITE3_INTEGER);
         }
-        if ($row['Graph']) {
+        if (isset($_POST['sensorht' . $p . 'graph'])) {
             $stmt->bindValue(':graph', 1, SQLITE3_INTEGER);
         } else {
             $stmt->bindValue(':graph', 0, SQLITE3_INTEGER);
         }
-        $stmt->bindValue(':temprelayhigh', $row['Temp_Relay_High'], SQLITE3_INTEGER);
-        $stmt->bindValue(':temprelaylow', $row['Temp_Relay_Low'], SQLITE3_INTEGER);
-        $stmt->bindValue(':tempor', 1, SQLITE3_INTEGER);
-        $stmt->bindValue(':tempset', $row['Temp_Set'], SQLITE3_FLOAT);
-        $stmt->bindValue(':tempsetdir', $row['Temp_Set_Direction'], SQLITE3_INTEGER);
-        $stmt->bindValue(':tempsetbuf', $row['Temp_Set_Buffer'], SQLITE3_FLOAT);
-        $stmt->bindValue(':tempperiod', $row['Temp_Period'], SQLITE3_INTEGER);
-        $stmt->bindValue(':tempphigh', $row['Temp_P_High'], SQLITE3_FLOAT);
-        $stmt->bindValue(':tempihigh', $row['Temp_I_High'], SQLITE3_FLOAT);
-        $stmt->bindValue(':tempdhigh', $row['Temp_D_High'], SQLITE3_FLOAT);
-        $stmt->bindValue(':tempplow', $row['Temp_P_Low'], SQLITE3_FLOAT);
-        $stmt->bindValue(':tempilow', $row['Temp_I_Low'], SQLITE3_FLOAT);
-        $stmt->bindValue(':tempdlow', $row['Temp_D_Low'], SQLITE3_FLOAT);
-        $stmt->bindValue(':humrelayhigh', $row['Hum_Relay_High'], SQLITE3_INTEGER);
-        $stmt->bindValue(':humrelaylow', $row['Hum_Relay_Low'], SQLITE3_INTEGER);
-        $stmt->bindValue(':humor', 1, SQLITE3_INTEGER);
-        $stmt->bindValue(':humset', $row['Hum_Set'], SQLITE3_FLOAT);
-        $stmt->bindValue(':humsetdir', $row['Hum_Set_Direction'], SQLITE3_INTEGER);
-        $stmt->bindValue(':humsetbuf', $row['Hum_Set_Buffer'], SQLITE3_FLOAT);
-        $stmt->bindValue(':humperiod', $row['Hum_Period'], SQLITE3_INTEGER);
-        $stmt->bindValue(':humphigh', $row['Hum_P_High'], SQLITE3_FLOAT);
-        $stmt->bindValue(':humihigh', $row['Hum_I_High'], SQLITE3_FLOAT);
-        $stmt->bindValue(':humdhigh', $row['Hum_D_High'], SQLITE3_FLOAT);
-        $stmt->bindValue(':humplow', $row['Hum_P_Low'], SQLITE3_FLOAT);
-        $stmt->bindValue(':humilow', $row['Hum_I_Low'], SQLITE3_FLOAT);
-        $stmt->bindValue(':humdlow', $row['Hum_D_Low'], SQLITE3_FLOAT);
-        $stmt->bindValue(':preset', $_POST['sensorht' . $p . 'presetname'], SQLITE3_TEXT);
+        $stmt->bindValue(':temprelayhigh', (int)$_POST['SetHT' . $p . 'TempRelayHigh'], SQLITE3_INTEGER);
+        $stmt->bindValue(':temprelaylow', (int)$_POST['SetHT' . $p . 'TempRelayLow'], SQLITE3_INTEGER);
+        $stmt->bindValue(':tempset', (float)$_POST['SetHT' . $p . 'TempSet'], SQLITE3_FLOAT);
+        $stmt->bindValue(':tempsetdir', (float)$_POST['SetHT' . $p . 'TempSetDir'], SQLITE3_INTEGER);
+        $stmt->bindValue(':tempsetbuf', (float)$_POST['SetHT' . $p . 'TempSetBuf'], SQLITE3_FLOAT);
+        $stmt->bindValue(':tempperiod', (int)$_POST['SetHT' . $p . 'TempPeriod'], SQLITE3_INTEGER);
+        $stmt->bindValue(':tempphigh', (float)$_POST['SetHT' . $p . 'Temp_P_High'], SQLITE3_FLOAT);
+        $stmt->bindValue(':tempihigh', (float)$_POST['SetHT' . $p . 'Temp_I_High'], SQLITE3_FLOAT);
+        $stmt->bindValue(':tempdhigh', (float)$_POST['SetHT' . $p . 'Temp_D_High'], SQLITE3_FLOAT);
+        $stmt->bindValue(':tempplow', (float)$_POST['SetHT' . $p . 'Temp_P_Low'], SQLITE3_FLOAT);
+        $stmt->bindValue(':tempilow', (float)$_POST['SetHT' . $p . 'Temp_I_Low'], SQLITE3_FLOAT);
+        $stmt->bindValue(':tempdlow', (float)$_POST['SetHT' . $p . 'Temp_D_Low'], SQLITE3_FLOAT);
+        $stmt->bindValue(':humrelayhigh', (int)$_POST['SetHT' . $p . 'HumRelayHigh'], SQLITE3_INTEGER);
+        $stmt->bindValue(':humrelaylow', (int)$_POST['SetHT' . $p . 'HumRelayLow'], SQLITE3_INTEGER);
+        $stmt->bindValue(':humset', (float)$_POST['SetHT' . $p . 'HumSet'], SQLITE3_FLOAT);
+        $stmt->bindValue(':humsetdir', (float)$_POST['SetHT' . $p . 'HumSetDir'], SQLITE3_INTEGER);
+        $stmt->bindValue(':humsetbuf', (float)$_POST['SetHT' . $p . 'HumSetBuf'], SQLITE3_FLOAT);
+        $stmt->bindValue(':humperiod', (int)$_POST['SetHT' . $p . 'HumPeriod'], SQLITE3_INTEGER);
+        $stmt->bindValue(':humphigh', (float)$_POST['SetHT' . $p . 'Hum_P_High'], SQLITE3_FLOAT);
+        $stmt->bindValue(':humihigh', (float)$_POST['SetHT' . $p . 'Hum_I_High'], SQLITE3_FLOAT);
+        $stmt->bindValue(':humdhigh', (float)$_POST['SetHT' . $p . 'Hum_D_High'], SQLITE3_FLOAT);
+        $stmt->bindValue(':humplow', (float)$_POST['SetHT' . $p . 'Hum_P_Low'], SQLITE3_FLOAT);
+        $stmt->bindValue(':humilow', (float)$_POST['SetHT' . $p . 'Hum_I_Low'], SQLITE3_FLOAT);
+        $stmt->bindValue(':humdlow', (float)$_POST['SetHT' . $p . 'Hum_D_Low'], SQLITE3_FLOAT);
         $stmt->execute();
-
-        if ($pid_ht_temp_or[$p] == 0) {
-            shell_exec("$mycodo_client --pidstop HTTemp $p");
-        }
-        if ($pid_ht_hum_or[$p] == 0) {
-            shell_exec("$mycodo_client --pidstop HTHum $p");
-        }
-        if  ($pid_ht_temp_or[$p] != 0 or $pid_ht_hum_or[$p] != 0) {
-            shell_exec("$mycodo_client --sqlreload 0");
-        }
     }
 
     // Delete Temperature/Humidity preset

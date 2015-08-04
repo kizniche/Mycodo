@@ -721,7 +721,7 @@ if (isset($output_error)) {
                                 <td>Activate<br>Graphing</td>
                                 <td rowspan=2 style="padding: 0 1.5em;">
                                     <div style="padding: 0.2em 0">
-                                        Preset: <select style="width: 9em;" name="sensorht<?php echo $i; ?>preset">
+                                        Presets: <select style="width: 9em;" name="sensorht<?php echo $i; ?>preset">
                                             <option value="default">default</option>
                                             <?php
                                             for ($z = 0; $z < count($sensor_ht_preset); $z++) {
