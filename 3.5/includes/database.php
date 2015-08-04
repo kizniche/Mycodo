@@ -24,6 +24,7 @@
 
 $db = new SQLite3($mycodo_db);
 
+
 $results = $db->query('SELECT Relays, TSensors, HTSensors, CO2Sensors, Timers FROM Numbers');
 while ($row = $results->fetchArray()) {
     $relay_num = $row[0];
@@ -33,6 +34,7 @@ while ($row = $results->fetchArray()) {
     $timer_num = $row[4];
 }
 
+
 $results = $db->query('SELECT Id, Name, Pin, Trigger, Start_State FROM Relays');
 while ($row = $results->fetchArray()) {
     $relay_name[$row[0]] = $row[1];
@@ -40,6 +42,30 @@ while ($row = $results->fetchArray()) {
     $relay_trigger[$row[0]] = $row[3];
     $relay_start_state[$row[0]] = $row[4];
 }
+
+
+// Sensor/PID Presets
+$sensor_t_preset = [];
+$results = $db->query('SELECT Preset FROM TSensorPreset');
+while ($row = $results->fetchArray()) {
+    $sensor_t_preset[] = $row[0];
+}
+sort($sensor_t_preset, SORT_NATURAL | SORT_FLAG_CASE);
+
+$sensor_ht_preset = [];
+$results = $db->query('SELECT Preset FROM HTSensorPreset');
+while ($row = $results->fetchArray()) {
+    $sensor_ht_preset[] = $row[0];
+}
+sort($sensor_ht_preset, SORT_NATURAL | SORT_FLAG_CASE);
+
+$sensor_co2_preset = [];
+$results = $db->query('SELECT Preset FROM CO2SensorPreset');
+while ($row = $results->fetchArray()) {
+    $sensor_co2_preset[] = $row[0];
+}
+sort($sensor_co2_preset, SORT_NATURAL | SORT_FLAG_CASE);
+
 
 $results = $db->query('SELECT Id, Name, Pin, Device, Period, Activated, Graph, Temp_Relay_High, Temp_Relay_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Set_Buffer, Temp_Period, Temp_P_High, Temp_I_High, Temp_D_High, Temp_P_Low, Temp_I_Low, Temp_D_Low FROM TSensor');
 while ($row = $results->fetchArray()) {
@@ -63,6 +89,7 @@ while ($row = $results->fetchArray()) {
     $pid_t_temp_i_low[$row[0]] = $row[18];
     $pid_t_temp_d_low[$row[0]] = $row[19];
 }
+
 
 $results = $db->query('SELECT Id, Name, Pin, Device, Period, Activated, Graph, Temp_Relay_High, Temp_Relay_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Set_Buffer, Temp_Period, Temp_P_High, Temp_I_High, Temp_D_High, Temp_P_Low, Temp_I_Low, Temp_D_Low, Hum_Relay_High, Hum_Relay_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Set_Buffer, Hum_Period, Hum_P_High, Hum_I_High, Hum_D_High, Hum_P_Low, Hum_I_Low, Hum_D_low FROM HTSensor');
 while ($row = $results->fetchArray()) {
@@ -100,13 +127,6 @@ while ($row = $results->fetchArray()) {
     $pid_ht_hum_d_low[$row[0]] = $row[32];
 }
 
-$sensor_ht_preset = [];
-$results = $db->query('SELECT Preset FROM HTSensorPreset');
-while ($row = $results->fetchArray()) {
-    $sensor_ht_preset[] = $row[0];
-}
-sort($sensor_ht_preset, SORT_NATURAL | SORT_FLAG_CASE);
-
 
 $results = $db->query('SELECT Id, Name, Pin, Device, Period, Activated, Graph, CO2_Relay_High, CO2_Relay_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Set_Buffer, CO2_Period, CO2_P_High, CO2_I_High, CO2_D_High, CO2_P_Low, CO2_I_Low, CO2_D_Low FROM CO2Sensor');
 while ($row = $results->fetchArray()) {
@@ -131,6 +151,7 @@ while ($row = $results->fetchArray()) {
     $pid_co2_d_low[$row[0]] = $row[19];
 }
 
+
 $results = $db->query('SELECT Id, Name, State, Relay, DurationOn, DurationOff FROM Timers');
 while ($row = $results->fetchArray()) {
     $timer_name[$row[0]] = $row[1];
@@ -139,6 +160,7 @@ while ($row = $results->fetchArray()) {
     $timer_duration_on[$row[0]] = $row[4];
     $timer_duration_off[$row[0]] = $row[5];
 }
+
 
 $results = $db->query('SELECT Host, SSL, Port, User, Pass, Email_From, Email_To FROM SMTP');
 while ($row = $results->fetchArray()) {
@@ -151,6 +173,7 @@ while ($row = $results->fetchArray()) {
     $smtp_email_from = $row[6];
 }
 
+
 $results = $db->query('SELECT Relay, Timestamp, Display_Last, Extra_Parameters FROM CameraStill');
 while ($row = $results->fetchArray()) {
     $still_relay = $row[0];
@@ -159,11 +182,13 @@ while ($row = $results->fetchArray()) {
     $still_extra_parameters = $row[3];
 }
 
+
 $results = $db->query('SELECT Relay, Extra_Parameters FROM CameraStream');
 while ($row = $results->fetchArray()) {
     $stream_relay = $row[0];
     $stream_extra_parameters = $row[1];
 }
+
 
 $results = $db->query('SELECT Relay, Path, Prefix, File_Timestamp, Display_Last, Extra_Parameters FROM CameraTimelapse');
 while ($row = $results->fetchArray()) {
@@ -174,6 +199,7 @@ while ($row = $results->fetchArray()) {
     $timelapse_display_last = $row[4];
     $timelapse_extra_parameters = $row[5];
 }
+
 
 $results = $db->query('SELECT Refresh_Time FROM Misc');
 while ($row = $results->fetchArray()) {

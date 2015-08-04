@@ -546,8 +546,7 @@ if (isset($output_error)) {
                     <?php
                     for ($i = 1; $i <= $sensor_t_num; $i++) {
                     ?>
-                    <div style="width: 54em; border: 0.7em solid #EBEBEB; border-top: 0;">
-                        <table class="pid" style="width: 100%;">
+                    <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
                         <tr class="shade">
                             <td>Sensor<br>No.</td>
                             <td>Sensor<br>Name</td>
@@ -562,8 +561,24 @@ if (isset($output_error)) {
                             <td>Log<br>Interval</td>
                             <td>Activate<br>Logging</td>
                             <td>Activate<br>Graphing</td>
-                            <td rowspan="2" style="padding: 0 2em;">
-                                <input style="height: 2.5em;" type="submit" name="Change<?php echo $i; ?>TSensor" value="Save">
+                            <td colspan=3 rowspan=2 style="padding: 0 1.5em;">
+                                <div style="padding: 0.2em 0">
+                                    Presets: <select style="width: 9em;" name="sensort<?php echo $i; ?>preset">
+                                        <option value="default">default</option>
+                                        <?php
+                                        for ($z = 0; $z < count($sensor_t_preset); $z++) {
+                                            echo '<option value="' . $sensor_t_preset[$z] . '">' . $sensor_t_preset[$z] . '</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                    
+                                </div>
+                                <div style="padding: 0.2em 0">
+                                    <input type="submit" name="Change<?php echo $i; ?>TSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>TSensorOverwrite" value="Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>TSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_t_preset) == 0) echo ' disabled'; ?>>
+                                </div>
+                                <div style="padding: 0.2em 0">
+                                    <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensort<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>TSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>TSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
+                                </div>
                             </td>
                         </tr>
                         <tr class="shade" style="height: 2.5em;">
@@ -605,9 +620,6 @@ if (isset($output_error)) {
                                 <input type="checkbox" name="sensort<?php echo $i; ?>graph" value="1" <?php if ($sensor_t_graph[$i] == 1) echo 'checked'; ?>>
                             </td>
                         </tr>
-                    </table>
-
-                    <table class="pid" style="width: 100%; margin-top: 0.1em;">
                         <tr class="shade">
                             <td style="text-align: left;">Regulation</td>
                             <td>Current<br>State</td>
@@ -686,7 +698,6 @@ if (isset($output_error)) {
                             </td>
                         </tr>
                     </table>
-                    </div>
                     <div style="padding-bottom: <?php if ($i == $sensor_t_num) echo '2'; else echo '1'; ?>em;">
                     <?php
                     }
@@ -931,8 +942,7 @@ if (isset($output_error)) {
                     <?php
                     for ($i = 1; $i <= $sensor_co2_num; $i++) {
                     ?>
-                    <div style="width: 54em; border: 0.7em solid #EBEBEB; border-top: 0;">
-                    <table class="pid" style="width: 100%;">
+                    <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
                         <tr class="shade">
                             <td>Sensor<br>No.</td>
                             <td>Sensor<br>Name</td>
@@ -941,8 +951,24 @@ if (isset($output_error)) {
                             <td>Log<br>Interval</td>
                             <td>Activate<br>Logging</td>
                             <td>Activate<br>Graphing</td>
-                            <td rowspan="2" style="padding: 0 2em;">
-                                <input style="height: 2.5em;" type="submit" name="Change<?php echo $i; ?>Co2Sensor" value="Save">
+                            <td colspan=3 rowspan=2 style="padding: 0 1.5em;">
+                                <div style="padding: 0.2em 0">
+                                    Presets: <select style="width: 9em;" name="sensorco2<?php echo $i; ?>preset">
+                                        <option value="default">default</option>
+                                        <?php
+                                        for ($z = 0; $z < count($sensor_co2_preset); $z++) {
+                                            echo '<option value="' . $sensor_co2_preset[$z] . '">' . $sensor_co2_preset[$z] . '</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                    
+                                </div>
+                                <div style="padding: 0.2em 0">
+                                    <input type="submit" name="Change<?php echo $i; ?>CO2SensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_co2_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>CO2SensorOverwrite" value="Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>CO2SensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_co2_preset) == 0) echo ' disabled'; ?>>
+                                </div>
+                                <div style="padding: 0.2em 0">
+                                    <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensorco2<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>CO2SensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>CO2SensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
+                                </div>
                             </td>
                         </tr>
                         <tr class="shade" style="height: 2.5em;">
@@ -987,9 +1013,6 @@ if (isset($output_error)) {
                                 <input type="checkbox" name="sensorco2<?php echo $i; ?>graph" value="1" <?php if ($sensor_co2_graph[$i] == 1) echo 'checked'; ?>>
                             </td>
                         </tr>
-                    </table>
-
-                    <table class="pid" style="width: 100%; margin-top: 0.1em;">
                         <tr class="shade">
                             <td style="text-align: left;">Regulation</td>
                             <td>Current<br>State</td>
@@ -1068,7 +1091,6 @@ if (isset($output_error)) {
                             </td>
                         </tr>
                     </table>
-                    </div>
                     <div style="margin-bottom: <?php if ($i == $sensor_ht_num) echo '2'; else echo '1'; ?>em;"></div>
                     <?php
                     }
