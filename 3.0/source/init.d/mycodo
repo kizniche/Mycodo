@@ -33,6 +33,7 @@
 
 case "${1:-''}" in
     'start')
+        mkdir -p /var/www/mycodo/log
         mkdir -p /var/log/mycodo
         mkdir -p /var/log/mycodo/images
         mkdir -p /var/www/mycodo/camera-stills
@@ -42,6 +43,10 @@ case "${1:-''}" in
             chown www-data.www-data /var/www/mycodo/images
         fi
 
+        if [ ! -e /var/www/mycodo/log/auth.log ]; then
+            touch /var/www/mycodo/log/auth.log
+        fi
+        
         if [ ! -e /var/log/mycodo/sensor-tmp.log ]; then
             touch /var/log/mycodo/sensor-tmp.log
         fi
