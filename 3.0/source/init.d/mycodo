@@ -32,7 +32,7 @@
 ### END INIT INFO
 
 case "${1:-''}" in
-    'start')
+    'init')
         mkdir -p /var/www/mycodo/log
         mkdir -p /var/log/mycodo
         mkdir -p /var/log/mycodo/images
@@ -79,7 +79,9 @@ case "${1:-''}" in
         
         chmod -R 770 /var/log/mycodo
         chown -R www-data.www-data /var/log/mycodo
-        
+        ;;
+    'start')
+        $0 init
         python /var/www/mycodo/cgi-bin/mycodo.py -d s i 2>&1 &
         ;;
     'stop')
@@ -88,13 +90,19 @@ case "${1:-''}" in
         printf "Checking if daemon has stopped."
         
         sleep 1
-        
         printf "."
-        
         sleep 1
-        
         printf "."
-        
+        sleep 1
+        printf "."
+        sleep 1
+        printf "."
+        sleep 1
+        printf "."
+        sleep 1
+        printf "."
+        sleep 1
+        printf "."
         sleep 1
         
         if ps aux | grep '[m]ycodo.py -d'
@@ -128,7 +136,7 @@ case "${1:-''}" in
         ;;
     'restart'|'reload'|'force-reload')
         $0 stop
-	$0 start
+	    $0 start
 	;;
     'status')
         ;;
