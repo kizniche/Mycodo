@@ -34,7 +34,7 @@ for ($p = 1; $p <= $sensor_t_num; $p++) {
         }
     }
 }
-for ($p = 1; $p <= $sensor_ht_num; $p++) {
+for ($p = 0; $p < count($sensor_ht); $p++) {
     if ($sensor_ht_activated[$p]) {
         $last_ht_sensor[$p] = `awk '$10 == $p {print}' /var/www/mycodo/log/sensor-ht-tmp.log | tail -n 1`;
         if ($last_ht_sensor[$p] != '') {

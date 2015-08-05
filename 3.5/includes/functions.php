@@ -110,7 +110,7 @@ function view_sql_db($sqlite_db) {
  */
 
 // Generate and display graphs on the Main tab
-function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_num, $sensor_t_graph, $sensor_ht_num, $sensor_ht_graph, $sensor_co2_num, $sensor_co2_graph) {
+function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_num, $sensor_t_graph, $sensor_ht_id, $sensor_ht_graph, $sensor_co2_num, $sensor_co2_graph) {
     // Main preset: Display graphs of past day and week
     if ($graph_time_span == 'default') {
 
@@ -147,7 +147,8 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
             $sensor_ht_log_generate = "/var/tmp/sensor-ht-logs-default.log";
             system("cat $sensor_ht_log_file $sensor_ht_log_file_tmp > $sensor_ht_log_generate");
 
-            for ($n = 1; $n <= $sensor_ht_num; $n++) {
+            $count = 0;
+            for ($n = 0; $n < count($sensor_ht_id); $n++) {
                 if ($sensor_ht_graph[$n] == 1) {
                     if (!file_exists("/var/www/mycodo/images/graph-htdefaultdefault-$graph_id-$n.png")) {
                         shell_exec("$mycodo_client --graph ht $graph_type $graph_time_span $graph_id $n");
@@ -160,7 +161,8 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                     echo "&id=$graph_id>";
                     echo '</div>';
 
-                    if ($n != $sensor_ht_num || array_sum($sensor_co2_graph)) {
+                    $count++;
+                    if ($count != array_sum($sensor_ht_graph) || array_sum($sensor_co2_graph)) {
                         echo '<hr class="fade"/>';
                     }
                 }
@@ -239,7 +241,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
             $sensor_ht_log_generate = "/var/tmp/sensor-ht-logs-separate.log";
             system("cat $sensor_ht_log_file $sensor_ht_log_file_tmp > $sensor_ht_log_generate");
 
-            for ($n = 1; $n <= $sensor_ht_num; $n++ ) {
+            for ($n = 0; $n < count($sensor_ht_id); $n++ ) {
                 if ($sensor_ht_graph[$n] == 1) {
                     if (!file_exists("/var/www/mycodo/images/graph-htseparate$graph_time_span-$graph_id-$n.png")) {
                         shell_exec("$mycodo_client --graph ht $graph_type $graph_time_span $graph_id $n");

@@ -52,10 +52,10 @@ $lock_mjpg_streamer_relay = $lock_path . "/mycodo-stream-light";
 $lock_timelapse = $lock_path . "/mycodo_time_lapse";
 $lock_timelapse_light = $lock_path . "/mycodo-timelapse-light";
 
-require($install_path . "/includes/functions.php"); // Mycodo functions
-
 if (!file_exists($mycodo_db)) exit("Mycodo database does not exist. Run '/var/www/mycodo/setup-database.py -i' to create required database.");
 require($install_path . "/includes/database.php"); // Initial SQL database load to variables
+
+require($install_path . "/includes/functions.php"); // Mycodo functions
 
 // Output an error if the user guest attempts to submit certain forms
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -63,6 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $output_error = 'guest';
     } else if ($_SESSION['user_name'] != 'guest') {
         // Only non-guest users may perform these actions
+        require($install_path . "/includes/database.php"); // Reload SQLite database
         require($install_path . "/includes/restricted.php"); // Configuration changes
         require($install_path . "/includes/database.php"); // Reload SQLite database
     }
@@ -200,7 +201,7 @@ if (isset($output_error)) {
         }
     }
     // Display brief Temp/Hum sensor and PID data in header
-    for ($i = 1; $i <= $sensor_ht_num; $i++) {
+    for ($i = 0; $i < count($sensor_ht); $i++) {
         if ($sensor_ht_activated[$i] == 1) { ?>
             <div class="header">
                 <table>
@@ -362,22 +363,24 @@ if (isset($output_error)) {
                 <div>
                     <?php
                     // Generate and display Main tab graphs
-                    generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_num, $sensor_t_graph, $sensor_ht_num, $sensor_ht_graph, $sensor_co2_num, $sensor_co2_graph);
+                    if (count($sensor_ht) > 0) {
+                        generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_num, $sensor_t_graph, $sensor_ht_id, $sensor_ht_graph, $sensor_co2_num, $sensor_co2_graph);
 
-                    // If any graphs are to be displayed, show links to the legends
-                    if (array_sum($sensor_t_graph) + array_sum($sensor_ht_graph) + array_sum($sensor_co2_graph)) { ?>
-                        <div style="width: 100%; padding: 1em 0 0 0; text-align: center;">
-                            <div style="text-align: center; padding-top: 0.5em;">
-                                <a href="https://github.com/kizniche/Mycodo" target="_blank">Mycodo on GitHub</a>
+                        // If any graphs are to be displayed, show links to the legends
+                        if (array_sum($sensor_t_graph) + array_sum($sensor_ht_graph) + array_sum($sensor_co2_graph)) { ?>
+                            <div style="width: 100%; padding: 1em 0 0 0; text-align: center;">
+                                <div style="text-align: center; padding-top: 0.5em;">
+                                    <a href="https://github.com/kizniche/Mycodo" target="_blank">Mycodo on GitHub</a>
+                                </div>
                             </div>
-                        </div>
-                    <?php
-                    } else { ?>
-                        <div style="width: 100%; padding: 2em 0 0 0; text-align: center;">
-                            There are currently 0 sensors activated for graphing.
-                            <br>Sensors can be activated for logging and graphing from the Sensor tab.
-                        </div>
-                    <?php
+                        <?php
+                        } else { ?>
+                            <div style="width: 100%; padding: 2em 0 0 0; text-align: center;">
+                                There are currently 0 sensors activated for graphing.
+                                <br>Sensors can be activated for logging and graphing from the Sensor tab.
+                            </div>
+                        <?php
+                        }
                     }
                     ?>
             </div>
@@ -425,69 +428,50 @@ if (isset($output_error)) {
                     </div>
                 </div>
 
-                <div style="float: left; margin: 0 0.5em; padding: 0.5em;">
+                <div style="float: left; margin: 0 0.5em; padding: 0 0.5em;">
                     <div style="float: left; padding-right: 1em;">
-                        <input type="submit" name="ChangeNoTSensors" value="Set">
-                        <select name="numtsensors">
-                            <option value="0"<?php
-                                if ($sensor_t_num == 0) {
-                                    echo ' selected="selected"';
-                                } ?>>0</option>
-                            <option value="1"<?php
-                                if ($sensor_t_num == 1) {
-                                    echo ' selected="selected"';
-                                } ?>>1</option>
-                            <option value="2"<?php
-                                if ($sensor_t_num == 2) {
-                                    echo ' selected="selected"';
-                                } ?>>2</option>
-                            <option value="3"<?php
-                                if ($sensor_t_num == 3) {
-                                    echo ' selected="selected"';
-                                } ?>>3</option>
-                            <option value="4"<?php
-                                if ($sensor_t_num == 4) {
-                                    echo ' selected="selected"';
-                                } ?>>4</option>
-                        </select>
+                        <div class="config-title">T Sensors</div>
+                        <div>
+                            <select name="numtsensors">
+                                <option value="0"<?php
+                                    if ($sensor_t_num == 0) {
+                                        echo ' selected="selected"';
+                                    } ?>>0</option>
+                                <option value="1"<?php
+                                    if ($sensor_t_num == 1) {
+                                        echo ' selected="selected"';
+                                    } ?>>1</option>
+                                <option value="2"<?php
+                                    if ($sensor_t_num == 2) {
+                                        echo ' selected="selected"';
+                                    } ?>>2</option>
+                                <option value="3"<?php
+                                    if ($sensor_t_num == 3) {
+                                        echo ' selected="selected"';
+                                    } ?>>3</option>
+                                <option value="4"<?php
+                                    if ($sensor_t_num == 4) {
+                                        echo ' selected="selected"';
+                                    } ?>>4</option>
+                            </select>
+                            <input type="submit" name="ChangeNoTSensors" value="Set">
+                        </div>
                     </div>
-                    <div class="config-title">T Sensors</div>
+                    
                     <div style="clear: both;"></div>
                 </div>
 
-                <div style="float: left; margin: 0 0.5em; padding: 0.5em;">
-                    <div style="float: left; padding-right: 1em;">
-                        <input type="submit" name="ChangeNoHTSensors" value="Set">
-                        <select name="numhtsensors">
-                            <option value="0"<?php
-                                if ($sensor_ht_num == 0) {
-                                    echo ' selected="selected"';
-                                } ?>>0</option>
-                            <option value="1"<?php
-                                if ($sensor_ht_num == 1) {
-                                    echo ' selected="selected"';
-                                } ?>>1</option>
-                            <option value="2"<?php
-                                if ($sensor_ht_num == 2) {
-                                    echo ' selected="selected"';
-                                } ?>>2</option>
-                            <option value="3"<?php
-                                if ($sensor_ht_num == 3) {
-                                    echo ' selected="selected"';
-                                } ?>>3</option>
-                            <option value="4"<?php
-                                if ($sensor_ht_num == 4) {
-                                    echo ' selected="selected"';
-                                } ?>>4</option>
-                        </select>
-                    </div>
+                <div style="float: left; margin: 0 0.5em; padding: 0 0.5em;">
+                    <div style="clear: both;"></div>
                     <div class="config-title">HT Sensors</div>
-                    <div style="clear: both;"></div>
+                    <div style="padding-right: 0.6em;">
+                        <input style="width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddHTSensorsNumber" title="Add Sensors"/> <input type="submit" name="AddHTSensors" value="Add">
+                    </div>
                 </div>
 
-                <div style="float: left; margin: 0 0.5em; padding: 0.5em;">
-                    <div style="float: left; padding-right: 1em;">
-                        <input type="submit" name="ChangeNoCo2Sensors" value="Set">
+                <div style="float: left; margin: 0 0.5em; padding: 0 0.5em;">
+                    <div class="config-title">CO<sub>2</sub> Sensors</div>
+                    <div>
                         <select name="numco2sensors">
                             <option value="0"<?php
                                 if ($sensor_co2_num == 0) {
@@ -498,9 +482,8 @@ if (isset($output_error)) {
                                     echo ' selected="selected"';
                                 } ?>>1</option>
                         </select>
+                        <input type="submit" name="ChangeNoCo2Sensors" value="Set">
                     </div>
-                    <div class="config-title">CO<sub>2</sub> Sensors</div>
-                    <div style="clear: both;"></div>
                 </div>
 
             </div>
@@ -707,15 +690,15 @@ if (isset($output_error)) {
                 }
                 ?>
 
-                <?php if ($sensor_ht_num > 0) { ?>
+                <?php if (count($sensor_ht) > 0) { ?>
                 <div class="sensor-title">Humidity/Temperature Sensors</div>
                 <div style="margin-bottom: 1.5em;">
                     <?php
-                    for ($i = 1; $i <= $sensor_ht_num; $i++) {
+                    for ($i = 0; $i < count($sensor_ht); $i++) {
                     ?>
                     <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
                         <tr class="shade">
-                            <td>Sensor<br>No.</td>
+                            <td>HT Sensor <?php echo $i; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_ht_id[$i]; ?>)</span></td>
                             <td>Sensor<br>Name</td>
                             <td>Sensor<br>Device</td>
                             <td>GPIO<br>Pin</td>
@@ -744,10 +727,10 @@ if (isset($output_error)) {
                         </tr>
                         <tr class="shade" style="height: 2.5em;">
                             <td class="shade" style="vertical-align: middle;">
-                                <?php echo $i; ?>
+                                <button type="submit" name="Delete<?php echo $i; ?>HTSensor" title="Delete Sensor">Delete<br>Sensor</button>
                             </td>
                             <td>
-                                <input style="width: 10em;" type="text" value="<?php echo $sensor_ht_name[$i]; ?>" maxlength=12 size=10 name="sensorht<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
+                                <input style="width: 6.5em;" type="text" value="<?php echo $sensor_ht_name[$i]; ?>" maxlength=12 size=10 name="sensorht<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
                             </td>
                             <td>
                                 <select style="width: 6.5em;" name="sensorht<?php echo $i; ?>device">

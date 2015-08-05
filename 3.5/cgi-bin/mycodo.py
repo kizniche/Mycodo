@@ -110,49 +110,50 @@ pid_t_temp_active = [0] * 5
 
 # Temperature & Humidity Sensors
 sensor_ht_num = 0
-sensor_ht_name = [0] * 5
-sensor_ht_device = [0] * 5
-sensor_ht_pin = [0] * 5
-sensor_ht_period = [0] * 5
-sensor_ht_activated = [0] * 5
-sensor_ht_graph = [0] * 5
-sensor_ht_read_temp_c = [0] * 5
-sensor_ht_read_hum = [0] * 5
-sensor_ht_dewpt_c = [0] * 5
+sensor_ht_id = []
+sensor_ht_name = []
+sensor_ht_device = []
+sensor_ht_pin = []
+sensor_ht_period = []
+sensor_ht_activated = []
+sensor_ht_graph = []
+sensor_ht_read_temp_c = []
+sensor_ht_read_hum = []
+sensor_ht_dewpt_c = []
 
 # HT Sensor Temperature PID
-pid_ht_temp_relay_high = [0] * 5
-pid_ht_temp_relay_low = [0] * 5
-pid_ht_temp_set = [0] * 5
-pid_ht_temp_set_dir = [0] * 5
-pid_ht_temp_set_buf = [0] * 5
-pid_ht_temp_period = [0] * 5
-pid_ht_temp_p_high = [0] * 5
-pid_ht_temp_i_high = [0] * 5
-pid_ht_temp_d_high = [0] * 5
-pid_ht_temp_p_low = [0] * 5
-pid_ht_temp_i_low = [0] * 5
-pid_ht_temp_d_low = [0] * 5
-pid_ht_temp_or = [0] * 5
-pid_ht_temp_alive = [1] * 5
-pid_ht_temp_active = [0] * 5
+pid_ht_temp_relay_high = []
+pid_ht_temp_relay_low = []
+pid_ht_temp_set = []
+pid_ht_temp_set_dir = []
+pid_ht_temp_set_buf = []
+pid_ht_temp_period = []
+pid_ht_temp_p_high = []
+pid_ht_temp_i_high = []
+pid_ht_temp_d_high = []
+pid_ht_temp_p_low = []
+pid_ht_temp_i_low = []
+pid_ht_temp_d_low = []
+pid_ht_temp_or = []
+pid_ht_temp_alive = []
+pid_ht_temp_active = []
 
 # Humidity PID
-pid_ht_hum_relay_high = [0] * 5
-pid_ht_hum_relay_low = [0] * 5
-pid_ht_hum_set = [0] * 5
-pid_ht_hum_set_dir = [0] * 5
-pid_ht_hum_set_buf = [0] * 5
-pid_ht_hum_period = [0] * 5
-pid_ht_hum_p_high = [0] * 5
-pid_ht_hum_i_high = [0] * 5
-pid_ht_hum_d_high = [0] * 5
-pid_ht_hum_p_low = [0] * 5
-pid_ht_hum_i_low = [0] * 5
-pid_ht_hum_d_low = [0] * 5
-pid_ht_hum_or = [0] * 5
-pid_ht_hum_alive = [1] * 5
-pid_ht_hum_active = [0] * 5
+pid_ht_hum_relay_high = []
+pid_ht_hum_relay_low = []
+pid_ht_hum_set = []
+pid_ht_hum_set_dir = []
+pid_ht_hum_set_buf = []
+pid_ht_hum_period = []
+pid_ht_hum_p_high = []
+pid_ht_hum_i_high = []
+pid_ht_hum_d_high = []
+pid_ht_hum_p_low = []
+pid_ht_hum_i_low = []
+pid_ht_hum_d_low = []
+pid_ht_hum_or = []
+pid_ht_hum_alive = []
+pid_ht_hum_active = []
 
 # CO2 Sensors
 sensor_co2_num = 0
@@ -211,6 +212,12 @@ smtp_email_from = None
 smtp_email_to = None
 
 # Miscellaneous
+start_all_t_pids = None
+stop_all_t_pids = None
+start_all_ht_pids = None
+stop_all_ht_pids = None
+start_all_co2_pids = None
+stop_all_co2_pids = None
 camera_light = None
 server = None
 client_que = '0'
@@ -238,8 +245,56 @@ class ComServer(rpyc.Service):
             logging.info("[Client command] Generate Graph: %s %s %s %s %s", sensor_type, graph_type, graph_span, graph_id, sensor_number)
         mycodoGraph.generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number, sensor_t_num, sensor_t_name, sensor_t_graph, sensor_t_period, pid_t_temp_relay_high, pid_t_temp_relay_low, sensor_ht_num, sensor_ht_name, sensor_ht_graph, sensor_ht_period, pid_ht_temp_relay_high, pid_ht_temp_relay_low, pid_ht_hum_relay_high, pid_ht_hum_relay_low, sensor_co2_num, sensor_co2_name, sensor_co2_graph, sensor_co2_period, pid_co2_relay_high, pid_co2_relay_low, relay_name)
         return 1
+    def exposed_PID_restart(self, sensortype):
+        logging.info("[Daemon] Commanding all %s PIDs to stop", sensortype)
+        if sensortype == 'T':
+            global start_all_t_pids
+            global stop_all_t_pids
+            stop_all_t_pids = 1
+            for i in range(1, 5):
+                if pid_t_temp_or[i] == 0:
+                    while pid_t_temp_alive[i] == 0:
+                        time.sleep(0.1)
+            time.sleep(0.25)
+            read_sql()
+            logging.info("[Daemon] Commanding all T PIDs to start")
+            time.sleep(0.25)
+            start_all_t_pids = 1
+        elif sensortype == 'HT':
+            global start_all_ht_pids
+            global stop_all_ht_pids
+            stop_all_ht_pids = 1
+            for i in range(0, len(sensor_ht_id)):
+                if pid_ht_temp_or[i] == 0:
+                    while pid_ht_temp_alive[i] == 0:
+                        time.sleep(0.1)
+            for i in range(0, len(sensor_ht_id)):
+                if pid_ht_hum_or[i] == 0:
+                    while pid_ht_hum_alive[i] == 0:
+                        time.sleep(0.1)
+            time.sleep(0.25)
+            read_sql()
+            logging.info("[Daemon] Commanding all HT PIDs to start")
+            time.sleep(0.25)
+            start_all_ht_pids = 1
+        elif sensortype == 'CO2':
+            global start_all_co2_pids
+            global stop_all_co2_pids
+            stop_all_co2_pids = 1
+            for i in range(1, 5):
+                if pid_co2_or[i] == 0:
+                    while pid_co2_alive[i] == 0:
+                        time.sleep(0.1)
+            time.sleep(0.25)
+            read_sql()
+            logging.info("[Daemon] Commanding all CO2 PIDs to start")
+            time.sleep(0.25)
+            start_all_co2_pids = 1
+        return 1
+
     def exposed_PID_start(self, pidtype, number):
         PID_start(pidtype, number)
+        return 1
     def exposed_PID_stop(self, pidtype, number):
         PID_stop(pidtype, number)
         return 1
@@ -274,8 +329,7 @@ class ComServer(rpyc.Service):
         return 1
     def exposed_Status(self, var):
         logging.debug("[Client command] Request status report")
-
-        return "1 Test1 Test2"
+        return 1
     def exposed_Terminate(self, remoteCommand):
         global client_que
         client_que = 'TerminateServer'
@@ -462,10 +516,26 @@ def daemon(output, log):
     global change_sensor_log
     global server
     global client_que
+    global start_all_t_pids
+    global stop_all_t_pids
+    global start_all_ht_pids
+    global stop_all_ht_pids
+    global start_all_co2_pids
+    global stop_all_co2_pids
+    start_all_t_pids = 1
+    stop_all_t_pids = 0
+    start_all_ht_pids = 1
+    stop_all_ht_pids = 0
+    start_all_co2_pids = 1
+    stop_all_co2_pids = 0
     timer_time = [0] * 9
     timerTSensorLog  = [0] * 5
     timerHTSensorLog  = [0] * 5
     timerCo2SensorLog  = [0] * 5
+    pid_t_temp_alive = [1] * 5
+    pid_ht_temp_alive =  [1] * len(sensor_ht_id)
+    pid_ht_hum_alive =  [1] * len(sensor_ht_id)
+    pid_co2_alive =  [1] * 5
 
     # Set log level based on startup argument
     if (log == 'warning'):
@@ -490,8 +560,8 @@ def daemon(output, log):
     ct.start()
     time.sleep(1)
 
-    logging.info("[Daemon] Reading SQL database and initializing variables")
-    read_sql()
+    # logging.info("[Daemon] Reading SQL database and initializing variables")
+    # read_sql()
 
     logging.info("[Daemon] Conducting initial sensor readings: %s T, %s HT, and %s CO2", sum(sensor_t_activated), sum(sensor_ht_activated), sum(sensor_co2_activated))
 
@@ -499,9 +569,18 @@ def daemon(output, log):
         if sensor_t_device[i] != 'Other' and sensor_t_activated[i] == 1:
             read_t_sensor(i)
 
-    for i in range(1, sensor_ht_num+1):
+
+    global sensor_ht_dewpt_c
+    global sensor_ht_read_hum
+    global sensor_ht_read_temp_c
+    sensor_ht_dewpt_c = [0] * len(sensor_ht_id)
+    sensor_ht_read_hum = [0] * len(sensor_ht_id)
+    sensor_ht_read_temp_c = [0] * len(sensor_ht_id)
+    
+    for i in range(0, len(sensor_ht_id)):
         if sensor_ht_device[i] != 'Other' and sensor_ht_activated[i] == 1:
             read_ht_sensor(i)
+
 
     for i in range(1, sensor_co2_num+1):
         if sensor_co2_device[i] != 'Other' and sensor_co2_activated[i] == 1:
@@ -515,8 +594,8 @@ def daemon(output, log):
     for i in range(1, 5):
         timerTSensorLog[i] = int(time.time()) + sensor_t_period[i]
 
-    for i in range(1, 5):
-        timerHTSensorLog[i] = int(time.time()) + sensor_ht_period[i]
+    for i in range(0, len(sensor_ht_id)):
+        timerHTSensorLog.append(int(time.time()) + sensor_ht_period[i])
 
     for i in range(1, 5):
         timerCo2SensorLog[i] = int(time.time()) + sensor_co2_period[i]
@@ -524,42 +603,6 @@ def daemon(output, log):
     for i in range(1, 9):
         timer_time[i] = int(time.time())
 
-    threads_t_t = []
-    threads_ht_t = []
-    threads_ht_h = []
-    threads_co2 = []
-
-    for i in range(1, 5):
-        if (pid_t_temp_or[i] == 0):
-            pid_t_temp_active[i] = 1
-            rod = threading.Thread(target = t_sensor_temperature_monitor,
-                args = ('Thread-T-T-%d' % i, i,))
-            rod.start()
-            threads_t_t.append(rod)
-
-    for i in range(1, 5):
-        if (pid_ht_temp_or[i] == 0):
-            pid_ht_temp_active[i] = 1
-            rod = threading.Thread(target = ht_sensor_temperature_monitor,
-                args = ('Thread-HT-T-%d' % i, i,))
-            rod.start()
-            threads_ht_t.append(rod)
-
-    for i in range(1, 5):
-        if (pid_ht_hum_or[i] == 0):
-            pid_ht_hum_active[i] = 1
-            rod = threading.Thread(target = ht_sensor_humidity_monitor,
-                args = ('Thread-HT-H-%d' % i, i,))
-            rod.start()
-            threads_ht_h.append(rod)
-
-    for i in range(1, 5):
-        if (pid_co2_or[i] == 0):
-            pid_co2_active[i] = 1
-            rod = threading.Thread(target = co2_monitor,
-                args = ('Thread-CO2-%d' % i, i,))
-            rod.start()
-            threads_co2.append(rod)
 
     while True: # Main loop of the daemon
         if client_que != '0': # Run remote commands issued by mycodo-client.py
@@ -587,7 +630,7 @@ def daemon(output, log):
                     else:
                         logging.warning("Could not read Hum/Temp-%s sensor, not writing to sensor log", client_var)
                 else:
-                    for i in range(1, int(sensor_ht_num)+1):
+                    for i in range(0, len(sensor_ht_id)):
                         if sensor_ht_activated[i]:
                             if read_ht_sensor(i) == 1:
                                 mycodoLog.write_ht_sensor_log(sensor_ht_read_temp_c, sensor_ht_read_hum, sensor_ht_dewpt_c, i)
@@ -617,8 +660,8 @@ def daemon(output, log):
 
                 logging.info("[Daemon] Commanding all PIDs to turn off")
                 pid_t_temp_alive = [0] * 5
-                pid_ht_temp_alive =  [0] * 5
-                pid_ht_hum_alive =  [0] * 5
+                pid_ht_temp_alive =  [0] * len(sensor_ht_id)
+                pid_ht_hum_alive =  [0] * len(sensor_ht_id)
                 pid_co2_alive =  [0] * 5
 
                 for t in threads_t_t:
@@ -637,12 +680,12 @@ def daemon(output, log):
                         while pid_t_temp_alive[i] == 0:
                             time.sleep(0.1)
 
-                for i in range(1, 5):
+                for i in range(0, len(sensor_ht_id)):
                     if pid_ht_temp_or[i] == 0:
                         while pid_ht_temp_alive[i] == 0:
                             time.sleep(0.1)
 
-                for i in range(1, 5):
+                for i in range(0, len(sensor_ht_id)):
                     if pid_ht_hum_or[i] == 0:
                         while pid_ht_hum_alive[i] == 0:
                             time.sleep(0.1)
@@ -665,6 +708,71 @@ def daemon(output, log):
 
             client_que = '0'
 
+        # Stop/Start all PID threads of a particular sensor type
+        if stop_all_t_pids:
+            pid_t_temp_alive = [0] * 5
+            stop_all_t_pids = 0
+
+        if stop_all_ht_pids:
+            pid_ht_temp_alive =  [0] * len(sensor_ht_id)
+            pid_ht_hum_alive =  [0] * len(sensor_ht_id)
+            stop_all_ht_pids = 0
+
+        if stop_all_co2_pids:
+            pid_co2_temp_alive = [0] * 5
+            stop_all_co2_pids = 0
+
+        if start_all_t_pids:
+            pid_t_temp_alive = [1] * 5
+            threads_t_t = []
+            for i in range(1, 5):
+                if (pid_t_temp_or[i] == 0):
+                    pid_t_temp_active[i] = 1
+                    rod = threading.Thread(target = t_sensor_temperature_monitor,
+                        args = ('Thread-T-T-%d' % i, i,))
+                    rod.start()
+                    threads_t_t.append(rod)
+            start_all_t_pids = 0
+
+        if start_all_ht_pids:
+            pid_ht_temp_alive =  [1] * len(sensor_ht_id)
+            pid_ht_hum_alive =  [1] * len(sensor_ht_id)
+            threads_ht_t = []
+            for i in range(0, len(sensor_ht_id)):
+                if (pid_ht_temp_or[i] == 0):
+                    pid_ht_temp_active.append(1)
+                    rod = threading.Thread(target = ht_sensor_temperature_monitor,
+                        args = ('Thread-HT-T-%d' % i, i,))
+                    rod.start()
+                    threads_ht_t.append(rod)
+                else:
+                    pid_ht_temp_active.append(0)
+            threads_ht_h = []
+            for i in range(0, len(sensor_ht_id)):
+                if (pid_ht_hum_or[i] == 0):
+                    pid_ht_hum_active.append(1)
+                    rod = threading.Thread(target = ht_sensor_humidity_monitor,
+                        args = ('Thread-HT-H-%d' % i, i,))
+                    rod.start()
+                    threads_ht_h.append(rod)
+                else:
+                     pid_ht_hum_active.append(0)
+            start_all_ht_pids = 0
+
+        if start_all_co2_pids:
+            pid_co2_alive =  [1] * 5
+            threads_co2 = []
+            for i in range(1, 5):
+                if (pid_co2_or[i] == 0):
+                    pid_co2_active[i] = 1
+                    rod = threading.Thread(target = co2_monitor,
+                        args = ('Thread-CO2-%d' % i, i,))
+                    rod.start()
+                    threads_co2.append(rod)
+            start_all_co2_pids = 0
+
+
+        # Stop/Start indevidual PID threads
         if pid_t_temp_down:
             if pid_t_temp_active[pid_number] == 1:
                 logging.info("[Daemon] Shutting Down Temperature PID Thread-T-T-%s", pid_number)
@@ -784,7 +892,7 @@ def daemon(output, log):
                 timerTSensorLog[i] = int(time.time()) + sensor_t_period[i]
 
         # Write temperature and humidity to sensor log
-        for i in range(1, 5):
+        for i in range(0, len(sensor_ht_id)):
             if int(time.time()) > timerHTSensorLog[i] and sensor_ht_device[i] != 'Other' and sensor_ht_activated[i] == 1:
                 logging.debug("[Timer Expiration] Read sensor %s every %s seconds: Write sensor log", i, sensor_ht_period[i])
                 if read_ht_sensor(i) == 1:
@@ -915,6 +1023,13 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
 
         time.sleep(0.1)
     logging.info("[PID T-Temperature-%s] Shutting Down %s", sensor, ThreadName)
+
+    # Turn activated PID relays off
+    if pid_t_temp_relay_high[sensor]:
+        relay_onoff(int(pid_t_temp_relay_high[sensor]), 'off')
+    if pid_t_temp_relay_low[sensor]:
+        relay_onoff(int(pid_t_temp_relay_low[sensor]), 'off')
+
     pid_t_temp_alive[sensor] = 2
 
 
@@ -1008,6 +1123,12 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
 
         time.sleep(0.1)
     logging.info("[PID HT-Temperature-%s] Shutting Down %s", sensor, ThreadName)
+
+    if pid_ht_temp_relay_high[sensor]:
+        relay_onoff(int(pid_ht_temp_relay_high[sensor]), 'off')
+    if pid_ht_temp_relay_low[sensor]:
+        relay_onoff(int(pid_ht_temp_relay_low[sensor]), 'off')
+
     pid_ht_temp_alive[sensor] = 2
 
 
@@ -1099,6 +1220,12 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
 
         time.sleep(0.1)
     logging.info("[PID HT-Humidity-%s] Shutting Down %s", sensor, ThreadName)
+
+    if pid_ht_hum_relay_high[sensor]:
+        relay_onoff(int(pid_ht_hum_relay_high[sensor]), 'off')
+    if pid_ht_hum_relay_low[sensor]:
+        relay_onoff(int(pid_ht_hum_relay_low[sensor]), 'off')
+
     pid_ht_hum_alive[sensor] = 2
 
 
@@ -1189,6 +1316,8 @@ def co2_monitor(ThreadName, sensor):
         time.sleep(0.1)
     logging.info("[PID CO2-%s] Shutting Down %s", sensor, ThreadName)
     pid_co2_alive[sensor] = 2
+
+
 
 
 def PID_start(type, number):
@@ -1406,7 +1535,6 @@ def read_ht_sensor(sensor):
 
         
         for i in range(0, ht_read_tries): # Multiple attempts to get first reading
-            logging.debug("[TEST Sensor-%s] %s %s %s", sensor, pid_ht_temp_alive[sensor], pid_ht_hum_alive[sensor], (not pid_ht_temp_alive[sensor] and not pid_ht_hum_alive[sensor]))
             if not pid_ht_temp_alive[sensor] and not pid_ht_hum_alive[sensor]:
                 return 0
             
@@ -1592,6 +1720,7 @@ def read_sql():
     global pid_t_temp_i_low
     global pid_t_temp_d_low
 
+    global sensor_ht_id
     global sensor_ht_num
     global sensor_ht_name
     global sensor_ht_device
@@ -1600,6 +1729,7 @@ def read_sql():
     global sensor_ht_activated
     global sensor_ht_graph
 
+    global pid_ht_temp_alive
     global pid_ht_temp_relay_high
     global pid_ht_temp_relay_low
     global pid_ht_temp_set
@@ -1614,6 +1744,7 @@ def read_sql():
     global pid_ht_temp_i_low
     global pid_ht_temp_d_low
 
+    global pid_ht_hum_alive
     global pid_ht_hum_relay_high
     global pid_ht_hum_relay_low
     global pid_ht_hum_set
@@ -1627,6 +1758,49 @@ def read_sql():
     global pid_ht_hum_p_low
     global pid_ht_hum_i_low
     global pid_ht_hum_d_low
+
+    # Temperature & Humidity Sensors
+    sensor_ht_num = 0
+    sensor_ht_id = []
+    sensor_ht_name = []
+    sensor_ht_device = []
+    sensor_ht_pin = []
+    sensor_ht_period = []
+    sensor_ht_activated = []
+    sensor_ht_graph = []
+    sensor_ht_read_temp_c = []
+    sensor_ht_read_hum = []
+    sensor_ht_dewpt_c = []
+
+    # HT Sensor Temperature PID
+    pid_ht_temp_relay_high = []
+    pid_ht_temp_relay_low = []
+    pid_ht_temp_set = []
+    pid_ht_temp_set_dir = []
+    pid_ht_temp_set_buf = []
+    pid_ht_temp_period = []
+    pid_ht_temp_p_high = []
+    pid_ht_temp_i_high = []
+    pid_ht_temp_d_high = []
+    pid_ht_temp_p_low = []
+    pid_ht_temp_i_low = []
+    pid_ht_temp_d_low = []
+    pid_ht_temp_or = []
+
+    # Humidity PID
+    pid_ht_hum_relay_high = []
+    pid_ht_hum_relay_low = []
+    pid_ht_hum_set = []
+    pid_ht_hum_set_dir = []
+    pid_ht_hum_set_buf = []
+    pid_ht_hum_period = []
+    pid_ht_hum_p_high = []
+    pid_ht_hum_i_high = []
+    pid_ht_hum_d_high = []
+    pid_ht_hum_p_low = []
+    pid_ht_hum_i_low = []
+    pid_ht_hum_d_low = []
+    pid_ht_hum_or = []
 
     global sensor_co2_num
     global sensor_co2_name
@@ -1737,41 +1911,44 @@ def read_sql():
     cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, Temp_Relay_High, Temp_Relay_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Set_Buffer, Temp_Period, Temp_P_High, Temp_I_High, Temp_D_High, Temp_P_Low, Temp_I_Low, Temp_D_Low, Hum_Relay_High, Hum_Relay_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Set_Buffer, Hum_Period, Hum_P_High, Hum_I_High, Hum_D_High, Hum_P_Low, Hum_I_Low, Hum_D_low FROM HTSensor')
     if verbose:
         print "Table: HTSensor"
+    count = 0
     for row in cur :
         if verbose:
             print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19], row[20], row[21], row[22], row[23], row[24], row[25], row[26], row[27], row[28], row[29], row[30], row[31], row[32])
-        sensor_ht_name[row[0]] = row[1]
-        sensor_ht_pin[row[0]] = row[2]
-        sensor_ht_device[row[0]] = row[3]
-        sensor_ht_period[row[0]] = row[4]
-        sensor_ht_activated[row[0]] = row[5]
-        sensor_ht_graph[row[0]] = row[6]
-        pid_ht_temp_relay_high[row[0]] = row[7]
-        pid_ht_temp_relay_low[row[0]] = row[8]
-        pid_ht_temp_or[row[0]] = row[9]
-        pid_ht_temp_set[row[0]] = row[10]
-        pid_ht_temp_set_dir[row[0]] = row[11]
-        pid_ht_temp_set_buf[row[0]] = row[12]
-        pid_ht_temp_period[row[0]] = row[13]
-        pid_ht_temp_p_high[row[0]] = row[14]
-        pid_ht_temp_i_high[row[0]] = row[15]
-        pid_ht_temp_d_high[row[0]] = row[16]
-        pid_ht_temp_p_low[row[0]] = row[17]
-        pid_ht_temp_i_low[row[0]] = row[18]
-        pid_ht_temp_d_low[row[0]] = row[19]
-        pid_ht_hum_relay_high[row[0]] = row[20]
-        pid_ht_hum_relay_low[row[0]] = row[21]
-        pid_ht_hum_or[row[0]] = row[22]
-        pid_ht_hum_set[row[0]] = row[23]
-        pid_ht_hum_set_dir[row[0]] = row[24]
-        pid_ht_hum_set_buf[row[0]] = row[25]
-        pid_ht_hum_period[row[0]] = row[26]
-        pid_ht_hum_p_high[row[0]] = row[27]
-        pid_ht_hum_i_high[row[0]] = row[28]
-        pid_ht_hum_d_high[row[0]] = row[29]
-        pid_ht_hum_p_low[row[0]] = row[30]
-        pid_ht_hum_i_low[row[0]] = row[31]
-        pid_ht_hum_d_low[row[0]] = row[32]
+        sensor_ht_id.append(row[0])
+        sensor_ht_name.append(row[1])
+        sensor_ht_pin.append(row[2])
+        sensor_ht_device.append(row[3])
+        sensor_ht_period.append(row[4])
+        sensor_ht_activated.append(row[5])
+        sensor_ht_graph.append(row[6])
+        pid_ht_temp_relay_high.append(row[7])
+        pid_ht_temp_relay_low.append(row[8])
+        pid_ht_temp_or.append(row[9])
+        pid_ht_temp_set.append(row[10])
+        pid_ht_temp_set_dir.append(row[11])
+        pid_ht_temp_set_buf.append(row[12])
+        pid_ht_temp_period.append(row[13])
+        pid_ht_temp_p_high.append(row[14])
+        pid_ht_temp_i_high.append(row[15])
+        pid_ht_temp_d_high.append(row[16])
+        pid_ht_temp_p_low.append(row[17])
+        pid_ht_temp_i_low.append(row[18])
+        pid_ht_temp_d_low.append(row[19])
+        pid_ht_hum_relay_high.append(row[20])
+        pid_ht_hum_relay_low.append(row[21])
+        pid_ht_hum_or.append(row[22])
+        pid_ht_hum_set.append(row[23])
+        pid_ht_hum_set_dir.append(row[24])
+        pid_ht_hum_set_buf.append(row[25])
+        pid_ht_hum_period.append(row[26])
+        pid_ht_hum_p_high.append(row[27])
+        pid_ht_hum_i_high.append(row[28])
+        pid_ht_hum_d_high.append(row[29])
+        pid_ht_hum_p_low.append(row[30])
+        pid_ht_hum_i_low.append(row[31])
+        pid_ht_hum_d_low.append(row[32])
+        count += 1
 
     cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, CO2_Relay_High, CO2_Relay_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Set_Buffer, CO2_Period, CO2_P_High, CO2_I_High, CO2_D_High, CO2_P_Low, CO2_I_Low, CO2_D_Low FROM CO2Sensor ')
     if verbose:
