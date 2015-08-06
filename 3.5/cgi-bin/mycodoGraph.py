@@ -473,10 +473,12 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set key at graph 0.0, graph 0.97\n')
                 plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                 plot.write('unset y2tics\n')
-                plot.write('set ytics 20\n')
-                plot.write('set mytics 4\n')
+                y1_min = '-100'
                 y1_max = '100'
                 plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
+                plot.write('set ytics 25\n')
+                plot.write('set mytics 5\n')
+                plot.write('set xzeroaxis linetype 1 linecolor rgb \'#000000\' linewidth 1\n')
                 plot.write('unset title\n')
                 plot.write('plot \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '"')
 
@@ -519,12 +521,14 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set origin 0.0,0.0\n')
                 plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                 plot.write('set key at graph 0.01, graph 0.97\n')
-                plot.write('set ytics 20\n')
-                plot.write('set mytics 4\n')
                 plot.write('unset y2tics\n')
+                y1_min = '-100'
                 y1_max = '100'
-                plot.write('unset title\n')
                 plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
+                plot.write('set ytics 25\n')
+                plot.write('set mytics 5\n')
+                plot.write('set xzeroaxis linetype 1 linecolor rgb \'#000000\' linewidth 1\n')
+                plot.write('unset title\n')
                 plot.write('plot \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '"')
                 
                 first = 0
@@ -571,10 +575,12 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                 plot.write('set key at graph 0.01, graph 0.97\n')
                 plot.write('unset y2tics\n')
-                plot.write('set ytics 20\n')
-                plot.write('set mytics 4\n')
+                y1_min = '-100'
                 y1_max = '100'
                 plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
+                plot.write('set ytics 25\n')
+                plot.write('set mytics 5\n')
+                plot.write('set xzeroaxis linetype 1 linecolor rgb \'#000000\' linewidth 1\n')
                 plot.write('unset title\n')
                 plot.write('plot \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '"')
                 
@@ -619,10 +625,12 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set origin 0.0,0.4\n')
                 plot.write('set key at graph 0.015, graph 0.95\n')
                 plot.write('set format x \"%H:%M\\n%m/%d\"\n')
+                y1_min = '-100'
                 y1_max = '100'
                 plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-                plot.write('set ytics 20\n')
+                plot.write('set ytics 25\n')
                 plot.write('set mytics 2\n')
+                plot.write('set xzeroaxis linetype 1 linecolor rgb \'#000000\' linewidth 1\n')
                 plot.write('unset title\n')
                 plot.write('plot \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '"')
                 
@@ -692,10 +700,12 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set origin 0.0,0.4\n')
                 plot.write('set key at graph 0.0, graph 0.95\n')
                 plot.write('set format x \"%H:%M\\n%m/%d\"\n')
+                y1_min = '-100'
                 y1_max = '100'
                 plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-                plot.write('set ytics 20\n')
+                plot.write('set ytics 25\n')
                 plot.write('set mytics 2\n')
+                plot.write('set xzeroaxis linetype 1 linecolor rgb \'#000000\' linewidth 1\n')
                 plot.write('unset y2tics\n')
                 plot.write('unset title\n')
                 plot.write('plot \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '"')
@@ -778,10 +788,12 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set origin 0.011,0.4\n')
                 plot.write('set key at graph 0.01, graph 0.95\n')
                 plot.write('set format x \"%H:%M\\n%m/%d\"\n')
+                y1_min = '-100'
                 y1_max = '100'
                 plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-                plot.write('set ytics 20\n')
+                plot.write('set ytics 25\n')
                 plot.write('set mytics 2\n')
+                plot.write('set xzeroaxis linetype 1 linecolor rgb \'#000000\' linewidth 1\n')
                 plot.write('unset title\n')
                 plot.write('plot \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '"')
 
