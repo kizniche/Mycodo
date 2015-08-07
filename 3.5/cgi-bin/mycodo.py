@@ -214,10 +214,10 @@ class ComServer(rpyc.Service):
     def exposed_ChangeRelay(self, relay, state):
         if (state == 1):
             logging.info("[Client command] Changing Relay %s to HIGH", relay)
-            relay_onoff(int(relay), 'on')
+            relay_onoff(int(relay)+1, 'on')
         elif (state == 0):
             logging.info("[Client command] Changing Relay %s to LOW", relay)
-            relay_onoff(int(relay), 'off')
+            relay_onoff(int(relay)+1, 'off')
         else:
             logging.info("[Client command] Turning Relay %s On for %s seconds", relay, state)
             rod = threading.Thread(target = relay_on_duration,
