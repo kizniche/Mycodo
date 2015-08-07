@@ -72,7 +72,7 @@ sensor_t_lock_path = "%s/sensor-t" % lock_directory
 sensor_ht_lock_path = "%s/sensor-ht" % lock_directory
 sensor_co2_lock_path = "%s/sensor-co2" % lock_directory
 
-# GPIO pins (BCM numbering) and name of devices attached to relay
+# Relays
 relay_id = []
 relay_pin = []
 relay_name = []
@@ -88,7 +88,6 @@ sensor_t_period = []
 sensor_t_activated = []
 sensor_t_graph = []
 sensor_t_read_temp_c = []
-sensor_t_read_hum = []
 sensor_t_dewpt_c = []
 
 # T Sensor Temperature PID
@@ -164,6 +163,29 @@ pid_co2_or = []
 pid_co2_alive = []
 pid_co2_active = []
 
+# Timers
+timer_id = []
+timer_name = []
+timer_relay = []
+timer_state = []
+timer_duration_on = []
+timer_duration_off = []
+timer_change = 0
+
+timer_time = []
+timerTSensorLog  = []
+timerHTSensorLog  = []
+timerCo2SensorLog  = []
+
+# SMTP notify
+smtp_host = None
+smtp_ssl = None
+smtp_port = None
+smtp_user = None
+smtp_pass = None
+smtp_email_from = None
+smtp_email_to = None
+
 # PID Restarting
 pid_number = None
 pid_t_temp_down = 0
@@ -174,24 +196,6 @@ pid_ht_hum_down = 0
 pid_ht_hum_up = 0
 pid_co2_down = 0
 pid_co2_up = 0
-
-# Timers
-timer_id = []
-timer_name = []
-timer_relay = []
-timer_state = []
-timer_duration_on = []
-timer_duration_off = []
-timer_change = 0
-
-# SMTP notify
-smtp_host = None
-smtp_ssl = None
-smtp_port = None
-smtp_user = None
-smtp_pass = None
-smtp_email_from = None
-smtp_email_to = None
 
 # Miscellaneous
 start_all_t_pids = None
@@ -510,14 +514,6 @@ def daemon(output, log):
     stop_all_ht_pids = 0
     start_all_co2_pids = 1
     stop_all_co2_pids = 0
-    timer_time = []
-    timerTSensorLog  = []
-    timerHTSensorLog  = []
-    timerCo2SensorLog  = []
-    pid_t_temp_alive = [1] * len(sensor_t_id)
-    pid_ht_temp_alive =  [1] * len(sensor_ht_id)
-    pid_ht_hum_alive =  [1] * len(sensor_ht_id)
-    pid_co2_alive =  [1] * len(sensor_co2_id)
 
     # Set log level based on startup argument
     if (log == 'warning'):
@@ -547,24 +543,14 @@ def daemon(output, log):
 
     logging.info("[Daemon] Conducting initial sensor readings: %s T, %s HT, and %s CO2", sum(sensor_t_activated), sum(sensor_ht_activated), sum(sensor_co2_activated))
 
-    global sensor_t_read_temp_c
-    sensor_t_read_temp_c = [0] * len(sensor_t_id)
     for i in range(0, len(sensor_t_id)):
         if sensor_t_device[i] != 'Other' and sensor_t_activated[i] == 1:
             read_t_sensor(i)
 
-    global sensor_ht_dewpt_c
-    global sensor_ht_read_hum
-    global sensor_ht_read_temp_c
-    sensor_ht_dewpt_c = [0] * len(sensor_ht_id)
-    sensor_ht_read_hum = [0] * len(sensor_ht_id)
-    sensor_ht_read_temp_c = [0] * len(sensor_ht_id)
     for i in range(0, len(sensor_ht_id)):
         if sensor_ht_device[i] != 'Other' and sensor_ht_activated[i] == 1:
             read_ht_sensor(i)
 
-    global sensor_co2_read_co2
-    sensor_co2_read_co2 = [0] * len(sensor_co2_id)
     for i in range(0, len(sensor_co2_id)):
         if sensor_co2_device[i] != 'Other' and sensor_co2_activated[i] == 1:
             read_co2_sensor(i)
@@ -574,21 +560,12 @@ def daemon(output, log):
     # How often to backup all logs to SD card
     timerLogBackup = int(time.time()) + 21600  # 21600 seconds = 6 hours
 
-    for i in range(0, len(sensor_t_id)):
-        timerTSensorLog.append(int(time.time()) + sensor_t_period[i])
-
-    for i in range(0, len(sensor_ht_id)):
-        timerHTSensorLog.append(int(time.time()) + sensor_ht_period[i])
-
-    for i in range(0, len(sensor_co2_id)):
-        timerCo2SensorLog.append(int(time.time()) + sensor_co2_period[i])
-
-    for i in range(0, len(timer_id)):
-        timer_time.append(int(time.time()))
-
-
     while True: # Main loop of the daemon
-        if client_que != '0': # Run remote commands issued by mycodo-client.py
+
+        #
+        # Run remote commands issued by mycodo-client.py
+        #
+        if client_que != '0':
             if client_que == 'write_t_sensor_log':
                 logging.debug("[Client command] Write T Sensor Log")
                 if (client_var != 0 and sensor_t_activated[client_var]):
@@ -691,19 +668,13 @@ def daemon(output, log):
 
             client_que = '0'
 
+
+        #
         # Stop/Start all PID threads of a particular sensor type
+        #
         if stop_all_t_pids:
             pid_t_temp_alive = [0] * len(sensor_t_id)
             stop_all_t_pids = 0
-
-        if stop_all_ht_pids:
-            pid_ht_temp_alive =  [0] * len(sensor_ht_id)
-            pid_ht_hum_alive =  [0] * len(sensor_ht_id)
-            stop_all_ht_pids = 0
-
-        if stop_all_co2_pids:
-            pid_co2_temp_alive = [0] * len(sensor_co2_id)
-            stop_all_co2_pids = 0
 
         if start_all_t_pids:
             pid_t_temp_alive = [1] * len(sensor_t_id)
@@ -716,6 +687,12 @@ def daemon(output, log):
                     rod.start()
                     threads_t_t.append(rod)
             start_all_t_pids = 0
+
+
+        if stop_all_ht_pids:
+            pid_ht_temp_alive =  [0] * len(sensor_ht_id)
+            pid_ht_hum_alive =  [0] * len(sensor_ht_id)
+            stop_all_ht_pids = 0
 
         if start_all_ht_pids:
             pid_ht_temp_alive =  [1] * len(sensor_ht_id)
@@ -742,6 +719,11 @@ def daemon(output, log):
                      pid_ht_hum_active.append(0)
             start_all_ht_pids = 0
 
+
+        if stop_all_co2_pids:
+            pid_co2_temp_alive = [0] * len(sensor_co2_id)
+            stop_all_co2_pids = 0
+
         if start_all_co2_pids:
             pid_co2_alive =  [1] * len(sensor_co2_id)
             threads_co2 = []
@@ -754,8 +736,9 @@ def daemon(output, log):
                     threads_co2.append(rod)
             start_all_co2_pids = 0
 
-
+        #
         # Stop/Start indevidual PID threads
+        #
         if pid_t_temp_down:
             if pid_t_temp_active[pid_number] == 1:
                 logging.info("[Daemon] Shutting Down Temperature PID Thread-T-T-%s", pid_number)
@@ -778,6 +761,7 @@ def daemon(output, log):
             else:
                 logging.warning("[Daemon] Cannot Start Temperature PID Thread-T-T-%s: It's already running.", pid_number)
             pid_t_temp_up = 0
+
 
         if pid_ht_temp_down:
             if pid_ht_temp_active[pid_number] == 1:
@@ -802,6 +786,7 @@ def daemon(output, log):
                 logging.warning("[Daemon] Cannot Start Temperature PID Thread-HT-T-%s: It's already running.", pid_number)
             pid_ht_temp_up = 0
 
+
         if pid_ht_hum_down:
             if pid_ht_hum_active[pid_number] == 1:
                 logging.info("[Daemon] Shutting Down Humidity PID Thread-HT-H-%s", pid_number)
@@ -824,6 +809,7 @@ def daemon(output, log):
             else:
                 logging.warning("[Daemon] Cannot Start Humidity PID Thread-HT-H-%s: It's already running.", pid_number)
             pid_ht_hum_up = 0
+
 
         if pid_co2_down:
             if pid_co2_active[pid_number] == 1:
@@ -848,7 +834,10 @@ def daemon(output, log):
                 logging.warning("[Daemon] Cannot Start CO2 PID Thread-CO2-%s: It's already running.", pid_number)
             pid_co2_up = 0
 
-        # Write temperature to sensor log
+
+        #
+        # Read sensors and write logs
+        #
         for i in range(0, len(sensor_t_id)):
             if int(time.time()) > timerTSensorLog[i] and sensor_t_device[i] != 'Other' and sensor_t_activated[i] == 1:
                 logging.debug("[Timer Expiration] Read sensor %s every %s seconds: Write sensor log", i, sensor_t_period[i])
@@ -858,7 +847,6 @@ def daemon(output, log):
                     logging.warning("Could not read Temp-%s sensor, not writing to sensor log", i)
                 timerTSensorLog[i] = int(time.time()) + sensor_t_period[i]
 
-        # Write temperature and humidity to sensor log
         for i in range(0, len(sensor_ht_id)):
             if int(time.time()) > timerHTSensorLog[i] and sensor_ht_device[i] != 'Other' and sensor_ht_activated[i] == 1:
                 logging.debug("[Timer Expiration] Read sensor %s every %s seconds: Write sensor log", i, sensor_ht_period[i])
@@ -868,7 +856,6 @@ def daemon(output, log):
                     logging.warning("Could not read Hum/Temp-%s sensor, not writing to sensor log", i)
                 timerHTSensorLog[i] = int(time.time()) + sensor_ht_period[i]
 
-        # Write CO2 to sensor log
         for i in range(0, len(sensor_co2_id)):
             if int(time.time()) > timerCo2SensorLog[i] and sensor_co2_device[i] != 'Other' and sensor_co2_activated[i] == 1:
                 if read_co2_sensor(i) == 1:
@@ -877,12 +864,16 @@ def daemon(output, log):
                     logging.warning("Could not read CO2-%s sensor, not writing to sensor log", i)
                 timerCo2SensorLog[i] = int(time.time()) + sensor_co2_period[i]
 
-        # Concatenate local log with tempfs log every 6 hours
+        #
+        # Concatenate local log with tempfs log every 6 hours (backup)
+        #
         if int(time.time()) > timerLogBackup:
             mycodoLog.Concatenate_Logs()
             timerLogBackup = int(time.time()) + 21600
 
-        # Handle timers
+        #
+        # Simple timers
+        #
         if len(timer_id) != 0:
             for i in range(0, len(timer_id)):
                 if int(time.time()) > timer_time[i]:
@@ -1574,6 +1565,8 @@ def read_K30(sensor):
 
 # Read variables from the SQLite database
 def read_sql():
+
+    # Temperature sensor globals
     global sensor_t_id
     global sensor_t_name
     global sensor_t_device
@@ -1581,7 +1574,6 @@ def read_sql():
     global sensor_t_period
     global sensor_t_activated
     global sensor_t_graph
-
     global pid_t_temp_alive
     global pid_t_temp_relay_high
     global pid_t_temp_relay_low
@@ -1592,8 +1584,10 @@ def read_sql():
     global pid_t_temp_p
     global pid_t_temp_i
     global pid_t_temp_d
+    global sensor_t_read_temp_c
+    
 
-    # Temperature Sensors
+    # Temperature sensor variable reset
     sensor_t_id = []
     sensor_t_name = []
     sensor_t_device = []
@@ -1601,8 +1595,6 @@ def read_sql():
     sensor_t_period = []
     sensor_t_activated = []
     sensor_t_graph = []
-
-    # T Sensor Temperature PID
     pid_t_temp_relay_high = []
     pid_t_temp_relay_low = []
     pid_t_temp_set = []
@@ -1612,7 +1604,9 @@ def read_sql():
     pid_t_temp_i = []
     pid_t_temp_d = []
     pid_t_temp_or = []
+    sensor_t_read_temp_c = []
 
+    # Temperature/Humidity sensor globals
     global sensor_ht_id
     global sensor_ht_name
     global sensor_ht_device
@@ -1620,7 +1614,6 @@ def read_sql():
     global sensor_ht_period
     global sensor_ht_activated
     global sensor_ht_graph
-
     global pid_ht_temp_alive
     global pid_ht_temp_relay_high
     global pid_ht_temp_relay_low
@@ -1631,7 +1624,6 @@ def read_sql():
     global pid_ht_temp_p
     global pid_ht_temp_i
     global pid_ht_temp_d
-
     global pid_ht_hum_alive
     global pid_ht_hum_relay_high
     global pid_ht_hum_relay_low
@@ -1642,8 +1634,12 @@ def read_sql():
     global pid_ht_hum_p
     global pid_ht_hum_i
     global pid_ht_hum_d
+    global sensor_ht_dewpt_c
+    global sensor_ht_read_hum
+    global sensor_ht_read_temp_c
+    
 
-    # Temperature & Humidity Sensors
+    # Temperature/Humidity sensor variable reset
     sensor_ht_id = []
     sensor_ht_name = []
     sensor_ht_device = []
@@ -1651,8 +1647,7 @@ def read_sql():
     sensor_ht_period = []
     sensor_ht_activated = []
     sensor_ht_graph = []
-
-    # HT Sensor Temperature PID
+    pid_ht_temp_alive = []
     pid_ht_temp_relay_high = []
     pid_ht_temp_relay_low = []
     pid_ht_temp_set = []
@@ -1662,8 +1657,7 @@ def read_sql():
     pid_ht_temp_i = []
     pid_ht_temp_d = []
     pid_ht_temp_or = []
-
-    # Humidity PID
+    pid_ht_hum_alive = []
     pid_ht_hum_relay_high = []
     pid_ht_hum_relay_low = []
     pid_ht_hum_set = []
@@ -1673,7 +1667,11 @@ def read_sql():
     pid_ht_hum_i = []
     pid_ht_hum_d = []
     pid_ht_hum_or = []
+    sensor_ht_dewpt_c = []
+    sensor_ht_read_hum = []
+    sensor_ht_read_temp_c = []
 
+    # CO2 sensor globals
     global sensor_co2_id
     global sensor_co2_name
     global sensor_co2_device
@@ -1681,7 +1679,6 @@ def read_sql():
     global sensor_co2_period
     global sensor_co2_activated
     global sensor_co2_graph
-
     global pid_co2_relay_high
     global pid_co2_relay_low
     global pid_co2_set
@@ -1691,8 +1688,9 @@ def read_sql():
     global pid_co2_p
     global pid_co2_i
     global pid_co2_d
+    global sensor_co2_read_co2
 
-    # CO2 Sensors
+    # CO2 sensor variable reset
     sensor_co2_id = []
     sensor_co2_name = []
     sensor_co2_device = []
@@ -1700,8 +1698,6 @@ def read_sql():
     sensor_co2_period = []
     sensor_co2_activated = []
     sensor_co2_graph = []
-
-    # CO2 Sensor CO2 PID
     pid_co2_relay_high = []
     pid_co2_relay_low = []
     pid_co2_set = []
@@ -1711,19 +1707,23 @@ def read_sql():
     pid_co2_i = []
     pid_co2_d = []
     pid_co2_or = []
+    sensor_co2_read_co2 = []
 
+    # Relay globals
     global relay_id
     global relay_name
     global relay_pin
     global relay_trigger
     global relay_start_state
 
+    # Relay variable reset
     relay_id = []
     relay_name = []
     relay_pin = []
     relay_trigger = []
     relay_start_state = []
 
+    # Timer globals
     global timer_id
     global timer_name
     global timer_relay
@@ -1731,6 +1731,7 @@ def read_sql():
     global timer_duration_on
     global timer_duration_off
 
+    # Timer variable reset 
     timer_id = []
     timer_name = []
     timer_relay = []
@@ -1738,10 +1739,19 @@ def read_sql():
     timer_duration_on = []
     timer_duration_off = []
 
-    global factorHumSeconds
-    global factorTempSeconds
-    global camera_light
+    # Daemon timer globals
+    global timer_time
+    global timerTSensorLog
+    global timerHTSensorLog
+    global timerCo2SensorLog
 
+    # Daemon timer variable reset
+    timer_time = []
+    timerTSensorLog = []
+    timerHTSensorLog = []
+    timerCo2SensorLog = []
+
+    # Email notification globals
     global smtp_host
     global smtp_ssl
     global smtp_port
@@ -1750,7 +1760,18 @@ def read_sql():
     global smtp_email_from
     global smtp_email_to
 
+    global pid_t_temp_alive
+    global pid_ht_temp_alive
+    global pid_ht_hum_alive
+    global pid_co2_alive
+
+    pid_t_temp_alive = []
+    pid_ht_temp_alive =  []
+    pid_ht_hum_alive =  []
+    pid_co2_alive =  []
+
     verbose = 0
+
     # Check if all required tables exist in the SQL database
     conn = sqlite3.connect(mycodo_database)
     cur = conn.cursor()
@@ -1906,6 +1927,31 @@ def read_sql():
         smtp_email_to = row[6]
 
     cur.close()
+
+    for i in range(0, len(sensor_t_id)):
+        timerTSensorLog.append(int(time.time()) + sensor_t_period[i])
+
+    for i in range(0, len(sensor_ht_id)):
+        timerHTSensorLog.append(int(time.time()) + sensor_ht_period[i])
+
+    for i in range(0, len(sensor_co2_id)):
+        timerCo2SensorLog.append(int(time.time()) + sensor_co2_period[i])
+
+    for i in range(0, len(timer_id)):
+        timer_time.append(int(time.time()))
+
+    pid_t_temp_alive = [1] * len(sensor_t_id)
+    pid_ht_temp_alive = [1] * len(sensor_ht_id)
+    pid_ht_hum_alive = [1] * len(sensor_ht_id)
+    pid_co2_alive = [1] * len(sensor_co2_id)
+
+    sensor_t_read_temp_c = [0] * len(sensor_t_id)
+    sensor_ht_dewpt_c = [0] * len(sensor_ht_id)
+    sensor_ht_read_hum = [0] * len(sensor_ht_id)
+    sensor_ht_read_temp_c = [0] * len(sensor_ht_id)
+    sensor_co2_read_co2 = [0] * len(sensor_co2_id)
+        
+
 
 # Write variables to the SQLite database
 def write_sql():
