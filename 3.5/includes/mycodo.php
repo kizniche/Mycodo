@@ -182,11 +182,13 @@ if (isset($output_error)) {
     <?php
     // Display brief Temp sensor and PID data in header
     for ($i = 0; $i < count($sensor_t_id); $i++) {
-        if ($sensor_t_activated[$i] == 1) { ?>
+        if ($sensor_t_activated[$i] == 1) {
+            if (isset($t_temp_f[$i])) {
+            ?>
             <div class="header">
                 <table>
                     <tr>
-                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'T' , $i , ': ' , $sensor_t_name[$i]; ?></td>
+                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'T' , $i+1 , ': ' , $sensor_t_name[$i]; ?></td>
                     </tr>
                     <tr>
                         <td style="font-size: 0.8em; padding-right: 0.5em;"><?php
@@ -198,15 +200,20 @@ if (isset($output_error)) {
                     </tr>
                 </table>
             </div><?php
+            } else {
+                echo '<div class="header">T' , $i+1 , ':<br>Wait for<br>1st read</div>';
+            }
         }
     }
     // Display brief Temp/Hum sensor and PID data in header
     for ($i = 0; $i < count($sensor_ht_id); $i++) {
-        if ($sensor_ht_activated[$i] == 1) { ?>
+        if ($sensor_ht_activated[$i] == 1) { 
+            if (isset($ht_temp_f[$i])) {
+            ?>
             <div class="header">
                 <table>
                     <tr>
-                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'HT' , $i , ': ' , $sensor_ht_name[$i]; ?></td>
+                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'HT' , $i+1 , ': ' , $sensor_ht_name[$i]; ?></td>
                     </tr>
                     <tr>
                         <td style="font-size: 0.8em; padding-right: 0.5em;"><?php
@@ -220,15 +227,20 @@ if (isset($output_error)) {
                     </tr>
                 </table>
             </div><?php
+            } else {
+                echo '<div class="header">HT' , $i+1 , ':<br>Wait for<br>1st read</div>';
+            }
         }
     }
     // Display brief CO2 sensor and PID data in header
     for ($i = 0; $i < count($sensor_co2_id); $i++) {
         if ($sensor_co2_activated[$i] == 1) {
-            ?><div class="header">
+            if (isset($co2[$i])) {
+            ?>
+            <div class="header">
                 <table>
                     <tr>
-                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'CO<sub>2</sub>' , $i , ': ' , $sensor_co2_name[$i]; ?></td>
+                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'CO<sub>2</sub>' , $i+1 , ': ' , $sensor_co2_name[$i]; ?></td>
                     </tr>
                     <tr>
                         <td style="font-size: 0.8em; padding-right: 0.5em;"><?php echo 'Now<br>' , $co2[$i]; ?></td>
@@ -236,6 +248,9 @@ if (isset($output_error)) {
                     </tr>
                 </table>
             </div><?php
+            } else {
+                echo '<div class="header">CO<sub>2</sub>' , $i+1 , ':<br>Wait for<br>1st read</div>';
+            }
         }
     }
     ?>
@@ -497,7 +512,7 @@ if (isset($output_error)) {
                     ?>
                     <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
                         <tr class="shade">
-                            <td>T Sensor <?php echo $i; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_t_id[$i]; ?>)</span></td>
+                            <td>T Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_t_id[$i]; ?>)</span></td>
                             <td>Sensor<br>Name</td>
                             <td>Sensor<br>Device</td>
                             <?php 
@@ -650,7 +665,7 @@ if (isset($output_error)) {
                     ?>
                     <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
                         <tr class="shade">
-                            <td>HT Sensor <?php echo $i; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_ht_id[$i]; ?>)</span></td>
+                            <td>HT Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_ht_id[$i]; ?>)</span></td>
                             <td>Sensor<br>Name</td>
                             <td>Sensor<br>Device</td>
                             <td>GPIO<br>Pin</td>
@@ -849,7 +864,7 @@ if (isset($output_error)) {
                     ?>
                     <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
                         <tr class="shade">
-                            <td>CO<sub>2</sub> Sensor <?php echo $i; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_co2_id[$i]; ?>)</span></td>
+                            <td>CO<sub>2</sub> Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_co2_id[$i]; ?>)</span></td>
                             <td>Sensor<br>Name</td>
                             <td>Sensor<br>Device</td>
                             <td>GPIO<br>Pin</td>
@@ -1761,7 +1776,7 @@ if (isset($output_error)) {
 
             <div class="advanced">
                 <form action="?tab=settings" method="POST">
-                <div style="margin: 0 0.5em; padding: 0 0.5em;">
+                <div style="margin: 0 0.5em 1em 0.5em; padding: 0 0.5em;">
                     <input style="width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddTimersNumber" title="Add Sensors"/> <input type="submit" name="AddTimers" value="Add"> Timers
                 </div>
                 <div style="clear: both"></div>
@@ -1785,7 +1800,7 @@ if (isset($output_error)) {
                         ?>
                         <tr>
                             <td align="center">
-                                <?php echo $i; ?>
+                                <?php echo $i+1; ?>
                             </td>
                             <td>
                                 <input style="width: 10em;" type="text" value="<?php echo $timer_name[$i]; ?>" maxlength=13 name="Timer<?php echo $i; ?>Name" title="This is the relay name for timer <?php echo $i; ?>"/>

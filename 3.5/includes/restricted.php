@@ -46,6 +46,55 @@ for ($p = 0; $p < count($relay_id); $p++) {
 
         shell_exec("$mycodo_client --sqlreload 0");
     }
+
+    // Send client command to turn relay on or off
+    if (isset($_POST['R' . $p])) {
+        $pin = $relay_pin[$p];
+        if($relay_trigger[$p] == 0) $trigger_state = 'LOW';
+        else $trigger_state = 'HIGH';
+        if ($_POST['R' . $p] == 0) $desired_state = 'OFF';
+        else $desired_state = 'ON';
+
+        $GPIO_state = shell_exec("$gpio_path -g read $pin");
+        if ($GPIO_state == 0 && $trigger_state == 'HIGH') $actual_state = 'LOW';
+        else if ($GPIO_state == 0 && $trigger_state == 'LOW') $actual_state = 'HIGH';
+        else if ($GPIO_state == 1 && $trigger_state == 'HIGH') $actual_state = 'HIGH';
+        else if ($GPIO_state == 1 && $trigger_state == 'LOW') $actual_state = 'LOW';
+        $relay = $p+1;
+        if ($actual_state == 'LOW' && $desired_state == 'OFF') {
+            $settings_error = "Error: Can't turn relay $relay Off, it's already Off";
+        } else if ($actual_state == 'HIGH' && $desired_state == 'ON') {
+            $settings_error = "Error: Can't turn relay $relay On, it's already On";
+        } else {
+            if ($desired_state == 'ON') $desired_state = 1;
+            else $desired_state = 0;
+            $relay = $p + 1;
+            shell_exec("$mycodo_client -r $relay $desired_state");
+        }
+    }
+
+    // Send client command to turn relay on for a number of seconds
+    if (isset($_POST[$p . 'secON'])) {
+        $name = $relay_name[$p];
+        $pin = $relay_pin[$p];
+        if($relay_trigger[$p] == 0) $trigger_state = 'LOW';
+        else $trigger_state = 'HIGH';
+
+        $GPIO_state = shell_exec("$gpio_path -g read $pin");
+        if ($GPIO_state == 0 && $trigger_state == 'HIGH') $actual_state = 'LOW';
+        else if ($GPIO_state == 0 && $trigger_state == 'LOW') $actual_state = 'HIGH';
+        else if ($GPIO_state == 1 && $trigger_state == 'HIGH') $actual_state = 'HIGH';
+        else if ($GPIO_state == 1 && $trigger_state == 'LOW') $actual_state = 'LOW';
+        $seconds_on = $_POST['sR' . $p];
+
+        if (!is_numeric($seconds_on) || $seconds_on < 2 || $seconds_on != round($seconds_on)) {
+            $settings_error = "Error: Relay $p ($name): Seconds On must be a positive integer and > 1</div>";
+        } else if ($actual_state == 'HIGH' && $desired_state == 'HIGH') {
+            $settings_error = "Error: Can't turn relay $p On, it's already On";
+        } else {
+            shell_exec("$mycodo_client -r $p $seconds_on");
+        }
+    }
 }
 
 // Add relays
@@ -96,7 +145,7 @@ for ($p = 0; $p < count($timer_id); $p++) {
 // Add timers
 if (isset($_POST['AddTimers']) && isset($_POST['AddTimersNumber'])) {
     for ($j = 0; $j < $_POST['AddTimersNumber']; $j++) {
-        $stmt = $db->prepare("INSERT INTO Timers VALUES(:id, 'Timer%d', 0, 0, 60, 360)");
+        $stmt = $db->prepare("INSERT INTO Timers VALUES(:id, 'Timer', 0, 0, 60, 360)");
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->execute();
 
@@ -817,27 +866,6 @@ if (isset($_POST['AddCO2Sensors']) && isset($_POST['AddCO2SensorsNumber'])) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Change email notify settings
 if (isset($_POST['ChangeNotify'])) {
     $stmt = $db->prepare("UPDATE SMTP SET Host=:host, SSL=:ssl, Port=:port, User=:user, Pass=:password, Email_From=:emailfrom, Email_To=:emailto");
@@ -933,55 +961,6 @@ if (isset($_POST['ChangeInterface'])) {
     $stmt->execute();
 }
 
-for ($p = 1; $p <= 8; $p++) {
-    // Send client command to turn relay on or off
-    if (isset($_POST['R' . $p])) {
-        $pin = $relay_pin[$p];
-        if($relay_trigger[$p] == 0) $trigger_state = 'LOW';
-        else $trigger_state = 'HIGH';
-        if ($_POST['R' . $p] == 0) $desired_state = 'OFF';
-        else $desired_state = 'ON';
-
-        $GPIO_state = shell_exec("$gpio_path -g read $pin");
-        if ($GPIO_state == 0 && $trigger_state == 'HIGH') $actual_state = 'LOW';
-        else if ($GPIO_state == 0 && $trigger_state == 'LOW') $actual_state = 'HIGH';
-        else if ($GPIO_state == 1 && $trigger_state == 'HIGH') $actual_state = 'HIGH';
-        else if ($GPIO_state == 1 && $trigger_state == 'LOW') $actual_state = 'LOW';
-        $relay = $p+1;
-        if ($actual_state == 'LOW' && $desired_state == 'OFF') {
-            $settings_error = "Error: Can't turn relay $relay Off, it's already Off";
-        } else if ($actual_state == 'HIGH' && $desired_state == 'ON') {
-            $settings_error = "Error: Can't turn relay $relay On, it's already On";
-        } else {
-            if ($desired_state == 'ON') $desired_state = 1;
-            else $desired_state = 0;
-            shell_exec("$mycodo_client -r $p $desired_state");
-        }
-    }
-
-    // Send client command to turn relay on for a number of seconds
-    if (isset($_POST[$p . 'secON'])) {
-        $name = $relay_name[$p];
-        $pin = $relay_pin[$p];
-        if($relay_trigger[$p] == 0) $trigger_state = 'LOW';
-        else $trigger_state = 'HIGH';
-
-        $GPIO_state = shell_exec("$gpio_path -g read $pin");
-        if ($GPIO_state == 0 && $trigger_state == 'HIGH') $actual_state = 'LOW';
-        else if ($GPIO_state == 0 && $trigger_state == 'LOW') $actual_state = 'HIGH';
-        else if ($GPIO_state == 1 && $trigger_state == 'HIGH') $actual_state = 'HIGH';
-        else if ($GPIO_state == 1 && $trigger_state == 'LOW') $actual_state = 'LOW';
-        $seconds_on = $_POST['sR' . $p];
-
-        if (!is_numeric($seconds_on) || $seconds_on < 2 || $seconds_on != round($seconds_on)) {
-            $settings_error = "Error: Relay $p ($name): Seconds On must be a positive integer and > 1</div>";
-        } else if ($actual_state == 'HIGH' && $desired_state == 'HIGH') {
-            $settings_error = "Error: Can't turn relay $p On, it's already On";
-        } else {
-            shell_exec("$mycodo_client -r $p $seconds_on");
-        }
-    }
-}
 
 // Camera error check
 if (isset($_POST['CaptureStill']) || isset($_POST['start-stream']) || isset($_POST['start-timelapse'])) {
