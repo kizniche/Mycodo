@@ -317,65 +317,62 @@ def delete_all_tables_mycodo():
     print "mydoco.db: Delete all tables"
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute('DROP TABLE IF EXISTS Relays ')
-    cur.execute('DROP TABLE IF EXISTS TSensor ')
-    cur.execute('DROP TABLE IF EXISTS TSensorPreset ')
-    cur.execute('DROP TABLE IF EXISTS HTSensor ')
-    cur.execute('DROP TABLE IF EXISTS HTSensorPreset ')
+    # cur.execute('DROP TABLE IF EXISTS Relays ')
+    # cur.execute('DROP TABLE IF EXISTS TSensor ')
+    # cur.execute('DROP TABLE IF EXISTS TSensorPreset ')
+    # cur.execute('DROP TABLE IF EXISTS HTSensor ')
+    # cur.execute('DROP TABLE IF EXISTS HTSensorPreset ')
     cur.execute('DROP TABLE IF EXISTS CO2Sensor ')
     cur.execute('DROP TABLE IF EXISTS CO2SensorPreset ')
-    cur.execute('DROP TABLE IF EXISTS Timers ')
-    cur.execute('DROP TABLE IF EXISTS Numbers ')
-    cur.execute('DROP TABLE IF EXISTS SMTP ')
-    cur.execute('DROP TABLE IF EXISTS CameraStill ')
-    cur.execute('DROP TABLE IF EXISTS CameraStream ')
-    cur.execute('DROP TABLE IF EXISTS CameraTimelapse ')
-    cur.execute('DROP TABLE IF EXISTS Misc ')
+    # cur.execute('DROP TABLE IF EXISTS Timers ')
+    # cur.execute('DROP TABLE IF EXISTS Numbers ')
+    # cur.execute('DROP TABLE IF EXISTS SMTP ')
+    # cur.execute('DROP TABLE IF EXISTS CameraStill ')
+    # cur.execute('DROP TABLE IF EXISTS CameraStream ')
+    # cur.execute('DROP TABLE IF EXISTS CameraTimelapse ')
+    # cur.execute('DROP TABLE IF EXISTS Misc ')
     conn.close()
 
 def create_all_tables_mycodo():
     print "mycodo.db: Create all tables"
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("CREATE TABLE Relays (Id INT, Name TEXT, Pin INT, Trigger INT, Start_State INT)")
-    cur.execute("CREATE TABLE TSensor (Id INT, Name TEXT, Pin TEXT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay_High INT, Temp_Relay_Low INT, Temp_OR INT, Temp_Set REAL, Temp_Set_Direction INT, Temp_Set_Buffer REAL, Temp_Period INT, Temp_P_high REAL, Temp_I_High REAL, Temp_D_High REAL, Temp_P_Low REAL, Temp_I_Low REAL, Temp_D_Low REAL)")
-    cur.execute("CREATE TABLE TSensorPreset (Preset TEXT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay_High INT, Temp_Relay_Low INT, Temp_Set REAL, Temp_Set_Direction INT, Temp_Set_Buffer REAL, Temp_Period INT, Temp_P_High REAL, Temp_I_High REAL, Temp_D_High REAL, Temp_P_Low REAL, Temp_I_Low REAL, Temp_D_Low REAL)")
-    cur.execute("CREATE TABLE HTSensor (Id TEXT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay_High INT, Temp_Relay_Low INT, Temp_OR INT, Temp_Set REAL, Temp_Set_Direction INT, Temp_Set_Buffer REAL, Temp_Period INT, Temp_P_High REAL, Temp_I_High REAL, Temp_D_High REAL, Temp_P_Low REAL, Temp_I_Low REAL, Temp_D_Low REAL, Hum_Relay_High INT, Hum_Relay_Low INT, Hum_OR INT, Hum_Set REAL, Hum_Set_Direction INT, Hum_Set_Buffer REAL, Hum_Period INT, Hum_P_High REAL, Hum_I_High REAL, Hum_D_High REAL, Hum_P_Low REAL, Hum_I_Low REAL, Hum_D_Low REAL)")
-    cur.execute("CREATE TABLE HTSensorPreset (Preset TEXT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay_High INT, Temp_Relay_Low INT, Temp_Set REAL, Temp_Set_Direction INT, Temp_Set_Buffer REAL, Temp_Period INT, Temp_P_High REAL, Temp_I_High REAL, Temp_D_High REAL, Temp_P_Low REAL, Temp_I_Low REAL, Temp_D_Low REAL, Hum_Relay_High INT, Hum_Relay_Low INT, Hum_Set REAL, Hum_Set_Direction INT, Hum_Set_Buffer REAL, Hum_Period INT, Hum_P_High REAL, Hum_I_High REAL, Hum_D_High REAL, Hum_P_Low REAL, Hum_I_Low REAL, Hum_D_Low REAL)")
-    cur.execute("CREATE TABLE CO2Sensor (Id INT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, CO2_Relay_High INT, CO2_Relay_Low INT, CO2_OR INT, CO2_Set REAL, CO2_Set_Direction INT, CO2_Set_Buffer REAL, CO2_Period INT, CO2_P_High REAL, CO2_I_High REAL, CO2_D_High REAL, CO2_P_Low REAL, CO2_I_Low REAL, CO2_D_Low REAL)")
-    cur.execute("CREATE TABLE CO2SensorPreset (Preset TEXT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, CO2_Relay_High INT, CO2_Relay_Low INT, CO2_OR INT, CO2_Set REAL, CO2_Set_Direction INT, CO2_Set_Buffer REAL, CO2_Period INT, CO2_P_High REAL, CO2_I_High REAL, CO2_D_High REAL, CO2_P_Low REAL, CO2_I_Low REAL, CO2_D_Low REAL)")
-    cur.execute("CREATE TABLE Timers (Id INT, Name TEXT, Relay INT, State INT, DurationOn INT, DurationOff INT)")
-    cur.execute("CREATE TABLE Numbers (Relays INT, TSensors INT, HTSensors INT, CO2Sensors INT, Timers INT)")
-    cur.execute("CREATE TABLE SMTP (Host TEXT, SSL INT, Port INT, User TEXT, Pass TEXT, Email_From TEXT, Email_To TEXT)")
-    cur.execute("CREATE TABLE CameraStill (Relay INT, Timestamp INT, Display_Last INT, Extra_Parameters TEXT)")
-    cur.execute("CREATE TABLE CameraStream (Relay INT, Extra_Parameters TEXT)")
-    cur.execute("CREATE TABLE CameraTimelapse (Relay INT, Path TEXT, Prefix TEXT, File_Timestamp INT, Display_Last INT, Extra_Parameters TEXT)")
-    cur.execute("CREATE TABLE Misc (Dismiss_Notification INT, Refresh_Time INT)")
+    # cur.execute("CREATE TABLE Relays (Id INT, Name TEXT, Pin INT, Trigger INT, Start_State INT)")
+    # cur.execute("CREATE TABLE TSensor (Id INT, Name TEXT, Pin TEXT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay_High INT, Temp_Relay_Low INT, Temp_OR INT, Temp_Set REAL, Temp_Set_Direction INT, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D REAL)")
+    # cur.execute("CREATE TABLE TSensorPreset (Preset TEXT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay_High INT, Temp_Relay_Low INT, Temp_Set REAL, Temp_Set_Direction INT, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D REAL)")
+    # cur.execute("CREATE TABLE HTSensor (Id TEXT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay_High INT, Temp_Relay_Low INT, Temp_OR INT, Temp_Set REAL, Temp_Set_Direction INT, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D REAL, Hum_Relay_High INT, Hum_Relay_Low INT, Hum_OR INT, Hum_Set REAL, Hum_Set_Direction INT, Hum_Period INT, Hum_P REAL, Hum_I REAL, Hum_D REAL)")
+    # cur.execute("CREATE TABLE HTSensorPreset (Preset TEXT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay_High INT, Temp_Relay_Low INT, Temp_Set REAL, Temp_Set_Direction INT, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D REAL, Hum_Relay_High INT, Hum_Relay_Low INT, Hum_Set REAL, Hum_Set_Direction INT, Hum_Set_Buffer REAL, Hum_Period INT, Hum_P REAL, Hum_I REAL, Hum_D REAL)")
+    cur.execute("CREATE TABLE CO2Sensor (Id INT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, CO2_Relay_High INT, CO2_Relay_Low INT, CO2_OR INT, CO2_Set REAL, CO2_Set_Direction INT, CO2_Period INT, CO2_P REAL, CO2_I REAL, CO2_D REAL)")
+    cur.execute("CREATE TABLE CO2SensorPreset (Preset TEXT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, CO2_Relay_High INT, CO2_Relay_Low INT, CO2_OR INT, CO2_Set REAL, CO2_Set_Direction INT, CO2_Period INT, CO2_P REAL, CO2_I REAL, CO2_D REAL)")
+    # cur.execute("CREATE TABLE Timers (Id INT, Name TEXT, Relay INT, State INT, DurationOn INT, DurationOff INT)")
+    # # cur.execute("CREATE TABLE Numbers (Relays INT, TSensors INT, HTSensors INT, CO2Sensors INT, Timers INT)")
+    # cur.execute("CREATE TABLE SMTP (Host TEXT, SSL INT, Port INT, User TEXT, Pass TEXT, Email_From TEXT, Email_To TEXT)")
+    # cur.execute("CREATE TABLE CameraStill (Relay INT, Timestamp INT, Display_Last INT, Extra_Parameters TEXT)")
+    # cur.execute("CREATE TABLE CameraStream (Relay INT, Extra_Parameters TEXT)")
+    # cur.execute("CREATE TABLE CameraTimelapse (Relay INT, Path TEXT, Prefix TEXT, File_Timestamp INT, Display_Last INT, Extra_Parameters TEXT)")
+    # cur.execute("CREATE TABLE Misc (Dismiss_Notification INT, Refresh_Time INT)")
     conn.close()
-    #
-    # Add set-point buffer for addition of both-way PID
-    # Direction: 0=both 1=positive -1=negative
 
 def create_rows_columns_mycodo():
     print "mydodo.db: Create all rows and columns"
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    for i in range(1, 9):
-        cur.execute("INSERT INTO Relays VALUES(%d, 'Relay%d', 0, 0, 0)" % (i, i))
-    for i in range(1, 5):
-        cur.execute("INSERT INTO TSensor VALUES(%d, 'T-S%d', '0', 'DS18B20', 120, 0, 0, 0, 0, 1, 25.0, 0, 2.5, 90, 0, 0, 0, 0, 0, 0)" % (i, i))
+    # for i in range(1, 9):
+    #     cur.execute("INSERT INTO Relays VALUES(%d, 'Relay%d', 0, 0, 0)" % (i, i))
+    # for i in range(1, 5):
+    #     cur.execute("INSERT INTO TSensor VALUES(%d, 'T-S%d', '0', 'DS18B20', 120, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0)" % (i, i))
     # for i in range(1, 5):
     #     cur.execute("INSERT INTO HTSensor VALUES(%d, 'HT-S%d', 0, 'DHT22', 120, 0, 0, 0, 0, 1, 25.0, 0, 2.5, 90, 0, 0, 0, 0, 0, 0, 0, 0, 1, 50.0, 0, 2.5, 90, 0, 0, 0, 0, 0, 0)" % (i, i))
-    for i in range(1, 5):
-        cur.execute("INSERT INTO CO2Sensor VALUES(%d, 'CO2-S%d', 0, 'K30', 120, 0, 0, 0, 0, 1, 2000, 0, 250, 90, 0, 0, 0, 0, 0, 0)" % (i, i))
-    for i in range(1, 9):
-        cur.execute("INSERT INTO Timers VALUES(%d, 'Timer%d', 0, 0, 60, 360)" % (i, i))
-    cur.execute("INSERT INTO Numbers VALUES(0, 0, 0, 0, 0)")
-    cur.execute("INSERT INTO SMTP VALUES('smtp.gmail.com', 1, 587, 'email@gmail.com', 'password', 'me@gmail.com', 'you@gmail.com')")
-    cur.execute("INSERT INTO CameraStill VALUES(0, 1, 1, '')")
-    cur.execute("INSERT INTO CameraStream VALUES(0, '')")
-    cur.execute("INSERT INTO CameraTimelapse VALUES(0, '/var/www/mycodo/camera-timelapse', 'Timelapse-', 1, 1, '')")
-    cur.execute("INSERT INTO Misc VALUES(0, 300)")
+    # for i in range(1, 5):
+    #     cur.execute("INSERT INTO CO2Sensor VALUES(%d, 'CO2-S%d', 0, 'K30', 120, 0, 0, 0, 0, 1, 2000, 0, 90, 0, 0, 0)" % (i, i))
+    # for i in range(1, 9):
+    #     cur.execute("INSERT INTO Timers VALUES(%d, 'Timer%d', 0, 0, 60, 360)" % (i, i))
+    # cur.execute("INSERT INTO Numbers VALUES(0, 0, 0, 0, 0)")
+    # cur.execute("INSERT INTO SMTP VALUES('smtp.gmail.com', 1, 587, 'email@gmail.com', 'password', 'me@gmail.com', 'you@gmail.com')")
+    # cur.execute("INSERT INTO CameraStill VALUES(0, 1, 1, '')")
+    # cur.execute("INSERT INTO CameraStream VALUES(0, '')")
+    # cur.execute("INSERT INTO CameraTimelapse VALUES(0, '/var/www/mycodo/camera-timelapse', 'Timelapse-', 1, 1, '')")
+    # cur.execute("INSERT INTO Misc VALUES(0, 300)")
     conn.commit()
     cur.close()
 

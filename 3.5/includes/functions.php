@@ -110,7 +110,7 @@ function view_sql_db($sqlite_db) {
  */
 
 // Generate and display graphs on the Main tab
-function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_num, $sensor_t_graph, $sensor_ht_id, $sensor_ht_graph, $sensor_co2_num, $sensor_co2_graph) {
+function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_graph, $sensor_ht_graph, $sensor_co2_graph) {
     // Main preset: Display graphs of past day and week
     if ($graph_time_span == 'default') {
 
@@ -120,7 +120,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
             $sensor_t_log_generate = "/var/tmp/sensor-t-logs-default.log";
             system("cat $sensor_t_log_file $sensor_t_log_file_tmp > $sensor_t_log_generate");
 
-            for ($n = 1; $n <= $sensor_t_num; $n++) {
+            for ($n = 0; $n < count($sensor_t_graph); $n++) {
                 if ($sensor_t_graph[$n] == 1) {
                     if (!file_exists("/var/www/mycodo/images/graph-tdefaultdefault-$graph_id-$n.png")) {
                         shell_exec("$mycodo_client --graph t $graph_type $graph_time_span $graph_id $n");
@@ -133,7 +133,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                     echo "&id=$graph_id>";
                     echo '</div>';
 
-                    if ($n != $sensor_t_num || array_sum($sensor_ht_graph) || array_sum($sensor_co2_graph)) {
+                    if ($n != count($sensor_t_graph) || array_sum($sensor_ht_graph) || array_sum($sensor_co2_graph)) {
                         echo '<hr class="fade"/>';
                     }
                 }
@@ -148,7 +148,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
             system("cat $sensor_ht_log_file $sensor_ht_log_file_tmp > $sensor_ht_log_generate");
 
             $count = 0;
-            for ($n = 0; $n < count($sensor_ht_id); $n++) {
+            for ($n = 0; $n < count($sensor_ht_graph); $n++) {
                 if ($sensor_ht_graph[$n] == 1) {
                     if (!file_exists("/var/www/mycodo/images/graph-htdefaultdefault-$graph_id-$n.png")) {
                         shell_exec("$mycodo_client --graph ht $graph_type $graph_time_span $graph_id $n");
@@ -176,7 +176,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
             $sensor_co2_log_generate = "/var/tmp/sensor-co2-logs-default.log";
             system("cat $sensor_co2_log_file $sensor_co2_log_file_tmp > $sensor_co2_log_generate");
 
-            for ($n = 1; $n <= $sensor_co2_num; $n++) {
+            for ($n = 0; $n < count($sensor_co2_graph); $n++) {
                 if ($sensor_co2_graph[$n] == 1) {
                     if (!file_exists("/var/www/mycodo/images/graph-co2defaultdefault-$graph_id-$n.png")) {
                         shell_exec("$mycodo_client --graph co2 $graph_time_span default $graph_id $n");
@@ -189,7 +189,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                     echo "&id=$graph_id>";
                     echo '</div>';
 
-                    if ($n != $sensor_co2_num) {
+                    if ($n != count($sensor_co2_graph)) {
                         echo '<hr class="fade"/>';
                     }
                 }
@@ -216,7 +216,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
             $sensor_t_log_generate = "/var/tmp/sensor-t-logs-separate.log";
             system("cat $sensor_t_log_file $sensor_t_log_file_tmp > $sensor_t_log_generate");
 
-            for ($n = 1; $n <= $sensor_t_num; $n++ ) {
+            for ($n = 0; $n < count($sensor_t_graph); $n++ ) {
                 if ($sensor_t_graph[$n] == 1) {
                     if (!file_exists("/var/www/mycodo/images/graph-tseparate$graph_time_span-$graph_id-$n.png")) {
                         shell_exec("$mycodo_client --graph t $graph_type $graph_time_span $graph_id $n");
@@ -241,7 +241,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
             $sensor_ht_log_generate = "/var/tmp/sensor-ht-logs-separate.log";
             system("cat $sensor_ht_log_file $sensor_ht_log_file_tmp > $sensor_ht_log_generate");
 
-            for ($n = 0; $n < count($sensor_ht_id); $n++ ) {
+            for ($n = 0; $n < count($sensor_ht_graph); $n++ ) {
                 if ($sensor_ht_graph[$n] == 1) {
                     if (!file_exists("/var/www/mycodo/images/graph-htseparate$graph_time_span-$graph_id-$n.png")) {
                         shell_exec("$mycodo_client --graph ht $graph_type $graph_time_span $graph_id $n");
@@ -266,7 +266,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
             $sensor_co2_log_generate = "/var/tmp/sensor-co2-logs-separate.log";
             system("cat $sensor_co2_log_file $sensor_co2_log_file_tmp > $sensor_co2_log_generate");
             
-            for ($n = 1; $n <= $sensor_co2_num; $n++ ) {
+            for ($n = 0; $n < count($sensor_co2_graph); $n++) {
                 if ($sensor_co2_graph[$n] == 1) {
                     if (!file_exists("/var/www/mycodo/images/graph-co2separate$graph_time_span-$graph_id-$n.png")) {
                         shell_exec("$mycodo_client --graph co2 $graph_type $graph_time_span $graph_id $n");

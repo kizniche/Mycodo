@@ -23,7 +23,7 @@
 */
 
 // Grab last entry for each sensor from the respective log file
-for ($p = 1; $p <= $sensor_t_num; $p++) {
+for ($p = 0; $p < count($sensor_t_id); $p++) {
     if ($sensor_t_activated[$p]) {
         $last_t_sensor[$p] = `awk '$8 == $p {print}' /var/www/mycodo/log/sensor-t-tmp.log | tail -n 1`;
         if ($last_t_sensor[$p] != '') {
@@ -34,7 +34,7 @@ for ($p = 1; $p <= $sensor_t_num; $p++) {
         }
     }
 }
-for ($p = 0; $p < count($sensor_ht); $p++) {
+for ($p = 0; $p < count($sensor_ht_id); $p++) {
     if ($sensor_ht_activated[$p]) {
         $last_ht_sensor[$p] = `awk '$10 == $p {print}' /var/www/mycodo/log/sensor-ht-tmp.log | tail -n 1`;
         if ($last_ht_sensor[$p] != '') {
@@ -48,7 +48,7 @@ for ($p = 0; $p < count($sensor_ht); $p++) {
         }
     }
 }
-for ($p = 1; $p <= $sensor_co2_num; $p++) {
+for ($p = 0; $p < count($sensor_co2_id); $p++) {
     if ($sensor_co2_activated[$p]) {
         $last_co2_sensor[$p] = `awk '$8 == $p {print}' /var/www/mycodo/log/sensor-co2-tmp.log | tail -n 1`;
         if ($last_co2_sensor[$p] != '') {
