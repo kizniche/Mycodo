@@ -463,7 +463,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set format x \"\"\n')
                 
             plot.write('set key at graph 0.02, graph 0.98\n')
-            plot.write('set title \"Temp Sensor ' + sensor_number + ': ' + sensor_t_name[int(float(sensor_number))] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            plot.write('set title \"Temp Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_t_name[int(float(sensor_number))] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot \"' + sensor_t_log_final[1] + '\" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1\n')
 
             if (int(pid_t_temp_relay_high[int(sensor_number)]) != 0 or
@@ -508,7 +508,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set my2tics 5\n')
 
             plot.write('set key at graph 0.02, graph 0.98\n')
-            plot.write('set title \"Hum/Temp Sensor ' + sensor_number + ': ' + sensor_ht_name[int(float(sensor_number))] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            plot.write('set title \"Hum/Temp Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_ht_name[int(float(sensor_number))] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot \"' + sensor_ht_log_final[1] + '\" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1, \\\n')
             plot.write('\"\" u 1:8 index 0 title \"RH\" w lp ls 2 axes x1y2, \\\n')
             plot.write('\"\" u 1:9 index 0 title \"DP\" w lp ls 3 axes x1y1\n')
@@ -565,7 +565,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
 
             plot.write('set termopt enhanced\n')
             plot.write('set key at graph 0.035, graph 0.98\n')
-            plot.write('set title \"CO_2 Sensor ' + sensor_number + ': ' + sensor_co2_name[int(float(sensor_number))] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            plot.write('set title \"CO_2 Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_co2_name[int(float(sensor_number))] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot \"' + sensor_co2_log_final[1] + '" u 1:7 index 0 title \"CO_2\" w lp ls 1 axes x1y1\n')
 
             if (int(pid_co2_relay_high[int(sensor_number)]) != 0 or
@@ -616,7 +616,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set origin 0.0,0.5\n')
                 plot.write('set key at graph 0.025, graph 0.98\n')
 
-            plot.write('set title \"Temp Sensor ' + sensor_number + ': ' + sensor_t_name[int(float(sensor_number))] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            plot.write('set title \"Temp Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_t_name[int(float(sensor_number))] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot \"' + sensor_t_log_final[1] + '" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1\n')
 
             if (int(pid_t_temp_relay_high[int(sensor_number)]) != 0 or
@@ -666,7 +666,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set origin 0.0,0.0\n')
 
             plot.write('unset xzeroaxis\n')
-            plot.write('set title \"Temp Sensor ' + sensor_number + ': ' + sensor_t_name[int(float(sensor_number))] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            plot.write('set title \"Temp Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_t_name[int(float(sensor_number))] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('set format x \"%a\\n%m/%d\"\n')
             plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
             plot.write('plot \"' + sensor_t_log_final[2] + '" u 1:7 index 0 notitle w lp ls 1 axes x1y1\n')
@@ -689,7 +689,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set origin 0.0,0.5\n')
                 plot.write('set key at graph 0.025, graph 0.98\n')
 
-            plot.write('set title \"Hum/Temp Sensor ' + sensor_number + ': ' + sensor_ht_name[int(float(sensor_number))] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            plot.write('set title \"Hum/Temp Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_ht_name[int(float(sensor_number))] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot \"' + sensor_ht_log_final[1] + '" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1, ')
             plot.write('\"\" u 1:8 index 0 title \"RH\" w lp ls 2 axes x1y2, ')
             plot.write('\"\" u 1:9 index 0 title \"DP\" w lp ls 3 axes x1y1\n')
@@ -759,7 +759,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set origin 0.0,0.0\n')
 
             plot.write('unset xzeroaxis\n')
-            plot.write('set title \"Hum/Temp Sensor ' + sensor_number + ': ' + sensor_ht_name[int(float(sensor_number))] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            plot.write('set title \"Hum/Temp Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_ht_name[int(float(sensor_number))] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('set format x \"%a\\n%m/%d\"\n')
             plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
             plot.write('plot \"' + sensor_ht_log_final[2] + '" u 1:7 index 0 notitle w lp ls 1 axes x1y1, ')
@@ -783,7 +783,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set key at graph 0.035, graph 0.98\n')
 
             plot.write('set termopt enhanced\n')
-            plot.write('set title \"CO_2 Sensor ' + sensor_number + ': ' + sensor_co2_name[int(float(sensor_number))] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            plot.write('set title \"CO_2 Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_co2_name[int(float(sensor_number))] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot \"' + sensor_co2_log_final[1] + '" u 1:7 index 0 title \"CO_2\" w lp ls 1 axes x1y1\n')
 
             if (int(pid_co2_relay_high[int(sensor_number)]) != 0 or
@@ -832,7 +832,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set origin 0.0,0.0\n')
 
             plot.write('unset xzeroaxis\n')
-            plot.write('set title \"CO_2 Sensor ' + sensor_number + ': ' + sensor_co2_name[int(float(sensor_number))] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            plot.write('set title \"CO_2 Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_co2_name[int(float(sensor_number))] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('set format x \"%a\\n%m/%d\"\n')
             plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
             plot.write('plot \"' + sensor_co2_log_final[2] + '" u 1:7 index 0 notitle w lp ls 1 axes x1y1\n')
