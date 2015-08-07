@@ -30,6 +30,7 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 <a name="progress"></a>
 ## Progress
 
+- [X] Added Feature: Unlimited number of sensor/relays/timers that can be added
 - [X] Added Feature: Custom Sensor/PID Presets (Save/Load/Overwrite/Delete)
 - [X] Added Feature: Set desired startup state of relay (on or off)
 - [X] Added Feature: Time-lapse image acquisition
