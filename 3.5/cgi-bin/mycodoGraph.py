@@ -628,7 +628,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 y1_min = '-100'
                 y1_max = '100'
                 plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-                plot.write('set ytics 25\n')
+                plot.write('set ytics 50\n')
                 plot.write('set mytics 2\n')
                 plot.write('set xzeroaxis linetype 1 linecolor rgb \'#000000\' linewidth 1\n')
                 plot.write('unset title\n')
@@ -656,7 +656,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 int(pid_t_temp_relay_low[int(sensor_number)]) != 0):
                 plot.write('set size 0.989,0.4\n')
                 plot.write('set origin 0.011,0.0\n')
-                y1_max = '0'
+                y1_min = '0'
                 y1_max = '35'
                 plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
                 plot.write('set ytics 5\n')
@@ -705,7 +705,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 y1_min = '-100'
                 y1_max = '100'
                 plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-                plot.write('set ytics 25\n')
+                plot.write('set ytics 50\n')
                 plot.write('set mytics 2\n')
                 plot.write('set xzeroaxis linetype 1 linecolor rgb \'#000000\' linewidth 1\n')
                 plot.write('unset y2tics\n')
@@ -747,7 +747,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 int(pid_ht_hum_relay_low[int(sensor_number)]) != 0):
                 plot.write('set size 0.989,0.4\n')
                 plot.write('set origin 0.011,0.0\n')
-                y1_max = '0'
+                y1_min = '0'
                 y1_max = '35'
                 plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
                 plot.write('set ytics 5\n')
@@ -795,7 +795,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 y1_min = '-100'
                 y1_max = '100'
                 plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-                plot.write('set ytics 25\n')
+                plot.write('set ytics 50\n')
                 plot.write('set mytics 2\n')
                 plot.write('set xzeroaxis linetype 1 linecolor rgb \'#000000\' linewidth 1\n')
                 plot.write('unset title\n')
@@ -822,7 +822,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 int(pid_co2_relay_low[int(sensor_number)]) != 0):
                 plot.write('set size 1.0,0.4\n')
                 plot.write('set origin 0.0,0.0\n')
-                y1_max = '0'
+                y1_min = '0'
                 y1_max = '5000'
                 plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
                 plot.write('set ytics 500\n')

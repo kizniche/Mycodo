@@ -762,10 +762,6 @@ def daemon(output, log):
                 pid_t_temp_alive[pid_number] = 0
                 while pid_t_temp_alive[pid_number] != 2:
                     time.sleep(0.1)
-                if int(pid_t_temp_relay_high[pid_number]):
-                    relay_onoff(int(pid_t_temp_relay_high[pid_number]), 'off')
-                if int(pid_t_temp_relay_low[pid_number]):
-                    relay_onoff(int(pid_t_temp_relay_low[pid_number]), 'off')
                 pid_t_temp_alive[pid_number] = 1
                 pid_t_temp_active[pid_number] = 0
             else:
@@ -789,10 +785,6 @@ def daemon(output, log):
                 pid_ht_temp_alive[pid_number] = 0
                 while pid_ht_temp_alive[pid_number] != 2:
                     time.sleep(0.1)
-                if int(pid_ht_temp_relay_high[pid_number]):
-                    relay_onoff(int(pid_ht_temp_relay_high[pid_number]), 'off')
-                if int(pid_ht_temp_relay_low[pid_number]):
-                    relay_onoff(int(pid_ht_temp_relay_low[pid_number]), 'off')
                 pid_ht_temp_alive[pid_number] = 1
                 pid_ht_temp_active[pid_number] = 0
             else:
@@ -816,10 +808,6 @@ def daemon(output, log):
                 pid_ht_hum_alive[pid_number] = 0
                 while pid_ht_hum_alive[pid_number] != 2:
                     time.sleep(0.1)
-                if int(pid_ht_hum_relay_high[pid_number]):
-                    relay_onoff(int(pid_ht_hum_relay_high[pid_number]), 'off')
-                if int(pid_ht_hum_relay_low[pid_number]):
-                    relay_onoff(int(pid_ht_hum_relay_low[pid_number]), 'off')
                 pid_ht_hum_alive[pid_number] = 1
                 pid_ht_hum_active[pid_number] = 0
             else:
@@ -843,10 +831,6 @@ def daemon(output, log):
                 pid_co2_alive[pid_number] = 0
                 while pid_co2_alive[pid_number] != 2:
                     time.sleep(0.1)
-                if int(pid_co2_relay_high[pid_number]):
-                    relay_onoff(int(pid_co2_relay_high[pid_number]), 'off')
-                if int(pid_co2_relay_low[pid_number]):
-                    relay_onoff(int(pid_co2_relay_low[pid_number]), 'off')
                 pid_co2_alive[pid_number] = 1
                 pid_co2_active[pid_number] = 0
             else:
@@ -2013,7 +1997,7 @@ def initialize_gpio(relay):
     #initialize one GPIO
     if relay_pin[relay] > 0:
         GPIO.setup(relay_pin[relay], GPIO.OUT)
-        relay_onoff(relay, 'off')
+        relay_onoff(relay+1, 'off')
 
 
 # Turn Relays Off

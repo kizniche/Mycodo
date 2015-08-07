@@ -1032,19 +1032,16 @@ if (isset($output_error)) {
                     if ($_POST['custom_type'] == 'Combined') {
 
                         $cus_graph = '/var/tmp/plot-cus-combined.gnuplot';
-                        $f = fopen($cus_graph, "w");
+                        $total = ((count($sensor_t_id) != 0) + (count($sensor_ht_id) != 0)*2 + (count($sensor_co2_id) != 0) + 1);
 
-                        fwrite($f, "set terminal png size $graph_width,1600\n");
+                        $f = fopen($cus_graph, "w");
+                        $size = $total * 350;
+                        fwrite($f, "set terminal png size $graph_width,$size\n");
                         fwrite($f, "set xdata time\n");
                         fwrite($f, "set timefmt \"%Y %m %d %H %M %S\"\n");
                         fwrite($f, "set output \"$images/graph-custom-combined-$id2-0.png\"\n");
                         fwrite($f, "set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]\n");
                         fwrite($f, "set format x \"%H:%M\\n%m/%d\"\n");
-                        fwrite($f, "set yrange [0:100]\n");
-                        fwrite($f, "set y2range [0:35]\n");
-                        fwrite($f, "set my2tics 10\n");
-                        fwrite($f, "set ytics 10\n");
-                        fwrite($f, "set y2tics 5\n");
                         fwrite($f, "set style line 11 lc rgb '#808080' lt 1\n");
                         fwrite($f, "set border 3 back ls 11\n");
                         fwrite($f, "set tics nomirror\n");
@@ -1062,58 +1059,100 @@ if (isset($output_error)) {
                         fwrite($f, "set style line 10 lc rgb '#CC8D9C' pt 0 ps 1 lt 1 lw 1\n");
                         fwrite($f, "set style line 11 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1\n");
                         fwrite($f, "set style line 12 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1\n");
+                        
+                        fwrite($f, "set multiplot layout $total, 1 title \"Combined Sensor Data - $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
 
-                        fwrite($f, "set multiplot layout 5, 1 title \"Combined Sensor Data - $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
+                        if (count($sensor_t_id) != 0) {
+                            if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
+                            else fwrite($f, "unset key\n");
+                            fwrite($f, "set yrange [0:35]\n");
+                            fwrite($f, "set ytics 5\n");
+                            fwrite($f, "set mytics 2\n");
+                            fwrite($f, "set title \"T Sensor: Combined Temperatures\"\n");
+                             fwrite($f, "plot ");
 
-                    if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
-                        else fwrite($f, "unset key\n");
-                        fwrite($f, "set title \"T Sensor: Combined Temperatures\"\n");
-                        fwrite($f, "plot \"<awk '\\$10 == 1' /var/tmp/sensor-t.log\" using 1:7 index 0 title \"T1\" w lp ls 1 axes x1y2, ");
-                        fwrite($f, "\"<awk '\\$10 == 2' /var/tmp/sensor-t.log\" using 1:7 index 0 title \"T2\" w lp ls 2 axes x1y2, ");
-                        fwrite($f, "\"<awk '\\$10 == 3' /var/tmp/sensor-t.log\" using 1:7 index 0 title \"T3\" w lp ls 3 axes x1y2, ");
-                        fwrite($f, "\"<awk '\\$10 == 4' /var/tmp/sensor-t.log\" using 1:7 index 0 title \"T4\" w lp ls 4 axes x1y2\n");
+                            for ($z = 0; $z < count($sensor_t_id); $z++) {
+                                $line= $z+1;
+                                fwrite($f, "\"<awk '\\$10 == " . $z . "' /var/tmp/sensor-t.log\" using 1:7 index 0 title \"T$line\" w lp ls $line axes x1y1");
+                                if ($z < count($sensor_t_id)-1) fwrite($f, ", ");
+                            }
+                            fwrite($f, "\n");
+                        }
 
-                        if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
-                        else fwrite($f, "unset key\n");
-                        fwrite($f, "set title \"HT Sensor: Combined Temperatures\"\n");
-                        fwrite($f, "plot \"<awk '\\$10 == 1' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \"T1\" w lp ls 1 axes x1y2, ");
-                        fwrite($f, "\"<awk '\\$10 == 2' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \"T2\" w lp ls 2 axes x1y2, ");
-                        fwrite($f, "\"<awk '\\$10 == 3' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \"T3\" w lp ls 3 axes x1y2, ");
-                        fwrite($f, "\"<awk '\\$10 == 4' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \"T4\" w lp ls 4 axes x1y2\n");
+                        if (count($sensor_ht_id) != 0) {
+                            if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
+                            else fwrite($f, "unset key\n");
+                            fwrite($f, "set yrange [0:35]\n");
+                            fwrite($f, "set ytics 5\n");
+                            fwrite($f, "set mytics 2\n");
+                            fwrite($f, "set title \"HT Sensor: Combined Temperatures\"\n");
+                            if (count($sensor_ht_id) != 0) fwrite($f, "plot ");
 
-                        if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
-                        else fwrite($f, "unset key\n");
-                        fwrite($f, "set title \"HT Sensor: Combined Humidities\"\n");
-                        fwrite($f, "plot \"<awk '\\$10 == 1' /var/tmp/sensor-ht.log\" using 1:8 index 0 title \"RH1\" w lp ls 1 axes x1y1, ");
-                        fwrite($f, "\"<awk '\\$10 == 2' /var/tmp/sensor-ht.log\" using 1:8 index 0 title \"RH2\" w lp ls 2 axes x1y1, ");
-                        fwrite($f, "\"<awk '\\$10 == 3' /var/tmp/sensor-ht.log\" using 1:8 index 0 title \"RH3\" w lp ls 3 axes x1y1, ");
-                        fwrite($f, "\"<awk '\\$10 == 4' /var/tmp/sensor-ht.log\" using 1:8 index 0 title \"RH4\" w lp ls 4 axes x1y1\n");
+                            for ($z = 0; $z < count($sensor_ht_id); $z++) {
+                                $line= $z+1;
+                                fwrite($f, "\"<awk '\\$10 == " . $z . "' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \"T$line\" w lp ls $line axes x1y1");
+                                if ($z < count($sensor_ht_id)-1) fwrite($f, ", ");
+                            }
+                            fwrite($f, "\n");
 
-                        if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
-                        else fwrite($f, "unset key\n");
-                        fwrite($f, "set title \"CO2 Sensor: Combined CO2s\"\n");
-                        fwrite($f, "plot \"<awk '\\$15 == 1' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"CO21\" w lp ls 1 axes x1y1, ");
-                        fwrite($f, "\"<awk '\\$15 == 2' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"CO22\" w lp ls 2 axes x1y1, ");
-                        fwrite($f, "\"<awk '\\$15 == 3' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"CO23\" w lp ls 3 axes x1y1, ");
-                        fwrite($f, "\"<awk '\\$15 == 4' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"CO24\" w lp ls 4 axes x1y1\n");
+                            if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
+                            else fwrite($f, "unset key\n");
+                            fwrite($f, "set yrange [0:100]\n");
+                            fwrite($f, "set ytics 10\n");
+                            fwrite($f, "set mytics 5\n");
+                            fwrite($f, "set title \"HT Sensor: Combined Humidities\"\n");
+                            if (count($sensor_ht_id) != 0) fwrite($f, "plot ");
+
+                            for ($z = 0; $z < count($sensor_ht_id); $z++) {
+                                $line= $z+1;
+                                fwrite($f, "\"<awk '\\$10 == " . $z . "' /var/tmp/sensor-ht.log\" using 1:8 index 0 title \"H$line\" w lp ls $line axes x1y1");
+                                if ($z < count($sensor_ht_id)-1) fwrite($f, ", ");
+                            }
+                            fwrite($f, "\n");
+                        }
+
+                        if (count($sensor_co2_id) != 0) {
+                            if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
+                            else fwrite($f, "unset key\n");
+                            fwrite($f, "set yrange [0:5000]\n");
+                            fwrite($f, "set ytics 1000\n");
+                            fwrite($f, "set mytics 5\n");
+                            fwrite($f, "set title \"CO2 Sensor: Combined CO2s\"\n");
+                            if (count($sensor_co2_id) != 0) fwrite($f, "plot ");
+
+                            for ($z = 0; $z < count($sensor_co2_id); $z++) {
+                                $line= $z+1;
+                                fwrite($f, "\"<awk '\\$15 == " . $z . "' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"H$line\" w lp ls $line axes x1y1");
+                                if ($z < count($sensor_co2_id)-1) fwrite($f, ", ");
+                            }
+                            fwrite($f, "\n");
+                        }
 
                         if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left top\n");
                         else fwrite($f, "unset key\n");
+                        fwrite($f, "set yrange [-100:100]\n");
+                        fwrite($f, "set ytics 25\n");
+                        fwrite($f, "set mytics 5\n");
+                        fwrite($f, "set xzeroaxis linetype 1 linecolor rgb '#000000' linewidth 1\n");
                         fwrite($f, "set title \"Relay Run Time\"\n");
-                        fwrite($f, "plot \"$relay_log\" u 1:7 index 0 title \"$relay_name[1]\" w impulses ls 5 axes x1y1, ");
-                        fwrite($f, "\"\" using 1:8 index 0 title \"$relay_name[2]\" w impulses ls 6 axes x1y1, ");
-                        fwrite($f, "\"\" using 1:9 index 0 title \"$relay_name[3]\" w impulses ls 7 axes x1y1, ");
-                        fwrite($f, "\"\" using 1:10 index 0 title \"$relay_name[4]\" w impulses ls 8 axes x1y1, ");
-                        fwrite($f, "\"\" using 1:11 index 0 title \"$relay_name[5]\" w impulses ls 9 axes x1y1, ");
-                        fwrite($f, "\"\" using 1:12 index 0 title \"$relay_name[6]\" w impulses ls 10 axes x1y1, ");
-                        fwrite($f, "\"\" using 1:13 index 0 title \"$relay_name[7]\" w impulses ls 11 axes x1y1, ");
-                        fwrite($f, "\"\" using 1:14 index 0 title \"$relay_name[8]\" w impulses ls 12 axes x1y1\n");
+                        fwrite($f, "plot \"/var/tmp/relay.log\" u 1:7 index 0 title \"$relay_name[0]\" w impulses ls 5 axes x1y1, ");
+                        fwrite($f, "\"\" using 1:8 index 0 title \"$relay_name[1]\" w impulses ls 6 axes x1y1, ");
+                        fwrite($f, "\"\" using 1:9 index 0 title \"$relay_name[2]\" w impulses ls 7 axes x1y1, ");
+                        fwrite($f, "\"\" using 1:10 index 0 title \"$relay_name[3]\" w impulses ls 8 axes x1y1, ");
+                        fwrite($f, "\"\" using 1:11 index 0 title \"$relay_name[4]\" w impulses ls 9 axes x1y1, ");
+                        fwrite($f, "\"\" using 1:12 index 0 title \"$relay_name[5]\" w impulses ls 10 axes x1y1, ");
+                        fwrite($f, "\"\" using 1:13 index 0 title \"$relay_name[6]\" w impulses ls 11 axes x1y1, ");
+                        fwrite($f, "\"\" using 1:14 index 0 title \"$relay_name[7]\" w impulses ls 12 axes x1y1\n");
                         fwrite($f, "unset multiplot\n");
 
                         fclose($f);
                         $cmd = "gnuplot $cus_graph";
                         exec($cmd);
                         unlink($cus_graph);
+                        unlink('/var/tmp/sensor-t.log');
+                        unlink('/var/tmp/sensor-ht.log');
+                        unlink('/var/tmp/sensor-co2.log');
+                        unlink('/var/tmp/relay.log');
 
                         echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
                         echo 'graphtype=custom-combined';
@@ -1161,14 +1200,14 @@ if (isset($output_error)) {
                                 fwrite($f, "plot \"<awk '\\$10 == $n' /var/tmp/sensor-t.log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, ");
                                 fwrite($f, "\"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, ");
                                 fwrite($f, "\"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ");
-                                fwrite($f, "\"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"$relay_name[1]\" w impulses ls 4 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:8 index 0 title \"$relay_name[2]\" w impulses ls 5 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:9 index 0 title \"$relay_name[3]\" w impulses ls 6 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:10 index 0 title \"$relay_name[4]\" w impulses ls 7 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:11 index 0 title \"$relay_name[5]\" w impulses ls 8 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:12 index 0 title \"$relay_name[6]\" w impulses ls 9 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:13 index 0 title \"$relay_name[7]\" w impulses ls 10 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:14 index 0 title \"$relay_name[8]\" w impulses ls 11 axes x1y1");
+                                fwrite($f, "\"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"$relay_name[0]\" w impulses ls 4 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:8 index 0 title \"$relay_name[1]\" w impulses ls 5 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:9 index 0 title \"$relay_name[2]\" w impulses ls 6 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:10 index 0 title \"$relay_name[3]\" w impulses ls 7 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:11 index 0 title \"$relay_name[4]\" w impulses ls 8 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:12 index 0 title \"$relay_name[5]\" w impulses ls 9 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:13 index 0 title \"$relay_name[6]\" w impulses ls 10 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:14 index 0 title \"$relay_name[7]\" w impulses ls 11 axes x1y1");
 
                                 fclose($f);
                                 $cmd = "gnuplot $cus_graph";
@@ -1224,14 +1263,14 @@ if (isset($output_error)) {
                                 fwrite($f, "plot \"<awk '\\$10 == $n' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, ");
                                 fwrite($f, "\"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, ");
                                 fwrite($f, "\"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ");
-                                fwrite($f, "\"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"$relay_name[1]\" w impulses ls 4 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:8 index 0 title \"$relay_name[2]\" w impulses ls 5 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:9 index 0 title \"$relay_name[3]\" w impulses ls 6 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:10 index 0 title \"$relay_name[4]\" w impulses ls 7 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:11 index 0 title \"$relay_name[5]\" w impulses ls 8 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:12 index 0 title \"$relay_name[6]\" w impulses ls 9 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:13 index 0 title \"$relay_name[7]\" w impulses ls 10 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:14 index 0 title \"$relay_name[8]\" w impulses ls 11 axes x1y1");
+                                fwrite($f, "\"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"$relay_name[0]\" w impulses ls 4 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:8 index 0 title \"$relay_name[1]\" w impulses ls 5 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:9 index 0 title \"$relay_name[2]\" w impulses ls 6 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:10 index 0 title \"$relay_name[3]\" w impulses ls 7 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:11 index 0 title \"$relay_name[4]\" w impulses ls 8 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:12 index 0 title \"$relay_name[5]\" w impulses ls 9 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:13 index 0 title \"$relay_name[6]\" w impulses ls 10 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:14 index 0 title \"$relay_name[7]\" w impulses ls 11 axes x1y1");
 
                                 fclose($f);
                                 $cmd = "gnuplot $cus_graph";
@@ -1297,7 +1336,7 @@ if (isset($output_error)) {
                                 fclose($f);
                                 $cmd = "gnuplot $cus_graph";
                                 exec($cmd);
-                                unlink($cus_graph);
+                                //unlink($cus_graph);
 
                                 echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
                                 echo 'graphtype=custom-separate';
