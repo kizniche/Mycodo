@@ -175,9 +175,10 @@ if (isset($output_error)) {
         </div>
     </div>
     <div style="float: left; vertical-align:top; height: 4.5em; padding: 1em 0.8em 0 0.3em;">
-        <div style="text-align: right; padding-top: 3px; font-size: 0.9em;">Time now: <?php echo $time_now; ?></div>
-        <div style="text-align: right; padding-top: 3px; font-size: 0.9em;">Last read: <?php echo $time_last; ?></div>
-        <div style="text-align: right; padding-top: 3px; font-size: 0.9em;"><?php echo `uptime | grep -ohe 'load average[s:][: ].*' `; ?></div>
+        <div style="text-align: right; padding-top: 0.1em; font-size: 0.8em;">Time now: <?php echo $time_now; ?></div>
+        <div style="text-align: right; padding-top: 0.1em; font-size: 0.8em;">Last read: <?php echo $time_last; ?></div>
+        <div style="text-align: right; padding-top: 0.1em; font-size: 0.8em;"><?php echo `uptime | grep -ohe 'load average[s:][: ].*' `; ?></div>
+        <div style="text-align: right; padding-top: 0.1em; font-size: 0.8em;">CPU: <?php echo '<span title="' , number_format((float)$pi_temp_cpu_f, 1, '.', '') , '&deg;F">' , $pi_temp_cpu_c , '&deg;C</span> GPU: <span title="' , number_format((float)$pi_temp_gpu_f, 1, '.', '') , '&deg;F">' , $pi_temp_gpu_c , '&deg;C</span>'; ?></div>
     </div>
     <?php
     // Display brief Temp sensor and PID data in header
