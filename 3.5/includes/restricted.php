@@ -31,10 +31,12 @@ for ($p = 0; $p < count($relay_id); $p++) {
         $stmt->bindValue(':pin', (int)$_POST['relay' . $p . 'pin'], SQLITE3_INTEGER);
         $stmt->bindValue(':trigger', (int)$_POST['relay' . $p . 'trigger'], SQLITE3_INTEGER);
         $stmt->bindValue(':startstate', (int)$_POST['relay' . $p . 'startstate'], SQLITE3_INTEGER);
-        $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
+        $stmt->bindValue(':id', $relay_id[$p], SQLITE3_INTEGER);
         $stmt->execute();
         if ($_POST['relay' . $p . 'pin'] != $relay_pin[$p]) {
             shell_exec("$mycodo_client --sqlreload $p");
+        } else {
+            shell_exec("$mycodo_client --sqlreload 0");
         }
     }
 
