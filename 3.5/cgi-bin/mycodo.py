@@ -1679,6 +1679,7 @@ def read_sql():
     global sensor_co2_period
     global sensor_co2_activated
     global sensor_co2_graph
+    global pid_co2_alive
     global pid_co2_relay_high
     global pid_co2_relay_low
     global pid_co2_set
@@ -1698,6 +1699,7 @@ def read_sql():
     sensor_co2_period = []
     sensor_co2_activated = []
     sensor_co2_graph = []
+    pid_co2_alive =  []
     pid_co2_relay_high = []
     pid_co2_relay_low = []
     pid_co2_set = []
@@ -1759,17 +1761,7 @@ def read_sql():
     global smtp_pass
     global smtp_email_from
     global smtp_email_to
-
-    global pid_t_temp_alive
-    global pid_ht_temp_alive
-    global pid_ht_hum_alive
-    global pid_co2_alive
-
-    pid_t_temp_alive = []
-    pid_ht_temp_alive =  []
-    pid_ht_hum_alive =  []
-    pid_co2_alive =  []
-
+    
     verbose = 0
 
     # Check if all required tables exist in the SQL database
