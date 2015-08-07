@@ -1628,11 +1628,8 @@ if (isset($output_error)) {
                 <form action="?tab=settings" method="POST">
 
 
-                <div style="float: left; margin: 0 0.5em; padding: 0 0.5em;">
-                    <div style="clear: both;"></div>
-                    <div class="config-title"><div style="padding-right: 0.6em;">
-                        <input style="width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddRelaysNumber" title="Add Sensors"/> <input type="submit" name="AddRelays" value="Add"> Relays
-                    </div>
+                <div style="margin: 0 0.5em 1em 0.5em; padding: 0 0.5em;">
+                    <input style="width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddRelaysNumber" title="Add Sensors"/> <input type="submit" name="AddRelays" value="Add"> Relays
                 </div>
 
                 
@@ -1725,10 +1722,8 @@ if (isset($output_error)) {
 
             <div class="advanced">
                 <form action="?tab=settings" method="POST">
-                <div style="float: left; margin: 0 0.5em; padding: 0 0.5em;">
-                    <div style="clear: both;"></div>
-                    <div class="config-title"><input style="width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddTimersNumber" title="Add Sensors"/> <input type="submit" name="AddTimers" value="Add"> Timers
-                    </div>
+                <div style="margin: 0 0.5em; padding: 0 0.5em;">
+                    <input style="width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddTimersNumber" title="Add Sensors"/> <input type="submit" name="AddTimers" value="Add"> Timers
                 </div>
                 <div style="clear: both"></div>
 
