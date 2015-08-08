@@ -30,17 +30,18 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 <a name="progress"></a>
 ## Progress
 
-- [X] Added Feature: Unlimited number of sensor/relays/timers that can be added
-- [X] Added Feature: Custom Sensor/PID presets (save/load/overwrite/delete)
-- [X] Added Feature: Set desired startup state of relay (on or off)
-- [X] Added Feature: Time-lapse image acquisition
-- [X] Added Feature: PID regulation up, down, or both (previously only up)
-- [X] Added Feature: Log parsing (40%-70% increase in graph-generation speed)
-- [X] Added Sensor: K30 CO<sub>2</sub> sensor
-- [X] Added Sensor: DS18B20 temperature sensor
-- [X] New SQLite configuration database (was plain-text)
-- [X] New SQLite user database (was MySQL)
-- [ ] Add maximum allowed PID output (turn relay on for a maximum of X seconds)
+- [X] Unlimited number of sensor/relays/timers that can be added
+- [X] Add custom Sensor/PID presets (save/load/overwrite/delete)
+- [X] Set desired startup state of relay (on or off)
+- [X] Time-lapse image acquisition
+- [X] PID regulation up, down, or both (previously only up)
+- [X] Log parsing (40%-70% increase in graph-generation speed)
+- [X] K30 CO<sub>2</sub> sensor support
+- [X] DS18B20 temperature sensor support
+- [X] SQLite configuration database (previously plain-text)
+- [X] SQLite user database (previously MySQL)
+- [ ] Sensor calibration
+- [ ] Optional maximum allowed PID output (turn relay on for a maximum of X seconds)
 - [ ] More graph options (y-axis min/max, select sensors to be graphed)
 - [ ] Email notification or audible alarm during critical failure or condition (working on)
 - [ ] Convert time-lapse images to video

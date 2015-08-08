@@ -1564,9 +1564,9 @@ if (isset($output_error)) {
                         <input type="submit" name="HTSensor" value="HT Sensor">
                         <input type="submit" name="Co2Sensor" value="Co2 Sensor">
                         <input type="submit" name="Relay" value="Relay">
-                        <input type="submit" name="Users" value="Users">
                         <input type="submit" name="Login" value="Login">
                         <input type="submit" name="Daemon" value="Daemon">
+                        <input type="submit" name="Users" value="Users">
                         <input type="submit" name="Database" value="Database">
                     </form>
                 </div>
