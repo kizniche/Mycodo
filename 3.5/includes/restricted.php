@@ -105,9 +105,8 @@ if (isset($_POST['AddRelays']) && isset($_POST['AddRelaysNumber'])) {
         $stmt = $db->prepare("INSERT INTO Relays VALUES(:id, 'Relay', 0, 0, 0)");
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->execute();
-
-        shell_exec("$mycodo_client --sqlreload 0");
     }
+    shell_exec("$mycodo_client --sqlreload 0");
 }
 
 
