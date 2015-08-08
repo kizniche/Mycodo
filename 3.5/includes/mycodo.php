@@ -1850,7 +1850,7 @@ if (isset($output_error)) {
                     <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
-                            Debugging
+                            Advanced
                         </td>
                     </tr>
                     <tr>
@@ -1859,6 +1859,38 @@ if (isset($output_error)) {
                         </td>
                         <td class="setting-value">
                             <input type="hidden" name="debug" value="0" /><input type="checkbox" id="debug" name="debug" value="1"<?php if (isset($_COOKIE['debug'])) if ($_COOKIE['debug'] == True) echo ' checked'; ?> title="Display debugging information at the bottom of every page."/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Start Daemon
+                        </td>
+                        <td class="setting-value">
+                            <button name="DaemonStart" type="submit" value="">Start Daemon</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Stop Daemon
+                        </td>
+                        <td class="setting-value">
+                            <button name="DaemonStop" type="submit" value="">Stop Daemon</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Restart Daemon
+                        </td>
+                        <td class="setting-value">
+                            <button name="DaemonRestart" type="submit" value="">Restart Daemon</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Restart Daemon in Debug Mode (use with caution, produces large logs)
+                        </td>
+                        <td class="setting-value">
+                            <button name="DaemonDebug" type="submit" value="">Restart Daemon in Debug Mode</button>
                         </td>
                     </tr>
                     <tr>

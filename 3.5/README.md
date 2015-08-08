@@ -283,6 +283,10 @@ Reboot to allow everything to start up
 
 `sudo shutdown now -r`
 
+Note: cgi-bin/mycodo-wrapper is a binary executable that was compiled from cgi-bin/mycodo-wrapper.c and has the setuid bit to permit it to be executed as root (the init.d script sets the correct permissions and setuid bit). mycodo-wrapper allows init.d/mycodo to run as root (required for this script). All of this is done to allow the daemon to be stopped, started, and restarted in debug mode from the settings tab of the web interface. You can check the source code of cgi-bin/mycodo-wrapper in the file cgi-bin/mycodo-wrapper.c and if you don't trust me with this and want to ensure the binary is the compiled code from that file, you may compile it yourself with the following command. Otherwise, the compiled binary is included and nothing more needs to be done. I mention this to explain the need for setuid and for transparency with security.
+
+`gcc /var/www/mycodo/cgi-bin/mycodo-wrapper.c -o /var/www/mycodo/cgi-bin/mycodo-wrapper`
+
 ## Usage
 
 ### Web Interface

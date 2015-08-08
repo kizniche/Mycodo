@@ -22,6 +22,27 @@
 *  Contact at kylegabriel.com
 */
 
+if (isset($_POST['DaemonStop'])) {
+    // $settings_error = shell_exec("sudo /etc/init.d/mycodo restart 2>&1; echo $?");
+    exec("$install_path/cgi-bin/mycodo-wrapper stop 2>&1 > /dev/null");
+}
+
+if (isset($_POST['DaemonStart'])) {
+    // $settings_error = shell_exec("sudo /etc/init.d/mycodo restart 2>&1; echo $?");
+    exec("$install_path/cgi-bin/mycodo-wrapper start 2>&1 > /dev/null");
+}
+
+if (isset($_POST['DaemonRestart'])) {
+    // $settings_error = shell_exec("sudo /etc/init.d/mycodo restart 2>&1; echo $?");
+    exec("$install_path/cgi-bin/mycodo-wrapper restart 2>&1 > /dev/null");
+}
+
+if (isset($_POST['DaemonDebug'])) {
+    // $settings_error = shell_exec("sudo /etc/init.d/mycodo restart 2>&1; echo $?");
+    exec("$install_path/cgi-bin/mycodo-wrapper debug 2>&1 > /dev/null");
+}
+
+
 // Check for changes to relay and timer variables (up to 8)
 for ($p = 0; $p < count($relay_id); $p++) {
     // Set relay variables

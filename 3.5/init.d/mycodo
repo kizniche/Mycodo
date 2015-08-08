@@ -112,10 +112,17 @@ case "${1:-''}" in
         find /var/www/mycodo/ -type d -exec chmod u+wx,g+wx {} +
         find /var/www/mycodo/ -type f -exec chmod u+w,g+w,o+r {} +
         find /var/www/mycodo/cgi-bin -type f -name '.?*' -prune -o -exec chmod 770 {} +
+        chown root:root /var/www/mycodo/cgi-bin/mycodo-wrapper
+        chmod 4775 /var/www/mycodo/cgi-bin/mycodo-wrapper
+        exit 0
         ;;
     'start')
-        $0 initialize
         python /var/www/mycodo/cgi-bin/mycodo.py 2>/dev/null &
+        exit 0
+        ;;
+    'start-debug')
+        python /var/www/mycodo/cgi-bin/mycodo.py -l d 2>/dev/null &
+        exit 0
         ;;
     'stop')
         /var/www/mycodo/cgi-bin/mycodo-client.py -t
@@ -176,10 +183,18 @@ case "${1:-''}" in
         fi
         
         $0 unlock
+        exit 0
         ;;
     'restart'|'reload'|'force-reload')
         $0 stop
+        $0 initialize
         $0 start
+        exit 0
+        ;;
+    'debug')
+        $0 stop
+        $0 initialize
+        $0 start-debug
         ;;
     'status')
         ;;
@@ -189,7 +204,7 @@ case "${1:-''}" in
         fi
         ;;
     *)
-        echo "Usage: $SELF start|stop"
+        echo "Usage: $SELF start|stop|restart"
         exit 1
         ;;
 esac
