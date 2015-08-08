@@ -980,12 +980,13 @@ if (isset($_POST['CaptureStill']) || isset($_POST['start-stream']) || isset($_PO
 if (isset($_POST['CaptureStill']) && !file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer) && !file_exists($lock_timelapse)) {
     shell_exec("touch $lock_raspistill");
     if ($still_relay) {
-        if ($relay_trigger[$still_relay] == 1) $trigger = 1;
+        if ($relay_trigger[$still_relay-1] == 1) $trigger = 1;
         else $trigger = 0;
+        $rpin = $relay_pin[$still_relay-1];
         if ($still_timestamp) {
-            $cmd = "$still_exec $relay_pin[$still_relay] $trigger 1 2>&1; echo $?";
+            $cmd = "$still_exec $rpin $trigger 1 2>&1; echo $?";
         } else {
-            $cmd = "$still_exec $relay_pin[$still_relay] $trigger 0 2>&1; echo $?";
+            $cmd = "$still_exec $rpin $trigger 0 2>&1; echo $?";
         }
     } else {
         if ($still_timestamp) {
@@ -1002,10 +1003,11 @@ if (isset($_POST['CaptureStill']) && !file_exists($lock_raspistill) && !file_exi
 if (isset($_POST['start-stream']) && !file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer) && !file_exists($lock_timelapse)) {
     shell_exec("touch $lock_mjpg_streamer");
     if ($stream_relay) { // Turn light on
-        if ($relay_trigger[$stream_relay] == 1) $trigger = 1;
+        if ($relay_trigger[$stream_relay-1] == 1) $trigger = 1;
         else $trigger = 0;
+        $rpin = $relay_pin[$stream_relay-1];
         shell_exec("touch $lock_mjpg_streamer_relay");
-        shell_exec("$stream_exec start $relay_pin[$stream_relay] $trigger > /dev/null &");
+        shell_exec("$stream_exec start $rpin $trigger > /dev/null &");
         sleep(1);
     } else {
         shell_exec("$stream_exec start > /dev/null &");
@@ -1018,8 +1020,9 @@ if (isset($_POST['stop-stream'])) {
     if (file_exists($lock_mjpg_streamer_relay)) { // Turn light off
         if ($relay_trigger[$stream_relay] == 1) $trigger = 0;
         else $trigger = 1;
+        $rpin = $relay_pin[$stream_relay-1];
         shell_exec("rm -f $lock_mjpg_streamer_relay");
-        shell_exec("$stream_exec stop $relay_pin[$stream_relay] $trigger > /dev/null &");
+        shell_exec("$stream_exec stop $rpin $trigger > /dev/null &");
     } else shell_exec("$stream_exec stop");
     shell_exec("rm -f $lock_mjpg_streamer");
     sleep(1);
@@ -1029,11 +1032,8 @@ if (isset($_POST['stop-stream'])) {
 if (isset($_POST['start-timelapse'])) {
     if (isset($_POST['timelapse_duration']) && isset($_POST['timelapse_runtime']) && !file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer) && !file_exists($lock_timelapse)) {
 
-        if ($timelapse_relay) $pin = $relay_pin[$timelapse_relay];
-        else $pin = 0;
-
         if ($timelapse_relay) {
-            if ($relay_trigger[$timelapse_relay] == 1) $trigger = 1;
+            if ($relay_trigger[$timelapse_relay-1] == 1) $trigger = 1;
             else $trigger = 0;
         } else $trigger = 0;
 
