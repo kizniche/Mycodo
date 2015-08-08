@@ -117,10 +117,12 @@ case "${1:-''}" in
         exit 0
         ;;
     'start')
+        $0 initialize
         python /var/www/mycodo/cgi-bin/mycodo.py 2>/dev/null &
         exit 0
         ;;
     'start-debug')
+        $0 initialize
         python /var/www/mycodo/cgi-bin/mycodo.py -l d 2>/dev/null &
         exit 0
         ;;
@@ -187,13 +189,11 @@ case "${1:-''}" in
         ;;
     'restart'|'reload'|'force-reload')
         $0 stop
-        $0 initialize
         $0 start
         exit 0
         ;;
     'debug')
         $0 stop
-        $0 initialize
         $0 start-debug
         ;;
     'status')
