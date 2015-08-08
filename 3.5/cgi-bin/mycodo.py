@@ -925,8 +925,10 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
     pid_temp.setPoint(high)
 
     while (pid_t_temp_alive[sensor]):
+
         while sql_reload_hold:
             time.sleep(0.1)
+
         if ( ( (pid_t_temp_set_dir[sensor] == 0 and
             pid_t_temp_relay_high[sensor] != 0 and
             pid_t_temp_relay_low[sensor] != 0) or 
@@ -972,7 +974,11 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
                 else:
                     logging.warning("[PID T-Temperature-%s] Could not read Temp sensor, not updating PID", sensor+1)
 
+        while sql_reload_hold:
+            time.sleep(0.1)
+
         time.sleep(0.1)
+
     logging.info("[PID T-Temperature-%s] Shutting Down %s", sensor+1, ThreadName)
 
     # Turn activated PID relays off
@@ -1001,8 +1007,10 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
     pid_temp.setPoint(pid_ht_temp_set[sensor])
 
     while (pid_ht_temp_alive[sensor]):
+
         while sql_reload_hold:
             time.sleep(0.1)
+
         if ( ( (pid_ht_temp_set_dir[sensor] == 0 and
             pid_ht_temp_relay_high[sensor] != 0 and
             pid_ht_temp_relay_low[sensor] != 0) or
@@ -1048,6 +1056,9 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
                 else:
                     logging.warning("[PID HT-Temperature-%s] Could not read Hum/Temp sensor, not updating PID", sensor+1)
 
+        while sql_reload_hold:
+            time.sleep(0.1)
+
         time.sleep(0.1)
 
     logging.info("[PID HT-Temperature-%s] Shutting Down %s", sensor+1, ThreadName)
@@ -1077,8 +1088,10 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
     pid_hum.setPoint(high)
 
     while (pid_ht_hum_alive[sensor]):
+
         while sql_reload_hold:
             time.sleep(0.1)
+
         if ( ( (pid_ht_hum_set_dir[sensor] == 0 and
             pid_ht_hum_relay_high[sensor] != 0 and
             pid_ht_hum_relay_low[sensor] != 0) or 
@@ -1124,7 +1137,11 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
                 else:
                     logging.warning("[PID HT-Humidity-%s] Could not read Hum/Temp sensor, not updating PID", sensor+1)
 
+        while sql_reload_hold:
+            time.sleep(0.1)
+
         time.sleep(0.1)
+
     logging.info("[PID HT-Humidity-%s] Shutting Down %s", sensor+1, ThreadName)
 
     if pid_ht_hum_relay_high[sensor]:
@@ -1152,8 +1169,10 @@ def co2_monitor(ThreadName, sensor):
     pid_co2.setPoint(high)
 
     while (pid_co2_alive[sensor]):
+
         while sql_reload_hold:
             time.sleep(0.1)
+
         if ( ( (pid_co2_set_dir[sensor] == 0 and
             pid_co2_relay_high[sensor] != 0 and
             pid_co2_relay_low[sensor] != 0) or
@@ -1198,6 +1217,9 @@ def co2_monitor(ThreadName, sensor):
 
                 else:
                     logging.warning("[PID CO2-%s] Could not read CO2 sensor, not updating PID", sensor+1)
+
+        while sql_reload_hold:
+            time.sleep(0.1)
 
         time.sleep(0.1)
 
@@ -1607,6 +1629,7 @@ def read_sql():
     global pid_t_temp_p
     global pid_t_temp_i
     global pid_t_temp_d
+    global pid_t_temp_alive
     global sensor_t_read_temp_c
     
 
@@ -1655,6 +1678,8 @@ def read_sql():
     global pid_ht_hum_p
     global pid_ht_hum_i
     global pid_ht_hum_d
+    global pid_ht_temp_alive
+    global pid_ht_hum_alive
     global sensor_ht_dewpt_c
     global sensor_ht_read_hum
     global sensor_ht_read_temp_c
@@ -1707,6 +1732,7 @@ def read_sql():
     global pid_co2_p
     global pid_co2_i
     global pid_co2_d
+    global pid_co2_alive
     global sensor_co2_read_co2
 
     # CO2 sensor variable reset
@@ -1782,7 +1808,7 @@ def read_sql():
     global sql_reload_hold
 
     sql_reload_hold = 1
-    time.sleep(1.0)
+    time.sleep(0.5)
     
     verbose = 0
 
@@ -1959,7 +1985,17 @@ def read_sql():
     sensor_ht_read_hum = [0] * len(sensor_ht_id)
     sensor_ht_read_temp_c = [0] * len(sensor_ht_id)
     sensor_co2_read_co2 = [0] * len(sensor_co2_id)
+
+    pid_t_temp_alive = []
+    pid_ht_temp_alive = []
+    pid_ht_hum_alive = []
+    pid_co2_alive = []
     
+    pid_t_temp_alive = [1] * len(sensor_t_id)
+    pid_ht_temp_alive = [1] * len(sensor_ht_id)
+    pid_ht_hum_alive = [1] * len(sensor_ht_id)
+    pid_co2_alive = [1] * len(sensor_co2_id)
+
     sql_reload_hold = 0
 
 
