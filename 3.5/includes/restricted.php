@@ -31,7 +31,7 @@ for ($p = 0; $p < count($relay_id); $p++) {
         $stmt->bindValue(':pin', (int)$_POST['relay' . $p . 'pin'], SQLITE3_INTEGER);
         $stmt->bindValue(':trigger', (int)$_POST['relay' . $p . 'trigger'], SQLITE3_INTEGER);
         $stmt->bindValue(':startstate', (int)$_POST['relay' . $p . 'startstate'], SQLITE3_INTEGER);
-        $stmt->bindValue(':id', $relay_id[$p], SQLITE3_INTEGER);
+        $stmt->bindValue(':id', $relay_id[$p], SQLITE3_TEXT);
         $stmt->execute();
         if ($_POST['relay' . $p . 'pin'] != $relay_pin[$p]) {
             shell_exec("$mycodo_client --sqlreload $p");
@@ -114,13 +114,12 @@ if (isset($_POST['AddRelays']) && isset($_POST['AddRelaysNumber'])) {
 for ($p = 0; $p < count($timer_id); $p++) {
     // Set timer variables
     if (isset($_POST['ChangeTimer' . $p])) {
-        $stmt = $db->prepare("UPDATE Timers SET Name=:name, State=:state, Relay=:relay, DurationOn=:durationon, DurationOff=:durationoff WHERE Id=:id");
+        $stmt = $db->prepare("UPDATE Timers SET Name=:name, Relay=:relay, DurationOn=:durationon, DurationOff=:durationoff WHERE Id=:id");
         $stmt->bindValue(':name', $_POST['Timer' . $p . 'Name'], SQLITE3_TEXT);
-        $stmt->bindValue(':state', (int)$_POST['Timer' . $p . 'State'], SQLITE3_INTEGER);
         $stmt->bindValue(':relay', (int)$_POST['Timer' . $p . 'Relay'], SQLITE3_INTEGER);
         $stmt->bindValue(':durationon', (int)$_POST['Timer' . $p . 'On'], SQLITE3_INTEGER);
         $stmt->bindValue(':durationoff', (int)$_POST['Timer' . $p . 'Off'], SQLITE3_INTEGER);
-        $stmt->bindValue(':id', $p, SQLITE3_TEXT);
+        $stmt->bindValue(':id', $timer_id[$p], SQLITE3_TEXT);
         $stmt->execute();
         shell_exec("$mycodo_client --sqlreload 0");
     }
@@ -129,9 +128,13 @@ for ($p = 0; $p < count($timer_id); $p++) {
     if (isset($_POST['Timer' . $p . 'StateChange'])) {
         $stmt = $db->prepare("UPDATE Timers SET State=:state WHERE Id=:id");
         $stmt->bindValue(':state', (int)$_POST['Timer' . $p . 'StateChange'], SQLITE3_INTEGER);
-        $stmt->bindValue(':id', $p, SQLITE3_INTEGER);
+        $stmt->bindValue(':id', $timer_id[$p], SQLITE3_TEXT);
         $stmt->execute();
         shell_exec("$mycodo_client --sqlreload 0");
+        if ((int)$_POST['Timer' . $p . 'StateChange'] == 0) {
+            $relay = $timer_relay[$p];
+            shell_exec("$mycodo_client -r $relay 0");
+        }
     }
 
     // Delete Timer
@@ -150,9 +153,8 @@ if (isset($_POST['AddTimers']) && isset($_POST['AddTimersNumber'])) {
         $stmt = $db->prepare("INSERT INTO Timers VALUES(:id, 'Timer', 0, 0, 60, 360)");
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->execute();
-
-        shell_exec("$mycodo_client --sqlreload 0");
     }
+    shell_exec("$mycodo_client --sqlreload 0");
 }
 
 

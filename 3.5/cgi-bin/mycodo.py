@@ -198,6 +198,7 @@ pid_co2_down = 0
 pid_co2_up = 0
 
 # Miscellaneous
+sql_reload_hold = 0
 start_all_t_pids = None
 stop_all_t_pids = None
 start_all_ht_pids = None
@@ -214,10 +215,10 @@ class ComServer(rpyc.Service):
     def exposed_ChangeRelay(self, relay, state):
         if (state == 1):
             logging.info("[Client command] Changing Relay %s to HIGH", relay)
-            relay_onoff(int(relay)+1, 'on')
+            relay_onoff(int(relay), 'on')
         elif (state == 0):
             logging.info("[Client command] Changing Relay %s to LOW", relay)
-            relay_onoff(int(relay)+1, 'off')
+            relay_onoff(int(relay), 'off')
         else:
             logging.info("[Client command] Turning Relay %s On for %s seconds", relay, state)
             rod = threading.Thread(target = relay_on_duration,
@@ -232,6 +233,7 @@ class ComServer(rpyc.Service):
         mycodoGraph.generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number, sensor_t_name, sensor_t_graph, sensor_t_period, pid_t_temp_relay_high, pid_t_temp_relay_low, sensor_ht_name, sensor_ht_graph, sensor_ht_period, pid_ht_temp_relay_high, pid_ht_temp_relay_low, pid_ht_hum_relay_high, pid_ht_hum_relay_low, sensor_co2_name, sensor_co2_graph, sensor_co2_period, pid_co2_relay_high, pid_co2_relay_low, relay_name)
         return 1
     def exposed_PID_restart(self, sensortype):
+        global client_que
         logging.info("[Daemon] Commanding all %s PIDs to stop", sensortype)
         if sensortype == 'T':
             global start_all_t_pids
@@ -242,7 +244,9 @@ class ComServer(rpyc.Service):
                     while pid_t_temp_alive[i] == 0:
                         time.sleep(0.1)
             time.sleep(0.25)
-            read_sql()
+            client_que = 'sql_reload'
+            while client_que == 'sql_reload':
+                time.sleep(0.1)
             logging.info("[Daemon] Commanding all T PIDs to start")
             time.sleep(0.25)
             start_all_t_pids = 1
@@ -259,7 +263,9 @@ class ComServer(rpyc.Service):
                     while pid_ht_hum_alive[i] == 0:
                         time.sleep(0.1)
             time.sleep(0.25)
-            read_sql()
+            client_que = 'sql_reload'
+            while client_que == 'sql_reload':
+                time.sleep(0.1)
             logging.info("[Daemon] Commanding all HT PIDs to start")
             time.sleep(0.25)
             start_all_ht_pids = 1
@@ -272,7 +278,9 @@ class ComServer(rpyc.Service):
                     while pid_co2_alive[i] == 0:
                         time.sleep(0.1)
             time.sleep(0.25)
-            read_sql()
+            client_que = 'sql_reload'
+            while client_que == 'sql_reload':
+                time.sleep(0.1)
             logging.info("[Daemon] Commanding all CO2 PIDs to start")
             time.sleep(0.25)
             start_all_co2_pids = 1
@@ -308,7 +316,10 @@ class ComServer(rpyc.Service):
             return 'Invalid Sensor Name'
     def exposed_SQLReload(self, relay):
         logging.info("[Client command] Reload SQLite database")
-        read_sql()
+        global client_que
+        client_que = 'sql_reload'
+        while client_que == 'sql_reload':
+            time.sleep(0.1)
         if relay:
             logging.info("[Client command] Relay %s GPIO pin changed to %s, initialize and turn off", relay, relay_pin[relay])
             initialize_gpio(relay)
@@ -538,10 +549,12 @@ def daemon(output, log):
     ct.start()
     time.sleep(1)
 
-    # logging.info("[Daemon] Reading SQL database and initializing variables")
-    # read_sql()
-
     logging.info("[Daemon] Conducting initial sensor readings: %s T, %s HT, and %s CO2", sum(sensor_t_activated), sum(sensor_ht_activated), sum(sensor_co2_activated))
+
+    pid_t_temp_alive = [1] * len(sensor_t_id)
+    pid_ht_temp_alive = [1] * len(sensor_ht_id)
+    pid_ht_hum_alive = [1] * len(sensor_ht_id)
+    pid_co2_alive = [1] * len(sensor_co2_id)
 
     for i in range(0, len(sensor_t_id)):
         if sensor_t_device[i] != 'Other' and sensor_t_activated[i] == 1:
@@ -566,7 +579,10 @@ def daemon(output, log):
         # Run remote commands issued by mycodo-client.py
         #
         if client_que != '0':
-            if client_que == 'write_t_sensor_log':
+
+            if client_que == 'sql_reload':
+                read_sql()
+            elif client_que == 'write_t_sensor_log':
                 logging.debug("[Client command] Write T Sensor Log")
                 if (client_var != 0 and sensor_t_activated[client_var]):
                     if read_t_sensor(client_var) == 1:
@@ -661,12 +677,8 @@ def daemon(output, log):
 
                 logging.info("[Daemon] Exiting Python")
                 return 0
-            elif client_que == 'TimerChange':
-                timer_time[timer_change] = 0
-                if (timer_state[timer_change] == 0 and timer_relay[timer_change] != 0):
-                    relay_onoff(timer_relay[timer_change], 'off')
 
-            client_que = '0'
+            client_que = None
 
 
         #
@@ -677,6 +689,7 @@ def daemon(output, log):
             stop_all_t_pids = 0
 
         if start_all_t_pids:
+            pid_t_temp_alive = []
             pid_t_temp_alive = [1] * len(sensor_t_id)
             threads_t_t = []
             for i in range(0, len(sensor_t_id)):
@@ -690,12 +703,14 @@ def daemon(output, log):
 
 
         if stop_all_ht_pids:
-            pid_ht_temp_alive =  [0] * len(sensor_ht_id)
-            pid_ht_hum_alive =  [0] * len(sensor_ht_id)
+            pid_ht_temp_alive = [0] * len(sensor_ht_id)
+            pid_ht_hum_alive = [0] * len(sensor_ht_id)
             stop_all_ht_pids = 0
 
         if start_all_ht_pids:
+            pid_ht_temp_alive = []
             pid_ht_temp_alive =  [1] * len(sensor_ht_id)
+            pid_ht_hum_alive = []
             pid_ht_hum_alive =  [1] * len(sensor_ht_id)
             threads_ht_t = []
             for i in range(0, len(sensor_ht_id)):
@@ -725,6 +740,7 @@ def daemon(output, log):
             stop_all_co2_pids = 0
 
         if start_all_co2_pids:
+            pid_co2_alive =  []
             pid_co2_alive =  [1] * len(sensor_co2_id)
             threads_co2 = []
             for i in range(0, len(sensor_co2_id)):
@@ -901,14 +917,16 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
 
     # Turn activated PID relays off
     if pid_t_temp_relay_high[sensor]:
-        relay_onoff(int(pid_t_temp_relay_high[sensor]+1), 'off')
+        relay_onoff(int(pid_t_temp_relay_high[sensor]), 'off')
     if pid_t_temp_relay_low[sensor]:
-        relay_onoff(int(pid_t_temp_relay_low[sensor]+1), 'off')
+        relay_onoff(int(pid_t_temp_relay_low[sensor]), 'off')
 
     pid_temp = PID(pid_t_temp_p[sensor], pid_t_temp_i[sensor], pid_t_temp_d[sensor])
     pid_temp.setPoint(high)
 
     while (pid_t_temp_alive[sensor]):
+        while sql_reload_hold:
+            time.sleep(0.1)
         if ( ( (pid_t_temp_set_dir[sensor] == 0 and
             pid_t_temp_relay_high[sensor] != 0 and
             pid_t_temp_relay_low[sensor] != 0) or 
@@ -959,9 +977,9 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
 
     # Turn activated PID relays off
     if pid_t_temp_relay_high[sensor]:
-        relay_onoff(int(pid_t_temp_relay_high[sensor]+1), 'off')
+        relay_onoff(int(pid_t_temp_relay_high[sensor]), 'off')
     if pid_t_temp_relay_low[sensor]:
-        relay_onoff(int(pid_t_temp_relay_low[sensor]+1), 'off')
+        relay_onoff(int(pid_t_temp_relay_low[sensor]), 'off')
 
     pid_t_temp_alive[sensor] = 2
 
@@ -975,14 +993,16 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
     logging.info("[PID HT-Temperature-%s] Starting %s", sensor, ThreadName)
 
     if pid_ht_temp_relay_high[sensor]:
-        relay_onoff(int(pid_ht_temp_relay_high[sensor]+1), 'off')
+        relay_onoff(int(pid_ht_temp_relay_high[sensor]), 'off')
     if pid_ht_temp_relay_low[sensor]:
-        relay_onoff(int(pid_ht_temp_relay_low[sensor]+1), 'off')
+        relay_onoff(int(pid_ht_temp_relay_low[sensor]), 'off')
 
     pid_temp = PID(pid_ht_temp_p[sensor], pid_ht_temp_i[sensor], pid_ht_temp_d[sensor])
     pid_temp.setPoint(pid_ht_temp_set[sensor])
 
     while (pid_ht_temp_alive[sensor]):
+        while sql_reload_hold:
+            time.sleep(0.1)
         if ( ( (pid_ht_temp_set_dir[sensor] == 0 and
             pid_ht_temp_relay_high[sensor] != 0 and
             pid_ht_temp_relay_low[sensor] != 0) or
@@ -1033,9 +1053,9 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
     logging.info("[PID HT-Temperature-%s] Shutting Down %s", sensor, ThreadName)
 
     if pid_ht_temp_relay_high[sensor]:
-        relay_onoff(int(pid_ht_temp_relay_high[sensor]+1), 'off')
+        relay_onoff(int(pid_ht_temp_relay_high[sensor]), 'off')
     if pid_ht_temp_relay_low[sensor]:
-        relay_onoff(int(pid_ht_temp_relay_low[sensor]+1), 'off')
+        relay_onoff(int(pid_ht_temp_relay_low[sensor]), 'off')
 
     pid_ht_temp_alive[sensor] = 2
 
@@ -1049,14 +1069,16 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
     logging.info("[PID HT-Humidity-%s] Starting %s", sensor, ThreadName)
 
     if pid_ht_hum_relay_high[sensor]:
-        relay_onoff(int(pid_ht_hum_relay_high[sensor]+1), 'off')
+        relay_onoff(int(pid_ht_hum_relay_high[sensor]), 'off')
     if pid_ht_hum_relay_low[sensor]:
-        relay_onoff(int(pid_ht_hum_relay_low[sensor]+1), 'off')
+        relay_onoff(int(pid_ht_hum_relay_low[sensor]), 'off')
 
     pid_hum = PID(pid_ht_hum_p[sensor], pid_ht_hum_i[sensor], pid_ht_hum_d[sensor])
     pid_hum.setPoint(high)
 
     while (pid_ht_hum_alive[sensor]):
+        while sql_reload_hold:
+            time.sleep(0.1)
         if ( ( (pid_ht_hum_set_dir[sensor] == 0 and
             pid_ht_hum_relay_high[sensor] != 0 and
             pid_ht_hum_relay_low[sensor] != 0) or 
@@ -1106,9 +1128,9 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
     logging.info("[PID HT-Humidity-%s] Shutting Down %s", sensor, ThreadName)
 
     if pid_ht_hum_relay_high[sensor]:
-        relay_onoff(int(pid_ht_hum_relay_high[sensor]+1), 'off')
+        relay_onoff(int(pid_ht_hum_relay_high[sensor]), 'off')
     if pid_ht_hum_relay_low[sensor]:
-        relay_onoff(int(pid_ht_hum_relay_low[sensor]+1), 'off')
+        relay_onoff(int(pid_ht_hum_relay_low[sensor]), 'off')
 
     pid_ht_hum_alive[sensor] = 2
 
@@ -1122,14 +1144,16 @@ def co2_monitor(ThreadName, sensor):
     logging.info("[PID CO2-%s] Starting %s", sensor, ThreadName)
 
     if pid_co2_relay_high[sensor]:
-        relay_onoff(int(pid_co2_relay_high[sensor]+1), 'off')
+        relay_onoff(int(pid_co2_relay_high[sensor]), 'off')
     if pid_co2_relay_low[sensor]:
-        relay_onoff(int(pid_co2_relay_low[sensor]+1), 'off')
+        relay_onoff(int(pid_co2_relay_low[sensor]), 'off')
 
     pid_co2 = PID(pid_co2_p[sensor], pid_co2_i[sensor], pid_co2_d[sensor])
     pid_co2.setPoint(high)
 
     while (pid_co2_alive[sensor]):
+        while sql_reload_hold:
+            time.sleep(0.1)
         if ( ( (pid_co2_set_dir[sensor] == 0 and
             pid_co2_relay_high[sensor] != 0 and
             pid_co2_relay_low[sensor] != 0) or
@@ -1180,9 +1204,9 @@ def co2_monitor(ThreadName, sensor):
     logging.info("[PID CO2-%s] Shutting Down %s", sensor, ThreadName)
 
     if pid_co2_relay_high[sensor]:
-        relay_onoff(int(pid_co2_relay_high[sensor]+1), 'off')
+        relay_onoff(int(pid_co2_relay_high[sensor]), 'off')
     if pid_co2_relay_low[sensor]:
-        relay_onoff(int(pid_co2_relay_low[sensor]+1), 'off')
+        relay_onoff(int(pid_co2_relay_low[sensor]), 'off')
 
     pid_co2_alive[sensor] = 2
 
@@ -1574,7 +1598,6 @@ def read_sql():
     global sensor_t_period
     global sensor_t_activated
     global sensor_t_graph
-    global pid_t_temp_alive
     global pid_t_temp_relay_high
     global pid_t_temp_relay_low
     global pid_t_temp_set
@@ -1614,7 +1637,6 @@ def read_sql():
     global sensor_ht_period
     global sensor_ht_activated
     global sensor_ht_graph
-    global pid_ht_temp_alive
     global pid_ht_temp_relay_high
     global pid_ht_temp_relay_low
     global pid_ht_temp_set
@@ -1624,7 +1646,6 @@ def read_sql():
     global pid_ht_temp_p
     global pid_ht_temp_i
     global pid_ht_temp_d
-    global pid_ht_hum_alive
     global pid_ht_hum_relay_high
     global pid_ht_hum_relay_low
     global pid_ht_hum_set
@@ -1647,7 +1668,6 @@ def read_sql():
     sensor_ht_period = []
     sensor_ht_activated = []
     sensor_ht_graph = []
-    pid_ht_temp_alive = []
     pid_ht_temp_relay_high = []
     pid_ht_temp_relay_low = []
     pid_ht_temp_set = []
@@ -1657,7 +1677,6 @@ def read_sql():
     pid_ht_temp_i = []
     pid_ht_temp_d = []
     pid_ht_temp_or = []
-    pid_ht_hum_alive = []
     pid_ht_hum_relay_high = []
     pid_ht_hum_relay_low = []
     pid_ht_hum_set = []
@@ -1679,7 +1698,6 @@ def read_sql():
     global sensor_co2_period
     global sensor_co2_activated
     global sensor_co2_graph
-    global pid_co2_alive
     global pid_co2_relay_high
     global pid_co2_relay_low
     global pid_co2_set
@@ -1699,7 +1717,6 @@ def read_sql():
     sensor_co2_period = []
     sensor_co2_activated = []
     sensor_co2_graph = []
-    pid_co2_alive =  []
     pid_co2_relay_high = []
     pid_co2_relay_low = []
     pid_co2_set = []
@@ -1761,6 +1778,11 @@ def read_sql():
     global smtp_pass
     global smtp_email_from
     global smtp_email_to
+
+    global sql_reload_hold
+
+    sql_reload_hold = 1
+    time.sleep(1.0)
     
     verbose = 0
 
@@ -1932,17 +1954,13 @@ def read_sql():
     for i in range(0, len(timer_id)):
         timer_time.append(int(time.time()))
 
-    pid_t_temp_alive = [1] * len(sensor_t_id)
-    pid_ht_temp_alive = [1] * len(sensor_ht_id)
-    pid_ht_hum_alive = [1] * len(sensor_ht_id)
-    pid_co2_alive = [1] * len(sensor_co2_id)
-
     sensor_t_read_temp_c = [0] * len(sensor_t_id)
     sensor_ht_dewpt_c = [0] * len(sensor_ht_id)
     sensor_ht_read_hum = [0] * len(sensor_ht_id)
     sensor_ht_read_temp_c = [0] * len(sensor_ht_id)
     sensor_co2_read_co2 = [0] * len(sensor_co2_id)
-        
+    
+    sql_reload_hold = 0
 
 
 # Write variables to the SQLite database
@@ -2082,13 +2100,13 @@ def gpio_change(relay, State):
 # Turn relay on or off (accounts for trigger)
 def relay_onoff(relay, state):
     if (relay_trigger[relay-1] == 1 and state == 'on'):
-        gpio_change(relay-1, 1)
+        gpio_change(relay, 1)
     elif (relay_trigger[relay-1] == 1 and state == 'off'):
-        gpio_change(relay-1, 0)
+        gpio_change(relay, 0)
     elif (relay_trigger[relay-1] == 0 and state == 'on'):
-        gpio_change(relay-1, 0)
+        gpio_change(relay, 0)
     elif (relay_trigger[relay-1] == 0 and state == 'off'):
-        gpio_change(relay-1, 1)
+        gpio_change(relay, 1)
 
 # Set relay on for a specific duration
 def relay_on_duration(relay, seconds, sensor):
