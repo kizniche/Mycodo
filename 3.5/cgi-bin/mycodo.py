@@ -381,7 +381,10 @@ class ComThread(threading.Thread):
         server = ThreadedServer(ComServer, port = 18812)
         server.start()
 
-# PID controller
+# Discrete PID Controller
+# <http://code.activestate.com/recipes/577231-discrete-pid-controller/>
+# Copyright (c) 2010 cnr437@gmail.com
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 class PID:
     def __init__(self, P=2.0, I=0.0, D=1.0, Derivator=0, Integrator=0,
             Integrator_max=500, Integrator_min=-500):
