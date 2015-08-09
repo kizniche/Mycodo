@@ -104,6 +104,12 @@ class OneFileLoginApplication {
                     $this->createNewUser();
                 }
             }
+        } else if (isset($_POST["changeemail"])) {
+            if ($this->checkEmailChangeData()) {
+                if ($this->createDatabaseConnection()) {
+                    $this->changeEmail();
+                }
+            }
         } else if (isset($_POST["changepassword"])) {
             if ($this->checkPasswordChangeData()) {
                 if ($this->createDatabaseConnection()) {
@@ -358,6 +364,57 @@ class OneFileLoginApplication {
         return false;
     }
 
+
+    private function checkEmailChangeData() {
+        if (!empty($_POST['user_name'])
+            && strlen($_POST['user_name']) <= 64
+            && strlen($_POST['user_name']) >= 2
+            && preg_match('/^[a-z\d]{2,64}$/i', $_POST['user_name'])
+            && !empty($_POST['user_email'])
+            && strlen($_POST['user_email']) <= 64
+            && filter_var($_POST['user_email'], FILTER_VALIDATE_EMAIL)
+        ) {
+            // only this case return true, only this case is valid
+            return true;
+        } elseif (empty($_POST['user_name'])) {
+            $this->feedback = "Empty Username";
+        } elseif (strlen($_POST['user_name']) > 64 || strlen($_POST['user_name']) < 2) {
+            $this->feedback = "Username cannot be shorter than 2 or longer than 64 characters";
+        } elseif (!preg_match('/^[a-z\d]{2,64}$/i', $_POST['user_name'])) {
+            $this->feedback = "Username does not fit the name scheme: only a-Z and numbers are allowed, 2 to 64 characters";
+        } elseif (empty($_POST['user_email'])) {
+            $this->feedback = "Email cannot be empty";
+        } elseif (strlen($_POST['user_email']) > 64) {
+            $this->feedback = "Email cannot be longer than 64 characters";
+        } elseif (!filter_var($_POST['user_email'], FILTER_VALIDATE_EMAIL)) {
+            $this->feedback = "Your email address is not in a valid email format";
+        } else {
+            $this->feedback = "An unknown error occurred.";
+        }
+        return false;
+    }
+
+    private function changeEmail() {
+        // remove html code etc. from username and email
+        $user_name = htmlentities($_POST['user_name'], ENT_QUOTES);
+        $user_email = htmlentities($_POST['user_email'], ENT_QUOTES);
+
+        $sql = 'UPDATE users SET user_email = :user_email WHERE user_name = :user_name';
+        $query = $this->db_connection->prepare($sql);
+        $query->bindValue(':user_name', $user_name);
+        $query->bindValue(':user_email', $user_email);
+        $emailchange_success_state = $query->execute();
+
+        if ($emailchange_success_state) {
+            $this->feedback = "Email successfully changed for user " . $user_name;
+            return true;
+        } else {
+            $this->feedback = "Email chage failed.";
+        }
+        return false;
+    }
+
+
     private function checkPasswordChangeData() {
         if (!empty($_POST['user_name'])
             && strlen($_POST['user_name']) <= 64
@@ -407,6 +464,7 @@ class OneFileLoginApplication {
         }
         return false;
     }
+
 
     private function checkDeleteUserData() {
         if (!empty($_POST['user_name'])

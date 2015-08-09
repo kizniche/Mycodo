@@ -960,7 +960,7 @@ if (isset($output_error)) {
                                 ?>
                             </td>
                             <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_set[$i]; ?>" maxlength=4 size=2 name="SetCO2<?php echo $i; ?>CO2Set" title="This is the desired CO2 concentration in ppm."/> ppm
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_set[$i]; ?>" maxlength=4 size=2 name="SetCO2<?php echo $i; ?>CO2Set" title="This is the desired CO2 concentration in ppmv."/> ppmv
                             </td>
                             <td>
                                 <select style="width: 5em;" name="SetCO2<?php echo $i; ?>CO2SetDir" title="Which direction should the PID regulate. 'Up' will ensure the CO2 is regulated above a certain CO2. 'Down' will ensure the CO2 is regulates below a certain point. 'Both' will ensure the CO2 is regulated both up and down to maintain a specific CO2."/>
@@ -1855,10 +1855,10 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
-                            Display Debugging Information
+                            Stop Daemon
                         </td>
                         <td class="setting-value">
-                            <input type="hidden" name="debug" value="0" /><input type="checkbox" id="debug" name="debug" value="1"<?php if (isset($_COOKIE['debug'])) if ($_COOKIE['debug'] == True) echo ' checked'; ?> title="Display debugging information at the bottom of every page."/>
+                            <button name="DaemonStop" type="submit" value="" title="Stop the mycodo daemon from running or kill a daemon that has had a segmentation fault.">Stop Daemon</button>
                         </td>
                     </tr>
                     <tr>
@@ -1866,15 +1866,7 @@ if (isset($output_error)) {
                             Start Daemon
                         </td>
                         <td class="setting-value">
-                            <button name="DaemonStart" type="submit" value="">Start Daemon</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Stop Daemon
-                        </td>
-                        <td class="setting-value">
-                            <button name="DaemonStop" type="submit" value="">Stop Daemon</button>
+                            <button name="DaemonStart" type="submit" value="" title="Start the mycodo daemon in normal mode (if no other instance is currently running).">Start Daemon</button>
                         </td>
                     </tr>
                     <tr>
@@ -1882,7 +1874,7 @@ if (isset($output_error)) {
                             Restart Daemon
                         </td>
                         <td class="setting-value">
-                            <button name="DaemonRestart" type="submit" value="">Restart Daemon</button>
+                            <button name="DaemonRestart" type="submit" value="" title="Stop and start the mycodo daemon in normal mode.">Restart Daemon</button>
                         </td>
                     </tr>
                     <tr>
@@ -1890,12 +1882,7 @@ if (isset($output_error)) {
                             Restart Daemon in Debug Mode (use with caution, produces large logs)
                         </td>
                         <td class="setting-value">
-                            <button name="DaemonDebug" type="submit" value="">Restart Daemon in Debug Mode</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-save">
-                            <button name="save" type="submit" value="">Save</button>
+                            <button name="DaemonDebug" type="submit" value="" title="Stop and start the mycodo daemon in debug mode (verbose log messages, temporary files are not deleted). You should probably not enable this unless you know what you're doing.">Restart Daemon in Debug Mode</button>
                         </td>
                     </tr>
                     </form>
@@ -1903,6 +1890,14 @@ if (isset($output_error)) {
                     <tr>
                         <td class="setting-title">
                             Web Interface
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Display Debugging Information
+                        </td>
+                        <td class="setting-value">
+                            <input type="hidden" name="debug" value="0" /><input type="checkbox" id="debug" name="debug" value="1"<?php if (isset($_COOKIE['debug'])) if ($_COOKIE['debug'] == True) echo ' checked'; ?> title="Display debugging information at the bottom of every page."/>
                         </td>
                     </tr>
                     <tr>
@@ -2142,7 +2137,7 @@ if (isset($output_error)) {
                             Username (only letters and numbers, 2 to 64 characters)
                         </td>
                         <td class="setting-value">
-                            <input style="width: 18em;" id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
+                            <input style="width: 18em;" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
                         </td>
                     </tr>
                     <tr>
@@ -2150,7 +2145,7 @@ if (isset($output_error)) {
                             Email
                         </td>
                         <td class="setting-value">
-                            <input style="width: 18em;" id="login_input_email" type="email" name="user_email" />
+                            <input style="width: 18em;" type="email" name="user_email" />
                         </td>
                     </tr>
                     <tr>
@@ -2158,7 +2153,7 @@ if (isset($output_error)) {
                             Password (min. 6 characters)
                         </td>
                         <td class="setting-value">
-                            <input style="width: 18em;" id="login_input_password_new" class="login_input" type="password" name="user_password_new" pattern=".{6,}" required autocomplete="off" />
+                            <input style="width: 18em;" class="login_input" type="password" name="user_password_new" pattern=".{6,}" required autocomplete="off" />
                         </td>
                     </tr>
                     <tr>
@@ -2166,7 +2161,7 @@ if (isset($output_error)) {
                             Repeat password
                         </td>
                         <td class="setting-value">
-                            <input style="width: 18em;" id="login_input_password_repeat" class="login_input" type="password" name="user_password_repeat" pattern=".{6,}" required autocomplete="off" />
+                            <input style="width: 18em;" class="login_input" type="password" name="user_password_repeat" pattern=".{6,}" required autocomplete="off" />
                         </td>
                     </tr>
                     <tr>
@@ -2186,7 +2181,7 @@ if (isset($output_error)) {
                             Username
                         </td>
                         <td class="setting-value">
-                            <input style="width: 18em;" id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
+                            <input style="width: 18em;" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
                         </td>
                     </tr>
                     <tr>
@@ -2194,7 +2189,7 @@ if (isset($output_error)) {
                             Password (min. 6 characters)
                         </td>
                         <td class="setting-value">
-                            <input style="width: 18em;" id="login_input_password_new" class="login_input" type="password" name="new_password" pattern=".{6,}" required autocomplete="off" />
+                            <input style="width: 18em;" class="login_input" type="password" name="new_password" pattern=".{6,}" required autocomplete="off" />
                         </td>
                     </tr>
                     <tr>
@@ -2202,12 +2197,40 @@ if (isset($output_error)) {
                             Repeat New password
                         </td>
                         <td class="setting-value">
-                            <input style="width: 18em;" id="login_input_password_repeat" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_repeat">
+                            <input style="width: 18em;" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_repeat">
                         </td>
                     </tr>
                     <tr>
                         <td class="setting-save">
                             <input type="submit" name="changepassword" value="Change Password" />
+                        </td>
+                    </tr>
+                    </form>
+                    <form method="post" action="?tab=settings">
+                    <tr>
+                        <td class="setting-title">
+                            Change Email
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Username
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Email
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" class="login_input" type="email" name="user_email" required />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-save">
+                            <input type="submit" name="changeemail" value="Change Email" />
                         </td>
                     </tr>
                     </form>
@@ -2222,7 +2245,7 @@ if (isset($output_error)) {
                             Username
                         </td>
                         <td class="setting-value">
-                            <input style="width: 18em;" id="login_input_username" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
+                            <input style="width: 18em;" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
                         </td>
                     </tr>
                     <tr>

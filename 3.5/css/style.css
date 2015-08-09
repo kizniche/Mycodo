@@ -37,12 +37,6 @@ a:hover { color: #F2273B; }
 
 /*** Header ***/
 
-.error {
-    margin: 0.5em 0;
-    color: red;
-    font-weight: bold;
-}
-
 .header {
     height: 4.5em;
     float: left;
@@ -264,8 +258,10 @@ label.notify {
 
 /* Warnings and errors */
 .error {
+    white-space: normal;
+    margin: 0.5em 0;
     color: red;
-    padding: 0 0 0.5em 0.3em;
+    font-weight: bold;
 }
 
 /* debug */

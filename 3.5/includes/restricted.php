@@ -23,22 +23,30 @@
 */
 
 if (isset($_POST['DaemonStop'])) {
-    // $settings_error = shell_exec("sudo /etc/init.d/mycodo restart 2>&1; echo $?");
-    exec("$install_path/cgi-bin/mycodo-wrapper stop 2>&1 > /dev/null");
+    if (!file_exists($lock_daemon)) {
+        $settings_error = 'Lock-file not present: ' . $lock_daemon . ' Is the daemon really running? Checking for and force-closing any running daemon.';
+    } else {
+        exec("$install_path/cgi-bin/mycodo-wrapper stop 2>&1 > /dev/null");
+    }
 }
 
 if (isset($_POST['DaemonStart'])) {
-    // $settings_error = shell_exec("sudo /etc/init.d/mycodo restart 2>&1; echo $?");
-    exec("$install_path/cgi-bin/mycodo-wrapper start 2>&1 > /dev/null");
+    if (file_exists($lock_daemon)) {
+        $settings_error = 'Lock-file present: ' . $lock_daemon . ' Is the daemon aready running? Delete the lock file to start or select "Restart Daemon"';
+    } else {
+        exec("$install_path/cgi-bin/mycodo-wrapper start 2>&1 > /dev/null");
+    }
 }
 
 if (isset($_POST['DaemonRestart'])) {
-    // $settings_error = shell_exec("sudo /etc/init.d/mycodo restart 2>&1; echo $?");
-    exec("$install_path/cgi-bin/mycodo-wrapper restart 2>&1 > /dev/null");
+    if (!file_exists($lock_daemon)) {
+        $settings_error = 'Lock-file not present: ' . $lock_daemon . ' Is the daemon really running? Checking for and force-closing any running daemon before attempting to start.';
+    } else {
+        exec("$install_path/cgi-bin/mycodo-wrapper restart 2>&1 > /dev/null");
+    }
 }
 
 if (isset($_POST['DaemonDebug'])) {
-    // $settings_error = shell_exec("sudo /etc/init.d/mycodo restart 2>&1; echo $?");
     exec("$install_path/cgi-bin/mycodo-wrapper debug 2>&1 > /dev/null");
 }
 
