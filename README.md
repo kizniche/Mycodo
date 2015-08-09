@@ -1,6 +1,6 @@
 # Mycodo
 
-   Mycodo is a system designed to monitor and regulate a microclimate of an environment with PID control. Sensors monitor environmental conditions (currently temperature, humidity, and CO<sub>2</sub>) and software PID controllers modulate relays that power devices to alter the environment. A web-interface features viewing of current and past conditions as well as graph generation, configuration modification, and image/video/timelapse acquisition, to name a few (full feature list below).
+   Mycodo is a system designed to monitor an environment and regulate the climate with discrete PID control. Sensors monitor environmental conditions (currently temperature, humidity, and CO<sub>2</sub>) and software PID controllers modulate relays that power devices to alter the environment. A web-interface features viewing of current and past conditions as well as graph generation, configuration modification, and image/video/timelapse acquisition, to name a few (full feature list below).
 
    A daemon performs all crucial tasks, including periodically reading sensors, writing sensor and relay logs, PID controller regulation, scheduling timer-activated relays, generating graphs, among others. A client application communicates with the daemon to carry out user-defined tasks, such as relay changes and turning PID regulation on and off, to name a few.
 
@@ -290,6 +290,8 @@ Mycodo is free software: you can redistribute it and/or modify it under the term
 Mycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.en.html) for more details.
 
 A full copy of the GNU General Public License can be found at <a href="http://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">http://www.gnu.org/licenses/gpl-3.0.en.html</a>
+
+This software includes third party open source software components: Discrete PID Controller. Each of these software components have their own license. Please see ./3.5/cgi-bin/mycodoPID.py for license information.
 
 <a name="links"></a>
 ## Useful Links
