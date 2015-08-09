@@ -696,7 +696,11 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
             $stmt = $db->prepare("UPDATE CO2SensorPreset SET Name=:name, Device=:device, Pin=:pin, Period=:period, Activated=:activated, Graph=:graph, CO2_Relay_High=:co2relayhigh, CO2_Relay_Low=:co2relaylow, CO2_Set=:co2set, CO2_Set_Direction=:co2setdir, CO2_Period=:co2period, CO2_P=:co2p, CO2_I=:co2i, CO2_D=:co2d WHERE Preset=:preset");
             $stmt->bindValue(':name', $_POST['sensorco2' . $p . 'name'], SQLITE3_TEXT);
             $stmt->bindValue(':device', $_POST['sensorco2' . $p . 'device'], SQLITE3_TEXT);
-            $stmt->bindValue(':pin', (int)$_POST['sensorco2' . $p . 'pin'], SQLITE3_INTEGER);
+            if ($_POST['sensorco2' . $p . 'device'] == 'K30') {
+                $stmt->bindValue(':pin', $sensor_co2_pin[$p], SQLITE3_INTEGER);
+            } else {
+                $stmt->bindValue(':pin', (int)$_POST['sensorco2' . $p . 'pin'], SQLITE3_INTEGER);
+            }
             $stmt->bindValue(':period', (int)$_POST['sensorco2' . $p . 'period'], SQLITE3_INTEGER);
             if (isset($_POST['sensorco2' . $p . 'activated'])) {
                 $stmt->bindValue(':activated', 1, SQLITE3_INTEGER);
@@ -724,7 +728,11 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
         $stmt->bindValue(':id', $sensor_co2_id[$p], SQLITE3_TEXT);
         $stmt->bindValue(':name', $_POST['sensorco2' . $p . 'name'], SQLITE3_TEXT);
         $stmt->bindValue(':device', $_POST['sensorco2' . $p . 'device'], SQLITE3_TEXT);
-        $stmt->bindValue(':pin', (int)$_POST['sensorco2' . $p . 'pin'], SQLITE3_INTEGER);
+        if ($_POST['sensorco2' . $p . 'device'] == 'K30') {
+            $stmt->bindValue(':pin', $sensor_co2_pin[$p], SQLITE3_INTEGER);
+        } else {
+            $stmt->bindValue(':pin', (int)$_POST['sensorco2' . $p . 'pin'], SQLITE3_INTEGER);
+        }
         $stmt->bindValue(':period', (int)$_POST['sensorco2' . $p . 'period'], SQLITE3_INTEGER);
         if (isset($_POST['sensorco2' . $p . 'activated'])) {
             $stmt->bindValue(':activated', 1, SQLITE3_INTEGER);
