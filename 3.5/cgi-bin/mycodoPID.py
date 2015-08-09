@@ -4,6 +4,7 @@
 # PID-controller.py - Discrete PID Controller
 #
 # Copyright (c) 2010 cnr437@gmail.com
+#
 # Licensed under the MIT License <http://opensource.org/licenses/MIT>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
