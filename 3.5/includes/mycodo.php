@@ -1877,6 +1877,8 @@ if (isset($output_error)) {
                             <button name="DaemonRestart" type="submit" value="" title="Stop and start the mycodo daemon in normal mode.">Restart Daemon</button>
                         </td>
                     </tr>
+                    </form>
+                    <form action="?tab=settings" method="post" onsubmit="return confirm('Confirm that you would like to run the daemon in debug mode. If not, click Cancel.')">
                     <tr>
                         <td class="setting-text">
                             Restart Daemon in Debug Mode (use with caution, produces large logs)
@@ -1885,6 +1887,8 @@ if (isset($output_error)) {
                             <button name="DaemonDebug" type="submit" value="" title="Stop and start the mycodo daemon in debug mode (verbose log messages, temporary files are not deleted). You should probably not enable this unless you know what you're doing.">Restart Daemon in Debug Mode</button>
                         </td>
                     </tr>
+                    </form>
+                    <form action="?tab=settings" method="post" onsubmit="return confirm('Confirm that you would like to begin the update process now. If not, click Cancel.')">
                     <tr>
                         <td class="setting-text">
                             Update Mycodo to the latest version on <a href="https://github.com/kizniche/Mycodo" target="_blank">GIT</a>
