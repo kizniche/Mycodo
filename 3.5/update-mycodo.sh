@@ -37,15 +37,15 @@ if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
     service mycodo stop
 
     NOW=$(date +"%Y-%m-%d_%H-%M-%S")
-    echo "#### Making backup in $PDIR-$NOW ####" >&2
+    echo "#### Creating backup in $PDIR-backups/Mycodo-$NOW ####" >&2
     mkdir -p $DIR/../../Mycodo-backups
-    cp -r $DIR/../../Mycodo $DIR/../../Mycodo-backups/Mycodo-$NOW
+    mkdir -p $DIR/../../Mycodo-backups/Mycodo-$NOW
+    cp -r $DIR/../../Mycodo/3.5 $DIR/../../Mycodo-backups/Mycodo-$NOW/
 
-    echo "#### Fetch from GIT ####" >&2
+    echo "#### Update from GIT ####" >&2
     git fetch --all
     git reset --hard origin/master
 
-    echo "#### Update Files ####" >&2
     if [ ! -h /var/www/mycodo ]; then
         ln -s $DIR /var/www/mycodo
     fi
@@ -58,8 +58,7 @@ if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
     echo "#### Starting Daemon ####" >&2
     service mycodo start
 
-    echo "#### Finished Updating ####" >&2
-
+    echo "#### Update Finished ####" >&2
 else
     echo "#### No git repository found ####" >&2
 fi
