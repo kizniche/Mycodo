@@ -19,7 +19,7 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
   + [Daemon](#daemon)
 + [Usage](#usage)
   + [Web Interface](#web-interface)
-  + [Discrete PID Control](#pid-control)
+  + [Discrete PID Control](#discrete-pid-control)
   + [Quick Setup Examples](#quick-set-up-examples)
     + [Exact-Temperature Regulation](#exact-temperature-regulation)
     + [High-Temperature Regulation](#high-humidity-regulation)

@@ -1562,12 +1562,12 @@ if (isset($output_error)) {
                         Lines: <input type="text" maxlength=8 size=8 name="Lines" />
                         <input type="submit" name="TSensor" value="T Sensor">
                         <input type="submit" name="HTSensor" value="HT Sensor">
-                        <input type="submit" name="Co2Sensor" value="Co2 Sensor">
+                        <input type="submit" name="Co2Sensor" value="CO2 Sensor">
                         <input type="submit" name="Relay" value="Relay">
                         <input type="submit" name="Login" value="Login">
                         <input type="submit" name="Daemon" value="Daemon">
-                        <input type="submit" name="Users" value="Users">
-                        <input type="submit" name="Database" value="Database">
+                        <input type="submit" name="Users" value="User Database">
+                        <input type="submit" name="Database" value="Mycodo Database">
                     </form>
                 </div>
                 <div style="font-family: monospace;">
@@ -1603,7 +1603,7 @@ if (isset($output_error)) {
                             concatenate_logs('co2');
                             $log = '/var/tmp/sensor-co2.log';
 
-                            echo 'Year Mo Day Hour Min Sec Co2 Sensor<br> <br>';
+                            echo 'Year Mo Day Hour Min Sec CO<sub>2</sub> Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `tail -n $Lines $log`;
