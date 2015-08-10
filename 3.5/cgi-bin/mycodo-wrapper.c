@@ -23,7 +23,16 @@ int main(int argc, char *argv[]) {
 			system(updateScript);
 		}
 	} else {
-		printf("mycodo-wrapper: Allows web interface to stop and start the daemon and update the mycodo system to the latest version.\n");
+		printf("mycodo-wrapper: A wrapper to allow the mycodo web interface\n");
+		printf("                to stop and start the daemon and update the\n");
+		printf("                mycodo system to the latest version.\n\n");
+		printf("Usage: mycodo-wrapper stop|start|restart|debug|update\n\n");
+		printf("Options:\n");
+		printf("    stop:    Stop the mycodo daemon\n");
+		printf("    start:   Start the mycodo daemon\n");
+		printf("    restart: Restart the mycodo daemon in normal mode\n");
+		printf("    debug:   Restart the mycodo daemon in debug mode\n");
+		printf("    update:  Update mycod to the latest version on git\n\n");
 	}
 
 	return 0;
