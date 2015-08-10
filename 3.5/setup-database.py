@@ -187,7 +187,10 @@ def menu():
             usage()
             return 1
         elif opt in ("-i", "--install-db"):
-            setup_db()
+            if sys.argv[2] == 'update':
+                setup_db('update') 
+            else:
+                setup_db(0)
             return 1
         elif opt in ("-p", "--pwchange"):
             if database != None:
@@ -302,12 +305,17 @@ def db_exists_mycodo(db):
         print 'database %s not found' % db
         sys.exit(0)
 
-def setup_db():
-    target = raw_input("Generate which database? 'user', 'mycodo', or 'all'? ")
+def setup_db(update):
+    if update == 'update':
+        target = 'mycodo'
+    else:
+        target = raw_input("Generate which database? 'user', 'mycodo', or 'all'? ")
+    
     if target == 'all' or target == 'mycodo':
         delete_all_tables_mycodo()
         create_all_tables_mycodo()
         create_rows_columns_mycodo()
+    
     if target == 'all' or target == 'user':
         delete_all_tables_user()
         create_all_tables_user()

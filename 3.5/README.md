@@ -300,13 +300,13 @@ Additionally, relays must be properly set up before PID regulation can be achiev
 
 ### Discrete PID Control
 
-The PID controller is the most common regulatory controller found in industrial settings, both for its simplicity and its complexity. PID stands for Proportional Integral Derivative, and these are the three components of the controller.
+The PID controller is the most common regulatory controller found in industrial settings, for it's ability to handle both simple and complex regulation. The PID controller has three paths, the proportional, integral, and derivative.
 
-> **P**roportional: This path takes the error and multiplies it by the constant K<sub>p</sub>, to yield an output value. When the error is large, there will be a large proportional output.
+> The **P**roportional takes the error and multiplies it by the constant K<sub>p</sub>, to yield an output value. When the error is large, there will be a large proportional output.
 
-> **I**ntegral: This path takes the error and multiplies it by K<sub>i</sub>, then integrates it (K<sub>i</sub> · 1/s). As the error changes over time, the integral will continually sum it and multiply it by the constant K<sub>i</sub>. The integral is used to remove perpetual error in the control system. If using P alone produces an output that produces a perpetual error (if the measured sensor value never reaches the Set Point), the integral will increase the output until the error decreases and the Set Point is reached.
+> The **I**ntegral takes the error and multiplies it by K<sub>i</sub>, then integrates it (K<sub>i</sub> · 1/s). As the error changes over time, the integral will continually sum it and multiply it by the constant K<sub>i</sub>. The integral is used to remove perpetual error in the control system. If using P alone produces an output that produces a perpetual error (if the measured sensor value never reaches the Set Point), the integral will increase the output until the error decreases and the Set Point is reached.
 
-> **D**erivative: This path multiplies the error by K<sub>d</sub>, then differentiates it (K<sub>d</sub> · s). When the error rate changes over time, the output signal will change. The faster the change in error, the larger the derivative path becomes, decreasing the output rate of change.
+> The **D**erivative multiplies the error by K<sub>d</sub>, then differentiates it (K<sub>d</sub> · s). When the error rate changes over time, the output signal will change. The faster the change in error, the larger the derivative path becomes, decreasing the output rate of change.
 
 <a href="https://en.wikipedia.org/wiki/PID_controller" target="_blank">![](http://kylegabriel.com/images/PID_Animated.gif)</a>
 

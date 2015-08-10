@@ -28,23 +28,39 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+PDIR="$( dirname "$DIR" )"
+
 cd $DIR
 
 if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
-    echo "#### stop daemon ####" >&2
+    echo "#### Stopping Daemon ####" >&2
     service mycodo stop
 
-    echo "#### backup logs ####" >&2
-
-    now=$(date +"%Y-%m-%d_%H-%M-%S")
+    NOW=$(date +"%Y-%m-%d_%H-%M-%S")
+    echo "#### Making backup in $PDIR-$NOW ####" >&2
     mkdir -p $DIR/../../Mycodo-backups
-    cp -r $DIR/../../Mycodo $DIR/../../Mycodo-backups/Mycodo_$now
+    cp -r $DIR/../../Mycodo $DIR/../../Mycodo-backups/Mycodo-$NOW
 
-    echo "#### update from git ####" >&2
+    echo "#### Fetch from GIT ####" >&2
     git fetch --all
     git reset --hard origin/master
 
+    echo "#### Update Files ####" >&2
+    if [ ! -h /var/www/mycodo ]; then
+        ln -s $DIR /var/www/mycodo
+    fi
+    cp $DIR/init.d/mycodo /etc/init.d/
+    cp $DIR/init.d/apache2-tempfs /etc/init.d/
+
+    echo "#### Update Database ####" >&2
+    $DIR/setup-database.sh -i update
+
+    echo "#### Starting Daemon ####" >&2
+    service mycodo start
+
+    echo "#### Finished Updating ####" >&2
+
 else
-    echo "#### Not a git repository ####" >&2
+    echo "#### No git repository found ####" >&2
 fi
 
