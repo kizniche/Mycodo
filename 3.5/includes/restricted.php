@@ -22,6 +22,10 @@
 *  Contact at kylegabriel.com
 */
 
+if (isset($_POST['UpdateMycodo'])) {
+    $settings_error = shell_exec("$install_path/cgi-bin/mycodo-wrapper update");
+}
+
 if (isset($_POST['DaemonStop'])) {
     if (!file_exists($lock_daemon)) {
         $settings_error = 'Lock-file not present: ' . $lock_daemon . ' Is the daemon really running? Checking for and force-closing any running daemon.';

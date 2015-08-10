@@ -19,6 +19,7 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
   + [Daemon](#daemon)
 + [Usage](#usage)
   + [Web Interface](#web-interface)
+  + [System Update](#system-update)
   + [Discrete PID Control](#discrete-pid-control)
   + [Quick Setup Examples](#quick-set-up-examples)
     + [Exact-Temperature Regulation](#exact-temperature-regulation)
@@ -30,6 +31,7 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 <a name="progress"></a>
 ## Progress
 
+- [X] System self-updater (updated through the web interface settings tab)
 - [X] Unlimited number of sensor/relays/timers that can be added
 - [X] Add custom Sensor/PID presets (save/load/overwrite/delete)
 - [X] Set desired startup state of relay (on or off)
@@ -82,11 +84,13 @@ This installation assumes you are starting with a fresh install of Raspbian linu
 
 `sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev php5 libapache2-mod-php5 python-pip subversion php5-sqlite sqlite3`
 
-`svn checkout https://github.com/kizniche/Mycodo/trunk/3.5 /var/www/mycodo`
+`git clone https://github.com/kizniche/Mycodo.git ~/Mycodo`
 
-`sudo git clone git://git.drogon.net/wiringPi ~/WiringPi`
+`sudo ln -s ~/Mycodo/3.5 /var/www/mycodo`
 
-`sudo git clone https://github.com/adafruit/Adafruit_Python_DHT ~/Adafruit_Python_DHT`
+`git clone git://git.drogon.net/wiringPi ~/WiringPi`
+
+`git clone https://github.com/adafruit/Adafruit_Python_DHT ~/Adafruit_Python_DHT`
 
 Install WiringPi
 
@@ -260,9 +264,7 @@ It is highly recommended that the configuration change be tested to determine if
 
 Use the following commands and type 'all' when prompted to create databases
 
-`cd /var/www/mycodo/`
-
-`sudo ./setup-databases.py -i`
+`sudo /var/www/mycodo/setup-databases.py -i`
 
 Follow the prompts to create an admin password, optionally create another user, and enable/disable guest access.
 
@@ -280,9 +282,9 @@ Last, set the daemon to automatically start
 
 `sudo update-rc.d mycodo defaults`
 
-Reboot to allow everything to start up
+You can either reboot or start the daemon with the following command.
 
-`sudo shutdown now -r`
+`sudo service mycodo start`
 
 Note: cgi-bin/mycodo-wrapper is a binary executable used to start and stop the mycodo daemon from the web interface settings tab. It has the setuid bit to permit it to be executed as root (the init.d script sets the correct permissions and setuid). Since shell scripts cannot be setuid (ony binary files), mycodo-wrapper permits init.d/mycodo to be executed as root by a non-root user. All of this is done to allow the daemon to be stopped, started, and restarted in debug mode from the settings tab of the web interface. You can audit the source code in cgi-bin/mycodo-wrapper.c and if you want to ensure the binary is indeed compiled from the source, you may compile it yourself with the following command. Otherwise, the compiled binary is included and no further action is needed. I mention this to explain the need for setuid, for transparency, and security.
 
@@ -297,6 +299,12 @@ After the system is back up, go to http://your.rpi.address/mycodo and log in wit
 Ensure the Daemon indicator at the top-left is blue, indicating the daemon is running. If it is not, PID regulation cannot operate.
 
 Additionally, relays must be properly set up before PID regulation can be achieved. Change the number of relays in the Settings tab and configure them. Change the `GPIO Pin` and `Signal ON` of each relay. The `GPIO Pin` is the pin on the raspberry pi (using BCM numbering, not board numbering) and the `Signal ON` is the required signal to activate the relay (close the circuit). If your relay activates when it receives a LOW signal (0-volt, Ground), set the `Signal ON` to 'Low', otherwise set it 'High'.
+
+### System Update
+
+If you have a fully-configured system, you may update to the latest version with the "Update Mycodo" button under the Advanced menu of the settings tab. A backup of the old system will be placed in the same directory the Mycodo main direcotry resides. For example, if this directory is /home/user/Mycodo, then the backup directory will reside at /home/user/Mycodo-backup.
+
+Note: Logs and the user database will be preserved, however you will most likely need to reconfigure your settings and presets (a database updater is in the works). 
 
 ### Discrete PID Control
 

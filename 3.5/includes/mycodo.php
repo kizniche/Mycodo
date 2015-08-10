@@ -1885,6 +1885,14 @@ if (isset($output_error)) {
                             <button name="DaemonDebug" type="submit" value="" title="Stop and start the mycodo daemon in debug mode (verbose log messages, temporary files are not deleted). You should probably not enable this unless you know what you're doing.">Restart Daemon in Debug Mode</button>
                         </td>
                     </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Update Mycodo to the latest version on <a href="https://github.com/kizniche/Mycodo" target="_blank">GIT</a>
+                        </td>
+                        <td class="setting-value">
+                            <button name="UpdateMycodo" type="submit" value="" title="Update the mycodo system to the latest version on github.">Update Mycodo</button>
+                        </td>
+                    </tr>
                     </form>
                     <form method="post" action="?tab=settings">
                     <tr>
