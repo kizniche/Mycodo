@@ -1769,7 +1769,7 @@ def read_sql():
     # Check if all required tables exist in the SQL database
     conn = sqlite3.connect(mycodo_database)
     cur = conn.cursor()
-    tables = ['Relays', 'TSensor', 'HTSensor', 'CO2Sensor', 'Timers', 'Numbers', 'SMTP']
+    tables = ['Relays', 'TSensor', 'HTSensor', 'CO2Sensor', 'Timers', 'SMTP']
     missing = []
     for i in range(0, len(tables)):
         query = "SELECT name FROM sqlite_master WHERE type='table' AND name='%s'" % tables[i]
