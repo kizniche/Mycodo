@@ -15,6 +15,7 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
   + [Security](#security)
     + [Enable SSL](#enable-ssl)
     + [Enable .htaccess](#enable-htaccess)
+  + [Enable mod_rewrite](#enable-mod_rewrite)
   + [Database Creation](#database-creation)
   + [Daemon](#daemon)
 + [Usage](#usage)
@@ -122,7 +123,7 @@ Install Adafruit_Python_DHT
 
 Install LockFile and RPyC
 
-`pip install lockfile rpyc`
+`sudo pip install lockfile rpyc`
 
 If using the Raspberry Pi camera module:
 
@@ -205,7 +206,7 @@ Generate your self-signed certificate with the following command. You will be pr
 
 `sudo openssl req -new -x509 -sha256 -days 365 -nodes -out /etc/ssl/localcerts/apache.crt -keyout /etc/ssl/localcerts/apache.key`
 
-`sudo chmod 600 /etc/ssl/localcerts/apache`
+`sudo chmod 600 /etc/ssl/localcerts/apache*`
 
 Change the symlink from non-SSL to SSL
 
@@ -270,6 +271,10 @@ If your server is accessible from the internet but you don't want to enable SSL 
     </Directory>
 ```
 
+### Enable mod_rewrite
+
+`a2enmod rewrite`
+
 Then restart apache with
 
 `sudo service apache2 restart`
@@ -280,13 +285,13 @@ It is highly recommended that the configuration change be tested to determine if
 
 Use the following commands and type 'all' when prompted to create databases
 
-`sudo /var/www/mycodo/setup-databases.py -i`
+`sudo /var/www/mycodo/setup-database.py -i`
 
 Follow the prompts to create an admin password, optionally create another user, and enable/disable guest access.
 
 ### Daemon
 
-To initialize GPIO pins at startup, open crontab with `sudo crontab -e` and add the following lines, then save with `Ctrl+e`
+To initialize GPIO pins at startup, open crontab with `sudo crontab -e` and add the following lines, then save with `Ctrl+x`
 
 `@reboot /usr/bin/python /var/www/mycodo/cgi-bin/GPIO-initialize.py &`
 
