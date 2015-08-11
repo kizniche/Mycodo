@@ -74,7 +74,21 @@ sqlite3
 
 ## Software Install
 
-This installation assumes you are starting with a fresh install of Raspbian linux on a Raspberry Pi. If not, adjust your installation accordingly.
+This installation assumes you are starting with a fresh install of Raspbian linux on a Raspberry Pi. If not, adjust your installation accordingly. Once <a href="https://www.raspberrypi.org/documentation/installation/installing-images/README.md" target="_blank">Raspbian has been installed</a> and the system is up and running, configure the system with raspi-config before doing anything else.
+
+`sudo raspi-config`
+
+Using raspi-config, perform the following:
+
+ + Change user (pi) password
+ + Set locale en_US.UTF-8 (Important! For some reason this isn't initially set)
+ + Set timezone (required for setting the proper time)
+ + Enable camera (optional)
+ + Advanced A2: change hostname (optional)
+ + Expand file system **Warning! This need to be done before upgrading or installing!**
+ + Reboot (Important!)
+
+`sudo shutdown now -r`
 
 ### Prerequisites
 
@@ -370,7 +384,7 @@ Mycodo is free software: you can redistribute it and/or modify it under the term
 
 Mycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.en.html) for more details.
 
-A full copy of the GNU General Public License can be found at <a href="http://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">http://www.gnu.org/licenses/gpl-3.0.en.html</a>
+A full copy of the GNU General Public License can be found at <a href="http://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">http://www.gnu.org/licenses/gpl-3.0.en.html</a> and in license.txt in the root directory for this software.
 
 This software includes third party open source software components: Discrete PID Controller. Each of these software components have their own license. Please see ./cgi-bin/mycodoPID.py for license information.
 
