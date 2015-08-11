@@ -80,13 +80,13 @@ This installation assumes you are starting with a fresh install of Raspbian linu
 
 Using raspi-config, perform the following:
 
- + Change user (pi) password
- + Set locale en_US.UTF-8 (Important! For some reason this isn't initially set)
- + Set timezone (required for setting the proper time)
- + Enable camera (optional)
- + Advanced A2: change hostname (optional)
- + Expand file system **Warning! This need to be done before upgrading or installing!**
- + Reboot (Important!)
+ + Change the default user (pi) password
+ + Set the locale to en_US.UTF-8 (Important! For some reason this isn't initially set)
+ + Set the timezone (required for setting the proper time)
+ + Enable the camera (optional)
+ + Advanced A2: change the hostname (optional)
+ + Expand the file system **Warning! This needs to be done before continuing to Prerequisites!**
+ + Reboot
 
 `sudo shutdown now -r`
 
@@ -96,15 +96,17 @@ Using raspi-config, perform the following:
 
 `sudo apt-get upgrade`
 
-`sudo apt-get install apache2 build-essential python-dev gnuplot git-core libconfig-dev php5 libapache2-mod-php5 python-pip subversion php5-sqlite sqlite3`
+`sudo apt-get install build-essential apache2 sqlite3 gnuplot git-core python-pip python-dev libconfig-dev php5 libapache2-mod-php5 php5-sqlite`
 
 `git clone https://github.com/kizniche/Mycodo.git ~/Mycodo`
-
-`sudo ln -s ~/Mycodo/3.5 /var/www/mycodo`
 
 `git clone git://git.drogon.net/wiringPi ~/WiringPi`
 
 `git clone https://github.com/adafruit/Adafruit_Python_DHT ~/Adafruit_Python_DHT`
+
+Create a symlink to the proper Mycodo version
+
+`sudo ln -s ~/Mycodo/3.5 /var/www/mycodo`
 
 Install WiringPi
 
@@ -150,7 +152,7 @@ Install video streaming capabilities (Note that it is recommended to require SSL
 
 ### Wifi
 
-With a supported usb wifi dongle, setting up a wireless connection is as simple as the next few commands and a reboot. Consult documentation for your wireless card or google if this doesn’t work. Edit wpa_supplicant.conf with `sudo vi /etc/wpa_supplicant/wpa_supplicant.conf` and add the following, then change the name and password.
+With a supported usb wifi dongle, setting up a wireless connection is as simple as the next few commands and a reboot. Consult documentation for your wireless card or google if this doesn’t work. Edit wpa_supplicant.conf with `sudo vi /etc/wpa_supplicant/wpa_supplicant.conf` and add the following, change the name and password to that of your wifi network.
 
 ```
 network={
