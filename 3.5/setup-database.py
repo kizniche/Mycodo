@@ -187,10 +187,13 @@ def menu():
             usage()
             return 1
         elif opt in ("-i", "--install-db"):
-            if sys.argv[2] == 'update':
-                setup_db('update') 
-            else:
+            try:
+                sys.argv[2]
+            except:
                 setup_db(0)
+            else:
+                if sys.argv[2] == 'update':
+                    setup_db('update') 
             return 1
         elif opt in ("-p", "--pwchange"):
             if database != None:
