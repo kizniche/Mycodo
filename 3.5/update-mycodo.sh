@@ -56,8 +56,8 @@ if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
     $DIR/setup-database.py -i update
 
     echo "#### Starting Daemon ####" >&2
-    $DIR/init.d/mycodo initialize
-    $DIR/init.d/mycodo start
+    /etc/init.d/mycodo initialize
+    /etc/init.d/mycodo start
 
     echo "#### Update Finished ####" >&2
 else
