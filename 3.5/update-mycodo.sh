@@ -59,7 +59,8 @@ if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
     /etc/init.d/mycodo start
 
     echo "#### Update Finished ####" >&2
+    exit 0
 else
     echo "#### No git repository found ####" >&2
+    exit 1
 fi
-
