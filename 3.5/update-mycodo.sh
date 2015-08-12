@@ -35,7 +35,7 @@ PDIR="$( dirname "$DIR" )"
 
 cd $DIR
 
-if git rev-parse ####is-inside-work-tree > /dev/null 2>&1; then
+if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
     echo "#### Stopping Daemon ####"
     $DIR/init.d/mycodo stop
 
