@@ -34,7 +34,7 @@ cd $DIR
 
 if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
     echo "#### Stopping Daemon ####" >&2
-    service mycodo stop
+    $DIR/init.d/mycodo stop
 
     NOW=$(date +"%Y-%m-%d_%H-%M-%S")
     echo "#### Creating backup in $PDIR-backups/Mycodo-$NOW ####" >&2
@@ -56,8 +56,8 @@ if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
     $DIR/setup-database.py -i update
 
     echo "#### Starting Daemon ####" >&2
-    service mycodo initialize
-    service mycodo start
+    $DIR/init.d/mycodo initialize
+    $DIR/init.d/mycodo start
 
     echo "#### Update Finished ####" >&2
 else
