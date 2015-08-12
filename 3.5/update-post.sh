@@ -1,8 +1,9 @@
 #!/bin/bash
 #
-#  update-script.sh - Extra commands to execute for the update process.
-#                     Used as a way to easily run version-specific updates
-#                     that may change over time.
+#  update-post.sh - Extra commands to execute for the update process.
+#                   Used as a way to provide additional commands to
+#                   execute that wouldn't be possible from the running
+#                   update script.
 #
 #  Copyright (C) 2015  Kyle T. Gabriel
 #
@@ -29,4 +30,6 @@ PDIR="$( dirname "$DIR" )"
 
 cd $DIR
 
-echo "No additional commands to run for this update"
+echo "No additional commands for this update"
+
+# $DIR/setup-database.py -i update

@@ -45,7 +45,7 @@ if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
     mkdir -p $DIR/../../Mycodo-backups/Mycodo-$NOW
     cp -r $DIR/../../Mycodo/3.5 $DIR/../../Mycodo-backups/Mycodo-$NOW/
 
-    echo "#### Update from GIT ####"
+    echo "#### Updating from github ####"
     git fetch --all
     git reset --hard origin/master
 
@@ -55,12 +55,12 @@ if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
     cp $DIR/init.d/mycodo /etc/init.d/
     cp $DIR/init.d/apache2-tmpfs /etc/init.d/
 
-    echo "#### Executing any extra commands ####"
-    if [ -f $DIR/update-script.sh ]; then
-        $DIR/update-script.sh
-        rm -rf $DIR/update-script.sh
+    echo "#### Executing Post-Update Commands ####"
+    if [ -f $DIR/update-post.sh ]; then
+        $DIR/update-post.sh
+        rm -rf $DIR/update-post.sh
     else
-        echo "Error: update-script.sh not found"
+        echo "Error: update-post.sh not found"
     fi
 
     echo "#### Starting Daemon ####"
@@ -69,6 +69,6 @@ if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
     echo "#### Update Finished ####"
     exit 0
 else
-    echo -e "#### No git repository found ####\n"
+    echo -e "#### No git repository found ####\n\n"
     exit 1
 fi
