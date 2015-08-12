@@ -66,9 +66,9 @@ if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
     echo "#### Starting Daemon ####"
     /etc/init.d/mycodo start
 
-    echo "#### Update Finished ####"
+    echo -e "#### Update Finished ####\n"
     exit 0
 else
-    echo -e "#### No git repository found ####\n\n"
+    echo -e "#### No git repository found ####\n"
     exit 1
 fi
