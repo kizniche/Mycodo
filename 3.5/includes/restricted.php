@@ -24,11 +24,12 @@
 
 if (isset($_POST['UpdateMycodo'])) {
     shell_exec("$install_path/cgi-bin/mycodo-wrapper update > /var/www/mycodo/log/update.log &");
+    $settings_error = "The update process has begun. View the progress of the update by viewing the log in the Data tab.";
 }
 
 if (isset($_POST['DaemonStop'])) {
     if (!file_exists($lock_daemon)) {
-        $settings_error = 'Lock-file not present: ' . $lock_daemon . ' Is the daemon really running? Checking for and force-closing any running daemon.';
+        $settings_error = 'Error: Lock-file not present: ' . $lock_daemon . ' Is the daemon really running? Checking for and force-closing any running daemon.';
     } else {
         exec("$install_path/cgi-bin/mycodo-wrapper stop 2>&1 > /dev/null");
     }
@@ -36,7 +37,7 @@ if (isset($_POST['DaemonStop'])) {
 
 if (isset($_POST['DaemonStart'])) {
     if (file_exists($lock_daemon)) {
-        $settings_error = 'Lock-file present: ' . $lock_daemon . ' Is the daemon aready running? Delete the lock file to start or select "Restart Daemon"';
+        $settings_error = 'Error: Lock-file present: ' . $lock_daemon . ' Is the daemon aready running? Delete the lock file to start or select "Restart Daemon"';
     } else {
         exec("$install_path/cgi-bin/mycodo-wrapper start 2>&1 > /dev/null");
     }
@@ -44,7 +45,7 @@ if (isset($_POST['DaemonStart'])) {
 
 if (isset($_POST['DaemonRestart'])) {
     if (!file_exists($lock_daemon)) {
-        $settings_error = 'Lock-file not present: ' . $lock_daemon . ' Is the daemon really running? Checking for and force-closing any running daemon before attempting to start.';
+        $settings_error = 'Error: Lock-file not present: ' . $lock_daemon . ' Is the daemon really running? Checking for and force-closing any running daemon before attempting to start.';
     } else {
         exec("$install_path/cgi-bin/mycodo-wrapper restart 2>&1 > /dev/null");
     }

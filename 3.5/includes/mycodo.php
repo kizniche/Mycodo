@@ -1657,7 +1657,7 @@ if (isset($output_error)) {
                             unlink($log);
                         }
                         if(isset($_POST['Update'])) {
-                            $log = '/var/www/mycodo/update.log';
+                            $log = '/var/www/mycodo/log/update.log';
 
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
