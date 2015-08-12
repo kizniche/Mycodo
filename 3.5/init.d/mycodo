@@ -31,6 +31,8 @@
 # Description:       Start|Stop mycodo.py daemon
 ### END INIT INFO
 
+export PATH="$PATH:/usr/sbin:/usr/local/bin:/usr/bin:/bin:/sbin"
+
 case "${1:-''}" in
     'initialize')
         mkdir -p /var/log/mycodo
@@ -204,7 +206,7 @@ case "${1:-''}" in
         fi
         ;;
     *)
-        echo "Usage: $SELF start|stop|restart"
+        echo "Usage: $SELF initialize|start|stop|restart|debug|unlock"
         exit 1
         ;;
 esac
