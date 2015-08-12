@@ -58,7 +58,6 @@ if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
     echo "#### Executing Post-Update Commands ####"
     if [ -f $DIR/update-post.sh ]; then
         $DIR/update-post.sh
-        rm -rf $DIR/update-post.sh
     else
         echo "Error: update-post.sh not found"
     fi
