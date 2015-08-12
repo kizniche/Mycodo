@@ -32,4 +32,5 @@ cd $DIR
 
 echo "No additional commands for this update"
 
+# Update mycodo SQLite database
 # $DIR/setup-database.py -i update
