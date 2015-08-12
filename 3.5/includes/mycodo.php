@@ -1675,6 +1675,11 @@ if (isset($output_error)) {
             if (isset($settings_error)) {
                 echo '<div class="error">Error: ' . $settings_error . '</div>';
             }
+            if (isset($settings_output)) {
+                if (isset($_POST['UpdateMycodo'])) {
+                    echo '<div class="error">Output:<br><pre>' . $settings_output . '</pre></div>';
+                }
+            }
             ?>
 
             <?php if ($this->feedback) echo $this->feedback; ?>
