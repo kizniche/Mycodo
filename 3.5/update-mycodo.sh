@@ -74,11 +74,11 @@ if git status -uno | grep 'Your branch is behind' > /dev/null; then
         echo -e "#### Update Finished ####\n"
         exit 0
     else
-        echo -e "#### No git repository found ####\n"
+        echo -e "Error: No git repository found. Update stopped.\n"
         exit 1
     fi
 else
-    echo -e "Your version of Mycodo is already the latest version.\n"
+    echo -e "Your version of Mycodo is already the latest version. Update stopped.\n"
 fi
 
 
