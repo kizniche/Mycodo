@@ -50,7 +50,7 @@ if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
         ln -s $DIR /var/www/mycodo
     fi
     cp $DIR/init.d/mycodo /etc/init.d/
-    cp $DIR/init.d/apache2-tempfs /etc/init.d/
+    cp $DIR/init.d/apache2-tmpfs /etc/init.d/
 
     echo "#### Update Database ####" >&2
     $DIR/setup-database.py -i update
