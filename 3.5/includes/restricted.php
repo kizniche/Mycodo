@@ -23,9 +23,8 @@
 */
 
 if (isset($_POST['UpdateMycodo'])) {
-    shell_exec("$install_path/cgi-bin/mycodo-wrapper update > /var/www/mycodo/log/update.log &");
+    shell_exec("$install_path/cgi-bin/mycodo-wrapper update >> /var/www/mycodo/log/update.log &");
     $settings_error = "The update process has begun. You can follow the progress of the update from the Data tab.";
-    sleep(10);
 }
 
 if (isset($_POST['DaemonStop'])) {

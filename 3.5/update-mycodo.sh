@@ -55,15 +55,20 @@ if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
     cp $DIR/init.d/mycodo /etc/init.d/
     cp $DIR/init.d/apache2-tmpfs /etc/init.d/
 
-    echo "#### Update Database ####"
-    $DIR/setup-database.py -i update
+    echo "#### Executing any extra commands ####"
+    if [ -f $DIR/update-script.sh ]; then
+        $DIR/update-script.sh
+        rm -rf $DIR/update-script.sh
+    else
+        echo "Error: update-script.sh not found"
+    fi
 
     echo "#### Starting Daemon ####"
-    /etc/init.d/mycodo start &
+    /etc/init.d/mycodo start
 
     echo "#### Update Finished ####"
     exit 0
 else
-    echo "#### No git repository found ####"
+    echo -e "#### No git repository found ####\n"
     exit 1
 fi
