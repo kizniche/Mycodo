@@ -46,8 +46,8 @@ if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
     cp -r $DIR/../../Mycodo/3.5 $DIR/../../Mycodo-backups/Mycodo-$NOW/
 
     echo "#### Update from GIT ####"
-    git fetch ####all
-    git reset ####hard origin/master
+    git fetch --all
+    git reset --hard origin/master
 
     if [ ! -h /var/www/mycodo ]; then
         ln -s $DIR /var/www/mycodo
