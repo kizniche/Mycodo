@@ -457,6 +457,11 @@ class OneFileLoginApplication {
         $passchange_success_state = $query->execute();
 
         if ($passchange_success_state) {
+            if ($_SESSION['user_name'] == $_POST['user_name']) {
+                setcookie("login_user", "", time() - 3600, '/');
+                setcookie("login_hash", "", time() - 3600, '/');
+                session_destroy();
+            }
             $this->feedback = "Password successfully changed for user " . $user_name;
             return true;
         } else {
