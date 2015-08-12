@@ -1676,7 +1676,7 @@ if (isset($output_error)) {
                 echo '<div class="error">Error: ' . $settings_error . '</div>';
             }
             if (isset($settings_output)) {
-                echo '<div class="error">Error:<br><pre>' . $settings_output . '</pre></div>';
+                echo '<div class="error">Error:<br><pre>' . nl2br($settings_output) . '</pre></div>';
             }
             ?>
 
