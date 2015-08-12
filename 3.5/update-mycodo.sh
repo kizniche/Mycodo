@@ -45,6 +45,9 @@ if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
     mkdir -p $DIR/../../Mycodo-backups/Mycodo-$NOW
     cp -r $DIR/../../Mycodo/3.5 $DIR/../../Mycodo-backups/Mycodo-$NOW/
 
+    echo "#### Checking if there is an update ####"
+    git status -uno
+    
     echo "#### Updating from github ####"
     git fetch --all
     git reset --hard origin/master
