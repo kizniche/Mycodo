@@ -28,26 +28,26 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 NOW=$(date +"%m-%d-%Y %H:%M:%S")
-echo "-- Update Started $NOW --"
+echo "#### Update Started $NOW ####"
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 PDIR="$( dirname "$DIR" )"
 
 cd $DIR
 
-if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
-    echo "-- Stopping Daemon --" >&2
+if git rev-parse ####is-inside-work-tree > /dev/null 2>&1; then
+    echo "#### Stopping Daemon ####" >&2
     $DIR/init.d/mycodo stop
 
     NOW=$(date +"%Y-%m-%d_%H-%M-%S")
-    echo "-- Creating backup in $PDIR-backups/Mycodo-$NOW --" >&2
+    echo "#### Creating backup in $PDIR-backups/Mycodo-$NOW ####" >&2
     mkdir -p $DIR/../../Mycodo-backups
     mkdir -p $DIR/../../Mycodo-backups/Mycodo-$NOW
     cp -r $DIR/../../Mycodo/3.5 $DIR/../../Mycodo-backups/Mycodo-$NOW/
 
-    echo "-- Update from GIT --" >&2
-    git fetch --all
-    git reset --hard origin/master
+    echo "#### Update from GIT ####" >&2
+    git fetch ####all
+    git reset ####hard origin/master
 
     if [ ! -h /var/www/mycodo ]; then
         ln -s $DIR /var/www/mycodo
@@ -55,15 +55,15 @@ if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
     cp $DIR/init.d/mycodo /etc/init.d/
     cp $DIR/init.d/apache2-tmpfs /etc/init.d/
 
-    echo "-- Update Database --" >&2
+    echo "#### Update Database ####" >&2
     $DIR/setup-database.py -i update
 
-    echo "-- Starting Daemon --" >&2
+    echo "#### Starting Daemon ####" >&2
     /etc/init.d/mycodo start &
 
-    echo "-- Update Finished --" >&2
+    echo "#### Update Finished ####" >&2
     exit 0
 else
-    echo "-- No git repository found --" >&2
+    echo "#### No git repository found ####" >&2
     exit 1
 fi

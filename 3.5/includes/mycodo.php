@@ -1685,7 +1685,7 @@ if (isset($output_error)) {
 
             <?php
             if (isset($settings_error)) {
-                echo '<div class="error">Error: ' . $settings_error . '</div>';
+                echo '<div class="error">' . $settings_error . '</div>';
             }
             ?>
 
