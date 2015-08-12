@@ -1568,6 +1568,7 @@ if (isset($output_error)) {
                         <input type="submit" name="Daemon" value="Daemon">
                         <input type="submit" name="Users" value="User Database">
                         <input type="submit" name="Database" value="Mycodo Database">
+                        <input type="submit" name="Update" value="Update">
                     </form>
                 </div>
                 <div style="font-family: monospace;">
@@ -1655,6 +1656,17 @@ if (isset($output_error)) {
                             }
                             unlink($log);
                         }
+                        if(isset($_POST['Update'])) {
+                            $log = '/var/www/mycodo/update.log';
+
+                            if ($_POST['Lines'] != '') {
+                                $Lines = $_POST['Lines'];
+                                echo `tail -n $Lines $log`;
+                            } else {
+                                echo `tail -n 30 $log`;
+                            }
+                            unlink($log);
+                        }
                         if(isset($_POST['Database'])) {
                             echo '<pre>';
                             exec('sqlite3 ' . $mycodo_db . ' .dump', $output); print_r($output);
@@ -1674,9 +1686,6 @@ if (isset($output_error)) {
             <?php
             if (isset($settings_error)) {
                 echo '<div class="error">Error: ' . $settings_error . '</div>';
-            }
-            if (isset($settings_output)) {
-                echo '<div class="error">Error:<br><pre>' . nl2br($settings_output) . '</pre></div>';
             }
             ?>
 
