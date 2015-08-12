@@ -1677,7 +1677,7 @@ if (isset($output_error)) {
             }
             if (isset($settings_output)) {
                 if (isset($_POST['UpdateMycodo'])) {
-                    echo '<div class="error">Output:<br><pre>' . $settings_output . '</pre></div>';
+                    echo '<div class="error">Output:<br><pre>' . print_r($settings_output) . '</pre></div>';
                 }
             }
             ?>
