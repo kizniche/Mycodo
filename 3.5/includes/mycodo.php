@@ -1665,7 +1665,6 @@ if (isset($output_error)) {
                             } else {
                                 echo `tail -n 30 $log`;
                             }
-                            unlink($log);
                         }
                         if(isset($_POST['Database'])) {
                             echo '<pre>';
