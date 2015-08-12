@@ -23,7 +23,7 @@
 */
 
 if (isset($_POST['UpdateMycodo'])) {
-    exec("$install_path/cgi-bin/mycodo-wrapper update 2>&1", $settings_output, $return_var);
+    $settings_output = shell_exec("$install_path/cgi-bin/mycodo-wrapper update");
 }
 
 if (isset($_POST['DaemonStop'])) {
