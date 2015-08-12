@@ -35,42 +35,50 @@ PDIR="$( dirname "$DIR" )"
 
 cd $DIR
 
-if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
-    echo "#### Stopping Daemon ####"
-    $DIR/init.d/mycodo stop
+echo "#### Checking if there is an update ####"
+git fetch origin
 
-    NOW=$(date +"%Y-%m-%d_%H-%M-%S")
-    echo "#### Creating backup in $PDIR-backups/Mycodo-$NOW ####"
-    mkdir -p $DIR/../../Mycodo-backups
-    mkdir -p $DIR/../../Mycodo-backups/Mycodo-$NOW
-    cp -r $DIR/../../Mycodo/3.5 $DIR/../../Mycodo-backups/Mycodo-$NOW/
+if git status -uno | grep 'Your branch is behind' > /dev/null; then
+    echo "The remote repository is newer than yours. This could mean there is an update to Mycodo."
 
-    echo "#### Checking if there is an update ####"
-    git status -uno
-    
-    echo "#### Updating from github ####"
-    git fetch --all
-    git reset --hard origin/master
+    if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+        echo "#### Stopping Daemon ####"
+        $DIR/init.d/mycodo stop
 
-    if [ ! -h /var/www/mycodo ]; then
-        ln -s $DIR /var/www/mycodo
-    fi
-    cp $DIR/init.d/mycodo /etc/init.d/
-    cp $DIR/init.d/apache2-tmpfs /etc/init.d/
+        NOW=$(date +"%Y-%m-%d_%H-%M-%S")
+        echo "#### Creating backup in $PDIR-backups/Mycodo-$NOW ####"
+        mkdir -p $DIR/../../Mycodo-backups
+        mkdir -p $DIR/../../Mycodo-backups/Mycodo-$NOW
+        cp -r $DIR/../../Mycodo/3.5 $DIR/../../Mycodo-backups/Mycodo-$NOW/
 
-    echo "#### Executing Post-Update Commands ####"
-    if [ -f $DIR/update-post.sh ]; then
-        $DIR/update-post.sh
+        echo "#### Updating from github ####"
+        git fetch --all
+        git reset --hard origin/master
+
+        if [ ! -h /var/www/mycodo ]; then
+            ln -s $DIR /var/www/mycodo
+        fi
+        cp $DIR/init.d/mycodo /etc/init.d/
+        cp $DIR/init.d/apache2-tmpfs /etc/init.d/
+
+        echo "#### Executing Post-Update Commands ####"
+        if [ -f $DIR/update-post.sh ]; then
+            $DIR/update-post.sh
+        else
+            echo "Error: update-post.sh not found"
+        fi
+
+        echo "#### Starting Daemon ####"
+        /etc/init.d/mycodo start
+
+        echo -e "#### Update Finished ####\n"
+        exit 0
     else
-        echo "Error: update-post.sh not found"
+        echo -e "#### No git repository found ####\n"
+        exit 1
     fi
-
-    echo "#### Starting Daemon ####"
-    /etc/init.d/mycodo start
-
-    echo -e "#### Update Finished ####\n"
-    exit 0
 else
-    echo -e "#### No git repository found ####\n"
-    exit 1
+    echo -e "Your version of Mycodo is already the latest version.\n"
 fi
+
+
