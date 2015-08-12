@@ -1677,9 +1677,7 @@ if (isset($output_error)) {
             }
             if (isset($settings_output)) {
                 if (isset($_POST['UpdateMycodo'])) {
-                    foreach($settings_output as $key=>$value) {
-                        echo '<br>' . $value;
-                    }
+                    echo '<div class="error">Error: ' . $settings_output . '</div>';
                 }
             }
             ?>
