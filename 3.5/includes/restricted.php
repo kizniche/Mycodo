@@ -22,8 +22,17 @@
 *  Contact at kylegabriel.com
 */
 
+if (isset($_POST['UpdateCheck'])) {
+    exec("$install_path/cgi-bin/mycodo-wrapper updatecheck 2>&1", $update_check_output, $update_check_return);
+    if ($update_check_return) {
+        $settings_error = "Update Check: There is an update for Mycodo.";
+    } else {
+        $settings_error = "Update Check: You are running the latest version of Mycodo.";
+    }
+}
+
 if (isset($_POST['UpdateMycodo'])) {
-    shell_exec("$install_path/cgi-bin/mycodo-wrapper update >> /var/www/mycodo/log/update.log &");
+    exec("$install_path/cgi-bin/mycodo-wrapper update >> /var/www/mycodo/log/update.log &");
     $settings_error = "The update process has begun. You can follow the progress of the update from the Data tab.";
 }
 

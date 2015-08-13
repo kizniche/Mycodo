@@ -19,7 +19,14 @@ int main(int argc, char *argv[]) {
 			char updateScript[255];
 			strncpy(updateScript, argv[0], sizeof(updateScript));
 			dirname(updateScript);
-			strncat(updateScript, "/../update-mycodo.sh", sizeof(updateScript));
+			strncat(updateScript, "/../update-mycodo.sh update", sizeof(updateScript));
+			system(updateScript);
+		} else if (strcmp(argv[1], "updatecheck") == 0) {
+			char updateScript[255];
+			strncpy(updateScript, argv[0], sizeof(updateScript));
+			dirname(updateScript);
+			strncat(updateScript, "/../update-mycodo.sh updatecheck", sizeof(updateScript));
+			printf(updateScript);
 			system(updateScript);
 		}
 	} else {
@@ -28,11 +35,12 @@ int main(int argc, char *argv[]) {
 		printf("                mycodo system to the latest version.\n\n");
 		printf("Usage: mycodo-wrapper stop|start|restart|debug|update\n\n");
 		printf("Options:\n");
-		printf("    stop:    Stop the mycodo daemon\n");
-		printf("    start:   Start the mycodo daemon\n");
-		printf("    restart: Restart the mycodo daemon in normal mode\n");
-		printf("    debug:   Restart the mycodo daemon in debug mode\n");
-		printf("    update:  Update mycod to the latest version on git\n\n");
+		printf("    stop:        Stop the mycodo daemon\n");
+		printf("    start:       Start the mycodo daemon\n");
+		printf("    restart:     Restart the mycodo daemon in normal mode\n");
+		printf("    debug:       Restart the mycodo daemon in debug mode\n");
+		printf("    update:      Update Mycodo to the latest version on github\n\n");
+		printf("    updatecheck: Check for a newer version of Mycodo on github\n\n");
 	}
 
 	return 0;
