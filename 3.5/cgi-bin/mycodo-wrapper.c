@@ -26,8 +26,10 @@ int main(int argc, char *argv[]) {
 			strncpy(updateScript, argv[0], sizeof(updateScript));
 			dirname(updateScript);
 			strncat(updateScript, "/../update-mycodo.sh updatecheck", sizeof(updateScript));
-			printf(updateScript);
-			system(updateScript);
+			int status;
+			if((status = system(updateScript)) != -1) {
+                return WEXITSTATUS(status);
+        	}
 		}
 	} else {
 		printf("mycodo-wrapper: A wrapper to allow the mycodo web interface\n");
