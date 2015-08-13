@@ -1339,7 +1339,7 @@ if (isset($output_error)) {
                                 if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
                                 else fwrite($f, "unset key\n");
                                 fwrite($f, "set title \"Sensor $n: $sensor_co2_name[$n]: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
-                                fwrite($f, "plot \"<awk '\\$8 == $n' /var/tmp/sensor-co2.log\" using 1:7 index 0 notitle w lp ls 1 axes x1y2, ");
+                                fwrite($f, "plot \"<awk '\\$8 == $n' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"CO_2\" w lp ls 1 axes x1y2, ");
                                 fwrite($f, "\"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"$relay_name[1]\" w impulses ls 4 axes x1y1, ");
                                 fwrite($f, "\"\" using 1:8 index 0 title \"$relay_name[2]\" w impulses ls 5 axes x1y1, ");
                                 fwrite($f, "\"\" using 1:9 index 0 title \"$relay_name[3]\" w impulses ls 6 axes x1y1, ");
@@ -2261,7 +2261,7 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
-                            Email
+                            New Email
                         </td>
                         <td class="setting-value">
                             <input style="width: 18em;" class="login_input" type="email" name="user_email" required />
