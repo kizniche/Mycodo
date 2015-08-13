@@ -1861,7 +1861,33 @@ if (isset($output_error)) {
                     <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
-                            Advanced
+                            System Update
+                        </td>
+                    </tr>
+                    <form action="?tab=settings" method="post">
+                        <tr>
+                        <td class="setting-text">
+                            Check if there is an update avaialble for Mycodo 
+                        </td>
+                        <td class="setting-value">
+                            <button name="UpdateCheck" type="submit" value="" title="Check if there is a newer version of Mycodo on github.">Check for Update</button>
+                        </td>
+                    </tr>
+                    </form>
+                    <form action="?tab=settings" method="post" onsubmit="return confirm('Confirm that you would like to begin the update process now. If not, click Cancel.')">
+                    <tr>
+                        <td class="setting-text">
+                            Update Mycodo to the latest version on <a href="https://github.com/kizniche/Mycodo" target="_blank">github</a>
+                        </td>
+                        <td class="setting-value">
+                            <button name="UpdateMycodo" type="submit" value="" title="Update the mycodo system to the latest version on github.">Update Mycodo</button>
+                        </td>
+                    </tr>
+                    </form>
+                    <form method="post" action="?tab=settings">
+                    <tr>
+                        <td class="setting-title">
+                            Daemon
                         </td>
                     </tr>
                     <tr>
@@ -1896,26 +1922,6 @@ if (isset($output_error)) {
                         </td>
                         <td class="setting-value">
                             <button name="DaemonDebug" type="submit" value="" title="Stop and start the mycodo daemon in debug mode (verbose log messages, temporary files are not deleted). You should probably not enable this unless you know what you're doing.">Restart Daemon in Debug Mode</button>
-                        </td>
-                    </tr>
-                    </form>
-                    <form action="?tab=settings" method="post">
-                        <tr>
-                        <td class="setting-text">
-                            Check if there is an update avaialble for Mycodo 
-                        </td>
-                        <td class="setting-value">
-                            <button name="UpdateCheck" type="submit" value="" title="Check if there is a newer version of Mycodo on github.">Update Check</button>
-                        </td>
-                    </tr>
-                    </form>
-                    <form action="?tab=settings" method="post" onsubmit="return confirm('Confirm that you would like to begin the update process now. If not, click Cancel.')">
-                    <tr>
-                        <td class="setting-text">
-                            Update Mycodo to the latest version on <a href="https://github.com/kizniche/Mycodo" target="_blank">github</a>
-                        </td>
-                        <td class="setting-value">
-                            <button name="UpdateMycodo" type="submit" value="" title="Update the mycodo system to the latest version on github.">Update Mycodo</button>
                         </td>
                     </tr>
                     </form>
