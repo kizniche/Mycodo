@@ -176,8 +176,6 @@ class OneFileLoginApplication {
                 $this->feedback = "Invalid cookie data.";
                 return false;
             }
-        } elseif (!empty($_SESSION['user_name']) && ($_SESSION['user_is_logged_in'])) {
-            $this->doLoginWithSessionData();
         } elseif (isset($_POST["login"])) {
             $this->doLoginWithPostData();
         }
@@ -190,11 +188,6 @@ class OneFileLoginApplication {
 
     // Process flow with cookie data
     private function doLoginWithCookieData() {
-        $this->user_is_logged_in = true;
-    }
-
-    // Set a marker (NOTE: is this method necessary ?)
-    private function doLoginWithSessionData() {
         $this->user_is_logged_in = true;
     }
 
@@ -212,7 +205,8 @@ class OneFileLoginApplication {
         $_SESSION = array();
         setcookie("login_user", "", time() - 3600, '/');
         setcookie("login_hash", "", time() - 3600, '/');
-        session_destroy();
+        unset($_COOKIE['login_user']);
+        unset($_COOKIE['login_hash']);
         $this->user_is_logged_in = false;
         $this->feedback = "Successfully logged out.";
     }
@@ -457,11 +451,7 @@ class OneFileLoginApplication {
         $passchange_success_state = $query->execute();
 
         if ($passchange_success_state) {
-            if ($_SESSION['user_name'] == $_POST['user_name']) {
-                setcookie("login_user", "", time() - 3600, '/');
-                setcookie("login_hash", "", time() - 3600, '/');
-                session_destroy();
-            }
+            $this->doLogout();
             $this->feedback = "Password successfully changed for user " . $user_name;
             return true;
         } else {
