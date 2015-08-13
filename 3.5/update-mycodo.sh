@@ -88,9 +88,10 @@ case "${1:-''}" in
     'updatecheck')
         git fetch origin
         if git status -uno | grep 'Your branch is behind' > /dev/null; then
-            exit 0
-        else
+            git status -uno | grep 'Your branch is behind'
             exit 1
+        else
+            exit 0
         fi
     ;;
 esac
