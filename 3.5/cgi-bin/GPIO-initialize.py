@@ -28,9 +28,9 @@ import sqlite3
 
 #### Configure Install Directory ####
 install_directory = "/var/www/mycodo"
-#### Configure Install Directory ####
 
-sql_database = '/var/www/mycodo/config/mycodo.db'
+
+sql_database = "%s/config/mycodo.db" % install_directory
 
 # GPIO pins (BCM numbering) and name of devices attached to relay
 relay_id = []
