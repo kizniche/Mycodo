@@ -32,8 +32,15 @@ if (isset($_POST['UpdateCheck'])) {
 }
 
 if (isset($_POST['UpdateMycodo'])) {
-    exec("$install_path/cgi-bin/mycodo-wrapper update >> /var/www/mycodo/log/update.log &");
-    $settings_error = "The update process has begun. You can follow the progress of the update from the Data tab.";
+    exec("$install_path/cgi-bin/mycodo-wrapper updatecheck 2>&1", $update_check_output, $update_check_return);
+    if ($update_check_return) {
+        exec("$install_path/cgi-bin/mycodo-wrapper update >> /var/www/mycodo/log/update.log &");
+        $settings_error = "The update process has begun. You can follow the progress of the update from the Data tab.";
+    } else {
+        $settings_error = "You are already running the latest version of Mycodo.";
+    }
+
+    
 }
 
 if (isset($_POST['DaemonStop'])) {

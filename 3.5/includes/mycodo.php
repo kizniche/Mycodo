@@ -1899,7 +1899,7 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     </form>
-                    <form action="?tab=settings" method="post" onsubmit="return confirm('Confirm that you would like to begin the update process now. If not, click Cancel.')">
+                    <form action="?tab=settings" method="post">
                         <tr>
                         <td class="setting-text">
                             Check if there is an update for Mycodo
@@ -1908,6 +1908,8 @@ if (isset($output_error)) {
                             <button name="UpdateCheck" type="submit" value="" title="Check if there is a newer version of Mycodo on github.">Update Check</button>
                         </td>
                     </tr>
+                    </form>
+                    <form action="?tab=settings" method="post" onsubmit="return confirm('Confirm that you would like to begin the update process now. If not, click Cancel.')">
                     <tr>
                         <td class="setting-text">
                             Update Mycodo to the latest version on <a href="https://github.com/kizniche/Mycodo" target="_blank">GIT</a>
