@@ -33,9 +33,10 @@ install_directory = "/var/www/mycodo"
 sql_database = '/var/www/mycodo/config/mycodo.db'
 
 # GPIO pins (BCM numbering) and name of devices attached to relay
-relay_pin = [0] * 9
-relay_trigger = [0] * 9
-relay_start_state = [0] * 9
+relay_id = []
+relay_pin = []
+relay_trigger = []
+relay_start_state = []
 
 def ReadSQL():
     global relay_pin
@@ -43,22 +44,25 @@ def ReadSQL():
     conn = sqlite3.connect(sql_database)
     cur = conn.cursor()
     cur.execute('SELECT Id, Pin, Trigger, Start_State FROM Relays')
-    for row in cur :
-        relay_pin[row[0]] = row[1]
-        relay_trigger[row[0]] = row[2]
-        relay_start_state[row[0]] = row[3]
+    count = 0
+    for row in cur:
+        relay_id.append(row[0])
+        relay_pin.append(row[1])
+        relay_trigger.append(row[2])
+        relay_start_state.append(row[3])
+        count += 1
 
 ReadSQL()
 
 # Turn all relays off
 # Set all relays to be turned off at startup
-for i in range(1, 9):
+for i in range(0, len(relay_id)):
     if relay_trigger[i] == 0: relay_trigger[i] = 1;
     else: relay_trigger[i] = 0
 
 # Turn specific relays on
 # If relay is set to be turned on, reverse the trigger
-for i in range(1, 9):
+for i in range(0, len(relay_id)):
     if relay_start_state[i]:
         if relay_trigger[i] == 0: relay_trigger[i] = 1;
         else: relay_trigger[i] = 0
@@ -66,7 +70,7 @@ for i in range(1, 9):
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-for i in range(1, 9):
+for i in range(0, len(relay_id)):
     if relay_pin[i] != 0:
         GPIO.setup(relay_pin[i], GPIO.OUT)
         GPIO.output(relay_pin[i], relay_trigger[i])

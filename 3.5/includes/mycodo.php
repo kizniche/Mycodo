@@ -1568,7 +1568,7 @@ if (isset($output_error)) {
                         <input type="submit" name="Daemon" value="Daemon">
                         <input type="submit" name="Users" value="User Database">
                         <input type="submit" name="Database" value="Mycodo Database">
-                        <input type="submit" name="Update" value="Update">
+                        <input type="submit" name="Update" value="Update Log">
                     </form>
                 </div>
                 <div style="font-family: monospace;">
