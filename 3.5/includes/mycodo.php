@@ -1902,7 +1902,7 @@ if (isset($output_error)) {
                     <form action="?tab=settings" method="post">
                         <tr>
                         <td class="setting-text">
-                            Check if there is an update for Mycodo
+                            Check if there is a newer version of Mycodo
                         </td>
                         <td class="setting-value">
                             <button name="UpdateCheck" type="submit" value="" title="Check if there is a newer version of Mycodo on github.">Update Check</button>
