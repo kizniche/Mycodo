@@ -1315,9 +1315,11 @@ if (isset($output_error)) {
                                 fwrite($f, "set output \"$images/graph-co2-custom-separate-$id2-$n.png\"\n");
                                 fwrite($f, "set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]\n");
                                 fwrite($f, "set format x \"%H:%M\\n%m/%d\"\n");
-                                fwrite($f, "set yrange [0:5000]\n");
-                                fwrite($f, "set mytics 5\n");
-                                fwrite($f, "set ytics 500\n");
+                                fwrite($f, "set yrange [0:100]\n");
+                                fwrite($f, "set ytics 10\n");
+                                fwrite($f, "set y2range [0:5000]\n");
+                                fwrite($f, "set y2tics 500\n");
+                                fwrite($f, "set my2tics 5\n");
                                 fwrite($f, "set style line 11 lc rgb '#808080' lt 1\n");
                                 fwrite($f, "set border 3 back ls 11\n");
                                 fwrite($f, "set tics nomirror\n");
