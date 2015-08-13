@@ -88,6 +88,23 @@ for ($p = 0; $p < count($relay_id); $p++) {
         } else {
             shell_exec("$mycodo_client --sqlreload 0");
         }
+
+        $pin = $_POST['relay' . $p . 'pin'];
+        shell_exec("gpio -g mode $pin output");
+
+        if ((int)$_POST['relay' . $p . 'trigger'] == 1) {
+            if ((int)$_POST['relay' . $p . 'startstate'] == 1) {
+                shell_exec("gpio -g write $pin 1");
+            } else {
+                shell_exec("gpio -g write $pin 0");
+            }
+        } else if ((int)$_POST['relay' . $p . 'trigger'] == 0) {
+            if ((int)$_POST['relay' . $p . 'startstate'] == 1) {
+                shell_exec("gpio -g write $pin 0");
+            } else {
+                shell_exec("gpio -g write $pin 1");
+            }
+        }
     }
 
     // Delete Relay
