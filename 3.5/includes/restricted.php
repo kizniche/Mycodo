@@ -25,7 +25,7 @@
 if (isset($_POST['UpdateCheck'])) {
     exec("$install_path/cgi-bin/mycodo-wrapper updatecheck 2>&1", $update_check_output, $update_check_return);
     if ($update_check_return) {
-        $settings_error = "Update Check: There is an update for Mycodo.";
+        $settings_error = "Update Check: There is a newer version of Mycodo available.";
     } else {
         $settings_error = "Update Check: You are running the latest version of Mycodo.";
     }
