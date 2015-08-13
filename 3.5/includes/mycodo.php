@@ -1315,11 +1315,9 @@ if (isset($output_error)) {
                                 fwrite($f, "set output \"$images/graph-co2-custom-separate-$id2-$n.png\"\n");
                                 fwrite($f, "set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]\n");
                                 fwrite($f, "set format x \"%H:%M\\n%m/%d\"\n");
-                                fwrite($f, "set yrange [0:100]\n");
-                                fwrite($f, "set y2range [0:35]\n");
-                                fwrite($f, "set my2tics 10\n");
-                                fwrite($f, "set ytics 10\n");
-                                fwrite($f, "set y2tics 5\n");
+                                fwrite($f, "set yrange [0:5000]\n");
+                                fwrite($f, "set mytics 5\n");
+                                fwrite($f, "set ytics 500\n");
                                 fwrite($f, "set style line 11 lc rgb '#808080' lt 1\n");
                                 fwrite($f, "set border 3 back ls 11\n");
                                 fwrite($f, "set tics nomirror\n");
@@ -1339,7 +1337,7 @@ if (isset($output_error)) {
                                 if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
                                 else fwrite($f, "unset key\n");
                                 fwrite($f, "set title \"Sensor $n: $sensor_co2_name[$n]: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
-                                fwrite($f, "plot \"<awk '\\$10 == $n' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, ");
+                                fwrite($f, "plot \"<awk '\\$10 == $n' /var/tmp/sensor-co2.log\" using 1:7 index 0 notitle w lp ls 1 axes x1y2, ");
                                 fwrite($f, "\"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"$relay_name[1]\" w impulses ls 4 axes x1y1, ");
                                 fwrite($f, "\"\" using 1:8 index 0 title \"$relay_name[2]\" w impulses ls 5 axes x1y1, ");
                                 fwrite($f, "\"\" using 1:9 index 0 title \"$relay_name[3]\" w impulses ls 6 axes x1y1, ");
