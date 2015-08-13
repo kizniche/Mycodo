@@ -23,38 +23,38 @@
 #  Contact at kylegabriel.com
 
 if [ "$EUID" -ne 0 ]; then
-    printf "Please run as root"
+    printf "Please run as root\n"
     exit
 fi
 
 case "${1:-''}" in
     'update')
         NOW=$(date +"%m-%d-%Y %H:%M:%S")
-        printf "#### Update Started $NOW ####"
+        printf "#### Update Started $NOW ####\n"
 
         DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
         PDIR="$( dirname "$DIR" )"
 
         cd $DIR
 
-        printf "#### Checking if there is an update ####"
+        printf "#### Checking if there is an update ####\n"
         git fetch origin
 
         if git status -uno | grep 'Your branch is behind' > /dev/null; then
             git status -uno | grep 'Your branch is behind'
-            printf "The remote repository is newer than yours. This could mean there is an update to Mycodo."
+            printf "The remote repository is newer than yours. This could mean there is an update to Mycodo.\n"
 
             if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
-                printf "#### Stopping Daemon ####"
+                printf "#### Stopping Daemon ####\n"
                 $DIR/init.d/mycodo stop
 
                 NOW=$(date +"%Y-%m-%d_%H-%M-%S")
-                printf "#### Creating backup in $PDIR-backups/Mycodo-$NOW ####"
+                printf "#### Creating backup in $PDIR-backups/Mycodo-$NOW ####\n"
                 mkdir -p $DIR/../../Mycodo-backups
                 mkdir -p $DIR/../../Mycodo-backups/Mycodo-$NOW
                 cp -r $DIR/../../Mycodo/3.5 $DIR/../../Mycodo-backups/Mycodo-$NOW/
 
-                printf "#### Updating from github ####"
+                printf "#### Updating from github ####\n"
                 git fetch --all
                 git reset --hard origin/master
 
@@ -64,14 +64,14 @@ case "${1:-''}" in
                 cp $DIR/init.d/mycodo /etc/init.d/
                 cp $DIR/init.d/apache2-tmpfs /etc/init.d/
 
-                printf "#### Executing Post-Update Commands ####"
+                printf "#### Executing Post-Update Commands ####\n"
                 if [ -f $DIR/update-post.sh ]; then
                     $DIR/update-post.sh
                 else
-                    printf "Error: update-post.sh not found"
+                    printf "Error: update-post.sh not found\n"
                 fi
 
-                printf "#### Starting Daemon ####"
+                printf "#### Starting Daemon ####\n"
                 /etc/init.d/mycodo start
 
                 printf "#### Update Finished ####\n\n"
