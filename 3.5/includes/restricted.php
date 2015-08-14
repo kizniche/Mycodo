@@ -443,9 +443,8 @@ if (isset($_POST['AddTSensors']) && isset($_POST['AddTSensorsNumber'])) {
         $stmt = $db->prepare("INSERT INTO TSensor VALUES(:id, 'T-S', 0, 'DS18B20', 120, 0, 0, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0)");
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->execute();
-
-        shell_exec("$mycodo_client --pidrestart T");
     }
+    shell_exec("$mycodo_client --pidrestart T");
 }
 
 
@@ -727,9 +726,8 @@ if (isset($_POST['AddHTSensors']) && isset($_POST['AddHTSensorsNumber'])) {
         $stmt = $db->prepare("INSERT INTO HTSensor VALUES(:id, 'HT-S', 0, 'DHT22', 120, 0, 0, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0, 0, 0, 1, 50.0, 0, 90, 0, 0, 0)");
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->execute();
-
-        shell_exec("$mycodo_client --pidrestart HT");
     }
+    shell_exec("$mycodo_client --pidrestart HT");
 }
 
 
@@ -962,9 +960,8 @@ if (isset($_POST['AddCO2Sensors']) && isset($_POST['AddCO2SensorsNumber'])) {
         $stmt = $db->prepare("INSERT INTO CO2Sensor VALUES(:id, 'CO2-S', 0, 'K30', 120, 0, 0, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0)");
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->execute();
-
-        shell_exec("$mycodo_client --pidrestart T");
     }
+    shell_exec("$mycodo_client --pidrestart CO2");
 }
 
 
