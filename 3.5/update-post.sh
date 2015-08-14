@@ -45,7 +45,7 @@ cd $DIR
 LIST=`sqlite3 $DATABASE "SELECT Database_Version FROM Misc"`;
 
 if [ -z "$LIST" ]; then
-	printf "Missing database version, updating database\n";
+	printf "Missing database version, recreating database\n";
 	# Recreate mycodo SQLite database
 	rm -rf $DIR/config/mycodo.db
 	$DIR/setup-database.py -i update
@@ -63,5 +63,8 @@ fi
 # Check database version against known database versions
 # Perform update based on database version
 if [[ $db_version == "1" ]]; then
-	printf "First version of versioned sqlite database. No update necessary.\n";
+	printf "SQLite database is already the latest version.\n";
+else
+	printf "SQLite database is an old version. Updating...\n"
+    $DIR/update-database.py -i update
 fi
