@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.65";
+$version = "3.5.66";
 
 ######### Start Edit Configure #########
 
@@ -1698,7 +1698,10 @@ if (isset($output_error)) {
                         }
                         if(isset($_POST['Database'])) {
                             echo '<pre>';
-                            exec('sqlite3 ' . $mycodo_db . ' .dump', $output); print_r($output);
+                            exec('sqlite3 /var/www/mycodo/test-database.db .dump', $output1); print_r($output1);
+                            echo '</pre>';
+                            echo '<pre>';
+                            exec('sqlite3 ' . $mycodo_db . ' .dump', $output2); print_r($output2);
                             echo '</pre>';
                         }
                     ?>

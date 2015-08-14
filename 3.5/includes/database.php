@@ -134,21 +134,21 @@ if (!isset($sensor_co2_graph)) $sensor_co2_graph = [];
 
 // Sensor Presets
 $sensor_t_preset = [];
-$results = $db->query('SELECT Preset FROM TSensorPreset');
+$results = $db->query('SELECT Id FROM TSensorPreset');
 while ($row = $results->fetchArray()) {
     $sensor_t_preset[] = $row[0];
 }
 sort($sensor_t_preset, SORT_NATURAL | SORT_FLAG_CASE);
 
 $sensor_ht_preset = [];
-$results = $db->query('SELECT Preset FROM HTSensorPreset');
+$results = $db->query('SELECT Id FROM HTSensorPreset');
 while ($row = $results->fetchArray()) {
     $sensor_ht_preset[] = $row[0];
 }
 sort($sensor_ht_preset, SORT_NATURAL | SORT_FLAG_CASE);
 
 $sensor_co2_preset = [];
-$results = $db->query('SELECT Preset FROM CO2SensorPreset');
+$results = $db->query('SELECT Id FROM CO2SensorPreset');
 while ($row = $results->fetchArray()) {
     $sensor_co2_preset[] = $row[0];
 }

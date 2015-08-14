@@ -27,12 +27,12 @@
 DATABASE="/var/www/mycodo/config/mycodo.db"
 
 if [ "$EUID" -ne 0 ]; then
-    printf "Please run as root\n"
+    printf "Please run as root\n";
     exit
 fi
 
 if [ ! -f $DATABASE ]; then
-    printf "Database not found: $DATABASE\n"
+    printf "Database not found: $DATABASE\n";
     exit 1
 fi
 
@@ -46,7 +46,8 @@ LIST=`sqlite3 $DATABASE "SELECT Database_Version FROM Misc"`;
 
 if [ -z "$LIST" ]; then
 	printf "Missing database version, updating database\n";
-	# Update mycodo SQLite database
+	# Recreate mycodo SQLite database
+	rm -rf $DIR/config/mycodo.db
 	$DIR/setup-database.py -i update
 else
 	# For each row
@@ -62,5 +63,5 @@ fi
 # Check database version against known database versions
 # Perform update based on database version
 if [[ $db_version == "1" ]]; then
-	printf "First version of versioned sqlite database. No update necessary.\n"
+	printf "First version of versioned sqlite database. No update necessary.\n";
 fi

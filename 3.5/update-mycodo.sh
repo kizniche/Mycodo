@@ -64,6 +64,10 @@ case "${1:-''}" in
                 cp $DIR/init.d/mycodo /etc/init.d/
                 cp $DIR/init.d/apache2-tmpfs /etc/init.d/
 
+                printf "#### Updating Mycodo SQLite Database ####\n"
+                # Update mycodo SQLite database
+                $DIR/update-database.py -i update
+
                 printf "#### Executing Post-Update Commands ####\n"
                 if [ -f $DIR/update-post.sh ]; then
                     $DIR/update-post.sh

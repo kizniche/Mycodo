@@ -286,7 +286,7 @@ It is highly recommended that the configuration change be tested to determine if
 
 Use the following commands and type 'all' when prompted to create databases
 
-`sudo /var/www/mycodo/setup-database.py -i`
+`sudo /var/www/mycodo/update-database.py -i`
 
 Follow the prompts to create an admin password, optionally create another user, and enable/disable guest access.
 
@@ -316,7 +316,7 @@ Note: cgi-bin/mycodo-wrapper is a binary executable used to start and stop the m
 
 ### Web Interface
 
-After the system is back up, go to http://your.rpi.address/mycodo and log in with the credentials you created with setup-database.py. **Input fields of the web interface will display descriptions or instructions when the mouse is hovered over them.**
+After the system is back up, go to http://your.rpi.address/mycodo and log in with the credentials you created with update-database.py. **Input fields of the web interface will display descriptions or instructions when the mouse is hovered over them.**
 
 Ensure the Daemon indicator at the top-left is blue, indicating the daemon is running. If it is not, PID regulation cannot operate.
 
