@@ -11,8 +11,8 @@ int main(int argc, char *argv[]) {
 	char cmd[255];
 
 	if (argc > 1) {
-		if (argv[1] == "stop" || argv[1] == "start" ||
-			argv[1] == "restart" || argv[1] == "debug") {
+		if ((strcmp(argv[1], "stop") == 0) || (strcmp(argv[1], "start") == 0) ||
+			(strcmp(argv[1], "restart") == 0) || (strcmp(argv[1], "debug") == 0)) {
 			sprintf(cmd, "/etc/init.d/mycodo %s", argv[1]);
 			system(cmd);
 		} else if (strcmp(argv[1], "update") == 0) {
