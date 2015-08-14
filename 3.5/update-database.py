@@ -26,7 +26,8 @@
 sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
 sql_database_user = '/var/www/mycodo/config/users.db'
 
-db_version = 1
+db_version_mycodo = 1
+db_version_user = 1
 
 import getopt
 import getpass
@@ -196,6 +197,13 @@ def setup_db(update):
         delete_all_tables_user()
         create_all_tables_user()
         create_rows_columns_user()
+
+        # Update User database version
+        conn = sqlite3.connect(sql_database_user)
+        cur = conn.cursor()
+        cur.execute("PRAGMA user_version = %s;" % db_version_user)
+        conn.commit()
+        cur.close()
 
 
 def MycodoDatabase():
@@ -417,10 +425,10 @@ def MycodoDatabase():
     ModNullValue('Misc', 'Dismiss_Notification', 0)
     ModNullValue('Misc', 'Refresh_Time', 300)
 
-    # Update database version
+    # Update Mycodo database version
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("PRAGMA user_version = %s;" % db_version)
+    cur.execute("PRAGMA user_version = %s;" % db_version_mycodo)
     conn.commit()
     cur.close()
 

@@ -37,6 +37,7 @@ $still_exec = $install_path . "/cgi-bin/camera-still.sh";
 $stream_exec = $install_path . "/cgi-bin/camera-stream.sh";
 $timelapse_exec = $install_path . "/cgi-bin/camera-timelapse.sh";
 $mycodo_db = $install_path . "/config/mycodo.db";
+$user_db = $install_path . "/config/users.db";
 
 $daemon_log = $install_path . "/log/daemon.log";
 $auth_log = $install_path . "/log/auth.log";
@@ -1658,8 +1659,9 @@ if (isset($output_error)) {
                             unlink($log);
                         }
                         if(isset($_POST['Users']) && $_SESSION['user_name'] != 'guest') {
-                            echo 'User Email Password_Hash<br> <br>';
-                            $db = new SQLite3("./config/users.db");
+                            echo exec('file ' . $user_db); 
+                            echo '<br>&nbsp;<br>User Email Password_Hash<br> <br>';
+                            $db = new SQLite3($user_db);
                             $results = $db->query('SELECT user_name, user_email, user_password_hash FROM users');
                             while ($row = $results->fetchArray()) {
                                 echo $row[0] , ' ' , $row[1] , ' ' , $row[2] , '<br>';
@@ -1697,7 +1699,8 @@ if (isset($output_error)) {
                             }
                         }
                         if(isset($_POST['Database'])) {
-                            echo '<pre>';
+                            echo exec('file ' . $mycodo_db); 
+                            echo '<br>&nbsp;<br><pre>';
                             exec('sqlite3 ' . $mycodo_db . ' .dump', $output); print_r($output);
                             echo '</pre>';
                         }

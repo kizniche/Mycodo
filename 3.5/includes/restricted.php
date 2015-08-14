@@ -86,7 +86,7 @@ for ($p = 0; $p < count($relay_id); $p++) {
         if ($_POST['relay' . $p . 'pin'] != $relay_pin[$p]) {
             shell_exec("$mycodo_client --sqlreload $p");
         } else {
-            shell_exec("$mycodo_client --sqlreload 0");
+            shell_exec("$mycodo_client --sqlreload -1");
         }
 
         $pin = $_POST['relay' . $p . 'pin'];
@@ -113,7 +113,7 @@ for ($p = 0; $p < count($relay_id); $p++) {
         $stmt->bindValue(':id', $relay_id[$p], SQLITE3_TEXT);
         $stmt->execute();
 
-        shell_exec("$mycodo_client --sqlreload 0");
+        shell_exec("$mycodo_client --sqlreload -1");
     }
 
     // Send client command to turn relay on or off
@@ -173,7 +173,7 @@ if (isset($_POST['AddRelays']) && isset($_POST['AddRelaysNumber'])) {
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->execute();
     }
-    shell_exec("$mycodo_client --sqlreload 0");
+    shell_exec("$mycodo_client --sqlreload -1");
 }
 
 
@@ -187,7 +187,7 @@ for ($p = 0; $p < count($timer_id); $p++) {
         $stmt->bindValue(':durationoff', (int)$_POST['Timer' . $p . 'Off'], SQLITE3_INTEGER);
         $stmt->bindValue(':id', $timer_id[$p], SQLITE3_TEXT);
         $stmt->execute();
-        shell_exec("$mycodo_client --sqlreload 0");
+        shell_exec("$mycodo_client --sqlreload -1");
     }
 
     // Set timer state
@@ -196,7 +196,7 @@ for ($p = 0; $p < count($timer_id); $p++) {
         $stmt->bindValue(':state', (int)$_POST['Timer' . $p . 'StateChange'], SQLITE3_INTEGER);
         $stmt->bindValue(':id', $timer_id[$p], SQLITE3_TEXT);
         $stmt->execute();
-        shell_exec("$mycodo_client --sqlreload 0");
+        shell_exec("$mycodo_client --sqlreload -1");
         if ((int)$_POST['Timer' . $p . 'StateChange'] == 0) {
             $relay = $timer_relay[$p];
             shell_exec("$mycodo_client -r $relay 0");
@@ -209,7 +209,7 @@ for ($p = 0; $p < count($timer_id); $p++) {
         $stmt->bindValue(':id', $timer_id[$p], SQLITE3_TEXT);
         $stmt->execute();
 
-        shell_exec("$mycodo_client --sqlreload 0");
+        shell_exec("$mycodo_client --sqlreload -1");
     }
 }
 
@@ -220,7 +220,7 @@ if (isset($_POST['AddTimers']) && isset($_POST['AddTimersNumber'])) {
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->execute();
     }
-    shell_exec("$mycodo_client --sqlreload 0");
+    shell_exec("$mycodo_client --sqlreload -1");
 }
 
 
@@ -234,9 +234,9 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
         $stmt->execute();
         if ((int)$_POST['ChangeT' . $p . 'TempOR']) {
             shell_exec("$mycodo_client --pidstop TTemp $p");
-            shell_exec("$mycodo_client --sqlreload 0");
+            shell_exec("$mycodo_client --sqlreload -1");
         } else {
-            shell_exec("$mycodo_client --sqlreload 0");
+            shell_exec("$mycodo_client --sqlreload -1");
             shell_exec("$mycodo_client --pidstart TTemp $p");
         }
     }
@@ -306,7 +306,7 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
             pid_reload($mycodo_client, 'TTemp', $p);
         }
         if  ($pid_t_temp_or[$p] != 0) {
-            shell_exec("$mycodo_client --sqlreload 0");
+            shell_exec("$mycodo_client --sqlreload -1");
         }
     }
 
@@ -359,10 +359,10 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
                 shell_exec("$mycodo_client --pidstop TTemp $p");
             }
             if  ($pid_t_temp_or[$p] != 0) {
-                shell_exec("$mycodo_client --sqlreload 0");
+                shell_exec("$mycodo_client --sqlreload -1");
             }
         } else {
-            $sensor_error = 'Something wrnt wrong. The preset you selected doesn\'t exist.';
+            $sensor_error = 'Something went wrong. The preset you selected doesn\'t exist.';
         }
     }
 
@@ -460,9 +460,9 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
         $stmt->execute();
         if ((int)$_POST['ChangeHT' . $p . 'TempOR']) {
             shell_exec("$mycodo_client --pidstop HTTemp $p");
-            shell_exec("$mycodo_client --sqlreload 0");
+            shell_exec("$mycodo_client --sqlreload -1");
         } else {
-            shell_exec("$mycodo_client --sqlreload 0");
+            shell_exec("$mycodo_client --sqlreload -1");
             shell_exec("$mycodo_client --pidstart HTTemp $p");
         }
     }
@@ -475,9 +475,9 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
         $stmt->execute();
         if ((int)$_POST['ChangeHT' . $p . 'HumOR']) {
             shell_exec("$mycodo_client --pidstop HTHum $p");
-            shell_exec("$mycodo_client --sqlreload 0");
+            shell_exec("$mycodo_client --sqlreload -1");
         } else {
-            shell_exec("$mycodo_client --sqlreload 0");
+            shell_exec("$mycodo_client --sqlreload -1");
             shell_exec("$mycodo_client --pidstart HTHum $p");
         }
     }
@@ -567,7 +567,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             pid_reload($mycodo_client, 'HTHum', $p);
         }
         if  ($pid_ht_temp_or[$p] != 0 or $pid_ht_hum_or[$p] != 0) {
-            shell_exec("$mycodo_client --sqlreload 0");
+            shell_exec("$mycodo_client --sqlreload -1");
         }
     }
 
@@ -633,10 +633,10 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
                 shell_exec("$mycodo_client --pidstop HTHum $p");
             }
             if  ($pid_ht_temp_or[$p] != 0 or $pid_ht_hum_or[$p] != 0) {
-                shell_exec("$mycodo_client --sqlreload 0");
+                shell_exec("$mycodo_client --sqlreload -1");
             }
         } else {
-            $sensor_error = 'Something wrnt wrong. The preset you selected doesn\'t exist.';
+            $sensor_error = 'Something went wrong. The preset you selected doesn\'t exist.';
         }
     }
 
@@ -742,9 +742,9 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
         $stmt->execute();
         if ((int)$_POST['ChangeCO2' . $p . 'CO2OR']) {
             shell_exec("$mycodo_client --pidstop CO2 $p");
-            shell_exec("$mycodo_client --sqlreload 0");
+            shell_exec("$mycodo_client --sqlreload -1");
         } else {
-            shell_exec("$mycodo_client --sqlreload 0");
+            shell_exec("$mycodo_client --sqlreload -1");
             shell_exec("$mycodo_client --pidstart CO2 $p");
         }
     }
@@ -823,7 +823,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
             pid_reload($mycodo_client, 'CO2', $p);
         }
         if  ($pid_co2_or[$p] != 0) {
-            shell_exec("$mycodo_client --sqlreload 0");
+            shell_exec("$mycodo_client --sqlreload -1");
         }
     }
 
@@ -876,10 +876,10 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
                 shell_exec("$mycodo_client --pidstop CO2 $p");
             }
             if  ($pid_co2_or[$p] != 0) {
-                shell_exec("$mycodo_client --sqlreload 0");
+                shell_exec("$mycodo_client --sqlreload -1");
             }
         } else {
-            $sensor_error = 'Something wrnt wrong. The preset you selected doesn\'t exist.';
+            $sensor_error = 'Something went wrong. The preset you selected doesn\'t exist.';
         }
     }
 
@@ -976,7 +976,7 @@ if (isset($_POST['ChangeNotify'])) {
     $stmt->bindValue(':emailfrom', $_POST['smtp_email_from'], SQLITE3_TEXT);
     $stmt->bindValue(':emailto', $_POST['smtp_email_to'], SQLITE3_TEXT);
     $stmt->execute();
-    shell_exec("$mycodo_client --sqlreload 0");
+    shell_exec("$mycodo_client --sqlreload -1");
 }
 
 // Change number of relays
@@ -984,7 +984,7 @@ if (isset($_POST['ChangeNoRelays'])) {
     $stmt = $db->prepare("UPDATE Numbers SET Relays=:relays");
     $stmt->bindValue(':relays', (int)$_POST['numrelays'], SQLITE3_INTEGER);
     $stmt->execute();
-    shell_exec("$mycodo_client --sqlreload 0");
+    shell_exec("$mycodo_client --sqlreload -1");
 }
 
 // Change number of T sensors
@@ -992,7 +992,7 @@ if (isset($_POST['ChangeNoTSensors'])) {
     $stmt = $db->prepare("UPDATE Numbers SET TSensors=:tsensors");
     $stmt->bindValue(':tsensors', (int)$_POST['numtsensors'], SQLITE3_INTEGER);
     $stmt->execute();
-    shell_exec("$mycodo_client --sqlreload 0");
+    shell_exec("$mycodo_client --sqlreload -1");
 }
 
 // Change number of HT sensors
@@ -1000,7 +1000,7 @@ if (isset($_POST['ChangeNoHTSensors'])) {
     $stmt = $db->prepare("UPDATE Numbers SET HTSensors=:htsensors");
     $stmt->bindValue(':htsensors', (int)$_POST['numhtsensors'], SQLITE3_INTEGER);
     $stmt->execute();
-    shell_exec("$mycodo_client --sqlreload 0");
+    shell_exec("$mycodo_client --sqlreload -1");
 }
 
 
@@ -1009,7 +1009,7 @@ if (isset($_POST['ChangeNoCo2Sensors'])) {
     $stmt = $db->prepare("UPDATE Numbers SET CO2Sensors=:co2sensors");
     $stmt->bindValue(':co2sensors', (int)$_POST['numco2sensors'], SQLITE3_INTEGER);
     $stmt->execute();
-    shell_exec("$mycodo_client --sqlreload 0");
+    shell_exec("$mycodo_client --sqlreload -1");
 }
 
 // Change number of timers
@@ -1017,7 +1017,7 @@ if (isset($_POST['ChangeNoTimers'])) {
     $stmt = $db->prepare("UPDATE Numbers SET Timers=:timers");
     $stmt->bindValue(':timers', (int)$_POST['numtimers'], SQLITE3_INTEGER);
     $stmt->execute();
-    shell_exec("$mycodo_client --sqlreload 0");
+    shell_exec("$mycodo_client --sqlreload -1");
 }
 
 // Change camera still image settings
@@ -1028,7 +1028,7 @@ if (isset($_POST['ChangeStill'])) {
     $stmt->bindValue(':displaylast', (int)$_POST['Still_DisplayLast'], SQLITE3_INTEGER);
     $stmt->bindValue(':extra', $_POST['Still_Extra_Parameters'], SQLITE3_TEXT);
     $stmt->execute();
-    shell_exec("$mycodo_client --sqlreload 0");
+    shell_exec("$mycodo_client --sqlreload -1");
 }
 
 // Change camera video stream settings
@@ -1037,7 +1037,7 @@ if (isset($_POST['ChangeStream'])) {
     $stmt->bindValue(':relay', (int)$_POST['Stream_Relay'], SQLITE3_INTEGER);
     $stmt->bindValue(':extra', $_POST['Stream_Extra_Parameters'], SQLITE3_TEXT);
     $stmt->execute();
-    shell_exec("$mycodo_client --sqlreload 0");
+    shell_exec("$mycodo_client --sqlreload -1");
 }
 
 // Change camera timelapse settings
@@ -1050,7 +1050,7 @@ if (isset($_POST['ChangeTimelapse'])) {
     $stmt->bindValue(':displaylast', (int)$_POST['Timelapse_DisplayLast'], SQLITE3_INTEGER);
     $stmt->bindValue(':extra', $_POST['Timelapse_Extra_Parameters'], SQLITE3_TEXT);
     $stmt->execute();
-    shell_exec("$mycodo_client --sqlreload 0");
+    shell_exec("$mycodo_client --sqlreload -1");
 }
 
 // Change interface settings
