@@ -32,6 +32,7 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 <a name="progress"></a>
 ## Progress
 
+- [X] Database update is now done dynamically instead of everything being erased
 - [X] Ability to activate a relay for a predefined period before reading a sensor
 - [X] Automated update from github (from Settings in the web interface)
 - [X] Unlimited number of sensor/relays/timers that can be added
