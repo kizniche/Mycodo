@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-#  setup-database.py - Tool for creating Mycodo SQLite databases
+#  update-database.py - Create and update Mycodo SQLite databases
 #
 #  Copyright (C) 2015  Kyle T. Gabriel
 #
@@ -22,6 +22,10 @@
 #
 #  Contact at kylegabriel.com
 
+
+sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
+sql_database_user = '/var/www/mycodo/config/users.db'
+
 db_version = 1
 
 import getopt
@@ -33,129 +37,7 @@ import subprocess
 import sys
 import time
 
-# GPIO pins (BCM numbering) and name of devices attached to relay
-relay_num = None
-relay_pin = [0] * 9
-relay_name = [0] * 9
-relay_trigger = [0] * 9
-relay_start_state = [0] * 9
-
-# Temperature & Humidity Sensors
-sensor_t_num = 0
-sensor_t_name = [0] * 5
-sensor_t_device = [0] * 5
-sensor_t_pin = [0] * 5
-sensor_t_period = [0] * 5
-sensor_t_log = [0] * 5
-sensor_t_graph = [0] * 5
-sensor_t_read_temp_c = [0] * 5
-sensor_t_read_hum = [0] * 5
-sensor_t_dewpt_c = [0] * 5
-
-# Temperature Sensor Temperature PID
-pid_t_temp_relay = [0] * 5
-pid_t_temp_set = [0] * 5
-pid_t_temp_period = [0] * 5
-pid_t_temp_p = [0] * 5
-pid_t_temp_i = [0] * 5
-pid_t_temp_d = [0] * 5
-pid_t_temp_or = [0] * 5
-pid_t_temp_alive = [1] * 5
-pid_t_temp_down = 0
-pid_t_temp_up = 0
-pid_t_temp_number = None
-
-# Temperature & Humidity Sensors
-sensor_ht_num = 0
-sensor_ht_name = [0] * 5
-sensor_ht_device = [0] * 5
-sensor_ht_pin = [0] * 5
-sensor_ht_period = [0] * 5
-sensor_ht_log = [0] * 5
-sensor_ht_graph = [0] * 5
-sensor_ht_read_temp_c = [0] * 5
-sensor_ht_read_hum = [0] * 5
-sensor_ht_dewpt_c = [0] * 5
-
-# HT Sensor Temperature PID
-pid_ht_temp_relay = [0] * 5
-pid_ht_temp_set = [0] * 5
-pid_ht_temp_period = [0] * 5
-pid_ht_temp_p = [0] * 5
-pid_ht_temp_i = [0] * 5
-pid_ht_temp_d = [0] * 5
-pid_ht_temp_or = [0] * 5
-pid_ht_temp_alive = [1] * 5
-pid_ht_temp_down = 0
-pid_ht_temp_up = 0
-pid_ht_temp_number = None
-
-# HT Sensor Humidity PID
-pid_ht_hum_relay = [0] * 5
-pid_ht_hum_set = [0] * 5
-pid_ht_hum_period = [0] * 5
-pid_ht_hum_p = [0] * 5
-pid_ht_hum_i = [0] * 5
-pid_ht_hum_d = [0] * 5
-pid_ht_hum_or = [0] * 5
-pid_ht_hum_alive = [1] * 5
-pid_ht_hum_down = 0
-pid_ht_hum_up = 0
-pid_ht_hum_number = None
-
-# CO2 Sensors
-sensor_co2_num = 0
-sensor_co2_name = [0] * 5
-sensor_co2_device = [0] * 5
-sensor_co2_pin = [0] * 5
-sensor_co2_period = [0] * 5
-sensor_co2_log = [0] * 5
-sensor_co2_graph = [0] * 5
-sensor_co2_read_co2 = [0] * 5
-
-# CO2 PID
-pid_co2_relay = [0] * 5
-pid_co2_set = [0] * 5
-pid_co2_period = [0] * 5
-pid_co2_p = [0] * 5
-pid_co2_i = [0] * 5
-pid_co2_d = [0] * 5
-pid_co2_or = [0] * 5
-pid_co2_alive = [1] * 5
-pid_co2_down = 0
-pid_co2_up = 0
-pid_co2_number = None
-
-# Timers
-timer_num = None
-timer_name = [0] * 9
-timer_relay = [0] * 9
-timer_state = [0] * 9
-timer_duration_on = [0] * 9
-timer_duration_off = [0] * 9
-timer_change = 0
-
-# SMTP notify
-smtp_host = None
-smtp_ssl = None
-smtp_port = None
-smtp_user = None
-smtp_pass = None
-smtp_email_from = None
-smtp_email_to = None
-
-# Miscellaneous
-camera_light = None
-server = None
-client_que = '0'
-client_var = None
-terminate = False
-
-# Timelapse
-timelapse_relay = None
-timelapse_path = None
-timelapse_prefix = None
-timelapse_timestamp = None
+start_time = time.time()
 
 
 def menu():
@@ -207,6 +89,7 @@ def menu():
         else:
             assert False, "Fail"
 
+
 def usage():
     print 'Usage: setup-database.py [OPTION] [FILE]...'
     print 'Create and manage Mycodo databases (if no database is specified, the'
@@ -224,6 +107,7 @@ def usage():
     print '           Create a new password for user\n'
     print 'Examples: setup-database.py -i'
     print '          setup-database.py -p /var/www/mycodo/config/users.db'
+
 
 def add_user(db):
     print 'Add user to %s' % db
@@ -259,6 +143,7 @@ def add_user(db):
     conn.commit()
     cur.close()
 
+
 def delete_user(db):
     print 'Delete user from %s' % db
     while 1:
@@ -273,6 +158,7 @@ def delete_user(db):
                 return 1
             else:
                 return 0
+
 
 def password_change(db):
     print 'Change password of user from %s' % db
@@ -296,19 +182,6 @@ def password_change(db):
             cur.close()
             return 1
 
-def db_exists_user(db):
-    if os.path.isfile(db):
-        return 1
-    else:
-        print 'database %s not found' % db
-        sys.exit(0)
-
-def db_exists_mycodo(db):
-    if os.path.isfile(db):
-        return 1
-    else:
-        print 'database %s not found' % db
-        sys.exit(0)
 
 def setup_db(update):
     if update == 'update':
@@ -317,63 +190,262 @@ def setup_db(update):
         target = raw_input("Generate which database? 'user', 'mycodo', or 'all'? ")
     
     if target == 'all' or target == 'mycodo':
-        delete_all_tables_mycodo()
-        create_all_tables_mycodo()
-        create_rows_columns_mycodo()
+        MycodoDatabase()
     
     if target == 'all' or target == 'user':
         delete_all_tables_user()
         create_all_tables_user()
         create_rows_columns_user()
 
-def delete_all_tables_mycodo():
-    print "mydoco.db: Delete all tables"
-    conn = sqlite3.connect(sql_database_mycodo)
-    cur = conn.cursor()
-    cur.execute('DROP TABLE IF EXISTS Relays ')
-    cur.execute('DROP TABLE IF EXISTS TSensor ')
-    cur.execute('DROP TABLE IF EXISTS TSensorPreset ')
-    cur.execute('DROP TABLE IF EXISTS HTSensor ')
-    cur.execute('DROP TABLE IF EXISTS HTSensorPreset ')
-    cur.execute('DROP TABLE IF EXISTS CO2Sensor ')
-    cur.execute('DROP TABLE IF EXISTS CO2SensorPreset ')
-    cur.execute('DROP TABLE IF EXISTS Timers ')
-    cur.execute('DROP TABLE IF EXISTS SMTP ')
-    cur.execute('DROP TABLE IF EXISTS CameraStill ')
-    cur.execute('DROP TABLE IF EXISTS CameraStream ')
-    cur.execute('DROP TABLE IF EXISTS CameraTimelapse ')
-    cur.execute('DROP TABLE IF EXISTS Misc ')
-    conn.close()
 
-def create_all_tables_mycodo():
-    print "mycodo.db: Create all tables"
-    conn = sqlite3.connect(sql_database_mycodo)
-    cur = conn.cursor()
-    cur.execute("CREATE TABLE Relays (Id TEXT, Name TEXT, Pin INT, Trigger INT, Start_State INT)")
-    cur.execute("CREATE TABLE TSensor (Id TEXT, Name TEXT, Pin TEXT, Device TEXT, Period INT, Pre_Measure_Relay INT, Pre_Measure_Dur INT, Activated INT, Graph INT, Temp_Relay_High INT, Temp_Relay_Low INT, Temp_OR INT, Temp_Set REAL, Temp_Set_Direction INT, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D REAL)")
-    cur.execute("CREATE TABLE TSensorPreset (Preset TEXT, Name TEXT, Pin INT, Device TEXT, Period INT, Pre_Measure_Relay INT, Pre_Measure_Dur INT, Activated INT, Graph INT, Temp_Relay_High INT, Temp_Relay_Low INT, Temp_Set REAL, Temp_Set_Direction INT, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D REAL)")
-    cur.execute("CREATE TABLE HTSensor (Id TEXT, Name TEXT, Pin INT, Device TEXT, Period INT, Pre_Measure_Relay INT, Pre_Measure_Dur INT, Activated INT, Graph INT, Temp_Relay_High INT, Temp_Relay_Low INT, Temp_OR INT, Temp_Set REAL, Temp_Set_Direction INT, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D REAL, Hum_Relay_High INT, Hum_Relay_Low INT, Hum_OR INT, Hum_Set REAL, Hum_Set_Direction INT, Hum_Period INT, Hum_P REAL, Hum_I REAL, Hum_D REAL)")
-    cur.execute("CREATE TABLE HTSensorPreset (Preset TEXT, Name TEXT, Pin INT, Device TEXT, Period INT, Pre_Measure_Relay INT, Pre_Measure_Dur INT, Activated INT, Graph INT, Temp_Relay_High INT, Temp_Relay_Low INT, Temp_Set REAL, Temp_Set_Direction INT, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D REAL, Hum_Relay_High INT, Hum_Relay_Low INT, Hum_Set REAL, Hum_Set_Direction INT, Hum_Set_Buffer REAL, Hum_Period INT, Hum_P REAL, Hum_I REAL, Hum_D REAL)")
-    cur.execute("CREATE TABLE CO2Sensor (Id TEXT, Name TEXT, Pin INT, Device TEXT, Period INT, Pre_Measure_Relay INT, Pre_Measure_Dur INT, Activated INT, Graph INT, CO2_Relay_High INT, CO2_Relay_Low INT, CO2_OR INT, CO2_Set REAL, CO2_Set_Direction INT, CO2_Period INT, CO2_P REAL, CO2_I REAL, CO2_D REAL)")
-    cur.execute("CREATE TABLE CO2SensorPreset (Preset TEXT, Name TEXT, Pin INT, Device TEXT, Period INT, Pre_Measure_Relay INT, Pre_Measure_Dur INT, Activated INT, Graph INT, CO2_Relay_High INT, CO2_Relay_Low INT, CO2_OR INT, CO2_Set REAL, CO2_Set_Direction INT, CO2_Period INT, CO2_P REAL, CO2_I REAL, CO2_D REAL)")
-    cur.execute("CREATE TABLE Timers (Id TEXT, Name TEXT, Relay INT, State INT, DurationOn INT, DurationOff INT)")
-    cur.execute("CREATE TABLE SMTP (Host TEXT, SSL INT, Port INT, User TEXT, Pass TEXT, Email_From TEXT, Email_To TEXT)")
-    cur.execute("CREATE TABLE CameraStill (Relay INT, Timestamp INT, Display_Last INT, Extra_Parameters TEXT)")
-    cur.execute("CREATE TABLE CameraStream (Relay INT, Extra_Parameters TEXT)")
-    cur.execute("CREATE TABLE CameraTimelapse (Relay INT, Path TEXT, Prefix TEXT, File_Timestamp INT, Display_Last INT, Extra_Parameters TEXT)")
-    cur.execute("CREATE TABLE Misc (Database_Version INT, Dismiss_Notification INT, Refresh_Time INT)")
-    conn.close()
+def MycodoDatabase():
+    AddTable('Relays')
+    AddColumn('Relays', 'Name', 'TEXT')
+    AddColumn('Relays', 'Pin', 'INT')
+    AddColumn('Relays', 'Trigger', 'INT')
+    AddColumn('Relays', 'Start_State', 'INT')
 
-def create_rows_columns_mycodo():
-    print "mydodo.db: Create all rows and columns"
+    AddTable('TSensor')
+    AddColumn('TSensor', 'Name', 'TEXT')
+    AddColumn('TSensor', 'Pin', 'INT')
+    AddColumn('TSensor', 'Device', 'TEXT')
+    AddColumn('TSensor', 'Period', 'INT')
+    AddColumn('TSensor', 'Pre_Measure_Relay', 'INT')
+    AddColumn('TSensor', 'Pre_Measure_Dur', 'INT')
+    AddColumn('TSensor', 'Activated', 'INT')
+    AddColumn('TSensor', 'Graph', 'INT')
+    AddColumn('TSensor', 'Temp_Relay_High', 'INT')
+    AddColumn('TSensor', 'Temp_Relay_Low', 'INT')
+    AddColumn('TSensor', 'Temp_OR', 'INT')
+    AddColumn('TSensor', 'Temp_Set', 'REAL')
+    AddColumn('TSensor', 'Temp_Set_Direction', 'INT')
+    AddColumn('TSensor', 'Temp_Period', 'INT')
+    AddColumn('TSensor', 'Temp_P', 'REAL')
+    AddColumn('TSensor', 'Temp_I', 'REAL')
+    AddColumn('TSensor', 'Temp_D', 'REAL')
+
+    AddTable('TSensorPreset')
+    AddColumn('TSensorPreset', 'Name', 'TEXT')
+    AddColumn('TSensorPreset', 'Pin', 'INT')
+    AddColumn('TSensorPreset', 'Device', 'TEXT')
+    AddColumn('TSensorPreset', 'Period', 'INT')
+    AddColumn('TSensorPreset', 'Pre_Measure_Relay', 'INT')
+    AddColumn('TSensorPreset', 'Pre_Measure_Dur', 'INT')
+    AddColumn('TSensorPreset', 'Activated', 'INT')
+    AddColumn('TSensorPreset', 'Graph', 'INT')
+    AddColumn('TSensorPreset', 'Temp_Relay_High', 'INT')
+    AddColumn('TSensorPreset', 'Temp_Relay_Low', 'INT')
+    AddColumn('TSensorPreset', 'Temp_Set', 'REAL')
+    AddColumn('TSensorPreset', 'Temp_Set_Direction', 'INT')
+    AddColumn('TSensorPreset', 'Temp_Period', 'INT')
+    AddColumn('TSensorPreset', 'Temp_P', 'REAL')
+    AddColumn('TSensorPreset', 'Temp_I', 'REAL')
+    AddColumn('TSensorPreset', 'Temp_D', 'REAL')
+
+    AddTable('HTSensor')
+    AddColumn('HTSensor', 'Name', 'TEXT')
+    AddColumn('HTSensor', 'Pin', 'INT')
+    AddColumn('HTSensor', 'Device', 'TEXT')
+    AddColumn('HTSensor', 'Period', 'INT')
+    AddColumn('HTSensor', 'Pre_Measure_Relay', 'INT')
+    AddColumn('HTSensor', 'Pre_Measure_Dur', 'INT')
+    AddColumn('HTSensor', 'Activated', 'INT')
+    AddColumn('HTSensor', 'Graph', 'INT')
+    AddColumn('HTSensor', 'Temp_Relay_High', 'INT')
+    AddColumn('HTSensor', 'Temp_Relay_Low', 'INT')
+    AddColumn('HTSensor', 'Temp_OR', 'INT')
+    AddColumn('HTSensor', 'Temp_Set', 'REAL')
+    AddColumn('HTSensor', 'Temp_Set_Direction', 'INT')
+    AddColumn('HTSensor', 'Temp_Period', 'INT')
+    AddColumn('HTSensor', 'Temp_P', 'REAL')
+    AddColumn('HTSensor', 'Temp_I', 'REAL')
+    AddColumn('HTSensor', 'Temp_D', 'REAL')
+    AddColumn('HTSensor', 'Hum_Relay_High', 'INT')
+    AddColumn('HTSensor', 'Hum_Relay_Low', 'INT')
+    AddColumn('HTSensor', 'Hum_OR', 'INT')
+    AddColumn('HTSensor', 'Hum_Set', 'REAL')
+    AddColumn('HTSensor', 'Hum_Set_Direction', 'INT')
+    AddColumn('HTSensor', 'Hum_Period', 'INT')
+    AddColumn('HTSensor', 'Hum_P', 'REAL')
+    AddColumn('HTSensor', 'Hum_I', 'REAL')
+    AddColumn('HTSensor', 'Hum_D', 'REAL')
+
+    AddTable('HTSensorPreset')
+    AddColumn('HTSensorPreset', 'Name', 'TEXT')
+    AddColumn('HTSensorPreset', 'Pin', 'INT')
+    AddColumn('HTSensorPreset', 'Device', 'TEXT')
+    AddColumn('HTSensorPreset', 'Period', 'INT')
+    AddColumn('HTSensorPreset', 'Pre_Measure_Relay', 'INT')
+    AddColumn('HTSensorPreset', 'Pre_Measure_Dur', 'INT')
+    AddColumn('HTSensorPreset', 'Activated', 'INT')
+    AddColumn('HTSensorPreset', 'Graph', 'INT')
+    AddColumn('HTSensorPreset', 'Temp_Relay_High', 'INT')
+    AddColumn('HTSensorPreset', 'Temp_Relay_Low', 'INT')
+    AddColumn('HTSensorPreset', 'Temp_Set', 'REAL')
+    AddColumn('HTSensorPreset', 'Temp_Set_Direction', 'INT')
+    AddColumn('HTSensorPreset', 'Temp_Period', 'INT')
+    AddColumn('HTSensorPreset', 'Temp_P', 'REAL')
+    AddColumn('HTSensorPreset', 'Temp_I', 'REAL')
+    AddColumn('HTSensorPreset', 'Temp_D', 'REAL')
+    AddColumn('HTSensorPreset', 'Hum_Relay_High', 'INT')
+    AddColumn('HTSensorPreset', 'Hum_Relay_Low', 'INT')
+    AddColumn('HTSensorPreset', 'Hum_Set', 'REAL')
+    AddColumn('HTSensorPreset', 'Hum_Set_Direction', 'INT')
+    AddColumn('HTSensorPreset', 'Hum_Period', 'INT')
+    AddColumn('HTSensorPreset', 'Hum_P', 'REAL')
+    AddColumn('HTSensorPreset', 'Hum_I', 'REAL')
+    AddColumn('HTSensorPreset', 'Hum_D', 'REAL')
+
+    AddTable('CO2Sensor')
+    AddColumn('CO2Sensor', 'Name', 'TEXT')
+    AddColumn('CO2Sensor', 'Pin', 'INT')
+    AddColumn('CO2Sensor', 'Device', 'TEXT')
+    AddColumn('CO2Sensor', 'Period', 'INT')
+    AddColumn('CO2Sensor', 'Pre_Measure_Relay', 'INT')
+    AddColumn('CO2Sensor', 'Pre_Measure_Dur', 'INT')
+    AddColumn('CO2Sensor', 'Activated', 'INT')
+    AddColumn('CO2Sensor', 'Graph', 'INT')
+    AddColumn('CO2Sensor', 'CO2_Relay_High', 'INT')
+    AddColumn('CO2Sensor', 'CO2_Relay_Low', 'INT')
+    AddColumn('CO2Sensor', 'CO2_OR', 'INT')
+    AddColumn('CO2Sensor', 'CO2_Set', 'REAL')
+    AddColumn('CO2Sensor', 'CO2_Set_Direction', 'INT')
+    AddColumn('CO2Sensor', 'CO2_Period', 'INT')
+    AddColumn('CO2Sensor', 'CO2_P', 'REAL')
+    AddColumn('CO2Sensor', 'CO2_I', 'REAL')
+    AddColumn('CO2Sensor', 'CO2_D', 'REAL')
+
+    AddTable('CO2SensorPreset')
+    AddColumn('CO2SensorPreset', 'Name', 'TEXT')
+    AddColumn('CO2SensorPreset', 'Pin', 'INT')
+    AddColumn('CO2SensorPreset', 'Device', 'TEXT')
+    AddColumn('CO2SensorPreset', 'Period', 'INT')
+    AddColumn('CO2SensorPreset', 'Pre_Measure_Relay', 'INT')
+    AddColumn('CO2SensorPreset', 'Pre_Measure_Dur', 'INT')
+    AddColumn('CO2SensorPreset', 'Activated', 'INT')
+    AddColumn('CO2SensorPreset', 'Graph', 'INT')
+    AddColumn('CO2SensorPreset', 'CO2_Relay_High', 'INT')
+    AddColumn('CO2SensorPreset', 'CO2_Relay_Low', 'INT')
+    AddColumn('CO2SensorPreset', 'CO2_Set', 'REAL')
+    AddColumn('CO2SensorPreset', 'CO2_Set_Direction', 'INT')
+    AddColumn('CO2SensorPreset', 'CO2_Period', 'INT')
+    AddColumn('CO2SensorPreset', 'CO2_P', 'REAL')
+    AddColumn('CO2SensorPreset', 'CO2_I', 'REAL')
+    AddColumn('CO2SensorPreset', 'CO2_D', 'REAL')
+
+    AddTable('Timers')
+    AddColumn('Timers', 'Name', 'TEXT')
+    AddColumn('Timers', 'Relay', 'INT')
+    AddColumn('Timers', 'State', 'INT')
+    AddColumn('Timers', 'DurationOn', 'INT')
+    AddColumn('Timers', 'DurationOff', 'INT')
+       
+    AddTable('SMTP')
+    AddColumn('SMTP', 'Host', 'TEXT')
+    AddColumn('SMTP', 'SSL', 'INT')
+    AddColumn('SMTP', 'Port', 'INT')
+    AddColumn('SMTP', 'User', 'TEXT')
+    AddColumn('SMTP', 'Pass', 'TEXT')
+    AddColumn('SMTP', 'Email_From', 'TEXT')
+    AddColumn('SMTP', 'Email_To', 'TEXT')
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("INSERT INTO SMTP VALUES('smtp.gmail.com', 1, 587, 'email@gmail.com', 'password', 'me@gmail.com', 'you@gmail.com')")
-    cur.execute("INSERT INTO CameraStill VALUES(0, 1, 1, '')")
-    cur.execute("INSERT INTO CameraStream VALUES(0, '')")
-    cur.execute("INSERT INTO CameraTimelapse VALUES(0, '/var/www/mycodo/camera-timelapse', 'Timelapse-', 1, 1, '')")
-    query = "INSERT INTO Misc VALUES(%s, 0, 300)" % db_version
-    cur.execute(query)
+    cur.execute("INSERT OR IGNORE INTO SMTP VALUES('0', 'smtp.gmail.com', 1, 587, 'email@gmail.com', 'password', 'me@gmail.com', 'you@gmail.com')")
+    conn.commit()
+    cur.close()
+    ModNullValue('SMTP', 'Host', 'smtp.gmail.com')
+    ModNullValue('SMTP', 'SSL', 1)
+    ModNullValue('SMTP', 'Port', 587)
+    ModNullValue('SMTP', 'User', 'email@gmail.com')
+    ModNullValue('SMTP', 'Pass', 'password')
+    ModNullValue('SMTP', 'Email_From', 'me@gmail.com')
+    ModNullValue('SMTP', 'Email_To', 'you@gmail.com')
+
+    AddTable('CameraStill')
+    AddColumn('CameraStill', 'Relay', 'INT')
+    AddColumn('CameraStill', 'Timestamp', 'INT')
+    AddColumn('CameraStill', 'Display_Last', 'INT')
+    AddColumn('CameraStill', 'Extra_Parameters', 'TEXT')
+    conn = sqlite3.connect(sql_database_mycodo)
+    cur = conn.cursor()
+    cur.execute("INSERT OR IGNORE INTO CameraStill VALUES('0', 0, 1, 1, '')")
+    conn.commit()
+    cur.close()
+    ModNullValue('CameraStill', 'Relay', 0)
+    ModNullValue('CameraStill', 'Timestamp', 1)
+    ModNullValue('CameraStill', 'Display_Last', 1)
+    ModNullValue('CameraStill', 'Extra_Parameters', '')
+
+    AddTable('CameraStream')
+    AddColumn('CameraStream', 'Relay', 'INT')
+    AddColumn('CameraStream', 'Extra_Parameters', 'TEXT')
+    conn = sqlite3.connect(sql_database_mycodo)
+    cur = conn.cursor()
+    cur.execute("INSERT OR IGNORE INTO CameraStream VALUES('0', 0, '')")
+    conn.commit()
+    cur.close()
+    ModNullValue('CameraStream', 'Relay', 0)
+    ModNullValue('CameraStream', 'Extra_Parameters', '')
+
+    AddTable('CameraTimelapse')
+    AddColumn('CameraTimelapse', 'Relay', 'INT')
+    AddColumn('CameraTimelapse', 'Path', 'TEXT')
+    AddColumn('CameraTimelapse', 'Prefix', 'TEXT')
+    AddColumn('CameraTimelapse', 'File_Timestamp', 'INT')
+    AddColumn('CameraTimelapse', 'Display_Last', 'INT')
+    AddColumn('CameraTimelapse', 'Extra_Parameters', 'TEXT')
+    conn = sqlite3.connect(sql_database_mycodo)
+    cur = conn.cursor()
+    cur.execute("INSERT OR IGNORE INTO CameraTimelapse VALUES('0', 0, '/var/www/mycodo/camera-timelapse', 'Timelapse-', 1, 1, '')")
+    conn.commit()
+    cur.close()
+    ModNullValue('CameraTimelapse', 'Relay', 0)
+    ModNullValue('CameraTimelapse', 'Path', '/var/www/mycodo/camera-timelapse')
+    ModNullValue('CameraTimelapse', 'Prefix', 'Timelapse-')
+    ModNullValue('CameraTimelapse', 'File_Timestamp', 1)
+    ModNullValue('CameraTimelapse', 'Display_Last', 1)
+    ModNullValue('CameraTimelapse', 'Extra_Parameters', '')
+
+    AddTable('Misc')
+    AddColumn('Misc', 'Database_Version', 'INT')
+    AddColumn('Misc', 'Dismiss_Notification', 'INT')
+    AddColumn('Misc', 'Refresh_Time', 'INT')
+    conn = sqlite3.connect(sql_database_mycodo)
+    cur = conn.cursor()
+    cur.execute("INSERT OR IGNORE INTO Misc VALUES('0', %s, 0, 300)" % db_version)
+    conn.commit()
+    cur.close()
+    ModNullValue('Misc', 'Database_Version', db_version)
+    ModNullValue('Misc', 'Dismiss_Notification', 0)
+    ModNullValue('Misc', 'Refresh_Time', 300)
+
+
+def AddTable(table):
+    conn = sqlite3.connect(sql_database_mycodo)
+    cur = conn.cursor()
+    cur.execute("CREATE TABLE IF NOT EXISTS %s (Id TEXT UNIQUE)" % table)
+    cur.close()
+
+
+def AddColumn(table, column, type):
+    conn = sqlite3.connect(sql_database_mycodo)
+    cur = conn.cursor() 
+    try:
+        cur.execute("ALTER TABLE %s ADD COLUMN %s %s" % (table, column, type))
+    except:
+        pass # Table does exist
+    else:
+        pass # Table doesn't exist
+    cur.close()
+
+
+def ModNullValue(table, name, value):
+    conn = sqlite3.connect(sql_database_mycodo)
+    cur = conn.cursor()
+    if isinstance(value, basestring):
+        cur.execute("UPDATE %s SET %s='%s' WHERE %s IS NULL" % (table, name, value, name))
+    else:
+        cur.execute("UPDATE %s SET %s=%s WHERE %s IS NULL" % (table, name, value, name))
     conn.commit()
     cur.close()
 
@@ -488,6 +560,7 @@ def pass_length_min(pw):
     'Password must be at least 6 characters\n'
     return len(pw) >= 6
 
+
 def test_password(pw, tests=[pass_length_min]):
     for test in tests:
         if not test(pw):
@@ -500,13 +573,16 @@ def characters(un):
     'User name must be only letters and numbers\n'
     return re.match("^[A-Za-z0-9_-]+$", un)
 
+
 def user_length_min(un):
     'Password must be at least 2 characters\n'
     return len(un) >= 2
 
+
 def user_length_max(un):
     'Password cannot be more than 64 characters\n'
     return len(un) <= 64
+
 
 def test_username(un, tests=[characters, user_length_min, user_length_max]):
     for test in tests:
@@ -548,151 +624,23 @@ def query_yes_no(question, default="yes"):
             sys.stdout.write("Please respond with 'y' or 'n').\n")
 
 
-
-
-#
-#
-# Old code (may be used)
-#
-# 
-
-def add_columns(table, variable, value):
-    #print "Add to Table: %s Variable: %s Value: %s" % (table, variable, value)
-    conn = sqlite3.connect(sql_database_mycodo)
-    cur = conn.cursor()
-    if represents_int(value) or represents_float(value):
-        query = "INSERT INTO %s (%s) VALUES ( '%s' )" % (table, variable, value)
+def db_exists_user(db):
+    if os.path.isfile(db):
+        return 1
     else:
-        query = "INSERT INTO %s (%s) VALUES ( %s )" % (table, variable, value)
-    cur.execute(query)
-    conn.commit()
-    cur.close()
+        print 'database %s not found' % db
+        sys.exit(0)
 
-# Print all values in all tables
-def view_columns():
-    conn = sqlite3.connect(sql_database_mycodo)
-    cur = conn.cursor()
 
-    cur.execute('SELECT Id, Name, Pin, Trigger FROM Relays')
-    print "Table: Relays"
-    print "Id Name Pin Trigger"
-    for row in cur :
-        print "%s %s %s %s" % (row[0], row[1], row[2], row[3])
-
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, Temp_Relay, Temp_OR, Temp_Set, Temp_P, Temp_I, Temp_D, Hum_Relay, Hum_OR, Hum_Set, Hum_P, Hum_I, Hum_D FROM HTSensor')
-    print "\nTable: HTSensor"
-    print "Id Name Pin Device Period Activated Graph Temp_Relay Temp_OR Temp_Set Temp_P Temp_I Temp_D Hum_Relay Hum_OR Hum_Set Hum_P Hum_I Hum_D"
-    for row in cur :
-        print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18])
-
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, CO2_Relay, CO2_OR, CO2_Set, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
-    print "\nTable: CO2Sensor"
-    print "Id Name Pin Device Period Activated Graph CO2_Relay CO2_OR CO2_Set CO2_P CO2_I CO2_D"
-    for row in cur :
-        print "%s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12])
-
-    cur.execute('SELECT Id, Name, State, Relay, DurationOn, DurationOff FROM Timers ')
-    print "\nTable: Timers"
-    print "Id Name State Relay DurationOn DurationOff"
-    for row in cur :
-        print "%s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5])
-
-    cur.execute('SELECT Relays, HTSensors, CO2Sensors, Timers FROM Numbers ')
-    print "\nTable: Numbers"
-    print "Relays HTSensors CO2Sensors Timers"
-    for row in cur :
-        print "%s %s %s %s" % (row[0], row[1], row[2], row[3])
-
-    cur.execute('SELECT Host, SSL, Port, User, Pass, Email_From, Email_To FROM SMTP ')
-    print "\nTable: SMTP"
-    print "Host SSL Port User Pass Email_From Email_To"
-    for row in cur :
-        print "%s %s %s %s %s %s %s\n" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6])
-
-    cur.execute('SELECT Camera_Relay FROM Misc')
-    print "\nTable: Misc"
-    print "Camera_Relay"
-    for row in cur :
-        print "%s\n" % row[0]
-
-    cur.close()
-
-def delete_all_rows():
-    print "Delete All Rows"
-    conn = sqlite3.connect(sql_database_mycodo)
-    cur = conn.cursor()
-    cur.execute('DELETE FROM Relays ')
-    cur.execute('DELETE FROM HTSensor ')
-    cur.execute('DELETE FROM CO2Sensor ')
-    cur.execute('DELETE FROM Timers ')
-    cur.execute('DELETE FROM Numbers ')
-    cur.execute('DELETE FROM SMTP ')
-    conn.commit()
-    cur.close()
-
-def delete_row(table, Id):
-    print "Delete Row: %s" % row
-    conn = sqlite3.connect(sql_database_mycodo)
-    cur = conn.cursor()
-    query = "DELETE FROM %s WHERE Id = '%s' " % (table, Id)
-    cur.execute(query)
-    conn.commit()
-    cur.close()
-
-def update_value(table, Id, variable, value):
-    print "Update Table: %s Id: %s Variable: %s Value: %s" % (
-        table, Id, variable, value)
-    conn = sqlite3.connect(sql_database_mycodo)
-    cur = conn.cursor()
-
-    if Id is '0':
-        if represents_int(value) or represents_float(value):
-            query = "UPDATE %s SET %s=%s" % (
-                table, variable, value)
-        else:
-            query = "UPDATE %s SET %s='%s'" % (
-                table, variable, value)
+def db_exists_mycodo(db):
+    if os.path.isfile(db):
+        return 1
     else:
-        if represents_int(value) or represents_float(value):
-            query = "UPDATE %s SET %s=%s WHERE Id=%s" % (
-                table, variable, value, Id)
-        else:
-            query = "UPDATE %s SET %s='%s' WHERE Id=%s" % (
-                table, variable, value, Id)
-    cur.execute(query)
-    conn.commit()
-    cur.close()
+        print 'database %s not found' % db
+        sys.exit(0)
 
-# Check if string represents an integer column
-def represents_int(s):
-    try:
-        int(s)
-        return True
-    except ValueError:
-        return False
-
-# Check if string represents a float column
-def represents_float(s):
-    try:
-        float(s)
-        return True
-    except ValueError:
-        return False
-
-#set_global_variables(0)
-#start_time = time.time()
-
-database = None
-
-if len(sys.argv) == 3:
-    database = sys.argv[2]
-elif len(sys.argv) > 3:
-    print 'Too Many arguments'
-    sys.exit(0)
-
-sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
-sql_database_user = '/var/www/mycodo/config/users.db'
 
 menu()
-#elapsed_time = time.time() - start_time
-#print '\nScript Completed in %.2f seconds' % elapsed_time
+
+elapsed_time = time.time() - start_time
+print 'Completed database creation/update in %.2f seconds' % elapsed_time
