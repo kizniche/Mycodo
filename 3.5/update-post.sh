@@ -42,22 +42,15 @@ PDIR="$( dirname "$DIR" )"
 cd $DIR
 
 # Getting my data
-LIST=`sqlite3 $DATABASE "SELECT Database_Version FROM Misc"`;
+db_version=`sqlite3 $DATABASE "PRAGMA user_version;"`;
 
-if [ -z "$LIST" ]; then
+if [ -z "$db_version" ]; then
 	printf "Missing database version, recreating database\n";
 	# Recreate mycodo SQLite database
 	rm -rf $DIR/config/mycodo.db
 	$DIR/setup-database.py -i update
 else
-	# For each row
-	for ROW in $LIST; do
-		# Parsing data (sqlite3 returns a pipe separated string)
-		db_version=`echo $ROW | awk '{split($0,a,"|"); print a[1]}'`
-		
-		# Printing my data
-		printf "SQLite Database version: $db_version\n";
-	done
+	printf "SQLite Database version: $db_version\n";
 fi
 
 # Check database version against known database versions

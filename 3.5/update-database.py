@@ -26,7 +26,7 @@
 sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
 sql_database_user = '/var/www/mycodo/config/users.db'
 
-db_version = 1
+db_version = 2
 
 import getopt
 import getpass
@@ -407,17 +407,22 @@ def MycodoDatabase():
     ModNullValue('CameraTimelapse', 'Extra_Parameters', '')
 
     AddTable('Misc')
-    AddColumn('Misc', 'Database_Version', 'INT')
     AddColumn('Misc', 'Dismiss_Notification', 'INT')
     AddColumn('Misc', 'Refresh_Time', 'INT')
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("INSERT OR IGNORE INTO Misc VALUES('0', %s, 0, 300)" % db_version)
+    cur.execute("INSERT OR IGNORE INTO Misc VALUES('0', 0, 300)")
     conn.commit()
     cur.close()
-    ModNullValue('Misc', 'Database_Version', db_version)
     ModNullValue('Misc', 'Dismiss_Notification', 0)
     ModNullValue('Misc', 'Refresh_Time', 300)
+
+    # Update database version
+    conn = sqlite3.connect(sql_database_mycodo)
+    cur = conn.cursor()
+    cur.execute("PRAGMA user_version = %s;" % db_version)
+    conn.commit()
+    cur.close()
 
 
 def AddTable(table):
