@@ -58,7 +58,7 @@ def usage():
     print '           Returns a reading from the temperature and humidity sensor on GPIO pin'
     print '           Device options: DS18B20'
     print '        --sqlreload relay'
-    print '           Reload the SQLite database, initialize GPIO if relay=1-8'
+    print '           Reload the SQLite database, initialize GPIO of relay if relay != -1'
     print '    -s, --status'
     print '           Return the status of the server'
     print '    -t, --terminate'
@@ -181,20 +181,17 @@ def menu():
             print "%s [Remote Command] Daemon Returned: Temperature: %s°C" % (Timestamp(), round(temperature,2))
             sys.exit(0)
         elif opt == "--sqlreload":
-            if int(float(sys.argv[2])):
-                if int(float(sys.argv[2])) > 8:
-                    print "Error: Relay selection out of range. Must be 1-8."
+            if int(float(sys.argv[2])) != -1:
+                print "%s [Remote command] Reload SQLite database and initialize relay %s: Server returned:" % (
+                    Timestamp(), int(float(sys.argv[2]))),
+                if c.root.SQLReload(int(float(sys.argv[2]))) == 1:
+                    print "Success"
                 else:
-                    print "%s [Remote command] Reload SQLite database and initialize relay %s: Server returned:" % (
-                        Timestamp(), int(float(sys.argv[2]))),
-                    if c.root.SQLReload(int(float(sys.argv[2]))) == 1:
-                        print "Success"
-                    else:
-                        print "Fail"
+                    print "Fail"
             else:
                 print "%s [Remote command] Reload SQLite database: Server returned:" % (
                     Timestamp()),
-                if c.root.SQLReload(0) == 1:
+                if c.root.SQLReload(-1) == 1:
                     print "Success"
                 else:
                     print "Fail"
