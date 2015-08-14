@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.64";
+$version = "3.5.65";
 
 ######### Start Edit Configure #########
 
@@ -503,7 +503,7 @@ if (isset($output_error)) {
             ?>
            
 
-            <div style="width: 54em; padding-left: 1.5em; padding-top: 2em;">
+            <div style="width: 54em; padding-left: 0.5em; padding-top: 2em;">
                 
                 <?php if (count($sensor_t_id) > 0) { ?>
                 <div class="sensor-title">Temperature Sensors</div>
@@ -511,7 +511,7 @@ if (isset($output_error)) {
                     <?php
                     for ($i = 0; $i < count($sensor_t_id); $i++) {
                     ?>
-                    <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
+                    <table class="sensor" style="border: 0.7em solid #EBEBEB; border-top: 0;">
                         <tr class="shade">
                             <td>T Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_t_id[$i]; ?>)</span></td>
                             <td>Sensor<br>Name</td>
@@ -524,9 +524,11 @@ if (isset($output_error)) {
                             }
                             ?>
                             <td>Log<br>Interval</td>
-                            <td>Activate<br>Logging</td>
-                            <td>Activate<br>Graphing</td>
-                            <td colspan=3 rowspan=2 style="padding: 0 1.5em;">
+                            <td>Pre<br>Relay</td>
+                            <td>Pre<br>Duration</td>
+                            <td>Log</td>
+                            <td>Graph</td>
+                            <td rowspan=2 style="padding: 0 0.5em;">
                                 <div style="padding: 0.2em 0">
                                     Presets: <select style="width: 9em;" name="sensort<?php echo $i; ?>preset">
                                         <option value="default">default</option>
@@ -579,12 +581,20 @@ if (isset($output_error)) {
                                 <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_t_period[$i]; ?>" name="sensort<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/> sec
                             </td>
                             <td>
-                                <input type="checkbox" name="sensort<?php echo $i; ?>activated" value="1" <?php if ($sensor_t_activated[$i] == 1) echo 'checked'; ?>>
+                                <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_t_premeasure_relay[$i]; ?>" maxlength=2 size=1 name="sensort<?php echo $i; ?>premeasure_relay" title="This is the relay that will turn on prior to the sensor measurement, for the duration specified by Pre Duration (0 to disable)"/>
                             </td>
                             <td>
-                                <input type="checkbox" name="sensort<?php echo $i; ?>graph" value="1" <?php if ($sensor_t_graph[$i] == 1) echo 'checked'; ?>>
+                                <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_t_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensort<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relaywill run before the sensor measurement is obtained"/> sec
+                            </td>
+                            <td>
+                                <input type="checkbox" title="Enable this sensor to record measurements to the log file?" name="sensort<?php echo $i; ?>activated" value="1" <?php if ($sensor_t_activated[$i] == 1) echo 'checked'; ?>>
+                            </td>
+                            <td>
+                                <input type="checkbox" title="Enable graphs to be generated from the sensor log data?" name="sensort<?php echo $i; ?>graph" value="1" <?php if ($sensor_t_graph[$i] == 1) echo 'checked'; ?>>
                             </td>
                         </tr>
+                    </table>
+                    <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
                         <tr class="shade">
                             <td style="text-align: left;">Regulation</td>
                             <td>Current<br>State</td>
@@ -664,16 +674,18 @@ if (isset($output_error)) {
                     <?php
                     for ($i = 0; $i < count($sensor_ht_id); $i++) {
                     ?>
-                    <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
+                    <table class="sensor" style="border: 0.7em solid #EBEBEB; border-top: 0;">
                         <tr class="shade">
                             <td>HT Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_ht_id[$i]; ?>)</span></td>
                             <td>Sensor<br>Name</td>
                             <td>Sensor<br>Device</td>
                             <td>GPIO<br>Pin</td>
                             <td>Log<br>Interval</td>
-                            <td>Activate<br>Logging</td>
-                            <td>Activate<br>Graphing</td>
-                            <td colspan=3 rowspan=2 style="padding: 0 1.5em;">
+                            <td>Pre<br>Relay</td>
+                            <td>Pre<br>Duration</td>
+                            <td>Log</td>
+                            <td>Graph</td>
+                            <td rowspan=2 style="padding: 0 0.5em;">
                                 <div style="padding: 0.2em 0">
                                     Presets: <select style="width: 9em;" name="sensorht<?php echo $i; ?>preset">
                                         <option value="default">default</option>
@@ -727,12 +739,20 @@ if (isset($output_error)) {
                                 <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_ht_period[$i]; ?>" name="sensorht<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/> sec
                             </td>
                             <td>
-                                <input type="checkbox" name="sensorht<?php echo $i; ?>activated" value="1" <?php if ($sensor_ht_activated[$i] == 1) echo 'checked'; ?>>
+                                <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_ht_premeasure_relay[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>premeasure_relay" title="This is the relay that will turn on prior to the sensor measurement, for the duration specified by Pre Duration (0 to disable)"/>
                             </td>
                             <td>
-                                <input type="checkbox" name="sensorht<?php echo $i; ?>graph" value="1" <?php if ($sensor_ht_graph[$i] == 1) echo 'checked'; ?>>
+                                <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_ht_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relaywill run before the sensor measurement is obtained"/> sec
+                            </td>
+                            <td>
+                                <input type="checkbox" title="Enable this sensor to record measurements to the log file?" name="sensorht<?php echo $i; ?>activated" value="1" <?php if ($sensor_ht_activated[$i] == 1) echo 'checked'; ?>>
+                            </td>
+                            <td>
+                                <input type="checkbox" title="Enable graphs to be generated from the sensor log data?" name="sensorht<?php echo $i; ?>graph" value="1" <?php if ($sensor_ht_graph[$i] == 1) echo 'checked'; ?>>
                             </td>
                         </tr>
+                    </table>
+                    <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
                         <tr class="shade">
                             <td style="text-align: left;">Regulation</td>
                             <td>Current<br>State</td>
@@ -863,16 +883,18 @@ if (isset($output_error)) {
                     <?php
                     for ($i = 0; $i < count($sensor_co2_id); $i++) {
                     ?>
-                    <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
+                    <table class="sensor" style="border: 0.7em solid #EBEBEB; border-top: 0;">
                         <tr class="shade">
                             <td>CO<sub>2</sub> Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_co2_id[$i]; ?>)</span></td>
                             <td>Sensor<br>Name</td>
                             <td>Sensor<br>Device</td>
                             <td>GPIO<br>Pin</td>
                             <td>Log<br>Interval</td>
-                            <td>Activate<br>Logging</td>
-                            <td>Activate<br>Graphing</td>
-                            <td colspan=3 rowspan=2 style="padding: 0 1.5em;">
+                            <td>Pre<br>Relay</td>
+                            <td>Pre<br>Duration</td>
+                            <td>Log</td>
+                            <td>Graph</td>
+                            <td rowspan=2 style="padding: 0 0.5em;">
                                 <div style="padding: 0.2em 0">
                                     Presets: <select style="width: 9em;" name="sensorco2<?php echo $i; ?>preset">
                                         <option value="default">default</option>
@@ -928,12 +950,20 @@ if (isset($output_error)) {
                                 <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_co2_period[$i]; ?>" name="sensorco2<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/> sec
                             </td>
                             <td>
-                                <input type="checkbox" name="sensorco2<?php echo $i; ?>activated" value="1" <?php if ($sensor_co2_activated[$i] == 1) echo 'checked'; ?>>
+                                <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_co2_premeasure_relay[$i]; ?>" maxlength=2 size=1 name="sensorco2<?php echo $i; ?>premeasure_relay" title="This is the relay that will turn on prior to the sensor measurement, for the duration specified by Pre Duration (0 to disable)"/>
                             </td>
                             <td>
-                                <input type="checkbox" name="sensorco2<?php echo $i; ?>graph" value="1" <?php if ($sensor_co2_graph[$i] == 1) echo 'checked'; ?>>
+                                <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_co2_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensorco2<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relaywill run before the sensor measurement is obtained"/> sec
+                            </td>
+                            <td>
+                                <input type="checkbox" title="Enable this sensor to record measurements to the log file?" name="sensorco2<?php echo $i; ?>activated" value="1" <?php if ($sensor_co2_activated[$i] == 1) echo 'checked'; ?>>
+                            </td>
+                            <td>
+                                <input type="checkbox" title="Enable graphs to be generated from the sensor log data?" name="sensorco2<?php echo $i; ?>graph" value="1" <?php if ($sensor_co2_graph[$i] == 1) echo 'checked'; ?>>
                             </td>
                         </tr>
+                    </table>
+                    <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
                         <tr class="shade">
                             <td style="text-align: left;">Regulation</td>
                             <td>Current<br>State</td>

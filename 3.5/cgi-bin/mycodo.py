@@ -87,6 +87,8 @@ sensor_t_name = []
 sensor_t_device = []
 sensor_t_pin = []
 sensor_t_period = []
+sensor_t_premeasure_relay = []
+sensor_t_premeasure_dur = []
 sensor_t_activated = []
 sensor_t_graph = []
 sensor_t_read_temp_c = []
@@ -111,6 +113,8 @@ sensor_ht_name = []
 sensor_ht_device = []
 sensor_ht_pin = []
 sensor_ht_period = []
+sensor_ht_premeasure_relay = []
+sensor_ht_premeasure_dur = []
 sensor_ht_activated = []
 sensor_ht_graph = []
 sensor_ht_read_temp_c = []
@@ -148,6 +152,8 @@ sensor_co2_name = []
 sensor_co2_device = []
 sensor_co2_pin = []
 sensor_co2_period = []
+sensor_co2_premeasure_relay = []
+sensor_co2_premeasure_dur = []
 sensor_co2_activated = []
 sensor_co2_graph = []
 sensor_co2_read_co2 = []
@@ -1167,7 +1173,7 @@ def co2_monitor(ThreadName, sensor):
                             args = (pid_co2_relay_high[sensor], round(PIDCO2,2), sensor,))
                         rod.start()
 
-                    timerTemp = int(time.time()) + int(abs(PIDCO2)) + pid_co2_period[sensor]
+                    timerCO2 = int(time.time()) + int(abs(PIDCO2)) + pid_co2_period[sensor]
 
                 else:
                     logging.warning("[PID CO2-%s] Could not read CO2 sensor, not updating PID", sensor+1)
@@ -1248,6 +1254,15 @@ def read_t_sensor(sensor):
     tempc = None
     tempc2 = None
     t_read_tries = 5
+
+    timerT = 0
+    if (sensor_t_premeasure_relay[sensor] and sensor_t_premeasure_dur[sensor]):
+        timerT = int(time.time()) + sensor_t_premeasure_dur[sensor]
+        rod = threading.Thread(target = relay_on_duration,
+            args = (sensor_t_premeasure_relay[sensor], sensor_t_premeasure_dur[sensor], sensor,))
+        rod.start()
+        while ((timerT > int(time.time())) and client_que != 'TerminateServer'):
+            time.sleep(0.25)
 
     for r in range(0, t_read_tries): # Multiple attempts to get similar consecutive readings
         logging.debug("[Read T Sensor-%s] Taking first Temperature/Humidity reading", sensor+1)
@@ -1371,6 +1386,15 @@ def read_ht_sensor(sensor):
     humidity2 = None
     ht_read_tries = 5
 
+    timerHT = 0
+    if (sensor_ht_premeasure_relay[sensor] and sensor_ht_premeasure_dur[sensor]):
+        timerHT = int(time.time()) + sensor_ht_premeasure_dur[sensor]
+        rod = threading.Thread(target = relay_on_duration,
+            args = (sensor_ht_premeasure_relay[sensor], sensor_ht_premeasure_dur[sensor], sensor,))
+        rod.start()
+        while ((timerHT > int(time.time())) and client_que != 'TerminateServer'):
+            time.sleep(0.25)
+
     for r in range(0, ht_read_tries): # Multiple attempts to get similar consecutive readings
         logging.debug("[Read HT Sensor-%s] Taking first Temperature/Humidity reading", sensor+1)
 
@@ -1470,6 +1494,15 @@ def read_co2_sensor(sensor):
     co2 = None
     co22 = None
     co2_read_tries = 5
+
+    timerCO2 = 0
+    if (sensor_co2_premeasure_relay[sensor] and sensor_co2_premeasure_dur[sensor]):
+        timerCO2 = int(time.time()) + sensor_co2_premeasure_dur[sensor]
+        rod = threading.Thread(target = relay_on_duration,
+            args = (sensor_co2_premeasure_relay[sensor], sensor_co2_premeasure_dur[sensor], sensor,))
+        rod.start()
+        while ((timerCO2 > int(time.time())) and client_que != 'TerminateServer'):
+            time.sleep(0.25)
 
     if (sensor_co2_device[sensor] != 'K30'):
         logging.warning("[Read CO2 Sensor-%s] Cannot read CO2 from an unknown device!", sensor+1)
@@ -1572,6 +1605,8 @@ def read_sql():
     global sensor_t_device
     global sensor_t_pin
     global sensor_t_period
+    global sensor_t_premeasure_relay
+    global sensor_t_premeasure_dur
     global sensor_t_activated
     global sensor_t_graph
     global pid_t_temp_relay_high
@@ -1593,6 +1628,8 @@ def read_sql():
     sensor_t_device = []
     sensor_t_pin = []
     sensor_t_period = []
+    sensor_t_premeasure_relay = []
+    sensor_t_premeasure_dur = []
     sensor_t_activated = []
     sensor_t_graph = []
     pid_t_temp_relay_high = []
@@ -1612,6 +1649,8 @@ def read_sql():
     global sensor_ht_device
     global sensor_ht_pin
     global sensor_ht_period
+    global sensor_ht_premeasure_relay
+    global sensor_ht_premeasure_dur
     global sensor_ht_activated
     global sensor_ht_graph
     global pid_ht_temp_relay_high
@@ -1645,6 +1684,8 @@ def read_sql():
     sensor_ht_device = []
     sensor_ht_pin = []
     sensor_ht_period = []
+    sensor_ht_premeasure_relay = []
+    sensor_ht_premeasure_dur = []
     sensor_ht_activated = []
     sensor_ht_graph = []
     pid_ht_temp_relay_high = []
@@ -1675,6 +1716,8 @@ def read_sql():
     global sensor_co2_device
     global sensor_co2_pin
     global sensor_co2_period
+    global sensor_co2_premeasure_relay
+    global sensor_co2_premeasure_dur
     global sensor_co2_activated
     global sensor_co2_graph
     global pid_co2_relay_high
@@ -1695,6 +1738,8 @@ def read_sql():
     sensor_co2_device = []
     sensor_co2_pin = []
     sensor_co2_period = []
+    sensor_co2_premeasure_relay = []
+    sensor_co2_premeasure_dur = []
     sensor_co2_activated = []
     sensor_co2_graph = []
     pid_co2_relay_high = []
@@ -1803,90 +1848,96 @@ def read_sql():
         relay_start_state.append(row[4])
         count += 1
 
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, Temp_Relay_High, Temp_Relay_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D FROM TSensor')
+    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Temp_Relay_High, Temp_Relay_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D FROM TSensor')
     if verbose:
         print "Table: TSensor"
     count = 0
     for row in cur :
         if verbose:
-            print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15])
+            print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17])
         sensor_t_id.append(row[0])
         sensor_t_name.append(row[1])
         sensor_t_pin.append(row[2])
         sensor_t_device.append(row[3])
         sensor_t_period.append(row[4])
-        sensor_t_activated.append(row[5])
-        sensor_t_graph.append(row[6])
-        pid_t_temp_relay_high.append(row[7])
-        pid_t_temp_relay_low.append(row[8])
-        pid_t_temp_or.append(row[9])
-        pid_t_temp_set.append(row[10])
-        pid_t_temp_set_dir.append(row[11])
-        pid_t_temp_period.append(row[12])
-        pid_t_temp_p.append(row[13])
-        pid_t_temp_i.append(row[14])
-        pid_t_temp_d.append(row[15])
+        sensor_t_premeasure_relay.append(row[5])
+        sensor_t_premeasure_dur.append(row[6])
+        sensor_t_activated.append(row[7])
+        sensor_t_graph.append(row[8])
+        pid_t_temp_relay_high.append(row[9])
+        pid_t_temp_relay_low.append(row[10])
+        pid_t_temp_or.append(row[11])
+        pid_t_temp_set.append(row[12])
+        pid_t_temp_set_dir.append(row[13])
+        pid_t_temp_period.append(row[14])
+        pid_t_temp_p.append(row[15])
+        pid_t_temp_i.append(row[16])
+        pid_t_temp_d.append(row[17])
         count += 1
 
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, Temp_Relay_High, Temp_Relay_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relay_High, Hum_Relay_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensor')
+    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Temp_Relay_High, Temp_Relay_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relay_High, Hum_Relay_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensor')
     if verbose:
         print "Table: HTSensor"
     count = 0
     for row in cur :
         if verbose:
-            print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19], row[20], row[21], row[22], row[23], row[24])
+            print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19], row[20], row[21], row[22], row[23], row[24], row[25], row[26])
         sensor_ht_id.append(row[0])
         sensor_ht_name.append(row[1])
         sensor_ht_pin.append(row[2])
         sensor_ht_device.append(row[3])
         sensor_ht_period.append(row[4])
-        sensor_ht_activated.append(row[5])
-        sensor_ht_graph.append(row[6])
-        pid_ht_temp_relay_high.append(row[7])
-        pid_ht_temp_relay_low.append(row[8])
-        pid_ht_temp_or.append(row[9])
-        pid_ht_temp_set.append(row[10])
-        pid_ht_temp_set_dir.append(row[11])
-        pid_ht_temp_period.append(row[12])
-        pid_ht_temp_p.append(row[13])
-        pid_ht_temp_i.append(row[14])
-        pid_ht_temp_d.append(row[15])
-        pid_ht_hum_relay_high.append(row[16])
-        pid_ht_hum_relay_low.append(row[17])
-        pid_ht_hum_or.append(row[18])
-        pid_ht_hum_set.append(row[19])
-        pid_ht_hum_set_dir.append(row[20])
-        pid_ht_hum_period.append(row[21])
-        pid_ht_hum_p.append(row[22])
-        pid_ht_hum_i.append(row[23])
-        pid_ht_hum_d.append(row[24])
+        sensor_ht_premeasure_relay.append(row[5])
+        sensor_ht_premeasure_dur.append(row[6])
+        sensor_ht_activated.append(row[7])
+        sensor_ht_graph.append(row[8])
+        pid_ht_temp_relay_high.append(row[9])
+        pid_ht_temp_relay_low.append(row[10])
+        pid_ht_temp_or.append(row[11])
+        pid_ht_temp_set.append(row[12])
+        pid_ht_temp_set_dir.append(row[13])
+        pid_ht_temp_period.append(row[14])
+        pid_ht_temp_p.append(row[15])
+        pid_ht_temp_i.append(row[16])
+        pid_ht_temp_d.append(row[17])
+        pid_ht_hum_relay_high.append(row[18])
+        pid_ht_hum_relay_low.append(row[19])
+        pid_ht_hum_or.append(row[20])
+        pid_ht_hum_set.append(row[21])
+        pid_ht_hum_set_dir.append(row[22])
+        pid_ht_hum_period.append(row[23])
+        pid_ht_hum_p.append(row[24])
+        pid_ht_hum_i.append(row[25])
+        pid_ht_hum_d.append(row[26])
         count += 1
 
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Activated, Graph, CO2_Relay_High, CO2_Relay_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
+    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, CO2_Relay_High, CO2_Relay_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
     if verbose:
         print "Table: CO2Sensor "
     count = 0
     for row in cur:
         if verbose:
-            print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" % (
+            print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" % (
                 row[0], row[1], row[2], row[3], row[4], row[5], row[6],
-                row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15])
+                row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17])
         sensor_co2_id.append(row[0])
         sensor_co2_name.append(row[1])
         sensor_co2_pin.append(row[2])
         sensor_co2_device.append(row[3])
         sensor_co2_period.append(row[4])
-        sensor_co2_activated.append(row[5])
-        sensor_co2_graph.append(row[6])
-        pid_co2_relay_high.append(row[7])
-        pid_co2_relay_low.append(row[8])
-        pid_co2_or.append(row[9])
-        pid_co2_set.append(row[10])
-        pid_co2_set_dir.append(row[11])
-        pid_co2_period.append(row[12])
-        pid_co2_p.append(row[13])
-        pid_co2_i.append(row[14])
-        pid_co2_d.append(row[15])
+        sensor_co2_premeasure_relay.append(row[5])
+        sensor_co2_premeasure_dur.append(row[6])
+        sensor_co2_activated.append(row[7])
+        sensor_co2_graph.append(row[8])
+        pid_co2_relay_high.append(row[9])
+        pid_co2_relay_low.append(row[10])
+        pid_co2_or.append(row[11])
+        pid_co2_set.append(row[12])
+        pid_co2_set_dir.append(row[13])
+        pid_co2_period.append(row[14])
+        pid_co2_p.append(row[15])
+        pid_co2_i.append(row[16])
+        pid_co2_d.append(row[17])
         count += 1
 
     cur.execute('SELECT Id, Name, Relay, State, DurationOn, DurationOff FROM Timers ')

@@ -24,13 +24,43 @@
 #
 #  Contact at kylegabriel.com
 
+DATABASE="/var/www/mycodo/config/mycodo.db"
+
+if [ "$EUID" -ne 0 ]; then
+    printf "Please run as root\n"
+    exit
+fi
+
+if [ ! -f $DATABASE ]; then
+    printf "Database not found: $DATABASE\n"
+    exit 1
+fi
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 PDIR="$( dirname "$DIR" )"
 
 cd $DIR
 
-echo "No additional commands for this update"
+# Getting my data
+LIST=`sqlite3 $DATABASE "SELECT Database_Version FROM Misc"`;
 
-# Update mycodo SQLite database
-# $DIR/setup-database.py -i update
+if [ -z "$LIST" ]; then
+	printf "Missing database version, updating database\n";
+	# Update mycodo SQLite database
+	$DIR/setup-database.py -i update
+else
+	# For each row
+	for ROW in $LIST; do
+		# Parsing data (sqlite3 returns a pipe separated string)
+		db_version=`echo $ROW | awk '{split($0,a,"|"); print a[1]}'`
+		
+		# Printing my data
+		printf "SQLite Database version: $db_version\n";
+	done
+fi
+
+# Check database version against known database versions
+# Perform update based on database version
+if [[ $db_version == "1" ]]; then
+	printf "First version of versioned sqlite database. No update necessary.\n"
+fi

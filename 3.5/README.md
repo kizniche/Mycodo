@@ -32,7 +32,8 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 <a name="progress"></a>
 ## Progress
 
-- [X] System self-updater (updated through the web interface settings tab)
+- [X] Ability to activate a relay for a predefined period before reading a sensor
+- [X] Automated update from github (from Settings in the web interface)
 - [X] Unlimited number of sensor/relays/timers that can be added
 - [X] Add custom Sensor/PID presets (save/load/overwrite/delete)
 - [X] Set desired startup state of relay (on or off)

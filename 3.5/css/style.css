@@ -89,6 +89,21 @@ hr.fade {
     display: inline-block;
 }
 
+.sensor {
+  border-collapse: initial;
+}
+
+table.sensor td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 0.5em 0.3em 0.6em 0.3em;
+}
+
+table.sensor th {
+    vertical-align: middle;
+    padding: 0.3em 0.3em 0.3em 0.3em;
+}
+
 .pid {
   border-collapse: initial;
 }
@@ -96,12 +111,12 @@ hr.fade {
 table.pid td {
     text-align: center;
     vertical-align: middle;
-    padding: 0.5em 0.4em 0.6em 0.4em;
+    padding: 0.5em 0.5em 0.6em 0.5em;
 }
 
 table.pid th {
     vertical-align: middle;
-    padding: 0.3em 0.4em 0.3em 0.4em;
+    padding: 0.3em 0.5em 0.3em 0.5em;
 }
 
 .shade {

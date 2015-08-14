@@ -41,7 +41,7 @@ if (!isset($relay_id)) $relay_id = [];
 
 
 unset($sensor_t_id);
-$results = $db->query('SELECT Id, Name, Pin, Device, Period, Activated, Graph, Temp_Relay_High, Temp_Relay_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D FROM TSensor');
+$results = $db->query('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Temp_Relay_High, Temp_Relay_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D FROM TSensor');
 $count = 0;
 while ($row = $results->fetchArray()) {
     $sensor_t_id[$count] = $row[0];
@@ -49,17 +49,19 @@ while ($row = $results->fetchArray()) {
     $sensor_t_pin[$count] = $row[2];
     $sensor_t_device[$count] = $row[3];
     $sensor_t_period[$count] = $row[4];
-    $sensor_t_activated[$count] = $row[5];
-    $sensor_t_graph[$count] = $row[6];
-    $pid_t_temp_relay_high[$count] = $row[7];
-    $pid_t_temp_relay_low[$count] = $row[8];
-    $pid_t_temp_or[$count] = $row[9];
-    $pid_t_temp_set[$count] = $row[10];
-    $pid_t_temp_set_dir[$count] = $row[11];
-    $pid_t_temp_period[$count] = $row[12];
-    $pid_t_temp_p[$count] = $row[13];
-    $pid_t_temp_i[$count] = $row[14];
-    $pid_t_temp_d[$count] = $row[15];
+    $sensor_t_premeasure_relay[$count] = $row[5];
+    $sensor_t_premeasure_dur[$count] = $row[6];
+    $sensor_t_activated[$count] = $row[7];
+    $sensor_t_graph[$count] = $row[8];
+    $pid_t_temp_relay_high[$count] = $row[9];
+    $pid_t_temp_relay_low[$count] = $row[10];
+    $pid_t_temp_or[$count] = $row[11];
+    $pid_t_temp_set[$count] = $row[12];
+    $pid_t_temp_set_dir[$count] = $row[13];
+    $pid_t_temp_period[$count] = $row[14];
+    $pid_t_temp_p[$count] = $row[15];
+    $pid_t_temp_i[$count] = $row[16];
+    $pid_t_temp_d[$count] = $row[17];
     $count++;
 }
 if (!isset($sensor_t_id)) $sensor_t_id = [];
@@ -67,7 +69,7 @@ if (!isset($sensor_t_graph)) $sensor_t_graph = [];
 
 
 unset($sensor_ht_id);
-$results = $db->query('SELECT Id, Name, Pin, Device, Period, Activated, Graph, Temp_Relay_High, Temp_Relay_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relay_High, Hum_Relay_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensor');
+$results = $db->query('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Temp_Relay_High, Temp_Relay_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relay_High, Hum_Relay_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensor');
 $count = 0;
 while ($row = $results->fetchArray()) {
     $sensor_ht_id[$count] = $row[0];
@@ -75,26 +77,28 @@ while ($row = $results->fetchArray()) {
     $sensor_ht_pin[$count] = $row[2];
     $sensor_ht_device[$count] = $row[3];
     $sensor_ht_period[$count] = $row[4];
-    $sensor_ht_activated[$count] = $row[5];
-    $sensor_ht_graph[$count] = $row[6];
-    $pid_ht_temp_relay_high[$count] = $row[7];
-    $pid_ht_temp_relay_low[$count] = $row[8];
-    $pid_ht_temp_or[$count] = $row[9];
-    $pid_ht_temp_set[$count] = $row[10];
-    $pid_ht_temp_set_dir[$count] = $row[11];
-    $pid_ht_temp_period[$count] = $row[12];
-    $pid_ht_temp_p[$count] = $row[13];
-    $pid_ht_temp_i[$count] = $row[14];
-    $pid_ht_temp_d[$count] = $row[15];
-    $pid_ht_hum_relay_high[$count] = $row[16];
-    $pid_ht_hum_relay_low[$count] = $row[17];
-    $pid_ht_hum_or[$count] = $row[18];
-    $pid_ht_hum_set[$count] = $row[19];
-    $pid_ht_hum_set_dir[$count] = $row[20];
-    $pid_ht_hum_period[$count] = $row[21];
-    $pid_ht_hum_p[$count] = $row[22];
-    $pid_ht_hum_i[$count] = $row[23];
-    $pid_ht_hum_d[$count] = $row[24];
+    $sensor_ht_premeasure_relay[$count] = $row[5];
+    $sensor_ht_premeasure_dur[$count] = $row[6];
+    $sensor_ht_activated[$count] = $row[7];
+    $sensor_ht_graph[$count] = $row[8];
+    $pid_ht_temp_relay_high[$count] = $row[9];
+    $pid_ht_temp_relay_low[$count] = $row[10];
+    $pid_ht_temp_or[$count] = $row[11];
+    $pid_ht_temp_set[$count] = $row[12];
+    $pid_ht_temp_set_dir[$count] = $row[13];
+    $pid_ht_temp_period[$count] = $row[14];
+    $pid_ht_temp_p[$count] = $row[15];
+    $pid_ht_temp_i[$count] = $row[16];
+    $pid_ht_temp_d[$count] = $row[17];
+    $pid_ht_hum_relay_high[$count] = $row[18];
+    $pid_ht_hum_relay_low[$count] = $row[19];
+    $pid_ht_hum_or[$count] = $row[20];
+    $pid_ht_hum_set[$count] = $row[21];
+    $pid_ht_hum_set_dir[$count] = $row[22];
+    $pid_ht_hum_period[$count] = $row[23];
+    $pid_ht_hum_p[$count] = $row[24];
+    $pid_ht_hum_i[$count] = $row[25];
+    $pid_ht_hum_d[$count] = $row[26];
     $count++;
 }
 if (!isset($sensor_ht_id)) $sensor_ht_id = [];
@@ -102,7 +106,7 @@ if (!isset($sensor_ht_graph)) $sensor_ht_graph = [];
 
 
 unset($sensor_co2_id);
-$results = $db->query('SELECT Id, Name, Pin, Device, Period, Activated, Graph, CO2_Relay_High, CO2_Relay_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D FROM CO2Sensor');
+$results = $db->query('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, CO2_Relay_High, CO2_Relay_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D FROM CO2Sensor');
 $count = 0;
 while ($row = $results->fetchArray()) {
     $sensor_co2_id[$count] = $row[0];
@@ -110,17 +114,19 @@ while ($row = $results->fetchArray()) {
     $sensor_co2_pin[$count] = $row[2];
     $sensor_co2_device[$count] = $row[3];
     $sensor_co2_period[$count] = $row[4];
-    $sensor_co2_activated[$count] = $row[5];
-    $sensor_co2_graph[$count] = $row[6];
-    $pid_co2_relay_high[$count] = $row[7];
-    $pid_co2_relay_low[$count] = $row[8];
-    $pid_co2_or[$count] = $row[9];
-    $pid_co2_set[$count] = $row[10];
-    $pid_co2_set_dir[$count] = $row[11];
-    $pid_co2_period[$count] = $row[12];
-    $pid_co2_p[$count] = $row[13];
-    $pid_co2_i[$count] = $row[14];
-    $pid_co2_d[$count] = $row[15];
+    $sensor_co2_premeasure_relay[$count] = $row[5];
+    $sensor_co2_premeasure_dur[$count] = $row[6];
+    $sensor_co2_activated[$count] = $row[7];
+    $sensor_co2_graph[$count] = $row[8];
+    $pid_co2_relay_high[$count] = $row[9];
+    $pid_co2_relay_low[$count] = $row[10];
+    $pid_co2_or[$count] = $row[11];
+    $pid_co2_set[$count] = $row[12];
+    $pid_co2_set_dir[$count] = $row[13];
+    $pid_co2_period[$count] = $row[14];
+    $pid_co2_p[$count] = $row[15];
+    $pid_co2_i[$count] = $row[16];
+    $pid_co2_d[$count] = $row[17];
     $count++;
 }
 if (!isset($sensor_co2_id)) $sensor_co2_id = [];

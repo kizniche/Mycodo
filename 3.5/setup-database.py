@@ -22,6 +22,8 @@
 #
 #  Contact at kylegabriel.com
 
+db_version = 1
+
 import getopt
 import getpass
 import os.path
@@ -348,18 +350,18 @@ def create_all_tables_mycodo():
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
     cur.execute("CREATE TABLE Relays (Id TEXT, Name TEXT, Pin INT, Trigger INT, Start_State INT)")
-    cur.execute("CREATE TABLE TSensor (Id TEXT, Name TEXT, Pin TEXT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay_High INT, Temp_Relay_Low INT, Temp_OR INT, Temp_Set REAL, Temp_Set_Direction INT, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D REAL)")
-    cur.execute("CREATE TABLE TSensorPreset (Preset TEXT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay_High INT, Temp_Relay_Low INT, Temp_Set REAL, Temp_Set_Direction INT, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D REAL)")
-    cur.execute("CREATE TABLE HTSensor (Id TEXT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay_High INT, Temp_Relay_Low INT, Temp_OR INT, Temp_Set REAL, Temp_Set_Direction INT, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D REAL, Hum_Relay_High INT, Hum_Relay_Low INT, Hum_OR INT, Hum_Set REAL, Hum_Set_Direction INT, Hum_Period INT, Hum_P REAL, Hum_I REAL, Hum_D REAL)")
-    cur.execute("CREATE TABLE HTSensorPreset (Preset TEXT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, Temp_Relay_High INT, Temp_Relay_Low INT, Temp_Set REAL, Temp_Set_Direction INT, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D REAL, Hum_Relay_High INT, Hum_Relay_Low INT, Hum_Set REAL, Hum_Set_Direction INT, Hum_Set_Buffer REAL, Hum_Period INT, Hum_P REAL, Hum_I REAL, Hum_D REAL)")
-    cur.execute("CREATE TABLE CO2Sensor (Id TEXT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, CO2_Relay_High INT, CO2_Relay_Low INT, CO2_OR INT, CO2_Set REAL, CO2_Set_Direction INT, CO2_Period INT, CO2_P REAL, CO2_I REAL, CO2_D REAL)")
-    cur.execute("CREATE TABLE CO2SensorPreset (Preset TEXT, Name TEXT, Pin INT, Device TEXT, Period INT, Activated INT, Graph INT, CO2_Relay_High INT, CO2_Relay_Low INT, CO2_OR INT, CO2_Set REAL, CO2_Set_Direction INT, CO2_Period INT, CO2_P REAL, CO2_I REAL, CO2_D REAL)")
+    cur.execute("CREATE TABLE TSensor (Id TEXT, Name TEXT, Pin TEXT, Device TEXT, Period INT, Pre_Measure_Relay INT, Pre_Measure_Dur INT, Activated INT, Graph INT, Temp_Relay_High INT, Temp_Relay_Low INT, Temp_OR INT, Temp_Set REAL, Temp_Set_Direction INT, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D REAL)")
+    cur.execute("CREATE TABLE TSensorPreset (Preset TEXT, Name TEXT, Pin INT, Device TEXT, Period INT, Pre_Measure_Relay INT, Pre_Measure_Dur INT, Activated INT, Graph INT, Temp_Relay_High INT, Temp_Relay_Low INT, Temp_Set REAL, Temp_Set_Direction INT, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D REAL)")
+    cur.execute("CREATE TABLE HTSensor (Id TEXT, Name TEXT, Pin INT, Device TEXT, Period INT, Pre_Measure_Relay INT, Pre_Measure_Dur INT, Activated INT, Graph INT, Temp_Relay_High INT, Temp_Relay_Low INT, Temp_OR INT, Temp_Set REAL, Temp_Set_Direction INT, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D REAL, Hum_Relay_High INT, Hum_Relay_Low INT, Hum_OR INT, Hum_Set REAL, Hum_Set_Direction INT, Hum_Period INT, Hum_P REAL, Hum_I REAL, Hum_D REAL)")
+    cur.execute("CREATE TABLE HTSensorPreset (Preset TEXT, Name TEXT, Pin INT, Device TEXT, Period INT, Pre_Measure_Relay INT, Pre_Measure_Dur INT, Activated INT, Graph INT, Temp_Relay_High INT, Temp_Relay_Low INT, Temp_Set REAL, Temp_Set_Direction INT, Temp_Period INT, Temp_P REAL, Temp_I REAL, Temp_D REAL, Hum_Relay_High INT, Hum_Relay_Low INT, Hum_Set REAL, Hum_Set_Direction INT, Hum_Set_Buffer REAL, Hum_Period INT, Hum_P REAL, Hum_I REAL, Hum_D REAL)")
+    cur.execute("CREATE TABLE CO2Sensor (Id TEXT, Name TEXT, Pin INT, Device TEXT, Period INT, Pre_Measure_Relay INT, Pre_Measure_Dur INT, Activated INT, Graph INT, CO2_Relay_High INT, CO2_Relay_Low INT, CO2_OR INT, CO2_Set REAL, CO2_Set_Direction INT, CO2_Period INT, CO2_P REAL, CO2_I REAL, CO2_D REAL)")
+    cur.execute("CREATE TABLE CO2SensorPreset (Preset TEXT, Name TEXT, Pin INT, Device TEXT, Period INT, Pre_Measure_Relay INT, Pre_Measure_Dur INT, Activated INT, Graph INT, CO2_Relay_High INT, CO2_Relay_Low INT, CO2_OR INT, CO2_Set REAL, CO2_Set_Direction INT, CO2_Period INT, CO2_P REAL, CO2_I REAL, CO2_D REAL)")
     cur.execute("CREATE TABLE Timers (Id TEXT, Name TEXT, Relay INT, State INT, DurationOn INT, DurationOff INT)")
     cur.execute("CREATE TABLE SMTP (Host TEXT, SSL INT, Port INT, User TEXT, Pass TEXT, Email_From TEXT, Email_To TEXT)")
     cur.execute("CREATE TABLE CameraStill (Relay INT, Timestamp INT, Display_Last INT, Extra_Parameters TEXT)")
     cur.execute("CREATE TABLE CameraStream (Relay INT, Extra_Parameters TEXT)")
     cur.execute("CREATE TABLE CameraTimelapse (Relay INT, Path TEXT, Prefix TEXT, File_Timestamp INT, Display_Last INT, Extra_Parameters TEXT)")
-    cur.execute("CREATE TABLE Misc (Dismiss_Notification INT, Refresh_Time INT)")
+    cur.execute("CREATE TABLE Misc (Database_Version INT, Dismiss_Notification INT, Refresh_Time INT)")
     conn.close()
 
 def create_rows_columns_mycodo():
@@ -370,7 +372,8 @@ def create_rows_columns_mycodo():
     cur.execute("INSERT INTO CameraStill VALUES(0, 1, 1, '')")
     cur.execute("INSERT INTO CameraStream VALUES(0, '')")
     cur.execute("INSERT INTO CameraTimelapse VALUES(0, '/var/www/mycodo/camera-timelapse', 'Timelapse-', 1, 1, '')")
-    cur.execute("INSERT INTO Misc VALUES(0, 300)")
+    query = "INSERT INTO Misc VALUES(%s, 0, 300)" % db_version
+    cur.execute(query)
     conn.commit()
     cur.close()
 
