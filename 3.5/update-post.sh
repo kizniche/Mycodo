@@ -37,8 +37,8 @@ PDIR="$( dirname "$DIR" )"
 cd $DIR
 
 if [ ! -f $DATABASE ]; then
-    printf "Database not found: $DATABASE\n";
-    printf "Creating Database...\n";
+    printf "Mycodo database not found: $DATABASE\n";
+    printf "Creating Mycodo database...\n";
     $DIR/update-database.py -i update
     exit 1
 fi
@@ -47,24 +47,24 @@ fi
 db_version=`sqlite3 $DATABASE "PRAGMA user_version;"`;
 
 if [ -z "$db_version" ]; then
-	printf "Missing database version, recreating database\n";
+	printf "Missing Mycodo database version, recreating database\n";
 	# Recreate mycodo SQLite database
 	rm -rf $DIR/config/mycodo.db
 	$DIR/update-database.py -i update
 else
-	printf "SQLite Database version: $db_version\n";
+	printf "Mycodo Database version: $db_version\n";
 fi
 
 # Check database version against known database versions
 # Perform update based on database version
 if [[ $db_version == "1" ]]; then
-	printf "SQLite database is already the latest version.\n";
+	printf "Mycod database is already the latest version.\n";
 elif [[ $db_version == "0" ]]; then
-	printf "SQLite database is not versioned. Recreating (you can retrieve your values from the backup)\n";
+	printf "Mycodo database is not versioned. Recreating (you can retrieve your values from the backup)\n";
 	rm -rf $DIR/config/mycodo.db
 	$DIR/update-database.py -i update
 else
-	printf "Unknown database version. Recreating...\n";
+	printf "Unknown Mycodo database version. Recreating...\n";
 	rm -rf $DIR/config/mycodo.db
 	$DIR/update-database.py -i update
 fi
