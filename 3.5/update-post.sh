@@ -31,15 +31,17 @@ if [ "$EUID" -ne 0 ]; then
     exit
 fi
 
-if [ ! -f $DATABASE ]; then
-    printf "Database not found: $DATABASE\n";
-    exit 1
-fi
-
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 PDIR="$( dirname "$DIR" )"
 
 cd $DIR
+
+if [ ! -f $DATABASE ]; then
+    printf "Database not found: $DATABASE\n";
+    printf "Creating Database...\n";
+    $DIR/update-database.py -i update
+    exit 1
+fi
 
 # Getting my data
 db_version=`sqlite3 $DATABASE "PRAGMA user_version;"`;
@@ -48,7 +50,7 @@ if [ -z "$db_version" ]; then
 	printf "Missing database version, recreating database\n";
 	# Recreate mycodo SQLite database
 	rm -rf $DIR/config/mycodo.db
-	$DIR/setup-database.py -i update
+	$DIR/update-database.py -i update
 else
 	printf "SQLite Database version: $db_version\n";
 fi
@@ -57,7 +59,12 @@ fi
 # Perform update based on database version
 if [[ $db_version == "1" ]]; then
 	printf "SQLite database is already the latest version.\n";
+elif [[ $db_version == "0" ]]; then
+	printf "SQLite database is not versioned. Recreating (you can retrieve your values from the backup)\n";
+	rm -rf $DIR/config/mycodo.db
+	$DIR/update-database.py -i update
 else
-	printf "SQLite database is an old version. Updating...\n"
-    $DIR/update-database.py -i update
+	printf "Unknown database version. Recreating...\n";
+	rm -rf $DIR/config/mycodo.db
+	$DIR/update-database.py -i update
 fi
