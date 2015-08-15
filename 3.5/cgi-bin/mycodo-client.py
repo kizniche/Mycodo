@@ -74,7 +74,7 @@ def menu():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:], 'hr:st',
-            ["help", "graph", "pidrestart=", "pidstart=", "pidstop=", "relay=", "sensorco2", "sensorht", "sensort", "sqlreload", "status", "terminate", "writetlog", "writehtlog", "writeco2log"])
+            ["help", "graph", "pidrestart=", "pidstart=", "pidstop=", "relay=", "sensorco2", "sensorht", "sensort", "sqlreload=", "status", "terminate", "writetlog", "writehtlog", "writeco2log"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
