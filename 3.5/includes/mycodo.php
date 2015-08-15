@@ -2389,13 +2389,13 @@ if (isset($output_error)) {
                                     ' , $key , '
                                 </td>
                                 <td>
-                                    ' , number_format($value, 10) , '
+                                    ' , number_format($value, 6) , '
                                 </td>
                                 <td>
-                                    ' , number_format($pre, 10) , '
+                                    ' , number_format($pre, 6) , '
                                 </td>
                                 <td>
-                                    ' , number_format($step_total, 10) , '
+                                    ' , number_format($step_total, 6) , '
                                 </td>
                                 <td>
                                     ' , number_format($value/$grand_total*100, 2) , '%
