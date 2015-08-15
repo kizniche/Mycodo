@@ -2346,63 +2346,72 @@ if (isset($output_error)) {
                 <?php 
                     SimpleProfiler::stop_profile();
                     $profile = SimpleProfiler::get_profile();
-                    $total = 0.0;
+                    $grand_total = 0.0;
+                    foreach($profile as $array => $next) {
+                        foreach($next as $key => $value) {
+                            $grand_total += $value;
+                        }
+                    }
+                    $step_total = 0.0;
                     echo '
                     <table class="debug-profiler">
                     <tr>
-                    <td>
-                    Event
-                    </td>
-                    <td>
-                    Event (seconds)
-                    </td>
-                    <td>
-                    Up to event
-                    </td>
-                    <td>
-                    Including event
-                    </td>
+                        <td>
+                            Event
+                        </td>
+                        <td>
+                            Event (seconds)
+                        </td>
+                        <td>
+                            Up to event
+                        </td>
+                        <td>
+                            Including event
+                        </td>
+                        <td>
+                            Percentage
+                        </td>
                     </tr>';
                     foreach($profile as $array => $next) {
                         echo '
                         <tr>
-                        <td style="padding-top: 0.5em; text-align: left; font-weight: bold;">
-                        ' , $array , '
-                        </td>
+                            <td style="padding-top: 0.5em; text-align: left; font-weight: bold;">
+                                ' , $array , '
+                            </td>
                         </tr>';
                         foreach($next as $key => $value) {
                             if ($key == "") $key = "-------->";
-                            $pre = $total;
-                            $total += $value;
+                            $pre = $step_total;
+                            $step_total += $value;
                             echo '
                             <tr style="border-bottom:1pt solid black;">
-                            <td style="">
-                            ' , $key , '
-                            </td>
-                            <td>
-                            ' , number_format($value, 10) , '
-                            </td>
-                            <td>
-                            ' , number_format($pre, 10) , '
-                            </td>
-                            <td>
-                            ' , number_format($total, 10) , '
-                            </td>
+                                <td style="">
+                                    ' , $key , '
+                                </td>
+                                <td>
+                                    ' , number_format($value, 10) , '
+                                </td>
+                                <td>
+                                    ' , number_format($pre, 10) , '
+                                </td>
+                                <td>
+                                    ' , number_format($step_total, 10) , '
+                                </td>
+                                <td>
+                                    ' , number_format($value/$grand_total*100, 2) , '%
+                                </td>
                             </tr>';
                         }
                     }
                     echo '
                     <tr>
-                    <td colspan="4" style="font-weight: bold; font-size: 1.3em;">
-                    Total: ' , number_format($total, 10) , '
-                    </td>
+                        <td colspan="4" style="font-weight: bold; font-size: 1.3em;">
+                            Total: ' , number_format($total, 10) , '
+                        </td>
                     </tr>
-                    </table>';
-                    echo '<p style="padding: 2em 0 1em 0; font-weight: bold;">Raw Profile<p>
-                    <pre>';
-                    print_r($profile);
-                    echo '</pre>
-                    <br>';
+                    </table>
+                    <p style="padding: 2em 0 1em 0; font-weight: bold;">Raw Profile<p>
+                    <pre>' , print_r($profile) , '</pre><br>';
                     ?>
                 </pre>
             </div>
