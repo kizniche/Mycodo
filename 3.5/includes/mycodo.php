@@ -2406,7 +2406,7 @@ if (isset($output_error)) {
                     echo '
                     <tr>
                         <td colspan="4" style="font-weight: bold; font-size: 1.3em;">
-                            Total: ' , number_format($total, 10) , '
+                            Total: ' , number_format($grand_total, 10) , '
                         </td>
                     </tr>
                     </table>
