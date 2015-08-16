@@ -96,7 +96,9 @@ sensor_t_dewpt_c = []
 
 # T Sensor Temperature PID
 pid_t_temp_relay_high = []
+pid_t_temp_outmax_high = []
 pid_t_temp_relay_low = []
+pid_t_temp_outmax_low = []
 pid_t_temp_set = []
 pid_t_temp_set_dir = []
 pid_t_temp_period = []
@@ -123,7 +125,9 @@ sensor_ht_dewpt_c = []
 
 # HT Sensor Temperature PID
 pid_ht_temp_relay_high = []
+pid_ht_temp_outmax_high = []
 pid_ht_temp_relay_low = []
+pid_ht_temp_outmax_low = []
 pid_ht_temp_set = []
 pid_ht_temp_set_dir = []
 pid_ht_temp_period = []
@@ -136,7 +140,9 @@ pid_ht_temp_active = []
 
 # Humidity PID
 pid_ht_hum_relay_high = []
+pid_ht_hum_outmax_high = []
 pid_ht_hum_relay_low = []
+pid_ht_hum_outmax_low = []
 pid_ht_hum_set = []
 pid_ht_hum_set_dir = []
 pid_ht_hum_period = []
@@ -160,7 +166,9 @@ sensor_co2_read_co2 = []
 
 # CO2 PID
 pid_co2_relay_high = []
+pid_co2_outmax_high = []
 pid_co2_relay_low = []
+pid_co2_outmax_low = []
 pid_co2_set = []
 pid_co2_set_dir = []
 pid_co2_period = []
@@ -917,14 +925,22 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
                     else:
                         logging.debug("[PID T-Temperature-%s] Temperature: %.1f°C now = %.1f°C set", sensor+1, sensor_t_read_temp_c[sensor], pid_t_temp_set[sensor])
 
-                    logging.debug("[PID T-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
-
                     if pid_t_temp_set_dir[sensor] > -1 and PIDTemp > 0:
+                        if pid_t_temp_outmax_low != 0 and PIDTemp > pid_t_temp_outmax_low:
+                            logging.debug("[PID T-Temperature-%s] PID = %.1f (max enabled)", sensor+1, PIDTemp)
+                            PIDTemp = pid_t_temp_outmax_low
+                        else:
+                            logging.debug("[PID T-Temperature-%s] PID = %.1f (max disabled)", sensor+1, PIDTemp)
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid__temp_relay_low[sensor], round(PIDTemp,2), sensor,))
                         rod.start()
 
                     if pid__temp_set_dir[sensor] < 1 and PIDTemp < 0:
+                        if pid_t_temp_outmax_high != 0 and PIDTemp > pid_t_temp_outmax_high:
+                            logging.debug("[PID T-Temperature-%s] PID = %.1f (max enabled)", sensor+1, PIDTemp)
+                            PIDTemp = pid_t_temp_outmax_high
+                        else:
+                            logging.debug("[PID T-Temperature-%s] PID = %.1f (max disabled)", sensor+1, PIDTemp)
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid__temp_relay_high[sensor], round(PIDTemp,2), sensor,))
                         rod.start()
@@ -999,14 +1015,22 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
                     else:
                         logging.debug("[PID HT-Temperature-%s] Temperature: %.1f°C now = %.1f°C set", sensor+1, sensor_ht_read_temp_c[sensor], pid_ht_temp_set[sensor])
 
-                    logging.debug("[PID HT-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
-
                     if pid_ht_temp_set_dir[sensor] > -1 and PIDTemp > 0:
+                        if pid_ht_temp_outmax_low != 0 and PIDTemp > pid_ht_temp_outmax_low:
+                            logging.debug("[PID HT-Temperature-%s] PID = %.1f (max enabled)", sensor+1, PIDTemp)
+                            PIDTemp = pid_ht_temp_outmax_low
+                        else:
+                            logging.debug("[PID HT-Temperature-%s] PID = %.1f (max disabled)", sensor+1, PIDTemp)
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_ht_temp_relay_low[sensor], round(PIDTemp,2), sensor,))
                         rod.start()
 
                     if pid_ht_temp_set_dir[sensor] < 1 and PIDTemp < 0:
+                        if pid_ht_temp_outmax_high != 0 and PIDTemp > pid_ht_temp_outmax_high:
+                            logging.debug("[PID HT-Temperature-%s] PID = %.1f (max enabled)", sensor+1, PIDTemp)
+                            PIDTemp = pid_ht_temp_outmax_high
+                        else:
+                            logging.debug("[PID HT-Temperature-%s] PID = %.1f (max disabled)", sensor+1, PIDTemp)
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_ht_temp_relay_high[sensor], round(PIDTemp,2), sensor,))
                         rod.start()
@@ -1080,14 +1104,22 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
                     else:
                         logging.debug("[PID HT-Humidity-%s] Humidity: %.1f%% now = %.1f%% set", sensor+1, sensor_ht_read_hum[sensor], pid_ht_hum_set[sensor])
 
-                    logging.debug("[PID HT-Humidity-%s] PID = %.1f (seconds)", sensor+1, PIDHum)
-
                     if pid_ht_hum_set_dir[sensor] > -1 and PIDHum > 0:
+                        if pid_ht_hum_outmax_low != 0 and PIDHum > pid_ht_hum_outmax_low:
+                            logging.debug("[PID HT-Humidity-%s] PID = %.1f (max enabled)", sensor+1, PIDHum)
+                            PIDHum = pid_ht_hum_outmax_low
+                        else:
+                            logging.debug("[PID HT-Humidity-%s] PID = %.1f (max disabled)", sensor+1, PIDHum)
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_ht_hum_relay_low[sensor], round(PIDHum,2), sensor,))
                         rod.start()
 
                     if pid_ht_hum_set_dir[sensor] < 1 and PIDHum < 0:
+                        if pid_ht_hum_outmax_high != 0 and PIDHum > pid_ht_hum_outmax_high:
+                            logging.debug("[PID HT-Humidity-%s] PID = %.1f (max enabled)", sensor+1, PIDHum)
+                            PIDHum = pid_ht_hum_outmax_high
+                        else:
+                            logging.debug("[PID HT-Humidity-%s] PID = %.1f (max disabled)", sensor+1, PIDHum)
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_ht_hum_relay_high[sensor], round(PIDHum,2), sensor,))
                         rod.start()
@@ -1161,14 +1193,22 @@ def co2_monitor(ThreadName, sensor):
                     else:
                         logging.debug("[PID CO2-%s] CO2: %.1f ppm now = %.1f ppm set", sensor+1, sensor_co2_read_co2[sensor], pid_co2_set[sensor])
 
-                    logging.debug("[PID CO2-%s] PID = %.1f", sensor+1, PIDCO2)
-
                     if pid_co2_set_dir[sensor] > -1 and PIDCO2 > 0:
+                        if pid_co2_outmax_low != 0 and PIDCO2 > pid_co2_outmax_low:
+                            logging.debug("[PID CO2-%s] PID = %.1f (max enabled)", sensor+1, PIDCO2)
+                            PIDCO2 = pid_co2_outmax_low
+                        else:
+                            logging.debug("[PID CO2-%s] PID = %.1f (max disabled)", sensor+1, PIDCO2)
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_co2_relay_low[sensor], round(PIDCO2,2), sensor,))
                         rod.start()
 
                     if pid_co2_set_dir[sensor] < 1 and PIDCO2 < 0:
+                        if pid_co2_outmax_high != 0 and PIDCO2 > pid_co2_outmax_high:
+                            logging.debug("[PID CO2-%s] PID = %.1f (max enabled)", sensor+1, PIDCO2)
+                            PIDCO2 = pid_co2_outmax_high
+                        else:
+                            logging.debug("[PID CO2-%s] PID = %.1f (max disabled)", sensor+1, PIDCO2)
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_co2_relay_high[sensor], round(PIDCO2,2), sensor,))
                         rod.start()
@@ -1610,7 +1650,9 @@ def read_sql():
     global sensor_t_activated
     global sensor_t_graph
     global pid_t_temp_relay_high
+    global pid_t_temp_outmax_high
     global pid_t_temp_relay_low
+    global pid_t_temp_outmax_low
     global pid_t_temp_set
     global pid_t_temp_set_dir
     global pid_t_temp_or
@@ -1633,7 +1675,9 @@ def read_sql():
     sensor_t_activated = []
     sensor_t_graph = []
     pid_t_temp_relay_high = []
+    pid_t_temp_outmax_high = []
     pid_t_temp_relay_low = []
+    pid_t_temp_outmax_low = []
     pid_t_temp_set = []
     pid_t_temp_set_dir = []
     pid_t_temp_period = []
@@ -1654,7 +1698,9 @@ def read_sql():
     global sensor_ht_activated
     global sensor_ht_graph
     global pid_ht_temp_relay_high
+    global pid_ht_temp_outmax_high
     global pid_ht_temp_relay_low
+    global pid_ht_temp_outmax_low
     global pid_ht_temp_set
     global pid_ht_temp_set_dir
     global pid_ht_temp_or
@@ -1663,7 +1709,9 @@ def read_sql():
     global pid_ht_temp_i
     global pid_ht_temp_d
     global pid_ht_hum_relay_high
+    global pid_ht_hum_outmax_high
     global pid_ht_hum_relay_low
+    global pid_ht_hum_outmax_low
     global pid_ht_hum_set
     global pid_ht_hum_set_dir
     global pid_ht_hum_or
@@ -1689,7 +1737,9 @@ def read_sql():
     sensor_ht_activated = []
     sensor_ht_graph = []
     pid_ht_temp_relay_high = []
+    pid_ht_temp_outmax_high = []
     pid_ht_temp_relay_low = []
+    pid_ht_temp_outmax_low = []
     pid_ht_temp_set = []
     pid_ht_temp_set_dir = []
     pid_ht_temp_period = []
@@ -1698,7 +1748,9 @@ def read_sql():
     pid_ht_temp_d = []
     pid_ht_temp_or = []
     pid_ht_hum_relay_high = []
+    pid_ht_hum_outmax_high = []
     pid_ht_hum_relay_low = []
+    pid_ht_hum_outmax_low = []
     pid_ht_hum_set = []
     pid_ht_hum_set_dir = []
     pid_ht_hum_period = []
@@ -1721,7 +1773,9 @@ def read_sql():
     global sensor_co2_activated
     global sensor_co2_graph
     global pid_co2_relay_high
+    global pid_co2_outmax_high
     global pid_co2_relay_low
+    global pid_co2_outmax_low
     global pid_co2_set
     global pid_co2_set_dir
     global pid_co2_or
@@ -1743,13 +1797,16 @@ def read_sql():
     sensor_co2_activated = []
     sensor_co2_graph = []
     pid_co2_relay_high = []
+    pid_co2_outmax_high = []
     pid_co2_relay_low = []
+    pid_co2_outmax_low = []
     pid_co2_set = []
     pid_co2_set_dir = []
     pid_co2_period = []
     pid_co2_p = []
     pid_co2_i = []
     pid_co2_d = []
+    pid_co2_outmax = []
     pid_co2_or = []
     sensor_co2_read_co2 = []
 
@@ -1814,7 +1871,7 @@ def read_sql():
     # Check if all required tables exist in the SQL database
     conn = sqlite3.connect(mycodo_database)
     cur = conn.cursor()
-    tables = ['Relays', 'TSensor', 'HTSensor', 'CO2Sensor', 'Timers', 'SMTP']
+    tables = ['Relays', 'TSensor', 'HTSensor', 'CO2Sensor', 'Timers', 'SMTP', 'Misc']
     missing = []
     for i in range(0, len(tables)):
         query = "SELECT name FROM sqlite_master WHERE type='table' AND name='%s'" % tables[i]
@@ -1838,7 +1895,7 @@ def read_sql():
     if verbose:
         print "Table: Relays"
     count = 0
-    for row in cur :
+    for row in cur:
         if verbose:
             print "%s %s %s %s" % (row[0], row[1], row[2], row[3])
         relay_id.append(row[0])
@@ -1848,13 +1905,13 @@ def read_sql():
         relay_start_state.append(row[4])
         count += 1
 
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Temp_Relay_High, Temp_Relay_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D FROM TSensor')
+    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D FROM TSensor')
     if verbose:
         print "Table: TSensor"
     count = 0
-    for row in cur :
+    for row in cur:
         if verbose:
-            print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17])
+            print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[18])
         sensor_t_id.append(row[0])
         sensor_t_name.append(row[1])
         sensor_t_pin.append(row[2])
@@ -1865,23 +1922,25 @@ def read_sql():
         sensor_t_activated.append(row[7])
         sensor_t_graph.append(row[8])
         pid_t_temp_relay_high.append(row[9])
-        pid_t_temp_relay_low.append(row[10])
-        pid_t_temp_or.append(row[11])
-        pid_t_temp_set.append(row[12])
-        pid_t_temp_set_dir.append(row[13])
-        pid_t_temp_period.append(row[14])
-        pid_t_temp_p.append(row[15])
-        pid_t_temp_i.append(row[16])
-        pid_t_temp_d.append(row[17])
+        pid_t_temp_outmax_high.append(row[10])
+        pid_t_temp_relay_low.append(row[11])
+        pid_t_temp_outmax_low.append(row[12])
+        pid_t_temp_or.append(row[13])
+        pid_t_temp_set.append(row[14])
+        pid_t_temp_set_dir.append(row[15])
+        pid_t_temp_period.append(row[16])
+        pid_t_temp_p.append(row[17])
+        pid_t_temp_i.append(row[18])
+        pid_t_temp_d.append(row[19])
         count += 1
 
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Temp_Relay_High, Temp_Relay_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relay_High, Hum_Relay_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensor')
+    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relay_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensor')
     if verbose:
         print "Table: HTSensor"
     count = 0
-    for row in cur :
+    for row in cur:
         if verbose:
-            print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19], row[20], row[21], row[22], row[23], row[24], row[25], row[26])
+            print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19], row[20], row[21], row[22], row[23], row[24], row[25], row[26], row[27], row[28], row[29], row[30], row[31])
         sensor_ht_id.append(row[0])
         sensor_ht_name.append(row[1])
         sensor_ht_pin.append(row[2])
@@ -1892,34 +1951,38 @@ def read_sql():
         sensor_ht_activated.append(row[7])
         sensor_ht_graph.append(row[8])
         pid_ht_temp_relay_high.append(row[9])
-        pid_ht_temp_relay_low.append(row[10])
-        pid_ht_temp_or.append(row[11])
-        pid_ht_temp_set.append(row[12])
-        pid_ht_temp_set_dir.append(row[13])
-        pid_ht_temp_period.append(row[14])
-        pid_ht_temp_p.append(row[15])
-        pid_ht_temp_i.append(row[16])
-        pid_ht_temp_d.append(row[17])
-        pid_ht_hum_relay_high.append(row[18])
-        pid_ht_hum_relay_low.append(row[19])
-        pid_ht_hum_or.append(row[20])
-        pid_ht_hum_set.append(row[21])
-        pid_ht_hum_set_dir.append(row[22])
-        pid_ht_hum_period.append(row[23])
-        pid_ht_hum_p.append(row[24])
-        pid_ht_hum_i.append(row[25])
-        pid_ht_hum_d.append(row[26])
+        pid_ht_temp_outmax_high.append(row[10])
+        pid_ht_temp_relay_low.append(row[11])
+        pid_ht_temp_outmax_low.append(row[12])
+        pid_ht_temp_or.append(row[13])
+        pid_ht_temp_set.append(row[14])
+        pid_ht_temp_set_dir.append(row[15])
+        pid_ht_temp_period.append(row[16])
+        pid_ht_temp_p.append(row[17])
+        pid_ht_temp_i.append(row[18])
+        pid_ht_temp_d.append(row[19])
+        pid_ht_hum_relay_high.append(row[20])
+        pid_ht_hum_outmax_high.append(row[21])
+        pid_ht_hum_relay_low.append(row[22])
+        pid_ht_hum_outmax_low.append(row[23])
+        pid_ht_hum_or.append(row[24])
+        pid_ht_hum_set.append(row[25])
+        pid_ht_hum_set_dir.append(row[26])
+        pid_ht_hum_period.append(row[27])
+        pid_ht_hum_p.append(row[28])
+        pid_ht_hum_i.append(row[29])
+        pid_ht_hum_d.append(row[30])
         count += 1
 
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, CO2_Relay_High, CO2_Relay_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
+    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, CO2_Relay_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmax_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
     if verbose:
         print "Table: CO2Sensor "
     count = 0
     for row in cur:
         if verbose:
-            print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" % (
+            print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" % (
                 row[0], row[1], row[2], row[3], row[4], row[5], row[6],
-                row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17])
+                row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19])
         sensor_co2_id.append(row[0])
         sensor_co2_name.append(row[1])
         sensor_co2_pin.append(row[2])
@@ -1930,14 +1993,16 @@ def read_sql():
         sensor_co2_activated.append(row[7])
         sensor_co2_graph.append(row[8])
         pid_co2_relay_high.append(row[9])
-        pid_co2_relay_low.append(row[10])
-        pid_co2_or.append(row[11])
-        pid_co2_set.append(row[12])
-        pid_co2_set_dir.append(row[13])
-        pid_co2_period.append(row[14])
-        pid_co2_p.append(row[15])
-        pid_co2_i.append(row[16])
-        pid_co2_d.append(row[17])
+        pid_co2_outmax_high.append(row[10])
+        pid_co2_relay_low.append(row[11])
+        pid_co2_outmax_low.append(row[12])
+        pid_co2_or.append(row[13])
+        pid_co2_set.append(row[14])
+        pid_co2_set_dir.append(row[15])
+        pid_co2_period.append(row[16])
+        pid_co2_p.append(row[17])
+        pid_co2_i.append(row[18])
+        pid_co2_d.append(row[19])
         count += 1
 
     cur.execute('SELECT Id, Name, Relay, State, DurationOn, DurationOff FROM Timers ')

@@ -26,7 +26,7 @@
 sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
 sql_database_user = '/var/www/mycodo/config/users.db'
 
-db_version_mycodo = 1
+db_version_mycodo = 2
 db_version_user = 1
 
 import getopt
@@ -192,6 +192,7 @@ def setup_db(update):
     
     if target == 'all' or target == 'mycodo':
         MycodoDatabase()
+        UpgradeDatabase()
     
     if target == 'all' or target == 'user':
         delete_all_tables_user()
@@ -204,6 +205,44 @@ def setup_db(update):
         cur.execute("PRAGMA user_version = %s;" % db_version_user)
         conn.commit()
         cur.close()
+
+
+def UpgradeDatabase():
+    conn = sqlite3.connect(sql_database_mycodo)
+    cur = conn.cursor()
+    cur.execute("PRAGMA user_version;")
+    for row in cur:
+        current_db_version_mycodo = row[0]
+    
+    # Version 2 updates
+    if current_db_version_mycodo < 2:
+        ModNullValue('TSensor', 'Temp_Outmax_High', 0)
+        ModNullValue('TSensor', 'Temp_Outmax_Low', 0)
+        ModNullValue('TSensorPreset', 'Temp_Outmax_High', 0)
+        ModNullValue('TSensorPreset', 'Temp_Outmax_Low', 0)
+        ModNullValue('HTSensor', 'Temp_Outmax_High', 0)
+        ModNullValue('HTSensor', 'Temp_Outmax_Low', 0)
+        ModNullValue('HTSensor', 'Hum_Outmax_High', 0)
+        ModNullValue('HTSensor', 'Hum_Outmax_Low', 0)
+        ModNullValue('HTSensorPreset', 'Temp_Outmax_High', 0)
+        ModNullValue('HTSensorPreset', 'Temp_Outmax_Low', 0)
+        ModNullValue('HTSensorPreset', 'Hum_Outmax_High', 0)
+        ModNullValue('HTSensorPreset', 'Hum_Outmax_Low', 0)
+        ModNullValue('CO2Sensor', 'CO2_Outmax_High', 0)
+        ModNullValue('CO2Sensor', 'CO2_Outmax_Low', 0)
+        ModNullValue('CO2SensorPreset', 'CO2_Outmax_High', 0)
+        ModNullValue('CO2SensorPreset', 'CO2_Outmax_Low', 0)
+
+    # Version 3 updates (for example)
+    if current_db_version_mycodo < 3:
+        pass
+
+    # Update Mycodo database version
+    conn = sqlite3.connect(sql_database_mycodo)
+    cur = conn.cursor()
+    cur.execute("PRAGMA user_version = %s;" % db_version_mycodo)
+    conn.commit()
+    cur.close()
 
 
 def MycodoDatabase():
@@ -223,7 +262,9 @@ def MycodoDatabase():
     AddColumn('TSensor', 'Activated', 'INT')
     AddColumn('TSensor', 'Graph', 'INT')
     AddColumn('TSensor', 'Temp_Relay_High', 'INT')
+    AddColumn('TSensor', 'Temp_Outmax_High', 'INT')
     AddColumn('TSensor', 'Temp_Relay_Low', 'INT')
+    AddColumn('TSensor', 'Temp_Outmax_Low', 'INT')
     AddColumn('TSensor', 'Temp_OR', 'INT')
     AddColumn('TSensor', 'Temp_Set', 'REAL')
     AddColumn('TSensor', 'Temp_Set_Direction', 'INT')
@@ -242,7 +283,9 @@ def MycodoDatabase():
     AddColumn('TSensorPreset', 'Activated', 'INT')
     AddColumn('TSensorPreset', 'Graph', 'INT')
     AddColumn('TSensorPreset', 'Temp_Relay_High', 'INT')
+    AddColumn('TSensorPreset', 'Temp_Outmax_High', 'INT')
     AddColumn('TSensorPreset', 'Temp_Relay_Low', 'INT')
+    AddColumn('TSensorPreset', 'Temp_Outmax_Low', 'INT')
     AddColumn('TSensorPreset', 'Temp_Set', 'REAL')
     AddColumn('TSensorPreset', 'Temp_Set_Direction', 'INT')
     AddColumn('TSensorPreset', 'Temp_Period', 'INT')
@@ -260,7 +303,9 @@ def MycodoDatabase():
     AddColumn('HTSensor', 'Activated', 'INT')
     AddColumn('HTSensor', 'Graph', 'INT')
     AddColumn('HTSensor', 'Temp_Relay_High', 'INT')
+    AddColumn('HTSensor', 'Temp_Outmax_High', 'INT')
     AddColumn('HTSensor', 'Temp_Relay_Low', 'INT')
+    AddColumn('HTSensor', 'Temp_Outmax_Low', 'INT')
     AddColumn('HTSensor', 'Temp_OR', 'INT')
     AddColumn('HTSensor', 'Temp_Set', 'REAL')
     AddColumn('HTSensor', 'Temp_Set_Direction', 'INT')
@@ -269,7 +314,9 @@ def MycodoDatabase():
     AddColumn('HTSensor', 'Temp_I', 'REAL')
     AddColumn('HTSensor', 'Temp_D', 'REAL')
     AddColumn('HTSensor', 'Hum_Relay_High', 'INT')
+    AddColumn('HTSensor', 'Hum_Outmax_High', 'INT')
     AddColumn('HTSensor', 'Hum_Relay_Low', 'INT')
+    AddColumn('HTSensor', 'Hum_Outmax_Low', 'INT')
     AddColumn('HTSensor', 'Hum_OR', 'INT')
     AddColumn('HTSensor', 'Hum_Set', 'REAL')
     AddColumn('HTSensor', 'Hum_Set_Direction', 'INT')
@@ -288,7 +335,9 @@ def MycodoDatabase():
     AddColumn('HTSensorPreset', 'Activated', 'INT')
     AddColumn('HTSensorPreset', 'Graph', 'INT')
     AddColumn('HTSensorPreset', 'Temp_Relay_High', 'INT')
+    AddColumn('HTSensorPreset', 'Temp_Outmax_High', 'INT')
     AddColumn('HTSensorPreset', 'Temp_Relay_Low', 'INT')
+    AddColumn('HTSensorPreset', 'Temp_Outmax_Low', 'INT')
     AddColumn('HTSensorPreset', 'Temp_Set', 'REAL')
     AddColumn('HTSensorPreset', 'Temp_Set_Direction', 'INT')
     AddColumn('HTSensorPreset', 'Temp_Period', 'INT')
@@ -296,7 +345,9 @@ def MycodoDatabase():
     AddColumn('HTSensorPreset', 'Temp_I', 'REAL')
     AddColumn('HTSensorPreset', 'Temp_D', 'REAL')
     AddColumn('HTSensorPreset', 'Hum_Relay_High', 'INT')
+    AddColumn('HTSensorPreset', 'Hum_Outmax_High', 'INT')
     AddColumn('HTSensorPreset', 'Hum_Relay_Low', 'INT')
+    AddColumn('HTSensorPreset', 'Hum_Outmax_Low', 'INT')
     AddColumn('HTSensorPreset', 'Hum_Set', 'REAL')
     AddColumn('HTSensorPreset', 'Hum_Set_Direction', 'INT')
     AddColumn('HTSensorPreset', 'Hum_Period', 'INT')
@@ -314,7 +365,9 @@ def MycodoDatabase():
     AddColumn('CO2Sensor', 'Activated', 'INT')
     AddColumn('CO2Sensor', 'Graph', 'INT')
     AddColumn('CO2Sensor', 'CO2_Relay_High', 'INT')
+    AddColumn('CO2Sensor', 'CO2_Outmax_High', 'INT')
     AddColumn('CO2Sensor', 'CO2_Relay_Low', 'INT')
+    AddColumn('CO2Sensor', 'CO2_Outmax_Low', 'INT')
     AddColumn('CO2Sensor', 'CO2_OR', 'INT')
     AddColumn('CO2Sensor', 'CO2_Set', 'REAL')
     AddColumn('CO2Sensor', 'CO2_Set_Direction', 'INT')
@@ -333,7 +386,9 @@ def MycodoDatabase():
     AddColumn('CO2SensorPreset', 'Activated', 'INT')
     AddColumn('CO2SensorPreset', 'Graph', 'INT')
     AddColumn('CO2SensorPreset', 'CO2_Relay_High', 'INT')
+    AddColumn('CO2SensorPreset', 'CO2_Outmax_High', 'INT')
     AddColumn('CO2SensorPreset', 'CO2_Relay_Low', 'INT')
+    AddColumn('CO2SensorPreset', 'CO2_Outmax_Low', 'INT')
     AddColumn('CO2SensorPreset', 'CO2_Set', 'REAL')
     AddColumn('CO2SensorPreset', 'CO2_Set_Direction', 'INT')
     AddColumn('CO2SensorPreset', 'CO2_Period', 'INT')
@@ -424,13 +479,6 @@ def MycodoDatabase():
     cur.close()
     ModNullValue('Misc', 'Dismiss_Notification', 0)
     ModNullValue('Misc', 'Refresh_Time', 300)
-
-    # Update Mycodo database version
-    conn = sqlite3.connect(sql_database_mycodo)
-    cur = conn.cursor()
-    cur.execute("PRAGMA user_version = %s;" % db_version_mycodo)
-    conn.commit()
-    cur.close()
 
 
 def AddTable(table):
