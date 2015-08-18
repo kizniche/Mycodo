@@ -26,7 +26,7 @@
 sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
 sql_database_user = '/var/www/mycodo/config/users.db'
 
-db_version_mycodo = 2
+db_version_mycodo = 3
 db_version_user = 1
 
 import getopt
@@ -214,7 +214,7 @@ def UpgradeDatabase():
     for row in cur:
         current_db_version_mycodo = row[0]
     
-    # Version 2 updates
+    # Version 2 row updates
     if current_db_version_mycodo < 2:
         ModNullValue('TSensor', 'Temp_Outmax_High', 0)
         ModNullValue('TSensor', 'Temp_Outmax_Low', 0)
@@ -233,8 +233,10 @@ def UpgradeDatabase():
         ModNullValue('CO2SensorPreset', 'CO2_Outmax_High', 0)
         ModNullValue('CO2SensorPreset', 'CO2_Outmax_Low', 0)
 
-    # Version 3 updates (for example)
-    if current_db_version_mycodo < 3:
+    # Version 3 updates: None (add pre/post camera commands)
+
+    # Version 4 updates (for example)
+    if current_db_version_mycodo < 4:
         pass
 
     # Update Mycodo database version
@@ -428,26 +430,34 @@ def MycodoDatabase():
     AddColumn('CameraStill', 'Relay', 'INT')
     AddColumn('CameraStill', 'Timestamp', 'INT')
     AddColumn('CameraStill', 'Display_Last', 'INT')
+    AddColumn('CameraStill', 'Cmd_Pre', 'TEXT')
+    AddColumn('CameraStill', 'Cmd_Post', 'TEXT')
     AddColumn('CameraStill', 'Extra_Parameters', 'TEXT')
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("INSERT OR IGNORE INTO CameraStill VALUES('0', 0, 1, 1, '')")
+    cur.execute("INSERT OR IGNORE INTO CameraStill VALUES('0', 0, 1, 1, '', '', '')")
     conn.commit()
     cur.close()
     ModNullValue('CameraStill', 'Relay', 0)
     ModNullValue('CameraStill', 'Timestamp', 1)
     ModNullValue('CameraStill', 'Display_Last', 1)
+    ModNullValue('CameraStill', 'Cmd_Pre', '')
+    ModNullValue('CameraStill', 'Cmd_Post', '')
     ModNullValue('CameraStill', 'Extra_Parameters', '')
 
     AddTable('CameraStream')
     AddColumn('CameraStream', 'Relay', 'INT')
+    AddColumn('CameraStream', 'Cmd_Pre', 'TEXT')
+    AddColumn('CameraStream', 'Cmd_Post', 'TEXT') 
     AddColumn('CameraStream', 'Extra_Parameters', 'TEXT')
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("INSERT OR IGNORE INTO CameraStream VALUES('0', 0, '')")
+    cur.execute("INSERT OR IGNORE INTO CameraStream VALUES('0', 0, '', '', '')")
     conn.commit()
     cur.close()
     ModNullValue('CameraStream', 'Relay', 0)
+    ModNullValue('CameraStream', 'Cmd_Pre', '')
+    ModNullValue('CameraStream', 'Cmd_Post', '') 
     ModNullValue('CameraStream', 'Extra_Parameters', '')
 
     AddTable('CameraTimelapse')
@@ -456,10 +466,12 @@ def MycodoDatabase():
     AddColumn('CameraTimelapse', 'Prefix', 'TEXT')
     AddColumn('CameraTimelapse', 'File_Timestamp', 'INT')
     AddColumn('CameraTimelapse', 'Display_Last', 'INT')
+    AddColumn('CameraTimelapse', 'Cmd_Pre', 'TEXT')
+    AddColumn('CameraTimelapse', 'Cmd_Post', 'TEXT')
     AddColumn('CameraTimelapse', 'Extra_Parameters', 'TEXT')
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("INSERT OR IGNORE INTO CameraTimelapse VALUES('0', 0, '/var/www/mycodo/camera-timelapse', 'Timelapse-', 1, 1, '')")
+    cur.execute("INSERT OR IGNORE INTO CameraTimelapse VALUES('0', 0, '/var/www/mycodo/camera-timelapse', 'Timelapse-', 1, 1, '', '', '')")
     conn.commit()
     cur.close()
     ModNullValue('CameraTimelapse', 'Relay', 0)
@@ -467,6 +479,8 @@ def MycodoDatabase():
     ModNullValue('CameraTimelapse', 'Prefix', 'Timelapse-')
     ModNullValue('CameraTimelapse', 'File_Timestamp', 1)
     ModNullValue('CameraTimelapse', 'Display_Last', 1)
+    ModNullValue('CameraTimelapse', 'Cmd_Pre', '')
+    ModNullValue('CameraTimelapse', 'Cmd_Post', '')
     ModNullValue('CameraTimelapse', 'Extra_Parameters', '')
 
     AddTable('Misc')

@@ -24,7 +24,7 @@
 
 DATE=$(date +"%Y-%m-%d_%H%M%S")
 
-if [ "$1" != 0 ]; then # Turn relay on
+if [ "$1" > 0 ]; then # Turn relay on
 	/usr/local/bin/gpio -g write $1 $2
 fi
 
@@ -32,7 +32,7 @@ sleep 1
 
 raspistill -vf -hf -w 800 -h 600 -o /var/www/mycodo/camera-stills/$DATE.jpg
 
-if [ "$1" != 0 ]; then # Turn relay off
+if [ "$1" > 0 ]; then # Turn relay off
 	if [ "$2" == 0 ]; then
 		TRIGGEROFF=1
 	else

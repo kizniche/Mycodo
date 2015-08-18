@@ -190,30 +190,35 @@ while ($row = $results->fetchArray()) {
 }
 
 
-$results = $db->query('SELECT Relay, Timestamp, Display_Last, Extra_Parameters FROM CameraStill');
+$results = $db->query('SELECT Relay, Timestamp, Display_Last, Cmd_Pre, Cmd_Post, Extra_Parameters FROM CameraStill');
 while ($row = $results->fetchArray()) {
     $still_relay = $row[0];
     $still_timestamp = $row[1];
     $still_display_last = $row[2];
-    $still_extra_parameters = $row[3];
+    $still_cmd_pre = $row[3];
+    $still_cmd_post = $row[4];
+    $still_extra_parameters = $row[5];
 }
 
-$results = $db->query('SELECT Relay, Extra_Parameters FROM CameraStream');
+$results = $db->query('SELECT Relay, Cmd_Pre, Cmd_Post, Extra_Parameters FROM CameraStream');
 while ($row = $results->fetchArray()) {
     $stream_relay = $row[0];
-    $stream_extra_parameters = $row[1];
+    $stream_cmd_pre = $row[1];
+    $stream_cmd_post = $row[2];
+    $stream_extra_parameters = $row[3];
 }
 
-$results = $db->query('SELECT Relay, Path, Prefix, File_Timestamp, Display_Last, Extra_Parameters FROM CameraTimelapse');
+$results = $db->query('SELECT Relay, Path, Prefix, File_Timestamp, Display_Last, Cmd_Pre, Cmd_Post, Extra_Parameters FROM CameraTimelapse');
 while ($row = $results->fetchArray()) {
     $timelapse_relay = $row[0];
     $timelapse_path = $row[1];
     $timelapse_prefix = $row[2];
     $timelapse_timestamp = $row[3];
     $timelapse_display_last = $row[4];
-    $timelapse_extra_parameters = $row[5];
+    $timelapse_cmd_pre = $row[5];
+    $timelapse_cmd_post = $row[6];
+    $timelapse_extra_parameters = $row[7];
 }
-
 
 $results = $db->query('SELECT Refresh_Time FROM Misc');
 while ($row = $results->fetchArray()) {

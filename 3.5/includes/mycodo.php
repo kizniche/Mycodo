@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.67";
+$version = "3.5.68";
 
 ######### Start Edit Configure #########
 
@@ -2028,7 +2028,7 @@ if (isset($output_error)) {
                             Relay to activate during capture (0 to disable)
                         </td>
                         <td class="setting-value">
-                    <input style="width: 4em;" type="number" min="0" max="8" value="<?php echo $still_relay; ?>" maxlength=4 size=1 name="Still_Relay" title="A relay can be set to activate during the still image capture."/>
+                    <input style="width: 4em;" type="number" min="0" max="30" value="<?php echo $still_relay; ?>" maxlength=4 size=1 name="Still_Relay" title="A relay can be set to activate during the still image capture."/>
                         </td>
                     </tr>
                     <tr>
@@ -2049,10 +2049,26 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Command to execute before capture
+                        </td>
+                        <td class="setting-value">
+                    <input style="width: 18em;" type="text" value="<?php echo $still_cmd_pre; ?>" maxlength=100 name="Still_Cmd_Pre" title="Command to be executed before the image capture. Double-quotes cannot be used. Use single-quotes instead. If your command is longer than 100 characters, consider creating a script and excuting that here."/> 
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Command to execute after capture
+                        </td>
+                        <td class="setting-value">
+                    <input style="width: 18em;" type="text" value="<?php echo $still_cmd_post; ?>" maxlength=100 name="Still_Cmd_Post" title="Command to be executed after the image capture. Double-quotes cannot be used. Use single-quotes instead. If your command is longer than 100 characters, consider creating a script and excuting that here."/> 
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
                             Extra parameters for camera (raspistill)
                         </td>
                         <td class="setting-value">
-                    <input style="width: 18em;" type="text" value="<?php echo $still_extra_parameters; ?>" maxlength=200 name="Still_Extra_Parameters" title=""/> 
+                    <input style="width: 18em;" type="text" value="<?php echo $still_extra_parameters; ?>" maxlength=200 name="Still_Extra_Parameters"/> 
                         </td>
                     </tr>
                     <tr>
@@ -2072,7 +2088,23 @@ if (isset($output_error)) {
                             Relay to activate during capture (0 to disable)
                         </td>
                         <td class="setting-value">
-                            <input style="width: 4em;" type="number" min="0" max="8" value="<?php echo $stream_relay; ?>" maxlength=4 size=1 name="Stream_Relay" title="A relay can be set to activate during the video stream."/>
+                            <input style="width: 4em;" type="number" min="0" max="30" value="<?php echo $stream_relay; ?>" maxlength=4 size=1 name="Stream_Relay" title="A relay can be set to activate during the video stream."/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Command to execute before starting stream
+                        </td>
+                        <td class="setting-value">
+                    <input style="width: 18em;" type="text" value="<?php echo $stream_cmd_pre; ?>" maxlength=100 name="Stream_Cmd_Pre" title="Command to be executed before the stream has started. Double-quotes cannot be used. Use single-quotes instead. If your command is longer than 100 characters, consider creating a script and excuting that here."/> 
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Command to execute after stopping stream
+                        </td>
+                        <td class="setting-value">
+                    <input style="width: 18em;" type="text" value="<?php echo $stream_cmd_post; ?>" maxlength=100 name="Stream_Cmd_Post" title="Command to be executed after the stream has been stopped. Double-quotes cannot be used. Use single-quotes instead. If your command is longer than 100 characters, consider creating a script and excuting that here."/> 
                         </td>
                     </tr>
                     <tr>
@@ -2100,7 +2132,7 @@ if (isset($output_error)) {
                             Relay to activate during capture (0 to disable)
                         </td>
                         <td class="setting-value">
-                            <input style="width: 4em;" type="number" min="0" max="8" value="<?php echo $timelapse_relay; ?>" maxlength=4 size=1 name="Timelapse_Relay" title="A relay can be set to activate during a timelapse capture."/>
+                            <input style="width: 4em;" type="number" min="0" max="30" value="<?php echo $timelapse_relay; ?>" maxlength=4 size=1 name="Timelapse_Relay" title="A relay can be set to activate during a timelapse capture."/>
                         </td>
                     </tr>
                     <tr>
@@ -2133,6 +2165,22 @@ if (isset($output_error)) {
                         </td>
                         <td class="setting-value">
                             <input type="hidden" name="Timelapse_DisplayLast" value="0" /><input type="checkbox" id="Timelapse_DisplayLast" name="Timelapse_DisplayLast" value="1"<?php if ($timelapse_display_last) echo ' checked'; ?> title="Always display the last timelapse image or only while a timelapse is running."/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Command to execute before capture
+                        </td>
+                        <td class="setting-value">
+                    <input style="width: 18em;" type="text" value="<?php echo $timelapse_cmd_pre; ?>" maxlength=100 name="Timelapse_Cmd_Pre" title="Command to be executed before capture. Double-quotes cannot be used. Use single-quotes instead. If your command is longer than 100 characters, consider creating a script and excuting that here."/> 
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Command to execute after capture
+                        </td>
+                        <td class="setting-value">
+                    <input style="width: 18em;" type="text" value="<?php echo $timelapse_cmd_post; ?>" maxlength=100 name="Timelapse_Cmd_Post" title="Command to be executed after capture. Double-quotes cannot be used. Use single-quotes instead. If your command is longer than 100 characters, consider creating a script and excuting that here."/> 
                         </td>
                     </tr>
                     <tr>

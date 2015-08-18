@@ -1011,80 +1011,6 @@ if (isset($_POST['ChangeNotify'])) {
     shell_exec("$mycodo_client --sqlreload -1");
 }
 
-// Change number of relays
-if (isset($_POST['ChangeNoRelays'])) {
-    $stmt = $db->prepare("UPDATE Numbers SET Relays=:relays");
-    $stmt->bindValue(':relays', (int)$_POST['numrelays'], SQLITE3_INTEGER);
-    $stmt->execute();
-    shell_exec("$mycodo_client --sqlreload -1");
-}
-
-// Change number of T sensors
-if (isset($_POST['ChangeNoTSensors'])) {
-    $stmt = $db->prepare("UPDATE Numbers SET TSensors=:tsensors");
-    $stmt->bindValue(':tsensors', (int)$_POST['numtsensors'], SQLITE3_INTEGER);
-    $stmt->execute();
-    shell_exec("$mycodo_client --sqlreload -1");
-}
-
-// Change number of HT sensors
-if (isset($_POST['ChangeNoHTSensors'])) {
-    $stmt = $db->prepare("UPDATE Numbers SET HTSensors=:htsensors");
-    $stmt->bindValue(':htsensors', (int)$_POST['numhtsensors'], SQLITE3_INTEGER);
-    $stmt->execute();
-    shell_exec("$mycodo_client --sqlreload -1");
-}
-
-
-// Change number of CO2 sensors
-if (isset($_POST['ChangeNoCo2Sensors'])) {
-    $stmt = $db->prepare("UPDATE Numbers SET CO2Sensors=:co2sensors");
-    $stmt->bindValue(':co2sensors', (int)$_POST['numco2sensors'], SQLITE3_INTEGER);
-    $stmt->execute();
-    shell_exec("$mycodo_client --sqlreload -1");
-}
-
-// Change number of timers
-if (isset($_POST['ChangeNoTimers'])) {
-    $stmt = $db->prepare("UPDATE Numbers SET Timers=:timers");
-    $stmt->bindValue(':timers', (int)$_POST['numtimers'], SQLITE3_INTEGER);
-    $stmt->execute();
-    shell_exec("$mycodo_client --sqlreload -1");
-}
-
-// Change camera still image settings
-if (isset($_POST['ChangeStill'])) {
-    $stmt = $db->prepare("UPDATE CameraStill SET Relay=:relay, Timestamp=:timestamp, Display_Last=:displaylast, Extra_Parameters=:extra");
-    $stmt->bindValue(':relay', (int)$_POST['Still_Relay'], SQLITE3_INTEGER);
-    $stmt->bindValue(':timestamp', (int)$_POST['Still_Timestamp'], SQLITE3_INTEGER);
-    $stmt->bindValue(':displaylast', (int)$_POST['Still_DisplayLast'], SQLITE3_INTEGER);
-    $stmt->bindValue(':extra', $_POST['Still_Extra_Parameters'], SQLITE3_TEXT);
-    $stmt->execute();
-    shell_exec("$mycodo_client --sqlreload -1");
-}
-
-// Change camera video stream settings
-if (isset($_POST['ChangeStream'])) {
-    $stmt = $db->prepare("UPDATE CameraStream SET Relay=:relay, Extra_Parameters=:extra");
-    $stmt->bindValue(':relay', (int)$_POST['Stream_Relay'], SQLITE3_INTEGER);
-    $stmt->bindValue(':extra', $_POST['Stream_Extra_Parameters'], SQLITE3_TEXT);
-    $stmt->execute();
-    shell_exec("$mycodo_client --sqlreload -1");
-}
-
-// Change camera timelapse settings
-if (isset($_POST['ChangeTimelapse'])) {
-    $stmt = $db->prepare("UPDATE CameraTimelapse SET Relay=:relay, Path=:path, Prefix=:prefix, File_Timestamp=:timestamp, Display_Last=:displaylast, Extra_Parameters=:extra");
-    $stmt->bindValue(':relay', (int)$_POST['Timelapse_Relay'], SQLITE3_INTEGER);
-    $stmt->bindValue(':path', $_POST['Timelapse_Path'], SQLITE3_TEXT);
-    $stmt->bindValue(':prefix', $_POST['Timelapse_Prefix'], SQLITE3_TEXT);
-    $stmt->bindValue(':timestamp', (int)$_POST['Timelapse_Timestamp'], SQLITE3_INTEGER);
-    $stmt->bindValue(':displaylast', (int)$_POST['Timelapse_DisplayLast'], SQLITE3_INTEGER);
-    $stmt->bindValue(':extra', $_POST['Timelapse_Extra_Parameters'], SQLITE3_TEXT);
-    $stmt->execute();
-    shell_exec("$mycodo_client --sqlreload -1");
-}
-
 // Change interface settings
 if (isset($_POST['ChangeInterface'])) {
     $stmt = $db->prepare("UPDATE Misc SET Refresh_Time=:refreshtime");
@@ -1092,6 +1018,57 @@ if (isset($_POST['ChangeInterface'])) {
     $stmt->execute();
 }
 
+// Request sensor read and log write
+ if (isset($_POST['WriteSensorLog'])) {
+    shell_exec("$mycodo_client --writetlog 0");
+    shell_exec("$mycodo_client --writehtlog 0");
+    shell_exec("$mycodo_client --writeco2log 0");
+}
+
+/*
+ *
+ * Camera
+ *
+ */
+
+// Change camera still image settings
+if (isset($_POST['ChangeStill'])) {
+    $stmt = $db->prepare("UPDATE CameraStill SET Relay=:relay, Timestamp=:timestamp, Display_Last=:displaylast, Cmd_Pre=:cmdpre, Cmd_Post=:cmdpost, Extra_Parameters=:extra");
+    $stmt->bindValue(':relay', (int)$_POST['Still_Relay'], SQLITE3_INTEGER);
+    $stmt->bindValue(':timestamp', (int)$_POST['Still_Timestamp'], SQLITE3_INTEGER);
+    $stmt->bindValue(':displaylast', (int)$_POST['Still_DisplayLast'], SQLITE3_INTEGER);
+    $stmt->bindValue(':cmdpre', $_POST['Still_Cmd_Pre'], SQLITE3_TEXT);
+    $stmt->bindValue(':cmdpost', $_POST['Still_Cmd_Post'], SQLITE3_TEXT);
+    $stmt->bindValue(':extra', $_POST['Still_Extra_Parameters'], SQLITE3_TEXT);
+    $stmt->execute();
+    shell_exec("$mycodo_client --sqlreload -1");
+}
+
+// Change camera video stream settings
+if (isset($_POST['ChangeStream'])) {
+    $stmt = $db->prepare("UPDATE CameraStream SET Relay=:relay, Cmd_Pre=:cmdpre, Cmd_Post=:cmdpost, Extra_Parameters=:extra");
+    $stmt->bindValue(':relay', (int)$_POST['Stream_Relay'], SQLITE3_INTEGER);
+    $stmt->bindValue(':cmdpre', $_POST['Stream_Cmd_Pre'], SQLITE3_TEXT);
+    $stmt->bindValue(':cmdpost', $_POST['Stream_Cmd_Post'], SQLITE3_TEXT);
+    $stmt->bindValue(':extra', $_POST['Stream_Extra_Parameters'], SQLITE3_TEXT);
+    $stmt->execute();
+    shell_exec("$mycodo_client --sqlreload -1");
+}
+
+// Change camera timelapse settings
+if (isset($_POST['ChangeTimelapse'])) {
+    $stmt = $db->prepare("UPDATE CameraTimelapse SET Relay=:relay, Path=:path, Prefix=:prefix, File_Timestamp=:timestamp, Display_Last=:displaylast, Cmd_Pre=:cmdpre, Cmd_Post=:cmdpost, Extra_Parameters=:extra");
+    $stmt->bindValue(':relay', (int)$_POST['Timelapse_Relay'], SQLITE3_INTEGER);
+    $stmt->bindValue(':path', $_POST['Timelapse_Path'], SQLITE3_TEXT);
+    $stmt->bindValue(':prefix', $_POST['Timelapse_Prefix'], SQLITE3_TEXT);
+    $stmt->bindValue(':timestamp', (int)$_POST['Timelapse_Timestamp'], SQLITE3_INTEGER);
+    $stmt->bindValue(':displaylast', (int)$_POST['Timelapse_DisplayLast'], SQLITE3_INTEGER);
+    $stmt->bindValue(':cmdpre', $_POST['Timelapse_Cmd_Pre'], SQLITE3_TEXT);
+    $stmt->bindValue(':cmdpost', $_POST['Timelapse_Cmd_Post'], SQLITE3_TEXT);
+    $stmt->bindValue(':extra', $_POST['Timelapse_Extra_Parameters'], SQLITE3_TEXT);
+    $stmt->execute();
+    shell_exec("$mycodo_client --sqlreload -1");
+}
 
 // Camera error check
 if (isset($_POST['CaptureStill']) || isset($_POST['start-stream']) || isset($_POST['start-timelapse'])) {
@@ -1106,8 +1083,11 @@ if (isset($_POST['CaptureStill']) || isset($_POST['start-stream']) || isset($_PO
 
 // Capture still image from camera (with or without light activation)
 if (isset($_POST['CaptureStill']) && !file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer) && !file_exists($lock_timelapse)) {
+
     shell_exec("touch $lock_raspistill");
-    if ($still_relay) {
+    if ($still_cmd_pre != '') shell_exec($still_cmd_pre);
+
+    if ($still_relay > 0) {
         if ($relay_trigger[$still_relay-1] == 1) $trigger = 1;
         else $trigger = 0;
         $rpin = $relay_pin[$still_relay-1];
@@ -1124,12 +1104,16 @@ if (isset($_POST['CaptureStill']) && !file_exists($lock_raspistill) && !file_exi
         }
     }
     shell_exec($cmd);
+
+    if ($still_cmd_post != '') shell_exec($still_cmd_post);
     shell_exec("rm -f $lock_raspistill");
 }
 
 // Start video stream
 if (isset($_POST['start-stream']) && !file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer) && !file_exists($lock_timelapse)) {
     shell_exec("touch $lock_mjpg_streamer");
+    if ($stream_cmd_pre != '') shell_exec($stream_cmd_pre);
+
     if ($stream_relay) { // Turn light on
         if ($relay_trigger[$stream_relay-1] == 1) $trigger = 1;
         else $trigger = 0;
@@ -1152,6 +1136,8 @@ if (isset($_POST['stop-stream'])) {
         shell_exec("rm -f $lock_mjpg_streamer_relay");
         shell_exec("$stream_exec stop $rpin $trigger > /dev/null &");
     } else shell_exec("$stream_exec stop");
+
+    if ($stream_cmd_post != '') shell_exec($stream_cmd_post);
     shell_exec("rm -f $lock_mjpg_streamer");
     sleep(1);
 }
@@ -1159,8 +1145,11 @@ if (isset($_POST['stop-stream'])) {
 // Start time-lapse
 if (isset($_POST['start-timelapse'])) {
     if (isset($_POST['timelapse_duration']) && isset($_POST['timelapse_runtime']) && !file_exists($lock_raspistill) && !file_exists($lock_mjpg_streamer) && !file_exists($lock_timelapse)) {
+        shell_exec("touch $lock_timelapse");
+        if ($still_cmd_pre != '') shell_exec($still_cmd_pre);
 
         if ($timelapse_relay) {
+            shell_exec("touch $lock_timelapse_light");
             if ($relay_trigger[$timelapse_relay-1] == 1) $trigger = 1;
             else $trigger = 0;
         } else $trigger = 0;
@@ -1170,10 +1159,6 @@ if (isset($_POST['start-timelapse'])) {
 
         $duration = $_POST['timelapse_duration'] * 60 * 1000;
         $timeout = $_POST['timelapse_runtime'] * 60 * 1000;
-
-        shell_exec("touch $lock_timelapse");
-
-        if ($timelapse_relay) shell_exec("touch $lock_timelapse_light");
 
         shell_exec("$timelapse_exec start $timelapse_relay $timelapse_path $timelapse_prefix $timestamp $duration $timeout > /dev/null &");
 
@@ -1187,13 +1172,8 @@ if (isset($_POST['stop-timelapse'])) {
         shell_exec("rm -f $lock_timelapse_light");
         shell_exec("$timelapse_exec stop $timelapse_relay > /dev/null &");
     } else shell_exec("$timelapse_exec stop > /dev/null &");
+
+    if ($timelapse_cmd_post != '') shell_exec($timelapse_cmd_post);
     shell_exec("rm -f $lock_timelapse");
     sleep(1);
-}
-
-// Request sensor read and log write
- if (isset($_POST['WriteSensorLog'])) {
-    shell_exec("$mycodo_client --writetlog 0");
-    shell_exec("$mycodo_client --writehtlog 0");
-    shell_exec("$mycodo_client --writeco2log 0");
 }

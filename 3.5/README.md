@@ -4,7 +4,8 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 ## Index
 
-+ [Progress](#progress)
++ [Changelog](#changelog)
++ [Development](#Development)
 + [New Dependencies](#new-dependencies)
 + [Supported Sensors](#supported-sensors)
 + [Software Install](#software-install)
@@ -29,27 +30,64 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 + [License](#license)
 + [Useful Links](#useful-links)
 
-<a name="progress"></a>
-## Progress
+## Changelog
 
-- [X] Add ability to set maximum on duration for relays under PID-control
-- [X] Database update is now done dynamically instead of everything being erased
-- [X] Ability to activate a relay for a predefined period before reading a sensor
-- [X] Automated update from github (from Settings in the web interface)
-- [X] Unlimited number of sensor/relays/timers that can be added
-- [X] Add custom Sensor/PID presets (save/load/overwrite/delete)
-- [X] Set desired startup state of relay (on or off)
-- [X] Time-lapse image acquisition
-- [X] PID regulation up, down, or both (previously only up)
-- [X] Log parsing (40%-70% increase in graph-generation speed)
-- [X] K30 CO<sub>2</sub> sensor support
-- [X] DS18B20 temperature sensor support
-- [X] SQLite configuration database (previously plain-text)
-- [X] SQLite user database (previously MySQL)
+Major changes for each versioned release
+
+#### 3.5.68
++ Set pre- and post-capture commands (for image, stream, and timelapse)
+
+#### 3.5.67
++ Set maximum on duration for relays under PID-control
+
+#### 3.5.66
++ Ability to upgrade database upgrade instead of erasing everything each Mycodo update
+
+#### 3.5.65
++ Ability to activate a relay for a predefined period before reading a sensor
++ Automated update from github (from Settings tab)
+
+#### 3.5.64
++ Unlimited number of sensor/relays/timers that can be added
+
+#### 3.5.63
++ Add custom Sensor/PID presets (save/load/overwrite/delete)
+
+#### 3.5.62
++ Set the desired startup state of each relay (On or Off)
+
+#### 3.5.61
++ Add time-lapse image acquisition
+
+#### 3.5.60
++ PID-controllers can now regulate up, down, or both (previously only up)
+
+#### 3.5.58
++ Add DS18B20 temperature sensor support
+
+#### 3.5.55
++ Add locks for sensor reads (prevents reading too often)
+
+#### 3.5.54
++ Ability to set relay to turn on while the camera is active
+
+#### 3.5.51/3.5.52
++ Security improvements
+
+#### 3.5.50
++ Add log parsing (40%-70% speed increase with generating graphs)
+
+#### 3.5.0
++ Add K30 CO<sub>2</sub> sensor support
++ Moved to simpler login system (log in, log out, remember me cookie)
++ Moved to SQLite settings database (previously plain-text)
++ Moved to SQLite login database (previously MySQL)
+  
+## Development
+
 - [ ] Sensor calibration
-- [ ] Optional maximum allowed PID output (turn relay on for a maximum of X seconds)
 - [ ] More graph options (y-axis min/max, select sensors to be graphed)
-- [ ] Email notification or audible alarm during critical failure or condition (working on)
+- [ ] Email notification or audible alarm during critical failure or condition
 - [ ] Convert time-lapse images to video
 - [ ] Barometric Pressure sensor support
 - [ ] O<sub>2</sub> sensor support
