@@ -471,7 +471,6 @@ if (isset($output_error)) {
 
             </div>
             </form>
-            <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
 
             <div style="clear: both;"></div>
 
@@ -514,6 +513,7 @@ if (isset($output_error)) {
                     <?php
                     for ($i = 0; $i < count($sensor_t_id); $i++) {
                     ?>
+                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                     <table class="sensor" style="border: 0.7em solid #EBEBEB; border-top: 0;">
                         <tr class="shade">
                             <td>T Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_t_id[$i]; ?>)</span></td>
@@ -605,7 +605,9 @@ if (isset($output_error)) {
                             <td>PID<br>Regulate</td>
                             <td>Sensor Read<br>Interval</td>
                             <td>Up<br>Relay</td>
+                            <td>Up<br>Max</td>
                             <td>Down<br>Relay</td>
+                            <td>Down<br>Max</td>
                             <td>K<sub>p</sub></td>
                             <td>K<sub>i</sub></td>
                             <td>K<sub>d</sub></td>
@@ -668,6 +670,7 @@ if (isset($output_error)) {
                             </td>
                         </tr>
                     </table>
+                    <form>
                     <div style="margin-bottom: <?php if ($i == count($sensor_t_id)) echo '2'; else echo '1'; ?>em;"></div>
                     <?php
                     }
@@ -683,6 +686,7 @@ if (isset($output_error)) {
                     <?php
                     for ($i = 0; $i < count($sensor_ht_id); $i++) {
                     ?>
+                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                     <table class="sensor" style="border: 0.7em solid #EBEBEB; border-top: 0;">
                         <tr class="shade">
                             <td>HT Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_ht_id[$i]; ?>)</span></td>
@@ -891,6 +895,7 @@ if (isset($output_error)) {
                             </td>
                         </tr>
                     </table>
+                    </form>
                     <div style="margin-bottom: <?php if ($i == count($sensor_ht_id)) echo '2'; else echo '1'; ?>em;"></div>
                     <?php
                     }
@@ -906,6 +911,7 @@ if (isset($output_error)) {
                     <?php
                     for ($i = 0; $i < count($sensor_co2_id); $i++) {
                     ?>
+                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                     <table class="sensor" style="border: 0.7em solid #EBEBEB; border-top: 0;">
                         <tr class="shade">
                             <td>CO<sub>2</sub> Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_co2_id[$i]; ?>)</span></td>
@@ -1060,6 +1066,7 @@ if (isset($output_error)) {
                             </td>
                         </tr>
                     </table>
+                    </form>
                     <div style="margin-bottom: <?php if ($i == count($sensor_co2_id)) echo '2'; else echo '1'; ?>em;"></div>
                     <?php
                     }

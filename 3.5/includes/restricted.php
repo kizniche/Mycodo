@@ -448,7 +448,7 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
 // Add Temperature sensors
 if (isset($_POST['AddTSensors']) && isset($_POST['AddTSensorsNumber'])) {
     for ($j = 0; $j < $_POST['AddTSensorsNumber']; $j++) {
-        $stmt = $db->prepare("INSERT INTO TSensor VALUES(:id, 'T-S', 0, 'DS18B20', 120, 0, 0, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0)");
+        $stmt = $db->prepare("INSERT INTO TSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D) VALUES(:id, 'T-S', 0, 'DS18B20', 120, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 90, 0, 0, 0)");
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->execute();
     }
@@ -747,7 +747,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
 // Add HT sensors
 if (isset($_POST['AddHTSensors']) && isset($_POST['AddHTSensorsNumber'])) {
     for ($j = 0; $j < $_POST['AddHTSensorsNumber']; $j++) {
-        $stmt = $db->prepare("INSERT INTO HTSensor VALUES(:id, 'HT-S', 0, 'DHT22', 120, 0, 0, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0, 0, 0, 1, 50.0, 0, 90, 0, 0, 0)");
+        $stmt = $db->prepare("INSERT INTO HTSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relay_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D) VALUES(:id, 'HT-S', 0, 'DHT22', 120, 0, 0, 0, 0, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0, 0, 0, 0, 0, 1, 50.0, 0, 90, 0, 0, 0)");
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->execute();
     }
@@ -989,7 +989,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
 // Add CO2 sensors
 if (isset($_POST['AddCO2Sensors']) && isset($_POST['AddCO2SensorsNumber'])) {
     for ($j = 0; $j < $_POST['AddCO2SensorsNumber']; $j++) {
-        $stmt = $db->prepare("INSERT INTO CO2Sensor VALUES(:id, 'CO2-S', 0, 'K30', 120, 0, 0, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0)");
+        $stmt = $db->prepare("INSERT INTO CO2Sensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, CO2_Relay_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmax_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D) VALUES(:id, 'CO2-S', 0, 'K30', 120, 0, 0, 0, 0, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0)");
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->execute();
     }
