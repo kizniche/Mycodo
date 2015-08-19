@@ -387,6 +387,11 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
         plot.write('set multiplot layout ' + str(num_graphs) + ',1\n')
 
         if sum(sensor_t_graph):
+            y1_min = '0'
+            y1_max = '35'
+            plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
+            plot.write('set ytics 5\n')
+            plot.write('set mytics 5\n')
             plot.write('set origin 0.0,%.2f\n' % float(1-((1/float(num_graphs))*float(multiplot_num))))
             multiplot_num += 1
             plot.write('set title \"Combined T Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
@@ -400,6 +405,11 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write(' \n')
 
         if sum(sensor_ht_graph):
+            y1_min = '0'
+            y1_max = '35'
+            plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
+            plot.write('set ytics 5\n')
+            plot.write('set mytics 5\n')
             plot.write('\nset origin 0.0,%.2f\n' % float(1-((1/float(num_graphs))*float(multiplot_num))))
             multiplot_num += 1
             plot.write('set title \"Combined HT Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
