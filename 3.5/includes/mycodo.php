@@ -1125,7 +1125,13 @@ if (isset($output_error)) {
                             <td>Press Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_press_id[$i]; ?>)</span></td>
                             <td>Sensor<br>Name</td>
                             <td>Sensor<br>Device</td>
-                            <td>GPIO<br>Pin</td>
+                            <?php
+                                if ($sensor_press_device[$i] == 'BMP085-180') {
+                                    echo '<td>I<sup>2</sup>C<br>Add.</td>';
+                                } else {
+                                    echo '<td>GPIO<br>Pin</td>';
+                                }
+                            ?>
                             <td>Log<br>Interval</td>
                             <td>Pre<br>Relay</td>
                             <td>Pre<br>Duration</td>
