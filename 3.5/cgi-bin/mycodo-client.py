@@ -102,7 +102,7 @@ def menu():
                 print "Fail"
             sys.exit(0)
         elif opt == "--pidrestart":
-            if (sys.argv[2] != 'T' and sys.argv[2] != 'HT' and sys.argv[2] != 'CO2' and sys.argv[2] != 'PressTemp' and sys.argv[2] != 'PressPress'):
+            if (sys.argv[2] != 'T' and sys.argv[2] != 'HT' and sys.argv[2] != 'CO2' and sys.argv[2] != 'Press'):
                 print "'%s' is not a valid option. Use 'T', 'HT', 'CO2', 'PressTemp', or 'PressPress'" % sys.argv[2]
                 sys.exit(0)
             print "%s [Remote command] Restart all %s PID controllers: Server returned:" % (
