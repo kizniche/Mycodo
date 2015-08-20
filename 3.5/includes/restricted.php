@@ -258,16 +258,30 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
 
     // Set Temperature PID override on or off
     if (isset($_POST['ChangeT' . $p . 'TempOR'])) {
-        $stmt = $db->prepare("UPDATE TSensor SET Temp_OR=:tempor WHERE Id=:id");
-        $stmt->bindValue(':tempor', (int)$_POST['ChangeT' . $p . 'TempOR'], SQLITE3_INTEGER);
-        $stmt->bindValue(':id', $sensor_t_id[$p], SQLITE3_TEXT);
-        $stmt->execute();
-        if ((int)$_POST['ChangeT' . $p . 'TempOR']) {
-            shell_exec("$mycodo_client --pidstop TTemp $p");
-            shell_exec("$mycodo_client --sqlreload -1");
-        } else {
-            shell_exec("$mycodo_client --sqlreload -1");
-            shell_exec("$mycodo_client --pidstart TTemp $p");
+
+        if ((int)$_POST['ChangeT' . $p . 'TempOR'] == 0) {
+            if (pid_t_temp_set_dir[$p] == 0 and
+                (pid_t_temp_relay_high[$p] == 0 or pid_t_temp_relay_low[$p] == 0)) {
+                $sensor_error = 'Error: If PID Regulate is set to Both, the Up and Down relays must be set.';
+            } else if (pid_t_temp_set_dir[$p] == -1 and pid_t_temp_relay_high[$p] == 0) {
+                $sensor_error = 'Error: If PID Regulate is set to Down, the Down relay must be set.';
+            } else if (pid_t_temp_set_dir[$p] == 1 and pid_t_temp_relay_low[$p] == 0) {
+                $sensor_error = 'Error: If PID Regulate is set to Up, the Up relay must be set.';
+            }
+        }
+
+        if (!isset($sensor_error)) {
+            $stmt = $db->prepare("UPDATE TSensor SET Temp_OR=:tempor WHERE Id=:id");
+            $stmt->bindValue(':tempor', (int)$_POST['ChangeT' . $p . 'TempOR'], SQLITE3_INTEGER);
+            $stmt->bindValue(':id', $sensor_t_id[$p], SQLITE3_TEXT);
+            $stmt->execute();
+            if ((int)$_POST['ChangeT' . $p . 'TempOR']) {
+                shell_exec("$mycodo_client --pidstop TTemp $p");
+                shell_exec("$mycodo_client --sqlreload -1");
+            } else {
+                shell_exec("$mycodo_client --sqlreload -1");
+                shell_exec("$mycodo_client --pidstart TTemp $p");
+            }
         }
     }
 
@@ -496,31 +510,59 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
 
     // Set Temperature PID override on or off
     if (isset($_POST['ChangeHT' . $p . 'TempOR'])) {
-        $stmt = $db->prepare("UPDATE HTSensor SET Temp_OR=:humor WHERE Id=:id");
-        $stmt->bindValue(':humor', (int)$_POST['ChangeHT' . $p . 'TempOR'], SQLITE3_INTEGER);
-        $stmt->bindValue(':id', $sensor_ht_id[$p], SQLITE3_TEXT);
-        $stmt->execute();
-        if ((int)$_POST['ChangeHT' . $p . 'TempOR']) {
-            shell_exec("$mycodo_client --pidstop HTTemp $p");
-            shell_exec("$mycodo_client --sqlreload -1");
-        } else {
-            shell_exec("$mycodo_client --sqlreload -1");
-            shell_exec("$mycodo_client --pidstart HTTemp $p");
+
+        if ((int)$_POST['ChangeHT' . $p . 'TempOR'] == 0) {
+            if (pid_ht_temp_set_dir[$p] == 0 and
+                (pid_ht_temp_relay_high[$p] == 0 or pid_ht_temp_relay_low[$p] == 0)) {
+                $sensor_error = 'Error: If PID Regulate is set to Both, the Up and Down relays must be set.';
+            } else if (pid_ht_temp_set_dir[$p] == -1 and pid_ht_temp_relay_high[$p] == 0) {
+                $sensor_error = 'Error: If PID Regulate is set to Down, the Down relay must be set.';
+            } else if (pid_ht_temp_set_dir[$p] == 1 and pid_ht_temp_relay_low[$p] == 0) {
+                $sensor_error = 'Error: If PID Regulate is set to Up, the Up relay must be set.';
+            }
+        }
+
+        if (!isset($sensor_error)) {
+            $stmt = $db->prepare("UPDATE HTSensor SET Temp_OR=:humor WHERE Id=:id");
+            $stmt->bindValue(':humor', (int)$_POST['ChangeHT' . $p . 'TempOR'], SQLITE3_INTEGER);
+            $stmt->bindValue(':id', $sensor_ht_id[$p], SQLITE3_TEXT);
+            $stmt->execute();
+            if ((int)$_POST['ChangeHT' . $p . 'TempOR']) {
+                shell_exec("$mycodo_client --pidstop HTTemp $p");
+                shell_exec("$mycodo_client --sqlreload -1");
+            } else {
+                shell_exec("$mycodo_client --sqlreload -1");
+                shell_exec("$mycodo_client --pidstart HTTemp $p");
+            }
         }
     }
 
     // Set Humidity PID override on or off
     if (isset($_POST['ChangeHT' . $p . 'HumOR'])) {
-        $stmt = $db->prepare("UPDATE HTSensor SET Hum_OR=:humor WHERE Id=:id");
-        $stmt->bindValue(':humor', (int)$_POST['ChangeHT' . $p . 'HumOR'], SQLITE3_INTEGER);
-        $stmt->bindValue(':id', $sensor_ht_id[$p], SQLITE3_TEXT);
-        $stmt->execute();
-        if ((int)$_POST['ChangeHT' . $p . 'HumOR']) {
-            shell_exec("$mycodo_client --pidstop HTHum $p");
-            shell_exec("$mycodo_client --sqlreload -1");
-        } else {
-            shell_exec("$mycodo_client --sqlreload -1");
-            shell_exec("$mycodo_client --pidstart HTHum $p");
+
+        if ((int)$_POST['ChangeHT' . $p . 'HumOR'] == 0) {
+            if (pid_ht_hum_set_dir[$p] == 0 and
+                (pid_ht_hum_relay_high[$p] == 0 or pid_ht_hum_relay_low[$p] == 0)) {
+                $sensor_error = 'Error: If PID Regulate is set to Both, the Up and Down relays must be set.';
+            } else if (pid_ht_hum_set_dir[$p] == -1 and pid_ht_hum_relay_high[$p] == 0) {
+                $sensor_error = 'Error: If PID Regulate is set to Down, the Down relay must be set.';
+            } else if (pid_ht_hum_set_dir[$p] == 1 and pid_ht_hum_relay_low[$p] == 0) {
+                $sensor_error = 'Error: If PID Regulate is set to Up, the Up relay must be set.';
+            }
+        }
+
+        if (!isset($sensor_error)) {
+            $stmt = $db->prepare("UPDATE HTSensor SET Hum_OR=:humor WHERE Id=:id");
+            $stmt->bindValue(':humor', (int)$_POST['ChangeHT' . $p . 'HumOR'], SQLITE3_INTEGER);
+            $stmt->bindValue(':id', $sensor_ht_id[$p], SQLITE3_TEXT);
+            $stmt->execute();
+            if ((int)$_POST['ChangeHT' . $p . 'HumOR']) {
+                shell_exec("$mycodo_client --pidstop HTHum $p");
+                shell_exec("$mycodo_client --sqlreload -1");
+            } else {
+                shell_exec("$mycodo_client --sqlreload -1");
+                shell_exec("$mycodo_client --pidstart HTHum $p");
+            }
         }
     }
 
@@ -799,16 +841,30 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
 
     // Set CO2 PID override on or off
     if (isset($_POST['ChangeCO2' . $p . 'CO2OR'])) {
-        $stmt = $db->prepare("UPDATE CO2Sensor SET CO2_OR=:co2or WHERE Id=:id");
-        $stmt->bindValue(':co2or', (int)$_POST['ChangeCO2' . $p . 'CO2OR'], SQLITE3_INTEGER);
-        $stmt->bindValue(':id', $sensor_co2_id[$p], SQLITE3_TEXT);
-        $stmt->execute();
-        if ((int)$_POST['ChangeCO2' . $p . 'CO2OR']) {
-            shell_exec("$mycodo_client --pidstop CO2 $p");
-            shell_exec("$mycodo_client --sqlreload -1");
-        } else {
-            shell_exec("$mycodo_client --sqlreload -1");
-            shell_exec("$mycodo_client --pidstart CO2 $p");
+
+        if ((int)$_POST['ChangeCO2' . $p . 'CO2OR'] == 0) {
+            if (pid_co2_set_dir[$p] == 0 and
+                (pid_co2_relay_high[$p] == 0 or pid_co2_relay_low[$p] == 0)) {
+                $sensor_error = 'Error: If PID Regulate is set to Both, the Up and Down relays must be set.';
+            } else if (pid_co2_set_dir[$p] == -1 and pid_co2_relay_high[$p] == 0) {
+                $sensor_error = 'Error: If PID Regulate is set to Down, the Down relay must be set.';
+            } else if (pid_co2_set_dir[$p] == 1 and pid_co2_relay_low[$p] == 0) {
+                $sensor_error = 'Error: If PID Regulate is set to Up, the Up relay must be set.';
+            }
+        }
+
+        if (!isset($sensor_error)) {
+            $stmt = $db->prepare("UPDATE CO2Sensor SET CO2_OR=:co2or WHERE Id=:id");
+            $stmt->bindValue(':co2or', (int)$_POST['ChangeCO2' . $p . 'CO2OR'], SQLITE3_INTEGER);
+            $stmt->bindValue(':id', $sensor_co2_id[$p], SQLITE3_TEXT);
+            $stmt->execute();
+            if ((int)$_POST['ChangeCO2' . $p . 'CO2OR']) {
+                shell_exec("$mycodo_client --pidstop CO2 $p");
+                shell_exec("$mycodo_client --sqlreload -1");
+            } else {
+                shell_exec("$mycodo_client --sqlreload -1");
+                shell_exec("$mycodo_client --pidstart CO2 $p");
+            }
         }
     }
 
@@ -1046,31 +1102,59 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
 
     // Set Temperature PID override on or off
     if (isset($_POST['ChangePress' . $p . 'TempOR'])) {
-        $stmt = $db->prepare("UPDATE PressSensor SET Temp_OR=:pressor WHERE Id=:id");
-        $stmt->bindValue(':pressor', (int)$_POST['ChangePress' . $p . 'TempOR'], SQLITE3_INTEGER);
-        $stmt->bindValue(':id', $sensor_press_id[$p], SQLITE3_TEXT);
-        $stmt->execute();
-        if ((int)$_POST['ChangePress' . $p . 'TempOR']) {
-            shell_exec("$mycodo_client --pidstop PressTemp $p");
-            shell_exec("$mycodo_client --sqlreload -1");
-        } else {
-            shell_exec("$mycodo_client --sqlreload -1");
-            shell_exec("$mycodo_client --pidstart PressTemp $p");
+
+        if ((int)$_POST['ChangePress' . $p . 'TempOR'] == 0) {
+            if (pid_press_temp_set_dir[$p] == 0 and
+                (pid_press_temp_relay_high[$p] == 0 or pid_press_temp_relay_low[$p] == 0)) {
+                $sensor_error = 'Error: If PID Regulate is set to Both, the Up and Down relays must be set.';
+            } else if (pid_press_temp_set_dir[$p] == -1 and pid_press_temp_relay_high[$p] == 0) {
+                $sensor_error = 'Error: If PID Regulate is set to Down, the Down relay must be set.';
+            } else if (pid_press_temp_set_dir[$p] == 1 and pid_press_temp_relay_low[$p] == 0) {
+                $sensor_error = 'Error: If PID Regulate is set to Up, the Up relay must be set.';
+            }
+        }
+
+        if (!isset($sensor_error)) {
+            $stmt = $db->prepare("UPDATE PressSensor SET Temp_OR=:pressor WHERE Id=:id");
+            $stmt->bindValue(':pressor', (int)$_POST['ChangePress' . $p . 'TempOR'], SQLITE3_INTEGER);
+            $stmt->bindValue(':id', $sensor_press_id[$p], SQLITE3_TEXT);
+            $stmt->execute();
+            if ((int)$_POST['ChangePress' . $p . 'TempOR']) {
+                shell_exec("$mycodo_client --pidstop PressTemp $p");
+                shell_exec("$mycodo_client --sqlreload -1");
+            } else {
+                shell_exec("$mycodo_client --sqlreload -1");
+                shell_exec("$mycodo_client --pidstart PressTemp $p");
+            }
         }
     }
 
     // Set Pressidity PID override on or off
     if (isset($_POST['ChangePress' . $p . 'PressOR'])) {
-        $stmt = $db->prepare("UPDATE PressSensor SET Press_OR=:pressor WHERE Id=:id");
-        $stmt->bindValue(':pressor', (int)$_POST['ChangePress' . $p . 'PressOR'], SQLITE3_INTEGER);
-        $stmt->bindValue(':id', $sensor_press_id[$p], SQLITE3_TEXT);
-        $stmt->execute();
-        if ((int)$_POST['ChangePress' . $p . 'PressOR']) {
-            shell_exec("$mycodo_client --pidstop PressPress $p");
-            shell_exec("$mycodo_client --sqlreload -1");
-        } else {
-            shell_exec("$mycodo_client --sqlreload -1");
-            shell_exec("$mycodo_client --pidstart PressPress $p");
+
+        if ((int)$_POST['ChangePress' . $p . 'PressOR'] == 0) {
+            if (pid_press_press_set_dir[$p] == 0 and
+                (pid_press_press_relay_high[$p] == 0 or pid_press_press_relay_low[$p] == 0)) {
+                $sensor_error = 'Error: If PID Regulate is set to Both, the Up and Down relays must be set.';
+            } else if (pid_press_press_set_dir[$p] == -1 and pid_press_press_relay_high[$p] == 0) {
+                $sensor_error = 'Error: If PID Regulate is set to Down, the Down relay must be set.';
+            } else if (pid_press_press_set_dir[$p] == 1 and pid_press_press_relay_low[$p] == 0) {
+                $sensor_error = 'Error: If PID Regulate is set to Up, the Up relay must be set.';
+            }
+        }
+
+        if (!isset($sensor_error)) {
+            $stmt = $db->prepare("UPDATE PressSensor SET Press_OR=:pressor WHERE Id=:id");
+            $stmt->bindValue(':pressor', (int)$_POST['ChangePress' . $p . 'PressOR'], SQLITE3_INTEGER);
+            $stmt->bindValue(':id', $sensor_press_id[$p], SQLITE3_TEXT);
+            $stmt->execute();
+            if ((int)$_POST['ChangePress' . $p . 'PressOR']) {
+                shell_exec("$mycodo_client --pidstop PressPress $p");
+                shell_exec("$mycodo_client --sqlreload -1");
+            } else {
+                shell_exec("$mycodo_client --sqlreload -1");
+                shell_exec("$mycodo_client --pidstart PressPress $p");
+            }
         }
     }
 

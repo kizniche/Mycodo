@@ -269,11 +269,11 @@ if (isset($output_error)) {
                     <tr>
                         <td style="font-size: 0.8em; padding-right: 0.5em;"><?php
                             echo 'Now<br><span title="' , number_format((float)$press_temp_f[$i], 1, '.', '') , '&deg;F">' , number_format((float)$press_temp_c[$i], 1, '.', '') , '&deg;C</span>';
-                            echo '<br>' , number_format((float)$press[$i], 1, '.', '') , 'Pa';
+                            echo '<br>' , (int)$press[$i] , ' Pa';
                         ?></td>
                         <td style="font-size: 0.8em;"><?php
                             echo 'Set<br><span title="' , number_format((float)$settemp_press_f[$i], 1, '.', '') , '&deg;F">' , number_format((float)$pid_press_temp_set[$i], 1, '.', '') , '&deg;C</span>';
-                            echo '<br>' , number_format((float)$pid_press_press_set[$i], 1, '.', '') , 'Pa';
+                            echo '<br>' , (int)$pid_press_press_set[$i] , ' Pa';
                         ?></td>
                     </tr>
                 </table>
