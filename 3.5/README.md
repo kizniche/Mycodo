@@ -152,7 +152,7 @@ Using raspi-config, perform the following:
 
 `git clone https://github.com/adafruit/Adafruit_Python_DHT.git ~/Adafruit_Python_DHT`
 
-`git clone https://github.com/adafruit/Adafruit_Python_BMP.git ~/Adafruit_Python_BMP
+`git clone https://github.com/adafruit/Adafruit_Python_BMP.git ~/Adafruit_Python_BMP`
 
 Create a symlink to Mycodo
 

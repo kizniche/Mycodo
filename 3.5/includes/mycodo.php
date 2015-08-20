@@ -264,7 +264,7 @@ if (isset($output_error)) {
             <div class="header">
                 <table>
                     <tr>
-                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'HT' , $i+1 , ': ' , $sensor_press_name[$i]; ?></td>
+                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'P' , $i+1 , ': ' , $sensor_press_name[$i]; ?></td>
                     </tr>
                     <tr>
                         <td style="font-size: 0.8em; padding-right: 0.5em;"><?php

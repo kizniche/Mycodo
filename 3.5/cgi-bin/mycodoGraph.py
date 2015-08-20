@@ -59,8 +59,6 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
     sensor_co2_log_final = [0] * (len(sensor_co2_name)+1)
     sensor_press_log_final = [0] * (len(sensor_press_name)+1)
 
-    logging.debug("[TEST00] %s", len(sensor_co2_name))
-
     tmp_path = "/var/tmp"
     h = 0
     d = 0
@@ -168,11 +166,8 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             os.system(cmd)
 
             lines = 604800
-            logging.debug("[TEST2] %s", sensor_co2_log_final[0])
-            sensor_co2_log_final[1] = 'test'
-            logging.debug("[TEST3] %s", sensor_co2_log_final[1])
-            # sensor_co2_log_final[1] = "%s/sensor-%s-logs-%s-%s-%s-week.log" %  (
-            #     tmp_path, sensor_type, graph_span, graph_id, sensor_number)
+            sensor_co2_log_final[1] = "%s/sensor-%s-logs-%s-%s-%s-week.log" %  (
+                tmp_path, sensor_type, graph_span, graph_id, sensor_number)
             cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
                 sensor_number, sensor_type, lines, sensor_co2_log_generate, sensor_co2_log_final[1])
             logging.debug("[Generate Graph] cmd: %s", cmd)
