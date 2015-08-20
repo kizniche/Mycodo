@@ -117,9 +117,6 @@ def menu():
             if (sys.argv[2] != 'TTemp' and sys.argv[2] != 'HTTemp' and sys.argv[2] != 'HTHum' and sys.argv[2] != 'CO2' and sys.argv[2] != 'PressTemp' and sys.argv[2] != 'PressPress'):
                 print "'%s' is not a valid option. Use 'TTemp', 'HTTemp', 'HTHum', 'CO2', 'PressTemp', or 'PressPress'" % sys.argv[2]
                 sys.exit(0)
-            if (int(float(sys.argv[3])) < 1):
-                print "'%s' is not a valid option. Options are >1." % sys.argv[3]
-                sys.exit(0)
             print "%s [Remote command] Start %s PID controller number %s: Server returned:" % (
                 Timestamp(), sys.argv[2], sys.argv[3]),
             reload_status = c.root.PID_start(sys.argv[2], int(float(sys.argv[3])))
@@ -131,9 +128,6 @@ def menu():
         elif opt == "--pidstop":
             if (sys.argv[2] != 'TTemp' and sys.argv[2] != 'HTTemp' and sys.argv[2] != 'HTHum' and sys.argv[2] != 'CO2' and sys.argv[2] != 'PressTemp' and sys.argv[2] != 'PressPress'):
                 print "'%s' is not a valid option. Use 'TTemp', 'HTTemp', 'HTHum',  'CO2', 'PressTemp', or 'PressPress'" % sys.argv[2]
-                sys.exit(0)
-            if (int(float(sys.argv[3])) < 1):
-                print "'%s' is not a valid option. Options are >1." % sys.argv[3]
                 sys.exit(0)
             print "%s [Remote command] Stop %s PID controller number %s: Server returned:" % (
                 Timestamp(), sys.argv[2], sys.argv[3]),
