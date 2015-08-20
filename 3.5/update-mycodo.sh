@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 #  install.sh - Mycodo install script (still a work-in-progress, use at
 #               your own risk)
