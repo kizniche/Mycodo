@@ -52,13 +52,15 @@ if [ -z "$db_version" ]; then
 	rm -rf $DIR/config/mycodo.db
 	$DIR/update-database.py -i update
 else
-	printf "Mycodo Database version: $db_version\n";
+	printf "Mycodo database version: $db_version\n";
 fi
 
 # Check database version against known database versions
 # Perform update based on database version
-if [[ $db_version == "3" ]]; then
+if [[ $db_version == "4" ]]; then
 	printf "Mycodo database is already the latest version.\n";
+elif [[ $db_version == "3" ]]; then
+	printf "Updating Mycodo database to version 4.\n";
 elif [[ $db_version == "2" ]]; then
 	printf "Updating Mycodo database to version 3.\n";
 	$DIR/update-database.py -i update

@@ -46,6 +46,9 @@ function concatenate_logs($type) {
         case 'co2':
             `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
             break;
+        case 'press':
+            `cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log > /var/tmp/sensor-press.log`;
+            break;
         case 'relay':
             `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log > /var/tmp/relay.log`;
             break;
@@ -56,6 +59,7 @@ function concatenate_logs($type) {
             `cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log > /var/tmp/sensor-t.log`;
             `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
             `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
+            `cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log > /var/tmp/sensor-press.log`;
             `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log > /var/tmp/relay.log`;
             break;
     }
@@ -110,7 +114,7 @@ function view_sql_db($sqlite_db) {
  */
 
 // Generate and display graphs on the Main tab
-function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_graph, $sensor_ht_graph, $sensor_co2_graph) {
+function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_graph, $sensor_ht_graph, $sensor_co2_graph, $sensor_press_graph) {
     // Main preset: Display graphs of past day and week
     if ($graph_time_span == 'default') {
 
@@ -195,6 +199,35 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                 }
             }
             unlink($sensor_co2_log_generate);
+        }
+
+        if (array_sum($sensor_press_graph)) {
+            $sensor_press_log_file_tmp = "/var/www/mycodo/log/sensor-press-tmp.log";
+            $sensor_press_log_file = "/var/www/mycodo/log/sensor-press.log";
+            $sensor_press_log_generate = "/var/tmp/sensor-press-logs-default.log";
+            system("cat $sensor_press_log_file $sensor_press_log_file_tmp > $sensor_press_log_generate");
+
+            $count = 0;
+            for ($n = 0; $n < count($sensor_press_graph); $n++) {
+                if ($sensor_press_graph[$n] == 1) {
+                    if (!file_exists("/var/www/mycodo/images/graph-pressdefaultdefault-$graph_id-$n.png")) {
+                        shell_exec("$mycodo_client --graph press $graph_type $graph_time_span $graph_id $n");
+                    }
+                    echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                    echo 'sensortype=press';
+                    echo "&sensornumber=$n";
+                    echo '&graphtype=default';
+                    echo '&graphspan=default';
+                    echo "&id=$graph_id>";
+                    echo '</div>';
+
+                    $count++;
+                    if ($count != array_sum($sensor_press_graph) || array_sum($sensor_co2_graph)) {
+                        echo '<hr class="fade"/>';
+                    }
+                }
+            }
+            unlink($sensor_press_log_generate);
         }
 
     } else if ($graph_type == 'combined') { // Combined preset: Generate combined graphs
@@ -283,6 +316,31 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                 }
             }
             unlink($sensor_co2_log_generate);
+        }
+
+        if (array_sum($sensor_press_graph)) {
+            $sensor_press_log_file_tmp = "/var/www/mycodo/log/sensor-press-tmp.log";
+            $sensor_press_log_file = "/var/www/mycodo/log/sensor-press.log";
+            $sensor_press_log_generate = "/var/tmp/sensor-press-logs-separate.log";
+            system("cat $sensor_press_log_file $sensor_press_log_file_tmp > $sensor_press_log_generate");
+
+            for ($n = 0; $n < count($sensor_press_graph); $n++) {
+                if ($sensor_press_graph[$n] == 1) {
+                    if (!file_exists("/var/www/mycodo/images/graph-pressseparate$graph_time_span-$graph_id-$n.png")) {
+                        shell_exec("$mycodo_client --graph press $graph_type $graph_time_span $graph_id $n");
+                    }
+                    if ($first) echo '<hr class="fade"/>';
+                    else $first = 1;
+                    echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                    echo 'sensortype=press';
+                    echo "&sensornumber=$n";
+                    echo "&graphspan=$graph_time_span";
+                    echo "&graphtype=$graph_type";
+                    echo "&id=$graph_id>";
+                    echo '</div>';
+                }
+            }
+            unlink($sensor_press_log_generate);
         }
     }
 }

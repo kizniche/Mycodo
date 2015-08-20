@@ -54,6 +54,9 @@ def usage():
     print '        --sensorht pin device'
     print '           Returns a reading from the temperature and humidity sensor on GPIO pin'
     print '           Device options: DHT22, DHT11, or AM2302'
+    print '        --sensorpress pin device'
+    print '           Returns a reading from the pressure sensor on GPIO pin'
+    print '           Device options: BMP085-180'
     print '        --sensort pin device'
     print '           Returns a reading from the temperature and humidity sensor on GPIO pin'
     print '           Device options: DS18B20'
@@ -69,12 +72,14 @@ def usage():
     print '           Read from T sensor number and append log file, 0 to write all.'
     print '        --writehtlog sensor'
     print '           Read from HT sensor number and append log file, 0 to write all.'
+    print '        --writepresslog sensor'
+    print '           Read from Press sensor number and append log file, 0 to write all.'
 
 def menu():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:], 'hr:st',
-            ["help", "graph", "pidrestart=", "pidstart=", "pidstop=", "relay=", "sensorco2", "sensorht", "sensort", "sqlreload=", "status", "terminate", "writetlog", "writehtlog", "writeco2log"])
+            ["help", "graph", "pidrestart=", "pidstart=", "pidstop=", "relay=", "sensorco2", "sensorht", "sensorpress", "sensort", "sqlreload=", "status", "terminate", "writetlog", "writehtlog", "writeco2log", "writepresslog"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -97,8 +102,8 @@ def menu():
                 print "Fail"
             sys.exit(0)
         elif opt == "--pidrestart":
-            if (sys.argv[2] != 'T' and sys.argv[2] != 'HT' and sys.argv[2] != 'CO2'):
-                print "'%s' is not a valid option. Use 'T', 'HT', or 'CO2'" % sys.argv[2]
+            if (sys.argv[2] != 'T' and sys.argv[2] != 'HT' and sys.argv[2] != 'CO2' and sys.argv[2] != 'PressTemp' and sys.argv[2] != 'PressPress'):
+                print "'%s' is not a valid option. Use 'T', 'HT', 'CO2', 'PressTemp', or 'PressPress'" % sys.argv[2]
                 sys.exit(0)
             print "%s [Remote command] Restart all %s PID controllers: Server returned:" % (
                 Timestamp(), sys.argv[2]),
@@ -109,11 +114,11 @@ def menu():
                 print "Fail, %s" % reload_status
             sys.exit(1)
         elif opt == "--pidstart":
-            if (sys.argv[2] != 'TTemp' and sys.argv[2] != 'HTTemp' and sys.argv[2] != 'HTHum' and sys.argv[2] != 'CO2'):
-                print "'%s' is not a valid option. Use 'TTemp', 'HTTemp', 'HTHum', or 'CO2'" % sys.argv[2]
+            if (sys.argv[2] != 'TTemp' and sys.argv[2] != 'HTTemp' and sys.argv[2] != 'HTHum' and sys.argv[2] != 'CO2' and sys.argv[2] != 'PressTemp' and sys.argv[2] != 'PressPress'):
+                print "'%s' is not a valid option. Use 'TTemp', 'HTTemp', 'HTHum', 'CO2', 'PressTemp', or 'PressPress'" % sys.argv[2]
                 sys.exit(0)
-            if (int(float(sys.argv[3])) > 4 or int(float(sys.argv[3])) < 1):
-                print "'%s' is not a valid option. Options are 1-4." % sys.argv[3]
+            if (int(float(sys.argv[3])) < 1):
+                print "'%s' is not a valid option. Options are >1." % sys.argv[3]
                 sys.exit(0)
             print "%s [Remote command] Start %s PID controller number %s: Server returned:" % (
                 Timestamp(), sys.argv[2], sys.argv[3]),
@@ -124,11 +129,11 @@ def menu():
                 print "Fail, %s" % reload_status
             sys.exit(1)
         elif opt == "--pidstop":
-            if (sys.argv[2] != 'TTemp' and sys.argv[2] != 'HTTemp' and sys.argv[2] != 'HTHum' and sys.argv[2] != 'CO2'):
-                print "'%s' is not a valid option. Use 'TTemp', 'HTTemp', 'HTHum', or 'CO2'" % sys.argv[2]
+            if (sys.argv[2] != 'TTemp' and sys.argv[2] != 'HTTemp' and sys.argv[2] != 'HTHum' and sys.argv[2] != 'CO2' and sys.argv[2] != 'PressTemp' and sys.argv[2] != 'PressPress'):
+                print "'%s' is not a valid option. Use 'TTemp', 'HTTemp', 'HTHum',  'CO2', 'PressTemp', or 'PressPress'" % sys.argv[2]
                 sys.exit(0)
-            if (int(float(sys.argv[3])) > 4 or int(float(sys.argv[3])) < 1):
-                print "'%s' is not a valid option. Options are 1-4." % sys.argv[3]
+            if (int(float(sys.argv[3])) < 1):
+                print "'%s' is not a valid option. Options are >1." % sys.argv[3]
                 sys.exit(0)
             print "%s [Remote command] Stop %s PID controller number %s: Server returned:" % (
                 Timestamp(), sys.argv[2], sys.argv[3]),
@@ -174,10 +179,16 @@ def menu():
             temperature, humidity = c.root.ReadHTSensor(int(float(sys.argv[2])), sys.argv[3])
             print "%s [Remote Command] Daemon Returned: Temperature: %s°C Humidity: %s%%" % (Timestamp(), round(temperature,2), round(humidity,2))
             sys.exit(0)
+        elif opt == "--sensorpress":
+            print "%s [Remote command] Read Press sensor %s on GPIO pin %s" % (
+                Timestamp(), sys.argv[3], int(float(sys.argv[2])))
+            temperature, press, alt = c.root.ReadPressSensor(int(float(sys.argv[2])), sys.argv[3])
+            print "%s [Remote Command] Daemon Returned: Temperature: %s°C Humidity: %s%%" % (Timestamp(), round(temperature,2), round(press,2), round(alt,2))
+            sys.exit(0)
         elif opt == "--sensort":
             print "%s [Remote command] Read T sensor %s on GPIO pin %s" % (
                 Timestamp(), sys.argv[3], int(float(sys.argv[2])))
-            temperature, humidity = c.root.ReadHTSensor(int(float(sys.argv[2])), sys.argv[3])
+            temperature, humidity = c.root.ReadTSensor(int(float(sys.argv[2])), sys.argv[3])
             print "%s [Remote Command] Daemon Returned: Temperature: %s°C" % (Timestamp(), round(temperature,2))
             sys.exit(0)
         elif opt == "--sqlreload":
@@ -238,6 +249,16 @@ def menu():
                 print "%s [Remote Command] Append HT sensor log from all sensors: Server returned:" % (
                     Timestamp()),
             if c.root.WriteHTSensorLog(int(float(sys.argv[2]))) == 1: print "Success"
+            else: print "Fail"
+            sys.exit(0)
+        elif opt in ("--writepresslog"):
+            if int(float(sys.argv[2])):
+                print "%s [Remote Command] Append Press sensor log from sensor %s: Server returned:" % (
+                    Timestamp(), sys.argv[2]),
+            else:
+                print "%s [Remote Command] Append Press sensor log from all sensors: Server returned:" % (
+                    Timestamp()),
+            if c.root.WritePressSensorLog(int(float(sys.argv[2]))) == 1: print "Success"
             else: print "Fail"
             sys.exit(0)
         else:

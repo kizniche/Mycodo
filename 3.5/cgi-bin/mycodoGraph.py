@@ -37,12 +37,14 @@ image_path = "%s/images" % install_directory # Where generated graphs are stored
 sensor_t_log_file_tmp = "%s/sensor-t-tmp.log" % log_path
 sensor_ht_log_file_tmp = "%s/sensor-ht-tmp.log" % log_path
 sensor_co2_log_file_tmp = "%s/sensor-co2-tmp.log" % log_path
+sensor_press_log_file_tmp = "%s/sensor-press-tmp.log" % log_path
 relay_log_file_tmp = "%s/relay-tmp.log" % log_path
 
 # Logs that are periodically concatenated (every 6 hours) to the SD card
 sensor_t_log_file = "%s/sensor-t.log" % log_path
 sensor_ht_log_file = "%s/sensor-ht.log" % log_path
 sensor_co2_log_file = "%s/sensor-co2.log" % log_path
+sensor_press_log_file = "%s/sensor-press.log" % log_path
 relay_log_file = "%s/relay.log" % log_path
 
 #################################################
@@ -50,11 +52,15 @@ relay_log_file = "%s/relay.log" % log_path
 #################################################
 
 # Generate gnuplot graph
-def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number, sensor_t_name, sensor_t_graph, sensor_t_period, pid_t_temp_relay_high, pid_t_temp_relay_low, sensor_ht_name, sensor_ht_graph, sensor_ht_period, pid_ht_temp_relay_high, pid_ht_temp_relay_low, pid_ht_hum_relay_high, pid_ht_hum_relay_low, sensor_co2_name, sensor_co2_graph, sensor_co2_period, pid_co2_relay_high, pid_co2_relay_low, relay_name):
+def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number, sensor_t_name, sensor_t_graph, sensor_t_period, pid_t_temp_relay_high, pid_t_temp_relay_low, sensor_ht_name, sensor_ht_graph, sensor_ht_period, pid_ht_temp_relay_high, pid_ht_temp_relay_low, pid_ht_hum_relay_high, pid_ht_hum_relay_low, sensor_co2_name, sensor_co2_graph, sensor_co2_period, pid_co2_relay_high, pid_co2_relay_low, sensor_press_name, sensor_press_graph, sensor_press_period, pid_press_temp_relay_high, pid_press_temp_relay_low, pid_press_press_relay_high, pid_press_press_relay_low, relay_name):
     logging.debug("[Generate Graph] Parsing logs...")
-    sensor_t_log_final = [0] * 5
-    sensor_ht_log_final = [0] * 5
-    sensor_co2_log_final = [0] * 5
+    sensor_t_log_final = [0] * (len(sensor_t_name)+1)
+    sensor_ht_log_final = [0] * (len(sensor_ht_name)+1)
+    sensor_co2_log_final = [0] * (len(sensor_co2_name)+1)
+    sensor_press_log_final = [0] * (len(sensor_press_name)+1)
+
+    logging.debug("[TEST00] %s", len(sensor_co2_name))
+
     tmp_path = "/var/tmp"
     h = 0
     d = 0
@@ -116,18 +122,18 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             sensor_t_log_generate = "%s/sensor-%s-logs-%s.log" % (
                 tmp_path, sensor_type, graph_span)
             lines = 86400
-            sensor_t_log_final[1] = "%s/sensor-%s-logs-%s-%s-%s-day.log" %  (
+            sensor_t_log_final[0] = "%s/sensor-%s-logs-%s-%s-%s-day.log" %  (
                 tmp_path, sensor_type, graph_span, graph_id, sensor_number)
             cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                sensor_number, sensor_type, lines, sensor_t_log_generate, sensor_t_log_final[1])
+                sensor_number, sensor_type, lines, sensor_t_log_generate, sensor_t_log_final[0])
             logging.debug("[Generate Graph] cmd: %s", cmd)
             os.system(cmd)
 
             lines = 604800
-            sensor_t_log_final[2] = "%s/sensor-%s-logs-%s-%s-%s-week.log" %  (
+            sensor_t_log_final[1] = "%s/sensor-%s-logs-%s-%s-%s-week.log" %  (
                 tmp_path, sensor_type, graph_span, graph_id, sensor_number)
             cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                sensor_number, sensor_type, lines, sensor_t_log_generate, sensor_t_log_final[2])
+                sensor_number, sensor_type, lines, sensor_t_log_generate, sensor_t_log_final[1])
             logging.debug("[Generate Graph] cmd: %s", cmd)
             os.system(cmd)
 
@@ -135,18 +141,18 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             sensor_ht_log_generate = "%s/sensor-%s-logs-%s.log" % (
                 tmp_path, sensor_type, graph_span)
             lines = 86400
-            sensor_ht_log_final[1] = "%s/sensor-%s-logs-%s-%s-%s-day.log" %  (
+            sensor_ht_log_final[0] = "%s/sensor-%s-logs-%s-%s-%s-day.log" %  (
                 tmp_path, sensor_type, graph_span, graph_id, sensor_number)
             cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                sensor_number, sensor_type, lines, sensor_ht_log_generate, sensor_ht_log_final[1])
+                sensor_number, sensor_type, lines, sensor_ht_log_generate, sensor_ht_log_final[0])
             logging.debug("[Generate Graph] cmd: %s", cmd)
             os.system(cmd)
 
             lines = 604800
-            sensor_ht_log_final[2] = "%s/sensor-%s-logs-%s-%s-%s-week.log" %  (
+            sensor_ht_log_final[1] = "%s/sensor-%s-logs-%s-%s-%s-week.log" %  (
                 tmp_path, sensor_type, graph_span, graph_id, sensor_number)
             cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                sensor_number, sensor_type, lines, sensor_ht_log_generate, sensor_ht_log_final[2])
+                sensor_number, sensor_type, lines, sensor_ht_log_generate, sensor_ht_log_final[1])
             logging.debug("[Generate Graph] cmd: %s", cmd)
             os.system(cmd)
 
@@ -154,18 +160,40 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             sensor_co2_log_generate = "%s/sensor-%s-logs-%s.log" % (
                 tmp_path, sensor_type, graph_span)
             lines = 86400
-            sensor_co2_log_final[1] = "%s/sensor-%s-logs-%s-%s-%s-day.log" %  (
+            sensor_co2_log_final[0] = "%s/sensor-%s-logs-%s-%s-%s-day.log" %  (
                 tmp_path, sensor_type, graph_span, graph_id, sensor_number)
+            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
+                sensor_number, sensor_type, lines, sensor_co2_log_generate, sensor_co2_log_final[0])
+            logging.debug("[Generate Graph] cmd: %s", cmd)
+            os.system(cmd)
+
+            lines = 604800
+            logging.debug("[TEST2] %s", sensor_co2_log_final[0])
+            sensor_co2_log_final[1] = 'test'
+            logging.debug("[TEST3] %s", sensor_co2_log_final[1])
+            # sensor_co2_log_final[1] = "%s/sensor-%s-logs-%s-%s-%s-week.log" %  (
+            #     tmp_path, sensor_type, graph_span, graph_id, sensor_number)
             cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
                 sensor_number, sensor_type, lines, sensor_co2_log_generate, sensor_co2_log_final[1])
             logging.debug("[Generate Graph] cmd: %s", cmd)
             os.system(cmd)
 
-            lines = 604800
-            sensor_co2_log_final[2] = "%s/sensor-%s-logs-%s-%s-%s-week.log" %  (
+        if sensor_type == "press":
+            sensor_press_log_generate = "%s/sensor-%s-logs-%s.log" % (
+                tmp_path, sensor_type, graph_span)
+            lines = 86400
+            sensor_press_log_final[0] = "%s/sensor-%s-logs-%s-%s-%s-day.log" %  (
                 tmp_path, sensor_type, graph_span, graph_id, sensor_number)
             cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                sensor_number, sensor_type, lines, sensor_co2_log_generate, sensor_co2_log_final[2])
+                sensor_number, sensor_type, lines, sensor_press_log_generate, sensor_press_log_final[0])
+            logging.debug("[Generate Graph] cmd: %s", cmd)
+            os.system(cmd)
+
+            lines = 604800
+            sensor_press_log_final[1] = "%s/sensor-%s-logs-%s-%s-%s-week.log" %  (
+                tmp_path, sensor_type, graph_span, graph_id, sensor_number)
+            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
+                sensor_number, sensor_type, lines, sensor_press_log_generate, sensor_press_log_final[1])
             logging.debug("[Generate Graph] cmd: %s", cmd)
             os.system(cmd)
 
@@ -198,6 +226,15 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
         else:
             sensor_co2_log_generate = None
 
+        if sum(sensor_press_graph):
+            sensor_press_log_files_combine = [sensor_press_log_file, sensor_press_log_file_tmp]
+            sensor_press_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, 'press', graph_type)
+            with open(sensor_press_log_generate, 'w') as fout:
+                for line in fileinput.input(sensor_press_log_files_combine):
+                    fout.write(line)
+        else:
+            sensor_press_log_generate = None
+
         for i in range(0, len(sensor_t_name)):
             lines = seconds/sensor_t_period[i]
             if sensor_t_graph[i]:
@@ -228,26 +265,42 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 logging.debug("[Generate Graph] cmd: %s", cmd)
                 os.system(cmd)
 
+        for i in range(0, len(sensor_press_name)):
+            lines = seconds/sensor_press_period[i]
+            if sensor_press_graph[i]:
+                sensor_press_log_final[i] = "%s/sensor-%s-logs-%s-%s-%s.log" %  (
+                    tmp_path, 'press', graph_type, graph_id, i)
+                cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
+                    i, 'press', lines, sensor_press_log_generate, sensor_press_log_final[i])
+                logging.debug("[Generate Graph] cmd: %s", cmd)
+                os.system(cmd)
+
     elif graph_type == "separate":
         sensor_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, sensor_type, graph_type)
         if sensor_type == "t":
             lines = seconds/sensor_t_period[int(sensor_number)]
-            sensor_t_log_final[1] = "%s/sensor-%s-logs-%s-%s-%s.log" % (
+            sensor_t_log_final[0] = "%s/sensor-%s-logs-%s-%s-%s.log" % (
                 tmp_path, sensor_type, graph_type, graph_id, sensor_number)
             cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                sensor_number, sensor_type, lines, sensor_log_generate, sensor_t_log_final[1])
+                sensor_number, sensor_type, lines, sensor_log_generate, sensor_t_log_final[0])
         if sensor_type == "ht":
             lines = seconds/sensor_ht_period[int(sensor_number)]
-            sensor_ht_log_final[1] = "%s/sensor-%s-logs-%s-%s-%s.log" % (
+            sensor_ht_log_final[0] = "%s/sensor-%s-logs-%s-%s-%s.log" % (
                 tmp_path, sensor_type, graph_type, graph_id, sensor_number)
             cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                sensor_number, sensor_type, lines, sensor_log_generate, sensor_ht_log_final[1])
+                sensor_number, sensor_type, lines, sensor_log_generate, sensor_ht_log_final[0])
         if sensor_type == "co2":
             lines = seconds/sensor_co2_period[int(sensor_number)]
-            sensor_co2_log_final[1] = "%s/sensor-%s-logs-%s-%s-%s.log" % (
+            sensor_co2_log_final[0] = "%s/sensor-%s-logs-%s-%s-%s.log" % (
                 tmp_path, sensor_type, graph_type, graph_id, sensor_number)
             cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                sensor_number, sensor_type, lines, sensor_log_generate, sensor_co2_log_final[1])
+                sensor_number, sensor_type, lines, sensor_log_generate, sensor_co2_log_final[0])
+        if sensor_type == "press":
+            lines = seconds/sensor_press_period[int(sensor_number)]
+            sensor_press_log_final[0] = "%s/sensor-%s-logs-%s-%s-%s.log" % (
+                tmp_path, sensor_type, graph_type, graph_id, sensor_number)
+            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
+                sensor_number, sensor_type, lines, sensor_log_generate, sensor_press_log_final[0])
         logging.debug("[Generate Graph] cmd: %s", cmd)
         os.system(cmd)
 
@@ -270,7 +323,12 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
     else:
         ht_graphs = 0
 
-    num_graphs = sum([bool(sum(sensor_t_graph)), ht_graphs, bool(sum(sensor_co2_graph))]) 
+    if bool(sensor_press_graph):
+        press_graphs = 2
+    else:
+        press_graphs = 0
+
+    num_graphs = sum([bool(sum(sensor_t_graph)), ht_graphs, bool(sum(sensor_co2_graph)), press_graphs])
     
     if graph_span == "default":
         graph_width = 1000
@@ -288,7 +346,12 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             int(pid_ht_hum_relay_low[int(sensor_number)]) != 0)) or
 
             ((sensor_type == "co2") and (int(pid_co2_relay_high[int(sensor_number)]) != 0 or
-            int(pid_co2_relay_low[int(sensor_number)]) != 0))):
+            int(pid_co2_relay_low[int(sensor_number)]) != 0)) or
+
+            ((sensor_type == "press") and (int(pid_press_temp_relay_high[int(sensor_number)]) != 0 or
+            int(pid_press_temp_relay_low[int(sensor_number)]) != 0 or 
+            int(pid_press_press_relay_high[int(sensor_number)]) != 0 or
+            int(pid_press_press_relay_low[int(sensor_number)]) != 0))):
 
             graph_width = 1000
             graph_height = 800
@@ -338,6 +401,15 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
         plot.write('set ytics 5\n')
         plot.write('set mytics 5\n')
         plot.write('set y2tics 10\n')
+        plot.write('set my2tics 5\n')
+
+    elif sensor_type == "press":
+        y2_min = '97000'
+        y2_max = '99000'
+        plot.write('set y2range [' + y2_min + ':' + y2_max + ']\n')
+        plot.write('set ytics 5\n')
+        plot.write('set mytics 5\n')
+        plot.write('set y2tics 250\n')
         plot.write('set my2tics 5\n')
 
     elif (((graph_type == "combined" and sum(sensor_co2_graph)) and sensor_type == "x") or
@@ -445,6 +517,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write('set ytics 500\n')
             plot.write('unset y2tics\n')
             plot.write('set origin 0.0,%.2f\n' % float(1-((1/float(num_graphs))*float(multiplot_num))))
+            multiplot_num += 1
             plot.write('set termopt enhanced\n') 
             plot.write('set title \"Combined CO_2s: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot ')
@@ -452,6 +525,42 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 if sensor_co2_graph[i]:
                     plot.write('\"' + sensor_co2_log_final[i] + '" u 1:7 index 0 title \"' + sensor_co2_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')
                 if i != (len(sensor_co2_graph) - 1) - sensor_co2_graph[::-1].index(1):
+                    plot.write(', ')
+
+            plot.write(' \n')
+
+        if sum(sensor_press_graph):
+            y1_min = '0'
+            y1_max = '35'
+            plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
+            plot.write('set ytics 5\n')
+            plot.write('set mytics 5\n')
+            plot.write('\nset origin 0.0,%.2f\n' % float(1-((1/float(num_graphs))*float(multiplot_num))))
+            multiplot_num += 1
+            plot.write('set title \"Combined Press Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            plot.write('plot ')
+            for i in range(0, len(sensor_press_name)):
+                if sensor_press_graph[i]:
+                    plot.write('\"' + sensor_press_log_final[i] + '" u 1:7 index 0 title \"' + sensor_press_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')
+                if i != (len(sensor_press_graph) - 1) - sensor_press_graph[::-1].index(1):
+                    plot.write(', ')
+
+            plot.write(' \n')
+
+        if sum(sensor_press_graph):
+            y1_min = '97000'
+            y1_max = '99000'
+            plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
+            plot.write('set ytics 200\n')
+            plot.write('set mytics 4\n')
+            plot.write('\nset origin 0.0,%.2f\n' % float(1-((1/float(num_graphs))*float(multiplot_num))))
+            multiplot_num += 1
+            plot.write('set title \"Combined Press Pressures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            plot.write('plot ')
+            for i in range(0, len(sensor_press_name)):
+                if sensor_press_graph[i]:
+                    plot.write('\"' + sensor_press_log_final[i] + '" u 1:8 index 0 title \"' + sensor_press_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')
+                if i != (len(sensor_press_graph) - 1) - sensor_press_graph[::-1].index(1):
                     plot.write(', ')
 
             plot.write(' \n')
@@ -474,7 +583,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 
             plot.write('set key at graph 0.02, graph 0.98\n')
             plot.write('set title \"Temp Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_t_name[int(float(sensor_number))] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-            plot.write('plot \"' + sensor_t_log_final[1] + '\" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1\n')
+            plot.write('plot \"' + sensor_t_log_final[0] + '\" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1\n')
 
             if (int(pid_t_temp_relay_high[int(sensor_number)]) != 0 or
                 int(pid_t_temp_relay_low[int(sensor_number)]) != 0):
@@ -519,7 +628,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
 
             plot.write('set key at graph 0.02, graph 0.98\n')
             plot.write('set title \"Hum/Temp Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_ht_name[int(float(sensor_number))] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-            plot.write('plot \"' + sensor_ht_log_final[1] + '\" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1, \\\n')
+            plot.write('plot \"' + sensor_ht_log_final[0] + '\" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1, \\\n')
             plot.write('\"\" u 1:8 index 0 title \"RH\" w lp ls 2 axes x1y2, \\\n')
             plot.write('\"\" u 1:9 index 0 title \"DP\" w lp ls 3 axes x1y1\n')
             
@@ -576,7 +685,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write('set termopt enhanced\n')
             plot.write('set key at graph 0.035, graph 0.98\n')
             plot.write('set title \"CO_2 Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_co2_name[int(float(sensor_number))] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-            plot.write('plot \"' + sensor_co2_log_final[1] + '" u 1:7 index 0 title \"CO_2\" w lp ls 1 axes x1y1\n')
+            plot.write('plot \"' + sensor_co2_log_final[0] + '" u 1:7 index 0 title \"CO_2\" w lp ls 1 axes x1y1\n')
 
             if (int(pid_co2_relay_high[int(sensor_number)]) != 0 or
                 int(pid_co2_relay_low[int(sensor_number)]) != 0):
@@ -606,6 +715,65 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
 
                 plot.write(' \n')
 
+        if sensor_type == "press":
+            if (int(pid_press_temp_relay_high[int(sensor_number)]) != 0 or
+                int(pid_press_temp_relay_low[int(sensor_number)]) != 0 or 
+                int(pid_press_press_relay_high[int(sensor_number)]) != 0 or
+                int(pid_press_press_relay_low[int(sensor_number)]) != 0):
+                plot.write('set multiplot\n')
+                plot.write('set size 0.989,0.6\n')
+                plot.write('set origin 0.011,0.4\n')
+                plot.write('set format x \"\"\n')
+                plot.write('set mytics 5\n')
+                plot.write('set my2tics 5\n')
+
+            plot.write('set key at graph 0.02, graph 0.98\n')
+            plot.write('set title \"Press Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_press_name[int(float(sensor_number))] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            plot.write('plot \"' + sensor_press_log_final[0] + '\" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1, \\\n')
+            plot.write('\"\" u 1:8 index 0 title \"Press\" w lp ls 2 axes x1y2\n')
+            
+            if (int(pid_press_temp_relay_high[int(sensor_number)]) != 0 or
+                int(pid_press_temp_relay_low[int(sensor_number)]) != 0 or 
+                int(pid_press_press_relay_high[int(sensor_number)]) != 0 or
+                int(pid_press_press_relay_low[int(sensor_number)]) != 0):
+                plot.write('set size 0.93,0.4\n')
+                plot.write('set origin 0.0,0.0\n')
+                plot.write('set format x \"%H:%M\\n%m/%d\"\n')
+                plot.write('set key at graph 0.01, graph 0.97\n')
+                plot.write('unset y2tics\n')
+                y1_min = '-100'
+                y1_max = '100'
+                plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
+                plot.write('set ytics 25\n')
+                plot.write('set mytics 5\n')
+                plot.write('set xzeroaxis linetype 1 linecolor rgb \'#000000\' linewidth 1\n')
+                plot.write('unset title\n')
+                plot.write('plot \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '"')
+                
+                first = 0
+                if int(pid_press_temp_relay_high[int(sensor_number)]) != 0:
+                    plot.write(' u 1:' + str(pid_press_temp_relay_high[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_press_temp_relay_high[int(sensor_number)])-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                    first += 1
+                
+                if int(pid_press_temp_relay_low[int(sensor_number)]) != 0:
+                    if first:
+                        plot.write(', \"\"')
+                    plot.write(' u 1:' + str(pid_press_temp_relay_low[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_press_temp_relay_low[int(sensor_number)])-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                    first += 1
+                
+                if int(pid_press_press_relay_high[int(sensor_number)]) != 0:
+                    if first:
+                        plot.write(', \"\"')
+                    plot.write(' u 1:' + str(pid_press_press_relay_high[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_press_press_relay_high[int(sensor_number)])-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                    first += 1
+                
+                if int(pid_press_press_relay_low[int(sensor_number)]) != 0:
+                    if first:
+                        plot.write(', \"\"')
+                    plot.write(' u 1:' + str(pid_press_press_relay_low[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_press_press_relay_low[int(sensor_number)])-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+
+                plot.write('\n')
+
 
     #
     # Default: Generate a graph of the past day and week periods for each sensor
@@ -627,7 +795,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set key at graph 0.025, graph 0.98\n')
 
             plot.write('set title \"Temp Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_t_name[int(float(sensor_number))] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-            plot.write('plot \"' + sensor_t_log_final[1] + '" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1\n')
+            plot.write('plot \"' + sensor_t_log_final[0] + '" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1\n')
 
             if (int(pid_t_temp_relay_high[int(sensor_number)]) != 0 or
                 int(pid_t_temp_relay_low[int(sensor_number)]) != 0):
@@ -679,7 +847,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write('set title \"Temp Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_t_name[int(float(sensor_number))] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('set format x \"%a\\n%m/%d\"\n')
             plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
-            plot.write('plot \"' + sensor_t_log_final[2] + '" u 1:7 index 0 notitle w lp ls 1 axes x1y1\n')
+            plot.write('plot \"' + sensor_t_log_final[1] + '" u 1:7 index 0 notitle w lp ls 1 axes x1y1\n')
             plot.write('unset multiplot\n')
 
 
@@ -700,7 +868,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set key at graph 0.025, graph 0.98\n')
 
             plot.write('set title \"Hum/Temp Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_ht_name[int(float(sensor_number))] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-            plot.write('plot \"' + sensor_ht_log_final[1] + '" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1, ')
+            plot.write('plot \"' + sensor_ht_log_final[0] + '" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1, ')
             plot.write('\"\" u 1:8 index 0 title \"RH\" w lp ls 2 axes x1y2, ')
             plot.write('\"\" u 1:9 index 0 title \"DP\" w lp ls 3 axes x1y1\n')
 
@@ -772,7 +940,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write('set title \"Hum/Temp Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_ht_name[int(float(sensor_number))] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('set format x \"%a\\n%m/%d\"\n')
             plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
-            plot.write('plot \"' + sensor_ht_log_final[2] + '" u 1:7 index 0 notitle w lp ls 1 axes x1y1, ')
+            plot.write('plot \"' + sensor_ht_log_final[1] + '" u 1:7 index 0 notitle w lp ls 1 axes x1y1, ')
             plot.write('\"\" u 1:8 index 0 notitle w lp ls 2 axes x1y2, ')
             plot.write('\"\" u 1:9 index 0 notitle w lp ls 3 axes x1y1\n')
             plot.write('unset multiplot\n')
@@ -794,7 +962,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
 
             plot.write('set termopt enhanced\n')
             plot.write('set title \"CO_2 Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_co2_name[int(float(sensor_number))] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-            plot.write('plot \"' + sensor_co2_log_final[1] + '" u 1:7 index 0 title \"CO_2\" w lp ls 1 axes x1y1\n')
+            plot.write('plot \"' + sensor_co2_log_final[0] + '" u 1:7 index 0 title \"CO_2\" w lp ls 1 axes x1y1\n')
 
             if (int(pid_co2_relay_high[int(sensor_number)]) != 0 or
                 int(pid_co2_relay_low[int(sensor_number)]) != 0):
@@ -845,7 +1013,99 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write('set title \"CO_2 Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_co2_name[int(float(sensor_number))] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('set format x \"%a\\n%m/%d\"\n')
             plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
-            plot.write('plot \"' + sensor_co2_log_final[2] + '" u 1:7 index 0 notitle w lp ls 1 axes x1y1\n')
+            plot.write('plot \"' + sensor_co2_log_final[1] + '" u 1:7 index 0 notitle w lp ls 1 axes x1y1\n')
+            plot.write('unset multiplot\n')
+
+        if sensor_type == "press":
+            plot.write('set multiplot\n')
+            # Top graph - day
+            if (int(pid_press_temp_relay_high[int(sensor_number)]) != 0 or
+                int(pid_press_temp_relay_low[int(sensor_number)]) != 0 or 
+                int(pid_press_press_relay_high[int(sensor_number)]) != 0 or
+                int(pid_press_press_relay_low[int(sensor_number)]) != 0):
+                plot.write('set size 0.989,0.4\n')
+                plot.write('set origin 0.011,0.6\n')
+                plot.write('set key at graph 0.025, graph 0.98\n')
+                plot.write('set format x ""\n')
+            else:
+                plot.write('set size 1.0,0.5\n')
+                plot.write('set origin 0.0,0.5\n')
+                plot.write('set key at graph 0.025, graph 0.98\n')
+
+            plot.write('set title \"Pressure Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_press_name[int(float(sensor_number))] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            plot.write('plot \"' + sensor_press_log_final[0] + '" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1, ')
+            plot.write('\"\" u 1:8 index 0 title \"Press\" w lp ls 2 axes x1y2\n')
+
+            if (int(pid_press_temp_relay_high[int(sensor_number)]) != 0 or
+                int(pid_press_temp_relay_low[int(sensor_number)]) != 0 or 
+                int(pid_press_press_relay_high[int(sensor_number)]) != 0 or
+                int(pid_press_press_relay_low[int(sensor_number)]) != 0):
+                plot.write('set size 0.935,0.2\n')
+                plot.write('set origin 0.0,0.4\n')
+                plot.write('set key at graph 0.0, graph 0.95\n')
+                plot.write('set format x \"%H:%M\\n%m/%d\"\n')
+                y1_min = '-100'
+                y1_max = '100'
+                plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
+                plot.write('set ytics 50\n')
+                plot.write('set mytics 2\n')
+                plot.write('set xzeroaxis linetype 1 linecolor rgb \'#000000\' linewidth 1\n')
+                plot.write('unset y2tics\n')
+                plot.write('unset title\n')
+                plot.write('plot \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '"')
+
+                first = 0
+                if int(pid_press_temp_relay_high[int(sensor_number)]) != 0:
+                    plot.write(' u 1:' + str(pid_press_temp_relay_high[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_press_temp_relay_high[int(sensor_number)])-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                    first += 1
+                
+                if int(pid_press_temp_relay_low[int(sensor_number)]) != 0:
+                    if first:
+                        plot.write(', \"\"')
+                    plot.write(' u 1:' + str(pid_press_temp_relay_low[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_press_temp_relay_low[int(sensor_number)])-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                    first += 1
+                
+                if int(pid_press_press_relay_high[int(sensor_number)]) != 0:
+                    if first:
+                        plot.write(', \"\"')
+                    plot.write(' u 1:' + str(pid_press_press_relay_high[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_press_press_relay_high[int(sensor_number)])-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                    first += 1
+                
+                if int(pid_press_press_relay_low[int(sensor_number)]) != 0:
+                    if first:
+                        plot.write(', \"\"')
+                    plot.write(' u 1:' + str(pid_press_press_relay_low[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_press_press_relay_low[int(sensor_number)])-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+
+                plot.write('\n')
+
+            # Bottom graph - week
+            d = 7
+            time_ago = '1 Week'
+            date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
+            date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S")
+            if (int(pid_press_temp_relay_high[int(sensor_number)]) != 0 or
+                int(pid_press_temp_relay_low[int(sensor_number)]) != 0 or 
+                int(pid_press_press_relay_high[int(sensor_number)]) != 0 or
+                int(pid_press_press_relay_low[int(sensor_number)]) != 0):
+                plot.write('set size 0.989,0.4\n')
+                plot.write('set origin 0.011,0.0\n')
+                y1_min = '0'
+                y1_max = '35'
+                plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
+                plot.write('set ytics 5\n')
+                plot.write('set mytics 5\n')
+                plot.write('set y2tics 10\n')
+                plot.write('set my2tics 5\n')
+            else:
+                plot.write('set size 1.0,0.5\n')
+                plot.write('set origin 0.0,0.0\n')
+
+            plot.write('unset xzeroaxis\n')
+            plot.write('set title \"Press Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_press_name[int(float(sensor_number))] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            plot.write('set format x \"%a\\n%m/%d\"\n')
+            plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
+            plot.write('plot \"' + sensor_press_log_final[1] + '" u 1:7 index 0 notitle w lp ls 1 axes x1y1, ')
+            plot.write('\"\" u 1:8 index 0 notitle w lp ls 2 axes x1y2\n')
             plot.write('unset multiplot\n')
 
     plot.close()
@@ -859,14 +1119,17 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
         os.remove(relay_log_generate)
         if graph_span == "default":
             if sensor_type == "t":
+                os.remove(sensor_t_log_final[0])
                 os.remove(sensor_t_log_final[1])
-                os.remove(sensor_t_log_final[2])
             if sensor_type == "ht":
+                os.remove(sensor_ht_log_final[0])
                 os.remove(sensor_ht_log_final[1])
-                os.remove(sensor_ht_log_final[2])
             if sensor_type == "co2":
+                os.remove(sensor_co2_log_final[0])
                 os.remove(sensor_co2_log_final[1])
-                os.remove(sensor_co2_log_final[2])
+            if sensor_type == "press":
+                os.remove(sensor_press_log_final[0])
+                os.remove(sensor_press_log_final[1])
         elif graph_type == "combined":
             if sum(sensor_t_graph):
                 os.remove(sensor_t_log_generate)
@@ -874,6 +1137,8 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 os.remove(sensor_ht_log_generate)
             if sum(sensor_co2_graph):
                 os.remove(sensor_co2_log_generate)
+            if sum(sensor_press_graph):
+                os.remove(sensor_press_log_generate)
             for i in range(0, len(sensor_t_name)):
                 if sensor_t_graph[i]:
                     os.remove(sensor_t_log_final[i])
@@ -883,9 +1148,14 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             for i in range(0, len(sensor_co2_name)):
                 if sensor_co2_graph[i]:
                     os.remove(sensor_co2_log_final[i])
+            for i in range(0, len(sensor_press_name)):
+                if sensor_press_graph[i]:
+                    os.remove(sensor_press_log_final[i])
         elif graph_type == "separate":
-            os.remove(sensor_ht_log_final[1])
-            os.remove(sensor_co2_log_final[1])
+            os.remove(sensor_t_log_final[0])
+            os.remove(sensor_ht_log_final[0])
+            os.remove(sensor_co2_log_final[0])
+            os.remove(sensor_press_log_final[0])
     else:
         gnuplot_log = "%s/plot-%s-%s-%s-%s.log" % (log_path, sensor_type, graph_type, graph_span, sensor_number)
         with open(gnuplot_log, 'ab') as errfile:

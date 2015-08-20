@@ -38,6 +38,7 @@ daemon_log_file_tmp = "%s/daemon-tmp.log" % log_path
 sensor_t_log_file_tmp = "%s/sensor-t-tmp.log" % log_path
 sensor_ht_log_file_tmp = "%s/sensor-ht-tmp.log" % log_path
 sensor_co2_log_file_tmp = "%s/sensor-co2-tmp.log" % log_path
+sensor_press_log_file_tmp = "%s/sensor-press-tmp.log" % log_path
 relay_log_file_tmp = "%s/relay-tmp.log" % log_path
 
 # Logs that are periodically concatenated (every 6 hours) to the SD card
@@ -45,6 +46,7 @@ daemon_log_file = "%s/daemon.log" % log_path
 sensor_t_log_file = "%s/sensor-t.log" % log_path
 sensor_ht_log_file = "%s/sensor-ht.log" % log_path
 sensor_co2_log_file = "%s/sensor-co2.log" % log_path
+sensor_press_log_file = "%s/sensor-press.log" % log_path
 relay_log_file = "%s/relay.log" % log_path
 
 # Lockfiles
@@ -52,6 +54,7 @@ lock_directory = "/var/lock/mycodo"
 sensor_t_log_lock_path = "%s/sensor-t-log" % lock_directory
 sensor_ht_log_lock_path = "%s/sensor-ht-log" % lock_directory
 sensor_co2_log_lock_path = "%s/sensor-co2-log" % lock_directory
+sensor_press_log_lock_path = "%s/sensor-press-log" % lock_directory
 relay_log_lock_path = "%s/relay" % lock_directory
 daemon_log_lock_path = "%s/logs" % lock_directory
 
@@ -144,6 +147,35 @@ def write_co2_sensor_log(sensor_co2_read_co2, sensor):
         logging.warning("[Write CO2 Sensor Log] Unable to append data to %s", sensor_co2_log_file_tmp)
 
     logging.debug("[Write CO2 Sensor Log] Removing lock: %s", lock.path)
+    lock.release()
+
+# Log pressure sensor reading
+def write_press_sensor_log(sensor_press_read_temp_c, sensor_press_read_press, sensor_press_read_alt, sensor):
+    if not os.path.exists(lock_directory):
+        os.makedirs(lock_directory)
+
+    lock = LockFile(sensor_press_log_lock_path)
+    while not lock.i_am_locking():
+        try:
+            logging.debug("[Write Sensor Log] Acquiring Lock: %s", lock.path)
+            lock.acquire(timeout=60)    # wait up to 60 seconds
+        except:
+            logging.warning("[Write Sensor Log] Breaking Lock to Acquire: %s", lock.path)
+            lock.break_lock()
+            lock.acquire()
+
+    logging.debug("[Write Sensor Log] Gained lock: %s", lock.path)
+
+    try:
+        with open(sensor_press_log_file_tmp, "ab") as sensorlog:
+            sensorlog.write('{0} {1:.1f} {2:.1f} {3:.1f} {4}\n'.format(
+                datetime.datetime.now().strftime("%Y %m %d %H %M %S"),
+                sensor_press_read_temp_c[sensor], sensor_press_read_press[sensor], sensor_press_read_alt[sensor], sensor))
+            logging.debug("[Write Sensor Log] Data appended to %s", sensor_press_log_file_tmp)
+    except:
+        logging.warning("[Write Sensor Log] Unable to append data to %s", sensor_press_log_file_tmp)
+
+    logging.debug("[Write Sensor Log] Removing lock: %s", lock.path)
     lock.release()
 
 # Log the relay duration
@@ -304,6 +336,36 @@ def Concatenate_Logs():
         lock.release()
     else:
         logging.debug("[Sensor Log] CO2 Sensor logs the same, skipping.")
+
+    # Pressure Sensor Logs
+    if not filecmp.cmp(sensor_press_log_file_tmp, sensor_press_log_file):
+        logging.debug("[Sensor Log] Concatenating Press sensor logs to %s", sensor_press_log_file)
+        lock = LockFile(sensor_press_log_lock_path)
+
+        while not lock.i_am_locking():
+            try:
+                logging.debug("[Sensor Log] Acquiring Lock: %s", lock.path)
+                lock.acquire(timeout=60)    # wait up to 60 seconds
+            except:
+                logging.warning("[Sensor Log] Breaking Lock to Acquire: %s", lock.path)
+                lock.break_lock()
+                lock.acquire()
+
+        logging.debug("[Sensor Log] Gained lock: %s", lock.path)
+
+        try:
+            with open(sensor_press_log_file, 'a') as fout:
+                for line in fileinput.input(sensor_press_log_file_tmp):
+                    fout.write(line)
+            logging.debug("[Daemon Log] Appended Press data to %s", sensor_press_log_file)
+        except:
+            logging.warning("[Sensor Log] Unable to append data to %s", sensor_press_log_file)
+
+        open(sensor_press_log_file_tmp, 'w').close()
+        logging.debug("[Sensor Log] Removing lock: %s", lock.path)
+        lock.release()
+    else:
+        logging.debug("[Sensor Log] Press Sensor logs the same, skipping.")
 
     # Relay Logs
     if not filecmp.cmp(relay_log_file_tmp, relay_log_file):

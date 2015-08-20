@@ -34,6 +34,9 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 Major changes for each versioned release
 
+#### 3.5.69
++ Add pressure sensors: BMP085/BMP180 pressure/temperature sensors
+
 #### 3.5.68
 + Set pre- and post-capture commands (for image, stream, and timelapse)
 
@@ -89,7 +92,6 @@ Major changes for each versioned release
 - [ ] More graph options (y-axis min/max, select sensors to be graphed)
 - [ ] Email notification or audible alarm during critical failure or condition
 - [ ] Convert time-lapse images to video
-- [ ] Barometric Pressure sensor support
 - [ ] O<sub>2</sub> sensor support
 - [ ] Set electrical current draw of each device and prevent exceeding total current limit with different combinations of devices on
 - [ ] HDR Photo creation (capture series of photos at different ISOs and combine) (Initial testing was slow: 3 photos = 15 minutes processing)
@@ -113,6 +115,10 @@ sqlite3
 ### CO<sub>2</sub>
 
 > [K30](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip)
+
+### Pressure
+
+> [BMP085/BMP180](https://learn.adafruit.com/using-the-bmp085-with-raspberry-pi)
 
 ## Software Install
 
@@ -144,9 +150,11 @@ Using raspi-config, perform the following:
 
 `git clone git://git.drogon.net/wiringPi ~/WiringPi`
 
-`git clone https://github.com/adafruit/Adafruit_Python_DHT ~/Adafruit_Python_DHT`
+`git clone https://github.com/adafruit/Adafruit_Python_DHT.git ~/Adafruit_Python_DHT`
 
-Create a symlink to the proper Mycodo version
+`git clone https://github.com/adafruit/Adafruit_Python_BMP.git ~/Adafruit_Python_BMP
+
+Create a symlink to Mycodo
 
 `sudo ln -s ~/Mycodo/3.5 /var/www/mycodo`
 
@@ -159,6 +167,12 @@ Install WiringPi
 Install Adafruit_Python_DHT
 
 `cd ~/Adafruit_Python_DHT`
+
+`sudo python setup.py install`
+
+Install Adafruit_Python_BMP
+
+`cd ~/Adafruit_Python_BMP`
 
 `sudo python setup.py install`
 

@@ -17,3 +17,7 @@ fi
 if [ $SENSORTYPE = "co2" ]; then
     awk -v num=$SENSORNUMBER '$8 == num' $INFILE | tail -n -$LINES | tee $OUTFILE 1> /dev/null
 fi
+
+if [ $SENSORTYPE = "press" ]; then
+    awk -v num=$SENSORNUMBER '$10 == num' $INFILE | tail -n -$LINES | tee $OUTFILE 1> /dev/null
+fi

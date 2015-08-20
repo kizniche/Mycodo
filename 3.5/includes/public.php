@@ -57,6 +57,18 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
         }
     }
 }
+for ($p = 0; $p < count($sensor_press_id); $p++) {
+    if ($sensor_press_activated[$p]) {
+        $last_press_sensor[$p] = `awk '$10 == $p {print}' /var/www/mycodo/log/sensor-press-tmp.log | tail -n 1`;
+        if ($last_press_sensor[$p] != '') {
+            $sensor_explode = explode(" ", $last_press_sensor[$p]);
+            $press_temp_c[$p] = floatval($sensor_explode[6]);
+            $press[$p] = $sensor_explode[7];
+            $press_temp_f[$p] = round(($press_temp_c[$p]*(9/5) + 32), 1);
+            $settemp_press_f[$p] = round($pid_press_temp_set[$p]*(9/5)+32, 1);
+        }
+    }
+}
 
 $pi_temp_cpu_c = `cat /sys/class/thermal/thermal_zone0/temp`;
 $pi_temp_cpu_c = round((float)($pi_temp_cpu_c / 1000), 1);

@@ -26,7 +26,7 @@
 sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
 sql_database_user = '/var/www/mycodo/config/users.db'
 
-db_version_mycodo = 3
+db_version_mycodo = 4
 db_version_user = 1
 
 import getopt
@@ -233,10 +233,12 @@ def UpgradeDatabase():
         ModNullValue('CO2SensorPreset', 'CO2_Outmax_High', 0)
         ModNullValue('CO2SensorPreset', 'CO2_Outmax_Low', 0)
 
-    # Version 3 updates: None (add pre/post camera commands)
+    # Version 3 updates: add pre/post camera commands
 
-    # Version 4 updates (for example)
-    if current_db_version_mycodo < 4:
+    # Version 4 updates: add pressure sensor
+
+    # any extra commands for version 5
+    if current_db_version_mycodo < 5:
         pass
 
     # Update Mycodo database version
@@ -397,6 +399,68 @@ def MycodoDatabase():
     AddColumn('CO2SensorPreset', 'CO2_P', 'REAL')
     AddColumn('CO2SensorPreset', 'CO2_I', 'REAL')
     AddColumn('CO2SensorPreset', 'CO2_D', 'REAL')
+
+    AddTable('PressSensor')
+    AddColumn('PressSensor', 'Name', 'TEXT')
+    AddColumn('PressSensor', 'Pin', 'INT')
+    AddColumn('PressSensor', 'Device', 'TEXT')
+    AddColumn('PressSensor', 'Period', 'INT')
+    AddColumn('PressSensor', 'Pre_Measure_Relay', 'INT')
+    AddColumn('PressSensor', 'Pre_Measure_Dur', 'INT')
+    AddColumn('PressSensor', 'Activated', 'INT')
+    AddColumn('PressSensor', 'Graph', 'INT')
+    AddColumn('PressSensor', 'Temp_Relay_High', 'INT')
+    AddColumn('PressSensor', 'Temp_Outmax_High', 'INT')
+    AddColumn('PressSensor', 'Temp_Relay_Low', 'INT')
+    AddColumn('PressSensor', 'Temp_Outmax_Low', 'INT')
+    AddColumn('PressSensor', 'Temp_OR', 'INT')
+    AddColumn('PressSensor', 'Temp_Set', 'REAL')
+    AddColumn('PressSensor', 'Temp_Set_Direction', 'INT')
+    AddColumn('PressSensor', 'Temp_Period', 'INT')
+    AddColumn('PressSensor', 'Temp_P', 'REAL')
+    AddColumn('PressSensor', 'Temp_I', 'REAL')
+    AddColumn('PressSensor', 'Temp_D', 'REAL')
+    AddColumn('PressSensor', 'Press_Relay_High', 'INT')
+    AddColumn('PressSensor', 'Press_Outmax_High', 'INT')
+    AddColumn('PressSensor', 'Press_Relay_Low', 'INT')
+    AddColumn('PressSensor', 'Press_Outmax_Low', 'INT')
+    AddColumn('PressSensor', 'Press_OR', 'INT')
+    AddColumn('PressSensor', 'Press_Set', 'REAL')
+    AddColumn('PressSensor', 'Press_Set_Direction', 'INT')
+    AddColumn('PressSensor', 'Press_Period', 'INT')
+    AddColumn('PressSensor', 'Press_P', 'REAL')
+    AddColumn('PressSensor', 'Press_I', 'REAL')
+    AddColumn('PressSensor', 'Press_D', 'REAL')
+
+    AddTable('PressSensorPreset')
+    AddColumn('PressSensorPreset', 'Name', 'TEXT')
+    AddColumn('PressSensorPreset', 'Pin', 'INT')
+    AddColumn('PressSensorPreset', 'Device', 'TEXT')
+    AddColumn('PressSensorPreset', 'Period', 'INT')
+    AddColumn('PressSensorPreset', 'Pre_Measure_Relay', 'INT')
+    AddColumn('PressSensorPreset', 'Pre_Measure_Dur', 'INT')
+    AddColumn('PressSensorPreset', 'Activated', 'INT')
+    AddColumn('PressSensorPreset', 'Graph', 'INT')
+    AddColumn('PressSensorPreset', 'Temp_Relay_High', 'INT')
+    AddColumn('PressSensorPreset', 'Temp_Outmax_High', 'INT')
+    AddColumn('PressSensorPreset', 'Temp_Relay_Low', 'INT')
+    AddColumn('PressSensorPreset', 'Temp_Outmax_Low', 'INT')
+    AddColumn('PressSensorPreset', 'Temp_Set', 'REAL')
+    AddColumn('PressSensorPreset', 'Temp_Set_Direction', 'INT')
+    AddColumn('PressSensorPreset', 'Temp_Period', 'INT')
+    AddColumn('PressSensorPreset', 'Temp_P', 'REAL')
+    AddColumn('PressSensorPreset', 'Temp_I', 'REAL')
+    AddColumn('PressSensorPreset', 'Temp_D', 'REAL')
+    AddColumn('PressSensorPreset', 'Press_Relay_High', 'INT')
+    AddColumn('PressSensorPreset', 'Press_Outmax_High', 'INT')
+    AddColumn('PressSensorPreset', 'Press_Relay_Low', 'INT')
+    AddColumn('PressSensorPreset', 'Press_Outmax_Low', 'INT')
+    AddColumn('PressSensorPreset', 'Press_Set', 'REAL')
+    AddColumn('PressSensorPreset', 'Press_Set_Direction', 'INT')
+    AddColumn('PressSensorPreset', 'Press_Period', 'INT')
+    AddColumn('PressSensorPreset', 'Press_P', 'REAL')
+    AddColumn('PressSensorPreset', 'Press_I', 'REAL')
+    AddColumn('PressSensorPreset', 'Press_D', 'REAL')
 
     AddTable('Timers')
     AddColumn('Timers', 'Name', 'TEXT')

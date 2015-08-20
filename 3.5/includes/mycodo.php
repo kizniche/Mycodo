@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.68";
+$version = "3.5.69";
 
 ######### Start Edit Configure #########
 
@@ -43,6 +43,7 @@ $daemon_log = $install_path . "/log/daemon.log";
 $auth_log = $install_path . "/log/auth.log";
 $sensor_ht_log = $install_path . "/log/sensor-ht.log";
 $sensor_co2_log = $install_path . "/log/sensor-co2.log";
+$sensor_press_log = $install_path . "/log/sensor-press.log";
 $relay_log = $install_path . "/log/relay.log";
 
 $images = $install_path . "/images";
@@ -255,6 +256,33 @@ if (isset($output_error)) {
             }
         }
     }
+    // Display brief Press sensor and PID data in header
+    for ($i = 0; $i < count($sensor_press_id); $i++) {
+        if ($sensor_press_activated[$i] == 1) { 
+            if (isset($press_temp_f[$i])) {
+            ?>
+            <div class="header">
+                <table>
+                    <tr>
+                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'HT' , $i+1 , ': ' , $sensor_press_name[$i]; ?></td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 0.8em; padding-right: 0.5em;"><?php
+                            echo 'Now<br><span title="' , number_format((float)$press_temp_f[$i], 1, '.', '') , '&deg;F">' , number_format((float)$press_temp_c[$i], 1, '.', '') , '&deg;C</span>';
+                            echo '<br>' , number_format((float)$press[$i], 1, '.', '') , 'Pa';
+                        ?></td>
+                        <td style="font-size: 0.8em;"><?php
+                            echo 'Set<br><span title="' , number_format((float)$settemp_press_f[$i], 1, '.', '') , '&deg;F">' , number_format((float)$pid_press_temp_set[$i], 1, '.', '') , '&deg;C</span>';
+                            echo '<br>' , number_format((float)$pid_press_press_set[$i], 1, '.', '') , 'Pa';
+                        ?></td>
+                    </tr>
+                </table>
+            </div><?php
+            } else {
+                echo '<div class="header">Press' , $i+1 , ':<br>Wait for<br>1st read</div>';
+            }
+        }
+    }
     ?>
 </div>
 <!-- End Header -->
@@ -382,9 +410,10 @@ if (isset($output_error)) {
                     // Generate and display Main tab graphs
                     if ((isset($sensor_t_graph) && array_sum($sensor_t_graph)) ||
                         (isset($sensor_ht_graph) && array_sum($sensor_ht_graph)) ||
-                        (isset($sensor_co2_graph) && array_sum($sensor_co2_graph))) {
+                        (isset($sensor_co2_graph) && array_sum($sensor_co2_graph)) ||
+                        (isset($sensor_press_graph) && array_sum($sensor_press_graph))) {
 
-                        generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_graph, $sensor_ht_graph, $sensor_co2_graph);
+                        generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_graph, $sensor_ht_graph, $sensor_co2_graph, $sensor_press_graph);
                         ?>
                         <div style="width: 100%; padding: 1em 0 0 0; text-align: center;">
                             <div style="text-align: center; padding-top: 0.5em;">
@@ -449,7 +478,7 @@ if (isset($output_error)) {
                     <div style="clear: both;"></div>
                     <div class="config-title">T Sensors</div>
                     <div style="padding-right: 0.6em;">
-                        <input style="width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddTSensorsNumber" title="Add Sensors"/> <input type="submit" name="AddTSensors" value="Add">
+                        <input style="width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddTSensorsNumber" title="Add this number of temperature sensors"/> <input type="submit" name="AddTSensors" value="Add">
                     </div>
                 </div>
 
@@ -457,7 +486,7 @@ if (isset($output_error)) {
                     <div style="clear: both;"></div>
                     <div class="config-title">HT Sensors</div>
                     <div style="padding-right: 0.6em;">
-                        <input style="width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddHTSensorsNumber" title="Add Sensors"/> <input type="submit" name="AddHTSensors" value="Add">
+                        <input style="width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddHTSensorsNumber" title="Add this number of humidity/temperature sensors"/> <input type="submit" name="AddHTSensors" value="Add">
                     </div>
                 </div>
 
@@ -465,7 +494,15 @@ if (isset($output_error)) {
                     <div style="clear: both;"></div>
                     <div class="config-title">CO<sub>2</sub> Sensors</div>
                     <div style="padding-right: 0.6em;">
-                        <input style="width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddCO2SensorsNumber" title="Add Sensors"/> <input type="submit" name="AddCO2Sensors" value="Add">
+                        <input style="width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddCO2SensorsNumber" title="Add this number of CO2 sensors"/> <input type="submit" name="AddCO2Sensors" value="Add">
+                    </div>
+                </div>
+
+                <div style="float: left; margin: 0 0.5em; padding: 0 0.5em;">
+                    <div style="clear: both;"></div>
+                    <div class="config-title">Pressure</sub> Sensors</div>
+                    <div style="padding-right: 0.6em;">
+                        <input style="width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddPressSensorsNumber" title="Add this number of pressure sensors"/> <input type="submit" name="AddPressSensors" value="Add">
                     </div>
                 </div>
 
@@ -1075,8 +1112,235 @@ if (isset($output_error)) {
                 <?php
                 }
                 ?>
+
+               <?php if (count($sensor_press_id) > 0) { ?>
+                <div class="sensor-title">Pressure Sensors</div>
+                <div style="margin-bottom: 1.5em;">
+                    <?php
+                    for ($i = 0; $i < count($sensor_press_id); $i++) {
+                    ?>
+                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                    <table class="sensor" style="border: 0.7em solid #EBEBEB; border-top: 0;">
+                        <tr class="shade">
+                            <td>Press Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_press_id[$i]; ?>)</span></td>
+                            <td>Sensor<br>Name</td>
+                            <td>Sensor<br>Device</td>
+                            <td>GPIO<br>Pin</td>
+                            <td>Log<br>Interval</td>
+                            <td>Pre<br>Relay</td>
+                            <td>Pre<br>Duration</td>
+                            <td>Log</td>
+                            <td>Graph</td>
+                            <td rowspan=2 style="padding: 0 0.5em;">
+                                <div style="padding: 0.2em 0">
+                                    Presets: <select style="width: 9em;" name="sensorpress<?php echo $i; ?>preset">
+                                        <option value="default">default</option>
+                                        <?php
+                                        for ($z = 0; $z < count($sensor_press_preset); $z++) {
+                                            echo '<option value="' . $sensor_press_preset[$z] . '">' . $sensor_press_preset[$z] . '</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                    
+                                </div>
+                                <div style="padding: 0.2em 0">
+                                    <input type="submit" name="Change<?php echo $i; ?>PressSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_press_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>PressSensorOverwrite" value="Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>PressSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_press_preset) == 0) echo ' disabled'; ?>>
+                                </div>
+                                <div style="padding: 0.2em 0">
+                                    <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensorpress<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>PressSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>PressSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="shade" style="height: 2.5em;">
+                            <td class="shade" style="vertical-align: middle;">
+                                <button type="submit" name="Delete<?php echo $i; ?>PressSensor" title="Delete Sensor">Delete<br>Sensor</button>
+                            </td>
+                            <td>
+                                <input style="width: 6.5em;" type="text" value="<?php echo $sensor_press_name[$i]; ?>" maxlength=12 size=10 name="sensorpress<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
+                            </td>
+                            <td>
+                                <select style="width: 6.5em;" name="sensorpress<?php echo $i; ?>device">
+                                    <option<?php
+                                        if ($sensor_press_device[$i] == 'BMP085-180') {
+                                            echo ' selected="selected"';
+                                        } ?> value="BMP085-180">BMP085/180</option>
+                                    <option<?php
+                                        if ($sensor_press_device[$i] == 'Other') {
+                                            echo ' selected="selected"';
+                                        } ?> value="Other">Other</option>
+                                </select>
+                            </td>
+                            <td>
+                                <?php
+                                if ($sensor_press_device[$i] == 'BMP085-180') {
+                                ?>
+                                I<sup>2</sup>C
+                                <?php
+                                } else {
+                                ?>
+                                    <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_press_pin[$i]; ?>" maxlength=2 size=1 name="sensorpress<?php echo $i; ?>pin" title="This is the GPIO pin connected to the Press sensor"/>
+                                <?php
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_press_period[$i]; ?>" name="sensorpress<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/> sec
+                            </td>
+                            <td>
+                                <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_press_premeasure_relay[$i]; ?>" maxlength=2 size=1 name="sensorpress<?php echo $i; ?>premeasure_relay" title="This is the relay that will turn on prior to the sensor measurement, for the duration specified by Pre Duration (0 to disable)"/>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_press_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensorpress<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relaywill run before the sensor measurement is obtained"/> sec
+                            </td>
+                            <td>
+                                <input type="checkbox" title="Enable this sensor to record measurements to the log file?" name="sensorpress<?php echo $i; ?>activated" value="1" <?php if ($sensor_press_activated[$i] == 1) echo 'checked'; ?>>
+                            </td>
+                            <td>
+                                <input type="checkbox" title="Enable graphs to be generated from the sensor log data?" name="sensorpress<?php echo $i; ?>graph" value="1" <?php if ($sensor_press_graph[$i] == 1) echo 'checked'; ?>>
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
+                        <tr class="shade">
+                            <td style="text-align: left;">Regulation</td>
+                            <td>Current<br>State</td>
+                            <td>PID<br>Set Point</td>
+                            <td>PID<br>Regulate</td>
+                            <td>Sensor Read<br>Interval</td>
+                            <td>Up<br>Relay</td>
+                            <td>Up<br>Max</td>
+                            <td>Down<br>Relay</td>
+                            <td>Down<br>Max</td>
+                            <td>K<sub>p</sub></td>
+                            <td>K<sub>i</sub></td>
+                            <td>K<sub>d</sub></td>
+                        </tr>
+                        <tr style="height: 2.5em;">
+                            <td style="text-align: left;">Temperature</td>
+                            <td class="onoff">
+                                <?php
+                                if ($pid_press_temp_or[$i] == 1) {
+                                    ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangePress<?php echo $i; ?>TempOR" value="0"> | <button style="width: 3em;" type="submit" name="ChangePress<?php echo $i; ?>TempOR" value="0">ON</button>
+                                    <?php
+                                } else {
+                                    ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangePress<?php echo $i; ?>TempOR" value="1"> | <button style="width: 3em;" type="submit" name="ChangePress<?php echo $i; ?>TempOR" value="1">OFF</button>
+                                <?php
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_temp_set[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>TempSet" title="This is the desired temperature in °C."/> °C
+                            </td>
+                            <td>
+                                <select style="width: 5em;" name="SetPress<?php echo $i; ?>TempSetDir" title="Which direction should the PID regulate. 'Up' will ensure the temperature is regulated above a certain temperature. 'Down' will ensure the temperature is regulates below a certain point. 'Both' will ensure the temperature is regulated both up and down to maintain a specific temperature."/>
+                                    <option value="0"<?php
+                                        if ($pid_press_temp_set_dir[$i] == 0) {
+                                            echo ' selected="selected"';
+                                        } ?>>Both</option>
+                                    <option value="1"<?php
+                                        if ($pid_press_temp_set_dir[$i] == 1) {
+                                            echo ' selected="selected"';
+                                        } ?>>Up</option>
+                                    <option value="-1"<?php
+                                        if ($pid_press_temp_set_dir[$i] == -1) {
+                                            echo ' selected="selected"';
+                                        } ?>>Down</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_press_temp_period[$i]; ?>" name="SetPress<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/> sec
+                            </td>
+                            <td>
+                                <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_press_temp_relay_low[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>TempRelayLow" title="This relay is used to increase temperature."/>
+                            </td>
+                            <td>
+                                <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_press_temp_outmax_low[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>TempOutmaxLow" title="This is the maximum number of seconds the relay used to increase temperature is permitted to turn on for (0 to disable)."/>
+                            </td>
+                            <td>
+                                <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_press_temp_relay_high[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>TempRelayHigh" title="This relay is used to decrease temperature."/>
+                            </td>
+                            <td>
+                                <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_press_temp_outmax_high[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>TempOutmaxHigh" title="This is the maximum number of seconds the relay used to decrease temperature is permitted to turn on for (0 to disable)."/>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_temp_p[$i]; ?>" maxlength=4 size=1 name="SetPress<?php echo $i; ?>Temp_P" title="This is the Proportional gain of the PID controller"/>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_temp_i[$i]; ?>" maxlength=4 size=1 name="SetPress<?php echo $i; ?>Temp_I" title="This is the Integral gain of the PID controller"/>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_temp_d[$i]; ?>" maxlength=4 size=1 name="SetPress<?php echo $i; ?>Temp_D" title="This is the Derivative gain of the PID controller"/>
+                            </td>
+                        </tr>
+                        <tr style="height: 2.5em;">
+                            <td style="text-align: left;">Pressure</td>
+                            <td class="onoff">
+                                <?php
+                                if ($pid_press_press_or[$i] == 1) {
+                                    ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangePress<?php echo $i; ?>PressOR" value="0"> | <button style="width: 3em;" type="submit" name="ChangePress<?php echo $i; ?>PressOR" value="0">ON</button>
+                                    <?php
+                                } else {
+                                    ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangePress<?php echo $i; ?>PressOR" value="1"> | <button style="width: 3em;" type="submit" name="ChangePress<?php echo $i; ?>PressOR" value="1">OFF</button>
+                                <?php
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_press_set[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>PressSet" title="This is the desired relative pressure in percent."/> Pa
+                            </td>
+                            <td>
+                                <select style="width: 5em;" name="SetPress<?php echo $i; ?>PressSetDir" title="Which direction should the PID regulate. 'Up' will ensure the pressure is regulated above a certain pressure. 'Down' will ensure the pressure is regulates below a certain point. 'Both' will ensure the pressure is regulated both up and down to maintain a specific pressure."/>
+                                    <option value="0"<?php
+                                        if ($pid_press_press_set_dir[$i] == 0) {
+                                            echo ' selected="selected"';
+                                        } ?>>Both</option>
+                                    <option value="1"<?php
+                                        if ($pid_press_press_set_dir[$i] == 1) {
+                                            echo ' selected="selected"';
+                                        } ?>>Up</option>
+                                    <option value="-1"<?php
+                                        if ($pid_press_press_set_dir[$i] == -1) {
+                                            echo ' selected="selected"';
+                                        } ?>>Down</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_press_press_period[$i]; ?>" name="SetPress<?php echo $i; ?>PressPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another pressure reading and applying the PID"/> sec
+                            </td>
+                            <td>
+                                <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_press_press_relay_low[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>PressRelayLow" title="This relay is used to increase pressure."/>
+                            </td>
+                            <td>
+                                <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_press_press_outmax_low[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>PressOutmaxLow" title="This is the maximum number of seconds the relay used to increase pressure is permitted to turn on for (0 to disable)."/>
+                            </td>
+                            <td>
+                                <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_press_press_relay_high[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>PressRelayHigh" title="This relay is used to decrease pressure."/>
+                            </td>
+                            <td>
+                                <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_press_press_outmax_high[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>PressOutmaxHigh" title="This is the maximum number of seconds the relay used to decrease pressure is permitted to turn on for (0 to disable)."/>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_press_p[$i]; ?>" maxlength=4 size=1 name="SetPress<?php echo $i; ?>Press_P" title="This is the Proportional gain of the PID controller"/>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_press_i[$i]; ?>" maxlength=4 size=1 name="SetPress<?php echo $i; ?>Press_I" title="This is the Integral gain of the PID controller"/>
+                            </td>
+                            <td>
+                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_press_d[$i]; ?>" maxlength=4 size=1 name="SetPress<?php echo $i; ?>Press_D" title="This is the Derivative gain of the PID controller"/>
+                            </td>
+                        </tr>
+                    </table>
+                    </form>
+                    <div style="margin-bottom: <?php if ($i == count($sensor_press_id)) echo '2'; else echo '1'; ?>em;"></div>
+                    <?php
+                    }
+                    ?>
+                </div>
+                <?php
+                }
+                ?>
+                
             </div>
-        </form>
         </li>
 
         <li data-content="custom" <?php
@@ -1117,7 +1381,7 @@ if (isset($output_error)) {
                     if ($_POST['custom_type'] == 'Combined') {
 
                         $cus_graph = '/var/tmp/plot-cus-combined.gnuplot';
-                        $total = ((count($sensor_t_id) != 0) + (count($sensor_ht_id) != 0)*2 + (count($sensor_co2_id) != 0) + 1);
+                        $total = ((count($sensor_t_id) != 0) + (count($sensor_ht_id) != 0)*2 + (count($sensor_co2_id) != 0) + (count($sensor_press_id) != 0)*2 + 1);
 
                         $f = fopen($cus_graph, "w");
                         $size = $total * 350;
@@ -1154,7 +1418,7 @@ if (isset($output_error)) {
                             fwrite($f, "set ytics 5\n");
                             fwrite($f, "set mytics 2\n");
                             fwrite($f, "set title \"T Sensor: Combined Temperatures\"\n");
-                             fwrite($f, "plot ");
+                            fwrite($f, "plot ");
 
                             for ($z = 0; $z < count($sensor_t_id); $z++) {
                                 $line= $z+1;
@@ -1207,8 +1471,40 @@ if (isset($output_error)) {
 
                             for ($z = 0; $z < count($sensor_co2_id); $z++) {
                                 $line= $z+1;
-                                fwrite($f, "\"<awk '\\$15 == " . $z . "' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"H$line\" w lp ls $line axes x1y1");
+                                fwrite($f, "\"<awk '\\$8 == " . $z . "' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"CO_2$line\" w lp ls $line axes x1y1");
                                 if ($z < count($sensor_co2_id)-1) fwrite($f, ", ");
+                            }
+                            fwrite($f, "\n");
+                        }
+
+                        if (count($sensor_press_id) != 0) {
+                            if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
+                            else fwrite($f, "unset key\n");
+                            fwrite($f, "set yrange [0:35]\n");
+                            fwrite($f, "set ytics 5\n");
+                            fwrite($f, "set mytics 2\n");
+                            fwrite($f, "set title \"Press Sensor: Combined Temperatures\"\n");
+                            if (count($sensor_press_id) != 0) fwrite($f, "plot ");
+
+                            for ($z = 0; $z < count($sensor_press_id); $z++) {
+                                $line= $z+1;
+                                fwrite($f, "\"<awk '\\$10 == " . $z . "' /var/tmp/sensor-press.log\" using 1:7 index 0 title \"T$line\" w lp ls $line axes x1y1");
+                                if ($z < count($sensor_press_id)-1) fwrite($f, ", ");
+                            }
+                            fwrite($f, "\n");
+
+                            if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
+                            else fwrite($f, "unset key\n");
+                            fwrite($f, "set yrange [97000:99000]\n");
+                            fwrite($f, "set ytics 200\n");
+                            fwrite($f, "set mytics 4\n");
+                            fwrite($f, "set title \"Press Sensor: Combined Pressures\"\n");
+                            if (count($sensor_press_id) != 0) fwrite($f, "plot ");
+
+                            for ($z = 0; $z < count($sensor_press_id); $z++) {
+                                $line= $z+1;
+                                fwrite($f, "\"<awk '\\$10 == " . $z . "' /var/tmp/sensor-press.log\" using 1:8 index 0 title \"P$line\" w lp ls $line axes x1y1");
+                                if ($z < count($sensor_press_id)-1) fwrite($f, ", ");
                             }
                             fwrite($f, "\n");
                         }
@@ -1220,14 +1516,15 @@ if (isset($output_error)) {
                         fwrite($f, "set mytics 5\n");
                         fwrite($f, "set xzeroaxis linetype 1 linecolor rgb '#000000' linewidth 1\n");
                         fwrite($f, "set title \"Relay Run Time\"\n");
-                        fwrite($f, "plot \"/var/tmp/relay.log\" u 1:7 index 0 title \"$relay_name[0]\" w impulses ls 5 axes x1y1, ");
-                        fwrite($f, "\"\" using 1:8 index 0 title \"$relay_name[1]\" w impulses ls 6 axes x1y1, ");
-                        fwrite($f, "\"\" using 1:9 index 0 title \"$relay_name[2]\" w impulses ls 7 axes x1y1, ");
-                        fwrite($f, "\"\" using 1:10 index 0 title \"$relay_name[3]\" w impulses ls 8 axes x1y1, ");
-                        fwrite($f, "\"\" using 1:11 index 0 title \"$relay_name[4]\" w impulses ls 9 axes x1y1, ");
-                        fwrite($f, "\"\" using 1:12 index 0 title \"$relay_name[5]\" w impulses ls 10 axes x1y1, ");
-                        fwrite($f, "\"\" using 1:13 index 0 title \"$relay_name[6]\" w impulses ls 11 axes x1y1, ");
-                        fwrite($f, "\"\" using 1:14 index 0 title \"$relay_name[7]\" w impulses ls 12 axes x1y1\n");
+                        fwrite($f, "plot ");
+
+                        for ($z = 0; $z < count($relay_name); $z++) {
+                            $line= $z+1;
+                            $lsvalue = $z+5;
+                            fwrite($f, "\"/var/tmp/relay.log\" u 1:7 index 0 title \"$relay_name[$z]\" w impulses ls $lsvalue axes x1y1");
+                            if ($z < count($relay_name)-1) fwrite($f, ", ");
+                        }
+                        fwrite($f, "\n");
                         fwrite($f, "unset multiplot\n");
 
                         fclose($f);
@@ -1237,6 +1534,7 @@ if (isset($output_error)) {
                         unlink('/var/tmp/sensor-t.log');
                         unlink('/var/tmp/sensor-ht.log');
                         unlink('/var/tmp/sensor-co2.log');
+                        unlink('/var/tmp/sensor-press.log');
                         unlink('/var/tmp/relay.log');
 
                         echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
@@ -1244,6 +1542,7 @@ if (isset($output_error)) {
                         echo '&id=' , $id2;
                         echo '&sensornumber=0>';
                         echo '</div>';
+
                     } else if ($_POST['custom_type'] == 'Separate') {
                         
                         for ($n = 0; $n < count($sensor_t_id); $n++) {
@@ -1409,19 +1708,19 @@ if (isset($output_error)) {
                                 else fwrite($f, "unset key\n");
                                 fwrite($f, "set title \"Sensor $n: $sensor_co2_name[$n]: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
                                 fwrite($f, "plot \"<awk '\\$8 == $n' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"CO_2\" w lp ls 1 axes x1y2, ");
-                                fwrite($f, "\"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"$relay_name[1]\" w impulses ls 4 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:8 index 0 title \"$relay_name[2]\" w impulses ls 5 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:9 index 0 title \"$relay_name[3]\" w impulses ls 6 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:10 index 0 title \"$relay_name[4]\" w impulses ls 7 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:11 index 0 title \"$relay_name[5]\" w impulses ls 8 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:12 index 0 title \"$relay_name[6]\" w impulses ls 9 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:13 index 0 title \"$relay_name[7]\" w impulses ls 10 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:14 index 0 title \"$relay_name[8]\" w impulses ls 11 axes x1y1\n");
+                                fwrite($f, "\"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"$relay_name[0]\" w impulses ls 4 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:8 index 0 title \"$relay_name[1]\" w impulses ls 5 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:9 index 0 title \"$relay_name[2]\" w impulses ls 6 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:10 index 0 title \"$relay_name[3]\" w impulses ls 7 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:11 index 0 title \"$relay_name[4]\" w impulses ls 8 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:12 index 0 title \"$relay_name[5]\" w impulses ls 9 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:13 index 0 title \"$relay_name[6]\" w impulses ls 10 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:14 index 0 title \"$relay_name[7]\" w impulses ls 11 axes x1y1\n");
 
                                 fclose($f);
                                 $cmd = "gnuplot $cus_graph";
                                 exec($cmd);
-                                //unlink($cus_graph);
+                                unlink($cus_graph);
 
                                 echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
                                 echo 'graphtype=custom-separate';
@@ -1432,6 +1731,72 @@ if (isset($output_error)) {
                             }
                             if ($n != count($sensor_co2_id)) { echo '<hr class="fade"/>'; }
                         }
+
+                        for ($n = 0; $n < count($sensor_press_id); $n++) {
+                            if ($sensor_press_graph[$n] == 1) {
+
+                                $cus_graph = "/var/tmp/plot-cus-press-separate-$n.gnuplot";
+                                $f = fopen($cus_graph, "w");
+
+                                fwrite($f, "set terminal png size $graph_width,490\n");
+                                fwrite($f, "set xdata time\n");
+                                fwrite($f, "set timefmt \"%Y %m %d %H %M %S\"\n");
+                                fwrite($f, "set output \"$images/graph-press-custom-separate-$id2-$n.png\"\n");
+                                fwrite($f, "set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]\n");
+                                fwrite($f, "set format x \"%H:%M\\n%m/%d\"\n");
+                                fwrite($f, "set yrange [97000:99000]\n");
+                                fwrite($f, "set y2range [0:35]\n");
+                                fwrite($f, "set mytics 4\n");
+                                fwrite($f, "set my2tics 10\n");
+                                fwrite($f, "set ytics 200\n");
+                                fwrite($f, "set y2tics 5\n");
+                                fwrite($f, "set style line 11 lc rgb '#808080' lt 1\n");
+                                fwrite($f, "set border 3 back ls 11\n");
+                                fwrite($f, "set tics nomirror\n");
+                                fwrite($f, "set style line 12 lc rgb '#808080' lt 0 lw 1\n");
+                                fwrite($f, "set grid xtics ytics back ls 12\n");
+                                fwrite($f, "set style line 1 lc rgb '#FF3100' pt 0 ps 1 lt 1 lw 2\n");
+                                fwrite($f, "set style line 2 lc rgb '#0772A1' pt 0 ps 1 lt 1 lw 2\n");
+                                fwrite($f, "set style line 3 lc rgb '#00B74A' pt 0 ps 1 lt 1 lw 2\n");
+                                fwrite($f, "set style line 4 lc rgb '#91180B' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 5 lc rgb '#582557' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 6 lc rgb '#04834C' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 7 lc rgb '#DC32E6' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 8 lc rgb '#957EF9' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 9 lc rgb '#CC8D9C' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 10 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1\n");
+                                fwrite($f, "set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1\n");
+                                if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
+                                else fwrite($f, "unset key\n");
+                                fwrite($f, "set title \"Sensor $n: $sensor_press_name[$n]: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
+                                fwrite($f, "plot \"<awk '\\$10 == $n' /var/tmp/sensor-press.log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, ");
+                                fwrite($f, "\"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ");
+                                fwrite($f, "\"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"$relay_name[0]\" w impulses ls 4 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:8 index 0 title \"$relay_name[1]\" w impulses ls 5 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:9 index 0 title \"$relay_name[2]\" w impulses ls 6 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:10 index 0 title \"$relay_name[3]\" w impulses ls 7 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:11 index 0 title \"$relay_name[4]\" w impulses ls 8 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:12 index 0 title \"$relay_name[5]\" w impulses ls 9 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:13 index 0 title \"$relay_name[6]\" w impulses ls 10 axes x1y1, ");
+                                fwrite($f, "\"\" using 1:14 index 0 title \"$relay_name[7]\" w impulses ls 11 axes x1y1");
+
+                                fclose($f);
+                                $cmd = "gnuplot $cus_graph";
+                                exec($cmd);
+                                unlink($cus_graph);
+
+                                echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
+                                echo 'graphtype=custom-separate';
+                                echo '&sensortype=press';
+                                echo '&id=' , $id2;
+                                echo '&sensornumber=' , $n , '>';
+                                echo '</div>';
+                            }
+                            if ($n != count($sensor_press_id) || $n == count($sensor_press_id)) {
+                                echo '<hr class="fade"/>'; }
+                        }
+
                     }
                 }
             } else if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] == 'guest') {
@@ -1629,9 +1994,10 @@ if (isset($output_error)) {
                             echo '&page=' , $_GET['page'];
                         } ?>" method="POST">
                         Lines: <input type="text" maxlength=8 size=8 name="Lines" />
-                        <input type="submit" name="TSensor" value="T Sensor">
-                        <input type="submit" name="HTSensor" value="HT Sensor">
-                        <input type="submit" name="Co2Sensor" value="CO2 Sensor">
+                        <input type="submit" name="TSensor" value="T">
+                        <input type="submit" name="HTSensor" value="HT">
+                        <input type="submit" name="Co2Sensor" value="CO2">
+                        <input type="submit" name="PressSensor" value="Press">
                         <input type="submit" name="Relay" value="Relay">
                         <input type="submit" name="Login" value="Login">
                         <input type="submit" name="Daemon" value="Daemon">
@@ -1674,6 +2040,20 @@ if (isset($output_error)) {
                             $log = '/var/tmp/sensor-co2.log';
 
                             echo 'Year Mo Day Hour Min Sec CO<sub>2</sub> Sensor<br> <br>';
+                            if ($_POST['Lines'] != '') {
+                                $Lines = $_POST['Lines'];
+                                echo `tail -n $Lines $log`;
+                            } else {
+                                echo `tail -n 30 $log`;
+                            }
+                            unlink($log);
+                        }
+
+                        if(isset($_POST['PressSensor'])) {
+                            concatenate_logs('press');
+                            $log = '/var/tmp/sensor-press.log';
+
+                            echo 'Year Mo Day Hour Min Sec Tc Press Alt Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `tail -n $Lines $log`;
@@ -2059,7 +2439,7 @@ if (isset($output_error)) {
                             Command to execute before capture
                         </td>
                         <td class="setting-value">
-                    <input style="width: 18em;" type="text" value="<?php echo $still_cmd_pre; ?>" maxlength=100 name="Still_Cmd_Pre" title="Command to be executed before the image capture. Double-quotes cannot be used. Use single-quotes instead. If your command is longer than 100 characters, consider creating a script and excuting that here."/> 
+                    <input style="width: 18em;" type="text" value="<?php echo $still_cmd_pre; ?>" maxlength=100 name="Still_Cmd_Pre" title="Command to be executed before the image capture. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
                         </td>
                     </tr>
                     <tr>
@@ -2067,7 +2447,7 @@ if (isset($output_error)) {
                             Command to execute after capture
                         </td>
                         <td class="setting-value">
-                    <input style="width: 18em;" type="text" value="<?php echo $still_cmd_post; ?>" maxlength=100 name="Still_Cmd_Post" title="Command to be executed after the image capture. Double-quotes cannot be used. Use single-quotes instead. If your command is longer than 100 characters, consider creating a script and excuting that here."/> 
+                    <input style="width: 18em;" type="text" value="<?php echo $still_cmd_post; ?>" maxlength=100 name="Still_Cmd_Post" title="Command to be executed after the image capture. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
                         </td>
                     </tr>
                     <tr>
@@ -2103,7 +2483,7 @@ if (isset($output_error)) {
                             Command to execute before starting stream
                         </td>
                         <td class="setting-value">
-                    <input style="width: 18em;" type="text" value="<?php echo $stream_cmd_pre; ?>" maxlength=100 name="Stream_Cmd_Pre" title="Command to be executed before the stream has started. Double-quotes cannot be used. Use single-quotes instead. If your command is longer than 100 characters, consider creating a script and excuting that here."/> 
+                    <input style="width: 18em;" type="text" value="<?php echo $stream_cmd_pre; ?>" maxlength=100 name="Stream_Cmd_Pre" title="Command to be executed before the stream has started. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
                         </td>
                     </tr>
                     <tr>
@@ -2111,7 +2491,7 @@ if (isset($output_error)) {
                             Command to execute after stopping stream
                         </td>
                         <td class="setting-value">
-                    <input style="width: 18em;" type="text" value="<?php echo $stream_cmd_post; ?>" maxlength=100 name="Stream_Cmd_Post" title="Command to be executed after the stream has been stopped. Double-quotes cannot be used. Use single-quotes instead. If your command is longer than 100 characters, consider creating a script and excuting that here."/> 
+                    <input style="width: 18em;" type="text" value="<?php echo $stream_cmd_post; ?>" maxlength=100 name="Stream_Cmd_Post" title="Command to be executed after the stream has been stopped. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
                         </td>
                     </tr>
                     <tr>
@@ -2179,7 +2559,7 @@ if (isset($output_error)) {
                             Command to execute before capture
                         </td>
                         <td class="setting-value">
-                    <input style="width: 18em;" type="text" value="<?php echo $timelapse_cmd_pre; ?>" maxlength=100 name="Timelapse_Cmd_Pre" title="Command to be executed before capture. Double-quotes cannot be used. Use single-quotes instead. If your command is longer than 100 characters, consider creating a script and excuting that here."/> 
+                    <input style="width: 18em;" type="text" value="<?php echo $timelapse_cmd_pre; ?>" maxlength=100 name="Timelapse_Cmd_Pre" title="Command to be executed before capture. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
                         </td>
                     </tr>
                     <tr>
@@ -2187,7 +2567,7 @@ if (isset($output_error)) {
                             Command to execute after capture
                         </td>
                         <td class="setting-value">
-                    <input style="width: 18em;" type="text" value="<?php echo $timelapse_cmd_post; ?>" maxlength=100 name="Timelapse_Cmd_Post" title="Command to be executed after capture. Double-quotes cannot be used. Use single-quotes instead. If your command is longer than 100 characters, consider creating a script and excuting that here."/> 
+                    <input style="width: 18em;" type="text" value="<?php echo $timelapse_cmd_post; ?>" maxlength=100 name="Timelapse_Cmd_Post" title="Command to be executed after capture. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
                         </td>
                     </tr>
                     <tr>
