@@ -261,11 +261,11 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
 
         if ((int)$_POST['ChangeT' . $p . 'TempOR'] == 0) {
             if ($pid_t_temp_set_dir[$p] == 0 and
-                ($pid_t_temp_relay_high[$p] == 0 or pid_t_temp_relay_low[$p] == 0)) {
+                ($pid_t_temp_relay_high[$p] == 0 or $pid_t_temp_relay_low[$p] == 0)) {
                 $sensor_error = 'Error: If PID Regulate is set to Both, the Up and Down relays must be set.';
-            } else if ($pid_t_temp_set_dir[$p] == -1 and pid_t_temp_relay_high[$p] == 0) {
+            } else if ($pid_t_temp_set_dir[$p] == -1 and $pid_t_temp_relay_high[$p] == 0) {
                 $sensor_error = 'Error: If PID Regulate is set to Down, the Down relay must be set.';
-            } else if ($pid_t_temp_set_dir[$p] == 1 and pid_t_temp_relay_low[$p] == 0) {
+            } else if ($pid_t_temp_set_dir[$p] == 1 and $pid_t_temp_relay_low[$p] == 0) {
                 $sensor_error = 'Error: If PID Regulate is set to Up, the Up relay must be set.';
             }
         }
@@ -513,11 +513,11 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
 
         if ((int)$_POST['ChangeHT' . $p . 'TempOR'] == 0) {
             if ($pid_ht_temp_set_dir[$p] == 0 and
-                ($pid_ht_temp_relay_high[$p] == 0 or pid_ht_temp_relay_low[$p] == 0)) {
+                ($pid_ht_temp_relay_high[$p] == 0 or $pid_ht_temp_relay_low[$p] == 0)) {
                 $sensor_error = 'Error: If PID Regulate is set to Both, the Up and Down relays must be set.';
-            } else if ($pid_ht_temp_set_dir[$p] == -1 and pid_ht_temp_relay_high[$p] == 0) {
+            } else if ($pid_ht_temp_set_dir[$p] == -1 and $pid_ht_temp_relay_high[$p] == 0) {
                 $sensor_error = 'Error: If PID Regulate is set to Down, the Down relay must be set.';
-            } else if ($pid_ht_temp_set_dir[$p] == 1 and pid_ht_temp_relay_low[$p] == 0) {
+            } else if ($pid_ht_temp_set_dir[$p] == 1 and $pid_ht_temp_relay_low[$p] == 0) {
                 $sensor_error = 'Error: If PID Regulate is set to Up, the Up relay must be set.';
             }
         }
@@ -542,11 +542,11 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
 
         if ((int)$_POST['ChangeHT' . $p . 'HumOR'] == 0) {
             if ($pid_ht_hum_set_dir[$p] == 0 and
-                ($pid_ht_hum_relay_high[$p] == 0 or pid_ht_hum_relay_low[$p] == 0)) {
+                ($pid_ht_hum_relay_high[$p] == 0 or $pid_ht_hum_relay_low[$p] == 0)) {
                 $sensor_error = 'Error: If PID Regulate is set to Both, the Up and Down relays must be set.';
-            } else if ($pid_ht_hum_set_dir[$p] == -1 and pid_ht_hum_relay_high[$p] == 0) {
+            } else if ($pid_ht_hum_set_dir[$p] == -1 and $pid_ht_hum_relay_high[$p] == 0) {
                 $sensor_error = 'Error: If PID Regulate is set to Down, the Down relay must be set.';
-            } else if ($pid_ht_hum_set_dir[$p] == 1 and pid_ht_hum_relay_low[$p] == 0) {
+            } else if ($pid_ht_hum_set_dir[$p] == 1 and $pid_ht_hum_relay_low[$p] == 0) {
                 $sensor_error = 'Error: If PID Regulate is set to Up, the Up relay must be set.';
             }
         }
@@ -844,11 +844,11 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
 
         if ((int)$_POST['ChangeCO2' . $p . 'CO2OR'] == 0) {
             if ($pid_co2_set_dir[$p] == 0 and
-                ($pid_co2_relay_high[$p] == 0 or pid_co2_relay_low[$p] == 0)) {
+                ($pid_co2_relay_high[$p] == 0 or $pid_co2_relay_low[$p] == 0)) {
                 $sensor_error = 'Error: If PID Regulate is set to Both, the Up and Down relays must be set.';
-            } else if ($pid_co2_set_dir[$p] == -1 and pid_co2_relay_high[$p] == 0) {
+            } else if ($pid_co2_set_dir[$p] == -1 and $pid_co2_relay_high[$p] == 0) {
                 $sensor_error = 'Error: If PID Regulate is set to Down, the Down relay must be set.';
-            } else if ($pid_co2_set_dir[$p] == 1 and pid_co2_relay_low[$p] == 0) {
+            } else if ($pid_co2_set_dir[$p] == 1 and $pid_co2_relay_low[$p] == 0) {
                 $sensor_error = 'Error: If PID Regulate is set to Up, the Up relay must be set.';
             }
         }
@@ -1105,11 +1105,11 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
 
         if ((int)$_POST['ChangePress' . $p . 'TempOR'] == 0) {
             if ($pid_press_temp_set_dir[$p] == 0 and
-                ($pid_press_temp_relay_high[$p] == 0 or pid_press_temp_relay_low[$p] == 0)) {
+                ($pid_press_temp_relay_high[$p] == 0 or $pid_press_temp_relay_low[$p] == 0)) {
                 $sensor_error = 'Error: If PID Regulate is set to Both, the Up and Down relays must be set.';
-            } else if ($pid_press_temp_set_dir[$p] == -1 and pid_press_temp_relay_high[$p] == 0) {
+            } else if ($pid_press_temp_set_dir[$p] == -1 and $pid_press_temp_relay_high[$p] == 0) {
                 $sensor_error = 'Error: If PID Regulate is set to Down, the Down relay must be set.';
-            } else if ($pid_press_temp_set_dir[$p] == 1 and pid_press_temp_relay_low[$p] == 0) {
+            } else if ($pid_press_temp_set_dir[$p] == 1 and $pid_press_temp_relay_low[$p] == 0) {
                 $sensor_error = 'Error: If PID Regulate is set to Up, the Up relay must be set.';
             }
         }
@@ -1134,11 +1134,11 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
 
         if ((int)$_POST['ChangePress' . $p . 'PressOR'] == 0) {
             if ($pid_press_press_set_dir[$p] == 0 and
-                ($pid_press_press_relay_high[$p] == 0 or pid_press_press_relay_low[$p] == 0)) {
+                ($pid_press_press_relay_high[$p] == 0 or $pid_press_press_relay_low[$p] == 0)) {
                 $sensor_error = 'Error: If PID Regulate is set to Both, the Up and Down relays must be set.';
-            } else if ($pid_press_press_set_dir[$p] == -1 and pid_press_press_relay_high[$p] == 0) {
+            } else if ($pid_press_press_set_dir[$p] == -1 and $pid_press_press_relay_high[$p] == 0) {
                 $sensor_error = 'Error: If PID Regulate is set to Down, the Down relay must be set.';
-            } else if ($pid_press_press_set_dir[$p] == 1 and pid_press_press_relay_low[$p] == 0) {
+            } else if ($pid_press_press_set_dir[$p] == 1 and $pid_press_press_relay_low[$p] == 0) {
                 $sensor_error = 'Error: If PID Regulate is set to Up, the Up relay must be set.';
             }
         }
