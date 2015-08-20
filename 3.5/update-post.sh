@@ -61,6 +61,7 @@ if [[ $db_version == "4" ]]; then
 	printf "Mycodo database is already the latest version.\n";
 elif [[ $db_version == "3" ]]; then
 	printf "Updating Mycodo database to version 4.\n";
+	$DIR/update-database.py -i update
 elif [[ $db_version == "2" ]]; then
 	printf "Updating Mycodo database to version 3.\n";
 	$DIR/update-database.py -i update
