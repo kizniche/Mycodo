@@ -191,13 +191,17 @@ def setup_db(update):
         target = raw_input("Generate which database? 'user', 'mycodo', or 'all'? ")
     
     if target == 'all' or target == 'mycodo':
-        MycodoDatabase()
-        UpgradeDatabase()
+        print "Mycodo database creation or integrity check of existing"
+        mycodo_database_create()
     
     if target == 'all' or target == 'user':
         delete_all_tables_user()
         create_all_tables_user()
         create_rows_columns_user()
+
+    if update == 'update':
+        mycodo_database_update()
+        user_database_update()
 
         # Update User database version
         conn = sqlite3.connect(sql_database_user)
@@ -207,12 +211,13 @@ def setup_db(update):
         cur.close()
 
 
-def UpgradeDatabase():
+def mycodo_database_update():
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
     cur.execute("PRAGMA user_version;")
     for row in cur:
         current_db_version_mycodo = row[0]
+    print "Mycodo database version: %d" % current_db_version_mycodo
     
     # Version 2 row updates
     if current_db_version_mycodo < 2:
@@ -241,6 +246,9 @@ def UpgradeDatabase():
     if current_db_version_mycodo < 5:
         pass
 
+    if db_version_mycodo == current_db_version_mycodo:
+        print "Mycodo database is already up to date."
+
     # Update Mycodo database version
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
@@ -249,7 +257,28 @@ def UpgradeDatabase():
     cur.close()
 
 
-def MycodoDatabase():
+def user_database_update():
+    conn = sqlite3.connect(sql_database_user)
+    cur = conn.cursor()
+    cur.execute("PRAGMA user_version;")
+    for row in cur:
+        current_db_version_user = row[0]
+    print "User database version: %d" % current_db_version_user
+    
+    # Version 1
+    if current_db_version_user < 1:
+        print "User database is out of date. Updating..."
+
+    if current_db_version_user == db_version_user:
+        print "User database is already up to date."
+
+    # Update Mycodo database version
+    cur.execute("PRAGMA user_version = %s;" % db_version_user)
+    conn.commit()
+    cur.close()
+
+
+def mycodo_database_create():
     AddTable('Relays')
     AddColumn('Relays', 'Name', 'TEXT')
     AddColumn('Relays', 'Pin', 'INT')
