@@ -1387,7 +1387,7 @@ if (isset($output_error)) {
                     if ($_POST['custom_type'] == 'Combined') {
 
                         $cus_graph = '/var/tmp/plot-cus-combined.gnuplot';
-                        $total = ((count($sensor_t_id) != 0) + (count($sensor_ht_id) != 0)*2 + (count($sensor_co2_id) != 0) + (count($sensor_press_id) != 0)*2 + 1);
+                        $total = ((array_sum($sensor_t_graph) != 0) + (array_sum($sensor_ht_graph) != 0)*2 + (array_sum($sensor_co2_graph) != 0) + (array_sum($sensor_press_graph) != 0)*2 + 1);
 
                         $f = fopen($cus_graph, "w");
                         $size = $total * 350;
@@ -1417,13 +1417,13 @@ if (isset($output_error)) {
                         
                         fwrite($f, "set multiplot layout $total, 1 title \"Combined Sensor Data - $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
 
-                        if (count($sensor_t_id) != 0) {
+                        if (array_sum($sensor_t_graph) != 0) {
                             if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
                             else fwrite($f, "unset key\n");
                             fwrite($f, "set yrange [0:35]\n");
                             fwrite($f, "set ytics 5\n");
                             fwrite($f, "set mytics 2\n");
-                            fwrite($f, "set title \"T Sensor: Combined Temperatures\"\n");
+                            fwrite($f, "set title \"Temperature Sensor: Combined Temperatures\"\n");
                             fwrite($f, "plot ");
 
                             for ($z = 0; $z < count($sensor_t_id); $z++) {
@@ -1434,13 +1434,13 @@ if (isset($output_error)) {
                             fwrite($f, "\n");
                         }
 
-                        if (count($sensor_ht_id) != 0) {
+                        if (array_sum($sensor_ht_graph) != 0) {
                             if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
                             else fwrite($f, "unset key\n");
                             fwrite($f, "set yrange [0:35]\n");
                             fwrite($f, "set ytics 5\n");
                             fwrite($f, "set mytics 2\n");
-                            fwrite($f, "set title \"HT Sensor: Combined Temperatures\"\n");
+                            fwrite($f, "set title \"Humitiy/Temperature Sensor: Combined Temperatures\"\n");
                             if (count($sensor_ht_id) != 0) fwrite($f, "plot ");
 
                             for ($z = 0; $z < count($sensor_ht_id); $z++) {
@@ -1455,7 +1455,7 @@ if (isset($output_error)) {
                             fwrite($f, "set yrange [0:100]\n");
                             fwrite($f, "set ytics 10\n");
                             fwrite($f, "set mytics 5\n");
-                            fwrite($f, "set title \"HT Sensor: Combined Humidities\"\n");
+                            fwrite($f, "set title \"Humitiy/Temperature Sensor: Combined Humidities\"\n");
                             if (count($sensor_ht_id) != 0) fwrite($f, "plot ");
 
                             for ($z = 0; $z < count($sensor_ht_id); $z++) {
@@ -1466,13 +1466,14 @@ if (isset($output_error)) {
                             fwrite($f, "\n");
                         }
 
-                        if (count($sensor_co2_id) != 0) {
-                            if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
+                        if (array_sum($sensor_co2_graph) != 0) {
+                            if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key at graph 0.04, graph 0.05\n");
                             else fwrite($f, "unset key\n");
                             fwrite($f, "set yrange [0:5000]\n");
                             fwrite($f, "set ytics 1000\n");
                             fwrite($f, "set mytics 5\n");
-                            fwrite($f, "set title \"CO2 Sensor: Combined CO2s\"\n");
+                            fwrite($f, "set termopt enhanced\n");
+                            fwrite($f, "set title \"CO_2 Sensor: Combined CO_2\"\n");
                             if (count($sensor_co2_id) != 0) fwrite($f, "plot ");
 
                             for ($z = 0; $z < count($sensor_co2_id); $z++) {
@@ -1483,13 +1484,13 @@ if (isset($output_error)) {
                             fwrite($f, "\n");
                         }
 
-                        if (count($sensor_press_id) != 0) {
-                            if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
+                        if (array_sum($sensor_press_graph) != 0) {
+                            if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key at graph 0.03, graph 0.05\n");
                             else fwrite($f, "unset key\n");
                             fwrite($f, "set yrange [0:35]\n");
                             fwrite($f, "set ytics 5\n");
                             fwrite($f, "set mytics 2\n");
-                            fwrite($f, "set title \"Press Sensor: Combined Temperatures\"\n");
+                            fwrite($f, "set title \"Pressure Sensor: Combined Temperatures\"\n");
                             if (count($sensor_press_id) != 0) fwrite($f, "plot ");
 
                             for ($z = 0; $z < count($sensor_press_id); $z++) {
@@ -1499,12 +1500,12 @@ if (isset($output_error)) {
                             }
                             fwrite($f, "\n");
 
-                            if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
+                            if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key at graph 0.03, graph 0.05\n");
                             else fwrite($f, "unset key\n");
                             fwrite($f, "set yrange [97000:99000]\n");
                             fwrite($f, "set ytics 200\n");
                             fwrite($f, "set mytics 4\n");
-                            fwrite($f, "set title \"Press Sensor: Combined Pressures\"\n");
+                            fwrite($f, "set title \"Pressure Sensor: Combined Pressures\"\n");
                             if (count($sensor_press_id) != 0) fwrite($f, "plot ");
 
                             for ($z = 0; $z < count($sensor_press_id); $z++) {
@@ -1515,7 +1516,7 @@ if (isset($output_error)) {
                             fwrite($f, "\n");
                         }
 
-                        if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left top\n");
+                        if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key at graph 0.03, graph 0.05\n");
                         else fwrite($f, "unset key\n");
                         fwrite($f, "set yrange [-100:100]\n");
                         fwrite($f, "set ytics 25\n");
@@ -1554,6 +1555,7 @@ if (isset($output_error)) {
                         for ($n = 0; $n < count($sensor_t_id); $n++) {
                             if ($sensor_t_graph[$n] == 1) {
 
+                                $sensor_number = $n+1;
                                 $cus_graph = "/var/tmp/plot-cus-t-separate-$n.gnuplot";
                                 $f = fopen($cus_graph, "w");
 
@@ -1586,7 +1588,7 @@ if (isset($output_error)) {
                                 fwrite($f, "set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1\n");
                                 if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
                                 else fwrite($f, "unset key\n");
-                                fwrite($f, "set title \"Sensor $n: $sensor_t_name[$n]: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
+                                fwrite($f, "set title \"Temperature Sensor $sensor_number: $sensor_t_name[$n]: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
                                 fwrite($f, "plot \"<awk '\\$10 == $n' /var/tmp/sensor-t.log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, ");
                                 fwrite($f, "\"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, ");
                                 fwrite($f, "\"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ");
@@ -1610,13 +1612,15 @@ if (isset($output_error)) {
                                 echo '&id=' , $id2;
                                 echo '&sensornumber=' , $n , '>';
                                 echo '</div>';
+
+                                echo '<hr class="fade"/>';
                             }
-                            if ($n != count($sensor_ht_id) || ($n == count($sensor_ht_id) && array_sum($sensor_co2_graph))) { echo '<hr class="fade"/>'; }
                         }
 
                         for ($n = 0; $n < count($sensor_ht_id); $n++) {
                             if ($sensor_ht_graph[$n] == 1) {
 
+                                $sensor_number = $n+1;
                                 $cus_graph = "/var/tmp/plot-cus-ht-separate-$n.gnuplot";
                                 $f = fopen($cus_graph, "w");
 
@@ -1649,7 +1653,7 @@ if (isset($output_error)) {
                                 fwrite($f, "set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1\n");
                                 if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
                                 else fwrite($f, "unset key\n");
-                                fwrite($f, "set title \"Sensor $n: $sensor_ht_name[$n]: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
+                                fwrite($f, "set title \"Humidity/Temperature Sensor $sensor_number: $sensor_ht_name[$n]: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
                                 fwrite($f, "plot \"<awk '\\$10 == $n' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, ");
                                 fwrite($f, "\"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, ");
                                 fwrite($f, "\"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ");
@@ -1673,13 +1677,15 @@ if (isset($output_error)) {
                                 echo '&id=' , $id2;
                                 echo '&sensornumber=' , $n , '>';
                                 echo '</div>';
+
+                                echo '<hr class="fade"/>';
                             }
-                            if ($n != count($sensor_ht_id) || ($n == count($sensor_ht_id) && array_sum($sensor_co2_graph))) { echo '<hr class="fade"/>'; }
                         }
 
                         for ($n = 0; $n < count($sensor_co2_id); $n++) {
                             if ($sensor_co2_graph[$n] == 1) {
 
+                                $sensor_number = $n+1;
                                 $cus_graph = "/var/tmp/plot-cus-co2-separate-$n.gnuplot";
                                 $f = fopen($cus_graph, "w");
 
@@ -1712,7 +1718,8 @@ if (isset($output_error)) {
                                 fwrite($f, "set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1\n");
                                 if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
                                 else fwrite($f, "unset key\n");
-                                fwrite($f, "set title \"Sensor $n: $sensor_co2_name[$n]: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
+                                fwrite($f, "set termopt enhanced\n");
+                                fwrite($f, "set title \"CO_2 Sensor $sensor_number: $sensor_co2_name[$n]: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
                                 fwrite($f, "plot \"<awk '\\$8 == $n' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"CO_2\" w lp ls 1 axes x1y2, ");
                                 fwrite($f, "\"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"$relay_name[0]\" w impulses ls 4 axes x1y1, ");
                                 fwrite($f, "\"\" using 1:8 index 0 title \"$relay_name[1]\" w impulses ls 5 axes x1y1, ");
@@ -1734,13 +1741,15 @@ if (isset($output_error)) {
                                 echo '&id=' , $id2;
                                 echo '&sensornumber=' , $n , '>';
                                 echo '</div>';
+
+                                echo '<hr class="fade"/>';
                             }
-                            if ($n != count($sensor_co2_id)) { echo '<hr class="fade"/>'; }
                         }
 
                         for ($n = 0; $n < count($sensor_press_id); $n++) {
                             if ($sensor_press_graph[$n] == 1) {
 
+                                $sensor_number = $n+1;
                                 $cus_graph = "/var/tmp/plot-cus-press-separate-$n.gnuplot";
                                 $f = fopen($cus_graph, "w");
 
@@ -1774,7 +1783,7 @@ if (isset($output_error)) {
                                 fwrite($f, "set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1\n");
                                 if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
                                 else fwrite($f, "unset key\n");
-                                fwrite($f, "set title \"Sensor $n: $sensor_press_name[$n]: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
+                                fwrite($f, "set title \"Pressure Sensor $sensor_number: $sensor_press_name[$n]: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
                                 fwrite($f, "plot \"<awk '\\$10 == $n' /var/tmp/sensor-press.log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, ");
                                 fwrite($f, "\"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, ");
                                 fwrite($f, "\"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ");
@@ -1798,11 +1807,10 @@ if (isset($output_error)) {
                                 echo '&id=' , $id2;
                                 echo '&sensornumber=' , $n , '>';
                                 echo '</div>';
-                            }
-                            if ($n != count($sensor_press_id) || $n == count($sensor_press_id)) {
-                                echo '<hr class="fade"/>'; }
-                        }
 
+                                echo '<hr class="fade"/>';
+                            }
+                        }
                     }
                 }
             } else if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] == 'guest') {

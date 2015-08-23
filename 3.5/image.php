@@ -65,12 +65,10 @@ if ($_COOKIE['login_hash'] == $user_hash) {
             }
     } else if (ctype_alnum($_GET['id']) && is_int((int)$_GET['sensornumber']) &&
             ($_GET['sensortype'] == 't' || $_GET['sensortype'] == 'ht' || $_GET['sensortype'] == 'co2' || $_GET['sensortype'] == 'press' || $_GET['sensortype'] == 'x')) {
-        error_log("test00");
         // Generate preset graphs (Main tab)
         if ($_GET['graphtype'] == 'separate' ||
             $_GET['graphtype'] == 'combined' ||
             $_GET['graphspan'] == 'default') {
-            error_log("test01");
             readfile($image_dir . 'graph-' . $_GET['sensortype'] . $_GET['graphtype'] . $_GET['graphspan'] . '-' . $_GET['id'] . '-' . $_GET['sensornumber'] . '.png');
         } elseif ($_GET['graphtype'] == 'custom-combined') {
             readfile($image_dir . 'graph-' . $_GET['graphtype'] . '-' . $_GET['id'] . '.png');
