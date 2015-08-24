@@ -250,6 +250,74 @@ if (isset($_POST['AddTimers']) && isset($_POST['AddTimersNumber'])) {
 
 /*
  *
+ * Add Sensors
+ *
+ */
+
+if (isset($_POST['AddSensor'])) {
+    if (isset($_POST['AddSensorName']) && ctype_alnum($_POST['AddSensorName'])) {
+        switch ($_POST['AddSensorDev']) {
+            case "DHT11":
+                $stmt = $db->prepare("INSERT INTO HTSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relay_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D) VALUES(:id, :name, 0, 'DHT11', 120, 0, 0, 0, 0, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0, 0, 0, 0, 0, 1, 50.0, 0, 90, 0, 0, 0)");
+                $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
+                $stmt->bindValue(':name', $_POST['AddSensorName'], SQLITE3_TEXT);
+                $stmt->execute();
+                shell_exec("$mycodo_client --pidrestart HT");
+                break;
+            case "DHT22":
+                $stmt = $db->prepare("INSERT INTO HTSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relay_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D) VALUES(:id, :name, 0, 'DHT22', 120, 0, 0, 0, 0, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0, 0, 0, 0, 0, 1, 50.0, 0, 90, 0, 0, 0)");
+                $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
+                $stmt->bindValue(':name', $_POST['AddSensorName'], SQLITE3_TEXT);
+                $stmt->execute();
+                shell_exec("$mycodo_client --pidrestart HT");
+                break;
+            case "AM2302":
+                $stmt = $db->prepare("INSERT INTO HTSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relay_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D) VALUES(:id, :name, 0, 'AM2302', 120, 0, 0, 0, 0, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0, 0, 0, 0, 0, 1, 50.0, 0, 90, 0, 0, 0)");
+                $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
+                $stmt->bindValue(':name', $_POST['AddSensorName'], SQLITE3_TEXT);
+                $stmt->execute();
+                shell_exec("$mycodo_client --pidrestart HT");
+                break;
+            case "BMP":
+                $stmt = $db->prepare("INSERT INTO PressSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Press_Relay_High, Press_Outmax_High, Press_Relay_Low, Press_Outmax_Low, Press_OR, Press_Set, Press_Set_Direction, Press_Period, Press_P, Press_I, Press_D) VALUES(:id, :name, 0, 'BMP085-180', 120, 0, 0, 0, 0, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0, 0, 0, 0, 0, 1, 50.0, 0, 90, 0, 0, 0)");
+                $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
+                $stmt->bindValue(':name', $_POST['AddSensorName'], SQLITE3_TEXT);
+                $stmt->execute();
+                shell_exec("$mycodo_client --pidrestart Press");
+                break;
+            case "DS18B20":
+                $stmt = $db->prepare("INSERT INTO TSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D) VALUES(:id, :name, 0, 'DS18B20', 120, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 90, 0, 0, 0)");
+                $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
+                $stmt->bindValue(':name', $_POST['AddSensorName'], SQLITE3_TEXT);
+                $stmt->execute();
+                shell_exec("$mycodo_client --pidrestart T");
+                break;
+            case "K30":
+                $stmt = $db->prepare("INSERT INTO CO2Sensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, CO2_Relay_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmax_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D) VALUES(:id, :name, 0, 'K30', 120, 0, 0, 0, 0, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0)");
+                $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
+                $stmt->bindValue(':name', $_POST['AddSensorName'], SQLITE3_TEXT);
+                $stmt->execute();
+                shell_exec("$mycodo_client --pidrestart CO2");
+                break;
+        }
+    } else {
+        $sensor_error = "Error: Missing name. Enter a name when adding a sensor.";
+    }
+}
+
+// Add HT sensors
+if (isset($_POST['AddHTSensors']) && isset($_POST['AddHTSensorsNumber'])) {
+    for ($j = 0; $j < $_POST['AddHTSensorsNumber']; $j++) {
+        $stmt = $db->prepare("INSERT INTO HTSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relay_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D) VALUES(:id, 'HT-S', 0, 'DHT22', 120, 0, 0, 0, 0, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0, 0, 0, 0, 0, 1, 50.0, 0, 90, 0, 0, 0)");
+        $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
+        $stmt->execute();
+    }
+    shell_exec("$mycodo_client --pidrestart HT");
+}
+
+
+/*
+ *
  * Temperature Sensors
  *
  */
@@ -412,7 +480,7 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
                 shell_exec("$mycodo_client --sqlreload -1");
             }
         } else {
-            $sensor_error = 'Something went wrong. The preset you selected doesn\'t exist.';
+            $sensor_error = 'Error: Something went wrong. The preset you selected doesn\'t exist.';
         }
     }
 
@@ -420,7 +488,7 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
     if (isset($_POST['Change' . $p . 'TSensorNewPreset'])) {
         if(in_array($_POST['sensort' . $p . 'presetname'], $sensor_t_preset)) {
             $name = $_POST['sensort' . $p . 'presetname'];
-            $sensor_error = "The preset name '$name' is already in use. Use a different name.";
+            $sensor_error = "Error: The preset name '$name' is already in use. Use a different name.";
         } else {
             if (isset($_POST['sensort' . $p . 'presetname']) && $_POST['sensort' . $p . 'presetname'] != '') {
 
@@ -454,7 +522,7 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
                 $stmt->bindValue(':tempd', (float)$_POST['SetT' . $p . 'Temp_D'], SQLITE3_FLOAT);
                 $stmt->execute();
             } else {
-                $sensor_error = 'You must enter a name to create a new preset.';
+                $sensor_error = 'Error: You must enter a name to create a new preset.';
             }
         }
     }
@@ -463,7 +531,7 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
     if (isset($_POST['Change' . $p . 'TSensorRenamePreset']) && $_POST['sensort' . $p . 'preset'] != 'default') {
         if(in_array($_POST['sensort' . $p . 'presetname'], $sensor_t_preset)) {
             $name = $_POST['sensort' . $p . 'presetname'];
-            $sensor_error = "The preset name '$name' is already in use. Use a different name.";
+            $sensor_error = "Error: The preset name '$name' is already in use. Use a different name.";
         } else {
             $stmt = $db->prepare("UPDATE TSensorPreset SET Id=:presetnew WHERE Id=:presetold");
             $stmt->bindValue(':presetold', $_POST['sensort' . $p . 'preset'], SQLITE3_TEXT);
@@ -487,16 +555,6 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
 
         shell_exec("$mycodo_client --pidrestart T");
     }
-}
-
-// Add Temperature sensors
-if (isset($_POST['AddTSensors']) && isset($_POST['AddTSensorsNumber'])) {
-    for ($j = 0; $j < $_POST['AddTSensorsNumber']; $j++) {
-        $stmt = $db->prepare("INSERT INTO TSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D) VALUES(:id, 'T-S', 0, 'DS18B20', 120, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 90, 0, 0, 0)");
-        $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
-        $stmt->execute();
-    }
-    shell_exec("$mycodo_client --pidrestart T");
 }
 
 
@@ -732,7 +790,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
                 shell_exec("$mycodo_client --sqlreload -1");
             }
         } else {
-            $sensor_error = 'Something went wrong. The preset you selected doesn\'t exist.';
+            $sensor_error = 'Error: Something went wrong. The preset you selected doesn\'t exist.';
         }
     }
 
@@ -741,7 +799,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
     if (isset($_POST['Change' . $p . 'HTSensorNewPreset'])) {
         if(in_array($_POST['sensorht' . $p . 'presetname'], $sensor_ht_preset)) {
             $name = $_POST['sensorht' . $p . 'presetname'];
-            $sensor_error = "The preset name '$name' is already in use. Use a different name.";
+            $sensor_error = "Error: The preset name '$name' is already in use. Use a different name.";
         } else {
             if (isset($_POST['sensorht' . $p . 'presetname']) && $_POST['sensorht' . $p . 'presetname'] != '') {
 
@@ -785,7 +843,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
                 $stmt->bindValue(':humd', (float)$_POST['SetHT' . $p . 'Hum_D'], SQLITE3_FLOAT);
                 $stmt->execute();
             } else {
-                $sensor_error = 'You must enter a name to create a new preset.';
+                $sensor_error = 'Error: You must enter a name to create a new preset.';
             }
         }
     }
@@ -794,7 +852,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
     if (isset($_POST['Change' . $p . 'HTSensorRenamePreset']) && $_POST['sensorht' . $p . 'preset'] != 'default') {
         if(in_array($_POST['sensorht' . $p . 'presetname'], $sensor_ht_preset)) {
             $name = $_POST['sensorht' . $p . 'presetname'];
-            $sensor_error = "The preset name '$name' is already in use. Use a different name.";
+            $sensor_error = "Error: The preset name '$name' is already in use. Use a different name.";
         } else {
             $stmt = $db->prepare("UPDATE HTSensorPreset SET Id=:presetnew WHERE Id=:presetold");
             $stmt->bindValue(':presetold', $_POST['sensorht' . $p . 'preset'], SQLITE3_TEXT);
@@ -820,15 +878,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
     }
 }
 
-// Add HT sensors
-if (isset($_POST['AddHTSensors']) && isset($_POST['AddHTSensorsNumber'])) {
-    for ($j = 0; $j < $_POST['AddHTSensorsNumber']; $j++) {
-        $stmt = $db->prepare("INSERT INTO HTSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relay_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D) VALUES(:id, 'HT-S', 0, 'DHT22', 120, 0, 0, 0, 0, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0, 0, 0, 0, 0, 1, 50.0, 0, 90, 0, 0, 0)");
-        $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
-        $stmt->execute();
-    }
-    shell_exec("$mycodo_client --pidrestart HT");
-}
+
 
 
 /*
@@ -1004,7 +1054,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
                 shell_exec("$mycodo_client --sqlreload -1");
             }
         } else {
-            $sensor_error = 'Something went wrong. The preset you selected doesn\'t exist.';
+            $sensor_error = 'Error: Something went wrong. The preset you selected doesn\'t exist.';
         }
     }
 
@@ -1012,7 +1062,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
     if (isset($_POST['Change' . $p . 'CO2SensorNewPreset'])) {
         if(in_array($_POST['sensorco2' . $p . 'presetname'], $sensor_co2_preset)) {
             $name = $_POST['sensorco2' . $p . 'presetname'];
-            $sensor_error = "The preset name '$name' is already in use. Use a different name.";
+            $sensor_error = "Error: The preset name '$name' is already in use. Use a different name.";
         } else {
             if (isset($_POST['sensorco2' . $p . 'presetname']) && $_POST['sensorco2' . $p . 'presetname'] != '') {
 
@@ -1046,7 +1096,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
                 $stmt->bindValue(':co2d', (float)$_POST['SetCO2' . $p . 'CO2_D'], SQLITE3_FLOAT);
                 $stmt->execute();
             } else {
-                $sensor_error = 'You must enter a name to create a new preset.';
+                $sensor_error = 'Error: You must enter a name to create a new preset.';
             }
         }
     }
@@ -1055,7 +1105,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
     if (isset($_POST['Change' . $p . 'CO2SensorRenamePreset']) && $_POST['sensorco2' . $p . 'preset'] != 'default') {
         if(in_array($_POST['sensorco2' . $p . 'presetname'], $sensor_co2_preset)) {
             $name = $_POST['sensorco2' . $p . 'presetname'];
-            $sensor_error = "The preset name '$name' is already in use. Use a different name.";
+            $sensor_error = "Error: The preset name '$name' is already in use. Use a different name.";
         } else {
             $stmt = $db->prepare("UPDATE CO2SensorPreset SET Id=:presetnew WHERE Id=:presetold");
             $stmt->bindValue(':presetold', $_POST['sensorco2' . $p . 'preset'], SQLITE3_TEXT);
@@ -1079,16 +1129,6 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
 
         shell_exec("$mycodo_client --pidrestart CO2");
     }
-}
-
-// Add CO2 sensors
-if (isset($_POST['AddCO2Sensors']) && isset($_POST['AddCO2SensorsNumber'])) {
-    for ($j = 0; $j < $_POST['AddCO2SensorsNumber']; $j++) {
-        $stmt = $db->prepare("INSERT INTO CO2Sensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, CO2_Relay_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmax_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D) VALUES(:id, 'CO2-S', 0, 'K30', 120, 0, 0, 0, 0, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0)");
-        $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
-        $stmt->execute();
-    }
-    shell_exec("$mycodo_client --pidrestart CO2");
 }
 
 
@@ -1324,7 +1364,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
                 shell_exec("$mycodo_client --sqlreload -1");
             }
         } else {
-            $sensor_error = 'Something went wrong. The preset you selected doesn\'t exist.';
+            $sensor_error = 'Error: Something went wrong. The preset you selected doesn\'t exist.';
         }
     }
 
@@ -1333,7 +1373,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
     if (isset($_POST['Change' . $p . 'PressSensorNewPreset'])) {
         if(in_array($_POST['sensorpress' . $p . 'presetname'], $sensor_press_preset)) {
             $name = $_POST['sensorpress' . $p . 'presetname'];
-            $sensor_error = "The preset name '$name' is already in use. Use a different name.";
+            $sensor_error = "Error: The preset name '$name' is already in use. Use a different name.";
         } else {
             if (isset($_POST['sensorpress' . $p . 'presetname']) && $_POST['sensorpress' . $p . 'presetname'] != '') {
 
@@ -1377,7 +1417,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
                 $stmt->bindValue(':pressd', (float)$_POST['SetPress' . $p . 'Press_D'], SQLITE3_FLOAT);
                 $stmt->execute();
             } else {
-                $sensor_error = 'You must enter a name to create a new preset.';
+                $sensor_error = 'Error: You must enter a name to create a new preset.';
             }
         }
     }
@@ -1386,7 +1426,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
     if (isset($_POST['Change' . $p . 'PressSensorRenamePreset']) && $_POST['sensorpress' . $p . 'preset'] != 'default') {
         if(in_array($_POST['sensorpress' . $p . 'presetname'], $sensor_press_preset)) {
             $name = $_POST['sensorpress' . $p . 'presetname'];
-            $sensor_error = "The preset name '$name' is already in use. Use a different name.";
+            $sensor_error = "Error: The preset name '$name' is already in use. Use a different name.";
         } else {
             $stmt = $db->prepare("UPDATE PressSensorPreset SET Id=:presetnew WHERE Id=:presetold");
             $stmt->bindValue(':presetold', $_POST['sensorpress' . $p . 'preset'], SQLITE3_TEXT);
@@ -1410,16 +1450,6 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
 
         shell_exec("$mycodo_client --pidrestart Press");
     }
-}
-
-// Add Press sensors
-if (isset($_POST['AddPressSensors']) && isset($_POST['AddPressSensorsNumber'])) {
-    for ($j = 0; $j < $_POST['AddPressSensorsNumber']; $j++) {
-        $stmt = $db->prepare("INSERT INTO PressSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Press_Relay_High, Press_Outmax_High, Press_Relay_Low, Press_Outmax_Low, Press_OR, Press_Set, Press_Set_Direction, Press_Period, Press_P, Press_I, Press_D) VALUES(:id, 'P-S', 0, 'BMP085-180', 120, 0, 0, 0, 0, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0, 0, 0, 0, 0, 1, 50.0, 0, 90, 0, 0, 0)");
-        $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
-        $stmt->execute();
-    }
-    shell_exec("$mycodo_client --pidrestart Press");
 }
 
 

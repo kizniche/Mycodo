@@ -324,7 +324,7 @@ if (isset($output_error)) {
 
             <?php
             if (isset($graph_error)) {
-                echo '<div class="error">Error: ' . $graph_error . '</div>';
+                echo '<div class="error">' . $graph_error . '</div>';
             }
             ?>
 
@@ -442,7 +442,7 @@ if (isset($output_error)) {
 
             <?php
             if (isset($sensor_error)) {
-                echo '<div class="error">Error: ' . $sensor_error . '</div>';
+                echo '<div class="error">' . $sensor_error . '</div>';
             }
             ?>
 
@@ -474,35 +474,18 @@ if (isset($output_error)) {
                     </div>
                 </div>
 
-                <div style="float: left; margin: 0 0.5em; padding: 0 0.5em;">
-                    <div style="clear: both;"></div>
-                    <div class="config-title">T Sensors</div>
+                <div style="float: left; margin: 0 0.5em; padding: 0.5em 0.5em;">
                     <div style="padding-right: 0.6em;">
-                        <input style="width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddTSensorsNumber" title="Add this number of temperature sensors"/> <input type="submit" name="AddTSensors" value="Add">
-                    </div>
-                </div>
-
-                <div style="float: left; margin: 0 0.5em; padding: 0 0.5em;">
-                    <div style="clear: both;"></div>
-                    <div class="config-title">HT Sensors</div>
-                    <div style="padding-right: 0.6em;">
-                        <input style="width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddHTSensorsNumber" title="Add this number of humidity/temperature sensors"/> <input type="submit" name="AddHTSensors" value="Add">
-                    </div>
-                </div>
-
-                <div style="float: left; margin: 0 0.5em; padding: 0 0.5em;">
-                    <div style="clear: both;"></div>
-                    <div class="config-title">CO<sub>2</sub> Sensors</div>
-                    <div style="padding-right: 0.6em;">
-                        <input style="width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddCO2SensorsNumber" title="Add this number of CO2 sensors"/> <input type="submit" name="AddCO2Sensors" value="Add">
-                    </div>
-                </div>
-
-                <div style="float: left; margin: 0 0.5em; padding: 0 0.5em;">
-                    <div style="clear: both;"></div>
-                    <div class="config-title">Pressure</sub> Sensors</div>
-                    <div style="padding-right: 0.6em;">
-                        <input style="width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddPressSensorsNumber" title="Add this number of pressure sensors"/> <input type="submit" name="AddPressSensors" value="Add">
+                        Add Sensor: <select style="width: 22em;" name="AddSensorDev">
+                            <option value="DHT11">Humidity & Temperature: DHT11</option>
+                            <option value="DHT22">Humidity & Temperature: DHT22</option>
+                            <option value="AM2302">Humidity & Temperature: AM2302</option>
+                            <option value="BMP">Pressure & Temperature: BMP085/BMP180</option>
+                            <option value="DS18B20">Temperature: DS18B20</option>
+                            <option value="K30">CO2: K-30</option>
+                        </select>
+                        Name (required): <input style="width: 7em;" maxlength=12 size=10 name="AddSensorName" title="Name of the new sensor."/>
+                        <input type="submit" name="AddSensor" value="Add">
                     </div>
                 </div>
 
@@ -1356,7 +1339,7 @@ if (isset($output_error)) {
 
             <?php
             if (isset($custom_error)) {
-                echo '<div class="error">Error: ' . $custom_error . '</div>';
+                echo '<div class="error">' . $custom_error . '</div>';
             }
             ?>
 
@@ -1827,7 +1810,7 @@ if (isset($output_error)) {
 
             <?php
             if (isset($camera_error)) {
-                echo '<div class="error">Error: ' . $camera_error . '</div>';
+                echo '<div class="error">' . $camera_error . '</div>';
             }
             ?>
 
@@ -1997,7 +1980,7 @@ if (isset($output_error)) {
 
             <?php
             if (isset($data_error)) {
-                echo '<div class="error">Error: ' . $data_error . '</div>';
+                echo '<div class="error">' . $data_error . '</div>';
             }
             ?>
 
