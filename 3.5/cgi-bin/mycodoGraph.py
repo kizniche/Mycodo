@@ -463,12 +463,13 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             multiplot_num += 1
             plot.write('set title \"Combined T Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot ')
+            first = 0;
             for i in range(0, len(sensor_t_name)):
                 if sensor_t_graph[i]:
+                    if first:
+                        plot.write(', ')
+                        first = 1
                     plot.write('\"' + sensor_t_log_final[i] + '" u 1:7 index 0 title \"' + sensor_t_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')
-                if i != (len(sensor_t_graph) - 1) - sensor_t_graph[::-1].index(1):
-                    plot.write(', ')
-
             plot.write(' \n')
 
         if sum(sensor_ht_graph):
@@ -481,12 +482,13 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             multiplot_num += 1
             plot.write('set title \"Combined HT Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot ')
+            first = 0
             for i in range(0, len(sensor_ht_name)):
-                if sensor_ht_graph[i]:
-                    plot.write('\"' + sensor_ht_log_final[i] + '" u 1:7 index 0 title \"' + sensor_ht_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')
-                if i != (len(sensor_ht_graph) - 1) - sensor_ht_graph[::-1].index(1):
-                    plot.write(', ')
-
+                if sensor_ht_graph[i]:\
+                    if first:
+                        plot.write(', ')
+                        first = 1
+                    plot.write('\"' + sensor_ht_log_final[i] + '" u 1:7 index 0 title \"' + sensor_ht_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')       
             plot.write(' \n')
 
         if sum(sensor_ht_graph):
@@ -498,12 +500,13 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             multiplot_num += 1
             plot.write('set title \"Combined HT Humidities: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot ')
+            first = 0
             for i in range(0, len(sensor_ht_name)):
                 if sensor_ht_graph[i]:
+                    if first:
+                        plot.write(', ')
+                        first = 1
                     plot.write('\"' + sensor_ht_log_final[i] + '" u 1:8 index 0 title \"' + sensor_ht_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')
-                if i != (len(sensor_ht_graph) - 1) - sensor_ht_graph[::-1].index(1):
-                    plot.write(', ')
-
             plot.write(' \n')
 
         if sum(sensor_co2_graph):
@@ -516,12 +519,13 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write('set termopt enhanced\n') 
             plot.write('set title \"Combined CO_2s: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot ')
+            first = 0
             for i in range(0, len(sensor_co2_name)):
                 if sensor_co2_graph[i]:
+                    if first:
+                        plot.write(', ')
+                        first = 1
                     plot.write('\"' + sensor_co2_log_final[i] + '" u 1:7 index 0 title \"' + sensor_co2_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')
-                if i != (len(sensor_co2_graph) - 1) - sensor_co2_graph[::-1].index(1):
-                    plot.write(', ')
-
             plot.write(' \n')
 
         if sum(sensor_press_graph):
@@ -534,12 +538,13 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             multiplot_num += 1
             plot.write('set title \"Combined Press Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot ')
+            first = 0
             for i in range(0, len(sensor_press_name)):
                 if sensor_press_graph[i]:
+                    if first:
+                        plot.write(', ')
+                        first = 1
                     plot.write('\"' + sensor_press_log_final[i] + '" u 1:7 index 0 title \"' + sensor_press_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')
-                if i != (len(sensor_press_graph) - 1) - sensor_press_graph[::-1].index(1):
-                    plot.write(', ')
-
             plot.write(' \n')
 
         if sum(sensor_press_graph):
@@ -552,12 +557,13 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             multiplot_num += 1
             plot.write('set title \"Combined Press Pressures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot ')
+            first = 0
             for i in range(0, len(sensor_press_name)):
                 if sensor_press_graph[i]:
+                    if first:
+                        plot.write(', ')
+                        first = 1
                     plot.write('\"' + sensor_press_log_final[i] + '" u 1:8 index 0 title \"' + sensor_press_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')
-                if i != (len(sensor_press_graph) - 1) - sensor_press_graph[::-1].index(1):
-                    plot.write(', ')
-
             plot.write(' \n')
 
         plot.write('unset multiplot\n')
