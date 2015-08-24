@@ -468,7 +468,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 if sensor_t_graph[i]:
                     if first:
                         plot.write(', ')
-                        first = 1
+                    first = 1
                     plot.write('\"' + sensor_t_log_final[i] + '" u 1:7 index 0 title \"' + sensor_t_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')
             plot.write(' \n')
 
@@ -484,10 +484,10 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write('plot ')
             first = 0
             for i in range(0, len(sensor_ht_name)):
-                if sensor_ht_graph[i]:\
+                if sensor_ht_graph[i]:
                     if first:
                         plot.write(', ')
-                        first = 1
+                    first = 1
                     plot.write('\"' + sensor_ht_log_final[i] + '" u 1:7 index 0 title \"' + sensor_ht_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')       
             plot.write(' \n')
 
@@ -505,7 +505,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 if sensor_ht_graph[i]:
                     if first:
                         plot.write(', ')
-                        first = 1
+                    first = 1
                     plot.write('\"' + sensor_ht_log_final[i] + '" u 1:8 index 0 title \"' + sensor_ht_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')
             plot.write(' \n')
 
@@ -524,7 +524,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 if sensor_co2_graph[i]:
                     if first:
                         plot.write(', ')
-                        first = 1
+                    first = 1
                     plot.write('\"' + sensor_co2_log_final[i] + '" u 1:7 index 0 title \"' + sensor_co2_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')
             plot.write(' \n')
 
@@ -543,7 +543,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 if sensor_press_graph[i]:
                     if first:
                         plot.write(', ')
-                        first = 1
+                    first = 1
                     plot.write('\"' + sensor_press_log_final[i] + '" u 1:7 index 0 title \"' + sensor_press_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')
             plot.write(' \n')
 
@@ -562,7 +562,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 if sensor_press_graph[i]:
                     if first:
                         plot.write(', ')
-                        first = 1
+                    first = 1
                     plot.write('\"' + sensor_press_log_final[i] + '" u 1:8 index 0 title \"' + sensor_press_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')
             plot.write(' \n')
 
