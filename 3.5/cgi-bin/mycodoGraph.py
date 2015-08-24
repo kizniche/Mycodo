@@ -1147,10 +1147,14 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 if sensor_press_graph[i]:
                     os.remove(sensor_press_log_final[i])
         elif graph_type == "separate":
-            os.remove(sensor_t_log_final[0])
-            os.remove(sensor_ht_log_final[0])
-            os.remove(sensor_co2_log_final[0])
-            os.remove(sensor_press_log_final[0])
+            if sensor_type == "t":
+                os.remove(sensor_t_log_final[0])
+            if sensor_type == "ht":
+                os.remove(sensor_ht_log_final[0])
+            if sensor_type == "co2":
+                os.remove(sensor_co2_log_final[0])
+            if sensor_type == "press":
+                os.remove(sensor_press_log_final[0])
     else:
         gnuplot_log = "%s/plot-%s-%s-%s-%s.log" % (log_path, sensor_type, graph_type, graph_span, sensor_number)
         with open(gnuplot_log, 'ab') as errfile:
