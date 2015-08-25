@@ -913,7 +913,7 @@ def daemon(output, log):
             if pid_t_temp_active[pid_number] == 0:
                 logging.info("[Daemon] Starting Temperature PID Thread-T-T-%s", pid_number+1)
                 rod = threading.Thread(target = ht_sensor_temperature_monitor,
-                    args = ('Thread-T-T-%d' % int(pid_number)+1, pid_number,))
+                    args = ('Thread-T-T-%d' % (int(pid_number)+1), pid_number,))
                 rod.start()
                 pid_t_temp_active[pid_number] = 1
             else:
@@ -961,7 +961,7 @@ def daemon(output, log):
             if pid_ht_hum_active[pid_number] == 0:
                 logging.info("[Daemon] Starting Humidity PID Thread-HT-H-%s", pid_number+1)
                 rod = threading.Thread(target = ht_sensor_humidity_monitor,
-                    args = ('Thread-%d' % int(pid_number)+1, pid_number,))
+                    args = ('Thread-%d' % (int(pid_number)+1), pid_number,))
                 rod.start()
                 pid_ht_hum_active[pid_number] = 1
             else:
@@ -985,7 +985,7 @@ def daemon(output, log):
             if pid_co2_active[pid_number] == 0:
                 logging.info("[Daemon] Starting CO2 PID Thread-CO2-%s", pid_number+1)
                 rod = threading.Thread(target = co2_monitor,
-                    args = ('Thread-%d' % int(pid_number)+1, pid_number,))
+                    args = ('Thread-%d' % (int(pid_number)+1), pid_number,))
                 rod.start()
                 pid_co2_active[pid_number] = 1
             else:
@@ -1033,7 +1033,7 @@ def daemon(output, log):
             if pid_press_press_active[pid_number] == 0:
                 logging.info("[Daemon] Starting Humidity PID Thread-Press-P-%s", pid_number+1)
                 rod = threading.Thread(target = press_sensor_pressure_monitor,
-                    args = ('Thread-%d' % int(pid_number)+1, pid_number,))
+                    args = ('Thread-%d' % (int(pid_number)+1), pid_number,))
                 rod.start()
                 pid_press_press_active[pid_number] = 1
             else:
