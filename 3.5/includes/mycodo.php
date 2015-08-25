@@ -607,7 +607,7 @@ if (isset($output_error)) {
                                 <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_t_premeasure_relay[$i]; ?>" maxlength=2 size=1 name="sensort<?php echo $i; ?>premeasure_relay" title="This is the relay that will turn on prior to the sensor measurement, for the duration specified by Pre Duration (0 to disable)"/>
                             </td>
                             <td>
-                                <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_t_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensort<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relaywill run before the sensor measurement is obtained"/> sec
+                                <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_t_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensort<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relay will run before the sensor measurement is obtained"/> sec
                             </td>
                             <td>
                                 <input type="checkbox" title="Enable this sensor to record measurements to the log file?" name="sensort<?php echo $i; ?>activated" value="1" <?php if ($sensor_t_activated[$i] == 1) echo 'checked'; ?>>
@@ -775,7 +775,7 @@ if (isset($output_error)) {
                                 <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_ht_premeasure_relay[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>premeasure_relay" title="This is the relay that will turn on prior to the sensor measurement, for the duration specified by Pre Duration (0 to disable)"/>
                             </td>
                             <td>
-                                <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_ht_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relaywill run before the sensor measurement is obtained"/> sec
+                                <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_ht_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relay will run before the sensor measurement is obtained"/> sec
                             </td>
                             <td>
                                 <input type="checkbox" title="Enable this sensor to record measurements to the log file?" name="sensorht<?php echo $i; ?>activated" value="1" <?php if ($sensor_ht_activated[$i] == 1) echo 'checked'; ?>>
@@ -1002,7 +1002,7 @@ if (isset($output_error)) {
                                 <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_co2_premeasure_relay[$i]; ?>" maxlength=2 size=1 name="sensorco2<?php echo $i; ?>premeasure_relay" title="This is the relay that will turn on prior to the sensor measurement, for the duration specified by Pre Duration (0 to disable)"/>
                             </td>
                             <td>
-                                <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_co2_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensorco2<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relaywill run before the sensor measurement is obtained"/> sec
+                                <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_co2_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensorco2<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relay will run before the sensor measurement is obtained"/> sec
                             </td>
                             <td>
                                 <input type="checkbox" title="Enable this sensor to record measurements to the log file?" name="sensorco2<?php echo $i; ?>activated" value="1" <?php if ($sensor_co2_activated[$i] == 1) echo 'checked'; ?>>
@@ -1179,7 +1179,7 @@ if (isset($output_error)) {
                                 <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_press_premeasure_relay[$i]; ?>" maxlength=2 size=1 name="sensorpress<?php echo $i; ?>premeasure_relay" title="This is the relay that will turn on prior to the sensor measurement, for the duration specified by Pre Duration (0 to disable)"/>
                             </td>
                             <td>
-                                <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_press_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensorpress<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relaywill run before the sensor measurement is obtained"/> sec
+                                <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_press_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensorpress<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relay will run before the sensor measurement is obtained"/> sec
                             </td>
                             <td>
                                 <input type="checkbox" title="Enable this sensor to record measurements to the log file?" name="sensorpress<?php echo $i; ?>activated" value="1" <?php if ($sensor_press_activated[$i] == 1) echo 'checked'; ?>>

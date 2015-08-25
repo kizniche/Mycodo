@@ -1300,7 +1300,7 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
         relay_onoff(int(pid_ht_hum_relay_low[sensor]), 'off')
 
     pid_hum = PID(pid_ht_hum_p[sensor], pid_ht_hum_i[sensor], pid_ht_hum_d[sensor])
-    pid_hum.setPoint(high)
+    pid_hum.setPoint(pid_ht_hum_set[sensor])
 
     while (pid_ht_hum_alive[sensor]):
 
@@ -1389,7 +1389,7 @@ def co2_monitor(ThreadName, sensor):
         relay_onoff(int(pid_co2_relay_low[sensor]), 'off')
 
     pid_co2 = PID(pid_co2_p[sensor], pid_co2_i[sensor], pid_co2_d[sensor])
-    pid_co2.setPoint(high)
+    pid_co2.setPoint(pid_co2_set[sensor])
 
     while (pid_co2_alive[sensor]):
 
@@ -1567,7 +1567,7 @@ def press_sensor_pressure_monitor(ThreadName, sensor):
         relay_onoff(int(pid_press_press_relay_low[sensor]), 'off')
 
     pid_press = PID(pid_press_press_p[sensor], pid_press_press_i[sensor], pid_press_press_d[sensor])
-    pid_press.setPoint(high)
+    pid_press.setPoint(pid_press_press_set[sensor])
 
     while (pid_press_press_alive[sensor]):
 
