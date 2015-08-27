@@ -313,17 +313,26 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
     #
     # Graph image size
     #
-    if bool(sensor_ht_graph):
-        ht_graphs = 2
-    else:
-        ht_graphs = 0
 
-    if bool(sensor_press_graph):
-        press_graphs = 2
-    else:
-        press_graphs = 0
+    num_graphs = 0
 
-    num_graphs = sum([bool(sum(sensor_t_graph)), ht_graphs, bool(sum(sensor_co2_graph)), press_graphs])
+    if bool(sum(sensor_t_graph)):
+        num_graphs += 1
+
+    if bool(sum(sensor_ht_graph)):
+        if bool(sum(sensor_t_graph)):
+            num_graphs += 1
+        else:
+            num_graphs += 2
+
+    if bool(sum(sensor_co2_graph)):
+        num_graphs += 1
+
+    if bool(sum(sensor_press_graph)):
+        if bool(sum(sensor_t_graph)) or bool(sum(sensor_ht_graph)):
+            num_graphs += 1
+        else:
+            num_graphs += 2
     
     if graph_span == "default":
         graph_width = 1000
@@ -447,13 +456,13 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
 
 
     #
-    # Combined: Generate graph with all temperatures and one graph with all humidities
+    # Combined: Generate graph combining temperatures, humidities, CO2s, and pressures
     #
     if graph_type == "combined" and  graph_span != "default":
         multiplot_num = 1
         plot.write('set multiplot layout ' + str(num_graphs) + ',1\n')
 
-        if sum(sensor_t_graph):
+        if sum(sensor_t_graph) or sum(sensor_ht_graph) or sum(sensor_press_graph):
             y1_min = '0'
             y1_max = '35'
             plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
@@ -461,7 +470,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write('set mytics 5\n')
             plot.write('set origin 0.0,%.2f\n' % float(1-((1/float(num_graphs))*float(multiplot_num))))
             multiplot_num += 1
-            plot.write('set title \"Combined T Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            plot.write('set title \"Combined Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot ')
             first = 0;
             for i in range(0, len(sensor_t_name)):
@@ -470,25 +479,18 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                         plot.write(', ')
                     first = 1
                     plot.write('\"' + sensor_t_log_final[i] + '" u 1:7 index 0 title \"' + sensor_t_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')
-            plot.write(' \n')
-
-        if sum(sensor_ht_graph):
-            y1_min = '0'
-            y1_max = '35'
-            plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-            plot.write('set ytics 5\n')
-            plot.write('set mytics 5\n')
-            plot.write('set origin 0.0,%.2f\n' % float(1-((1/float(num_graphs))*float(multiplot_num))))
-            multiplot_num += 1
-            plot.write('set title \"Combined HT Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-            plot.write('plot ')
-            first = 0
             for i in range(0, len(sensor_ht_name)):
                 if sensor_ht_graph[i]:
                     if first:
                         plot.write(', ')
                     first = 1
-                    plot.write('\"' + sensor_ht_log_final[i] + '" u 1:7 index 0 title \"' + sensor_ht_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')       
+                    plot.write('\"' + sensor_ht_log_final[i] + '" u 1:7 index 0 title \"' + sensor_ht_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')
+            for i in range(0, len(sensor_press_name)):
+                if sensor_press_graph[i]:
+                    if first:
+                        plot.write(', ')
+                    first = 1
+                    plot.write('\"' + sensor_press_log_final[i] + '" u 1:7 index 0 title \"' + sensor_press_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')
             plot.write(' \n')
 
         if sum(sensor_ht_graph):
@@ -498,7 +500,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write('set mytics 5\n')
             plot.write('set origin 0.0,%.2f\n' % float(1-((1/float(num_graphs))*float(multiplot_num))))
             multiplot_num += 1
-            plot.write('set title \"Combined HT Humidities: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            plot.write('set title \"Combined Humidities: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot ')
             first = 0
             for i in range(0, len(sensor_ht_name)):
@@ -529,25 +531,6 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write(' \n')
 
         if sum(sensor_press_graph):
-            y1_min = '0'
-            y1_max = '35'
-            plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-            plot.write('set ytics 5\n')
-            plot.write('set mytics 5\n')
-            plot.write('\nset origin 0.0,%.2f\n' % float(1-((1/float(num_graphs))*float(multiplot_num))))
-            multiplot_num += 1
-            plot.write('set title \"Combined Press Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-            plot.write('plot ')
-            first = 0
-            for i in range(0, len(sensor_press_name)):
-                if sensor_press_graph[i]:
-                    if first:
-                        plot.write(', ')
-                    first = 1
-                    plot.write('\"' + sensor_press_log_final[i] + '" u 1:7 index 0 title \"' + sensor_press_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')
-            plot.write(' \n')
-
-        if sum(sensor_press_graph):
             y1_min = '97000'
             y1_max = '99000'
             plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
@@ -555,7 +538,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write('set mytics 4\n')
             plot.write('\nset origin 0.0,%.2f\n' % float(1-((1/float(num_graphs))*float(multiplot_num))))
             multiplot_num += 1
-            plot.write('set title \"Combined Press Pressures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            plot.write('set title \"Combined Pressures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot ')
             first = 0
             for i in range(0, len(sensor_press_name)):

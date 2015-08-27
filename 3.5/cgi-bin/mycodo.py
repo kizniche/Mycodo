@@ -1934,8 +1934,6 @@ def read_ht_sensor(sensor):
 
 # Obtain reading from HT sensor
 def read_ht(sensor, device, pin):
-    time.sleep(2) # Wait 2 seconds between sensor reads
-
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
 
