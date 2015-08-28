@@ -418,10 +418,19 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
         $stmt->bindValue(':tempd', (float)$_POST['SetT' . $p . 'Temp_D'], SQLITE3_FLOAT);
         $stmt->execute();
 
-        if ($pid_t_temp_or[$p] == 0) {
+        if ($pid_t_temp_or[$p] == 0 &&
+            ($pid_t_temp_relay_high[$p] != (int)$_POST['SetT' . $p . 'TempRelayHigh'] ||
+            $pid_t_temp_outmax_high[$p] != (int)$_POST['SetT' . $p . 'TempOutmaxHigh'] ||
+            $pid_t_temp_relay_low[$p] != (int)$_POST['SetT' . $p . 'TempRelayLow'] ||
+            $pid_t_temp_outmax_low[$p] != (int)$_POST['SetT' . $p . 'TempOutmaxLow'] ||
+            $pid_t_temp_set[$p] != (float)$_POST['SetT' . $p . 'TempSet'] ||
+            $pid_t_temp_set_dir[$p] != (float)$_POST['SetT' . $p . 'TempSetDir'] ||
+            $pid_t_temp_period[$p] != (int)$_POST['SetT' . $p . 'TempPeriod'] ||
+            $pid_t_temp_p[$p] != (float)$_POST['SetT' . $p . 'Temp_P'] ||
+            $pid_t_temp_i[$p] != (float)$_POST['SetT' . $p . 'Temp_I'] ||
+            $pid_t_temp_d[$p] != (float)$_POST['SetT' . $p . 'Temp_D'])) {
             pid_reload($mycodo_client, 'TTemp', $p);
-        }
-        if  ($pid_t_temp_or[$p] != 0) {
+        } else {
             shell_exec("$mycodo_client --sqlreload -1");
         }
     }
@@ -474,9 +483,8 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
             $stmt->execute();
 
             if ($pid_t_temp_or[$p] == 0) {
-                shell_exec("$mycodo_client --pidstop TTemp $p");
-            }
-            if  ($pid_t_temp_or[$p] != 0) {
+                pid_reload($mycodo_client, 'TTemp', $p);
+            } else if ($pid_t_temp_or[$p] != 0) {
                 shell_exec("$mycodo_client --sqlreload -1");
             }
         } else {
@@ -710,13 +718,36 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
         $stmt->bindValue(':humd', (float)$_POST['SetHT' . $p . 'Hum_D'], SQLITE3_FLOAT);
         $stmt->execute();
 
-        if ($pid_ht_temp_or[$p] == 0) {
+        $reload = 1;
+        if ($pid_ht_temp_or[$p] == 0 &&
+            ($pid_ht_temp_relay_high[$p] != (int)$_POST['SetHT' . $p . 'TempRelayHigh'] ||
+            $pid_ht_temp_outmax_high[$p] != (int)$_POST['SetHT' . $p . 'TempOutmaxHigh'] ||
+            $pid_ht_temp_relay_low[$p] != (int)$_POST['SetHT' . $p . 'TempRelayLow'] ||
+            $pid_ht_temp_outmax_low[$p] != (int)$_POST['SetHT' . $p . 'TempOutmaxLow'] ||
+            $pid_ht_temp_set[$p] != (float)$_POST['SetHT' . $p . 'TempSet'] ||
+            $pid_ht_temp_set_dir[$p] != (float)$_POST['SetHT' . $p . 'TempSetDir'] ||
+            $pid_ht_temp_period[$p] != (int)$_POST['SetHT' . $p . 'TempPeriod'] ||
+            $pid_ht_temp_p[$p] != (float)$_POST['SetHT' . $p . 'Temp_P'] ||
+            $pid_ht_temp_i[$p] != (float)$_POST['SetHT' . $p . 'Temp_I'] ||
+            $pid_ht_temp_d[$p] != (float)$_POST['SetHT' . $p . 'Temp_D'])) {
             pid_reload($mycodo_client, 'HTTemp', $p);
+            $reload = 0;
         }
-        if ($pid_ht_hum_or[$p] == 0) {
+        if ($pid_ht_hum_or[$p] == 0 &&
+            ($pid_ht_hum_relay_high[$p] != (int)$_POST['SetHT' . $p . 'HumRelayHigh'] ||
+            $pid_ht_hum_outmax_high[$p] != (int)$_POST['SetHT' . $p . 'HumOutmaxHigh'] ||
+            $pid_ht_hum_relay_low[$p] != (int)$_POST['SetHT' . $p . 'HumRelayLow'] ||
+            $pid_ht_hum_outmax_low[$p] != (int)$_POST['SetHT' . $p . 'HumOutmaxLow'] ||
+            $pid_ht_hum_set[$p] != (float)$_POST['SetHT' . $p . 'HumSet'] ||
+            $pid_ht_hum_set_dir[$p] != (float)$_POST['SetHT' . $p . 'HumSetDir'] ||
+            $pid_ht_hum_period[$p] != (int)$_POST['SetHT' . $p . 'HumPeriod'] ||
+            $pid_ht_hum_p[$p] != (float)$_POST['SetHT' . $p . 'Hum_P'] ||
+            $pid_ht_hum_i[$p] != (float)$_POST['SetHT' . $p . 'Hum_I'] ||
+            $pid_ht_hum_d[$p] != (float)$_POST['SetHT' . $p . 'Hum_D'])) {
             pid_reload($mycodo_client, 'HTHum', $p);
+            $reload = 0;
         }
-        if  ($pid_ht_temp_or[$p] != 0 or $pid_ht_hum_or[$p] != 0) {
+        if ($reload) {
             shell_exec("$mycodo_client --sqlreload -1");
         }
     }
@@ -781,12 +812,12 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             $stmt->execute();
 
             if ($pid_ht_temp_or[$p] == 0) {
-                shell_exec("$mycodo_client --pidstop HTTemp $p");
+                pid_reload($mycodo_client, 'HTTemp', $p);
             }
             if ($pid_ht_hum_or[$p] == 0) {
-                shell_exec("$mycodo_client --pidstop HTHum $p");
+                pid_reload($mycodo_client, 'HTHum', $p);
             }
-            if  ($pid_ht_temp_or[$p] != 0 or $pid_ht_hum_or[$p] != 0) {
+            if ($pid_ht_temp_or[$p] != 0 or $pid_ht_hum_or[$p] != 0) {
                 shell_exec("$mycodo_client --sqlreload -1");
             }
         } else {
@@ -989,13 +1020,21 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
         $stmt->bindValue(':co2p', (float)$_POST['SetCO2' . $p . 'CO2_P'], SQLITE3_FLOAT);
         $stmt->bindValue(':co2i', (float)$_POST['SetCO2' . $p . 'CO2_I'], SQLITE3_FLOAT);
         $stmt->bindValue(':co2d', (float)$_POST['SetCO2' . $p . 'CO2_D'], SQLITE3_FLOAT);
-
         $stmt->execute();
 
-        if ($pid_co2_or[$p] == 0) {
+        if ($pid_co2_or[$p] == 0 &&
+            ($pid_co2_relay_high[$p] != (int)$_POST['SetCO2' . $p . 'CO2RelayHigh'] ||
+            $pid_co2_outmax_high[$p] != (int)$_POST['SetCO2' . $p . 'CO2OutmaxHigh'] ||
+            $pid_co2_relay_low[$p] != (int)$_POST['SetCO2' . $p . 'CO2RelayLow'] ||
+            $pid_co2_outmax_low[$p] != (int)$_POST['SetCO2' . $p . 'CO2OutmaxLow'] ||
+            $pid_co2_set[$p] != (float)$_POST['SetCO2' . $p . 'CO2Set'] ||
+            $pid_co2_set_dir[$p] != (float)$_POST['SetCO2' . $p . 'CO2SetDir'] ||
+            $pid_co2_period[$p] != (int)$_POST['SetCO2' . $p . 'CO2Period'] ||
+            $pid_co2_p[$p] != (float)$_POST['SetCO2' . $p . 'CO2_P'] ||
+            $pid_co2_i[$p] != (float)$_POST['SetCO2' . $p . 'CO2_I'] ||
+            $pid_co2_d[$p] != (float)$_POST['SetCO2' . $p . 'CO2_D'])) {
             pid_reload($mycodo_client, 'CO2', $p);
-        }
-        if  ($pid_co2_or[$p] != 0) {
+        } else {
             shell_exec("$mycodo_client --sqlreload -1");
         }
     }
@@ -1048,7 +1087,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
             $stmt->execute();
 
             if ($pid_co2_or[$p] == 0) {
-                shell_exec("$mycodo_client --pidstop CO2 $p");
+                pid_reload($mycodo_client, 'CO2', $p);
             }
             if  ($pid_co2_or[$p] != 0) {
                 shell_exec("$mycodo_client --sqlreload -1");
@@ -1169,7 +1208,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
         }
     }
 
-    // Set Pressidity PID override on or off
+    // Set Pressure sensor PID override on or off
     if (isset($_POST['ChangePress' . $p . 'PressOR'])) {
 
         if ((int)$_POST['ChangePress' . $p . 'PressOR'] == 0) {
@@ -1199,7 +1238,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
     }
 
 
-    // Overwrite preset for Temperature/Pressidity sensor and PID variables
+    // Overwrite preset for Pressure sensor and PID variables
     if (isset($_POST['Change' . $p . 'PressSensorOverwrite'])) {
 
         if (isset($_POST['sensorpress' . $p . 'preset']) && $_POST['sensorpress' . $p . 'preset'] != 'default') {
@@ -1282,21 +1321,44 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
         $stmt->bindValue(':pressp', (float)$_POST['SetPress' . $p . 'Press_P'], SQLITE3_FLOAT);
         $stmt->bindValue(':pressi', (float)$_POST['SetPress' . $p . 'Press_I'], SQLITE3_FLOAT);
         $stmt->bindValue(':pressd', (float)$_POST['SetPress' . $p . 'Press_D'], SQLITE3_FLOAT);
-        $stmt->execute();
+        $stmt->execute();   
 
-        if ($pid_press_temp_or[$p] == 0) {
+        $reload = 1;
+        if ($pid_press_temp_or[$p] == 0 &&
+            ($pid_press_temp_relay_high[$p] != (int)$_POST['SetPress' . $p . 'TempRelayHigh'] ||
+            $pid_press_temp_outmax_high[$p] != (int)$_POST['SetPress' . $p . 'TempOutmaxHigh'] ||
+            $pid_press_temp_relay_low[$p] != (int)$_POST['SetPress' . $p . 'TempRelayLow'] ||
+            $pid_press_temp_outmax_low[$p] != (int)$_POST['SetPress' . $p . 'TempOutmaxLow'] ||
+            $pid_press_temp_set[$p] != (float)$_POST['SetPress' . $p . 'TempSet'] ||
+            $pid_press_temp_set_dir[$p] != (float)$_POST['SetPress' . $p . 'TempSetDir'] ||
+            $pid_press_temp_period[$p] != (int)$_POST['SetPress' . $p . 'TempPeriod'] ||
+            $pid_press_temp_p[$p] != (float)$_POST['SetPress' . $p . 'Temp_P'] ||
+            $pid_press_temp_i[$p] != (float)$_POST['SetPress' . $p . 'Temp_I'] ||
+            $pid_press_temp_d[$p] != (float)$_POST['SetPress' . $p . 'Temp_D'])) {
             pid_reload($mycodo_client, 'PressTemp', $p);
+            $reload = 0;
         }
-        if ($pid_press_press_or[$p] == 0) {
+        if ($pid_press_press_or[$p] == 0 &&
+            ($pid_press_press_relay_high[$p] != (int)$_POST['SetPress' . $p . 'PressRelayHigh'] ||
+            $pid_press_press_outmax_high[$p] != (int)$_POST['SetPress' . $p . 'PressOutmaxHigh'] ||
+            $pid_press_press_relay_low[$p] != (int)$_POST['SetPress' . $p . 'PressRelayLow'] ||
+            $pid_press_press_outmax_low[$p] != (int)$_POST['SetPress' . $p . 'PressOutmaxLow'] ||
+            $pid_press_press_set[$p] != (float)$_POST['SetPress' . $p . 'PressSet'] ||
+            $pid_press_press_set_dir[$p] != (float)$_POST['SetPress' . $p . 'PressSetDir'] ||
+            $pid_press_press_period[$p] != (int)$_POST['SetPress' . $p . 'PressPeriod'] ||
+            $pid_press_press_p[$p] != (float)$_POST['SetPress' . $p . 'Press_P'] ||
+            $pid_press_press_i[$p] != (float)$_POST['SetPress' . $p . 'Press_I'] ||
+            $pid_press_press_d[$p] != (float)$_POST['SetPress' . $p . 'Press_D'])) {
             pid_reload($mycodo_client, 'PressPress', $p);
+            $reload = 0;
         }
-        if  ($pid_press_temp_or[$p] != 0 or $pid_press_press_or[$p] != 0) {
+        if ($reload) {
             shell_exec("$mycodo_client --sqlreload -1");
         }
     }
 
 
-    // Load Temperature/Pressidity sensor and PID variables from preset
+    // Load Pressure sensor and PID variables from preset
     if (isset($_POST['Change' . $p . 'PressSensorLoad']) && $_POST['sensorpress' . $p . 'preset'] != 'default') {
 
         $stmt = $db->prepare('SELECT * FROM PressSensorPreset WHERE Id=:preset');
@@ -1355,10 +1417,10 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
             $stmt->execute();
 
             if ($pid_press_temp_or[$p] == 0) {
-                shell_exec("$mycodo_client --pidstop PressTemp $p");
+                pid_reload($mycodo_client, 'PressTemp', $p);
             }
             if ($pid_press_press_or[$p] == 0) {
-                shell_exec("$mycodo_client --pidstop PressPress $p");
+                pid_reload($mycodo_client, 'PressPress', $p);
             }
             if  ($pid_press_temp_or[$p] != 0 or $pid_press_press_or[$p] != 0) {
                 shell_exec("$mycodo_client --sqlreload -1");
@@ -1369,7 +1431,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
     }
 
 
-    // Save Temperature/Pressidity sensor and PID variables to a new preset
+    // Save Pressure sensor and PID variables to a new preset
     if (isset($_POST['Change' . $p . 'PressSensorNewPreset'])) {
         if(in_array($_POST['sensorpress' . $p . 'presetname'], $sensor_press_preset)) {
             $name = $_POST['sensorpress' . $p . 'presetname'];
@@ -1422,7 +1484,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
         }
     }
 
-    // Rename Temperature/Pressidity preset
+    // Rename Pressure preset
     if (isset($_POST['Change' . $p . 'PressSensorRenamePreset']) && $_POST['sensorpress' . $p . 'preset'] != 'default') {
         if(in_array($_POST['sensorpress' . $p . 'presetname'], $sensor_press_preset)) {
             $name = $_POST['sensorpress' . $p . 'presetname'];
@@ -1435,14 +1497,14 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
         }
     }
 
-    // Delete Temperature/Pressidity preset
+    // Delete Pressure preset
     if (isset($_POST['Change' . $p . 'PressSensorDelete']) && $_POST['sensorpress' . $p . 'preset'] != 'default') {
         $stmt = $db->prepare("DELETE FROM PressSensorPreset WHERE Id=:preset");
         $stmt->bindValue(':preset', $_POST['sensorpress' . $p . 'preset']);
         $stmt->execute();
     }
 
-    // Delete Press sensors
+    // Delete Pressure sensors
     if (isset($_POST['Delete' . $p . 'PressSensor'])) {
         $stmt = $db->prepare("DELETE FROM PressSensor WHERE Id=:id");
         $stmt->bindValue(':id', $sensor_press_id[$p], SQLITE3_TEXT);
