@@ -650,8 +650,8 @@ def create_rows_columns_user():
         if admin_password != admin_password_again:
             print "Passwords don't match"
         elif test_password(admin_password):
-                admin_password_hash = subprocess.check_output(["php", "includes/hash.php", "hash", admin_password])
-                pass_checks = False
+            admin_password_hash = subprocess.check_output(["php", "includes/hash.php", "hash", admin_password])
+            pass_checks = False
 
     pass_checks = True
     print "\nEmail for user 'admin'"
@@ -681,7 +681,10 @@ def create_rows_columns_user():
             if user_password != user_password_again:
                 print "Passwords don't match"
             elif test_password(user_password):
-                    user_password_hash = subprocess.check_output(["php", "includes/hash.php", "hash", user_password])
+                    try:
+                        user_password_hash = subprocess.check_output(["php", "includes/hash.php", "hash", user_password])
+                    except subprocess.CalledProcessError as e:
+                        raise RuntimeError("command '{}' return with error (code {}): {}".format(e.cmd, e.returncode, e.output))
                     pass_checks = False
 
         pass_checks = True
