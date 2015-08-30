@@ -610,10 +610,10 @@ if (isset($output_error)) {
                                 <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_t_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensort<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relay will run before the sensor measurement is obtained"/> sec
                             </td>
                             <td>
-                                <input type="checkbox" title="Enable this sensor to record measurements to the log file?" name="sensort<?php echo $i; ?>activated" value="1" <?php if ($sensor_t_activated[$i] == 1) echo 'checked'; ?>>
+                                <input type="checkbox" title="Enable this sensor to record measurements to the log file" name="sensort<?php echo $i; ?>activated" value="1" <?php if ($sensor_t_activated[$i] == 1) echo 'checked'; ?>>
                             </td>
                             <td>
-                                <input type="checkbox" title="Enable graphs to be generated from the sensor log data?" name="sensort<?php echo $i; ?>graph" value="1" <?php if ($sensor_t_graph[$i] == 1) echo 'checked'; ?>>
+                                <input type="checkbox" title="Enable graphs to be generated from the sensor log data" name="sensort<?php echo $i; ?>graph" value="1" <?php if ($sensor_t_graph[$i] == 1) echo 'checked'; ?>>
                             </td>
                         </tr>
                     </table>
@@ -778,10 +778,10 @@ if (isset($output_error)) {
                                 <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_ht_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relay will run before the sensor measurement is obtained"/> sec
                             </td>
                             <td>
-                                <input type="checkbox" title="Enable this sensor to record measurements to the log file?" name="sensorht<?php echo $i; ?>activated" value="1" <?php if ($sensor_ht_activated[$i] == 1) echo 'checked'; ?>>
+                                <input type="checkbox" title="Enable this sensor to record measurements to the log file" name="sensorht<?php echo $i; ?>activated" value="1" <?php if ($sensor_ht_activated[$i] == 1) echo 'checked'; ?>>
                             </td>
                             <td>
-                                <input type="checkbox" title="Enable graphs to be generated from the sensor log data?" name="sensorht<?php echo $i; ?>graph" value="1" <?php if ($sensor_ht_graph[$i] == 1) echo 'checked'; ?>>
+                                <input type="checkbox" title="Enable graphs to be generated from the sensor log data" name="sensorht<?php echo $i; ?>graph" value="1" <?php if ($sensor_ht_graph[$i] == 1) echo 'checked'; ?>>
                             </td>
                         </tr>
                     </table>
@@ -914,6 +914,29 @@ if (isset($output_error)) {
                                 <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_d[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Hum_D" title="This is the Derivative gain of the PID controller"/>
                             </td>
                         </tr>
+                        <tr class="shade">
+                            <td colspan=12>
+                                Conditional: If <select style="width: 8em;" name="SensorType">
+                                    <option value="Humidity">Humidity</option>
+                                    <option value="Temperature">Temperature</option>
+                                </select>
+                                is
+                                <select style="width: 6em;" name="SensorType">
+                                    <option value="Above">Above</option>
+                                    <option value="Below">Below</option>
+                                </select>
+                                <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="setnumber1" title=""/> &deg;C/%,
+                                turn Relay
+                                <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="setnumber1" title=""/>
+                                <select style="width: 4em;" name="SensorType">
+                                    <option value="On">On</option>
+                                    <option value="Off">Off</option>
+                                </select>
+                                (if on, for
+                                <input style="width: 4em;" type="number" step="any" value="0" maxlength=4 size=1 name="setnumber1" title="The number of seconds for the relay to remain on. Leave at 0 to just turn it on or off."/> sec)
+                                <button type="submit" name="SaveConditional1" title="Save conditional">Save</button>
+                            </td>
+                        </tr>
                     </table>
                     </form>
                     <div style="margin-bottom: <?php if ($i == count($sensor_ht_id)) echo '2'; else echo '1'; ?>em;"></div>
@@ -1005,10 +1028,10 @@ if (isset($output_error)) {
                                 <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_co2_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensorco2<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relay will run before the sensor measurement is obtained"/> sec
                             </td>
                             <td>
-                                <input type="checkbox" title="Enable this sensor to record measurements to the log file?" name="sensorco2<?php echo $i; ?>activated" value="1" <?php if ($sensor_co2_activated[$i] == 1) echo 'checked'; ?>>
+                                <input type="checkbox" title="Enable this sensor to record measurements to the log file" name="sensorco2<?php echo $i; ?>activated" value="1" <?php if ($sensor_co2_activated[$i] == 1) echo 'checked'; ?>>
                             </td>
                             <td>
-                                <input type="checkbox" title="Enable graphs to be generated from the sensor log data?" name="sensorco2<?php echo $i; ?>graph" value="1" <?php if ($sensor_co2_graph[$i] == 1) echo 'checked'; ?>>
+                                <input type="checkbox" title="Enable graphs to be generated from the sensor log data" name="sensorco2<?php echo $i; ?>graph" value="1" <?php if ($sensor_co2_graph[$i] == 1) echo 'checked'; ?>>
                             </td>
                         </tr>
                     </table>
@@ -1182,10 +1205,10 @@ if (isset($output_error)) {
                                 <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_press_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensorpress<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relay will run before the sensor measurement is obtained"/> sec
                             </td>
                             <td>
-                                <input type="checkbox" title="Enable this sensor to record measurements to the log file?" name="sensorpress<?php echo $i; ?>activated" value="1" <?php if ($sensor_press_activated[$i] == 1) echo 'checked'; ?>>
+                                <input type="checkbox" title="Enable this sensor to record measurements to the log file" name="sensorpress<?php echo $i; ?>activated" value="1" <?php if ($sensor_press_activated[$i] == 1) echo 'checked'; ?>>
                             </td>
                             <td>
-                                <input type="checkbox" title="Enable graphs to be generated from the sensor log data?" name="sensorpress<?php echo $i; ?>graph" value="1" <?php if ($sensor_press_graph[$i] == 1) echo 'checked'; ?>>
+                                <input type="checkbox" title="Enable graphs to be generated from the sensor log data" name="sensorpress<?php echo $i; ?>graph" value="1" <?php if ($sensor_press_graph[$i] == 1) echo 'checked'; ?>>
                             </td>
                         </tr>
                     </table>
