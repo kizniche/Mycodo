@@ -681,8 +681,8 @@ def create_rows_columns_user():
             if user_password != user_password_again:
                 print "Passwords don't match"
             elif test_password(user_password):
-                    user_password_hash = subprocess.check_output(["php", "includes/hash.php", "hash", user_password], shell=False, stderr=subprocess.STDOUT)
-                    pass_checks = False
+                user_password_hash = subprocess.check_output(["php", "includes/hash.php", "hash", user_password])
+                pass_checks = False
 
         pass_checks = True
         print "\nEmail for user '" + user_name + "'"
@@ -706,8 +706,8 @@ def create_rows_columns_user():
             if user_password != user_password_again:
                 print "Passwords don't match"
             elif test_password(user_password):
-                    user_password_hash = subprocess.check_output(["php", "/var/www/mycodo/includes/hash.php", "hash", user_password])
-                    pass_checks = False
+                user_password_hash = subprocess.check_output(["php", "/var/www/mycodo/includes/hash.php", "hash", user_password])
+                pass_checks = False
 
         cur.execute("INSERT INTO users (user_name, user_password_hash, user_email) VALUES ('{user_name}', '{user_password_hash}', '{user_email}')".\
             format(user_name='guest', user_password_hash=user_password_hash, user_email='guest@guest.com'))
