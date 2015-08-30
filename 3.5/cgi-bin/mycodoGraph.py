@@ -531,7 +531,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                     if first:
                         plot.write(', ')
                     first = 1
-                    plot.write('\"' + sensor_co2_log_final[i] + '" u 1:7 index 0 title \"' + sensor_co2_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')
+                    plot.write('\"' + sensor_co2_log_final[i] + '" u 1:7 index 0 title \"   ' + sensor_co2_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')
             plot.write(' \n')
 
         if sum(sensor_press_graph):
