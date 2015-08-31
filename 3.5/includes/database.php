@@ -179,7 +179,88 @@ while ($row = $results->fetchArray()) {
 if (!isset($sensor_press_id)) $sensor_press_id = [];
 if (!isset($sensor_press_graph)) $sensor_press_graph = [];
 
-// Sensor Presets
+
+// conditional statements
+unset($conditional_t_id);
+for ($n = 0; $n < count($sensor_t_id); $n++) {
+    $results = $db->query('SELECT Id, Name, State, Sensor, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On FROM TSensorConditional WHERE Sensor=' . $n);
+    $count = 0;
+    while ($row = $results->fetchArray()) {
+        $conditional_t_id[$n][$count] = $row[0];
+        $conditional_t_name[$n][$count] = $row[1];
+        $conditional_t_state[$n][$count] = $row[2];
+        $conditional_t_sensor[$n][$count] = $row[3];
+        $conditional_t_direction[$n][$count] = $row[4];
+        $conditional_t_setpoint[$n][$count] = $row[5];
+        $conditional_t_period[$n][$count] = $row[6];
+        $conditional_t_relay[$n][$count] = $row[7];
+        $conditional_t_relay_state[$n][$count] = $row[8];
+        $conditional_t_relay_seconds_on[$n][$count] = $row[9];
+        $count++;
+    }
+}
+
+unset($conditional_ht_id);
+for ($n = 0; $n < count($sensor_ht_id); $n++) {
+    $results = $db->query('SELECT Id, Name, State, Sensor, Condition, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On FROM HTSensorConditional WHERE Sensor=' . $n);
+    $count = 0;
+    while ($row = $results->fetchArray()) {
+        $conditional_ht_id[$n][$count] = $row[0];
+        $conditional_ht_name[$n][$count] = $row[1];
+        $conditional_ht_state[$n][$count] = $row[2];
+        $conditional_ht_sensor[$n][$count] = $row[3];
+        $conditional_ht_condition[$n][$count] = $row[4];
+        $conditional_ht_direction[$n][$count] = $row[5];
+        $conditional_ht_setpoint[$n][$count] = $row[6];
+        $conditional_ht_period[$n][$count] = $row[7];
+        $conditional_ht_relay[$n][$count] = $row[8];
+        $conditional_ht_relay_state[$n][$count] = $row[9];
+        $conditional_ht_relay_seconds_on[$n][$count] = $row[10];
+        $count++;
+    }
+}
+
+unset($conditional_co2_id);
+for ($n = 0; $n < count($sensor_co2_id); $n++) {
+    $results = $db->query('SELECT Id, Name, State, Sensor, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On FROM CO2SensorConditional WHERE Sensor=' . $n);
+    $count = 0;
+    while ($row = $results->fetchArray()) {
+        $conditional_co2_id[$n][$count] = $row[0];
+        $conditional_co2_name[$n][$count] = $row[1];
+        $conditional_co2_state[$n][$count] = $row[2];
+        $conditional_co2_sensor[$n][$count] = $row[3];
+        $conditional_co2_direction[$n][$count] = $row[4];
+        $conditional_co2_setpoint[$n][$count] = $row[5];
+        $conditional_co2_period[$n][$count] = $row[6];
+        $conditional_co2_relay[$n][$count] = $row[7];
+        $conditional_co2_relay_state[$n][$count] = $row[8];
+        $conditional_co2_relay_seconds_on[$n][$count] = $row[9];
+        $count++;
+    }
+}
+
+unset($conditional_press_id);
+for ($n = 0; $n < count($sensor_press_id); $n++) {
+    $results = $db->query('SELECT Id, Name, State, Sensor, Condition, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On FROM PressSensorConditional WHERE Sensor=' . $n);
+    $count = 0;
+    while ($row = $results->fetchArray()) {
+        $conditional_press_id[$n][$count] = $row[0];
+        $conditional_press_name[$n][$count] = $row[1];
+        $conditional_press_state[$n][$count] = $row[2];
+        $conditional_press_sensor[$n][$count] = $row[3];
+        $conditional_press_condition[$n][$count] = $row[4];
+        $conditional_press_direction[$n][$count] = $row[5];
+        $conditional_press_setpoint[$n][$count] = $row[6];
+        $conditional_press_period[$n][$count] = $row[7];
+        $conditional_press_relay[$n][$count] = $row[8];
+        $conditional_press_relay_state[$n][$count] = $row[9];
+        $conditional_press_relay_seconds_on[$n][$count] = $row[10];
+        $count++;
+    }
+}
+
+
+// Sort sensor Presets
 $sensor_t_preset = [];
 $results = $db->query('SELECT Id FROM TSensorPreset');
 while ($row = $results->fetchArray()) {

@@ -305,16 +305,6 @@ if (isset($_POST['AddSensor'])) {
     }
 }
 
-// Add HT sensors
-if (isset($_POST['AddHTSensors']) && isset($_POST['AddHTSensorsNumber'])) {
-    for ($j = 0; $j < $_POST['AddHTSensorsNumber']; $j++) {
-        $stmt = $db->prepare("INSERT INTO HTSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relay_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D) VALUES(:id, 'HT-S', 0, 'DHT22', 120, 0, 0, 0, 0, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0, 0, 0, 0, 0, 1, 50.0, 0, 90, 0, 0, 0)");
-        $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
-        $stmt->execute();
-    }
-    shell_exec("$mycodo_client --pidrestart HT");
-}
-
 
 /*
  *
@@ -323,6 +313,52 @@ if (isset($_POST['AddHTSensors']) && isset($_POST['AddHTSensorsNumber'])) {
  */
 
 for ($p = 0; $p < count($sensor_t_id); $p++) {
+
+    // Add T Conditional statement
+    if (isset($_POST['AddT' . $p . 'Conditional'])) {
+        $stmt = $db->prepare("INSERT INTO TSensorConditional (Id, Name, Sensor, State, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On) VALUES(:id, :name, :sensor, 0, :direction, :setpoint, :period, :relay, :relaystate, :relaysecondson)");
+        $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
+        $stmt->bindValue(':name', $_POST['conditiont' . $p . 'name'], SQLITE3_TEXT);
+        $stmt->bindValue(':sensor', $p, SQLITE3_INTEGER);
+        $stmt->bindValue(':direction', (int)$_POST['conditiont' . $p . 'direction'], SQLITE3_INTEGER);
+        $stmt->bindValue(':setpoint', (float)$_POST['conditiont' . $p . 'setpoint'], SQLITE3_FLOAT);
+        $stmt->bindValue(':period', (int)$_POST['conditiont' . $p . 'period'], SQLITE3_INTEGER);
+        $stmt->bindValue(':relay', (int)$_POST['conditiont' . $p . 'relay'], SQLITE3_INTEGER);
+        $stmt->bindValue(':relaystate', (int)$_POST['conditiont' . $p . 'relaystate'], SQLITE3_INTEGER);
+        $stmt->bindValue(':relaysecondson', (int)$_POST['conditiont' . $p . 'relaysecondson'], SQLITE3_INTEGER);
+        $stmt->execute();
+    }
+
+    for ($z = 0; $z < count($conditional_t_id[$p]); $z++) {
+        // Delete T Conditional Statement
+        if (isset($_POST['DeleteT' . $p . '-' . $z . 'Conditional'])) {
+            $stmt = $db->prepare("DELETE FROM TSensorConditional WHERE Id=:id");
+            $stmt->bindValue(':id', $conditional_t_id[$p][$z], SQLITE3_TEXT);
+            $stmt->execute();
+
+            shell_exec("$mycodo_client --sqlreload -1");
+        }
+
+        // Turn T Conditional Statements On/Off
+        if (isset($_POST['TurnOnT' . $p . '-' . $z . 'Conditional'])) {
+            $stmt = $db->prepare("UPDATE TSensorConditional SET State=:state WHERE Id=:id");
+            $stmt->bindValue(':state', 1);
+            $stmt->bindValue(':id', $conditional_t_id[$p][$z], SQLITE3_TEXT);
+            $stmt->execute();
+
+            shell_exec("$mycodo_client --sqlreload -1");
+        }
+
+        if (isset($_POST['TurnOffT' . $p . '-' . $z . 'Conditional'])) {
+            $stmt = $db->prepare("UPDATE TSensorConditional SET State=:state WHERE Id=:id");
+            $stmt->bindValue(':state', 0);
+            $stmt->bindValue(':id', $conditional_t_id[$p][$z], SQLITE3_TEXT);
+            $stmt->execute();
+
+            shell_exec("$mycodo_client --sqlreload -1");
+        }
+    }
+
 
     // Set Temperature PID override on or off
     if (isset($_POST['ChangeT' . $p . 'TempOR'])) {
@@ -573,6 +609,53 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
  */
 
 for ($p = 0; $p < count($sensor_ht_id); $p++) {
+
+    // Add HT Conditional statement
+    if (isset($_POST['AddHT' . $p . 'Conditional'])) {
+        $stmt = $db->prepare("INSERT INTO HTSensorConditional (Id, Name, Sensor, State, Condition, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On) VALUES(:id, :name, :sensor, 0, :condition, :direction, :setpoint, :period, :relay, :relaystate, :relaysecondson)");
+        $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
+        $stmt->bindValue(':name', $_POST['conditionht' . $p . 'name'], SQLITE3_TEXT);
+        $stmt->bindValue(':sensor', $p, SQLITE3_INTEGER);
+        $stmt->bindValue(':condition', $_POST['conditionht' . $p . 'condition'], SQLITE3_TEXT);
+        $stmt->bindValue(':direction', (int)$_POST['conditionht' . $p . 'direction'], SQLITE3_INTEGER);
+        $stmt->bindValue(':setpoint', (float)$_POST['conditionht' . $p . 'setpoint'], SQLITE3_FLOAT);
+        $stmt->bindValue(':period', (int)$_POST['conditionht' . $p . 'period'], SQLITE3_INTEGER);
+        $stmt->bindValue(':relay', (int)$_POST['conditionht' . $p . 'relay'], SQLITE3_INTEGER);
+        $stmt->bindValue(':relaystate', (int)$_POST['conditionht' . $p . 'relaystate'], SQLITE3_INTEGER);
+        $stmt->bindValue(':relaysecondson', (int)$_POST['conditionht' . $p . 'relaysecondson'], SQLITE3_INTEGER);
+        $stmt->execute();
+    }
+
+    for ($z = 0; $z < count($conditional_ht_id[$p]); $z++) {
+        // Delete HT Conditional Statement
+        if (isset($_POST['DeleteHT' . $p . '-' . $z . 'Conditional'])) {
+            $stmt = $db->prepare("DELETE FROM HTSensorConditional WHERE Id=:id");
+            $stmt->bindValue(':id', $conditional_ht_id[$p][$z], SQLITE3_TEXT);
+            $stmt->execute();
+
+            shell_exec("$mycodo_client --sqlreload -1");
+        }
+
+        // Turn HT Conditional Statements On/Off
+        if (isset($_POST['TurnOnHT' . $p . '-' . $z . 'Conditional'])) {
+            $stmt = $db->prepare("UPDATE HTSensorConditional SET State=:state WHERE Id=:id");
+            $stmt->bindValue(':state', 1);
+            $stmt->bindValue(':id', $conditional_ht_id[$p][$z], SQLITE3_TEXT);
+            $stmt->execute();
+
+            shell_exec("$mycodo_client --sqlreload -1");
+        }
+
+        if (isset($_POST['TurnOffHT' . $p . '-' . $z . 'Conditional'])) {
+            $stmt = $db->prepare("UPDATE HTSensorConditional SET State=:state WHERE Id=:id");
+            $stmt->bindValue(':state', 0);
+            $stmt->bindValue(':id', $conditional_ht_id[$p][$z], SQLITE3_TEXT);
+            $stmt->execute();
+
+            shell_exec("$mycodo_client --sqlreload -1");
+        }
+    }
+
 
     // Set Temperature PID override on or off
     if (isset($_POST['ChangeHT' . $p . 'TempOR'])) {
@@ -920,6 +1003,52 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
 
 for ($p = 0; $p < count($sensor_co2_id); $p++) {
 
+    // Add CO2 Conditional statement
+    if (isset($_POST['AddCO2' . $p . 'Conditional'])) {
+        $stmt = $db->prepare("INSERT INTO CO2SensorConditional (Id, Name, Sensor, State, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On) VALUES(:id, :name, :sensor, 0, :direction, :setpoint, :period, :relay, :relaystate, :relaysecondson)");
+        $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
+        $stmt->bindValue(':name', $_POST['conditionco2' . $p . 'name'], SQLITE3_TEXT);
+        $stmt->bindValue(':sensor', $p, SQLITE3_INTEGER);
+        $stmt->bindValue(':direction', (int)$_POST['conditionco2' . $p . 'direction'], SQLITE3_INTEGER);
+        $stmt->bindValue(':setpoint', (float)$_POST['conditionco2' . $p . 'setpoint'], SQLITE3_FLOAT);
+        $stmt->bindValue(':period', (int)$_POST['conditionco2' . $p . 'period'], SQLITE3_INTEGER);
+        $stmt->bindValue(':relay', (int)$_POST['conditionco2' . $p . 'relay'], SQLITE3_INTEGER);
+        $stmt->bindValue(':relaystate', (int)$_POST['conditionco2' . $p . 'relaystate'], SQLITE3_INTEGER);
+        $stmt->bindValue(':relaysecondson', (int)$_POST['conditionco2' . $p . 'relaysecondson'], SQLITE3_INTEGER);
+        $stmt->execute();
+    }
+
+    for ($z = 0; $z < count($conditional_co2_id[$p]); $z++) {
+        // Delete CO2 Conditional Statement
+        if (isset($_POST['DeleteCO2' . $p . '-' . $z . 'Conditional'])) {
+            $stmt = $db->prepare("DELETE FROM CO2SensorConditional WHERE Id=:id");
+            $stmt->bindValue(':id', $conditional_co2_id[$p][$z], SQLITE3_TEXT);
+            $stmt->execute();
+
+            shell_exec("$mycodo_client --sqlreload -1");
+        }
+
+        // Turn CO2 Conditional Statements On/Off
+        if (isset($_POST['TurnOnCO2' . $p . '-' . $z . 'Conditional'])) {
+            $stmt = $db->prepare("UPDATE CO2SensorConditional SET State=:state WHERE Id=:id");
+            $stmt->bindValue(':state', 1);
+            $stmt->bindValue(':id', $conditional_co2_id[$p][$z], SQLITE3_TEXT);
+            $stmt->execute();
+
+            shell_exec("$mycodo_client --sqlreload -1");
+        }
+
+        if (isset($_POST['TurnOffCO2' . $p . '-' . $z . 'Conditional'])) {
+            $stmt = $db->prepare("UPDATE CO2SensorConditional SET State=:state WHERE Id=:id");
+            $stmt->bindValue(':state', 0);
+            $stmt->bindValue(':id', $conditional_co2_id[$p][$z], SQLITE3_TEXT);
+            $stmt->execute();
+
+            shell_exec("$mycodo_client --sqlreload -1");
+        }
+    }
+
+
     // Set CO2 PID override on or off
     if (isset($_POST['ChangeCO2' . $p . 'CO2OR'])) {
 
@@ -1178,6 +1307,53 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
  */
 
 for ($p = 0; $p < count($sensor_press_id); $p++) {
+
+    // Add Press Conditional statement
+    if (isset($_POST['AddPress' . $p . 'Conditional'])) {
+        $stmt = $db->prepare("INSERT INTO PressSensorConditional (Id, Name, Sensor, State, Condition, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On) VALUES(:id, :name, :sensor, 0, :condition, :direction, :setpoint, :period, :relay, :relaystate, :relaysecondson)");
+        $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
+        $stmt->bindValue(':name', $_POST['conditionpress' . $p . 'name'], SQLITE3_TEXT);
+        $stmt->bindValue(':sensor', $p, SQLITE3_INTEGER);
+        $stmt->bindValue(':condition', $_POST['conditionpress' . $p . 'condition'], SQLITE3_TEXT);
+        $stmt->bindValue(':direction', (int)$_POST['conditionpress' . $p . 'direction'], SQLITE3_INTEGER);
+        $stmt->bindValue(':setpoint', (float)$_POST['conditionpress' . $p . 'setpoint'], SQLITE3_FLOAT);
+        $stmt->bindValue(':period', (int)$_POST['conditionpress' . $p . 'period'], SQLITE3_INTEGER);
+        $stmt->bindValue(':relay', (int)$_POST['conditionpress' . $p . 'relay'], SQLITE3_INTEGER);
+        $stmt->bindValue(':relaystate', (int)$_POST['conditionpress' . $p . 'relaystate'], SQLITE3_INTEGER);
+        $stmt->bindValue(':relaysecondson', (int)$_POST['conditionpress' . $p . 'relaysecondson'], SQLITE3_INTEGER);
+        $stmt->execute();
+    }
+
+    for ($z = 0; $z < count($conditional_press_id[$p]); $z++) {
+        // Delete Press Conditional Statement
+        if (isset($_POST['DeletePress' . $p . '-' . $z . 'Conditional'])) {
+            $stmt = $db->prepare("DELETE FROM PressSensorConditional WHERE Id=:id");
+            $stmt->bindValue(':id', $conditional_press_id[$p][$z], SQLITE3_TEXT);
+            $stmt->execute();
+
+            shell_exec("$mycodo_client --sqlreload -1");
+        }
+
+        // Turn Press Conditional Statements On/Off
+        if (isset($_POST['TurnOnPress' . $p . '-' . $z . 'Conditional'])) {
+            $stmt = $db->prepare("UPDATE PressSensorConditional SET State=:state WHERE Id=:id");
+            $stmt->bindValue(':state', 1);
+            $stmt->bindValue(':id', $conditional_press_id[$p][$z], SQLITE3_TEXT);
+            $stmt->execute();
+
+            shell_exec("$mycodo_client --sqlreload -1");
+        }
+
+        if (isset($_POST['TurnOffPress' . $p . '-' . $z . 'Conditional'])) {
+            $stmt = $db->prepare("UPDATE PressSensorConditional SET State=:state WHERE Id=:id");
+            $stmt->bindValue(':state', 0);
+            $stmt->bindValue(':id', $conditional_press_id[$p][$z], SQLITE3_TEXT);
+            $stmt->execute();
+
+            shell_exec("$mycodo_client --sqlreload -1");
+        }
+    }
+
 
     // Set Temperature PID override on or off
     if (isset($_POST['ChangePress' . $p . 'TempOR'])) {

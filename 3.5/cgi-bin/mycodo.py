@@ -38,6 +38,7 @@ import datetime
 import fcntl
 import getopt
 import logging
+import numpy as np
 import os
 import re
 import rpyc
@@ -75,178 +76,6 @@ sensor_t_lock_path = "%s/sensor-t" % lock_directory
 sensor_ht_lock_path = "%s/sensor-ht" % lock_directory
 sensor_co2_lock_path = "%s/sensor-co2" % lock_directory
 sensor_press_lock_path = "%s/sensor-press" % lock_directory
-
-# Relays
-relay_id = []
-relay_pin = []
-relay_name = []
-relay_trigger = []
-relay_start_state = []
-
-# Temperature & Humidity Sensors
-sensor_t_id = []
-sensor_t_name = []
-sensor_t_device = []
-sensor_t_pin = []
-sensor_t_period = []
-sensor_t_premeasure_relay = []
-sensor_t_premeasure_dur = []
-sensor_t_activated = []
-sensor_t_graph = []
-sensor_t_read_temp_c = []
-sensor_t_dewpt_c = []
-
-# T Sensor Temperature PID
-pid_t_temp_relay_high = []
-pid_t_temp_outmax_high = []
-pid_t_temp_relay_low = []
-pid_t_temp_outmax_low = []
-pid_t_temp_set = []
-pid_t_temp_set_dir = []
-pid_t_temp_period = []
-pid_t_temp_p = []
-pid_t_temp_i = []
-pid_t_temp_d = []
-pid_t_temp_or = []
-pid_t_temp_alive = []
-pid_t_temp_active = []
-
-# Temperature & Humidity Sensors
-sensor_ht_id = []
-sensor_ht_name = []
-sensor_ht_device = []
-sensor_ht_pin = []
-sensor_ht_period = []
-sensor_ht_premeasure_relay = []
-sensor_ht_premeasure_dur = []
-sensor_ht_activated = []
-sensor_ht_graph = []
-sensor_ht_read_temp_c = []
-sensor_ht_read_hum = []
-sensor_ht_dewpt_c = []
-
-# HT Sensor Temperature PID
-pid_ht_temp_relay_high = []
-pid_ht_temp_outmax_high = []
-pid_ht_temp_relay_low = []
-pid_ht_temp_outmax_low = []
-pid_ht_temp_set = []
-pid_ht_temp_set_dir = []
-pid_ht_temp_period = []
-pid_ht_temp_p = []
-pid_ht_temp_i = []
-pid_ht_temp_d = []
-pid_ht_temp_or = []
-pid_ht_temp_alive = []
-pid_ht_temp_active = []
-
-# Humidity PID
-pid_ht_hum_relay_high = []
-pid_ht_hum_outmax_high = []
-pid_ht_hum_relay_low = []
-pid_ht_hum_outmax_low = []
-pid_ht_hum_set = []
-pid_ht_hum_set_dir = []
-pid_ht_hum_period = []
-pid_ht_hum_p = []
-pid_ht_hum_i = []
-pid_ht_hum_d = []
-pid_ht_hum_or = []
-pid_ht_hum_alive = []
-pid_ht_hum_active = []
-
-# CO2 Sensors
-sensor_co2_name = []
-sensor_co2_device = []
-sensor_co2_pin = []
-sensor_co2_period = []
-sensor_co2_premeasure_relay = []
-sensor_co2_premeasure_dur = []
-sensor_co2_activated = []
-sensor_co2_graph = []
-sensor_co2_read_co2 = []
-
-# CO2 PID
-pid_co2_relay_high = []
-pid_co2_outmax_high = []
-pid_co2_relay_low = []
-pid_co2_outmax_low = []
-pid_co2_set = []
-pid_co2_set_dir = []
-pid_co2_period = []
-pid_co2_p = []
-pid_co2_i = []
-pid_co2_d = []
-pid_co2_or = []
-pid_co2_alive = []
-pid_co2_active = []
-
-# Pressure Sensors
-sensor_press_id = []
-sensor_press_name = []
-sensor_press_device = []
-sensor_press_pin = []
-sensor_press_period = []
-sensor_press_premeasure_relay = []
-sensor_press_premeasure_dur = []
-sensor_press_activated = []
-sensor_press_graph = []
-sensor_press_read_temp_c = []
-sensor_press_read_hum = []
-sensor_press_dewpt_c = []
-
-# Press Sensor Temperature PID
-pid_press_temp_relay_high = []
-pid_press_temp_outmax_high = []
-pid_press_temp_relay_low = []
-pid_press_temp_outmax_low = []
-pid_press_temp_set = []
-pid_press_temp_set_dir = []
-pid_press_temp_period = []
-pid_press_temp_p = []
-pid_press_temp_i = []
-pid_press_temp_d = []
-pid_press_temp_or = []
-pid_press_temp_alive = []
-pid_press_temp_active = []
-
-# Pressure PID
-pid_press_press_relay_high = []
-pid_press_press_outmax_high = []
-pid_press_press_relay_low = []
-pid_press_press_outmax_low = []
-pid_press_press_set = []
-pid_press_press_set_dir = []
-pid_press_press_period = []
-pid_press_press_p = []
-pid_press_press_i = []
-pid_press_press_d = []
-pid_press_press_or = []
-pid_press_press_alive = []
-pid_press_press_active = []
-
-# Timers
-timer_id = []
-timer_name = []
-timer_relay = []
-timer_state = []
-timer_duration_on = []
-timer_duration_off = []
-timer_change = 0
-
-timer_time = []
-timerTSensorLog  = []
-timerHTSensorLog  = []
-timerCo2SensorLog  = []
-
-# SMTP notify
-smtp_host = None
-smtp_ssl = None
-smtp_port = None
-smtp_user = None
-smtp_pass = None
-smtp_email_from = None
-smtp_email_to = None
 
 # PID Restarting
 pid_number = None
@@ -551,39 +380,48 @@ def menu():
 # Read sensors, modify relays based on sensor values, write sensor/relay
 # logs, and receive/execute commands from mycodo-client.py
 def daemon(output, log):
-    global pid_t_temp_active
     global pid_t_temp_alive
     global pid_t_temp_down
     global pid_t_temp_up
 
-    global pid_ht_temp_active
     global pid_ht_temp_alive
     global pid_ht_temp_down
     global pid_ht_temp_up
 
-    global pid_ht_hum_active
     global pid_ht_hum_alive
     global pid_ht_hum_down
     global pid_ht_hum_up
 
-    global pid_co2_active
     global pid_co2_alive
     global pid_co2_down
     global pid_co2_up
 
-    global pid_press_temp_active
     global pid_press_temp_alive
     global pid_press_temp_down
     global pid_press_temp_up
 
-    global pid_press_press_active
     global pid_press_press_alive
     global pid_press_press_down
     global pid_press_press_up
+
+    global pid_t_temp_active
+    global pid_ht_temp_active
+    global pid_ht_hum_active
+    global pid_co2_active
+    global pid_press_temp_active
+    global pid_press_press_active
+
+    pid_t_temp_active = []
+    pid_ht_temp_active = []
+    pid_ht_hum_active = []
+    pid_co2_active = []
+    pid_press_temp_active = []
+    pid_press_press_active = []
     
     global change_sensor_log
     global server
     global client_que
+
     global start_all_t_pids
     global stop_all_t_pids
     global start_all_ht_pids
@@ -592,6 +430,7 @@ def daemon(output, log):
     global stop_all_co2_pids
     global start_all_press_pids
     global stop_all_press_pids
+
     start_all_t_pids = 1
     stop_all_t_pids = 0
     start_all_ht_pids = 1
@@ -1079,6 +918,147 @@ def daemon(output, log):
                     logging.warning("Could not read Press-%s sensor, not writing to sensor log", i+1)
                 timerPressSensorLog[i] = int(time.time()) + sensor_press_period[i]
 
+
+        #
+        # Check if T conditional statements are true
+        #
+        for j in range(0, len(conditional_t_number_sensor)):
+            for k in range(0, len(conditional_t_number_conditional)):
+
+                if conditional_t_id[j][k][0] != 0:
+
+                    if int(time.time()) > timerTConditional[j][k] and conditional_t_state[j][k][0] == 1:
+                        logging.debug("[Conditional] Check T conditional statement %s: %s", k+1, conditional_t_name[j][k][0])
+                        if read_t_sensor(j) == 1:
+
+                            if ((conditional_t_direction[j][k][0] == 1 and # If temp is above set point
+                                    sensor_t_read_temp_c[j] > conditional_t_setpoint[j][k][0]) or
+                                    (conditional_t_direction[j][k][0] == -1 and # If temp is below set point
+                                    sensor_t_read_temp_c[j] < conditional_t_setpoint[j][k][0])):
+
+                                if conditional_t_relay_state[j][k][0] == 1:
+                                    if conditional_t_relay_seconds_on[j][k][0] > 0:
+                                        rod = threading.Thread(target = relay_on_duration,
+                                            args = (conditional_t_relay[j][k][0], conditional_t_relay_seconds_on[j][k][0], j,))
+                                        rod.start()
+                                    else:
+                                        relay_onoff(conditional_t_relay[j][k][0], "on")
+                                elif conditional_t_relay_state[j][k][0] == 0:
+                                    relay_onoff(conditional_t_relay[j][k][0], "off")
+                        else:
+                            logging.warning("[Conditional] Could not read T-%s sensor, did not check conditional %s", j+1, k+1)
+                        timerTConditional[j][k] = int(time.time()) + conditional_t_period[j][k][0]
+
+
+        #
+        # Check if HT conditional statements are true
+        #
+        for j in range(0, len(conditional_ht_number_sensor)):
+            for k in range(0, len(conditional_ht_number_conditional)):
+
+                if conditional_ht_id[j][k][0] != 0:
+
+                    if int(time.time()) > timerHTConditional[j][k] and conditional_ht_state[j][k][0] == 1:
+                        logging.debug("[Conditional] Check HT conditional statement %s: %s", k+1, conditional_ht_name[j][k][0])
+                        if read_ht_sensor(j) == 1:
+
+                            if ((conditional_ht_condition[j][k][0] == "Temperature" and # If temp is above set point
+                                    conditional_ht_direction[j][k][0] == 1 and
+                                    sensor_ht_read_temp_c[j] > conditional_ht_setpoint[j][k][0]) or
+                                    (conditional_ht_condition[j][k][0] == "Temperature" and  # If temp is below set point
+                                    conditional_ht_direction[j][k][0] == -1 and
+                                    sensor_ht_read_temp_c[j] < conditional_ht_setpoint[j][k][0]) or
+                                    (conditional_ht_condition[j][k][0] == "Humidity" and # If hum is above set point
+                                    conditional_ht_direction[j][k][0] == 1 and
+                                    sensor_ht_read_hum[j] > conditional_ht_setpoint[j][k][0]) or
+                                    (conditional_ht_condition[j][k][0] == "Humidity" and # If hum is below set point
+                                    conditional_ht_direction[j][k][0] == -1 and
+                                    sensor_ht_read_hum[j] < conditional_ht_setpoint[j][k][0])):
+
+                                if conditional_ht_relay_state[j][k][0] == 1:
+                                    if conditional_ht_relay_seconds_on[j][k][0] > 0:
+                                        rod = threading.Thread(target = relay_on_duration,
+                                            args = (conditional_ht_relay[j][k][0], conditional_ht_relay_seconds_on[j][k][0], j,))
+                                        rod.start()
+                                    else:
+                                        relay_onoff(conditional_ht_relay[j][k][0], "on")
+                                elif conditional_ht_relay_state[j][k][0] == 0:
+                                    relay_onoff(conditional_ht_relay[j][k][0], "off")
+                        else:
+                            logging.warning("[Conditional] Could not read HT-%s sensor, did not check conditional %s", j+1, k+1)
+                        timerHTConditional[j][k] = int(time.time()) + conditional_ht_period[j][k][0]
+
+
+        #
+        # Check if CO2 conditional statements are true
+        #
+        for j in range(0, len(conditional_co2_number_sensor)):
+            for k in range(0, len(conditional_co2_number_conditional)):
+
+                if conditional_co2_id[j][k][0] != 0:
+
+                    if int(time.time()) > timerCO2Conditional[j][k] and conditional_co2_state[j][k][0] == 1:
+                        logging.debug("[Conditional] Check CO2 conditional statement %s: %s", k+1, conditional_co2_name[j][k][0])
+                        if read_co2_sensor(j) == 1:
+
+                            if ((conditional_co2_direction[j][k][0] == 1 and # If temp is above set point
+                                    sensor_co2_read_co2[j] > conditional_co2_setpoint[j][k][0]) or
+                                    (conditional_co2_direction[j][k][0] == -1 and # If temp is below set point
+                                    sensor_co2_read_co2[j] < conditional_co2_setpoint[j][k][0])):
+
+                                if conditional_co2_relay_state[j][k][0] == 1:
+                                    if conditional_co2_relay_seconds_on[j][k][0] > 0:
+                                        rod = threading.CO2hread(target = relay_on_duration,
+                                            args = (conditional_co2_relay[j][k][0], conditional_co2_relay_seconds_on[j][k][0], j,))
+                                        rod.start()
+                                    else:
+                                        relay_onoff(conditional_co2_relay[j][k][0], "on")
+                                elif conditional_co2_relay_state[j][k][0] == 0:
+                                    relay_onoff(conditional_co2_relay[j][k][0], "off")
+                        else:
+                            logging.warning("[Conditional] Could not read CO2-%s sensor, did not check conditional %s", j+1, k+1)
+                        timerCO2Conditional[j][k] = int(time.time()) + conditional_co2_period[j][k][0]
+
+
+        #
+        # Check if Press conditional statements are true
+        #
+        for j in range(0, len(conditional_press_number_sensor)):
+            for k in range(0, len(conditional_press_number_conditional)):
+
+                if conditional_press_id[j][k][0] != 0:
+
+                    if int(time.time()) > timerPressConditional[j][k] and conditional_press_state[j][k][0] == 1:
+                        logging.debug("[Conditional] Check Press conditional statement %s: %s", k+1, conditional_press_name[j][k][0])
+                        if read_press_sensor(j) == 1:
+
+                            if ((conditional_press_condition[j][k][0] == "Pressure" and # If temp is above set point
+                                    conditional_press_direction[j][k][0] == 1 and
+                                    sensor_press_read_press[j] > conditional_press_setpoint[j][k][0]) or
+                                    (conditional_press_condition[j][k][0] == "Pressure" and  # If temp is below set point
+                                    conditional_press_direction[j][k][0] == -1 and
+                                    sensor_press_read_press[j] < conditional_press_setpoint[j][k][0]) or
+                                    (conditional_press_condition[j][k][0] == "Temperature" and # If hum is above set point
+                                    conditional_press_direction[j][k][0] == 1 and
+                                    sensor_press_read_temp_c[j] > conditional_press_setpoint[j][k][0]) or
+                                    (conditional_press_condition[j][k][0] == "Temperature" and # If hum is below set point
+                                    conditional_press_direction[j][k][0] == -1 and
+                                    sensor_press_read_temp_c[j] < conditional_press_setpoint[j][k][0])):
+
+                                if conditional_press_relay_state[j][k][0] == 1:
+                                    if conditional_press_relay_seconds_on[j][k][0] > 0:
+                                        rod = threading.Thread(target = relay_on_duration,
+                                            args = (conditional_press_relay[j][k][0], conditional_press_relay_seconds_on[j][k][0], j,))
+                                        rod.start()
+                                    else:
+                                        relay_onoff(conditional_press_relay[j][k][0], "on")
+                                elif conditional_press_relay_state[j][k][0] == 0:
+                                    relay_onoff(conditional_press_relay[j][k][0], "off")
+                        else:
+                            logging.warning("[Conditional] Could not read Press-%s sensor, did not check conditional %s", j+1, k+1)
+                        timerPressConditional[j][k] = int(time.time()) + conditional_press_period[j][k][0]
+
+
         #
         # Concatenate local log with tempfs log every 6 hours (backup)
         #
@@ -1099,7 +1079,7 @@ def daemon(output, log):
                         rod.start()
                         timer_time[i] = int(time.time()) + timer_duration_on[i] + timer_duration_off[i]
 
-        time.sleep(0.1)
+        time.sleep(0.25)
 
 
 #################################################
@@ -2062,8 +2042,7 @@ def read_K30(sensor):
 # Read the temperature and pressure from sensor
 def read_press_sensor(sensor):
     global sensor_press_read_temp_c
-    global sensor_press_read_hum
-    global sensor_press_dewpt_c
+    global sensor_press_read_press
     tempc = None
     tempc2 = None
     pressure = None
@@ -2270,7 +2249,7 @@ def read_sql():
     global sensor_ht_dewpt_c
     global sensor_ht_read_hum
     global sensor_ht_read_temp_c
-    
+
 
     # Temperature/Humidity sensor variable reset
     sensor_ht_id = []
@@ -2307,6 +2286,7 @@ def read_sql():
     sensor_ht_dewpt_c = []
     sensor_ht_read_hum = []
     sensor_ht_read_temp_c = []
+    
 
     # CO2 sensor globals
     global sensor_co2_id
@@ -2491,6 +2471,7 @@ def read_sql():
     
     verbose = 0
 
+
     # Check if all required tables exist in the SQL database
     conn = sqlite3.connect(mycodo_database)
     cur = conn.cursor()
@@ -2513,11 +2494,11 @@ def read_sql():
         print "Reinitialize database to correct."
         return 0
 
+
     # Begin setting global variables from SQL database values
     cur.execute('SELECT Id, Name, Pin, Trigger, Start_State FROM Relays')
     if verbose:
         print "Table: Relays"
-    count = 0
     for row in cur:
         if verbose:
             print "%s %s %s %s" % (row[0], row[1], row[2], row[3])
@@ -2526,12 +2507,11 @@ def read_sql():
         relay_pin.append(row[2])
         relay_trigger.append(row[3])
         relay_start_state.append(row[4])
-        count += 1
+
 
     cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D FROM TSensor')
     if verbose:
         print "Table: TSensor"
-    count = 0
     for row in cur:
         if verbose:
             print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[18])
@@ -2555,12 +2535,64 @@ def read_sql():
         pid_t_temp_p.append(row[17])
         pid_t_temp_i.append(row[18])
         pid_t_temp_d.append(row[19])
-        count += 1
+
+
+    global conditional_t_number_sensor
+    global conditional_t_number_conditional
+
+    conditional_t_number_sensor = []
+    conditional_t_number_conditional = []
+
+    cur.execute('SELECT Id FROM TSensor')
+    for row in cur:
+        conditional_t_number_sensor.append(row[0])
+
+    cur.execute('SELECT Id FROM TSensorConditional')
+    for row in cur:
+        conditional_t_number_conditional.append(row[0])
+
+    global conditional_t_id
+    global conditional_t_name
+    global conditional_t_state
+    global conditional_t_sensor
+    global conditional_t_direction
+    global conditional_t_setpoint
+    global conditional_t_period
+    global conditional_t_relay
+    global conditional_t_relay_state
+    global conditional_t_relay_seconds_on
+
+    conditional_t_id = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
+    conditional_t_name = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
+    conditional_t_state = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
+    conditional_t_sensor = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
+    conditional_t_direction = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
+    conditional_t_setpoint = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
+    conditional_t_period = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
+    conditional_t_relay = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
+    conditional_t_relay_state = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
+    conditional_t_relay_seconds_on = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
+
+    for j in range(0, len(conditional_t_number_sensor)):
+        cur.execute('SELECT Id, Name, State, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On FROM TSensorConditional WHERE Sensor=' + str(j))
+        count = 0
+        for row in cur:
+            conditional_t_id[j][count][0] = row[0]
+            conditional_t_name[j][count][0] = row[1]
+            conditional_t_state[j][count][0] = row[2]
+            conditional_t_direction[j][count][0] = row[3]
+            conditional_t_setpoint[j][count][0] = row[4]
+            conditional_t_period[j][count][0] = row[5]
+            conditional_t_relay[j][count][0] = row[6]
+            conditional_t_relay_state[j][count][0] = row[7]
+            conditional_t_relay_seconds_on[j][count][0] = row[8]
+            count += 1
+
+
 
     cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relay_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensor')
     if verbose:
         print "Table: HTSensor"
-    count = 0
     for row in cur:
         if verbose:
             print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19], row[20], row[21], row[22], row[23], row[24], row[25], row[26], row[27], row[28], row[29], row[30], row[31])
@@ -2595,12 +2627,67 @@ def read_sql():
         pid_ht_hum_p.append(row[28])
         pid_ht_hum_i.append(row[29])
         pid_ht_hum_d.append(row[30])
-        count += 1
+
+    
+    global conditional_ht_number_sensor
+    global conditional_ht_number_conditional
+
+    conditional_ht_number_sensor = []
+    conditional_ht_number_conditional = []
+
+    cur.execute('SELECT Id FROM HTSensor')
+    for row in cur:
+        conditional_ht_number_sensor.append(row[0])
+
+    cur.execute('SELECT Id FROM HTSensorConditional')
+    for row in cur:
+        conditional_ht_number_conditional.append(row[0])
+
+    global conditional_ht_id
+    global conditional_ht_name
+    global conditional_ht_state
+    global conditional_ht_sensor
+    global conditional_ht_condition
+    global conditional_ht_direction
+    global conditional_ht_setpoint
+    global conditional_ht_period
+    global conditional_ht_relay
+    global conditional_ht_relay_state
+    global conditional_ht_relay_seconds_on
+
+    conditional_ht_id = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
+    conditional_ht_name = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
+    conditional_ht_state = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
+    conditional_ht_sensor = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
+    conditional_ht_condition = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
+    conditional_ht_direction = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
+    conditional_ht_setpoint = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
+    conditional_ht_period = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
+    conditional_ht_relay = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
+    conditional_ht_relay_state = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
+    conditional_ht_relay_seconds_on = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
+
+    for j in range(0, len(conditional_ht_number_sensor)):
+        cur.execute('SELECT Id, Name, State, Condition, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On FROM HTSensorConditional WHERE Sensor=' + str(j))
+        count = 0
+        for row in cur:
+            conditional_ht_id[j][count][0] = row[0]
+            conditional_ht_name[j][count][0] = row[1]
+            conditional_ht_state[j][count][0] = row[2]
+            conditional_ht_condition[j][count][0] = row[3]
+            conditional_ht_direction[j][count][0] = row[4]
+            conditional_ht_setpoint[j][count][0] = row[5]
+            conditional_ht_period[j][count][0] = row[6]
+            conditional_ht_relay[j][count][0] = row[7]
+            conditional_ht_relay_state[j][count][0] = row[8]
+            conditional_ht_relay_seconds_on[j][count][0] = row[9]
+            count += 1
+
+
 
     cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, CO2_Relay_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmax_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
     if verbose:
         print "Table: CO2Sensor "
-    count = 0
     for row in cur:
         if verbose:
             print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" % (
@@ -2626,12 +2713,65 @@ def read_sql():
         pid_co2_p.append(row[17])
         pid_co2_i.append(row[18])
         pid_co2_d.append(row[19])
-        count += 1
+
+
+    global conditional_co2_number_sensor
+    global conditional_co2_number_conditional
+
+    conditional_co2_number_sensor = []
+    conditional_co2_number_conditional = []
+
+    cur.execute('SELECT Id FROM CO2Sensor')
+    for row in cur:
+        conditional_co2_number_sensor.append(row[0])
+
+    cur.execute('SELECT Id FROM CO2SensorConditional')
+    for row in cur:
+        conditional_co2_number_conditional.append(row[0])
+
+    global conditional_co2_id
+    global conditional_co2_name
+    global conditional_co2_state
+    global conditional_co2_sensor
+    global conditional_co2_condition
+    global conditional_co2_direction
+    global conditional_co2_setpoint
+    global conditional_co2_period
+    global conditional_co2_relay
+    global conditional_co2_relay_state
+    global conditional_co2_relay_seconds_on
+
+    conditional_co2_id = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
+    conditional_co2_name = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
+    conditional_co2_state = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
+    conditional_co2_sensor = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
+    conditional_co2_direction = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
+    conditional_co2_setpoint = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
+    conditional_co2_period = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
+    conditional_co2_relay = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
+    conditional_co2_relay_state = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
+    conditional_co2_relay_seconds_on = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
+
+    for j in range(0, len(conditional_co2_number_sensor)):
+        cur.execute('SELECT Id, Name, State, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On FROM CO2SensorConditional WHERE Sensor=' + str(j))
+        count = 0
+        for row in cur:
+            conditional_co2_id[j][count][0] = row[0]
+            conditional_co2_name[j][count][0] = row[1]
+            conditional_co2_state[j][count][0] = row[2]
+            conditional_co2_direction[j][count][0] = row[3]
+            conditional_co2_setpoint[j][count][0] = row[4]
+            conditional_co2_period[j][count][0] = row[5]
+            conditional_co2_relay[j][count][0] = row[6]
+            conditional_co2_relay_state[j][count][0] = row[7]
+            conditional_co2_relay_seconds_on[j][count][0] = row[8]
+            count += 1
+
+
 
     cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Press_Relay_High, Press_Outmax_High, Press_Relay_Low, Press_Outmax_Low, Press_OR, Press_Set, Press_Set_Direction, Press_Period, Press_P, Press_I, Press_D FROM PressSensor')
     if verbose:
         print "Table: PressSensor"
-    count = 0
     for row in cur:
         if verbose:
             print "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19], row[20], row[21], row[22], row[23], row[24], row[25], row[26], row[27], row[28], row[29], row[30], row[31])
@@ -2666,12 +2806,67 @@ def read_sql():
         pid_press_press_p.append(row[28])
         pid_press_press_i.append(row[29])
         pid_press_press_d.append(row[30])
-        count += 1
+
+
+    global conditional_press_number_sensor
+    global conditional_press_number_conditional
+
+    conditional_press_number_sensor = []
+    conditional_press_number_conditional = []
+
+    cur.execute('SELECT Id FROM PressSensor')
+    for row in cur:
+        conditional_press_number_sensor.append(row[0])
+
+    cur.execute('SELECT Id FROM PressSensorConditional')
+    for row in cur:
+        conditional_press_number_conditional.append(row[0])
+
+    global conditional_press_id
+    global conditional_press_name
+    global conditional_press_state
+    global conditional_press_sensor
+    global conditional_press_condition
+    global conditional_press_direction
+    global conditional_press_setpoint
+    global conditional_press_period
+    global conditional_press_relay
+    global conditional_press_relay_state
+    global conditional_press_relay_seconds_on
+
+    conditional_press_id = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
+    conditional_press_name = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
+    conditional_press_state = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
+    conditional_press_sensor = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
+    conditional_press_condition = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
+    conditional_press_direction = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
+    conditional_press_setpoint = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
+    conditional_press_period = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
+    conditional_press_relay = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
+    conditional_press_relay_state = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
+    conditional_press_relay_seconds_on = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
+
+    for j in range(0, len(conditional_press_number_sensor)):
+        cur.execute('SELECT Id, Name, State, Condition, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On FROM PressSensorConditional WHERE Sensor=' + str(j))
+        count = 0
+        for row in cur:
+            conditional_press_id[j][count][0] = row[0]
+            conditional_press_name[j][count][0] = row[1]
+            conditional_press_state[j][count][0] = row[2]
+            conditional_press_condition[j][count][0] = row[3]
+            conditional_press_direction[j][count][0] = row[4]
+            conditional_press_setpoint[j][count][0] = row[5]
+            conditional_press_period[j][count][0] = row[6]
+            conditional_press_relay[j][count][0] = row[7]
+            conditional_press_relay_state[j][count][0] = row[8]
+            conditional_press_relay_seconds_on[j][count][0] = row[9]
+            count += 1
+
+
 
     cur.execute('SELECT Id, Name, Relay, State, DurationOn, DurationOff FROM Timers ')
     if verbose:
         print "Table: Timers "
-    count = 0
     for row in cur:
         if verbose:
             print "%s %s %s %s %s %s" % (
@@ -2682,7 +2877,7 @@ def read_sql():
         timer_state.append(row[3])
         timer_duration_on.append(row[4])
         timer_duration_off.append(row[5])
-        count += 1
+
 
     cur.execute('SELECT Host, SSL, Port, User, Pass, Email_From, Email_To FROM SMTP ')
     if verbose:
@@ -2701,6 +2896,7 @@ def read_sql():
 
     cur.close()
 
+
     for i in range(0, len(sensor_t_id)):
         timerTSensorLog.append(int(time.time()) + sensor_t_period[i])
 
@@ -2716,6 +2912,38 @@ def read_sql():
     for i in range(0, len(timer_id)):
         timer_time.append(int(time.time()))
 
+
+    global timerTConditional
+    global timerHTConditional
+    global timerCO2Conditional
+    global timerPressConditional
+
+    timerTConditional = [[0 for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
+    timerHTConditional = [[0 for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
+    timerCO2Conditional = [[0 for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
+    timerPressConditional = [[0 for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
+    
+    for j in range(0, len(conditional_t_number_sensor)):
+        for k in range(0, len(conditional_t_number_conditional)):
+            if conditional_t_id[j][k][0] != 0:
+                timerTConditional[j][k] = 0
+
+    for j in range(0, len(conditional_ht_number_sensor)):
+        for k in range(0, len(conditional_ht_number_conditional)):
+            if conditional_ht_id[j][k][0] != 0:
+                timerHTConditional[j][k] = 0
+
+    for j in range(0, len(conditional_co2_number_sensor)):
+        for k in range(0, len(conditional_co2_number_conditional)):
+            if conditional_co2_id[j][k][0] != 0:
+                timerCO2Conditional[j][k] = 0
+
+    for j in range(0, len(conditional_press_number_sensor)):
+        for k in range(0, len(conditional_press_number_conditional)):
+            if conditional_press_id[j][k][0] != 0:
+                timerPressConditional[j][k] = 0
+
+
     sensor_t_read_temp_c = [0] * len(sensor_t_id)
     sensor_ht_dewpt_c = [0] * len(sensor_ht_id)
     sensor_ht_read_hum = [0] * len(sensor_ht_id)
@@ -2724,6 +2952,7 @@ def read_sql():
     sensor_press_read_alt = [0] * len(sensor_press_id)
     sensor_press_read_press = [0] * len(sensor_press_id)
     sensor_press_read_temp_c = [0] * len(sensor_press_id)
+
 
     pid_t_temp_alive = []
     pid_ht_temp_alive = []

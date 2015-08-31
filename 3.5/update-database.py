@@ -26,7 +26,7 @@
 sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
 sql_database_user = '/var/www/mycodo/config/users.db'
 
-db_version_mycodo = 4
+db_version_mycodo = 5
 db_version_user = 1
 
 import getopt
@@ -242,19 +242,21 @@ def mycodo_database_update():
 
     # Version 4 updates: add pressure sensor
 
+    # Version 5 updates: add conditional statements
+
     # any extra commands for version 5
     if current_db_version_mycodo < 5:
         pass
 
     if db_version_mycodo == current_db_version_mycodo:
         print "Mycodo database is already up to date."
-
-    # Update Mycodo database version
-    conn = sqlite3.connect(sql_database_mycodo)
-    cur = conn.cursor()
-    cur.execute("PRAGMA user_version = %s;" % db_version_mycodo)
-    conn.commit()
-    cur.close()
+    else:
+        # Update Mycodo database version
+        conn = sqlite3.connect(sql_database_mycodo)
+        cur = conn.cursor()
+        cur.execute("PRAGMA user_version = %s;" % db_version_mycodo)
+        conn.commit()
+        cur.close()
 
 
 def user_database_update():
@@ -326,6 +328,17 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'TSensorPreset', 'Temp_I', 'REAL')
     AddColumn(sql_database_mycodo, 'TSensorPreset', 'Temp_D', 'REAL')
 
+    AddTable(sql_database_mycodo, 'TSensorConditional')
+    AddColumn(sql_database_mycodo, 'TSensorConditional', 'Name', 'TEXT')
+    AddColumn(sql_database_mycodo, 'TSensorConditional', 'State', 'INT')
+    AddColumn(sql_database_mycodo, 'TSensorConditional', 'Sensor', 'INT')
+    AddColumn(sql_database_mycodo, 'TSensorConditional', 'Direction', 'INT')
+    AddColumn(sql_database_mycodo, 'TSensorConditional', 'Setpoint', 'REAL')
+    AddColumn(sql_database_mycodo, 'TSensorConditional', 'Period', 'INT')
+    AddColumn(sql_database_mycodo, 'TSensorConditional', 'Relay', 'INT')
+    AddColumn(sql_database_mycodo, 'TSensorConditional', 'Relay_State', 'INT')
+    AddColumn(sql_database_mycodo, 'TSensorConditional', 'Relay_Seconds_On', 'INT')
+
     AddTable(sql_database_mycodo, 'HTSensor')
     AddColumn(sql_database_mycodo, 'HTSensor', 'Name', 'TEXT')
     AddColumn(sql_database_mycodo, 'HTSensor', 'Pin', 'INT')
@@ -388,6 +401,18 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Hum_I', 'REAL')
     AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Hum_D', 'REAL')
 
+    AddTable(sql_database_mycodo, 'HTSensorConditional')
+    AddColumn(sql_database_mycodo, 'HTSensorConditional', 'Name', 'TEXT')
+    AddColumn(sql_database_mycodo, 'HTSensorConditional', 'State', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensorConditional', 'Sensor', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensorConditional', 'Condition', 'TEXT')
+    AddColumn(sql_database_mycodo, 'HTSensorConditional', 'Direction', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensorConditional', 'Setpoint', 'REAL')
+    AddColumn(sql_database_mycodo, 'HTSensorConditional', 'Period', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensorConditional', 'Relay', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensorConditional', 'Relay_State', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensorConditional', 'Relay_Seconds_On', 'INT')
+
     AddTable(sql_database_mycodo, 'CO2Sensor')
     AddColumn(sql_database_mycodo, 'CO2Sensor', 'Name', 'TEXT')
     AddColumn(sql_database_mycodo, 'CO2Sensor', 'Pin', 'INT')
@@ -428,6 +453,17 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'CO2SensorPreset', 'CO2_P', 'REAL')
     AddColumn(sql_database_mycodo, 'CO2SensorPreset', 'CO2_I', 'REAL')
     AddColumn(sql_database_mycodo, 'CO2SensorPreset', 'CO2_D', 'REAL')
+
+    AddTable(sql_database_mycodo, 'CO2SensorConditional')
+    AddColumn(sql_database_mycodo, 'CO2SensorConditional', 'Name', 'TEXT')
+    AddColumn(sql_database_mycodo, 'CO2SensorConditional', 'State', 'INT')
+    AddColumn(sql_database_mycodo, 'CO2SensorConditional', 'Sensor', 'INT')
+    AddColumn(sql_database_mycodo, 'CO2SensorConditional', 'Direction', 'INT')
+    AddColumn(sql_database_mycodo, 'CO2SensorConditional', 'Setpoint', 'REAL')
+    AddColumn(sql_database_mycodo, 'CO2SensorConditional', 'Period', 'INT')
+    AddColumn(sql_database_mycodo, 'CO2SensorConditional', 'Relay', 'INT')
+    AddColumn(sql_database_mycodo, 'CO2SensorConditional', 'Relay_State', 'INT')
+    AddColumn(sql_database_mycodo, 'CO2SensorConditional', 'Relay_Seconds_On', 'INT')
 
     AddTable(sql_database_mycodo, 'PressSensor')
     AddColumn(sql_database_mycodo, 'PressSensor', 'Name', 'TEXT')
@@ -490,6 +526,18 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'PressSensorPreset', 'Press_P', 'REAL')
     AddColumn(sql_database_mycodo, 'PressSensorPreset', 'Press_I', 'REAL')
     AddColumn(sql_database_mycodo, 'PressSensorPreset', 'Press_D', 'REAL')
+
+    AddTable(sql_database_mycodo, 'PressSensorConditional')
+    AddColumn(sql_database_mycodo, 'PressSensorConditional', 'Name', 'TEXT')
+    AddColumn(sql_database_mycodo, 'PressSensorConditional', 'State', 'INT')
+    AddColumn(sql_database_mycodo, 'PressSensorConditional', 'Sensor', 'INT')
+    AddColumn(sql_database_mycodo, 'PressSensorConditional', 'Condition', 'TEXT')
+    AddColumn(sql_database_mycodo, 'PressSensorConditional', 'Direction', 'INT')
+    AddColumn(sql_database_mycodo, 'PressSensorConditional', 'Setpoint', 'REAL')
+    AddColumn(sql_database_mycodo, 'PressSensorConditional', 'Period', 'INT')
+    AddColumn(sql_database_mycodo, 'PressSensorConditional', 'Relay', 'INT')
+    AddColumn(sql_database_mycodo, 'PressSensorConditional', 'Relay_State', 'INT')
+    AddColumn(sql_database_mycodo, 'PressSensorConditional', 'Relay_Seconds_On', 'INT')
 
     AddTable(sql_database_mycodo, 'Timers')
     AddColumn(sql_database_mycodo, 'Timers', 'Name', 'TEXT')

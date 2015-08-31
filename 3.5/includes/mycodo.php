@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.69";
+$version = "3.5.70";
 
 ######### Start Edit Configure #########
 
@@ -689,8 +689,79 @@ if (isset($output_error)) {
                                 <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_d[$i]; ?>" maxlength=4 size=1 name="SetT<?php echo $i; ?>Temp_D" title="This is the Derivative gain of the PID controller"/>
                             </td>
                         </tr>
+                        </form>
+                        <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                        <tr class="shade">
+                            <td colspan=12 style="text-align: left;">
+                                Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                            </td>
+                        </tr>
+                        <tr class="shade">
+                            <td colspan=12 style="text-align: left;">
+                                Name: 
+                                <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditiont<?php echo $i; ?>name" title="" required/>
+                                Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditiont<?php echo $i; ?>period" title="" required/> sec,
+                                if Temperature is
+                                <select style="width: 5em;" name="conditiont<?php echo $i; ?>direction">
+                                    <option value="1">Above</option>
+                                    <option value="-1">Below</option>
+                                </select>
+                                <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="conditiont<?php echo $i; ?>setpoint" title="" required/>,
+                                turn Relay
+                                <input style="width: 3em;" type="number" step="any" value="" maxlength=4 size=1 name="conditiont<?php echo $i; ?>relay" title="" required/>
+                                <select style="width: 4em;" name="conditiont<?php echo $i; ?>relaystate">
+                                    <option value="1">On</option>
+                                    <option value="0">Off</option>
+                                </select>
+                                (for
+                                <input style="width: 4em;" type="number" step="any" value="0" maxlength=4 size=1 name="conditiont<?php echo $i; ?>relaysecondson" title="The number of seconds for the relay to remain on. Leave at 0 to just turn it on or off." required/> sec)
+                                <button type="submit" name="AddT<?php echo $i; ?>Conditional" title="Save new conditional statement">Save</button>
+                            </td>
+                        </tr>
+                        </form>
+                        <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                        <?php
+                        if (isset($conditional_t_id[$i]) && count($conditional_t_id[$i]) > 0) { 
+                            for ($z = 0; $z < count($conditional_t_id[$i]); $z++) {
+                            ?>
+                        <tr>
+                            <td colspan=12 style="text-align: left;">
+                                <?php
+                                echo '<button type="submit" name="DeleteT' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
+                                if ($conditional_t_state[$i][$z]) {
+                                    echo '<button type="submit" name="TurnOffT' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> ';
+                                    echo 'On ';
+                                } else {
+                                    echo '<button type="submit" name="TurnOnT' . $i . '-' . $z . 'Conditional" title="">Turn On</button> ';
+                                    echo 'Off ';
+                                }
+
+                                echo $z+1 . ' ' . $conditional_t_name[$i][$z] . ': Every ' . $conditional_t_period[$i][$z] . ' sec, if the Temperature is ';
+
+                                if ($conditional_t_direction[$i][$z] == 1) {
+                                    echo 'Above ';
+                                } else {
+                                    echo 'Below ';
+                                }
+
+                                echo $conditional_t_setpoint[$i][$z] .  '%deg;C, turn Relay ' . $conditional_t_relay[$i][$z];
+
+                                if ($conditional_t_relay_state[$i][$z]) {
+                                    echo ' On';
+                                    if ($conditional_t_relay_seconds_on[$i][$z] > 0) {
+                                        echo ' for ' . $conditional_t_relay_seconds_on[$i][$z] . ' seconds';
+                                    }
+                                } else {
+                                    echo ' Off';
+                                } 
+                                ?>
+                            </td>
+                        </tr>
+                        <?php
+                        } }
+                        ?>
+                        </form>
                     </table>
-                    <form>
                     <div style="margin-bottom: <?php if ($i == count($sensor_t_id)) echo '2'; else echo '1'; ?>em;"></div>
                     <?php
                     }
@@ -706,8 +777,8 @@ if (isset($output_error)) {
                     <?php
                     for ($i = 0; $i < count($sensor_ht_id); $i++) {
                     ?>
-                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                     <table class="sensor" style="border: 0.7em solid #EBEBEB; border-top: 0;">
+                        <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                         <tr class="shade">
                             <td>HT Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_ht_id[$i]; ?>)</span></td>
                             <td>Sensor<br>Name</td>
@@ -914,31 +985,91 @@ if (isset($output_error)) {
                                 <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_d[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Hum_D" title="This is the Derivative gain of the PID controller"/>
                             </td>
                         </tr>
+                        </form>
+                        <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                         <tr class="shade">
-                            <td colspan=12>
-                                Conditional: If <select style="width: 8em;" name="SensorType">
+                            <td colspan=12 style="text-align: left;">
+                                Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                            </td>
+                        </tr>
+                        <tr class="shade">
+                            <td colspan=12 style="text-align: left;">
+                                Name: 
+                                <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionht<?php echo $i; ?>name" title="" required/>
+                                Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditionht<?php echo $i; ?>period" title="" required/> sec,
+                                if <select style="width: 6em;" name="conditionht<?php echo $i; ?>condition">
                                     <option value="Humidity">Humidity</option>
                                     <option value="Temperature">Temperature</option>
                                 </select>
                                 is
-                                <select style="width: 6em;" name="SensorType">
-                                    <option value="Above">Above</option>
-                                    <option value="Below">Below</option>
+                                <select style="width: 5em;" name="conditionht<?php echo $i; ?>direction">
+                                    <option value="1">Above</option>
+                                    <option value="-1">Below</option>
                                 </select>
-                                <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="setnumber1" title=""/> &deg;C/%,
+                                <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionht<?php echo $i; ?>setpoint" title="" required/>,
                                 turn Relay
-                                <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="setnumber1" title=""/>
-                                <select style="width: 4em;" name="SensorType">
-                                    <option value="On">On</option>
-                                    <option value="Off">Off</option>
+                                <input style="width: 3em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionht<?php echo $i; ?>relay" title="" required/>
+                                <select style="width: 4em;" name="conditionht<?php echo $i; ?>relaystate">
+                                    <option value="1">On</option>
+                                    <option value="0">Off</option>
                                 </select>
-                                (if on, for
-                                <input style="width: 4em;" type="number" step="any" value="0" maxlength=4 size=1 name="setnumber1" title="The number of seconds for the relay to remain on. Leave at 0 to just turn it on or off."/> sec)
-                                <button type="submit" name="SaveConditional1" title="Save conditional">Save</button>
+                                (for
+                                <input style="width: 4em;" type="number" step="any" value="0" maxlength=4 size=1 name="conditionht<?php echo $i; ?>relaysecondson" title="The number of seconds for the relay to remain on. Leave at 0 to just turn it on or off." required/> sec)
+                                <button type="submit" name="AddHT<?php echo $i; ?>Conditional" title="Save new conditional statement">Save</button>
                             </td>
                         </tr>
+                        </form>
+                        <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                        <?php
+                        if (isset($conditional_ht_id[$i]) && count($conditional_ht_id[$i]) > 0) { 
+                            for ($z = 0; $z < count($conditional_ht_id[$i]); $z++) {
+                            ?>
+                        <tr>
+                            <td colspan=12 style="text-align: left;">
+                                <?php
+                                echo '<button type="submit" name="DeleteHT' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
+                                if ($conditional_ht_state[$i][$z]) {
+                                    echo '<button type="submit" name="TurnOffHT' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> ';
+                                    echo 'On ';
+                                } else {
+                                    echo '<button type="submit" name="TurnOnHT' . $i . '-' . $z . 'Conditional" title="">Turn On</button> ';
+                                    echo 'Off ';
+                                }
+
+                                echo $z+1 . ' ' . $conditional_ht_name[$i][$z] . ': Every ' . $conditional_ht_period[$i][$z] . ' sec, if the ' . $conditional_ht_condition[$i][$z] . ' is ';
+
+                                if ($conditional_ht_direction[$i][$z] == 1) {
+                                    echo 'Above ';
+                                } else {
+                                    echo 'Below ';
+                                }
+
+                                echo $conditional_ht_setpoint[$i][$z];
+
+                                if ($conditional_ht_condition[$i][$z] == "Humidity") {
+                                    echo '%';
+                                } else {
+                                    echo '&deg;C';
+                                }
+
+                                echo ', turn Relay ' . $conditional_ht_relay[$i][$z];
+
+                                if ($conditional_ht_relay_state[$i][$z]) {
+                                    echo ' On';
+                                    if ($conditional_ht_relay_seconds_on[$i][$z] > 0) {
+                                        echo ' for ' . $conditional_ht_relay_seconds_on[$i][$z] . ' seconds';
+                                    }
+                                } else {
+                                    echo ' Off';
+                                } 
+                                ?>
+                            </td>
+                        </tr>
+                        <?php
+                        } }
+                        ?>
+                        </form>
                     </table>
-                    </form>
                     <div style="margin-bottom: <?php if ($i == count($sensor_ht_id)) echo '2'; else echo '1'; ?>em;"></div>
                     <?php
                     }
@@ -1108,8 +1239,79 @@ if (isset($output_error)) {
                                 <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_d[$i]; ?>" maxlength=5 size=1 name="SetCO2<?php echo $i; ?>CO2_D" title="This is the Derivative gain of the PID controller"/>
                             </td>
                         </tr>
+                        </form>
+                        <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                        <tr class="shade">
+                            <td colspan=12 style="text-align: left;">
+                                Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                            </td>
+                        </tr>
+                        <tr class="shade">
+                            <td colspan=12 style="text-align: left;">
+                                Name: 
+                                <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionco2<?php echo $i; ?>name" title="" required/>
+                                Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditionco2<?php echo $i; ?>period" title="" required/> sec,
+                                if CO<sub>2</sub> is
+                                <select style="width: 5em;" name="conditionco2<?php echo $i; ?>direction">
+                                    <option value="1">Above</option>
+                                    <option value="-1">Below</option>
+                                </select>
+                                <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionco2<?php echo $i; ?>setpoint" title="" required/>,
+                                turn Relay
+                                <input style="width: 3em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionco2<?php echo $i; ?>relay" title="" required/>
+                                <select style="width: 4em;" name="conditionco2<?php echo $i; ?>relaystate">
+                                    <option value="1">On</option>
+                                    <option value="0">Off</option>
+                                </select>
+                                (for
+                                <input style="width: 4em;" type="number" step="any" value="0" maxlength=4 size=1 name="conditionco2<?php echo $i; ?>relaysecondson" title="The number of seconds for the relay to remain on. Leave at 0 to just turn it on or off." required/> sec)
+                                <button type="submit" name="AddCO2<?php echo $i; ?>Conditional" title="Save new conditional statement">Save</button>
+                            </td>
+                        </tr>
+                        </form>
+                        <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                        <?php
+                        if (isset($conditional_co2_id[$i]) && count($conditional_co2_id[$i]) > 0) { 
+                            for ($z = 0; $z < count($conditional_co2_id[$i]); $z++) {
+                            ?>
+                        <tr>
+                            <td colspan=12 style="text-align: left;">
+                                <?php
+                                echo '<button type="submit" name="DeleteCO2' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
+                                if ($conditional_co2_state[$i][$z]) {
+                                    echo '<button type="submit" name="TurnOffCO2' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> ';
+                                    echo 'On ';
+                                } else {
+                                    echo '<button type="submit" name="TurnOnCO2' . $i . '-' . $z . 'Conditional" title="">Turn On</button> ';
+                                    echo 'Off ';
+                                }
+
+                                echo $z+1 . ' ' . $conditional_co2_name[$i][$z] . ': Every ' . $conditional_co2_period[$i][$z] . ' sec, if the CO<sub>2</sub> is ';
+
+                                if ($conditional_co2_direction[$i][$z] == 1) {
+                                    echo 'Above ';
+                                } else {
+                                    echo 'Below ';
+                                }
+
+                                echo $conditional_co2_setpoint[$i][$z] . 'ppm, turn Relay ' . $conditional_co2_relay[$i][$z];
+
+                                if ($conditional_co2_relay_state[$i][$z]) {
+                                    echo ' On';
+                                    if ($conditional_co2_relay_seconds_on[$i][$z] > 0) {
+                                        echo ' for ' . $conditional_co2_relay_seconds_on[$i][$z] . ' seconds';
+                                    }
+                                } else {
+                                    echo ' Off';
+                                } 
+                                ?>
+                            </td>
+                        </tr>
+                        <?php
+                        } }
+                        ?>
+                        </form>
                     </table>
-                    </form>
                     <div style="margin-bottom: <?php if ($i == count($sensor_co2_id)) echo '2'; else echo '1'; ?>em;"></div>
                     <?php
                     }
@@ -1341,8 +1543,91 @@ if (isset($output_error)) {
                                 <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_press_d[$i]; ?>" maxlength=4 size=1 name="SetPress<?php echo $i; ?>Press_D" title="This is the Derivative gain of the PID controller"/>
                             </td>
                         </tr>
+                        </form>
+                        <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                        <tr class="shade">
+                            <td colspan=12 style="text-align: left;">
+                                Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                            </td>
+                        </tr>
+                        <tr class="shade">
+                            <td colspan=12 style="text-align: left;">
+                                Name: 
+                                <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionpress<?php echo $i; ?>name" title="" required/>
+                                Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditionpress<?php echo $i; ?>period" title="" required/> sec,
+                                if <select style="width: 6em;" name="conditionpress<?php echo $i; ?>condition">
+                                    <option value="Pressure">Pressure</option>
+                                    <option value="Temperature">Temperature</option>
+                                </select>
+                                is
+                                <select style="width: 5em;" name="conditionpress<?php echo $i; ?>direction">
+                                    <option value="1">Above</option>
+                                    <option value="-1">Below</option>
+                                </select>
+                                <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionpress<?php echo $i; ?>setpoint" title="" required/>,
+                                turn Relay
+                                <input style="width: 3em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionpress<?php echo $i; ?>relay" title="" required/>
+                                <select style="width: 4em;" name="conditionpress<?php echo $i; ?>relaystate">
+                                    <option value="1">On</option>
+                                    <option value="0">Off</option>
+                                </select>
+                                (for
+                                <input style="width: 4em;" type="number" step="any" value="0" maxlength=4 size=1 name="conditionpress<?php echo $i; ?>relaysecondson" title="The number of seconds for the relay to remain on. Leave at 0 to just turn it on or off." required/> sec)
+                                <button type="submit" name="AddPress<?php echo $i; ?>Conditional" title="Save new conditional statement">Save</button>
+                            </td>
+                        </tr>
+                        </form>
+                        <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                        <?php
+                        if (isset($conditional_press_id[$i]) && count($conditional_press_id[$i]) > 0) { 
+                            for ($z = 0; $z < count($conditional_press_id[$i]); $z++) {
+                            ?>
+                        <tr>
+                            <td colspan=12 style="text-align: left;">
+                                <?php
+                                echo '<button type="submit" name="DeletePress' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
+                                if ($conditional_press_state[$i][$z]) {
+                                    echo '<button type="submit" name="TurnOffPress' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> ';
+                                    echo 'On ';
+                                } else {
+                                    echo '<button type="submit" name="TurnOnPress' . $i . '-' . $z . 'Conditional" title="">Turn On</button> ';
+                                    echo 'Off ';
+                                }
+
+                                echo $z+1 . ' ' . $conditional_press_name[$i][$z] . ': Every ' . $conditional_press_period[$i][$z] . ' sec, if the ' . $conditional_press_condition[$i][$z] . ' is ';
+
+                                if ($conditional_press_direction[$i][$z] == 1) {
+                                    echo 'Above ';
+                                } else {
+                                    echo 'Below ';
+                                }
+
+                                echo $conditional_press_setpoint[$i][$z];
+
+                                if ($conditional_press_condition[$i][$z] == "Pressure") {
+                                    echo 'kPa';
+                                } else {
+                                    echo '&deg;C';
+                                }
+
+                                echo ', turn Relay ' . $conditional_press_relay[$i][$z];
+
+                                if ($conditional_press_relay_state[$i][$z]) {
+                                    echo ' On';
+                                    if ($conditional_press_relay_seconds_on[$i][$z] > 0) {
+                                        echo ' for ' . $conditional_press_relay_seconds_on[$i][$z] . ' seconds';
+                                    }
+                                } else {
+                                    echo ' Off';
+                                } 
+                                ?>
+                            </td>
+                        </tr>
+                        <?php
+                        } }
+                        ?>
+                        </form>
                     </table>
-                    </form>
                     <div style="margin-bottom: <?php if ($i == count($sensor_press_id)) echo '2'; else echo '1'; ?>em;"></div>
                     <?php
                     }
