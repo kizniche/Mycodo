@@ -258,6 +258,8 @@ def mycodo_database_update():
         conn.commit()
         cur.close()
 
+        print "Mycodo database version: %d" % current_db_version_mycodo
+
 
 def user_database_update():
     conn = sqlite3.connect(sql_database_user)
