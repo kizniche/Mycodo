@@ -329,33 +329,35 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
         $stmt->execute();
     }
 
-    for ($z = 0; $z < count($conditional_t_id[$p]); $z++) {
-        // Delete T Conditional Statement
-        if (isset($_POST['DeleteT' . $p . '-' . $z . 'Conditional'])) {
-            $stmt = $db->prepare("DELETE FROM TSensorConditional WHERE Id=:id");
-            $stmt->bindValue(':id', $conditional_t_id[$p][$z], SQLITE3_TEXT);
-            $stmt->execute();
+    if (isset($conditional_t_id)) {
+        for ($z = 0; $z < count($conditional_t_id[$p]); $z++) {
+            // Delete T Conditional Statement
+            if (isset($_POST['DeleteT' . $p . '-' . $z . 'Conditional'])) {
+                $stmt = $db->prepare("DELETE FROM TSensorConditional WHERE Id=:id");
+                $stmt->bindValue(':id', $conditional_t_id[$p][$z], SQLITE3_TEXT);
+                $stmt->execute();
 
-            shell_exec("$mycodo_client --sqlreload -1");
-        }
+                shell_exec("$mycodo_client --sqlreload -1");
+            }
 
-        // Turn T Conditional Statements On/Off
-        if (isset($_POST['TurnOnT' . $p . '-' . $z . 'Conditional'])) {
-            $stmt = $db->prepare("UPDATE TSensorConditional SET State=:state WHERE Id=:id");
-            $stmt->bindValue(':state', 1);
-            $stmt->bindValue(':id', $conditional_t_id[$p][$z], SQLITE3_TEXT);
-            $stmt->execute();
+            // Turn T Conditional Statements On/Off
+            if (isset($_POST['TurnOnT' . $p . '-' . $z . 'Conditional'])) {
+                $stmt = $db->prepare("UPDATE TSensorConditional SET State=:state WHERE Id=:id");
+                $stmt->bindValue(':state', 1);
+                $stmt->bindValue(':id', $conditional_t_id[$p][$z], SQLITE3_TEXT);
+                $stmt->execute();
 
-            shell_exec("$mycodo_client --sqlreload -1");
-        }
+                shell_exec("$mycodo_client --sqlreload -1");
+            }
 
-        if (isset($_POST['TurnOffT' . $p . '-' . $z . 'Conditional'])) {
-            $stmt = $db->prepare("UPDATE TSensorConditional SET State=:state WHERE Id=:id");
-            $stmt->bindValue(':state', 0);
-            $stmt->bindValue(':id', $conditional_t_id[$p][$z], SQLITE3_TEXT);
-            $stmt->execute();
+            if (isset($_POST['TurnOffT' . $p . '-' . $z . 'Conditional'])) {
+                $stmt = $db->prepare("UPDATE TSensorConditional SET State=:state WHERE Id=:id");
+                $stmt->bindValue(':state', 0);
+                $stmt->bindValue(':id', $conditional_t_id[$p][$z], SQLITE3_TEXT);
+                $stmt->execute();
 
-            shell_exec("$mycodo_client --sqlreload -1");
+                shell_exec("$mycodo_client --sqlreload -1");
+            }
         }
     }
 
@@ -626,33 +628,35 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
         $stmt->execute();
     }
 
-    for ($z = 0; $z < count($conditional_ht_id[$p]); $z++) {
-        // Delete HT Conditional Statement
-        if (isset($_POST['DeleteHT' . $p . '-' . $z . 'Conditional'])) {
-            $stmt = $db->prepare("DELETE FROM HTSensorConditional WHERE Id=:id");
-            $stmt->bindValue(':id', $conditional_ht_id[$p][$z], SQLITE3_TEXT);
-            $stmt->execute();
+    if (isset($conditional_ht_id)) {
+        for ($z = 0; $z < count($conditional_ht_id[$p]); $z++) {
+            // Delete HT Conditional Statement
+            if (isset($_POST['DeleteHT' . $p . '-' . $z . 'Conditional'])) {
+                $stmt = $db->prepare("DELETE FROM HTSensorConditional WHERE Id=:id");
+                $stmt->bindValue(':id', $conditional_ht_id[$p][$z], SQLITE3_TEXT);
+                $stmt->execute();
 
-            shell_exec("$mycodo_client --sqlreload -1");
-        }
+                shell_exec("$mycodo_client --sqlreload -1");
+            }
 
-        // Turn HT Conditional Statements On/Off
-        if (isset($_POST['TurnOnHT' . $p . '-' . $z . 'Conditional'])) {
-            $stmt = $db->prepare("UPDATE HTSensorConditional SET State=:state WHERE Id=:id");
-            $stmt->bindValue(':state', 1);
-            $stmt->bindValue(':id', $conditional_ht_id[$p][$z], SQLITE3_TEXT);
-            $stmt->execute();
+            // Turn HT Conditional Statements On/Off
+            if (isset($_POST['TurnOnHT' . $p . '-' . $z . 'Conditional'])) {
+                $stmt = $db->prepare("UPDATE HTSensorConditional SET State=:state WHERE Id=:id");
+                $stmt->bindValue(':state', 1);
+                $stmt->bindValue(':id', $conditional_ht_id[$p][$z], SQLITE3_TEXT);
+                $stmt->execute();
 
-            shell_exec("$mycodo_client --sqlreload -1");
-        }
+                shell_exec("$mycodo_client --sqlreload -1");
+            }
 
-        if (isset($_POST['TurnOffHT' . $p . '-' . $z . 'Conditional'])) {
-            $stmt = $db->prepare("UPDATE HTSensorConditional SET State=:state WHERE Id=:id");
-            $stmt->bindValue(':state', 0);
-            $stmt->bindValue(':id', $conditional_ht_id[$p][$z], SQLITE3_TEXT);
-            $stmt->execute();
+            if (isset($_POST['TurnOffHT' . $p . '-' . $z . 'Conditional'])) {
+                $stmt = $db->prepare("UPDATE HTSensorConditional SET State=:state WHERE Id=:id");
+                $stmt->bindValue(':state', 0);
+                $stmt->bindValue(':id', $conditional_ht_id[$p][$z], SQLITE3_TEXT);
+                $stmt->execute();
 
-            shell_exec("$mycodo_client --sqlreload -1");
+                shell_exec("$mycodo_client --sqlreload -1");
+            }
         }
     }
 
@@ -1018,33 +1022,35 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
         $stmt->execute();
     }
 
-    for ($z = 0; $z < count($conditional_co2_id[$p]); $z++) {
-        // Delete CO2 Conditional Statement
-        if (isset($_POST['DeleteCO2' . $p . '-' . $z . 'Conditional'])) {
-            $stmt = $db->prepare("DELETE FROM CO2SensorConditional WHERE Id=:id");
-            $stmt->bindValue(':id', $conditional_co2_id[$p][$z], SQLITE3_TEXT);
-            $stmt->execute();
+    if (isset($conditional_co2_id)) {
+        for ($z = 0; $z < count($conditional_co2_id[$p]); $z++) {
+            // Delete CO2 Conditional Statement
+            if (isset($_POST['DeleteCO2' . $p . '-' . $z . 'Conditional'])) {
+                $stmt = $db->prepare("DELETE FROM CO2SensorConditional WHERE Id=:id");
+                $stmt->bindValue(':id', $conditional_co2_id[$p][$z], SQLITE3_TEXT);
+                $stmt->execute();
 
-            shell_exec("$mycodo_client --sqlreload -1");
-        }
+                shell_exec("$mycodo_client --sqlreload -1");
+            }
 
-        // Turn CO2 Conditional Statements On/Off
-        if (isset($_POST['TurnOnCO2' . $p . '-' . $z . 'Conditional'])) {
-            $stmt = $db->prepare("UPDATE CO2SensorConditional SET State=:state WHERE Id=:id");
-            $stmt->bindValue(':state', 1);
-            $stmt->bindValue(':id', $conditional_co2_id[$p][$z], SQLITE3_TEXT);
-            $stmt->execute();
+            // Turn CO2 Conditional Statements On/Off
+            if (isset($_POST['TurnOnCO2' . $p . '-' . $z . 'Conditional'])) {
+                $stmt = $db->prepare("UPDATE CO2SensorConditional SET State=:state WHERE Id=:id");
+                $stmt->bindValue(':state', 1);
+                $stmt->bindValue(':id', $conditional_co2_id[$p][$z], SQLITE3_TEXT);
+                $stmt->execute();
 
-            shell_exec("$mycodo_client --sqlreload -1");
-        }
+                shell_exec("$mycodo_client --sqlreload -1");
+            }
 
-        if (isset($_POST['TurnOffCO2' . $p . '-' . $z . 'Conditional'])) {
-            $stmt = $db->prepare("UPDATE CO2SensorConditional SET State=:state WHERE Id=:id");
-            $stmt->bindValue(':state', 0);
-            $stmt->bindValue(':id', $conditional_co2_id[$p][$z], SQLITE3_TEXT);
-            $stmt->execute();
+            if (isset($_POST['TurnOffCO2' . $p . '-' . $z . 'Conditional'])) {
+                $stmt = $db->prepare("UPDATE CO2SensorConditional SET State=:state WHERE Id=:id");
+                $stmt->bindValue(':state', 0);
+                $stmt->bindValue(':id', $conditional_co2_id[$p][$z], SQLITE3_TEXT);
+                $stmt->execute();
 
-            shell_exec("$mycodo_client --sqlreload -1");
+                shell_exec("$mycodo_client --sqlreload -1");
+            }
         }
     }
 
@@ -1324,33 +1330,35 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
         $stmt->execute();
     }
 
-    for ($z = 0; $z < count($conditional_press_id[$p]); $z++) {
-        // Delete Press Conditional Statement
-        if (isset($_POST['DeletePress' . $p . '-' . $z . 'Conditional'])) {
-            $stmt = $db->prepare("DELETE FROM PressSensorConditional WHERE Id=:id");
-            $stmt->bindValue(':id', $conditional_press_id[$p][$z], SQLITE3_TEXT);
-            $stmt->execute();
+    if (isset($conditional_press_id)) {
+        for ($z = 0; $z < count($conditional_press_id[$p]); $z++) {
+            // Delete Press Conditional Statement
+            if (isset($_POST['DeletePress' . $p . '-' . $z . 'Conditional'])) {
+                $stmt = $db->prepare("DELETE FROM PressSensorConditional WHERE Id=:id");
+                $stmt->bindValue(':id', $conditional_press_id[$p][$z], SQLITE3_TEXT);
+                $stmt->execute();
 
-            shell_exec("$mycodo_client --sqlreload -1");
-        }
+                shell_exec("$mycodo_client --sqlreload -1");
+            }
 
-        // Turn Press Conditional Statements On/Off
-        if (isset($_POST['TurnOnPress' . $p . '-' . $z . 'Conditional'])) {
-            $stmt = $db->prepare("UPDATE PressSensorConditional SET State=:state WHERE Id=:id");
-            $stmt->bindValue(':state', 1);
-            $stmt->bindValue(':id', $conditional_press_id[$p][$z], SQLITE3_TEXT);
-            $stmt->execute();
+            // Turn Press Conditional Statements On/Off
+            if (isset($_POST['TurnOnPress' . $p . '-' . $z . 'Conditional'])) {
+                $stmt = $db->prepare("UPDATE PressSensorConditional SET State=:state WHERE Id=:id");
+                $stmt->bindValue(':state', 1);
+                $stmt->bindValue(':id', $conditional_press_id[$p][$z], SQLITE3_TEXT);
+                $stmt->execute();
 
-            shell_exec("$mycodo_client --sqlreload -1");
-        }
+                shell_exec("$mycodo_client --sqlreload -1");
+            }
 
-        if (isset($_POST['TurnOffPress' . $p . '-' . $z . 'Conditional'])) {
-            $stmt = $db->prepare("UPDATE PressSensorConditional SET State=:state WHERE Id=:id");
-            $stmt->bindValue(':state', 0);
-            $stmt->bindValue(':id', $conditional_press_id[$p][$z], SQLITE3_TEXT);
-            $stmt->execute();
+            if (isset($_POST['TurnOffPress' . $p . '-' . $z . 'Conditional'])) {
+                $stmt = $db->prepare("UPDATE PressSensorConditional SET State=:state WHERE Id=:id");
+                $stmt->bindValue(':state', 0);
+                $stmt->bindValue(':id', $conditional_press_id[$p][$z], SQLITE3_TEXT);
+                $stmt->execute();
 
-            shell_exec("$mycodo_client --sqlreload -1");
+                shell_exec("$mycodo_client --sqlreload -1");
+            }
         }
     }
 
