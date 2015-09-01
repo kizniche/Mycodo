@@ -1137,9 +1137,9 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
                         logging.debug("[PID T-Temperature-%s] Temperature: %.1f°C now = %.1f°C set", sensor+1, sensor_t_read_temp_c[sensor], pid_t_temp_set[sensor])
 
                     if pid_t_temp_set_dir[sensor] > -1 and PIDTemp > 0:
-                        if pid_t_temp_outmax_low != 0 and PIDTemp > pid_t_temp_outmax_low:
+                        if pid_t_temp_outmax_low[sensor] != 0 and PIDTemp > pid_t_temp_outmax_low[sensor]:
                             logging.debug("[PID T-Temperature-%s] PID = %.1f (max enabled)", sensor+1, PIDTemp)
-                            PIDTemp = pid_t_temp_outmax_low
+                            PIDTemp = pid_t_temp_outmax_low[sensor]
                         else:
                             logging.debug("[PID T-Temperature-%s] PID = %.1f (max disabled)", sensor+1, PIDTemp)
                         rod = threading.Thread(target = relay_on_duration,
@@ -1147,9 +1147,9 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
                         rod.start()
 
                     if pid__temp_set_dir[sensor] < 1 and PIDTemp < 0:
-                        if pid_t_temp_outmax_high != 0 and PIDTemp > pid_t_temp_outmax_high:
+                        if pid_t_temp_outmax_high[sensor] != 0 and abs(PIDTemp) > pid_t_temp_outmax_high[sensor]:
                             logging.debug("[PID T-Temperature-%s] PID = %.1f (max enabled)", sensor+1, PIDTemp)
-                            PIDTemp = pid_t_temp_outmax_high
+                            PIDTemp = pid_t_temp_outmax_high[sensor]
                         else:
                             logging.debug("[PID T-Temperature-%s] PID = %.1f (max disabled)", sensor+1, PIDTemp)
                         rod = threading.Thread(target = relay_on_duration,
@@ -1227,9 +1227,9 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
                         logging.debug("[PID HT-Temperature-%s] Temperature: %.1f°C now = %.1f°C set", sensor+1, sensor_ht_read_temp_c[sensor], pid_ht_temp_set[sensor])
 
                     if pid_ht_temp_set_dir[sensor] > -1 and PIDTemp > 0:
-                        if pid_ht_temp_outmax_low != 0 and PIDTemp > pid_ht_temp_outmax_low:
+                        if pid_ht_temp_outmax_low[sensor] != 0 and PIDTemp > pid_ht_temp_outmax_low[sensor]:
                             logging.debug("[PID HT-Temperature-%s] PID = %.1f (max enabled)", sensor+1, PIDTemp)
-                            PIDTemp = pid_ht_temp_outmax_low
+                            PIDTemp = pid_ht_temp_outmax_low[sensor]
                         else:
                             logging.debug("[PID HT-Temperature-%s] PID = %.1f (max disabled)", sensor+1, PIDTemp)
                         rod = threading.Thread(target = relay_on_duration,
@@ -1237,9 +1237,9 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
                         rod.start()
 
                     if pid_ht_temp_set_dir[sensor] < 1 and PIDTemp < 0:
-                        if pid_ht_temp_outmax_high != 0 and PIDTemp > pid_ht_temp_outmax_high:
+                        if pid_ht_temp_outmax_high[sensor] != 0 and abs(PIDTemp) > pid_ht_temp_outmax_high[sensor]:
                             logging.debug("[PID HT-Temperature-%s] PID = %.1f (max enabled)", sensor+1, PIDTemp)
-                            PIDTemp = pid_ht_temp_outmax_high
+                            PIDTemp = pid_ht_temp_outmax_high[sensor]
                         else:
                             logging.debug("[PID HT-Temperature-%s] PID = %.1f (max disabled)", sensor+1, PIDTemp)
                         rod = threading.Thread(target = relay_on_duration,
@@ -1316,9 +1316,9 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
                         logging.debug("[PID HT-Humidity-%s] Humidity: %.1f%% now = %.1f%% set", sensor+1, sensor_ht_read_hum[sensor], pid_ht_hum_set[sensor])
 
                     if pid_ht_hum_set_dir[sensor] > -1 and PIDHum > 0:
-                        if pid_ht_hum_outmax_low != 0 and PIDHum > pid_ht_hum_outmax_low:
+                        if pid_ht_hum_outmax_low[sensor] != 0 and PIDHum > pid_ht_hum_outmax_low[sensor]:
                             logging.debug("[PID HT-Humidity-%s] PID = %.1f (max enabled)", sensor+1, PIDHum)
-                            PIDHum = pid_ht_hum_outmax_low
+                            PIDHum = pid_ht_hum_outmax_low[sensor]
                         else:
                             logging.debug("[PID HT-Humidity-%s] PID = %.1f (max disabled)", sensor+1, PIDHum)
                         rod = threading.Thread(target = relay_on_duration,
@@ -1326,9 +1326,9 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
                         rod.start()
 
                     if pid_ht_hum_set_dir[sensor] < 1 and PIDHum < 0:
-                        if pid_ht_hum_outmax_high != 0 and PIDHum > pid_ht_hum_outmax_high:
+                        if pid_ht_hum_outmax_high[sensor] != 0 and abs(PIDHum) > pid_ht_hum_outmax_high[sensor]:
                             logging.debug("[PID HT-Humidity-%s] PID = %.1f (max enabled)", sensor+1, PIDHum)
-                            PIDHum = pid_ht_hum_outmax_high
+                            PIDHum = pid_ht_hum_outmax_high[sensor]
                         else:
                             logging.debug("[PID HT-Humidity-%s] PID = %.1f (max disabled)", sensor+1, PIDHum)
                         rod = threading.Thread(target = relay_on_duration,
@@ -1405,9 +1405,9 @@ def co2_monitor(ThreadName, sensor):
                         logging.debug("[PID CO2-%s] CO2: %.1f ppm now = %.1f ppm set", sensor+1, sensor_co2_read_co2[sensor], pid_co2_set[sensor])
 
                     if pid_co2_set_dir[sensor] > -1 and PIDCO2 > 0:
-                        if pid_co2_outmax_low != 0 and PIDCO2 > pid_co2_outmax_low:
+                        if pid_co2_outmax_low[sensor] != 0 and PIDCO2 > pid_co2_outmax_low[sensor]:
                             logging.debug("[PID CO2-%s] PID = %.1f (max enabled)", sensor+1, PIDCO2)
-                            PIDCO2 = pid_co2_outmax_low
+                            PIDCO2 = pid_co2_outmax_low[sensor]
                         else:
                             logging.debug("[PID CO2-%s] PID = %.1f (max disabled)", sensor+1, PIDCO2)
                         rod = threading.Thread(target = relay_on_duration,
@@ -1415,9 +1415,9 @@ def co2_monitor(ThreadName, sensor):
                         rod.start()
 
                     if pid_co2_set_dir[sensor] < 1 and PIDCO2 < 0:
-                        if pid_co2_outmax_high != 0 and PIDCO2 > pid_co2_outmax_high:
+                        if pid_co2_outmax_high[sensor] != 0 and abs(PIDCO2) > pid_co2_outmax_high[sensor]:
                             logging.debug("[PID CO2-%s] PID = %.1f (max enabled)", sensor+1, PIDCO2)
-                            PIDCO2 = pid_co2_outmax_high
+                            PIDCO2 = pid_co2_outmax_high[sensor]
                         else:
                             logging.debug("[PID CO2-%s] PID = %.1f (max disabled)", sensor+1, PIDCO2)
                         rod = threading.Thread(target = relay_on_duration,
@@ -1494,9 +1494,9 @@ def press_sensor_temperature_monitor(ThreadName, sensor):
                         logging.debug("[PID Press-Temperature-%s] Temperature: %.1f°C now = %.1f°C set", sensor+1, sensor_ht_read_temp_c[sensor], pid_press_temp_set[sensor])
 
                     if pid_press_temp_set_dir[sensor] > -1 and PIDTemp > 0:
-                        if pid_press_temp_outmax_low != 0 and PIDTemp > pid_press_temp_outmax_low:
+                        if pid_press_temp_outmax_low[sensor] != 0 and PIDTemp > pid_press_temp_outmax_low[sensor]:
                             logging.debug("[PID Press-Temperature-%s] PID = %.1f (max enabled)", sensor+1, PIDTemp)
-                            PIDTemp = pid_press_temp_outmax_low
+                            PIDTemp = pid_press_temp_outmax_low[sensor]
                         else:
                             logging.debug("[PID Press-Temperature-%s] PID = %.1f (max disabled)", sensor+1, PIDTemp)
                         rod = threading.Thread(target = relay_on_duration,
@@ -1504,9 +1504,9 @@ def press_sensor_temperature_monitor(ThreadName, sensor):
                         rod.start()
 
                     if pid_press_temp_set_dir[sensor] < 1 and PIDTemp < 0:
-                        if pid_press_temp_outmax_high != 0 and PIDTemp > pid_press_temp_outmax_high:
+                        if pid_press_temp_outmax_high[sensor] != 0 and abs(PIDTemp) > pid_press_temp_outmax_high[sensor]:
                             logging.debug("[PID Press-Temperature-%s] PID = %.1f (max enabled)", sensor+1, PIDTemp)
-                            PIDTemp = pid_press_temp_outmax_high
+                            PIDTemp = pid_press_temp_outmax_high[sensor]
                         else:
                             logging.debug("[PID Press-Temperature-%s] PID = %.1f (max disabled)", sensor+1, PIDTemp)
                         rod = threading.Thread(target = relay_on_duration,
@@ -1583,9 +1583,9 @@ def press_sensor_pressure_monitor(ThreadName, sensor):
                         logging.debug("[PID Press-Pressure-%s] Pressure: %.1f%% now = %.1fPa set", sensor+1, sensor_press_read_press[sensor], pid_press_press_set[sensor])
 
                     if pid_press_press_set_dir[sensor] > -1 and PIDPress > 0:
-                        if pid_press_press_outmax_low != 0 and PIDPress > pid_press_press_outmax_low:
+                        if pid_press_press_outmax_low[sensor] != 0 and PIDPress > pid_press_press_outmax_low[sensor]:
                             logging.debug("[PID Press-Pressure-%s] PID = %.1f (max enabled)", sensor+1, PIDPress)
-                            PIDPress = pid_press_press_outmax_low
+                            PIDPress = pid_press_press_outmax_low[sensor]
                         else:
                             logging.debug("[PID Press-Pressure-%s] PID = %.1f (max disabled)", sensor+1, PIDPress)
                         rod = threading.Thread(target = relay_on_duration,
@@ -1593,9 +1593,9 @@ def press_sensor_pressure_monitor(ThreadName, sensor):
                         rod.start()
 
                     if pid_press_press_set_dir[sensor] < 1 and PIDPress < 0:
-                        if pid_press_press_outmax_high != 0 and PIDPress > pid_press_press_outmax_high:
+                        if pid_press_press_outmax_high[sensor] != 0 and abs(PIDPress) > pid_press_press_outmax_high[sensor]:
                             logging.debug("[PID Press-Pressure-%s] PID = %.1f (max enabled)", sensor+1, PIDPress)
-                            PIDPress = pid_press_press_outmax_high
+                            PIDPress = pid_press_press_outmax_high[sensor]
                         else:
                             logging.debug("[PID Press-Pressure-%s] PID = %.1f (max disabled)", sensor+1, PIDPress)
                         rod = threading.Thread(target = relay_on_duration,
