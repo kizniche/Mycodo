@@ -693,12 +693,12 @@ if (isset($output_error)) {
                         </form>
                         <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                         <tr class="shade">
-                            <td colspan=12 style="text-align: left;">
+                            <td colspan=12 class="conditional">
                                 Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                             </td>
                         </tr>
                         <tr class="shade">
-                            <td colspan=12 style="text-align: left;">
+                            <td colspan=12 class="conditional">
                                 Name: 
                                 <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditiont<?php echo $i; ?>name" title="" required/>
                                 Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditiont<?php echo $i; ?>period" title="" required/> sec,
@@ -989,12 +989,12 @@ if (isset($output_error)) {
                         </form>
                         <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                         <tr class="shade">
-                            <td colspan=12 style="text-align: left;">
+                            <td colspan=12 class="conditional">
                                 Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                             </td>
                         </tr>
                         <tr class="shade">
-                            <td colspan=12 style="text-align: left;">
+                            <td colspan=12 class="conditional">
                                 Name: 
                                 <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionht<?php echo $i; ?>name" title="" required/>
                                 Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditionht<?php echo $i; ?>period" title="" required/> sec,
@@ -1243,12 +1243,12 @@ if (isset($output_error)) {
                         </form>
                         <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                         <tr class="shade">
-                            <td colspan=12 style="text-align: left;">
+                            <td colspan=12 class="conditional">
                                 Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                             </td>
                         </tr>
                         <tr class="shade">
-                            <td colspan=12 style="text-align: left;">
+                            <td colspan=12 class="conditional">
                                 Name: 
                                 <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionco2<?php echo $i; ?>name" title="" required/>
                                 Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditionco2<?php echo $i; ?>period" title="" required/> sec,
@@ -1547,12 +1547,12 @@ if (isset($output_error)) {
                         </form>
                         <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                         <tr class="shade">
-                            <td colspan=12 style="text-align: left;">
+                            <td colspan=12 class="conditional">
                                 Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                             </td>
                         </tr>
                         <tr class="shade">
-                            <td colspan=12 style="text-align: left;">
+                            <td colspan=12 class="conditional">
                                 Name: 
                                 <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionpress<?php echo $i; ?>name" title="" required/>
                                 Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditionpress<?php echo $i; ?>period" title="" required/> sec,

@@ -123,6 +123,11 @@ table.pid th {
     background-color: #EBEBEB;
 }
 
+.conditional {
+    text-align: left !important;
+    padding: 1em 0 0 0 !important;
+}
+
 .table-header {
     border-style: none none solid none;
     border-width: 1px;
