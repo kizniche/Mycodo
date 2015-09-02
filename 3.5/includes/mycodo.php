@@ -688,7 +688,6 @@ if (isset($output_error)) {
                     </tr>
                 </table>
                 </form>
-                <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                 <table class="pid" style="width: 100%; border: 0.7em solid #EBEBEB; border-top: 0;">
                     <tr class="shade">
                         <td class="conditional">
@@ -697,6 +696,7 @@ if (isset($output_error)) {
                     </tr>
                     <tr class="shade">
                         <td class="conditional">
+                            <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                             Name: 
                             <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditiont<?php echo $i; ?>name" title="" required/>
                             Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditiont<?php echo $i; ?>period" title="" required/> sec,
@@ -715,6 +715,7 @@ if (isset($output_error)) {
                             (for
                             <input style="width: 4em;" type="number" step="any" value="0" maxlength=4 size=1 name="conditiont<?php echo $i; ?>relaysecondson" title="The number of seconds for the relay to remain on. Leave at 0 to just turn it on or off." required/> sec)
                             <button type="submit" name="AddT<?php echo $i; ?>Conditional" title="Save new conditional statement">Save</button>
+                            </form>
                         </td>
                     </tr>
                     <?php
@@ -723,6 +724,7 @@ if (isset($output_error)) {
                         ?>
                     <tr>
                         <td style="text-align: left; background-color: #FFFFFF;">
+                            <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                             <?php
                             echo '<button type="submit" name="DeleteT' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                             if ($conditional_t_state[$i][$z]) {
@@ -752,15 +754,14 @@ if (isset($output_error)) {
                                 echo ' Off';
                             } 
                             ?>
+                            </form>
                         </td>
                     </tr>
                     <?php
                     } }
                     ?>
                 </table>
-
                 </div>
-                </form>
                 <div style="margin-bottom: <?php if ($i == count($sensor_t_id)) echo '2'; else echo '1'; ?>em;"></div>
                 <?php
                 }
@@ -982,7 +983,6 @@ if (isset($output_error)) {
                     </tr>
                 </table>
                 </form>
-                <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                 <table class="pid" style="width: 100%; border: 0.7em solid #EBEBEB; border-top: 0;">
                     <tr class="shade">
                         <td class="conditional">
@@ -991,6 +991,7 @@ if (isset($output_error)) {
                     </tr>
                     <tr class="shade">
                         <td class="conditional">
+                            <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                             Name: 
                             <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionht<?php echo $i; ?>name" title="" required/>
                             Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditionht<?php echo $i; ?>period" title="" required/> sec,
@@ -1013,6 +1014,7 @@ if (isset($output_error)) {
                             (for
                             <input style="width: 4em;" type="number" step="any" value="0" maxlength=4 size=1 name="conditionht<?php echo $i; ?>relaysecondson" title="The number of seconds for the relay to remain on. Leave at 0 to just turn it on or off." required/> sec)
                             <button type="submit" name="AddHT<?php echo $i; ?>Conditional" title="Save new conditional statement">Save</button>
+                            </form>
                         </td>
                     </tr>
                     <?php
@@ -1021,6 +1023,7 @@ if (isset($output_error)) {
                         ?>
                     <tr>
                         <td style="text-align: left; background-color: #FFFFFF;">
+                            <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                             <?php
                             echo '<button type="submit" name="DeleteHT' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                             if ($conditional_ht_state[$i][$z]) {
@@ -1058,6 +1061,7 @@ if (isset($output_error)) {
                                 echo ' Off';
                             } 
                             ?>
+                            </form>
                         </td>
                     </tr>
                     <?php
@@ -1065,7 +1069,6 @@ if (isset($output_error)) {
                     ?>
                 </table>
                 </div>
-                </form>
                 <?php
                 }
             }
@@ -1232,7 +1235,6 @@ if (isset($output_error)) {
                     </tr>
                 </table>
                 </form>
-                <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                 <table class="pid" style="width: 100%; border: 0.7em solid #EBEBEB; border-top: 0;">
                     <tr class="shade">
                         <td class="conditional">
@@ -1241,6 +1243,7 @@ if (isset($output_error)) {
                     </tr>
                     <tr class="shade">
                         <td class="conditional">
+                            <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                             Name: 
                             <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionco2<?php echo $i; ?>name" title="" required/>
                             Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditionco2<?php echo $i; ?>period" title="" required/> sec,
@@ -1259,6 +1262,7 @@ if (isset($output_error)) {
                             (for
                             <input style="width: 4em;" type="number" step="any" value="0" maxlength=4 size=1 name="conditionco2<?php echo $i; ?>relaysecondson" title="The number of seconds for the relay to remain on. Leave at 0 to just turn it on or off." required/> sec)
                             <button type="submit" name="AddCO2<?php echo $i; ?>Conditional" title="Save new conditional statement">Save</button>
+                            </form>
                         </td>
                     </tr>
                     <?php
@@ -1267,6 +1271,7 @@ if (isset($output_error)) {
                         ?>
                     <tr>
                         <td style="text-align: left; background-color: #FFFFFF;">
+                            <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                             <?php
                             echo '<button type="submit" name="DeleteCO2' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                             if ($conditional_co2_state[$i][$z]) {
@@ -1296,6 +1301,7 @@ if (isset($output_error)) {
                                 echo ' Off';
                             } 
                             ?>
+                            </form>
                         </td>
                     </tr>
                     <?php
@@ -1303,7 +1309,6 @@ if (isset($output_error)) {
                     ?>
                 </table>
                 </div>
-                </form>
                 <div style="margin-bottom: <?php if ($i == count($sensor_co2_id)) echo '2'; else echo '1'; ?>em;"></div>
                 <?php
                 }
@@ -1533,7 +1538,6 @@ if (isset($output_error)) {
                     </tr>
                 </table>
                 </form>
-                <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                 <table class="pid" style="width: 100%; border: 0.7em solid #EBEBEB; border-top: 0;">
                     <tr class="shade">
                         <td class="conditional">
@@ -1542,6 +1546,7 @@ if (isset($output_error)) {
                     </tr>
                     <tr class="shade">
                         <td class="conditional">
+                            <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                             Name: 
                             <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionpress<?php echo $i; ?>name" title="" required/>
                             Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditionpress<?php echo $i; ?>period" title="" required/> sec,
@@ -1564,6 +1569,7 @@ if (isset($output_error)) {
                             (for
                             <input style="width: 4em;" type="number" step="any" value="0" maxlength=4 size=1 name="conditionpress<?php echo $i; ?>relaysecondson" title="The number of seconds for the relay to remain on. Leave at 0 to just turn it on or off." required/> sec)
                             <button type="submit" name="AddPress<?php echo $i; ?>Conditional" title="Save new conditional statement">Save</button>
+                            </form>
                         </td>
                     </tr>
                     <?php
@@ -1572,6 +1578,7 @@ if (isset($output_error)) {
                         ?>
                     <tr>
                         <td style="text-align: left; background-color: #FFFFFF;">
+                            <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                             <?php
                             echo '<button type="submit" name="DeletePress' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                             if ($conditional_press_state[$i][$z]) {
@@ -1609,14 +1616,15 @@ if (isset($output_error)) {
                                 echo ' Off';
                             } 
                             ?>
+                            </form>
                         </td>
                     </tr>
                     <?php
-                    } }
+                        } 
+                    }
                     ?>
                 </table>
                 </div>
-                </form>
                 <div style="margin-bottom: <?php if ($i == count($sensor_press_id)) echo '2'; else echo '1'; ?>em;"></div>
                 <?php
                 }
