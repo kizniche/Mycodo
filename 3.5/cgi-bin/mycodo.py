@@ -2942,10 +2942,10 @@ def read_sql():
     global timerCO2Conditional
     global timerPressConditional
 
-    timerTConditional = [[0 for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
+    timerTConditional = [[0 for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
     timerHTConditional = [[0 for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
-    timerCO2Conditional = [[0 for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
-    timerPressConditional = [[0 for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
+    timerCO2Conditional = [[0 for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
+    timerPressConditional = [[0 for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
     
     for j in range(0, len(conditional_t_number_sensor)):
         for k in range(0, len(conditional_t_number_conditional)):
