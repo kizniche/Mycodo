@@ -526,1116 +526,1102 @@ if (isset($output_error)) {
                 echo '</table></div></div><div style="clear: both;"></div>';
             }
             ?>
-           
-            <div style="width: 54em; padding-left: 0.5em; padding-top: 2em;">
                 
-                <?php if (count($sensor_t_id) > 0) { ?>
-                <div class="sensor-title">Temperature Sensors</div>
-                <div style="padding-bottom: 1.5em;">
-                    <?php
-                    for ($i = 0; $i < count($sensor_t_id); $i++) {
-                    ?>
-                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                    <table class="sensor" style="border: 0.7em solid #EBEBEB; border-top: 0;">
-                        <tr class="shade">
-                            <td>T Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_t_id[$i]; ?>)</span></td>
-                            <td>Sensor<br>Name</td>
-                            <td>Sensor<br>Device</td>
+            <?php if (count($sensor_t_id) > 0) { ?>
+            <div class="sensor-title">Temperature Sensors</div>
+                <?php
+                for ($i = 0; $i < count($sensor_t_id); $i++) {
+                ?>
+                
+                <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                <div class="sensor-parent">
+                <table class="sensor" style="table-layout: fixed;">
+                    <tr class="shade">
+                        <td>T Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_t_id[$i]; ?>)</span></td>
+                        <td>Sensor<br>Name</td>
+                        <td>Sensor<br>Device</td>
+                        <?php 
+                        if ($sensor_t_device[$i] == 'DS18B20') {
+                            echo '<td align=center>Serial No<br>28-xxx</td>';
+                        } else {
+                            echo '<td align=center>GPIO<br>Pin</td>';
+                        }
+                        ?>
+                        <td>Log<br>Interval</td>
+                        <td>Pre<br>Relay</td>
+                        <td>Pre<br>Duration</td>
+                        <td>Log</td>
+                        <td>Graph</td>
+                        <td style="padding: 0.2 0.5em;">
+                            Presets: <select style="width: 9em;" name="sensort<?php echo $i; ?>preset">
+                                <option value="default">default</option>
+                                <?php
+                                for ($z = 0; $z < count($sensor_t_preset); $z++) {
+                                    echo '<option value="' . $sensor_t_preset[$z] . '">' . $sensor_t_preset[$z] . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr class="shade" style="height: 2.5em;">
+                        <td class="shade" style="vertical-align: middle;">
+                            <button type="submit" name="Delete<?php echo $i; ?>TSensor" title="Delete Sensor">Delete<br>Sensor</button>
+                        </td>
+                        <td>
+                            <input style="width: <?php if ($sensor_t_device[$i] == 'DS18B20') echo '6em'; else echo '10em'; ?>;" type="text" value="<?php echo $sensor_t_name[$i]; ?>" maxlength=12 size=10 name="sensort<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
+                        </td>
+                        <td>
+                            <select style="width: 6.5em;" name="sensort<?php echo $i; ?>device">
+                                <option<?php
+                                    if ($sensor_t_device[$i] == 'Other') {
+                                        echo ' selected="selected"';
+                                    } ?> value="Other">Other</option>
+                                <option<?php
+                                    if ($sensor_t_device[$i] == 'DS18B20') {
+                                        echo ' selected="selected"';
+                                    } ?> value="DS18B20">DS18B20</option>
+                            </select>
+                        </td>
+                        <td>
                             <?php 
                             if ($sensor_t_device[$i] == 'DS18B20') {
-                                echo '<td align=center>Serial No<br>28-xxx</td>';
+                                echo '<input style="width: 7em;" type="text" value="' , $sensor_t_pin[$i] . '" maxlength=12 name="sensort' , $i , 'pin" title="This is the serial number found at /sys/bus/w1/devices/28-x where x is the serial number of your connected DS18B20."/>';
                             } else {
-                                echo '<td align=center>GPIO<br>Pin</td>';
+                                echo '<input style="width: 3em;" type="number" min="0" max="40" value="' , $sensor_t_pin[$i] , '" maxlength=2 name="sensort' , $i , 'pin" title="This is the GPIO pin connected to the temperature sensor"/>';
                             }
                             ?>
-                            <td>Log<br>Interval</td>
-                            <td>Pre<br>Relay</td>
-                            <td>Pre<br>Duration</td>
-                            <td>Log</td>
-                            <td>Graph</td>
-                            <td rowspan="2" style="padding: 0.2 0.5em;">
-                                Presets: <select style="width: 9em;" name="sensort<?php echo $i; ?>preset">
-                                    <option value="default">default</option>
-                                    <?php
-                                    for ($z = 0; $z < count($sensor_t_preset); $z++) {
-                                        echo '<option value="' . $sensor_t_preset[$z] . '">' . $sensor_t_preset[$z] . '</option>';
-                                    }
-                                    ?>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr class="shade" style="height: 2.5em;">
-                            <td class="shade" style="vertical-align: middle;">
-                                <button type="submit" name="Delete<?php echo $i; ?>TSensor" title="Delete Sensor">Delete<br>Sensor</button>
-                            </td>
-                            <td>
-                                <input style="width: <?php if ($sensor_t_device[$i] == 'DS18B20') echo '6em'; else echo '10em'; ?>;" type="text" value="<?php echo $sensor_t_name[$i]; ?>" maxlength=12 size=10 name="sensort<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
-                            </td>
-                            <td>
-                                <select style="width: 6.5em;" name="sensort<?php echo $i; ?>device">
-                                    <option<?php
-                                        if ($sensor_t_device[$i] == 'Other') {
-                                            echo ' selected="selected"';
-                                        } ?> value="Other">Other</option>
-                                    <option<?php
-                                        if ($sensor_t_device[$i] == 'DS18B20') {
-                                            echo ' selected="selected"';
-                                        } ?> value="DS18B20">DS18B20</option>
-                                </select>
-                            </td>
-                            <td>
-                                <?php 
-                                if ($sensor_t_device[$i] == 'DS18B20') {
-                                    echo '<input style="width: 7em;" type="text" value="' , $sensor_t_pin[$i] . '" maxlength=12 name="sensort' , $i , 'pin" title="This is the serial number found at /sys/bus/w1/devices/28-x where x is the serial number of your connected DS18B20."/>';
-                                } else {
-                                    echo '<input style="width: 3em;" type="number" min="0" max="40" value="' , $sensor_t_pin[$i] , '" maxlength=2 name="sensort' , $i , 'pin" title="This is the GPIO pin connected to the temperature sensor"/>';
-                                }
-                                ?>
-                                
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_t_period[$i]; ?>" name="sensort<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/> sec
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_t_premeasure_relay[$i]; ?>" maxlength=2 size=1 name="sensort<?php echo $i; ?>premeasure_relay" title="This is the relay that will turn on prior to the sensor measurement, for the duration specified by Pre Duration (0 to disable)"/>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_t_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensort<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relay will run before the sensor measurement is obtained"/> sec
-                            </td>
-                            <td>
-                                <input type="checkbox" title="Enable this sensor to record measurements to the log file" name="sensort<?php echo $i; ?>activated" value="1" <?php if ($sensor_t_activated[$i] == 1) echo 'checked'; ?>>
-                            </td>
-                            <td>
-                                <input type="checkbox" title="Enable graphs to be generated from the sensor log data" name="sensort<?php echo $i; ?>graph" value="1" <?php if ($sensor_t_graph[$i] == 1) echo 'checked'; ?>>
-                            </td>
-                            <td>
-                                <div style="padding: 0.2em 0">
-                                    <input type="submit" name="Change<?php echo $i; ?>TSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>TSensorOverwrite" value="Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>TSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_t_preset) == 0) echo ' disabled'; ?>>
-                                </div>
-                                <div style="padding: 0.2em 0">
-                                    <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensort<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>TSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>TSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                    <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
-                        <tr class="shade">
-                            <td style="text-align: left;">Regulation</td>
-                            <td>Current<br>State</td>
-                            <td>PID<br>Set Point</td>
-                            <td>PID<br>Regulate</td>
-                            <td>Sensor Read<br>Interval</td>
-                            <td>Up<br>Relay</td>
-                            <td>Up<br>Max</td>
-                            <td>Down<br>Relay</td>
-                            <td>Down<br>Max</td>
-                            <td>K<sub>p</sub></td>
-                            <td>K<sub>i</sub></td>
-                            <td>K<sub>d</sub></td>
-                        </tr>
-                        <tr style="height: 2.5em;">
-                            <td style="text-align: left;">Temperature</td>
-                            <td class="onoff">
-                                <?php
-                                if ($pid_t_temp_or[$i] == 1) {
-                                    ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangeT<?php echo $i; ?>TempOR" value="0"> | <button style="width: 3em;" type="submit" name="ChangeT<?php echo $i; ?>TempOR" value="0">ON</button>
-                                    <?php
-                                } else {
-                                    ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangeT<?php echo $i; ?>TempOR" value="1"> | <button style="width: 3em;" type="submit" name="ChangeT<?php echo $i; ?>TempOR" value="1">OFF</button>
-                                <?php
-                                }
-                                ?>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_set[$i]; ?>" maxlength=4 size=2 name="SetT<?php echo $i; ?>TempSet" title="This is the desired temperature in °C."/> °C
-                            </td>
-                            <td>
-                                <select style="width: 5em;" name="SetT<?php echo $i; ?>TempSetDir" title="Which direction should the PID regulate. 'Up' will ensure the temperature is regulated above a certain temperature. 'Down' will ensure the temperature is regulates below a certain point. 'Both' will ensure the temperature is regulated both up and down to maintain a specific temperature."/>
-                                    <option value="0"<?php
-                                        if ($pid_t_temp_set_dir[$i] == 0) {
-                                            echo ' selected="selected"';
-                                        } ?>>Both</option>
-                                    <option value="1"<?php
-                                        if ($pid_t_temp_set_dir[$i] == 1) {
-                                            echo ' selected="selected"';
-                                        } ?>>Up</option>
-                                    <option value="-1"<?php
-                                        if ($pid_t_temp_set_dir[$i] == -1) {
-                                            echo ' selected="selected"';
-                                        } ?>>Down</option>
-                                </select>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_t_temp_period[$i]; ?>" name="SetT<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/> sec
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_t_temp_relay_low[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempRelayLow" title="This relay is used to increase temperature."/>
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_t_temp_outmax_low[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempOutmaxLow" title="This is the maximum number of seconds the relay used to increase temperature is permitted to turn on for (0 to disable)."/>
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_t_temp_relay_high[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempRelayHigh" title="This relay is used to decrease temperature."/>
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_t_temp_outmax_high[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempOutmaxHigh" title="This is the maximum number of seconds the relay used to decrease temperature is permitted to turn on for (0 to disable)."/>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_p[$i]; ?>" maxlength=4 size=1 name="SetT<?php echo $i; ?>Temp_P" title="This is the Proportional gain of the PID controller"/>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_i[$i]; ?>" maxlength=4 size=1 name="SetT<?php echo $i; ?>Temp_I" title="This is the Integral gain of the PID controller"/>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_d[$i]; ?>" maxlength=4 size=1 name="SetT<?php echo $i; ?>Temp_D" title="This is the Derivative gain of the PID controller"/>
-                            </td>
-                        </tr>
-                    </table>
-                    </form>
-                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                    <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
-                        <tr class="shade">
-                            <td class="conditional">
-                                Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
-                            </td>
-                        </tr>
-                        <tr class="shade">
-                            <td class="conditional">
-                                Name: 
-                                <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditiont<?php echo $i; ?>name" title="" required/>
-                                Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditiont<?php echo $i; ?>period" title="" required/> sec,
-                                if Temperature is
-                                <select style="width: 5em;" name="conditiont<?php echo $i; ?>direction">
-                                    <option value="1">Above</option>
-                                    <option value="-1">Below</option>
-                                </select>
-                                <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="conditiont<?php echo $i; ?>setpoint" title="" required/>,
-                                turn Relay
-                                <input style="width: 3em;" type="number" step="any" value="" maxlength=4 size=1 name="conditiont<?php echo $i; ?>relay" title="" required/>
-                                <select style="width: 4em;" name="conditiont<?php echo $i; ?>relaystate">
-                                    <option value="1">On</option>
-                                    <option value="0">Off</option>
-                                </select>
-                                (for
-                                <input style="width: 4em;" type="number" step="any" value="0" maxlength=4 size=1 name="conditiont<?php echo $i; ?>relaysecondson" title="The number of seconds for the relay to remain on. Leave at 0 to just turn it on or off." required/> sec)
-                                <button type="submit" name="AddT<?php echo $i; ?>Conditional" title="Save new conditional statement">Save</button>
-                            </td>
-                        </tr>
-                        <?php
-                        if (isset($conditional_t_id[$i]) && count($conditional_t_id[$i]) > 0) { 
-                            for ($z = 0; $z < count($conditional_t_id[$i]); $z++) {
-                            ?>
-                        <tr>
-                            <td style="text-align: left;">
-                                <?php
-                                echo '<button type="submit" name="DeleteT' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
-                                if ($conditional_t_state[$i][$z]) {
-                                    echo '<button type="submit" name="TurnOffT' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> ';
-                                    echo 'On ';
-                                } else {
-                                    echo '<button type="submit" name="TurnOnT' . $i . '-' . $z . 'Conditional" title="">Turn On</button> ';
-                                    echo 'Off ';
-                                }
-
-                                echo $z+1 . ' ' . $conditional_t_name[$i][$z] . ': Every ' . $conditional_t_period[$i][$z] . ' sec, if the Temperature is ';
-
-                                if ($conditional_t_direction[$i][$z] == 1) {
-                                    echo 'Above ';
-                                } else {
-                                    echo 'Below ';
-                                }
-
-                                echo $conditional_t_setpoint[$i][$z] .  '%deg;C, turn Relay ' . $conditional_t_relay[$i][$z];
-
-                                if ($conditional_t_relay_state[$i][$z]) {
-                                    echo ' On';
-                                    if ($conditional_t_relay_seconds_on[$i][$z] > 0) {
-                                        echo ' for ' . $conditional_t_relay_seconds_on[$i][$z] . ' seconds';
-                                    }
-                                } else {
-                                    echo ' Off';
-                                } 
-                                ?>
-                            </td>
-                        </tr>
-                        <?php
-                        } }
-                        ?>
-                    </table>
-                    </form>
-                    <div style="margin-bottom: <?php if ($i == count($sensor_t_id)) echo '2'; else echo '1'; ?>em;"></div>
-                    <?php
-                    }
-                    ?>
-                </div>
-                <?php
-                }
-                ?>
-
-                <?php if (count($sensor_ht_id) > 0) { ?>
-                <div class="sensor-title">Humidity/Temperature Sensors</div>
-                <div style="margin-bottom: 1.5em;">
-                    <?php
-                    for ($i = 0; $i < count($sensor_ht_id); $i++) {
-                    ?>
-                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                    <table class="sensor" style="border: 0.7em solid #EBEBEB; border-top: 0;">
-                        <tr class="shade">
-                            <td>HT Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_ht_id[$i]; ?>)</span></td>
-                            <td>Sensor<br>Name</td>
-                            <td>Sensor<br>Device</td>
-                            <td>GPIO<br>Pin</td>
-                            <td>Log<br>Interval</td>
-                            <td>Pre<br>Relay</td>
-                            <td>Pre<br>Duration</td>
-                            <td>Log</td>
-                            <td>Graph</td>
-                            <td rowspan=2 style="padding: 0.2 0.5em;">
-                                Presets: <select style="width: 9em;" name="sensorht<?php echo $i; ?>preset">
-                                    <option value="default">default</option>
-                                    <?php
-                                    for ($z = 0; $z < count($sensor_ht_preset); $z++) {
-                                        echo '<option value="' . $sensor_ht_preset[$z] . '">' . $sensor_ht_preset[$z] . '</option>';
-                                    }
-                                    ?>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr class="shade" style="height: 2.5em;">
-                            <td class="shade" style="vertical-align: middle;">
-                                <button type="submit" name="Delete<?php echo $i; ?>HTSensor" title="Delete Sensor">Delete<br>Sensor</button>
-                            </td>
-                            <td>
-                                <input style="width: 6.5em;" type="text" value="<?php echo $sensor_ht_name[$i]; ?>" maxlength=12 size=10 name="sensorht<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
-                            </td>
-                            <td>
-                                <select style="width: 6.5em;" name="sensorht<?php echo $i; ?>device">
-                                    <option<?php
-                                        if ($sensor_ht_device[$i] == 'DHT11') {
-                                            echo ' selected="selected"';
-                                        } ?> value="DHT11">DHT11</option>
-                                    <option<?php
-                                        if ($sensor_ht_device[$i] == 'DHT22') {
-                                            echo ' selected="selected"';
-                                        } ?> value="DHT22">DHT22</option>
-                                    <option<?php
-                                        if ($sensor_ht_device[$i] == 'AM2302') {
-                                            echo ' selected="selected"';
-                                        } ?> value="AM2302">AM2302</option>
-                                    <option<?php
-                                        if ($sensor_ht_device[$i] == 'Other') {
-                                            echo ' selected="selected"';
-                                        } ?> value="Other">Other</option>
-                                </select>
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_ht_pin[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>pin" title="This is the GPIO pin connected to the HT sensor"/>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_ht_period[$i]; ?>" name="sensorht<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/> sec
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_ht_premeasure_relay[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>premeasure_relay" title="This is the relay that will turn on prior to the sensor measurement, for the duration specified by Pre Duration (0 to disable)"/>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_ht_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relay will run before the sensor measurement is obtained"/> sec
-                            </td>
-                            <td>
-                                <input type="checkbox" title="Enable this sensor to record measurements to the log file" name="sensorht<?php echo $i; ?>activated" value="1" <?php if ($sensor_ht_activated[$i] == 1) echo 'checked'; ?>>
-                            </td>
-                            <td>
-                                <input type="checkbox" title="Enable graphs to be generated from the sensor log data" name="sensorht<?php echo $i; ?>graph" value="1" <?php if ($sensor_ht_graph[$i] == 1) echo 'checked'; ?>>
-                            </td>
-                            <td>
-                                <div style="padding: 0.2em 0">
-                                    <input type="submit" name="Change<?php echo $i; ?>HTSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>HTSensorOverwrite" value="Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>HTSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>>
-                                </div>
-                                <div style="padding: 0.2em 0">
-                                    <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensorht<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>HTSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>HTSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                    <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
-                        <tr class="shade">
-                            <td style="text-align: left;">Regulation</td>
-                            <td>Current<br>State</td>
-                            <td>PID<br>Set Point</td>
-                            <td>PID<br>Regulate</td>
-                            <td>Sensor Read<br>Interval</td>
-                            <td>Up<br>Relay</td>
-                            <td>Up<br>Max</td>
-                            <td>Down<br>Relay</td>
-                            <td>Down<br>Max</td>
-                            <td>K<sub>p</sub></td>
-                            <td>K<sub>i</sub></td>
-                            <td>K<sub>d</sub></td>
-                        </tr>
-                        <tr style="height: 2.5em;">
-                            <td style="text-align: left;">Temperature</td>
-                            <td class="onoff">
-                                <?php
-                                if ($pid_ht_temp_or[$i] == 1) {
-                                    ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangeHT<?php echo $i; ?>TempOR" value="0"> | <button style="width: 3em;" type="submit" name="ChangeHT<?php echo $i; ?>TempOR" value="0">ON</button>
-                                    <?php
-                                } else {
-                                    ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangeHT<?php echo $i; ?>TempOR" value="1"> | <button style="width: 3em;" type="submit" name="ChangeHT<?php echo $i; ?>TempOR" value="1">OFF</button>
-                                <?php
-                                }
-                                ?>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_temp_set[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>TempSet" title="This is the desired temperature in °C."/> °C
-                            </td>
-                            <td>
-                                <select style="width: 5em;" name="SetHT<?php echo $i; ?>TempSetDir" title="Which direction should the PID regulate. 'Up' will ensure the temperature is regulated above a certain temperature. 'Down' will ensure the temperature is regulates below a certain point. 'Both' will ensure the temperature is regulated both up and down to maintain a specific temperature."/>
-                                    <option value="0"<?php
-                                        if ($pid_ht_temp_set_dir[$i] == 0) {
-                                            echo ' selected="selected"';
-                                        } ?>>Both</option>
-                                    <option value="1"<?php
-                                        if ($pid_ht_temp_set_dir[$i] == 1) {
-                                            echo ' selected="selected"';
-                                        } ?>>Up</option>
-                                    <option value="-1"<?php
-                                        if ($pid_ht_temp_set_dir[$i] == -1) {
-                                            echo ' selected="selected"';
-                                        } ?>>Down</option>
-                                </select>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_temp_period[$i]; ?>" name="SetHT<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/> sec
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_ht_temp_relay_low[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>TempRelayLow" title="This relay is used to increase temperature."/>
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_ht_temp_outmax_low[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>TempOutmaxLow" title="This is the maximum number of seconds the relay used to increase temperature is permitted to turn on for (0 to disable)."/>
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_ht_temp_relay_high[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>TempRelayHigh" title="This relay is used to decrease temperature."/>
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_ht_temp_outmax_high[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>TempOutmaxHigh" title="This is the maximum number of seconds the relay used to decrease temperature is permitted to turn on for (0 to disable)."/>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_temp_p[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Temp_P" title="This is the Proportional gain of the PID controller"/>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_temp_i[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Temp_I" title="This is the Integral gain of the PID controller"/>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_temp_d[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Temp_D" title="This is the Derivative gain of the PID controller"/>
-                            </td>
-                        </tr>
-                        <tr style="height: 2.5em;">
-                            <td style="text-align: left;">Humidity</td>
-                            <td class="onoff">
-                                <?php
-                                if ($pid_ht_hum_or[$i] == 1) {
-                                    ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangeHT<?php echo $i; ?>HumOR" value="0"> | <button style="width: 3em;" type="submit" name="ChangeHT<?php echo $i; ?>HumOR" value="0">ON</button>
-                                    <?php
-                                } else {
-                                    ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangeHT<?php echo $i; ?>HumOR" value="1"> | <button style="width: 3em;" type="submit" name="ChangeHT<?php echo $i; ?>HumOR" value="1">OFF</button>
-                                <?php
-                                }
-                                ?>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_set[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>HumSet" title="This is the desired relative humidity in percent."/> %
-                            </td>
-                            <td>
-                                <select style="width: 5em;" name="SetHT<?php echo $i; ?>HumSetDir" title="Which direction should the PID regulate. 'Up' will ensure the humidity is regulated above a certain humidity. 'Down' will ensure the humidity is regulates below a certain point. 'Both' will ensure the humidity is regulated both up and down to maintain a specific humidity."/>
-                                    <option value="0"<?php
-                                        if ($pid_ht_hum_set_dir[$i] == 0) {
-                                            echo ' selected="selected"';
-                                        } ?>>Both</option>
-                                    <option value="1"<?php
-                                        if ($pid_ht_hum_set_dir[$i] == 1) {
-                                            echo ' selected="selected"';
-                                        } ?>>Up</option>
-                                    <option value="-1"<?php
-                                        if ($pid_ht_hum_set_dir[$i] == -1) {
-                                            echo ' selected="selected"';
-                                        } ?>>Down</option>
-                                </select>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_hum_period[$i]; ?>" name="SetHT<?php echo $i; ?>HumPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another humidity reading and applying the PID"/> sec
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_ht_hum_relay_low[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>HumRelayLow" title="This relay is used to increase humidity."/>
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_ht_hum_outmax_low[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>HumOutmaxLow" title="This is the maximum number of seconds the relay used to increase humidity is permitted to turn on for (0 to disable)."/>
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_ht_hum_relay_high[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>HumRelayHigh" title="This relay is used to decrease humidity."/>
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_ht_hum_outmax_high[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>HumOutmaxHigh" title="This is the maximum number of seconds the relay used to decrease humidity is permitted to turn on for (0 to disable)."/>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_p[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Hum_P" title="This is the Proportional gain of the PID controller"/>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_i[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Hum_I" title="This is the Integral gain of the PID controller"/>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_d[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Hum_D" title="This is the Derivative gain of the PID controller"/>
-                            </td>
-                        </tr>
-                    </table>
-                    </form>
-                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                    <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
-                        <tr class="shade">
-                            <td class="conditional">
-                                Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
-                            </td>
-                        </tr>
-                        <tr class="shade">
-                            <td class="conditional">
-                                Name: 
-                                <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionht<?php echo $i; ?>name" title="" required/>
-                                Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditionht<?php echo $i; ?>period" title="" required/> sec,
-                                if <select style="width: 6em;" name="conditionht<?php echo $i; ?>condition">
-                                    <option value="Humidity">Humidity</option>
-                                    <option value="Temperature">Temperature</option>
-                                </select>
-                                is
-                                <select style="width: 5em;" name="conditionht<?php echo $i; ?>direction">
-                                    <option value="1">Above</option>
-                                    <option value="-1">Below</option>
-                                </select>
-                                <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionht<?php echo $i; ?>setpoint" title="" required/>,
-                                turn Relay
-                                <input style="width: 3em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionht<?php echo $i; ?>relay" title="" required/>
-                                <select style="width: 4em;" name="conditionht<?php echo $i; ?>relaystate">
-                                    <option value="1">On</option>
-                                    <option value="0">Off</option>
-                                </select>
-                                (for
-                                <input style="width: 4em;" type="number" step="any" value="0" maxlength=4 size=1 name="conditionht<?php echo $i; ?>relaysecondson" title="The number of seconds for the relay to remain on. Leave at 0 to just turn it on or off." required/> sec)
-                                <button type="submit" name="AddHT<?php echo $i; ?>Conditional" title="Save new conditional statement">Save</button>
-                            </td>
-                        </tr>
-                        <?php
-                        if (isset($conditional_ht_id[$i]) && count($conditional_ht_id[$i]) > 0) { 
-                            for ($z = 0; $z < count($conditional_ht_id[$i]); $z++) {
-                            ?>
-                        <tr>
-                            <td style="text-align: left;">
-                                <?php
-                                echo '<button type="submit" name="DeleteHT' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
-                                if ($conditional_ht_state[$i][$z]) {
-                                    echo '<button type="submit" name="TurnOffHT' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> ';
-                                    echo 'On ';
-                                } else {
-                                    echo '<button type="submit" name="TurnOnHT' . $i . '-' . $z . 'Conditional" title="">Turn On</button> ';
-                                    echo 'Off ';
-                                }
-
-                                echo $z+1 . ' ' . $conditional_ht_name[$i][$z] . ': Every ' . $conditional_ht_period[$i][$z] . ' sec, if the ' . $conditional_ht_condition[$i][$z] . ' is ';
-
-                                if ($conditional_ht_direction[$i][$z] == 1) {
-                                    echo 'Above ';
-                                } else {
-                                    echo 'Below ';
-                                }
-
-                                echo $conditional_ht_setpoint[$i][$z];
-
-                                if ($conditional_ht_condition[$i][$z] == "Humidity") {
-                                    echo '%';
-                                } else {
-                                    echo '&deg;C';
-                                }
-
-                                echo ', turn Relay ' . $conditional_ht_relay[$i][$z];
-
-                                if ($conditional_ht_relay_state[$i][$z]) {
-                                    echo ' On';
-                                    if ($conditional_ht_relay_seconds_on[$i][$z] > 0) {
-                                        echo ' for ' . $conditional_ht_relay_seconds_on[$i][$z] . ' seconds';
-                                    }
-                                } else {
-                                    echo ' Off';
-                                } 
-                                ?>
-                            </td>
-                        </tr>
-                        <?php
-                        } }
-                        ?>
-                    </table>
-                    </form>
-                    <div style="margin-bottom: <?php if ($i == count($sensor_ht_id)) echo '2'; else echo '1'; ?>em;"></div>
-                    <?php
-                    }
-                    ?>
-                </div>
-                <?php
-                }
-                ?>
-
-                <?php if (count($sensor_co2_id) > 0) { ?>
-                <div class="sensor-title">CO<sub>2</sub> Sensors</div>
-                <div>
-                    <?php
-                    for ($i = 0; $i < count($sensor_co2_id); $i++) {
-                    ?>
-                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                    <table class="sensor" style="border: 0.7em solid #EBEBEB; border-top: 0;">
-                        <tr class="shade">
-                            <td>CO<sub>2</sub> Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_co2_id[$i]; ?>)</span></td>
-                            <td>Sensor<br>Name</td>
-                            <td>Sensor<br>Device</td>
-                            <td>GPIO<br>Pin</td>
-                            <td>Log<br>Interval</td>
-                            <td>Pre<br>Relay</td>
-                            <td>Pre<br>Duration</td>
-                            <td>Log</td>
-                            <td>Graph</td>
-                            <td rowspan=2 style="padding: 0.2 0.5em;">
-                                Presets: <select style="width: 9em;" name="sensorco2<?php echo $i; ?>preset">
-                                    <option value="default">default</option>
-                                    <?php
-                                    for ($z = 0; $z < count($sensor_co2_preset); $z++) {
-                                        echo '<option value="' . $sensor_co2_preset[$z] . '">' . $sensor_co2_preset[$z] . '</option>';
-                                    }
-                                    ?>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr class="shade" style="height: 2.5em;">
-                            <td class="shade" style="vertical-align: middle;">
-                                <button type="submit" name="Delete<?php echo $i; ?>CO2Sensor" title="Delete Sensor">Delete<br>Sensor</button>
-                            </td>
-                            <td>
-                                <input style="width: 7em;" type="text" value="<?php echo $sensor_co2_name[$i]; ?>" maxlength=12 size=10 name="sensorco2<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
-                            </td>
-                            <td>
-                                <select style="width: 6.5em;" name="sensorco2<?php echo $i; ?>device">
-                                    <option<?php
-                                        if ($sensor_co2_device[$i] == 'Other') {
-                                            echo ' selected="selected"';
-                                        } ?> value="Other">Other</option>
-                                    <option<?php
-                                        if ($sensor_co2_device[$i] == 'K30') {
-                                            echo ' selected="selected"';
-                                        } ?> value="K30">K30</option>
-                                </select>
-                            </td>
-                            <td>
-                                <?php
-                                if ($sensor_co2_device[$i] == 'K30') {
-                                ?>
-                                    Tx/Rx
-                                <?php
-                                } else {
-                                ?>
-                                    <input style="width: 4em;" type="number" value="<?php echo $sensor_co2_pin[$i]; ?>" maxlength=2 size=1 name="sensorco2<?php echo $i; ?>pin" title="This is the GPIO pin connected to the CO2 sensor"/>
-                                <?php
-                                }
-                                ?>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_co2_period[$i]; ?>" name="sensorco2<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/> sec
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_co2_premeasure_relay[$i]; ?>" maxlength=2 size=1 name="sensorco2<?php echo $i; ?>premeasure_relay" title="This is the relay that will turn on prior to the sensor measurement, for the duration specified by Pre Duration (0 to disable)"/>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_co2_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensorco2<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relay will run before the sensor measurement is obtained"/> sec
-                            </td>
-                            <td>
-                                <input type="checkbox" title="Enable this sensor to record measurements to the log file" name="sensorco2<?php echo $i; ?>activated" value="1" <?php if ($sensor_co2_activated[$i] == 1) echo 'checked'; ?>>
-                            </td>
-                            <td>
-                                <input type="checkbox" title="Enable graphs to be generated from the sensor log data" name="sensorco2<?php echo $i; ?>graph" value="1" <?php if ($sensor_co2_graph[$i] == 1) echo 'checked'; ?>>
-                            </td>
-                            <td>
-                                <div style="padding: 0.2em 0">
-                                    <input type="submit" name="Change<?php echo $i; ?>CO2SensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_co2_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>CO2SensorOverwrite" value="Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>CO2SensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_co2_preset) == 0) echo ' disabled'; ?>>
-                                </div>
-                                <div style="padding: 0.2em 0">
-                                    <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensorco2<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>CO2SensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>CO2SensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                    <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
-                        <tr class="shade">
-                            <td style="text-align: left;">Regulation</td>
-                            <td>Current<br>State</td>
-                            <td>PID<br>Set Point</td>
-                            <td>PID<br>Regulate</td>
-                            <td>Sensor Read<br>Interval</td>
-                            <td>Up<br>Relay</td>
-                            <td>Up<br>Max</td>
-                            <td>Down<br>Relay</td>
-                            <td>Down<br>Max</td>
-                            <td>K<sub>p</sub></td>
-                            <td>K<sub>i</sub></td>
-                            <td>K<sub>d</sub></td>
-                        </tr>
-                        <tr style="height: 2.5em;">
-                            <td style="text-align: left;">CO<sub>2</sub></td>
-                            <td class="onoff">
-                                <?php
-                                if ($pid_co2_or[$i] == 1) {
-                                    ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="Change<?php echo $i; ?>CO2OR" value="0"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>CO2OR" value="0">ON</button>
-                                    <?php
-                                } else {
-                                    ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="Change<?php echo $i; ?>CO2OR" value="1"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>CO2OR" value="1">OFF</button>
-                                    <?php
-                                }
-                                ?>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_set[$i]; ?>" maxlength=4 size=2 name="SetCO2<?php echo $i; ?>CO2Set" title="This is the desired CO2 concentration in ppmv."/> ppmv
-                            </td>
-                            <td>
-                                <select style="width: 5em;" name="SetCO2<?php echo $i; ?>CO2SetDir" title="Which direction should the PID regulate. 'Up' will ensure the CO2 is regulated above a certain CO2. 'Down' will ensure the CO2 is regulates below a certain point. 'Both' will ensure the CO2 is regulated both up and down to maintain a specific CO2."/>
-                                    <option value="0"<?php
-                                        if ($pid_co2_set_dir[$i] == 0) {
-                                            echo ' selected="selected"';
-                                        } ?>>Both</option>
-                                    <option value="1"<?php
-                                        if ($pid_co2_set_dir[$i] == 1) {
-                                            echo ' selected="selected"';
-                                        } ?>>Up</option>
-                                    <option value="-1"<?php
-                                        if ($pid_co2_set_dir[$i] == -1) {
-                                            echo ' selected="selected"';
-                                        } ?>>Down</option>
-                                </select>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_co2_period[$i]; ?>" maxlength=4 size=1 name="SetCO2<?php echo $i; ?>CO2Period" title="This is the number of seconds to wait after the relay has been turned off before taking another CO2 reading and applying the PID"/> sec
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_co2_relay_low[$i]; ?>" maxlength=1 size=1 name="SetCO2<?php echo $i; ?>CO2RelayLow" title="This relay is used to increase CO2."/>
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_co2_outmax_low[$i]; ?>" maxlength=1 size=1 name="SetCO2<?php echo $i; ?>CO2OutmaxLow" title="This is the maximum number of seconds the relay used to increase CO2 is permitted to turn on for (0 to disable)."/>
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_co2_relay_high[$i]; ?>" maxlength=1 size=1 name="SetCO2<?php echo $i; ?>CO2RelayHigh" title="This relay is used to decrease CO2."/>
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_co2_outmax_high[$i]; ?>" maxlength=1 size=1 name="SetCO2<?php echo $i; ?>CO2OutmaxHigh" title="This is the maximum number of seconds the relay used to decrease CO2 is permitted to turn on for (0 to disable)."/>
-                            </td>
                             
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_p[$i]; ?>" maxlength=5 size=1 name="SetCO2<?php echo $i; ?>CO2_P" title="This is the Proportional gain of the PID controller"/>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_i[$i]; ?>" maxlength=5 size=1 name="SetCO2<?php echo $i; ?>CO2_I" title="This is the Integral gain of the PID controller"/>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_d[$i]; ?>" maxlength=5 size=1 name="SetCO2<?php echo $i; ?>CO2_D" title="This is the Derivative gain of the PID controller"/>
-                            </td>
-                        </tr>
-                    </table>
-                    </form>
-                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                    <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
-                        <tr class="shade">
-                            <td class="conditional">
-                                Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
-                            </td>
-                        </tr>
-                        <tr class="shade">
-                            <td class="conditional">
-                                Name: 
-                                <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionco2<?php echo $i; ?>name" title="" required/>
-                                Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditionco2<?php echo $i; ?>period" title="" required/> sec,
-                                if CO<sub>2</sub> is
-                                <select style="width: 5em;" name="conditionco2<?php echo $i; ?>direction">
-                                    <option value="1">Above</option>
-                                    <option value="-1">Below</option>
-                                </select>
-                                <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionco2<?php echo $i; ?>setpoint" title="" required/>,
-                                turn Relay
-                                <input style="width: 3em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionco2<?php echo $i; ?>relay" title="" required/>
-                                <select style="width: 4em;" name="conditionco2<?php echo $i; ?>relaystate">
-                                    <option value="1">On</option>
-                                    <option value="0">Off</option>
-                                </select>
-                                (for
-                                <input style="width: 4em;" type="number" step="any" value="0" maxlength=4 size=1 name="conditionco2<?php echo $i; ?>relaysecondson" title="The number of seconds for the relay to remain on. Leave at 0 to just turn it on or off." required/> sec)
-                                <button type="submit" name="AddCO2<?php echo $i; ?>Conditional" title="Save new conditional statement">Save</button>
-                            </td>
-                        </tr>
-                        <?php
-                        if (isset($conditional_co2_id[$i]) && count($conditional_co2_id[$i]) > 0) { 
-                            for ($z = 0; $z < count($conditional_co2_id[$i]); $z++) {
-                            ?>
-                        <tr>
-                            <td style="text-align: left;">
-                                <?php
-                                echo '<button type="submit" name="DeleteCO2' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
-                                if ($conditional_co2_state[$i][$z]) {
-                                    echo '<button type="submit" name="TurnOffCO2' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> ';
-                                    echo 'On ';
-                                } else {
-                                    echo '<button type="submit" name="TurnOnCO2' . $i . '-' . $z . 'Conditional" title="">Turn On</button> ';
-                                    echo 'Off ';
-                                }
-
-                                echo $z+1 . ' ' . $conditional_co2_name[$i][$z] . ': Every ' . $conditional_co2_period[$i][$z] . ' sec, if the CO<sub>2</sub> is ';
-
-                                if ($conditional_co2_direction[$i][$z] == 1) {
-                                    echo 'Above ';
-                                } else {
-                                    echo 'Below ';
-                                }
-
-                                echo $conditional_co2_setpoint[$i][$z] . 'ppm, turn Relay ' . $conditional_co2_relay[$i][$z];
-
-                                if ($conditional_co2_relay_state[$i][$z]) {
-                                    echo ' On';
-                                    if ($conditional_co2_relay_seconds_on[$i][$z] > 0) {
-                                        echo ' for ' . $conditional_co2_relay_seconds_on[$i][$z] . ' seconds';
-                                    }
-                                } else {
-                                    echo ' Off';
-                                } 
-                                ?>
-                            </td>
-                        </tr>
-                        <?php
-                        } }
-                        ?>
-                    </table>
-                    </form>
-                    <div style="margin-bottom: <?php if ($i == count($sensor_co2_id)) echo '2'; else echo '1'; ?>em;"></div>
-                    <?php
-                    }
-                    ?>
-                </div>
-                <?php
-                }
-                ?>
-
-               <?php if (count($sensor_press_id) > 0) { ?>
-                <div class="sensor-title">Pressure Sensors</div>
-                <div style="margin-bottom: 1.5em;">
-                    <?php
-                    for ($i = 0; $i < count($sensor_press_id); $i++) {
-                    ?>
-                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                    <table class="sensor" style="border: 0.7em solid #EBEBEB; border-top: 0;">
-                        <tr class="shade">
-                            <td>Press Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_press_id[$i]; ?>)</span></td>
-                            <td>Sensor<br>Name</td>
-                            <td>Sensor<br>Device</td>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_t_period[$i]; ?>" name="sensort<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/> sec
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_t_premeasure_relay[$i]; ?>" maxlength=2 size=1 name="sensort<?php echo $i; ?>premeasure_relay" title="This is the relay that will turn on prior to the sensor measurement, for the duration specified by Pre Duration (0 to disable)"/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_t_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensort<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relay will run before the sensor measurement is obtained"/> sec
+                        </td>
+                        <td>
+                            <input type="checkbox" title="Enable this sensor to record measurements to the log file" name="sensort<?php echo $i; ?>activated" value="1" <?php if ($sensor_t_activated[$i] == 1) echo 'checked'; ?>>
+                        </td>
+                        <td>
+                            <input type="checkbox" title="Enable graphs to be generated from the sensor log data" name="sensort<?php echo $i; ?>graph" value="1" <?php if ($sensor_t_graph[$i] == 1) echo 'checked'; ?>>
+                        </td>
+                        <td>
+                            <input type="submit" name="Change<?php echo $i; ?>TSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>TSensorOverwrite" value="Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>TSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_t_preset) == 0) echo ' disabled'; ?>>
+                            <br>
+                            <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensort<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>TSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>TSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
+                        </td>
+                    </tr>
+                </table>
+                <table class="pid" style="width:100%; border: 0.7em solid #EBEBEB; border-top: 0;">
+                    <tr class="shade">
+                        <td style="text-align: left;">Regulation</td>
+                        <td>Current<br>State</td>
+                        <td>PID<br>Set Point</td>
+                        <td>PID<br>Regulate</td>
+                        <td>Sensor Read<br>Interval</td>
+                        <td>Up<br>Relay</td>
+                        <td>Up<br>Max</td>
+                        <td>Down<br>Relay</td>
+                        <td>Down<br>Max</td>
+                        <td>K<sub>p</sub></td>
+                        <td>K<sub>i</sub></td>
+                        <td>K<sub>d</sub></td>
+                    </tr>
+                    <tr style="height: 2.5em; background-color: #FFFFFF;">
+                        <td style="text-align: left;">Temperature</td>
+                        <td class="onoff">
                             <?php
-                                if ($sensor_press_device[$i] == 'BMP085-180') {
-                                    echo '<td>I<sup>2</sup>C<br>Add.</td>';
-                                } else {
-                                    echo '<td>GPIO<br>Pin</td>';
-                                }
+                            if ($pid_t_temp_or[$i] == 1) {
+                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangeT<?php echo $i; ?>TempOR" value="0"> | <button style="width: 3em;" type="submit" name="ChangeT<?php echo $i; ?>TempOR" value="0">ON</button>
+                                <?php
+                            } else {
+                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangeT<?php echo $i; ?>TempOR" value="1"> | <button style="width: 3em;" type="submit" name="ChangeT<?php echo $i; ?>TempOR" value="1">OFF</button>
+                            <?php
+                            }
                             ?>
-                            <td>Log<br>Interval</td>
-                            <td>Pre<br>Relay</td>
-                            <td>Pre<br>Duration</td>
-                            <td>Log</td>
-                            <td>Graph</td>
-                            <td rowspan=2 style="padding: 0.2 0.5em;">
-                                Presets: <select style="width: 9em;" name="sensorpress<?php echo $i; ?>preset">
-                                    <option value="default">default</option>
-                                    <?php
-                                    for ($z = 0; $z < count($sensor_press_preset); $z++) {
-                                        echo '<option value="' . $sensor_press_preset[$z] . '">' . $sensor_press_preset[$z] . '</option>';
-                                    }
-                                    ?>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr class="shade" style="height: 2.5em;">
-                            <td class="shade" style="vertical-align: middle;">
-                                <button type="submit" name="Delete<?php echo $i; ?>PressSensor" title="Delete Sensor">Delete<br>Sensor</button>
-                            </td>
-                            <td>
-                                <input style="width: 6.5em;" type="text" value="<?php echo $sensor_press_name[$i]; ?>" maxlength=12 size=10 name="sensorpress<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
-                            </td>
-                            <td>
-                                <select style="width: 6.5em;" name="sensorpress<?php echo $i; ?>device">
-                                    <option<?php
-                                        if ($sensor_press_device[$i] == 'BMP085-180') {
-                                            echo ' selected="selected"';
-                                        } ?> value="BMP085-180">BMP085/180</option>
-                                    <option<?php
-                                        if ($sensor_press_device[$i] == 'Other') {
-                                            echo ' selected="selected"';
-                                        } ?> value="Other">Other</option>
-                                </select>
-                            </td>
-                            <td>
-                                <?php
-                                if ($sensor_press_device[$i] == 'BMP085-180') {
-                                ?>
-                                I<sup>2</sup>C
-                                <?php
-                                } else {
-                                ?>
-                                    <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_press_pin[$i]; ?>" maxlength=2 size=1 name="sensorpress<?php echo $i; ?>pin" title="This is the GPIO pin connected to the Press sensor"/>
-                                <?php
-                                }
-                                ?>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_press_period[$i]; ?>" name="sensorpress<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/> sec
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_press_premeasure_relay[$i]; ?>" maxlength=2 size=1 name="sensorpress<?php echo $i; ?>premeasure_relay" title="This is the relay that will turn on prior to the sensor measurement, for the duration specified by Pre Duration (0 to disable)"/>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_press_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensorpress<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relay will run before the sensor measurement is obtained"/> sec
-                            </td>
-                            <td>
-                                <input type="checkbox" title="Enable this sensor to record measurements to the log file" name="sensorpress<?php echo $i; ?>activated" value="1" <?php if ($sensor_press_activated[$i] == 1) echo 'checked'; ?>>
-                            </td>
-                            <td>
-                                <input type="checkbox" title="Enable graphs to be generated from the sensor log data" name="sensorpress<?php echo $i; ?>graph" value="1" <?php if ($sensor_press_graph[$i] == 1) echo 'checked'; ?>>
-                            </td>
-                            <td>
-                                <div style="padding: 0.2em 0">
-                                    <input type="submit" name="Change<?php echo $i; ?>PressSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_press_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>PressSensorOverwrite" value="Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>PressSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_press_preset) == 0) echo ' disabled'; ?>>
-                                </div>
-                                <div style="padding: 0.2em 0">
-                                    <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensorpress<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>PressSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>PressSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                    <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
-                        <tr class="shade">
-                            <td style="text-align: left;">Regulation</td>
-                            <td>Current<br>State</td>
-                            <td>PID<br>Set Point</td>
-                            <td>PID<br>Regulate</td>
-                            <td>Sensor Read<br>Interval</td>
-                            <td>Up<br>Relay</td>
-                            <td>Up<br>Max</td>
-                            <td>Down<br>Relay</td>
-                            <td>Down<br>Max</td>
-                            <td>K<sub>p</sub></td>
-                            <td>K<sub>i</sub></td>
-                            <td>K<sub>d</sub></td>
-                        </tr>
-                        <tr style="height: 2.5em;">
-                            <td style="text-align: left;">Temperature</td>
-                            <td class="onoff">
-                                <?php
-                                if ($pid_press_temp_or[$i] == 1) {
-                                    ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangePress<?php echo $i; ?>TempOR" value="0"> | <button style="width: 3em;" type="submit" name="ChangePress<?php echo $i; ?>TempOR" value="0">ON</button>
-                                    <?php
-                                } else {
-                                    ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangePress<?php echo $i; ?>TempOR" value="1"> | <button style="width: 3em;" type="submit" name="ChangePress<?php echo $i; ?>TempOR" value="1">OFF</button>
-                                <?php
-                                }
-                                ?>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_temp_set[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>TempSet" title="This is the desired temperature in °C."/> °C
-                            </td>
-                            <td>
-                                <select style="width: 5em;" name="SetPress<?php echo $i; ?>TempSetDir" title="Which direction should the PID regulate. 'Up' will ensure the temperature is regulated above a certain temperature. 'Down' will ensure the temperature is regulates below a certain point. 'Both' will ensure the temperature is regulated both up and down to maintain a specific temperature."/>
-                                    <option value="0"<?php
-                                        if ($pid_press_temp_set_dir[$i] == 0) {
-                                            echo ' selected="selected"';
-                                        } ?>>Both</option>
-                                    <option value="1"<?php
-                                        if ($pid_press_temp_set_dir[$i] == 1) {
-                                            echo ' selected="selected"';
-                                        } ?>>Up</option>
-                                    <option value="-1"<?php
-                                        if ($pid_press_temp_set_dir[$i] == -1) {
-                                            echo ' selected="selected"';
-                                        } ?>>Down</option>
-                                </select>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_press_temp_period[$i]; ?>" name="SetPress<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/> sec
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_press_temp_relay_low[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>TempRelayLow" title="This relay is used to increase temperature."/>
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_press_temp_outmax_low[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>TempOutmaxLow" title="This is the maximum number of seconds the relay used to increase temperature is permitted to turn on for (0 to disable)."/>
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_press_temp_relay_high[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>TempRelayHigh" title="This relay is used to decrease temperature."/>
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_press_temp_outmax_high[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>TempOutmaxHigh" title="This is the maximum number of seconds the relay used to decrease temperature is permitted to turn on for (0 to disable)."/>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_temp_p[$i]; ?>" maxlength=4 size=1 name="SetPress<?php echo $i; ?>Temp_P" title="This is the Proportional gain of the PID controller"/>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_temp_i[$i]; ?>" maxlength=4 size=1 name="SetPress<?php echo $i; ?>Temp_I" title="This is the Integral gain of the PID controller"/>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_temp_d[$i]; ?>" maxlength=4 size=1 name="SetPress<?php echo $i; ?>Temp_D" title="This is the Derivative gain of the PID controller"/>
-                            </td>
-                        </tr>
-                        <tr style="height: 2.5em;">
-                            <td style="text-align: left;">Pressure</td>
-                            <td class="onoff">
-                                <?php
-                                if ($pid_press_press_or[$i] == 1) {
-                                    ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangePress<?php echo $i; ?>PressOR" value="0"> | <button style="width: 3em;" type="submit" name="ChangePress<?php echo $i; ?>PressOR" value="0">ON</button>
-                                    <?php
-                                } else {
-                                    ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangePress<?php echo $i; ?>PressOR" value="1"> | <button style="width: 3em;" type="submit" name="ChangePress<?php echo $i; ?>PressOR" value="1">OFF</button>
-                                <?php
-                                }
-                                ?>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_press_set[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>PressSet" title="This is the desired relative pressure in percent."/> Pa
-                            </td>
-                            <td>
-                                <select style="width: 5em;" name="SetPress<?php echo $i; ?>PressSetDir" title="Which direction should the PID regulate. 'Up' will ensure the pressure is regulated above a certain pressure. 'Down' will ensure the pressure is regulates below a certain point. 'Both' will ensure the pressure is regulated both up and down to maintain a specific pressure."/>
-                                    <option value="0"<?php
-                                        if ($pid_press_press_set_dir[$i] == 0) {
-                                            echo ' selected="selected"';
-                                        } ?>>Both</option>
-                                    <option value="1"<?php
-                                        if ($pid_press_press_set_dir[$i] == 1) {
-                                            echo ' selected="selected"';
-                                        } ?>>Up</option>
-                                    <option value="-1"<?php
-                                        if ($pid_press_press_set_dir[$i] == -1) {
-                                            echo ' selected="selected"';
-                                        } ?>>Down</option>
-                                </select>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_press_press_period[$i]; ?>" name="SetPress<?php echo $i; ?>PressPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another pressure reading and applying the PID"/> sec
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_press_press_relay_low[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>PressRelayLow" title="This relay is used to increase pressure."/>
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_press_press_outmax_low[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>PressOutmaxLow" title="This is the maximum number of seconds the relay used to increase pressure is permitted to turn on for (0 to disable)."/>
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_press_press_relay_high[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>PressRelayHigh" title="This relay is used to decrease pressure."/>
-                            </td>
-                            <td>
-                                <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_press_press_outmax_high[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>PressOutmaxHigh" title="This is the maximum number of seconds the relay used to decrease pressure is permitted to turn on for (0 to disable)."/>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_press_p[$i]; ?>" maxlength=4 size=1 name="SetPress<?php echo $i; ?>Press_P" title="This is the Proportional gain of the PID controller"/>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_press_i[$i]; ?>" maxlength=4 size=1 name="SetPress<?php echo $i; ?>Press_I" title="This is the Integral gain of the PID controller"/>
-                            </td>
-                            <td>
-                                <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_press_d[$i]; ?>" maxlength=4 size=1 name="SetPress<?php echo $i; ?>Press_D" title="This is the Derivative gain of the PID controller"/>
-                            </td>
-                        </tr>
-                    </table>
-                    </form>
-                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                    <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
-                        <tr class="shade">
-                            <td class="conditional">
-                                Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
-                            </td>
-                        </tr>
-                        <tr class="shade">
-                            <td class="conditional">
-                                Name: 
-                                <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionpress<?php echo $i; ?>name" title="" required/>
-                                Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditionpress<?php echo $i; ?>period" title="" required/> sec,
-                                if <select style="width: 6em;" name="conditionpress<?php echo $i; ?>condition">
-                                    <option value="Pressure">Pressure</option>
-                                    <option value="Temperature">Temperature</option>
-                                </select>
-                                is
-                                <select style="width: 5em;" name="conditionpress<?php echo $i; ?>direction">
-                                    <option value="1">Above</option>
-                                    <option value="-1">Below</option>
-                                </select>
-                                <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionpress<?php echo $i; ?>setpoint" title="" required/>,
-                                turn Relay
-                                <input style="width: 3em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionpress<?php echo $i; ?>relay" title="" required/>
-                                <select style="width: 4em;" name="conditionpress<?php echo $i; ?>relaystate">
-                                    <option value="1">On</option>
-                                    <option value="0">Off</option>
-                                </select>
-                                (for
-                                <input style="width: 4em;" type="number" step="any" value="0" maxlength=4 size=1 name="conditionpress<?php echo $i; ?>relaysecondson" title="The number of seconds for the relay to remain on. Leave at 0 to just turn it on or off." required/> sec)
-                                <button type="submit" name="AddPress<?php echo $i; ?>Conditional" title="Save new conditional statement">Save</button>
-                            </td>
-                        </tr>
-                        <?php
-                        if (isset($conditional_press_id[$i]) && count($conditional_press_id[$i]) > 0) { 
-                            for ($z = 0; $z < count($conditional_press_id[$i]); $z++) {
-                            ?>
-                        <tr>
-                            <td style="text-align: left;">
-                                <?php
-                                echo '<button type="submit" name="DeletePress' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
-                                if ($conditional_press_state[$i][$z]) {
-                                    echo '<button type="submit" name="TurnOffPress' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> ';
-                                    echo 'On ';
-                                } else {
-                                    echo '<button type="submit" name="TurnOnPress' . $i . '-' . $z . 'Conditional" title="">Turn On</button> ';
-                                    echo 'Off ';
-                                }
-
-                                echo $z+1 . ' ' . $conditional_press_name[$i][$z] . ': Every ' . $conditional_press_period[$i][$z] . ' sec, if the ' . $conditional_press_condition[$i][$z] . ' is ';
-
-                                if ($conditional_press_direction[$i][$z] == 1) {
-                                    echo 'Above ';
-                                } else {
-                                    echo 'Below ';
-                                }
-
-                                echo $conditional_press_setpoint[$i][$z];
-
-                                if ($conditional_press_condition[$i][$z] == "Pressure") {
-                                    echo 'kPa';
-                                } else {
-                                    echo '&deg;C';
-                                }
-
-                                echo ', turn Relay ' . $conditional_press_relay[$i][$z];
-
-                                if ($conditional_press_relay_state[$i][$z]) {
-                                    echo ' On';
-                                    if ($conditional_press_relay_seconds_on[$i][$z] > 0) {
-                                        echo ' for ' . $conditional_press_relay_seconds_on[$i][$z] . ' seconds';
-                                    }
-                                } else {
-                                    echo ' Off';
-                                } 
-                                ?>
-                            </td>
-                        </tr>
-                        <?php
-                        } }
-                        ?>
-                    </table>
-                    </form>
-                    <div style="margin-bottom: <?php if ($i == count($sensor_press_id)) echo '2'; else echo '1'; ?>em;"></div>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_set[$i]; ?>" maxlength=4 size=2 name="SetT<?php echo $i; ?>TempSet" title="This is the desired temperature in °C."/> °C
+                        </td>
+                        <td>
+                            <select style="width: 5em;" name="SetT<?php echo $i; ?>TempSetDir" title="Which direction should the PID regulate. 'Up' will ensure the temperature is regulated above a certain temperature. 'Down' will ensure the temperature is regulates below a certain point. 'Both' will ensure the temperature is regulated both up and down to maintain a specific temperature."/>
+                                <option value="0"<?php
+                                    if ($pid_t_temp_set_dir[$i] == 0) {
+                                        echo ' selected="selected"';
+                                    } ?>>Both</option>
+                                <option value="1"<?php
+                                    if ($pid_t_temp_set_dir[$i] == 1) {
+                                        echo ' selected="selected"';
+                                    } ?>>Up</option>
+                                <option value="-1"<?php
+                                    if ($pid_t_temp_set_dir[$i] == -1) {
+                                        echo ' selected="selected"';
+                                    } ?>>Down</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_t_temp_period[$i]; ?>" name="SetT<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/> sec
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_t_temp_relay_low[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempRelayLow" title="This relay is used to increase temperature."/>
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_t_temp_outmax_low[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempOutmaxLow" title="This is the maximum number of seconds the relay used to increase temperature is permitted to turn on for (0 to disable)."/>
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_t_temp_relay_high[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempRelayHigh" title="This relay is used to decrease temperature."/>
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_t_temp_outmax_high[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempOutmaxHigh" title="This is the maximum number of seconds the relay used to decrease temperature is permitted to turn on for (0 to disable)."/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_p[$i]; ?>" maxlength=4 size=1 name="SetT<?php echo $i; ?>Temp_P" title="This is the Proportional gain of the PID controller"/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_i[$i]; ?>" maxlength=4 size=1 name="SetT<?php echo $i; ?>Temp_I" title="This is the Integral gain of the PID controller"/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_d[$i]; ?>" maxlength=4 size=1 name="SetT<?php echo $i; ?>Temp_D" title="This is the Derivative gain of the PID controller"/>
+                        </td>
+                    </tr>
+                </table>
+                </form>
+                <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                <table class="pid" style="width: 100%; border: 0.7em solid #EBEBEB; border-top: 0;">
+                    <tr class="shade">
+                        <td class="conditional">
+                            Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                        </td>
+                    </tr>
+                    <tr class="shade">
+                        <td class="conditional">
+                            Name: 
+                            <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditiont<?php echo $i; ?>name" title="" required/>
+                            Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditiont<?php echo $i; ?>period" title="" required/> sec,
+                            if Temperature is
+                            <select style="width: 5em;" name="conditiont<?php echo $i; ?>direction">
+                                <option value="1">Above</option>
+                                <option value="-1">Below</option>
+                            </select>
+                            <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="conditiont<?php echo $i; ?>setpoint" title="" required/>,
+                            turn Relay
+                            <input style="width: 3em;" type="number" step="any" value="" maxlength=4 size=1 name="conditiont<?php echo $i; ?>relay" title="" required/>
+                            <select style="width: 4em;" name="conditiont<?php echo $i; ?>relaystate">
+                                <option value="1">On</option>
+                                <option value="0">Off</option>
+                            </select>
+                            (for
+                            <input style="width: 4em;" type="number" step="any" value="0" maxlength=4 size=1 name="conditiont<?php echo $i; ?>relaysecondson" title="The number of seconds for the relay to remain on. Leave at 0 to just turn it on or off." required/> sec)
+                            <button type="submit" name="AddT<?php echo $i; ?>Conditional" title="Save new conditional statement">Save</button>
+                        </td>
+                    </tr>
                     <?php
-                    }
+                    if (isset($conditional_t_id[$i]) && count($conditional_t_id[$i]) > 0) { 
+                        for ($z = 0; $z < count($conditional_t_id[$i]); $z++) {
+                        ?>
+                    <tr>
+                        <td style="text-align: left; background-color: #FFFFFF;">
+                            <?php
+                            echo '<button type="submit" name="DeleteT' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
+                            if ($conditional_t_state[$i][$z]) {
+                                echo '<button type="submit" name="TurnOffT' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> ';
+                                echo 'On ';
+                            } else {
+                                echo '<button type="submit" name="TurnOnT' . $i . '-' . $z . 'Conditional" title="">Turn On</button> ';
+                                echo 'Off ';
+                            }
+
+                            echo $z+1 . ' ' . $conditional_t_name[$i][$z] . ': Every ' . $conditional_t_period[$i][$z] . ' sec, if the Temperature is ';
+
+                            if ($conditional_t_direction[$i][$z] == 1) {
+                                echo 'Above ';
+                            } else {
+                                echo 'Below ';
+                            }
+
+                            echo $conditional_t_setpoint[$i][$z] .  '%deg;C, turn Relay ' . $conditional_t_relay[$i][$z];
+
+                            if ($conditional_t_relay_state[$i][$z]) {
+                                echo ' On';
+                                if ($conditional_t_relay_seconds_on[$i][$z] > 0) {
+                                    echo ' for ' . $conditional_t_relay_seconds_on[$i][$z] . ' seconds';
+                                }
+                            } else {
+                                echo ' Off';
+                            } 
+                            ?>
+                        </td>
+                    </tr>
+                    <?php
+                    } }
                     ?>
+                </table>
+
                 </div>
+                </form>
+                <div style="margin-bottom: <?php if ($i == count($sensor_t_id)) echo '2'; else echo '1'; ?>em;"></div>
                 <?php
                 }
+            }
+            ?>
+
+            <?php if (count($sensor_ht_id) > 0) { ?>
+            <div class="sensor-title">Humidity/Temperature Sensors</div>
+                <?php
+                for ($i = 0; $i < count($sensor_ht_id); $i++) {
                 ?>
-                
-            </div>
+                <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                <div class="sensor-parent">
+                <table class="sensor" style="table-layout: fixed;">
+                    <tr class="shade">
+                        <td>HT Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_ht_id[$i]; ?>)</span></td>
+                        <td>Sensor<br>Name</td>
+                        <td>Sensor<br>Device</td>
+                        <td>GPIO<br>Pin</td>
+                        <td>Log<br>Interval</td>
+                        <td>Pre<br>Relay</td>
+                        <td>Pre<br>Duration</td>
+                        <td>Log</td>
+                        <td>Graph</td>
+                        <td style="padding: 0.2 0.5em;">
+                            Presets: <select style="width: 9em;" name="sensorht<?php echo $i; ?>preset">
+                                <option value="default">default</option>
+                                <?php
+                                for ($z = 0; $z < count($sensor_ht_preset); $z++) {
+                                    echo '<option value="' . $sensor_ht_preset[$z] . '">' . $sensor_ht_preset[$z] . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr class="shade" style="height: 2.5em;">
+                        <td class="shade" style="vertical-align: middle;">
+                            <button type="submit" name="Delete<?php echo $i; ?>HTSensor" title="Delete Sensor">Delete<br>Sensor</button>
+                        </td>
+                        <td>
+                            <input style="width: 6.5em;" type="text" value="<?php echo $sensor_ht_name[$i]; ?>" maxlength=12 size=10 name="sensorht<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
+                        </td>
+                        <td>
+                            <select style="width: 6.5em;" name="sensorht<?php echo $i; ?>device">
+                                <option<?php
+                                    if ($sensor_ht_device[$i] == 'DHT11') {
+                                        echo ' selected="selected"';
+                                    } ?> value="DHT11">DHT11</option>
+                                <option<?php
+                                    if ($sensor_ht_device[$i] == 'DHT22') {
+                                        echo ' selected="selected"';
+                                    } ?> value="DHT22">DHT22</option>
+                                <option<?php
+                                    if ($sensor_ht_device[$i] == 'AM2302') {
+                                        echo ' selected="selected"';
+                                    } ?> value="AM2302">AM2302</option>
+                                <option<?php
+                                    if ($sensor_ht_device[$i] == 'Other') {
+                                        echo ' selected="selected"';
+                                    } ?> value="Other">Other</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_ht_pin[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>pin" title="This is the GPIO pin connected to the HT sensor"/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_ht_period[$i]; ?>" name="sensorht<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/> sec
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_ht_premeasure_relay[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>premeasure_relay" title="This is the relay that will turn on prior to the sensor measurement, for the duration specified by Pre Duration (0 to disable)"/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_ht_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relay will run before the sensor measurement is obtained"/> sec
+                        </td>
+                        <td>
+                            <input type="checkbox" title="Enable this sensor to record measurements to the log file" name="sensorht<?php echo $i; ?>activated" value="1" <?php if ($sensor_ht_activated[$i] == 1) echo 'checked'; ?>>
+                        </td>
+                        <td>
+                            <input type="checkbox" title="Enable graphs to be generated from the sensor log data" name="sensorht<?php echo $i; ?>graph" value="1" <?php if ($sensor_ht_graph[$i] == 1) echo 'checked'; ?>>
+                        </td>
+                        <td>
+                            <div style="padding: 0.2em 0">
+                                <input type="submit" name="Change<?php echo $i; ?>HTSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>HTSensorOverwrite" value="Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>HTSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>>
+                            </div>
+                            <div style="padding: 0.2em 0">
+                                <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensorht<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>HTSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>HTSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
+                    <tr class="shade">
+                        <td style="text-align: left;">Regulation</td>
+                        <td>Current<br>State</td>
+                        <td>PID<br>Set Point</td>
+                        <td>PID<br>Regulate</td>
+                        <td>Sensor Read<br>Interval</td>
+                        <td>Up<br>Relay</td>
+                        <td>Up<br>Max</td>
+                        <td>Down<br>Relay</td>
+                        <td>Down<br>Max</td>
+                        <td>K<sub>p</sub></td>
+                        <td>K<sub>i</sub></td>
+                        <td>K<sub>d</sub></td>
+                    </tr>
+                    <tr style="height: 2.5em; background-color: #FFFFFF;">
+                        <td style="text-align: left;">Temperature</td>
+                        <td class="onoff">
+                            <?php
+                            if ($pid_ht_temp_or[$i] == 1) {
+                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangeHT<?php echo $i; ?>TempOR" value="0"> | <button style="width: 3em;" type="submit" name="ChangeHT<?php echo $i; ?>TempOR" value="0">ON</button>
+                                <?php
+                            } else {
+                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangeHT<?php echo $i; ?>TempOR" value="1"> | <button style="width: 3em;" type="submit" name="ChangeHT<?php echo $i; ?>TempOR" value="1">OFF</button>
+                            <?php
+                            }
+                            ?>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_temp_set[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>TempSet" title="This is the desired temperature in °C."/> °C
+                        </td>
+                        <td>
+                            <select style="width: 5em;" name="SetHT<?php echo $i; ?>TempSetDir" title="Which direction should the PID regulate. 'Up' will ensure the temperature is regulated above a certain temperature. 'Down' will ensure the temperature is regulates below a certain point. 'Both' will ensure the temperature is regulated both up and down to maintain a specific temperature."/>
+                                <option value="0"<?php
+                                    if ($pid_ht_temp_set_dir[$i] == 0) {
+                                        echo ' selected="selected"';
+                                    } ?>>Both</option>
+                                <option value="1"<?php
+                                    if ($pid_ht_temp_set_dir[$i] == 1) {
+                                        echo ' selected="selected"';
+                                    } ?>>Up</option>
+                                <option value="-1"<?php
+                                    if ($pid_ht_temp_set_dir[$i] == -1) {
+                                        echo ' selected="selected"';
+                                    } ?>>Down</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_temp_period[$i]; ?>" name="SetHT<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/> sec
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_ht_temp_relay_low[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>TempRelayLow" title="This relay is used to increase temperature."/>
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_ht_temp_outmax_low[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>TempOutmaxLow" title="This is the maximum number of seconds the relay used to increase temperature is permitted to turn on for (0 to disable)."/>
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_ht_temp_relay_high[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>TempRelayHigh" title="This relay is used to decrease temperature."/>
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_ht_temp_outmax_high[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>TempOutmaxHigh" title="This is the maximum number of seconds the relay used to decrease temperature is permitted to turn on for (0 to disable)."/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_temp_p[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Temp_P" title="This is the Proportional gain of the PID controller"/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_temp_i[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Temp_I" title="This is the Integral gain of the PID controller"/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_temp_d[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Temp_D" title="This is the Derivative gain of the PID controller"/>
+                        </td>
+                    </tr>
+                    <tr style="height: 2.5em; background-color: #FFFFFF;">
+                        <td style="text-align: left;">Humidity</td>
+                        <td class="onoff">
+                            <?php
+                            if ($pid_ht_hum_or[$i] == 1) {
+                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangeHT<?php echo $i; ?>HumOR" value="0"> | <button style="width: 3em;" type="submit" name="ChangeHT<?php echo $i; ?>HumOR" value="0">ON</button>
+                                <?php
+                            } else {
+                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangeHT<?php echo $i; ?>HumOR" value="1"> | <button style="width: 3em;" type="submit" name="ChangeHT<?php echo $i; ?>HumOR" value="1">OFF</button>
+                            <?php
+                            }
+                            ?>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_set[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>HumSet" title="This is the desired relative humidity in percent."/> %
+                        </td>
+                        <td>
+                            <select style="width: 5em;" name="SetHT<?php echo $i; ?>HumSetDir" title="Which direction should the PID regulate. 'Up' will ensure the humidity is regulated above a certain humidity. 'Down' will ensure the humidity is regulates below a certain point. 'Both' will ensure the humidity is regulated both up and down to maintain a specific humidity."/>
+                                <option value="0"<?php
+                                    if ($pid_ht_hum_set_dir[$i] == 0) {
+                                        echo ' selected="selected"';
+                                    } ?>>Both</option>
+                                <option value="1"<?php
+                                    if ($pid_ht_hum_set_dir[$i] == 1) {
+                                        echo ' selected="selected"';
+                                    } ?>>Up</option>
+                                <option value="-1"<?php
+                                    if ($pid_ht_hum_set_dir[$i] == -1) {
+                                        echo ' selected="selected"';
+                                    } ?>>Down</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_hum_period[$i]; ?>" name="SetHT<?php echo $i; ?>HumPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another humidity reading and applying the PID"/> sec
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_ht_hum_relay_low[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>HumRelayLow" title="This relay is used to increase humidity."/>
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_ht_hum_outmax_low[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>HumOutmaxLow" title="This is the maximum number of seconds the relay used to increase humidity is permitted to turn on for (0 to disable)."/>
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_ht_hum_relay_high[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>HumRelayHigh" title="This relay is used to decrease humidity."/>
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_ht_hum_outmax_high[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>HumOutmaxHigh" title="This is the maximum number of seconds the relay used to decrease humidity is permitted to turn on for (0 to disable)."/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_p[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Hum_P" title="This is the Proportional gain of the PID controller"/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_i[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Hum_I" title="This is the Integral gain of the PID controller"/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_d[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Hum_D" title="This is the Derivative gain of the PID controller"/>
+                        </td>
+                    </tr>
+                </table>
+                </form>
+                <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                <table class="pid" style="width: 100%; border: 0.7em solid #EBEBEB; border-top: 0;">
+                    <tr class="shade">
+                        <td class="conditional">
+                            Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                        </td>
+                    </tr>
+                    <tr class="shade">
+                        <td class="conditional">
+                            Name: 
+                            <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionht<?php echo $i; ?>name" title="" required/>
+                            Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditionht<?php echo $i; ?>period" title="" required/> sec,
+                            if <select style="width: 6em;" name="conditionht<?php echo $i; ?>condition">
+                                <option value="Humidity">Humidity</option>
+                                <option value="Temperature">Temperature</option>
+                            </select>
+                            is
+                            <select style="width: 5em;" name="conditionht<?php echo $i; ?>direction">
+                                <option value="1">Above</option>
+                                <option value="-1">Below</option>
+                            </select>
+                            <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionht<?php echo $i; ?>setpoint" title="" required/>,
+                            turn Relay
+                            <input style="width: 3em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionht<?php echo $i; ?>relay" title="" required/>
+                            <select style="width: 4em;" name="conditionht<?php echo $i; ?>relaystate">
+                                <option value="1">On</option>
+                                <option value="0">Off</option>
+                            </select>
+                            (for
+                            <input style="width: 4em;" type="number" step="any" value="0" maxlength=4 size=1 name="conditionht<?php echo $i; ?>relaysecondson" title="The number of seconds for the relay to remain on. Leave at 0 to just turn it on or off." required/> sec)
+                            <button type="submit" name="AddHT<?php echo $i; ?>Conditional" title="Save new conditional statement">Save</button>
+                        </td>
+                    </tr>
+                    <?php
+                    if (isset($conditional_ht_id[$i]) && count($conditional_ht_id[$i]) > 0) { 
+                        for ($z = 0; $z < count($conditional_ht_id[$i]); $z++) {
+                        ?>
+                    <tr>
+                        <td style="text-align: left; background-color: #FFFFFF;">
+                            <?php
+                            echo '<button type="submit" name="DeleteHT' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
+                            if ($conditional_ht_state[$i][$z]) {
+                                echo '<button type="submit" name="TurnOffHT' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> ';
+                                echo 'On ';
+                            } else {
+                                echo '<button type="submit" name="TurnOnHT' . $i . '-' . $z . 'Conditional" title="">Turn On</button> ';
+                                echo 'Off ';
+                            }
+
+                            echo $z+1 . ' ' . $conditional_ht_name[$i][$z] . ': Every ' . $conditional_ht_period[$i][$z] . ' sec, if the ' . $conditional_ht_condition[$i][$z] . ' is ';
+
+                            if ($conditional_ht_direction[$i][$z] == 1) {
+                                echo 'Above ';
+                            } else {
+                                echo 'Below ';
+                            }
+
+                            echo $conditional_ht_setpoint[$i][$z];
+
+                            if ($conditional_ht_condition[$i][$z] == "Humidity") {
+                                echo '%';
+                            } else {
+                                echo '&deg;C';
+                            }
+
+                            echo ', turn Relay ' . $conditional_ht_relay[$i][$z];
+
+                            if ($conditional_ht_relay_state[$i][$z]) {
+                                echo ' On';
+                                if ($conditional_ht_relay_seconds_on[$i][$z] > 0) {
+                                    echo ' for ' . $conditional_ht_relay_seconds_on[$i][$z] . ' seconds';
+                                }
+                            } else {
+                                echo ' Off';
+                            } 
+                            ?>
+                        </td>
+                    </tr>
+                    <?php
+                    } }
+                    ?>
+                </table>
+                </div>
+                </form>
+                <?php
+                }
+            }
+            ?>
+
+            <?php if (count($sensor_co2_id) > 0) { ?>
+            <div class="sensor-title">CO<sub>2</sub> Sensors</div>
+                <?php
+                for ($i = 0; $i < count($sensor_co2_id); $i++) {
+                ?>
+                <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                <div class="sensor-parent">
+                <table class="sensor" style="table-layout: fixed;">
+                    <tr class="shade">
+                        <td>CO<sub>2</sub> Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_co2_id[$i]; ?>)</span></td>
+                        <td>Sensor<br>Name</td>
+                        <td>Sensor<br>Device</td>
+                        <td>GPIO<br>Pin</td>
+                        <td>Log<br>Interval</td>
+                        <td>Pre<br>Relay</td>
+                        <td>Pre<br>Duration</td>
+                        <td>Log</td>
+                        <td>Graph</td>
+                        <td style="padding: 0.2 0.5em;">
+                            Presets: <select style="width: 9em;" name="sensorco2<?php echo $i; ?>preset">
+                                <option value="default">default</option>
+                                <?php
+                                for ($z = 0; $z < count($sensor_co2_preset); $z++) {
+                                    echo '<option value="' . $sensor_co2_preset[$z] . '">' . $sensor_co2_preset[$z] . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr class="shade" style="height: 2.5em;">
+                        <td class="shade" style="vertical-align: middle;">
+                            <button type="submit" name="Delete<?php echo $i; ?>CO2Sensor" title="Delete Sensor">Delete<br>Sensor</button>
+                        </td>
+                        <td>
+                            <input style="width: 7em;" type="text" value="<?php echo $sensor_co2_name[$i]; ?>" maxlength=12 size=10 name="sensorco2<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
+                        </td>
+                        <td>
+                            <select style="width: 6.5em;" name="sensorco2<?php echo $i; ?>device">
+                                <option<?php
+                                    if ($sensor_co2_device[$i] == 'Other') {
+                                        echo ' selected="selected"';
+                                    } ?> value="Other">Other</option>
+                                <option<?php
+                                    if ($sensor_co2_device[$i] == 'K30') {
+                                        echo ' selected="selected"';
+                                    } ?> value="K30">K30</option>
+                            </select>
+                        </td>
+                        <td>
+                            <?php
+                            if ($sensor_co2_device[$i] == 'K30') {
+                            ?>
+                                Tx/Rx
+                            <?php
+                            } else {
+                            ?>
+                                <input style="width: 4em;" type="number" value="<?php echo $sensor_co2_pin[$i]; ?>" maxlength=2 size=1 name="sensorco2<?php echo $i; ?>pin" title="This is the GPIO pin connected to the CO2 sensor"/>
+                            <?php
+                            }
+                            ?>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_co2_period[$i]; ?>" name="sensorco2<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/> sec
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_co2_premeasure_relay[$i]; ?>" maxlength=2 size=1 name="sensorco2<?php echo $i; ?>premeasure_relay" title="This is the relay that will turn on prior to the sensor measurement, for the duration specified by Pre Duration (0 to disable)"/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_co2_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensorco2<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relay will run before the sensor measurement is obtained"/> sec
+                        </td>
+                        <td>
+                            <input type="checkbox" title="Enable this sensor to record measurements to the log file" name="sensorco2<?php echo $i; ?>activated" value="1" <?php if ($sensor_co2_activated[$i] == 1) echo 'checked'; ?>>
+                        </td>
+                        <td>
+                            <input type="checkbox" title="Enable graphs to be generated from the sensor log data" name="sensorco2<?php echo $i; ?>graph" value="1" <?php if ($sensor_co2_graph[$i] == 1) echo 'checked'; ?>>
+                        </td>
+                        <td>
+                            <div style="padding: 0.2em 0">
+                                <input type="submit" name="Change<?php echo $i; ?>CO2SensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_co2_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>CO2SensorOverwrite" value="Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>CO2SensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_co2_preset) == 0) echo ' disabled'; ?>>
+                            </div>
+                            <div style="padding: 0.2em 0">
+                                <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensorco2<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>CO2SensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>CO2SensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
+                    <tr class="shade">
+                        <td style="text-align: left;">Regulation</td>
+                        <td>Current<br>State</td>
+                        <td>PID<br>Set Point</td>
+                        <td>PID<br>Regulate</td>
+                        <td>Sensor Read<br>Interval</td>
+                        <td>Up<br>Relay</td>
+                        <td>Up<br>Max</td>
+                        <td>Down<br>Relay</td>
+                        <td>Down<br>Max</td>
+                        <td>K<sub>p</sub></td>
+                        <td>K<sub>i</sub></td>
+                        <td>K<sub>d</sub></td>
+                    </tr>
+                    <tr style="height: 2.5em; background-color: #FFFFFF;">
+                        <td style="text-align: left;">CO<sub>2</sub></td>
+                        <td class="onoff">
+                            <?php
+                            if ($pid_co2_or[$i] == 1) {
+                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="Change<?php echo $i; ?>CO2OR" value="0"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>CO2OR" value="0">ON</button>
+                                <?php
+                            } else {
+                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="Change<?php echo $i; ?>CO2OR" value="1"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>CO2OR" value="1">OFF</button>
+                                <?php
+                            }
+                            ?>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_set[$i]; ?>" maxlength=4 size=2 name="SetCO2<?php echo $i; ?>CO2Set" title="This is the desired CO2 concentration in ppmv."/> ppmv
+                        </td>
+                        <td>
+                            <select style="width: 5em;" name="SetCO2<?php echo $i; ?>CO2SetDir" title="Which direction should the PID regulate. 'Up' will ensure the CO2 is regulated above a certain CO2. 'Down' will ensure the CO2 is regulates below a certain point. 'Both' will ensure the CO2 is regulated both up and down to maintain a specific CO2."/>
+                                <option value="0"<?php
+                                    if ($pid_co2_set_dir[$i] == 0) {
+                                        echo ' selected="selected"';
+                                    } ?>>Both</option>
+                                <option value="1"<?php
+                                    if ($pid_co2_set_dir[$i] == 1) {
+                                        echo ' selected="selected"';
+                                    } ?>>Up</option>
+                                <option value="-1"<?php
+                                    if ($pid_co2_set_dir[$i] == -1) {
+                                        echo ' selected="selected"';
+                                    } ?>>Down</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_co2_period[$i]; ?>" maxlength=4 size=1 name="SetCO2<?php echo $i; ?>CO2Period" title="This is the number of seconds to wait after the relay has been turned off before taking another CO2 reading and applying the PID"/> sec
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_co2_relay_low[$i]; ?>" maxlength=1 size=1 name="SetCO2<?php echo $i; ?>CO2RelayLow" title="This relay is used to increase CO2."/>
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_co2_outmax_low[$i]; ?>" maxlength=1 size=1 name="SetCO2<?php echo $i; ?>CO2OutmaxLow" title="This is the maximum number of seconds the relay used to increase CO2 is permitted to turn on for (0 to disable)."/>
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_co2_relay_high[$i]; ?>" maxlength=1 size=1 name="SetCO2<?php echo $i; ?>CO2RelayHigh" title="This relay is used to decrease CO2."/>
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_co2_outmax_high[$i]; ?>" maxlength=1 size=1 name="SetCO2<?php echo $i; ?>CO2OutmaxHigh" title="This is the maximum number of seconds the relay used to decrease CO2 is permitted to turn on for (0 to disable)."/>
+                        </td>
+                        
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_p[$i]; ?>" maxlength=5 size=1 name="SetCO2<?php echo $i; ?>CO2_P" title="This is the Proportional gain of the PID controller"/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_i[$i]; ?>" maxlength=5 size=1 name="SetCO2<?php echo $i; ?>CO2_I" title="This is the Integral gain of the PID controller"/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_d[$i]; ?>" maxlength=5 size=1 name="SetCO2<?php echo $i; ?>CO2_D" title="This is the Derivative gain of the PID controller"/>
+                        </td>
+                    </tr>
+                </table>
+                </form>
+                <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                <table class="pid" style="width: 100%; border: 0.7em solid #EBEBEB; border-top: 0;">
+                    <tr class="shade">
+                        <td class="conditional">
+                            Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                        </td>
+                    </tr>
+                    <tr class="shade">
+                        <td class="conditional">
+                            Name: 
+                            <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionco2<?php echo $i; ?>name" title="" required/>
+                            Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditionco2<?php echo $i; ?>period" title="" required/> sec,
+                            if CO<sub>2</sub> is
+                            <select style="width: 5em;" name="conditionco2<?php echo $i; ?>direction">
+                                <option value="1">Above</option>
+                                <option value="-1">Below</option>
+                            </select>
+                            <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionco2<?php echo $i; ?>setpoint" title="" required/>,
+                            turn Relay
+                            <input style="width: 3em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionco2<?php echo $i; ?>relay" title="" required/>
+                            <select style="width: 4em;" name="conditionco2<?php echo $i; ?>relaystate">
+                                <option value="1">On</option>
+                                <option value="0">Off</option>
+                            </select>
+                            (for
+                            <input style="width: 4em;" type="number" step="any" value="0" maxlength=4 size=1 name="conditionco2<?php echo $i; ?>relaysecondson" title="The number of seconds for the relay to remain on. Leave at 0 to just turn it on or off." required/> sec)
+                            <button type="submit" name="AddCO2<?php echo $i; ?>Conditional" title="Save new conditional statement">Save</button>
+                        </td>
+                    </tr>
+                    <?php
+                    if (isset($conditional_co2_id[$i]) && count($conditional_co2_id[$i]) > 0) { 
+                        for ($z = 0; $z < count($conditional_co2_id[$i]); $z++) {
+                        ?>
+                    <tr>
+                        <td style="text-align: left; background-color: #FFFFFF;">
+                            <?php
+                            echo '<button type="submit" name="DeleteCO2' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
+                            if ($conditional_co2_state[$i][$z]) {
+                                echo '<button type="submit" name="TurnOffCO2' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> ';
+                                echo 'On ';
+                            } else {
+                                echo '<button type="submit" name="TurnOnCO2' . $i . '-' . $z . 'Conditional" title="">Turn On</button> ';
+                                echo 'Off ';
+                            }
+
+                            echo $z+1 . ' ' . $conditional_co2_name[$i][$z] . ': Every ' . $conditional_co2_period[$i][$z] . ' sec, if the CO<sub>2</sub> is ';
+
+                            if ($conditional_co2_direction[$i][$z] == 1) {
+                                echo 'Above ';
+                            } else {
+                                echo 'Below ';
+                            }
+
+                            echo $conditional_co2_setpoint[$i][$z] . 'ppm, turn Relay ' . $conditional_co2_relay[$i][$z];
+
+                            if ($conditional_co2_relay_state[$i][$z]) {
+                                echo ' On';
+                                if ($conditional_co2_relay_seconds_on[$i][$z] > 0) {
+                                    echo ' for ' . $conditional_co2_relay_seconds_on[$i][$z] . ' seconds';
+                                }
+                            } else {
+                                echo ' Off';
+                            } 
+                            ?>
+                        </td>
+                    </tr>
+                    <?php
+                    } }
+                    ?>
+                </table>
+                </div>
+                </form>
+                <div style="margin-bottom: <?php if ($i == count($sensor_co2_id)) echo '2'; else echo '1'; ?>em;"></div>
+                <?php
+                }
+            }
+            ?>
+
+           <?php if (count($sensor_press_id) > 0) { ?>
+            <div class="sensor-title">Pressure Sensors</div>
+                <?php
+                for ($i = 0; $i < count($sensor_press_id); $i++) {
+                ?>
+                <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                <div class="sensor-parent">
+                <table class="sensor" style="table-layout: fixed;">
+                    <tr class="shade">
+                        <td>Press Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_press_id[$i]; ?>)</span></td>
+                        <td>Sensor<br>Name</td>
+                        <td>Sensor<br>Device</td>
+                        <?php
+                            if ($sensor_press_device[$i] == 'BMP085-180') {
+                                echo '<td>I<sup>2</sup>C<br>Add.</td>';
+                            } else {
+                                echo '<td>GPIO<br>Pin</td>';
+                            }
+                        ?>
+                        <td>Log<br>Interval</td>
+                        <td>Pre<br>Relay</td>
+                        <td>Pre<br>Duration</td>
+                        <td>Log</td>
+                        <td>Graph</td>
+                        <td style="padding: 0.2 0.5em;">
+                            Presets: <select style="width: 9em;" name="sensorpress<?php echo $i; ?>preset">
+                                <option value="default">default</option>
+                                <?php
+                                for ($z = 0; $z < count($sensor_press_preset); $z++) {
+                                    echo '<option value="' . $sensor_press_preset[$z] . '">' . $sensor_press_preset[$z] . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr class="shade" style="height: 2.5em;">
+                        <td class="shade" style="vertical-align: middle;">
+                            <button type="submit" name="Delete<?php echo $i; ?>PressSensor" title="Delete Sensor">Delete<br>Sensor</button>
+                        </td>
+                        <td>
+                            <input style="width: 6.5em;" type="text" value="<?php echo $sensor_press_name[$i]; ?>" maxlength=12 size=10 name="sensorpress<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
+                        </td>
+                        <td>
+                            <select style="width: 6.5em;" name="sensorpress<?php echo $i; ?>device">
+                                <option<?php
+                                    if ($sensor_press_device[$i] == 'BMP085-180') {
+                                        echo ' selected="selected"';
+                                    } ?> value="BMP085-180">BMP085/180</option>
+                                <option<?php
+                                    if ($sensor_press_device[$i] == 'Other') {
+                                        echo ' selected="selected"';
+                                    } ?> value="Other">Other</option>
+                            </select>
+                        </td>
+                        <td>
+                            <?php
+                            if ($sensor_press_device[$i] == 'BMP085-180') {
+                            ?>
+                            I<sup>2</sup>C
+                            <?php
+                            } else {
+                            ?>
+                                <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_press_pin[$i]; ?>" maxlength=2 size=1 name="sensorpress<?php echo $i; ?>pin" title="This is the GPIO pin connected to the Press sensor"/>
+                            <?php
+                            }
+                            ?>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_press_period[$i]; ?>" name="sensorpress<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/> sec
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_press_premeasure_relay[$i]; ?>" maxlength=2 size=1 name="sensorpress<?php echo $i; ?>premeasure_relay" title="This is the relay that will turn on prior to the sensor measurement, for the duration specified by Pre Duration (0 to disable)"/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" min="0" max="99999" value="<?php echo $sensor_press_premeasure_dur[$i]; ?>" maxlength=2 size=1 name="sensorpress<?php echo $i; ?>premeasure_dur" title="The number of seconds the pre-measurement relay will run before the sensor measurement is obtained"/> sec
+                        </td>
+                        <td>
+                            <input type="checkbox" title="Enable this sensor to record measurements to the log file" name="sensorpress<?php echo $i; ?>activated" value="1" <?php if ($sensor_press_activated[$i] == 1) echo 'checked'; ?>>
+                        </td>
+                        <td>
+                            <input type="checkbox" title="Enable graphs to be generated from the sensor log data" name="sensorpress<?php echo $i; ?>graph" value="1" <?php if ($sensor_press_graph[$i] == 1) echo 'checked'; ?>>
+                        </td>
+                        <td>
+                            <div style="padding: 0.2em 0">
+                                <input type="submit" name="Change<?php echo $i; ?>PressSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_press_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>PressSensorOverwrite" value="Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>PressSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_press_preset) == 0) echo ' disabled'; ?>>
+                            </div>
+                            <div style="padding: 0.2em 0">
+                                <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensorpress<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>PressSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>PressSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
+                    <tr class="shade">
+                        <td style="text-align: left;">Regulation</td>
+                        <td>Current<br>State</td>
+                        <td>PID<br>Set Point</td>
+                        <td>PID<br>Regulate</td>
+                        <td>Sensor Read<br>Interval</td>
+                        <td>Up<br>Relay</td>
+                        <td>Up<br>Max</td>
+                        <td>Down<br>Relay</td>
+                        <td>Down<br>Max</td>
+                        <td>K<sub>p</sub></td>
+                        <td>K<sub>i</sub></td>
+                        <td>K<sub>d</sub></td>
+                    </tr>
+                    <tr style="height: 2.5em; background-color: #FFFFFF;">
+                        <td style="text-align: left;">Temperature</td>
+                        <td class="onoff">
+                            <?php
+                            if ($pid_press_temp_or[$i] == 1) {
+                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangePress<?php echo $i; ?>TempOR" value="0"> | <button style="width: 3em;" type="submit" name="ChangePress<?php echo $i; ?>TempOR" value="0">ON</button>
+                                <?php
+                            } else {
+                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangePress<?php echo $i; ?>TempOR" value="1"> | <button style="width: 3em;" type="submit" name="ChangePress<?php echo $i; ?>TempOR" value="1">OFF</button>
+                            <?php
+                            }
+                            ?>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_temp_set[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>TempSet" title="This is the desired temperature in °C."/> °C
+                        </td>
+                        <td>
+                            <select style="width: 5em;" name="SetPress<?php echo $i; ?>TempSetDir" title="Which direction should the PID regulate. 'Up' will ensure the temperature is regulated above a certain temperature. 'Down' will ensure the temperature is regulates below a certain point. 'Both' will ensure the temperature is regulated both up and down to maintain a specific temperature."/>
+                                <option value="0"<?php
+                                    if ($pid_press_temp_set_dir[$i] == 0) {
+                                        echo ' selected="selected"';
+                                    } ?>>Both</option>
+                                <option value="1"<?php
+                                    if ($pid_press_temp_set_dir[$i] == 1) {
+                                        echo ' selected="selected"';
+                                    } ?>>Up</option>
+                                <option value="-1"<?php
+                                    if ($pid_press_temp_set_dir[$i] == -1) {
+                                        echo ' selected="selected"';
+                                    } ?>>Down</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_press_temp_period[$i]; ?>" name="SetPress<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/> sec
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_press_temp_relay_low[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>TempRelayLow" title="This relay is used to increase temperature."/>
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_press_temp_outmax_low[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>TempOutmaxLow" title="This is the maximum number of seconds the relay used to increase temperature is permitted to turn on for (0 to disable)."/>
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_press_temp_relay_high[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>TempRelayHigh" title="This relay is used to decrease temperature."/>
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_press_temp_outmax_high[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>TempOutmaxHigh" title="This is the maximum number of seconds the relay used to decrease temperature is permitted to turn on for (0 to disable)."/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_temp_p[$i]; ?>" maxlength=4 size=1 name="SetPress<?php echo $i; ?>Temp_P" title="This is the Proportional gain of the PID controller"/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_temp_i[$i]; ?>" maxlength=4 size=1 name="SetPress<?php echo $i; ?>Temp_I" title="This is the Integral gain of the PID controller"/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_temp_d[$i]; ?>" maxlength=4 size=1 name="SetPress<?php echo $i; ?>Temp_D" title="This is the Derivative gain of the PID controller"/>
+                        </td>
+                    </tr>
+                    <tr style="height: 2.5em; background-color: #FFFFFF;">
+                        <td style="text-align: left;">Pressure</td>
+                        <td class="onoff">
+                            <?php
+                            if ($pid_press_press_or[$i] == 1) {
+                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangePress<?php echo $i; ?>PressOR" value="0"> | <button style="width: 3em;" type="submit" name="ChangePress<?php echo $i; ?>PressOR" value="0">ON</button>
+                                <?php
+                            } else {
+                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangePress<?php echo $i; ?>PressOR" value="1"> | <button style="width: 3em;" type="submit" name="ChangePress<?php echo $i; ?>PressOR" value="1">OFF</button>
+                            <?php
+                            }
+                            ?>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_press_set[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>PressSet" title="This is the desired relative pressure in percent."/> Pa
+                        </td>
+                        <td>
+                            <select style="width: 5em;" name="SetPress<?php echo $i; ?>PressSetDir" title="Which direction should the PID regulate. 'Up' will ensure the pressure is regulated above a certain pressure. 'Down' will ensure the pressure is regulates below a certain point. 'Both' will ensure the pressure is regulated both up and down to maintain a specific pressure."/>
+                                <option value="0"<?php
+                                    if ($pid_press_press_set_dir[$i] == 0) {
+                                        echo ' selected="selected"';
+                                    } ?>>Both</option>
+                                <option value="1"<?php
+                                    if ($pid_press_press_set_dir[$i] == 1) {
+                                        echo ' selected="selected"';
+                                    } ?>>Up</option>
+                                <option value="-1"<?php
+                                    if ($pid_press_press_set_dir[$i] == -1) {
+                                        echo ' selected="selected"';
+                                    } ?>>Down</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_press_press_period[$i]; ?>" name="SetPress<?php echo $i; ?>PressPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another pressure reading and applying the PID"/> sec
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_press_press_relay_low[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>PressRelayLow" title="This relay is used to increase pressure."/>
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_press_press_outmax_low[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>PressOutmaxLow" title="This is the maximum number of seconds the relay used to increase pressure is permitted to turn on for (0 to disable)."/>
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_press_press_relay_high[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>PressRelayHigh" title="This relay is used to decrease pressure."/>
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_press_press_outmax_high[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>PressOutmaxHigh" title="This is the maximum number of seconds the relay used to decrease pressure is permitted to turn on for (0 to disable)."/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_press_p[$i]; ?>" maxlength=4 size=1 name="SetPress<?php echo $i; ?>Press_P" title="This is the Proportional gain of the PID controller"/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_press_i[$i]; ?>" maxlength=4 size=1 name="SetPress<?php echo $i; ?>Press_I" title="This is the Integral gain of the PID controller"/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_press_d[$i]; ?>" maxlength=4 size=1 name="SetPress<?php echo $i; ?>Press_D" title="This is the Derivative gain of the PID controller"/>
+                        </td>
+                    </tr>
+                </table>
+                </form>
+                <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                <table class="pid" style="width: 100%; border: 0.7em solid #EBEBEB; border-top: 0;">
+                    <tr class="shade">
+                        <td class="conditional">
+                            Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                        </td>
+                    </tr>
+                    <tr class="shade">
+                        <td class="conditional">
+                            Name: 
+                            <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionpress<?php echo $i; ?>name" title="" required/>
+                            Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditionpress<?php echo $i; ?>period" title="" required/> sec,
+                            if <select style="width: 6em;" name="conditionpress<?php echo $i; ?>condition">
+                                <option value="Pressure">Pressure</option>
+                                <option value="Temperature">Temperature</option>
+                            </select>
+                            is
+                            <select style="width: 5em;" name="conditionpress<?php echo $i; ?>direction">
+                                <option value="1">Above</option>
+                                <option value="-1">Below</option>
+                            </select>
+                            <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionpress<?php echo $i; ?>setpoint" title="" required/>,
+                            turn Relay
+                            <input style="width: 3em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionpress<?php echo $i; ?>relay" title="" required/>
+                            <select style="width: 4em;" name="conditionpress<?php echo $i; ?>relaystate">
+                                <option value="1">On</option>
+                                <option value="0">Off</option>
+                            </select>
+                            (for
+                            <input style="width: 4em;" type="number" step="any" value="0" maxlength=4 size=1 name="conditionpress<?php echo $i; ?>relaysecondson" title="The number of seconds for the relay to remain on. Leave at 0 to just turn it on or off." required/> sec)
+                            <button type="submit" name="AddPress<?php echo $i; ?>Conditional" title="Save new conditional statement">Save</button>
+                        </td>
+                    </tr>
+                    <?php
+                    if (isset($conditional_press_id[$i]) && count($conditional_press_id[$i]) > 0) { 
+                        for ($z = 0; $z < count($conditional_press_id[$i]); $z++) {
+                        ?>
+                    <tr>
+                        <td style="text-align: left; background-color: #FFFFFF;">
+                            <?php
+                            echo '<button type="submit" name="DeletePress' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
+                            if ($conditional_press_state[$i][$z]) {
+                                echo '<button type="submit" name="TurnOffPress' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> ';
+                                echo 'On ';
+                            } else {
+                                echo '<button type="submit" name="TurnOnPress' . $i . '-' . $z . 'Conditional" title="">Turn On</button> ';
+                                echo 'Off ';
+                            }
+
+                            echo $z+1 . ' ' . $conditional_press_name[$i][$z] . ': Every ' . $conditional_press_period[$i][$z] . ' sec, if the ' . $conditional_press_condition[$i][$z] . ' is ';
+
+                            if ($conditional_press_direction[$i][$z] == 1) {
+                                echo 'Above ';
+                            } else {
+                                echo 'Below ';
+                            }
+
+                            echo $conditional_press_setpoint[$i][$z];
+
+                            if ($conditional_press_condition[$i][$z] == "Pressure") {
+                                echo 'kPa';
+                            } else {
+                                echo '&deg;C';
+                            }
+
+                            echo ', turn Relay ' . $conditional_press_relay[$i][$z];
+
+                            if ($conditional_press_relay_state[$i][$z]) {
+                                echo ' On';
+                                if ($conditional_press_relay_seconds_on[$i][$z] > 0) {
+                                    echo ' for ' . $conditional_press_relay_seconds_on[$i][$z] . ' seconds';
+                                }
+                            } else {
+                                echo ' Off';
+                            } 
+                            ?>
+                        </td>
+                    </tr>
+                    <?php
+                    } }
+                    ?>
+                </table>
+                </div>
+                </form>
+                <div style="margin-bottom: <?php if ($i == count($sensor_press_id)) echo '2'; else echo '1'; ?>em;"></div>
+                <?php
+                }
+            }
+            ?>
         </li>
 
         <li data-content="custom" <?php
