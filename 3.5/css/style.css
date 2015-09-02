@@ -136,7 +136,7 @@ table.pid th {
 
 .conditional {
     text-align: left !important;
-    padding: 1em 0 0 0 !important;
+    padding: 0.5em 0 0.5em 0 !important;
 }
 
 .table-header {
