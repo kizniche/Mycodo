@@ -473,7 +473,7 @@ if (isset($output_error)) {
                 </div>
                 <div style="float: left; padding: 0 2em 1em 0.5em;">
                     <div style="float: left; padding-right: 0.1em;">
-                        <input type="submit" name="Refresh" value="Refresh&#10;Page" title="Refresh page">
+                        <button name="Refresh" type="submit" value="">Refresh<br>Page</button>
                     </div>
                 </div>
 
@@ -2141,7 +2141,7 @@ if (isset($output_error)) {
                 </div>
                 <div style="float: left; padding: 0 2em 1em 0.5em;">
                     <div style="float: left; padding-right: 0.1em;">
-                        <input type="submit" name="Refresh" value="Refresh&#10;Page" title="Refresh page">
+                        <button name="Refresh" type="submit" value="">Refresh<br>Page</button>
                     </div>
                 </div>
             </div>
