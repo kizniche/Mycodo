@@ -72,7 +72,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
         time_ago = '1 Hour'
     elif graph_span == "3h":
         h = 3
-        seconds = 1080
+        seconds = 10800
         time_ago = '3 Hours'
     elif graph_span == "6h":
         h = 6
