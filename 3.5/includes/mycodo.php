@@ -350,7 +350,7 @@ if (isset($output_error)) {
                     </div>
                     <div style="float: left; padding: 0 2em 1em 0.5em;">
                         <div style="float: left; padding-right: 0.1em;">
-                            <input type="submit" name="Refresh" value="Refresh&#10;Page" title="Refresh page">
+                            <button name="Refresh" type="submit" value="">Refresh<br>Page</button>
                         </div>
                     </div>
                     <div style="float: left; padding: 0.2em 0 1em 0.5em">
@@ -528,6 +528,7 @@ if (isset($output_error)) {
             ?>
                 
             <?php if (count($sensor_t_id) > 0) { ?>
+            <div style="clear: both;"></div>
             <div class="sensor-title">Temperature Sensors</div>
                 <?php
                 for ($i = 0; $i < count($sensor_t_id); $i++) {
@@ -769,6 +770,7 @@ if (isset($output_error)) {
             ?>
 
             <?php if (count($sensor_ht_id) > 0) { ?>
+            <div style="clear: both;"></div>
             <div class="sensor-title">Humidity/Temperature Sensors</div>
                 <?php
                 for ($i = 0; $i < count($sensor_ht_id); $i++) {
@@ -1075,6 +1077,7 @@ if (isset($output_error)) {
             ?>
 
             <?php if (count($sensor_co2_id) > 0) { ?>
+            <div style="clear: both;"></div>
             <div class="sensor-title">CO<sub>2</sub> Sensors</div>
                 <?php
                 for ($i = 0; $i < count($sensor_co2_id); $i++) {
@@ -1316,6 +1319,7 @@ if (isset($output_error)) {
             ?>
 
            <?php if (count($sensor_press_id) > 0) { ?>
+           <div style="clear: both;"></div>
             <div class="sensor-title">Pressure Sensors</div>
                 <?php
                 for ($i = 0; $i < count($sensor_press_id); $i++) {
