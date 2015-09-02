@@ -94,6 +94,10 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
         d = 7
         seconds = 604800
         time_ago = '1 Week'
+    elif graph_span == "2w":
+        d = 14
+        seconds = 1209600
+        time_ago = '2 Weeks'
     elif graph_span == "1m":
         d = 30
         seconds = 2592000
@@ -102,6 +106,10 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
         d = 90
         seconds = 7776000
         time_ago = '3 Months'
+    elif graph_span == "6m":
+        d = 180
+        seconds = 15552000
+        time_ago = '6 Months'
     elif graph_span == "legend-full":
         h = 6
         seconds = 21600

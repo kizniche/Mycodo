@@ -394,8 +394,10 @@ if (isset($output_error)) {
                                 <option value="1d" <?php if ($graph_time_span == '1d') echo 'selected="selected"'; ?>>1 Day</option>
                                 <option value="3d" <?php if ($graph_time_span == '3d') echo 'selected="selected"'; ?>>3 Days</option>
                                 <option value="1w" <?php if ($graph_time_span == '1w') echo 'selected="selected"'; ?>>1 Week</option>
+                                <option value="2w" <?php if ($graph_time_span == '2w') echo 'selected="selected"'; ?>>2 Weeks</option>
                                 <option value="1m" <?php if ($graph_time_span == '1m') echo 'selected="selected"'; ?>>1 Month</option>
                                 <option value="3m" <?php if ($graph_time_span == '3m') echo 'selected="selected"'; ?>>3 Months</option>
+                                <option value="6m" <?php if ($graph_time_span == '6m') echo 'selected="selected"'; ?>>6 Months</option>
                             </select>
                         </div>
                         <div style="float: left; padding-top: 0.9em;">
