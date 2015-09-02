@@ -193,6 +193,7 @@ def setup_db(update):
     if target == 'all' or target == 'mycodo':
         print "Mycodo database creation/integrity check"
         mycodo_database_create()
+        mycodo_database_update()
     
     if target == 'all' or target == 'user':
         delete_all_tables_user()
