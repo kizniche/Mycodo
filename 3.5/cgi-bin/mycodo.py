@@ -38,7 +38,6 @@ import datetime
 import fcntl
 import getopt
 import logging
-import numpy as np
 import os
 import re
 import rpyc
@@ -109,6 +108,7 @@ client_var = None
 
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
+
     def exposed_ChangeRelay(self, relay, state):
         if (state == 1):
             logging.info("[Client command] Changing Relay %s to HIGH", relay)
@@ -122,6 +122,7 @@ class ComServer(rpyc.Service):
                 args = (int(relay), int(state), 0,))
             rod.start()
         return 1
+
     def exposed_GenerateGraph(self, sensor_type, graph_type, graph_span, graph_id, sensor_number):
         if (graph_span == 'default'):
             logging.info("[Client command] Generate Graph: %s %s %s %s", sensor_type, graph_span, graph_id, sensor_number)
@@ -129,6 +130,7 @@ class ComServer(rpyc.Service):
             logging.info("[Client command] Generate Graph: %s %s %s %s %s", sensor_type, graph_type, graph_span, graph_id, sensor_number)
         mycodoGraph.generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number, sensor_t_name, sensor_t_graph, sensor_t_period, pid_t_temp_relay_high, pid_t_temp_relay_low, sensor_ht_name, sensor_ht_graph, sensor_ht_period, pid_ht_temp_relay_high, pid_ht_temp_relay_low, pid_ht_hum_relay_high, pid_ht_hum_relay_low, sensor_co2_name, sensor_co2_graph, sensor_co2_period, pid_co2_relay_high, pid_co2_relay_low, sensor_press_name, sensor_press_graph, sensor_press_period, pid_press_temp_relay_high, pid_press_temp_relay_low, pid_press_press_relay_high, pid_press_press_relay_low, relay_name)
         return 1
+
     def exposed_PID_restart(self, sensortype):
         global client_que
         logging.info("[Daemon] Commanding all %s PIDs to stop", sensortype)
@@ -205,9 +207,11 @@ class ComServer(rpyc.Service):
     def exposed_PID_start(self, pidtype, number):
         PID_start(pidtype, number)
         return 1
+
     def exposed_PID_stop(self, pidtype, number):
         PID_stop(pidtype, number)
         return 1
+
     def exposed_ReadPressSensor(self, pin, sensor):
         logging.info("[Client command] Read Press Sensor %s from GPIO pin %s", sensor, pin)
         if (sensor == 'BMP085-180'):
@@ -218,6 +222,7 @@ class ComServer(rpyc.Service):
         else:
             return 'Invalid Sensor Name'
         return (tc, press, alt, sea_press)
+
     def exposed_ReadCO2Sensor(self, pin, sensor):
         logging.info("[Client command] Read CO2 Sensor %s from GPIO pin %s", sensor, pin)
         if (sensor == 'K30'):
@@ -225,6 +230,7 @@ class ComServer(rpyc.Service):
             return sensor_co2_read_co2
         else:
             return 'Invalid Sensor Name'
+
     def exposed_ReadHTSensor(self, pin, sensor):
         logging.info("[Client command] Read HT Sensor %s from GPIO pin %s", sensor, pin)
         if (sensor == 'DHT11'): device = Adafruit_DHT.DHT11
@@ -234,12 +240,14 @@ class ComServer(rpyc.Service):
             return 'Invalid Sensor Name'
         hum, tc = Adafruit_DHT.read_retry(device, pin)
         return (tc, hum)
+
     def exposed_ReadTSensor(self, pin, device):
         logging.info("[Client command] Read T Sensor %s from GPIO pin %s", sensor, pin)
         if (sensor == 'DS18B20'):
             return read_t(0, device, pin)
         else:
             return 'Invalid Sensor Name'
+
     def exposed_SQLReload(self, relay):
         if relay != -1:
             logging.info("[Client command] Relay %s GPIO pin changed to %s, initialize and turn off", relay, relay_pin[relay])
@@ -250,14 +258,17 @@ class ComServer(rpyc.Service):
         while client_que == 'sql_reload':
             time.sleep(0.1)
         return 1
+
     def exposed_Status(self, var):
         logging.debug("[Client command] Request status report")
         return 1
+
     def exposed_Terminate(self, remoteCommand):
         global client_que
         client_que = 'TerminateServer'
         logging.info("[Client command] terminate threads and shut down")
         return 1
+
     def exposed_WriteTSensorLog(self, sensor):
         global client_que
         global client_var
@@ -272,6 +283,7 @@ class ComServer(rpyc.Service):
         while (change_sensor_log):
             time.sleep(0.1)
         return 1
+
     def exposed_WriteHTSensorLog(self, sensor):
         global client_que
         global client_var
@@ -286,6 +298,7 @@ class ComServer(rpyc.Service):
         while (change_sensor_log):
             time.sleep(0.1)
         return 1
+
     def exposed_WriteCO2SensorLog(self, sensor):
         global client_que
         global client_var
@@ -300,6 +313,7 @@ class ComServer(rpyc.Service):
         while (change_sensor_log):
             time.sleep(0.1)
         return 1
+
     def exposed_WritePressSensorLog(self, sensor):
         global client_que
         global client_var
@@ -343,6 +357,7 @@ def usage():
     print "Examples: mycodo.py"
     print "          mycodo.py -l d"
     print "          mycodo.py -l w -v\n"
+
 
 # Check for any command line options
 def menu():
@@ -417,10 +432,6 @@ def daemon(output, log):
     pid_co2_active = []
     pid_press_temp_active = []
     pid_press_press_active = []
-    
-    global change_sensor_log
-    global server
-    global client_que
 
     global start_all_t_pids
     global stop_all_t_pids
@@ -439,6 +450,10 @@ def daemon(output, log):
     stop_all_co2_pids = 0
     start_all_press_pids = 1
     stop_all_press_pids = 0
+
+    global change_sensor_log
+    global server
+    global client_que
 
     # Set log level based on startup argument
     if (log == 'warning'):
@@ -463,7 +478,7 @@ def daemon(output, log):
     ct.start()
     time.sleep(1)
 
-    logging.info("[Daemon] Conducting initial sensor readings: %s T, %s HT, %s CO2, and %s P", sum(sensor_t_activated), sum(sensor_ht_activated), sum(sensor_co2_activated), sum(sensor_press_activated))
+    logging.info("[Daemon] Conducting initial sensor readings: %s Temp, %s Hum, %s CO2, %s Press", sum(sensor_t_activated), sum(sensor_ht_activated), sum(sensor_co2_activated), sum(sensor_press_activated))
 
     pid_t_temp_alive = [1] * len(sensor_t_id)
     pid_ht_temp_alive = [1] * len(sensor_ht_id)
@@ -502,6 +517,7 @@ def daemon(output, log):
 
             if client_que == 'sql_reload':
                 read_sql()
+
             elif client_que == 'write_t_sensor_log':
                 logging.debug("[Client command] Write T Sensor Log")
                 if (client_var != 0 and sensor_t_activated[client_var]):
@@ -518,6 +534,7 @@ def daemon(output, log):
                                 logging.warning("Could not read Temp-%s sensor, not writing to sensor log", i)
                             time.sleep(0.1)
                 change_sensor_log = 0
+
             elif client_que == 'write_ht_sensor_log':
                 logging.debug("[Client command] Write HT Sensor Log")
                 if (client_var != 0 and sensor_ht_activated[client_var]):
@@ -534,6 +551,7 @@ def daemon(output, log):
                                 logging.warning("Could not read Hum/Temp-%s sensor, not writing to sensor log", i)
                             time.sleep(0.1)
                 change_sensor_log = 0
+
             elif client_que == 'write_co2_sensor_log':
                 logging.debug("[Client command] Write CO2 Sensor Log")
                 if (client_var != 0 and sensor_co2_activated[client_var]):
@@ -550,6 +568,7 @@ def daemon(output, log):
                                 logging.warning("Could not read CO2-%s sensor, not writing to sensor log", i)
                             time.sleep(0.1)
                 change_sensor_log = 0
+
             elif client_que == 'write_press_sensor_log':
                 logging.debug("[Client command] Write Press Sensor Log")
                 if (client_var != 0 and sensor_press_activated[client_var]):
@@ -566,11 +585,14 @@ def daemon(output, log):
                                 logging.warning("Could not read Press-%s sensor, not writing to sensor log", i)
                             time.sleep(0.1)
                 change_sensor_log = 0
+
             elif client_que == 'TerminateServer':
                 logging.info("[Daemon] Backing up logs")
+
                 mycodoLog.Concatenate_Logs()
 
                 logging.info("[Daemon] Commanding all PIDs to turn off")
+
                 pid_t_temp_alive = [0] * len(sensor_t_id)
                 pid_ht_temp_alive =  [0] * len(sensor_ht_id)
                 pid_ht_hum_alive =  [0] * len(sensor_ht_id)
@@ -589,6 +611,7 @@ def daemon(output, log):
                 # server.close()
 
                 logging.info("[Daemon] Waiting for all PIDs to turn off")
+
                 for i in range(0, len(sensor_t_id)):
                     if pid_t_temp_or[i] == 0:
                         while pid_t_temp_alive[i] == 0:
@@ -622,9 +645,10 @@ def daemon(output, log):
                 logging.info("[Daemon] All PIDs have turned off")
 
                 logging.info("[Daemon] Turning off all relays")
+
                 Relays_Off()
 
-                logging.info("[Daemon] Exiting Python")
+                logging.info("[Daemon] Shutdown success")
                 return 0
 
             client_que = None
@@ -1067,7 +1091,7 @@ def daemon(output, log):
             timerLogBackup = int(time.time()) + 21600
 
         #
-        # Simple timers
+        # Simple duration timers
         #
         if len(timer_id) != 0:
             for i in range(0, len(timer_id)):

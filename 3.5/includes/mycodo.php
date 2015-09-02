@@ -527,7 +527,6 @@ if (isset($output_error)) {
             }
             ?>
            
-
             <div style="width: 54em; padding-left: 0.5em; padding-top: 2em;">
                 
                 <?php if (count($sensor_t_id) > 0) { ?>
@@ -554,24 +553,15 @@ if (isset($output_error)) {
                             <td>Pre<br>Duration</td>
                             <td>Log</td>
                             <td>Graph</td>
-                            <td rowspan=2 style="padding: 0 0.5em;">
-                                <div style="padding: 0.2em 0">
-                                    Presets: <select style="width: 9em;" name="sensort<?php echo $i; ?>preset">
-                                        <option value="default">default</option>
-                                        <?php
-                                        for ($z = 0; $z < count($sensor_t_preset); $z++) {
-                                            echo '<option value="' . $sensor_t_preset[$z] . '">' . $sensor_t_preset[$z] . '</option>';
-                                        }
-                                        ?>
-                                    </select>
-                                    
-                                </div>
-                                <div style="padding: 0.2em 0">
-                                    <input type="submit" name="Change<?php echo $i; ?>TSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>TSensorOverwrite" value="Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>TSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_t_preset) == 0) echo ' disabled'; ?>>
-                                </div>
-                                <div style="padding: 0.2em 0">
-                                    <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensort<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>TSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>TSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
-                                </div>
+                            <td rowspan="2" style="padding: 0.2 0.5em;">
+                                Presets: <select style="width: 9em;" name="sensort<?php echo $i; ?>preset">
+                                    <option value="default">default</option>
+                                    <?php
+                                    for ($z = 0; $z < count($sensor_t_preset); $z++) {
+                                        echo '<option value="' . $sensor_t_preset[$z] . '">' . $sensor_t_preset[$z] . '</option>';
+                                    }
+                                    ?>
+                                </select>
                             </td>
                         </tr>
                         <tr class="shade" style="height: 2.5em;">
@@ -617,6 +607,14 @@ if (isset($output_error)) {
                             </td>
                             <td>
                                 <input type="checkbox" title="Enable graphs to be generated from the sensor log data" name="sensort<?php echo $i; ?>graph" value="1" <?php if ($sensor_t_graph[$i] == 1) echo 'checked'; ?>>
+                            </td>
+                            <td>
+                                <div style="padding: 0.2em 0">
+                                    <input type="submit" name="Change<?php echo $i; ?>TSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>TSensorOverwrite" value="Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>TSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_t_preset) == 0) echo ' disabled'; ?>>
+                                </div>
+                                <div style="padding: 0.2em 0">
+                                    <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensort<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>TSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>TSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
+                                </div>
                             </td>
                         </tr>
                     </table>
@@ -692,15 +690,17 @@ if (isset($output_error)) {
                                 <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_t_temp_d[$i]; ?>" maxlength=4 size=1 name="SetT<?php echo $i; ?>Temp_D" title="This is the Derivative gain of the PID controller"/>
                             </td>
                         </tr>
-                        </form>
-                        <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                    </table>
+                    </form>
+                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                    <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
                         <tr class="shade">
-                            <td colspan=12 class="conditional">
+                            <td class="conditional">
                                 Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                             </td>
                         </tr>
                         <tr class="shade">
-                            <td colspan=12 class="conditional">
+                            <td class="conditional">
                                 Name: 
                                 <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditiont<?php echo $i; ?>name" title="" required/>
                                 Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditiont<?php echo $i; ?>period" title="" required/> sec,
@@ -721,14 +721,12 @@ if (isset($output_error)) {
                                 <button type="submit" name="AddT<?php echo $i; ?>Conditional" title="Save new conditional statement">Save</button>
                             </td>
                         </tr>
-                        </form>
-                        <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                         <?php
                         if (isset($conditional_t_id[$i]) && count($conditional_t_id[$i]) > 0) { 
                             for ($z = 0; $z < count($conditional_t_id[$i]); $z++) {
                             ?>
                         <tr>
-                            <td colspan=12 style="text-align: left;">
+                            <td style="text-align: left;">
                                 <?php
                                 echo '<button type="submit" name="DeleteT' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                                 if ($conditional_t_state[$i][$z]) {
@@ -763,8 +761,8 @@ if (isset($output_error)) {
                         <?php
                         } }
                         ?>
-                        </form>
                     </table>
+                    </form>
                     <div style="margin-bottom: <?php if ($i == count($sensor_t_id)) echo '2'; else echo '1'; ?>em;"></div>
                     <?php
                     }
@@ -780,8 +778,8 @@ if (isset($output_error)) {
                     <?php
                     for ($i = 0; $i < count($sensor_ht_id); $i++) {
                     ?>
+                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                     <table class="sensor" style="border: 0.7em solid #EBEBEB; border-top: 0;">
-                        <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                         <tr class="shade">
                             <td>HT Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_ht_id[$i]; ?>)</span></td>
                             <td>Sensor<br>Name</td>
@@ -792,24 +790,15 @@ if (isset($output_error)) {
                             <td>Pre<br>Duration</td>
                             <td>Log</td>
                             <td>Graph</td>
-                            <td rowspan=2 style="padding: 0 0.5em;">
-                                <div style="padding: 0.2em 0">
-                                    Presets: <select style="width: 9em;" name="sensorht<?php echo $i; ?>preset">
-                                        <option value="default">default</option>
-                                        <?php
-                                        for ($z = 0; $z < count($sensor_ht_preset); $z++) {
-                                            echo '<option value="' . $sensor_ht_preset[$z] . '">' . $sensor_ht_preset[$z] . '</option>';
-                                        }
-                                        ?>
-                                    </select>
-                                    
-                                </div>
-                                <div style="padding: 0.2em 0">
-                                    <input type="submit" name="Change<?php echo $i; ?>HTSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>HTSensorOverwrite" value="Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>HTSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>>
-                                </div>
-                                <div style="padding: 0.2em 0">
-                                    <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensorht<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>HTSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>HTSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
-                                </div>
+                            <td rowspan=2 style="padding: 0.2 0.5em;">
+                                Presets: <select style="width: 9em;" name="sensorht<?php echo $i; ?>preset">
+                                    <option value="default">default</option>
+                                    <?php
+                                    for ($z = 0; $z < count($sensor_ht_preset); $z++) {
+                                        echo '<option value="' . $sensor_ht_preset[$z] . '">' . $sensor_ht_preset[$z] . '</option>';
+                                    }
+                                    ?>
+                                </select>
                             </td>
                         </tr>
                         <tr class="shade" style="height: 2.5em;">
@@ -856,6 +845,14 @@ if (isset($output_error)) {
                             </td>
                             <td>
                                 <input type="checkbox" title="Enable graphs to be generated from the sensor log data" name="sensorht<?php echo $i; ?>graph" value="1" <?php if ($sensor_ht_graph[$i] == 1) echo 'checked'; ?>>
+                            </td>
+                            <td>
+                                <div style="padding: 0.2em 0">
+                                    <input type="submit" name="Change<?php echo $i; ?>HTSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>HTSensorOverwrite" value="Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>HTSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>>
+                                </div>
+                                <div style="padding: 0.2em 0">
+                                    <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensorht<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>HTSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>HTSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
+                                </div>
                             </td>
                         </tr>
                     </table>
@@ -988,15 +985,17 @@ if (isset($output_error)) {
                                 <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_ht_hum_d[$i]; ?>" maxlength=4 size=1 name="SetHT<?php echo $i; ?>Hum_D" title="This is the Derivative gain of the PID controller"/>
                             </td>
                         </tr>
-                        </form>
-                        <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                    </table>
+                    </form>
+                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                    <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
                         <tr class="shade">
-                            <td colspan=12 class="conditional">
+                            <td class="conditional">
                                 Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                             </td>
                         </tr>
                         <tr class="shade">
-                            <td colspan=12 class="conditional">
+                            <td class="conditional">
                                 Name: 
                                 <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionht<?php echo $i; ?>name" title="" required/>
                                 Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditionht<?php echo $i; ?>period" title="" required/> sec,
@@ -1021,14 +1020,12 @@ if (isset($output_error)) {
                                 <button type="submit" name="AddHT<?php echo $i; ?>Conditional" title="Save new conditional statement">Save</button>
                             </td>
                         </tr>
-                        </form>
-                        <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                         <?php
                         if (isset($conditional_ht_id[$i]) && count($conditional_ht_id[$i]) > 0) { 
                             for ($z = 0; $z < count($conditional_ht_id[$i]); $z++) {
                             ?>
                         <tr>
-                            <td colspan=12 style="text-align: left;">
+                            <td style="text-align: left;">
                                 <?php
                                 echo '<button type="submit" name="DeleteHT' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                                 if ($conditional_ht_state[$i][$z]) {
@@ -1071,8 +1068,8 @@ if (isset($output_error)) {
                         <?php
                         } }
                         ?>
-                        </form>
                     </table>
+                    </form>
                     <div style="margin-bottom: <?php if ($i == count($sensor_ht_id)) echo '2'; else echo '1'; ?>em;"></div>
                     <?php
                     }
@@ -1100,24 +1097,15 @@ if (isset($output_error)) {
                             <td>Pre<br>Duration</td>
                             <td>Log</td>
                             <td>Graph</td>
-                            <td rowspan=2 style="padding: 0 0.5em;">
-                                <div style="padding: 0.2em 0">
-                                    Presets: <select style="width: 9em;" name="sensorco2<?php echo $i; ?>preset">
-                                        <option value="default">default</option>
-                                        <?php
-                                        for ($z = 0; $z < count($sensor_co2_preset); $z++) {
-                                            echo '<option value="' . $sensor_co2_preset[$z] . '">' . $sensor_co2_preset[$z] . '</option>';
-                                        }
-                                        ?>
-                                    </select>
-                                    
-                                </div>
-                                <div style="padding: 0.2em 0">
-                                    <input type="submit" name="Change<?php echo $i; ?>CO2SensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_co2_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>CO2SensorOverwrite" value="Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>CO2SensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_co2_preset) == 0) echo ' disabled'; ?>>
-                                </div>
-                                <div style="padding: 0.2em 0">
-                                    <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensorco2<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>CO2SensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>CO2SensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
-                                </div>
+                            <td rowspan=2 style="padding: 0.2 0.5em;">
+                                Presets: <select style="width: 9em;" name="sensorco2<?php echo $i; ?>preset">
+                                    <option value="default">default</option>
+                                    <?php
+                                    for ($z = 0; $z < count($sensor_co2_preset); $z++) {
+                                        echo '<option value="' . $sensor_co2_preset[$z] . '">' . $sensor_co2_preset[$z] . '</option>';
+                                    }
+                                    ?>
+                                </select>
                             </td>
                         </tr>
                         <tr class="shade" style="height: 2.5em;">
@@ -1166,6 +1154,14 @@ if (isset($output_error)) {
                             </td>
                             <td>
                                 <input type="checkbox" title="Enable graphs to be generated from the sensor log data" name="sensorco2<?php echo $i; ?>graph" value="1" <?php if ($sensor_co2_graph[$i] == 1) echo 'checked'; ?>>
+                            </td>
+                            <td>
+                                <div style="padding: 0.2em 0">
+                                    <input type="submit" name="Change<?php echo $i; ?>CO2SensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_co2_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>CO2SensorOverwrite" value="Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>CO2SensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_co2_preset) == 0) echo ' disabled'; ?>>
+                                </div>
+                                <div style="padding: 0.2em 0">
+                                    <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensorco2<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>CO2SensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>CO2SensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
+                                </div>
                             </td>
                         </tr>
                     </table>
@@ -1242,15 +1238,17 @@ if (isset($output_error)) {
                                 <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_co2_d[$i]; ?>" maxlength=5 size=1 name="SetCO2<?php echo $i; ?>CO2_D" title="This is the Derivative gain of the PID controller"/>
                             </td>
                         </tr>
-                        </form>
-                        <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                    </table>
+                    </form>
+                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                    <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
                         <tr class="shade">
-                            <td colspan=12 class="conditional">
+                            <td class="conditional">
                                 Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                             </td>
                         </tr>
                         <tr class="shade">
-                            <td colspan=12 class="conditional">
+                            <td class="conditional">
                                 Name: 
                                 <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionco2<?php echo $i; ?>name" title="" required/>
                                 Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditionco2<?php echo $i; ?>period" title="" required/> sec,
@@ -1271,14 +1269,12 @@ if (isset($output_error)) {
                                 <button type="submit" name="AddCO2<?php echo $i; ?>Conditional" title="Save new conditional statement">Save</button>
                             </td>
                         </tr>
-                        </form>
-                        <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                         <?php
                         if (isset($conditional_co2_id[$i]) && count($conditional_co2_id[$i]) > 0) { 
                             for ($z = 0; $z < count($conditional_co2_id[$i]); $z++) {
                             ?>
                         <tr>
-                            <td colspan=12 style="text-align: left;">
+                            <td style="text-align: left;">
                                 <?php
                                 echo '<button type="submit" name="DeleteCO2' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                                 if ($conditional_co2_state[$i][$z]) {
@@ -1313,8 +1309,8 @@ if (isset($output_error)) {
                         <?php
                         } }
                         ?>
-                        </form>
                     </table>
+                    </form>
                     <div style="margin-bottom: <?php if ($i == count($sensor_co2_id)) echo '2'; else echo '1'; ?>em;"></div>
                     <?php
                     }
@@ -1348,24 +1344,15 @@ if (isset($output_error)) {
                             <td>Pre<br>Duration</td>
                             <td>Log</td>
                             <td>Graph</td>
-                            <td rowspan=2 style="padding: 0 0.5em;">
-                                <div style="padding: 0.2em 0">
-                                    Presets: <select style="width: 9em;" name="sensorpress<?php echo $i; ?>preset">
-                                        <option value="default">default</option>
-                                        <?php
-                                        for ($z = 0; $z < count($sensor_press_preset); $z++) {
-                                            echo '<option value="' . $sensor_press_preset[$z] . '">' . $sensor_press_preset[$z] . '</option>';
-                                        }
-                                        ?>
-                                    </select>
-                                    
-                                </div>
-                                <div style="padding: 0.2em 0">
-                                    <input type="submit" name="Change<?php echo $i; ?>PressSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_press_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>PressSensorOverwrite" value="Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>PressSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_press_preset) == 0) echo ' disabled'; ?>>
-                                </div>
-                                <div style="padding: 0.2em 0">
-                                    <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensorpress<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>PressSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>PressSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
-                                </div>
+                            <td rowspan=2 style="padding: 0.2 0.5em;">
+                                Presets: <select style="width: 9em;" name="sensorpress<?php echo $i; ?>preset">
+                                    <option value="default">default</option>
+                                    <?php
+                                    for ($z = 0; $z < count($sensor_press_preset); $z++) {
+                                        echo '<option value="' . $sensor_press_preset[$z] . '">' . $sensor_press_preset[$z] . '</option>';
+                                    }
+                                    ?>
+                                </select>
                             </td>
                         </tr>
                         <tr class="shade" style="height: 2.5em;">
@@ -1414,6 +1401,14 @@ if (isset($output_error)) {
                             </td>
                             <td>
                                 <input type="checkbox" title="Enable graphs to be generated from the sensor log data" name="sensorpress<?php echo $i; ?>graph" value="1" <?php if ($sensor_press_graph[$i] == 1) echo 'checked'; ?>>
+                            </td>
+                            <td>
+                                <div style="padding: 0.2em 0">
+                                    <input type="submit" name="Change<?php echo $i; ?>PressSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_press_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>PressSensorOverwrite" value="Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>PressSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_press_preset) == 0) echo ' disabled'; ?>>
+                                </div>
+                                <div style="padding: 0.2em 0">
+                                    <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensorpress<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>PressSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>PressSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
+                                </div>
                             </td>
                         </tr>
                     </table>
@@ -1546,15 +1541,17 @@ if (isset($output_error)) {
                                 <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_press_d[$i]; ?>" maxlength=4 size=1 name="SetPress<?php echo $i; ?>Press_D" title="This is the Derivative gain of the PID controller"/>
                             </td>
                         </tr>
-                        </form>
-                        <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                    </table>
+                    </form>
+                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                    <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
                         <tr class="shade">
-                            <td colspan=12 class="conditional">
+                            <td class="conditional">
                                 Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                             </td>
                         </tr>
                         <tr class="shade">
-                            <td colspan=12 class="conditional">
+                            <td class="conditional">
                                 Name: 
                                 <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionpress<?php echo $i; ?>name" title="" required/>
                                 Every <input style="width: 4em;" type="number" step="any" value="360" maxlength=4 size=1 name="conditionpress<?php echo $i; ?>period" title="" required/> sec,
@@ -1579,14 +1576,12 @@ if (isset($output_error)) {
                                 <button type="submit" name="AddPress<?php echo $i; ?>Conditional" title="Save new conditional statement">Save</button>
                             </td>
                         </tr>
-                        </form>
-                        <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                         <?php
                         if (isset($conditional_press_id[$i]) && count($conditional_press_id[$i]) > 0) { 
                             for ($z = 0; $z < count($conditional_press_id[$i]); $z++) {
                             ?>
                         <tr>
-                            <td colspan=12 style="text-align: left;">
+                            <td style="text-align: left;">
                                 <?php
                                 echo '<button type="submit" name="DeletePress' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                                 if ($conditional_press_state[$i][$z]) {
@@ -1629,8 +1624,8 @@ if (isset($output_error)) {
                         <?php
                         } }
                         ?>
-                        </form>
                     </table>
+                    </form>
                     <div style="margin-bottom: <?php if ($i == count($sensor_press_id)) echo '2'; else echo '1'; ?>em;"></div>
                     <?php
                     }
