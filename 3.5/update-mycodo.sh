@@ -49,7 +49,7 @@ case "${1:-''}" in
                 $DIR/init.d/mycodo stop
 
                 NOW=$(date +"%Y-%m-%d_%H-%M-%S")
-                printf "#### Creating backup in $PDIR-backups/Mycodo-$NOW ####\n"
+                printf "#### Creating backup Mycodo-backups/Mycodo-$NOW ####\n"
                 mkdir -p $DIR/../../Mycodo-backups
                 mkdir -p $DIR/../../Mycodo-backups/Mycodo-$NOW
                 cp -r $DIR/../../Mycodo/3.5 $DIR/../../Mycodo-backups/Mycodo-$NOW/
