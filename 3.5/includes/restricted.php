@@ -179,7 +179,8 @@ for ($p = 0; $p < count($relay_id); $p++) {
         } else if ($actual_state == 'HIGH' && $desired_state == 'HIGH') {
             $settings_error = "Error: Can't turn relay $p On, it's already On";
         } else {
-            shell_exec("$mycodo_client -r $p $seconds_on");
+            $relay = $p+1;
+            shell_exec("$mycodo_client -r $relay $seconds_on");
         }
     }
 }
