@@ -400,7 +400,7 @@ function displayform() { ?>
         </div>
         <div style="display: inline-block; padding-right:0.5em; vertical-align: top;">
             <div style="display: inline-block; padding-right:0.5em;">
-                <select name="custom_type">
+                <select style="height: 3em;" name="custom_type">
                     <option value="Separate" <?php
                         if (isset($_POST['custom_type'])) {
                             if ($_POST['custom_type'] == 'Separate') echo 'selected="selected"';
@@ -413,15 +413,17 @@ function displayform() { ?>
                         ?>>Combined</option>
                 </select>
             </div>
-            <div style="display: inline-block; padding-right:0.5em;">
+        </div>
+        <div style="display: inline-block; padding-right:0.5em; vertical-align: top;">
+            <div style="adding-right:0.5em;">
                 Width: <input type="text" value="900" maxlength=4 size=4 name="graph-width" title="Width of the generated graph"> px (4000 max)
             </div>
-            <div style="display: inline-block; padding-right:0.5em;">
+            <div style="padding-right:0.5em;">
                 Show Key: <input type="hidden" name="key" value="0" /><input type="checkbox" id="key" name="key" value="1"<?php if (isset($_POST['key'])) if ($_POST['key'] == 1) echo ' checked'; ?> title="Generate graph with legend/key."/>
             </div>
         </div>
-        <div style="display: inline-block;">
-            <input type="submit" name="SubmitDates" value="Generate">
+        <div style="display: inline-block; padding-right:0.5em; vertical-align: top;">
+            <button type="submit" name="SubmitDates" value="Generate">Generate<br>Graph</button>
         </div>
     </div>
     </form>

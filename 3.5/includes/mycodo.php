@@ -358,34 +358,12 @@ if (isset($output_error)) {
                             <button name="Refresh" type="submit" value="">Refresh<br>Page</button>
                         </div>
                     </div>
-                    <div style="float: left; padding: 0.2em 0 1em 0.5em">
+                    <div style="float: left; padding: 0em 0 1em 0.5em">
                         <div style="float: left; padding-right: 0.5em;">
-                            <table>
-                                <tr>
-                                    <td>
-                                        <input type="radio" name="graph_type" value="separate" <?php
-                                        if ($graph_time_span != 'default' && $graph_type == 'separate') {
-                                            echo 'checked'; 
-                                        }
-                                        ?>>
-                                    </td>
-                                    <td>
-                                        Separate
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <input type="radio" name="graph_type" value="combined" <?php 
-                                        if ($graph_time_span != 'default' && $graph_type == 'combined') {
-                                            echo 'checked'; 
-                                        }
-                                        ?>>
-                                    </td>
-                                    <td>
-                                        Combined
-                                    </td>
-                                </tr>
-                            </table>
+                            <select style="height: 2.8em;" name="graph_type">
+                                <option value="separate" <?php if ($graph_time_span != 'default' && $graph_type == 'separate') echo 'selected="selected"'; ?>>Separate</option>
+                                <option value="combined" <?php if ($graph_time_span != 'default' && $graph_type == 'combined') echo 'selected="selected"'; ?>>Combined</option>
+                            </select>
                         </div>
                         <div style="float: left; padding-right: 0.5em;">
                             <select style="height: 2.8em;" name="graph_time_span">
@@ -494,7 +472,10 @@ if (isset($output_error)) {
                     </div>
                     <div style="float: left;">
                         <div style="padding-bottom: 0.1em;">Name <span style="font-size: 0.85em;">(required)</span></div>
-                        <input style="width: 8em;" maxlength=12 size=10 name="AddSensorName" title="Name of the new sensor."/> <button type="submit" name="AddSensor" value="Add">Add Sensor</button>
+                        <input style="width: 8em;" maxlength=12 size=10 name="AddSensorName" title="Name of the new sensor."/>
+                    </div>
+                    <div style="float: left; padding: 0.2em 0 0 0.3em;">
+                        <button type="submit" name="AddSensor" value="Add">Add<br>Sensor</button>
                     </div>
                 </div>
 
@@ -2149,17 +2130,17 @@ if (isset($output_error)) {
             </div>
 
             <div>
-                <div style="float: left; padding: 1em 1.5em;">
-                    <button name="CaptureStill" type="submit" value="">Capture Still</button>
+                <div style="float: left; padding: 0.5em 1.5em;">
+                    <button name="CaptureStill" type="submit" value="">Capture<br>Still</button>
                 </div>
 
-                <div style="float: left; padding: 1em 1.5em;">
+                <div style="float: left; padding: 0.5em 1.5em;">
                     <div>
                         <?php
                         if (!file_exists($lock_mjpg_streamer)) {
-                            echo '<button name="start-stream" type="submit" value="">Start</button>';
+                            echo '<button name="start-stream" type="submit" value="">Start<br>Stream</button>';
                         } else {
-                            echo '<button name="stop-stream" type="submit" value="">Stop</button>';
+                            echo '<button name="stop-stream" type="submit" value="">Stop<br>Stream</button>';
                         }
                         ?> Video Stream <?php
                         if (!file_exists($lock_mjpg_streamer)) {
@@ -2171,13 +2152,13 @@ if (isset($output_error)) {
                     </div>
                 </div>
 
-                <div style="float: left; padding: 1em 1.5em;">
+                <div style="float: left; padding: 0.5em 1.5em;">
                     <div>
                         <?php
                         if (!file_exists($lock_timelapse)) {
-                            echo '<button name="start-timelapse" type="submit" value="">Start</button>';
+                            echo '<button name="start-timelapse" type="submit" value="">Start<br>Timelapse</button>';
                         } else {
-                            echo '<button name="stop-timelapse" type="submit" value="">Stop</button>';
+                            echo '<button name="stop-timelapse" type="submit" value="">Stop<br>Timelapse</button>';
                         }
                         ?> Time-lapse <?php
                         if (!file_exists($lock_timelapse)) {
@@ -2292,25 +2273,46 @@ if (isset($output_error)) {
             ?>
 
             <div style="padding: 10px 0 0 15px;">
-                <div style="padding-bottom: 15px;">
-                    <form action="?tab=data<?php
-                        if (isset($_GET['page'])) {
-                            echo '&page=' , $_GET['page'];
-                        } ?>" method="POST">
-                        Lines: <input type="text" maxlength=8 size=8 name="Lines" />
-                        <input type="submit" name="TSensor" value="T">
-                        <input type="submit" name="HTSensor" value="HT">
-                        <input type="submit" name="Co2Sensor" value="CO2">
-                        <input type="submit" name="PressSensor" value="Press">
-                        <input type="submit" name="Relay" value="Relay">
-                        <input type="submit" name="Login" value="Login">
-                        <input type="submit" name="Daemon" value="Daemon">
-                        <input type="submit" name="Users" value="User Database">
-                        <input type="submit" name="Database" value="Mycodo Database">
-                        <input type="submit" name="Update" value="Update Log">
-                    </form>
-                </div>
-                <div style="font-family: monospace;">
+                <form action="?tab=data<?php
+                    if (isset($_GET['page'])) {
+                        echo '&page=' , $_GET['page'];
+                    } ?>" method="POST">
+                    <div class="data-buttons data-buttons-rightspace">
+                        Lines: <input style="height: 2.5em;" type="text" maxlength=8 size=8 name="Lines" />
+                    </div>
+                    <div class="data-buttons">
+                        <button type="submit" name="TSensor" value="T">T<br>Sensor</button>
+                    </div>
+                    <div class="data-buttons">
+                        <button type="submit" name="HTSensor" value="HT">HT<br>Sensor</button>
+                    </div>
+                    <div class="data-buttons">
+                        <button type="submit" name="Co2Sensor" value="CO2">CO2<br>Sensor</button>
+                    </div>
+                    <div class="data-buttons data-buttons-rightspace">
+                        <button type="submit" name="PressSensor" value="Press">Press<br>Sensor</button>
+                    </div>
+                    <div class="data-buttons">
+                        <button type="submit" name="Relay" value="Relay">Relay<br>Log</button>
+                    </div>
+                    <div class="data-buttons">
+                        <button type="submit" name="Login" value="Login">Login<br>Log</button>
+                    </div>
+                    <div class="data-buttons">
+                        <button type="submit" name="Daemon" value="Daemon">Daemon<br>Log</button>
+                    </div>
+                    <div class="data-buttons data-buttons-rightspace">
+                        <button type="submit" name="Update" value="Update Log">Update<br>Log</button>
+                    </div>
+                    <div class="data-buttons">
+                        <button type="submit" name="Users" value="User Database">User<br>Database</button>
+                    </div>
+                    <div class="data-buttons">
+                        <button type="submit" name="Database" value="Mycodo Database">Mycodo<br>Database</button>
+                    </div>
+                </form>
+                <div style="clear: both;"></div>
+                <div style="font-family: monospace; padding-top:1em;">
                     <pre><?php
                         if(isset($_POST['TSensor'])) {
                             concatenate_logs('t');

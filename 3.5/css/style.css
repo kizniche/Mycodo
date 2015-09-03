@@ -205,6 +205,18 @@ button.linkoff {
 }
 
 
+/*** Data tab ***/
+
+.data-buttons {
+  float:left;
+  padding:0 0.1em;
+}
+
+.data-buttons-rightspace {
+  padding:0 0.6em 0 0.1em;
+}
+
+
 /*** Settings tab ***/
 
 .smtp {
