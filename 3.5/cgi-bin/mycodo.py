@@ -1330,7 +1330,7 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
                 logging.debug("[PID HT-Humidity-%s] Reading humidity...", sensor+1)
                 if read_ht_sensor(sensor) == 1:
 
-                    PIDHum = abs(pid_hum.update(float(sensor_ht_read_hum[sensor])))
+                    PIDHum = pid_hum.update(float(sensor_ht_read_hum[sensor]))
 
                     if sensor_ht_read_hum[sensor] > pid_ht_hum_set[sensor]:
                         logging.debug("[PID HT-Humidity-%s] Humidity: %.1f%% now > %.1f%% set", sensor+1, sensor_ht_read_hum[sensor], pid_ht_hum_set[sensor])
@@ -1597,7 +1597,7 @@ def press_sensor_pressure_monitor(ThreadName, sensor):
                 logging.debug("[PID Press-Pressure-%s] Reading pressure...", sensor+1)
                 if read_press_sensor(sensor) == 1:
 
-                    PIDPress = abs(pid_press.update(float(sensor_press_read_press[sensor])))
+                    PIDPress = pid_press.update(float(sensor_press_read_press[sensor]))
 
                     if sensor_press_read_press[sensor] > pid_press_press_set[sensor]:
                         logging.debug("[PID Press-Pressure-%s] Pressure: %.1f%% now > %.1fPa set", sensor+1, sensor_press_read_press[sensor], pid_press_press_set[sensor])
