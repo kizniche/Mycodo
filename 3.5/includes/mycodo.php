@@ -535,6 +535,7 @@ if (isset($output_error)) {
             <?php if (count($sensor_t_id) > 0) { ?>
             <div style="clear: both;"></div>
             <div class="sensor-title">Temperature Sensors</div>
+            <div style="clear: both;"></div>
                 <?php
                 for ($i = 0; $i < count($sensor_t_id); $i++) {
                 ?>
@@ -777,6 +778,7 @@ if (isset($output_error)) {
             <?php if (count($sensor_ht_id) > 0) { ?>
             <div style="clear: both;"></div>
             <div class="sensor-title">Humidity/Temperature Sensors</div>
+            <div style="clear: both;"></div>
                 <?php
                 for ($i = 0; $i < count($sensor_ht_id); $i++) {
                 ?>
@@ -1084,6 +1086,7 @@ if (isset($output_error)) {
             <?php if (count($sensor_co2_id) > 0) { ?>
             <div style="clear: both;"></div>
             <div class="sensor-title">CO<sub>2</sub> Sensors</div>
+            <div style="clear: both;"></div>
                 <?php
                 for ($i = 0; $i < count($sensor_co2_id); $i++) {
                 ?>
@@ -1323,9 +1326,10 @@ if (isset($output_error)) {
             }
             ?>
 
-           <?php if (count($sensor_press_id) > 0) { ?>
-           <div style="clear: both;"></div>
+            <?php if (count($sensor_press_id) > 0) { ?>
+            <div style="clear: both;"></div>
             <div class="sensor-title">Pressure Sensors</div>
+            <div style="clear: both;"></div>
                 <?php
                 for ($i = 0; $i < count($sensor_press_id); $i++) {
                 ?>
