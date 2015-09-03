@@ -245,6 +245,7 @@ button.linkoff {
 
 table.relays {
     width: 42em;
+    margin: 0 0 0.5em 0;
 }
 
 table.relays td {

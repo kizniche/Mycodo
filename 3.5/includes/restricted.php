@@ -149,9 +149,9 @@ for ($p = 0; $p < count($relay_id); $p++) {
         else if ($GPIO_state == 1 && $trigger_state == 'LOW') $actual_state = 'LOW';
         $relay = $p+1;
         if ($actual_state == 'LOW' && $desired_state == 'OFF') {
-            $settings_error = "Error: Can't turn relay $relay Off, it's already Off";
+            $sensor_error = "Error: Can't turn relay $relay Off, it's already Off";
         } else if ($actual_state == 'HIGH' && $desired_state == 'ON') {
-            $settings_error = "Error: Can't turn relay $relay On, it's already On";
+            $sensor_error = "Error: Can't turn relay $relay On, it's already On";
         } else {
             if ($desired_state == 'ON') $desired_state = 1;
             else $desired_state = 0;
@@ -175,9 +175,9 @@ for ($p = 0; $p < count($relay_id); $p++) {
         $seconds_on = $_POST['sR' . $p];
 
         if (!is_numeric($seconds_on) || $seconds_on < 2 || $seconds_on != round($seconds_on)) {
-            $settings_error = "Error: Relay $p ($name): Seconds On must be a positive integer and > 1</div>";
+            $sensor_error = "Error: Relay $p ($name): Seconds On must be a positive integer and > 1</div>";
         } else if ($actual_state == 'HIGH' && $desired_state == 'HIGH') {
-            $settings_error = "Error: Can't turn relay $p On, it's already On";
+            $sensor_error = "Error: Can't turn relay $p On, it's already On";
         } else {
             $relay = $p+1;
             shell_exec("$mycodo_client -r $relay $seconds_on");
