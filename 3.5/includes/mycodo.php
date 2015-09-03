@@ -388,9 +388,7 @@ if (isset($output_error)) {
                             </table>
                         </div>
                         <div style="float: left; padding-right: 0.5em;">
-                            Time Span
-                            <br>
-                            <select name="graph_time_span">
+                            <select style="height: 2.8em;" name="graph_time_span">
                                 <option value="default" <?php if ($graph_time_span == 'default') echo 'selected="selected"'; ?>>Day/Week</option>
                                 <option value="1h" <?php if ($graph_time_span == '1h') echo 'selected="selected"'; ?>>1 Hour</option>
                                 <option value="3h" <?php if ($graph_time_span == '3h') echo 'selected="selected"'; ?>>3 Hours</option>
@@ -549,9 +547,9 @@ if (isset($output_error)) {
                         <td>Sensor<br>Device</td>
                         <?php 
                         if ($sensor_t_device[$i] == 'DS18B20') {
-                            echo '<td align=center>Serial No<br>28-xxx</td>';
+                            echo '<td>Serial No<br>28-xxx</td>';
                         } else {
-                            echo '<td align=center>GPIO<br>Pin</td>';
+                            echo '<td>GPIO<br>Pin</td>';
                         }
                         ?>
                         <td>Log<br>Interval</td>
