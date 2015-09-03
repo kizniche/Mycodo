@@ -1032,7 +1032,7 @@ def daemon(output, log):
 
                                 if conditional_co2_relay_state[j][k][0] == 1:
                                     if conditional_co2_relay_seconds_on[j][k][0] > 0:
-                                        rod = threading.CO2hread(target = relay_on_duration,
+                                        rod = threading.Thread(target = relay_on_duration,
                                             args = (conditional_co2_relay[j][k][0], conditional_co2_relay_seconds_on[j][k][0], j,))
                                         rod.start()
                                     else:
