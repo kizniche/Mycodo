@@ -2016,11 +2016,11 @@ def read_co2_sensor(sensor):
             logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor+1, co2)
             logging.debug("[Read CO2 Sensor-%s] Difference: %s", sensor+1, abs(co22 - co2))
 
-            if abs(co22-co2) > 20:
+            if abs(co22-co2) > 200:
                 co22 = co2
-                logging.debug("[Read CO2 Sensor-%s] Successive readings > 20 difference: Rereading", sensor+1)
+                logging.debug("[Read CO2 Sensor-%s] Successive readings > 200 difference: Rereading", sensor+1)
             else:
-                logging.debug("[Read CO2 Sensor-%s] Successive readings < 20 difference: keeping.", sensor+1)
+                logging.debug("[Read CO2 Sensor-%s] Successive readings < 200 difference: keeping.", sensor+1)
                 logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor+1, co2)
                 sensor_co2_read_co2[sensor] = co2
                 return 1
