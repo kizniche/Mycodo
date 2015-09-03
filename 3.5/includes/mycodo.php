@@ -641,10 +641,10 @@ if (isset($output_error)) {
                         <td class="onoff">
                             <?php
                             if ($pid_t_temp_or[$i] == 1) {
-                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangeT<?php echo $i; ?>TempOR" value="0"> | <button style="width: 3em;" type="submit" name="ChangeT<?php echo $i; ?>TempOR" value="0">ON</button>
+                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangeT<?php echo $i; ?>TempOR" value="0"> | <button style="width: 6.5em;" type="submit" name="ChangeT<?php echo $i; ?>TempOR" value="0">TURN ON</button>
                                 <?php
                             } else {
-                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangeT<?php echo $i; ?>TempOR" value="1"> | <button style="width: 3em;" type="submit" name="ChangeT<?php echo $i; ?>TempOR" value="1">OFF</button>
+                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangeT<?php echo $i; ?>TempOR" value="1"> | <button style="width: 6.5em;" type="submit" name="ChangeT<?php echo $i; ?>TempOR" value="1">TURN OFF</button>
                             <?php
                             }
                             ?>
@@ -735,11 +735,9 @@ if (isset($output_error)) {
                             <?php
                             echo '<button type="submit" name="DeleteT' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                             if ($conditional_t_state[$i][$z]) {
-                                echo '<button type="submit" name="TurnOffT' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> ';
-                                echo 'On ';
+                                echo '<button type="submit" name="TurnOffT' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> <input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="TurnOffT' . $i . '-' . $z . 'Conditional" value="0"> ';
                             } else {
-                                echo '<button type="submit" name="TurnOnT' . $i . '-' . $z . 'Conditional" title="">Turn On</button> ';
-                                echo 'Off ';
+                                echo '<button type="submit" name="TurnOnT' . $i . '-' . $z . 'Conditional" title="">Turn On</button> <input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="TurnOnT' . $i . '-' . $z . 'Conditional" value="0"> ';
                             }
 
                             echo $z+1 . ' ' . $conditional_t_name[$i][$z] . ': Every ' . $conditional_t_period[$i][$z] . ' sec, if the Temperature is ';
@@ -750,7 +748,7 @@ if (isset($output_error)) {
                                 echo 'Below ';
                             }
 
-                            echo $conditional_t_setpoint[$i][$z] .  '%deg;C, turn Relay ' . $conditional_t_relay[$i][$z];
+                            echo $conditional_t_setpoint[$i][$z] .  '&deg;C, turn Relay ' . $conditional_t_relay[$i][$z];
 
                             if ($conditional_t_relay_state[$i][$z]) {
                                 echo ' On';
@@ -881,10 +879,10 @@ if (isset($output_error)) {
                         <td class="onoff">
                             <?php
                             if ($pid_ht_temp_or[$i] == 1) {
-                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangeHT<?php echo $i; ?>TempOR" value="0"> | <button style="width: 3em;" type="submit" name="ChangeHT<?php echo $i; ?>TempOR" value="0">ON</button>
+                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangeHT<?php echo $i; ?>TempOR" value="0"> | <button style="width: 6.5em;" type="submit" name="ChangeHT<?php echo $i; ?>TempOR" value="0">TURN ON</button>
                                 <?php
                             } else {
-                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangeHT<?php echo $i; ?>TempOR" value="1"> | <button style="width: 3em;" type="submit" name="ChangeHT<?php echo $i; ?>TempOR" value="1">OFF</button>
+                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangeHT<?php echo $i; ?>TempOR" value="1"> | <button style="width: 6.5em;" type="submit" name="ChangeHT<?php echo $i; ?>TempOR" value="1">TURN OFF</button>
                             <?php
                             }
                             ?>
@@ -938,10 +936,10 @@ if (isset($output_error)) {
                         <td class="onoff">
                             <?php
                             if ($pid_ht_hum_or[$i] == 1) {
-                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangeHT<?php echo $i; ?>HumOR" value="0"> | <button style="width: 3em;" type="submit" name="ChangeHT<?php echo $i; ?>HumOR" value="0">ON</button>
+                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangeHT<?php echo $i; ?>HumOR" value="0"> | <button style="width: 6.5em;" type="submit" name="ChangeHT<?php echo $i; ?>HumOR" value="0">TURN ON</button>
                                 <?php
                             } else {
-                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangeHT<?php echo $i; ?>HumOR" value="1"> | <button style="width: 3em;" type="submit" name="ChangeHT<?php echo $i; ?>HumOR" value="1">OFF</button>
+                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangeHT<?php echo $i; ?>HumOR" value="1"> | <button style="width: 6.5em;" type="submit" name="ChangeHT<?php echo $i; ?>HumOR" value="1">TURN OFF</button>
                             <?php
                             }
                             ?>
@@ -1036,11 +1034,9 @@ if (isset($output_error)) {
                             <?php
                             echo '<button type="submit" name="DeleteHT' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                             if ($conditional_ht_state[$i][$z]) {
-                                echo '<button type="submit" name="TurnOffHT' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> ';
-                                echo 'On ';
+                                echo '<button type="submit" name="TurnOffHT' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> <input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="TurnOffHT' . $i . '-' . $z . 'Conditional" value="0"> ';
                             } else {
-                                echo '<button type="submit" name="TurnOnHT' . $i . '-' . $z . 'Conditional" title="">Turn On</button> ';
-                                echo 'Off ';
+                                echo '<button type="submit" name="TurnOnHT' . $i . '-' . $z . 'Conditional" title="">Turn On</button> <input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="TurnOnHT' . $i . '-' . $z . 'Conditional" value="0"> ';
                             }
 
                             echo $z+1 . ' ' . $conditional_ht_name[$i][$z] . ': Every ' . $conditional_ht_period[$i][$z] . ' sec, if the ' . $conditional_ht_condition[$i][$z] . ' is ';
@@ -1191,10 +1187,10 @@ if (isset($output_error)) {
                         <td class="onoff">
                             <?php
                             if ($pid_co2_or[$i] == 1) {
-                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="Change<?php echo $i; ?>CO2OR" value="0"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>CO2OR" value="0">ON</button>
+                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="Change<?php echo $i; ?>CO2OR" value="0"> | <button style="width: 6.5em;" type="submit" name="Change<?php echo $i; ?>CO2OR" value="0">TURN ON</button>
                                 <?php
                             } else {
-                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="Change<?php echo $i; ?>CO2OR" value="1"> | <button style="width: 3em;" type="submit" name="Change<?php echo $i; ?>CO2OR" value="1">OFF</button>
+                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="Change<?php echo $i; ?>CO2OR" value="1"> | <button style="width: 6.5em;" type="submit" name="Change<?php echo $i; ?>CO2OR" value="1">TURN OFF</button>
                                 <?php
                             }
                             ?>
@@ -1286,11 +1282,9 @@ if (isset($output_error)) {
                             <?php
                             echo '<button type="submit" name="DeleteCO2' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                             if ($conditional_co2_state[$i][$z]) {
-                                echo '<button type="submit" name="TurnOffCO2' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> ';
-                                echo 'On ';
+                                echo '<button type="submit" name="TurnOffCO2' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> <input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="TurnOffCO2' . $i . '-' . $z . 'Conditional" value="0"> ';
                             } else {
-                                echo '<button type="submit" name="TurnOnCO2' . $i . '-' . $z . 'Conditional" title="">Turn On</button> ';
-                                echo 'Off ';
+                                echo '<button type="submit" name="TurnOnCO2' . $i . '-' . $z . 'Conditional" title="">Turn On</button> <input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="TurnOnCO2' . $i . '-' . $z . 'Conditional" value="0"> ';
                             }
 
                             echo $z+1 . ' ' . $conditional_co2_name[$i][$z] . ': Every ' . $conditional_co2_period[$i][$z] . ' sec, if the CO<sub>2</sub> is ';
@@ -1440,10 +1434,10 @@ if (isset($output_error)) {
                         <td class="onoff">
                             <?php
                             if ($pid_press_temp_or[$i] == 1) {
-                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangePress<?php echo $i; ?>TempOR" value="0"> | <button style="width: 3em;" type="submit" name="ChangePress<?php echo $i; ?>TempOR" value="0">ON</button>
+                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangePress<?php echo $i; ?>TempOR" value="0"> | <button style="width: 6.5em;" type="submit" name="ChangePress<?php echo $i; ?>TempOR" value="0">TURN ON</button>
                                 <?php
                             } else {
-                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangePress<?php echo $i; ?>TempOR" value="1"> | <button style="width: 3em;" type="submit" name="ChangePress<?php echo $i; ?>TempOR" value="1">OFF</button>
+                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangePress<?php echo $i; ?>TempOR" value="1"> | <button style="width: 6.5em;" type="submit" name="ChangePress<?php echo $i; ?>TempOR" value="1">TURN OFF</button>
                             <?php
                             }
                             ?>
@@ -1497,10 +1491,10 @@ if (isset($output_error)) {
                         <td class="onoff">
                             <?php
                             if ($pid_press_press_or[$i] == 1) {
-                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangePress<?php echo $i; ?>PressOR" value="0"> | <button style="width: 3em;" type="submit" name="ChangePress<?php echo $i; ?>PressOR" value="0">ON</button>
+                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangePress<?php echo $i; ?>PressOR" value="0"> | <button style="width: 6.5em;" type="submit" name="ChangePress<?php echo $i; ?>PressOR" value="0">TURN ON</button>
                                 <?php
                             } else {
-                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangePress<?php echo $i; ?>PressOR" value="1"> | <button style="width: 3em;" type="submit" name="ChangePress<?php echo $i; ?>PressOR" value="1">OFF</button>
+                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangePress<?php echo $i; ?>PressOR" value="1"> | <button style="width: 6.5em;" type="submit" name="ChangePress<?php echo $i; ?>PressOR" value="1">TURN OFF</button>
                             <?php
                             }
                             ?>
@@ -1595,11 +1589,9 @@ if (isset($output_error)) {
                             <?php
                             echo '<button type="submit" name="DeletePress' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                             if ($conditional_press_state[$i][$z]) {
-                                echo '<button type="submit" name="TurnOffPress' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> ';
-                                echo 'On ';
+                                echo '<button type="submit" name="TurnOffPress' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> <input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="TurnOffPress' . $i . '-' . $z . 'Conditional" value="0"> ';
                             } else {
-                                echo '<button type="submit" name="TurnOnPress' . $i . '-' . $z . 'Conditional" title="">Turn On</button> ';
-                                echo 'Off ';
+                                echo '<button type="submit" name="TurnOnPress' . $i . '-' . $z . 'Conditional" title="">Turn On</button> <input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="TurnOnPress' . $i . '-' . $z . 'Conditional" value="0"> ';
                             }
 
                             echo $z+1 . ' ' . $conditional_press_name[$i][$z] . ': Every ' . $conditional_press_period[$i][$z] . ' sec, if the ' . $conditional_press_condition[$i][$z] . ' is ';
