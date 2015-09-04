@@ -364,7 +364,7 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
 
 
     // Check for errors
-    if (((int)$_POST['ChangeT' . $p . 'TempOR'] == 0 && isset($_POST['ChangeT' . $p . 'TempOR'])) ||
+    if ((isset($_POST['ChangeT' . $p . 'TempOR']) && (int)$_POST['ChangeT' . $p . 'TempOR'] == 0) ||
         ($pid_t_temp_or[$p] == 0 && isset($_POST['Change' . $p . 'TSensorOverwrite'])) ||
         ($pid_t_temp_or[$p] == 0 && isset($_POST['Change' . $p . 'TSensorLoad']) && $_POST['sensort' . $p . 'preset'] != 'default')) {
 
@@ -669,7 +669,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
 
 
     // Check for errors
-    if (((int)$_POST['ChangeHT' . $p . 'TempOR'] == 0 && isset($_POST['ChangeHT' . $p . 'TempOR'])) ||
+    if ((isset($_POST['ChangeHT' . $p . 'TempOR']) && (int)$_POST['ChangeHT' . $p . 'TempOR'] == 0) ||
         ($pid_ht_temp_or[$p] == 0 && isset($_POST['Change' . $p . 'HTSensorOverwrite'])) ||
         ($pid_ht_temp_or[$p] == 0 && isset($_POST['Change' . $p . 'HTSensorLoad']) && $_POST['sensort' . $p . 'preset'] != 'default')) {
 
@@ -682,7 +682,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
         }
     }
 
-    if (((int)$_POST['ChangeHT' . $p . 'HumOR'] == 0 && isset($_POST['ChangeHT' . $p . 'HumOR'])) ||
+    if ((isset($_POST['ChangeHT' . $p . 'HumOR']) && (int)$_POST['ChangeHT' . $p . 'HumOR'] == 0) ||
         ($pid_ht_hum_or[$p] == 0 && isset($_POST['Change' . $p . 'HTSensorOverwrite'])) ||
         ($pid_ht_hum_or[$p] == 0 && isset($_POST['Change' . $p . 'HTSensorLoad']) && $_POST['sensort' . $p . 'preset'] != 'default')) {
 
@@ -1068,7 +1068,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
 
 
     // Check for errors
-    if (((int)$_POST['Change' . $p . 'CO2OR'] == 0 && isset($_POST['Change' . $p . 'CO2OR'])) ||
+    if ((isset($_POST['Change' . $p . 'CO2OR']) && (int)$_POST['Change' . $p . 'CO2OR'] == 0) ||
         ($pid_co2_or[$p] == 0 && isset($_POST['Change' . $p . 'CO2SensorOverwrite'])) ||
         ($pid_co2_or[$p] == 0 && isset($_POST['Change' . $p . 'CO2SensorLoad']) && $_POST['sensorco2' . $p . 'preset'] != 'default')) {
 
@@ -1381,7 +1381,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
     }
 
     // Check for errors
-    if (((int)$_POST['ChangePress' . $p . 'TempOR'] == 0 && isset($_POST['ChangePress' . $p . 'TempOR'])) ||
+    if ((isset($_POST['ChangePress' . $p . 'TempOR']) && (int)$_POST['ChangePress' . $p . 'TempOR'] == 0) ||
         ($pid_press_temp_or[$p] == 0 && isset($_POST['Change' . $p . 'PressSensorOverwrite'])) ||
         ($pid_press_temp_or[$p] == 0 && isset($_POST['Change' . $p . 'PressSensorLoad']) && $_POST['sensorpress' . $p . 'preset'] != 'default')) {
 
@@ -1394,7 +1394,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
         }
     }
 
-    if (((int)$_POST['ChangePress' . $p . 'PressOR'] == 0 && isset($_POST['ChangePress' . $p . 'PressOR'])) ||
+    if ((isset($_POST['ChangePress' . $p . 'PressOR']) && (int)$_POST['ChangePress' . $p . 'PressOR'] == 0) ||
         ($pid_press_press_or[$p] == 0 && isset($_POST['Change' . $p . 'PressSensorOverwrite'])) ||
         ($pid_press_press_or[$p] == 0 && isset($_POST['Change' . $p . 'PressSensorLoad']) && $_POST['sensorpress' . $p . 'preset'] != 'default')) {
 

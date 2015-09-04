@@ -436,7 +436,7 @@ if (isset($output_error)) {
                         echo '<div style="color: red; padding: 0.5em 0 1em 0.5em; font-size: 0.9em;">Attention: There are 0 Relays configured. Change this in the Settings before activating a PID.</div>';
                     }
                 ?>
-                <div style="float: left; padding: 0 1.5em 1em 0.5em;">
+                <div style="float: left; padding: 0.5em 1.5em 1em 0.5em;">
                     <div style="text-align: center; padding-bottom: 0.2em;">Auto Refresh</div>
                     <div style="text-align: center;"><?php
                         if (isset($_GET['r'])) {
@@ -451,24 +451,22 @@ if (isset($output_error)) {
                     ?>
                     </div>
                 </div>
-                <div style="float: left; padding: 0 2em 1em 0.5em;">
+                <div style="float: left; padding: 0.5em 1em 1em 0.5em;">
                     <div style="float: left; padding-right: 0.1em;">
                         <button name="Refresh" type="submit" value="">Refresh<br>Page</button>
                     </div>
                 </div>
             </form>
 
-            <div style="clear: both"></div>
-
             <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                <div style="float: left; margin: 0.5em 1em;">
-                    <div style="padding-right: 0.6em; float: left;">
+                <div style="float: left; margin: 0.3em 0.7em 0.3em 1.5em;">
+                    <div style="padding-right: 0.2em; float: left;">
                         <div style="padding-bottom: 0.1em;">Sensor</div>
-                        <select style="height: 1.6em; width: 22em;" name="AddSensorDev">
-                            <option value="DHT11">Humidity & Temperature: DHT11</option>
-                            <option value="DHT22">Humidity & Temperature: DHT22</option>
-                            <option value="AM2302">Humidity & Temperature: AM2302</option>
-                            <option value="BMP">Pressure & Temperature: BMP085/BMP180</option>
+                        <select style="height: 1.6em; width: 20em;" name="AddSensorDev">
+                            <option value="DHT11">Humidity/Temperature: DHT11</option>
+                            <option value="DHT22">Humidity/Temperature: DHT22</option>
+                            <option value="AM2302">Humidity/Temperature: AM2302</option>
+                            <option value="BMP">Pressure/Temperature: BMP085/BMP180</option>
                             <option value="DS18B20">Temperature: DS18B20</option>
                             <option value="K30">CO2: K-30</option>
                         </select>
@@ -477,15 +475,15 @@ if (isset($output_error)) {
                         <div style="padding-bottom: 0.1em;">Name <span style="font-size: 0.85em;">(required)</span></div>
                         <input style="width: 8em;" maxlength=12 size=10 name="AddSensorName" title="Name of the new sensor."/>
                     </div>
-                    <div style="float: left; padding: 0.2em 0 0 0.3em;">
+                    <div style="float: left;">
                         <button type="submit" name="AddSensor" value="Add">Add<br>Sensor</button>
                     </div>
                 </div>
             </form>
             
             <form action="?tab=sensor" method="POST">
-                <div style="float:left; margin: 0.7em 1em;">
-                    <div style="float:left; padding-right: 0.5em;">
+                <div style="float:left; margin: 0.3em 0.7em;">
+                    <div style="float:left; padding-right: 0.4em;">
                         <input style="height: 2.6em; width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddRelaysNumber" title="Add Sensors" required/>
                     </div>
                     <div style="float:left">
@@ -495,8 +493,8 @@ if (isset($output_error)) {
             </form>
 
             <form action="?tab=sensor" method="POST">
-                <div style="float:left; margin: 0.7em 1em;">
-                    <div style="float:left; padding-right: 0.5em;">
+                <div style="float:left; margin: 0.3em 0.7em;">
+                    <div style="float:left; padding-right: 0.4em;">
                         <input style="height: 2.6em; width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddTimersNumber" title="Add Sensors"  required/>
                     </div>
                     <div style="float:left">
@@ -594,11 +592,12 @@ if (isset($output_error)) {
             </form>
             </div>
 
+            
+            <?php
+            if (count($timer_id) > 0) {
+            ?>
             <div class="advanced">
-
-                <?php
-                if (count($timer_id) > 0) {
-                ?>
+                <form action="?tab=sensor" method="POST">
                 <div>
                     <table class="relays">
                         <tr>
@@ -653,11 +652,12 @@ if (isset($output_error)) {
                         ?>
                     </table>
                 </div>
-                <?php
-                }
-                ?>
-            </form>
+                </form>
             </div>
+            <?php
+            }
+            ?>
+            
                 
             <?php if (count($sensor_t_id) > 0) { ?>
             <div style="clear: both;"></div>
