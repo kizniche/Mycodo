@@ -182,9 +182,7 @@ if (isset($output_error)) {
         <div style="text-align: right; padding-top: 0.1em; font-size: 0.8em;"><?php echo `uptime | grep -ohe 'load average[s:][: ].*' `; ?></div>
         <div style="text-align: right; padding-top: 0.1em; font-size: 0.8em;"><?php
             echo 'CPU: <span title="' , number_format((float)$pi_temp_cpu_f, 1, '.', '') , '&deg;F">' , $pi_temp_cpu_c , '&deg;C</span>';
-            if ($pi_temp_gpu_c < 50 && $pi_temp_gpu_c > -50) {
-                echo ' GPU: <span title="' , number_format((float)$pi_temp_gpu_f, 1, '.', '') , '&deg;F">' , $pi_temp_gpu_c , '&deg;C</span>';
-            }
+            echo ' GPU: <span title="' , number_format((float)$pi_temp_gpu_f, 1, '.', '') , '&deg;F">' , $pi_temp_gpu_c , '&deg;C</span>';
             ?></div>
     </div>
     <?php

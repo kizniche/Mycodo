@@ -183,11 +183,13 @@ Install LockFile and RPyC
 
 `sudo pip install lockfile rpyc`
 
-If using the Raspberry Pi camera module:
-
-`echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' | sudo tee /etc/udev/rules.d/10-vchiq-permissions.rules`
+To access /dev/vchiqread and read the GPU temperature, the user www-data needs to be added to the group video
 
 `sudo usermod -a -G video www-data`
+
+If you want mycodo to support using the Raspberry Pi camera module, a SUBSYSTEM line must be added to 10-vchiq-permissions.rules
+
+`echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' | sudo tee /etc/udev/rules.d/10-vchiq-permissions.rules`
 
 Install video streaming capabilities (Note that it is recommended to require SSL on your web server to prevent potential viewing of video streams by unauthorized users, details on forcing SSL below)
 
