@@ -459,21 +459,25 @@ if (isset($output_error)) {
             </form>
 
             <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                <div style="float: left; margin: 0.3em 0.7em 0.3em 1.5em;">
-                    <div style="padding-right: 0.2em; float: left;">
-                        <div style="padding-bottom: 0.1em;">Sensor</div>
-                        <select style="height: 1.6em; width: 20em;" name="AddSensorDev">
-                            <option value="DHT11">Humidity/Temperature: DHT11</option>
-                            <option value="DHT22">Humidity/Temperature: DHT22</option>
-                            <option value="AM2302">Humidity/Temperature: AM2302</option>
-                            <option value="BMP">Pressure/Temperature: BMP085/BMP180</option>
-                            <option value="DS18B20">Temperature: DS18B20</option>
-                            <option value="K30">CO2: K-30</option>
-                        </select>
-                    </div>
+                <div style="float: left; margin: 0.5em 0.7em 0 1.5em;">
                     <div style="float: left;">
-                        <div style="padding-bottom: 0.1em;">Name <span style="font-size: 0.85em;">(required)</span></div>
-                        <input style="width: 8em;" maxlength=12 size=10 name="AddSensorName" title="Name of the new sensor."/>
+                        <div>
+                            <select style="height: 1.6em; width: 20em;" name="AddSensorDev">
+                                <option value="DHT11">Humidity/Temperature: DHT11</option>
+                                <option value="DHT22">Humidity/Temperature: DHT22</option>
+                                <option value="AM2302">Humidity/Temperature: AM2302</option>
+                                <option value="BMP">Pressure/Temperature: BMP085/BMP180</option>
+                                <option value="DS18B20">Temperature: DS18B20</option>
+                                <option value="K30">CO2: K-30</option>
+                            </select>
+                        </div>
+                        <div style="padding: 0.1em 0 0 0.2em;">Sensor</div>
+                    </div>
+                    <div style="float: left; padding: 0 0.2em;">
+                        <div>
+                            <input style="width: 8em;" maxlength=12 size=10 name="AddSensorName" title="Name of the new sensor."/>
+                        </div>
+                        <div style="padding: 0.1em 0 0 0.2em;">Name <span style="font-size: 0.85em;">(required)</span></div>
                     </div>
                     <div style="float: left;">
                         <button type="submit" name="AddSensor" value="Add">Add<br>Sensor</button>
@@ -482,8 +486,8 @@ if (isset($output_error)) {
             </form>
             
             <form action="?tab=sensor" method="POST">
-                <div style="float:left; margin: 0.3em 0.7em;">
-                    <div style="float:left; padding-right: 0.4em;">
+                <div style="float:left; margin: 0.5em 0.7em;">
+                    <div style="float:left; padding-right: 0.2em;">
                         <input style="height: 2.6em; width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddRelaysNumber" title="Add Sensors" required/>
                     </div>
                     <div style="float:left">
@@ -493,8 +497,8 @@ if (isset($output_error)) {
             </form>
 
             <form action="?tab=sensor" method="POST">
-                <div style="float:left; margin: 0.3em 0.7em;">
-                    <div style="float:left; padding-right: 0.4em;">
+                <div style="float:left; margin: 0.5em 0.7em;">
+                    <div style="float:left; padding-right: 0.2em;">
                         <input style="height: 2.6em; width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddTimersNumber" title="Add Sensors"  required/>
                     </div>
                     <div style="float:left">
@@ -658,7 +662,6 @@ if (isset($output_error)) {
             }
             ?>
             
-                
             <?php if (count($sensor_t_id) > 0) { ?>
             <div style="clear: both;"></div>
             <div class="sensor-title">Temperature Sensors</div>
