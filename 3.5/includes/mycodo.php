@@ -189,7 +189,6 @@ if (isset($output_error)) {
     // Display brief Temp sensor and PID data in header
     for ($i = 0; $i < count($sensor_t_id); $i++) {
         if ($sensor_t_activated[$i] == 1) {
-            if (isset($t_temp_f[$i])) {
             ?>
             <div class="header">
                 <table>
@@ -197,24 +196,28 @@ if (isset($output_error)) {
                         <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'T' , $i+1 , ': ' , $sensor_t_name[$i]; ?></td>
                     </tr>
                     <tr>
+                        <?php
+                        if (isset($t_temp_f[$i])) {
+                        ?>
                         <td style="font-size: 0.8em; padding-right: 0.5em;"><?php
                             echo 'Now<br><span title="' , number_format((float)$t_temp_f[$i], 1, '.', '') , '&deg;F">' , number_format((float)$t_temp_c[$i], 1, '.', '') , '&deg;C</span>';
                         ?></td>
                         <td style="font-size: 0.8em;"><?php
                             echo 'Set<br><span title="' , number_format((float)$settemp_t_f[$i], 1, '.', '') , '&deg;F">' , number_format((float)$pid_t_temp_set[$i], 1, '.', '') , '&deg;C</span>';
                         ?></td>
+                        <?php
+                        } else {
+                            echo '<td>Wait for<br>1st read</td>';
+                        } ?>
                     </tr>
                 </table>
-            </div><?php
-            } else {
-                echo '<div class="header">T' , $i+1 , ':<br>Wait for<br>1st read</div>';
-            }
+            </div>
+            <?php
         }
     }
     // Display brief Temp/Hum sensor and PID data in header
     for ($i = 0; $i < count($sensor_ht_id); $i++) {
         if ($sensor_ht_activated[$i] == 1) { 
-            if (isset($ht_temp_f[$i])) {
             ?>
             <div class="header">
                 <table>
@@ -222,6 +225,9 @@ if (isset($output_error)) {
                         <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'HT' , $i+1 , ': ' , $sensor_ht_name[$i]; ?></td>
                     </tr>
                     <tr>
+                        <?php
+                        if (isset($ht_temp_f[$i])) {
+                        ?>
                         <td style="font-size: 0.8em; padding-right: 0.5em;"><?php
                             echo 'Now<br><span title="' , number_format((float)$ht_temp_f[$i], 1, '.', '') , '&deg;F">' , number_format((float)$ht_temp_c[$i], 1, '.', '') , '&deg;C</span>';
                             echo '<br>' , number_format((float)$hum[$i], 1, '.', '') , '%';
@@ -230,18 +236,19 @@ if (isset($output_error)) {
                             echo 'Set<br><span title="' , number_format((float)$settemp_ht_f[$i], 1, '.', '') , '&deg;F">' , number_format((float)$pid_ht_temp_set[$i], 1, '.', '') , '&deg;C</span>';
                             echo '<br>' , number_format((float)$pid_ht_hum_set[$i], 1, '.', '') , '%';
                         ?></td>
+                        <?php
+                        } else {
+                            echo '<td>Wait for<br>1st read</td>';
+                        } ?>
                     </tr>
                 </table>
-            </div><?php
-            } else {
-                echo '<div class="header">HT' , $i+1 , ':<br>Wait for<br>1st read</div>';
-            }
+            </div>
+            <?php
         }
     }
     // Display brief CO2 sensor and PID data in header
     for ($i = 0; $i < count($sensor_co2_id); $i++) {
         if ($sensor_co2_activated[$i] == 1) {
-            if (isset($co2[$i])) {
             ?>
             <div class="header">
                 <table>
@@ -249,20 +256,24 @@ if (isset($output_error)) {
                         <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'CO<sub>2</sub>' , $i+1 , ': ' , $sensor_co2_name[$i]; ?></td>
                     </tr>
                     <tr>
+                        <?php
+                        if (isset($co2[$i])) {
+                        ?>
                         <td style="font-size: 0.8em; padding-right: 0.5em;"><?php echo 'Now<br>' , $co2[$i]; ?></td>
                         <td style="font-size: 0.8em;"><?php echo 'Set<br>' , $pid_co2_set[$i]; ?></td>
+                        <?php
+                        } else {
+                            echo '<td>Wait for<br>1st read</td>';
+                        } ?>
                     </tr>
                 </table>
-            </div><?php
-            } else {
-                echo '<div class="header">CO<sub>2</sub>' , $i+1 , ':<br>Wait for<br>1st read</div>';
-            }
+            </div>
+            <?php
         }
     }
     // Display brief Press sensor and PID data in header
     for ($i = 0; $i < count($sensor_press_id); $i++) {
-        if ($sensor_press_activated[$i] == 1) { 
-            if (isset($press_temp_f[$i])) {
+        if ($sensor_press_activated[$i] == 1) {
             ?>
             <div class="header">
                 <table>
@@ -270,6 +281,9 @@ if (isset($output_error)) {
                         <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'P' , $i+1 , ': ' , $sensor_press_name[$i]; ?></td>
                     </tr>
                     <tr>
+                        <?php
+                        if (isset($press_temp_f[$i])) {
+                        ?>
                         <td style="font-size: 0.8em; padding-right: 0.5em;"><?php
                             echo 'Now<br><span title="' , number_format((float)$press_temp_f[$i], 1, '.', '') , '&deg;F">' , number_format((float)$press_temp_c[$i], 1, '.', '') , '&deg;C</span>';
                             echo '<br>' , (int)$press[$i] , ' Pa';
@@ -278,12 +292,14 @@ if (isset($output_error)) {
                             echo 'Set<br><span title="' , number_format((float)$settemp_press_f[$i], 1, '.', '') , '&deg;F">' , number_format((float)$pid_press_temp_set[$i], 1, '.', '') , '&deg;C</span>';
                             echo '<br>' , (int)$pid_press_press_set[$i] , ' Pa';
                         ?></td>
+                        <?php
+                        } else {
+                            echo '<td>Wait for<br>1st read</td>';
+                        } ?>
                     </tr>
                 </table>
-            </div><?php
-            } else {
-                echo '<div class="header">Press' , $i+1 , ':<br>Wait for<br>1st read</div>';
-            }
+            </div>
+            <?php
         }
     }
     ?>
@@ -1740,10 +1756,10 @@ if (isset($output_error)) {
                             <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_press_yaxis_temp_mtics[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>YAxisTempMTics" title=""/>
                         </td>
                         <td style="padding-left: 1.5em;">
-                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_press_yaxis_press_min[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>YAxisPressMin" title=""/>
+                            <input style="width: 5em;" type="number" step="any" value="<?php echo $sensor_press_yaxis_press_min[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>YAxisPressMin" title=""/>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_press_yaxis_press_max[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>YAxisPressMax" title=""/>
+                            <input style="width: 5em;" type="number" step="any" value="<?php echo $sensor_press_yaxis_press_max[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>YAxisPressMax" title=""/>
                         </td>
                         <td>
                             <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_press_yaxis_press_tics[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>YAxisPressTics" title=""/>
