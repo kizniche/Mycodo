@@ -35,6 +35,9 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 Major changes for each versioned release
 
 #### 3.5.70
++ Ability to set y-axis min/max/tics/mtics for each sensor graph, for both relays and measured condition(s)
+
+#### 3.5.70
 + Ability to create conditional statements for each sensor to manipulate relays
 
 #### 3.5.69

@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.70";
+$version = "3.5.71";
 
 ######### Start Edit Configure #########
 
@@ -473,9 +473,9 @@ if (isset($output_error)) {
                     </div>
                     <div style="float: left; padding: 0 0.2em;">
                         <div>
-                            <input style="width: 8em;" maxlength=12 size=10 name="AddSensorName" title="Name of the new sensor."/>
+                            <input style="width: 6em;" maxlength=12 size=10 name="AddSensorName" title="Name of the new sensor."/>
                         </div>
-                        <div style="padding: 0.1em 0 0 0.2em;">Name <span style="font-size: 0.85em;">(required)</span></div>
+                        <div style="padding: 0.1em 0 0 0.2em;">Name</div>
                     </div>
                     <div style="float: left;">
                         <button type="submit" name="AddSensor" value="Add">Add<br>Sensor</button>
@@ -664,13 +664,13 @@ if (isset($output_error)) {
             <div style="clear: both;"></div>
             <div class="sensor-title">Temperature Sensors</div>
             <div style="clear: both;"></div>
-                <?php
-                for ($i = 0; $i < count($sensor_t_id); $i++) {
-                ?>
+            <?php
+            for ($i = 0; $i < count($sensor_t_id); $i++) {
+            ?>
                 
-                <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                <div class="sensor-parent">
-                <table class="sensor" style="table-layout: fixed;">
+            <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+            <div class="sensor-parent">
+                <table class="sensor">
                     <tr class="shade">
                         <td>T Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_t_id[$i]; ?>)</span></td>
                         <td>Sensor<br>Name</td>
@@ -744,17 +744,61 @@ if (isset($output_error)) {
                         </td>
                         <td>
                             <div style="padding: 0.2em 0">
-                                <input type="submit" name="Change<?php echo $i; ?>TSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>TSensorOverwrite" value="Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>TSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_t_preset) == 0) echo ' disabled'; ?>>
+                                <input type="submit" name="Change<?php echo $i; ?>TSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>TSensorOverwrite" value="Save/Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>TSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_t_preset) == 0) echo ' disabled'; ?>>
                             </div>
                             <div style="padding: 0.2em 0">
-                                <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensort<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>TSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>TSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
+                                <input style="width: 7em;" type="text" value="" maxlength=12 size=10 name="sensort<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>TSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>TSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
                             </div>
                         </td>
                     </tr>
                 </table>
-                <table class="pid" style="width:100%; border: 0.7em solid #EBEBEB; border-top: 0;">
-                    <tr class="shade">
-                        <td style="text-align: left;">Regulation</td>
+
+                <table class="yaxis" style="margin-bottom: 0.7em;">
+                    <tr>
+                        <td rowspan=3>Graph Y-Axis<br>Range<br>&<br>Marks</td>
+                        <td colspan=4>Relay</td>
+                        <td colspan=4>Temperature</td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 1.5em;">Min</td>
+                        <td>Max</td>
+                        <td>Tics</td>
+                        <td>mTics</td>
+                        <td style="padding-left: 1.5em;">Min</td>
+                        <td>Max</td>
+                        <td>Tics</td>
+                        <td>mTics</td>
+                    </tr>
+                        <td style="padding-left: 1.5em;"    >
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_t_yaxis_relay_min[$i]; ?>" maxlength=4 size=2 name="SetT<?php echo $i; ?>YAxisRelayMin" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_t_yaxis_relay_max[$i]; ?>" maxlength=4 size=2 name="SetT<?php echo $i; ?>YAxisRelayMax" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_t_yaxis_relay_tics[$i]; ?>" maxlength=4 size=2 name="SetT<?php echo $i; ?>YAxisRelayTics" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_t_yaxis_relay_mtics[$i]; ?>" maxlength=4 size=2 name="SetT<?php echo $i; ?>YAxisRelayMTics" title=""/>
+                        </td>
+                        <td style="padding-left: 1.5em;">
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_t_yaxis_temp_min[$i]; ?>" maxlength=4 size=2 name="SetT<?php echo $i; ?>YAxisTempMin" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_t_yaxis_temp_max[$i]; ?>" maxlength=4 size=2 name="SetT<?php echo $i; ?>YAxisTempMax" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_t_yaxis_temp_tics[$i]; ?>" maxlength=4 size=2 name="SetT<?php echo $i; ?>YAxisTempTics" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_t_yaxis_temp_mtics[$i]; ?>" maxlength=4 size=2 name="SetT<?php echo $i; ?>YAxisTempMTics" title=""/>
+                        </td>
+                    </tr>
+                </table>
+
+                <table class="pid">
+                    <tr>
+                        <td>Regulation</td>
                         <td>Current<br>State</td>
                         <td>PID<br>Set Point</td>
                         <td>PID<br>Regulate</td>
@@ -897,11 +941,10 @@ if (isset($output_error)) {
                     } }
                     ?>
                 </table>
-                </div>
-                <div style="margin-bottom: <?php if ($i == count($sensor_t_id)) echo '2'; else echo '1'; ?>em;"></div>
-                <?php
-                }
-            }
+            </div>
+            <div style="margin-bottom: <?php if ($i == count($sensor_t_id)) echo '2'; else echo '1'; ?>em;"></div>
+            <?php
+            } }
             ?>
 
             <?php if (count($sensor_ht_id) > 0) { ?>
@@ -982,17 +1025,78 @@ if (isset($output_error)) {
                         </td>
                         <td>
                             <div style="padding: 0.2em 0">
-                                <input type="submit" name="Change<?php echo $i; ?>HTSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>HTSensorOverwrite" value="Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>HTSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>>
+                                <input type="submit" name="Change<?php echo $i; ?>HTSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>HTSensorOverwrite" value="Save/Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>HTSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>>
                             </div>
                             <div style="padding: 0.2em 0">
-                                <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensorht<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>HTSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>HTSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
+                                <input style="width: 7em;" type="text" value="" maxlength=12 size=10 name="sensorht<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>HTSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>HTSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
                             </div>
                         </td>
                     </tr>
                 </table>
-                <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
-                    <tr class="shade">
-                        <td style="text-align: left;">Regulation</td>
+
+                <table class="yaxis" style="margin-bottom: 0.7em;">
+                    <tr>
+                        <td rowspan=3>Graph Y-Axis<br>Range<br>&<br>Marks</td>
+                        <td colspan=4>Relay</td>
+                        <td colspan=4>Temperature</td>
+                        <td colspan=4>Humidity</td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 1.5em;">Min</td>
+                        <td>Max</td>
+                        <td>Tics</td>
+                        <td>mTics</td>
+                        <td style="padding-left: 1.5em;">Min</td>
+                        <td>Max</td>
+                        <td>Tics</td>
+                        <td>mTics</td>
+                        <td style="padding-left: 1.5em;">Min</td>
+                        <td>Max</td>
+                        <td>Tics</td>
+                        <td>mTics</td>
+                    </tr>
+                        <td style="padding-left: 1.5em;"    >
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_ht_yaxis_relay_min[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>YAxisRelayMin" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_ht_yaxis_relay_max[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>YAxisRelayMax" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_ht_yaxis_relay_tics[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>YAxisRelayTics" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_ht_yaxis_relay_mtics[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>YAxisRelayMTics" title=""/>
+                        </td>
+                        <td style="padding-left: 1.5em;">
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_ht_yaxis_temp_min[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>YAxisTempMin" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_ht_yaxis_temp_max[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>YAxisTempMax" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_ht_yaxis_temp_tics[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>YAxisTempTics" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_ht_yaxis_temp_mtics[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>YAxisTempMTics" title=""/>
+                        </td>
+                        <td style="padding-left: 1.5em;">
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_ht_yaxis_hum_min[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>YAxisHumMin" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_ht_yaxis_hum_max[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>YAxisHumMax" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_ht_yaxis_hum_tics[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>YAxisHumTics" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_ht_yaxis_hum_mtics[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>YAxisHumMTics" title=""/>
+                        </td>
+                    </tr>
+                </table>
+
+                <table class="pid">
+                    <tr>
+                        <td>Regulation</td>
                         <td>Current<br>State</td>
                         <td>PID<br>Set Point</td>
                         <td>PID<br>Regulate</td>
@@ -1290,17 +1394,61 @@ if (isset($output_error)) {
                         </td>
                         <td>
                             <div style="padding: 0.2em 0">
-                                <input type="submit" name="Change<?php echo $i; ?>CO2SensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_co2_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>CO2SensorOverwrite" value="Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>CO2SensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_co2_preset) == 0) echo ' disabled'; ?>>
+                                <input type="submit" name="Change<?php echo $i; ?>CO2SensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_co2_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>CO2SensorOverwrite" value="Save/Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>CO2SensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_co2_preset) == 0) echo ' disabled'; ?>>
                             </div>
                             <div style="padding: 0.2em 0">
-                                <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensorco2<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>CO2SensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>CO2SensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
+                                <input style="width: 7em;" type="text" value="" maxlength=12 size=10 name="sensorco2<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>CO2SensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>CO2SensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
                             </div>
                         </td>
                     </tr>
                 </table>
-                <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
-                    <tr class="shade">
-                        <td style="text-align: left;">Regulation</td>
+
+                <table class="yaxis" style="margin-bottom: 0.7em;">
+                    <tr>
+                        <td rowspan=3>Graph Y-Axis<br>Range<br>&<br>Marks</td>
+                        <td colspan=4>Relay</td>
+                        <td colspan=4>CO<sub>2</sub></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 1.5em;">Min</td>
+                        <td>Max</td>
+                        <td>Tics</td>
+                        <td>mTics</td>
+                        <td style="padding-left: 1.5em;">Min</td>
+                        <td>Max</td>
+                        <td>Tics</td>
+                        <td>mTics</td>
+                    </tr>
+                        <td style="padding-left: 1.5em;"    >
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_co2_yaxis_relay_min[$i]; ?>" maxlength=4 size=2 name="SetCO2<?php echo $i; ?>YAxisRelayMin" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_co2_yaxis_relay_max[$i]; ?>" maxlength=4 size=2 name="SetCO2<?php echo $i; ?>YAxisRelayMax" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_co2_yaxis_relay_tics[$i]; ?>" maxlength=4 size=2 name="SetCO2<?php echo $i; ?>YAxisRelayTics" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_co2_yaxis_relay_mtics[$i]; ?>" maxlength=4 size=2 name="SetCO2<?php echo $i; ?>YAxisRelayMTics" title=""/>
+                        </td>
+                        <td style="padding-left: 1.5em;">
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_co2_yaxis_temp_min[$i]; ?>" maxlength=4 size=2 name="SetCO2<?php echo $i; ?>YAxisCO2Min" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_co2_yaxis_temp_max[$i]; ?>" maxlength=4 size=2 name="SetCO2<?php echo $i; ?>YAxisCO2Max" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_co2_yaxis_temp_tics[$i]; ?>" maxlength=4 size=2 name="SetCO2<?php echo $i; ?>YAxisCO2Tics" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_co2_yaxis_temp_mtics[$i]; ?>" maxlength=4 size=2 name="SetCO2<?php echo $i; ?>YAxisCO2MTics" title=""/>
+                        </td>
+                    </tr>
+                </table>
+
+                <table class="pid">
+                    <tr>
+                        <td>Regulation</td>
                         <td>Current<br>State</td>
                         <td>PID<br>Set Point</td>
                         <td>PID<br>Regulate</td>
@@ -1537,17 +1685,78 @@ if (isset($output_error)) {
                         </td>
                         <td>
                             <div style="padding: 0.2em 0">
-                                <input type="submit" name="Change<?php echo $i; ?>PressSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_press_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>PressSensorOverwrite" value="Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>PressSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_press_preset) == 0) echo ' disabled'; ?>>
+                                <input type="submit" name="Change<?php echo $i; ?>PressSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_press_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>PressSensorOverwrite" value="Save/Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>PressSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_press_preset) == 0) echo ' disabled'; ?>>
                             </div>
                             <div style="padding: 0.2em 0">
-                                <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensorpress<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>PressSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>PressSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
+                                <input style="width: 7em;" type="text" value="" maxlength=12 size=10 name="sensorpress<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>PressSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>PressSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
                             </div>
                         </td>
                     </tr>
                 </table>
-                <table class="pid" style="border: 0.7em solid #EBEBEB; border-top: 0;">
-                    <tr class="shade">
-                        <td style="text-align: left;">Regulation</td>
+
+                <table class="yaxis" style="margin-bottom: 0.7em;">
+                    <tr>
+                        <td rowspan=3>Graph Y-Axis<br>Range<br>&<br>Marks</td>
+                        <td colspan=4>Relay</td>
+                        <td colspan=4>Temperature</td>
+                        <td colspan=4>Pressure</td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 1.5em;">Min</td>
+                        <td>Max</td>
+                        <td>Tics</td>
+                        <td>mTics</td>
+                        <td style="padding-left: 1.5em;">Min</td>
+                        <td>Max</td>
+                        <td>Tics</td>
+                        <td>mTics</td>
+                        <td style="padding-left: 1.5em;">Min</td>
+                        <td>Max</td>
+                        <td>Tics</td>
+                        <td>mTics</td>
+                    </tr>
+                        <td style="padding-left: 1.5em;"    >
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_press_yaxis_relay_min[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>YAxisRelayMin" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_press_yaxis_relay_max[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>YAxisRelayMax" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_press_yaxis_relay_tics[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>YAxisRelayTics" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_press_yaxis_relay_mtics[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>YAxisRelayMTics" title=""/>
+                        </td>
+                        <td style="padding-left: 1.5em;">
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_press_yaxis_temp_min[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>YAxisTempMin" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_press_yaxis_temp_max[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>YAxisTempMax" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_press_yaxis_temp_tics[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>YAxisTempTics" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_press_yaxis_temp_mtics[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>YAxisTempMTics" title=""/>
+                        </td>
+                        <td style="padding-left: 1.5em;">
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_press_yaxis_press_min[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>YAxisPressMin" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_press_yaxis_press_max[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>YAxisPressMax" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_press_yaxis_press_tics[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>YAxisPressTics" title=""/>
+                        </td>
+                        <td>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_press_yaxis_press_mtics[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>YAxisPressMTics" title=""/>
+                        </td>
+                    </tr>
+                </table>
+
+                <table class="pid">
+                    <tr>
+                        <td>Regulation</td>
                         <td>Current<br>State</td>
                         <td>PID<br>Set Point</td>
                         <td>PID<br>Regulate</td>
@@ -1766,6 +1975,7 @@ if (isset($output_error)) {
                 }
             }
             ?>
+            <div style="clear: both;"></div>
         </li>
 
         <li data-content="custom" <?php

@@ -57,10 +57,10 @@ fi
 
 # Check database version against known database versions
 # Perform update based on database version
-if [[ $db_version == "5" ]]; then
+if [[ $db_version == "6" ]]; then
 	printf "Mycodo database is already the latest version.\n";
-elif [[ $db_version -lt 5 && $db_version -gt 0 ]]; then
-	printf "Updating Mycodo database to version 5.\n";
+elif [[ $db_version -lt 6 && $db_version -gt 0 ]]; then
+	printf "Updating Mycodo database to version 6.\n";
 	$DIR/update-database.py -i update
 elif [[ $db_version == "0" ]]; then
 	printf "Mycodo database is not versioned. Recreating (you should retrieve your values from the backed-up database)\n";

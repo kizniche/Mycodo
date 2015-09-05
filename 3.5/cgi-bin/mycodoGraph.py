@@ -52,7 +52,7 @@ relay_log_file = "%s/relay.log" % log_path
 #################################################
 
 # Generate gnuplot graph
-def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number, sensor_t_name, sensor_t_graph, sensor_t_period, pid_t_temp_relay_high, pid_t_temp_relay_low, sensor_ht_name, sensor_ht_graph, sensor_ht_period, pid_ht_temp_relay_high, pid_ht_temp_relay_low, pid_ht_hum_relay_high, pid_ht_hum_relay_low, sensor_co2_name, sensor_co2_graph, sensor_co2_period, pid_co2_relay_high, pid_co2_relay_low, sensor_press_name, sensor_press_graph, sensor_press_period, pid_press_temp_relay_high, pid_press_temp_relay_low, pid_press_press_relay_high, pid_press_press_relay_low, relay_name):
+def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number, sensor_t_name, sensor_t_graph, sensor_t_period, sensor_t_yaxis_relay_min, sensor_t_yaxis_relay_max, sensor_t_yaxis_relay_tics, sensor_t_yaxis_relay_mtics, sensor_t_yaxis_temp_min, sensor_t_yaxis_temp_max, sensor_t_yaxis_temp_tics, sensor_t_yaxis_temp_mtics, pid_t_temp_relay_high, pid_t_temp_relay_low, sensor_ht_name, sensor_ht_graph, sensor_ht_period, sensor_ht_yaxis_relay_min, sensor_ht_yaxis_relay_max, sensor_ht_yaxis_relay_tics, sensor_ht_yaxis_relay_mtics, sensor_ht_yaxis_temp_min, sensor_ht_yaxis_temp_max, sensor_ht_yaxis_temp_tics, sensor_ht_yaxis_temp_mtics, sensor_ht_yaxis_hum_min, sensor_ht_yaxis_hum_max, sensor_ht_yaxis_hum_tics, sensor_ht_yaxis_hum_mtics, pid_ht_temp_relay_high, pid_ht_temp_relay_low, pid_ht_hum_relay_high, pid_ht_hum_relay_low, sensor_co2_name, sensor_co2_graph, sensor_co2_period, sensor_co2_yaxis_relay_min, sensor_co2_yaxis_relay_max, sensor_co2_yaxis_relay_tics, sensor_co2_yaxis_relay_mtics, sensor_co2_yaxis_co2_min, sensor_co2_yaxis_co2_max, sensor_co2_yaxis_co2_tics, sensor_co2_yaxis_co2_mtics, pid_co2_relay_high, pid_co2_relay_low, sensor_press_name, sensor_press_graph, sensor_press_period, sensor_press_yaxis_relay_min, sensor_press_yaxis_relay_max, sensor_press_yaxis_relay_tics, sensor_press_yaxis_relay_mtics, sensor_press_yaxis_temp_min, sensor_press_yaxis_temp_max, sensor_press_yaxis_temp_tics, sensor_press_yaxis_temp_mtics, sensor_press_yaxis_press_min, sensor_press_yaxis_press_max, sensor_press_yaxis_press_tics, sensor_press_yaxis_press_mtics, pid_press_temp_relay_high, pid_press_temp_relay_low, pid_press_press_relay_high, pid_press_press_relay_low, relay_name):
     logging.debug("[Generate Graph] Parsing logs...")
     sensor_t_log_final = [0] * (len(sensor_t_name)+1)
     sensor_ht_log_final = [0] * (len(sensor_ht_name)+1)
@@ -581,6 +581,9 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set origin 0.011,0.4\n')
                 plot.write('set format x \"\"\n')
                 
+            plot.write('set yrange [' + str(sensor_t_yaxis_temp_min[int(sensor_number)]) + ':' + str(sensor_t_yaxis_temp_max[int(sensor_number)]) + ']\n')
+            plot.write('set ytics ' + str(sensor_t_yaxis_temp_tics[int(sensor_number)]) + '\n')
+            plot.write('set mytics ' + str(sensor_t_yaxis_temp_mtics[int(sensor_number)]) + '\n')
             plot.write('set key at graph 0.02, graph 0.98\n')
             plot.write('set title \"Temp Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_t_name[int(float(sensor_number))] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot \"' + sensor_t_log_final[0] + '\" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1\n')
@@ -592,11 +595,9 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set key at graph 0.0, graph 0.97\n')
                 plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                 plot.write('unset y2tics\n')
-                y1_min = '-100'
-                y1_max = '100'
-                plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-                plot.write('set ytics 25\n')
-                plot.write('set mytics 5\n')
+                plot.write('set yrange [' + str(sensor_t_yaxis_relay_min[int(sensor_number)]) + ':' + str(sensor_t_yaxis_relay_max[int(sensor_number)]) + ']\n')
+                plot.write('set ytics ' + str(sensor_t_yaxis_relay_tics[int(sensor_number)]) + '\n')
+                plot.write('set mytics ' + str(sensor_t_yaxis_relay_mtics[int(sensor_number)]) + '\n')
                 plot.write('set xzeroaxis linetype 1 linecolor rgb \'#000000\' linewidth 1\n')
                 plot.write('unset title\n')
                 plot.write('plot \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '"')
@@ -623,9 +624,13 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set size 0.989,0.6\n')
                 plot.write('set origin 0.011,0.4\n')
                 plot.write('set format x \"\"\n')
-                plot.write('set mytics 5\n')
-                plot.write('set my2tics 5\n')
 
+            plot.write('set yrange [' + str(sensor_ht_yaxis_temp_min[int(sensor_number)]) + ':' + str(sensor_ht_yaxis_temp_max[int(sensor_number)]) + ']\n')
+            plot.write('set ytics ' + str(sensor_ht_yaxis_temp_tics[int(sensor_number)]) + '\n')
+            plot.write('set mytics ' + str(sensor_ht_yaxis_temp_mtics[int(sensor_number)]) + '\n')
+            plot.write('set y2range [' + str(sensor_ht_yaxis_hum_min[int(sensor_number)]) + ':' + str(sensor_ht_yaxis_hum_max[int(sensor_number)]) + ']\n')
+            plot.write('set y2tics ' + str(sensor_ht_yaxis_hum_tics[int(sensor_number)]) + '\n')
+            plot.write('set my2tics ' + str(sensor_ht_yaxis_hum_mtics[int(sensor_number)]) + '\n')
             plot.write('set key at graph 0.02, graph 0.98\n')
             plot.write('set title \"Hum/Temp Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_ht_name[int(float(sensor_number))] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot \"' + sensor_ht_log_final[0] + '\" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1, \\\n')
@@ -641,11 +646,9 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                 plot.write('set key at graph 0.01, graph 0.97\n')
                 plot.write('unset y2tics\n')
-                y1_min = '-100'
-                y1_max = '100'
-                plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-                plot.write('set ytics 25\n')
-                plot.write('set mytics 5\n')
+                plot.write('set yrange [' + str(sensor_ht_yaxis_relay_min[int(sensor_number)]) + ':' + str(sensor_ht_yaxis_relay_max[int(sensor_number)]) + ']\n')
+                plot.write('set ytics ' + str(sensor_ht_yaxis_relay_tics[int(sensor_number)]) + '\n')
+                plot.write('set mytics ' + str(sensor_ht_yaxis_relay_mtics[int(sensor_number)]) + '\n')
                 plot.write('set xzeroaxis linetype 1 linecolor rgb \'#000000\' linewidth 1\n')
                 plot.write('unset title\n')
                 plot.write('plot \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '"')
@@ -682,6 +685,9 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set origin 0.0,0.4\n')
                 plot.write('set format x \"\"\n')
 
+            plot.write('set yrange [' + str(sensor_co2_yaxis_co2_min[int(sensor_number)]) + ':' + str(sensor_co2_yaxis_co2_max[int(sensor_number)]) + ']\n')
+            plot.write('set ytics ' + str(sensor_co2_yaxis_co2_tics[int(sensor_number)]) + '\n')
+            plot.write('set mytics ' + str(sensor_co2_yaxis_co2_mtics[int(sensor_number)]) + '\n')
             plot.write('set termopt enhanced\n')
             plot.write('set key at graph 0.035, graph 0.98\n')
             plot.write('set title \"CO_2 Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_co2_name[int(float(sensor_number))] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
@@ -694,11 +700,9 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                 plot.write('set key at graph 0.01, graph 0.97\n')
                 plot.write('unset y2tics\n')
-                y1_min = '-100'
-                y1_max = '100'
-                plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-                plot.write('set ytics 25\n')
-                plot.write('set mytics 5\n')
+                plot.write('set yrange [' + str(sensor_co2_yaxis_relay_min[int(sensor_number)]) + ':' + str(sensor_co2_yaxis_relay_max[int(sensor_number)]) + ']\n')
+                plot.write('set ytics ' + str(sensor_co2_yaxis_relay_tics[int(sensor_number)]) + '\n')
+                plot.write('set mytics ' + str(sensor_co2_yaxis_relay_mtics[int(sensor_number)]) + '\n')
                 plot.write('set xzeroaxis linetype 1 linecolor rgb \'#000000\' linewidth 1\n')
                 plot.write('unset title\n')
                 plot.write('plot \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '"')
@@ -724,9 +728,13 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set size 0.989,0.6\n')
                 plot.write('set origin 0.011,0.4\n')
                 plot.write('set format x \"\"\n')
-                plot.write('set mytics 5\n')
-                plot.write('set my2tics 5\n')
 
+            plot.write('set yrange [' + str(sensor_press_yaxis_temp_min[int(sensor_number)]) + ':' + str(sensor_press_yaxis_temp_max[int(sensor_number)]) + ']\n')
+            plot.write('set ytics ' + str(sensor_press_yaxis_temp_tics[int(sensor_number)]) + '\n')
+            plot.write('set mytics ' + str(sensor_press_yaxis_temp_mtics[int(sensor_number)]) + '\n')
+            plot.write('set y2range [' + str(sensor_press_yaxis_press_min[int(sensor_number)]) + ':' + str(sensor_press_yaxis_press_max[int(sensor_number)]) + ']\n')
+            plot.write('set y2tics ' + str(sensor_press_yaxis_press_tics[int(sensor_number)]) + '\n')
+            plot.write('set my2tics ' + str(sensor_press_yaxis_press_mtics[int(sensor_number)]) + '\n')
             plot.write('set key at graph 0.02, graph 0.98\n')
             plot.write('set title \"Press Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_press_name[int(float(sensor_number))] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot \"' + sensor_press_log_final[0] + '\" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1, \\\n')
@@ -741,11 +749,9 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                 plot.write('set key at graph 0.01, graph 0.97\n')
                 plot.write('unset y2tics\n')
-                y1_min = '-100'
-                y1_max = '100'
-                plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-                plot.write('set ytics 25\n')
-                plot.write('set mytics 5\n')
+                plot.write('set yrange [' + str(sensor_press_yaxis_relay_min[int(sensor_number)]) + ':' + str(sensor_press_yaxis_relay_max[int(sensor_number)]) + ']\n')
+                plot.write('set ytics ' + str(sensor_press_yaxis_relay_tics[int(sensor_number)]) + '\n')
+                plot.write('set mytics ' + str(sensor_press_yaxis_relay_mtics[int(sensor_number)]) + '\n')
                 plot.write('set xzeroaxis linetype 1 linecolor rgb \'#000000\' linewidth 1\n')
                 plot.write('unset title\n')
                 plot.write('plot \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '"')
@@ -794,6 +800,9 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set origin 0.0,0.5\n')
                 plot.write('set key at graph 0.025, graph 0.98\n')
 
+            plot.write('set yrange [' + str(sensor_t_yaxis_temp_min[int(sensor_number)]) + ':' + str(sensor_t_yaxis_temp_max[int(sensor_number)]) + ']\n')
+            plot.write('set ytics ' + str(sensor_t_yaxis_temp_tics[int(sensor_number)]) + '\n')
+            plot.write('set mytics ' + str(sensor_t_yaxis_temp_mtics[int(sensor_number)]) + '\n')
             plot.write('set title \"Temp Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_t_name[int(float(sensor_number))] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot \"' + sensor_t_log_final[0] + '" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1\n')
 
@@ -803,11 +812,9 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set origin 0.0,0.4\n')
                 plot.write('set key at graph 0.015, graph 0.95\n')
                 plot.write('set format x \"%H:%M\\n%m/%d\"\n')
-                y1_min = '-100'
-                y1_max = '100'
-                plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-                plot.write('set ytics 50\n')
-                plot.write('set mytics 2\n')
+                plot.write('set yrange [' + str(sensor_t_yaxis_relay_min[int(sensor_number)]) + ':' + str(sensor_t_yaxis_relay_max[int(sensor_number)]) + ']\n')
+                plot.write('set ytics ' + str(sensor_t_yaxis_relay_tics[int(sensor_number)]) + '\n')
+                plot.write('set mytics ' + str(sensor_t_yaxis_relay_mtics[int(sensor_number)]) + '\n')
                 plot.write('set xzeroaxis linetype 1 linecolor rgb \'#000000\' linewidth 1\n')
                 plot.write('unset title\n')
                 plot.write('plot \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '"')
@@ -834,11 +841,9 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 int(pid_t_temp_relay_low[int(sensor_number)]) != 0):
                 plot.write('set size 0.989,0.4\n')
                 plot.write('set origin 0.011,0.0\n')
-                y1_min = '0'
-                y1_max = '35'
-                plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-                plot.write('set ytics 5\n')
-                plot.write('set mytics 5\n')
+                plot.write('set yrange [' + str(sensor_t_yaxis_temp_min[int(sensor_number)]) + ':' + str(sensor_t_yaxis_temp_max[int(sensor_number)]) + ']\n')
+                plot.write('set ytics ' + str(sensor_t_yaxis_temp_tics[int(sensor_number)]) + '\n')
+                plot.write('set mytics ' + str(sensor_t_yaxis_temp_mtics[int(sensor_number)]) + '\n')
             else:
                 plot.write('set size 1.0,0.5\n')
                 plot.write('set origin 0.0,0.0\n')
@@ -867,6 +872,12 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set origin 0.0,0.5\n')
                 plot.write('set key at graph 0.025, graph 0.98\n')
 
+            plot.write('set yrange [' + str(sensor_ht_yaxis_temp_min[int(sensor_number)]) + ':' + str(sensor_ht_yaxis_temp_max[int(sensor_number)]) + ']\n')
+            plot.write('set ytics ' + str(sensor_ht_yaxis_temp_tics[int(sensor_number)]) + '\n')
+            plot.write('set mytics ' + str(sensor_ht_yaxis_temp_mtics[int(sensor_number)]) + '\n')
+            plot.write('set y2range [' + str(sensor_ht_yaxis_hum_min[int(sensor_number)]) + ':' + str(sensor_ht_yaxis_hum_max[int(sensor_number)]) + ']\n')
+            plot.write('set y2tics ' + str(sensor_ht_yaxis_hum_tics[int(sensor_number)]) + '\n')
+            plot.write('set my2tics ' + str(sensor_ht_yaxis_hum_mtics[int(sensor_number)]) + '\n')
             plot.write('set title \"Hum/Temp Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_ht_name[int(float(sensor_number))] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot \"' + sensor_ht_log_final[0] + '" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1, ')
             plot.write('\"\" u 1:8 index 0 title \"RH\" w lp ls 2 axes x1y2, ')
@@ -880,11 +891,9 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set origin 0.0,0.4\n')
                 plot.write('set key at graph 0.0, graph 0.95\n')
                 plot.write('set format x \"%H:%M\\n%m/%d\"\n')
-                y1_min = '-100'
-                y1_max = '100'
-                plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-                plot.write('set ytics 50\n')
-                plot.write('set mytics 2\n')
+                plot.write('set yrange [' + str(sensor_ht_yaxis_relay_min[int(sensor_number)]) + ':' + str(sensor_ht_yaxis_relay_max[int(sensor_number)]) + ']\n')
+                plot.write('set ytics ' + str(sensor_ht_yaxis_relay_tics[int(sensor_number)]) + '\n')
+                plot.write('set mytics ' + str(sensor_ht_yaxis_relay_mtics[int(sensor_number)]) + '\n')
                 plot.write('set xzeroaxis linetype 1 linecolor rgb \'#000000\' linewidth 1\n')
                 plot.write('unset y2tics\n')
                 plot.write('unset title\n')
@@ -925,13 +934,12 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 int(pid_ht_hum_relay_low[int(sensor_number)]) != 0):
                 plot.write('set size 0.989,0.4\n')
                 plot.write('set origin 0.011,0.0\n')
-                y1_min = '0'
-                y1_max = '35'
-                plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-                plot.write('set ytics 5\n')
-                plot.write('set mytics 5\n')
-                plot.write('set y2tics 10\n')
-                plot.write('set my2tics 5\n')
+                plot.write('set yrange [' + str(sensor_ht_yaxis_temp_min[int(sensor_number)]) + ':' + str(sensor_ht_yaxis_temp_max[int(sensor_number)]) + ']\n')
+                plot.write('set ytics ' + str(sensor_ht_yaxis_temp_tics[int(sensor_number)]) + '\n')
+                plot.write('set mytics ' + str(sensor_ht_yaxis_temp_mtics[int(sensor_number)]) + '\n')
+                plot.write('set y2range [' + str(sensor_ht_yaxis_hum_min[int(sensor_number)]) + ':' + str(sensor_ht_yaxis_hum_max[int(sensor_number)]) + ']\n')
+                plot.write('set y2tics ' + str(sensor_ht_yaxis_hum_tics[int(sensor_number)]) + '\n')
+                plot.write('set my2tics ' + str(sensor_ht_yaxis_hum_mtics[int(sensor_number)]) + '\n')
             else:
                 plot.write('set size 1.0,0.5\n')
                 plot.write('set origin 0.0,0.0\n')
@@ -960,6 +968,9 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set origin 0.0,0.5\n')
                 plot.write('set key at graph 0.035, graph 0.98\n')
 
+            plot.write('set yrange [' + str(sensor_co2_yaxis_co2_min[int(sensor_number)]) + ':' + str(sensor_co2_yaxis_co2_max[int(sensor_number)]) + ']\n')
+            plot.write('set ytics ' + str(sensor_co2_yaxis_co2_tics[int(sensor_number)]) + '\n')
+            plot.write('set mytics ' + str(sensor_co2_yaxis_co2_mtics[int(sensor_number)]) + '\n')
             plot.write('set termopt enhanced\n')
             plot.write('set title \"CO_2 Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_co2_name[int(float(sensor_number))] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot \"' + sensor_co2_log_final[0] + '" u 1:7 index 0 title \"CO_2\" w lp ls 1 axes x1y1\n')
@@ -970,11 +981,9 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set origin 0.011,0.4\n')
                 plot.write('set key at graph 0.01, graph 0.95\n')
                 plot.write('set format x \"%H:%M\\n%m/%d\"\n')
-                y1_min = '-100'
-                y1_max = '100'
-                plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-                plot.write('set ytics 50\n')
-                plot.write('set mytics 2\n')
+                plot.write('set yrange [' + str(sensor_co2_yaxis_relay_min[int(sensor_number)]) + ':' + str(sensor_co2_yaxis_relay_max[int(sensor_number)]) + ']\n')
+                plot.write('set ytics ' + str(sensor_co2_yaxis_relay_tics[int(sensor_number)]) + '\n')
+                plot.write('set mytics ' + str(sensor_co2_yaxis_relay_mtics[int(sensor_number)]) + '\n')
                 plot.write('set xzeroaxis linetype 1 linecolor rgb \'#000000\' linewidth 1\n')
                 plot.write('unset title\n')
                 plot.write('plot \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '"')
@@ -1000,11 +1009,9 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 int(pid_co2_relay_low[int(sensor_number)]) != 0):
                 plot.write('set size 1.0,0.4\n')
                 plot.write('set origin 0.0,0.0\n')
-                y1_min = '0'
-                y1_max = '5000'
-                plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-                plot.write('set ytics 500\n')
-                plot.write('set mytics 5\n')
+                plot.write('set yrange [' + str(sensor_co2_yaxis_co2_min[int(sensor_number)]) + ':' + str(sensor_co2_yaxis_co2_max[int(sensor_number)]) + ']\n')
+                plot.write('set ytics ' + str(sensor_co2_yaxis_co2_tics[int(sensor_number)]) + '\n')
+                plot.write('set mytics ' + str(sensor_co2_yaxis_co2_mtics[int(sensor_number)]) + '\n')
             else:
                 plot.write('set size 1.0,0.5\n')
                 plot.write('set origin 0.0,0.0\n')
@@ -1032,6 +1039,12 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set origin 0.0,0.5\n')
                 plot.write('set key at graph 0.025, graph 0.98\n')
 
+            plot.write('set yrange [' + str(sensor_press_yaxis_temp_min[int(sensor_number)]) + ':' + str(sensor_press_yaxis_temp_max[int(sensor_number)]) + ']\n')
+            plot.write('set ytics ' + str(sensor_press_yaxis_temp_tics[int(sensor_number)]) + '\n')
+            plot.write('set mytics ' + str(sensor_press_yaxis_temp_mtics[int(sensor_number)]) + '\n')
+            plot.write('set y2range [' + str(sensor_press_yaxis_press_min[int(sensor_number)]) + ':' + str(sensor_press_yaxis_press_max[int(sensor_number)]) + ']\n')
+            plot.write('set y2tics ' + str(sensor_press_yaxis_press_tics[int(sensor_number)]) + '\n')
+            plot.write('set my2tics ' + str(sensor_press_yaxis_press_mtics[int(sensor_number)]) + '\n')
             plot.write('set title \"Pressure Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_press_name[int(float(sensor_number))] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot \"' + sensor_press_log_final[0] + '" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1, ')
             plot.write('\"\" u 1:8 index 0 title \"Press\" w lp ls 2 axes x1y2\n')
@@ -1044,11 +1057,9 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('set origin 0.0,0.4\n')
                 plot.write('set key at graph 0.0, graph 0.95\n')
                 plot.write('set format x \"%H:%M\\n%m/%d\"\n')
-                y1_min = '-100'
-                y1_max = '100'
-                plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-                plot.write('set ytics 50\n')
-                plot.write('set mytics 2\n')
+                plot.write('set yrange [' + str(sensor_press_yaxis_relay_min[int(sensor_number)]) + ':' + str(sensor_press_yaxis_relay_max[int(sensor_number)]) + ']\n')
+                plot.write('set ytics ' + str(sensor_press_yaxis_relay_tics[int(sensor_number)]) + '\n')
+                plot.write('set mytics ' + str(sensor_press_yaxis_relay_mtics[int(sensor_number)]) + '\n')
                 plot.write('set xzeroaxis linetype 1 linecolor rgb \'#000000\' linewidth 1\n')
                 plot.write('unset y2tics\n')
                 plot.write('unset title\n')
@@ -1089,13 +1100,12 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 int(pid_press_press_relay_low[int(sensor_number)]) != 0):
                 plot.write('set size 0.989,0.4\n')
                 plot.write('set origin 0.011,0.0\n')
-                y1_min = '0'
-                y1_max = '35'
-                plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-                plot.write('set ytics 5\n')
-                plot.write('set mytics 5\n')
-                plot.write('set y2tics 10\n')
-                plot.write('set my2tics 5\n')
+                plot.write('set yrange [' + str(sensor_press_yaxis_temp_min[int(sensor_number)]) + ':' + str(sensor_press_yaxis_temp_max[int(sensor_number)]) + ']\n')
+                plot.write('set ytics ' + str(sensor_press_yaxis_temp_tics[int(sensor_number)]) + '\n')
+                plot.write('set mytics ' + str(sensor_press_yaxis_temp_mtics[int(sensor_number)]) + '\n')
+                plot.write('set y2range [' + str(sensor_press_yaxis_press_min[int(sensor_number)]) + ':' + str(sensor_press_yaxis_press_max[int(sensor_number)]) + ']\n')
+                plot.write('set y2tics ' + str(sensor_press_yaxis_press_tics[int(sensor_number)]) + '\n')
+                plot.write('set my2tics ' + str(sensor_press_yaxis_press_mtics[int(sensor_number)]) + '\n')
             else:
                 plot.write('set size 1.0,0.5\n')
                 plot.write('set origin 0.0,0.0\n')

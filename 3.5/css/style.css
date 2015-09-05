@@ -1,4 +1,4 @@
-/*** General ***/
+y/*** General ***/
 sub, sup {
   /* Specified in % so that the sup/sup is the right size relative to the surrounding text */
   font-size: 75%;
@@ -110,9 +110,10 @@ table.sensor td {
     padding: 0.5em 0.3em 0.6em 0.3em;
 }
 
-table.sensor th {
+table.yaxis td {
+    text-align: center;
     vertical-align: middle;
-    padding: 0.3em 0.3em 0.3em 0.3em;
+    padding: 0.3em 0.1em 0.3em 0.1em;
 }
 
 .pid {
@@ -327,7 +328,7 @@ Primary style
 }
 
 *::after, *::before {
-  content: '';
+  /*content: '';*/
 }
 
 body {
