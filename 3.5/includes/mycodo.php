@@ -1432,16 +1432,16 @@ if (isset($output_error)) {
                             <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_co2_yaxis_relay_mtics[$i]; ?>" maxlength=4 size=2 name="SetCO2<?php echo $i; ?>YAxisRelayMTics" title=""/>
                         </td>
                         <td style="padding-left: 1.5em;">
-                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_co2_yaxis_temp_min[$i]; ?>" maxlength=4 size=2 name="SetCO2<?php echo $i; ?>YAxisCO2Min" title=""/>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_co2_yaxis_co2_min[$i]; ?>" maxlength=4 size=2 name="SetCO2<?php echo $i; ?>YAxisCO2Min" title=""/>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_co2_yaxis_temp_max[$i]; ?>" maxlength=4 size=2 name="SetCO2<?php echo $i; ?>YAxisCO2Max" title=""/>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_co2_yaxis_co2_max[$i]; ?>" maxlength=4 size=2 name="SetCO2<?php echo $i; ?>YAxisCO2Max" title=""/>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_co2_yaxis_temp_tics[$i]; ?>" maxlength=4 size=2 name="SetCO2<?php echo $i; ?>YAxisCO2Tics" title=""/>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_co2_yaxis_co2_tics[$i]; ?>" maxlength=4 size=2 name="SetCO2<?php echo $i; ?>YAxisCO2Tics" title=""/>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_co2_yaxis_temp_mtics[$i]; ?>" maxlength=4 size=2 name="SetCO2<?php echo $i; ?>YAxisCO2MTics" title=""/>
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_co2_yaxis_co2_mtics[$i]; ?>" maxlength=4 size=2 name="SetCO2<?php echo $i; ?>YAxisCO2MTics" title=""/>
                         </td>
                     </tr>
                 </table>
