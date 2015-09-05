@@ -34,7 +34,7 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 Major changes for each versioned release
 
-#### 3.5.70
+#### 3.5.71
 + Ability to set y-axis min/max/tics/mtics for each sensor graph, for both relays and measured condition(s)
 
 #### 3.5.70
