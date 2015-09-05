@@ -54,9 +54,9 @@ $lock_mjpg_streamer_relay = $lock_path . "/mycodo-stream-light";
 $lock_timelapse = $lock_path . "/mycodo_time_lapse";
 $lock_timelapse_light = $lock_path . "/mycodo-timelapse-light";
 
-if (!file_exists($mycodo_db)) exit("Mycodo database does not exist. Run '/var/www/mycodo/setup-database.py -i' to create required database.");
-require($install_path . "/includes/database.php"); // Initial SQL database load to variables
+if (!file_exists($mycodo_db)) exit("Mycodo database does not exist. Run 'setup-database.py -i' to create required database.");
 
+require($install_path . "/includes/database.php"); // Initial SQL database load to variables
 require($install_path . "/includes/functions.php"); // Mycodo functions
 
 // Output an error if the user guest attempts to submit certain forms
@@ -65,7 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $output_error = 'guest';
     } else if ($_SESSION['user_name'] != 'guest') {
         // Only non-guest users may perform these actions
-        require($install_path . "/includes/database.php"); // Reload SQLite database
         require($install_path . "/includes/restricted.php"); // Configuration changes
         require($install_path . "/includes/database.php"); // Reload SQLite database
     }
@@ -113,10 +112,8 @@ delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete olde
 <?php
 // Display general error that occurred (top of page)
 if (isset($output_error)) {
-    switch ($output_error) {
-        case "guest":
-            echo '<span class="error">You cannot perform that task as a guest</span>';
-            break;
+    if ($output_error == 'guest') {
+        echo '<span class="error">You cannot perform that task as a guest user</span>';
     }
     $output_error = NULL;
 }
@@ -1962,7 +1959,7 @@ if (isset($output_error)) {
                             echo $conditional_press_setpoint[$i][$z];
 
                             if ($conditional_press_condition[$i][$z] == "Pressure") {
-                                echo 'kPa';
+                                echo ' kPa';
                             } else {
                                 echo '&deg;C';
                             }
