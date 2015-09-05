@@ -1992,7 +1992,7 @@ if (isset($output_error)) {
                 }
             }
             ?>
-            <div style="clear: both;"></div>
+
         </li>
 
         <li data-content="custom" <?php
@@ -3317,6 +3317,7 @@ if (isset($output_error)) {
     <?php
     if (isset($_COOKIE['debug']) && $_COOKIE['debug'] == True) {
         ?>
+        <div style="clear: both;"></div>
         <div style="padding: 4em 0 2em 2em;">
             <div style="padding-bottom: 1em; font-weight: bold; font-size: 1.5em;">
                 Debug Information

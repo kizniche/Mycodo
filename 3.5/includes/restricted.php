@@ -319,7 +319,7 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
         $stmt->execute();
     }
 
-    if (isset($conditional_t_id)) {
+    if (isset($conditional_t_id[$p])) {
         for ($z = 0; $z < count($conditional_t_id[$p]); $z++) {
             // Delete T Conditional Statement
             if (isset($_POST['DeleteT' . $p . '-' . $z . 'Conditional'])) {
@@ -656,7 +656,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
         $stmt->execute();
     }
 
-    if (isset($conditional_ht_id)) {
+    if (isset($conditional_ht_id[$p])) {
         for ($z = 0; $z < count($conditional_ht_id[$p]); $z++) {
             // Delete HT Conditional Statement
             if (isset($_POST['DeleteHT' . $p . '-' . $z . 'Conditional'])) {
@@ -1103,7 +1103,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
         $stmt->execute();
     }
 
-    if (isset($conditional_co2_id)) {
+    if (isset($conditional_co2_id[$p])) {
         for ($z = 0; $z < count($conditional_co2_id[$p]); $z++) {
             // Delete CO2 Conditional Statement
             if (isset($_POST['DeleteCO2' . $p . '-' . $z . 'Conditional'])) {
@@ -1449,7 +1449,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
         $stmt->execute();
     }
 
-    if (isset($conditional_press_id)) {
+    if (isset($conditional_press_id[$p])) {
         for ($z = 0; $z < count($conditional_press_id[$p]); $z++) {
             // Delete Press Conditional Statement
             if (isset($_POST['DeletePress' . $p . '-' . $z . 'Conditional'])) {
