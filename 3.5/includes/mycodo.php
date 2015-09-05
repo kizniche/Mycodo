@@ -621,7 +621,7 @@ if (isset($output_error)) {
                         <tr>
                             <td align=center class="table-header">Timer</td>
                             <td class="table-header">Name</td>
-                            <th align=center class="table-header">State</th>
+                            <td align=center class="table-header">State</th>
                             <td align=center class="table-header">Relay</td>
                             <td align=center class="table-header">On (sec)</td>
                             <td align=center class="table-header">Off (sec)</td>
@@ -687,7 +687,7 @@ if (isset($output_error)) {
             <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
             <div class="sensor-parent">
                 <table class="sensor">
-                    <tr class="shade">
+                    <tr>
                         <td>T Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_t_id[$i]; ?>)</span></td>
                         <td>Sensor<br>Name</td>
                         <td>Sensor<br>Device</td>
@@ -714,8 +714,8 @@ if (isset($output_error)) {
                             </select>
                         </td>
                     </tr>
-                    <tr class="shade" style="height: 2.5em;">
-                        <td class="shade" style="vertical-align: middle;">
+                    <tr style="height: 2.5em;">
+                        <td style="vertical-align: middle;">
                             <button type="submit" name="Delete<?php echo $i; ?>TSensor" title="Delete Sensor">Delete<br>Sensor</button>
                         </td>
                         <td>
@@ -769,11 +769,11 @@ if (isset($output_error)) {
                     </tr>
                 </table>
 
-                <table class="yaxis" style="margin-bottom: 0.7em;">
+                <table class="yaxis">
                     <tr>
                         <td rowspan=3>Graph Y-Axis<br>Range<br>&<br>Marks</td>
                         <td colspan=4>Relay</td>
-                        <td colspan=4>Temperature</td>
+                        <td colspan=4>Temperature (&deg;C)</td>
                     </tr>
                     <tr>
                         <td style="padding-left: 1.5em;">Min</td>
@@ -886,14 +886,15 @@ if (isset($output_error)) {
                     </tr>
                 </table>
                 </form>
-                <table class="pid" style="width: 100%; border: 0.7em solid #EBEBEB; border-top: 0;">
-                    <tr class="shade">
-                        <td class="conditional">
+
+                <table class="conditional">
+                    <tr>
+                        <td>
                             Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                         </td>
                     </tr>
-                    <tr class="shade">
-                        <td class="conditional">
+                    <tr>
+                        <td style="padding-bottom: 1em;">
                             <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                             Name: 
                             <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditiont<?php echo $i; ?>name" title="" required/>
@@ -921,7 +922,7 @@ if (isset($output_error)) {
                         for ($z = 0; $z < count($conditional_t_id[$i]); $z++) {
                         ?>
                     <tr>
-                        <td style="text-align: left; background-color: #FFFFFF;">
+                        <td style="background-color: #FFFFFF;">
                             <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                             <?php
                             echo '<button type="submit" name="DeleteT' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
@@ -973,7 +974,7 @@ if (isset($output_error)) {
                 <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                 <div class="sensor-parent">
                 <table class="sensor" style="table-layout: fixed;">
-                    <tr class="shade">
+                    <tr>
                         <td>HT Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_ht_id[$i]; ?>)</span></td>
                         <td>Sensor<br>Name</td>
                         <td>Sensor<br>Device</td>
@@ -994,8 +995,8 @@ if (isset($output_error)) {
                             </select>
                         </td>
                     </tr>
-                    <tr class="shade" style="height: 2.5em;">
-                        <td class="shade" style="vertical-align: middle;">
+                    <tr style="height: 2.5em;">
+                        <td style="vertical-align: middle;">
                             <button type="submit" name="Delete<?php echo $i; ?>HTSensor" title="Delete Sensor">Delete<br>Sensor</button>
                         </td>
                         <td>
@@ -1050,12 +1051,12 @@ if (isset($output_error)) {
                     </tr>
                 </table>
 
-                <table class="yaxis" style="margin-bottom: 0.7em;">
+                <table class="yaxis">
                     <tr>
                         <td rowspan=3>Graph Y-Axis<br>Range<br>&<br>Marks</td>
                         <td colspan=4>Relay</td>
-                        <td colspan=4>Temperature</td>
-                        <td colspan=4>Humidity</td>
+                        <td colspan=4>Temperature (&degC)</td>
+                        <td colspan=4>Humidity (%)</td>
                     </tr>
                     <tr>
                         <td style="padding-left: 1.5em;">Min</td>
@@ -1241,14 +1242,14 @@ if (isset($output_error)) {
                     </tr>
                 </table>
                 </form>
-                <table class="pid" style="width: 100%; border: 0.7em solid #EBEBEB; border-top: 0;">
-                    <tr class="shade">
-                        <td class="conditional">
+                <table class="conditional">
+                    <tr>
+                        <td>
                             Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                         </td>
                     </tr>
-                    <tr class="shade">
-                        <td class="conditional">
+                    <tr>
+                        <td style="padding-bottom: 1em;">
                             <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                             Name: 
                             <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionht<?php echo $i; ?>name" title="" required/>
@@ -1280,7 +1281,7 @@ if (isset($output_error)) {
                         for ($z = 0; $z < count($conditional_ht_id[$i]); $z++) {
                         ?>
                     <tr>
-                        <td style="text-align: left; background-color: #FFFFFF;">
+                        <td style="background-color: #FFFFFF;">
                             <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                             <?php
                             echo '<button type="submit" name="DeleteHT' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
@@ -1340,7 +1341,7 @@ if (isset($output_error)) {
                 <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                 <div class="sensor-parent">
                 <table class="sensor" style="table-layout: fixed;">
-                    <tr class="shade">
+                    <tr>
                         <td>CO<sub>2</sub> Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_co2_id[$i]; ?>)</span></td>
                         <td>Sensor<br>Name</td>
                         <td>Sensor<br>Device</td>
@@ -1361,8 +1362,8 @@ if (isset($output_error)) {
                             </select>
                         </td>
                     </tr>
-                    <tr class="shade" style="height: 2.5em;">
-                        <td class="shade" style="vertical-align: middle;">
+                    <tr style="height: 2.5em;">
+                        <td style="vertical-align: middle;">
                             <button type="submit" name="Delete<?php echo $i; ?>CO2Sensor" title="Delete Sensor">Delete<br>Sensor</button>
                         </td>
                         <td>
@@ -1419,11 +1420,11 @@ if (isset($output_error)) {
                     </tr>
                 </table>
 
-                <table class="yaxis" style="margin-bottom: 0.7em;">
+                <table class="yaxis">
                     <tr>
                         <td rowspan=3>Graph Y-Axis<br>Range<br>&<br>Marks</td>
                         <td colspan=4>Relay</td>
-                        <td colspan=4>CO<sub>2</sub></td>
+                        <td colspan=4>CO<sub>2</sub> (ppmv)</td>
                     </tr>
                     <tr>
                         <td style="padding-left: 1.5em;">Min</td>
@@ -1537,14 +1538,14 @@ if (isset($output_error)) {
                     </tr>
                 </table>
                 </form>
-                <table class="pid" style="width: 100%; border: 0.7em solid #EBEBEB; border-top: 0;">
-                    <tr class="shade">
-                        <td class="conditional">
+                <table class="conditional">
+                    <tr>
+                        <td>
                             Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                         </td>
                     </tr>
-                    <tr class="shade">
-                        <td class="conditional">
+                    <tr>
+                        <td style="padding-bottom: 1em;">
                             <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                             Name: 
                             <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionco2<?php echo $i; ?>name" title="" required/>
@@ -1572,7 +1573,7 @@ if (isset($output_error)) {
                         for ($z = 0; $z < count($conditional_co2_id[$i]); $z++) {
                         ?>
                     <tr>
-                        <td style="text-align: left; background-color: #FFFFFF;">
+                        <td style="background-color: #FFFFFF;">
                             <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                             <?php
                             echo '<button type="submit" name="DeleteCO2' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
@@ -1625,7 +1626,7 @@ if (isset($output_error)) {
                 <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                 <div class="sensor-parent">
                 <table class="sensor" style="table-layout: fixed;">
-                    <tr class="shade">
+                    <tr>
                         <td>Press Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_press_id[$i]; ?>)</span></td>
                         <td>Sensor<br>Name</td>
                         <td>Sensor<br>Device</td>
@@ -1652,8 +1653,8 @@ if (isset($output_error)) {
                             </select>
                         </td>
                     </tr>
-                    <tr class="shade" style="height: 2.5em;">
-                        <td class="shade" style="vertical-align: middle;">
+                    <tr style="height: 2.5em;">
+                        <td style="vertical-align: middle;">
                             <button type="submit" name="Delete<?php echo $i; ?>PressSensor" title="Delete Sensor">Delete<br>Sensor</button>
                         </td>
                         <td>
@@ -1710,12 +1711,12 @@ if (isset($output_error)) {
                     </tr>
                 </table>
 
-                <table class="yaxis" style="margin-bottom: 0.7em;">
+                <table class="yaxis">
                     <tr>
                         <td rowspan=3>Graph Y-Axis<br>Range<br>&<br>Marks</td>
                         <td colspan=4>Relay</td>
-                        <td colspan=4>Temperature</td>
-                        <td colspan=4>Pressure</td>
+                        <td colspan=4>Temperature (&deg;C)</td>
+                        <td colspan=4>Pressure (kPa)</td>
                     </tr>
                     <tr>
                         <td style="padding-left: 1.5em;">Min</td>
@@ -1901,14 +1902,14 @@ if (isset($output_error)) {
                     </tr>
                 </table>
                 </form>
-                <table class="pid" style="width: 100%; border: 0.7em solid #EBEBEB; border-top: 0;">
-                    <tr class="shade">
-                        <td class="conditional">
+                <table class="conditional">
+                    <tr>
+                        <td>
                             Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                         </td>
                     </tr>
-                    <tr class="shade">
-                        <td class="conditional">
+                    <tr>
+                        <td style="padding-bottom: 1em;">
                             <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                             Name: 
                             <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionpress<?php echo $i; ?>name" title="" required/>
@@ -1940,7 +1941,7 @@ if (isset($output_error)) {
                         for ($z = 0; $z < count($conditional_press_id[$i]); $z++) {
                         ?>
                     <tr>
-                        <td style="text-align: left; background-color: #FFFFFF;">
+                        <td style="background-color: #FFFFFF;">
                             <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                             <?php
                             echo '<button type="submit" name="DeletePress' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';

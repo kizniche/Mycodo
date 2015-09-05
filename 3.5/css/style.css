@@ -81,10 +81,18 @@ hr.fade {
   border-collapse: initial;
 }
 
+table.sensor {
+    margin: 0.3em 0.5em 1em 0.5em;
+}
+
 table.sensor td {
     text-align: center;
     vertical-align: middle;
-    padding: 0.5em 0.3em 0.6em 0.3em;
+    padding: 0.3em 0.3em 0.3em 0.3em;
+}
+
+table.yaxis {
+    margin: 0 0.5em 1em 0.5em;
 }
 
 table.yaxis td {
@@ -93,8 +101,8 @@ table.yaxis td {
     padding: 0.3em 0.1em 0.3em 0.1em;
 }
 
-.pid {
-  border-collapse: initial;
+table.pid {
+    margin: 0 0.5em 1em 0.5em;
 }
 
 table.pid td {
@@ -103,18 +111,22 @@ table.pid td {
     padding: 0.5em 0.4em 0.6em 0.4em;
 }
 
-table.pid th {
+table.conditional {
+    margin: 0 0.5em 0.5em 0.5em;
+}
+
+table.conditional td {
+    text-align: left;
     vertical-align: middle;
-    padding: 0.3em 0.4em 0.3em 0.4em;
+    padding: 0.5em 0.4em 0.6em 0.4em;
+}
+
+.pid {
+  border-collapse: initial;
 }
 
 .shade {
     background-color: #EBEBEB;
-}
-
-.conditional {
-    text-align: left !important;
-    padding: 0.5em 0 0.5em 0 !important;
 }
 
 .table-header {
