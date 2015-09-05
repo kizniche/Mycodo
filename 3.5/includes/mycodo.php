@@ -86,7 +86,7 @@ delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete olde
 <!doctype html>
 <html lang="en" class="no-js">
 <head>
-    <title>Mycodo</title>
+    <title>Mycodo - <?php echo $_SERVER['SERVER_NAME']; ?></title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex">
