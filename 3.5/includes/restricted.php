@@ -1607,7 +1607,11 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
             $stmt->bindValue(':id', $sensor_press_id[$p], SQLITE3_TEXT);
             $stmt->bindValue(':name', $_POST['sensorpress' . $p . 'name'], SQLITE3_TEXT);
             $stmt->bindValue(':device', $_POST['sensorpress' . $p . 'device'], SQLITE3_TEXT);
-            $stmt->bindValue(':pin', (int)$_POST['sensorpress' . $p . 'pin'], SQLITE3_INTEGER);
+            if ($_POST['sensorpress' . $p . 'device'] != "BMP085-180") {
+                $stmt->bindValue(':pin', (int)$_POST['sensorpress' . $p . 'pin'], SQLITE3_INTEGER);
+            } else {
+                $stmt->bindValue(':pin', 0, SQLITE3_INTEGER);
+            }
             $stmt->bindValue(':period', (int)$_POST['sensorpress' . $p . 'period'], SQLITE3_INTEGER);
             $stmt->bindValue(':premeas_relay', (int)$_POST['sensorpress' . $p . 'premeasure_relay'], SQLITE3_INTEGER);
             $stmt->bindValue(':premeas_dur', (int)$_POST['sensorpress' . $p . 'premeasure_dur'], SQLITE3_INTEGER);
