@@ -327,8 +327,8 @@ Primary style
   box-sizing: border-box;
 }
 
-*::after, *::before {
-  /*content: '';*/
+a::after, a::before {
+  content: '';
 }
 
 body {
