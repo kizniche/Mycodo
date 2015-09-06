@@ -104,7 +104,10 @@ server = None
 client_que = '0'
 client_var = None
 
-
+last_t_reading = 0
+last_ht_reading = 0
+last_co2_reading = 0
+last_press_reading = 0
 
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
@@ -515,83 +518,10 @@ def daemon(output, log):
         #
         if client_que != '0':
 
-            if client_que == 'sql_reload':
-                read_sql()
-
-            elif client_que == 'write_t_sensor_log':
-                logging.debug("[Client command] Write T Sensor Log")
-                if (client_var != 0 and sensor_t_activated[client_var]):
-                    if read_t_sensor(client_var-1) == 1:
-                        mycodoLog.write_t_sensor_log(sensor_t_read_temp_c, client_var)
-                    else:
-                        logging.warning("Could not read Temp-%s sensor, not writing to sensor log", client_var)
-                else:
-                    for i in range(0, len(sensor_t_id)):
-                        if sensor_t_activated[i]:
-                            if read_t_sensor(i) == 1:
-                                mycodoLog.write_t_sensor_log(sensor_t_read_temp_c, i)
-                            else:
-                                logging.warning("Could not read Temp-%s sensor, not writing to sensor log", i)
-                            time.sleep(0.1)
-                change_sensor_log = 0
-
-            elif client_que == 'write_ht_sensor_log':
-                logging.debug("[Client command] Write HT Sensor Log")
-                if (client_var != 0 and sensor_ht_activated[client_var]):
-                    if read_ht_sensor(client_var-1) == 1:
-                        mycodoLog.write_ht_sensor_log(sensor_ht_read_temp_c, sensor_ht_read_hum, sensor_ht_dewpt_c, client_var)
-                    else:
-                        logging.warning("Could not read Hum/Temp-%s sensor, not writing to sensor log", client_var)
-                else:
-                    for i in range(0, len(sensor_ht_id)):
-                        if sensor_ht_activated[i]:
-                            if read_ht_sensor(i) == 1:
-                                mycodoLog.write_ht_sensor_log(sensor_ht_read_temp_c, sensor_ht_read_hum, sensor_ht_dewpt_c, i)
-                            else:
-                                logging.warning("Could not read Hum/Temp-%s sensor, not writing to sensor log", i)
-                            time.sleep(0.1)
-                change_sensor_log = 0
-
-            elif client_que == 'write_co2_sensor_log':
-                logging.debug("[Client command] Write CO2 Sensor Log")
-                if (client_var != 0 and sensor_co2_activated[client_var]):
-                    if read_co2_sensor(client_var-1) == 1:
-                        mycodoLog.write_co2_sensor_log(sensor_co2_read_co2, client_var)
-                    else:
-                        logging.warning("Could not read CO2-%s sensor, not writing to sensor log", client_var)
-                else:
-                    for i in range(0, len(sensor_co2_id)):
-                        if sensor_co2_activated[i]:
-                            if read_co2_sensor(i) == 1:
-                                mycodoLog.write_co2_sensor_log(sensor_co2_read_co2, i)
-                            else:
-                                logging.warning("Could not read CO2-%s sensor, not writing to sensor log", i)
-                            time.sleep(0.1)
-                change_sensor_log = 0
-
-            elif client_que == 'write_press_sensor_log':
-                logging.debug("[Client command] Write Press Sensor Log")
-                if (client_var != 0 and sensor_press_activated[client_var]):
-                    if read_press_sensor(client_var-1) == 1:
-                        mycodoLog.write_press_sensor_log(sensor_press_read_temp_c, sensor_press_read_press, sensor_press_read_alt, client_var)
-                    else:
-                        logging.warning("Could not read Press-%s sensor, not writing to sensor log", client_var)
-                else:
-                    for i in range(0, len(sensor_press_id)):
-                        if sensor_press_activated[i]:
-                            if read_press_sensor(i) == 1:
-                                mycodoLog.write_press_sensor_log(sensor_press_read_temp_c, sensor_press_read_press, sensor_press_read_alt, i)
-                            else:
-                                logging.warning("Could not read Press-%s sensor, not writing to sensor log", i)
-                            time.sleep(0.1)
-                change_sensor_log = 0
-
-            elif client_que == 'TerminateServer':
+            if client_que == 'TerminateServer':
                 logging.info("[Daemon] Backing up logs")
 
                 mycodoLog.Concatenate_Logs()
-
-                logging.info("[Daemon] Commanding all PIDs to turn off")
 
                 pid_t_temp_alive = [0] * len(sensor_t_id)
                 pid_ht_temp_alive =  [0] * len(sensor_ht_id)
@@ -642,16 +572,283 @@ def daemon(output, log):
                         while pid_press_press_alive[i] == 0:
                             time.sleep(0.1)
 
-                logging.info("[Daemon] All PIDs have turned off")
-
                 logging.info("[Daemon] Turning off all relays")
-
                 Relays_Off()
-
                 logging.info("[Daemon] Shutdown success")
                 return 0
 
+            elif client_que == 'sql_reload' and client_que != 'TerminateServer':
+                read_sql()
+
+            elif client_que == 'write_t_sensor_log' and client_que != 'TerminateServer':
+                logging.debug("[Client command] Write T Sensor Log")
+                if (client_var != 0 and sensor_t_activated[client_var]):
+                    if read_t_sensor(client_var-1) == 1:
+                        mycodoLog.write_t_sensor_log(sensor_t_read_temp_c, client_var)
+                    else:
+                        logging.warning("Could not read Temp-%s sensor, not writing to sensor log", client_var)
+                else:
+                    for i in range(0, len(sensor_t_id)):
+                        if sensor_t_activated[i]:
+                            if read_t_sensor(i) == 1:
+                                mycodoLog.write_t_sensor_log(sensor_t_read_temp_c, i)
+                            else:
+                                logging.warning("Could not read Temp-%s sensor, not writing to sensor log", i)
+                            time.sleep(0.1)
+                change_sensor_log = 0
+
+            elif client_que == 'write_ht_sensor_log' and client_que != 'TerminateServer':
+                logging.debug("[Client command] Write HT Sensor Log")
+                if (client_var != 0 and sensor_ht_activated[client_var]):
+                    if read_ht_sensor(client_var-1) == 1:
+                        mycodoLog.write_ht_sensor_log(sensor_ht_read_temp_c, sensor_ht_read_hum, sensor_ht_dewpt_c, client_var)
+                    else:
+                        logging.warning("Could not read Hum/Temp-%s sensor, not writing to sensor log", client_var)
+                else:
+                    for i in range(0, len(sensor_ht_id)):
+                        if sensor_ht_activated[i]:
+                            if read_ht_sensor(i) == 1:
+                                mycodoLog.write_ht_sensor_log(sensor_ht_read_temp_c, sensor_ht_read_hum, sensor_ht_dewpt_c, i)
+                            else:
+                                logging.warning("Could not read Hum/Temp-%s sensor, not writing to sensor log", i)
+                            time.sleep(0.1)
+                change_sensor_log = 0
+
+            elif client_que == 'write_co2_sensor_log' and client_que != 'TerminateServer':
+                logging.debug("[Client command] Write CO2 Sensor Log")
+                if (client_var != 0 and sensor_co2_activated[client_var]):
+                    if read_co2_sensor(client_var-1) == 1:
+                        mycodoLog.write_co2_sensor_log(sensor_co2_read_co2, client_var)
+                    else:
+                        logging.warning("Could not read CO2-%s sensor, not writing to sensor log", client_var)
+                else:
+                    for i in range(0, len(sensor_co2_id)):
+                        if sensor_co2_activated[i]:
+                            if read_co2_sensor(i) == 1:
+                                mycodoLog.write_co2_sensor_log(sensor_co2_read_co2, i)
+                            else:
+                                logging.warning("Could not read CO2-%s sensor, not writing to sensor log", i)
+                            time.sleep(0.1)
+                change_sensor_log = 0
+
+            elif client_que == 'write_press_sensor_log' and client_que != 'TerminateServer':
+                logging.debug("[Client command] Write Press Sensor Log")
+                if (client_var != 0 and sensor_press_activated[client_var]):
+                    if read_press_sensor(client_var-1) == 1:
+                        mycodoLog.write_press_sensor_log(sensor_press_read_temp_c, sensor_press_read_press, sensor_press_read_alt, client_var)
+                    else:
+                        logging.warning("Could not read Press-%s sensor, not writing to sensor log", client_var)
+                else:
+                    for i in range(0, len(sensor_press_id)):
+                        if sensor_press_activated[i]:
+                            if read_press_sensor(i) == 1:
+                                mycodoLog.write_press_sensor_log(sensor_press_read_temp_c, sensor_press_read_press, sensor_press_read_alt, i)
+                            else:
+                                logging.warning("Could not read Press-%s sensor, not writing to sensor log", i)
+                            time.sleep(0.1)
+                change_sensor_log = 0
+
             client_que = None
+
+
+        #
+        # Read sensors and write logs
+        #
+        for i in range(0, len(sensor_t_id)):
+            if int(time.time()) > timerTSensorLog[i] and sensor_t_device[i] != 'Other' and sensor_t_activated[i] == 1 and client_que != 'TerminateServer':
+                logging.debug("[Timer Expiration] Read Temp-%s sensor every %s seconds: Write sensor log", i+1, sensor_t_period[i])
+                if read_t_sensor(i) == 1:
+                    mycodoLog.write_t_sensor_log(sensor_t_read_temp_c, i)
+                else:
+                    logging.warning("Could not read Temp-%s sensor, not writing to sensor log", i+1)
+                timerTSensorLog[i] = int(time.time()) + sensor_t_period[i]
+
+        for i in range(0, len(sensor_ht_id)):
+            if int(time.time()) > timerHTSensorLog[i] and sensor_ht_device[i] != 'Other' and sensor_ht_activated[i] == 1 and client_que != 'TerminateServer':
+                logging.debug("[Timer Expiration] Read HT-%s sensor every %s seconds: Write sensor log", i+1, sensor_ht_period[i])
+                if read_ht_sensor(i) == 1:
+                    mycodoLog.write_ht_sensor_log(sensor_ht_read_temp_c, sensor_ht_read_hum, sensor_ht_dewpt_c, i)
+                else:
+                    logging.warning("Could not read HT-%s sensor, not writing to sensor log", i+1)
+                timerHTSensorLog[i] = int(time.time()) + sensor_ht_period[i]
+
+        for i in range(0, len(sensor_co2_id)):
+            if int(time.time()) > timerCo2SensorLog[i] and sensor_co2_device[i] != 'Other' and sensor_co2_activated[i] == 1 and client_que != 'TerminateServer':
+                if read_co2_sensor(i) == 1:
+                    mycodoLog.write_co2_sensor_log(sensor_co2_read_co2, i)
+                else:
+                    logging.warning("Could not read CO2-%s sensor, not writing to sensor log", i+1)
+                timerCo2SensorLog[i] = int(time.time()) + sensor_co2_period[i]
+
+        for i in range(0, len(sensor_press_id)):
+            if int(time.time()) > timerPressSensorLog[i] and sensor_press_device[i] != 'Other' and sensor_press_activated[i] == 1 and client_que != 'TerminateServer':
+                logging.debug("[Timer Expiration] Read Press-%s sensor every %s seconds: Write sensor log", i+1, sensor_press_period[i])
+                if read_press_sensor(i) == 1:
+                    mycodoLog.write_press_sensor_log(sensor_press_read_temp_c, sensor_press_read_press, sensor_press_read_alt, i)
+                else:
+                    logging.warning("Could not read Press-%s sensor, not writing to sensor log", i+1)
+                timerPressSensorLog[i] = int(time.time()) + sensor_press_period[i]
+
+
+        #
+        # Check if T conditional statements are true
+        #
+        for j in range(0, len(conditional_t_number_sensor)):
+            for k in range(0, len(conditional_t_number_conditional)):
+
+                if conditional_t_id[j][k][0] != 0 and client_que != 'TerminateServer':
+
+                    if int(time.time()) > timerTConditional[j][k] and conditional_t_state[j][k][0] == 1:
+                        logging.debug("[Conditional] Check T conditional statement %s: %s", k+1, conditional_t_name[j][k][0])
+                        if read_t_sensor(j) == 1:
+
+                            if ((conditional_t_direction[j][k][0] == 1 and # If temp is above set point
+                                    sensor_t_read_temp_c[j] > conditional_t_setpoint[j][k][0]) or
+                                    (conditional_t_direction[j][k][0] == -1 and # If temp is below set point
+                                    sensor_t_read_temp_c[j] < conditional_t_setpoint[j][k][0])):
+
+                                if conditional_t_relay_state[j][k][0] == 1:
+                                    if conditional_t_relay_seconds_on[j][k][0] > 0:
+                                        rod = threading.Thread(target = relay_on_duration,
+                                            args = (conditional_t_relay[j][k][0], conditional_t_relay_seconds_on[j][k][0], j,))
+                                        rod.start()
+                                    else:
+                                        relay_onoff(conditional_t_relay[j][k][0], "on")
+                                elif conditional_t_relay_state[j][k][0] == 0:
+                                    relay_onoff(conditional_t_relay[j][k][0], "off")
+                        else:
+                            logging.warning("[Conditional] Could not read T-%s sensor, did not check conditional %s", j+1, k+1)
+                        timerTConditional[j][k] = int(time.time()) + conditional_t_period[j][k][0]
+
+
+        #
+        # Check if HT conditional statements are true
+        #
+        for j in range(0, len(conditional_ht_number_sensor)):
+            for k in range(0, len(conditional_ht_number_conditional)):
+
+                if conditional_ht_id[j][k][0] != 0 and client_que != 'TerminateServer':
+
+                    if int(time.time()) > timerHTConditional[j][k] and conditional_ht_state[j][k][0] == 1:
+                        logging.debug("[Conditional] Check HT conditional statement %s: %s", k+1, conditional_ht_name[j][k][0])
+                        if read_ht_sensor(j) == 1:
+
+                            if ((conditional_ht_condition[j][k][0] == "Temperature" and # If temp is above set point
+                                    conditional_ht_direction[j][k][0] == 1 and
+                                    sensor_ht_read_temp_c[j] > conditional_ht_setpoint[j][k][0]) or
+                                    (conditional_ht_condition[j][k][0] == "Temperature" and  # If temp is below set point
+                                    conditional_ht_direction[j][k][0] == -1 and
+                                    sensor_ht_read_temp_c[j] < conditional_ht_setpoint[j][k][0]) or
+                                    (conditional_ht_condition[j][k][0] == "Humidity" and # If hum is above set point
+                                    conditional_ht_direction[j][k][0] == 1 and
+                                    sensor_ht_read_hum[j] > conditional_ht_setpoint[j][k][0]) or
+                                    (conditional_ht_condition[j][k][0] == "Humidity" and # If hum is below set point
+                                    conditional_ht_direction[j][k][0] == -1 and
+                                    sensor_ht_read_hum[j] < conditional_ht_setpoint[j][k][0])):
+
+                                if conditional_ht_relay_state[j][k][0] == 1:
+                                    if conditional_ht_relay_seconds_on[j][k][0] > 0:
+                                        rod = threading.Thread(target = relay_on_duration,
+                                            args = (conditional_ht_relay[j][k][0], conditional_ht_relay_seconds_on[j][k][0], j,))
+                                        rod.start()
+                                    else:
+                                        relay_onoff(conditional_ht_relay[j][k][0], "on")
+                                elif conditional_ht_relay_state[j][k][0] == 0:
+                                    relay_onoff(conditional_ht_relay[j][k][0], "off")
+                        else:
+                            logging.warning("[Conditional] Could not read HT-%s sensor, did not check conditional %s", j+1, k+1)
+                        timerHTConditional[j][k] = int(time.time()) + conditional_ht_period[j][k][0]
+
+
+        #
+        # Check if CO2 conditional statements are true
+        #
+        for j in range(0, len(conditional_co2_number_sensor)):
+            for k in range(0, len(conditional_co2_number_conditional)):
+
+                if conditional_co2_id[j][k][0] != 0 and client_que != 'TerminateServer':
+
+                    if int(time.time()) > timerCO2Conditional[j][k] and conditional_co2_state[j][k][0] == 1:
+                        logging.debug("[Conditional] Check CO2 conditional statement %s: %s", k+1, conditional_co2_name[j][k][0])
+                        if read_co2_sensor(j) == 1:
+
+                            if ((conditional_co2_direction[j][k][0] == 1 and # If temp is above set point
+                                    sensor_co2_read_co2[j] > conditional_co2_setpoint[j][k][0]) or
+                                    (conditional_co2_direction[j][k][0] == -1 and # If temp is below set point
+                                    sensor_co2_read_co2[j] < conditional_co2_setpoint[j][k][0])):
+
+                                if conditional_co2_relay_state[j][k][0] == 1:
+                                    if conditional_co2_relay_seconds_on[j][k][0] > 0:
+                                        rod = threading.Thread(target = relay_on_duration,
+                                            args = (conditional_co2_relay[j][k][0], conditional_co2_relay_seconds_on[j][k][0], j,))
+                                        rod.start()
+                                    else:
+                                        relay_onoff(conditional_co2_relay[j][k][0], "on")
+                                elif conditional_co2_relay_state[j][k][0] == 0:
+                                    relay_onoff(conditional_co2_relay[j][k][0], "off")
+                        else:
+                            logging.warning("[Conditional] Could not read CO2-%s sensor, did not check conditional %s", j+1, k+1)
+                        timerCO2Conditional[j][k] = int(time.time()) + conditional_co2_period[j][k][0]
+
+
+        #
+        # Check if Press conditional statements are true
+        #
+        for j in range(0, len(conditional_press_number_sensor)):
+            for k in range(0, len(conditional_press_number_conditional)):
+
+                if conditional_press_id[j][k][0] != 0 and client_que != 'TerminateServer':
+
+                    if int(time.time()) > timerPressConditional[j][k] and conditional_press_state[j][k][0] == 1:
+                        logging.debug("[Conditional] Check Press conditional statement %s: %s", k+1, conditional_press_name[j][k][0])
+                        if read_press_sensor(j) == 1:
+
+                            if ((conditional_press_condition[j][k][0] == "Pressure" and # If temp is above set point
+                                    conditional_press_direction[j][k][0] == 1 and
+                                    sensor_press_read_press[j] > conditional_press_setpoint[j][k][0]) or
+                                    (conditional_press_condition[j][k][0] == "Pressure" and  # If temp is below set point
+                                    conditional_press_direction[j][k][0] == -1 and
+                                    sensor_press_read_press[j] < conditional_press_setpoint[j][k][0]) or
+                                    (conditional_press_condition[j][k][0] == "Temperature" and # If hum is above set point
+                                    conditional_press_direction[j][k][0] == 1 and
+                                    sensor_press_read_temp_c[j] > conditional_press_setpoint[j][k][0]) or
+                                    (conditional_press_condition[j][k][0] == "Temperature" and # If hum is below set point
+                                    conditional_press_direction[j][k][0] == -1 and
+                                    sensor_press_read_temp_c[j] < conditional_press_setpoint[j][k][0])):
+
+                                if conditional_press_relay_state[j][k][0] == 1:
+                                    if conditional_press_relay_seconds_on[j][k][0] > 0:
+                                        rod = threading.Thread(target = relay_on_duration,
+                                            args = (conditional_press_relay[j][k][0], conditional_press_relay_seconds_on[j][k][0], j,))
+                                        rod.start()
+                                    else:
+                                        relay_onoff(conditional_press_relay[j][k][0], "on")
+                                elif conditional_press_relay_state[j][k][0] == 0:
+                                    relay_onoff(conditional_press_relay[j][k][0], "off")
+                        else:
+                            logging.warning("[Conditional] Could not read Press-%s sensor, did not check conditional %s", j+1, k+1)
+                        timerPressConditional[j][k] = int(time.time()) + conditional_press_period[j][k][0]
+
+
+        #
+        # Concatenate local log with tempfs log every 6 hours (backup)
+        #
+        if int(time.time()) > timerLogBackup and client_que != 'TerminateServer':
+            mycodoLog.Concatenate_Logs()
+            timerLogBackup = int(time.time()) + 21600
+
+        #
+        # Simple duration timers
+        #
+        if len(timer_id) != 0 and client_que != 'TerminateServer':
+            for i in range(0, len(timer_id)):
+                if int(time.time()) > timer_time[i]:
+                    if timer_state[i] == 1:
+                        logging.debug("[Timer Expiration] Timer %s: Turn Relay %s on for %s seconds, off %s seconds.", i, timer_relay[i], timer_duration_on[i], timer_duration_off[i])
+                        rod = threading.Thread(target = relay_on_duration,
+                            args = (timer_relay[i], timer_duration_on[i], 0,))
+                        rod.start()
+                        timer_time[i] = int(time.time()) + timer_duration_on[i] + timer_duration_off[i]
 
 
         #
@@ -903,205 +1100,6 @@ def daemon(output, log):
                 logging.warning("[Daemon] Cannot Start Humidity PID Thread-Press-P-%s: It's already running.", pid_number+1)
             pid_press_press_up = 0
 
-
-        #
-        # Read sensors and write logs
-        #
-        for i in range(0, len(sensor_t_id)):
-            if int(time.time()) > timerTSensorLog[i] and sensor_t_device[i] != 'Other' and sensor_t_activated[i] == 1:
-                logging.debug("[Timer Expiration] Read Temp-%s sensor every %s seconds: Write sensor log", i+1, sensor_t_period[i])
-                if read_t_sensor(i) == 1:
-                    mycodoLog.write_t_sensor_log(sensor_t_read_temp_c, i)
-                else:
-                    logging.warning("Could not read Temp-%s sensor, not writing to sensor log", i+1)
-                timerTSensorLog[i] = int(time.time()) + sensor_t_period[i]
-
-        for i in range(0, len(sensor_ht_id)):
-            if int(time.time()) > timerHTSensorLog[i] and sensor_ht_device[i] != 'Other' and sensor_ht_activated[i] == 1:
-                logging.debug("[Timer Expiration] Read HT-%s sensor every %s seconds: Write sensor log", i+1, sensor_ht_period[i])
-                if read_ht_sensor(i) == 1:
-                    mycodoLog.write_ht_sensor_log(sensor_ht_read_temp_c, sensor_ht_read_hum, sensor_ht_dewpt_c, i)
-                else:
-                    logging.warning("Could not read HT-%s sensor, not writing to sensor log", i+1)
-                timerHTSensorLog[i] = int(time.time()) + sensor_ht_period[i]
-
-        for i in range(0, len(sensor_co2_id)):
-            if int(time.time()) > timerCo2SensorLog[i] and sensor_co2_device[i] != 'Other' and sensor_co2_activated[i] == 1:
-                if read_co2_sensor(i) == 1:
-                    mycodoLog.write_co2_sensor_log(sensor_co2_read_co2, i)
-                else:
-                    logging.warning("Could not read CO2-%s sensor, not writing to sensor log", i+1)
-                timerCo2SensorLog[i] = int(time.time()) + sensor_co2_period[i]
-
-        for i in range(0, len(sensor_press_id)):
-            if int(time.time()) > timerPressSensorLog[i] and sensor_press_device[i] != 'Other' and sensor_press_activated[i] == 1:
-                logging.debug("[Timer Expiration] Read Press-%s sensor every %s seconds: Write sensor log", i+1, sensor_press_period[i])
-                if read_press_sensor(i) == 1:
-                    mycodoLog.write_press_sensor_log(sensor_press_read_temp_c, sensor_press_read_press, sensor_press_read_alt, i)
-                else:
-                    logging.warning("Could not read Press-%s sensor, not writing to sensor log", i+1)
-                timerPressSensorLog[i] = int(time.time()) + sensor_press_period[i]
-
-
-        #
-        # Check if T conditional statements are true
-        #
-        for j in range(0, len(conditional_t_number_sensor)):
-            for k in range(0, len(conditional_t_number_conditional)):
-
-                if conditional_t_id[j][k][0] != 0:
-
-                    if int(time.time()) > timerTConditional[j][k] and conditional_t_state[j][k][0] == 1:
-                        logging.debug("[Conditional] Check T conditional statement %s: %s", k+1, conditional_t_name[j][k][0])
-                        if read_t_sensor(j) == 1:
-
-                            if ((conditional_t_direction[j][k][0] == 1 and # If temp is above set point
-                                    sensor_t_read_temp_c[j] > conditional_t_setpoint[j][k][0]) or
-                                    (conditional_t_direction[j][k][0] == -1 and # If temp is below set point
-                                    sensor_t_read_temp_c[j] < conditional_t_setpoint[j][k][0])):
-
-                                if conditional_t_relay_state[j][k][0] == 1:
-                                    if conditional_t_relay_seconds_on[j][k][0] > 0:
-                                        rod = threading.Thread(target = relay_on_duration,
-                                            args = (conditional_t_relay[j][k][0], conditional_t_relay_seconds_on[j][k][0], j,))
-                                        rod.start()
-                                    else:
-                                        relay_onoff(conditional_t_relay[j][k][0], "on")
-                                elif conditional_t_relay_state[j][k][0] == 0:
-                                    relay_onoff(conditional_t_relay[j][k][0], "off")
-                        else:
-                            logging.warning("[Conditional] Could not read T-%s sensor, did not check conditional %s", j+1, k+1)
-                        timerTConditional[j][k] = int(time.time()) + conditional_t_period[j][k][0]
-
-
-        #
-        # Check if HT conditional statements are true
-        #
-        for j in range(0, len(conditional_ht_number_sensor)):
-            for k in range(0, len(conditional_ht_number_conditional)):
-
-                if conditional_ht_id[j][k][0] != 0:
-
-                    if int(time.time()) > timerHTConditional[j][k] and conditional_ht_state[j][k][0] == 1:
-                        logging.debug("[Conditional] Check HT conditional statement %s: %s", k+1, conditional_ht_name[j][k][0])
-                        if read_ht_sensor(j) == 1:
-
-                            if ((conditional_ht_condition[j][k][0] == "Temperature" and # If temp is above set point
-                                    conditional_ht_direction[j][k][0] == 1 and
-                                    sensor_ht_read_temp_c[j] > conditional_ht_setpoint[j][k][0]) or
-                                    (conditional_ht_condition[j][k][0] == "Temperature" and  # If temp is below set point
-                                    conditional_ht_direction[j][k][0] == -1 and
-                                    sensor_ht_read_temp_c[j] < conditional_ht_setpoint[j][k][0]) or
-                                    (conditional_ht_condition[j][k][0] == "Humidity" and # If hum is above set point
-                                    conditional_ht_direction[j][k][0] == 1 and
-                                    sensor_ht_read_hum[j] > conditional_ht_setpoint[j][k][0]) or
-                                    (conditional_ht_condition[j][k][0] == "Humidity" and # If hum is below set point
-                                    conditional_ht_direction[j][k][0] == -1 and
-                                    sensor_ht_read_hum[j] < conditional_ht_setpoint[j][k][0])):
-
-                                if conditional_ht_relay_state[j][k][0] == 1:
-                                    if conditional_ht_relay_seconds_on[j][k][0] > 0:
-                                        rod = threading.Thread(target = relay_on_duration,
-                                            args = (conditional_ht_relay[j][k][0], conditional_ht_relay_seconds_on[j][k][0], j,))
-                                        rod.start()
-                                    else:
-                                        relay_onoff(conditional_ht_relay[j][k][0], "on")
-                                elif conditional_ht_relay_state[j][k][0] == 0:
-                                    relay_onoff(conditional_ht_relay[j][k][0], "off")
-                        else:
-                            logging.warning("[Conditional] Could not read HT-%s sensor, did not check conditional %s", j+1, k+1)
-                        timerHTConditional[j][k] = int(time.time()) + conditional_ht_period[j][k][0]
-
-
-        #
-        # Check if CO2 conditional statements are true
-        #
-        for j in range(0, len(conditional_co2_number_sensor)):
-            for k in range(0, len(conditional_co2_number_conditional)):
-
-                if conditional_co2_id[j][k][0] != 0:
-
-                    if int(time.time()) > timerCO2Conditional[j][k] and conditional_co2_state[j][k][0] == 1:
-                        logging.debug("[Conditional] Check CO2 conditional statement %s: %s", k+1, conditional_co2_name[j][k][0])
-                        if read_co2_sensor(j) == 1:
-
-                            if ((conditional_co2_direction[j][k][0] == 1 and # If temp is above set point
-                                    sensor_co2_read_co2[j] > conditional_co2_setpoint[j][k][0]) or
-                                    (conditional_co2_direction[j][k][0] == -1 and # If temp is below set point
-                                    sensor_co2_read_co2[j] < conditional_co2_setpoint[j][k][0])):
-
-                                if conditional_co2_relay_state[j][k][0] == 1:
-                                    if conditional_co2_relay_seconds_on[j][k][0] > 0:
-                                        rod = threading.Thread(target = relay_on_duration,
-                                            args = (conditional_co2_relay[j][k][0], conditional_co2_relay_seconds_on[j][k][0], j,))
-                                        rod.start()
-                                    else:
-                                        relay_onoff(conditional_co2_relay[j][k][0], "on")
-                                elif conditional_co2_relay_state[j][k][0] == 0:
-                                    relay_onoff(conditional_co2_relay[j][k][0], "off")
-                        else:
-                            logging.warning("[Conditional] Could not read CO2-%s sensor, did not check conditional %s", j+1, k+1)
-                        timerCO2Conditional[j][k] = int(time.time()) + conditional_co2_period[j][k][0]
-
-
-        #
-        # Check if Press conditional statements are true
-        #
-        for j in range(0, len(conditional_press_number_sensor)):
-            for k in range(0, len(conditional_press_number_conditional)):
-
-                if conditional_press_id[j][k][0] != 0:
-
-                    if int(time.time()) > timerPressConditional[j][k] and conditional_press_state[j][k][0] == 1:
-                        logging.debug("[Conditional] Check Press conditional statement %s: %s", k+1, conditional_press_name[j][k][0])
-                        if read_press_sensor(j) == 1:
-
-                            if ((conditional_press_condition[j][k][0] == "Pressure" and # If temp is above set point
-                                    conditional_press_direction[j][k][0] == 1 and
-                                    sensor_press_read_press[j] > conditional_press_setpoint[j][k][0]) or
-                                    (conditional_press_condition[j][k][0] == "Pressure" and  # If temp is below set point
-                                    conditional_press_direction[j][k][0] == -1 and
-                                    sensor_press_read_press[j] < conditional_press_setpoint[j][k][0]) or
-                                    (conditional_press_condition[j][k][0] == "Temperature" and # If hum is above set point
-                                    conditional_press_direction[j][k][0] == 1 and
-                                    sensor_press_read_temp_c[j] > conditional_press_setpoint[j][k][0]) or
-                                    (conditional_press_condition[j][k][0] == "Temperature" and # If hum is below set point
-                                    conditional_press_direction[j][k][0] == -1 and
-                                    sensor_press_read_temp_c[j] < conditional_press_setpoint[j][k][0])):
-
-                                if conditional_press_relay_state[j][k][0] == 1:
-                                    if conditional_press_relay_seconds_on[j][k][0] > 0:
-                                        rod = threading.Thread(target = relay_on_duration,
-                                            args = (conditional_press_relay[j][k][0], conditional_press_relay_seconds_on[j][k][0], j,))
-                                        rod.start()
-                                    else:
-                                        relay_onoff(conditional_press_relay[j][k][0], "on")
-                                elif conditional_press_relay_state[j][k][0] == 0:
-                                    relay_onoff(conditional_press_relay[j][k][0], "off")
-                        else:
-                            logging.warning("[Conditional] Could not read Press-%s sensor, did not check conditional %s", j+1, k+1)
-                        timerPressConditional[j][k] = int(time.time()) + conditional_press_period[j][k][0]
-
-
-        #
-        # Concatenate local log with tempfs log every 6 hours (backup)
-        #
-        if int(time.time()) > timerLogBackup:
-            mycodoLog.Concatenate_Logs()
-            timerLogBackup = int(time.time()) + 21600
-
-        #
-        # Simple duration timers
-        #
-        if len(timer_id) != 0:
-            for i in range(0, len(timer_id)):
-                if int(time.time()) > timer_time[i]:
-                    if timer_state[i] == 1:
-                        logging.debug("[Timer Expiration] Timer %s: Turn Relay %s on for %s seconds, off %s seconds.", i, timer_relay[i], timer_duration_on[i], timer_duration_off[i])
-                        rod = threading.Thread(target = relay_on_duration,
-                            args = (timer_relay[i], timer_duration_on[i], 0,))
-                        rod.start()
-                        timer_time[i] = int(time.time()) + timer_duration_on[i] + timer_duration_off[i]
 
         time.sleep(0.25)
 
@@ -1734,72 +1732,8 @@ def read_t_sensor(sensor):
         rod = threading.Thread(target = relay_on_duration,
             args = (sensor_t_premeasure_relay[sensor], sensor_t_premeasure_dur[sensor], sensor,))
         rod.start()
-        while ((timerT > int(time.time())) and client_que != 'TerminateServer'):
+        while timerT > int(time.time()) and client_que != 'TerminateServer':
             time.sleep(0.25)
-
-    for r in range(0, t_read_tries): # Multiple attempts to get similar consecutive readings
-        logging.debug("[Read T Sensor-%s] Taking first Temperature/Humidity reading", sensor+1)
-
-        # Begin HT Sensor
-        if (sensor_t_device[sensor] == 'DS18B20'): device = 'DS18B20'
-        else:
-            device = 'Other'
-            return 0
-
-        for i in range(0, t_read_tries):
-            if not pid_t_temp_alive[sensor]:
-                return 0
-
-            # Begin T Sensor
-            tempc2 = read_t(sensor, device, sensor_t_pin[sensor])
-            # End T Sensor
-
-            if tempc2 != None:
-                break
-
-        if tempc2 == None:
-            logging.warning("[Read T Sensor-%s] Could not read first Temp measurement! (%s tries)", sensor+1, ht_read_tries)
-            return 0
-        else:
-            logging.debug("[Read T Sensor-%s] %.1f°C", sensor, tempc2)
-            logging.debug("[Read T Sensor-%s] Taking second Temperature reading", sensor+1)
-
-        
-        for i in range(0, t_read_tries): # Multiple attempts to get first reading
-            if not pid_t_temp_alive[sensor]:
-                return 0
-            
-            # Begin T Sensor
-            tempc = read_t(sensor, device, sensor_t_pin[sensor])
-            # End T Sensor
-           
-            if tempc != None:
-                break
-        
-
-        if tempc == None:
-            logging.warning("[Read T Sensor-%s] Could not read Temperature!", sensor+1)
-            return 0
-        else:
-            logging.debug("[Read T Sensor-%s] %.1f°C", sensor, tempc)
-            logging.debug("[Read T Sensor-%s] Differences: %.1f°C", sensor+1, abs(tempc2-tempc))
-
-            if abs(tempc2-tempc) > 1:
-                tempc2 = tempc
-                logging.debug("[Read T Sensor-%s] Successive readings > 1 difference: Rereading", sensor+1)
-            else:
-                logging.debug("[Read T Sensor-%s] Successive readings < 1 difference: keeping.", sensor+1)
-                temperature_f = float(tempc)*9.0/5.0 + 32.0
-                logging.debug("[Read T Sensor-%s] Temp: %.1f°C", sensor+1, tempc)
-                sensor_t_read_temp_c[sensor] = tempc
-                return 1
-
-    logging.warning("[Read T Sensor-%s] Could not get two consecutive Temp measurements that were consistent.", sensor+1)
-    return 0
-
-# Obtain reading from T sensor
-def read_t(sensor, device, pin):
-    time.sleep(1) # Wait 1 seconds between sensor reads
 
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
@@ -1816,7 +1750,93 @@ def read_t(sensor, device, pin):
 
     logging.debug("[Read T Sensor-%s] Gained lock: %s", sensor+1, lock.path)
 
-    # Begin DS18B20 Sensor
+    for r in range(0, t_read_tries): # Multiple attempts to get similar consecutive readings
+        if client_que == 'TerminateServer':
+            logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+            lock.release()
+            return 0
+
+        logging.debug("[Read T Sensor-%s] Taking first Temperature/Humidity reading", sensor+1)
+
+        for i in range(0, t_read_tries):
+            if not pid_t_temp_alive[sensor]:
+                logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+                lock.release()
+                return 0
+
+            if client_que != 'TerminateServer':
+                tempc2 = read_t(sensor, sensor_t_device[sensor], sensor_t_pin[sensor])
+            else:
+                logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+                lock.release()
+                return 0
+
+            if tempc2 != None:
+                break
+
+            time.sleep(1) # Wait 1 seconds between sensor reads
+
+        if tempc2 == None:
+            logging.warning("[Read T Sensor-%s] Could not read first Temp measurement! (%s tries)", sensor+1, ht_read_tries)
+            logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+            lock.release()
+            return 0
+        else:
+            logging.debug("[Read T Sensor-%s] %.1f°C", sensor, tempc2)
+            logging.debug("[Read T Sensor-%s] Taking second Temperature reading", sensor+1)
+
+        for i in range(0, t_read_tries): # Multiple attempts to get first reading
+            if not pid_t_temp_alive[sensor]:
+                logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+                lock.release()
+                return 0
+            
+            if client_que != 'TerminateServer':
+                tempc = read_t(sensor, sensor_t_device[sensor], sensor_t_pin[sensor])
+            else:
+                logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+                lock.release()
+                return 0
+           
+            if tempc != None:
+                break
+
+            time.sleep(1) # Wait 1 seconds between sensor reads
+
+        if tempc == None:
+            logging.warning("[Read T Sensor-%s] Could not read Temperature!", sensor+1)
+            logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+            lock.release()
+            return 0
+        else:
+            logging.debug("[Read T Sensor-%s] %.1f°C", sensor, tempc)
+            logging.debug("[Read T Sensor-%s] Differences: %.1f°C", sensor+1, abs(tempc2-tempc))
+
+            if abs(tempc2-tempc) > 1:
+                tempc2 = tempc
+                logging.debug("[Read T Sensor-%s] Successive readings > 1 difference: Rereading", sensor+1)
+            else:
+                logging.debug("[Read T Sensor-%s] Successive readings < 1 difference: keeping.", sensor+1)
+                temperature_f = float(tempc)*9.0/5.0 + 32.0
+                logging.debug("[Read T Sensor-%s] Temp: %.1f°C", sensor+1, tempc)
+                sensor_t_read_temp_c[sensor] = tempc
+                logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+                lock.release()
+                return 1
+
+    logging.warning("[Read T Sensor-%s] Could not get two consecutive Temp measurements that were consistent.", sensor+1)
+    logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+    lock.release()
+    return 0
+
+# Obtain reading from T sensor
+def read_t(sensor, device, pin):
+    global last_t_reading
+
+    # Ensure at least 2 seconds between sensor reads
+    while last_t_reading > int(time.time()):
+        time.sleep(0.25)
+
     if device == 'DS18B20':
         import glob
         os.system('modprobe w1-gpio')
@@ -1835,18 +1855,17 @@ def read_t(sensor, device, pin):
             time.sleep(0.2)
             lines = read_temp_raw()
         equals_pos = lines[1].find('t=')
-    if equals_pos != -1:
-        temp_string = lines[1][equals_pos+2:]
-        tempc = float(temp_string) / 1000.0
-        #temp_f = temp_c * 9.0 / 5.0 + 32.0
+        if equals_pos != -1:
+            temp_string = lines[1][equals_pos+2:]
+            tempc = float(temp_string) / 1000.0
+            #temp_f = temp_c * 9.0 / 5.0 + 32.0
+            last_t_reading = int(time.time())+2
+            return tempc
     else:
+        logging.debug("[Read T Sensor-%s] Device not recognized: %s", sensor+1, device)
+        last_t_reading = int(time.time())+2
         return None
-    # End DS18B20 Sensor
 
-    logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-    lock.release()
-
-    return tempc
 
 # Read the temperature and humidity from sensor
 def read_ht_sensor(sensor):
@@ -1884,18 +1903,12 @@ def read_ht_sensor(sensor):
     logging.debug("[Read HT Sensor-%s] Gained lock: %s", sensor+1, lock.path)
 
     for r in range(0, ht_read_tries): # Multiple attempts to get similar consecutive readings
-        logging.debug("[Read HT Sensor-%s] Taking first Temperature/Humidity reading", sensor+1)
-
-        # Begin HT Sensor
-        if (sensor_ht_device[sensor] == 'DHT11'): device = Adafruit_DHT.DHT11
-        elif (sensor_ht_device[sensor] == 'DHT22'): device = Adafruit_DHT.DHT22
-        elif (sensor_ht_device[sensor] == 'AM2302'): device = Adafruit_DHT.AM2302
-        else:
-            device = 'Other'
-            logging.debug("[Read HT Sensor-%s] Unknown device: %s" % device)
+        if client_que == 'TerminateServer':
             logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
             lock.release()
             return 0
+
+        logging.debug("[Read HT Sensor-%s] Taking first Temperature/Humidity reading", sensor+1)
 
         for i in range(0, ht_read_tries):
             if not pid_ht_temp_alive[sensor] and not pid_ht_hum_alive[sensor]:
@@ -1903,9 +1916,12 @@ def read_ht_sensor(sensor):
                 lock.release()
                 return 0
 
-            # Begin HT Sensor
-            humidity2, tempc2 = Adafruit_DHT.read_retry(device, sensor_ht_pin[sensor])
-            # End HT Sensor
+            if client_que != 'TerminateServer':
+                humidity2, tempc2 = read_ht(sensor, sensor_ht_device[sensor], sensor_ht_pin[sensor])
+            else:
+                logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+                lock.release()
+                return 0
 
             if humidity2 != None and tempc2 != None:
                 break
@@ -1926,9 +1942,12 @@ def read_ht_sensor(sensor):
                 lock.release()
                 return 0
             
-            # Begin HT Sensor
-            humidity, tempc = Adafruit_DHT.read_retry(device, sensor_ht_pin[sensor])
-            # End HT Sensor
+            if client_que != 'TerminateServer':
+                humidity, tempc = read_ht(sensor, sensor_ht_device[sensor], sensor_ht_pin[sensor])
+            else:
+                logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+                lock.release()
+                return 0
            
             if humidity != None and tempc != None:
                 break
@@ -1965,6 +1984,27 @@ def read_ht_sensor(sensor):
     lock.release()
     return 0
 
+# Obtain reading from HT sensor
+def read_ht(sensor, device, pin):
+    global last_ht_reading
+
+    # Ensure at least 2 seconds between sensor reads
+    while last_ht_reading > int(time.time()):
+        time.sleep(0.25)
+
+    if device == 'DHT11': device = Adafruit_DHT.DHT11
+    elif device == 'DHT22': device = Adafruit_DHT.DHT22
+    elif device == 'AM2302': device = Adafruit_DHT.AM2302
+    
+    if device == Adafruit_DHT.DHT11 or device == Adafruit_DHT.DHT22 or device == Adafruit_DHT.AM2302:
+        humidity, temp = Adafruit_DHT.read_retry(device, pin)
+        last_ht_reading = int(time.time())+2
+        return humidity, temp
+    else:
+        logging.debug("[Read HT Sensor-%s] Device not recognized: %s", sensor+1, device)
+        last_ht_reading = int(time.time())+2
+        return 0
+
 
 # Read CO2 sensor
 def read_co2_sensor(sensor):
@@ -1982,61 +2022,6 @@ def read_co2_sensor(sensor):
         while ((timerCO2 > int(time.time())) and client_que != 'TerminateServer'):
             time.sleep(0.25)
 
-    if (sensor_co2_device[sensor] != 'K30'):
-        logging.warning("[Read CO2 Sensor-%s] Cannot read CO2 from an unknown device!", sensor+1)
-        return 0
-
-    for r in range(0, co2_read_tries):
-        logging.debug("[Read CO2 Sensor-%s] Taking first CO2 reading", sensor+1)
-
-        # Begin K30 Sensor
-        if sensor_co2_device[sensor] == 'K30':
-            for i in range(0, co2_read_tries): # Multiple attempts to get first reading
-                if not pid_co2_alive[sensor]:
-                    return 0
-                co22 = read_K30(sensor)
-                if co22 != None:
-                    break
-        # End K30 Sensor
-
-        if co22 == None:
-            logging.warning("[Read CO2 Sensor-%s] Could not read first CO2 measurement! (of %s tries)", sensor+1, co2_read_tries)
-            break
-        else:
-            logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor+1, co22)
-            logging.debug("[Read CO2 Sensor-%s] Taking second CO2 reading", sensor+1)
-
-        # Begin K30 Sensor
-        if sensor_co2_device[sensor] == 'K30':
-            for i in range(0, co2_read_tries): # Multiple attempts to get second reading
-                if not pid_co2_alive[sensor]:
-                    return 0
-                co2 = read_K30(sensor)
-                if co2 != None:
-                    break
-        # End K30 Sensor
-
-        if co2 == None:
-            logging.warning("[Read CO2 Sensor-%s] Could not read second CO2 measurement! (of %s tries)", sensor+1, co2_read_tries)
-            break
-        else:
-            logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor+1, co2)
-            logging.debug("[Read CO2 Sensor-%s] Difference: %s", sensor+1, abs(co22 - co2))
-
-            if abs(co22-co2) > 200:
-                co22 = co2
-                logging.debug("[Read CO2 Sensor-%s] Successive readings > 200 difference: Rereading", sensor+1)
-            else:
-                logging.debug("[Read CO2 Sensor-%s] Successive readings < 200 difference: keeping.", sensor+1)
-                logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor+1, co2)
-                sensor_co2_read_co2[sensor] = co2
-                return 1
-
-    logging.warning("[Read CO2 Sensor-%s] Could not get two consecutive CO2 measurements that were consistent.", sensor+1)
-    return 0
-
-# Read K30 CO2 Sensor
-def read_K30(sensor):
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
 
@@ -2052,22 +2037,104 @@ def read_K30(sensor):
 
     logging.debug("[Read CO2 Sensor-%s] Gained lock: %s", sensor+1, lock.path)
 
-    time.sleep(2) # Ensure at least 2 seconds between sensor reads
-    ser = serial.Serial("/dev/ttyAMA0", timeout=1) # Wait 1 second for reply
-    ser.flushInput()
-    time.sleep(1)
-    ser.write("\xFE\x44\x00\x08\x02\x9F\x25")
-    time.sleep(.01)
-    resp = ser.read(7)
-    if len(resp) == 0:
-        return None
-    high = ord(resp[3])
-    low = ord(resp[4])
-    co2 = (high*256) + low
+    for r in range(0, co2_read_tries):
+        if client_que == 'TerminateServer':
+            logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+            lock.release()
+            return 0
 
+        logging.debug("[Read CO2 Sensor-%s] Taking first CO2 reading", sensor+1)
+
+        for i in range(0, co2_read_tries): # Multiple attempts to get first reading
+            if not pid_co2_alive[sensor]:
+                logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+                lock.release()
+                return 0
+
+            if client_que != 'TerminateServer':
+                co22 = read_K30(sensor, sensor_co2_device[sensor])
+            else:
+                logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+                lock.release()
+                return 0
+
+            if co22 != None:
+                break
+
+        if co22 == None:
+            logging.warning("[Read CO2 Sensor-%s] Could not read first CO2 measurement! (of %s tries)", sensor+1, co2_read_tries)
+            break
+        else:
+            logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor+1, co22)
+            logging.debug("[Read CO2 Sensor-%s] Taking second CO2 reading", sensor+1)
+
+        for i in range(0, co2_read_tries): # Multiple attempts to get second reading
+            if not pid_co2_alive[sensor]:
+                logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+                lock.release()
+                return 0
+
+            if client_que != 'TerminateServer':
+                co2 = read_K30(sensor, sensor_co2_device[sensor])
+            else:
+                logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+                lock.release()
+                return 0
+
+            if co2 != None:
+                break
+        
+        if co2 == None:
+            logging.warning("[Read CO2 Sensor-%s] Could not read second CO2 measurement! (of %s tries)", sensor+1, co2_read_tries)
+            break
+        else:
+            logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor+1, co2)
+            logging.debug("[Read CO2 Sensor-%s] Difference: %s", sensor+1, abs(co22 - co2))
+
+            if abs(co22-co2) > 200:
+                co22 = co2
+                logging.debug("[Read CO2 Sensor-%s] Successive readings > 200 difference: Rereading", sensor+1)
+            else:
+                logging.debug("[Read CO2 Sensor-%s] Successive readings < 200 difference: keeping.", sensor+1)
+                logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor+1, co2)
+                sensor_co2_read_co2[sensor] = co2
+                logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+                lock.release()
+                return 1
+
+    logging.warning("[Read CO2 Sensor-%s] Could not get two consecutive CO2 measurements that were consistent.", sensor+1)
     logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor+1, lock.path)
     lock.release()
-    return co2
+    return 0
+
+# Read K30 CO2 Sensor
+def read_K30(sensor, device):
+    global last_co2_reading
+
+    # Ensure at least 2 seconds between sensor reads
+    while last_co2_reading > int(time.time()):
+        time.sleep(0.25)
+
+    if device == 'K30':
+        ser = serial.Serial("/dev/ttyAMA0", timeout=1) # Wait 1 second for reply
+        ser.flushInput()
+        time.sleep(1)
+        ser.write("\xFE\x44\x00\x08\x02\x9F\x25")
+        time.sleep(.01)
+        resp = ser.read(7)
+        if len(resp) == 0:
+            last_co2_reading = int(time.time())+2
+            return None
+        else:
+            high = ord(resp[3])
+            low = ord(resp[4])
+            co2 = (high*256) + low
+            last_co2_reading = int(time.time())+2
+            return co2
+    else:
+        logging.debug("[Read CO2 Sensor-%s] Device not recognized: %s", sensor+1, device)
+        last_co2_reading = int(time.time())+2
+        return 0
 
 
 # Read the temperature and pressure from sensor
@@ -2088,76 +2155,8 @@ def read_press_sensor(sensor):
         rod = threading.Thread(target = relay_on_duration,
             args = (sensor_press_premeasure_relay[sensor], sensor_press_premeasure_dur[sensor], sensor,))
         rod.start()
-        while ((timerPress > int(time.time())) and client_que != 'TerminateServer'):
+        while timerPress > int(time.time()) and client_que != 'TerminateServer':
             time.sleep(0.25)
-
-    for r in range(0, press_read_tries): # Multiple attempts to get similar consecutive readings
-        logging.debug("[Read Press Sensor-%s] Taking first Temperature/Pressure reading", sensor+1)
-
-        # Begin Press Sensor
-        if (sensor_press_device[sensor] == 'BMP085-180'):
-            device = 'BMP085-180'
-        else:
-            device = 'Other'
-            return 0
-
-        for i in range(0, press_read_tries):
-            if not pid_press_temp_alive[sensor] and not pid_press_press_alive[sensor]:
-                return 0
-
-            # Begin Press Sensor
-            pressure2, tempc2, alt2 = read_press(sensor, device, sensor_press_pin[sensor])
-            # End Press Sensor
-
-            if pressure2 != None and tempc2 != None:
-                break
-
-        if pressure2 == None or tempc2 == None:
-            logging.warning("[Read Press Sensor-%s] Could not read first Press measurement! (%s tries)", sensor+1, press_read_tries)
-            return 0
-        else:
-            logging.debug("[Read Press Sensor-%s] %.1f°C, %.1fPa", sensor+1, tempc2, pressure2)
-            logging.debug("[Read Press Sensor-%s] Taking second Temperature/Pressure reading", sensor+1)
-
-        
-        for i in range(0, press_read_tries): # Multiple attempts to get first reading
-            if not pid_press_temp_alive[sensor] and not pid_press_press_alive[sensor]:
-                return 0
-            
-            # Begin Press Sensor
-            pressure, tempc, alt = read_press(sensor, device, sensor_press_pin[sensor])
-            # End Press Sensor
-           
-            if pressure != None and tempc != None:
-                break
-        
-
-        if pressure == None or tempc == None:
-            logging.warning("[Read Press Sensor-%s] Could not read Temperature/Pressure!", sensor+1)
-            return 0
-        else:
-            logging.debug("[Read Press Sensor-%s] %.1f°C, %.1fPa", sensor+1, tempc, pressure)
-            logging.debug("[Read Press Sensor-%s] Differences: %.1f°C, %.1fPa", sensor+1, abs(tempc2-tempc), abs(pressure2-pressure))
-
-            if abs(tempc2-tempc) > 1 or abs(pressure2-pressure) > 15:
-                tempc2 = tempc
-                pressure2 = pressure
-                logging.debug("[Read Press Sensor-%s] Successive readings > 15 Pa or > 1°C difference: Rereading", sensor+1)
-            else:
-                logging.debug("[Read Press Sensor-%s] Successive readings < 15 Pa or < 1°C difference: keeping.", sensor+1)
-                temperature_f = float(tempc)*9.0/5.0 + 32.0
-                logging.debug("[Read Press Sensor-%s] Temp: %.1f°C, Press: %.1fPa, ALT: %.1fm", sensor+1, tempc, pressure, alt)
-                sensor_press_read_press[sensor] = pressure
-                sensor_press_read_temp_c[sensor] = tempc
-                sensor_press_read_alt[sensor] = alt
-                return 1
-
-    logging.warning("[Read Press Sensor-%s] Could not get two consecutive Press measurements that were consistent.", sensor+1)
-    return 0
-
-# Obtain reading from Press sensor
-def read_press(sensor, device, pin):
-    time.sleep(2) # Wait 2 seconds between sensor reads
 
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
@@ -2174,17 +2173,104 @@ def read_press(sensor, device, pin):
 
     logging.debug("[Read Press Sensor-%s] Gained lock: %s", sensor+1, lock.path)
 
-    if (device == 'BMP085-180'):
-        press_sensor = BMP085.BMP085()
+    for r in range(0, press_read_tries): # Multiple attempts to get similar consecutive readings
+        if client_que == 'TerminateServer':
+            logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+            lock.release()
+            return 0
 
-    temp = press_sensor.read_temperature()
-    press = press_sensor.read_pressure()
-    alt = press_sensor.read_altitude()
-    #sea_level = sensor.read_sealevel_pressure()
+        logging.debug("[Read Press Sensor-%s] Taking first Temperature/Pressure reading", sensor+1)
 
+        for i in range(0, press_read_tries):
+            if not pid_press_temp_alive[sensor] and not pid_press_press_alive[sensor]:
+                logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+                lock.release()
+                return 0
+
+            if client_que != 'TerminateServer':
+                pressure2, tempc2, alt2 = read_press(sensor, sensor_press_device[sensor], sensor_press_pin[sensor])
+            else:
+                logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+                lock.release()
+                return 0
+
+            if pressure2 != None and tempc2 != None:
+                break
+
+        if pressure2 == None or tempc2 == None:
+            logging.warning("[Read Press Sensor-%s] Could not read first Press measurement! (%s tries)", sensor+1, press_read_tries)
+            logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+            lock.release()
+            return 0
+        else:
+            logging.debug("[Read Press Sensor-%s] %.1f°C, %.1fPa", sensor+1, tempc2, pressure2)
+            logging.debug("[Read Press Sensor-%s] Taking second Temperature/Pressure reading", sensor+1)
+        
+        for i in range(0, press_read_tries): # Multiple attempts to get first reading
+            if not pid_press_temp_alive[sensor] and not pid_press_press_alive[sensor]:
+                logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+                lock.release()
+                return 0
+            
+            if client_que != 'TerminateServer':
+                pressure, tempc, alt = read_press(sensor, sensor_press_device[sensor], sensor_press_pin[sensor])
+            else:
+                logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+                lock.release()
+                return 0
+           
+            if pressure != None and tempc != None:
+                break
+
+        if pressure == None or tempc == None:
+            logging.warning("[Read Press Sensor-%s] Could not read Temperature/Pressure!", sensor+1)
+            logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+            lock.release()
+            return 0
+        else:
+            logging.debug("[Read Press Sensor-%s] %.1f°C, %.1fPa", sensor+1, tempc, pressure)
+            logging.debug("[Read Press Sensor-%s] Differences: %.1f°C, %.1fPa", sensor+1, abs(tempc2-tempc), abs(pressure2-pressure))
+
+            if abs(tempc2-tempc) > 1 or abs(pressure2-pressure) > 15:
+                tempc2 = tempc
+                pressure2 = pressure
+                logging.debug("[Read Press Sensor-%s] Successive readings > 15 Pa or > 1°C difference: Rereading", sensor+1)
+            else:
+                logging.debug("[Read Press Sensor-%s] Successive readings < 15 Pa or < 1°C difference: keeping.", sensor+1)
+                temperature_f = float(tempc)*9.0/5.0 + 32.0
+                logging.debug("[Read Press Sensor-%s] Temp: %.1f°C, Press: %.1fPa, ALT: %.1fm", sensor+1, tempc, pressure, alt)
+                sensor_press_read_press[sensor] = pressure
+                sensor_press_read_temp_c[sensor] = tempc
+                sensor_press_read_alt[sensor] = alt
+                logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+                lock.release()
+                return 1
+
+    logging.warning("[Read Press Sensor-%s] Could not get two consecutive Press measurements that were consistent.", sensor+1)
     logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor+1, lock.path)
     lock.release()
-    return press, temp, alt
+    return 0
+
+# Obtain reading from Press sensor
+def read_press(sensor, device, pin):
+    global last_press_reading
+
+    # Ensure at least 2 seconds between sensor reads
+    while last_press_reading > int(time.time()):
+        time.sleep(0.25)
+
+    if device == 'BMP085-180':
+        press_sensor = BMP085.BMP085()
+        temp = press_sensor.read_temperature()
+        press = press_sensor.read_pressure()
+        alt = press_sensor.read_altitude()
+        #sea_level = sensor.read_sealevel_pressure()
+        last_press_reading = int(time.time())+2
+        return press, temp, alt
+    else:
+        logging.debug("[Read Press Sensor-%s] Device not recognized: %s", sensor+1, device)
+        last_press_reading = int(time.time())+2
+        return 0
 
 
 
