@@ -136,7 +136,7 @@ class ComServer(rpyc.Service):
 
     def exposed_PID_restart(self, sensortype):
         global client_que
-        logging.info("[Daemon] Commanding all %s PIDs to stop", sensortype)
+        logging.info("[Daemon] Commanding all %s PID controllers to stop", sensortype)
         if sensortype == 'T':
             global start_all_t_pids
             global stop_all_t_pids
@@ -149,7 +149,7 @@ class ComServer(rpyc.Service):
             client_que = 'sql_reload'
             while client_que == 'sql_reload':
                 time.sleep(0.1)
-            logging.info("[Daemon] Commanding all T PIDs to start")
+            logging.info("[Daemon] Commanding all T PID controllers to start")
             time.sleep(0.25)
             start_all_t_pids = 1
         elif sensortype == 'HT':
@@ -168,7 +168,7 @@ class ComServer(rpyc.Service):
             client_que = 'sql_reload'
             while client_que == 'sql_reload':
                 time.sleep(0.1)
-            logging.info("[Daemon] Commanding all HT PIDs to start")
+            logging.info("[Daemon] Commanding all HT PID controllers to start")
             time.sleep(0.25)
             start_all_ht_pids = 1
         elif sensortype == 'CO2':
@@ -183,7 +183,7 @@ class ComServer(rpyc.Service):
             client_que = 'sql_reload'
             while client_que == 'sql_reload':
                 time.sleep(0.1)
-            logging.info("[Daemon] Commanding all CO2 PIDs to start")
+            logging.info("[Daemon] Commanding all CO2 PID controllers to start")
             time.sleep(0.25)
             start_all_co2_pids = 1
         elif sensortype == 'Press':
@@ -202,7 +202,7 @@ class ComServer(rpyc.Service):
             client_que = 'sql_reload'
             while client_que == 'sql_reload':
                 time.sleep(0.1)
-            logging.info("[Daemon] Commanding all Press PIDs to start")
+            logging.info("[Daemon] Commanding all Press PID controllers to start")
             time.sleep(0.25)
             start_all_press_pids = 1
         return 1
@@ -269,7 +269,7 @@ class ComServer(rpyc.Service):
     def exposed_Terminate(self, remoteCommand):
         global client_que
         client_que = 'TerminateServer'
-        logging.info("[Client command] terminate threads and shut down")
+        logging.info("[Client command] Shut down the daemon")
         return 1
 
     def exposed_WriteTSensorLog(self, sensor):
@@ -473,15 +473,13 @@ def daemon(output, log):
         # add the handler to the root logger
         logging.getLogger('').addHandler(console)
 
-    logging.info("[Daemon] Daemon Started")
+    logging.info("[Daemon] Starting daemon")
 
-    logging.info("[Daemon} Communication server thread starting")
+    logging.info("[Daemon} Starting communication server")
     ct = ComThread()
     ct.daemon = True
     ct.start()
     time.sleep(1)
-
-    logging.info("[Daemon] Conducting initial sensor readings: %s Temp, %s Hum, %s CO2, %s Press", sum(sensor_t_activated), sum(sensor_ht_activated), sum(sensor_co2_activated), sum(sensor_press_activated))
 
     pid_t_temp_alive = [1] * len(sensor_t_id)
     pid_ht_temp_alive = [1] * len(sensor_ht_id)
@@ -489,24 +487,6 @@ def daemon(output, log):
     pid_co2_alive = [1] * len(sensor_co2_id)
     pid_press_temp_alive = [1] * len(sensor_press_id)
     pid_press_press_alive = [1] * len(sensor_press_id)
-
-    for i in range(0, len(sensor_t_id)):
-        if sensor_t_device[i] != 'Other' and sensor_t_activated[i] == 1 and client_que != 'TerminateServer':
-            read_t_sensor(i)
-
-    for i in range(0, len(sensor_ht_id)):
-        if sensor_ht_device[i] != 'Other' and sensor_ht_activated[i] == 1 and client_que != 'TerminateServer':
-            read_ht_sensor(i)
-
-    for i in range(0, len(sensor_co2_id)):
-        if sensor_co2_device[i] != 'Other' and sensor_co2_activated[i] == 1 and client_que != 'TerminateServer':
-            read_co2_sensor(i)
-
-    for i in range(0, len(sensor_press_id)):
-        if sensor_press_device[i] != 'Other' and sensor_press_activated[i] == 1 and client_que != 'TerminateServer':
-            read_press_sensor(i)
-
-    logging.info("[Daemon] Initial sensor readings complete")
 
     # How often to backup all logs to SD card
     timerLogBackup = int(time.time()) + 21600  # 21600 seconds = 6 hours
@@ -520,9 +500,9 @@ def daemon(output, log):
 
             if client_que == 'TerminateServer':
                 logging.info("[Daemon] Backing up logs")
-
                 mycodoLog.Concatenate_Logs()
 
+                logging.info("[Daemon] Turning off all PID controllers")
                 pid_t_temp_alive = [0] * len(sensor_t_id)
                 pid_ht_temp_alive =  [0] * len(sensor_ht_id)
                 pid_ht_hum_alive =  [0] * len(sensor_ht_id)
@@ -539,8 +519,6 @@ def daemon(output, log):
                 # for t in threads_co2:
                 #     t.join()
                 # server.close()
-
-                logging.info("[Daemon] Waiting for all PIDs to turn off")
 
                 for i in range(0, len(sensor_t_id)):
                     if pid_t_temp_or[i] == 0:
@@ -649,6 +627,110 @@ def daemon(output, log):
                 change_sensor_log = 0
 
             client_que = None
+
+
+        #
+        # Stop/Start all PID threads of a particular sensor type
+        #
+        if stop_all_t_pids:
+            pid_t_temp_alive = [0] * len(sensor_t_id)
+            stop_all_t_pids = 0
+
+        if start_all_t_pids:
+            pid_t_temp_alive = []
+            pid_t_temp_alive = [1] * len(sensor_t_id)
+            threads_t_t = []
+            for i in range(0, len(sensor_t_id)):
+                if (pid_t_temp_or[i] == 0):
+                    pid_t_temp_active[i] = 1
+                    rod = threading.Thread(target = t_sensor_temperature_monitor,
+                        args = ('Thread-T-T-%d' % i+1, i,))
+                    rod.start()
+                    threads_t_t.append(rod)
+            start_all_t_pids = 0
+
+
+        if stop_all_ht_pids:
+            pid_ht_temp_alive = [0] * len(sensor_ht_id)
+            pid_ht_hum_alive = [0] * len(sensor_ht_id)
+            stop_all_ht_pids = 0
+
+        if start_all_ht_pids:
+            pid_ht_temp_alive = []
+            pid_ht_temp_alive =  [1] * len(sensor_ht_id)
+            pid_ht_hum_alive = []
+            pid_ht_hum_alive =  [1] * len(sensor_ht_id)
+            threads_ht_t = []
+            for i in range(0, len(sensor_ht_id)):
+                if (pid_ht_temp_or[i] == 0):
+                    pid_ht_temp_active.append(1)
+                    rod = threading.Thread(target = ht_sensor_temperature_monitor,
+                        args = ('Thread-HT-T-%d' % (i+1), i,))
+                    rod.start()
+                    threads_ht_t.append(rod)
+                else:
+                    pid_ht_temp_active.append(0)
+            threads_ht_h = []
+            for i in range(0, len(sensor_ht_id)):
+                if (pid_ht_hum_or[i] == 0):
+                    pid_ht_hum_active.append(1)
+                    rod = threading.Thread(target = ht_sensor_humidity_monitor,
+                        args = ('Thread-HT-H-%d' % (i+1), i,))
+                    rod.start()
+                    threads_ht_h.append(rod)
+                else:
+                     pid_ht_hum_active.append(0)
+            start_all_ht_pids = 0
+
+
+        if stop_all_co2_pids:
+            pid_co2_temp_alive = [0] * len(sensor_co2_id)
+            stop_all_co2_pids = 0
+
+        if start_all_co2_pids:
+            pid_co2_alive =  []
+            pid_co2_alive =  [1] * len(sensor_co2_id)
+            threads_co2 = []
+            for i in range(0, len(sensor_co2_id)):
+                if (pid_co2_or[i] == 0):
+                    pid_co2_active[i] = 1
+                    rod = threading.Thread(target = co2_monitor,
+                        args = ('Thread-CO2-%d' % (i+1), i,))
+                    rod.start()
+                    threads_co2.append(rod)
+            start_all_co2_pids = 0
+
+        if stop_all_press_pids:
+            pid_press_temp_alive = [0] * len(sensor_press_id)
+            pid_press_press_alive = [0] * len(sensor_press_id)
+            stop_all_press_pids = 0
+
+        if start_all_press_pids:
+            pid_press_temp_alive = []
+            pid_press_temp_alive =  [1] * len(sensor_press_id)
+            pid_press_press_alive = []
+            pid_press_press_alive =  [1] * len(sensor_press_id)
+            threads_press_t = []
+            for i in range(0, len(sensor_press_id)):
+                if (pid_press_temp_or[i] == 0):
+                    pid_press_temp_active.append(1)
+                    rod = threading.Thread(target = press_sensor_temperature_monitor,
+                        args = ('Thread-HT-T-%d' % (i+1), i,))
+                    rod.start()
+                    threads_press_t.append(rod)
+                else:
+                    pid_press_temp_active.append(0)
+            threads_press_h = []
+            for i in range(0, len(sensor_press_id)):
+                if (pid_press_press_or[i] == 0):
+                    pid_press_press_active.append(1)
+                    rod = threading.Thread(target = press_sensor_pressure_monitor,
+                        args = ('Thread-HT-H-%d' % (i+1), i,))
+                    rod.start()
+                    threads_press_h.append(rod)
+                else:
+                     pid_press_press_active.append(0)
+            start_all_press_pids = 0
 
 
         #
@@ -837,122 +919,19 @@ def daemon(output, log):
             mycodoLog.Concatenate_Logs()
             timerLogBackup = int(time.time()) + 21600
 
+
         #
         # Simple duration timers
         #
         if len(timer_id) != 0 and client_que != 'TerminateServer':
             for i in range(0, len(timer_id)):
-                if int(time.time()) > timer_time[i]:
-                    if timer_state[i] == 1:
-                        logging.debug("[Timer Expiration] Timer %s: Turn Relay %s on for %s seconds, off %s seconds.", i, timer_relay[i], timer_duration_on[i], timer_duration_off[i])
-                        rod = threading.Thread(target = relay_on_duration,
-                            args = (timer_relay[i], timer_duration_on[i], 0,))
-                        rod.start()
-                        timer_time[i] = int(time.time()) + timer_duration_on[i] + timer_duration_off[i]
-
-
-        #
-        # Stop/Start all PID threads of a particular sensor type
-        #
-        if stop_all_t_pids:
-            pid_t_temp_alive = [0] * len(sensor_t_id)
-            stop_all_t_pids = 0
-
-        if start_all_t_pids:
-            pid_t_temp_alive = []
-            pid_t_temp_alive = [1] * len(sensor_t_id)
-            threads_t_t = []
-            for i in range(0, len(sensor_t_id)):
-                if (pid_t_temp_or[i] == 0):
-                    pid_t_temp_active[i] = 1
-                    rod = threading.Thread(target = t_sensor_temperature_monitor,
-                        args = ('Thread-T-T-%d' % i+1, i,))
+                if timer_state[i] == 1 and int(time.time()) > timer_time[i]:
+                    logging.debug("[Timer Expiration] Timer %s: Turn Relay %s on for %s seconds, off %s seconds.", i, timer_relay[i], timer_duration_on[i], timer_duration_off[i])
+                    rod = threading.Thread(target = relay_on_duration,
+                        args = (timer_relay[i], timer_duration_on[i], 0,))
                     rod.start()
-                    threads_t_t.append(rod)
-            start_all_t_pids = 0
+                    timer_time[i] = int(time.time()) + timer_duration_on[i] + timer_duration_off[i]
 
-
-        if stop_all_ht_pids:
-            pid_ht_temp_alive = [0] * len(sensor_ht_id)
-            pid_ht_hum_alive = [0] * len(sensor_ht_id)
-            stop_all_ht_pids = 0
-
-        if start_all_ht_pids:
-            pid_ht_temp_alive = []
-            pid_ht_temp_alive =  [1] * len(sensor_ht_id)
-            pid_ht_hum_alive = []
-            pid_ht_hum_alive =  [1] * len(sensor_ht_id)
-            threads_ht_t = []
-            for i in range(0, len(sensor_ht_id)):
-                if (pid_ht_temp_or[i] == 0):
-                    pid_ht_temp_active.append(1)
-                    rod = threading.Thread(target = ht_sensor_temperature_monitor,
-                        args = ('Thread-HT-T-%d' % (i+1), i,))
-                    rod.start()
-                    threads_ht_t.append(rod)
-                else:
-                    pid_ht_temp_active.append(0)
-            threads_ht_h = []
-            for i in range(0, len(sensor_ht_id)):
-                if (pid_ht_hum_or[i] == 0):
-                    pid_ht_hum_active.append(1)
-                    rod = threading.Thread(target = ht_sensor_humidity_monitor,
-                        args = ('Thread-HT-H-%d' % (i+1), i,))
-                    rod.start()
-                    threads_ht_h.append(rod)
-                else:
-                     pid_ht_hum_active.append(0)
-            start_all_ht_pids = 0
-
-
-        if stop_all_co2_pids:
-            pid_co2_temp_alive = [0] * len(sensor_co2_id)
-            stop_all_co2_pids = 0
-
-        if start_all_co2_pids:
-            pid_co2_alive =  []
-            pid_co2_alive =  [1] * len(sensor_co2_id)
-            threads_co2 = []
-            for i in range(0, len(sensor_co2_id)):
-                if (pid_co2_or[i] == 0):
-                    pid_co2_active[i] = 1
-                    rod = threading.Thread(target = co2_monitor,
-                        args = ('Thread-CO2-%d' % (i+1), i,))
-                    rod.start()
-                    threads_co2.append(rod)
-            start_all_co2_pids = 0
-
-        if stop_all_press_pids:
-            pid_press_temp_alive = [0] * len(sensor_press_id)
-            pid_press_press_alive = [0] * len(sensor_press_id)
-            stop_all_press_pids = 0
-
-        if start_all_press_pids:
-            pid_press_temp_alive = []
-            pid_press_temp_alive =  [1] * len(sensor_press_id)
-            pid_press_press_alive = []
-            pid_press_press_alive =  [1] * len(sensor_press_id)
-            threads_press_t = []
-            for i in range(0, len(sensor_press_id)):
-                if (pid_press_temp_or[i] == 0):
-                    pid_press_temp_active.append(1)
-                    rod = threading.Thread(target = press_sensor_temperature_monitor,
-                        args = ('Thread-HT-T-%d' % (i+1), i,))
-                    rod.start()
-                    threads_press_t.append(rod)
-                else:
-                    pid_press_temp_active.append(0)
-            threads_press_h = []
-            for i in range(0, len(sensor_press_id)):
-                if (pid_press_press_or[i] == 0):
-                    pid_press_press_active.append(1)
-                    rod = threading.Thread(target = press_sensor_pressure_monitor,
-                        args = ('Thread-HT-H-%d' % (i+1), i,))
-                    rod.start()
-                    threads_press_h.append(rod)
-                else:
-                     pid_press_press_active.append(0)
-            start_all_press_pids = 0
 
         #
         # Stop/Start indevidual PID threads
@@ -980,7 +959,6 @@ def daemon(output, log):
                 logging.warning("[Daemon] Cannot Start Temperature PID Thread-T-T-%s: It's already running.", pid_number+1)
             pid_t_temp_up = 0
 
-
         if pid_ht_temp_down:
             if pid_ht_temp_active[pid_number] == 1:
                 logging.info("[Daemon] Shutting Down Temperature PID Thread-HT-T-%s", pid_number+1)
@@ -1003,7 +981,6 @@ def daemon(output, log):
             else:
                 logging.warning("[Daemon] Cannot Start Temperature PID Thread-HT-T-%s: It's already running.", pid_number+1)
             pid_ht_temp_up = 0
-
 
         if pid_ht_hum_down:
             if pid_ht_hum_active[pid_number] == 1:
@@ -1028,7 +1005,6 @@ def daemon(output, log):
                 logging.warning("[Daemon] Cannot Start Humidity PID Thread-HT-H-%s: It's already running.", pid_number+1)
             pid_ht_hum_up = 0
 
-
         if pid_co2_down:
             if pid_co2_active[pid_number] == 1:
                 logging.info("[Daemon] Shutting Down CO2 PID Thread-CO2-%s", pid_number+1)
@@ -1052,7 +1028,6 @@ def daemon(output, log):
                 logging.warning("[Daemon] Cannot Start CO2 PID Thread-CO2-%s: It's already running.", pid_number+1)
             pid_co2_up = 0
 
-
         if pid_press_temp_down:
             if pid_press_temp_active[pid_number] == 1:
                 logging.info("[Daemon] Shutting Down Pressure PID Thread-Press-T-%s", pid_number+1)
@@ -1075,7 +1050,6 @@ def daemon(output, log):
             else:
                 logging.warning("[Daemon] Cannot Start Pressure PID Thread-Press-T-%s: It's already running.", pid_number+1)
             pid_press_temp_up = 0
-
 
         if pid_press_press_down:
             if pid_press_press_active[pid_number] == 1:
@@ -1183,9 +1157,6 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
                 else:
                     logging.warning("[PID T-Temperature-%s] Could not read Temp sensor, not updating PID", sensor+1)
 
-        while sql_reload_hold:
-            time.sleep(0.1)
-
         time.sleep(0.1)
 
     logging.info("[PID T-Temperature-%s] Shutting Down %s", sensor+1, ThreadName)
@@ -1273,9 +1244,6 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
                 else:
                     logging.warning("[PID HT-Temperature-%s] Could not read Hum/Temp sensor, not updating PID", sensor+1)
 
-        while sql_reload_hold:
-            time.sleep(0.1)
-
         time.sleep(0.1)
 
     logging.info("[PID HT-Temperature-%s] Shutting Down %s", sensor+1, ThreadName)
@@ -1361,9 +1329,6 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
 
                 else:
                     logging.warning("[PID HT-Humidity-%s] Could not read Hum/Temp sensor, not updating PID", sensor+1)
-
-        while sql_reload_hold:
-            time.sleep(0.1)
 
         time.sleep(0.1)
 
@@ -1451,9 +1416,6 @@ def co2_monitor(ThreadName, sensor):
                 else:
                     logging.warning("[PID CO2-%s] Could not read CO2 sensor, not updating PID", sensor+1)
 
-        while sql_reload_hold:
-            time.sleep(0.1)
-
         time.sleep(0.1)
 
     logging.info("[PID CO2-%s] Shutting Down %s", sensor+1, ThreadName)
@@ -1540,9 +1502,6 @@ def press_sensor_temperature_monitor(ThreadName, sensor):
                 else:
                     logging.warning("[PID Press-Temperature-%s] Could not read Press/Temp sensor, not updating PID", sensor+1)
 
-        while sql_reload_hold:
-            time.sleep(0.1)
-
         time.sleep(0.1)
 
     logging.info("[PID Press-Temperature-%s] Shutting Down %s", sensor+1, ThreadName)
@@ -1628,9 +1587,6 @@ def press_sensor_pressure_monitor(ThreadName, sensor):
 
                 else:
                     logging.warning("[PID Press-Pressure-%s] Could not read Press/Temp sensor, not updating PID", sensor+1)
-
-        while sql_reload_hold:
-            time.sleep(0.1)
 
         time.sleep(0.1)
 
@@ -2313,7 +2269,6 @@ def read_sql():
     global pid_t_temp_alive
     global sensor_t_read_temp_c
     
-
     # Temperature sensor variable reset
     sensor_t_id = []
     sensor_t_name = []
@@ -2395,7 +2350,6 @@ def read_sql():
     global sensor_ht_read_hum
     global sensor_ht_read_temp_c
 
-
     # Temperature/Humidity sensor variable reset
     sensor_ht_id = []
     sensor_ht_name = []
@@ -2444,7 +2398,6 @@ def read_sql():
     sensor_ht_read_hum = []
     sensor_ht_read_temp_c = []
     
-
     # CO2 sensor globals
     global sensor_co2_id
     global sensor_co2_name
@@ -2559,7 +2512,6 @@ def read_sql():
     global sensor_press_read_press
     global sensor_press_read_temp_c
     
-
     # Pressure sensor variable reset
     sensor_press_id = []
     sensor_press_name = []
@@ -2665,9 +2617,6 @@ def read_sql():
 
     sql_reload_hold = 1
     time.sleep(0.5)
-    
-    verbose = 0
-
 
     # Check if all required tables exist in the SQL database
     conn = sqlite3.connect(mycodo_database)
@@ -2694,11 +2643,7 @@ def read_sql():
 
     # Begin setting global variables from SQL database values
     cur.execute('SELECT Id, Name, Pin, Trigger, Start_State FROM Relays')
-    if verbose:
-        print "Table: Relays"
     for row in cur:
-        if verbose:
-            print "%s %s %s %s" % (row[0], row[1], row[2], row[3])
         relay_id.append(row[0])
         relay_name.append(row[1])
         relay_pin.append(row[2])
@@ -3084,12 +3029,7 @@ def read_sql():
 
 
     cur.execute('SELECT Id, Name, Relay, State, DurationOn, DurationOff FROM Timers ')
-    if verbose:
-        print "Table: Timers "
     for row in cur:
-        if verbose:
-            print "%s %s %s %s %s %s" % (
-                row[0], row[1], row[2], row[3], row[4], row[5])
         timer_id.append(row[0])
         timer_name.append(row[1])
         timer_relay.append(row[2])
@@ -3099,12 +3039,7 @@ def read_sql():
 
 
     cur.execute('SELECT Host, SSL, Port, User, Pass, Email_From, Email_To FROM SMTP ')
-    if verbose:
-        print "Table: SMTP "
     for row in cur:
-        if verbose:
-            print "%s %s %s %s %s %s %s" % (
-                row[0], row[1], row[2], row[3], row[4], row[5], row[6])
         smtp_host = row[0]
         smtp_ssl = row[1]
         smtp_port = row[2]
@@ -3117,19 +3052,19 @@ def read_sql():
 
 
     for i in range(0, len(sensor_t_id)):
-        timerTSensorLog.append(int(time.time()) + sensor_t_period[i])
+        timerTSensorLog.append(0)
 
     for i in range(0, len(sensor_ht_id)):
-        timerHTSensorLog.append(int(time.time()) + sensor_ht_period[i])
+        timerHTSensorLog.append(0)
 
     for i in range(0, len(sensor_co2_id)):
-        timerCo2SensorLog.append(int(time.time()) + sensor_co2_period[i])
+        timerCo2SensorLog.append(0)
 
     for i in range(0, len(sensor_press_id)):
-        timerPressSensorLog.append(int(time.time()) + sensor_press_period[i])
+        timerPressSensorLog.append(0)
 
     for i in range(0, len(timer_id)):
-        timer_time.append(int(time.time()))
+        timer_time.append(0)
 
 
     global timerTConditional
