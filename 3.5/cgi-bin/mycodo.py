@@ -3199,10 +3199,12 @@ def relay_on_duration(relay, seconds, sensor):
         time.sleep(0.1)
 
     # Turn relay off
-    if relay_trigger[relay-1] == 0: GPIO.output(relay_pin[relay-1], 1)
-    else: GPIO.output(relay_pin[relay-1], 0)
+    if relay_trigger[relay-1] == 0:
+        GPIO.output(relay_pin[relay-1], 1)
+    else:
+        GPIO.output(relay_pin[relay-1], 0)
 
-    logging.debug("[Relay Duration] Relay %s (%s) Off (was On for %s sec)",
+    logging.debug("[Relay Duration] Relay %s (%s) Off (was on for %s sec)",
         relay, relay_name[relay-1], round(abs(seconds), 1))
     return 1
 

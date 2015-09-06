@@ -2952,7 +2952,7 @@ if (isset($output_error)) {
                             Command to execute before capture
                         </td>
                         <td class="setting-value">
-                    <input style="width: 18em;" type="text" value="<?php echo $still_cmd_pre; ?>" maxlength=100 name="Still_Cmd_Pre" title="Command to be executed before the image capture. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
+                    <input style="width: 18em;" type="text" value="<?php echo htmlentities($still_cmd_pre); ?>" maxlength=100 name="Still_Cmd_Pre" title="Command to be executed before the image capture. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
                         </td>
                     </tr>
                     <tr>
@@ -2960,7 +2960,7 @@ if (isset($output_error)) {
                             Command to execute after capture
                         </td>
                         <td class="setting-value">
-                    <input style="width: 18em;" type="text" value="<?php echo $still_cmd_post; ?>" maxlength=100 name="Still_Cmd_Post" title="Command to be executed after the image capture. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
+                    <input style="width: 18em;" type="text" value="<?php echo htmlentities($still_cmd_post); ?>" maxlength=100 name="Still_Cmd_Post" title="Command to be executed after the image capture. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
                         </td>
                     </tr>
                     <tr>
@@ -2996,7 +2996,7 @@ if (isset($output_error)) {
                             Command to execute before starting stream
                         </td>
                         <td class="setting-value">
-                    <input style="width: 18em;" type="text" value="<?php echo $stream_cmd_pre; ?>" maxlength=100 name="Stream_Cmd_Pre" title="Command to be executed before the stream has started. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
+                    <input style="width: 18em;" type="text" value="<?php echo htmlentities($stream_cmd_pre); ?>" maxlength=100 name="Stream_Cmd_Pre" title="Command to be executed before the stream has started. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
                         </td>
                     </tr>
                     <tr>
@@ -3004,7 +3004,7 @@ if (isset($output_error)) {
                             Command to execute after stopping stream
                         </td>
                         <td class="setting-value">
-                    <input style="width: 18em;" type="text" value="<?php echo $stream_cmd_post; ?>" maxlength=100 name="Stream_Cmd_Post" title="Command to be executed after the stream has been stopped. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
+                    <input style="width: 18em;" type="text" value="<?php echo htmlentities($stream_cmd_post); ?>" maxlength=100 name="Stream_Cmd_Post" title="Command to be executed after the stream has been stopped. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
                         </td>
                     </tr>
                     <tr>
@@ -3072,7 +3072,7 @@ if (isset($output_error)) {
                             Command to execute before capture
                         </td>
                         <td class="setting-value">
-                    <input style="width: 18em;" type="text" value="<?php echo $timelapse_cmd_pre; ?>" maxlength=100 name="Timelapse_Cmd_Pre" title="Command to be executed before capture. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
+                    <input style="width: 18em;" type="text" value="<?php echo htmlentities($timelapse_cmd_pre); ?>" maxlength=100 name="Timelapse_Cmd_Pre" title="Command to be executed before capture. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
                         </td>
                     </tr>
                     <tr>
@@ -3080,7 +3080,7 @@ if (isset($output_error)) {
                             Command to execute after capture
                         </td>
                         <td class="setting-value">
-                    <input style="width: 18em;" type="text" value="<?php echo $timelapse_cmd_post; ?>" maxlength=100 name="Timelapse_Cmd_Post" title="Command to be executed after capture. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
+                    <input style="width: 18em;" type="text" value="<?php echo htmlentities($timelapse_cmd_post); ?>" maxlength=100 name="Timelapse_Cmd_Post" title="Command to be executed after capture. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
                         </td>
                     </tr>
                     <tr>

@@ -1886,8 +1886,10 @@ if (isset($_POST['ChangeStill'])) {
     $stmt->bindValue(':relay', (int)$_POST['Still_Relay'], SQLITE3_INTEGER);
     $stmt->bindValue(':timestamp', (int)$_POST['Still_Timestamp'], SQLITE3_INTEGER);
     $stmt->bindValue(':displaylast', (int)$_POST['Still_DisplayLast'], SQLITE3_INTEGER);
-    $stmt->bindValue(':cmdpre', $_POST['Still_Cmd_Pre'], SQLITE3_TEXT);
-    $stmt->bindValue(':cmdpost', $_POST['Still_Cmd_Post'], SQLITE3_TEXT);
+    $cmd_pre = SQLite3::escapeString($_POST['Still_Cmd_Pre']);
+    $cmd_post = SQLite3::escapeString($_POST['Still_Cmd_Post']);
+    $stmt->bindValue(':cmdpre', $cmd_pre, SQLITE3_TEXT);
+    $stmt->bindValue(':cmdpost', $cmd_post, SQLITE3_TEXT);
     $stmt->bindValue(':extra', $_POST['Still_Extra_Parameters'], SQLITE3_TEXT);
     $stmt->execute();
     shell_exec("$mycodo_client --sqlreload -1");
@@ -1897,8 +1899,10 @@ if (isset($_POST['ChangeStill'])) {
 if (isset($_POST['ChangeStream'])) {
     $stmt = $db->prepare("UPDATE CameraStream SET Relay=:relay, Cmd_Pre=:cmdpre, Cmd_Post=:cmdpost, Extra_Parameters=:extra");
     $stmt->bindValue(':relay', (int)$_POST['Stream_Relay'], SQLITE3_INTEGER);
-    $stmt->bindValue(':cmdpre', $_POST['Stream_Cmd_Pre'], SQLITE3_TEXT);
-    $stmt->bindValue(':cmdpost', $_POST['Stream_Cmd_Post'], SQLITE3_TEXT);
+    $cmd_pre = SQLite3::escapeString($_POST['Stream_Cmd_Pre']);
+    $cmd_post = SQLite3::escapeString($_POST['Stream_Cmd_Post']);
+    $stmt->bindValue(':cmdpre', $cmd_pre, SQLITE3_TEXT);
+    $stmt->bindValue(':cmdpost', $cmd_post, SQLITE3_TEXT);
     $stmt->bindValue(':extra', $_POST['Stream_Extra_Parameters'], SQLITE3_TEXT);
     $stmt->execute();
     shell_exec("$mycodo_client --sqlreload -1");
@@ -1912,8 +1916,10 @@ if (isset($_POST['ChangeTimelapse'])) {
     $stmt->bindValue(':prefix', $_POST['Timelapse_Prefix'], SQLITE3_TEXT);
     $stmt->bindValue(':timestamp', (int)$_POST['Timelapse_Timestamp'], SQLITE3_INTEGER);
     $stmt->bindValue(':displaylast', (int)$_POST['Timelapse_DisplayLast'], SQLITE3_INTEGER);
-    $stmt->bindValue(':cmdpre', $_POST['Timelapse_Cmd_Pre'], SQLITE3_TEXT);
-    $stmt->bindValue(':cmdpost', $_POST['Timelapse_Cmd_Post'], SQLITE3_TEXT);
+    $cmd_pre = SQLite3::escapeString($_POST['Timelapse_Cmd_Pre']);
+    $cmd_post = SQLite3::escapeString($_POST['Timelapse_Cmd_Post']);
+    $stmt->bindValue(':cmdpre', $cmd_pre, SQLITE3_TEXT);
+    $stmt->bindValue(':cmdpost', $cmd_post, SQLITE3_TEXT);
     $stmt->bindValue(':extra', $_POST['Timelapse_Extra_Parameters'], SQLITE3_TEXT);
     $stmt->execute();
     shell_exec("$mycodo_client --sqlreload -1");
