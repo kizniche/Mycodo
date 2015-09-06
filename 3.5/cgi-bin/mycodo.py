@@ -488,19 +488,19 @@ def daemon(output, log):
     pid_press_press_alive = [1] * len(sensor_press_id)
 
     for i in range(0, len(sensor_t_id)):
-        if sensor_t_device[i] != 'Other' and sensor_t_activated[i] == 1:
+        if sensor_t_device[i] != 'Other' and sensor_t_activated[i] == 1 and client_que != 'TerminateServer':
             read_t_sensor(i)
 
     for i in range(0, len(sensor_ht_id)):
-        if sensor_ht_device[i] != 'Other' and sensor_ht_activated[i] == 1:
+        if sensor_ht_device[i] != 'Other' and sensor_ht_activated[i] == 1 and client_que != 'TerminateServer':
             read_ht_sensor(i)
 
     for i in range(0, len(sensor_co2_id)):
-        if sensor_co2_device[i] != 'Other' and sensor_co2_activated[i] == 1:
+        if sensor_co2_device[i] != 'Other' and sensor_co2_activated[i] == 1 and client_que != 'TerminateServer':
             read_co2_sensor(i)
 
     for i in range(0, len(sensor_press_id)):
-        if sensor_press_device[i] != 'Other' and sensor_press_activated[i] == 1:
+        if sensor_press_device[i] != 'Other' and sensor_press_activated[i] == 1 and client_que != 'TerminateServer':
             read_press_sensor(i)
 
     logging.info("[Daemon] Initial sensor readings complete")
@@ -1868,6 +1868,21 @@ def read_ht_sensor(sensor):
         while ((timerHT > int(time.time())) and client_que != 'TerminateServer'):
             time.sleep(0.25)
 
+    if not os.path.exists(lock_directory):
+        os.makedirs(lock_directory)
+
+    lock = LockFile(sensor_ht_lock_path)
+    while not lock.i_am_locking():
+        try:
+            logging.debug("[Read HT Sensor-%s] Acquiring Lock: %s", sensor+1, lock.path)
+            lock.acquire(timeout=60)    # wait up to 60 seconds
+        except:
+            logging.warning("[Read HT Sensor-%s] Breaking Lock to Acquire: %s", sensor+1, lock.path)
+            lock.break_lock()
+            lock.acquire()
+
+    logging.debug("[Read HT Sensor-%s] Gained lock: %s", sensor+1, lock.path)
+
     for r in range(0, ht_read_tries): # Multiple attempts to get similar consecutive readings
         logging.debug("[Read HT Sensor-%s] Taking first Temperature/Humidity reading", sensor+1)
 
@@ -1877,14 +1892,19 @@ def read_ht_sensor(sensor):
         elif (sensor_ht_device[sensor] == 'AM2302'): device = Adafruit_DHT.AM2302
         else:
             device = 'Other'
+            logging.debug("[Read HT Sensor-%s] Unknown device: %s" % device)
+            logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+            lock.release()
             return 0
 
         for i in range(0, ht_read_tries):
             if not pid_ht_temp_alive[sensor] and not pid_ht_hum_alive[sensor]:
+                logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+                lock.release()
                 return 0
 
             # Begin HT Sensor
-            humidity2, tempc2 = read_ht(sensor, device, sensor_ht_pin[sensor])
+            humidity2, tempc2 = Adafruit_DHT.read_retry(device, sensor_ht_pin[sensor])
             # End HT Sensor
 
             if humidity2 != None and tempc2 != None:
@@ -1892,6 +1912,8 @@ def read_ht_sensor(sensor):
 
         if humidity2 == None or tempc2 == None:
             logging.warning("[Read HT Sensor-%s] Could not read first Hum/Temp measurement! (%s tries)", sensor+1, ht_read_tries)
+            logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+            lock.release()
             return 0
         else:
             logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor+1, tempc2, humidity2)
@@ -1900,18 +1922,21 @@ def read_ht_sensor(sensor):
         
         for i in range(0, ht_read_tries): # Multiple attempts to get first reading
             if not pid_ht_temp_alive[sensor] and not pid_ht_hum_alive[sensor]:
+                logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+                lock.release()
                 return 0
             
             # Begin HT Sensor
-            humidity, tempc = read_ht(sensor, device, sensor_ht_pin[sensor])
+            humidity, tempc = Adafruit_DHT.read_retry(device, sensor_ht_pin[sensor])
             # End HT Sensor
            
             if humidity != None and tempc != None:
                 break
-        
 
         if humidity == None or tempc == None:
             logging.warning("[Read HT Sensor-%s] Could not read Temperature/Humidity!", sensor+1)
+            logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+            lock.release()
             return 0
         else:
             logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor+1, tempc, humidity)
@@ -1931,33 +1956,15 @@ def read_ht_sensor(sensor):
                 logging.debug("[Read HT Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", sensor+1, tempc, humidity, sensor_ht_dewpt_c[sensor])
                 sensor_ht_read_hum[sensor] = humidity
                 sensor_ht_read_temp_c[sensor] = tempc
+                logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+                lock.release()
                 return 1
 
     logging.warning("[Read HT Sensor-%s] Could not get two consecutive Hum/Temp measurements that were consistent.", sensor+1)
-    return 0
-
-# Obtain reading from HT sensor
-def read_ht(sensor, device, pin):
-    if not os.path.exists(lock_directory):
-        os.makedirs(lock_directory)
-
-    lock = LockFile(sensor_ht_lock_path)
-    while not lock.i_am_locking():
-        try:
-            logging.debug("[Read HT Sensor-%s] Acquiring Lock: %s", sensor+1, lock.path)
-            lock.acquire(timeout=60)    # wait up to 60 seconds
-        except:
-            logging.warning("[Read HT Sensor-%s] Breaking Lock to Acquire: %s", sensor+1, lock.path)
-            lock.break_lock()
-            lock.acquire()
-
-    logging.debug("[Read HT Sensor-%s] Gained lock: %s", sensor+1, lock.path)
-
-    humidity, temp = Adafruit_DHT.read_retry(device, pin)
-
     logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
     lock.release()
-    return humidity, temp
+    return 0
+
 
 # Read CO2 sensor
 def read_co2_sensor(sensor):
@@ -3181,7 +3188,7 @@ def relay_onoff(relay, state):
     elif (relay_trigger[relay-1] == 0 and state == 'off'):
         gpio_change(relay, 1)
 
-# Set relay on for a specific duration
+# Set relay on for a specific duration (seconds may be negative)
 def relay_on_duration(relay, seconds, sensor):
     if (relay_trigger[relay-1] == 0 and GPIO.input(relay_pin[relay-1]) == 0) or (
             relay_trigger[relay-1] == 1 and GPIO.input(relay_pin[relay-1]) == 1):
