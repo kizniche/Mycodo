@@ -791,9 +791,9 @@ def daemon(output, log):
                                             args = (conditional_t_relay[j][k][0], conditional_t_relay_seconds_on[j][k][0], j,))
                                         rod.start()
                                     else:
-                                        relay_onoff(conditional_t_relay[j][k][0], "on")
+                                        relay_onoff(conditional_t_relay[j][k][0], 'on')
                                 elif conditional_t_relay_state[j][k][0] == 0:
-                                    relay_onoff(conditional_t_relay[j][k][0], "off")
+                                    relay_onoff(conditional_t_relay[j][k][0], 'off')
                         else:
                             logging.warning("[Conditional T] Could not read sensor %s, did not check conditional %s", j+1, k+1)
                         timerTConditional[j][k] = int(time.time()) + conditional_t_period[j][k][0]
@@ -831,9 +831,9 @@ def daemon(output, log):
                                             args = (conditional_ht_relay[j][k][0], conditional_ht_relay_seconds_on[j][k][0], j,))
                                         rod.start()
                                     else:
-                                        relay_onoff(conditional_ht_relay[j][k][0], "on")
+                                        relay_onoff(conditional_ht_relay[j][k][0], 'on')
                                 elif conditional_ht_relay_state[j][k][0] == 0:
-                                    relay_onoff(conditional_ht_relay[j][k][0], "off")
+                                    relay_onoff(conditional_ht_relay[j][k][0], 'off')
                         else:
                             logging.warning("[Conditional HT] Could not read sensor %s, did not check conditional %s", j+1, k+1)
                         timerHTConditional[j][k] = int(time.time()) + conditional_ht_period[j][k][0]
@@ -863,9 +863,9 @@ def daemon(output, log):
                                             args = (conditional_co2_relay[j][k][0], conditional_co2_relay_seconds_on[j][k][0], j,))
                                         rod.start()
                                     else:
-                                        relay_onoff(conditional_co2_relay[j][k][0], "on")
+                                        relay_onoff(conditional_co2_relay[j][k][0], 'on')
                                 elif conditional_co2_relay_state[j][k][0] == 0:
-                                    relay_onoff(conditional_co2_relay[j][k][0], "off")
+                                    relay_onoff(conditional_co2_relay[j][k][0], 'off')
                         else:
                             logging.warning("[Conditional CO2] Could not read sensor %s, did not check conditional %s", j+1, k+1)
                         timerCO2Conditional[j][k] = int(time.time()) + conditional_co2_period[j][k][0]
@@ -903,9 +903,9 @@ def daemon(output, log):
                                             args = (conditional_press_relay[j][k][0], conditional_press_relay_seconds_on[j][k][0], j,))
                                         rod.start()
                                     else:
-                                        relay_onoff(conditional_press_relay[j][k][0], "on")
+                                        relay_onoff(conditional_press_relay[j][k][0], 'on')
                                 elif conditional_press_relay_state[j][k][0] == 0:
-                                    relay_onoff(conditional_press_relay[j][k][0], "off")
+                                    relay_onoff(conditional_press_relay[j][k][0], 'off')
                         else:
                             logging.warning("[Conditional Press] Could not read sensor %s, did not check conditional %s", j+1, k+1)
                         timerPressConditional[j][k] = int(time.time()) + conditional_press_period[j][k][0]
@@ -1689,7 +1689,7 @@ def read_t_sensor(sensor):
         rod.start()
         while timerT > int(time.time()) and client_que != 'TerminateServer':
             if sql_reload_hold:
-                relay_onoff(sensor_t_premeasure_relay[sensor], 0)
+                relay_onoff(sensor_t_premeasure_relay[sensor], 'off')
                 timerT = 0
             time.sleep(0.25)
 
@@ -1844,7 +1844,7 @@ def read_ht_sensor(sensor):
         rod.start()
         while ((timerHT > int(time.time())) and client_que != 'TerminateServer'):
             if sql_reload_hold:
-                relay_onoff(sensor_ht_premeasure_relay[sensor], 0)
+                relay_onoff(sensor_ht_premeasure_relay[sensor], 'off')
                 timerHT = 0
             time.sleep(0.25)
 
@@ -1982,7 +1982,7 @@ def read_co2_sensor(sensor):
         rod.start()
         while ((timerCO2 > int(time.time())) and client_que != 'TerminateServer'):
             if sql_reload_hold:
-                relay_onoff(sensor_co2_premeasure_relay[sensor], 0)
+                relay_onoff(sensor_co2_premeasure_relay[sensor], 'off')
                 timerCO2 = 0
             time.sleep(0.25)
 
@@ -2121,7 +2121,7 @@ def read_press_sensor(sensor):
         rod.start()
         while timerPress > int(time.time()) and client_que != 'TerminateServer':
             if sql_reload_hold:
-                relay_onoff(sensor_press_premeasure_relay[sensor], 0)
+                relay_onoff(sensor_press_premeasure_relay[sensor], 'off')
                 timerPress = 0
             time.sleep(0.25)
 
