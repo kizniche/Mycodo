@@ -109,6 +109,10 @@ last_ht_reading = 0
 last_co2_reading = 0
 last_press_reading = 0
 
+global sql_reload_hold_test
+
+sql_reload_hold_test = 0
+
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
 
@@ -146,9 +150,7 @@ class ComServer(rpyc.Service):
                     while pid_t_temp_alive[i] == 0:
                         time.sleep(0.1)
             time.sleep(0.25)
-            client_que = 'sql_reload'
-            while client_que == 'sql_reload':
-                time.sleep(0.1)
+            read_sql()
             logging.info("[Daemon] Commanding all T PID controllers to start")
             time.sleep(0.25)
             start_all_t_pids = 1
@@ -164,12 +166,8 @@ class ComServer(rpyc.Service):
                 if pid_ht_hum_or[i] == 0:
                     while pid_ht_hum_alive[i] == 0:
                         time.sleep(0.1)
-            time.sleep(0.25)
-            client_que = 'sql_reload'
-            while client_que == 'sql_reload':
-                time.sleep(0.1)
+            read_sql()
             logging.info("[Daemon] Commanding all HT PID controllers to start")
-            time.sleep(0.25)
             start_all_ht_pids = 1
         elif sensortype == 'CO2':
             global start_all_co2_pids
@@ -179,12 +177,8 @@ class ComServer(rpyc.Service):
                 if pid_co2_or[i] == 0:
                     while pid_co2_alive[i] == 0:
                         time.sleep(0.1)
-            time.sleep(0.25)
-            client_que = 'sql_reload'
-            while client_que == 'sql_reload':
-                time.sleep(0.1)
+            read_sql()
             logging.info("[Daemon] Commanding all CO2 PID controllers to start")
-            time.sleep(0.25)
             start_all_co2_pids = 1
         elif sensortype == 'Press':
             global start_all_press_pids
@@ -198,12 +192,8 @@ class ComServer(rpyc.Service):
                 if pid_press_press_or[i] == 0:
                     while pid_press_press_alive[i] == 0:
                         time.sleep(0.1)
-            time.sleep(0.25)
-            client_que = 'sql_reload'
-            while client_que == 'sql_reload':
-                time.sleep(0.1)
+            read_sql()
             logging.info("[Daemon] Commanding all Press PID controllers to start")
-            time.sleep(0.25)
             start_all_press_pids = 1
         return 1
 
@@ -255,11 +245,8 @@ class ComServer(rpyc.Service):
         if relay != -1:
             logging.info("[Client command] Relay %s GPIO pin changed to %s, initialize and turn off", relay, relay_pin[relay])
             initialize_gpio(relay)
-        logging.info("[Client command] Reload SQLite database")
-        global client_que
-        client_que = 'sql_reload'
-        while client_que == 'sql_reload':
-            time.sleep(0.1)
+        logging.info("[Client command] Reload SQLite database (Note: May cause interruption of sensor readings)")
+        read_sql()
         return 1
 
     def exposed_Status(self, var):
@@ -457,6 +444,9 @@ def daemon(output, log):
     global change_sensor_log
     global server
     global client_que
+    global sql_reload_hold_test
+
+    sql_reload_hold_test = -1;
 
     # Set log level based on startup argument
     if (log == 'warning'):
@@ -492,6 +482,14 @@ def daemon(output, log):
     timerLogBackup = int(time.time()) + 21600  # 21600 seconds = 6 hours
 
     while True: # Main loop of the daemon
+
+        # Wait for and pause the daemon while the SQL database is reloaded
+        if sql_reload_hold:
+            sql_reload_hold_test = 0
+            while sql_reload_hold:
+                time.sleep(0.1)
+            sql_reload_hold_test = -1
+            
 
         #
         # Run remote commands issued by mycodo-client.py
@@ -554,9 +552,6 @@ def daemon(output, log):
                 Relays_Off()
                 logging.info("[Daemon] Shutdown success")
                 return 0
-
-            elif client_que == 'sql_reload' and client_que != 'TerminateServer':
-                read_sql()
 
             elif client_que == 'write_t_sensor_log' and client_que != 'TerminateServer':
                 logging.debug("[Client command] Write T Sensor Log")
@@ -737,7 +732,7 @@ def daemon(output, log):
         # Read sensors and write logs
         #
         for i in range(0, len(sensor_t_id)):
-            if int(time.time()) > timerTSensorLog[i] and sensor_t_device[i] != 'Other' and sensor_t_activated[i] == 1 and client_que != 'TerminateServer':
+            if int(time.time()) > timerTSensorLog[i] and sensor_t_device[i] != 'Other' and sensor_t_activated[i] == 1 and client_que != 'TerminateServer' and sql_reload_hold != 1:
                 logging.debug("[Timer Expiration] Read Temp-%s sensor every %s seconds: Write sensor log", i+1, sensor_t_period[i])
                 if read_t_sensor(i) == 1:
                     mycodoLog.write_t_sensor_log(sensor_t_read_temp_c, i)
@@ -746,7 +741,7 @@ def daemon(output, log):
                 timerTSensorLog[i] = int(time.time()) + sensor_t_period[i]
 
         for i in range(0, len(sensor_ht_id)):
-            if int(time.time()) > timerHTSensorLog[i] and sensor_ht_device[i] != 'Other' and sensor_ht_activated[i] == 1 and client_que != 'TerminateServer':
+            if int(time.time()) > timerHTSensorLog[i] and sensor_ht_device[i] != 'Other' and sensor_ht_activated[i] == 1 and client_que != 'TerminateServer' and sql_reload_hold != 1:
                 logging.debug("[Timer Expiration] Read HT-%s sensor every %s seconds: Write sensor log", i+1, sensor_ht_period[i])
                 if read_ht_sensor(i) == 1:
                     mycodoLog.write_ht_sensor_log(sensor_ht_read_temp_c, sensor_ht_read_hum, sensor_ht_dewpt_c, i)
@@ -755,7 +750,7 @@ def daemon(output, log):
                 timerHTSensorLog[i] = int(time.time()) + sensor_ht_period[i]
 
         for i in range(0, len(sensor_co2_id)):
-            if int(time.time()) > timerCo2SensorLog[i] and sensor_co2_device[i] != 'Other' and sensor_co2_activated[i] == 1 and client_que != 'TerminateServer':
+            if int(time.time()) > timerCo2SensorLog[i] and sensor_co2_device[i] != 'Other' and sensor_co2_activated[i] == 1 and client_que != 'TerminateServer' and sql_reload_hold != 1:
                 if read_co2_sensor(i) == 1:
                     mycodoLog.write_co2_sensor_log(sensor_co2_read_co2, i)
                 else:
@@ -763,7 +758,7 @@ def daemon(output, log):
                 timerCo2SensorLog[i] = int(time.time()) + sensor_co2_period[i]
 
         for i in range(0, len(sensor_press_id)):
-            if int(time.time()) > timerPressSensorLog[i] and sensor_press_device[i] != 'Other' and sensor_press_activated[i] == 1 and client_que != 'TerminateServer':
+            if int(time.time()) > timerPressSensorLog[i] and sensor_press_device[i] != 'Other' and sensor_press_activated[i] == 1 and client_que != 'TerminateServer' and sql_reload_hold != 1:
                 logging.debug("[Timer Expiration] Read Press-%s sensor every %s seconds: Write sensor log", i+1, sensor_press_period[i])
                 if read_press_sensor(i) == 1:
                     mycodoLog.write_press_sensor_log(sensor_press_read_temp_c, sensor_press_read_press, sensor_press_read_alt, i)
@@ -778,10 +773,10 @@ def daemon(output, log):
         for j in range(0, len(conditional_t_number_sensor)):
             for k in range(0, len(conditional_t_number_conditional)):
 
-                if conditional_t_id[j][k][0] != 0 and client_que != 'TerminateServer':
+                if conditional_t_id[j][k][0] != 0 and client_que != 'TerminateServer' and sql_reload_hold != 1:
 
                     if int(time.time()) > timerTConditional[j][k] and conditional_t_state[j][k][0] == 1:
-                        logging.debug("[Conditional] Check T conditional statement %s: %s", k+1, conditional_t_name[j][k][0])
+                        logging.debug("[Conditional T] Check conditional statement %s: %s", k+1, conditional_t_name[j][k][0])
                         if read_t_sensor(j) == 1:
 
                             if ((conditional_t_direction[j][k][0] == 1 and # If temp is above set point
@@ -791,6 +786,7 @@ def daemon(output, log):
 
                                 if conditional_t_relay_state[j][k][0] == 1:
                                     if conditional_t_relay_seconds_on[j][k][0] > 0:
+                                        logging.debug("[Conditional T] Conditional statement %s True: Turn relay %s on for %s seconds", k+1, conditional_t_relay[j][k][0], conditional_t_relay_seconds_on[j][k][0])
                                         rod = threading.Thread(target = relay_on_duration,
                                             args = (conditional_t_relay[j][k][0], conditional_t_relay_seconds_on[j][k][0], j,))
                                         rod.start()
@@ -799,7 +795,7 @@ def daemon(output, log):
                                 elif conditional_t_relay_state[j][k][0] == 0:
                                     relay_onoff(conditional_t_relay[j][k][0], "off")
                         else:
-                            logging.warning("[Conditional] Could not read T-%s sensor, did not check conditional %s", j+1, k+1)
+                            logging.warning("[Conditional T] Could not read sensor %s, did not check conditional %s", j+1, k+1)
                         timerTConditional[j][k] = int(time.time()) + conditional_t_period[j][k][0]
 
 
@@ -809,10 +805,10 @@ def daemon(output, log):
         for j in range(0, len(conditional_ht_number_sensor)):
             for k in range(0, len(conditional_ht_number_conditional)):
 
-                if conditional_ht_id[j][k][0] != 0 and client_que != 'TerminateServer':
+                if conditional_ht_id[j][k][0] != 0 and client_que != 'TerminateServer' and sql_reload_hold != 1:
 
                     if int(time.time()) > timerHTConditional[j][k] and conditional_ht_state[j][k][0] == 1:
-                        logging.debug("[Conditional] Check HT conditional statement %s: %s", k+1, conditional_ht_name[j][k][0])
+                        logging.debug("[Conditional HT] Check conditional statement %s: %s", k+1, conditional_ht_name[j][k][0])
                         if read_ht_sensor(j) == 1:
 
                             if ((conditional_ht_condition[j][k][0] == "Temperature" and # If temp is above set point
@@ -830,6 +826,7 @@ def daemon(output, log):
 
                                 if conditional_ht_relay_state[j][k][0] == 1:
                                     if conditional_ht_relay_seconds_on[j][k][0] > 0:
+                                        logging.debug("[Conditional HT] Conditional statement %s True: Turn relay %s on for %s seconds", k+1, conditional_ht_relay[j][k][0], conditional_ht_relay_seconds_on[j][k][0])
                                         rod = threading.Thread(target = relay_on_duration,
                                             args = (conditional_ht_relay[j][k][0], conditional_ht_relay_seconds_on[j][k][0], j,))
                                         rod.start()
@@ -838,7 +835,7 @@ def daemon(output, log):
                                 elif conditional_ht_relay_state[j][k][0] == 0:
                                     relay_onoff(conditional_ht_relay[j][k][0], "off")
                         else:
-                            logging.warning("[Conditional] Could not read HT-%s sensor, did not check conditional %s", j+1, k+1)
+                            logging.warning("[Conditional HT] Could not read sensor %s, did not check conditional %s", j+1, k+1)
                         timerHTConditional[j][k] = int(time.time()) + conditional_ht_period[j][k][0]
 
 
@@ -848,10 +845,10 @@ def daemon(output, log):
         for j in range(0, len(conditional_co2_number_sensor)):
             for k in range(0, len(conditional_co2_number_conditional)):
 
-                if conditional_co2_id[j][k][0] != 0 and client_que != 'TerminateServer':
+                if conditional_co2_id[j][k][0] != 0 and client_que != 'TerminateServer' and sql_reload_hold != 1:
 
                     if int(time.time()) > timerCO2Conditional[j][k] and conditional_co2_state[j][k][0] == 1:
-                        logging.debug("[Conditional] Check CO2 conditional statement %s: %s", k+1, conditional_co2_name[j][k][0])
+                        logging.debug("[Conditional CO2] Check conditional statement %s: %s", k+1, conditional_co2_name[j][k][0])
                         if read_co2_sensor(j) == 1:
 
                             if ((conditional_co2_direction[j][k][0] == 1 and # If temp is above set point
@@ -861,6 +858,7 @@ def daemon(output, log):
 
                                 if conditional_co2_relay_state[j][k][0] == 1:
                                     if conditional_co2_relay_seconds_on[j][k][0] > 0:
+                                        logging.debug("[Conditional CO2] Conditional statement %s True: Turn relay %s on for %s seconds", k+1, conditional_co2_relay[j][k][0], conditional_co2_relay_seconds_on[j][k][0])
                                         rod = threading.Thread(target = relay_on_duration,
                                             args = (conditional_co2_relay[j][k][0], conditional_co2_relay_seconds_on[j][k][0], j,))
                                         rod.start()
@@ -869,7 +867,7 @@ def daemon(output, log):
                                 elif conditional_co2_relay_state[j][k][0] == 0:
                                     relay_onoff(conditional_co2_relay[j][k][0], "off")
                         else:
-                            logging.warning("[Conditional] Could not read CO2-%s sensor, did not check conditional %s", j+1, k+1)
+                            logging.warning("[Conditional CO2] Could not read sensor %s, did not check conditional %s", j+1, k+1)
                         timerCO2Conditional[j][k] = int(time.time()) + conditional_co2_period[j][k][0]
 
 
@@ -879,10 +877,10 @@ def daemon(output, log):
         for j in range(0, len(conditional_press_number_sensor)):
             for k in range(0, len(conditional_press_number_conditional)):
 
-                if conditional_press_id[j][k][0] != 0 and client_que != 'TerminateServer':
+                if conditional_press_id[j][k][0] != 0 and client_que != 'TerminateServer' and sql_reload_hold != 1:
 
                     if int(time.time()) > timerPressConditional[j][k] and conditional_press_state[j][k][0] == 1:
-                        logging.debug("[Conditional] Check Press conditional statement %s: %s", k+1, conditional_press_name[j][k][0])
+                        logging.debug("[Conditional Press] Check conditional statement %s: %s", k+1, conditional_press_name[j][k][0])
                         if read_press_sensor(j) == 1:
 
                             if ((conditional_press_condition[j][k][0] == "Pressure" and # If temp is above set point
@@ -900,6 +898,7 @@ def daemon(output, log):
 
                                 if conditional_press_relay_state[j][k][0] == 1:
                                     if conditional_press_relay_seconds_on[j][k][0] > 0:
+                                        logging.debug("[Conditional Press] Conditional statement %s True: Turn relay %s on for %s seconds", k+1, conditional_press_relay[j][k][0], conditional_press_relay_seconds_on[j][k][0])
                                         rod = threading.Thread(target = relay_on_duration,
                                             args = (conditional_press_relay[j][k][0], conditional_press_relay_seconds_on[j][k][0], j,))
                                         rod.start()
@@ -908,7 +907,7 @@ def daemon(output, log):
                                 elif conditional_press_relay_state[j][k][0] == 0:
                                     relay_onoff(conditional_press_relay[j][k][0], "off")
                         else:
-                            logging.warning("[Conditional] Could not read Press-%s sensor, did not check conditional %s", j+1, k+1)
+                            logging.warning("[Conditional Press] Could not read sensor %s, did not check conditional %s", j+1, k+1)
                         timerPressConditional[j][k] = int(time.time()) + conditional_press_period[j][k][0]
 
 
@@ -1707,7 +1706,7 @@ def read_t_sensor(sensor):
     logging.debug("[Read T Sensor-%s] Gained lock: %s", sensor+1, lock.path)
 
     for r in range(0, t_read_tries): # Multiple attempts to get similar consecutive readings
-        if client_que == 'TerminateServer':
+        if client_que == 'TerminateServer' or sql_reload_hold:
             logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor+1, lock.path)
             lock.release()
             return 0
@@ -1720,7 +1719,7 @@ def read_t_sensor(sensor):
                 lock.release()
                 return 0
 
-            if client_que != 'TerminateServer':
+            if client_que != 'TerminateServer' and sql_reload_hold != 1:
                 tempc2 = read_t(sensor, sensor_t_device[sensor], sensor_t_pin[sensor])
             else:
                 logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor+1, lock.path)
@@ -1747,7 +1746,7 @@ def read_t_sensor(sensor):
                 lock.release()
                 return 0
             
-            if client_que != 'TerminateServer':
+            if client_que != 'TerminateServer' and sql_reload_hold != 1:
                 tempc = read_t(sensor, sensor_t_device[sensor], sensor_t_pin[sensor])
             else:
                 logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor+1, lock.path)
@@ -1859,7 +1858,7 @@ def read_ht_sensor(sensor):
     logging.debug("[Read HT Sensor-%s] Gained lock: %s", sensor+1, lock.path)
 
     for r in range(0, ht_read_tries): # Multiple attempts to get similar consecutive readings
-        if client_que == 'TerminateServer':
+        if client_que == 'TerminateServer' or sql_reload_hold:
             logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
             lock.release()
             return 0
@@ -1872,7 +1871,7 @@ def read_ht_sensor(sensor):
                 lock.release()
                 return 0
 
-            if client_que != 'TerminateServer':
+            if client_que != 'TerminateServer' and sql_reload_hold != 1:
                 humidity2, tempc2 = read_ht(sensor, sensor_ht_device[sensor], sensor_ht_pin[sensor])
             else:
                 logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
@@ -1898,7 +1897,7 @@ def read_ht_sensor(sensor):
                 lock.release()
                 return 0
             
-            if client_que != 'TerminateServer':
+            if client_que != 'TerminateServer' and sql_reload_hold != 1:
                 humidity, tempc = read_ht(sensor, sensor_ht_device[sensor], sensor_ht_pin[sensor])
             else:
                 logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
@@ -1994,7 +1993,7 @@ def read_co2_sensor(sensor):
     logging.debug("[Read CO2 Sensor-%s] Gained lock: %s", sensor+1, lock.path)
 
     for r in range(0, co2_read_tries):
-        if client_que == 'TerminateServer':
+        if client_que == 'TerminateServer' or sql_reload_hold:
             logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor+1, lock.path)
             lock.release()
             return 0
@@ -2007,7 +2006,7 @@ def read_co2_sensor(sensor):
                 lock.release()
                 return 0
 
-            if client_que != 'TerminateServer':
+            if client_que != 'TerminateServer' and sql_reload_hold != 1:
                 co22 = read_K30(sensor, sensor_co2_device[sensor])
             else:
                 logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor+1, lock.path)
@@ -2030,7 +2029,7 @@ def read_co2_sensor(sensor):
                 lock.release()
                 return 0
 
-            if client_que != 'TerminateServer':
+            if client_que != 'TerminateServer' and sql_reload_hold != 1:
                 co2 = read_K30(sensor, sensor_co2_device[sensor])
             else:
                 logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor+1, lock.path)
@@ -2130,7 +2129,7 @@ def read_press_sensor(sensor):
     logging.debug("[Read Press Sensor-%s] Gained lock: %s", sensor+1, lock.path)
 
     for r in range(0, press_read_tries): # Multiple attempts to get similar consecutive readings
-        if client_que == 'TerminateServer':
+        if client_que == 'TerminateServer' or sql_reload_hold:
             logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor+1, lock.path)
             lock.release()
             return 0
@@ -2143,7 +2142,7 @@ def read_press_sensor(sensor):
                 lock.release()
                 return 0
 
-            if client_que != 'TerminateServer':
+            if client_que != 'TerminateServer' and sql_reload_hold != 1:
                 pressure2, tempc2, alt2 = read_press(sensor, sensor_press_device[sensor], sensor_press_pin[sensor])
             else:
                 logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor+1, lock.path)
@@ -2168,7 +2167,7 @@ def read_press_sensor(sensor):
                 lock.release()
                 return 0
             
-            if client_que != 'TerminateServer':
+            if client_que != 'TerminateServer' and sql_reload_hold != 1:
                 pressure, tempc, alt = read_press(sensor, sensor_press_device[sensor], sensor_press_pin[sensor])
             else:
                 logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor+1, lock.path)
@@ -2236,6 +2235,15 @@ def read_press(sensor, device, pin):
 
 # Read variables from the SQLite database
 def read_sql():
+    global sql_reload_hold
+    global sql_reload_hold_test
+
+    if sql_reload_hold_test == -1:
+        sql_reload_hold = 1
+        while sql_reload_hold_test == -1:
+            time.sleep(0.1)
+    else:
+        sql_reload_hold = 1
 
     # Temperature sensor globals
     global sensor_t_id
@@ -2612,11 +2620,6 @@ def read_sql():
     global smtp_pass
     global smtp_email_from
     global smtp_email_to
-
-    global sql_reload_hold
-
-    sql_reload_hold = 1
-    time.sleep(0.5)
 
     # Check if all required tables exist in the SQL database
     conn = sqlite3.connect(mycodo_database)
@@ -3131,7 +3134,7 @@ def read_sql():
 
 # Initialize all relay GPIO pins
 def initialize_all_gpio():
-    logging.info("[GPIO Initialize] Set GPIO mode to BCM numbering, all as output")
+    logging.info("[GPIO Initialize] Set GPIO mode to BCM numbering, all set GPIOs as output")
 
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
@@ -3146,7 +3149,7 @@ def initialize_all_gpio():
 
 # Initialize specified GPIO pin
 def initialize_gpio(relay):
-    logging.info("[GPIO Initialize] Set GPIO mode to BCM numbering, pin %s as output", relay_pin[relay])
+    logging.info("[GPIO Initialize] Set GPIO mode to BCM numbering, GPIO %s as output", relay_pin[relay])
 
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
@@ -3159,6 +3162,7 @@ def initialize_gpio(relay):
 
 # Turn Relays Off
 def Relays_Off():
+    logging.info("[GPIO Initialize] Turning off all relays set to off at startup")
     for i in range(0, len(relay_id)):
         if relay_pin[i] > 0:
             if relay_trigger[i] == 0:
@@ -3168,6 +3172,7 @@ def Relays_Off():
 
 # Turn Select Relays On
 def Relays_Start():
+    logging.info("[GPIO Initialize] Turning on all relays set to on at startup")
     for i in range(0, len(relay_id)):
         if relay_pin[i] > 0:
             if relay_trigger[i] == 0:
@@ -3219,9 +3224,8 @@ def relay_on_duration(relay, seconds, sensor):
         logging.debug("[Relay Duration] Relay %s (%s) ON for %s seconds",
             relay, relay_name[relay-1], round(abs(seconds), 1))
 
-    GPIO.output(relay_pin[relay-1], relay_trigger[relay-1]) # Turn relay on
     timer_on = int(time.time()) + abs(seconds)
-    mycodoLog.write_relay_log(relay, seconds, sensor)
+    GPIO.output(relay_pin[relay-1], relay_trigger[relay-1]) # Turn relay on
 
     while (client_que != 'TerminateServer' and timer_on > int(time.time())):
         time.sleep(0.1)
@@ -3231,6 +3235,8 @@ def relay_on_duration(relay, seconds, sensor):
         GPIO.output(relay_pin[relay-1], 1)
     else:
         GPIO.output(relay_pin[relay-1], 0)
+
+    mycodoLog.write_relay_log(relay, seconds, sensor)
 
     logging.debug("[Relay Duration] Relay %s (%s) Off (was on for %s sec)",
         relay, relay_name[relay-1], round(abs(seconds), 1))
