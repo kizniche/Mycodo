@@ -1682,12 +1682,15 @@ def read_t_sensor(sensor):
     t_read_tries = 5
 
     timerT = 0
-    if (sensor_t_premeasure_relay[sensor] and sensor_t_premeasure_dur[sensor]):
+    if sensor_t_premeasure_relay[sensor] and sensor_t_premeasure_dur[sensor]:
         timerT = int(time.time()) + sensor_t_premeasure_dur[sensor]
         rod = threading.Thread(target = relay_on_duration,
             args = (sensor_t_premeasure_relay[sensor], sensor_t_premeasure_dur[sensor], sensor,))
         rod.start()
         while timerT > int(time.time()) and client_que != 'TerminateServer':
+            if sql_reload_hold:
+                relay_onoff(sensor_t_premeasure_relay[sensor], 0)
+                timerT = 0
             time.sleep(0.25)
 
     if not os.path.exists(lock_directory):
@@ -1834,12 +1837,15 @@ def read_ht_sensor(sensor):
     ht_read_tries = 5
 
     timerHT = 0
-    if (sensor_ht_premeasure_relay[sensor] and sensor_ht_premeasure_dur[sensor]):
+    if sensor_ht_premeasure_relay[sensor] and sensor_ht_premeasure_dur[sensor]:
         timerHT = int(time.time()) + sensor_ht_premeasure_dur[sensor]
         rod = threading.Thread(target = relay_on_duration,
             args = (sensor_ht_premeasure_relay[sensor], sensor_ht_premeasure_dur[sensor], sensor,))
         rod.start()
         while ((timerHT > int(time.time())) and client_que != 'TerminateServer'):
+            if sql_reload_hold:
+                relay_onoff(sensor_ht_premeasure_relay[sensor], 0)
+                timerHT = 0
             time.sleep(0.25)
 
     if not os.path.exists(lock_directory):
@@ -1969,12 +1975,15 @@ def read_co2_sensor(sensor):
     co2_read_tries = 5
 
     timerCO2 = 0
-    if (sensor_co2_premeasure_relay[sensor] and sensor_co2_premeasure_dur[sensor]):
+    if sensor_co2_premeasure_relay[sensor] and sensor_co2_premeasure_dur[sensor]:
         timerCO2 = int(time.time()) + sensor_co2_premeasure_dur[sensor]
         rod = threading.Thread(target = relay_on_duration,
             args = (sensor_co2_premeasure_relay[sensor], sensor_co2_premeasure_dur[sensor], sensor,))
         rod.start()
         while ((timerCO2 > int(time.time())) and client_que != 'TerminateServer'):
+            if sql_reload_hold:
+                relay_onoff(sensor_co2_premeasure_relay[sensor], 0)
+                timerCO2 = 0
             time.sleep(0.25)
 
     if not os.path.exists(lock_directory):
@@ -2111,6 +2120,9 @@ def read_press_sensor(sensor):
             args = (sensor_press_premeasure_relay[sensor], sensor_press_premeasure_dur[sensor], sensor,))
         rod.start()
         while timerPress > int(time.time()) and client_que != 'TerminateServer':
+            if sql_reload_hold:
+                relay_onoff(sensor_press_premeasure_relay[sensor], 0)
+                timerPress = 0
             time.sleep(0.25)
 
     if not os.path.exists(lock_directory):
@@ -2238,12 +2250,12 @@ def read_sql():
     global sql_reload_hold
     global sql_reload_hold_test
 
+    sql_reload_hold = 1
+
+    # If daemon is running, wait for daemon to pause to reload SLQ database
     if sql_reload_hold_test == -1:
-        sql_reload_hold = 1
         while sql_reload_hold_test == -1:
             time.sleep(0.1)
-    else:
-        sql_reload_hold = 1
 
     # Temperature sensor globals
     global sensor_t_id
