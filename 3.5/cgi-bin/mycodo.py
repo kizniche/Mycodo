@@ -109,9 +109,9 @@ last_ht_reading = 0
 last_co2_reading = 0
 last_press_reading = 0
 
-global sql_reload_hold_test
+global sql_reload_hold_confirm
 
-sql_reload_hold_test = 0
+sql_reload_hold_confirm = 0
 
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
@@ -444,9 +444,9 @@ def daemon(output, log):
     global change_sensor_log
     global server
     global client_que
-    global sql_reload_hold_test
+    global sql_reload_hold_confirm
 
-    sql_reload_hold_test = -1;
+    sql_reload_hold_confirm = -1;
 
     # Set log level based on startup argument
     if (log == 'warning'):
@@ -485,143 +485,71 @@ def daemon(output, log):
 
         # Wait for and pause the daemon while the SQL database is reloaded
         if sql_reload_hold:
-            sql_reload_hold_test = 0
-            while sql_reload_hold:
+            sql_reload_hold_confirm = 0
+            while sql_reload_hold and client_que != 'TerminateServer':
                 time.sleep(0.1)
-            sql_reload_hold_test = -1
+            sql_reload_hold_confirm = -1
             
 
         #
         # Run remote commands issued by mycodo-client.py
         #
-        if client_que != '0':
+        if client_que == 'TerminateServer':
+            logging.info("[Daemon] Backing up logs")
+            mycodoLog.Concatenate_Logs()
 
-            if client_que == 'TerminateServer':
-                logging.info("[Daemon] Backing up logs")
-                mycodoLog.Concatenate_Logs()
+            logging.info("[Daemon] Turning off all PID controllers")
+            pid_t_temp_alive = [0] * len(sensor_t_id)
+            pid_ht_temp_alive =  [0] * len(sensor_ht_id)
+            pid_ht_hum_alive =  [0] * len(sensor_ht_id)
+            pid_co2_alive =  [0] * len(sensor_co2_id)
+            pid_press_temp_alive =  [0] * len(sensor_press_id)
+            pid_press_press_alive =  [0] * len(sensor_press_id)
 
-                logging.info("[Daemon] Turning off all PID controllers")
-                pid_t_temp_alive = [0] * len(sensor_t_id)
-                pid_ht_temp_alive =  [0] * len(sensor_ht_id)
-                pid_ht_hum_alive =  [0] * len(sensor_ht_id)
-                pid_co2_alive =  [0] * len(sensor_co2_id)
-                pid_press_temp_alive =  [0] * len(sensor_press_id)
-                pid_press_press_alive =  [0] * len(sensor_press_id)
+            # for t in threads_t_t:
+            #     t.join()
+            # for t in threads_ht_t:
+            #     t.join()
+            # for t in threads_ht_h:
+            #     t.join()
+            # for t in threads_co2:
+            #     t.join()
+            # server.close()
 
-                # for t in threads_t_t:
-                #     t.join()
-                # for t in threads_ht_t:
-                #     t.join()
-                # for t in threads_ht_h:
-                #     t.join()
-                # for t in threads_co2:
-                #     t.join()
-                # server.close()
+            for i in range(0, len(sensor_t_id)):
+                if pid_t_temp_or[i] == 0:
+                    while pid_t_temp_alive[i] == 0:
+                        time.sleep(0.1)
 
-                for i in range(0, len(sensor_t_id)):
-                    if pid_t_temp_or[i] == 0:
-                        while pid_t_temp_alive[i] == 0:
-                            time.sleep(0.1)
+            for i in range(0, len(sensor_ht_id)):
+                if pid_ht_temp_or[i] == 0:
+                    while pid_ht_temp_alive[i] == 0:
+                        time.sleep(0.1)
 
-                for i in range(0, len(sensor_ht_id)):
-                    if pid_ht_temp_or[i] == 0:
-                        while pid_ht_temp_alive[i] == 0:
-                            time.sleep(0.1)
+            for i in range(0, len(sensor_ht_id)):
+                if pid_ht_hum_or[i] == 0:
+                    while pid_ht_hum_alive[i] == 0:
+                        time.sleep(0.1)
 
-                for i in range(0, len(sensor_ht_id)):
-                    if pid_ht_hum_or[i] == 0:
-                        while pid_ht_hum_alive[i] == 0:
-                            time.sleep(0.1)
+            for i in range(0, len(sensor_co2_id)):
+                if pid_co2_or[i] == 0:
+                    while pid_co2_alive[i] == 0:
+                        time.sleep(0.1)
 
-                for i in range(0, len(sensor_co2_id)):
-                    if pid_co2_or[i] == 0:
-                        while pid_co2_alive[i] == 0:
-                            time.sleep(0.1)
+            for i in range(0, len(sensor_press_id)):
+                if pid_press_temp_or[i] == 0:
+                    while pid_press_temp_alive[i] == 0:
+                        time.sleep(0.1)
 
-                for i in range(0, len(sensor_press_id)):
-                    if pid_press_temp_or[i] == 0:
-                        while pid_press_temp_alive[i] == 0:
-                            time.sleep(0.1)
+            for i in range(0, len(sensor_press_id)):
+                if pid_press_press_or[i] == 0:
+                    while pid_press_press_alive[i] == 0:
+                        time.sleep(0.1)
 
-                for i in range(0, len(sensor_press_id)):
-                    if pid_press_press_or[i] == 0:
-                        while pid_press_press_alive[i] == 0:
-                            time.sleep(0.1)
-
-                logging.info("[Daemon] Turning off all relays")
-                Relays_Off()
-                logging.info("[Daemon] Shutdown success")
-                return 0
-
-            elif client_que == 'write_t_sensor_log' and client_que != 'TerminateServer':
-                logging.debug("[Client command] Write T Sensor Log")
-                if (client_var != 0 and sensor_t_activated[client_var]):
-                    if read_t_sensor(client_var-1) == 1:
-                        mycodoLog.write_t_sensor_log(sensor_t_read_temp_c, client_var)
-                    else:
-                        logging.warning("Could not read Temp-%s sensor, not writing to sensor log", client_var)
-                else:
-                    for i in range(0, len(sensor_t_id)):
-                        if sensor_t_activated[i]:
-                            if read_t_sensor(i) == 1:
-                                mycodoLog.write_t_sensor_log(sensor_t_read_temp_c, i)
-                            else:
-                                logging.warning("Could not read Temp-%s sensor, not writing to sensor log", i)
-                            time.sleep(0.1)
-                change_sensor_log = 0
-
-            elif client_que == 'write_ht_sensor_log' and client_que != 'TerminateServer':
-                logging.debug("[Client command] Write HT Sensor Log")
-                if (client_var != 0 and sensor_ht_activated[client_var]):
-                    if read_ht_sensor(client_var-1) == 1:
-                        mycodoLog.write_ht_sensor_log(sensor_ht_read_temp_c, sensor_ht_read_hum, sensor_ht_dewpt_c, client_var)
-                    else:
-                        logging.warning("Could not read Hum/Temp-%s sensor, not writing to sensor log", client_var)
-                else:
-                    for i in range(0, len(sensor_ht_id)):
-                        if sensor_ht_activated[i]:
-                            if read_ht_sensor(i) == 1:
-                                mycodoLog.write_ht_sensor_log(sensor_ht_read_temp_c, sensor_ht_read_hum, sensor_ht_dewpt_c, i)
-                            else:
-                                logging.warning("Could not read Hum/Temp-%s sensor, not writing to sensor log", i)
-                            time.sleep(0.1)
-                change_sensor_log = 0
-
-            elif client_que == 'write_co2_sensor_log' and client_que != 'TerminateServer':
-                logging.debug("[Client command] Write CO2 Sensor Log")
-                if (client_var != 0 and sensor_co2_activated[client_var]):
-                    if read_co2_sensor(client_var-1) == 1:
-                        mycodoLog.write_co2_sensor_log(sensor_co2_read_co2, client_var)
-                    else:
-                        logging.warning("Could not read CO2-%s sensor, not writing to sensor log", client_var)
-                else:
-                    for i in range(0, len(sensor_co2_id)):
-                        if sensor_co2_activated[i]:
-                            if read_co2_sensor(i) == 1:
-                                mycodoLog.write_co2_sensor_log(sensor_co2_read_co2, i)
-                            else:
-                                logging.warning("Could not read CO2-%s sensor, not writing to sensor log", i)
-                            time.sleep(0.1)
-                change_sensor_log = 0
-
-            elif client_que == 'write_press_sensor_log' and client_que != 'TerminateServer':
-                logging.debug("[Client command] Write Press Sensor Log")
-                if (client_var != 0 and sensor_press_activated[client_var]):
-                    if read_press_sensor(client_var-1) == 1:
-                        mycodoLog.write_press_sensor_log(sensor_press_read_temp_c, sensor_press_read_press, sensor_press_read_alt, client_var)
-                    else:
-                        logging.warning("Could not read Press-%s sensor, not writing to sensor log", client_var)
-                else:
-                    for i in range(0, len(sensor_press_id)):
-                        if sensor_press_activated[i]:
-                            if read_press_sensor(i) == 1:
-                                mycodoLog.write_press_sensor_log(sensor_press_read_temp_c, sensor_press_read_press, sensor_press_read_alt, i)
-                            else:
-                                logging.warning("Could not read Press-%s sensor, not writing to sensor log", i)
-                            time.sleep(0.1)
-                change_sensor_log = 0
-
-            client_que = None
+            logging.info("[Daemon] Turning off all relays")
+            Relays_Off()
+            logging.info("[Daemon] Shutdown success")
+            return 0
 
 
         #
@@ -1100,9 +1028,6 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
 
     while (pid_t_temp_alive[sensor]):
 
-        while sql_reload_hold:
-            time.sleep(0.1)
-
         if ( ( (pid_t_temp_set_dir[sensor] == 0 and
             pid_t_temp_relay_high[sensor] != 0 and
             pid_t_temp_relay_low[sensor] != 0) or 
@@ -1158,6 +1083,11 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
 
         time.sleep(0.1)
 
+        if sql_reload_hold:
+            logging.debug("[PID T-Temperature-%s] Pausing Temp sensor read for SQL reload", sensor+1)
+            while sql_reload_hold:
+                time.sleep(0.1)
+
     logging.info("[PID T-Temperature-%s] Shutting Down %s", sensor+1, ThreadName)
 
     # Turn activated PID relays off
@@ -1186,9 +1116,6 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
     pid_temp.setPoint(pid_ht_temp_set[sensor])
 
     while (pid_ht_temp_alive[sensor]):
-
-        while sql_reload_hold:
-            time.sleep(0.1)
 
         if ( ( (pid_ht_temp_set_dir[sensor] == 0 and
             pid_ht_temp_relay_high[sensor] != 0 and
@@ -1245,6 +1172,11 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
 
         time.sleep(0.1)
 
+        if sql_reload_hold:
+            logging.debug("[PID HT-Temperature-%s] Pausing Hum/Temp sensor read for SQL reload", sensor+1)
+            while sql_reload_hold:
+                time.sleep(0.1)
+
     logging.info("[PID HT-Temperature-%s] Shutting Down %s", sensor+1, ThreadName)
 
     if pid_ht_temp_relay_high[sensor]:
@@ -1272,9 +1204,6 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
     pid_hum.setPoint(pid_ht_hum_set[sensor])
 
     while (pid_ht_hum_alive[sensor]):
-
-        while sql_reload_hold:
-            time.sleep(0.1)
 
         if ( ( (pid_ht_hum_set_dir[sensor] == 0 and
             pid_ht_hum_relay_high[sensor] != 0 and
@@ -1331,6 +1260,11 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
 
         time.sleep(0.1)
 
+        if sql_reload_hold:
+            logging.debug("[PID HT-Humidity-%s] Pausing Hum/Temp sensor read for SQL reload", sensor+1)
+            while sql_reload_hold:
+                time.sleep(0.1)
+
     logging.info("[PID HT-Humidity-%s] Shutting Down %s", sensor+1, ThreadName)
 
     if pid_ht_hum_relay_high[sensor]:
@@ -1358,9 +1292,6 @@ def co2_monitor(ThreadName, sensor):
     pid_co2.setPoint(pid_co2_set[sensor])
 
     while (pid_co2_alive[sensor]):
-
-        while sql_reload_hold:
-            time.sleep(0.1)
 
         if ( ( (pid_co2_set_dir[sensor] == 0 and
             pid_co2_relay_high[sensor] != 0 and
@@ -1417,6 +1348,11 @@ def co2_monitor(ThreadName, sensor):
 
         time.sleep(0.1)
 
+        if sql_reload_hold:
+            logging.debug("[PID CO2-%s] Pausing CO2 sensor read for SQL reload", sensor+1)
+            while sql_reload_hold:
+                time.sleep(0.1)
+
     logging.info("[PID CO2-%s] Shutting Down %s", sensor+1, ThreadName)
 
     if pid_co2_relay_high[sensor]:
@@ -1444,9 +1380,6 @@ def press_sensor_temperature_monitor(ThreadName, sensor):
     pid_temp.setPoint(pid_press_temp_set[sensor])
 
     while (pid_press_temp_alive[sensor]):
-
-        while sql_reload_hold:
-            time.sleep(0.1)
 
         if ( ( (pid_press_temp_set_dir[sensor] == 0 and
             pid_press_temp_relay_high[sensor] != 0 and
@@ -1503,6 +1436,11 @@ def press_sensor_temperature_monitor(ThreadName, sensor):
 
         time.sleep(0.1)
 
+        if sql_reload_hold:
+            logging.debug("[PID Press-Temperature-%s] Pausing Press/Temp sensor read for SQL reload", sensor+1)
+            while sql_reload_hold:
+                time.sleep(0.1)
+
     logging.info("[PID Press-Temperature-%s] Shutting Down %s", sensor+1, ThreadName)
 
     if pid_press_temp_relay_high[sensor]:
@@ -1530,9 +1468,6 @@ def press_sensor_pressure_monitor(ThreadName, sensor):
     pid_press.setPoint(pid_press_press_set[sensor])
 
     while (pid_press_press_alive[sensor]):
-
-        while sql_reload_hold:
-            time.sleep(0.1)
 
         if ( ( (pid_press_press_set_dir[sensor] == 0 and
             pid_press_press_relay_high[sensor] != 0 and
@@ -1588,6 +1523,11 @@ def press_sensor_pressure_monitor(ThreadName, sensor):
                     logging.warning("[PID Press-Pressure-%s] Could not read Press/Temp sensor, not updating PID", sensor+1)
 
         time.sleep(0.1)
+
+        if sql_reload_hold:
+            logging.debug("[PID Press-Pressure-%s] Pausing Press/Temp sensor read for SQL reload", sensor+1)
+            while sql_reload_hold:
+                time.sleep(0.1)
 
     logging.info("[PID Press-Pressure-%s] Shutting Down %s", sensor+1, ThreadName)
 
@@ -1705,67 +1645,41 @@ def read_t_sensor(sensor):
         while timerT > int(time.time()) and client_que != 'TerminateServer':
             if sql_reload_hold:
                 relay_onoff(sensor_t_premeasure_relay[sensor], 'off')
-                timerT = 0
+                break
             time.sleep(0.25)
 
     for r in range(0, t_read_tries): # Multiple attempts to get similar consecutive readings
-        if client_que == 'TerminateServer' or sql_reload_hold:
-            logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-            lock.release()
-            return 0
+        if not pid_t_temp_alive[sensor] or client_que == 'TerminateServer' or sql_reload_hold:
+            break
 
         logging.debug("[Read T Sensor-%s] Taking first Temperature/Humidity reading", sensor+1)
 
         for i in range(0, t_read_tries):
-            if not pid_t_temp_alive[sensor]:
-                logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-                lock.release()
-                return 0
-
-            if client_que != 'TerminateServer' and sql_reload_hold != 1:
+            if pid_t_temp_alive[sensor] and client_que != 'TerminateServer' and sql_reload_hold != 1:
                 tempc2 = read_t(sensor, sensor_t_device[sensor], sensor_t_pin[sensor])
+                if tempc2 != None:
+                    break
             else:
-                logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-                lock.release()
-                return 0
-
-            if tempc2 != None:
                 break
 
-            time.sleep(1) # Wait 1 seconds between sensor reads
-
         if tempc2 == None:
-            logging.warning("[Read T Sensor-%s] Could not read first Temp measurement! (%s tries)", sensor+1, ht_read_tries)
-            logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-            lock.release()
-            return 0
+            logging.warning("[Read T Sensor-%s] Could not read first Temp measurement!", sensor+1)
+            break
         else:
             logging.debug("[Read T Sensor-%s] %.1f°C", sensor, tempc2)
             logging.debug("[Read T Sensor-%s] Taking second Temperature reading", sensor+1)
 
         for i in range(0, t_read_tries): # Multiple attempts to get first reading
-            if not pid_t_temp_alive[sensor]:
-                logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-                lock.release()
-                return 0
-            
-            if client_que != 'TerminateServer' and sql_reload_hold != 1:
+            if pid_t_temp_alive[sensor] and client_que != 'TerminateServer' and sql_reload_hold != 1:
                 tempc = read_t(sensor, sensor_t_device[sensor], sensor_t_pin[sensor])
+                if tempc != None:
+                    break
             else:
-                logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-                lock.release()
-                return 0
-           
-            if tempc != None:
                 break
 
-            time.sleep(1) # Wait 1 seconds between sensor reads
-
         if tempc == None:
-            logging.warning("[Read T Sensor-%s] Could not read Temperature!", sensor+1)
-            logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-            lock.release()
-            return 0
+            logging.warning("[Read T Sensor-%s] Could not read second Temp measurement!", sensor+1)
+            break
         else:
             logging.debug("[Read T Sensor-%s] %.1f°C", sensor, tempc)
             logging.debug("[Read T Sensor-%s] Differences: %.1f°C", sensor+1, abs(tempc2-tempc))
@@ -1781,8 +1695,9 @@ def read_t_sensor(sensor):
                 logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor+1, lock.path)
                 lock.release()
                 return 1
+    else:
+        logging.warning("[Read T Sensor-%s] Could not get two consecutive Temp measurements that were consistent.", sensor+1)
 
-    logging.warning("[Read T Sensor-%s] Could not get two consecutive Temp measurements that were consistent.", sensor+1)
     logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor+1, lock.path)
     lock.release()
     return 0
@@ -1791,7 +1706,7 @@ def read_t_sensor(sensor):
 def read_t(sensor, device, pin):
     global last_t_reading
 
-    # Ensure at least 2 seconds between sensor reads
+    # Ensure at least 1 second between sensor reads
     while last_t_reading > int(time.time()):
         time.sleep(0.25)
 
@@ -1821,7 +1736,7 @@ def read_t(sensor, device, pin):
             return tempc
     else:
         logging.debug("[Read T Sensor-%s] Device not recognized: %s", sensor+1, device)
-        last_t_reading = int(time.time())+2
+        last_t_reading = int(time.time())+1
         return None
 
 
@@ -1860,64 +1775,41 @@ def read_ht_sensor(sensor):
         while ((timerHT > int(time.time())) and client_que != 'TerminateServer'):
             if sql_reload_hold:
                 relay_onoff(sensor_ht_premeasure_relay[sensor], 'off')
-                timerHT = 0
+                break
             time.sleep(0.25)
 
     for r in range(0, ht_read_tries): # Multiple attempts to get similar consecutive readings
-        if client_que == 'TerminateServer' or sql_reload_hold:
-            logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-            lock.release()
-            return 0
+        if (not pid_ht_temp_alive[sensor] and not pid_ht_hum_alive[sensor]) or client_que == 'TerminateServer' or sql_reload_hold:
+            break
 
         logging.debug("[Read HT Sensor-%s] Taking first Temperature/Humidity reading", sensor+1)
 
         for i in range(0, ht_read_tries):
-            if not pid_ht_temp_alive[sensor] and not pid_ht_hum_alive[sensor]:
-                logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-                lock.release()
-                return 0
-
-            if client_que != 'TerminateServer' and sql_reload_hold != 1:
+            if (pid_ht_temp_alive[sensor] or pid_ht_hum_alive[sensor]) and client_que != 'TerminateServer' and sql_reload_hold != 1:
                 humidity2, tempc2 = read_ht(sensor, sensor_ht_device[sensor], sensor_ht_pin[sensor])
+                if humidity2 != None and tempc2 != None:
+                    break
             else:
-                logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-                lock.release()
-                return 0
-
-            if humidity2 != None and tempc2 != None:
                 break
 
         if humidity2 == None or tempc2 == None:
-            logging.warning("[Read HT Sensor-%s] Could not read first Hum/Temp measurement! (%s tries)", sensor+1, ht_read_tries)
-            logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-            lock.release()
-            return 0
+            logging.warning("[Read HT Sensor-%s] Could not read first Hum/Temp measurement!", sensor+1)
+            break
         else:
             logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor+1, tempc2, humidity2)
             logging.debug("[Read HT Sensor-%s] Taking second Temperature/Humidity reading", sensor+1)
-
         
         for i in range(0, ht_read_tries): # Multiple attempts to get first reading
-            if not pid_ht_temp_alive[sensor] and not pid_ht_hum_alive[sensor]:
-                logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-                lock.release()
-                return 0
-            
-            if client_que != 'TerminateServer' and sql_reload_hold != 1:
+            if (pid_ht_temp_alive[sensor] or pid_ht_hum_alive[sensor]) and client_que != 'TerminateServer' and sql_reload_hold != 1:
                 humidity, tempc = read_ht(sensor, sensor_ht_device[sensor], sensor_ht_pin[sensor])
+                if humidity != None and tempc != None:
+                    break
             else:
-                logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-                lock.release()
-                return 0
-           
-            if humidity != None and tempc != None:
                 break
 
         if humidity == None or tempc == None:
-            logging.warning("[Read HT Sensor-%s] Could not read Temperature/Humidity!", sensor+1)
-            logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-            lock.release()
-            return 0
+            logging.warning("[Read HT Sensor-%s] Could not read second Hum/Temp measurement!", sensor+1)
+            break
         else:
             logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor+1, tempc, humidity)
             logging.debug("[Read HT Sensor-%s] Differences: %.1f°C, %.1f%%", sensor+1, abs(tempc2-tempc), abs(humidity2-humidity))
@@ -1940,7 +1832,9 @@ def read_ht_sensor(sensor):
                 lock.release()
                 return 1
 
-    logging.warning("[Read HT Sensor-%s] Could not get two consecutive Hum/Temp measurements that were consistent.", sensor+1)
+    else:
+        logging.warning("[Read HT Sensor-%s] Could not get two consecutive Hum/Temp measurements that were consistent.", sensor+1)
+
     logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
     lock.release()
     return 0
@@ -1998,58 +1892,40 @@ def read_co2_sensor(sensor):
         while ((timerCO2 > int(time.time())) and client_que != 'TerminateServer'):
             if sql_reload_hold:
                 relay_onoff(sensor_co2_premeasure_relay[sensor], 'off')
-                timerCO2 = 0
+                break
             time.sleep(0.25)
 
     for r in range(0, co2_read_tries):
-        if client_que == 'TerminateServer' or sql_reload_hold:
-            logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-            lock.release()
-            return 0
+        if not pid_co2_alive[sensor] or client_que == 'TerminateServer' or sql_reload_hold:
+            break
 
         logging.debug("[Read CO2 Sensor-%s] Taking first CO2 reading", sensor+1)
 
         for i in range(0, co2_read_tries): # Multiple attempts to get first reading
-            if not pid_co2_alive[sensor]:
-                logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-                lock.release()
-                return 0
-
-            if client_que != 'TerminateServer' and sql_reload_hold != 1:
+            if pid_co2_alive[sensor] and client_que != 'TerminateServer' and sql_reload_hold != 1:
                 co22 = read_K30(sensor, sensor_co2_device[sensor])
+                if co22 != None:
+                    break
             else:
-                logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-                lock.release()
-                return 0
-
-            if co22 != None:
                 break
 
         if co22 == None:
-            logging.warning("[Read CO2 Sensor-%s] Could not read first CO2 measurement! (of %s tries)", sensor+1, co2_read_tries)
+            logging.warning("[Read CO2 Sensor-%s] Could not read first CO2 measurement!", sensor+1)
             break
         else:
             logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor+1, co22)
             logging.debug("[Read CO2 Sensor-%s] Taking second CO2 reading", sensor+1)
 
         for i in range(0, co2_read_tries): # Multiple attempts to get second reading
-            if not pid_co2_alive[sensor]:
-                logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-                lock.release()
-                return 0
-
-            if client_que != 'TerminateServer' and sql_reload_hold != 1:
+            if pid_co2_alive[sensor] and client_que != 'TerminateServer' and sql_reload_hold != 1:
                 co2 = read_K30(sensor, sensor_co2_device[sensor])
+                if co2 != None:
+                    break
             else:
-                logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-                lock.release()
-                return 0
-
-            if co2 != None:
                 break
-        
+
         if co2 == None:
-            logging.warning("[Read CO2 Sensor-%s] Could not read second CO2 measurement! (of %s tries)", sensor+1, co2_read_tries)
+            logging.warning("[Read CO2 Sensor-%s] Could not read second CO2 measurement!", sensor+1)
             break
         else:
             logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor+1, co2)
@@ -2066,7 +1942,9 @@ def read_co2_sensor(sensor):
                 lock.release()
                 return 1
 
-    logging.warning("[Read CO2 Sensor-%s] Could not get two consecutive CO2 measurements that were consistent.", sensor+1)
+    else:
+        logging.warning("[Read CO2 Sensor-%s] Could not get two consecutive CO2 measurements that were consistent.", sensor+1)
+
     logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor+1, lock.path)
     lock.release()
     return 0
@@ -2137,63 +2015,41 @@ def read_press_sensor(sensor):
         while timerPress > int(time.time()) and client_que != 'TerminateServer':
             if sql_reload_hold:
                 relay_onoff(sensor_press_premeasure_relay[sensor], 'off')
-                timerPress = 0
+                break
             time.sleep(0.25)
 
     for r in range(0, press_read_tries): # Multiple attempts to get similar consecutive readings
-        if client_que == 'TerminateServer' or sql_reload_hold:
-            logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-            lock.release()
-            return 0
+        if (not pid_press_temp_alive[sensor] and not pid_press_press_alive[sensor]) and client_que == 'TerminateServer' or sql_reload_hold:
+            break
 
         logging.debug("[Read Press Sensor-%s] Taking first Temperature/Pressure reading", sensor+1)
 
-        for i in range(0, press_read_tries):
-            if not pid_press_temp_alive[sensor] and not pid_press_press_alive[sensor]:
-                logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-                lock.release()
-                return 0
-
-            if client_que != 'TerminateServer' and sql_reload_hold != 1:
+        for i in range(0, press_read_tries): # Multiple attempts to get first reading
+            if (pid_press_temp_alive[sensor] or pid_press_press_alive[sensor]) and client_que != 'TerminateServer' and sql_reload_hold != 1:
                 pressure2, tempc2, alt2 = read_press(sensor, sensor_press_device[sensor], sensor_press_pin[sensor])
+                if pressure2 != None and tempc2 != None:
+                    break
             else:
-                logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-                lock.release()
-                return 0
-
-            if pressure2 != None and tempc2 != None:
                 break
 
         if pressure2 == None or tempc2 == None:
-            logging.warning("[Read Press Sensor-%s] Could not read first Press measurement! (%s tries)", sensor+1, press_read_tries)
-            logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-            lock.release()
-            return 0
+            logging.warning("[Read Press Sensor-%s] Could not read first Press/Temp measurement!", sensor+1)
+            break
         else:
             logging.debug("[Read Press Sensor-%s] %.1f°C, %.1fPa", sensor+1, tempc2, pressure2)
             logging.debug("[Read Press Sensor-%s] Taking second Temperature/Pressure reading", sensor+1)
         
-        for i in range(0, press_read_tries): # Multiple attempts to get first reading
-            if not pid_press_temp_alive[sensor] and not pid_press_press_alive[sensor]:
-                logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-                lock.release()
-                return 0
-            
-            if client_que != 'TerminateServer' and sql_reload_hold != 1:
+        for i in range(0, press_read_tries): # Multiple attempts to get second reading
+            if (pid_press_temp_alive[sensor] or pid_press_press_alive[sensor]) and client_que != 'TerminateServer' and sql_reload_hold != 1:
                 pressure, tempc, alt = read_press(sensor, sensor_press_device[sensor], sensor_press_pin[sensor])
+                if pressure != None and tempc != None:
+                    break
             else:
-                logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-                lock.release()
-                return 0
-           
-            if pressure != None and tempc != None:
                 break
-
+           
         if pressure == None or tempc == None:
-            logging.warning("[Read Press Sensor-%s] Could not read Temperature/Pressure!", sensor+1)
-            logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor+1, lock.path)
-            lock.release()
-            return 0
+            logging.warning("[Read Press Sensor-%s] Could not read second Press/Temp measurement!", sensor+1)
+            break
         else:
             logging.debug("[Read Press Sensor-%s] %.1f°C, %.1fPa", sensor+1, tempc, pressure)
             logging.debug("[Read Press Sensor-%s] Differences: %.1f°C, %.1fPa", sensor+1, abs(tempc2-tempc), abs(pressure2-pressure))
@@ -2213,7 +2069,9 @@ def read_press_sensor(sensor):
                 lock.release()
                 return 1
 
-    logging.warning("[Read Press Sensor-%s] Could not get two consecutive Press measurements that were consistent.", sensor+1)
+    else:
+        logging.warning("[Read Press Sensor-%s] Could not get two consecutive Press measurements that were consistent.", sensor+1)
+
     logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor+1, lock.path)
     lock.release()
     return 0
@@ -2248,13 +2106,13 @@ def read_press(sensor, device, pin):
 # Read variables from the SQLite database
 def read_sql():
     global sql_reload_hold
-    global sql_reload_hold_test
+    global sql_reload_hold_confirm
 
     sql_reload_hold = 1
 
     # If daemon is running, wait for daemon to pause to reload SLQ database
-    if sql_reload_hold_test == -1:
-        while sql_reload_hold_test == -1:
+    if sql_reload_hold_confirm == -1:
+        while sql_reload_hold_confirm == -1:
             time.sleep(0.1)
 
     # Temperature sensor globals

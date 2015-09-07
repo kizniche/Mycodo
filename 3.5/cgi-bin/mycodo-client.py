@@ -66,20 +66,12 @@ def usage():
     print '           Return the status of the server'
     print '    -t, --terminate'
     print '           Terminate the communication service and daemon'
-    print '        --writeco2log sensor'
-    print '           Read from CO2 sensor number and append log file, 0 to write all.'
-    print '        --writetlog sensor'
-    print '           Read from T sensor number and append log file, 0 to write all.'
-    print '        --writehtlog sensor'
-    print '           Read from HT sensor number and append log file, 0 to write all.'
-    print '        --writepresslog sensor'
-    print '           Read from Press sensor number and append log file, 0 to write all.'
 
 def menu():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:], 'hr:st',
-            ["help", "graph", "pidrestart=", "pidstart=", "pidstop=", "relay=", "sensorco2", "sensorht", "sensorpress", "sensort", "sqlreload=", "status", "terminate", "writetlog", "writehtlog", "writeco2log", "writepresslog"])
+            ["help", "graph", "pidrestart=", "pidstart=", "pidstop=", "relay=", "sensorco2", "sensorht", "sensorpress", "sensort", "sqlreload=", "status", "terminate"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -213,46 +205,6 @@ def menu():
             print "%s [Remote command] Terminate all threads and daemon: Server returned:" % (
                 Timestamp()),
             if c.root.Terminate(1) == 1: print "Success"
-            else: print "Fail"
-            sys.exit(0)
-        elif opt in ("--writeco2log"):
-            if int(float(sys.argv[2])):
-                print "%s [Remote Command] Append CO2 sensor log from sensor %s: Server returned:" % (
-                    Timestamp(), sys.argv[2]),
-            else:
-                print "%s [Remote Command] Append CO2 sensor log from all sensors: Server returned:" % (
-                    Timestamp()),
-            if c.root.WriteCO2SensorLog(int(float(sys.argv[2]))) == 1: print "Success"
-            else: print "Fail"
-            sys.exit(0)
-        elif opt in ("--writetlog"):
-            if int(float(sys.argv[2])):
-                print "%s [Remote Command] Append T sensor log from sensor %s: Server returned:" % (
-                    Timestamp(), sys.argv[2]),
-            else:
-                print "%s [Remote Command] Append T sensor log from all sensors: Server returned:" % (
-                    Timestamp()),
-            if c.root.WriteTSensorLog(int(float(sys.argv[2]))) == 1: print "Success"
-            else: print "Fail"
-            sys.exit(0)
-        elif opt in ("--writehtlog"):
-            if int(float(sys.argv[2])):
-                print "%s [Remote Command] Append HT sensor log from sensor %s: Server returned:" % (
-                    Timestamp(), sys.argv[2]),
-            else:
-                print "%s [Remote Command] Append HT sensor log from all sensors: Server returned:" % (
-                    Timestamp()),
-            if c.root.WriteHTSensorLog(int(float(sys.argv[2]))) == 1: print "Success"
-            else: print "Fail"
-            sys.exit(0)
-        elif opt in ("--writepresslog"):
-            if int(float(sys.argv[2])):
-                print "%s [Remote Command] Append Press sensor log from sensor %s: Server returned:" % (
-                    Timestamp(), sys.argv[2]),
-            else:
-                print "%s [Remote Command] Append Press sensor log from all sensors: Server returned:" % (
-                    Timestamp()),
-            if c.root.WritePressSensorLog(int(float(sys.argv[2]))) == 1: print "Success"
             else: print "Fail"
             sys.exit(0)
         else:
