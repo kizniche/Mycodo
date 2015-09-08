@@ -809,7 +809,7 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td rowspan="2">Relays to<br>Graph</td>
-                        <td colspan="4" rowspan="2" style="padding-left: 1.5em;">Seperate relays with commas<br>Set 0 to disable</td>
+                        <td colspan="4" rowspan="2" style="padding-left: 1.5em;">Separate multiple relays with<br>commas or set 0 to disable</td>
                         <td colspan="2" style="padding-left: 1.5em;">Graph Up</td>
                         <td colspan="2">Graph Down</td>
                     </tr>
@@ -1121,7 +1121,7 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td rowspan="2">Relays to<br>Graph</td>
-                        <td colspan="4" rowspan="2" style="padding-left: 1.5em;">Seperate relays with commas<br>Set 0 to disable</td>
+                        <td colspan="4" rowspan="2" style="padding-left: 1.5em;">Separate multiple relays with<br>commas or set 0 to disable</td>
                         <td colspan="2" style="padding-left: 1.5em;">Graph Up</td>
                         <td colspan="2">Graph Down</td>
                         <td colspan="2" style="padding-left: 1.5em;">Graph Up</td>
@@ -1494,7 +1494,7 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td rowspan="2">Relays to<br>Graph</td>
-                        <td colspan="4" rowspan="2" style="padding-left: 1.5em;">Seperate relays with commas<br>Set 0 to disable</td>
+                        <td colspan="4" rowspan="2" style="padding-left: 1.5em;">Separate multiple relays with<br>commas or set 0 to disable</td>
                         <td colspan="2" style="padding-left: 1.5em;">Graph Up</td>
                         <td colspan="2">Graph Down</td>
                     </tr>
@@ -1815,7 +1815,7 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td rowspan="2">Relays to<br>Graph</td>
-                        <td colspan="4" rowspan="2" style="padding-left: 1.5em;">Seperate relays with commas<br>Set 0 to disable</td>
+                        <td colspan="4" rowspan="2" style="padding-left: 1.5em;">Separate multiple relays with<br>commas or set 0 to disable</td>
                         <td colspan="2" style="padding-left: 1.5em;">Graph Up</td>
                         <td colspan="2">Graph Down</td>
                         <td colspan="2" style="padding-left: 1.5em;">Graph Up</td>
