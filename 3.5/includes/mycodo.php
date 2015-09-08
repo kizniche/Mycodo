@@ -1499,10 +1499,10 @@ if (isset($output_error)) {
                         <td colspan="2">Graph Down</td>
                     </tr>
                         <td colspan="2" style="padding-left: 1.5em;">
-                            <input style="width: 8em;" type="text" value="<?php echo $sensor_co2_relays_up[$i]; ?>" maxlength=20 name="SetCO2<?php echo $i; ?>RelaysUp" title="These relays will be graphed with this sensor's condition and display above the y-axis 0."/>
+                            <input style="width: 8em;" type="text" value="<?php echo $sensor_co2_relays_up[$i]; ?>" maxlength=20 name="SetCO2<?php echo $i; ?>CO2RelaysUp" title="These relays will be graphed with this sensor's condition and display above the y-axis 0."/>
                         </td>
                         <td colspan="2">
-                            <input style="width: 8em;" type="text" value="<?php echo $sensor_co2_relays_down[$i]; ?>" maxlength=20 name="SetCO2<?php echo $i; ?>RelaysDown" title="These relays will be graphed with this sensor's condition and display below the y-axis 0."/>
+                            <input style="width: 8em;" type="text" value="<?php echo $sensor_co2_relays_down[$i]; ?>" maxlength=20 name="SetCO2<?php echo $i; ?>CO2RelaysDown" title="These relays will be graphed with this sensor's condition and display below the y-axis 0."/>
                         </td>
                     </tr>
                 </table>
