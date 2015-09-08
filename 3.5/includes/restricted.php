@@ -366,6 +366,18 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
         }
     }
 
+    if (isset($_POST['Change' . $p . 'TSensorOverwrite'])) {
+        $re = '/^\d+(?:,\d+)*$/';
+        if (($_POST['SetT' . $p . 'TempRelaysUp'] != '0' and
+            (!ctype_digit($_POST['SetT' . $p . 'TempRelaysUp']) and !preg_match($re, $_POST['SetT' . $p . 'TempRelaysUp']))) or
+            ($_POST['SetT' . $p . 'TempRelaysUp'] == '') or
+            ($_POST['SetT' . $p . 'TempRelaysDown'] != '0' and
+            (!ctype_digit($_POST['SetT' . $p . 'TempRelaysDown']) and !preg_match($re, $_POST['SetT' . $p . 'TempRelaysDown']))) or
+            ($_POST['SetT' . $p . 'TempRelaysDown'] == '')) {
+            $sensor_error = 'Error: Graph Relays must contain digits separated by commas or be set to 0.';
+        }
+    }
+
 
     // If no errors encountered in the form data, proceed
     if (!isset($sensor_error)) {
@@ -640,6 +652,7 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
 }
 
 
+
 /*
  *
  * Humidity/Temperature Sensors
@@ -721,6 +734,25 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             $sensor_error = 'Error: If "PID Regulate" is set to Up, "Up Relay" is required to be set.';
         } else if ((float)$_POST['SetHT' . $p . 'HumSetDir'] == -1 && (int)$_POST['SetHT' . $p . 'HumRelayHigh'] < 1) {
             $sensor_error = 'Error: If "PID Regulate" is set to Down, "Down Relay" is required to be set.';
+        }
+    }
+
+    if (isset($_POST['Change' . $p . 'HTSensorOverwrite'])) {
+        $re = '/^\d+(?:,\d+)*$/';
+        if (($_POST['SetHT' . $p . 'TempRelaysUp'] != '0' and
+            (!ctype_digit($_POST['SetHT' . $p . 'TempRelaysUp']) and !preg_match($re, $_POST['SetHT' . $p . 'TempRelaysUp']))) or
+            ($_POST['SetHT' . $p . 'TempRelaysUp'] == '') or
+            ($_POST['SetHT' . $p . 'TempRelaysDown'] != '0' and
+            (!ctype_digit($_POST['SetHT' . $p . 'TempRelaysDown']) and !preg_match($re, $_POST['SetHT' . $p . 'TempRelaysDown']))) or
+            ($_POST['SetHT' . $p . 'TempRelaysDown'] == '')) {
+            $sensor_error = 'Error: Graph Relays must contain digits separated by commas or be set to 0.';
+        } else if (($_POST['SetHT' . $p . 'HumRelaysUp'] != '0' and
+            (!ctype_digit($_POST['SetHT' . $p . 'HumRelaysUp']) and !preg_match($re, $_POST['SetHT' . $p . 'HumRelaysUp']))) or
+            ($_POST['SetHT' . $p . 'HumRelaysUp'] == '') or
+            ($_POST['SetHT' . $p . 'HumRelaysDown'] != '0' and
+            (!ctype_digit($_POST['SetHT' . $p . 'HumRelaysDown']) and !preg_match($re, $_POST['SetHT' . $p . 'HumRelaysDown']))) or
+            ($_POST['SetHT' . $p . 'HumRelaysDown'] == '')) {
+            $sensor_error = 'Error: Graph Relays must contain digits separated by commas or be set to 0.';
         }
     }
 
@@ -1103,7 +1135,6 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
 
 
 
-
 /*
  *
  * CO2 Sensors
@@ -1174,23 +1205,34 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
         }
     }
 
+    if (isset($_POST['Change' . $p . 'CO2SensorOverwrite'])) {
+        $re = '/^\d+(?:,\d+)*$/';
+        if (($_POST['SetCO2' . $p . 'CO2RelaysUp'] != '0' and
+            (!ctype_digit($_POST['SetCO2' . $p . 'CO2RelaysUp']) and !preg_match($re, $_POST['SetCO2' . $p . 'CO2RelaysUp']))) or
+            ($_POST['SetCO2' . $p . 'CO2RelaysUp'] == '') or
+            ($_POST['SetCO2' . $p . 'CO2RelaysDown'] != '0' and
+            (!ctype_digit($_POST['SetCO2' . $p . 'CO2RelaysDown']) and !preg_match($re, $_POST['SetCO2' . $p . 'CO2RelaysDown']))) or
+            ($_POST['SetCO2' . $p . 'CO2RelaysDown'] == '')) {
+            $sensor_error = 'Error: Graph Relays must contain digits separated by commas or be set to 0.';
+        }
+    }
+
     // If no errors encountered in the form data, proceed
     if (!isset($sensor_error)) {
 
         // Set CO2 PID override on or off
         if (isset($_POST['ChangeCO2' . $p . 'CO2OR'])) {
 
-                $stmt = $db->prepare("UPDATE CO2Sensor SET CO2_OR=:co2or WHERE Id=:id");
-                $stmt->bindValue(':co2or', (int)$_POST['ChangeCO2' . $p . 'CO2OR'], SQLITE3_INTEGER);
-                $stmt->bindValue(':id', $sensor_co2_id[$p], SQLITE3_TEXT);
-                $stmt->execute();
-                if ((int)$_POST['ChangeCO2' . $p . 'CO2OR']) {
-                    shell_exec("$mycodo_client --pidstop CO2 $p");
-                    shell_exec("$mycodo_client --sqlreload -1");
-                } else {
-                    shell_exec("$mycodo_client --sqlreload -1");
-                    shell_exec("$mycodo_client --pidstart CO2 $p");
-                }
+            $stmt = $db->prepare("UPDATE CO2Sensor SET CO2_OR=:co2or WHERE Id=:id");
+            $stmt->bindValue(':co2or', (int)$_POST['ChangeCO2' . $p . 'CO2OR'], SQLITE3_INTEGER);
+            $stmt->bindValue(':id', $sensor_co2_id[$p], SQLITE3_TEXT);
+            $stmt->execute();
+            if ((int)$_POST['ChangeCO2' . $p . 'CO2OR']) {
+                shell_exec("$mycodo_client --pidstop CO2 $p");
+                shell_exec("$mycodo_client --sqlreload -1");
+            } else {
+                shell_exec("$mycodo_client --sqlreload -1");
+                shell_exec("$mycodo_client --pidstart CO2 $p");
             }
         }
 
@@ -1307,7 +1349,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
 
         // Save CO2 sensor and PID variables to a new preset
         if (isset($_POST['Change' . $p . 'CO2SensorNewPreset'])) {
-            if(in_array($_POST['sensorco2' . $p . 'presetname'], $sensor_co2_preset)) {
+            if (in_array($_POST['sensorco2' . $p . 'presetname'], $sensor_co2_preset)) {
                 $name = $_POST['sensorco2' . $p . 'presetname'];
                 $sensor_error = "Error: The preset name '$name' is already in use. Use a different name.";
             } else {
@@ -1455,6 +1497,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
 
         shell_exec("$mycodo_client --pidrestart CO2");
     }
+}
 
 
 /*
@@ -1540,6 +1583,25 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
         }
     }
 
+    if (isset($_POST['Change' . $p . 'PressSensorOverwrite'])) {
+        $re = '/^\d+(?:,\d+)*$/';
+        if (($_POST['SetPress' . $p . 'TempRelaysUp'] != '0' and
+            (!ctype_digit($_POST['SetPress' . $p . 'TempRelaysUp']) and !preg_match($re, $_POST['SetPress' . $p . 'TempRelaysUp']))) or
+            ($_POST['SetPress' . $p . 'TempRelaysUp'] == '') or
+            ($_POST['SetPress' . $p . 'TempRelaysDown'] != '0' and
+            (!ctype_digit($_POST['SetPress' . $p . 'TempRelaysDown']) and !preg_match($re, $_POST['SetPress' . $p . 'TempRelaysDown']))) or
+            ($_POST['SetPress' . $p . 'TempRelaysDown'] == '')) {
+            $sensor_error = 'Error: Graph Relays must contain digits separated by commas or be set to 0.';
+        } else if (($_POST['SetPress' . $p . 'PressRelaysUp'] != '0' and
+            (!ctype_digit($_POST['SetPress' . $p . 'PressRelaysUp']) and !preg_match($re, $_POST['SetPress' . $p . 'PressRelaysUp']))) or
+            ($_POST['SetPress' . $p . 'PressRelaysUp'] == '') or
+            ($_POST['SetPress' . $p . 'PressRelaysDown'] != '0' and
+            (!ctype_digit($_POST['SetPress' . $p . 'PressRelaysDown']) and !preg_match($re, $_POST['SetPress' . $p . 'PressRelaysDown']))) or
+            ($_POST['SetPress' . $p . 'PressRelaysDown'] == '')) {
+            $sensor_error = 'Error: Graph Relays must contain digits separated by commas or be set to 0.';
+        }
+    }
+
 
     // If no errors encountered in the form data, proceed
     if (!isset($sensor_error)) {
@@ -1563,17 +1625,16 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
         // Set Pressure sensor PID override on or off
         if (isset($_POST['ChangePress' . $p . 'PressOR'])) {
 
-                $stmt = $db->prepare("UPDATE PressSensor SET Press_OR=:pressor WHERE Id=:id");
-                $stmt->bindValue(':pressor', (int)$_POST['ChangePress' . $p . 'PressOR'], SQLITE3_INTEGER);
-                $stmt->bindValue(':id', $sensor_press_id[$p], SQLITE3_TEXT);
-                $stmt->execute();
-                if ((int)$_POST['ChangePress' . $p . 'PressOR']) {
-                    shell_exec("$mycodo_client --pidstop PressPress $p");
-                    shell_exec("$mycodo_client --sqlreload -1");
-                } else {
-                    shell_exec("$mycodo_client --sqlreload -1");
-                    shell_exec("$mycodo_client --pidstart PressPress $p");
-                }
+            $stmt = $db->prepare("UPDATE PressSensor SET Press_OR=:pressor WHERE Id=:id");
+            $stmt->bindValue(':pressor', (int)$_POST['ChangePress' . $p . 'PressOR'], SQLITE3_INTEGER);
+            $stmt->bindValue(':id', $sensor_press_id[$p], SQLITE3_TEXT);
+            $stmt->execute();
+            if ((int)$_POST['ChangePress' . $p . 'PressOR']) {
+                shell_exec("$mycodo_client --pidstop PressPress $p");
+                shell_exec("$mycodo_client --sqlreload -1");
+            } else {
+                shell_exec("$mycodo_client --sqlreload -1");
+                shell_exec("$mycodo_client --pidstart PressPress $p");
             }
         }
 
@@ -1735,7 +1796,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
 
         // Save Pressure sensor and PID variables to a new preset
         if (isset($_POST['Change' . $p . 'PressSensorNewPreset'])) {
-            if(in_array($_POST['sensorpress' . $p . 'presetname'], $sensor_press_preset)) {
+            if (in_array($_POST['sensorpress' . $p . 'presetname'], $sensor_press_preset)) {
                 $name = $_POST['sensorpress' . $p . 'presetname'];
                 $sensor_error = "Error: The preset name '$name' is already in use. Use a different name.";
             } else {
@@ -1894,7 +1955,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
 
     // Rename Pressure preset
     if (isset($_POST['Change' . $p . 'PressSensorRenamePreset']) && $_POST['sensorpress' . $p . 'preset'] != 'default') {
-        if(in_array($_POST['sensorpress' . $p . 'presetname'], $sensor_press_preset)) {
+        if (in_array($_POST['sensorpress' . $p . 'presetname'], $sensor_press_preset)) {
             $name = $_POST['sensorpress' . $p . 'presetname'];
             $sensor_error = "Error: The preset name '$name' is already in use. Use a different name.";
         } else {
@@ -1920,6 +1981,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
 
         shell_exec("$mycodo_client --pidrestart Press");
     }
+}
 
 
 /*
