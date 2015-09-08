@@ -34,7 +34,7 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 Major changes for each versioned release
 
-#### 3.5.71
+#### 3.5.72
 + Ability to choose which relays are graphed and what direction (up or down from the 0 y-axis)
 
 #### 3.5.71
