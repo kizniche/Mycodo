@@ -52,7 +52,7 @@ relay_log_file = "%s/relay.log" % log_path
 #################################################
 
 # Generate gnuplot graph
-def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number, sensor_t_name, sensor_t_graph, sensor_t_period, sensor_t_yaxis_relay_min, sensor_t_yaxis_relay_max, sensor_t_yaxis_relay_tics, sensor_t_yaxis_relay_mtics, sensor_t_yaxis_temp_min, sensor_t_yaxis_temp_max, sensor_t_yaxis_temp_tics, sensor_t_yaxis_temp_mtics, pid_t_temp_relay_high, pid_t_temp_relay_low, sensor_ht_name, sensor_ht_graph, sensor_ht_period, sensor_ht_yaxis_relay_min, sensor_ht_yaxis_relay_max, sensor_ht_yaxis_relay_tics, sensor_ht_yaxis_relay_mtics, sensor_ht_yaxis_temp_min, sensor_ht_yaxis_temp_max, sensor_ht_yaxis_temp_tics, sensor_ht_yaxis_temp_mtics, sensor_ht_yaxis_hum_min, sensor_ht_yaxis_hum_max, sensor_ht_yaxis_hum_tics, sensor_ht_yaxis_hum_mtics, pid_ht_temp_relay_high, pid_ht_temp_relay_low, pid_ht_hum_relay_high, pid_ht_hum_relay_low, sensor_co2_name, sensor_co2_graph, sensor_co2_period, sensor_co2_yaxis_relay_min, sensor_co2_yaxis_relay_max, sensor_co2_yaxis_relay_tics, sensor_co2_yaxis_relay_mtics, sensor_co2_yaxis_co2_min, sensor_co2_yaxis_co2_max, sensor_co2_yaxis_co2_tics, sensor_co2_yaxis_co2_mtics, pid_co2_relay_high, pid_co2_relay_low, sensor_press_name, sensor_press_graph, sensor_press_period, sensor_press_yaxis_relay_min, sensor_press_yaxis_relay_max, sensor_press_yaxis_relay_tics, sensor_press_yaxis_relay_mtics, sensor_press_yaxis_temp_min, sensor_press_yaxis_temp_max, sensor_press_yaxis_temp_tics, sensor_press_yaxis_temp_mtics, sensor_press_yaxis_press_min, sensor_press_yaxis_press_max, sensor_press_yaxis_press_tics, sensor_press_yaxis_press_mtics, pid_press_temp_relay_high, pid_press_temp_relay_low, pid_press_press_relay_high, pid_press_press_relay_low, relay_name):
+def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number, sensor_t_name, sensor_t_graph, sensor_t_period, sensor_t_yaxis_relay_min, sensor_t_yaxis_relay_max, sensor_t_yaxis_relay_tics, sensor_t_yaxis_relay_mtics, sensor_t_yaxis_temp_min, sensor_t_yaxis_temp_max, sensor_t_yaxis_temp_tics, sensor_t_yaxis_temp_mtics, sensor_t_temp_relays_up_list, sensor_t_temp_relays_down_list, pid_t_temp_relay_high, pid_t_temp_relay_low, sensor_ht_name, sensor_ht_graph, sensor_ht_period, sensor_ht_yaxis_relay_min, sensor_ht_yaxis_relay_max, sensor_ht_yaxis_relay_tics, sensor_ht_yaxis_relay_mtics, sensor_ht_yaxis_temp_min, sensor_ht_yaxis_temp_max, sensor_ht_yaxis_temp_tics, sensor_ht_yaxis_temp_mtics, sensor_ht_yaxis_hum_min, sensor_ht_yaxis_hum_max, sensor_ht_yaxis_hum_tics, sensor_ht_yaxis_hum_mtics, sensor_ht_temp_relays_up_list, sensor_ht_temp_relays_down_list, sensor_ht_hum_relays_up_list, sensor_ht_hum_relays_down_list, pid_ht_temp_relay_high, pid_ht_temp_relay_low, pid_ht_hum_relay_high, pid_ht_hum_relay_low, sensor_co2_name, sensor_co2_graph, sensor_co2_period, sensor_co2_yaxis_relay_min, sensor_co2_yaxis_relay_max, sensor_co2_yaxis_relay_tics, sensor_co2_yaxis_relay_mtics, sensor_co2_yaxis_co2_min, sensor_co2_yaxis_co2_max, sensor_co2_yaxis_co2_tics, sensor_co2_yaxis_co2_mtics, sensor_co2_relays_up_list, sensor_co2_relays_down_list, pid_co2_relay_high, pid_co2_relay_low, sensor_press_name, sensor_press_graph, sensor_press_period, sensor_press_yaxis_relay_min, sensor_press_yaxis_relay_max, sensor_press_yaxis_relay_tics, sensor_press_yaxis_relay_mtics, sensor_press_yaxis_temp_min, sensor_press_yaxis_temp_max, sensor_press_yaxis_temp_tics, sensor_press_yaxis_temp_mtics, sensor_press_yaxis_press_min, sensor_press_yaxis_press_max, sensor_press_yaxis_press_tics, sensor_press_yaxis_press_mtics, sensor_press_temp_relays_up_list, sensor_press_temp_relays_down_list, sensor_press_press_relays_up_list, sensor_press_press_relays_down_list, pid_press_temp_relay_high, pid_press_temp_relay_low, pid_press_press_relay_high, pid_press_press_relay_low, relay_name):
     logging.debug("[Generate Graph] Parsing logs...")
     sensor_t_log_final = [0] * (len(sensor_t_name)+1)
     sensor_ht_log_final = [0] * (len(sensor_ht_name)+1)
@@ -345,6 +345,36 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             num_graphs += 1
         else:
             num_graphs += 2
+
+    sensor_t_graph_relay = 0
+    sensor_ht_graph_relay = 0
+    sensor_co2_graph_relay = 0
+    sensor_press_graph_relay = 0
+
+    if sensor_type == "t":
+        if ((len(sensor_t_temp_relays_up_list[int(sensor_number)]) > 1 or (len(sensor_t_temp_relays_up_list[int(sensor_number)]) == 1 and sensor_t_temp_relays_up_list[int(sensor_number)][0] != 0)) or
+                (len(sensor_t_temp_relays_down_list[int(sensor_number)]) > 1 or (len(sensor_t_temp_relays_down_list[int(sensor_number)]) == 1 and sensor_t_temp_relays_down_list[int(sensor_number)][0] != 0))):
+            sensor_t_graph_relay = 1
+
+    if sensor_type == "ht":
+        if ((len(sensor_ht_temp_relays_up_list[int(sensor_number)]) > 1 or (len(sensor_ht_temp_relays_up_list[int(sensor_number)]) == 1 and sensor_ht_temp_relays_up_list[int(sensor_number)][0] != 0)) or
+                (len(sensor_ht_temp_relays_down_list[int(sensor_number)]) > 1 or (len(sensor_ht_temp_relays_down_list[int(sensor_number)]) == 1 and sensor_ht_temp_relays_down_list[int(sensor_number)][0] != 0)) or 
+                (len(sensor_ht_hum_relays_up_list[int(sensor_number)]) > 1 or (len(sensor_ht_hum_relays_up_list[int(sensor_number)]) == 1 and sensor_ht_hum_relays_up_list[int(sensor_number)][0] != 0)) or
+                (len(sensor_ht_hum_relays_down_list[int(sensor_number)]) > 1 or (len(sensor_ht_hum_relays_down_list[int(sensor_number)]) == 1 and sensor_ht_hum_relays_down_list[int(sensor_number)][0] != 0))):
+            sensor_ht_graph_relay = 1
+
+    if sensor_type == "co2":
+        if ((len(sensor_co2_relays_up_list[int(sensor_number)]) > 1 or (len(sensor_co2_relays_up_list[int(sensor_number)]) == 1 and sensor_co2_relays_up_list[int(sensor_number)][0] != 0)) or
+                (len(sensor_co2_relays_down_list[int(sensor_number)]) > 1 or (len(sensor_co2_relays_down_list[int(sensor_number)]) == 1 and sensor_co2_relays_down_list[int(sensor_number)][0] != 0))):
+            sensor_co2_graph_relay = 1
+
+    if sensor_type == "press":
+        if ((len(sensor_press_temp_relays_up_list[int(sensor_number)]) > 1 or (len(sensor_press_temp_relays_up_list[int(sensor_number)]) == 1 and sensor_press_temp_relays_up_list[int(sensor_number)][0] != 0)) or
+                (len(sensor_press_temp_relays_down_list[int(sensor_number)]) > 1 or (len(sensor_press_temp_relays_down_list[int(sensor_number)]) == 1 and sensor_press_temp_relays_down_list[int(sensor_number)][0] != 0)) or 
+                (len(sensor_press_press_relays_up_list[int(sensor_number)]) > 1 or (len(sensor_press_press_relays_up_list[int(sensor_number)]) == 1 and sensor_press_press_relays_up_list[int(sensor_number)][0] != 0)) or
+                (len(sensor_press_press_relays_down_list[int(sensor_number)]) > 1 or (len(sensor_press_press_relays_down_list[int(sensor_number)]) == 1 and sensor_press_press_relays_down_list[int(sensor_number)][0] != 0))):
+            sensor_press_graph_relay = 0
+
     
     if graph_span == "default":
         graph_width = 1000
@@ -353,22 +383,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
         graph_width = 1000
         graph_height = (500*num_graphs)
     elif graph_type == "separate":
-        if (((sensor_type == "t") and (int(pid_t_temp_relay_high[int(sensor_number)]) != 0 or
-            int(pid_t_temp_relay_low[int(sensor_number)]) != 0)) or
-
-            ((sensor_type == "ht") and (int(pid_ht_temp_relay_high[int(sensor_number)]) != 0 or
-            int(pid_ht_temp_relay_low[int(sensor_number)]) != 0 or 
-            int(pid_ht_hum_relay_high[int(sensor_number)]) != 0 or
-            int(pid_ht_hum_relay_low[int(sensor_number)]) != 0)) or
-
-            ((sensor_type == "co2") and (int(pid_co2_relay_high[int(sensor_number)]) != 0 or
-            int(pid_co2_relay_low[int(sensor_number)]) != 0)) or
-
-            ((sensor_type == "press") and (int(pid_press_temp_relay_high[int(sensor_number)]) != 0 or
-            int(pid_press_temp_relay_low[int(sensor_number)]) != 0 or 
-            int(pid_press_press_relay_high[int(sensor_number)]) != 0 or
-            int(pid_press_press_relay_low[int(sensor_number)]) != 0))):
-
+        if sensor_t_graph_relay or sensor_ht_graph_relay or sensor_co2_graph_relay or sensor_press_graph_relay:
             graph_width = 1000
             graph_height = 800
         else:
@@ -574,8 +589,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
     if graph_type == "separate" and  graph_span != "default":
         
         if sensor_type == "t":
-            if (int(pid_t_temp_relay_high[int(sensor_number)]) != 0 or
-                int(pid_t_temp_relay_low[int(sensor_number)]) != 0):
+            if sensor_t_graph_relay:
                 plot.write('set multiplot\n')
                 plot.write('set size 0.989,0.6\n')
                 plot.write('set origin 0.011,0.4\n')
@@ -588,8 +602,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write('set title \"Temp Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_t_name[int(float(sensor_number))] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot \"' + sensor_t_log_final[0] + '\" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1\n')
 
-            if (int(pid_t_temp_relay_high[int(sensor_number)]) != 0 or
-                int(pid_t_temp_relay_low[int(sensor_number)]) != 0):
+            if sensor_t_graph_relay:
                 plot.write('set size 1.0,0.4\n')
                 plot.write('set origin 0.0,0.0\n')
                 plot.write('set key at graph 0.0, graph 0.97\n')
@@ -602,24 +615,24 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('unset title\n')
                 plot.write('plot \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '"')
 
-                first = True
-                if int(pid_t_temp_relay_high[int(sensor_number)]) != 0:
-                    plot.write(' u 1:' + str(pid_t_temp_relay_high[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_t_temp_relay_high[int(sensor_number)])-1] + '\" w impulses ls 4 axes x1y1')
-                    first = False
-                
-                if int(pid_t_temp_relay_low[int(sensor_number)]) != 0:
-                    if not first:
-                        plot.write(', \"\"')
-                    plot.write(' u 1:' + str(pid_t_temp_relay_low[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_t_temp_relay_low[int(sensor_number)])-1] + '\" w impulses ls 5 axes x1y1')
-                    first = False
+                first = 0
+                for i in range(0, len(sensor_t_temp_relays_up_list[int(sensor_number)])):
+                    if sensor_t_temp_relays_up_list[int(sensor_number)][i] != 0:
+                        if first:
+                            plot.write(', \"\"')
+                        plot.write(' u 1:(abs($' + str(sensor_t_temp_relays_up_list[int(sensor_number)][i]+6) + ')) index 0 title \"' + relay_name[sensor_t_temp_relays_up_list[int(sensor_number)][i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                        first += 1
+                for i in range(0, len(sensor_t_temp_relays_down_list[int(sensor_number)])):
+                    if sensor_t_temp_relays_down_list[int(sensor_number)][i] != 0:
+                        if first:
+                            plot.write(', \"\"')
+                        plot.write(' u 1:(-abs($' + str(sensor_t_temp_relays_down_list[int(sensor_number)][i]+6) + ')) index 0 title \"' + relay_name[sensor_t_temp_relays_down_list[int(sensor_number)][i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                        first += 1
 
                 plot.write(' \n')
 
         if sensor_type == "ht":
-            if (int(pid_ht_temp_relay_high[int(sensor_number)]) != 0 or
-                int(pid_ht_temp_relay_low[int(sensor_number)]) != 0 or 
-                int(pid_ht_hum_relay_high[int(sensor_number)]) != 0 or
-                int(pid_ht_hum_relay_low[int(sensor_number)]) != 0):
+            if sensor_ht_graph_relay:
                 plot.write('set multiplot\n')
                 plot.write('set size 0.989,0.6\n')
                 plot.write('set origin 0.011,0.4\n')
@@ -637,10 +650,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write('\"\" u 1:8 index 0 title \"RH\" w lp ls 2 axes x1y2, \\\n')
             plot.write('\"\" u 1:9 index 0 title \"DP\" w lp ls 3 axes x1y1\n')
             
-            if (int(pid_ht_temp_relay_high[int(sensor_number)]) != 0 or
-                int(pid_ht_temp_relay_low[int(sensor_number)]) != 0 or 
-                int(pid_ht_hum_relay_high[int(sensor_number)]) != 0 or
-                int(pid_ht_hum_relay_low[int(sensor_number)]) != 0):
+            if sensor_ht_graph_relay:
                 plot.write('set size 0.93,0.4\n')
                 plot.write('set origin 0.0,0.0\n')
                 plot.write('set format x \"%H:%M\\n%m/%d\"\n')
@@ -654,32 +664,35 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('plot \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '"')
                 
                 first = 0
-                if int(pid_ht_temp_relay_high[int(sensor_number)]) != 0:
-                    plot.write(' u 1:' + str(pid_ht_temp_relay_high[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_ht_temp_relay_high[int(sensor_number)])-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
-                    first += 1
+                for i in range(0, len(sensor_ht_temp_relays_up_list[int(sensor_number)])):
+                    if sensor_ht_temp_relays_up_list[int(sensor_number)][i] != 0:
+                        if first:
+                            plot.write(', \"\"')
+                        plot.write(' u 1:(abs($' + str(sensor_ht_temp_relays_up_list[int(sensor_number)][i]+6) + ')) index 0 title \"' + relay_name[sensor_ht_temp_relays_up_list[int(sensor_number)][i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                        first += 1
+                for i in range(0, len(sensor_ht_temp_relays_down_list[int(sensor_number)])):
+                    if sensor_ht_temp_relays_down_list[int(sensor_number)][i] != 0:
+                        if first:
+                            plot.write(', \"\"')
+                        plot.write(' u 1:(-abs($' + str(sensor_ht_temp_relays_down_list[int(sensor_number)][i]+6) + ')) index 0 title \"' + relay_name[sensor_ht_temp_relays_down_list[int(sensor_number)][i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                        first += 1
+                for i in range(0, len(sensor_ht_hum_relays_up_list[int(sensor_number)])):
+                    if sensor_ht_hum_relays_up_list[int(sensor_number)][i] != 0:
+                        if first:
+                            plot.write(', \"\"')
+                        plot.write(' u 1:(abs($' + str(sensor_ht_hum_relays_up_list[int(sensor_number)][i]+6) + ')) index 0 title \"' + relay_name[sensor_ht_hum_relays_up_list[int(sensor_number)][i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                        first += 1
+                for i in range(0, len(sensor_ht_hum_relays_down_list[int(sensor_number)])):
+                    if sensor_ht_hum_relays_down_list[int(sensor_number)][i] != 0:
+                        if first:
+                            plot.write(', \"\"')
+                        plot.write(' u 1:(-abs($' + str(sensor_ht_hum_relays_down_list[int(sensor_number)][i]+6) + ')) index 0 title \"' + relay_name[sensor_ht_hum_relays_down_list[int(sensor_number)][i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                        first += 1
                 
-                if int(pid_ht_temp_relay_low[int(sensor_number)]) != 0:
-                    if first:
-                        plot.write(', \"\"')
-                    plot.write(' u 1:' + str(pid_ht_temp_relay_low[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_ht_temp_relay_low[int(sensor_number)])-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
-                    first += 1
-                
-                if int(pid_ht_hum_relay_high[int(sensor_number)]) != 0:
-                    if first:
-                        plot.write(', \"\"')
-                    plot.write(' u 1:' + str(pid_ht_hum_relay_high[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_ht_hum_relay_high[int(sensor_number)])-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
-                    first += 1
-                
-                if int(pid_ht_hum_relay_low[int(sensor_number)]) != 0:
-                    if first:
-                        plot.write(', \"\"')
-                    plot.write(' u 1:' + str(pid_ht_hum_relay_low[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_ht_hum_relay_low[int(sensor_number)])-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
-
                 plot.write('\n')
 
         if sensor_type == "co2":
-            if (int(pid_co2_relay_high[int(sensor_number)]) != 0 or
-                int(pid_co2_relay_low[int(sensor_number)]) != 0):
+            if sensor_co2_graph_relay:
                 plot.write('set multiplot\n')
                 plot.write('set size 1.0,0.6\n')
                 plot.write('set origin 0.0,0.4\n')
@@ -693,8 +706,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write('set title \"CO_2 Sensor ' + str(int(sensor_number)+1) + ': ' + sensor_co2_name[int(float(sensor_number))] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot \"' + sensor_co2_log_final[0] + '" u 1:7 index 0 title \"CO_2\" w lp ls 1 axes x1y1\n')
 
-            if (int(pid_co2_relay_high[int(sensor_number)]) != 0 or
-                int(pid_co2_relay_low[int(sensor_number)]) != 0):
+            if sensor_co2_graph_relay:
                 plot.write('set size 0.989,0.4\n')
                 plot.write('set origin 0.011,0.0\n')
                 plot.write('set format x \"%H:%M\\n%m/%d\"\n')
@@ -707,23 +719,24 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('unset title\n')
                 plot.write('plot \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '"')
                 
-                first = True
-                if int(pid_co2_relay_high[int(sensor_number)]) != 0:
-                    plot.write(' u 1:' + str(pid_co2_relay_high[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_co2_relay_high[int(sensor_number)])-1] + '\" w impulses ls 4 axes x1y1')
-                    first = False
-
-                if int(pid_co2_relay_low[int(sensor_number)]) != 0:
-                    if not first:
-                        plot.write(', \"\"')
-                    plot.write(' u 1:' + str(pid_co2_relay_low[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_co2_relay_low[int(sensor_number)])-1] + '\" w impulses ls 5 axes x1y1\n')
+                first = 0
+                for i in range(0, len(sensor_co2_relays_up_list[int(sensor_number)])):
+                    if sensor_co2_relays_up_list[int(sensor_number)][i] != 0:
+                        if first:
+                            plot.write(', \"\"')
+                        plot.write(' u 1:(abs($' + str(sensor_co2_relays_up_list[int(sensor_number)][i]+6) + ')) index 0 title \"' + relay_name[sensor_co2_relays_up_list[int(sensor_number)][i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                        first += 1
+                for i in range(0, len(sensor_co2_relays_down_list[int(sensor_number)])):
+                    if sensor_co2_relays_down_list[int(sensor_number)][i] != 0:
+                        if first:
+                            plot.write(', \"\"')
+                        plot.write(' u 1:(-abs($' + str(sensor_co2_relays_down_list[int(sensor_number)][i]+6) + ')) index 0 title \"' + relay_name[sensor_co2_relays_down_list[int(sensor_number)][i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                        first += 1
 
                 plot.write(' \n')
 
         if sensor_type == "press":
-            if (int(pid_press_temp_relay_high[int(sensor_number)]) != 0 or
-                int(pid_press_temp_relay_low[int(sensor_number)]) != 0 or 
-                int(pid_press_press_relay_high[int(sensor_number)]) != 0 or
-                int(pid_press_press_relay_low[int(sensor_number)]) != 0):
+            if sensor_press_graph_relay:
                 plot.write('set multiplot\n')
                 plot.write('set size 0.989,0.6\n')
                 plot.write('set origin 0.011,0.4\n')
@@ -740,10 +753,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write('plot \"' + sensor_press_log_final[0] + '\" u 1:7 index 0 title \"T\" w lp ls 1 axes x1y1, \\\n')
             plot.write('\"\" u 1:8 index 0 title \"Press\" w lp ls 2 axes x1y2\n')
             
-            if (int(pid_press_temp_relay_high[int(sensor_number)]) != 0 or
-                int(pid_press_temp_relay_low[int(sensor_number)]) != 0 or 
-                int(pid_press_press_relay_high[int(sensor_number)]) != 0 or
-                int(pid_press_press_relay_low[int(sensor_number)]) != 0):
+            if sensor_press_graph_relay:
                 plot.write('set size 0.93,0.4\n')
                 plot.write('set origin 0.0,0.0\n')
                 plot.write('set format x \"%H:%M\\n%m/%d\"\n')
@@ -757,26 +767,30 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 plot.write('plot \"<awk \'$15 == ' + sensor_number + '\' ' + relay_log_generate + '"')
                 
                 first = 0
-                if int(pid_press_temp_relay_high[int(sensor_number)]) != 0:
-                    plot.write(' u 1:' + str(pid_press_temp_relay_high[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_press_temp_relay_high[int(sensor_number)])-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
-                    first += 1
-                
-                if int(pid_press_temp_relay_low[int(sensor_number)]) != 0:
-                    if first:
-                        plot.write(', \"\"')
-                    plot.write(' u 1:' + str(pid_press_temp_relay_low[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_press_temp_relay_low[int(sensor_number)])-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
-                    first += 1
-                
-                if int(pid_press_press_relay_high[int(sensor_number)]) != 0:
-                    if first:
-                        plot.write(', \"\"')
-                    plot.write(' u 1:' + str(pid_press_press_relay_high[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_press_press_relay_high[int(sensor_number)])-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
-                    first += 1
-                
-                if int(pid_press_press_relay_low[int(sensor_number)]) != 0:
-                    if first:
-                        plot.write(', \"\"')
-                    plot.write(' u 1:' + str(pid_press_press_relay_low[int(sensor_number)]+6) + ' index 0 title \"' + relay_name[int(pid_press_press_relay_low[int(sensor_number)])-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                for i in range(0, len(sensor_press_temp_relays_up_list[int(sensor_number)])):
+                    if sensor_press_temp_relays_up_list[int(sensor_number)][i] != 0:
+                        if first:
+                            plot.write(', \"\"')
+                        plot.write(' u 1:(abs($' + str(sensor_press_temp_relays_up_list[int(sensor_number)][i]+6) + ')) index 0 title \"' + relay_name[sensor_press_temp_relays_up_list[int(sensor_number)][i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                        first += 1
+                for i in range(0, len(sensor_press_temp_relays_down_list[int(sensor_number)])):
+                    if sensor_press_temp_relays_down_list[int(sensor_number)][i] != 0:
+                        if first:
+                            plot.write(', \"\"')
+                        plot.write(' u 1:(-abs($' + str(sensor_press_temp_relays_down_list[int(sensor_number)][i]+6) + ')) index 0 title \"' + relay_name[sensor_press_temp_relays_down_list[int(sensor_number)][i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                        first += 1
+                for i in range(0, len(sensor_press_press_relays_up_list[int(sensor_number)])):
+                    if sensor_press_press_relays_up_list[int(sensor_number)][i] != 0:
+                        if first:
+                            plot.write(', \"\"')
+                        plot.write(' u 1:(abs($' + str(sensor_press_press_relays_up_list[int(sensor_number)][i]+6) + ')) index 0 title \"' + relay_name[sensor_press_press_relays_up_list[int(sensor_number)][i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                        first += 1
+                for i in range(0, len(sensor_press_press_relays_down_list[int(sensor_number)])):
+                    if sensor_press_press_relays_down_list[int(sensor_number)][i] != 0:
+                        if first:
+                            plot.write(', \"\"')
+                        plot.write(' u 1:(-abs($' + str(sensor_press_press_relays_down_list[int(sensor_number)][i]+6) + ')) index 0 title \"' + relay_name[sensor_press_press_relays_down_list[int(sensor_number)][i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                        first += 1
 
                 plot.write('\n')
 

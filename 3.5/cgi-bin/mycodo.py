@@ -135,7 +135,7 @@ class ComServer(rpyc.Service):
             logging.info("[Client command] Generate Graph: %s %s %s %s", sensor_type, graph_span, graph_id, sensor_number)
         else:
             logging.info("[Client command] Generate Graph: %s %s %s %s %s", sensor_type, graph_type, graph_span, graph_id, sensor_number)
-        mycodoGraph.generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number, sensor_t_name, sensor_t_graph, sensor_t_period, sensor_t_yaxis_relay_min, sensor_t_yaxis_relay_max, sensor_t_yaxis_relay_tics, sensor_t_yaxis_relay_mtics, sensor_t_yaxis_temp_min, sensor_t_yaxis_temp_max, sensor_t_yaxis_temp_tics, sensor_t_yaxis_temp_mtics, pid_t_temp_relay_high, pid_t_temp_relay_low, sensor_ht_name, sensor_ht_graph, sensor_ht_period, sensor_ht_yaxis_relay_min, sensor_ht_yaxis_relay_max, sensor_ht_yaxis_relay_tics, sensor_ht_yaxis_relay_mtics, sensor_ht_yaxis_temp_min, sensor_ht_yaxis_temp_max, sensor_ht_yaxis_temp_tics, sensor_ht_yaxis_temp_mtics, sensor_ht_yaxis_hum_min, sensor_ht_yaxis_hum_max, sensor_ht_yaxis_hum_tics, sensor_ht_yaxis_hum_mtics, pid_ht_temp_relay_high, pid_ht_temp_relay_low, pid_ht_hum_relay_high, pid_ht_hum_relay_low, sensor_co2_name, sensor_co2_graph, sensor_co2_period, sensor_co2_yaxis_relay_min, sensor_co2_yaxis_relay_max, sensor_co2_yaxis_relay_tics, sensor_co2_yaxis_relay_mtics, sensor_co2_yaxis_co2_min, sensor_co2_yaxis_co2_max, sensor_co2_yaxis_co2_tics, sensor_co2_yaxis_co2_mtics, pid_co2_relay_high, pid_co2_relay_low, sensor_press_name, sensor_press_graph, sensor_press_period, sensor_press_yaxis_relay_min, sensor_press_yaxis_relay_max, sensor_press_yaxis_relay_tics, sensor_press_yaxis_relay_mtics, sensor_press_yaxis_temp_min, sensor_press_yaxis_temp_max, sensor_press_yaxis_temp_tics, sensor_press_yaxis_temp_mtics, sensor_press_yaxis_press_min, sensor_press_yaxis_press_max, sensor_press_yaxis_press_tics, sensor_press_yaxis_press_mtics, pid_press_temp_relay_high, pid_press_temp_relay_low, pid_press_press_relay_high, pid_press_press_relay_low, relay_name)
+        mycodoGraph.generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number, sensor_t_name, sensor_t_graph, sensor_t_period, sensor_t_yaxis_relay_min, sensor_t_yaxis_relay_max, sensor_t_yaxis_relay_tics, sensor_t_yaxis_relay_mtics, sensor_t_yaxis_temp_min, sensor_t_yaxis_temp_max, sensor_t_yaxis_temp_tics, sensor_t_yaxis_temp_mtics, sensor_t_temp_relays_up_list, sensor_t_temp_relays_down_list, pid_t_temp_relay_high, pid_t_temp_relay_low, sensor_ht_name, sensor_ht_graph, sensor_ht_period, sensor_ht_yaxis_relay_min, sensor_ht_yaxis_relay_max, sensor_ht_yaxis_relay_tics, sensor_ht_yaxis_relay_mtics, sensor_ht_yaxis_temp_min, sensor_ht_yaxis_temp_max, sensor_ht_yaxis_temp_tics, sensor_ht_yaxis_temp_mtics, sensor_ht_yaxis_hum_min, sensor_ht_yaxis_hum_max, sensor_ht_yaxis_hum_tics, sensor_ht_yaxis_hum_mtics, sensor_ht_temp_relays_up_list, sensor_ht_temp_relays_down_list, sensor_ht_hum_relays_up_list, sensor_ht_hum_relays_down_list, pid_ht_temp_relay_high, pid_ht_temp_relay_low, pid_ht_hum_relay_high, pid_ht_hum_relay_low, sensor_co2_name, sensor_co2_graph, sensor_co2_period, sensor_co2_yaxis_relay_min, sensor_co2_yaxis_relay_max, sensor_co2_yaxis_relay_tics, sensor_co2_yaxis_relay_mtics, sensor_co2_yaxis_co2_min, sensor_co2_yaxis_co2_max, sensor_co2_yaxis_co2_tics, sensor_co2_yaxis_co2_mtics, sensor_co2_relays_up_list, sensor_co2_relays_down_list, pid_co2_relay_high, pid_co2_relay_low, sensor_press_name, sensor_press_graph, sensor_press_period, sensor_press_yaxis_relay_min, sensor_press_yaxis_relay_max, sensor_press_yaxis_relay_tics, sensor_press_yaxis_relay_mtics, sensor_press_yaxis_temp_min, sensor_press_yaxis_temp_max, sensor_press_yaxis_temp_tics, sensor_press_yaxis_temp_mtics, sensor_press_yaxis_press_min, sensor_press_yaxis_press_max, sensor_press_yaxis_press_tics, sensor_press_yaxis_press_mtics, sensor_press_temp_relays_up_list, sensor_press_temp_relays_down_list, sensor_press_press_relays_up_list, sensor_press_press_relays_down_list, pid_press_temp_relay_high, pid_press_temp_relay_low, pid_press_press_relay_high, pid_press_press_relay_low, relay_name)
         return 1
 
     def exposed_PID_restart(self, sensortype):
@@ -2133,6 +2133,8 @@ def read_sql():
     global sensor_t_yaxis_temp_max
     global sensor_t_yaxis_temp_tics
     global sensor_t_yaxis_temp_mtics
+    global sensor_t_temp_relays_up
+    global sensor_t_temp_relays_down
     global pid_t_temp_relay_high
     global pid_t_temp_outmax_high
     global pid_t_temp_relay_low
@@ -2165,6 +2167,8 @@ def read_sql():
     sensor_t_yaxis_temp_max = []
     sensor_t_yaxis_temp_tics = []
     sensor_t_yaxis_temp_mtics = []
+    sensor_t_temp_relays_up = []
+    sensor_t_temp_relays_down = []
     pid_t_temp_relay_high = []
     pid_t_temp_outmax_high = []
     pid_t_temp_relay_low = []
@@ -2200,6 +2204,8 @@ def read_sql():
     global sensor_ht_yaxis_hum_max
     global sensor_ht_yaxis_hum_tics
     global sensor_ht_yaxis_hum_mtics
+    global sensor_ht_temp_relays_up
+    global sensor_ht_temp_relays_down
     global pid_ht_temp_relay_high
     global pid_ht_temp_outmax_high
     global pid_ht_temp_relay_low
@@ -2211,6 +2217,8 @@ def read_sql():
     global pid_ht_temp_p
     global pid_ht_temp_i
     global pid_ht_temp_d
+    global sensor_ht_hum_relays_up
+    global sensor_ht_hum_relays_down
     global pid_ht_hum_relay_high
     global pid_ht_hum_outmax_high
     global pid_ht_hum_relay_low
@@ -2250,6 +2258,8 @@ def read_sql():
     sensor_ht_yaxis_hum_max = []
     sensor_ht_yaxis_hum_tics = []
     sensor_ht_yaxis_hum_mtics = []
+    sensor_ht_temp_relays_up = []
+    sensor_ht_temp_relays_down = []
     pid_ht_temp_relay_high = []
     pid_ht_temp_outmax_high = []
     pid_ht_temp_relay_low = []
@@ -2261,6 +2271,8 @@ def read_sql():
     pid_ht_temp_i = []
     pid_ht_temp_d = []
     pid_ht_temp_or = []
+    sensor_ht_hum_relays_up = []
+    sensor_ht_hum_relays_down = []
     pid_ht_hum_relay_high = []
     pid_ht_hum_outmax_high = []
     pid_ht_hum_relay_low = []
@@ -2294,6 +2306,8 @@ def read_sql():
     global sensor_co2_yaxis_co2_max
     global sensor_co2_yaxis_co2_tics
     global sensor_co2_yaxis_co2_mtics
+    global sensor_co2_relays_up
+    global sensor_co2_relays_down
     global pid_co2_relay_high
     global pid_co2_outmax_high
     global pid_co2_relay_low
@@ -2326,6 +2340,8 @@ def read_sql():
     sensor_co2_yaxis_co2_max = []
     sensor_co2_yaxis_co2_tics = []
     sensor_co2_yaxis_co2_mtics = []
+    sensor_co2_relays_up = []
+    sensor_co2_relays_down = []
     pid_co2_relay_high = []
     pid_co2_outmax_high = []
     pid_co2_relay_low = []
@@ -2362,6 +2378,8 @@ def read_sql():
     global sensor_press_yaxis_press_max
     global sensor_press_yaxis_press_tics
     global sensor_press_yaxis_press_mtics
+    global sensor_press_temp_relays_up
+    global sensor_press_temp_relays_down
     global pid_press_temp_relay_high
     global pid_press_temp_outmax_high
     global pid_press_temp_relay_low
@@ -2373,6 +2391,8 @@ def read_sql():
     global pid_press_temp_p
     global pid_press_temp_i
     global pid_press_temp_d
+    global sensor_press_press_relays_up
+    global sensor_press_press_relays_down
     global pid_press_press_relay_high
     global pid_press_press_outmax_high
     global pid_press_press_relay_low
@@ -2412,6 +2432,8 @@ def read_sql():
     sensor_press_yaxis_press_max = []
     sensor_press_yaxis_press_tics = []
     sensor_press_yaxis_press_mtics = []
+    sensor_press_temp_relays_up = []
+    sensor_press_temp_relays_down = []
     pid_press_temp_relay_high = []
     pid_press_temp_outmax_high = []
     pid_press_temp_relay_low = []
@@ -2423,6 +2445,8 @@ def read_sql():
     pid_press_temp_i = []
     pid_press_temp_d = []
     pid_press_temp_or = []
+    sensor_press_press_relays_up = []
+    sensor_press_press_relays_down = []
     pid_press_press_relay_high = []
     pid_press_press_outmax_high = []
     pid_press_press_relay_low = []
@@ -2524,7 +2548,7 @@ def read_sql():
         relay_start_state.append(row[4])
 
 
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D FROM TSensor')
+    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D FROM TSensor')
     for row in cur:
         sensor_t_id.append(row[0])
         sensor_t_name.append(row[1])
@@ -2543,17 +2567,32 @@ def read_sql():
         sensor_t_yaxis_temp_max.append(row[14])
         sensor_t_yaxis_temp_tics.append(row[15])
         sensor_t_yaxis_temp_mtics.append(row[16])
-        pid_t_temp_relay_high.append(row[17])
-        pid_t_temp_outmax_high.append(row[18])
-        pid_t_temp_relay_low.append(row[19])
-        pid_t_temp_outmax_low.append(row[20])
-        pid_t_temp_or.append(row[21])
-        pid_t_temp_set.append(row[22])
-        pid_t_temp_set_dir.append(row[23])
-        pid_t_temp_period.append(row[24])
-        pid_t_temp_p.append(row[25])
-        pid_t_temp_i.append(row[26])
-        pid_t_temp_d.append(row[27])
+        sensor_t_temp_relays_up.append(row[17])
+        sensor_t_temp_relays_down.append(row[18])
+        pid_t_temp_relay_high.append(row[19])
+        pid_t_temp_outmax_high.append(row[20])
+        pid_t_temp_relay_low.append(row[21])
+        pid_t_temp_outmax_low.append(row[22])
+        pid_t_temp_or.append(row[23])
+        pid_t_temp_set.append(row[24])
+        pid_t_temp_set_dir.append(row[25])
+        pid_t_temp_period.append(row[26])
+        pid_t_temp_p.append(row[27])
+        pid_t_temp_i.append(row[28])
+        pid_t_temp_d.append(row[29])
+
+    # Convert string of comma-separated values to a 2-dimensional list of integers
+    global sensor_t_temp_relays_up_list
+    sensor_t_temp_relays_up_list = []
+    for i in range(0, len(sensor_t_temp_relays_up)):
+        sensor_t_temp_relays_up_list.append(sensor_t_temp_relays_up[i].split(","))
+        sensor_t_temp_relays_up_list[i] = map(int, sensor_t_temp_relays_up_list[i])
+
+    global sensor_t_temp_relays_down_list
+    sensor_t_temp_relays_down_list = []
+    for i in range(0, len(sensor_t_temp_relays_down)):
+        sensor_t_temp_relays_down_list.append(sensor_t_temp_relays_down[i].split(","))
+        sensor_t_temp_relays_down_list[i] = map(int, sensor_t_temp_relays_down_list[i])
 
 
     global conditional_t_number_sensor
@@ -2609,7 +2648,7 @@ def read_sql():
 
 
 
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relay_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensor')
+    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relays_Up, Hum_Relays_Down, Hum_Relay_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensor')
     for row in cur:
         sensor_ht_id.append(row[0])
         sensor_ht_name.append(row[1])
@@ -2632,28 +2671,57 @@ def read_sql():
         sensor_ht_yaxis_hum_max.append(row[18])
         sensor_ht_yaxis_hum_tics.append(row[19])
         sensor_ht_yaxis_hum_mtics.append(row[20])
-        pid_ht_temp_relay_high.append(row[21])
-        pid_ht_temp_outmax_high.append(row[22])
-        pid_ht_temp_relay_low.append(row[23])
-        pid_ht_temp_outmax_low.append(row[24])
-        pid_ht_temp_or.append(row[25])
-        pid_ht_temp_set.append(row[26])
-        pid_ht_temp_set_dir.append(row[27])
-        pid_ht_temp_period.append(row[28])
-        pid_ht_temp_p.append(row[29])
-        pid_ht_temp_i.append(row[30])
-        pid_ht_temp_d.append(row[31])
-        pid_ht_hum_relay_high.append(row[32])
-        pid_ht_hum_outmax_high.append(row[33])
-        pid_ht_hum_relay_low.append(row[34])
-        pid_ht_hum_outmax_low.append(row[35])
-        pid_ht_hum_or.append(row[36])
-        pid_ht_hum_set.append(row[37])
-        pid_ht_hum_set_dir.append(row[38])
-        pid_ht_hum_period.append(row[39])
-        pid_ht_hum_p.append(row[40])
-        pid_ht_hum_i.append(row[41])
-        pid_ht_hum_d.append(row[42])
+        sensor_ht_temp_relays_up.append(row[21])
+        sensor_ht_temp_relays_down.append(row[22])
+        pid_ht_temp_relay_high.append(row[23])
+        pid_ht_temp_outmax_high.append(row[24])
+        pid_ht_temp_relay_low.append(row[25])
+        pid_ht_temp_outmax_low.append(row[26])
+        pid_ht_temp_or.append(row[27])
+        pid_ht_temp_set.append(row[28])
+        pid_ht_temp_set_dir.append(row[29])
+        pid_ht_temp_period.append(row[30])
+        pid_ht_temp_p.append(row[31])
+        pid_ht_temp_i.append(row[32])
+        pid_ht_temp_d.append(row[33])
+        sensor_ht_hum_relays_up.append(row[34])
+        sensor_ht_hum_relays_down.append(row[35])
+        pid_ht_hum_relay_high.append(row[36])
+        pid_ht_hum_outmax_high.append(row[37])
+        pid_ht_hum_relay_low.append(row[38])
+        pid_ht_hum_outmax_low.append(row[39])
+        pid_ht_hum_or.append(row[40])
+        pid_ht_hum_set.append(row[41])
+        pid_ht_hum_set_dir.append(row[42])
+        pid_ht_hum_period.append(row[43])
+        pid_ht_hum_p.append(row[44])
+        pid_ht_hum_i.append(row[45])
+        pid_ht_hum_d.append(row[46])
+
+    # Convert string of comma-separated values to a 2-dimensional list of integers
+    global sensor_ht_temp_relays_up_list
+    sensor_ht_temp_relays_up_list = []
+    for i in range(0, len(sensor_ht_temp_relays_up)):
+        sensor_ht_temp_relays_up_list.append(sensor_ht_temp_relays_up[i].split(","))
+        sensor_ht_temp_relays_up_list[i] = map(int, sensor_ht_temp_relays_up_list[i])
+
+    global sensor_ht_temp_relays_down_list
+    sensor_ht_temp_relays_down_list = []
+    for i in range(0, len(sensor_ht_temp_relays_down)):
+        sensor_ht_temp_relays_down_list.append(sensor_ht_temp_relays_down[i].split(","))
+        sensor_ht_temp_relays_down_list[i] = map(int, sensor_ht_temp_relays_down_list[i])
+
+    global sensor_ht_hum_relays_up_list
+    sensor_ht_hum_relays_up_list = []
+    for i in range(0, len(sensor_ht_hum_relays_up)):
+        sensor_ht_hum_relays_up_list.append(sensor_ht_hum_relays_up[i].split(","))
+        sensor_ht_hum_relays_up_list[i] = map(int, sensor_ht_hum_relays_up_list[i])
+
+    global sensor_ht_hum_relays_down_list
+    sensor_ht_hum_relays_down_list = []
+    for i in range(0, len(sensor_ht_hum_relays_down)):
+        sensor_ht_hum_relays_down_list.append(sensor_ht_hum_relays_down[i].split(","))
+        sensor_ht_hum_relays_down_list[i] = map(int, sensor_ht_hum_relays_down_list[i])
 
     
     global conditional_ht_number_sensor
@@ -2712,7 +2780,7 @@ def read_sql():
 
 
 
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_CO2_Min, YAxis_CO2_Max, YAxis_CO2_Tics, YAxis_CO2_MTics, CO2_Relay_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmax_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
+    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_CO2_Min, YAxis_CO2_Max, YAxis_CO2_Tics, YAxis_CO2_MTics, CO2_Relays_Up, CO2_Relays_Down, CO2_Relay_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmax_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
     for row in cur:
         sensor_co2_id.append(row[0])
         sensor_co2_name.append(row[1])
@@ -2731,17 +2799,32 @@ def read_sql():
         sensor_co2_yaxis_co2_max.append(row[14])
         sensor_co2_yaxis_co2_tics.append(row[15])
         sensor_co2_yaxis_co2_mtics.append(row[16])
-        pid_co2_relay_high.append(row[17])
-        pid_co2_outmax_high.append(row[18])
-        pid_co2_relay_low.append(row[19])
-        pid_co2_outmax_low.append(row[20])
-        pid_co2_or.append(row[21])
-        pid_co2_set.append(row[22])
-        pid_co2_set_dir.append(row[23])
-        pid_co2_period.append(row[24])
-        pid_co2_p.append(row[25])
-        pid_co2_i.append(row[26])
-        pid_co2_d.append(row[27])
+        sensor_co2_relays_up.append(row[17])
+        sensor_co2_relays_down.append(row[18])
+        pid_co2_relay_high.append(row[19])
+        pid_co2_outmax_high.append(row[20])
+        pid_co2_relay_low.append(row[21])
+        pid_co2_outmax_low.append(row[22])
+        pid_co2_or.append(row[23])
+        pid_co2_set.append(row[24])
+        pid_co2_set_dir.append(row[25])
+        pid_co2_period.append(row[26])
+        pid_co2_p.append(row[27])
+        pid_co2_i.append(row[28])
+        pid_co2_d.append(row[29])
+
+    # Convert string of comma-separated values to a 2-dimensional list of integers
+    global sensor_co2_relays_up_list
+    sensor_co2_relays_up_list = []
+    for i in range(0, len(sensor_co2_relays_up)):
+        sensor_co2_relays_up_list.append(sensor_co2_relays_up[i].split(","))
+        sensor_co2_relays_up_list[i] = map(int, sensor_co2_relays_up_list[i])
+
+    global sensor_co2_relays_down_list
+    sensor_co2_relays_down_list = []
+    for i in range(0, len(sensor_co2_relays_down)):
+        sensor_co2_relays_down_list.append(sensor_co2_relays_down[i].split(","))
+        sensor_co2_relays_down_list[i] = map(int, sensor_co2_relays_down_list[i])
 
 
     global conditional_co2_number_sensor
@@ -2798,7 +2881,7 @@ def read_sql():
 
 
 
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Press_Min, YAxis_Press_Max, YAxis_Press_Tics, YAxis_Press_MTics, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Press_Relay_High, Press_Outmax_High, Press_Relay_Low, Press_Outmax_Low, Press_OR, Press_Set, Press_Set_Direction, Press_Period, Press_P, Press_I, Press_D FROM PressSensor')
+    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Press_Min, YAxis_Press_Max, YAxis_Press_Tics, YAxis_Press_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Press_Relays_Up, Press_Relays_Down, Press_Relay_High, Press_Outmax_High, Press_Relay_Low, Press_Outmax_Low, Press_OR, Press_Set, Press_Set_Direction, Press_Period, Press_P, Press_I, Press_D FROM PressSensor')
     for row in cur:
         sensor_press_id.append(row[0])
         sensor_press_name.append(row[1])
@@ -2821,28 +2904,57 @@ def read_sql():
         sensor_press_yaxis_press_max.append(row[18])
         sensor_press_yaxis_press_tics.append(row[19])
         sensor_press_yaxis_press_mtics.append(row[20])
-        pid_press_temp_relay_high.append(row[21])
-        pid_press_temp_outmax_high.append(row[22])
-        pid_press_temp_relay_low.append(row[23])
-        pid_press_temp_outmax_low.append(row[24])
-        pid_press_temp_or.append(row[25])
-        pid_press_temp_set.append(row[26])
-        pid_press_temp_set_dir.append(row[27])
-        pid_press_temp_period.append(row[28])
-        pid_press_temp_p.append(row[29])
-        pid_press_temp_i.append(row[30])
-        pid_press_temp_d.append(row[31])
-        pid_press_press_relay_high.append(row[32])
-        pid_press_press_outmax_high.append(row[33])
-        pid_press_press_relay_low.append(row[34])
-        pid_press_press_outmax_low.append(row[35])
-        pid_press_press_or.append(row[36])
-        pid_press_press_set.append(row[37])
-        pid_press_press_set_dir.append(row[38])
-        pid_press_press_period.append(row[39])
-        pid_press_press_p.append(row[40])
-        pid_press_press_i.append(row[41])
-        pid_press_press_d.append(row[42])
+        sensor_press_temp_relays_up.append(row[21])
+        sensor_press_temp_relays_down.append(row[22])
+        pid_press_temp_relay_high.append(row[23])
+        pid_press_temp_outmax_high.append(row[24])
+        pid_press_temp_relay_low.append(row[25])
+        pid_press_temp_outmax_low.append(row[26])
+        pid_press_temp_or.append(row[27])
+        pid_press_temp_set.append(row[28])
+        pid_press_temp_set_dir.append(row[29])
+        pid_press_temp_period.append(row[30])
+        pid_press_temp_p.append(row[31])
+        pid_press_temp_i.append(row[32])
+        pid_press_temp_d.append(row[33])
+        sensor_press_press_relays_up.append(row[34])
+        sensor_press_press_relays_down.append(row[35])
+        pid_press_press_relay_high.append(row[36])
+        pid_press_press_outmax_high.append(row[37])
+        pid_press_press_relay_low.append(row[38])
+        pid_press_press_outmax_low.append(row[39])
+        pid_press_press_or.append(row[40])
+        pid_press_press_set.append(row[41])
+        pid_press_press_set_dir.append(row[42])
+        pid_press_press_period.append(row[43])
+        pid_press_press_p.append(row[44])
+        pid_press_press_i.append(row[45])
+        pid_press_press_d.append(row[46])
+
+    # Convert string of comma-separated values to a 2-dimensional list of integers
+    global sensor_press_temp_relays_up_list
+    sensor_press_temp_relays_up_list = []
+    for i in range(0, len(sensor_press_temp_relays_up)):
+        sensor_press_temp_relays_up_list.append(sensor_press_temp_relays_up[i].split(","))
+        sensor_press_temp_relays_up_list[i] = map(int, sensor_press_temp_relays_up_list[i])
+
+    global sensor_press_temp_relays_down_list
+    sensor_press_temp_relays_down_list = []
+    for i in range(0, len(sensor_press_temp_relays_down)):
+        sensor_press_temp_relays_down_list.append(sensor_press_temp_relays_down[i].split(","))
+        sensor_press_temp_relays_down_list[i] = map(int, sensor_press_temp_relays_down_list[i])
+
+    global sensor_press_press_relays_up_list
+    sensor_press_press_relays_up_list = []
+    for i in range(0, len(sensor_press_press_relays_up)):
+        sensor_press_press_relays_up_list.append(sensor_press_press_relays_up[i].split(","))
+        sensor_press_press_relays_up_list[i] = map(int, sensor_press_press_relays_up_list[i])
+
+    global sensor_press_press_relays_down_list
+    sensor_press_press_relays_down_list = []
+    for i in range(0, len(sensor_press_press_relays_down)):
+        sensor_press_press_relays_down_list.append(sensor_press_press_relays_down[i].split(","))
+        sensor_press_press_relays_down_list[i] = map(int, sensor_press_press_relays_down_list[i])
 
 
     global conditional_press_number_sensor

@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.71";
+$version = "3.5.72";
 
 ######### Start Edit Configure #########
 
@@ -807,6 +807,19 @@ if (isset($output_error)) {
                             <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_t_yaxis_temp_mtics[$i]; ?>" maxlength=4 size=2 name="SetT<?php echo $i; ?>YAxisTempMTics" title=""/>
                         </td>
                     </tr>
+                    <tr>
+                        <td rowspan="2">Relays to<br>Graph</td>
+                        <td colspan="4" rowspan="2" style="padding-left: 1.5em;">Seperate relays with commas<br>Set 0 to disable</td>
+                        <td colspan="2" style="padding-left: 1.5em;">Graph Up</td>
+                        <td colspan="2">Graph Down</td>
+                    </tr>
+                        <td colspan="2" style="padding-left: 1.5em;">
+                            <input style="width: 8em;" type="text" value="<?php echo $sensor_t_temp_relays_up[$i]; ?>" maxlength=20 name="SetT<?php echo $i; ?>TempRelaysUp" title="These relays will be graphed with this sensor's condition and display above the y-axis 0."/>
+                        </td>
+                        <td colspan="2">
+                            <input style="width: 8em;" type="text" value="<?php echo $sensor_t_temp_relays_down[$i]; ?>" maxlength=20 name="SetT<?php echo $i; ?>TempRelaysDown" title="These relays will be graphed with this sensor's condition and display below the y-axis 0."/>
+                        </td>
+                    </tr>
                 </table>
 
                 <table class="pid">
@@ -1104,6 +1117,27 @@ if (isset($output_error)) {
                         </td>
                         <td>
                             <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_ht_yaxis_hum_mtics[$i]; ?>" maxlength=4 size=2 name="SetHT<?php echo $i; ?>YAxisHumMTics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">Relays to<br>Graph</td>
+                        <td colspan="4" rowspan="2" style="padding-left: 1.5em;">Seperate relays with commas<br>Set 0 to disable</td>
+                        <td colspan="2" style="padding-left: 1.5em;">Graph Up</td>
+                        <td colspan="2">Graph Down</td>
+                        <td colspan="2" style="padding-left: 1.5em;">Graph Up</td>
+                        <td colspan="2">Graph Down</td>
+                    </tr>
+                        <td colspan="2" style="padding-left: 1.5em;">
+                            <input style="width: 8em;" type="text" value="<?php echo $sensor_ht_temp_relays_up[$i]; ?>" maxlength=20 name="SetHT<?php echo $i; ?>TempRelaysUp" title="These relays will be graphed with this sensor's condition and display above the y-axis 0."/>
+                        </td>
+                        <td colspan="2">
+                            <input style="width: 8em;" type="text" value="<?php echo $sensor_ht_temp_relays_down[$i]; ?>" maxlength=20 name="SetHT<?php echo $i; ?>TempRelaysDown" title="These relays will be graphed with this sensor's condition and display below the y-axis 0."/>
+                        </td>
+                        <td colspan="2" style="padding-left: 1.5em;">
+                            <input style="width: 8em;" type="text" value="<?php echo $sensor_ht_hum_relays_up[$i]; ?>" maxlength=20 name="SetHT<?php echo $i; ?>HumRelaysUp" title="These relays will be graphed with this sensor's condition and display above the y-axis 0."/>
+                        </td>
+                        <td colspan="2">
+                            <input style="width: 8em;" type="text" value="<?php echo $sensor_ht_hum_relays_down[$i]; ?>" maxlength=20 name="SetHT<?php echo $i; ?>HumRelaysDown" title="These relays will be graphed with this sensor's condition and display below the y-axis 0."/>
                         </td>
                     </tr>
                 </table>
@@ -1458,6 +1492,19 @@ if (isset($output_error)) {
                             <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_co2_yaxis_co2_mtics[$i]; ?>" maxlength=4 size=2 name="SetCO2<?php echo $i; ?>YAxisCO2MTics" title=""/>
                         </td>
                     </tr>
+                    <tr>
+                        <td rowspan="2">Relays to<br>Graph</td>
+                        <td colspan="4" rowspan="2" style="padding-left: 1.5em;">Seperate relays with commas<br>Set 0 to disable</td>
+                        <td colspan="2" style="padding-left: 1.5em;">Graph Up</td>
+                        <td colspan="2">Graph Down</td>
+                    </tr>
+                        <td colspan="2" style="padding-left: 1.5em;">
+                            <input style="width: 8em;" type="text" value="<?php echo $sensor_co2_relays_up[$i]; ?>" maxlength=20 name="SetCO2<?php echo $i; ?>RelaysUp" title="These relays will be graphed with this sensor's condition and display above the y-axis 0."/>
+                        </td>
+                        <td colspan="2">
+                            <input style="width: 8em;" type="text" value="<?php echo $sensor_co2_relays_down[$i]; ?>" maxlength=20 name="SetCO2<?php echo $i; ?>RelaysDown" title="These relays will be graphed with this sensor's condition and display below the y-axis 0."/>
+                        </td>
+                    </tr>
                 </table>
 
                 <table class="pid">
@@ -1764,6 +1811,27 @@ if (isset($output_error)) {
                         </td>
                         <td>
                             <input style="width: 4em;" type="number" step="any" value="<?php echo $sensor_press_yaxis_press_mtics[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>YAxisPressMTics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">Relays to<br>Graph</td>
+                        <td colspan="4" rowspan="2" style="padding-left: 1.5em;">Seperate relays with commas<br>Set 0 to disable</td>
+                        <td colspan="2" style="padding-left: 1.5em;">Graph Up</td>
+                        <td colspan="2">Graph Down</td>
+                        <td colspan="2" style="padding-left: 1.5em;">Graph Up</td>
+                        <td colspan="2">Graph Down</td>
+                    </tr>
+                        <td colspan="2" style="padding-left: 1.5em;">
+                            <input style="width: 8em;" type="text" value="<?php echo $sensor_press_temp_relays_up[$i]; ?>" maxlength=20 name="SetPress<?php echo $i; ?>TempRelaysUp" title="These relays will be graphed with this sensor's condition and display above the y-axis 0."/>
+                        </td>
+                        <td colspan="2">
+                            <input style="width: 8em;" type="text" value="<?php echo $sensor_press_temp_relays_down[$i]; ?>" maxlength=20 name="SetPress<?php echo $i; ?>TempRelaysDown" title="These relays will be graphed with this sensor's condition and display below the y-axis 0."/>
+                        </td>
+                        <td colspan="2" style="padding-left: 1.5em;">
+                            <input style="width: 8em;" type="text" value="<?php echo $sensor_press_press_relays_up[$i]; ?>" maxlength=20 name="SetPress<?php echo $i; ?>PressRelaysUp" title="These relays will be graphed with this sensor's condition and display above the y-axis 0."/>
+                        </td>
+                        <td colspan="2">
+                            <input style="width: 8em;" type="text" value="<?php echo $sensor_press_press_relays_down[$i]; ?>" maxlength=20 name="SetPress<?php echo $i; ?>PressRelaysDown" title="These relays will be graphed with this sensor's condition and display below the y-axis 0."/>
                         </td>
                     </tr>
                 </table>

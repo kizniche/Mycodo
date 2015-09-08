@@ -259,7 +259,7 @@ if (isset($_POST['AddSensor'])) {
     if (isset($_POST['AddSensorName']) && ctype_alnum($_POST['AddSensorName'])) {
         switch ($_POST['AddSensorDev']) {
             case "DS18B20":
-                $stmt = $db->prepare("INSERT INTO TSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D) VALUES(:id, :name, 0, 'DS18B20', 120, 0, 0, 0, 0, -100, 100, 25, 5, 0, 35, 5, 5 0, 0, 0, 0, 1, 0, 0, 90, 0, 0, 0)");
+                $stmt = $db->prepare("INSERT INTO TSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D) VALUES(:id, :name, 0, 'DS18B20', 120, 0, 0, 0, 0, -100, 100, 25, 5, 0, 35, 5, 5, '','', 0, 0, 0, 0, 1, 0, 0, 90, 0, 0, 0)");
                 $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
                 $stmt->bindValue(':name', $_POST['AddSensorName'], SQLITE3_TEXT);
                 $stmt->execute();
@@ -268,7 +268,7 @@ if (isset($_POST['AddSensor'])) {
             case "DHT11":
             case "DHT22":
             case "AM2302":
-                $stmt = $db->prepare("INSERT INTO HTSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relay_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D) VALUES(:id, :name, 0, :dev, 120, 0, 0, 0, 0, -100, 100, 25, 5, 0, 35, 5, 5, 0, 100, 10, 5, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0, 0, 0, 0, 0, 1, 50.0, 0, 90, 0, 0, 0)");
+                $stmt = $db->prepare("INSERT INTO HTSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relays_Up, Hum_Relays_Down, Hum_Relay_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D) VALUES(:id, :name, 0, :dev, 120, 0, 0, 0, 0, -100, 100, 25, 5, 0, 35, 5, 5, 0, 100, 10, 5, '', '', 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0, '', '', 0, 0, 0, 0, 1, 50.0, 0, 90, 0, 0, 0)");
                 $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
                 $stmt->bindValue(':name', $_POST['AddSensorName'], SQLITE3_TEXT);
                 $stmt->bindValue(':dev', $_POST['AddSensorDev'], SQLITE3_TEXT);
@@ -276,14 +276,14 @@ if (isset($_POST['AddSensor'])) {
                 shell_exec("$mycodo_client --pidrestart HT");
                 break;
             case "K30":
-                $stmt = $db->prepare("INSERT INTO CO2Sensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_CO2_Min, YAxis_CO2_Max, YAxis_CO2_Tics, YAxis_CO2_MTics, CO2_Relay_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmax_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D) VALUES(:id, :name, 0, 'K30', 120, 0, 0, 0, 0, -100, 100, 25, 5, 0, 5000, 500, 5, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0)");
+                $stmt = $db->prepare("INSERT INTO CO2Sensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_CO2_Min, YAxis_CO2_Max, YAxis_CO2_Tics, YAxis_CO2_MTics, CO2_Relays_Up, CO2_Relays_Down, CO2_Relay_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmax_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D) VALUES(:id, :name, 0, 'K30', 120, 0, 0, 0, 0, -100, 100, 25, 5, 0, 5000, 500, 5, '', '', 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0)");
                 $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
                 $stmt->bindValue(':name', $_POST['AddSensorName'], SQLITE3_TEXT);
                 $stmt->execute();
                 shell_exec("$mycodo_client --pidrestart CO2");
                 break;
             case "BMP":
-                $stmt = $db->prepare("INSERT INTO PressSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Press_Min, YAxis_Press_Max, YAxis_Press_Tics, YAxis_Press_MTics, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Press_Relay_High, Press_Outmax_High, Press_Relay_Low, Press_Outmax_Low, Press_OR, Press_Set, Press_Set_Direction, Press_Period, Press_P, Press_I, Press_D) VALUES(:id, :name, 0, 'BMP085-180', 120, 0, 0, 0, 0, -100, 100, 25, 5, 0, 35, 5, 5, 97000, 99000, 250, 5, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0, 0, 0, 0, 0, 1, 50.0, 0, 90, 0, 0, 0)");
+                $stmt = $db->prepare("INSERT INTO PressSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Press_Min, YAxis_Press_Max, YAxis_Press_Tics, YAxis_Press_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Press_Relays_Up, Press_Relays_Down, Press_Relay_High, Press_Outmax_High, Press_Relay_Low, Press_Outmax_Low, Press_OR, Press_Set, Press_Set_Direction, Press_Period, Press_P, Press_I, Press_D) VALUES(:id, :name, 0, 'BMP085-180', 120, 0, 0, 0, 0, -100, 100, 25, 5, 0, 35, 5, 5, 97000, 99000, 250, 5, '', '', 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0, '', '', 0, 0, 0, 0, 1, 50.0, 0, 90, 0, 0, 0)");
                 $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
                 $stmt->bindValue(':name', $_POST['AddSensorName'], SQLITE3_TEXT);
                 $stmt->execute();
@@ -390,7 +390,7 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
         if (isset($_POST['Change' . $p . 'TSensorOverwrite'])) {
 
             if (isset($_POST['sensort' . $p . 'preset']) && $_POST['sensort' . $p . 'preset'] != 'default') {
-                $stmt = $db->prepare("UPDATE TSensorPreset SET Name=:name, Device=:device, Pin=:pin, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_Temp_Min=:yaxis_temp_min, YAxis_Temp_Max=:yaxis_temp_max, YAxis_Temp_Tics=:yaxis_temp_tics, YAxis_Temp_MTics=:yaxis_temp_mtics, Temp_Relay_High=:temprelayhigh, Temp_Outmax_High=:tempoutmaxhigh, Temp_Relay_Low=:temprelaylow, Temp_Outmax_Low=:tempoutmaxlow, Temp_Set=:tempset, Temp_Set_Direction=:tempsetdir, Temp_Period=:tempperiod, Temp_P=:tempp, Temp_I=:tempi, Temp_D=:tempd WHERE Id=:preset");
+                $stmt = $db->prepare("UPDATE TSensorPreset SET Name=:name, Device=:device, Pin=:pin, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_Temp_Min=:yaxis_temp_min, YAxis_Temp_Max=:yaxis_temp_max, YAxis_Temp_Tics=:yaxis_temp_tics, YAxis_Temp_MTics=:yaxis_temp_mtics, Temp_Relays_Up=:temprelaysup, Temp_Relays_Down=:temprelaysdown, Temp_Relay_High=:temprelayhigh, Temp_Outmax_High=:tempoutmaxhigh, Temp_Relay_Low=:temprelaylow, Temp_Outmax_Low=:tempoutmaxlow, Temp_Set=:tempset, Temp_Set_Direction=:tempsetdir, Temp_Period=:tempperiod, Temp_P=:tempp, Temp_I=:tempi, Temp_D=:tempd WHERE Id=:preset");
                 $stmt->bindValue(':name', $_POST['sensort' . $p . 'name'], SQLITE3_TEXT);
                 $stmt->bindValue(':device', $_POST['sensort' . $p . 'device'], SQLITE3_TEXT);
                 $stmt->bindValue(':pin', (int)$_POST['sensort' . $p . 'pin'], SQLITE3_INTEGER);
@@ -415,6 +415,8 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
                 $stmt->bindValue(':yaxis_temp_max', (int)$_POST['SetT' . $p . 'YAxisTempMax'], SQLITE3_INTEGER);
                 $stmt->bindValue(':yaxis_temp_tics', (int)$_POST['SetT' . $p . 'YAxisTempTics'], SQLITE3_INTEGER);
                 $stmt->bindValue(':yaxis_temp_mtics', (int)$_POST['SetT' . $p . 'YAxisTempMTics'], SQLITE3_INTEGER);
+                $stmt->bindValue(':temprelaysup', $_POST['SetT' . $p . 'TempRelaysUp'], SQLITE3_TEXT);
+                $stmt->bindValue(':temprelaysdown', $_POST['SetT' . $p . 'TempRelaysDown'], SQLITE3_TEXT);
                 $stmt->bindValue(':temprelayhigh', (int)$_POST['SetT' . $p . 'TempRelayHigh'], SQLITE3_INTEGER);
                 $stmt->bindValue(':tempoutmaxhigh', (int)$_POST['SetT' . $p . 'TempOutmaxHigh'], SQLITE3_INTEGER);
                 $stmt->bindValue(':temprelaylow', (int)$_POST['SetT' . $p . 'TempRelayLow'], SQLITE3_INTEGER);
@@ -429,7 +431,7 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
                 $stmt->execute();
             }
 
-            $stmt = $db->prepare("UPDATE TSensor SET Name=:name, Device=:device, Pin=:pin, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_Temp_Min=:yaxis_temp_min, YAxis_Temp_Max=:yaxis_temp_max, YAxis_Temp_Tics=:yaxis_temp_tics, YAxis_Temp_MTics=:yaxis_temp_mtics, Temp_Relay_High=:temprelayhigh, Temp_Outmax_High=:tempoutmaxhigh, Temp_Relay_Low=:temprelaylow, Temp_Outmax_Low=:tempoutmaxlow, Temp_Set=:tempset, Temp_Set_Direction=:tempsetdir, Temp_Period=:tempperiod, Temp_P=:tempp, Temp_I=:tempi, Temp_D=:tempd WHERE Id=:id");
+            $stmt = $db->prepare("UPDATE TSensor SET Name=:name, Device=:device, Pin=:pin, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_Temp_Min=:yaxis_temp_min, YAxis_Temp_Max=:yaxis_temp_max, YAxis_Temp_Tics=:yaxis_temp_tics, YAxis_Temp_MTics=:yaxis_temp_mtics, Temp_Relays_Up=:temprelaysup, Temp_Relays_Down=:temprelaysdown, Temp_Relay_High=:temprelayhigh, Temp_Outmax_High=:tempoutmaxhigh, Temp_Relay_Low=:temprelaylow, Temp_Outmax_Low=:tempoutmaxlow, Temp_Set=:tempset, Temp_Set_Direction=:tempsetdir, Temp_Period=:tempperiod, Temp_P=:tempp, Temp_I=:tempi, Temp_D=:tempd WHERE Id=:id");
             $stmt->bindValue(':id', $sensor_t_id[$p], SQLITE3_TEXT);
             $stmt->bindValue(':name', $_POST['sensort' . $p . 'name'], SQLITE3_TEXT);
             $stmt->bindValue(':device', $_POST['sensort' . $p . 'device'], SQLITE3_TEXT);
@@ -455,6 +457,8 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
             $stmt->bindValue(':yaxis_temp_max', (int)$_POST['SetT' . $p . 'YAxisTempMax'], SQLITE3_INTEGER);
             $stmt->bindValue(':yaxis_temp_tics', (int)$_POST['SetT' . $p . 'YAxisTempTics'], SQLITE3_INTEGER);
             $stmt->bindValue(':yaxis_temp_mtics', (int)$_POST['SetT' . $p . 'YAxisTempMTics'], SQLITE3_INTEGER);
+            $stmt->bindValue(':temprelaysup', $_POST['SetT' . $p . 'TempRelaysUp'], SQLITE3_TEXT);
+            $stmt->bindValue(':temprelaysdown', $_POST['SetT' . $p . 'TempRelaysDown'], SQLITE3_TEXT);
             $stmt->bindValue(':temprelayhigh', (int)$_POST['SetT' . $p . 'TempRelayHigh'], SQLITE3_INTEGER);
             $stmt->bindValue(':tempoutmaxhigh', (int)$_POST['SetT' . $p . 'TempOutmaxHigh'], SQLITE3_INTEGER);
             $stmt->bindValue(':temprelaylow', (int)$_POST['SetT' . $p . 'TempRelayLow'], SQLITE3_INTEGER);
@@ -495,12 +499,12 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
             // Id exists, change values to preset
             if ($exist != False) {
 
-                $stmt = $db->prepare('SELECT Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D FROM TSensorPreset WHERE Id=:preset');
+                $stmt = $db->prepare('SELECT Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relays_Up, Temp_Relays_Down Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D FROM TSensorPreset WHERE Id=:preset');
                 $stmt->bindValue(':preset', $_POST['sensort' . $p . 'preset']);
                 $result = $stmt->execute();
                 $row = $result->fetchArray();
 
-                $stmt = $db->prepare("UPDATE TSensor SET Name=:name, Pin=:pin, Device=:device, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_Temp_Min=:yaxis_temp_min, YAxis_Temp_Max=:yaxis_temp_max, YAxis_Temp_Tics=:yaxis_temp_tics, YAxis_Temp_MTics=:yaxis_temp_mtics, Temp_Relay_High=:temprelayhigh, Temp_Outmax_High=:tempoutmaxhigh, Temp_Relay_Low=:temprelaylow, Temp_Outmax_Low=:tempoutmaxlow, Temp_OR=:tempor, Temp_Set=:tempset, Temp_Set_Direction=:tempsetdir, Temp_Period=:tempperiod, Temp_P=:tempp, Temp_I=:tempi, Temp_D=:tempd WHERE Id=:id");
+                $stmt = $db->prepare("UPDATE TSensor SET Name=:name, Pin=:pin, Device=:device, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_Temp_Min=:yaxis_temp_min, YAxis_Temp_Max=:yaxis_temp_max, YAxis_Temp_Tics=:yaxis_temp_tics, YAxis_Temp_MTics=:yaxis_temp_mtics, Temp_Relays_Up=:temprelaysup, Temp_Relays_Down=:temprelaysdown, Temp_Relay_High=:temprelayhigh, Temp_Outmax_High=:tempoutmaxhigh, Temp_Relay_Low=:temprelaylow, Temp_Outmax_Low=:tempoutmaxlow, Temp_OR=:tempor, Temp_Set=:tempset, Temp_Set_Direction=:tempsetdir, Temp_Period=:tempperiod, Temp_P=:tempp, Temp_I=:tempi, Temp_D=:tempd WHERE Id=:id");
                 $stmt->bindValue(':id', $sensor_t_id[$p], SQLITE3_TEXT);
                 $stmt->bindValue(':name', $row['Name'], SQLITE3_TEXT);
                 $stmt->bindValue(':device', $row['Device'], SQLITE3_TEXT);
@@ -526,6 +530,8 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
                 $stmt->bindValue(':yaxis_temp_max', $row['YAxis_Temp_Max'], SQLITE3_INTEGER);
                 $stmt->bindValue(':yaxis_temp_tics', $row['YAxis_Temp_Tics'], SQLITE3_INTEGER);
                 $stmt->bindValue(':yaxis_temp_mtics', $row['YAxis_Temp_MTics'], SQLITE3_INTEGER);
+                $stmt->bindValue(':temprelaysup', $row['Temp_Relays_Up'], SQLITE3_TEXT);
+                $stmt->bindValue(':temprelaysdown', $row['Temp_Relays_Down'], SQLITE3_TEXT);
                 $stmt->bindValue(':temprelayhigh', $row['Temp_Relay_High'], SQLITE3_INTEGER);
                 $stmt->bindValue(':tempoutmaxhigh', $row['Temp_Outmax_High'], SQLITE3_INTEGER);
                 $stmt->bindValue(':temprelaylow', $row['Temp_Relay_Low'], SQLITE3_INTEGER);
@@ -558,7 +564,7 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
         } else {
             if (isset($_POST['sensort' . $p . 'presetname']) && $_POST['sensort' . $p . 'presetname'] != '') {
 
-                $stmt = $db->prepare("INSERT INTO TSensorPreset (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D) VALUES(:preset, :name, :pin, :device, :period, :premeas_relay, :premeas_dur, :activated, :graph, :yaxis_relay_min, :yaxis_relay_max, :yaxis_relay_tics, :yaxis_relay_mtics, :yaxis_temp_min, :yaxis_temp_max, :yaxis_temp_tics, :yaxis_temp_mtics, :temprelayhigh, :tempoutmaxhigh, :temprelaylow, :tempoutmaxlow, :tempset, :tempsetdir, :tempperiod, :tempp, :tempi, :tempd)");
+                $stmt = $db->prepare("INSERT INTO TSensorPreset (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D) VALUES(:preset, :name, :pin, :device, :period, :premeas_relay, :premeas_dur, :activated, :graph, :yaxis_relay_min, :yaxis_relay_max, :yaxis_relay_tics, :yaxis_relay_mtics, :yaxis_temp_min, :yaxis_temp_max, :yaxis_temp_tics, :yaxis_temp_mtics, :temprelaysup, :temprelaysdown, :temprelayhigh, :tempoutmaxhigh, :temprelaylow, :tempoutmaxlow, :tempset, :tempsetdir, :tempperiod, :tempp, :tempi, :tempd)");
                 $stmt->bindValue(':preset', $_POST['sensort' . $p . 'presetname'], SQLITE3_TEXT);
                 $stmt->bindValue(':name', $_POST['sensort' . $p . 'name'], SQLITE3_TEXT);
                 $stmt->bindValue(':device', $_POST['sensort' . $p . 'device'], SQLITE3_TEXT);
@@ -584,6 +590,8 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
                 $stmt->bindValue(':yaxis_temp_max', (int)$_POST['SetT' . $p . 'YAxisTempMax'], SQLITE3_INTEGER);
                 $stmt->bindValue(':yaxis_temp_tics', (int)$_POST['SetT' . $p . 'YAxisTempTics'], SQLITE3_INTEGER);
                 $stmt->bindValue(':yaxis_temp_mtics', (int)$_POST['SetT' . $p . 'YAxisTempMTics'], SQLITE3_INTEGER);
+                $stmt->bindValue(':temprelaysup', $_POST['SetT' . $p . 'TempRelaysUp'], SQLITE3_TEXT);
+                $stmt->bindValue(':temprelaysdown', $_POST['SetT' . $p . 'TempRelaysDown'], SQLITE3_TEXT);
                 $stmt->bindValue(':temprelayhigh', (int)$_POST['SetT' . $p . 'TempRelayHigh'], SQLITE3_INTEGER);
                 $stmt->bindValue(':tempoutmaxhigh', (int)$_POST['SetT' . $p . 'TempOutmaxHigh'], SQLITE3_INTEGER);
                 $stmt->bindValue(':temprelaylow', (int)$_POST['SetT' . $p . 'TempRelayLow'], SQLITE3_INTEGER);
@@ -757,7 +765,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
         if (isset($_POST['Change' . $p . 'HTSensorOverwrite'])) {
 
             if (isset($_POST['sensorht' . $p . 'preset']) && $_POST['sensorht' . $p . 'preset'] != 'default') {
-                $stmt = $db->prepare("UPDATE HTSensorPreset SET Name=:name, Device=:device, Pin=:pin, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_Temp_Min=:yaxis_temp_min, YAxis_Temp_Max=:yaxis_temp_max, YAxis_Temp_Tics=:yaxis_temp_tics, YAxis_Temp_MTics=:yaxis_temp_mtics, YAxis_Hum_Min=:yaxis_hum_min, YAxis_Hum_Max=:yaxis_hum_max, YAxis_Hum_Tics=:yaxis_hum_tics, YAxis_Hum_MTics=:yaxis_hum_mtics, Temp_Relay_High=:temprelayhigh, Temp_Outmax_High=:tempoutmaxhigh, Temp_Relay_Low=:temprelaylow, Temp_Outmax_Low=:tempoutmaxlow, Temp_Set=:tempset, Temp_Set_Direction=:tempsetdir, Temp_Period=:tempperiod, Temp_P=:tempp, Temp_I=:tempi, Temp_D=:tempd, Hum_Relay_High=:humrelayhigh, Hum_Outmax_High=:humoutmaxhigh, Hum_Relay_Low=:humrelaylow, Hum_Outmax_Low=:humoutmaxlow, Hum_Set=:humset, Hum_Set_Direction=:humsetdir, Hum_Period=:humperiod, Hum_P=:hum, Hum_I=:hum, Hum_D=:humd WHERE Id=:preset");
+                $stmt = $db->prepare("UPDATE HTSensorPreset SET Name=:name, Device=:device, Pin=:pin, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_Temp_Min=:yaxis_temp_min, YAxis_Temp_Max=:yaxis_temp_max, YAxis_Temp_Tics=:yaxis_temp_tics, YAxis_Temp_MTics=:yaxis_temp_mtics, YAxis_Hum_Min=:yaxis_hum_min, YAxis_Hum_Max=:yaxis_hum_max, YAxis_Hum_Tics=:yaxis_hum_tics, YAxis_Hum_MTics=:yaxis_hum_mtics, Temp_Relays_Up=:temprelaysup, Temp_Relays_Down=:temprelaysdown, Temp_Relay_High=:temprelayhigh, Temp_Outmax_High=:tempoutmaxhigh, Temp_Relay_Low=:temprelaylow, Temp_Outmax_Low=:tempoutmaxlow, Temp_Set=:tempset, Temp_Set_Direction=:tempsetdir, Temp_Period=:tempperiod, Temp_P=:tempp, Temp_I=:tempi, Temp_D=:tempd, Hum_Relays_Up=:humrelaysup, Hum_Relays_Down=:humrelaysdown, Hum_Relay_High=:humrelayhigh, Hum_Outmax_High=:humoutmaxhigh, Hum_Relay_Low=:humrelaylow, Hum_Outmax_Low=:humoutmaxlow, Hum_Set=:humset, Hum_Set_Direction=:humsetdir, Hum_Period=:humperiod, Hum_P=:hum, Hum_I=:hum, Hum_D=:humd WHERE Id=:preset");
                 $stmt->bindValue(':name', $_POST['sensorht' . $p . 'name'], SQLITE3_TEXT);
                 $stmt->bindValue(':device', $_POST['sensorht' . $p . 'device'], SQLITE3_TEXT);
                 $stmt->bindValue(':pin', (int)$_POST['sensorht' . $p . 'pin'], SQLITE3_INTEGER);
@@ -786,6 +794,8 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
                 $stmt->bindValue(':yaxis_hum_max', (int)$_POST['SetHT' . $p . 'YAxisHumMax'], SQLITE3_INTEGER);
                 $stmt->bindValue(':yaxis_hum_tics', (int)$_POST['SetHT' . $p . 'YAxisHumTics'], SQLITE3_INTEGER);
                 $stmt->bindValue(':yaxis_hum_mtics', (int)$_POST['SetHT' . $p . 'YAxisHumMTics'], SQLITE3_INTEGER);
+                $stmt->bindValue(':temprelaysup', $_POST['SetHT' . $p . 'TempRelaysUp'], SQLITE3_TEXT);
+                $stmt->bindValue(':temprelaysdown', $_POST['SetHT' . $p . 'TempRelaysDown'], SQLITE3_TEXT);
                 $stmt->bindValue(':temprelayhigh', (int)$_POST['SetHT' . $p . 'TempRelayHigh'], SQLITE3_INTEGER);
                 $stmt->bindValue(':tempoutmaxhigh', (int)$_POST['SetHT' . $p . 'TempOutmaxHigh'], SQLITE3_INTEGER);
                 $stmt->bindValue(':temprelaylow', (int)$_POST['SetHT' . $p . 'TempRelayLow'], SQLITE3_INTEGER);
@@ -796,6 +806,8 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
                 $stmt->bindValue(':tempp', (float)$_POST['SetHT' . $p . 'Temp_P'], SQLITE3_FLOAT);
                 $stmt->bindValue(':tempi', (float)$_POST['SetHT' . $p . 'Temp_I'], SQLITE3_FLOAT);
                 $stmt->bindValue(':tempd', (float)$_POST['SetHT' . $p . 'Temp_D'], SQLITE3_FLOAT);
+                $stmt->bindValue(':humrelaysup', $_POST['SetHT' . $p . 'HumRelaysUp'], SQLITE3_TEXT);
+                $stmt->bindValue(':humrelaysdown', $_POST['SetHT' . $p . 'HumRelaysDown'], SQLITE3_TEXT);
                 $stmt->bindValue(':humrelayhigh', (int)$_POST['SetHT' . $p . 'HumRelayHigh'], SQLITE3_INTEGER);
                 $stmt->bindValue(':humoutmaxhigh', (int)$_POST['SetHT' . $p . 'HumOutmaxHigh'], SQLITE3_INTEGER);
                 $stmt->bindValue(':humrelaylow', (int)$_POST['SetHT' . $p . 'HumRelayLow'], SQLITE3_INTEGER);
@@ -810,7 +822,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
                 $stmt->execute();
             }
 
-            $stmt = $db->prepare("UPDATE HTSensor SET Name=:name, Device=:device, Pin=:pin, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_Temp_Min=:yaxis_temp_min, YAxis_Temp_Max=:yaxis_temp_max, YAxis_Temp_Tics=:yaxis_temp_tics, YAxis_Temp_MTics=:yaxis_temp_mtics, YAxis_Hum_Min=:yaxis_hum_min, YAxis_Hum_Max=:yaxis_hum_max, YAxis_Hum_Tics=:yaxis_hum_tics, YAxis_Hum_MTics=:yaxis_hum_mtics, Temp_Relay_High=:temprelayhigh, Temp_Outmax_High=:tempoutmaxhigh, Temp_Relay_Low=:temprelaylow, Temp_Outmax_Low=:tempoutmaxlow, Temp_Set=:tempset, Temp_Set_Direction=:tempsetdir, Temp_Period=:tempperiod, Temp_P=:tempp, Temp_I=:tempi, Temp_D=:tempd, Hum_Relay_High=:humrelayhigh, Hum_Outmax_High=:humoutmaxhigh, Hum_Relay_Low=:humrelaylow, Hum_Outmax_Low=:humoutmaxlow, Hum_Set=:humset, Hum_Set_Direction=:humsetdir, Hum_Period=:humperiod, Hum_P=:hump, Hum_I=:humi, Hum_D=:humd WHERE Id=:id");
+            $stmt = $db->prepare("UPDATE HTSensor SET Name=:name, Device=:device, Pin=:pin, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_Temp_Min=:yaxis_temp_min, YAxis_Temp_Max=:yaxis_temp_max, YAxis_Temp_Tics=:yaxis_temp_tics, YAxis_Temp_MTics=:yaxis_temp_mtics, YAxis_Hum_Min=:yaxis_hum_min, YAxis_Hum_Max=:yaxis_hum_max, YAxis_Hum_Tics=:yaxis_hum_tics, YAxis_Hum_MTics=:yaxis_hum_mtics, Temp_Relays_Up=:temprelaysup, Temp_Relays_Down=:temprelaysdown, Temp_Relay_High=:temprelayhigh, Temp_Outmax_High=:tempoutmaxhigh, Temp_Relay_Low=:temprelaylow, Temp_Outmax_Low=:tempoutmaxlow, Temp_Set=:tempset, Temp_Set_Direction=:tempsetdir, Temp_Period=:tempperiod, Temp_P=:tempp, Temp_I=:tempi, Temp_D=:tempd, Hum_Relays_Up=:humrelaysup, Hum_Relays_Down=:humrelaysdown, Hum_Relay_High=:humrelayhigh, Hum_Outmax_High=:humoutmaxhigh, Hum_Relay_Low=:humrelaylow, Hum_Outmax_Low=:humoutmaxlow, Hum_Set=:humset, Hum_Set_Direction=:humsetdir, Hum_Period=:humperiod, Hum_P=:hump, Hum_I=:humi, Hum_D=:humd WHERE Id=:id");
             $stmt->bindValue(':id', $sensor_ht_id[$p], SQLITE3_TEXT);
             $stmt->bindValue(':name', $_POST['sensorht' . $p . 'name'], SQLITE3_TEXT);
             $stmt->bindValue(':device', $_POST['sensorht' . $p . 'device'], SQLITE3_TEXT);
@@ -840,6 +852,8 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             $stmt->bindValue(':yaxis_hum_max', (int)$_POST['SetHT' . $p . 'YAxisHumMax'], SQLITE3_INTEGER);
             $stmt->bindValue(':yaxis_hum_tics', (int)$_POST['SetHT' . $p . 'YAxisHumTics'], SQLITE3_INTEGER);
             $stmt->bindValue(':yaxis_hum_mtics', (int)$_POST['SetHT' . $p . 'YAxisHumMTics'], SQLITE3_INTEGER);
+            $stmt->bindValue(':temprelaysup', $_POST['SetHT' . $p . 'TempRelaysUp'], SQLITE3_TEXT);
+            $stmt->bindValue(':temprelaysdown', $_POST['SetHT' . $p . 'TempRelaysDown'], SQLITE3_TEXT);
             $stmt->bindValue(':temprelayhigh', (int)$_POST['SetHT' . $p . 'TempRelayHigh'], SQLITE3_INTEGER);
             $stmt->bindValue(':tempoutmaxhigh', (int)$_POST['SetHT' . $p . 'TempOutmaxHigh'], SQLITE3_INTEGER);
             $stmt->bindValue(':temprelaylow', (int)$_POST['SetHT' . $p . 'TempRelayLow'], SQLITE3_INTEGER);
@@ -850,6 +864,8 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             $stmt->bindValue(':tempp', (float)$_POST['SetHT' . $p . 'Temp_P'], SQLITE3_FLOAT);
             $stmt->bindValue(':tempi', (float)$_POST['SetHT' . $p . 'Temp_I'], SQLITE3_FLOAT);
             $stmt->bindValue(':tempd', (float)$_POST['SetHT' . $p . 'Temp_D'], SQLITE3_FLOAT);
+            $stmt->bindValue(':humrelaysup', $_POST['SetHT' . $p . 'HumRelaysUp'], SQLITE3_TEXT);
+            $stmt->bindValue(':humrelaysdown', $_POST['SetHT' . $p . 'HumRelaysDown'], SQLITE3_TEXT);
             $stmt->bindValue(':humrelayhigh', (int)$_POST['SetHT' . $p . 'HumRelayHigh'], SQLITE3_INTEGER);
             $stmt->bindValue(':humoutmaxhigh', (int)$_POST['SetHT' . $p . 'HumOutmaxHigh'], SQLITE3_INTEGER);
             $stmt->bindValue(':humrelaylow', (int)$_POST['SetHT' . $p . 'HumRelayLow'], SQLITE3_INTEGER);
@@ -904,7 +920,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             } else {
                 if (isset($_POST['sensorht' . $p . 'presetname']) && $_POST['sensorht' . $p . 'presetname'] != '') {
 
-                    $stmt = $db->prepare("INSERT INTO HTSensorPreset (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relay_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmax_Low, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D) VALUES(:preset, :name, :pin, :device, :period, :premeas_relay, :premeas_dur, :activated, :graph, :yaxis_relay_min, :yaxis_relay_max, :yaxis_relay_tics, :yaxis_relay_mtics, :yaxis_temp_min, :yaxis_temp_max, :yaxis_temp_tics, :yaxis_temp_mtics, :yaxis_hum_min, :yaxis_hum_max, :yaxis_hum_tics, :yaxis_hum_mtics, :temprelayhigh, :tempoutmaxhigh, :temprelaylow, :tempoutmaxlow, :tempset, :tempsetdir, :tempperiod, :tempp, :tempi, :tempd, :humrelayhigh, :humoutmaxhigh, :humrelaylow, :humoutmaxlow, :humset, :humsetdir, :humperiod, :hump, :humi, :humd)");
+                    $stmt = $db->prepare("INSERT INTO HTSensorPreset (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relays_Up, Hum_Relays_Down, Hum_Relay_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmax_Low, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D) VALUES(:preset, :name, :pin, :device, :period, :premeas_relay, :premeas_dur, :activated, :graph, :yaxis_relay_min, :yaxis_relay_max, :yaxis_relay_tics, :yaxis_relay_mtics, :yaxis_temp_min, :yaxis_temp_max, :yaxis_temp_tics, :yaxis_temp_mtics, :yaxis_hum_min, :yaxis_hum_max, :yaxis_hum_tics, :yaxis_hum_mtics, :temprelaysup, :temprelaysdown, :temprelayhigh, :tempoutmaxhigh, :temprelaylow, :tempoutmaxlow, :tempset, :tempsetdir, :tempperiod, :tempp, :tempi, :tempd, :humrelaysup, :humrelaysdown, :humrelayhigh, :humoutmaxhigh, :humrelaylow, :humoutmaxlow, :humset, :humsetdir, :humperiod, :hump, :humi, :humd)");
                     $stmt->bindValue(':preset', $_POST['sensorht' . $p . 'presetname'], SQLITE3_TEXT);
                     $stmt->bindValue(':name', $_POST['sensorht' . $p . 'name'], SQLITE3_TEXT);
                     $stmt->bindValue(':device', $_POST['sensorht' . $p . 'device'], SQLITE3_TEXT);
@@ -934,6 +950,8 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
                     $stmt->bindValue(':yaxis_hum_max', (int)$_POST['SetHT' . $p . 'YAxisHumMax'], SQLITE3_INTEGER);
                     $stmt->bindValue(':yaxis_hum_tics', (int)$_POST['SetHT' . $p . 'YAxisHumTics'], SQLITE3_INTEGER);
                     $stmt->bindValue(':yaxis_hum_mtics', (int)$_POST['SetHT' . $p . 'YAxisHumMTics'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':temprelaysup', $_POST['SetHT' . $p . 'TempRelaysUp'], SQLITE3_TEXT);
+                    $stmt->bindValue(':temprelaysdown', $_POST['SetHT' . $p . 'TempRelaysDown'], SQLITE3_TEXT);
                     $stmt->bindValue(':temprelayhigh', (int)$_POST['SetHT' . $p . 'TempRelayHigh'], SQLITE3_INTEGER);
                     $stmt->bindValue(':tempoutmaxhigh', (int)$_POST['SetHT' . $p . 'TempOutmaxHigh'], SQLITE3_INTEGER);
                     $stmt->bindValue(':temprelaylow', (int)$_POST['SetHT' . $p . 'TempRelayLow'], SQLITE3_INTEGER);
@@ -944,6 +962,8 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
                     $stmt->bindValue(':tempp', (float)$_POST['SetHT' . $p . 'Temp_P'], SQLITE3_FLOAT);
                     $stmt->bindValue(':tempi', (float)$_POST['SetHT' . $p . 'Temp_I'], SQLITE3_FLOAT);
                     $stmt->bindValue(':tempd', (float)$_POST['SetHT' . $p . 'Temp_D'], SQLITE3_FLOAT);
+                    $stmt->bindValue(':humrelaysup', $_POST['SetHT' . $p . 'HumRelaysUp'], SQLITE3_TEXT);
+                    $stmt->bindValue(':humrelaysdown', $_POST['SetHT' . $p . 'HumRelaysDown'], SQLITE3_TEXT);
                     $stmt->bindValue(':humrelayhigh', (int)$_POST['SetHT' . $p . 'HumRelayHigh'], SQLITE3_INTEGER);
                     $stmt->bindValue(':humoutmaxhigh', (int)$_POST['SetHT' . $p . 'HumOutmaxHigh'], SQLITE3_INTEGER);
                     $stmt->bindValue(':humrelaylow', (int)$_POST['SetHT' . $p . 'HumRelayLow'], SQLITE3_INTEGER);
@@ -974,12 +994,12 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
         // Id exists, change values to preset
         if ($exist != False) {
 
-            $stmt = $db->prepare('SELECT Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relay_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmax_Low, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensorPreset WHERE Id=:preset');
+            $stmt = $db->prepare('SELECT Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relays_Up, Hum_Relays_Down, Hum_Relay_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmax_Low, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensorPreset WHERE Id=:preset');
             $stmt->bindValue(':preset', $_POST['sensorht' . $p . 'preset']);
             $result = $stmt->execute();
             $row = $result->fetchArray();
 
-            $stmt = $db->prepare("UPDATE HTSensor SET Name=:name, Pin=:pin, Device=:device, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_Temp_Min=:yaxis_temp_min, YAxis_Temp_Max=:yaxis_temp_max, YAxis_Temp_Tics=:yaxis_temp_tics, YAxis_Temp_MTics=:yaxis_temp_mtics, YAxis_Hum_Min=:yaxis_hum_min, YAxis_Hum_Max=:yaxis_hum_max, YAxis_Hum_Tics=:yaxis_hum_tics, YAxis_Hum_MTics=:yaxis_hum_mtics, Temp_Relay_High=:temprelayhigh, Temp_Outmax_High=:tempoutmaxhigh, Temp_Relay_Low=:temprelaylow, Temp_Outmax_Low=:tempoutmaxlow, Temp_OR=:tempor, Temp_Set=:tempset, Temp_Set_Direction=:tempsetdir, Temp_Period=:tempperiod, Temp_P=:tempp, Temp_I=:tempi, Temp_D=:tempd, Hum_Relay_High=:humrelayhigh, Hum_Outmax_High=:humoutmaxhigh, Hum_Relay_Low=:humrelaylow, Hum_Outmax_Low=:humoutmaxlow, Hum_OR=:humor, Hum_Set=:humset, Hum_Set_Direction=:humsetdir, Hum_Period=:humperiod, Hum_P=:hump, Hum_I=:humi, Hum_D=:humd WHERE Id=:id");
+            $stmt = $db->prepare("UPDATE HTSensor SET Name=:name, Pin=:pin, Device=:device, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_Temp_Min=:yaxis_temp_min, YAxis_Temp_Max=:yaxis_temp_max, YAxis_Temp_Tics=:yaxis_temp_tics, YAxis_Temp_MTics=:yaxis_temp_mtics, YAxis_Hum_Min=:yaxis_hum_min, YAxis_Hum_Max=:yaxis_hum_max, YAxis_Hum_Tics=:yaxis_hum_tics, YAxis_Hum_MTics=:yaxis_hum_mtics, Temp_Relays_Up=:temprelaysup, Temp_Relays_Down=:temprelaysdown, Temp_Relay_High=:temprelayhigh, Temp_Outmax_High=:tempoutmaxhigh, Temp_Relay_Low=:temprelaylow, Temp_Outmax_Low=:tempoutmaxlow, Temp_OR=:tempor, Temp_Set=:tempset, Temp_Set_Direction=:tempsetdir, Temp_Period=:tempperiod, Temp_P=:tempp, Temp_I=:tempi, Temp_D=:tempd, Hum_Relays_Up=:humrelaysup, Hum_Relays_Down=:humrelaysdown, Hum_Relay_High=:humrelayhigh, Hum_Outmax_High=:humoutmaxhigh, Hum_Relay_Low=:humrelaylow, Hum_Outmax_Low=:humoutmaxlow, Hum_OR=:humor, Hum_Set=:humset, Hum_Set_Direction=:humsetdir, Hum_Period=:humperiod, Hum_P=:hump, Hum_I=:humi, Hum_D=:humd WHERE Id=:id");
             $stmt->bindValue(':id', $sensor_ht_id[$p], SQLITE3_TEXT);
             $stmt->bindValue(':name', $row['Name'], SQLITE3_TEXT);
             $stmt->bindValue(':device', $row['Device'], SQLITE3_TEXT);
@@ -1009,6 +1029,8 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             $stmt->bindValue(':yaxis_hum_max', $row['YAxis_Hum_Max'], SQLITE3_INTEGER);
             $stmt->bindValue(':yaxis_hum_tics', $row['YAxis_Hum_Tics'], SQLITE3_INTEGER);
             $stmt->bindValue(':yaxis_hum_mtics', $row['YAxis_Hum_MTics'], SQLITE3_INTEGER);
+            $stmt->bindValue(':temprelaysup', $row['Temp_Relays_Up'], SQLITE3_TEXT);
+            $stmt->bindValue(':temprelaysdown', $row['Temp_Relays_Down'], SQLITE3_TEXT);
             $stmt->bindValue(':temprelayhigh', $row['Temp_Relay_High'], SQLITE3_INTEGER);
             $stmt->bindValue(':tempoutmaxhigh', $row['Temp_Outmax_High'], SQLITE3_INTEGER);
             $stmt->bindValue(':temprelaylow', $row['Temp_Relay_Low'], SQLITE3_INTEGER);
@@ -1020,6 +1042,8 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             $stmt->bindValue(':tempp', $row['Temp_P'], SQLITE3_FLOAT);
             $stmt->bindValue(':tempi', $row['Temp_I'], SQLITE3_FLOAT);
             $stmt->bindValue(':tempd', $row['Temp_D'], SQLITE3_FLOAT);
+            $stmt->bindValue(':humrelaysup', $row['Hum_Relays_Up'], SQLITE3_TEXT);
+            $stmt->bindValue(':humrelaysdown', $row['Hum_Relays_Down'], SQLITE3_TEXT);
             $stmt->bindValue(':humrelayhigh', $row['Hum_Relay_High'], SQLITE3_INTEGER);
             $stmt->bindValue(':humoutmaxhigh', $row['Hum_Outmax_High'], SQLITE3_INTEGER);
             $stmt->bindValue(':humrelaylow', $row['Hum_Relay_Low'], SQLITE3_INTEGER);
@@ -1175,7 +1199,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
 
             if (isset($_POST['sensorco2' . $p . 'preset']) && $_POST['sensorco2' . $p . 'preset'] != 'default') {
 
-                $stmt = $db->prepare("UPDATE CO2SensorPreset SET Name=:name, Device=:device, Pin=:pin, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_CO2_Min=:yaxis_co2_min, YAxis_CO2_Max=:yaxis_co2_max, YAxis_CO2_Tics=:yaxis_co2_tics, YAxis_CO2_MTics=:yaxis_co2_mtics, CO2_Relay_High=:co2relayhigh, CO2_Outmax_High=:co2outmaxhigh, CO2_Relay_Low=:co2relaylow, CO2_Outmax_Low=:co2outmaxlow, CO2_Set=:co2set, CO2_Set_Direction=:co2setdir, CO2_Period=:co2period, CO2_P=:co2p, CO2_I=:co2i, CO2_D=:co2d WHERE Id=:preset");
+                $stmt = $db->prepare("UPDATE CO2SensorPreset SET Name=:name, Device=:device, Pin=:pin, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_CO2_Min=:yaxis_co2_min, YAxis_CO2_Max=:yaxis_co2_max, YAxis_CO2_Tics=:yaxis_co2_tics, YAxis_CO2_MTics=:yaxis_co2_mtics, CO2_Relays_Up=:co2relaysup, CO2_Relays_Down=:co2relaysdown, CO2_Relay_High=:co2relayhigh, CO2_Outmax_High=:co2outmaxhigh, CO2_Relay_Low=:co2relaylow, CO2_Outmax_Low=:co2outmaxlow, CO2_Set=:co2set, CO2_Set_Direction=:co2setdir, CO2_Period=:co2period, CO2_P=:co2p, CO2_I=:co2i, CO2_D=:co2d WHERE Id=:preset");
                 $stmt->bindValue(':name', $_POST['sensorco2' . $p . 'name'], SQLITE3_TEXT);
                 $stmt->bindValue(':device', $_POST['sensorco2' . $p . 'device'], SQLITE3_TEXT);
                 if ($_POST['sensorco2' . $p . 'device'] == 'K30') {
@@ -1204,6 +1228,8 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
                 $stmt->bindValue(':yaxis_co2_max', (int)$_POST['SetCO2' . $p . 'YAxisCO2Max'], SQLITE3_INTEGER);
                 $stmt->bindValue(':yaxis_co2_tics', (int)$_POST['SetCO2' . $p . 'YAxisCO2Tics'], SQLITE3_INTEGER);
                 $stmt->bindValue(':yaxis_co2_mtics', (int)$_POST['SetCO2' . $p . 'YAxisCO2MTics'], SQLITE3_INTEGER);
+                $stmt->bindValue(':co2relaysup', $_POST['SetCO2' . $p . 'CO2RelaysUp'], SQLITE3_TEXT);
+                $stmt->bindValue(':co2relaysdown', $_POST['SetCO2' . $p . 'CO2RelaysDown'], SQLITE3_TEXT);
                 $stmt->bindValue(':co2relayhigh', (int)$_POST['SetCO2' . $p . 'CO2RelayHigh'], SQLITE3_INTEGER);
                 $stmt->bindValue(':co2outmaxhigh', (int)$_POST['SetCO2' . $p . 'CO2OutmaxHigh'], SQLITE3_INTEGER);
                 $stmt->bindValue(':co2relaylow', (int)$_POST['SetCO2' . $p . 'CO2RelayLow'], SQLITE3_INTEGER);
@@ -1218,7 +1244,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
                 $stmt->execute();
             }
 
-            $stmt = $db->prepare("UPDATE CO2Sensor SET Name=:name, Device=:device, Pin=:pin, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_CO2_Min=:yaxis_co2_min, YAxis_CO2_Max=:yaxis_co2_max, YAxis_CO2_Tics=:yaxis_co2_tics, YAxis_CO2_MTics=:yaxis_co2_mtics, CO2_Relay_High=:co2relayhigh, CO2_Outmax_High=:co2outmaxhigh, CO2_Relay_Low=:co2relaylow, CO2_Outmax_Low=:co2outmaxlow, CO2_Set=:co2set, CO2_Set_Direction=:co2setdir, CO2_Period=:co2period, CO2_P=:co2p, CO2_I=:co2i, CO2_D=:co2d WHERE Id=:id");
+            $stmt = $db->prepare("UPDATE CO2Sensor SET Name=:name, Device=:device, Pin=:pin, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_CO2_Min=:yaxis_co2_min, YAxis_CO2_Max=:yaxis_co2_max, YAxis_CO2_Tics=:yaxis_co2_tics, YAxis_CO2_MTics=:yaxis_co2_mtics, CO2_Relays_Up=:co2relaysup, CO2_Relays_Down=:co2relaysdown, CO2_Relay_High=:co2relayhigh, CO2_Outmax_High=:co2outmaxhigh, CO2_Relay_Low=:co2relaylow, CO2_Outmax_Low=:co2outmaxlow, CO2_Set=:co2set, CO2_Set_Direction=:co2setdir, CO2_Period=:co2period, CO2_P=:co2p, CO2_I=:co2i, CO2_D=:co2d WHERE Id=:id");
             $stmt->bindValue(':id', $sensor_co2_id[$p], SQLITE3_TEXT);
             $stmt->bindValue(':name', $_POST['sensorco2' . $p . 'name'], SQLITE3_TEXT);
             $stmt->bindValue(':device', $_POST['sensorco2' . $p . 'device'], SQLITE3_TEXT);
@@ -1248,6 +1274,8 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
             $stmt->bindValue(':yaxis_co2_max', (int)$_POST['SetCO2' . $p . 'YAxisCO2Max'], SQLITE3_INTEGER);
             $stmt->bindValue(':yaxis_co2_tics', (int)$_POST['SetCO2' . $p . 'YAxisCO2Tics'], SQLITE3_INTEGER);
             $stmt->bindValue(':yaxis_co2_mtics', (int)$_POST['SetCO2' . $p . 'YAxisCO2MTics'], SQLITE3_INTEGER);
+            $stmt->bindValue(':co2relaysup', $_POST['SetCO2' . $p . 'CO2RelaysUp'], SQLITE3_TEXT);
+            $stmt->bindValue(':co2relaysdown', $_POST['SetCO2' . $p . 'CO2RelaysDown'], SQLITE3_TEXT);
             $stmt->bindValue(':co2relayhigh', (int)$_POST['SetCO2' . $p . 'CO2RelayHigh'], SQLITE3_INTEGER);
             $stmt->bindValue(':co2outmaxhigh', (int)$_POST['SetCO2' . $p . 'CO2OutmaxHigh'], SQLITE3_INTEGER);
             $stmt->bindValue(':co2relaylow', (int)$_POST['SetCO2' . $p . 'CO2RelayLow'], SQLITE3_INTEGER);
@@ -1285,7 +1313,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
             } else {
                 if (isset($_POST['sensorco2' . $p . 'presetname']) && $_POST['sensorco2' . $p . 'presetname'] != '') {
 
-                    $stmt = $db->prepare("INSERT INTO CO2SensorPreset (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_CO2_Min, YAxis_CO2_Max, YAxis_CO2_Tics, YAxis_CO2_MTics, CO2_Relay_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmax_Low, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D) VALUES(:preset, :name, :pin, :device, :period, :premeas_relay, :premeas_dur, :activated, :graph, :yaxis_relay_min, :yaxis_relay_max, :yaxis_relay_tics, :yaxis_relay_mtics, :yaxis_co2_min, :yaxis_co2_max, :yaxis_co2_tics, :yaxis_co2_mtics, :co2relayhigh, :co2outmaxhigh, :co2relaylow, :co2outmaxlow, :co2set, :co2setdir, :co2period, :co2p, :co2i, :co2d)");
+                    $stmt = $db->prepare("INSERT INTO CO2SensorPreset (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_CO2_Min, YAxis_CO2_Max, YAxis_CO2_Tics, YAxis_CO2_MTics, CO2_Relays_Up, CO2_Relays_Down, CO2_Relay_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmax_Low, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D) VALUES(:preset, :name, :pin, :device, :period, :premeas_relay, :premeas_dur, :activated, :graph, :yaxis_relay_min, :yaxis_relay_max, :yaxis_relay_tics, :yaxis_relay_mtics, :yaxis_co2_min, :yaxis_co2_max, :yaxis_co2_tics, :yaxis_co2_mtics, :co2relaysup, :co2relaysdown, :co2relayhigh, :co2outmaxhigh, :co2relaylow, :co2outmaxlow, :co2set, :co2setdir, :co2period, :co2p, :co2i, :co2d)");
                     $stmt->bindValue(':preset', $_POST['sensorco2' . $p . 'presetname'], SQLITE3_TEXT);
                     $stmt->bindValue(':name', $_POST['sensorco2' . $p . 'name'], SQLITE3_TEXT);
                     $stmt->bindValue(':device', $_POST['sensorco2' . $p . 'device'], SQLITE3_TEXT);
@@ -1311,6 +1339,8 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
                     $stmt->bindValue(':yaxis_co2_max', (int)$_POST['SetCO2' . $p . 'YAxisCO2Max'], SQLITE3_INTEGER);
                     $stmt->bindValue(':yaxis_co2_tics', (int)$_POST['SetCO2' . $p . 'YAxisCO2Tics'], SQLITE3_INTEGER);
                     $stmt->bindValue(':yaxis_co2_mtics', (int)$_POST['SetCO2' . $p . 'YAxisCO2MTics'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':co2relaysup', $_POST['SetCO2' . $p . 'CO2RelaysUp'], SQLITE3_TEXT);
+                    $stmt->bindValue(':co2relaysdown', $_POST['SetCO2' . $p . 'CO2RelaysDown'], SQLITE3_TEXT);
                     $stmt->bindValue(':co2relayhigh', (int)$_POST['SetCO2' . $p . 'CO2RelayHigh'], SQLITE3_INTEGER);
                     $stmt->bindValue(':co2outmaxhigh', (int)$_POST['SetCO2' . $p . 'CO2OutmaxHigh'], SQLITE3_INTEGER);
                     $stmt->bindValue(':co2relaylow', (int)$_POST['SetCO2' . $p . 'CO2RelayLow'], SQLITE3_INTEGER);
@@ -1340,12 +1370,12 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
         // Id exists, change values to preset
         if ($exist != False) {
 
-            $stmt = $db->prepare('SELECT Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_CO2_Min, YAxis_CO2_Max, YAxis_CO2_Tics, YAxis_CO2_MTics, CO2_Relay_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmax_Low, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D FROM CO2SensorPreset WHERE Id=:preset');
+            $stmt = $db->prepare('SELECT Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_CO2_Min, YAxis_CO2_Max, YAxis_CO2_Tics, YAxis_CO2_MTics, CO2_Relays_Up, CO2_Relays_Down, CO2_Relay_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmax_Low, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D FROM CO2SensorPreset WHERE Id=:preset');
             $stmt->bindValue(':preset', $_POST['sensorco2' . $p . 'preset']);
             $result = $stmt->execute();
             $row = $result->fetchArray();
 
-            $stmt = $db->prepare("UPDATE CO2Sensor SET Name=:name, Pin=:pin, Device=:device, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_CO2_Min=:yaxis_co2_min, YAxis_CO2_Max=:yaxis_co2_max, YAxis_CO2_Tics=:yaxis_co2_tics, YAxis_CO2_MTics=:yaxis_co2_mtics, CO2_Relay_High=:co2relayhigh, CO2_Outmax_High=:co2outmaxhigh, CO2_Relay_Low=:co2relaylow, CO2_Outmax_Low=:co2outmaxlow, CO2_OR=:co2or, CO2_Set=:co2set, CO2_Set_Direction=:co2setdir, CO2_Period=:co2period, CO2_P=:co2p, CO2_I=:co2i, CO2_D=:co2d WHERE Id=:id");
+            $stmt = $db->prepare("UPDATE CO2Sensor SET Name=:name, Pin=:pin, Device=:device, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_CO2_Min=:yaxis_co2_min, YAxis_CO2_Max=:yaxis_co2_max, YAxis_CO2_Tics=:yaxis_co2_tics, YAxis_CO2_MTics=:yaxis_co2_mtics, CO2_Relays_Up=:co2relaysup, CO2_Relays_Down=:co2relaysdown, CO2_Relay_High=:co2relayhigh, CO2_Outmax_High=:co2outmaxhigh, CO2_Relay_Low=:co2relaylow, CO2_Outmax_Low=:co2outmaxlow, CO2_OR=:co2or, CO2_Set=:co2set, CO2_Set_Direction=:co2setdir, CO2_Period=:co2period, CO2_P=:co2p, CO2_I=:co2i, CO2_D=:co2d WHERE Id=:id");
             $stmt->bindValue(':id', $sensor_co2_id[$p], SQLITE3_TEXT);
             $stmt->bindValue(':name', $row['Name'], SQLITE3_TEXT);
             $stmt->bindValue(':device', $row['Device'], SQLITE3_TEXT);
@@ -1371,6 +1401,8 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
             $stmt->bindValue(':yaxis_co2_max', $row['YAxis_CO2_Max'], SQLITE3_INTEGER);
             $stmt->bindValue(':yaxis_co2_tics', $row['YAxis_CO2_Tics'], SQLITE3_INTEGER);
             $stmt->bindValue(':yaxis_co2_mtics', $row['YAxis_CO2_MTics'], SQLITE3_INTEGER);
+            $stmt->bindValue(':co2relaysup', $row['CO2_Relays_Up'], SQLITE3_TEXT);
+            $stmt->bindValue(':co2relaysdown', $row['CO2_Relays_Down'], SQLITE3_TEXT);
             $stmt->bindValue(':co2relayhigh', $row['CO2_Relay_High'], SQLITE3_INTEGER);
             $stmt->bindValue(':co2outmaxhigh', $row['CO2_Outmax_High'], SQLITE3_INTEGER);
             $stmt->bindValue(':co2relaylow', $row['CO2_Relay_Low'], SQLITE3_INTEGER);
@@ -1550,7 +1582,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
         if (isset($_POST['Change' . $p . 'PressSensorOverwrite'])) {
 
             if (isset($_POST['sensorpress' . $p . 'preset']) && $_POST['sensorpress' . $p . 'preset'] != 'default') {
-                $stmt = $db->prepare("UPDATE PressSensorPreset SET Name=:name, Device=:device, Pin=:pin, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_Temp_Min=:yaxis_temp_min, YAxis_Temp_Max=:yaxis_temp_max, YAxis_Temp_Tics=:yaxis_temp_tics, YAxis_Temp_MTics=:yaxis_temp_mtics, YAxis_Press_Min=:yaxis_press_min, YAxis_Press_Max=:yaxis_press_max, YAxis_Press_Tics=:yaxis_press_tics, YAxis_Press_MTics=:yaxis_press_mtics, Temp_Relay_High=:temprelayhigh, Temp_Outmax_High=:tempoutmaxhigh, Temp_Relay_Low=:temprelaylow, Temp_Outmax_Low=:tempoutmaxlow, Temp_Set=:tempset, Temp_Set_Direction=:tempsetdir, Temp_Period=:tempperiod, Temp_P=:tempp, Temp_I=:tempi, Temp_D=:tempd, Press_Relay_High=:pressrelayhigh, Press_Outmax_High=:pressoutmaxhigh, Press_Relay_Low=:pressrelaylow, Press_Outmax_Low=:pressoutmaxlow, Press_Set=:pressset, Press_Set_Direction=:presssetdir, Press_Period=:pressperiod, Press_P=:press, Press_I=:press, Press_D=:pressd WHERE Id=:preset");
+                $stmt = $db->prepare("UPDATE PressSensorPreset SET Name=:name, Device=:device, Pin=:pin, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_Temp_Min=:yaxis_temp_min, YAxis_Temp_Max=:yaxis_temp_max, YAxis_Temp_Tics=:yaxis_temp_tics, YAxis_Temp_MTics=:yaxis_temp_mtics, YAxis_Press_Min=:yaxis_press_min, YAxis_Press_Max=:yaxis_press_max, YAxis_Press_Tics=:yaxis_press_tics, YAxis_Press_MTics=:yaxis_press_mtics, Temp_Relays_Up=:temprelaysup, Temp_Relays_Down=:temprelaysdown, Temp_Relay_High=:temprelayhigh, Temp_Outmax_High=:tempoutmaxhigh, Temp_Relay_Low=:temprelaylow, Temp_Outmax_Low=:tempoutmaxlow, Temp_Set=:tempset, Temp_Set_Direction=:tempsetdir, Temp_Period=:tempperiod, Temp_P=:tempp, Temp_I=:tempi, Temp_D=:tempd, Press_Relays_Up=:pressrelaysup, Press_Relays_Down=:pressrelaysdown, Press_Relay_High=:pressrelayhigh, Press_Outmax_High=:pressoutmaxhigh, Press_Relay_Low=:pressrelaylow, Press_Outmax_Low=:pressoutmaxlow, Press_Set=:pressset, Press_Set_Direction=:presssetdir, Press_Period=:pressperiod, Press_P=:press, Press_I=:press, Press_D=:pressd WHERE Id=:preset");
                 $stmt->bindValue(':name', $_POST['sensorpress' . $p . 'name'], SQLITE3_TEXT);
                 $stmt->bindValue(':device', $_POST['sensorpress' . $p . 'device'], SQLITE3_TEXT);
                 $stmt->bindValue(':pin', (int)$_POST['sensorpress' . $p . 'pin'], SQLITE3_INTEGER);
@@ -1579,6 +1611,8 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
                 $stmt->bindValue(':yaxis_press_max', (int)$_POST['SetPress' . $p . 'YAxisPressMax'], SQLITE3_INTEGER);
                 $stmt->bindValue(':yaxis_press_tics', (int)$_POST['SetPress' . $p . 'YAxisPressTics'], SQLITE3_INTEGER);
                 $stmt->bindValue(':yaxis_press_mtics', (int)$_POST['SetPress' . $p . 'YAxisPressMTics'], SQLITE3_INTEGER);
+                $stmt->bindValue(':temprelaysup', $_POST['SetPress' . $p . 'TempRelaysUp'], SQLITE3_TEXT);
+                $stmt->bindValue(':temprelaysdown', $_POST['SetPress' . $p . 'TempRelaysDown'], SQLITE3_TEXT);
                 $stmt->bindValue(':temprelayhigh', (int)$_POST['SetPress' . $p . 'TempRelayHigh'], SQLITE3_INTEGER);
                 $stmt->bindValue(':tempoutmaxhigh', (int)$_POST['SetPress' . $p . 'TempOutmaxHigh'], SQLITE3_INTEGER);
                 $stmt->bindValue(':temprelaylow', (int)$_POST['SetPress' . $p . 'TempRelayLow'], SQLITE3_INTEGER);
@@ -1589,6 +1623,8 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
                 $stmt->bindValue(':tempp', (float)$_POST['SetPress' . $p . 'Temp_P'], SQLITE3_FLOAT);
                 $stmt->bindValue(':tempi', (float)$_POST['SetPress' . $p . 'Temp_I'], SQLITE3_FLOAT);
                 $stmt->bindValue(':tempd', (float)$_POST['SetPress' . $p . 'Temp_D'], SQLITE3_FLOAT);
+                $stmt->bindValue(':pressrelaysup', $_POST['SetPress' . $p . 'PressRelaysUp'], SQLITE3_TEXT);
+                $stmt->bindValue(':pressrelaysdown', $_POST['SetPress' . $p . 'PressRelaysDown'], SQLITE3_TEXT);
                 $stmt->bindValue(':pressrelayhigh', (int)$_POST['SetPress' . $p . 'PressRelayHigh'], SQLITE3_INTEGER);
                 $stmt->bindValue(':pressoutmaxhigh', (int)$_POST['SetPress' . $p . 'PressOutmaxHigh'], SQLITE3_INTEGER);
                 $stmt->bindValue(':pressrelaylow', (int)$_POST['SetPress' . $p . 'PressRelayLow'], SQLITE3_INTEGER);
@@ -1603,7 +1639,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
                 $stmt->execute();
             }
 
-            $stmt = $db->prepare("UPDATE PressSensor SET Name=:name, Device=:device, Pin=:pin, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_Temp_Min=:yaxis_temp_min, YAxis_Temp_Max=:yaxis_temp_max, YAxis_Temp_Tics=:yaxis_temp_tics, YAxis_Temp_MTics=:yaxis_temp_mtics, YAxis_Press_Min=:yaxis_press_min, YAxis_Press_Max=:yaxis_press_max, YAxis_Press_Tics=:yaxis_press_tics, YAxis_Press_MTics=:yaxis_press_mtics, Temp_Relay_High=:temprelayhigh, Temp_Outmax_High=:tempoutmaxhigh, Temp_Relay_Low=:temprelaylow, Temp_Outmax_Low=:tempoutmaxlow, Temp_Set=:tempset, Temp_Set_Direction=:tempsetdir, Temp_Period=:tempperiod, Temp_P=:tempp, Temp_I=:tempi, Temp_D=:tempd, Press_Relay_High=:pressrelayhigh, Press_Outmax_High=:pressoutmaxhigh, Press_Relay_Low=:pressrelaylow, Press_Outmax_Low=:pressoutmaxlow, Press_Set=:pressset, Press_Set_Direction=:presssetdir, Press_Period=:pressperiod, Press_P=:pressp, Press_I=:pressi, Press_D=:pressd WHERE Id=:id");
+            $stmt = $db->prepare("UPDATE PressSensor SET Name=:name, Device=:device, Pin=:pin, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_Temp_Min=:yaxis_temp_min, YAxis_Temp_Max=:yaxis_temp_max, YAxis_Temp_Tics=:yaxis_temp_tics, YAxis_Temp_MTics=:yaxis_temp_mtics, YAxis_Press_Min=:yaxis_press_min, YAxis_Press_Max=:yaxis_press_max, YAxis_Press_Tics=:yaxis_press_tics, YAxis_Press_MTics=:yaxis_press_mtics, Temp_Relays_Up=:temprelaysup, Temp_Relays_Down=:temprelaysdown, Temp_Relay_High=:temprelayhigh, Temp_Outmax_High=:tempoutmaxhigh, Temp_Relay_Low=:temprelaylow, Temp_Outmax_Low=:tempoutmaxlow, Temp_Set=:tempset, Temp_Set_Direction=:tempsetdir, Temp_Period=:tempperiod, Temp_P=:tempp, Temp_I=:tempi, Temp_D=:tempd, Press_Relays_Up=:pressrelaysup, Press_Relays_Down=:pressrelaysdown, Press_Relay_High=:pressrelayhigh, Press_Outmax_High=:pressoutmaxhigh, Press_Relay_Low=:pressrelaylow, Press_Outmax_Low=:pressoutmaxlow, Press_Set=:pressset, Press_Set_Direction=:presssetdir, Press_Period=:pressperiod, Press_P=:pressp, Press_I=:pressi, Press_D=:pressd WHERE Id=:id");
             $stmt->bindValue(':id', $sensor_press_id[$p], SQLITE3_TEXT);
             $stmt->bindValue(':name', $_POST['sensorpress' . $p . 'name'], SQLITE3_TEXT);
             $stmt->bindValue(':device', $_POST['sensorpress' . $p . 'device'], SQLITE3_TEXT);
@@ -1637,6 +1673,8 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
             $stmt->bindValue(':yaxis_press_max', (int)$_POST['SetPress' . $p . 'YAxisPressMax'], SQLITE3_INTEGER);
             $stmt->bindValue(':yaxis_press_tics', (int)$_POST['SetPress' . $p . 'YAxisPressTics'], SQLITE3_INTEGER);
             $stmt->bindValue(':yaxis_press_mtics', (int)$_POST['SetPress' . $p . 'YAxisPressMTics'], SQLITE3_INTEGER);
+            $stmt->bindValue(':temprelaysup', $_POST['SetPress' . $p . 'TempRelaysUp'], SQLITE3_TEXT);
+            $stmt->bindValue(':temprelaysdown', $_POST['SetPress' . $p . 'TempRelaysDown'], SQLITE3_TEXT);
             $stmt->bindValue(':temprelayhigh', (int)$_POST['SetPress' . $p . 'TempRelayHigh'], SQLITE3_INTEGER);
             $stmt->bindValue(':tempoutmaxhigh', (int)$_POST['SetPress' . $p . 'TempOutmaxHigh'], SQLITE3_INTEGER);
             $stmt->bindValue(':temprelaylow', (int)$_POST['SetPress' . $p . 'TempRelayLow'], SQLITE3_INTEGER);
@@ -1647,6 +1685,8 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
             $stmt->bindValue(':tempp', (float)$_POST['SetPress' . $p . 'Temp_P'], SQLITE3_FLOAT);
             $stmt->bindValue(':tempi', (float)$_POST['SetPress' . $p . 'Temp_I'], SQLITE3_FLOAT);
             $stmt->bindValue(':tempd', (float)$_POST['SetPress' . $p . 'Temp_D'], SQLITE3_FLOAT);
+            $stmt->bindValue(':pressrelaysup', $_POST['SetPress' . $p . 'PressRelaysUp'], SQLITE3_TEXT);
+            $stmt->bindValue(':pressrelaysdown', $_POST['SetPress' . $p . 'PressRelaysDown'], SQLITE3_TEXT);
             $stmt->bindValue(':pressrelayhigh', (int)$_POST['SetPress' . $p . 'PressRelayHigh'], SQLITE3_INTEGER);
             $stmt->bindValue(':pressoutmaxhigh', (int)$_POST['SetPress' . $p . 'PressOutmaxHigh'], SQLITE3_INTEGER);
             $stmt->bindValue(':pressrelaylow', (int)$_POST['SetPress' . $p . 'PressRelayLow'], SQLITE3_INTEGER);
@@ -1701,7 +1741,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
             } else {
                 if (isset($_POST['sensorpress' . $p . 'presetname']) && $_POST['sensorpress' . $p . 'presetname'] != '') {
 
-                    $stmt = $db->prepare("INSERT INTO PressSensorPreset (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Press_Min, YAxis_Press_Max, YAxis_Press_Tics, YAxis_Press_MTics, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Press_Relay_High, Press_Outmax_High, Press_Relay_Low, Press_Outmax_Low, Press_Set, Press_Set_Direction, Press_Period, Press_P, Press_I, Press_D) VALUES(:preset, :name, :pin, :device, :period, :premeas_relay, :premeas_dur, :activated, :graph, :yaxis_relay_min, :yaxis_relay_max, :yaxis_relay_tics, :yaxis_relay_mtics, :yaxis_temp_min, :yaxis_temp_max, :yaxis_temp_tics, :yaxis_temp_mtics, :yaxis_press_min, :yaxis_press_max, :yaxis_press_tics, :yaxis_press_mtics, :temprelayhigh, :tempoutmaxhigh, :temprelaylow, :tempoutmaxlow, :tempset, :tempsetdir, :tempperiod, :tempp, :tempi, :tempd, :pressrelayhigh, :pressoutmaxhigh, :pressrelaylow, :pressoutmaxlow, :pressset, :presssetdir, :pressperiod, :pressp, :pressi, :pressd)");
+                    $stmt = $db->prepare("INSERT INTO PressSensorPreset (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Press_Min, YAxis_Press_Max, YAxis_Press_Tics, YAxis_Press_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Press_Relays_Up, Press_Relays_Down, Press_Relay_High, Press_Outmax_High, Press_Relay_Low, Press_Outmax_Low, Press_Set, Press_Set_Direction, Press_Period, Press_P, Press_I, Press_D) VALUES(:preset, :name, :pin, :device, :period, :premeas_relay, :premeas_dur, :activated, :graph, :yaxis_relay_min, :yaxis_relay_max, :yaxis_relay_tics, :yaxis_relay_mtics, :yaxis_temp_min, :yaxis_temp_max, :yaxis_temp_tics, :yaxis_temp_mtics, :yaxis_press_min, :yaxis_press_max, :yaxis_press_tics, :yaxis_press_mtics, :temprelaysup, :temprelaysdown, :temprelayhigh, :tempoutmaxhigh, :temprelaylow, :tempoutmaxlow, :tempset, :tempsetdir, :tempperiod, :tempp, :tempi, :tempd, :pressrelaysup, :pressrelaysdown, :pressrelayhigh, :pressoutmaxhigh, :pressrelaylow, :pressoutmaxlow, :pressset, :presssetdir, :pressperiod, :pressp, :pressi, :pressd)");
                     $stmt->bindValue(':preset', $_POST['sensorpress' . $p . 'presetname'], SQLITE3_TEXT);
                     $stmt->bindValue(':name', $_POST['sensorpress' . $p . 'name'], SQLITE3_TEXT);
                     $stmt->bindValue(':device', $_POST['sensorpress' . $p . 'device'], SQLITE3_TEXT);
@@ -1731,6 +1771,8 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
                     $stmt->bindValue(':yaxis_press_max', (int)$_POST['SetPress' . $p . 'YAxisPressMax'], SQLITE3_INTEGER);
                     $stmt->bindValue(':yaxis_press_tics', (int)$_POST['SetPress' . $p . 'YAxisPressTics'], SQLITE3_INTEGER);
                     $stmt->bindValue(':yaxis_press_mtics', (int)$_POST['SetPress' . $p . 'YAxisPressMTics'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':temprelaysup', $_POST['SetPress' . $p . 'TempRelaysUp'], SQLITE3_TEXT);
+                    $stmt->bindValue(':temprelaysdown', $_POST['SetPress' . $p . 'TempRelaysDown'], SQLITE3_TEXT);
                     $stmt->bindValue(':temprelayhigh', (int)$_POST['SetPress' . $p . 'TempRelayHigh'], SQLITE3_INTEGER);
                     $stmt->bindValue(':tempoutmaxhigh', (int)$_POST['SetPress' . $p . 'TempOutmaxHigh'], SQLITE3_INTEGER);
                     $stmt->bindValue(':temprelaylow', (int)$_POST['SetPress' . $p . 'TempRelayLow'], SQLITE3_INTEGER);
@@ -1741,6 +1783,8 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
                     $stmt->bindValue(':tempp', (float)$_POST['SetPress' . $p . 'Temp_P'], SQLITE3_FLOAT);
                     $stmt->bindValue(':tempi', (float)$_POST['SetPress' . $p . 'Temp_I'], SQLITE3_FLOAT);
                     $stmt->bindValue(':tempd', (float)$_POST['SetPress' . $p . 'Temp_D'], SQLITE3_FLOAT);
+                    $stmt->bindValue(':pressrelaysup', $_POST['SetPress' . $p . 'PressRelaysUp'], SQLITE3_TEXT);
+                    $stmt->bindValue(':pressrelaysdown', $_POST['SetPress' . $p . 'PressRelaysDown'], SQLITE3_TEXT);
                     $stmt->bindValue(':pressrelayhigh', (int)$_POST['SetPress' . $p . 'PressRelayHigh'], SQLITE3_INTEGER);
                     $stmt->bindValue(':pressoutmaxhigh', (int)$_POST['SetPress' . $p . 'PressOutmaxHigh'], SQLITE3_INTEGER);
                     $stmt->bindValue(':pressrelaylow', (int)$_POST['SetPress' . $p . 'PressRelayLow'], SQLITE3_INTEGER);
@@ -1771,12 +1815,12 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
         // Id exists, change values to preset
         if ($exist != False) {
 
-            $stmt = $db->prepare('SELECT Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Press_Min, YAxis_Press_Max, YAxis_Press_Tics, YAxis_Press_MTics, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Press_Relay_High, Press_Outmax_High, Press_Relay_Low, Press_Outmax_Low, Press_Set, Press_Set_Direction, Press_Period, Press_P, Press_I, Press_D FROM PressSensorPreset WHERE Id=:preset');
+            $stmt = $db->prepare('SELECT Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Press_Min, YAxis_Press_Max, YAxis_Press_Tics, YAxis_Press_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Press_Relays_Up, Press_Relays_Down, Press_Relay_High, Press_Outmax_High, Press_Relay_Low, Press_Outmax_Low, Press_Set, Press_Set_Direction, Press_Period, Press_P, Press_I, Press_D FROM PressSensorPreset WHERE Id=:preset');
             $stmt->bindValue(':preset', $_POST['sensorpress' . $p . 'preset']);
             $result = $stmt->execute();
             $row = $result->fetchArray();
 
-            $stmt = $db->prepare("UPDATE PressSensor SET Name=:name, Pin=:pin, Device=:device, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_Temp_Min=:yaxis_temp_min, YAxis_Temp_Max=:yaxis_temp_max, YAxis_Temp_Tics=:yaxis_temp_tics, YAxis_Temp_MTics=:yaxis_temp_mtics, YAxis_Press_Min=:yaxis_press_min, YAxis_Press_Max=:yaxis_press_max, YAxis_Press_Tics=:yaxis_press_tics, YAxis_Press_MTics=:yaxis_press_mtics, Temp_Relay_High=:temprelayhigh, Temp_Outmax_High=:tempoutmaxhigh, Temp_Relay_Low=:temprelaylow, Temp_Outmax_Low=:tempoutmaxlow, Temp_OR=:tempor, Temp_Set=:tempset, Temp_Set_Direction=:tempsetdir, Temp_Period=:tempperiod, Temp_P=:tempp, Temp_I=:tempi, Temp_D=:tempd, Press_Relay_High=:pressrelayhigh, Press_Outmax_High=:pressoutmaxhigh, Press_Relay_Low=:pressrelaylow, Press_Outmax_Low=:pressoutmaxlow, Press_OR=:pressor, Press_Set=:pressset, Press_Set_Direction=:presssetdir, Press_Period=:pressperiod, Press_P=:pressp, Press_I=:pressi, Press_D=:pressd WHERE Id=:id");
+            $stmt = $db->prepare("UPDATE PressSensor SET Name=:name, Pin=:pin, Device=:device, Period=:period, Pre_Measure_Relay=:premeas_relay, Pre_Measure_Dur=:premeas_dur, Activated=:activated, Graph=:graph, YAxis_Relay_Min=:yaxis_relay_min, YAxis_Relay_Max=:yaxis_relay_max, YAxis_Relay_Tics=:yaxis_relay_tics, YAxis_Relay_MTics=:yaxis_relay_mtics, YAxis_Temp_Min=:yaxis_temp_min, YAxis_Temp_Max=:yaxis_temp_max, YAxis_Temp_Tics=:yaxis_temp_tics, YAxis_Temp_MTics=:yaxis_temp_mtics, YAxis_Press_Min=:yaxis_press_min, YAxis_Press_Max=:yaxis_press_max, YAxis_Press_Tics=:yaxis_press_tics, YAxis_Press_MTics=:yaxis_press_mtics, Temp_Relays_Up=:temprelaysup, Temp_Relays_Down=:temprelaysdown, Temp_Relay_High=:temprelayhigh, Temp_Outmax_High=:tempoutmaxhigh, Temp_Relay_Low=:temprelaylow, Temp_Outmax_Low=:tempoutmaxlow, Temp_OR=:tempor, Temp_Set=:tempset, Temp_Set_Direction=:tempsetdir, Temp_Period=:tempperiod, Temp_P=:tempp, Temp_I=:tempi, Temp_D=:tempd, Press_Relays_Up=:pressrelaysup, Press_Relays_Down=:pressrelaysdown, Press_Relay_High=:pressrelayhigh, Press_Outmax_High=:pressoutmaxhigh, Press_Relay_Low=:pressrelaylow, Press_Outmax_Low=:pressoutmaxlow, Press_OR=:pressor, Press_Set=:pressset, Press_Set_Direction=:presssetdir, Press_Period=:pressperiod, Press_P=:pressp, Press_I=:pressi, Press_D=:pressd WHERE Id=:id");
             $stmt->bindValue(':id', $sensor_press_id[$p], SQLITE3_TEXT);
             $stmt->bindValue(':name', $row['Name'], SQLITE3_TEXT);
             $stmt->bindValue(':device', $row['Device'], SQLITE3_TEXT);
@@ -1806,6 +1850,8 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
             $stmt->bindValue(':yaxis_press_max', $row['YAxis_Press_Max'], SQLITE3_INTEGER);
             $stmt->bindValue(':yaxis_press_tics', $row['YAxis_Press_Tics'], SQLITE3_INTEGER);
             $stmt->bindValue(':yaxis_press_mtics', $row['YAxis_Press_MTics'], SQLITE3_INTEGER);
+            $stmt->bindValue(':temprelaysup', $row['Temp_Relays_Up'], SQLITE3_TEXT);
+            $stmt->bindValue(':temprelaysdown', $row['Temp_Relays_Down'], SQLITE3_TEXT);
             $stmt->bindValue(':temprelayhigh', $row['Temp_Relay_High'], SQLITE3_INTEGER);
             $stmt->bindValue(':tempoutmaxhigh', $row['Temp_Outmax_High'], SQLITE3_INTEGER);
             $stmt->bindValue(':temprelaylow', $row['Temp_Relay_Low'], SQLITE3_INTEGER);
@@ -1817,6 +1863,8 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
             $stmt->bindValue(':tempp', $row['Temp_P'], SQLITE3_FLOAT);
             $stmt->bindValue(':tempi', $row['Temp_I'], SQLITE3_FLOAT);
             $stmt->bindValue(':tempd', $row['Temp_D'], SQLITE3_FLOAT);
+            $stmt->bindValue(':pressrelaysup', $row['Press_Relays_Up'], SQLITE3_TEXT);
+            $stmt->bindValue(':pressrelaysdown', $row['Press_Relays_Down'], SQLITE3_TEXT);
             $stmt->bindValue(':pressrelayhigh', $row['Press_Relay_High'], SQLITE3_INTEGER);
             $stmt->bindValue(':pressoutmaxhigh', $row['Press_Outmax_High'], SQLITE3_INTEGER);
             $stmt->bindValue(':pressrelaylow', $row['Press_Relay_Low'], SQLITE3_INTEGER);

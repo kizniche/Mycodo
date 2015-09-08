@@ -26,7 +26,7 @@
 sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
 sql_database_user = '/var/www/mycodo/config/users.db'
 
-db_version_mycodo = 6
+db_version_mycodo = 7
 db_version_user = 1
 
 import getopt
@@ -291,6 +291,21 @@ def mycodo_database_update():
             ModNullValue(sql_database_mycodo, 'PressSensor', 'YAxis_Press_Tics', 250)
             ModNullValue(sql_database_mycodo, 'PressSensor', 'YAxis_Press_MTics', 5)
 
+        # Version 7 row updates
+        if current_db_version_mycodo < 7:
+            ModNullValue(sql_database_mycodo, 'TSensor', 'Temp_Relays_Up', '0')
+            ModNullValue(sql_database_mycodo, 'TSensor', 'Temp_Relays_Down', '0')
+            ModNullValue(sql_database_mycodo, 'HTSensor', 'Temp_Relays_Up', '0')
+            ModNullValue(sql_database_mycodo, 'HTSensor', 'Temp_Relays_Down', '0')
+            ModNullValue(sql_database_mycodo, 'HTSensor', 'Hum_Relays_Up', '0')
+            ModNullValue(sql_database_mycodo, 'HTSensor', 'Hum_Relays_Down', '0')
+            ModNullValue(sql_database_mycodo, 'CO2Sensor', 'CO2_Relays_Up', '0')
+            ModNullValue(sql_database_mycodo, 'CO2Sensor', 'CO2_Relays_Down', '0')
+            ModNullValue(sql_database_mycodo, 'PressSensor', 'Temp_Relays_Up', '0')
+            ModNullValue(sql_database_mycodo, 'PressSensor', 'Temp_Relays_Down', '0')
+            ModNullValue(sql_database_mycodo, 'PressSensor', 'Press_Relays_Up', '0')
+            ModNullValue(sql_database_mycodo, 'PressSensor', 'Press_Relays_Down', '0')
+
         # any extra commands for version X
         #if current_db_version_mycodo < X:
         #    pass
@@ -302,7 +317,8 @@ def user_database_update():
     cur.execute("PRAGMA user_version;")
     for row in cur:
         current_db_version_user = row[0]
-    print "User database version: %d" % current_db_version_user
+    print "Current User database version: %d" % current_db_version_user
+    print "Latest User database version: %d" % db_version_user
     
     # Version 1
     if current_db_version_user < 1:
@@ -341,6 +357,8 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'TSensor', 'YAxis_Temp_Max', 'INT')
     AddColumn(sql_database_mycodo, 'TSensor', 'YAxis_Temp_Tics', 'INT')
     AddColumn(sql_database_mycodo, 'TSensor', 'YAxis_Temp_MTics', 'INT')
+    AddColumn(sql_database_mycodo, 'TSensor', 'Temp_Relays_Up', 'TEXT')
+    AddColumn(sql_database_mycodo, 'TSensor', 'Temp_Relays_Down', 'TEXT')
     AddColumn(sql_database_mycodo, 'TSensor', 'Temp_Relay_High', 'INT')
     AddColumn(sql_database_mycodo, 'TSensor', 'Temp_Outmax_High', 'INT')
     AddColumn(sql_database_mycodo, 'TSensor', 'Temp_Relay_Low', 'INT')
@@ -370,6 +388,8 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'TSensorPreset', 'YAxis_Temp_Max', 'INT')
     AddColumn(sql_database_mycodo, 'TSensorPreset', 'YAxis_Temp_Tics', 'INT')
     AddColumn(sql_database_mycodo, 'TSensorPreset', 'YAxis_Temp_MTics', 'INT')
+    AddColumn(sql_database_mycodo, 'TSensorPreset', 'Temp_Relays_Up', 'TEXT')
+    AddColumn(sql_database_mycodo, 'TSensorPreset', 'Temp_Relays_Down', 'TEXT')
     AddColumn(sql_database_mycodo, 'TSensorPreset', 'Temp_Relay_High', 'INT')
     AddColumn(sql_database_mycodo, 'TSensorPreset', 'Temp_Outmax_High', 'INT')
     AddColumn(sql_database_mycodo, 'TSensorPreset', 'Temp_Relay_Low', 'INT')
@@ -413,6 +433,8 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'HTSensor', 'YAxis_Hum_Max', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensor', 'YAxis_Hum_Tics', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensor', 'YAxis_Hum_MTics', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensor', 'Temp_Relays_Up', 'TEXT')
+    AddColumn(sql_database_mycodo, 'HTSensor', 'Temp_Relays_Down', 'TEXT')
     AddColumn(sql_database_mycodo, 'HTSensor', 'Temp_Relay_High', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensor', 'Temp_Outmax_High', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensor', 'Temp_Relay_Low', 'INT')
@@ -424,6 +446,8 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'HTSensor', 'Temp_P', 'REAL')
     AddColumn(sql_database_mycodo, 'HTSensor', 'Temp_I', 'REAL')
     AddColumn(sql_database_mycodo, 'HTSensor', 'Temp_D', 'REAL')
+    AddColumn(sql_database_mycodo, 'HTSensor', 'Hum_Relays_Up', 'TEXT')
+    AddColumn(sql_database_mycodo, 'HTSensor', 'Hum_Relays_Down', 'TEXT')
     AddColumn(sql_database_mycodo, 'HTSensor', 'Hum_Relay_High', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensor', 'Hum_Outmax_High', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensor', 'Hum_Relay_Low', 'INT')
@@ -457,6 +481,8 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'HTSensorPreset', 'YAxis_Hum_Max', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensorPreset', 'YAxis_Hum_Tics', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensorPreset', 'YAxis_Hum_MTics', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Temp_Relays_Up', 'TEXT')
+    AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Temp_Relays_Down', 'TEXT')
     AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Temp_Relay_High', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Temp_Outmax_High', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Temp_Relay_Low', 'INT')
@@ -467,6 +493,8 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Temp_P', 'REAL')
     AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Temp_I', 'REAL')
     AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Temp_D', 'REAL')
+    AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Hum_Relays_Up', 'TEXT')
+    AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Hum_Relays_Down', 'TEXT')
     AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Hum_Relay_High', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Hum_Outmax_High', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Hum_Relay_Low', 'INT')
@@ -507,6 +535,8 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'CO2Sensor', 'YAxis_CO2_Max', 'INT')
     AddColumn(sql_database_mycodo, 'CO2Sensor', 'YAxis_CO2_Tics', 'INT')
     AddColumn(sql_database_mycodo, 'CO2Sensor', 'YAxis_CO2_MTics', 'INT')
+    AddColumn(sql_database_mycodo, 'CO2Sensor', 'CO2_Relays_Up', 'TEXT')
+    AddColumn(sql_database_mycodo, 'CO2Sensor', 'CO2_Relays_Down', 'TEXT')
     AddColumn(sql_database_mycodo, 'CO2Sensor', 'CO2_Relay_High', 'INT')
     AddColumn(sql_database_mycodo, 'CO2Sensor', 'CO2_Outmax_High', 'INT')
     AddColumn(sql_database_mycodo, 'CO2Sensor', 'CO2_Relay_Low', 'INT')
@@ -536,6 +566,8 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'CO2SensorPreset', 'YAxis_CO2_Max', 'INT')
     AddColumn(sql_database_mycodo, 'CO2SensorPreset', 'YAxis_CO2_Tics', 'INT')
     AddColumn(sql_database_mycodo, 'CO2SensorPreset', 'YAxis_CO2_MTics', 'INT')
+    AddColumn(sql_database_mycodo, 'CO2SensorPreset', 'CO2_Relays_Up', 'TEXT')
+    AddColumn(sql_database_mycodo, 'CO2SensorPreset', 'CO2_Relays_Down', 'TEXT')
     AddColumn(sql_database_mycodo, 'CO2SensorPreset', 'CO2_Relay_High', 'INT')
     AddColumn(sql_database_mycodo, 'CO2SensorPreset', 'CO2_Outmax_High', 'INT')
     AddColumn(sql_database_mycodo, 'CO2SensorPreset', 'CO2_Relay_Low', 'INT')
@@ -579,6 +611,8 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'PressSensor', 'YAxis_Press_Max', 'INT')
     AddColumn(sql_database_mycodo, 'PressSensor', 'YAxis_Press_Tics', 'INT')
     AddColumn(sql_database_mycodo, 'PressSensor', 'YAxis_Press_MTics', 'INT')
+    AddColumn(sql_database_mycodo, 'PressSensor', 'Temp_Relays_Up', 'TEXT')
+    AddColumn(sql_database_mycodo, 'PressSensor', 'Temp_Relays_Down', 'TEXT')
     AddColumn(sql_database_mycodo, 'PressSensor', 'Temp_Relay_High', 'INT')
     AddColumn(sql_database_mycodo, 'PressSensor', 'Temp_Outmax_High', 'INT')
     AddColumn(sql_database_mycodo, 'PressSensor', 'Temp_Relay_Low', 'INT')
@@ -590,6 +624,8 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'PressSensor', 'Temp_P', 'REAL')
     AddColumn(sql_database_mycodo, 'PressSensor', 'Temp_I', 'REAL')
     AddColumn(sql_database_mycodo, 'PressSensor', 'Temp_D', 'REAL')
+    AddColumn(sql_database_mycodo, 'PressSensor', 'Press_Relays_Up', 'TEXT')
+    AddColumn(sql_database_mycodo, 'PressSensor', 'Press_Relays_Down', 'TEXT')
     AddColumn(sql_database_mycodo, 'PressSensor', 'Press_Relay_High', 'INT')
     AddColumn(sql_database_mycodo, 'PressSensor', 'Press_Outmax_High', 'INT')
     AddColumn(sql_database_mycodo, 'PressSensor', 'Press_Relay_Low', 'INT')
@@ -623,6 +659,8 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'PressSensorPreset', 'YAxis_Press_Max', 'INT')
     AddColumn(sql_database_mycodo, 'PressSensorPreset', 'YAxis_Press_Tics', 'INT')
     AddColumn(sql_database_mycodo, 'PressSensorPreset', 'YAxis_Press_MTics', 'INT')
+    AddColumn(sql_database_mycodo, 'PressSensorPreset', 'Temp_Relays_Up', 'TEXT')
+    AddColumn(sql_database_mycodo, 'PressSensorPreset', 'Temp_Relays_Down', 'TEXT')
     AddColumn(sql_database_mycodo, 'PressSensorPreset', 'Temp_Relay_High', 'INT')
     AddColumn(sql_database_mycodo, 'PressSensorPreset', 'Temp_Outmax_High', 'INT')
     AddColumn(sql_database_mycodo, 'PressSensorPreset', 'Temp_Relay_Low', 'INT')
@@ -633,6 +671,8 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'PressSensorPreset', 'Temp_P', 'REAL')
     AddColumn(sql_database_mycodo, 'PressSensorPreset', 'Temp_I', 'REAL')
     AddColumn(sql_database_mycodo, 'PressSensorPreset', 'Temp_D', 'REAL')
+    AddColumn(sql_database_mycodo, 'PressSensorPreset', 'Press_Relays_Up', 'TEXT')
+    AddColumn(sql_database_mycodo, 'PressSensorPreset', 'Press_Relays_Down', 'TEXT')
     AddColumn(sql_database_mycodo, 'PressSensorPreset', 'Press_Relay_High', 'INT')
     AddColumn(sql_database_mycodo, 'PressSensorPreset', 'Press_Outmax_High', 'INT')
     AddColumn(sql_database_mycodo, 'PressSensorPreset', 'Press_Relay_Low', 'INT')

@@ -35,6 +35,9 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 Major changes for each versioned release
 
 #### 3.5.71
++ Ability to choose which relays are graphed and what direction (up or down from the 0 y-axis)
+
+#### 3.5.71
 + Ability to set y-axis min/max/tics/mtics for each sensor graph, for both relays and measured condition(s)
 
 #### 3.5.70
