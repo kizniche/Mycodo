@@ -1044,18 +1044,6 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
 
             if int(time.time()) > timerTemp:
 
-                timerT = 0
-                if sensor_t_premeasure_relay[sensor] and sensor_t_premeasure_dur[sensor]:
-                    timerT = int(time.time()) + sensor_t_premeasure_dur[sensor]
-                    rod = threading.Thread(target = relay_on_duration,
-                        args = (sensor_t_premeasure_relay[sensor], sensor_t_premeasure_dur[sensor], sensor,))
-                    rod.start()
-                    while timerT > int(time.time()) and client_que != 'TerminateServer':
-                        if sql_reload_hold:
-                            relay_onoff(sensor_t_premeasure_relay[sensor], 'off')
-                            break
-                        time.sleep(0.25)
-
                 logging.debug("[PID T-Temperature-%s] Reading temperature...", sensor+1)
                 if read_t_sensor(sensor) == 1:
 
@@ -1145,18 +1133,6 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
 
             if int(time.time()) > timerTemp:
 
-                timerHT = 0
-                if sensor_ht_premeasure_relay[sensor] and sensor_ht_premeasure_dur[sensor]:
-                    timerHT = int(time.time()) + sensor_ht_premeasure_dur[sensor]
-                    rod = threading.Thread(target = relay_on_duration,
-                        args = (sensor_ht_premeasure_relay[sensor], sensor_ht_premeasure_dur[sensor], sensor,))
-                    rod.start()
-                    while ((timerHT > int(time.time())) and client_que != 'TerminateServer'):
-                        if sql_reload_hold:
-                            relay_onoff(sensor_ht_premeasure_relay[sensor], 'off')
-                            break
-                        time.sleep(0.25)
-
                 logging.debug("[PID HT-Temperature-%s] Reading temperature...", sensor+1)
                 if read_ht_sensor(sensor) == 1:
 
@@ -1245,18 +1221,6 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
 
             if int(time.time()) > timerHum:
 
-                timerHT = 0
-                if sensor_ht_premeasure_relay[sensor] and sensor_ht_premeasure_dur[sensor]:
-                    timerHT = int(time.time()) + sensor_ht_premeasure_dur[sensor]
-                    rod = threading.Thread(target = relay_on_duration,
-                        args = (sensor_ht_premeasure_relay[sensor], sensor_ht_premeasure_dur[sensor], sensor,))
-                    rod.start()
-                    while ((timerHT > int(time.time())) and client_que != 'TerminateServer'):
-                        if sql_reload_hold:
-                            relay_onoff(sensor_ht_premeasure_relay[sensor], 'off')
-                            break
-                        time.sleep(0.25)
-
                 logging.debug("[PID HT-Humidity-%s] Reading humidity...", sensor+1)
                 if read_ht_sensor(sensor) == 1:
 
@@ -1344,18 +1308,6 @@ def co2_monitor(ThreadName, sensor):
             sensor_co2_activated[sensor] == 1):
 
             if int(time.time()) > timerCO2:
-
-                timerCO2 = 0
-                if sensor_co2_premeasure_relay[sensor] and sensor_co2_premeasure_dur[sensor]:
-                    timerCO2 = int(time.time()) + sensor_co2_premeasure_dur[sensor]
-                    rod = threading.Thread(target = relay_on_duration,
-                        args = (sensor_co2_premeasure_relay[sensor], sensor_co2_premeasure_dur[sensor], sensor,))
-                    rod.start()
-                    while ((timerCO2 > int(time.time())) and client_que != 'TerminateServer'):
-                        if sql_reload_hold:
-                            relay_onoff(sensor_co2_premeasure_relay[sensor], 'off')
-                            break
-                        time.sleep(0.25)
 
                 logging.debug("[PID CO2-%s] Reading temperature...", sensor+1)
                 if read_co2_sensor(sensor) == 1:
@@ -1533,18 +1485,6 @@ def press_sensor_pressure_monitor(ThreadName, sensor):
 
             if int(time.time()) > timerPress:
 
-                timerPress = 0
-                if (sensor_press_premeasure_relay[sensor] and sensor_press_premeasure_dur[sensor]):
-                    timerPress = int(time.time()) + sensor_press_premeasure_dur[sensor]
-                    rod = threading.Thread(target = relay_on_duration,
-                        args = (sensor_press_premeasure_relay[sensor], sensor_press_premeasure_dur[sensor], sensor,))
-                    rod.start()
-                    while timerPress > int(time.time()) and client_que != 'TerminateServer':
-                        if sql_reload_hold:
-                            relay_onoff(sensor_press_premeasure_relay[sensor], 'off')
-                            break
-                        time.sleep(0.25)
-
                 logging.debug("[PID Press-Pressure-%s] Reading pressure...", sensor+1)
                 if read_press_sensor(sensor) == 1:
 
@@ -1696,6 +1636,18 @@ def read_t_sensor(sensor):
 
     logging.debug("[Read T Sensor-%s] Gained lock: %s", sensor+1, lock.path)
 
+    timerT = 0
+    if sensor_t_premeasure_relay[sensor] and sensor_t_premeasure_dur[sensor]:
+        timerT = int(time.time()) + sensor_t_premeasure_dur[sensor]
+        rod = threading.Thread(target = relay_on_duration,
+            args = (sensor_t_premeasure_relay[sensor], sensor_t_premeasure_dur[sensor], sensor,))
+        rod.start()
+        while timerT > int(time.time()) and client_que != 'TerminateServer':
+            if sql_reload_hold:
+                relay_onoff(sensor_t_premeasure_relay[sensor], 'off')
+                break
+            time.sleep(0.25)
+
     for r in range(0, t_read_tries): # Multiple attempts to get similar consecutive readings
         if not pid_t_temp_alive[sensor] or client_que == 'TerminateServer' or sql_reload_hold:
             break
@@ -1814,6 +1766,18 @@ def read_ht_sensor(sensor):
 
     logging.debug("[Read HT Sensor-%s] Gained lock: %s", sensor+1, lock.path)
 
+    timerHT = 0
+    if sensor_ht_premeasure_relay[sensor] and sensor_ht_premeasure_dur[sensor]:
+        timerHT = int(time.time()) + sensor_ht_premeasure_dur[sensor]
+        rod = threading.Thread(target = relay_on_duration,
+            args = (sensor_ht_premeasure_relay[sensor], sensor_ht_premeasure_dur[sensor], sensor,))
+        rod.start()
+        while ((timerHT > int(time.time())) and client_que != 'TerminateServer'):
+            if sql_reload_hold:
+                relay_onoff(sensor_ht_premeasure_relay[sensor], 'off')
+                break
+            time.sleep(0.25)
+
     for r in range(0, ht_read_tries): # Multiple attempts to get similar consecutive readings
         if (not pid_ht_temp_alive[sensor] and not pid_ht_hum_alive[sensor]) or client_que == 'TerminateServer' or sql_reload_hold:
             break
@@ -1918,6 +1882,18 @@ def read_co2_sensor(sensor):
             lock.acquire()
 
     logging.debug("[Read CO2 Sensor-%s] Gained lock: %s", sensor+1, lock.path)
+
+    timerCO2 = 0
+    if sensor_co2_premeasure_relay[sensor] and sensor_co2_premeasure_dur[sensor]:
+        timerCO2 = int(time.time()) + sensor_co2_premeasure_dur[sensor]
+        rod = threading.Thread(target = relay_on_duration,
+            args = (sensor_co2_premeasure_relay[sensor], sensor_co2_premeasure_dur[sensor], sensor,))
+        rod.start()
+        while ((timerCO2 > int(time.time())) and client_que != 'TerminateServer'):
+            if sql_reload_hold:
+                relay_onoff(sensor_co2_premeasure_relay[sensor], 'off')
+                break
+            time.sleep(0.25)
 
     for r in range(0, co2_read_tries):
         if not pid_co2_alive[sensor] or client_que == 'TerminateServer' or sql_reload_hold:
@@ -2029,6 +2005,18 @@ def read_press_sensor(sensor):
             lock.acquire()
 
     logging.debug("[Read Press Sensor-%s] Gained lock: %s", sensor+1, lock.path)
+
+    timerPress = 0
+    if (sensor_press_premeasure_relay[sensor] and sensor_press_premeasure_dur[sensor]):
+        timerPress = int(time.time()) + sensor_press_premeasure_dur[sensor]
+        rod = threading.Thread(target = relay_on_duration,
+            args = (sensor_press_premeasure_relay[sensor], sensor_press_premeasure_dur[sensor], sensor,))
+        rod.start()
+        while timerPress > int(time.time()) and client_que != 'TerminateServer':
+            if sql_reload_hold:
+                relay_onoff(sensor_press_premeasure_relay[sensor], 'off')
+                break
+            time.sleep(0.25)
 
     for r in range(0, press_read_tries): # Multiple attempts to get similar consecutive readings
         if (not pid_press_temp_alive[sensor] and not pid_press_press_alive[sensor]) and client_que == 'TerminateServer' or sql_reload_hold:
