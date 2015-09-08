@@ -724,13 +724,13 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                     if sensor_co2_relays_up_list[int(sensor_number)][i] != 0:
                         if first:
                             plot.write(', \"\"')
-                        plot.write(' u 1:(abs($' + str(sensor_co2_relays_up_list[int(sensor_number)][i]+6) + ')) index 0 title \"' + relay_name[sensor_co2_relays_up_list[int(sensor_number)][i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                        plot.write(' u 1:(abs($' + str(sensor_co2_relays_up_list[int(sensor_number)][i]+6) + ')) index 0 title \"  ' + relay_name[sensor_co2_relays_up_list[int(sensor_number)][i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
                         first += 1
                 for i in range(0, len(sensor_co2_relays_down_list[int(sensor_number)])):
                     if sensor_co2_relays_down_list[int(sensor_number)][i] != 0:
                         if first:
                             plot.write(', \"\"')
-                        plot.write(' u 1:(-abs($' + str(sensor_co2_relays_down_list[int(sensor_number)][i]+6) + ')) index 0 title \"' + relay_name[sensor_co2_relays_down_list[int(sensor_number)][i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                        plot.write(' u 1:(-abs($' + str(sensor_co2_relays_down_list[int(sensor_number)][i]+6) + ')) index 0 title \"  ' + relay_name[sensor_co2_relays_down_list[int(sensor_number)][i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
                         first += 1
 
                 plot.write(' \n')
