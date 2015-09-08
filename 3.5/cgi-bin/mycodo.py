@@ -2585,14 +2585,16 @@ def read_sql():
     global sensor_t_temp_relays_up_list
     sensor_t_temp_relays_up_list = []
     for i in range(0, len(sensor_t_temp_relays_up)):
-        sensor_t_temp_relays_up_list.append(sensor_t_temp_relays_up[i].split(","))
-        sensor_t_temp_relays_up_list[i] = map(int, sensor_t_temp_relays_up_list[i])
+        if sensor_t_temp_relays_up[i] != '':
+            sensor_t_temp_relays_up_list.append(sensor_t_temp_relays_up[i].split(","))
+            sensor_t_temp_relays_up_list[i] = map(int, sensor_t_temp_relays_up_list[i])
 
     global sensor_t_temp_relays_down_list
     sensor_t_temp_relays_down_list = []
     for i in range(0, len(sensor_t_temp_relays_down)):
-        sensor_t_temp_relays_down_list.append(sensor_t_temp_relays_down[i].split(","))
-        sensor_t_temp_relays_down_list[i] = map(int, sensor_t_temp_relays_down_list[i])
+        if sensor_t_temp_relays_down[i] != '':
+            sensor_t_temp_relays_down_list.append(sensor_t_temp_relays_down[i].split(","))
+            sensor_t_temp_relays_down_list[i] = map(int, sensor_t_temp_relays_down_list[i])
 
 
     global conditional_t_number_sensor
@@ -2702,26 +2704,30 @@ def read_sql():
     global sensor_ht_temp_relays_up_list
     sensor_ht_temp_relays_up_list = []
     for i in range(0, len(sensor_ht_temp_relays_up)):
-        sensor_ht_temp_relays_up_list.append(sensor_ht_temp_relays_up[i].split(","))
-        sensor_ht_temp_relays_up_list[i] = map(int, sensor_ht_temp_relays_up_list[i])
+        if sensor_ht_temp_relays_up[i] != '':
+            sensor_ht_temp_relays_up_list.append(sensor_ht_temp_relays_up[i].split(","))
+            sensor_ht_temp_relays_up_list[i] = map(int, sensor_ht_temp_relays_up_list[i])
 
     global sensor_ht_temp_relays_down_list
     sensor_ht_temp_relays_down_list = []
     for i in range(0, len(sensor_ht_temp_relays_down)):
-        sensor_ht_temp_relays_down_list.append(sensor_ht_temp_relays_down[i].split(","))
-        sensor_ht_temp_relays_down_list[i] = map(int, sensor_ht_temp_relays_down_list[i])
+        if sensor_ht_temp_relays_down[i] != '':
+            sensor_ht_temp_relays_down_list.append(sensor_ht_temp_relays_down[i].split(","))
+            sensor_ht_temp_relays_down_list[i] = map(int, sensor_ht_temp_relays_down_list[i])
 
     global sensor_ht_hum_relays_up_list
     sensor_ht_hum_relays_up_list = []
     for i in range(0, len(sensor_ht_hum_relays_up)):
-        sensor_ht_hum_relays_up_list.append(sensor_ht_hum_relays_up[i].split(","))
-        sensor_ht_hum_relays_up_list[i] = map(int, sensor_ht_hum_relays_up_list[i])
+        if sensor_ht_hum_relays_up[i] != '':
+            sensor_ht_hum_relays_up_list.append(sensor_ht_hum_relays_up[i].split(","))
+            sensor_ht_hum_relays_up_list[i] = map(int, sensor_ht_hum_relays_up_list[i])
 
     global sensor_ht_hum_relays_down_list
     sensor_ht_hum_relays_down_list = []
     for i in range(0, len(sensor_ht_hum_relays_down)):
-        sensor_ht_hum_relays_down_list.append(sensor_ht_hum_relays_down[i].split(","))
-        sensor_ht_hum_relays_down_list[i] = map(int, sensor_ht_hum_relays_down_list[i])
+        if sensor_ht_hum_relays_down[i] != '':
+            sensor_ht_hum_relays_down_list.append(sensor_ht_hum_relays_down[i].split(","))
+            sensor_ht_hum_relays_down_list[i] = map(int, sensor_ht_hum_relays_down_list[i])
 
     
     global conditional_ht_number_sensor
@@ -2817,14 +2823,16 @@ def read_sql():
     global sensor_co2_relays_up_list
     sensor_co2_relays_up_list = []
     for i in range(0, len(sensor_co2_relays_up)):
-        sensor_co2_relays_up_list.append(sensor_co2_relays_up[i].split(","))
-        sensor_co2_relays_up_list[i] = map(int, sensor_co2_relays_up_list[i])
+        if (sensor_co2_relays_up[i] != ''):
+            sensor_co2_relays_up_list.append(sensor_co2_relays_up[i].split(","))
+            sensor_co2_relays_up_list[i] = map(int, sensor_co2_relays_up_list[i])
 
     global sensor_co2_relays_down_list
     sensor_co2_relays_down_list = []
     for i in range(0, len(sensor_co2_relays_down)):
-        sensor_co2_relays_down_list.append(sensor_co2_relays_down[i].split(","))
-        sensor_co2_relays_down_list[i] = map(int, sensor_co2_relays_down_list[i])
+        if (sensor_co2_relays_down[i] != ''):
+            sensor_co2_relays_down_list.append(sensor_co2_relays_down[i].split(","))
+            sensor_co2_relays_down_list[i] = map(int, sensor_co2_relays_down_list[i])
 
 
     global conditional_co2_number_sensor
@@ -2935,26 +2943,30 @@ def read_sql():
     global sensor_press_temp_relays_up_list
     sensor_press_temp_relays_up_list = []
     for i in range(0, len(sensor_press_temp_relays_up)):
-        sensor_press_temp_relays_up_list.append(sensor_press_temp_relays_up[i].split(","))
-        sensor_press_temp_relays_up_list[i] = map(int, sensor_press_temp_relays_up_list[i])
+        if sensor_press_temp_relays_up[i] != '':
+            sensor_press_temp_relays_up_list.append(sensor_press_temp_relays_up[i].split(","))
+            sensor_press_temp_relays_up_list[i] = map(int, sensor_press_temp_relays_up_list[i])
 
     global sensor_press_temp_relays_down_list
     sensor_press_temp_relays_down_list = []
     for i in range(0, len(sensor_press_temp_relays_down)):
-        sensor_press_temp_relays_down_list.append(sensor_press_temp_relays_down[i].split(","))
-        sensor_press_temp_relays_down_list[i] = map(int, sensor_press_temp_relays_down_list[i])
+        if sensor_press_temp_relays_down[i] != '':
+            sensor_press_temp_relays_down_list.append(sensor_press_temp_relays_down[i].split(","))
+            sensor_press_temp_relays_down_list[i] = map(int, sensor_press_temp_relays_down_list[i])
 
     global sensor_press_press_relays_up_list
     sensor_press_press_relays_up_list = []
     for i in range(0, len(sensor_press_press_relays_up)):
-        sensor_press_press_relays_up_list.append(sensor_press_press_relays_up[i].split(","))
-        sensor_press_press_relays_up_list[i] = map(int, sensor_press_press_relays_up_list[i])
+        if sensor_press_press_relays_up[i] != '':
+            sensor_press_press_relays_up_list.append(sensor_press_press_relays_up[i].split(","))
+            sensor_press_press_relays_up_list[i] = map(int, sensor_press_press_relays_up_list[i])
 
     global sensor_press_press_relays_down_list
     sensor_press_press_relays_down_list = []
     for i in range(0, len(sensor_press_press_relays_down)):
-        sensor_press_press_relays_down_list.append(sensor_press_press_relays_down[i].split(","))
-        sensor_press_press_relays_down_list[i] = map(int, sensor_press_press_relays_down_list[i])
+        if sensor_press_press_relays_down[i] != '':
+            sensor_press_press_relays_down_list.append(sensor_press_press_relays_down[i].split(","))
+            sensor_press_press_relays_down_list[i] = map(int, sensor_press_press_relays_down_list[i])
 
 
     global conditional_press_number_sensor
