@@ -374,7 +374,6 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 (len(sensor_press_press_relays_up_list[int(sensor_number)]) > 1 or (len(sensor_press_press_relays_up_list[int(sensor_number)]) == 1 and sensor_press_press_relays_up_list[int(sensor_number)][0] != 0)) or
                 (len(sensor_press_press_relays_down_list[int(sensor_number)]) > 1 or (len(sensor_press_press_relays_down_list[int(sensor_number)]) == 1 and sensor_press_press_relays_down_list[int(sensor_number)][0] != 0))):
             sensor_press_graph_relay = 0
-
     
     if graph_span == "default":
         graph_width = 1000
@@ -483,7 +482,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
 
 
     #
-    # Combined: Generate graph combining temperatures, humidities, CO2s, and pressures
+    # Combined: Generate one large graph combining each condition to its own graph
     #
     if graph_type == "combined" and  graph_span != "default":
         multiplot_num = 1
@@ -584,7 +583,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
 
 
     #
-    # Separate: Generate a graph with temp, hum, and dew point for each sensor
+    # Separate: Generate a graph for each sensor
     #
     if graph_type == "separate" and  graph_span != "default":
         
@@ -1144,6 +1143,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
         # Delete all temporary files
         os.remove(gnuplot_graph)
         os.remove(relay_log_generate)
+
         if graph_span == "default":
             if sensor_type == "t":
                 os.remove(sensor_t_log_final[0])
