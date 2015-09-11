@@ -126,7 +126,7 @@ def add_user(db):
             print "Passwords don't match"
         else:
             if test_password(user_password):
-                user_password_hash = subprocess.check_output(["php", "includes/hash.php", "hash", user_password])
+                user_password_hash = subprocess.check_output(["php", "/var/www/mycodo/includes/hash.php", "hash", user_password])
                 pass_checks = False
 
     pass_checks = True
@@ -175,7 +175,7 @@ def password_change(db):
         if user_password != user_password_again:
             print "Passwords don't match"
         elif test_password(user_password):
-            user_password_hash = subprocess.check_output(["php", "includes/hash.php", "hash", user_password])
+            user_password_hash = subprocess.check_output(["php", "/var/www/mycodo/includes/hash.php", "hash", user_password])
             conn = sqlite3.connect(sql_database_user)
             cur = conn.cursor()
             cur.execute("UPDATE users SET user_password_hash='%s' WHERE user_name='%s'" % (user_password_hash, user_name))
@@ -866,7 +866,7 @@ def create_rows_columns_user():
         if admin_password != admin_password_again:
             print "Passwords don't match"
         elif test_password(admin_password):
-            admin_password_hash = subprocess.check_output(["php", "includes/hash.php", "hash", admin_password])
+            admin_password_hash = subprocess.check_output(["php", "/var/www/mycodo/includes/hash.php", "hash", admin_password])
             pass_checks = False
 
     pass_checks = True
@@ -897,7 +897,7 @@ def create_rows_columns_user():
             if user_password != user_password_again:
                 print "Passwords don't match"
             elif test_password(user_password):
-                user_password_hash = subprocess.check_output(["php", "includes/hash.php", "hash", user_password])
+                user_password_hash = subprocess.check_output(["php", "/var/www/mycodo/includes/hash.php", "hash", user_password])
                 pass_checks = False
 
         pass_checks = True
