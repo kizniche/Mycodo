@@ -179,7 +179,7 @@ def write_press_sensor_log(sensor_press_read_temp_c, sensor_press_read_press, se
     lock.release()
 
 # Log the relay duration
-def write_relay_log(relayNumber, relaySeconds, sensor):
+def write_relay_log(relayNumber, relaySeconds, sensor, gpio):
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
 
@@ -195,18 +195,13 @@ def write_relay_log(relayNumber, relaySeconds, sensor):
             lock.acquire()
 
     logging.debug("[Write Relay Log] Gained lock: %s", lock.path)
-    relay = [0] * 9
-
-    for n in range(1, 9):
-        if n == relayNumber:
-            relay[relayNumber] = relaySeconds
 
     try:
         with open(relay_log_file_tmp, "ab") as relaylog:
-            relaylog.write('{0} {1} {2} {3} {4} {5} {6} {7} {8} {9}\n'.format(
+            relaylog.write('{0} {1} {2} {3} {4}\n'.format(
                 datetime.datetime.now().strftime("%Y %m %d %H %M %S"),
-                relay[1], relay[2], relay[3], relay[4],
-                relay[5], relay[6], relay[7], relay[8], sensor))
+                sensor, relayNumber, gpio, relaySeconds))
+
     except:
         logging.warning("[Write Relay Log] Unable to append data to %s", relay_log_file_tmp)
 
