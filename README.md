@@ -1,6 +1,6 @@
 # Mycodo
 
-   Mycodo is a system designed to monitor an environment and regulate the climate with discrete PID control. Sensors monitor environmental conditions (currently temperature, humidity, and CO<sub>2</sub>) and software PID controllers modulate relays that power devices to alter the environment. A web-interface features viewing of current and past conditions as well as graph generation, configuration modification, and image/video/timelapse acquisition, to name a few (full feature list below).
+   Mycodo is a system designed to monitor an environment and regulate the climate with discrete PID control. Sensors monitor environmental conditions (currently temperature, humidity, CO<sub>2</sub>, and barometric pressure) and software PID controllers modulate relays that power devices to alter the environment. A web-interface features viewing of current and past conditions as well as graph generation, configuration modification, and image/video/timelapse acquisition, to name a few (full feature list below).
 
    A daemon performs all crucial tasks, including periodically reading sensors, writing sensor and relay logs, PID controller regulation, scheduling timer-activated relays, generating graphs, among others. A client application communicates with the daemon to carry out user-defined tasks, such as relay changes and turning PID regulation on and off, to name a few.
 
@@ -64,7 +64,7 @@ With its inception in 2010, the first system was comprised of an ATMega interfac
     </tr>
     <tr>
         <td>
-            Regulation
+            Controller Regulation
         </td>
         <td>
             P
@@ -76,7 +76,7 @@ With its inception in 2010, the first system was comprised of an ATMega interfac
             PID (Up only)
         </td>
         <td>
-            Full PID
+            PID (Up and Down)
         </td>
     </tr>
     <tr>
@@ -98,19 +98,19 @@ With its inception in 2010, the first system was comprised of an ATMega interfac
     </tr>
     <tr>
         <td>
-            Types of Sensors
+            Measurments
         </td>
         <td>
-            Temp/Hum
+            Temperature, Humidity
         </td>
         <td>
-            Temp/Hum
+            Temperature, Humidity
         </td>
         <td>
-            Temp/Hum
+            Temperature, Humidity
         </td>
         <td>
-            Temp, Temp/Hum, CO<sub>2</sub>
+            Temperature, Humidity, CO<sub>2</sub>, Barometric Pressure
         </td>
     </tr>
     <tr>
