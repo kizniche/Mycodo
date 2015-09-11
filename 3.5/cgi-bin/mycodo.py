@@ -2476,6 +2476,26 @@ def read_sql():
     relay_trigger = []
     relay_start_state = []
 
+    # Relay conditional statement globals
+    global conditional_relay_id
+    global conditional_relay_name
+    global conditional_relay_ifrelay
+    global conditional_relay_ifaction
+    global conditional_relay_ifduration
+    global conditional_relay_dorelay
+    global conditional_relay_doaction
+    global conditional_relay_doduration
+
+    # Relay conditional statement reset
+    conditional_relay_id = []
+    conditional_relay_name = []
+    conditional_relay_ifrelay = []
+    conditional_relay_ifaction = []
+    conditional_relay_ifduration = []
+    conditional_relay_dorelay = []
+    conditional_relay_doaction = []
+    conditional_relay_doduration = []
+
     # Timer globals
     global timer_id
     global timer_name
@@ -2546,6 +2566,18 @@ def read_sql():
         relay_pin.append(row[2])
         relay_trigger.append(row[3])
         relay_start_state.append(row[4])
+
+
+    cur.execute('SELECT Id, Name, If_Relay, If_Action, If_Duration, Do_Relay, Do_Action, Do_Duration FROM RelayConditional')
+    for row in cur:
+        conditional_relay_id.append(row[0])
+        conditional_relay_name.append(row[1])
+        conditional_relay_ifrelay.append(row[2])
+        conditional_relay_ifaction.append(row[3])
+        conditional_relay_ifduration.append(row[4])
+        conditional_relay_dorelay.append(row[5])
+        conditional_relay_doaction.append(row[6])
+        conditional_relay_doduration.append(row[7])
 
 
     cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D FROM TSensor')
@@ -3209,6 +3241,25 @@ def relay_onoff(relay, state):
     elif (relay_trigger[relay-1] == 0 and state == 'off'):
         gpio_change(relay, 1)
 
+    for i in range(0, len(conditional_relay_id)):
+        if state == 'on':
+            if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'on' and conditional_relay_ifduration[i] == 0:
+                if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
+                    rod = threading.Thread(target = relay_on_duration,
+                        args = (conditional_relay_dorelay[i], conditional_relay_doduration[i], 0,))
+                    rod.start()
+                else:
+                    relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
+        elif state == 'off':
+            if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'off':
+                if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
+                    rod = threading.Thread(target = relay_on_duration,
+                        args = (conditional_relay_dorelay[i], conditional_relay_doduration[i], 0,))
+                    rod.start()
+                else:
+                    relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
+
+
 # Set relay on for a specific duration (seconds may be negative)
 def relay_on_duration(relay, seconds, sensor):
     if (relay_trigger[relay-1] == 0 and GPIO.input(relay_pin[relay-1]) == 0) or (
@@ -3224,6 +3275,19 @@ def relay_on_duration(relay, seconds, sensor):
         args = (relay, seconds, sensor, relay_pin[relay-1],))
     wrl.start()
 
+    for i in range(0, len(conditional_relay_id)):
+        if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'on':
+            if conditional_relay_ifduration[i] == seconds:
+                if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
+                    rod = threading.Thread(target = relay_on_duration,
+                        args = (conditional_relay_dorelay[i], conditional_relay_doduration[i], sensor,))
+                    rod.start()
+                elif (conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] == 0) or conditional_relay_doaction[i] == 'off':
+                    relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
+            elif conditional_relay_ifduration[i] == 0:
+                relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
+
+
     timer_on = int(time.time()) + abs(seconds)
     GPIO.output(relay_pin[relay-1], relay_trigger[relay-1]) # Turn relay on
 
@@ -3235,6 +3299,12 @@ def relay_on_duration(relay, seconds, sensor):
         GPIO.output(relay_pin[relay-1], 1)
     else:
         GPIO.output(relay_pin[relay-1], 0)
+
+    for i in range(0, len(conditional_relay_id)):
+        if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'off' and conditional_relay_doaction[i] == 'off':
+            relay_onoff(conditional_relay_dorelay[i], 'off')
+        elif conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'off' and conditional_relay_doaction[i] == 'on':
+            relay_onoff(conditional_relay_dorelay[i], 'on')
 
     logging.debug("[Relay Duration] Relay %s (%s) Off (was on for %s sec)",
         relay, relay_name[relay-1], round(abs(seconds), 1))

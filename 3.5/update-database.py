@@ -26,7 +26,7 @@
 sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
 sql_database_user = '/var/www/mycodo/config/users.db'
 
-db_version_mycodo = 7
+db_version_mycodo = 8
 db_version_user = 1
 
 import getopt
@@ -246,7 +246,7 @@ def mycodo_database_update():
 
         # Version 4 updates: add pressure sensor
 
-        # Version 5 updates: add conditional statements
+        # Version 5 updates: add sensor conditional statements
 
         # Version 6 row updates
         if current_db_version_mycodo < 6:
@@ -306,6 +306,8 @@ def mycodo_database_update():
             ModNullValue(sql_database_mycodo, 'PressSensor', 'Press_Relays_Up', '0')
             ModNullValue(sql_database_mycodo, 'PressSensor', 'Press_Relays_Down', '0')
 
+        # Version 8 updates: add relay conditional statements
+
         # any extra commands for version X
         #if current_db_version_mycodo < X:
         #    pass
@@ -339,6 +341,15 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'Relays', 'Pin', 'INT')
     AddColumn(sql_database_mycodo, 'Relays', 'Trigger', 'INT')
     AddColumn(sql_database_mycodo, 'Relays', 'Start_State', 'INT')
+
+    AddTable(sql_database_mycodo, 'RelayConditional')
+    AddColumn(sql_database_mycodo, 'RelayConditional', 'Name', 'TEXT')
+    AddColumn(sql_database_mycodo, 'RelayConditional', 'If_Relay', 'INT')
+    AddColumn(sql_database_mycodo, 'RelayConditional', 'If_Action', 'TEXT')
+    AddColumn(sql_database_mycodo, 'RelayConditional', 'If_Duration', 'REAL')
+    AddColumn(sql_database_mycodo, 'RelayConditional', 'Do_Relay', 'INT')
+    AddColumn(sql_database_mycodo, 'RelayConditional', 'Do_Action', 'TEXT')
+    AddColumn(sql_database_mycodo, 'RelayConditional', 'Do_Duration', 'REAL')
 
     AddTable(sql_database_mycodo, 'TSensor')
     AddColumn(sql_database_mycodo, 'TSensor', 'Name', 'TEXT')

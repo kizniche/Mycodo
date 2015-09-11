@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.72";
+$version = "3.5.73";
 
 ######### Start Edit Configure #########
 
@@ -600,6 +600,95 @@ if (isset($output_error)) {
                         <?php
                         } ?>
                     </table>
+                </form>
+
+                <form action="?tab=sensor" method="POST">
+                    <table class="conditional">
+                        <tr>
+                            <td>
+                                Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding-bottom: 1em;">
+                                <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                                Name: 
+                                <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionrelayname" title="Name for this relay conditional statement." required/>
+                                If Relay
+                                <select style="width: 3em;" name="conditionrelayifrelay">
+                                    <?php
+                                    for ($i = 0; $i < count($relay_id); $i++) {
+                                    echo '<option value="' . ($i+1) . '">' . ($i+1) . '</option>';
+                                    } ?>
+                                </select>
+                                turns
+                                <select style="width: 3em;" name="conditionrelayifaction">
+                                    <option value="on">On</option>
+                                    <option value="off">Off</option>
+                                </select>
+                                (if on, for 
+                                <input style="width: 4em;" type="number" step="any" value="0" maxlength=5 size=1 name="conditionrelayifduration" title="" required/>
+                                sec), turn Relay
+                                <select style="width: 3em;" name="conditionrelaydorelay">
+                                    <?php
+                                    for ($i = 0; $i < count($relay_id); $i++) {
+                                    echo '<option value="' . ($i+1) . '">' . ($i+1) . '</option>';
+                                    } ?>
+                                </select>
+                                <select style="width: 3em;" name="conditionrelaydoaction">
+                                    <option value="on">On</option>
+                                    <option value="off">Off</option>
+                                </select>
+                                (if on, for 
+                                <input style="width: 4em;" type="number" step="any" value="0" maxlength=5 size=1 name="conditionrelaydoduration" title="The number of seconds for the relay to remain on. Leave at 0 to only turn it on, but not off." required/>
+                                sec)
+                                <button type="submit" name="AddRelayConditional" title="Save new relay conditional statement">Save</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php
+                        if (isset($conditional_relay_id) && count($conditional_relay_id) > 0) { 
+                            for ($z = 0; $z < count($conditional_relay_id); $z++) {
+                            ?>
+                        <tr>
+                            <td style="background-color: #FFFFFF;">
+                                <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                                <?php
+                                echo '<button type="submit" name="DeleteRelay' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
+
+                                echo $z+1 . ' ' . $conditional_relay_name[$z] . ': If Relay ' . $conditional_relay_ifrelay[$z] . ' turns';
+
+                                if ($conditional_relay_ifaction[$z] == 'on') {
+                                    echo ' On';
+                                } else {
+                                    echo ' Off';
+                                }
+
+                                if ($conditional_relay_ifduration[$z] > 0) {
+                                    echo ' for ' . $conditional_relay_ifduration[$z] . ' seconds';
+                                }
+
+                                echo ', turn Relay ' . $conditional_relay_dorelay[$z];
+
+                                if ($conditional_relay_doaction[$z] == 'on') {
+                                    echo ' On';
+                                    if ($conditional_relay_doduration[$z] > 0) {
+                                        echo ' for ' . $conditional_relay_doduration[$z] . ' seconds';
+                                    }
+                                } else {
+                                    echo ' Off';
+                                }
+
+                                echo '.';
+                                ?>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php
+                    } }
+                    ?>
+                    </table>
+
                 </div>
             <?php
             }

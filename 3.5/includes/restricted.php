@@ -195,6 +195,33 @@ if (isset($_POST['AddRelays']) && isset($_POST['AddRelaysNumber'])) {
     shell_exec("$mycodo_client --sqlreload -1");
 }
 
+# Delete conditional relay
+for ($p = 0; $p < count($conditional_relay_id); $p++) {
+    if (isset($_POST['DeleteRelay' . $p . 'Conditional'])) {
+        $stmt = $db->prepare("DELETE FROM RelayConditional WHERE Id=:id");
+        $stmt->bindValue(':id', $conditional_relay_id[$p], SQLITE3_TEXT);
+        $stmt->execute();
+
+        shell_exec("$mycodo_client --sqlreload -1");
+    }
+}
+
+// Add Relay Conditional statement
+if (isset($_POST['AddRelayConditional'])) {
+    $stmt = $db->prepare("INSERT INTO RelayConditional (Id, Name, If_Relay, If_Action, If_Duration, Do_Relay, Do_Action, Do_Duration) VALUES(:id, :name, :ifrelay, :ifaction, :ifduration, :dorelay, :doaction, :doduration)");
+    $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
+    $stmt->bindValue(':name', $_POST['conditionrelayname'], SQLITE3_TEXT);
+    $stmt->bindValue(':ifrelay', (int)$_POST['conditionrelayifrelay'], SQLITE3_INTEGER);
+    $stmt->bindValue(':ifaction', $_POST['conditionrelayifaction'], SQLITE3_TEXT);
+    $stmt->bindValue(':ifduration', (float)$_POST['conditionrelayifduration'], SQLITE3_FLOAT);
+    $stmt->bindValue(':dorelay', (int)$_POST['conditionrelaydorelay'], SQLITE3_INTEGER);
+    $stmt->bindValue(':doaction', $_POST['conditionrelaydoaction'], SQLITE3_TEXT);
+    $stmt->bindValue(':doduration', (float)$_POST['conditionrelaydoduration'], SQLITE3_FLOAT);
+    $stmt->execute();
+
+    shell_exec("$mycodo_client --sqlreload -1");
+}
+
 
 /*
  *

@@ -34,6 +34,9 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 Major changes for each versioned release
 
+#### 3.5.73
++ Ability to create relay conditional statements based on relay states
+
 #### 3.5.72
 + Ability to choose which relays are graphed and what direction (up or down from the 0 y-axis)
 
@@ -41,7 +44,7 @@ Major changes for each versioned release
 + Ability to set y-axis min/max/tics/mtics for each sensor graph, for both relays and measured condition(s)
 
 #### 3.5.70
-+ Ability to create conditional statements for each sensor to manipulate relays
++ Ability to create sensor conditional statements that manipulate relays based on sensor measurements
 
 #### 3.5.69
 + Add pressure sensors: BMP085/BMP180 pressure/temperature sensors

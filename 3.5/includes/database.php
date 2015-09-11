@@ -39,6 +39,23 @@ while ($row = $results->fetchArray()) {
 if (!isset($relay_id)) $relay_id = [];
 
 
+// conditional statements
+unset($conditional_relay_id);
+$results = $db->query('SELECT Id, Name, If_Relay, If_Action, If_Duration, Do_Relay, Do_Action, Do_Duration FROM RelayConditional');
+$i = 0;
+while ($row = $results->fetchArray()) {
+    $conditional_relay_id[$i] = $row[0];
+    $conditional_relay_name[$i] = $row[1];
+    $conditional_relay_ifrelay[$i] = $row[2];
+    $conditional_relay_ifaction[$i] = $row[3];
+    $conditional_relay_ifduration[$i] = $row[4];
+    $conditional_relay_dorelay[$i] = $row[5];
+    $conditional_relay_doaction[$i] = $row[6];
+    $conditional_relay_doduration[$i] = $row[7];
+    $i++;
+}
+
+
 unset($sensor_t_id);
 $results = $db->query('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D FROM TSensor');
 $i = 0;
