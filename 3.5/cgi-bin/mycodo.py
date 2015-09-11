@@ -113,6 +113,7 @@ global sql_reload_hold_confirm
 
 sql_reload_hold_confirm = 0
 
+
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
 
@@ -320,6 +321,7 @@ class ComServer(rpyc.Service):
         return 1
 
 
+# Communication thread to receive client commands from mycodo-client.py
 class ComThread(threading.Thread):
     def run(self):
         global server
@@ -376,6 +378,7 @@ def menu():
 
     daemon(a, b)
     return 1
+
 
 
 #################################################
@@ -1005,6 +1008,7 @@ def daemon(output, log):
         time.sleep(0.25)
 
 
+
 #################################################
 #                  PID Control                  #
 #################################################
@@ -1610,6 +1614,7 @@ def PID_stop(type, number):
     return 1
 
 
+
 #################################################
 #                Sensor Reading                 #
 #################################################
@@ -1701,6 +1706,7 @@ def read_t_sensor(sensor):
     logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor+1, lock.path)
     lock.release()
     return 0
+
 
 # Obtain reading from T sensor
 def read_t(sensor, device, pin):
@@ -1839,6 +1845,7 @@ def read_ht_sensor(sensor):
     lock.release()
     return 0
 
+
 # Obtain reading from HT sensor
 def read_ht(sensor, device, pin):
     global last_ht_reading
@@ -1948,6 +1955,7 @@ def read_co2_sensor(sensor):
     logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor+1, lock.path)
     lock.release()
     return 0
+
 
 # Read K30 CO2 Sensor
 def read_K30(sensor, device):
@@ -2075,6 +2083,7 @@ def read_press_sensor(sensor):
     logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor+1, lock.path)
     lock.release()
     return 0
+
 
 # Obtain reading from Press sensor
 def read_press(sensor, device, pin):
@@ -2525,6 +2534,9 @@ def read_sql():
     timerHTSensorLog = []
     timerCo2SensorLog = []
     timerPressSensorLog = []
+
+    global on_duration_timer
+    on_duration_timer = []
 
     # Email notification globals
     global smtp_host
@@ -3095,6 +3107,9 @@ def read_sql():
     for i in range(0, len(timer_id)):
         timer_time.append(0)
 
+    for i in range(0, len(relay_id)):
+        on_duration_timer.append(0)
+
 
     global timerTConditional
     global timerHTConditional
@@ -3154,6 +3169,7 @@ def read_sql():
     sql_reload_hold = 0
 
 
+
 #################################################
 #               GPIO Manipulation               #
 #################################################
@@ -3174,6 +3190,7 @@ def initialize_all_gpio():
     Relays_Off()
     logging.info("[GPIO Initialize] Turning on all relays set to on at startup")
     Relays_Start()
+
 
 # Initialize specified GPIO pin
 def initialize_gpio(relay):
@@ -3220,6 +3237,7 @@ def gpio_read():
         if GPIO.input(relay_pin[x]): logging.info("[GPIO Read] Relay %s: OFF", x)
         else: logging.info("[GPIO Read] Relay %s: ON", x)
 
+
 # Change GPIO (Select) to a specific state (State)
 def gpio_change(relay, State):
     if relay == 0:
@@ -3229,6 +3247,7 @@ def gpio_change(relay, State):
             relay, relay_name[relay-1],
             State, GPIO.input(relay_pin[relay-1]))
         GPIO.output(relay_pin[relay-1], State)
+
 
 # Turn relay on or off (accounts for trigger)
 def relay_onoff(relay, state):
@@ -3262,14 +3281,52 @@ def relay_onoff(relay, state):
 
 # Set relay on for a specific duration (seconds may be negative)
 def relay_on_duration(relay, seconds, sensor):
-    if (relay_trigger[relay-1] == 0 and GPIO.input(relay_pin[relay-1]) == 0) or (
-            relay_trigger[relay-1] == 1 and GPIO.input(relay_pin[relay-1]) == 1):
-        logging.warning("[Relay Duration] Relay %s (%s) is already On.",
-            relay, relay_name[relay-1])
+    global on_duration_timer
+
+    if (((relay_trigger[relay-1] == 0 and GPIO.input(relay_pin[relay-1]) == 0) or (
+            relay_trigger[relay-1] == 1 and GPIO.input(relay_pin[relay-1]) == 1)) and
+            on_duration_timer[relay] > int(time.time())):
+
+        if int(time.time()) + seconds < on_duration_timer[relay]:
+            logging.debug("[Relay Duration] Relay %s (%s) is already On and the new duration is shorter than the current time remaining. Not updating.",
+                relay, relay_name[relay-1])
+
+        else:
+            logging.debug("[Relay Duration] Relay %s (%s) is already On and the new duration is longer than the current time remaining. Updating On duration to %s more seconds from now.",
+                relay, relay_name[relay-1], seconds)
+
+            on_duration_timer[relay] = int(time.time()) + abs(seconds)
+
+            wrl = threading.Thread(target = mycodoLog.write_relay_log,
+                args = (relay, seconds, sensor, relay_pin[relay-1],))
+            wrl.start()
+
+        for i in range(0, len(conditional_relay_id)):
+            if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'on':
+                if conditional_relay_ifduration[i] == seconds:
+                    if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
+                        rod = threading.Thread(target = relay_on_duration,
+                            args = (conditional_relay_dorelay[i], conditional_relay_doduration[i], sensor,))
+                        rod.start()
+                    elif (conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] == 0) or conditional_relay_doaction[i] == 'off':
+                        relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
+                elif conditional_relay_ifduration[i] == 0:
+                    relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
+
         return 1
 
-    logging.debug("[Relay Duration] Relay %s (%s) ON for %s seconds",
-            relay, relay_name[relay-1], round(abs(seconds), 1))
+    elif (((relay_trigger[relay-1] == 0 and GPIO.input(relay_pin[relay-1]) == 0) or (
+            relay_trigger[relay-1] == 1 and GPIO.input(relay_pin[relay-1]) == 1)) and
+            on_duration_timer[relay] < int(time.time())):
+
+        logging.warning("[Relay Duration] Relay %s (%s) is set On without a duration. Turning into a duration.",
+            relay, relay_name[relay-1], seconds)
+
+    logging.debug("[Relay Duration] Relay %s (%s) On for %s seconds.",
+        relay, relay_name[relay-1], round(abs(seconds), 1))
+
+    on_duration_timer[relay] = int(time.time()) + abs(seconds)
+    GPIO.output(relay_pin[relay-1], relay_trigger[relay-1]) # Turn relay on
 
     wrl = threading.Thread(target = mycodoLog.write_relay_log,
         args = (relay, seconds, sensor, relay_pin[relay-1],))
@@ -3287,11 +3344,12 @@ def relay_on_duration(relay, seconds, sensor):
             elif conditional_relay_ifduration[i] == 0:
                 relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
 
-
-    timer_on = int(time.time()) + abs(seconds)
-    GPIO.output(relay_pin[relay-1], relay_trigger[relay-1]) # Turn relay on
-
-    while (client_que != 'TerminateServer' and timer_on > int(time.time())):
+    while (client_que != 'TerminateServer' and on_duration_timer[relay] > int(time.time())):
+        if (relay_trigger[relay-1] == 0 and GPIO.input(relay_pin[relay-1]) == 1) or (
+            relay_trigger[relay-1] == 1 and GPIO.input(relay_pin[relay-1]) == 0):
+            logging.warning("[Relay Duration] Relay %s (%s) turned off during a timed on duration. Cancelling current timer.",
+                relay, relay_name[relay-1])
+            return 1
         time.sleep(0.1)
 
     # Turn relay off
@@ -3306,9 +3364,12 @@ def relay_on_duration(relay, seconds, sensor):
         elif conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'off' and conditional_relay_doaction[i] == 'on':
             relay_onoff(conditional_relay_dorelay[i], 'on')
 
-    logging.debug("[Relay Duration] Relay %s (%s) Off (was on for %s sec)",
+    logging.debug("[Relay Duration] Relay %s (%s) Off (was On for %s seconds)",
         relay, relay_name[relay-1], round(abs(seconds), 1))
+
     return 1
+
+
 
 #################################################
 #                 Email Notify                  #
@@ -3338,6 +3399,7 @@ def email(message):
     server.quit()
 
 
+
 #################################################
 #                 Miscellaneous                 #
 #################################################
@@ -3361,6 +3423,7 @@ def represents_float(s):
 # Timestamp format used in sensor and relay logs
 def timestamp():
     return datetime.datetime.fromtimestamp(time.time()).strftime('%Y %m %d %H %M %S')
+
 
 
 #################################################
