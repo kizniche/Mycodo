@@ -3285,9 +3285,9 @@ def relay_on_duration(relay, seconds, sensor):
 
     if (((relay_trigger[relay-1] == 0 and GPIO.input(relay_pin[relay-1]) == 0) or (
             relay_trigger[relay-1] == 1 and GPIO.input(relay_pin[relay-1]) == 1)) and
-            on_duration_timer[relay] > int(time.time())):
+            on_duration_timer[relay-1] > int(time.time())):
 
-        if int(time.time()) + seconds < on_duration_timer[relay]:
+        if int(time.time()) + seconds < on_duration_timer[relay-1]:
             logging.debug("[Relay Duration] Relay %s (%s) is already On and the new duration is shorter than the current time remaining. Not updating.",
                 relay, relay_name[relay-1])
 
@@ -3295,7 +3295,7 @@ def relay_on_duration(relay, seconds, sensor):
             logging.debug("[Relay Duration] Relay %s (%s) is already On and the new duration is longer than the current time remaining. Updating On duration to %s more seconds from now.",
                 relay, relay_name[relay-1], seconds)
 
-            on_duration_timer[relay] = int(time.time()) + abs(seconds)
+            on_duration_timer[relay-1] = int(time.time()) + abs(seconds)
 
             wrl = threading.Thread(target = mycodoLog.write_relay_log,
                 args = (relay, seconds, sensor, relay_pin[relay-1],))
@@ -3317,7 +3317,7 @@ def relay_on_duration(relay, seconds, sensor):
 
     elif (((relay_trigger[relay-1] == 0 and GPIO.input(relay_pin[relay-1]) == 0) or (
             relay_trigger[relay-1] == 1 and GPIO.input(relay_pin[relay-1]) == 1)) and
-            on_duration_timer[relay] < int(time.time())):
+            on_duration_timer[relay-1] < int(time.time())):
 
         logging.warning("[Relay Duration] Relay %s (%s) is set On without a duration. Turning into a duration.",
             relay, relay_name[relay-1], seconds)
@@ -3325,7 +3325,7 @@ def relay_on_duration(relay, seconds, sensor):
     logging.debug("[Relay Duration] Relay %s (%s) On for %s seconds.",
         relay, relay_name[relay-1], round(abs(seconds), 1))
 
-    on_duration_timer[relay] = int(time.time()) + abs(seconds)
+    on_duration_timer[relay-1] = int(time.time()) + abs(seconds)
     GPIO.output(relay_pin[relay-1], relay_trigger[relay-1]) # Turn relay on
 
     wrl = threading.Thread(target = mycodoLog.write_relay_log,
@@ -3344,7 +3344,7 @@ def relay_on_duration(relay, seconds, sensor):
             elif conditional_relay_ifduration[i] == 0:
                 relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
 
-    while (client_que != 'TerminateServer' and on_duration_timer[relay] > int(time.time())):
+    while (client_que != 'TerminateServer' and on_duration_timer[relay-1] > int(time.time())):
         if (relay_trigger[relay-1] == 0 and GPIO.input(relay_pin[relay-1]) == 1) or (
             relay_trigger[relay-1] == 1 and GPIO.input(relay_pin[relay-1]) == 0):
             logging.warning("[Relay Duration] Relay %s (%s) turned off during a timed on duration. Cancelling current timer.",
