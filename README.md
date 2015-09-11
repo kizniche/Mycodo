@@ -93,7 +93,7 @@ With its inception in 2010, the first system was comprised of an ATMega interfac
             3
         </td>
         <td>
-            5
+            7
         </td>
     </tr>
     <tr>
@@ -166,7 +166,7 @@ With its inception in 2010, the first system was comprised of an ATMega interfac
     </tr>
     <tr>
         <td>
-            Config Database
+            Configuration Database
         </td>
         <td>
             Plain-text
