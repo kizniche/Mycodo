@@ -552,13 +552,13 @@ if (isset($output_error)) {
                                 if ((shell_exec($read) == 1 && $relay_trigger[$i] == 0) || (shell_exec($read) == 0 && $relay_trigger[$i] == 1)) {
                                     ?>
                                     <td class="onoff">
-                                        <nobr><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="R<?php echo $i; ?>" value="0"> | <button style="width: 3em;" type="submit" name="R<?php echo $i; ?>" value="1">ON</button></nobr>
+                                        <nobr><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="R<?php echo $i; ?>" value="0"> | <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="1">Turn On</button></nobr>
                                     </td>
                                     <?php
                                 } else {
                                     ?>
                                     <td class="onoff">
-                                        <nobr><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/on.jpg" alt="On" title="On" name="R<?php echo $i; ?>" value="1"> | <button style="width: 3em;" type="submit" name="R<?php echo $i; ?>" value="0">OFF</button></nobr>
+                                        <nobr><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/on.jpg" alt="On" title="On" name="R<?php echo $i; ?>" value="1"> | <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="0">Turn Off</button></nobr>
                                     </td>
                                     <?php
                                 }
@@ -615,32 +615,32 @@ if (isset($output_error)) {
                                 Name: 
                                 <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionrelayname" title="Name for this relay conditional statement." required/>
                                 If Relay
-                                <select style="width: 3em;" name="conditionrelayifrelay">
+                                <select style="width: 3em;" name="conditionrelayifrelay" title="Select the relay to watch for whether it turns on or off.">
                                     <?php
                                     for ($i = 0; $i < count($relay_id); $i++) {
                                     echo '<option value="' . ($i+1) . '">' . ($i+1) . '</option>';
                                     } ?>
                                 </select>
                                 turns
-                                <select style="width: 3em;" name="conditionrelayifaction">
+                                <select style="width: 3em;" name="conditionrelayifaction" title="Select whether the relay that is watched will be watched whether it turns on or off.">
                                     <option value="on">On</option>
                                     <option value="off">Off</option>
                                 </select>
                                 (if on, for 
-                                <input style="width: 4em;" type="number" step="any" value="0" maxlength=5 size=1 name="conditionrelayifduration" title="" required/>
+                                <input style="width: 4em;" type="number" step="any" value="0" maxlength=5 size=1 name="conditionrelayifduration" title="Check if the number of seconds the selected relay turns on for is equal to this value. If it is the same number of seconds, this statement is true. Leave at 0 if you only want to check if the relay was turned on and not necessarily if there is a duration associated with it. If 'Off' is selected in the previous field, this variable is not considered." required/>
                                 sec), turn Relay
-                                <select style="width: 3em;" name="conditionrelaydorelay">
+                                <select style="width: 3em;" name="conditionrelaydorelay" title="Select the relay that will be modified based on the watched relay and watched action.">
                                     <?php
                                     for ($i = 0; $i < count($relay_id); $i++) {
                                     echo '<option value="' . ($i+1) . '">' . ($i+1) . '</option>';
                                     } ?>
                                 </select>
-                                <select style="width: 3em;" name="conditionrelaydoaction">
+                                <select style="width: 3em;" name="conditionrelaydoaction" title="What do you want the modified relay to do once the watched relay performs the watched action.">
                                     <option value="on">On</option>
                                     <option value="off">Off</option>
                                 </select>
                                 (if on, for 
-                                <input style="width: 4em;" type="number" step="any" value="0" maxlength=5 size=1 name="conditionrelaydoduration" title="The number of seconds for the relay to remain on. Leave at 0 to only turn it on, but not off." required/>
+                                <input style="width: 4em;" type="number" step="any" value="0" maxlength=5 size=1 name="conditionrelaydoduration" title="The number of seconds for the modified relay to remain on. Leave at 0 to only turn the selected relay on, but not off. If 'Off' is selected in the previous field, this variable is not considered." required/>
                                 sec)
                                 <button type="submit" name="AddRelayConditional" title="Save new relay conditional statement">Save</button>
                                 </form>
@@ -727,13 +727,13 @@ if (isset($output_error)) {
                             if ($timer_state[$i] == 0) {
                             ?>
                                 <td class="onoff">
-                                    <nobr><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="Timer<?php echo $i; ?>StateChange" value="0"> | <button style="width: 3em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">ON</button></nobr>
+                                    <nobr><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="Timer<?php echo $i; ?>StateChange" value="0"> | <button style="width: 5em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">Turn On</button></nobr>
                                 </td>
                             <?php
                             } else {
                             ?>
                                 <td class="onoff">
-                                    <nobr><input type="image" style="height: 0.95em;" src="/mycodo/img/on.jpg" alt="On" title="On" name="Timer<?php echo $i; ?>StateChange" value="1"> | <button style="width: 3em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="0">OFF</button></nobr>
+                                    <nobr><input type="image" style="height: 0.95em;" src="/mycodo/img/on.jpg" alt="On" title="On" name="Timer<?php echo $i; ?>StateChange" value="1"> | <button style="width: 5em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="0">Turn Off</button></nobr>
                                 </td>
                             <?php
                             }
