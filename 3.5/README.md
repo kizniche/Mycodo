@@ -26,7 +26,7 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
   + [Discrete PID Control](#discrete-pid-control)
   + [Quick Setup Examples](#quick-set-up-examples)
     + [Exact-Temperature Regulation](#exact-temperature-regulation)
-    + [High-Temperature Regulation](#high-humidity-regulation)
+    + [High-Temperature Regulation](#high-temperature-regulation)
   + [Tips](#tips)
 + [License](#license)
 + [Useful Links](#useful-links)
