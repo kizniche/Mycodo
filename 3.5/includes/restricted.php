@@ -121,13 +121,13 @@ for ($p = 0; $p < count($relay_id); $p++) {
         $stmt->bindValue(':startstate', (int)$_POST['relay' . $p . 'startstate'], SQLITE3_INTEGER);
         $stmt->bindValue(':id', $relay_id[$p], SQLITE3_TEXT);
         $stmt->execute();
-        if ($_POST['relay' . $p . 'pin'] != $relay_pin[$p]) {
+        if ((int)$_POST['relay' . $p . 'pin'] != $relay_pin[$p]) {
             shell_exec("$mycodo_client --sqlreload $p");
         } else {
             shell_exec("$mycodo_client --sqlreload -1");
         }
 
-        $pin = $_POST['relay' . $p . 'pin'];
+        $pin = (int)$_POST['relay' . $p . 'pin'];
         shell_exec("gpio -g mode $pin output");
 
         if ((int)$_POST['relay' . $p . 'trigger'] == 1) {
