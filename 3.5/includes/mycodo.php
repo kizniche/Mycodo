@@ -444,7 +444,7 @@ if (isset($output_error)) {
             <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                 <?php
                     if (count($relay_id) == 0) {
-                        echo '<div style="color: red; padding: 0.5em 0 1em 0.5em; font-size: 0.9em;">Attention: There are 0 Relays configured. Change this in the Settings before activating a PID.</div>';
+                        echo '<div style="color: red; padding: 0.5em 0 1em 0.5em; font-size: 0.9em;">Note: There are 0 Relays configured. Change this in the Sensor tab before activating a PID.</div>';
                     }
                 ?>
                 <div style="float: left; padding: 0.5em 1.5em 1em 0.5em;">
@@ -2903,7 +2903,7 @@ if (isset($output_error)) {
                             concatenate_logs('relay');
                             $log = '/var/tmp/relay.log';
 
-                            echo 'Year Mo Day Hour Min Sec R1Sec R2Sec R3Sec R4Sec R5Sec R6Sec R7Sec R8Sec<br> <br>';
+                            echo 'Year Mo Day Hour Min Sec Sensor Relay GPIO SecondsOn<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `tail -n $Lines $log`;
