@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.73";
+$version = "3.5.74";
 
 ######### Start Edit Configure #########
 
@@ -534,6 +534,7 @@ if (isset($output_error)) {
                             <td align=center class="table-header">State<br><img style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off" title="Off"> = off</td>
                             <td align=center class="table-header">Seconds<br>On</td>
                             <td align=center class="table-header">GPIO<br>Pin</td>
+                            <td align=center class="table-header">Amps<br>Draw</td>
                             <td align=center class="table-header">Signal<br>ON</td>
                             <td align=center class="table-header">Startup<br>State</td>
                             <td align=center class="table-header"></td>
@@ -568,6 +569,9 @@ if (isset($output_error)) {
                             </td>
                             <td align=center>
                                 <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $relay_pin[$i]; ?>" name="relay<?php echo $i; ?>pin" title="GPIO pin using BCM numbering, connected to relay <?php echo $i+1; ?>"/>
+                            </td>
+                            <td align=center>
+                                <input style="width: 4em;" type="number" min="0" max="500" step="0.1" value="<?php echo $relay_amps[$i]; ?>" name="relay<?php echo $i; ?>amps" title="The maximum number of amps that relay <?php echo $i+1; ?> draws."/>
                             </td>
                             <td align=center>
                                 <select style="width: 65px;" title="Does this relay activate with a LOW (0-volt) or HIGH (5-volt) signal?" name="relay<?php echo $i; ?>trigger">
@@ -2982,7 +2986,7 @@ if (isset($output_error)) {
                     <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
-                            System Update
+                            Update
                         </td>
                     </tr>
                     <form action="?tab=settings" method="post">
@@ -3049,15 +3053,23 @@ if (isset($output_error)) {
                     <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
-                            Web Interface
+                            System
                         </td>
                     </tr>
                     <tr>
                         <td class="setting-text">
-                            Display Debugging Information
+                            Prevent exceeding the maximum amperage draw
                         </td>
                         <td class="setting-value">
-                            <input type="hidden" name="debug" value="0" /><input type="checkbox" id="debug" name="debug" value="1"<?php if (isset($_COOKIE['debug'])) if ($_COOKIE['debug'] == True) echo ' checked'; ?> title="Display debugging information at the bottom of every page."/>
+                            <input type="hidden" name="debug" value="0" /><input type="checkbox" id="debug" name="enable_max_amps" value="1"<?php if ($enable_max_amps == 1) echo ' checked'; ?> title="Prevent a combination of relays from turning on that surpass the maxmum amperage limit (set below)."/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Maximum number of amps the system may draw
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 4em;" type="number" min="1" max="500" step="0.1" value="<?php echo $max_amps; ?>" maxlength=4 size=1 name="max_amps" title="The number of amps that any combination of relays will be prevented from exceeding. Each relay must have an accurate amp draw set for this to operate properly. Ensure all relays that are connected to devices have the correct amperage set."/>
                         </td>
                     </tr>
                     <tr>
@@ -3066,6 +3078,14 @@ if (isset($output_error)) {
                         </td>
                         <td class="setting-value">
                             <input style="width: 4em;" type="number" min="1" max="999999" value="<?php echo $refresh_time; ?>" maxlength=4 size=1 name="refresh_time" title="The number of seconds between automatic page refreshing."/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Display Debugging Information
+                        </td>
+                        <td class="setting-value">
+                            <input type="hidden" name="debug" value="0" /><input type="checkbox" id="debug" name="debug" value="1"<?php if (isset($_COOKIE['debug'])) if ($_COOKIE['debug'] == True) echo ' checked'; ?> title="Display debugging information at the bottom of every page."/>
                         </td>
                     </tr>
                     <tr>

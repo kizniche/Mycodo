@@ -114,9 +114,10 @@ if (isset($_POST['AddRelays']) && isset($_POST['AddRelaysNumber'])) {
 for ($p = 0; $p < count($relay_id); $p++) {
     // Set relay variables
     if (isset($_POST['Mod' . $p . 'Relay'])) {
-        $stmt = $db->prepare("UPDATE Relays SET Name=:name, Pin=:pin, Trigger=:trigger, Start_State=:startstate WHERE Id=:id");
+        $stmt = $db->prepare("UPDATE Relays SET Name=:name, Pin=:pin, Amps=:amps, Trigger=:trigger, Start_State=:startstate WHERE Id=:id");
         $stmt->bindValue(':name', $_POST['relay' . $p . 'name'], SQLITE3_TEXT);
         $stmt->bindValue(':pin', (int)$_POST['relay' . $p . 'pin'], SQLITE3_INTEGER);
+        $stmt->bindValue(':amps', (float)$_POST['relay' . $p . 'amps'], SQLITE3_FLOAT);
         $stmt->bindValue(':trigger', (int)$_POST['relay' . $p . 'trigger'], SQLITE3_INTEGER);
         $stmt->bindValue(':startstate', (int)$_POST['relay' . $p . 'startstate'], SQLITE3_INTEGER);
         $stmt->bindValue(':id', $relay_id[$p], SQLITE3_TEXT);
@@ -154,53 +155,76 @@ for ($p = 0; $p < count($relay_id); $p++) {
         shell_exec("$mycodo_client --sqlreload -1");
     }
 
-    // Send client command to turn relay on or off
-    if (isset($_POST['R' . $p])) {
-        $pin = $relay_pin[$p];
-        if($relay_trigger[$p] == 0) $trigger_state = 'LOW';
-        else $trigger_state = 'HIGH';
-        if ($_POST['R' . $p] == 0) $desired_state = 'OFF';
-        else $desired_state = 'ON';
-
-        $GPIO_state = shell_exec("$gpio_path -g read $pin");
-        if ($GPIO_state == 0 && $trigger_state == 'HIGH') $actual_state = 'LOW';
-        else if ($GPIO_state == 0 && $trigger_state == 'LOW') $actual_state = 'HIGH';
-        else if ($GPIO_state == 1 && $trigger_state == 'HIGH') $actual_state = 'HIGH';
-        else if ($GPIO_state == 1 && $trigger_state == 'LOW') $actual_state = 'LOW';
-        $relay = $p+1;
-        if ($actual_state == 'LOW' && $desired_state == 'OFF') {
-            $sensor_error = "Error: Can't turn relay $relay Off, it's already Off";
-        } else if ($actual_state == 'HIGH' && $desired_state == 'ON') {
-            $sensor_error = "Error: Can't turn relay $relay On, it's already On";
-        } else {
-            if ($desired_state == 'ON') $desired_state = 1;
-            else $desired_state = 0;
-            $relay = $p + 1;
-            shell_exec("$mycodo_client -r $relay $desired_state");
+    // Check for errors
+    if (isset($_POST['R' . $p]) || isset($_POST[$p . 'secON'])) {
+        $total_amps = 0.0;
+        for ($i = 0; $i < count($relay_id); $i++) {
+            $read = "$gpio_path -g read $relay_pin[$i]";
+            $row = $results->fetchArray();
+            if ((shell_exec($read) == 1 && $relay_trigger[$i] == 1) || (shell_exec($read) == 0 && $relay_trigger[$i] == 0)) {
+                $total_amps = $total_amps + $relay_amps[$i];
+            }
+        }
+        $read = "$gpio_path -g read $relay_pin[$p]";
+        $row = $results->fetchArray();
+        if ((shell_exec($read) == 1 && $relay_trigger[$p] == 0) || (shell_exec($read) == 0 && $relay_trigger[$p] == 1)) {
+            $total_amps = $total_amps + $relay_amps[$p];
+        }
+        if ($total_amps > $max_amps) {
+            $sensor_error = "Error: Cannot turn relay $p on. This will exceed the maximum set amp draw ($max_amps amps).";
         }
     }
 
-    // Send client command to turn relay on for a number of seconds
-    if (isset($_POST[$p . 'secON'])) {
-        $name = $relay_name[$p];
-        $pin = $relay_pin[$p];
-        if($relay_trigger[$p] == 0) $trigger_state = 'LOW';
-        else $trigger_state = 'HIGH';
+    if (!isset($sensor_error)) {
 
-        $GPIO_state = shell_exec("$gpio_path -g read $pin");
-        if ($GPIO_state == 0 && $trigger_state == 'HIGH') $actual_state = 'LOW';
-        else if ($GPIO_state == 0 && $trigger_state == 'LOW') $actual_state = 'HIGH';
-        else if ($GPIO_state == 1 && $trigger_state == 'HIGH') $actual_state = 'HIGH';
-        else if ($GPIO_state == 1 && $trigger_state == 'LOW') $actual_state = 'LOW';
-        $seconds_on = $_POST['sR' . $p];
+        // Send client command to turn relay on or off
+        if (isset($_POST['R' . $p])) {
+            $pin = $relay_pin[$p];
+            if($relay_trigger[$p] == 0) $trigger_state = 'LOW';
+            else $trigger_state = 'HIGH';
+            if ($_POST['R' . $p] == 0) $desired_state = 'OFF';
+            else $desired_state = 'ON';
 
-        if (!is_numeric($seconds_on) || $seconds_on < 2 || $seconds_on != round($seconds_on)) {
-            $sensor_error = "Error: Relay $p ($name): Seconds On must be a positive integer and > 1</div>";
-        } else if ($actual_state == 'HIGH' && $desired_state == 'HIGH') {
-            $sensor_error = "Error: Can't turn relay $p On, it's already On";
-        } else {
+            $GPIO_state = shell_exec("$gpio_path -g read $pin");
+            if ($GPIO_state == 0 && $trigger_state == 'HIGH') $actual_state = 'LOW';
+            else if ($GPIO_state == 0 && $trigger_state == 'LOW') $actual_state = 'HIGH';
+            else if ($GPIO_state == 1 && $trigger_state == 'HIGH') $actual_state = 'HIGH';
+            else if ($GPIO_state == 1 && $trigger_state == 'LOW') $actual_state = 'LOW';
             $relay = $p+1;
-            shell_exec("$mycodo_client -r $relay $seconds_on");
+            if ($actual_state == 'LOW' && $desired_state == 'OFF') {
+                $sensor_error = "Error: Can't turn relay $relay Off, it's already Off";
+            } else if ($actual_state == 'HIGH' && $desired_state == 'ON') {
+                $sensor_error = "Error: Can't turn relay $relay On, it's already On";
+            } else {
+                if ($desired_state == 'ON') $desired_state = 1;
+                else $desired_state = 0;
+                $relay = $p + 1;
+                shell_exec("$mycodo_client -r $relay $desired_state");
+            }
+        }
+
+        // Send client command to turn relay on for a number of seconds
+        if (isset($_POST[$p . 'secON'])) {
+            $name = $relay_name[$p];
+            $pin = $relay_pin[$p];
+            if($relay_trigger[$p] == 0) $trigger_state = 'LOW';
+            else $trigger_state = 'HIGH';
+
+            $GPIO_state = shell_exec("$gpio_path -g read $pin");
+            if ($GPIO_state == 0 && $trigger_state == 'HIGH') $actual_state = 'LOW';
+            else if ($GPIO_state == 0 && $trigger_state == 'LOW') $actual_state = 'HIGH';
+            else if ($GPIO_state == 1 && $trigger_state == 'HIGH') $actual_state = 'HIGH';
+            else if ($GPIO_state == 1 && $trigger_state == 'LOW') $actual_state = 'LOW';
+            $seconds_on = $_POST['sR' . $p];
+
+            if (!is_numeric($seconds_on) || $seconds_on < 2 || $seconds_on != round($seconds_on)) {
+                $sensor_error = "Error: Relay $p ($name): Seconds On must be a positive integer and > 1</div>";
+            } else if ($actual_state == 'HIGH' && $desired_state == 'HIGH') {
+                $sensor_error = "Error: Can't turn relay $p On, it's already On";
+            } else {
+                $relay = $p+1;
+                shell_exec("$mycodo_client -r $relay $seconds_on");
+            }
         }
     }
 }
@@ -2218,8 +2242,10 @@ if (isset($_POST['ChangeNotify'])) {
 
 // Change interface settings
 if (isset($_POST['ChangeInterface'])) {
-    $stmt = $db->prepare("UPDATE Misc SET Refresh_Time=:refreshtime");
+    $stmt = $db->prepare("UPDATE Misc SET Refresh_Time=:refreshtime, Enable_Max_Amps=:enablemaxamps, Max_Amps=:maxamps");
     $stmt->bindValue(':refreshtime', (int)$_POST['refresh_time'], SQLITE3_INTEGER);
+    $stmt->bindValue(':enablemaxamps', (int)$_POST['enable_max_amps'], SQLITE3_INTEGER);
+    $stmt->bindValue(':maxamps', (float)$_POST['max_amps'], SQLITE3_FLOAT);
     $stmt->execute();
 }
 

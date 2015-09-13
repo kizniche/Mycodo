@@ -2481,6 +2481,7 @@ def read_sql():
     global relay_id
     global relay_name
     global relay_pin
+    global relay_amps
     global relay_trigger
     global relay_start_state
 
@@ -2488,6 +2489,7 @@ def read_sql():
     relay_id = []
     relay_name = []
     relay_pin = []
+    relay_amps = []
     relay_trigger = []
     relay_start_state = []
 
@@ -2553,6 +2555,11 @@ def read_sql():
     global smtp_email_from
     global smtp_email_to
 
+    # Misc
+    global enable_max_amps
+    global max_amps
+
+
     # Check if all required tables exist in the SQL database
     conn = sqlite3.connect(mycodo_database)
     cur = conn.cursor()
@@ -2577,13 +2584,21 @@ def read_sql():
 
 
     # Begin setting global variables from SQL database values
-    cur.execute('SELECT Id, Name, Pin, Trigger, Start_State FROM Relays')
+    cur.execute('SELECT Enable_Max_Amps, Max_Amps FROM Misc')
+    for row in cur:
+        enable_max_amps = row[0]
+        max_amps = row[1]
+
+
+    # Begin setting global variables from SQL database values
+    cur.execute('SELECT Id, Name, Pin, Amps, Trigger, Start_State FROM Relays')
     for row in cur:
         relay_id.append(row[0])
         relay_name.append(row[1])
         relay_pin.append(row[2])
-        relay_trigger.append(row[3])
-        relay_start_state.append(row[4])
+        relay_amps.append(row[3])
+        relay_trigger.append(row[4])
+        relay_start_state.append(row[5])
 
 
     cur.execute('SELECT Id, Name, If_Relay, If_Action, If_Duration, Do_Relay, Do_Action, Do_Duration FROM RelayConditional')
@@ -3258,13 +3273,49 @@ def gpio_change(relay, State):
 # Turn relay on or off (accounts for trigger)
 def relay_onoff(relay, state):
     if (relay_trigger[relay-1] == 1 and state == 'on'):
+
+        if enable_max_amps == 1:
+            total_amps = 0
+            for i in range(0, len(relay_id)):
+                if ((relay_trigger[i] == 0 and GPIO.input(relay_pin[i]) == 0) or (
+                    relay_trigger[i] == 1 and GPIO.input(relay_pin[i]) == 1)):
+                    total_amps += relay_amps[i]
+                    
+            if ((relay_trigger[relay-1] == 0 and GPIO.input(relay_pin[relay-1]) == 1) or (
+                    relay_trigger[relay-1] == 1 and GPIO.input(relay_pin[relay-1]) == 0)):
+                total_amps += relay_amps[relay-1]
+
+            if total_amps > max_amps:
+                logging.warning("[Daemon] Cannot turn relay %s (%s) On. If this relay turns on, there will be %s amps being drawn, which exceeds the maximum set draw of %s amps.",
+                        relay, relay_name[relay-1], total_amps, max_amps)
+                return 1
+        
+        gpio_change(relay, 1)
+
+    elif (relay_trigger[relay-1] == 0 and state == 'on'):
+
+        if enable_max_amps == 1:
+            total_amps = 0
+            for i in range(0, len(relay_id)):
+                if ((relay_trigger[i] == 0 and GPIO.input(relay_pin[i]) == 0) or (
+                    relay_trigger[i] == 1 and GPIO.input(relay_pin[i]) == 1)):
+                    total_amps += relay_amps[i]
+                    
+            if ((relay_trigger[relay-1] == 0 and GPIO.input(relay_pin[relay-1]) == 1) or (
+                    relay_trigger[relay-1] == 1 and GPIO.input(relay_pin[relay-1]) == 0)):
+                total_amps += relay_amps[relay-1]
+
+            if total_amps > max_amps:
+                logging.warning("[Daemon] Cannot turn relay %s (%s) On. If this relay turns on, there will be %s amps being drawn, which exceeds the maximum set draw of %s amps.",
+                        relay, relay_name[relay-1], total_amps, max_amps)
+                return 1
+
+        gpio_change(relay, 0)
+
+    elif (relay_trigger[relay-1] == 0 and state == 'off'):
         gpio_change(relay, 1)
     elif (relay_trigger[relay-1] == 1 and state == 'off'):
         gpio_change(relay, 0)
-    elif (relay_trigger[relay-1] == 0 and state == 'on'):
-        gpio_change(relay, 0)
-    elif (relay_trigger[relay-1] == 0 and state == 'off'):
-        gpio_change(relay, 1)
 
     for i in range(0, len(conditional_relay_id)):
         if state == 'on':
@@ -3288,6 +3339,22 @@ def relay_onoff(relay, state):
 # Set relay on for a specific duration (seconds may be negative)
 def relay_on_duration(relay, seconds, sensor):
     global on_duration_timer
+
+    if enable_max_amps == 1:
+        total_amps = 0
+        for i in range(0, len(relay_id)):
+            if ((relay_trigger[i] == 0 and GPIO.input(relay_pin[i]) == 0) or (
+                relay_trigger[i] == 1 and GPIO.input(relay_pin[i]) == 1)):
+                total_amps += relay_amps[i]
+
+        if ((relay_trigger[relay-1] == 0 and GPIO.input(relay_pin[relay-1]) == 1) or (
+                relay_trigger[relay-1] == 1 and GPIO.input(relay_pin[relay-1]) == 0)):
+            total_amps += relay_amps[relay-1]
+
+        if total_amps > max_amps:
+            logging.warning("[Daemon] Cannot turn relay %s (%s) On. If this relay turns on, there will be %s amps being drawn, which exceeds the maximum set draw of %s amps.",
+                    relay, relay_name[relay-1], total_amps, max_amps)
+            return 1
 
     if (((relay_trigger[relay-1] == 0 and GPIO.input(relay_pin[relay-1]) == 0) or (
             relay_trigger[relay-1] == 1 and GPIO.input(relay_pin[relay-1]) == 1)) and

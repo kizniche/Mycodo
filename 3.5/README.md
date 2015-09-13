@@ -35,6 +35,9 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 Major changes for each versioned release
 
+#### 3.5.74
++ Ability to add amp draw for each device and set maximum allowed amps to be drawn (will prevent relays from turning on that would exceed the set max)
+
 #### 3.5.73
 + Ability to create relay conditional statements based on relay states
 

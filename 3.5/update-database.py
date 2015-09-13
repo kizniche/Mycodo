@@ -26,7 +26,7 @@
 sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
 sql_database_user = '/var/www/mycodo/config/users.db'
 
-db_version_mycodo = 8
+db_version_mycodo = 9
 db_version_user = 1
 
 import getopt
@@ -308,6 +308,11 @@ def mycodo_database_update():
 
         # Version 8 updates: add relay conditional statements
 
+        # Version 9 updates: add table relay: Amps
+        ModNullValue(sql_database_mycodo, 'Relays', 'Amps', 0)
+        ModNullValue(sql_database_mycodo, 'Misc', 'Enable_Max_Amps', 1)
+        ModNullValue(sql_database_mycodo, 'Misc', 'Max_Amps', 15)
+
         # any extra commands for version X
         #if current_db_version_mycodo < X:
         #    pass
@@ -339,6 +344,7 @@ def mycodo_database_create():
     AddTable(sql_database_mycodo, 'Relays')
     AddColumn(sql_database_mycodo, 'Relays', 'Name', 'TEXT')
     AddColumn(sql_database_mycodo, 'Relays', 'Pin', 'INT')
+    AddColumn(sql_database_mycodo, 'Relays', 'Amps', 'REAL')
     AddColumn(sql_database_mycodo, 'Relays', 'Trigger', 'INT')
     AddColumn(sql_database_mycodo, 'Relays', 'Start_State', 'INT')
 
@@ -795,9 +801,11 @@ def mycodo_database_create():
     AddTable(sql_database_mycodo, 'Misc')
     AddColumn(sql_database_mycodo, 'Misc', 'Dismiss_Notification', 'INT')
     AddColumn(sql_database_mycodo, 'Misc', 'Refresh_Time', 'INT')
+    AddColumn(sql_database_mycodo, 'Misc', 'Enable_Max_Amps', 'INT')
+    AddColumn(sql_database_mycodo, 'Misc', 'Max_Amps', 'REAL')
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("INSERT OR IGNORE INTO Misc VALUES('0', 0, 300)")
+    cur.execute("INSERT OR IGNORE INTO Misc VALUES('0', 0, 300, 1, 15)")
     conn.commit()
     cur.close()
     ModNullValue(sql_database_mycodo, 'Misc', 'Dismiss_Notification', 0)

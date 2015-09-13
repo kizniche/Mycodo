@@ -26,14 +26,15 @@ $db = new SQLite3($mycodo_db);
 
 
 unset($relay_id);
-$results = $db->query('SELECT Id, Name, Pin, Trigger, Start_State FROM Relays');
+$results = $db->query('SELECT Id, Name, Pin, Amps, Trigger, Start_State FROM Relays');
 $i = 0;
 while ($row = $results->fetchArray()) {
     $relay_id[$i] = $row[0];
     $relay_name[$i] = $row[1];
     $relay_pin[$i] = $row[2];
-    $relay_trigger[$i] = $row[3];
-    $relay_start_state[$i] = $row[4];
+    $relay_amps[$i] = $row[3];
+    $relay_trigger[$i] = $row[4];
+    $relay_start_state[$i] = $row[5];
     $i++;
 }
 if (!isset($relay_id)) $relay_id = [];
@@ -415,7 +416,9 @@ while ($row = $results->fetchArray()) {
     $timelapse_extra_parameters = $row[7];
 }
 
-$results = $db->query('SELECT Refresh_Time FROM Misc');
+$results = $db->query('SELECT Refresh_Time, Enable_Max_Amps, Max_Amps FROM Misc');
 while ($row = $results->fetchArray()) {
     $refresh_time = $row[0];
+    $enable_max_amps = $row[1];
+    $max_amps = $row[2];
 }
