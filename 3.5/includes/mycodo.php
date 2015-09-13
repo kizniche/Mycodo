@@ -571,7 +571,7 @@ if (isset($output_error)) {
                                 <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $relay_pin[$i]; ?>" name="relay<?php echo $i; ?>pin" title="GPIO pin using BCM numbering, connected to relay <?php echo $i+1; ?>"/>
                             </td>
                             <td align=center>
-                                <input style="width: 4em;" type="number" min="0" max="500" step="0.1" value="<?php echo $relay_amps[$i]; ?>" name="relay<?php echo $i; ?>amps" title="The maximum number of amps that relay <?php echo $i+1; ?> draws."/>
+                                <input style="width: 4em;" type="number" min="0" max="500" step="0.1" value="<?php echo $relay_amps[$i]; ?>" name="relay<?php echo $i; ?>amps" title="The maximum number of amps that the device connected to relay <?php echo $i+1; ?> draws. Set overall maximum allowed to be drawn from all relays in the Settings tab."/>
                             </td>
                             <td align=center>
                                 <select style="width: 65px;" title="Does this relay activate with a LOW (0-volt) or HIGH (5-volt) signal?" name="relay<?php echo $i; ?>trigger">
