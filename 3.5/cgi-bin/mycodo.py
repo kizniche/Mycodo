@@ -1071,16 +1071,17 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
                         rod.start()
 
                     if pid_t_temp_set_dir[sensor] < 1 and PIDTemp < 0:
-                        if pid_t_temp_outmax_high[sensor] != 0 and abs(PIDTemp) > pid_t_temp_outmax_high[sensor]:
+                        PIDTemp = abs(PIDTemp)
+                        if pid_t_temp_outmax_high[sensor] != 0 and PIDTemp > pid_t_temp_outmax_high[sensor]:
                             logging.debug("[PID T-Temperature-%s] PID = %.1f (max enabled)", sensor+1, PIDTemp)
-                            PIDTemp = -abs(pid_t_temp_outmax_high[sensor])
+                            PIDTemp = pid_t_temp_outmax_high[sensor]
                         else:
                             logging.debug("[PID T-Temperature-%s] PID = %.1f (max disabled)", sensor+1, PIDTemp)
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_t_temp_relay_high[sensor], round(PIDTemp,2), sensor,))
                         rod.start()
 
-                    timerTemp = int(time.time()) + int(abs(PIDTemp)) + pid_t_temp_period[sensor]
+                    timerTemp = int(time.time()) + int(PIDTemp) + pid_t_temp_period[sensor]
 
                 else:
                     logging.warning("[PID T-Temperature-%s] Could not read Temp sensor, not updating PID", sensor+1)
@@ -1160,16 +1161,17 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
                         rod.start()
 
                     if pid_ht_temp_set_dir[sensor] < 1 and PIDTemp < 0:
-                        if pid_ht_temp_outmax_high[sensor] != 0 and abs(PIDTemp) > pid_ht_temp_outmax_high[sensor]:
+                        PIDTemp = abs(PIDTemp)
+                        if pid_ht_temp_outmax_high[sensor] != 0 and PIDTemp > pid_ht_temp_outmax_high[sensor]:
                             logging.debug("[PID HT-Temperature-%s] PID = %.1f (max enabled)", sensor+1, PIDTemp)
-                            PIDTemp = -abs(pid_ht_temp_outmax_high[sensor])
+                            PIDTemp = pid_ht_temp_outmax_high[sensor]
                         else:
                             logging.debug("[PID HT-Temperature-%s] PID = %.1f (max disabled)", sensor+1, PIDTemp)
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_ht_temp_relay_high[sensor], round(PIDTemp,2), sensor,))
                         rod.start()
 
-                    timerTemp = int(time.time()) + int(abs(PIDTemp)) + pid_ht_temp_period[sensor]
+                    timerTemp = int(time.time()) + int(PIDTemp) + pid_ht_temp_period[sensor]
 
                 else:
                     logging.warning("[PID HT-Temperature-%s] Could not read Hum/Temp sensor, not updating PID", sensor+1)
@@ -1248,16 +1250,17 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
                         rod.start()
 
                     if pid_ht_hum_set_dir[sensor] < 1 and PIDHum < 0:
-                        if pid_ht_hum_outmax_high[sensor] != 0 and abs(PIDHum) > pid_ht_hum_outmax_high[sensor]:
+                        PIDHum = abs(PIDHum)
+                        if pid_ht_hum_outmax_high[sensor] != 0 and PIDHum > pid_ht_hum_outmax_high[sensor]:
                             logging.debug("[PID HT-Humidity-%s] PID = %.1f (max enabled)", sensor+1, PIDHum)
-                            PIDHum = -abs(pid_ht_hum_outmax_high[sensor])
+                            PIDHum = pid_ht_hum_outmax_high[sensor]
                         else:
                             logging.debug("[PID HT-Humidity-%s] PID = %.1f (max disabled)", sensor+1, PIDHum)
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_ht_hum_relay_high[sensor], round(PIDHum,2), sensor,))
                         rod.start()
 
-                    timerHum = int(time.time()) + int(abs(PIDHum)) + pid_ht_hum_period[sensor]
+                    timerHum = int(time.time()) + int(PIDHum) + pid_ht_hum_period[sensor]
 
                 else:
                     logging.warning("[PID HT-Humidity-%s] Could not read Hum/Temp sensor, not updating PID", sensor+1)
@@ -1336,16 +1339,17 @@ def co2_monitor(ThreadName, sensor):
                         rod.start()
 
                     if pid_co2_set_dir[sensor] < 1 and PIDCO2 < 0:
-                        if pid_co2_outmax_high[sensor] != 0 and abs(PIDCO2) > pid_co2_outmax_high[sensor]:
+                        PIDCO2 = abs(PIDCO2)
+                        if pid_co2_outmax_high[sensor] != 0 and PIDCO2 > pid_co2_outmax_high[sensor]:
                             logging.debug("[PID CO2-%s] PID = %.1f (max enabled)", sensor+1, PIDCO2)
-                            PIDCO2 = -abs(pid_co2_outmax_high[sensor])
+                            PIDCO2 = pid_co2_outmax_high[sensor]
                         else:
                             logging.debug("[PID CO2-%s] PID = %.1f (max disabled)", sensor+1, PIDCO2)
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_co2_relay_high[sensor], round(PIDCO2,2), sensor,))
                         rod.start()
 
-                    timerCO2 = int(time.time()) + int(abs(PIDCO2)) + pid_co2_period[sensor]
+                    timerCO2 = int(time.time()) + int(PIDCO2) + pid_co2_period[sensor]
 
                 else:
                     logging.warning("[PID CO2-%s] Could not read CO2 sensor, not updating PID", sensor+1)
@@ -1424,16 +1428,17 @@ def press_sensor_temperature_monitor(ThreadName, sensor):
                         rod.start()
 
                     if pid_press_temp_set_dir[sensor] < 1 and PIDTemp < 0:
-                        if pid_press_temp_outmax_high[sensor] != 0 and abs(PIDTemp) > pid_press_temp_outmax_high[sensor]:
+                        PIDTemp = abs(PIDTemp)
+                        if pid_press_temp_outmax_high[sensor] != 0 and PIDTemp > pid_press_temp_outmax_high[sensor]:
                             logging.debug("[PID Press-Temperature-%s] PID = %.1f (max enabled)", sensor+1, PIDTemp)
-                            PIDTemp = -abs(pid_press_temp_outmax_high[sensor])
+                            PIDTemp = pid_press_temp_outmax_high[sensor]
                         else:
                             logging.debug("[PID Press-Temperature-%s] PID = %.1f (max disabled)", sensor+1, PIDTemp)
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_press_temp_relay_high[sensor], round(PIDTemp,2), sensor,))
                         rod.start()
 
-                    timerTemp = int(time.time()) + int(abs(PIDTemp)) + pid_press_temp_period[sensor]
+                    timerTemp = int(time.time()) + int(PIDTemp) + pid_press_temp_period[sensor]
 
                 else:
                     logging.warning("[PID Press-Temperature-%s] Could not read Press/Temp sensor, not updating PID", sensor+1)
@@ -1512,16 +1517,17 @@ def press_sensor_pressure_monitor(ThreadName, sensor):
                         rod.start()
 
                     if pid_press_press_set_dir[sensor] < 1 and PIDPress < 0:
-                        if pid_press_press_outmax_high[sensor] != 0 and abs(PIDPress) > pid_press_press_outmax_high[sensor]:
+                        PIDPress = abs(PIDPress)
+                        if pid_press_press_outmax_high[sensor] != 0 and PIDPress > pid_press_press_outmax_high[sensor]:
                             logging.debug("[PID Press-Pressure-%s] PID = %.1f (max enabled)", sensor+1, PIDPress)
-                            PIDPress = -abs(pid_press_press_outmax_high[sensor])
+                            PIDPress = pid_press_press_outmax_high[sensor]
                         else:
                             logging.debug("[PID Press-Pressure-%s] PID = %.1f (max disabled)", sensor+1, PIDPress)
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_press_press_relay_high[sensor], round(PIDPress,2), sensor,))
                         rod.start()
 
-                    timerPress = int(time.time()) + int(abs(PIDPress)) + pid_press_press_period[sensor]
+                    timerPress = int(time.time()) + int(PIDPress) + pid_press_press_period[sensor]
 
                 else:
                     logging.warning("[PID Press-Pressure-%s] Could not read Press/Temp sensor, not updating PID", sensor+1)

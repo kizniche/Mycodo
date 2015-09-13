@@ -1724,7 +1724,7 @@ if (isset($output_error)) {
                                 echo 'Below ';
                             }
 
-                            echo $conditional_co2_setpoint[$i][$z] . 'ppm, turn Relay ' . $conditional_co2_relay[$i][$z];
+                            echo $conditional_co2_setpoint[$i][$z] . ' ppmv, turn Relay ' . $conditional_co2_relay[$i][$z];
 
                             if ($conditional_co2_relay_state[$i][$z]) {
                                 echo ' On';
