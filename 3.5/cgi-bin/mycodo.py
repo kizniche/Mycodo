@@ -148,9 +148,10 @@ class ComServer(rpyc.Service):
         return 1
 
     def exposed_all_PID_restart(self, sensortype):
-        global client_que
+        global PID_change
+        PID_change = 1
 
-        logging.info("[Daemon] Commanding all %s PID controllers to stop", sensortype)
+        logging.info("[Daemon] Commanding all %s PID controllers to restart", sensortype)
 
         if sensortype == 'T':
             global start_all_t_pids
@@ -210,6 +211,8 @@ class ComServer(rpyc.Service):
         return 1
 
     def exposed_PID_restart(self, pidtype, number):
+        global PID_change
+        PID_change = 1
         PID_stop(pidtype, number)
         logging.info("[Client command] Reload SQLite database (Note: May cause interruption of sensor readings)")
         read_sql()
@@ -217,10 +220,14 @@ class ComServer(rpyc.Service):
         return 1
 
     def exposed_PID_start(self, pidtype, number):
+        global PID_change
+        PID_change = 1
         PID_start(pidtype, number)
         return 1
 
     def exposed_PID_stop(self, pidtype, number):
+        global PID_change
+        PID_change = 1
         PID_stop(pidtype, number)
         return 1
 
@@ -467,7 +474,10 @@ def daemon(output, log):
     global client_que
     global pause_daemon_confirm
 
-    pause_daemon_confirm = -1;
+    global PID_change
+
+    pause_daemon_confirm = -1
+    PID_change = 0
 
     # Set log level based on startup argument
     if (log == 'warning'):
@@ -678,7 +688,7 @@ def daemon(output, log):
 
 
         # Check if a PID is being stopped or started, used to pause other tasks
-        if pid_t_temp_up or pid_ht_temp_up or pid_ht_hum_up or pid_co2_up or pid_press_temp_up or pid_press_press_up or pid_t_temp_down or pid_ht_temp_down or pid_ht_hum_down or pid_co2_down or pid_press_temp_down or pid_press_press_down:
+        if pid_t_temp_up or pid_ht_temp_up or pid_ht_hum_up or pid_co2_up or pid_press_temp_up or pid_press_press_up or pid_t_temp_down or pid_ht_temp_down or pid_ht_hum_down or pid_co2_down or pid_press_temp_down or pid_press_press_down or stop_all_t_pids or start_all_t_pids or stop_all_ht_pids or start_all_ht_pids or stop_all_co2_pids or start_all_co2_pids or stop_all_press_pids or start_all_press_pids:
             PID_change = 1
         else:
             PID_change = 0

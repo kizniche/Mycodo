@@ -460,9 +460,7 @@ Use the same configuration as the <a href="#exact-temperature-regulation">Exact 
 
 ### Tips
 
-#### PID Buffer
-
-If regulation is set to 'Both' ways (up and down), the devices that regulate each direction may turn on excessively, essentially competing to maintain regulation of a precise Set Point. This is where the `PID Buffer` may be effective at reducing relay activity. By setting the PID Buffer greater than 0, a zone is formed (Set Point ± Buffer) where relays will not activate while the environmental condition is measured within this range. For instance, if the Set Point is 30°C and the Buffer is 1, this range would be 30°C ± 1 = 29°C and 31°C.
+The page-load time when submiting configuration changes in the sensor tab will be faster when the daemon is not running. The daemon can be stopped and started in the Settings tab.
 
 ## License
 
