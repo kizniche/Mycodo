@@ -35,7 +35,7 @@ $mycodo_client = $install_path . "/cgi-bin/mycodo-client.py";
 require_once("includes/auth.php"); // Check authorization to view
 
 if ($_COOKIE['login_hash'] == $user_hash) {
-    header('Content-Type: image/jpeg');
+    header('Content-Type: image/png');
 
     if (isset($_GET['graphtype']) && ($_GET['graphtype'] == 'custom-separate' || $_GET['graphtype'] == 'custom-combined')) {
         // Generate custom graph (Graph tab)
