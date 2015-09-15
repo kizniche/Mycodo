@@ -659,11 +659,17 @@ def daemon(output, log):
             start_all_press_pids = 0
 
 
+        # Check if a PID is being stopped or started, used to pause other tasks
+        if pid_t_temp_up or pid_ht_temp_up or pid_ht_hum_up or pid_co2_up or pid_press_temp_up or pid_press_press_up or pid_t_temp_down or pid_ht_temp_down or pid_ht_hum_down or pid_co2_down or pid_press_temp_down or pid_press_press_down:
+            PID_change = 1
+        else:
+            PID_change = 0
+
         #
         # Read sensors and write logs
         #
         for i in range(0, len(sensor_t_id)):
-            if int(time.time()) > timerTSensorLog[i] and sensor_t_device[i] != 'Other' and sensor_t_activated[i] == 1 and client_que != 'TerminateServer' and sql_reload_hold != 1:
+            if int(time.time()) > timerTSensorLog[i] and sensor_t_device[i] != 'Other' and sensor_t_activated[i] == 1 and client_que != 'TerminateServer' and sql_reload_hold != 1 and PID_change != 1:
                 logging.debug("[Timer Expiration] Read Temp-%s sensor every %s seconds: Write sensor log", i+1, sensor_t_period[i])
                 if read_t_sensor(i) == 1:
                     mycodoLog.write_t_sensor_log(sensor_t_read_temp_c, i)
@@ -672,7 +678,7 @@ def daemon(output, log):
                 timerTSensorLog[i] = int(time.time()) + sensor_t_period[i]
 
         for i in range(0, len(sensor_ht_id)):
-            if int(time.time()) > timerHTSensorLog[i] and sensor_ht_device[i] != 'Other' and sensor_ht_activated[i] == 1 and client_que != 'TerminateServer' and sql_reload_hold != 1:
+            if int(time.time()) > timerHTSensorLog[i] and sensor_ht_device[i] != 'Other' and sensor_ht_activated[i] == 1 and client_que != 'TerminateServer' and sql_reload_hold != 1 and PID_change != 1:
                 logging.debug("[Timer Expiration] Read HT-%s sensor every %s seconds: Write sensor log", i+1, sensor_ht_period[i])
                 if read_ht_sensor(i) == 1:
                     mycodoLog.write_ht_sensor_log(sensor_ht_read_temp_c, sensor_ht_read_hum, sensor_ht_dewpt_c, i)
@@ -681,7 +687,7 @@ def daemon(output, log):
                 timerHTSensorLog[i] = int(time.time()) + sensor_ht_period[i]
 
         for i in range(0, len(sensor_co2_id)):
-            if int(time.time()) > timerCo2SensorLog[i] and sensor_co2_device[i] != 'Other' and sensor_co2_activated[i] == 1 and client_que != 'TerminateServer' and sql_reload_hold != 1:
+            if int(time.time()) > timerCo2SensorLog[i] and sensor_co2_device[i] != 'Other' and sensor_co2_activated[i] == 1 and client_que != 'TerminateServer' and sql_reload_hold != 1 and PID_change != 1:
                 if read_co2_sensor(i) == 1:
                     mycodoLog.write_co2_sensor_log(sensor_co2_read_co2, i)
                 else:
@@ -689,7 +695,7 @@ def daemon(output, log):
                 timerCo2SensorLog[i] = int(time.time()) + sensor_co2_period[i]
 
         for i in range(0, len(sensor_press_id)):
-            if int(time.time()) > timerPressSensorLog[i] and sensor_press_device[i] != 'Other' and sensor_press_activated[i] == 1 and client_que != 'TerminateServer' and sql_reload_hold != 1:
+            if int(time.time()) > timerPressSensorLog[i] and sensor_press_device[i] != 'Other' and sensor_press_activated[i] == 1 and client_que != 'TerminateServer' and sql_reload_hold != 1 and PID_change != 1:
                 logging.debug("[Timer Expiration] Read Press-%s sensor every %s seconds: Write sensor log", i+1, sensor_press_period[i])
                 if read_press_sensor(i) == 1:
                     mycodoLog.write_press_sensor_log(sensor_press_read_temp_c, sensor_press_read_press, sensor_press_read_alt, i)
@@ -704,7 +710,7 @@ def daemon(output, log):
         for j in range(0, len(conditional_t_number_sensor)):
             for k in range(0, len(conditional_t_number_conditional)):
 
-                if conditional_t_id[j][k][0] != 0 and client_que != 'TerminateServer' and sql_reload_hold != 1:
+                if conditional_t_id[j][k][0] != 0 and client_que != 'TerminateServer' and sql_reload_hold != 1 and PID_change != 1:
 
                     if int(time.time()) > timerTConditional[j][k] and conditional_t_state[j][k][0] == 1:
                         logging.debug("[Conditional T] Check conditional statement %s: %s", k+1, conditional_t_name[j][k][0])
@@ -736,7 +742,7 @@ def daemon(output, log):
         for j in range(0, len(conditional_ht_number_sensor)):
             for k in range(0, len(conditional_ht_number_conditional)):
 
-                if conditional_ht_id[j][k][0] != 0 and client_que != 'TerminateServer' and sql_reload_hold != 1:
+                if conditional_ht_id[j][k][0] != 0 and client_que != 'TerminateServer' and sql_reload_hold != 1 and PID_change != 1:
 
                     if int(time.time()) > timerHTConditional[j][k] and conditional_ht_state[j][k][0] == 1:
                         logging.debug("[Conditional HT] Check conditional statement %s: %s", k+1, conditional_ht_name[j][k][0])
@@ -776,7 +782,7 @@ def daemon(output, log):
         for j in range(0, len(conditional_co2_number_sensor)):
             for k in range(0, len(conditional_co2_number_conditional)):
 
-                if conditional_co2_id[j][k][0] != 0 and client_que != 'TerminateServer' and sql_reload_hold != 1:
+                if conditional_co2_id[j][k][0] != 0 and client_que != 'TerminateServer' and sql_reload_hold != 1 and PID_change != 1:
 
                     if int(time.time()) > timerCO2Conditional[j][k] and conditional_co2_state[j][k][0] == 1:
                         logging.debug("[Conditional CO2] Check conditional statement %s: %s", k+1, conditional_co2_name[j][k][0])
@@ -808,7 +814,7 @@ def daemon(output, log):
         for j in range(0, len(conditional_press_number_sensor)):
             for k in range(0, len(conditional_press_number_conditional)):
 
-                if conditional_press_id[j][k][0] != 0 and client_que != 'TerminateServer' and sql_reload_hold != 1:
+                if conditional_press_id[j][k][0] != 0 and client_que != 'TerminateServer' and sql_reload_hold != 1 and PID_change != 1:
 
                     if int(time.time()) > timerPressConditional[j][k] and conditional_press_state[j][k][0] == 1:
                         logging.debug("[Conditional Press] Check conditional statement %s: %s", k+1, conditional_press_name[j][k][0])
@@ -845,7 +851,7 @@ def daemon(output, log):
         #
         # Concatenate local log with tempfs log every 6 hours (backup)
         #
-        if int(time.time()) > timerLogBackup and client_que != 'TerminateServer':
+        if int(time.time()) > timerLogBackup and client_que != 'TerminateServer' and PID_change != 1:
             mycodoLog.Concatenate_Logs()
             timerLogBackup = int(time.time()) + 21600
 
@@ -853,9 +859,9 @@ def daemon(output, log):
         #
         # Simple duration timers
         #
-        if len(timer_id) != 0 and client_que != 'TerminateServer':
+        if len(timer_id) != 0:
             for i in range(0, len(timer_id)):
-                if timer_state[i] == 1 and int(time.time()) > timer_time[i]:
+                if timer_state[i] == 1 and int(time.time()) > timer_time[i] and client_que != 'TerminateServer' and PID_change != 1:
                     logging.debug("[Timer Expiration] Timer %s: Turn Relay %s on for %s seconds, off %s seconds.", i, timer_relay[i], timer_duration_on[i], timer_duration_off[i])
                     rod = threading.Thread(target = relay_on_duration,
                         args = (timer_relay[i], timer_duration_on[i], 0,))
