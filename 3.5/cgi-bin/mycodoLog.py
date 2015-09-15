@@ -210,184 +210,182 @@ def write_relay_log(relayNumber, relaySeconds, sensor, gpio):
 
 # Combines the logs on the SD card with the logs on the temporary file system
 def Concatenate_Logs():
-    logging.debug("[Timer Expiration] Run every 6 hours: Concatenate logs")
-
-    # Daemon Logs
-    if not filecmp.cmp(daemon_log_file_tmp, daemon_log_file):
-        logging.debug("[Daemon Log] Concatenating daemon logs to %s", daemon_log_file)
-        lock = LockFile(daemon_log_lock_path)
-
-        while not lock.i_am_locking():
-            try:
-                logging.debug("[Daemon Log] Acquiring Lock: %s", lock.path)
-                lock.acquire(timeout=60)    # wait up to 60 seconds
-            except:
-                logging.warning("[Daemon Log] Breaking Lock to Acquire: %s", lock.path)
-                lock.break_lock()
-                lock.acquire()
-
-        logging.debug("[Daemon Log] Gained lock: %s", lock.path)
-
-        try:
-            with open(daemon_log_file, 'a') as fout:
-                for line in fileinput.input(daemon_log_file_tmp):
-                    fout.write(line)
-            logging.debug("[Daemon Log] Appended data to %s", daemon_log_file)
-        except:
-            logging.warning("[Daemon Log] Unable to append data to %s", daemon_log_file)
-
-        open(daemon_log_file_tmp, 'w').close()
-        logging.debug("[Daemon Log] Removing lock: %s", lock.path)
-        lock.release()
-    else:
-        logging.debug("[Daemon Log] Daemon logs the same, skipping.")
-
     # Temperature Sensor Logs
     if not filecmp.cmp(sensor_t_log_file_tmp, sensor_t_log_file):
-        logging.debug("[Sensor Log] Concatenating T sensor logs to %s", sensor_t_log_file)
+        logging.debug("[Log Backup] Concatenating T sensor logs to %s", sensor_t_log_file)
         lock = LockFile(sensor_t_log_lock_path)
 
         while not lock.i_am_locking():
             try:
-                logging.debug("[Sensor Log] Acquiring Lock: %s", lock.path)
+                logging.debug("[Log Backup] Acquiring Lock: %s", lock.path)
                 lock.acquire(timeout=60)    # wait up to 60 seconds
             except:
-                logging.warning("[Sensor Log] Breaking Lock to Acquire: %s", lock.path)
+                logging.warning("[Log Backup] Breaking Lock to Acquire: %s", lock.path)
                 lock.break_lock()
                 lock.acquire()
 
-        logging.debug("[Sensor Log] Gained lock: %s", lock.path)
+        logging.debug("[Log Backup] Gained lock: %s", lock.path)
 
         try:
             with open(sensor_t_log_file, 'a') as fout:
                 for line in fileinput.input(sensor_t_log_file_tmp):
                     fout.write(line)
-            logging.debug("[Daemon Log] Appended T data to %s", sensor_t_log_file)
+            logging.debug("[Log Backup] Appended T data to %s", sensor_t_log_file)
         except:
-            logging.warning("[Sensor Log] Unable to append data to %s", sensor_t_log_file)
+            logging.warning("[Log Backup] Unable to append data to %s", sensor_t_log_file)
 
         open(sensor_t_log_file_tmp, 'w').close()
-        logging.debug("[Sensor Log] Removing lock: %s", lock.path)
+        logging.debug("[Log Backup] Removing lock: %s", lock.path)
         lock.release()
     else:
-        logging.debug("[Sensor Log] T Sensor logs the same, skipping.")
+        logging.debug("[Log Backup] T Sensor logs the same, skipping.")
 
     # Humidity/Temperature Sensor Logs
     if not filecmp.cmp(sensor_ht_log_file_tmp, sensor_ht_log_file):
-        logging.debug("[Sensor Log] Concatenating HT sensor logs to %s", sensor_ht_log_file)
+        logging.debug("[Log Backup] Concatenating HT sensor logs to %s", sensor_ht_log_file)
         lock = LockFile(sensor_ht_log_lock_path)
 
         while not lock.i_am_locking():
             try:
-                logging.debug("[Sensor Log] Acquiring Lock: %s", lock.path)
+                logging.debug("[Log Backup] Acquiring Lock: %s", lock.path)
                 lock.acquire(timeout=60)    # wait up to 60 seconds
             except:
-                logging.warning("[Sensor Log] Breaking Lock to Acquire: %s", lock.path)
+                logging.warning("[Log Backup] Breaking Lock to Acquire: %s", lock.path)
                 lock.break_lock()
                 lock.acquire()
 
-        logging.debug("[Sensor Log] Gained lock: %s", lock.path)
+        logging.debug("[Log Backup] Gained lock: %s", lock.path)
 
         try:
             with open(sensor_ht_log_file, 'a') as fout:
                 for line in fileinput.input(sensor_ht_log_file_tmp):
                     fout.write(line)
-            logging.debug("[Daemon Log] Appended HT data to %s", sensor_ht_log_file)
+            logging.debug("[Log Backup] Appended HT data to %s", sensor_ht_log_file)
         except:
-            logging.warning("[Sensor Log] Unable to append data to %s", sensor_ht_log_file)
+            logging.warning("[Log Backup] Unable to append data to %s", sensor_ht_log_file)
 
         open(sensor_ht_log_file_tmp, 'w').close()
-        logging.debug("[Sensor Log] Removing lock: %s", lock.path)
+        logging.debug("[Log Backup] Removing lock: %s", lock.path)
         lock.release()
     else:
-        logging.debug("[Sensor Log] HT Sensor logs the same, skipping.")
+        logging.debug("[Log Backup] HT Sensor logs the same, skipping.")
 
     # CO2 Sensor Logs
     if not filecmp.cmp(sensor_co2_log_file_tmp, sensor_co2_log_file):
-        logging.debug("[Sensor Log] Concatenating CO2 sensor logs to %s", sensor_co2_log_file)
+        logging.debug("[Log Backup] Concatenating CO2 sensor logs to %s", sensor_co2_log_file)
         lock = LockFile(sensor_co2_log_lock_path)
 
         while not lock.i_am_locking():
             try:
-                logging.debug("[Sensor Log] Acquiring Lock: %s", lock.path)
+                logging.debug("[Log Backup] Acquiring Lock: %s", lock.path)
                 lock.acquire(timeout=60)    # wait up to 60 seconds
             except:
-                logging.warning("[Sensor Log] Breaking Lock to Acquire: %s", lock.path)
+                logging.warning("[Log Backup] Breaking Lock to Acquire: %s", lock.path)
                 lock.break_lock()
                 lock.acquire()
 
-        logging.debug("[Sensor Log] Gained lock: %s", lock.path)
+        logging.debug("[Log Backup] Gained lock: %s", lock.path)
 
         try:
             with open(sensor_co2_log_file, 'a') as fout:
                 for line in fileinput.input(sensor_co2_log_file_tmp):
                     fout.write(line)
-            logging.debug("[Daemon Log] Appended CO2 data to %s", sensor_co2_log_file)
+            logging.debug("[Log Backup] Appended CO2 data to %s", sensor_co2_log_file)
         except:
-            logging.warning("[Sensor Log] Unable to append data to %s", sensor_co2_log_file)
+            logging.warning("[Log Backup] Unable to append data to %s", sensor_co2_log_file)
 
         open(sensor_co2_log_file_tmp, 'w').close()
-        logging.debug("[Sensor Log] Removing lock: %s", lock.path)
+        logging.debug("[Log Backup] Removing lock: %s", lock.path)
         lock.release()
     else:
-        logging.debug("[Sensor Log] CO2 Sensor logs the same, skipping.")
+        logging.debug("[Log Backup] CO2 Sensor logs the same, skipping.")
 
     # Pressure Sensor Logs
     if not filecmp.cmp(sensor_press_log_file_tmp, sensor_press_log_file):
-        logging.debug("[Sensor Log] Concatenating Press sensor logs to %s", sensor_press_log_file)
+        logging.debug("[Log Backup] Concatenating Press sensor logs to %s", sensor_press_log_file)
         lock = LockFile(sensor_press_log_lock_path)
 
         while not lock.i_am_locking():
             try:
-                logging.debug("[Sensor Log] Acquiring Lock: %s", lock.path)
+                logging.debug("[Log Backup] Acquiring Lock: %s", lock.path)
                 lock.acquire(timeout=60)    # wait up to 60 seconds
             except:
-                logging.warning("[Sensor Log] Breaking Lock to Acquire: %s", lock.path)
+                logging.warning("[Log Backup] Breaking Lock to Acquire: %s", lock.path)
                 lock.break_lock()
                 lock.acquire()
 
-        logging.debug("[Sensor Log] Gained lock: %s", lock.path)
+        logging.debug("[Log Backup] Gained lock: %s", lock.path)
 
         try:
             with open(sensor_press_log_file, 'a') as fout:
                 for line in fileinput.input(sensor_press_log_file_tmp):
                     fout.write(line)
-            logging.debug("[Daemon Log] Appended Press data to %s", sensor_press_log_file)
+            logging.debug("[Log Backup] Appended Press data to %s", sensor_press_log_file)
         except:
-            logging.warning("[Sensor Log] Unable to append data to %s", sensor_press_log_file)
+            logging.warning("[Log Backup] Unable to append data to %s", sensor_press_log_file)
 
         open(sensor_press_log_file_tmp, 'w').close()
-        logging.debug("[Sensor Log] Removing lock: %s", lock.path)
+        logging.debug("[Log Backup] Removing lock: %s", lock.path)
         lock.release()
     else:
-        logging.debug("[Sensor Log] Press Sensor logs the same, skipping.")
+        logging.debug("[Log Backup] Press Sensor logs the same, skipping.")
 
     # Relay Logs
     if not filecmp.cmp(relay_log_file_tmp, relay_log_file):
-        logging.debug("[Relay Log] Concatenating relay logs to %s", relay_log_file)
+        logging.debug("[Log Backup] Concatenating relay logs to %s", relay_log_file)
         lock = LockFile(relay_log_lock_path)
 
         while not lock.i_am_locking():
             try:
-                logging.debug("[Relay Log] Acquiring Lock: %s", lock.path)
+                logging.debug("[Log Backup] Acquiring Lock: %s", lock.path)
                 lock.acquire(timeout=60)    # wait up to 60 seconds
             except:
-                logging.warning("[Relay Log] Breaking Lock to Acquire: %s", lock.path)
+                logging.warning("[Log Backup] Breaking Lock to Acquire: %s", lock.path)
                 lock.break_lock()
                 lock.acquire()
 
-        logging.debug("[Relay Log] Gained lock: %s", lock.path)
+        logging.debug("[Log Backup] Gained lock: %s", lock.path)
 
         try:
             with open(relay_log_file, 'a') as fout:
                 for line in fileinput.input(relay_log_file_tmp):
                     fout.write(line)
-            logging.debug("[Daemon Log] Appended data to %s", relay_log_file)
+            logging.debug("[Log Backup] Appended data to %s", relay_log_file)
         except:
-            logging.warning("[Relay Log] Unable to append data to %s", relay_log_file)
+            logging.warning("[Log Backup] Unable to append data to %s", relay_log_file)
 
         open(relay_log_file_tmp, 'w').close()
-        logging.debug("[Relay Log] Removing lock: %s", lock.path)
+        logging.debug("[Log Backup] Removing lock: %s", lock.path)
         lock.release()
     else:
-        logging.debug("[Relay Log] Relay logs the same, skipping.")
+        logging.debug("[Log Backup] Relay logs the same, skipping.")
+
+    # Daemon Logs
+    if not filecmp.cmp(daemon_log_file_tmp, daemon_log_file):
+        logging.debug("[Log Backup] Concatenating daemon logs to %s", daemon_log_file)
+        lock = LockFile(daemon_log_lock_path)
+
+        while not lock.i_am_locking():
+            try:
+                logging.debug("[Log Backup] Acquiring Lock: %s", lock.path)
+                lock.acquire(timeout=60)    # wait up to 60 seconds
+            except:
+                logging.warning("[Log Backup] Breaking Lock to Acquire: %s", lock.path)
+                lock.break_lock()
+                lock.acquire()
+
+        logging.debug("[Log Backup] Gained lock: %s", lock.path)
+
+        try:
+            with open(daemon_log_file, 'a') as fout:
+                for line in fileinput.input(daemon_log_file_tmp):
+                    fout.write(line)
+            logging.debug("[Log Backup] Appended daemon log data to %s", daemon_log_file)
+        except:
+            logging.warning("[Log Backup] Unable to append data to %s", daemon_log_file)
+
+        open(daemon_log_file_tmp, 'w').close()
+        logging.debug("[Log Backup] Removing lock: %s", lock.path)
+        lock.release()
+    else:
+        logging.debug("[Log Backup] Daemon logs the same, skipping.")
