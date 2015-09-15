@@ -596,11 +596,13 @@ def daemon(output, log):
             threads_t_t = []
             for i in range(0, len(sensor_t_id)):
                 if (pid_t_temp_or[i] == 0):
-                    pid_t_temp_active[i] = 1
+                    pid_t_temp_active.append(1)
                     rod = threading.Thread(target = t_sensor_temperature_monitor,
-                        args = ('Thread-T-T-%d' % i+1, i,))
+                        args = ('Thread-T-T-%d' % (i+1), i,))
                     rod.start()
                     threads_t_t.append(rod)
+                else:
+                	pid_t_temp_active.append(0)
             start_all_t_pids = 0
 
 
@@ -921,7 +923,7 @@ def daemon(output, log):
         if pid_t_temp_up:
             if pid_t_temp_active[pid_number] == 0:
                 logging.info("[Daemon] Starting Temperature PID Thread-T-T-%s", pid_number+1)
-                rod = threading.Thread(target = ht_sensor_temperature_monitor,
+                rod = threading.Thread(target = t_sensor_temperature_monitor,
                     args = ('Thread-T-T-%d' % (int(pid_number)+1), pid_number,))
                 rod.start()
                 pid_t_temp_active[pid_number] = 1
@@ -1068,7 +1070,7 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
         relay_onoff(int(pid_t_temp_relay_low[sensor]), 'off')
 
     pid_temp = PID(pid_t_temp_p[sensor], pid_t_temp_i[sensor], pid_t_temp_d[sensor])
-    pid_temp.setPoint(high)
+    pid_temp.setPoint(pid_t_temp_set[sensor])
 
     while (pid_t_temp_alive[sensor]):
 
