@@ -339,7 +339,7 @@ if (isset($_POST['AddSensor'])) {
                 $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
                 $stmt->bindValue(':name', $_POST['AddSensorName'], SQLITE3_TEXT);
                 $stmt->execute();
-                shell_exec("$mycodo_client --pidrestart T");
+                shell_exec("$mycodo_client --pidallrestart T");
                 break;
             case "DHT11":
             case "DHT22":
@@ -349,21 +349,21 @@ if (isset($_POST['AddSensor'])) {
                 $stmt->bindValue(':name', $_POST['AddSensorName'], SQLITE3_TEXT);
                 $stmt->bindValue(':dev', $_POST['AddSensorDev'], SQLITE3_TEXT);
                 $stmt->execute();
-                shell_exec("$mycodo_client --pidrestart HT");
+                shell_exec("$mycodo_client --pidallrestart HT");
                 break;
             case "K30":
                 $stmt = $db->prepare("INSERT INTO CO2Sensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_CO2_Min, YAxis_CO2_Max, YAxis_CO2_Tics, YAxis_CO2_MTics, CO2_Relays_Up, CO2_Relays_Down, CO2_Relay_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmax_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D) VALUES(:id, :name, 0, 'K30', 120, 0, 0, 0, 0, -100, 100, 25, 5, 0, 5000, 500, 5, '0', '0', 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0)");
                 $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
                 $stmt->bindValue(':name', $_POST['AddSensorName'], SQLITE3_TEXT);
                 $stmt->execute();
-                shell_exec("$mycodo_client --pidrestart CO2");
+                shell_exec("$mycodo_client --pidallrestart CO2");
                 break;
             case "BMP":
                 $stmt = $db->prepare("INSERT INTO PressSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Press_Min, YAxis_Press_Max, YAxis_Press_Tics, YAxis_Press_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Press_Relays_Up, Press_Relays_Down, Press_Relay_High, Press_Outmax_High, Press_Relay_Low, Press_Outmax_Low, Press_OR, Press_Set, Press_Set_Direction, Press_Period, Press_P, Press_I, Press_D) VALUES(:id, :name, 0, 'BMP085-180', 120, 0, 0, 0, 0, -100, 100, 25, 5, 0, 35, 5, 5, 97000, 99000, 250, 5, '0', '0', 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0, '0', '0', 0, 0, 0, 0, 1, 50.0, 0, 90, 0, 0, 0)");
                 $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
                 $stmt->bindValue(':name', $_POST['AddSensorName'], SQLITE3_TEXT);
                 $stmt->execute();
-                shell_exec("$mycodo_client --pidrestart Press");
+                shell_exec("$mycodo_client --pidallrestart Press");
                 break;
         }
     } else {
@@ -570,7 +570,7 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
                 $pid_t_temp_p[$p] != (float)$_POST['SetT' . $p . 'Temp_P'] ||
                 $pid_t_temp_i[$p] != (float)$_POST['SetT' . $p . 'Temp_I'] ||
                 $pid_t_temp_d[$p] != (float)$_POST['SetT' . $p . 'Temp_D'])) {
-                pid_reload($mycodo_client, 'TTemp', $p);
+                shell_exec("$mycodo_client --pidrestart TTemp $p");
             } else {
                 shell_exec("$mycodo_client --sqlreload -1");
             }
@@ -634,8 +634,8 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
                 $stmt->execute();
 
                 if ($pid_t_temp_or[$p] == 0) {
-                    pid_reload($mycodo_client, 'TTemp', $p);
-                } else if ($pid_t_temp_or[$p] != 0) {
+                    shell_exec("$mycodo_client --pidrestart TTemp $p");
+                } else {
                     shell_exec("$mycodo_client --sqlreload -1");
                 }
             } else {
@@ -723,7 +723,7 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
         $stmt->bindValue(':id', $sensor_t_id[$p], SQLITE3_TEXT);
         $stmt->execute();
 
-        shell_exec("$mycodo_client --pidrestart T");
+        shell_exec("$mycodo_client --pidallrestart T");
     }
 }
 
@@ -998,7 +998,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
                 $pid_ht_temp_p[$p] != (float)$_POST['SetHT' . $p . 'Temp_P'] ||
                 $pid_ht_temp_i[$p] != (float)$_POST['SetHT' . $p . 'Temp_I'] ||
                 $pid_ht_temp_d[$p] != (float)$_POST['SetHT' . $p . 'Temp_D'])) {
-                pid_reload($mycodo_client, 'HTTemp', $p);
+                shell_exec("$mycodo_client --pidrestart HTTemp $p");
                 $reload = 0;
             }
             if ($pid_ht_hum_or[$p] == 0 &&
@@ -1012,7 +1012,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
                 $pid_ht_hum_p[$p] != (float)$_POST['SetHT' . $p . 'Hum_P'] ||
                 $pid_ht_hum_i[$p] != (float)$_POST['SetHT' . $p . 'Hum_I'] ||
                 $pid_ht_hum_d[$p] != (float)$_POST['SetHT' . $p . 'Hum_D'])) {
-                pid_reload($mycodo_client, 'HTHum', $p);
+                shell_exec("$mycodo_client --pidrestart HTHum $p");
                 $reload = 0;
             }
             if ($reload) {
@@ -1166,10 +1166,10 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             $stmt->execute();
 
             if ($pid_ht_temp_or[$p] == 0) {
-                pid_reload($mycodo_client, 'HTTemp', $p);
+                shell_exec("$mycodo_client --pidrestart HTTemp $p");
             }
             if ($pid_ht_hum_or[$p] == 0) {
-                pid_reload($mycodo_client, 'HTHum', $p);
+                shell_exec("$mycodo_client --pidrestart HTHum $p");
             }
             if ($pid_ht_temp_or[$p] != 0 or $pid_ht_hum_or[$p] != 0) {
                 shell_exec("$mycodo_client --sqlreload -1");
@@ -1205,7 +1205,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
         $stmt->bindValue(':id', $sensor_ht_id[$p], SQLITE3_TEXT);
         $stmt->execute();
 
-        shell_exec("$mycodo_client --pidrestart HT");
+        shell_exec("$mycodo_client --pidallrestart HT");
     }
 }
 
@@ -1417,7 +1417,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
                 $pid_co2_p[$p] != (float)$_POST['SetCO2' . $p . 'CO2_P'] ||
                 $pid_co2_i[$p] != (float)$_POST['SetCO2' . $p . 'CO2_I'] ||
                 $pid_co2_d[$p] != (float)$_POST['SetCO2' . $p . 'CO2_D'])) {
-                pid_reload($mycodo_client, 'CO2', $p);
+                shell_exec("$mycodo_client --pidrestart CO2 $p");
             } else {
                 shell_exec("$mycodo_client --sqlreload -1");
             }
@@ -1535,9 +1535,8 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
             $stmt->execute();
 
             if ($pid_co2_or[$p] == 0) {
-                pid_reload($mycodo_client, 'CO2', $p);
-            }
-            if  ($pid_co2_or[$p] != 0) {
+                shell_exec("$mycodo_client --pidrestart CO2 $p");
+            } else {
                 shell_exec("$mycodo_client --sqlreload -1");
             }
         } else {
@@ -1571,7 +1570,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
         $stmt->bindValue(':id', $sensor_co2_id[$p], SQLITE3_TEXT);
         $stmt->execute();
 
-        shell_exec("$mycodo_client --pidrestart CO2");
+        shell_exec("$mycodo_client --pidallrestart CO2");
     }
 }
 
@@ -1848,7 +1847,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
                 $pid_press_temp_p[$p] != (float)$_POST['SetPress' . $p . 'Temp_P'] ||
                 $pid_press_temp_i[$p] != (float)$_POST['SetPress' . $p . 'Temp_I'] ||
                 $pid_press_temp_d[$p] != (float)$_POST['SetPress' . $p . 'Temp_D'])) {
-                pid_reload($mycodo_client, 'PressTemp', $p);
+                shell_exec("$mycodo_client --pidrestart PressTemp $p");
                 $reload = 0;
             }
             if ($pid_press_press_or[$p] == 0 &&
@@ -1862,7 +1861,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
                 $pid_press_press_p[$p] != (float)$_POST['SetPress' . $p . 'Press_P'] ||
                 $pid_press_press_i[$p] != (float)$_POST['SetPress' . $p . 'Press_I'] ||
                 $pid_press_press_d[$p] != (float)$_POST['SetPress' . $p . 'Press_D'])) {
-                pid_reload($mycodo_client, 'PressPress', $p);
+                shell_exec("$mycodo_client --pidrestart PressPress $p");
                 $reload = 0;
             }
             if ($reload) {
@@ -2016,10 +2015,10 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
             $stmt->execute();
 
             if ($pid_press_temp_or[$p] == 0) {
-                pid_reload($mycodo_client, 'PressTemp', $p);
+                shell_exec("$mycodo_client --pidrestart PressTemp $p");
             }
             if ($pid_press_press_or[$p] == 0) {
-                pid_reload($mycodo_client, 'PressPress', $p);
+                shell_exec("$mycodo_client --pidrestart PressPress $p");
             }
             if  ($pid_press_temp_or[$p] != 0 or $pid_press_press_or[$p] != 0) {
                 shell_exec("$mycodo_client --sqlreload -1");
@@ -2055,7 +2054,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
         $stmt->bindValue(':id', $sensor_press_id[$p], SQLITE3_TEXT);
         $stmt->execute();
 
-        shell_exec("$mycodo_client --pidrestart Press");
+        shell_exec("$mycodo_client --pidallrestart Press");
     }
 }
 

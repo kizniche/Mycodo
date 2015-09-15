@@ -39,12 +39,17 @@ def usage():
     print '           Display this help and exit'
     print '        --graph Duration ID Sensor'
     print '           See documentation for options'
-    print '        --pidrestart Sensor'
+    print '        --pidallrestart Sensor'
     print '           Restart all PIDs, where Sensor=T, HT, CO2'
-    print '        --pidstart Coctroller Number'
-    print '           Start PID Controller, where Controller=TTemp, HTTemp, HTHum, CO2 and Number=1-4'
-    print '        --pidstop Coctroller Number'
-    print '           Stop PID Controller, where Controller=TTemp, HTTemp, HTHum, CO2 and Number=1-4'
+    print '        --pidrestart PIDType PIDnumber'
+    print '           Restart PID Controller, where PIDType=TTemp, HTTemp, HTHum, CO2, PressTemp, or PressPress'
+    print '           PIDnumber=the PID controller number'
+    print '        --pidstart PIDType PIDnumber'
+    print '           Start PID Controller, where PIDType=TTemp, HTTemp, HTHum, CO2, PressTemp, or PressPress'
+    print '           PIDnumber=the PID controller number'
+    print '        --pidstop PIDType PIDnumber'
+    print '           Stop PID Controller, where PIDType=TTemp, HTTemp, HTHum, CO2, PressTemp, or PressPress'
+    print '           PIDnumber=the PID controller number'
     print '    -r, --relay relay state'
     print '           Turn a relay on or off. state can be 0, 1, or X.'
     print '           0=OFF, 1=ON, or X number of seconds On'
@@ -71,7 +76,7 @@ def menu():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:], 'hr:st',
-            ["help", "graph", "pidrestart=", "pidstart=", "pidstop=", "relay=", "sensorco2", "sensorht", "sensorpress", "sensort", "sqlreload=", "status", "terminate"])
+            ["help", "graph", "pidallrestart=", "pidrestart=", "pidstart=", "pidstop=", "relay=", "sensorco2", "sensorht", "sensorpress", "sensort", "sqlreload=", "status", "terminate"])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -93,13 +98,25 @@ def menu():
             else:
                 print "Fail"
             sys.exit(0)
-        elif opt == "--pidrestart":
+        elif opt == "--pidallrestart":
             if (sys.argv[2] != 'T' and sys.argv[2] != 'HT' and sys.argv[2] != 'CO2' and sys.argv[2] != 'Press'):
                 print "'%s' is not a valid option. Use 'T', 'HT', 'CO2', 'PressTemp', or 'PressPress'" % sys.argv[2]
                 sys.exit(0)
             print "%s [Remote command] Restart all %s PID controllers: Server returned:" % (
                 Timestamp(), sys.argv[2]),
-            reload_status = c.root.PID_restart(sys.argv[2])
+            reload_status = c.root.all_PID_restart(sys.argv[2])
+            if reload_status == 1:
+                print "Success"
+            else:
+                print "Fail, %s" % reload_status
+            sys.exit(1)
+        elif opt == "--pidrestart":
+            if (sys.argv[2] != 'TTemp' and sys.argv[2] != 'HTTemp' and sys.argv[2] != 'HTHum' and sys.argv[2] != 'CO2' and sys.argv[2] != 'PressTemp' and sys.argv[2] != 'PressPress'):
+                print "'%s' is not a valid option. Use 'TTemp', 'HTTemp', 'HTHum', 'CO2', 'PressTemp', or 'PressPress'" % sys.argv[2]
+                sys.exit(0)
+            print "%s [Remote command] Start %s PID controller number %s: Server returned:" % (
+                Timestamp(), sys.argv[2], sys.argv[3]),
+            reload_status = c.root.PID_restart(sys.argv[2], int(float(sys.argv[3])))
             if reload_status == 1:
                 print "Success"
             else:
