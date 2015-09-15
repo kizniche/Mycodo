@@ -1657,7 +1657,7 @@ def read_t_sensor(sensor):
     while not lock.i_am_locking():
         try:
             logging.debug("[Read T Sensor-%s] Acquiring Lock: %s", sensor+1, lock.path)
-            lock.acquire(timeout=60)    # wait up to 60 seconds
+            lock.acquire(timeout=90)    # wait up to 60 seconds
         except:
             logging.warning("[Read T Sensor-%s] Breaking Lock to Acquire: %s", sensor+1, lock.path)
             lock.break_lock()
@@ -1788,7 +1788,7 @@ def read_ht_sensor(sensor):
     while not lock.i_am_locking():
         try:
             logging.debug("[Read HT Sensor-%s] Acquiring Lock: %s", sensor+1, lock.path)
-            lock.acquire(timeout=60)    # wait up to 60 seconds
+            lock.acquire(timeout=90)    # wait up to 60 seconds
         except:
             logging.warning("[Read HT Sensor-%s] Breaking Lock to Acquire: %s", sensor+1, lock.path)
             lock.break_lock()
@@ -1906,7 +1906,7 @@ def read_co2_sensor(sensor):
     while not lock.i_am_locking():
         try:
             logging.debug("[Read CO2 Sensor-%s] Acquiring Lock: %s", sensor+1, lock.path)
-            lock.acquire(timeout=60)    # wait up to 60 seconds
+            lock.acquire(timeout=90)    # wait up to 60 seconds
         except:
             logging.warning("[Read CO2 Sensor-%s] Breaking Lock to Acquire: %s", sensor+1, lock.path)
             lock.break_lock()
@@ -2030,7 +2030,7 @@ def read_press_sensor(sensor):
     while not lock.i_am_locking():
         try:
             logging.debug("[Read Press Sensor-%s] Acquiring Lock: %s", sensor+1, lock.path)
-            lock.acquire(timeout=60)    # wait up to 60 seconds
+            lock.acquire(timeout=90)    # wait up to 60 seconds
         except:
             logging.warning("[Read Press Sensor-%s] Breaking Lock to Acquire: %s", sensor+1, lock.path)
             lock.break_lock()
