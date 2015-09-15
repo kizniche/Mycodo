@@ -1088,6 +1088,7 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
                         rod.start()
 
                     else:
+                        logging.debug("[PID T-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
                         PIDTemp = 0
 
                     timerTemp = int(time.time()) + int(PIDTemp) + pid_t_temp_period[sensor]
@@ -1181,6 +1182,7 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
                         rod.start()
 
                     else:
+                        logging.debug("[PID HT-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
                         PIDTemp = 0
 
                     timerTemp = int(time.time()) + int(PIDTemp) + pid_ht_temp_period[sensor]
@@ -1273,6 +1275,7 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
                         rod.start()
 
                     else:
+                        logging.debug("[PID HT-Humidity-%s] PID = %.1f", sensor+1, PIDHum)
                         PIDHum = 0
 
                     timerHum = int(time.time()) + int(PIDHum) + pid_ht_hum_period[sensor]
@@ -1365,6 +1368,7 @@ def co2_monitor(ThreadName, sensor):
                         rod.start()
 
                     else:
+                        logging.debug("[PID CO2-%s] PID = %.1f", sensor+1, PIDCO2)
                         PIDCO2 = 0
 
                     timerCO2 = int(time.time()) + int(PIDCO2) + pid_co2_period[sensor]
@@ -1457,6 +1461,7 @@ def press_sensor_temperature_monitor(ThreadName, sensor):
                         rod.start()
 
                     else:
+                        logging.debug("[PID Press-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
                         PIDTemp = 0
 
                     timerTemp = int(time.time()) + int(PIDTemp) + pid_press_temp_period[sensor]
@@ -1549,6 +1554,7 @@ def press_sensor_pressure_monitor(ThreadName, sensor):
                         rod.start()
 
                     else:
+                        logging.debug("[PID Press-Pressure-%s] PID = %.1f", sensor+1, PIDPress)
                         PIDPress = 0
 
                     timerPress = int(time.time()) + int(PIDPress) + pid_press_press_period[sensor]
