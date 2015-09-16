@@ -524,7 +524,7 @@ if (isset($output_error)) {
                 <?php
                 if (count($relay_id) > 0) {
                 ?>
-            
+                <form action="?tab=sensor" method="POST">
                 <div>
                     <table class="relays">
                         <tr>
@@ -541,7 +541,6 @@ if (isset($output_error)) {
                         <?php for ($i = 0; $i < count($relay_id); $i++) {
                             $read = "$gpio_path -g read $relay_pin[$i]";
                         ?>
-                        <form action="?tab=sensor" method="POST">
                         <tr>
                             <td align=center>
                                 <?php echo $i+1; ?>
@@ -601,10 +600,10 @@ if (isset($output_error)) {
                                 <input type="submit" name="Mod<?php echo $i; ?>Relay" value="Set"> <button type="submit" name="Delete<?php echo $i; ?>Relay" title="Delete">Delete</button>
                             </td>
                         </tr>
-                        </form>
                         <?php
                         } ?>
                     </table>
+                </form>
 
                 <form action="?tab=sensor" method="POST">
                     <table class="conditional">
