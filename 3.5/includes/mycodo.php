@@ -2168,7 +2168,7 @@ if (isset($output_error)) {
             /* DateSelector*Author: Leon Atkinson */
             if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] != 'guest') {
                 
-                concatenate_logs('all');
+                concatenate_logs();
 
                 if ($_POST['SubmitDates']) {
                     displayform();
@@ -2849,72 +2849,52 @@ if (isset($output_error)) {
                 <div style="font-family: monospace; padding-top:1em;">
                     <pre><?php
                         if(isset($_POST['TSensor'])) {
-                            concatenate_logs('t');
-                            $log = '/var/tmp/sensor-t.log';
-
                             echo 'Year Mo Day Hour Min Sec Tc Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `tail -n $Lines $log`;
+                                echo `cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log | tail -n $Lines`;
                             } else {
-                                echo `tail -n 30 $log`;
+                                echo `cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log | tail -n 30`;
                             }
-                            unlink($log);
                         }
                         if(isset($_POST['HTSensor'])) {
-                            concatenate_logs('ht');
-                            $log = '/var/tmp/sensor-ht.log';
-
                             echo 'Year Mo Day Hour Min Sec Tc RH DPc Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `tail -n $Lines $log`;
+                                echo `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log | tail -n $Lines`;
                             } else {
-                                echo `tail -n 30 $log`;
+                                echo `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log | tail -n 30`;
                             }
-                            unlink($log);
                         }
 
                         if(isset($_POST['Co2Sensor'])) {
-                            concatenate_logs('co2');
-                            $log = '/var/tmp/sensor-co2.log';
-
                             echo 'Year Mo Day Hour Min Sec CO<sub>2</sub> Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `tail -n $Lines $log`;
+                                echo `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log | tail -n $Lines`;
                             } else {
-                                echo `tail -n 30 $log`;
+                                echo `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log | tail -n 30`;
                             }
-                            unlink($log);
                         }
 
                         if(isset($_POST['PressSensor'])) {
-                            concatenate_logs('press');
-                            $log = '/var/tmp/sensor-press.log';
-
                             echo 'Year Mo Day Hour Min Sec Tc Press Alt Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `tail -n $Lines $log`;
+                                echo `cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log | tail -n $Lines`;
                             } else {
-                                echo `tail -n 30 $log`;
+                                echo `cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log | tail -n 30`;
                             }
-                            unlink($log);
                         }
 
                         if(isset($_POST['Relay'])) {
-                            concatenate_logs('relay');
-                            $log = '/var/tmp/relay.log';
-
                             echo 'Year Mo Day Hour Min Sec Sensor Relay GPIO SecondsOn<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `tail -n $Lines $log`;
+                                echo `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | tail -n $Lines`;
                             } else {
-                                echo `tail -n 30 $log`;
+                                echo `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | tail -n 30`;
                             }
-                            unlink($log);
                         }
                         if(isset($_POST['Users']) && $_SESSION['user_name'] != 'guest') {
                             echo exec('file ' . $user_db); 
@@ -2935,16 +2915,12 @@ if (isset($output_error)) {
                             }
                         }
                         if(isset($_POST['Daemon'])) {
-                            concatenate_logs('daemon');
-                            $log = '/var/tmp/daemon.log';
-
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `tail -n $Lines $log`;
+                                echo `cat /var/www/mycodo/log/daemon.log /var/www/mycodo/log/daemon-tmp.log | tail -n $Lines`;
                             } else {
-                                echo `tail -n 30 $log`;
+                                echo `cat /var/www/mycodo/log/daemon.log /var/www/mycodo/log/daemon-tmp.log | tail -n 30`;
                             }
-                            unlink($log);
                         }
                         if(isset($_POST['Update'])) {
                             $log = '/var/www/mycodo/log/update.log';

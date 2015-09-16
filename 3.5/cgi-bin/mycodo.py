@@ -625,7 +625,7 @@ def daemon(output, log):
                     rod.start()
                     threads_t_t.append(rod)
                 else:
-                	pid_t_temp_active.append(0)
+                    pid_t_temp_active.append(0)
             start_all_t_pids = 0
 
 

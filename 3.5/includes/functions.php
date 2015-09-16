@@ -27,34 +27,12 @@
  */
 
 // Concatenate sensor and relay log files (to TempFS) to ensure the latest data is being used
-function concatenate_logs($type) {
-    switch($type) {
-        case 't':
-            `cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log > /var/tmp/sensor-t.log`;
-            break;
-        case 'ht':
-            `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
-            break;
-        case 'co2':
-            `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
-            break;
-        case 'press':
-            `cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log > /var/tmp/sensor-press.log`;
-            break;
-        case 'relay':
-            `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log > /var/tmp/relay.log`;
-            break;
-        case 'daemon':
-            `cat /var/www/mycodo/log/daemon.log /var/www/mycodo/log/daemon-tmp.log > /var/tmp/daemon.log`;
-            break;
-        case 'all':
-            `cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log > /var/tmp/sensor-t.log`;
-            `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
-            `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
-            `cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log > /var/tmp/sensor-press.log`;
-            `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log > /var/tmp/relay.log`;
-            break;
-    }
+function concatenate_logs() {
+    `cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log > /var/tmp/sensor-t.log`;
+    `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
+    `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
+    `cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log > /var/tmp/sensor-press.log`;
+    `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log > /var/tmp/relay.log`;
 }
 
 // Display Log tab SQL database tables, names, and variables
