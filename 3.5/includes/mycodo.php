@@ -2757,39 +2757,37 @@ if (isset($output_error)) {
             ?>
 
             <?php
-                if (file_exists($lock_mjpg_streamer)) {
-                    echo '
-                    <div style="padding-bottom: 0.5em;">
-                        Video Stream
-                    </div>
-                    <div style="padding-bottom: 2em;">
-                        <img src="stream.php">
-                    </div>
-                    ';
-                }
+            if (file_exists($lock_mjpg_streamer)) {
+                echo '
+                <div style="padding-bottom: 0.5em;">
+                    Video Stream
+                </div>
+                <div style="padding-bottom: 2em;">
+                    <img src="stream.php">
+                </div>
+                ';
+            }
 
-                if ($_SESSION['user_name'] != 'guest') {
-                    $cam_stills_path = $install_path . '/camera-stills';
-                    $cam_stills_dir = (count(glob("$cam_stills_path/*")) === 0) ? 'Empty' : 'Not empty';
-                    if ($cam_stills_dir == 'Not empty' && (isset($_POST['CaptureStill']) || $still_display_last)) {
-                        echo '
-                        <div style="padding-bottom: 0.5em;">
-                            Still Image
-                        </div>
-                        ';
+            $cam_stills_path = $install_path . '/camera-stills';
+            $cam_stills_dir = (count(glob("$cam_stills_path/*")) === 0) ? 'Empty' : 'Not empty';
+            if ($cam_stills_dir == 'Not empty' && (isset($_POST['CaptureStill']) || $still_display_last)) {
+                echo '
+                <div style="padding-bottom: 0.5em;">
+                    Still Image
+                </div>
+                ';
 
-                        $files = scandir($cam_stills_path, SCANDIR_SORT_DESCENDING);
-                        $newest_file = $files[0];
-                        $latest_file = filemtime("$cam_stills_path/$newest_file");
-                        echo 'Latest File: ' , date("F d Y H:i:s", $latest_file) , '<br>';
+                $files = scandir($cam_stills_path, SCANDIR_SORT_DESCENDING);
+                $newest_file = $files[0];
+                $latest_file = filemtime("$cam_stills_path/$newest_file");
+                echo 'Latest File: ' , date("F d Y H:i:s", $latest_file) , '<br>';
 
-                        echo '
-                        <div style="padding-bottom: 2em;">
-                            <img src=image.php?span=cam-still>
-                        </div>
-                        ';
-                    }
-                }
+                echo '
+                <div style="padding-bottom: 2em;">
+                    <img src=image.php?span=cam-still>
+                </div>
+                ';
+            }
             ?>
             </center>
         </li>
