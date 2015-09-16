@@ -521,7 +521,6 @@ if (isset($output_error)) {
             <div style="clear: both"></div>
 
             <div class="advanced" style="padding-top: 1.5em;">
-                <form action="?tab=sensor" method="POST">
                 <?php
                 if (count($relay_id) > 0) {
                 ?>
@@ -542,6 +541,7 @@ if (isset($output_error)) {
                         <?php for ($i = 0; $i < count($relay_id); $i++) {
                             $read = "$gpio_path -g read $relay_pin[$i]";
                         ?>
+                        <form action="?tab=sensor" method="POST">
                         <tr>
                             <td align=center>
                                 <?php echo $i+1; ?>
@@ -553,13 +553,13 @@ if (isset($output_error)) {
                                 if ((shell_exec($read) == 1 && $relay_trigger[$i] == 0) || (shell_exec($read) == 0 && $relay_trigger[$i] == 1)) {
                                     ?>
                                     <td class="onoff">
-                                        <nobr><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="R<?php echo $i; ?>" value="1"> | <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="1">Turn On</button></nobr>
+                                        <nobr><input type="hidden" "R<?php echo $i; ?>" value="1" /><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off, Click to turn on." title="Off, Click to turn on." name="R<?php echo $i; ?>" value="1"> | <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="1">Turn On</button></nobr>
                                     </td>
                                     <?php
                                 } else {
                                     ?>
                                     <td class="onoff">
-                                        <nobr><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/on.jpg" alt="On, Click to turn off." title="On" name="R<?php echo $i; ?>" value="0"> | <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="0">Turn Off</button></nobr>
+                                        <nobr><input type="hidden" "R<?php echo $i; ?>" value="0" /><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/on.jpg" alt="On, Click to turn off." title="On, Click to turn off." name="R<?php echo $i; ?>" value="0"> | <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="0">Turn Off</button></nobr>
                                     </td>
                                     <?php
                                 }
@@ -601,10 +601,10 @@ if (isset($output_error)) {
                                 <input type="submit" name="Mod<?php echo $i; ?>Relay" value="Set"> <button type="submit" name="Delete<?php echo $i; ?>Relay" title="Delete">Delete</button>
                             </td>
                         </tr>
+                        </form>
                         <?php
                         } ?>
                     </table>
-                </form>
 
                 <form action="?tab=sensor" method="POST">
                     <table class="conditional">
