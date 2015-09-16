@@ -29,6 +29,7 @@ import fileinput
 import logging
 import os
 import subprocess
+import time
 
 log_path = "%s/log" % install_directory # Where generated logs are stored
 image_path = "%s/images" % install_directory # Where generated graphs are stored
@@ -169,6 +170,8 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                     with open(fname) as infile:
                         for line in infile:
                             outfile.write(line)
+
+        time.sleep(0.1)
 
 
     # Parse default logs
@@ -315,6 +318,8 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                     fout.write(line)
         else:
             sensor_press_log_generate = None
+
+        time.sleep(0.1)
 
         for i in range(0, len(sensor_t_name)):
             lines = seconds/sensor_t_period[i]
