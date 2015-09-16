@@ -388,6 +388,8 @@ Note: cgi-bin/mycodo-wrapper is a binary executable used to start and stop the m
 
 ### Preface
 
+Only press one button at a time on the web interface. After pressing a button, wait for either a response or for the page to time out. Sending multiple commands will only make it take longer, at best. There may be many unforseen issues with sending multiple commands.
+
 Before activating any conditional statements or PID controllers, it's advised to thoroughly explore all possible scenarios and plan a configuration that eliminates relay conflicts. Then, trial run your configuration before connecting devices to the relays. **Some devices or relays may respond atypically or fail when switched many times in rapid succession. Therefore, avoid creating a condition for a relay to switch on and off in an [infinite loop](https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops).** 
 
 ### Web Interface

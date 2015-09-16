@@ -43,6 +43,7 @@ import re
 import rpyc
 import RPi.GPIO as GPIO
 import serial
+import shutil
 import smtplib
 import sqlite3
 import traceback
@@ -144,6 +145,28 @@ class ComServer(rpyc.Service):
             logging.info("[Client command] Generate Graph: %s %s %s %s", sensor_type, graph_span, graph_id, sensor_number)
         else:
             logging.info("[Client command] Generate Graph: %s %s %s %s %s", sensor_type, graph_type, graph_span, graph_id, sensor_number)
+
+        # Calculate the size of /var/tmp
+        folder_path = '/var/tmp'
+        total_tmp_folder_size = 0
+        for dirpath, dirnames, filenames in os.walk(folder_path):
+            for f in filenames:
+                fp = os.path.join(dirpath, f)
+                total_tmp_folder_size += os.path.getsize(fp)
+
+        # Delete /var/tmp/* if the folder size is greater than 20 MB
+        if total_tmp_folder_size > 20000000:
+            logging.debug("[Cleanup] /var/tmp size = %s bytes > 20000000 bytes (20 MB). Cleaning up free space.", total_tmp_folder_size)
+            folder = '/var/tmp'
+            for the_file in os.listdir(folder):
+                file_path = os.path.join(folder, the_file)
+                try:
+                    if os.path.isfile(file_path):
+                        os.unlink(file_path)
+                    elif os.path.isdir(file_path): shutil.rmtree(file_path)
+                except Exception, e:
+                    print e
+
         mycodoGraph.generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number, sensor_t_name, sensor_t_graph, sensor_t_period, sensor_t_yaxis_relay_min, sensor_t_yaxis_relay_max, sensor_t_yaxis_relay_tics, sensor_t_yaxis_relay_mtics, sensor_t_yaxis_temp_min, sensor_t_yaxis_temp_max, sensor_t_yaxis_temp_tics, sensor_t_yaxis_temp_mtics, sensor_t_temp_relays_up_list, sensor_t_temp_relays_down_list, pid_t_temp_relay_high, pid_t_temp_relay_low, sensor_ht_name, sensor_ht_graph, sensor_ht_period, sensor_ht_yaxis_relay_min, sensor_ht_yaxis_relay_max, sensor_ht_yaxis_relay_tics, sensor_ht_yaxis_relay_mtics, sensor_ht_yaxis_temp_min, sensor_ht_yaxis_temp_max, sensor_ht_yaxis_temp_tics, sensor_ht_yaxis_temp_mtics, sensor_ht_yaxis_hum_min, sensor_ht_yaxis_hum_max, sensor_ht_yaxis_hum_tics, sensor_ht_yaxis_hum_mtics, sensor_ht_temp_relays_up_list, sensor_ht_temp_relays_down_list, sensor_ht_hum_relays_up_list, sensor_ht_hum_relays_down_list, pid_ht_temp_relay_high, pid_ht_temp_relay_low, pid_ht_hum_relay_high, pid_ht_hum_relay_low, sensor_co2_name, sensor_co2_graph, sensor_co2_period, sensor_co2_yaxis_relay_min, sensor_co2_yaxis_relay_max, sensor_co2_yaxis_relay_tics, sensor_co2_yaxis_relay_mtics, sensor_co2_yaxis_co2_min, sensor_co2_yaxis_co2_max, sensor_co2_yaxis_co2_tics, sensor_co2_yaxis_co2_mtics, sensor_co2_relays_up_list, sensor_co2_relays_down_list, pid_co2_relay_high, pid_co2_relay_low, sensor_press_name, sensor_press_graph, sensor_press_period, sensor_press_yaxis_relay_min, sensor_press_yaxis_relay_max, sensor_press_yaxis_relay_tics, sensor_press_yaxis_relay_mtics, sensor_press_yaxis_temp_min, sensor_press_yaxis_temp_max, sensor_press_yaxis_temp_tics, sensor_press_yaxis_temp_mtics, sensor_press_yaxis_press_min, sensor_press_yaxis_press_max, sensor_press_yaxis_press_tics, sensor_press_yaxis_press_mtics, sensor_press_temp_relays_up_list, sensor_press_temp_relays_down_list, sensor_press_press_relays_up_list, sensor_press_press_relays_down_list, pid_press_temp_relay_high, pid_press_temp_relay_low, pid_press_press_relay_high, pid_press_press_relay_low, relay_name, relay_pin)
         return 1
 
@@ -880,11 +903,11 @@ def daemon(output, log):
         # Check log size on tempfs every 10 minutes and back up if larger than maximum allowed
         #
         if int(time.time()) > timerLogBackup and client_que != 'TerminateServer' and PID_change != 1:
-            total_tmp_log_size = os.stat(daemon_log_file_tmp).st_size + os.stat(sensor_t_log_file_tmp).st_size + os.stat(sensor_ht_log_file_tmp).st_size + os.stat(sensor_co2_log_file_tmp).st_size + os.stat(sensor_press_log_file_tmp).st_size + os.stat(relay_log_file_tmp).st_size
+            total_log_size = os.stat(daemon_log_file_tmp).st_size + os.stat(sensor_t_log_file_tmp).st_size + os.stat(sensor_ht_log_file_tmp).st_size + os.stat(sensor_co2_log_file_tmp).st_size + os.stat(sensor_press_log_file_tmp).st_size + os.stat(relay_log_file_tmp).st_size
 
             # Back up logs if their combined size is greater than 5 MB
-            if total_tmp_log_size > 5000000:
-                logging.debug("[Log Backup] Sum of log sizes = %s bytes > 5,000,000 bytes (5 MB). Backing up.", total_tmp_log_size)
+            if total_log_size > 5000000:
+                logging.debug("[Log Backup] Sum of log sizes = %s bytes > 5,000,000 bytes (5 MB). Backing up.", total_log_size)
                 mycodoLog.Concatenate_Logs()
 
             timerLogBackup = int(time.time()) + 600

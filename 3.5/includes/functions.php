@@ -22,14 +22,6 @@
 *  Contact at kylegabriel.com
 */
 
-// Instruct mycodo.py daemon to reload a specific PID controller
-function pid_reload($mycodo_client, $controller, $pid) {
-    shell_exec("$mycodo_client --pidstop $controller $pid");
-    shell_exec("$mycodo_client --sqlreload -1");
-    shell_exec("$mycodo_client --pidstart $controller $pid");
-}
-
-
 /*
  * Logging
  */
@@ -115,15 +107,27 @@ function view_sql_db($sqlite_db) {
 
 // Generate and display graphs on the Main tab
 function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_graph, $sensor_ht_graph, $sensor_co2_graph, $sensor_press_graph) {
+
+    $sensor_t_log_file_tmp = "/var/www/mycodo/log/sensor-t-tmp.log";
+    $sensor_t_log_file = "/var/www/mycodo/log/sensor-t.log";
+    $sensor_t_log_generate = "/var/tmp/sensor-t-logs-combined.log";
+
+    $sensor_ht_log_file_tmp = "/var/www/mycodo/log/sensor-ht-tmp.log";
+    $sensor_ht_log_file = "/var/www/mycodo/log/sensor-ht.log";
+    $sensor_ht_log_generate = "/var/tmp/sensor-ht-logs-combined.log";
+
+    $sensor_co2_log_file_tmp = "/var/www/mycodo/log/sensor-co2-tmp.log";
+    $sensor_co2_log_file = "/var/www/mycodo/log/sensor-co2.log";
+    $sensor_co2_log_generate = "/var/tmp/sensor-co2-logs-combined.log";
+
+    $sensor_press_log_file_tmp = "/var/www/mycodo/log/sensor-press-tmp.log";
+    $sensor_press_log_file = "/var/www/mycodo/log/sensor-press.log";
+    $sensor_press_log_generate = "/var/tmp/sensor-press-logs-combined.log";
+
     // Main preset: Display graphs of past day and week
     if ($graph_time_span == 'default') {
 
         if (array_sum($sensor_t_graph)) {
-            $sensor_t_log_file_tmp = "/var/www/mycodo/log/sensor-t-tmp.log";
-            $sensor_t_log_file = "/var/www/mycodo/log/sensor-t.log";
-            $sensor_t_log_generate = "/var/tmp/sensor-t-logs-default.log";
-            system("cat $sensor_t_log_file $sensor_t_log_file_tmp > $sensor_t_log_generate");
-
             for ($n = 0; $n < count($sensor_t_graph); $n++) {
                 if ($sensor_t_graph[$n] == 1) {
                     if (!file_exists("/var/www/mycodo/images/graph-tdefaultdefault-$graph_id-$n.png")) {
@@ -142,15 +146,9 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                     }
                 }
             }
-            unlink($sensor_t_log_generate);
         }
 
         if (array_sum($sensor_ht_graph)) {
-            $sensor_ht_log_file_tmp = "/var/www/mycodo/log/sensor-ht-tmp.log";
-            $sensor_ht_log_file = "/var/www/mycodo/log/sensor-ht.log";
-            $sensor_ht_log_generate = "/var/tmp/sensor-ht-logs-default.log";
-            system("cat $sensor_ht_log_file $sensor_ht_log_file_tmp > $sensor_ht_log_generate");
-
             $count = 0;
             for ($n = 0; $n < count($sensor_ht_graph); $n++) {
                 if ($sensor_ht_graph[$n] == 1) {
@@ -171,19 +169,13 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                     }
                 }
             }
-            unlink($sensor_ht_log_generate);
         }
 
         if (array_sum($sensor_co2_graph)) {
-            $sensor_co2_log_file_tmp = "/var/www/mycodo/log/sensor-co2-tmp.log";
-            $sensor_co2_log_file = "/var/www/mycodo/log/sensor-co2.log";
-            $sensor_co2_log_generate = "/var/tmp/sensor-co2-logs-default.log";
-            system("cat $sensor_co2_log_file $sensor_co2_log_file_tmp > $sensor_co2_log_generate");
-
             for ($n = 0; $n < count($sensor_co2_graph); $n++) {
                 if ($sensor_co2_graph[$n] == 1) {
                     if (!file_exists("/var/www/mycodo/images/graph-co2defaultdefault-$graph_id-$n.png")) {
-                        shell_exec("$mycodo_client --graph co2 $graph_time_span default $graph_id $n");
+                        shell_exec("$mycodo_client --graph co2 $graph_type $graph_time_span $graph_id $n");
                     }
                     echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
                     echo 'sensortype=co2';
@@ -198,15 +190,9 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                     }
                 }
             }
-            unlink($sensor_co2_log_generate);
         }
 
         if (array_sum($sensor_press_graph)) {
-            $sensor_press_log_file_tmp = "/var/www/mycodo/log/sensor-press-tmp.log";
-            $sensor_press_log_file = "/var/www/mycodo/log/sensor-press.log";
-            $sensor_press_log_generate = "/var/tmp/sensor-press-logs-default.log";
-            system("cat $sensor_press_log_file $sensor_press_log_file_tmp > $sensor_press_log_generate");
-
             $count = 0;
             for ($n = 0; $n < count($sensor_press_graph); $n++) {
                 if ($sensor_press_graph[$n] == 1) {
@@ -227,7 +213,6 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                     }
                 }
             }
-            unlink($sensor_press_log_generate);
         }
 
     } else if ($graph_type == 'combined') { // Combined preset: Generate combined graphs
@@ -244,11 +229,6 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
     } else if ($graph_type == 'separate') { // Combined preset: Generate separate graphs
         $first = 0;
         if (array_sum($sensor_t_graph)) {
-            $sensor_t_log_file_tmp = "/var/www/mycodo/log/sensor-t-tmp.log";
-            $sensor_t_log_file = "/var/www/mycodo/log/sensor-t.log";
-            $sensor_t_log_generate = "/var/tmp/sensor-t-logs-separate.log";
-            system("cat $sensor_t_log_file $sensor_t_log_file_tmp > $sensor_t_log_generate");
-
             for ($n = 0; $n < count($sensor_t_graph); $n++ ) {
                 if ($sensor_t_graph[$n] == 1) {
                     if (!file_exists("/var/www/mycodo/images/graph-tseparate$graph_time_span-$graph_id-$n.png")) {
@@ -265,15 +245,9 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                     echo '</div>';
                 } 
             }
-            unlink($sensor_t_log_generate);
         }
 
         if (array_sum($sensor_ht_graph)) {
-            $sensor_ht_log_file_tmp = "/var/www/mycodo/log/sensor-ht-tmp.log";
-            $sensor_ht_log_file = "/var/www/mycodo/log/sensor-ht.log";
-            $sensor_ht_log_generate = "/var/tmp/sensor-ht-logs-separate.log";
-            system("cat $sensor_ht_log_file $sensor_ht_log_file_tmp > $sensor_ht_log_generate");
-
             for ($n = 0; $n < count($sensor_ht_graph); $n++ ) {
                 if ($sensor_ht_graph[$n] == 1) {
                     if (!file_exists("/var/www/mycodo/images/graph-htseparate$graph_time_span-$graph_id-$n.png")) {
@@ -290,15 +264,9 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                     echo '</div>';
                 }
             }
-            unlink($sensor_ht_log_generate);
         }
 
         if (array_sum($sensor_co2_graph)) {
-            $sensor_co2_log_file_tmp = "/var/www/mycodo/log/sensor-co2-tmp.log";
-            $sensor_co2_log_file = "/var/www/mycodo/log/sensor-co2.log";
-            $sensor_co2_log_generate = "/var/tmp/sensor-co2-logs-separate.log";
-            system("cat $sensor_co2_log_file $sensor_co2_log_file_tmp > $sensor_co2_log_generate");
-            
             for ($n = 0; $n < count($sensor_co2_graph); $n++) {
                 if ($sensor_co2_graph[$n] == 1) {
                     if (!file_exists("/var/www/mycodo/images/graph-co2separate$graph_time_span-$graph_id-$n.png")) {
@@ -315,15 +283,9 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                     echo '</div>';
                 }
             }
-            unlink($sensor_co2_log_generate);
         }
 
         if (array_sum($sensor_press_graph)) {
-            $sensor_press_log_file_tmp = "/var/www/mycodo/log/sensor-press-tmp.log";
-            $sensor_press_log_file = "/var/www/mycodo/log/sensor-press.log";
-            $sensor_press_log_generate = "/var/tmp/sensor-press-logs-separate.log";
-            system("cat $sensor_press_log_file $sensor_press_log_file_tmp > $sensor_press_log_generate");
-
             for ($n = 0; $n < count($sensor_press_graph); $n++) {
                 if ($sensor_press_graph[$n] == 1) {
                     if (!file_exists("/var/www/mycodo/images/graph-pressseparate$graph_time_span-$graph_id-$n.png")) {
@@ -340,7 +302,6 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                     echo '</div>';
                 }
             }
-            unlink($sensor_press_log_generate);
         }
     }
 }

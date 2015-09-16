@@ -2247,10 +2247,3 @@ if (isset($_POST['ChangeInterface'])) {
     $stmt->bindValue(':maxamps', (float)$_POST['max_amps'], SQLITE3_FLOAT);
     $stmt->execute();
 }
-
-// Request sensor read and log write
- if (isset($_POST['WriteSensorLog'])) {
-    shell_exec("$mycodo_client --writetlog 0");
-    shell_exec("$mycodo_client --writehtlog 0");
-    shell_exec("$mycodo_client --writeco2log 0");
-}
