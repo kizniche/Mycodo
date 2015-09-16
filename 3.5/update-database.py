@@ -359,7 +359,7 @@ def mycodo_database_create():
 
     AddTable(sql_database_mycodo, 'TSensor')
     AddColumn(sql_database_mycodo, 'TSensor', 'Name', 'TEXT')
-    AddColumn(sql_database_mycodo, 'TSensor', 'Pin', 'INT')
+    AddColumn(sql_database_mycodo, 'TSensor', 'Pin', 'TEXT')
     AddColumn(sql_database_mycodo, 'TSensor', 'Device', 'TEXT')
     AddColumn(sql_database_mycodo, 'TSensor', 'Period', 'INT')
     AddColumn(sql_database_mycodo, 'TSensor', 'Pre_Measure_Relay', 'INT')
@@ -390,7 +390,7 @@ def mycodo_database_create():
 
     AddTable(sql_database_mycodo, 'TSensorPreset')
     AddColumn(sql_database_mycodo, 'TSensorPreset', 'Name', 'TEXT')
-    AddColumn(sql_database_mycodo, 'TSensorPreset', 'Pin', 'INT')
+    AddColumn(sql_database_mycodo, 'TSensorPreset', 'Pin', 'TEXT')
     AddColumn(sql_database_mycodo, 'TSensorPreset', 'Device', 'TEXT')
     AddColumn(sql_database_mycodo, 'TSensorPreset', 'Period', 'INT')
     AddColumn(sql_database_mycodo, 'TSensorPreset', 'Pre_Measure_Relay', 'INT')

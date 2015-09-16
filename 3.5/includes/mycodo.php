@@ -553,13 +553,13 @@ if (isset($output_error)) {
                                 if ((shell_exec($read) == 1 && $relay_trigger[$i] == 0) || (shell_exec($read) == 0 && $relay_trigger[$i] == 1)) {
                                     ?>
                                     <td class="onoff">
-                                        <nobr><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="R<?php echo $i; ?>" value="0"> | <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="1">Turn On</button></nobr>
+                                        <nobr><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="R<?php echo $i; ?>" value="1"> | <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="1">Turn On</button></nobr>
                                     </td>
                                     <?php
                                 } else {
                                     ?>
                                     <td class="onoff">
-                                        <nobr><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/on.jpg" alt="On" title="On" name="R<?php echo $i; ?>" value="1"> | <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="0">Turn Off</button></nobr>
+                                        <nobr><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/on.jpg" alt="On, Click to turn off." title="On" name="R<?php echo $i; ?>" value="0"> | <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="0">Turn Off</button></nobr>
                                     </td>
                                     <?php
                                 }
