@@ -128,6 +128,8 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
         for line in fileinput.input(relay_log_files_combine):
             fout.write(line)
 
+    time.sleep(0.1) # Allow relay log to be completely written before modification and use
+
     # Concatenate default and separate logs
     if graph_span == 'default' or graph_type == 'separate':
         if graph_type == 'separate':
@@ -171,7 +173,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                         for line in infile:
                             outfile.write(line)
 
-        time.sleep(0.1)
+        time.sleep(0.1) # Allow sensor log to be completely written before modification and use
 
 
     # Parse default logs
@@ -319,7 +321,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
         else:
             sensor_press_log_generate = None
 
-        time.sleep(0.1)
+        time.sleep(0.1) # Allow sensor log to be completely written before modification and use
 
         for i in range(0, len(sensor_t_name)):
             lines = seconds/sensor_t_period[i]

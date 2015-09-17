@@ -2955,6 +2955,10 @@ if (isset($output_error)) {
             <?php if ($this->feedback) echo $this->feedback; ?>
 
             <div class="advanced">
+                <a class="manual" href="manual.html" target="_blank">Mycodo 3.5 Manual</a> (work in progress)
+            </div>
+
+            <div class="advanced">
                 <table>
                     <form method="post" action="?tab=settings">
                     <tr>

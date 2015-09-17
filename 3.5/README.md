@@ -24,10 +24,6 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
   + [Web Interface](#web-interface)
   + [System Update](#system-update)
   + [Discrete PID Control](#discrete-pid-control)
-  + [Quick Setup Examples](#quick-set-up-examples)
-    + [Exact-Temperature Regulation](#exact-temperature-regulation)
-    + [High-Temperature Regulation](#high-temperature-regulation)
-  + [Tips](#tips)
 + [License](#license)
 + [Useful Links](#useful-links)
 
@@ -386,6 +382,8 @@ Note: cgi-bin/mycodo-wrapper is a binary executable used to start and stop the m
 
 ## Manual
 
+A full manual is provided, manual.html, and can be accessed through your browser directly to the file on your file system or at http://your-pi-address/mycodo/manual.html if you have your web server operational.
+
 ### Preface
 
 Only press one button at a time on the web interface. After pressing a button, wait for either a response or for the page to time out. Sending multiple commands will only make it take longer, at best. There may be many unforseen issues with sending multiple commands.
@@ -406,7 +404,7 @@ Additionally, relays must be properly set up before PID regulation can be achiev
 
 If you have a fully-configured system, you may update to the latest version with the "Update Mycodo" button under the Advanced menu of the settings tab. A backup of the old system will be placed in the same directory the Mycodo main direcotry resides. For example, if this directory is /home/user/Mycodo, then the backup directory will reside at /home/user/Mycodo-backup.
 
-Note: Logs and the user database will be preserved, however you will most likely need to reconfigure your settings and presets (a database updater is in the works). 
+Note: Logs and the user database will be preserved, however you will most likely need to reconfigure your settings and presets (a database updater is in the works).
 
 ### Discrete PID Control
 
@@ -427,42 +425,6 @@ The output can be used a number of ways, however this controller was designed to
 Therefor, if one would be regulating temperature, the sensor would be a temperature sensor and the feedback device(s) would be able to heat and cool. If the temperature is lower than the Set Point, the output value would be positive and a heater would activate. The temperature would rise toward the desired temperature, causing the error to decrease and a lower output to be produced. This feedback loop would continue until the error reaches 0 (at which point the output would be 0). If the temperature continues to rise past the Set Point (this is may be aceptable, depending on the degree), the PID would produce a negative output, which could be used by the cooling device to bring the temperature back down, to reduce the error. If the temperature would normally lower without the aid of a cooling device, then the system can be simplified by omitting a cooler and allowing it to lower on its own. 
 
 Implementing a controller that effectively utilizes P, I, and D can be challenging. Furthermore, it is often unnecessary. For instance, the I and D can be set to 0, effectively turning them off and producing the very popular and simple P controller. Also popular is the PI controller. It is recommended to start with only P activated, then experiment with PI, before finally using PID. Because systems will vary (e.g. airspace volume, degree of insulation, and the degree of impact from the connected device, etc.), each path will need to be adjusted through experimentation to produce an effective output.
-
-### Quick Set-up Examples
-
-These example setups are meant to illustrate how to configure regulation in particular directions, and not to achieve ideal values to configure your P, I, and D variables. There are a number of online resources that discuss techniques and methods that have been developed to determine ideal PID values (such as <a href="http://robotics.stackexchange.com/questions/167/what-are-good-strategies-for-tuning-pid-loops" target="_blank">here</a>, <a href="http://innovativecontrols.com/blog/basics-tuning-pid-loops" target="_blank">here</a>, <a href="https://hennulat.wordpress.com/2011/01/12/pid-loop-tuning-101/" target="_blank">here</a>, <a href="http://eas.uccs.edu/wang/ECE4330F12/PID-without-a-PhD.pdf" target="_blank">here</a>, and <a href="http://www.atmel.com/Images/doc2558.pdf" target="_blank">here</a>) and since there are no universal values that will work for every system, it is recommended to conduct your own research to understand the variables and essential to conduct your own experiments to effectively implement them.
-
-Provided merely as an example of the variance of PID values, one of my setups had temperature PID values (up regulation) of P=30, I=1.0, and D=0.5, and humidity PID values (up regulation) of P=1.0, I=0.2, and D=0.5. Furthermore, these values may not have been optimal but they worked well for the conditions of my environmental chamber.
-
-#### Exact Temperature Regulation
-
-This will set up the system to raise and lower the temperature to a certain level with two regulatory devices (one that heats and one that cools).
-
-Select the number of sensors that are connected. Select the proper device and GPIO pin for each sensor and activate logging and graphing.
-
-***Stop here. Wait 10 minutes, then go the Main tab and generate a graph. If the graph generates with data on it, continue. If not, stop and investigate why there is no sensor data. The controller will not function if there is not sensor data being acquired.***
-
-Under the Temperature PID for an active sensor, change `PID Set Point` to the desired temperature, `PID Regulate` to 'Both', and `PID Buffer` to 0 or 1. The Buffer will prevent PID regulation (i.e. not allow relays to operate), when the temperature falls within the Set Point ± Buffer range. For instance, if the Set Point is 30°C and the Buffer is 1, this range would be 30°C ± 1 = 29°C and 31°C.
-
-Set the `Relay No.` of the up-regulating PID (represented by an Up arrow) to the relay attached to the heating device and the down-regulating PID to the relay attached to the coolong device.
-
-Set `P` to 1, `I` to 0, `D` to 0, then turn the Temperature PID on with the ON button.
-
-If the temperature is lower than the Set Point, the heater should activate at some interval determined by the PID controller until the temperature rises to the set point. If the temperature goes higher than the Set Point (or Set Point + Buffer), the cooling device will activate until the temperature returns to the set point. If the temperature is not reaching the Set Point after a reasonable amount of time, increase the P value and see how that affects the system. Experiment with different configurations involving only `Read Interval` and `P` to achieve a good regulation. Avoid changing the `I` and `D` from 0 until a working regulation is achieved with P alone.
-
-Generate '6 Hour Seperate' graphs from the Main tab to identify how well the temperature is regulated to the Set Point. What is meant by well-regulated will vary, depending on your specific application and tolerances. Most applications of a PID controller would like to see the proper temperature attained within a reasonable amount of time and with little oscillation.
-
-Once regulation is achieved, experiment by reducing P slightly (~25%) and increasing `I` by a low amount to start, such as 0.1 (or lower), then observe how the controller regulates. Slowly increase I until regulation becomes both quick yet there is little oscillation once regulation is achieved. At this point, you should be fairly familiar with experimenting with the system and the D value can be experimented with.
-
-#### High Temperature Regulation
-
-Often the system can be simplified if two-way regulation is not needed. For instance, if cooling is unnecessary, this can be removed from the system and only up-regulation can be used.
-
-Use the same configuration as the <a href="#exact-temperature-regulation">Exact Temperature Regulation</a> example, except change `PID Regulate` to 'Up' and change the `Relay No.` and `P`, `I`, and `D` values of the up-regulating PID (represented by an Up arrow). Buffer should be set to 0 when 'Both' is not used.
-
-### Tips
-
-The page-load time when submiting configuration changes in the sensor tab will be faster when the daemon is not running. The daemon can be stopped and started in the Settings tab.
 
 ## License
 

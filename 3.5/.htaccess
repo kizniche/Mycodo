@@ -15,3 +15,6 @@ DirectoryIndex index.php
         Allow from All
 </FilesMatch>
 
+<FilesMatch "manual.html">
+        Allow from All
+</FilesMatch>

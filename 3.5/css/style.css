@@ -11,6 +11,12 @@ a:visited { color: #000000; }
 a:active { color: #F2273B; }
 a:hover { color: #F2273B; }
 
+a.manual {color:red;}
+a.manual:link  {text-decoration: none; color: red;}
+a.manual:visited {text-decoration: none; color: red;}
+a.manual:hover {text-decoration: underline; color: red;}
+a.manual:active {text-decoration: none; color: red;}
+
 
 /*** Header ***/
 
