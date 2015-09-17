@@ -1,0 +1,112 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+	<title>
+		Mycodo 3.5 Manual
+	</title>
+</head>
+<body>
+
+<h1>Mycodo 3.5 Manual</h1>
+
+<ul>
+<li><a href="#preface">Preface</a></li>
+<li><a href="#web-interface">Web Interface</a></li>
+<li><a href="#system-update">System Update</a></li>
+<li><a href="#discrete-pid-control">Discrete PID Control</a></li>
+<li><a href="#quick-set-up-examples">Quick Setup Examples</a></li>
+<ul>
+<li><a href="#exact-temperature-regulation">Exact-Temperature Regulation</a></li>
+<li><a href="#high-temperature-regulation">High-Temperature Regulation</a></li>
+</ul>
+<li><a href="#tips">Tips</a></li>
+</ul>
+
+<a name="preface"></a>
+<h2>Preface</h2>
+
+<p>Only press one button at a time on the web interface. After pressing a button, wait for either a response or for the page to time out. Sending multiple commands will only make it take longer, at best. There may be many unforseen issues with sending multiple commands.</p>
+
+<p>Before activating any conditional statements or PID controllers, it"s advised to thoroughly explore all possible scenarios and plan a configuration that eliminates relay conflicts. Then, trial run your configuration before connecting devices to the relays. <b>Some devices or relays may respond atypically or fail when switched many times in rapid succession. Therefore, avoid creating a condition for a relay to switch on and off in an <a href="https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops" target="_blank">infinite loop</a></b>.</p>
+
+<a name="web-interface"></a>
+<h2>Web Interface</h2>
+
+<p>After the system is back up, go to http://your-rpi-address/mycodo and log in with the credentials you created with update-database.py.</p>
+
+<p><b>Most input fields of the web interface will display descriptions or instructions when the mouse is hovered over them. In the absence of a complete manual of each setting, utilize this to learn about the system.</b></p>
+
+<p>The Daemon indicator at the top-left indicates the daemon is running (blue). If it is not (red), sensor measurements, logging, and PID regulation cannot operate.</p>
+
+<p>Additionally, relays must be properly set up before PID regulation can be achieved. Add and configure relays in the Sensor tab. Set the "GPIO Pin" to the BCM number of the pin connected to the relay. "Signal ON" should be set to the signal that activates the relay (close the circuit). If your relay activates when the potential across the coil is 0-volts, set "Signal ON" to "Low", otherwise if your relay activates when the potential across the coil is 5-volts, set it to "High".</p>
+
+<a name="system-update"></a>
+<h2>System Update</h2>
+
+<p>If you have a fully-configured system, you may update to the latest version with the "Update Mycodo" button under the Advanced menu of the settings tab. A backup of the old system will be placed in the same directory the Mycodo main direcotry resides. For example, if this directory is /home/user/Mycodo, then the backup directory will reside at /home/user/Mycodo-backup.</p>
+
+<p>Note: Logs and the user database will be preserved, however you will most likely need to reconfigure your settings and presets (a database updater is in the works). </p>
+
+<a name="discrete-pid-control"></a>
+<h2>Discrete PID Control</h2>
+
+<p>The PID controller is the most common regulatory controller found in industrial settings, for it"s ability to handle both simple and complex regulation. The PID controller has three paths, the proportional, integral, and derivative.</p>
+
+<p>The <b>P</b>roportional takes the error and multiplies it by the constant K<sub>p</sub>, to yield an output value. When the error is large, there will be a large proportional output.</p>
+
+<p>The <b>I</b>ntegral takes the error and multiplies it by K<sub>i</sub>, then integrates it (K<sub>i</sub> · 1/s). As the error changes over time, the integral will continually sum it and multiply it by the constant K<sub>i</sub>. The integral is used to remove perpetual error in the control system. If using K<sub>p</sub> alone produces an output that produces a perpetual error (i.e. if the sensor measurement never reaches the Set Point), the integral will increase the output until the error decreases and the Set Point is reached.</p>
+
+<p>The <b>D</b>erivative multiplies the error by K<sub>d</sub>, then differentiates it (K<sub>d</sub> · s). When the error rate changes over time, the output signal will change. The faster the change in error, the larger the derivative path becomes, decreasing the output rate of change. This has the effect of dampening overshoot and undershoot (oscillation) of the Set Point.</p>
+
+<p><a href="https://en.wikipedia.org/wiki/PID_controller" target="_blank"><img src="http://kylegabriel.com/images/PID_Animated.gif"></a></p>
+
+<p>Using temperature as an example, the Process Variable (PV) is the sensed temperature, the Set Point (SP) is the desired temperature, and the Error (e) is the distance between the measured temperature and the desired temperature (indicating if the actual temperature is too hot or too cold and to what degree). The error is manipulated by each of the three PID components, producing an output, called the Manipulated Variable (MV) or Control Variable (CV). To allow control of how much each path contributes to the output value, each path is multiplied by a gain (represented by K). By adjusting the gains, the sensitivity of the system to each path is affected. When all three paths are summed, the PID output is produced. If a gain is set to 0, that path does not contribute to the output and that path is eessentially turned off.</p>
+
+<p>The output can be used a number of ways, however this controller was designed to use the ouput to affect the sensed value (PV). This feedback loop, with a <i>properly tuned</i> PID controller, can achieve a set point in a short period of time, maintain regulation with little oscillation, and respond quickly to disturbance.</p>
+
+<p>Therefor, if one would be regulating temperature, the sensor would be a temperature sensor and the feedback device(s) would be able to heat and cool. If the temperature is lower than the Set Point, the output value would be positive and a heater would activate. The temperature would rise toward the desired temperature, causing the error to decrease and a lower output to be produced. This feedback loop would continue until the error reaches 0 (at which point the output would be 0). If the temperature continues to rise past the Set Point (this is may be aceptable, depending on the degree), the PID would produce a negative output, which could be used by the cooling device to bring the temperature back down, to reduce the error. If the temperature would normally lower without the aid of a cooling device, then the system can be simplified by omitting a cooler and allowing it to lower on its own.</p>
+
+<p>Implementing a controller that effectively utilizes P, I, and D can be challenging. Furthermore, it is often unnecessary. For instance, the I and D can be set to 0, effectively turning them off and producing the very popular and simple P controller. Also popular is the PI controller. It is recommended to start with only P activated, then experiment with PI, before finally using PID. Because systems will vary (e.g. airspace volume, degree of insulation, and the degree of impact from the connected device, etc.), each path will need to be adjusted through experimentation to produce an effective output.</p>
+
+<a name="quick-set-up-examples"></a>
+<h2>Quick Set-up Examples</h2>
+
+<p>These example setups are meant to illustrate how to configure regulation in particular directions, and not to achieve ideal values to configure your P, I, and D variables. There are a number of online resources that discuss techniques and methods that have been developed to determine ideal PID values (such as <a href="http://robotics.stackexchange.com/questions/167/what-are-good-strategies-for-tuning-pid-loops" target="_blank">here</a>, <a href="http://innovativecontrols.com/blog/basics-tuning-pid-loops" target="_blank">here</a>, <a href="https://hennulat.wordpress.com/2011/01/12/pid-loop-tuning-101/" target="_blank">here</a>, <a href="http://eas.uccs.edu/wang/ECE4330F12/PID-without-a-PhD.pdf" target="_blank">here</a>, and <a href="http://www.atmel.com/Images/doc2558.pdf" target="_blank">here</a>) and since there are no universal values that will work for every system, it is recommended to conduct your own research to understand the variables and essential to conduct your own experiments to effectively implement them.</p>
+
+<p>Provided merely as an example of the variance of PID values, one of my setups had temperature PID values (up regulation) of P=30, I=1.0, and D=0.5, and humidity PID values (up regulation) of P=1.0, I=0.2, and D=0.5. Furthermore, these values may not have been optimal but they worked well for the conditions of my environmental chamber.</p>
+
+<a name="exact-temperature-regulation"></a>
+<h3>Exact Temperature Regulation</h3>
+
+<p>This will set up the system to raise and lower the temperature to a certain level with two regulatory devices (one that heats and one that cools).</p>
+
+<p>Select the number of sensors that are connected. Select the proper device and GPIO pin for each sensor and activate logging and graphing.</p>
+
+<p><b><i>Stop here. Wait 10 minutes, then go the Main tab and generate a graph. If the graph generates with data on it, continue. If not, stop and investigate why there is no sensor data. The PID controller will not function if there is not sensor data being acquired.</i></b></p>
+
+<p>Under the Temperature PID for an active sensor, change "PID Set Point" to the desired temperature, "PID Regulate" to Both. Set the "Up Relay" to the relay number attached to the heating device and the "Down Relay" to the relay number attached to the coolong device.</p>
+
+<p>Set "P" to 1, "I" to 0, "D" to 0, then turn the Temperature PID on with the ON button.</p>
+
+<p>If the temperature is lower than the Set Point, the heater should activate at some interval determined by the PID controller until the temperature rises to the set point. If the temperature goes higher than the Set Point (or Set Point + Buffer), the cooling device will activate until the temperature returns to the set point. If the temperature is not reaching the Set Point after a reasonable amount of time, increase the P value and see how that affects the system. Experiment with different configurations involving only "Read Interval" and "P" to achieve a good regulation. Avoid changing the "I" and "D" from 0 until a working regulation is achieved with P alone.</p>
+
+<p>Generate "6 Hour Seperate" graphs from the Main tab to identify how well the temperature is regulated to the Set Point. What is meant by well-regulated will vary, depending on your specific application and tolerances. Most applications of a PID controller would like to see the proper temperature attained within a reasonable amount of time and with little oscillation.</p>
+
+<p>Once regulation is achieved, experiment by reducing P slightly (~25%) and increasing "I" by a low amount to start, such as 0.1 (or lower), then observe how the controller regulates. Slowly increase I until regulation becomes both quick yet there is little oscillation once regulation is achieved. At this point, you should be fairly familiar with experimenting with the system and the D value can be experimented with.</p>
+
+<a name="high-temperature-regulation"></a>
+<h3>High Temperature Regulation</h3>
+
+<p>Often the system can be simplified if two-way regulation is not needed. For instance, if cooling is unnecessary, this can be removed from the system and only up-regulation can be used.</p>
+
+<p>Use the same configuration as the <a href="#exact-temperature-regulation">Exact Temperature Regulation</a> example, except change "PID Regulate" to "Up" and do not touch the "Down Relay" section.</p>
+
+<a name="tips"></a>
+<h2>Tips</h2>
+
+<p>The page-load time when submiting configuration changes in the sensor tab will be faster when the daemon is not running. The daemon can be stopped and started in the Settings tab.</p>
+
+</body>
+</html>
