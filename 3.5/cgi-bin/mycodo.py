@@ -101,7 +101,7 @@ pid_press_press_down = 0
 pid_press_press_up = 0
 
 # Miscellaneous
-pause_daemon = 0
+
 start_all_t_pids = None
 stop_all_t_pids = None
 start_all_ht_pids = None
@@ -118,8 +118,7 @@ last_ht_reading = 0
 last_co2_reading = 0
 last_press_reading = 0
 
-global pause_daemon_confirm
-
+pause_daemon = 0
 pause_daemon_confirm = 0
 
 
@@ -128,13 +127,13 @@ class ComServer(rpyc.Service):
 
     def exposed_ChangeRelay(self, relay, state):
         if (state == 1):
-            logging.info("[Client command] Changing Relay %s to HIGH", relay)
+            logging.info("[Client command] Changing Relay %s (%s) to HIGH", relay, relay_name[relay-1])
             relay_onoff(int(relay), 'on')
         elif (state == 0):
-            logging.info("[Client command] Changing Relay %s to LOW", relay)
+            logging.info("[Client command] Changing Relay %s (%s) to LOW", relay, relay_name[relay-1])
             relay_onoff(int(relay), 'off')
         else:
-            logging.info("[Client command] Turning Relay %s On for %s seconds", relay, state)
+            logging.info("[Client command] Turning Relay %s (%s) On for %s seconds", relay, relay_name[relay-1], state)
             rod = threading.Thread(target = relay_on_duration,
                 args = (int(relay), int(state), 0,))
             rod.start()
@@ -438,12 +437,13 @@ def daemon(output, log):
     global change_sensor_log
     global server
     global client_que
-    global pause_daemon_confirm
 
     global PID_change
-
-    pause_daemon_confirm = -1
     PID_change = 0
+
+    global pause_daemon_confirm
+    pause_daemon_confirm = -1
+
 
     # Set log level based on startup argument
     if (log == 'warning'):
@@ -3432,7 +3432,9 @@ def relay_on_duration(relay, seconds, sensor):
         relay, relay_name[relay-1], round(abs(seconds), 1))
 
     on_duration_timer[relay-1] = int(time.time()) + abs(seconds)
-    GPIO.output(relay_pin[relay-1], relay_trigger[relay-1]) # Turn relay on
+
+    # Turn relay on
+    GPIO.output(relay_pin[relay-1], relay_trigger[relay-1])
 
     wrl = threading.Thread(target = mycodoLog.write_relay_log,
         args = (relay, seconds, sensor, relay_pin[relay-1],))
@@ -3453,9 +3455,23 @@ def relay_on_duration(relay, seconds, sensor):
     while (client_que != 'TerminateServer' and on_duration_timer[relay-1] > int(time.time())):
         if (relay_trigger[relay-1] == 0 and GPIO.input(relay_pin[relay-1]) == 1) or (
             relay_trigger[relay-1] == 1 and GPIO.input(relay_pin[relay-1]) == 0):
-            logging.warning("[Relay Duration] Relay %s (%s) turned off during a timed on duration. Cancelling current timer.",
-                relay, relay_name[relay-1])
-            return 1
+            if pause_daemon:
+                logging.warning("[Relay Duration] SQL database reloaded while Relay %s (%s) is in a timed on duration. Turning off and cancelling current timer.",
+                    relay, relay_name[relay-1])
+                # Turn relay off
+                if relay_trigger[relay-1] == 0:
+                    GPIO.output(relay_pin[relay-1], 1)
+                else:
+                    GPIO.output(relay_pin[relay-1], 0)
+            else:
+                logging.warning("[Relay Duration] Relay %s (%s) detected as off during a timed on duration. Turning off and cancelling current timer.",
+                    relay, relay_name[relay-1])
+                # Ensure relay is actually off
+                if relay_trigger[relay-1] == 0:
+                    GPIO.output(relay_pin[relay-1], 1)
+                else:
+                    GPIO.output(relay_pin[relay-1], 0)
+                return 1
         time.sleep(0.1)
 
     # Turn relay off

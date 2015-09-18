@@ -2954,11 +2954,11 @@ if (isset($output_error)) {
 
             <?php if ($this->feedback) echo $this->feedback; ?>
 
-            <div class="advanced">
-                <a class="manual" href="manual.html" target="_blank">Mycodo 3.5 Manual</a> (work in progress)
+            <div style="padding: 2em 0 0 1em;">
+                <a class="manual" href="manual.html" target="_blank">Mycodo 3.5 Manual</a>
             </div>
 
-            <div class="advanced">
+            <div style="padding: 0 0 0 1em;">
                 <table>
                     <form method="post" action="?tab=settings">
                     <tr>
