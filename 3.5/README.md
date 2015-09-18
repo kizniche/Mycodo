@@ -382,7 +382,7 @@ Note: cgi-bin/mycodo-wrapper is a binary executable used to start and stop the m
 
 ## Manual
 
-The full Mycodo 3.5 manual provided in the file manual.html. Access this file firectly with your web browser or navigate to http://your-pi-address/mycodo/manual.html if you have your web server operational.
+The Mycodo 3.5 manual is provided in the file manual.html. You can find a link to this manual at the top of the Settings tab of the web interface. This file can be accessed directly with your web browser or by navigating to http://your-pi-address/mycodo/manual.html if the web server is operational.
 
 ### Preface
 
