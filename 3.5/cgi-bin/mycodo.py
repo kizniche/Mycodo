@@ -307,67 +307,9 @@ class ComServer(rpyc.Service):
         global client_que
         client_que = 'TerminateServer'
         logging.info("[Client command] Shut down the daemon")
+        mycodoLog.Concatenate_Logs()
         return 1
 
-    def exposed_WriteTSensorLog(self, sensor):
-        global client_que
-        global client_var
-        client_var = sensor
-        client_que = 'write_t_sensor_log'
-        if sensor:
-            logging.info("[Client command] Read T sensor number %s and append log", sensor)
-        else:
-            logging.info("[Client command] Read all T sensors and append log")
-        global change_sensor_log
-        change_sensor_log = 1
-        while (change_sensor_log):
-            time.sleep(0.1)
-        return 1
-
-    def exposed_WriteHTSensorLog(self, sensor):
-        global client_que
-        global client_var
-        client_var = sensor
-        client_que = 'write_ht_sensor_log'
-        if sensor:
-            logging.info("[Client command] Read HT sensor number %s and append log", sensor)
-        else:
-            logging.info("[Client command] Read all HT sensors and append log")
-        global change_sensor_log
-        change_sensor_log = 1
-        while (change_sensor_log):
-            time.sleep(0.1)
-        return 1
-
-    def exposed_WriteCO2SensorLog(self, sensor):
-        global client_que
-        global client_var
-        client_var = sensor
-        client_que = 'write_co2_sensor_log'
-        if sensor:
-            logging.info("[Client command] Read CO2 sensor number %s and append log", sensor)
-        else:
-            logging.info("[Client command] Read all CO2 sensors and append log")
-        global change_sensor_log
-        change_sensor_log = 1
-        while (change_sensor_log):
-            time.sleep(0.1)
-        return 1
-
-    def exposed_WritePressSensorLog(self, sensor):
-        global client_que
-        global client_var
-        client_var = sensor
-        client_que = 'write_press_sensor_log'
-        if sensor:
-            logging.info("[Client command] Read Press sensor number %s and append log", sensor)
-        else:
-            logging.info("[Client command] Read all Press sensors and append log")
-        global change_sensor_log
-        change_sensor_log = 1
-        while (change_sensor_log):
-            time.sleep(0.1)
-        return 1
 
 
 # Communication thread to receive client commands from mycodo-client.py
@@ -535,6 +477,7 @@ def daemon(output, log):
 
     # How often to check log sizes and backup all logs to SD card
     timerLogBackup = int(time.time()) + 600  # 600 seconds = 10 minutes
+    timerLogBackupCount = 0
 
     while True: # Main loop of the daemon
 
@@ -550,9 +493,6 @@ def daemon(output, log):
         # Run remote commands issued by mycodo-client.py
         #
         if client_que == 'TerminateServer':
-            logging.info("[Daemon] Backing up logs")
-            mycodoLog.Concatenate_Logs()
-
             logging.info("[Daemon] Turning off all PID controllers")
             pid_t_temp_alive = [0] * len(sensor_t_id)
             pid_ht_temp_alive =  [0] * len(sensor_ht_id)
@@ -910,9 +850,14 @@ def daemon(output, log):
 
             # Back up logs if their combined size is greater than 5 MB
             if total_log_size > 5000000:
-                logging.debug("[Log Backup] Sum of log sizes = %s bytes > 5,000,000 bytes (5 MB). Backing up.", total_log_size)
+                logging.debug("[Log Backup] Sum of log sizes = %s bytes > 5,000,000 bytes (5 MB). Backing up logs.", total_log_size)
                 mycodoLog.Concatenate_Logs()
+            elif timerLogBackupCount > 16:
+                logging.debug("[Log Backup] 3-hour timer expired. Backing up logs.", total_log_size)
+                mycodoLog.Concatenate_Logs()
+                timerLogBackupCount = 0
 
+            timerLogBackupCount += 1
             timerLogBackup = int(time.time()) + 600
 
 
