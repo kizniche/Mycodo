@@ -89,6 +89,7 @@ delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete olde
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex">
+    <link rel="icon" type="image/png" href="img/favicon.png">
     <link rel="stylesheet" href="css/fonts.css" type="text/css">
     <link rel="stylesheet" href="css/reset.css" type="text/css">
     <link rel="stylesheet" href="css/style.css" type="text/css">

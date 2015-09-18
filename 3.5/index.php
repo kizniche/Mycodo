@@ -524,6 +524,9 @@ class OneFileLoginApplication {
         if ($this->feedback) echo $this->feedback . "<br/>";
         ?>
         <html>
+        <head>
+            <link rel="icon" type="image/png" href="img/favicon.png">
+        </head>
         <body>
         <div style="padding-top: 2em; width: 15em; margin: 8 auto; text-align: left; ">
             <div style="padding-bottom: 0.6em; text-align: center; font-size: 1.8em;">Mycodo</div>
