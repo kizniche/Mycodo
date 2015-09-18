@@ -1043,6 +1043,11 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
 
     while (pid_t_temp_alive[sensor]):
 
+        if pause_daemon:
+            logging.debug("[PID T-Temperature-%s] Pausing Temp sensor read for SQL reload", sensor+1)
+            while pause_daemon:
+                time.sleep(0.1)
+
         if ( ( (pid_t_temp_set_dir[sensor] == 0 and
             pid_t_temp_relay_high[sensor] != 0 and
             pid_t_temp_relay_low[sensor] != 0) or 
@@ -1103,11 +1108,6 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
 
         time.sleep(0.1)
 
-        if pause_daemon:
-            logging.debug("[PID T-Temperature-%s] Pausing Temp sensor read for SQL reload", sensor+1)
-            while pause_daemon:
-                time.sleep(0.1)
-
     logging.info("[PID T-Temperature-%s] Shutting Down %s", sensor+1, ThreadName)
 
     # Turn activated PID relays off
@@ -1136,6 +1136,11 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
     pid_temp.setPoint(pid_ht_temp_set[sensor])
 
     while (pid_ht_temp_alive[sensor]):
+
+        if pause_daemon:
+            logging.debug("[PID HT-Temperature-%s] Pausing Hum/Temp sensor read for SQL reload", sensor+1)
+            while pause_daemon:
+                time.sleep(0.1)
 
         if ( ( (pid_ht_temp_set_dir[sensor] == 0 and
             pid_ht_temp_relay_high[sensor] != 0 and
@@ -1197,11 +1202,6 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
 
         time.sleep(0.1)
 
-        if pause_daemon:
-            logging.debug("[PID HT-Temperature-%s] Pausing Hum/Temp sensor read for SQL reload", sensor+1)
-            while pause_daemon:
-                time.sleep(0.1)
-
     logging.info("[PID HT-Temperature-%s] Shutting Down %s", sensor+1, ThreadName)
 
     if pid_ht_temp_relay_high[sensor]:
@@ -1229,6 +1229,11 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
     pid_hum.setPoint(pid_ht_hum_set[sensor])
 
     while (pid_ht_hum_alive[sensor]):
+
+        if pause_daemon:
+            logging.debug("[PID HT-Humidity-%s] Pausing Hum/Temp sensor read for SQL reload", sensor+1)
+            while pause_daemon:
+                time.sleep(0.1)
 
         if ( ( (pid_ht_hum_set_dir[sensor] == 0 and
             pid_ht_hum_relay_high[sensor] != 0 and
@@ -1290,11 +1295,6 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
 
         time.sleep(0.1)
 
-        if pause_daemon:
-            logging.debug("[PID HT-Humidity-%s] Pausing Hum/Temp sensor read for SQL reload", sensor+1)
-            while pause_daemon:
-                time.sleep(0.1)
-
     logging.info("[PID HT-Humidity-%s] Shutting Down %s", sensor+1, ThreadName)
 
     if pid_ht_hum_relay_high[sensor]:
@@ -1322,6 +1322,11 @@ def co2_monitor(ThreadName, sensor):
     pid_co2.setPoint(pid_co2_set[sensor])
 
     while (pid_co2_alive[sensor]):
+
+        if pause_daemon:
+            logging.debug("[PID CO2-%s] Pausing CO2 sensor read for SQL reload", sensor+1)
+            while pause_daemon:
+                time.sleep(0.1)
 
         if ( ( (pid_co2_set_dir[sensor] == 0 and
             pid_co2_relay_high[sensor] != 0 and
@@ -1383,11 +1388,6 @@ def co2_monitor(ThreadName, sensor):
 
         time.sleep(0.1)
 
-        if pause_daemon:
-            logging.debug("[PID CO2-%s] Pausing CO2 sensor read for SQL reload", sensor+1)
-            while pause_daemon:
-                time.sleep(0.1)
-
     logging.info("[PID CO2-%s] Shutting Down %s", sensor+1, ThreadName)
 
     if pid_co2_relay_high[sensor]:
@@ -1415,6 +1415,11 @@ def press_sensor_temperature_monitor(ThreadName, sensor):
     pid_temp.setPoint(pid_press_temp_set[sensor])
 
     while (pid_press_temp_alive[sensor]):
+
+        if pause_daemon:
+            logging.debug("[PID Press-Temperature-%s] Pausing Press/Temp sensor read for SQL reload", sensor+1)
+            while pause_daemon:
+                time.sleep(0.1)
 
         if ( ( (pid_press_temp_set_dir[sensor] == 0 and
             pid_press_temp_relay_high[sensor] != 0 and
@@ -1475,11 +1480,6 @@ def press_sensor_temperature_monitor(ThreadName, sensor):
                     logging.warning("[PID Press-Temperature-%s] Could not read Press/Temp sensor, not updating PID", sensor+1)
 
         time.sleep(0.1)
-
-        if pause_daemon:
-            logging.debug("[PID Press-Temperature-%s] Pausing Press/Temp sensor read for SQL reload", sensor+1)
-            while pause_daemon:
-                time.sleep(0.1)
 
     logging.info("[PID Press-Temperature-%s] Shutting Down %s", sensor+1, ThreadName)
 
