@@ -299,8 +299,12 @@ class ComServer(rpyc.Service):
         return 1
 
     def exposed_Status(self, var):
-        logging.debug("[Client command] Request status report")
-        return 1
+        global status_report
+        status_report = 1
+
+        logging.info("[Client command] Request status report")
+        
+        return 1, globals().keys(), globals().values()
 
     def exposed_Terminate(self, remoteCommand):
         global client_que

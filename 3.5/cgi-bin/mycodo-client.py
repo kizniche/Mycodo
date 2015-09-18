@@ -68,7 +68,7 @@ def usage():
     print '        --sqlreload relay'
     print '           Reload the SQLite database, initialize GPIO of relay if relay != -1'
     print '    -s, --status'
-    print '           Return the status of the server'
+    print '           Return the status of the daemon and all global variables'
     print '    -t, --terminate'
     print '           Terminate the communication service and daemon'
 
@@ -211,12 +211,19 @@ def menu():
                     print "Fail"
             sys.exit(0)
         elif opt in ("-s", "--status"):
-            print "%s [Remote command] Request Status Report: Server returned:" % (
+            print "%s [Remote command] Request Status Report: Daemon is active:" % (
                 Timestamp()),
-            output = c.root.Status(1)
-            if output[:1] == '1': print "Success"
-            else: print "Fail"
-            print output
+            output, names, values = c.root.Status(1)
+            if output == 1:
+                print "Yes"
+                print "Parsing global variables..."
+            else:
+                print "No"
+
+            padding = 36
+            for nam, val in zip(names, values):
+                print "%s %s" % (nam.ljust(padding), val)
+
             sys.exit(0)
         elif opt in ("-t", "--terminate"):
             print "%s [Remote command] Terminate all threads and daemon: Server returned:" % (
