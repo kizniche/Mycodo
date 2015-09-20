@@ -4,6 +4,7 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 ## Index
 
++ [Screenshots](#screenshots)
 + [Changelog](#changelog)
 + [Development](#Development)
 + [New Dependencies](#new-dependencies)
@@ -26,6 +27,11 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
   + [Discrete PID Control](#discrete-pid-control)
 + [License](#license)
 + [Useful Links](#useful-links)
+
+## Screenshots
+
+| Graph<br><a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Graph.png" target="_blank">![Graph](http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Graph-150x150.png)</a> | Sensor<br><a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Sensor.png" target="_blank">![Sensor](http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Sensor-150x150.png)</a> | Custom<br><a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Custom.png" target="_blank">![Custom](http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Custom-150x150.png)</a> |
+| Camera<br><a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Camera.png" target="_blank">![Camera](http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Camera-150x150.png)</a> | Data<br><a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Data.png" target="_blank">![Data](http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Data-150x150.png)</a> | Settings<br><a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Settings.png" target="_blank">![Settings](http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Settings-150x150.png)</a> |
 
 ## Changelog
 
