@@ -66,7 +66,7 @@ while ($row = $results->fetchArray()) {
     $conditional_relay_doaction[$i] = $row[7];
     $conditional_relay_doduration[$i] = $row[8];
     $conditional_relay_sel_command[$i] = $row[9];
-    $conditional_relay_command[$i] = $row[10];
+    $conditional_relay_command[$i] = str_replace("''","'",$row[10]);
     $conditional_relay_sel_notify[$i] = $row[11];
     $conditional_relay_notify[$i] = $row[12];
     $i++;
@@ -285,7 +285,7 @@ for ($n = 0; $n < count($sensor_t_id); $n++) {
         $conditional_t_relay_state[$n][$i] = $row[9];
         $conditional_t_relay_seconds_on[$n][$i] = $row[10];
         $conditional_t_sel_command[$n][$i] = $row[11];
-        $conditional_t_command[$n][$i] = $row[12];
+        $conditional_t_command[$n][$i] = str_replace("''","'",$row[12]);
         $conditional_t_sel_notify[$n][$i] = $row[13];
         $conditional_t_notify[$n][$i] = $row[14];
         $i++;
@@ -310,7 +310,7 @@ for ($n = 0; $n < count($sensor_ht_id); $n++) {
         $conditional_ht_relay_state[$n][$i] = $row[10];
         $conditional_ht_relay_seconds_on[$n][$i] = $row[11];
         $conditional_ht_sel_command[$n][$i] = $row[12];
-        $conditional_ht_command[$n][$i] = $row[13];
+        $conditional_ht_command[$n][$i] = str_replace("''","'",$row[13]);
         $conditional_ht_sel_notify[$n][$i] = $row[14];
         $conditional_ht_notify[$n][$i] = $row[15];
         $i++;
@@ -334,7 +334,7 @@ for ($n = 0; $n < count($sensor_co2_id); $n++) {
         $conditional_co2_relay_state[$n][$i] = $row[9];
         $conditional_co2_relay_seconds_on[$n][$i] = $row[10];
         $conditional_co2_sel_command[$n][$i] = $row[11];
-        $conditional_co2_command[$n][$i] = $row[12];
+        $conditional_co2_command[$n][$i] = str_replace("''","'",$row[12]);
         $conditional_co2_sel_notify[$n][$i] = $row[13];
         $conditional_co2_notify[$n][$i] = $row[14];
         $i++;
@@ -359,7 +359,7 @@ for ($n = 0; $n < count($sensor_press_id); $n++) {
         $conditional_press_relay_state[$n][$i] = $row[10];
         $conditional_press_relay_seconds_on[$n][$i] = $row[11];
         $conditional_press_sel_command[$n][$i] = $row[12];
-        $conditional_press_command[$n][$i] = $row[13];
+        $conditional_press_command[$n][$i] = str_replace("''","'",$row[13]);
         $conditional_press_sel_notify[$n][$i] = $row[14];
         $conditional_press_notify[$n][$i] = $row[15];
         $i++;

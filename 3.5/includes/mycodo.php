@@ -851,7 +851,7 @@ if (isset($output_error)) {
                         <td>Log</td>
                         <td>Graph</td>
                         <td style="padding: 0.2 0.5em;">
-                            Presets: <select style="width: 9em;" name="sensort<?php echo $i; ?>preset">
+                            Presets: <select style="width: 7em;" name="sensort<?php echo $i; ?>preset">
                                 <option value="default">default</option>
                                 <?php
                                 for ($z = 0; $z < count($sensor_t_preset); $z++) {
@@ -907,10 +907,10 @@ if (isset($output_error)) {
                         </td>
                         <td>
                             <div style="padding: 0.2em 0">
-                                <input type="submit" name="Change<?php echo $i; ?>TSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>TSensorOverwrite" value="Save/Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>TSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_t_preset) == 0) echo ' disabled'; ?>>
+                                <input type="submit" name="Change<?php echo $i; ?>TSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>TSensorOverwrite" value="Save" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>TSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_t_preset) == 0) echo ' disabled'; ?>>
                             </div>
                             <div style="padding: 0.2em 0">
-                                <input style="width: 7em;" type="text" value="" maxlength=12 size=10 name="sensort<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>TSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>TSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
+                                <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensort<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>TSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>TSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
                             </div>
                         </td>
                     </tr>
@@ -1076,7 +1076,7 @@ if (isset($output_error)) {
                                 echo '<option value="' . ($n+1) . '">' . ($n+1) . '</option>';
                                 } ?>
                             </select>
-                            <select style="width: 4em;" name="conditiont<?php echo $i; ?>relaystate">
+                            <select style="width: 3em;" name="conditiont<?php echo $i; ?>relaystate">
                                 <option value="1">On</option>
                                 <option value="0">Off</option>
                             </select>
@@ -1204,7 +1204,7 @@ if (isset($output_error)) {
                         <td>Log</td>
                         <td>Graph</td>
                         <td style="padding: 0.2 0.5em;">
-                            Presets: <select style="width: 9em;" name="sensorht<?php echo $i; ?>preset">
+                            Presets: <select style="width: 7em;" name="sensorht<?php echo $i; ?>preset">
                                 <option value="default">default</option>
                                 <?php
                                 for ($z = 0; $z < count($sensor_ht_preset); $z++) {
@@ -1261,10 +1261,10 @@ if (isset($output_error)) {
                         </td>
                         <td>
                             <div style="padding: 0.2em 0">
-                                <input type="submit" name="Change<?php echo $i; ?>HTSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>HTSensorOverwrite" value="Save/Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>HTSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>>
+                                <input type="submit" name="Change<?php echo $i; ?>HTSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>HTSensorOverwrite" value="Save" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>HTSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_ht_preset) == 0) echo ' disabled'; ?>>
                             </div>
                             <div style="padding: 0.2em 0">
-                                <input style="width: 7em;" type="text" value="" maxlength=12 size=10 name="sensorht<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>HTSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>HTSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
+                                <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensorht<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>HTSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>HTSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
                             </div>
                         </td>
                     </tr>
@@ -1517,7 +1517,7 @@ if (isset($output_error)) {
                                 echo '<option value="' . ($n+1) . '">' . ($n+1) . '</option>';
                                 } ?>
                             </select>
-                            <select style="width: 4em;" name="conditionht<?php echo $i; ?>relaystate">
+                            <select style="width: 3em;" name="conditionht<?php echo $i; ?>relaystate">
                                 <option value="1">On</option>
                                 <option value="0">Off</option>
                             </select>
@@ -1654,7 +1654,7 @@ if (isset($output_error)) {
                         <td>Log</td>
                         <td>Graph</td>
                         <td style="padding: 0.2 0.5em;">
-                            Presets: <select style="width: 9em;" name="sensorco2<?php echo $i; ?>preset">
+                            Presets: <select style="width: 7em;" name="sensorco2<?php echo $i; ?>preset">
                                 <option value="default">default</option>
                                 <?php
                                 for ($z = 0; $z < count($sensor_co2_preset); $z++) {
@@ -1713,10 +1713,10 @@ if (isset($output_error)) {
                         </td>
                         <td>
                             <div style="padding: 0.2em 0">
-                                <input type="submit" name="Change<?php echo $i; ?>CO2SensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_co2_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>CO2SensorOverwrite" value="Save/Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>CO2SensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_co2_preset) == 0) echo ' disabled'; ?>>
+                                <input type="submit" name="Change<?php echo $i; ?>CO2SensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_co2_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>CO2SensorOverwrite" value="Save" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>CO2SensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_co2_preset) == 0) echo ' disabled'; ?>>
                             </div>
                             <div style="padding: 0.2em 0">
-                                <input style="width: 7em;" type="text" value="" maxlength=12 size=10 name="sensorco2<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>CO2SensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>CO2SensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
+                                <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensorco2<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>CO2SensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>CO2SensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
                             </div>
                         </td>
                     </tr>
@@ -1885,7 +1885,7 @@ if (isset($output_error)) {
                                 echo '<option value="' . ($n+1) . '">' . ($n+1) . '</option>';
                                 } ?>
                             </select>
-                            <select style="width: 4em;" name="conditionco2<?php echo $i; ?>relaystate">
+                            <select style="width: 3em;" name="conditionco2<?php echo $i; ?>relaystate">
                                 <option value="1">On</option>
                                 <option value="0">Off</option>
                             </select>
@@ -2019,7 +2019,7 @@ if (isset($output_error)) {
                         <td>Log</td>
                         <td>Graph</td>
                         <td style="padding: 0.2 0.5em;">
-                            Presets: <select style="width: 9em;" name="sensorpress<?php echo $i; ?>preset">
+                            Presets: <select style="width: 7em;" name="sensorpress<?php echo $i; ?>preset">
                                 <option value="default">default</option>
                                 <?php
                                 for ($z = 0; $z < count($sensor_press_preset); $z++) {
@@ -2078,10 +2078,10 @@ if (isset($output_error)) {
                         </td>
                         <td>
                             <div style="padding: 0.2em 0">
-                                <input type="submit" name="Change<?php echo $i; ?>PressSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_press_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>PressSensorOverwrite" value="Save/Overwrite" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>PressSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_press_preset) == 0) echo ' disabled'; ?>>
+                                <input type="submit" name="Change<?php echo $i; ?>PressSensorLoad" value="Load" title="Load the selected preset Sensor and PID values"<?php if (count($sensor_press_preset) == 0) echo ' disabled'; ?>> <input type="submit" name="Change<?php echo $i; ?>PressSensorOverwrite" value="Save" title="Overwrite the selected saved preset (or default) sensor and PID values with those that are currently populated"> <input type="submit" name="Change<?php echo $i; ?>PressSensorDelete" value="Delete" title="Delete the selected preset"<?php if (count($sensor_press_preset) == 0) echo ' disabled'; ?>>
                             </div>
                             <div style="padding: 0.2em 0">
-                                <input style="width: 7em;" type="text" value="" maxlength=12 size=10 name="sensorpress<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>PressSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>PressSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
+                                <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensorpress<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>PressSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>PressSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
                             </div>
                         </td>
                     </tr>
@@ -2197,7 +2197,7 @@ if (isset($output_error)) {
                             ?>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_temp_set[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>TempSet" title="This is the desired temperature in °C."/> °C
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_temp_set[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>TempSet" title="This is the desired temperature in °C."/> °C&nbsp;&nbsp;
                         </td>
                         <td>
                             <select style="width: 5em;" name="SetPress<?php echo $i; ?>TempSetDir" title="Which direction should the PID regulate. 'Up' will ensure the temperature is regulated above a certain temperature. 'Down' will ensure the temperature is regulates below a certain point. 'Both' will ensure the temperature is regulated both up and down to maintain a specific temperature."/>
@@ -2254,7 +2254,7 @@ if (isset($output_error)) {
                             ?>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_press_set[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>PressSet" title="This is the desired relative pressure in percent."/> Pa
+                            <input style="width: 4em;" type="number" step="any" value="<?php echo $pid_press_press_set[$i]; ?>" maxlength=4 size=2 name="SetPress<?php echo $i; ?>PressSet" title="This is the desired relative pressure in percent."/> kPa
                         </td>
                         <td>
                             <select style="width: 5em;" name="SetPress<?php echo $i; ?>PressSetDir" title="Which direction should the PID regulate. 'Up' will ensure the pressure is regulated above a certain pressure. 'Down' will ensure the pressure is regulates below a certain point. 'Both' will ensure the pressure is regulated both up and down to maintain a specific pressure."/>
@@ -2334,7 +2334,7 @@ if (isset($output_error)) {
                                 echo '<option value="' . ($n+1) . '">' . ($n+1) . '</option>';
                                 } ?>
                             </select>
-                            <select style="width: 4em;" name="conditionpress<?php echo $i; ?>relaystate">
+                            <select style="width: 3em;" name="conditionpress<?php echo $i; ?>relaystate">
                                 <option value="1">On</option>
                                 <option value="0">Off</option>
                             </select>
@@ -3326,6 +3326,7 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     </form>
+
                     <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
@@ -3370,6 +3371,76 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     </form>
+
+                    <form method="post" action="?tab=settings">
+                    <tr>
+                        <td class="setting-title">
+                            Email Notification
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            SMTP Host
+                        </td>
+                        <td class="setting-value">
+                            <input class="smtp" type="text" value="<?php echo $smtp_host; ?>" maxlength=30 size=20 name="smtp_host" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            SMTP Port
+                        </td>
+                        <td class="setting-value">
+                            <input class="smtp" type="number" value="<?php echo $smtp_port; ?>" maxlength=30 size=20 name="smtp_port" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            User
+                        </td>
+                        <td class="setting-value">
+                            <input class="smtp" type="text" value="<?php echo $smtp_user; ?>" maxlength=30 size=20 name="smtp_user" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Password
+                        </td>
+                        <td class="setting-value">
+                            <input class="smtp" type="password" value="<?php echo $smtp_pass; ?>" maxlength=30 size=20 name="smtp_pass" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            From
+                        </td>
+                        <td class="setting-value">
+                            <input class="smtp" type="text" value="<?php echo $smtp_email_from; ?>" maxlength=30 size=20 name="smtp_email_from" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Daily Max (The maximum number of notifications that can be sent in a single day)
+                        </td>
+                        <td class="setting-value">
+                            <input class="smtp" type="number" step="1" value="<?php echo $smtp_daily_max; ?>" maxlength=2 size=20 name="smtp_daily_max" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Wait Time (seconds) (How long to wait between sending the same notification)
+                        </td>
+                        <td class="setting-value">
+                            <input class="smtp" type="number" step="1" value="<?php echo $smtp_wait_time; ?>" maxlength=6 size=20 name="smtp_wait_time" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-save">
+                            <input type="submit" name="ChangeNotify" value="Save">
+                        </td>
+                    </tr>
+                    </form>
+
                     <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
@@ -3430,6 +3501,7 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     </form>
+
                     <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
@@ -3474,6 +3546,7 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     </form>
+
                     <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
@@ -3570,74 +3643,7 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     </form>
-                    <form method="post" action="?tab=settings">
-                    <tr>
-                        <td class="setting-title">
-                            Email Notification
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            SMTP Host
-                        </td>
-                        <td class="setting-value">
-                            <input class="smtp" type="text" value="<?php echo $smtp_host; ?>" maxlength=30 size=20 name="smtp_host" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            SMTP Port
-                        </td>
-                        <td class="setting-value">
-                            <input class="smtp" type="number" value="<?php echo $smtp_port; ?>" maxlength=30 size=20 name="smtp_port" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            User
-                        </td>
-                        <td class="setting-value">
-                            <input class="smtp" type="text" value="<?php echo $smtp_user; ?>" maxlength=30 size=20 name="smtp_user" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Password
-                        </td>
-                        <td class="setting-value">
-                            <input class="smtp" type="password" value="<?php echo $smtp_pass; ?>" maxlength=30 size=20 name="smtp_pass" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            From
-                        </td>
-                        <td class="setting-value">
-                            <input class="smtp" type="text" value="<?php echo $smtp_email_from; ?>" maxlength=30 size=20 name="smtp_email_from" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Daily Max (The maximum number of notifications that can be sent in a single day)
-                        </td>
-                        <td class="setting-value">
-                            <input class="smtp" type="number" step="1" value="<?php echo $smtp_daily_max; ?>" maxlength=2 size=20 name="smtp_daily_max" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Wait Time (seconds) (How long to wait between sending the same notification)
-                        </td>
-                        <td class="setting-value">
-                            <input class="smtp" type="number" step="1" value="<?php echo $smtp_wait_time; ?>" maxlength=6 size=20 name="smtp_wait_time" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-save">
-                            <input type="submit" name="ChangeNotify" value="Save">
-                        </td>
-                    </tr>
-                    </form>
+
                     <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
