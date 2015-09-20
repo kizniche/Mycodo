@@ -732,10 +732,10 @@ def daemon(output, log):
                                 if conditional_t_sel_notify[j][k][0]:
                                     if (conditional_t_direction[j][k][0] == 1 and
                                             sensor_t_read_temp_c[j] > conditional_t_setpoint[j][k][0]):
-                                        message = "Notification: T Sensor %s (%s), Conditional %s (%s), Temperature: %s°C > %s°C." % (j+1, sensor_t_name[j], k+1, conditional_t_name[j][k][0], round(sensor_t_read_temp_c[j], 2), conditional_t_setpoint[j][k][0])
+                                        message = "Conditional %s (%s) T Sensor %s (%s) Temperature: %s°C > %s°C." % (j+1, sensor_t_name[j], k+1, conditional_t_name[j][k][0], round(sensor_t_read_temp_c[j], 2), conditional_t_setpoint[j][k][0])
                                     if (conditional_t_direction[j][k][0] == -1 and
                                             sensor_t_read_temp_c[j] < conditional_t_setpoint[j][k][0]):
-                                        message = "Notification: T Sensor %s (%s), Conditional %s (%s), Temperature: %s°C < %s°C." % (j+1, sensor_t_name[j], k+1, conditional_t_name[j][k][0], round(sensor_t_read_temp_c[j], 2), conditional_t_setpoint[j][k][0])
+                                        message = "Conditional %s (%s) T Sensor %s (%s) Temperature: %s°C < %s°C." % (j+1, sensor_t_name[j], k+1, conditional_t_name[j][k][0], round(sensor_t_read_temp_c[j], 2), conditional_t_setpoint[j][k][0])
 
                                     email(conditional_t_do_notify[j][k][0], message)
 
@@ -789,19 +789,19 @@ def daemon(output, log):
                                     if (conditional_ht_condition[j][k][0] == "Temperature" and
                                             conditional_ht_direction[j][k][0] == 1 and
                                             sensor_ht_read_temp_c[j] > conditional_ht_setpoint[j][k][0]):
-                                        message = "Notification: HT Sensor %s (%s), Conditional %s (%s), Temperature: %s°C > %s°C." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_temp_c[j], 2), conditional_ht_setpoint[j][k][0])
+                                        message = "Conditional %s (%s) HT Sensor %s (%s) Temperature: %s°C > %s°C." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_temp_c[j], 2), conditional_ht_setpoint[j][k][0])
                                     if (conditional_ht_condition[j][k][0] == "Temperature" and
                                             conditional_ht_direction[j][k][0] == -1 and
                                             sensor_ht_read_temp_c[j] < conditional_ht_setpoint[j][k][0]):
-                                        message = "Notification: HT Sensor %s (%s), Conditional %s (%s), Temperature: %s°C < %s°C." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_temp_c[j], 1), conditional_ht_setpoint[j][k][0])
+                                        message = "Conditional %s (%s) HT Sensor %s (%s) Temperature: %s°C < %s°C." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_temp_c[j], 1), conditional_ht_setpoint[j][k][0])
                                     if (conditional_ht_condition[j][k][0] == "Humidity" and
                                             conditional_ht_direction[j][k][0] == 1 and
                                             sensor_ht_read_hum[j] > conditional_ht_setpoint[j][k][0]):
-                                        message = "Notification: HT Sensor %s (%s), Conditional %s (%s), Humidity: %s%% > %s%%." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_hum[j], 2), conditional_ht_setpoint[j][k][0])
+                                        message = "Conditional %s (%s) HT Sensor %s (%s) Humidity: %s%% > %s%%." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_hum[j], 2), conditional_ht_setpoint[j][k][0])
                                     if (conditional_ht_condition[j][k][0] == "Humidity" and
                                             conditional_ht_direction[j][k][0] == -1 and
                                             sensor_ht_read_hum[j] < conditional_ht_setpoint[j][k][0]):
-                                        message = "Notification: HT Sensor %s (%s), Conditional %s (%s), Humidity: %s%% < %s%%." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_hum[j], 2), conditional_ht_setpoint[j][k][0])
+                                        message = "Conditional %s (%s) HT Sensor %s (%s) Humidity: %s%% < %s%%." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_hum[j], 2), conditional_ht_setpoint[j][k][0])
                                     
                                     email(conditional_ht_do_notify[j][k][0], message)
 
@@ -845,10 +845,10 @@ def daemon(output, log):
                                 if conditional_co2_sel_notify[j][k][0]:
                                     if (conditional_co2_direction[j][k][0] == 1 and
                                             sensor_co2_read_co2[j] > conditional_co2_setpoint[j][k][0]):
-                                        message = "Notification: CO2 Sensor %s (%s), Conditional %s (%s), CO2: %s ppmv > %s ppmv." % (j+1, sensor_co2_name[j], k+1, conditional_co2_name[j][k][0], sensor_co2_read_co2[j], conditional_co2_setpoint[j][k][0])
+                                        message = "Conditional %s (%s) CO2 Sensor %s (%s) CO2: %s ppmv > %s ppmv." % (j+1, sensor_co2_name[j], k+1, conditional_co2_name[j][k][0], sensor_co2_read_co2[j], conditional_co2_setpoint[j][k][0])
                                     if (conditional_co2_direction[j][k][0] == -1 and
                                             sensor_co2_read_co2[j] < conditional_co2_setpoint[j][k][0]):
-                                        message = "Notification: CO2 Sensor %s (%s), Conditional %s (%s), CO2: %s ppmv < %s ppmv." % (j+1, sensor_co2_name[j], k+1, conditional_co2_name[j][k][0], sensor_co2_read_co2[j], conditional_co2_setpoint[j][k][0])
+                                        message = "Conditional %s (%s) CO2 Sensor %s (%s) CO2: %s ppmv < %s ppmv." % (j+1, sensor_co2_name[j], k+1, conditional_co2_name[j][k][0], sensor_co2_read_co2[j], conditional_co2_setpoint[j][k][0])
 
                                     email(conditional_co2_do_notify[j][k][0], message)
 
@@ -902,19 +902,19 @@ def daemon(output, log):
                                     if (conditional_press_condition[j][k][0] == "Pressure" and
                                     conditional_press_direction[j][k][0] == 1 and
                                     sensor_press_read_press[j] > conditional_press_setpoint[j][k][0]):
-                                        message = "Notification: Press Sensor %s (%s), Conditional %s (%s), Pressure: %s kPa > %s kPa." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_press[j], conditional_press_setpoint[j][k][0])
+                                        message = "Conditional %s (%s) Press Sensor %s (%s): Pressure: %s kPa > %s kPa." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_press[j], conditional_press_setpoint[j][k][0])
                                     if (conditional_press_condition[j][k][0] == "Pressure" and
                                     conditional_press_direction[j][k][0] == -1 and
                                     sensor_press_read_press[j] < conditional_press_setpoint[j][k][0]):
-                                        message = "Notification: Press Sensor %s (%s), Conditional %s (%s), Pressure: %s kPa < %s kPa." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_press[j], conditional_press_setpoint[j][k][0])
+                                        message = "Conditional %s (%s) Press Sensor %s (%s): Pressure: %s kPa < %s kPa." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_press[j], conditional_press_setpoint[j][k][0])
                                     if (conditional_press_condition[j][k][0] == "Temperature" and
                                     conditional_press_direction[j][k][0] == 1 and
                                     sensor_press_read_temp_c[j] > conditional_press_setpoint[j][k][0]):
-                                        message = "Notification: Press Sensor %s (%s), Conditional %s (%s), Temperature: %s°C > %s°C." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_temp_c[j], conditional_press_setpoint[j][k][0])
+                                        message = "Conditional %s (%s) Press Sensor %s (%s): Temperature: %s°C > %s°C." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_temp_c[j], conditional_press_setpoint[j][k][0])
                                     if (conditional_press_condition[j][k][0] == "Temperature" and
                                     conditional_press_direction[j][k][0] == -1 and
                                     sensor_press_read_temp_c[j] < conditional_press_setpoint[j][k][0]):
-                                        message = "Notification: Press Sensor %s (%s), Conditional %s (%s), Temperature: %s°C < %s°C." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_temp_c[j], conditional_press_setpoint[j][k][0])
+                                        message = "Conditional %s (%s) Press Sensor %s (%s): Temperature: %s°C < %s°C." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_temp_c[j], conditional_press_setpoint[j][k][0])
                                     
                                     email(conditional_press_do_notify[j][k][0], message)
                                     
@@ -3522,9 +3522,9 @@ def relay_onoff(relay, state):
                     pass # conditional_relay_do_command
                 if conditional_relay_sel_notify[i]:
                     if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
-                        message = "Notification: Relay %s turned %s for %s seconds." % (relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
+                        message = "Relay Conditional %s (%s): Relay %s turned %s for %s seconds." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
                     else:
-                        message = "Notification: Relay %s turned %s." % (relay, conditional_relay_doaction[i])
+                        message = "Relay Conditional %s (%s): Relay %s turned %s." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i])
                     email(conditional_relay_do_notify[i], message)
 
         elif state == 'off':
@@ -3540,9 +3540,9 @@ def relay_onoff(relay, state):
                     pass # conditional_relay_do_command
                 if conditional_relay_sel_notify[i]:
                     if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
-                        message = "Notification: Relay %s turned %s for %s seconds." % (relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
+                        message = "Relay Conditional %s (%s): Relay %s turned %s for %s seconds." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
                     else:
-                        message = "Notification: Relay %s turned %s." % (relay, conditional_relay_doaction[i])
+                        message = "Relay Conditional %s (%s): Relay %s turned %s." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i])
                     email(conditional_relay_do_notify[i], message)
 
 
@@ -3598,9 +3598,9 @@ def relay_on_duration(relay, seconds, sensor):
                         pass # conditional_relay_do_command
                     if conditional_relay_sel_notify[i]:    
                         if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
-                            message = "Notification: Relay %s turned %s for %s seconds." % (relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
+                            message = "Relay Conditional %s (%s): Relay %s turned %s for %s seconds." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
                         else:
-                            message = "Notification: Relay %s turned %s." % (relay, conditional_relay_doaction[i])
+                            message = "Relay Conditional %s (%s): Relay %s turned %s." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i])
                         email(conditional_relay_do_notify[i], message)
 
                 elif conditional_relay_ifduration[i] == 0:
@@ -3610,9 +3610,9 @@ def relay_on_duration(relay, seconds, sensor):
                         pass # conditional_relay_do_command
                     if conditional_relay_sel_notify[i]:
                         if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
-                            message = "Notification: Relay %s turned %s for %s seconds." % (relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
+                            message = "Relay Conditional %s (%s): Relay %s turned %s for %s seconds." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
                         else:
-                            message = "Notification: Relay %s turned %s." % (relay, conditional_relay_doaction[i])
+                            message = "Relay Conditional %s (%s): Relay %s turned %s." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i])
                         email(conditional_relay_do_notify[i], message)
 
         return 1
@@ -3650,9 +3650,9 @@ def relay_on_duration(relay, seconds, sensor):
                     pass # conditional_relay_do_command
                 if conditional_relay_sel_notify[i]:
                     if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
-                        message = "Notification: Relay %s turned %s for %s seconds." % (relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
+                        message = "Relay Conditional %s (%s): Relay %s turned %s for %s seconds." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
                     else:
-                        message = "Notification: Relay %s turned %s." % (relay, conditional_relay_doaction[i])
+                        message = "Relay Conditional %s (%s): Relay %s turned %s." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i])
                     email(conditional_relay_do_notify[i], message)
 
             elif conditional_relay_ifduration[i] == 0:
@@ -3662,9 +3662,9 @@ def relay_on_duration(relay, seconds, sensor):
                     pass # conditional_relay_do_command
                 if conditional_relay_sel_notify[i]:
                     if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
-                        message = "Notification: Relay %s turned %s for %s seconds." % (relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
+                        message = "Relay Conditional %s (%s): Relay %s turned %s for %s seconds." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
                     else:
-                        message = "Notification: Relay %s turned %s." % (relay, conditional_relay_doaction[i])
+                        message = "Relay Conditional %s (%s): Relay %s turned %s." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i])
                     email(conditional_relay_do_notify[i], message)
 
     while (client_que != 'TerminateServer' and on_duration_timer[relay-1] > int(time.time())):
@@ -3703,9 +3703,9 @@ def relay_on_duration(relay, seconds, sensor):
                 pass # conditional_relay_do_command
             if conditional_relay_sel_notify[i]:
                 if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
-                    message = "Notification: Relay %s turned %s for %s seconds." % (relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
+                    message = "Relay Conditional %s (%s): Relay %s turned %s for %s seconds." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
                 else:
-                    message = "Notification: Relay %s turned %s." % (relay, conditional_relay_doaction[i])
+                    message = "Relay Conditional %s (%s): Relay %s turned %s." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i])
                 email(conditional_relay_do_notify[i], message)
 
         elif conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'off' and conditional_relay_doaction[i] == 'on':
@@ -3715,9 +3715,9 @@ def relay_on_duration(relay, seconds, sensor):
                 pass # conditional_relay_do_command
             if conditional_relay_sel_notify[i]:
                 if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
-                    message = "Notification: Relay %s turned %s for %s seconds." % (relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
+                    message = "Relay Conditional %s (%s): Relay %s turned %s for %s seconds." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
                 else:
-                    message = "Notification: Relay %s turned %s." % (relay, conditional_relay_doaction[i])
+                    message = "Relay Conditional %s (%s): Relay %s turned %s." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i])
                 email(conditional_relay_do_notify[i], message)
 
     logging.debug("[Relay Duration] Relay %s (%s) Off (was On for %s seconds)",
@@ -3748,7 +3748,7 @@ def email(email_to, message):
     # message = "Critical warning!"
 
     msg = MIMEText(message)
-    msg['Subject'] = "Mycodo Notification (%s)" % socket.gethostname()
+    msg['Subject'] = "Mycodo Notification (%s)" % socket.getfqdn()
     msg['From'] = smtp_email_from
     msg['To'] = email_to
     server.sendmail(msg['From'], email_to, msg.as_string())
