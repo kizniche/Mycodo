@@ -33,13 +33,13 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 <table>
   <tr>
     <td>
-      Graph <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Graph.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Graph-150x150.png"></a>
+      Graph<br><a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Graph.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Graph-150x150.png"></a>
     </td>
     <td>
-      Sensor <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Sensor.png" target="_blank">![Sensor](http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Sensor-150x150.png)</a>
+      Sensor<br><a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Sensor.png" target="_blank"><img arc="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Sensor-150x150.png"></a>
     </td>
     <td>
-      Custom <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Custom.png" target="_blank">![Custom](http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Custom-150x150.png)</a>
+      Custom<br><a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Custom.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Custom-150x150.png"></a>
     </td>
   </tr>
   <tr>
