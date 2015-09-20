@@ -3848,6 +3848,7 @@ def main():
             logging.warning("Lock file present: %s. Delete it or run 'sudo service mycodo restart'", runlock.path)
             error = "Error: Lock file present: %s" % runlock.path
             print error
+            usage()
             sys.exit(error)
 
     read_sql()
