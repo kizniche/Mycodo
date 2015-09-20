@@ -26,7 +26,7 @@
 sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
 sql_database_user = '/var/www/mycodo/config/users.db'
 
-db_version_mycodo = 9
+db_version_mycodo = 10
 db_version_user = 1
 
 import getopt
@@ -185,7 +185,16 @@ def password_change(db):
 
 
 def setup_db(update):
+    global current_db_version_mycodo
+
+    conn = sqlite3.connect(sql_database_mycodo)
+    cur = conn.cursor()
+    cur.execute("PRAGMA user_version;")
+    for row in cur:
+        current_db_version_mycodo = row[0]
+
     if update == 'update':
+        mycodo_database_pre_update() # Any commands that need to be ran before the update
         mycodo_database_create()
         mycodo_database_update()
         user_database_update()
@@ -202,21 +211,22 @@ def setup_db(update):
             create_all_tables_user()
             create_rows_columns_user()
 
+def mycodo_database_pre_update():
+    print "Running pre-update checks..."
+
+    # Version 10 updates: add more conditionals (exec and notify)
+    # Need to remove column, but SQLite doesn't support DROP COLUMN
+    if current_db_version_mycodo < 10:
+        DelTable(sql_database_mycodo, 'SMTP')
 
 def mycodo_database_update():
-    conn = sqlite3.connect(sql_database_mycodo)
-    cur = conn.cursor()
-    cur.execute("PRAGMA user_version;")
-    for row in cur:
-        current_db_version_mycodo = row[0]
-
     if db_version_mycodo == current_db_version_mycodo:
         print "Mycodo database is already up to date."
     else:
         # Update Mycodo database version
         print "Current Mycodo database version: %d" % current_db_version_mycodo
         print "Latest Mycodo database version: %d" % db_version_mycodo
-        print "Updating Mycodo database"
+        print "Updating Mycodo database..."
         conn = sqlite3.connect(sql_database_mycodo)
         cur = conn.cursor()
         cur.execute("PRAGMA user_version = %s;" % db_version_mycodo)
@@ -313,6 +323,14 @@ def mycodo_database_update():
         ModNullValue(sql_database_mycodo, 'Misc', 'Enable_Max_Amps', 1)
         ModNullValue(sql_database_mycodo, 'Misc', 'Max_Amps', 15)
 
+        # Version 10 updates: add more conditionals (exec and notify)
+        if current_db_version_mycodo < 10:
+            ModNullValue(sql_database_mycodo, 'RelayConditional', 'Sel_Relay', 1)
+            ModNullValue(sql_database_mycodo, 'TSensorConditional', 'Sel_Relay', 1)
+            ModNullValue(sql_database_mycodo, 'HTSensorConditional', 'Sel_Relay', 1)
+            ModNullValue(sql_database_mycodo, 'CO2SensorConditional', 'Sel_Relay', 1)
+            ModNullValue(sql_database_mycodo, 'PressSensorConditional', 'Sel_Relay', 1)
+
         # any extra commands for version X
         #if current_db_version_mycodo < X:
         #    pass
@@ -353,9 +371,14 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'RelayConditional', 'If_Relay', 'INT')
     AddColumn(sql_database_mycodo, 'RelayConditional', 'If_Action', 'TEXT')
     AddColumn(sql_database_mycodo, 'RelayConditional', 'If_Duration', 'REAL')
+    AddColumn(sql_database_mycodo, 'RelayConditional', 'Sel_Relay', 'INT')
     AddColumn(sql_database_mycodo, 'RelayConditional', 'Do_Relay', 'INT')
     AddColumn(sql_database_mycodo, 'RelayConditional', 'Do_Action', 'TEXT')
     AddColumn(sql_database_mycodo, 'RelayConditional', 'Do_Duration', 'REAL')
+    AddColumn(sql_database_mycodo, 'RelayConditional', 'Sel_Command', 'INT')
+    AddColumn(sql_database_mycodo, 'RelayConditional', 'Do_Command', 'TEXT')
+    AddColumn(sql_database_mycodo, 'RelayConditional', 'Sel_Notify', 'INT')
+    AddColumn(sql_database_mycodo, 'RelayConditional', 'Do_Notify', 'TEXT')
 
     AddTable(sql_database_mycodo, 'TSensor')
     AddColumn(sql_database_mycodo, 'TSensor', 'Name', 'TEXT')
@@ -425,9 +448,14 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'TSensorConditional', 'Direction', 'INT')
     AddColumn(sql_database_mycodo, 'TSensorConditional', 'Setpoint', 'REAL')
     AddColumn(sql_database_mycodo, 'TSensorConditional', 'Period', 'INT')
+    AddColumn(sql_database_mycodo, 'TSensorConditional', 'Sel_Relay', 'INT')
     AddColumn(sql_database_mycodo, 'TSensorConditional', 'Relay', 'INT')
     AddColumn(sql_database_mycodo, 'TSensorConditional', 'Relay_State', 'INT')
     AddColumn(sql_database_mycodo, 'TSensorConditional', 'Relay_Seconds_On', 'INT')
+    AddColumn(sql_database_mycodo, 'TSensorConditional', 'Sel_Command', 'INT')
+    AddColumn(sql_database_mycodo, 'TSensorConditional', 'Do_Command', 'TEXT')
+    AddColumn(sql_database_mycodo, 'TSensorConditional', 'Sel_Notify', 'INT')
+    AddColumn(sql_database_mycodo, 'TSensorConditional', 'Do_Notify', 'TEXT')
 
     AddTable(sql_database_mycodo, 'HTSensor')
     AddColumn(sql_database_mycodo, 'HTSensor', 'Name', 'TEXT')
@@ -531,9 +559,14 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'HTSensorConditional', 'Direction', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensorConditional', 'Setpoint', 'REAL')
     AddColumn(sql_database_mycodo, 'HTSensorConditional', 'Period', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensorConditional', 'Sel_Relay', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensorConditional', 'Relay', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensorConditional', 'Relay_State', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensorConditional', 'Relay_Seconds_On', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensorConditional', 'Sel_Command', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensorConditional', 'Do_Command', 'TEXT')
+    AddColumn(sql_database_mycodo, 'HTSensorConditional', 'Sel_Notify', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensorConditional', 'Do_Notify', 'TEXT')
 
     AddTable(sql_database_mycodo, 'CO2Sensor')
     AddColumn(sql_database_mycodo, 'CO2Sensor', 'Name', 'TEXT')
@@ -603,9 +636,14 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'CO2SensorConditional', 'Direction', 'INT')
     AddColumn(sql_database_mycodo, 'CO2SensorConditional', 'Setpoint', 'REAL')
     AddColumn(sql_database_mycodo, 'CO2SensorConditional', 'Period', 'INT')
+    AddColumn(sql_database_mycodo, 'CO2SensorConditional', 'Sel_Relay', 'INT')
     AddColumn(sql_database_mycodo, 'CO2SensorConditional', 'Relay', 'INT')
     AddColumn(sql_database_mycodo, 'CO2SensorConditional', 'Relay_State', 'INT')
     AddColumn(sql_database_mycodo, 'CO2SensorConditional', 'Relay_Seconds_On', 'INT')
+    AddColumn(sql_database_mycodo, 'CO2SensorConditional', 'Sel_Command', 'INT')
+    AddColumn(sql_database_mycodo, 'CO2SensorConditional', 'Do_Command', 'TEXT')
+    AddColumn(sql_database_mycodo, 'CO2SensorConditional', 'Sel_Notify', 'INT')
+    AddColumn(sql_database_mycodo, 'CO2SensorConditional', 'Do_Notify', 'TEXT')
 
     AddTable(sql_database_mycodo, 'PressSensor')
     AddColumn(sql_database_mycodo, 'PressSensor', 'Name', 'TEXT')
@@ -709,9 +747,14 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'PressSensorConditional', 'Direction', 'INT')
     AddColumn(sql_database_mycodo, 'PressSensorConditional', 'Setpoint', 'REAL')
     AddColumn(sql_database_mycodo, 'PressSensorConditional', 'Period', 'INT')
+    AddColumn(sql_database_mycodo, 'PressSensorConditional', 'Sel_Relay', 'INT')
     AddColumn(sql_database_mycodo, 'PressSensorConditional', 'Relay', 'INT')
     AddColumn(sql_database_mycodo, 'PressSensorConditional', 'Relay_State', 'INT')
     AddColumn(sql_database_mycodo, 'PressSensorConditional', 'Relay_Seconds_On', 'INT')
+    AddColumn(sql_database_mycodo, 'PressSensorConditional', 'Sel_Command', 'INT')
+    AddColumn(sql_database_mycodo, 'PressSensorConditional', 'Do_Command', 'TEXT')
+    AddColumn(sql_database_mycodo, 'PressSensorConditional', 'Sel_Notify', 'INT')
+    AddColumn(sql_database_mycodo, 'PressSensorConditional', 'Do_Notify', 'TEXT')
 
     AddTable(sql_database_mycodo, 'Timers')
     AddColumn(sql_database_mycodo, 'Timers', 'Name', 'TEXT')
@@ -727,10 +770,11 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'SMTP', 'User', 'TEXT')
     AddColumn(sql_database_mycodo, 'SMTP', 'Pass', 'TEXT')
     AddColumn(sql_database_mycodo, 'SMTP', 'Email_From', 'TEXT')
-    AddColumn(sql_database_mycodo, 'SMTP', 'Email_To', 'TEXT')
+    AddColumn(sql_database_mycodo, 'SMTP', 'Daily_Max', 'INT')
+    AddColumn(sql_database_mycodo, 'SMTP', 'Wait_Time', 'INT')
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("INSERT OR IGNORE INTO SMTP VALUES('0', 'smtp.gmail.com', 1, 587, 'email@gmail.com', 'password', 'me@gmail.com', 'you@gmail.com')")
+    cur.execute("INSERT OR IGNORE INTO SMTP VALUES('0', 'smtp.gmail.com', 1, 587, 'email@gmail.com', 'password', 'me@gmail.com', 10, 7200)")
     conn.commit()
     cur.close()
     ModNullValue(sql_database_mycodo, 'SMTP', 'Host', 'smtp.gmail.com')
@@ -739,7 +783,8 @@ def mycodo_database_create():
     ModNullValue(sql_database_mycodo, 'SMTP', 'User', 'email@gmail.com')
     ModNullValue(sql_database_mycodo, 'SMTP', 'Pass', 'password')
     ModNullValue(sql_database_mycodo, 'SMTP', 'Email_From', 'me@gmail.com')
-    ModNullValue(sql_database_mycodo, 'SMTP', 'Email_To', 'you@gmail.com')
+    ModNullValue(sql_database_mycodo, 'SMTP', 'Daily_Max', 10)
+    ModNullValue(sql_database_mycodo, 'SMTP', 'Wait_Time', 7200)
 
     AddTable(sql_database_mycodo, 'CameraStill')
     AddColumn(sql_database_mycodo, 'CameraStill', 'Relay', 'INT')
@@ -817,6 +862,13 @@ def AddTable(sql_database, table):
     cur = conn.cursor()
     cur.execute("CREATE TABLE IF NOT EXISTS %s (Id TEXT UNIQUE)" % table)
     cur.close()
+
+
+def DelTable(sql_database, table):
+    conn = sqlite3.connect(sql_database)
+    cur = conn.cursor()
+    cur.execute("DROP TABLE IF EXISTS %s" % table)
+    conn.close()
 
 
 def AddColumn(sql_database, table, column, type):

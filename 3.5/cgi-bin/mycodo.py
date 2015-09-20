@@ -299,11 +299,7 @@ class ComServer(rpyc.Service):
         return 1
 
     def exposed_Status(self, var):
-        global status_report
-        status_report = 1
-
-        logging.info("[Client command] Request status report")
-        
+        logging.info("[Client command] Request status report")        
         return 1, globals().keys(), globals().values()
 
     def exposed_Terminate(self, remoteCommand):
@@ -2536,9 +2532,14 @@ def read_sql():
     global conditional_relay_ifrelay
     global conditional_relay_ifaction
     global conditional_relay_ifduration
+    global conditional_relay_sel_relay
     global conditional_relay_dorelay
     global conditional_relay_doaction
     global conditional_relay_doduration
+    global conditional_relay_sel_command
+    global conditional_relay_do_command
+    global conditional_relay_sel_notify
+    global conditional_relay_do_notify
 
     # Relay conditional statement reset
     conditional_relay_id = []
@@ -2546,9 +2547,14 @@ def read_sql():
     conditional_relay_ifrelay = []
     conditional_relay_ifaction = []
     conditional_relay_ifduration = []
+    conditional_relay_sel_relay = []
     conditional_relay_dorelay = []
     conditional_relay_doaction = []
     conditional_relay_doduration = []
+    conditional_relay_sel_command = []
+    conditional_relay_do_command = []
+    conditional_relay_sel_notify = []
+    conditional_relay_do_notify = []
 
     # Timer globals
     global timer_id
@@ -2590,7 +2596,8 @@ def read_sql():
     global smtp_user
     global smtp_pass
     global smtp_email_from
-    global smtp_email_to
+    global smtp_daily_max
+    global smtp_wait_time
 
     # Misc
     global enable_max_amps
@@ -2638,16 +2645,21 @@ def read_sql():
         relay_start_state.append(row[5])
 
 
-    cur.execute('SELECT Id, Name, If_Relay, If_Action, If_Duration, Do_Relay, Do_Action, Do_Duration FROM RelayConditional')
+    cur.execute('SELECT Id, Name, If_Relay, If_Action, If_Duration, Sel_Relay, Do_Relay, Do_Action, Do_Duration, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM RelayConditional')
     for row in cur:
         conditional_relay_id.append(row[0])
         conditional_relay_name.append(row[1])
         conditional_relay_ifrelay.append(row[2])
         conditional_relay_ifaction.append(row[3])
         conditional_relay_ifduration.append(row[4])
-        conditional_relay_dorelay.append(row[5])
-        conditional_relay_doaction.append(row[6])
-        conditional_relay_doduration.append(row[7])
+        conditional_relay_sel_relay.append(row[5])
+        conditional_relay_dorelay.append(row[6])
+        conditional_relay_doaction.append(row[7])
+        conditional_relay_doduration.append(row[8])
+        conditional_relay_sel_command.append(row[9])
+        conditional_relay_do_command.append(row[10])
+        conditional_relay_sel_notify.append(row[11])
+        conditional_relay_do_notify.append(row[12])
 
 
     cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D FROM TSensor')
@@ -2720,9 +2732,14 @@ def read_sql():
     global conditional_t_direction
     global conditional_t_setpoint
     global conditional_t_period
+    global conditional_t_sel_relay
     global conditional_t_relay
     global conditional_t_relay_state
     global conditional_t_relay_seconds_on
+    global conditional_t_sel_command
+    global conditional_t_do_command
+    global conditional_t_sel_notify
+    global conditional_t_do_notify
 
     conditional_t_id = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
     conditional_t_name = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
@@ -2731,12 +2748,17 @@ def read_sql():
     conditional_t_direction = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
     conditional_t_setpoint = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
     conditional_t_period = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
+    conditional_t_sel_relay = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
     conditional_t_relay = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
     conditional_t_relay_state = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
     conditional_t_relay_seconds_on = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
+    conditional_t_sel_command = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
+    conditional_t_do_command = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
+    conditional_t_sel_notify = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
+    conditional_t_do_notify = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
 
     for j in range(0, len(conditional_t_number_sensor)):
-        cur.execute('SELECT Id, Name, State, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On FROM TSensorConditional WHERE Sensor=' + str(j))
+        cur.execute('SELECT Id, Name, State, Sensor, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM TSensorConditional WHERE Sensor=' + str(j))
         count = 0
         for row in cur:
             conditional_t_id[j][count][0] = row[0]
@@ -2745,9 +2767,14 @@ def read_sql():
             conditional_t_direction[j][count][0] = row[3]
             conditional_t_setpoint[j][count][0] = row[4]
             conditional_t_period[j][count][0] = row[5]
-            conditional_t_relay[j][count][0] = row[6]
-            conditional_t_relay_state[j][count][0] = row[7]
-            conditional_t_relay_seconds_on[j][count][0] = row[8]
+            conditional_t_sel_relay[j][count][0] = row[6]
+            conditional_t_relay[j][count][0] = row[7]
+            conditional_t_relay_state[j][count][0] = row[8]
+            conditional_t_relay_seconds_on[j][count][0] = row[9]
+            conditional_t_sel_command[j][count][0] = row[10]
+            conditional_t_do_command[j][count][0] = row[11]
+            conditional_t_sel_notify[j][count][0] = row[12]
+            conditional_t_do_notify[j][count][0] = row[13]
             count += 1
 
 
@@ -2854,9 +2881,14 @@ def read_sql():
     global conditional_ht_direction
     global conditional_ht_setpoint
     global conditional_ht_period
+    global conditional_ht_sel_relay
     global conditional_ht_relay
     global conditional_ht_relay_state
     global conditional_ht_relay_seconds_on
+    global conditional_ht_sel_command
+    global conditional_ht_do_command
+    global conditional_ht_sel_notify
+    global conditional_ht_do_notify
 
     conditional_ht_id = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
     conditional_ht_name = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
@@ -2866,12 +2898,17 @@ def read_sql():
     conditional_ht_direction = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
     conditional_ht_setpoint = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
     conditional_ht_period = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
+    conditional_ht_sel_relay = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
     conditional_ht_relay = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
     conditional_ht_relay_state = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
     conditional_ht_relay_seconds_on = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
+    conditional_ht_sel_command = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
+    conditional_ht_do_command = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
+    conditional_ht_sel_notify = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
+    conditional_ht_do_notify = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
 
     for j in range(0, len(conditional_ht_number_sensor)):
-        cur.execute('SELECT Id, Name, State, Condition, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On FROM HTSensorConditional WHERE Sensor=' + str(j))
+        cur.execute('SELECT Id, Name, State, Condition, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM HTSensorConditional WHERE Sensor=' + str(j))
         count = 0
         for row in cur:
             conditional_ht_id[j][count][0] = row[0]
@@ -2881,9 +2918,14 @@ def read_sql():
             conditional_ht_direction[j][count][0] = row[4]
             conditional_ht_setpoint[j][count][0] = row[5]
             conditional_ht_period[j][count][0] = row[6]
-            conditional_ht_relay[j][count][0] = row[7]
-            conditional_ht_relay_state[j][count][0] = row[8]
-            conditional_ht_relay_seconds_on[j][count][0] = row[9]
+            conditional_ht_sel_relay[j][count][0] = row[7]
+            conditional_ht_relay[j][count][0] = row[8]
+            conditional_ht_relay_state[j][count][0] = row[9]
+            conditional_ht_relay_seconds_on[j][count][0] = row[10]
+            conditional_ht_sel_command[j][count][0] = row[11]
+            conditional_ht_do_command[j][count][0] = row[12]
+            conditional_ht_sel_notify[j][count][0] = row[13]
+            conditional_ht_do_notify[j][count][0] = row[14]
             count += 1
 
 
@@ -2959,9 +3001,14 @@ def read_sql():
     global conditional_co2_direction
     global conditional_co2_setpoint
     global conditional_co2_period
+    global conditional_co2_sel_relay
     global conditional_co2_relay
     global conditional_co2_relay_state
     global conditional_co2_relay_seconds_on
+    global conditional_co2_sel_command
+    global conditional_co2_do_command
+    global conditional_co2_sel_notify
+    global conditional_co2_do_notify
 
     conditional_co2_id = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
     conditional_co2_name = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
@@ -2970,12 +3017,17 @@ def read_sql():
     conditional_co2_direction = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
     conditional_co2_setpoint = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
     conditional_co2_period = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
+    conditional_co2_sel_relay = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
     conditional_co2_relay = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
     conditional_co2_relay_state = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
     conditional_co2_relay_seconds_on = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
+    conditional_co2_sel_command = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
+    conditional_co2_do_command = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
+    conditional_co2_sel_notify = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
+    conditional_co2_do_notify = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
 
     for j in range(0, len(conditional_co2_number_sensor)):
-        cur.execute('SELECT Id, Name, State, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On FROM CO2SensorConditional WHERE Sensor=' + str(j))
+        cur.execute('SELECT Id, Name, State, Sensor, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM CO2SensorConditional WHERE Sensor=' + str(j))
         count = 0
         for row in cur:
             conditional_co2_id[j][count][0] = row[0]
@@ -2984,9 +3036,14 @@ def read_sql():
             conditional_co2_direction[j][count][0] = row[3]
             conditional_co2_setpoint[j][count][0] = row[4]
             conditional_co2_period[j][count][0] = row[5]
-            conditional_co2_relay[j][count][0] = row[6]
-            conditional_co2_relay_state[j][count][0] = row[7]
-            conditional_co2_relay_seconds_on[j][count][0] = row[8]
+            conditional_co2_sel_relay[j][count][0] = row[6]
+            conditional_co2_relay[j][count][0] = row[7]
+            conditional_co2_relay_state[j][count][0] = row[8]
+            conditional_co2_relay_seconds_on[j][count][0] = row[9]
+            conditional_co2_sel_command[j][count][0] = row[10]
+            conditional_co2_do_command[j][count][0] = row[11]
+            conditional_co2_sel_notify[j][count][0] = row[12]
+            conditional_co2_do_notify[j][count][0] = row[13]
             count += 1
 
 
@@ -3093,9 +3150,14 @@ def read_sql():
     global conditional_press_direction
     global conditional_press_setpoint
     global conditional_press_period
+    global conditional_press_sel_relay
     global conditional_press_relay
     global conditional_press_relay_state
     global conditional_press_relay_seconds_on
+    global conditional_press_sel_command
+    global conditional_press_do_command
+    global conditional_press_sel_notify
+    global conditional_press_do_notify
 
     conditional_press_id = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
     conditional_press_name = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
@@ -3105,12 +3167,17 @@ def read_sql():
     conditional_press_direction = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
     conditional_press_setpoint = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
     conditional_press_period = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
+    conditional_press_sel_relay = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
     conditional_press_relay = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
     conditional_press_relay_state = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
     conditional_press_relay_seconds_on = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
+    conditional_press_sel_command = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
+    conditional_press_do_command = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
+    conditional_press_sel_notify = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
+    conditional_press_do_notify = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
 
     for j in range(0, len(conditional_press_number_sensor)):
-        cur.execute('SELECT Id, Name, State, Condition, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On FROM PressSensorConditional WHERE Sensor=' + str(j))
+        cur.execute('SELECT Id, Name, State, Condition, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM PressSensorConditional WHERE Sensor=' + str(j))
         count = 0
         for row in cur:
             conditional_press_id[j][count][0] = row[0]
@@ -3120,9 +3187,14 @@ def read_sql():
             conditional_press_direction[j][count][0] = row[4]
             conditional_press_setpoint[j][count][0] = row[5]
             conditional_press_period[j][count][0] = row[6]
-            conditional_press_relay[j][count][0] = row[7]
-            conditional_press_relay_state[j][count][0] = row[8]
-            conditional_press_relay_seconds_on[j][count][0] = row[9]
+            conditional_press_sel_relay[j][count][0] = row[7]
+            conditional_press_relay[j][count][0] = row[8]
+            conditional_press_relay_state[j][count][0] = row[9]
+            conditional_press_relay_seconds_on[j][count][0] = row[10]
+            conditional_press_sel_command[j][count][0] = row[11]
+            conditional_press_do_command[j][count][0] = row[12]
+            conditional_press_sel_notify[j][count][0] = row[13]
+            conditional_press_do_notify[j][count][0] = row[14]
             count += 1
 
 
@@ -3137,7 +3209,7 @@ def read_sql():
         timer_duration_off.append(row[5])
 
 
-    cur.execute('SELECT Host, SSL, Port, User, Pass, Email_From, Email_To FROM SMTP ')
+    cur.execute('SELECT Host, SSL, Port, User, Pass, Email_From, Daily_Max, Wait_Time FROM SMTP ')
     for row in cur:
         smtp_host = row[0]
         smtp_ssl = row[1]
@@ -3145,7 +3217,8 @@ def read_sql():
         smtp_user = row[3]
         smtp_pass = row[4]
         smtp_email_from = row[5]
-        smtp_email_to = row[6]
+        smtp_daily_max = row[6]
+        smtp_wait_time = row[7]
 
     cur.close()
 
@@ -3357,20 +3430,39 @@ def relay_onoff(relay, state):
     for i in range(0, len(conditional_relay_id)):
         if state == 'on':
             if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'on' and conditional_relay_ifduration[i] == 0:
-                if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
-                    rod = threading.Thread(target = relay_on_duration,
-                        args = (conditional_relay_dorelay[i], conditional_relay_doduration[i], 0,))
-                    rod.start()
-                else:
-                    relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
+                if conditional_relay_sel_relay[i]:
+                    if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
+                        rod = threading.Thread(target = relay_on_duration,
+                            args = (conditional_relay_dorelay[i], conditional_relay_doduration[i], 0,))
+                        rod.start()
+                    else:
+                        relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
+                if conditional_relay_sel_command[i]:
+                    pass # conditional_relay_do_command
+                if conditional_relay_sel_notify[i]:
+                    if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
+                        message = "Notification: Relay %s turned %s for %s seconds." % (relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
+                    else:
+                        message = "Notification: Relay %s turned %s." % (relay, conditional_relay_doaction[i])
+                    email(conditional_relay_do_notify[i], message)
+
         elif state == 'off':
             if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'off':
-                if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
-                    rod = threading.Thread(target = relay_on_duration,
-                        args = (conditional_relay_dorelay[i], conditional_relay_doduration[i], 0,))
-                    rod.start()
-                else:
-                    relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
+                if conditional_relay_sel_relay[i]:
+                    if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
+                        rod = threading.Thread(target = relay_on_duration,
+                            args = (conditional_relay_dorelay[i], conditional_relay_doduration[i], 0,))
+                        rod.start()
+                    else:
+                        relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
+                if conditional_relay_sel_command[i]:
+                    pass # conditional_relay_do_command
+                if conditional_relay_sel_notify[i]:
+                    if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
+                        message = "Notification: Relay %s turned %s for %s seconds." % (relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
+                    else:
+                        message = "Notification: Relay %s turned %s." % (relay, conditional_relay_doaction[i])
+                    email(conditional_relay_do_notify[i], message)
 
 
 # Set relay on for a specific duration (seconds may be negative)
@@ -3414,14 +3506,33 @@ def relay_on_duration(relay, seconds, sensor):
         for i in range(0, len(conditional_relay_id)):
             if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'on':
                 if conditional_relay_ifduration[i] == seconds:
-                    if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
-                        rod = threading.Thread(target = relay_on_duration,
-                            args = (conditional_relay_dorelay[i], conditional_relay_doduration[i], sensor,))
-                        rod.start()
-                    elif (conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] == 0) or conditional_relay_doaction[i] == 'off':
-                        relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
+                    if conditional_relay_sel_relay[i]:
+                        if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
+                            rod = threading.Thread(target = relay_on_duration,
+                                args = (conditional_relay_dorelay[i], conditional_relay_doduration[i], sensor,))
+                            rod.start()
+                        elif (conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] == 0) or conditional_relay_doaction[i] == 'off':
+                            relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
+                    if conditional_relay_sel_command[i]:
+                        pass # conditional_relay_do_command
+                    if conditional_relay_sel_notify[i]:    
+                        if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
+                            message = "Notification: Relay %s turned %s for %s seconds." % (relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
+                        else:
+                            message = "Notification: Relay %s turned %s." % (relay, conditional_relay_doaction[i])
+                        email(conditional_relay_do_notify[i], message)
+
                 elif conditional_relay_ifduration[i] == 0:
-                    relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
+                    if conditional_relay_sel_relay[i]:
+                        relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
+                    if conditional_relay_sel_command[i]:
+                        pass # conditional_relay_do_command
+                    if conditional_relay_sel_notify[i]:
+                        if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
+                            message = "Notification: Relay %s turned %s for %s seconds." % (relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
+                        else:
+                            message = "Notification: Relay %s turned %s." % (relay, conditional_relay_doaction[i])
+                        email(conditional_relay_do_notify[i], message)
 
         return 1
 
@@ -3447,14 +3558,33 @@ def relay_on_duration(relay, seconds, sensor):
     for i in range(0, len(conditional_relay_id)):
         if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'on':
             if conditional_relay_ifduration[i] == seconds:
-                if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
-                    rod = threading.Thread(target = relay_on_duration,
-                        args = (conditional_relay_dorelay[i], conditional_relay_doduration[i], sensor,))
-                    rod.start()
-                elif (conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] == 0) or conditional_relay_doaction[i] == 'off':
-                    relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
+                if conditional_relay_sel_relay[i]:
+                    if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
+                        rod = threading.Thread(target = relay_on_duration,
+                            args = (conditional_relay_dorelay[i], conditional_relay_doduration[i], sensor,))
+                        rod.start()
+                    elif (conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] == 0) or conditional_relay_doaction[i] == 'off':
+                        relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
+                if conditional_relay_sel_command[i]:
+                    pass # conditional_relay_do_command
+                if conditional_relay_sel_notify[i]:
+                    if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
+                        message = "Notification: Relay %s turned %s for %s seconds." % (relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
+                    else:
+                        message = "Notification: Relay %s turned %s." % (relay, conditional_relay_doaction[i])
+                    email(conditional_relay_do_notify[i], message)
+
             elif conditional_relay_ifduration[i] == 0:
-                relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
+                if conditional_relay_sel_relay[i]:
+                    relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
+                if conditional_relay_sel_command[i]:
+                    pass # conditional_relay_do_command
+                if conditional_relay_sel_notify[i]:
+                    if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
+                        message = "Notification: Relay %s turned %s for %s seconds." % (relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
+                    else:
+                        message = "Notification: Relay %s turned %s." % (relay, conditional_relay_doaction[i])
+                    email(conditional_relay_do_notify[i], message)
 
     while (client_que != 'TerminateServer' and on_duration_timer[relay-1] > int(time.time())):
         if (relay_trigger[relay-1] == 0 and GPIO.input(relay_pin[relay-1]) == 1) or (
@@ -3486,9 +3616,28 @@ def relay_on_duration(relay, seconds, sensor):
 
     for i in range(0, len(conditional_relay_id)):
         if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'off' and conditional_relay_doaction[i] == 'off':
-            relay_onoff(conditional_relay_dorelay[i], 'off')
+            if conditional_relay_sel_relay[i]:
+                relay_onoff(conditional_relay_dorelay[i], 'off')
+            if conditional_relay_sel_command[i]:
+                pass # conditional_relay_do_command
+            if conditional_relay_sel_notify[i]:
+                if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
+                    message = "Notification: Relay %s turned %s for %s seconds." % (relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
+                else:
+                    message = "Notification: Relay %s turned %s." % (relay, conditional_relay_doaction[i])
+                email(conditional_relay_do_notify[i], message)
+                
         elif conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'off' and conditional_relay_doaction[i] == 'on':
-            relay_onoff(conditional_relay_dorelay[i], 'on')
+            if conditional_relay_sel_relay[i]:
+                relay_onoff(conditional_relay_dorelay[i], 'on')
+            if conditional_relay_sel_command[i]:
+                pass # conditional_relay_do_command
+            if conditional_relay_sel_notify[i]:
+                if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
+                    message = "Notification: Relay %s turned %s for %s seconds." % (relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
+                else:
+                    message = "Notification: Relay %s turned %s." % (relay, conditional_relay_doaction[i])
+                email(conditional_relay_do_notify[i], message)
 
     logging.debug("[Relay Duration] Relay %s (%s) Off (was On for %s seconds)",
         relay, relay_name[relay-1], round(abs(seconds), 1))
@@ -3501,8 +3650,8 @@ def relay_on_duration(relay, seconds, sensor):
 #                 Email Notify                  #
 #################################################
 
-# Email if temperature or humidity is outside of critical range (Not yet implemented)
-def email(message):
+# Email notification
+def email(email_to, message):
     if (smtp_ssl):
         server = smtplib.SMTP_SSL(smtp_host, smtp_port)
         server.ehlo()
@@ -3519,9 +3668,9 @@ def email(message):
 
     msg = MIMEText(message)
     msg['Subject'] = "Critical warning!"
-    msg['From'] = "Raspberry Pi"
-    msg['To'] = smtp_email_from
-    server.sendmail(smtp_email_from, smtp_email_to, msg.as_string())
+    msg['From'] = smtp_email_from
+    msg['To'] = email_to
+    server.sendmail(smtp_email_from, email_to, msg.as_string())
     server.quit()
 
 

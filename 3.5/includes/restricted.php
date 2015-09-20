@@ -234,21 +234,39 @@ for ($p = 0; $p < count($relay_id); $p++) {
 if (isset($_POST['AddRelayConditional'])) {
 
     // Check for errors
-    if ((int)$_POST['conditionrelayifrelay'] == (int)$_POST['conditionrelaydorelay']) {
+    if ((int)$_POST['conditionrelayifrelay'] == (int)$_POST['conditionrelaydorelay'] and isset($_POST['conditionrelayselrelay'])) {
         $sensor_error = 'Error: Creating Conditional Statement: Relays cannot be the same.';
     }
 
     // If no errors encountered in the form data, proceed
     if (!isset($sensor_error)) {
-        $stmt = $db->prepare("INSERT INTO RelayConditional (Id, Name, If_Relay, If_Action, If_Duration, Do_Relay, Do_Action, Do_Duration) VALUES(:id, :name, :ifrelay, :ifaction, :ifduration, :dorelay, :doaction, :doduration)");
+        $stmt = $db->prepare("INSERT INTO RelayConditional (Id, Name, If_Relay, If_Action, If_Duration, Sel_Relay, Do_Relay, Do_Action, Do_Duration, Sel_Command, Do_Command, Sel_Notify, Do_Notify) VALUES(:id, :name, :ifrelay, :ifaction, :ifduration, :selrelay, :dorelay, :doaction, :doduration, :selcommand, :command, :selnotify, :notify)");
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->bindValue(':name', $_POST['conditionrelayname'], SQLITE3_TEXT);
         $stmt->bindValue(':ifrelay', (int)$_POST['conditionrelayifrelay'], SQLITE3_INTEGER);
         $stmt->bindValue(':ifaction', $_POST['conditionrelayifaction'], SQLITE3_TEXT);
         $stmt->bindValue(':ifduration', (float)$_POST['conditionrelayifduration'], SQLITE3_FLOAT);
+        if (isset($_POST['conditionrelayselrelay'])) {
+            $stmt->bindValue(':selrelay', 1, SQLITE3_INTEGER);
+        } else {
+            $stmt->bindValue(':selrelay', 0, SQLITE3_INTEGER);
+        }
         $stmt->bindValue(':dorelay', (int)$_POST['conditionrelaydorelay'], SQLITE3_INTEGER);
         $stmt->bindValue(':doaction', $_POST['conditionrelaydoaction'], SQLITE3_TEXT);
         $stmt->bindValue(':doduration', (float)$_POST['conditionrelaydoduration'], SQLITE3_FLOAT);
+        if (isset($_POST['conditionrelayselcommand'])) {
+            $stmt->bindValue(':selcommand', 1, SQLITE3_INTEGER);
+        } else {
+            $stmt->bindValue(':selcommand', 0, SQLITE3_INTEGER);
+        }
+        $command = SQLite3::escapeString($_POST['conditionrelaycommand']);
+        $stmt->bindValue(':command', $command, SQLITE3_TEXT);
+        if (isset($_POST['conditionrelayselnotify'])) {
+            $stmt->bindValue(':selnotify', 1, SQLITE3_INTEGER);
+        } else {
+            $stmt->bindValue(':selnotify', 0, SQLITE3_INTEGER);
+        }
+        $stmt->bindValue(':notify', $_POST['conditionrelaynotify'], SQLITE3_TEXT);
         $stmt->execute();
 
         shell_exec("$mycodo_client --sqlreload -1");
@@ -382,16 +400,34 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
 
     // Add T Conditional statement
     if (isset($_POST['AddT' . $p . 'Conditional'])) {
-        $stmt = $db->prepare("INSERT INTO TSensorConditional (Id, Name, Sensor, State, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On) VALUES(:id, :name, :sensor, 0, :direction, :setpoint, :period, :relay, :relaystate, :relaysecondson)");
+        $stmt = $db->prepare("INSERT INTO TSensorConditional (Id, Name, Sensor, State, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify) VALUES(:id, :name, :sensor, 0, :direction, :setpoint, :period, :selrelay, :relay, :relaystate, :relaysecondson, :selcommand, :command, :selnotify, :notify)");
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->bindValue(':name', $_POST['conditiont' . $p . 'name'], SQLITE3_TEXT);
         $stmt->bindValue(':sensor', $p, SQLITE3_INTEGER);
         $stmt->bindValue(':direction', (int)$_POST['conditiont' . $p . 'direction'], SQLITE3_INTEGER);
         $stmt->bindValue(':setpoint', (float)$_POST['conditiont' . $p . 'setpoint'], SQLITE3_FLOAT);
         $stmt->bindValue(':period', (int)$_POST['conditiont' . $p . 'period'], SQLITE3_INTEGER);
+        if (isset($_POST['conditiont' . $p . 'selrelay'])) {
+            $stmt->bindValue(':selrelay', 1, SQLITE3_INTEGER);
+        } else {
+            $stmt->bindValue(':selrelay', 0, SQLITE3_INTEGER);
+        }
         $stmt->bindValue(':relay', (int)$_POST['conditiont' . $p . 'relay'], SQLITE3_INTEGER);
         $stmt->bindValue(':relaystate', (int)$_POST['conditiont' . $p . 'relaystate'], SQLITE3_INTEGER);
         $stmt->bindValue(':relaysecondson', (int)$_POST['conditiont' . $p . 'relaysecondson'], SQLITE3_INTEGER);
+        if (isset($_POST['conditiont' . $p . 'selcommand'])) {
+            $stmt->bindValue(':selcommand', 1, SQLITE3_INTEGER);
+        } else {
+            $stmt->bindValue(':selcommand', 0, SQLITE3_INTEGER);
+        }
+        $command = SQLite3::escapeString($_POST['conditiont' . $p . 'command']);
+        $stmt->bindValue(':command', $command, SQLITE3_TEXT);
+        if (isset($_POST['conditiont' . $p . 'selnotify'])) {
+            $stmt->bindValue(':selnotify', 1, SQLITE3_INTEGER);
+        } else {
+            $stmt->bindValue(':selnotify', 0, SQLITE3_INTEGER);
+        }
+        $stmt->bindValue(':notify', $_POST['conditiont' . $p . 'notify'], SQLITE3_TEXT);
         $stmt->execute();
     }
 
@@ -739,7 +775,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
 
     // Add HT Conditional statement
     if (isset($_POST['AddHT' . $p . 'Conditional'])) {
-        $stmt = $db->prepare("INSERT INTO HTSensorConditional (Id, Name, Sensor, State, Condition, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On) VALUES(:id, :name, :sensor, 0, :condition, :direction, :setpoint, :period, :relay, :relaystate, :relaysecondson)");
+        $stmt = $db->prepare("INSERT INTO HTSensorConditional (Id, Name, Sensor, State, Condition, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify) VALUES(:id, :name, :sensor, 0, :condition, :direction, :setpoint, :period, :selrelay, :relay, :relaystate, :relaysecondson, :selcommand, :command, :selnotify, :notify)");
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->bindValue(':name', $_POST['conditionht' . $p . 'name'], SQLITE3_TEXT);
         $stmt->bindValue(':sensor', $p, SQLITE3_INTEGER);
@@ -747,9 +783,27 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
         $stmt->bindValue(':direction', (int)$_POST['conditionht' . $p . 'direction'], SQLITE3_INTEGER);
         $stmt->bindValue(':setpoint', (float)$_POST['conditionht' . $p . 'setpoint'], SQLITE3_FLOAT);
         $stmt->bindValue(':period', (int)$_POST['conditionht' . $p . 'period'], SQLITE3_INTEGER);
+        if (isset($_POST['conditionht' . $p . 'selrelay'])) {
+            $stmt->bindValue(':selrelay', 1, SQLITE3_INTEGER);
+        } else {
+            $stmt->bindValue(':selrelay', 0, SQLITE3_INTEGER);
+        }
         $stmt->bindValue(':relay', (int)$_POST['conditionht' . $p . 'relay'], SQLITE3_INTEGER);
         $stmt->bindValue(':relaystate', (int)$_POST['conditionht' . $p . 'relaystate'], SQLITE3_INTEGER);
         $stmt->bindValue(':relaysecondson', (int)$_POST['conditionht' . $p . 'relaysecondson'], SQLITE3_INTEGER);
+        if (isset($_POST['conditionht' . $p . 'selcommand'])) {
+            $stmt->bindValue(':selcommand', 1, SQLITE3_INTEGER);
+        } else {
+            $stmt->bindValue(':selcommand', 0, SQLITE3_INTEGER);
+        }
+        $command = SQLite3::escapeString($_POST['conditionht' . $p . 'command']);
+        $stmt->bindValue(':command', $command, SQLITE3_TEXT);
+        if (isset($_POST['conditionht' . $p . 'selnotify'])) {
+            $stmt->bindValue(':selnotify', 1, SQLITE3_INTEGER);
+        } else {
+            $stmt->bindValue(':selnotify', 0, SQLITE3_INTEGER);
+        }
+        $stmt->bindValue(':notify', $_POST['conditionht' . $p . 'notify'], SQLITE3_TEXT);
         $stmt->execute();
     }
 
@@ -1221,16 +1275,34 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
 
     // Add CO2 Conditional statement
     if (isset($_POST['AddCO2' . $p . 'Conditional'])) {
-        $stmt = $db->prepare("INSERT INTO CO2SensorConditional (Id, Name, Sensor, State, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On) VALUES(:id, :name, :sensor, 0, :direction, :setpoint, :period, :relay, :relaystate, :relaysecondson)");
+        $stmt = $db->prepare("INSERT INTO CO2SensorConditional (Id, Name, Sensor, State, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify) VALUES(:id, :name, :sensor, 0, :direction, :setpoint, :period, :selrelay, :relay, :relaystate, :relaysecondson, :selcommand, :command, :selnotify, :notify)");
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->bindValue(':name', $_POST['conditionco2' . $p . 'name'], SQLITE3_TEXT);
         $stmt->bindValue(':sensor', $p, SQLITE3_INTEGER);
         $stmt->bindValue(':direction', (int)$_POST['conditionco2' . $p . 'direction'], SQLITE3_INTEGER);
         $stmt->bindValue(':setpoint', (float)$_POST['conditionco2' . $p . 'setpoint'], SQLITE3_FLOAT);
         $stmt->bindValue(':period', (int)$_POST['conditionco2' . $p . 'period'], SQLITE3_INTEGER);
+        if (isset($_POST['conditionco2' . $p . 'selrelay'])) {
+            $stmt->bindValue(':selrelay', 1, SQLITE3_INTEGER);
+        } else {
+            $stmt->bindValue(':selrelay', 0, SQLITE3_INTEGER);
+        }
         $stmt->bindValue(':relay', (int)$_POST['conditionco2' . $p . 'relay'], SQLITE3_INTEGER);
         $stmt->bindValue(':relaystate', (int)$_POST['conditionco2' . $p . 'relaystate'], SQLITE3_INTEGER);
         $stmt->bindValue(':relaysecondson', (int)$_POST['conditionco2' . $p . 'relaysecondson'], SQLITE3_INTEGER);
+        if (isset($_POST['conditionco2' . $p . 'selcommand'])) {
+            $stmt->bindValue(':selcommand', 1, SQLITE3_INTEGER);
+        } else {
+            $stmt->bindValue(':selcommand', 0, SQLITE3_INTEGER);
+        }
+        $command = SQLite3::escapeString($_POST['conditionco2' . $p . 'command']);
+        $stmt->bindValue(':command', $command, SQLITE3_TEXT);
+        if (isset($_POST['conditionco2' . $p . 'selnotify'])) {
+            $stmt->bindValue(':selnotify', 1, SQLITE3_INTEGER);
+        } else {
+            $stmt->bindValue(':selnotify', 0, SQLITE3_INTEGER);
+        }
+        $stmt->bindValue(':notify', $_POST['conditionco2' . $p . 'notify'], SQLITE3_TEXT);
         $stmt->execute();
     }
 
@@ -1585,7 +1657,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
 
     // Add Press Conditional statement
     if (isset($_POST['AddPress' . $p . 'Conditional'])) {
-        $stmt = $db->prepare("INSERT INTO PressSensorConditional (Id, Name, Sensor, State, Condition, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On) VALUES(:id, :name, :sensor, 0, :condition, :direction, :setpoint, :period, :relay, :relaystate, :relaysecondson)");
+        $stmt = $db->prepare("INSERT INTO PressSensorConditional (Id, Name, Sensor, State, Condition, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify) VALUES(:id, :name, :sensor, 0, :condition, :direction, :setpoint, :period, :selrelay, :relay, :relaystate, :relaysecondson, :selcommand, :command, :selnotify, :notify)");
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->bindValue(':name', $_POST['conditionpress' . $p . 'name'], SQLITE3_TEXT);
         $stmt->bindValue(':sensor', $p, SQLITE3_INTEGER);
@@ -1593,9 +1665,27 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
         $stmt->bindValue(':direction', (int)$_POST['conditionpress' . $p . 'direction'], SQLITE3_INTEGER);
         $stmt->bindValue(':setpoint', (float)$_POST['conditionpress' . $p . 'setpoint'], SQLITE3_FLOAT);
         $stmt->bindValue(':period', (int)$_POST['conditionpress' . $p . 'period'], SQLITE3_INTEGER);
+        if (isset($_POST['conditionpress' . $p . 'selrelay'])) {
+            $stmt->bindValue(':selrelay', 1, SQLITE3_INTEGER);
+        } else {
+            $stmt->bindValue(':selrelay', 0, SQLITE3_INTEGER);
+        }
         $stmt->bindValue(':relay', (int)$_POST['conditionpress' . $p . 'relay'], SQLITE3_INTEGER);
         $stmt->bindValue(':relaystate', (int)$_POST['conditionpress' . $p . 'relaystate'], SQLITE3_INTEGER);
         $stmt->bindValue(':relaysecondson', (int)$_POST['conditionpress' . $p . 'relaysecondson'], SQLITE3_INTEGER);
+        if (isset($_POST['conditionpress' . $p . 'selcommand'])) {
+            $stmt->bindValue(':selcommand', 1, SQLITE3_INTEGER);
+        } else {
+            $stmt->bindValue(':selcommand', 0, SQLITE3_INTEGER);
+        }
+        $command = SQLite3::escapeString($_POST['conditionpress' . $p . 'command']);
+        $stmt->bindValue(':command', $command, SQLITE3_TEXT);
+        if (isset($_POST['conditionpress' . $p . 'selnotify'])) {
+            $stmt->bindValue(':selnotify', 1, SQLITE3_INTEGER);
+        } else {
+            $stmt->bindValue(':selnotify', 0, SQLITE3_INTEGER);
+        }
+        $stmt->bindValue(':notify', $_POST['conditionpress' . $p . 'notify'], SQLITE3_TEXT);
         $stmt->execute();
     }
 
@@ -2227,7 +2317,7 @@ if (isset($_POST['stop-timelapse'])) {
 
 // Change email notify settings
 if (isset($_POST['ChangeNotify'])) {
-    $stmt = $db->prepare("UPDATE SMTP SET Host=:host, SSL=:ssl, Port=:port, User=:user, Pass=:password, Email_From=:emailfrom, Email_To=:emailto");
+    $stmt = $db->prepare("UPDATE SMTP SET Host=:host, SSL=:ssl, Port=:port, User=:user, Pass=:password, Email_From=:emailfrom, Daily_Max=:dailymax, Wait_Time=:waittime");
     $stmt->bindValue(':host', $_POST['smtp_host'], SQLITE3_TEXT);
     $stmt->bindValue(':ssl', (int)$_POST['smtp_ssl'], SQLITE3_INTEGER);
     $stmt->bindValue(':port', (int)$_POST['smtp_port'], SQLITE3_INTEGER);
@@ -2235,6 +2325,8 @@ if (isset($_POST['ChangeNotify'])) {
     $stmt->bindValue(':password', $_POST['smtp_pass'], SQLITE3_TEXT);
     $stmt->bindValue(':emailfrom', $_POST['smtp_email_from'], SQLITE3_TEXT);
     $stmt->bindValue(':emailto', $_POST['smtp_email_to'], SQLITE3_TEXT);
+    $stmt->bindValue(':dailymax', $_POST['smtp_daily_max'], SQLITE3_TEXT);
+    $stmt->bindValue(':waittime', $_POST['smtp_wait_time'], SQLITE3_TEXT);
     $stmt->execute();
     shell_exec("$mycodo_client --sqlreload -1");
 }

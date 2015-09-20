@@ -24,6 +24,17 @@
 
 $db = new SQLite3($mycodo_db);
 
+$udb = new SQLite3($user_db);
+
+
+$results = $udb->query('SELECT user_name, user_email FROM users');
+$i = 0;
+while ($row = $results->fetchArray()) {
+    $user_name[$i] = $row[0];
+    $user_email[$i] = $row[1];
+    $i++;
+}
+
 
 unset($relay_id);
 $results = $db->query('SELECT Id, Name, Pin, Amps, Trigger, Start_State FROM Relays');
@@ -42,7 +53,7 @@ if (!isset($relay_id)) $relay_id = [];
 
 // conditional statements
 unset($conditional_relay_id);
-$results = $db->query('SELECT Id, Name, If_Relay, If_Action, If_Duration, Do_Relay, Do_Action, Do_Duration FROM RelayConditional');
+$results = $db->query('SELECT Id, Name, If_Relay, If_Action, If_Duration, Sel_Relay, Do_Relay, Do_Action, Do_Duration, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM RelayConditional');
 $i = 0;
 while ($row = $results->fetchArray()) {
     $conditional_relay_id[$i] = $row[0];
@@ -50,9 +61,14 @@ while ($row = $results->fetchArray()) {
     $conditional_relay_ifrelay[$i] = $row[2];
     $conditional_relay_ifaction[$i] = $row[3];
     $conditional_relay_ifduration[$i] = $row[4];
-    $conditional_relay_dorelay[$i] = $row[5];
-    $conditional_relay_doaction[$i] = $row[6];
-    $conditional_relay_doduration[$i] = $row[7];
+    $conditional_relay_sel_relay[$i] = $row[5];
+    $conditional_relay_dorelay[$i] = $row[6];
+    $conditional_relay_doaction[$i] = $row[7];
+    $conditional_relay_doduration[$i] = $row[8];
+    $conditional_relay_sel_command[$i] = $row[9];
+    $conditional_relay_command[$i] = $row[10];
+    $conditional_relay_sel_notify[$i] = $row[11];
+    $conditional_relay_notify[$i] = $row[12];
     $i++;
 }
 
@@ -253,7 +269,7 @@ if (!isset($sensor_press_graph)) $sensor_press_graph = [];
 // conditional statements
 unset($conditional_t_id);
 for ($n = 0; $n < count($sensor_t_id); $n++) {
-    $results = $db->query('SELECT Id, Name, State, Sensor, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On FROM TSensorConditional WHERE Sensor=' . $n);
+    $results = $db->query('SELECT Id, Name, State, Sensor, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM TSensorConditional WHERE Sensor=' . $n);
     $i = 0;
     while ($row = $results->fetchArray()) {
         $conditional_t_id[$n][$i] = $row[0];
@@ -263,16 +279,21 @@ for ($n = 0; $n < count($sensor_t_id); $n++) {
         $conditional_t_direction[$n][$i] = $row[4];
         $conditional_t_setpoint[$n][$i] = $row[5];
         $conditional_t_period[$n][$i] = $row[6];
-        $conditional_t_relay[$n][$i] = $row[7];
-        $conditional_t_relay_state[$n][$i] = $row[8];
-        $conditional_t_relay_seconds_on[$n][$i] = $row[9];
+        $conditional_t_sel_relay[$n][$i] = $row[7];
+        $conditional_t_relay[$n][$i] = $row[8];
+        $conditional_t_relay_state[$n][$i] = $row[9];
+        $conditional_t_relay_seconds_on[$n][$i] = $row[10];
+        $conditional_t_sel_command[$n][$i] = $row[11];
+        $conditional_t_command[$n][$i] = $row[12];
+        $conditional_t_sel_notify[$n][$i] = $row[13];
+        $conditional_t_notify[$n][$i] = $row[14];
         $i++;
     }
 }
 
 unset($conditional_ht_id);
 for ($n = 0; $n < count($sensor_ht_id); $n++) {
-    $results = $db->query('SELECT Id, Name, State, Sensor, Condition, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On FROM HTSensorConditional WHERE Sensor=' . $n);
+    $results = $db->query('SELECT Id, Name, State, Sensor, Condition, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM HTSensorConditional WHERE Sensor=' . $n);
     $i = 0;
     while ($row = $results->fetchArray()) {
         $conditional_ht_id[$n][$i] = $row[0];
@@ -283,16 +304,21 @@ for ($n = 0; $n < count($sensor_ht_id); $n++) {
         $conditional_ht_direction[$n][$i] = $row[5];
         $conditional_ht_setpoint[$n][$i] = $row[6];
         $conditional_ht_period[$n][$i] = $row[7];
-        $conditional_ht_relay[$n][$i] = $row[8];
-        $conditional_ht_relay_state[$n][$i] = $row[9];
-        $conditional_ht_relay_seconds_on[$n][$i] = $row[10];
+        $conditional_ht_sel_relay[$n][$i] = $row[8];
+        $conditional_ht_relay[$n][$i] = $row[9];
+        $conditional_ht_relay_state[$n][$i] = $row[10];
+        $conditional_ht_relay_seconds_on[$n][$i] = $row[11];
+        $conditional_ht_sel_command[$n][$i] = $row[12];
+        $conditional_ht_command[$n][$i] = $row[13];
+        $conditional_ht_sel_notify[$n][$i] = $row[14];
+        $conditional_ht_notify[$n][$i] = $row[15];
         $i++;
     }
 }
 
 unset($conditional_co2_id);
 for ($n = 0; $n < count($sensor_co2_id); $n++) {
-    $results = $db->query('SELECT Id, Name, State, Sensor, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On FROM CO2SensorConditional WHERE Sensor=' . $n);
+    $results = $db->query('SELECT Id, Name, State, Sensor, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM CO2SensorConditional WHERE Sensor=' . $n);
     $i = 0;
     while ($row = $results->fetchArray()) {
         $conditional_co2_id[$n][$i] = $row[0];
@@ -302,16 +328,21 @@ for ($n = 0; $n < count($sensor_co2_id); $n++) {
         $conditional_co2_direction[$n][$i] = $row[4];
         $conditional_co2_setpoint[$n][$i] = $row[5];
         $conditional_co2_period[$n][$i] = $row[6];
-        $conditional_co2_relay[$n][$i] = $row[7];
-        $conditional_co2_relay_state[$n][$i] = $row[8];
-        $conditional_co2_relay_seconds_on[$n][$i] = $row[9];
+        $conditional_co2_sel_relay[$n][$i] = $row[7];
+        $conditional_co2_relay[$n][$i] = $row[8];
+        $conditional_co2_relay_state[$n][$i] = $row[9];
+        $conditional_co2_relay_seconds_on[$n][$i] = $row[10];
+        $conditional_co2_sel_command[$n][$i] = $row[11];
+        $conditional_co2_command[$n][$i] = $row[12];
+        $conditional_co2_sel_notify[$n][$i] = $row[13];
+        $conditional_co2_notify[$n][$i] = $row[14];
         $i++;
     }
 }
 
 unset($conditional_press_id);
 for ($n = 0; $n < count($sensor_press_id); $n++) {
-    $results = $db->query('SELECT Id, Name, State, Sensor, Condition, Direction, Setpoint, Period, Relay, Relay_State, Relay_Seconds_On FROM PressSensorConditional WHERE Sensor=' . $n);
+    $results = $db->query('SELECT Id, Name, State, Sensor, Condition, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM PressSensorConditional WHERE Sensor=' . $n);
     $i = 0;
     while ($row = $results->fetchArray()) {
         $conditional_press_id[$n][$i] = $row[0];
@@ -322,9 +353,14 @@ for ($n = 0; $n < count($sensor_press_id); $n++) {
         $conditional_press_direction[$n][$i] = $row[5];
         $conditional_press_setpoint[$n][$i] = $row[6];
         $conditional_press_period[$n][$i] = $row[7];
-        $conditional_press_relay[$n][$i] = $row[8];
-        $conditional_press_relay_state[$n][$i] = $row[9];
-        $conditional_press_relay_seconds_on[$n][$i] = $row[10];
+        $conditional_press_sel_relay[$n][$i] = $row[8];
+        $conditional_press_relay[$n][$i] = $row[9];
+        $conditional_press_relay_state[$n][$i] = $row[10];
+        $conditional_press_relay_seconds_on[$n][$i] = $row[11];
+        $conditional_press_sel_command[$n][$i] = $row[12];
+        $conditional_press_command[$n][$i] = $row[13];
+        $conditional_press_sel_notify[$n][$i] = $row[14];
+        $conditional_press_notify[$n][$i] = $row[15];
         $i++;
     }
 }
@@ -374,15 +410,16 @@ while ($row = $results->fetchArray()) {
 if (!isset($timer_id)) $timer_id = [];
 
 
-$results = $db->query('SELECT Host, SSL, Port, User, Pass, Email_From, Email_To FROM SMTP');
+$results = $db->query('SELECT Host, SSL, Port, User, Pass, Email_From, Daily_Max, Wait_Time FROM SMTP');
 while ($row = $results->fetchArray()) {
     $smtp_host = $row[0];
     $smtp_ssl = $row[1];
     $smtp_port = $row[2];
     $smtp_user = $row[3];
     $smtp_pass = $row[4];
-    $smtp_email_to = $row[5];
-    $smtp_email_from = $row[6];
+    $smtp_email_from = $row[5];
+    $smtp_daily_max = $row[6];
+    $smtp_wait_time = $row[7];
 }
 
 
