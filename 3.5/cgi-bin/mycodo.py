@@ -2853,7 +2853,10 @@ def read_sql():
             conditional_t_relay_state[j][count][0] = row[8]
             conditional_t_relay_seconds_on[j][count][0] = row[9]
             conditional_t_sel_command[j][count][0] = row[10]
-            conditional_t_do_command[j][count][0] = row[11].replace("\'\'","\'")
+            if row[11] == None:
+                conditional_t_do_command[j][count][0] = row[11]
+            else:
+                conditional_t_do_command[j][count][0] = row[11].replace("\'\'","\'")
             conditional_t_sel_notify[j][count][0] = row[12]
             conditional_t_do_notify[j][count][0] = row[13]
             count += 1
@@ -3004,7 +3007,10 @@ def read_sql():
             conditional_ht_relay_state[j][count][0] = row[9]
             conditional_ht_relay_seconds_on[j][count][0] = row[10]
             conditional_ht_sel_command[j][count][0] = row[11]
-            conditional_ht_do_command[j][count][0] = row[12].replace("\'\'","\'")
+            if row[12] == None:
+                conditional_ht_do_command[j][count][0] = row[12]
+            else:
+                conditional_ht_do_command[j][count][0] = row[12].replace("\'\'","\'")
             conditional_ht_sel_notify[j][count][0] = row[13]
             conditional_ht_do_notify[j][count][0] = row[14]
             count += 1
@@ -3122,7 +3128,10 @@ def read_sql():
             conditional_co2_relay_state[j][count][0] = row[8]
             conditional_co2_relay_seconds_on[j][count][0] = row[9]
             conditional_co2_sel_command[j][count][0] = row[10]
-            conditional_co2_do_command[j][count][0] = row[11].replace("\'\'","\'")
+            if row[11] == None:
+                conditional_co2_do_command[j][count][0] = row[11]
+            else:
+                conditional_co2_do_command[j][count][0] = row[11].replace("\'\'","\'")
             conditional_co2_sel_notify[j][count][0] = row[12]
             conditional_co2_do_notify[j][count][0] = row[13]
             count += 1
@@ -3273,7 +3282,10 @@ def read_sql():
             conditional_press_relay_state[j][count][0] = row[9]
             conditional_press_relay_seconds_on[j][count][0] = row[10]
             conditional_press_sel_command[j][count][0] = row[11]
-            conditional_press_do_command[j][count][0] = row[12].replace("\'\'","\'")
+            if row[12] == None:
+                conditional_press_do_command[j][count][0] = row[12]
+            else:
+                conditional_press_do_command[j][count][0] = row[12].replace("\'\'","\'")
             conditional_press_sel_notify[j][count][0] = row[13]
             conditional_press_do_notify[j][count][0] = row[14]
             count += 1
@@ -3744,7 +3756,7 @@ def relay_on_duration(relay, seconds, sensor):
                 p = subprocess.Popen(conditional_relay_do_command[i], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 output, errors = p.communicate()
                 logging.debug("[Conditional %s] Execute command: %s Command output: %s Command errors: %s", (i+1), conditional_relay_do_command[i], output, errors)
-                
+
             if conditional_relay_sel_notify[i]:
                 if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
                     message = "Relay Conditional %s (%s): Relay %s turned %s for %s seconds." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
