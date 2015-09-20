@@ -520,11 +520,11 @@ if (isset($output_error)) {
             </form>
                 
             <div style="clear: both"></div>
-
-            <div class="sensor-parent">
-                <?php
-                if (count($relay_id) > 0) {
-                ?>
+            
+            <?php
+            if (count($relay_id) > 0) {
+            ?>
+                <div class="sensor-parent" style="margin-top: 2em;">
                     <form action="?tab=sensor" method="POST">
                     <table class="relays">
                         <tr>
@@ -538,7 +538,7 @@ if (isset($output_error)) {
                             <td align=center class="table-header">Startup<br>State</td>
                             <td align=center class="table-header"></td>
                         </tr>
-                        <?php for ($i = 0; $i < count($relay_id); $i++) {
+                        <?php for ($n = 0; $n < count($relay_id); $n++) {
                             $read = "$gpio_path -g read $relay_pin[$i]";
                         ?>
                         <tr>
@@ -622,8 +622,8 @@ if (isset($output_error)) {
                                 If Relay
                                 <select style="width: 3em;" name="conditionrelayifrelay" title="Select the relay to watch for whether it turns on or off.">
                                     <?php
-                                    for ($i = 0; $i < count($relay_id); $i++) {
-                                    echo '<option value="' . ($i+1) . '">' . ($i+1) . '</option>';
+                                    for ($n = 0; $n < count($relay_id); $n++) {
+                                    echo '<option value="' . ($n+1) . '">' . ($n+1) . '</option>';
                                     } ?>
                                 </select>
                                 turns
@@ -639,8 +639,8 @@ if (isset($output_error)) {
                                 <input type="checkbox" name="conditionrelayselrelay" value="1" checked> Turn Relay
                                 <select style="width: 3em;" name="conditionrelaydorelay" title="Select the relay that will be modified based on the watched relay and watched action.">
                                     <?php
-                                    for ($i = 0; $i < count($relay_id); $i++) {
-                                    echo '<option value="' . ($i+1) . '">' . ($i+1) . '</option>';
+                                    for ($n = 0; $n < count($relay_id); $n++) {
+                                    echo '<option value="' . ($n+1) . '">' . ($n+1) . '</option>';
                                     } ?>
                                 </select>
                                 <select style="width: 3em;" name="conditionrelaydoaction" title="What do you want the modified relay to do once the watched relay performs the watched action.">
@@ -733,31 +733,38 @@ if (isset($output_error)) {
                                 if (!$first) {
                                     echo '</tr><tr><td></td>';
                                 }
-                                echo '<td>Notify <b>' . $conditional_relay_notify[$z] . '</b></td>';
+                                echo '<td style="width: 100%;">Notify <b>' . $conditional_relay_notify[$z] . '</b></td>';
                             }
 
                             echo '</tr>';
                         } 
                     ?>
-                    <tr><td style="padding-top: 1em;"></td><td></td></tr>
+                    <tr>
+                        <td style="padding-top: 1em;"></td>
+                        <td></td>
+                    </tr>
                     </table>
                     </form>
                     <?php
                     }
                     ?>
+
+                </div>
             <?php
             }
             ?>
-            </div>
 
             <?php if (count($relay_id) > 0) echo '<div style="margin-bottom:1em;"></div>'; ?>
             
             <?php
             if (count($timer_id) > 0) {
             ?>
-            <div class="advanced">
+                <div style="clear: both;"></div>
+                <div class="sensor-title">Timers</div>
+                <div style="clear: both;"></div>
+
+                <div class="sensor-parent">
                 <form action="?tab=sensor" method="POST">
-                <div>
                     <table class="relays">
                         <tr>
                             <td align=center class="table-header">Timer</td>
@@ -810,9 +817,8 @@ if (isset($output_error)) {
                         }
                         ?>
                     </table>
-                </div>
                 </form>
-            </div>
+                </div>
             <?php
             }
             ?>
@@ -1064,7 +1070,12 @@ if (isset($output_error)) {
                         </td>
                         <td style="padding-bottom: 0.3em;">
                             <input type="checkbox" name="conditiont<?php echo $i; ?>selrelay" value="1" checked> Turn Relay
-                            <input style="width: 3em;" type="number" step="any" value="" maxlength=4 size=1 name="conditiont<?php echo $i; ?>relay" title="" required/>
+                            <select style="width: 3em;" name="conditiont<?php echo $i; ?>relay" title="Select the relay that will be modified based on the watched action.">
+                                <?php
+                                for ($n = 0; $n < count($relay_id); $n++) {
+                                echo '<option value="' . ($n+1) . '">' . ($n+1) . '</option>';
+                                } ?>
+                            </select>
                             <select style="width: 4em;" name="conditiont<?php echo $i; ?>relaystate">
                                 <option value="1">On</option>
                                 <option value="0">Off</option>
@@ -1153,7 +1164,7 @@ if (isset($output_error)) {
                                 if (!$first) {
                                     echo '</tr><tr><td></td>';
                                 }
-                                echo '<td>Notify <b>' . $conditional_t_notify[$i][$z] . '</b></td>';
+                                echo '<td style="width: 100%;">Notify <b>' . $conditional_t_notify[$i][$z] . '</b></td>';
                             }
 
                             echo '</tr>';
@@ -1472,7 +1483,6 @@ if (isset($output_error)) {
                 </table>
                 </form>
                 
-
                 <table class="conditional">
                     <tr>
                         <td>
@@ -1480,6 +1490,7 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                 </table>
+
                 <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                 <table>
                     <tr>
@@ -1500,7 +1511,12 @@ if (isset($output_error)) {
                         </td>
                         <td style="padding-bottom: 0.3em;">
                             <input type="checkbox" name="conditionht<?php echo $i; ?>selrelay" value="1" checked> Turn Relay
-                            <input style="width: 3em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionht<?php echo $i; ?>relay" title="" required/>
+                            <select style="width: 3em;" name="conditionht<?php echo $i; ?>relay" title="Select the relay that will be modified based on the watched action.">
+                                <?php
+                                for ($n = 0; $n < count($relay_id); $n++) {
+                                echo '<option value="' . ($n+1) . '">' . ($n+1) . '</option>';
+                                } ?>
+                            </select>
                             <select style="width: 4em;" name="conditionht<?php echo $i; ?>relaystate">
                                 <option value="1">On</option>
                                 <option value="0">Off</option>
@@ -1558,9 +1574,9 @@ if (isset($output_error)) {
                             echo $conditional_ht_setpoint[$i][$z];
 
                             if ($conditional_ht_condition[$i][$z] == "Humidity") {
-                                echo '%';
+                                echo '%:';
                             } else {
-                                echo '&deg;C';
+                                echo '&deg;C:';
                             }
 
                             $first = 1;
@@ -1595,13 +1611,16 @@ if (isset($output_error)) {
                                 if (!$first) {
                                     echo '</tr><tr><td></td>';
                                 }
-                                echo '<td>Notify <b>' . $conditional_ht_notify[$i][$z] . '</b></td>';
+                                echo '<td style="width: 100%;">Notify <b>' . $conditional_ht_notify[$i][$z] . '</b></td>';
                             }
 
                             echo '</tr>';
                         } 
                     ?>
-                    <tr><td style="padding-top:1em;"></td><td></td></tr>
+                    <tr>
+                        <td style="padding-top:1em;"></td>
+                        <td></td>
+                    </tr>
                 </table>
                 </form>
                 <?php
@@ -1611,7 +1630,7 @@ if (isset($output_error)) {
                 </div>
                 <div style="margin-bottom: <?php if ($i == count($sensor_ht_id)) echo '2'; else echo '1'; ?>em;"></div>
                 <?php
-                } }
+                }   }
                 ?>
 
             <?php if (count($sensor_co2_id) > 0) { ?>
@@ -1860,7 +1879,12 @@ if (isset($output_error)) {
                         </td>
                         <td style="padding-bottom: 0.3em;">
                             <input type="checkbox" name="conditionco2<?php echo $i; ?>selrelay" value="1" checked> Turn Relay
-                            <input style="width: 3em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionco2<?php echo $i; ?>relay" title="" required/>
+                            <select style="width: 3em;" name="conditionco2<?php echo $i; ?>relay" title="Select the relay that will be modified based on the watched action.">
+                                <?php
+                                for ($n = 0; $n < count($relay_id); $n++) {
+                                echo '<option value="' . ($n+1) . '">' . ($n+1) . '</option>';
+                                } ?>
+                            </select>
                             <select style="width: 4em;" name="conditionco2<?php echo $i; ?>relaystate">
                                 <option value="1">On</option>
                                 <option value="0">Off</option>
@@ -1949,7 +1973,7 @@ if (isset($output_error)) {
                                 if (!$first) {
                                     echo '</tr><tr><td></td>';
                                 }
-                                echo '<td>Notify <b>' . $conditional_co2_notify[$i][$z] . '</b></td>';
+                                echo '<td style="width: 100%;">Notify <b>' . $conditional_co2_notify[$i][$z] . '</b></td>';
                             }
 
                             echo '</tr>';
@@ -2304,7 +2328,12 @@ if (isset($output_error)) {
                         </td>
                         <td style="padding-bottom: 0.3em;">
                             <input type="checkbox" name="conditionpress<?php echo $i; ?>selrelay" value="1" checked> Turn Relay
-                            <input style="width: 3em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionpress<?php echo $i; ?>relay" title="" required/>
+                            <select style="width: 3em;" name="conditionpress<?php echo $i; ?>relay" title="Select the relay that will be modified based on the watched action.">
+                                <?php
+                                for ($n = 0; $n < count($relay_id); $n++) {
+                                echo '<option value="' . ($n+1) . '">' . ($n+1) . '</option>';
+                                } ?>
+                            </select>
                             <select style="width: 4em;" name="conditionpress<?php echo $i; ?>relaystate">
                                 <option value="1">On</option>
                                 <option value="0">Off</option>
@@ -2362,9 +2391,9 @@ if (isset($output_error)) {
                             echo $conditional_press_setpoint[$i][$z];
 
                             if ($conditional_press_condition[$i][$z] == "Pressure") {
-                                echo ' kPa';
+                                echo ' kPa:';
                             } else {
-                                echo '&deg;C';
+                                echo '&deg;C:';
                             }
 
                             echo ':</td>';
@@ -2401,7 +2430,7 @@ if (isset($output_error)) {
                                 if (!$first) {
                                     echo '</tr><tr><td></td>';
                                 }
-                                echo '<td>Notify <b>' . $conditional_press_notify[$i][$z] . '</b></td>';
+                                echo '<td style="width: 100%;">Notify <b>' . $conditional_press_notify[$i][$z] . '</b></td>';
                             }
 
                             echo '</tr>';

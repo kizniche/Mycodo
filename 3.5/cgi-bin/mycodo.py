@@ -715,16 +715,29 @@ def daemon(output, log):
                                     (conditional_t_direction[j][k][0] == -1 and # If temp is below set point
                                     sensor_t_read_temp_c[j] < conditional_t_setpoint[j][k][0])):
 
-                                if conditional_t_relay_state[j][k][0] == 1:
-                                    if conditional_t_relay_seconds_on[j][k][0] > 0:
-                                        logging.debug("[Conditional T] Conditional statement %s True: Turn relay %s on for %s seconds", k+1, conditional_t_relay[j][k][0], conditional_t_relay_seconds_on[j][k][0])
-                                        rod = threading.Thread(target = relay_on_duration,
-                                            args = (conditional_t_relay[j][k][0], conditional_t_relay_seconds_on[j][k][0], j,))
-                                        rod.start()
-                                    else:
-                                        relay_onoff(conditional_t_relay[j][k][0], 'on')
-                                elif conditional_t_relay_state[j][k][0] == 0:
-                                    relay_onoff(conditional_t_relay[j][k][0], 'off')
+                                if conditional_t_sel_relay[j][k][0]:
+                                    if conditional_t_relay_state[j][k][0] == 1:
+                                        if conditional_t_relay_seconds_on[j][k][0] > 0:
+                                            logging.debug("[Conditional T] Conditional statement %s True: Turn relay %s on for %s seconds", k+1, conditional_t_relay[j][k][0], conditional_t_relay_seconds_on[j][k][0])
+                                            rod = threading.Thread(target = relay_on_duration,
+                                                args = (conditional_t_relay[j][k][0], conditional_t_relay_seconds_on[j][k][0], j,))
+                                            rod.start()
+                                        else:
+                                            relay_onoff(conditional_t_relay[j][k][0], 'on')
+                                    elif conditional_t_relay_state[j][k][0] == 0:
+                                        relay_onoff(conditional_t_relay[j][k][0], 'off')
+                                if conditional_t_sel_command[j][k][0]:
+                                    pass # conditional_relay_do_command
+                                if conditional_t_sel_notify[j][k][0]:
+                                    if (conditional_t_direction[j][k][0] == 1 and
+                                            sensor_t_read_temp_c[j] > conditional_t_setpoint[j][k][0]):
+                                        message = "Notification: T Sensor %s (%s), Conditional %s (%s), Temperature %s°C above %s°C." % (j+1, sensor_t_name[j], k+1, conditional_t_name[j][k][0], round(sensor_t_read_temp_c[j], 2), conditional_t_setpoint[j][k][0])
+                                    if (conditional_t_direction[j][k][0] == -1 and
+                                            sensor_t_read_temp_c[j] < conditional_t_setpoint[j][k][0]):
+                                        message = "Notification: T Sensor %s (%s), Conditional %s (%s), Temperature %s°C below %s°C." % (j+1, sensor_t_name[j], k+1, conditional_t_name[j][k][0], round(sensor_t_read_temp_c[j], 2), conditional_t_setpoint[j][k][0])
+
+                                    email(conditional_t_do_notify[j][k][0], message)
+
                         else:
                             logging.warning("[Conditional T] Could not read sensor %s, did not check conditional %s", j+1, k+1)
                         timerTConditional[j][k] = int(time.time()) + conditional_t_period[j][k][0]
@@ -755,16 +768,42 @@ def daemon(output, log):
                                     conditional_ht_direction[j][k][0] == -1 and
                                     sensor_ht_read_hum[j] < conditional_ht_setpoint[j][k][0])):
 
-                                if conditional_ht_relay_state[j][k][0] == 1:
-                                    if conditional_ht_relay_seconds_on[j][k][0] > 0:
-                                        logging.debug("[Conditional HT] Conditional statement %s True: Turn relay %s on for %s seconds", k+1, conditional_ht_relay[j][k][0], conditional_ht_relay_seconds_on[j][k][0])
-                                        rod = threading.Thread(target = relay_on_duration,
-                                            args = (conditional_ht_relay[j][k][0], conditional_ht_relay_seconds_on[j][k][0], j,))
-                                        rod.start()
-                                    else:
-                                        relay_onoff(conditional_ht_relay[j][k][0], 'on')
-                                elif conditional_ht_relay_state[j][k][0] == 0:
-                                    relay_onoff(conditional_ht_relay[j][k][0], 'off')
+                                if conditional_ht_sel_relay[j][k][0]:
+                                    if conditional_ht_relay_state[j][k][0] == 1:
+                                        if conditional_ht_relay_seconds_on[j][k][0] > 0:
+                                            logging.debug("[Conditional HT] Conditional statement %s True: Turn relay %s on for %s seconds", k+1, conditional_ht_relay[j][k][0], conditional_ht_relay_seconds_on[j][k][0])
+                                            rod = threading.Thread(target = relay_on_duration,
+                                                args = (conditional_ht_relay[j][k][0], conditional_ht_relay_seconds_on[j][k][0], j,))
+                                            rod.start()
+                                        else:
+                                            relay_onoff(conditional_ht_relay[j][k][0], 'on')
+                                    elif conditional_ht_relay_state[j][k][0] == 0:
+                                        relay_onoff(conditional_ht_relay[j][k][0], 'off')
+
+                                if conditional_ht_sel_command[j][k][0]:
+                                    pass # conditional_relay_do_command
+
+                                if conditional_ht_sel_notify[j][k][0]:
+
+                                    if (conditional_ht_condition[j][k][0] == "Temperature" and
+                                            conditional_ht_direction[j][k][0] == 1 and
+                                            sensor_ht_read_temp_c[j] > conditional_ht_setpoint[j][k][0]):
+                                        message = "Notification: HT Sensor %s (%s), Conditional %s (%s), Temperature %s°C above %s°C." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_temp_c[j], 2), conditional_ht_setpoint[j][k][0])
+                                    if (conditional_ht_condition[j][k][0] == "Temperature" and
+                                            conditional_ht_direction[j][k][0] == -1 and
+                                            sensor_ht_read_temp_c[j] < conditional_ht_setpoint[j][k][0]):
+                                        message = "Notification: HT Sensor %s (%s), Conditional %s (%s), Temperature %s°C below %s°C." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_temp_c[j], 1), conditional_ht_setpoint[j][k][0])
+                                    if (conditional_ht_condition[j][k][0] == "Humidity" and
+                                            conditional_ht_direction[j][k][0] == 1 and
+                                            sensor_ht_read_hum[j] > conditional_ht_setpoint[j][k][0]):
+                                        message = "Notification: HT Sensor %s (%s), Conditional %s (%s), Humidity %s%% above %s%%." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_hum[j], 2), conditional_ht_setpoint[j][k][0])
+                                    if (conditional_ht_condition[j][k][0] == "Humidity" and
+                                            conditional_ht_direction[j][k][0] == -1 and
+                                            sensor_ht_read_hum[j] < conditional_ht_setpoint[j][k][0]):
+                                        message = "Notification: HT Sensor %s (%s), Conditional %s (%s), Humidity %s%% below %s%%." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_hum[j], 2), conditional_ht_setpoint[j][k][0])
+                                    
+                                    email(conditional_ht_do_notify[j][k][0], message)
+
                         else:
                             logging.warning("[Conditional HT] Could not read sensor %s, did not check conditional %s", j+1, k+1)
                         timerHTConditional[j][k] = int(time.time()) + conditional_ht_period[j][k][0]
@@ -782,21 +821,36 @@ def daemon(output, log):
                         logging.debug("[Conditional CO2] Check conditional statement %s: %s", k+1, conditional_co2_name[j][k][0])
                         if read_co2_sensor(j) == 1:
 
-                            if ((conditional_co2_direction[j][k][0] == 1 and # If temp is above set point
+                            if ((conditional_co2_direction[j][k][0] == 1 and
                                     sensor_co2_read_co2[j] > conditional_co2_setpoint[j][k][0]) or
-                                    (conditional_co2_direction[j][k][0] == -1 and # If temp is below set point
+                                    (conditional_co2_direction[j][k][0] == -1 and
                                     sensor_co2_read_co2[j] < conditional_co2_setpoint[j][k][0])):
 
-                                if conditional_co2_relay_state[j][k][0] == 1:
-                                    if conditional_co2_relay_seconds_on[j][k][0] > 0:
-                                        logging.debug("[Conditional CO2] Conditional statement %s True: Turn relay %s on for %s seconds", k+1, conditional_co2_relay[j][k][0], conditional_co2_relay_seconds_on[j][k][0])
-                                        rod = threading.Thread(target = relay_on_duration,
-                                            args = (conditional_co2_relay[j][k][0], conditional_co2_relay_seconds_on[j][k][0], j,))
-                                        rod.start()
-                                    else:
-                                        relay_onoff(conditional_co2_relay[j][k][0], 'on')
-                                elif conditional_co2_relay_state[j][k][0] == 0:
-                                    relay_onoff(conditional_co2_relay[j][k][0], 'off')
+                                if conditional_co2_sel_relay[j][k][0]:
+                                    if conditional_co2_relay_state[j][k][0] == 1:
+                                        if conditional_co2_relay_seconds_on[j][k][0] > 0:
+                                            logging.debug("[Conditional CO2] Conditional statement %s True: Turn relay %s on for %s seconds", k+1, conditional_co2_relay[j][k][0], conditional_co2_relay_seconds_on[j][k][0])
+                                            rod = threading.Thread(target = relay_on_duration,
+                                                args = (conditional_co2_relay[j][k][0], conditional_co2_relay_seconds_on[j][k][0], j,))
+                                            rod.start()
+                                        else:
+                                            relay_onoff(conditional_co2_relay[j][k][0], 'on')
+                                    elif conditional_co2_relay_state[j][k][0] == 0:
+                                        relay_onoff(conditional_co2_relay[j][k][0], 'off')
+
+                                if conditional_co2_sel_command[j][k][0]:
+                                    pass # conditional_relay_do_command
+
+                                if conditional_co2_sel_notify[j][k][0]:
+                                    if (conditional_co2_direction[j][k][0] == 1 and
+                                            sensor_co2_read_co2[j] > conditional_co2_setpoint[j][k][0]):
+                                        message = "Notification: CO2 Sensor %s (%s), Conditional %s (%s), CO2 %s ppmv above %s ppmv." % (j+1, sensor_co2_name[j], k+1, conditional_co2_name[j][k][0], sensor_co2_read_co2[j], conditional_co2_setpoint[j][k][0])
+                                    if (conditional_co2_direction[j][k][0] == -1 and
+                                            sensor_co2_read_co2[j] < conditional_co2_setpoint[j][k][0]):
+                                        message = "Notification: CO2 Sensor %s (%s), Conditional %s (%s), CO2 %s ppmv below %s ppmv." % (j+1, sensor_co2_name[j], k+1, conditional_co2_name[j][k][0], sensor_co2_read_co2[j], conditional_co2_setpoint[j][k][0])
+
+                                    email(conditional_co2_do_notify[j][k][0], message)
+
                         else:
                             logging.warning("[Conditional CO2] Could not read sensor %s, did not check conditional %s", j+1, k+1)
                         timerCO2Conditional[j][k] = int(time.time()) + conditional_co2_period[j][k][0]
@@ -814,29 +868,55 @@ def daemon(output, log):
                         logging.debug("[Conditional Press] Check conditional statement %s: %s", k+1, conditional_press_name[j][k][0])
                         if read_press_sensor(j) == 1:
 
-                            if ((conditional_press_condition[j][k][0] == "Pressure" and # If temp is above set point
+                            if ((conditional_press_condition[j][k][0] == "Pressure" and
                                     conditional_press_direction[j][k][0] == 1 and
                                     sensor_press_read_press[j] > conditional_press_setpoint[j][k][0]) or
-                                    (conditional_press_condition[j][k][0] == "Pressure" and  # If temp is below set point
+                                    (conditional_press_condition[j][k][0] == "Pressure" and
                                     conditional_press_direction[j][k][0] == -1 and
                                     sensor_press_read_press[j] < conditional_press_setpoint[j][k][0]) or
-                                    (conditional_press_condition[j][k][0] == "Temperature" and # If hum is above set point
+                                    (conditional_press_condition[j][k][0] == "Temperature" and
                                     conditional_press_direction[j][k][0] == 1 and
                                     sensor_press_read_temp_c[j] > conditional_press_setpoint[j][k][0]) or
-                                    (conditional_press_condition[j][k][0] == "Temperature" and # If hum is below set point
+                                    (conditional_press_condition[j][k][0] == "Temperature" and
                                     conditional_press_direction[j][k][0] == -1 and
                                     sensor_press_read_temp_c[j] < conditional_press_setpoint[j][k][0])):
 
-                                if conditional_press_relay_state[j][k][0] == 1:
-                                    if conditional_press_relay_seconds_on[j][k][0] > 0:
-                                        logging.debug("[Conditional Press] Conditional statement %s True: Turn relay %s on for %s seconds", k+1, conditional_press_relay[j][k][0], conditional_press_relay_seconds_on[j][k][0])
-                                        rod = threading.Thread(target = relay_on_duration,
-                                            args = (conditional_press_relay[j][k][0], conditional_press_relay_seconds_on[j][k][0], j,))
-                                        rod.start()
-                                    else:
-                                        relay_onoff(conditional_press_relay[j][k][0], 'on')
-                                elif conditional_press_relay_state[j][k][0] == 0:
-                                    relay_onoff(conditional_press_relay[j][k][0], 'off')
+                                if conditional_press_sel_relay[j][k][0]:
+                                    if conditional_press_relay_state[j][k][0] == 1:
+                                        if conditional_press_relay_seconds_on[j][k][0] > 0:
+                                            logging.debug("[Conditional Press] Conditional statement %s True: Turn relay %s on for %s seconds", k+1, conditional_press_relay[j][k][0], conditional_press_relay_seconds_on[j][k][0])
+                                            rod = threading.Thread(target = relay_on_duration,
+                                                args = (conditional_press_relay[j][k][0], conditional_press_relay_seconds_on[j][k][0], j,))
+                                            rod.start()
+                                        else:
+                                            relay_onoff(conditional_press_relay[j][k][0], 'on')
+                                    elif conditional_press_relay_state[j][k][0] == 0:
+                                        relay_onoff(conditional_press_relay[j][k][0], 'off')
+
+                                if conditional_press_sel_command[j][k][0]:
+                                    pass # conditional_relay_do_command
+
+                                if conditional_press_sel_notify[j][k][0]:
+
+                                    if (conditional_press_condition[j][k][0] == "Pressure" and
+                                    conditional_press_direction[j][k][0] == 1 and
+                                    sensor_press_read_press[j] > conditional_press_setpoint[j][k][0]):
+                                        message = "Notification: Press Sensor %s (%s), Conditional %s (%s), Pressure %s kPa above %s kPa." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_press[j], conditional_press_setpoint[j][k][0])
+                                    if (conditional_press_condition[j][k][0] == "Pressure" and
+                                    conditional_press_direction[j][k][0] == -1 and
+                                    sensor_press_read_press[j] < conditional_press_setpoint[j][k][0]):
+                                        message = "Notification: Press Sensor %s (%s), Conditional %s (%s), Pressure %s kPa below %s kPa." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_press[j], conditional_press_setpoint[j][k][0])
+                                    if (conditional_press_condition[j][k][0] == "Temperature" and
+                                    conditional_press_direction[j][k][0] == 1 and
+                                    sensor_press_read_temp_c[j] > conditional_press_setpoint[j][k][0]):
+                                        message = "Notification: Press Sensor %s (%s), Conditional %s (%s), Temperature %s°C above %s°C." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_temp_c[j], conditional_press_setpoint[j][k][0])
+                                    if (conditional_press_condition[j][k][0] == "Temperature" and
+                                    conditional_press_direction[j][k][0] == -1 and
+                                    sensor_press_read_temp_c[j] < conditional_press_setpoint[j][k][0]):
+                                        message = "Notification: Press Sensor %s (%s), Conditional %s (%s), Temperature %s°C below %s°C." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_temp_c[j], conditional_press_setpoint[j][k][0])
+                                    
+                                    email(conditional_press_do_notify[j][k][0], message)
+                                    
                         else:
                             logging.warning("[Conditional Press] Could not read sensor %s, did not check conditional %s", j+1, k+1)
                         timerPressConditional[j][k] = int(time.time()) + conditional_press_period[j][k][0]
@@ -3626,7 +3706,7 @@ def relay_on_duration(relay, seconds, sensor):
                 else:
                     message = "Notification: Relay %s turned %s." % (relay, conditional_relay_doaction[i])
                 email(conditional_relay_do_notify[i], message)
-                
+
         elif conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'off' and conditional_relay_doaction[i] == 'on':
             if conditional_relay_sel_relay[i]:
                 relay_onoff(conditional_relay_dorelay[i], 'on')
