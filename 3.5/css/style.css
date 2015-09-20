@@ -98,7 +98,7 @@ hr.fade {
 
 table.sensor_conditional td {
     background-color: #FFFFFF;
-    padding-right: 1em;
+    padding-right: 0.5em;
 }
 
 table.sensor {

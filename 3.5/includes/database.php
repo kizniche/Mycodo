@@ -71,6 +71,7 @@ while ($row = $results->fetchArray()) {
     $conditional_relay_notify[$i] = $row[12];
     $i++;
 }
+if (!isset($conditional_relay_id)) $conditional_relay_id = [];
 
 
 unset($sensor_t_id);

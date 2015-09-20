@@ -45,12 +45,13 @@ import RPi.GPIO as GPIO
 import serial
 import shutil
 import smtplib
+import socket
 import sqlite3
-import traceback
 import subprocess
 import sys
 import threading
 import time
+import traceback
 from array import *
 from email.mime.text import MIMEText
 from lockfile import LockFile
@@ -710,9 +711,9 @@ def daemon(output, log):
                         logging.debug("[Conditional T] Check conditional statement %s: %s", k+1, conditional_t_name[j][k][0])
                         if read_t_sensor(j) == 1:
 
-                            if ((conditional_t_direction[j][k][0] == 1 and # If temp is above set point
+                            if ((conditional_t_direction[j][k][0] == 1 and
                                     sensor_t_read_temp_c[j] > conditional_t_setpoint[j][k][0]) or
-                                    (conditional_t_direction[j][k][0] == -1 and # If temp is below set point
+                                    (conditional_t_direction[j][k][0] == -1 and
                                     sensor_t_read_temp_c[j] < conditional_t_setpoint[j][k][0])):
 
                                 if conditional_t_sel_relay[j][k][0]:
@@ -731,10 +732,10 @@ def daemon(output, log):
                                 if conditional_t_sel_notify[j][k][0]:
                                     if (conditional_t_direction[j][k][0] == 1 and
                                             sensor_t_read_temp_c[j] > conditional_t_setpoint[j][k][0]):
-                                        message = "Notification: T Sensor %s (%s), Conditional %s (%s), Temperature %s°C above %s°C." % (j+1, sensor_t_name[j], k+1, conditional_t_name[j][k][0], round(sensor_t_read_temp_c[j], 2), conditional_t_setpoint[j][k][0])
+                                        message = "Notification: T Sensor %s (%s), Conditional %s (%s), Temperature: %s°C > %s°C." % (j+1, sensor_t_name[j], k+1, conditional_t_name[j][k][0], round(sensor_t_read_temp_c[j], 2), conditional_t_setpoint[j][k][0])
                                     if (conditional_t_direction[j][k][0] == -1 and
                                             sensor_t_read_temp_c[j] < conditional_t_setpoint[j][k][0]):
-                                        message = "Notification: T Sensor %s (%s), Conditional %s (%s), Temperature %s°C below %s°C." % (j+1, sensor_t_name[j], k+1, conditional_t_name[j][k][0], round(sensor_t_read_temp_c[j], 2), conditional_t_setpoint[j][k][0])
+                                        message = "Notification: T Sensor %s (%s), Conditional %s (%s), Temperature: %s°C < %s°C." % (j+1, sensor_t_name[j], k+1, conditional_t_name[j][k][0], round(sensor_t_read_temp_c[j], 2), conditional_t_setpoint[j][k][0])
 
                                     email(conditional_t_do_notify[j][k][0], message)
 
@@ -755,16 +756,16 @@ def daemon(output, log):
                         logging.debug("[Conditional HT] Check conditional statement %s: %s", k+1, conditional_ht_name[j][k][0])
                         if read_ht_sensor(j) == 1:
 
-                            if ((conditional_ht_condition[j][k][0] == "Temperature" and # If temp is above set point
+                            if ((conditional_ht_condition[j][k][0] == "Temperature" and
                                     conditional_ht_direction[j][k][0] == 1 and
                                     sensor_ht_read_temp_c[j] > conditional_ht_setpoint[j][k][0]) or
-                                    (conditional_ht_condition[j][k][0] == "Temperature" and  # If temp is below set point
+                                    (conditional_ht_condition[j][k][0] == "Temperature" and
                                     conditional_ht_direction[j][k][0] == -1 and
                                     sensor_ht_read_temp_c[j] < conditional_ht_setpoint[j][k][0]) or
-                                    (conditional_ht_condition[j][k][0] == "Humidity" and # If hum is above set point
+                                    (conditional_ht_condition[j][k][0] == "Humidity" and
                                     conditional_ht_direction[j][k][0] == 1 and
                                     sensor_ht_read_hum[j] > conditional_ht_setpoint[j][k][0]) or
-                                    (conditional_ht_condition[j][k][0] == "Humidity" and # If hum is below set point
+                                    (conditional_ht_condition[j][k][0] == "Humidity" and
                                     conditional_ht_direction[j][k][0] == -1 and
                                     sensor_ht_read_hum[j] < conditional_ht_setpoint[j][k][0])):
 
@@ -788,19 +789,19 @@ def daemon(output, log):
                                     if (conditional_ht_condition[j][k][0] == "Temperature" and
                                             conditional_ht_direction[j][k][0] == 1 and
                                             sensor_ht_read_temp_c[j] > conditional_ht_setpoint[j][k][0]):
-                                        message = "Notification: HT Sensor %s (%s), Conditional %s (%s), Temperature %s°C above %s°C." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_temp_c[j], 2), conditional_ht_setpoint[j][k][0])
+                                        message = "Notification: HT Sensor %s (%s), Conditional %s (%s), Temperature: %s°C > %s°C." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_temp_c[j], 2), conditional_ht_setpoint[j][k][0])
                                     if (conditional_ht_condition[j][k][0] == "Temperature" and
                                             conditional_ht_direction[j][k][0] == -1 and
                                             sensor_ht_read_temp_c[j] < conditional_ht_setpoint[j][k][0]):
-                                        message = "Notification: HT Sensor %s (%s), Conditional %s (%s), Temperature %s°C below %s°C." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_temp_c[j], 1), conditional_ht_setpoint[j][k][0])
+                                        message = "Notification: HT Sensor %s (%s), Conditional %s (%s), Temperature: %s°C < %s°C." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_temp_c[j], 1), conditional_ht_setpoint[j][k][0])
                                     if (conditional_ht_condition[j][k][0] == "Humidity" and
                                             conditional_ht_direction[j][k][0] == 1 and
                                             sensor_ht_read_hum[j] > conditional_ht_setpoint[j][k][0]):
-                                        message = "Notification: HT Sensor %s (%s), Conditional %s (%s), Humidity %s%% above %s%%." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_hum[j], 2), conditional_ht_setpoint[j][k][0])
+                                        message = "Notification: HT Sensor %s (%s), Conditional %s (%s), Humidity: %s%% > %s%%." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_hum[j], 2), conditional_ht_setpoint[j][k][0])
                                     if (conditional_ht_condition[j][k][0] == "Humidity" and
                                             conditional_ht_direction[j][k][0] == -1 and
                                             sensor_ht_read_hum[j] < conditional_ht_setpoint[j][k][0]):
-                                        message = "Notification: HT Sensor %s (%s), Conditional %s (%s), Humidity %s%% below %s%%." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_hum[j], 2), conditional_ht_setpoint[j][k][0])
+                                        message = "Notification: HT Sensor %s (%s), Conditional %s (%s), Humidity: %s%% < %s%%." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_hum[j], 2), conditional_ht_setpoint[j][k][0])
                                     
                                     email(conditional_ht_do_notify[j][k][0], message)
 
@@ -844,10 +845,10 @@ def daemon(output, log):
                                 if conditional_co2_sel_notify[j][k][0]:
                                     if (conditional_co2_direction[j][k][0] == 1 and
                                             sensor_co2_read_co2[j] > conditional_co2_setpoint[j][k][0]):
-                                        message = "Notification: CO2 Sensor %s (%s), Conditional %s (%s), CO2 %s ppmv above %s ppmv." % (j+1, sensor_co2_name[j], k+1, conditional_co2_name[j][k][0], sensor_co2_read_co2[j], conditional_co2_setpoint[j][k][0])
+                                        message = "Notification: CO2 Sensor %s (%s), Conditional %s (%s), CO2: %s ppmv > %s ppmv." % (j+1, sensor_co2_name[j], k+1, conditional_co2_name[j][k][0], sensor_co2_read_co2[j], conditional_co2_setpoint[j][k][0])
                                     if (conditional_co2_direction[j][k][0] == -1 and
                                             sensor_co2_read_co2[j] < conditional_co2_setpoint[j][k][0]):
-                                        message = "Notification: CO2 Sensor %s (%s), Conditional %s (%s), CO2 %s ppmv below %s ppmv." % (j+1, sensor_co2_name[j], k+1, conditional_co2_name[j][k][0], sensor_co2_read_co2[j], conditional_co2_setpoint[j][k][0])
+                                        message = "Notification: CO2 Sensor %s (%s), Conditional %s (%s), CO2: %s ppmv < %s ppmv." % (j+1, sensor_co2_name[j], k+1, conditional_co2_name[j][k][0], sensor_co2_read_co2[j], conditional_co2_setpoint[j][k][0])
 
                                     email(conditional_co2_do_notify[j][k][0], message)
 
@@ -901,19 +902,19 @@ def daemon(output, log):
                                     if (conditional_press_condition[j][k][0] == "Pressure" and
                                     conditional_press_direction[j][k][0] == 1 and
                                     sensor_press_read_press[j] > conditional_press_setpoint[j][k][0]):
-                                        message = "Notification: Press Sensor %s (%s), Conditional %s (%s), Pressure %s kPa above %s kPa." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_press[j], conditional_press_setpoint[j][k][0])
+                                        message = "Notification: Press Sensor %s (%s), Conditional %s (%s), Pressure: %s kPa > %s kPa." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_press[j], conditional_press_setpoint[j][k][0])
                                     if (conditional_press_condition[j][k][0] == "Pressure" and
                                     conditional_press_direction[j][k][0] == -1 and
                                     sensor_press_read_press[j] < conditional_press_setpoint[j][k][0]):
-                                        message = "Notification: Press Sensor %s (%s), Conditional %s (%s), Pressure %s kPa below %s kPa." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_press[j], conditional_press_setpoint[j][k][0])
+                                        message = "Notification: Press Sensor %s (%s), Conditional %s (%s), Pressure: %s kPa < %s kPa." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_press[j], conditional_press_setpoint[j][k][0])
                                     if (conditional_press_condition[j][k][0] == "Temperature" and
                                     conditional_press_direction[j][k][0] == 1 and
                                     sensor_press_read_temp_c[j] > conditional_press_setpoint[j][k][0]):
-                                        message = "Notification: Press Sensor %s (%s), Conditional %s (%s), Temperature %s°C above %s°C." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_temp_c[j], conditional_press_setpoint[j][k][0])
+                                        message = "Notification: Press Sensor %s (%s), Conditional %s (%s), Temperature: %s°C > %s°C." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_temp_c[j], conditional_press_setpoint[j][k][0])
                                     if (conditional_press_condition[j][k][0] == "Temperature" and
                                     conditional_press_direction[j][k][0] == -1 and
                                     sensor_press_read_temp_c[j] < conditional_press_setpoint[j][k][0]):
-                                        message = "Notification: Press Sensor %s (%s), Conditional %s (%s), Temperature %s°C below %s°C." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_temp_c[j], conditional_press_setpoint[j][k][0])
+                                        message = "Notification: Press Sensor %s (%s), Conditional %s (%s), Temperature: %s°C < %s°C." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_temp_c[j], conditional_press_setpoint[j][k][0])
                                     
                                     email(conditional_press_do_notify[j][k][0], message)
                                     
@@ -3727,7 +3728,7 @@ def relay_on_duration(relay, seconds, sensor):
 
 
 #################################################
-#                 Email Notify                  #
+#              Email Notification               #
 #################################################
 
 # Email notification
@@ -3747,10 +3748,10 @@ def email(email_to, message):
     # message = "Critical warning!"
 
     msg = MIMEText(message)
-    msg['Subject'] = "Critical warning!"
+    msg['Subject'] = "Mycodo Notification (%s)" % socket.gethostname()
     msg['From'] = smtp_email_from
     msg['To'] = email_to
-    server.sendmail(smtp_email_from, email_to, msg.as_string())
+    server.sendmail(msg['From'], email_to, msg.as_string())
     server.quit()
 
 

@@ -538,7 +538,7 @@ if (isset($output_error)) {
                             <td align=center class="table-header">Startup<br>State</td>
                             <td align=center class="table-header"></td>
                         </tr>
-                        <?php for ($n = 0; $n < count($relay_id); $n++) {
+                        <?php for ($i = 0; $i < count($relay_id); $i++) {
                             $read = "$gpio_path -g read $relay_pin[$i]";
                         ?>
                         <tr>
@@ -633,7 +633,7 @@ if (isset($output_error)) {
                                 </select>
                                 (if on, for 
                                 <input style="width: 4em;" type="number" step="any" value="0" maxlength=5 size=1 name="conditionrelayifduration" title="Check if the number of seconds the selected relay turns on for is equal to this value. If it is the same number of seconds, this statement is true. Leave at 0 if you only want to check if the relay was turned on and not necessarily if there is a duration associated with it. If 'Off' is selected in the previous field, this variable is not considered." required/>
-                                sec),
+                                sec): 
                             </td>
                             <td style="padding-bottom: 0.3em;">
                                 <input type="checkbox" name="conditionrelayselrelay" value="1" checked> Turn Relay
@@ -647,7 +647,7 @@ if (isset($output_error)) {
                                     <option value="on">On</option>
                                     <option value="off">Off</option>
                                 </select>
-                                (if on, for 
+                                (for 
                                 <input style="width: 4em;" type="number" step="any" value="0" maxlength=5 size=1 name="conditionrelaydoduration" title="The number of seconds for the modified relay to remain on. Leave at 0 to only turn the selected relay on, but not off. If 'Off' is selected in the previous field, this variable is not considered." required/>
                                 sec)
                             </td>
@@ -657,7 +657,7 @@ if (isset($output_error)) {
                         </tr>
                         <tr>
                             <td></td>
-                            <td style="padding-bottom: 0.3em;"><input type="checkbox" name="conditionrelayselcommand" value="1"> Execute command: <input style="width: 13em;" type="text" value="" maxlength=100 name="conditionrelaycommand" title="Command to execute in a linux shell."/></td>
+                            <td style="padding-bottom: 0.3em;"><input type="checkbox" name="conditionrelayselcommand" value="1"> Execute command: <input style="width: 11em;" type="text" value="" maxlength=100 name="conditionrelaycommand" title="Command to execute in a linux shell."/></td>
                         </tr>
                         <tr>
                             <td></td>
@@ -1066,7 +1066,7 @@ if (isset($output_error)) {
                                 <option value="1">Above</option>
                                 <option value="-1">Below</option>
                             </select>
-                            <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="conditiont<?php echo $i; ?>setpoint" title="" required/> &deg;C,
+                            <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="conditiont<?php echo $i; ?>setpoint" title="" required/>: 
                         </td>
                         <td style="padding-bottom: 0.3em;">
                             <input type="checkbox" name="conditiont<?php echo $i; ?>selrelay" value="1" checked> Turn Relay
@@ -1089,7 +1089,7 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td></td>
-                        <td style="padding-bottom: 0.3em;"><input type="checkbox" name="conditiont<?php echo $i; ?>selcommand" value="1"> Execute command: <input style="width: 13em;" type="text" value="" maxlength=100 name="conditiont<?php echo $i; ?>command" title="Command to execute in a linux shell."/></td>
+                        <td style="padding-bottom: 0.3em;"><input type="checkbox" name="conditiont<?php echo $i; ?>selcommand" value="1"> Execute command: <input style="width: 11em;" type="text" value="" maxlength=100 name="conditiont<?php echo $i; ?>command" title="Command to execute in a linux shell."/></td>
                     </tr>
                     <tr>
                         <td></td>
@@ -1507,7 +1507,7 @@ if (isset($output_error)) {
                                 <option value="1">Above</option>
                                 <option value="-1">Below</option>
                             </select>
-                            <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionht<?php echo $i; ?>setpoint" title="" required/> &deg;C,
+                            <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionht<?php echo $i; ?>setpoint" title="" required/>: 
                         </td>
                         <td style="padding-bottom: 0.3em;">
                             <input type="checkbox" name="conditionht<?php echo $i; ?>selrelay" value="1" checked> Turn Relay
@@ -1530,7 +1530,7 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td></td>
-                        <td style="padding-bottom: 0.3em;"><input type="checkbox" name="conditionht<?php echo $i; ?>selcommand" value="1"> Execute command: <input style="width: 13em;" type="text" value="" maxlength=100 name="conditionht<?php echo $i; ?>command" title="Command to execute in a linux shell."/></td>
+                        <td style="padding-bottom: 0.3em;"><input type="checkbox" name="conditionht<?php echo $i; ?>selcommand" value="1"> Execute command: <input style="width: 11em;" type="text" value="" maxlength=100 name="conditionht<?php echo $i; ?>command" title="Command to execute in a linux shell."/></td>
                     </tr>
                     <tr>
                         <td></td>
@@ -1875,7 +1875,7 @@ if (isset($output_error)) {
                                 <option value="1">Above</option>
                                 <option value="-1">Below</option>
                             </select>
-                            <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionco2<?php echo $i; ?>setpoint" title="" required/> &deg;C,
+                            <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionco2<?php echo $i; ?>setpoint" title="" required/>: 
                         </td>
                         <td style="padding-bottom: 0.3em;">
                             <input type="checkbox" name="conditionco2<?php echo $i; ?>selrelay" value="1" checked> Turn Relay
@@ -1898,7 +1898,7 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td></td>
-                        <td style="padding-bottom: 0.3em;"><input type="checkbox" name="conditionco2<?php echo $i; ?>selcommand" value="1"> Execute command: <input style="width: 13em;" type="text" value="" maxlength=100 name="conditionco2<?php echo $i; ?>command" title="Command to execute in a linux shell."/></td>
+                        <td style="padding-bottom: 0.3em;"><input type="checkbox" name="conditionco2<?php echo $i; ?>selcommand" value="1"> Execute command: <input style="width: 11em;" type="text" value="" maxlength=100 name="conditionco2<?php echo $i; ?>command" title="Command to execute in a linux shell."/></td>
                     </tr>
                     <tr>
                         <td></td>
@@ -2324,7 +2324,7 @@ if (isset($output_error)) {
                                 <option value="1">Above</option>
                                 <option value="-1">Below</option>
                             </select>
-                            <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionpress<?php echo $i; ?>setpoint" title="" required/> kPa/&deg;C,
+                            <input style="width: 4em;" type="number" step="any" value="" maxlength=4 size=1 name="conditionpress<?php echo $i; ?>setpoint" title="" required/>: 
                         </td>
                         <td style="padding-bottom: 0.3em;">
                             <input type="checkbox" name="conditionpress<?php echo $i; ?>selrelay" value="1" checked> Turn Relay
@@ -2347,7 +2347,7 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td></td>
-                        <td style="padding-bottom: 0.3em;"><input type="checkbox" name="conditionpress<?php echo $i; ?>selcommand" value="1"> Execute command: <input style="width: 13em;" type="text" value="" maxlength=100 name="conditionpress<?php echo $i; ?>command" title="Command to execute in a linux shell."/></td>
+                        <td style="padding-bottom: 0.3em;"><input type="checkbox" name="conditionpress<?php echo $i; ?>selcommand" value="1"> Execute command: <input style="width: 11em;" type="text" value="" maxlength=100 name="conditionpress<?php echo $i; ?>command" title="Command to execute in a linux shell."/></td>
                     </tr>
                     <tr>
                         <td></td>
