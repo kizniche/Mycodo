@@ -32,25 +32,46 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 <table>
   <tr>
+    <td style="text-align: center">
+      Graph
+    </td>
+    <td style="text-align: center">
+      Sensor
+    </td>
+    <td style="text-align: center">
+      Custom
+    </td>
+  </tr>
     <td>
-      Graph<br><a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Graph.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Graph-150x150.png"></a>
+      <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Graph.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Graph-150x150.png"></a>
     </td>
     <td>
-      Sensor<br><a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Sensor.png" target="_blank"><img arc="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Sensor-150x150.png"></a>
+      <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Sensor.png" target="_blank"><img arc="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Sensor-150x150.png"></a>
     </td>
     <td>
-      Custom<br><a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Custom.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Custom-150x150.png"></a>
+      <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Custom.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Custom-150x150.png"></a>
+    </td>
+  </tr>
+  <tr>
+    <td style="text-align: center; padding-top 1em;">
+      Camera
+    </td>
+    <td style="text-align: center; padding-top 1em;">
+      Data
+    </td>
+    <td style="text-align: center; padding-top 1em;">
+      Settings
     </td>
   </tr>
   <tr>
     <td>
-      Camera <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Camera.png" target="_blank">![Camera](http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Camera-150x150.png)</a>
+      <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Camera.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Camera-150x150.png"></a>
     </td>
     <td>
-      Data <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Data.png" target="_blank">![Data](http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Data-150x150.png)</a>
+      <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Data.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Data-150x150.png"></a>
     </td>
     <td>
-      Settings <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Settings.png" target="_blank">![Settings](http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Settings-150x150.png)</a>
+      <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Settings.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Settings-150x150.png"></a>
     </td>
   </tr>
 </table>
