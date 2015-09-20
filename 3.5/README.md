@@ -31,6 +31,9 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 Major changes for each versioned release
 
+#### 3.5.75
++ Ability to execute command or notify by email if relay or sensor conditional is true
+
 #### 3.5.74
 + Ability to add amp draw for each device and set maximum allowed amps to be drawn (will prevent relays from turning on that would exceed the set max)
 
