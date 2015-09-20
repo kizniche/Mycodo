@@ -5,6 +5,8 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 ## Index
 
 + [Screenshots](#screenshots)
+  + [Web Interface](#web-interface)
+  + [Terminal](#terminal)
 + [Changelog](#changelog)
 + [Development](#Development)
 + [New Dependencies](#new-dependencies)
@@ -30,6 +32,8 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 ## Screenshots
 
+### Web Interface
+
 <table>
   <tr>
     <td style="text-align: center">
@@ -46,7 +50,7 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
       <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Graph.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Graph-150x150.png"></a>
     </td>
     <td>
-      <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Sensor.png" target="_blank"><img arc="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Sensor-150x150.png"></a>
+      <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Sensor.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Sensor-150x150.png"></a>
     </td>
     <td>
       <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Custom.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Custom-150x150.png"></a>
@@ -75,6 +79,16 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
     </td>
   </tr>
 </table>
+
+### Terminal
+
+#### Daemon
+
+<a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/mycodo.py_.png"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/mycodo.py_-300x124.png"></a>
+
+#### Client
+
+<a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/mycodo-client.py_.png"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/mycodo-client.py_-300x219.png"></a>
 
 ## Changelog
 
