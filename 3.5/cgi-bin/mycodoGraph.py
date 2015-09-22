@@ -51,12 +51,11 @@ relay_log_file = "%s/relay.log" % log_path
 
 # Lockfiles
 lock_directory = "/var/lock/mycodo"
+relay_log_lock_path = "%s/relay" % lock_directory
 sensor_t_log_lock_path = "%s/sensor-t-log" % lock_directory
 sensor_ht_log_lock_path = "%s/sensor-ht-log" % lock_directory
 sensor_co2_log_lock_path = "%s/sensor-co2-log" % lock_directory
 sensor_press_log_lock_path = "%s/sensor-press-log" % lock_directory
-relay_log_lock_path = "%s/relay" % lock_directory
-daemon_log_lock_path = "%s/logs" % lock_directory
 
 #################################################
 #                Graph Generation               #
