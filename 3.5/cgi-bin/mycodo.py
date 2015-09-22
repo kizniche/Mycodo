@@ -1158,22 +1158,30 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
                         logging.debug("[PID T-Temperature-%s] Temperature: %.1f°C now = %.1f°C set", sensor+1, sensor_t_read_temp_c[sensor], pid_t_temp_set[sensor])
 
                     if pid_t_temp_set_dir[sensor] > -1 and PIDTemp > 0:
-                        if pid_t_temp_outmax_low[sensor] != 0 and PIDTemp > pid_t_temp_outmax_low[sensor]:
-                            logging.debug("[PID T-Temperature-%s] PID = %.1f (max enabled)", sensor+1, PIDTemp)
+                        if pid_t_temp_outmin_low[sensor] != 0 and PIDTemp < pid_t_temp_outmin_low[sensor]:
+                            logging.debug("[PID T-Temperature-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDTemp, pid_t_temp_outmin_low[sensor])
+                            PIDTemp = pid_t_temp_outmin_low[sensor]
+                        elif pid_t_temp_outmax_low[sensor] != 0 and PIDTemp > pid_t_temp_outmax_low[sensor]:
+                            logging.debug("[PID T-Temperature-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDTemp, pid_t_temp_outmax_low[sensor])
                             PIDTemp = pid_t_temp_outmax_low[sensor]
                         else:
-                            logging.debug("[PID T-Temperature-%s] PID = %.1f (max disabled)", sensor+1, PIDTemp)
+                            logging.debug("[PID T-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
+                            
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_t_temp_relay_low[sensor], round(PIDTemp,2), sensor,))
                         rod.start()
 
                     elif pid_t_temp_set_dir[sensor] < 1 and PIDTemp < 0:
                         PIDTemp = abs(PIDTemp)
-                        if pid_t_temp_outmax_high[sensor] != 0 and PIDTemp > pid_t_temp_outmax_high[sensor]:
-                            logging.debug("[PID T-Temperature-%s] PID = %.1f (max enabled)", sensor+1, PIDTemp)
+                        if pid_t_temp_outmin_high[sensor] != 0 and PIDTemp < pid_t_temp_outmin_high[sensor]:
+                            logging.debug("[PID T-Temperature-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDTemp, pid_t_temp_outmin_high[sensor])
+                            PIDTemp = pid_t_temp_outmin_high[sensor]
+                        elif pid_t_temp_outmax_high[sensor] != 0 and PIDTemp > pid_t_temp_outmax_high[sensor]:
+                            logging.debug("[PID T-Temperature-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDTemp, pid_t_temp_outmax_high[sensor])
                             PIDTemp = pid_t_temp_outmax_high[sensor]
                         else:
-                            logging.debug("[PID T-Temperature-%s] PID = %.1f (max disabled)", sensor+1, PIDTemp)
+                            logging.debug("[PID T-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
+
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_t_temp_relay_high[sensor], round(PIDTemp,2), sensor,))
                         rod.start()
@@ -1252,22 +1260,30 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
                         logging.debug("[PID HT-Temperature-%s] Temperature: %.1f°C now = %.1f°C set", sensor+1, sensor_ht_read_temp_c[sensor], pid_ht_temp_set[sensor])
 
                     if pid_ht_temp_set_dir[sensor] > -1 and PIDTemp > 0:
-                        if pid_ht_temp_outmax_low[sensor] != 0 and PIDTemp > pid_ht_temp_outmax_low[sensor]:
-                            logging.debug("[PID HT-Temperature-%s] PID = %.1f (max enabled)", sensor+1, PIDTemp)
+                        if pid_ht_temp_outmin_low[sensor] != 0 and PIDTemp < pid_ht_temp_outmin_low[sensor]:
+                            logging.debug("[PID HT-Temperature-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDTemp, pid_ht_temp_outmin_low[sensor])
+                            PIDTemp = pid_ht_temp_outmin_low[sensor]
+                        elif pid_ht_temp_outmax_low[sensor] != 0 and PIDTemp > pid_ht_temp_outmax_low[sensor]:
+                            logging.debug("[PID HT-Temperature-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDTemp, pid_ht_temp_outmax_low[sensor])
                             PIDTemp = pid_ht_temp_outmax_low[sensor]
                         else:
-                            logging.debug("[PID HT-Temperature-%s] PID = %.1f (max disabled)", sensor+1, PIDTemp)
+                            logging.debug("[PID HT-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
+
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_ht_temp_relay_low[sensor], round(PIDTemp,2), sensor,))
                         rod.start()
 
                     elif pid_ht_temp_set_dir[sensor] < 1 and PIDTemp < 0:
                         PIDTemp = abs(PIDTemp)
-                        if pid_ht_temp_outmax_high[sensor] != 0 and PIDTemp > pid_ht_temp_outmax_high[sensor]:
-                            logging.debug("[PID HT-Temperature-%s] PID = %.1f (max enabled)", sensor+1, PIDTemp)
+                        if pid_ht_temp_outmin_high[sensor] != 0 and PIDTemp < pid_ht_temp_outmin_high[sensor]:
+                            logging.debug("[PID HT-Temperature-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDTemp, pid_ht_temp_outmin_high[sensor])
+                            PIDTemp = pid_ht_temp_outmin_high[sensor]
+                        elif pid_ht_temp_outmax_high[sensor] != 0 and PIDTemp > pid_ht_temp_outmax_high[sensor]:
+                            logging.debug("[PID HT-Temperature-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDTemp, pid_ht_temp_outmax_high[sensor])
                             PIDTemp = pid_ht_temp_outmax_high[sensor]
                         else:
-                            logging.debug("[PID HT-Temperature-%s] PID = %.1f (max disabled)", sensor+1, PIDTemp)
+                            logging.debug("[PID HT-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
+
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_ht_temp_relay_high[sensor], round(PIDTemp,2), sensor,))
                         rod.start()
@@ -1345,22 +1361,30 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
                         logging.debug("[PID HT-Humidity-%s] Humidity: %.1f%% now = %.1f%% set", sensor+1, sensor_ht_read_hum[sensor], pid_ht_hum_set[sensor])
 
                     if pid_ht_hum_set_dir[sensor] > -1 and PIDHum > 0:
-                        if pid_ht_hum_outmax_low[sensor] != 0 and PIDHum > pid_ht_hum_outmax_low[sensor]:
-                            logging.debug("[PID HT-Humidity-%s] PID = %.1f (max enabled)", sensor+1, PIDHum)
+                        if pid_ht_hum_outmin_low[sensor] != 0 and PIDHum < pid_ht_hum_outmin_low[sensor]:
+                            logging.debug("[PID HT-Humidity-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDHum, pid_ht_hum_outmin_low[sensor])
+                            PIDHum = pid_ht_hum_outmin_low[sensor]
+                        elif pid_ht_hum_outmax_low[sensor] != 0 and PIDHum > pid_ht_hum_outmax_low[sensor]:
+                            logging.debug("[PID HT-Humidity-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDHum, pid_ht_hum_outmax_low[sensor])
                             PIDHum = pid_ht_hum_outmax_low[sensor]
                         else:
                             logging.debug("[PID HT-Humidity-%s] PID = %.1f (max disabled)", sensor+1, PIDHum)
+
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_ht_hum_relay_low[sensor], round(PIDHum,2), sensor,))
                         rod.start()
 
                     elif pid_ht_hum_set_dir[sensor] < 1 and PIDHum < 0:
                         PIDHum = abs(PIDHum)
-                        if pid_ht_hum_outmax_high[sensor] != 0 and PIDHum > pid_ht_hum_outmax_high[sensor]:
-                            logging.debug("[PID HT-Humidity-%s] PID = %.1f (max enabled)", sensor+1, PIDHum)
+                        if pid_ht_hum_outmin_high[sensor] != 0 and PIDHum < pid_ht_hum_outmin_high[sensor]:
+                            logging.debug("[PID HT-Humidity-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDHum, pid_ht_hum_outmin_high[sensor])
+                            PIDHum = pid_ht_hum_outmin_high[sensor]
+                        elif pid_ht_hum_outmax_high[sensor] != 0 and PIDHum > pid_ht_hum_outmax_high[sensor]:
+                            logging.debug("[PID HT-Humidity-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDHum, pid_ht_hum_outmax_high[sensor])
                             PIDHum = pid_ht_hum_outmax_high[sensor]
                         else:
-                            logging.debug("[PID HT-Humidity-%s] PID = %.1f (max disabled)", sensor+1, PIDHum)
+                            logging.debug("[PID HT-Humidity-%s] PID = %.1f", sensor+1, PIDHum)
+
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_ht_hum_relay_high[sensor], round(PIDHum,2), sensor,))
                         rod.start()
@@ -1438,22 +1462,30 @@ def co2_monitor(ThreadName, sensor):
                         logging.debug("[PID CO2-%s] CO2: %.1f ppm now = %.1f ppm set", sensor+1, sensor_co2_read_co2[sensor], pid_co2_set[sensor])
 
                     if pid_co2_set_dir[sensor] > -1 and PIDCO2 > 0:
-                        if pid_co2_outmax_low[sensor] != 0 and PIDCO2 > pid_co2_outmax_low[sensor]:
-                            logging.debug("[PID CO2-%s] PID = %.1f (max enabled)", sensor+1, PIDCO2)
+                        if pid_co2_outmin_low[sensor] != 0 and PIDCO2 < pid_co2_outmin_low[sensor]:
+                            logging.debug("[PID CO2-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDCO2, pid_co2_outmin_low[sensor])
+                            PIDCO2 = pid_co2_outmin_low[sensor]
+                        elif pid_co2_outmax_low[sensor] != 0 and PIDCO2 > pid_co2_outmax_low[sensor]:
+                            logging.debug("[PID CO2-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDCO2, pid_co2_outmax_low[sensor])
                             PIDCO2 = pid_co2_outmax_low[sensor]
                         else:
-                            logging.debug("[PID CO2-%s] PID = %.1f (max disabled)", sensor+1, PIDCO2)
+                            logging.debug("[PID CO2-%s] PID = %.1f", sensor+1, PIDCO2)
+
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_co2_relay_low[sensor], round(PIDCO2,2), sensor,))
                         rod.start()
 
                     elif pid_co2_set_dir[sensor] < 1 and PIDCO2 < 0:
                         PIDCO2 = abs(PIDCO2)
-                        if pid_co2_outmax_high[sensor] != 0 and PIDCO2 > pid_co2_outmax_high[sensor]:
-                            logging.debug("[PID CO2-%s] PID = %.1f (max enabled)", sensor+1, PIDCO2)
+                        if pid_co2_outmin_high[sensor] != 0 and PIDCO2 < pid_co2_outmin_high[sensor]:
+                            logging.debug("[PID CO2-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDCO2, pid_co2_outmin_high[sensor])
+                            PIDCO2 = pid_co2_outmin_high[sensor]
+                        elif pid_co2_outmax_high[sensor] != 0 and PIDCO2 > pid_co2_outmax_high[sensor]:
+                            logging.debug("[PID CO2-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDCO2, pid_co2_outmax_high[sensor])
                             PIDCO2 = pid_co2_outmax_high[sensor]
                         else:
-                            logging.debug("[PID CO2-%s] PID = %.1f (max disabled)", sensor+1, PIDCO2)
+                            logging.debug("[PID CO2-%s] PID = %.1f", sensor+1, PIDCO2)
+
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_co2_relay_high[sensor], round(PIDCO2,2), sensor,))
                         rod.start()
@@ -1531,22 +1563,30 @@ def press_sensor_temperature_monitor(ThreadName, sensor):
                         logging.debug("[PID Press-Temperature-%s] Temperature: %.1f°C now = %.1f°C set", sensor+1, sensor_ht_read_temp_c[sensor], pid_press_temp_set[sensor])
 
                     if pid_press_temp_set_dir[sensor] > -1 and PIDTemp > 0:
-                        if pid_press_temp_outmax_low[sensor] != 0 and PIDTemp > pid_press_temp_outmax_low[sensor]:
-                            logging.debug("[PID Press-Temperature-%s] PID = %.1f (max enabled)", sensor+1, PIDTemp)
+                        if pid_press_temp_outmin_low[sensor] != 0 and PIDTemp < pid_press_temp_outmin_low[sensor]:
+                            logging.debug("[PID Press-Temperature-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDTemp, pid_press_temp_outmin_low[sensor])
+                            PIDTemp = pid_press_temp_outmin_low[sensor]
+                        elif pid_press_temp_outmax_low[sensor] != 0 and PIDTemp > pid_press_temp_outmax_low[sensor]:
+                            logging.debug("[PID Press-Temperature-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDTemp, pid_press_temp_outmax_low[sensor])
                             PIDTemp = pid_press_temp_outmax_low[sensor]
                         else:
-                            logging.debug("[PID Press-Temperature-%s] PID = %.1f (max disabled)", sensor+1, PIDTemp)
+                            logging.debug("[PID Press-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
+
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_press_temp_relay_low[sensor], round(PIDTemp,2), sensor,))
                         rod.start()
 
                     elif pid_press_temp_set_dir[sensor] < 1 and PIDTemp < 0:
                         PIDTemp = abs(PIDTemp)
-                        if pid_press_temp_outmax_high[sensor] != 0 and PIDTemp > pid_press_temp_outmax_high[sensor]:
-                            logging.debug("[PID Press-Temperature-%s] PID = %.1f (max enabled)", sensor+1, PIDTemp)
+                        if pid_press_temp_outmin_high[sensor] != 0 and PIDTemp < pid_press_temp_outmin_high[sensor]:
+                            logging.debug("[PID Press-Temperature-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDTemp, pid_press_temp_outmin_high[sensor])
+                            PIDTemp = pid_press_temp_outmin_high[sensor]
+                        elif pid_press_temp_outmax_high[sensor] != 0 and PIDTemp > pid_press_temp_outmax_high[sensor]:
+                            logging.debug("[PID Press-Temperature-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDTemp, pid_press_temp_outmax_high[sensor])
                             PIDTemp = pid_press_temp_outmax_high[sensor]
                         else:
-                            logging.debug("[PID Press-Temperature-%s] PID = %.1f (max disabled)", sensor+1, PIDTemp)
+                            logging.debug("[PID Press-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
+
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_press_temp_relay_high[sensor], round(PIDTemp,2), sensor,))
                         rod.start()
@@ -1619,22 +1659,30 @@ def press_sensor_pressure_monitor(ThreadName, sensor):
                         logging.debug("[PID Press-Pressure-%s] Pressure: %.1f%% now = %.1fPa set", sensor+1, sensor_press_read_press[sensor], pid_press_press_set[sensor])
 
                     if pid_press_press_set_dir[sensor] > -1 and PIDPress > 0:
-                        if pid_press_press_outmax_low[sensor] != 0 and PIDPress > pid_press_press_outmax_low[sensor]:
-                            logging.debug("[PID Press-Pressure-%s] PID = %.1f (max enabled)", sensor+1, PIDPress)
+                        if pid_press_press_outmin_low[sensor] != 0 and PIDPress < pid_press_press_outmin_low[sensor]:
+                            logging.debug("[PID Press-Pressure-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDPress, pid_press_press_outmin_low[sensor])
+                            PIDPress = pid_press_press_outmin_low[sensor]
+                        elif pid_press_press_outmax_low[sensor] != 0 and PIDPress > pid_press_press_outmax_low[sensor]:
+                            logging.debug("[PID Press-Pressure-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDPress, pid_press_press_outmax_low[sensor])
                             PIDPress = pid_press_press_outmax_low[sensor]
                         else:
-                            logging.debug("[PID Press-Pressure-%s] PID = %.1f (max disabled)", sensor+1, PIDPress)
+                            logging.debug("[PID Press-Pressure-%s] PID = %.1f", sensor+1, PIDPress)
+
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_press_press_relay_low[sensor], round(PIDPress,2), sensor,))
                         rod.start()
 
                     elif pid_press_press_set_dir[sensor] < 1 and PIDPress < 0:
                         PIDPress = abs(PIDPress)
-                        if pid_press_press_outmax_high[sensor] != 0 and PIDPress > pid_press_press_outmax_high[sensor]:
-                            logging.debug("[PID Press-Pressure-%s] PID = %.1f (max enabled)", sensor+1, PIDPress)
+                        if pid_press_press_outmin_high[sensor] != 0 and PIDPress < pid_press_press_outmin_high[sensor]:
+                            logging.debug("[PID Press-Pressure-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDPress, pid_press_press_outmin_high[sensor])
+                            PIDPress = pid_press_press_outmin_high[sensor]
+                        elif pid_press_press_outmax_high[sensor] != 0 and PIDPress > pid_press_press_outmax_high[sensor]:
+                            logging.debug("[PID Press-Pressure-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDPress, pid_press_press_outmax_high[sensor])
                             PIDPress = pid_press_press_outmax_high[sensor]
                         else:
-                            logging.debug("[PID Press-Pressure-%s] PID = %.1f (max disabled)", sensor+1, PIDPress)
+                            logging.debug("[PID Press-Pressure-%s] PID = %.1f", sensor+1, PIDPress)
+
                         rod = threading.Thread(target = relay_on_duration,
                             args = (pid_press_press_relay_high[sensor], round(PIDPress,2), sensor,))
                         rod.start()
@@ -2265,8 +2313,10 @@ def read_sql():
     global sensor_t_temp_relays_up
     global sensor_t_temp_relays_down
     global pid_t_temp_relay_high
+    global pid_t_temp_outmin_high
     global pid_t_temp_outmax_high
     global pid_t_temp_relay_low
+    global pid_t_temp_outmin_low
     global pid_t_temp_outmax_low
     global pid_t_temp_set
     global pid_t_temp_set_dir
@@ -2299,8 +2349,10 @@ def read_sql():
     sensor_t_temp_relays_up = []
     sensor_t_temp_relays_down = []
     pid_t_temp_relay_high = []
+    pid_t_temp_outmin_high = []
     pid_t_temp_outmax_high = []
     pid_t_temp_relay_low = []
+    pid_t_temp_outmin_low = []
     pid_t_temp_outmax_low = []
     pid_t_temp_set = []
     pid_t_temp_set_dir = []
@@ -2336,8 +2388,10 @@ def read_sql():
     global sensor_ht_temp_relays_up
     global sensor_ht_temp_relays_down
     global pid_ht_temp_relay_high
+    global pid_ht_temp_outmin_high
     global pid_ht_temp_outmax_high
     global pid_ht_temp_relay_low
+    global pid_ht_temp_outmin_low
     global pid_ht_temp_outmax_low
     global pid_ht_temp_set
     global pid_ht_temp_set_dir
@@ -2349,8 +2403,10 @@ def read_sql():
     global sensor_ht_hum_relays_up
     global sensor_ht_hum_relays_down
     global pid_ht_hum_relay_high
+    global pid_ht_hum_outmin_high
     global pid_ht_hum_outmax_high
     global pid_ht_hum_relay_low
+    global pid_ht_hum_outmin_low
     global pid_ht_hum_outmax_low
     global pid_ht_hum_set
     global pid_ht_hum_set_dir
@@ -2390,8 +2446,10 @@ def read_sql():
     sensor_ht_temp_relays_up = []
     sensor_ht_temp_relays_down = []
     pid_ht_temp_relay_high = []
+    pid_ht_temp_outmin_high = []
     pid_ht_temp_outmax_high = []
     pid_ht_temp_relay_low = []
+    pid_ht_temp_outmin_low = []
     pid_ht_temp_outmax_low = []
     pid_ht_temp_set = []
     pid_ht_temp_set_dir = []
@@ -2403,8 +2461,10 @@ def read_sql():
     sensor_ht_hum_relays_up = []
     sensor_ht_hum_relays_down = []
     pid_ht_hum_relay_high = []
+    pid_ht_hum_outmin_high = []
     pid_ht_hum_outmax_high = []
     pid_ht_hum_relay_low = []
+    pid_ht_hum_outmin_low = []
     pid_ht_hum_outmax_low = []
     pid_ht_hum_set = []
     pid_ht_hum_set_dir = []
@@ -2438,8 +2498,10 @@ def read_sql():
     global sensor_co2_relays_up
     global sensor_co2_relays_down
     global pid_co2_relay_high
+    global pid_co2_outmin_high
     global pid_co2_outmax_high
     global pid_co2_relay_low
+    global pid_co2_outmin_low
     global pid_co2_outmax_low
     global pid_co2_set
     global pid_co2_set_dir
@@ -2472,8 +2534,10 @@ def read_sql():
     sensor_co2_relays_up = []
     sensor_co2_relays_down = []
     pid_co2_relay_high = []
+    pid_co2_outmin_high = []
     pid_co2_outmax_high = []
     pid_co2_relay_low = []
+    pid_co2_outmin_low = []
     pid_co2_outmax_low = []
     pid_co2_set = []
     pid_co2_set_dir = []
@@ -2510,8 +2574,10 @@ def read_sql():
     global sensor_press_temp_relays_up
     global sensor_press_temp_relays_down
     global pid_press_temp_relay_high
+    global pid_press_temp_outmin_high
     global pid_press_temp_outmax_high
     global pid_press_temp_relay_low
+    global pid_press_temp_outmin_low
     global pid_press_temp_outmax_low
     global pid_press_temp_set
     global pid_press_temp_set_dir
@@ -2523,8 +2589,10 @@ def read_sql():
     global sensor_press_press_relays_up
     global sensor_press_press_relays_down
     global pid_press_press_relay_high
+    global pid_press_press_outmin_high
     global pid_press_press_outmax_high
     global pid_press_press_relay_low
+    global pid_press_press_outmin_low
     global pid_press_press_outmax_low
     global pid_press_press_set
     global pid_press_press_set_dir
@@ -2564,8 +2632,10 @@ def read_sql():
     sensor_press_temp_relays_up = []
     sensor_press_temp_relays_down = []
     pid_press_temp_relay_high = []
+    pid_press_temp_outmin_high = []
     pid_press_temp_outmax_high = []
     pid_press_temp_relay_low = []
+    pid_press_temp_outmin_low = []
     pid_press_temp_outmax_low = []
     pid_press_temp_set = []
     pid_press_temp_set_dir = []
@@ -2577,8 +2647,10 @@ def read_sql():
     sensor_press_press_relays_up = []
     sensor_press_press_relays_down = []
     pid_press_press_relay_high = []
+    pid_press_press_outmin_high = []
     pid_press_press_outmax_high = []
     pid_press_press_relay_low = []
+    pid_press_press_outmin_low = []
     pid_press_press_outmax_low = []
     pid_press_press_set = []
     pid_press_press_set_dir = []
@@ -2743,7 +2815,7 @@ def read_sql():
         conditional_relay_do_notify.append(row[12])
 
 
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D FROM TSensor')
+    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D FROM TSensor')
     for row in cur:
         sensor_t_id.append(row[0])
         sensor_t_name.append(row[1])
@@ -2765,16 +2837,18 @@ def read_sql():
         sensor_t_temp_relays_up.append(row[17])
         sensor_t_temp_relays_down.append(row[18])
         pid_t_temp_relay_high.append(row[19])
-        pid_t_temp_outmax_high.append(row[20])
-        pid_t_temp_relay_low.append(row[21])
-        pid_t_temp_outmax_low.append(row[22])
-        pid_t_temp_or.append(row[23])
-        pid_t_temp_set.append(row[24])
-        pid_t_temp_set_dir.append(row[25])
-        pid_t_temp_period.append(row[26])
-        pid_t_temp_p.append(row[27])
-        pid_t_temp_i.append(row[28])
-        pid_t_temp_d.append(row[29])
+        pid_t_temp_outmin_high.append(row[20])
+        pid_t_temp_outmax_high.append(row[21])
+        pid_t_temp_relay_low.append(row[22])
+        pid_t_temp_outmin_low.append(row[23])
+        pid_t_temp_outmax_low.append(row[24])
+        pid_t_temp_or.append(row[25])
+        pid_t_temp_set.append(row[26])
+        pid_t_temp_set_dir.append(row[27])
+        pid_t_temp_period.append(row[28])
+        pid_t_temp_p.append(row[29])
+        pid_t_temp_i.append(row[30])
+        pid_t_temp_d.append(row[31])
 
     # Convert string of comma-separated values to a 2-dimensional list of integers
     global sensor_t_temp_relays_up_list
@@ -2863,7 +2937,7 @@ def read_sql():
 
 
 
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relays_Up, Hum_Relays_Down, Hum_Relay_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensor')
+    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph,  YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relays_Up, Hum_Relays_Down, Hum_Relay_High, Hum_Outmin_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmin_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensor')
     for row in cur:
         sensor_ht_id.append(row[0])
         sensor_ht_name.append(row[1])
@@ -2889,29 +2963,33 @@ def read_sql():
         sensor_ht_temp_relays_up.append(row[21])
         sensor_ht_temp_relays_down.append(row[22])
         pid_ht_temp_relay_high.append(row[23])
-        pid_ht_temp_outmax_high.append(row[24])
-        pid_ht_temp_relay_low.append(row[25])
-        pid_ht_temp_outmax_low.append(row[26])
-        pid_ht_temp_or.append(row[27])
-        pid_ht_temp_set.append(row[28])
-        pid_ht_temp_set_dir.append(row[29])
-        pid_ht_temp_period.append(row[30])
-        pid_ht_temp_p.append(row[31])
-        pid_ht_temp_i.append(row[32])
-        pid_ht_temp_d.append(row[33])
-        sensor_ht_hum_relays_up.append(row[34])
-        sensor_ht_hum_relays_down.append(row[35])
-        pid_ht_hum_relay_high.append(row[36])
-        pid_ht_hum_outmax_high.append(row[37])
-        pid_ht_hum_relay_low.append(row[38])
-        pid_ht_hum_outmax_low.append(row[39])
-        pid_ht_hum_or.append(row[40])
-        pid_ht_hum_set.append(row[41])
-        pid_ht_hum_set_dir.append(row[42])
-        pid_ht_hum_period.append(row[43])
-        pid_ht_hum_p.append(row[44])
-        pid_ht_hum_i.append(row[45])
-        pid_ht_hum_d.append(row[46])
+        pid_ht_temp_outmin_high.append(row[24])
+        pid_ht_temp_outmax_high.append(row[25])
+        pid_ht_temp_relay_low.append(row[26])
+        pid_ht_temp_outmin_low.append(row[27])
+        pid_ht_temp_outmax_low.append(row[28])
+        pid_ht_temp_or.append(row[29])
+        pid_ht_temp_set.append(row[30])
+        pid_ht_temp_set_dir.append(row[31])
+        pid_ht_temp_period.append(row[32])
+        pid_ht_temp_p.append(row[33])
+        pid_ht_temp_i.append(row[34])
+        pid_ht_temp_d.append(row[35])
+        sensor_ht_hum_relays_up.append(row[36])
+        sensor_ht_hum_relays_down.append(row[37])
+        pid_ht_hum_relay_high.append(row[38])
+        pid_ht_hum_outmin_high.append(row[39])
+        pid_ht_hum_outmax_high.append(row[40])
+        pid_ht_hum_relay_low.append(row[41])
+        pid_ht_hum_outmin_low.append(row[42])
+        pid_ht_hum_outmax_low.append(row[43])
+        pid_ht_hum_or.append(row[44])
+        pid_ht_hum_set.append(row[45])
+        pid_ht_hum_set_dir.append(row[46])
+        pid_ht_hum_period.append(row[47])
+        pid_ht_hum_p.append(row[48])
+        pid_ht_hum_i.append(row[49])
+        pid_ht_hum_d.append(row[50])
 
     # Convert string of comma-separated values to a 2-dimensional list of integers
     global sensor_ht_temp_relays_up_list
@@ -3017,7 +3095,7 @@ def read_sql():
 
 
 
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_CO2_Min, YAxis_CO2_Max, YAxis_CO2_Tics, YAxis_CO2_MTics, CO2_Relays_Up, CO2_Relays_Down, CO2_Relay_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmax_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
+    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph,  YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_CO2_Min, YAxis_CO2_Max, YAxis_CO2_Tics, YAxis_CO2_MTics, CO2_Relays_Up, CO2_Relays_Down, CO2_Relay_High, CO2_Outmin_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmin_Low, CO2_Outmax_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
     for row in cur:
         sensor_co2_id.append(row[0])
         sensor_co2_name.append(row[1])
@@ -3039,16 +3117,18 @@ def read_sql():
         sensor_co2_relays_up.append(row[17])
         sensor_co2_relays_down.append(row[18])
         pid_co2_relay_high.append(row[19])
-        pid_co2_outmax_high.append(row[20])
-        pid_co2_relay_low.append(row[21])
-        pid_co2_outmax_low.append(row[22])
-        pid_co2_or.append(row[23])
-        pid_co2_set.append(row[24])
-        pid_co2_set_dir.append(row[25])
-        pid_co2_period.append(row[26])
-        pid_co2_p.append(row[27])
-        pid_co2_i.append(row[28])
-        pid_co2_d.append(row[29])
+        pid_co2_outmin_high.append(row[20])
+        pid_co2_outmax_high.append(row[21])
+        pid_co2_relay_low.append(row[22])
+        pid_co2_outmin_low.append(row[23])
+        pid_co2_outmax_low.append(row[24])
+        pid_co2_or.append(row[25])
+        pid_co2_set.append(row[26])
+        pid_co2_set_dir.append(row[27])
+        pid_co2_period.append(row[28])
+        pid_co2_p.append(row[29])
+        pid_co2_i.append(row[30])
+        pid_co2_d.append(row[31])
 
     # Convert string of comma-separated values to a 2-dimensional list of integers
     global sensor_co2_relays_up_list
@@ -3138,7 +3218,7 @@ def read_sql():
 
 
 
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Press_Min, YAxis_Press_Max, YAxis_Press_Tics, YAxis_Press_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Press_Relays_Up, Press_Relays_Down, Press_Relay_High, Press_Outmax_High, Press_Relay_Low, Press_Outmax_Low, Press_OR, Press_Set, Press_Set_Direction, Press_Period, Press_P, Press_I, Press_D FROM PressSensor')
+    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Press_Min, YAxis_Press_Max, YAxis_Press_Tics, YAxis_Press_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Press_Relays_Up, Press_Relays_Down, Press_Relay_High, Press_Outmin_High, Press_Outmax_High, Press_Relay_Low, Press_Outmin_Low, Press_Outmax_Low, Press_OR, Press_Set, Press_Set_Direction, Press_Period, Press_P, Press_I, Press_D FROM PressSensor')
     for row in cur:
         sensor_press_id.append(row[0])
         sensor_press_name.append(row[1])
@@ -3164,29 +3244,33 @@ def read_sql():
         sensor_press_temp_relays_up.append(row[21])
         sensor_press_temp_relays_down.append(row[22])
         pid_press_temp_relay_high.append(row[23])
-        pid_press_temp_outmax_high.append(row[24])
-        pid_press_temp_relay_low.append(row[25])
-        pid_press_temp_outmax_low.append(row[26])
-        pid_press_temp_or.append(row[27])
-        pid_press_temp_set.append(row[28])
-        pid_press_temp_set_dir.append(row[29])
-        pid_press_temp_period.append(row[30])
-        pid_press_temp_p.append(row[31])
-        pid_press_temp_i.append(row[32])
-        pid_press_temp_d.append(row[33])
-        sensor_press_press_relays_up.append(row[34])
-        sensor_press_press_relays_down.append(row[35])
-        pid_press_press_relay_high.append(row[36])
-        pid_press_press_outmax_high.append(row[37])
-        pid_press_press_relay_low.append(row[38])
-        pid_press_press_outmax_low.append(row[39])
-        pid_press_press_or.append(row[40])
-        pid_press_press_set.append(row[41])
-        pid_press_press_set_dir.append(row[42])
-        pid_press_press_period.append(row[43])
-        pid_press_press_p.append(row[44])
-        pid_press_press_i.append(row[45])
-        pid_press_press_d.append(row[46])
+        pid_press_temp_outmin_high.append(row[24])
+        pid_press_temp_outmax_high.append(row[25])
+        pid_press_temp_relay_low.append(row[26])
+        pid_press_temp_outmin_low.append(row[27])
+        pid_press_temp_outmax_low.append(row[28])
+        pid_press_temp_or.append(row[29])
+        pid_press_temp_set.append(row[30])
+        pid_press_temp_set_dir.append(row[31])
+        pid_press_temp_period.append(row[32])
+        pid_press_temp_p.append(row[33])
+        pid_press_temp_i.append(row[34])
+        pid_press_temp_d.append(row[35])
+        sensor_press_press_relays_up.append(row[36])
+        sensor_press_press_relays_down.append(row[37])
+        pid_press_press_relay_high.append(row[38])
+        pid_press_press_outmin_high.append(row[39])
+        pid_press_press_outmax_high.append(row[40])
+        pid_press_press_relay_low.append(row[41])
+        pid_press_press_outmin_low.append(row[42])
+        pid_press_press_outmax_low.append(row[43])
+        pid_press_press_or.append(row[44])
+        pid_press_press_set.append(row[45])
+        pid_press_press_set_dir.append(row[46])
+        pid_press_press_period.append(row[47])
+        pid_press_press_p.append(row[48])
+        pid_press_press_i.append(row[49])
+        pid_press_press_d.append(row[50])
 
     # Convert string of comma-separated values to a 2-dimensional list of integers
     global sensor_press_temp_relays_up_list
