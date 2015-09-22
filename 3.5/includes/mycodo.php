@@ -975,27 +975,38 @@ if (isset($output_error)) {
                 <table class="pid">
                     <tr>
                         <td>Regulation</td>
-                        <td>Current<br>State</td>
+                        <td>Activate</td>
                         <td>PID<br>Set Point</td>
                         <td>PID<br>Regulate</td>
                         <td>Sensor Read<br>Interval</td>
                         <td>Up<br>Relay</td>
+                        <td>Up<br>Min</td>
                         <td>Up<br>Max</td>
                         <td>Down<br>Relay</td>
+                        <td>Down<br>Min</td>
                         <td>Down<br>Max</td>
                         <td>K<sub>p</sub></td>
                         <td>K<sub>i</sub></td>
                         <td>K<sub>d</sub></td>
                     </tr>
                     <tr style="height: 2.5em; background-color: #FFFFFF;">
-                        <td style="text-align: left;">Temperature</td>
-                        <td class="onoff">
-                            <?php
+                        <td style="text-align: center; line-height: 1.5em;"><?php
                             if ($pid_t_temp_or[$i] == 1) {
-                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangeT<?php echo $i; ?>TempOR" value="0"> | <button style="width: 5em;" type="submit" name="ChangeT<?php echo $i; ?>TempOR" value="0">Turn On</button>
+                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangeT<?php echo $i; ?>TempOR" value="0">
                                 <?php
                             } else {
-                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangeT<?php echo $i; ?>TempOR" value="1"> | <button style="width: 5em;" type="submit" name="ChangeT<?php echo $i; ?>TempOR" value="1">Turn Off</button>
+                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangeT<?php echo $i; ?>TempOR" value="1">
+                            <?php
+                            }
+                            ?> Temperature
+                        </td>
+                        <td>
+                            <?php
+                            if ($pid_t_temp_or[$i] == 1) {
+                                ?><button style="width: 5em;" type="submit" name="ChangeT<?php echo $i; ?>TempOR" value="0">Turn On</button>
+                                <?php
+                            } else {
+                                ?><button style="width: 5em;" type="submit" name="ChangeT<?php echo $i; ?>TempOR" value="1">Turn Off</button>
                             <?php
                             }
                             ?>
@@ -1026,10 +1037,16 @@ if (isset($output_error)) {
                             <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_t_temp_relay_low[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempRelayLow" title="This relay is used to increase temperature."/>
                         </td>
                         <td>
+                            <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_t_temp_outmin_low[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempOutminLow" title="This is the minimum number of seconds the relay used to increase temperature is permitted to turn on for (0 to disable)."/>
+                        </td>
+                        <td>
                             <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_t_temp_outmax_low[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempOutmaxLow" title="This is the maximum number of seconds the relay used to increase temperature is permitted to turn on for (0 to disable)."/>
                         </td>
                         <td>
                             <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_t_temp_relay_high[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempRelayHigh" title="This relay is used to decrease temperature."/>
+                        </td>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_t_temp_outmin_high[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempOutminHigh" title="This is the minimum number of seconds the relay used to decrease temperature is permitted to turn on for (0 to disable)."/>
                         </td>
                         <td>
                             <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_t_temp_outmax_high[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempOutmaxHigh" title="This is the maximum number of seconds the relay used to decrease temperature is permitted to turn on for (0 to disable)."/>
