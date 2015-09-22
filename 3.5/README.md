@@ -84,15 +84,18 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 #### Daemon
 
-<a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/mycodo.py_.png"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/mycodo.py_-300x124.png"></a>
+<a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/mycodo.py_.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/mycodo.py_-300x124.png"></a>
 
 #### Client
 
-<a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/mycodo-client.py_.png"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/mycodo-client.py_-300x219.png"></a>
+<a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/mycodo-client.py_.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/mycodo-client.py_-300x219.png"></a>
 
 ## Changelog
 
 Major changes for each versioned release
+
+#### 3.5.76
++ Add minimum relay on duration for PID controllers (to complement maximum on duration)
 
 #### 3.5.75
 + Ability to execute command or notify by email if relay or sensor conditional is true

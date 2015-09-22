@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.75";
+$version = "3.5.76";
 
 ######### Start Edit Configure #########
 
