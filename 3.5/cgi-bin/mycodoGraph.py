@@ -30,6 +30,7 @@ import logging
 import os
 import subprocess
 import time
+from lockfile import LockFile
 
 log_path = "%s/log" % install_directory # Where generated logs are stored
 image_path = "%s/images" % install_directory # Where generated graphs are stored
@@ -48,6 +49,14 @@ sensor_co2_log_file = "%s/sensor-co2.log" % log_path
 sensor_press_log_file = "%s/sensor-press.log" % log_path
 relay_log_file = "%s/relay.log" % log_path
 
+# Lockfiles
+lock_directory = "/var/lock/mycodo"
+sensor_t_log_lock_path = "%s/sensor-t-log" % lock_directory
+sensor_ht_log_lock_path = "%s/sensor-ht-log" % lock_directory
+sensor_co2_log_lock_path = "%s/sensor-co2-log" % lock_directory
+sensor_press_log_lock_path = "%s/sensor-press-log" % lock_directory
+relay_log_lock_path = "%s/relay" % lock_directory
+daemon_log_lock_path = "%s/logs" % lock_directory
 
 #################################################
 #                Graph Generation               #
@@ -121,6 +130,22 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
     date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
     date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%d/%m/%Y %H:%M:%S")
 
+    if not os.path.exists(lock_directory):
+        os.makedirs(lock_directory)
+
+    lock = LockFile(relay_log_lock_path)
+
+    while not lock.i_am_locking():
+        try:
+            logging.debug("[Generate Graph] Acquiring Lock: %s", lock.path)
+            lock.acquire(timeout=60)    # wait up to 60 seconds
+        except:
+            logging.warning("[Generate Graph] Breaking Lock to Acquire: %s", lock.path)
+            lock.break_lock()
+            lock.acquire()
+
+    logging.debug("[Generate Graph] Gained lock: %s", lock.path)
+
     # Combine relay logs
     relay_log_files_combine = [relay_log_file, relay_log_file_tmp]
     relay_log_generate = "%s/relay-logs-combined.log" % tmp_path
@@ -128,7 +153,9 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
         for line in fileinput.input(relay_log_files_combine):
             fout.write(line)
 
-    time.sleep(0.1) # Allow relay log to be completely written before modification and use
+    logging.debug("[Generate Graph] Removing lock: %s", lock.path)
+    lock.release()
+
 
     # Concatenate default and separate logs
     if graph_span == 'default' or graph_type == 'separate':
@@ -138,6 +165,21 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             generate_type = 'default'
 
         if sensor_type == 't':
+            if not os.path.exists(lock_directory):
+                os.makedirs(lock_directory)
+
+            lock = LockFile(sensor_t_log_lock_path)
+            while not lock.i_am_locking():
+                try:
+                    logging.debug("[Generate Graph] Acquiring Lock: %s", lock.path)
+                    lock.acquire(timeout=60)    # wait up to 60 seconds
+                except:
+                    logging.warning("[Generate Graph] Breaking Lock to Acquire: %s", lock.path)
+                    lock.break_lock()
+                    lock.acquire()
+
+            logging.debug("[Generate Graph] Gained lock: %s", lock.path)
+
             filenames = [sensor_t_log_file, sensor_t_log_file_tmp]
             sensor_t_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, 't', generate_type)
             with open(sensor_t_log_generate, 'w') as outfile:
@@ -146,7 +188,25 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                         for line in infile:
                             outfile.write(line)
 
+            logging.debug("[Generate Graph] Removing lock: %s", lock.path)
+            lock.release()
+
         if sensor_type == 'ht':
+            if not os.path.exists(lock_directory):
+                os.makedirs(lock_directory)
+
+            lock = LockFile(sensor_ht_log_lock_path)
+            while not lock.i_am_locking():
+                try:
+                    logging.debug("[Generate Graph] Acquiring Lock: %s", lock.path)
+                    lock.acquire(timeout=60)    # wait up to 60 seconds
+                except:
+                    logging.warning("[Generate Graph] Breaking Lock to Acquire: %s", lock.path)
+                    lock.break_lock()
+                    lock.acquire()
+
+            logging.debug("[Generate Graph] Gained lock: %s", lock.path)
+
             filenames = [sensor_ht_log_file, sensor_ht_log_file_tmp]
             sensor_ht_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, 'ht', generate_type)
             with open(sensor_ht_log_generate, 'w') as outfile:
@@ -155,7 +215,25 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                         for line in infile:
                             outfile.write(line)
 
+            logging.debug("[Generate Graph] Removing lock: %s", lock.path)
+            lock.release()
+
         if sensor_type == 'co2':
+            if not os.path.exists(lock_directory):
+                os.makedirs(lock_directory)
+
+            lock = LockFile(sensor_co2_log_lock_path)
+            while not lock.i_am_locking():
+                try:
+                    logging.debug("[Write CO2 Sensor Log] Acquiring Lock: %s", lock.path)
+                    lock.acquire(timeout=60)    # wait up to 60 seconds
+                except:
+                    logging.warning("[Write CO2 Sensor Log] Breaking Lock to Acquire: %s", lock.path)
+                    lock.break_lock()
+                    lock.acquire()
+
+            logging.debug("[Write CO2 Sensor Log] Gained lock: %s", lock.path)
+
             filenames = [sensor_co2_log_file, sensor_co2_log_file_tmp]
             sensor_co2_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, 'co2', generate_type)
             with open(sensor_co2_log_generate, 'w') as outfile:
@@ -164,7 +242,25 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                         for line in infile:
                             outfile.write(line)
 
+            logging.debug("[Generate Graph] Removing lock: %s", lock.path)
+            lock.release()
+
         if sensor_type == 'press':
+            if not os.path.exists(lock_directory):
+                os.makedirs(lock_directory)
+
+            lock = LockFile(sensor_press_log_lock_path)
+            while not lock.i_am_locking():
+                try:
+                    logging.debug("[Generate Graph] Acquiring Lock: %s", lock.path)
+                    lock.acquire(timeout=60)    # wait up to 60 seconds
+                except:
+                    logging.warning("[Generate Graph] Breaking Lock to Acquire: %s", lock.path)
+                    lock.break_lock()
+                    lock.acquire()
+
+            logging.debug("[Generate Graph] Gained lock: %s", lock.path)
+
             filenames = [sensor_press_log_file, sensor_press_log_file_tmp]
             sensor_press_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, 'press', generate_type)
             with open(sensor_press_log_generate, 'w') as outfile:
@@ -173,7 +269,8 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                         for line in infile:
                             outfile.write(line)
 
-        time.sleep(0.1) # Allow sensor log to be completely written before modification and use
+            logging.debug("[Generate Graph] Removing lock: %s", lock.path)
+            lock.release()
 
 
     # Parse default logs
