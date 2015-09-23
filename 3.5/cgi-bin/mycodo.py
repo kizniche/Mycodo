@@ -2810,10 +2810,10 @@ def read_sql():
         conditional_relay_doaction.append(row[7])
         conditional_relay_doduration.append(row[8])
         conditional_relay_sel_command.append(row[9])
-        if row[10] != None:
-            conditional_relay_do_command.append(row[10].replace("\'\'","\'"))
-        else:
+        if row[10] == None:
             conditional_relay_do_command.append(row[10])
+        else:
+            conditional_relay_do_command.append(row[10].replace("\'\'","\'"))
         conditional_relay_sel_notify.append(row[11])
         conditional_relay_do_notify.append(row[12])
 
