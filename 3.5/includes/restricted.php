@@ -2393,7 +2393,8 @@ if (isset($_POST['ChangeNotify'])) {
 
 // Change interface settings
 if (isset($_POST['ChangeInterface'])) {
-    $stmt = $db->prepare("UPDATE Misc SET Refresh_Time=:refreshtime, Enable_Max_Amps=:enablemaxamps, Max_Amps=:maxamps");
+    $stmt = $db->prepare("UPDATE Misc SET Refresh_Time=:refreshtime, Login_Message=:loginmessage, Enable_Max_Amps=:enablemaxamps, Max_Amps=:maxamps");
+    $stmt->bindValue(':loginmessage', $_POST['login_message'], SQLITE3_TEXT);
     $stmt->bindValue(':refreshtime', (int)$_POST['refresh_time'], SQLITE3_INTEGER);
     $stmt->bindValue(':enablemaxamps', (int)$_POST['enable_max_amps'], SQLITE3_INTEGER);
     $stmt->bindValue(':maxamps', (float)$_POST['max_amps'], SQLITE3_FLOAT);

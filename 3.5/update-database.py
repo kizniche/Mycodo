@@ -26,7 +26,7 @@
 sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
 sql_database_user = '/var/www/mycodo/config/users.db'
 
-db_version_mycodo = 11
+db_version_mycodo = 12
 db_version_user = 1
 
 import getopt
@@ -357,6 +357,8 @@ def mycodo_database_update():
             ModNullValue(sql_database_mycodo, 'PressSensorPreset', 'Temp_Outmin_Low', 0)
             ModNullValue(sql_database_mycodo, 'PressSensorPreset', 'Press_Outmin_High', 0)
             ModNullValue(sql_database_mycodo, 'PressSensorPreset', 'Press_Outmin_Low', 0)
+
+        # Version 12 update: add custom message to login page
 
         # any extra commands for version X
         #if current_db_version_mycodo < X:
@@ -896,15 +898,17 @@ def mycodo_database_create():
 
     AddTable(sql_database_mycodo, 'Misc')
     AddColumn(sql_database_mycodo, 'Misc', 'Dismiss_Notification', 'INT')
+    AddColumn(sql_database_mycodo, 'Misc', 'Login_Message', 'TEXT')
     AddColumn(sql_database_mycodo, 'Misc', 'Refresh_Time', 'INT')
     AddColumn(sql_database_mycodo, 'Misc', 'Enable_Max_Amps', 'INT')
     AddColumn(sql_database_mycodo, 'Misc', 'Max_Amps', 'REAL')
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("INSERT OR IGNORE INTO Misc VALUES('0', 0, 300, 1, 15)")
+    cur.execute("INSERT OR IGNORE INTO Misc VALUES('0', '', 0, 300, 1, 15)")
     conn.commit()
     cur.close()
     ModNullValue(sql_database_mycodo, 'Misc', 'Dismiss_Notification', 0)
+    ModNullValue(sql_database_mycodo, 'Misc', 'Login_Message', '')
     ModNullValue(sql_database_mycodo, 'Misc', 'Refresh_Time', 300)
 
 

@@ -261,7 +261,7 @@ Install LockFile and RPyC
 
 `sudo pip install lockfile rpyc`
 
-To access /dev/vchiq to read the GPU temperature, the user www-data needs to be added to the group video
+To access /dev/vchiq (to read the GPU temperature or access the Pi camera), the user www-data needs to be added to the group video
 
 `sudo usermod -a -G video www-data`
 

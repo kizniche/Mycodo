@@ -571,10 +571,13 @@ class OneFileLoginApplication {
             $stmt->execute();
         }
 
-        $stmt = $db->query('SELECT Dismiss_Notification FROM Misc');
+        $stmt = $db->query('SELECT Login_Message, Dismiss_Notification FROM Misc');
         while ($row = $stmt->fetchArray()) {
-            $dismiss = $row[0];
+            $login_message = $row[0]; 
+            $dismiss = $row[1];
         }
+
+        echo '<div style="padding-top: 2em; width: 33em; margin: 8 auto; text-align: center;">' . $login_message . '</div>';
 
         if (!$dismiss) {
             ?>
