@@ -3451,7 +3451,7 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
-                            Message to diaplay on login screen
+                            Message to display on login screen
                         </td>
                         <td class="setting-value">
                             <input style="width: 18em;" type="text" value="<?php echo $login_message; ?>" maxlength=300 name="login_message" title=""/>
