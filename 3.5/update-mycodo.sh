@@ -52,7 +52,7 @@ case "${1:-''}" in
                 printf "#### Creating backup Mycodo-backups/Mycodo-$NOW ####\n"
                 mkdir -p $DIR/../../Mycodo-backups
                 mkdir -p $DIR/../../Mycodo-backups/Mycodo-$NOW
-                cp -r $DIR/../../Mycodo/3.5 $DIR/../../Mycodo-backups/Mycodo-$NOW/
+                cp -a $DIR/../../Mycodo/3.5/. $DIR/../../Mycodo-backups/Mycodo-$NOW/
 
                 printf "#### Updating from github ####\n"
                 git fetch --all
