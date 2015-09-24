@@ -94,6 +94,9 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 Major changes for each versioned release
 
+#### 3.5.77
++ Implement ability to provide custom raspistill options from web interface
+
 #### 3.5.76
 + Add minimum relay on duration for PID controllers (to complement maximum on duration)
 

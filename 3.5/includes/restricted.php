@@ -2223,9 +2223,10 @@ if (isset($_POST['ChangeStill'])) {
     $stmt->bindValue(':displaylast', (int)$_POST['Still_DisplayLast'], SQLITE3_INTEGER);
     $cmd_pre = SQLite3::escapeString($_POST['Still_Cmd_Pre']);
     $cmd_post = SQLite3::escapeString($_POST['Still_Cmd_Post']);
+    $cmd_extra = SQLite3::escapeString($_POST['Still_Extra_Parameters']);
     $stmt->bindValue(':cmdpre', $cmd_pre, SQLITE3_TEXT);
     $stmt->bindValue(':cmdpost', $cmd_post, SQLITE3_TEXT);
-    $stmt->bindValue(':extra', $_POST['Still_Extra_Parameters'], SQLITE3_TEXT);
+    $stmt->bindValue(':extra', $cmd_extra, SQLITE3_TEXT);
     $stmt->execute();
     shell_exec("$mycodo_client --sqlreload -1");
 }
@@ -2236,9 +2237,10 @@ if (isset($_POST['ChangeStream'])) {
     $stmt->bindValue(':relay', (int)$_POST['Stream_Relay'], SQLITE3_INTEGER);
     $cmd_pre = SQLite3::escapeString($_POST['Stream_Cmd_Pre']);
     $cmd_post = SQLite3::escapeString($_POST['Stream_Cmd_Post']);
+    $cmd_extra = SQLite3::escapeString($_POST['Stream_Extra_Parameters']);
     $stmt->bindValue(':cmdpre', $cmd_pre, SQLITE3_TEXT);
     $stmt->bindValue(':cmdpost', $cmd_post, SQLITE3_TEXT);
-    $stmt->bindValue(':extra', $_POST['Stream_Extra_Parameters'], SQLITE3_TEXT);
+    $stmt->bindValue(':extra', $cmd_extra, SQLITE3_TEXT);
     $stmt->execute();
     shell_exec("$mycodo_client --sqlreload -1");
 }
@@ -2253,9 +2255,10 @@ if (isset($_POST['ChangeTimelapse'])) {
     $stmt->bindValue(':displaylast', (int)$_POST['Timelapse_DisplayLast'], SQLITE3_INTEGER);
     $cmd_pre = SQLite3::escapeString($_POST['Timelapse_Cmd_Pre']);
     $cmd_post = SQLite3::escapeString($_POST['Timelapse_Cmd_Post']);
+    $cmd_extra = SQLite3::escapeString($_POST['Timelapse_Extra_Parameters']);
     $stmt->bindValue(':cmdpre', $cmd_pre, SQLITE3_TEXT);
     $stmt->bindValue(':cmdpost', $cmd_post, SQLITE3_TEXT);
-    $stmt->bindValue(':extra', $_POST['Timelapse_Extra_Parameters'], SQLITE3_TEXT);
+    $stmt->bindValue(':extra', $cmd_extra, SQLITE3_TEXT);
     $stmt->execute();
     shell_exec("$mycodo_client --sqlreload -1");
 }

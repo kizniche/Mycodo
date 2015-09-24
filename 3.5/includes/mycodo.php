@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.76";
+$version = "3.5.77";
 
 ######### Start Edit Configure #########
 
@@ -137,14 +137,17 @@ if (isset($output_error)) {
     <div class="header">
         <div style="float: left;">
             <div style="padding-bottom: 0.1em;"><?php
-                if (file_exists($lock_daemon)) echo '<input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On" name="daemon_change" value="0"> Daemon';
-                else echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="daemon_change" value="1"> Daemon';
-                ?></div>
+                if (file_exists($lock_daemon)) {
+                    echo '<img style="height: 0.9em;" src="/mycodo/img/on.jpg" alt="On" title="On">';
+                } else {
+                    echo '<img style="height: 0.9em;" src="/mycodo/img/off.jpg" alt="Off" title="Off">';
+                }
+                ?> Daemon</div>
             <div style="padding-bottom: 0.1em;"><?php
                 if (file_exists($lock_mjpg_streamer)) {
-                    echo '<input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="" value="0">';
+                    echo '<img style="height: 0.9em;" src="/mycodo/img/on.jpg" alt="On" title="On">';
                 } else {
-                    echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="" value="0">';
+                    echo '<img style="height: 0.9em;" src="/mycodo/img/off.jpg" alt="Off" title="Off">';
                 }
                 ?> Stream</div>
             <div style="padding-bottom: 0.1em;"><?php
@@ -154,22 +157,22 @@ if (isset($output_error)) {
                 }
 
                 if (file_exists($lock_timelapse)) {
-                    echo '<input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="" value="0">';
+                    echo '<img style="height: 0.9em;" src="/mycodo/img/on.jpg" alt="On" title="On">';
                 } else {
-                    echo '<input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="" value="0">';
+                    echo '<img style="height: 0.9em;" src="/mycodo/img/off.jpg" alt="Off" title="Off">';
                 }
                 ?> Time-lapse</div>
         </div>
         <div style="float: left;">
             <div><?php
                 if (isset($_GET['r'])) {
-                    ?><div style="display:inline-block; vertical-align:top;"><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On" name="" value="0">
+                    ?><div style="display:inline-block; vertical-align:top;"><img style="height: 0.9em;" src="/mycodo/img/on.jpg" alt="On" title="On">
                     </div>
                     <div style="display:inline-block; padding-left: 0.3em;">
                         <div>Refresh<br><span style="font-size: 0.7em">(<?php echo $_GET['tab']; ?>)</span></div>
                     </div><?php
                 } else {
-                    ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="" value="0"> Refresh<?php
+                    ?><img style="height: 0.9em;" src="/mycodo/img/off.jpg" alt="Off" title="Off"> Refresh<?php
                 }
             ?></div>
         </div>
@@ -528,9 +531,10 @@ if (isset($output_error)) {
                     <form action="?tab=sensor" method="POST">
                     <table class="relays">
                         <tr>
-                            <td align=center class="table-header">&nbsp;<br>Relay</td>
-                            <td class="table-header">&nbsp;<br>Name</td>
-                            <td colspan="2" class="table-header" style="vertical-align: middle;">On <img style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/on.jpg" alt="On" title="On"> | Off <img style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off" title="Off"></td>
+                            <td align=center class="table-header" style="vertical-align: middle;">Relay</td>
+                            <td class="table-header" style="vertical-align: middle;">Name</td>
+                            <td colspan="2" class="table-header" style="vertical-align: middle;">
+                                On <img style="height: 1em;" src="/mycodo/img/on.jpg" alt="On" title="On"> ~ Off <img style="height: 1em;" src="/mycodo/img/off.jpg" alt="Off" title="Off"></td>
                             <td align=center class="table-header">Seconds<br>On</td>
                             <td align=center class="table-header">GPIO<br>Pin</td>
                             <td align=center class="table-header">Amps<br>Draw</td>
@@ -551,8 +555,8 @@ if (isset($output_error)) {
                             <?php
                                 if ((shell_exec($read) == 1 && $relay_trigger[$i] == 0) || (shell_exec($read) == 0 && $relay_trigger[$i] == 1)) {
                                     ?>
-                                    <td>
-                                        <input type="hidden" "R<?php echo $i; ?>" value="1" /><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off, Click to turn on." title="Off, Click to turn on." name="R<?php echo $i; ?>" value="1">
+                                    <td style="vertical-align: middle;">
+                                        <input type="hidden" "R<?php echo $i; ?>" value="1" /><img style="height: 1em;" src="/mycodo/img/off.jpg" alt="Off" title="Off">
                                     </td>
                                     <td>
                                         <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="1">Turn On</button>
@@ -560,8 +564,8 @@ if (isset($output_error)) {
                                     <?php
                                 } else {
                                     ?>
-                                    <td>
-                                        <input type="hidden" "R<?php echo $i; ?>" value="0" /><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/on.jpg" alt="On, Click to turn off." title="On, Click to turn off." name="R<?php echo $i; ?>" value="0">
+                                    <td style="vertical-align: middle;">
+                                        <img style="height: 1em;" src="/mycodo/img/on.jpg" alt="On" title="On">
                                     </td>
                                     <td>
                                         <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="0">Turn Off</button>
@@ -775,7 +779,7 @@ if (isset($output_error)) {
                         <tr>
                             <td align=center class="table-header">Timer</td>
                             <td class="table-header">Name</td>
-                            <td align=center class="table-header">State</th>
+                            <td align=center colspan="2" class="table-header">Activate</th>
                             <td align=center class="table-header">Relay</td>
                             <td align=center class="table-header">On (sec)</td>
                             <td align=center class="table-header">Off (sec)</td>
@@ -794,14 +798,20 @@ if (isset($output_error)) {
                             <?php
                             if ($timer_state[$i] == 0) {
                             ?>
-                                <td class="onoff">
-                                    <nobr><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off" title="Off" name="Timer<?php echo $i; ?>StateChange" value="0"> | <button style="width: 5em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">Turn On</button></nobr>
+                                <td style="vertical-align:middle;">
+                                    <img style="height: 1em;" src="/mycodo/img/off.jpg" alt="Off" title="Off">
+                                </td>
+                                <td>
+                                    <button style="width: 5em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">Turn On</button></nobr>
                                 </td>
                             <?php
                             } else {
                             ?>
-                                <td class="onoff">
-                                    <nobr><input type="image" style="height: 0.95em;" src="/mycodo/img/on.jpg" alt="On" title="On" name="Timer<?php echo $i; ?>StateChange" value="1"> | <button style="width: 5em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="0">Turn Off</button></nobr>
+                                <td style="vertical-align:middle;">
+                                    <img style="height: 1em;" src="/mycodo/img/on.jpg" alt="On" title="On">
+                                </td>
+                                <td>
+                                    <button style="width: 5em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="0">Turn Off</button></nobr>
                                 </td>
                             <?php
                             }
@@ -998,7 +1008,7 @@ if (isset($output_error)) {
                     <tr style="height: 2.5em; background-color: #FFFFFF;">
                         <td  style="text-align: left;"><?php
                             if ($pid_t_temp_or[$i] == 1) {
-                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangeT<?php echo $i; ?>TempOR" value="0">
+                                ?><img style="height: 1em;" src="/mycodo/img/off.jpg" alt="Off" title="Off">
                                 <?php
                             } else {
                                 ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangeT<?php echo $i; ?>TempOR" value="1">
@@ -1394,7 +1404,7 @@ if (isset($output_error)) {
                     <tr style="height: 2.5em; background-color: #FFFFFF;">
                         <td><?php
                             if ($pid_ht_temp_or[$i] == 1) {
-                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangeHT<?php echo $i; ?>TempOR" value="0">
+                                ?><img style="height: 1em;" src="/mycodo/img/off.jpg" alt="Off" title="Off">
                                 <?php
                             } else {
                                 ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangeHT<?php echo $i; ?>TempOR" value="1">
@@ -1465,10 +1475,10 @@ if (isset($output_error)) {
                     <tr style="height: 2.5em; background-color: #FFFFFF;">
                         <td style="text-align: left;"><?php
                             if ($pid_ht_hum_or[$i] == 1) {
-                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangeHT<?php echo $i; ?>HumOR" value="0">
+                                ?><img style="height: 1em;" src="/mycodo/img/off.jpg" alt="Off" title="Off">
                                 <?php
                             } else {
-                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangeHT<?php echo $i; ?>HumOR" value="1">
+                                ?><img style="height: 1em;" src="/mycodo/img/on.jpg" alt="On" title="On">
                             <?php
                             }
                             ?> Humidity</td>
@@ -1851,10 +1861,10 @@ if (isset($output_error)) {
                     <tr style="height: 2.5em; background-color: #FFFFFF;">
                         <td style="text-align: left;"><?php
                             if ($pid_co2_or[$i] == 1) {
-                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="Change<?php echo $i; ?>CO2OR" value="0">
+                                ?><img style="height: 1em;" src="/mycodo/img/off.jpg" alt="Off" title="Off">
                                 <?php
                             } else {
-                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="Change<?php echo $i; ?>CO2OR" value="1">
+                                ?><img style="height: 1em;" src="/mycodo/img/on.jpg" alt="On" title="On">
                                 <?php
                             }
                             ?> CO<sub>2</sub></td>
@@ -2256,10 +2266,10 @@ if (isset($output_error)) {
                     <tr style="height: 2.5em; background-color: #FFFFFF;">
                         <td style="text-align: left;"><?php
                             if ($pid_press_temp_or[$i] == 1) {
-                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangePress<?php echo $i; ?>TempOR" value="0">
+                                ?><img style="height: 1em;" src="/mycodo/img/off.jpg" alt="Off" title="Off">
                                 <?php
                             } else {
-                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangePress<?php echo $i; ?>TempOR" value="1">
+                                ?><img style="height: 1em;" src="/mycodo/img/on.jpg" alt="On" title="On">
                             <?php
                             }
                             ?> Temperature</td>
@@ -2327,10 +2337,10 @@ if (isset($output_error)) {
                     <tr style="height: 2.5em; background-color: #FFFFFF;">
                         <td style="text-align: left;"><?php
                             if ($pid_press_press_or[$i] == 1) {
-                                ?><input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="ChangePress<?php echo $i; ?>PressOR" value="0">
+                                ?><img style="height: 1em;" src="/mycodo/img/off.jpg" alt="Off" title="Off">
                                 <?php
                             } else {
-                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangePress<?php echo $i; ?>PressOR" value="1">
+                                ?><img style="height: 1em;" src="/mycodo/img/on.jpg" alt="On" title="On">
                             <?php
                             }
                             ?> Pressure</td>
@@ -3473,7 +3483,7 @@ if (isset($output_error)) {
                             Message to display on login screen
                         </td>
                         <td class="setting-value">
-                            <textarea style="width: 18em;" type="text" value="<?php echo $login_message; ?>" rows="2" maxlength=500 name="login_message" title=""></textarea>
+                            <textarea style="width: 18em;" rows="2" maxlength=500 name="login_message" title=""><?php echo $login_message; ?></textarea>
                         </td>
                     </tr>
                     <tr>
@@ -3571,7 +3581,7 @@ if (isset($output_error)) {
                             Relay to activate during capture (0 to disable)
                         </td>
                         <td class="setting-value">
-                    <input style="width: 4em;" type="number" min="0" max="30" value="<?php echo $still_relay; ?>" maxlength=4 size=1 name="Still_Relay" title="A relay can be set to activate during the still image capture."/>
+                            <input style="width: 4em;" type="number" min="0" max="30" value="<?php echo $still_relay; ?>" maxlength=4 size=1 name="Still_Relay" title="A relay can be set to activate during the still image capture."/>
                         </td>
                     </tr>
                     <tr>
@@ -3579,7 +3589,7 @@ if (isset($output_error)) {
                             Add timestamp to image
                         </td>
                         <td class="setting-value">
-                    <input type="hidden" name="Still_Timestamp" value="0" /><input type="checkbox" id="Still_Timestamp" name="Still_Timestamp" value="1"<?php if ($still_timestamp) echo ' checked'; ?> title="Add a timestamp to the captured image."/>
+                            <input type="hidden" name="Still_Timestamp" value="0" /><input type="checkbox" id="Still_Timestamp" name="Still_Timestamp" value="1"<?php if ($still_timestamp) echo ' checked'; ?> title="Add a timestamp to the captured image."/>
                         </td>
                     </tr>
                     <tr>
@@ -3587,31 +3597,31 @@ if (isset($output_error)) {
                             Always display last still image on Camera tab
                         </td>
                         <td class="setting-value">
-                    <input type="hidden" name="Still_DisplayLast" value="0" /><input type="checkbox" id="Still_DisplayLast" name="Still_DisplayLast" value="1"<?php if ($still_display_last) echo ' checked'; ?> title="Always display the last image acquired or only after clicking 'Capture Still'."/>
+                            <input type="hidden" name="Still_DisplayLast" value="0" /><input type="checkbox" id="Still_DisplayLast" name="Still_DisplayLast" value="1"<?php if ($still_display_last) echo ' checked'; ?> title="Always display the last image acquired or only after clicking 'Capture Still'."/>
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="vertical-align: top;">
                             Command to execute before capture
                         </td>
                         <td class="setting-value">
-                    <input style="width: 18em;" type="text" value="<?php echo htmlentities($still_cmd_pre); ?>" maxlength=100 name="Still_Cmd_Pre" title="Command to be executed before the image capture. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
+                            <textarea rows="2" style="width: 18em;" maxlength=200 name="Still_Cmd_Pre" title="Command to be executed before the image capture. If your command is longer than 200 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."><?php echo htmlentities($still_cmd_pre); ?></textarea> 
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="vertical-align: top;">
                             Command to execute after capture
                         </td>
                         <td class="setting-value">
-                    <input style="width: 18em;" type="text" value="<?php echo htmlentities($still_cmd_post); ?>" maxlength=100 name="Still_Cmd_Post" title="Command to be executed after the image capture. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
+                            <textarea rows="2" style="width: 18em;" maxlength=200 name="Still_Cmd_Post" title="Command to be executed after the image capture. If your command is longer than 200 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."><?php echo htmlentities($still_cmd_post); ?></textarea> 
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="vertical-align: top;">
                             Extra parameters for camera (raspistill)
                         </td>
                         <td class="setting-value">
-                    <input style="width: 18em;" type="text" value="<?php echo $still_extra_parameters; ?>" maxlength=200 name="Still_Extra_Parameters"/> 
+                            <textarea rows="2" style="width: 18em;" maxlength=200 name="Still_Extra_Parameters"><?php echo $still_extra_parameters; ?></textarea>
                         </td>
                     </tr>
                     <tr>
@@ -3636,27 +3646,27 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="vertical-align: top;">
                             Command to execute before starting stream
                         </td>
                         <td class="setting-value">
-                    <input style="width: 18em;" type="text" value="<?php echo htmlentities($stream_cmd_pre); ?>" maxlength=100 name="Stream_Cmd_Pre" title="Command to be executed before the stream has started. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
+                            <textarea rows="2" style="width: 18em;" maxlength=200 name="Stream_Cmd_Pre" title="Command to be executed before the stream has started. If your command is longer than 200 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."><?php echo htmlentities($stream_cmd_pre); ?></textarea> 
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="vertical-align: top;">
                             Command to execute after stopping stream
                         </td>
                         <td class="setting-value">
-                    <input style="width: 18em;" type="text" value="<?php echo htmlentities($stream_cmd_post); ?>" maxlength=100 name="Stream_Cmd_Post" title="Command to be executed after the stream has been stopped. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
+                            <textarea rows="2" style="width: 18em;" maxlength=200 name="Stream_Cmd_Post" title="Command to be executed after the stream has been stopped. If your command is longer than 200 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."><?php echo htmlentities($stream_cmd_post); ?></textarea> 
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="vertical-align: top;">
                             Extra parameters for camera (raspistill)
                         </td>
                         <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $stream_extra_parameters; ?>" maxlength=200 name="Stream_Extra_Parameters" title=""/>
+                            <textarea rows="2" style="width: 18em;" maxlength=200 name="Stream_Extra_Parameters" title=""><?php echo $stream_extra_parameters; ?></textarea>
                         </td>
                     </tr>
                     <tr>
@@ -3713,27 +3723,27 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="vertical-align: top;">
                             Command to execute before capture
                         </td>
                         <td class="setting-value">
-                    <input style="width: 18em;" type="text" value="<?php echo htmlentities($timelapse_cmd_pre); ?>" maxlength=100 name="Timelapse_Cmd_Pre" title="Command to be executed before capture. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
+                            <textarea rows="2" style="width: 18em;" maxlength=200 name="Timelapse_Cmd_Pre" title="Command to be executed before capture. If your command is longer than 200 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."><?php echo htmlentities($timelapse_cmd_pre); ?></textarea> 
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="vertical-align: top;">
                             Command to execute after capture
                         </td>
                         <td class="setting-value">
-                    <input style="width: 18em;" type="text" value="<?php echo htmlentities($timelapse_cmd_post); ?>" maxlength=100 name="Timelapse_Cmd_Post" title="Command to be executed after capture. If your command is longer than 100 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."/> 
+                            <textarea rows="2" style="width: 18em;" maxlength=200 name="Timelapse_Cmd_Post" title="Command to be executed after capture. If your command is longer than 200 characters, consider creating a script and excuting that here. Use full paths and single-quotes instead of double-quotes."><?php echo htmlentities($timelapse_cmd_post); ?></textarea> 
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="vertical-align: top;">
                             Extra parameters for camera (raspistill)
                         </td>
                         <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $timelapse_extra_parameters; ?>" maxlength=200 name="Timelapse_Extra_Parameters" title=""/>
+                            <textarea rows="2" style="width: 18em;" maxlength=200 name="Timelapse_Extra_Parameters" title=""><?php echo $timelapse_extra_parameters; ?></textarea>
                         </td>
                     </tr>
                     <tr>
