@@ -138,16 +138,16 @@ if (isset($output_error)) {
         <div style="float: left;">
             <div style="padding-bottom: 0.1em;"><?php
                 if (file_exists($lock_daemon)) {
-                    echo '<img style="height: 0.9em;" src="/mycodo/img/on.jpg" alt="On" title="On">';
+                    echo '<img style="height: 0.9em;" src="/mycodo/img/on.png" alt="On" title="On">';
                 } else {
-                    echo '<img style="height: 0.9em;" src="/mycodo/img/off.jpg" alt="Off" title="Off">';
+                    echo '<img style="height: 0.9em;" src="/mycodo/img/off.png" alt="Off" title="Off">';
                 }
                 ?> Daemon</div>
             <div style="padding-bottom: 0.1em;"><?php
                 if (file_exists($lock_mjpg_streamer)) {
-                    echo '<img style="height: 0.9em;" src="/mycodo/img/on.jpg" alt="On" title="On">';
+                    echo '<img style="height: 0.9em;" src="/mycodo/img/on.png" alt="On" title="On">';
                 } else {
-                    echo '<img style="height: 0.9em;" src="/mycodo/img/off.jpg" alt="Off" title="Off">';
+                    echo '<img style="height: 0.9em;" src="/mycodo/img/off.png" alt="Off" title="Off">';
                 }
                 ?> Stream</div>
             <div style="padding-bottom: 0.1em;"><?php
@@ -157,22 +157,22 @@ if (isset($output_error)) {
                 }
 
                 if (file_exists($lock_timelapse)) {
-                    echo '<img style="height: 0.9em;" src="/mycodo/img/on.jpg" alt="On" title="On">';
+                    echo '<img style="height: 0.9em;" src="/mycodo/img/on.png" alt="On" title="On">';
                 } else {
-                    echo '<img style="height: 0.9em;" src="/mycodo/img/off.jpg" alt="Off" title="Off">';
+                    echo '<img style="height: 0.9em;" src="/mycodo/img/off.png" alt="Off" title="Off">';
                 }
                 ?> Time-lapse</div>
         </div>
         <div style="float: left;">
             <div><?php
                 if (isset($_GET['r'])) {
-                    ?><div style="display:inline-block; vertical-align:top;"><img style="height: 0.9em;" src="/mycodo/img/on.jpg" alt="On" title="On">
+                    ?><div style="display:inline-block; vertical-align:top;"><img style="height: 0.9em;" src="/mycodo/img/on.png" alt="On" title="On">
                     </div>
                     <div style="display:inline-block; padding-left: 0.3em;">
                         <div>Refresh<br><span style="font-size: 0.7em">(<?php echo $_GET['tab']; ?>)</span></div>
                     </div><?php
                 } else {
-                    ?><img style="height: 0.9em;" src="/mycodo/img/off.jpg" alt="Off" title="Off"> Refresh<?php
+                    ?><img style="height: 0.9em;" src="/mycodo/img/off.png" alt="Off" title="Off"> Refresh<?php
                 }
             ?></div>
         </div>
@@ -534,7 +534,7 @@ if (isset($output_error)) {
                             <td align=center class="table-header" style="vertical-align: middle;">Relay</td>
                             <td class="table-header" style="vertical-align: middle;">Name</td>
                             <td colspan="2" class="table-header" style="vertical-align: middle;">
-                                On <img style="height: 1em;" src="/mycodo/img/on.jpg" alt="On" title="On"> ~ Off <img style="height: 1em;" src="/mycodo/img/off.jpg" alt="Off" title="Off"></td>
+                                On <img style="height: 1em;" src="/mycodo/img/on.png" alt="On" title="On"> ~ Off <img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off"></td>
                             <td align=center class="table-header">Seconds<br>On</td>
                             <td align=center class="table-header">GPIO<br>Pin</td>
                             <td align=center class="table-header">Amps<br>Draw</td>
@@ -556,7 +556,7 @@ if (isset($output_error)) {
                                 if ((shell_exec($read) == 1 && $relay_trigger[$i] == 0) || (shell_exec($read) == 0 && $relay_trigger[$i] == 1)) {
                                     ?>
                                     <td style="vertical-align: middle;">
-                                        <input type="hidden" "R<?php echo $i; ?>" value="1" /><img style="height: 1em;" src="/mycodo/img/off.jpg" alt="Off" title="Off">
+                                        <input type="hidden" "R<?php echo $i; ?>" value="1" /><img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
                                     </td>
                                     <td>
                                         <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="1">Turn On</button>
@@ -565,7 +565,7 @@ if (isset($output_error)) {
                                 } else {
                                     ?>
                                     <td style="vertical-align: middle;">
-                                        <img style="height: 1em;" src="/mycodo/img/on.jpg" alt="On" title="On">
+                                        <img style="height: 1em;" src="/mycodo/img/on.png" alt="On" title="On">
                                     </td>
                                     <td>
                                         <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="0">Turn Off</button>
@@ -799,7 +799,7 @@ if (isset($output_error)) {
                             if ($timer_state[$i] == 0) {
                             ?>
                                 <td style="vertical-align:middle;">
-                                    <img style="height: 1em;" src="/mycodo/img/off.jpg" alt="Off" title="Off">
+                                    <img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
                                 </td>
                                 <td>
                                     <button style="width: 5em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">Turn On</button></nobr>
@@ -808,7 +808,7 @@ if (isset($output_error)) {
                             } else {
                             ?>
                                 <td style="vertical-align:middle;">
-                                    <img style="height: 1em;" src="/mycodo/img/on.jpg" alt="On" title="On">
+                                    <img style="height: 1em;" src="/mycodo/img/on.png" alt="On" title="On">
                                 </td>
                                 <td>
                                     <button style="width: 5em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="0">Turn Off</button></nobr>
@@ -1008,10 +1008,10 @@ if (isset($output_error)) {
                     <tr style="height: 2.5em; background-color: #FFFFFF;">
                         <td  style="text-align: left;"><?php
                             if ($pid_t_temp_or[$i] == 1) {
-                                ?><img style="height: 1em;" src="/mycodo/img/off.jpg" alt="Off" title="Off">
+                                ?><img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
                                 <?php
                             } else {
-                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangeT<?php echo $i; ?>TempOR" value="1">
+                                ?><input type="image" class="indicate" src="/mycodo/img/on.png" alt="On" title="On, Click to turn off." name="ChangeT<?php echo $i; ?>TempOR" value="1">
                             <?php
                             }
                             ?> Temperature
@@ -1150,9 +1150,9 @@ if (isset($output_error)) {
                             <?php
                             echo '<button type="submit" name="DeleteT' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                             if ($conditional_t_state[$i][$z]) {
-                                echo '<button style="width: 5em;" type="submit" name="TurnOffT' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> <input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="TurnOffT' . $i . '-' . $z . 'Conditional" value="0"> ';
+                                echo '<button style="width: 5em;" type="submit" name="TurnOffT' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> <input type="image" class="indicate" src="/mycodo/img/on.png" alt="On" title="On, Click to turn off." name="TurnOffT' . $i . '-' . $z . 'Conditional" value="0"> ';
                             } else {
-                                echo '<button style="width: 5em;" type="submit" name="TurnOnT' . $i . '-' . $z . 'Conditional" title="">Turn On</button> <input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="TurnOnT' . $i . '-' . $z . 'Conditional" value="0"> ';
+                                echo '<button style="width: 5em;" type="submit" name="TurnOnT' . $i . '-' . $z . 'Conditional" title="">Turn On</button> <input type="image" class="indicate" src="/mycodo/img/off.png" alt="Off" title="Off, Click to turn on." name="TurnOnT' . $i . '-' . $z . 'Conditional" value="0"> ';
                             }
 
                             echo $z+1 . ' ' . $conditional_t_name[$i][$z] . ': Every ' . $conditional_t_period[$i][$z] . ' sec, if the Temperature is ';
@@ -1404,10 +1404,10 @@ if (isset($output_error)) {
                     <tr style="height: 2.5em; background-color: #FFFFFF;">
                         <td><?php
                             if ($pid_ht_temp_or[$i] == 1) {
-                                ?><img style="height: 1em;" src="/mycodo/img/off.jpg" alt="Off" title="Off">
+                                ?><img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
                                 <?php
                             } else {
-                                ?><input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="ChangeHT<?php echo $i; ?>TempOR" value="1">
+                                ?><input type="image" class="indicate" src="/mycodo/img/on.png" alt="On" title="On, Click to turn off." name="ChangeHT<?php echo $i; ?>TempOR" value="1">
                             <?php
                             }
                             ?> Temperature</td>
@@ -1475,10 +1475,10 @@ if (isset($output_error)) {
                     <tr style="height: 2.5em; background-color: #FFFFFF;">
                         <td style="text-align: left;"><?php
                             if ($pid_ht_hum_or[$i] == 1) {
-                                ?><img style="height: 1em;" src="/mycodo/img/off.jpg" alt="Off" title="Off">
+                                ?><img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
                                 <?php
                             } else {
-                                ?><img style="height: 1em;" src="/mycodo/img/on.jpg" alt="On" title="On">
+                                ?><img style="height: 1em;" src="/mycodo/img/on.png" alt="On" title="On">
                             <?php
                             }
                             ?> Humidity</td>
@@ -1621,9 +1621,9 @@ if (isset($output_error)) {
                             <?php
                             echo '<button type="submit" name="DeleteHT' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                             if ($conditional_ht_state[$i][$z]) {
-                                echo '<button style="width: 5em;" type="submit" name="TurnOffHT' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> <input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="TurnOffHT' . $i . '-' . $z . 'Conditional" value="0"> ';
+                                echo '<button style="width: 5em;" type="submit" name="TurnOffHT' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> <input type="image" class="indicate" src="/mycodo/img/on.png" alt="On" title="On, Click to turn off." name="TurnOffHT' . $i . '-' . $z . 'Conditional" value="0"> ';
                             } else {
-                                echo '<button style="width: 5em;" type="submit" name="TurnOnHT' . $i . '-' . $z . 'Conditional" title="">Turn On</button> <input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="TurnOnHT' . $i . '-' . $z . 'Conditional" value="0"> ';
+                                echo '<button style="width: 5em;" type="submit" name="TurnOnHT' . $i . '-' . $z . 'Conditional" title="">Turn On</button> <input type="image" class="indicate" src="/mycodo/img/off.png" alt="Off" title="Off, Click to turn on." name="TurnOnHT' . $i . '-' . $z . 'Conditional" value="0"> ';
                             }
 
                             echo $z+1 . ' ' . $conditional_ht_name[$i][$z] . ': Every ' . $conditional_ht_period[$i][$z] . ' sec, if the ' . $conditional_ht_condition[$i][$z] . ' is ';
@@ -1861,10 +1861,10 @@ if (isset($output_error)) {
                     <tr style="height: 2.5em; background-color: #FFFFFF;">
                         <td style="text-align: left;"><?php
                             if ($pid_co2_or[$i] == 1) {
-                                ?><img style="height: 1em;" src="/mycodo/img/off.jpg" alt="Off" title="Off">
+                                ?><img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
                                 <?php
                             } else {
-                                ?><img style="height: 1em;" src="/mycodo/img/on.jpg" alt="On" title="On">
+                                ?><img style="height: 1em;" src="/mycodo/img/on.png" alt="On" title="On">
                                 <?php
                             }
                             ?> CO<sub>2</sub></td>
@@ -2004,9 +2004,9 @@ if (isset($output_error)) {
                             <?php
                             echo '<button type="submit" name="DeleteCO2' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                             if ($conditional_co2_state[$i][$z]) {
-                                echo '<button style="width: 5em;" type="submit" name="TurnOffCO2' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> <input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="TurnOffCO2' . $i . '-' . $z . 'Conditional" value="0"> ';
+                                echo '<button style="width: 5em;" type="submit" name="TurnOffCO2' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> <input type="image" class="indicate" src="/mycodo/img/on.png" alt="On" title="On, Click to turn off." name="TurnOffCO2' . $i . '-' . $z . 'Conditional" value="0"> ';
                             } else {
-                                echo '<button style="width: 5em;" type="submit" name="TurnOnCO2' . $i . '-' . $z . 'Conditional" title="">Turn On</button> <input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="TurnOnCO2' . $i . '-' . $z . 'Conditional" value="0"> ';
+                                echo '<button style="width: 5em;" type="submit" name="TurnOnCO2' . $i . '-' . $z . 'Conditional" title="">Turn On</button> <input type="image" class="indicate" src="/mycodo/img/off.png" alt="Off" title="Off, Click to turn on." name="TurnOnCO2' . $i . '-' . $z . 'Conditional" value="0"> ';
                             }
 
                             echo $z+1 . ' ' . $conditional_co2_name[$i][$z] . ': Every ' . $conditional_co2_period[$i][$z] . ' sec, if CO<sub>2</sub> is ';
@@ -2266,10 +2266,10 @@ if (isset($output_error)) {
                     <tr style="height: 2.5em; background-color: #FFFFFF;">
                         <td style="text-align: left;"><?php
                             if ($pid_press_temp_or[$i] == 1) {
-                                ?><img style="height: 1em;" src="/mycodo/img/off.jpg" alt="Off" title="Off">
+                                ?><img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
                                 <?php
                             } else {
-                                ?><img style="height: 1em;" src="/mycodo/img/on.jpg" alt="On" title="On">
+                                ?><img style="height: 1em;" src="/mycodo/img/on.png" alt="On" title="On">
                             <?php
                             }
                             ?> Temperature</td>
@@ -2337,10 +2337,10 @@ if (isset($output_error)) {
                     <tr style="height: 2.5em; background-color: #FFFFFF;">
                         <td style="text-align: left;"><?php
                             if ($pid_press_press_or[$i] == 1) {
-                                ?><img style="height: 1em;" src="/mycodo/img/off.jpg" alt="Off" title="Off">
+                                ?><img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
                                 <?php
                             } else {
-                                ?><img style="height: 1em;" src="/mycodo/img/on.jpg" alt="On" title="On">
+                                ?><img style="height: 1em;" src="/mycodo/img/on.png" alt="On" title="On">
                             <?php
                             }
                             ?> Pressure</td>
@@ -2483,9 +2483,9 @@ if (isset($output_error)) {
                             <?php
                             echo '<button type="submit" name="DeletePress' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                             if ($conditional_press_state[$i][$z]) {
-                                echo '<button style="width: 5em;" type="submit" name="TurnOffPress' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> <input type="image" class="indicate" src="/mycodo/img/on.jpg" alt="On" title="On, Click to turn off." name="TurnOffPress' . $i . '-' . $z . 'Conditional" value="0"> ';
+                                echo '<button style="width: 5em;" type="submit" name="TurnOffPress' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> <input type="image" class="indicate" src="/mycodo/img/on.png" alt="On" title="On, Click to turn off." name="TurnOffPress' . $i . '-' . $z . 'Conditional" value="0"> ';
                             } else {
-                                echo '<button style="width: 5em;" type="submit" name="TurnOnPress' . $i . '-' . $z . 'Conditional" title="">Turn On</button> <input type="image" class="indicate" src="/mycodo/img/off.jpg" alt="Off" title="Off, Click to turn on." name="TurnOnPress' . $i . '-' . $z . 'Conditional" value="0"> ';
+                                echo '<button style="width: 5em;" type="submit" name="TurnOnPress' . $i . '-' . $z . 'Conditional" title="">Turn On</button> <input type="image" class="indicate" src="/mycodo/img/off.png" alt="Off" title="Off, Click to turn on." name="TurnOnPress' . $i . '-' . $z . 'Conditional" value="0"> ';
                             }
 
                             echo $z+1 . ' ' . $conditional_press_name[$i][$z] . ': Every ' . $conditional_press_period[$i][$z] . ' sec, if the ' . $conditional_press_condition[$i][$z] . ' is ';
