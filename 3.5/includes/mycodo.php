@@ -3261,6 +3261,7 @@ if (isset($output_error)) {
                                 echo `cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log | tail -n 30`;
                             }
                         }
+                        
                         if(isset($_POST['HTSensor'])) {
                             echo 'Year Mo Day Hour Min Sec Tc RH DPc Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
@@ -3300,15 +3301,7 @@ if (isset($output_error)) {
                                 echo `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | tail -n 30`;
                             }
                         }
-                        if(isset($_POST['Users']) && $_SESSION['user_name'] != 'guest') {
-                            echo exec('file ' . $user_db); 
-                            echo '<br>&nbsp;<br>User Email Password_Hash<br> <br>';
-                            $db = new SQLite3($user_db);
-                            $results = $db->query('SELECT user_name, user_email, user_password_hash FROM users');
-                            while ($row = $results->fetchArray()) {
-                                echo $row[0] , ' ' , $row[1] , ' ' , $row[2] , '<br>';
-                            }
-                        }
+                        
                         if(isset($_POST['Login']) && $_SESSION['user_name'] != 'guest') {
                             echo 'Time, Type of auth, user, IP, Hostname, Referral, Browser<br> <br>';
                             if ($_POST['Lines'] != '') {
@@ -3318,6 +3311,7 @@ if (isset($output_error)) {
                                 echo `tail -n 30 $auth_log`;
                             }
                         }
+
                         if(isset($_POST['Daemon'])) {
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
@@ -3326,6 +3320,7 @@ if (isset($output_error)) {
                                 echo `cat /var/www/mycodo/log/daemon.log /var/www/mycodo/log/daemon-tmp.log | tail -n 30`;
                             }
                         }
+
                         if(isset($_POST['Update'])) {
                             $log = '/var/www/mycodo/log/update.log';
 
@@ -3336,7 +3331,18 @@ if (isset($output_error)) {
                                 echo `tail -n 30 $log`;
                             }
                         }
-                        if(isset($_POST['Database'])) {
+
+                        if(isset($_POST['Users']) && $_SESSION['user_name'] != 'guest') {
+                            echo exec('file ' . $user_db); 
+                            echo '<br>&nbsp;<br>User Email Password_Hash<br> <br>';
+                            $db = new SQLite3($user_db);
+                            $results = $db->query('SELECT user_name, user_email, user_password_hash FROM users');
+                            while ($row = $results->fetchArray()) {
+                                echo $row[0] , ' ' , $row[1] , ' ' , $row[2] , '<br>';
+                            }
+                        }
+
+                        if(isset($_POST['Database']) && $_SESSION['user_name'] != 'guest') {
                             echo exec('file ' . $mycodo_db); 
                             echo '<br>&nbsp;<br><pre>';
                             exec('sqlite3 ' . $mycodo_db . ' .dump', $output); print_r($output);

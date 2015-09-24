@@ -27,18 +27,19 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
     if ($sensor_t_activated[$p]) {
         $last_t_sensor[$p] = `awk '$8 == $p {print}' /var/www/mycodo/log/sensor-t-tmp.log | tail -n 1`;
         if ($last_t_sensor[$p] != '') {
-            $sensor_explode = explode(" ", $last_t_sensor[$p]);
+            $sensor_explode = preg_split('/[\s]+/', $last_t_sensor[$p]);
             $t_temp_c[$p] = $sensor_explode[6];
             $t_temp_f[$p] = round(($t_temp_c[$p]*(9/5) + 32), 1);
             $settemp_t_f[$p] = round($pid_t_temp_set[$p]*(9/5)+32, 1);
         }
     }
 }
+
 for ($p = 0; $p < count($sensor_ht_id); $p++) {
     if ($sensor_ht_activated[$p]) {
         $last_ht_sensor[$p] = `awk '$10 == $p {print}' /var/www/mycodo/log/sensor-ht-tmp.log | tail -n 1`;
         if ($last_ht_sensor[$p] != '') {
-            $sensor_explode = explode(" ", $last_ht_sensor[$p]);
+            $sensor_explode = preg_split('/[\s]+/', $last_ht_sensor[$p]);
             $ht_temp_c[$p] = floatval($sensor_explode[6]);
             $hum[$p] = $sensor_explode[7];
             $ht_temp_f[$p] = round(($ht_temp_c[$p]*(9/5) + 32), 1);
@@ -48,20 +49,22 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
         }
     }
 }
+
 for ($p = 0; $p < count($sensor_co2_id); $p++) {
     if ($sensor_co2_activated[$p]) {
         $last_co2_sensor[$p] = `awk '$8 == $p {print}' /var/www/mycodo/log/sensor-co2-tmp.log | tail -n 1`;
         if ($last_co2_sensor[$p] != '') {
-            $sensor_explode = explode(" ", $last_co2_sensor[$p]);
+            $sensor_explode = preg_split('/[\s]+/', $last_co2_sensor[$p]);
             $co2[$p] = $sensor_explode[6];
         }
     }
 }
+
 for ($p = 0; $p < count($sensor_press_id); $p++) {
     if ($sensor_press_activated[$p]) {
         $last_press_sensor[$p] = `awk '$10 == $p {print}' /var/www/mycodo/log/sensor-press-tmp.log | tail -n 1`;
         if ($last_press_sensor[$p] != '') {
-            $sensor_explode = explode(" ", $last_press_sensor[$p]);
+            $sensor_explode = preg_split('/[\s]+/', $last_press_sensor[$p]);
             $press_temp_c[$p] = floatval($sensor_explode[6]);
             $press[$p] = $sensor_explode[7];
             $press_temp_f[$p] = round(($press_temp_c[$p]*(9/5) + 32), 1);
@@ -80,31 +83,38 @@ $pi_temp_gpu_c = substr($pi_temp_gpu_c,0,-3);
 $pi_temp_gpu_c = trim($pi_temp_gpu_c, "tempC=\'C");
 $pi_temp_gpu_f = round(($pi_temp_gpu_c*(9/5) + 32), 1);
 
-// Grab the time of the last sensor read
+// Determine the time of the last sensor read
 $time_now = `date +"%Y-%m-%d %H:%M:%S"`;
 
 $time_last_t = `tail -n 1 /var/www/mycodo/log/sensor-t-tmp.log`;
 if ($time_last_t != '') {
-    $time_explode = explode(" ", $time_last_t);
+    $time_explode = preg_split('/[\s]+/', $time_last_t);
     $time_last_t = $time_explode[0] . '-' . $time_explode[1] . '-' . $time_explode[2] . ' ' .
                    $time_explode[3] . ':' . $time_explode[4] . ':' . $time_explode[5];
 }
 
 $time_last_ht = `tail -n 1 /var/www/mycodo/log/sensor-ht-tmp.log`;
 if ($time_last_ht != '') {
-    $time_explode = explode(" ", $time_last_ht);
+    $time_explode = preg_split('/[\s]+/', $time_last_ht);
     $time_last_ht = $time_explode[0] . '-' . $time_explode[1] . '-' . $time_explode[2] . ' ' .
                     $time_explode[3] . ':' . $time_explode[4] . ':' . $time_explode[5];
 }
 
 $time_last_co2 = `tail -n 1 /var/www/mycodo/log/sensor-co2-tmp.log`;
 if ($time_last_co2 != '') {
-    $time_explode = explode(" ", $time_last_co2);
+    $time_explode = preg_split('/[\s]+/', $time_last_co2);
     $time_last_co2 = $time_explode[0] . '-' . $time_explode[1] . '-' . $time_explode[2] . ' ' .
                      $time_explode[3] . ':' . $time_explode[4] . ':' . $time_explode[5];
 }
 
-$time_last = max($time_last_t, $time_last_ht, $time_last_co2);
+$time_last_press = `tail -n 1 /var/www/mycodo/log/sensor-press-tmp.log`;
+if ($time_last_press != '') {
+    $time_explode = preg_split('/[\s]+/', $time_last_press);
+    $time_last_press = $time_explode[0] . '-' . $time_explode[1] . '-' . $time_explode[2] . ' ' .
+                     $time_explode[3] . ':' . $time_explode[4] . ':' . $time_explode[5];
+}
+
+$time_last = max($time_last_t, $time_last_ht, $time_last_co2, $time_last_press);
 
 
 // Request to generate a graph
