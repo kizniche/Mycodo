@@ -530,7 +530,7 @@ if (isset($output_error)) {
                         <tr>
                             <td align=center class="table-header">&nbsp;<br>Relay</td>
                             <td class="table-header">&nbsp;<br>Name</td>
-                            <td align=center class="table-header">State<br><img style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off" title="Off"> = off</td>
+                            <td colspan="2" class="table-header" style="vertical-align: middle;">On <img style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/on.jpg" alt="On" title="On"> | Off <img style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off" title="Off"></td>
                             <td align=center class="table-header">Seconds<br>On</td>
                             <td align=center class="table-header">GPIO<br>Pin</td>
                             <td align=center class="table-header">Amps<br>Draw</td>
@@ -551,14 +551,20 @@ if (isset($output_error)) {
                             <?php
                                 if ((shell_exec($read) == 1 && $relay_trigger[$i] == 0) || (shell_exec($read) == 0 && $relay_trigger[$i] == 1)) {
                                     ?>
-                                    <td class="onoff">
-                                        <nobr><input type="hidden" "R<?php echo $i; ?>" value="1" /><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off, Click to turn on." title="Off, Click to turn on." name="R<?php echo $i; ?>" value="1"> | <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="1">Turn On</button></nobr>
+                                    <td>
+                                        <input type="hidden" "R<?php echo $i; ?>" value="1" /><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/off.jpg" alt="Off, Click to turn on." title="Off, Click to turn on." name="R<?php echo $i; ?>" value="1">
+                                    </td>
+                                    <td>
+                                        <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="1">Turn On</button>
                                     </td>
                                     <?php
                                 } else {
                                     ?>
-                                    <td class="onoff">
-                                        <nobr><input type="hidden" "R<?php echo $i; ?>" value="0" /><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/on.jpg" alt="On, Click to turn off." title="On, Click to turn off." name="R<?php echo $i; ?>" value="0"> | <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="0">Turn Off</button></nobr>
+                                    <td>
+                                        <input type="hidden" "R<?php echo $i; ?>" value="0" /><input type="image" style="height: 0.95em; vertical-align: middle;" src="/mycodo/img/on.jpg" alt="On, Click to turn off." title="On, Click to turn off." name="R<?php echo $i; ?>" value="0">
+                                    </td>
+                                    <td>
+                                        <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="0">Turn Off</button>
                                     </td>
                                     <?php
                                 }
@@ -3450,7 +3456,20 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-text">
+                        <td class="setting-save">
+                            <button name="ChangeInterface" type="submit" value="">Save</button>
+                        </td>
+                    </tr>
+                    </form>
+
+                    <form method="post" action="?tab=settings">
+                    <tr>
+                        <td class="setting-title">
+                            Display
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text" style="vertical-align:top;">
                             Message to display on login screen
                         </td>
                         <td class="setting-value">
@@ -3504,10 +3523,10 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
-                            Password
+                            Password (field will always be blank, enter new password and save to change)
                         </td>
                         <td class="setting-value">
-                            <input class="smtp" type="password" value="<?php echo $smtp_pass; ?>" maxlength=30 size=20 name="smtp_pass" title=""/>
+                            <input class="smtp" type="password" value="" maxlength=30 size=20 name="smtp_pass" title=""/>
                         </td>
                     </tr>
                     <tr>
