@@ -198,7 +198,7 @@ def write_relay_log(relayNumber, relaySeconds, sensor, gpio):
 
     try:
         with open(relay_log_file_tmp, "ab") as relaylog:
-            relaylog.write('{0} {1:6d} {2:6d} {3:6d} {4:8.2f}\n'.format(
+            relaylog.write('{0} {1:3d} {2:4d} {3:4d} {4:9.2f}\n'.format(
                 datetime.datetime.now().strftime("%Y %m %d %H %M %S"),
                 sensor, relayNumber, gpio, relaySeconds))
 
