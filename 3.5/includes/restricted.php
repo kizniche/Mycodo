@@ -29,14 +29,8 @@
  *
  */
 
-
 if (isset($_POST['UpdateCheck'])) {
-    exec("$install_path/cgi-bin/mycodo-wrapper updatecheck 2>&1", $update_check_output, $update_check_return);
-    if ($update_check_return) {
-        $settings_error = "There is a newer version of Mycodo available.";
-    } else {
-        $settings_error = "You are running the latest version of Mycodo.";
-    }
+    update_check($install_path, $update_check);
 }
 
 if (isset($_POST['UpdateMycodo'])) {
@@ -45,10 +39,9 @@ if (isset($_POST['UpdateMycodo'])) {
         exec("$install_path/cgi-bin/mycodo-wrapper update >> /var/www/mycodo/log/update.log &");
         $settings_error = "The update process has begun. You can follow the progress of the update from the Update Log under the Data tab.";
     } else {
-        $settings_error = "You are already running the latest version of Mycodo.";
+        $settings_error = "Error: Cannot update: You are already running the latest version of Mycodo.";
     }
 }
-
 
 
 
@@ -57,7 +50,6 @@ if (isset($_POST['UpdateMycodo'])) {
  * Daemon Control
  *
  */
-
 
 if (isset($_POST['DaemonStop'])) {
     if (!file_exists($lock_daemon)) {

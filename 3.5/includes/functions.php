@@ -455,3 +455,13 @@ function delete_graphs() {
 function is_positive_integer($str) {
     return (is_numeric($str) && $str > 0 && $str == round($str));
 }
+
+function update_check($install_path, $update_check) {
+    exec("$install_path/cgi-bin/mycodo-wrapper updatecheck 2>&1", $update_check_output, $update_check_return);
+
+    if ($update_check_return) {
+        exec("echo '1' > $update_check");
+    } else {
+        exec("echo '0' > $update_check");
+    }
+}

@@ -38,6 +38,7 @@ $stream_exec = $install_path . "/cgi-bin/camera-stream.sh";
 $timelapse_exec = $install_path . "/cgi-bin/camera-timelapse.sh";
 $mycodo_db = $install_path . "/config/mycodo.db";
 $user_db = $install_path . "/config/users.db";
+$update_check = $install_path . "/.updatecheck";
 
 $daemon_log = $install_path . "/log/daemon.log";
 $auth_log = $install_path . "/log/auth.log";
@@ -58,6 +59,11 @@ if (!file_exists($mycodo_db)) exit("Mycodo database does not exist. Run 'setup-d
 
 require($install_path . "/includes/database.php"); // Initial SQL database load to variables
 require($install_path . "/includes/functions.php"); // Mycodo functions
+
+// Check is there is an update (check at minimum every 24 hours)
+if (time()-filemtime($update_check) > 24 * 3600) {
+    update_check($install_path, $update_check);
+}
 
 // Output an error if the user guest attempts to submit certain forms
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -3404,7 +3410,13 @@ if (isset($output_error)) {
                     <form action="?tab=settings" method="post">
                         <tr>
                         <td class="setting-text">
-                            Check if there is an update avaialble for Mycodo 
+                            Check if there is an update avaialble for Mycodo<?php
+                            if (`cat /var/www/mycodo/.updatecheck` == '1') {
+                                echo ' (<span style="color: red;">A new version is available</span>)';
+                            } else {
+                                echo ' (<span style="color: green;">You are running the latest version</span>)';
+                            }
+                            ?>
                         </td>
                         <td class="setting-value">
                             <button name="UpdateCheck" type="submit" value="" title="Check if there is a newer version of Mycodo on github.">Check for Update</button>
