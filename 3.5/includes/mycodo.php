@@ -3412,7 +3412,7 @@ if (isset($output_error)) {
                         <td class="setting-text">
                             Check if there is an update avaialble for Mycodo<?php
                             if (strpos(`cat /var/www/mycodo/.updatecheck`,'1') !== false) {
-                                echo ' (<span style="color: red;">A new version is available</span>)';
+                                echo ' (<span style="color: red;">A newer version is available</span>)';
                             } else {
                                 echo ' (<span style="color: green;">You are running the latest version</span>)';
                             }
