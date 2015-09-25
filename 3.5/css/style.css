@@ -74,17 +74,7 @@ hr.fade {
     display: inline-block;
 }
 
-.relay-parent {
-  float: left;
-  width: auto;
-  height: auto;
-  border: 0.5em solid #EBEBEB;
-  background-color: #EBEBEB;
-  margin-bottom: 1em;
-}
-
 .sensor-parent {
-  float: left;
   width: auto;
   height: auto;
   border: 0.5em solid #EBEBEB;
@@ -94,6 +84,40 @@ hr.fade {
 
 .sensor {
   border-collapse: initial;
+}
+
+.center {
+    text-align: center;
+}
+
+.middle {
+    vertical-align: middle;
+}
+
+table.relays {
+    display: table;
+    width: 100%;
+    margin: 0 0.2em 0 0;
+}
+
+table.relays td {
+    padding: 0.5em 0.6em 0.5em 0.6em;
+}
+
+table.relays tr:nth-child(even) {
+    background-color: #FFFFFF;
+}
+
+table.relay-display td {
+    padding: 0.15em 0.8em 0.15em 0.8em;
+}
+
+table.timers td {
+    padding: 0.6em 0.5em 0.6em 0.8em;
+}
+
+table.timers tr:nth-child(odd) {
+    background-color: #EBEBEB;
 }
 
 table.sensor_conditional td {
@@ -251,31 +275,6 @@ button.linkoff {
 
 .setting-save {
     padding: 0.5em 0;
-}
-
-table.relays {
-    width: 42em;
-    margin: 0 0.2em 0.5em 0;
-}
-
-table.relays td {
-    padding: 0.5em 0.6em 0.5em 0.6em;
-}
-
-table.relays tr:nth-child(even) {
-    background-color: #FFFFFF;
-}
-
-table.relay-display td {
-    padding: 0.15em 0.8em 0.15em 0.8em;
-}
-
-table.timers td {
-    padding: 0.6em 0.5em 0.6em 0.8em;
-}
-
-table.timers tr:nth-child(odd) {
-    background-color: #EBEBEB;
 }
 
 .notify-title {

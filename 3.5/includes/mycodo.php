@@ -531,22 +531,22 @@ if (isset($output_error)) {
                     <form action="?tab=sensor" method="POST">
                     <table class="relays">
                         <tr>
-                            <td align=center class="table-header" style="vertical-align: middle;">Relay</td>
-                            <td class="table-header" style="vertical-align: middle;">Name</td>
-                            <td colspan="2" class="table-header" style="vertical-align: middle;">
+                            <td class="table-header center middle">Relay</td>
+                            <td class="table-header middle">Name</td>
+                            <td colspan="2" class="table-header center" style="vertical-align: middle;">
                                 On <img style="height: 1em;" src="/mycodo/img/on.png" alt="On" title="On"> ~ Off <img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off"></td>
-                            <td align=center class="table-header">Seconds<br>On</td>
-                            <td align=center class="table-header">GPIO<br>Pin</td>
-                            <td align=center class="table-header">Amps<br>Draw</td>
-                            <td align=center class="table-header">Signal<br>ON</td>
-                            <td align=center class="table-header">Startup<br>State</td>
-                            <td align=center class="table-header"></td>
+                            <td class="table-header center">Seconds<br>On</td>
+                            <td class="table-header center">GPIO<br>Pin</td>
+                            <td class="table-header center">Amps<br>Draw</td>
+                            <td class="table-header center">Signal<br>ON</td>
+                            <td class="table-header center">Startup<br>State</td>
+                            <td class="table-header center"></td>
                         </tr>
                         <?php for ($i = 0; $i < count($relay_id); $i++) {
                             $read = "$gpio_path -g read $relay_pin[$i]";
                         ?>
                         <tr>
-                            <td align=center>
+                            <td class="center">
                                 <?php echo $i+1; ?>
                             </td>
                             <td>
@@ -573,16 +573,16 @@ if (isset($output_error)) {
                                     <?php
                                 }
                             ?>
-                            <td>
+                            <td class="center">
                                  [<input style="width: 4em;" type="number" min="1" max="99999" name="sR<?php echo $i; ?>" title="Number of seconds to turn this relay on"/><input type="submit" name="<?php echo $i; ?>secON" value="ON">]
                             </td>
-                            <td align=center>
+                            <td class="center">
                                 <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $relay_pin[$i]; ?>" name="relay<?php echo $i; ?>pin" title="GPIO pin using BCM numbering, connected to relay <?php echo $i+1; ?>"/>
                             </td>
-                            <td align=center>
+                            <td class="center">
                                 <input style="width: 4em;" type="number" min="0" max="500" step="0.1" value="<?php echo $relay_amps[$i]; ?>" name="relay<?php echo $i; ?>amps" title="The maximum number of amps that the device connected to relay <?php echo $i+1; ?> draws. Set overall maximum allowed to be drawn from all relays in the Settings tab."/>
                             </td>
-                            <td align=center>
+                            <td class="center">
                                 <select style="width: 65px;" title="Does this relay activate with a LOW (0-volt) or HIGH (5-volt) signal?" name="relay<?php echo $i; ?>trigger">
                                     <option<?php
                                         if ($relay_trigger[$i] == 1) {
@@ -594,7 +594,7 @@ if (isset($output_error)) {
                                         } ?> value="0">Low</option>
                                 </select>
                             </td>
-                            <td align=center>
+                            <td class="center">
                                 <select style="width: 65px;" title="Should the relay be On or Off at startup?" name="relay<?php echo $i; ?>startstate">
                                     <option<?php
                                         if ($relay_start_state[$i] == 1) {
@@ -606,7 +606,7 @@ if (isset($output_error)) {
                                         } ?> value="0">Off</option>
                                 </select>
                             </td>
-                            <td>
+                            <td class="center">
                                 <input type="submit" name="Mod<?php echo $i; ?>Relay" value="Set"> <button type="submit" name="Delete<?php echo $i; ?>Relay" title="Delete">Delete</button>
                             </td>
                         </tr>
@@ -777,19 +777,20 @@ if (isset($output_error)) {
                 <form action="?tab=sensor" method="POST">
                     <table class="relays">
                         <tr>
-                            <td align=center class="table-header">Timer</td>
-                            <td class="table-header">Name</td>
-                            <td align=center colspan="2" class="table-header">Activate</th>
-                            <td align=center class="table-header">Relay</td>
-                            <td align=center class="table-header">On (sec)</td>
-                            <td align=center class="table-header">Off (sec)</td>
-                            <td align=center class="table-header"></td>
+                            <td class="table-header center middle">Timer</td>
+                            <td class="table-header middle">Name</td>
+                            <td class="table-header center middle">Status</td>
+                            <td class="table-header center middle">Activate</td>
+                            <td class="table-header center middle">Relay</td>
+                            <td class="table-header center middle">On (sec)</td>
+                            <td class="table-header center middle">Off (sec)</td>
+                            <td class="table-header"></td>
                         </tr>
                         <?php
                         for ($i = 0; $i < count($timer_id); $i++) {
                         ?>
                         <tr>
-                            <td align="center">
+                            <td class="center">
                                 <?php echo $i+1; ?>
                             </td>
                             <td>
@@ -798,34 +799,34 @@ if (isset($output_error)) {
                             <?php
                             if ($timer_state[$i] == 0) {
                             ?>
-                                <td style="vertical-align:middle;">
+                                <td  class="center" style="vertical-align:middle;">
                                     <img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
                                 </td>
-                                <td>
+                                <td class="center">
                                     <button style="width: 5em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">Turn On</button></nobr>
                                 </td>
                             <?php
                             } else {
                             ?>
-                                <td style="vertical-align:middle;">
+                                <td  class="center" style="vertical-align:middle;">
                                     <img style="height: 1em;" src="/mycodo/img/on.png" alt="On" title="On">
                                 </td>
-                                <td>
+                                <td class="center">
                                     <button style="width: 5em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="0">Turn Off</button></nobr>
                                 </td>
                             <?php
                             }
                             ?>
-                            <td>
-                                <input  style="width: 3em;" type="number" min="0" max="8" value="<?php echo $timer_relay[$i]; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>Relay" title="This is the relay number for timer <?php echo $i; ?>"/>
+                            <td class="center">
+                                <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $timer_relay[$i]; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>Relay" title="This is the relay number for timer <?php echo $i; ?>"/>
                             </td>
-                            <td>
+                            <td class="center">
                                 <input style="width: 5em;" type="number" min="1" max="99999" value="<?php echo $timer_duration_on[$i]; ?>" name="Timer<?php echo $i; ?>On" title="This is On duration of timer <?php echo $i; ?>"/>
                             </td>
-                            <td>
+                            <td class="center">
                                 <input style="width: 5em;" type="number" min="0" max="99999" value="<?php echo $timer_duration_off[$i]; ?>" name="Timer<?php echo $i; ?>Off" title="This is Off duration for timer <?php echo $i; ?>"/>
                             </td>
-                            <td>
+                            <td class="center">
                                 <input type="submit" name="ChangeTimer<?php echo $i; ?>" value="Set"> <button type="submit" name="Delete<?php echo $i; ?>Timer" title="Delete">Delete</button>
                             </td>
                         </tr>
@@ -3170,7 +3171,7 @@ if (isset($output_error)) {
                     Video Stream
                 </div>
                 <div style="padding-bottom: 2em;">
-                    <img src="stream.php">
+                    <img style="width:100%;" src="stream.php">
                 </div>
                 ';
             }
@@ -3191,7 +3192,7 @@ if (isset($output_error)) {
 
                 echo '
                 <div style="padding-bottom: 2em;">
-                    <img src=image.php?span=cam-still>
+                    <img style="width:100%;" src=image.php?span=cam-still>
                 </div>
                 ';
             }
