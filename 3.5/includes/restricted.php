@@ -81,13 +81,11 @@ if (isset($_POST['DaemonDebug'])) {
 
 
 
-
 /*
  *
  * Relays
  *
  */
-
 
 // Add relays
 if (isset($_POST['AddRelays']) && isset($_POST['AddRelaysNumber'])) {
@@ -280,13 +278,11 @@ for ($p = 0; $p < count($conditional_relay_id); $p++) {
 
 
 
-
 /*
  *
  * Timers
  *
  */
-
 
 for ($p = 0; $p < count($timer_id); $p++) {
     // Set timer variables
@@ -335,6 +331,7 @@ if (isset($_POST['AddTimers']) && isset($_POST['AddTimersNumber'])) {
 }
 
 
+
 /*
  *
  * Add Sensors
@@ -380,6 +377,7 @@ if (isset($_POST['AddSensor'])) {
         $sensor_error = "Error: Missing name. Enter a name when adding a sensor.";
     }
 }
+
 
 
 /*
@@ -1679,6 +1677,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
 }
 
 
+
 /*
  *
  * Pressure Sensors
@@ -2201,6 +2200,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
 }
 
 
+
 /*
  *
  * Camera
@@ -2362,6 +2362,7 @@ if (isset($_POST['stop-timelapse'])) {
     shell_exec("rm -f $lock_timelapse");
     sleep(1);
 }
+
 
 
 /*
