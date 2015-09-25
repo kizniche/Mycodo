@@ -75,6 +75,8 @@ case "${1:-''}" in
                 /etc/init.d/mycodo start
 
                 printf "#### Update Finished ####\n\n"
+
+                echo '0' > $DIR/.updatecheck
                 exit 0
             else
                 printf "Error: No git repository found. Update stopped.\n\n"
