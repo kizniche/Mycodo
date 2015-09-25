@@ -61,7 +61,7 @@ require($install_path . "/includes/database.php"); // Initial SQL database load 
 require($install_path . "/includes/functions.php"); // Mycodo functions
 
 // Check is there is an update (check at minimum every 24 hours)
-if (time()-filemtime($update_check) > 24 * 3600) {
+if (!file_exists($update_check) || time()-filemtime($update_check) > 24 * 3600) {
     update_check($install_path, $update_check);
 }
 
@@ -3411,7 +3411,7 @@ if (isset($output_error)) {
                         <tr>
                         <td class="setting-text">
                             Check if there is an update avaialble for Mycodo<?php
-                            if (`cat /var/www/mycodo/.updatecheck` == '1') {
+                            if (strpos(`cat /var/www/mycodo/.updatecheck`,'1') !== false) {
                                 echo ' (<span style="color: red;">A new version is available</span>)';
                             } else {
                                 echo ' (<span style="color: green;">You are running the latest version</span>)';
