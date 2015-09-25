@@ -577,7 +577,7 @@ class OneFileLoginApplication {
             $dismiss = $row[1];
         }
 
-        if ($login_message != '') {
+        if ($login_message != '' && '0') {
             echo '<div style="padding-top: 2em; width: 33em; margin: 8 auto; text-align: center;">' . $login_message . '</div>';
         }
 
