@@ -649,3 +649,7 @@ sub {
   /* Move the subscripted text down, but only half as far down as the superscript moved up */
   bottom: -0.25em;
 }
+
+strong {
+  font-weight: bold;
+}

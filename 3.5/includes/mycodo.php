@@ -3240,6 +3240,9 @@ if (isset($output_error)) {
                     <div class="data-buttons">
                         <button type="submit" name="Daemon" value="Daemon">Daemon<br>Log</button>
                     </div>
+                    <div class="data-buttons">
+                        <button type="submit" name="Commits" value="Update Log">Git<br>Commits</button>
+                    </div>
                     <div class="data-buttons data-buttons-rightspace">
                         <button type="submit" name="Update" value="Update Log">Update<br>Log</button>
                     </div>
@@ -3311,6 +3314,24 @@ if (isset($output_error)) {
                             } else {
                                 echo `tail -n 30 $auth_log`;
                             }
+                        }
+
+                        if(isset($_POST['Commits'])) {
+                            if ($_POST['Lines'] != '') {
+                                $Lines = $_POST['Lines'];
+                                $commits = `git log --oneline | head -n $Lines`;
+                            } else {
+                                $commits = `git log --oneline | head -n 30`;
+                            }
+                            $current_commit = `git rev-parse HEAD`;
+                            $current_commit = mb_substr($current_commit, 0, 7);
+
+                            $commit_replace = "<span style=\"font-weight: bold; color: red;\">$current_commit</span>";
+
+                            echo 'current commit: ' . $commit_replace . '<br> <br>Commit  Description<br> <br>';
+
+                            $commits = str_replace($current_commit, $commit_replace, $commits);
+                            echo $commits . '<br> <br>';
                         }
 
                         if(isset($_POST['Daemon'])) {
