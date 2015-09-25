@@ -3254,7 +3254,7 @@ if (isset($output_error)) {
                 <div style="font-family: monospace; padding-top:1em;">
                     <pre><?php
                         if(isset($_POST['TSensor'])) {
-                            echo 'Year Mo Day Hour Min Sec Tc Sensor<br> <br>';
+                            echo '   Y  M  D  H  M  S     Tc   Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log | tail -n $Lines`;
@@ -3264,7 +3264,7 @@ if (isset($output_error)) {
                         }
                         
                         if(isset($_POST['HTSensor'])) {
-                            echo 'Year Mo Day Hour Min Sec Tc RH DPc Sensor<br> <br>';
+                            echo '   Y  M  D  H  M  S     Tc     RH    DPc   Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log | tail -n $Lines`;
@@ -3274,7 +3274,7 @@ if (isset($output_error)) {
                         }
 
                         if(isset($_POST['Co2Sensor'])) {
-                            echo 'Year Mo Day Hour Min Sec CO<sub>2</sub> Sensor<br> <br>';
+                            echo '   Y  M  D  H  M  S    CO<sub>2</sub>   Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log | tail -n $Lines`;
@@ -3284,7 +3284,7 @@ if (isset($output_error)) {
                         }
 
                         if(isset($_POST['PressSensor'])) {
-                            echo 'Year Mo Day Hour Min Sec Tc Press Alt Sensor<br> <br>';
+                            echo '   Y  M  D  H  M  S     Tc   Press      Alt   Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log | tail -n $Lines`;
@@ -3294,7 +3294,7 @@ if (isset($output_error)) {
                         }
 
                         if(isset($_POST['Relay'])) {
-                            echo 'Year Mo Day Hour Min Sec Sensor Relay GPIO SecondsOn<br> <br>';
+                            echo '   Y  M  D  H  M  S  Sen  Rel GPIO  SecondsOn<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | tail -n $Lines`;
