@@ -95,29 +95,15 @@ hr.fade {
 }
 
 table.relays {
-    display: table;
     width: 100%;
-    margin: 0 0.2em 0 0;
 }
 
 table.relays td {
-    padding: 0.5em 0.6em 0.5em 0.6em;
+    padding: 0.4em 0.4em;
 }
 
 table.relays tr:nth-child(even) {
     background-color: #FFFFFF;
-}
-
-table.relay-display td {
-    padding: 0.15em 0.8em 0.15em 0.8em;
-}
-
-table.timers td {
-    padding: 0.6em 0.5em 0.6em 0.8em;
-}
-
-table.timers tr:nth-child(odd) {
-    background-color: #EBEBEB;
 }
 
 table.sensor_conditional td {
@@ -126,7 +112,7 @@ table.sensor_conditional td {
 }
 
 table.sensor {
-    margin: 0.3em 0.5em 1em 0.5em;
+    width:100%;
 }
 
 table.sensor td {
@@ -146,23 +132,27 @@ table.yaxis td {
 }
 
 table.pid {
-    margin: 0 0.5em 1em 0.5em;
+    width:100%;
 }
 
 table.pid td {
     text-align: center;
     vertical-align: middle;
-    padding: 0.5em 0.25em 0.6em 0.25em;
+    padding: 0.4em 0;
 }
 
-table.conditional {  
-    margin: 1.1em 0.5em 0.5em 0.5em;
+table.conditional {
+    margin: 1em 0.5em 0.5em 0.5em;
 }
 
 table.conditional td {
     text-align: left;
     vertical-align: middle;
-    padding: 0.5em 0.4em 0.6em 0.4em;
+    padding: 0.4em 0.4em;
+}
+
+table.sensor-conditional td {
+    padding: 0.1em 0.5em;
 }
 
 .pid {

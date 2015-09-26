@@ -630,7 +630,7 @@ if (isset($output_error)) {
                     </table>
 
                     <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                    <table>
+                    <table class="sensor-conditional">
                         <tr>
                             <td style="padding-left: 1em;">
                                 Name: 
@@ -1001,7 +1001,7 @@ if (isset($output_error)) {
                         <td>Activate</td>
                         <td>PID<br>Set Point</td>
                         <td>PID<br>Regulate</td>
-                        <td>Sensor Read<br>Interval</td>
+                        <td>Measure<br>Interval</td>
                         <td>Up<br>Relay</td>
                         <td>Up<br>Min</td>
                         <td>Up<br>Max</td>
@@ -1013,7 +1013,7 @@ if (isset($output_error)) {
                         <td>K<sub>d</sub></td>
                     </tr>
                     <tr style="height: 2.5em; background-color: #FFFFFF;">
-                        <td  style="text-align: left;"><?php
+                        <td style="text-align:left; padding-left:0.5em;"><?php
                             if ($pid_t_temp_or[$i] == 1) {
                                 ?><img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
                                 <?php
@@ -1054,7 +1054,7 @@ if (isset($output_error)) {
                             </select>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_t_temp_period[$i]; ?>" name="SetT<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/> sec
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_t_temp_period[$i]; ?>" name="SetT<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/>
                         </td>
                         <td>
                             <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_t_temp_relay_low[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempRelayLow" title="This relay is used to increase temperature."/>
@@ -1095,7 +1095,7 @@ if (isset($output_error)) {
                     </tr>
                 </table>
                 <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                <table>
+                <table class="sensor-conditional">
                     <tr>
                         <td style="padding-left: 1em;">
                             Name: 
@@ -1157,9 +1157,9 @@ if (isset($output_error)) {
                             <?php
                             echo '<button type="submit" name="DeleteT' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                             if ($conditional_t_state[$i][$z]) {
-                                echo '<button style="width: 5em;" type="submit" name="TurnOffT' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> <input type="image" class="indicate" src="/mycodo/img/on.png" alt="On" title="On, Click to turn off." name="TurnOffT' . $i . '-' . $z . 'Conditional" value="0"> ';
+                                echo '<button style="width: 5em;" type="submit" name="TurnOffT' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> <img style="height: 1em; padding: 0 0.5em;" src="/mycodo/img/on.png" alt="On" title="On"> ';
                             } else {
-                                echo '<button style="width: 5em;" type="submit" name="TurnOnT' . $i . '-' . $z . 'Conditional" title="">Turn On</button> <input type="image" class="indicate" src="/mycodo/img/off.png" alt="Off" title="Off, Click to turn on." name="TurnOnT' . $i . '-' . $z . 'Conditional" value="0"> ';
+                                echo '<button style="width: 5em;" type="submit" name="TurnOnT' . $i . '-' . $z . 'Conditional" title="">Turn On</button> <img style="height: 1em; padding: 0 0.5em;" src="/mycodo/img/off.png" alt="Off" title="Off"> ';
                             }
 
                             echo $z+1 . ' ' . $conditional_t_name[$i][$z] . ': Every ' . $conditional_t_period[$i][$z] . ' sec, if the Temperature is ';
@@ -1232,7 +1232,7 @@ if (isset($output_error)) {
                 ?>
                 <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                 <div class="sensor-parent">
-                <table class="sensor" style="table-layout: fixed;">
+                <table class="sensor">
                     <tr>
                         <td>HT Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_ht_id[$i]; ?>)</span></td>
                         <td>Sensor<br>Name</td>
@@ -1397,7 +1397,7 @@ if (isset($output_error)) {
                         <td>Activate</td>
                         <td>PID<br>Set Point</td>
                         <td>PID<br>Regulate</td>
-                        <td>Sensor Read<br>Interval</td>
+                        <td>Measure<br>Interval</td>
                         <td>Up<br>Relay</td>
                         <td>Up<br>Min</td>
                         <td>Up<br>Max</td>
@@ -1409,7 +1409,7 @@ if (isset($output_error)) {
                         <td>K<sub>d</sub></td>
                     </tr>
                     <tr style="height: 2.5em; background-color: #FFFFFF;">
-                        <td><?php
+                        <td style="text-align:left; padding-left:0.5em;"><?php
                             if ($pid_ht_temp_or[$i] == 1) {
                                 ?><img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
                                 <?php
@@ -1449,7 +1449,7 @@ if (isset($output_error)) {
                             </select>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_temp_period[$i]; ?>" name="SetHT<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/> sec
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_temp_period[$i]; ?>" name="SetHT<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/>
                         </td>
                         <td>
                             <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_ht_temp_relay_low[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>TempRelayLow" title="This relay is used to increase temperature."/>
@@ -1480,7 +1480,7 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     <tr style="height: 2.5em; background-color: #FFFFFF;">
-                        <td style="text-align: left;"><?php
+                        <td style="text-align:left; padding-left:0.5em;"><?php
                             if ($pid_ht_hum_or[$i] == 1) {
                                 ?><img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
                                 <?php
@@ -1520,7 +1520,7 @@ if (isset($output_error)) {
                             </select>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_hum_period[$i]; ?>" name="SetHT<?php echo $i; ?>HumPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another humidity reading and applying the PID"/> sec
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_hum_period[$i]; ?>" name="SetHT<?php echo $i; ?>HumPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another humidity reading and applying the PID"/>
                         </td>
                         <td>
                             <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_ht_hum_relay_low[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>HumRelayLow" title="This relay is used to increase humidity."/>
@@ -1562,7 +1562,7 @@ if (isset($output_error)) {
                 </table>
 
                 <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                <table>
+                <table class="sensor-conditional">
                     <tr>
                         <td style="padding-left: 1em;">
                             Name: 
@@ -1628,9 +1628,9 @@ if (isset($output_error)) {
                             <?php
                             echo '<button type="submit" name="DeleteHT' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                             if ($conditional_ht_state[$i][$z]) {
-                                echo '<button style="width: 5em;" type="submit" name="TurnOffHT' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> <input type="image" class="indicate" src="/mycodo/img/on.png" alt="On" title="On, Click to turn off." name="TurnOffHT' . $i . '-' . $z . 'Conditional" value="0"> ';
+                                echo '<button style="width: 5em;" type="submit" name="TurnOffHT' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> <img style="height: 1em; padding: 0 0.5em;" src="/mycodo/img/on.png" alt="On" title="On"> ';
                             } else {
-                                echo '<button style="width: 5em;" type="submit" name="TurnOnHT' . $i . '-' . $z . 'Conditional" title="">Turn On</button> <input type="image" class="indicate" src="/mycodo/img/off.png" alt="Off" title="Off, Click to turn on." name="TurnOnHT' . $i . '-' . $z . 'Conditional" value="0"> ';
+                                echo '<button style="width: 5em;" type="submit" name="TurnOnHT' . $i . '-' . $z . 'Conditional" title="">Turn On</button> <img style="height: 1em; padding: 0 0.5em;" src="/mycodo/img/off.png" alt="Off" title="Off"> ';
                             }
 
                             echo $z+1 . ' ' . $conditional_ht_name[$i][$z] . ': Every ' . $conditional_ht_period[$i][$z] . ' sec, if the ' . $conditional_ht_condition[$i][$z] . ' is ';
@@ -1712,7 +1712,7 @@ if (isset($output_error)) {
                 ?>
                 <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                 <div class="sensor-parent">
-                <table class="sensor" style="table-layout: fixed;">
+                <table class="sensor">
                     <tr>
                         <td>CO<sub>2</sub> Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_co2_id[$i]; ?>)</span></td>
                         <td>Sensor<br>Name</td>
@@ -1854,7 +1854,7 @@ if (isset($output_error)) {
                         <td>Activate</td>
                         <td>PID<br>Set Point</td>
                         <td>PID<br>Regulate</td>
-                        <td>Sensor Read<br>Interval</td>
+                        <td>Measure<br>Interval</td>
                         <td>Up<br>Relay</td>
                         <td>Up<br>Min</td>
                         <td>Up<br>Max</td>
@@ -1866,7 +1866,7 @@ if (isset($output_error)) {
                         <td>K<sub>d</sub></td>
                     </tr>
                     <tr style="height: 2.5em; background-color: #FFFFFF;">
-                        <td style="text-align: left;"><?php
+                        <td style="text-align:left; padding-left:0.5em;"><?php
                             if ($pid_co2_or[$i] == 1) {
                                 ?><img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
                                 <?php
@@ -1906,7 +1906,7 @@ if (isset($output_error)) {
                             </select>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_co2_period[$i]; ?>" maxlength=4 size=1 name="SetCO2<?php echo $i; ?>CO2Period" title="This is the number of seconds to wait after the relay has been turned off before taking another CO2 reading and applying the PID"/> sec
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_co2_period[$i]; ?>" maxlength=4 size=1 name="SetCO2<?php echo $i; ?>CO2Period" title="This is the number of seconds to wait after the relay has been turned off before taking another CO2 reading and applying the PID"/>
                         </td>
                         <td>
                             <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_co2_relay_low[$i]; ?>" maxlength=1 size=1 name="SetCO2<?php echo $i; ?>CO2RelayLow" title="This relay is used to increase CO2."/>
@@ -1949,7 +1949,7 @@ if (isset($output_error)) {
                     </tr>
                 </table>
                 <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                <table>
+                <table class="sensor-conditional">
                     <tr>
                         <td style="padding-left: 1em;">
                             Name: 
@@ -2011,9 +2011,9 @@ if (isset($output_error)) {
                             <?php
                             echo '<button type="submit" name="DeleteCO2' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                             if ($conditional_co2_state[$i][$z]) {
-                                echo '<button style="width: 5em;" type="submit" name="TurnOffCO2' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> <input type="image" class="indicate" src="/mycodo/img/on.png" alt="On" title="On, Click to turn off." name="TurnOffCO2' . $i . '-' . $z . 'Conditional" value="0"> ';
+                                echo '<button style="width: 5em;" type="submit" name="TurnOffCO2' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> <img style="height: 1em; padding: 0 0.5em;" src="/mycodo/img/on.png" alt="On" title="On"> ';
                             } else {
-                                echo '<button style="width: 5em;" type="submit" name="TurnOnCO2' . $i . '-' . $z . 'Conditional" title="">Turn On</button> <input type="image" class="indicate" src="/mycodo/img/off.png" alt="Off" title="Off, Click to turn on." name="TurnOnCO2' . $i . '-' . $z . 'Conditional" value="0"> ';
+                                echo '<button style="width: 5em;" type="submit" name="TurnOnCO2' . $i . '-' . $z . 'Conditional" title="">Turn On</button> <img style="height: 1em; padding: 0 0.5em;" src="/mycodo/img/off.png" alt="Off" title="Off"> ';
                             }
 
                             echo $z+1 . ' ' . $conditional_co2_name[$i][$z] . ': Every ' . $conditional_co2_period[$i][$z] . ' sec, if CO<sub>2</sub> is ';
@@ -2086,7 +2086,7 @@ if (isset($output_error)) {
                 ?>
                 <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                 <div class="sensor-parent">
-                <table class="sensor" style="table-layout: fixed;">
+                <table class="sensor">
                     <tr>
                         <td>Press Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_press_id[$i]; ?>)</span></td>
                         <td>Sensor<br>Name</td>
@@ -2259,7 +2259,7 @@ if (isset($output_error)) {
                         <td>Activate</td>
                         <td>PID<br>Set Point</td>
                         <td>PID<br>Regulate</td>
-                        <td>Sensor Read<br>Interval</td>
+                        <td>Measure<br>Interval</td>
                         <td>Up<br>Relay</td>
                         <td>Up<br>Min</td>
                         <td>Up<br>Max</td>
@@ -2271,7 +2271,7 @@ if (isset($output_error)) {
                         <td>K<sub>d</sub></td>
                     </tr>
                     <tr style="height: 2.5em; background-color: #FFFFFF;">
-                        <td style="text-align: left;"><?php
+                        <td style="text-align:left; padding-left:0.5em;"><?php
                             if ($pid_press_temp_or[$i] == 1) {
                                 ?><img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
                                 <?php
@@ -2311,7 +2311,7 @@ if (isset($output_error)) {
                             </select>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_press_temp_period[$i]; ?>" name="SetPress<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/> sec
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_press_temp_period[$i]; ?>" name="SetPress<?php echo $i; ?>TempPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another temperature reading and applying the PID"/>
                         </td>
                         <td>
                             <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_press_temp_relay_low[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>TempRelayLow" title="This relay is used to increase temperature."/>
@@ -2342,7 +2342,7 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     <tr style="height: 2.5em; background-color: #FFFFFF;">
-                        <td style="text-align: left;"><?php
+                        <td style="text-align:left; padding-left:0.5em;"><?php
                             if ($pid_press_press_or[$i] == 1) {
                                 ?><img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
                                 <?php
@@ -2382,7 +2382,7 @@ if (isset($output_error)) {
                             </select>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_press_press_period[$i]; ?>" name="SetPress<?php echo $i; ?>PressPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another pressure reading and applying the PID"/> sec
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_press_press_period[$i]; ?>" name="SetPress<?php echo $i; ?>PressPeriod" title="This is the number of seconds to wait after the relay has been turned off before taking another pressure reading and applying the PID"/>
                         </td>
                         <td>
                             <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_press_press_relay_low[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>PressRelayLow" title="This relay is used to increase pressure."/>
@@ -2424,7 +2424,7 @@ if (isset($output_error)) {
                     </tr>
                 </table>
                 <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                <table>
+                <table class="sensor-conditional">
                     <tr>
                         <td style="padding-left: 1em;">
                             Name: 
@@ -2490,9 +2490,9 @@ if (isset($output_error)) {
                             <?php
                             echo '<button type="submit" name="DeletePress' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                             if ($conditional_press_state[$i][$z]) {
-                                echo '<button style="width: 5em;" type="submit" name="TurnOffPress' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> <input type="image" class="indicate" src="/mycodo/img/on.png" alt="On" title="On, Click to turn off." name="TurnOffPress' . $i . '-' . $z . 'Conditional" value="0"> ';
+                                echo '<button style="width: 5em;" type="submit" name="TurnOffPress' . $i . '-' . $z . 'Conditional" title="">Turn Off</button> <img style="height: 1em; padding: 0 0.5em;" src="/mycodo/img/on.png" alt="On" title="On"> ';
                             } else {
-                                echo '<button style="width: 5em;" type="submit" name="TurnOnPress' . $i . '-' . $z . 'Conditional" title="">Turn On</button> <input type="image" class="indicate" src="/mycodo/img/off.png" alt="Off" title="Off, Click to turn on." name="TurnOnPress' . $i . '-' . $z . 'Conditional" value="0"> ';
+                                echo '<button style="width: 5em;" type="submit" name="TurnOnPress' . $i . '-' . $z . 'Conditional" title="">Turn On</button> <img style="height: 1em; padding: 0 0.5em;" src="/mycodo/img/off.png" alt="Off" title="Off"> ';
                             }
 
                             echo $z+1 . ' ' . $conditional_press_name[$i][$z] . ': Every ' . $conditional_press_period[$i][$z] . ' sec, if the ' . $conditional_press_condition[$i][$z] . ' is ';
