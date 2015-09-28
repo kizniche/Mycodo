@@ -3435,7 +3435,7 @@ if (isset($output_error)) {
                                     $commits = str_replace($backup_commits[$i], $commit_replace, $commits);
                                 } 
                             }
-                            echo $commits;
+                            echo "<form>$commits</form>";
 
                         }
 

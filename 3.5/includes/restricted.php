@@ -44,9 +44,10 @@ if (isset($_POST['UpdateMycodo'])) {
 }
 
 if (isset($_POST['RestoreMycodo'])) {
-    $commit = $_POST['Restore'];
-    exec("$install_path/cgi-bin/mycodo-wrapper restore $commit >> /var/www/mycodo/log/restore.log &");
-    $data_error = "The restore process has begun. You can follow the progress of the restore from the Restore Log under the Data tab.";
+    echo $commit;
+    //$commit = $_POST['Restore'];
+    //exec("$install_path/cgi-bin/mycodo-wrapper restore $commit >> /var/www/mycodo/log/restore.log &");
+    //$data_error = "The restore process has begun. You can follow the progress of the restore from the Restore Log under the Data tab.";
 }
 
 
