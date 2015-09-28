@@ -3416,22 +3416,25 @@ if (isset($output_error)) {
                             $current_commit = `git rev-parse --short HEAD`;
                             $current_commit = mb_substr($current_commit, 0, 7);
 
-                            $commit_replace = "<span style=\"font-weight: bold; color: red;\">$current_commit</span>";
+                            echo 'Current commit: ' . $current_commit . '<br> <br>Commit  Description (The most recent commit is at the top)<br> <br>';
 
-                            echo 'Current commit: ' . $commit_replace . '<br> <br>Commit  Description (The most recent commit is at the top)<br> <br>';
+                            $commits_list = explode("\n", $commits);
 
-                            $commits = str_replace($current_commit, $commit_replace, $commits);
-                            echo $commits;
+                            foreach ($commits_list as $n => $line) {
+                                $var[$n] = substr( $line, 0, strpos( $line, ' ' ) );
+                            }
 
-                            $dirs = array_filter(glob('/home/kiz/Mycodo-backups/*'), 'is_dir');
+                            $dirs = array_filter(glob('/var/Mycodo-backups/*'), 'is_dir');
                             for ($i = 0; $i < count($dirs); $i++) {
                                 $dirs[$i] = mb_substr($dirs[$i], -7);
-                            }
-                            print_r($dirs);
 
-                            if (in_array("8-53-25", $dirs)) {
-                                echo "test1";
+                                if (in_array($dirs[i], $var)) {
+                                    $commit_replace = "<button type=\"submit\" name=\"$dirs[$i]\" value=\"1\">Restore</button> $dirs[$i]";
+                                    $commits = str_replace($dirs[$i], $commit_replace, $commits);
+                                } 
                             }
+                            echo $commits;
+
                         }
 
                         if(isset($_POST['Daemon'])) {
