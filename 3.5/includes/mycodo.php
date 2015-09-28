@@ -3416,21 +3416,22 @@ if (isset($output_error)) {
                             $current_commit = `git rev-parse --short HEAD`;
                             $current_commit = mb_substr($current_commit, 0, 7);
 
-                            echo 'Current commit: ' . $current_commit . '<br> <br>Commit  Description (The most recent commit is at the top)<br> <br>';
+                            echo 'Current commit: ' . $current_commit . '<br> <br>If a backup exists for a certain commit, a "Restore" button will appear beside the commit ID.<br>Restoring a backup will create a backup of the current commit.<br>Restoring a backup will restore the databases from the restored backup.<br> <br>Commit  Description (The most recent commit is at the top)<br> <br>';
 
                             $commits_list = explode("\n", $commits);
 
                             foreach ($commits_list as $n => $line) {
-                                $var[$n] = substr( $line, 0, strpos( $line, ' ' ) );
+                                $var[$n] = substr($line, 0, strpos($line, ' '));
                             }
 
                             $dirs = array_filter(glob('/var/Mycodo-backups/*'), 'is_dir');
                             for ($i = 0; $i < count($dirs); $i++) {
-                                $dirs[$i] = mb_substr($dirs[$i], -7);
+                                $backup_commits[$i] = mb_substr($dirs[$i], -7);
+                                $backup_dates[$i] = substr($dirs[$i], 27, 19);
 
-                                if (in_array($dirs[i], $var)) {
-                                    $commit_replace = "<button type=\"submit\" name=\"RestoreBackup\" value=\"$dirs[$i]\">Restore</button> $dirs[$i]";
-                                    $commits = str_replace($dirs[$i], $commit_replace, $commits);
+                                if (in_array($backup_commits[i], $var)) {
+                                    $commit_replace = "<button type=\"submit\" name=\"RestoreBackup\" value=\"$backup_commits[$i]\" title=\"Backed up on $backup_dates[$i]\">Restore</button> $backup_commits[$i]";
+                                    $commits = str_replace($backup_commits[$i], $commit_replace, $commits);
                                 } 
                             }
                             echo $commits;
