@@ -3429,7 +3429,7 @@ if (isset($output_error)) {
                                 $dirs[$i] = mb_substr($dirs[$i], -7);
 
                                 if (in_array($dirs[i], $var)) {
-                                    $commit_replace = "<button type=\"submit\" name=\"$dirs[$i]\" value=\"1\">Restore</button> $dirs[$i]";
+                                    $commit_replace = "<button type=\"submit\" name=\"RestoreBackup\" value=\"$dirs[$i]\">Restore</button> $dirs[$i]";
                                     $commits = str_replace($dirs[$i], $commit_replace, $commits);
                                 } 
                             }
