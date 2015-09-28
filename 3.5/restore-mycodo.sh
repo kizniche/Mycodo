@@ -48,7 +48,7 @@ mkdir -p /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT
 cp -a /var/www/mycodo/. /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT/
 
 directory=$2
-commit=${directory:27}
+commit=${directory:47}
 printf "#### Resetting to commit $commit ####\n"
 cd /var/www/mycodo/
 git reset --hard $commit

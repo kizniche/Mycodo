@@ -3405,7 +3405,7 @@ if (isset($output_error)) {
                             }
                         }
 
-                        if(isset($_POST['Commits']) || isset($_POST['Backups'])) {
+                        if(isset($_POST['Commits'])) {
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 $commits = `git log --oneline | head -n $Lines`;
@@ -3415,14 +3415,10 @@ if (isset($output_error)) {
 
                             echo 'Note: Restoring a backup will restore all files from the backup, including databases and logs.<br>When restoring a backup, a backup of the current system will also be created.<br>Deleting a backup will delete all files of that backup.';
 
-                            if (isset($_POST['Commits'])) {
-                                $current_commit = `git rev-parse --short HEAD`;
-                                $current_commit = mb_substr($current_commit, 0, 7);
+                            $current_commit = `git rev-parse --short HEAD`;
+                            $current_commit = mb_substr($current_commit, 0, 7);
 
-                                echo 'Current commit: ' . $current_commit . '<br> <br>Commit  Description (The commit of the currently-install system is at the top)<br> <br>';
-                            } else {
-                                echo '<br> <br>';
-                            }
+                            echo 'Current commit: ' . $current_commit . '<br> <br>Commit  Description (The commit of the currently-install system is at the top)<br> <br>';
 
                             $commits_list = explode("\n", $commits);
 
@@ -3438,9 +3434,7 @@ if (isset($output_error)) {
                             }
 
                             for ($j = 0; $j < count($commits_list); $j++) {
-                                if (isset($_POST['Commits'])) {
-                                    echo "$commits_list[$j]<br>";
-                                }
+                                echo "<div style=\"padding: 0.5em 0 0.1em 0;\">$commits_list[$j]</div>";
 
                                 for ($i = 0; $i < count($backup_commits); $i++) {
                                     if ($backup_commits[$i] == $var[$j]) {
@@ -3458,6 +3452,34 @@ if (isset($output_error)) {
                                         </table>";
                                     }
                                 }
+                            }
+                        }
+
+                        if (isset($_POST['Backups'])) {
+                            echo 'Note: Restoring a backup will restore all files from the backup, including databases and logs.<br>When restoring a backup, a backup of the current system will also be created.<br>Deleting a backup will delete all files of that backup.';
+
+                            $dirs = array_filter(glob('/var/Mycodo-backups/*'), 'is_dir');
+
+                            for ($i = 0; $i < count($dirs); $i++) {
+                                $backup_commits[$i] = mb_substr($dirs[$i], -7);
+                                $backup_dates[$i] = substr($dirs[$i], 27, 19);
+                            }
+
+                            for ($i = 0; $i < count($dirs); $i++) {
+                                echo "
+                                <table class=\"gitcommits\">
+                                    <tr>
+                                        <td>$backup_commits[$i]</td>
+                                        <td><form action=\"?tab=data";
+                                        if (isset($_GET['page'])) echo '&page=' , $_GET['page'];
+                                        echo "\" method=\"POST\" onsubmit=\"return confirm('Confirm that you would like to DELETE the $backup_dates[$i] backup of the system at commit $backup_commits[$i]. Note: This will delete all files of this backup. This cannot be undone. If you do not want to do this, click Cancel.')\"><button type=\"submit\" name=\"DeleteBackup\" value=\"$dirs[$i]\" title=\"Delete backup from $backup_dates[$i]\">Delete Backup</button></form></td>
+                                        <td><form action=\"?tab=data";
+                                        if (isset($_GET['page'])) echo '&page=' , $_GET['page'];
+                                        echo "\" method=\"POST\" onsubmit=\"return confirm('Confirm that you would like to begin the RESTORE process from the $backup_dates[$i] backup of the system at commit $backup_commits[$i]. If you do not want to do this, click Cancel.)\"><button type=\"submit\" name=\"RestoreBackup\" value=\"$dirs[$i]\" title=\"Restore backup from $backup_dates[$i]\">Restore Backup</button></form></td>
+                                        <td>Backup date: $backup_dates[$i]</td>
+                                    </tr>
+                                </table>
+                                ";
                             }
                         }
 
