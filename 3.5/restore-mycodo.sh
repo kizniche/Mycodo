@@ -60,4 +60,4 @@ cp $2/config/*.db /var/www/mycodo/config/
 printf "#### Starting Daemon ####\n"
 /etc/init.d/mycodo start
 
-printf "#### Restore Complete ####\n"
+printf "#### Restore Complete ####\n\n"
