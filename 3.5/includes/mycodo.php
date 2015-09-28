@@ -3259,7 +3259,7 @@ if (isset($output_error)) {
                             <button type="submit" name="Commits" value="Update Log">Git<br>Commits</button>
                         </td>
                         <td class="data-buttons-rightspace">
-                            <button type="submit" name="Update" value="Update Log">Update<br>Log</button>
+                            <button style="width:100%" type="submit" name="Update" value="Update Log">Update<br>Log</button>
                         </td>
                         <td>
                             <button type="submit" name="Users" value="User Database">User<br>Database</button>
@@ -3293,7 +3293,8 @@ if (isset($output_error)) {
                         </td>
                         <td>
                         </td>
-                        <td>
+                        <td class="data-buttons-rightspace">
+                            <button type="submit" name="Restore" value="Restore Log">Restore<br>Log</button>
                         </td>
                         <td>
                         </td>
@@ -3449,6 +3450,17 @@ if (isset($output_error)) {
 
                         if(isset($_POST['Update'])) {
                             $log = '/var/www/mycodo/log/update.log';
+
+                            if ($_POST['Lines'] != '') {
+                                $Lines = $_POST['Lines'];
+                                echo `tail -n $Lines $log`;
+                            } else {
+                                echo `tail -n 30 $log`;
+                            }
+                        }
+
+                        if(isset($_POST['Restore'])) {
+                            $log = '/var/www/mycodo/log/restore.log';
 
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];

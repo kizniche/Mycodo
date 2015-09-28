@@ -1,7 +1,6 @@
 #!/bin/bash
 #
-#  install.sh - Mycodo install script (still a work-in-progress, use at
-#               your own risk)
+#  update-mycodo.sh - Update Mycodo to the lastest version on GitHub
 #
 #  Copyright (C) 2015  Kyle T. Gabriel
 #
