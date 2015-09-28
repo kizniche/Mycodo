@@ -147,25 +147,11 @@ case "${1:-''}" in
         
         printf "Checking if daemon has stopped (please wait 10 seconds)."
         
-        sleep 1
-        printf "."
-        sleep 1
-        printf "."
-        sleep 1
-        printf "."
-        sleep 1
-        printf "."
-        sleep 1
-        printf "."
-        sleep 1
-        printf "."
-        sleep 1
-        printf "."
-        sleep 1
-        printf "."
-        sleep 1
-        printf "."
-        sleep 1
+        for i in {1..10}
+        do
+            sleep 1
+            printf "."
+        done
         
         if ps aux | grep '[m]ycodo.py'
         then
