@@ -26,10 +26,10 @@ if [ "$EUID" -ne 0 ]; then
     exit
 fi
 
-if [ ! -e "$1" ]; then         
+if [ ! -e $2 ]; then         
    echo "Directory does not exist"         
    exit 4  
-elif [ ! -d "$1" ]; then         
+elif [ ! -d $2 ]; then         
     echo "Input not a directory"        
     exit 5
 fi
@@ -47,7 +47,7 @@ mkdir -p /var/Mycodo-backups
 mkdir -p /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT
 cp -a /var/www/mycodo/. /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT/
 
-directory=$1
+directory=$2
 commit=${directory:27}
 printf "#### Restoring commit $commit ####\n"
 cd /var/www/mycodo/
@@ -55,8 +55,8 @@ git reset --hard $commit
 
 printf "#### Restoring databases from $DIR/config ####\n"
 rm -f /var/www/mycodo/config/*.db
-echo "cp $1/config/*.db /var/www/mycodo/config/"
-cp $1/config/*.db /var/www/mycodo/config/
+echo "cp $2/config/*.db /var/www/mycodo/config/"
+cp $2/config/*.db /var/www/mycodo/config/
 
 printf "#### Starting Daemon ####\n"
 /etc/init.d/mycodo start
