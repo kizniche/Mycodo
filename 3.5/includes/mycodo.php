@@ -3329,7 +3329,7 @@ if (isset($output_error)) {
                                 $Lines = $_POST['Lines'];
                                 echo `echo "Y M D H M S Temperature(C) Relative-Humidity DewPoint(C) Sensor\n$(cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S Temperature(C) Relative-Humidity DewPoint(C) Sensor\n$(cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log | tail -n 30)" | column -c 1 -t`;
+                                echo `echo "Y M D H M S Temperature(C) Relative-Humidity DewPoint(C) Sensor\n$(cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log | tail -n 30)" | column -t`;
                             }
                         }
 
@@ -3390,9 +3390,9 @@ if (isset($output_error)) {
                         if(isset($_POST['Relay_Changes'])) {
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y M D H M S # Name GPIO Amps Trigger State\n$(cat /var/www/mycodo/log/relay-changes.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y M D H M S Relay Name GPIO Amps Trigger State\n$(cat /var/www/mycodo/log/relay-changes.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S # Name GPIO Amps Trigger State\n$(cat /var/www/mycodo/log/relay-changes.log | tail -n 30)" | column -t`;
+                                echo `echo "Y M D H M S Relay Name GPIO Amps Trigger State\n$(cat /var/www/mycodo/log/relay-changes.log | tail -n 30)" | column -t`;
                             }
                         }
                         
