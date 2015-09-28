@@ -49,10 +49,13 @@ cp -a /var/www/mycodo/. /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT/
 
 printf "#### Restoring commit $1 ####\n"
 cd /var/www/mycodo/
+directory=$1
+commit=${directory:27}
 git reset --hard $1
 
 printf "#### Restoring databases from $DIR/config ####\n"
-rm -f /var/www/mycodo/config/*
+rm -f /var/www/mycodo/config/*.db
+echo "cp $1/config/*.db /var/www/mycodo/config/"
 cp $1/config/*.db /var/www/mycodo/config/
 
 printf "#### Starting Daemon ####\n"
