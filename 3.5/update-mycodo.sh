@@ -50,10 +50,10 @@ case "${1:-''}" in
 
                 NOW=$(date +"%Y-%m-%d_%H-%M-%S")
                 CURCOMMIT=$(git rev-parse --short HEAD)
-                printf "#### Creating backup Mycodo-backups/Mycodo-$NOW-$CURCOMMIT ####\n"
-                mkdir -p $DIR/../../Mycodo-backups
-                mkdir -p $DIR/../../Mycodo-backups/Mycodo-$NOW-$CURCOMMIT
-                cp -a $DIR/../../Mycodo/3.5/. $DIR/../../Mycodo-backups/Mycodo-$NOW-$CURCOMMIT/
+                printf "#### Creating backup /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT ####\n"
+                mkdir -p /var/Mycodo-backups
+                mkdir -p /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT
+                cp -a $DIR/../../Mycodo/3.5/. /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT/
 
                 printf "#### Updating from github ####\n"
                 git fetch --all
