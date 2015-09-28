@@ -2813,7 +2813,10 @@ def read_sql():
         if row[10] == None:
             conditional_relay_do_command.append(row[10])
         else:
-            conditional_relay_do_command.append(row[10].replace("\'\'","\'"))
+            if "\'\'" not in row[10]:   
+                conditional_relay_do_command.append(row[10])
+            else:
+                conditional_relay_do_command.append(row[10].replace("\'\'","\'"))
         conditional_relay_sel_notify.append(row[11])
         conditional_relay_do_notify.append(row[12])
 
@@ -2928,10 +2931,13 @@ def read_sql():
             conditional_t_relay_state[j][count][0] = row[8]
             conditional_t_relay_seconds_on[j][count][0] = row[9]
             conditional_t_sel_command[j][count][0] = row[10]
-            if "\'\'" not in row[11]:
+            if row[11] is None:
                 conditional_t_do_command[j][count][0] = row[11]
             else:
-                conditional_t_do_command[j][count][0] = row[11].replace("\'\'","\'")
+                if "\'\'" not in row[11]:   
+                    conditional_t_do_command[j][count][0] = row[11]
+                else:
+                    conditional_t_do_command[j][count][0] = row[11].replace("\'\'","\'")
             conditional_t_sel_notify[j][count][0] = row[12]
             conditional_t_do_notify[j][count][0] = row[13]
             count += 1
@@ -3084,10 +3090,13 @@ def read_sql():
             conditional_ht_relay_state[j][count][0] = row[9]
             conditional_ht_relay_seconds_on[j][count][0] = row[10]
             conditional_ht_sel_command[j][count][0] = row[11]
-            if "\'\'" not in row[12]:
+            if row[12] is None:
                 conditional_ht_do_command[j][count][0] = row[12]
             else:
-                conditional_ht_do_command[j][count][0] = row[12].replace("\'\'","\'")
+                if "\'\'" not in row[12]:
+                    conditional_ht_do_command[j][count][0] = row[12]
+                else:
+                    conditional_ht_do_command[j][count][0] = row[12].replace("\'\'","\'")
             conditional_ht_sel_notify[j][count][0] = row[13]
             conditional_ht_do_notify[j][count][0] = row[14]
             count += 1
@@ -3205,10 +3214,13 @@ def read_sql():
             conditional_co2_relay_state[j][count][0] = row[8]
             conditional_co2_relay_seconds_on[j][count][0] = row[9]
             conditional_co2_sel_command[j][count][0] = row[10]
-            if "\'\'" not in row[11]:
+            if row[11] is None:
                 conditional_co2_do_command[j][count][0] = row[11]
             else:
-                conditional_co2_do_command[j][count][0] = row[11].replace("\'\'","\'")
+                if "\'\'" not in row[11]:
+                    conditional_co2_do_command[j][count][0] = row[11]
+                else:
+                    conditional_co2_do_command[j][count][0] = row[11].replace("\'\'","\'")
             conditional_co2_sel_notify[j][count][0] = row[12]
             conditional_co2_do_notify[j][count][0] = row[13]
             count += 1
@@ -3361,10 +3373,13 @@ def read_sql():
             conditional_press_relay_state[j][count][0] = row[9]
             conditional_press_relay_seconds_on[j][count][0] = row[10]
             conditional_press_sel_command[j][count][0] = row[11]
-            if "\'\'" not in row[12]:
+            if row[12] is None:
                 conditional_press_do_command[j][count][0] = row[12]
             else:
-                conditional_press_do_command[j][count][0] = row[12].replace("\'\'","\'")
+                if "\'\'" not in row[12]:
+                    conditional_press_do_command[j][count][0] = row[12]
+                else:
+                    conditional_press_do_command[j][count][0] = row[12].replace("\'\'","\'")
             conditional_press_sel_notify[j][count][0] = row[13]
             conditional_press_do_notify[j][count][0] = row[14]
             count += 1
