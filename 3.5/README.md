@@ -94,6 +94,9 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 Major changes for each versioned release
 
+#### 3.5.79
++ Add backup restore feature to revert back to a previously-backed up system and databases (found in "Git Commits" of the Data tab)
+
 #### 3.5.78
 + Record history of changes to sensor/relay values, reduce number of spaces between values in relay/sensor logs to one (reduce file size)
 

@@ -53,9 +53,8 @@ printf "#### Restoring commit $commit ####\n"
 cd /var/www/mycodo/
 git reset --hard $commit
 
-printf "#### Restoring databases from $DIR/config ####\n"
+printf "#### Restoring databases from $2/config ####\n"
 rm -f /var/www/mycodo/config/*.db
-echo "cp $2/config/*.db /var/www/mycodo/config/"
 cp $2/config/*.db /var/www/mycodo/config/
 
 printf "#### Starting Daemon ####\n"
