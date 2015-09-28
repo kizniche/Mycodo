@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
 			(strcmp(argv[1], "restart") == 0) || (strcmp(argv[1], "debug") == 0)) {
 			sprintf(cmd, "/etc/init.d/mycodo %s", argv[1]);
 			system(cmd);
-		} else if (strcmp(argv[1], "restore") == 0 && strcmp(argv[1], "restore") == 0) {
+		} else if (strcmp(argv[1], "restore") == 0 && argc > 2) {
 			char updateScript[255];
 			strncpy(updateScript, argv[0], sizeof(updateScript));
 			dirname(updateScript);
