@@ -134,6 +134,16 @@ for ($p = 0; $p < count($relay_id); $p++) {
                 shell_exec("gpio -g write $pin 1");
             }
         }
+
+        $number = str_pad($p + 1, 2);
+        $name = str_pad($_POST['relay' . $p . 'name'], 15);
+        $pin = str_pad((int)$_POST['relay' . $p . 'pin'], 5);
+        $amps = str_pad((float)$_POST['relay' . $p . 'amps'], 5);
+        $trigger = str_pad((int)$_POST['relay' . $p . 'trigger'], 8);
+        $state = (int)$_POST['relay' . $p . 'startstate'];
+        $timestamp = date('Y m d H i s');
+        $record = "$timestamp $number $name $pin $amps $trigger $state\n";
+        file_put_contents($relay_changes_log, $record, FILE_APPEND);
     }
 
     // Delete Relay
@@ -606,6 +616,49 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
             } else {
                 shell_exec("$mycodo_client --sqlreload -1");
             }
+            
+            $id = $sensor_t_id[$p];
+            $name = $_POST['sensort' . $p . 'name'];
+            $device = $_POST['sensort' . $p . 'device'];
+            $pin = $_POST['sensort' . $p . 'pin'];
+            $period = (int)$_POST['sensort' . $p . 'period'];
+            $prerelay = (int)$_POST['sensort' . $p . 'premeasure_relay'];
+            $predur = (int)$_POST['sensort' . $p . 'premeasure_dur'];
+            if (isset($_POST['sensort' . $p . 'activated'])) {
+                $activated = 1;
+            } else {
+                $activated = 0;
+            }
+            if (isset($_POST['sensort' . $p . 'graph'])) {
+                 $graph = 1;
+            } else {
+                 $graph = 0;
+            }
+            $yrelaymin = (int)$_POST['SetT' . $p . 'YAxisRelayMin'];
+            $yrelaymax = (int)$_POST['SetT' . $p . 'YAxisRelayMax'];
+            $yrelaytics = (int)$_POST['SetT' . $p . 'YAxisRelayTics'];
+            $yrelaymtics = (int)$_POST['SetT' . $p . 'YAxisRelayMTics'];
+            $ytempmin = (int)$_POST['SetT' . $p . 'YAxisTempMin'];
+            $ytempmax = (int)$_POST['SetT' . $p . 'YAxisTempMax'];
+            $ytemptics = (int)$_POST['SetT' . $p . 'YAxisTempTics'];
+            $ytempmtics = (int)$_POST['SetT' . $p . 'YAxisTempMTics'];
+            $temprelaysup = $_POST['SetT' . $p . 'TempRelaysUp'];
+            $temprelaysdown = $_POST['SetT' . $p . 'TempRelaysDown'];
+            $temprelayhigh = (int)$_POST['SetT' . $p . 'TempRelayHigh'];
+            $temprelayhighmin = (int)$_POST['SetT' . $p . 'TempOutminHigh'];
+            $temprelayhighmax = (int)$_POST['SetT' . $p . 'TempOutmaxHigh'];
+            $temprelaylow = (int)$_POST['SetT' . $p . 'TempRelayLow'];
+            $temprelaylowmin = (int)$_POST['SetT' . $p . 'TempOutminLow'];
+            $temprelaylowmax = (int)$_POST['SetT' . $p . 'TempOutmaxLow'];
+            $tempset = (float)$_POST['SetT' . $p . 'TempSet'];
+            $tempsetdir = (float)$_POST['SetT' . $p . 'TempSetDir'];
+            $tempperiod = (int)$_POST['SetT' . $p . 'TempPeriod'];
+            $tempP = (float)$_POST['SetT' . $p . 'Temp_P'];
+            $tempI = (float)$_POST['SetT' . $p . 'Temp_I'];
+            $tempD = (float)$_POST['SetT' . $p . 'Temp_D'];
+            $timestamp = date('Y m d H i s');
+            $record = "$timestamp $id $name $device $pin $period $prerelay $predur $activated $graph $yrelaymin $yrelaymax $yrelaytics $yrelaymtics $ytempmin $ytempmax $ytemptics $ytempmtics $temprelaysup $temprelaysdown $temprelayhigh $temprelayhighmin $temprelayhighmax $temprelaylow $temprelaylowmin $temprelaylowmax $tempset $tempsetdir $tempperiod $tempP $tempI $tempD\n";
+            file_put_contents($sensor_t_changes_log, $record, FILE_APPEND);
         }
 
         // Load Temperature sensor and PID variables from preset
@@ -1084,6 +1137,63 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             if ($reload) {
                 shell_exec("$mycodo_client --sqlreload -1");
             }
+
+            $id = $sensor_t_id[$p];
+            $name = $_POST['sensorht' . $p . 'name'];
+            $device = $_POST['sensorht' . $p . 'device'];
+            $pin = $_POST['sensorht' . $p . 'pin'];
+            $period = (int)$_POST['sensorht' . $p . 'period'];
+            $prerelay = (int)$_POST['sensorht' . $p . 'premeasure_relay'];
+            $predur = (int)$_POST['sensorht' . $p . 'premeasure_dur'];
+            if (isset($_POST['sensorht' . $p . 'activated'])) {
+                $activated = 1;
+            } else {
+                $activated = 0;
+            }
+            if (isset($_POST['sensorht' . $p . 'graph'])) {
+                 $graph = 1;
+            } else {
+                 $graph = 0;
+            }
+            $yrelaymin = (int)$_POST['SetHT' . $p . 'YAxisRelayMin'];
+            $yrelaymax = (int)$_POST['SetHT' . $p . 'YAxisRelayMax'];
+            $yrelaytics = (int)$_POST['SetHT' . $p . 'YAxisRelayTics'];
+            $yrelaymtics = (int)$_POST['SetHT' . $p . 'YAxisRelayMTics'];
+            $ytempmin = (int)$_POST['SetHT' . $p . 'YAxisTempMin'];
+            $ytempmax = (int)$_POST['SetHT' . $p . 'YAxisTempMax'];
+            $ytemptics = (int)$_POST['SetHT' . $p . 'YAxisTempTics'];
+            $ytempmtics = (int)$_POST['SetHT' . $p . 'YAxisTempMTics'];
+            $temprelaysup = $_POST['SetHT' . $p . 'TempRelaysUp'];
+            $temprelaysdown = $_POST['SetHT' . $p . 'TempRelaysDown'];
+            $temprelayhigh = (int)$_POST['SetHT' . $p . 'TempRelayHigh'];
+            $temprelayhighmin = (int)$_POST['SetHT' . $p . 'TempOutminHigh'];
+            $temprelayhighmax = (int)$_POST['SetHT' . $p . 'TempOutmaxHigh'];
+            $temprelaylow = (int)$_POST['SetHT' . $p . 'TempRelayLow'];
+            $temprelaylowmin = (int)$_POST['SetHT' . $p . 'TempOutminLow'];
+            $temprelaylowmax = (int)$_POST['SetHT' . $p . 'TempOutmaxLow'];
+            $tempset = (float)$_POST['SetHT' . $p . 'TempSet'];
+            $tempsetdir = (float)$_POST['SetHT' . $p . 'TempSetDir'];
+            $tempperiod = (int)$_POST['SetHT' . $p . 'TempPeriod'];
+            $tempP = (float)$_POST['SetHT' . $p . 'Temp_P'];
+            $tempI = (float)$_POST['SetHT' . $p . 'Temp_I'];
+            $tempD = (float)$_POST['SetHT' . $p . 'Temp_D'];
+            $humrelaysup = $_POST['SetHT' . $p . 'HumRelaysUp'];
+            $humrelaysdown = $_POST['SetHT' . $p . 'HumRelaysDown'];
+            $humrelayhigh = (int)$_POST['SetHT' . $p . 'HumRelayHigh'];
+            $humrelayhighmin = (int)$_POST['SetHT' . $p . 'HumOutminHigh'];
+            $humrelayhighmax = (int)$_POST['SetHT' . $p . 'HumOutmaxHigh'];
+            $humrelaylow = (int)$_POST['SetHT' . $p . 'HumRelayLow'];
+            $humrelaylowmin = (int)$_POST['SetHT' . $p . 'HumOutminLow'];
+            $humrelaylowmax = (int)$_POST['SetHT' . $p . 'HumOutmaxLow'];
+            $humset = (float)$_POST['SetHT' . $p . 'HumSet'];
+            $humsetdir = (float)$_POST['SetHT' . $p . 'HumSetDir'];
+            $humperiod = (int)$_POST['SetHT' . $p . 'HumPeriod'];
+            $humP = (float)$_POST['SetHT' . $p . 'Hum_P'];
+            $humI = (float)$_POST['SetHT' . $p . 'Hum_I'];
+            $humD = (float)$_POST['SetHT' . $p . 'Hum_D'];
+            $timestamp = date('Y m d H i s');
+            $record = "$timestamp $id $name $device $pin $period $prerelay $predur $activated $graph $yrelaymin $yrelaymax $yrelaytics $yrelaymtics $ytempmin $ytempmax $ytemptics $ytempmtics $temprelaysup $temprelaysdown $temprelayhigh $temprelayhighmin $temprelayhighmax $temprelaylow $temprelaylowmin $temprelaylowmax $tempset $tempsetdir $tempperiod $tempP $tempI $tempD $humrelaysup $humrelaysdown $humrelayhigh $humrelayhighmin $humrelayhighmax $humrelaylow $humrelaylowmin $humrelaylowmax $humset $humsetdir $humperiod $humP $humI $humD\n";
+            file_put_contents($sensor_ht_changes_log, $record, FILE_APPEND);
         }
 
         // Save Temperature/Humidity sensor and PID variables to a new preset
@@ -1519,6 +1629,53 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
             } else {
                 shell_exec("$mycodo_client --sqlreload -1");
             }
+
+            $id = $sensor_co2_id[$p];
+            $name = $_POST['sensorco2' . $p . 'name'];
+            $device = $_POST['sensorco2' . $p . 'device'];
+            if ($_POST['sensorco2' . $p . 'device'] == 'K30') {
+                $pin = $sensor_co2_pin[$p];
+            } else {
+                $pin = (int)$_POST['sensorco2' . $p . 'pin'];
+            }
+            $period = (int)$_POST['sensorco2' . $p . 'period'];
+            $prerelay = (int)$_POST['sensorco2' . $p . 'premeasure_relay'];
+            $predur = (int)$_POST['sensorco2' . $p . 'premeasure_dur'];
+            if (isset($_POST['sensorco2' . $p . 'activated'])) {
+                $activated = 1;
+            } else {
+                $activated = 0;
+            }
+            if (isset($_POST['sensorco2' . $p . 'graph'])) {
+                 $graph = 1;
+            } else {
+                 $graph = 0;
+            }
+            $yrelaymin = (int)$_POST['SetCO2' . $p . 'YAxisRelayMin'];
+            $yrelaymax = (int)$_POST['SetCO2' . $p . 'YAxisRelayMax'];
+            $yrelaytics = (int)$_POST['SetCO2' . $p . 'YAxisRelayTics'];
+            $yrelaymtics = (int)$_POST['SetCO2' . $p . 'YAxisRelayMTics'];
+            $yco2min = (int)$_POST['SetCO2' . $p . 'YAxisCO2Min'];
+            $yco2max = (int)$_POST['SetCO2' . $p . 'YAxisCO2Max'];
+            $yco2tics = (int)$_POST['SetCO2' . $p . 'YAxisCO2Tics'];
+            $yco2mtics = (int)$_POST['SetCO2' . $p . 'YAxisCO2MTics'];
+            $co2relaysup = $_POST['SetCO2' . $p . 'CO2RelaysUp'];
+            $co2relaysdown = $_POST['SetCO2' . $p . 'CO2RelaysDown'];
+            $co2relayhigh = (int)$_POST['SetCO2' . $p . 'CO2RelayHigh'];
+            $co2relayhighmin = (int)$_POST['SetCO2' . $p . 'CO2OutminHigh'];
+            $co2relayhighmax = (int)$_POST['SetCO2' . $p . 'CO2OutmaxHigh'];
+            $co2relaylow = (int)$_POST['SetCO2' . $p . 'CO2RelayLow'];
+            $co2relaylowmin = (int)$_POST['SetCO2' . $p . 'CO2OutminLow'];
+            $co2relaylowmax = (int)$_POST['SetCO2' . $p . 'CO2OutmaxLow'];
+            $co2set = (float)$_POST['SetCO2' . $p . 'CO2Set'];
+            $co2setdir = (float)$_POST['SetCO2' . $p . 'CO2SetDir'];
+            $co2period = (int)$_POST['SetCO2' . $p . 'CO2Period'];
+            $co2P = (float)$_POST['SetCO2' . $p . 'CO2_P'];
+            $co2I = (float)$_POST['SetCO2' . $p . 'CO2_I'];
+            $co2D = (float)$_POST['SetCO2' . $p . 'CO2_D'];
+            $timestamp = date('Y m d H i s');
+            $record = "$timestamp $id $name $device $pin $period $prerelay $predur $activated $graph $yrelaymin $yrelaymax $yrelaytics $yrelaymtics $yco2min $yco2max $yco2tics $yco2mtics $co2relaysup $co2relaysdown $co2relayhigh $co2relayhighmin $co2relayhighmax $co2relaylow $co2relaylowmin $co2relaylowmax $co2set $co2setdir $co2period $co2P $co2I $co2D\n";
+            file_put_contents($sensor_co2_changes_log, $record, FILE_APPEND);
         }
 
         // Save CO2 sensor and PID variables to a new preset
@@ -2000,6 +2157,67 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
             if ($reload) {
                 shell_exec("$mycodo_client --sqlreload -1");
             }
+
+            $id = $sensor_press_id[$p];
+            $name = $_POST['sensorpress' . $p . 'name'];
+            $device = $_POST['sensorpress' . $p . 'device'];
+            if ($_POST['sensorpress' . $p . 'device'] == 'BMP085-180') {
+                $pin = 'I2C';
+            } else {
+                $pin = $_POST['sensorpress' . $p . 'pin'];
+            }
+            $period = (int)$_POST['sensorpress' . $p . 'period'];
+            $prerelay = (int)$_POST['sensorpress' . $p . 'premeasure_relay'];
+            $predur = (int)$_POST['sensorpress' . $p . 'premeasure_dur'];
+            if (isset($_POST['sensorpress' . $p . 'activated'])) {
+                $activated = 1;
+            } else {
+                $activated = 0;
+            }
+            if (isset($_POST['sensorpress' . $p . 'graph'])) {
+                 $graph = 1;
+            } else {
+                 $graph = 0;
+            }
+            $yrelaymin = (int)$_POST['SetPress' . $p . 'YAxisRelayMin'];
+            $yrelaymax = (int)$_POST['SetPress' . $p . 'YAxisRelayMax'];
+            $yrelaytics = (int)$_POST['SetPress' . $p . 'YAxisRelayTics'];
+            $yrelaymtics = (int)$_POST['SetPress' . $p . 'YAxisRelayMTics'];
+            $ytempmin = (int)$_POST['SetPress' . $p . 'YAxisTempMin'];
+            $ytempmax = (int)$_POST['SetPress' . $p . 'YAxisTempMax'];
+            $ytemptics = (int)$_POST['SetPress' . $p . 'YAxisTempTics'];
+            $ytempmtics = (int)$_POST['SetPress' . $p . 'YAxisTempMTics'];
+            $temprelaysup = $_POST['SetPress' . $p . 'TempRelaysUp'];
+            $temprelaysdown = $_POST['SetPress' . $p . 'TempRelaysDown'];
+            $temprelayhigh = (int)$_POST['SetPress' . $p . 'TempRelayHigh'];
+            $temprelayhighmin = (int)$_POST['SetPress' . $p . 'TempOutminHigh'];
+            $temprelayhighmax = (int)$_POST['SetPress' . $p . 'TempOutmaxHigh'];
+            $temprelaylow = (int)$_POST['SetPress' . $p . 'TempRelayLow'];
+            $temprelaylowmin = (int)$_POST['SetPress' . $p . 'TempOutminLow'];
+            $temprelaylowmax = (int)$_POST['SetPress' . $p . 'TempOutmaxLow'];
+            $tempset = (float)$_POST['SetPress' . $p . 'TempSet'];
+            $tempsetdir = (float)$_POST['SetPress' . $p . 'TempSetDir'];
+            $tempperiod = (int)$_POST['SetPress' . $p . 'TempPeriod'];
+            $tempP = (float)$_POST['SetPress' . $p . 'Temp_P'];
+            $tempI = (float)$_POST['SetPress' . $p . 'Temp_I'];
+            $tempD = (float)$_POST['SetPress' . $p . 'Temp_D'];
+            $pressrelaysup = $_POST['SetPress' . $p . 'PressRelaysUp'];
+            $pressrelaysdown = $_POST['SetPress' . $p . 'PressRelaysDown'];
+            $pressrelayhigh = (int)$_POST['SetPress' . $p . 'PressRelayHigh'];
+            $pressrelayhighmin = (int)$_POST['SetPress' . $p . 'PressOutminHigh'];
+            $pressrelayhighmax = (int)$_POST['SetPress' . $p . 'PressOutmaxHigh'];
+            $pressrelaylow = (int)$_POST['SetPress' . $p . 'PressRelayLow'];
+            $pressrelaylowmin = (int)$_POST['SetPress' . $p . 'PressOutminLow'];
+            $pressrelaylowmax = (int)$_POST['SetPress' . $p . 'PressOutmaxLow'];
+            $pressset = (float)$_POST['SetPress' . $p . 'PressSet'];
+            $presssetdir = (float)$_POST['SetPress' . $p . 'PressSetDir'];
+            $pressperiod = (int)$_POST['SetPress' . $p . 'PressPeriod'];
+            $pressP = (float)$_POST['SetPress' . $p . 'Press_P'];
+            $pressI = (float)$_POST['SetPress' . $p . 'Press_I'];
+            $pressD = (float)$_POST['SetPress' . $p . 'Press_D'];
+            $timestamp = date('Y m d H i s');
+            $record = "$timestamp $id $name $device $pin $period $prerelay $predur $activated $graph $yrelaymin $yrelaymax $yrelaytics $yrelaymtics $ytempmin $ytempmax $ytemptics $ytempmtics $temprelaysup $temprelaysdown $temprelayhigh $temprelayhighmin $temprelayhighmax $temprelaylow $temprelaylowmin $temprelaylowmax $tempset $tempsetdir $tempperiod $tempP $tempI $tempD $pressrelaysup $pressrelaysdown $pressrelayhigh $pressrelayhighmin $pressrelayhighmax $pressrelaylow $pressrelaylowmin $pressrelaylowmax $pressset $presssetdir $pressperiod $pressP $pressI $pressD\n";
+            file_put_contents($sensor_press_changes_log, $record, FILE_APPEND);
         }
 
         // Save Pressure sensor and PID variables to a new preset

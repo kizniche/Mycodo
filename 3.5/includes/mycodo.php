@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.77";
+$version = "3.5.78";
 
 ######### Start Edit Configure #########
 
@@ -42,10 +42,17 @@ $update_check = $install_path . "/.updatecheck";
 
 $daemon_log = $install_path . "/log/daemon.log";
 $auth_log = $install_path . "/log/auth.log";
+$sensor_t_log = $install_path . "/log/sensor-t.log";
 $sensor_ht_log = $install_path . "/log/sensor-ht.log";
 $sensor_co2_log = $install_path . "/log/sensor-co2.log";
 $sensor_press_log = $install_path . "/log/sensor-press.log";
 $relay_log = $install_path . "/log/relay.log";
+
+$sensor_t_changes_log = $install_path . "/log/sensor-t-changes.log";
+$sensor_ht_changes_log = $install_path . "/log/sensor-ht-changes.log";
+$sensor_co2_changes_log = $install_path . "/log/sensor-co2-changes.log";
+$sensor_press_changes_log = $install_path . "/log/sensor-press-changes.log";
+$relay_changes_log = $install_path . "/log/relay-changes.log";
 
 $images = $install_path . "/images";
 $lock_daemon = $lock_path . "/mycodo/daemon.lock";
@@ -3222,93 +3229,170 @@ if (isset($output_error)) {
                     if (isset($_GET['page'])) {
                         echo '&page=' , $_GET['page'];
                     } ?>" method="POST">
-                    <div class="data-buttons data-buttons-rightspace">
-                        Lines: <input style="height: 2.5em;" type="text" maxlength=8 size=8 name="Lines" />
-                    </div>
-                    <div class="data-buttons">
-                        <button type="submit" name="TSensor" value="T">T<br>Sensor</button>
-                    </div>
-                    <div class="data-buttons">
-                        <button type="submit" name="HTSensor" value="HT">HT<br>Sensor</button>
-                    </div>
-                    <div class="data-buttons">
-                        <button type="submit" name="Co2Sensor" value="CO2">CO2<br>Sensor</button>
-                    </div>
-                    <div class="data-buttons data-buttons-rightspace">
-                        <button type="submit" name="PressSensor" value="Press">Press<br>Sensor</button>
-                    </div>
-                    <div class="data-buttons">
-                        <button type="submit" name="Relay" value="Relay">Relay<br>Log</button>
-                    </div>
-                    <div class="data-buttons">
-                        <button type="submit" name="Login" value="Login">Login<br>Log</button>
-                    </div>
-                    <div class="data-buttons">
-                        <button type="submit" name="Daemon" value="Daemon">Daemon<br>Log</button>
-                    </div>
-                    <div class="data-buttons">
-                        <button type="submit" name="Commits" value="Update Log">Git<br>Commits</button>
-                    </div>
-                    <div class="data-buttons data-buttons-rightspace">
-                        <button type="submit" name="Update" value="Update Log">Update<br>Log</button>
-                    </div>
-                    <div class="data-buttons">
-                        <button type="submit" name="Users" value="User Database">User<br>Database</button>
-                    </div>
-                    <div class="data-buttons">
-                        <button type="submit" name="Database" value="Mycodo Database">Mycodo<br>Database</button>
-                    </div>
+                <table>
+                    <tr>
+                        <td class="data-buttons-rightspace">
+                            Lines: <input style="height: 2.5em;" type="text" maxlength=8 size=8 name="Lines" />
+                        </td>
+                        <td>
+                            <button type="submit" name="TSensor" value="T">T<br>Sensor</button>
+                        </td>
+                        <td>
+                            <button type="submit" name="HTSensor" value="HT">HT<br>Sensor</button>
+                        </td>
+                        <td>
+                            <button type="submit" name="CO2Sensor" value="CO2">CO2<br>Sensor</button>
+                        </td>
+                        <td class="data-buttons-rightspace">
+                            <button type="submit" name="PressSensor" value="Press">Press<br>Sensor</button>
+                        </td>
+                        <td>
+                            <button type="submit" name="Relay" value="Relay">Relay<br>Log</button>
+                        </td>
+                        <td>
+                            <button type="submit" name="Login" value="Login">Login<br>Log</button>
+                        </td>
+                        <td>
+                            <button type="submit" name="Daemon" value="Daemon">Daemon<br>Log</button>
+                        </td>
+                        <td>
+                            <button type="submit" name="Commits" value="Update Log">Git<br>Commits</button>
+                        </td>
+                        <td class="data-buttons-rightspace">
+                            <button type="submit" name="Update" value="Update Log">Update<br>Log</button>
+                        </td>
+                        <td>
+                            <button type="submit" name="Users" value="User Database">User<br>Database</button>
+                        </td>
+                        <td>
+                            <button type="submit" name="Database" value="Mycodo Database">Mycodo<br>Database</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+
+                        </td>
+                        <td>
+                            <button style="width:100%" type="submit" name="TSensor_Changes" value="T">T<br>Δ</button>
+                        </td>
+                        <td>
+                            <button style="width:100%" type="submit" name="HTSensor_Changes" value="HT">HT<br>Δ</button>
+                        </td>
+                        <td>
+                            <button style="width:100%" type="submit" name="CO2Sensor_Changes" value="CO2">CO2<br>Δ</button>
+                        </td>
+                        <td class="data-buttons-rightspace">
+                            <button style="width:100%" type="submit" name="PressSensor_Changes" value="Press">Press<br>Δ</button>
+                        </td>
+                        <td>
+                            <button type="submit" name="Relay_Changes" value="Relay">Relay<br>Δ</button>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                </table>
                 </form>
+
                 <div style="clear: both;"></div>
                 <div style="font-family: monospace; padding-top:1em;">
                     <pre><?php
                         if(isset($_POST['TSensor'])) {
-                            echo '   Y  M  D  H  M  S     Tc   Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log | tail -n $Lines`;
+                                echo `echo "Y M D H M S Tc Sensor\n$(cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log | tail -n 30`;
+                                echo `echo "Y M D H M S Tc Sensor\n$(cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log | tail -n 30)" | column -t`;
+                            }
+                        }
+
+                        if(isset($_POST['TSensor_Changes'])) {
+                            if ($_POST['Lines'] != '') {
+                                $Lines = $_POST['Lines'];
+                                echo `echo "Y M D H M S ID Name Device Pin/Ser# Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD\n$(cat /var/www/mycodo/log/sensor-t-changes.log | tail -n $Lines)" | column -t`;
+                            } else {
+                                echo `echo "Y M D H M S ID Name Device Pin/Ser# Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD\n$(cat /var/www/mycodo/log/sensor-t-changes.log | tail -n 30)" | column -t`;
                             }
                         }
                         
                         if(isset($_POST['HTSensor'])) {
-                            echo '   Y  M  D  H  M  S     Tc     RH    DPc   Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log | tail -n $Lines`;
+                                echo `echo "Y M D H M S Temperature(C) Relative-Humidity DewPoint(C) Sensor\n$(cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log | tail -n 30`;
+                                echo `echo "Y M D H M S Temperature(C) Relative-Humidity DewPoint(C) Sensor\n$(cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log | tail -n 30)" | column -t`;
                             }
                         }
 
-                        if(isset($_POST['Co2Sensor'])) {
-                            echo '   Y  M  D  H  M  S    CO<sub>2</sub>   Sensor<br> <br>';
+                        if(isset($_POST['HTSensor_Changes'])) {
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log | tail -n $Lines`;
+                                echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD HumRelaysUp HumRelaysDown HumRelayHigh HumRelayHighMin HumRelayHighMax HumRelayLow HumRelayLowMin HumRelayLowMax HumSet HumSetDir HumPeriod HumP HumI HumD\n$(cat /var/www/mycodo/log/sensor-ht-changes.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log | tail -n 30`;
+                                echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD HumRelaysUp HumRelaysDown HumRelayHigh HumRelayHighMin HumRelayHighMax HumRelayLow HumRelayLowMin HumRelayLowMax HumSet HumSetDir HumPeriod HumP HumI HumD\n$(cat /var/www/mycodo/log/sensor-ht-changes.log | tail -n 30)" | column -t`;
+                            }
+                        }
+
+                        if(isset($_POST['CO2Sensor'])) {
+                            if ($_POST['Lines'] != '') {
+                                $Lines = $_POST['Lines'];
+                                echo `echo "Y M D H M S CO2 Sensor\n$(cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log | tail -n $Lines)" | column -t`;
+                            } else {
+                                echo `echo "Y M D H M S CO2 Sensor\n$(cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log | tail -n 30)" | column -t`;
+                            }
+                        }
+
+                        if(isset($_POST['CO2Sensor_Changes'])) {
+                            if ($_POST['Lines'] != '') {
+                                $Lines = $_POST['Lines'];
+                                echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YCO2Min YCO2Max YCO2Tics YCO2MTics CO2RelaysUp CO2RelaysDown CO2RelayHigh CO2RelayHighMin CO2RelayHighMax CO2RelayLow CO2RelayLowMin CO2RelayLowMax CO2Set CO2SetDir CO2Period CO2P CO2I CO2D\n$(cat /var/www/mycodo/log/sensor-co2-changes.log | tail -n $Lines)" | column -t`;
+                            } else {
+                                echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YCO2Min YCO2Max YCO2Tics YCO2MTics CO2RelaysUp CO2RelaysDown CO2RelayHigh CO2RelayHighMin CO2RelayHighMax CO2RelayLow CO2RelayLowMin CO2RelayLowMax CO2Set CO2SetDir CO2Period CO2P CO2I CO2D\n$(cat /var/www/mycodo/log/sensor-co2-changes.log | tail -n 30)" | column -t`;
                             }
                         }
 
                         if(isset($_POST['PressSensor'])) {
-                            echo '   Y  M  D  H  M  S     Tc   Press      Alt   Sensor<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log | tail -n $Lines`;
+                                echo `echo "Y M D H M S Temperature(C) Pressure(kPa) Altitude(m) Sensor\n$(cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log | tail -n 30`;
+                                echo `echo "Y M D H M S Temperature(C) Pressure(kPa) Altitude(m) Sensor\n$(cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log | tail -n 30)" | column -t`;
+                            }
+                        }
+
+                        if(isset($_POST['PressSensor_Changes'])) {
+                            if ($_POST['Lines'] != '') {
+                                $Lines = $_POST['Lines'];
+                                echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD PressRelaysUp PressRelaysDown PressRelayHigh PressRelayHighMin PressRelayHighMax PressRelayLow PressRelayLowMin PressRelayLowMax PressSet PressSetDir PressPeriod PressP PressI PressD\n$(cat /var/www/mycodo/log/sensor-press-changes.log | tail -n $Lines)" | column -t`;
+                            } else {
+                                echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD PressRelaysUp PressRelaysDown PressRelayHigh PressRelayHighMin PressRelayHighMax PressRelayLow PressRelayLowMin PressRelayLowMax PressSet PressSetDir PressPeriod PressP PressI PressD\n$(cat /var/www/mycodo/log/sensor-press-changes.log | tail -n 30)" | column -t`;
                             }
                         }
 
                         if(isset($_POST['Relay'])) {
-                            echo '   Y  M  D  H  M  S  Sen  Rel GPIO  SecondsOn<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | tail -n $Lines`;
+                                echo `echo "Y M D H M S Sensor Relay GPIO SecondsOn\n$(cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | tail -n 30`;
+                                echo `echo "Y M D H M S Sensor Relay GPIO SecondsOn\n$(cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | tail -n 30)" | column -t`;
+                            }
+                        }
+
+                        if(isset($_POST['Relay_Changes'])) {
+                            if ($_POST['Lines'] != '') {
+                                $Lines = $_POST['Lines'];
+                                echo `echo "Y M D H M S # Name GPIO Amps Trigger State\n$(cat /var/www/mycodo/log/relay-changes.log | tail -n $Lines)" | column -t`;
+                            } else {
+                                echo `echo "Y M D H M S # Name GPIO Amps Trigger State\n$(cat /var/www/mycodo/log/relay-changes.log | tail -n 30)" | column -t`;
                             }
                         }
                         

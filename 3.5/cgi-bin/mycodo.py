@@ -2886,7 +2886,6 @@ def read_sql():
     global conditional_t_id
     global conditional_t_name
     global conditional_t_state
-    global conditional_t_sensor
     global conditional_t_direction
     global conditional_t_setpoint
     global conditional_t_period
@@ -2902,7 +2901,6 @@ def read_sql():
     conditional_t_id = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
     conditional_t_name = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
     conditional_t_state = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
-    conditional_t_sensor = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
     conditional_t_direction = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
     conditional_t_setpoint = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
     conditional_t_period = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
@@ -2916,7 +2914,7 @@ def read_sql():
     conditional_t_do_notify = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
 
     for j in range(0, len(conditional_t_number_sensor)):
-        cur.execute('SELECT Id, Name, State, Sensor, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM TSensorConditional WHERE Sensor=' + str(j))
+        cur.execute('SELECT Id, Name, State, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM TSensorConditional WHERE Sensor=' + str(j))
         count = 0
         for row in cur:
             conditional_t_id[j][count][0] = row[0]
@@ -2930,7 +2928,7 @@ def read_sql():
             conditional_t_relay_state[j][count][0] = row[8]
             conditional_t_relay_seconds_on[j][count][0] = row[9]
             conditional_t_sel_command[j][count][0] = row[10]
-            if row[11] == None:
+            if "\'\'" not in row[11]:
                 conditional_t_do_command[j][count][0] = row[11]
             else:
                 conditional_t_do_command[j][count][0] = row[11].replace("\'\'","\'")
@@ -3041,7 +3039,6 @@ def read_sql():
     global conditional_ht_id
     global conditional_ht_name
     global conditional_ht_state
-    global conditional_ht_sensor
     global conditional_ht_condition
     global conditional_ht_direction
     global conditional_ht_setpoint
@@ -3058,7 +3055,6 @@ def read_sql():
     conditional_ht_id = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
     conditional_ht_name = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
     conditional_ht_state = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
-    conditional_ht_sensor = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
     conditional_ht_condition = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
     conditional_ht_direction = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
     conditional_ht_setpoint = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
@@ -3088,7 +3084,7 @@ def read_sql():
             conditional_ht_relay_state[j][count][0] = row[9]
             conditional_ht_relay_seconds_on[j][count][0] = row[10]
             conditional_ht_sel_command[j][count][0] = row[11]
-            if row[12] == None:
+            if "\'\'" not in row[12]:
                 conditional_ht_do_command[j][count][0] = row[12]
             else:
                 conditional_ht_do_command[j][count][0] = row[12].replace("\'\'","\'")
@@ -3166,7 +3162,6 @@ def read_sql():
     global conditional_co2_id
     global conditional_co2_name
     global conditional_co2_state
-    global conditional_co2_sensor
     global conditional_co2_condition
     global conditional_co2_direction
     global conditional_co2_setpoint
@@ -3183,7 +3178,6 @@ def read_sql():
     conditional_co2_id = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
     conditional_co2_name = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
     conditional_co2_state = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
-    conditional_co2_sensor = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
     conditional_co2_direction = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
     conditional_co2_setpoint = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
     conditional_co2_period = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
@@ -3197,7 +3191,7 @@ def read_sql():
     conditional_co2_do_notify = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
 
     for j in range(0, len(conditional_co2_number_sensor)):
-        cur.execute('SELECT Id, Name, State, Sensor, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM CO2SensorConditional WHERE Sensor=' + str(j))
+        cur.execute('SELECT Id, Name, State, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM CO2SensorConditional WHERE Sensor=' + str(j))
         count = 0
         for row in cur:
             conditional_co2_id[j][count][0] = row[0]
@@ -3211,7 +3205,7 @@ def read_sql():
             conditional_co2_relay_state[j][count][0] = row[8]
             conditional_co2_relay_seconds_on[j][count][0] = row[9]
             conditional_co2_sel_command[j][count][0] = row[10]
-            if row[11] == None:
+            if "\'\'" not in row[11]:
                 conditional_co2_do_command[j][count][0] = row[11]
             else:
                 conditional_co2_do_command[j][count][0] = row[11].replace("\'\'","\'")
@@ -3322,7 +3316,6 @@ def read_sql():
     global conditional_press_id
     global conditional_press_name
     global conditional_press_state
-    global conditional_press_sensor
     global conditional_press_condition
     global conditional_press_direction
     global conditional_press_setpoint
@@ -3339,7 +3332,6 @@ def read_sql():
     conditional_press_id = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
     conditional_press_name = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
     conditional_press_state = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
-    conditional_press_sensor = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
     conditional_press_condition = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
     conditional_press_direction = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
     conditional_press_setpoint = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
@@ -3369,7 +3361,7 @@ def read_sql():
             conditional_press_relay_state[j][count][0] = row[9]
             conditional_press_relay_seconds_on[j][count][0] = row[10]
             conditional_press_sel_command[j][count][0] = row[11]
-            if row[12] == None:
+            if "\'\'" not in row[12]:
                 conditional_press_do_command[j][count][0] = row[12]
             else:
                 conditional_press_do_command[j][count][0] = row[12].replace("\'\'","\'")

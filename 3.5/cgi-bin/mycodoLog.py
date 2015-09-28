@@ -81,7 +81,7 @@ def write_t_sensor_log(sensor_t_read_temp_c, sensor):
 
     try:
         with open(sensor_t_log_file_tmp, "ab") as sensorlog:
-            sensorlog.write('{0} {1:6.1f} {2:3d}\n'.format(
+            sensorlog.write('{0} {1:.1f} {2:d}\n'.format(
                 datetime.datetime.now().strftime("%Y %m %d %H %M %S"),
                 sensor_t_read_temp_c[sensor], sensor))
             logging.debug("[Write Sensor Log] Data appended to %s", sensor_t_log_file_tmp)
@@ -110,7 +110,7 @@ def write_ht_sensor_log(sensor_ht_read_temp_c, sensor_ht_read_hum, sensor_ht_dew
 
     try:
         with open(sensor_ht_log_file_tmp, "ab") as sensorlog:
-            sensorlog.write('{0} {1:6.1f} {2:6.1f} {3:6.1f} {4:3d}\n'.format(
+            sensorlog.write('{0} {1:.1f} {2:.1f} {3:.1f} {4:d}\n'.format(
                 datetime.datetime.now().strftime("%Y %m %d %H %M %S"),
                 sensor_ht_read_temp_c[sensor], sensor_ht_read_hum[sensor], sensor_ht_dewpt_c[sensor], sensor))
             logging.debug("[Write Sensor Log] Data appended to %s", sensor_ht_log_file_tmp)
@@ -139,7 +139,7 @@ def write_co2_sensor_log(sensor_co2_read_co2, sensor):
 
     try:
         with open(sensor_co2_log_file_tmp, "ab") as sensorlog:
-            sensorlog.write('{0} {1:6d} {2:3d}\n'.format(
+            sensorlog.write('{0} {1:d} {2:d}\n'.format(
                 datetime.datetime.now().strftime("%Y %m %d %H %M %S"),
                 sensor_co2_read_co2[sensor], sensor))
             logging.debug("[Write CO2 Sensor Log] Data appended to %s", sensor_co2_log_file_tmp)
@@ -168,7 +168,7 @@ def write_press_sensor_log(sensor_press_read_temp_c, sensor_press_read_press, se
 
     try:
         with open(sensor_press_log_file_tmp, "ab") as sensorlog:
-            sensorlog.write('{0} {1:6.1f} {2:7d} {3:8.1f} {4:3d}\n'.format(
+            sensorlog.write('{0} {1:.1f} {2:d} {3:.1f} {4:d}\n'.format(
                 datetime.datetime.now().strftime("%Y %m %d %H %M %S"),
                 sensor_press_read_temp_c[sensor], sensor_press_read_press[sensor], sensor_press_read_alt[sensor], sensor))
             logging.debug("[Write Sensor Log] Data appended to %s", sensor_press_log_file_tmp)
@@ -198,7 +198,7 @@ def write_relay_log(relayNumber, relaySeconds, sensor, gpio):
 
     try:
         with open(relay_log_file_tmp, "ab") as relaylog:
-            relaylog.write('{0} {1:3d} {2:4d} {3:4d} {4:9.2f}\n'.format(
+            relaylog.write('{0} {1:d} {2:d} {3:d} {4:.2f}\n'.format(
                 datetime.datetime.now().strftime("%Y %m %d %H %M %S"),
                 sensor, relayNumber, gpio, relaySeconds))
 
