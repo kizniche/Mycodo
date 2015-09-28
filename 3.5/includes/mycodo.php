@@ -3225,10 +3225,7 @@ if (isset($output_error)) {
             ?>
 
             <div style="padding: 10px 0 0 15px;">
-                <form action="?tab=data<?php
-                    if (isset($_GET['page'])) {
-                        echo '&page=' , $_GET['page'];
-                    } ?>" method="POST">
+                <form action="?tab=data<?php if (isset($_GET['page'])) echo '&page=' , $_GET['page']; ?>" method="POST">
                 <table>
                     <tr>
                         <td class="data-buttons-rightspace">
@@ -3435,7 +3432,11 @@ if (isset($output_error)) {
                                     $commits = str_replace($backup_commits[$i], $commit_replace, $commits);
                                 } 
                             }
-                            echo "<form>$commits</form>";
+                            echo '<form action="?tab=data';
+                            if (isset($_GET['page'])) echo '&page=' , $_GET['page'];
+                            echo ' method="POST">';
+                            echo $commits;
+                            echo '</form>';
 
                         }
 
