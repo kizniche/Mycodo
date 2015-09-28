@@ -27,10 +27,10 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 if [ ! -e "$1" ]; then         
-   echo "Directory does not exist!"         
+   echo "Directory does not exist"         
    exit 4  
 elif [ ! -d "$1" ]; then         
-    echo "Not a Directory"        
+    echo "Input not a directory"        
     exit 5
 fi
 
@@ -47,11 +47,11 @@ mkdir -p /var/Mycodo-backups
 mkdir -p /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT
 cp -a /var/www/mycodo/. /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT/
 
-printf "#### Restoring commit $1 ####\n"
-cd /var/www/mycodo/
 directory=$1
 commit=${directory:27}
-git reset --hard $1
+printf "#### Restoring commit $commit ####\n"
+cd /var/www/mycodo/
+git reset --hard $commit
 
 printf "#### Restoring databases from $DIR/config ####\n"
 rm -f /var/www/mycodo/config/*.db

@@ -40,6 +40,13 @@ case "${1:-''}" in
         mkdir -p /var/www/mycodo/camera-stills
         mkdir -p /var/www/mycodo/camera-timelapse
         
+        if [ ! -e /var/www/mycodo/log/update.log ]; then
+            touch /var/www/mycodo/log/update.log
+        fi
+        if [ ! -e /var/www/mycodo/log/restore.log ]; then
+            touch /var/www/mycodo/log/restore.log
+        fi
+
         if [ ! -h /var/www/mycodo/images ]; then
             ln -s /var/log/mycodo/images /var/www/mycodo/images
         fi
