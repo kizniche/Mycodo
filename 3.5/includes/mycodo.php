@@ -3289,9 +3289,10 @@ if (isset($output_error)) {
                         <td>
                         </td>
                         <td>
+                            <button type="submit" name="Backups" value="">All<br>Backups</button>
                         </td>
                         <td class="data-buttons-rightspace">
-                            <button type="submit" name="Restore" value="Restore Log">Restore<br>Log</button>
+                            <button type="submit" name="Restore" value="">Restore<br>Log</button>
                         </td>
                         <td>
                         </td>
@@ -3404,17 +3405,24 @@ if (isset($output_error)) {
                             }
                         }
 
-                        if(isset($_POST['Commits'])) {
+                        if(isset($_POST['Commits']) || isset($_POST['Backups'])) {
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 $commits = `git log --oneline | head -n $Lines`;
                             } else {
                                 $commits = `git log --oneline | head -n 30`;
                             }
-                            $current_commit = `git rev-parse --short HEAD`;
-                            $current_commit = mb_substr($current_commit, 0, 7);
 
-                            echo 'Current commit: ' . $current_commit . '<br> <br>If a backup exists for a certain commit, a "Restore" button will appear beside the commit ID.<br>Restoring a backup will create a backup of the current commit.<br>Restoring a backup will restore the databases from the restored backup.<br> <br>Commit  Description (The most recent commit is at the top)<br> <br>';
+                            echo 'Note: Restoring a backup will restore all files from the backup, including databases and logs.<br>When restoring a backup, a backup of the current system will also be created.<br>Deleting a backup will delete all files of that backup.';
+
+                            if (isset($_POST['Commits'])) {
+                                $current_commit = `git rev-parse --short HEAD`;
+                                $current_commit = mb_substr($current_commit, 0, 7);
+
+                                echo 'Current commit: ' . $current_commit . '<br> <br>Commit  Description (The commit of the currently-install system is at the top)<br> <br>';
+                            } else {
+                                echo '<br> <br>';
+                            }
 
                             $commits_list = explode("\n", $commits);
 
@@ -3429,36 +3437,28 @@ if (isset($output_error)) {
                                 $backup_dates[$i] = substr($dirs[$i], 27, 19);
                             }
 
-                            // print_r($dirs);
-                            // print_r($backup_dates);
-                            // print_r($backup_commits);
-
-                            echo '<form action="?tab=data';
-                            if (isset($_GET['page'])) echo '&page=' , $_GET['page'];
-                            echo '" method="POST">';
-                            
                             for ($j = 0; $j < count($commits_list); $j++) {
-                                echo "$commits_list[$j]<br>";
+                                if (isset($_POST['Commits'])) {
+                                    echo "$commits_list[$j]<br>";
+                                }
+
                                 for ($i = 0; $i < count($backup_commits); $i++) {
                                     if ($backup_commits[$i] == $var[$j]) {
-                                        echo "<button type=\"submit\" name=\"RestoreBackup\" value=\"$dirs[$i]\" title=\"Restore backup from $backup_dates[$i]\">Restore</button> commit $backup_commits[$i] from $backup_dates[$i]<br>";
+                                        echo "<table class=\"gitcommits\">
+                                            <tr>
+                                                <td>$backup_commits[$i]</td>
+                                                <td><form action=\"?tab=data";
+                                                if (isset($_GET['page'])) echo '&page=' , $_GET['page'];
+                                                echo "\" method=\"POST\" onsubmit=\"return confirm('Confirm that you would like to DELETE the $backup_dates[$i] backup of the system at commit $backup_commits[$i]. Note: This will delete all files of this backup. This cannot be undone. If you do not want to do this, click Cancel.')\"><button type=\"submit\" name=\"DeleteBackup\" value=\"$dirs[$i]\" title=\"Delete backup from $backup_dates[$i]\">Delete Backup</button></form></td>
+                                                <td><form action=\"?tab=data";
+                                                if (isset($_GET['page'])) echo '&page=' , $_GET['page'];
+                                                echo "\" method=\"POST\" onsubmit=\"return confirm('Confirm that you would like to begin the RESTORE process from the $backup_dates[$i] backup of the system at commit $backup_commits[$i]. If you do not want to do this, click Cancel.)\"><button type=\"submit\" name=\"RestoreBackup\" value=\"$dirs[$i]\" title=\"Restore backup from $backup_dates[$i]\">Restore Backup</button></form></td>
+                                                <td>Backup date: $backup_dates[$i]</td>
+                                            </tr>
+                                        </table>";
                                     }
                                 }
                             }
-
-                            echo '</form>';
-
-                            // for ($i = 0; $i < count($dirs); $i++) {
-                            //     echo "<br>$backup_commits[$i]<br>";
-
-                            //     if (in_array($backup_commits[i], $var)) {
-                            //         $commit_replace = "<br><button type=\"submit\" name=\"RestoreBackup\" value=\"$backup_dates[$i]\" title=\"Restore backup from $backup_dates[$i]\">Restore</button> Backup from $backup_dates[$i]<br>$backup_commits[$i]";
-                            //         $commits = str_replace($backup_commits[$i], $commit_replace, $commits);
-                            //     } 
-                            // }
-
-                            
-                            // echo $commits;
                         }
 
                         if(isset($_POST['Daemon'])) {

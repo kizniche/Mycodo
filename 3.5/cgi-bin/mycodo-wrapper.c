@@ -22,6 +22,9 @@ int main(int argc, char *argv[]) {
 			sprintf(cmd, "/../restore-mycodo.sh restore %s", argv[2]);
 			strncat(updateScript, cmd, sizeof(updateScript));
 			system(updateScript);
+		} else if (strcmp(argv[1], "delete") == 0 && (argc > 2)) {
+			sprintf(cmd, "rm -rf %s", argv[2]);
+			system(cmd);
 		} else if (strcmp(argv[1], "update") == 0) {
 			char updateScript[255];
 			strncpy(updateScript, argv[0], sizeof(updateScript));

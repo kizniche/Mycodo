@@ -49,6 +49,11 @@ if (isset($_POST['RestoreBackup'])) {
     $data_error = "The restore process has begun. You can follow the progress of the restore from the Restore Log under the Data tab.";
 }
 
+if (isset($_POST['DeleteBackup'])) {
+    $delete_directory = $_POST['DeleteBackup'];
+    exec("$install_path/cgi-bin/mycodo-wrapper delete $delete_directory &");
+}
+
 
 
 /*
