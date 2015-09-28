@@ -1138,7 +1138,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
                 shell_exec("$mycodo_client --sqlreload -1");
             }
 
-            $id = $sensor_t_id[$p];
+            $id = $sensor_ht_id[$p];
             $name = $_POST['sensorht' . $p . 'name'];
             $device = $_POST['sensorht' . $p . 'device'];
             $pin = $_POST['sensorht' . $p . 'pin'];
