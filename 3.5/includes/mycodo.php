@@ -3423,21 +3423,42 @@ if (isset($output_error)) {
                             }
 
                             $dirs = array_filter(glob('/var/Mycodo-backups/*'), 'is_dir');
+
                             for ($i = 0; $i < count($dirs); $i++) {
                                 $backup_commits[$i] = mb_substr($dirs[$i], -7);
                                 $backup_dates[$i] = substr($dirs[$i], 27, 19);
-
-                                if (in_array($backup_commits[i], $var)) {
-                                    $commit_replace = "<button type=\"submit\" name=\"RestoreBackup\" value=\"$backup_commits[$i]\" title=\"Restore backup from $backup_dates[$i] of commit $backup_commits[$i]\">Restore</button> $backup_commits[$i]";
-                                    $commits = str_replace($backup_commits[$i], $commit_replace, $commits);
-                                } 
                             }
+
+                            // print_r($dirs);
+                            // print_r($backup_dates);
+                            // print_r($backup_commits);
+
                             echo '<form action="?tab=data';
                             if (isset($_GET['page'])) echo '&page=' , $_GET['page'];
-                            echo ' method="POST">';
-                            echo $commits;
+                            echo '" method="POST">';
+                            
+                            for ($j = 0; $j < count($commits_list); $j++) {
+                                echo "$commits_list[$j]<br>";
+                                for ($i = 0; $i < count($backup_commits); $i++) {
+                                    if ($backup_commits[$i] == $var[$j]) {
+                                        echo "<button type=\"submit\" name=\"RestoreBackup\" value=\"$dirs[$i]\" title=\"Restore backup from $backup_dates[$i]\">Restore</button> commit $backup_commits[$i] from $backup_dates[$i]<br>";
+                                    }
+                                }
+                            }
+
                             echo '</form>';
 
+                            // for ($i = 0; $i < count($dirs); $i++) {
+                            //     echo "<br>$backup_commits[$i]<br>";
+
+                            //     if (in_array($backup_commits[i], $var)) {
+                            //         $commit_replace = "<br><button type=\"submit\" name=\"RestoreBackup\" value=\"$backup_dates[$i]\" title=\"Restore backup from $backup_dates[$i]\">Restore</button> Backup from $backup_dates[$i]<br>$backup_commits[$i]";
+                            //         $commits = str_replace($backup_commits[$i], $commit_replace, $commits);
+                            //     } 
+                            // }
+
+                            
+                            // echo $commits;
                         }
 
                         if(isset($_POST['Daemon'])) {

@@ -26,25 +26,16 @@ if [ "$EUID" -ne 0 ]; then
     exit
 fi
 
-if [ ${#1} -ne 7 ]; then
-    printf "Input is not a valid 7-character commit ID\n"
-    exit
-fi
-
-if [[ "$1" =~ [^a-z0-9\ ] ]]; then
-  printf "Input is not a valid 7-character commit ID\n"
-  exit
-fi
-
-DIR=`find /var/Mycodo-backups -type d -name "*$1"`
-
-if [ -z "$DIR" ]; then
-    printf "There is not a valid backup with that commit ID\n"
-    exit
+if [ ! -e "$1" ]; then         
+   echo "Directory does not exist!"         
+   exit 4  
+elif [ ! -d "$1" ]; then         
+    echo "Not a Directory"        
+    exit 5
 fi
 
 NOW=$(date +"%m-%d-%Y %H:%M:%S")
-printf "#### Restore of backup initiated $NOW ####"
+printf "#### Restore of backup initiated $NOW ####\n"
 
 printf "#### Stopping Daemon ####\n"
 /etc/init.d/mycodo stop
@@ -54,7 +45,7 @@ CURCOMMIT=$(git rev-parse --short HEAD)
 printf "#### Creating backup /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT ####\n"
 mkdir -p /var/Mycodo-backups
 mkdir -p /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT
-cp -a $DIR/../../Mycodo/3.5/. /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT/
+cp -a /var/www/mycodo/. /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT/
 
 printf "#### Restoring commit $1 ####\n"
 cd /var/www/mycodo/
@@ -62,9 +53,9 @@ git reset --hard $1
 
 printf "#### Restoring databases from $DIR/config ####\n"
 rm -f /var/www/mycodo/config/*
-cp $DIR/config/*.db /var/www/mycodo/config/
+cp $1/config/*.db /var/www/mycodo/config/
 
 printf "#### Starting Daemon ####\n"
 /etc/init.d/mycodo start
 
-printf "#### Restore Complete ####"
+printf "#### Restore Complete ####\n"
