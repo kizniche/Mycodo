@@ -3431,7 +3431,7 @@ if (isset($output_error)) {
                                 $backup_dates[$i] = substr($dirs[$i], 27, 19);
 
                                 if (in_array($backup_commits[i], $var)) {
-                                    $commit_replace = "<button type=\"submit\" name=\"RestoreBackup\" value=\"$backup_commits[$i]\" title=\"Backed up on $backup_dates[$i]\">Restore</button> $backup_commits[$i]";
+                                    $commit_replace = "<button type=\"submit\" name=\"RestoreBackup\" value=\"$backup_commits[$i]\" title=\"Restore backup from $backup_dates[$i] of commit $backup_commits[$i]\">Restore</button> $backup_commits[$i]";
                                     $commits = str_replace($backup_commits[$i], $commit_replace, $commits);
                                 } 
                             }

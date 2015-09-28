@@ -46,6 +46,9 @@ fi
 NOW=$(date +"%m-%d-%Y %H:%M:%S")
 printf "#### Restore of backup initiated $NOW ####"
 
+printf "#### Stopping Daemon ####\n"
+/etc/init.d/mycodo stop
+
 NOW=$(date +"%Y-%m-%d_%H-%M-%S")
 CURCOMMIT=$(git rev-parse --short HEAD)
 printf "#### Creating backup /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT ####\n"
@@ -60,5 +63,8 @@ git reset --hard $1
 printf "#### Restoring databases from $DIR/config ####\n"
 rm -f /var/www/mycodo/config/*
 cp $DIR/config/*.db /var/www/mycodo/config/
+
+printf "#### Starting Daemon ####\n"
+/etc/init.d/mycodo start
 
 printf "#### Restore Complete ####"
