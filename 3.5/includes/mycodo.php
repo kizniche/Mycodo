@@ -3413,15 +3413,25 @@ if (isset($output_error)) {
                             } else {
                                 $commits = `git log --oneline | head -n 30`;
                             }
-                            $current_commit = `git rev-parse HEAD`;
+                            $current_commit = `git rev-parse --short HEAD`;
                             $current_commit = mb_substr($current_commit, 0, 7);
 
                             $commit_replace = "<span style=\"font-weight: bold; color: red;\">$current_commit</span>";
 
-                            echo 'current commit: ' . $commit_replace . '<br> <br>Commit  Description<br> <br>';
+                            echo 'Current commit: ' . $commit_replace . '<br> <br>Commit  Description (The most recent commit is at the top)<br> <br>';
 
                             $commits = str_replace($current_commit, $commit_replace, $commits);
-                            echo $commits . '<br> <br>';
+                            echo $commits;
+
+                            $dirs = array_filter(glob('/home/kiz/Mycodo-backups/*'), 'is_dir');
+                            for ($i = 0; $i < count($dirs); $i++) {
+                                $dirs[$i] = mb_substr($dirs[$i], -7);
+                            }
+                            print_r($dirs);
+
+                            if (in_array("8-53-25", $dirs)) {
+                                echo "test1";
+                            }
                         }
 
                         if(isset($_POST['Daemon'])) {
