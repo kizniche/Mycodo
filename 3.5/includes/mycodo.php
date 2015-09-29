@@ -3434,7 +3434,7 @@ if (isset($output_error)) {
                             }
 
                             for ($j = 0; $j < count($commits_list); $j++) {
-                                echo "<div style=\"padding: 0.5em 0 0.1em 0;\">$commits_list[$j]</div>";
+                                echo "<div style=\"padding: 0.7em 0 0 0;\">$commits_list[$j]</div>";
 
                                 for ($i = 0; $i < count($backup_commits); $i++) {
                                     if ($backup_commits[$i] == $var[$j]) {
@@ -3466,8 +3466,7 @@ if (isset($output_error)) {
                             }
 
                             for ($i = 0; $i < count($dirs); $i++) {
-                                echo "
-                                <table class=\"gitcommits\">
+                                echo "<table class=\"gitcommits\">
                                     <tr>
                                         <td>$backup_commits[$i]</td>
                                         <td><form action=\"?tab=data";
@@ -3478,8 +3477,7 @@ if (isset($output_error)) {
                                         echo "\" method=\"POST\" onsubmit=\"return confirm('Confirm that you would like to begin the RESTORE process from the $backup_dates[$i] backup of the system at commit $backup_commits[$i]. If you do not want to do this, click Cancel.)\"><button type=\"submit\" name=\"RestoreBackup\" value=\"$dirs[$i]\" title=\"Restore backup from $backup_dates[$i]\">Restore Backup</button></form></td>
                                         <td>Backup date: $backup_dates[$i]</td>
                                     </tr>
-                                </table>
-                                ";
+                                </table>";
                             }
                         }
 
