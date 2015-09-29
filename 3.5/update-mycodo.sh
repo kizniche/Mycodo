@@ -96,4 +96,7 @@ case "${1:-''}" in
             exit 0
         fi
     ;;
+    'fetchorigin')
+        git fetch origin
+    ;;
 esac

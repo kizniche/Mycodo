@@ -15,13 +15,6 @@ int main(int argc, char *argv[]) {
 			(strcmp(argv[1], "restart") == 0) || (strcmp(argv[1], "debug") == 0)) {
 			sprintf(cmd, "/etc/init.d/mycodo %s", argv[1]);
 			system(cmd);
-		} else if (strcmp(argv[1], "fetchorigin") == 0) {
-			char updateScript[255];
-			strncpy(updateScript, argv[0], sizeof(updateScript));
-			dirname(updateScript);
-			sprintf(cmd, "/../fetchorigin-mycodo.sh");
-			strncat(updateScript, cmd, sizeof(updateScript));
-			system(updateScript);
 		} else if (strcmp(argv[1], "restore") == 0 && (argc > 2)) {
 			char updateScript[255];
 			strncpy(updateScript, argv[0], sizeof(updateScript));
@@ -47,6 +40,12 @@ int main(int argc, char *argv[]) {
 			if((status = system(updateScript)) != -1) {
                 return WEXITSTATUS(status);
         	}
+		} else if (strcmp(argv[1], "fetchorigin") == 0) {
+			char updateScript[255];
+			strncpy(updateScript, argv[0], sizeof(updateScript));
+			dirname(updateScript);
+			strncat(updateScript, "/../update-mycodo.sh fetchorigin", sizeof(updateScript));
+			system(updateScript);
 		}
 	} else {
 		printf("mycodo-wrapper: A wrapper to allow the mycodo web interface\n");
