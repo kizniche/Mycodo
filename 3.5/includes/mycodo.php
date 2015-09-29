@@ -3418,7 +3418,7 @@ if (isset($output_error)) {
                             $current_commit = `git rev-parse --short HEAD`;
                             $current_commit = mb_substr($current_commit, 0, 7);
 
-                            echo '<br> <br>Current commit: ' . $current_commit . ' (the current commit is colored red in the list below)<br> <br><strong>Commit  Description</strong><br>';
+                            echo '<br> <br>Current commit: ' . $current_commit . ' (the current commit is colored red in the list below)<br> <br><strong><u>Commit  Description</u></strong><br>';
 
                             exec("$install_path/cgi-bin/mycodo-wrapper fetchorigin");
                             $commits_ahead = `git log --oneline master...origin/master`;
