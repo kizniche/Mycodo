@@ -57,6 +57,7 @@ printf "#### Restoring all files from $2 ####\n"
 rm -rf /var/www/mycodo/*
 cp -R $2/* /var/www/mycodo/
 cp -f /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT/log/restore.log /var/www/mycodo/log/
+cp -f /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT/log/update.log /var/www/mycodo/log/
 
 printf "#### Starting Daemon ####\n"
 /etc/init.d/mycodo start
