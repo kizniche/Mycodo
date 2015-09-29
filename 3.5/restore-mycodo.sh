@@ -35,7 +35,7 @@ elif [ ! -d $2 ]; then
 fi
 
 NOW=$(date +"%m-%d-%Y %H:%M:%S")
-printf "#### Restore of backup initiated $NOW ####\n"
+printf "#### Restore of backup $2 initiated $NOW ####\n"
 
 printf "#### Stopping Daemon ####\n"
 /etc/init.d/mycodo stop
@@ -53,9 +53,10 @@ printf "#### Resetting to commit $commit ####\n"
 cd /var/www/mycodo/
 git reset --hard $commit
 
-printf "#### Restoring all files from backup ####\n"
+printf "#### Restoring all files from $2 ####\n"
 rm -rf /var/www/mycodo/*
 cp -R $2/* /var/www/mycodo/
+cp -f /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT/log/restore.log /var/www/mycodo/log/
 
 printf "#### Starting Daemon ####\n"
 /etc/init.d/mycodo start
