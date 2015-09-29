@@ -3417,13 +3417,11 @@ if (isset($output_error)) {
 
                             $current_commit = `git rev-parse --short HEAD`;
                             $current_commit = mb_substr($current_commit, 0, 7);
-
                             echo '<br> <br>Current commit: ' . $current_commit . ' (newest commits are at the top, the current commit is colored red)<br> <br><strong><u>Commit</u>  <u>Description</u></strong><br>';
 
                             exec("$install_path/cgi-bin/mycodo-wrapper fetchorigin");
                             $commits_ahead = `git log --oneline master...origin/master`;
                             $commits_ahead = explode("\n", $commits_ahead);
-
                             for ($i = 0; $i < count($commits_ahead); $i++) {
                                 if ($commits_ahead[$i] != '') {
                                     echo "<div style=\"padding: 0.7em 0 0 0;\">$commits_ahead[$i]</div>";
@@ -3431,13 +3429,11 @@ if (isset($output_error)) {
                             }
 
                             $commits_list = explode("\n", $commits);
-
                             foreach ($commits_list as $n => $line) {
                                 $var[$n] = substr($line, 0, strpos($line, ' '));
                             }
 
                             $dirs = array_filter(glob('/var/Mycodo-backups/*'), 'is_dir');
-
                             for ($i = 0; $i < count($dirs); $i++) {
                                 $backup_commits[$i] = mb_substr($dirs[$i], -7);
                                 $backup_dates[$i] = substr($dirs[$i], 27, 19);
