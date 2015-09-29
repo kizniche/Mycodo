@@ -3418,7 +3418,17 @@ if (isset($output_error)) {
                             $current_commit = `git rev-parse --short HEAD`;
                             $current_commit = mb_substr($current_commit, 0, 7);
 
-                            echo 'Current commit: ' . $current_commit . '<br> <br>Commit  Description (The commit of the currently-install system is at the top)<br> <br>';
+                            echo '<br> <br>Current commit: ' . $current_commit . ' (the current commit is colored red in the list below)<br> <br><strong>Commit  Description</strong><br>';
+
+                            exec("$install_path/cgi-bin/mycodo-wrapper fetchorigin");
+                            $commits_ahead = `git log --oneline master...origin/master`;
+                            $commits_ahead = explode("\n", $commits_ahead);
+
+                            for ($i = 0; $i < count($commits_ahead); $i++) {
+                                if ($commits_ahead[$i] != '') {
+                                    echo "<div class=\"gitcommits\">$commits_ahead[$i]</div>";
+                                }
+                            }
 
                             $commits_list = explode("\n", $commits);
 
@@ -3434,7 +3444,11 @@ if (isset($output_error)) {
                             }
 
                             for ($j = 0; $j < count($commits_list); $j++) {
-                                echo "<div style=\"padding: 0.7em 0 0 0;\">$commits_list[$j]</div>";
+                                if ($var[$j] == $current_commit) {
+                                    echo "<div style=\"padding: 0.7em 0 0 0; color: red;\">$commits_list[$j]</div>";
+                                } else {
+                                    echo "<div style=\"padding: 0.7em 0 0 0;\">$commits_list[$j]</div>";
+                                }
 
                                 for ($i = 0; $i < count($backup_commits); $i++) {
                                     if ($backup_commits[$i] == $var[$j]) {
