@@ -2616,12 +2616,18 @@ if (isset($_POST['ChangeNotify'])) {
     shell_exec("$mycodo_client --sqlreload -1");
 }
 
-// Change interface settings
-if (isset($_POST['ChangeInterface'])) {
-    $stmt = $db->prepare("UPDATE Misc SET Refresh_Time=:refreshtime, Login_Message=:loginmessage, Enable_Max_Amps=:enablemaxamps, Max_Amps=:maxamps");
-    $stmt->bindValue(':loginmessage', $_POST['login_message'], SQLITE3_TEXT);
+// Change system settings
+if (isset($_POST['ChangeSystem'])) {
+    $stmt = $db->prepare("UPDATE Misc SET Refresh_Time=:refreshtime, Enable_Max_Amps=:enablemaxamps, Max_Amps=:maxamps");
     $stmt->bindValue(':refreshtime', (int)$_POST['refresh_time'], SQLITE3_INTEGER);
     $stmt->bindValue(':enablemaxamps', (int)$_POST['enable_max_amps'], SQLITE3_INTEGER);
     $stmt->bindValue(':maxamps', (float)$_POST['max_amps'], SQLITE3_FLOAT);
+    $stmt->execute();
+}
+
+// Change interface settings
+if (isset($_POST['ChangeInterface'])) {
+    $stmt = $db->prepare("UPDATE Misc SET Login_Message=:loginmessage");
+    $stmt->bindValue(':loginmessage', $_POST['login_message'], SQLITE3_TEXT);
     $stmt->execute();
 }

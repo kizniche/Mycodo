@@ -3567,12 +3567,12 @@ if (isset($output_error)) {
 
             <div style="padding: 0 0 0 1em;">
                 <table>
-                    <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
                             Update
                         </td>
                     </tr>
+
                     <form action="?tab=settings" method="post">
                         <tr>
                         <td class="setting-text">
@@ -3589,6 +3589,7 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     </form>
+
                     <form action="?tab=settings" method="post" onsubmit="return confirm('Confirm that you would like to begin the update process now. If not, click Cancel.')">
                     <tr>
                         <td class="setting-text">
@@ -3599,6 +3600,7 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     </form>
+
                     <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
@@ -3630,6 +3632,7 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     </form>
+
                     <form action="?tab=settings" method="post" onsubmit="return confirm('Confirm that you would like to run the daemon in debug mode. If not, click Cancel.')">
                     <tr>
                         <td class="setting-text">
@@ -3652,7 +3655,7 @@ if (isset($output_error)) {
                             Prevent exceeding the maximum amperage draw
                         </td>
                         <td class="setting-value">
-                            <input type="hidden" name="debug" value="0" /><input type="checkbox" id="debug" name="enable_max_amps" value="1"<?php if ($enable_max_amps == 1) echo ' checked'; ?> title="Prevent a combination of relays from turning on that surpass the maxmum amperage limit (set below)."/>
+                            <input type="hidden" name="enable_max_amps" value="0" /><input type="checkbox" name="enable_max_amps" value="1"<?php if ($enable_max_amps == 1) echo ' checked'; ?> title="Prevent a combination of relays from turning on that surpass the maxmum amperage limit (set below)."/>
                         </td>
                     </tr>
                     <tr>
@@ -3673,7 +3676,7 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td class="setting-save">
-                            <button name="ChangeInterface" type="submit" value="">Save</button>
+                            <button name="ChangeSystem" type="submit" value="">Save</button>
                         </td>
                     </tr>
                     </form>
@@ -3697,7 +3700,7 @@ if (isset($output_error)) {
                             Display Debugging Information
                         </td>
                         <td class="setting-value">
-                            <input type="hidden" name="debug" value="0" /><input type="checkbox" id="debug" name="debug" value="1"<?php if (isset($_COOKIE['debug'])) if ($_COOKIE['debug'] == True) echo ' checked'; ?> title="Display debugging information at the bottom of every page."/>
+                            <input type="hidden" name="debug" value="0" /><input type="checkbox" name="debug" value="1"<?php if (isset($_COOKIE['debug'])) if ($_COOKIE['debug'] == True) echo ' checked'; ?> title="Display debugging information at the bottom of every page."/>
                         </td>
                     </tr>
                     <tr>
@@ -4023,6 +4026,7 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     </form>
+
                     <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
@@ -4059,6 +4063,7 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     </form>
+
                     <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
@@ -4087,6 +4092,7 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     </form>
+
                     <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">

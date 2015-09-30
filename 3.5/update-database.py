@@ -904,7 +904,7 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'Misc', 'Max_Amps', 'REAL')
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("INSERT OR IGNORE INTO Misc VALUES('0', '', 0, 300, 1, 15)")
+    cur.execute("INSERT OR IGNORE INTO Misc VALUES('0', 0, '', 300, 1, 15)")
     conn.commit()
     cur.close()
     ModNullValue(sql_database_mycodo, 'Misc', 'Dismiss_Notification', 0)
