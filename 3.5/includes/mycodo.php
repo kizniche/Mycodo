@@ -3417,7 +3417,7 @@ if (isset($output_error)) {
 
                             $current_commit = `git rev-parse --short HEAD`;
                             $current_commit = mb_substr($current_commit, 0, 7);
-                            echo '<br> <br>Current commit: ' . $current_commit . ' (newest commits are at the top, the current commit is colored red)<br> <br><strong><u>Commit</u>  <u>Description</u></strong><br>';
+                            echo '<br> <br>Current commit: ' . $current_commit . ' (newest commits are at the top, the system is currently at the commit <span style="color:red;">colored red</span>)<br> <br><strong><u>Commit</u>  <u>Description</u></strong><br>';
 
                             exec("$install_path/cgi-bin/mycodo-wrapper fetchorigin");
                             $commits_ahead = `git log --oneline master...origin/master`;
@@ -3479,19 +3479,24 @@ if (isset($output_error)) {
                                 $backup_dates[$i] = substr($dirs[$i], 27, 19);
                             }
 
-                            for ($i = 0; $i < count($dirs); $i++) {
-                                echo "<table class=\"gitcommits\">
-                                    <tr>
-                                        <td>$backup_commits[$i]</td>
-                                        <td><form action=\"?tab=data";
-                                        if (isset($_GET['page'])) echo '&page=' , $_GET['page'];
-                                        echo "\" method=\"POST\" onsubmit=\"return confirm('Confirm that you would like to DELETE the $backup_dates[$i] backup of the system at commit $backup_commits[$i]. Note: This will delete all files of this backup. This cannot be undone. If you do not want to do this, click Cancel.')\"><button type=\"submit\" name=\"DeleteBackup\" value=\"$dirs[$i]\" title=\"Delete backup from $backup_dates[$i]\">Delete Backup</button></form></td>
-                                        <td><form action=\"?tab=data";
-                                        if (isset($_GET['page'])) echo '&page=' , $_GET['page'];
-                                        echo "\" method=\"POST\" onsubmit=\"return confirm('Confirm that you would like to begin the RESTORE process from the $backup_dates[$i] backup of the system at commit $backup_commits[$i]. If you do not want to do this, click Cancel.)\"><button type=\"submit\" name=\"RestoreBackup\" value=\"$dirs[$i]\" title=\"Restore backup from $backup_dates[$i]\">Restore Backup</button></form></td>
-                                        <td>Backup date: $backup_dates[$i]</td>
-                                    </tr>
-                                </table>";
+                            if (count($dirs) == 0) {
+                                echo "<br> <br>0 backups found";
+                            } else {
+                                for ($i = 0; $i < count($dirs); $i++) {
+                                    
+                                    echo "<table class=\"gitcommits\">
+                                        <tr>
+                                            <td>$backup_commits[$i]</td>
+                                            <td><form action=\"?tab=data";
+                                            if (isset($_GET['page'])) echo '&page=' , $_GET['page'];
+                                            echo "\" method=\"POST\" onsubmit=\"return confirm('Confirm that you would like to DELETE the $backup_dates[$i] backup of the system at commit $backup_commits[$i]. Note: This will delete all files of this backup. This cannot be undone. If you do not want to do this, click Cancel.')\"><button type=\"submit\" name=\"DeleteBackup\" value=\"$dirs[$i]\" title=\"Delete backup from $backup_dates[$i]\">Delete Backup</button></form></td>
+                                            <td><form action=\"?tab=data";
+                                            if (isset($_GET['page'])) echo '&page=' , $_GET['page'];
+                                            echo "\" method=\"POST\" onsubmit=\"return confirm('Confirm that you would like to begin the RESTORE process from the $backup_dates[$i] backup of the system at commit $backup_commits[$i]. If you do not want to do this, click Cancel.)\"><button type=\"submit\" name=\"RestoreBackup\" value=\"$dirs[$i]\" title=\"Restore backup from $backup_dates[$i]\">Restore Backup</button></form></td>
+                                            <td>Backup date: $backup_dates[$i]</td>
+                                        </tr>
+                                    </table>";
+                                }
                             }
                         }
 
