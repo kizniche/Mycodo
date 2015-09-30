@@ -3229,7 +3229,7 @@ if (isset($output_error)) {
                 <table>
                     <tr>
                         <td class="data-buttons-rightspace">
-                            Lines: <input style="height: 2.5em;" type="text" maxlength=8 size=8 name="Lines" />
+                            Lines: <input style="height: 2.5em;" type="text" maxlength=8 size=8 name="Lines" value="<?php if (isset($_POST['Lines'])) echo $_POST['Lines']; ?>"/>
                         </td>
                         <td>
                             <button type="submit" name="TSensor" value="T">T<br>Sensor</button>
@@ -3434,9 +3434,11 @@ if (isset($output_error)) {
                             }
 
                             $dirs = array_filter(glob('/var/Mycodo-backups/*'), 'is_dir');
-                            for ($i = 0; $i < count($dirs); $i++) {
-                                $backup_commits[$i] = mb_substr($dirs[$i], -7);
-                                $backup_dates[$i] = substr($dirs[$i], 27, 19);
+                            if (count($dirs) != 0) {
+                                for ($i = 0; $i < count($dirs); $i++) {
+                                    $backup_commits[$i] = mb_substr($dirs[$i], -7);
+                                    $backup_dates[$i] = substr($dirs[$i], 27, 19);
+                                }
                             }
 
                             for ($j = 0; $j < count($commits_list); $j++) {
@@ -3446,20 +3448,22 @@ if (isset($output_error)) {
                                     echo "<div style=\"padding: 0.7em 0 0 0;\">$commits_list[$j]</div>";
                                 }
 
-                                for ($i = 0; $i < count($backup_commits); $i++) {
-                                    if ($backup_commits[$i] == $var[$j]) {
-                                        echo "<table class=\"gitcommits\">
-                                            <tr>
-                                                <td>$backup_commits[$i]</td>
-                                                <td><form action=\"?tab=data";
-                                                if (isset($_GET['page'])) echo '&page=' , $_GET['page'];
-                                                echo "\" method=\"POST\" onsubmit=\"return confirm('Confirm that you would like to DELETE the $backup_dates[$i] backup of the system at commit $backup_commits[$i]. Note: This will delete all files of this backup. This cannot be undone. If you do not want to do this, click Cancel.')\"><button type=\"submit\" name=\"DeleteBackup\" value=\"$dirs[$i]\" title=\"Delete backup from $backup_dates[$i]\">Delete Backup</button></form></td>
-                                                <td><form action=\"?tab=data";
-                                                if (isset($_GET['page'])) echo '&page=' , $_GET['page'];
-                                                echo "\" method=\"POST\" onsubmit=\"return confirm('Confirm that you would like to begin the RESTORE process from the $backup_dates[$i] backup of the system at commit $backup_commits[$i]. If you do not want to do this, click Cancel.)\"><button type=\"submit\" name=\"RestoreBackup\" value=\"$dirs[$i]\" title=\"Restore backup from $backup_dates[$i]\">Restore Backup</button></form></td>
-                                                <td>Backup date: $backup_dates[$i]</td>
-                                            </tr>
-                                        </table>";
+                                if (isset($backup_commits) && count($backup_commits) != 0) {
+                                    for ($i = 0; $i < count($backup_commits); $i++) {
+                                        if ($backup_commits[$i] == $var[$j]) {
+                                            echo "<table class=\"gitcommits\">
+                                                <tr>
+                                                    <td>$backup_commits[$i]</td>
+                                                    <td><form action=\"?tab=data";
+                                                    if (isset($_GET['page'])) echo '&page=' , $_GET['page'];
+                                                    echo "\" method=\"POST\" onsubmit=\"return confirm('Confirm that you would like to DELETE the $backup_dates[$i] backup of the system at commit $backup_commits[$i]. Note: This will delete all files of this backup. This cannot be undone. If you do not want to do this, click Cancel.')\"><button type=\"submit\" name=\"DeleteBackup\" value=\"$dirs[$i]\" title=\"Delete backup from $backup_dates[$i]\">Delete Backup</button></form></td>
+                                                    <td><form action=\"?tab=data";
+                                                    if (isset($_GET['page'])) echo '&page=' , $_GET['page'];
+                                                    echo "\" method=\"POST\" onsubmit=\"return confirm('Confirm that you would like to begin the RESTORE process from the $backup_dates[$i] backup of the system at commit $backup_commits[$i]. If you do not want to do this, click Cancel.)\"><button type=\"submit\" name=\"RestoreBackup\" value=\"$dirs[$i]\" title=\"Restore backup from $backup_dates[$i]\">Restore Backup</button></form></td>
+                                                    <td>Backup date: $backup_dates[$i]</td>
+                                                </tr>
+                                            </table>";
+                                        }
                                     }
                                 }
                             }
