@@ -1248,6 +1248,11 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
 
             if int(time.time()) > timerTemp:
 
+                if pid_ht_temp_relay_high[sensor]:
+                    relay_onoff(int(pid_ht_temp_relay_high[sensor]), 'off')
+                if pid_ht_temp_relay_low[sensor]:
+                    relay_onoff(int(pid_ht_temp_relay_low[sensor]), 'off')
+
                 logging.debug("[PID HT-Temperature-%s] Reading temperature...", sensor+1)
                 if read_ht_sensor(sensor) == 1:
 
@@ -1348,6 +1353,11 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
             sensor_ht_activated[sensor] == 1):
 
             if int(time.time()) > timerHum:
+
+                if pid_ht_hum_relay_high[sensor]:
+                    relay_onoff(int(pid_ht_hum_relay_high[sensor]), 'off')
+                if pid_ht_hum_relay_low[sensor]:
+                    relay_onoff(int(pid_ht_hum_relay_low[sensor]), 'off')
 
                 logging.debug("[PID HT-Humidity-%s] Reading humidity...", sensor+1)
                 if read_ht_sensor(sensor) == 1:
@@ -1450,6 +1460,11 @@ def co2_monitor(ThreadName, sensor):
 
             if int(time.time()) > timerCO2:
 
+                if pid_co2_relay_high[sensor]:
+                    relay_onoff(int(pid_co2_relay_high[sensor]), 'off')
+                if pid_co2_relay_low[sensor]:
+                    relay_onoff(int(pid_co2_relay_low[sensor]), 'off')
+
                 logging.debug("[PID CO2-%s] Reading temperature...", sensor+1)
                 if read_co2_sensor(sensor) == 1:
 
@@ -1551,6 +1566,11 @@ def press_sensor_temperature_monitor(ThreadName, sensor):
 
             if int(time.time()) > timerTemp:
 
+                if pid_press_temp_relay_high[sensor]:
+                    relay_onoff(int(pid_press_temp_relay_high[sensor]), 'off')
+                if pid_press_temp_relay_low[sensor]:
+                    relay_onoff(int(pid_press_temp_relay_low[sensor]), 'off')
+
                 logging.debug("[PID Press-Temperature-%s] Reading temperature...", sensor+1)
                 if read_press_sensor(sensor) == 1:
 
@@ -1646,6 +1666,11 @@ def press_sensor_pressure_monitor(ThreadName, sensor):
             sensor_press_activated[sensor] == 1):
 
             if int(time.time()) > timerPress:
+
+                if pid_press_press_relay_high[sensor]:
+                    relay_onoff(int(pid_press_press_relay_high[sensor]), 'off')
+                if pid_press_press_relay_low[sensor]:
+                    relay_onoff(int(pid_press_press_relay_low[sensor]), 'off')
 
                 logging.debug("[PID Press-Pressure-%s] Reading pressure...", sensor+1)
                 if read_press_sensor(sensor) == 1:
