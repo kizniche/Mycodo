@@ -484,6 +484,7 @@ def daemon(output, log):
 
         # Wait for and pause the daemon while the SQL database is reloaded
         if pause_daemon:
+            logging.debug("[Daemon] Daemon Paused")
             pause_daemon_confirm = 0
             while pause_daemon and client_que != 'TerminateServer':
                 time.sleep(0.1)
@@ -2288,9 +2289,10 @@ def read_sql():
     global pause_daemon_confirm
 
     pause_daemon = 1
-    if pause_daemon_confirm == -1:
-        while pause_daemon_confirm == -1:
-            time.sleep(0.1)
+    while pause_daemon_confirm == -1:
+        time.sleep(0.1)
+
+    time.sleep(1)
 
     # Temperature sensor globals
     global sensor_t_id
@@ -3567,6 +3569,15 @@ def gpio_change(relay, State):
         GPIO.output(relay_pin[relay-1], State)
 
 
+# Turn relay off without checks
+def relay_off(relay):
+    logging.warning("[Relay Off] Relay %s (%s) turning off.",
+        relay, relay_name[relay-1])
+    if relay_trigger[relay-1] == 0:
+        GPIO.output(relay_pin[relay-1], 1)
+    else:
+        GPIO.output(relay_pin[relay-1], 0)
+
 # Turn relay on or off (accounts for trigger)
 def relay_onoff(relay, state):
     if (relay_trigger[relay-1] == 1 and state == 'on'):
@@ -3754,76 +3765,82 @@ def relay_on_duration(relay, seconds, sensor):
     # Turn relay on
     GPIO.output(relay_pin[relay-1], relay_trigger[relay-1])
 
-    wrl = threading.Thread(target = mycodoLog.write_relay_log,
-        args = (relay, seconds, sensor, relay_pin[relay-1],))
-    wrl.start()
+    try:
+        wrl = threading.Thread(target = mycodoLog.write_relay_log,
+            args = (relay, seconds, sensor, relay_pin[relay-1],))
+        wrl.start()
 
-    for i in range(0, len(conditional_relay_id)):
-        if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'on':
-            if conditional_relay_ifduration[i] == seconds:
-                if conditional_relay_sel_relay[i]:
-                    if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
-                        rod = threading.Thread(target = relay_on_duration,
-                            args = (conditional_relay_dorelay[i], conditional_relay_doduration[i], sensor,))
-                        rod.start()
-                    elif (conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] == 0) or conditional_relay_doaction[i] == 'off':
+        for i in range(0, len(conditional_relay_id)):
+            if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'on':
+                if conditional_relay_ifduration[i] == seconds:
+                    if conditional_relay_sel_relay[i]:
+                        if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
+                            rod = threading.Thread(target = relay_on_duration,
+                                args = (conditional_relay_dorelay[i], conditional_relay_doduration[i], sensor,))
+                            rod.start()
+                        elif (conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] == 0) or conditional_relay_doaction[i] == 'off':
+                            relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
+
+                    if conditional_relay_sel_command[i]:
+                        p = subprocess.Popen(conditional_relay_do_command[i], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                        output, errors = p.communicate()
+                        logging.debug("[Conditional %s] Execute command: %s Command output: %s Command errors: %s", (i+1), conditional_relay_do_command[i], output, errors)
+
+                    if conditional_relay_sel_notify[i]:
+                        if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
+                            message = "Relay Conditional %s (%s): Relay %s turned %s for %s seconds." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
+                        else:
+                            message = "Relay Conditional %s (%s): Relay %s turned %s." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i])
+                        email(conditional_relay_do_notify[i], message)
+
+                elif conditional_relay_ifduration[i] == 0:
+                    if conditional_relay_sel_relay[i]:
                         relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
 
-                if conditional_relay_sel_command[i]:
-                    p = subprocess.Popen(conditional_relay_do_command[i], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    output, errors = p.communicate()
-                    logging.debug("[Conditional %s] Execute command: %s Command output: %s Command errors: %s", (i+1), conditional_relay_do_command[i], output, errors)
+                    if conditional_relay_sel_command[i]:
+                        p = subprocess.Popen(conditional_relay_do_command[i], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                        output, errors = p.communicate()
+                        logging.debug("[Conditional %s] Execute command: %s Command output: %s Command errors: %s", (i+1), conditional_relay_do_command[i], output, errors)
 
-                if conditional_relay_sel_notify[i]:
-                    if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
-                        message = "Relay Conditional %s (%s): Relay %s turned %s for %s seconds." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
-                    else:
-                        message = "Relay Conditional %s (%s): Relay %s turned %s." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i])
-                    email(conditional_relay_do_notify[i], message)
+                    if conditional_relay_sel_notify[i]:
+                        if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
+                            message = "Relay Conditional %s (%s): Relay %s turned %s for %s seconds." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
+                        else:
+                            message = "Relay Conditional %s (%s): Relay %s turned %s." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i])
+                        email(conditional_relay_do_notify[i], message)
 
-            elif conditional_relay_ifduration[i] == 0:
-                if conditional_relay_sel_relay[i]:
-                    relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
+        if pause_daemon:
+            logging.warning("[Relay Duration] SQL database reloaded while Relay %s (%s) is in a timed on duration. Turning off and cancelling current timer.",
+                relay, relay_name[relay-1])
+            relay_off(relay)
 
-                if conditional_relay_sel_command[i]:
-                    p = subprocess.Popen(conditional_relay_do_command[i], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    output, errors = p.communicate()
-                    logging.debug("[Conditional %s] Execute command: %s Command output: %s Command errors: %s", (i+1), conditional_relay_do_command[i], output, errors)
-
-                if conditional_relay_sel_notify[i]:
-                    if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
-                        message = "Relay Conditional %s (%s): Relay %s turned %s for %s seconds." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
-                    else:
-                        message = "Relay Conditional %s (%s): Relay %s turned %s." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i])
-                    email(conditional_relay_do_notify[i], message)
-
-    while (client_que != 'TerminateServer' and on_duration_timer[relay-1] > int(time.time())):
-        if (relay_trigger[relay-1] == 0 and GPIO.input(relay_pin[relay-1]) == 1) or (
-            relay_trigger[relay-1] == 1 and GPIO.input(relay_pin[relay-1]) == 0):
-            if pause_daemon:
-                logging.warning("[Relay Duration] SQL database reloaded while Relay %s (%s) is in a timed on duration. Turning off and cancelling current timer.",
-                    relay, relay_name[relay-1])
-                # Turn relay off
-                if relay_trigger[relay-1] == 0:
-                    GPIO.output(relay_pin[relay-1], 1)
+        while (client_que != 'TerminateServer' and on_duration_timer[relay-1] > int(time.time())):
+            if (relay_trigger[relay-1] == 0 and GPIO.input(relay_pin[relay-1]) == 1) or (
+                relay_trigger[relay-1] == 1 and GPIO.input(relay_pin[relay-1]) == 0):
+                if pause_daemon:
+                    logging.warning("[Relay Duration] SQL database reloaded while Relay %s (%s) is in a timed on duration. Turning off and cancelling current timer.",
+                        relay, relay_name[relay-1])
+                    # Turn relay off
+                    relay_off(relay)
                 else:
-                    GPIO.output(relay_pin[relay-1], 0)
-            else:
-                logging.warning("[Relay Duration] Relay %s (%s) detected as off during a timed on duration. Turning off and cancelling current timer.",
-                    relay, relay_name[relay-1])
-                # Ensure relay is actually off
-                if relay_trigger[relay-1] == 0:
-                    GPIO.output(relay_pin[relay-1], 1)
-                else:
-                    GPIO.output(relay_pin[relay-1], 0)
-                return 1
-        time.sleep(0.1)
+                    logging.warning("[Relay Duration] Relay %s (%s) detected as off during a timed on duration. Turning off and cancelling current timer.",
+                        relay, relay_name[relay-1])
+                    # Ensure relay is actually off
+                    relay_off(relay)
+                    return 1
+            time.sleep(0.1)
+    
+    except:
+        logging.warning("[Relay Duration] Exception caught while Relay %s (%s) was supposed to be on for %s seconds.",
+                        relay, relay_name[relay-1], seconds)
+        relay_off(relay)
+        if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'off' and conditional_relay_doaction[i] == 'off':
+            if conditional_relay_sel_relay[i]:
+                relay_onoff(conditional_relay_dorelay[i], 'off')
+        return 1
 
     # Turn relay off
-    if relay_trigger[relay-1] == 0:
-        GPIO.output(relay_pin[relay-1], 1)
-    else:
-        GPIO.output(relay_pin[relay-1], 0)
+    relay_off(relay)
 
     for i in range(0, len(conditional_relay_id)):
         if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'off' and conditional_relay_doaction[i] == 'off':
