@@ -3596,7 +3596,7 @@ def gpio_change(relay, State):
 
 # Turn relay off without checks
 def relay_off(relay):
-    logging.warning("[Relay Off] Relay %s (%s) turning off.",
+    logging.debug("[Relay Off] Relay %s (%s) turning off.",
         relay, relay_name[relay-1])
     if relay_trigger[relay-1] == 0:
         GPIO.output(relay_pin[relay-1], 1)
@@ -3854,18 +3854,16 @@ def relay_on_duration(relay, seconds, sensor):
                     relay_off(relay)
                     return 1
             time.sleep(0.1)
-    
     except:
+        relay_off(relay)
         logging.warning("[Relay Duration] Exception caught while Relay %s (%s) was supposed to be on for %s seconds.",
                         relay, relay_name[relay-1], seconds)
-        relay_off(relay)
         if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'off' and conditional_relay_doaction[i] == 'off':
             if conditional_relay_sel_relay[i]:
                 relay_onoff(conditional_relay_dorelay[i], 'off')
         return 1
-
-    # Turn relay off
-    relay_off(relay)
+    finally:
+        relay_off(relay)
 
     for i in range(0, len(conditional_relay_id)):
         if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'off' and conditional_relay_doaction[i] == 'off':
