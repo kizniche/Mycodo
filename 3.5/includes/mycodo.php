@@ -3228,8 +3228,8 @@ if (isset($output_error)) {
                 <form action="?tab=data<?php if (isset($_GET['page'])) echo '&page=' , $_GET['page']; ?>" method="POST">
                 <table>
                     <tr>
-                        <td class="data-buttons-rightspace">
-                            Lines: <input style="height: 2.5em;" type="text" maxlength=8 size=8 name="Lines" value="<?php if (isset($_POST['Lines'])) echo $_POST['Lines']; ?>"/>
+                        <td rowspan="2" class="data-buttons-rightspace" style="text-align:center; line-height:1.6em;">
+                            Lines<br><input style="width: 4em;" type="text" maxlength=8 size=8 name="Lines" value="<?php if (isset($_POST['Lines'])) echo $_POST['Lines']; ?>" title="The maximum number of lines to display. Defaults to 30 if left blank."/>
                         </td>
                         <td>
                             <button type="submit" name="TSensor" value="T">T<br>Sensor</button>
@@ -3243,11 +3243,8 @@ if (isset($output_error)) {
                         <td class="data-buttons-rightspace">
                             <button type="submit" name="PressSensor" value="Press">Press<br>Sensor</button>
                         </td>
-                        <td>
+                        <td class="data-buttons-rightspace">
                             <button type="submit" name="Relay" value="Relay">Relay<br>Log</button>
-                        </td>
-                        <td>
-                            <button type="submit" name="Login" value="Login">Login<br>Log</button>
                         </td>
                         <td>
                             <button type="submit" name="Daemon" value="Daemon">Daemon<br>Log</button>
@@ -3261,14 +3258,8 @@ if (isset($output_error)) {
                         <td>
                             <button type="submit" name="Users" value="User Database">User<br>Database</button>
                         </td>
-                        <td>
-                            <button type="submit" name="Database" value="Mycodo Database">Mycodo<br>Database</button>
-                        </td>
                     </tr>
                     <tr>
-                        <td>
-
-                        </td>
                         <td>
                             <button style="width:100%" type="submit" name="TSensor_Changes" value="T">T<br>Δ</button>
                         </td>
@@ -3281,22 +3272,20 @@ if (isset($output_error)) {
                         <td class="data-buttons-rightspace">
                             <button style="width:100%" type="submit" name="PressSensor_Changes" value="Press">Press<br>Δ</button>
                         </td>
-                        <td>
+                        <td class="data-buttons-rightspace">
                             <button type="submit" name="Relay_Changes" value="Relay">Relay<br>Δ</button>
                         </td>
                         <td>
+                            <button style="width:100%" type="submit" name="Login" value="Login">Login<br>Log</button>
                         </td>
                         <td>
-                        </td>
-                        <td>
-                            <button type="submit" name="Backups" value="">All<br>Backups</button>
+                            <button style="width:100%" type="submit" name="Backups" value="">All<br>Backups</button>
                         </td>
                         <td class="data-buttons-rightspace">
                             <button type="submit" name="Restore" value="">Restore<br>Log</button>
                         </td>
                         <td>
-                        </td>
-                        <td>
+                            <button type="submit" name="Database" value="Mycodo Database">Mycodo<br>Database</button>
                         </td>
                     </tr>
                 </table>
@@ -3413,11 +3402,11 @@ if (isset($output_error)) {
                                 $commits = `git log --oneline | head -n 30`;
                             }
 
-                            echo 'Note: Restoring a backup will restore all files from the backup, including databases and logs.<br>When restoring a backup, a backup of the current system will also be created.<br>Deleting a backup will delete all files of that backup.';
+                            echo '<div style="padding: 1em 0 1.5em 0;">Note: Restoring a backup will restore all files from the backup, including databases and logs.<br>When restoring a backup, a backup of the current system will also be created.<br>Deleting a backup will delete all files of that backup.</div>';
 
                             $current_commit = `git rev-parse --short HEAD`;
                             $current_commit = mb_substr($current_commit, 0, 7);
-                            echo '<br> <br>Current commit: ' . $current_commit . ' (newest commits are at the top, the system is currently at the commit <span style="color:red;">colored red</span>)<br> <br><strong><u>Commit</u>  <u>Description</u></strong><br>';
+                            echo 'Current commit: ' . $current_commit . ' (newest commits are at the top, the system is currently at the commit <span style="color:red;">colored red</span>)<br> <br><strong><u>Commit</u>  <u>Description</u></strong><br>';
 
                             exec("$install_path/cgi-bin/mycodo-wrapper fetchorigin");
                             $commits_ahead = `git log --oneline master...origin/master`;
@@ -3470,7 +3459,7 @@ if (isset($output_error)) {
                         }
 
                         if (isset($_POST['Backups'])) {
-                            echo 'Note: Restoring a backup will restore all files from the backup, including databases and logs.<br>When restoring a backup, a backup of the current system will also be created.<br>Deleting a backup will delete all files of that backup.';
+                            echo '<div style="padding: 1em 0 1.5em 0;">Note: Restoring a backup will restore all files from the backup, including databases and logs.<br>When restoring a backup, a backup of the current system will also be created.<br>Deleting a backup will delete all files of that backup.</div>';
 
                             $dirs = array_filter(glob('/var/Mycodo-backups/*'), 'is_dir');
 
@@ -3480,7 +3469,7 @@ if (isset($output_error)) {
                             }
 
                             if (count($dirs) == 0) {
-                                echo "<br> <br>0 backups found";
+                                echo "0 backups found";
                             } else {
                                 for ($i = 0; $i < count($dirs); $i++) {
                                     

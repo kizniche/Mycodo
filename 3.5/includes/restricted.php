@@ -2449,7 +2449,6 @@ if (isset($_POST['ChangeStill'])) {
     $stmt->bindValue(':cmdpost', $cmd_post, SQLITE3_TEXT);
     $stmt->bindValue(':extra', $cmd_extra, SQLITE3_TEXT);
     $stmt->execute();
-    shell_exec("$mycodo_client --sqlreload -1");
 }
 
 // Change camera video stream settings
@@ -2463,7 +2462,6 @@ if (isset($_POST['ChangeStream'])) {
     $stmt->bindValue(':cmdpost', $cmd_post, SQLITE3_TEXT);
     $stmt->bindValue(':extra', $cmd_extra, SQLITE3_TEXT);
     $stmt->execute();
-    shell_exec("$mycodo_client --sqlreload -1");
 }
 
 // Change camera timelapse settings
@@ -2481,7 +2479,6 @@ if (isset($_POST['ChangeTimelapse'])) {
     $stmt->bindValue(':cmdpost', $cmd_post, SQLITE3_TEXT);
     $stmt->bindValue(':extra', $cmd_extra, SQLITE3_TEXT);
     $stmt->execute();
-    shell_exec("$mycodo_client --sqlreload -1");
 }
 
 // Camera error check
