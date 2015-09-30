@@ -1025,7 +1025,7 @@ if (isset($output_error)) {
                                 ?><img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
                                 <?php
                             } else {
-                                ?><input type="image" class="indicate" src="/mycodo/img/on.png" alt="On" title="On, Click to turn off." name="ChangeT<?php echo $i; ?>TempOR" value="1">
+                                ?><img style="height: 1em;" src="/mycodo/img/on.png" alt="On" title="On">
                             <?php
                             }
                             ?> Temperature
@@ -1421,7 +1421,7 @@ if (isset($output_error)) {
                                 ?><img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
                                 <?php
                             } else {
-                                ?><input type="image" class="indicate" src="/mycodo/img/on.png" alt="On" title="On, Click to turn off." name="ChangeHT<?php echo $i; ?>TempOR" value="1">
+                                ?><img style="height: 1em;" src="/mycodo/img/on.png" alt="On" title="On">
                             <?php
                             }
                             ?> Temperature</td>
