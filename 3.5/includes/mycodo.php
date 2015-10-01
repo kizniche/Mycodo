@@ -3411,15 +3411,19 @@ if (isset($output_error)) {
                             exec("$install_path/cgi-bin/mycodo-wrapper fetchorigin");
                             $commits_ahead = `git log --oneline master...origin/master`;
                             $commits_ahead = explode("\n", $commits_ahead);
+                            foreach ($commits_ahead as $n => $line) {
+                                $commits_ahead_id[$n] = substr($line, 0, strpos($line, ' '));
+                            }
+
                             for ($i = 0; $i < count($commits_ahead); $i++) {
-                                if ($commits_ahead[$i] != '') {
-                                    echo "<div style=\"padding: 0.7em 0 0 0;\">$commits_ahead[$i]</div>";
+                                if ($commits_ahead[$i] != '' && $commits_ahead_id[$i] != $current_commit) {
+                                    echo "<div style=\"padding: 0.7em 0 0 0;\"><a href=\"https://github.com/kizniche/Mycodo/commit/$commits_ahead_id[$i]\">$commits_ahead[$i]</a></div>";
                                 }
                             }
 
                             $commits_list = explode("\n", $commits);
                             foreach ($commits_list as $n => $line) {
-                                $var[$n] = substr($line, 0, strpos($line, ' '));
+                                $commits_behind_id[$n] = substr($line, 0, strpos($line, ' '));
                             }
 
                             $dirs = array_filter(glob('/var/Mycodo-backups/*'), 'is_dir');
@@ -3431,15 +3435,15 @@ if (isset($output_error)) {
                             }
 
                             for ($j = 0; $j < count($commits_list); $j++) {
-                                if ($var[$j] == $current_commit) {
-                                    echo "<div style=\"padding: 0.7em 0 0 0; color: #FF0000;\"><a style=\"color: #FF0000;\" href=\"https://github.com/kizniche/Mycodo/commit/$var[$j]\">$commits_list[$j]</a></div>";
+                                if ($commits_behind_id[$j] == $current_commit) {
+                                    echo "<div style=\"padding: 0.7em 0 0 0;\"><a style=\"color: #FF0000;\" href=\"https://github.com/kizniche/Mycodo/commit/$commits_behind_id[$j]\">$commits_list[$j]</a></div>";
                                 } else {
-                                    echo "<div style=\"padding: 0.7em 0 0 0;\"><a href=\"https://github.com/kizniche/Mycodo/commit/$var[$j]\">$commits_list[$j]</a></div>";
+                                    echo "<div style=\"padding: 0.7em 0 0 0;\"><a href=\"https://github.com/kizniche/Mycodo/commit/$commits_behind_id[$j]\">$commits_list[$j]</a></div>";
                                 }
 
                                 if (isset($backup_commits) && count($backup_commits) != 0) {
                                     for ($i = 0; $i < count($backup_commits); $i++) {
-                                        if ($backup_commits[$i] == $var[$j]) {
+                                        if ($backup_commits[$i] == $commits_behind_id[$j]) {
                                             echo "<table class=\"gitcommits\">
                                                 <tr>
                                                     <td>$backup_commits[$i]</td>
@@ -3475,7 +3479,7 @@ if (isset($output_error)) {
                                     
                                     echo "<table class=\"gitcommits\">
                                         <tr>
-                                            <td>$backup_commits[$i]</td>
+                                            <td><a href=\"https://github.com/kizniche/Mycodo/commit/$backup_commits[$i]\">$backup_commits[$i]</a></td>
                                             <td><form action=\"?tab=data";
                                             if (isset($_GET['page'])) echo '&page=' , $_GET['page'];
                                             echo "\" method=\"POST\" onsubmit=\"return confirm('Confirm that you would like to DELETE the $backup_dates[$i] backup of the system at commit $backup_commits[$i]. Note: This will delete all files of this backup. This cannot be undone. If you do not want to do this, click Cancel.')\"><button type=\"submit\" name=\"DeleteBackup\" value=\"$dirs[$i]\" title=\"Delete backup from $backup_dates[$i]\">Delete Backup</button></form></td>
