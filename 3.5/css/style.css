@@ -6,8 +6,8 @@ body {
     font-size: 0.875em;
 }
 
-a:link { color: #000000; }
-a:visited { color: #000000; }
+a:link { color: #0000FF; }
+a:visited { color: #00008b; }
 a:active { color: #F2273B; }
 a:hover { color: #F2273B; }
 

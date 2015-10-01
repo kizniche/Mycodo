@@ -3432,9 +3432,9 @@ if (isset($output_error)) {
 
                             for ($j = 0; $j < count($commits_list); $j++) {
                                 if ($var[$j] == $current_commit) {
-                                    echo "<div style=\"padding: 0.7em 0 0 0; color: red;\">$commits_list[$j]</div>";
+                                    echo "<div style=\"padding: 0.7em 0 0 0; color: #FF0000;\"><a style=\"color: #FF0000;\" href=\"https://github.com/kizniche/Mycodo/commit/$var[$j]\">$commits_list[$j]</a></div>";
                                 } else {
-                                    echo "<div style=\"padding: 0.7em 0 0 0;\">$commits_list[$j]</div>";
+                                    echo "<div style=\"padding: 0.7em 0 0 0;\"><a href=\"https://github.com/kizniche/Mycodo/commit/$var[$j]\">$commits_list[$j]</a></div>";
                                 }
 
                                 if (isset($backup_commits) && count($backup_commits) != 0) {
