@@ -316,6 +316,15 @@ for ($p = 0; $p < count($timer_id); $p++) {
         $stmt->bindValue(':id', $timer_id[$p], SQLITE3_TEXT);
         $stmt->execute();
         shell_exec("$mycodo_client --sqlreload -1");
+
+        $id = $timer_id[$p];
+        $name = $_POST['Timer' . $p . 'Name'];
+        $relay = (int)$_POST['Timer' . $p . 'Relay'];
+        $durationon = (int)$_POST['Timer' . $p . 'On'];
+        $durationoff = (int)$_POST['Timer' . $p . 'Off'];
+        $timestamp = date('Y m d H i s');
+        $record = "$timestamp $id $name $relay $durationon $durationoff\n";
+        file_put_contents($timer_changes_log, $record, FILE_APPEND);
     }
 
     // Set timer state

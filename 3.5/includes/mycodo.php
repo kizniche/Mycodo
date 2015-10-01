@@ -53,6 +53,7 @@ $sensor_ht_changes_log = $install_path . "/log/sensor-ht-changes.log";
 $sensor_co2_changes_log = $install_path . "/log/sensor-co2-changes.log";
 $sensor_press_changes_log = $install_path . "/log/sensor-press-changes.log";
 $relay_changes_log = $install_path . "/log/relay-changes.log";
+$timer_changes_log = $install_path . "/log/timer-changes.log";
 
 $images = $install_path . "/images";
 $lock_daemon = $lock_path . "/mycodo/daemon.lock";
@@ -3232,19 +3233,22 @@ if (isset($output_error)) {
                             Lines<br><input style="width: 4em;" type="text" maxlength=8 size=8 name="Lines" value="<?php if (isset($_POST['Lines'])) echo $_POST['Lines']; ?>" title="The maximum number of lines to display. Defaults to 30 if left blank."/>
                         </td>
                         <td>
-                            <button type="submit" name="TSensor" value="T">T<br>Sensor</button>
+                            <button style="width:100%" type="submit" name="TSensor_Changes" value="T">T<br>Δ</button>
                         </td>
                         <td>
-                            <button type="submit" name="HTSensor" value="HT">HT<br>Sensor</button>
+                            <button style="width:100%" type="submit" name="HTSensor_Changes" value="HT">HT<br>Δ</button>
                         </td>
                         <td>
-                            <button type="submit" name="CO2Sensor" value="CO2">CO2<br>Sensor</button>
+                            <button style="width:100%" type="submit" name="CO2Sensor_Changes" value="CO2">CO2<br>Δ</button>
                         </td>
                         <td class="data-buttons-rightspace">
-                            <button type="submit" name="PressSensor" value="Press">Press<br>Sensor</button>
+                            <button style="width:100%" type="submit" name="PressSensor_Changes" value="Press">Press<br>Δ</button>
+                        </td>
+                        <td>
+                            <button type="submit" name="Relay_Changes" value="Relay">Relay<br>Δ</button>
                         </td>
                         <td class="data-buttons-rightspace">
-                            <button type="submit" name="Relay" value="Relay">Relay<br>Log</button>
+                            <button type="submit" name="Timer_Changes" value="Timer">Timer<br>Δ</button>
                         </td>
                         <td>
                             <button type="submit" name="Daemon" value="Daemon">Daemon<br>Log</button>
@@ -3261,19 +3265,21 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td>
-                            <button style="width:100%" type="submit" name="TSensor_Changes" value="T">T<br>Δ</button>
+                            <button type="submit" name="TSensor" value="T">T<br>Sensor</button>
                         </td>
                         <td>
-                            <button style="width:100%" type="submit" name="HTSensor_Changes" value="HT">HT<br>Δ</button>
+                            <button type="submit" name="HTSensor" value="HT">HT<br>Sensor</button>
                         </td>
                         <td>
-                            <button style="width:100%" type="submit" name="CO2Sensor_Changes" value="CO2">CO2<br>Δ</button>
+                            <button type="submit" name="CO2Sensor" value="CO2">CO2<br>Sensor</button>
                         </td>
                         <td class="data-buttons-rightspace">
-                            <button style="width:100%" type="submit" name="PressSensor_Changes" value="Press">Press<br>Δ</button>
+                            <button type="submit" name="PressSensor" value="Press">Press<br>Sensor</button>
+                        </td>
+                        <td>
+                            <button type="submit" name="Relay" value="Relay">Relay<br>Log</button>
                         </td>
                         <td class="data-buttons-rightspace">
-                            <button type="submit" name="Relay_Changes" value="Relay">Relay<br>Δ</button>
                         </td>
                         <td>
                             <button style="width:100%" type="submit" name="Login" value="Login">Login<br>Log</button>
@@ -3304,6 +3310,7 @@ if (isset($output_error)) {
                         }
 
                         if(isset($_POST['TSensor_Changes'])) {
+                            echo "Temperature Sensor Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `echo "Y M D H M S ID Name Device Pin/Ser# Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD\n$(cat /var/www/mycodo/log/sensor-t-changes.log | tail -n $Lines)" | column -t`;
@@ -3322,6 +3329,7 @@ if (isset($output_error)) {
                         }
 
                         if(isset($_POST['HTSensor_Changes'])) {
+                            echo "Temperature/Humidity Sensor Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD HumRelaysUp HumRelaysDown HumRelayHigh HumRelayHighMin HumRelayHighMax HumRelayLow HumRelayLowMin HumRelayLowMax HumSet HumSetDir HumPeriod HumP HumI HumD\n$(cat /var/www/mycodo/log/sensor-ht-changes.log | tail -n $Lines)" | column -t`;
@@ -3340,6 +3348,7 @@ if (isset($output_error)) {
                         }
 
                         if(isset($_POST['CO2Sensor_Changes'])) {
+                            echo "CO<sub>2</sub> Sensor Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YCO2Min YCO2Max YCO2Tics YCO2MTics CO2RelaysUp CO2RelaysDown CO2RelayHigh CO2RelayHighMin CO2RelayHighMax CO2RelayLow CO2RelayLowMin CO2RelayLowMax CO2Set CO2SetDir CO2Period CO2P CO2I CO2D\n$(cat /var/www/mycodo/log/sensor-co2-changes.log | tail -n $Lines)" | column -t`;
@@ -3358,6 +3367,7 @@ if (isset($output_error)) {
                         }
 
                         if(isset($_POST['PressSensor_Changes'])) {
+                            echo "Temperature/Pressure Sensor Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD PressRelaysUp PressRelaysDown PressRelayHigh PressRelayHighMin PressRelayHighMax PressRelayLow PressRelayLowMin PressRelayLowMax PressSet PressSetDir PressPeriod PressP PressI PressD\n$(cat /var/www/mycodo/log/sensor-press-changes.log | tail -n $Lines)" | column -t`;
@@ -3376,11 +3386,22 @@ if (isset($output_error)) {
                         }
 
                         if(isset($_POST['Relay_Changes'])) {
+                            echo "Relay Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `echo "Y M D H M S Relay Name GPIO Amps Trigger State\n$(cat /var/www/mycodo/log/relay-changes.log | tail -n $Lines)" | column -t`;
                             } else {
                                 echo `echo "Y M D H M S Relay Name GPIO Amps Trigger State\n$(cat /var/www/mycodo/log/relay-changes.log | tail -n 30)" | column -t`;
+                            }
+                        }
+
+                        if(isset($_POST['Timer_Changes'])) {
+                            echo "Timer Changes<br> <br>";
+                            if ($_POST['Lines'] != '') {
+                                $Lines = $_POST['Lines'];
+                                echo `echo "Y M D H M S ID Name Relay DurationOn DurationOff\n$(cat /var/www/mycodo/log/timer-changes.log | tail -n $Lines)" | column -t`;
+                            } else {
+                                echo `echo "Y M D H M S ID Name Relay DurationOn DurationOff\n$(cat /var/www/mycodo/log/timer-changes.log | tail -n 30)" | column -t`;
                             }
                         }
                         
