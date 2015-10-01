@@ -122,6 +122,8 @@ last_press_reading = 0
 pause_daemon = 0
 pause_daemon_confirm = 0
 
+on_duration_timer = []
+
 
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
@@ -136,7 +138,7 @@ class ComServer(rpyc.Service):
         else:
             logging.info("[Client command] Turning Relay %s (%s) On for %s seconds", relay, relay_name[relay-1], state)
             rod = threading.Thread(target = relay_on_duration,
-                args = (int(relay), int(state), 0,))
+                args = (int(relay), int(state), 0, relay_trigger, relay_pin,))
             rod.start()
         return 1
 
@@ -722,7 +724,7 @@ def daemon(output, log):
                                         if conditional_t_relay_seconds_on[j][k][0] > 0:
                                             logging.debug("[Conditional T] Conditional statement %s True: Turn relay %s on for %s seconds", k+1, conditional_t_relay[j][k][0], conditional_t_relay_seconds_on[j][k][0])
                                             rod = threading.Thread(target = relay_on_duration,
-                                                args = (conditional_t_relay[j][k][0], conditional_t_relay_seconds_on[j][k][0], j,))
+                                                args = (conditional_t_relay[j][k][0], conditional_t_relay_seconds_on[j][k][0], j, relay_trigger, relay_pin,))
                                             rod.start()
                                         else:
                                             relay_onoff(conditional_t_relay[j][k][0], 'on')
@@ -775,7 +777,7 @@ def daemon(output, log):
                                         if conditional_ht_relay_seconds_on[j][k][0] > 0:
                                             logging.debug("[Conditional HT] Conditional statement %s True: Turn relay %s on for %s seconds", k+1, conditional_ht_relay[j][k][0], conditional_ht_relay_seconds_on[j][k][0])
                                             rod = threading.Thread(target = relay_on_duration,
-                                                args = (conditional_ht_relay[j][k][0], conditional_ht_relay_seconds_on[j][k][0], j,))
+                                                args = (conditional_ht_relay[j][k][0], conditional_ht_relay_seconds_on[j][k][0], j, relay_trigger, relay_pin,))
                                             rod.start()
                                         else:
                                             relay_onoff(conditional_ht_relay[j][k][0], 'on')
@@ -833,7 +835,7 @@ def daemon(output, log):
                                         if conditional_co2_relay_seconds_on[j][k][0] > 0:
                                             logging.debug("[Conditional CO2] Conditional statement %s True: Turn relay %s on for %s seconds", k+1, conditional_co2_relay[j][k][0], conditional_co2_relay_seconds_on[j][k][0])
                                             rod = threading.Thread(target = relay_on_duration,
-                                                args = (conditional_co2_relay[j][k][0], conditional_co2_relay_seconds_on[j][k][0], j,))
+                                                args = (conditional_co2_relay[j][k][0], conditional_co2_relay_seconds_on[j][k][0], j, relay_trigger, relay_pin,))
                                             rod.start()
                                         else:
                                             relay_onoff(conditional_co2_relay[j][k][0], 'on')
@@ -888,7 +890,7 @@ def daemon(output, log):
                                         if conditional_press_relay_seconds_on[j][k][0] > 0:
                                             logging.debug("[Conditional Press] Conditional statement %s True: Turn relay %s on for %s seconds", k+1, conditional_press_relay[j][k][0], conditional_press_relay_seconds_on[j][k][0])
                                             rod = threading.Thread(target = relay_on_duration,
-                                                args = (conditional_press_relay[j][k][0], conditional_press_relay_seconds_on[j][k][0], j,))
+                                                args = (conditional_press_relay[j][k][0], conditional_press_relay_seconds_on[j][k][0], j, relay_trigger, relay_pin,))
                                             rod.start()
                                         else:
                                             relay_onoff(conditional_press_relay[j][k][0], 'on')
@@ -951,7 +953,7 @@ def daemon(output, log):
                 if timer_state[i] == 1 and int(time.time()) > timer_time[i] and client_que != 'TerminateServer' and PID_change != 1:
                     logging.debug("[Timer Expiration] Timer %s: Turn Relay %s on for %s seconds, off %s seconds.", i, timer_relay[i], timer_duration_on[i], timer_duration_off[i])
                     rod = threading.Thread(target = relay_on_duration,
-                        args = (timer_relay[i], timer_duration_on[i], 0,))
+                        args = (timer_relay[i], timer_duration_on[i], 0, relay_trigger, relay_pin,))
                     rod.start()
                     timer_time[i] = int(time.time()) + timer_duration_on[i] + timer_duration_off[i]
 
@@ -1169,7 +1171,7 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
                             logging.debug("[PID T-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
                             
                         rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_t_temp_relay_low[sensor], round(PIDTemp,2), sensor,))
+                            args = (pid_t_temp_relay_low[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
                         rod.start()
 
                     elif pid_t_temp_set_dir[sensor] < 1 and PIDTemp < 0:
@@ -1184,7 +1186,7 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
                             logging.debug("[PID T-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
 
                         rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_t_temp_relay_high[sensor], round(PIDTemp,2), sensor,))
+                            args = (pid_t_temp_relay_high[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
                         rod.start()
 
                     else:
@@ -1276,7 +1278,7 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
                             logging.debug("[PID HT-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
 
                         rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_ht_temp_relay_low[sensor], round(PIDTemp,2), sensor,))
+                            args = (pid_ht_temp_relay_low[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
                         rod.start()
 
                     elif pid_ht_temp_set_dir[sensor] < 1 and PIDTemp < 0:
@@ -1291,7 +1293,7 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
                             logging.debug("[PID HT-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
 
                         rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_ht_temp_relay_high[sensor], round(PIDTemp,2), sensor,))
+                            args = (pid_ht_temp_relay_high[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
                         rod.start()
 
                     else:
@@ -1382,7 +1384,7 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
                             logging.debug("[PID HT-Humidity-%s] PID = %.1f (max disabled)", sensor+1, PIDHum)
 
                         rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_ht_hum_relay_low[sensor], round(PIDHum,2), sensor,))
+                            args = (pid_ht_hum_relay_low[sensor], round(PIDHum,2), sensor, relay_trigger, relay_pin,))
                         rod.start()
 
                     elif pid_ht_hum_set_dir[sensor] < 1 and PIDHum < 0:
@@ -1397,7 +1399,7 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
                             logging.debug("[PID HT-Humidity-%s] PID = %.1f", sensor+1, PIDHum)
 
                         rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_ht_hum_relay_high[sensor], round(PIDHum,2), sensor,))
+                            args = (pid_ht_hum_relay_high[sensor], round(PIDHum,2), sensor, relay_trigger, relay_pin,))
                         rod.start()
 
                     else:
@@ -1488,7 +1490,7 @@ def co2_monitor(ThreadName, sensor):
                             logging.debug("[PID CO2-%s] PID = %.1f", sensor+1, PIDCO2)
 
                         rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_co2_relay_low[sensor], round(PIDCO2,2), sensor,))
+                            args = (pid_co2_relay_low[sensor], round(PIDCO2,2), sensor, relay_trigger, relay_pin,))
                         rod.start()
 
                     elif pid_co2_set_dir[sensor] < 1 and PIDCO2 < 0:
@@ -1503,7 +1505,7 @@ def co2_monitor(ThreadName, sensor):
                             logging.debug("[PID CO2-%s] PID = %.1f", sensor+1, PIDCO2)
 
                         rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_co2_relay_high[sensor], round(PIDCO2,2), sensor,))
+                            args = (pid_co2_relay_high[sensor], round(PIDCO2,2), sensor, relay_trigger, relay_pin,))
                         rod.start()
 
                     else:
@@ -1594,7 +1596,7 @@ def press_sensor_temperature_monitor(ThreadName, sensor):
                             logging.debug("[PID Press-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
 
                         rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_press_temp_relay_low[sensor], round(PIDTemp,2), sensor,))
+                            args = (pid_press_temp_relay_low[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
                         rod.start()
 
                     elif pid_press_temp_set_dir[sensor] < 1 and PIDTemp < 0:
@@ -1609,7 +1611,7 @@ def press_sensor_temperature_monitor(ThreadName, sensor):
                             logging.debug("[PID Press-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
 
                         rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_press_temp_relay_high[sensor], round(PIDTemp,2), sensor,))
+                            args = (pid_press_temp_relay_high[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
                         rod.start()
 
                     else:
@@ -1695,7 +1697,7 @@ def press_sensor_pressure_monitor(ThreadName, sensor):
                             logging.debug("[PID Press-Pressure-%s] PID = %.1f", sensor+1, PIDPress)
 
                         rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_press_press_relay_low[sensor], round(PIDPress,2), sensor,))
+                            args = (pid_press_press_relay_low[sensor], round(PIDPress,2), sensor, relay_trigger, relay_pin,))
                         rod.start()
 
                     elif pid_press_press_set_dir[sensor] < 1 and PIDPress < 0:
@@ -1710,7 +1712,7 @@ def press_sensor_pressure_monitor(ThreadName, sensor):
                             logging.debug("[PID Press-Pressure-%s] PID = %.1f", sensor+1, PIDPress)
 
                         rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_press_press_relay_high[sensor], round(PIDPress,2), sensor,))
+                            args = (pid_press_press_relay_high[sensor], round(PIDPress,2), sensor, relay_trigger, relay_pin,))
                         rod.start()
 
                     else:
@@ -1841,7 +1843,7 @@ def read_t_sensor(sensor):
     if sensor_t_premeasure_relay[sensor] and sensor_t_premeasure_dur[sensor]:
         timerT = int(time.time()) + sensor_t_premeasure_dur[sensor]
         rod = threading.Thread(target = relay_on_duration,
-            args = (sensor_t_premeasure_relay[sensor], sensor_t_premeasure_dur[sensor], sensor,))
+            args = (sensor_t_premeasure_relay[sensor], sensor_t_premeasure_dur[sensor], sensor, relay_trigger, relay_pin,))
         rod.start()
         while timerT > int(time.time()) and client_que != 'TerminateServer':
             if pause_daemon:
@@ -1972,7 +1974,7 @@ def read_ht_sensor(sensor):
     if sensor_ht_premeasure_relay[sensor] and sensor_ht_premeasure_dur[sensor]:
         timerHT = int(time.time()) + sensor_ht_premeasure_dur[sensor]
         rod = threading.Thread(target = relay_on_duration,
-            args = (sensor_ht_premeasure_relay[sensor], sensor_ht_premeasure_dur[sensor], sensor,))
+            args = (sensor_ht_premeasure_relay[sensor], sensor_ht_premeasure_dur[sensor], sensor, relay_trigger, relay_pin,))
         rod.start()
         while ((timerHT > int(time.time())) and client_que != 'TerminateServer'):
             if pause_daemon:
@@ -2090,7 +2092,7 @@ def read_co2_sensor(sensor):
     if sensor_co2_premeasure_relay[sensor] and sensor_co2_premeasure_dur[sensor]:
         timerCO2 = int(time.time()) + sensor_co2_premeasure_dur[sensor]
         rod = threading.Thread(target = relay_on_duration,
-            args = (sensor_co2_premeasure_relay[sensor], sensor_co2_premeasure_dur[sensor], sensor,))
+            args = (sensor_co2_premeasure_relay[sensor], sensor_co2_premeasure_dur[sensor], sensor, relay_trigger, relay_pin,))
         rod.start()
         while ((timerCO2 > int(time.time())) and client_que != 'TerminateServer'):
             if pause_daemon:
@@ -2214,7 +2216,7 @@ def read_press_sensor(sensor):
     if (sensor_press_premeasure_relay[sensor] and sensor_press_premeasure_dur[sensor]):
         timerPress = int(time.time()) + sensor_press_premeasure_dur[sensor]
         rod = threading.Thread(target = relay_on_duration,
-            args = (sensor_press_premeasure_relay[sensor], sensor_press_premeasure_dur[sensor], sensor,))
+            args = (sensor_press_premeasure_relay[sensor], sensor_press_premeasure_dur[sensor], sensor, relay_trigger, relay_pin,))
         rod.start()
         while timerPress > int(time.time()) and client_que != 'TerminateServer':
             if pause_daemon:
@@ -2767,7 +2769,6 @@ def read_sql():
     timerPressSensorLog = []
 
     global on_duration_timer
-    on_duration_timer = []
 
     # Email notification globals
     global smtp_host
@@ -3452,8 +3453,10 @@ def read_sql():
     for i in range(0, len(timer_id)):
         timer_time.append(0)
 
-    for i in range(0, len(relay_id)):
-        on_duration_timer.append(0)
+    if len(on_duration_timer) != len(relay_id):
+        on_duration_timer = []
+        for i in range(0, len(relay_id)):
+            on_duration_timer.append(0)
 
 
     global timerTConditional
@@ -3594,16 +3597,7 @@ def gpio_change(relay, State):
         GPIO.output(relay_pin[relay-1], State)
 
 
-# Turn relay off without checks
-def relay_off(relay):
-    logging.debug("[Relay Off] Relay %s (%s) turning off.",
-        relay, relay_name[relay-1])
-    if relay_trigger[relay-1] == 0:
-        GPIO.output(relay_pin[relay-1], 1)
-    else:
-        GPIO.output(relay_pin[relay-1], 0)
-
-# Turn relay on or off (accounts for trigger)
+# Turn relay on or off and use conditionals
 def relay_onoff(relay, state):
     if (relay_trigger[relay-1] == 1 and state == 'on'):
 
@@ -3656,7 +3650,7 @@ def relay_onoff(relay, state):
                 if conditional_relay_sel_relay[i]:
                     if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
                         rod = threading.Thread(target = relay_on_duration,
-                            args = (conditional_relay_dorelay[i], conditional_relay_doduration[i], 0,))
+                            args = (conditional_relay_dorelay[i], conditional_relay_doduration[i], 0, relay_trigger, relay_pin,))
                         rod.start()
                     else:
                         relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
@@ -3678,7 +3672,7 @@ def relay_onoff(relay, state):
                 if conditional_relay_sel_relay[i]:
                     if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
                         rod = threading.Thread(target = relay_on_duration,
-                            args = (conditional_relay_dorelay[i], conditional_relay_doduration[i], 0,))
+                            args = (conditional_relay_dorelay[i], conditional_relay_doduration[i], 0, relay_trigger, relay_pin,))
                         rod.start()
                     else:
                         relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
@@ -3696,19 +3690,28 @@ def relay_onoff(relay, state):
                     email(conditional_relay_do_notify[i], message)
 
 
+# Turn relay off without conditional check
+def relay_off(relay, local_relay_pin, local_relay_trigger):
+    logging.debug("[Relay Off] Relay %s turning off.", relay)
+    if local_relay_trigger[relay-1] == 0:
+        GPIO.output(local_relay_pin[relay-1], 1)
+    else:
+        GPIO.output(local_relay_pin[relay-1], 0)
+
+
 # Set relay on for a specific duration (seconds may be negative)
-def relay_on_duration(relay, seconds, sensor):
+def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_pin):
     global on_duration_timer
 
     if enable_max_amps == 1:
         total_amps = 0
         for i in range(0, len(relay_id)):
-            if ((relay_trigger[i] == 0 and GPIO.input(relay_pin[i]) == 0) or (
-                relay_trigger[i] == 1 and GPIO.input(relay_pin[i]) == 1)):
+            if ((local_relay_trigger[i] == 0 and GPIO.input(local_relay_pin[i]) == 0) or (
+                local_relay_trigger[i] == 1 and GPIO.input(local_relay_pin[i]) == 1)):
                 total_amps += relay_amps[i]
 
-        if ((relay_trigger[relay-1] == 0 and GPIO.input(relay_pin[relay-1]) == 1) or (
-                relay_trigger[relay-1] == 1 and GPIO.input(relay_pin[relay-1]) == 0)):
+        if ((local_relay_trigger[relay-1] == 0 and GPIO.input(local_relay_pin[relay-1]) == 1) or (
+                local_relay_trigger[relay-1] == 1 and GPIO.input(local_relay_pin[relay-1]) == 0)):
             total_amps += relay_amps[relay-1]
 
         if total_amps > max_amps:
@@ -3716,8 +3719,8 @@ def relay_on_duration(relay, seconds, sensor):
                     relay, relay_name[relay-1], total_amps, max_amps)
             return 1
 
-    if (((relay_trigger[relay-1] == 0 and GPIO.input(relay_pin[relay-1]) == 0) or (
-            relay_trigger[relay-1] == 1 and GPIO.input(relay_pin[relay-1]) == 1)) and
+    if (((local_relay_trigger[relay-1] == 0 and GPIO.input(local_relay_pin[relay-1]) == 0) or (
+            local_relay_trigger[relay-1] == 1 and GPIO.input(local_relay_pin[relay-1]) == 1)) and
             on_duration_timer[relay-1] > int(time.time())):
 
         if int(time.time()) + seconds < on_duration_timer[relay-1]:
@@ -3731,7 +3734,7 @@ def relay_on_duration(relay, seconds, sensor):
             on_duration_timer[relay-1] = int(time.time()) + abs(seconds)
 
             wrl = threading.Thread(target = mycodoLog.write_relay_log,
-                args = (relay, seconds, sensor, relay_pin[relay-1],))
+                args = (relay, seconds, sensor, local_relay_pin[relay-1],))
             wrl.start()
 
         for i in range(0, len(conditional_relay_id)):
@@ -3740,7 +3743,7 @@ def relay_on_duration(relay, seconds, sensor):
                     if conditional_relay_sel_relay[i]:
                         if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
                             rod = threading.Thread(target = relay_on_duration,
-                                args = (conditional_relay_dorelay[i], conditional_relay_doduration[i], sensor,))
+                                args = (conditional_relay_dorelay[i], conditional_relay_doduration[i], sensor, relay_trigger, relay_pin,))
                             rod.start()
                         elif (conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] == 0) or conditional_relay_doaction[i] == 'off':
                             relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
@@ -3772,13 +3775,11 @@ def relay_on_duration(relay, seconds, sensor):
                         else:
                             message = "Relay Conditional %s (%s): Relay %s turned %s." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i])
                         email(conditional_relay_do_notify[i], message)
-
         return 1
 
-    elif (((relay_trigger[relay-1] == 0 and GPIO.input(relay_pin[relay-1]) == 0) or (
-            relay_trigger[relay-1] == 1 and GPIO.input(relay_pin[relay-1]) == 1)) and
+    elif (((local_relay_trigger[relay-1] == 0 and GPIO.input(local_relay_pin[relay-1]) == 0) or (
+            local_relay_trigger[relay-1] == 1 and GPIO.input(local_relay_pin[relay-1]) == 1)) and
             on_duration_timer[relay-1] < int(time.time())):
-
         logging.warning("[Relay Duration] Relay %s (%s) is set On without a duration. Turning into a duration.",
             relay, relay_name[relay-1], seconds)
 
@@ -3788,11 +3789,11 @@ def relay_on_duration(relay, seconds, sensor):
     on_duration_timer[relay-1] = int(time.time()) + abs(seconds)
 
     # Turn relay on
-    GPIO.output(relay_pin[relay-1], relay_trigger[relay-1])
+    GPIO.output(local_relay_pin[relay-1], local_relay_trigger[relay-1])
 
     try:
         wrl = threading.Thread(target = mycodoLog.write_relay_log,
-            args = (relay, seconds, sensor, relay_pin[relay-1],))
+            args = (relay, seconds, sensor, local_relay_pin[relay-1],))
         wrl.start()
 
         for i in range(0, len(conditional_relay_id)):
@@ -3801,7 +3802,7 @@ def relay_on_duration(relay, seconds, sensor):
                     if conditional_relay_sel_relay[i]:
                         if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
                             rod = threading.Thread(target = relay_on_duration,
-                                args = (conditional_relay_dorelay[i], conditional_relay_doduration[i], sensor,))
+                                args = (conditional_relay_dorelay[i], conditional_relay_doduration[i], sensor, relay_trigger, relay_pin,))
                             rod.start()
                         elif (conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] == 0) or conditional_relay_doaction[i] == 'off':
                             relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
@@ -3835,35 +3836,35 @@ def relay_on_duration(relay, seconds, sensor):
                         email(conditional_relay_do_notify[i], message)
 
         if pause_daemon:
-            logging.warning("[Relay Duration] SQL database reloaded while Relay %s (%s) is in a timed on duration. Turning off and cancelling current timer.",
-                relay, relay_name[relay-1])
-            relay_off(relay)
-
-        while (client_que != 'TerminateServer' and on_duration_timer[relay-1] > int(time.time())):
-            if (relay_trigger[relay-1] == 0 and GPIO.input(relay_pin[relay-1]) == 1) or (
-                relay_trigger[relay-1] == 1 and GPIO.input(relay_pin[relay-1]) == 0):
+            logging.warning("[Relay Duration] SQL database reloaded while Relay %s is in a timed on duration. Turning off and cancelling current timer.", relay)
+            relay_off(relay, local_relay_pin, local_relay_trigger)
+        else:
+            while (client_que != 'TerminateServer' and on_duration_timer[relay-1] > int(time.time())):
                 if pause_daemon:
-                    logging.warning("[Relay Duration] SQL database reloaded while Relay %s (%s) is in a timed on duration. Turning off and cancelling current timer.",
-                        relay, relay_name[relay-1])
-                    # Turn relay off
-                    relay_off(relay)
-                else:
-                    logging.warning("[Relay Duration] Relay %s (%s) detected as off during a timed on duration. Turning off and cancelling current timer.",
-                        relay, relay_name[relay-1])
-                    # Ensure relay is actually off
-                    relay_off(relay)
-                    return 1
-            time.sleep(0.1)
+                    relay_off(relay, local_relay_pin, local_relay_trigger)
+                    logging.warning("[Relay Duration] SQL database reloaded while Relay %s is in a timed on duration. Turning off and cancelling current timer.", relay)
+                    break
+                if (local_relay_trigger[relay-1] == 0 and GPIO.input(local_relay_pin[relay-1]) == 1) or (
+                    local_relay_trigger[relay-1] == 1 and GPIO.input(local_relay_pin[relay-1]) == 0):
+                    relay_off(relay, local_relay_pin, local_relay_trigger)
+                    logging.warning("[Relay Duration] Relay %s detected as off during a timed on duration. Turning off and cancelling current timer.", relay, relay_name[relay-1])
+                    break
+                time.sleep(0.1)
+
     except:
-        relay_off(relay)
-        logging.warning("[Relay Duration] Exception caught while Relay %s (%s) was supposed to be on for %s seconds.",
-                        relay, relay_name[relay-1], seconds)
+        relay_off(relay, local_relay_pin, local_relay_trigger)
+        logging.warning("[Relay Duration] Exception caught while Relay %s was supposed to be on for %s seconds.",
+                        relay, seconds)
         if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'off' and conditional_relay_doaction[i] == 'off':
             if conditional_relay_sel_relay[i]:
                 relay_onoff(conditional_relay_dorelay[i], 'off')
         return 1
-    finally:
-        relay_off(relay)
+    
+    # Turn relay off
+    relay_off(relay, local_relay_pin, local_relay_trigger)
+
+    while pause_daemon:
+        time.sleep(0.1)
 
     for i in range(0, len(conditional_relay_id)):
         if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'off' and conditional_relay_doaction[i] == 'off':
