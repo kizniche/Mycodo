@@ -294,11 +294,8 @@ A temporary file system in RAM can be created for areas of the disk that are wri
 Edit /etc/fstab with `sudo vi /etc/fstab` and add the following lines
 
 ```
-tmpfs    /tmp    tmpfs    defaults,noatime,nosuid,size=100m    0 0
-tmpfs    /var/tmp    tmpfs    defaults,noatime,nosuid,size=30m    0 0
-tmpfs    /var/log    tmpfs    defaults,noatime,nosuid,mode=0755,size=100m    0 0
-tmpfs    /var/run    tmpfs    defaults,noatime,nosuid,mode=0755,size=2m    0 0
-tmpfs    /var/spool/mqueue    tmpfs    defaults,noatime,nosuid,mode=0700,gid=12,size=30m    0 0
+tmpfs /tmp     tmpfs nodev,nosuid,mode=1777,size=30M              0 0
+tmpfs /var/log tmpfs defaults,noatime,nosuid,mode=0755,size=100M  0 0
 ```
 
 Using a tempfs does create some issues with certain software. Apache does not start if there is no directory structure in /var/log, and the designation of /var/log as a tempfs means that at every bootup this directory is empty. This init script will ensure that the proper directory structure is created at every boot, prior to Apache starting.
