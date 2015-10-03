@@ -460,11 +460,6 @@ if (isset($output_error)) {
             ?>
 
             <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                <?php
-                    if (count($relay_id) == 0) {
-                        echo '<div style="color: red; padding: 0.5em 0 1em 0.5em; font-size: 0.9em;">Note: There are 0 Relays configured. Change this in the Sensor tab before activating a PID.</div>';
-                    }
-                ?>
                 <div style="float: left; padding: 0.5em 1.5em 1em 0.5em;">
                     <div style="text-align: center; padding-bottom: 0.2em;">Auto Refresh</div>
                     <div style="text-align: center;"><?php

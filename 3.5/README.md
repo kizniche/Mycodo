@@ -268,11 +268,7 @@ Install video streaming capabilities (Note that it is recommended to require SSL
 
 `sudo wget -P ~/ http://sourceforge.net/code-snapshots/svn/m/mj/mjpg-streamer/code/mjpg-streamer-code-182.zip`
 
-`cd ~`
-
-`unzip mjpg-streamer-code-182.zip`
-
-`cd mjpg-streamer-code-182/mjpg-streamer`
+`cd ~ && unzip mjpg-streamer-code-182.zip && cd mjpg-streamer-code-182/mjpg-streamer`
 
 `make mjpg_streamer input_file.so output_http.so`
 
@@ -344,7 +340,7 @@ Change the symlink from non-SSL to SSL
 Edit /etc/apache2/sites-enabled/000-default and make sure the top looks similar to this:
 
 ```
-    <IfModule mod_ssl.c>
+<IfModule mod_ssl.c>
     <VirtualHost *:80>
             RewriteEngine on
             RewriteCond  %{HTTPS} !=on
@@ -402,7 +398,7 @@ If your server is accessible from the internet but you don't want to enable SSL 
 
 ### Enable mod_rewrite
 
-`a2enmod rewrite`
+`sudo a2enmod rewrite`
 
 Then restart apache with
 
