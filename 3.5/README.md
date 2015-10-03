@@ -262,7 +262,7 @@ If you want mycodo to support using the Raspberry Pi camera module, a SUBSYSTEM 
 
 Install video streaming capabilities (Note that it is recommended to require SSL on your web server to prevent potential viewing of video streams by unauthorized users, details on forcing SSL below)
 
-`sudo apt-get install libjpeg8-dev libv4l-dev wget`
+`sudo apt-get install libjpeg8-dev libv4l-dev wget subversion`
 
 `sudo ln -s /usr/include/linux/videodev2.h /usr/include/linux/videodev.h`
 
@@ -275,6 +275,10 @@ Install video streaming capabilities (Note that it is recommended to require SSL
 `sudo cp mjpg_streamer /usr/local/bin`
 
 `sudo cp output_http.so input_file.so /usr/local/lib/`
+
+Clean Up
+
+`sudo rm -rf WiringPi Adafruit_Python_BMP Adafruit_Python_DHT mjpg-streamer-code-182 mjpg-streamer-code-182.zip`
 
 ### Wifi
 
@@ -332,9 +336,15 @@ Generate your self-signed certificate with the following command. You will be pr
 
 Change the symlink from non-SSL to SSL
 
+If using Raspbian Wheezy:
+
 `sudo ln -sf /etc/apache2/sites-available/default-ssl /etc/apache2/sites-enabled/000-default`
 
-Edit /etc/apache2/sites-enabled/000-default and make sure the top looks similar to this:
+If using Raspbian Jessie:
+
+`sudo ln -sf /etc/apache2/sites-available/default-ssl.conf /etc/apache2/sites-enabled/000-default.conf`
+
+Edit /etc/apache2/sites-enabled/000-default (or 000-default.conf if running Jessie) and make sure the top looks similar to this:
 
 ```
 <IfModule mod_ssl.c>
