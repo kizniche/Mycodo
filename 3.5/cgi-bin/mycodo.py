@@ -806,7 +806,10 @@ def daemon(output, log):
                                             sensor_ht_read_hum[j] < conditional_ht_setpoint[j][k][0]):
                                         message = "Conditional %s (%s) HT Sensor %s (%s) Humidity: %s%% < %s%%." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_hum[j], 2), conditional_ht_setpoint[j][k][0])
                                     
-                                    email(conditional_ht_do_notify[j][k][0], message)
+                                    try:
+                                        email(conditional_ht_do_notify[j][k][0], message)
+                                    except:
+                                        logging.warning("[Email Notify] Cound not send email.")
 
                         else:
                             logging.warning("[Conditional HT] Could not read sensor %s, did not check conditional %s", j+1, k+1)
