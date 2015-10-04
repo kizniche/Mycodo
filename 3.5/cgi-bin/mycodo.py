@@ -806,10 +806,7 @@ def daemon(output, log):
                                             sensor_ht_read_hum[j] < conditional_ht_setpoint[j][k][0]):
                                         message = "Conditional %s (%s) HT Sensor %s (%s) Humidity: %s%% < %s%%." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_hum[j], 2), conditional_ht_setpoint[j][k][0])
                                     
-                                    try:
-                                        email(conditional_ht_do_notify[j][k][0], message)
-                                    except:
-                                        logging.warning("[Email Notify] Cound not send email.")
+                                    email(conditional_ht_do_notify[j][k][0], message)
 
                         else:
                             logging.warning("[Conditional HT] Could not read sensor %s, did not check conditional %s", j+1, k+1)
@@ -3915,26 +3912,30 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
 
 # Email notification
 def email(email_to, message):
-    if (smtp_ssl):
-        server = smtplib.SMTP_SSL(smtp_host, smtp_port)
-        server.ehlo()
-    else:
-        server = smtplib.SMTP(smtp_host, smtp_port)
-        server.ehlo()
-        server.starttls()
+    try:
+        if (smtp_ssl):
+            server = smtplib.SMTP_SSL(smtp_host, smtp_port)
+            server.ehlo()
+        else:
+            server = smtplib.SMTP(smtp_host, smtp_port)
+            server.ehlo()
+            server.starttls()
 
-    server.ehlo
-    server.login(smtp_user, smtp_pass)
+        server.ehlo
+        server.login(smtp_user, smtp_pass)
 
-    # Body of email
-    # message = "Critical warning!"
+        # Body of email
+        # message = "Critical warning!"
 
-    msg = MIMEText(message)
-    msg['Subject'] = "Mycodo Notification (%s)" % socket.getfqdn()
-    msg['From'] = smtp_email_from
-    msg['To'] = email_to
-    server.sendmail(msg['From'], email_to, msg.as_string())
-    server.quit()
+        msg = MIMEText(message)
+        msg['Subject'] = "Mycodo Notification (%s)" % socket.getfqdn()
+        msg['From'] = smtp_email_from
+        msg['To'] = email_to
+        server.sendmail(msg['From'], email_to, msg.as_string())
+        server.quit()
+    except Exception, e:
+        logging.warning("[Email Notification] Error: %s", e)
+        logging.warning("[Email Notification] Cound not send email to %s with message: %s", email_to, message)
 
 
 
