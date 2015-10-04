@@ -3851,10 +3851,11 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
                     break
                 time.sleep(0.1)
 
-    except:
+    except Exception, error:
         relay_off(relay, local_relay_pin, local_relay_trigger)
         logging.warning("[Relay Duration] Exception caught while Relay %s was supposed to be on for %s seconds.",
                         relay, seconds)
+        logging.warning("[Relay Duration] Exception error: %s", error)
         if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'off' and conditional_relay_doaction[i] == 'off':
             if conditional_relay_sel_relay[i]:
                 relay_onoff(conditional_relay_dorelay[i], 'off')
@@ -3933,8 +3934,8 @@ def email(email_to, message):
         msg['To'] = email_to
         server.sendmail(msg['From'], email_to, msg.as_string())
         server.quit()
-    except Exception, e:
-        logging.warning("[Email Notification] Error: %s", e)
+    except Exception, error:
+        logging.warning("[Email Notification] Error: %s", error)
         logging.warning("[Email Notification] Cound not send email to %s with message: %s", email_to, message)
 
 
