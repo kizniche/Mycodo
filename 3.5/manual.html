@@ -15,6 +15,7 @@
 <li><a href="#preface">Preface</a></li>
 <li><a href="#web-interface">Web Interface</a></li>
 <li><a href="#system-update">System Update</a></li>
+<li><a href="#system-restore">System Restore</a></li>
 <li><a href="#discrete-pid-control">Discrete PID Control</a></li>
 <li><a href="#quick-set-up-examples">Quick Setup Examples</a></li>
 <ul>
@@ -45,9 +46,16 @@
 <a name="system-update"></a>
 <h2>System Update</h2>
 
-<p>If you have a fully-configured system, you may update to the latest version with the "Update Mycodo" button under the Advanced menu of the settings tab. A backup of the old system will be placed in the same directory the Mycodo main direcotry resides. For example, if this directory is /home/user/Mycodo, then the backup directory will reside at /home/user/Mycodo-backup.</p>
+<p>You may update Mycodo to the latest version with the "Update Mycodo" button under the Settings tab. A backup of the old system will be made to /var/Mycodo-backups/.</p>
 
-<p>Note: Logs and the user database will be preserved, however you will most likely need to reconfigure your settings and presets (a database updater is in the works). </p>
+<p>Note: All logs and databases will be preserved during the update process. If you wish to return to a previous backup, read the next section, System Restore.</p>
+
+<a name="system-restore"></a>
+<h2>System Restore</h2>
+
+<p>You may restore a backup of Mycodo and bring it back to a previous version. This may be desirable if an update happens to break your system. To view all backups, use the "All Backups" button under the Data tab. If you would like to view the backups in the contact of github updates, use the "Git Commits" button under the data tab. When viewing git commits, existing backups will be displayed under the commit for which the system was at during the time of the backup.</p>
+
+<p>To ensure no data is lost, when a backup is restored, a backup of the current system is also created.</p>
 
 <a name="discrete-pid-control"></a>
 <h2>Discrete PID Control</h2>
