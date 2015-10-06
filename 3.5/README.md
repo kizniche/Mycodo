@@ -278,7 +278,7 @@ Install video streaming capabilities (Note that it is recommended to require SSL
 
 Clean Up
 
-`sudo rm -rf WiringPi Adafruit_Python_BMP Adafruit_Python_DHT mjpg-streamer-code-182 mjpg-streamer-code-182.zip`
+`cd ~ && sudo rm -rf WiringPi Adafruit_Python_BMP Adafruit_Python_DHT mjpg-streamer-code-182 mjpg-streamer-code-182.zip`
 
 ### Wifi
 
@@ -377,11 +377,9 @@ Edit /etc/apache2/sites-enabled/000-default (or 000-default.conf if running Jess
 
 Add `ServerName your.domain.com` to /etc/apache2/apache2.conf
 
-Ensure SSL is enabled in apache2 and restart the server
+Ensure SSL is enabled
 
 `sudo a2enmod ssl`
-
-`sudo service apache2 restart`
 
 You will need to add the self-signed certificate that was created (/etc/ssl/localcerts/apache.pem) to your browser as trusted in order not to receive warnings. You can copy this from the /etc/ssl/localcerts/ directory or it can be obtained by visiting your server with your browser. The process for adding this file to your browser as trusted may be different for each browser, however there are many resources online that detail how to do so. Adding your certificate to your browser is highly recommended to ensure the site's certificate is what it's supposed to be, however you will still be able to access your site without adding the certificate, but you may receive a warning stating your site's security may be compromised.
 
@@ -407,15 +405,13 @@ If your server is accessible from the internet but you don't want to enable SSL 
 
 `sudo a2enmod rewrite`
 
-Then restart apache with
-
-`sudo service apache2 restart`
+A reboot is necessary for the tempfs to be operational and apache2 to start correctly.
 
 It is highly recommended that the configuration change be tested to determine if they actually worked. This can be done by going to https://yourwebaddress/mycodo/includes/ with your browser, and if you get an error, "Forbidden: You don't have permission to access /mycodo/includes on this server," or similar, then everything is working correctly. If the page actually loads or there is any other error than "forbidden", there is a problem and you should diagnose the issue before opening your server to beyond your local network.
 
 ### Database Creation
 
-Use the following commands and type 'all' when prompted to create databases
+Use the following command and type 'all' when prompted to create both the user and mycodo databases.
 
 `sudo /var/www/mycodo/update-database.py -i`
 
