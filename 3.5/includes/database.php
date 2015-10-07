@@ -23,8 +23,8 @@
 */
 
 $db = new SQLite3($mycodo_db);
-
 $udb = new SQLite3($user_db);
+$ndb = new SQLite3($note_db);
 
 
 $results = $udb->query('SELECT user_name, user_email FROM users');

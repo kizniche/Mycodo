@@ -25,9 +25,11 @@
 
 sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
 sql_database_user = '/var/www/mycodo/config/users.db'
+sql_database_note = '/var/www/mycodo/config/notes.db'
 
 db_version_mycodo = 12
 db_version_user = 1
+db_version_note = 1
 
 import getopt
 import getpass
@@ -198,6 +200,8 @@ def setup_db(update):
         mycodo_database_create()
         mycodo_database_update()
         user_database_update()
+        note_database_create()
+        note_database_update()
     else:
         target = raw_input("Generate which database? 'user', 'mycodo', or 'all'? ")
     
@@ -910,6 +914,35 @@ def mycodo_database_create():
     ModNullValue(sql_database_mycodo, 'Misc', 'Dismiss_Notification', 0)
     ModNullValue(sql_database_mycodo, 'Misc', 'Login_Message', '')
     ModNullValue(sql_database_mycodo, 'Misc', 'Refresh_Time', 300)
+
+
+def note_database_create():
+    AddTable(sql_database_note, 'Notes')
+    AddColumn(sql_database_note, 'Notes', 'Time', 'TEXT')
+    AddColumn(sql_database_note, 'Notes', 'User', 'TEXT')
+    AddColumn(sql_database_note, 'Notes', 'Note', 'TEXT')
+
+
+def note_database_update():
+    conn = sqlite3.connect(sql_database_note)
+    cur = conn.cursor()
+    cur.execute("PRAGMA user_version;")
+    for row in cur:
+        current_db_version_note = row[0]
+    print "Current User database version: %d" % current_db_version_note
+    print "Latest User database version: %d" % db_version_note
+    
+    # Version 1
+    if current_db_version_note < 1:
+        print "Note database is not versioned. Updating..."
+
+    if current_db_version_note == db_version_note:
+        print "Note database is already up to date."
+
+    # Update Note database version
+    cur.execute("PRAGMA user_version = %s;" % db_version_note)
+    conn.commit()
+    cur.close()
 
 
 def AddTable(sql_database, table):

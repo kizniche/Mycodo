@@ -94,6 +94,9 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 Major changes for each versioned release
 
+#### 3.5.80
++ Add basic note-taking functionality ("Notes" under Data tab)
+
 #### 3.5.79
 + Add backup restore feature to revert back to a previously-backed up system and databases (found in "Git Commits" of the Data tab)
 

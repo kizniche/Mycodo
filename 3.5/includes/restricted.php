@@ -2606,6 +2606,24 @@ if (isset($_POST['stop-timelapse'])) {
  *
  */
 
+// Delete Note
+if (isset($_POST['Delete_Note'])) {
+    $stmt = $ndb->prepare('DELETE FROM Notes WHERE Id = :id');
+    $stmt->bindValue(':id', $_POST['Delete_Note'], SQLITE3_TEXT);
+    $stmt->execute();
+}
+
+// Add Note
+if (isset($_POST['Add_Note'])) {
+    $note_ts = `date +"%Y-%m-%d %H:%M:%S"`;
+    $stmt = $ndb->prepare("INSERT INTO Notes VALUES(:id, :time, :user, :note)");
+    $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
+    $stmt->bindValue(':time', $note_ts, SQLITE3_TEXT);
+    $stmt->bindValue(':user', $_SESSION['user_name'], SQLITE3_TEXT);
+    $stmt->bindValue(':note', $_POST['Note_Text'], SQLITE3_TEXT);
+    $stmt->execute();
+}
+
 // Change email notify settings
 if (isset($_POST['ChangeNotify'])) {
     $stmt = $db->prepare("UPDATE SMTP SET Host=:host, SSL=:ssl, Port=:port, User=:user, Pass=:password, Email_From=:emailfrom, Daily_Max=:dailymax, Wait_Time=:waittime");

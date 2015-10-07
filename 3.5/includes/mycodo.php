@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.79";
+$version = "3.5.80";
 
 ######### Start Edit Configure #########
 
@@ -38,6 +38,7 @@ $stream_exec = $install_path . "/cgi-bin/camera-stream.sh";
 $timelapse_exec = $install_path . "/cgi-bin/camera-timelapse.sh";
 $mycodo_db = $install_path . "/config/mycodo.db";
 $user_db = $install_path . "/config/users.db";
+$note_db = $install_path . "/config/notes.db";
 $update_check = $install_path . "/.updatecheck";
 
 $daemon_log = $install_path . "/log/daemon.log";
@@ -3275,6 +3276,7 @@ if (isset($output_error)) {
                             <button type="submit" name="Relay" value="Relay">Relay<br>Log</button>
                         </td>
                         <td class="data-buttons-rightspace">
+                            <button style="width:100%" type="submit" name="Notes" value="Notes">Notes<br>&nbsp;</button>
                         </td>
                         <td>
                             <button style="width:100%" type="submit" name="Login" value="Login">Login<br>Log</button>
@@ -3398,6 +3400,35 @@ if (isset($output_error)) {
                             } else {
                                 echo `echo "Y M D H M S ID Name Relay DurationOn DurationOff\n$(cat /var/www/mycodo/log/timer-changes.log | tail -n 30)" | column -t`;
                             }
+                        }
+
+                        if (isset($_POST['Notes']) || isset($_POST['Delete_Note']) || isset($_POST['Add_Note'])) {
+                            echo "Notes<br> <br>";
+                            
+                            echo "<form action=\"?tab=data\" method=\"POST\">";
+                            echo "<textarea style=\"width: 80%;\" rows=\"2\" maxlength=1000 name=\"Note_Text\" title=\"\"></textarea> <button type=\"submit\" name=\"Add_Note\" value=\"\">Save<br>Note</button><br> <br>";
+
+                            $ndb = new SQLite3($note_db);
+                            unset($note_id);
+                            $results = $ndb->query('SELECT Id, Time, User, Note FROM Notes');
+                            $i = 0;
+                            while ($row = $results->fetchArray()) {
+                                $note_id[$i] = $row[0];
+                                $note_time[$i] = $row[1];
+                                $note_user[$i] = $row[2];
+                                $note_note[$i] = $row[3];
+                                $i++;
+                            }
+                            if (!isset($note_id)) $note_id = [];
+                            else {
+                                echo "<table class=\"notes\"><tr><td></td><td>#</td><td>Time</td><td>User</td><td>Note</td></tr>";
+
+                                for ($u = 0; $u < count($note_id); $u++) {
+                                    echo "<tr><td><button type=\"submit\" name=\"Delete_Note\" value=\"$note_id[$u]\">Delete</button></td><td>$u</td><td>$note_time[$u]</td><td>$note_user[$u]</td><td>$note_note[$u]</td></tr>";
+                                }
+                                echo "</table>";
+                            }
+                            echo "</form>";
                         }
                         
                         if(isset($_POST['Login']) && $_SESSION['user_name'] != 'guest') {
