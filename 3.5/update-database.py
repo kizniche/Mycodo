@@ -929,8 +929,8 @@ def note_database_update():
     cur.execute("PRAGMA user_version;")
     for row in cur:
         current_db_version_note = row[0]
-    print "Current User database version: %d" % current_db_version_note
-    print "Latest User database version: %d" % db_version_note
+    print "Current Note database version: %d" % current_db_version_note
+    print "Latest Note database version: %d" % db_version_note
     
     # Version 1
     if current_db_version_note < 1:
