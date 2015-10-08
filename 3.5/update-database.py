@@ -104,7 +104,7 @@ def usage():
     print '           Delete user from existing users.db database'
     print '    -h, --help'
     print '           Display this help and exit'
-    print "    -i, --install-db"
+    print "    -i, --install-db [update]"
     print '           Create new users.db, mycodo.db. or both'
     print '    -p, --pwchange'
     print '           Create a new password for user\n'
@@ -203,7 +203,7 @@ def setup_db(update):
         note_database_create()
         note_database_update()
     else:
-        target = raw_input("Generate which database? 'user', 'mycodo', or 'all'? ")
+        target = raw_input("Generate which database? 'user', 'mycodo', 'notes', or 'all'? ")
     
         if target == 'all' or target == 'mycodo':
             print "Mycodo database creation/integrity check"
@@ -214,6 +214,11 @@ def setup_db(update):
             delete_all_tables_user()
             create_all_tables_user()
             create_rows_columns_user()
+
+        if target == 'all' or target == 'notes':
+            note_database_create()
+            note_database_update()
+
 
 def mycodo_database_pre_update():
     print "Running pre-update checks..."
