@@ -3434,6 +3434,9 @@ if (isset($output_error)) {
 
                         if (isset($_POST['Edit_Note'])) {
                             echo " Edit Note<br> <br>";
+
+                            
+
                             $ndb = new SQLite3($note_db);
                             unset($note_id);
                             $results = $ndb->query("SELECT Id, Time, User, Note FROM Notes WHERE Id='" . $_POST['Edit_Note'] . "'");
@@ -3443,6 +3446,8 @@ if (isset($output_error)) {
                                 $note_user = $row[2];
                                 $note_note = $row[3];
                             }
+
+                            echo "<table class=\"notes\"><tr><td>Time</td><td>User</td></tr><tr><td>$note_time</td><td>$note_user</td></tr></table>";
 
                             echo "<form action=\"?tab=data\" method=\"POST\">";
                             echo "<textarea style=\"width: 80%;\" rows=\"2\" maxlength=1000 name=\"Edit_Note_Text\" title=\"\">$note_note</textarea> <button type=\"submit\" name=\"Edit_Note_Save\" value=\"$note_id\">Save<br>Note</button><br> <br>";
