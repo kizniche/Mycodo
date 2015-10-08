@@ -108,8 +108,8 @@ def usage():
     print '           Create new users.db, mycodo.db. or both'
     print '    -p, --pwchange'
     print '           Create a new password for user\n'
-    print 'Examples: setup-database.py -i'
-    print '          setup-database.py -p /var/www/mycodo/config/users.db'
+    print 'Examples: update-database.py -i'
+    print '          update-database.py -p /var/www/mycodo/config/users.db'
 
 
 def add_user(db):

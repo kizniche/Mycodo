@@ -465,7 +465,7 @@ def daemon(output, log):
 
     logging.info("[Daemon] Starting daemon")
 
-    logging.info("[Daemon} Starting communication server")
+    logging.info("[Daemon] Starting communication server")
     ct = ComThread()
     ct.daemon = True
     ct.start()
