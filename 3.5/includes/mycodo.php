@@ -3402,8 +3402,9 @@ if (isset($output_error)) {
                             }
                         }
 
-                        if (isset($_POST['Notes']) || isset($_POST['Delete_Note']) || isset($_POST['Add_Note'])) {
-                            echo "Notes<br> <br>";
+
+                        if (isset($_POST['Notes']) || isset($_POST['Delete_Note']) || isset($_POST['Add_Note']) || isset($_POST['Edit_Note_Save'])) {
+                            echo "All Notes<br> <br>";
                             
                             echo "<form action=\"?tab=data\" method=\"POST\">";
                             echo "<textarea style=\"width: 80%;\" rows=\"2\" maxlength=1000 name=\"Note_Text\" title=\"\"></textarea> <button type=\"submit\" name=\"Add_Note\" value=\"\">Save<br>Note</button><br> <br>";
@@ -3424,13 +3425,31 @@ if (isset($output_error)) {
                                 echo "<table class=\"notes\"><tr><td></td><td>#</td><td>Time</td><td>User</td><td>Note</td></tr>";
 
                                 for ($u = 0; $u < count($note_id); $u++) {
-                                    echo "<tr><td><button type=\"submit\" name=\"Delete_Note\" value=\"$note_id[$u]\">Delete</button></td><td>$u</td><td>$note_time[$u]</td><td>$note_user[$u]</td><td>$note_note[$u]</td></tr>";
+                                    echo "<tr><td><button type=\"submit\" name=\"Delete_Note\" value=\"$note_id[$u]\">Delete</button><button type=\"submit\" name=\"Edit_Note\" value=\"$note_id[$u]\">Edit</button></td><td>$u</td><td>$note_time[$u]</td><td>$note_user[$u]</td><td>$note_note[$u]</td></tr>";
                                 }
                                 echo "</table>";
                             }
                             echo "</form>";
                         }
+
+                        if (isset($_POST['Edit_Note'])) {
+                            echo " Edit Note<br> <br>";
+                            $ndb = new SQLite3($note_db);
+                            unset($note_id);
+                            $results = $ndb->query("SELECT Id, Time, User, Note FROM Notes WHERE Id='" . $_POST['Edit_Note'] . "'");
+                            while ($row = $results->fetchArray()) {
+                                $note_id = $row[0];
+                                $note_time = $row[1];
+                                $note_user = $row[2];
+                                $note_note = $row[3];
+                            }
+
+                            echo "<form action=\"?tab=data\" method=\"POST\">";
+                            echo "<textarea style=\"width: 80%;\" rows=\"2\" maxlength=1000 name=\"Edit_Note_Text\" title=\"\">$note_note</textarea> <button type=\"submit\" name=\"Edit_Note_Save\" value=\"$note_id\">Save<br>Note</button><br> <br>";
+                            echo "</form>";
+                        }
                         
+
                         if(isset($_POST['Login']) && $_SESSION['user_name'] != 'guest') {
                             echo 'Time, Type of auth, user, IP, Hostname, Referral, Browser<br> <br>';
                             if ($_POST['Lines'] != '') {

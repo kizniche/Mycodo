@@ -2624,6 +2624,14 @@ if (isset($_POST['Add_Note'])) {
     $stmt->execute();
 }
 
+// Edit Note
+if (isset($_POST['Edit_Note_Save'])) {
+    $stmt = $ndb->prepare("UPDATE Notes SET Note=:note WHERE Id=:id");
+    $stmt->bindValue(':id', $_POST['Edit_Note_Save'], SQLITE3_TEXT);
+    $stmt->bindValue(':note', $_POST['Edit_Note_Text'], SQLITE3_TEXT);
+    $stmt->execute();
+}
+
 // Change email notify settings
 if (isset($_POST['ChangeNotify'])) {
     $stmt = $db->prepare("UPDATE SMTP SET Host=:host, SSL=:ssl, Port=:port, User=:user, Pass=:password, Email_From=:emailfrom, Daily_Max=:dailymax, Wait_Time=:waittime");
