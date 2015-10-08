@@ -3407,7 +3407,7 @@ if (isset($output_error)) {
                             echo "All Notes<br> <br>";
                             
                             echo "<form action=\"?tab=data\" method=\"POST\">";
-                            echo "<textarea style=\"width: 80%;\" rows=\"2\" maxlength=1000 name=\"Note_Text\" title=\"\"></textarea> <button type=\"submit\" name=\"Add_Note\" value=\"\">Save<br>Note</button><br> <br>";
+                            echo "<textarea style=\"width: 80%;\" rows=\"2\" maxlength=1000 name=\"Note_Text\" title=\"\"></textarea> <button type=\"submit\" name=\"Add_Note\" value=\"\">Save<br>New<br>Note</button><br> <br>";
 
                             $ndb = new SQLite3($note_db);
                             unset($note_id);
@@ -3424,7 +3424,7 @@ if (isset($output_error)) {
                             else {
                                 echo "<table class=\"notes\"><tr><td></td><td>#</td><td>Time</td><td>User</td><td>Note</td></tr>";
 
-                                for ($u = 0; $u < count($note_id); $u++) {
+                                for ($u = count($note_id)-1; $u >= 0; $u--) {
                                     echo "<tr><td><button type=\"submit\" name=\"Delete_Note\" value=\"$note_id[$u]\">Delete</button><button type=\"submit\" name=\"Edit_Note\" value=\"$note_id[$u]\">Edit</button></td><td>$u</td><td>$note_time[$u]</td><td>$note_user[$u]</td><td>$note_note[$u]</td></tr>";
                                 }
                                 echo "</table>";
@@ -3434,8 +3434,6 @@ if (isset($output_error)) {
 
                         if (isset($_POST['Edit_Note'])) {
                             echo " Edit Note<br> <br>";
-
-                            
 
                             $ndb = new SQLite3($note_db);
                             unset($note_id);
@@ -3448,7 +3446,6 @@ if (isset($output_error)) {
                             }
 
                             echo "<table class=\"notes\"><tr><td>Time</td><td>User</td></tr><tr><td>$note_time</td><td>$note_user</td></tr></table>";
-
                             echo "<form action=\"?tab=data\" method=\"POST\">";
                             echo "<textarea style=\"width: 80%;\" rows=\"2\" maxlength=1000 name=\"Edit_Note_Text\" title=\"\">$note_note</textarea> <button type=\"submit\" name=\"Edit_Note_Save\" value=\"$note_id\">Save<br>Note</button><br> <br>";
                             echo "</form>";
