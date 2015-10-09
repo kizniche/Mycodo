@@ -39,6 +39,8 @@ case "${1:-''}" in
         mkdir -p /var/log/mycodo/images
         mkdir -p /var/www/mycodo/camera-stills
         mkdir -p /var/www/mycodo/camera-timelapse
+        mkdir -p /var/www/mycodo/notes
+        mkdir -p /var/www/mycodo/notes/uploads
         
         if [ ! -e /var/www/mycodo/log/update.log ]; then
             touch /var/www/mycodo/log/update.log
