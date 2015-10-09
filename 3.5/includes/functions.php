@@ -465,3 +465,10 @@ function update_check($install_path, $update_check) {
         exec("echo '0' > $update_check");
     }
 }
+
+function endswith($string, $test) {
+    $strlen = strlen($string);
+    $testlen = strlen($test);
+    if ($testlen > $strlen) return false;
+    return substr_compare($string, $test, $strlen - $testlen, $testlen) === 0;
+}

@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.80";
+$version = "3.5.81";
 
 ######### Start Edit Configure #########
 
@@ -3298,6 +3298,7 @@ if (isset($output_error)) {
                 <div style="font-family: monospace; padding-top:1em;">
                     <pre><?php
                         if(isset($_POST['TSensor'])) {
+                            echo "Temperature Sensor Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `echo "Y M D H M S Tc Sensor\n$(cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log | tail -n $Lines)" | column -t`;
@@ -3317,6 +3318,7 @@ if (isset($output_error)) {
                         }
                         
                         if(isset($_POST['HTSensor'])) {
+                            echo "Temperature/Humidity Sensor Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `echo "Y M D H M S Temperature(C) Relative-Humidity DewPoint(C) Sensor\n$(cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log | tail -n $Lines)" | column -t`;
@@ -3336,6 +3338,7 @@ if (isset($output_error)) {
                         }
 
                         if(isset($_POST['CO2Sensor'])) {
+                            echo "CO<sub>2</sub> Sensor Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `echo "Y M D H M S CO2 Sensor\n$(cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log | tail -n $Lines)" | column -t`;
@@ -3355,6 +3358,7 @@ if (isset($output_error)) {
                         }
 
                         if(isset($_POST['PressSensor'])) {
+                            echo "Pressure Sensor Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `echo "Y M D H M S Temperature(C) Pressure(kPa) Altitude(m) Sensor\n$(cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log | tail -n $Lines)" | column -t`;
@@ -3374,6 +3378,7 @@ if (isset($output_error)) {
                         }
 
                         if(isset($_POST['Relay'])) {
+                            echo "Relay Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `echo "Y M D H M S Sensor Relay GPIO SecondsOn\n$(cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | tail -n $Lines)" | column -t`;
@@ -3402,12 +3407,10 @@ if (isset($output_error)) {
                             }
                         }
 
-
                         if (isset($_POST['Notes']) || isset($_POST['Delete_Note']) || isset($_POST['Add_Note']) || isset($_POST['Edit_Note_Save'])) {
-                            echo "All Notes<br> <br>";
-                            
-                            echo "<form action=\"?tab=data\" method=\"POST\">";
-                            echo "<textarea style=\"width: 80%;\" rows=\"2\" maxlength=1000 name=\"Note_Text\" title=\"\"></textarea> <button type=\"submit\" name=\"Add_Note\" value=\"\">Save<br>New<br>Note</button><br> <br>";
+                            echo "Notes<br> <br>";
+                            echo "<form action=\"?tab=data\" method=\"POST\" enctype=\"multipart/form-data\">";
+                            echo "<textarea style=\"width: 80%;\" rows=\"2\" maxlength=1000 name=\"Note_Text\" title=\"\"></textarea> <button type=\"submit\" name=\"Add_Note\" value=\"\">Save<br>Note</button><br><input id='upload' name=\"notes[]\" type=\"file\" multiple=\"multiple\" /><br> <br>";
 
                             $ndb = new SQLite3($note_db);
                             unset($note_id);
@@ -3423,9 +3426,51 @@ if (isset($output_error)) {
                             if (!isset($note_id)) $note_id = [];
                             else {
                                 echo "<table class=\"notes\"><tr><td></td><td>#</td><td>Time</td><td>User</td><td>Note</td></tr>";
-
                                 for ($u = count($note_id)-1; $u >= 0; $u--) {
                                     echo "<tr><td><button type=\"submit\" name=\"Delete_Note\" value=\"$note_id[$u]\">Delete</button><button type=\"submit\" name=\"Edit_Note\" value=\"$note_id[$u]\">Edit</button></td><td>$u</td><td>$note_time[$u]</td><td>$note_user[$u]</td><td>$note_note[$u]</td></tr>";
+
+                                    unset($upload_id);
+                                    $results = $ndb->query("SELECT Id, Name, File_Name, Location FROM Uploads WHERE Id='" . $note_id[$u] . "'");
+                                    $i = 0;
+                                    while ($row = $results->fetchArray()) {
+                                        $upload_id[$i] = $row[0];
+                                        $upload_name[$i] = $row[1];
+                                        $upload_file_name[$i] = $row[2];
+                                        $upload_location[$i] = $row[3];
+                                        $i++;
+                                    }
+                                    if (!isset($upload_id)) $upload_id = [];
+                                    else {
+                                        echo "<tr><td colspan=\"4\" style=\"text-align:right\"></td><td><table><tr><td>Files:</td>";
+                                        for ($v = 0; $v < count($upload_id); $v++) {
+                                            if ($v != 0) echo "<tr><td></td>";
+                                            echo "<td><a href=\"image.php?span=ul-dl&file=$upload_file_name[$v]\">$upload_name[$v]</a></td></tr>";
+                                        }
+
+                                        $images = False;
+                                        if (endswith($upload_name[$v], '.jpg') || endswith($upload_name[$v], '.jpeg') || endswith($upload_name[$v], '.png') || endswith($upload_name[$v], '.gif')) {
+                                            $images = True;
+                                        }
+                                        if ($images == True) {
+                                            echo "<tr><td></td><td>";
+                                        }
+                                        for ($v = 0; $v < count($upload_id); $v++) {
+                                            if (endswith($upload_name[$v], '.jpg') || endswith($upload_name[$v], '.jpeg')) {
+                                                echo "<a href=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"><img style=\"max-height: 100px; max-width: 100px;\" src=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"></a>";
+                                            }
+                                            if (endswith($upload_name[$v], '.png')) {
+                                                echo "<a href=\"image.php?span=ul-png&file=$upload_file_name[$v]\"><img style=\"max-height: 100px; max-width: 100px;\" src=\"image.php?span=ul-png&file=$upload_file_name[$v]\"></a>";
+                                            }
+                                            if (endswith($upload_name[$v], '.gif')) {
+                                                echo "<a href=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"><img style=\"max-height: 100px; max-width: 100px;\" src=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"></a>";
+                                            }
+                                        }
+                                        if ($images == True) {
+                                            echo "</td></tr>";
+                                        }
+                                        echo "</table></td></tr>";
+
+                                    }
                                 }
                                 echo "</table>";
                             }
@@ -3433,8 +3478,7 @@ if (isset($output_error)) {
                         }
 
                         if (isset($_POST['Edit_Note'])) {
-                            echo " Edit Note<br> <br>";
-
+                            echo "Edit Note<br> <br>";
                             $ndb = new SQLite3($note_db);
                             unset($note_id);
                             $results = $ndb->query("SELECT Id, Time, User, Note FROM Notes WHERE Id='" . $_POST['Edit_Note'] . "'");
@@ -3444,13 +3488,11 @@ if (isset($output_error)) {
                                 $note_user = $row[2];
                                 $note_note = $row[3];
                             }
-
-                            echo "<table class=\"notes\"><tr><td>Time</td><td>User</td></tr><tr><td>$note_time</td><td>$note_user</td></tr></table>";
+                            echo "<table class=\"notes\"><tr><td>Time</td><td>User</td></tr><tr><td>$note_time</td><td>$note_user</td></tr></table><br>";
                             echo "<form action=\"?tab=data\" method=\"POST\">";
                             echo "<textarea style=\"width: 80%;\" rows=\"2\" maxlength=1000 name=\"Edit_Note_Text\" title=\"\">$note_note</textarea> <button type=\"submit\" name=\"Edit_Note_Save\" value=\"$note_id\">Save<br>Note</button><br> <br>";
                             echo "</form>";
                         }
-                        
 
                         if(isset($_POST['Login']) && $_SESSION['user_name'] != 'guest') {
                             echo 'Time, Type of auth, user, IP, Hostname, Referral, Browser<br> <br>';
@@ -3469,31 +3511,25 @@ if (isset($output_error)) {
                             } else {
                                 $commits = `git log --oneline | head -n 30`;
                             }
-
                             echo '<div style="padding: 1em 0 1.5em 0;">Note: Restoring a backup will restore all files from the backup, including databases and logs.<br>When restoring a backup, a backup of the current system will also be created.<br>Deleting a backup will delete all files of that backup.</div>';
-
                             $current_commit = `git rev-parse --short HEAD`;
                             $current_commit = mb_substr($current_commit, 0, 7);
                             echo "Current commit: <a style=\"color: #FF0000;\" href=\"https://github.com/kizniche/Mycodo/commit/$current_commit\" target=\"_blank\">$current_commit</a> (newest commits are at the top, the system is currently at the commit <span style=\"color:red;\">colored red</span>)<br> <br><strong><u>Commit</u>  <u>Description</u></strong><br>";
-
                             exec("$install_path/cgi-bin/mycodo-wrapper fetchorigin");
                             $commits_ahead = `git log --oneline master...origin/master`;
                             $commits_ahead = explode("\n", $commits_ahead);
                             foreach ($commits_ahead as $n => $line) {
                                 $commits_ahead_id[$n] = substr($line, 0, strpos($line, ' '));
                             }
-
                             for ($i = 0; $i < count($commits_ahead); $i++) {
                                 if ($commits_ahead[$i] != '' && $commits_ahead_id[$i] != $current_commit) {
                                     echo "<div style=\"padding: 0.7em 0 0 0;\"><a href=\"https://github.com/kizniche/Mycodo/commit/$commits_ahead_id[$i]\" target=\"_blank\">$commits_ahead[$i]</a></div>";
                                 }
                             }
-
                             $commits_list = explode("\n", $commits);
                             foreach ($commits_list as $n => $line) {
                                 $commits_behind_id[$n] = substr($line, 0, strpos($line, ' '));
                             }
-
                             $dirs = array_filter(glob('/var/Mycodo-backups/*'), 'is_dir');
                             if (count($dirs) != 0) {
                                 for ($i = 0; $i < count($dirs); $i++) {
@@ -3501,14 +3537,12 @@ if (isset($output_error)) {
                                     $backup_dates[$i] = substr($dirs[$i], 27, 19);
                                 }
                             }
-
                             for ($j = 0; $j < count($commits_list); $j++) {
                                 if ($commits_behind_id[$j] == $current_commit) {
                                     echo "<div style=\"padding: 0.7em 0 0 0;\"><a style=\"color: #FF0000;\" href=\"https://github.com/kizniche/Mycodo/commit/$commits_behind_id[$j]\" target=\"_blank\">$commits_list[$j]</a></div>";
                                 } else {
                                     echo "<div style=\"padding: 0.7em 0 0 0;\"><a href=\"https://github.com/kizniche/Mycodo/commit/$commits_behind_id[$j]\" target=\"_blank\">$commits_list[$j]</a></div>";
                                 }
-
                                 if (isset($backup_commits) && count($backup_commits) != 0) {
                                     for ($i = 0; $i < count($backup_commits); $i++) {
                                         if ($backup_commits[$i] == $commits_behind_id[$j]) {
@@ -3532,19 +3566,15 @@ if (isset($output_error)) {
 
                         if (isset($_POST['Backups'])) {
                             echo '<div style="padding: 1em 0 1.5em 0;">Note: Restoring a backup will restore all files from the backup, including databases and logs.<br>When restoring a backup, a backup of the current system will also be created.<br>Deleting a backup will delete all files of that backup.</div>';
-
                             $dirs = array_filter(glob('/var/Mycodo-backups/*'), 'is_dir');
-
                             for ($i = 0; $i < count($dirs); $i++) {
                                 $backup_commits[$i] = mb_substr($dirs[$i], -7);
                                 $backup_dates[$i] = substr($dirs[$i], 27, 19);
                             }
-
                             if (count($dirs) == 0) {
                                 echo "0 backups found";
                             } else {
                                 for ($i = 0; $i < count($dirs); $i++) {
-                                    
                                     echo "<table class=\"gitcommits\">
                                         <tr>
                                             <td><a href=\"https://github.com/kizniche/Mycodo/commit/$backup_commits[$i]\" target=\"_blank\">$backup_commits[$i]</a></td>
@@ -3572,7 +3602,6 @@ if (isset($output_error)) {
 
                         if(isset($_POST['Update'])) {
                             $log = '/var/www/mycodo/log/update.log';
-
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `tail -n $Lines $log`;
@@ -3583,7 +3612,6 @@ if (isset($output_error)) {
 
                         if(isset($_POST['Restore'])) {
                             $log = '/var/www/mycodo/log/restore.log';
-
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `tail -n $Lines $log`;

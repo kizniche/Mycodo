@@ -29,7 +29,7 @@ sql_database_note = '/var/www/mycodo/config/notes.db'
 
 db_version_mycodo = 12
 db_version_user = 1
-db_version_note = 1
+db_version_note = 2
 
 import getopt
 import getpass
@@ -934,20 +934,28 @@ def note_database_update():
     cur.execute("PRAGMA user_version;")
     for row in cur:
         current_db_version_note = row[0]
-    print "Current Note database version: %d" % current_db_version_note
-    print "Latest Note database version: %d" % db_version_note
-    
-    # Version 1
-    if current_db_version_note < 1:
-        print "Note database is not versioned. Updating..."
-
-    if current_db_version_note == db_version_note:
+    if db_version_note == current_db_version_note:
         print "Note database is already up to date."
+    else:
+        # Update Note database version
+        print "Current Note database version: %d" % current_db_version_note
+        print "Latest Note database version: %d" % db_version_note
+        print "Updating Note database..."
+        conn = sqlite3.connect(sql_database_note)
+        cur = conn.cursor()
+        cur.execute("PRAGMA user_version = %s;" % db_version_note)
+        conn.commit()
+        cur.close()
 
-    # Update Note database version
-    cur.execute("PRAGMA user_version = %s;" % db_version_note)
-    conn.commit()
-    cur.close()
+    # Version 2
+    if current_db_version_note < 2:
+        conn = sqlite3.connect(sql_database_note)
+        cur = conn.cursor()
+        cur.execute("CREATE TABLE IF NOT EXISTS Uploads (Id TEXT)")
+        cur.close()
+        AddColumn(sql_database_note, 'Uploads', 'Name', 'TEXT')
+        AddColumn(sql_database_note, 'Uploads', 'File_Name', 'TEXT')
+        AddColumn(sql_database_note, 'Uploads', 'Location', 'TEXT')
 
 
 def AddTable(sql_database, table):

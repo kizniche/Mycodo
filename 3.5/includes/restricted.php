@@ -2616,8 +2616,42 @@ if (isset($_POST['Delete_Note'])) {
 // Add Note
 if (isset($_POST['Add_Note'])) {
     $note_ts = `date +"%Y-%m-%d %H:%M:%S"`;
+    $uniqueid = uniqid();
+
+    if(count($_FILES['notes']['name']) > 0) {
+        for($i = 0; $i < count($_FILES['notes']['name']); $i++) {
+          //Get the temp file path
+            $tmpFilePath = $_FILES['notes']['tmp_name'][$i];
+
+            //Make sure we have a filepath
+            if($tmpFilePath != "") {
+
+                //save the filename
+                $shortname = $_FILES['notes']['name'][$i];
+
+                //save the url and the file
+                $fullName = date('d-m-Y-H-i-s') . '-' . $_FILES['notes']['name'][$i];
+                $filePath = "/var/www/mycodo/notes/uploads/" . $fullName;
+
+                //Upload the file into the temp dir
+                if(move_uploaded_file($tmpFilePath, $filePath)) {
+                    $files[] = $shortname;
+                    $stmt = $ndb->prepare("INSERT INTO Uploads VALUES(:id, :name, :filename, :location)");
+                    $stmt->bindValue(':id', $uniqueid, SQLITE3_TEXT);
+                    $stmt->bindValue(':name', $shortname, SQLITE3_TEXT);
+                    $stmt->bindValue(':filename', $fullName, SQLITE3_TEXT);
+                    $stmt->bindValue(':location', $filePath, SQLITE3_TEXT);
+                    $stmt->execute();
+                    //insert into db 
+                    //use $shortname for the filename
+                    //use $filePath for the relative url to the file
+                }
+            }
+        }
+    }
+
     $stmt = $ndb->prepare("INSERT INTO Notes VALUES(:id, :time, :user, :note)");
-    $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
+    $stmt->bindValue(':id', $uniqueid, SQLITE3_TEXT);
     $stmt->bindValue(':time', $note_ts, SQLITE3_TEXT);
     $stmt->bindValue(':user', $_SESSION['user_name'], SQLITE3_TEXT);
     $stmt->bindValue(':note', $_POST['Note_Text'], SQLITE3_TEXT);
