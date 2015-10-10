@@ -3223,7 +3223,7 @@ if (isset($output_error)) {
 
             <div style="padding: 10px 0 0 15px;">
                 <form action="?tab=data<?php if (isset($_GET['page'])) echo '&page=' , $_GET['page']; ?>" method="POST">
-                <table>
+                <table class="data-buttons">
                     <tr>
                         <td rowspan="2" class="data-buttons-rightspace" style="text-align:center; line-height:1.6em;">
                             Lines<br><input style="width: 4em;" type="text" maxlength=8 size=8 name="Lines" value="<?php if (isset($_POST['Lines'])) echo $_POST['Lines']; ?>" title="The maximum number of lines to display. Defaults to 30 if left blank."/>
@@ -3244,7 +3244,7 @@ if (isset($output_error)) {
                             <button type="submit" name="Relay_Changes" value="Relay">Relay<br>Δ</button>
                         </td>
                         <td class="data-buttons-rightspace">
-                            <button type="submit" name="Timer_Changes" value="Timer">Timer<br>Δ</button>
+                            <button style="width:100%" type="submit" name="Timer_Changes" value="Timer">Timer<br>Δ</button>
                         </td>
                         <td>
                             <button type="submit" name="Daemon" value="Daemon">Daemon<br>Log</button>
@@ -3424,13 +3424,13 @@ if (isset($output_error)) {
                             <table style=\"width:100%\";>
                                 <tr>
                                     <td style=\"width: auto;\">
-                                        <textarea style=\"width: 52em;\" rows=\"6\" maxlength=1000 name=\"Note_Text\" title=\"\"></textarea>
+                                        <textarea style=\"width: 40em;\" rows=\"6\" maxlength=1000 name=\"Note_Text\" title=\"\"></textarea>
                                     </td>
-                                    <td style=\"vertical-align: bottom; height:100%; width:100%;\">
+                                    <td style=\"vertical-align: top; height:100%; width:100%;\">
                                         <table style=\"height:100%; width:100%;\">
                                             <tr>
-                                                <td style=\"padding: 0 0 0.3em 0.4em; vertical-align: top; height:1em;\">
-                                                    Upload Files:
+                                                <td style=\"padding: 0 0 0.4em 0.4em; vertical-align: top; height:1em;\">
+                                                    Upload (hold Ctrl to select multiple files):
                                                 </td>
                                             </tr>
                                             <tr>
@@ -3439,8 +3439,8 @@ if (isset($output_error)) {
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style=\"padding-left: 0.4em; vertical-align: bottom;\">
-                                                    <button type=\"submit\" name=\"Add_Note\" value=\"\">Save<br>Note</button>
+                                                <td style=\"padding: 0.4em 0 0 0.4em; vertical-align: bottom;\">
+                                                    <button style=\"width:5.7em;\" type=\"submit\" name=\"Add_Note\" value=\"\">Save<br>Note</button>
                                                 </td>
                                             </tr>
                                         </table>
@@ -3464,9 +3464,22 @@ if (isset($output_error)) {
                             }
                             if (!isset($note_id)) $note_id = [];
                             else {
-                                echo "<table class=\"notes\"><tr><td></td><td>#</td><td>Time</td><td>User</td><td colspan=\"2\">Note</td></tr>";
+                                echo "<table class=\"notes\">
+                                    <tr>
+                                        <td></td>
+                                        <td style=\"padding-bottom:0.5em;\">#</td>
+                                        <td>Time</td>
+                                        <td>User</td>
+                                        <td colspan=\"2\">Note</td>
+                                    </tr>";
                                 for ($u = count($note_id)-1; $u >= 0; $u--) {
-                                    echo "<tr><td><button style=\"width:5em;\" type=\"submit\" name=\"Delete_Note\" value=\"$note_id[$u]\">Delete</button><br><button style=\"width:5em;\" type=\"submit\" name=\"Edit_Note\" value=\"$note_id[$u]\">Edit</button></td><td>$u</td><td style=\"line-height:1.5em; width:1em;\">$note_time[$u]</td><td>$note_user[$u]</td><td colspan=\"2\" class=\"wrap\">" . htmlspecialchars($note_note[$u]) . "</td></tr>";
+                                    echo "<tr>
+                                        <td style=\"padding-top:0.5em; border-style: solid none none none; border-width: 1px;\"><button style=\"width:5em;\" type=\"submit\" name=\"Delete_Note\" value=\"$note_id[$u]\">Delete</button><br><button style=\"width:5em;\" type=\"submit\" name=\"Edit_Note\" value=\"$note_id[$u]\">Edit</button></td>
+                                        <td style=\"border-style: solid none none none; border-width: 1px;\">$u</td>
+                                        <td style=\"border-style: solid none none none; border-width: 1px; line-height:1.5em; width:7em;\">$note_time[$u]</td>
+                                        <td style=\"border-style: solid none none none; border-width: 1px;\">$note_user[$u]</td>
+                                        <td style=\"border-style: solid none none none; border-width: 1px; padding-bottom: 1em;\" colspan=\"2\" class=\"wrap\">" . htmlspecialchars($note_note[$u]) . "</td>
+                                    </tr>";
 
                                     unset($upload_id);
                                     $results = $ndb->query("SELECT Id, Name, File_Name, Location FROM Uploads WHERE Id='" . $note_id[$u] . "'");
@@ -3499,13 +3512,13 @@ if (isset($output_error)) {
                                         }
                                         for ($v = 0; $v < count($upload_id); $v++) {
                                             if (endswith($upload_name[$v], '.jpg') || endswith($upload_name[$v], '.jpeg')) {
-                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"><img style=\"max-height: 100px; max-width: 100px;\" src=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"></a></div>";
+                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"><img style=\"max-height: 125px; max-width: 125px;\" src=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"></a></div>";
                                             }
                                             if (endswith($upload_name[$v], '.png')) {
-                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-png&file=$upload_file_name[$v]\"><img style=\"max-height: 100px; max-width: 100px;\" src=\"image.php?span=ul-png&file=$upload_file_name[$v]\"></a></div>";
+                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-png&file=$upload_file_name[$v]\"><img style=\"max-height: 125px; max-width: 125px;\" src=\"image.php?span=ul-png&file=$upload_file_name[$v]\"></a></div>";
                                             }
                                             if (endswith($upload_name[$v], '.gif')) {
-                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"><img style=\"max-height: 100px; max-width: 100px;\" src=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"></a></div>";
+                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"><img style=\"max-height: 125px; max-width: 125px;\" src=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"></a></div>";
                                             }
                                         }
                                         if ($images == True) {
@@ -3537,7 +3550,7 @@ if (isset($output_error)) {
                                         <textarea style=\"width: 52em;\" rows=\"15\" maxlength=1000 name=\"Edit_Note_Text\" title=\"\">$note_note</textarea>
                                     </td>
                                     <td style=\"vertical-align: bottom; padding-left: 0.4em;\">
-                                        <button type=\"submit\" name=\"Edit_Note_Save\" value=\"$note_id\">Save<br>Note</button>
+                                        <button style=\"width:5.7em;\" type=\"submit\" name=\"Edit_Note_Save\" value=\"$note_id\">Save<br>Note</button>
                                     </td>
                                 </tr>
                             </table>

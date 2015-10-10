@@ -253,8 +253,12 @@ button.linkoff {
     padding:0 0.1em;
 }
 
+.data-buttons td {
+  padding: 0.1em;
+}
+
 .data-buttons-rightspace {
-    padding:0 0.6em 0 0.1em;
+    padding:0 0.6em 0 0.1em !important;
 }
 
 
