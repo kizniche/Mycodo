@@ -3425,9 +3425,9 @@ if (isset($output_error)) {
                             }
                             if (!isset($note_id)) $note_id = [];
                             else {
-                                echo "<table class=\"notes\"><tr><td></td><td>#</td><td>Time</td><td>User</td><td>Note</td></tr>";
+                                echo "<table class=\"notes\"><tr><td></td><td>#</td><td>Time</td><td>User</td><td colspan=\"2\">Note</td></tr>";
                                 for ($u = count($note_id)-1; $u >= 0; $u--) {
-                                    echo "<tr><td><button type=\"submit\" name=\"Delete_Note\" value=\"$note_id[$u]\">Delete</button><button type=\"submit\" name=\"Edit_Note\" value=\"$note_id[$u]\">Edit</button></td><td>$u</td><td>$note_time[$u]</td><td>$note_user[$u]</td><td>$note_note[$u]</td></tr>";
+                                    echo "<tr><td><button type=\"submit\" name=\"Delete_Note\" value=\"$note_id[$u]\">Delete</button><button type=\"submit\" name=\"Edit_Note\" value=\"$note_id[$u]\">Edit</button></td><td>$u</td><td>$note_time[$u]</td><td>$note_user[$u]</td><td colspan=\"2\">$note_note[$u]</td></tr>";
 
                                     unset($upload_id);
                                     $results = $ndb->query("SELECT Id, Name, File_Name, Location FROM Uploads WHERE Id='" . $note_id[$u] . "'");
@@ -3441,35 +3441,36 @@ if (isset($output_error)) {
                                     }
                                     if (!isset($upload_id)) $upload_id = [];
                                     else {
-                                        echo "<tr><td colspan=\"4\" style=\"text-align:right\"></td><td><table><tr><td>Files:</td>";
+                                        echo "<tr><td colspan=\"4\" style=\"text-align:right\"></td><td>Files:</td>";
                                         for ($v = 0; $v < count($upload_id); $v++) {
-                                            if ($v != 0) echo "<tr><td></td>";
+                                            if ($v != 0) echo "<tr><td colspan=\"5\"></td>";
                                             echo "<td><a href=\"image.php?span=ul-dl&file=$upload_file_name[$v]\">$upload_name[$v]</a></td></tr>";
                                         }
 
                                         $images = False;
-                                        if (endswith($upload_name[$v], '.jpg') || endswith($upload_name[$v], '.jpeg') || endswith($upload_name[$v], '.png') || endswith($upload_name[$v], '.gif')) {
-                                            $images = True;
+                                        for ($v = 0; $v < count($upload_id); $v++) {
+                                            if (endswith($upload_name[$v], '.jpg') || endswith($upload_name[$v], '.jpeg') || endswith($upload_name[$v], '.png') || endswith($upload_name[$v], '.gif')) {
+                                                $images = True;
+                                            }
                                         }
+
                                         if ($images == True) {
-                                            echo "<tr><td></td><td>";
+                                            echo "<tr><td colspan=\"5\"></td><td>";
                                         }
                                         for ($v = 0; $v < count($upload_id); $v++) {
                                             if (endswith($upload_name[$v], '.jpg') || endswith($upload_name[$v], '.jpeg')) {
-                                                echo "<a href=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"><img style=\"max-height: 100px; max-width: 100px;\" src=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"></a>";
+                                                echo "<div style=\"float: left; padding:0.4em;\"><a href=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"><img style=\"max-height: 100px; max-width: 100px;\" src=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"></a></div>";
                                             }
                                             if (endswith($upload_name[$v], '.png')) {
-                                                echo "<a href=\"image.php?span=ul-png&file=$upload_file_name[$v]\"><img style=\"max-height: 100px; max-width: 100px;\" src=\"image.php?span=ul-png&file=$upload_file_name[$v]\"></a>";
+                                                echo "<div style=\"float: left; padding:0.4em;\"><a href=\"image.php?span=ul-png&file=$upload_file_name[$v]\"><img style=\"max-height: 100px; max-width: 100px;\" src=\"image.php?span=ul-png&file=$upload_file_name[$v]\"></a></div>";
                                             }
                                             if (endswith($upload_name[$v], '.gif')) {
-                                                echo "<a href=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"><img style=\"max-height: 100px; max-width: 100px;\" src=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"></a>";
+                                                echo "<div style=\"float: left; padding:0.4em;\"><a href=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"><img style=\"max-height: 100px; max-width: 100px;\" src=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"></a></div>";
                                             }
                                         }
                                         if ($images == True) {
                                             echo "</td></tr>";
                                         }
-                                        echo "</table></td></tr>";
-
                                     }
                                 }
                                 echo "</table>";
