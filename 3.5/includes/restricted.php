@@ -2660,10 +2660,35 @@ if (isset($_POST['Add_Note'])) {
 
 // Edit Note
 if (isset($_POST['Edit_Note_Save'])) {
-    $stmt = $ndb->prepare("UPDATE Notes SET Note=:note WHERE Id=:id");
+    $stmt = $ndb->prepare("UPDATE Notes SET Time=:time, User=:user, Note=:note WHERE Id=:id");
     $stmt->bindValue(':id', $_POST['Edit_Note_Save'], SQLITE3_TEXT);
+    $stmt->bindValue(':time', $_POST['Edit_Note_Time'], SQLITE3_TEXT);
+    $stmt->bindValue(':user', $_POST['Edit_Note_User'], SQLITE3_TEXT);
     $stmt->bindValue(':note', $_POST['Edit_Note_Text'], SQLITE3_TEXT);
     $stmt->execute();
+
+    unset($upload_id);
+    $results = $ndb->query("SELECT Id, Name, File_Name, Location FROM Uploads WHERE Id='" . $_POST['Edit_Note_Save'] . "'");
+    $i = 0;
+    while ($row = $results->fetchArray()) {
+        $upload_id[$i] = $row[0];
+        $upload_name[$i] = $row[1];
+        $upload_file_name[$i] = $row[2];
+        $upload_location[$i] = $row[3];
+        $i++;
+    }
+    if (!isset($upload_id)) $upload_id = [];
+    else {
+        for ($v = 0; $v < count($upload_id); $v++) {
+            if ($_POST["$v"] == 0) {
+                $stmt = $ndb->prepare("DELETE FROM Uploads WHERE File_Name=:filename");
+                $stmt->bindValue(':filename', $upload_file_name[$v]);
+                $stmt->execute();
+                echo $upload_location[$v] . " 1 " . file_exists($upload_location[$v]);
+                unlink($upload_location[$v]);
+            }
+        }
+    }
 }
 
 // Change email notify settings

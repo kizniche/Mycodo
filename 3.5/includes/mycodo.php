@@ -3493,7 +3493,7 @@ if (isset($output_error)) {
                                     }
                                     if (!isset($upload_id)) $upload_id = [];
                                     else {
-                                        echo "<tr><td colspan=\"4\"></td><td>Files: ";
+                                        echo "<tr><td colspan=\"4\"></td><td style=\"padding-bottom:0.5em;\">Files: ";
                                         for ($v = 0; $v < count($upload_id); $v++) {
                                             echo "<a href=\"image.php?span=ul-dl&file=$upload_file_name[$v]\">$upload_name[$v]</a>";
                                             if ($v != count($upload_id)-1) echo ", ";
@@ -3542,9 +3542,19 @@ if (isset($output_error)) {
                                 $note_user = $row[2];
                                 $note_note = $row[3];
                             }
-                            echo "<table class=\"notes\"><tr><td>Time</td><td>User</td></tr><tr><td>$note_time</td><td>$note_user</td></tr></table><br>";
-                            echo "<form action=\"?tab=data\" method=\"POST\">";
-                            echo "<table style=\"width: auto;\">
+                            echo "<form action=\"?tab=data\" method=\"POST\">
+                            <table class=\"notes\">
+                                <tr>
+                                    <td>Time</td>
+                                    <td>User</td>
+                                </tr>
+                                <tr>
+                                    <td><input style=\"width: 11em;\" type=\"text\" maxlength=50 name=\"Edit_Note_Time\" title=\"\" value=\"$note_time\"></td>
+                                    <td><input style=\"width: 11em;\" type=\"text\" maxlength=50 name=\"Edit_Note_User\" title=\"\" value=\"$note_user\"></td>
+                                </tr>
+                            </table>
+                            <br>
+                            <table style=\"width: auto;\">
                                 <tr>
                                     <td>
                                         <textarea style=\"width: 52em;\" rows=\"15\" maxlength=1000 name=\"Edit_Note_Text\" title=\"\">$note_note</textarea>
@@ -3554,6 +3564,53 @@ if (isset($output_error)) {
                                     </td>
                                 </tr>
                             </table>
+                            <br>
+                            <table class=\"notes\">";
+
+                            unset($upload_id);
+                            $results = $ndb->query("SELECT Id, Name, File_Name, Location FROM Uploads WHERE Id='" . $_POST['Edit_Note'] . "'");
+                            $i = 0;
+                            while ($row = $results->fetchArray()) {
+                                $upload_id[$i] = $row[0];
+                                $upload_name[$i] = $row[1];
+                                $upload_file_name[$i] = $row[2];
+                                $upload_location[$i] = $row[3];
+                                $i++;
+                            }
+                            if (!isset($upload_id)) $upload_id = [];
+                            else {
+                                echo "<tr><td style=\"vertical-align: top;\">Files (uncheck to delete):<br>";
+                                for ($v = 0; $v < count($upload_id); $v++) {
+                                    echo "<div style=\"float:left; padding: 0.5em;\"><input type=\"hidden\" name=\"$v\" value=\"0\" /><input type=\"checkbox\" name=\"$v\" value=\"1\" checked> <a href=\"image.php?span=ul-dl&file=$upload_file_name[$v]\">$upload_name[$v]</a></div>";
+                                }
+                                echo "</td></tr>";
+
+                                $images = False;
+                                for ($v = 0; $v < count($upload_id); $v++) {
+                                    if (endswith($upload_name[$v], '.jpg') || endswith($upload_name[$v], '.jpeg') || endswith($upload_name[$v], '.png') || endswith($upload_name[$v], '.gif')) {
+                                        $images = True;
+                                    }
+                                }
+
+                                if ($images == True) {
+                                    echo "<tr><td>";
+                                }
+                                for ($v = 0; $v < count($upload_id); $v++) {
+                                    if (endswith($upload_name[$v], '.jpg') || endswith($upload_name[$v], '.jpeg')) {
+                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"><img style=\"max-height: 125px; max-width: 125px;\" src=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"></a></div>";
+                                    }
+                                    if (endswith($upload_name[$v], '.png')) {
+                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-png&file=$upload_file_name[$v]\"><img style=\"max-height: 125px; max-width: 125px;\" src=\"image.php?span=ul-png&file=$upload_file_name[$v]\"></a></div>";
+                                    }
+                                    if (endswith($upload_name[$v], '.gif')) {
+                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"><img style=\"max-height: 125px; max-width: 125px;\" src=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"></a></div>";
+                                    }
+                                }
+                                if ($images == True) {
+                                    echo "</td></tr>";
+                                }
+                            }
+                            echo "</table>
                             </form>";
                         }
 
