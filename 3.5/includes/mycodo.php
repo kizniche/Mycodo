@@ -3429,17 +3429,17 @@ if (isset($output_error)) {
                                     <td style=\"vertical-align: bottom; height:100%; width:100%;\">
                                         <table style=\"height:100%; width:100%;\">
                                             <tr>
-                                                <td style=\"padding: 0 0 0.3em 0.5em; vertical-align: top; height:1em;\">
+                                                <td style=\"padding: 0 0 0.3em 0.4em; vertical-align: top; height:1em;\">
                                                     Upload Files:
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style=\"padding-left: 0.5em; vertical-align: top;\">
+                                                <td style=\"padding-left: 0.4em; vertical-align: top;\">
                                                     <input id='upload' name=\"notes[]\" type=\"file\" multiple=\"multiple\" />
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style=\"padding-left: 0.5em; vertical-align: bottom;\">
+                                                <td style=\"padding-left: 0.4em; vertical-align: bottom;\">
                                                     <button type=\"submit\" name=\"Add_Note\" value=\"\">Save<br>Note</button>
                                                 </td>
                                             </tr>
@@ -3531,12 +3531,12 @@ if (isset($output_error)) {
                             }
                             echo "<table class=\"notes\"><tr><td>Time</td><td>User</td></tr><tr><td>$note_time</td><td>$note_user</td></tr></table><br>";
                             echo "<form action=\"?tab=data\" method=\"POST\">";
-                            echo "<table style=\"width:100%;\">
+                            echo "<table style=\"width: auto;\">
                                 <tr>
                                     <td>
-                                        <textarea style=\"width: 100%;\" rows=\"15\" maxlength=1000 name=\"Edit_Note_Text\" title=\"\">$note_note</textarea>
+                                        <textarea style=\"width: 52em;\" rows=\"15\" maxlength=1000 name=\"Edit_Note_Text\" title=\"\">$note_note</textarea>
                                     </td>
-                                    <td style=\"vertical-align: bottom; padding:0 0 0 0.2em;\">
+                                    <td style=\"vertical-align: bottom; padding-left: 0.4em;\">
                                         <button type=\"submit\" name=\"Edit_Note_Save\" value=\"$note_id\">Save<br>Note</button>
                                     </td>
                                 </tr>
