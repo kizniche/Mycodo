@@ -3295,116 +3295,127 @@ if (isset($output_error)) {
                 </form>
 
                 <div style="clear: both;"></div>
-                <div style="font-family: monospace; padding-top:1em;">
-                    <pre><?php
+                <div style="font-family: monospace; padding-top:1em; white-space: normal;">
+                    <?php
                         if(isset($_POST['TSensor'])) {
-                            echo "Temperature Sensor Log<br> <br>";
+                            echo "<pre>Temperature Sensor Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `echo "Y M D H M S Tc Sensor\n$(cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
                                 echo `echo "Y M D H M S Tc Sensor\n$(cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log | tail -n 30)" | column -t`;
                             }
+                            echo '</pre>';
                         }
 
                         if(isset($_POST['TSensor_Changes'])) {
-                            echo "Temperature Sensor Changes<br> <br>";
+                            echo "<pre>Temperature Sensor Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `echo "Y M D H M S ID Name Device Pin/Ser# Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD\n$(cat /var/www/mycodo/log/sensor-t-changes.log | tail -n $Lines)" | column -t`;
                             } else {
                                 echo `echo "Y M D H M S ID Name Device Pin/Ser# Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD\n$(cat /var/www/mycodo/log/sensor-t-changes.log | tail -n 30)" | column -t`;
                             }
+                            echo '</pre>';
                         }
                         
                         if(isset($_POST['HTSensor'])) {
-                            echo "Temperature/Humidity Sensor Log<br> <br>";
+                            echo "<pre>Temperature/Humidity Sensor Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `echo "Y M D H M S Temperature(C) Relative-Humidity DewPoint(C) Sensor\n$(cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
                                 echo `echo "Y M D H M S Temperature(C) Relative-Humidity DewPoint(C) Sensor\n$(cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log | tail -n 30)" | column -t`;
                             }
+                            echo '</pre>';
                         }
 
                         if(isset($_POST['HTSensor_Changes'])) {
-                            echo "Temperature/Humidity Sensor Changes<br> <br>";
+                            echo "<pre>Temperature/Humidity Sensor Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD HumRelaysUp HumRelaysDown HumRelayHigh HumRelayHighMin HumRelayHighMax HumRelayLow HumRelayLowMin HumRelayLowMax HumSet HumSetDir HumPeriod HumP HumI HumD\n$(cat /var/www/mycodo/log/sensor-ht-changes.log | tail -n $Lines)" | column -t`;
                             } else {
                                 echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD HumRelaysUp HumRelaysDown HumRelayHigh HumRelayHighMin HumRelayHighMax HumRelayLow HumRelayLowMin HumRelayLowMax HumSet HumSetDir HumPeriod HumP HumI HumD\n$(cat /var/www/mycodo/log/sensor-ht-changes.log | tail -n 30)" | column -t`;
                             }
+                            echo '</pre>';
                         }
 
                         if(isset($_POST['CO2Sensor'])) {
-                            echo "CO<sub>2</sub> Sensor Log<br> <br>";
+                            echo "<pre>CO<sub>2</sub> Sensor Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `echo "Y M D H M S CO2 Sensor\n$(cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
                                 echo `echo "Y M D H M S CO2 Sensor\n$(cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log | tail -n 30)" | column -t`;
                             }
+                            echo '</pre>';
                         }
 
                         if(isset($_POST['CO2Sensor_Changes'])) {
-                            echo "CO<sub>2</sub> Sensor Changes<br> <br>";
+                            echo "<pre>CO<sub>2</sub> Sensor Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YCO2Min YCO2Max YCO2Tics YCO2MTics CO2RelaysUp CO2RelaysDown CO2RelayHigh CO2RelayHighMin CO2RelayHighMax CO2RelayLow CO2RelayLowMin CO2RelayLowMax CO2Set CO2SetDir CO2Period CO2P CO2I CO2D\n$(cat /var/www/mycodo/log/sensor-co2-changes.log | tail -n $Lines)" | column -t`;
                             } else {
                                 echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YCO2Min YCO2Max YCO2Tics YCO2MTics CO2RelaysUp CO2RelaysDown CO2RelayHigh CO2RelayHighMin CO2RelayHighMax CO2RelayLow CO2RelayLowMin CO2RelayLowMax CO2Set CO2SetDir CO2Period CO2P CO2I CO2D\n$(cat /var/www/mycodo/log/sensor-co2-changes.log | tail -n 30)" | column -t`;
                             }
+                            echo '</pre>';
                         }
 
                         if(isset($_POST['PressSensor'])) {
-                            echo "Pressure Sensor Log<br> <br>";
+                            echo "<pre>Pressure Sensor Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `echo "Y M D H M S Temperature(C) Pressure(kPa) Altitude(m) Sensor\n$(cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
                                 echo `echo "Y M D H M S Temperature(C) Pressure(kPa) Altitude(m) Sensor\n$(cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log | tail -n 30)" | column -t`;
                             }
+                            echo '</pre>';
                         }
 
                         if(isset($_POST['PressSensor_Changes'])) {
-                            echo "Temperature/Pressure Sensor Changes<br> <br>";
+                            echo "<pre>Temperature/Pressure Sensor Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD PressRelaysUp PressRelaysDown PressRelayHigh PressRelayHighMin PressRelayHighMax PressRelayLow PressRelayLowMin PressRelayLowMax PressSet PressSetDir PressPeriod PressP PressI PressD\n$(cat /var/www/mycodo/log/sensor-press-changes.log | tail -n $Lines)" | column -t`;
                             } else {
                                 echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD PressRelaysUp PressRelaysDown PressRelayHigh PressRelayHighMin PressRelayHighMax PressRelayLow PressRelayLowMin PressRelayLowMax PressSet PressSetDir PressPeriod PressP PressI PressD\n$(cat /var/www/mycodo/log/sensor-press-changes.log | tail -n 30)" | column -t`;
                             }
+                            echo '</pre>';
                         }
 
                         if(isset($_POST['Relay'])) {
-                            echo "Relay Log<br> <br>";
+                            echo "<pre>Relay Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `echo "Y M D H M S Sensor Relay GPIO SecondsOn\n$(cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
                                 echo `echo "Y M D H M S Sensor Relay GPIO SecondsOn\n$(cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | tail -n 30)" | column -t`;
                             }
+                            echo '</pre>';
                         }
 
                         if(isset($_POST['Relay_Changes'])) {
-                            echo "Relay Changes<br> <br>";
+                            echo "<pre>Relay Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `echo "Y M D H M S Relay Name GPIO Amps Trigger State\n$(cat /var/www/mycodo/log/relay-changes.log | tail -n $Lines)" | column -t`;
                             } else {
                                 echo `echo "Y M D H M S Relay Name GPIO Amps Trigger State\n$(cat /var/www/mycodo/log/relay-changes.log | tail -n 30)" | column -t`;
                             }
+                            echo '</pre>';
                         }
 
                         if(isset($_POST['Timer_Changes'])) {
-                            echo "Timer Changes<br> <br>";
+                            echo "<pre>Timer Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `echo "Y M D H M S ID Name Relay DurationOn DurationOff\n$(cat /var/www/mycodo/log/timer-changes.log | tail -n $Lines)" | column -t`;
                             } else {
                                 echo `echo "Y M D H M S ID Name Relay DurationOn DurationOff\n$(cat /var/www/mycodo/log/timer-changes.log | tail -n 30)" | column -t`;
                             }
+                            echo '</pre>';
                         }
 
                         if (isset($_POST['Notes']) || isset($_POST['Delete_Note']) || isset($_POST['Add_Note']) || isset($_POST['Edit_Note_Save'])) {
@@ -3427,7 +3438,7 @@ if (isset($output_error)) {
                             else {
                                 echo "<table class=\"notes\"><tr><td></td><td>#</td><td>Time</td><td>User</td><td colspan=\"2\">Note</td></tr>";
                                 for ($u = count($note_id)-1; $u >= 0; $u--) {
-                                    echo "<tr><td><button type=\"submit\" name=\"Delete_Note\" value=\"$note_id[$u]\">Delete</button><button type=\"submit\" name=\"Edit_Note\" value=\"$note_id[$u]\">Edit</button></td><td>$u</td><td>$note_time[$u]</td><td>$note_user[$u]</td><td colspan=\"2\">$note_note[$u]</td></tr>";
+                                    echo "<tr><td><button style=\"width:5em;\" type=\"submit\" name=\"Delete_Note\" value=\"$note_id[$u]\">Delete</button><button style=\"width:5em;\" type=\"submit\" name=\"Edit_Note\" value=\"$note_id[$u]\">Edit</button></td><td>$u</td><td style=\"width:1em;\">$note_time[$u]</td><td>$note_user[$u]</td><td colspan=\"2\" class=\"wrap\">$note_note[$u]</td></tr>";
 
                                     unset($upload_id);
                                     $results = $ndb->query("SELECT Id, Name, File_Name, Location FROM Uploads WHERE Id='" . $note_id[$u] . "'");
@@ -3459,13 +3470,13 @@ if (isset($output_error)) {
                                         }
                                         for ($v = 0; $v < count($upload_id); $v++) {
                                             if (endswith($upload_name[$v], '.jpg') || endswith($upload_name[$v], '.jpeg')) {
-                                                echo "<div style=\"float: left; padding:0.4em;\"><a href=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"><img style=\"max-height: 100px; max-width: 100px;\" src=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"></a></div>";
+                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"><img style=\"max-height: 100px; max-width: 100px;\" src=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"></a></div>";
                                             }
                                             if (endswith($upload_name[$v], '.png')) {
-                                                echo "<div style=\"float: left; padding:0.4em;\"><a href=\"image.php?span=ul-png&file=$upload_file_name[$v]\"><img style=\"max-height: 100px; max-width: 100px;\" src=\"image.php?span=ul-png&file=$upload_file_name[$v]\"></a></div>";
+                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-png&file=$upload_file_name[$v]\"><img style=\"max-height: 100px; max-width: 100px;\" src=\"image.php?span=ul-png&file=$upload_file_name[$v]\"></a></div>";
                                             }
                                             if (endswith($upload_name[$v], '.gif')) {
-                                                echo "<div style=\"float: left; padding:0.4em;\"><a href=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"><img style=\"max-height: 100px; max-width: 100px;\" src=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"></a></div>";
+                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"><img style=\"max-height: 100px; max-width: 100px;\" src=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"></a></div>";
                                             }
                                         }
                                         if ($images == True) {
@@ -3496,13 +3507,14 @@ if (isset($output_error)) {
                         }
 
                         if(isset($_POST['Login']) && $_SESSION['user_name'] != 'guest') {
-                            echo 'Time, Type of auth, user, IP, Hostname, Referral, Browser<br> <br>';
+                            echo '<pre>Time, Type of auth, user, IP, Hostname, Referral, Browser<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `tail -n $Lines $auth_log`;
                             } else {
                                 echo `tail -n 30 $auth_log`;
                             }
+                            echo '</pre>';
                         }
 
                         if(isset($_POST['Commits'])) {
@@ -3512,7 +3524,7 @@ if (isset($output_error)) {
                             } else {
                                 $commits = `git log --oneline | head -n 30`;
                             }
-                            echo '<div style="padding: 1em 0 1.5em 0;">Note: Restoring a backup will restore all files from the backup, including databases and logs.<br>When restoring a backup, a backup of the current system will also be created.<br>Deleting a backup will delete all files of that backup.</div>';
+                            echo '<pre><div style="padding: 1em 0 1.5em 0;">Note: Restoring a backup will restore all files from the backup, including databases and logs.<br>When restoring a backup, a backup of the current system will also be created.<br>Deleting a backup will delete all files of that backup.</div>';
                             $current_commit = `git rev-parse --short HEAD`;
                             $current_commit = mb_substr($current_commit, 0, 7);
                             echo "Current commit: <a style=\"color: #FF0000;\" href=\"https://github.com/kizniche/Mycodo/commit/$current_commit\" target=\"_blank\">$current_commit</a> (newest commits are at the top, the system is currently at the commit <span style=\"color:red;\">colored red</span>)<br> <br><strong><u>Commit</u>  <u>Description</u></strong><br>";
@@ -3563,10 +3575,11 @@ if (isset($output_error)) {
                                     }
                                 }
                             }
+                            echo '</pre>';
                         }
 
                         if (isset($_POST['Backups'])) {
-                            echo '<div style="padding: 1em 0 1.5em 0;">Note: Restoring a backup will restore all files from the backup, including databases and logs.<br>When restoring a backup, a backup of the current system will also be created.<br>Deleting a backup will delete all files of that backup.</div>';
+                            echo '<pre><div style="padding: 1em 0 1.5em 0;">Note: Restoring a backup will restore all files from the backup, including databases and logs.<br>When restoring a backup, a backup of the current system will also be created.<br>Deleting a backup will delete all files of that backup.</div>';
                             $dirs = array_filter(glob('/var/Mycodo-backups/*'), 'is_dir');
                             for ($i = 0; $i < count($dirs); $i++) {
                                 $backup_commits[$i] = mb_substr($dirs[$i], -7);
@@ -3590,55 +3603,62 @@ if (isset($output_error)) {
                                     </table>";
                                 }
                             }
+                            echo '</pre>';
                         }
 
                         if(isset($_POST['Daemon'])) {
+                            echo '<pre>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `cat /var/www/mycodo/log/daemon.log /var/www/mycodo/log/daemon-tmp.log | tail -n $Lines`;
                             } else {
                                 echo `cat /var/www/mycodo/log/daemon.log /var/www/mycodo/log/daemon-tmp.log | tail -n 30`;
                             }
+                            echo '</pre>';
                         }
 
                         if(isset($_POST['Update'])) {
                             $log = '/var/www/mycodo/log/update.log';
+                            echo '<pre>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `tail -n $Lines $log`;
                             } else {
                                 echo `tail -n 30 $log`;
                             }
+                            echo '</pre>';
                         }
 
                         if(isset($_POST['Restore'])) {
                             $log = '/var/www/mycodo/log/restore.log';
+                            echo '<pre>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
                                 echo `tail -n $Lines $log`;
                             } else {
                                 echo `tail -n 30 $log`;
                             }
+                            echo '</pre>';
                         }
 
                         if(isset($_POST['Users']) && $_SESSION['user_name'] != 'guest') {
-                            echo exec('file ' . $user_db); 
-                            echo '<br>&nbsp;<br>User Email Password_Hash<br> <br>';
+                            echo exec('file ' . $user_db);
+                            echo '<pre><br> <br>User Email Password_Hash<br> <br>';
                             $db = new SQLite3($user_db);
                             $results = $db->query('SELECT user_name, user_email, user_password_hash FROM users');
                             while ($row = $results->fetchArray()) {
                                 echo $row[0] , ' ' , $row[1] , ' ' , $row[2] , '<br>';
                             }
+                            echo '</pre>';
                         }
 
                         if(isset($_POST['Database']) && $_SESSION['user_name'] != 'guest') {
                             echo exec('file ' . $mycodo_db); 
-                            echo '<br>&nbsp;<br><pre>';
+                            echo '<pre><br> <br>';
                             exec('sqlite3 ' . $mycodo_db . ' .dump', $output); print_r($output);
                             echo '</pre>';
                         }
                     ?>
-                    </pre>
                 </div>
             </div>
         </li>
