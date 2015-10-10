@@ -1,1 +1,3 @@
 Allow from all
+RewriteEngine On
+RewriteRule   ^$ - [R=404,L]

@@ -374,7 +374,7 @@ Edit /etc/apache2/sites-enabled/000-default (or 000-default.conf if running Jess
             AllowOverride None
     </Directory>
     <Directory /var/www/>
-            Options Indexes FollowSymLinks MultiViews
+            Options FollowSymLinks MultiViews
             AllowOverride All
             Order allow,deny
             allow from all
