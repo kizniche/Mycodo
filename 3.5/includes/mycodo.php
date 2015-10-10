@@ -3419,9 +3419,37 @@ if (isset($output_error)) {
                         }
 
                         if (isset($_POST['Notes']) || isset($_POST['Delete_Note']) || isset($_POST['Add_Note']) || isset($_POST['Edit_Note_Save'])) {
-                            echo "Notes<br> <br>";
-                            echo "<form action=\"?tab=data\" method=\"POST\" enctype=\"multipart/form-data\">";
-                            echo "<textarea style=\"width: 80%;\" rows=\"2\" maxlength=1000 name=\"Note_Text\" title=\"\"></textarea> <button type=\"submit\" name=\"Add_Note\" value=\"\">Save<br>Note</button><br><input id='upload' name=\"notes[]\" type=\"file\" multiple=\"multiple\" /><br> <br>";
+                            echo "Notes<br> <br>
+                            <form action=\"?tab=data\" method=\"POST\" enctype=\"multipart/form-data\">
+                            <table style=\"width:100%\";>
+                                <tr>
+                                    <td style=\"width: auto;\">
+                                        <textarea style=\"width: 52em;\" rows=\"6\" maxlength=1000 name=\"Note_Text\" title=\"\"></textarea>
+                                    </td>
+                                    <td style=\"vertical-align: bottom; height:100%; width:100%;\">
+                                        <table style=\"height:100%; width:100%;\">
+                                            <tr>
+                                                <td style=\"padding: 0 0 0.3em 0.5em; vertical-align: top; height:1em;\">
+                                                    Upload Files:
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style=\"padding-left: 0.5em; vertical-align: top;\">
+                                                    <input id='upload' name=\"notes[]\" type=\"file\" multiple=\"multiple\" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style=\"padding-left: 0.5em; vertical-align: bottom;\">
+                                                    <button type=\"submit\" name=\"Add_Note\" value=\"\">Save<br>Note</button>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    
+                                </tr>
+                            </table><br> <br>";
 
                             $ndb = new SQLite3($note_db);
                             unset($note_id);
@@ -3438,7 +3466,7 @@ if (isset($output_error)) {
                             else {
                                 echo "<table class=\"notes\"><tr><td></td><td>#</td><td>Time</td><td>User</td><td colspan=\"2\">Note</td></tr>";
                                 for ($u = count($note_id)-1; $u >= 0; $u--) {
-                                    echo "<tr><td><button style=\"width:5em;\" type=\"submit\" name=\"Delete_Note\" value=\"$note_id[$u]\">Delete</button><button style=\"width:5em;\" type=\"submit\" name=\"Edit_Note\" value=\"$note_id[$u]\">Edit</button></td><td>$u</td><td style=\"width:1em;\">$note_time[$u]</td><td>$note_user[$u]</td><td colspan=\"2\" class=\"wrap\">" . htmlspecialchars($note_note[$u]) . "</td></tr>";
+                                    echo "<tr><td><button style=\"width:5em;\" type=\"submit\" name=\"Delete_Note\" value=\"$note_id[$u]\">Delete</button><br><button style=\"width:5em;\" type=\"submit\" name=\"Edit_Note\" value=\"$note_id[$u]\">Edit</button></td><td>$u</td><td style=\"line-height:1.5em; width:1em;\">$note_time[$u]</td><td>$note_user[$u]</td><td colspan=\"2\" class=\"wrap\">" . htmlspecialchars($note_note[$u]) . "</td></tr>";
 
                                     unset($upload_id);
                                     $results = $ndb->query("SELECT Id, Name, File_Name, Location FROM Uploads WHERE Id='" . $note_id[$u] . "'");
@@ -3452,11 +3480,12 @@ if (isset($output_error)) {
                                     }
                                     if (!isset($upload_id)) $upload_id = [];
                                     else {
-                                        echo "<tr><td colspan=\"4\"></td><td style=\"width:5em;\">Files:</td>";
+                                        echo "<tr><td colspan=\"4\"></td><td>Files: ";
                                         for ($v = 0; $v < count($upload_id); $v++) {
-                                            if ($v != 0) echo "<tr><td colspan=\"5\"></td>";
-                                            echo "<td><a href=\"image.php?span=ul-dl&file=$upload_file_name[$v]\">$upload_name[$v]</a></td></tr>";
+                                            echo "<a href=\"image.php?span=ul-dl&file=$upload_file_name[$v]\">$upload_name[$v]</a>";
+                                            if ($v != count($upload_id)-1) echo ", ";
                                         }
+                                        echo "</td></tr>";
 
                                         $images = False;
                                         for ($v = 0; $v < count($upload_id); $v++) {
@@ -3466,7 +3495,7 @@ if (isset($output_error)) {
                                         }
 
                                         if ($images == True) {
-                                            echo "<tr><td colspan=\"5\"></td><td>";
+                                            echo "<tr><td colspan=\"4\"></td><td>";
                                         }
                                         for ($v = 0; $v < count($upload_id); $v++) {
                                             if (endswith($upload_name[$v], '.jpg') || endswith($upload_name[$v], '.jpeg')) {
@@ -3502,8 +3531,17 @@ if (isset($output_error)) {
                             }
                             echo "<table class=\"notes\"><tr><td>Time</td><td>User</td></tr><tr><td>$note_time</td><td>$note_user</td></tr></table><br>";
                             echo "<form action=\"?tab=data\" method=\"POST\">";
-                            echo "<textarea style=\"width: 80%;\" rows=\"2\" maxlength=1000 name=\"Edit_Note_Text\" title=\"\">$note_note</textarea> <button type=\"submit\" name=\"Edit_Note_Save\" value=\"$note_id\">Save<br>Note</button><br> <br>";
-                            echo "</form>";
+                            echo "<table style=\"width:100%;\">
+                                <tr>
+                                    <td>
+                                        <textarea style=\"width: 100%;\" rows=\"15\" maxlength=1000 name=\"Edit_Note_Text\" title=\"\">$note_note</textarea>
+                                    </td>
+                                    <td style=\"vertical-align: bottom; padding:0 0 0 0.2em;\">
+                                        <button type=\"submit\" name=\"Edit_Note_Save\" value=\"$note_id\">Save<br>Note</button>
+                                    </td>
+                                </tr>
+                            </table>
+                            </form>";
                         }
 
                         if(isset($_POST['Login']) && $_SESSION['user_name'] != 'guest') {
