@@ -3542,7 +3542,7 @@ if (isset($output_error)) {
                                 $note_user = $row[2];
                                 $note_note = $row[3];
                             }
-                            echo "<form action=\"?tab=data\" method=\"POST\">
+                            echo "<form action=\"?tab=data\" method=\"POST\" enctype=\"multipart/form-data\">
                             <table class=\"notes\">
                                 <tr>
                                     <td>Time</td>
@@ -3557,10 +3557,26 @@ if (isset($output_error)) {
                             <table style=\"width: auto;\">
                                 <tr>
                                     <td>
-                                        <textarea style=\"width: 52em;\" rows=\"15\" maxlength=1000 name=\"Edit_Note_Text\" title=\"\">$note_note</textarea>
+                                        <textarea style=\"width: 40em;\" rows=\"15\" maxlength=1000 name=\"Edit_Note_Text\" title=\"\">$note_note</textarea>
                                     </td>
-                                    <td style=\"vertical-align: bottom; padding-left: 0.4em;\">
-                                        <button style=\"width:5.7em;\" type=\"submit\" name=\"Edit_Note_Save\" value=\"$note_id\">Save<br>Note</button>
+                                    <td style=\"vertical-align: top; height:100%; width:100%;\">
+                                        <table style=\"height:100%; width:100%;\">
+                                            <tr>
+                                                <td style=\"padding: 0 0 0.4em 0.4em; vertical-align: top; height:1em;\">
+                                                    Upload (hold Ctrl to select multiple files):
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style=\"padding-left: 0.4em; vertical-align: top;\">
+                                                    <input id='upload' name=\"edit_notes[]\" type=\"file\" multiple=\"multiple\" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style=\"padding: 0.4em 0 0 0.4em; vertical-align: bottom;\">
+                                                    <button style=\"width:5.7em;\" type=\"submit\" name=\"Edit_Note_Save\" value=\"$note_id\">Save<br>Note</button>
+                                                </td>
+                                            </tr>
+                                        </table>
                                     </td>
                                 </tr>
                             </table>
