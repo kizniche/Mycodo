@@ -3474,11 +3474,11 @@ if (isset($output_error)) {
                                     </tr>";
                                 for ($u = count($note_id)-1; $u >= 0; $u--) {
                                     echo "<tr>
-                                        <td style=\"padding-top:0.5em; border-style: solid none none none; border-width: 1px;\"><button style=\"width:5em;\" type=\"submit\" name=\"Delete_Note\" value=\"$note_id[$u]\">Delete</button><br><button style=\"width:5em;\" type=\"submit\" name=\"Edit_Note\" value=\"$note_id[$u]\">Edit</button></td>
+                                        <td style=\"padding:0.7em 1em 0.7em 0; border-style: solid none none none; border-width: 1px;\"><button style=\"width:5em;\" type=\"submit\" name=\"Delete_Note\" value=\"$note_id[$u]\">Delete</button><br><button style=\"width:5em;\" type=\"submit\" name=\"Edit_Note\" value=\"$note_id[$u]\">Edit</button></td>
                                         <td style=\"border-style: solid none none none; border-width: 1px;\">$u</td>
                                         <td style=\"border-style: solid none none none; border-width: 1px; line-height:1.5em; width:7em;\">$note_time[$u]</td>
                                         <td style=\"border-style: solid none none none; border-width: 1px;\">$note_user[$u]</td>
-                                        <td style=\"border-style: solid none none none; border-width: 1px; padding-bottom: 1em;\" colspan=\"2\" class=\"wrap\">" . htmlspecialchars($note_note[$u]) . "</td>
+                                        <td style=\"border-style: solid none none none; border-width: 1px; padding-bottom: 0.7em;\" colspan=\"2\" class=\"wrap\">" . htmlspecialchars($note_note[$u]) . "</td>
                                     </tr>";
 
                                     unset($upload_id);
