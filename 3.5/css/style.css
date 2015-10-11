@@ -240,6 +240,12 @@ button.linkoff {
 
 /*** Data tab ***/
 
+.thumbnail {
+  border:1px solid #bdbdbd;
+  max-height: 125px;
+  max-width: 125px;\"
+}
+
 .notes td {
     padding: 0.1em 1em 0.1em 0;
 }

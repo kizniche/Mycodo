@@ -94,6 +94,9 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 Major changes for each versioned release
 
+#### 3.5.82
++ Add sensor measurement verification with second sensor (Only for temperature/humidity sensors at the moment)
+
 #### 3.5.81
 + Add image/file upload to notes
 

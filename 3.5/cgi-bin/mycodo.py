@@ -679,6 +679,8 @@ def daemon(output, log):
             if int(time.time()) > timerHTSensorLog[i] and sensor_ht_device[i] != 'Other' and sensor_ht_activated[i] == 1 and client_que != 'TerminateServer' and pause_daemon != 1 and PID_change != 1:
                 logging.debug("[Timer Expiration] Read HT-%s sensor every %s seconds: Write sensor log", i+1, sensor_ht_period[i])
                 if read_ht_sensor(i) == 1:
+                    if sensor_ht_verify_pin[i] != 0:
+                        verify_ht_sensor(i, sensor_ht_verify_pin[i])
                     mycodoLog.write_ht_sensor_log(sensor_ht_read_temp_c, sensor_ht_read_hum, sensor_ht_dewpt_c, i)
                 else:
                     logging.warning("Could not read HT-%s sensor, not writing to sensor log", i+1)
@@ -1258,47 +1260,56 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
                 logging.debug("[PID HT-Temperature-%s] Reading temperature...", sensor+1)
                 if read_ht_sensor(sensor) == 1:
 
-                    PIDTemp = pid_temp.update(float(sensor_ht_read_temp_c[sensor]))
+                    verify_check = 0
+                    if sensor_ht_verify_pin[sensor] != 0:
+                        verify_check = verify_ht_sensor(sensor, sensor_ht_verify_pin[sensor])
+                        if (verify_check == 3 or verify_check == 6) and sensor_ht_verify_temp_stop:
+                            logging.Warning("Verification of Temperature failed, not enabling PID")
 
-                    if sensor_ht_read_temp_c[sensor] > pid_ht_temp_set[sensor]:
-                        logging.debug("[PID HT-Temperature-%s] Temperature: %.1f°C now > %.1f°C set", sensor+1, sensor_ht_read_temp_c[sensor], pid_ht_temp_set[sensor])
-                    elif (sensor_ht_read_temp_c[sensor] < pid_ht_temp_set[sensor]):
-                        logging.debug("[PID HT-Temperature-%s] Temperature: %.1f°C now < %.1f°C set", sensor+1, sensor_ht_read_temp_c[sensor], pid_ht_temp_set[sensor])
+                    if verify_check == 3 or verify_check == 6:
+                        pass
                     else:
-                        logging.debug("[PID HT-Temperature-%s] Temperature: %.1f°C now = %.1f°C set", sensor+1, sensor_ht_read_temp_c[sensor], pid_ht_temp_set[sensor])
+                        PIDTemp = pid_temp.update(float(sensor_ht_read_temp_c[sensor]))
 
-                    if pid_ht_temp_set_dir[sensor] > -1 and PIDTemp > 0:
-                        if pid_ht_temp_outmin_low[sensor] != 0 and PIDTemp < pid_ht_temp_outmin_low[sensor]:
-                            logging.debug("[PID HT-Temperature-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDTemp, pid_ht_temp_outmin_low[sensor])
-                            PIDTemp = pid_ht_temp_outmin_low[sensor]
-                        elif pid_ht_temp_outmax_low[sensor] != 0 and PIDTemp > pid_ht_temp_outmax_low[sensor]:
-                            logging.debug("[PID HT-Temperature-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDTemp, pid_ht_temp_outmax_low[sensor])
-                            PIDTemp = pid_ht_temp_outmax_low[sensor]
+                        if sensor_ht_read_temp_c[sensor] > pid_ht_temp_set[sensor]:
+                            logging.debug("[PID HT-Temperature-%s] Temperature: %.1f°C now > %.1f°C set", sensor+1, sensor_ht_read_temp_c[sensor], pid_ht_temp_set[sensor])
+                        elif (sensor_ht_read_temp_c[sensor] < pid_ht_temp_set[sensor]):
+                            logging.debug("[PID HT-Temperature-%s] Temperature: %.1f°C now < %.1f°C set", sensor+1, sensor_ht_read_temp_c[sensor], pid_ht_temp_set[sensor])
+                        else:
+                            logging.debug("[PID HT-Temperature-%s] Temperature: %.1f°C now = %.1f°C set", sensor+1, sensor_ht_read_temp_c[sensor], pid_ht_temp_set[sensor])
+
+                        if pid_ht_temp_set_dir[sensor] > -1 and PIDTemp > 0:
+                            if pid_ht_temp_outmin_low[sensor] != 0 and PIDTemp < pid_ht_temp_outmin_low[sensor]:
+                                logging.debug("[PID HT-Temperature-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDTemp, pid_ht_temp_outmin_low[sensor])
+                                PIDTemp = pid_ht_temp_outmin_low[sensor]
+                            elif pid_ht_temp_outmax_low[sensor] != 0 and PIDTemp > pid_ht_temp_outmax_low[sensor]:
+                                logging.debug("[PID HT-Temperature-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDTemp, pid_ht_temp_outmax_low[sensor])
+                                PIDTemp = pid_ht_temp_outmax_low[sensor]
+                            else:
+                                logging.debug("[PID HT-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
+
+                            rod = threading.Thread(target = relay_on_duration,
+                                args = (pid_ht_temp_relay_low[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
+                            rod.start()
+
+                        elif pid_ht_temp_set_dir[sensor] < 1 and PIDTemp < 0:
+                            PIDTemp = abs(PIDTemp)
+                            if pid_ht_temp_outmin_high[sensor] != 0 and PIDTemp < pid_ht_temp_outmin_high[sensor]:
+                                logging.debug("[PID HT-Temperature-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDTemp, pid_ht_temp_outmin_high[sensor])
+                                PIDTemp = pid_ht_temp_outmin_high[sensor]
+                            elif pid_ht_temp_outmax_high[sensor] != 0 and PIDTemp > pid_ht_temp_outmax_high[sensor]:
+                                logging.debug("[PID HT-Temperature-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDTemp, pid_ht_temp_outmax_high[sensor])
+                                PIDTemp = pid_ht_temp_outmax_high[sensor]
+                            else:
+                                logging.debug("[PID HT-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
+
+                            rod = threading.Thread(target = relay_on_duration,
+                                args = (pid_ht_temp_relay_high[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
+                            rod.start()
+
                         else:
                             logging.debug("[PID HT-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
-
-                        rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_ht_temp_relay_low[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
-                        rod.start()
-
-                    elif pid_ht_temp_set_dir[sensor] < 1 and PIDTemp < 0:
-                        PIDTemp = abs(PIDTemp)
-                        if pid_ht_temp_outmin_high[sensor] != 0 and PIDTemp < pid_ht_temp_outmin_high[sensor]:
-                            logging.debug("[PID HT-Temperature-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDTemp, pid_ht_temp_outmin_high[sensor])
-                            PIDTemp = pid_ht_temp_outmin_high[sensor]
-                        elif pid_ht_temp_outmax_high[sensor] != 0 and PIDTemp > pid_ht_temp_outmax_high[sensor]:
-                            logging.debug("[PID HT-Temperature-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDTemp, pid_ht_temp_outmax_high[sensor])
-                            PIDTemp = pid_ht_temp_outmax_high[sensor]
-                        else:
-                            logging.debug("[PID HT-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
-
-                        rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_ht_temp_relay_high[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
-                        rod.start()
-
-                    else:
-                        logging.debug("[PID HT-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
-                        PIDTemp = 0
+                            PIDTemp = 0
 
                     timerTemp = int(time.time()) + int(PIDTemp) + pid_ht_temp_period[sensor]
 
@@ -2036,10 +2047,123 @@ def read_ht_sensor(sensor):
                 lock.release()
                 return 1
 
-    else:
-        logging.warning("[Read HT Sensor-%s] Could not get two consecutive Hum/Temp measurements that were consistent.", sensor+1)
-
+    logging.warning("[Read HT Sensor-%s] Could not get two consecutive Hum/Temp measurements that were consistent.", sensor+1)
     logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+    lock.release()
+    return 0
+
+
+# Verify the temperature and/or humidity from second sensor
+def verify_ht_sensor(sensor, GPIO):
+    global sensor_ht_verify_read_temp_c
+    global sensor_ht_verify_read_hum
+    tempc = None
+    tempc2 = None
+    humidity = None
+    humidity2 = None
+    ht_read_tries = 5
+
+    if not os.path.exists(lock_directory):
+        os.makedirs(lock_directory)
+
+    lock = LockFile(sensor_ht_lock_path)
+    while not lock.i_am_locking():
+        try:
+            logging.debug("[Verify HT Sensor-%s] Acquiring Lock: %s", sensor+1, lock.path)
+            lock.acquire(timeout=90)    # wait up to 60 seconds
+        except:
+            logging.warning("[Verify HT Sensor-%s] Breaking Lock to Acquire: %s", sensor+1, lock.path)
+            lock.break_lock()
+            lock.acquire()
+
+    logging.debug("[Verify HT Sensor-%s] Gained lock: %s", sensor+1, lock.path)
+
+    timerHT = 0
+    if sensor_ht_premeasure_relay[sensor] and sensor_ht_premeasure_dur[sensor]:
+        timerHT = int(time.time()) + sensor_ht_premeasure_dur[sensor]
+        rod = threading.Thread(target = relay_on_duration,
+            args = (sensor_ht_premeasure_relay[sensor], sensor_ht_premeasure_dur[sensor], sensor, relay_trigger, relay_pin,))
+        rod.start()
+        while ((timerHT > int(time.time())) and client_que != 'TerminateServer'):
+            if pause_daemon:
+                relay_onoff(sensor_ht_premeasure_relay[sensor], 'off')
+                break
+            time.sleep(0.25)
+
+    for r in range(0, ht_read_tries): # Multiple attempts to get similar consecutive readings
+        if (not pid_ht_temp_alive[sensor] and not pid_ht_hum_alive[sensor]) or client_que == 'TerminateServer' or pause_daemon:
+            break
+
+        logging.debug("[Verify HT Sensor-%s] Taking first Temperature/Humidity reading", sensor+1)
+
+        for i in range(0, ht_read_tries):
+            if (pid_ht_temp_alive[sensor] or pid_ht_hum_alive[sensor]) and client_que != 'TerminateServer' and pause_daemon != 1:
+                humidity2, tempc2 = read_ht(sensor, sensor_ht_device[sensor], GPIO)
+                if humidity2 != None and tempc2 != None:
+                    break
+            else:
+                break
+
+        if humidity2 == None or tempc2 == None:
+            logging.warning("[Verify HT Sensor-%s] Could not read first Hum/Temp measurement!", sensor+1)
+            break
+        else:
+            logging.debug("[Verify HT Sensor-%s] %.1f°C, %.1f%%", sensor+1, tempc2, humidity2)
+            logging.debug("[Verify HT Sensor-%s] Taking second Temperature/Humidity reading", sensor+1)
+        
+        for i in range(0, ht_read_tries): # Multiple attempts to get first reading
+            if (pid_ht_temp_alive[sensor] or pid_ht_hum_alive[sensor]) and client_que != 'TerminateServer' and pause_daemon != 1:
+                humidity, tempc = read_ht(sensor, sensor_ht_device[sensor], GPIO)
+                if humidity != None and tempc != None:
+                    break
+            else:
+                break
+
+        if humidity == None or tempc == None:
+            logging.warning("[Verify HT Sensor-%s] Could not read second Hum/Temp measurement!", sensor+1)
+            break
+        else:
+            logging.debug("[Verify HT Sensor-%s] %.1f°C, %.1f%%", sensor+1, tempc, humidity)
+            logging.debug("[Verify HT Sensor-%s] Differences: %.1f°C, %.1f%%", sensor+1, abs(tempc2-tempc), abs(humidity2-humidity))
+
+            if abs(tempc2-tempc) > 1 or abs(humidity2-humidity) > 1:
+                tempc2 = tempc
+                humidity2 = humidity
+                logging.debug("[Verify HT Sensor-%s] Successive readings > 1 difference: Rereading", sensor+1)
+            else:
+                logging.debug("[Verify HT Sensor-%s] Successive readings < 1 difference: keeping.", sensor+1)
+                temperature_f = float(tempc)*9.0/5.0 + 32.0
+                logging.debug("[Verify HT Sensor-%s] Temp: %.1f°C, Hum: %.1f%%", sensor+1, tempc, humidity)
+                sensor_ht_verify_read_hum = humidity
+                sensor_ht_verify_read_temp_c = tempc
+                logging.debug("[Verify HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
+                lock.release()
+
+                count = 1
+                if abs(tempc - sensor_ht_read_temp_c[sensor]) > sensor_ht_verify_temp[sensor]:
+                    logging.warning("[Verify HT Sensor-%s] Temperature difference (%.1f°C) greater than set (%.1f°C)", abs(tempc - sensor_ht_read_temp_c[sensor]), sensor_ht_verify_temp[sensor])
+                    count = count + 2
+                if abs(humidity - sensor_ht_read_hum[sensor]) > sensor_ht_verify_hum[sensor]:
+                    logging.warning("[Verify HT Sensor-%s] Humidity difference (%.1f%) greater than set (%.1f%)", abs(humidity - sensor_ht_read_hum[sensor]), sensor_ht_verify_hum[sensor])
+                    count = count + 3
+
+                if count == 6 and sensor_ht_verify_temp_notify and sensor_ht_verify_hum_notify:
+                    message = "Temperature difference (%.1f°C) greater than set (%.1f°C)\nHumidity difference (%s%) greater than set (%s%)" % (abs(tempc - sensor_ht_read_temp_c[sensor]), sensor_ht_verify_temp[sensor], abs(humidity - sensor_ht_read_hum[sensor]), sensor_ht_verify_hum[sensor])
+                elif (count == 3 or count == 6) and sensor_ht_verify_temp_notify:
+                    message = "Temperature difference (%.1f°C) greater than set (%.1f°C)" % (abs(tempc - sensor_ht_read_temp_c[sensor]), sensor_ht_verify_temp[sensor])
+                elif (count == 4 or count == 6) and sensor_ht_verify_hum_notify:
+                    message = "Humidity difference (%.1f%%) greater than set (%.1f%%)" % (abs(humidity - sensor_ht_read_hum[sensor]), sensor_ht_verify_hum[sensor])
+
+                if count == 1:
+                    logging.debug("[Verify HT Sensor-%s] Both differences within range: %.1f°C < %.1f°C set, %.1f%% < %.1f%% set", sensor+1, abs(tempc - sensor_ht_read_temp_c[sensor]), sensor_ht_verify_temp[sensor], abs(humidity - sensor_ht_read_hum[sensor]), sensor_ht_verify_hum[sensor])
+                    return 1
+                else:
+                    email(sensor_ht_verify_email, message)
+                    logging.warning(message)
+                    return count
+
+    logging.warning("[Verify HT Sensor-%s] Could not get two consecutive Hum/Temp measurements that were consistent.", sensor+1)
+    logging.debug("[Verify HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
     lock.release()
     return 0
 
@@ -2147,9 +2271,7 @@ def read_co2_sensor(sensor):
                 lock.release()
                 return 1
 
-    else:
-        logging.warning("[Read CO2 Sensor-%s] Could not get two consecutive CO2 measurements that were consistent.", sensor+1)
-
+    logging.warning("[Read CO2 Sensor-%s] Could not get two consecutive CO2 measurements that were consistent.", sensor+1)
     logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor+1, lock.path)
     lock.release()
     return 0
@@ -2275,9 +2397,7 @@ def read_press_sensor(sensor):
                 lock.release()
                 return 1
 
-    else:
-        logging.warning("[Read Press Sensor-%s] Could not get two consecutive Press measurements that were consistent.", sensor+1)
-
+    logging.warning("[Read Press Sensor-%s] Could not get two consecutive Press measurements that were consistent.", sensor+1)
     logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor+1, lock.path)
     lock.release()
     return 0
@@ -2402,6 +2522,14 @@ def read_sql():
     global sensor_ht_premeasure_dur
     global sensor_ht_activated
     global sensor_ht_graph
+    global sensor_ht_verify_pin
+    global sensor_ht_verify_temp
+    global sensor_ht_verify_temp_notify
+    global sensor_ht_verify_temp_stop
+    global sensor_ht_verify_hum
+    global sensor_ht_verify_hum_notify
+    global sensor_ht_verify_hum_stop
+    global sensor_ht_verify_email
     global sensor_ht_yaxis_relay_min
     global sensor_ht_yaxis_relay_max
     global sensor_ht_yaxis_relay_tics
@@ -2460,6 +2588,14 @@ def read_sql():
     sensor_ht_premeasure_dur = []
     sensor_ht_activated = []
     sensor_ht_graph = []
+    sensor_ht_verify_pin = []
+    sensor_ht_verify_temp = []
+    sensor_ht_verify_temp_notify = []
+    sensor_ht_verify_temp_stop = []
+    sensor_ht_verify_hum = []
+    sensor_ht_verify_hum_notify = []
+    sensor_ht_verify_hum_stop = []
+    sensor_ht_verify_email = []
     sensor_ht_yaxis_relay_min = []
     sensor_ht_yaxis_relay_max = []
     sensor_ht_yaxis_relay_tics = []
@@ -2972,7 +3108,7 @@ def read_sql():
 
 
 
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph,  YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relays_Up, Hum_Relays_Down, Hum_Relay_High, Hum_Outmin_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmin_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensor')
+    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Verify_Pin, Verify_Temp, Verify_Temp_Notify, Verify_Temp_Stop, Verify_Hum, Verify_Hum_Notify, Verify_Hum_Stop, Verify_Notify_Email, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relays_Up, Hum_Relays_Down, Hum_Relay_High, Hum_Outmin_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmin_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensor')
     for row in cur:
         sensor_ht_id.append(row[0])
         sensor_ht_name.append(row[1])
@@ -2983,48 +3119,56 @@ def read_sql():
         sensor_ht_premeasure_dur.append(row[6])
         sensor_ht_activated.append(row[7])
         sensor_ht_graph.append(row[8])
-        sensor_ht_yaxis_relay_min.append(row[9])
-        sensor_ht_yaxis_relay_max.append(row[10])
-        sensor_ht_yaxis_relay_tics.append(row[11])
-        sensor_ht_yaxis_relay_mtics.append(row[12])
-        sensor_ht_yaxis_temp_min.append(row[13])
-        sensor_ht_yaxis_temp_max.append(row[14])
-        sensor_ht_yaxis_temp_tics.append(row[15])
-        sensor_ht_yaxis_temp_mtics.append(row[16])
-        sensor_ht_yaxis_hum_min.append(row[17])
-        sensor_ht_yaxis_hum_max.append(row[18])
-        sensor_ht_yaxis_hum_tics.append(row[19])
-        sensor_ht_yaxis_hum_mtics.append(row[20])
-        sensor_ht_temp_relays_up.append(row[21])
-        sensor_ht_temp_relays_down.append(row[22])
-        pid_ht_temp_relay_high.append(row[23])
-        pid_ht_temp_outmin_high.append(row[24])
-        pid_ht_temp_outmax_high.append(row[25])
-        pid_ht_temp_relay_low.append(row[26])
-        pid_ht_temp_outmin_low.append(row[27])
-        pid_ht_temp_outmax_low.append(row[28])
-        pid_ht_temp_or.append(row[29])
-        pid_ht_temp_set.append(row[30])
-        pid_ht_temp_set_dir.append(row[31])
-        pid_ht_temp_period.append(row[32])
-        pid_ht_temp_p.append(row[33])
-        pid_ht_temp_i.append(row[34])
-        pid_ht_temp_d.append(row[35])
-        sensor_ht_hum_relays_up.append(row[36])
-        sensor_ht_hum_relays_down.append(row[37])
-        pid_ht_hum_relay_high.append(row[38])
-        pid_ht_hum_outmin_high.append(row[39])
-        pid_ht_hum_outmax_high.append(row[40])
-        pid_ht_hum_relay_low.append(row[41])
-        pid_ht_hum_outmin_low.append(row[42])
-        pid_ht_hum_outmax_low.append(row[43])
-        pid_ht_hum_or.append(row[44])
-        pid_ht_hum_set.append(row[45])
-        pid_ht_hum_set_dir.append(row[46])
-        pid_ht_hum_period.append(row[47])
-        pid_ht_hum_p.append(row[48])
-        pid_ht_hum_i.append(row[49])
-        pid_ht_hum_d.append(row[50])
+        sensor_ht_verify_pin.append(row[9])
+        sensor_ht_verify_temp.append(row[10])
+        sensor_ht_verify_temp_notify.append(row[11])
+        sensor_ht_verify_temp_stop.append(row[12])
+        sensor_ht_verify_hum.append(row[13])
+        sensor_ht_verify_hum_notify.append(row[14])
+        sensor_ht_verify_hum_stop.append(row[15])
+        sensor_ht_verify_email.append(row[16])
+        sensor_ht_yaxis_relay_min.append(row[17])
+        sensor_ht_yaxis_relay_max.append(row[18])
+        sensor_ht_yaxis_relay_tics.append(row[19])
+        sensor_ht_yaxis_relay_mtics.append(row[20])
+        sensor_ht_yaxis_temp_min.append(row[21])
+        sensor_ht_yaxis_temp_max.append(row[22])
+        sensor_ht_yaxis_temp_tics.append(row[23])
+        sensor_ht_yaxis_temp_mtics.append(row[24])
+        sensor_ht_yaxis_hum_min.append(row[25])
+        sensor_ht_yaxis_hum_max.append(row[26])
+        sensor_ht_yaxis_hum_tics.append(row[27])
+        sensor_ht_yaxis_hum_mtics.append(row[28])
+        sensor_ht_temp_relays_up.append(row[29])
+        sensor_ht_temp_relays_down.append(row[30])
+        pid_ht_temp_relay_high.append(row[31])
+        pid_ht_temp_outmin_high.append(row[32])
+        pid_ht_temp_outmax_high.append(row[33])
+        pid_ht_temp_relay_low.append(row[34])
+        pid_ht_temp_outmin_low.append(row[35])
+        pid_ht_temp_outmax_low.append(row[36])
+        pid_ht_temp_or.append(row[37])
+        pid_ht_temp_set.append(row[38])
+        pid_ht_temp_set_dir.append(row[39])
+        pid_ht_temp_period.append(row[40])
+        pid_ht_temp_p.append(row[41])
+        pid_ht_temp_i.append(row[42])
+        pid_ht_temp_d.append(row[43])
+        sensor_ht_hum_relays_up.append(row[44])
+        sensor_ht_hum_relays_down.append(row[45])
+        pid_ht_hum_relay_high.append(row[46])
+        pid_ht_hum_outmin_high.append(row[47])
+        pid_ht_hum_outmax_high.append(row[48])
+        pid_ht_hum_relay_low.append(row[49])
+        pid_ht_hum_outmin_low.append(row[50])
+        pid_ht_hum_outmax_low.append(row[51])
+        pid_ht_hum_or.append(row[52])
+        pid_ht_hum_set.append(row[53])
+        pid_ht_hum_set_dir.append(row[54])
+        pid_ht_hum_period.append(row[55])
+        pid_ht_hum_p.append(row[56])
+        pid_ht_hum_i.append(row[57])
+        pid_ht_hum_d.append(row[58])
 
     # Convert string of comma-separated values to a 2-dimensional list of integers
     global sensor_ht_temp_relays_up_list

@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.81";
+$version = "3.5.82";
 
 ######### Start Edit Configure #########
 
@@ -1311,6 +1311,38 @@ if (isset($output_error)) {
                                 <input style="width: 5em;" type="text" value="" maxlength=12 size=10 name="sensorht<?php echo $i; ?>presetname" title="Name of new preset to save"/> <input type="submit" name="Change<?php echo $i; ?>HTSensorNewPreset" value="New" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left"> <input type="submit" name="Change<?php echo $i; ?>HTSensorRenamePreset" value="Rename" title="Save a new preset with the currently-populated sensor and PID values, with the name from the box to the left">
                             </div>
                         </td>
+                    </tr>
+                </table>
+
+                <table class="sensor">
+                    <tr>
+                        <td>Sensor Verification</td>
+                        <td></td>
+                        <td colspan="3">Temperature (&degC)</td>
+                        <td colspan="3">Humidity (%)</td>
+                        <td>Notification</td>
+                    </tr>
+                    <tr>
+                        <td>Sensor must be either:</td>
+                        <td>GPIO</td>
+                        <td>Difference</td>
+                        <td>Notify</td>
+                        <td>Stop PID</td>
+                        <td>Difference</td>
+                        <td>Notify</td>
+                        <td>Stop PID</td>
+                        <td>(separate emails with commas)</td>
+                    </tr>
+                    <tr>
+                        <td>DHT11, DHT22, AMH2302</td>
+                        <td><input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_ht_verify_pin[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>verifypin" title="This is the GPIO pin connected to the HT sensor that will verify this sensor's measurement (0 to disable)"/></td>
+                        <td><input style="width: 4em;" type="number" min="0" max="100" step="any" value="<?php echo $sensor_ht_verify_temp[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>verifytemp" title="This is the maximum temperature difference between the two sensors allowed before sending an alarm notification and disabling the PID for the condition with the disparity."/> &deg;C</td>
+                        <td><input type="hidden" name="sensorht<?php echo $i; ?>verifytempnotify" value="0" /><input type="checkbox" id="sensorht<?php echo $i; ?>verifytempnotify" name="sensorht<?php echo $i; ?>verifytempnotify" value="1" <?php if ($sensor_ht_verify_temp_notify[$i] == 1) echo "checked"; ?>/></td>
+                        <td><input type="hidden" name="sensorht<?php echo $i; ?>verifytempstop" value="0" /><input type="checkbox" id="sensorht<?php echo $i; ?>verifytempstop" name="sensorht<?php echo $i; ?>verifytempstop" value="1" <?php if ($sensor_ht_verify_temp_stop[$i] == 1) echo "checked"; ?>/></td>
+                        <td><input style="width: 4em;" type="number" min="0" max="100" step="any" value="<?php echo $sensor_ht_verify_hum[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>verifyhum" title="This is the maximum humidity difference between the two sensors allowed before sending an alarm notification and disabling the PID for the condition with the disparity."/> %</td>
+                        <td><input type="hidden" name="sensorht<?php echo $i; ?>verifyhumnotify" value="0" /><input type="checkbox" id="sensorht<?php echo $i; ?>verifyhumnotify" name="sensorht<?php echo $i; ?>verifyhumnotify" value="1" <?php if ($sensor_ht_verify_hum_notify[$i] == 1) echo "checked"; ?>/></td>
+                        <td><input type="hidden" name="sensorht<?php echo $i; ?>verifyhumstop" value="0" /><input type="checkbox" id="sensorht<?php echo $i; ?>verifyhumstop" name="sensorht<?php echo $i; ?>verifyhumstop" value="1" <?php if ($sensor_ht_verify_hum_stop[$i] == 1) echo "checked"; ?>/></td>
+                        <td><input style="width: 16em;" type="text" value="<?php echo $sensor_ht_verify_email[$i]; ?>" name="sensorht<?php echo $i; ?>verifyemail" title="These are the email addresses that will be notified if the sensor measurements diverge by the set differences"/></td>
                     </tr>
                 </table>
 
@@ -3512,13 +3544,13 @@ if (isset($output_error)) {
                                         }
                                         for ($v = 0; $v < count($upload_id); $v++) {
                                             if (endswith($upload_name[$v], '.jpg') || endswith($upload_name[$v], '.jpeg')) {
-                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"><img style=\"max-height: 125px; max-width: 125px;\" src=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"></a></div>";
+                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"></a></div>";
                                             }
                                             if (endswith($upload_name[$v], '.png')) {
-                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-png&file=$upload_file_name[$v]\"><img style=\"max-height: 125px; max-width: 125px;\" src=\"image.php?span=ul-png&file=$upload_file_name[$v]\"></a></div>";
+                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-png&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-png&file=$upload_file_name[$v]\"></a></div>";
                                             }
                                             if (endswith($upload_name[$v], '.gif')) {
-                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"><img style=\"max-height: 125px; max-width: 125px;\" src=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"></a></div>";
+                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"></a></div>";
                                             }
                                         }
                                         if ($images == True) {
@@ -3613,13 +3645,13 @@ if (isset($output_error)) {
                                 }
                                 for ($v = 0; $v < count($upload_id); $v++) {
                                     if (endswith($upload_name[$v], '.jpg') || endswith($upload_name[$v], '.jpeg')) {
-                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"><img style=\"max-height: 125px; max-width: 125px;\" src=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"></a></div>";
+                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"></a></div>";
                                     }
                                     if (endswith($upload_name[$v], '.png')) {
-                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-png&file=$upload_file_name[$v]\"><img style=\"max-height: 125px; max-width: 125px;\" src=\"image.php?span=ul-png&file=$upload_file_name[$v]\"></a></div>";
+                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-png&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-png&file=$upload_file_name[$v]\"></a></div>";
                                     }
                                     if (endswith($upload_name[$v], '.gif')) {
-                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"><img style=\"max-height: 125px; max-width: 125px;\" src=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"></a></div>";
+                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"></a></div>";
                                     }
                                 }
                                 if ($images == True) {

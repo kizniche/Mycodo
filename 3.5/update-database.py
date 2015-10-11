@@ -27,7 +27,7 @@ sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
 sql_database_user = '/var/www/mycodo/config/users.db'
 sql_database_note = '/var/www/mycodo/config/notes.db'
 
-db_version_mycodo = 12
+db_version_mycodo = 13
 db_version_user = 1
 db_version_note = 2
 
@@ -369,6 +369,25 @@ def mycodo_database_update():
 
         # Version 12 update: add custom message to login page
 
+        # Version 13 updates: Add ability to verify HT sensor measurement
+        if current_db_version_mycodo < 13:
+            ModNullValue(sql_database_mycodo, 'HTSensor', 'Verify_Pin', 0)
+            ModNullValue(sql_database_mycodo, 'HTSensor', 'Verify_Temp', 0)
+            ModNullValue(sql_database_mycodo, 'HTSensor', 'Verify_Temp_Notify', 0)
+            ModNullValue(sql_database_mycodo, 'HTSensor', 'Verify_Temp_Stop', 0)
+            ModNullValue(sql_database_mycodo, 'HTSensor', 'Verify_Hum', 0)
+            ModNullValue(sql_database_mycodo, 'HTSensor', 'Verify_Hum_Notify', 0)
+            ModNullValue(sql_database_mycodo, 'HTSensor', 'Verify_Hum_Stop', 0)
+            ModNullValue(sql_database_mycodo, 'HTSensor', 'Verify_Notify_Email', '')
+            ModNullValue(sql_database_mycodo, 'HTSensorPreset', 'Verify_Pin', 0)
+            ModNullValue(sql_database_mycodo, 'HTSensorPreset', 'Verify_Temp', 0)
+            ModNullValue(sql_database_mycodo, 'HTSensorPreset', 'Verify_Temp_Notify', 0)
+            ModNullValue(sql_database_mycodo, 'HTSensorPreset', 'Verify_Temp_Stop', 0)
+            ModNullValue(sql_database_mycodo, 'HTSensorPreset', 'Verify_Hum', 0)
+            ModNullValue(sql_database_mycodo, 'HTSensorPreset', 'Verify_Hum_Notify', 0)
+            ModNullValue(sql_database_mycodo, 'HTSensorPreset', 'Verify_Hum_Stop', 0)
+            ModNullValue(sql_database_mycodo, 'HTSensorPreset', 'Verify_Notify_Email', '')
+
         # any extra commands for version X
         #if current_db_version_mycodo < X:
         #    pass
@@ -508,6 +527,14 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'HTSensor', 'Pre_Measure_Dur', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensor', 'Activated', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensor', 'Graph', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensor', 'Verify_Pin', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensor', 'Verify_Temp', 'REAL')
+    AddColumn(sql_database_mycodo, 'HTSensor', 'Verify_Temp_Notify', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensor', 'Verify_Temp_Stop', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensor', 'Verify_Hum', 'REAL')
+    AddColumn(sql_database_mycodo, 'HTSensor', 'Verify_Hum_Notify', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensor', 'Verify_Hum_Stop', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensor', 'Verify_Notify_Email', 'TEXT')
     AddColumn(sql_database_mycodo, 'HTSensor', 'YAxis_Relay_Min', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensor', 'YAxis_Relay_Max', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensor', 'YAxis_Relay_Tics', 'INT')
@@ -560,6 +587,14 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Pre_Measure_Dur', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Activated', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Graph', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Verify_Pin', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Verify_Temp', 'REAL')
+    AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Verify_Temp_Notify', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Verify_Temp_Stop', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Verify_Hum', 'REAL')
+    AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Verify_Hum_Notify', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Verify_Hum_Stop', 'INT')
+    AddColumn(sql_database_mycodo, 'HTSensorPreset', 'Verify_Notify_Email', 'TEXT')
     AddColumn(sql_database_mycodo, 'HTSensorPreset', 'YAxis_Relay_Min', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensorPreset', 'YAxis_Relay_Max', 'INT')
     AddColumn(sql_database_mycodo, 'HTSensorPreset', 'YAxis_Relay_Tics', 'INT')
