@@ -679,7 +679,7 @@ def daemon(output, log):
             if int(time.time()) > timerHTSensorLog[i] and sensor_ht_device[i] != 'Other' and sensor_ht_activated[i] == 1 and client_que != 'TerminateServer' and pause_daemon != 1 and PID_change != 1:
                 logging.debug("[Timer Expiration] Read HT-%s sensor every %s seconds: Write sensor log", i+1, sensor_ht_period[i])
                 if read_ht_sensor(i) == 1:
-                    if sensor_ht_verify_pin[i] != 0:
+                    if (sensor_ht_verify_hum_notify[i] or sensor_ht_verify_temp_notify[i]) and sensor_ht_verify_pin[i] != 0:
                         verify_ht_sensor(i, sensor_ht_verify_pin[i])
                     mycodoLog.write_ht_sensor_log(sensor_ht_read_temp_c, sensor_ht_read_hum, sensor_ht_dewpt_c, i)
                 else:
@@ -737,10 +737,10 @@ def daemon(output, log):
                                 if conditional_t_sel_notify[j][k][0]:
                                     if (conditional_t_direction[j][k][0] == 1 and
                                             sensor_t_read_temp_c[j] > conditional_t_setpoint[j][k][0]):
-                                        message = "Conditional %s (%s) T Sensor %s (%s) Temperature: %s°C > %s°C." % (j+1, sensor_t_name[j], k+1, conditional_t_name[j][k][0], round(sensor_t_read_temp_c[j], 2), conditional_t_setpoint[j][k][0])
+                                        message = "Conditional %s (%s) T Sensor %s (%s) Temperature: %s C > %s C." % (j+1, sensor_t_name[j], k+1, conditional_t_name[j][k][0], round(sensor_t_read_temp_c[j], 2), conditional_t_setpoint[j][k][0])
                                     if (conditional_t_direction[j][k][0] == -1 and
                                             sensor_t_read_temp_c[j] < conditional_t_setpoint[j][k][0]):
-                                        message = "Conditional %s (%s) T Sensor %s (%s) Temperature: %s°C < %s°C." % (j+1, sensor_t_name[j], k+1, conditional_t_name[j][k][0], round(sensor_t_read_temp_c[j], 2), conditional_t_setpoint[j][k][0])
+                                        message = "Conditional %s (%s) T Sensor %s (%s) Temperature: %s C < %s C." % (j+1, sensor_t_name[j], k+1, conditional_t_name[j][k][0], round(sensor_t_read_temp_c[j], 2), conditional_t_setpoint[j][k][0])
 
                                     email(conditional_t_do_notify[j][k][0], message)
 
@@ -794,11 +794,11 @@ def daemon(output, log):
                                     if (conditional_ht_condition[j][k][0] == "Temperature" and
                                             conditional_ht_direction[j][k][0] == 1 and
                                             sensor_ht_read_temp_c[j] > conditional_ht_setpoint[j][k][0]):
-                                        message = "Conditional %s (%s) HT Sensor %s (%s) Temperature: %s°C > %s°C." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_temp_c[j], 2), conditional_ht_setpoint[j][k][0])
+                                        message = "Conditional %s (%s) HT Sensor %s (%s) Temperature: %s C > %s C." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_temp_c[j], 2), conditional_ht_setpoint[j][k][0])
                                     if (conditional_ht_condition[j][k][0] == "Temperature" and
                                             conditional_ht_direction[j][k][0] == -1 and
                                             sensor_ht_read_temp_c[j] < conditional_ht_setpoint[j][k][0]):
-                                        message = "Conditional %s (%s) HT Sensor %s (%s) Temperature: %s°C < %s°C." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_temp_c[j], 1), conditional_ht_setpoint[j][k][0])
+                                        message = "Conditional %s (%s) HT Sensor %s (%s) Temperature: %s C < %s C." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_temp_c[j], 1), conditional_ht_setpoint[j][k][0])
                                     if (conditional_ht_condition[j][k][0] == "Humidity" and
                                             conditional_ht_direction[j][k][0] == 1 and
                                             sensor_ht_read_hum[j] > conditional_ht_setpoint[j][k][0]):
@@ -915,11 +915,11 @@ def daemon(output, log):
                                     if (conditional_press_condition[j][k][0] == "Temperature" and
                                     conditional_press_direction[j][k][0] == 1 and
                                     sensor_press_read_temp_c[j] > conditional_press_setpoint[j][k][0]):
-                                        message = "Conditional %s (%s) Press Sensor %s (%s) Temperature: %s°C > %s°C." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_temp_c[j], conditional_press_setpoint[j][k][0])
+                                        message = "Conditional %s (%s) Press Sensor %s (%s) Temperature: %s C > %s C." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_temp_c[j], conditional_press_setpoint[j][k][0])
                                     if (conditional_press_condition[j][k][0] == "Temperature" and
                                     conditional_press_direction[j][k][0] == -1 and
                                     sensor_press_read_temp_c[j] < conditional_press_setpoint[j][k][0]):
-                                        message = "Conditional %s (%s) Press Sensor %s (%s) Temperature: %s°C < %s°C." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_temp_c[j], conditional_press_setpoint[j][k][0])
+                                        message = "Conditional %s (%s) Press Sensor %s (%s) Temperature: %s C < %s C." % (j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], sensor_press_read_temp_c[j], conditional_press_setpoint[j][k][0])
                                     
                                     email(conditional_press_do_notify[j][k][0], message)
                                     
@@ -1260,13 +1260,13 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
                 logging.debug("[PID HT-Temperature-%s] Reading temperature...", sensor+1)
                 if read_ht_sensor(sensor) == 1:
 
-                    verify_check = 0
-                    if sensor_ht_verify_pin[sensor] != 0:
-                        verify_check = verify_ht_sensor(sensor, sensor_ht_verify_pin[sensor])
-                        if (verify_check == 3 or verify_check == 6) and sensor_ht_verify_temp_stop:
+                    verify_check = {"temperature": 0, "humidity": 0}
+                    if (sensor_ht_verify_temp_stop[sensor] or sensor_ht_verify_temp_notify[sensor]) and sensor_ht_verify_pin[sensor] != 0:
+                        return_value, verify_check["temperature"], verify_check["humidity"] = verify_ht_sensor(sensor, sensor_ht_verify_pin[sensor])
+                        if verify_check["temperature"] and sensor_ht_verify_temp_stop[sensor]:
                             logging.Warning("Verification of Temperature failed, not enabling PID")
 
-                    if verify_check == 3 or verify_check == 6:
+                    if sensor_ht_verify_temp_stop[sensor] and verify_check["temperature"]:
                         pass
                     else:
                         PIDTemp = pid_temp.update(float(sensor_ht_read_temp_c[sensor]))
@@ -1375,47 +1375,56 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
                 logging.debug("[PID HT-Humidity-%s] Reading humidity...", sensor+1)
                 if read_ht_sensor(sensor) == 1:
 
-                    PIDHum = pid_hum.update(float(sensor_ht_read_hum[sensor]))
+                    verify_check = {"temperature": 0, "humidity": 0}
+                    if (sensor_ht_verify_hum_stop[sensor] or sensor_ht_verify_hum_notify[sensor]) and sensor_ht_verify_pin[sensor] != 0:
+                        return_value, verify_check["temperature"], verify_check["humidity"] = verify_ht_sensor(sensor, sensor_ht_verify_pin[sensor])
+                        if verify_check["humidity"] and sensor_ht_verify_hum_stop[sensor]:
+                            logging.Warning("Verification of Humidity failed, not enabling PID")
 
-                    if sensor_ht_read_hum[sensor] > pid_ht_hum_set[sensor]:
-                        logging.debug("[PID HT-Humidity-%s] Humidity: %.1f%% now > %.1f%% set", sensor+1, sensor_ht_read_hum[sensor], pid_ht_hum_set[sensor])
-                    elif sensor_ht_read_hum[sensor] < pid_ht_hum_set[sensor]:
-                        logging.debug("[PID HT-Humidity-%s] Humidity: %.1f%% now < %.1f%% set", sensor+1, sensor_ht_read_hum[sensor], pid_ht_hum_set[sensor])
+                    if sensor_ht_verify_hum_stop[sensor] and verify_check["humidity"]:
+                        pass
                     else:
-                        logging.debug("[PID HT-Humidity-%s] Humidity: %.1f%% now = %.1f%% set", sensor+1, sensor_ht_read_hum[sensor], pid_ht_hum_set[sensor])
+                        PIDHum = pid_hum.update(float(sensor_ht_read_hum[sensor]))
 
-                    if pid_ht_hum_set_dir[sensor] > -1 and PIDHum > 0:
-                        if pid_ht_hum_outmin_low[sensor] != 0 and PIDHum < pid_ht_hum_outmin_low[sensor]:
-                            logging.debug("[PID HT-Humidity-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDHum, pid_ht_hum_outmin_low[sensor])
-                            PIDHum = pid_ht_hum_outmin_low[sensor]
-                        elif pid_ht_hum_outmax_low[sensor] != 0 and PIDHum > pid_ht_hum_outmax_low[sensor]:
-                            logging.debug("[PID HT-Humidity-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDHum, pid_ht_hum_outmax_low[sensor])
-                            PIDHum = pid_ht_hum_outmax_low[sensor]
+                        if sensor_ht_read_hum[sensor] > pid_ht_hum_set[sensor]:
+                            logging.debug("[PID HT-Humidity-%s] Humidity: %.1f%% now > %.1f%% set", sensor+1, sensor_ht_read_hum[sensor], pid_ht_hum_set[sensor])
+                        elif sensor_ht_read_hum[sensor] < pid_ht_hum_set[sensor]:
+                            logging.debug("[PID HT-Humidity-%s] Humidity: %.1f%% now < %.1f%% set", sensor+1, sensor_ht_read_hum[sensor], pid_ht_hum_set[sensor])
                         else:
-                            logging.debug("[PID HT-Humidity-%s] PID = %.1f (max disabled)", sensor+1, PIDHum)
+                            logging.debug("[PID HT-Humidity-%s] Humidity: %.1f%% now = %.1f%% set", sensor+1, sensor_ht_read_hum[sensor], pid_ht_hum_set[sensor])
 
-                        rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_ht_hum_relay_low[sensor], round(PIDHum,2), sensor, relay_trigger, relay_pin,))
-                        rod.start()
+                        if pid_ht_hum_set_dir[sensor] > -1 and PIDHum > 0:
+                            if pid_ht_hum_outmin_low[sensor] != 0 and PIDHum < pid_ht_hum_outmin_low[sensor]:
+                                logging.debug("[PID HT-Humidity-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDHum, pid_ht_hum_outmin_low[sensor])
+                                PIDHum = pid_ht_hum_outmin_low[sensor]
+                            elif pid_ht_hum_outmax_low[sensor] != 0 and PIDHum > pid_ht_hum_outmax_low[sensor]:
+                                logging.debug("[PID HT-Humidity-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDHum, pid_ht_hum_outmax_low[sensor])
+                                PIDHum = pid_ht_hum_outmax_low[sensor]
+                            else:
+                                logging.debug("[PID HT-Humidity-%s] PID = %.1f (max disabled)", sensor+1, PIDHum)
 
-                    elif pid_ht_hum_set_dir[sensor] < 1 and PIDHum < 0:
-                        PIDHum = abs(PIDHum)
-                        if pid_ht_hum_outmin_high[sensor] != 0 and PIDHum < pid_ht_hum_outmin_high[sensor]:
-                            logging.debug("[PID HT-Humidity-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDHum, pid_ht_hum_outmin_high[sensor])
-                            PIDHum = pid_ht_hum_outmin_high[sensor]
-                        elif pid_ht_hum_outmax_high[sensor] != 0 and PIDHum > pid_ht_hum_outmax_high[sensor]:
-                            logging.debug("[PID HT-Humidity-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDHum, pid_ht_hum_outmax_high[sensor])
-                            PIDHum = pid_ht_hum_outmax_high[sensor]
+                            rod = threading.Thread(target = relay_on_duration,
+                                args = (pid_ht_hum_relay_low[sensor], round(PIDHum,2), sensor, relay_trigger, relay_pin,))
+                            rod.start()
+
+                        elif pid_ht_hum_set_dir[sensor] < 1 and PIDHum < 0:
+                            PIDHum = abs(PIDHum)
+                            if pid_ht_hum_outmin_high[sensor] != 0 and PIDHum < pid_ht_hum_outmin_high[sensor]:
+                                logging.debug("[PID HT-Humidity-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDHum, pid_ht_hum_outmin_high[sensor])
+                                PIDHum = pid_ht_hum_outmin_high[sensor]
+                            elif pid_ht_hum_outmax_high[sensor] != 0 and PIDHum > pid_ht_hum_outmax_high[sensor]:
+                                logging.debug("[PID HT-Humidity-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDHum, pid_ht_hum_outmax_high[sensor])
+                                PIDHum = pid_ht_hum_outmax_high[sensor]
+                            else:
+                                logging.debug("[PID HT-Humidity-%s] PID = %.1f", sensor+1, PIDHum)
+
+                            rod = threading.Thread(target = relay_on_duration,
+                                args = (pid_ht_hum_relay_high[sensor], round(PIDHum,2), sensor, relay_trigger, relay_pin,))
+                            rod.start()
+
                         else:
                             logging.debug("[PID HT-Humidity-%s] PID = %.1f", sensor+1, PIDHum)
-
-                        rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_ht_hum_relay_high[sensor], round(PIDHum,2), sensor, relay_trigger, relay_pin,))
-                        rod.start()
-
-                    else:
-                        logging.debug("[PID HT-Humidity-%s] PID = %.1f", sensor+1, PIDHum)
-                        PIDHum = 0
+                            PIDHum = 0
 
                     timerHum = int(time.time()) + int(PIDHum) + pid_ht_hum_period[sensor]
 
@@ -2139,28 +2148,29 @@ def verify_ht_sensor(sensor, GPIO):
                 logging.debug("[Verify HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
                 lock.release()
 
-                count = 1
+                verify_check = {"temperature": 0, "humidity": 0}
                 if abs(tempc - sensor_ht_read_temp_c[sensor]) > sensor_ht_verify_temp[sensor]:
-                    logging.warning("[Verify HT Sensor-%s] Temperature difference (%.1f°C) greater than set (%.1f°C)", abs(tempc - sensor_ht_read_temp_c[sensor]), sensor_ht_verify_temp[sensor])
-                    count = count + 2
+                    verify_check["temperature"] = 1
                 if abs(humidity - sensor_ht_read_hum[sensor]) > sensor_ht_verify_hum[sensor]:
-                    logging.warning("[Verify HT Sensor-%s] Humidity difference (%.1f%) greater than set (%.1f%)", abs(humidity - sensor_ht_read_hum[sensor]), sensor_ht_verify_hum[sensor])
-                    count = count + 3
+                    verify_check["humidity"] = 1
 
-                if count == 6 and sensor_ht_verify_temp_notify and sensor_ht_verify_hum_notify:
-                    message = "Temperature difference (%.1f°C) greater than set (%.1f°C)\nHumidity difference (%s%) greater than set (%s%)" % (abs(tempc - sensor_ht_read_temp_c[sensor]), sensor_ht_verify_temp[sensor], abs(humidity - sensor_ht_read_hum[sensor]), sensor_ht_verify_hum[sensor])
-                elif (count == 3 or count == 6) and sensor_ht_verify_temp_notify:
-                    message = "Temperature difference (%.1f°C) greater than set (%.1f°C)" % (abs(tempc - sensor_ht_read_temp_c[sensor]), sensor_ht_verify_temp[sensor])
-                elif (count == 4 or count == 6) and sensor_ht_verify_hum_notify:
-                    message = "Humidity difference (%.1f%%) greater than set (%.1f%%)" % (abs(humidity - sensor_ht_read_hum[sensor]), sensor_ht_verify_hum[sensor])
+                if verify_check["temperature"] and verify_check["humidity"]:
+                    message = "[Verify HT Sensor-%s] (%s) Temperature difference (%.1f C) greater than set (%.1f C) and Humidity difference (%.1f%%) greater than set (%.1f%%)" % (sensor+1, sensor_ht_name[sensor], abs(tempc - sensor_ht_read_temp_c[sensor]), sensor_ht_verify_temp[sensor], abs(humidity - sensor_ht_read_hum[sensor]), sensor_ht_verify_hum[sensor])
+                    email(sensor_ht_verify_email[sensor], message)
+                elif verify_check["temperature"] and not verify_check["humidity"]:
+                    message = "[Verify HT Sensor-%s] (%s) Temperature difference (%.1f C) greater than set (%.1f C)" % (sensor+1, sensor_ht_name[sensor], abs(tempc - sensor_ht_read_temp_c[sensor]), sensor_ht_verify_temp[sensor])
+                    email(sensor_ht_verify_email[sensor], message)
+                elif verify_check["humidity"] and not verify_check["temperature"]:
+                    message = "[Verify HT Sensor-%s] (%s) Humidity difference (%.1f%%) greater than set (%.1f%%)" % (sensor+1, sensor_ht_name[sensor], abs(humidity - sensor_ht_read_hum[sensor]), sensor_ht_verify_hum[sensor])
+                    email(sensor_ht_verify_email[sensor], message)
 
-                if count == 1:
+                if verify_check["temperature"] or verify_check["humidity"]:
+                    logging.warning(message)
+                    return 2, verify_check["temperature"], verify_check["humidity"]
+                else:
                     logging.debug("[Verify HT Sensor-%s] Both differences within range: %.1f°C < %.1f°C set, %.1f%% < %.1f%% set", sensor+1, abs(tempc - sensor_ht_read_temp_c[sensor]), sensor_ht_verify_temp[sensor], abs(humidity - sensor_ht_read_hum[sensor]), sensor_ht_verify_hum[sensor])
                     return 1
-                else:
-                    email(sensor_ht_verify_email, message)
-                    logging.warning(message)
-                    return count
+                    
 
     logging.warning("[Verify HT Sensor-%s] Could not get two consecutive Hum/Temp measurements that were consistent.", sensor+1)
     logging.debug("[Verify HT Sensor-%s] Removing lock: %s", sensor+1, lock.path)
@@ -4072,7 +4082,7 @@ def email(email_to, message):
         # Body of email
         # message = "Critical warning!"
 
-        msg = MIMEText(message)
+        msg = MIMEText(message.decode('utf-8'), 'plain', 'utf-8')
         msg['Subject'] = "Mycodo Notification (%s)" % socket.getfqdn()
         msg['From'] = smtp_email_from
         msg['To'] = email_to
