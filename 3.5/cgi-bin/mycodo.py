@@ -1266,6 +1266,7 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
 
                     if sensor_ht_verify_temp_stop[sensor] and verify_check["temperature"]:
                         logging.warning("[PID HT-Temperature-%s] Verification of Temperature failed, not updating PID or turning on relay", sensor+1)
+                        timerTemp = int(time.time()) + pid_ht_temp_period[sensor]
                     else:
                         PIDTemp = pid_temp.update(float(sensor_ht_read_temp_c[sensor]))
 
@@ -1309,7 +1310,7 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
                             logging.debug("[PID HT-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
                             PIDTemp = 0
 
-                    timerTemp = int(time.time()) + int(PIDTemp) + pid_ht_temp_period[sensor]
+                        timerTemp = int(time.time()) + int(PIDTemp) + pid_ht_temp_period[sensor]
 
                 else:
                     logging.warning("[PID HT-Temperature-%s] Could not read Hum/Temp sensor, not updating PID", sensor+1)
@@ -1376,11 +1377,10 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
                     verify_check = {"temperature": 0, "humidity": 0}
                     if (sensor_ht_verify_hum_stop[sensor] or sensor_ht_verify_hum_notify[sensor]) and sensor_ht_verify_pin[sensor] != 0:
                         return_value, verify_check["temperature"], verify_check["humidity"] = verify_ht_sensor(sensor, sensor_ht_verify_pin[sensor])
-                        if verify_check["humidity"] and sensor_ht_verify_hum_stop[sensor]:
-                            logging.Warning("Verification of Humidity failed, not enabling PID")
 
                     if sensor_ht_verify_hum_stop[sensor] and verify_check["humidity"]:
-                        pass
+                        logging.warning("[PID HT-Humidity-%s] Verification of Humidity failed, not updating PID or turning on relay", sensor+1)
+                        timerHum = int(time.time()) + pid_ht_hum_period[sensor]
                     else:
                         PIDHum = pid_hum.update(float(sensor_ht_read_hum[sensor]))
 
@@ -1424,7 +1424,7 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
                             logging.debug("[PID HT-Humidity-%s] PID = %.1f", sensor+1, PIDHum)
                             PIDHum = 0
 
-                    timerHum = int(time.time()) + int(PIDHum) + pid_ht_hum_period[sensor]
+                        timerHum = int(time.time()) + int(PIDHum) + pid_ht_hum_period[sensor]
 
                 else:
                     logging.warning("[PID HT-Humidity-%s] Could not read Hum/Temp sensor, not updating PID", sensor+1)
@@ -2160,15 +2160,15 @@ def verify_ht_sensor(sensor, GPIO):
                     message = "[Verify HT Sensor-%s] (%s) Humidity difference (%.1f%%) greater than set (%.1f%%)" % (sensor+1, sensor_ht_name[sensor], abs(humidity - sensor_ht_read_hum[sensor]), sensor_ht_verify_hum[sensor])
 
                 if verify_check["temperature"] or verify_check["humidity"]:
-                    if (((sensor_ht_verify_temp_notify and sensor_ht_verify_hum_notify) and (verify_check["temperature"] and verify_check["humidity"])) or
-                        (sensor_ht_verify_temp_notify and verify_check["temperature"]) or
-                        (sensor_ht_verify_hum_notify and verify_check["humidity"])):
+                    if (((sensor_ht_verify_temp_notify[sensor] and sensor_ht_verify_hum_notify[sensor]) and (verify_check["temperature"] and verify_check["humidity"])) or
+                        (sensor_ht_verify_temp_notify[sensor] and verify_check["temperature"]) or
+                        (sensor_ht_verify_hum_notify[sensor] and verify_check["humidity"])):
                         email(sensor_ht_verify_email[sensor], message)
                     logging.warning(message)
                     return 2, verify_check["temperature"], verify_check["humidity"]
                 else:
-                    logging.debug("[Verify HT Sensor-%s] Both differences within range: %.1f°C < %.1f°C set, %.1f%% < %.1f%% set", sensor+1, abs(tempc - sensor_ht_read_temp_c[sensor]), sensor_ht_verify_temp[sensor], abs(humidity - sensor_ht_read_hum[sensor]), sensor_ht_verify_hum[sensor])
-                    return 1
+                    logging.debug("[Verify HT Sensor-%s] Both differences within range: %.1f°C <= %.1f°C set, %.1f%% <= %.1f%% set", sensor+1, abs(tempc - sensor_ht_read_temp_c[sensor]), sensor_ht_verify_temp[sensor], abs(humidity - sensor_ht_read_hum[sensor]), sensor_ht_verify_hum[sensor])
+                    return 1, verify_check["temperature"], verify_check["humidity"]
                     
 
     logging.warning("[Verify HT Sensor-%s] Could not get two consecutive Hum/Temp measurements that were consistent.", sensor+1)
