@@ -2620,20 +2620,12 @@ if (isset($_POST['Add_Note'])) {
 
     if(count($_FILES['notes']['name']) > 0) {
         for($i = 0; $i < count($_FILES['notes']['name']); $i++) {
-          //Get the temp file path
             $tmpFilePath = $_FILES['notes']['tmp_name'][$i];
-
-            //Make sure we have a filepath
             if($tmpFilePath != "") {
-
-                //save the filename
                 $shortname = $_FILES['notes']['name'][$i];
-
-                //save the url and the file
                 $fullName = date('d-m-Y-H-i-s') . '-' . $_FILES['notes']['name'][$i];
                 $filePath = "/var/www/mycodo/notes/uploads/" . $fullName;
 
-                //Upload the file into the temp dir
                 if(move_uploaded_file($tmpFilePath, $filePath)) {
                     $files[] = $shortname;
                     $stmt = $ndb->prepare("INSERT INTO Uploads VALUES(:id, :name, :filename, :location)");
@@ -2642,9 +2634,6 @@ if (isset($_POST['Add_Note'])) {
                     $stmt->bindValue(':filename', $fullName, SQLITE3_TEXT);
                     $stmt->bindValue(':location', $filePath, SQLITE3_TEXT);
                     $stmt->execute();
-                    //insert into db 
-                    //use $shortname for the filename
-                    //use $filePath for the relative url to the file
                 }
             }
         }
@@ -2677,6 +2666,7 @@ if (isset($_POST['Edit_Note_Save'])) {
         $upload_location[$i] = $row[3];
         $i++;
     }
+
     if (!isset($upload_id)) $upload_id = [];
     else {
         for ($v = 0; $v < count($upload_id); $v++) {
@@ -2684,8 +2674,28 @@ if (isset($_POST['Edit_Note_Save'])) {
                 $stmt = $ndb->prepare("DELETE FROM Uploads WHERE File_Name=:filename");
                 $stmt->bindValue(':filename', $upload_file_name[$v]);
                 $stmt->execute();
-                echo $upload_location[$v] . " 1 " . file_exists($upload_location[$v]);
                 unlink($upload_location[$v]);
+            }
+        }
+    }
+    
+    if(count($_FILES['edit_notes']['name']) > 0) {
+        for($i = 0; $i < count($_FILES['edit_notes']['name']); $i++) {
+            $tmpFilePath = $_FILES['edit_notes']['tmp_name'][$i];
+            if($tmpFilePath != "") {
+                $shortname = $_FILES['edit_notes']['name'][$i];
+                $fullName = date('d-m-Y-H-i-s') . '-' . $_FILES['edit_notes']['name'][$i];
+                $filePath = "/var/www/mycodo/notes/uploads/" . $fullName;
+
+                if(move_uploaded_file($tmpFilePath, $filePath)) {
+                    $files[] = $shortname;
+                    $stmt = $ndb->prepare("INSERT INTO Uploads VALUES(:id, :name, :filename, :location)");
+                    $stmt->bindValue(':id', $_POST['Edit_Note_Save'], SQLITE3_TEXT);
+                    $stmt->bindValue(':name', $shortname, SQLITE3_TEXT);
+                    $stmt->bindValue(':filename', $fullName, SQLITE3_TEXT);
+                    $stmt->bindValue(':location', $filePath, SQLITE3_TEXT);
+                    $stmt->execute();
+                }
             }
         }
     }
