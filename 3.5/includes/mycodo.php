@@ -3456,7 +3456,7 @@ if (isset($output_error)) {
                             <table style=\"width:100%\";>
                                 <tr>
                                     <td style=\"width: auto;\">
-                                        <textarea style=\"width: 40em;\" rows=\"6\" maxlength=1000 name=\"Note_Text\" title=\"\"></textarea>
+                                        <textarea style=\"width: 40em;\" rows=\"6\" maxlength=100000 name=\"Note_Text\" title=\"\"></textarea>
                                     </td>
                                     <td style=\"vertical-align: top; height:100%; width:100%;\">
                                         <table style=\"height:100%; width:100%;\">
@@ -3589,7 +3589,7 @@ if (isset($output_error)) {
                             <table style=\"width: auto;\">
                                 <tr>
                                     <td>
-                                        <textarea style=\"width: 40em;\" rows=\"15\" maxlength=1000 name=\"Edit_Note_Text\" title=\"\">$note_note</textarea>
+                                        <textarea style=\"width: 40em;\" rows=\"15\" maxlength=100000 name=\"Edit_Note_Text\" title=\"\">$note_note</textarea>
                                     </td>
                                     <td style=\"vertical-align: top; height:100%; width:100%;\">
                                         <table style=\"height:100%; width:100%;\">
