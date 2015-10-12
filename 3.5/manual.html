@@ -86,7 +86,7 @@
 <a name="automatic-refresh"></a>
 <h4>Automatic Refresh</h4>
 
-<p>When activted, the Automatic Refresh option will force the page to refresh for the duration of time defined in the <a href="#settings-tab">Settings Tab</a>. If Auto Refresh was activated on the Graph Tab, the refreshed page will stay on the Graph Tab as well as generate a new graph from current measurement data.</p>
+<p>When activted, the Automatic Refresh option will force the page to refresh for the duration of time defined in the <a href="#settings-tab">Settings Tab</a>. If Auto Refresh was activated on the Graph Tab, the refreshed page will stay on the Graph Tab as well as generate a new graph from current measurement data, whcih is useful to have a constantly-updated graph displayed. Auto refresh can also be enabled on the Sensor Tab (useful for viewing the current status of relays) and the Camera Tab (useful for keeping the current image during a time-lapse).</p>
 
 <a name="sensor-tab"></a>
 <h3>Sensor Tab</h3>
@@ -137,39 +137,38 @@
 	</tr>
 	<tr>
 		<td>Log</td>
-		<td></td>
+		<td>Enable saving sensor measurements to the log at the duration set by "Log Interval".</td>
 	</tr>
 	<tr>
 		<td>Graph</td>
-		<td></td>
+		<td>Enable the generation of graphs for this sensor.</td>
 	</tr>
 	<tr>
 		<td>Presets</td>
-		<td></td>
+		<td>These are saved sensor configurations. There is a permanent preset named 'daefault', which is the current configuration that is displayed. If a saved preset is restored, it will overwrite the 'default' preset with the saved configuration.</td>
 	</tr>
 	<tr>
 		<td>Load</td>
-		<td></td>
+		<td>Select a preset and this button will overwrite the current configuration with the preset's configuration.</td>
 	</tr>
 	<tr>
 		<td>Save</td>
-		<td></td>
+		<td>Use this button to overwrite a preset with the current sensor configuration. You may save to the 'default' preset (the current configuration) or select a different preset to overwrite that preset's saved configuration.</td>
 	</tr>
 	<tr>
 		<td>Delete</td>
-		<td></td>
+		<td>Select a preset and use this button to delete the preset.</td>
 	</tr>
 	<tr>
 		<td>New</td>
-		<td></td>
+		<td>Enter a name and use this button to create a new preset.</td>
 	</tr>
 	<tr>
 		<td>Rename</td>
-		<td></td>
+		<td>Select a preset and enter a name, then use this button to rename the preset to the new name.</td>
 	</tr>
-</table>
-
-<table class="options">
+		<td style="padding: 0.75em;">
+		</td>
 	<tr>
 		<td colspan="2" style="font-size: 1.15em;">Sensor Verification</td>
 	</tr>
@@ -205,55 +204,37 @@
 		<td>Notification</td>
 		<td>This is the email address that will be notified if the measurement differences surpass the set limit.</td>
 	</tr>
-</table>
-
-<table class="options">
+		<td style="padding: 0.75em;">
+		</td>
 	<tr>
 		<td colspan="2" style="font-size: 1.15em;">Graph Y-Axis Range & Marks</td>
 	</tr>
 	<tr>
-		<td>Relay Min</td>
-		<td></td>
+		<td>Min</td>
+		<td>The lower end of the y-axis range that will be plotted on the graph.</td>
 	</tr>
 	<tr>
-		<td>Relay Max</td>
-		<td></td>
+		<td>Max</td>
+		<td>The higher end of the y-axis range that will be plotted on the graph.</td>
 	</tr>
 	<tr>
-		<td>Relay Tics</td>
-		<td></td>
+		<td>Tics</td>
+		<td>This determines the number of graduations between the minimum and maximum values. Horizontal lines are also created across the entire graph at these marks. Each graduation will occur for the number of units that this is set to. For example, if the min is 0, the max is 100, and Tics is 20, there will be marks at 20, 40, 60, and 80.</td>
 	</tr>
 	<tr>
-		<td>Relay mTics</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td>Condition Min</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td>Condition Max</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td>Condition Tics</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td>Condition mTics</td>
-		<td></td>
+		<td>mTics</td>
+		<td>This determines the number of marks between Tics. These do not include horizontal lines that span the whole graph. In the above example, if mTics is set to 5, there will be extra marks at 25, 30, and 35. If mTics is set to 10, there will be extra marks at 30.</td>
 	</tr>
 	<tr>
 		<td>Graph Up</td>
-		<td></td>
+		<td>These are the relay numbers that the on durations will be displayed as a positive value and will graph above 0 on the Relay Graph y-axis. Separate multiple relays with commas.</td>
 	</tr>
 	<tr>
 		<td>Graph Down</td>
-		<td></td>
+		<td>These are the relay numbers that the on durations will be displayed as a negative value and will graph below 0 on the Relay Graph y-axis. Separate multiple relays with commas.</td>
 	</tr>
-</table>
-
-<table class="options">
+		<td style="padding: 0.75em;">
+		</td>
 	<tr>
 		<td colspan="2" style="font-size: 1.15em;">PID Regulation</td>
 	</tr>
@@ -298,16 +279,20 @@
 		<td>This is the maximum duration the Down Relay is allowed to turn on for. if the PID output exceeds this number, the Down Relay will turn on for no greater than this duration of time.</td>
 	</tr>
 	<tr>
-		<td>Kp</td>
-		<td></td>
+		<td>K<sub>p</sub></td>
+		<td>Porportional coefficient (non-negative). Accounts for present values of the error.</td>
 	</tr>
 	<tr>
-		<td>Ki</td>
-		<td></td>
+		<td>K<sub>i</sub></td>
+		<td>Integral coefficient (non-negative). Accounts for past values of the error.</td>
 	</tr>
 	<tr>
-		<td>Kd</td>
+		<td>K<sub>d</sub></td>
+		<td>Derivative coefficient (non-negative). Accounts for predicted future values of the error, based on its current rate of change.</td>
+	</tr>
+	<tr>
 		<td></td>
+		<td>For more details about PID controllers, see <a href="#discrete-pid-control">Discrete PID Control</a></td>
 	</tr>
 </table>
 
@@ -391,17 +376,17 @@ If Humidity if Less Than 50%, turn relay #1 on for 21 seconds, execute '/usr/loc
 <a name="custom-tab"></a>
 <h3>Custom Tab</h3>
 
-<p></p>
+<p>Graph data can be plotted from any start and end times, so long as the beginning time is before the end time. As with the Graph Tab, graphs can be generated seperately or combined.</p>
 
 <a name="camera-tab"></a>
 <h3>Camera Tab</h3>
 
-<p></p>
+<p>There is currently only support for the Raspberry Pi camera. The camera can be instructed to capture images, stream video, or operate on a timer to produce a time-lapse series.</p>
 
 <a name="data-tab"></a>
 <h3>Data Tab</h3>
 
-<p></p>
+<p>Here is where all the system data can be viewed and edited (in the case of notes), and where system system restores can be initiated from. An input allows a certain number of lines to be printed from the respective log or output. Notes and Git Commits (future commits) will always show in their entirety.</p>
 
 <a name="system-restore"></a>
 <h4>System Restore</h4>
@@ -413,14 +398,39 @@ If Humidity if Less Than 50%, turn relay #1 on for 21 seconds, execute '/usr/loc
 <a name="settings-tab"></a>
 <h3>Settings Tab</h3>
 
-<p></p>
-
-<a name="system-update"></a>
-<h4>System Update</h4>
-
-<p>You may update Mycodo to the latest version with the "Update Mycodo" button under the Settings tab. A backup of the old system will be made to /var/Mycodo-backups/.</p>
-
-<p>Note: All logs and databases will be preserved during the update process. If you wish to return to a previous backup, read the next section, System Restore.</p>
+<table class="options">
+	<tr>
+		<td colspan="2" style="font-size: 1.15em;"><a name="system-update"></a>Update</td>
+		<td>You may update Mycodo to the latest version with the "Update Mycodo" button. A backup of the old system will be made to /var/Mycodo-backups/. Note: All logs and databases will be preserved during the update process. If you wish to return to a previous backup, see <a href="#system-restore">System Restore</a>.</td>
+	</tr>
+	<tr>
+		<td colspan="2" style="font-size: 1.15em;">Daemon</td>
+		<td>These options allow the stopping and starting of the Mycodo daemon that performs all the background tasks such as reading sensors, generating graphs, and operating PID controllers. The daemon can also be started in debug mode from here, providing a more verbose Daemon Log that may facilitate diagnosing issues.</td>
+	</tr>
+	<tr>
+		<td colspan="2" style="font-size: 1.15em;">System</td>
+		<td>
+			<p>The maximum amperage draw is the largest number of amps that are permitted to be activated by the Mycodo system when activating relays. If the maximum amperage limit will be surpassed if a particular relay is turned on, the system will prevent that relay form turning on.</p>
+			<p>The automatic refresh duration is the amount of time to wait between page refreshes when "Auto Refresh" is enabled (Graph Tab, Sensor Tab, and Camera Tab.</p>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" style="font-size: 1.15em;">Display</td>
+		<td>A custom message can be placed on the login page. This field accepts HTML and can be used for a number of purposes, such as a simple wencome message or to instruct visiting users how to log in with the guest account.</td>
+	</tr>
+	<tr>
+		<td colspan="2" style="font-size: 1.15em;">Email Notification</td>
+		<td>The email notification settings will configure the system to log in and email. Currently only SMTP is supported.</td>
+	</tr>
+	<tr>
+		<td colspan="2" style="font-size: 1.15em;">Camera Settings</td>
+		<td>These settings allow a relay to be activated while the camera is being used, change paths and format the image file name, send <a href="https://www.raspberrypi.org/documentation/raspbian/applications/camera.md" target="_blank">command parameters to raspistill</a>, and execute commands in a linux shell before and after camera use.</td>
+	</tr>
+	<tr>
+		<td colspan="2" style="font-size: 1.15em;">User Settings</td>
+		<td>In this section, users can be created or deleted and email addresses and passwords can be changed.</td>
+	</tr>
+</table>
 
 <a name="tips"></a>
 <h2>Tips</h2>
