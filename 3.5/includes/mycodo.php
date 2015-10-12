@@ -1001,10 +1001,10 @@ if (isset($output_error)) {
 
                 <table class="pid">
                     <tr>
-                        <td>Regulation</td>
+                        <td>PID Regulation</td>
                         <td>Activate</td>
-                        <td>PID<br>Set Point</td>
-                        <td>PID<br>Regulate</td>
+                        <td>Set Point</td>
+                        <td>Regulate</td>
                         <td>Measure<br>Interval</td>
                         <td>Up<br>Relay</td>
                         <td>Up<br>Min</td>
@@ -1429,10 +1429,10 @@ if (isset($output_error)) {
 
                 <table class="pid">
                     <tr>
-                        <td>Regulation</td>
+                        <td>PID Regulation</td>
                         <td>Activate</td>
-                        <td>PID<br>Set Point</td>
-                        <td>PID<br>Regulate</td>
+                        <td>Set Point</td>
+                        <td>Regulate</td>
                         <td>Measure<br>Interval</td>
                         <td>Up<br>Relay</td>
                         <td>Up<br>Min</td>
@@ -1886,10 +1886,10 @@ if (isset($output_error)) {
 
                 <table class="pid">
                     <tr>
-                        <td>Regulation</td>
+                        <td>PID Regulation</td>
                         <td>Activate</td>
-                        <td>PID<br>Set Point</td>
-                        <td>PID<br>Regulate</td>
+                        <td>Set Point</td>
+                        <td>Regulate</td>
                         <td>Measure<br>Interval</td>
                         <td>Up<br>Relay</td>
                         <td>Up<br>Min</td>
@@ -2291,10 +2291,10 @@ if (isset($output_error)) {
 
                 <table class="pid">
                     <tr>
-                        <td>Regulation</td>
+                        <td>PID Regulation</td>
                         <td>Activate</td>
-                        <td>PID<br>Set Point</td>
-                        <td>PID<br>Regulate</td>
+                        <td>Set Point</td>
+                        <td>Regulate</td>
                         <td>Measure<br>Interval</td>
                         <td>Up<br>Relay</td>
                         <td>Up<br>Min</td>
@@ -4413,7 +4413,7 @@ if (isset($output_error)) {
                 <div style="font-family: monospace; padding-bottom:0.5em;"><pre><?php echo `lsb_release -da`; ?></pre></div>
                 <div style="font-family: monospace; padding-bottom:0.5em;"><pre><?php echo `lscpu`; ?></pre></div>
                 <div style="font-family: monospace; padding-bottom:0.5em;"><pre><?php echo `cat /proc/cpuinfo`; ?></pre></div>
-                <div style="font-family: monospace; padding-bottom:0.5em"><pre><?php echo `df`; ?></pre></div>
+                <div style="font-family: monospace; padding-bottom:0.5em;"><pre><?php echo `df`; ?></pre></div>
                 <div style="font-family: monospace;"><pre><?php echo `free`; ?></pre></div>
             </div>
             <div style="padding-bottom: 2em;">
