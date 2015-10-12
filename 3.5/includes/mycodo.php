@@ -4406,6 +4406,18 @@ if (isset($output_error)) {
             </div>
             <div style="padding-bottom: 2em;">
                 <div style="padding: 1em 0; font-weight: bold; font-size: 1.2em;">
+                    System
+                </div>
+                <div style="font-family: monospace; padding-bottom:0.5em;"><pre><?php echo `uname -a`; ?></pre></div>
+                <div style="font-family: monospace; padding-bottom:0.5em;"><pre><?php echo `uptime`; ?></pre></div>
+                <div style="font-family: monospace; padding-bottom:0.5em;"><pre><?php echo `lsb_release -da`; ?></pre></div>
+                <div style="font-family: monospace; padding-bottom:0.5em;"><pre><?php echo `lscpu`; ?></pre></div>
+                <div style="font-family: monospace; padding-bottom:0.5em;"><pre><?php echo `cat /proc/cpuinfo`; ?></pre></div>
+                <div style="font-family: monospace; padding-bottom:0.5em"><pre><?php echo `df`; ?></pre></div>
+                <div style="font-family: monospace;"><pre><?php echo `free`; ?></pre></div>
+            </div>
+            <div style="padding-bottom: 2em;">
+                <div style="padding: 1em 0; font-weight: bold; font-size: 1.2em;">
                     PHP Profile
                 </div>
                 <?php 
