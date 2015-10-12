@@ -3456,7 +3456,7 @@ if (isset($output_error)) {
                             <table style=\"width:100%\";>
                                 <tr>
                                     <td style=\"width: auto;\">
-                                        <textarea style=\"width: 40em;\" rows=\"6\" maxlength=100000 name=\"Note_Text\" title=\"\"></textarea>
+                                        <textarea style=\"width: 40em;\" rows=\"6\" maxlength=\"100000\" name=\"Note_Text\" title=\"\"></textarea>
                                     </td>
                                     <td style=\"vertical-align: top; height:100%; width:100%;\">
                                         <table style=\"height:100%; width:100%;\">
@@ -3589,7 +3589,7 @@ if (isset($output_error)) {
                             <table style=\"width: auto;\">
                                 <tr>
                                     <td>
-                                        <textarea style=\"width: 40em;\" rows=\"15\" maxlength=100000 name=\"Edit_Note_Text\" title=\"\">$note_note</textarea>
+                                        <textarea style=\"width: 40em;\" rows=\"15\" maxlength=\"100000\" name=\"Edit_Note_Text\" title=\"\">$note_note</textarea>
                                     </td>
                                     <td style=\"vertical-align: top; height:100%; width:100%;\">
                                         <table style=\"height:100%; width:100%;\">
@@ -4397,6 +4397,12 @@ if (isset($output_error)) {
         <div style="padding: 4em 0 2em 2em;">
             <div style="padding-bottom: 1em; font-weight: bold; font-size: 1.5em;">
                 Debug Information
+            </div>
+            <div style="padding-bottom: 2em;">
+                <div style="padding: 1em 0; font-weight: bold; font-size: 1.2em;">
+                    WiringPi GPIO
+                </div>
+                <div style="font-family: monospace;"><pre><?php echo `gpio readall`; ?></pre></div>
             </div>
             <div style="padding-bottom: 2em;">
                 <div style="padding: 1em 0; font-weight: bold; font-size: 1.2em;">
