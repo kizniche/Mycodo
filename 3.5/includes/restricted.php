@@ -2686,6 +2686,8 @@ if (isset($_POST['Add_Image_Note'])) {
     $stmt->bindValue(':user', $_SESSION['user_name'], SQLITE3_TEXT);
     $stmt->bindValue(':note', '', SQLITE3_TEXT);
     $stmt->execute();
+
+    $_POST['Edit_Note'] = $uniqueid;
 }
 
 // Add Note

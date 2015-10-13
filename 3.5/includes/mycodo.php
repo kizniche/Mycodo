@@ -3236,7 +3236,7 @@ if (isset($output_error)) {
                             Latest File: ' , date("F d Y H:i:s", $latest_file) , '
                         </td>
                         <td>
-                            <form action="?tab=camera" method="POST"><input type="hidden" name="file_path" value="' . $cam_stills_path . '" /><input type="hidden" name="file_name" value="' . $newest_file . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Image</button>
+                            <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $cam_stills_path . '" /><input type="hidden" name="file_name" value="' . $newest_file . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Image</button>
                             </form>
                         </td>
                     </tr>
@@ -3573,7 +3573,7 @@ if (isset($output_error)) {
                             echo "</form>";
                         }
 
-                        if (isset($_POST['Edit_Note'])) {
+                        if (isset($_POST['Edit_Note']) || isset($_POST['Add_Image_Note'])) {
                             echo "Edit Note<br> <br>";
                             $ndb = new SQLite3($note_db);
                             unset($note_id);
