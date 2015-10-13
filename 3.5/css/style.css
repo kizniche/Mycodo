@@ -234,6 +234,17 @@ button.linkoff {
 
 
 /*** Camera tab ***/
+
+table.camera-still {
+  padding-bottom: 0.5em;
+}
+
+table.camera-still td {
+  padding: 0 1em 0.5em 0;
+  text-align: center;
+  vertical-align: middle;
+}
+
 .camera td {
     padding: 0 0.3em 0.6em 0.3em;
 }

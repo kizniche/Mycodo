@@ -3218,19 +3218,29 @@ if (isset($output_error)) {
                 ';
             }
 
-            $cam_stills_path = $install_path . '/camera-stills';
-            $cam_stills_dir = (count(glob("$cam_stills_path/*")) === 0) ? 'Empty' : 'Not empty';
+            $cam_stills_path = $install_path . '/camera-stills/';
+            $cam_stills_dir = (count(glob("$cam_stills_path*")) === 0) ? 'Empty' : 'Not empty';
             if ($cam_stills_dir == 'Not empty' && (isset($_POST['CaptureStill']) || $still_display_last)) {
-                echo '
-                <div style="padding-bottom: 0.5em;">
-                    Still Image
-                </div>
-                ';
-
                 $files = scandir($cam_stills_path, SCANDIR_SORT_DESCENDING);
                 $newest_file = $files[0];
                 $latest_file = filemtime("$cam_stills_path/$newest_file");
-                echo 'Latest File: ' , date("F d Y H:i:s", $latest_file) , '<br>';
+                echo '
+                <table class="camera-still">
+                    <tr>
+                        <td>
+                            Still Image
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Latest File: ' , date("F d Y H:i:s", $latest_file) , '
+                        </td>
+                        <td>
+                            <form action="?tab=camera" method="POST"><input type="hidden" name="file_path" value="' . $cam_stills_path . '" /><input type="hidden" name="file_name" value="' . $newest_file . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Image</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </table>';
 
                 echo '
                 <div style="padding-bottom: 2em;">
@@ -3254,7 +3264,7 @@ if (isset($output_error)) {
             ?>
 
             <div style="padding: 10px 0 0 15px;">
-                <form action="?tab=data<?php if (isset($_GET['page'])) echo '&page=' , $_GET['page']; ?>" method="POST">
+                <form action="?tab=data" method="POST">
                 <table class="data-buttons">
                     <tr>
                         <td rowspan="2" class="data-buttons-rightspace" style="text-align:center; line-height:1.6em;">
@@ -3923,18 +3933,10 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
-                            Prevent exceeding the maximum amperage draw
+                            Maximum current draw
                         </td>
                         <td class="setting-value">
-                            <input type="hidden" name="enable_max_amps" value="0" /><input type="checkbox" name="enable_max_amps" value="1"<?php if ($enable_max_amps == 1) echo ' checked'; ?> title="Prevent a combination of relays from turning on that surpass the maxmum amperage limit (set below)."/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Maximum number of amps the system may draw
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 4em;" type="number" min="1" max="500" step="0.1" value="<?php echo $max_amps; ?>" maxlength=4 size=1 name="max_amps" title="The number of amps that any combination of relays will be prevented from exceeding. Each relay must have an accurate amp draw set for this to operate properly. Ensure all relays that are connected to devices have the correct amperage set."/>
+                            <input style="width: 4em;" type="number" min="1" max="500" step="0.1" value="<?php echo $max_amps; ?>" maxlength=4 size=1 name="max_amps" title="The number of amps that any combination of relays will be prevented from exceeding. Each relay must have an accurate amp draw set for this to operate properly. Ensure all relays that are connected to devices have the correct amperage set."/> amps&nbsp;&nbsp;|&nbsp;&nbsp;Enable: <input type="hidden" name="enable_max_amps" value="0" /><input type="checkbox" name="enable_max_amps" value="1"<?php if ($enable_max_amps == 1) echo ' checked'; ?> title="Prevent a combination of relays from turning on that surpass the maxmum amperage limit (set below)."/>
                         </td>
                     </tr>
                     <tr>
@@ -4224,14 +4226,6 @@ if (isset($output_error)) {
                         </td>
                         <td class="setting-value">
                             <textarea rows="2" style="width: 18em;" maxlength=200 name="Timelapse_Extra_Parameters" title=""><?php echo $timelapse_extra_parameters; ?></textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Enable experimental auto-exposure mode (currently not enabled)
-                        </td>
-                        <td class="setting-value">
-                            <input type="hidden" name="" value="0" /><input type="checkbox" id="" name="timelapse-auto-exp" value="1"<?php if (1) echo ' checked'; ?> title=""/>
                         </td>
                     </tr>
                     <tr>

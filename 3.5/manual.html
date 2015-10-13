@@ -58,16 +58,16 @@
 <a name="preface"></a>
 <h2>Preface</h2>
 
-<p>There may be many unforseen issues with sending multiple commands when using the web interface. Therefore, wait for either a response or for the page to time out before pressing another button.</p>
+<p>There may be many unforseen issues if multiple commands are sent in rapid succession, when using the web interface. Therefore, after pressing abutton, wait either for a response or for the page to time out before pressing another button.</p>
 
 <a name="web-interface"></a>
 <h2>Web Interface</h2>
 
-<p>Go to http://127.0.0.1/mycodo (replace 127.0.0.1 with the correct domain name or IP address) and log in with the credentials you created with update-database.py. You will be greeted by a header with various information about the currently-logged in user, the status of the daemon and other services, system performance statistics, and (if sensors are receiving data and activated) information about the activated sensors.</p>
+<p>Go to http://127.0.0.1/mycodo/ (replace 127.0.0.1 with the correct domain name or IP address of your system) and log in with the credentials you created with update-database.py. You will be greeted by a header with various information about the currently-logged in user, the status of the daemon and other services, system performance statistics, and (if sensors are receiving data and activated) information about the activated sensors.</p>
 
-<p><b>Many input fields and buttons of the web interface will display descriptions or instructions when the mouse is hovered over them. While a complete manual is being developed, utilize this to learn about the system.</b></p>
+<p><b>Many input fields and buttons of the web interface will display descriptions or instructions when the mouse is hovered over them. Use this information in addition to the manual to learn how to operate the system.</b></p>
 
-<p>The Daemon indicator at the top-left indicates the daemon is running (blue). If it is not (red), sensor measurements, logging, and PID regulation cannot operate.</p>
+<p>The Daemon indicator at the top-left indicates the daemon is running (green). If it is not (red), sensor measurements, logging, and PID regulation cannot operate.</p>
 
 <p>Additionally, relays must be properly set up before PID regulation can be achieved. Add and configure relays in the Sensor tab. Set the "GPIO Pin" to the BCM number of the pin connected to the relay. "Signal ON" should be set to the signal that activates the relay (close the circuit). If your relay activates when the potential across the coil is 0-volts, set "Signal ON" to "Low", otherwise if your relay activates when the potential across the coil is 5-volts, set it to "High".</p>
 
@@ -420,7 +420,7 @@ If Humidity if Less Than 50%, turn relay #1 on for 21 seconds, execute '/usr/loc
 	</tr>
 	<tr>
 		<td colspan="2" style="font-size: 1.15em;">Email Notification</td>
-		<td>The email notification settings will configure the system to log in and email. Currently only SMTP is supported.</td>
+		<td>The email notification settings will configure the system to log in and email the specified user (from the Sensor Tab) when a notification needs to be made. Currently only SMTP is supported.</td>
 	</tr>
 	<tr>
 		<td colspan="2" style="font-size: 1.15em;">Camera Settings</td>
