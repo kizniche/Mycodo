@@ -1,7 +1,7 @@
 <?php
 /*
-*  image.php - displays images when image directory is protected by the
-*              web server
+*  image.php - Authenticates the tranfer of files, images, and video
+*              streams from protected locations.
 *
 *  Copyright (C) 2015  Kyle T. Gabriel
 *
@@ -64,6 +64,25 @@ if ($_COOKIE['login_hash'] == $user_hash) {
                 $files = scandir($still_dir, SCANDIR_SORT_DESCENDING);
                 $newest_file = $files[0];
                 readfile($still_dir . $newest_file);
+                break;
+            case 'stream':
+                if ($_COOKIE['login_hash'] == $user_hash) {
+                    $server = "localhost"; // camera server address
+                    $port = 6926; // camera server port
+                    $url = "/?action=stream"; // image url on server
+                    set_time_limit(0);  
+                    $fp = fsockopen($server, $port, $errno, $errstr, 30); 
+                    if (!$fp) { 
+                            echo "$errstr ($errno)<br>\n";   // error handling
+                    } else {
+                            $urlstring = "GET ".$url." HTTP/1.0\r\n\r\n"; 
+                            fputs ($fp, $urlstring); 
+                            while ($str = trim(fgets($fp, 4096))) 
+                            header($str); 
+                            fpassthru($fp); 
+                            fclose($fp); 
+                    }
+                }
                 break;
             case 'ul-png':
                 header('Content-Type: image/png');
