@@ -3213,7 +3213,7 @@ if (isset($output_error)) {
                     Video Stream
                 </div>
                 <div style="padding-bottom: 2em;">
-                    <img style="width:100%;" src="stream.php">
+                    <img style="width:100%;" src="image.php?span=stream">
                 </div>
                 ';
             }
