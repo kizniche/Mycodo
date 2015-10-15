@@ -1,7 +1,6 @@
 #!/bin/bash
 #
-#  install.sh - Mycodo install script (still a work-in-progress, use at
-#               your own risk)
+#  update-mycodo.sh - Update Mycodo to the lastest version on GitHub
 #
 #  Copyright (C) 2015  Kyle T. Gabriel
 #
@@ -49,10 +48,11 @@ case "${1:-''}" in
                 $DIR/init.d/mycodo stop
 
                 NOW=$(date +"%Y-%m-%d_%H-%M-%S")
-                printf "#### Creating backup Mycodo-backups/Mycodo-$NOW ####\n"
-                mkdir -p $DIR/../../Mycodo-backups
-                mkdir -p $DIR/../../Mycodo-backups/Mycodo-$NOW
-                cp -r $DIR/../../Mycodo/3.5 $DIR/../../Mycodo-backups/Mycodo-$NOW/
+                CURCOMMIT=$(git rev-parse --short HEAD)
+                printf "#### Creating backup /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT ####\n"
+                mkdir -p /var/Mycodo-backups
+                mkdir -p /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT
+                cp -a $DIR/../../Mycodo/3.5/. /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT/
 
                 printf "#### Updating from github ####\n"
                 git fetch --all
@@ -75,6 +75,8 @@ case "${1:-''}" in
                 /etc/init.d/mycodo start
 
                 printf "#### Update Finished ####\n\n"
+
+                echo '0' > $DIR/.updatecheck
                 exit 0
             else
                 printf "Error: No git repository found. Update stopped.\n\n"
@@ -93,5 +95,8 @@ case "${1:-''}" in
         else
             exit 0
         fi
+    ;;
+    'fetchorigin')
+        git fetch origin
     ;;
 esac

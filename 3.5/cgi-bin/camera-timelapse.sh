@@ -28,10 +28,23 @@ start() {
         /var/www/mycodo/cgi-bin/mycodo-client.py -r $1 $SECON
     fi
 
+    # Getting extra command options
+    DATABASE="/var/www/mycodo/config/mycodo.db"
+    EXTRA=`sqlite3 $DATABASE "SELECT Extra_Parameters FROM CameraStream;"`;
+
+
     if [ $4 -ne 0 ]; then
-        /usr/bin/raspistill --nopreview --contrast 20 --sharpness 60 --awb auto --quality 20 --vflip --hflip --width 800 --height 600 --timelapse $5 --timeout $6 --thumb none -o $2/$3$4-%05d.jpg &
+        if [ ! -z "$EXTRA" ]; then
+            /usr/bin/raspistill $EXTRA --timelapse $5 --timeout $6 --thumb none -o $2/$3$4-%05d.jpg &
+        else
+            /usr/bin/raspistill --timelapse $5 --timeout $6 --thumb none -o $2/$3$4-%05d.jpg &
+        fi
     else
-        /usr/bin/raspistill --nopreview --contrast 20 --sharpness 60 --awb auto --quality 20 --vflip --hflip --width 800 --height 600 --timelapse $5 --timeout $6 --thumb none -o $2/$3-%05d.jpg &
+        if [ ! -z "$EXTRA" ]; then
+            /usr/bin/raspistill $EXTRA --timelapse $5 --timeout $6 --thumb none -o $2/$3-%05d.jpg &
+        else
+            /usr/bin/raspistill --timelapse $5 --timeout $6 --thumb none -o $2/$3-%05d.jpg &
+        fi
     fi
 }
 

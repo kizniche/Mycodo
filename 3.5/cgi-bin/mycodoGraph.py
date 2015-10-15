@@ -29,6 +29,8 @@ import fileinput
 import logging
 import os
 import subprocess
+import time
+from lockfile import LockFile
 
 log_path = "%s/log" % install_directory # Where generated logs are stored
 image_path = "%s/images" % install_directory # Where generated graphs are stored
@@ -47,13 +49,21 @@ sensor_co2_log_file = "%s/sensor-co2.log" % log_path
 sensor_press_log_file = "%s/sensor-press.log" % log_path
 relay_log_file = "%s/relay.log" % log_path
 
+# Lockfiles
+lock_directory = "/var/lock/mycodo"
+relay_log_lock_path = "%s/relay" % lock_directory
+sensor_t_log_lock_path = "%s/sensor-t-log" % lock_directory
+sensor_ht_log_lock_path = "%s/sensor-ht-log" % lock_directory
+sensor_co2_log_lock_path = "%s/sensor-co2-log" % lock_directory
+sensor_press_log_lock_path = "%s/sensor-press-log" % lock_directory
+
 #################################################
 #                Graph Generation               #
 #################################################
 
 # Generate gnuplot graph
 def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number, sensor_t_name, sensor_t_graph, sensor_t_period, sensor_t_yaxis_relay_min, sensor_t_yaxis_relay_max, sensor_t_yaxis_relay_tics, sensor_t_yaxis_relay_mtics, sensor_t_yaxis_temp_min, sensor_t_yaxis_temp_max, sensor_t_yaxis_temp_tics, sensor_t_yaxis_temp_mtics, sensor_t_temp_relays_up_list, sensor_t_temp_relays_down_list, pid_t_temp_relay_high, pid_t_temp_relay_low, sensor_ht_name, sensor_ht_graph, sensor_ht_period, sensor_ht_yaxis_relay_min, sensor_ht_yaxis_relay_max, sensor_ht_yaxis_relay_tics, sensor_ht_yaxis_relay_mtics, sensor_ht_yaxis_temp_min, sensor_ht_yaxis_temp_max, sensor_ht_yaxis_temp_tics, sensor_ht_yaxis_temp_mtics, sensor_ht_yaxis_hum_min, sensor_ht_yaxis_hum_max, sensor_ht_yaxis_hum_tics, sensor_ht_yaxis_hum_mtics, sensor_ht_temp_relays_up_list, sensor_ht_temp_relays_down_list, sensor_ht_hum_relays_up_list, sensor_ht_hum_relays_down_list, pid_ht_temp_relay_high, pid_ht_temp_relay_low, pid_ht_hum_relay_high, pid_ht_hum_relay_low, sensor_co2_name, sensor_co2_graph, sensor_co2_period, sensor_co2_yaxis_relay_min, sensor_co2_yaxis_relay_max, sensor_co2_yaxis_relay_tics, sensor_co2_yaxis_relay_mtics, sensor_co2_yaxis_co2_min, sensor_co2_yaxis_co2_max, sensor_co2_yaxis_co2_tics, sensor_co2_yaxis_co2_mtics, sensor_co2_relays_up_list, sensor_co2_relays_down_list, pid_co2_relay_high, pid_co2_relay_low, sensor_press_name, sensor_press_graph, sensor_press_period, sensor_press_yaxis_relay_min, sensor_press_yaxis_relay_max, sensor_press_yaxis_relay_tics, sensor_press_yaxis_relay_mtics, sensor_press_yaxis_temp_min, sensor_press_yaxis_temp_max, sensor_press_yaxis_temp_tics, sensor_press_yaxis_temp_mtics, sensor_press_yaxis_press_min, sensor_press_yaxis_press_max, sensor_press_yaxis_press_tics, sensor_press_yaxis_press_mtics, sensor_press_temp_relays_up_list, sensor_press_temp_relays_down_list, sensor_press_press_relays_up_list, sensor_press_press_relays_down_list, pid_press_temp_relay_high, pid_press_temp_relay_low, pid_press_press_relay_high, pid_press_press_relay_low, relay_name, relay_pin):
-    logging.debug("[Generate Graph] Parsing logs...")
+
     sensor_t_log_final = [0] * (len(sensor_t_name)+1)
     sensor_ht_log_final = [0] * (len(sensor_ht_name)+1)
     sensor_co2_log_final = [0] * (len(sensor_co2_name)+1)
@@ -119,14 +129,150 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
     date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
     date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%d/%m/%Y %H:%M:%S")
 
+    if not os.path.exists(lock_directory):
+        os.makedirs(lock_directory)
+
+    lock = LockFile(relay_log_lock_path)
+
+    while not lock.i_am_locking():
+        try:
+            logging.debug("[Generate Graph] Acquiring Lock: %s", lock.path)
+            lock.acquire(timeout=60)    # wait up to 60 seconds
+        except:
+            logging.warning("[Generate Graph] Breaking Lock to Acquire: %s", lock.path)
+            lock.break_lock()
+            lock.acquire()
+
+    logging.debug("[Generate Graph] Gained lock: %s", lock.path)
+
+    # Combine relay logs
     relay_log_files_combine = [relay_log_file, relay_log_file_tmp]
     relay_log_generate = "%s/relay-logs-combined.log" % tmp_path
     with open(relay_log_generate, 'w') as fout:
         for line in fileinput.input(relay_log_files_combine):
             fout.write(line)
 
-    # only combined graphs get logs concatentated here. Separate graph logs are 
-    # concatenated by the php code (to prevent redundant combining of log data)
+    logging.debug("[Generate Graph] Removing lock: %s", lock.path)
+    lock.release()
+
+
+    # Concatenate default and separate logs
+    if graph_span == 'default' or graph_type == 'separate':
+        if graph_type == 'separate':
+            generate_type = 'separate'
+        if graph_span == 'default':
+            generate_type = 'default'
+
+        if sensor_type == 't':
+            if not os.path.exists(lock_directory):
+                os.makedirs(lock_directory)
+
+            lock = LockFile(sensor_t_log_lock_path)
+            while not lock.i_am_locking():
+                try:
+                    logging.debug("[Generate Graph] Acquiring Lock: %s", lock.path)
+                    lock.acquire(timeout=60)    # wait up to 60 seconds
+                except:
+                    logging.warning("[Generate Graph] Breaking Lock to Acquire: %s", lock.path)
+                    lock.break_lock()
+                    lock.acquire()
+
+            logging.debug("[Generate Graph] Gained lock: %s", lock.path)
+
+            filenames = [sensor_t_log_file, sensor_t_log_file_tmp]
+            sensor_t_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, 't', generate_type)
+            with open(sensor_t_log_generate, 'w') as outfile:
+                for fname in filenames:
+                    with open(fname) as infile:
+                        for line in infile:
+                            outfile.write(line)
+
+            logging.debug("[Generate Graph] Removing lock: %s", lock.path)
+            lock.release()
+
+        if sensor_type == 'ht':
+            if not os.path.exists(lock_directory):
+                os.makedirs(lock_directory)
+
+            lock = LockFile(sensor_ht_log_lock_path)
+            while not lock.i_am_locking():
+                try:
+                    logging.debug("[Generate Graph] Acquiring Lock: %s", lock.path)
+                    lock.acquire(timeout=60)    # wait up to 60 seconds
+                except:
+                    logging.warning("[Generate Graph] Breaking Lock to Acquire: %s", lock.path)
+                    lock.break_lock()
+                    lock.acquire()
+
+            logging.debug("[Generate Graph] Gained lock: %s", lock.path)
+
+            filenames = [sensor_ht_log_file, sensor_ht_log_file_tmp]
+            sensor_ht_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, 'ht', generate_type)
+            with open(sensor_ht_log_generate, 'w') as outfile:
+                for fname in filenames:
+                    with open(fname) as infile:
+                        for line in infile:
+                            outfile.write(line)
+
+            logging.debug("[Generate Graph] Removing lock: %s", lock.path)
+            lock.release()
+
+        if sensor_type == 'co2':
+            if not os.path.exists(lock_directory):
+                os.makedirs(lock_directory)
+
+            lock = LockFile(sensor_co2_log_lock_path)
+            while not lock.i_am_locking():
+                try:
+                    logging.debug("[Write CO2 Sensor Log] Acquiring Lock: %s", lock.path)
+                    lock.acquire(timeout=60)    # wait up to 60 seconds
+                except:
+                    logging.warning("[Write CO2 Sensor Log] Breaking Lock to Acquire: %s", lock.path)
+                    lock.break_lock()
+                    lock.acquire()
+
+            logging.debug("[Write CO2 Sensor Log] Gained lock: %s", lock.path)
+
+            filenames = [sensor_co2_log_file, sensor_co2_log_file_tmp]
+            sensor_co2_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, 'co2', generate_type)
+            with open(sensor_co2_log_generate, 'w') as outfile:
+                for fname in filenames:
+                    with open(fname) as infile:
+                        for line in infile:
+                            outfile.write(line)
+
+            logging.debug("[Generate Graph] Removing lock: %s", lock.path)
+            lock.release()
+
+        if sensor_type == 'press':
+            if not os.path.exists(lock_directory):
+                os.makedirs(lock_directory)
+
+            lock = LockFile(sensor_press_log_lock_path)
+            while not lock.i_am_locking():
+                try:
+                    logging.debug("[Generate Graph] Acquiring Lock: %s", lock.path)
+                    lock.acquire(timeout=60)    # wait up to 60 seconds
+                except:
+                    logging.warning("[Generate Graph] Breaking Lock to Acquire: %s", lock.path)
+                    lock.break_lock()
+                    lock.acquire()
+
+            logging.debug("[Generate Graph] Gained lock: %s", lock.path)
+
+            filenames = [sensor_press_log_file, sensor_press_log_file_tmp]
+            sensor_press_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, 'press', generate_type)
+            with open(sensor_press_log_generate, 'w') as outfile:
+                for fname in filenames:
+                    with open(fname) as infile:
+                        for line in infile:
+                            outfile.write(line)
+
+            logging.debug("[Generate Graph] Removing lock: %s", lock.path)
+            lock.release()
+
+
+    # Parse default logs
     if graph_span == "default":
         if sensor_type == "t":
             sensor_t_log_generate = "%s/sensor-%s-logs-%s.log" % (
@@ -144,8 +290,6 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 tmp_path, sensor_type, graph_span, graph_id, sensor_number)
             cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
                 sensor_number, sensor_type, lines, sensor_t_log_generate, sensor_t_log_final[1])
-            logging.debug("[Generate Graph] cmd: %s", cmd)
-            os.system(cmd)
 
         if sensor_type == "ht":
             sensor_ht_log_generate = "%s/sensor-%s-logs-%s.log" % (
@@ -163,8 +307,6 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 tmp_path, sensor_type, graph_span, graph_id, sensor_number)
             cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
                 sensor_number, sensor_type, lines, sensor_ht_log_generate, sensor_ht_log_final[1])
-            logging.debug("[Generate Graph] cmd: %s", cmd)
-            os.system(cmd)
 
         if sensor_type == "co2":
             sensor_co2_log_generate = "%s/sensor-%s-logs-%s.log" % (
@@ -182,8 +324,6 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 tmp_path, sensor_type, graph_span, graph_id, sensor_number)
             cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
                 sensor_number, sensor_type, lines, sensor_co2_log_generate, sensor_co2_log_final[1])
-            logging.debug("[Generate Graph] cmd: %s", cmd)
-            os.system(cmd)
 
         if sensor_type == "press":
             sensor_press_log_generate = "%s/sensor-%s-logs-%s.log" % (
@@ -201,11 +341,46 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 tmp_path, sensor_type, graph_span, graph_id, sensor_number)
             cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
                 sensor_number, sensor_type, lines, sensor_press_log_generate, sensor_press_log_final[1])
-            logging.debug("[Generate Graph] cmd: %s", cmd)
-            os.system(cmd)
 
+        logging.debug("[Generate Graph] cmd: %s", cmd)
+        os.system(cmd)
+
+    # Parse separate logs
+    elif graph_type == "separate":
+        sensor_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, sensor_type, graph_type)
+        if sensor_type == "t":
+            lines = seconds/sensor_t_period[int(sensor_number)]
+            sensor_t_log_final[0] = "%s/sensor-%s-logs-%s-%s-%s.log" % (
+                tmp_path, sensor_type, graph_type, graph_id, sensor_number)
+            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
+                sensor_number, sensor_type, lines, sensor_log_generate, sensor_t_log_final[0])
+
+        if sensor_type == "ht":
+            lines = seconds/sensor_ht_period[int(sensor_number)]
+            sensor_ht_log_final[0] = "%s/sensor-%s-logs-%s-%s-%s.log" % (
+                tmp_path, sensor_type, graph_type, graph_id, sensor_number)
+            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
+                sensor_number, sensor_type, lines, sensor_log_generate, sensor_ht_log_final[0])
+
+        if sensor_type == "co2":
+            lines = seconds/sensor_co2_period[int(sensor_number)]
+            sensor_co2_log_final[0] = "%s/sensor-%s-logs-%s-%s-%s.log" % (
+                tmp_path, sensor_type, graph_type, graph_id, sensor_number)
+            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
+                sensor_number, sensor_type, lines, sensor_log_generate, sensor_co2_log_final[0])
+
+        if sensor_type == "press":
+            lines = seconds/sensor_press_period[int(sensor_number)]
+            sensor_press_log_final[0] = "%s/sensor-%s-logs-%s-%s-%s.log" % (
+                tmp_path, sensor_type, graph_type, graph_id, sensor_number)
+            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
+                sensor_number, sensor_type, lines, sensor_log_generate, sensor_press_log_final[0])
+
+        logging.debug("[Generate Graph] cmd: %s", cmd)
+        os.system(cmd)
+
+    # Concatenate combined logs
     elif graph_type == "combined":
-        # Combine sensor and relay logs on SD card with sensor and relay logs in /tmp
         if sum(sensor_t_graph):
             sensor_t_log_files_combine = [sensor_t_log_file, sensor_t_log_file_tmp]
             sensor_t_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, 't', graph_type)
@@ -241,6 +416,8 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                     fout.write(line)
         else:
             sensor_press_log_generate = None
+
+        time.sleep(0.1) # Allow sensor log to be completely written before modification and use
 
         for i in range(0, len(sensor_t_name)):
             lines = seconds/sensor_t_period[i]
@@ -282,34 +459,6 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 logging.debug("[Generate Graph] cmd: %s", cmd)
                 os.system(cmd)
 
-    elif graph_type == "separate":
-        sensor_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, sensor_type, graph_type)
-        if sensor_type == "t":
-            lines = seconds/sensor_t_period[int(sensor_number)]
-            sensor_t_log_final[0] = "%s/sensor-%s-logs-%s-%s-%s.log" % (
-                tmp_path, sensor_type, graph_type, graph_id, sensor_number)
-            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                sensor_number, sensor_type, lines, sensor_log_generate, sensor_t_log_final[0])
-        if sensor_type == "ht":
-            lines = seconds/sensor_ht_period[int(sensor_number)]
-            sensor_ht_log_final[0] = "%s/sensor-%s-logs-%s-%s-%s.log" % (
-                tmp_path, sensor_type, graph_type, graph_id, sensor_number)
-            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                sensor_number, sensor_type, lines, sensor_log_generate, sensor_ht_log_final[0])
-        if sensor_type == "co2":
-            lines = seconds/sensor_co2_period[int(sensor_number)]
-            sensor_co2_log_final[0] = "%s/sensor-%s-logs-%s-%s-%s.log" % (
-                tmp_path, sensor_type, graph_type, graph_id, sensor_number)
-            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                sensor_number, sensor_type, lines, sensor_log_generate, sensor_co2_log_final[0])
-        if sensor_type == "press":
-            lines = seconds/sensor_press_period[int(sensor_number)]
-            sensor_press_log_final[0] = "%s/sensor-%s-logs-%s-%s-%s.log" % (
-                tmp_path, sensor_type, graph_type, graph_id, sensor_number)
-            cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                sensor_number, sensor_type, lines, sensor_log_generate, sensor_press_log_final[0])
-        logging.debug("[Generate Graph] cmd: %s", cmd)
-        os.system(cmd)
 
     logging.debug("[Generate Graph] Generating Graph...")
 
@@ -1163,15 +1312,19 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
 
         if graph_span == "default":
             if sensor_type == "t":
+                os.remove(sensor_t_log_generate)
                 os.remove(sensor_t_log_final[0])
                 os.remove(sensor_t_log_final[1])
             if sensor_type == "ht":
+                os.remove(sensor_ht_log_generate)
                 os.remove(sensor_ht_log_final[0])
                 os.remove(sensor_ht_log_final[1])
             if sensor_type == "co2":
+                os.remove(sensor_co2_log_generate)
                 os.remove(sensor_co2_log_final[0])
                 os.remove(sensor_co2_log_final[1])
             if sensor_type == "press":
+                os.remove(sensor_press_log_generate)
                 os.remove(sensor_press_log_final[0])
                 os.remove(sensor_press_log_final[1])
         elif graph_type == "combined":
@@ -1197,12 +1350,16 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                     os.remove(sensor_press_log_final[i])
         elif graph_type == "separate":
             if sensor_type == "t":
+                os.remove(sensor_t_log_generate)
                 os.remove(sensor_t_log_final[0])
             if sensor_type == "ht":
+                os.remove(sensor_ht_log_generate)
                 os.remove(sensor_ht_log_final[0])
             if sensor_type == "co2":
+                os.remove(sensor_co2_log_generate)
                 os.remove(sensor_co2_log_final[0])
             if sensor_type == "press":
+                os.remove(sensor_press_log_generate)
                 os.remove(sensor_press_log_final[0])
     else:
         gnuplot_log = "%s/plot-%s-%s-%s-%s.log" % (log_path, sensor_type, graph_type, graph_span, sensor_number)

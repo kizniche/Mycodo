@@ -30,7 +30,16 @@ fi
 
 sleep 1
 
-raspistill -vf -hf -w 800 -h 600 -o /var/www/mycodo/camera-stills/$DATE.jpg
+# Getting extra command options
+DATABASE="/var/www/mycodo/config/mycodo.db"
+EXTRA=`sqlite3 $DATABASE "SELECT Extra_Parameters FROM CameraStill;"`;
+
+if [ ! -z "$EXTRA" ]; then
+	/usr/bin/raspistill $EXTRA -o /var/www/mycodo/camera-stills/$DATE.jpg
+else
+	/usr/bin/raspistill -o /var/www/mycodo/camera-stills/$DATE.jpg
+fi
+
 
 if [ "$1" > 0 ]; then # Turn relay off
 	if [ "$2" == 0 ]; then

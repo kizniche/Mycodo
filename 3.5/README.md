@@ -4,6 +4,9 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 ## Index
 
++ [Screenshots](#screenshots)
+  + [Web Interface](#web-interface)
+  + [Terminal](#terminal)
 + [Changelog](#changelog)
 + [Development](#Development)
 + [New Dependencies](#new-dependencies)
@@ -24,16 +27,96 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
   + [Web Interface](#web-interface)
   + [System Update](#system-update)
   + [Discrete PID Control](#discrete-pid-control)
-  + [Quick Setup Examples](#quick-set-up-examples)
-    + [Exact-Temperature Regulation](#exact-temperature-regulation)
-    + [High-Temperature Regulation](#high-temperature-regulation)
-  + [Tips](#tips)
 + [License](#license)
 + [Useful Links](#useful-links)
+
+## Screenshots
+
+### Web Interface
+
+<table>
+  <tr>
+    <td style="text-align: center">
+      Graph
+    </td>
+    <td style="text-align: center">
+      Sensor
+    </td>
+    <td style="text-align: center">
+      Custom
+    </td>
+  </tr>
+    <td>
+      <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Graph.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Graph-150x150.png"></a>
+    </td>
+    <td>
+      <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Sensor.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Sensor-150x150.png"></a>
+    </td>
+    <td>
+      <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Custom.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Custom-150x150.png"></a>
+    </td>
+  </tr>
+  <tr>
+    <td style="text-align: center; padding-top 1em;">
+      Camera
+    </td>
+    <td style="text-align: center; padding-top 1em;">
+      Data
+    </td>
+    <td style="text-align: center; padding-top 1em;">
+      Settings
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Camera.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Camera-150x150.png"></a>
+    </td>
+    <td>
+      <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Data.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Data-150x150.png"></a>
+    </td>
+    <td>
+      <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Settings.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/Mycodo-3.5.75-beesl2-01-Settings-150x150.png"></a>
+    </td>
+  </tr>
+</table>
+
+### Terminal
+
+#### Daemon
+
+<a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/mycodo.py_.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/mycodo.py_-300x124.png"></a>
+
+#### Client
+
+<a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/mycodo-client.py_.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/mycodo-client.py_-300x219.png"></a>
 
 ## Changelog
 
 Major changes for each versioned release
+
+#### 3.5.82
++ Add sensor measurement verification with second sensor (Only for temperature/humidity sensors at the moment)
+
+#### 3.5.81
++ Add image/file upload to notes
+
+#### 3.5.80
++ Add basic note-taking functionality ("Notes" under Data tab)
+
+#### 3.5.79
++ Add backup restore feature to revert back to a previously-backed up system and databases (found in "Git Commits" of the Data tab)
+
+#### 3.5.78
++ Record history of changes to sensor/relay values, reduce number of spaces between values in relay/sensor logs to one (reduce file size)
+
+#### 3.5.77
++ Implement ability to provide custom raspistill options from web interface
+
+#### 3.5.76
++ Add minimum relay on duration for PID controllers (to complement maximum on duration)
+
+#### 3.5.75
++ Ability to execute command or notify by email if relay or sensor conditional is true
 
 #### 3.5.74
 + Ability to add amp draw for each device and set maximum allowed amps to be drawn (will prevent relays from turning on that would exceed the set max)
@@ -164,39 +247,21 @@ Using raspi-config, perform the following:
 
 `git clone https://github.com/kizniche/Mycodo.git ~/Mycodo`
 
-`git clone git://git.drogon.net/wiringPi ~/WiringPi`
+`git clone git://git.drogon.net/wiringPi ~/WiringPi && cd ~/WiringPi && sudo ./build`
 
-`git clone https://github.com/adafruit/Adafruit_Python_DHT.git ~/Adafruit_Python_DHT`
+`git clone https://github.com/adafruit/Adafruit_Python_DHT.git ~/Adafruit_Python_DHT && cd ~/Adafruit_Python_DHT && sudo python setup.py install`
 
-`git clone https://github.com/adafruit/Adafruit_Python_BMP.git ~/Adafruit_Python_BMP`
+`git clone https://github.com/adafruit/Adafruit_Python_BMP.git ~/Adafruit_Python_BMP && cd ~/Adafruit_Python_BMP && sudo python setup.py install`
 
 Create a symlink to Mycodo
 
 `sudo ln -s ~/Mycodo/3.5 /var/www/mycodo`
 
-Install WiringPi
-
-`cd ~/WiringPi`
-
-`sudo ./build`
-
-Install Adafruit_Python_DHT
-
-`cd ~/Adafruit_Python_DHT`
-
-`sudo python setup.py install`
-
-Install Adafruit_Python_BMP
-
-`cd ~/Adafruit_Python_BMP`
-
-`sudo python setup.py install`
-
 Install LockFile and RPyC
 
 `sudo pip install lockfile rpyc`
 
-To access /dev/vchiq to read the GPU temperature, the user www-data needs to be added to the group video
+To access /dev/vchiq (to read the GPU temperature or access the Pi camera), the user www-data needs to be added to the group video
 
 `sudo usermod -a -G video www-data`
 
@@ -206,23 +271,23 @@ If you want mycodo to support using the Raspberry Pi camera module, a SUBSYSTEM 
 
 Install video streaming capabilities (Note that it is recommended to require SSL on your web server to prevent potential viewing of video streams by unauthorized users, details on forcing SSL below)
 
-`sudo apt-get install libjpeg8-dev libv4l-dev wget`
+`sudo apt-get install libjpeg8-dev libv4l-dev wget subversion`
 
 `sudo ln -s /usr/include/linux/videodev2.h /usr/include/linux/videodev.h`
 
 `sudo wget -P ~/ http://sourceforge.net/code-snapshots/svn/m/mj/mjpg-streamer/code/mjpg-streamer-code-182.zip`
 
-`cd ~`
-
-`unzip mjpg-streamer-code-182.zip`
-
-`cd mjpg-streamer-code-182/mjpg-streamer`
+`cd ~ && unzip mjpg-streamer-code-182.zip && cd mjpg-streamer-code-182/mjpg-streamer`
 
 `make mjpg_streamer input_file.so output_http.so`
 
 `sudo cp mjpg_streamer /usr/local/bin`
 
 `sudo cp output_http.so input_file.so /usr/local/lib/`
+
+Clean Up
+
+`cd ~ && sudo rm -rf WiringPi Adafruit_Python_BMP Adafruit_Python_DHT mjpg-streamer-code-182 mjpg-streamer-code-182.zip`
 
 ### Wifi
 
@@ -242,11 +307,8 @@ A temporary file system in RAM can be created for areas of the disk that are wri
 Edit /etc/fstab with `sudo vi /etc/fstab` and add the following lines
 
 ```
-tmpfs    /tmp    tmpfs    defaults,noatime,nosuid,size=100m    0 0
-tmpfs    /var/tmp    tmpfs    defaults,noatime,nosuid,size=30m    0 0
-tmpfs    /var/log    tmpfs    defaults,noatime,nosuid,mode=0755,size=100m    0 0
-tmpfs    /var/run    tmpfs    defaults,noatime,nosuid,mode=0755,size=2m    0 0
-tmpfs    /var/spool/mqueue    tmpfs    defaults,noatime,nosuid,mode=0700,gid=12,size=30m    0 0
+tmpfs /tmp     tmpfs nodev,nosuid,mode=1777,size=30M              0 0
+tmpfs /var/log tmpfs defaults,noatime,nosuid,mode=0755,size=100M  0 0
 ```
 
 Using a tempfs does create some issues with certain software. Apache does not start if there is no directory structure in /var/log, and the designation of /var/log as a tempfs means that at every bootup this directory is empty. This init script will ensure that the proper directory structure is created at every boot, prior to Apache starting.
@@ -283,12 +345,18 @@ Generate your self-signed certificate with the following command. You will be pr
 
 Change the symlink from non-SSL to SSL
 
+If using Raspbian Wheezy:
+
 `sudo ln -sf /etc/apache2/sites-available/default-ssl /etc/apache2/sites-enabled/000-default`
 
-Edit /etc/apache2/sites-enabled/000-default and make sure the top looks similar to this:
+If using Raspbian Jessie:
+
+`sudo ln -sf /etc/apache2/sites-available/default-ssl.conf /etc/apache2/sites-enabled/000-default.conf`
+
+Edit /etc/apache2/sites-enabled/000-default (or 000-default.conf if running Jessie) and make sure the top looks similar to this:
 
 ```
-    <IfModule mod_ssl.c>
+<IfModule mod_ssl.c>
     <VirtualHost *:80>
             RewriteEngine on
             RewriteCond  %{HTTPS} !=on
@@ -309,7 +377,7 @@ Edit /etc/apache2/sites-enabled/000-default and make sure the top looks similar 
             AllowOverride None
     </Directory>
     <Directory /var/www/>
-            Options Indexes FollowSymLinks MultiViews
+            Options FollowSymLinks MultiViews
             AllowOverride All
             Order allow,deny
             allow from all
@@ -318,11 +386,9 @@ Edit /etc/apache2/sites-enabled/000-default and make sure the top looks similar 
 
 Add `ServerName your.domain.com` to /etc/apache2/apache2.conf
 
-Ensure SSL is enabled in apache2 and restart the server
+Ensure SSL is enabled
 
 `sudo a2enmod ssl`
-
-`sudo service apache2 restart`
 
 You will need to add the self-signed certificate that was created (/etc/ssl/localcerts/apache.pem) to your browser as trusted in order not to receive warnings. You can copy this from the /etc/ssl/localcerts/ directory or it can be obtained by visiting your server with your browser. The process for adding this file to your browser as trusted may be different for each browser, however there are many resources online that detail how to do so. Adding your certificate to your browser is highly recommended to ensure the site's certificate is what it's supposed to be, however you will still be able to access your site without adding the certificate, but you may receive a warning stating your site's security may be compromised.
 
@@ -346,17 +412,15 @@ If your server is accessible from the internet but you don't want to enable SSL 
 
 ### Enable mod_rewrite
 
-`a2enmod rewrite`
+`sudo a2enmod rewrite`
 
-Then restart apache with
-
-`sudo service apache2 restart`
+A reboot is necessary for the tempfs to be operational and apache2 to start correctly.
 
 It is highly recommended that the configuration change be tested to determine if they actually worked. This can be done by going to https://yourwebaddress/mycodo/includes/ with your browser, and if you get an error, "Forbidden: You don't have permission to access /mycodo/includes on this server," or similar, then everything is working correctly. If the page actually loads or there is any other error than "forbidden", there is a problem and you should diagnose the issue before opening your server to beyond your local network.
 
 ### Database Creation
 
-Use the following commands and type 'all' when prompted to create databases
+Use the following command and type 'all' when prompted to create both the user and mycodo databases.
 
 `sudo /var/www/mycodo/update-database.py -i`
 
@@ -386,7 +450,11 @@ Note: cgi-bin/mycodo-wrapper is a binary executable used to start and stop the m
 
 ## Manual
 
+The Mycodo 3.5 manual is provided in the file manual.html. You can find a link to this manual at the top of the Settings tab of the web interface. This file can be accessed directly with your web browser or by navigating to http://your-pi-address/mycodo/manual.html if the web server is operational.
+
 ### Preface
+
+Only press one button at a time on the web interface. After pressing a button, wait for either a response or for the page to time out. Sending multiple commands will only make it take longer, at best. There may be many unforseen issues with sending multiple commands.
 
 Before activating any conditional statements or PID controllers, it's advised to thoroughly explore all possible scenarios and plan a configuration that eliminates relay conflicts. Then, trial run your configuration before connecting devices to the relays. **Some devices or relays may respond atypically or fail when switched many times in rapid succession. Therefore, avoid creating a condition for a relay to switch on and off in an [infinite loop](https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops).** 
 
@@ -404,7 +472,7 @@ Additionally, relays must be properly set up before PID regulation can be achiev
 
 If you have a fully-configured system, you may update to the latest version with the "Update Mycodo" button under the Advanced menu of the settings tab. A backup of the old system will be placed in the same directory the Mycodo main direcotry resides. For example, if this directory is /home/user/Mycodo, then the backup directory will reside at /home/user/Mycodo-backup.
 
-Note: Logs and the user database will be preserved, however you will most likely need to reconfigure your settings and presets (a database updater is in the works). 
+Note: Logs and the user database will be preserved, however you will most likely need to reconfigure your settings and presets (a database updater is in the works).
 
 ### Discrete PID Control
 
@@ -426,42 +494,6 @@ Therefor, if one would be regulating temperature, the sensor would be a temperat
 
 Implementing a controller that effectively utilizes P, I, and D can be challenging. Furthermore, it is often unnecessary. For instance, the I and D can be set to 0, effectively turning them off and producing the very popular and simple P controller. Also popular is the PI controller. It is recommended to start with only P activated, then experiment with PI, before finally using PID. Because systems will vary (e.g. airspace volume, degree of insulation, and the degree of impact from the connected device, etc.), each path will need to be adjusted through experimentation to produce an effective output.
 
-### Quick Set-up Examples
-
-These example setups are meant to illustrate how to configure regulation in particular directions, and not to achieve ideal values to configure your P, I, and D variables. There are a number of online resources that discuss techniques and methods that have been developed to determine ideal PID values (such as <a href="http://robotics.stackexchange.com/questions/167/what-are-good-strategies-for-tuning-pid-loops" target="_blank">here</a>, <a href="http://innovativecontrols.com/blog/basics-tuning-pid-loops" target="_blank">here</a>, <a href="https://hennulat.wordpress.com/2011/01/12/pid-loop-tuning-101/" target="_blank">here</a>, <a href="http://eas.uccs.edu/wang/ECE4330F12/PID-without-a-PhD.pdf" target="_blank">here</a>, and <a href="http://www.atmel.com/Images/doc2558.pdf" target="_blank">here</a>) and since there are no universal values that will work for every system, it is recommended to conduct your own research to understand the variables and essential to conduct your own experiments to effectively implement them.
-
-Provided merely as an example of the variance of PID values, one of my setups had temperature PID values (up regulation) of P=30, I=1.0, and D=0.5, and humidity PID values (up regulation) of P=1.0, I=0.2, and D=0.5. Furthermore, these values may not have been optimal but they worked well for the conditions of my environmental chamber.
-
-#### Exact Temperature Regulation
-
-This will set up the system to raise and lower the temperature to a certain level with two regulatory devices (one that heats and one that cools).
-
-Select the number of sensors that are connected. Select the proper device and GPIO pin for each sensor and activate logging and graphing.
-
-***Stop here. Wait 10 minutes, then go the Main tab and generate a graph. If the graph generates with data on it, continue. If not, stop and investigate why there is no sensor data. The controller will not function if there is not sensor data being acquired.***
-
-Under the Temperature PID for an active sensor, change `PID Set Point` to the desired temperature, `PID Regulate` to 'Both', and `PID Buffer` to 0 or 1. The Buffer will prevent PID regulation (i.e. not allow relays to operate), when the temperature falls within the Set Point ± Buffer range. For instance, if the Set Point is 30°C and the Buffer is 1, this range would be 30°C ± 1 = 29°C and 31°C.
-
-Set the `Relay No.` of the up-regulating PID (represented by an Up arrow) to the relay attached to the heating device and the down-regulating PID to the relay attached to the coolong device.
-
-Set `P` to 1, `I` to 0, `D` to 0, then turn the Temperature PID on with the ON button.
-
-If the temperature is lower than the Set Point, the heater should activate at some interval determined by the PID controller until the temperature rises to the set point. If the temperature goes higher than the Set Point (or Set Point + Buffer), the cooling device will activate until the temperature returns to the set point. If the temperature is not reaching the Set Point after a reasonable amount of time, increase the P value and see how that affects the system. Experiment with different configurations involving only `Read Interval` and `P` to achieve a good regulation. Avoid changing the `I` and `D` from 0 until a working regulation is achieved with P alone.
-
-Generate '6 Hour Seperate' graphs from the Main tab to identify how well the temperature is regulated to the Set Point. What is meant by well-regulated will vary, depending on your specific application and tolerances. Most applications of a PID controller would like to see the proper temperature attained within a reasonable amount of time and with little oscillation.
-
-Once regulation is achieved, experiment by reducing P slightly (~25%) and increasing `I` by a low amount to start, such as 0.1 (or lower), then observe how the controller regulates. Slowly increase I until regulation becomes both quick yet there is little oscillation once regulation is achieved. At this point, you should be fairly familiar with experimenting with the system and the D value can be experimented with.
-
-#### High Temperature Regulation
-
-Often the system can be simplified if two-way regulation is not needed. For instance, if cooling is unnecessary, this can be removed from the system and only up-regulation can be used.
-
-Use the same configuration as the <a href="#exact-temperature-regulation">Exact Temperature Regulation</a> example, except change `PID Regulate` to 'Up' and change the `Relay No.` and `P`, `I`, and `D` values of the up-regulating PID (represented by an Up arrow). Buffer should be set to 0 when 'Both' is not used.
-
-### Tips
-
-The page-load time when submiting configuration changes in the sensor tab will be faster when the daemon is not running. The daemon can be stopped and started in the Settings tab.
-
 ## License
 
 Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -476,6 +508,8 @@ This software includes third party open source software components: Discrete PID
 
 Thanks for using and supporting my software, however it may not be the latest version or it may have been altered if not obtained through an official distribution site. You should be able to find the latest version on github or my web site.
 
-https://github.com/kizniche/Mycodo
+[Mycodo Manual](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/3.5/manual.html)
 
-http://KyleGabriel.com
+[Mycodo on Github](https://github.com/kizniche/Mycodo)
+
+[KyleGabriel.com](http://KyleGabriel.com)

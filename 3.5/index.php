@@ -96,7 +96,7 @@ class OneFileLoginApplication {
 
     // controller that handles the entire flow of the application.
     public function runApplication() {
-        if (!file_exists($this->db_sqlite_path)) exit("User database does not exist. Run '/var/www/mycodo/setup-database.py -i' to creeate required database.");
+        if (!file_exists($this->db_sqlite_path)) exit("User database does not exist. Run 'sudo /var/www/mycodo/update-database.py -i' to create required database.");
         
         if (isset($_POST["register"])) {
             if ($this->checkRegistrationData()) {
@@ -514,6 +514,11 @@ class OneFileLoginApplication {
         if ($referred == "") $referred = $auth_write . 'direct';
         $browser = $_SERVER['HTTP_USER_AGENT'];
         $auth_write = $date->format('Y m d H:i:s') . ', ' . $auth . ', ' . $user . ', ' . $ip . ', ' . $hostaddress . ', ' . $referred . ', ' . $browser . "\n";
+
+        if (!file_exists($auth_file)) {
+            $fh = fopen($auth_file, 'w') or die("Can't create file");
+        }
+
         $fh = fopen($auth_file, 'a') or die("Error: Can't find/open " . $auth_file);
         fwrite($fh, $auth_write);
         fclose($fh);
@@ -524,6 +529,9 @@ class OneFileLoginApplication {
         if ($this->feedback) echo $this->feedback . "<br/>";
         ?>
         <html>
+        <head>
+            <link rel="icon" type="image/png" href="img/favicon.png">
+        </head>
         <body>
         <div style="padding-top: 2em; width: 15em; margin: 8 auto; text-align: left; ">
             <div style="padding-bottom: 0.6em; text-align: center; font-size: 1.8em;">Mycodo</div>
@@ -568,9 +576,14 @@ class OneFileLoginApplication {
             $stmt->execute();
         }
 
-        $stmt = $db->query('SELECT Dismiss_Notification FROM Misc');
+        $stmt = $db->query('SELECT Login_Message, Dismiss_Notification FROM Misc');
         while ($row = $stmt->fetchArray()) {
-            $dismiss = $row[0];
+            $login_message = $row[0]; 
+            $dismiss = $row[1];
+        }
+
+        if ($login_message != '') {
+            echo '<div style="padding-top: 2em; width: 33em; margin: 8 auto; text-align: center;">' . $login_message . '</div>';
         }
 
         if (!$dismiss) {

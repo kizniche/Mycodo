@@ -6,11 +6,26 @@ body {
     font-size: 0.875em;
 }
 
-a:link { color: #000000; }
-a:visited { color: #000000; }
+a:link { color: #000061; }
+a:visited { color: #000037; }
 a:active { color: #F2273B; }
 a:hover { color: #F2273B; }
 
+a.manual {color:red;}
+a.manual:link  {text-decoration: none; color: red;}
+a.manual:visited {text-decoration: none; color: red;}
+a.manual:hover {text-decoration: underline; color: red;}
+a.manual:active {text-decoration: none; color: red;}
+
+.wrap {
+    font-family: monospace;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap; /* Mozilla, supported since 1999 */
+    white-space: -pre-wrap; /* Opera */
+    white-space: -o-pre-wrap; /* Opera */
+    white-space: pre-wrap; /* CSS3 - Text module (Candidate Recommendation) http://www.w3.org/TR/css3-text/#white-space */
+    word-wrap: break-word; /* IE 5.5+ */
+}
 
 /*** Header ***/
 
@@ -69,7 +84,6 @@ hr.fade {
 }
 
 .sensor-parent {
-  float: left;
   width: auto;
   height: auto;
   border: 0.5em solid #EBEBEB;
@@ -81,8 +95,34 @@ hr.fade {
   border-collapse: initial;
 }
 
+.center {
+    text-align: center;
+}
+
+.middle {
+    vertical-align: middle;
+}
+
+table.relays {
+    width: 100%;
+}
+
+table.relays td {
+    padding: 0.4em 0.4em;
+}
+
+table.relays tr:nth-child(even) {
+    background-color: #FFFFFF;
+}
+
+table.sensor_conditional td {
+    background-color: #FFFFFF;
+    padding-right: 0.5em;
+}
+
 table.sensor {
-    margin: 0.3em 0.5em 1em 0.5em;
+    width:100%;
+    padding-bottom: 1em;
 }
 
 table.sensor td {
@@ -102,23 +142,27 @@ table.yaxis td {
 }
 
 table.pid {
-    margin: 0 0.5em 1em 0.5em;
+    width:100%;
 }
 
 table.pid td {
     text-align: center;
     vertical-align: middle;
-    padding: 0.5em 0.4em 0.6em 0.4em;
+    padding: 0.4em 0;
 }
 
-table.conditional {  
-    margin: 1.1em 0.5em 0.5em 0.5em;
+table.conditional {
+    margin: 1em 0.5em 0.5em 0.5em;
 }
 
 table.conditional td {
     text-align: left;
     vertical-align: middle;
-    padding: 0.5em 0.4em 0.6em 0.4em;
+    padding: 0.4em 0.4em;
+}
+
+table.sensor-conditional td {
+    padding: 0.1em 0.5em;
 }
 
 .pid {
@@ -190,6 +234,17 @@ button.linkoff {
 
 
 /*** Camera tab ***/
+
+table.camera-still {
+  padding-bottom: 0.5em;
+}
+
+table.camera-still td {
+  padding: 0 1em 0.5em 0;
+  text-align: center;
+  vertical-align: middle;
+}
+
 .camera td {
     padding: 0 0.3em 0.6em 0.3em;
 }
@@ -197,20 +252,38 @@ button.linkoff {
 
 /*** Data tab ***/
 
+.thumbnail {
+  border:1px solid #bdbdbd;
+  max-height: 125px;
+  max-width: 125px;\"
+}
+
+.notes td {
+    padding: 0.1em 1em 0.1em 0;
+}
+
+.gitcommits td {
+    padding: 0.5em 0.3em 0.5em 0;
+}
+
 .data-buttons {
-  float:left;
-  padding:0 0.1em;
+    float:left;
+    padding:0 0.1em;
+}
+
+.data-buttons td {
+  padding: 0.1em;
 }
 
 .data-buttons-rightspace {
-  padding:0 0.6em 0 0.1em;
+    padding:0 0.6em 0 0.1em !important;
 }
 
 
 /*** Settings tab ***/
 
 .smtp {
-  width: 18em;
+    width: 18em;
 }
 
 .setting-title {
@@ -231,31 +304,6 @@ button.linkoff {
 
 .setting-save {
     padding: 0.5em 0;
-}
-
-table.relays {
-    width: 42em;
-    margin: 0 0 0.5em 0;
-}
-
-table.relays td {
-    padding: 0.5em 0.6em 0.5em 0.6em;
-}
-
-table.relays tr:nth-child(odd) {
-    background-color: #EBEBEB;
-}
-
-table.relay-display td {
-    padding: 0.15em 0.8em 0.15em 0.8em;
-}
-
-table.timers td {
-    padding: 0.6em 0.5em 0.6em 0.8em;
-}
-
-table.timers tr:nth-child(odd) {
-    background-color: #EBEBEB;
 }
 
 .notify-title {
@@ -629,4 +677,8 @@ sup {
 sub {
   /* Move the subscripted text down, but only half as far down as the superscript moved up */
   bottom: -0.25em;
+}
+
+strong {
+  font-weight: bold;
 }

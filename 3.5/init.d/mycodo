@@ -39,7 +39,16 @@ case "${1:-''}" in
         mkdir -p /var/log/mycodo/images
         mkdir -p /var/www/mycodo/camera-stills
         mkdir -p /var/www/mycodo/camera-timelapse
+        mkdir -p /var/www/mycodo/notes
+        mkdir -p /var/www/mycodo/notes/uploads
         
+        if [ ! -e /var/www/mycodo/log/update.log ]; then
+            touch /var/www/mycodo/log/update.log
+        fi
+        if [ ! -e /var/www/mycodo/log/restore.log ]; then
+            touch /var/www/mycodo/log/restore.log
+        fi
+
         if [ ! -h /var/www/mycodo/images ]; then
             ln -s /var/log/mycodo/images /var/www/mycodo/images
         fi
@@ -147,25 +156,11 @@ case "${1:-''}" in
         
         printf "Checking if daemon has stopped (please wait 10 seconds)."
         
-        sleep 1
-        printf "."
-        sleep 1
-        printf "."
-        sleep 1
-        printf "."
-        sleep 1
-        printf "."
-        sleep 1
-        printf "."
-        sleep 1
-        printf "."
-        sleep 1
-        printf "."
-        sleep 1
-        printf "."
-        sleep 1
-        printf "."
-        sleep 1
+        for i in {1..10}
+        do
+            sleep 1
+            printf "."
+        done
         
         if ps aux | grep '[m]ycodo.py'
         then
