@@ -252,6 +252,16 @@ table.camera-still td {
 
 /*** Data tab ***/
 
+table.data-data td, th {
+  padding: 0.1em 0.5em;
+  border: 1px solid grey;
+  vertical-align:middle;
+}
+
+table.data-data th {
+  text-align:center;
+}
+
 .thumbnail {
   border:1px solid #bdbdbd;
   max-height: 125px;

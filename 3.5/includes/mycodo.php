@@ -3286,7 +3286,7 @@ if (isset($output_error)) {
                             <button type="submit" name="Relay_Changes" value="Relay">Relay<br>Δ</button>
                         </td>
                         <td class="data-buttons-rightspace">
-                            <button style="width:100%" type="submit" name="Timer_Changes" value="Timer">Timer<br>Δ</button>
+                            <button type="submit" name="Timer_Changes" value="Timer">Timer<br>Δ</button>
                         </td>
                         <td>
                             <button type="submit" name="Daemon" value="Daemon">Daemon<br>Log</button>
@@ -3362,25 +3362,106 @@ if (isset($output_error)) {
                         }
                         
                         if(isset($_POST['HTSensor'])) {
-                            echo "<pre>Temperature/Humidity Sensor Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y M D H M S Temperature(C) Relative-Humidity DewPoint(C) Sensor\n$(cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S Temperature(C) Relative-Humidity DewPoint(C) Sensor\n$(cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log | tail -n 30)" | column -t`;
+                                $Lines = 30;
                             }
-                            echo '</pre>';
+                            echo "<pre>Temperature/Humidity Sensor Log ($Lines lines)<br>";
+                            echo '
+                                <table class="data-data">
+                                    <tr>
+                                        <th>Y</th>
+                                        <th>M</th>
+                                        <th>D</th>
+                                        <th>H</th>
+                                        <th>M</th>
+                                        <th>S</th>
+                                        <th>Temperature<br>(&deg;C)</th>
+                                        <th>Relative<br>Humidity</th>
+                                        <th>DewPoint<br>(&deg;C)</th>
+                                        <th>Sensor</th>
+                                    </tr>
+                                    <tr>
+                                        <td>';
+                            echo `echo "$(cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log | tail -n $Lines)" | column -t | tail -n +2 | tr -s " " | sed 's/ /\<\/td\>\<td\>/g' | awk '{ print $0; }' RS='\n' ORS='</td></tr><tr><td>'`;
+                            echo 'End</td></tr></table></pre>';
                         }
 
                         if(isset($_POST['HTSensor_Changes'])) {
-                            echo "<pre>Temperature/Humidity Sensor Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD HumRelaysUp HumRelaysDown HumRelayHigh HumRelayHighMin HumRelayHighMax HumRelayLow HumRelayLowMin HumRelayLowMax HumSet HumSetDir HumPeriod HumP HumI HumD\n$(cat /var/www/mycodo/log/sensor-ht-changes.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD HumRelaysUp HumRelaysDown HumRelayHigh HumRelayHighMin HumRelayHighMax HumRelayLow HumRelayLowMin HumRelayLowMax HumSet HumSetDir HumPeriod HumP HumI HumD\n$(cat /var/www/mycodo/log/sensor-ht-changes.log | tail -n 30)" | column -t`;
+                                $Lines = 30;
                             }
-                            echo '</pre>';
+                            echo "<pre>Temperature/Humidity Sensor Changes ($Lines lines)<br>";
+                            echo '
+                                <table class="data-data">
+                                    <tr>
+                                        <th>Y</th>
+                                        <th>M</th>
+                                        <th>D</th>
+                                        <th>H</th>
+                                        <th>M</th>
+                                        <th>S</th>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Device</th>
+                                        <th>GPIO</th>
+                                        <th>Period</th>
+                                        <th>Pre<br>Relay</th>
+                                        <th>Pre<br>Dur</th>
+                                        <th>Log</th>
+                                        <th>Graph</th>
+                                        <th>Verify<br>Pin</th>
+                                        <th>Verify<br>Temp</th>
+                                        <th>Verify<br>Temp<br>Notify</th>
+                                        <th>Verify<br>Temp<br>Stop</th>
+                                        <th>Verify<br>Hum</th>
+                                        <th>Verify<br>Hum<br>Notify</th>
+                                        <th>Verify<br>Hum<br>Stop</th>
+                                        <th>Verify<br>Email</th>
+                                        <th>YRelay<br>Min</th>
+                                        <th>YRelay<br>Max</th>
+                                        <th>YRelay<br>Tics</th>
+                                        <th>YRelay<br>MTics</th>
+                                        <th>YTemp<br>Min</th>
+                                        <th>YTemp<br>Max</th>
+                                        <th>YTemp<br>Tics</th>
+                                        <th>YTemp<br>MTics</th>
+                                        <th>Temp<br>Relays<br>Up</th>
+                                        <th>Temp<br>Relays<br>Down</th>
+                                        <th>Temp<br>Relay<br>High</th>
+                                        <th>Temp<br>Relay<br>High<br>Min</th>
+                                        <th>Temp<br>Relay<br>High<br>Max</th>
+                                        <th>Temp<br>Relay<br>Low</th>
+                                        <th>Temp<br>Relay<br>Low<br>Min</th>
+                                        <th>Temp<br>Relay<br>Low<br>Max</th>
+                                        <th>Temp<br>Set</th>
+                                        <th>Temp<br>Set<br>Dir</th>
+                                        <th>Temp<br>Period</th>
+                                        <th>Temp<br>K<sub>P</sub></th>
+                                        <th>Temp<br>K<sub>I</sub></th>
+                                        <th>Temp<br>K<sub>D</sub></th>
+                                        <th>Hum<br>Relays<br>Up</th>
+                                        <th>Hum<br>Relays<br>Down</th>
+                                        <th>Hum<br>Relay<br>High</th>
+                                        <th>Hum<br>Relay<br>High<br>Min</th>
+                                        <th>Hum<br>Relay<br>High<br>Max</th>
+                                        <th>Hum<br>Relay<br>Low</th>
+                                        <th>Hum<br>Relay<br>Low<br>Min</th>
+                                        <th>Hum<br>Relay<br>Low<br>Max</th>
+                                        <th>Hum<br>Set</th>
+                                        <th>Hum<br>Set<br>Dir</th>
+                                        <th>Hum<br>Period</th>
+                                        <th>Hum<br>K<sub>P</sub></th>
+                                        <th>Hum<br>K<sub>I</sub></th>
+                                        <th>Hum<br>K<sub>D</sub></th>
+                                    </tr>
+                                    <tr>
+                                        <td>';
+                            echo `echo "$(cat /var/www/mycodo/log/sensor-ht-changes.log | tail -n $Lines)" | column -t | tail -n +2 | tr -s " " | sed 's/ /\<\/td\>\<td\>/g' | awk '{ print $0; }' RS='\n' ORS='</td></tr><tr><td>'`;
+                            echo 'End</td></tr></table></pre>';
                         }
 
                         if(isset($_POST['CO2Sensor'])) {
