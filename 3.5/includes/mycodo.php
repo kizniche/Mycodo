@@ -3378,7 +3378,7 @@ if (isset($output_error)) {
                                         <th>M</th>
                                         <th>S</th>
                                         <th>Temperature<br>(&deg;C)</th>
-                                        <th>Relative<br>Humidity</th>
+                                        <th>Relative<br>Humidity<br>(%)</th>
                                         <th>DewPoint<br>(&deg;C)</th>
                                         <th>Sensor</th>
                                     </tr>

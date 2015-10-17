@@ -258,6 +258,10 @@ table.data-data td, th {
   vertical-align:middle;
 }
 
+table.data-data td {
+  text-align:right;
+}
+
 table.data-data th {
   text-align:center;
 }
