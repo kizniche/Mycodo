@@ -269,7 +269,11 @@ If you want mycodo to support using the Raspberry Pi camera module, a SUBSYSTEM 
 
 `echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' | sudo tee /etc/udev/rules.d/10-vchiq-permissions.rules`
 
-Install video streaming capabilities (Note that it is recommended to require SSL on your web server to prevent potential viewing of video streams by unauthorized users, details on forcing SSL below)
+To be able to place a timestamp on an still image captures, the command 'convert' is required from the package imagemagick
+
+`sudo apt-get install imagemagick`
+
+Install video streaming capabilities
 
 `sudo apt-get install libjpeg8-dev libv4l-dev wget subversion`
 
