@@ -4085,7 +4085,7 @@ def email(email_to, message):
         msg['Subject'] = "Mycodo Notification (%s)" % socket.getfqdn()
         msg['From'] = smtp_email_from
         msg['To'] = email_to
-        server.sendmail(msg['From'], email_to, msg.as_string())
+        server.sendmail(msg['From'], msg['To'].split(","), msg.as_string())
         server.quit()
     except Exception, error:
         logging.warning("[Email Notification] Error: %s", error)

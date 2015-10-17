@@ -682,12 +682,7 @@ if (isset($output_error)) {
                         <tr>
                             <td></td>
                             <td style="padding-bottom: 1em;">
-                                <input type="checkbox" name="conditionrelayselnotify" value="1"> Notify <select style="width: 15em;" title="Which email address to notify?" name="conditionrelaynotify">
-                                <?php 
-                                for ($j = 0; $j < count($user_name); $j++) {
-                                    echo '<option value="' . $user_email[$j] . '">' . $user_name[$j] . ' (' . $user_email[$j] . ')</option>';
-                                    } ?>
-                                </select>
+                                <input type="checkbox" name="conditionrelayselnotify" value="1"> Email <input style="width: 17em;" type="text" value="" name="conditionrelaynotify" title="These are the email addresses that will be notified. Separate multiple email addresses with commas."/>
                             </td>
                         </tr>
                     </table>
@@ -753,7 +748,7 @@ if (isset($output_error)) {
                                 if (!$first) {
                                     echo '</tr><tr><td></td>';
                                 }
-                                echo '<td style="width: 100%;">Notify <b>' . $conditional_relay_notify[$z] . '</b></td>';
+                                echo '<td style="width: 100%; white-space:normal;">Email <b>' . str_replace(",", ", ", $conditional_relay_notify[$z]) . '</b></td>';
                             }
 
                             echo '</tr>';
@@ -1138,12 +1133,8 @@ if (isset($output_error)) {
                     <tr>
                         <td></td>
                         <td style="padding-bottom: 1em;">
-                            <input type="checkbox" name="conditiont<?php echo $i; ?>selnotify" value="1"> Notify <select style="width: 15em;" title="Which email address to notify?" name="conditiont<?php echo $i; ?>notify">
-                            <?php 
-                            for ($j = 0; $j < count($user_name); $j++) {
-                                echo '<option value="' . $user_email[$j] . '">' . $user_name[$j] . ' (' . $user_email[$j] . ')</option>';
-                                } ?>
-                            </select></td>
+                            <input type="checkbox" name="conditiont<?php echo $i; ?>selnotify" value="1"> Email <input style="width: 17em;" type="text" value="" name="conditiont<?php echo $i; ?>notify" title="These are the email addresses that will be notified. Separate multiple email addresses with commas."/>
+                        </td>
                     </tr>
                 </table>
                 </form>
@@ -1208,7 +1199,7 @@ if (isset($output_error)) {
                                 if (!$first) {
                                     echo '</tr><tr><td></td>';
                                 }
-                                echo '<td style="width: 100%;">Notify <b>' . $conditional_t_notify[$i][$z] . '</b></td>';
+                                echo '<td style="width: 100%; white-space:normal;">Email <b>' . str_replace(",", ", ", $conditional_t_notify[$i][$z]) . '</b></td>';
                             }
 
                             echo '</tr>';
@@ -1641,12 +1632,8 @@ if (isset($output_error)) {
                     <tr>
                         <td></td>
                         <td style="padding-bottom: 1em;">
-                            <input type="checkbox" name="conditionht<?php echo $i; ?>selnotify" value="1"> Notify <select style="width: 15em;" title="Which email address to notify?" name="conditionht<?php echo $i; ?>notify">
-                            <?php 
-                            for ($j = 0; $j < count($user_name); $j++) {
-                                echo '<option value="' . $user_email[$j] . '">' . $user_name[$j] . ' (' . $user_email[$j] . ')</option>';
-                                } ?>
-                            </select></td>
+                            <input type="checkbox" name="conditionht<?php echo $i; ?>selnotify" value="1"> Email <input style="width: 17em;" type="text" value="" name="conditionht<?php echo $i; ?>notify" title="These are the email addresses that will be notified. Separate multiple email addresses with commas."/>
+                        </td>
                     </tr>
                 </table>
                 </form>
@@ -1717,7 +1704,7 @@ if (isset($output_error)) {
                                 if (!$first) {
                                     echo '</tr><tr><td></td>';
                                 }
-                                echo '<td style="width: 100%;">Notify <b>' . $conditional_ht_notify[$i][$z] . '</b></td>';
+                                echo '<td style="width: 100%; white-space:normal;">Email <b>' . str_replace(",", ", ", $conditional_ht_notify[$i][$z]) . '</b></td>';
                             }
 
                             echo '</tr>';
@@ -2024,12 +2011,8 @@ if (isset($output_error)) {
                     <tr>
                         <td></td>
                         <td style="padding-bottom: 1em;">
-                            <input type="checkbox" name="conditionco2<?php echo $i; ?>selnotify" value="1"> Notify <select style="width: 15em;" title="Which email address to notify?" name="conditionco2<?php echo $i; ?>notify">
-                            <?php 
-                            for ($j = 0; $j < count($user_name); $j++) {
-                                echo '<option value="' . $user_email[$j] . '">' . $user_name[$j] . ' (' . $user_email[$j] . ')</option>';
-                                } ?>
-                            </select></td>
+                            <input type="checkbox" name="conditionco2<?php echo $i; ?>selnotify" value="1"> Email <input style="width: 17em;" type="text" value="" name="conditionco2<?php echo $i; ?>notify" title="These are the email addresses that will be notified. Separate multiple email addresses with commas."/>
+                        </td>
                     </tr>
                 </table>
                 </form>
@@ -2094,7 +2077,7 @@ if (isset($output_error)) {
                                 if (!$first) {
                                     echo '</tr><tr><td></td>';
                                 }
-                                echo '<td style="width: 100%;">Notify <b>' . $conditional_co2_notify[$i][$z] . '</b></td>';
+                                echo '<td style="width: 100%; white-space:normal;">Email <b>' . str_replace(",", ", ", $conditional_co2_notify[$i][$z]) . '</b></td>';
                             }
 
                             echo '</tr>';
@@ -2503,12 +2486,8 @@ if (isset($output_error)) {
                     <tr>
                         <td></td>
                         <td style="padding-bottom: 1em;">
-                            <input type="checkbox" name="conditionpress<?php echo $i; ?>selnotify" value="1"> Notify <select style="width: 15em;" title="Which email address to notify?" name="conditionpress<?php echo $i; ?>notify">
-                            <?php 
-                            for ($j = 0; $j < count($user_name); $j++) {
-                                echo '<option value="' . $user_email[$j] . '">' . $user_name[$j] . ' (' . $user_email[$j] . ')</option>';
-                                } ?>
-                            </select></td>
+                            <input type="checkbox" name="conditionpress<?php echo $i; ?>selnotify" value="1"> Email <input style="width: 17em;" type="text" value="" name="conditionpress<?php echo $i; ?>notify" title="These are the email addresses that will be notified. Separate multiple email addresses with commas."/>
+                        </td>
                     </tr>
                 </table>
                 </form>
@@ -2581,7 +2560,7 @@ if (isset($output_error)) {
                                 if (!$first) {
                                     echo '</tr><tr><td></td>';
                                 }
-                                echo '<td style="width: 100%;">Notify <b>' . $conditional_press_notify[$i][$z] . '</b></td>';
+                                echo '<td style="width: 100%; white-space:normal;">Email <b>' . str_replace(",", ", ", $conditional_press_notify[$i][$z]) . '</b></td>';
                             }
 
                             echo '</tr>';
