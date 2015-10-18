@@ -3246,8 +3246,8 @@ if (isset($output_error)) {
                 <form action="?tab=data" method="POST">
                 <table class="data-buttons">
                     <tr>
-                        <td rowspan="2" class="data-buttons-rightspace" style="text-align:center; line-height:1.6em;">
-                            Lines<br><input style="width: 4em;" type="text" maxlength=8 size=8 name="Lines" value="<?php if (isset($_POST['Lines'])) echo $_POST['Lines']; ?>" title="The maximum number of lines to display. Defaults to 30 if left blank."/>
+                        <td rowspan="2" class="data-buttons-rightspace" style="vertical-align:middle; text-align:center; line-height:1.6em;">
+                            Last<br><input style="width: 4em;" type="text" maxlength="8" name="Lines" value="<?php if (isset($_POST['Lines'])) echo $_POST['Lines']; ?>" title="The maximum number of lines to display. Defaults to 30 if left blank."/><br>Lines
                         </td>
                         <td>
                             <button style="width:100%" type="submit" name="TSensor_Changes" value="T">T<br>Δ</button>
@@ -3346,7 +3346,7 @@ if (isset($output_error)) {
                             } else {
                                 $Lines = 30;
                             }
-                            echo "<pre>Temperature/Humidity Sensor Log ($Lines lines)<br>";
+                            echo "<pre>Temperature/Humidity Sensor Log (Last $Lines lines)<br>";
                             echo '
                                 <table class="data-data">
                                     <tr>
@@ -3373,7 +3373,7 @@ if (isset($output_error)) {
                             } else {
                                 $Lines = 30;
                             }
-                            echo "<pre>Temperature/Humidity Sensor Changes ($Lines lines)<br>";
+                            echo "<pre>Temperature/Humidity Sensor Changes (Last $Lines lines)<br>";
                             echo '
                                 <table class="data-data">
                                     <tr>
@@ -4103,6 +4103,14 @@ if (isset($output_error)) {
                         </td>
                         <td class="setting-value">
                             <input class="smtp" type="number" step="1" value="<?php echo $smtp_wait_time; ?>" maxlength=6 size=20 name="smtp_wait_time" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Send Test Email (save configure above, then enter recipient and click Send)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 13em;" type="text" value="" maxlength=100 size=20 name="smtp_email_test" title=""/> <input style="width: 5em;"type="submit" name="TestNotify" value="Send">
                         </td>
                     </tr>
                     <tr>

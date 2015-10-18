@@ -71,12 +71,14 @@ def usage():
     print '           Return the status of the daemon and all global variables'
     print '    -t, --terminate'
     print '           Terminate the communication service and daemon'
+    print '        --test-email recipient'
+    print '           Send a test email'
 
 def menu():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:], 'hr:st',
-            ["help", "graph", "pidallrestart=", "pidrestart=", "pidstart=", "pidstop=", "relay=", "sensorco2", "sensorht", "sensorpress", "sensort", "sqlreload=", "status", "terminate"])
+            ["help", "graph", "pidallrestart=", "pidrestart=", "pidstart=", "pidstop=", "relay=", "sensorco2", "sensorht", "sensorpress", "sensort", "sqlreload=", "status", "terminate", "test-email="])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -231,6 +233,14 @@ def menu():
             if c.root.Terminate(1) == 1: print "Success"
             else: print "Fail"
             sys.exit(0)
+        elif opt == "--test-email":
+            print "%s [Remote command] Send test email to %s: Server returned:" % (
+                Timestamp(), sys.argv[2]),
+            if c.root.TestEmail(sys.argv[2]) == 1:
+                print "Success (check your email for confirmation)"
+            else:
+                print "Fail"
+            sys.exit(1)
         else:
             assert False, "Fail"
     usage()

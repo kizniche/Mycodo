@@ -305,6 +305,11 @@ class ComServer(rpyc.Service):
         logging.info("[Client command] Request status report")        
         return 1, globals().keys(), globals().values()
 
+    def exposed_TestEmail(self, email_to):
+        logging.info("[Client command] Send test email to %s", email_to)
+        email(email_to, "This is a test of the Mycodo email notification system")
+        return 1
+
     def exposed_Terminate(self, remoteCommand):
         global client_que
         client_que = 'TerminateServer'

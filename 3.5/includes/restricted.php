@@ -2807,3 +2807,9 @@ if (isset($_POST['ChangeInterface'])) {
     $stmt->bindValue(':loginmessage', $_POST['login_message'], SQLITE3_TEXT);
     $stmt->execute();
 }
+
+//Send test email
+if (isset($_POST['TestNotify'])) {
+    $email_to = $_POST['smtp_email_test'];
+    shell_exec("$mycodo_client --test-email $email_to");
+}
