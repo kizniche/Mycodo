@@ -4059,7 +4059,15 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
-                            SMTP Port
+                            Enable SSL (unchecked for TSL)
+                        </td>
+                        <td class="setting-value">
+                            <input type="hidden" name="smtp_ssl" value="0" /><input type="checkbox" name="smtp_ssl" value="1"<?php if ($smtp_ssl == 1) echo ' checked'; ?> title="Enable email to be sent using SSL."/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            SMTP Port (465 for SSL, 587 for TSL)
                         </td>
                         <td class="setting-value">
                             <input class="smtp" type="number" value="<?php echo $smtp_port; ?>" maxlength=30 size=20 name="smtp_port" title=""/>
@@ -4075,7 +4083,7 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
-                            Password (field will always be blank, enter new password and save to change)
+                            Password (field will always be blank, enter password to change)
                         </td>
                         <td class="setting-value">
                             <input class="smtp" type="password" value="" maxlength=30 size=20 name="smtp_pass" title=""/>

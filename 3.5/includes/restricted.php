@@ -2794,12 +2794,16 @@ if (isset($_POST['ChangeInterface'])) {
 
 // Change email notify settings
 if (isset($_POST['ChangeNotify'])) {
-    $stmt = $db->prepare("UPDATE SMTP SET Host=:host, SSL=:ssl, Port=:port, User=:user, Pass=:password, Email_From=:emailfrom, Daily_Max=:dailymax, Wait_Time=:waittime");
+    if ($_POST['smtp_pass'] != '') {
+        $stmt = $db->prepare("UPDATE SMTP SET Host=:host, SSL=:ssl, Port=:port, User=:user, Pass=:password, Email_From=:emailfrom, Daily_Max=:dailymax, Wait_Time=:waittime");
+        $stmt->bindValue(':password', $_POST['smtp_pass'], SQLITE3_TEXT);
+    } else {
+        $stmt = $db->prepare("UPDATE SMTP SET Host=:host, SSL=:ssl, Port=:port, User=:user, Email_From=:emailfrom, Daily_Max=:dailymax, Wait_Time=:waittime");
+    }
     $stmt->bindValue(':host', str_replace(' ', '', $_POST['smtp_host']), SQLITE3_TEXT);
     $stmt->bindValue(':ssl', (int)$_POST['smtp_ssl'], SQLITE3_INTEGER);
     $stmt->bindValue(':port', (int)$_POST['smtp_port'], SQLITE3_INTEGER);
     $stmt->bindValue(':user', str_replace(' ', '', $_POST['smtp_user']), SQLITE3_TEXT);
-    $stmt->bindValue(':password', $_POST['smtp_pass'], SQLITE3_TEXT);
     $stmt->bindValue(':emailfrom', str_replace(' ', '', $_POST['smtp_email_from']), SQLITE3_TEXT);
     $stmt->bindValue(':dailymax', (int)$_POST['smtp_daily_max'], SQLITE3_TEXT);
     $stmt->bindValue(':waittime', (int)$_POST['smtp_wait_time'], SQLITE3_TEXT);

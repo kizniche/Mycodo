@@ -4080,7 +4080,6 @@ def email(email_to, message):
             server.ehlo()
             server.starttls()
 
-        server.ehlo
         server.login(smtp_user, smtp_pass)
 
         # Body of email
