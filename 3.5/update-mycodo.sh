@@ -27,6 +27,14 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 case "${1:-''}" in
+    'backup')
+        NOW=$(date +"%Y-%m-%d_%H-%M-%S")
+        CURCOMMIT=$(git rev-parse --short HEAD)
+        printf "#### Creating backup /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT ####\n"
+        mkdir -p /var/Mycodo-backups
+        mkdir -p /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT
+        cp -a $DIR/../../Mycodo/3.5/. /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT/
+    ;;
     'update')
         NOW=$(date +"%m-%d-%Y %H:%M:%S")
         printf "#### Update Started $NOW ####\n"

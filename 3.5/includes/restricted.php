@@ -54,6 +54,10 @@ if (isset($_POST['DeleteBackup'])) {
     exec("$install_path/cgi-bin/mycodo-wrapper delete $delete_directory &");
 }
 
+if (isset($_POST['CreateBackup'])) {
+    exec("$install_path/cgi-bin/mycodo-wrapper backup");
+}
+
 
 
 /*

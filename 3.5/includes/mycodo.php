@@ -3303,7 +3303,7 @@ if (isset($output_error)) {
                             <button style="width:100%" type="submit" name="Login" value="Login">Login<br>Log</button>
                         </td>
                         <td>
-                            <button style="width:100%" type="submit" name="Backups" value="">All<br>Backups</button>
+                            <button style="width:100%" type="submit" name="Backups" value="">Backup/<br>Restore</button>
                         </td>
                         <td class="data-buttons-rightspace">
                             <button type="submit" name="Restore" value="">Restore<br>Log</button>
@@ -3804,8 +3804,9 @@ if (isset($output_error)) {
                             echo '</pre>';
                         }
 
-                        if (isset($_POST['Backups'])) {
-                            echo '<pre><div style="padding: 1em 0 1.5em 0;">Note: Restoring a backup will restore all files from the backup, including databases and logs.<br>When restoring a backup, a backup of the current system will also be created.<br>Deleting a backup will delete all files of that backup.</div>';
+                        if (isset($_POST['Backups']) || isset($_POST['CreateBackup']) || isset($_POST['DeleteBackup'])) {
+                            echo '<pre><div style="padding: 1em 0 1em 0;">Note: Restoring a backup will restore all files from the backup, including databases and logs.<br>When restoring a backup, a backup of the current system will also be created.<br>Deleting a backup will delete all files of that backup.</div>';
+                            echo '<div style="padding: 1em 0 1.5em 0;"><form action="?tab=data" method="POST"><button type="submit" name="CreateBackup" value="">Create New Backup</button></form></div>';
                             $dirs = array_filter(glob('/var/Mycodo-backups/*'), 'is_dir');
                             for ($i = 0; $i < count($dirs); $i++) {
                                 $backup_commits[$i] = mb_substr($dirs[$i], -7);
@@ -3818,9 +3819,7 @@ if (isset($output_error)) {
                                     echo "<table class=\"gitcommits\">
                                         <tr>
                                             <td><a href=\"https://github.com/kizniche/Mycodo/commit/$backup_commits[$i]\" target=\"_blank\">$backup_commits[$i]</a></td>
-                                            <td><form action=\"?tab=data";
-                                            if (isset($_GET['page'])) echo '&page=' , $_GET['page'];
-                                            echo "\" method=\"POST\" onsubmit=\"return confirm('Confirm that you would like to DELETE the $backup_dates[$i] backup of the system at commit $backup_commits[$i]. Note: This will delete all files of this backup. This cannot be undone. If you do not want to do this, click Cancel.')\"><button type=\"submit\" name=\"DeleteBackup\" value=\"$dirs[$i]\" title=\"Delete backup from $backup_dates[$i]\">Delete Backup</button></form></td>
+                                            <td><form action=\"?tab=data\" method=\"POST\" onsubmit=\"return confirm('Confirm that you would like to DELETE the $backup_dates[$i] backup of the system at commit $backup_commits[$i]. Note: This will delete all files of this backup. This cannot be undone. If you do not want to do this, click Cancel.')\"><button type=\"submit\" name=\"DeleteBackup\" value=\"$dirs[$i]\" title=\"Delete backup from $backup_dates[$i]\">Delete Backup</button></form></td>
                                             <td><form action=\"?tab=data";
                                             if (isset($_GET['page'])) echo '&page=' , $_GET['page'];
                                             echo "\" method=\"POST\" onsubmit=\"return confirm('Confirm that you would like to begin the RESTORE process from the $backup_dates[$i] backup of the system at commit $backup_commits[$i]. If you do not want to do this, click Cancel.)\"><button type=\"submit\" name=\"RestoreBackup\" value=\"$dirs[$i]\" title=\"Restore backup from $backup_dates[$i]\">Restore Backup</button></form></td>
@@ -4054,7 +4053,7 @@ if (isset($output_error)) {
                             SMTP Host
                         </td>
                         <td class="setting-value">
-                            <input class="smtp" type="text" value="<?php echo $smtp_host; ?>" maxlength=30 size=20 name="smtp_host" title=""/>
+                            <input class="smtp" type="text" value="<?php echo $smtp_host; ?>" maxlength="50" name="smtp_host" title=""/>
                         </td>
                     </tr>
                     <tr>
@@ -4070,31 +4069,31 @@ if (isset($output_error)) {
                             SMTP Port (465 for SSL, 587 for TSL)
                         </td>
                         <td class="setting-value">
-                            <input class="smtp" type="number" value="<?php echo $smtp_port; ?>" maxlength=30 size=20 name="smtp_port" title=""/>
+                            <input class="smtp" type="number" value="<?php echo $smtp_port; ?>" maxlength="6" name="smtp_port" title=""/>
                         </td>
                     </tr>
                     <tr>
                         <td class="setting-text">
-                            User
+                            User (usually full email address)
                         </td>
                         <td class="setting-value">
-                            <input class="smtp" type="text" value="<?php echo $smtp_user; ?>" maxlength=30 size=20 name="smtp_user" title=""/>
+                            <input class="smtp" type="text" value="<?php echo $smtp_user; ?>" maxlength="50" name="smtp_user" title=""/>
                         </td>
                     </tr>
                     <tr>
                         <td class="setting-text">
-                            Password (field will always be blank, enter password to change)
+                            Password (field will always be blank, enter new password to change)
                         </td>
                         <td class="setting-value">
-                            <input class="smtp" type="password" value="" maxlength=30 size=20 name="smtp_pass" title=""/>
+                            <input class="smtp" type="password" value="" maxlength="100" name="smtp_pass" title=""/>
                         </td>
                     </tr>
                     <tr>
                         <td class="setting-text">
-                            From
+                            From Email
                         </td>
                         <td class="setting-value">
-                            <input class="smtp" type="text" value="<?php echo $smtp_email_from; ?>" maxlength=30 size=20 name="smtp_email_from" title=""/>
+                            <input class="smtp" type="text" value="<?php echo $smtp_email_from; ?>" maxlength="50" name="smtp_email_from" title=""/>
                         </td>
                     </tr>
                     <tr>
@@ -4102,15 +4101,15 @@ if (isset($output_error)) {
                             Daily Max (The maximum number of notifications that can be sent in a single day)
                         </td>
                         <td class="setting-value">
-                            <input class="smtp" type="number" step="1" value="<?php echo $smtp_daily_max; ?>" maxlength=2 size=20 name="smtp_daily_max" title=""/>
+                            <input class="smtp" type="number" step="1" value="<?php echo $smtp_daily_max; ?>" maxlength="3" name="smtp_daily_max" title=""/>
                         </td>
                     </tr>
                     <tr>
                         <td class="setting-text">
-                            Wait Time (seconds) (How long to wait between sending the same notification)
+                            Wait Time (How long to wait between sending the same notification, in seconds)
                         </td>
                         <td class="setting-value">
-                            <input class="smtp" type="number" step="1" value="<?php echo $smtp_wait_time; ?>" maxlength=6 size=20 name="smtp_wait_time" title=""/>
+                            <input class="smtp" type="number" step="1" value="<?php echo $smtp_wait_time; ?>" maxlength="7" name="smtp_wait_time" title=""/>
                         </td>
                     </tr>
                     <tr>
@@ -4118,7 +4117,7 @@ if (isset($output_error)) {
                             Send Test Email (save configure above, then enter recipient and click Send)
                         </td>
                         <td class="setting-value">
-                            <input style="width: 13em;" type="text" value="" maxlength=100 size=20 name="smtp_email_test" title=""/> <input style="width: 5em;"type="submit" name="TestNotify" value="Send">
+                            <input style="width: 13em;" type="text" value="" maxlength="50" name="smtp_email_test" title=""/> <input style="width: 5em;"type="submit" name="TestNotify" value="Send">
                         </td>
                     </tr>
                     <tr>
