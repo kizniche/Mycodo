@@ -2776,22 +2776,6 @@ if (isset($_POST['Edit_Note_Save'])) {
     }
 }
 
-// Change email notify settings
-if (isset($_POST['ChangeNotify'])) {
-    $stmt = $db->prepare("UPDATE SMTP SET Host=:host, SSL=:ssl, Port=:port, User=:user, Pass=:password, Email_From=:emailfrom, Daily_Max=:dailymax, Wait_Time=:waittime");
-    $stmt->bindValue(':host', str_replace(' ', '', $_POST['smtp_host']), SQLITE3_TEXT);
-    $stmt->bindValue(':ssl', (int)$_POST['smtp_ssl'], SQLITE3_INTEGER);
-    $stmt->bindValue(':port', (int)$_POST['smtp_port'], SQLITE3_INTEGER);
-    $stmt->bindValue(':user', str_replace(' ', '', $_POST['smtp_user']), SQLITE3_TEXT);
-    $stmt->bindValue(':password', $_POST['smtp_pass'], SQLITE3_TEXT);
-    $stmt->bindValue(':emailfrom', str_replace(' ', '', $_POST['smtp_email_from']), SQLITE3_TEXT);
-    $stmt->bindValue(':emailto', str_replace(' ', '', $_POST['smtp_email_to']), SQLITE3_TEXT);
-    $stmt->bindValue(':dailymax', (int)$_POST['smtp_daily_max'], SQLITE3_TEXT);
-    $stmt->bindValue(':waittime', (int)$_POST['smtp_wait_time'], SQLITE3_TEXT);
-    $stmt->execute();
-    shell_exec("$mycodo_client --sqlreload -1");
-}
-
 // Change system settings
 if (isset($_POST['ChangeSystem'])) {
     $stmt = $db->prepare("UPDATE Misc SET Refresh_Time=:refreshtime, Enable_Max_Amps=:enablemaxamps, Max_Amps=:maxamps");
@@ -2808,8 +2792,30 @@ if (isset($_POST['ChangeInterface'])) {
     $stmt->execute();
 }
 
+// Change email notify settings
+if (isset($_POST['ChangeNotify'])) {
+    $stmt = $db->prepare("UPDATE SMTP SET Host=:host, SSL=:ssl, Port=:port, User=:user, Pass=:password, Email_From=:emailfrom, Daily_Max=:dailymax, Wait_Time=:waittime");
+    $stmt->bindValue(':host', str_replace(' ', '', $_POST['smtp_host']), SQLITE3_TEXT);
+    $stmt->bindValue(':ssl', (int)$_POST['smtp_ssl'], SQLITE3_INTEGER);
+    $stmt->bindValue(':port', (int)$_POST['smtp_port'], SQLITE3_INTEGER);
+    $stmt->bindValue(':user', str_replace(' ', '', $_POST['smtp_user']), SQLITE3_TEXT);
+    $stmt->bindValue(':password', $_POST['smtp_pass'], SQLITE3_TEXT);
+    $stmt->bindValue(':emailfrom', str_replace(' ', '', $_POST['smtp_email_from']), SQLITE3_TEXT);
+    $stmt->bindValue(':dailymax', (int)$_POST['smtp_daily_max'], SQLITE3_TEXT);
+    $stmt->bindValue(':waittime', (int)$_POST['smtp_wait_time'], SQLITE3_TEXT);
+    $stmt->execute();
+    shell_exec("$mycodo_client --sqlreload -1");
+}
+
 //Send test email
 if (isset($_POST['TestNotify'])) {
     $email_to = $_POST['smtp_email_test'];
-    shell_exec("$mycodo_client --test-email $email_to");
+    if (!file_exists($lock_daemon)) {
+        $settings_error = "Error: Daemon must be runnnig to send a test email";
+    } else if (!filter_var($email_to, FILTER_VALIDATE_EMAIL)) {
+      $settings_error = "Error: Invalid email format for recipient of test email";
+    } else {
+        $settings_error = "Test email command sent to daemon. Check the daemon log and/or your email to verify it was delivered.";
+        shell_exec("$mycodo_client --test-email $email_to");
+    }
 }
