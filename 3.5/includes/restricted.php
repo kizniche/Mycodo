@@ -2663,32 +2663,47 @@ if (isset($_POST['Delete_Note'])) {
     $stmt = $ndb->prepare('DELETE FROM Notes WHERE Id = :id');
     $stmt->bindValue(':id', $_POST['Delete_Note'], SQLITE3_TEXT);
     $stmt->execute();
+    $results = $ndb->query("SELECT Id, Name, File_Name, Location FROM Uploads WHERE Id='" . $_POST['Delete_Note'] . "'");
+    $i = 0;
+    while ($row = $results->fetchArray()) {
+        $upload_id[$i] = $row[0];
+        $upload_name[$i] = $row[1];
+        $upload_file_name[$i] = $row[2];
+        $upload_location[$i] = $row[3];
+        $i++;
+    }
+    $upload_path = "/var/www/mycodo/notes/uploads/";
+    if (!isset($upload_id)) $upload_id = [];
+    else {
+        for ($v = 0; $v < count($upload_id); $v++) {
+            unlink($upload_path . $upload_file_name[$v]);
+            if (endswith($upload_name[$v], '.jpg') || endswith($upload_name[$v], '.jpeg') || endswith($upload_name[$v], '.gif') || endswith($upload_name[$v], '.png')) {
+                unlink($upload_path . 'thumb' . $upload_file_name[$v]);
+            }
+        }
+    }
 }
 
 // Add Camera Still Note
 if (isset($_POST['Add_Image_Note'])) {
     $note_ts = `date +"%Y-%m-%d %H:%M:%S"`;
     $uniqueid = uniqid();
-
     $upload_path = "/var/www/mycodo/notes/uploads/";
     $full_image_path = $_POST['file_path'] . $_POST['file_name'];
-
     copy($full_image_path, $upload_path . $_POST['file_name']);
-
+    makeThumbnail($upload_path, $_POST['file_name']);
     $stmt = $ndb->prepare("INSERT INTO Uploads VALUES(:id, :name, :filename, :location)");
     $stmt->bindValue(':id', $uniqueid, SQLITE3_TEXT);
     $stmt->bindValue(':name', $_POST['file_name'], SQLITE3_TEXT);
     $stmt->bindValue(':filename', $_POST['file_name'], SQLITE3_TEXT);
     $stmt->bindValue(':location', $upload_path, SQLITE3_TEXT);
     $stmt->execute();
-
     $stmt = $ndb->prepare("INSERT INTO Notes VALUES(:id, :time, :user, :note)");
     $stmt->bindValue(':id', $uniqueid, SQLITE3_TEXT);
     $stmt->bindValue(':time', $note_ts, SQLITE3_TEXT);
     $stmt->bindValue(':user', $_SESSION['user_name'], SQLITE3_TEXT);
     $stmt->bindValue(':note', '', SQLITE3_TEXT);
     $stmt->execute();
-
     $_POST['Edit_Note'] = $uniqueid;
 }
 
@@ -2696,28 +2711,27 @@ if (isset($_POST['Add_Image_Note'])) {
 if (isset($_POST['Add_Note'])) {
     $note_ts = `date +"%Y-%m-%d %H:%M:%S"`;
     $uniqueid = uniqid();
-
     if(count($_FILES['notes']['name']) > 0) {
         for($i = 0; $i < count($_FILES['notes']['name']); $i++) {
             $tmpFilePath = $_FILES['notes']['tmp_name'][$i];
             if($tmpFilePath != "") {
                 $shortname = $_FILES['notes']['name'][$i];
                 $file_name = date('d-m-Y-H-i-s') . '-' . $_FILES['notes']['name'][$i];
-                $upload_path = "/var/www/mycodo/notes/uploads/" . $file_name;
-
-                if(move_uploaded_file($tmpFilePath, $upload_path)) {
+                $upload_path = "/var/www/mycodo/notes/uploads/";
+                $full_upload_path = $upload_path . $file_name;
+                if(move_uploaded_file($tmpFilePath, $full_upload_path)) {
                     $files[] = $shortname;
                     $stmt = $ndb->prepare("INSERT INTO Uploads VALUES(:id, :name, :filename, :location)");
                     $stmt->bindValue(':id', $uniqueid, SQLITE3_TEXT);
                     $stmt->bindValue(':name', $shortname, SQLITE3_TEXT);
                     $stmt->bindValue(':filename', $file_name, SQLITE3_TEXT);
-                    $stmt->bindValue(':location', $upload_path, SQLITE3_TEXT);
+                    $stmt->bindValue(':location', $full_upload_path, SQLITE3_TEXT);
                     $stmt->execute();
+                    makeThumbnail($upload_path, $file_name);
                 }
             }
         }
     }
-
     $stmt = $ndb->prepare("INSERT INTO Notes VALUES(:id, :time, :user, :note)");
     $stmt->bindValue(':id', $uniqueid, SQLITE3_TEXT);
     $stmt->bindValue(':time', $note_ts, SQLITE3_TEXT);
@@ -2734,7 +2748,6 @@ if (isset($_POST['Edit_Note_Save'])) {
     $stmt->bindValue(':user', $_POST['Edit_Note_User'], SQLITE3_TEXT);
     $stmt->bindValue(':note', $_POST['Edit_Note_Text'], SQLITE3_TEXT);
     $stmt->execute();
-
     unset($upload_id);
     $results = $ndb->query("SELECT Id, Name, File_Name, Location FROM Uploads WHERE Id='" . $_POST['Edit_Note_Save'] . "'");
     $i = 0;
@@ -2745,7 +2758,7 @@ if (isset($_POST['Edit_Note_Save'])) {
         $upload_location[$i] = $row[3];
         $i++;
     }
-
+    $upload_path = "/var/www/mycodo/notes/uploads/";
     if (!isset($upload_id)) $upload_id = [];
     else {
         for ($v = 0; $v < count($upload_id); $v++) {
@@ -2753,27 +2766,29 @@ if (isset($_POST['Edit_Note_Save'])) {
                 $stmt = $ndb->prepare("DELETE FROM Uploads WHERE File_Name=:filename");
                 $stmt->bindValue(':filename', $upload_file_name[$v]);
                 $stmt->execute();
-                unlink($upload_location[$v]);
+                unlink($upload_path . $upload_file_name[$v]);
+                if (endswith($upload_name[$v], '.jpg') || endswith($upload_name[$v], '.jpeg') || endswith($upload_name[$v], '.gif') || endswith($upload_name[$v], '.png')) {
+                    unlink($upload_path . 'thumb' . $upload_file_name[$v]);
+                }
             }
         }
     }
-    
     if(count($_FILES['edit_notes']['name']) > 0) {
         for($i = 0; $i < count($_FILES['edit_notes']['name']); $i++) {
             $tmpFilePath = $_FILES['edit_notes']['tmp_name'][$i];
             if($tmpFilePath != "") {
                 $shortname = $_FILES['edit_notes']['name'][$i];
-                $fullName = date('d-m-Y-H-i-s') . '-' . $_FILES['edit_notes']['name'][$i];
-                $filePath = "/var/www/mycodo/notes/uploads/" . $fullName;
-
-                if(move_uploaded_file($tmpFilePath, $filePath)) {
+                $file_name = date('d-m-Y-H-i-s') . '-' . $_FILES['edit_notes']['name'][$i];
+                $full_upload_path = $upload_path . $file_name;
+                if(move_uploaded_file($tmpFilePath, $full_upload_path)) {
                     $files[] = $shortname;
                     $stmt = $ndb->prepare("INSERT INTO Uploads VALUES(:id, :name, :filename, :location)");
                     $stmt->bindValue(':id', $_POST['Edit_Note_Save'], SQLITE3_TEXT);
                     $stmt->bindValue(':name', $shortname, SQLITE3_TEXT);
-                    $stmt->bindValue(':filename', $fullName, SQLITE3_TEXT);
-                    $stmt->bindValue(':location', $filePath, SQLITE3_TEXT);
+                    $stmt->bindValue(':filename', $file_name, SQLITE3_TEXT);
+                    $stmt->bindValue(':location', $full_upload_path, SQLITE3_TEXT);
                     $stmt->execute();
+                    makeThumbnail($upload_path, $file_name);
                 }
             }
         }
