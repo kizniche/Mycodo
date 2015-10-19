@@ -448,13 +448,13 @@ You can either reboot or start the daemon with the following command.
 
 `sudo service mycodo start`
 
-Note: cgi-bin/mycodo-wrapper is a binary executable used to start and stop the mycodo daemon from the web interface settings tab. It has the setuid bit to permit it to be executed as root (the init.d script sets the correct permissions and setuid). Since shell scripts cannot be setuid (ony binary files), mycodo-wrapper permits init.d/mycodo to be executed as root by a non-root user. All of this is done to allow the daemon to be stopped, started, and restarted in debug mode from the settings tab of the web interface. You can audit the source code in cgi-bin/mycodo-wrapper.c and if you want to ensure the binary is indeed compiled from the source, you may compile it yourself with the following command. Otherwise, the compiled binary is included and no further action is needed. I mention this to explain the need for setuid, for transparency, and security.
+Note: cgi-bin/mycodo-wrapper is a binary executable used to start and stop the mycodo daemon, and to create and restore backups, from the web interface. It has the setuid bit to permit it to be executed as root (the init.d/mycodo script sets the correct permissions and setuid). Since shell scripts cannot be setuid (ony binary files), the mycodo-wrapper binay permits init.d/mycodo to be executed as root by a non-root user. You can audit the source code of cgi-bin/mycodo-wrapper.c and if you want to ensure the binary is indeed compiled from that source, you may compile it yourself with the following command. Otherwise, the compiled binary is already included and no further action is needed. I mention this to explain the need for setuid, for transparency, for security, and to maintain all code of this project as open source.
 
-`gcc /var/www/mycodo/cgi-bin/mycodo-wrapper.c -o /var/www/mycodo/cgi-bin/mycodo-wrapper`
+`sudo gcc /var/www/mycodo/cgi-bin/mycodo-wrapper.c -o /var/www/mycodo/cgi-bin/mycodo-wrapper`
 
 ## Manual
 
-The Mycodo 3.5 manual is provided in the file manual.html. You can find a link to this manual at the top of the Settings tab of the web interface. This file can be accessed directly with your web browser or by navigating to http://your-pi-address/mycodo/manual.html if the web server is operational.
+The Mycodo 3.5 manual is provided in the file manual.html. You can find a link to this manual at the top of the Settings Tab of the web interface. The manual can be accessed directly with the link at the end of this document in the [Useful Links](#useful-links) section.
 
 ### Preface
 
