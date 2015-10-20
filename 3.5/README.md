@@ -245,7 +245,7 @@ Using raspi-config, perform the following:
 
 `sudo apt-get upgrade`
 
-`sudo apt-get install build-essential apache2 sqlite3 gnuplot git-core python-pip python-dev libconfig-dev php5 libapache2-mod-php5 php5-sqlite`
+`sudo apt-get install build-essential apache2 sqlite3 gnuplot git-core python-pip python-dev libconfig-dev php5 libapache2-mod-php5 php5-sqlite php5-gd`
 
 `git clone https://github.com/kizniche/Mycodo.git ~/Mycodo`
 
@@ -273,7 +273,7 @@ If you want mycodo to support using the Raspberry Pi camera module, a SUBSYSTEM 
 
 To be able to place a timestamp on an still image captures, the command 'convert' is required from the package imagemagick. Additionally, php5-gd is required for the creation of thumbnails when images are uploaded to notes.
 
-`sudo apt-get install imagemagick php5-gd`
+`sudo apt-get install imagemagick`
 
 Install video streaming capabilities
 
