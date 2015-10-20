@@ -733,10 +733,9 @@ def daemon(output, log):
                                     elif conditional_t_relay_state[j][k][0] == 0:
                                         relay_onoff(conditional_t_relay[j][k][0], 'off')
                                 if conditional_t_sel_command[j][k][0]:
-                                    try:
-                                        os.system(conditional_t_do_command)
-                                    except:
-                                        logging.debug("[Conditional T] Conditional %s (%s) T Sensor %s (%s): Error received while attempting to execute command: %s", j+1, sensor_t_name[j], k+1, conditional_t_name[j][k][0], conditional_t_do_command[j][k][0])
+                                    p = subprocess.Popen(conditional_t_do_command[j][k][0], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                    output, errors = p.communicate()
+                                    logging.debug("[Conditional T] Conditional %s (%s) T Sensor %s (%s) True: Execute command: %s Command output: %s Command errors: %s", i+1, conditional_t_name[j][k][0], conditional_t_do_command[j][k][0], output, errors)
                                 if conditional_t_sel_notify[j][k][0] and conditional_t_time_notify[j][k][0] < int(time.time()):
                                     logging.debug("[Conditional T] Conditional %s (%s) T Sensor %s (%s) True: Notify %s", j+1, sensor_t_name[j], k+1, conditional_t_name[j][k][0], conditional_t_do_notify[j][k][0])
                                     if (conditional_t_direction[j][k][0] == 1 and
@@ -786,10 +785,9 @@ def daemon(output, log):
                                     elif conditional_ht_relay_state[j][k][0] == 0:
                                         relay_onoff(conditional_ht_relay[j][k][0], 'off')
                                 if conditional_ht_sel_command[j][k][0]:
-                                    try:
-                                        os.system(conditional_ht_do_command)
-                                    except:
-                                        logging.debug("[Conditional HT] Conditional %s (%s) HT Sensor %s (%s): Error received while attempting to execute command: %s", j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], conditional_ht_do_command[j][k][0])
+                                    p = subprocess.Popen(conditional_ht_do_command[j][k][0], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                    output, errors = p.communicate()
+                                    logging.debug("[Conditional HT] Conditional %s (%s) HT Sensor %s (%s) True: Execute command: %s Command output: %s Command errors: %s", i+1, conditional_ht_name[j][k][0], conditional_ht_do_command[j][k][0], output, errors)
                                 if conditional_ht_sel_notify[j][k][0] and conditional_ht_time_notify[j][k][0] < int(time.time()):
                                     logging.debug("[Conditional HT] Conditional %s (%s) HT Sensor %s (%s) True: Notify %s", j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], conditional_ht_do_notify[j][k][0])
                                     if (conditional_ht_condition[j][k][0] == "Temperature" and
@@ -841,10 +839,9 @@ def daemon(output, log):
                                     elif conditional_co2_relay_state[j][k][0] == 0:
                                         relay_onoff(conditional_co2_relay[j][k][0], 'off')
                                 if conditional_co2_sel_command[j][k][0]:
-                                    try:
-                                        os.system(conditional_co2_do_command)
-                                    except:
-                                        logging.debug("[Conditional CO2] Conditional %s (%s) CO2 Sensor %s (%s): Error received while attempting to execute command: %s", j+1, sensor_co2_name[j], k+1, conditional_co2_name[j][k][0], conditional_co2_do_command[j][k][0])
+                                    p = subprocess.Popen(conditional_co2_do_command[j][k][0], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                    output, errors = p.communicate()
+                                    logging.debug("[Conditional CO2] Conditional %s (%s) T Sensor %s (%s) True: Execute command: %s Command output: %s Command errors: %s", i+1, conditional_co2_name[j][k][0], conditional_co2_do_command[j][k][0], output, errors)
                                 if conditional_co2_sel_notify[j][k][0] and conditional_co2_time_notify[j][k][0] < int(time.time()):
                                     logging.debug("[Conditional CO2] Conditional %s (%s) CO2 Sensor %s (%s) True: Notify %s", j+1, sensor_co2_name[j], k+1, conditional_co2_name[j][k][0], conditional_co2_do_notify[j][k][0])
                                     if (conditional_co2_direction[j][k][0] == 1 and
@@ -894,10 +891,9 @@ def daemon(output, log):
                                     elif conditional_press_relay_state[j][k][0] == 0:
                                         relay_onoff(conditional_press_relay[j][k][0], 'off')
                                 if conditional_press_sel_command[j][k][0]:
-                                    try:
-                                        os.system(conditional_co2_do_command)
-                                    except:
-                                        logging.debug("[Conditional Press] Conditional %s (%s) Press Sensor %s (%s): Error received while attempting to execute command: %s", j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], conditional_press_do_command[j][k][0])
+                                    p = subprocess.Popen(conditional_press_do_command[j][k][0], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                    output, errors = p.communicate()
+                                    logging.debug("[Conditional Press] Conditional %s (%s) Press Sensor %s (%s) True: Execute command: %s Command output: %s Command errors: %s", i+1, conditional_press_name[j][k][0], conditional_press_do_command[j][k][0], output, errors)
                                 if conditional_press_sel_notify[j][k][0] and conditional_press_time_notify[j][k][0] < int(time.time()):
                                     logging.debug("[Conditional Press] Conditional %s (%s) Press Sensor %s (%s) True: Notify %s", j+1, sensor_press_name[j], k+1, conditional_press_name[j][k][0], conditional_press_do_notify[j][k][0])
                                     if (conditional_press_condition[j][k][0] == "Pressure" and
@@ -2849,36 +2845,6 @@ def read_sql():
     relay_trigger = []
     relay_start_state = []
 
-    # Relay conditional statement globals
-    global conditional_relay_id
-    global conditional_relay_name
-    global conditional_relay_ifrelay
-    global conditional_relay_ifaction
-    global conditional_relay_ifduration
-    global conditional_relay_sel_relay
-    global conditional_relay_dorelay
-    global conditional_relay_doaction
-    global conditional_relay_doduration
-    global conditional_relay_sel_command
-    global conditional_relay_do_command
-    global conditional_relay_sel_notify
-    global conditional_relay_do_notify
-
-    # Relay conditional statement reset
-    conditional_relay_id = []
-    conditional_relay_name = []
-    conditional_relay_ifrelay = []
-    conditional_relay_ifaction = []
-    conditional_relay_ifduration = []
-    conditional_relay_sel_relay = []
-    conditional_relay_dorelay = []
-    conditional_relay_doaction = []
-    conditional_relay_doduration = []
-    conditional_relay_sel_command = []
-    conditional_relay_do_command = []
-    conditional_relay_sel_notify = []
-    conditional_relay_do_notify = []
-
     # Timer globals
     global timer_id
     global timer_name
@@ -2963,6 +2929,38 @@ def read_sql():
         relay_trigger.append(row[4])
         relay_start_state.append(row[5])
 
+    # Relay conditional statement globals
+    global conditional_relay_id
+    global conditional_relay_name
+    global conditional_relay_ifrelay
+    global conditional_relay_ifaction
+    global conditional_relay_ifduration
+    global conditional_relay_sel_relay
+    global conditional_relay_dorelay
+    global conditional_relay_doaction
+    global conditional_relay_doduration
+    global conditional_relay_sel_command
+    global conditional_relay_do_command
+    global conditional_relay_sel_notify
+    global conditional_relay_do_notify
+    global conditional_relay_time_notify
+
+    # Relay conditional statement reset
+    conditional_relay_id = []
+    conditional_relay_name = []
+    conditional_relay_ifrelay = []
+    conditional_relay_ifaction = []
+    conditional_relay_ifduration = []
+    conditional_relay_sel_relay = []
+    conditional_relay_dorelay = []
+    conditional_relay_doaction = []
+    conditional_relay_doduration = []
+    conditional_relay_sel_command = []
+    conditional_relay_do_command = []
+    conditional_relay_sel_notify = []
+    conditional_relay_do_notify = []
+    conditional_relay_time_notify = []
+
     cur.execute('SELECT Id, Name, If_Relay, If_Action, If_Duration, Sel_Relay, Do_Relay, Do_Action, Do_Duration, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM RelayConditional')
     for row in cur:
         conditional_relay_id.append(row[0])
@@ -2984,6 +2982,7 @@ def read_sql():
                 conditional_relay_do_command.append(row[10].replace("\'\'","\'"))
         conditional_relay_sel_notify.append(row[11])
         conditional_relay_do_notify.append(row[12])
+        conditional_relay_time_notify.append(0)
 
     cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D FROM TSensor')
     for row in cur:
@@ -3791,19 +3790,20 @@ def relay_onoff(relay, state):
                         rod.start()
                     else:
                         relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
-
                 if conditional_relay_sel_command[i]:
                     p = subprocess.Popen(conditional_relay_do_command[i], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     output, errors = p.communicate()
-                    logging.debug("[Conditional %s] Execute command: %s Command output: %s Command errors: %s", (i+1), conditional_relay_do_command[i], output, errors)
-
-                if conditional_relay_sel_notify[i]:
+                    logging.debug("[Relay Conditional %s (%s)] Execute command: %s Command output: %s Command errors: %s", i+1, conditional_relay_name[i], conditional_relay_do_command[i], output, errors)
+                if conditional_relay_sel_notify[i] and conditional_relay_time_notify[i] < int(time.time()):
+                    logging.debug("[Relay Conditional %s (%s)] True: Notify %s", i+1, conditional_relay_name[i], conditional_relay_do_notify[i])
                     if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
                         message = "Relay Conditional %s (%s): Relay %s turned %s for %s seconds." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
                     else:
                         message = "Relay Conditional %s (%s): Relay %s turned %s." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i])
                     email(conditional_relay_do_notify[i], message)
-
+                    conditional_relay_time_notify[i] = int(time.time()) + smtp_wait_time
+                elif conditional_relay_sel_notify[i]:
+                    logging.debug("[Relay Conditional %s (%s)] True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", i+1, conditional_relay_name[i], conditional_relay_do_notify[i], (smtp_wait_time - (smtp_wait_time - (conditional_relay_time_notify[i] - int(time.time())))), smtp_wait_time)
         elif state == 'off':
             if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'off':
                 if conditional_relay_sel_relay[i]:
@@ -3813,18 +3813,19 @@ def relay_onoff(relay, state):
                         rod.start()
                     else:
                         relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
-
                 if conditional_relay_sel_command[i]:
                     p = subprocess.Popen(conditional_relay_do_command[i], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     output, errors = p.communicate()
-                    logging.debug("[Conditional %s] Execute command: %s Command output: %s Command errors: %s", (i+1), conditional_relay_do_command[i], output, errors)
-
-                if conditional_relay_sel_notify[i]:
+                    logging.debug("[Relay Conditional %s (%s)] Execute command: %s Command output: %s Command errors: %s", i+1, conditional_relay_name[i], conditional_relay_do_command[i], output, errors)
+                if conditional_relay_sel_notify[i] and conditional_relay_time_notify[i] < int(time.time()):
                     if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
                         message = "Relay Conditional %s (%s): Relay %s turned %s for %s seconds." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
                     else:
                         message = "Relay Conditional %s (%s): Relay %s turned %s." % ((i+1), conditional_relay_name[i], relay, conditional_relay_doaction[i])
                     email(conditional_relay_do_notify[i], message)
+                    conditional_relay_time_notify[i] = int(time.time()) + smtp_wait_time
+                elif conditional_relay_sel_notify[i]:
+                    logging.debug("[Relay Conditional %s (%s)] True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", i+1, conditional_relay_name[i], conditional_relay_do_notify[i], (smtp_wait_time - (smtp_wait_time - (conditional_relay_time_notify[i] - int(time.time())))), smtp_wait_time)
 
 
 # Turn relay off without conditional check
