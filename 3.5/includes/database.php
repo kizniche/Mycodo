@@ -431,7 +431,7 @@ while ($row = $results->fetchArray()) {
 if (!isset($timer_id)) $timer_id = [];
 
 
-$results = $db->query('SELECT Host, SSL, Port, User, Pass, Email_From, Daily_Max, Wait_Time FROM SMTP');
+$results = $db->query('SELECT Host, SSL, Port, User, Pass, Email_From, Wait_Time FROM SMTP');
 while ($row = $results->fetchArray()) {
     $smtp_host = $row[0];
     $smtp_ssl = $row[1];
@@ -439,8 +439,7 @@ while ($row = $results->fetchArray()) {
     $smtp_user = $row[3];
     $smtp_pass = $row[4];
     $smtp_email_from = $row[5];
-    $smtp_daily_max = $row[6];
-    $smtp_wait_time = $row[7];
+    $smtp_wait_time = $row[6];
 }
 
 

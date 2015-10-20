@@ -464,7 +464,7 @@ Before activating any conditional statements or PID controllers, it's advised to
 
 ### Web Interface
 
-After the system is back up, go to http://your-rpi-address/mycodo and log in with the credentials you created with update-database.py.
+After the system is back up, go to http://your-rpi-address/mycodo/index.php and log in with the credentials you created with update-database.py.
 
 **Most input fields of the web interface will display descriptions or instructions when the mouse is hovered over them. In the absence of a complete manual of each setting, utilize this to learn about the system.**
 

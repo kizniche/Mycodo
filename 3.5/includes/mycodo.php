@@ -4098,14 +4098,6 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
-                            Daily Max (The maximum number of notifications that can be sent in a single day)
-                        </td>
-                        <td class="setting-value">
-                            <input class="smtp" type="number" step="1" value="<?php echo $smtp_daily_max; ?>" maxlength="3" name="smtp_daily_max" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
                             Wait Time (How long to wait between sending the same notification, in seconds)
                         </td>
                         <td class="setting-value">

@@ -759,13 +759,10 @@ def daemon(output, log):
         #
         for j in range(0, len(conditional_ht_number_sensor)):
             for k in range(0, len(conditional_ht_number_conditional)):
-
                 if conditional_ht_id[j][k][0] != 0 and client_que != 'TerminateServer' and pause_daemon != 1 and PID_change != 1:
-
                     if int(time.time()) > timerHTConditional[j][k] and conditional_ht_state[j][k][0] == 1:
                         logging.debug("[Conditional HT] Check conditional statement %s: %s", k+1, conditional_ht_name[j][k][0])
                         if read_ht_sensor(j) == 1:
-
                             if ((conditional_ht_condition[j][k][0] == "Temperature" and
                                     conditional_ht_direction[j][k][0] == 1 and
                                     sensor_ht_read_temp_c[j] > conditional_ht_setpoint[j][k][0]) or
@@ -778,11 +775,10 @@ def daemon(output, log):
                                     (conditional_ht_condition[j][k][0] == "Humidity" and
                                     conditional_ht_direction[j][k][0] == -1 and
                                     sensor_ht_read_hum[j] < conditional_ht_setpoint[j][k][0])):
-
                                 if conditional_ht_sel_relay[j][k][0]:
                                     if conditional_ht_relay_state[j][k][0] == 1:
                                         if conditional_ht_relay_seconds_on[j][k][0] > 0:
-                                            logging.debug("[Conditional HT] Conditional statement %s True: Turn relay %s on for %s seconds", k+1, conditional_ht_relay[j][k][0], conditional_ht_relay_seconds_on[j][k][0])
+                                            logging.debug("[Conditional HT] Conditional %s (%s) HT Sensor %s (%s) True: Turn relay %s on for %s seconds", j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], conditional_ht_relay[j][k][0], conditional_ht_relay_seconds_on[j][k][0])
                                             rod = threading.Thread(target = relay_on_duration,
                                                 args = (conditional_ht_relay[j][k][0], conditional_ht_relay_seconds_on[j][k][0], j, relay_trigger, relay_pin,))
                                             rod.start()
@@ -790,12 +786,10 @@ def daemon(output, log):
                                             relay_onoff(conditional_ht_relay[j][k][0], 'on')
                                     elif conditional_ht_relay_state[j][k][0] == 0:
                                         relay_onoff(conditional_ht_relay[j][k][0], 'off')
-
                                 if conditional_ht_sel_command[j][k][0]:
-                                    pass # conditional_relay_do_command
-
-                                if conditional_ht_sel_notify[j][k][0]:
-
+                                    os.system(conditional_ht_do_command)
+                                if conditional_ht_sel_notify[j][k][0] and conditional_ht_time_notify[j][k][0] < int(time.time()):
+                                    logging.debug("[Conditional HT] Conditional %s (%s) HT Sensor %s (%s) True: Notify %s", j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], conditional_ht_do_notify[j][k][0])
                                     if (conditional_ht_condition[j][k][0] == "Temperature" and
                                             conditional_ht_direction[j][k][0] == 1 and
                                             sensor_ht_read_temp_c[j] > conditional_ht_setpoint[j][k][0]):
@@ -812,9 +806,10 @@ def daemon(output, log):
                                             conditional_ht_direction[j][k][0] == -1 and
                                             sensor_ht_read_hum[j] < conditional_ht_setpoint[j][k][0]):
                                         message = "Conditional %s (%s) HT Sensor %s (%s) Humidity: %s%% < %s%%." % (j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], round(sensor_ht_read_hum[j], 2), conditional_ht_setpoint[j][k][0])
-                                    
                                     email(conditional_ht_do_notify[j][k][0], message)
-
+                                    conditional_ht_time_notify[j][k][0] = int(time.time()) + smtp_wait_time
+                                elif conditional_ht_sel_notify[j][k][0]:
+                                    logging.debug("[Conditional HT] Conditional %s (%s) HT Sensor %s (%s) True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", j+1, sensor_ht_name[j], k+1, conditional_ht_name[j][k][0], conditional_ht_do_notify[j][k][0], (smtp_wait_time - (smtp_wait_time - (conditional_ht_time_notify[j][k][0] - int(time.time())))), smtp_wait_time)
                         else:
                             logging.warning("[Conditional HT] Could not read sensor %s, did not check conditional %s", j+1, k+1)
                         timerHTConditional[j][k] = int(time.time()) + conditional_ht_period[j][k][0]
@@ -2927,7 +2922,6 @@ def read_sql():
     global smtp_user
     global smtp_pass
     global smtp_email_from
-    global smtp_daily_max
     global smtp_wait_time
 
     # Misc
@@ -2957,13 +2951,11 @@ def read_sql():
         print "Reinitialize database to correct."
         return 0
 
-
     # Begin setting global variables from SQL database values
     cur.execute('SELECT Enable_Max_Amps, Max_Amps FROM Misc')
     for row in cur:
         enable_max_amps = row[0]
         max_amps = row[1]
-
 
     # Begin setting global variables from SQL database values
     cur.execute('SELECT Id, Name, Pin, Amps, Trigger, Start_State FROM Relays')
@@ -2974,7 +2966,6 @@ def read_sql():
         relay_amps.append(row[3])
         relay_trigger.append(row[4])
         relay_start_state.append(row[5])
-
 
     cur.execute('SELECT Id, Name, If_Relay, If_Action, If_Duration, Sel_Relay, Do_Relay, Do_Action, Do_Duration, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM RelayConditional')
     for row in cur:
@@ -2997,7 +2988,6 @@ def read_sql():
                 conditional_relay_do_command.append(row[10].replace("\'\'","\'"))
         conditional_relay_sel_notify.append(row[11])
         conditional_relay_do_notify.append(row[12])
-
 
     cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D FROM TSensor')
     for row in cur:
@@ -3048,7 +3038,6 @@ def read_sql():
         if sensor_t_temp_relays_down[i] != '':
             sensor_t_temp_relays_down_list.append(sensor_t_temp_relays_down[i].split(","))
             sensor_t_temp_relays_down_list[i] = map(int, sensor_t_temp_relays_down_list[i])
-
 
     global conditional_t_number_sensor
     global conditional_t_number_conditional
@@ -3119,8 +3108,6 @@ def read_sql():
             conditional_t_sel_notify[j][count][0] = row[12]
             conditional_t_do_notify[j][count][0] = row[13]
             count += 1
-
-
 
     cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Verify_Pin, Verify_Temp, Verify_Temp_Notify, Verify_Temp_Stop, Verify_Hum, Verify_Hum_Notify, Verify_Hum_Stop, Verify_Notify_Email, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relays_Up, Hum_Relays_Down, Hum_Relay_High, Hum_Outmin_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmin_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensor')
     for row in cur:
@@ -3212,7 +3199,6 @@ def read_sql():
         if sensor_ht_hum_relays_down[i] != '':
             sensor_ht_hum_relays_down_list.append(sensor_ht_hum_relays_down[i].split(","))
             sensor_ht_hum_relays_down_list[i] = map(int, sensor_ht_hum_relays_down_list[i])
-
     
     global conditional_ht_number_sensor
     global conditional_ht_number_conditional
@@ -3243,6 +3229,7 @@ def read_sql():
     global conditional_ht_do_command
     global conditional_ht_sel_notify
     global conditional_ht_do_notify
+    global conditional_ht_time_notify
 
     conditional_ht_id = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
     conditional_ht_name = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
@@ -3259,6 +3246,7 @@ def read_sql():
     conditional_ht_do_command = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
     conditional_ht_sel_notify = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
     conditional_ht_do_notify = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
+    conditional_ht_time_notify = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
 
     for j in range(0, len(conditional_ht_number_sensor)):
         cur.execute('SELECT Id, Name, State, Condition, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM HTSensorConditional WHERE Sensor=' + str(j))
@@ -3285,9 +3273,8 @@ def read_sql():
                     conditional_ht_do_command[j][count][0] = row[12].replace("\'\'","\'")
             conditional_ht_sel_notify[j][count][0] = row[13]
             conditional_ht_do_notify[j][count][0] = row[14]
+            conditional_ht_time_notify[j][count][0] = 0
             count += 1
-
-
 
     cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph,  YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_CO2_Min, YAxis_CO2_Max, YAxis_CO2_Tics, YAxis_CO2_MTics, CO2_Relays_Up, CO2_Relays_Down, CO2_Relay_High, CO2_Outmin_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmin_Low, CO2_Outmax_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
     for row in cur:
@@ -3338,7 +3325,6 @@ def read_sql():
         if (sensor_co2_relays_down[i] != ''):
             sensor_co2_relays_down_list.append(sensor_co2_relays_down[i].split(","))
             sensor_co2_relays_down_list[i] = map(int, sensor_co2_relays_down_list[i])
-
 
     global conditional_co2_number_sensor
     global conditional_co2_number_conditional
@@ -3410,8 +3396,6 @@ def read_sql():
             conditional_co2_sel_notify[j][count][0] = row[12]
             conditional_co2_do_notify[j][count][0] = row[13]
             count += 1
-
-
 
     cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Press_Min, YAxis_Press_Max, YAxis_Press_Tics, YAxis_Press_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Press_Relays_Up, Press_Relays_Down, Press_Relay_High, Press_Outmin_High, Press_Outmax_High, Press_Relay_Low, Press_Outmin_Low, Press_Outmax_Low, Press_OR, Press_Set, Press_Set_Direction, Press_Period, Press_P, Press_I, Press_D FROM PressSensor')
     for row in cur:
@@ -3496,7 +3480,6 @@ def read_sql():
             sensor_press_press_relays_down_list.append(sensor_press_press_relays_down[i].split(","))
             sensor_press_press_relays_down_list[i] = map(int, sensor_press_press_relays_down_list[i])
 
-
     global conditional_press_number_sensor
     global conditional_press_number_conditional
 
@@ -3570,8 +3553,6 @@ def read_sql():
             conditional_press_do_notify[j][count][0] = row[14]
             count += 1
 
-
-
     cur.execute('SELECT Id, Name, Relay, State, DurationOn, DurationOff FROM Timers ')
     for row in cur:
         timer_id.append(row[0])
@@ -3581,8 +3562,7 @@ def read_sql():
         timer_duration_on.append(row[4])
         timer_duration_off.append(row[5])
 
-
-    cur.execute('SELECT Host, SSL, Port, User, Pass, Email_From, Daily_Max, Wait_Time FROM SMTP ')
+    cur.execute('SELECT Host, SSL, Port, User, Pass, Email_From, Wait_Time FROM SMTP ')
     for row in cur:
         smtp_host = row[0]
         smtp_ssl = row[1]
@@ -3590,11 +3570,9 @@ def read_sql():
         smtp_user = row[3]
         smtp_pass = row[4]
         smtp_email_from = row[5]
-        smtp_daily_max = row[6]
-        smtp_wait_time = row[7]
+        smtp_wait_time = row[6]
 
     cur.close()
-
 
     for i in range(0, len(sensor_t_id)):
         timerTSensorLog.append(0)
@@ -3615,7 +3593,6 @@ def read_sql():
         on_duration_timer = []
         for i in range(0, len(relay_id)):
             on_duration_timer.append(0)
-
 
     global timerTConditional
     global timerHTConditional
