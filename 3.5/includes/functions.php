@@ -452,8 +452,7 @@ function delete_graphs() {
  * Miscellaneous
  */
 
-function makeThumbnail($updir, $img)
-{
+function makeThumbnail($updir, $img) {
     $thumbnail_width = 150;
     $thumbnail_height = 150;
     $thumb_prefix = "thumb";

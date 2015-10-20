@@ -2686,25 +2686,29 @@ if (isset($_POST['Delete_Note'])) {
 
 // Add Camera Still Note
 if (isset($_POST['Add_Image_Note'])) {
-    $note_ts = `date +"%Y-%m-%d %H:%M:%S"`;
-    $uniqueid = uniqid();
-    $upload_path = "/var/www/mycodo/notes/uploads/";
-    $full_image_path = $_POST['file_path'] . $_POST['file_name'];
-    copy($full_image_path, $upload_path . $_POST['file_name']);
-    makeThumbnail($upload_path, $_POST['file_name']);
-    $stmt = $ndb->prepare("INSERT INTO Uploads VALUES(:id, :name, :filename, :location)");
-    $stmt->bindValue(':id', $uniqueid, SQLITE3_TEXT);
-    $stmt->bindValue(':name', $_POST['file_name'], SQLITE3_TEXT);
-    $stmt->bindValue(':filename', $_POST['file_name'], SQLITE3_TEXT);
-    $stmt->bindValue(':location', $upload_path, SQLITE3_TEXT);
-    $stmt->execute();
-    $stmt = $ndb->prepare("INSERT INTO Notes VALUES(:id, :time, :user, :note)");
-    $stmt->bindValue(':id', $uniqueid, SQLITE3_TEXT);
-    $stmt->bindValue(':time', $note_ts, SQLITE3_TEXT);
-    $stmt->bindValue(':user', $_SESSION['user_name'], SQLITE3_TEXT);
-    $stmt->bindValue(':note', '', SQLITE3_TEXT);
-    $stmt->execute();
-    $_POST['Edit_Note'] = $uniqueid;
+    if (!function_exists(ImageCreateFromGIF) || !function_exists(ImageCreateFromJPEG) || !function_exists(ImageCreateFromPNG)) {
+        $data_error = "Error: missing required function to create image thumbnail. Install php5-gd (sudo apt-get install php5-gd)";
+    } else {
+        $note_ts = `date +"%Y-%m-%d %H:%M:%S"`;
+        $uniqueid = uniqid();
+        $upload_path = "/var/www/mycodo/notes/uploads/";
+        $full_image_path = $_POST['file_path'] . $_POST['file_name'];
+        copy($full_image_path, $upload_path . $_POST['file_name']);
+        makeThumbnail($upload_path, $_POST['file_name']);
+        $stmt = $ndb->prepare("INSERT INTO Uploads VALUES(:id, :name, :filename, :location)");
+        $stmt->bindValue(':id', $uniqueid, SQLITE3_TEXT);
+        $stmt->bindValue(':name', $_POST['file_name'], SQLITE3_TEXT);
+        $stmt->bindValue(':filename', $_POST['file_name'], SQLITE3_TEXT);
+        $stmt->bindValue(':location', $upload_path, SQLITE3_TEXT);
+        $stmt->execute();
+        $stmt = $ndb->prepare("INSERT INTO Notes VALUES(:id, :time, :user, :note)");
+        $stmt->bindValue(':id', $uniqueid, SQLITE3_TEXT);
+        $stmt->bindValue(':time', $note_ts, SQLITE3_TEXT);
+        $stmt->bindValue(':user', $_SESSION['user_name'], SQLITE3_TEXT);
+        $stmt->bindValue(':note', '', SQLITE3_TEXT);
+        $stmt->execute();
+        $_POST['Edit_Note'] = $uniqueid;
+    }
 }
 
 // Add Note
@@ -2712,22 +2716,26 @@ if (isset($_POST['Add_Note'])) {
     $note_ts = `date +"%Y-%m-%d %H:%M:%S"`;
     $uniqueid = uniqid();
     if(count($_FILES['notes']['name']) > 0) {
-        for($i = 0; $i < count($_FILES['notes']['name']); $i++) {
-            $tmpFilePath = $_FILES['notes']['tmp_name'][$i];
-            if($tmpFilePath != "") {
-                $shortname = $_FILES['notes']['name'][$i];
-                $file_name = date('d-m-Y-H-i-s') . '-' . $_FILES['notes']['name'][$i];
-                $upload_path = "/var/www/mycodo/notes/uploads/";
-                $full_upload_path = $upload_path . $file_name;
-                if(move_uploaded_file($tmpFilePath, $full_upload_path)) {
-                    $files[] = $shortname;
-                    $stmt = $ndb->prepare("INSERT INTO Uploads VALUES(:id, :name, :filename, :location)");
-                    $stmt->bindValue(':id', $uniqueid, SQLITE3_TEXT);
-                    $stmt->bindValue(':name', $shortname, SQLITE3_TEXT);
-                    $stmt->bindValue(':filename', $file_name, SQLITE3_TEXT);
-                    $stmt->bindValue(':location', $full_upload_path, SQLITE3_TEXT);
-                    $stmt->execute();
-                    makeThumbnail($upload_path, $file_name);
+        if (!function_exists(ImageCreateFromGIF) || !function_exists(ImageCreateFromJPEG) || !function_exists(ImageCreateFromPNG)) {
+            $data_error = "Error: missing required function to create image thumbnail. Install php5-gd (sudo apt-get install php5-gd)";
+        } else {
+            for($i = 0; $i < count($_FILES['notes']['name']); $i++) {
+                $tmpFilePath = $_FILES['notes']['tmp_name'][$i];
+                if($tmpFilePath != "") {
+                    $shortname = $_FILES['notes']['name'][$i];
+                    $file_name = date('d-m-Y-H-i-s') . '-' . $_FILES['notes']['name'][$i];
+                    $upload_path = "/var/www/mycodo/notes/uploads/";
+                    $full_upload_path = $upload_path . $file_name;
+                    if(move_uploaded_file($tmpFilePath, $full_upload_path)) {
+                        $files[] = $shortname;
+                        $stmt = $ndb->prepare("INSERT INTO Uploads VALUES(:id, :name, :filename, :location)");
+                        $stmt->bindValue(':id', $uniqueid, SQLITE3_TEXT);
+                        $stmt->bindValue(':name', $shortname, SQLITE3_TEXT);
+                        $stmt->bindValue(':filename', $file_name, SQLITE3_TEXT);
+                        $stmt->bindValue(':location', $full_upload_path, SQLITE3_TEXT);
+                        $stmt->execute();
+                        makeThumbnail($upload_path, $file_name);
+                    }
                 }
             }
         }
@@ -2774,21 +2782,25 @@ if (isset($_POST['Edit_Note_Save'])) {
         }
     }
     if(count($_FILES['edit_notes']['name']) > 0) {
-        for($i = 0; $i < count($_FILES['edit_notes']['name']); $i++) {
-            $tmpFilePath = $_FILES['edit_notes']['tmp_name'][$i];
-            if($tmpFilePath != "") {
-                $shortname = $_FILES['edit_notes']['name'][$i];
-                $file_name = date('d-m-Y-H-i-s') . '-' . $_FILES['edit_notes']['name'][$i];
-                $full_upload_path = $upload_path . $file_name;
-                if(move_uploaded_file($tmpFilePath, $full_upload_path)) {
-                    $files[] = $shortname;
-                    $stmt = $ndb->prepare("INSERT INTO Uploads VALUES(:id, :name, :filename, :location)");
-                    $stmt->bindValue(':id', $_POST['Edit_Note_Save'], SQLITE3_TEXT);
-                    $stmt->bindValue(':name', $shortname, SQLITE3_TEXT);
-                    $stmt->bindValue(':filename', $file_name, SQLITE3_TEXT);
-                    $stmt->bindValue(':location', $full_upload_path, SQLITE3_TEXT);
-                    $stmt->execute();
-                    makeThumbnail($upload_path, $file_name);
+        if (!function_exists(ImageCreateFromGIF) || !function_exists(ImageCreateFromJPEG) || !function_exists(ImageCreateFromPNG)) {
+            $data_error = "Error: missing required function to create image thumbnail. Install php5-gd (sudo apt-get install php5-gd)";
+        } else {
+            for($i = 0; $i < count($_FILES['edit_notes']['name']); $i++) {
+                $tmpFilePath = $_FILES['edit_notes']['tmp_name'][$i];
+                if($tmpFilePath != "") {
+                    $shortname = $_FILES['edit_notes']['name'][$i];
+                    $file_name = date('d-m-Y-H-i-s') . '-' . $_FILES['edit_notes']['name'][$i];
+                    $full_upload_path = $upload_path . $file_name;
+                    if(move_uploaded_file($tmpFilePath, $full_upload_path)) {
+                        $files[] = $shortname;
+                        $stmt = $ndb->prepare("INSERT INTO Uploads VALUES(:id, :name, :filename, :location)");
+                        $stmt->bindValue(':id', $_POST['Edit_Note_Save'], SQLITE3_TEXT);
+                        $stmt->bindValue(':name', $shortname, SQLITE3_TEXT);
+                        $stmt->bindValue(':filename', $file_name, SQLITE3_TEXT);
+                        $stmt->bindValue(':location', $full_upload_path, SQLITE3_TEXT);
+                        $stmt->execute();
+                        makeThumbnail($upload_path, $file_name);
+                    }
                 }
             }
         }
