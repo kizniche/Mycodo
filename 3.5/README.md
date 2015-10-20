@@ -199,6 +199,8 @@ Major changes for each versioned release
 
 php5-sqlite
 
+php5-gd
+
 sqlite3
 
 ## Supported Sensors
@@ -269,9 +271,9 @@ If you want mycodo to support using the Raspberry Pi camera module, a SUBSYSTEM 
 
 `echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' | sudo tee /etc/udev/rules.d/10-vchiq-permissions.rules`
 
-To be able to place a timestamp on an still image captures, the command 'convert' is required from the package imagemagick
+To be able to place a timestamp on an still image captures, the command 'convert' is required from the package imagemagick. Additionally, php5-gd is required for the creation of thumbnails when images are uploaded to notes.
 
-`sudo apt-get install imagemagick`
+`sudo apt-get install imagemagick php5-gd`
 
 Install video streaming capabilities
 
