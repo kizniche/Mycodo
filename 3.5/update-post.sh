@@ -34,7 +34,7 @@ fi
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 PDIR="$( dirname "$DIR" )"
 DATABASE="/var/www/mycodo/config/mycodo.db"
-# db_version=`sqlite3 $DATABASE "PRAGMA user_version;"`;
+db_version=`sqlite3 $DATABASE "PRAGMA user_version;"`;
 
 cd $DIR
 
