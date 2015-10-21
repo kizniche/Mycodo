@@ -376,49 +376,64 @@ function DateSelector($inName, $useDate=0) {
     "April", "May", "June", "July", "August",
     "September", "October", "November", "December");
     /* if date invalid or not supplied, use current time */
-    if($useDate == 0) $useDate = Time();
+    if ($useDate == 0) $useDate = Time();
 
     echo "<SELECT NAME=" . $inName . "Month>\n";
-    for($currentMonth = 1; $currentMonth <= 12; $currentMonth++) {
+    for ($currentMonth = 1; $currentMonth <= 12; $currentMonth++) {
         echo "<OPTION VALUE=\"" . intval($currentMonth) . "\"";
-        if(intval(date( "m", $useDate))==$currentMonth) echo " SELECTED";
+        if (isset($_POST['startMonth']) && isset($_POST['endMonth'])) {
+            if (isset($_POST['startMonth']) && $inName == "start" && $currentMonth == $_POST['startMonth']) echo " SELECTED";
+            else if (isset($_POST['endMonth']) && $inName == "end" && $currentMonth == $_POST['endMonth']) echo " SELECTED";
+        } else if (intval(date( "m", $useDate)) == $currentMonth) echo " SELECTED";
         echo ">" . $monthName[$currentMonth] . "</OPTION>\n";
     }
     echo "</SELECT> / ";
 
     echo "<SELECT NAME=" . $inName . "Day>\n";
-    for($currentDay=1; $currentDay <= 31; $currentDay++) {
+    for ($currentDay=1; $currentDay <= 31; $currentDay++) {
         echo "<OPTION VALUE=\"$currentDay\"";
-        if(intval(date( "d", $useDate))==$currentDay) echo " SELECTED";
+        if (isset($_POST['startDay']) && isset($_POST['endDay'])) {
+            if (isset($_POST['startDay']) && $inName == "start" && $currentDay == $_POST['startDay']) echo " SELECTED";
+            else if (isset($_POST['endDay']) && $inName == "end" && $currentDay == $_POST['endDay']) echo " SELECTED";
+        } else if (intval(date( "d", $useDate)) == $currentDay) echo " SELECTED";
         echo ">$currentDay</OPTION>\n";
     }
     echo "</SELECT> / ";
 
     echo "<SELECT NAME=" . $inName . "Year>\n";
     $startYear = date("Y", $useDate);
-    for($currentYear = $startYear-5; $currentYear <= $startYear+5; $currentYear++) {
+    for ($currentYear = $startYear-5; $currentYear <= $startYear+5; $currentYear++) {
         echo "<OPTION VALUE=\"$currentYear\"";
-        if(date("Y", $useDate) == $currentYear) echo " SELECTED";
+        if (isset($_POST['startYear']) && isset($_POST['endYear'])) {
+            if (isset($_POST['startYear']) && $inName == "start" && $currentYear == $_POST['startYear']) echo " SELECTED";
+            else if (isset($_POST['endYear']) && $inName == "end" && $currentYear == $_POST['endYear']) echo " SELECTED";
+        } else if (date("Y", $useDate) == $currentYear) echo " SELECTED";
         echo ">$currentYear</OPTION>\n";
     }
     echo "</SELECT>&nbsp;&nbsp;&nbsp;";
 
     echo "<SELECT NAME=" . $inName . "Hour>\n";
-    for($currentHour=0; $currentHour <= 23; $currentHour++) {
-        if($currentHour < 10) echo "<OPTION VALUE=\"0$currentHour\"";
+    for ($currentHour=0; $currentHour <= 23; $currentHour++) {
+        if ($currentHour < 10) echo "<OPTION VALUE=\"0$currentHour\"";
         else echo "<OPTION VALUE=\"$currentHour\"";
-        if(intval(date("H", $useDate)) == $currentHour) echo " SELECTED";
-        if($currentHour < 10) echo ">0$currentHour</OPTION>\n";
+        if (isset($_POST['startHour']) && isset($_POST['endHour'])) {
+            if (isset($_POST['startHour']) && $inName == "start" && $currentHour == $_POST['startHour']) echo " SELECTED";
+            else if (isset($_POST['endHour']) && $inName == "end" && $currentHour == $_POST['endHour']) echo " SELECTED";
+        } else if (intval(date("H", $useDate)) == $currentHour) echo " SELECTED";
+        if ($currentHour < 10) echo ">0$currentHour</OPTION>\n";
         else echo ">$currentHour</OPTION>\n";
     }
     echo "</SELECT> : ";
 
     echo "<SELECT NAME=" . $inName . "Minute>\n";
-    for($currentMinute=0; $currentMinute <= 59; $currentMinute++) {
-        if($currentMinute < 10) echo "<OPTION VALUE=\"0$currentMinute\"";
+    for ($currentMinute=0; $currentMinute <= 59; $currentMinute++) {
+        if ($currentMinute < 10) echo "<OPTION VALUE=\"0$currentMinute\"";
         else echo "<OPTION VALUE=\"$currentMinute\"";
-        if(intval(date( "i", $useDate)) == $currentMinute) echo " SELECTED";
-        if($currentMinute < 10) echo ">0$currentMinute</OPTION>\n";
+        if (isset($_POST['startMinute']) && isset($_POST['endMinute'])) {
+            if (isset($_POST['startMinute']) && $inName == "start" && $currentMinute == $_POST['startMinute']) echo " SELECTED";
+            else if (isset($_POST['endMinute']) && $inName == "end" && $currentMinute == $_POST['endMinute']) echo " SELECTED";
+        } else if (intval(date( "i", $useDate)) == $currentMinute) echo " SELECTED";
+        if ($currentMinute < 10) echo ">0$currentMinute</OPTION>\n";
         else echo ">$currentMinute</OPTION>\n";
     }
     echo "</SELECT>";
