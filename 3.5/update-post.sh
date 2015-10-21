@@ -24,8 +24,6 @@
 #
 #  Contact at kylegabriel.com
 
-
-
 if [ "$EUID" -ne 0 ]; then
     printf "Please run as root\n";
     exit
@@ -38,17 +36,13 @@ db_version=`sqlite3 $DATABASE "PRAGMA user_version;"`;
 
 cd $DIR
 
+# Perform update based on database version
 if [ ! -f $DATABASE ]; then
     printf "Mycodo database not found: $DATABASE\n";
     printf "Creating Mycodo database...\n";
     $DIR/update-database.py -i update
-    exit 1
-fi
-
-# Check database version against known database versions
-# Perform update based on database version
-if [[ $db_version -gt 0 ]]; then
-	printf "Checking if Mycodo database is up-to-date...\n";
+elif [[ $db_version -gt 0 ]]; then
+	printf "Checking if databases are up-to-date...\n";
 	$DIR/update-database.py -i update
 elif [[ $db_version == "0" ]]; then
 	printf "Mycodo database is not versioned. Recreating database...\n";

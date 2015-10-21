@@ -62,7 +62,7 @@ sensor_press_log_lock_path = "%s/sensor-press-log" % lock_directory
 #################################################
 
 # Generate gnuplot graph
-def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number, sensor_t_name, sensor_t_graph, sensor_t_period, sensor_t_yaxis_relay_min, sensor_t_yaxis_relay_max, sensor_t_yaxis_relay_tics, sensor_t_yaxis_relay_mtics, sensor_t_yaxis_temp_min, sensor_t_yaxis_temp_max, sensor_t_yaxis_temp_tics, sensor_t_yaxis_temp_mtics, sensor_t_temp_relays_up_list, sensor_t_temp_relays_down_list, pid_t_temp_relay_high, pid_t_temp_relay_low, sensor_ht_name, sensor_ht_graph, sensor_ht_period, sensor_ht_yaxis_relay_min, sensor_ht_yaxis_relay_max, sensor_ht_yaxis_relay_tics, sensor_ht_yaxis_relay_mtics, sensor_ht_yaxis_temp_min, sensor_ht_yaxis_temp_max, sensor_ht_yaxis_temp_tics, sensor_ht_yaxis_temp_mtics, sensor_ht_yaxis_hum_min, sensor_ht_yaxis_hum_max, sensor_ht_yaxis_hum_tics, sensor_ht_yaxis_hum_mtics, sensor_ht_temp_relays_up_list, sensor_ht_temp_relays_down_list, sensor_ht_hum_relays_up_list, sensor_ht_hum_relays_down_list, pid_ht_temp_relay_high, pid_ht_temp_relay_low, pid_ht_hum_relay_high, pid_ht_hum_relay_low, sensor_co2_name, sensor_co2_graph, sensor_co2_period, sensor_co2_yaxis_relay_min, sensor_co2_yaxis_relay_max, sensor_co2_yaxis_relay_tics, sensor_co2_yaxis_relay_mtics, sensor_co2_yaxis_co2_min, sensor_co2_yaxis_co2_max, sensor_co2_yaxis_co2_tics, sensor_co2_yaxis_co2_mtics, sensor_co2_relays_up_list, sensor_co2_relays_down_list, pid_co2_relay_high, pid_co2_relay_low, sensor_press_name, sensor_press_graph, sensor_press_period, sensor_press_yaxis_relay_min, sensor_press_yaxis_relay_max, sensor_press_yaxis_relay_tics, sensor_press_yaxis_relay_mtics, sensor_press_yaxis_temp_min, sensor_press_yaxis_temp_max, sensor_press_yaxis_temp_tics, sensor_press_yaxis_temp_mtics, sensor_press_yaxis_press_min, sensor_press_yaxis_press_max, sensor_press_yaxis_press_tics, sensor_press_yaxis_press_mtics, sensor_press_temp_relays_up_list, sensor_press_temp_relays_down_list, sensor_press_press_relays_up_list, sensor_press_press_relays_down_list, pid_press_temp_relay_high, pid_press_temp_relay_low, pid_press_press_relay_high, pid_press_press_relay_low, relay_name, relay_pin):
+def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number, sensor_t_name, sensor_t_graph, sensor_t_period, sensor_t_yaxis_relay_min, sensor_t_yaxis_relay_max, sensor_t_yaxis_relay_tics, sensor_t_yaxis_relay_mtics, sensor_t_yaxis_temp_min, sensor_t_yaxis_temp_max, sensor_t_yaxis_temp_tics, sensor_t_yaxis_temp_mtics, sensor_t_temp_relays_up_list, sensor_t_temp_relays_down_list, pid_t_temp_relay_high, pid_t_temp_relay_low, sensor_ht_name, sensor_ht_graph, sensor_ht_period, sensor_ht_yaxis_relay_min, sensor_ht_yaxis_relay_max, sensor_ht_yaxis_relay_tics, sensor_ht_yaxis_relay_mtics, sensor_ht_yaxis_temp_min, sensor_ht_yaxis_temp_max, sensor_ht_yaxis_temp_tics, sensor_ht_yaxis_temp_mtics, sensor_ht_yaxis_hum_min, sensor_ht_yaxis_hum_max, sensor_ht_yaxis_hum_tics, sensor_ht_yaxis_hum_mtics, sensor_ht_temp_relays_up_list, sensor_ht_temp_relays_down_list, sensor_ht_hum_relays_up_list, sensor_ht_hum_relays_down_list, pid_ht_temp_relay_high, pid_ht_temp_relay_low, pid_ht_hum_relay_high, pid_ht_hum_relay_low, sensor_co2_name, sensor_co2_graph, sensor_co2_period, sensor_co2_yaxis_relay_min, sensor_co2_yaxis_relay_max, sensor_co2_yaxis_relay_tics, sensor_co2_yaxis_relay_mtics, sensor_co2_yaxis_co2_min, sensor_co2_yaxis_co2_max, sensor_co2_yaxis_co2_tics, sensor_co2_yaxis_co2_mtics, sensor_co2_relays_up_list, sensor_co2_relays_down_list, pid_co2_relay_high, pid_co2_relay_low, sensor_press_name, sensor_press_graph, sensor_press_period, sensor_press_yaxis_relay_min, sensor_press_yaxis_relay_max, sensor_press_yaxis_relay_tics, sensor_press_yaxis_relay_mtics, sensor_press_yaxis_temp_min, sensor_press_yaxis_temp_max, sensor_press_yaxis_temp_tics, sensor_press_yaxis_temp_mtics, sensor_press_yaxis_press_min, sensor_press_yaxis_press_max, sensor_press_yaxis_press_tics, sensor_press_yaxis_press_mtics, sensor_press_temp_relays_up_list, sensor_press_temp_relays_down_list, sensor_press_press_relays_up_list, sensor_press_press_relays_down_list, pid_press_temp_relay_high, pid_press_temp_relay_low, pid_press_press_relay_high, pid_press_press_relay_low, relay_name, relay_pin, time_from, time_to, width):
 
     sensor_t_log_final = [0] * (len(sensor_t_name)+1)
     sensor_ht_log_final = [0] * (len(sensor_ht_name)+1)
@@ -124,10 +124,19 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
         h = 6
         seconds = 21600
         time_ago = '6 Hours'
-    date_now = datetime.datetime.now().strftime("%Y %m %d %H %M %S")
-    date_now_disp = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
-    date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%d/%m/%Y %H:%M:%S")
+
+    if time_from != 0 and time_to != 0:
+        date_ago = time.strftime('%Y %m %d %H %M %S', time.localtime(float(time_from)))
+        date_now = time.strftime('%Y %m %d %H %M %S', time.localtime(float(time_to)))
+        date_ago_disp = time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(float(time_from)))
+        date_now_disp = time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(float(time_to)))
+        time_ago = "Custom Time"
+        seconds = 15552000
+    else:
+        date_now = datetime.datetime.now().strftime("%Y %m %d %H %M %S")
+        date_now_disp = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
+        date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%d/%m/%Y %H:%M:%S")
 
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
@@ -154,7 +163,6 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
 
     logging.debug("[Generate Graph] Removing lock: %s", lock.path)
     lock.release()
-
 
     # Concatenate default and separate logs
     if graph_span == 'default' or graph_type == 'separate':
@@ -270,7 +278,6 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
 
             logging.debug("[Generate Graph] Removing lock: %s", lock.path)
             lock.release()
-
 
     # Parse default logs
     if graph_span == "default":
@@ -538,6 +545,9 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             graph_width = 1000
             graph_height = 600
 
+    if width != 0:
+        graph_width = width
+
     plot.write('set terminal png size ' + str(graph_width) + ',' + str(graph_height) + '\n')
 
 
@@ -734,7 +744,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
     #
     # Separate: Generate a graph for each sensor
     #
-    if graph_type == "separate" and  graph_span != "default":
+    if graph_type == "separate" and graph_span != "default":
         
         if sensor_type == "t":
             if sensor_t_graph_relay:
