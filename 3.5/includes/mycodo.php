@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.82";
+$version = "3.5.83";
 
 ######### Start Edit Configure #########
 
@@ -3677,6 +3677,203 @@ if (isset($output_error)) {
                     <tr>
                         <td class="setting-save">
                             <button name="ChangeInterface" type="submit" value="">Save</button>
+                        </td>
+                    </tr>
+                    </form>
+
+                    <form method="post" action="?tab=settings">
+                    <tr>
+                        <td class="setting-title">
+                            Custom Combined Graph Generation
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Combined Temperatures
+                        </td>
+                        <td class="setting-value"></td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relays to Plot (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_temp_relays; ?>" name="combined_temp_relays" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Min
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_min; ?>" maxlength="6" name="combined_temp_min" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_max; ?>" maxlength="6" name="combined_temp_max" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_tics; ?>" maxlength="6" name="combined_temp_tics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_mtics; ?>" maxlength="6" name="combined_temp_mtics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text pad-top">
+                            Combined Humidities
+                        </td>
+                        <td class="setting-value"></td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relays to Plot (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_hum_relays; ?>" name="combined_hum_relays" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Min
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_min; ?>" maxlength="6" name="combined_hum_min" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_max; ?>" maxlength="6" name="combined_hum_max" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_tics; ?>" maxlength="6" name="combined_hum_tics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_mtics; ?>" maxlength="6" name="combined_hum_mtics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text pad-top">
+                            Combined CO<sub>2</sub>s
+                        </td>
+                        <td class="setting-value"></td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relays to Plot (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_co2_relays; ?>" name="combined_co2_relays" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Min
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_min; ?>" maxlength="6" name="combined_co2_min" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_max; ?>" maxlength="6" name="combined_co2_max" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_tics; ?>" maxlength="6" name="combined_co2_tics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_mtics; ?>" maxlength="6" name="combined_co2_mtics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text pad-top">
+                            Combined Pressures
+                        </td>
+                        <td class="setting-value"></td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relays to Plot (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_press_relays; ?>" name="combined_press_relays" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Min
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_min; ?>" maxlength="6" name="combined_press_min" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_max; ?>" maxlength="6" name="combined_press_max" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_tics; ?>" maxlength="6" name="combined_press_tics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_mtics; ?>" maxlength="6" name="combined_press_mtics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-save">
+                            <button name="ChangeCombinedSetings" type="submit" value="">Save</button>
                         </td>
                     </tr>
                     </form>

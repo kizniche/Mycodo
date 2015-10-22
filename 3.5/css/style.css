@@ -316,6 +316,10 @@ table.data-data th {
     border-bottom: 1px solid grey;
 }
 
+.pad-top {
+    padding-top: 1.5em;
+}
+
 .setting-save {
     padding: 0.5em 0;
 }

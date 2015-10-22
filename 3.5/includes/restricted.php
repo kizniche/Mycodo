@@ -2658,6 +2658,48 @@ if (isset($_POST['stop-timelapse'])) {
  *
  */
 
+// Custom Graph Generation Settings
+if (isset($_POST['ChangeCombinedSetings'])) {
+    $re = '/^\d+(?:,\d+)*$/';
+    if (($_POST['combined_temp_relays'] != '0' and
+        (!ctype_digit($_POST['combined_temp_relays']) and !preg_match($re, $_POST['combined_temp_relays']))) or
+        ($_POST['combined_temp_relays'] == '') or
+        ($_POST['combined_temp_relays'] != '0' and
+        (!ctype_digit($_POST['combined_hum_relays']) and !preg_match($re, $_POST['combined_hum_relays']))) or
+        ($_POST['combined_hum_relays'] == '') or
+        ($_POST['combined_co2_relays'] != '0' and
+        (!ctype_digit($_POST['combined_co2_relays']) and !preg_match($re, $_POST['combined_co2_relays']))) or
+        ($_POST['combined_co2_relays'] == '') or
+        ($_POST['combined_press_relays'] != '0' and
+        (!ctype_digit($_POST['combined_press_relays']) and !preg_match($re, $_POST['combined_press_relays']))) or
+        ($_POST['combined_press_relays'] == '')) {
+        $sensor_error = 'Error: Custom Graph Relays must contain digits separated by commas or be set to 0.';
+    } else {
+        $stmt = $db->prepare("UPDATE CustomGraph SET Combined_Temp_Relays=:temprelays, Combined_Temp_Min=:tempmin, Combined_Temp_Max=:tempmax, Combined_Temp_Tics=:temptics, Combined_Temp_Mtics=:tempmtics, Combined_Hum_Relays=:humrelays, Combined_Hum_Min=:hummin, Combined_Hum_Max=:hummax, Combined_Hum_Tics=:humtics, Combined_Hum_Mtics=:hummtics, Combined_Co2_Relays=:co2relays, Combined_Co2_Min=:co2min, Combined_Co2_Max=:co2max, Combined_Co2_Tics=:co2tics, Combined_Co2_Mtics=:co2mtics, Combined_Press_Relays=:pressrelays, Combined_Press_Min=:pressmin, Combined_Press_Max=:pressmax, Combined_Press_Tics=:presstics, Combined_Press_Mtics=:pressmtics");
+        $stmt->bindValue(':temprelays', $_POST['combined_temp_relays'], SQLITE3_TEXT);
+        $stmt->bindValue(':tempmin', (int)$_POST['combined_temp_min'], SQLITE3_INTEGER);
+        $stmt->bindValue(':tempmax', (int)$_POST['combined_temp_max'], SQLITE3_INTEGER);
+        $stmt->bindValue(':temptics', (int)$_POST['combined_temp_tics'], SQLITE3_INTEGER);
+        $stmt->bindValue(':tempmtics', (int)$_POST['combined_temp_mtics'], SQLITE3_INTEGER);
+        $stmt->bindValue(':humrelays', $_POST['combined_hum_relays'], SQLITE3_TEXT);
+        $stmt->bindValue(':hummin', (int)$_POST['combined_hum_min'], SQLITE3_INTEGER);
+        $stmt->bindValue(':hummax', (int)$_POST['combined_hum_max'], SQLITE3_INTEGER);
+        $stmt->bindValue(':humtics', (int)$_POST['combined_hum_tics'], SQLITE3_INTEGER);
+        $stmt->bindValue(':hummtics', (int)$_POST['combined_hum_mtics'], SQLITE3_INTEGER);
+        $stmt->bindValue(':co2relays', $_POST['combined_co2_relays'], SQLITE3_TEXT);
+        $stmt->bindValue(':co2min', (int)$_POST['combined_co2_min'], SQLITE3_INTEGER);
+        $stmt->bindValue(':co2max', (int)$_POST['combined_co2_max'], SQLITE3_INTEGER);
+        $stmt->bindValue(':co2tics', (int)$_POST['combined_co2_tics'], SQLITE3_INTEGER);
+        $stmt->bindValue(':co2mtics', (int)$_POST['combined_co2_mtics'], SQLITE3_INTEGER);
+        $stmt->bindValue(':pressrelays', $_POST['combined_press_relays'], SQLITE3_TEXT);
+        $stmt->bindValue(':pressmin', (int)$_POST['combined_press_min'], SQLITE3_INTEGER);
+        $stmt->bindValue(':pressmax', (int)$_POST['combined_press_max'], SQLITE3_INTEGER);
+        $stmt->bindValue(':presstics', (int)$_POST['combined_press_tics'], SQLITE3_INTEGER);
+        $stmt->bindValue(':pressmtics', (int)$_POST['combined_press_mtics'], SQLITE3_INTEGER);
+        $stmt->execute();
+    }
+}
+
 // Delete Note
 if (isset($_POST['Delete_Note'])) {
     $stmt = $ndb->prepare('DELETE FROM Notes WHERE Id = :id');
