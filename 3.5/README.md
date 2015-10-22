@@ -94,6 +94,9 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 Major changes for each versioned release
 
+#### 3.5.83
++ Add ability to define combined graph values: relays to plot and y-axis values (min, max, tics, and mtics)
+
 #### 3.5.82
 + Add sensor measurement verification with second sensor (Only for temperature/humidity sensors at the moment)
 
@@ -199,6 +202,8 @@ Major changes for each versioned release
 
 php5-sqlite
 
+php5-gd
+
 sqlite3
 
 ## Supported Sensors
@@ -243,7 +248,7 @@ Using raspi-config, perform the following:
 
 `sudo apt-get upgrade`
 
-`sudo apt-get install build-essential apache2 sqlite3 gnuplot git-core python-pip python-dev libconfig-dev php5 libapache2-mod-php5 php5-sqlite`
+`sudo apt-get install build-essential apache2 sqlite3 gnuplot git-core python-pip python-dev libconfig-dev php5 libapache2-mod-php5 php5-sqlite php5-gd`
 
 `git clone https://github.com/kizniche/Mycodo.git ~/Mycodo`
 
@@ -269,7 +274,11 @@ If you want mycodo to support using the Raspberry Pi camera module, a SUBSYSTEM 
 
 `echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' | sudo tee /etc/udev/rules.d/10-vchiq-permissions.rules`
 
-Install video streaming capabilities (Note that it is recommended to require SSL on your web server to prevent potential viewing of video streams by unauthorized users, details on forcing SSL below)
+To be able to place a timestamp on an still image captures, the command 'convert' is required from the package imagemagick. Additionally, php5-gd is required for the creation of thumbnails when images are uploaded to notes.
+
+`sudo apt-get install imagemagick`
+
+Install video streaming capabilities
 
 `sudo apt-get install libjpeg8-dev libv4l-dev wget subversion`
 
@@ -444,13 +453,13 @@ You can either reboot or start the daemon with the following command.
 
 `sudo service mycodo start`
 
-Note: cgi-bin/mycodo-wrapper is a binary executable used to start and stop the mycodo daemon from the web interface settings tab. It has the setuid bit to permit it to be executed as root (the init.d script sets the correct permissions and setuid). Since shell scripts cannot be setuid (ony binary files), mycodo-wrapper permits init.d/mycodo to be executed as root by a non-root user. All of this is done to allow the daemon to be stopped, started, and restarted in debug mode from the settings tab of the web interface. You can audit the source code in cgi-bin/mycodo-wrapper.c and if you want to ensure the binary is indeed compiled from the source, you may compile it yourself with the following command. Otherwise, the compiled binary is included and no further action is needed. I mention this to explain the need for setuid, for transparency, and security.
+Note: cgi-bin/mycodo-wrapper is a binary executable used to start and stop the mycodo daemon, and to create and restore backups, from the web interface. It has the setuid bit to permit it to be executed as root (the init.d/mycodo script sets the correct permissions and setuid). Since shell scripts cannot be setuid (ony binary files), the mycodo-wrapper binay permits init.d/mycodo to be executed as root by a non-root user. You can audit the source code of cgi-bin/mycodo-wrapper.c and if you want to ensure the binary is indeed compiled from that source, you may compile it yourself with the following command. Otherwise, the compiled binary is already included and no further action is needed. I mention this to explain the need for setuid, for transparency, for security, and to maintain all code of this project as open source.
 
-`gcc /var/www/mycodo/cgi-bin/mycodo-wrapper.c -o /var/www/mycodo/cgi-bin/mycodo-wrapper`
+`sudo gcc /var/www/mycodo/cgi-bin/mycodo-wrapper.c -o /var/www/mycodo/cgi-bin/mycodo-wrapper`
 
 ## Manual
 
-The Mycodo 3.5 manual is provided in the file manual.html. You can find a link to this manual at the top of the Settings tab of the web interface. This file can be accessed directly with your web browser or by navigating to http://your-pi-address/mycodo/manual.html if the web server is operational.
+The Mycodo 3.5 manual is provided in the file manual.html. You can find a link to this manual at the top of the Settings Tab of the web interface. The manual can be accessed directly with the link at the end of this document in the [Useful Links](#useful-links) section.
 
 ### Preface
 
@@ -460,7 +469,7 @@ Before activating any conditional statements or PID controllers, it's advised to
 
 ### Web Interface
 
-After the system is back up, go to http://your-rpi-address/mycodo and log in with the credentials you created with update-database.py.
+After the system is back up, go to http://your-rpi-address/mycodo/index.php and log in with the credentials you created with update-database.py.
 
 **Most input fields of the web interface will display descriptions or instructions when the mouse is hovered over them. In the absence of a complete manual of each setting, utilize this to learn about the system.**
 

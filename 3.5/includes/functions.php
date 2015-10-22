@@ -357,9 +357,6 @@ function displayform() { ?>
             <div style="adding-right:0.5em;">
                 Width: <input type="text" value="900" maxlength=4 size=4 name="graph-width" title="Width of the generated graph"> px (4000 max)
             </div>
-            <div style="padding-right:0.5em;">
-                Show Key: <input type="hidden" name="key" value="0" /><input type="checkbox" id="key" name="key" value="1"<?php if (isset($_POST['key'])) if ($_POST['key'] == 1) echo ' checked'; ?> title="Generate graph with legend/key."/>
-            </div>
         </div>
         <div style="display: inline-block; padding-right:0.5em; vertical-align: top;">
             <button type="submit" name="SubmitDates" value="Generate">Generate<br>Graph</button>
@@ -376,49 +373,64 @@ function DateSelector($inName, $useDate=0) {
     "April", "May", "June", "July", "August",
     "September", "October", "November", "December");
     /* if date invalid or not supplied, use current time */
-    if($useDate == 0) $useDate = Time();
+    if ($useDate == 0) $useDate = Time();
 
     echo "<SELECT NAME=" . $inName . "Month>\n";
-    for($currentMonth = 1; $currentMonth <= 12; $currentMonth++) {
+    for ($currentMonth = 1; $currentMonth <= 12; $currentMonth++) {
         echo "<OPTION VALUE=\"" . intval($currentMonth) . "\"";
-        if(intval(date( "m", $useDate))==$currentMonth) echo " SELECTED";
+        if (isset($_POST['startMonth']) && isset($_POST['endMonth'])) {
+            if (isset($_POST['startMonth']) && $inName == "start" && $currentMonth == $_POST['startMonth']) echo " SELECTED";
+            else if (isset($_POST['endMonth']) && $inName == "end" && $currentMonth == $_POST['endMonth']) echo " SELECTED";
+        } else if (intval(date( "m", $useDate)) == $currentMonth) echo " SELECTED";
         echo ">" . $monthName[$currentMonth] . "</OPTION>\n";
     }
     echo "</SELECT> / ";
 
     echo "<SELECT NAME=" . $inName . "Day>\n";
-    for($currentDay=1; $currentDay <= 31; $currentDay++) {
+    for ($currentDay=1; $currentDay <= 31; $currentDay++) {
         echo "<OPTION VALUE=\"$currentDay\"";
-        if(intval(date( "d", $useDate))==$currentDay) echo " SELECTED";
+        if (isset($_POST['startDay']) && isset($_POST['endDay'])) {
+            if (isset($_POST['startDay']) && $inName == "start" && $currentDay == $_POST['startDay']) echo " SELECTED";
+            else if (isset($_POST['endDay']) && $inName == "end" && $currentDay == $_POST['endDay']) echo " SELECTED";
+        } else if (intval(date( "d", $useDate)) == $currentDay) echo " SELECTED";
         echo ">$currentDay</OPTION>\n";
     }
     echo "</SELECT> / ";
 
     echo "<SELECT NAME=" . $inName . "Year>\n";
     $startYear = date("Y", $useDate);
-    for($currentYear = $startYear-5; $currentYear <= $startYear+5; $currentYear++) {
+    for ($currentYear = $startYear-5; $currentYear <= $startYear+5; $currentYear++) {
         echo "<OPTION VALUE=\"$currentYear\"";
-        if(date("Y", $useDate) == $currentYear) echo " SELECTED";
+        if (isset($_POST['startYear']) && isset($_POST['endYear'])) {
+            if (isset($_POST['startYear']) && $inName == "start" && $currentYear == $_POST['startYear']) echo " SELECTED";
+            else if (isset($_POST['endYear']) && $inName == "end" && $currentYear == $_POST['endYear']) echo " SELECTED";
+        } else if (date("Y", $useDate) == $currentYear) echo " SELECTED";
         echo ">$currentYear</OPTION>\n";
     }
     echo "</SELECT>&nbsp;&nbsp;&nbsp;";
 
     echo "<SELECT NAME=" . $inName . "Hour>\n";
-    for($currentHour=0; $currentHour <= 23; $currentHour++) {
-        if($currentHour < 10) echo "<OPTION VALUE=\"0$currentHour\"";
+    for ($currentHour=0; $currentHour <= 23; $currentHour++) {
+        if ($currentHour < 10) echo "<OPTION VALUE=\"0$currentHour\"";
         else echo "<OPTION VALUE=\"$currentHour\"";
-        if(intval(date("H", $useDate)) == $currentHour) echo " SELECTED";
-        if($currentHour < 10) echo ">0$currentHour</OPTION>\n";
+        if (isset($_POST['startHour']) && isset($_POST['endHour'])) {
+            if (isset($_POST['startHour']) && $inName == "start" && $currentHour == $_POST['startHour']) echo " SELECTED";
+            else if (isset($_POST['endHour']) && $inName == "end" && $currentHour == $_POST['endHour']) echo " SELECTED";
+        } else if (intval(date("H", $useDate)) == $currentHour) echo " SELECTED";
+        if ($currentHour < 10) echo ">0$currentHour</OPTION>\n";
         else echo ">$currentHour</OPTION>\n";
     }
     echo "</SELECT> : ";
 
     echo "<SELECT NAME=" . $inName . "Minute>\n";
-    for($currentMinute=0; $currentMinute <= 59; $currentMinute++) {
-        if($currentMinute < 10) echo "<OPTION VALUE=\"0$currentMinute\"";
+    for ($currentMinute=0; $currentMinute <= 59; $currentMinute++) {
+        if ($currentMinute < 10) echo "<OPTION VALUE=\"0$currentMinute\"";
         else echo "<OPTION VALUE=\"$currentMinute\"";
-        if(intval(date( "i", $useDate)) == $currentMinute) echo " SELECTED";
-        if($currentMinute < 10) echo ">0$currentMinute</OPTION>\n";
+        if (isset($_POST['startMinute']) && isset($_POST['endMinute'])) {
+            if (isset($_POST['startMinute']) && $inName == "start" && $currentMinute == $_POST['startMinute']) echo " SELECTED";
+            else if (isset($_POST['endMinute']) && $inName == "end" && $currentMinute == $_POST['endMinute']) echo " SELECTED";
+        } else if (intval(date( "i", $useDate)) == $currentMinute) echo " SELECTED";
+        if ($currentMinute < 10) echo ">0$currentMinute</OPTION>\n";
         else echo ">$currentMinute</OPTION>\n";
     }
     echo "</SELECT>";
@@ -451,6 +463,40 @@ function delete_graphs() {
 /*
  * Miscellaneous
  */
+
+function makeThumbnail($updir, $img) {
+    $thumbnail_width = 150;
+    $thumbnail_height = 150;
+    $thumb_prefix = "thumb";
+    $arr_image_details = getimagesize("$updir" . "$img");
+    $original_width = $arr_image_details[0];
+    $original_height = $arr_image_details[1];
+    if ($original_width > $original_height) {
+        $new_width = $thumbnail_width;
+        $new_height = (int)($original_height * $new_width / $original_width);
+    } else {
+        $new_height = $thumbnail_height;
+        $new_width = (int)($original_width * $new_height / $original_height);
+    }
+    if ($arr_image_details[2] == 1) {
+        $imgt = "ImageGIF";
+        $imgcreatefrom = "ImageCreateFromGIF";
+    }
+    if ($arr_image_details[2] == 2) {
+        $imgt = "ImageJPEG";
+        $imgcreatefrom = "ImageCreateFromJPEG";
+    }
+    if ($arr_image_details[2] == 3) {
+        $imgt = "ImagePNG";
+        $imgcreatefrom = "ImageCreateFromPNG";
+    }
+    if ($imgt) {
+        $old_image = $imgcreatefrom("$updir" . "$img");
+        $new_image = imagecreatetruecolor($new_width, $new_height);
+        imagecopyresized($new_image, $old_image, 0, 0, 0, 0, $new_width, $new_height, $original_width, $original_height);
+        $imgt($new_image, "$updir" . "$thumb_prefix" . "$img");
+    }
+}
 
 function is_positive_integer($str) {
     return (is_numeric($str) && $str > 0 && $str == round($str));

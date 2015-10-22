@@ -430,8 +430,31 @@ while ($row = $results->fetchArray()) {
 }
 if (!isset($timer_id)) $timer_id = [];
 
+$results = $db->query('SELECT Combined_Temp_Relays, Combined_Temp_Min, Combined_Temp_Max, Combined_Temp_Tics, Combined_Temp_Mtics, Combined_Hum_Relays, Combined_Hum_Min, Combined_Hum_Max, Combined_Hum_Tics, Combined_Hum_Mtics, Combined_Co2_Relays, Combined_Co2_Min, Combined_Co2_Max, Combined_Co2_Tics, Combined_Co2_Mtics, Combined_Press_Relays, Combined_Press_Min, Combined_Press_Max, Combined_Press_Tics, Combined_Press_Mtics FROM CustomGraph');
+while ($row = $results->fetchArray()) {
+    $combined_temp_relays = $row[0];
+    $combined_temp_min = $row[1];
+    $combined_temp_max = $row[2];
+    $combined_temp_tics = $row[3];
+    $combined_temp_mtics = $row[4];
+    $combined_hum_relays = $row[5];
+    $combined_hum_min = $row[6];
+    $combined_hum_max = $row[7];
+    $combined_hum_tics = $row[8];
+    $combined_hum_mtics = $row[9];
+    $combined_co2_relays = $row[10];
+    $combined_co2_min = $row[11];
+    $combined_co2_max = $row[12];
+    $combined_co2_tics = $row[13];
+    $combined_co2_mtics = $row[14];
+    $combined_press_relays = $row[15];
+    $combined_press_min = $row[16];
+    $combined_press_max = $row[17];
+    $combined_press_tics = $row[18];
+    $combined_press_mtics = $row[19];
+}
 
-$results = $db->query('SELECT Host, SSL, Port, User, Pass, Email_From, Daily_Max, Wait_Time FROM SMTP');
+$results = $db->query('SELECT Host, SSL, Port, User, Pass, Email_From, Wait_Time FROM SMTP');
 while ($row = $results->fetchArray()) {
     $smtp_host = $row[0];
     $smtp_ssl = $row[1];
@@ -439,10 +462,8 @@ while ($row = $results->fetchArray()) {
     $smtp_user = $row[3];
     $smtp_pass = $row[4];
     $smtp_email_from = $row[5];
-    $smtp_daily_max = $row[6];
-    $smtp_wait_time = $row[7];
+    $smtp_wait_time = $row[6];
 }
-
 
 $results = $db->query('SELECT Relay, Timestamp, Display_Last, Cmd_Pre, Cmd_Post, Extra_Parameters FROM CameraStill');
 while ($row = $results->fetchArray()) {

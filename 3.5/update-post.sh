@@ -24,8 +24,6 @@
 #
 #  Contact at kylegabriel.com
 
-DATABASE="/var/www/mycodo/config/mycodo.db"
-
 if [ "$EUID" -ne 0 ]; then
     printf "Please run as root\n";
     exit
@@ -33,39 +31,29 @@ fi
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 PDIR="$( dirname "$DIR" )"
+DATABASE="/var/www/mycodo/config/mycodo.db"
+db_version=`sqlite3 $DATABASE "PRAGMA user_version;"`;
 
 cd $DIR
 
+# Perform update based on database version
 if [ ! -f $DATABASE ]; then
     printf "Mycodo database not found: $DATABASE\n";
     printf "Creating Mycodo database...\n";
     $DIR/update-database.py -i update
-    exit 1
-fi
-
-# Getting my data
-db_version=`sqlite3 $DATABASE "PRAGMA user_version;"`;
-
-if [ -z "$db_version" ]; then
-	printf "Missing Mycodo database version, recreating database\n";
-	# Recreate mycodo SQLite database
-	rm -rf $DIR/config/mycodo.db
-	$DIR/update-database.py -i update
-else
-	printf "Mycodo database version: $db_version\n";
-fi
-
-# Check database version against known database versions
-# Perform update based on database version
-if [[ $db_version -gt 0 ]]; then
-	printf "Checking if Mycodo database is up-to-date...\n";
+elif [[ $db_version -gt 0 ]]; then
+	printf "Checking if databases are up-to-date...\n";
 	$DIR/update-database.py -i update
 elif [[ $db_version == "0" ]]; then
-	printf "Mycodo database is not versioned. Recreating (you should retrieve your values from the backed-up database)\n";
+	printf "Mycodo database is not versioned. Recreating database...\n";
+	rm -rf $DIR/config/mycodo.db
+	$DIR/update-database.py -i update
+elif [ -z "$db_version" ]; then
+	printf "Missing Mycodo database version. Recreating database...\n";
 	rm -rf $DIR/config/mycodo.db
 	$DIR/update-database.py -i update
 else
-	printf "Unknown Mycodo database version. Recreating...\n";
+	printf "Unknown Mycodo database version. Recreating database...\n";
 	rm -rf $DIR/config/mycodo.db
 	$DIR/update-database.py -i update
 fi

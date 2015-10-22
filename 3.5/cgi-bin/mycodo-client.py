@@ -37,8 +37,10 @@ def usage():
     print 'Options:'
     print '    -h, --help'
     print '           Display this help and exit'
-    print '        --graph Duration ID Sensor'
-    print '           See documentation for options'
+    print '        --graph sensor_type graph_type graph_span graph_id sensor_number'
+    print '           Generate graph form sensor data. See documentation for options'
+    print '        --graph-custom sensor_type, graph_type, graph_span, graph_id, sensor_number, time_from, time_to, width'
+    print '           Generate custom graph, Where time_from and time_to are the number of seconds since epoch'
     print '        --pidallrestart Sensor'
     print '           Restart all PIDs, where Sensor=T, HT, CO2'
     print '        --pidrestart PIDType PIDnumber'
@@ -71,12 +73,14 @@ def usage():
     print '           Return the status of the daemon and all global variables'
     print '    -t, --terminate'
     print '           Terminate the communication service and daemon'
+    print '        --test-email recipient'
+    print '           Send a test email'
 
 def menu():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:], 'hr:st',
-            ["help", "graph", "pidallrestart=", "pidrestart=", "pidstart=", "pidstop=", "relay=", "sensorco2", "sensorht", "sensorpress", "sensort", "sqlreload=", "status", "terminate"])
+            ["help", "graph=", "graph-custom=", "pidallrestart=", "pidrestart=", "pidstart=", "pidstop=", "relay=", "sensorco2", "sensorht", "sensorpress", "sensort", "sqlreload=", "status", "terminate", "test-email="])
     except getopt.GetoptError as err:
         print(err) # will print "option -a not recognized"
         usage()
@@ -94,6 +98,16 @@ def menu():
             print "%s [Remote command] Server returned:" % (
                 Timestamp()),
             if c.root.GenerateGraph(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6]) == 1:
+                print "Success"
+            else:
+                print "Fail"
+            sys.exit(0)
+        elif opt == "--graph-custom":
+            print "%s [Remote command] Graph: %s %s %s %s %s %s %s %s" % (
+                Timestamp(), sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9])
+            print "%s [Remote command] Server returned:" % (
+                Timestamp()),
+            if c.root.GenerateGraphCustom(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9]) == 1:
                 print "Success"
             else:
                 print "Fail"
@@ -231,6 +245,14 @@ def menu():
             if c.root.Terminate(1) == 1: print "Success"
             else: print "Fail"
             sys.exit(0)
+        elif opt == "--test-email":
+            print "%s [Remote command] Send test email to %s: Server returned:" % (
+                Timestamp(), sys.argv[2]),
+            if c.root.TestEmail(sys.argv[2]) == 1:
+                print "Success (check your email for confirmation)"
+            else:
+                print "Fail"
+            sys.exit(1)
         else:
             assert False, "Fail"
     usage()

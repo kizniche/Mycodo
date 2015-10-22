@@ -119,10 +119,10 @@ if ($_COOKIE['login_hash'] == $user_hash) {
             $_GET['graphtype'] == 'combined' ||
             $_GET['graphspan'] == 'default') {
             readfile($image_dir . 'graph-' . $_GET['sensortype'] . $_GET['graphtype'] . $_GET['graphspan'] . '-' . $_GET['id'] . '-' . $_GET['sensornumber'] . '.png');
-        } elseif ($_GET['graphtype'] == 'custom-combined') {
-            readfile($image_dir . 'graph-' . $_GET['graphtype'] . '-' . $_GET['id'] . '.png');
-        } elseif ($_GET['graphtype'] == 'custom-separate') {
-            readfile($image_dir . 'graph-' . $_GET['graphtype'] . '-' . $_GET['id'] .  '-' . $_GET['sensornumber'] . '.png');
+        } elseif ($_GET['graphtype'] == 'combinedcustom') {
+            readfile($image_dir . 'graph-' . $_GET['sensortype'] . $_GET['graphtype'] . '-' . $_GET['id'] . '-custom.png');
+        } elseif ($_GET['graphtype'] == 'separatecustom') {
+            readfile($image_dir . 'graph-' . $_GET['sensortype'] . $_GET['graphtype'] . '-' . $_GET['id'] . '-' . $_GET['sensornumber'] . '.png');
         } elseif ($_GET['graphtype'] == 'legend-small') {
             $id = uniqid();
             shell_exec($mycodo_client . ' --graph mone legend-small none' . $id . ' 0');

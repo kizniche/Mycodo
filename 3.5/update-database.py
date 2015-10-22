@@ -188,12 +188,26 @@ def password_change(db):
 
 def setup_db(update):
     global current_db_version_mycodo
+    global current_db_version_user
+    global current_db_version_note
 
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
     cur.execute("PRAGMA user_version;")
     for row in cur:
         current_db_version_mycodo = row[0]
+
+    conn = sqlite3.connect(sql_database_user)
+    cur = conn.cursor()
+    cur.execute("PRAGMA user_version;")
+    for row in cur:
+        current_db_version_user = row[0]
+
+    conn = sqlite3.connect(sql_database_note)
+    cur = conn.cursor()
+    cur.execute("PRAGMA user_version;")
+    for row in cur:
+        current_db_version_note = row[0]
 
     if update == 'update':
         mycodo_database_pre_update() # Any commands that need to be ran before the update
@@ -229,18 +243,22 @@ def mycodo_database_pre_update():
         DelTable(sql_database_mycodo, 'SMTP')
 
 def mycodo_database_update():
+    print "Current Mycodo database version: %d" % current_db_version_mycodo
+    print "Latest Mycodo database version: %d" % db_version_mycodo
+
     if db_version_mycodo == current_db_version_mycodo:
         print "Mycodo database is already up to date."
     else:
-        # Update Mycodo database version
-        print "Current Mycodo database version: %d" % current_db_version_mycodo
-        print "Latest Mycodo database version: %d" % db_version_mycodo
         print "Updating Mycodo database..."
         conn = sqlite3.connect(sql_database_mycodo)
         cur = conn.cursor()
         cur.execute("PRAGMA user_version = %s;" % db_version_mycodo)
         conn.commit()
         cur.close()
+
+        # Version 1 - Create version number
+        if current_db_version_mycodo < 1:
+            print "Note database is not versioned. Updating."
     
         # Version 2 row updates
         if current_db_version_mycodo < 2:
@@ -394,25 +412,52 @@ def mycodo_database_update():
 
 
 def user_database_update():
-    conn = sqlite3.connect(sql_database_user)
-    cur = conn.cursor()
-    cur.execute("PRAGMA user_version;")
-    for row in cur:
-        current_db_version_user = row[0]
     print "Current User database version: %d" % current_db_version_user
     print "Latest User database version: %d" % db_version_user
-    
-    # Version 1
-    if current_db_version_user < 1:
-        print "User database is not versioned. Updating..."
 
-    if current_db_version_user == db_version_user:
+    if db_version_user == current_db_version_user:
         print "User database is already up to date."
+    else:
+        print "Updating User database..."
+        onn = sqlite3.connect(sql_database_user)
+        cur = conn.cursor()
+        cur.execute("PRAGMA user_version = %s;" % db_version_user)
+        conn.commit()
+        cur.close()
+    
+    # Version 1 - Create version number
+    if current_db_version_user < 1:
+        print "User database is not versioned. Updating."
 
-    # Update Mycodo database version
-    cur.execute("PRAGMA user_version = %s;" % db_version_user)
-    conn.commit()
-    cur.close()
+
+
+def note_database_update():
+    print "Current Note database version: %d" % current_db_version_note
+    print "Latest Note database version: %d" % db_version_note
+
+    if db_version_note == current_db_version_note:
+        print "Note database is already up to date."
+    else:
+        print "Updating Note database..."
+        conn = sqlite3.connect(sql_database_note)
+        cur = conn.cursor()
+        cur.execute("PRAGMA user_version = %s;" % db_version_note)
+        conn.commit()
+        cur.close()
+
+    # Version 1 - Create version number
+    if current_db_version_note < 1:
+        print "Note database is not versioned. Updating."
+
+    # Version 2
+    if current_db_version_note < 2:
+        conn = sqlite3.connect(sql_database_note)
+        cur = conn.cursor()
+        cur.execute("CREATE TABLE IF NOT EXISTS Uploads (Id TEXT)")
+        cur.close()
+        AddColumn(sql_database_note, 'Uploads', 'Name', 'TEXT')
+        AddColumn(sql_database_note, 'Uploads', 'File_Name', 'TEXT')
+        AddColumn(sql_database_note, 'Uploads', 'Location', 'TEXT')
 
 
 def mycodo_database_create():
@@ -859,6 +904,33 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'Timers', 'State', 'INT')
     AddColumn(sql_database_mycodo, 'Timers', 'DurationOn', 'INT')
     AddColumn(sql_database_mycodo, 'Timers', 'DurationOff', 'INT')
+
+    AddTable(sql_database_mycodo, 'CustomGraph')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Temp_Relays', 'TEXT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Temp_Min', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Temp_Max', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Temp_Tics', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Temp_Mtics', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Hum_Relays', 'TEXT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Hum_Min', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Hum_Max', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Hum_Tics', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Hum_Mtics', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Co2_Relays', 'TEXT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Co2_Min', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Co2_Max', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Co2_Tics', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Co2_Mtics', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Press_Relays', 'TEXT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Press_Min', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Press_Max', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Press_Tics', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Press_Mtics', 'INT')
+    conn = sqlite3.connect(sql_database_mycodo)
+    cur = conn.cursor()
+    cur.execute("INSERT OR IGNORE INTO CustomGraph VALUES('0', '0', 0, 35, 5, 5, '0', 0, 100, 10, 5, '0', 0, 5000, 500, 5, '0', 96000, 100000, 500, 5)")
+    conn.commit()
+    cur.close()
        
     AddTable(sql_database_mycodo, 'SMTP')
     AddColumn(sql_database_mycodo, 'SMTP', 'Host', 'TEXT')
@@ -871,17 +943,17 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'SMTP', 'Wait_Time', 'INT')
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("INSERT OR IGNORE INTO SMTP VALUES('0', 'smtp.gmail.com', 1, 587, 'email@gmail.com', 'password', 'me@gmail.com', 10, 7200)")
+    cur.execute("INSERT OR IGNORE INTO SMTP VALUES('0', 'smtp.gmail.com', 1, 465, 'email@gmail.com', 'password', 'email@gmail.com', 48, 3600)")
     conn.commit()
     cur.close()
     ModNullValue(sql_database_mycodo, 'SMTP', 'Host', 'smtp.gmail.com')
     ModNullValue(sql_database_mycodo, 'SMTP', 'SSL', 1)
-    ModNullValue(sql_database_mycodo, 'SMTP', 'Port', 587)
+    ModNullValue(sql_database_mycodo, 'SMTP', 'Port', 465)
     ModNullValue(sql_database_mycodo, 'SMTP', 'User', 'email@gmail.com')
     ModNullValue(sql_database_mycodo, 'SMTP', 'Pass', 'password')
-    ModNullValue(sql_database_mycodo, 'SMTP', 'Email_From', 'me@gmail.com')
-    ModNullValue(sql_database_mycodo, 'SMTP', 'Daily_Max', 10)
-    ModNullValue(sql_database_mycodo, 'SMTP', 'Wait_Time', 7200)
+    ModNullValue(sql_database_mycodo, 'SMTP', 'Email_From', 'email@gmail.com')
+    ModNullValue(sql_database_mycodo, 'SMTP', 'Daily_Max', 48)
+    ModNullValue(sql_database_mycodo, 'SMTP', 'Wait_Time', 3600)
 
     AddTable(sql_database_mycodo, 'CameraStill')
     AddColumn(sql_database_mycodo, 'CameraStill', 'Relay', 'INT')
@@ -961,36 +1033,6 @@ def note_database_create():
     AddColumn(sql_database_note, 'Notes', 'Time', 'TEXT')
     AddColumn(sql_database_note, 'Notes', 'User', 'TEXT')
     AddColumn(sql_database_note, 'Notes', 'Note', 'TEXT')
-
-
-def note_database_update():
-    conn = sqlite3.connect(sql_database_note)
-    cur = conn.cursor()
-    cur.execute("PRAGMA user_version;")
-    for row in cur:
-        current_db_version_note = row[0]
-    if db_version_note == current_db_version_note:
-        print "Note database is already up to date."
-    else:
-        # Update Note database version
-        print "Current Note database version: %d" % current_db_version_note
-        print "Latest Note database version: %d" % db_version_note
-        print "Updating Note database..."
-        conn = sqlite3.connect(sql_database_note)
-        cur = conn.cursor()
-        cur.execute("PRAGMA user_version = %s;" % db_version_note)
-        conn.commit()
-        cur.close()
-
-    # Version 2
-    if current_db_version_note < 2:
-        conn = sqlite3.connect(sql_database_note)
-        cur = conn.cursor()
-        cur.execute("CREATE TABLE IF NOT EXISTS Uploads (Id TEXT)")
-        cur.close()
-        AddColumn(sql_database_note, 'Uploads', 'Name', 'TEXT')
-        AddColumn(sql_database_note, 'Uploads', 'File_Name', 'TEXT')
-        AddColumn(sql_database_note, 'Uploads', 'Location', 'TEXT')
 
 
 def AddTable(sql_database, table):

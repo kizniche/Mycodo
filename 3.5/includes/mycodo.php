@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.82";
+$version = "3.5.83";
 
 ######### Start Edit Configure #########
 
@@ -682,12 +682,7 @@ if (isset($output_error)) {
                         <tr>
                             <td></td>
                             <td style="padding-bottom: 1em;">
-                                <input type="checkbox" name="conditionrelayselnotify" value="1"> Notify <select style="width: 15em;" title="Which email address to notify?" name="conditionrelaynotify">
-                                <?php 
-                                for ($j = 0; $j < count($user_name); $j++) {
-                                    echo '<option value="' . $user_email[$j] . '">' . $user_name[$j] . ' (' . $user_email[$j] . ')</option>';
-                                    } ?>
-                                </select>
+                                <input type="checkbox" name="conditionrelayselnotify" value="1"> Email <input style="width: 17em;" type="text" value="" name="conditionrelaynotify" title="These are the email addresses that will be notified. Separate multiple email addresses with commas."/>
                             </td>
                         </tr>
                     </table>
@@ -753,7 +748,7 @@ if (isset($output_error)) {
                                 if (!$first) {
                                     echo '</tr><tr><td></td>';
                                 }
-                                echo '<td style="width: 100%;">Notify <b>' . $conditional_relay_notify[$z] . '</b></td>';
+                                echo '<td style="width: 100%; white-space:normal;">Email <b>' . str_replace(",", ", ", $conditional_relay_notify[$z]) . '</b></td>';
                             }
 
                             echo '</tr>';
@@ -1138,12 +1133,8 @@ if (isset($output_error)) {
                     <tr>
                         <td></td>
                         <td style="padding-bottom: 1em;">
-                            <input type="checkbox" name="conditiont<?php echo $i; ?>selnotify" value="1"> Notify <select style="width: 15em;" title="Which email address to notify?" name="conditiont<?php echo $i; ?>notify">
-                            <?php 
-                            for ($j = 0; $j < count($user_name); $j++) {
-                                echo '<option value="' . $user_email[$j] . '">' . $user_name[$j] . ' (' . $user_email[$j] . ')</option>';
-                                } ?>
-                            </select></td>
+                            <input type="checkbox" name="conditiont<?php echo $i; ?>selnotify" value="1"> Email <input style="width: 17em;" type="text" value="" name="conditiont<?php echo $i; ?>notify" title="These are the email addresses that will be notified. Separate multiple email addresses with commas."/>
+                        </td>
                     </tr>
                 </table>
                 </form>
@@ -1208,7 +1199,7 @@ if (isset($output_error)) {
                                 if (!$first) {
                                     echo '</tr><tr><td></td>';
                                 }
-                                echo '<td style="width: 100%;">Notify <b>' . $conditional_t_notify[$i][$z] . '</b></td>';
+                                echo '<td style="width: 100%; white-space:normal;">Email <b>' . str_replace(",", ", ", $conditional_t_notify[$i][$z]) . '</b></td>';
                             }
 
                             echo '</tr>';
@@ -1641,12 +1632,8 @@ if (isset($output_error)) {
                     <tr>
                         <td></td>
                         <td style="padding-bottom: 1em;">
-                            <input type="checkbox" name="conditionht<?php echo $i; ?>selnotify" value="1"> Notify <select style="width: 15em;" title="Which email address to notify?" name="conditionht<?php echo $i; ?>notify">
-                            <?php 
-                            for ($j = 0; $j < count($user_name); $j++) {
-                                echo '<option value="' . $user_email[$j] . '">' . $user_name[$j] . ' (' . $user_email[$j] . ')</option>';
-                                } ?>
-                            </select></td>
+                            <input type="checkbox" name="conditionht<?php echo $i; ?>selnotify" value="1"> Email <input style="width: 17em;" type="text" value="" name="conditionht<?php echo $i; ?>notify" title="These are the email addresses that will be notified. Separate multiple email addresses with commas."/>
+                        </td>
                     </tr>
                 </table>
                 </form>
@@ -1717,7 +1704,7 @@ if (isset($output_error)) {
                                 if (!$first) {
                                     echo '</tr><tr><td></td>';
                                 }
-                                echo '<td style="width: 100%;">Notify <b>' . $conditional_ht_notify[$i][$z] . '</b></td>';
+                                echo '<td style="width: 100%; white-space:normal;">Email <b>' . str_replace(",", ", ", $conditional_ht_notify[$i][$z]) . '</b></td>';
                             }
 
                             echo '</tr>';
@@ -2024,12 +2011,8 @@ if (isset($output_error)) {
                     <tr>
                         <td></td>
                         <td style="padding-bottom: 1em;">
-                            <input type="checkbox" name="conditionco2<?php echo $i; ?>selnotify" value="1"> Notify <select style="width: 15em;" title="Which email address to notify?" name="conditionco2<?php echo $i; ?>notify">
-                            <?php 
-                            for ($j = 0; $j < count($user_name); $j++) {
-                                echo '<option value="' . $user_email[$j] . '">' . $user_name[$j] . ' (' . $user_email[$j] . ')</option>';
-                                } ?>
-                            </select></td>
+                            <input type="checkbox" name="conditionco2<?php echo $i; ?>selnotify" value="1"> Email <input style="width: 17em;" type="text" value="" name="conditionco2<?php echo $i; ?>notify" title="These are the email addresses that will be notified. Separate multiple email addresses with commas."/>
+                        </td>
                     </tr>
                 </table>
                 </form>
@@ -2094,7 +2077,7 @@ if (isset($output_error)) {
                                 if (!$first) {
                                     echo '</tr><tr><td></td>';
                                 }
-                                echo '<td style="width: 100%;">Notify <b>' . $conditional_co2_notify[$i][$z] . '</b></td>';
+                                echo '<td style="width: 100%; white-space:normal;">Email <b>' . str_replace(",", ", ", $conditional_co2_notify[$i][$z]) . '</b></td>';
                             }
 
                             echo '</tr>';
@@ -2503,12 +2486,8 @@ if (isset($output_error)) {
                     <tr>
                         <td></td>
                         <td style="padding-bottom: 1em;">
-                            <input type="checkbox" name="conditionpress<?php echo $i; ?>selnotify" value="1"> Notify <select style="width: 15em;" title="Which email address to notify?" name="conditionpress<?php echo $i; ?>notify">
-                            <?php 
-                            for ($j = 0; $j < count($user_name); $j++) {
-                                echo '<option value="' . $user_email[$j] . '">' . $user_name[$j] . ' (' . $user_email[$j] . ')</option>';
-                                } ?>
-                            </select></td>
+                            <input type="checkbox" name="conditionpress<?php echo $i; ?>selnotify" value="1"> Email <input style="width: 17em;" type="text" value="" name="conditionpress<?php echo $i; ?>notify" title="These are the email addresses that will be notified. Separate multiple email addresses with commas."/>
+                        </td>
                     </tr>
                 </table>
                 </form>
@@ -2581,7 +2560,7 @@ if (isset($output_error)) {
                                 if (!$first) {
                                     echo '</tr><tr><td></td>';
                                 }
-                                echo '<td style="width: 100%;">Notify <b>' . $conditional_press_notify[$i][$z] . '</b></td>';
+                                echo '<td style="width: 100%; white-space:normal;">Email <b>' . str_replace(",", ", ", $conditional_press_notify[$i][$z]) . '</b></td>';
                             }
 
                             echo '</tr>';
@@ -2617,7 +2596,7 @@ if (isset($output_error)) {
             /* DateSelector*Author: Leon Atkinson */
             if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] != 'guest') {
                 
-                concatenate_logs();
+                //concatenate_logs();
 
                 if ($_POST['SubmitDates']) {
                     displayform();
@@ -2633,436 +2612,75 @@ if (isset($output_error)) {
                     $mone = $_POST['endMonth'];
                     $yeare = $_POST['endYear'];
 
+                    $time_from = strtotime($monb . "/" . $dayb . "/" . $yearb . " " .  $hourb . ":" . $minb);
+                    $time_to = strtotime($mone . "/" . $daye . "/" . $yeare . " " .  $houre . ":" . $mine);
+
                     if (is_positive_integer($_POST['graph-width']) and $_POST['graph-width'] <= 4000 and $_POST['graph-width']) {
                         $graph_width = $_POST['graph-width'];
                     } else $graph_width = 900;
 
                     if ($_POST['custom_type'] == 'Combined') {
-
-                        $cus_graph = '/var/tmp/plot-cus-combined.gnuplot';
-                        $total = ((array_sum($sensor_t_graph) != 0) + (array_sum($sensor_ht_graph) != 0)*2 + (array_sum($sensor_co2_graph) != 0) + (array_sum($sensor_press_graph) != 0)*2 + 1);
-
-                        $f = fopen($cus_graph, "w");
-                        $size = $total * 350;
-                        fwrite($f, "set terminal png size $graph_width,$size\n");
-                        fwrite($f, "set xdata time\n");
-                        fwrite($f, "set timefmt \"%Y %m %d %H %M %S\"\n");
-                        fwrite($f, "set output \"$images/graph-custom-combined-$id2-0.png\"\n");
-                        fwrite($f, "set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]\n");
-                        fwrite($f, "set format x \"%H:%M\\n%m/%d\"\n");
-                        fwrite($f, "set style line 11 lc rgb '#808080' lt 1\n");
-                        fwrite($f, "set border 3 back ls 11\n");
-                        fwrite($f, "set tics nomirror\n");
-                        fwrite($f, "set style line 12 lc rgb '#808080' lt 0 lw 1\n");
-                        fwrite($f, "set grid xtics ytics back ls 12\n");
-                        fwrite($f, "set style line 1 lc rgb '#7164a3' pt 0 ps 1 lt 1 lw 2\n");
-                        fwrite($f, "set style line 2 lc rgb '#599e86' pt 0 ps 1 lt 1 lw 2\n");
-                        fwrite($f, "set style line 3 lc rgb '#c3ae4f' pt 0 ps 1 lt 1 lw 2\n");
-                        fwrite($f, "set style line 4 lc rgb '#c3744f' pt 0 ps 1 lt 1 lw 2\n");
-                        fwrite($f, "set style line 5 lc rgb '#91180B' pt 0 ps 1 lt 1 lw 1\n");
-                        fwrite($f, "set style line 6 lc rgb '#582557' pt 0 ps 1 lt 1 lw 1\n");
-                        fwrite($f, "set style line 7 lc rgb '#04834C' pt 0 ps 1 lt 1 lw 1\n");
-                        fwrite($f, "set style line 8 lc rgb '#DC32E6' pt 0 ps 1 lt 1 lw 1\n");
-                        fwrite($f, "set style line 9 lc rgb '#957EF9' pt 0 ps 1 lt 1 lw 1\n");
-                        fwrite($f, "set style line 10 lc rgb '#CC8D9C' pt 0 ps 1 lt 1 lw 1\n");
-                        fwrite($f, "set style line 11 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1\n");
-                        fwrite($f, "set style line 12 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1\n");
-                        
-                        fwrite($f, "set multiplot layout $total, 1 title \"Combined Sensor Data - $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
-
-                        if (array_sum($sensor_t_graph) != 0) {
-                            if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
-                            else fwrite($f, "unset key\n");
-                            fwrite($f, "set yrange [0:35]\n");
-                            fwrite($f, "set ytics 5\n");
-                            fwrite($f, "set mytics 2\n");
-                            fwrite($f, "set title \"Temperature Sensor: Combined Temperatures\"\n");
-                            fwrite($f, "plot ");
-
-                            for ($z = 0; $z < count($sensor_t_id); $z++) {
-                                $line= $z+1;
-                                fwrite($f, "\"<awk '\\$10 == " . $z . "' /var/tmp/sensor-t.log\" using 1:7 index 0 title \"T$line\" w lp ls $line axes x1y1");
-                                if ($z < count($sensor_t_id)-1) fwrite($f, ", ");
-                            }
-                            fwrite($f, "\n");
-                        }
-
-                        if (array_sum($sensor_ht_graph) != 0) {
-                            if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
-                            else fwrite($f, "unset key\n");
-                            fwrite($f, "set yrange [0:35]\n");
-                            fwrite($f, "set ytics 5\n");
-                            fwrite($f, "set mytics 2\n");
-                            fwrite($f, "set title \"Humitiy/Temperature Sensor: Combined Temperatures\"\n");
-                            if (count($sensor_ht_id) != 0) fwrite($f, "plot ");
-
-                            for ($z = 0; $z < count($sensor_ht_id); $z++) {
-                                $line= $z+1;
-                                fwrite($f, "\"<awk '\\$10 == " . $z . "' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \"T$line\" w lp ls $line axes x1y1");
-                                if ($z < count($sensor_ht_id)-1) fwrite($f, ", ");
-                            }
-                            fwrite($f, "\n");
-
-                            if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
-                            else fwrite($f, "unset key\n");
-                            fwrite($f, "set yrange [0:100]\n");
-                            fwrite($f, "set ytics 10\n");
-                            fwrite($f, "set mytics 5\n");
-                            fwrite($f, "set title \"Humitiy/Temperature Sensor: Combined Humidities\"\n");
-                            if (count($sensor_ht_id) != 0) fwrite($f, "plot ");
-
-                            for ($z = 0; $z < count($sensor_ht_id); $z++) {
-                                $line= $z+1;
-                                fwrite($f, "\"<awk '\\$10 == " . $z . "' /var/tmp/sensor-ht.log\" using 1:8 index 0 title \"H$line\" w lp ls $line axes x1y1");
-                                if ($z < count($sensor_ht_id)-1) fwrite($f, ", ");
-                            }
-                            fwrite($f, "\n");
-                        }
-
-                        if (array_sum($sensor_co2_graph) != 0) {
-                            if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key at graph 0.04, graph 0.05\n");
-                            else fwrite($f, "unset key\n");
-                            fwrite($f, "set yrange [0:5000]\n");
-                            fwrite($f, "set ytics 1000\n");
-                            fwrite($f, "set mytics 5\n");
-                            fwrite($f, "set termopt enhanced\n");
-                            fwrite($f, "set title \"CO_2 Sensor: Combined CO_2\"\n");
-                            if (count($sensor_co2_id) != 0) fwrite($f, "plot ");
-
-                            for ($z = 0; $z < count($sensor_co2_id); $z++) {
-                                $line= $z+1;
-                                fwrite($f, "\"<awk '\\$8 == " . $z . "' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"CO_2$line\" w lp ls $line axes x1y1");
-                                if ($z < count($sensor_co2_id)-1) fwrite($f, ", ");
-                            }
-                            fwrite($f, "\n");
-                        }
-
-                        if (array_sum($sensor_press_graph) != 0) {
-                            if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key at graph 0.03, graph 0.05\n");
-                            else fwrite($f, "unset key\n");
-                            fwrite($f, "set yrange [0:35]\n");
-                            fwrite($f, "set ytics 5\n");
-                            fwrite($f, "set mytics 2\n");
-                            fwrite($f, "set title \"Pressure Sensor: Combined Temperatures\"\n");
-                            if (count($sensor_press_id) != 0) fwrite($f, "plot ");
-
-                            for ($z = 0; $z < count($sensor_press_id); $z++) {
-                                $line= $z+1;
-                                fwrite($f, "\"<awk '\\$10 == " . $z . "' /var/tmp/sensor-press.log\" using 1:7 index 0 title \"T$line\" w lp ls $line axes x1y1");
-                                if ($z < count($sensor_press_id)-1) fwrite($f, ", ");
-                            }
-                            fwrite($f, "\n");
-
-                            if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key at graph 0.03, graph 0.05\n");
-                            else fwrite($f, "unset key\n");
-                            fwrite($f, "set yrange [97000:99000]\n");
-                            fwrite($f, "set ytics 200\n");
-                            fwrite($f, "set mytics 4\n");
-                            fwrite($f, "set title \"Pressure Sensor: Combined Pressures\"\n");
-                            if (count($sensor_press_id) != 0) fwrite($f, "plot ");
-
-                            for ($z = 0; $z < count($sensor_press_id); $z++) {
-                                $line= $z+1;
-                                fwrite($f, "\"<awk '\\$10 == " . $z . "' /var/tmp/sensor-press.log\" using 1:8 index 0 title \"P$line\" w lp ls $line axes x1y1");
-                                if ($z < count($sensor_press_id)-1) fwrite($f, ", ");
-                            }
-                            fwrite($f, "\n");
-                        }
-
-                        if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key at graph 0.03, graph 0.05\n");
-                        else fwrite($f, "unset key\n");
-                        fwrite($f, "set yrange [-100:100]\n");
-                        fwrite($f, "set ytics 25\n");
-                        fwrite($f, "set mytics 5\n");
-                        fwrite($f, "set xzeroaxis linetype 1 linecolor rgb '#000000' linewidth 1\n");
-                        fwrite($f, "set title \"Relay Run Time\"\n");
-                        fwrite($f, "plot ");
-
-                        for ($z = 0; $z < count($relay_name); $z++) {
-                            $line= $z+1;
-                            $lsvalue = $z+5;
-                            fwrite($f, "\"/var/tmp/relay.log\" u 1:7 index 0 title \"$relay_name[$z]\" w impulses ls $lsvalue axes x1y1");
-                            if ($z < count($relay_name)-1) fwrite($f, ", ");
-                        }
-                        fwrite($f, "\n");
-                        fwrite($f, "unset multiplot\n");
-
-                        fclose($f);
-                        $cmd = "gnuplot $cus_graph";
-                        exec($cmd);
-                        unlink($cus_graph);
-                        unlink('/var/tmp/sensor-t.log');
-                        unlink('/var/tmp/sensor-ht.log');
-                        unlink('/var/tmp/sensor-co2.log');
-                        unlink('/var/tmp/sensor-press.log');
-                        unlink('/var/tmp/relay.log');
-
+                        shell_exec("$mycodo_client --graph-custom x combined custom $id2 custom $time_from $time_to $graph_width");
                         echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
-                        echo 'graphtype=custom-combined';
-                        echo '&id=' , $id2;
-                        echo '&sensornumber=0>';
+                        echo 'graphtype=combinedcustom';
+                        echo '&sensortype=x';
+                        echo '&id=' , $id2 , '>';
                         echo '</div>';
-
                     } else if ($_POST['custom_type'] == 'Separate') {
-                        
+                        $first = False;
                         for ($n = 0; $n < count($sensor_t_id); $n++) {
                             if ($sensor_t_graph[$n] == 1) {
-
-                                $sensor_number = $n+1;
-                                $cus_graph = "/var/tmp/plot-cus-t-separate-$n.gnuplot";
-                                $f = fopen($cus_graph, "w");
-
-                                fwrite($f, "set terminal png size $graph_width,490\n");
-                                fwrite($f, "set xdata time\n");
-                                fwrite($f, "set timefmt \"%Y %m %d %H %M %S\"\n");
-                                fwrite($f, "set output \"$images/graph-t-custom-separate-$id2-$n.png\"\n");
-                                fwrite($f, "set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]\n");
-                                fwrite($f, "set format x \"%H:%M\\n%m/%d\"\n");
-                                fwrite($f, "set yrange [0:100]\n");
-                                fwrite($f, "set y2range [0:35]\n");
-                                fwrite($f, "set ytics 10\n");
-                                fwrite($f, "set mytics 2\n");
-                                fwrite($f, "set y2tics 5\n");
-                                fwrite($f, "set my2tics 10\n");
-                                fwrite($f, "set style line 11 lc rgb '#808080' lt 1\n");
-                                fwrite($f, "set border 3 back ls 11\n");
-                                fwrite($f, "set tics nomirror\n");
-                                fwrite($f, "set style line 12 lc rgb '#808080' lt 0 lw 1\n");
-                                fwrite($f, "set grid xtics ytics back ls 12\n");
-                                fwrite($f, "set style line 1 lc rgb '#FF3100' pt 0 ps 1 lt 1 lw 2\n");
-                                fwrite($f, "set style line 2 lc rgb '#0772A1' pt 0 ps 1 lt 1 lw 2\n");
-                                fwrite($f, "set style line 3 lc rgb '#00B74A' pt 0 ps 1 lt 1 lw 2\n");
-                                fwrite($f, "set style line 4 lc rgb '#91180B' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 5 lc rgb '#582557' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 6 lc rgb '#04834C' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 7 lc rgb '#DC32E6' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 8 lc rgb '#957EF9' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 9 lc rgb '#CC8D9C' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 10 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1\n");
-                                if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
-                                else fwrite($f, "unset key\n");
-                                fwrite($f, "set title \"Temperature Sensor $sensor_number: $sensor_t_name[$n]: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
-                                fwrite($f, "plot \"<awk '\\$10 == $n' /var/tmp/sensor-t.log\" using 1:7 index 0 title \"T\" w lp ls 1 axes x1y2, ");
-                                fwrite($f, "\"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"$relay_name[0]\" w impulses ls 4 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:8 index 0 title \"$relay_name[1]\" w impulses ls 5 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:9 index 0 title \"$relay_name[2]\" w impulses ls 6 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:10 index 0 title \"$relay_name[3]\" w impulses ls 7 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:11 index 0 title \"$relay_name[4]\" w impulses ls 8 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:12 index 0 title \"$relay_name[5]\" w impulses ls 9 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:13 index 0 title \"$relay_name[6]\" w impulses ls 10 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:14 index 0 title \"$relay_name[7]\" w impulses ls 11 axes x1y1");
-
-                                fclose($f);
-                                $cmd = "gnuplot $cus_graph";
-                                exec($cmd);
-                                unlink($cus_graph);
-
+                                if ($first == True) echo '<hr class="fade"/>';
+                                else $first = True;
+                                shell_exec("$mycodo_client --graph-custom t separate custom $id2 $n $time_from $time_to $graph_width");
                                 echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
-                                echo 'graphtype=custom-separate';
+                                echo 'graphtype=separatecustom';
                                 echo '&sensortype=t';
                                 echo '&id=' , $id2;
                                 echo '&sensornumber=' , $n , '>';
                                 echo '</div>';
-
-                                echo '<hr class="fade"/>';
                             }
                         }
 
                         for ($n = 0; $n < count($sensor_ht_id); $n++) {
                             if ($sensor_ht_graph[$n] == 1) {
-
-                                $sensor_number = $n+1;
-                                $cus_graph = "/var/tmp/plot-cus-ht-separate-$n.gnuplot";
-                                $f = fopen($cus_graph, "w");
-
-                                fwrite($f, "set terminal png size $graph_width,490\n");
-                                fwrite($f, "set xdata time\n");
-                                fwrite($f, "set timefmt \"%Y %m %d %H %M %S\"\n");
-                                fwrite($f, "set output \"$images/graph-ht-custom-separate-$id2-$n.png\"\n");
-                                fwrite($f, "set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]\n");
-                                fwrite($f, "set format x \"%H:%M\\n%m/%d\"\n");
-                                fwrite($f, "set yrange [0:100]\n");
-                                fwrite($f, "set y2range [0:35]\n");
-                                fwrite($f, "set ytics 10\n");
-                                fwrite($f, "set mytics 2\n");
-                                fwrite($f, "set y2tics 5\n");
-                                fwrite($f, "set my2tics 10\n");
-                                fwrite($f, "set style line 11 lc rgb '#808080' lt 1\n");
-                                fwrite($f, "set border 3 back ls 11\n");
-                                fwrite($f, "set tics nomirror\n");
-                                fwrite($f, "set style line 12 lc rgb '#808080' lt 0 lw 1\n");
-                                fwrite($f, "set grid xtics ytics back ls 12\n");
-                                fwrite($f, "set style line 1 lc rgb '#FF3100' pt 0 ps 1 lt 1 lw 2\n");
-                                fwrite($f, "set style line 2 lc rgb '#0772A1' pt 0 ps 1 lt 1 lw 2\n");
-                                fwrite($f, "set style line 3 lc rgb '#00B74A' pt 0 ps 1 lt 1 lw 2\n");
-                                fwrite($f, "set style line 4 lc rgb '#91180B' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 5 lc rgb '#582557' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 6 lc rgb '#04834C' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 7 lc rgb '#DC32E6' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 8 lc rgb '#957EF9' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 9 lc rgb '#CC8D9C' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 10 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1\n");
-                                if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
-                                else fwrite($f, "unset key\n");
-                                fwrite($f, "set title \"Humidity/Temperature Sensor $sensor_number: $sensor_ht_name[$n]: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
-                                fwrite($f, "plot \"<awk '\\$10 == $n' /var/tmp/sensor-ht.log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, ");
-                                fwrite($f, "\"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ");
-                                fwrite($f, "\"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"$relay_name[0]\" w impulses ls 4 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:8 index 0 title \"$relay_name[1]\" w impulses ls 5 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:9 index 0 title \"$relay_name[2]\" w impulses ls 6 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:10 index 0 title \"$relay_name[3]\" w impulses ls 7 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:11 index 0 title \"$relay_name[4]\" w impulses ls 8 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:12 index 0 title \"$relay_name[5]\" w impulses ls 9 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:13 index 0 title \"$relay_name[6]\" w impulses ls 10 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:14 index 0 title \"$relay_name[7]\" w impulses ls 11 axes x1y1");
-
-                                fclose($f);
-                                $cmd = "gnuplot $cus_graph";
-                                exec($cmd);
-                                unlink($cus_graph);
-
+                                if ($first == True) echo '<hr class="fade"/>';
+                                else $first = True;
+                                shell_exec("$mycodo_client --graph-custom ht separate custom $id2 $n $time_from $time_to $graph_width");
                                 echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
-                                echo 'graphtype=custom-separate';
+                                echo 'graphtype=separatecustom';
                                 echo '&sensortype=ht';
                                 echo '&id=' , $id2;
                                 echo '&sensornumber=' , $n , '>';
                                 echo '</div>';
-
-                                echo '<hr class="fade"/>';
                             }
                         }
 
                         for ($n = 0; $n < count($sensor_co2_id); $n++) {
                             if ($sensor_co2_graph[$n] == 1) {
-
-                                $sensor_number = $n+1;
-                                $cus_graph = "/var/tmp/plot-cus-co2-separate-$n.gnuplot";
-                                $f = fopen($cus_graph, "w");
-
-                                fwrite($f, "set terminal png size $graph_width,490\n");
-                                fwrite($f, "set xdata time\n");
-                                fwrite($f, "set timefmt \"%Y %m %d %H %M %S\"\n");
-                                fwrite($f, "set output \"$images/graph-co2-custom-separate-$id2-$n.png\"\n");
-                                fwrite($f, "set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]\n");
-                                fwrite($f, "set format x \"%H:%M\\n%m/%d\"\n");
-                                fwrite($f, "set yrange [0:100]\n");
-                                fwrite($f, "set ytics 10\n");
-                                fwrite($f, "set mytics 2\n");
-                                fwrite($f, "set y2range [0:5000]\n");
-                                fwrite($f, "set y2tics 500\n");
-                                fwrite($f, "set my2tics 5\n");
-                                fwrite($f, "set style line 11 lc rgb '#808080' lt 1\n");
-                                fwrite($f, "set border 3 back ls 11\n");
-                                fwrite($f, "set tics nomirror\n");
-                                fwrite($f, "set style line 12 lc rgb '#808080' lt 0 lw 1\n");
-                                fwrite($f, "set grid xtics ytics back ls 12\n");
-                                fwrite($f, "set style line 1 lc rgb '#FF3100' pt 0 ps 1 lt 1 lw 2\n");
-                                fwrite($f, "set style line 2 lc rgb '#0772A1' pt 0 ps 1 lt 1 lw 2\n");
-                                fwrite($f, "set style line 3 lc rgb '#00B74A' pt 0 ps 1 lt 1 lw 2\n");
-                                fwrite($f, "set style line 4 lc rgb '#91180B' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 5 lc rgb '#582557' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 6 lc rgb '#04834C' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 7 lc rgb '#DC32E6' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 8 lc rgb '#957EF9' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 9 lc rgb '#CC8D9C' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 10 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1\n");
-                                if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
-                                else fwrite($f, "unset key\n");
-                                fwrite($f, "set termopt enhanced\n");
-                                fwrite($f, "set title \"CO_2 Sensor $sensor_number: $sensor_co2_name[$n]: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
-                                fwrite($f, "plot \"<awk '\\$8 == $n' /var/tmp/sensor-co2.log\" using 1:7 index 0 title \"CO_2\" w lp ls 1 axes x1y2\n");
-                                fwrite($f, "\"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"$relay_name[0]\" w impulses ls 4 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:8 index 0 title \"$relay_name[1]\" w impulses ls 5 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:9 index 0 title \"$relay_name[2]\" w impulses ls 6 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:10 index 0 title \"$relay_name[3]\" w impulses ls 7 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:11 index 0 title \"$relay_name[4]\" w impulses ls 8 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:12 index 0 title \"$relay_name[5]\" w impulses ls 9 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:13 index 0 title \"$relay_name[6]\" w impulses ls 10 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:14 index 0 title \"$relay_name[7]\" w impulses ls 11 axes x1y1\n");
-
-                                fclose($f);
-                                $cmd = "gnuplot $cus_graph";
-                                exec($cmd);
-                                unlink($cus_graph);
-
+                                if ($first == True) echo '<hr class="fade"/>';
+                                else $first = True;
+                                shell_exec("$mycodo_client --graph-custom co2 separate custom $id2 $n $time_from $time_to $graph_width");
                                 echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
-                                echo 'graphtype=custom-separate';
+                                echo 'graphtype=separatecustom';
                                 echo '&sensortype=co2';
                                 echo '&id=' , $id2;
                                 echo '&sensornumber=' , $n , '>';
                                 echo '</div>';
-
-                                echo '<hr class="fade"/>';
                             }
                         }
 
                         for ($n = 0; $n < count($sensor_press_id); $n++) {
                             if ($sensor_press_graph[$n] == 1) {
-
-                                $sensor_number = $n+1;
-                                $cus_graph = "/var/tmp/plot-cus-press-separate-$n.gnuplot";
-                                $f = fopen($cus_graph, "w");
-
-                                fwrite($f, "set terminal png size $graph_width,490\n");
-                                fwrite($f, "set xdata time\n");
-                                fwrite($f, "set timefmt \"%Y %m %d %H %M %S\"\n");
-                                fwrite($f, "set output \"$images/graph-press-custom-separate-$id2-$n.png\"\n");
-                                fwrite($f, "set xrange [\"$yearb $monb $dayb $hourb $minb 00\":\"$yeare $mone $daye $houre $mine 00\"]\n");
-                                fwrite($f, "set format x \"%H:%M\\n%m/%d\"\n");
-                                fwrite($f, "set yrange [97000:99000]\n");
-                                fwrite($f, "set y2range [0:35]\n");
-                                fwrite($f, "set mytics 4\n");
-                                fwrite($f, "set my2tics 10\n");
-                                fwrite($f, "set ytics 200\n");
-                                fwrite($f, "set y2tics 5\n");
-                                fwrite($f, "set style line 11 lc rgb '#808080' lt 1\n");
-                                fwrite($f, "set border 3 back ls 11\n");
-                                fwrite($f, "set tics nomirror\n");
-                                fwrite($f, "set style line 12 lc rgb '#808080' lt 0 lw 1\n");
-                                fwrite($f, "set grid xtics ytics back ls 12\n");
-                                fwrite($f, "set style line 1 lc rgb '#FF3100' pt 0 ps 1 lt 1 lw 2\n");
-                                fwrite($f, "set style line 2 lc rgb '#0772A1' pt 0 ps 1 lt 1 lw 2\n");
-                                fwrite($f, "set style line 3 lc rgb '#00B74A' pt 0 ps 1 lt 1 lw 2\n");
-                                fwrite($f, "set style line 4 lc rgb '#91180B' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 5 lc rgb '#582557' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 6 lc rgb '#04834C' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 7 lc rgb '#DC32E6' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 8 lc rgb '#957EF9' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 9 lc rgb '#CC8D9C' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 10 lc rgb '#717412' pt 0 ps 1 lt 1 lw 1\n");
-                                fwrite($f, "set style line 11 lc rgb '#0B479B' pt 0 ps 1 lt 1 lw 1\n");
-                                if (isset($_POST['key']) && $_POST['key'] == 1) fwrite($f, "set key left bottom\n");
-                                else fwrite($f, "unset key\n");
-                                fwrite($f, "set title \"Pressure Sensor $sensor_number: $sensor_press_name[$n]: $monb/$dayb/$yearb $hourb:$minb - $mone/$daye/$yeare $houre:$mine\"\n");
-                                fwrite($f, "plot \"<awk '\\$10 == $n' /var/tmp/sensor-press.log\" using 1:7 index 0 title \" RH\" w lp ls 1 axes x1y2, ");
-                                fwrite($f, "\"\" using 1:8 index 0 title \"T\" w lp ls 2 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:9 index 0 title \"DP\" w lp ls 3 axes x1y2, ");
-                                fwrite($f, "\"<awk '\\$15 == $n' $relay_log\" u 1:7 index 0 title \"$relay_name[0]\" w impulses ls 4 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:8 index 0 title \"$relay_name[1]\" w impulses ls 5 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:9 index 0 title \"$relay_name[2]\" w impulses ls 6 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:10 index 0 title \"$relay_name[3]\" w impulses ls 7 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:11 index 0 title \"$relay_name[4]\" w impulses ls 8 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:12 index 0 title \"$relay_name[5]\" w impulses ls 9 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:13 index 0 title \"$relay_name[6]\" w impulses ls 10 axes x1y1, ");
-                                fwrite($f, "\"\" using 1:14 index 0 title \"$relay_name[7]\" w impulses ls 11 axes x1y1");
-
-                                fclose($f);
-                                $cmd = "gnuplot $cus_graph";
-                                exec($cmd);
-                                unlink($cus_graph);
-
+                                if ($first == True) echo '<hr class="fade"/>';
+                                else $first = True;
+                                shell_exec("$mycodo_client --graph-custom press separate custom $id2 $n $time_from $time_to $graph_width");
                                 echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
-                                echo 'graphtype=custom-separate';
+                                echo 'graphtype=separatecustom';
                                 echo '&sensortype=press';
                                 echo '&id=' , $id2;
                                 echo '&sensornumber=' , $n , '>';
                                 echo '</div>';
-
-                                echo '<hr class="fade"/>';
                             }
                         }
                     }
@@ -3267,8 +2885,8 @@ if (isset($output_error)) {
                 <form action="?tab=data" method="POST">
                 <table class="data-buttons">
                     <tr>
-                        <td rowspan="2" class="data-buttons-rightspace" style="text-align:center; line-height:1.6em;">
-                            Lines<br><input style="width: 4em;" type="text" maxlength=8 size=8 name="Lines" value="<?php if (isset($_POST['Lines'])) echo $_POST['Lines']; ?>" title="The maximum number of lines to display. Defaults to 30 if left blank."/>
+                        <td rowspan="2" class="data-buttons-rightspace" style="vertical-align:middle; text-align:center; line-height:1.6em;">
+                            Last<br><input style="width: 4em;" type="text" maxlength="8" name="Lines" value="<?php if (isset($_POST['Lines'])) echo $_POST['Lines']; ?>" title="The maximum number of lines to display. Defaults to 30 if left blank."/><br>Lines
                         </td>
                         <td>
                             <button style="width:100%" type="submit" name="TSensor_Changes" value="T">T<br>Δ</button>
@@ -3286,7 +2904,7 @@ if (isset($output_error)) {
                             <button type="submit" name="Relay_Changes" value="Relay">Relay<br>Δ</button>
                         </td>
                         <td class="data-buttons-rightspace">
-                            <button style="width:100%" type="submit" name="Timer_Changes" value="Timer">Timer<br>Δ</button>
+                            <button type="submit" name="Timer_Changes" value="Timer">Timer<br>Δ</button>
                         </td>
                         <td>
                             <button type="submit" name="Daemon" value="Daemon">Daemon<br>Log</button>
@@ -3324,7 +2942,7 @@ if (isset($output_error)) {
                             <button style="width:100%" type="submit" name="Login" value="Login">Login<br>Log</button>
                         </td>
                         <td>
-                            <button style="width:100%" type="submit" name="Backups" value="">All<br>Backups</button>
+                            <button style="width:100%" type="submit" name="Backups" value="">Backup/<br>Restore</button>
                         </td>
                         <td class="data-buttons-rightspace">
                             <button type="submit" name="Restore" value="">Restore<br>Log</button>
@@ -3362,25 +2980,106 @@ if (isset($output_error)) {
                         }
                         
                         if(isset($_POST['HTSensor'])) {
-                            echo "<pre>Temperature/Humidity Sensor Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y M D H M S Temperature(C) Relative-Humidity DewPoint(C) Sensor\n$(cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S Temperature(C) Relative-Humidity DewPoint(C) Sensor\n$(cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log | tail -n 30)" | column -t`;
+                                $Lines = 30;
                             }
-                            echo '</pre>';
+                            echo "<pre>Temperature/Humidity Sensor Log (Last $Lines lines)<br>";
+                            echo '
+                                <table class="data-data">
+                                    <tr>
+                                        <th>Y</th>
+                                        <th>M</th>
+                                        <th>D</th>
+                                        <th>H</th>
+                                        <th>M</th>
+                                        <th>S</th>
+                                        <th>Temperature<br>(&deg;C)</th>
+                                        <th>Relative<br>Humidity<br>(%)</th>
+                                        <th>DewPoint<br>(&deg;C)</th>
+                                        <th>Sensor</th>
+                                    </tr>
+                                    <tr>
+                                        <td>';
+                            echo `echo "$(cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log | tail -n $Lines)" | column -t | tail -n +2 | tr -s " " | sed 's/ /\<\/td\>\<td\>/g' | awk '{ print $0; }' RS='\n' ORS='</td></tr><tr><td>'`;
+                            echo 'End</td></tr></table></pre>';
                         }
 
                         if(isset($_POST['HTSensor_Changes'])) {
-                            echo "<pre>Temperature/Humidity Sensor Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD HumRelaysUp HumRelaysDown HumRelayHigh HumRelayHighMin HumRelayHighMax HumRelayLow HumRelayLowMin HumRelayLowMax HumSet HumSetDir HumPeriod HumP HumI HumD\n$(cat /var/www/mycodo/log/sensor-ht-changes.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD HumRelaysUp HumRelaysDown HumRelayHigh HumRelayHighMin HumRelayHighMax HumRelayLow HumRelayLowMin HumRelayLowMax HumSet HumSetDir HumPeriod HumP HumI HumD\n$(cat /var/www/mycodo/log/sensor-ht-changes.log | tail -n 30)" | column -t`;
+                                $Lines = 30;
                             }
-                            echo '</pre>';
+                            echo "<pre>Temperature/Humidity Sensor Changes (Last $Lines lines)<br>";
+                            echo '
+                                <table class="data-data">
+                                    <tr>
+                                        <th>Y</th>
+                                        <th>M</th>
+                                        <th>D</th>
+                                        <th>H</th>
+                                        <th>M</th>
+                                        <th>S</th>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Device</th>
+                                        <th>GPIO</th>
+                                        <th>Period</th>
+                                        <th>Pre<br>Relay</th>
+                                        <th>Pre<br>Dur</th>
+                                        <th>Log</th>
+                                        <th>Graph</th>
+                                        <th>Verify<br>Pin</th>
+                                        <th>Verify<br>Temp</th>
+                                        <th>Verify<br>Temp<br>Notify</th>
+                                        <th>Verify<br>Temp<br>Stop</th>
+                                        <th>Verify<br>Hum</th>
+                                        <th>Verify<br>Hum<br>Notify</th>
+                                        <th>Verify<br>Hum<br>Stop</th>
+                                        <th>Verify<br>Email</th>
+                                        <th>YRelay<br>Min</th>
+                                        <th>YRelay<br>Max</th>
+                                        <th>YRelay<br>Tics</th>
+                                        <th>YRelay<br>MTics</th>
+                                        <th>YTemp<br>Min</th>
+                                        <th>YTemp<br>Max</th>
+                                        <th>YTemp<br>Tics</th>
+                                        <th>YTemp<br>MTics</th>
+                                        <th>Temp<br>Relays<br>Up</th>
+                                        <th>Temp<br>Relays<br>Down</th>
+                                        <th>Temp<br>Relay<br>High</th>
+                                        <th>Temp<br>Relay<br>High<br>Min</th>
+                                        <th>Temp<br>Relay<br>High<br>Max</th>
+                                        <th>Temp<br>Relay<br>Low</th>
+                                        <th>Temp<br>Relay<br>Low<br>Min</th>
+                                        <th>Temp<br>Relay<br>Low<br>Max</th>
+                                        <th>Temp<br>Set</th>
+                                        <th>Temp<br>Set<br>Dir</th>
+                                        <th>Temp<br>Period</th>
+                                        <th>Temp<br>K<sub>P</sub></th>
+                                        <th>Temp<br>K<sub>I</sub></th>
+                                        <th>Temp<br>K<sub>D</sub></th>
+                                        <th>Hum<br>Relays<br>Up</th>
+                                        <th>Hum<br>Relays<br>Down</th>
+                                        <th>Hum<br>Relay<br>High</th>
+                                        <th>Hum<br>Relay<br>High<br>Min</th>
+                                        <th>Hum<br>Relay<br>High<br>Max</th>
+                                        <th>Hum<br>Relay<br>Low</th>
+                                        <th>Hum<br>Relay<br>Low<br>Min</th>
+                                        <th>Hum<br>Relay<br>Low<br>Max</th>
+                                        <th>Hum<br>Set</th>
+                                        <th>Hum<br>Set<br>Dir</th>
+                                        <th>Hum<br>Period</th>
+                                        <th>Hum<br>K<sub>P</sub></th>
+                                        <th>Hum<br>K<sub>I</sub></th>
+                                        <th>Hum<br>K<sub>D</sub></th>
+                                    </tr>
+                                    <tr>
+                                        <td>';
+                            echo `echo "$(cat /var/www/mycodo/log/sensor-ht-changes.log | tail -n $Lines)" | column -t | tail -n +2 | tr -s " " | sed 's/ /\<\/td\>\<td\>/g' | awk '{ print $0; }' RS='\n' ORS='</td></tr><tr><td>'`;
+                            echo 'End</td></tr></table></pre>';
                         }
 
                         if(isset($_POST['CO2Sensor'])) {
@@ -3554,13 +3253,13 @@ if (isset($output_error)) {
                                         }
                                         for ($v = 0; $v < count($upload_id); $v++) {
                                             if (endswith($upload_name[$v], '.jpg') || endswith($upload_name[$v], '.jpeg')) {
-                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"></a></div>";
+                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-jpg&file=thumb$upload_file_name[$v]\"></a></div>";
                                             }
                                             if (endswith($upload_name[$v], '.png')) {
-                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-png&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-png&file=$upload_file_name[$v]\"></a></div>";
+                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-png&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-png&file=thumb$upload_file_name[$v]\"></a></div>";
                                             }
                                             if (endswith($upload_name[$v], '.gif')) {
-                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"></a></div>";
+                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-gif&file=thumb$upload_file_name[$v]\"></a></div>";
                                             }
                                         }
                                         if ($images == True) {
@@ -3655,13 +3354,13 @@ if (isset($output_error)) {
                                 }
                                 for ($v = 0; $v < count($upload_id); $v++) {
                                     if (endswith($upload_name[$v], '.jpg') || endswith($upload_name[$v], '.jpeg')) {
-                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"></a></div>";
+                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-jpg&file=thumb$upload_file_name[$v]\"></a></div>";
                                     }
                                     if (endswith($upload_name[$v], '.png')) {
-                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-png&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-png&file=$upload_file_name[$v]\"></a></div>";
+                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-png&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-png&file=thumb$upload_file_name[$v]\"></a></div>";
                                     }
                                     if (endswith($upload_name[$v], '.gif')) {
-                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"></a></div>";
+                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-gif&file=thumb$upload_file_name[$v]\"></a></div>";
                                     }
                                 }
                                 if ($images == True) {
@@ -3744,8 +3443,9 @@ if (isset($output_error)) {
                             echo '</pre>';
                         }
 
-                        if (isset($_POST['Backups'])) {
-                            echo '<pre><div style="padding: 1em 0 1.5em 0;">Note: Restoring a backup will restore all files from the backup, including databases and logs.<br>When restoring a backup, a backup of the current system will also be created.<br>Deleting a backup will delete all files of that backup.</div>';
+                        if (isset($_POST['Backups']) || isset($_POST['CreateBackup']) || isset($_POST['DeleteBackup'])) {
+                            echo '<pre><div style="padding: 1em 0 1em 0;">Note: Restoring a backup will restore all files from the backup, including databases and logs.<br>When restoring a backup, a backup of the current system will also be created.<br>Deleting a backup will delete all files of that backup.</div>';
+                            echo '<div style="padding: 1em 0 1.5em 0;"><form action="?tab=data" method="POST"><button type="submit" name="CreateBackup" value="">Create New System Backup</button></form></div>';
                             $dirs = array_filter(glob('/var/Mycodo-backups/*'), 'is_dir');
                             for ($i = 0; $i < count($dirs); $i++) {
                                 $backup_commits[$i] = mb_substr($dirs[$i], -7);
@@ -3758,9 +3458,7 @@ if (isset($output_error)) {
                                     echo "<table class=\"gitcommits\">
                                         <tr>
                                             <td><a href=\"https://github.com/kizniche/Mycodo/commit/$backup_commits[$i]\" target=\"_blank\">$backup_commits[$i]</a></td>
-                                            <td><form action=\"?tab=data";
-                                            if (isset($_GET['page'])) echo '&page=' , $_GET['page'];
-                                            echo "\" method=\"POST\" onsubmit=\"return confirm('Confirm that you would like to DELETE the $backup_dates[$i] backup of the system at commit $backup_commits[$i]. Note: This will delete all files of this backup. This cannot be undone. If you do not want to do this, click Cancel.')\"><button type=\"submit\" name=\"DeleteBackup\" value=\"$dirs[$i]\" title=\"Delete backup from $backup_dates[$i]\">Delete Backup</button></form></td>
+                                            <td><form action=\"?tab=data\" method=\"POST\" onsubmit=\"return confirm('Confirm that you would like to DELETE the $backup_dates[$i] backup of the system at commit $backup_commits[$i]. Note: This will delete all files of this backup. This cannot be undone. If you do not want to do this, click Cancel.')\"><button type=\"submit\" name=\"DeleteBackup\" value=\"$dirs[$i]\" title=\"Delete backup from $backup_dates[$i]\">Delete Backup</button></form></td>
                                             <td><form action=\"?tab=data";
                                             if (isset($_GET['page'])) echo '&page=' , $_GET['page'];
                                             echo "\" method=\"POST\" onsubmit=\"return confirm('Confirm that you would like to begin the RESTORE process from the $backup_dates[$i] backup of the system at commit $backup_commits[$i]. If you do not want to do this, click Cancel.)\"><button type=\"submit\" name=\"RestoreBackup\" value=\"$dirs[$i]\" title=\"Restore backup from $backup_dates[$i]\">Restore Backup</button></form></td>
@@ -3986,6 +3684,203 @@ if (isset($output_error)) {
                     <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
+                            Custom Combined Graph Generation
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Combined Temperatures
+                        </td>
+                        <td class="setting-value"></td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relays to Plot (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_temp_relays; ?>" name="combined_temp_relays" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Min
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_min; ?>" maxlength="6" name="combined_temp_min" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_max; ?>" maxlength="6" name="combined_temp_max" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_tics; ?>" maxlength="6" name="combined_temp_tics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_mtics; ?>" maxlength="6" name="combined_temp_mtics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text pad-top">
+                            Combined Humidities
+                        </td>
+                        <td class="setting-value"></td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relays to Plot (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_hum_relays; ?>" name="combined_hum_relays" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Min
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_min; ?>" maxlength="6" name="combined_hum_min" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_max; ?>" maxlength="6" name="combined_hum_max" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_tics; ?>" maxlength="6" name="combined_hum_tics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_mtics; ?>" maxlength="6" name="combined_hum_mtics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text pad-top">
+                            Combined CO<sub>2</sub>s
+                        </td>
+                        <td class="setting-value"></td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relays to Plot (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_co2_relays; ?>" name="combined_co2_relays" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Min
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_min; ?>" maxlength="6" name="combined_co2_min" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_max; ?>" maxlength="6" name="combined_co2_max" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_tics; ?>" maxlength="6" name="combined_co2_tics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_mtics; ?>" maxlength="6" name="combined_co2_mtics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text pad-top">
+                            Combined Pressures
+                        </td>
+                        <td class="setting-value"></td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relays to Plot (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_press_relays; ?>" name="combined_press_relays" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Min
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_min; ?>" maxlength="6" name="combined_press_min" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_max; ?>" maxlength="6" name="combined_press_max" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_tics; ?>" maxlength="6" name="combined_press_tics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_mtics; ?>" maxlength="6" name="combined_press_mtics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-save">
+                            <button name="ChangeCombinedSetings" type="submit" value="">Save</button>
+                        </td>
+                    </tr>
+                    </form>
+
+                    <form method="post" action="?tab=settings">
+                    <tr>
+                        <td class="setting-title">
                             Email Notification
                         </td>
                     </tr>
@@ -3994,55 +3889,63 @@ if (isset($output_error)) {
                             SMTP Host
                         </td>
                         <td class="setting-value">
-                            <input class="smtp" type="text" value="<?php echo $smtp_host; ?>" maxlength=30 size=20 name="smtp_host" title=""/>
+                            <input class="smtp" type="text" value="<?php echo $smtp_host; ?>" maxlength="50" name="smtp_host" title=""/>
                         </td>
                     </tr>
                     <tr>
                         <td class="setting-text">
-                            SMTP Port
+                            Enable SSL (unchecked for TSL)
                         </td>
                         <td class="setting-value">
-                            <input class="smtp" type="number" value="<?php echo $smtp_port; ?>" maxlength=30 size=20 name="smtp_port" title=""/>
+                            <input type="hidden" name="smtp_ssl" value="0" /><input type="checkbox" name="smtp_ssl" value="1"<?php if ($smtp_ssl == 1) echo ' checked'; ?> title="Enable email to be sent using SSL."/>
                         </td>
                     </tr>
                     <tr>
                         <td class="setting-text">
-                            User
+                            SMTP Port (465 for SSL, 587 for TSL)
                         </td>
                         <td class="setting-value">
-                            <input class="smtp" type="text" value="<?php echo $smtp_user; ?>" maxlength=30 size=20 name="smtp_user" title=""/>
+                            <input class="smtp" type="number" value="<?php echo $smtp_port; ?>" maxlength="6" name="smtp_port" title=""/>
                         </td>
                     </tr>
                     <tr>
                         <td class="setting-text">
-                            Password (field will always be blank, enter new password and save to change)
+                            User (usually full email address)
                         </td>
                         <td class="setting-value">
-                            <input class="smtp" type="password" value="" maxlength=30 size=20 name="smtp_pass" title=""/>
+                            <input class="smtp" type="text" value="<?php echo $smtp_user; ?>" maxlength="50" name="smtp_user" title=""/>
                         </td>
                     </tr>
                     <tr>
                         <td class="setting-text">
-                            From
+                            Password (field will always be blank, enter new password to change)
                         </td>
                         <td class="setting-value">
-                            <input class="smtp" type="text" value="<?php echo $smtp_email_from; ?>" maxlength=30 size=20 name="smtp_email_from" title=""/>
+                            <input class="smtp" type="password" value="" maxlength="100" name="smtp_pass" title=""/>
                         </td>
                     </tr>
                     <tr>
                         <td class="setting-text">
-                            Daily Max (The maximum number of notifications that can be sent in a single day)
+                            From Email
                         </td>
                         <td class="setting-value">
-                            <input class="smtp" type="number" step="1" value="<?php echo $smtp_daily_max; ?>" maxlength=2 size=20 name="smtp_daily_max" title=""/>
+                            <input class="smtp" type="text" value="<?php echo $smtp_email_from; ?>" maxlength="50" name="smtp_email_from" title=""/>
                         </td>
                     </tr>
                     <tr>
                         <td class="setting-text">
-                            Wait Time (seconds) (How long to wait between sending the same notification)
+                            Wait Time (How long to wait between sending the same notification, in seconds)
                         </td>
                         <td class="setting-value">
-                            <input class="smtp" type="number" step="1" value="<?php echo $smtp_wait_time; ?>" maxlength=6 size=20 name="smtp_wait_time" title=""/>
+                            <input class="smtp" type="number" step="1" value="<?php echo $smtp_wait_time; ?>" maxlength="7" name="smtp_wait_time" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Send Test Email (save configure above, then enter recipient and click Send)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 13em;" type="text" value="" maxlength="50" name="smtp_email_test" title=""/> <input style="width: 5em;"type="submit" name="TestNotify" value="Send">
                         </td>
                     </tr>
                     <tr>
