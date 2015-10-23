@@ -2621,11 +2621,46 @@ if (isset($output_error)) {
 
                     if ($_POST['custom_type'] == 'Combined') {
                         shell_exec("$mycodo_client --graph-custom x combined custom $id2 custom $time_from $time_to $graph_width");
-                        echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
-                        echo 'graphtype=combinedcustom';
-                        echo '&sensortype=x';
-                        echo '&id=' , $id2 , '>';
-                        echo '</div>';
+                        $first = 0;
+                        if (array_sum($sensor_t_graph) || array_sum($sensor_ht_graph)) {
+                            if ($first) echo '<hr class="fade"/>';
+                            else $first = 1;
+                            echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                            echo 'graphtype=combinedcustom';
+                            echo '&sensortype=temp-x';
+                            echo '&id=' , $id2 , '>';
+                            echo '</div>';
+                        }
+
+                        if (array_sum($sensor_ht_graph)) {
+                            if ($first) echo '<hr class="fade"/>';
+                            else $first = 1;
+                            echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                            echo 'graphtype=combinedcustom';
+                            echo '&sensortype=hum-x';
+                            echo '&id=' , $id2 , '>';
+                            echo '</div>';
+                        }
+
+                        if (array_sum($sensor_co2_graph)) {
+                            if ($first) echo '<hr class="fade"/>';
+                            else $first = 1;
+                            echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                            echo 'graphtype=combinedcustom';
+                            echo '&sensortype=co2-x';
+                            echo '&id=' , $id2 , '>';
+                            echo '</div>';
+                        }
+
+                        if (array_sum($sensor_press_graph)) {
+                            if ($first) echo '<hr class="fade"/>';
+                            else $first = 1;
+                            echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                            echo 'graphtype=combinedcustom';
+                            echo '&sensortype=press-x';
+                            echo '&id=' , $id2 , '>';
+                            echo '</div>';
+                        }
                     } else if ($_POST['custom_type'] == 'Separate') {
                         $first = False;
                         for ($n = 0; $n < count($sensor_t_id); $n++) {

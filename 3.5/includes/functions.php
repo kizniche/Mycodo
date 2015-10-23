@@ -194,16 +194,57 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
         }
 
     } else if ($graph_type == 'combined') { // Combined preset: Generate combined graphs
-        if (!file_exists("/var/www/mycodo/images/graph-xcombined$graph_time_span-$graph_id-0.png")) {
+        if (sizeof(glob("/var/www/mycodo/images/*$graph_id*")) == 0) {
             shell_exec("$mycodo_client --graph x $graph_type $graph_time_span $graph_id 0");
         }
-        echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
-                echo 'sensortype=x';
-                echo '&sensornumber=0';
-                echo "&graphspan=$graph_time_span";
-                echo "&graphtype=$graph_type";
-                echo "&id=$graph_id>";
-                echo '</div>';
+        $first = 0;
+        if (array_sum($sensor_t_graph) || array_sum($sensor_ht_graph)) {
+            if ($first) echo '<hr class="fade"/>';
+            else $first = 1;
+            echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+            echo 'sensortype=temp-x';
+            echo '&sensornumber=0';
+            echo "&graphspan=$graph_time_span";
+            echo "&graphtype=$graph_type";
+            echo "&id=$graph_id>";
+            echo '</div>';
+        }
+
+        if (array_sum($sensor_ht_graph)) {
+            if ($first) echo '<hr class="fade"/>';
+            else $first = 1;
+            echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+            echo 'sensortype=hum-x';
+            echo '&sensornumber=0';
+            echo "&graphspan=$graph_time_span";
+            echo "&graphtype=$graph_type";
+            echo "&id=$graph_id>";
+            echo '</div>';
+        }
+
+        if (array_sum($sensor_co2_graph)) {
+            if ($first) echo '<hr class="fade"/>';
+            else $first = 1;
+            echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+            echo 'sensortype=co2-x';
+            echo '&sensornumber=0';
+            echo "&graphspan=$graph_time_span";
+            echo "&graphtype=$graph_type";
+            echo "&id=$graph_id>";
+            echo '</div>';
+        }
+
+        if (array_sum($sensor_press_graph)) {
+            if ($first) echo '<hr class="fade"/>';
+            else $first = 1;
+            echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+            echo 'sensortype=press-x';
+            echo '&sensornumber=0';
+            echo "&graphspan=$graph_time_span";
+            echo "&graphtype=$graph_type";
+            echo "&id=$graph_id>";
+            echo '</div>';
+        }
     } else if ($graph_type == 'separate') { // Combined preset: Generate separate graphs
         $first = 0;
         if (array_sum($sensor_t_graph)) {

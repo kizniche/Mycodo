@@ -112,7 +112,7 @@ if ($_COOKIE['login_hash'] == $user_hash) {
                 break;
             }
     } else if (ctype_alnum($_GET['id']) && is_int((int)$_GET['sensornumber']) &&
-            ($_GET['sensortype'] == 't' || $_GET['sensortype'] == 'ht' || $_GET['sensortype'] == 'co2' || $_GET['sensortype'] == 'press' || $_GET['sensortype'] == 'x')) {
+            ($_GET['sensortype'] == 't' || $_GET['sensortype'] == 'ht' || $_GET['sensortype'] == 'co2' || $_GET['sensortype'] == 'press' || $_GET['sensortype'] == 'temp-x' || $_GET['sensortype'] == 'hum-x' || $_GET['sensortype'] == 'co2-x' || $_GET['sensortype'] == 'press-x')) {
         header('Content-Type: image/png');
         // Generate preset graphs (Main tab)
         if ($_GET['graphtype'] == 'separate' ||

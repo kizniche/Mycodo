@@ -472,11 +472,12 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
     # Write the following output to a file that will be executed with gnuplot
     gnuplot_graph = "%s/plot-%s-%s-%s-%s-%s.gnuplot" % (
         tmp_path, sensor_type, graph_type, graph_span, graph_id, sensor_number)
-    plot = open(gnuplot_graph, 'w')
 
-    plot.write('reset\n')
-    plot.write('set xdata time\n')
-    plot.write('set timefmt \"%Y %m %d %H %M %S\"\n')
+    if graph_type != "combined" or graph_span == "default":
+        plot = open(gnuplot_graph, 'w')
+        plot.write('reset\n')
+        plot.write('set xdata time\n')
+        plot.write('set timefmt \"%Y %m %d %H %M %S\"\n')
 
     #
     # Graph image size
@@ -573,9 +574,6 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
     if graph_span == "default":
         graph_width = 1000
         graph_height = 1000
-    elif graph_type == "combined":
-        graph_width = 1000
-        graph_height = (500*num_graphs)
     elif graph_type == "separate":
         if sensor_t_graph_relay or sensor_ht_graph_relay or sensor_co2_graph_relay or sensor_press_graph_relay:
             graph_width = 1000
@@ -587,7 +585,8 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
     if width != None:
         graph_width = width
 
-    plot.write('set terminal png size ' + str(graph_width) + ',' + str(graph_height) + '\n')
+    if graph_type != "combined" or graph_span == "default":
+        plot.write('set terminal png size ' + str(graph_width) + ',' + str(graph_height) + '\n')
 
     #
     # Output file
@@ -595,21 +594,23 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
     if graph_span == 'default':
         graph_type = 'default'
 
-    plot.write('set output \"' + image_path + '/graph-' + sensor_type + graph_type + graph_span + '-' + graph_id + '-' + sensor_number + '.png\"\n')
+    if graph_type != "combined" or graph_span == "default":
+        plot.write('set output \"' + image_path + '/graph-' + sensor_type + graph_type + graph_span + '-' + graph_id + '-' + sensor_number + '.png\"\n')
 
     #
     # Axes ranges and Ticks
     #
-    plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
-    plot.write('set format x \"%H:%M\\n%m/%d\"\n')
-    if (((graph_type == "combined" and sum(sensor_t_graph)) and sensor_type == "x") or
-        sensor_type == "t"):
+    if sensor_type == "t":
+        plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
+        plot.write('set format x \"%H:%M\\n%m/%d\"\n')
         y1_min = '0'
         y1_max = '35'
         plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
         plot.write('set ytics 5\n')
         plot.write('set mytics 5\n')
     elif sensor_type == "ht":
+        plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
+        plot.write('set format x \"%H:%M\\n%m/%d\"\n')
         y1_min = '0'
         y1_max = '35'
         plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
@@ -621,6 +622,8 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
         plot.write('set y2tics 10\n')
         plot.write('set my2tics 5\n')
     elif sensor_type == "press":
+        plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
+        plot.write('set format x \"%H:%M\\n%m/%d\"\n')
         y1_min = '0'
         y1_max = '35'
         plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
@@ -631,8 +634,9 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
         plot.write('set mytics 5\n')
         plot.write('set y2tics 250\n')
         plot.write('set my2tics 5\n')
-    elif (((graph_type == "combined" and sum(sensor_co2_graph)) and sensor_type == "x") or
-        sensor_type == "co2"):
+    elif sensor_type == "co2":
+        plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
+        plot.write('set format x \"%H:%M\\n%m/%d\"\n')
         y1_min = '0'
         y1_max = '5000'
         plot.write('set ytics 500\n')
@@ -644,54 +648,92 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
     graph_colors = ['#D55E00', '#0072B2', '#009E73',
                     '#7164a3', '#599e86', '#c3ae4f', '#CC79A7', '#957EF9', '#CC8D9C', '#717412', '#0B479B',
                     ]
-    plot.write('set tics nomirror\n')
-    plot.write('set style line 11 lc rgb \'#808080\' lt 1\n')
-    plot.write('set border 3 back ls 11\n')
-    plot.write('set style line 12 lc rgb \'#808080\' lt 0 lw 1\n')
-    plot.write('set grid xtics ytics back ls 12\n')
-    # Horizontal lines: separate temperature, humidity, and dewpoint
-    plot.write('set style line 1 lc rgb \'' + graph_colors[0] + '\' pt 0 ps 1 lt 1 lw 2\n')
-    plot.write('set style line 2 lc rgb \'' + graph_colors[1] + '\' pt 0 ps 1 lt 1 lw 2\n')
-    plot.write('set style line 3 lc rgb \'' + graph_colors[2] + '\' pt 0 ps 1 lt 1 lw 2\n')
-    # Vertical lines: relays 1 - 8
-    plot.write('set style line 4 lc rgb \'' + graph_colors[3] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    plot.write('set style line 5 lc rgb \'' + graph_colors[4] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    plot.write('set style line 6 lc rgb \'' + graph_colors[5] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    plot.write('set style line 7 lc rgb \'' + graph_colors[6] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    plot.write('set style line 8 lc rgb \'' + graph_colors[7] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    plot.write('set style line 9 lc rgb \'' + graph_colors[8] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    plot.write('set style line 10 lc rgb \'' + graph_colors[9] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    plot.write('set style line 11 lc rgb \'' + graph_colors[10] + '\' pt 0 ps 1 lt 1 lw 1\n')
-    # Horizontal lines: combined temperatures and humidities
-    plot.write('set style line 12 lc rgb \'' + graph_colors[3] + '\' pt 0 ps 1 lt 1 lw 2\n')
-    plot.write('set style line 13 lc rgb \'' + graph_colors[4] + '\' pt 0 ps 1 lt 1 lw 2\n')
-    plot.write('set style line 14 lc rgb \'' + graph_colors[5] + '\' pt 0 ps 1 lt 1 lw 2\n')
-    plot.write('set style line 15 lc rgb \'' + graph_colors[6] + '\' pt 0 ps 1 lt 1 lw 2\n')
-    #plot.write('unset key\n')
-    plot.write('set key left top\n')
+    if graph_type != "combined" or graph_span == "default":
+        plot.write('set tics nomirror\n')
+        plot.write('set style line 11 lc rgb \'#808080\' lt 1\n')
+        plot.write('set border 3 back ls 11\n')
+        plot.write('set style line 12 lc rgb \'#808080\' lt 0 lw 1\n')
+        plot.write('set grid xtics ytics back ls 12\n')
+        # Horizontal lines: separate temperature, humidity, and dewpoint
+        plot.write('set style line 1 lc rgb \'' + graph_colors[0] + '\' pt 0 ps 1 lt 1 lw 2\n')
+        plot.write('set style line 2 lc rgb \'' + graph_colors[1] + '\' pt 0 ps 1 lt 1 lw 2\n')
+        plot.write('set style line 3 lc rgb \'' + graph_colors[2] + '\' pt 0 ps 1 lt 1 lw 2\n')
+        # Vertical lines: relays 1 - 8
+        plot.write('set style line 4 lc rgb \'' + graph_colors[3] + '\' pt 0 ps 1 lt 1 lw 1\n')
+        plot.write('set style line 5 lc rgb \'' + graph_colors[4] + '\' pt 0 ps 1 lt 1 lw 1\n')
+        plot.write('set style line 6 lc rgb \'' + graph_colors[5] + '\' pt 0 ps 1 lt 1 lw 1\n')
+        plot.write('set style line 7 lc rgb \'' + graph_colors[6] + '\' pt 0 ps 1 lt 1 lw 1\n')
+        plot.write('set style line 8 lc rgb \'' + graph_colors[7] + '\' pt 0 ps 1 lt 1 lw 1\n')
+        plot.write('set style line 9 lc rgb \'' + graph_colors[8] + '\' pt 0 ps 1 lt 1 lw 1\n')
+        plot.write('set style line 10 lc rgb \'' + graph_colors[9] + '\' pt 0 ps 1 lt 1 lw 1\n')
+        plot.write('set style line 11 lc rgb \'' + graph_colors[10] + '\' pt 0 ps 1 lt 1 lw 1\n')
+        # Horizontal lines: combined temperatures and humidities
+        plot.write('set style line 12 lc rgb \'' + graph_colors[3] + '\' pt 0 ps 1 lt 1 lw 2\n')
+        plot.write('set style line 13 lc rgb \'' + graph_colors[4] + '\' pt 0 ps 1 lt 1 lw 2\n')
+        plot.write('set style line 14 lc rgb \'' + graph_colors[5] + '\' pt 0 ps 1 lt 1 lw 2\n')
+        plot.write('set style line 15 lc rgb \'' + graph_colors[6] + '\' pt 0 ps 1 lt 1 lw 2\n')
+        #plot.write('unset key\n')
+        plot.write('set key left top\n')
 
     #
     # Combined: Generate one large graph combining each condition to its own graph
     #
     if graph_type == "combined" and graph_span != "default":
-        multiplot_num = 1
-        plot.write('set multiplot layout ' + str(num_graphs) + ',1\n')
+        # multiplot_num = 1
+        # plot.write('set multiplot layout ' + str(num_graphs) + ',1\n')
 
         if sum(sensor_t_graph) or sum(sensor_ht_graph) or sum(sensor_press_graph):
-            if combined_temp_graph_relays_up or combined_temp_graph_relays_down :
-                y1_min = str(combined_temp_min)
-                y1_max = str(combined_temp_max)
-                plot.write('set ytics ' + str(combined_temp_tics) + '\n')
-                plot.write('set mytics ' + str(combined_temp_mtics) + '\n')
+            if combined_temp_graph_relays_up or combined_temp_graph_relays_down:
+                graph_width = 1000
+                graph_height = 900
+            else:
+                graph_width = 1000
+                graph_height = 600
+            plot = open(gnuplot_graph, 'w')
+            plot.write('reset\n')
+            plot.write('set xdata time\n')
+            plot.write('set timefmt \"%Y %m %d %H %M %S\"\n')
+            plot.write('set terminal png size ' + str(graph_width) + ',' + str(graph_height) + '\n')
+            plot.write('set output \"' + image_path + '/graph-temp-' + sensor_type + graph_type + graph_span + '-' + graph_id + '-' + sensor_number + '.png\"\n')
+            plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
+            plot.write('set tics nomirror\n')
+            plot.write('set style line 11 lc rgb \'#808080\' lt 1\n')
+            plot.write('set border 3 back ls 11\n')
+            plot.write('set style line 12 lc rgb \'#808080\' lt 0 lw 1\n')
+            plot.write('set grid xtics ytics back ls 12\n')
+            # Horizontal lines: separate temperature, humidity, and dewpoint
+            plot.write('set style line 1 lc rgb \'' + graph_colors[0] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            plot.write('set style line 2 lc rgb \'' + graph_colors[1] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            plot.write('set style line 3 lc rgb \'' + graph_colors[2] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            # Vertical lines: relays 1 - 8
+            plot.write('set style line 4 lc rgb \'' + graph_colors[3] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 5 lc rgb \'' + graph_colors[4] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 6 lc rgb \'' + graph_colors[5] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 7 lc rgb \'' + graph_colors[6] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 8 lc rgb \'' + graph_colors[7] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 9 lc rgb \'' + graph_colors[8] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 10 lc rgb \'' + graph_colors[9] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 11 lc rgb \'' + graph_colors[10] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            # Horizontal lines: combined temperatures and humidities
+            plot.write('set style line 12 lc rgb \'' + graph_colors[3] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            plot.write('set style line 13 lc rgb \'' + graph_colors[4] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            plot.write('set style line 14 lc rgb \'' + graph_colors[5] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            plot.write('set style line 15 lc rgb \'' + graph_colors[6] + '\' pt 0 ps 1 lt 1 lw 2\n')
+
+            if combined_temp_graph_relays_up or combined_temp_graph_relays_down:
+                plot.write('set multiplot\n')
+                plot.write('set size 0.989,0.6\n')
+                plot.write('set origin 0.011,0.4\n')
                 plot.write('set format x \"\"\n')
             else:
-                y1_min = '0'
-                y1_max = '35'
-                plot.write('set ytics 5\n')
-                plot.write('set mytics 5\n')
+                plot.write('set format x \"%H:%M\\n%m/%d\"\n')
+            y1_min = str(combined_temp_min)
+            y1_max = str(combined_temp_max)
+            plot.write('set ytics ' + str(combined_temp_tics) + '\n')
+            plot.write('set mytics ' + str(combined_temp_mtics) + '\n')
             plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-            plot.write('set origin 0.0,%.2f\n' % float(1-((1/float(num_graphs))*float(multiplot_num))))
-            multiplot_num += 1
+            plot.write('set termopt enhanced\n')
+            plot.write('set key at graph 0.2, graph 0.95\n')
             plot.write('set title \"Combined Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot ')
             first = 0;
@@ -720,13 +762,10 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write(' \n')
 
             if combined_temp_graph_relays_up or combined_temp_graph_relays_down:
-                # plot.write('set size 1.0,0.4\n')
-                plot.write('set origin 0.0,%.2f\n' % float(1-((1/float(num_graphs))*float(multiplot_num))))
-                multiplot_num += 1
-                # plot.write('set key at graph 0.0, graph 0.97\n')
+                plot.write('set size 1.0,0.4\n')
+                plot.write('set origin 0.0,0.0\n')
                 plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                 plot.write('unset y2tics\n')
-                plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                 plot.write('set yrange [' + str(combined_temp_relays_min) + ':' + str(combined_temp_relays_max) + ']\n')
                 plot.write('set ytics ' + str(combined_temp_relays_tics) + '\n')
                 plot.write('set mytics ' + str(combined_temp_relays_mtics) + '\n')
@@ -749,23 +788,68 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                         plot.write('\"<awk \'$8 == ' + str(combined_temp_relays_down_list[i]) + '\' ' + relay_log_generate + '"')
                         plot.write(' u 1:(-abs($10)) index 0 title \"' + relay_name[combined_temp_relays_down_list[i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
                         first += 1
-
                 plot.write(' \n')
+
+            plot.close()
+            if logging.getLogger().isEnabledFor(logging.DEBUG) == False:
+                subprocess.call(['gnuplot', gnuplot_graph])
+            else:
+                gnuplot_log = "%s/plot-%s-%s-%s-%s.log" % (log_path, sensor_type, graph_type, graph_span, sensor_number)
+                with open(gnuplot_log, 'ab') as errfile:
+                    subprocess.call(['gnuplot', gnuplot_graph], stderr=errfile)
 
         if sum(sensor_ht_graph):
             if combined_hum_graph_relays_up or combined_hum_graph_relays_down:
-                y1_min = str(combined_hum_min)
-                y1_max = str(combined_hum_max)
-                plot.write('set ytics ' + str(combined_hum_tics) + '\n')
-                plot.write('set mytics ' + str(combined_hum_mtics) + '\n')
+                graph_width = 1000
+                graph_height = 900
             else:
-                y1_min = '0'
-                y1_max = '100'
-                plot.write('set ytics 10\n')
-                plot.write('set mytics 5\n')
+                graph_width = 1000
+                graph_height = 600
+            plot = open(gnuplot_graph, 'w')
+            plot.write('reset\n')
+            plot.write('set xdata time\n')
+            plot.write('set timefmt \"%Y %m %d %H %M %S\"\n')
+            plot.write('set terminal png size ' + str(graph_width) + ',' + str(graph_height) + '\n')
+            plot.write('set output \"' + image_path + '/graph-hum-' + sensor_type + graph_type + graph_span + '-' + graph_id + '-' + sensor_number + '.png\"\n')
+            plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
+            plot.write('set tics nomirror\n')
+            plot.write('set style line 11 lc rgb \'#808080\' lt 1\n')
+            plot.write('set border 3 back ls 11\n')
+            plot.write('set style line 12 lc rgb \'#808080\' lt 0 lw 1\n')
+            plot.write('set grid xtics ytics back ls 12\n')
+            # Horizontal lines: separate temperature, humidity, and dewpoint
+            plot.write('set style line 1 lc rgb \'' + graph_colors[0] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            plot.write('set style line 2 lc rgb \'' + graph_colors[1] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            plot.write('set style line 3 lc rgb \'' + graph_colors[2] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            # Vertical lines: relays 1 - 8
+            plot.write('set style line 4 lc rgb \'' + graph_colors[3] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 5 lc rgb \'' + graph_colors[4] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 6 lc rgb \'' + graph_colors[5] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 7 lc rgb \'' + graph_colors[6] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 8 lc rgb \'' + graph_colors[7] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 9 lc rgb \'' + graph_colors[8] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 10 lc rgb \'' + graph_colors[9] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 11 lc rgb \'' + graph_colors[10] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            # Horizontal lines: combined temperatures and humidities
+            plot.write('set style line 12 lc rgb \'' + graph_colors[3] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            plot.write('set style line 13 lc rgb \'' + graph_colors[4] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            plot.write('set style line 14 lc rgb \'' + graph_colors[5] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            plot.write('set style line 15 lc rgb \'' + graph_colors[6] + '\' pt 0 ps 1 lt 1 lw 2\n')
+
+            if combined_hum_graph_relays_up or combined_hum_graph_relays_down:
+                plot.write('set multiplot\n')
+                plot.write('set size 0.989,0.6\n')
+                plot.write('set origin 0.011,0.4\n')
+                plot.write('set format x \"\"\n')
+            else:
+                plot.write('set format x \"%H:%M\\n%m/%d\"\n')
+            y1_min = str(combined_hum_min)
+            y1_max = str(combined_hum_max)
+            plot.write('set ytics ' + str(combined_hum_tics) + '\n')
+            plot.write('set mytics ' + str(combined_hum_mtics) + '\n')
             plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-            plot.write('set origin 0.0,%.2f\n' % float(1-((1/float(num_graphs))*float(multiplot_num))))
-            multiplot_num += 1
+            plot.write('set termopt enhanced\n')
+            plot.write('set key at graph 0.2, graph 0.95\n')
             plot.write('set title \"Combined Humidities: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot ')
             first = 0
@@ -777,21 +861,96 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                     plot.write('\"' + sensor_ht_log_final[i] + '" u 1:8 index 0 title \"' + sensor_ht_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')
             plot.write(' \n')
 
+            if combined_hum_graph_relays_up or combined_hum_graph_relays_down:
+                plot.write('set size 1.0,0.4\n')
+                plot.write('set origin 0.0,0.0\n')
+                plot.write('set format x \"%H:%M\\n%m/%d\"\n')
+                plot.write('unset y2tics\n')
+                plot.write('set yrange [' + str(combined_hum_relays_min) + ':' + str(combined_hum_relays_max) + ']\n')
+                plot.write('set ytics ' + str(combined_hum_relays_tics) + '\n')
+                plot.write('set mytics ' + str(combined_hum_relays_mtics) + '\n')
+                plot.write('set xzeroaxis linetype 1 linecolor rgb \'#000000\' linewidth 1\n')
+                plot.write('unset title\n')
+                plot.write('plot ')
+
+                first = 0
+                for i in range(0, len(combined_hum_relays_up_list)):
+                    if combined_hum_relays_up_list[i] != 0:
+                        if first:
+                            plot.write(', \\\n')
+                        plot.write('\"<awk \'$8 == ' + str(combined_hum_relays_up_list[i]) + '\' ' + relay_log_generate + '"')
+                        plot.write(' u 1:(abs($10)) index 0 title \"' + relay_name[combined_hum_relays_up_list[i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                        first += 1
+                for i in range(0, len(combined_hum_relays_down_list)):
+                    if combined_hum_relays_down_list[i] != 0:
+                        if first:
+                            plot.write(', \\\n')
+                        plot.write('\"<awk \'$8 == ' + str(combined_hum_relays_down_list[i]) + '\' ' + relay_log_generate + '"')
+                        plot.write(' u 1:(-abs($10)) index 0 title \"' + relay_name[combined_hum_relays_down_list[i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                        first += 1
+                plot.write(' \n')
+
+            plot.close()
+            if logging.getLogger().isEnabledFor(logging.DEBUG) == False:
+                subprocess.call(['gnuplot', gnuplot_graph])
+            else:
+                gnuplot_log = "%s/plot-%s-%s-%s-%s.log" % (log_path, sensor_type, graph_type, graph_span, sensor_number)
+                with open(gnuplot_log, 'ab') as errfile:
+                    subprocess.call(['gnuplot', gnuplot_graph], stderr=errfile)
+
         if sum(sensor_co2_graph):
             if combined_co2_graph_relays_up or combined_co2_graph_relays_down:
-                y1_min = str(combined_co2_min)
-                y1_max = str(combined_co2_max)
-                plot.write('set ytics ' + str(combined_co2_tics) + '\n')
-                plot.write('set mytics ' + str(combined_co2_mtics) + '\n')
+                graph_width = 1000
+                graph_height = 900
             else:
-                y1_min = '0'
-                y1_max = '5000'
-                plot.write('set ytics 500\n')
+                graph_width = 1000
+                graph_height = 600
+            plot = open(gnuplot_graph, 'w')
+            plot.write('reset\n')
+            plot.write('set xdata time\n')
+            plot.write('set timefmt \"%Y %m %d %H %M %S\"\n')
+            plot.write('set terminal png size ' + str(graph_width) + ',' + str(graph_height) + '\n')
+            plot.write('set output \"' + image_path + '/graph-co2-' + sensor_type + graph_type + graph_span + '-' + graph_id + '-' + sensor_number + '.png\"\n')
+            plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
+            plot.write('set tics nomirror\n')
+            plot.write('set style line 11 lc rgb \'#808080\' lt 1\n')
+            plot.write('set border 3 back ls 11\n')
+            plot.write('set style line 12 lc rgb \'#808080\' lt 0 lw 1\n')
+            plot.write('set grid xtics ytics back ls 12\n')
+            # Horizontal lines: separate temperature, humidity, and dewpoint
+            plot.write('set style line 1 lc rgb \'' + graph_colors[0] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            plot.write('set style line 2 lc rgb \'' + graph_colors[1] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            plot.write('set style line 3 lc rgb \'' + graph_colors[2] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            # Vertical lines: relays 1 - 8
+            plot.write('set style line 4 lc rgb \'' + graph_colors[3] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 5 lc rgb \'' + graph_colors[4] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 6 lc rgb \'' + graph_colors[5] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 7 lc rgb \'' + graph_colors[6] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 8 lc rgb \'' + graph_colors[7] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 9 lc rgb \'' + graph_colors[8] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 10 lc rgb \'' + graph_colors[9] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 11 lc rgb \'' + graph_colors[10] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            # Horizontal lines: combined temperatures and humidities
+            plot.write('set style line 12 lc rgb \'' + graph_colors[3] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            plot.write('set style line 13 lc rgb \'' + graph_colors[4] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            plot.write('set style line 14 lc rgb \'' + graph_colors[5] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            plot.write('set style line 15 lc rgb \'' + graph_colors[6] + '\' pt 0 ps 1 lt 1 lw 2\n')
+
+            if combined_co2_graph_relays_up or combined_co2_graph_relays_down:
+                plot.write('set multiplot\n')
+                plot.write('set size 0.989,0.6\n')
+                plot.write('set origin 0.011,0.4\n')
+                plot.write('set format x \"\"\n')
+            else:
+                plot.write('set format x \"%H:%M\\n%m/%d\"\n')
+            y1_min = str(combined_co2_min)
+            y1_max = str(combined_co2_max)
+            plot.write('set ytics ' + str(combined_co2_tics) + '\n')
+            plot.write('set mytics ' + str(combined_co2_mtics) + '\n')
             plot.write('unset y2tics\n')
             plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-            plot.write('set origin 0.0,%.2f\n' % float(1-((1/float(num_graphs))*float(multiplot_num))))
-            multiplot_num += 1
-            plot.write('set termopt enhanced\n') 
+            plot.write('set termopt enhanced\n')
+            plot.write('set key at graph 0.2, graph 0.95\n')
             plot.write('set title \"Combined CO_2s: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot ')
             first = 0
@@ -803,20 +962,96 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                     plot.write('\"' + sensor_co2_log_final[i] + '" u 1:7 index 0 title \"   ' + sensor_co2_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')
             plot.write(' \n')
 
+            if combined_co2_graph_relays_up or combined_co2_graph_relays_down:
+                plot.write('set size 1.0,0.4\n')
+                plot.write('set origin 0.0,0.0\n')
+                plot.write('set format x \"%H:%M\\n%m/%d\"\n')
+                plot.write('unset y2tics\n')
+                plot.write('set yrange [' + str(combined_co2_relays_min) + ':' + str(combined_co2_relays_max) + ']\n')
+                plot.write('set ytics ' + str(combined_co2_relays_tics) + '\n')
+                plot.write('set mytics ' + str(combined_co2_relays_mtics) + '\n')
+                plot.write('set xzeroaxis linetype 1 linecolor rgb \'#000000\' linewidth 1\n')
+                plot.write('unset title\n')
+                plot.write('plot ')
+
+                first = 0
+                for i in range(0, len(combined_co2_relays_up_list)):
+                    if combined_co2_relays_up_list[i] != 0:
+                        if first:
+                            plot.write(', \\\n')
+                        plot.write('\"<awk \'$8 == ' + str(combined_co2_relays_up_list[i]) + '\' ' + relay_log_generate + '"')
+                        plot.write(' u 1:(abs($10)) index 0 title \"' + relay_name[combined_co2_relays_up_list[i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                        first += 1
+                for i in range(0, len(combined_co2_relays_down_list)):
+                    if combined_co2_relays_down_list[i] != 0:
+                        if first:
+                            plot.write(', \\\n')
+                        plot.write('\"<awk \'$8 == ' + str(combined_co2_relays_down_list[i]) + '\' ' + relay_log_generate + '"')
+                        plot.write(' u 1:(-abs($10)) index 0 title \"' + relay_name[combined_co2_relays_down_list[i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                        first += 1
+                plot.write(' \n')
+
+            plot.close()
+            if logging.getLogger().isEnabledFor(logging.DEBUG) == False:
+                subprocess.call(['gnuplot', gnuplot_graph])
+            else:
+                gnuplot_log = "%s/plot-%s-%s-%s-%s.log" % (log_path, sensor_type, graph_type, graph_span, sensor_number)
+                with open(gnuplot_log, 'ab') as errfile:
+                    subprocess.call(['gnuplot', gnuplot_graph], stderr=errfile)
+
         if sum(sensor_press_graph):
             if combined_press_graph_relays_up or combined_press_graph_relays_down:
-                y1_min = str(combined_press_min)
-                y1_max = str(combined_press_max)
-                plot.write('set ytics ' + str(combined_press_tics) + '\n')
-                plot.write('set mytics ' + str(combined_press_mtics) + '\n')
+                graph_width = 1000
+                graph_height = 900
             else:
-                y1_min = '97000'
-                y1_max = '99000'
-                plot.write('set ytics 200\n')
-                plot.write('set mytics 4\n')
+                graph_width = 1000
+                graph_height = 600
+            plot = open(gnuplot_graph, 'w')
+            plot.write('reset\n')
+            plot.write('set xdata time\n')
+            plot.write('set timefmt \"%Y %m %d %H %M %S\"\n')
+            plot.write('set terminal png size ' + str(graph_width) + ',' + str(graph_height) + '\n')
+            plot.write('set output \"' + image_path + '/graph-press-' + sensor_type + graph_type + graph_span + '-' + graph_id + '-' + sensor_number + '.png\"\n')
+            plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
+            plot.write('set tics nomirror\n')
+            plot.write('set style line 11 lc rgb \'#808080\' lt 1\n')
+            plot.write('set border 3 back ls 11\n')
+            plot.write('set style line 12 lc rgb \'#808080\' lt 0 lw 1\n')
+            plot.write('set grid xtics ytics back ls 12\n')
+            # Horizontal lines: separate temperature, humidity, and dewpoint
+            plot.write('set style line 1 lc rgb \'' + graph_colors[0] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            plot.write('set style line 2 lc rgb \'' + graph_colors[1] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            plot.write('set style line 3 lc rgb \'' + graph_colors[2] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            # Vertical lines: relays 1 - 8
+            plot.write('set style line 4 lc rgb \'' + graph_colors[3] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 5 lc rgb \'' + graph_colors[4] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 6 lc rgb \'' + graph_colors[5] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 7 lc rgb \'' + graph_colors[6] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 8 lc rgb \'' + graph_colors[7] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 9 lc rgb \'' + graph_colors[8] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 10 lc rgb \'' + graph_colors[9] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            plot.write('set style line 11 lc rgb \'' + graph_colors[10] + '\' pt 0 ps 1 lt 1 lw 1\n')
+            # Horizontal lines: combined temperatures and humidities
+            plot.write('set style line 12 lc rgb \'' + graph_colors[3] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            plot.write('set style line 13 lc rgb \'' + graph_colors[4] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            plot.write('set style line 14 lc rgb \'' + graph_colors[5] + '\' pt 0 ps 1 lt 1 lw 2\n')
+            plot.write('set style line 15 lc rgb \'' + graph_colors[6] + '\' pt 0 ps 1 lt 1 lw 2\n')
+
+            if combined_press_graph_relays_up or combined_press_graph_relays_down:
+                plot.write('set multiplot\n')
+                plot.write('set size 0.989,0.6\n')
+                plot.write('set origin 0.011,0.4\n')
+                plot.write('set format x \"\"\n')
+            else:
+                plot.write('set format x \"%H:%M\\n%m/%d\"\n')
+            y1_min = str(combined_press_min)
+            y1_max = str(combined_press_max)
+            plot.write('set ytics ' + str(combined_press_tics) + '\n')
+            plot.write('set mytics ' + str(combined_press_mtics) + '\n')
+            plot.write('unset y2tics\n')
             plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-            plot.write('\nset origin 0.0,%.2f\n' % float(1-((1/float(num_graphs))*float(multiplot_num))))
-            multiplot_num += 1
+            plot.write('set termopt enhanced\n')
+            plot.write('set key at graph 0.2, graph 0.95\n')
             plot.write('set title \"Combined Pressures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot ')
             first = 0
@@ -828,7 +1063,42 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                     plot.write('\"' + sensor_press_log_final[i] + '" u 1:8 index 0 title \"' + sensor_press_name[i] + '\" w lp ls ' + str(i+11) + ' axes x1y1')
             plot.write(' \n')
 
-        plot.write('unset multiplot\n')
+            if combined_press_graph_relays_up or combined_press_graph_relays_down:
+                plot.write('set size 1.0,0.4\n')
+                plot.write('set origin 0.0,0.0\n')
+                plot.write('set format x \"%H:%M\\n%m/%d\"\n')
+                plot.write('unset y2tics\n')
+                plot.write('set yrange [' + str(combined_press_relays_min) + ':' + str(combined_press_relays_max) + ']\n')
+                plot.write('set ytics ' + str(combined_press_relays_tics) + '\n')
+                plot.write('set mytics ' + str(combined_press_relays_mtics) + '\n')
+                plot.write('set xzeroaxis linetype 1 linecolor rgb \'#000000\' linewidth 1\n')
+                plot.write('unset title\n')
+                plot.write('plot ')
+
+                first = 0
+                for i in range(0, len(combined_press_relays_up_list)):
+                    if combined_press_relays_up_list[i] != 0:
+                        if first:
+                            plot.write(', \\\n')
+                        plot.write('\"<awk \'$8 == ' + str(combined_press_relays_up_list[i]) + '\' ' + relay_log_generate + '"')
+                        plot.write(' u 1:(abs($10)) index 0 title \"' + relay_name[combined_press_relays_up_list[i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                        first += 1
+                for i in range(0, len(combined_press_relays_down_list)):
+                    if combined_press_relays_down_list[i] != 0:
+                        if first:
+                            plot.write(', \\\n')
+                        plot.write('\"<awk \'$8 == ' + str(combined_press_relays_down_list[i]) + '\' ' + relay_log_generate + '"')
+                        plot.write(' u 1:(-abs($10)) index 0 title \"' + relay_name[combined_press_relays_down_list[i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                        first += 1
+                plot.write(' \n')
+
+            plot.close()
+            if logging.getLogger().isEnabledFor(logging.DEBUG) == False:
+                subprocess.call(['gnuplot', gnuplot_graph])
+            else:
+                gnuplot_log = "%s/plot-%s-%s-%s-%s.log" % (log_path, sensor_type, graph_type, graph_span, sensor_number)
+                with open(gnuplot_log, 'ab') as errfile:
+                    subprocess.call(['gnuplot', gnuplot_graph], stderr=errfile)
 
 
     #
@@ -1400,11 +1670,13 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write('\"\" u 1:8 index 0 notitle w lp ls 2 axes x1y2\n')
             plot.write('unset multiplot\n')
 
-    plot.close()
+    if graph_type != "combined" or graph_span == "default":
+        plot.close()
 
     # Generate graph with gnuplot with the above generated command sequence
     if logging.getLogger().isEnabledFor(logging.DEBUG) == False:
-        subprocess.call(['gnuplot', gnuplot_graph])
+        if graph_type != "combined" or graph_span == "default":
+            subprocess.call(['gnuplot', gnuplot_graph])
 
         # Delete all temporary files
         os.remove(gnuplot_graph)
