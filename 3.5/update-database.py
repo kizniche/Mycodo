@@ -27,7 +27,7 @@ sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
 sql_database_user = '/var/www/mycodo/config/users.db'
 sql_database_note = '/var/www/mycodo/config/notes.db'
 
-db_version_mycodo = 13
+db_version_mycodo = 14
 db_version_user = 1
 db_version_note = 2
 
@@ -242,6 +242,11 @@ def mycodo_database_pre_update():
     if current_db_version_mycodo < 10:
         DelTable(sql_database_mycodo, 'SMTP')
 
+    # Version 14 updates: Add ability to customize combined graphs
+    # Need to remove column, but SQLite doesn't support DROP COLUMN
+    if current_db_version_mycodo < 14:
+        DelTable(sql_database_mycodo, 'CustomGraph')
+
 def mycodo_database_update():
     print "Current Mycodo database version: %d" % current_db_version_mycodo
     print "Latest Mycodo database version: %d" % db_version_mycodo
@@ -405,6 +410,9 @@ def mycodo_database_update():
             ModNullValue(sql_database_mycodo, 'HTSensorPreset', 'Verify_Hum_Notify', 0)
             ModNullValue(sql_database_mycodo, 'HTSensorPreset', 'Verify_Hum_Stop', 0)
             ModNullValue(sql_database_mycodo, 'HTSensorPreset', 'Verify_Notify_Email', '')
+
+        # Version 14 updates: Add ability to customize combined graphs
+
 
         # any extra commands for version X
         #if current_db_version_mycodo < X:
@@ -906,29 +914,49 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'Timers', 'DurationOff', 'INT')
 
     AddTable(sql_database_mycodo, 'CustomGraph')
-    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Temp_Relays', 'TEXT')
     AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Temp_Min', 'INT')
     AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Temp_Max', 'INT')
     AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Temp_Tics', 'INT')
     AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Temp_Mtics', 'INT')
-    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Hum_Relays', 'TEXT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Temp_Relays_Up', 'TEXT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Temp_Relays_Down', 'TEXT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Temp_Relays_Min', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Temp_Relays_Max', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Temp_Relays_Tics', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Temp_Relays_Mtics', 'INT')
     AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Hum_Min', 'INT')
     AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Hum_Max', 'INT')
     AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Hum_Tics', 'INT')
     AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Hum_Mtics', 'INT')
-    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Co2_Relays', 'TEXT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Hum_Relays_Up', 'TEXT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Hum_Relays_Down', 'TEXT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Hum_Relays_Min', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Hum_Relays_Max', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Hum_Relays_Tics', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Hum_Relays_Mtics', 'INT')
     AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Co2_Min', 'INT')
     AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Co2_Max', 'INT')
     AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Co2_Tics', 'INT')
     AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Co2_Mtics', 'INT')
-    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Press_Relays', 'TEXT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Co2_Relays_Up', 'TEXT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Co2_Relays_Down', 'TEXT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Co2_Relays_Min', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Co2_Relays_Max', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Co2_Relays_Tics', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Co2_Relays_Mtics', 'INT')
     AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Press_Min', 'INT')
     AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Press_Max', 'INT')
     AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Press_Tics', 'INT')
     AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Press_Mtics', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Press_Relays_Up', 'TEXT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Press_Relays_Down', 'TEXT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Press_Relays_Min', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Press_Relays_Max', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Press_Relays_Tics', 'INT')
+    AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Press_Relays_Mtics', 'INT')
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("INSERT OR IGNORE INTO CustomGraph VALUES('0', '0', 0, 35, 5, 5, '0', 0, 100, 10, 5, '0', 0, 5000, 500, 5, '0', 96000, 100000, 500, 5)")
+    cur.execute("INSERT OR IGNORE INTO CustomGraph VALUES('0', 0, 35, 5, 5, '0', '0', -100, 100, 25, 5, 0, 100, 10, 5, '0', '0', -100, 100, 25, 5, 0, 5000, 500, 5, '0', '0', -100, 100, 25, 5, 96000, 100000, 500, 5, '0', '0', -100, 100, 25, 5)")
     conn.commit()
     cur.close()
        

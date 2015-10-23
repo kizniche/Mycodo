@@ -62,7 +62,7 @@ sensor_press_log_lock_path = "%s/sensor-press-log" % lock_directory
 #################################################
 
 # Generate gnuplot graph
-def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number, sensor_t_name, sensor_t_graph, sensor_t_period, sensor_t_yaxis_relay_min, sensor_t_yaxis_relay_max, sensor_t_yaxis_relay_tics, sensor_t_yaxis_relay_mtics, sensor_t_yaxis_temp_min, sensor_t_yaxis_temp_max, sensor_t_yaxis_temp_tics, sensor_t_yaxis_temp_mtics, sensor_t_temp_relays_up_list, sensor_t_temp_relays_down_list, pid_t_temp_relay_high, pid_t_temp_relay_low, sensor_ht_name, sensor_ht_graph, sensor_ht_period, sensor_ht_yaxis_relay_min, sensor_ht_yaxis_relay_max, sensor_ht_yaxis_relay_tics, sensor_ht_yaxis_relay_mtics, sensor_ht_yaxis_temp_min, sensor_ht_yaxis_temp_max, sensor_ht_yaxis_temp_tics, sensor_ht_yaxis_temp_mtics, sensor_ht_yaxis_hum_min, sensor_ht_yaxis_hum_max, sensor_ht_yaxis_hum_tics, sensor_ht_yaxis_hum_mtics, sensor_ht_temp_relays_up_list, sensor_ht_temp_relays_down_list, sensor_ht_hum_relays_up_list, sensor_ht_hum_relays_down_list, pid_ht_temp_relay_high, pid_ht_temp_relay_low, pid_ht_hum_relay_high, pid_ht_hum_relay_low, sensor_co2_name, sensor_co2_graph, sensor_co2_period, sensor_co2_yaxis_relay_min, sensor_co2_yaxis_relay_max, sensor_co2_yaxis_relay_tics, sensor_co2_yaxis_relay_mtics, sensor_co2_yaxis_co2_min, sensor_co2_yaxis_co2_max, sensor_co2_yaxis_co2_tics, sensor_co2_yaxis_co2_mtics, sensor_co2_relays_up_list, sensor_co2_relays_down_list, pid_co2_relay_high, pid_co2_relay_low, sensor_press_name, sensor_press_graph, sensor_press_period, sensor_press_yaxis_relay_min, sensor_press_yaxis_relay_max, sensor_press_yaxis_relay_tics, sensor_press_yaxis_relay_mtics, sensor_press_yaxis_temp_min, sensor_press_yaxis_temp_max, sensor_press_yaxis_temp_tics, sensor_press_yaxis_temp_mtics, sensor_press_yaxis_press_min, sensor_press_yaxis_press_max, sensor_press_yaxis_press_tics, sensor_press_yaxis_press_mtics, sensor_press_temp_relays_up_list, sensor_press_temp_relays_down_list, sensor_press_press_relays_up_list, sensor_press_press_relays_down_list, pid_press_temp_relay_high, pid_press_temp_relay_low, pid_press_press_relay_high, pid_press_press_relay_low, relay_name, relay_pin, time_from, time_to, width, combined_temp_relays, combined_temp_min, combined_temp_max, combined_temp_tics, combined_temp_mtics, combined_hum_relays, combined_hum_min, combined_hum_max, combined_hum_tics, combined_hum_mtics, combined_co2_relays, combined_co2_min, combined_co2_max, combined_co2_tics, combined_co2_mtics, combined_press_relays, combined_press_min, combined_press_max, combined_press_tics, combined_press_mtics):
+def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number, sensor_t_name, sensor_t_graph, sensor_t_period, sensor_t_yaxis_relay_min, sensor_t_yaxis_relay_max, sensor_t_yaxis_relay_tics, sensor_t_yaxis_relay_mtics, sensor_t_yaxis_temp_min, sensor_t_yaxis_temp_max, sensor_t_yaxis_temp_tics, sensor_t_yaxis_temp_mtics, sensor_t_temp_relays_up_list, sensor_t_temp_relays_down_list, pid_t_temp_relay_high, pid_t_temp_relay_low, sensor_ht_name, sensor_ht_graph, sensor_ht_period, sensor_ht_yaxis_relay_min, sensor_ht_yaxis_relay_max, sensor_ht_yaxis_relay_tics, sensor_ht_yaxis_relay_mtics, sensor_ht_yaxis_temp_min, sensor_ht_yaxis_temp_max, sensor_ht_yaxis_temp_tics, sensor_ht_yaxis_temp_mtics, sensor_ht_yaxis_hum_min, sensor_ht_yaxis_hum_max, sensor_ht_yaxis_hum_tics, sensor_ht_yaxis_hum_mtics, sensor_ht_temp_relays_up_list, sensor_ht_temp_relays_down_list, sensor_ht_hum_relays_up_list, sensor_ht_hum_relays_down_list, pid_ht_temp_relay_high, pid_ht_temp_relay_low, pid_ht_hum_relay_high, pid_ht_hum_relay_low, sensor_co2_name, sensor_co2_graph, sensor_co2_period, sensor_co2_yaxis_relay_min, sensor_co2_yaxis_relay_max, sensor_co2_yaxis_relay_tics, sensor_co2_yaxis_relay_mtics, sensor_co2_yaxis_co2_min, sensor_co2_yaxis_co2_max, sensor_co2_yaxis_co2_tics, sensor_co2_yaxis_co2_mtics, sensor_co2_relays_up_list, sensor_co2_relays_down_list, pid_co2_relay_high, pid_co2_relay_low, sensor_press_name, sensor_press_graph, sensor_press_period, sensor_press_yaxis_relay_min, sensor_press_yaxis_relay_max, sensor_press_yaxis_relay_tics, sensor_press_yaxis_relay_mtics, sensor_press_yaxis_temp_min, sensor_press_yaxis_temp_max, sensor_press_yaxis_temp_tics, sensor_press_yaxis_temp_mtics, sensor_press_yaxis_press_min, sensor_press_yaxis_press_max, sensor_press_yaxis_press_tics, sensor_press_yaxis_press_mtics, sensor_press_temp_relays_up_list, sensor_press_temp_relays_down_list, sensor_press_press_relays_up_list, sensor_press_press_relays_down_list, pid_press_temp_relay_high, pid_press_temp_relay_low, pid_press_press_relay_high, pid_press_press_relay_low, relay_name, relay_pin, time_from, time_to, width, combined_temp_min, combined_temp_max, combined_temp_tics, combined_temp_mtics, combined_temp_relays_up, combined_temp_relays_down, combined_temp_relays_min, combined_temp_relays_max, combined_temp_relays_tics, combined_temp_relays_mtics, combined_hum_min, combined_hum_max, combined_hum_tics, combined_hum_mtics, combined_hum_relays_up, combined_hum_relays_down, combined_hum_relays_min, combined_hum_relays_max, combined_hum_relays_tics, combined_hum_relays_mtics, combined_co2_min, combined_co2_max, combined_co2_tics, combined_co2_mtics, combined_co2_relays_up, combined_co2_relays_down, combined_co2_relays_min, combined_co2_relays_max, combined_co2_relays_tics, combined_co2_relays_mtics, combined_press_min, combined_press_max, combined_press_tics, combined_press_mtics, combined_press_relays_up, combined_press_relays_down, combined_press_relays_min, combined_press_relays_max, combined_press_relays_tics, combined_press_relays_mtics, combined_temp_relays_up_list, combined_temp_relays_down_list, combined_hum_relays_up_list, combined_hum_relays_down_list, combined_co2_relays_up_list, combined_co2_relays_down_list, combined_press_relays_up_list, combined_press_relays_down_list):
 
     sensor_t_log_final = [0] * (len(sensor_t_name)+1)
     sensor_ht_log_final = [0] * (len(sensor_ht_name)+1)
@@ -482,26 +482,6 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
     # Graph image size
     #
 
-    num_graphs = 0
-
-    if bool(sum(sensor_t_graph)):
-        num_graphs += 1
-
-    if bool(sum(sensor_ht_graph)):
-        if bool(sum(sensor_t_graph)):
-            num_graphs += 1
-        else:
-            num_graphs += 2
-
-    if bool(sum(sensor_co2_graph)):
-        num_graphs += 1
-
-    if bool(sum(sensor_press_graph)):
-        if bool(sum(sensor_t_graph)) or bool(sum(sensor_ht_graph)):
-            num_graphs += 1
-        else:
-            num_graphs += 2
-
     sensor_t_graph_relay = 0
     sensor_ht_graph_relay = 0
     sensor_co2_graph_relay = 0
@@ -529,8 +509,67 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                 (len(sensor_press_temp_relays_down_list[int(sensor_number)]) > 1 or (len(sensor_press_temp_relays_down_list[int(sensor_number)]) == 1 and sensor_press_temp_relays_down_list[int(sensor_number)][0] != 0)) or 
                 (len(sensor_press_press_relays_up_list[int(sensor_number)]) > 1 or (len(sensor_press_press_relays_up_list[int(sensor_number)]) == 1 and sensor_press_press_relays_up_list[int(sensor_number)][0] != 0)) or
                 (len(sensor_press_press_relays_down_list[int(sensor_number)]) > 1 or (len(sensor_press_press_relays_down_list[int(sensor_number)]) == 1 and sensor_press_press_relays_down_list[int(sensor_number)][0] != 0))):
-            sensor_press_graph_relay = 0
-    
+            sensor_press_graph_relay = 1
+
+    num_graphs = 0
+    if bool(sum(sensor_t_graph)):
+        num_graphs += 1
+    if bool(sum(sensor_ht_graph)):
+        if bool(sum(sensor_t_graph)):
+            num_graphs += 1
+        else:
+            num_graphs += 2
+    if bool(sum(sensor_co2_graph)):
+        num_graphs += 1
+    if bool(sum(sensor_press_graph)):
+        if bool(sum(sensor_t_graph)) or bool(sum(sensor_ht_graph)):
+            num_graphs += 1
+        else:
+            num_graphs += 2
+
+    combined_temp_graph_relays_up = 0
+    combined_temp_graph_relays_down = 0
+    combined_hum_graph_relays_up = 0
+    combined_hum_graph_relays_down = 0
+    combined_co2_graph_relays_up = 0
+    combined_co2_graph_relays_down = 0
+    combined_press_graph_relays_up = 0
+    combined_press_graph_relays_down = 0
+
+    if sensor_type == "x":
+        for i in range(0, len(combined_temp_relays_up_list)):
+            if combined_temp_relays_up_list[i] != 0:
+                combined_temp_graph_relays_up = 1
+        for i in range(0, len(combined_temp_relays_down_list)):
+            if combined_temp_relays_down_list[i] != 0:
+                combined_temp_graph_relays_down = 1
+        for i in range(0, len(combined_hum_relays_up_list)):
+            if combined_hum_relays_up_list[i] != 0:
+                combined_hum_graph_relays_up = 1
+        for i in range(0, len(combined_hum_relays_down_list)):
+            if combined_hum_relays_down_list[i] != 0:
+                combined_hum_graph_relays_down = 1
+        for i in range(0, len(combined_co2_relays_up_list)):
+            if combined_co2_relays_up_list[i] != 0:
+                combined_co2_graph_relays_up = 1
+        for i in range(0, len(combined_co2_relays_down_list)):
+            if combined_co2_relays_down_list[i] != 0:
+                combined_co2_graph_relays_down = 1
+        for i in range(0, len(combined_press_relays_up_list)):
+            if combined_press_relays_up_list[i] != 0:
+                combined_press_graph_relays_up = 1
+        for i in range(0, len(combined_press_relays_down_list)):
+            if combined_press_relays_down_list[i] != 0:
+                combined_press_graph_relays_down = 1
+        if combined_temp_graph_relays_up or combined_temp_graph_relays_down:
+            num_graphs += 1
+        if combined_hum_graph_relays_up or combined_hum_graph_relays_down:
+            num_graphs += 1
+        if combined_co2_graph_relays_up or combined_co2_graph_relays_down:
+            num_graphs += 1
+        if combined_press_graph_relays_up or combined_press_graph_relays_down:
+            num_graphs += 1
+
     if graph_span == "default":
         graph_width = 1000
         graph_height = 1000
@@ -550,7 +589,6 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
 
     plot.write('set terminal png size ' + str(graph_width) + ',' + str(graph_height) + '\n')
 
-
     #
     # Output file
     #
@@ -559,31 +597,22 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
 
     plot.write('set output \"' + image_path + '/graph-' + sensor_type + graph_type + graph_span + '-' + graph_id + '-' + sensor_number + '.png\"\n')
 
-
     #
-    # Axes ranges
+    # Axes ranges and Ticks
     #
-    y1_min = '0'
-    y1_max = '35'
-
-    if sensor_type == "co2":
-        y1_min = '0'
-        y1_max = '5000'
-
     plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
     plot.write('set format x \"%H:%M\\n%m/%d\"\n')
-    plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
-
-
-    #
-    # Ticks
-    #
     if (((graph_type == "combined" and sum(sensor_t_graph)) and sensor_type == "x") or
         sensor_type == "t"):
+        y1_min = '0'
+        y1_max = '35'
+        plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
         plot.write('set ytics 5\n')
         plot.write('set mytics 5\n')
-
     elif sensor_type == "ht":
+        y1_min = '0'
+        y1_max = '35'
+        plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
         y2_min = '0'
         y2_max = '100'
         plot.write('set y2range [' + y2_min + ':' + y2_max + ']\n')
@@ -591,8 +620,10 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
         plot.write('set mytics 5\n')
         plot.write('set y2tics 10\n')
         plot.write('set my2tics 5\n')
-
     elif sensor_type == "press":
+        y1_min = '0'
+        y1_max = '35'
+        plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
         y2_min = '97000'
         y2_max = '99000'
         plot.write('set y2range [' + y2_min + ':' + y2_max + ']\n')
@@ -600,9 +631,10 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
         plot.write('set mytics 5\n')
         plot.write('set y2tics 250\n')
         plot.write('set my2tics 5\n')
-
     elif (((graph_type == "combined" and sum(sensor_co2_graph)) and sensor_type == "x") or
         sensor_type == "co2"):
+        y1_min = '0'
+        y1_max = '5000'
         plot.write('set ytics 500\n')
         plot.write('set mytics 5\n')
    
@@ -612,7 +644,6 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
     graph_colors = ['#D55E00', '#0072B2', '#009E73',
                     '#7164a3', '#599e86', '#c3ae4f', '#CC79A7', '#957EF9', '#CC8D9C', '#717412', '#0B479B',
                     ]
-
     plot.write('set tics nomirror\n')
     plot.write('set style line 11 lc rgb \'#808080\' lt 1\n')
     plot.write('set border 3 back ls 11\n')
@@ -639,7 +670,6 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
     #plot.write('unset key\n')
     plot.write('set key left top\n')
 
-
     #
     # Combined: Generate one large graph combining each condition to its own graph
     #
@@ -648,11 +678,12 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
         plot.write('set multiplot layout ' + str(num_graphs) + ',1\n')
 
         if sum(sensor_t_graph) or sum(sensor_ht_graph) or sum(sensor_press_graph):
-            if combined_temp_relays != None:
+            if combined_temp_graph_relays_up or combined_temp_graph_relays_down :
                 y1_min = str(combined_temp_min)
                 y1_max = str(combined_temp_max)
                 plot.write('set ytics ' + str(combined_temp_tics) + '\n')
                 plot.write('set mytics ' + str(combined_temp_mtics) + '\n')
+                plot.write('set format x \"\"\n')
             else:
                 y1_min = '0'
                 y1_max = '35'
@@ -688,13 +719,47 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
                     line += 1
             plot.write(' \n')
 
+            if combined_temp_graph_relays_up or combined_temp_graph_relays_down:
+                # plot.write('set size 1.0,0.4\n')
+                plot.write('set origin 0.0,%.2f\n' % float(1-((1/float(num_graphs))*float(multiplot_num))))
+                multiplot_num += 1
+                # plot.write('set key at graph 0.0, graph 0.97\n')
+                plot.write('set format x \"%H:%M\\n%m/%d\"\n')
+                plot.write('unset y2tics\n')
+                plot.write('set format x \"%H:%M\\n%m/%d\"\n')
+                plot.write('set yrange [' + str(combined_temp_relays_min) + ':' + str(combined_temp_relays_max) + ']\n')
+                plot.write('set ytics ' + str(combined_temp_relays_tics) + '\n')
+                plot.write('set mytics ' + str(combined_temp_relays_mtics) + '\n')
+                plot.write('set xzeroaxis linetype 1 linecolor rgb \'#000000\' linewidth 1\n')
+                plot.write('unset title\n')
+                plot.write('plot ')
+
+                first = 0
+                for i in range(0, len(combined_temp_relays_up_list)):
+                    if combined_temp_relays_up_list[i] != 0:
+                        if first:
+                            plot.write(', \\\n')
+                        plot.write('\"<awk \'$8 == ' + str(combined_temp_relays_up_list[i]) + '\' ' + relay_log_generate + '"')
+                        plot.write(' u 1:(abs($10)) index 0 title \"' + relay_name[combined_temp_relays_up_list[i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                        first += 1
+                for i in range(0, len(combined_temp_relays_down_list)):
+                    if combined_temp_relays_down_list[i] != 0:
+                        if first:
+                            plot.write(', \\\n')
+                        plot.write('\"<awk \'$8 == ' + str(combined_temp_relays_down_list[i]) + '\' ' + relay_log_generate + '"')
+                        plot.write(' u 1:(-abs($10)) index 0 title \"' + relay_name[combined_temp_relays_down_list[i]-1] + '\" w impulses ls ' + str(first+4) + ' axes x1y1')
+                        first += 1
+
+                plot.write(' \n')
+
         if sum(sensor_ht_graph):
-            if combined_hum_relays != None:
+            if combined_hum_graph_relays_up or combined_hum_graph_relays_down:
                 y1_min = str(combined_hum_min)
                 y1_max = str(combined_hum_max)
                 plot.write('set ytics ' + str(combined_hum_tics) + '\n')
                 plot.write('set mytics ' + str(combined_hum_mtics) + '\n')
             else:
+                y1_min = '0'
                 y1_max = '100'
                 plot.write('set ytics 10\n')
                 plot.write('set mytics 5\n')
@@ -713,12 +778,13 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write(' \n')
 
         if sum(sensor_co2_graph):
-            if combined_co2_relays != None:
+            if combined_co2_graph_relays_up or combined_co2_graph_relays_down:
                 y1_min = str(combined_co2_min)
                 y1_max = str(combined_co2_max)
                 plot.write('set ytics ' + str(combined_co2_tics) + '\n')
                 plot.write('set mytics ' + str(combined_co2_mtics) + '\n')
             else:
+                y1_min = '0'
                 y1_max = '5000'
                 plot.write('set ytics 500\n')
             plot.write('unset y2tics\n')
@@ -738,7 +804,7 @@ def generate_graph(sensor_type, graph_type, graph_span, graph_id, sensor_number,
             plot.write(' \n')
 
         if sum(sensor_press_graph):
-            if combined_press_relays != None:
+            if combined_press_graph_relays_up or combined_press_graph_relays_down:
                 y1_min = str(combined_press_min)
                 y1_max = str(combined_press_max)
                 plot.write('set ytics ' + str(combined_press_tics) + '\n')
