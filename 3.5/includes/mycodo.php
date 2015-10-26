@@ -2620,54 +2620,54 @@ if (isset($output_error)) {
                     } else $graph_width = 900;
 
                     if ($_POST['custom_type'] == 'Combined') {
-                        shell_exec("$mycodo_client --graph-custom x combined custom $id2 custom $time_from $time_to $graph_width");
-                        $first = 0;
+                        shell_exec("$mycodo_client --graph combined $id2 x $time_from $time_to $graph_width");
+                        $first = False;
                         if (array_sum($sensor_t_graph) || array_sum($sensor_ht_graph)) {
                             if ($first) echo '<hr class="fade"/>';
-                            else $first = 1;
+                            else $first = True;
                             echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
                             echo 'graphtype=combinedcustom';
-                            echo '&sensortype=temp-x';
+                            echo '&sensortype=temp';
                             echo '&id=' , $id2 , '>';
                             echo '</div>';
                         }
 
                         if (array_sum($sensor_ht_graph)) {
                             if ($first) echo '<hr class="fade"/>';
-                            else $first = 1;
+                            else $first = True;
                             echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
                             echo 'graphtype=combinedcustom';
-                            echo '&sensortype=hum-x';
+                            echo '&sensortype=hum';
                             echo '&id=' , $id2 , '>';
                             echo '</div>';
                         }
 
                         if (array_sum($sensor_co2_graph)) {
                             if ($first) echo '<hr class="fade"/>';
-                            else $first = 1;
+                            else $first = True;
                             echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
                             echo 'graphtype=combinedcustom';
-                            echo '&sensortype=co2-x';
+                            echo '&sensortype=co2';
                             echo '&id=' , $id2 , '>';
                             echo '</div>';
                         }
 
                         if (array_sum($sensor_press_graph)) {
                             if ($first) echo '<hr class="fade"/>';
-                            else $first = 1;
+                            else $first = True;
                             echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
                             echo 'graphtype=combinedcustom';
-                            echo '&sensortype=press-x';
+                            echo '&sensortype=press';
                             echo '&id=' , $id2 , '>';
                             echo '</div>';
                         }
                     } else if ($_POST['custom_type'] == 'Separate') {
+                        shell_exec("$mycodo_client --graph separate $id2 x $time_from $time_to $graph_width");
                         $first = False;
                         for ($n = 0; $n < count($sensor_t_id); $n++) {
                             if ($sensor_t_graph[$n] == 1) {
-                                if ($first == True) echo '<hr class="fade"/>';
+                                if ($first) echo '<hr class="fade"/>';
                                 else $first = True;
-                                shell_exec("$mycodo_client --graph-custom t separate custom $id2 $n $time_from $time_to $graph_width");
                                 echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
                                 echo 'graphtype=separatecustom';
                                 echo '&sensortype=t';
@@ -2676,12 +2676,10 @@ if (isset($output_error)) {
                                 echo '</div>';
                             }
                         }
-
                         for ($n = 0; $n < count($sensor_ht_id); $n++) {
                             if ($sensor_ht_graph[$n] == 1) {
-                                if ($first == True) echo '<hr class="fade"/>';
+                                if ($first) echo '<hr class="fade"/>';
                                 else $first = True;
-                                shell_exec("$mycodo_client --graph-custom ht separate custom $id2 $n $time_from $time_to $graph_width");
                                 echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
                                 echo 'graphtype=separatecustom';
                                 echo '&sensortype=ht';
@@ -2690,12 +2688,10 @@ if (isset($output_error)) {
                                 echo '</div>';
                             }
                         }
-
                         for ($n = 0; $n < count($sensor_co2_id); $n++) {
                             if ($sensor_co2_graph[$n] == 1) {
-                                if ($first == True) echo '<hr class="fade"/>';
+                                if ($first) echo '<hr class="fade"/>';
                                 else $first = True;
-                                shell_exec("$mycodo_client --graph-custom co2 separate custom $id2 $n $time_from $time_to $graph_width");
                                 echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
                                 echo 'graphtype=separatecustom';
                                 echo '&sensortype=co2';
@@ -2704,12 +2700,10 @@ if (isset($output_error)) {
                                 echo '</div>';
                             }
                         }
-
                         for ($n = 0; $n < count($sensor_press_id); $n++) {
                             if ($sensor_press_graph[$n] == 1) {
-                                if ($first == True) echo '<hr class="fade"/>';
+                                if ($first) echo '<hr class="fade"/>';
                                 else $first = True;
-                                shell_exec("$mycodo_client --graph-custom press separate custom $id2 $n $time_from $time_to $graph_width");
                                 echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
                                 echo 'graphtype=separatecustom';
                                 echo '&sensortype=press';

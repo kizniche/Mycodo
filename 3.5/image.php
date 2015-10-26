@@ -36,16 +36,7 @@ $mycodo_client = $install_path . "/cgi-bin/mycodo-client.py";
 require_once("includes/auth.php"); // Check authorization to view
 
 if ($_COOKIE['login_hash'] == $user_hash) {
-    if (isset($_GET['graphtype']) && ($_GET['graphtype'] == 'custom-separate' || $_GET['graphtype'] == 'custom-combined')) {
-        header('Content-Type: image/png');
-        // Generate custom graph (Graph tab)
-        if (isset($_GET['sensortype'])) {
-            readfile($image_dir . 'graph-' . $_GET['sensortype'] . "-" . $_GET['graphtype'] . '-' . $_GET['id'] . '-' . $_GET['sensornumber'] . '.png');
-        } else {
-            readfile($image_dir . 'graph-' . $_GET['graphtype'] . '-' . $_GET['id'] . '-' . $_GET['sensornumber'] . '.png');
-        }
-    } else if (isset($_GET['span'])) {
-        // Display still image from RPi camera (Camera tab)
+    if (isset($_GET['span'])) {
         switch ($_GET['span']) {
             case 'cam-still':
                 header('Content-Type: image/png');
@@ -111,27 +102,21 @@ if ($_COOKIE['login_hash'] == $user_hash) {
                 readfile($upload_dir . $_GET['file']);
                 break;
             }
-    } else if (ctype_alnum($_GET['id']) && is_int((int)$_GET['sensornumber']) &&
-            ($_GET['sensortype'] == 't' || $_GET['sensortype'] == 'ht' || $_GET['sensortype'] == 'co2' || $_GET['sensortype'] == 'press' || $_GET['sensortype'] == 'temp-x' || $_GET['sensortype'] == 'hum-x' || $_GET['sensortype'] == 'co2-x' || $_GET['sensortype'] == 'press-x')) {
+    } else if ($_GET['graphtype'] == 'default') {
         header('Content-Type: image/png');
-        // Generate preset graphs (Main tab)
-        if ($_GET['graphtype'] == 'separate' ||
-            $_GET['graphtype'] == 'combined' ||
-            $_GET['graphspan'] == 'default') {
-            readfile($image_dir . 'graph-' . $_GET['sensortype'] . $_GET['graphtype'] . $_GET['graphspan'] . '-' . $_GET['id'] . '-' . $_GET['sensornumber'] . '.png');
-        } elseif ($_GET['graphtype'] == 'combinedcustom') {
-            readfile($image_dir . 'graph-' . $_GET['sensortype'] . $_GET['graphtype'] . '-' . $_GET['id'] . '-custom.png');
-        } elseif ($_GET['graphtype'] == 'separatecustom') {
-            readfile($image_dir . 'graph-' . $_GET['sensortype'] . $_GET['graphtype'] . '-' . $_GET['id'] . '-' . $_GET['sensornumber'] . '.png');
-        } elseif ($_GET['graphtype'] == 'legend-small') {
-            $id = uniqid();
-            shell_exec($mycodo_client . ' --graph mone legend-small none' . $id . ' 0');
-            readfile($image_dir . 'graph-' . $_GET['graphtype'] . '-' . $id . '.png');
-        } elseif ($_GET['graphtype'] == 'legend-full') {
-            $id = uniqid();
-            shell_exec($mycodo_client . ' --graph none legend-full none' . $id . ' 0');
-            readfile($image_dir . 'graph-' . $_GET['graphtype'] . '-' . $id . '.png');
-        } 
+        readfile($image_dir . 'graph-' . $_GET['sensortype'] . '-' . $_GET['graphtype'] . '-' . $_GET['id'] . '-' . $_GET['sensornumber'] . '.png');
+    } else if ($_GET['graphtype'] == 'separate') {
+        header('Content-Type: image/png');
+        readfile($image_dir . 'graph-' . $_GET['sensortype'] . '-' . $_GET['graphtype'] . '-' . $_GET['graphspan'] . '-' . $_GET['id'] . '-' . $_GET['sensornumber'] . '.png');
+    } else if ($_GET['graphtype'] == 'combined') {
+        header('Content-Type: image/png');
+        readfile($image_dir . 'graph-' . $_GET['sensortype'] . '-' . $_GET['graphtype'] . '-' . $_GET['graphspan'] . '-' . $_GET['id'] . '.png');
+    } else if ($_GET['graphtype'] == 'combinedcustom') {
+        header('Content-Type: image/png');
+        readfile($image_dir . 'graph-' . $_GET['sensortype'] . '-combined-' . $_GET['id'] . '.png');
+    } else if ($_GET['graphtype'] == 'separatecustom') {
+        header('Content-Type: image/png');
+        readfile($image_dir . 'graph-' . $_GET['sensortype'] . '-separate-x-' . $_GET['id'] . '-' . $_GET['sensornumber'] . '.png');
     }
 }
 ?>  
