@@ -554,6 +554,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
             plot.close()
             if logging.getLogger().isEnabledFor(logging.DEBUG) == False:
                 subprocess.call(['gnuplot', gnuplot_graph])
+                os.remove(gnuplot_graph)
             else:
                 gnuplot_log = "%s/plot-%s-%s-%s.log" % (log_path, 'temp', graph_type, graph_span)
                 with open(gnuplot_log, 'ab') as errfile:
@@ -626,6 +627,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
             plot.close()
             if logging.getLogger().isEnabledFor(logging.DEBUG) == False:
                 subprocess.call(['gnuplot', gnuplot_graph])
+                os.remove(gnuplot_graph)
             else:
                 gnuplot_log = "%s/plot-%s-%s-%s.log" % (log_path, 'hum', graph_type, graph_span)
                 with open(gnuplot_log, 'ab') as errfile:
@@ -696,6 +698,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
             plot.close()
             if logging.getLogger().isEnabledFor(logging.DEBUG) == False:
                 subprocess.call(['gnuplot', gnuplot_graph])
+                os.remove(gnuplot_graph)
             else:
                 gnuplot_log = "%s/plot-%s-%s-%s.log" % (log_path, 'co2', graph_type, graph_span)
                 with open(gnuplot_log, 'ab') as errfile:
@@ -770,6 +773,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
             plot.close()
             if logging.getLogger().isEnabledFor(logging.DEBUG) == False:
                 subprocess.call(['gnuplot', gnuplot_graph])
+                os.remove(gnuplot_graph)
             else:
                 gnuplot_log = "%s/plot-%s-%s-%s.log" % (log_path, 'press', graph_type, graph_span)
                 with open(gnuplot_log, 'ab') as errfile:
@@ -844,6 +848,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 plot.close()
                 if logging.getLogger().isEnabledFor(logging.DEBUG) == False:
                     subprocess.call(['gnuplot', gnuplot_graph])
+                    os.remove(gnuplot_graph)
                 else:
                     gnuplot_log = "%s/plot-%s-%s-%s-%s.log" % (log_path, 't', graph_type, graph_span, h)
                     with open(gnuplot_log, 'ab') as errfile:
@@ -933,6 +938,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 plot.close()
                 if logging.getLogger().isEnabledFor(logging.DEBUG) == False:
                     subprocess.call(['gnuplot', gnuplot_graph])
+                    os.remove(gnuplot_graph)
                 else:
                     gnuplot_log = "%s/plot-%s-%s-%s-%s.log" % (log_path, 'ht', graph_type, graph_span, h)
                     with open(gnuplot_log, 'ab') as errfile:
@@ -1003,6 +1009,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 plot.close()
                 if logging.getLogger().isEnabledFor(logging.DEBUG) == False:
                     subprocess.call(['gnuplot', gnuplot_graph])
+                    os.remove(gnuplot_graph)
                 else:
                     gnuplot_log = "%s/plot-%s-%s-%s-%s.log" % (log_path, 'co2', graph_type, graph_span, h)
                     with open(gnuplot_log, 'ab') as errfile:
@@ -1091,6 +1098,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 plot.close()
                 if logging.getLogger().isEnabledFor(logging.DEBUG) == False:
                     subprocess.call(['gnuplot', gnuplot_graph])
+                    os.remove(gnuplot_graph)
                 else:
                     gnuplot_log = "%s/plot-%s-%s-%s-%s.log" % (log_path, 'press', graph_type, graph_span, h)
                     with open(gnuplot_log, 'ab') as errfile:
@@ -1128,6 +1136,11 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 setup_lines_colors(plot)
                 plot.write('set multiplot\n')
                 # Top graph - day
+                d = 1
+                time_ago = '1 Day'
+                date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
+                date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S")
+                plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
                 if sensor_t_graph_relay[h]:
                     plot.write('set size 0.989,0.4\n')
                     plot.write('set origin 0.011,0.6\n')
@@ -1137,6 +1150,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     plot.write('set size 1.0,0.5\n')
                     plot.write('set origin 0.0,0.5\n')
                     plot.write('set key at graph 0.025, graph 0.98\n')
+                    plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                 plot.write('set yrange [' + str(sensor_t_yaxis_temp_min[h]) + ':' + str(sensor_t_yaxis_temp_max[h]) + ']\n')
                 plot.write('set ytics ' + str(sensor_t_yaxis_temp_tics[h]) + '\n')
                 plot.write('set mytics ' + str(sensor_t_yaxis_temp_mtics[h]) + '\n')
@@ -1175,6 +1189,8 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 time_ago = '1 Week'
                 date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
                 date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S")
+                plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
+                plot.write('set format x \"%a\\n%m/%d\"\n')
                 if sensor_t_graph_relay[h]:
                     plot.write('set size 0.989,0.4\n')
                     plot.write('set origin 0.011,0.0\n')
@@ -1186,13 +1202,12 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     plot.write('set origin 0.0,0.0\n')
                 plot.write('unset xzeroaxis\n')
                 plot.write('set title \"Temp Sensor ' + str(h+1) + ': ' + sensor_t_name[h] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-                plot.write('set format x \"%a\\n%m/%d\"\n')
-                plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
                 plot.write('plot \"' + sensor_t_log_final_default_week[h] + '" u 1:7 index 0 notitle w lp ls 1 axes x1y1\n')
                 plot.write('unset multiplot\n')
                 plot.close()
                 if logging.getLogger().isEnabledFor(logging.DEBUG) == False:
                     subprocess.call(['gnuplot', gnuplot_graph])
+                    os.remove(gnuplot_graph)
                 else:
                     gnuplot_log = "%s/plot-%s-%s-%s.log" % (log_path, 't', graph_type, h)
                     with open(gnuplot_log, 'ab') as errfile:
@@ -1226,6 +1241,11 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 setup_lines_colors(plot)
                 plot.write('set multiplot\n')
                 # Top graph - day
+                d = 1
+                time_ago = '1 Day'
+                date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
+                date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S")
+                plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
                 if sensor_ht_graph_relay[h]:
                     plot.write('set size 0.989,0.4\n')
                     plot.write('set origin 0.011,0.6\n')
@@ -1235,6 +1255,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     plot.write('set size 1.0,0.5\n')
                     plot.write('set origin 0.0,0.5\n')
                     plot.write('set key at graph 0.025, graph 0.98\n')
+                    plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                 plot.write('set yrange [' + str(sensor_ht_yaxis_temp_min[h]) + ':' + str(sensor_ht_yaxis_temp_max[h]) + ']\n')
                 plot.write('set ytics ' + str(sensor_ht_yaxis_temp_tics[h]) + '\n')
                 plot.write('set mytics ' + str(sensor_ht_yaxis_temp_mtics[h]) + '\n')
@@ -1292,6 +1313,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 time_ago = '1 Week'
                 date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
                 date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S")
+                plot.write('set format x \"%a\\n%m/%d\"\n')
                 if sensor_ht_graph_relay[h]:
                     plot.write('set size 0.989,0.4\n')
                     plot.write('set origin 0.011,0.0\n')
@@ -1306,7 +1328,6 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     plot.write('set origin 0.0,0.0\n')
                 plot.write('unset xzeroaxis\n')
                 plot.write('set title \"Hum/Temp Sensor ' + str(h+1) + ': ' + sensor_ht_name[h] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-                plot.write('set format x \"%a\\n%m/%d\"\n')
                 plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
                 plot.write('plot \"' + sensor_ht_log_final_default_week[h] + '" u 1:7 index 0 notitle w lp ls 1 axes x1y1, ')
                 plot.write('\"\" u 1:8 index 0 notitle w lp ls 2 axes x1y2, ')
@@ -1315,6 +1336,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 plot.close()
                 if logging.getLogger().isEnabledFor(logging.DEBUG) == False:
                     subprocess.call(['gnuplot', gnuplot_graph])
+                    os.remove(gnuplot_graph)
                 else:
                     gnuplot_log = "%s/plot-%s-%s-%s.log" % (log_path, 'ht', graph_type, h)
                     with open(gnuplot_log, 'ab') as errfile:
@@ -1348,6 +1370,11 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 setup_lines_colors(plot)
                 plot.write('set multiplot\n')
                 # Top graph - day
+                d = 1
+                time_ago = '1 Day'
+                date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
+                date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S")
+                plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
                 if sensor_co2_graph_relay[h]:
                     plot.write('set size 1.0,0.4\n')
                     plot.write('set origin 0.0,0.6\n')
@@ -1357,6 +1384,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     plot.write('set size 1.0,0.5\n')
                     plot.write('set origin 0.0,0.5\n')
                     plot.write('set key at graph 0.035, graph 0.98\n')
+                    plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                 plot.write('set yrange [' + str(sensor_co2_yaxis_co2_min[h]) + ':' + str(sensor_co2_yaxis_co2_max[h]) + ']\n')
                 plot.write('set ytics ' + str(sensor_co2_yaxis_co2_tics[h]) + '\n')
                 plot.write('set mytics ' + str(sensor_co2_yaxis_co2_mtics[h]) + '\n')
@@ -1395,6 +1423,8 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 time_ago = '1 Week'
                 date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
                 date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S")
+                plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
+                plot.write('set format x \"%a\\n%m/%d\"\n')
                 if sensor_co2_graph_relay[h]:
                     plot.write('set size 1.0,0.4\n')
                     plot.write('set origin 0.0,0.0\n')
@@ -1406,13 +1436,12 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     plot.write('set origin 0.0,0.0\n')
                 plot.write('unset xzeroaxis\n')
                 plot.write('set title \"CO_2 Sensor ' + str(h+1) + ': ' + sensor_co2_name[h] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-                plot.write('set format x \"%a\\n%m/%d\"\n')
-                plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
                 plot.write('plot \"' + sensor_co2_log_final_default_week[h] + '" u 1:7 index 0 notitle w lp ls 1 axes x1y1\n')
                 plot.write('unset multiplot\n')
                 plot.close()
                 if logging.getLogger().isEnabledFor(logging.DEBUG) == False:
                     subprocess.call(['gnuplot', gnuplot_graph])
+                    os.remove(gnuplot_graph)
                 else:
                     gnuplot_log = "%s/plot-%s-%s-%s.log" % (log_path, 'co2', graph_type, h)
                     with open(gnuplot_log, 'ab') as errfile:
@@ -1446,6 +1475,11 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 setup_lines_colors(plot)
                 plot.write('set multiplot\n')
                 # Top graph - day
+                d = 1
+                time_ago = '1 Day'
+                date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
+                date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S")
+                plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
                 if sensor_press_graph_relay[h]:
                     plot.write('set size 0.989,0.4\n')
                     plot.write('set origin 0.011,0.6\n')
@@ -1455,6 +1489,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     plot.write('set size 1.0,0.5\n')
                     plot.write('set origin 0.0,0.5\n')
                     plot.write('set key at graph 0.025, graph 0.98\n')
+                    plot.write('set format x \"%a\\n%m/%d\"\n')
                 plot.write('set yrange [' + str(sensor_press_yaxis_temp_min[h]) + ':' + str(sensor_press_yaxis_temp_max[h]) + ']\n')
                 plot.write('set ytics ' + str(sensor_press_yaxis_temp_tics[h]) + '\n')
                 plot.write('set mytics ' + str(sensor_press_yaxis_temp_mtics[h]) + '\n')
@@ -1511,6 +1546,8 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 time_ago = '1 Week'
                 date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y %m %d %H %M %S")
                 date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S")
+                plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
+                plot.write('set format x \"%a\\n%m/%d\"\n')
                 if sensor_press_graph_relay[h]:
                     plot.write('set size 0.989,0.4\n')
                     plot.write('set origin 0.011,0.0\n')
@@ -1525,61 +1562,58 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     plot.write('set origin 0.0,0.0\n')
                 plot.write('unset xzeroaxis\n')
                 plot.write('set title \"Press Sensor ' + str(h+1) + ': ' + sensor_press_name[h] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
-                plot.write('set format x \"%a\\n%m/%d\"\n')
-                plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
                 plot.write('plot \"' + sensor_press_log_final_default_week[h] + '" u 1:7 index 0 notitle w lp ls 1 axes x1y1, ')
                 plot.write('\"\" u 1:8 index 0 notitle w lp ls 2 axes x1y2\n')
                 plot.write('unset multiplot\n')
                 plot.close()
                 if logging.getLogger().isEnabledFor(logging.DEBUG) == False:
                     subprocess.call(['gnuplot', gnuplot_graph])
+                    os.remove(gnuplot_graph)
                 else:
                     gnuplot_log = "%s/plot-%s-%s-%s.log" % (log_path, 'press', graph_type, h)
                     with open(gnuplot_log, 'ab') as errfile:
                         subprocess.call(['gnuplot', gnuplot_graph], stderr=errfile)
 
+    # Delete all temporary files
     if logging.getLogger().isEnabledFor(logging.DEBUG) == False:
-        # Delete all temporary files
-        os.remove(gnuplot_graph)
         os.remove(relay_log_generate)
-
         if graph_span == "default":
             if sum(sensor_t_graph):
+                os.remove(sensor_t_log_generate)
                 for h in range(0, len(sensor_t_graph)):
-                    os.remove(sensor_t_log_generate)
                     os.remove(sensor_t_log_final_default_day[h])
                     os.remove(sensor_t_log_final_default_week[h])
             if sum(sensor_ht_graph):
+                os.remove(sensor_ht_log_generate)
                 for h in range(0, len(sensor_ht_graph)):
-                    os.remove(sensor_ht_log_generate)
                     os.remove(sensor_ht_log_final_default_day[h])
                     os.remove(sensor_ht_log_final_default_week[h])
             if sum(sensor_co2_graph):
+                os.remove(sensor_co2_log_generate)
                 for h in range(0, len(sensor_co2_graph)):
-                    os.remove(sensor_co2_log_generate)
                     os.remove(sensor_co2_log_final_default_day[h])
                     os.remove(sensor_co2_log_final_default_week[h])
             if sum(sensor_press_graph):
+                os.remove(sensor_press_log_generate)
                 for h in range(0, len(sensor_press_graph)):
-                    os.remove(sensor_press_log_generate)
                     os.remove(sensor_press_log_final_default_day[h])
                     os.remove(sensor_press_log_final_default_week[h])
         elif graph_type == "combined" or graph_type == "separate":
             if sum(sensor_t_graph):
+                os.remove(sensor_t_log_generate)
                 for h in range(0, len(sensor_t_graph)):
-                    os.remove(sensor_t_log_generate[h])
                     os.remove(sensor_t_log_final[h])
             if sum(sensor_ht_graph):
+                os.remove(sensor_ht_log_generate)
                 for h in range(0, len(sensor_ht_graph)):
-                    os.remove(sensor_ht_log_generate[h])
                     os.remove(sensor_ht_log_final[h])
             if sum(sensor_co2_graph):
+                os.remove(sensor_co2_log_generate)
                 for h in range(0, len(sensor_co2_graph)):
-                    os.remove(sensor_co2_log_generate[h])
                     os.remove(sensor_co2_log_final[h])
             if sum(sensor_press_graph):
+                os.remove(sensor_press_log_generate)
                 for h in range(0, len(sensor_press_graph)):
-                    os.remove(sensor_press_log_generate[h])
                     os.remove(sensor_press_log_final[h])
 
     logging.debug("[Generate Graph] Finished")
