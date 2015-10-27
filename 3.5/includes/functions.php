@@ -348,7 +348,7 @@ function displayform() { ?>
         </div>
         <div style="display: inline-block; padding-right:0.5em; vertical-align: top;">
             <div style="adding-right:0.5em;">
-                Width: <input type="text" value="900" maxlength=4 size=4 name="graph-width" title="Width of the generated graph"> px (4000 max)
+                Width: <input type="text" value="<?php if (isset($_POST['graph-width'])) echo $_POST['graph-width']; else echo '900';?>" maxlength=4 size=4 name="graph-width" title="Width of the generated graph"> px (4000 max)
             </div>
         </div>
         <div style="display: inline-block; padding-right:0.5em; vertical-align: top;">

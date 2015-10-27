@@ -65,16 +65,15 @@ sensor_press_log_lock_path = "%s/sensor-press-log" % lock_directory
 def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_graph, sensor_t_period, sensor_t_yaxis_relay_min, sensor_t_yaxis_relay_max, sensor_t_yaxis_relay_tics, sensor_t_yaxis_relay_mtics, sensor_t_yaxis_temp_min, sensor_t_yaxis_temp_max, sensor_t_yaxis_temp_tics, sensor_t_yaxis_temp_mtics, sensor_t_temp_relays_up_list, sensor_t_temp_relays_down_list, pid_t_temp_relay_high, pid_t_temp_relay_low, sensor_ht_name, sensor_ht_graph, sensor_ht_period, sensor_ht_yaxis_relay_min, sensor_ht_yaxis_relay_max, sensor_ht_yaxis_relay_tics, sensor_ht_yaxis_relay_mtics, sensor_ht_yaxis_temp_min, sensor_ht_yaxis_temp_max, sensor_ht_yaxis_temp_tics, sensor_ht_yaxis_temp_mtics, sensor_ht_yaxis_hum_min, sensor_ht_yaxis_hum_max, sensor_ht_yaxis_hum_tics, sensor_ht_yaxis_hum_mtics, sensor_ht_temp_relays_up_list, sensor_ht_temp_relays_down_list, sensor_ht_hum_relays_up_list, sensor_ht_hum_relays_down_list, pid_ht_temp_relay_high, pid_ht_temp_relay_low, pid_ht_hum_relay_high, pid_ht_hum_relay_low, sensor_co2_name, sensor_co2_graph, sensor_co2_period, sensor_co2_yaxis_relay_min, sensor_co2_yaxis_relay_max, sensor_co2_yaxis_relay_tics, sensor_co2_yaxis_relay_mtics, sensor_co2_yaxis_co2_min, sensor_co2_yaxis_co2_max, sensor_co2_yaxis_co2_tics, sensor_co2_yaxis_co2_mtics, sensor_co2_relays_up_list, sensor_co2_relays_down_list, pid_co2_relay_high, pid_co2_relay_low, sensor_press_name, sensor_press_graph, sensor_press_period, sensor_press_yaxis_relay_min, sensor_press_yaxis_relay_max, sensor_press_yaxis_relay_tics, sensor_press_yaxis_relay_mtics, sensor_press_yaxis_temp_min, sensor_press_yaxis_temp_max, sensor_press_yaxis_temp_tics, sensor_press_yaxis_temp_mtics, sensor_press_yaxis_press_min, sensor_press_yaxis_press_max, sensor_press_yaxis_press_tics, sensor_press_yaxis_press_mtics, sensor_press_temp_relays_up_list, sensor_press_temp_relays_down_list, sensor_press_press_relays_up_list, sensor_press_press_relays_down_list, pid_press_temp_relay_high, pid_press_temp_relay_low, pid_press_press_relay_high, pid_press_press_relay_low, relay_name, relay_pin, time_from, time_to, width, combined_temp_min, combined_temp_max, combined_temp_tics, combined_temp_mtics, combined_temp_relays_up, combined_temp_relays_down, combined_temp_relays_min, combined_temp_relays_max, combined_temp_relays_tics, combined_temp_relays_mtics, combined_hum_min, combined_hum_max, combined_hum_tics, combined_hum_mtics, combined_hum_relays_up, combined_hum_relays_down, combined_hum_relays_min, combined_hum_relays_max, combined_hum_relays_tics, combined_hum_relays_mtics, combined_co2_min, combined_co2_max, combined_co2_tics, combined_co2_mtics, combined_co2_relays_up, combined_co2_relays_down, combined_co2_relays_min, combined_co2_relays_max, combined_co2_relays_tics, combined_co2_relays_mtics, combined_press_min, combined_press_max, combined_press_tics, combined_press_mtics, combined_press_relays_up, combined_press_relays_down, combined_press_relays_min, combined_press_relays_max, combined_press_relays_tics, combined_press_relays_mtics, combined_temp_relays_up_list, combined_temp_relays_down_list, combined_hum_relays_up_list, combined_hum_relays_down_list, combined_co2_relays_up_list, combined_co2_relays_down_list, combined_press_relays_up_list, combined_press_relays_down_list):
 
     sensor_t_log_final = [0] * (len(sensor_t_name)+1)
-    sensor_ht_log_final = [0] * (len(sensor_ht_name)+1)
-    sensor_co2_log_final = [0] * (len(sensor_co2_name)+1)
-    sensor_press_log_final = [0] * (len(sensor_press_name)+1)
-
     sensor_t_log_final_default_day = [0] * (len(sensor_t_name)+1)
     sensor_t_log_final_default_week = [0] * (len(sensor_t_name)+1)
+    sensor_ht_log_final = [0] * (len(sensor_ht_name)+1)
     sensor_ht_log_final_default_day = [0] * (len(sensor_ht_name)+1)
     sensor_ht_log_final_default_week = [0] * (len(sensor_ht_name)+1)
+    sensor_co2_log_final = [0] * (len(sensor_co2_name)+1)
     sensor_co2_log_final_default_day = [0] * (len(sensor_co2_name)+1)
     sensor_co2_log_final_default_week = [0] * (len(sensor_co2_name)+1)
+    sensor_press_log_final = [0] * (len(sensor_press_name)+1)
     sensor_press_log_final_default_day = [0] * (len(sensor_press_name)+1)
     sensor_press_log_final_default_week = [0] * (len(sensor_press_name)+1)
 
@@ -87,8 +86,8 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
     if graph_span == 'default':
         graph_type = 'default'
 
-    if width != 0:
-        graph_width = width
+    if width == 0:
+        width = 1000
 
     # Calculate a past date from a number of hours or days ago
     if graph_span == "1h":
@@ -172,11 +171,6 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
 
     # Concatenate default and separate logs
     if graph_type == 'default' or graph_type == 'separate':
-        if graph_type == 'separate':
-            generate_type = 'separate'
-        if graph_type == 'default':
-            generate_type = 'default'
-
         if sum(sensor_t_graph):
             if not os.path.exists(lock_directory):
                 os.makedirs(lock_directory)
@@ -191,7 +185,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     lock.acquire()
             logging.debug("[Generate Graph] Gained lock: %s", lock.path)
             filenames = [sensor_t_log_file, sensor_t_log_file_tmp]
-            sensor_t_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, 't', generate_type)
+            sensor_t_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, 't', graph_type)
             with open(sensor_t_log_generate, 'w') as outfile:
                 for fname in filenames:
                     with open(fname) as infile:
@@ -214,7 +208,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     lock.acquire()
             logging.debug("[Generate Graph] Gained lock: %s", lock.path)
             filenames = [sensor_ht_log_file, sensor_ht_log_file_tmp]
-            sensor_ht_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, 'ht', generate_type)
+            sensor_ht_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, 'ht', graph_type)
             with open(sensor_ht_log_generate, 'w') as outfile:
                 for fname in filenames:
                     with open(fname) as infile:
@@ -237,7 +231,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     lock.acquire()
             logging.debug("[Generate Graph] Gained lock: %s", lock.path)
             filenames = [sensor_co2_log_file, sensor_co2_log_file_tmp]
-            sensor_co2_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, 'co2', generate_type)
+            sensor_co2_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, 'co2', graph_type)
             with open(sensor_co2_log_generate, 'w') as outfile:
                 for fname in filenames:
                     with open(fname) as infile:
@@ -260,7 +254,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     lock.acquire()
             logging.debug("[Generate Graph] Gained lock: %s", lock.path)
             filenames = [sensor_press_log_file, sensor_press_log_file_tmp]
-            sensor_press_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, 'press', generate_type)
+            sensor_press_log_generate = "%s/sensor-%s-logs-%s.log" % (tmp_path, 'press', graph_type)
             with open(sensor_press_log_generate, 'w') as outfile:
                 for fname in filenames:
                     with open(fname) as infile:
@@ -479,9 +473,9 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     tmp_path, 'temp', graph_type, 'custom', graph_id)
             plot = open(gnuplot_graph, 'w')
             if combined_temp_graph_relays_up or combined_temp_graph_relays_down:
-                setup_initial(plot, 1000, 900)
+                setup_initial(plot, width, 900)
             else:
-                setup_initial(plot, 1000, 600)
+                setup_initial(plot, width, 600)
             if graph_span != 'x':
                 plot.write('set output \"' + image_path + '/graph-temp-' + graph_type + '-' + graph_span + '-' + graph_id + '.png\"\n')
             else:
@@ -562,9 +556,9 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     tmp_path, 'hum', graph_type, 'custom', graph_id)
             plot = open(gnuplot_graph, 'w')
             if combined_hum_graph_relays_up or combined_hum_graph_relays_down:
-                setup_initial(plot, 1000, 900)
+                setup_initial(plot, width, 900)
             else:
-                setup_initial(plot, 1000, 600)
+                setup_initial(plot, width, 600)
             if graph_span != 'x':
                 plot.write('set output \"' + image_path + '/graph-hum-' + graph_type + '-' + graph_span + '-' + graph_id + '.png\"\n')
             else:
@@ -635,9 +629,9 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     tmp_path, 'co2', graph_type, 'custom', graph_id)
             plot = open(gnuplot_graph, 'w')
             if combined_co2_graph_relays_up or combined_co2_graph_relays_down:
-                setup_initial(plot, 1000, 900)
+                setup_initial(plot, width, 900)
             else:
-                setup_initial(plot, 1000, 600)
+                setup_initial(plot, width, 600)
             if graph_span != 'x':
                 plot.write('set output \"' + image_path + '/graph-co2-' + graph_type + '-' + graph_span + '-' + graph_id + '.png\"\n')
             else:
@@ -706,9 +700,9 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     tmp_path, 'press', graph_type, 'custom', graph_id)
             plot = open(gnuplot_graph, 'w')
             if combined_press_graph_relays_up or combined_press_graph_relays_down:
-                setup_initial(plot, 1000, 900)
+                setup_initial(plot, width, 900)
             else:
-                setup_initial(plot, 1000, 600)
+                setup_initial(plot, width, 600)
             if graph_span != 'x':
                 plot.write('set output \"' + image_path + '/graph-press-' + graph_type + '-' + graph_span + '-' + graph_id + '.png\"\n')
             else:
@@ -795,9 +789,9 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                         tmp_path, 't', graph_type, graph_span, graph_id, h)
                 plot = open(gnuplot_graph, 'w')
                 if sensor_t_graph_relay[h]:
-                    setup_initial(plot, 1000, 900)
+                    setup_initial(plot, width, 900)
                 else:
-                    setup_initial(plot, 1000, 600)
+                    setup_initial(plot, width, 600)
                 plot.write('set output \"' + image_path + '/graph-t-' + graph_type + '-' + graph_span + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 if sensor_t_graph_relay[h]:
@@ -866,9 +860,9 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                         tmp_path, 'ht', graph_type, graph_span, graph_id, h)
                 plot = open(gnuplot_graph, 'w')
                 if sensor_ht_graph_relay[h]:
-                    setup_initial(plot, 1000, 900)
+                    setup_initial(plot, width, 900)
                 else:
-                    setup_initial(plot, 1000, 600)
+                    setup_initial(plot, width, 600)
                 plot.write('set output \"' + image_path + '/graph-ht-' + graph_type + '-' + graph_span + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 if sensor_ht_graph_relay[h]:
@@ -956,9 +950,9 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                         tmp_path, 'co2', graph_type, graph_span, graph_id, h)
                 plot = open(gnuplot_graph, 'w')
                 if sensor_co2_graph_relay[h]:
-                    setup_initial(plot, 1000, 900)
+                    setup_initial(plot, width, 900)
                 else:
-                    setup_initial(plot, 1000, 600)
+                    setup_initial(plot, width, 600)
                 plot.write('set output \"' + image_path + '/graph-co2-' + graph_type + '-' + graph_span + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 if sensor_co2_graph_relay[h]:
@@ -1027,9 +1021,9 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                             tmp_path, 'press', graph_type, graph_span, graph_id, h)
                 plot = open(gnuplot_graph, 'w')
                 if sensor_press_graph_relay[h]:
-                    setup_initial(plot, 1000, 900)
+                    setup_initial(plot, width, 900)
                 else:
-                    setup_initial(plot, 1000, 600)
+                    setup_initial(plot, width, 600)
                 plot.write('set output \"' + image_path + '/graph-press-' + graph_type + '-' + graph_span + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 if sensor_press_graph_relay[h]:
@@ -1127,7 +1121,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 gnuplot_graph = "%s/plot-%s-%s-%s-%s-%s.gnuplot" % (
                     tmp_path, 't', graph_type, graph_span, graph_id, h)
                 plot = open(gnuplot_graph, 'w')
-                setup_initial(plot, 1000, 1000)
+                setup_initial(plot, width, 1000)
                 plot.write('set output \"' + image_path + '/graph-t-' + graph_type + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 plot.write('set multiplot\n')
@@ -1232,7 +1226,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 gnuplot_graph = "%s/plot-%s-%s-%s-%s-%s.gnuplot" % (
                     tmp_path, 'ht', graph_type, graph_span, graph_id, h)
                 plot = open(gnuplot_graph, 'w')
-                setup_initial(plot, 1000, 1000)
+                setup_initial(plot, width, 1000)
                 plot.write('set output \"' + image_path + '/graph-ht-' + graph_type + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 plot.write('set multiplot\n')
@@ -1361,7 +1355,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 gnuplot_graph = "%s/plot-%s-%s-%s-%s-%s.gnuplot" % (
                     tmp_path, 'co2', graph_type, graph_span, graph_id, h)
                 plot = open(gnuplot_graph, 'w')
-                setup_initial(plot, 1000, 1000)
+                setup_initial(plot, width, 1000)
                 plot.write('set output \"' + image_path + '/graph-co2-' + graph_type + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 plot.write('set multiplot\n')
@@ -1466,7 +1460,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 gnuplot_graph = "%s/plot-%s-%s-%s-%s-%s.gnuplot" % (
                         tmp_path, 'press', graph_type, graph_span, graph_id, h)
                 plot = open(gnuplot_graph, 'w')
-                setup_initial(plot, 1000, 1000)
+                setup_initial(plot, width, 1000)
                 plot.write('set output \"' + image_path + '/graph-press-' + graph_type + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 plot.write('set multiplot\n')
