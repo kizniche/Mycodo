@@ -2593,11 +2593,8 @@ if (isset($output_error)) {
             ?>
 
             <?php
-            /* DateSelector*Author: Leon Atkinson */
+            /* DateSelector, modified from work by Leon Atkinson */
             if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] != 'guest') {
-                
-                //concatenate_logs();
-
                 if ($_POST['SubmitDates']) {
                     displayform();
                     $id2 = uniqid();
@@ -2611,13 +2608,14 @@ if (isset($output_error)) {
                     $daye = $_POST['endDay'];
                     $mone = $_POST['endMonth'];
                     $yeare = $_POST['endYear'];
-
                     $time_from = strtotime($monb . "/" . $dayb . "/" . $yearb . " " .  $hourb . ":" . $minb);
                     $time_to = strtotime($mone . "/" . $daye . "/" . $yeare . " " .  $houre . ":" . $mine);
 
                     if (is_positive_integer($_POST['graph-width']) and $_POST['graph-width'] <= 4000 and $_POST['graph-width']) {
                         $graph_width = $_POST['graph-width'];
-                    } else $graph_width = 900;
+                    } else {
+                        $graph_width = 950;
+                    }
 
                     if ($_POST['custom_type'] == 'Combined') {
                         shell_exec("$mycodo_client --graph combined $id2 x $time_from $time_to $graph_width");

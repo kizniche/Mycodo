@@ -86,8 +86,8 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
     if graph_span == 'default':
         graph_type = 'default'
 
-    if width == 0:
-        width = 1000
+    if int(width) == 0:
+        width = 950
 
     # Calculate a past date from a number of hours or days ago
     if graph_span == "1h":
