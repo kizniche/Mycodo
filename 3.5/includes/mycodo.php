@@ -3421,7 +3421,7 @@ if (isset($output_error)) {
                             echo '<pre><div style="padding: 1em 0 1.5em 0;">Note: Restoring a backup will restore all files from the backup, including databases and logs.<br>When restoring a backup, a backup of the current system will also be created.<br>Deleting a backup will delete all files of that backup.</div>';
                             $current_commit = `git rev-parse --short HEAD`;
                             $current_commit = mb_substr($current_commit, 0, 7);
-                            echo "Current commit: <a style=\"color: #FF0000;\" href=\"https://github.com/kizniche/Mycodo/commit/$current_commit\" target=\"_blank\">$current_commit</a> (newest commits are at the top, the system is currently at the commit <span style=\"color:red;\">colored red</span>)<br> <br><strong><u>Commit</u>  <u>Description</u></strong><br>";
+                            echo "Current commit: <a style=\"color: #FF0000;\" href=\"https://github.com/kizniche/Mycodo/commit/$current_commit\" target=\"_blank\">$current_commit</a> (newest commits are at the top and the system's current commit is <span style=\"color:red;\">colored red</span>)<br> <br><strong><u>Commit</u>  <u>Description</u></strong><br>";
                             exec("$install_path/cgi-bin/mycodo-wrapper fetchorigin");
                             $commits_ahead = `git log --oneline master...origin/master`;
                             $commits_ahead = explode("\n", $commits_ahead);

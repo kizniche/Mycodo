@@ -135,10 +135,6 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
         d = 180
         seconds = 15552000
         time_ago = '6 Months'
-    elif graph_span == "legend-full":
-        h = 6
-        seconds = 21600
-        time_ago = '6 Hours'
 
     if time_from != '0' and time_to != '0':
         date_ago = time.strftime('%Y %m %d %H %M %S', time.localtime(float(time_from)))
@@ -146,7 +142,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
         date_ago_disp = time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(float(time_from)))
         date_now_disp = time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(float(time_to)))
         time_ago = "Custom Time"
-        seconds = 15552000
+        seconds = 0
     else:
         date_now = datetime.datetime.now().strftime("%Y %m %d %H %M %S")
         date_now_disp = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
