@@ -439,19 +439,19 @@ If Humidity if Less Than 50%, turn relay #1 on for 21 seconds, execute '/usr/loc
 As per the <a href="https://github.com/kizniche/Mycodo/issues/25#issuecomment-143360432" target="_blank">work done by Boomstick8x</a>, the process to preserve custom code edits and restore them after a Mycodo update is below. Be aware that this method does not guarantee the successful operation of Mycodo after restoring custom code, as it can't be unknown what is changed in an update. It's assumed that if you're producing custom code, you should also be familiar with analyzing the changes of an update to determine if your code edits will work.
 
 Stash uncommited changes and apply them after an update:
-<br>1. <pre>git stash</pre> - Save uncommited changes to git stack (use <pre>git stash list</pre> to see the stack)
+<br>1. <code>git stash</code> - Save uncommited changes to git stack (use <code>git stash list</code> to see the stack)
 <br>2. Update to newest version
-<br>3. <pre>git stash apply</pre> - Apply the last saved changes to updated version (<pre>git stash pop</pre> can be used to apply changes from the stack and then delete the stack)
+<br>3. <code>git stash apply</code> - Apply the last saved changes to updated version (<code>git stash pop</code> can be used to apply changes from the stack and then delete the stack)
 <br>4. check if everything has worked as excepted
-<br>5. <pre>git stash drop</pre> - to drop last saved stash (if we dont use git stash pop before)</p>
+<br>5. <code>git stash drop</code> - to drop last saved stash (if we dont use git stash pop before)</p>
 
 <p>Making patch file of changes:
-<br>1. <pre>git stash</pre> - Stash changes
-<br>2. <pre>git stash show -p > name.patch</pre> - Stash output in a patch file
-(add <pre>--binary</pre> option after -p if we also need to stash binary files: <pre>git stash show -p --binary > name.patch</pre>)
-<br>3. <pre>git apply --stat name.patch</pre> - View is everything looks good
-<br>4. <pre>git apply --check name.patch</pre> - Verify no errors
-<br>5. <pre>git apply name.patch</pre> - Apply the patch</p> 
+<br>1. <code>git stash</code> - Stash changes
+<br>2. <code>git stash show -p > name.patch</code> - Stash output in a patch file
+(add <code>--binary</code> option after -p if we also need to stash binary files: <code>git stash show -p --binary > name.patch</code>)
+<br>3. <code>git apply --stat name.patch</code> - View is everything looks good
+<br>4. <code>git apply --check name.patch</code> - Verify no errors
+<br>5. <code>git apply name.patch</code> - Apply the patch</p> 
 
 <a name="tips"></a>
 <h2>Tips</h2>
