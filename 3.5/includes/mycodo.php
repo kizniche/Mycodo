@@ -2913,7 +2913,7 @@ if (isset($output_error)) {
                 <table class="data-buttons">
                     <tr>
                         <td rowspan="2" class="data-buttons-rightspace" style="vertical-align:middle; text-align:center; line-height:1.6em;">
-                            Last<br><input style="width: 4em;" type="text" maxlength="8" name="Lines" value="<?php if (isset($_POST['Lines'])) echo $_POST['Lines']; ?>" title="The maximum number of lines to display. Defaults to 30 if left blank."/><br>Lines
+                            Last<br><input style="width: 4em;" type="text" maxlength="8" name="Lines" value="<?php if (isset($_POST['Lines']) && $_POST['Lines'] != '') echo $_POST['Lines']; else echo '30'; ?>" title="The maximum number of lines to display. Defaults to 30 if left blank."/><br>Lines
                         </td>
                         <td>
                             <button style="width:100%" type="submit" name="TSensor_Changes" value="T">T<br>Δ</button>

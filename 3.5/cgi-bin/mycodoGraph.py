@@ -1479,7 +1479,7 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     plot.write('set size 1.0,0.5\n')
                     plot.write('set origin 0.0,0.5\n')
                     plot.write('set key at graph 0.025, graph 0.98\n')
-                    plot.write('set format x \"%a\\n%m/%d\"\n')
+                    plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                 plot.write('set yrange [' + str(sensor_press_yaxis_temp_min[h]) + ':' + str(sensor_press_yaxis_temp_max[h]) + ']\n')
                 plot.write('set ytics ' + str(sensor_press_yaxis_temp_tics[h]) + '\n')
                 plot.write('set mytics ' + str(sensor_press_yaxis_temp_mtics[h]) + '\n')
