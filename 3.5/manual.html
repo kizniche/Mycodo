@@ -438,20 +438,55 @@ If Humidity if Less Than 50%, turn relay #1 on for 21 seconds, execute '/usr/loc
 
 As per the <a href="https://github.com/kizniche/Mycodo/issues/25#issuecomment-143360432" target="_blank">work done by Boomstick8x</a>, the process to preserve custom code edits and restore them after a Mycodo update is below. Be aware that this method does not guarantee the successful operation of Mycodo after restoring custom code, as it can't be unknown what is changed in an update. It's assumed that if you're producing custom code, you should also be familiar with analyzing the changes of an update to determine if your code edits will work.
 
-Stash uncommited changes and apply them after an update:
-<br>1. <code>git stash</code> - Save uncommited changes to git stack (use <code>git stash list</code> to see the stack)
-<br>2. Update to newest version
-<br>3. <code>git stash apply</code> - Apply the last saved changes to updated version (<code>git stash pop</code> can be used to apply changes from the stack and then delete the stack)
-<br>4. check if everything has worked as excepted
-<br>5. <code>git stash drop</code> - to drop last saved stash (if we dont use git stash pop before)</p>
+<table>
+	<tr>
+		<td colspan="2">Stash uncommited changes and apply them after an update:</td>
+	</tr>
+	<tr>
+		<td>1. <code>git stash</code></td>
+		<td>Save uncommited changes to git stack (use <code>git stash list</code> to see the stack)</td>
+	</tr>
+	<tr>
+		<td colspan="2">2. Update to newest version</td>
+	</tr>
+	<tr>
+		<td>3. <code>git stash apply</code></td>
+		<td>Apply the last saved changes to updated version (<code>git stash pop</code> can be used to apply changes from the stack and then delete the stack)</td>
+	</tr>
+	<tr>
+		<td colspan="2">4. check if everything has worked as excepted</td>
+	</tr>
+	<tr>
+		<td>5. <code>git stash drop</code></td>
+		<td>Drop last saved stash (if we dont use git stash pop before)</td>
+	</tr>
+</table>
 
-<p>Making patch file of changes:
-<br>1. <code>git stash</code> - Stash changes
-<br>2. <code>git stash show -p > name.patch</code> - Stash output in a patch file
-(add <code>--binary</code> option after -p if we also need to stash binary files: <code>git stash show -p --binary > name.patch</code>)
-<br>3. <code>git apply --stat name.patch</code> - View is everything looks good
-<br>4. <code>git apply --check name.patch</code> - Verify no errors
-<br>5. <code>git apply name.patch</code> - Apply the patch</p> 
+<table>
+	<tr>
+		<td colspan="2">Making patch file of changes:</td>
+	</tr>
+	<tr>
+		<td>1. <code>git stash</code></td>
+		<td>Stash changes</td>
+	</tr>
+	<tr>
+		<td>2. <code>git stash show -p > name.patch</code></td>
+		<td>Stash output in a patch file (add <code>--binary</code> option after -p if we also need to stash binary files: <code>git stash show -p --binary > name.patch</code>)</td>
+	</tr>
+	<tr>
+		<td>3. <code>git apply --stat name.patch</code></td>
+		<td>View is everything looks good</td>
+	</tr>
+	<tr>
+		<td>4. <code>git apply --check name.patch</code></td>
+		<td>Verify no errors</td>
+	</tr>
+	<tr>
+		<td>5. <code>git apply name.patch</code></td>
+		<td>Apply the patch</td>
+	</tr>
+</table>
 
 <a name="tips"></a>
 <h2>Tips</h2>
