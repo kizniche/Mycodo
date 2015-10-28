@@ -10,6 +10,9 @@
     	table.options td {
     		padding: 0.3em 0.5em 0.3em 0;
     	}
+    	table.custom-code td {
+    		padding: 0.1em 1em 0.1em 0;
+    	}
     </style>
 	<title>
 		Mycodo 3.5 Manual
@@ -438,7 +441,7 @@ If Humidity if Less Than 50%, turn relay #1 on for 21 seconds, execute '/usr/loc
 
 As per the <a href="https://github.com/kizniche/Mycodo/issues/25#issuecomment-143360432" target="_blank">work done by Boomstick8x</a>, the process to preserve custom code edits and restore them after a Mycodo update is below. Be aware that this method does not guarantee the successful operation of Mycodo after restoring custom code, as it can't be unknown what is changed in an update. It's assumed that if you're producing custom code, you should also be familiar with analyzing the changes of an update to determine if your code edits will work.
 
-<table>
+<table class="custom-code" style="padding-top: 1.5em;">
 	<tr>
 		<td colspan="2">Stash uncommited changes and apply them after an update:</td>
 	</tr>
@@ -447,32 +450,29 @@ As per the <a href="https://github.com/kizniche/Mycodo/issues/25#issuecomment-14
 		<td>Save uncommited changes to git stack (use <code>git stash list</code> to see the stack)</td>
 	</tr>
 	<tr>
-		<td colspan="2">2. Update to newest version</td>
+		<td>2. Update Mycodo</td>
 	</tr>
 	<tr>
 		<td>3. <code>git stash apply</code></td>
-		<td>Apply the last saved changes to updated version (<code>git stash pop</code> can be used to apply changes from the stack and then delete the stack)</td>
+		<td>Apply the last saved changes to updated version (<code>git stash pop</code> can be used to apply changes from the stack and then drop the stack)</td>
 	</tr>
 	<tr>
-		<td colspan="2">4. check if everything has worked as excepted</td>
+		<td>4. Check if everything worked</td>
 	</tr>
 	<tr>
 		<td>5. <code>git stash drop</code></td>
-		<td>Drop last saved stash (if we dont use git stash pop before)</td>
+		<td>Drop last saved stash (if <code>git stash pop</code> wasn't used)</td>
 	</tr>
-</table>
-
-<table>
 	<tr>
-		<td colspan="2">Making patch file of changes:</td>
+		<td colspan="2" style="padding-top: 1.5em;">Creating a patch file of changes and restoring them after an update:</td>
 	</tr>
 	<tr>
 		<td>1. <code>git stash</code></td>
 		<td>Stash changes</td>
 	</tr>
 	<tr>
-		<td>2. <code>git stash show -p > name.patch</code></td>
-		<td>Stash output in a patch file (add <code>--binary</code> option after -p if we also need to stash binary files: <code>git stash show -p --binary > name.patch</code>)</td>
+		<td style="white-space: nowrap;">2. <code>git stash show -p > name.patch</code></td>
+		<td>Stash output in a patch file (add <code>--binary</code> option after <code>-p</code> if we also need to stash binary files: <code>git stash show -p --binary > name.patch</code>)</td>
 	</tr>
 	<tr>
 		<td>3. <code>git apply --stat name.patch</code></td>
