@@ -3428,7 +3428,7 @@ if (isset($output_error)) {
                             }
                             for ($i = 0; $i < count($commits_ahead); $i++) {
                                 if ($commits_ahead[$i] != '' && $commits_ahead_id[$i] != $current_commit) {
-                                    echo "<div style=\"padding: 0.7em 0 0 0;\"><a href=\"https://github.com/kizniche/Mycodo/commit/$commits_ahead_id[$i]\" target=\"_blank\">$commits_ahead[$i]</a></div>";
+                                    echo "<div style=\"padding: 0.7em 0 0 0;\"><a href=\"https://github.com/kizniche/Mycodo/commit/$commits_ahead_id[$i]\" target=\"_blank\">" , htmlentities($commits_ahead[$i]) , "</a></div>";
                                 }
                             }
                             $commits_list = explode("\n", $commits);
@@ -3444,9 +3444,9 @@ if (isset($output_error)) {
                             }
                             for ($j = 0; $j < count($commits_list); $j++) {
                                 if ($commits_behind_id[$j] == $current_commit) {
-                                    echo "<div style=\"padding: 0.7em 0 0 0;\"><a style=\"color: #FF0000;\" href=\"https://github.com/kizniche/Mycodo/commit/$commits_behind_id[$j]\" target=\"_blank\">$commits_list[$j]</a></div>";
+                                    echo "<div style=\"padding: 0.7em 0 0 0;\"><a style=\"color: #FF0000;\" href=\"https://github.com/kizniche/Mycodo/commit/$commits_behind_id[$j]\" target=\"_blank\">" , htmlentities($commits_list[$j]) , "</a></div>";
                                 } else {
-                                    echo "<div style=\"padding: 0.7em 0 0 0;\"><a href=\"https://github.com/kizniche/Mycodo/commit/$commits_behind_id[$j]\" target=\"_blank\">$commits_list[$j]</a></div>";
+                                    echo "<div style=\"padding: 0.7em 0 0 0;\"><a href=\"https://github.com/kizniche/Mycodo/commit/$commits_behind_id[$j]\" target=\"_blank\">" , htmlentities($commits_list[$j]) , "</a></div>";
                                 }
                                 if (isset($backup_commits) && count($backup_commits) != 0) {
                                     for ($i = 0; $i < count($backup_commits); $i++) {
