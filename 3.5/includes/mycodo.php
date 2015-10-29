@@ -2617,13 +2617,18 @@ if (isset($output_error)) {
                         $graph_width = 950;
                     }
 
+                    $image_path = '/var/www/mycodo/images/';
+
                     if ($_POST['custom_type'] == 'Combined') {
                         shell_exec("$mycodo_client --graph combined $id2 x $time_from $time_to $graph_width");
                         $first = False;
                         if (array_sum($sensor_t_graph) || array_sum($sensor_ht_graph)) {
                             if ($first) echo '<hr class="fade"/>';
                             else $first = True;
-                            echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                            $file_name = 'graph-temp-combined-' . $id2 . '.png';
+                            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                                <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
                             echo 'graphtype=combinedcustom';
                             echo '&sensortype=temp';
                             echo '&id=' , $id2 , '>';
@@ -2633,7 +2638,10 @@ if (isset($output_error)) {
                         if (array_sum($sensor_ht_graph)) {
                             if ($first) echo '<hr class="fade"/>';
                             else $first = True;
-                            echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                            $file_name = 'graph-hum-combined-' . $id2 . '.png';
+                            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                                <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
                             echo 'graphtype=combinedcustom';
                             echo '&sensortype=hum';
                             echo '&id=' , $id2 , '>';
@@ -2643,7 +2651,10 @@ if (isset($output_error)) {
                         if (array_sum($sensor_co2_graph)) {
                             if ($first) echo '<hr class="fade"/>';
                             else $first = True;
-                            echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                            $file_name = 'graph-co2-combined-' . $id2 . '.png';
+                            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                                <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
                             echo 'graphtype=combinedcustom';
                             echo '&sensortype=co2';
                             echo '&id=' , $id2 , '>';
@@ -2653,7 +2664,10 @@ if (isset($output_error)) {
                         if (array_sum($sensor_press_graph)) {
                             if ($first) echo '<hr class="fade"/>';
                             else $first = True;
-                            echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                            $file_name = 'graph-press-combined-' . $id2 . '.png';
+                            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                                <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
                             echo 'graphtype=combinedcustom';
                             echo '&sensortype=press';
                             echo '&id=' , $id2 , '>';
@@ -2666,7 +2680,10 @@ if (isset($output_error)) {
                             if ($sensor_t_graph[$n] == 1) {
                                 if ($first) echo '<hr class="fade"/>';
                                 else $first = True;
-                                echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
+                                $file_name = 'graph-t-separate-x-' . $id2 . '-' . $n . '.png';
+                                echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                    <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                                    <img src=image.php?';
                                 echo 'graphtype=separatecustom';
                                 echo '&sensortype=t';
                                 echo '&id=' , $id2;
@@ -2678,7 +2695,10 @@ if (isset($output_error)) {
                             if ($sensor_ht_graph[$n] == 1) {
                                 if ($first) echo '<hr class="fade"/>';
                                 else $first = True;
-                                echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
+                                $file_name = 'graph-ht-separate-x-' . $id2 . '-' . $n . '.png';
+                                echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                    <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                                    <img src=image.php?';
                                 echo 'graphtype=separatecustom';
                                 echo '&sensortype=ht';
                                 echo '&id=' , $id2;
@@ -2690,7 +2710,10 @@ if (isset($output_error)) {
                             if ($sensor_co2_graph[$n] == 1) {
                                 if ($first) echo '<hr class="fade"/>';
                                 else $first = True;
-                                echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
+                                $file_name = 'graph-co2-separate-x-' . $id2 . '-' . $n . '.png';
+                                echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                    <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                                    <img src=image.php?';
                                 echo 'graphtype=separatecustom';
                                 echo '&sensortype=co2';
                                 echo '&id=' , $id2;
@@ -2702,7 +2725,10 @@ if (isset($output_error)) {
                             if ($sensor_press_graph[$n] == 1) {
                                 if ($first) echo '<hr class="fade"/>';
                                 else $first = True;
-                                echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
+                                $file_name = 'graph-press-separate-x-' . $id2 . '-' . $n . '.png';
+                                echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                    <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                                    <img src=image.php?';
                                 echo 'graphtype=separatecustom';
                                 echo '&sensortype=press';
                                 echo '&id=' , $id2;
