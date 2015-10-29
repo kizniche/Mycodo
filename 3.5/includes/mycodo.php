@@ -416,6 +416,7 @@ if (isset($output_error)) {
                         </div>
                     </div>
                 </div>
+            </form>
 
                 <div style="clear: both;"></div>
 
@@ -445,7 +446,6 @@ if (isset($output_error)) {
                     ?>
             </div>
             </div>
-            </form>
 
         </li>
 

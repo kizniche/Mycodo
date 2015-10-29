@@ -2758,7 +2758,7 @@ if (isset($_POST['Delete_Note'])) {
     }
 }
 
-// Add Camera Still Note
+// Add Note with image attachment
 if (isset($_POST['Add_Image_Note'])) {
     if (!function_exists(ImageCreateFromGIF) || !function_exists(ImageCreateFromJPEG) || !function_exists(ImageCreateFromPNG)) {
         $data_error = "Error: missing required function to create image thumbnail. Install php5-gd (sudo apt-get install php5-gd)";
