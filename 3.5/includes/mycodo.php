@@ -3470,7 +3470,7 @@ if (isset($output_error)) {
                             }
                             for ($j = 0; $j < count($commits_list); $j++) {
                                 if ($commits_behind_id[$j] == $current_commit) {
-                                    echo "<<div style=\"text-indent: -5em; padding: 0.7em 0 0 5em; width: 100%; white-space: normal;\"><a style=\"color: #FF0000;\" href=\"https://github.com/kizniche/Mycodo/commit/$commits_behind_id[$j]\" target=\"_blank\">" , htmlentities($commits_list[$j]) , "</a></div>";
+                                    echo "<div style=\"text-indent: -5em; padding: 0.7em 0 0 5em; width: 100%; white-space: normal;\"><a style=\"color: #FF0000;\" href=\"https://github.com/kizniche/Mycodo/commit/$commits_behind_id[$j]\" target=\"_blank\">" , htmlentities($commits_list[$j]) , "</a></div>";
                                 } else {
                                     echo "<div style=\"text-indent: -5em; padding: 0.7em 0 0 5em; width: 100%; white-space: normal;\"><a href=\"https://github.com/kizniche/Mycodo/commit/$commits_behind_id[$j]\" target=\"_blank\">" , htmlentities($commits_list[$j]) , "</a></div>";
                                 }
