@@ -65,7 +65,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
         $last_press_sensor[$p] = `awk '$5 == $p {print}' /var/www/mycodo/log/sensor-press-tmp.log | tail -n 1`;
         if ($last_press_sensor[$p] != '') {
             $sensor_explode = preg_split('/[\s]+/', $last_press_sensor[$p]);
-            $press_temp_c[$p] = floatval($sensor_explode[6]);
+            $press_temp_c[$p] = floatval($sensor_explode[1]);
             $press[$p] = $sensor_explode[2];
             $press_temp_f[$p] = round(($press_temp_c[$p]*(9/5) + 32), 1);
             $settemp_press_f[$p] = round($pid_press_temp_set[$p]*(9/5)+32, 1);
