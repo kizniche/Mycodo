@@ -27,7 +27,7 @@ sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
 sql_database_user = '/var/www/mycodo/config/users.db'
 sql_database_note = '/var/www/mycodo/config/notes.db'
 
-db_version_mycodo = 14
+db_version_mycodo = 15
 db_version_user = 1
 db_version_note = 2
 
@@ -351,9 +351,10 @@ def mycodo_database_update():
         # Version 8 updates: add relay conditional statements
 
         # Version 9 updates: add table relay: Amps
-        ModNullValue(sql_database_mycodo, 'Relays', 'Amps', 0)
-        ModNullValue(sql_database_mycodo, 'Misc', 'Enable_Max_Amps', 1)
-        ModNullValue(sql_database_mycodo, 'Misc', 'Max_Amps', 15)
+        if current_db_version_mycodo < 9:
+            ModNullValue(sql_database_mycodo, 'Relays', 'Amps', 0)
+            ModNullValue(sql_database_mycodo, 'Misc', 'Enable_Max_Amps', 1)
+            ModNullValue(sql_database_mycodo, 'Misc', 'Max_Amps', 15)
 
         # Version 10 updates: add more conditionals (exec and notify)
         if current_db_version_mycodo < 10:
@@ -413,6 +414,10 @@ def mycodo_database_update():
 
         # Version 14 updates: Add ability to customize combined graphs
 
+        # Version 15 updates: Update log timestamp format, add relay duration and power usage stats/options
+        if current_db_version_mycodo < 15:
+            ModNullValue(sql_database_mycodo, 'Misc', 'Relay_Stats_Volts', 120)
+            ModNullValue(sql_database_mycodo, 'Misc', 'Relay_Stats_DayofMonth', 15)
 
         # any extra commands for version X
         #if current_db_version_mycodo < X:
@@ -1046,9 +1051,11 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'Misc', 'Refresh_Time', 'INT')
     AddColumn(sql_database_mycodo, 'Misc', 'Enable_Max_Amps', 'INT')
     AddColumn(sql_database_mycodo, 'Misc', 'Max_Amps', 'REAL')
+    AddColumn(sql_database_mycodo, 'Misc', 'Relay_Stats_Volts', 'INT')
+    AddColumn(sql_database_mycodo, 'Misc', 'Relay_Stats_DayofMonth', 'INT')
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("INSERT OR IGNORE INTO Misc VALUES('0', 0, '', 300, 1, 15)")
+    cur.execute("INSERT OR IGNORE INTO Misc VALUES('0', 0, '', 300, 1, 15, 120, 15)")
     conn.commit()
     cur.close()
     ModNullValue(sql_database_mycodo, 'Misc', 'Dismiss_Notification', 0)

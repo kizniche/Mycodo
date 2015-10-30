@@ -90,6 +90,9 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 Major changes for each versioned release
 
+#### 3.5.84
++ Add relay and power usage statistics to the Data Tab
+
 #### 3.5.83
 + Add ability to define combined graph values: relays to plot and y-axis values (min, max, tics, and mtics)
 

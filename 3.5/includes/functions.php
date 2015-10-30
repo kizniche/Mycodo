@@ -74,7 +74,7 @@ function view_sql_db($sqlite_db) {
  * Graphing
  */
 
-// Generate and display graphs on the Main tab
+// Generate and display graphs on the Graph tab
 function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_graph, $sensor_ht_graph, $sensor_co2_graph, $sensor_press_graph) {
     $image_path = '/var/www/mycodo/images/';
 

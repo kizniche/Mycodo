@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.83";
+$version = "3.5.84";
 
 ######### Start Edit Configure #########
 
@@ -2968,8 +2968,11 @@ if (isset($output_error)) {
                         <td class="data-buttons-rightspace">
                             <button style="width:100%" type="submit" name="Update" value="Update Log">Update<br>Log</button>
                         </td>
-                        <td>
+                        <td class="data-buttons-rightspace">
                             <button type="submit" name="Users" value="User Database">User<br>Database</button>
+                        </td>
+                        <td>
+                            <button style="width:100%" type="submit" name="Notes" value="Notes">Notes<br>&nbsp;</button>
                         </td>
                     </tr>
                     <tr>
@@ -2989,7 +2992,7 @@ if (isset($output_error)) {
                             <button type="submit" name="Relay" value="Relay">Relay<br>Log</button>
                         </td>
                         <td class="data-buttons-rightspace">
-                            <button style="width:100%" type="submit" name="Notes" value="Notes">Notes<br>&nbsp;</button>
+                            <button style="width:100%" type="submit" name="RelayUsage" value="" title="Display the relay duration and power usage statistics">Relay<br>Usage</button>
                         </td>
                         <td>
                             <button style="width:100%" type="submit" name="Login" value="Login">Login<br>Log</button>
@@ -3014,9 +3017,9 @@ if (isset($output_error)) {
                             echo "<pre>Temperature Sensor Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y M D H M S Tc Sensor\n$(cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Tc Sensor\n$(cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S Tc Sensor\n$(cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Tc Sensor\n$(cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3025,9 +3028,9 @@ if (isset($output_error)) {
                             echo "<pre>Temperature Sensor Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y M D H M S ID Name Device Pin/Ser# Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD\n$(cat /var/www/mycodo/log/sensor-t-changes.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Device Pin/Ser# Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD\n$(cat /var/www/mycodo/log/sensor-t-changes.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S ID Name Device Pin/Ser# Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD\n$(cat /var/www/mycodo/log/sensor-t-changes.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Device Pin/Ser# Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD\n$(cat /var/www/mycodo/log/sensor-t-changes.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3042,12 +3045,7 @@ if (isset($output_error)) {
                             echo '
                                 <table class="data-data">
                                     <tr>
-                                        <th>Y</th>
-                                        <th>M</th>
-                                        <th>D</th>
-                                        <th>H</th>
-                                        <th>M</th>
-                                        <th>S</th>
+                                        <th>Y/M/D-H:M:S</th>
                                         <th>Temperature<br>(&deg;C)</th>
                                         <th>Relative<br>Humidity<br>(%)</th>
                                         <th>DewPoint<br>(&deg;C)</th>
@@ -3069,12 +3067,7 @@ if (isset($output_error)) {
                             echo '
                                 <table class="data-data">
                                     <tr>
-                                        <th>Y</th>
-                                        <th>M</th>
-                                        <th>D</th>
-                                        <th>H</th>
-                                        <th>M</th>
-                                        <th>S</th>
+                                        <th>Y/M/D-H:M:S</th>
                                         <th>ID</th>
                                         <th>Name</th>
                                         <th>Device</th>
@@ -3139,9 +3132,9 @@ if (isset($output_error)) {
                             echo "<pre>CO<sub>2</sub> Sensor Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y M D H M S CO2 Sensor\n$(cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S CO2 Sensor\n$(cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S CO2 Sensor\n$(cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S CO2 Sensor\n$(cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3150,9 +3143,9 @@ if (isset($output_error)) {
                             echo "<pre>CO<sub>2</sub> Sensor Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YCO2Min YCO2Max YCO2Tics YCO2MTics CO2RelaysUp CO2RelaysDown CO2RelayHigh CO2RelayHighMin CO2RelayHighMax CO2RelayLow CO2RelayLowMin CO2RelayLowMax CO2Set CO2SetDir CO2Period CO2P CO2I CO2D\n$(cat /var/www/mycodo/log/sensor-co2-changes.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YCO2Min YCO2Max YCO2Tics YCO2MTics CO2RelaysUp CO2RelaysDown CO2RelayHigh CO2RelayHighMin CO2RelayHighMax CO2RelayLow CO2RelayLowMin CO2RelayLowMax CO2Set CO2SetDir CO2Period CO2P CO2I CO2D\n$(cat /var/www/mycodo/log/sensor-co2-changes.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YCO2Min YCO2Max YCO2Tics YCO2MTics CO2RelaysUp CO2RelaysDown CO2RelayHigh CO2RelayHighMin CO2RelayHighMax CO2RelayLow CO2RelayLowMin CO2RelayLowMax CO2Set CO2SetDir CO2Period CO2P CO2I CO2D\n$(cat /var/www/mycodo/log/sensor-co2-changes.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YCO2Min YCO2Max YCO2Tics YCO2MTics CO2RelaysUp CO2RelaysDown CO2RelayHigh CO2RelayHighMin CO2RelayHighMax CO2RelayLow CO2RelayLowMin CO2RelayLowMax CO2Set CO2SetDir CO2Period CO2P CO2I CO2D\n$(cat /var/www/mycodo/log/sensor-co2-changes.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3161,9 +3154,9 @@ if (isset($output_error)) {
                             echo "<pre>Pressure Sensor Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y M D H M S Temperature(C) Pressure(kPa) Altitude(m) Sensor\n$(cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Temperature(C) Pressure(kPa) Altitude(m) Sensor\n$(cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S Temperature(C) Pressure(kPa) Altitude(m) Sensor\n$(cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Temperature(C) Pressure(kPa) Altitude(m) Sensor\n$(cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3172,9 +3165,9 @@ if (isset($output_error)) {
                             echo "<pre>Temperature/Pressure Sensor Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD PressRelaysUp PressRelaysDown PressRelayHigh PressRelayHighMin PressRelayHighMax PressRelayLow PressRelayLowMin PressRelayLowMax PressSet PressSetDir PressPeriod PressP PressI PressD\n$(cat /var/www/mycodo/log/sensor-press-changes.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD PressRelaysUp PressRelaysDown PressRelayHigh PressRelayHighMin PressRelayHighMax PressRelayLow PressRelayLowMin PressRelayLowMax PressSet PressSetDir PressPeriod PressP PressI PressD\n$(cat /var/www/mycodo/log/sensor-press-changes.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD PressRelaysUp PressRelaysDown PressRelayHigh PressRelayHighMin PressRelayHighMax PressRelayLow PressRelayLowMin PressRelayLowMax PressSet PressSetDir PressPeriod PressP PressI PressD\n$(cat /var/www/mycodo/log/sensor-press-changes.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD PressRelaysUp PressRelaysDown PressRelayHigh PressRelayHighMin PressRelayHighMax PressRelayLow PressRelayLowMin PressRelayLowMax PressSet PressSetDir PressPeriod PressP PressI PressD\n$(cat /var/www/mycodo/log/sensor-press-changes.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3183,9 +3176,9 @@ if (isset($output_error)) {
                             echo "<pre>Relay Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y M D H M S Sensor Relay GPIO SecondsOn\n$(cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Sensor Relay GPIO SecondsOn\n$(cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S Sensor Relay GPIO SecondsOn\n$(cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Sensor Relay GPIO SecondsOn\n$(cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3194,9 +3187,9 @@ if (isset($output_error)) {
                             echo "<pre>Relay Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y M D H M S Relay Name GPIO Amps Trigger State\n$(cat /var/www/mycodo/log/relay-changes.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Relay Name GPIO Amps Trigger State\n$(cat /var/www/mycodo/log/relay-changes.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S Relay Name GPIO Amps Trigger State\n$(cat /var/www/mycodo/log/relay-changes.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Relay Name GPIO Amps Trigger State\n$(cat /var/www/mycodo/log/relay-changes.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3205,9 +3198,9 @@ if (isset($output_error)) {
                             echo "<pre>Timer Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y M D H M S ID Name Relay DurationOn DurationOff\n$(cat /var/www/mycodo/log/timer-changes.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Relay DurationOn DurationOff\n$(cat /var/www/mycodo/log/timer-changes.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S ID Name Relay DurationOn DurationOff\n$(cat /var/www/mycodo/log/timer-changes.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Relay DurationOn DurationOff\n$(cat /var/www/mycodo/log/timer-changes.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3558,6 +3551,264 @@ if (isset($output_error)) {
                             echo '</pre>';
                         }
 
+                        if (isset($_POST['RelayUsage']) && count($relay_id) > 0) {
+                        ?>Past Relay Usage
+                            <div class="sensor-parent" style="margin-top: 1em;">
+                                <table class="relays">
+                                    <tr>
+                                        <td class="table-header">Relay</td>
+                                        <td class="table-header middle">Name</td>
+                                        <td class="table-header">Duration On (seconds)<br>Power Usage (kW-hours@<?php echo $relay_stats_volts; ?>V)</td>
+                                        <td class="table-header">Hour</td>
+                                        <td class="table-header">Day</td>
+                                        <td class="table-header">Week</td>
+                                        <td class="table-header">Month<br>(Today)</td>
+                                        <td class="table-header">Month<br>(Day <?php echo $relay_stats_dayofmonth; ?>)</td>
+                                        <td class="table-header">Year</td>
+                                        <td class="table-header">Total</td>
+                                    </tr>
+                                    <?php 
+                                    $relay_stats_seconds_on = [];
+                                    $relay_stats_seconds_on_hour = [];
+                                    $relay_stats_seconds_on_day = [];
+                                    $relay_stats_seconds_on_week = [];
+                                    $relay_stats_seconds_on_month = [];
+                                    $relay_stats_seconds_on_year = [];
+
+                                    $current_year = date("Y");
+                                    $current_month = date("m");
+                                    $current_day = date("d");
+                                    $date_ago_dayofmonth = None;
+                                    if ($relay_stats_dayofmonth < $current_day) {
+                                        $date_ago_dayofmonth = date("Y/m/d-h:i:s", mktime(date("h"), date("i"), 0, $current_month, $relay_stats_dayofmonth, $current_year));
+                                    } else {
+                                        if ($current_month == 1) {
+                                            $date_ago_dayofmonth = date("Y/m/d-h:i:s", mktime(date("h"), date("i"), 0, 12, $relay_stats_dayofmonth, $current_year-1));
+                                        } else {
+                                            $date_ago_dayofmonth = date("Y/m/d-h:i:s", mktime(date("h"), date("i"), 0, $current_month-1, $relay_stats_dayofmonth, $current_year));
+                                        }
+                                    }
+
+                                    for ($i = 0; $i < count($relay_id); $i++) {
+                                        $read = "$gpio_path -g read $relay_pin[$i]";
+                                        $date_now = substr(shell_exec("date --date=\"now\" +'%Y/%m/%d-%H:%M:%S'"), 0, -1);
+                                        $date_ago = shell_exec("date --date=\"1 hour ago\" +'%Y/%m/%d-%H:%M:%S'");
+                                        $relay_stats_seconds_on_hour[$i] = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                        $date_ago = shell_exec("date --date=\"1 day ago\" +'%Y/%m/%d-%H:%M:%S'");
+                                        $relay_stats_seconds_on_day[$i] = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                        $date_ago = shell_exec("date --date=\"1 week ago\" +'%Y/%m/%d-%H:%M:%S'");
+                                        $relay_stats_seconds_on_week[$i] = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                        $date_ago = shell_exec("date --date=\"1 month ago\" +'%Y/%m/%d-%H:%M:%S'");
+                                        $relay_stats_seconds_on_month[$i] = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                        $relay_stats_seconds_on_dayofmonth[$i] = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago_dayofmonth . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                        $date_ago = shell_exec("date --date=\"1 year ago\" +'%Y/%m/%d-%H:%M:%S'");
+                                        $relay_stats_seconds_on_year[$i] = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                        $relay_stats_seconds_on[$i] = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                    ?>
+                                    <tr>
+                                        <td class="center"><?php echo $i+1; ?></td>
+                                        <td><?php echo $relay_name[$i]; ?></td>
+                                        <td>Duration On</td>
+                                        <td><?php echo $relay_stats_seconds_on_hour[$i]; ?></td>
+                                        <td><?php echo $relay_stats_seconds_on_day[$i]; ?></td>
+                                        <td><?php echo $relay_stats_seconds_on_week[$i]; ?></td>
+                                        <td><?php echo $relay_stats_seconds_on_month[$i]; ?></td>
+                                        <td><?php echo $relay_stats_seconds_on_dayofmonth[$i]; ?></td>
+                                        <td><?php echo $relay_stats_seconds_on_year[$i]; ?></td>
+                                        <td><?php echo $relay_stats_seconds_on[$i]; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"></td>
+                                        <td>Power Usage</td>
+                                        <td>
+                                            <?php
+                                            $date_ago = shell_exec("date --date=\"1 hour ago\" +'%Y/%m/%d-%H:%M:%S'");
+                                            $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                            echo round($relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000, 2);
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            $date_ago = shell_exec("date --date=\"1 day ago\" +'%Y/%m/%d-%H:%M:%S'");
+                                            $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                            echo round($relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000, 2);
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            $date_ago = shell_exec("date --date=\"1 week ago\" +'%Y/%m/%d-%H:%M:%S'");
+                                            $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                            echo round($relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000, 2);
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            $date_ago = shell_exec("date --date=\"1 month ago\" +'%Y/%m/%d-%H:%M:%S'");
+                                            $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                            echo round($relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000, 2);
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago_dayofmonth . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                            echo round($relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000, 2);
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            $date_ago = shell_exec("date --date=\"1 year ago\" +'%Y/%m/%d-%H:%M:%S'");
+                                            $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                            echo round($relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000, 2);
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            echo round($relay_stats_volts*$relay_amps[$i]*($relay_stats_seconds_on[$i]/3600)/1000, 2);
+                                        ?>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                    }
+                                    ?>
+                                    <tr>
+                                        <td colspan="2">Grand Total</td>
+                                        <td>Duration On</td>
+                                        <td>
+                                            <?php
+                                            $relay_stats_seconds_on_total = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_seconds_on_total += $relay_stats_seconds_on_hour[$j];
+                                            }
+                                            echo $relay_stats_seconds_on_total;
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            $relay_stats_seconds_on_total = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_seconds_on_total += $relay_stats_seconds_on_day[$j];
+                                            }
+                                            echo $relay_stats_seconds_on_total;
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            $relay_stats_seconds_on_total = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_seconds_on_total += $relay_stats_seconds_on_week[$j];
+                                            }
+                                            echo $relay_stats_seconds_on_total;
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            $relay_stats_seconds_on_total = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_seconds_on_total += $relay_stats_seconds_on_month[$j];
+                                            }
+                                            echo $relay_stats_seconds_on_total;
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            $relay_stats_seconds_on_total = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_seconds_on_total += $relay_stats_seconds_on_dayofmonth[$j];
+                                            }
+                                            echo $relay_stats_seconds_on_total;
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            $relay_stats_seconds_on_total = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_seconds_on_total += $relay_stats_seconds_on_year[$j];
+                                            }
+                                            echo $relay_stats_seconds_on_total;
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            $relay_stats_seconds_on_total = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_seconds_on_total += $relay_stats_seconds_on[$j];
+                                            }
+                                            echo $relay_stats_seconds_on_total;
+                                            ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"></td>
+                                        <td>Power Usage</td>
+                                        <td>
+                                        <?php
+                                            $relay_stats_total_amps = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_hour[$j]/3600)/1000, 2);
+                                            }
+                                            echo $relay_stats_total_amps;
+                                        ?>
+                                        </td>
+                                        <td>
+                                        <?php
+                                            $relay_stats_total_amps = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_day[$j]/3600)/1000, 2);
+                                            }
+                                            echo $relay_stats_total_amps;
+                                        ?>
+                                        </td>
+                                        <td>
+                                        <?php
+                                            $relay_stats_total_amps = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_week[$j]/3600)/1000, 2);
+                                            }
+                                            echo $relay_stats_total_amps;
+                                        ?>
+                                        </td>
+                                        <td>
+                                        <?php
+                                            $relay_stats_total_amps = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_month[$j]/3600)/1000, 2);
+                                            }
+                                            echo $relay_stats_total_amps;
+                                        ?>
+                                        </td>
+                                        <td>
+                                        <?php
+                                            $relay_stats_total_amps = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_dayofmonth[$j]/3600)/1000, 2);
+                                            }
+                                            echo $relay_stats_total_amps;
+                                        ?>
+                                        </td>
+                                        <td>
+                                        <?php
+                                            $relay_stats_total_amps = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_year[$j]/3600)/1000, 2);
+                                            }
+                                            echo $relay_stats_total_amps;
+                                        ?>
+                                        </td>
+                                        <td>
+                                        <?php
+                                            $relay_stats_total_amps = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on[$j]/3600)/1000, 2);
+                                            }
+                                            echo $relay_stats_total_amps;
+                                        ?>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        <?php 
+                        }
+
                         if(isset($_POST['Users']) && $_SESSION['user_name'] != 'guest') {
                             echo exec('file ' . $user_db);
                             echo '<pre><br> <br>User Email Password_Hash<br> <br>';
@@ -3692,23 +3943,18 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
-                            Automatic refresh rate (seconds)
+                            Voltage (used to calculate kiloWatt-hours (kWh) power usage)
                         </td>
                         <td class="setting-value">
-                            <input style="width: 4em;" type="number" min="1" max="999999" value="<?php echo $refresh_time; ?>" maxlength=4 size=1 name="refresh_time" title="The number of seconds between automatic page refreshing."/>
+                            <input style="width: 18em;" type="number" min="1" max="9999" step="1" value="<?php echo $relay_stats_volts; ?>" maxlength=4 size=1 name="relay_stats_volts" title="The voltage that is being controlled through the relays."/>
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <button name="ChangeSystem" type="submit" value="">Save</button>
+                        <td class="setting-text">
+                            Power Billing Day of the Month (for calculating kWh usage since the last bill)
                         </td>
-                    </tr>
-                    </form>
-
-                    <form method="post" action="?tab=settings">
-                    <tr>
-                        <td class="setting-title">
-                            Display
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" min="1" max="31" step="1" value="<?php echo $relay_stats_dayofmonth; ?>" maxlength=4 size=1 name="relay_stats_dayofmonth" title="Power usage will be calculated from this nth day of the month until the present."/>
                         </td>
                     </tr>
                     <tr>
@@ -3721,6 +3967,14 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Automatic refresh rate (seconds)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" min="1" max="999999" value="<?php echo $refresh_time; ?>" maxlength=4 size=1 name="refresh_time" title="The number of seconds between automatic page refreshing."/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
                             Display Debugging Information
                         </td>
                         <td class="setting-value">
@@ -3729,7 +3983,7 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td class="setting-save">
-                            <button name="ChangeInterface" type="submit" value="">Save</button>
+                            <button name="ChangeSystem" type="submit" value="">Save</button>
                         </td>
                     </tr>
                     </form>

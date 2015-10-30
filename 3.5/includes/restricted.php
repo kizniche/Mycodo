@@ -2883,17 +2883,13 @@ if (isset($_POST['Edit_Note_Save'])) {
 
 // Change system settings
 if (isset($_POST['ChangeSystem'])) {
-    $stmt = $db->prepare("UPDATE Misc SET Refresh_Time=:refreshtime, Enable_Max_Amps=:enablemaxamps, Max_Amps=:maxamps");
-    $stmt->bindValue(':refreshtime', (int)$_POST['refresh_time'], SQLITE3_INTEGER);
+    $stmt = $db->prepare("UPDATE Misc SET Enable_Max_Amps=:enablemaxamps, Max_Amps=:maxamps, Relay_Stats_Volts=:statvolts, Relay_Stats_DayofMonth=:statdayofmonth, Login_Message=:loginmessage, Refresh_Time=:refreshtime");
     $stmt->bindValue(':enablemaxamps', (int)$_POST['enable_max_amps'], SQLITE3_INTEGER);
     $stmt->bindValue(':maxamps', (float)$_POST['max_amps'], SQLITE3_FLOAT);
-    $stmt->execute();
-}
-
-// Change interface settings
-if (isset($_POST['ChangeInterface'])) {
-    $stmt = $db->prepare("UPDATE Misc SET Login_Message=:loginmessage");
+    $stmt->bindValue(':statvolts', (int)$_POST['relay_stats_volts'], SQLITE3_INTEGER);
+    $stmt->bindValue(':statdayofmonth', (int)$_POST['relay_stats_dayofmonth'], SQLITE3_INTEGER);
     $stmt->bindValue(':loginmessage', $_POST['login_message'], SQLITE3_TEXT);
+    $stmt->bindValue(':refreshtime', (int)$_POST['refresh_time'], SQLITE3_INTEGER);
     $stmt->execute();
 }
 
