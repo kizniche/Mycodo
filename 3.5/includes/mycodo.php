@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.84";
+$version = "3.5.85";
 
 ######### Start Edit Configure #########
 
@@ -109,6 +109,7 @@ delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete olde
     <link rel="stylesheet" href="css/reset.css" type="text/css">
     <link rel="stylesheet" href="css/style.css" type="text/css">
     <script src="js/modernizr.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript">
         function open_legend() {
             window.open("image.php?span=legend-small","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=250, height=300");
@@ -118,6 +119,10 @@ delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete olde
         }
     </script>
     <?php
+    if (isset($_POST['Generate_Graph'])) {
+        require($install_path . "/includes/graph.php");
+    }
+
     if (isset($_GET['r']) && ($_GET['r'] == 1)) {
         echo '<META HTTP-EQUIV="refresh" CONTENT="' , $refresh_time , '">';
     }
@@ -363,14 +368,8 @@ if (isset($output_error)) {
             }
             ?>
 
-            <form action="?tab=graph<?php
-            if (isset($_GET['page'])) {
-                echo '&page=' , $_GET['page'];
-            }
-            if (isset($_GET['r'])) {
-                echo '&r=' , $_GET['r'];
-            } ?>" method="POST">
             <div>
+                <form action="?tab=graph<?php if (isset($_GET['r'])) echo '&r=' , $_GET['r']; ?>" method="POST">
                 <div style="padding-top: 0.5em;">
                     <div style="float: left; padding: 0 1.5em 1em 0.5em;">
                         <div style="text-align: center; padding-bottom: 0.2em;">Auto Refresh</div>
@@ -411,12 +410,42 @@ if (isset($output_error)) {
                                 <option value="6m" <?php if ($graph_time_span == '6m') echo 'selected="selected"'; ?>>6 Months</option>
                             </select>
                         </div>
-                        <div style="float: left;">
+                        <div style="float: left; padding-right: 2em;">
                             <button type="submit" name="Graph" value="Generate Graph">Generate<br>Graph</button>
                         </div>
                     </div>
+
+                    <div style="float: left; padding: 0 1.5em 1em 0.5em;">
+                        <button type="submit" name="Generate_Graph" value="t">T<br>Graph</button>
+                        <button type="submit" name="Generate_Graph" value="ht">HT<br>Graph</button>
+                        <button type="submit" name="Generate_Graph" value="co2">CO2<br>Graph</button>
+                        <button type="submit" name="Generate_Graph" value="press">Press<br>Graph</button>
+                    </div>
                 </div>
-            </form>
+                </form>
+                
+                <div style="clear: both;"></div>
+
+                <?php
+                if (isset($_POST['Generate_Graph'])) {
+                    $sensor_type = $_POST['Generate_Graph'];
+                    $sensor_num_array = "sensor_{$sensor_type}_id";
+                    echo '<div style="padding: 1.5em 0 1.5em 0; text-align:center;">';
+                    $first = False;
+                    if ($_POST['Generate_Graph'] == 'ht') {
+                        echo '<div id="containerx" style="width: 100%; height: 30em; "></div>';
+                        for ($i=0; $i < count(${$sensor_num_array}); $i++) {
+                            $count = $i+1;
+                            if ($first == True) echo '<hr class="fade"/>';
+                            else $first = True;
+                            echo '<div id="container' . $count . '" style="width: 100%; height: 30em; "></div>';
+                        }
+                    } else {
+                        echo '<div id="container" style="width: 100%; height: 30em; "></div>';
+                    }
+                    echo '</div>';
+                }
+                ?>
 
                 <div style="clear: both;"></div>
 
@@ -444,9 +473,8 @@ if (isset($output_error)) {
                     <?php
                     }
                     ?>
+                </div>
             </div>
-            </div>
-
         </li>
 
         <li data-content="sensor" <?php
@@ -3578,7 +3606,7 @@ if (isset($output_error)) {
                                     $current_year = date("Y");
                                     $current_month = date("m");
                                     $current_day = date("d");
-                                    $date_ago_dayofmonth = None;
+                                    $date_ago_dayofmonth = NULL;
                                     if ($relay_stats_dayofmonth < $current_day) {
                                         $date_ago_dayofmonth = date("Y/m/d-h:i:s", mktime(date("h"), date("i"), 0, $current_month, $relay_stats_dayofmonth, $current_year));
                                     } else {
@@ -4880,8 +4908,9 @@ if (isset($output_error)) {
     ?>
 
 </div> <!-- cd-tabs -->
-
-<script src="js/jquery-2.1.1.js"></script>
+<script src="js/highstock.js"></script>
+<script src="js/modules/exporting.js"></script>
+<!-- <script src="js/jquery-2.1.1.js"></script> -->
 <script src="js/main.js"></script> <!-- Resource jQuery -->
 
 </body>

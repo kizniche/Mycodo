@@ -55,6 +55,26 @@ if [[ $db_version -lt 15 ]]; then
 	fi
 fi
 
+if [[ $db_version -lt 16 ]]; then
+	printf "Updating timestamps in log files (this may take a while)...\n";
+	if [ -s "/var/www/mycodo/log/sensor-t.log" ]; then
+		tr -s " " < /var/www/mycodo/log/sensor-t.log > /var/www/mycodo/log/sensor-t.log-new
+		mv -f /var/www/mycodo/log/sensor-t.log-new /var/www/mycodo/log/sensor-t.log
+	fi
+	if [ -s "/var/www/mycodo/log/sensor-ht.log" ]; then
+		tr -s " " < /var/www/mycodo/log/sensor-ht.log > /var/www/mycodo/log/sensor-ht.log-new
+		mv -f /var/www/mycodo/log/sensor-ht.log-new /var/www/mycodo/log/sensor-ht.log
+	fi
+	if [ -s "/var/www/mycodo/log/sensor-co2.log" ]; then
+		tr -s " " < /var/www/mycodo/log/sensor-co2.log > /var/www/mycodo/log/sensor-co2.log-new
+		mv -f /var/www/mycodo/log/sensor-co2.log-new /var/www/mycodo/log/sensor-co2.log
+	fi
+	if [ -s "/var/www/mycodo/log/sensor-press.log" ]; then
+		tr -s " " < /var/www/mycodo/log/sensor-press.log > /var/www/mycodo/log/sensor-press.log-new
+		mv -f /var/www/mycodo/log/sensor-press.log-new /var/www/mycodo/log/sensor-press.log
+	fi
+fi
+
 # Perform update based on database version
 if [ ! -f $DATABASE ]; then
     printf "Mycodo database not found: $DATABASE\n";

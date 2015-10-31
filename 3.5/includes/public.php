@@ -43,7 +43,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             $ht_temp_c[$p] = floatval($sensor_explode[1]);
             $hum[$p] = $sensor_explode[2];
             $ht_temp_f[$p] = round(($ht_temp_c[$p]*(9/5) + 32), 1);
-            $dp_c[$p] = substr($sensor_explode[8], 0, -1);
+            $dp_c[$p] = substr($sensor_explode[3], 0, -1);
             $dp_f[$p] = round(($dp_c[$p]*(9/5) + 32), 1);
             $settemp_ht_f[$p] = round($pid_ht_temp_set[$p]*(9/5)+32, 1);
         }

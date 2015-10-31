@@ -27,7 +27,7 @@ sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
 sql_database_user = '/var/www/mycodo/config/users.db'
 sql_database_note = '/var/www/mycodo/config/notes.db'
 
-db_version_mycodo = 15
+db_version_mycodo = 16
 db_version_user = 1
 db_version_note = 2
 
@@ -418,6 +418,8 @@ def mycodo_database_update():
         if current_db_version_mycodo < 15:
             ModNullValue(sql_database_mycodo, 'Misc', 'Relay_Stats_Volts', 120)
             ModNullValue(sql_database_mycodo, 'Misc', 'Relay_Stats_DayofMonth', 15)
+
+        # Version 15 updates: New graphing method, need to update log file format (remove multiple spaces)
 
         # any extra commands for version X
         #if current_db_version_mycodo < X:
