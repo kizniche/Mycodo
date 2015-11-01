@@ -39,11 +39,6 @@ $relay_log_file_final = "image.php?span=graph&file=relay-$graph_id.log";
 
 $sensor_num_array = "sensor_{$sensor_type}_id";
 
-// for ($i=0; $i < count(${$sensor_num_array}); $i++) {
-//     $sensor_log_generate = "/var/tmp/sensor-$sensor_type-$graph_id-$i.log";
-//     shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh $i $sensor_type $number_lines $sensor_log_first $sensor_log_second $sensor_log_generate");
-// }
-
 if ($sensor_type == 't') {
     ?>
 
@@ -89,6 +84,10 @@ if ($sensor_type == 't') {
                     },
                     legend: {
                         enabled: true,
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'top',
+                        y: 75,
                     },
                     exporting: {
                         fallbackToExportServer: false,
@@ -230,7 +229,6 @@ if ($sensor_type == 't') {
         });
     });
 </script>
-
 
     <?php
     } else if ($sensor_type == 'ht' && count(${$sensor_num_array}) > 0) {
@@ -507,17 +505,24 @@ if ($sensor_type == 't') {
                         zoomType: 'x',
                     },
                     title: {
-                        text: 'CO2 Sensor Data'
+                        text: 'CO<sub>2</sub> Sensor Data',
+                        useHTML: true
                     },
                     legend: {
                         enabled: true,
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'top',
+                        y: 75,
+                        useHTML: true,
                     },
                     exporting: {
                         fallbackToExportServer: false,
                     },
                     yAxis: [{
                         title: {
-                            text: 'CO2 (ppmv)',
+                            text: 'CO<sub>2</sub> (ppmv)',
+                            useHTML: true
                         },
                         labels: {
                             format: '{value}ppmv',
@@ -536,12 +541,12 @@ if ($sensor_type == 't') {
                         lineWidth: 2
                     }],
                     series: [{
-                        name: '<?php echo $sensor_co2_name[$i]; ?> CO2',
+                        name: '<?php echo $sensor_co2_name[$i]; ?> CO<sub>2</sub>',
                         color: Highcharts.getOptions().colors[0],
                         data: getSensorData(0),
                         tooltip: {
                             valueSuffix: ' ppmv',
-                            valueDecimals: 0,
+                            valueDecimals: 0
                         }
                     }<?php
                     for ($i = 0; $i < count($relay_id); $i++) {
@@ -550,14 +555,14 @@ if ($sensor_type == 't') {
                         type: 'column',
                         dataGrouping: {
                             approximation: 'low',
-                            groupPixelWidth: 3,
+                            groupPixelWidth: 3
                         },
                         color: Highcharts.getOptions().colors[<?php echo $i+1; ?>],
                         data: getRelayData(<?php echo $i+1; ?>),
                         yAxis: 1,
                         tooltip: {
                             valueSuffix: ' sec',
-                            valueDecimals: 0,
+                            valueDecimals: 0
                         }
                     }<?php 
                     }
