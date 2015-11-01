@@ -229,6 +229,8 @@ if ($sensor_type == 't') {
                         },
                         labels: {
                             format: '{value}°C',
+                            align: 'left',
+                            x: -3
                         },
                         height: '60%',
                         minRange: 5,
@@ -239,6 +241,8 @@ if ($sensor_type == 't') {
                         },
                         labels: {
                             format: '{value}%',
+                            align: 'right',
+                            x: -3
                         },
                         height: '60%',
                         minRange: 10,
@@ -248,6 +252,8 @@ if ($sensor_type == 't') {
                         },
                         labels: {
                             format: '{value}sec',
+                            align: 'right',
+                            x: -3
                         },
                         top: '65%',
                         height: '35%',
