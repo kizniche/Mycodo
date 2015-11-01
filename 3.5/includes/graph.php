@@ -214,7 +214,7 @@ if ($sensor_type == 't') {
                         align: 'right',
                         verticalAlign: 'top',
                         y: 75,
-                    },
+                    },s
                     exporting: {
                         width: 1200,
                         scale: 1,
@@ -229,8 +229,6 @@ if ($sensor_type == 't') {
                         },
                         labels: {
                             format: '{value}°C',
-                            align: 'left',
-                            x: -3
                         },
                         height: '60%',
                         minRange: 5,
@@ -241,19 +239,15 @@ if ($sensor_type == 't') {
                         },
                         labels: {
                             format: '{value}%',
-                            align: 'right',
-                            x: -3
                         },
                         height: '60%',
                         minRange: 10,
                     },{
                         title: {
-                            text: 'Duration (sec)'
+                            text: 'Duration (sec)',
                         },
                         labels: {
                             format: '{value}sec',
-                            align: 'right',
-                            x: -3
                         },
                         top: '65%',
                         height: '35%',
@@ -445,8 +439,6 @@ if ($sensor_type == 't') {
                         },
                         labels: {
                             format: '{value}ppmv',
-                            align: 'right',
-                            x: -3
                         },
                         height: '60%',
                     }, {
@@ -455,8 +447,6 @@ if ($sensor_type == 't') {
                         },
                         labels: {
                             format: '{value}sec',
-                            align: 'right',
-                            x: -3
                         },
                         top: '65%',
                         height: '35%',
@@ -583,6 +573,8 @@ if ($sensor_type == 't') {
                 data2.push([date,parseInt(items[2])]);
             });
 
+            
+
             $('#container').highcharts('StockChart', {
                 chart: {
                     renderTo: 'container',
@@ -699,12 +691,62 @@ if ($sensor_type == 't') {
                     }],
                     selected: 13
                 },
-
                 credits: {
                     enabled: false,
                     href: "https://github.com/kizniche/Mycodo",
                     text: "Mycodo"
                 },
+
+                $('#showAll').click(function(){
+                    console.log("test");
+                    for(i=0; i < chart.series.length; i++) {
+                        chart.series[i].show();
+                    }
+                });
+                $('#hideAll').click(function(){
+                    for(i=0; i < chart.series.length; i++) {
+                        chart.series[i].hide();
+                    }
+                });
+                $('#checkAll').click(function(){
+                    for(i=0; i < chart.series.length; i++) {
+                        if(chart.series[i].selected == false){
+                            chart.series[i].select();
+                            showSeries.call(chart.series[i], {checked: true});
+                        }
+                    }
+                });
+                $('#uncheckAll').click(function(){
+                    for(i=0; i < chart.series.length; i++) {
+                        if(chart.series[i].selected == true){
+                            chart.series[i].select();
+                            showSeries.call(chart.series[i], {checked: false});
+                        }
+                    }
+                });
+                $('#resetChart').click(function(){
+                    chart.destroy();
+                    chart = new Highcharts.Chart(optionsChart1,highlightSer);
+                });
+
+                $('#button').click(function() {
+                    var series = chart.series[0];
+                    if (series.visible) {
+                        $(chart.series).each(function(){
+                            //this.hide();
+                            this.setVisible(false, false);
+                        });
+                        chart.redraw();
+                        $button.html('Show series');
+                    } else {
+                        $(chart.series).each(function(){
+                            //this.show();
+                            this.setVisible(true, false);
+                        });
+                        chart.redraw();
+                        $button.html('Hide series');
+                    }
+                });
             });
         });
     });

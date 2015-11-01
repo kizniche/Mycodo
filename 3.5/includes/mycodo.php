@@ -108,8 +108,10 @@ delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete olde
     <link rel="stylesheet" href="css/fonts.css" type="text/css">
     <link rel="stylesheet" href="css/reset.css" type="text/css">
     <link rel="stylesheet" href="css/style.css" type="text/css">
-    <script src="js/modernizr.js"></script>
+    <script type="text/javascript" src="js/modernizr.js"></script>
     <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/highstock.js"></script>
+    <script type="text/javascript" src="js/modules/exporting.js"></script>
     <script type="text/javascript">
         function open_legend() {
             window.open("image.php?span=legend-small","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=250, height=300");
@@ -440,6 +442,12 @@ if (isset($output_error)) {
                     $sensor_num_array = "sensor_{$sensor_type}_id";
                     echo '<div style="padding: 1.5em 0 1.5em 0; text-align:center;">';
                     echo '<div id="container" style="width: 100%; height: 50em; "></div>';
+                    echo '<button id="showAll" style="width:120px;">show all</button>
+                        <button id="hideAll"style="width:120px;">hide all</button>
+                        <button id="checkAll"style="width:120px;">check all</button>
+                        <button id="uncheckAll"style="width:120px;">un-check all</button>
+                        <button id="resetChart"style="width:120px;">reset chart</button><button id="button">Hide series</button>';
+                    
                     echo '</div>';
                 }
                 ?>
@@ -4905,10 +4913,7 @@ if (isset($output_error)) {
     ?>
 
 </div> <!-- cd-tabs -->
-<script src="js/highstock.js"></script>
-<script src="js/modules/exporting.js"></script>
 <!-- <script src="js/jquery-2.1.1.js"></script> -->
 <script src="js/main.js"></script> <!-- Resource jQuery -->
-
 </body>
 </html>
