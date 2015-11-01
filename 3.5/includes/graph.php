@@ -263,7 +263,7 @@ if ($sensor_type == 't') {
                     series: [<?php
                     $count = 0;
                     for ($i = 0; $i < count(${$sensor_num_array}); $i++) {
-                 ?>{
+                    ?>{
                         name: '<?php echo "S" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Humidity',
                         color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
                         yAxis: 1,
@@ -368,11 +368,32 @@ if ($sensor_type == 't') {
                         }],
                         selected: 13
                     },
-
                     credits: {
                         enabled: false,
                         href: "https://github.com/kizniche/Mycodo",
                         text: "Mycodo"
+                    }
+                });
+
+                var chart = $('#container').highcharts(),
+                $button = $('#button');
+                $button.click(function() {
+                    console.log("test");
+                    var series = chart.series[0];
+                    if (series.visible) {
+                        $(chart.series).each(function(){
+                            //this.hide();
+                            this.setVisible(false, false);
+                        });
+                        chart.redraw();
+                        $button.html('Show series');
+                    } else {
+                        $(chart.series).each(function(){
+                            //this.show();
+                            this.setVisible(true, false);
+                        });
+                        chart.redraw();
+                        $button.html('Hide series');
                     }
                 });
             });
@@ -702,57 +723,6 @@ if ($sensor_type == 't') {
                     href: "https://github.com/kizniche/Mycodo",
                     text: "Mycodo"
                 },
-
-                $('#showAll').click(function(){
-                    console.log("test");
-                    for(i=0; i < chart.series.length; i++) {
-                        chart.series[i].show();
-                    }
-                });
-                $('#hideAll').click(function(){
-                    for(i=0; i < chart.series.length; i++) {
-                        chart.series[i].hide();
-                    }
-                });
-                $('#checkAll').click(function(){
-                    for(i=0; i < chart.series.length; i++) {
-                        if(chart.series[i].selected == false){
-                            chart.series[i].select();
-                            showSeries.call(chart.series[i], {checked: true});
-                        }
-                    }
-                });
-                $('#uncheckAll').click(function(){
-                    for(i=0; i < chart.series.length; i++) {
-                        if(chart.series[i].selected == true){
-                            chart.series[i].select();
-                            showSeries.call(chart.series[i], {checked: false});
-                        }
-                    }
-                });
-                $('#resetChart').click(function(){
-                    chart.destroy();
-                    chart = new Highcharts.Chart(optionsChart1,highlightSer);
-                });
-
-                $('#button').click(function() {
-                    var series = chart.series[0];
-                    if (series.visible) {
-                        $(chart.series).each(function(){
-                            //this.hide();
-                            this.setVisible(false, false);
-                        });
-                        chart.redraw();
-                        $button.html('Show series');
-                    } else {
-                        $(chart.series).each(function(){
-                            //this.show();
-                            this.setVisible(true, false);
-                        });
-                        chart.redraw();
-                        $button.html('Hide series');
-                    }
-                });
             });
         });
     });

@@ -442,12 +442,7 @@ if (isset($output_error)) {
                     $sensor_num_array = "sensor_{$sensor_type}_id";
                     echo '<div style="padding: 1.5em 0 1.5em 0; text-align:center;">';
                     echo '<div id="container" style="width: 100%; height: 50em; "></div>';
-                    echo '<button id="showAll" style="width:120px;">show all</button>
-                        <button id="hideAll"style="width:120px;">hide all</button>
-                        <button id="checkAll"style="width:120px;">check all</button>
-                        <button id="uncheckAll"style="width:120px;">un-check all</button>
-                        <button id="resetChart"style="width:120px;">reset chart</button><button id="button">Hide series</button>';
-                    
+                    echo '<button id="button">Hide series</button>';
                     echo '</div>';
                 }
                 ?>
