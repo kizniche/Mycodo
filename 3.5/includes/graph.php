@@ -237,7 +237,7 @@ if ($sensor_type == 't') {
                     $count = 0;
                     for ($i = 0; $i < count(${$sensor_num_array}); $i++) {
                  ?>{
-                        name: '<?php echo $sensor_ht_name[$i]; ?> H <?php echo $i+1; ?>',
+                        name: '<?php echo "S" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Humidity',
                         color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
                         yAxis: 1,
                         data: getSensorData(<?php echo $i; ?>, 'humidity'),
@@ -246,7 +246,7 @@ if ($sensor_type == 't') {
                             valueDecimals: 1
                         }
                     },{
-                        name: '<?php echo $sensor_ht_name[$i]; ?> T <?php echo $i+1; ?>',
+                        name: '<?php echo "S" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Temperature',
                         color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
                         data: getSensorData(<?php echo $i; ?>, 'temperature'),
                         tooltip: {
@@ -254,7 +254,7 @@ if ($sensor_type == 't') {
                             valueDecimals: 1
                         }
                     },{
-                        name: '<?php echo $sensor_ht_name[$i]; ?> DP <?php echo $i+1; ?>',
+                        name: '<?php echo "S" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Dew Point',
                         color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
                         data: getSensorData(<?php echo $i; ?>, 'dewpoint'),
                         tooltip: {
