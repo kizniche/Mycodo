@@ -214,7 +214,7 @@ if ($sensor_type == 't') {
                         align: 'right',
                         verticalAlign: 'top',
                         y: 75,
-                    },s
+                    },
                     exporting: {
                         width: 1200,
                         scale: 1,
