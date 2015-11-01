@@ -447,7 +447,6 @@ if (isset($output_error)) {
                     $sensor_num_array = "sensor_{$sensor_type}_id";
                     echo '<div style="padding: 1.5em 0 1.5em 0; text-align:center;">';
                     echo '<div id="container" style="width: 100%; height: 50em; "></div>';
-                    echo '<button id="button">Hide series</button>';
                     echo '</div>';
                 }
                 ?>

@@ -143,6 +143,28 @@ if ($sensor_type == 't') {
                     },<?php 
                     }
                     ?>],
+                    exporting: {
+                        buttons: {
+                            contextButton: {
+                                enabled: false
+                            },
+                            custom: {
+                                text: "Hide All",
+                                align: 'right',
+                                symbolFill: '#B5C9DF',
+                                hoverSymbolFill: '#779ABF',
+                                _titleKey: 'Balance',
+                                onclick: function () {
+                                    Click();
+                                    if (this.series[0].visible) {
+                                        this.exportSVGElements[0].attr({ text: 'Hide All' });
+                                    } else {
+                                        this.exportSVGElements[0].attr({ text: 'Show All' });
+                                    }
+                                }
+                            }
+                        }
+                    },
                     rangeSelector: {
                         buttons: [{
                             type: 'hour',
@@ -208,10 +230,8 @@ if ($sensor_type == 't') {
                         text: "Mycodo"
                     }
                 });
-                var chart = $('#container').highcharts(),
-                $button = $('#button');
-                $button.click(function() {
-                    console.log("test");
+                function Click() {
+                    var chart = $('#container').highcharts();
                     var series = chart.series[0];
                     if (series.visible) {
                         $(chart.series).each(function(){
@@ -219,16 +239,14 @@ if ($sensor_type == 't') {
                             this.setVisible(false, false);
                         });
                         chart.redraw();
-                        $button.html('Show series');
                     } else {
                         $(chart.series).each(function(){
                             //this.show();
                             this.setVisible(true, false);
                         });
                         chart.redraw();
-                        $button.html('Hide series');
                     }
-                });
+                }
             });
         });
     });
@@ -376,6 +394,28 @@ if ($sensor_type == 't') {
                     },<?php 
                     }
                     ?>],
+                    exporting: {
+                        buttons: {
+                            contextButton: {
+                                enabled: false
+                            },
+                            custom: {
+                                text: "Hide All",
+                                align: 'right',
+                                symbolFill: '#B5C9DF',
+                                hoverSymbolFill: '#779ABF',
+                                _titleKey: 'Balance',
+                                onclick: function () {
+                                    Click();
+                                    if (this.series[0].visible) {
+                                        this.exportSVGElements[0].attr({ text: 'Hide All' });
+                                    } else {
+                                        this.exportSVGElements[0].attr({ text: 'Show All' });
+                                    }
+                                }
+                            }
+                        }
+                    },
                     rangeSelector: {
                         buttons: [{
                             type: 'hour',
@@ -441,10 +481,8 @@ if ($sensor_type == 't') {
                         text: "Mycodo"
                     }
                 });
-                var chart = $('#container').highcharts(),
-                $button = $('#button');
-                $button.click(function() {
-                    console.log("test");
+                function Click() {
+                    var chart = $('#container').highcharts();
                     var series = chart.series[0];
                     if (series.visible) {
                         $(chart.series).each(function(){
@@ -452,16 +490,14 @@ if ($sensor_type == 't') {
                             this.setVisible(false, false);
                         });
                         chart.redraw();
-                        $button.html('Show series');
                     } else {
                         $(chart.series).each(function(){
                             //this.show();
                             this.setVisible(true, false);
                         });
                         chart.redraw();
-                        $button.html('Hide series');
                     }
-                });
+                }
             });
         });
     });
@@ -575,6 +611,28 @@ if ($sensor_type == 't') {
                     },<?php 
                     }
                     ?>],
+                    exporting: {
+                        buttons: {
+                            contextButton: {
+                                enabled: false
+                            },
+                            custom: {
+                                text: "Hide All",
+                                align: 'right',
+                                symbolFill: '#B5C9DF',
+                                hoverSymbolFill: '#779ABF',
+                                _titleKey: 'Balance',
+                                onclick: function () {
+                                    Click();
+                                    if (this.series[0].visible) {
+                                        this.exportSVGElements[0].attr({ text: 'Hide All' });
+                                    } else {
+                                        this.exportSVGElements[0].attr({ text: 'Show All' });
+                                    }
+                                }
+                            }
+                        }
+                    },
                     rangeSelector: {
                         buttons: [{
                             type: 'hour',
@@ -640,10 +698,8 @@ if ($sensor_type == 't') {
                         text: "Mycodo"
                     }
                 });
-                var chart = $('#container').highcharts(),
-                $button = $('#button');
-                $button.click(function() {
-                    console.log("test");
+                function Click() {
+                    var chart = $('#container').highcharts();
                     var series = chart.series[0];
                     if (series.visible) {
                         $(chart.series).each(function(){
@@ -651,16 +707,14 @@ if ($sensor_type == 't') {
                             this.setVisible(false, false);
                         });
                         chart.redraw();
-                        $button.html('Show series');
                     } else {
                         $(chart.series).each(function(){
                             //this.show();
                             this.setVisible(true, false);
                         });
                         chart.redraw();
-                        $button.html('Hide series');
                     }
-                });
+                }
             });
         });
     });
@@ -798,6 +852,28 @@ if ($sensor_type == 't') {
                     },<?php 
                     }
                     ?>],
+                    exporting: {
+                        buttons: {
+                            contextButton: {
+                                enabled: false
+                            },
+                            custom: {
+                                text: "Hide All",
+                                align: 'right',
+                                symbolFill: '#B5C9DF',
+                                hoverSymbolFill: '#779ABF',
+                                _titleKey: 'Balance',
+                                onclick: function () {
+                                    Click();
+                                    if (this.series[0].visible) {
+                                        this.exportSVGElements[0].attr({ text: 'Hide All' });
+                                    } else {
+                                        this.exportSVGElements[0].attr({ text: 'Show All' });
+                                    }
+                                }
+                            }
+                        }
+                    },
                     rangeSelector: {
                         buttons: [{
                             type: 'hour',
@@ -863,10 +939,8 @@ if ($sensor_type == 't') {
                         text: "Mycodo"
                     }
                 });
-                var chart = $('#container').highcharts(),
-                $button = $('#button');
-                $button.click(function() {
-                    console.log("test");
+                function Click() {
+                    var chart = $('#container').highcharts();
                     var series = chart.series[0];
                     if (series.visible) {
                         $(chart.series).each(function(){
@@ -874,16 +948,14 @@ if ($sensor_type == 't') {
                             this.setVisible(false, false);
                         });
                         chart.redraw();
-                        $button.html('Show series');
                     } else {
                         $(chart.series).each(function(){
                             //this.show();
                             this.setVisible(true, false);
                         });
                         chart.redraw();
-                        $button.html('Hide series');
                     }
-                });
+                }
             });
         });
     });
