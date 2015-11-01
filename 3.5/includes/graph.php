@@ -86,6 +86,22 @@ if ($sensor_type == 't') {
                 }],
                 rangeSelector: {
                     buttons: [{
+                        type: 'hour',
+                        count: 1,
+                        text: '1h'
+                    }, {
+                        type: 'hour',
+                        count: 3,
+                        text: '3h'
+                    }, {
+                        type: 'hour',
+                        count: 6,
+                        text: '6h'
+                    }, {
+                        type: 'hour',
+                        count: 12,
+                        text: '12h'
+                    }, {
                         type: 'day',
                         count: 1,
                         text: '1d'
@@ -119,7 +135,7 @@ if ($sensor_type == 't') {
                         text: '1y'
                     }, {
                         type: 'all',
-                        text: 'All'
+                        text: 'Full'
                     }],
                     selected: 8
                 },
@@ -291,6 +307,22 @@ if ($sensor_type == 't') {
                     ?>],
                     rangeSelector: {
                         buttons: [{
+                            type: 'hour',
+                            count: 1,
+                            text: '1h'
+                        }, {
+                            type: 'hour',
+                            count: 3,
+                            text: '3h'
+                        }, {
+                            type: 'hour',
+                            count: 6,
+                            text: '6h'
+                        }, {
+                            type: 'hour',
+                            count: 12,
+                            text: '12h'
+                        }, {
                             type: 'day',
                             count: 1,
                             text: '1d'
@@ -324,7 +356,7 @@ if ($sensor_type == 't') {
                             text: '1y'
                         }, {
                             type: 'all',
-                            text: 'All'
+                            text: 'Full'
                         }],
                         selected: 8
                     },
@@ -452,6 +484,22 @@ if ($sensor_type == 't') {
                     ?>],
                     rangeSelector: {
                         buttons: [{
+                            type: 'hour',
+                            count: 1,
+                            text: '1h'
+                        }, {
+                            type: 'hour',
+                            count: 3,
+                            text: '3h'
+                        }, {
+                            type: 'hour',
+                            count: 6,
+                            text: '6h'
+                        }, {
+                            type: 'hour',
+                            count: 12,
+                            text: '12h'
+                        }, {
                             type: 'day',
                             count: 1,
                             text: '1d'
@@ -485,7 +533,7 @@ if ($sensor_type == 't') {
                             text: '1y'
                         }, {
                             type: 'all',
-                            text: 'All'
+                            text: 'Full'
                         }],
                         selected: 8
                     },
@@ -582,6 +630,22 @@ if ($sensor_type == 't') {
                 }],
                 rangeSelector: {
                     buttons: [{
+                        type: 'hour',
+                        count: 1,
+                        text: '1h'
+                    }, {
+                        type: 'hour',
+                        count: 3,
+                        text: '3h'
+                    }, {
+                        type: 'hour',
+                        count: 6,
+                        text: '6h'
+                    }, {
+                        type: 'hour',
+                        count: 12,
+                        text: '12h'
+                    }, {
                         type: 'day',
                         count: 1,
                         text: '1d'
@@ -615,7 +679,7 @@ if ($sensor_type == 't') {
                         text: '1y'
                     }, {
                         type: 'all',
-                        text: 'All'
+                        text: 'Full'
                     }],
                     selected: 8
                 },
