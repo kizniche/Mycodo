@@ -240,7 +240,7 @@ if ($sensor_type == 't') {
     $(document).ready(function() {
         $.getJSON("<?php echo $sensor_log_file_final; ?>", function(sensor_csv) {
             $.getJSON("<?php echo $relay_log_file_final; ?>", function(relay_csv) {
-                function getSensorData(sensor) {
+                function getSensorData(sensor, condition) {
                     var sensordata = [];
                     var lines = sensor_csv.split('\n');
                     $.each(lines, function(lineNo,line) {
@@ -250,7 +250,9 @@ if ($sensor_type == 't') {
                         var date = timeElements[0].split('/');
                         var time = timeElements[1].split(':');
                         var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
-                        if (parseInt(items[2]) == sensor) sensordata.push([date,parseFloat(items[1])]);
+                        if (condition == 'temperature' && parseInt(items[4]) == sensor) sensordata.push([date,parseFloat(items[1])]);
+                    if (condition == 'humidity' && parseInt(items[4]) == sensor) sensordata.push([date,parseFloat(items[2])]);
+                    if (condition == 'dewpoint' && parseInt(items[4]) == sensor) sensordata.push([date,parseFloat(items[3])]);
                     });
                     return sensordata;
                 }
@@ -274,7 +276,7 @@ if ($sensor_type == 't') {
                         zoomType: 'x',
                     },
                     title: {
-                        text: 'Temperature Sensor Data'
+                        text: 'Temperature/Humidity Sensor Data'
                     },
                     legend: {
                         enabled: true,
@@ -300,6 +302,17 @@ if ($sensor_type == 't') {
                         opposite: false
                     },{
                         title: {
+                            text: 'Humidity (%)',
+                        },
+                        labels: {
+                            format: '{value}%',
+                            align: 'right',
+                            x: -3
+                        },
+                        height: '60%',
+                        minRange: 10,
+                    },{
+                        title: {
                             text: 'Duration (sec)',
                         },
                         labels: {
@@ -316,11 +329,28 @@ if ($sensor_type == 't') {
                     $count = 0;
                     for ($i = 0; $i < count(${$sensor_num_array}); $i++) {
                     ?>{
-                        name: '<?php echo "S" . ($i+1) . " " . $sensor_t_name[$i]; ?> Temperature',
+                        name: '<?php echo "S" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Humidity',
+                        color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
+                        yAxis: 1,
+                        data: getSensorData(<?php echo $i; ?>, 'humidity'),
+                        tooltip: {
+                            valueSuffix: ' %',
+                            valueDecimals: 1,
+                        }
+                    },{
+                        name: '<?php echo "S" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Temperature',
                         color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
                         data: getSensorData(<?php echo $i; ?>, 'temperature'),
                         tooltip: {
                             valueSuffix: '°C',
+                            valueDecimals: 1,
+                        }
+                    },{
+                        name: '<?php echo "S" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Dew Point',
+                        color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
+                        data: getSensorData(<?php echo $i; ?>, 'dewpoint'),
+                        tooltip: {
+                            valueSuffix: ' °C',
                             valueDecimals: 1,
                         }
                     },<?php 
