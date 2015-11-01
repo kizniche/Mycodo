@@ -141,7 +141,7 @@ if ($sensor_type == 't') {
                         type: 'all',
                         text: 'Full'
                     }],
-                    selected: 8
+                    selected: 13
                 },
 
                 credits: {
@@ -366,7 +366,7 @@ if ($sensor_type == 't') {
                             type: 'all',
                             text: 'Full'
                         }],
-                        selected: 8
+                        selected: 13
                     },
 
                     credits: {
@@ -547,7 +547,7 @@ if ($sensor_type == 't') {
                             type: 'all',
                             text: 'Full'
                         }],
-                        selected: 8
+                        selected: 13
                     },
 
                     credits: {
@@ -697,7 +697,7 @@ if ($sensor_type == 't') {
                         type: 'all',
                         text: 'Full'
                     }],
-                    selected: 8
+                    selected: 13
                 },
 
                 credits: {
