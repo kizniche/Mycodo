@@ -195,6 +195,11 @@ if ($sensor_type == 't') {
                         verticalAlign: 'top',
                         y: 75,
                     },
+                    exporting: {
+                        width: 1200,
+                        scale: 1,
+                        url: 'https://export.highcharts.com/',
+                    },
                     title: {
                         text: 'Temperature/Humidity Sensor Data'
                     },
@@ -208,6 +213,7 @@ if ($sensor_type == 't') {
                             x: -3
                         },
                         height: '60%',
+                        minRange: 5,
                         opposite: false
                     },{
                         title: {
@@ -219,6 +225,7 @@ if ($sensor_type == 't') {
                             x: -3
                         },
                         height: '60%',
+                        minRange: 10,
                     },{
                         title: {
                             text: 'Duration (sec)'
@@ -243,7 +250,7 @@ if ($sensor_type == 't') {
                         data: getSensorData(<?php echo $i; ?>, 'humidity'),
                         tooltip: {
                             valueSuffix: ' %',
-                            valueDecimals: 1
+                            valueDecimals: 1,
                         }
                     },{
                         name: '<?php echo "S" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Temperature',
@@ -251,7 +258,7 @@ if ($sensor_type == 't') {
                         data: getSensorData(<?php echo $i; ?>, 'temperature'),
                         tooltip: {
                             valueSuffix: '°C',
-                            valueDecimals: 1
+                            valueDecimals: 1,
                         }
                     },{
                         name: '<?php echo "S" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Dew Point',
@@ -259,7 +266,7 @@ if ($sensor_type == 't') {
                         data: getSensorData(<?php echo $i; ?>, 'dewpoint'),
                         tooltip: {
                             valueSuffix: ' °C',
-                            valueDecimals: 1
+                            valueDecimals: 1,
                         }
                     },<?php 
                     }
@@ -276,7 +283,8 @@ if ($sensor_type == 't') {
                         yAxis: 2,
                         tooltip: {
                             valueSuffix: ' sec',
-                            valueDecimals: 0
+                            valueDecimals: 0,
+                            shared: true,
                         }
                     },<?php 
                     }
@@ -421,7 +429,7 @@ if ($sensor_type == 't') {
                         data: getSensorData(0),
                         tooltip: {
                             valueSuffix: ' ppmv',
-                            valueDecimals: 0
+                            valueDecimals: 0,
                         }
                     }<?php
                     for ($i = 0; $i < count($relay_id); $i++) {
@@ -437,7 +445,7 @@ if ($sensor_type == 't') {
                         yAxis: 1,
                         tooltip: {
                             valueSuffix: ' sec',
-                            valueDecimals: 0
+                            valueDecimals: 0,
                         }
                     }<?php 
                     }
