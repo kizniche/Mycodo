@@ -127,6 +127,10 @@ if ($sensor_type == 't') {
                         text: '2m'
                     }, {
                         type: 'month',
+                        count: 3,
+                        text: '3m'
+                    }, {
+                        type: 'month',
                         count: 6,
                         text: '6m'
                     }, {
@@ -348,6 +352,10 @@ if ($sensor_type == 't') {
                             text: '2m'
                         }, {
                             type: 'month',
+                            count: 3,
+                            text: '3m'
+                        }, {
+                            type: 'month',
                             count: 6,
                             text: '6m'
                         }, {
@@ -525,6 +533,10 @@ if ($sensor_type == 't') {
                             text: '2m'
                         }, {
                             type: 'month',
+                            count: 3,
+                            text: '3m'
+                        }, {
+                            type: 'month',
                             count: 6,
                             text: '6m'
                         }, {
@@ -669,6 +681,10 @@ if ($sensor_type == 't') {
                         type: 'month',
                         count: 2,
                         text: '2m'
+                    }, {
+                        type: 'month',
+                        count: 3,
+                        text: '3m'
                     }, {
                         type: 'month',
                         count: 6,
