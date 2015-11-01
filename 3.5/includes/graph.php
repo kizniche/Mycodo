@@ -112,17 +112,21 @@ if ($sensor_type == 't') {
                         offset: 0,
                         lineWidth: 2
                     }],
-                    series: [{
-                        name: '<?php echo $sensor_t_name[$i]; ?> °C',
+                    series: [<?php
+                    $count = 0;
+                    for ($i = 0; $i < count(${$sensor_num_array}); $i++) {
+                    ?>{
+                        name: '<?php echo "S" . ($i+1) . " " . $sensor_t_name[$i]; ?> °C',
                         color: Highcharts.getOptions().colors[0],
                         data: getSensorData(0),
                         tooltip: {
                             valueSuffix: ' °C',
                             valueDecimals: 0,
                         }
-                    }<?php
+                    },<?php
+                    }
                     for ($i = 0; $i < count($relay_id); $i++) {
-                    ?>,{
+                    ?>{
                         name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
                         type: 'column',
                         dataGrouping: {
@@ -136,7 +140,7 @@ if ($sensor_type == 't') {
                             valueSuffix: ' sec',
                             valueDecimals: 0,
                         }
-                    }<?php 
+                    },<?php 
                     }
                     ?>],
                     rangeSelector: {
@@ -540,17 +544,21 @@ if ($sensor_type == 't') {
                         offset: 0,
                         lineWidth: 2
                     }],
-                    series: [{
-                        name: '<?php echo $sensor_co2_name[$i]; ?> CO<sub>2</sub>',
+                    series: [<?php
+                    $count = 0;
+                    for ($i = 0; $i < count(${$sensor_num_array}); $i++) {
+                    ?>{
+                        name: '<?php echo "S" . ($i+1) . " " . $sensor_co2_name[$i]; ?> CO<sub>2</sub>',
                         color: Highcharts.getOptions().colors[0],
                         data: getSensorData(0),
                         tooltip: {
                             valueSuffix: ' ppmv',
                             valueDecimals: 0
                         }
-                    }<?php
+                    },<?php
+                    }
                     for ($i = 0; $i < count($relay_id); $i++) {
-                    ?>,{
+                    ?>{
                         name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
                         type: 'column',
                         dataGrouping: {
@@ -564,7 +572,7 @@ if ($sensor_type == 't') {
                             valueSuffix: ' sec',
                             valueDecimals: 0
                         }
-                    }<?php 
+                    },<?php 
                     }
                     ?>],
                     rangeSelector: {
