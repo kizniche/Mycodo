@@ -267,6 +267,10 @@ if ($sensor_type == 't') {
                     ?>{
                         name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
                         type: 'column',
+                        dataGrouping: {
+                            approximation: 'low',
+                            groupPixelWidth: 3,
+                        },
                         color: Highcharts.getOptions().colors[<?php echo $i+1; ?>],
                         data: getRelayData(<?php echo $i+1; ?>),
                         yAxis: 2,
@@ -424,6 +428,10 @@ if ($sensor_type == 't') {
                     ?>,{
                         name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
                         type: 'column',
+                        dataGrouping: {
+                            approximation: 'low',
+                            groupPixelWidth: 3,
+                        },
                         color: Highcharts.getOptions().colors[<?php echo $i+1; ?>],
                         data: getRelayData(<?php echo $i+1; ?>),
                         yAxis: 1,
