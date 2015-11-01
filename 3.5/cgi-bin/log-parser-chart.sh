@@ -7,6 +7,10 @@ INFILE1=$4
 INFILE2=$5
 OUTFILE=$6
 
+if [[ ( "$SENSORTYPE" = "relay" ) ]]; then
+	cat $INFILE1 $INFILE2 | tee $OUTFILE 1> /dev/null
+fi
+
 if [[ ( "$SENSORTYPE" = "t" ) && ( "$SENSORNUMBER" = "x" ) ]]; then
 	cat $INFILE1 $INFILE2 | tee $OUTFILE 1> /dev/null
 elif [[ ( "$SENSORTYPE" = "t" ) && ( "$LINES" != "0" ) ]]; then

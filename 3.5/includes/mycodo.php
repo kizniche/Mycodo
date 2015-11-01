@@ -416,10 +416,18 @@ if (isset($output_error)) {
                     </div>
 
                     <div style="float: left; padding: 0 1.5em 1em 0.5em;">
-                        <button type="submit" name="Generate_Graph" value="t">T<br>Graph</button>
-                        <button type="submit" name="Generate_Graph" value="ht">HT<br>Graph</button>
-                        <button type="submit" name="Generate_Graph" value="co2">CO2<br>Graph</button>
-                        <button type="submit" name="Generate_Graph" value="press">Press<br>Graph</button>
+                        <div style="float: left;">
+                            <button type="submit" name="Generate_Graph" value="t">T<br>Graph</button>
+                        </div>
+                        <div style="float: left;">
+                            <button type="submit" name="Generate_Graph" value="ht">HT<br>Graph</button>
+                        </div>
+                        <div style="float: left;">
+                            <button type="submit" name="Generate_Graph" value="co2">CO2<br>Graph</button>
+                        </div>
+                        <div style="float: left;">
+                            <button type="submit" name="Generate_Graph" value="press">Press<br>Graph</button>
+                        </div>
                     </div>
                 </div>
                 </form>
@@ -431,18 +439,7 @@ if (isset($output_error)) {
                     $sensor_type = $_POST['Generate_Graph'];
                     $sensor_num_array = "sensor_{$sensor_type}_id";
                     echo '<div style="padding: 1.5em 0 1.5em 0; text-align:center;">';
-                    $first = False;
-                    if ($_POST['Generate_Graph'] == 'ht') {
-                        echo '<div id="containerx" style="width: 100%; height: 30em; "></div>';
-                        for ($i=0; $i < count(${$sensor_num_array}); $i++) {
-                            $count = $i+1;
-                            if ($first == True) echo '<hr class="fade"/>';
-                            else $first = True;
-                            echo '<div id="container' . $count . '" style="width: 100%; height: 30em; "></div>';
-                        }
-                    } else {
-                        echo '<div id="container" style="width: 100%; height: 30em; "></div>';
-                    }
+                    echo '<div id="container" style="width: 100%; height: 50em; "></div>';
                     echo '</div>';
                 }
                 ?>

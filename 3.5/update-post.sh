@@ -56,7 +56,7 @@ if [[ $db_version -lt 15 ]]; then
 fi
 
 if [[ $db_version -lt 16 ]]; then
-	printf "Updating timestamps in log files (this may take a while)...\n";
+	printf "Updating log file firmatting (this may take a while)...\n";
 	if [ -s "/var/www/mycodo/log/sensor-t.log" ]; then
 		tr -s " " < /var/www/mycodo/log/sensor-t.log > /var/www/mycodo/log/sensor-t.log-new
 		mv -f /var/www/mycodo/log/sensor-t.log-new /var/www/mycodo/log/sensor-t.log

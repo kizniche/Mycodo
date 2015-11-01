@@ -101,7 +101,7 @@ if ($_COOKIE['login_hash'] == $user_hash) {
                 header('Content-Length: ' . $size);
                 readfile($upload_dir . $_GET['file']);
                 break;
-            case 'graph_ht':
+            case 'graph':
                 header('Content-Type: text/json');
                 echo json_encode(file_get_contents('/var/tmp/' . $_GET['file']));
                 break;
