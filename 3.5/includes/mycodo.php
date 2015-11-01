@@ -108,10 +108,15 @@ delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete olde
     <link rel="stylesheet" href="css/fonts.css" type="text/css">
     <link rel="stylesheet" href="css/reset.css" type="text/css">
     <link rel="stylesheet" href="css/style.css" type="text/css">
-    <script type="text/javascript" src="js/modernizr.js"></script>
-    <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script type="text/javascript" src="js/highstock.js"></script>
-    <script type="text/javascript" src="js/modules/exporting.js"></script>
+    <script src="js/modernizr.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/highstock.js"></script>
+    <!-- Order of dependencies before highcharts-export-clientside.js is important -->
+    <script src="js/modules/exporting.js"></script>
+    <script src="js/modules/canvas-tools.js"></script>
+    <script src="js/modules/export-csv.js"></script>
+    <script src="js/modules/jspdf.min.js"></script>
+    <script src="js/modules/highcharts-export-clientside.js"></script>
     <script type="text/javascript">
         function open_legend() {
             window.open("image.php?span=legend-small","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=250, height=300");

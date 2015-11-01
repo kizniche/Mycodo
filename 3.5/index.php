@@ -451,7 +451,7 @@ class OneFileLoginApplication {
         $passchange_success_state = $query->execute();
 
         if ($passchange_success_state) {
-            $this->doLogout();
+            if ($user_name == $_SESSION['user_name']) $this->doLogout();
             $this->feedback = "Password successfully changed for user " . $user_name;
             return true;
         } else {
