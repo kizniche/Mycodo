@@ -234,10 +234,11 @@ if ($sensor_type == 't') {
                         lineWidth: 2
                     }],
                     series: [<?php
+                    $count = 0;
                     for ($i = 0; $i < count(${$sensor_num_array}); $i++) {
                  ?>{
-                        name: 'Humidity <?php echo $i+1; ?>',
-                        color: Highcharts.getOptions().colors[0],
+                        name: '<?php echo $sensor_ht_name[$i]; ?> H <?php echo $i+1; ?>',
+                        color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
                         yAxis: 1,
                         data: getSensorData(<?php echo $i; ?>, 'humidity'),
                         tooltip: {
@@ -245,16 +246,16 @@ if ($sensor_type == 't') {
                             valueDecimals: 1
                         }
                     },{
-                        name: 'Temperature <?php echo $i+1; ?>',
-                        color: Highcharts.getOptions().colors[5],
+                        name: '<?php echo $sensor_ht_name[$i]; ?> T <?php echo $i+1; ?>',
+                        color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
                         data: getSensorData(<?php echo $i; ?>, 'temperature'),
                         tooltip: {
                             valueSuffix: '°C',
                             valueDecimals: 1
                         }
                     },{
-                        name: 'Dew Point <?php echo $i+1; ?>',
-                        color: Highcharts.getOptions().colors[2],
+                        name: '<?php echo $sensor_ht_name[$i]; ?> DP <?php echo $i+1; ?>',
+                        color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
                         data: getSensorData(<?php echo $i; ?>, 'dewpoint'),
                         tooltip: {
                             valueSuffix: ' °C',
@@ -411,7 +412,7 @@ if ($sensor_type == 't') {
                         lineWidth: 2
                     }],
                     series: [{
-                        name: 'CO2',
+                        name: '<?php echo $sensor_ht_name[$i]; ?> CO2',
                         color: Highcharts.getOptions().colors[0],
                         data: getSensorData(0),
                         tooltip: {
