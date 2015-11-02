@@ -1039,7 +1039,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         zoomType: 'x',
                     },
                     title: {
-                        text: 'Temperature/Humidity Sensor Data'
+                        text: 'All Sensor and Relay Data'
                     },
                     legend: {
                         enabled: true,
@@ -1120,7 +1120,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                     $count = 0;
                     for ($i = 0; $i < count($sensor_t_id); $i++) {
                     ?>{
-                        name: '<?php echo "S" . ($i+1) . " " . $sensor_t_name[$i]; ?> °C',
+                        name: '<?php echo "S" . ($i+1) . " " . $sensor_t_name[$i]; ?> Temperature',
                         color: Highcharts.getOptions().colors[0],
                         data: getSensorData(<?php echo $i; ?>, 't', 0),
                         tooltip: {
