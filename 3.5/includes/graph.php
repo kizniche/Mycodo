@@ -155,9 +155,9 @@ if ($sensor_type == 't') {
                                 onclick: function () {
                                     Click();
                                     if (this.series[0].visible) {
-                                        this.exportSVGElements[0].attr({ text: 'Hide All' });
+                                        this.exportSVGElements[2].attr({ text: 'Hide All' });
                                     } else {
-                                        this.exportSVGElements[0].attr({ text: 'Show All' });
+                                        this.exportSVGElements[2].attr({ text: 'Show All' });
                                     }
                                 }
                             }
@@ -403,10 +403,11 @@ if ($sensor_type == 't') {
                                 _titleKey: 'Balance',
                                 onclick: function () {
                                     Click();
+                                    console.log(this.exportSVGElements);
                                     if (this.series[0].visible) {
-                                        this.exportSVGElements[0].attr({ text: 'Hide All' });
+                                        this.exportSVGElements[2].attr({ text: 'Hide All' });
                                     } else {
-                                        this.exportSVGElements[0].attr({ text: 'Show All' });
+                                        this.exportSVGElements[2].attr({ text: 'Show All' });
                                     }
                                 }
                             }
@@ -619,9 +620,9 @@ if ($sensor_type == 't') {
                                 onclick: function () {
                                     Click();
                                     if (this.series[0].visible) {
-                                        this.exportSVGElements[0].attr({ text: 'Hide All' });
+                                        this.exportSVGElements[2].attr({ text: 'Hide All' });
                                     } else {
-                                        this.exportSVGElements[0].attr({ text: 'Show All' });
+                                        this.exportSVGElements[2].attr({ text: 'Show All' });
                                     }
                                 }
                             }
@@ -858,9 +859,9 @@ if ($sensor_type == 't') {
                                 onclick: function () {
                                     Click();
                                     if (this.series[0].visible) {
-                                        this.exportSVGElements[0].attr({ text: 'Hide All' });
+                                        this.exportSVGElements[2].attr({ text: 'Hide All' });
                                     } else {
-                                        this.exportSVGElements[0].attr({ text: 'Show All' });
+                                        this.exportSVGElements[2].attr({ text: 'Show All' });
                                     }
                                 }
                             }
