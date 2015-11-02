@@ -2661,41 +2661,73 @@ if (isset($_POST['stop-timelapse'])) {
 // Custom Graph Generation Settings
 if (isset($_POST['ChangeCombinedSetings'])) {
     $re = '/^\d+(?:,\d+)*$/';
-    if (($_POST['combined_temp_relays'] != '0' and
-        (!ctype_digit($_POST['combined_temp_relays']) and !preg_match($re, $_POST['combined_temp_relays']))) or
-        ($_POST['combined_temp_relays'] == '') or
-        ($_POST['combined_temp_relays'] != '0' and
-        (!ctype_digit($_POST['combined_hum_relays']) and !preg_match($re, $_POST['combined_hum_relays']))) or
-        ($_POST['combined_hum_relays'] == '') or
-        ($_POST['combined_co2_relays'] != '0' and
-        (!ctype_digit($_POST['combined_co2_relays']) and !preg_match($re, $_POST['combined_co2_relays']))) or
-        ($_POST['combined_co2_relays'] == '') or
-        ($_POST['combined_press_relays'] != '0' and
-        (!ctype_digit($_POST['combined_press_relays']) and !preg_match($re, $_POST['combined_press_relays']))) or
-        ($_POST['combined_press_relays'] == '')) {
+    if (($_POST['combined_temp_relays_up'] != '0' and
+        (!ctype_digit($_POST['combined_temp_relays_up']) and !preg_match($re, $_POST['combined_temp_relays_up']))) or
+        ($_POST['combined_temp_relays_up'] == '') or
+        ($_POST['combined_temp_relays_down'] != '0' and
+        (!ctype_digit($_POST['combined_temp_relays_down']) and !preg_match($re, $_POST['combined_temp_relays_down']))) or
+        ($_POST['combined_temp_relays_down'] == '') or
+        ($_POST['combined_hum_relays_up'] != '0' and
+        (!ctype_digit($_POST['combined_hum_relays_up']) and !preg_match($re, $_POST['combined_hum_relays_up']))) or
+        ($_POST['combined_hum_relays_up'] == '') or
+        ($_POST['combined_hum_relays_down'] != '0' and
+        (!ctype_digit($_POST['combined_hum_relays_down']) and !preg_match($re, $_POST['combined_hum_relays_down']))) or
+        ($_POST['combined_hum_relays_down'] == '') or
+        ($_POST['combined_co2_relays_up'] != '0' and
+        (!ctype_digit($_POST['combined_co2_relays_up']) and !preg_match($re, $_POST['combined_co2_relays_up']))) or
+        ($_POST['combined_co2_relays_up'] == '') or
+        ($_POST['combined_co2_relays_down'] != '0' and
+        (!ctype_digit($_POST['combined_co2_relays_down']) and !preg_match($re, $_POST['combined_co2_relays_down']))) or
+        ($_POST['combined_co2_relays_down'] == '') or
+        ($_POST['combined_press_relays_up'] != '0' and
+        (!ctype_digit($_POST['combined_press_relays_up']) and !preg_match($re, $_POST['combined_press_relays_up']))) or
+        ($_POST['combined_press_relays_up'] == '') or
+        ($_POST['combined_press_relays_down'] != '0' and
+        (!ctype_digit($_POST['combined_press_relays_down']) and !preg_match($re, $_POST['combined_press_relays_down']))) or
+        ($_POST['combined_press_relays_down'] == '')) {
         $sensor_error = 'Error: Custom Graph Relays must contain digits separated by commas or be set to 0.';
     } else {
-        $stmt = $db->prepare("UPDATE CustomGraph SET Combined_Temp_Relays=:temprelays, Combined_Temp_Min=:tempmin, Combined_Temp_Max=:tempmax, Combined_Temp_Tics=:temptics, Combined_Temp_Mtics=:tempmtics, Combined_Hum_Relays=:humrelays, Combined_Hum_Min=:hummin, Combined_Hum_Max=:hummax, Combined_Hum_Tics=:humtics, Combined_Hum_Mtics=:hummtics, Combined_Co2_Relays=:co2relays, Combined_Co2_Min=:co2min, Combined_Co2_Max=:co2max, Combined_Co2_Tics=:co2tics, Combined_Co2_Mtics=:co2mtics, Combined_Press_Relays=:pressrelays, Combined_Press_Min=:pressmin, Combined_Press_Max=:pressmax, Combined_Press_Tics=:presstics, Combined_Press_Mtics=:pressmtics");
-        $stmt->bindValue(':temprelays', $_POST['combined_temp_relays'], SQLITE3_TEXT);
+        $stmt = $db->prepare("UPDATE CustomGraph SET Combined_Temp_Min=:tempmin, Combined_Temp_Max=:tempmax, Combined_Temp_Tics=:temptics, Combined_Temp_Mtics=:tempmtics, Combined_Temp_Relays_Up=:temprelaysup, Combined_Temp_Relays_Down=:temprelaysdown, Combined_Temp_Relays_Min=:temprelaysmin, Combined_Temp_Relays_Max=:temprelaysmax, Combined_Temp_Relays_Tics=:temprelaystics, Combined_Temp_Relays_Mtics=:temprelaysmtics, Combined_Hum_Min=:hummin, Combined_Hum_Max=:hummax, Combined_Hum_Tics=:humtics, Combined_Hum_Mtics=:hummtics, Combined_Hum_Relays_Up=:humrelaysup, Combined_Hum_Relays_Down=:humrelaysdown, Combined_Hum_Relays_Min=:humrelaysmin, Combined_Hum_Relays_Max=:humrelaysmax, Combined_Hum_Relays_Tics=:humrelaystics, Combined_Hum_Relays_Mtics=:humrelaysmtics, Combined_Co2_Min=:co2min, Combined_Co2_Max=:co2max, Combined_Co2_Tics=:co2tics, Combined_Co2_Mtics=:co2mtics, Combined_Co2_Relays_Up=:co2relaysup, Combined_Co2_Relays_Down=:co2relaysdown, Combined_Co2_Relays_Min=:co2relaysmin, Combined_Co2_Relays_Max=:co2relaysmax, Combined_Co2_Relays_Tics=:co2relaystics, Combined_Co2_Relays_Mtics=:co2relaysmtics, Combined_Press_Min=:pressmin, Combined_Press_Max=:pressmax, Combined_Press_Tics=:presstics, Combined_Press_Mtics=:pressmtics, Combined_Press_Relays_Up=:pressrelaysup, Combined_Press_Relays_Down=:pressrelaysdown, Combined_Press_Relays_Min=:pressrelaysmin, Combined_Press_Relays_Max=:pressrelaysmax, Combined_Press_Relays_Tics=:pressrelaystics, Combined_Press_Relays_Mtics=:pressrelaysmtics");
         $stmt->bindValue(':tempmin', (int)$_POST['combined_temp_min'], SQLITE3_INTEGER);
         $stmt->bindValue(':tempmax', (int)$_POST['combined_temp_max'], SQLITE3_INTEGER);
         $stmt->bindValue(':temptics', (int)$_POST['combined_temp_tics'], SQLITE3_INTEGER);
         $stmt->bindValue(':tempmtics', (int)$_POST['combined_temp_mtics'], SQLITE3_INTEGER);
-        $stmt->bindValue(':humrelays', $_POST['combined_hum_relays'], SQLITE3_TEXT);
+        $stmt->bindValue(':temprelaysup', $_POST['combined_temp_relays_up'], SQLITE3_TEXT);
+        $stmt->bindValue(':temprelaysdown', $_POST['combined_temp_relays_down'], SQLITE3_TEXT);
+        $stmt->bindValue(':temprelaysmin', (int)$_POST['combined_temp_relays_min'], SQLITE3_INTEGER);
+        $stmt->bindValue(':temprelaysmax', (int)$_POST['combined_temp_relays_max'], SQLITE3_INTEGER);
+        $stmt->bindValue(':temprelaystics', (int)$_POST['combined_temp_relays_tics'], SQLITE3_INTEGER);
+        $stmt->bindValue(':temprelaysmtics', (int)$_POST['combined_temp_relays_mtics'], SQLITE3_INTEGER);
         $stmt->bindValue(':hummin', (int)$_POST['combined_hum_min'], SQLITE3_INTEGER);
         $stmt->bindValue(':hummax', (int)$_POST['combined_hum_max'], SQLITE3_INTEGER);
         $stmt->bindValue(':humtics', (int)$_POST['combined_hum_tics'], SQLITE3_INTEGER);
         $stmt->bindValue(':hummtics', (int)$_POST['combined_hum_mtics'], SQLITE3_INTEGER);
-        $stmt->bindValue(':co2relays', $_POST['combined_co2_relays'], SQLITE3_TEXT);
+        $stmt->bindValue(':humrelaysup', $_POST['combined_hum_relays_up'], SQLITE3_TEXT);
+        $stmt->bindValue(':humrelaysdown', $_POST['combined_hum_relays_down'], SQLITE3_TEXT);
+        $stmt->bindValue(':humrelaysmin', (int)$_POST['combined_hum_relays_min'], SQLITE3_INTEGER);
+        $stmt->bindValue(':humrelaysmax', (int)$_POST['combined_hum_relays_max'], SQLITE3_INTEGER);
+        $stmt->bindValue(':humrelaystics', (int)$_POST['combined_hum_relays_tics'], SQLITE3_INTEGER);
+        $stmt->bindValue(':humrelaysmtics', (int)$_POST['combined_hum_relays_mtics'], SQLITE3_INTEGER);
         $stmt->bindValue(':co2min', (int)$_POST['combined_co2_min'], SQLITE3_INTEGER);
         $stmt->bindValue(':co2max', (int)$_POST['combined_co2_max'], SQLITE3_INTEGER);
         $stmt->bindValue(':co2tics', (int)$_POST['combined_co2_tics'], SQLITE3_INTEGER);
         $stmt->bindValue(':co2mtics', (int)$_POST['combined_co2_mtics'], SQLITE3_INTEGER);
-        $stmt->bindValue(':pressrelays', $_POST['combined_press_relays'], SQLITE3_TEXT);
+        $stmt->bindValue(':co2relaysup', $_POST['combined_co2_relays_up'], SQLITE3_TEXT);
+        $stmt->bindValue(':co2relaysdown', $_POST['combined_co2_relays_down'], SQLITE3_TEXT);
+        $stmt->bindValue(':co2relaysmin', (int)$_POST['combined_co2_relays_min'], SQLITE3_INTEGER);
+        $stmt->bindValue(':co2relaysmax', (int)$_POST['combined_co2_relays_max'], SQLITE3_INTEGER);
+        $stmt->bindValue(':co2relaystics', (int)$_POST['combined_co2_relays_tics'], SQLITE3_INTEGER);
+        $stmt->bindValue(':co2relaysmtics', (int)$_POST['combined_co2_relays_mtics'], SQLITE3_INTEGER);
         $stmt->bindValue(':pressmin', (int)$_POST['combined_press_min'], SQLITE3_INTEGER);
         $stmt->bindValue(':pressmax', (int)$_POST['combined_press_max'], SQLITE3_INTEGER);
         $stmt->bindValue(':presstics', (int)$_POST['combined_press_tics'], SQLITE3_INTEGER);
         $stmt->bindValue(':pressmtics', (int)$_POST['combined_press_mtics'], SQLITE3_INTEGER);
+        $stmt->bindValue(':pressrelaysup', $_POST['combined_press_relays_up'], SQLITE3_TEXT);
+        $stmt->bindValue(':pressrelaysdown', $_POST['combined_press_relays_down'], SQLITE3_TEXT);
+        $stmt->bindValue(':pressrelaysmin', (int)$_POST['combined_press_relays_min'], SQLITE3_INTEGER);
+        $stmt->bindValue(':pressrelaysmax', (int)$_POST['combined_press_relays_max'], SQLITE3_INTEGER);
+        $stmt->bindValue(':pressrelaystics', (int)$_POST['combined_press_relays_tics'], SQLITE3_INTEGER);
+        $stmt->bindValue(':pressrelaysmtics', (int)$_POST['combined_press_relays_mtics'], SQLITE3_INTEGER);
         $stmt->execute();
     }
 }
@@ -2726,7 +2758,7 @@ if (isset($_POST['Delete_Note'])) {
     }
 }
 
-// Add Camera Still Note
+// Add Note with image attachment
 if (isset($_POST['Add_Image_Note'])) {
     if (!function_exists(ImageCreateFromGIF) || !function_exists(ImageCreateFromJPEG) || !function_exists(ImageCreateFromPNG)) {
         $data_error = "Error: missing required function to create image thumbnail. Install php5-gd (sudo apt-get install php5-gd)";
@@ -2851,17 +2883,13 @@ if (isset($_POST['Edit_Note_Save'])) {
 
 // Change system settings
 if (isset($_POST['ChangeSystem'])) {
-    $stmt = $db->prepare("UPDATE Misc SET Refresh_Time=:refreshtime, Enable_Max_Amps=:enablemaxamps, Max_Amps=:maxamps");
-    $stmt->bindValue(':refreshtime', (int)$_POST['refresh_time'], SQLITE3_INTEGER);
+    $stmt = $db->prepare("UPDATE Misc SET Enable_Max_Amps=:enablemaxamps, Max_Amps=:maxamps, Relay_Stats_Volts=:statvolts, Relay_Stats_DayofMonth=:statdayofmonth, Login_Message=:loginmessage, Refresh_Time=:refreshtime");
     $stmt->bindValue(':enablemaxamps', (int)$_POST['enable_max_amps'], SQLITE3_INTEGER);
     $stmt->bindValue(':maxamps', (float)$_POST['max_amps'], SQLITE3_FLOAT);
-    $stmt->execute();
-}
-
-// Change interface settings
-if (isset($_POST['ChangeInterface'])) {
-    $stmt = $db->prepare("UPDATE Misc SET Login_Message=:loginmessage");
+    $stmt->bindValue(':statvolts', (int)$_POST['relay_stats_volts'], SQLITE3_INTEGER);
+    $stmt->bindValue(':statdayofmonth', (int)$_POST['relay_stats_dayofmonth'], SQLITE3_INTEGER);
     $stmt->bindValue(':loginmessage', $_POST['login_message'], SQLITE3_TEXT);
+    $stmt->bindValue(':refreshtime', (int)$_POST['refresh_time'], SQLITE3_INTEGER);
     $stmt->execute();
 }
 

@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.83";
+$version = "3.5.85";
 
 ######### Start Edit Configure #########
 
@@ -109,6 +109,14 @@ delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete olde
     <link rel="stylesheet" href="css/reset.css" type="text/css">
     <link rel="stylesheet" href="css/style.css" type="text/css">
     <script src="js/modernizr.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/highstock.js"></script>
+    <!-- Order of dependencies before highcharts-export-clientside.js is important -->
+    <script src="js/modules/exporting.js"></script>
+    <script src="js/modules/canvas-tools.js"></script>
+    <script src="js/modules/export-csv.js"></script>
+    <script src="js/modules/jspdf.min.js"></script>
+    <script src="js/modules/highcharts-export-clientside.js"></script>
     <script type="text/javascript">
         function open_legend() {
             window.open("image.php?span=legend-small","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=250, height=300");
@@ -118,6 +126,10 @@ delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete olde
         }
     </script>
     <?php
+    if (isset($_POST['Generate_Graph'])) {
+        require($install_path . "/includes/graph.php");
+    }
+
     if (isset($_GET['r']) && ($_GET['r'] == 1)) {
         echo '<META HTTP-EQUIV="refresh" CONTENT="' , $refresh_time , '">';
     }
@@ -363,14 +375,8 @@ if (isset($output_error)) {
             }
             ?>
 
-            <form action="?tab=graph<?php
-            if (isset($_GET['page'])) {
-                echo '&page=' , $_GET['page'];
-            }
-            if (isset($_GET['r'])) {
-                echo '&r=' , $_GET['r'];
-            } ?>" method="POST">
             <div>
+                <form action="?tab=graph<?php if (isset($_GET['r'])) echo '&r=' , $_GET['r']; ?>" method="POST">
                 <div style="padding-top: 0.5em;">
                     <div style="float: left; padding: 0 1.5em 1em 0.5em;">
                         <div style="text-align: center; padding-bottom: 0.2em;">Auto Refresh</div>
@@ -411,11 +417,42 @@ if (isset($output_error)) {
                                 <option value="6m" <?php if ($graph_time_span == '6m') echo 'selected="selected"'; ?>>6 Months</option>
                             </select>
                         </div>
-                        <div style="float: left;">
+                        <div style="float: left; padding-right: 2em;">
                             <button type="submit" name="Graph" value="Generate Graph">Generate<br>Graph</button>
                         </div>
                     </div>
+
+                    <div style="float: left; padding: 0 1.5em 1em 0.5em;">
+                        <div style="float: left;">
+                            <button type="submit" name="Generate_Graph" value="t">T<br>Graph</button>
+                        </div>
+                        <div style="float: left;">
+                            <button type="submit" name="Generate_Graph" value="ht">HT<br>Graph</button>
+                        </div>
+                        <div style="float: left;">
+                            <button type="submit" name="Generate_Graph" value="co2">CO2<br>Graph</button>
+                        </div>
+                        <div style="float: left;">
+                            <button type="submit" name="Generate_Graph" value="press">Press<br>Graph</button>
+                        </div>
+                        <div style="float: left;">
+                            <button type="submit" name="Generate_Graph" value="all" title="Warning: This may take a long time to process, as it will be compiling and generating graphs from all data points of all sensors.">All<br>Graphs</button>
+                        </div>
+                    </div>
                 </div>
+                </form>
+                
+                <div style="clear: both;"></div>
+
+                <?php
+                if (isset($_POST['Generate_Graph']) || isset($_POST['Generate_Graph_All'])) {
+                    $sensor_type = $_POST['Generate_Graph'];
+                    $sensor_num_array = "sensor_{$sensor_type}_id";
+                    echo '<div style="padding: 1.5em 0 1.5em 0; text-align:center;">';
+                    echo '<div id="container" style="width: 100%; height: 50em; "></div>';
+                    echo '</div>';
+                }
+                ?>
 
                 <div style="clear: both;"></div>
 
@@ -443,10 +480,8 @@ if (isset($output_error)) {
                     <?php
                     }
                     ?>
+                </div>
             </div>
-            </div>
-            </form>
-
         </li>
 
         <li data-content="sensor" <?php
@@ -2593,11 +2628,8 @@ if (isset($output_error)) {
             ?>
 
             <?php
-            /* DateSelector*Author: Leon Atkinson */
+            /* DateSelector, modified from work by Leon Atkinson */
             if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] != 'guest') {
-                
-                //concatenate_logs();
-
                 if ($_POST['SubmitDates']) {
                     displayform();
                     $id2 = uniqid();
@@ -2611,29 +2643,82 @@ if (isset($output_error)) {
                     $daye = $_POST['endDay'];
                     $mone = $_POST['endMonth'];
                     $yeare = $_POST['endYear'];
-
                     $time_from = strtotime($monb . "/" . $dayb . "/" . $yearb . " " .  $hourb . ":" . $minb);
                     $time_to = strtotime($mone . "/" . $daye . "/" . $yeare . " " .  $houre . ":" . $mine);
 
                     if (is_positive_integer($_POST['graph-width']) and $_POST['graph-width'] <= 4000 and $_POST['graph-width']) {
                         $graph_width = $_POST['graph-width'];
-                    } else $graph_width = 900;
+                    } else {
+                        $graph_width = 950;
+                    }
+
+                    $image_path = '/var/www/mycodo/images/';
 
                     if ($_POST['custom_type'] == 'Combined') {
-                        shell_exec("$mycodo_client --graph-custom x combined custom $id2 custom $time_from $time_to $graph_width");
-                        echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
-                        echo 'graphtype=combinedcustom';
-                        echo '&sensortype=x';
-                        echo '&id=' , $id2 , '>';
-                        echo '</div>';
+                        shell_exec("$mycodo_client --graph combined $id2 x $time_from $time_to $graph_width");
+                        $first = False;
+                        if (array_sum($sensor_t_graph) || array_sum($sensor_ht_graph)) {
+                            if ($first) echo '<hr class="fade"/>';
+                            else $first = True;
+                            $file_name = 'graph-temp-combined-' . $id2 . '.png';
+                            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                                <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                            echo 'graphtype=combinedcustom';
+                            echo '&sensortype=temp';
+                            echo '&id=' , $id2 , '>';
+                            echo '</div>';
+                        }
+
+                        if (array_sum($sensor_ht_graph)) {
+                            if ($first) echo '<hr class="fade"/>';
+                            else $first = True;
+                            $file_name = 'graph-hum-combined-' . $id2 . '.png';
+                            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                                <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                            echo 'graphtype=combinedcustom';
+                            echo '&sensortype=hum';
+                            echo '&id=' , $id2 , '>';
+                            echo '</div>';
+                        }
+
+                        if (array_sum($sensor_co2_graph)) {
+                            if ($first) echo '<hr class="fade"/>';
+                            else $first = True;
+                            $file_name = 'graph-co2-combined-' . $id2 . '.png';
+                            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                                <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                            echo 'graphtype=combinedcustom';
+                            echo '&sensortype=co2';
+                            echo '&id=' , $id2 , '>';
+                            echo '</div>';
+                        }
+
+                        if (array_sum($sensor_press_graph)) {
+                            if ($first) echo '<hr class="fade"/>';
+                            else $first = True;
+                            $file_name = 'graph-press-combined-' . $id2 . '.png';
+                            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                                <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                            echo 'graphtype=combinedcustom';
+                            echo '&sensortype=press';
+                            echo '&id=' , $id2 , '>';
+                            echo '</div>';
+                        }
                     } else if ($_POST['custom_type'] == 'Separate') {
+                        shell_exec("$mycodo_client --graph separate $id2 x $time_from $time_to $graph_width");
                         $first = False;
                         for ($n = 0; $n < count($sensor_t_id); $n++) {
                             if ($sensor_t_graph[$n] == 1) {
-                                if ($first == True) echo '<hr class="fade"/>';
+                                if ($first) echo '<hr class="fade"/>';
                                 else $first = True;
-                                shell_exec("$mycodo_client --graph-custom t separate custom $id2 $n $time_from $time_to $graph_width");
-                                echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
+                                $file_name = 'graph-t-separate-x-' . $id2 . '-' . $n . '.png';
+                                echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                    <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                                    <img src=image.php?';
                                 echo 'graphtype=separatecustom';
                                 echo '&sensortype=t';
                                 echo '&id=' , $id2;
@@ -2641,13 +2726,14 @@ if (isset($output_error)) {
                                 echo '</div>';
                             }
                         }
-
                         for ($n = 0; $n < count($sensor_ht_id); $n++) {
                             if ($sensor_ht_graph[$n] == 1) {
-                                if ($first == True) echo '<hr class="fade"/>';
+                                if ($first) echo '<hr class="fade"/>';
                                 else $first = True;
-                                shell_exec("$mycodo_client --graph-custom ht separate custom $id2 $n $time_from $time_to $graph_width");
-                                echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
+                                $file_name = 'graph-ht-separate-x-' . $id2 . '-' . $n . '.png';
+                                echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                    <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                                    <img src=image.php?';
                                 echo 'graphtype=separatecustom';
                                 echo '&sensortype=ht';
                                 echo '&id=' , $id2;
@@ -2655,13 +2741,14 @@ if (isset($output_error)) {
                                 echo '</div>';
                             }
                         }
-
                         for ($n = 0; $n < count($sensor_co2_id); $n++) {
                             if ($sensor_co2_graph[$n] == 1) {
-                                if ($first == True) echo '<hr class="fade"/>';
+                                if ($first) echo '<hr class="fade"/>';
                                 else $first = True;
-                                shell_exec("$mycodo_client --graph-custom co2 separate custom $id2 $n $time_from $time_to $graph_width");
-                                echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
+                                $file_name = 'graph-co2-separate-x-' . $id2 . '-' . $n . '.png';
+                                echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                    <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                                    <img src=image.php?';
                                 echo 'graphtype=separatecustom';
                                 echo '&sensortype=co2';
                                 echo '&id=' , $id2;
@@ -2669,13 +2756,14 @@ if (isset($output_error)) {
                                 echo '</div>';
                             }
                         }
-
                         for ($n = 0; $n < count($sensor_press_id); $n++) {
                             if ($sensor_press_graph[$n] == 1) {
-                                if ($first == True) echo '<hr class="fade"/>';
+                                if ($first) echo '<hr class="fade"/>';
                                 else $first = True;
-                                shell_exec("$mycodo_client --graph-custom press separate custom $id2 $n $time_from $time_to $graph_width");
-                                echo '<div style="width: 100%; text-align: center; padding: 1em 0 3em 0;"><img src=image.php?';
+                                $file_name = 'graph-press-separate-x-' . $id2 . '-' . $n . '.png';
+                                echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                    <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                                    <img src=image.php?';
                                 echo 'graphtype=separatecustom';
                                 echo '&sensortype=press';
                                 echo '&id=' , $id2;
@@ -2886,7 +2974,7 @@ if (isset($output_error)) {
                 <table class="data-buttons">
                     <tr>
                         <td rowspan="2" class="data-buttons-rightspace" style="vertical-align:middle; text-align:center; line-height:1.6em;">
-                            Last<br><input style="width: 4em;" type="text" maxlength="8" name="Lines" value="<?php if (isset($_POST['Lines'])) echo $_POST['Lines']; ?>" title="The maximum number of lines to display. Defaults to 30 if left blank."/><br>Lines
+                            Last<br><input style="width: 4em;" type="text" maxlength="8" name="Lines" value="<?php if (isset($_POST['Lines']) && $_POST['Lines'] != '') echo $_POST['Lines']; else echo '30'; ?>" title="The maximum number of lines to display. Defaults to 30 if left blank."/><br>Lines
                         </td>
                         <td>
                             <button style="width:100%" type="submit" name="TSensor_Changes" value="T">T<br>Δ</button>
@@ -2915,8 +3003,11 @@ if (isset($output_error)) {
                         <td class="data-buttons-rightspace">
                             <button style="width:100%" type="submit" name="Update" value="Update Log">Update<br>Log</button>
                         </td>
-                        <td>
+                        <td class="data-buttons-rightspace">
                             <button type="submit" name="Users" value="User Database">User<br>Database</button>
+                        </td>
+                        <td>
+                            <button style="width:100%" type="submit" name="Notes" value="Notes">Notes<br>&nbsp;</button>
                         </td>
                     </tr>
                     <tr>
@@ -2936,7 +3027,7 @@ if (isset($output_error)) {
                             <button type="submit" name="Relay" value="Relay">Relay<br>Log</button>
                         </td>
                         <td class="data-buttons-rightspace">
-                            <button style="width:100%" type="submit" name="Notes" value="Notes">Notes<br>&nbsp;</button>
+                            <button style="width:100%" type="submit" name="RelayUsage" value="" title="Display the relay duration and power usage statistics">Relay<br>Usage</button>
                         </td>
                         <td>
                             <button style="width:100%" type="submit" name="Login" value="Login">Login<br>Log</button>
@@ -2961,9 +3052,9 @@ if (isset($output_error)) {
                             echo "<pre>Temperature Sensor Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y M D H M S Tc Sensor\n$(cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Tc Sensor\n$(cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S Tc Sensor\n$(cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Tc Sensor\n$(cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -2972,9 +3063,9 @@ if (isset($output_error)) {
                             echo "<pre>Temperature Sensor Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y M D H M S ID Name Device Pin/Ser# Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD\n$(cat /var/www/mycodo/log/sensor-t-changes.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Device Pin/Ser# Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD\n$(cat /var/www/mycodo/log/sensor-t-changes.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S ID Name Device Pin/Ser# Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD\n$(cat /var/www/mycodo/log/sensor-t-changes.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Device Pin/Ser# Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD\n$(cat /var/www/mycodo/log/sensor-t-changes.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -2989,12 +3080,7 @@ if (isset($output_error)) {
                             echo '
                                 <table class="data-data">
                                     <tr>
-                                        <th>Y</th>
-                                        <th>M</th>
-                                        <th>D</th>
-                                        <th>H</th>
-                                        <th>M</th>
-                                        <th>S</th>
+                                        <th>Y/M/D-H:M:S</th>
                                         <th>Temperature<br>(&deg;C)</th>
                                         <th>Relative<br>Humidity<br>(%)</th>
                                         <th>DewPoint<br>(&deg;C)</th>
@@ -3016,12 +3102,7 @@ if (isset($output_error)) {
                             echo '
                                 <table class="data-data">
                                     <tr>
-                                        <th>Y</th>
-                                        <th>M</th>
-                                        <th>D</th>
-                                        <th>H</th>
-                                        <th>M</th>
-                                        <th>S</th>
+                                        <th>Y/M/D-H:M:S</th>
                                         <th>ID</th>
                                         <th>Name</th>
                                         <th>Device</th>
@@ -3086,9 +3167,9 @@ if (isset($output_error)) {
                             echo "<pre>CO<sub>2</sub> Sensor Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y M D H M S CO2 Sensor\n$(cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S CO2 Sensor\n$(cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S CO2 Sensor\n$(cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S CO2 Sensor\n$(cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3097,9 +3178,9 @@ if (isset($output_error)) {
                             echo "<pre>CO<sub>2</sub> Sensor Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YCO2Min YCO2Max YCO2Tics YCO2MTics CO2RelaysUp CO2RelaysDown CO2RelayHigh CO2RelayHighMin CO2RelayHighMax CO2RelayLow CO2RelayLowMin CO2RelayLowMax CO2Set CO2SetDir CO2Period CO2P CO2I CO2D\n$(cat /var/www/mycodo/log/sensor-co2-changes.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YCO2Min YCO2Max YCO2Tics YCO2MTics CO2RelaysUp CO2RelaysDown CO2RelayHigh CO2RelayHighMin CO2RelayHighMax CO2RelayLow CO2RelayLowMin CO2RelayLowMax CO2Set CO2SetDir CO2Period CO2P CO2I CO2D\n$(cat /var/www/mycodo/log/sensor-co2-changes.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YCO2Min YCO2Max YCO2Tics YCO2MTics CO2RelaysUp CO2RelaysDown CO2RelayHigh CO2RelayHighMin CO2RelayHighMax CO2RelayLow CO2RelayLowMin CO2RelayLowMax CO2Set CO2SetDir CO2Period CO2P CO2I CO2D\n$(cat /var/www/mycodo/log/sensor-co2-changes.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YCO2Min YCO2Max YCO2Tics YCO2MTics CO2RelaysUp CO2RelaysDown CO2RelayHigh CO2RelayHighMin CO2RelayHighMax CO2RelayLow CO2RelayLowMin CO2RelayLowMax CO2Set CO2SetDir CO2Period CO2P CO2I CO2D\n$(cat /var/www/mycodo/log/sensor-co2-changes.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3108,9 +3189,9 @@ if (isset($output_error)) {
                             echo "<pre>Pressure Sensor Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y M D H M S Temperature(C) Pressure(kPa) Altitude(m) Sensor\n$(cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Temperature(C) Pressure(kPa) Altitude(m) Sensor\n$(cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S Temperature(C) Pressure(kPa) Altitude(m) Sensor\n$(cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Temperature(C) Pressure(kPa) Altitude(m) Sensor\n$(cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3119,9 +3200,9 @@ if (isset($output_error)) {
                             echo "<pre>Temperature/Pressure Sensor Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD PressRelaysUp PressRelaysDown PressRelayHigh PressRelayHighMin PressRelayHighMax PressRelayLow PressRelayLowMin PressRelayLowMax PressSet PressSetDir PressPeriod PressP PressI PressD\n$(cat /var/www/mycodo/log/sensor-press-changes.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD PressRelaysUp PressRelaysDown PressRelayHigh PressRelayHighMin PressRelayHighMax PressRelayLow PressRelayLowMin PressRelayLowMax PressSet PressSetDir PressPeriod PressP PressI PressD\n$(cat /var/www/mycodo/log/sensor-press-changes.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD PressRelaysUp PressRelaysDown PressRelayHigh PressRelayHighMin PressRelayHighMax PressRelayLow PressRelayLowMin PressRelayLowMax PressSet PressSetDir PressPeriod PressP PressI PressD\n$(cat /var/www/mycodo/log/sensor-press-changes.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD PressRelaysUp PressRelaysDown PressRelayHigh PressRelayHighMin PressRelayHighMax PressRelayLow PressRelayLowMin PressRelayLowMax PressSet PressSetDir PressPeriod PressP PressI PressD\n$(cat /var/www/mycodo/log/sensor-press-changes.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3130,9 +3211,9 @@ if (isset($output_error)) {
                             echo "<pre>Relay Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y M D H M S Sensor Relay GPIO SecondsOn\n$(cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Sensor Relay GPIO SecondsOn\n$(cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S Sensor Relay GPIO SecondsOn\n$(cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Sensor Relay GPIO SecondsOn\n$(cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3141,9 +3222,9 @@ if (isset($output_error)) {
                             echo "<pre>Relay Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y M D H M S Relay Name GPIO Amps Trigger State\n$(cat /var/www/mycodo/log/relay-changes.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Relay Name GPIO Amps Trigger State\n$(cat /var/www/mycodo/log/relay-changes.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S Relay Name GPIO Amps Trigger State\n$(cat /var/www/mycodo/log/relay-changes.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Relay Name GPIO Amps Trigger State\n$(cat /var/www/mycodo/log/relay-changes.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3152,9 +3233,9 @@ if (isset($output_error)) {
                             echo "<pre>Timer Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y M D H M S ID Name Relay DurationOn DurationOff\n$(cat /var/www/mycodo/log/timer-changes.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Relay DurationOn DurationOff\n$(cat /var/www/mycodo/log/timer-changes.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y M D H M S ID Name Relay DurationOn DurationOff\n$(cat /var/www/mycodo/log/timer-changes.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Relay DurationOn DurationOff\n$(cat /var/www/mycodo/log/timer-changes.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3392,7 +3473,7 @@ if (isset($output_error)) {
                             echo '<pre><div style="padding: 1em 0 1.5em 0;">Note: Restoring a backup will restore all files from the backup, including databases and logs.<br>When restoring a backup, a backup of the current system will also be created.<br>Deleting a backup will delete all files of that backup.</div>';
                             $current_commit = `git rev-parse --short HEAD`;
                             $current_commit = mb_substr($current_commit, 0, 7);
-                            echo "Current commit: <a style=\"color: #FF0000;\" href=\"https://github.com/kizniche/Mycodo/commit/$current_commit\" target=\"_blank\">$current_commit</a> (newest commits are at the top, the system is currently at the commit <span style=\"color:red;\">colored red</span>)<br> <br><strong><u>Commit</u>  <u>Description</u></strong><br>";
+                            echo "Current commit: <a style=\"color: #FF0000;\" href=\"https://github.com/kizniche/Mycodo/commit/$current_commit\" target=\"_blank\">$current_commit</a> (newest commits are at the top and the system's current commit is <span style=\"color:red;\">colored red</span>)<br> <br><strong><u>Commit</u>  <u>Description</u></strong><br>";
                             exec("$install_path/cgi-bin/mycodo-wrapper fetchorigin");
                             $commits_ahead = `git log --oneline master...origin/master`;
                             $commits_ahead = explode("\n", $commits_ahead);
@@ -3401,7 +3482,7 @@ if (isset($output_error)) {
                             }
                             for ($i = 0; $i < count($commits_ahead); $i++) {
                                 if ($commits_ahead[$i] != '' && $commits_ahead_id[$i] != $current_commit) {
-                                    echo "<div style=\"padding: 0.7em 0 0 0;\"><a href=\"https://github.com/kizniche/Mycodo/commit/$commits_ahead_id[$i]\" target=\"_blank\">$commits_ahead[$i]</a></div>";
+                                    echo "<div style=\"text-indent: -5em; padding: 0.7em 0 0 5em; width: 100%; white-space: normal;\"><a href=\"https://github.com/kizniche/Mycodo/commit/$commits_ahead_id[$i]\" target=\"_blank\">" , htmlentities($commits_ahead[$i]) , "</a></div>";
                                 }
                             }
                             $commits_list = explode("\n", $commits);
@@ -3417,9 +3498,9 @@ if (isset($output_error)) {
                             }
                             for ($j = 0; $j < count($commits_list); $j++) {
                                 if ($commits_behind_id[$j] == $current_commit) {
-                                    echo "<div style=\"padding: 0.7em 0 0 0;\"><a style=\"color: #FF0000;\" href=\"https://github.com/kizniche/Mycodo/commit/$commits_behind_id[$j]\" target=\"_blank\">$commits_list[$j]</a></div>";
+                                    echo "<div style=\"text-indent: -5em; padding: 0.7em 0 0 5em; width: 100%; white-space: normal;\"><a style=\"color: #FF0000;\" href=\"https://github.com/kizniche/Mycodo/commit/$commits_behind_id[$j]\" target=\"_blank\">" , htmlentities($commits_list[$j]) , "</a></div>";
                                 } else {
-                                    echo "<div style=\"padding: 0.7em 0 0 0;\"><a href=\"https://github.com/kizniche/Mycodo/commit/$commits_behind_id[$j]\" target=\"_blank\">$commits_list[$j]</a></div>";
+                                    echo "<div style=\"text-indent: -5em; padding: 0.7em 0 0 5em; width: 100%; white-space: normal;\"><a href=\"https://github.com/kizniche/Mycodo/commit/$commits_behind_id[$j]\" target=\"_blank\">" , htmlentities($commits_list[$j]) , "</a></div>";
                                 }
                                 if (isset($backup_commits) && count($backup_commits) != 0) {
                                     for ($i = 0; $i < count($backup_commits); $i++) {
@@ -3503,6 +3584,264 @@ if (isset($output_error)) {
                                 echo `tail -n 30 $log`;
                             }
                             echo '</pre>';
+                        }
+
+                        if (isset($_POST['RelayUsage']) && count($relay_id) > 0) {
+                        ?>Past Relay Usage
+                            <div class="sensor-parent" style="margin-top: 1em;">
+                                <table class="relays">
+                                    <tr>
+                                        <td class="table-header middle">Relay</td>
+                                        <td class="table-header middle">Name</td>
+                                        <td class="table-header">Duration On (hours)<br>Power Usage (kW-hours@<?php echo $relay_stats_volts; ?>V)</td>
+                                        <td class="table-header right" style="width:6em;">Hour</td>
+                                        <td class="table-header right" style="width:6em;">Day</td>
+                                        <td class="table-header right" style="width:6em;">Week</td>
+                                        <td class="table-header right" style="width:6em;">Month<br>(Today)</td>
+                                        <td class="table-header right" style="width:6em;">Month<br>(Day <?php echo $relay_stats_dayofmonth; ?>)</td>
+                                        <td class="table-header right" style="width:6em;">Year</td>
+                                        <td class="table-header right" style="width:6em;">Total</td>
+                                    </tr>
+                                    <?php 
+                                    $relay_stats_seconds_on = [];
+                                    $relay_stats_seconds_on_hour = [];
+                                    $relay_stats_seconds_on_day = [];
+                                    $relay_stats_seconds_on_week = [];
+                                    $relay_stats_seconds_on_month = [];
+                                    $relay_stats_seconds_on_year = [];
+
+                                    $current_year = date("Y");
+                                    $current_month = date("m");
+                                    $current_day = date("d");
+                                    $date_ago_dayofmonth = NULL;
+                                    if ($relay_stats_dayofmonth < $current_day) {
+                                        $date_ago_dayofmonth = date("Y/m/d-h:i:s", mktime(date("h"), date("i"), 0, $current_month, $relay_stats_dayofmonth, $current_year));
+                                    } else {
+                                        if ($current_month == 1) {
+                                            $date_ago_dayofmonth = date("Y/m/d-h:i:s", mktime(date("h"), date("i"), 0, 12, $relay_stats_dayofmonth, $current_year-1));
+                                        } else {
+                                            $date_ago_dayofmonth = date("Y/m/d-h:i:s", mktime(date("h"), date("i"), 0, $current_month-1, $relay_stats_dayofmonth, $current_year));
+                                        }
+                                    }
+
+                                    for ($i = 0; $i < count($relay_id); $i++) {
+                                        $read = "$gpio_path -g read $relay_pin[$i]";
+                                        $date_now = substr(shell_exec("date --date=\"now\" +'%Y/%m/%d-%H:%M:%S'"), 0, -1);
+                                        $date_ago = shell_exec("date --date=\"1 hour ago\" +'%Y/%m/%d-%H:%M:%S'");
+                                        $relay_stats_seconds_on_hour[$i] = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                        $date_ago = shell_exec("date --date=\"1 day ago\" +'%Y/%m/%d-%H:%M:%S'");
+                                        $relay_stats_seconds_on_day[$i] = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                        $date_ago = shell_exec("date --date=\"1 week ago\" +'%Y/%m/%d-%H:%M:%S'");
+                                        $relay_stats_seconds_on_week[$i] = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                        $date_ago = shell_exec("date --date=\"1 month ago\" +'%Y/%m/%d-%H:%M:%S'");
+                                        $relay_stats_seconds_on_month[$i] = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                        $relay_stats_seconds_on_dayofmonth[$i] = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago_dayofmonth . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                        $date_ago = shell_exec("date --date=\"1 year ago\" +'%Y/%m/%d-%H:%M:%S'");
+                                        $relay_stats_seconds_on_year[$i] = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                        $relay_stats_seconds_on[$i] = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                    ?>
+                                    <tr>
+                                        <td class="center"><?php echo $i+1; ?></td>
+                                        <td><?php echo $relay_name[$i]; ?></td>
+                                        <td>Duration On</td>
+                                        <td class="right"><?php printf("%.2f", $relay_stats_seconds_on_hour[$i]/3600); ?></td>
+                                        <td class="right"><?php printf("%.2f", $relay_stats_seconds_on_day[$i]/3600); ?></td>
+                                        <td class="right"><?php printf("%.2f", $relay_stats_seconds_on_week[$i]/3600); ?></td>
+                                        <td class="right"><?php printf("%.2f", $relay_stats_seconds_on_month[$i]/3600); ?></td>
+                                        <td class="right"><?php printf("%.2f", $relay_stats_seconds_on_dayofmonth[$i]/3600); ?></td>
+                                        <td class="right"><?php printf("%.2f", $relay_stats_seconds_on_year[$i]/3600) ?></td>
+                                        <td class="right"><?php printf("%.2f", $relay_stats_seconds_on[$i]/3600); ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"></td>
+                                        <td>Power Usage</td>
+                                        <td class="right">
+                                            <?php
+                                            $date_ago = shell_exec("date --date=\"1 hour ago\" +'%Y/%m/%d-%H:%M:%S'");
+                                            $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                            printf("%.2f", $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            $date_ago = shell_exec("date --date=\"1 day ago\" +'%Y/%m/%d-%H:%M:%S'");
+                                            $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                            printf("%.2f", $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            $date_ago = shell_exec("date --date=\"1 week ago\" +'%Y/%m/%d-%H:%M:%S'");
+                                            $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                            printf("%.2f", $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            $date_ago = shell_exec("date --date=\"1 month ago\" +'%Y/%m/%d-%H:%M:%S'");
+                                            $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                            printf("%.2f", $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago_dayofmonth . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                            printf("%.2f", $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            $date_ago = shell_exec("date --date=\"1 year ago\" +'%Y/%m/%d-%H:%M:%S'");
+                                            $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                            printf("%.2f", $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%.2f", $relay_stats_volts*$relay_amps[$i]*($relay_stats_seconds_on[$i]/3600)/1000);
+                                        ?>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                    }
+                                    ?>
+                                    <tr>
+                                        <td colspan="2">Grand Total</td>
+                                        <td>Duration On</td>
+                                        <td class="right">
+                                            <?php
+                                            $relay_stats_seconds_on_total = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_seconds_on_total += $relay_stats_seconds_on_hour[$j];
+                                            }
+                                            printf("%.2f", $relay_stats_seconds_on_total/3600);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            $relay_stats_seconds_on_total = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_seconds_on_total += $relay_stats_seconds_on_day[$j];
+                                            }
+                                            printf("%.2f", $relay_stats_seconds_on_total/3600);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            $relay_stats_seconds_on_total = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_seconds_on_total += $relay_stats_seconds_on_week[$j];
+                                            }
+                                            printf("%.2f", $relay_stats_seconds_on_total/3600);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            $relay_stats_seconds_on_total = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_seconds_on_total += $relay_stats_seconds_on_month[$j];
+                                            }
+                                            printf("%.2f", $relay_stats_seconds_on_total/3600);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            $relay_stats_seconds_on_total = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_seconds_on_total += $relay_stats_seconds_on_dayofmonth[$j];
+                                            }
+                                            printf("%.2f", $relay_stats_seconds_on_total/3600);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            $relay_stats_seconds_on_total = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_seconds_on_total += $relay_stats_seconds_on_year[$j];
+                                            }
+                                            printf("%.2f", $relay_stats_seconds_on_total/3600);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            $relay_stats_seconds_on_total = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_seconds_on_total += $relay_stats_seconds_on[$j];
+                                            }
+                                            printf("%.2f", $relay_stats_seconds_on_total/3600);
+                                            ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"></td>
+                                        <td>Power Usage</td>
+                                        <td class="right">
+                                        <?php
+                                            $relay_stats_total_amps = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_hour[$j]/3600)/1000, 2);
+                                            }
+                                            printf("%.2f", $relay_stats_total_amps);
+                                        ?>
+                                        </td>
+                                        <td class="right">
+                                        <?php
+                                            $relay_stats_total_amps = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_day[$j]/3600)/1000, 2);
+                                            }
+                                            printf("%.2f", $relay_stats_total_amps);
+                                        ?>
+                                        </td>
+                                        <td class="right">
+                                        <?php
+                                            $relay_stats_total_amps = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_week[$j]/3600)/1000, 2);
+                                            }
+                                            printf("%.2f", $relay_stats_total_amps);
+                                        ?>
+                                        </td>
+                                        <td class="right">
+                                        <?php
+                                            $relay_stats_total_amps = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_month[$j]/3600)/1000, 2);
+                                            }
+                                            printf("%.2f", $relay_stats_total_amps);
+                                        ?>
+                                        </td>
+                                        <td class="right">
+                                        <?php
+                                            $relay_stats_total_amps = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_dayofmonth[$j]/3600)/1000, 2);
+                                            }
+                                            printf("%.2f", $relay_stats_total_amps);
+                                        ?>
+                                        </td>
+                                        <td class="right">
+                                        <?php
+                                            $relay_stats_total_amps = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_year[$j]/3600)/1000, 2);
+                                            }
+                                            printf("%.2f", $relay_stats_total_amps);
+                                        ?>
+                                        </td>
+                                        <td class="right">
+                                        <?php
+                                            $relay_stats_total_amps = 0;
+                                            for ($j=0; $j < count($relay_id); $j++) {
+                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on[$j]/3600)/1000, 2);
+                                            }
+                                            printf("%.2f", $relay_stats_total_amps);
+                                        ?>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        <?php 
                         }
 
                         if(isset($_POST['Users']) && $_SESSION['user_name'] != 'guest') {
@@ -3639,23 +3978,18 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
-                            Automatic refresh rate (seconds)
+                            Voltage (used to calculate kiloWatt-hours (kWh) power usage)
                         </td>
                         <td class="setting-value">
-                            <input style="width: 4em;" type="number" min="1" max="999999" value="<?php echo $refresh_time; ?>" maxlength=4 size=1 name="refresh_time" title="The number of seconds between automatic page refreshing."/>
+                            <input style="width: 18em;" type="number" min="1" max="9999" step="1" value="<?php echo $relay_stats_volts; ?>" maxlength=4 size=1 name="relay_stats_volts" title="The voltage that is being controlled through the relays."/>
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <button name="ChangeSystem" type="submit" value="">Save</button>
+                        <td class="setting-text">
+                            Power Billing Day of the Month (for calculating kWh usage since the last bill)
                         </td>
-                    </tr>
-                    </form>
-
-                    <form method="post" action="?tab=settings">
-                    <tr>
-                        <td class="setting-title">
-                            Display
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" min="1" max="31" step="1" value="<?php echo $relay_stats_dayofmonth; ?>" maxlength=4 size=1 name="relay_stats_dayofmonth" title="Power usage will be calculated from this nth day of the month until the present."/>
                         </td>
                     </tr>
                     <tr>
@@ -3668,6 +4002,14 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Automatic refresh rate (seconds)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" min="1" max="999999" value="<?php echo $refresh_time; ?>" maxlength=4 size=1 name="refresh_time" title="The number of seconds between automatic page refreshing."/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
                             Display Debugging Information
                         </td>
                         <td class="setting-value">
@@ -3676,7 +4018,7 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td class="setting-save">
-                            <button name="ChangeInterface" type="submit" value="">Save</button>
+                            <button name="ChangeSystem" type="submit" value="">Save</button>
                         </td>
                     </tr>
                     </form>
@@ -3684,7 +4026,7 @@ if (isset($output_error)) {
                     <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
-                            Custom Combined Graph Generation
+                            Combined Graph Generation
                         </td>
                     </tr>
                     <tr>
@@ -3692,14 +4034,6 @@ if (isset($output_error)) {
                             Combined Temperatures
                         </td>
                         <td class="setting-value"></td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_temp_relays; ?>" name="combined_temp_relays" title=""/>
-                        </td>
                     </tr>
                     <tr>
                         <td class="setting-text">
@@ -3734,18 +4068,58 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     <tr>
+                        <td class="setting-text">
+                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_temp_relays_up; ?>" name="combined_temp_relays_up" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_temp_relays_down; ?>" name="combined_temp_relays_down" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relay Y-Axis Min
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_relays_min; ?>" maxlength="6" name="combined_temp_relays_min" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relay Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_relays_max; ?>" maxlength="6" name="combined_temp_relays_max" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relay Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_relays_tics; ?>" maxlength="6" name="combined_temp_relays_tics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relay Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_relays_mtics; ?>" maxlength="6" name="combined_temp_relays_mtics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
                         <td class="setting-text pad-top">
                             Combined Humidities
                         </td>
                         <td class="setting-value"></td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_hum_relays; ?>" name="combined_hum_relays" title=""/>
-                        </td>
                     </tr>
                     <tr>
                         <td class="setting-text">
@@ -3780,18 +4154,58 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     <tr>
+                        <td class="setting-text">
+                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_hum_relays_up; ?>" name="combined_hum_relays_up" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_hum_relays_down; ?>" name="combined_hum_relays_down" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relay Y-Axis Min
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_relays_min; ?>" maxlength="6" name="combined_hum_relays_min" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relay Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_relays_max; ?>" maxlength="6" name="combined_hum_relays_max" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relay Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_relays_tics; ?>" maxlength="6" name="combined_hum_relays_tics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relay Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_relays_mtics; ?>" maxlength="6" name="combined_hum_relays_mtics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
                         <td class="setting-text pad-top">
                             Combined CO<sub>2</sub>s
                         </td>
                         <td class="setting-value"></td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_co2_relays; ?>" name="combined_co2_relays" title=""/>
-                        </td>
                     </tr>
                     <tr>
                         <td class="setting-text">
@@ -3826,18 +4240,58 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     <tr>
+                        <td class="setting-text">
+                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_co2_relays_up; ?>" name="combined_co2_relays_up" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_co2_relays_down; ?>" name="combined_co2_relays_down" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relay Y-Axis Min
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_relays_min; ?>" maxlength="6" name="combined_co2_relays_min" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relay Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_relays_max; ?>" maxlength="6" name="combined_co2_relays_max" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relay Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_relays_tics; ?>" maxlength="6" name="combined_co2_relays_tics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relay Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_relays_mtics; ?>" maxlength="6" name="combined_co2_relays_mtics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
                         <td class="setting-text pad-top">
                             Combined Pressures
                         </td>
                         <td class="setting-value"></td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_press_relays; ?>" name="combined_press_relays" title=""/>
-                        </td>
                     </tr>
                     <tr>
                         <td class="setting-text">
@@ -3869,6 +4323,54 @@ if (isset($output_error)) {
                         </td>
                         <td class="setting-value">
                             <input style="width: 18em;" type="number" value="<?php echo $combined_press_mtics; ?>" maxlength="6" name="combined_press_mtics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_press_relays_up; ?>" name="combined_press_relays_up" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_press_relays_down; ?>" name="combined_press_relays_down" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relay Y-Axis Min
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_relays_min; ?>" maxlength="6" name="combined_press_relays_min" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relay Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_relays_max; ?>" maxlength="6" name="combined_press_relays_max" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relay Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_relays_tics; ?>" maxlength="6" name="combined_press_relays_tics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Relay Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_relays_mtics; ?>" maxlength="6" name="combined_press_relays_mtics" title=""/>
                         </td>
                     </tr>
                     <tr>
@@ -4413,9 +4915,7 @@ if (isset($output_error)) {
     ?>
 
 </div> <!-- cd-tabs -->
-
-<script src="js/jquery-2.1.1.js"></script>
+<!-- <script src="js/jquery-2.1.1.js"></script> -->
 <script src="js/main.js"></script> <!-- Resource jQuery -->
-
 </body>
 </html>

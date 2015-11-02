@@ -28,6 +28,7 @@ fi
 
 case "${1:-''}" in
     'backup')
+        DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
         NOW=$(date +"%Y-%m-%d_%H-%M-%S")
         CURCOMMIT=$(git rev-parse --short HEAD)
         printf "#### Creating backup /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT ####\n"

@@ -10,6 +10,9 @@
     	table.options td {
     		padding: 0.3em 0.5em 0.3em 0;
     	}
+    	table.custom-code td {
+    		padding: 0.1em 1em 0.1em 0;
+    	}
     </style>
 	<title>
 		Mycodo 3.5 Manual
@@ -45,6 +48,7 @@
 	<li><a href="#camera-tab">Camera Tab</a></li>
 	<li><a href="#data-tab">Data Tab</a></li>
 	<ul>
+		<li><a href="#system-backup">System Backup</a></li>
 		<li><a href="#system-restore">System Restore</a></li>
 	</ul>
 	<li><a href="#settings-tab">Settings Tab</a></li>
@@ -52,6 +56,7 @@
 		<li><a href="#system-update">System Update</a></li>
 	</ul>
 </ul>
+<li><a href="#preserving-custom-code">Preserving Custom Code</a></li>
 <li><a href="#tips">Tips</a></li>
 </ul>
 
@@ -386,12 +391,17 @@ If Humidity if Less Than 50%, turn relay #1 on for 21 seconds, execute '/usr/loc
 <a name="data-tab"></a>
 <h3>Data Tab</h3>
 
-<p>Here is where all the system data can be viewed and edited (in the case of notes), and where system system restores can be initiated from. An input allows a certain number of lines to be printed from the respective log or output. Notes and Git Commits (future commits) will always show in their entirety.</p>
+<p>Here is where all the system data can be viewed and edited (in the case of notes), and where system backups and restores can be initiated from. Additionally, a number of lines may be defined (default of 30 if left blank) to restrict the output to a certain number of lines (for instance, if you only want to view the last 100 lines of a 100,000-line log). Notes and Git Commits (commits ahead only) will always show in their entirety.</p>
+
+<a name="system-backup"></a>
+<h4>System Backup</h4>
+
+<p>You may create a full backup of Mycodo at any time. This may be desirable if you are experimenting with creating custom code. A backup can be created from the "Create New System Bacup" button after pressing the "Backup/Restore" button under the Data Tab.</p>
 
 <a name="system-restore"></a>
 <h4>System Restore</h4>
 
-<p>You may restore a backup of Mycodo and bring it back to a previous version. This may be desirable if an update happens to break your system. To view all backups, use the "All Backups" button under the Data tab. If you would like to view the backups in the contact of github updates, use the "Git Commits" button under the data tab. When viewing git commits, existing backups will be displayed under the commit for which the system was at during the time of the backup.</p>
+<p>You may restore a backup of Mycodo and bring it back to a previous version. This may be desirable if an update happens to break your system. To view all backups (or create a backup), select the "Backup/Restore" button under the Data Tab. If you would like to view the backups in the context of github updates, use the "Git Commits" button under the data tab. When viewing git commits, existing backups will be displayed under the commit for which the system was at during the time of the backup.</p>
 
 <p>To ensure no data is lost, when a backup is restored, a backup of the current system is also created.</p>
 
@@ -432,10 +442,64 @@ If Humidity if Less Than 50%, turn relay #1 on for 21 seconds, execute '/usr/loc
 	</tr>
 </table>
 
+<a name="preserving-custom-code"></a>
+<h2>Preserving Custom Code</h2>
+
+As per the <a href="https://github.com/kizniche/Mycodo/issues/25#issuecomment-143360432" target="_blank">work done by Boomstick8x</a>, the process to preserve custom code edits and restore them after a Mycodo update is below. Be aware that this method does not guarantee the successful operation of Mycodo after restoring custom code, as it can't be unknown what is changed in an update. It's assumed that if you're producing custom code, you should also be familiar with analyzing the changes of an update to determine if your code edits will work.
+
+<table class="custom-code" style="padding: 1.5em 0 1em 0">
+	<tr>
+		<td colspan="2">Stash uncommited changes and apply them after an update:</td>
+	</tr>
+	<tr>
+		<td>1. <code>git stash</code></td>
+		<td>Save uncommited changes to git stack (use <code>git stash list</code> to see the stack)</td>
+	</tr>
+	<tr>
+		<td>2. Update Mycodo</td>
+	</tr>
+	<tr>
+		<td>3. <code>git stash apply</code></td>
+		<td>Apply the last saved changes to updated version (<code>git stash pop</code> can be used to apply changes from the stack and then drop the stack)</td>
+	</tr>
+	<tr>
+		<td>4. Check if everything worked</td>
+	</tr>
+	<tr>
+		<td>5. <code>git stash drop</code></td>
+		<td>Drop last saved stash (if <code>git stash pop</code> wasn't used)</td>
+	</tr>
+	<tr>
+		<td colspan="2" style="padding-top: 1.5em;">Creating a patch file of changes and restoring them after an update:</td>
+	</tr>
+	<tr>
+		<td>1. <code>git stash</code></td>
+		<td>Stash changes</td>
+	</tr>
+	<tr>
+		<td style="white-space: nowrap;">2. <code>git stash show -p > name.patch</code></td>
+		<td>Stash output in a patch file (add <code>--binary</code> option after <code>-p</code> if we also need to stash binary files: <code>git stash show -p --binary > name.patch</code>)</td>
+	</tr>
+	<tr>
+		<td>3. <code>git apply --stat name.patch</code></td>
+		<td>View is everything looks good</td>
+	</tr>
+	<tr>
+		<td>4. <code>git apply --check name.patch</code></td>
+		<td>Verify no errors</td>
+	</tr>
+	<tr>
+		<td>5. <code>git apply name.patch</code></td>
+		<td>Apply the patch</td>
+	</tr>
+</table>
+
 <a name="tips"></a>
 <h2>Tips</h2>
 
-<p>The page-load time when submiting configuration changes in the sensor tab will be faster when the daemon is not running. The daemon can be stopped and started in the Settings tab.</p>
+<p>Because submitting certain configuration changes (mainly from the Sensor Tab) will require the daemon to reload the SQLite database before refreshing the web interface, the page-load time will potentially be faster when the daemon is not running. The daemon can be stopped and started in the Settings Tab.</p>
+
+&nbsp;
 
 </body>
 </html>

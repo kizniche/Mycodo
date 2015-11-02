@@ -20,4 +20,3 @@ while True:
     co2 = (high*256) + low
     print Timestamp() + " CO2 = " + str(co2) + " ppmv = " + str(float(co2)/10000) + " %"
     time.sleep(2)
-

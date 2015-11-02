@@ -26,15 +26,6 @@
  * Logging
  */
 
-// Concatenate sensor and relay log files (to TempFS) to ensure the latest data is being used
-function concatenate_logs() {
-    `cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log > /var/tmp/sensor-t.log`;
-    `cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log > /var/tmp/sensor-ht.log`;
-    `cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log > /var/tmp/sensor-co2.log`;
-    `cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log > /var/tmp/sensor-press.log`;
-    `cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log > /var/tmp/relay.log`;
-}
-
 // Display Log tab SQL database tables, names, and variables
 function view_sql_db($sqlite_db) {
     $db = new SQLite3($sqlite_db);
@@ -83,8 +74,9 @@ function view_sql_db($sqlite_db) {
  * Graphing
  */
 
-// Generate and display graphs on the Main tab
+// Generate and display graphs on the Graph tab
 function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_graph, $sensor_ht_graph, $sensor_co2_graph, $sensor_press_graph) {
+    $image_path = '/var/www/mycodo/images/';
 
     $sensor_t_log_file_tmp = "/var/www/mycodo/log/sensor-t-tmp.log";
     $sensor_t_log_file = "/var/www/mycodo/log/sensor-t.log";
@@ -104,117 +96,149 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
 
     // Main preset: Display graphs of past day and week
     if ($graph_time_span == 'default') {
-
+        if (sizeof(glob("/var/www/mycodo/images/*default*$graph_id*")) == 0) {
+            shell_exec("$mycodo_client --graph default $graph_id 0 0 0 0");
+        }
+        $first = 0;
         if (array_sum($sensor_t_graph)) {
             for ($n = 0; $n < count($sensor_t_graph); $n++) {
                 if ($sensor_t_graph[$n] == 1) {
-                    if (!file_exists("/var/www/mycodo/images/graph-tdefaultdefault-$graph_id-$n.png")) {
-                        shell_exec("$mycodo_client --graph t $graph_type $graph_time_span $graph_id $n");
-                    }
-                    echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                    if ($first) echo '<hr class="fade"/>';
+                    else $first = 1;
+                    $file_name = 'graph-t-default-' . $graph_id . '-' . $n . '.png';
+                    echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                        <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                            <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
                     echo 'sensortype=t';
                     echo "&sensornumber=$n";
                     echo '&graphtype=default';
-                    echo '&graphspan=default';
                     echo "&id=$graph_id>";
                     echo '</div>';
-
-                    if ($n != count($sensor_t_graph) || array_sum($sensor_ht_graph) || array_sum($sensor_co2_graph)) {
-                        echo '<hr class="fade"/>';
-                    }
                 }
             }
         }
-
         if (array_sum($sensor_ht_graph)) {
-            $count = 0;
             for ($n = 0; $n < count($sensor_ht_graph); $n++) {
                 if ($sensor_ht_graph[$n] == 1) {
-                    if (!file_exists("/var/www/mycodo/images/graph-htdefaultdefault-$graph_id-$n.png")) {
-                        shell_exec("$mycodo_client --graph ht $graph_type $graph_time_span $graph_id $n");
-                    }
-                    echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                    if ($first) echo '<hr class="fade"/>';
+                    else $first = 1;
+                    $file_name = 'graph-ht-default-' . $graph_id . '-' . $n . '.png';
+                    echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                        <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                            <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
                     echo 'sensortype=ht';
                     echo "&sensornumber=$n";
                     echo '&graphtype=default';
-                    echo '&graphspan=default';
                     echo "&id=$graph_id>";
                     echo '</div>';
-
-                    $count++;
-                    if ($count != array_sum($sensor_ht_graph) || array_sum($sensor_co2_graph)) {
-                        echo '<hr class="fade"/>';
-                    }
                 }
             }
         }
-
         if (array_sum($sensor_co2_graph)) {
             for ($n = 0; $n < count($sensor_co2_graph); $n++) {
                 if ($sensor_co2_graph[$n] == 1) {
-                    if (!file_exists("/var/www/mycodo/images/graph-co2defaultdefault-$graph_id-$n.png")) {
-                        shell_exec("$mycodo_client --graph co2 $graph_type $graph_time_span $graph_id $n");
-                    }
-                    echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                    if ($first) echo '<hr class="fade"/>';
+                    else $first = 1;
+                    $file_name = 'graph-co2-default-' . $graph_id . '-' . $n . '.png';
+                    echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                        <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                            <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
                     echo 'sensortype=co2';
                     echo "&sensornumber=$n";
-                    echo '&graphspan=default';
                     echo '&graphtype=default';
                     echo "&id=$graph_id>";
                     echo '</div>';
-
-                    if ($n != count($sensor_co2_graph)) {
-                        echo '<hr class="fade"/>';
-                    }
                 }
             }
         }
-
         if (array_sum($sensor_press_graph)) {
-            $count = 0;
             for ($n = 0; $n < count($sensor_press_graph); $n++) {
                 if ($sensor_press_graph[$n] == 1) {
-                    if (!file_exists("/var/www/mycodo/images/graph-pressdefaultdefault-$graph_id-$n.png")) {
-                        shell_exec("$mycodo_client --graph press $graph_type $graph_time_span $graph_id $n");
-                    }
-                    echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                    if ($first) echo '<hr class="fade"/>';
+                    else $first = 1;
+                    $file_name = 'graph-press-default-' . $graph_id . '-' . $n . '.png';
+                    echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                        <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                            <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
                     echo 'sensortype=press';
                     echo "&sensornumber=$n";
                     echo '&graphtype=default';
-                    echo '&graphspan=default';
                     echo "&id=$graph_id>";
                     echo '</div>';
-
-                    $count++;
-                    if ($count != array_sum($sensor_press_graph) || array_sum($sensor_co2_graph)) {
-                        echo '<hr class="fade"/>';
-                    }
                 }
             }
         }
-
-    } else if ($graph_type == 'combined') { // Combined preset: Generate combined graphs
-        if (!file_exists("/var/www/mycodo/images/graph-xcombined$graph_time_span-$graph_id-0.png")) {
-            shell_exec("$mycodo_client --graph x $graph_type $graph_time_span $graph_id 0");
+    } else if ($graph_type == 'combined') {
+        if (sizeof(glob("/var/www/mycodo/images/*combined*$graph_id*")) == 0) {
+            shell_exec("$mycodo_client --graph combined $graph_id $graph_time_span 0 0 0");
         }
-        echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
-                echo 'sensortype=x';
-                echo '&sensornumber=0';
-                echo "&graphspan=$graph_time_span";
-                echo "&graphtype=$graph_type";
-                echo "&id=$graph_id>";
-                echo '</div>';
-    } else if ($graph_type == 'separate') { // Combined preset: Generate separate graphs
+        $first = 0;
+        if (array_sum($sensor_t_graph) || array_sum($sensor_ht_graph)) {
+            if ($first) echo '<hr class="fade"/>';
+            else $first = 1;
+            $file_name = 'graph-temp-' . $graph_type . '-' . $graph_time_span . '-' . $graph_id . '.png';
+            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                    <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+            echo 'sensortype=temp';
+            echo "&graphspan=$graph_time_span";
+            echo "&graphtype=$graph_type";
+            echo "&id=$graph_id>";
+            echo '</div>';
+        }
+        if (array_sum($sensor_ht_graph)) {
+            if ($first) echo '<hr class="fade"/>';
+            else $first = 1;
+            $file_name = 'graph-hum-' . $graph_type . '-' . $graph_time_span . '-' . $graph_id . '.png';
+            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                    <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+            echo 'sensortype=hum';
+            echo "&graphspan=$graph_time_span";
+            echo "&graphtype=$graph_type";
+            echo "&id=$graph_id>";
+            echo '</div>';
+        }
+        if (array_sum($sensor_co2_graph)) {
+            if ($first) echo '<hr class="fade"/>';
+            else $first = 1;
+            $file_name = 'graph-co2-' . $graph_type . '-' . $graph_time_span . '-' . $graph_id . '.png';
+            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                    <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+            echo 'sensortype=co2';
+            echo "&graphspan=$graph_time_span";
+            echo "&graphtype=$graph_type";
+            echo "&id=$graph_id>";
+            echo '</div>';
+        }
+        if (array_sum($sensor_press_graph)) {
+            if ($first) echo '<hr class="fade"/>';
+            else $first = 1;
+            $file_name = 'graph-press-' . $graph_type . '-' . $graph_time_span . '-' . $graph_id . '.png';
+            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                    <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+            echo 'sensortype=press';
+            echo "&graphspan=$graph_time_span";
+            echo "&graphtype=$graph_type";
+            echo "&id=$graph_id>";
+            echo '</div>';
+        }
+    } else if ($graph_type == 'separate') {
+        if (sizeof(glob("/var/www/mycodo/images/*separate*$graph_id*")) == 0) {
+            shell_exec("$mycodo_client --graph $graph_type $graph_id $graph_time_span 0 0 0");
+        }
         $first = 0;
         if (array_sum($sensor_t_graph)) {
             for ($n = 0; $n < count($sensor_t_graph); $n++ ) {
                 if ($sensor_t_graph[$n] == 1) {
-                    if (!file_exists("/var/www/mycodo/images/graph-tseparate$graph_time_span-$graph_id-$n.png")) {
-                        shell_exec("$mycodo_client --graph t $graph_type $graph_time_span $graph_id $n");
-                    }
                     if ($first) echo '<hr class="fade"/>';
                     else $first = 1;
-                    echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                    $file_name = 'graph-t-' . $graph_type . '-' . $graph_time_span . '-' . $graph_id . '-' . $n . '.png';
+                    echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                        <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                            <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
                     echo 'sensortype=t';
                     echo "&sensornumber=$n";
                     echo "&graphspan=$graph_time_span";
@@ -224,16 +248,15 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                 } 
             }
         }
-
         if (array_sum($sensor_ht_graph)) {
             for ($n = 0; $n < count($sensor_ht_graph); $n++ ) {
                 if ($sensor_ht_graph[$n] == 1) {
-                    if (!file_exists("/var/www/mycodo/images/graph-htseparate$graph_time_span-$graph_id-$n.png")) {
-                        shell_exec("$mycodo_client --graph ht $graph_type $graph_time_span $graph_id $n");
-                    }
                     if ($first) echo '<hr class="fade"/>';
                     else $first = 1;
-                    echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                    $file_name = 'graph-ht-' . $graph_type . '-' . $graph_time_span . '-' . $graph_id . '-' . $n . '.png';
+                    echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                        <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                            <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
                     echo 'sensortype=ht';
                     echo "&sensornumber=$n";
                     echo "&graphspan=$graph_time_span";
@@ -243,16 +266,15 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                 }
             }
         }
-
         if (array_sum($sensor_co2_graph)) {
             for ($n = 0; $n < count($sensor_co2_graph); $n++) {
                 if ($sensor_co2_graph[$n] == 1) {
-                    if (!file_exists("/var/www/mycodo/images/graph-co2separate$graph_time_span-$graph_id-$n.png")) {
-                        shell_exec("$mycodo_client --graph co2 $graph_type $graph_time_span $graph_id $n");
-                    }
                     if ($first) echo '<hr class="fade"/>';
                     else $first = 1;
-                    echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                    $file_name = 'graph-co2-' . $graph_type . '-' . $graph_time_span . '-' . $graph_id . '-' . $n . '.png';
+                    echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                        <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                            <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
                     echo 'sensortype=co2';
                     echo "&sensornumber=$n";
                     echo "&graphspan=$graph_time_span";
@@ -262,16 +284,15 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                 }
             }
         }
-
         if (array_sum($sensor_press_graph)) {
             for ($n = 0; $n < count($sensor_press_graph); $n++) {
                 if ($sensor_press_graph[$n] == 1) {
-                    if (!file_exists("/var/www/mycodo/images/graph-pressseparate$graph_time_span-$graph_id-$n.png")) {
-                        shell_exec("$mycodo_client --graph press $graph_type $graph_time_span $graph_id $n");
-                    }
                     if ($first) echo '<hr class="fade"/>';
                     else $first = 1;
-                    echo '<div style="padding: 1em 0 3em 0;"><img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                    $file_name = 'graph-press-' . $graph_type . '-' . $graph_time_span . '-' . $graph_id . '-' . $n . '.png';
+                    echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                        <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
+                            <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
                     echo 'sensortype=press';
                     echo "&sensornumber=$n";
                     echo "&graphspan=$graph_time_span";
@@ -355,7 +376,7 @@ function displayform() { ?>
         </div>
         <div style="display: inline-block; padding-right:0.5em; vertical-align: top;">
             <div style="adding-right:0.5em;">
-                Width: <input type="text" value="900" maxlength=4 size=4 name="graph-width" title="Width of the generated graph"> px (4000 max)
+                Width: <input type="text" value="<?php if (isset($_POST['graph-width']) && $_POST['graph-width'] != '') echo $_POST['graph-width']; else echo '950';?>" maxlength=4 size=4 name="graph-width" title="Width of the generated graph"> px (4000 max)
             </div>
         </div>
         <div style="display: inline-block; padding-right:0.5em; vertical-align: top;">

@@ -26,7 +26,6 @@ $db = new SQLite3($mycodo_db);
 $udb = new SQLite3($user_db);
 $ndb = new SQLite3($note_db);
 
-
 $results = $udb->query('SELECT user_name, user_email FROM users');
 $i = 0;
 while ($row = $results->fetchArray()) {
@@ -34,7 +33,6 @@ while ($row = $results->fetchArray()) {
     $user_email[$i] = $row[1];
     $i++;
 }
-
 
 unset($relay_id);
 $results = $db->query('SELECT Id, Name, Pin, Amps, Trigger, Start_State FROM Relays');
@@ -49,7 +47,6 @@ while ($row = $results->fetchArray()) {
     $i++;
 }
 if (!isset($relay_id)) $relay_id = [];
-
 
 // conditional statements
 unset($conditional_relay_id);
@@ -72,7 +69,6 @@ while ($row = $results->fetchArray()) {
     $i++;
 }
 if (!isset($conditional_relay_id)) $conditional_relay_id = [];
-
 
 unset($sensor_t_id);
 $results = $db->query('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D FROM TSensor');
@@ -114,7 +110,6 @@ while ($row = $results->fetchArray()) {
 }
 if (!isset($sensor_t_id)) $sensor_t_id = [];
 if (!isset($sensor_t_graph)) $sensor_t_graph = [];
-
 
 unset($sensor_ht_id);
 $results = $db->query('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Verify_Pin, Verify_Temp, Verify_Temp_Notify, Verify_Temp_Stop, Verify_Hum, Verify_Hum_Notify, Verify_Hum_Stop, Verify_Notify_Email, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relays_Up, Hum_Relays_Down, Hum_Relay_High, Hum_Outmin_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmin_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensor');
@@ -183,7 +178,6 @@ while ($row = $results->fetchArray()) {
 }
 if (!isset($sensor_ht_id)) $sensor_ht_id = [];
 if (!isset($sensor_ht_graph)) $sensor_ht_graph = [];
-
 
 unset($sensor_co2_id);
 $results = $db->query('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph,  YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_CO2_Min, YAxis_CO2_Max, YAxis_CO2_Tics, YAxis_CO2_MTics, CO2_Relays_Up, CO2_Relays_Down, CO2_Relay_High, CO2_Outmin_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmin_Low, CO2_Outmax_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D FROM CO2Sensor');
@@ -286,7 +280,6 @@ while ($row = $results->fetchArray()) {
 if (!isset($sensor_press_id)) $sensor_press_id = [];
 if (!isset($sensor_press_graph)) $sensor_press_graph = [];
 
-
 // conditional statements
 unset($conditional_t_id);
 for ($n = 0; $n < count($sensor_t_id); $n++) {
@@ -386,7 +379,6 @@ for ($n = 0; $n < count($sensor_press_id); $n++) {
     }
 }
 
-
 // Sort sensor Presets
 $sensor_t_preset = [];
 $results = $db->query('SELECT Id FROM TSensorPreset');
@@ -430,28 +422,48 @@ while ($row = $results->fetchArray()) {
 }
 if (!isset($timer_id)) $timer_id = [];
 
-$results = $db->query('SELECT Combined_Temp_Relays, Combined_Temp_Min, Combined_Temp_Max, Combined_Temp_Tics, Combined_Temp_Mtics, Combined_Hum_Relays, Combined_Hum_Min, Combined_Hum_Max, Combined_Hum_Tics, Combined_Hum_Mtics, Combined_Co2_Relays, Combined_Co2_Min, Combined_Co2_Max, Combined_Co2_Tics, Combined_Co2_Mtics, Combined_Press_Relays, Combined_Press_Min, Combined_Press_Max, Combined_Press_Tics, Combined_Press_Mtics FROM CustomGraph');
+$results = $db->query('SELECT Combined_Temp_Min, Combined_Temp_Max, Combined_Temp_Tics, Combined_Temp_Mtics, Combined_Temp_Relays_Up, Combined_Temp_Relays_Down, Combined_Temp_Relays_Min, Combined_Temp_Relays_Max, Combined_Temp_Relays_Tics, Combined_Temp_Relays_Mtics, Combined_Hum_Min, Combined_Hum_Max, Combined_Hum_Tics, Combined_Hum_Mtics, Combined_Hum_Relays_Up, Combined_Hum_Relays_Down, Combined_Hum_Relays_Min, Combined_Hum_Relays_Max, Combined_Hum_Relays_Tics, Combined_Hum_Relays_Mtics, Combined_Co2_Min, Combined_Co2_Max, Combined_Co2_Tics, Combined_Co2_Mtics, Combined_Co2_Relays_Up, Combined_Co2_Relays_Down, Combined_Co2_Relays_Min, Combined_Co2_Relays_Max, Combined_Co2_Relays_Tics, Combined_Co2_Relays_Mtics, Combined_Press_Min, Combined_Press_Max, Combined_Press_Tics, Combined_Press_Mtics, Combined_Press_Relays_Up, Combined_Press_Relays_Down, Combined_Press_Relays_Min, Combined_Press_Relays_Max, Combined_Press_Relays_Tics, Combined_Press_Relays_Mtics FROM CustomGraph');
 while ($row = $results->fetchArray()) {
-    $combined_temp_relays = $row[0];
-    $combined_temp_min = $row[1];
-    $combined_temp_max = $row[2];
-    $combined_temp_tics = $row[3];
-    $combined_temp_mtics = $row[4];
-    $combined_hum_relays = $row[5];
-    $combined_hum_min = $row[6];
-    $combined_hum_max = $row[7];
-    $combined_hum_tics = $row[8];
-    $combined_hum_mtics = $row[9];
-    $combined_co2_relays = $row[10];
-    $combined_co2_min = $row[11];
-    $combined_co2_max = $row[12];
-    $combined_co2_tics = $row[13];
-    $combined_co2_mtics = $row[14];
-    $combined_press_relays = $row[15];
-    $combined_press_min = $row[16];
-    $combined_press_max = $row[17];
-    $combined_press_tics = $row[18];
-    $combined_press_mtics = $row[19];
+    $combined_temp_min = $row[0];
+    $combined_temp_max = $row[1];
+    $combined_temp_tics = $row[2];
+    $combined_temp_mtics = $row[3];
+    $combined_temp_relays_up = $row[4];
+    $combined_temp_relays_down = $row[5];
+    $combined_temp_relays_min = $row[6];
+    $combined_temp_relays_max = $row[7];
+    $combined_temp_relays_tics = $row[8];
+    $combined_temp_relays_mtics = $row[9];
+    $combined_hum_min = $row[10];
+    $combined_hum_max = $row[11];
+    $combined_hum_tics = $row[12];
+    $combined_hum_mtics = $row[13];
+    $combined_hum_relays_up = $row[14];
+    $combined_hum_relays_down = $row[15];
+    $combined_hum_relays_min = $row[16];
+    $combined_hum_relays_max = $row[17];
+    $combined_hum_relays_tics = $row[18];
+    $combined_hum_relays_mtics = $row[19];
+    $combined_co2_min = $row[20];
+    $combined_co2_max = $row[21];
+    $combined_co2_tics = $row[22];
+    $combined_co2_mtics = $row[23];
+    $combined_co2_relays_up = $row[24];
+    $combined_co2_relays_down = $row[25];
+    $combined_co2_relays_min = $row[26];
+    $combined_co2_relays_max = $row[27];
+    $combined_co2_relays_tics = $row[28];
+    $combined_co2_relays_mtics = $row[29];
+    $combined_press_min = $row[30];
+    $combined_press_max = $row[31];
+    $combined_press_tics = $row[32];
+    $combined_press_mtics = $row[33];
+    $combined_press_relays_up = $row[34];
+    $combined_press_relays_down = $row[35];
+    $combined_press_relays_min = $row[36];
+    $combined_press_relays_max = $row[37];
+    $combined_press_relays_tics = $row[38];
+    $combined_press_relays_mtics = $row[39];
 }
 
 $results = $db->query('SELECT Host, SSL, Port, User, Pass, Email_From, Wait_Time FROM SMTP');
@@ -495,10 +507,12 @@ while ($row = $results->fetchArray()) {
     $timelapse_extra_parameters = str_replace("''","'",$row[7]);
 }
 
-$results = $db->query('SELECT Login_Message, Refresh_Time, Enable_Max_Amps, Max_Amps FROM Misc');
+$results = $db->query('SELECT Login_Message, Refresh_Time, Enable_Max_Amps, Max_Amps, Relay_Stats_Volts, Relay_Stats_DayofMonth FROM Misc');
 while ($row = $results->fetchArray()) {
     $login_message = $row[0];
     $refresh_time = $row[1];
     $enable_max_amps = $row[2];
     $max_amps = $row[3];
+    $relay_stats_volts = $row[4];
+    $relay_stats_dayofmonth = $row[5];
 }

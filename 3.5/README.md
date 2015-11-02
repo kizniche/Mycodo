@@ -23,10 +23,6 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
   + [Database Creation](#database-creation)
   + [Daemon](#daemon)
 + [Manual](#manual)
-  + [Preface](#preface)
-  + [Web Interface](#web-interface)
-  + [System Update](#system-update)
-  + [Discrete PID Control](#discrete-pid-control)
 + [License](#license)
 + [Useful Links](#useful-links)
 
@@ -93,6 +89,12 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 ## Changelog
 
 Major changes for each versioned release
+
+#### 3.5.85
++ New client-side graph generation using HighCharts/HighStock
+
+#### 3.5.84
++ Add relay and power usage statistics to the Data Tab
 
 #### 3.5.83
 + Add ability to define combined graph values: relays to plot and y-axis values (min, max, tics, and mtics)
@@ -205,6 +207,10 @@ php5-sqlite
 php5-gd
 
 sqlite3
+
+Software used:
+
+php-login-one-file, HighStock, highcharts-export-clientside, JQuery, Modernizr, canvas-tools, export-csv, jspdf
 
 ## Supported Sensors
 
@@ -459,49 +465,7 @@ Note: cgi-bin/mycodo-wrapper is a binary executable used to start and stop the m
 
 ## Manual
 
-The Mycodo 3.5 manual is provided in the file manual.html. You can find a link to this manual at the top of the Settings Tab of the web interface. The manual can be accessed directly with the link at the end of this document in the [Useful Links](#useful-links) section.
-
-### Preface
-
-Only press one button at a time on the web interface. After pressing a button, wait for either a response or for the page to time out. Sending multiple commands will only make it take longer, at best. There may be many unforseen issues with sending multiple commands.
-
-Before activating any conditional statements or PID controllers, it's advised to thoroughly explore all possible scenarios and plan a configuration that eliminates relay conflicts. Then, trial run your configuration before connecting devices to the relays. **Some devices or relays may respond atypically or fail when switched many times in rapid succession. Therefore, avoid creating a condition for a relay to switch on and off in an [infinite loop](https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops).** 
-
-### Web Interface
-
-After the system is back up, go to http://your-rpi-address/mycodo/index.php and log in with the credentials you created with update-database.py.
-
-**Most input fields of the web interface will display descriptions or instructions when the mouse is hovered over them. In the absence of a complete manual of each setting, utilize this to learn about the system.**
-
-The Daemon indicator at the top-left indicates the daemon is running (blue). If it is not (red), sensor measurements, logging, and PID regulation cannot operate.
-
-Additionally, relays must be properly set up before PID regulation can be achieved. Add and configure relays in the Sensor tab. Set the `GPIO Pin` to the BCM number of the pin connected to the relay. `Signal ON` should be set to the signal that activates the relay (close the circuit). If your relay activates when the potential across the coil is 0-volts, set `Signal ON` to 'Low', otherwise if your relay activates when the potential across the coil is 5-volts, set it to 'High'.
-
-### System Update
-
-If you have a fully-configured system, you may update to the latest version with the "Update Mycodo" button under the Advanced menu of the settings tab. A backup of the old system will be placed in the same directory the Mycodo main direcotry resides. For example, if this directory is /home/user/Mycodo, then the backup directory will reside at /home/user/Mycodo-backup.
-
-Note: Logs and the user database will be preserved, however you will most likely need to reconfigure your settings and presets (a database updater is in the works).
-
-### Discrete PID Control
-
-The PID controller is the most common regulatory controller found in industrial settings, for it's ability to handle both simple and complex regulation. The PID controller has three paths, the proportional, integral, and derivative.
-
-> The **P**roportional takes the error and multiplies it by the constant K<sub>p</sub>, to yield an output value. When the error is large, there will be a large proportional output.
-
-> The **I**ntegral takes the error and multiplies it by K<sub>i</sub>, then integrates it (K<sub>i</sub> · 1/s). As the error changes over time, the integral will continually sum it and multiply it by the constant K<sub>i</sub>. The integral is used to remove perpetual error in the control system. If using K<sub>p</sub> alone produces an output that produces a perpetual error (i.e. if the sensor measurement never reaches the Set Point), the integral will increase the output until the error decreases and the Set Point is reached.
-
-> The **D**erivative multiplies the error by K<sub>d</sub>, then differentiates it (K<sub>d</sub> · s). When the error rate changes over time, the output signal will change. The faster the change in error, the larger the derivative path becomes, decreasing the output rate of change. This has the effect of dampening overshoot and undershoot (oscillation) of the Set Point.
-
-<a href="https://en.wikipedia.org/wiki/PID_controller" target="_blank">![](http://kylegabriel.com/images/PID_Animated.gif)</a>
-
-Using temperature as an example, the Process Variable (PV) is the sensed temperature, the Set Point (SP) is the desired temperature, and the Error (e) is the distance between the measured temperature and the desired temperature (indicating if the actual temperature is too hot or too cold and to what degree). The error is manipulated by each of the three PID components, producing an output, called the Manipulated Variable (MV) or Control Variable (CV). To allow control of how much each path contributes to the output value, each path is multiplied by a gain (represented by K). By adjusting the gains, the sensitivity of the system to each path is affected. When all three paths are summed, the PID output is produced. If a gain is set to 0, that path does not contribute to the output and that path is eessentially turned off.
-
-The output can be used a number of ways, however this controller was designed to use the ouput to affect the sensed value (PV). This feedback loop, with a *properly tuned* PID controller, can achieve a set point in a short period of time, maintain regulation with little oscillation, and respond quickly to disturbance.
-
-Therefor, if one would be regulating temperature, the sensor would be a temperature sensor and the feedback device(s) would be able to heat and cool. If the temperature is lower than the Set Point, the output value would be positive and a heater would activate. The temperature would rise toward the desired temperature, causing the error to decrease and a lower output to be produced. This feedback loop would continue until the error reaches 0 (at which point the output would be 0). If the temperature continues to rise past the Set Point (this is may be aceptable, depending on the degree), the PID would produce a negative output, which could be used by the cooling device to bring the temperature back down, to reduce the error. If the temperature would normally lower without the aid of a cooling device, then the system can be simplified by omitting a cooler and allowing it to lower on its own. 
-
-Implementing a controller that effectively utilizes P, I, and D can be challenging. Furthermore, it is often unnecessary. For instance, the I and D can be set to 0, effectively turning them off and producing the very popular and simple P controller. Also popular is the PI controller. It is recommended to start with only P activated, then experiment with PI, before finally using PID. Because systems will vary (e.g. airspace volume, degree of insulation, and the degree of impact from the connected device, etc.), each path will need to be adjusted through experimentation to produce an effective output.
+The Mycodo 3.5 manual is provided in the file manual.html. You can find a link to this manual at the top of the Settings Tab of the web interface. The manual can be accessed directly [here](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/3.5/manual.html) or the link at the end of this document in the [Useful Links](#useful-links) section.
 
 ## License
 
