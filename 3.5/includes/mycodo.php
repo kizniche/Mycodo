@@ -435,6 +435,9 @@ if (isset($output_error)) {
                         <div style="float: left;">
                             <button type="submit" name="Generate_Graph" value="press">Press<br>Graph</button>
                         </div>
+                        <div style="float: left;">
+                            <button type="submit" name="Generate_Graph" value="all" title="Warning: This may take a long time to process, as it will be compiling and generating graphs from all data points of all sensors.">All<br>Graphs</button>
+                        </div>
                     </div>
                 </div>
                 </form>
@@ -442,7 +445,7 @@ if (isset($output_error)) {
                 <div style="clear: both;"></div>
 
                 <?php
-                if (isset($_POST['Generate_Graph'])) {
+                if (isset($_POST['Generate_Graph']) || isset($_POST['Generate_Graph_All'])) {
                     $sensor_type = $_POST['Generate_Graph'];
                     $sensor_num_array = "sensor_{$sensor_type}_id";
                     echo '<div style="padding: 1.5em 0 1.5em 0; text-align:center;">';

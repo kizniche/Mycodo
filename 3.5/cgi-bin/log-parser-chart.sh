@@ -7,6 +7,10 @@ INFILE1=$4
 INFILE2=$5
 OUTFILE=$6
 
+if [[ ( "$SENSORTYPE" = "all" ) ]]; then
+	cat $INFILE1 $INFILE2 | sed -e "s/^/$SENSORNUMBER /" | tee $OUTFILE 1> /dev/null
+fi
+
 if [[ ( "$SENSORTYPE" = "relay" ) ]]; then
 	cat $INFILE1 $INFILE2 | tee $OUTFILE 1> /dev/null
 fi
