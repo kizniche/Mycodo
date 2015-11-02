@@ -91,7 +91,7 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 Major changes for each versioned release
 
 #### 3.5.85
-+ Add new graphing method (currently limited options on the Graph Tab)
++ New client-side graph generation using HighCharts/HighStock
 
 #### 3.5.84
 + Add relay and power usage statistics to the Data Tab
@@ -207,6 +207,10 @@ php5-sqlite
 php5-gd
 
 sqlite3
+
+Software used:
+
+php-login-one-file, HighStock, highcharts-export-clientside, JQuery, Modernizr, canvas-tools, export-csv, jspdf
 
 ## Supported Sensors
 

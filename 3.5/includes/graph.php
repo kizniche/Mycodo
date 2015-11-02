@@ -145,12 +145,10 @@ if ($sensor_type == 't') {
                     ?>],
                     exporting: {
                         buttons: {
-                            contextButton: {
-                                enabled: false
-                            },
                             custom: {
                                 text: "Hide All",
                                 align: 'right',
+                                x: -40,
                                 symbolFill: '#B5C9DF',
                                 hoverSymbolFill: '#779ABF',
                                 _titleKey: 'Balance',
@@ -396,12 +394,10 @@ if ($sensor_type == 't') {
                     ?>],
                     exporting: {
                         buttons: {
-                            contextButton: {
-                                enabled: false
-                            },
                             custom: {
                                 text: "Hide All",
                                 align: 'right',
+                                x: -40,
                                 symbolFill: '#B5C9DF',
                                 hoverSymbolFill: '#779ABF',
                                 _titleKey: 'Balance',
@@ -613,12 +609,10 @@ if ($sensor_type == 't') {
                     ?>],
                     exporting: {
                         buttons: {
-                            contextButton: {
-                                enabled: false
-                            },
                             custom: {
                                 text: "Hide All",
                                 align: 'right',
+                                x: -40,
                                 symbolFill: '#B5C9DF',
                                 hoverSymbolFill: '#779ABF',
                                 _titleKey: 'Balance',
@@ -854,12 +848,10 @@ if ($sensor_type == 't') {
                     ?>],
                     exporting: {
                         buttons: {
-                            contextButton: {
-                                enabled: false
-                            },
                             custom: {
                                 text: "Hide All",
                                 align: 'right',
+                                x: -40,
                                 symbolFill: '#B5C9DF',
                                 hoverSymbolFill: '#779ABF',
                                 _titleKey: 'Balance',
