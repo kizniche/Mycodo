@@ -37,6 +37,7 @@
 		<li><a href="#sensors">Sensors</a></li>
 		<li><a href="#timers">Timers</a></li>
 		<li><a href="#conditional-statements">Conditional Statements</a></li>
+		<li><a href="#custom-code">Custom Code</a></li>
 		<li><a href="#discrete-pid-control">Discrete PID Control</a></li>
 		<li><a href="#quick-set-up-examples">Quick Setup Examples</a></li>
 		<ul>
@@ -323,6 +324,93 @@ If Humidity if Less Than 50%, turn relay #1 on for 21 seconds, execute '/usr/loc
 </p>
 
 <p>Before activating any conditional statements or PID controllers, it"s advised to thoroughly explore all possible scenarios and plan a configuration that eliminates conflicts. Then, trial run your configuration before connecting devices to the relays. Some devices or relays may respond atypically or fail when switched on and off in rapid succession. Therefore, avoid creating an <a href="https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops" target="_blank">infinite loop</a> with conditional statements.</p>
+
+<a name="custom-code"></a>
+<h4>Custom Code</h4>
+
+<p>These two input fields will be excuted by the Mycodo daemon. The programming language used by the daemon is Python. The setup code will be executed once, before the main loop begins. The main loop code will be executed in a loop. Only valid Python code may be used here. There are many resources devoted to the Python language that may be used for reference. I will only be including the variables and functions available to the daemon. This feature is intended for advanced users who have a grasp of the Python programming language.</p>
+
+<a name="custom-code-setup"></a>
+<h4>Setup Code</h4>
+
+<p>This code will only be executed once. Use this area to declare new variables, load modules, or anything else that is only desired to be executed once, before the main loop begins.</p>
+
+<a name="custom-code-main"></a>
+<h4>Main Loop Code</h4>
+
+<p>This code will be executed in its own thread, but will have many global variables available to it already. The main loop of the thread will contain a 0.1 second pause at the end.</p>
+
+***This section is incomplete!***
+<table class="options">
+	<tr>
+		<td>Available Functions:</td>
+	</tr>
+	<tr>
+		<td>relay_on_seconds(relay, seconds)</td>
+		<td>Turns a relay on for a specific duration of time, in seconds.</td>
+	</tr>
+	<tr>
+		<td>relay_on_off(relay, state)</td>
+		<td>Turns a relay on or off. state must either be "on" or "off" (include the quotes).</td>
+	</tr>
+	<tr>
+		<td>all_relays_off()</td>
+		<td>Turns all relays off.</td>
+	</tr>
+	<tr>
+		<td>relay_off(relay)</td>
+		<td>Returns true if relay is on, false if relay is off.</td>
+	</tr>
+	<tr>
+		<td>relay_on(relay)</td>
+		<td>Returns true if relay os off, false if relay is on.</td>
+	</tr>
+	<tr>
+		<td>email(email, message)</td>
+		<td>Send an email with 'message' to the email address 'email'.</td>
+	</tr>
+	<tr>
+		<td>()</td>
+		<td>.</td>
+	</tr>
+	<tr>
+		<td>()</td>
+		<td>.</td>
+	</tr>
+	<tr>
+		<td>()</td>
+		<td>.</td>
+	</tr>
+	<tr>
+		<td>()</td>
+		<td>.</td>
+	</tr>
+	<tr>
+		<td>()</td>
+		<td>.</td>
+	</tr>
+	<tr>
+</table>
+<table>
+	<tr>
+		<td>Available Variables:</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td></td>
+	</tr>
+	<tr>
+</table>
+
+
 
 <a name="discrete-pid-control"></a>
 <h4>Discrete PID Control</h4>
