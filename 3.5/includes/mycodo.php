@@ -125,6 +125,13 @@ delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete olde
             window.open("image.php?span=legend-full","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=820, height=550");
         }
     </script>
+    <script>
+        function submitForm(action, target) {
+            document.getElementById('DynamicGraphForm').action = action;
+            document.getElementById('DynamicGraphForm').target = target;
+            document.getElementById('DynamicGraphForm').submit();
+        }
+    </script>
     <?php
     if (isset($_POST['Generate_Graph'])) {
         require($install_path . "/includes/graph.php");
@@ -376,9 +383,8 @@ if (isset($output_error)) {
             ?>
 
             <div>
-                <form action="?tab=graph<?php if (isset($_GET['r'])) echo '&r=' , $_GET['r']; ?>" method="POST">
                 <div style="padding-top: 0.5em;">
-                    <div style="float: left; padding: 0 1.5em 1em 0.5em;">
+                    <div style="float: left; padding: 0 2em 1em 0.5em;">
                         <div style="text-align: center; padding-bottom: 0.2em;">Auto Refresh</div>
                         <div style="text-align: center;"><?php
                             if (isset($_GET['r']) && $_GET['r'] == 1) {
@@ -389,12 +395,13 @@ if (isset($output_error)) {
                         ?>
                         </div>
                     </div>
-                    <div style="float: left; padding: 0 2em 1em 0.5em;">
+                    <form action="?tab=graph<?php if (isset($_GET['r'])) echo '&r=' , $_GET['r']; ?>" method="POST">
+                    <div style="float: left; padding: 0 2em 1em 0;">
                         <div style="float: left; padding-right: 0.1em;">
                             <button name="Refresh" type="submit" value="">Refresh<br>Page</button>
                         </div>
                     </div>
-                    <div style="float: left; padding: 0em 0 1em 0.5em">
+                    <div style="float: left; padding: 0 2em 1em 0">
                         <div style="float: left; padding-right: 0.5em;">
                             <select style="height: 2.8em;" name="graph_type">
                                 <option value="separate" <?php if ($graph_time_span != 'default' && $graph_type == 'separate') echo 'selected="selected"'; ?>>Separate</option>
@@ -417,37 +424,53 @@ if (isset($output_error)) {
                                 <option value="6m" <?php if ($graph_time_span == '6m') echo 'selected="selected"'; ?>>6 Months</option>
                             </select>
                         </div>
-                        <div style="float: left; padding-right: 2em;">
-                            <button type="submit" name="Graph" value="Generate Graph">Generate<br>Graph</button>
+                        <div style="float: left; padding-right: 1em;">
+                            <button type="submit" name="Graph" value="Generate Graph" title="Generate a server-side graph and display them as PNG images.">Static<br>Graph</button>
                         </div>
                     </div>
+                    </form>
 
-                    <div style="float: left; padding: 0 1.5em 1em 0.5em;">
-                        <div style="float: left;">
-                            <button type="submit" name="Generate_Graph" value="t">T<br>Graph</button>
+                    <div style="float: left; padding: 0 0 1em 0;">
+                        <form style="float:left;" id="DynamicGraphForm" action="?tab=graph<?php if (isset($_GET['r'])) echo '&r=' , $_GET['r']; ?>" method="POST">
+                        <div style="float:left; padding-right: 0.5em;">
+                            <select style="height: 2.8em;" name="Generate_Graph_Span">
+                                <option value="1h">1 Hour</option>
+                                <option value="3h">3 Hours</option>
+                                <option value="6h">6 Hours</option>
+                                <option value="12h">12 Hours</option>
+                                <option value="1d">1 Day</option>
+                                <option value="3d">3 Days</option>
+                                <option value="1w">1 Week</option>
+                                <option value="2w">2 Weeks</option>
+                                <option value="1m">1 Month</option>
+                                <option value="3m">3 Months</option>
+                                <option value="6m">6 Months</option>
+                                <option value="all">All Time</option>
+                            </select>
                         </div>
-                        <div style="float: left;">
-                            <button type="submit" name="Generate_Graph" value="ht">HT<br>Graph</button>
+                        <div style="float:left; padding-right: 0.5em;">
+                            <select style="height: 2.8em;" name="Generate_Graph_Type">
+                                <option value="all">All Sensors</option>
+                                <option value="t">Temperature</option>
+                                <option value="ht">Humidity</option>
+                                <option value="co2">CO2</option>
+                                <option value="press">Pressure</option>
+                            </select>
                         </div>
-                        <div style="float: left;">
-                            <button type="submit" name="Generate_Graph" value="co2">CO2<br>Graph</button>
+                        <div style="float:left;">
+                            <button type="submit" onclick="submitForm('?tab=graph<?php if (isset($_GET['r'])) echo '&r=' , $_GET['r']; ?>','_self')" name="Generate_Graph" value="all" title="Generate a client-side graph that will render in the browser. Warning: The more data you choose to use, the longer it will take to process. Choosing 'All Time' or 'All Sensors' may take a significant amount of time to process.">Dynamic<br>Graph</button>
                         </div>
-                        <div style="float: left;">
-                            <button type="submit" name="Generate_Graph" value="press">Press<br>Graph</button>
+                        <div style="float:left;">
+                            <button type="submit" onclick="submitForm('image.php?span=graph-pop','_blank')" name="Generate_Graph" value="all" title="Same as 'Dynamic Graph' but the graph will load in a new window.">Pop<br>Out</button>
                         </div>
-                        <div style="float: left;">
-                            <button type="submit" name="Generate_Graph" value="all" title="Warning: This may take a long time to process, as it will be compiling and generating graphs from all data points of all sensors.">All<br>Graphs</button>
-                        </div>
+                        </form>
                     </div>
                 </div>
-                </form>
                 
                 <div style="clear: both;"></div>
 
                 <?php
-                if (isset($_POST['Generate_Graph']) || isset($_POST['Generate_Graph_All'])) {
-                    $sensor_type = $_POST['Generate_Graph'];
-                    $sensor_num_array = "sensor_{$sensor_type}_id";
+                if (isset($_POST['Generate_Graph'])) {
                     echo '<div style="padding: 1.5em 0 1.5em 0; text-align:center;">';
                     echo '<div id="container" style="width: 100%; height: 50em; "></div>';
                     echo '</div>';
@@ -464,14 +487,9 @@ if (isset($output_error)) {
                         (isset($sensor_co2_graph) && array_sum($sensor_co2_graph)) ||
                         (isset($sensor_press_graph) && array_sum($sensor_press_graph))) {
 
-                        generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_graph, $sensor_ht_graph, $sensor_co2_graph, $sensor_press_graph);
-                        ?>
-                        <div style="width: 100%; padding: 1em 0 0 0; text-align: center;">
-                            <div style="text-align: center; padding-top: 0.5em;">
-                                <a href="https://github.com/kizniche/Mycodo" target="_blank">Mycodo on GitHub</a>
-                            </div>
-                        </div>
-                    <?php
+                        if (!isset($_POST['Generate_Graph']) && !isset($_POST['Generate_Graph_All'])) {
+                            generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_graph, $sensor_ht_graph, $sensor_co2_graph, $sensor_press_graph);
+                        }
                     } else { ?>
                         <div style="width: 100%; padding: 2em 0 0 0; text-align: center;">
                             There are currently 0 sensors activated for graphing.
@@ -496,7 +514,7 @@ if (isset($output_error)) {
             ?>
 
             <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                <div style="float: left; padding: 0.5em 1.5em 1em 0.5em;">
+                <div style="float: left; padding: 0.5em 2em 1em 0.5em;">
                     <div style="text-align: center; padding-bottom: 0.2em;">Auto Refresh</div>
                     <div style="text-align: center;"><?php
                         if (isset($_GET['r'])) {
@@ -511,7 +529,7 @@ if (isset($output_error)) {
                     ?>
                     </div>
                 </div>
-                <div style="float: left; padding: 0.5em 1em 1em 0.5em;">
+                <div style="float: left; padding: 0.5em 2em 1em 0;">
                     <div style="float: left; padding-right: 0.1em;">
                         <button name="Refresh" type="submit" value="">Refresh<br>Page</button>
                     </div>
@@ -519,7 +537,7 @@ if (isset($output_error)) {
             </form>
 
             <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                <div style="float: left; margin: 0.5em 0.7em 0 1.5em;">
+                <div style="float: left; margin: 0.5em 0.7em 0 0;">
                     <div style="float: left;">
                         <div>
                             <select style="height: 1.6em; width: 20em;" name="AddSensorDev">
@@ -2800,7 +2818,7 @@ if (isset($output_error)) {
             } ?>" method="POST">
 
             <div style="float: left; padding-top: 0.5em;">
-                <div style="float: left; padding: 0 1.5em 1em 0.5em;">
+                <div style="float: left; padding: 0 2em 1em 0.5em;">
                     <div style="text-align: center; padding-bottom: 0.2em;">Auto Refresh</div>
                     <div style="text-align: center;"><?php
                         if (isset($_GET['r']) && $_GET['r'] == 1) {
@@ -2811,7 +2829,7 @@ if (isset($output_error)) {
                     ?>
                     </div>
                 </div>
-                <div style="float: left; padding: 0 2em 1em 0.5em;">
+                <div style="float: left; padding: 0 2em 1em 0;">
                     <div style="float: left; padding-right: 0.1em;">
                         <button name="Refresh" type="submit" value="">Refresh<br>Page</button>
                     </div>
@@ -3880,7 +3898,7 @@ if (isset($output_error)) {
             <?php if ($this->feedback) echo $this->feedback; ?>
 
             <div style="padding: 2em 0 0 1em;">
-                <a class="manual" href="manual.html" target="_blank">Mycodo 3.5 Manual</a>
+                <a class="manual" href="manual.html" target="_blank">Mycodo 3.5 Manual</a> | <a class="manual" href="https://github.com/kizniche/Mycodo" target="_blank">Mycodo on GitHub</a> | Have a problem? <a class="manual" href="http://kylegabriel.com/contact" target="_blank">Contact the developer</a> or <a class="manual" href="https://github.com/kizniche/Mycodo/issues" target="_blank">submit an issue</a>.
             </div>
 
             <div style="padding: 0 0 0 1em;">

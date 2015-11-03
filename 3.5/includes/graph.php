@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$sensor_type = $_POST['Generate_Graph'];
+$sensor_type = $_POST['Generate_Graph_Type'];
 
 if ($sensor_type != 'all') {
     $number_lines = 0; // all
@@ -555,6 +555,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         align: 'right',
                         verticalAlign: 'top',
                         y: 75,
+                        useHTML:true,
                         itemMarginBottom: 5
                     },
                     exporting: {
@@ -1122,6 +1123,24 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                     ?>],
                     series: [<?php
                     $count = 0;
+                    for ($i = 0; $i < count($relay_id); $i++) {
+                    ?>{
+                        name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
+                        type: 'column',
+                        dataGrouping: {
+                            approximation: 'low',
+                            groupPixelWidth: 3,
+                        },
+                        color: Highcharts.getOptions().colors[<?php echo $i+1; ?>],
+                        data: getRelayData(<?php echo $i+1; ?>),
+                        yAxis: 4,
+                        tooltip: {
+                            valueSuffix: ' sec',
+                            valueDecimals: 0,
+                            shared: true,
+                        }
+                    },<?php 
+                    }
                     for ($i = 0; $i < count($sensor_t_id); $i++) {
                         if ($sensor_t_graph[$i]) {
                     ?>{
@@ -1200,24 +1219,6 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         }
                     },<?php
                         }
-                    }
-                    for ($i = 0; $i < count($relay_id); $i++) {
-                    ?>{
-                        name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
-                        type: 'column',
-                        dataGrouping: {
-                            approximation: 'low',
-                            groupPixelWidth: 3,
-                        },
-                        color: Highcharts.getOptions().colors[<?php echo $i+1; ?>],
-                        data: getRelayData(<?php echo $i+1; ?>),
-                        yAxis: 4,
-                        tooltip: {
-                            valueSuffix: ' sec',
-                            valueDecimals: 0,
-                            shared: true,
-                        }
-                    },<?php 
                     }
                     ?>],
                     exporting: {
