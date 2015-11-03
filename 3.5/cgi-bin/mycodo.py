@@ -123,6 +123,7 @@ pause_daemon = 0
 pause_daemon_confirm = 0
 
 on_duration_timer = []
+on_duration_seconds = []
 
 
 # Threaded server that receives commands from mycodo-client.py
@@ -2830,6 +2831,7 @@ def read_sql():
     timerPressSensorLog = []
 
     global on_duration_timer
+    global on_duration_seconds
 
     # Email notification globals
     global smtp_host
@@ -3548,6 +3550,12 @@ def read_sql():
         for i in range(0, len(relay_id)):
             on_duration_timer.append(0)
 
+    if len(on_duration_seconds) != len(relay_id):
+        on_duration_seconds = []
+        for i in range(0, len(relay_id)):
+            on_duration_seconds.append(0)
+
+
     global timerTConditional
     global timerHTConditional
     global timerCO2Conditional
@@ -3768,6 +3776,7 @@ def relay_off(relay, local_relay_pin, local_relay_trigger):
 # Set relay on for a specific duration (seconds may be negative)
 def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_pin):
     global on_duration_timer
+    global on_duration_seconds
     if enable_max_amps == 1:
         total_amps = 0
         for i in range(0, len(relay_id)):
@@ -3785,16 +3794,13 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
     if (((local_relay_trigger[relay-1] == 0 and GPIO.input(local_relay_pin[relay-1]) == 0) or (
             local_relay_trigger[relay-1] == 1 and GPIO.input(local_relay_pin[relay-1]) == 1)) and
             on_duration_timer[relay-1] > int(time.time())):
-        if int(time.time()) + seconds < on_duration_timer[relay-1]:
-            logging.debug("[Relay Duration] Relay %s (%s) is already On and the new duration is shorter than the current time remaining. Not updating.",
-                relay, relay_name[relay-1])
-        else:
-            logging.debug("[Relay Duration] Relay %s (%s) is already On and the new duration is longer than the current time remaining. Updating On duration to %s more seconds from now.",
-                relay, relay_name[relay-1], seconds)
-            on_duration_timer[relay-1] = int(time.time()) + abs(seconds)
-            wrl = threading.Thread(target = mycodoLog.write_relay_log,
-                args = (relay, seconds, sensor, local_relay_pin[relay-1],))
-            wrl.start()
+        logging.debug("[Relay Duration] Relay %s (%s) is already On for a duration (%s sec with %s sec remaining). Recording the amount of time the relay has been on (%s sec) to log and updating On duration to %s seconds.",
+            relay, relay_name[relay-1], on_duration_seconds[relay-1], (on_duration_timer[relay-1] - int(time.time())), (on_duration_seconds[relay-1] - (on_duration_timer[relay-1] - int(time.time()))),seconds)
+        wrl = threading.Thread(target = mycodoLog.write_relay_log,
+            args = (relay, (on_duration_seconds[relay-1] - (on_duration_timer[relay-1] - int(time.time()))), sensor, local_relay_pin[relay-1],))
+        wrl.start()
+        on_duration_timer[relay-1] = int(time.time()) + abs(seconds)
+        on_duration_seconds[relay-1] = abs(seconds)
 
         for i in range(0, len(conditional_relay_id)):
             if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'on':
@@ -3844,20 +3850,17 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
             on_duration_timer[relay-1] < int(time.time())):
         logging.warning("[Relay Duration] Relay %s (%s) is set On without a duration. Turning into a duration.",
             relay, relay_name[relay-1], seconds)
+    
+    on_duration_seconds[relay-1] = abs(seconds)
+    on_duration_timer[relay-1] = int(time.time()) + abs(seconds)
 
     logging.debug("[Relay Duration] Relay %s (%s) On for %s seconds.",
         relay, relay_name[relay-1], round(abs(seconds), 1))
-
-    on_duration_timer[relay-1] = int(time.time()) + abs(seconds)
 
     # Turn relay on
     GPIO.output(local_relay_pin[relay-1], local_relay_trigger[relay-1])
 
     try:
-        wrl = threading.Thread(target = mycodoLog.write_relay_log,
-            args = (relay, seconds, sensor, local_relay_pin[relay-1],))
-        wrl.start()
-
         for i in range(0, len(conditional_relay_id)):
             if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'on':
                 if conditional_relay_ifduration[i] == seconds:
@@ -3928,6 +3931,15 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
     
     # Turn relay off
     relay_off(relay, local_relay_pin, local_relay_trigger)
+
+    if on_duration_seconds[relay-1] == 0:
+        wrl = threading.Thread(target = mycodoLog.write_relay_log,
+            args = (relay, seconds, sensor, local_relay_pin[relay-1],))
+        wrl.start()
+    else:
+        wrl = threading.Thread(target = mycodoLog.write_relay_log,
+            args = (relay, on_duration_seconds[relay-1], sensor, local_relay_pin[relay-1],))
+        wrl.start()
 
     while pause_daemon:
         time.sleep(0.1)
