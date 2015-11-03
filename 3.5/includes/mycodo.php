@@ -109,7 +109,7 @@ delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete olde
     <link rel="stylesheet" href="css/reset.css" type="text/css">
     <link rel="stylesheet" href="css/style.css" type="text/css">
     <script src="js/modernizr.js"></script>
-    <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/jquery-2.1.4.min.js"></script>
     <script src="js/highstock.js"></script>
     <!-- Order of dependencies before highcharts-export-clientside.js is important -->
     <script src="js/modules/exporting.js"></script>
