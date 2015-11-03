@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$sensor_type = $_POST['Generate_Graph'];
+$sensor_type = $_POST['Generate_Graph_Type'];
 
 if ($sensor_type != 'all') {
     $number_lines = 0; // all
@@ -91,6 +91,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         align: 'right',
                         verticalAlign: 'top',
                         y: 75,
+                        itemMarginBottom: 5
                     },
                     exporting: {
                         fallbackToExportServer: false,
@@ -305,6 +306,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         align: 'right',
                         verticalAlign: 'top',
                         y: 75,
+                        itemMarginBottom: 5
                     },
                     exporting: {
                         fallbackToExportServer: false,
@@ -553,7 +555,8 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         align: 'right',
                         verticalAlign: 'top',
                         y: 75,
-                        useHTML: true,
+                        useHTML:true,
+                        itemMarginBottom: 5
                     },
                     exporting: {
                         fallbackToExportServer: false,
@@ -768,6 +771,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         align: 'right',
                         verticalAlign: 'top',
                         y: 75,
+                        itemMarginBottom: 5
                     },
                     exporting: {
                         fallbackToExportServer: false,
@@ -1047,6 +1051,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         align: 'right',
                         verticalAlign: 'top',
                         y: 75,
+                        itemMarginBottom: 5
                     },
                     exporting: {
                         fallbackToExportServer: false,
@@ -1118,85 +1123,6 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                     ?>],
                     series: [<?php
                     $count = 0;
-                    for ($i = 0; $i < count($sensor_t_id); $i++) {
-                        if ($sensor_t_graph[$i]) {
-                    ?>{
-                        name: '<?php echo "S" . ($i+1) . " " . $sensor_t_name[$i]; ?> Temperature',
-                        color: Highcharts.getOptions().colors[0],
-                        data: getSensorData(<?php echo $i; ?>, 't', 0),
-                        tooltip: {
-                            valueSuffix: ' °C',
-                            valueDecimals: 0,
-                        }
-                    },<?php
-                        }
-                    }
-                    for ($i = 0; $i < count($sensor_ht_id); $i++) {
-                        if ($sensor_ht_graph[$i]) {
-                    ?>{
-                        name: '<?php echo "S" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Humidity',
-                        color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
-                        yAxis: 2,
-                        data: getSensorData(<?php echo $i; ?>, 'ht', 'hum'),
-                        tooltip: {
-                            valueSuffix: ' %',
-                            valueDecimals: 1,
-                        }
-                    },{
-                        name: '<?php echo "S" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Temperature',
-                        color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
-                        data: getSensorData(<?php echo $i; ?>, 'ht', 'temp'),
-                        tooltip: {
-                            valueSuffix: '°C',
-                            valueDecimals: 1,
-                        }
-                    },{
-                        name: '<?php echo "S" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Dew Point',
-                        color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
-                        data: getSensorData(<?php echo $i; ?>, 'ht', 'dp'),
-                        tooltip: {
-                            valueSuffix: ' °C',
-                            valueDecimals: 1,
-                        }
-                    },<?php
-                        }
-                    }
-                    for ($i = 0; $i < count($sensor_co2_id); $i++) {
-                        if ($sensor_co2_graph[$i]) {
-                    ?>{
-                        name: '<?php echo "S" . ($i+1) . " " . $sensor_co2_name[$i]; ?> CO<sub>2</sub>',
-                        color: Highcharts.getOptions().colors[0],
-                        yAxis: 1,
-                        data: getSensorData(<?php echo $i; ?>, 'co2', 0),
-                        tooltip: {
-                            valueSuffix: ' ppmv',
-                            valueDecimals: 0
-                        }
-                    },<?php
-                        }
-                    }
-                    for ($i = 0; $i < count($sensor_press_id); $i++) {
-                        if ($sensor_press_graph[$i]) {
-                    ?>{
-                        name: '<?php echo "S" . ($i+1) . " " . $sensor_press_name[$i]; ?> Pressure',
-                        color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
-                        yAxis: 3,
-                        data: getSensorData(<?php echo $i; ?>, 'press', 'press'),
-                        tooltip: {
-                            valueSuffix: ' kPa',
-                            valueDecimals: 0
-                        }
-                    },{
-                        name: '<?php echo "S" . ($i+1) . " " . $sensor_press_name[$i]; ?> Temperature',
-                        color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
-                        data: getSensorData(<?php echo $i; ?>, 'press', 'temp'),
-                        tooltip: {
-                            valueSuffix: '°C',
-                            valueDecimals: 1
-                        }
-                    },<?php
-                        }
-                    }
                     for ($i = 0; $i < count($relay_id); $i++) {
                     ?>{
                         name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
@@ -1214,6 +1140,85 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             shared: true,
                         }
                     },<?php 
+                    }
+                    for ($i = 0; $i < count($sensor_t_id); $i++) {
+                        if ($sensor_t_graph[$i]) {
+                    ?>{
+                        name: '<?php echo "T" . ($i+1) . " " . $sensor_t_name[$i]; ?> Temperature',
+                        color: Highcharts.getOptions().colors[0],
+                        data: getSensorData(<?php echo $i; ?>, 't', 0),
+                        tooltip: {
+                            valueSuffix: ' °C',
+                            valueDecimals: 0,
+                        }
+                    },<?php
+                        }
+                    }
+                    for ($i = 0; $i < count($sensor_ht_id); $i++) {
+                        if ($sensor_ht_graph[$i]) {
+                    ?>{
+                        name: '<?php echo "HT" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Humidity',
+                        color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
+                        yAxis: 2,
+                        data: getSensorData(<?php echo $i; ?>, 'ht', 'hum'),
+                        tooltip: {
+                            valueSuffix: ' %',
+                            valueDecimals: 1,
+                        }
+                    },{
+                        name: '<?php echo "HT" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Temperature',
+                        color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
+                        data: getSensorData(<?php echo $i; ?>, 'ht', 'temp'),
+                        tooltip: {
+                            valueSuffix: '°C',
+                            valueDecimals: 1,
+                        }
+                    },{
+                        name: '<?php echo "HT" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Dew Point',
+                        color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
+                        data: getSensorData(<?php echo $i; ?>, 'ht', 'dp'),
+                        tooltip: {
+                            valueSuffix: ' °C',
+                            valueDecimals: 1,
+                        }
+                    },<?php
+                        }
+                    }
+                    for ($i = 0; $i < count($sensor_co2_id); $i++) {
+                        if ($sensor_co2_graph[$i]) {
+                    ?>{
+                        name: '<?php echo "CO2" . ($i+1) . " " . $sensor_co2_name[$i]; ?> CO<sub>2</sub>',
+                        color: Highcharts.getOptions().colors[0],
+                        yAxis: 1,
+                        data: getSensorData(<?php echo $i; ?>, 'co2', 0),
+                        tooltip: {
+                            valueSuffix: ' ppmv',
+                            valueDecimals: 0
+                        }
+                    },<?php
+                        }
+                    }
+                    for ($i = 0; $i < count($sensor_press_id); $i++) {
+                        if ($sensor_press_graph[$i]) {
+                    ?>{
+                        name: '<?php echo "Press" . ($i+1) . " " . $sensor_press_name[$i]; ?> Pressure',
+                        color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
+                        yAxis: 3,
+                        data: getSensorData(<?php echo $i; ?>, 'press', 'press'),
+                        tooltip: {
+                            valueSuffix: ' kPa',
+                            valueDecimals: 0
+                        }
+                    },{
+                        name: '<?php echo "Press" . ($i+1) . " " . $sensor_press_name[$i]; ?> Temperature',
+                        color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
+                        data: getSensorData(<?php echo $i; ?>, 'press', 'temp'),
+                        tooltip: {
+                            valueSuffix: '°C',
+                            valueDecimals: 1
+                        }
+                    },<?php
+                        }
                     }
                     ?>],
                     exporting: {

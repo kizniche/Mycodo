@@ -105,6 +105,40 @@ if ($_COOKIE['login_hash'] == $user_hash) {
                 header('Content-Type: text/json');
                 echo json_encode(file_get_contents('/var/tmp/' . $_GET['file']));
                 break;
+            case 'graph-pop':
+                $mycodo_db = $install_path . "/config/mycodo.db";
+                $user_db = $install_path . "/config/users.db";
+                $note_db = $install_path . "/config/notes.db";
+                require($install_path . "/includes/database.php"); // Initial SQL database load to variables
+                require($install_path . "/includes/functions.php"); // Mycodo functions
+                $graph_id = get_graph_cookie('id');
+                echo '
+                <html lang="en" class="no-js">
+                <head>
+                    <title>Pop-Out Graph</title>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1">
+                    <meta name="robots" content="noindex">
+                    <link rel="icon" type="image/png" href="img/favicon.png">
+                    <link rel="stylesheet" href="css/fonts.css" type="text/css">
+                    <link rel="stylesheet" href="css/reset.css" type="text/css">
+                    <link rel="stylesheet" href="css/style.css" type="text/css">
+                    <script src="js/modernizr.js"></script>
+                    <script src="js/jquery.min.js"></script>
+                    <script src="js/highstock.js"></script>
+                    <script src="js/modules/exporting.js"></script>
+                    <script src="js/modules/canvas-tools.js"></script>
+                    <script src="js/modules/export-csv.js"></script>
+                    <script src="js/modules/jspdf.min.js"></script>
+                    <script src="js/modules/highcharts-export-clientside.js"></script>
+                ';
+                if (isset($_POST['Generate_Graph'])) {
+                    require($install_path . "/includes/graph.php");
+                }
+                echo '</head><body>';
+                echo '<div id="container" style="width: 100%; height: 100%; "></div>';
+                echo '</body></html>';
+            break;
             }
     } else if ($_GET['graphtype'] == 'default') {
         header('Content-Type: image/png');
