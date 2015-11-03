@@ -124,7 +124,7 @@ if ($_COOKIE['login_hash'] == $user_hash) {
                     <link rel="stylesheet" href="css/reset.css" type="text/css">
                     <link rel="stylesheet" href="css/style.css" type="text/css">
                     <script src="js/modernizr.js"></script>
-                    <script src="js/jquery.min.js"></script>
+                    <script src="js/jquery-2.1.4.min.js"></script>
                     <script src="js/highstock.js"></script>
                     <script src="js/modules/exporting.js"></script>
                     <script src="js/modules/canvas-tools.js"></script>

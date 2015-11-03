@@ -1106,7 +1106,7 @@ if (isset($output_error)) {
                             </select>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_t_temp_period[$i]; ?>" name="SetT<?php echo $i; ?>TempPeriod" title="This is the number of seconds between taking new temperature reading and applying the PID"/>
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_t_temp_period[$i]; ?>" name="SetT<?php echo $i; ?>TempPeriod" title="This is the number of seconds between taking a new temperature measurement and applying the PID"/>
                         </td>
                         <td>
                             <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_t_temp_relay_low[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempRelayLow" title="This relay is used to increase temperature."/>
@@ -1529,7 +1529,7 @@ if (isset($output_error)) {
                             </select>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_temp_period[$i]; ?>" name="SetHT<?php echo $i; ?>TempPeriod" title="This is the number of seconds between taking new temperature reading and applying the PID"/>
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_temp_period[$i]; ?>" name="SetHT<?php echo $i; ?>TempPeriod" title="This is the number of seconds between taking a new temperature measurement and applying the PID"/>
                         </td>
                         <td>
                             <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_ht_temp_relay_low[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>TempRelayLow" title="This relay is used to increase temperature."/>
@@ -1600,7 +1600,7 @@ if (isset($output_error)) {
                             </select>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_hum_period[$i]; ?>" name="SetHT<?php echo $i; ?>HumPeriod" title="This is the number of seconds between taking new humidity reading and applying the PID"/>
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_hum_period[$i]; ?>" name="SetHT<?php echo $i; ?>HumPeriod" title="This is the number of seconds between taking a new humidity measurement and applying the PID"/>
                         </td>
                         <td>
                             <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_ht_hum_relay_low[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>HumRelayLow" title="This relay is used to increase humidity."/>
@@ -1982,7 +1982,7 @@ if (isset($output_error)) {
                             </select>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_co2_period[$i]; ?>" maxlength=4 size=1 name="SetCO2<?php echo $i; ?>CO2Period" title="This is the number of seconds between taking new CO2 reading and applying the PID"/>
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_co2_period[$i]; ?>" maxlength=4 size=1 name="SetCO2<?php echo $i; ?>CO2Period" title="This is the number of seconds between taking a new CO2 measurement and applying the PID"/>
                         </td>
                         <td>
                             <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_co2_relay_low[$i]; ?>" maxlength=1 size=1 name="SetCO2<?php echo $i; ?>CO2RelayLow" title="This relay is used to increase CO2."/>
@@ -2383,7 +2383,7 @@ if (isset($output_error)) {
                             </select>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_press_temp_period[$i]; ?>" name="SetPress<?php echo $i; ?>TempPeriod" title="This is the number of seconds between taking new temperature reading and applying the PID"/>
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_press_temp_period[$i]; ?>" name="SetPress<?php echo $i; ?>TempPeriod" title="This is the number of seconds between taking a new temperature measurement and applying the PID"/>
                         </td>
                         <td>
                             <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_press_temp_relay_low[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>TempRelayLow" title="This relay is used to increase temperature."/>
@@ -2454,7 +2454,7 @@ if (isset($output_error)) {
                             </select>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_press_press_period[$i]; ?>" name="SetPress<?php echo $i; ?>PressPeriod" title="This is the number of seconds between taking new pressure reading and applying the PID"/>
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_press_press_period[$i]; ?>" name="SetPress<?php echo $i; ?>PressPeriod" title="This is the number of seconds between taking a new pressure measurement and applying the PID"/>
                         </td>
                         <td>
                             <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_press_press_relay_low[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>PressRelayLow" title="This relay is used to increase pressure."/>
