@@ -91,6 +91,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         align: 'right',
                         verticalAlign: 'top',
                         y: 75,
+                        itemMarginBottom: 5
                     },
                     exporting: {
                         fallbackToExportServer: false,
@@ -305,6 +306,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         align: 'right',
                         verticalAlign: 'top',
                         y: 75,
+                        itemMarginBottom: 5
                     },
                     exporting: {
                         fallbackToExportServer: false,
@@ -553,7 +555,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         align: 'right',
                         verticalAlign: 'top',
                         y: 75,
-                        useHTML: true,
+                        itemMarginBottom: 5
                     },
                     exporting: {
                         fallbackToExportServer: false,
@@ -768,6 +770,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         align: 'right',
                         verticalAlign: 'top',
                         y: 75,
+                        itemMarginBottom: 5
                     },
                     exporting: {
                         fallbackToExportServer: false,
@@ -1047,6 +1050,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         align: 'right',
                         verticalAlign: 'top',
                         y: 75,
+                        itemMarginBottom: 5
                     },
                     exporting: {
                         fallbackToExportServer: false,
@@ -1121,7 +1125,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                     for ($i = 0; $i < count($sensor_t_id); $i++) {
                         if ($sensor_t_graph[$i]) {
                     ?>{
-                        name: '<?php echo "S" . ($i+1) . " " . $sensor_t_name[$i]; ?> Temperature',
+                        name: '<?php echo "T" . ($i+1) . " " . $sensor_t_name[$i]; ?> Temperature',
                         color: Highcharts.getOptions().colors[0],
                         data: getSensorData(<?php echo $i; ?>, 't', 0),
                         tooltip: {
@@ -1134,7 +1138,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                     for ($i = 0; $i < count($sensor_ht_id); $i++) {
                         if ($sensor_ht_graph[$i]) {
                     ?>{
-                        name: '<?php echo "S" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Humidity',
+                        name: '<?php echo "HT" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Humidity',
                         color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
                         yAxis: 2,
                         data: getSensorData(<?php echo $i; ?>, 'ht', 'hum'),
@@ -1143,7 +1147,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             valueDecimals: 1,
                         }
                     },{
-                        name: '<?php echo "S" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Temperature',
+                        name: '<?php echo "HT" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Temperature',
                         color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
                         data: getSensorData(<?php echo $i; ?>, 'ht', 'temp'),
                         tooltip: {
@@ -1151,7 +1155,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             valueDecimals: 1,
                         }
                     },{
-                        name: '<?php echo "S" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Dew Point',
+                        name: '<?php echo "HT" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Dew Point',
                         color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
                         data: getSensorData(<?php echo $i; ?>, 'ht', 'dp'),
                         tooltip: {
@@ -1164,7 +1168,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                     for ($i = 0; $i < count($sensor_co2_id); $i++) {
                         if ($sensor_co2_graph[$i]) {
                     ?>{
-                        name: '<?php echo "S" . ($i+1) . " " . $sensor_co2_name[$i]; ?> CO<sub>2</sub>',
+                        name: '<?php echo "CO2" . ($i+1) . " " . $sensor_co2_name[$i]; ?> CO<sub>2</sub>',
                         color: Highcharts.getOptions().colors[0],
                         yAxis: 1,
                         data: getSensorData(<?php echo $i; ?>, 'co2', 0),
@@ -1178,7 +1182,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                     for ($i = 0; $i < count($sensor_press_id); $i++) {
                         if ($sensor_press_graph[$i]) {
                     ?>{
-                        name: '<?php echo "S" . ($i+1) . " " . $sensor_press_name[$i]; ?> Pressure',
+                        name: '<?php echo "Press" . ($i+1) . " " . $sensor_press_name[$i]; ?> Pressure',
                         color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
                         yAxis: 3,
                         data: getSensorData(<?php echo $i; ?>, 'press', 'press'),
@@ -1187,7 +1191,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             valueDecimals: 0
                         }
                     },{
-                        name: '<?php echo "S" . ($i+1) . " " . $sensor_press_name[$i]; ?> Temperature',
+                        name: '<?php echo "Press" . ($i+1) . " " . $sensor_press_name[$i]; ?> Temperature',
                         color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
                         data: getSensorData(<?php echo $i; ?>, 'press', 'temp'),
                         tooltip: {
