@@ -346,44 +346,40 @@ If Humidity if Less Than 50%, turn relay #1 on for 21 seconds, execute '/usr/loc
 		<td>Available Functions:</td>
 	</tr>
 	<tr>
-		<td>relay_on_seconds(relay, seconds)</td>
-		<td>Turns a relay on for a specific duration of time, in seconds.</td>
+		<td>read_relay(relay)</td>
+		<td>Returns "on" if relay is on, "off" if relay is off.</td>
 	</tr>
 	<tr>
-		<td>relay_on_off(relay, state)</td>
-		<td>Turns a relay on or off. state must either be "on" or "off" (include the quotes).</td>
+		<td style="white-space: nowrap;">relay_on_timed(relay, seconds)</td>
+		<td>Turns a relay on for a specific duration of time and then turns it off.</td>
+	</tr>
+	<tr>
+		<td>relay_onoff(relay, state)</td>
+		<td>Turns a relay on or off. The state must either be "on" or "off" (include the quotes). This function witll check whether any relay conditional statements are true upon changing the relay state. If you would like to change the state of a relay without evaluationg relay conditional statements, use set_relay_gpio() instead.</td>
 	</tr>
 	<tr>
 		<td>all_relays_off()</td>
 		<td>Turns all relays off.</td>
 	</tr>
 	<tr>
-		<td>relay_off(relay)</td>
-		<td>Returns true if relay is on, false if relay is off.</td>
-	</tr>
-	<tr>
-		<td>relay_on(relay)</td>
-		<td>Returns true if relay os off, false if relay is on.</td>
+		<td>set_relay_gpio(relay, state)</td>
+		<td>Set the gpio state of a particular relay. This will bypass the conditional checking that takes place with relay_onoff().</td>
 	</tr>
 	<tr>
 		<td>email(email, message)</td>
 		<td>Send an email with 'message' to the email address 'email'.</td>
 	</tr>
 	<tr>
-		<td>()</td>
-		<td>.</td>
+		<td>logging.info("message")</td>
+		<td>Log an info message to the daemon log. This will be logged when the daemon is running normally or in debug mode.</td>
 	</tr>
 	<tr>
-		<td>()</td>
-		<td>.</td>
+		<td>logging.warning("message")</td>
+		<td>Log a warning message to the daemon log. This will be logged when the daemon is running normally or in debug mode.</td>
 	</tr>
 	<tr>
-		<td>()</td>
-		<td>.</td>
-	</tr>
-	<tr>
-		<td>()</td>
-		<td>.</td>
+		<td>logging.debug("message")</td>
+		<td>Log a debug message to the daemon log. This will only be logged when the daemon is running in debug mode.</td>
 	</tr>
 	<tr>
 		<td>()</td>
