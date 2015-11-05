@@ -948,8 +948,8 @@ def daemon(output, log):
             if total_log_size > 5000000:
                 logging.debug("[Log Backup] Sum of log sizes = %s bytes > 5,000,000 bytes (5 MB). Backing up logs.", total_log_size)
                 mycodoLog.Concatenate_Logs()
-            elif timerLogBackupCount > 16:
-                logging.debug("[Log Backup] 3-hour timer expired. Backing up logs.", total_log_size)
+            elif timerLogBackupCount > 5:
+                logging.debug("[Log Backup] 1-hour timer expired. Backing up logs.", total_log_size)
                 mycodoLog.Concatenate_Logs()
                 timerLogBackupCount = 0
             timerLogBackupCount += 1
