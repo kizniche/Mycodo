@@ -3903,7 +3903,13 @@ if (isset($output_error)) {
                         if(isset($_POST['Database']) && $_SESSION['user_name'] != 'guest') {
                             echo exec('file ' . $mycodo_db); 
                             echo '<pre><br> <br>';
-                            exec('sqlite3 ' . $mycodo_db . ' .dump', $output); print_r($output);
+                            exec('sqlite3 ' . $mycodo_db . ' .dump', $output);
+                            $db = new SQLite3($mycodo_db);
+                            $results = $db->query('SELECT Pass FROM SMTP');
+                            while ($row = $results->fetchArray()) {
+                                $email_password = $row[0];
+                            }
+                            print_r(str_replace($email_password,"*****",$output));
                             echo '</pre>';
                         }
                     ?>
