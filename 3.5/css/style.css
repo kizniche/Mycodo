@@ -401,13 +401,12 @@ a {
 }
 
 span {
-    white-space: nowrap;
     display: inline-block;
 }
 
-div {
+/*div {
     white-space: nowrap;
-}
+}*/
 
 .main-wrapper {
     padding-bottom: 0.5em;

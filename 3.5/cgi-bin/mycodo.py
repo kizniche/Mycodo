@@ -123,6 +123,7 @@ pause_daemon = 0
 pause_daemon_confirm = 0
 
 on_duration_timer = []
+on_duration_seconds = []
 
 
 # Threaded server that receives commands from mycodo-client.py
@@ -1146,11 +1147,6 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
 
             if int(time.time()) > timerTemp:
 
-                if pid_t_temp_relay_high[sensor]:
-                    relay_onoff(int(pid_t_temp_relay_high[sensor]), 'off')
-                if pid_t_temp_relay_low[sensor]:
-                    relay_onoff(int(pid_t_temp_relay_low[sensor]), 'off')
-
                 logging.debug("[PID T-Temperature-%s] Reading temperature...", sensor+1)
                 if read_t_sensor(sensor) == 1:
 
@@ -1164,32 +1160,34 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
 
                     if pid_t_temp_set_dir[sensor] > -1 and PIDTemp > 0:
                         if pid_t_temp_outmin_low[sensor] != 0 and PIDTemp < pid_t_temp_outmin_low[sensor]:
-                            logging.debug("[PID T-Temperature-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDTemp, pid_t_temp_outmin_low[sensor])
-                            PIDTemp = pid_t_temp_outmin_low[sensor]
+                            logging.debug("[PID T-Temperature-%s] PID = %.1f (min enabled, %s, not turning on)", sensor+1, PIDTemp, pid_t_temp_outmin_low[sensor])
                         elif pid_t_temp_outmax_low[sensor] != 0 and PIDTemp > pid_t_temp_outmax_low[sensor]:
                             logging.debug("[PID T-Temperature-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDTemp, pid_t_temp_outmax_low[sensor])
                             PIDTemp = pid_t_temp_outmax_low[sensor]
+                            rod = threading.Thread(target = relay_on_duration,
+                                args = (pid_t_temp_relay_low[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
+                            rod.start()
                         else:
                             logging.debug("[PID T-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
-                            
-                        rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_t_temp_relay_low[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
-                        rod.start()
+                            rod = threading.Thread(target = relay_on_duration,
+                                args = (pid_t_temp_relay_low[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
+                            rod.start()
 
                     elif pid_t_temp_set_dir[sensor] < 1 and PIDTemp < 0:
                         PIDTemp = abs(PIDTemp)
                         if pid_t_temp_outmin_high[sensor] != 0 and PIDTemp < pid_t_temp_outmin_high[sensor]:
-                            logging.debug("[PID T-Temperature-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDTemp, pid_t_temp_outmin_high[sensor])
-                            PIDTemp = pid_t_temp_outmin_high[sensor]
+                            logging.debug("[PID T-Temperature-%s] PID = %.1f (min enabled, %s, not turning on)", sensor+1, PIDTemp, pid_t_temp_outmin_high[sensor])
                         elif pid_t_temp_outmax_high[sensor] != 0 and PIDTemp > pid_t_temp_outmax_high[sensor]:
                             logging.debug("[PID T-Temperature-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDTemp, pid_t_temp_outmax_high[sensor])
                             PIDTemp = pid_t_temp_outmax_high[sensor]
+                            rod = threading.Thread(target = relay_on_duration,
+                                args = (pid_t_temp_relay_high[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
+                            rod.start()
                         else:
                             logging.debug("[PID T-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
-
-                        rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_t_temp_relay_high[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
-                        rod.start()
+                            rod = threading.Thread(target = relay_on_duration,
+                                args = (pid_t_temp_relay_high[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
+                            rod.start()
 
                     else:
                         logging.debug("[PID T-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
@@ -1197,7 +1195,6 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
                     timerTemp = int(time.time()) + pid_t_temp_period[sensor]
                 else:
                     logging.warning("[PID T-Temperature-%s] Could not read Temp sensor, not updating PID", sensor+1)
-
         time.sleep(0.1)
     logging.info("[PID T-Temperature-%s] Shutting Down %s", sensor+1, ThreadName)
 
@@ -1247,11 +1244,6 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
 
             if int(time.time()) > timerTemp:
 
-                if pid_ht_temp_relay_high[sensor]:
-                    relay_onoff(int(pid_ht_temp_relay_high[sensor]), 'off')
-                if pid_ht_temp_relay_low[sensor]:
-                    relay_onoff(int(pid_ht_temp_relay_low[sensor]), 'off')
-
                 logging.debug("[PID HT-Temperature-%s] Reading temperature...", sensor+1)
                 if read_ht_sensor(sensor) == 1:
 
@@ -1273,32 +1265,34 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
 
                         if pid_ht_temp_set_dir[sensor] > -1 and PIDTemp > 0:
                             if pid_ht_temp_outmin_low[sensor] != 0 and PIDTemp < pid_ht_temp_outmin_low[sensor]:
-                                logging.debug("[PID HT-Temperature-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDTemp, pid_ht_temp_outmin_low[sensor])
-                                PIDTemp = pid_ht_temp_outmin_low[sensor]
+                                logging.debug("[PID HT-Temperature-%s] PID = %.1f (min enabled, %s, not turning on)", sensor+1, PIDTemp, pid_ht_temp_outmin_low[sensor])
                             elif pid_ht_temp_outmax_low[sensor] != 0 and PIDTemp > pid_ht_temp_outmax_low[sensor]:
                                 logging.debug("[PID HT-Temperature-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDTemp, pid_ht_temp_outmax_low[sensor])
                                 PIDTemp = pid_ht_temp_outmax_low[sensor]
+                                rod = threading.Thread(target = relay_on_duration,
+                                    args = (pid_ht_temp_relay_low[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
+                                rod.start()
                             else:
                                 logging.debug("[PID HT-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
-
-                            rod = threading.Thread(target = relay_on_duration,
-                                args = (pid_ht_temp_relay_low[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
-                            rod.start()
+                                rod = threading.Thread(target = relay_on_duration,
+                                    args = (pid_ht_temp_relay_low[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
+                                rod.start()
 
                         elif pid_ht_temp_set_dir[sensor] < 1 and PIDTemp < 0:
                             PIDTemp = abs(PIDTemp)
                             if pid_ht_temp_outmin_high[sensor] != 0 and PIDTemp < pid_ht_temp_outmin_high[sensor]:
-                                logging.debug("[PID HT-Temperature-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDTemp, pid_ht_temp_outmin_high[sensor])
-                                PIDTemp = pid_ht_temp_outmin_high[sensor]
+                                logging.debug("[PID HT-Temperature-%s] PID = %.1f (min enabled, %s, not turning on)", sensor+1, PIDTemp, pid_ht_temp_outmin_high[sensor])
                             elif pid_ht_temp_outmax_high[sensor] != 0 and PIDTemp > pid_ht_temp_outmax_high[sensor]:
                                 logging.debug("[PID HT-Temperature-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDTemp, pid_ht_temp_outmax_high[sensor])
                                 PIDTemp = pid_ht_temp_outmax_high[sensor]
+                                rod = threading.Thread(target = relay_on_duration,
+                                    args = (pid_ht_temp_relay_high[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
+                                rod.start()
                             else:
                                 logging.debug("[PID HT-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
-
-                            rod = threading.Thread(target = relay_on_duration,
-                                args = (pid_ht_temp_relay_high[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
-                            rod.start()
+                                rod = threading.Thread(target = relay_on_duration,
+                                    args = (pid_ht_temp_relay_high[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
+                                rod.start()
 
                         else:
                             logging.debug("[PID HT-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
@@ -1356,11 +1350,6 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
 
             if int(time.time()) > timerHum:
 
-                if pid_ht_hum_relay_high[sensor]:
-                    relay_onoff(int(pid_ht_hum_relay_high[sensor]), 'off')
-                if pid_ht_hum_relay_low[sensor]:
-                    relay_onoff(int(pid_ht_hum_relay_low[sensor]), 'off')
-
                 logging.debug("[PID HT-Humidity-%s] Reading humidity...", sensor+1)
                 if read_ht_sensor(sensor) == 1:
 
@@ -1382,32 +1371,34 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
 
                         if pid_ht_hum_set_dir[sensor] > -1 and PIDHum > 0:
                             if pid_ht_hum_outmin_low[sensor] != 0 and PIDHum < pid_ht_hum_outmin_low[sensor]:
-                                logging.debug("[PID HT-Humidity-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDHum, pid_ht_hum_outmin_low[sensor])
-                                PIDHum = pid_ht_hum_outmin_low[sensor]
+                                logging.debug("[PID HT-Humidity-%s] PID = %.1f (min enabled, %s, not turning on)", sensor+1, PIDHum, pid_ht_hum_outmin_low[sensor])
                             elif pid_ht_hum_outmax_low[sensor] != 0 and PIDHum > pid_ht_hum_outmax_low[sensor]:
                                 logging.debug("[PID HT-Humidity-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDHum, pid_ht_hum_outmax_low[sensor])
                                 PIDHum = pid_ht_hum_outmax_low[sensor]
+                                rod = threading.Thread(target = relay_on_duration,
+                                    args = (pid_ht_hum_relay_low[sensor], round(PIDHum,2), sensor, relay_trigger, relay_pin,))
+                                rod.start()
                             else:
                                 logging.debug("[PID HT-Humidity-%s] PID = %.1f (max disabled)", sensor+1, PIDHum)
-
-                            rod = threading.Thread(target = relay_on_duration,
-                                args = (pid_ht_hum_relay_low[sensor], round(PIDHum,2), sensor, relay_trigger, relay_pin,))
-                            rod.start()
+                                rod = threading.Thread(target = relay_on_duration,
+                                    args = (pid_ht_hum_relay_low[sensor], round(PIDHum,2), sensor, relay_trigger, relay_pin,))
+                                rod.start()
 
                         elif pid_ht_hum_set_dir[sensor] < 1 and PIDHum < 0:
                             PIDHum = abs(PIDHum)
                             if pid_ht_hum_outmin_high[sensor] != 0 and PIDHum < pid_ht_hum_outmin_high[sensor]:
-                                logging.debug("[PID HT-Humidity-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDHum, pid_ht_hum_outmin_high[sensor])
-                                PIDHum = pid_ht_hum_outmin_high[sensor]
+                                logging.debug("[PID HT-Humidity-%s] PID = %.1f (min enabled, %s, not turning on)", sensor+1, PIDHum, pid_ht_hum_outmin_high[sensor])
                             elif pid_ht_hum_outmax_high[sensor] != 0 and PIDHum > pid_ht_hum_outmax_high[sensor]:
                                 logging.debug("[PID HT-Humidity-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDHum, pid_ht_hum_outmax_high[sensor])
                                 PIDHum = pid_ht_hum_outmax_high[sensor]
+                                rod = threading.Thread(target = relay_on_duration,
+                                    args = (pid_ht_hum_relay_high[sensor], round(PIDHum,2), sensor, relay_trigger, relay_pin,))
+                                rod.start()
                             else:
                                 logging.debug("[PID HT-Humidity-%s] PID = %.1f", sensor+1, PIDHum)
-
-                            rod = threading.Thread(target = relay_on_duration,
-                                args = (pid_ht_hum_relay_high[sensor], round(PIDHum,2), sensor, relay_trigger, relay_pin,))
-                            rod.start()
+                                rod = threading.Thread(target = relay_on_duration,
+                                    args = (pid_ht_hum_relay_high[sensor], round(PIDHum,2), sensor, relay_trigger, relay_pin,))
+                                rod.start()
 
                         else:
                             logging.debug("[PID HT-Humidity-%s] PID = %.1f", sensor+1, PIDHum)
@@ -1464,11 +1455,6 @@ def co2_monitor(ThreadName, sensor):
 
             if int(time.time()) > timerCO2:
 
-                if pid_co2_relay_high[sensor]:
-                    relay_onoff(int(pid_co2_relay_high[sensor]), 'off')
-                if pid_co2_relay_low[sensor]:
-                    relay_onoff(int(pid_co2_relay_low[sensor]), 'off')
-
                 logging.debug("[PID CO2-%s] Reading temperature...", sensor+1)
                 if read_co2_sensor(sensor) == 1:
 
@@ -1482,32 +1468,34 @@ def co2_monitor(ThreadName, sensor):
 
                     if pid_co2_set_dir[sensor] > -1 and PIDCO2 > 0:
                         if pid_co2_outmin_low[sensor] != 0 and PIDCO2 < pid_co2_outmin_low[sensor]:
-                            logging.debug("[PID CO2-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDCO2, pid_co2_outmin_low[sensor])
-                            PIDCO2 = pid_co2_outmin_low[sensor]
+                            logging.debug("[PID CO2-%s] PID = %.1f (min enabled, %s, not turning on)", sensor+1, PIDCO2, pid_co2_outmin_low[sensor])
                         elif pid_co2_outmax_low[sensor] != 0 and PIDCO2 > pid_co2_outmax_low[sensor]:
                             logging.debug("[PID CO2-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDCO2, pid_co2_outmax_low[sensor])
                             PIDCO2 = pid_co2_outmax_low[sensor]
+                            rod = threading.Thread(target = relay_on_duration,
+                                args = (pid_co2_relay_low[sensor], round(PIDCO2,2), sensor, relay_trigger, relay_pin,))
+                            rod.start()
                         else:
                             logging.debug("[PID CO2-%s] PID = %.1f", sensor+1, PIDCO2)
-
-                        rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_co2_relay_low[sensor], round(PIDCO2,2), sensor, relay_trigger, relay_pin,))
-                        rod.start()
+                            rod = threading.Thread(target = relay_on_duration,
+                                args = (pid_co2_relay_low[sensor], round(PIDCO2,2), sensor, relay_trigger, relay_pin,))
+                            rod.start()
 
                     elif pid_co2_set_dir[sensor] < 1 and PIDCO2 < 0:
                         PIDCO2 = abs(PIDCO2)
                         if pid_co2_outmin_high[sensor] != 0 and PIDCO2 < pid_co2_outmin_high[sensor]:
-                            logging.debug("[PID CO2-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDCO2, pid_co2_outmin_high[sensor])
-                            PIDCO2 = pid_co2_outmin_high[sensor]
+                            logging.debug("[PID CO2-%s] PID = %.1f (min enabled, %s, not turning on)", sensor+1, PIDCO2, pid_co2_outmin_high[sensor])
                         elif pid_co2_outmax_high[sensor] != 0 and PIDCO2 > pid_co2_outmax_high[sensor]:
                             logging.debug("[PID CO2-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDCO2, pid_co2_outmax_high[sensor])
                             PIDCO2 = pid_co2_outmax_high[sensor]
+                            rod = threading.Thread(target = relay_on_duration,
+                                args = (pid_co2_relay_high[sensor], round(PIDCO2,2), sensor, relay_trigger, relay_pin,))
+                            rod.start()
                         else:
                             logging.debug("[PID CO2-%s] PID = %.1f", sensor+1, PIDCO2)
-
-                        rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_co2_relay_high[sensor], round(PIDCO2,2), sensor, relay_trigger, relay_pin,))
-                        rod.start()
+                            rod = threading.Thread(target = relay_on_duration,
+                                args = (pid_co2_relay_high[sensor], round(PIDCO2,2), sensor, relay_trigger, relay_pin,))
+                            rod.start()
 
                     else:
                         logging.debug("[PID CO2-%s] PID = %.1f", sensor+1, PIDCO2)
@@ -1564,11 +1552,6 @@ def press_sensor_temperature_monitor(ThreadName, sensor):
 
             if int(time.time()) > timerTemp:
 
-                if pid_press_temp_relay_high[sensor]:
-                    relay_onoff(int(pid_press_temp_relay_high[sensor]), 'off')
-                if pid_press_temp_relay_low[sensor]:
-                    relay_onoff(int(pid_press_temp_relay_low[sensor]), 'off')
-
                 logging.debug("[PID Press-Temperature-%s] Reading temperature...", sensor+1)
                 if read_press_sensor(sensor) == 1:
 
@@ -1582,32 +1565,34 @@ def press_sensor_temperature_monitor(ThreadName, sensor):
 
                     if pid_press_temp_set_dir[sensor] > -1 and PIDTemp > 0:
                         if pid_press_temp_outmin_low[sensor] != 0 and PIDTemp < pid_press_temp_outmin_low[sensor]:
-                            logging.debug("[PID Press-Temperature-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDTemp, pid_press_temp_outmin_low[sensor])
-                            PIDTemp = pid_press_temp_outmin_low[sensor]
+                            logging.debug("[PID Press-Temperature-%s] PID = %.1f (min enabled, %s, not turning on)", sensor+1, PIDTemp, pid_press_temp_outmin_low[sensor])
                         elif pid_press_temp_outmax_low[sensor] != 0 and PIDTemp > pid_press_temp_outmax_low[sensor]:
                             logging.debug("[PID Press-Temperature-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDTemp, pid_press_temp_outmax_low[sensor])
                             PIDTemp = pid_press_temp_outmax_low[sensor]
+                            rod = threading.Thread(target = relay_on_duration,
+                                args = (pid_press_temp_relay_low[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
+                            rod.start()
                         else:
                             logging.debug("[PID Press-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
-
-                        rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_press_temp_relay_low[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
-                        rod.start()
+                            rod = threading.Thread(target = relay_on_duration,
+                                args = (pid_press_temp_relay_low[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
+                            rod.start()
 
                     elif pid_press_temp_set_dir[sensor] < 1 and PIDTemp < 0:
                         PIDTemp = abs(PIDTemp)
                         if pid_press_temp_outmin_high[sensor] != 0 and PIDTemp < pid_press_temp_outmin_high[sensor]:
-                            logging.debug("[PID Press-Temperature-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDTemp, pid_press_temp_outmin_high[sensor])
-                            PIDTemp = pid_press_temp_outmin_high[sensor]
+                            logging.debug("[PID Press-Temperature-%s] PID = %.1f (min enabled, %s, not turning on)", sensor+1, PIDTemp, pid_press_temp_outmin_high[sensor])
                         elif pid_press_temp_outmax_high[sensor] != 0 and PIDTemp > pid_press_temp_outmax_high[sensor]:
                             logging.debug("[PID Press-Temperature-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDTemp, pid_press_temp_outmax_high[sensor])
                             PIDTemp = pid_press_temp_outmax_high[sensor]
+                            rod = threading.Thread(target = relay_on_duration,
+                                args = (pid_press_temp_relay_high[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
+                            rod.start()
                         else:
                             logging.debug("[PID Press-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
-
-                        rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_press_temp_relay_high[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
-                        rod.start()
+                            rod = threading.Thread(target = relay_on_duration,
+                                args = (pid_press_temp_relay_high[sensor], round(PIDTemp,2), sensor, relay_trigger, relay_pin,))
+                            rod.start()
 
                     else:
                         logging.debug("[PID Press-Temperature-%s] PID = %.1f", sensor+1, PIDTemp)
@@ -1664,11 +1649,6 @@ def press_sensor_pressure_monitor(ThreadName, sensor):
 
             if int(time.time()) > timerPress:
 
-                if pid_press_press_relay_high[sensor]:
-                    relay_onoff(int(pid_press_press_relay_high[sensor]), 'off')
-                if pid_press_press_relay_low[sensor]:
-                    relay_onoff(int(pid_press_press_relay_low[sensor]), 'off')
-
                 logging.debug("[PID Press-Pressure-%s] Reading pressure...", sensor+1)
                 if read_press_sensor(sensor) == 1:
 
@@ -1682,32 +1662,34 @@ def press_sensor_pressure_monitor(ThreadName, sensor):
 
                     if pid_press_press_set_dir[sensor] > -1 and PIDPress > 0:
                         if pid_press_press_outmin_low[sensor] != 0 and PIDPress < pid_press_press_outmin_low[sensor]:
-                            logging.debug("[PID Press-Pressure-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDPress, pid_press_press_outmin_low[sensor])
-                            PIDPress = pid_press_press_outmin_low[sensor]
+                            logging.debug("[PID Press-Pressure-%s] PID = %.1f (min enabled, %s, not turning on)", sensor+1, PIDPress, pid_press_press_outmin_low[sensor])
                         elif pid_press_press_outmax_low[sensor] != 0 and PIDPress > pid_press_press_outmax_low[sensor]:
                             logging.debug("[PID Press-Pressure-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDPress, pid_press_press_outmax_low[sensor])
                             PIDPress = pid_press_press_outmax_low[sensor]
+                            rod = threading.Thread(target = relay_on_duration,
+                                args = (pid_press_press_relay_low[sensor], round(PIDPress,2), sensor, relay_trigger, relay_pin,))
+                            rod.start()
                         else:
                             logging.debug("[PID Press-Pressure-%s] PID = %.1f", sensor+1, PIDPress)
-
-                        rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_press_press_relay_low[sensor], round(PIDPress,2), sensor, relay_trigger, relay_pin,))
-                        rod.start()
+                            rod = threading.Thread(target = relay_on_duration,
+                                args = (pid_press_press_relay_low[sensor], round(PIDPress,2), sensor, relay_trigger, relay_pin,))
+                            rod.start()
 
                     elif pid_press_press_set_dir[sensor] < 1 and PIDPress < 0:
                         PIDPress = abs(PIDPress)
                         if pid_press_press_outmin_high[sensor] != 0 and PIDPress < pid_press_press_outmin_high[sensor]:
-                            logging.debug("[PID Press-Pressure-%s] PID = %.1f (min enabled, %s)", sensor+1, PIDPress, pid_press_press_outmin_high[sensor])
-                            PIDPress = pid_press_press_outmin_high[sensor]
+                            logging.debug("[PID Press-Pressure-%s] PID = %.1f (min enabled, %s, not turning on)", sensor+1, PIDPress, pid_press_press_outmin_high[sensor])
                         elif pid_press_press_outmax_high[sensor] != 0 and PIDPress > pid_press_press_outmax_high[sensor]:
                             logging.debug("[PID Press-Pressure-%s] PID = %.1f (max enabled, %s)", sensor+1, PIDPress, pid_press_press_outmax_high[sensor])
                             PIDPress = pid_press_press_outmax_high[sensor]
+                            rod = threading.Thread(target = relay_on_duration,
+                                args = (pid_press_press_relay_high[sensor], round(PIDPress,2), sensor, relay_trigger, relay_pin,))
+                            rod.start()
                         else:
                             logging.debug("[PID Press-Pressure-%s] PID = %.1f", sensor+1, PIDPress)
-
-                        rod = threading.Thread(target = relay_on_duration,
-                            args = (pid_press_press_relay_high[sensor], round(PIDPress,2), sensor, relay_trigger, relay_pin,))
-                        rod.start()
+                            rod = threading.Thread(target = relay_on_duration,
+                                args = (pid_press_press_relay_high[sensor], round(PIDPress,2), sensor, relay_trigger, relay_pin,))
+                            rod.start()
 
                     else:
                         logging.debug("[PID Press-Pressure-%s] PID = %.1f", sensor+1, PIDPress)
@@ -2830,6 +2812,7 @@ def read_sql():
     timerPressSensorLog = []
 
     global on_duration_timer
+    global on_duration_seconds
 
     # Email notification globals
     global smtp_host
@@ -3548,6 +3531,12 @@ def read_sql():
         for i in range(0, len(relay_id)):
             on_duration_timer.append(0)
 
+    if len(on_duration_seconds) != len(relay_id):
+        on_duration_seconds = []
+        for i in range(0, len(relay_id)):
+            on_duration_seconds.append(0)
+
+
     global timerTConditional
     global timerHTConditional
     global timerCO2Conditional
@@ -3656,14 +3645,16 @@ def Relays_Start():
                 else:
                     GPIO.output(relay_pin[i], 0)
 
-# Read states (HIGH/LOW) of GPIO pins
-def gpio_read():
-    for x in range(0, len(relay_id)):
-        if GPIO.input(relay_pin[x]): logging.info("[GPIO Read] Relay %s: OFF", x)
-        else: logging.info("[GPIO Read] Relay %s: ON", x)
+# Read the state of a relay
+def read_relay(relay):
+    if ((relay_trigger[relay-1] == 0 and GPIO.input(relay_pin[relay-1]) == 0) or (
+        relay_trigger[relay-1] == 1 and GPIO.input(relay_pin[relay-1]) == 1)):
+        return "on"
+    else:
+        return "off"
 
 # Change GPIO (Select) to a specific state (State)
-def gpio_change(relay, State):
+def set_relay_gpio(relay, State):
     if relay == 0:
         logging.warning("[GPIO Write] 0 is an invalid relay number. Check your configuration.")
     else:
@@ -3688,7 +3679,7 @@ def relay_onoff(relay, state):
                 logging.warning("[Daemon] Cannot turn relay %s (%s) On. If this relay turns on, there will be %s amps being drawn, which exceeds the maximum set draw of %s amps.",
                         relay, relay_name[relay-1], total_amps, max_amps)
                 return 1
-        gpio_change(relay, 1)
+        set_relay_gpio(relay, 1)
     elif (relay_trigger[relay-1] == 0 and state == 'on'):
         if enable_max_amps == 1:
             total_amps = 0
@@ -3703,12 +3694,12 @@ def relay_onoff(relay, state):
                 logging.warning("[Daemon] Cannot turn relay %s (%s) On. If this relay turns on, there will be %s amps being drawn, which exceeds the maximum set draw of %s amps.",
                         relay, relay_name[relay-1], total_amps, max_amps)
                 return 1
-        gpio_change(relay, 0)
+        set_relay_gpio(relay, 0)
 
     elif (relay_trigger[relay-1] == 0 and state == 'off'):
-        gpio_change(relay, 1)
+        set_relay_gpio(relay, 1)
     elif (relay_trigger[relay-1] == 1 and state == 'off'):
-        gpio_change(relay, 0)
+        set_relay_gpio(relay, 0)
 
     for i in range(0, len(conditional_relay_id)):
         if state == 'on':
@@ -3765,9 +3756,14 @@ def relay_off(relay, local_relay_pin, local_relay_trigger):
     else:
         GPIO.output(local_relay_pin[relay-1], 0)
 
+# Turn relay on for a specific duration
+def relay_on_timed(relay, seconds):
+    relay_on_duration(relay, seconds, 0, relay_trigger, relay_pin)
+
 # Set relay on for a specific duration (seconds may be negative)
 def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_pin):
     global on_duration_timer
+    global on_duration_seconds
     if enable_max_amps == 1:
         total_amps = 0
         for i in range(0, len(relay_id)):
@@ -3785,16 +3781,13 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
     if (((local_relay_trigger[relay-1] == 0 and GPIO.input(local_relay_pin[relay-1]) == 0) or (
             local_relay_trigger[relay-1] == 1 and GPIO.input(local_relay_pin[relay-1]) == 1)) and
             on_duration_timer[relay-1] > int(time.time())):
-        if int(time.time()) + seconds < on_duration_timer[relay-1]:
-            logging.debug("[Relay Duration] Relay %s (%s) is already On and the new duration is shorter than the current time remaining. Not updating.",
-                relay, relay_name[relay-1])
-        else:
-            logging.debug("[Relay Duration] Relay %s (%s) is already On and the new duration is longer than the current time remaining. Updating On duration to %s more seconds from now.",
-                relay, relay_name[relay-1], seconds)
-            on_duration_timer[relay-1] = int(time.time()) + abs(seconds)
-            wrl = threading.Thread(target = mycodoLog.write_relay_log,
-                args = (relay, seconds, sensor, local_relay_pin[relay-1],))
-            wrl.start()
+        logging.debug("[Relay Duration] Relay %s (%s) is already On for a duration (%s sec with %s sec remaining). Recording the amount of time the relay has been on (%s sec) to log and updating On duration to %s seconds.",
+            relay, relay_name[relay-1], on_duration_seconds[relay-1], (on_duration_timer[relay-1] - int(time.time())), (on_duration_seconds[relay-1] - (on_duration_timer[relay-1] - int(time.time()))),seconds)
+        wrl = threading.Thread(target = mycodoLog.write_relay_log,
+            args = (relay, (on_duration_seconds[relay-1] - (on_duration_timer[relay-1] - int(time.time()))), sensor, local_relay_pin[relay-1],))
+        wrl.start()
+        on_duration_timer[relay-1] = int(time.time()) + abs(seconds)
+        on_duration_seconds[relay-1] = abs(seconds)
 
         for i in range(0, len(conditional_relay_id)):
             if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'on':
@@ -3844,20 +3837,17 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
             on_duration_timer[relay-1] < int(time.time())):
         logging.warning("[Relay Duration] Relay %s (%s) is set On without a duration. Turning into a duration.",
             relay, relay_name[relay-1], seconds)
+    
+    on_duration_seconds[relay-1] = abs(seconds)
+    on_duration_timer[relay-1] = int(time.time()) + abs(seconds)
 
     logging.debug("[Relay Duration] Relay %s (%s) On for %s seconds.",
         relay, relay_name[relay-1], round(abs(seconds), 1))
-
-    on_duration_timer[relay-1] = int(time.time()) + abs(seconds)
 
     # Turn relay on
     GPIO.output(local_relay_pin[relay-1], local_relay_trigger[relay-1])
 
     try:
-        wrl = threading.Thread(target = mycodoLog.write_relay_log,
-            args = (relay, seconds, sensor, local_relay_pin[relay-1],))
-        wrl.start()
-
         for i in range(0, len(conditional_relay_id)):
             if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'on':
                 if conditional_relay_ifduration[i] == seconds:
@@ -3928,6 +3918,15 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
     
     # Turn relay off
     relay_off(relay, local_relay_pin, local_relay_trigger)
+
+    if on_duration_seconds[relay-1] == 0:
+        wrl = threading.Thread(target = mycodoLog.write_relay_log,
+            args = (relay, seconds, sensor, local_relay_pin[relay-1],))
+        wrl.start()
+    else:
+        wrl = threading.Thread(target = mycodoLog.write_relay_log,
+            args = (relay, on_duration_seconds[relay-1], sensor, local_relay_pin[relay-1],))
+        wrl.start()
 
     while pause_daemon:
         time.sleep(0.1)

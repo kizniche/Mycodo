@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.85";
+$version = "3.5.86";
 
 ######### Start Edit Configure #########
 
@@ -440,7 +440,7 @@ if (isset($output_error)) {
                                 <option value="12h">12 Hours</option>
                                 <option value="1d">1 Day</option>
                                 <option value="3d">3 Days</option>
-                                <option value="1w">1 Week</option>
+                                <option value="1w" selected>1 Week</option>
                                 <option value="2w">2 Weeks</option>
                                 <option value="1m">1 Month</option>
                                 <option value="3m">3 Months</option>
@@ -681,7 +681,7 @@ if (isset($output_error)) {
                     <table class="conditional">
                         <tr>
                             <td>
-                                Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                                Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                             </td>
                         </tr>
                     </table>
@@ -750,7 +750,7 @@ if (isset($output_error)) {
                         for ($z = 0; $z < count($conditional_relay_id); $z++) {
                         ?>
                         <tr>
-                            <td style="padding-top: 1em; padding-left: 1em;">
+                            <td style="padding-top: 1em; padding-left: 1em; white-space: nowrap;">
                             <?php
                             echo '<button type="submit" name="DeleteRelay' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
 
@@ -805,7 +805,7 @@ if (isset($output_error)) {
                             }
 
                             echo '</tr>';
-                        } 
+                        }
                     ?>
                     <tr>
                         <td style="padding-top: 1em;"></td>
@@ -813,10 +813,37 @@ if (isset($output_error)) {
                     </tr>
                     </table>
                     </form>
+
+                    <table class="conditional">
+                        <tr>
+                            <td>
+                                Custom Code<br/><span style="padding-top: 0.5em; font-size: 0.7em;">Warning: This is a very powerful feature. If the syntax is not completely correct, it will fail. If you haven't read the <a class="manual" href="manual.html#custom-code" target="_blank">Custom Code</a> section of the manual and understood everything, do not attempt to use this feature.</span>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                    <table class="conditional" style="width: 100%;">
+                        <tr>
+                            <td style="padding-left: 1em;">Setup Code</td>
+                            <td style="padding-left: 1em;">Main Loop Code</td>
+                        </tr>
+                        <tr>
+                            <td style="padding-left: 1em;">
+                                <textarea style="width: 100%;" rows="4" maxlength="1000" name="conditional_advanced_setup" title=""></textarea>
+                            </td>
+                            <td style="padding-left: 1em;">
+                                <textarea style="width: 100%;" rows="4" maxlength="1000" name="conditional_advanced_main" title=""></textarea>
+                            </td>
+                            <td>
+                                <button type="submit" style="height:5em; width:4em;" style="height:5em;" name="AddRelayConditional" title="Save new relay conditional statement">Save</button>
+                            </td>
+                        </tr>
+                    </table>
+                    </form>
                     <?php
                     }
                     ?>
-
                 </div>
             <?php
             }
@@ -1106,7 +1133,7 @@ if (isset($output_error)) {
                             </select>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_t_temp_period[$i]; ?>" name="SetT<?php echo $i; ?>TempPeriod" title="This is the number of seconds between taking new temperature reading and applying the PID"/>
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_t_temp_period[$i]; ?>" name="SetT<?php echo $i; ?>TempPeriod" title="This is the number of seconds between taking a new temperature measurement and applying the PID"/>
                         </td>
                         <td>
                             <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_t_temp_relay_low[$i]; ?>" maxlength=1 size=1 name="SetT<?php echo $i; ?>TempRelayLow" title="This relay is used to increase temperature."/>
@@ -1142,7 +1169,7 @@ if (isset($output_error)) {
                 <table class="conditional">
                     <tr>
                         <td>
-                            Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                            Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                         </td>
                     </tr>
                 </table>
@@ -1201,7 +1228,7 @@ if (isset($output_error)) {
                         for ($z = 0; $z < count($conditional_t_id[$i]); $z++) {
                     ?>
                     <tr>
-                        <td style="padding-top: 1em; padding-left: 1em;">
+                        <td style="padding-top: 1em; padding-left: 1em; white-space: nowrap;">
                             <?php
                             echo '<button type="submit" name="DeleteT' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                             if ($conditional_t_state[$i][$z]) {
@@ -1529,7 +1556,7 @@ if (isset($output_error)) {
                             </select>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_temp_period[$i]; ?>" name="SetHT<?php echo $i; ?>TempPeriod" title="This is the number of seconds between taking new temperature reading and applying the PID"/>
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_temp_period[$i]; ?>" name="SetHT<?php echo $i; ?>TempPeriod" title="This is the number of seconds between taking a new temperature measurement and applying the PID"/>
                         </td>
                         <td>
                             <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_ht_temp_relay_low[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>TempRelayLow" title="This relay is used to increase temperature."/>
@@ -1600,7 +1627,7 @@ if (isset($output_error)) {
                             </select>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_hum_period[$i]; ?>" name="SetHT<?php echo $i; ?>HumPeriod" title="This is the number of seconds between taking new humidity reading and applying the PID"/>
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_ht_hum_period[$i]; ?>" name="SetHT<?php echo $i; ?>HumPeriod" title="This is the number of seconds between taking a new humidity measurement and applying the PID"/>
                         </td>
                         <td>
                             <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_ht_hum_relay_low[$i]; ?>" maxlength=1 size=1 name="SetHT<?php echo $i; ?>HumRelayLow" title="This relay is used to increase humidity."/>
@@ -1636,7 +1663,7 @@ if (isset($output_error)) {
                 <table class="conditional">
                     <tr>
                         <td>
-                            Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                            Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                         </td>
                     </tr>
                 </table>
@@ -1700,7 +1727,7 @@ if (isset($output_error)) {
                         for ($z = 0; $z < count($conditional_ht_id[$i]); $z++) {
                     ?>
                     <tr>
-                        <td style="padding-top: 1em; padding-left: 1em;">
+                        <td style="padding-top: 1em; padding-left: 1em; white-space: nowrap;">
                             <?php
                             echo '<button type="submit" name="DeleteHT' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                             if ($conditional_ht_state[$i][$z]) {
@@ -1982,7 +2009,7 @@ if (isset($output_error)) {
                             </select>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_co2_period[$i]; ?>" maxlength=4 size=1 name="SetCO2<?php echo $i; ?>CO2Period" title="This is the number of seconds between taking new CO2 reading and applying the PID"/>
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_co2_period[$i]; ?>" maxlength=4 size=1 name="SetCO2<?php echo $i; ?>CO2Period" title="This is the number of seconds between taking a new CO2 measurement and applying the PID"/>
                         </td>
                         <td>
                             <input style="width: 3em;" type="number" min="0" max="9999" value="<?php echo $pid_co2_relay_low[$i]; ?>" maxlength=1 size=1 name="SetCO2<?php echo $i; ?>CO2RelayLow" title="This relay is used to increase CO2."/>
@@ -2020,7 +2047,7 @@ if (isset($output_error)) {
                 <table class="conditional">
                     <tr>
                         <td>
-                            Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                            Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                         </td>
                     </tr>
                 </table>
@@ -2079,7 +2106,7 @@ if (isset($output_error)) {
                         for ($z = 0; $z < count($conditional_co2_id[$i]); $z++) {
                     ?>
                     <tr>
-                        <td style="padding-top: 1em; padding-left: 1em;">
+                        <td style="padding-top: 1em; padding-left: 1em; white-space: nowrap;">
                             <?php
                             echo '<button type="submit" name="DeleteCO2' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                             if ($conditional_co2_state[$i][$z]) {
@@ -2383,7 +2410,7 @@ if (isset($output_error)) {
                             </select>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_press_temp_period[$i]; ?>" name="SetPress<?php echo $i; ?>TempPeriod" title="This is the number of seconds between taking new temperature reading and applying the PID"/>
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_press_temp_period[$i]; ?>" name="SetPress<?php echo $i; ?>TempPeriod" title="This is the number of seconds between taking a new temperature measurement and applying the PID"/>
                         </td>
                         <td>
                             <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_press_temp_relay_low[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>TempRelayLow" title="This relay is used to increase temperature."/>
@@ -2454,7 +2481,7 @@ if (isset($output_error)) {
                             </select>
                         </td>
                         <td>
-                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_press_press_period[$i]; ?>" name="SetPress<?php echo $i; ?>PressPeriod" title="This is the number of seconds between taking new pressure reading and applying the PID"/>
+                            <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $pid_press_press_period[$i]; ?>" name="SetPress<?php echo $i; ?>PressPeriod" title="This is the number of seconds between taking a new pressure measurement and applying the PID"/>
                         </td>
                         <td>
                             <input style="width: 3em;" type="number" min="0" max="30" value="<?php echo $pid_press_press_relay_low[$i]; ?>" maxlength=1 size=1 name="SetPress<?php echo $i; ?>PressRelayLow" title="This relay is used to increase pressure."/>
@@ -2491,7 +2518,7 @@ if (isset($output_error)) {
                 <table class="conditional">
                     <tr>
                         <td>
-                            Conditional Statements &nbsp;<span style="font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                            Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                         </td>
                     </tr>
                 </table>
@@ -2554,7 +2581,7 @@ if (isset($output_error)) {
                         for ($z = 0; $z < count($conditional_press_id[$i]); $z++) {
                     ?>
                     <tr>
-                        <td style="padding-top: 1em; padding-left: 1em;">
+                        <td style="padding-top: 1em; padding-left: 1em; white-space: nowrap;">
                             <?php
                             echo '<button type="submit" name="DeletePress' . $i . '-' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
                             if ($conditional_press_state[$i][$z]) {
@@ -3876,7 +3903,13 @@ if (isset($output_error)) {
                         if(isset($_POST['Database']) && $_SESSION['user_name'] != 'guest') {
                             echo exec('file ' . $mycodo_db); 
                             echo '<pre><br> <br>';
-                            exec('sqlite3 ' . $mycodo_db . ' .dump', $output); print_r($output);
+                            exec('sqlite3 ' . $mycodo_db . ' .dump', $output);
+                            $db = new SQLite3($mycodo_db);
+                            $results = $db->query('SELECT Pass FROM SMTP');
+                            while ($row = $results->fetchArray()) {
+                                $email_password = $row[0];
+                            }
+                            print_r(str_replace($email_password,"*****",$output));
                             echo '</pre>';
                         }
                     ?>
