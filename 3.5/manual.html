@@ -42,7 +42,6 @@
 	</ul>
 	<li><a href="#timers">Timers</a></li>
 	<li><a href="#conditional-statements">Conditional Statements</a></li>
-	<li><a href="#custom-code">Custom Code</a></li>
 	<li><a href="#discrete-pid-control">Discrete PID Control</a></li>
 	<li><a href="#quick-set-up-examples">Quick Setup Examples</a></li>
 	<ul>
@@ -343,125 +342,6 @@ If Humidity if Less Than 50%, turn relay #1 on for 21 seconds, execute '/usr/loc
 </p>
 
 <p>Before activating any conditional statements or PID controllers, it"s advised to thoroughly explore all possible scenarios and plan a configuration that eliminates conflicts. Then, trial run your configuration before connecting devices to the relays. Some devices or relays may respond atypically or fail when switched on and off in rapid succession. Therefore, avoid creating an <a href="https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops" target="_blank">infinite loop</a> with conditional statements.</p>
-
-<a name="custom-code"></a>
-<h3>Custom Code</h3>
-
-<p>These two input fields will be excuted by the Mycodo daemon. The programming language used by the daemon is Python. The setup code will be executed once, before the main loop begins. The main loop code will be executed in a loop. Only valid Python code may be used here. There are many resources devoted to the Python language that may be used for reference. I will only be including the variables and functions available to the daemon. This feature is intended for advanced users who have a grasp of the Python programming language.</p>
-
-<a name="custom-code-setup"></a>
-<h3>Setup Code</h3>
-
-<p>This code will only be executed once. Use this area to declare new variables, load modules, or anything else that is only desired to be executed once, before the main loop begins.</p>
-
-<a name="custom-code-main"></a>
-<h3>Main Loop Code</h3>
-
-<p>This code will be executed in its own thread, but will have many global variables available to it already. The main loop of the thread will contain a 0.1 second pause at the end.</p>
-
-***This section is incomplete!***
-<table class="options">
-	<tr>
-		<td>Available Functions:</td>
-	</tr>
-	<tr>
-		<td>read_relay(relay)</td>
-		<td>Returns "on" if relay is on, "off" if relay is off.</td>
-	</tr>
-	<tr>
-		<td style="white-space: nowrap;">relay_on_timed(relay, seconds)</td>
-		<td>Turns a relay on for a specific duration of time and then turns it off.</td>
-	</tr>
-	<tr>
-		<td>relay_onoff(relay, state)</td>
-		<td>Turns a relay on or off. The state must either be "on" or "off" (include the quotes). This function witll check whether any relay conditional statements are true upon changing the relay state. If you would like to change the state of a relay without evaluationg relay conditional statements, use set_relay_gpio() instead.</td>
-	</tr>
-	<tr>
-		<td>all_relays_off()</td>
-		<td>Turns all relays off.</td>
-	</tr>
-	<tr>
-		<td>set_relay_gpio(relay, state)</td>
-		<td>Set the gpio state of a particular relay. This will bypass the conditional checking that takes place with relay_onoff().</td>
-	</tr>
-	<tr>
-		<td>email(email, message)</td>
-		<td>Send an email with 'message' to the email address 'email'.</td>
-	</tr>
-	<tr>
-		<td>logging.info("message")</td>
-		<td>Log an info message to the daemon log. This will be logged when the daemon is running normally or in debug mode.</td>
-	</tr>
-	<tr>
-		<td>logging.warning("message")</td>
-		<td>Log a warning message to the daemon log. This will be logged when the daemon is running normally or in debug mode.</td>
-	</tr>
-	<tr>
-		<td>logging.debug("message")</td>
-		<td>Log a debug message to the daemon log. This will only be logged when the daemon is running in debug mode.</td>
-	</tr>
-	<tr>
-		<td>()</td>
-		<td>.</td>
-	</tr>
-	<tr>
-</table>
-
-<table class="options">
-	<tr>
-		<td>Available Variables:</td>
-	</tr>
-	<tr>
-		<td>sensor_ht_read_temp_c[x-1]</td>
-		<td>The latest temperature measured from temperature sensor x. Because arrays begin with 0, you must subtract 1 from the actual sensor number to reference the corrct part of the array. Sensor 1 would become 0, 2 would become 1, etc.</td>
-	</tr>
-	<tr>
-		<td></td>
-		<td></td>
-	</tr>
-	<tr>
-		<td></td>
-		<td></td>
-	</tr>
-	<tr>
-</table>
-
-<h4>Example:</h4>
-
-<p><h4>Setup code</h4>
-
-<pre>
-timer = 0     # Initialize our timer
-HTsensor = 2  # Initialize and set our humidity/temperature variable with our sensor number
-</pre>
-
-<h4>Main Loop Code</h4>
-<pre>
-# The timer expires when the current time is greater than the timer's time
-if timer &lt; int(time.time()):
-
-    # Send a debug message to the daemon log to indicate this happened
-    logging.debug("[Timer Expiration] The timer expired")
-
-    # If the temperature reading from HT sensor 2 is less than or equal to 10 or greater than or equal to 15
-    # We must subtract 1 from our actual sensor number because arrays begin at 0, offsetting all numbers by one
-    if (sensor_ht_read_temp_c[HTsensor-1] &lt;= 10 or sensor_ht_read_temp_c[HTsensor-1] &gt;= 15):
-
-    	# Email notifying the temperature is out of range
-    	email(myemail@email.com, "The timer has expired and the temperature is out of range")
-
-        if (read_relay(5) == "on"):  # If relay 5 is on
-            relay_onoff("off")       # Turn relay 5 off
-            relay_on_timed(3, 10)    # Turn relay 3 on for 10 seconds
-
-        if (read_relay(2) == "off")  # If relay 2 is off
-            relay_on_timed(2, 50)    # Turn relay 2 on for 50 seconds
-
-    timer = int(time.time()) + 120   # Set the timer to 120 seconds in the future
-                                     # The result is this will be executed every 120 seconds
-</pre>
-</p>
-
 
 <a name="discrete-pid-control"></a>
 <h3>Discrete PID Control</h3>

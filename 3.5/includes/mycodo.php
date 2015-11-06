@@ -813,34 +813,6 @@ if (isset($output_error)) {
                     </tr>
                     </table>
                     </form>
-
-                    <table class="conditional">
-                        <tr>
-                            <td>
-                                Custom Code<br/><span style="padding-top: 0.5em; font-size: 0.7em;">Warning: This is a very powerful feature. If the syntax is not completely correct, it will fail. If you haven't read the <a class="manual" href="manual.html#custom-code" target="_blank">Custom Code</a> section of the manual and understood everything, do not attempt to use this feature.</span>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                    <table class="conditional" style="width: 100%;">
-                        <tr>
-                            <td style="padding-left: 1em;">Setup Code</td>
-                            <td style="padding-left: 1em;">Main Loop Code</td>
-                        </tr>
-                        <tr>
-                            <td style="padding-left: 1em;">
-                                <textarea style="width: 100%;" rows="4" maxlength="1000" name="conditional_advanced_setup" title=""></textarea>
-                            </td>
-                            <td style="padding-left: 1em;">
-                                <textarea style="width: 100%;" rows="4" maxlength="1000" name="conditional_advanced_main" title=""></textarea>
-                            </td>
-                            <td>
-                                <button type="submit" style="height:5em; width:4em;" style="height:5em;" name="AddRelayConditional" title="Save new relay conditional statement">Save</button>
-                            </td>
-                        </tr>
-                    </table>
-                    </form>
                     <?php
                     }
                     ?>
