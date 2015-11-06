@@ -3147,7 +3147,12 @@ if (isset($output_error)) {
                             echo '
                                 <table class="data-data">
                                     <tr>
-                                        <th>Y/M/D-H:M:S</th>
+                                        <th>Y</th>
+                                        <th>M</th>
+                                        <th>D</th>
+                                        <th>H</th>
+                                        <th>M</th>
+                                        <th>S</th>
                                         <th>ID</th>
                                         <th>Name</th>
                                         <th>Device</th>
