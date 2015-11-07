@@ -40,9 +40,8 @@ if ($_POST['Generate_Graph_Span'] == "all") {
     else if ($_POST['Generate_Graph_Span'] == "6m") $time_start = date('Y/m/d-H:i:s', strtotime('-6 month'));
     else if ($_POST['Generate_Graph_Span'] == "1y") $time_start = date('Y/m/d-H:i:s', strtotime('-1 year'));
     $time_end = date('Y/m/d-H:i:s');
-    $title = ": " . $_POST['Generate_Graph_Span'] . ': ' . $time_start . ' - ' . $time_end;
+    $title = "<br>" . $_POST['Generate_Graph_Span'] . ': ' . $time_start . ' - ' . $time_end;
 }
-
 
 $sensor_type = $_POST['Generate_Graph_Type'];
 

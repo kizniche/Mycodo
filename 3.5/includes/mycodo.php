@@ -382,6 +382,7 @@ if (isset($output_error)) {
             }
 
             if (isset($_POST['Generate_Graph_Span'])) $dyn_time_span = $_POST['Generate_Graph_Span'];
+            else $dyn_time_span = "1w";
             if (isset($_POST['Generate_Graph_Type'])) $dyn_type = $_POST['Generate_Graph_Type'];
             ?>
 
@@ -460,7 +461,7 @@ if (isset($output_error)) {
                                 <option value="press" <?php if ($dyn_type == 'press') echo 'selected="selected"'; ?>>Pressure</option>
                             </select>
                         </div>
-                        <div style="float:left;">
+                        <div style="float:left; padding-right: 0.5em;">
                             <button type="submit" onclick="submitForm('?tab=graph<?php if (isset($_GET['r'])) echo '&r=' , $_GET['r']; ?>','_self')" name="Generate_Graph" value="all" title="Generate a client-side graph that will render in the browser. Warning: The more data you choose to use, the longer it will take to process. Choosing 'All Time' or 'All Sensors' may take a significant amount of time to process.">Dynamic<br>Graph</button>
                         </div>
                         <div style="float:left;">
