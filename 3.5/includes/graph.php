@@ -26,6 +26,7 @@ if ($_POST['Generate_Graph_Span'] == "all") {
     $time_start = "0";
     $time_end = "0";
     $title = "";
+    $legend_y = 75;
 } else {
     if ($_POST['Generate_Graph_Span'] == "1h") $time_start = date('Y/m/d-H:i:s', strtotime('-1 hour'));
     else if ($_POST['Generate_Graph_Span'] == "3h") $time_start = date('Y/m/d-H:i:s', strtotime('-3 hour'));
@@ -41,6 +42,7 @@ if ($_POST['Generate_Graph_Span'] == "all") {
     else if ($_POST['Generate_Graph_Span'] == "1y") $time_start = date('Y/m/d-H:i:s', strtotime('-1 year'));
     $time_end = date('Y/m/d-H:i:s');
     $title = "<br>" . $_POST['Generate_Graph_Span'] . ': ' . $time_start . ' - ' . $time_end;
+    $legend_y = 95;
 }
 
 $sensor_type = $_POST['Generate_Graph_Type'];
@@ -110,7 +112,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         layout: 'vertical',
                         align: 'right',
                         verticalAlign: 'top',
-                        y: 75,
+                        y: <?php echo $legend_y; ?>,
                         itemMarginBottom: 5
                     },
                     exporting: {
@@ -325,7 +327,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         layout: 'vertical',
                         align: 'right',
                         verticalAlign: 'top',
-                        y: 75,
+                        y: <?php echo $legend_y; ?>,
                         itemMarginBottom: 5
                     },
                     exporting: {
@@ -574,7 +576,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         layout: 'vertical',
                         align: 'right',
                         verticalAlign: 'top',
-                        y: 75,
+                        y: <?php echo $legend_y; ?>,
                         useHTML:true,
                         itemMarginBottom: 5
                     },
@@ -790,7 +792,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         layout: 'vertical',
                         align: 'right',
                         verticalAlign: 'top',
-                        y: 75,
+                        y: <?php echo $legend_y; ?>,
                         itemMarginBottom: 5
                     },
                     exporting: {
@@ -1068,7 +1070,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         layout: 'vertical',
                         align: 'right',
                         verticalAlign: 'top',
-                        y: 75,
+                        y: <?php echo $legend_y; ?>,
                         itemMarginBottom: 5
                     },
                     exporting: {
@@ -1141,24 +1143,6 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                     ?>],
                     series: [<?php
                     $count = 0;
-                    for ($i = 0; $i < count($relay_id); $i++) {
-                    ?>{
-                        name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
-                        type: 'column',
-                        dataGrouping: {
-                            approximation: 'low',
-                            groupPixelWidth: 3,
-                        },
-                        color: Highcharts.getOptions().colors[<?php echo $i+1; ?>],
-                        data: getRelayData(<?php echo $i+1; ?>),
-                        yAxis: 4,
-                        tooltip: {
-                            valueSuffix: ' sec',
-                            valueDecimals: 0,
-                            shared: true,
-                        }
-                    },<?php 
-                    }
                     for ($i = 0; $i < count($sensor_t_id); $i++) {
                         if ($sensor_t_graph[$i]) {
                     ?>{
@@ -1237,6 +1221,24 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         }
                     },<?php
                         }
+                    }
+                    for ($i = 0; $i < count($relay_id); $i++) {
+                    ?>{
+                        name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
+                        type: 'column',
+                        dataGrouping: {
+                            approximation: 'low',
+                            groupPixelWidth: 3,
+                        },
+                        color: Highcharts.getOptions().colors[<?php echo $i+1; ?>],
+                        data: getRelayData(<?php echo $i+1; ?>),
+                        yAxis: 4,
+                        tooltip: {
+                            valueSuffix: ' sec',
+                            valueDecimals: 0,
+                            shared: true,
+                        }
+                    },<?php 
                     }
                     ?>],
                     exporting: {
