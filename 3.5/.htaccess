@@ -7,7 +7,7 @@ DirectoryIndex index.php
         Allow from All
 </FilesMatch>
 
-<FilesMatch "^(image\.php)?$">
+<FilesMatch "^(file\.php)?$">
         Allow from All
 </FilesMatch>
 

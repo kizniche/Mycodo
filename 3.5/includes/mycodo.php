@@ -119,10 +119,10 @@ delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete olde
     <script src="js/modules/highcharts-export-clientside.js"></script>
     <script type="text/javascript">
         function open_legend() {
-            window.open("image.php?span=legend-small","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=250, height=300");
+            window.open("file.php?span=legend-small","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=250, height=300");
         }
         function open_legend_full() {
-            window.open("image.php?span=legend-full","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=820, height=550");
+            window.open("file.php?span=legend-full","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=820, height=550");
         }
     </script>
     <script>
@@ -461,7 +461,7 @@ if (isset($output_error)) {
                             <button type="submit" onclick="submitForm('?tab=graph<?php if (isset($_GET['r'])) echo '&r=' , $_GET['r']; ?>','_self')" name="Generate_Graph" value="all" title="Generate a client-side graph that will render in the browser. Warning: The more data you choose to use, the longer it will take to process. Choosing 'All Time' or 'All Sensors' may take a significant amount of time to process.">Dynamic<br>Graph</button>
                         </div>
                         <div style="float:left;">
-                            <button type="submit" onclick="submitForm('image.php?span=graph-pop','_blank')" name="Generate_Graph" value="all" title="Same as 'Dynamic Graph' but the graph will load in a new window.">Pop<br>Out</button>
+                            <button type="submit" onclick="submitForm('file.php?span=graph-pop','_blank')" name="Generate_Graph" value="all" title="Same as 'Dynamic Graph' but the graph will load in a new window.">Pop<br>Out</button>
                         </div>
                         </form>
                     </div>
@@ -2680,7 +2680,7 @@ if (isset($output_error)) {
                             $file_name = 'graph-temp-combined-' . $id2 . '.png';
                             echo '<div style="padding: 1em 0 3em 0; text-align: center;">
                                 <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
-                                <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                                <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                             echo 'graphtype=combinedcustom';
                             echo '&sensortype=temp';
                             echo '&id=' , $id2 , '>';
@@ -2693,7 +2693,7 @@ if (isset($output_error)) {
                             $file_name = 'graph-hum-combined-' . $id2 . '.png';
                             echo '<div style="padding: 1em 0 3em 0; text-align: center;">
                                 <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
-                                <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                                <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                             echo 'graphtype=combinedcustom';
                             echo '&sensortype=hum';
                             echo '&id=' , $id2 , '>';
@@ -2706,7 +2706,7 @@ if (isset($output_error)) {
                             $file_name = 'graph-co2-combined-' . $id2 . '.png';
                             echo '<div style="padding: 1em 0 3em 0; text-align: center;">
                                 <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
-                                <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                                <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                             echo 'graphtype=combinedcustom';
                             echo '&sensortype=co2';
                             echo '&id=' , $id2 , '>';
@@ -2719,7 +2719,7 @@ if (isset($output_error)) {
                             $file_name = 'graph-press-combined-' . $id2 . '.png';
                             echo '<div style="padding: 1em 0 3em 0; text-align: center;">
                                 <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
-                                <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                                <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                             echo 'graphtype=combinedcustom';
                             echo '&sensortype=press';
                             echo '&id=' , $id2 , '>';
@@ -2735,7 +2735,7 @@ if (isset($output_error)) {
                                 $file_name = 'graph-t-separate-x-' . $id2 . '-' . $n . '.png';
                                 echo '<div style="padding: 1em 0 3em 0; text-align: center;">
                                     <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
-                                    <img src=image.php?';
+                                    <img src=file.php?';
                                 echo 'graphtype=separatecustom';
                                 echo '&sensortype=t';
                                 echo '&id=' , $id2;
@@ -2750,7 +2750,7 @@ if (isset($output_error)) {
                                 $file_name = 'graph-ht-separate-x-' . $id2 . '-' . $n . '.png';
                                 echo '<div style="padding: 1em 0 3em 0; text-align: center;">
                                     <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
-                                    <img src=image.php?';
+                                    <img src=file.php?';
                                 echo 'graphtype=separatecustom';
                                 echo '&sensortype=ht';
                                 echo '&id=' , $id2;
@@ -2765,7 +2765,7 @@ if (isset($output_error)) {
                                 $file_name = 'graph-co2-separate-x-' . $id2 . '-' . $n . '.png';
                                 echo '<div style="padding: 1em 0 3em 0; text-align: center;">
                                     <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
-                                    <img src=image.php?';
+                                    <img src=file.php?';
                                 echo 'graphtype=separatecustom';
                                 echo '&sensortype=co2';
                                 echo '&id=' , $id2;
@@ -2780,7 +2780,7 @@ if (isset($output_error)) {
                                 $file_name = 'graph-press-separate-x-' . $id2 . '-' . $n . '.png';
                                 echo '<div style="padding: 1em 0 3em 0; text-align: center;">
                                     <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
-                                    <img src=image.php?';
+                                    <img src=file.php?';
                                 echo 'graphtype=separatecustom';
                                 echo '&sensortype=press';
                                 echo '&id=' , $id2;
@@ -2916,7 +2916,7 @@ if (isset($output_error)) {
                     echo 'Latest File: ' , date("F d Y H:i:s", $latest_file) , '<br>';
                     echo '
                     <div style="padding-bottom: 2em;">
-                        <img src=image.php?span=cam-timelapse>
+                        <img src=file.php?span=cam-timelapse>
                     </div>
                     ';
                 } else if (file_exists($lock_timelapse)) {
@@ -2936,7 +2936,7 @@ if (isset($output_error)) {
                     Video Stream
                 </div>
                 <div style="padding-bottom: 2em;">
-                    <img style="width:100%;" src="image.php?span=stream">
+                    <img style="width:100%;" src="file.php?span=stream">
                 </div>
                 ';
             }
@@ -2967,7 +2967,7 @@ if (isset($output_error)) {
 
                 echo '
                 <div style="padding-bottom: 2em;">
-                    <img style="width:100%;" src=image.php?span=cam-still>
+                    <img style="width:100%;" src=file.php?span=cam-still>
                 </div>
                 ';
             }
@@ -3339,7 +3339,7 @@ if (isset($output_error)) {
                                     else {
                                         echo "<tr><td colspan=\"4\"></td><td style=\"padding-bottom:0.5em;\">Files: ";
                                         for ($v = 0; $v < count($upload_id); $v++) {
-                                            echo "<a href=\"image.php?span=ul-dl&file=$upload_file_name[$v]\">$upload_name[$v]</a>";
+                                            echo "<a href=\"file.php?span=ul-dl&file=$upload_file_name[$v]\">$upload_name[$v]</a>";
                                             if ($v != count($upload_id)-1) echo ", ";
                                         }
                                         echo "</td></tr>";
@@ -3356,13 +3356,13 @@ if (isset($output_error)) {
                                         }
                                         for ($v = 0; $v < count($upload_id); $v++) {
                                             if (endswith($upload_name[$v], '.jpg') || endswith($upload_name[$v], '.jpeg')) {
-                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-jpg&file=thumb$upload_file_name[$v]\"></a></div>";
+                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"file.php?span=ul-jpg&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"file.php?span=ul-jpg&file=thumb$upload_file_name[$v]\"></a></div>";
                                             }
                                             if (endswith($upload_name[$v], '.png')) {
-                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-png&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-png&file=thumb$upload_file_name[$v]\"></a></div>";
+                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"file.php?span=ul-png&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"file.php?span=ul-png&file=thumb$upload_file_name[$v]\"></a></div>";
                                             }
                                             if (endswith($upload_name[$v], '.gif')) {
-                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-gif&file=thumb$upload_file_name[$v]\"></a></div>";
+                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"file.php?span=ul-gif&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"file.php?span=ul-gif&file=thumb$upload_file_name[$v]\"></a></div>";
                                             }
                                         }
                                         if ($images == True) {
@@ -3441,7 +3441,7 @@ if (isset($output_error)) {
                             else {
                                 echo "<tr><td style=\"vertical-align: top;\">Files (uncheck to delete):<br>";
                                 for ($v = 0; $v < count($upload_id); $v++) {
-                                    echo "<div style=\"float:left; padding: 0.5em;\"><input type=\"hidden\" name=\"$v\" value=\"0\" /><input type=\"checkbox\" name=\"$v\" value=\"1\" checked> <a href=\"image.php?span=ul-dl&file=$upload_file_name[$v]\">$upload_name[$v]</a></div>";
+                                    echo "<div style=\"float:left; padding: 0.5em;\"><input type=\"hidden\" name=\"$v\" value=\"0\" /><input type=\"checkbox\" name=\"$v\" value=\"1\" checked> <a href=\"file.php?span=ul-dl&file=$upload_file_name[$v]\">$upload_name[$v]</a></div>";
                                 }
                                 echo "</td></tr>";
 
@@ -3457,13 +3457,13 @@ if (isset($output_error)) {
                                 }
                                 for ($v = 0; $v < count($upload_id); $v++) {
                                     if (endswith($upload_name[$v], '.jpg') || endswith($upload_name[$v], '.jpeg')) {
-                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-jpg&file=thumb$upload_file_name[$v]\"></a></div>";
+                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"file.php?span=ul-jpg&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"file.php?span=ul-jpg&file=thumb$upload_file_name[$v]\"></a></div>";
                                     }
                                     if (endswith($upload_name[$v], '.png')) {
-                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-png&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-png&file=thumb$upload_file_name[$v]\"></a></div>";
+                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"file.php?span=ul-png&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"file.php?span=ul-png&file=thumb$upload_file_name[$v]\"></a></div>";
                                     }
                                     if (endswith($upload_name[$v], '.gif')) {
-                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-gif&file=thumb$upload_file_name[$v]\"></a></div>";
+                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"file.php?span=ul-gif&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"file.php?span=ul-gif&file=thumb$upload_file_name[$v]\"></a></div>";
                                     }
                                 }
                                 if ($images == True) {
