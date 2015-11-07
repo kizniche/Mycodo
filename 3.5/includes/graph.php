@@ -22,22 +22,43 @@
 *  Contact at kylegabriel.com
 */
 
+if ($_POST['Generate_Graph_Span'] == "all") {
+    $time_start = "0";
+    $time_end = "0";
+    $title = "";
+} else {
+    if ($_POST['Generate_Graph_Span'] == "1h") $time_start = date('Y/m/d-H:i:s', strtotime('-1 hour'));
+    else if ($_POST['Generate_Graph_Span'] == "3h") $time_start = date('Y/m/d-H:i:s', strtotime('-3 hour'));
+    else if ($_POST['Generate_Graph_Span'] == "6h") $time_start = date('Y/m/d-H:i:s', strtotime('-6 hour'));
+    else if ($_POST['Generate_Graph_Span'] == "12h") $time_start = date('Y/m/d-H:i:s', strtotime('-12 hour'));
+    else if ($_POST['Generate_Graph_Span'] == "1d") $time_start = date('Y/m/d-H:i:s', strtotime('-1 day'));
+    else if ($_POST['Generate_Graph_Span'] == "3d") $time_start = date('Y/m/d-H:i:s', strtotime('-3 day'));
+    else if ($_POST['Generate_Graph_Span'] == "1w") $time_start = date('Y/m/d-H:i:s', strtotime('-1 week'));
+    else if ($_POST['Generate_Graph_Span'] == "2w") $time_start = date('Y/m/d-H:i:s', strtotime('-2 week'));
+    else if ($_POST['Generate_Graph_Span'] == "1m") $time_start = date('Y/m/d-H:i:s', strtotime('-1 month'));
+    else if ($_POST['Generate_Graph_Span'] == "3m") $time_start = date('Y/m/d-H:i:s', strtotime('-3 month'));
+    else if ($_POST['Generate_Graph_Span'] == "6m") $time_start = date('Y/m/d-H:i:s', strtotime('-6 month'));
+    else if ($_POST['Generate_Graph_Span'] == "1y") $time_start = date('Y/m/d-H:i:s', strtotime('-1 year'));
+    $time_end = date('Y/m/d-H:i:s');
+    $title = ": " . $_POST['Generate_Graph_Span'] . ': ' . $time_start . ' - ' . $time_end;
+}
+
+
 $sensor_type = $_POST['Generate_Graph_Type'];
 
 if ($sensor_type != 'all') {
-    $number_lines = 0; // all
 
     $sensor_log_first = "/var/www/mycodo/log/sensor-$sensor_type.log";
     $sensor_log_second = "/var/www/mycodo/log/sensor-$sensor_type-tmp.log";
     $sensor_log_generate = "/var/tmp/sensor-$sensor_type-$graph_id.log";
-    shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh x $sensor_type $number_lines $sensor_log_first $sensor_log_second $sensor_log_generate");
-    $sensor_log_file_final = "image.php?span=graph&file=sensor-$sensor_type-$graph_id.log";
+    shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh x $sensor_type $time_start $time_end $sensor_log_first $sensor_log_second $sensor_log_generate");
+    $sensor_log_file_final = "file.php?span=graph&file=sensor-$sensor_type-$graph_id.log";
 
     $relay_log_first = "/var/www/mycodo/log/relay.log";
     $relay_log_second = "/var/www/mycodo/log/relay-tmp.log";
     $relay_log_generate = "/var/tmp/relay-$graph_id.log";
-    shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh x relay 0 $relay_log_first $relay_log_second $relay_log_generate");
-    $relay_log_file_final = "image.php?span=graph&file=relay-$graph_id.log";
+    shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh x relay $time_start $time_end $relay_log_first $relay_log_second $relay_log_generate");
+    $relay_log_file_final = "file.php?span=graph&file=relay-$graph_id.log";
 
     $sensor_num_array = "sensor_{$sensor_type}_id";
 }
@@ -83,7 +104,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         zoomType: 'x',
                     },
                     title: {
-                        text: 'Temperature Sensor Data'
+                        text: 'Temperature Sensor Data<?php echo $title; ?>'
                     },
                     legend: {
                         enabled: true,
@@ -298,7 +319,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         zoomType: 'x',
                     },
                     title: {
-                        text: 'Temperature/Humidity Sensor Data'
+                        text: 'Temperature/Humidity Sensor Data<?php echo $title; ?>'
                     },
                     legend: {
                         enabled: true,
@@ -546,7 +567,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         zoomType: 'x',
                     },
                     title: {
-                        text: 'CO<sub>2</sub> Sensor Data',
+                        text: 'CO<sub>2</sub> Sensor Data<?php echo $title; ?>',
                         useHTML: true
                     },
                     legend: {
@@ -763,7 +784,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         zoomType: 'x',
                     },
                     title: {
-                        text: 'Pressure Sensor Data'
+                        text: 'Pressure Sensor Data<?php echo $title; ?>'
                     },
                     legend: {
                         enabled: true,
@@ -962,8 +983,6 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
 
 <?php
     } else if ($sensor_type == 'all') {
-
-        $number_lines = 0; // all
         $sensor_type_list = ['t','ht','co2','press'];
         $files = array();
         for ($i=0; $i < count($sensor_type_list); $i++) {
@@ -973,7 +992,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
             $sensor_log_second = "/var/www/mycodo/log/sensor-$sensor_type-tmp.log";
             $sensor_log_generate = "/var/tmp/sensor-all-$sensor_type-$graph_id.log";
             $files[] = $sensor_log_generate;
-            shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh $sensor_type all $number_lines $sensor_log_first $sensor_log_second $sensor_log_generate");
+            shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh $sensor_type all $time_start $time_end $sensor_log_first $sensor_log_second $sensor_log_generate");
         }
         $out = array();
         foreach($files as $file) {
@@ -986,12 +1005,12 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
         foreach ($out as $f) {
             fclose($f);
         }
-        $sensor_log_file_final = "image.php?span=graph&file=sensor-final-all-$graph_id.log";
+        $sensor_log_file_final = "file.php?span=graph&file=sensor-final-all-$graph_id.log";
         $relay_log_first = "/var/www/mycodo/log/relay.log";
         $relay_log_second = "/var/www/mycodo/log/relay-tmp.log";
         $relay_log_generate = "/var/tmp/relay-$graph_id.log";
-        shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh x relay 0 $relay_log_first $relay_log_second $relay_log_generate");
-        $relay_log_file_final = "image.php?span=graph&file=relay-$graph_id.log";
+        shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh x relay $time_start $time_end $relay_log_first $relay_log_second $relay_log_generate");
+        $relay_log_file_final = "file.php?span=graph&file=relay-$graph_id.log";
     ?>
 
 <script type="text/javascript">
@@ -1043,7 +1062,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         zoomType: 'x',
                     },
                     title: {
-                        text: 'All Sensor and Relay Data'
+                        text: 'All Sensors and Relay Data<?php echo $title; ?>'
                     },
                     legend: {
                         enabled: true,

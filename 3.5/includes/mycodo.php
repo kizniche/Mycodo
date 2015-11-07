@@ -380,6 +380,9 @@ if (isset($output_error)) {
             if (isset($graph_error)) {
                 echo '<div class="error">' . $graph_error . '</div>';
             }
+
+            if (isset($_POST['Generate_Graph_Span'])) $dyn_time_span = $_POST['Generate_Graph_Span'];
+            if (isset($_POST['Generate_Graph_Type'])) $dyn_type = $_POST['Generate_Graph_Type'];
             ?>
 
             <div>
@@ -434,27 +437,27 @@ if (isset($output_error)) {
                         <form style="float:left;" id="DynamicGraphForm" action="?tab=graph<?php if (isset($_GET['r'])) echo '&r=' , $_GET['r']; ?>" method="POST">
                         <div style="float:left; padding-right: 0.5em;">
                             <select style="height: 2.8em;" name="Generate_Graph_Span">
-                                <option value="1h">1 Hour</option>
-                                <option value="3h">3 Hours</option>
-                                <option value="6h">6 Hours</option>
-                                <option value="12h">12 Hours</option>
-                                <option value="1d">1 Day</option>
-                                <option value="3d">3 Days</option>
-                                <option value="1w" selected>1 Week</option>
-                                <option value="2w">2 Weeks</option>
-                                <option value="1m">1 Month</option>
-                                <option value="3m">3 Months</option>
-                                <option value="6m">6 Months</option>
-                                <option value="all">All Time</option>
+                                <option value="1h" <?php if ($dyn_time_span == '1h') echo 'selected="selected"'; ?>>1 Hour</option>
+                                <option value="3h" <?php if ($dyn_time_span == '3h') echo 'selected="selected"'; ?>>3 Hours</option>
+                                <option value="6h" <?php if ($dyn_time_span == '6h') echo 'selected="selected"'; ?>>6 Hours</option>
+                                <option value="12h" <?php if ($dyn_time_span == '12h') echo 'selected="selected"'; ?>>12 Hours</option>
+                                <option value="1d" <?php if ($dyn_time_span == '1d') echo 'selected="selected"'; ?>>1 Day</option>
+                                <option value="3d" <?php if ($dyn_time_span == '3d') echo 'selected="selected"'; ?>>3 Days</option>
+                                <option value="1w" <?php if ($dyn_time_span == '1w') echo 'selected="selected"'; ?>>1 Week</option>
+                                <option value="2w" <?php if ($dyn_time_span == '2w') echo 'selected="selected"'; ?>>2 Weeks</option>
+                                <option value="1m" <?php if ($dyn_time_span == '1m') echo 'selected="selected"'; ?>>1 Month</option>
+                                <option value="3m" <?php if ($dyn_time_span == '3m') echo 'selected="selected"'; ?>>3 Months</option>
+                                <option value="6m" <?php if ($dyn_time_span == '6m') echo 'selected="selected"'; ?>>6 Months</option>
+                                <option value="all" <?php if ($dyn_time_span == 'all') echo 'selected="selected"'; ?>>All Time</option>
                             </select>
                         </div>
                         <div style="float:left; padding-right: 0.5em;">
                             <select style="height: 2.8em;" name="Generate_Graph_Type">
-                                <option value="all">All Sensors</option>
-                                <option value="t">Temperature</option>
-                                <option value="ht">Humidity</option>
-                                <option value="co2">CO2</option>
-                                <option value="press">Pressure</option>
+                                <option value="all" <?php if ($dyn_type == 'all') echo 'selected="selected"'; ?>>All Sensors</option>
+                                <option value="t" <?php if ($dyn_type == 't') echo 'selected="selected"'; ?>>Temperature</option>
+                                <option value="ht" <?php if ($dyn_type == 'ht') echo 'selected="selected"'; ?>>Humidity</option>
+                                <option value="co2" <?php if ($dyn_type == 'co2') echo 'selected="selected"'; ?>>CO2</option>
+                                <option value="press" <?php if ($dyn_type == 'press') echo 'selected="selected"'; ?>>Pressure</option>
                             </select>
                         </div>
                         <div style="float:left;">
