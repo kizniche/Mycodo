@@ -4670,9 +4670,9 @@ if (isset($output_error)) {
                             <?php
                     if ($timelapse_timestamp) {
                         $timelapse_tstamp = substr(`date +"%Y%m%d%H%M%S"`, 0, -1);
-                        echo 'Output file series: ' , $timelapse_path , '/' , $timelapse_prefix , $timelapse_tstamp , '-00001.jpg';
+                        echo 'Output file series: ' , $timelapse_path , '/' , $timelapse_prefix , '-' , $timelapse_tstamp , '-00001.jpg';
                     } else {
-                        echo 'Output file series: ' , $timelapse_path , '/' , $timelapse_prefix , '00001.jpg';
+                        echo 'Output file series: ' , $timelapse_path , '/' , $timelapse_prefix , '-00001.jpg';
                     }
                      ?>
                         </td>

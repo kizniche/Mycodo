@@ -27,12 +27,9 @@ start() {
         SECON=$((($6/1000)+($5/1000)+20))
         /var/www/mycodo/cgi-bin/mycodo-client.py -r $1 $SECON
     fi
-
     # Getting extra command options
     DATABASE="/var/www/mycodo/config/mycodo.db"
-    EXTRA=`sqlite3 $DATABASE "SELECT Extra_Parameters FROM CameraStream;"`;
-
-
+    EXTRA=`sqlite3 $DATABASE "SELECT Extra_Parameters FROM CameraTimelapse;"`;
     if [ $4 -ne 0 ]; then
         if [ ! -z "$EXTRA" ]; then
             /usr/bin/nohup /usr/bin/raspistill $EXTRA --timelapse $5 --timeout $6 --thumb none -o $2/$3$4-%05d.jpg &
@@ -52,7 +49,6 @@ stop() {
     if [ $1 -ne 0 ]; then
         /var/www/mycodo/cgi-bin/mycodo-client.py -r $1 0
     fi
-    
     pkill raspistill
 }
 
