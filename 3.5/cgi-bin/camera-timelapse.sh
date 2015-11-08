@@ -35,15 +35,15 @@ start() {
 
     if [ $4 -ne 0 ]; then
         if [ ! -z "$EXTRA" ]; then
-            /usr/bin/raspistill $EXTRA --timelapse $5 --timeout $6 --thumb none -o $2/$3$4-%05d.jpg &
+            /usr/bin/nohup /usr/bin/raspistill $EXTRA --timelapse $5 --timeout $6 --thumb none -o $2/$3$4-%05d.jpg &
         else
-            /usr/bin/raspistill --timelapse $5 --timeout $6 --thumb none -o $2/$3$4-%05d.jpg &
+            /usr/bin/nohup /usr/bin/raspistill --timelapse $5 --timeout $6 --thumb none -o $2/$3$4-%05d.jpg &
         fi
     else
         if [ ! -z "$EXTRA" ]; then
-            /usr/bin/raspistill $EXTRA --timelapse $5 --timeout $6 --thumb none -o $2/$3-%05d.jpg &
+            /usr/bin/nohup /usr/bin/raspistill $EXTRA --timelapse $5 --timeout $6 --thumb none -o $2/$3-%05d.jpg &
         else
-            /usr/bin/raspistill --timelapse $5 --timeout $6 --thumb none -o $2/$3-%05d.jpg &
+            /usr/bin/nohup /usr/bin/raspistill --timelapse $5 --timeout $6 --thumb none -o $2/$3-%05d.jpg &
         fi
     fi
 }

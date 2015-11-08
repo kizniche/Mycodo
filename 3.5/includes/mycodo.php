@@ -2920,7 +2920,7 @@ if (isset($output_error)) {
                     echo 'Latest File: ' , date("F d Y H:i:s", $latest_file) , '<br>';
                     echo '
                     <div style="padding-bottom: 2em;">
-                        <img src=file.php?span=cam-timelapse>
+                        <img src="file.php?span=cam-timelapse" style="width:100%">
                     </div>
                     ';
                 } else if (file_exists($lock_timelapse)) {

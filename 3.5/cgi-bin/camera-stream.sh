@@ -34,9 +34,9 @@ start() {
     EXTRA=`sqlite3 $DATABASE "SELECT Extra_Parameters FROM CameraStream;"`;
 
     if [ ! -z "$EXTRA" ]; then
-        /usr/bin/raspistill $EXTRA --burst -o /tmp/stream/pic.jpg --timelapse 500 --timeout 9999999 --thumb 0:0:0 &
+        /usr/bin/nohup /usr/bin/raspistill $EXTRA --burst -o /tmp/stream/pic.jpg --timelapse 500 --timeout 9999999 --thumb 0:0:0 &
     else
-        /usr/bin/raspistill --burst -o /tmp/stream/pic.jpg --timelapse 500 --timeout 9999999 --thumb 0:0:0 &
+        /usr/bin/nohup /usr/bin/raspistill --burst -o /tmp/stream/pic.jpg --timelapse 500 --timeout 9999999 --thumb 0:0:0 &
     fi
 
     LD_LIBRARY_PATH=/usr/local/lib /usr/local/bin/mjpg_streamer -i "input_file.so -f /tmp/stream -n pic.jpg" -o "output_http.so -w /var/www/mycodo/ -p 6926" &
