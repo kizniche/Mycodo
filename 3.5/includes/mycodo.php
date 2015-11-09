@@ -3383,11 +3383,15 @@ if (isset($output_error)) {
                             echo "</form>";
                         }
 
-                        if (isset($_POST['Edit_Note']) || isset($_POST['Add_Image_Note'])) {
+                        if (isset($_POST['Edit_Note']) || isset($_POST['Add_Image_Note']) || isset($_GET['displaynote'])) {
                             echo "Edit Note<br> <br>";
                             $ndb = new SQLite3($note_db);
                             unset($note_id);
-                            $results = $ndb->query("SELECT Id, Time, User, Title, Note FROM Notes WHERE Id='" . $_POST['Edit_Note'] . "'");
+                            if (isset($_GET['displaynote'])) {
+                                $results = $ndb->query("SELECT Id, Time, User, Title, Note FROM Notes WHERE Id='" . $_GET['noteid'] . "'");
+                            } else {
+                                $results = $ndb->query("SELECT Id, Time, User, Title, Note FROM Notes WHERE Id='" . $_POST['Edit_Note'] . "'");
+                            }
                             while ($row = $results->fetchArray()) {
                                 $note_id = $row[0];
                                 $note_time = $row[1];

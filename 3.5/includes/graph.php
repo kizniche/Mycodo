@@ -64,12 +64,12 @@ if ($sensor_type != 'all') {
     $sensor_num_array = "sensor_{$sensor_type}_id";
 
     $ndb = new SQLite3($note_db);
-    $results = $ndb->query('SELECT Time, Title FROM Notes');
+    $results = $ndb->query('SELECT Id, Time, Title FROM Notes');
     $notes_file = "/var/tmp/notes.csv";
     if (file_exists($notes_file)) unlink($notes_file);
     $p = 0;
     while ($row = $results->fetchArray()) {
-        $message = trim($row[0]) . "," . $p . "," . $row[1] . PHP_EOL;
+        $message = trim($row[1]) . "," . $row[0] . "," . $p . "," . $row[2] . PHP_EOL;
         file_put_contents($notes_file, $message, FILE_APPEND);
         $p++;
     }
@@ -339,9 +339,10 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             var date = timeElements[0].split('-');
                             var time = timeElements[1].split(':');
                             var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
-                            title_full = items[1];
-                            text_full = "'"+items[2]+"'";
-                            notedata.push({x: date, title: title_full, text: text_full});
+                            title_full = items[2];
+                            url_full = "index.php?tab=data&displaynote=1&noteid="+items[1];
+                            text_full = "'"+items[3]+"'";
+                            notedata.push({x: date, title: title_full, url: url_full, text: text_full});
                         });
                         return notedata;
                     }
@@ -395,11 +396,25 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                                 align: 'right',
                                 x: -3
                             },
+                            min: 0,
                             top: '65%',
                             height: '35%',
                             offset: 0,
                             lineWidth: 2
                         }],
+                        plotOptions:{
+                            flags:{
+                                point:{
+                                events:{
+                                    click:function(e){
+                                        e.preventDefault();
+                                        var url = this.url;
+                                        window.open(url,'_blank');
+                                    }
+                                }
+                                }
+                            }
+                        },
                         series: [<?php
                         $count = 0;
                         for ($i = 0; $i < count(${$sensor_num_array}); $i++) {
@@ -452,7 +467,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             name: 'Notes',
                             type : 'flags',
                             data : getNoteData(),
-                            shape : 'squarepin'
+                            shape : 'squarepin',
                         }],
                         exporting: {
                             buttons: {
