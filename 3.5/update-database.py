@@ -29,7 +29,7 @@ sql_database_note = '/var/www/mycodo/config/notes.db'
 
 db_version_mycodo = 16
 db_version_user = 1
-db_version_note = 2
+db_version_note = 3
 
 import getopt
 import getpass
@@ -473,6 +473,11 @@ def note_database_update():
         AddColumn(sql_database_note, 'Uploads', 'Name', 'TEXT')
         AddColumn(sql_database_note, 'Uploads', 'File_Name', 'TEXT')
         AddColumn(sql_database_note, 'Uploads', 'Location', 'TEXT')
+
+    # Version 3
+    if current_db_version_note < 3:
+        AddColumn(sql_database_note, 'Notes', 'Title', 'TEXT')
+        ModNullValue(sql_database_note, 'Notes', 'Title', '')
 
 
 def mycodo_database_create():

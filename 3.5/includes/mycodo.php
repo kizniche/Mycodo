@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.86";
+$version = "3.5.87";
 
 ######### Start Edit Configure #########
 
@@ -3271,8 +3271,11 @@ if (isset($output_error)) {
                             <form action=\"?tab=data\" method=\"POST\" enctype=\"multipart/form-data\">
                             <table style=\"width:100%\";>
                                 <tr>
-                                    <td style=\"width: auto;\">
-                                        <textarea style=\"width: 40em;\" rows=\"6\" maxlength=\"100000\" name=\"Note_Text\" title=\"\"></textarea>
+                                    <td style=\"padding-bottom: 0.2em;\"><input style=\"width: 100%;\" type=\"text\" placeholder=\"Title\" maxlength=\"200\" name=\"Note_Title\"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan=\"2\">
+                                        <textarea style=\"width: 40em;\" placeholder=\"Note\" rows=\"6\" maxlength=\"100000\" name=\"Note_Text\"></textarea>
                                     </td>
                                     <td style=\"vertical-align: top; height:100%; width:100%;\">
                                         <table style=\"height:100%; width:100%;\">
@@ -3301,13 +3304,14 @@ if (isset($output_error)) {
 
                             $ndb = new SQLite3($note_db);
                             unset($note_id);
-                            $results = $ndb->query('SELECT Id, Time, User, Note FROM Notes');
+                            $results = $ndb->query('SELECT Id, Time, User, Title, Note FROM Notes');
                             $i = 0;
                             while ($row = $results->fetchArray()) {
                                 $note_id[$i] = $row[0];
                                 $note_time[$i] = $row[1];
                                 $note_user[$i] = $row[2];
-                                $note_note[$i] = $row[3];
+                                $note_title[$i] = $row[3];
+                                $note_note[$i] = $row[4];
                                 $i++;
                             }
                             if (!isset($note_id)) $note_id = [];
@@ -3326,7 +3330,7 @@ if (isset($output_error)) {
                                         <td style=\"border-style: solid none none none; border-width: 1px;\">$u</td>
                                         <td style=\"border-style: solid none none none; border-width: 1px; line-height:1.5em; width:7em;\">$note_time[$u]</td>
                                         <td style=\"border-style: solid none none none; border-width: 1px;\">$note_user[$u]</td>
-                                        <td style=\"border-style: solid none none none; border-width: 1px; padding-bottom: 0.7em;\" colspan=\"2\" class=\"wrap\">" . htmlspecialchars($note_note[$u]) . "</td>
+                                        <td style=\"border-style: solid none none none; border-width: 1px; padding-bottom: 0.7em;\" colspan=\"2\" class=\"wrap\"><div style=\"padding-bottom: 0.5em; font-weight: bold;\">" . htmlspecialchars($note_title[$u]) . "</div>" . htmlspecialchars($note_note[$u]) . "</td>
                                     </tr>";
 
                                     unset($upload_id);
@@ -3383,12 +3387,13 @@ if (isset($output_error)) {
                             echo "Edit Note<br> <br>";
                             $ndb = new SQLite3($note_db);
                             unset($note_id);
-                            $results = $ndb->query("SELECT Id, Time, User, Note FROM Notes WHERE Id='" . $_POST['Edit_Note'] . "'");
+                            $results = $ndb->query("SELECT Id, Time, User, Title, Note FROM Notes WHERE Id='" . $_POST['Edit_Note'] . "'");
                             while ($row = $results->fetchArray()) {
                                 $note_id = $row[0];
                                 $note_time = $row[1];
                                 $note_user = $row[2];
-                                $note_note = $row[3];
+                                $note_title = $row[3];
+                                $note_note = $row[4];
                             }
                             echo "<form action=\"?tab=data\" method=\"POST\" enctype=\"multipart/form-data\">
                             <table class=\"notes\">
@@ -3399,6 +3404,12 @@ if (isset($output_error)) {
                                 <tr>
                                     <td><input style=\"width: 11em;\" type=\"text\" maxlength=50 name=\"Edit_Note_Time\" title=\"\" value=\"$note_time\"></td>
                                     <td><input style=\"width: 11em;\" type=\"text\" maxlength=50 name=\"Edit_Note_User\" title=\"\" value=\"$note_user\"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan=\"2\" style=\"padding-top: 0.5em;\">Title</td>
+                                </tr>
+                                <tr>
+                                    <td colspan=\"2\"><input style=\"width: 100%;\" type=\"text\" maxlength=50 name=\"Edit_Note_Title\" title=\"\" value=\"$note_title\"></td>
                                 </tr>
                             </table>
                             <br>

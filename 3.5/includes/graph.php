@@ -62,6 +62,19 @@ if ($sensor_type != 'all') {
     $relay_log_file_final = "file.php?span=graph&file=relay-$graph_id.log";
 
     $sensor_num_array = "sensor_{$sensor_type}_id";
+
+    $ndb = new SQLite3($note_db);
+    $results = $ndb->query('SELECT Time, Title FROM Notes');
+    $notes_file = "/var/tmp/notes.csv";
+    if (file_exists($notes_file)) unlink($notes_file);
+    $p = 0;
+    while ($row = $results->fetchArray()) {
+        $message = trim($row[0]) . "," . $p . "," . $row[1] . PHP_EOL;
+        file_put_contents($notes_file, $message, FILE_APPEND);
+        $p++;
+    }
+    $notes_file_final = "file.php?span=graph&file=notes.csv";
+
 }
 
 if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
@@ -284,243 +297,266 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
     $(document).ready(function() {
         $.getJSON("<?php echo $sensor_log_file_final; ?>", function(sensor_csv) {
             $.getJSON("<?php echo $relay_log_file_final; ?>", function(relay_csv) {
-                function getSensorData(sensor, condition) {
-                    var sensordata = [];
-                    var lines = sensor_csv.split('\n');
-                    $.each(lines, function(lineNo,line) {
-                        if (line == "") return;
-                        var items = line.split(' ');
-                        var timeElements = items[0].split('-');
-                        var date = timeElements[0].split('/');
-                        var time = timeElements[1].split(':');
-                        var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
-                        if (condition == 'temperature' && parseInt(items[4]) == sensor) sensordata.push([date,parseFloat(items[1])]);
-                    if (condition == 'humidity' && parseInt(items[4]) == sensor) sensordata.push([date,parseFloat(items[2])]);
-                    if (condition == 'dewpoint' && parseInt(items[4]) == sensor) sensordata.push([date,parseFloat(items[3])]);
-                    });
-                    return sensordata;
-                }
-                function getRelayData(relay) {
-                    var relaydata = [];
-                    var num_relays = <?php echo count($relay_id); ?>;
-                    var lines = relay_csv.split('\n');
-                    $.each(lines, function(lineNo,line) {
-                        if (line == "") return;
-                        var items = line.split(' ');
-                        var timeElements = items[0].split('-');
-                        var date = timeElements[0].split('/');
-                        var time = timeElements[1].split(':');
-                        var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
-                        if (parseInt(items[2]) == relay) relaydata.push([date,parseFloat(items[4])]);
-                    });
-                    return relaydata;
-                }
-                $('#container').highcharts('StockChart', {
-                    chart: {
-                        zoomType: 'x',
-                    },
-                    title: {
-                        text: 'Temperature/Humidity Sensor Data<?php echo $title; ?>'
-                    },
-                    legend: {
-                        enabled: true,
-                        layout: 'vertical',
-                        align: 'right',
-                        verticalAlign: 'top',
-                        y: <?php echo $legend_y; ?>,
-                        itemMarginBottom: 5
-                    },
-                    exporting: {
-                        fallbackToExportServer: false,
-                    },
-                    yAxis: [{
-                        title: {
-                            text: 'Temperature (°C)',
-                        },
-                        labels: {
-                            format: '{value}°C',
-                            align: 'left',
-                            x: -3
-                        },
-                        height: '60%',
-                        minRange: 5,
-                        opposite: false
-                    },{
-                        title: {
-                            text: 'Humidity (%)',
-                        },
-                        labels: {
-                            format: '{value}%',
-                            align: 'right',
-                            x: -3
-                        },
-                        height: '60%',
-                        minRange: 10,
-                    },{
-                        title: {
-                            text: 'Duration (sec)',
-                        },
-                        labels: {
-                            format: '{value}sec',
-                            align: 'right',
-                            x: -3
-                        },
-                        top: '65%',
-                        height: '35%',
-                        offset: 0,
-                        lineWidth: 2
-                    }],
-                    series: [<?php
-                    $count = 0;
-                    for ($i = 0; $i < count(${$sensor_num_array}); $i++) {
-                    ?>{
-                        name: '<?php echo "S" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Humidity',
-                        color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
-                        yAxis: 1,
-                        data: getSensorData(<?php echo $i; ?>, 'humidity'),
-                        tooltip: {
-                            valueSuffix: ' %',
-                            valueDecimals: 1,
-                        }
-                    },{
-                        name: '<?php echo "S" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Temperature',
-                        color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
-                        data: getSensorData(<?php echo $i; ?>, 'temperature'),
-                        tooltip: {
-                            valueSuffix: '°C',
-                            valueDecimals: 1,
-                        }
-                    },{
-                        name: '<?php echo "S" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Dew Point',
-                        color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
-                        data: getSensorData(<?php echo $i; ?>, 'dewpoint'),
-                        tooltip: {
-                            valueSuffix: ' °C',
-                            valueDecimals: 1,
-                        }
-                    },<?php 
+                $.getJSON("<?php echo $notes_file_final; ?>", function(note_csv) {
+                    function getSensorData(sensor, condition) {
+                        var sensordata = [];
+                        var lines = sensor_csv.split('\n');
+                        $.each(lines, function(lineNo,line) {
+                            if (line == "") return;
+                            var items = line.split(' ');
+                            var timeElements = items[0].split('-');
+                            var date = timeElements[0].split('/');
+                            var time = timeElements[1].split(':');
+                            var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
+                            if (condition == 'temperature' && parseInt(items[4]) == sensor) sensordata.push([date,parseFloat(items[1])]);
+                            if (condition == 'humidity' && parseInt(items[4]) == sensor) sensordata.push([date,parseFloat(items[2])]);
+                            if (condition == 'dewpoint' && parseInt(items[4]) == sensor) sensordata.push([date,parseFloat(items[3])]);
+                        });
+                        return sensordata;
                     }
-                    for ($i = 0; $i < count($relay_id); $i++) {
-                    ?>{
-                        name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
-                        type: 'column',
-                        dataGrouping: {
-                            approximation: 'low',
-                            groupPixelWidth: 3,
-                        },
-                        color: Highcharts.getOptions().colors[<?php echo $i+1; ?>],
-                        data: getRelayData(<?php echo $i+1; ?>),
-                        yAxis: 2,
-                        tooltip: {
-                            valueSuffix: ' sec',
-                            valueDecimals: 0,
-                            shared: true,
-                        }
-                    },<?php 
+                    function getRelayData(relay) {
+                        var relaydata = [];
+                        var num_relays = <?php echo count($relay_id); ?>;
+                        var lines = relay_csv.split('\n');
+                        $.each(lines, function(lineNo,line) {
+                            if (line == "") return;
+                            var items = line.split(' ');
+                            var timeElements = items[0].split('-');
+                            var date = timeElements[0].split('/');
+                            var time = timeElements[1].split(':');
+                            var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
+                            if (parseInt(items[2]) == relay) relaydata.push([date,parseFloat(items[4])]);
+                        });
+                        return relaydata;
                     }
-                    ?>],
-                    exporting: {
-                        buttons: {
-                            custom: {
-                                text: "Hide All",
+                    function getNoteData() {
+                        var notedata = [];
+                        var lines = note_csv.split('\n');
+                        $.each(lines, function(lineNo,line) {
+                            if (line == "") return;
+                            var items = line.split(',');
+                            var timeElements = items[0].split(' ');
+                            var date = timeElements[0].split('-');
+                            var time = timeElements[1].split(':');
+                            var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
+                            title_full = items[1];
+                            text_full = "'"+items[2]+"'";
+                            notedata.push({x: date, title: title_full, text: text_full});
+                        });
+                        return notedata;
+                    }
+                    $('#container').highcharts('StockChart', {
+                        chart: {
+                            zoomType: 'x',
+                        },
+                        title: {
+                            text: 'Temperature/Humidity Sensor Data<?php echo $title; ?>'
+                        },
+                        legend: {
+                            enabled: true,
+                            layout: 'vertical',
+                            align: 'right',
+                            verticalAlign: 'top',
+                            y: <?php echo $legend_y; ?>,
+                            itemMarginBottom: 5
+                        },
+                        exporting: {
+                            fallbackToExportServer: false,
+                        },
+                        yAxis: [{
+                            title: {
+                                text: 'Temperature (°C)',
+                            },
+                            labels: {
+                                format: '{value}°C',
+                                align: 'left',
+                                x: -3
+                            },
+                            height: '60%',
+                            minRange: 5,
+                            opposite: false
+                        },{
+                            title: {
+                                text: 'Humidity (%)',
+                            },
+                            labels: {
+                                format: '{value}%',
                                 align: 'right',
-                                x: -40,
-                                symbolFill: '#B5C9DF',
-                                hoverSymbolFill: '#779ABF',
-                                _titleKey: 'Balance',
-                                onclick: function () {
-                                    Click();
-                                    if (this.series[0].visible) {
-                                        this.exportSVGElements[2].attr({ text: 'Hide All' });
-                                    } else {
-                                        this.exportSVGElements[2].attr({ text: 'Show All' });
+                                x: -3
+                            },
+                            height: '60%',
+                            minRange: 10,
+                        },{
+                            title: {
+                                text: 'Duration (sec)',
+                            },
+                            labels: {
+                                format: '{value}sec',
+                                align: 'right',
+                                x: -3
+                            },
+                            top: '65%',
+                            height: '35%',
+                            offset: 0,
+                            lineWidth: 2
+                        }],
+                        series: [<?php
+                        $count = 0;
+                        for ($i = 0; $i < count(${$sensor_num_array}); $i++) {
+                        ?>{
+                            name: '<?php echo "S" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Humidity',
+                            color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
+                            yAxis: 1,
+                            data: getSensorData(<?php echo $i; ?>, 'humidity'),
+                            tooltip: {
+                                valueSuffix: ' %',
+                                valueDecimals: 1,
+                            }
+                        },{
+                            name: '<?php echo "S" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Temperature',
+                            color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
+                            data: getSensorData(<?php echo $i; ?>, 'temperature'),
+                            tooltip: {
+                                valueSuffix: '°C',
+                                valueDecimals: 1,
+                            }
+                        },{
+                            name: '<?php echo "S" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Dew Point',
+                            color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
+                            data: getSensorData(<?php echo $i; ?>, 'dewpoint'),
+                            tooltip: {
+                                valueSuffix: ' °C',
+                                valueDecimals: 1,
+                            }
+                        },<?php 
+                        }
+                        for ($i = 0; $i < count($relay_id); $i++) {
+                        ?>{
+                            name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
+                            type: 'column',
+                            dataGrouping: {
+                                approximation: 'low',
+                                groupPixelWidth: 3,
+                            },
+                            color: Highcharts.getOptions().colors[<?php echo $i+1; ?>],
+                            data: getRelayData(<?php echo $i+1; ?>),
+                            yAxis: 2,
+                            tooltip: {
+                                valueSuffix: ' sec',
+                                valueDecimals: 0,
+                                shared: true,
+                            }
+                        },<?php 
+                        }
+                        ?>{
+                            name: 'Notes',
+                            type : 'flags',
+                            data : getNoteData(),
+                            shape : 'squarepin'
+                        }],
+                        exporting: {
+                            buttons: {
+                                custom: {
+                                    text: "Hide All",
+                                    align: 'right',
+                                    x: -40,
+                                    symbolFill: '#B5C9DF',
+                                    hoverSymbolFill: '#779ABF',
+                                    _titleKey: 'Balance',
+                                    onclick: function () {
+                                        Click();
+                                        if (this.series[0].visible) {
+                                            this.exportSVGElements[2].attr({ text: 'Hide All' });
+                                        } else {
+                                            this.exportSVGElements[2].attr({ text: 'Show All' });
+                                        }
                                     }
                                 }
                             }
+                        },
+                        rangeSelector: {
+                            buttons: [{
+                                type: 'hour',
+                                count: 1,
+                                text: '1h'
+                            }, {
+                                type: 'hour',
+                                count: 3,
+                                text: '3h'
+                            }, {
+                                type: 'hour',
+                                count: 6,
+                                text: '6h'
+                            }, {
+                                type: 'hour',
+                                count: 12,
+                                text: '12h'
+                            }, {
+                                type: 'day',
+                                count: 1,
+                                text: '1d'
+                            }, {
+                                type: 'day',
+                                count: 3,
+                                text: '3d'
+                            }, {
+                                type: 'week',
+                                count: 1,
+                                text: '1w'
+                            }, {
+                                type: 'week',
+                                count: 2,
+                                text: '2w'
+                            }, {
+                                type: 'month',
+                                count: 1,
+                                text: '1m'
+                            }, {
+                                type: 'month',
+                                count: 2,
+                                text: '2m'
+                            }, {
+                                type: 'month',
+                                count: 3,
+                                text: '3m'
+                            }, {
+                                type: 'month',
+                                count: 6,
+                                text: '6m'
+                            }, {
+                                type: 'year',
+                                count: 1,
+                                text: '1y'
+                            }, {
+                                type: 'all',
+                                text: 'Full'
+                            }],
+                            selected: 13
+                        },
+                        credits: {
+                            enabled: false,
+                            href: "https://github.com/kizniche/Mycodo",
+                            text: "Mycodo"
                         }
-                    },
-                    rangeSelector: {
-                        buttons: [{
-                            type: 'hour',
-                            count: 1,
-                            text: '1h'
-                        }, {
-                            type: 'hour',
-                            count: 3,
-                            text: '3h'
-                        }, {
-                            type: 'hour',
-                            count: 6,
-                            text: '6h'
-                        }, {
-                            type: 'hour',
-                            count: 12,
-                            text: '12h'
-                        }, {
-                            type: 'day',
-                            count: 1,
-                            text: '1d'
-                        }, {
-                            type: 'day',
-                            count: 3,
-                            text: '3d'
-                        }, {
-                            type: 'week',
-                            count: 1,
-                            text: '1w'
-                        }, {
-                            type: 'week',
-                            count: 2,
-                            text: '2w'
-                        }, {
-                            type: 'month',
-                            count: 1,
-                            text: '1m'
-                        }, {
-                            type: 'month',
-                            count: 2,
-                            text: '2m'
-                        }, {
-                            type: 'month',
-                            count: 3,
-                            text: '3m'
-                        }, {
-                            type: 'month',
-                            count: 6,
-                            text: '6m'
-                        }, {
-                            type: 'year',
-                            count: 1,
-                            text: '1y'
-                        }, {
-                            type: 'all',
-                            text: 'Full'
-                        }],
-                        selected: 13
-                    },
-                    credits: {
-                        enabled: false,
-                        href: "https://github.com/kizniche/Mycodo",
-                        text: "Mycodo"
+                    });
+                    function Click() {
+                        var chart = $('#container').highcharts();
+                        var series = chart.series[0];
+                        if (series.visible) {
+                            $(chart.series).each(function(){
+                                //this.hide();
+                                this.setVisible(false, false);
+                            });
+                            chart.redraw();
+                        } else {
+                            $(chart.series).each(function(){
+                                //this.show();
+                                this.setVisible(true, false);
+                            });
+                            chart.redraw();
+                        }
                     }
                 });
-                function Click() {
-                    var chart = $('#container').highcharts();
-                    var series = chart.series[0];
-                    if (series.visible) {
-                        $(chart.series).each(function(){
-                            //this.hide();
-                            this.setVisible(false, false);
-                        });
-                        chart.redraw();
-                    } else {
-                        $(chart.series).each(function(){
-                            //this.show();
-                            this.setVisible(true, false);
-                        });
-                        chart.redraw();
-                    }
-                }
             });
         });
     });

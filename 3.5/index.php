@@ -533,24 +533,18 @@ class OneFileLoginApplication {
             <link rel="icon" type="image/png" href="img/favicon.png">
         </head>
         <body>
-        <div style="padding-top: 2em; width: 15em; margin: 8 auto; text-align: left; ">
+        <div style="padding-top: 2em; width: 12em; margin: 8 auto; text-align: left; ">
             <div style="padding-bottom: 0.6em; text-align: center; font-size: 1.8em;">Mycodo</div>
             <form method="post" action="<?php echo $_SERVER['SCRIPT_NAME']; ?>" name="loginform">
-            <table>
+            <table style="width: 100%;">
                 <tr>
                     <td>
-                        <label for="login_input_username">Username</label>
-                    </td>
-                    <td>
-                        <input id="login_input_username" type="text" name="user_name" title="Username or Email" required /> 
+                        <input style="width: 100%;" id="login_input_username" placeholder="User" type="text" name="user_name" title="Username or Email" required /> 
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <label for="login_input_password">Password</label>
-                    </td>
-                    <td>
-                        <input id="login_input_password" type="password" name="user_password" autocomplete="off" required />
+                        <input style="width: 100%;" id="login_input_password" placeholder="Password" type="password" name="user_password" autocomplete="off" required />
                     </td>
                 </tr>
                 <tr>
