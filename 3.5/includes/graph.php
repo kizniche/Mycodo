@@ -76,6 +76,8 @@ if ($sensor_type != 'all') {
     $sensor_num_array = "sensor_{$sensor_type}_id";
 }
 
+$relay_file = "/var/tmp/relay-$graph_id.log";
+
 if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
     ?>
 
@@ -99,36 +101,40 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         return sensordata;
                     }
                     function getRelayData(relay) {
-                        var relaydata = [];
-                        var num_relays = <?php echo count($relay_id); ?>;
-                        var lines = relay_csv.split('\n');
-                        $.each(lines, function(lineNo,line) {
-                            if (line == "") return;
-                            var items = line.split(' ');
-                            var timeElements = items[0].split('-');
-                            var date = timeElements[0].split('/');
-                            var time = timeElements[1].split(':');
-                            var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
-                            if (parseInt(items[2]) == relay) relaydata.push([date,parseFloat(items[4])]);
-                        });
-                        return relaydata;
+                        if (relay_csv != 0) {
+                            var relaydata = [];
+                            var num_relays = <?php echo count($relay_id); ?>;
+                            var lines = relay_csv.split('\n');
+                            $.each(lines, function(lineNo,line) {
+                                if (line == "") return;
+                                var items = line.split(' ');
+                                var timeElements = items[0].split('-');
+                                var date = timeElements[0].split('/');
+                                var time = timeElements[1].split(':');
+                                var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
+                                if (parseInt(items[2]) == relay) relaydata.push([date,parseFloat(items[4])]);
+                            });
+                            return relaydata;
+                        } else return 0;
                     }
                     function getNoteData() {
-                        var notedata = [];
-                        var lines = note_csv.split('\n');
-                        $.each(lines, function(lineNo,line) {
-                            if (line == "") return;
-                            var items = line.split(',');
-                            var timeElements = items[0].split(' ');
-                            var date = timeElements[0].split('-');
-                            var time = timeElements[1].split(':');
-                            var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
-                            title_full = items[2];
-                            url_full = "index.php?tab=data&displaynote=1&noteid="+items[1];
-                            text_full = "'"+items[3]+"'";
-                            notedata.push({x: date, title: title_full, url: url_full, text: text_full});
-                        });
-                        return notedata;
+                        if (note_csv != 0) {
+                            var notedata = [];
+                            var lines = note_csv.split('\n');
+                            $.each(lines, function(lineNo,line) {
+                                if (line == "") return;
+                                var items = line.split(',');
+                                var timeElements = items[0].split(' ');
+                                var date = timeElements[0].split('-');
+                                var time = timeElements[1].split(':');
+                                var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
+                                title_full = items[2];
+                                url_full = "index.php?tab=data&displaynote=1&noteid="+items[1];
+                                text_full = "'"+items[3]+"'";
+                                notedata.push({x: date, title: title_full, url: url_full, text: text_full});
+                            });
+                            return notedata;
+                        } else return 0;
                     }
                     $('#container').highcharts('StockChart', {
                         chart: {
@@ -155,8 +161,9 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             labels: {
                                 format: '{value}°C',
                             },
-                            height: '60%',
-                        }, {
+                            <?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) echo "height: '60%',"; ?>
+                        }<?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) { ?>
+                        ,{
                             title: {
                                 text: 'Duration (sec)'
                             },
@@ -168,7 +175,9 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             height: '35%',
                             offset: 0,
                             lineWidth: 2
-                        }],
+                        }<?php
+                        }
+                        ?>],
                         plotOptions:{
                             flags:{
                                 point:{
@@ -195,6 +204,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             }
                         },<?php
                         }
+                        if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) {
                         for ($i = 0; $i < count($relay_id); $i++) {
                         ?>{
                             name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
@@ -212,12 +222,16 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             }
                         },<?php 
                         }
+                        }
+                        if (filesize($notes_file) > 16 && !empty(trim(file_get_contents($notes_file)))) {
                         ?>{
                             name: 'Notes',
                             type : 'flags',
                             data : getNoteData(),
                             shape : 'squarepin',
-                        }],
+                        }<?php
+                        }
+                        ?>],
                         exporting: {
                             buttons: {
                                 custom: {
@@ -352,36 +366,40 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         return sensordata;
                     }
                     function getRelayData(relay) {
-                        var relaydata = [];
-                        var num_relays = <?php echo count($relay_id); ?>;
-                        var lines = relay_csv.split('\n');
-                        $.each(lines, function(lineNo,line) {
-                            if (line == "") return;
-                            var items = line.split(' ');
-                            var timeElements = items[0].split('-');
-                            var date = timeElements[0].split('/');
-                            var time = timeElements[1].split(':');
-                            var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
-                            if (parseInt(items[2]) == relay) relaydata.push([date,parseFloat(items[4])]);
-                        });
-                        return relaydata;
+                        if (relay_csv != 0) {
+                            var relaydata = [];
+                            var num_relays = <?php echo count($relay_id); ?>;
+                            var lines = relay_csv.split('\n');
+                            $.each(lines, function(lineNo,line) {
+                                if (line == "") return;
+                                var items = line.split(' ');
+                                var timeElements = items[0].split('-');
+                                var date = timeElements[0].split('/');
+                                var time = timeElements[1].split(':');
+                                var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
+                                if (parseInt(items[2]) == relay) relaydata.push([date,parseFloat(items[4])]);
+                            });
+                            return relaydata;
+                        } else return 0;
                     }
                     function getNoteData() {
-                        var notedata = [];
-                        var lines = note_csv.split('\n');
-                        $.each(lines, function(lineNo,line) {
-                            if (line == "") return;
-                            var items = line.split(',');
-                            var timeElements = items[0].split(' ');
-                            var date = timeElements[0].split('-');
-                            var time = timeElements[1].split(':');
-                            var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
-                            title_full = items[2];
-                            url_full = "index.php?tab=data&displaynote=1&noteid="+items[1];
-                            text_full = "'"+items[3]+"'";
-                            notedata.push({x: date, title: title_full, url: url_full, text: text_full});
-                        });
-                        return notedata;
+                        if (note_csv != 0) {
+                            var notedata = [];
+                            var lines = note_csv.split('\n');
+                            $.each(lines, function(lineNo,line) {
+                                if (line == "") return;
+                                var items = line.split(',');
+                                var timeElements = items[0].split(' ');
+                                var date = timeElements[0].split('-');
+                                var time = timeElements[1].split(':');
+                                var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
+                                title_full = items[2];
+                                url_full = "index.php?tab=data&displaynote=1&noteid="+items[1];
+                                text_full = "'"+items[3]+"'";
+                                notedata.push({x: date, title: title_full, url: url_full, text: text_full});
+                            });
+                            return notedata;
+                        } else return 0;
                     }
                     $('#container').highcharts('StockChart', {
                         chart: {
@@ -410,7 +428,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                                 align: 'left',
                                 x: -3
                             },
-                            height: '60%',
+                            <?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) echo "height: '60%',"; ?>
                             minRange: 5,
                             opposite: false
                         },{
@@ -422,9 +440,11 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                                 align: 'right',
                                 x: -3
                             },
-                            height: '60%',
+                            <?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) echo "height: '60%',"; ?>
                             minRange: 10,
-                        },{
+                        }
+                        <?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) { ?>
+                        ,{
                             title: {
                                 text: 'Duration (sec)',
                             },
@@ -438,7 +458,9 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             height: '35%',
                             offset: 0,
                             lineWidth: 2
-                        }],
+                        }<?php
+                        }
+                        ?>],
                         plotOptions:{
                             flags:{
                                 point:{
@@ -482,6 +504,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             }
                         },<?php 
                         }
+                        if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) {
                         for ($i = 0; $i < count($relay_id); $i++) {
                         ?>{
                             name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
@@ -500,12 +523,16 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             }
                         },<?php 
                         }
+                        }
+                        if (filesize($notes_file) > 16 && !empty(trim(file_get_contents($notes_file)))) {
                         ?>{
                             name: 'Notes',
                             type : 'flags',
                             data : getNoteData(),
                             shape : 'squarepin',
-                        }],
+                        }<?php
+                        }
+                        ?>],
                         exporting: {
                             buttons: {
                                 custom: {
@@ -638,36 +665,40 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         return sensordata;
                     }
                     function getRelayData(relay) {
-                        var relaydata = [];
-                        var num_relays = <?php echo count($relay_id); ?>;
-                        var lines = relay_csv.split('\n');
-                        $.each(lines, function(lineNo,line) {
-                            if (line == "") return;
-                            var items = line.split(' ');
-                            var timeElements = items[0].split('-');
-                            var date = timeElements[0].split('/');
-                            var time = timeElements[1].split(':');
-                            var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
-                            if (parseInt(items[2]) == relay) relaydata.push([date,parseFloat(items[4])]);
-                        });
-                        return relaydata;
+                        if (relay_csv != 0) {
+                            var relaydata = [];
+                            var num_relays = <?php echo count($relay_id); ?>;
+                            var lines = relay_csv.split('\n');
+                            $.each(lines, function(lineNo,line) {
+                                if (line == "") return;
+                                var items = line.split(' ');
+                                var timeElements = items[0].split('-');
+                                var date = timeElements[0].split('/');
+                                var time = timeElements[1].split(':');
+                                var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
+                                if (parseInt(items[2]) == relay) relaydata.push([date,parseFloat(items[4])]);
+                            });
+                            return relaydata;
+                        } else return 0;
                     }
                     function getNoteData() {
-                        var notedata = [];
-                        var lines = note_csv.split('\n');
-                        $.each(lines, function(lineNo,line) {
-                            if (line == "") return;
-                            var items = line.split(',');
-                            var timeElements = items[0].split(' ');
-                            var date = timeElements[0].split('-');
-                            var time = timeElements[1].split(':');
-                            var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
-                            title_full = items[2];
-                            url_full = "index.php?tab=data&displaynote=1&noteid="+items[1];
-                            text_full = "'"+items[3]+"'";
-                            notedata.push({x: date, title: title_full, url: url_full, text: text_full});
-                        });
-                        return notedata;
+                        if (note_csv != 0) {
+                            var notedata = [];
+                            var lines = note_csv.split('\n');
+                            $.each(lines, function(lineNo,line) {
+                                if (line == "") return;
+                                var items = line.split(',');
+                                var timeElements = items[0].split(' ');
+                                var date = timeElements[0].split('-');
+                                var time = timeElements[1].split(':');
+                                var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
+                                title_full = items[2];
+                                url_full = "index.php?tab=data&displaynote=1&noteid="+items[1];
+                                text_full = "'"+items[3]+"'";
+                                notedata.push({x: date, title: title_full, url: url_full, text: text_full});
+                            });
+                            return notedata;
+                        } else return 0;
                     }
                     $('#container').highcharts('StockChart', {
                         chart: {
@@ -697,8 +728,9 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             labels: {
                                 format: '{value}ppmv',
                             },
-                            height: '60%',
-                        }, {
+                            <?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) echo "height: '60%',"; ?>
+                        }<?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) { ?>
+                        ,{
                             title: {
                                 text: 'Duration (sec)'
                             },
@@ -710,7 +742,9 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             height: '35%',
                             offset: 0,
                             lineWidth: 2
-                        }],
+                        }<?php
+                        }
+                        ?>],
                         plotOptions:{
                             flags:{
                                 point:{
@@ -737,6 +771,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             }
                         },<?php
                         }
+                        if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) {
                         for ($i = 0; $i < count($relay_id); $i++) {
                         ?>{
                             name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
@@ -754,12 +789,16 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             }
                         },<?php 
                         }
+                        }
+                        if (filesize($notes_file) > 16 && !empty(trim(file_get_contents($notes_file)))) {
                         ?>{
                             name: 'Notes',
                             type : 'flags',
                             data : getNoteData(),
                             shape : 'squarepin',
-                        }],
+                        }<?php
+                        }
+                        ?>],
                         exporting: {
                             buttons: {
                                 custom: {
@@ -893,36 +932,40 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         return sensordata;
                     }
                     function getRelayData(relay) {
-                        var relaydata = [];
-                        var num_relays = <?php echo count($relay_id); ?>;
-                        var lines = relay_csv.split('\n');
-                        $.each(lines, function(lineNo,line) {
-                            if (line == "") return;
-                            var items = line.split(' ');
-                            var timeElements = items[0].split('-');
-                            var date = timeElements[0].split('/');
-                            var time = timeElements[1].split(':');
-                            var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
-                            if (parseInt(items[2]) == relay) relaydata.push([date,parseFloat(items[4])]);
-                        });
-                        return relaydata;
+                        if (relay_csv != 0) {
+                            var relaydata = [];
+                            var num_relays = <?php echo count($relay_id); ?>;
+                            var lines = relay_csv.split('\n');
+                            $.each(lines, function(lineNo,line) {
+                                if (line == "") return;
+                                var items = line.split(' ');
+                                var timeElements = items[0].split('-');
+                                var date = timeElements[0].split('/');
+                                var time = timeElements[1].split(':');
+                                var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
+                                if (parseInt(items[2]) == relay) relaydata.push([date,parseFloat(items[4])]);
+                            });
+                            return relaydata;
+                        } else return 0;
                     }
                     function getNoteData() {
-                        var notedata = [];
-                        var lines = note_csv.split('\n');
-                        $.each(lines, function(lineNo,line) {
-                            if (line == "") return;
-                            var items = line.split(',');
-                            var timeElements = items[0].split(' ');
-                            var date = timeElements[0].split('-');
-                            var time = timeElements[1].split(':');
-                            var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
-                            title_full = items[2];
-                            url_full = "index.php?tab=data&displaynote=1&noteid="+items[1];
-                            text_full = "'"+items[3]+"'";
-                            notedata.push({x: date, title: title_full, url: url_full, text: text_full});
-                        });
-                        return notedata;
+                        if (note_csv != 0) {
+                            var notedata = [];
+                            var lines = note_csv.split('\n');
+                            $.each(lines, function(lineNo,line) {
+                                if (line == "") return;
+                                var items = line.split(',');
+                                var timeElements = items[0].split(' ');
+                                var date = timeElements[0].split('-');
+                                var time = timeElements[1].split(':');
+                                var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
+                                title_full = items[2];
+                                url_full = "index.php?tab=data&displaynote=1&noteid="+items[1];
+                                text_full = "'"+items[3]+"'";
+                                notedata.push({x: date, title: title_full, url: url_full, text: text_full});
+                            });
+                            return notedata;
+                        } else return 0;
                     }
                     $('#container').highcharts('StockChart', {
                         chart: {
@@ -951,7 +994,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                                 align: 'left',
                                 x: -3
                             },
-                            height: '60%',
+                            <?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) echo "height: '60%',"; ?>
                             minRange: 5,
                             opposite: false
                         },{
@@ -963,8 +1006,9 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                                 align: 'right',
                                 x: -3
                             },
-                            height: '60%',
-                        },{
+                            <?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) echo "height: '60%',"; ?>
+                        }<?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) { ?>
+                        ,{
                             title: {
                                 text: 'Duration (sec)',
                             },
@@ -978,7 +1022,9 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             height: '35%',
                             offset: 0,
                             lineWidth: 2
-                        }],
+                        }<?php
+                        }
+                        ?>],
                         plotOptions:{
                             flags:{
                                 point:{
@@ -1014,6 +1060,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             }
                         },<?php 
                         }
+                        if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) {
                         for ($i = 0; $i < count($relay_id); $i++) {
                         ?>{
                             name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
@@ -1032,12 +1079,16 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             }
                         },<?php 
                         }
+                        }
+                        if (filesize($notes_file) > 16 && !empty(trim(file_get_contents($notes_file)))) {
                         ?>{
                             name: 'Notes',
                             type : 'flags',
                             data : getNoteData(),
                             shape : 'squarepin',
-                        }],
+                        }<?php
+                        }
+                        ?>],
                         exporting: {
                             buttons: {
                                 custom: {
@@ -1209,36 +1260,40 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         return sensordata;
                     }
                     function getRelayData(relay) {
-                        var relaydata = [];
-                        var num_relays = <?php echo count($relay_id); ?>;
-                        var lines = relay_csv.split('\n');
-                        $.each(lines, function(lineNo,line) {
-                            if (line == "") return;
-                            var items = line.split(' ');
-                            var timeElements = items[0].split('-');
-                            var date = timeElements[0].split('/');
-                            var time = timeElements[1].split(':');
-                            var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
-                            if (parseInt(items[2]) == relay) relaydata.push([date,parseFloat(items[4])]);
-                        });
-                        return relaydata;
+                        if (relay_csv != 0) {
+                            var relaydata = [];
+                            var num_relays = <?php echo count($relay_id); ?>;
+                            var lines = relay_csv.split('\n');
+                            $.each(lines, function(lineNo,line) {
+                                if (line == "") return;
+                                var items = line.split(' ');
+                                var timeElements = items[0].split('-');
+                                var date = timeElements[0].split('/');
+                                var time = timeElements[1].split(':');
+                                var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
+                                if (parseInt(items[2]) == relay) relaydata.push([date,parseFloat(items[4])]);
+                            });
+                            return relaydata;
+                        } else return 0;
                     }
                     function getNoteData() {
-                        var notedata = [];
-                        var lines = note_csv.split('\n');
-                        $.each(lines, function(lineNo,line) {
-                            if (line == "") return;
-                            var items = line.split(',');
-                            var timeElements = items[0].split(' ');
-                            var date = timeElements[0].split('-');
-                            var time = timeElements[1].split(':');
-                            var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
-                            title_full = items[2];
-                            url_full = "index.php?tab=data&displaynote=1&noteid="+items[1];
-                            text_full = "'"+items[3]+"'";
-                            notedata.push({x: date, title: title_full, url: url_full, text: text_full});
-                        });
-                        return notedata;
+                        if (note_csv != 0) {
+                            var notedata = [];
+                            var lines = note_csv.split('\n');
+                            $.each(lines, function(lineNo,line) {
+                                if (line == "") return;
+                                var items = line.split(',');
+                                var timeElements = items[0].split(' ');
+                                var date = timeElements[0].split('-');
+                                var time = timeElements[1].split(':');
+                                var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
+                                title_full = items[2];
+                                url_full = "index.php?tab=data&displaynote=1&noteid="+items[1];
+                                text_full = "'"+items[3]+"'";
+                                notedata.push({x: date, title: title_full, url: url_full, text: text_full});
+                            });
+                            return notedata;
+                        } else return 0;
                     }
                     $('#container').highcharts('StockChart', {
                         chart: {
@@ -1267,7 +1322,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             labels: {
                                 format: '{value}°C',
                             },
-                            height: '60%',
+                            <?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) echo "height: '60%',"; ?>
                             minRange: 5,
                             opposite: false
                         },<?php
@@ -1281,7 +1336,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             labels: {
                                 format: '{value}ppmv',
                             },
-                            height: '60%',
+                            <?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) echo "height: '60%',"; ?>
                             opposite: false
                         },<?php
                         }
@@ -1293,7 +1348,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             labels: {
                                 format: '{value}%',
                             },
-                            height: '60%',
+                            <?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) echo "height: '60%',"; ?>
                             minRange: 10,
                         },<?php
                         }
@@ -1305,10 +1360,10 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             labels: {
                                 format: '{value}kPa',
                             },
-                            height: '60%',
+                            <?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) echo "height: '60%',"; ?>
                         },<?php
                         }
-                        if (array_sum($relay_id)) {
+                        if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) {
                         ?>{
                             title: {
                                 text: 'Duration (sec)',
@@ -1418,6 +1473,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         },<?php
                             }
                         }
+                        if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) {
                         for ($i = 0; $i < count($relay_id); $i++) {
                         ?>{
                             name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
@@ -1436,12 +1492,16 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             }
                         },<?php 
                         }
+                        }
+                        if (filesize($notes_file) > 16 && !empty(trim(file_get_contents($notes_file)))) {
                         ?>{
                             name: 'Notes',
                             type : 'flags',
                             data : getNoteData(),
                             shape : 'squarepin',
-                        }],
+                        }<?php
+                        }
+                        ?>],
                         exporting: {
                             buttons: {
                                 custom: {
