@@ -1,6 +1,6 @@
 <?php
 /*
-*  image.php - Authenticates the tranfer of files, images, and video
+*  file.php - Authenticates the tranfer of files, images, and video
 *              streams from protected locations.
 *
 *  Copyright (C) 2015  Kyle T. Gabriel

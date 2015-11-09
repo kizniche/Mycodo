@@ -31,12 +31,12 @@ fi
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 PDIR="$( dirname "$DIR" )"
-DATABASE="/var/www/mycodo/config/mycodo.db"
-db_version=`sqlite3 $DATABASE "PRAGMA user_version;"`;
-
 cd $DIR
 
-if [[ $db_version -lt 15 ]]; then
+DATABASEMYC="/var/www/mycodo/config/mycodo.db"
+db_version_mycodo=`sqlite3 $DATABASEMYC "PRAGMA user_version;"`;
+
+if [[ $db_version_mycodo -lt 15 ]]; then
 	printf "Updating timestamps in log files (this may take a while)...\n";
 	if [ -s "/var/www/mycodo/log/sensor-t.log" ]; then
 		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' /var/www/mycodo/log/sensor-t.log
@@ -55,7 +55,7 @@ if [[ $db_version -lt 15 ]]; then
 	fi
 fi
 
-if [[ $db_version -lt 16 ]]; then
+if [[ $db_version_mycodo -lt 16 ]]; then
 	printf "Updating log file formatting (this may take a while)...\n";
 	if [ -s "/var/www/mycodo/log/sensor-t.log" ]; then
 		tr -s " " < /var/www/mycodo/log/sensor-t.log > /var/www/mycodo/log/sensor-t.log-new
@@ -76,18 +76,18 @@ if [[ $db_version -lt 16 ]]; then
 fi
 
 # Perform update based on database version
-if [ ! -f $DATABASE ]; then
-    printf "Mycodo database not found: $DATABASE\n";
+if [ ! -f $DATABASEMYC ]; then
+    printf "Mycodo database not found: $DATABASEMYC\n";
     printf "Creating Mycodo database...\n";
     $DIR/update-database.py -i update
-elif [[ $db_version -gt 0 ]]; then
+elif [[ $db_version_mycodo -gt 0 ]]; then
 	printf "Checking if databases are up-to-date...\n";
 	$DIR/update-database.py -i update
-elif [[ $db_version == "0" ]]; then
+elif [[ $db_version_mycodo == "0" ]]; then
 	printf "Mycodo database is not versioned. Recreating database...\n";
 	rm -rf $DIR/config/mycodo.db
 	$DIR/update-database.py -i update
-elif [ -z "$db_version" ]; then
+elif [ -z "$db_version_mycodo" ]; then
 	printf "Missing Mycodo database version. Recreating database...\n";
 	rm -rf $DIR/config/mycodo.db
 	$DIR/update-database.py -i update

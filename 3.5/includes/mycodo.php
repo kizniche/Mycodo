@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.86";
+$version = "3.5.87";
 
 ######### Start Edit Configure #########
 
@@ -119,10 +119,10 @@ delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete olde
     <script src="js/modules/highcharts-export-clientside.js"></script>
     <script type="text/javascript">
         function open_legend() {
-            window.open("image.php?span=legend-small","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=250, height=300");
+            window.open("file.php?span=legend-small","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=250, height=300");
         }
         function open_legend_full() {
-            window.open("image.php?span=legend-full","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=820, height=550");
+            window.open("file.php?span=legend-full","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=820, height=550");
         }
     </script>
     <script>
@@ -380,6 +380,10 @@ if (isset($output_error)) {
             if (isset($graph_error)) {
                 echo '<div class="error">' . $graph_error . '</div>';
             }
+
+            if (isset($_POST['Generate_Graph_Span'])) $dyn_time_span = $_POST['Generate_Graph_Span'];
+            else $dyn_time_span = "1w";
+            if (isset($_POST['Generate_Graph_Type'])) $dyn_type = $_POST['Generate_Graph_Type'];
             ?>
 
             <div>
@@ -434,34 +438,34 @@ if (isset($output_error)) {
                         <form style="float:left;" id="DynamicGraphForm" action="?tab=graph<?php if (isset($_GET['r'])) echo '&r=' , $_GET['r']; ?>" method="POST">
                         <div style="float:left; padding-right: 0.5em;">
                             <select style="height: 2.8em;" name="Generate_Graph_Span">
-                                <option value="1h">1 Hour</option>
-                                <option value="3h">3 Hours</option>
-                                <option value="6h">6 Hours</option>
-                                <option value="12h">12 Hours</option>
-                                <option value="1d">1 Day</option>
-                                <option value="3d">3 Days</option>
-                                <option value="1w" selected>1 Week</option>
-                                <option value="2w">2 Weeks</option>
-                                <option value="1m">1 Month</option>
-                                <option value="3m">3 Months</option>
-                                <option value="6m">6 Months</option>
-                                <option value="all">All Time</option>
+                                <option value="1h" <?php if ($dyn_time_span == '1h') echo 'selected="selected"'; ?>>1 Hour</option>
+                                <option value="3h" <?php if ($dyn_time_span == '3h') echo 'selected="selected"'; ?>>3 Hours</option>
+                                <option value="6h" <?php if ($dyn_time_span == '6h') echo 'selected="selected"'; ?>>6 Hours</option>
+                                <option value="12h" <?php if ($dyn_time_span == '12h') echo 'selected="selected"'; ?>>12 Hours</option>
+                                <option value="1d" <?php if ($dyn_time_span == '1d') echo 'selected="selected"'; ?>>1 Day</option>
+                                <option value="3d" <?php if ($dyn_time_span == '3d') echo 'selected="selected"'; ?>>3 Days</option>
+                                <option value="1w" <?php if ($dyn_time_span == '1w') echo 'selected="selected"'; ?>>1 Week</option>
+                                <option value="2w" <?php if ($dyn_time_span == '2w') echo 'selected="selected"'; ?>>2 Weeks</option>
+                                <option value="1m" <?php if ($dyn_time_span == '1m') echo 'selected="selected"'; ?>>1 Month</option>
+                                <option value="3m" <?php if ($dyn_time_span == '3m') echo 'selected="selected"'; ?>>3 Months</option>
+                                <option value="6m" <?php if ($dyn_time_span == '6m') echo 'selected="selected"'; ?>>6 Months</option>
+                                <option value="all" <?php if ($dyn_time_span == 'all') echo 'selected="selected"'; ?>>All Time</option>
                             </select>
                         </div>
                         <div style="float:left; padding-right: 0.5em;">
                             <select style="height: 2.8em;" name="Generate_Graph_Type">
-                                <option value="all">All Sensors</option>
-                                <option value="t">Temperature</option>
-                                <option value="ht">Humidity</option>
-                                <option value="co2">CO2</option>
-                                <option value="press">Pressure</option>
+                                <option value="all" <?php if ($dyn_type == 'all') echo 'selected="selected"'; ?>>All Sensors</option>
+                                <option value="t" <?php if ($dyn_type == 't') echo 'selected="selected"'; ?>>Temperature</option>
+                                <option value="ht" <?php if ($dyn_type == 'ht') echo 'selected="selected"'; ?>>Humidity</option>
+                                <option value="co2" <?php if ($dyn_type == 'co2') echo 'selected="selected"'; ?>>CO2</option>
+                                <option value="press" <?php if ($dyn_type == 'press') echo 'selected="selected"'; ?>>Pressure</option>
                             </select>
                         </div>
-                        <div style="float:left;">
+                        <div style="float:left; padding-right: 0.5em;">
                             <button type="submit" onclick="submitForm('?tab=graph<?php if (isset($_GET['r'])) echo '&r=' , $_GET['r']; ?>','_self')" name="Generate_Graph" value="all" title="Generate a client-side graph that will render in the browser. Warning: The more data you choose to use, the longer it will take to process. Choosing 'All Time' or 'All Sensors' may take a significant amount of time to process.">Dynamic<br>Graph</button>
                         </div>
                         <div style="float:left;">
-                            <button type="submit" onclick="submitForm('image.php?span=graph-pop','_blank')" name="Generate_Graph" value="all" title="Same as 'Dynamic Graph' but the graph will load in a new window.">Pop<br>Out</button>
+                            <button type="submit" onclick="submitForm('file.php?span=graph-pop','_blank')" name="Generate_Graph" value="all" title="Same as 'Dynamic Graph' but the graph will load in a new window.">Pop<br>Out</button>
                         </div>
                         </form>
                     </div>
@@ -811,34 +815,6 @@ if (isset($output_error)) {
                         <td style="padding-top: 1em;"></td>
                         <td></td>
                     </tr>
-                    </table>
-                    </form>
-
-                    <table class="conditional">
-                        <tr>
-                            <td>
-                                Custom Code<br/><span style="padding-top: 0.5em; font-size: 0.7em;">Warning: This is a very powerful feature. If the syntax is not completely correct, it will fail. If you haven't read the <a class="manual" href="manual.html#custom-code" target="_blank">Custom Code</a> section of the manual and understood everything, do not attempt to use this feature.</span>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                    <table class="conditional" style="width: 100%;">
-                        <tr>
-                            <td style="padding-left: 1em;">Setup Code</td>
-                            <td style="padding-left: 1em;">Main Loop Code</td>
-                        </tr>
-                        <tr>
-                            <td style="padding-left: 1em;">
-                                <textarea style="width: 100%;" rows="4" maxlength="1000" name="conditional_advanced_setup" title=""></textarea>
-                            </td>
-                            <td style="padding-left: 1em;">
-                                <textarea style="width: 100%;" rows="4" maxlength="1000" name="conditional_advanced_main" title=""></textarea>
-                            </td>
-                            <td>
-                                <button type="submit" style="height:5em; width:4em;" style="height:5em;" name="AddRelayConditional" title="Save new relay conditional statement">Save</button>
-                            </td>
-                        </tr>
                     </table>
                     </form>
                     <?php
@@ -2708,7 +2684,7 @@ if (isset($output_error)) {
                             $file_name = 'graph-temp-combined-' . $id2 . '.png';
                             echo '<div style="padding: 1em 0 3em 0; text-align: center;">
                                 <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
-                                <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                                <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                             echo 'graphtype=combinedcustom';
                             echo '&sensortype=temp';
                             echo '&id=' , $id2 , '>';
@@ -2721,7 +2697,7 @@ if (isset($output_error)) {
                             $file_name = 'graph-hum-combined-' . $id2 . '.png';
                             echo '<div style="padding: 1em 0 3em 0; text-align: center;">
                                 <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
-                                <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                                <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                             echo 'graphtype=combinedcustom';
                             echo '&sensortype=hum';
                             echo '&id=' , $id2 , '>';
@@ -2734,7 +2710,7 @@ if (isset($output_error)) {
                             $file_name = 'graph-co2-combined-' . $id2 . '.png';
                             echo '<div style="padding: 1em 0 3em 0; text-align: center;">
                                 <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
-                                <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                                <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                             echo 'graphtype=combinedcustom';
                             echo '&sensortype=co2';
                             echo '&id=' , $id2 , '>';
@@ -2747,7 +2723,7 @@ if (isset($output_error)) {
                             $file_name = 'graph-press-combined-' . $id2 . '.png';
                             echo '<div style="padding: 1em 0 3em 0; text-align: center;">
                                 <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
-                                <img class="main-image" style="max-width:100%;height:auto;" src=image.php?';
+                                <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                             echo 'graphtype=combinedcustom';
                             echo '&sensortype=press';
                             echo '&id=' , $id2 , '>';
@@ -2763,7 +2739,7 @@ if (isset($output_error)) {
                                 $file_name = 'graph-t-separate-x-' . $id2 . '-' . $n . '.png';
                                 echo '<div style="padding: 1em 0 3em 0; text-align: center;">
                                     <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
-                                    <img src=image.php?';
+                                    <img src=file.php?';
                                 echo 'graphtype=separatecustom';
                                 echo '&sensortype=t';
                                 echo '&id=' , $id2;
@@ -2778,7 +2754,7 @@ if (isset($output_error)) {
                                 $file_name = 'graph-ht-separate-x-' . $id2 . '-' . $n . '.png';
                                 echo '<div style="padding: 1em 0 3em 0; text-align: center;">
                                     <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
-                                    <img src=image.php?';
+                                    <img src=file.php?';
                                 echo 'graphtype=separatecustom';
                                 echo '&sensortype=ht';
                                 echo '&id=' , $id2;
@@ -2793,7 +2769,7 @@ if (isset($output_error)) {
                                 $file_name = 'graph-co2-separate-x-' . $id2 . '-' . $n . '.png';
                                 echo '<div style="padding: 1em 0 3em 0; text-align: center;">
                                     <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
-                                    <img src=image.php?';
+                                    <img src=file.php?';
                                 echo 'graphtype=separatecustom';
                                 echo '&sensortype=co2';
                                 echo '&id=' , $id2;
@@ -2808,7 +2784,7 @@ if (isset($output_error)) {
                                 $file_name = 'graph-press-separate-x-' . $id2 . '-' . $n . '.png';
                                 echo '<div style="padding: 1em 0 3em 0; text-align: center;">
                                     <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
-                                    <img src=image.php?';
+                                    <img src=file.php?';
                                 echo 'graphtype=separatecustom';
                                 echo '&sensortype=press';
                                 echo '&id=' , $id2;
@@ -2944,7 +2920,7 @@ if (isset($output_error)) {
                     echo 'Latest File: ' , date("F d Y H:i:s", $latest_file) , '<br>';
                     echo '
                     <div style="padding-bottom: 2em;">
-                        <img src=image.php?span=cam-timelapse>
+                        <img src="file.php?span=cam-timelapse" style="width:100%">
                     </div>
                     ';
                 } else if (file_exists($lock_timelapse)) {
@@ -2964,7 +2940,7 @@ if (isset($output_error)) {
                     Video Stream
                 </div>
                 <div style="padding-bottom: 2em;">
-                    <img style="width:100%;" src="image.php?span=stream">
+                    <img style="width:100%;" src="file.php?span=stream">
                 </div>
                 ';
             }
@@ -2995,7 +2971,7 @@ if (isset($output_error)) {
 
                 echo '
                 <div style="padding-bottom: 2em;">
-                    <img style="width:100%;" src=image.php?span=cam-still>
+                    <img style="width:100%;" src=file.php?span=cam-still>
                 </div>
                 ';
             }
@@ -3147,7 +3123,12 @@ if (isset($output_error)) {
                             echo '
                                 <table class="data-data">
                                     <tr>
-                                        <th>Y/M/D-H:M:S</th>
+                                        <th>Y</th>
+                                        <th>M</th>
+                                        <th>D</th>
+                                        <th>H</th>
+                                        <th>M</th>
+                                        <th>S</th>
                                         <th>ID</th>
                                         <th>Name</th>
                                         <th>Device</th>
@@ -3290,8 +3271,11 @@ if (isset($output_error)) {
                             <form action=\"?tab=data\" method=\"POST\" enctype=\"multipart/form-data\">
                             <table style=\"width:100%\";>
                                 <tr>
-                                    <td style=\"width: auto;\">
-                                        <textarea style=\"width: 40em;\" rows=\"6\" maxlength=\"100000\" name=\"Note_Text\" title=\"\"></textarea>
+                                    <td style=\"padding-bottom: 0.2em;\"><input style=\"width: 100%;\" type=\"text\" placeholder=\"Title\" maxlength=\"200\" name=\"Note_Title\"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan=\"2\">
+                                        <textarea style=\"width: 40em;\" placeholder=\"Note\" rows=\"6\" maxlength=\"100000\" name=\"Note_Text\"></textarea>
                                     </td>
                                     <td style=\"vertical-align: top; height:100%; width:100%;\">
                                         <table style=\"height:100%; width:100%;\">
@@ -3320,13 +3304,14 @@ if (isset($output_error)) {
 
                             $ndb = new SQLite3($note_db);
                             unset($note_id);
-                            $results = $ndb->query('SELECT Id, Time, User, Note FROM Notes');
+                            $results = $ndb->query('SELECT Id, Time, User, Title, Note FROM Notes');
                             $i = 0;
                             while ($row = $results->fetchArray()) {
                                 $note_id[$i] = $row[0];
                                 $note_time[$i] = $row[1];
                                 $note_user[$i] = $row[2];
-                                $note_note[$i] = $row[3];
+                                $note_title[$i] = $row[3];
+                                $note_note[$i] = $row[4];
                                 $i++;
                             }
                             if (!isset($note_id)) $note_id = [];
@@ -3345,7 +3330,7 @@ if (isset($output_error)) {
                                         <td style=\"border-style: solid none none none; border-width: 1px;\">$u</td>
                                         <td style=\"border-style: solid none none none; border-width: 1px; line-height:1.5em; width:7em;\">$note_time[$u]</td>
                                         <td style=\"border-style: solid none none none; border-width: 1px;\">$note_user[$u]</td>
-                                        <td style=\"border-style: solid none none none; border-width: 1px; padding-bottom: 0.7em;\" colspan=\"2\" class=\"wrap\">" . htmlspecialchars($note_note[$u]) . "</td>
+                                        <td style=\"border-style: solid none none none; border-width: 1px; padding-bottom: 0.7em;\" colspan=\"2\" class=\"wrap\"><div style=\"padding-bottom: 0.5em; font-weight: bold;\">" . htmlspecialchars($note_title[$u]) . "</div>" . htmlspecialchars($note_note[$u]) . "</td>
                                     </tr>";
 
                                     unset($upload_id);
@@ -3362,7 +3347,7 @@ if (isset($output_error)) {
                                     else {
                                         echo "<tr><td colspan=\"4\"></td><td style=\"padding-bottom:0.5em;\">Files: ";
                                         for ($v = 0; $v < count($upload_id); $v++) {
-                                            echo "<a href=\"image.php?span=ul-dl&file=$upload_file_name[$v]\">$upload_name[$v]</a>";
+                                            echo "<a href=\"file.php?span=ul-dl&file=$upload_file_name[$v]\">$upload_name[$v]</a>";
                                             if ($v != count($upload_id)-1) echo ", ";
                                         }
                                         echo "</td></tr>";
@@ -3379,13 +3364,13 @@ if (isset($output_error)) {
                                         }
                                         for ($v = 0; $v < count($upload_id); $v++) {
                                             if (endswith($upload_name[$v], '.jpg') || endswith($upload_name[$v], '.jpeg')) {
-                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-jpg&file=thumb$upload_file_name[$v]\"></a></div>";
+                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"file.php?span=ul-jpg&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"file.php?span=ul-jpg&file=thumb$upload_file_name[$v]\"></a></div>";
                                             }
                                             if (endswith($upload_name[$v], '.png')) {
-                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-png&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-png&file=thumb$upload_file_name[$v]\"></a></div>";
+                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"file.php?span=ul-png&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"file.php?span=ul-png&file=thumb$upload_file_name[$v]\"></a></div>";
                                             }
                                             if (endswith($upload_name[$v], '.gif')) {
-                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-gif&file=thumb$upload_file_name[$v]\"></a></div>";
+                                                echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"file.php?span=ul-gif&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"file.php?span=ul-gif&file=thumb$upload_file_name[$v]\"></a></div>";
                                             }
                                         }
                                         if ($images == True) {
@@ -3398,16 +3383,21 @@ if (isset($output_error)) {
                             echo "</form>";
                         }
 
-                        if (isset($_POST['Edit_Note']) || isset($_POST['Add_Image_Note'])) {
+                        if (isset($_POST['Edit_Note']) || isset($_POST['Add_Image_Note']) || isset($_GET['displaynote'])) {
                             echo "Edit Note<br> <br>";
                             $ndb = new SQLite3($note_db);
                             unset($note_id);
-                            $results = $ndb->query("SELECT Id, Time, User, Note FROM Notes WHERE Id='" . $_POST['Edit_Note'] . "'");
+                            if (isset($_GET['displaynote'])) {
+                                $results = $ndb->query("SELECT Id, Time, User, Title, Note FROM Notes WHERE Id='" . $_GET['noteid'] . "'");
+                            } else {
+                                $results = $ndb->query("SELECT Id, Time, User, Title, Note FROM Notes WHERE Id='" . $_POST['Edit_Note'] . "'");
+                            }
                             while ($row = $results->fetchArray()) {
                                 $note_id = $row[0];
                                 $note_time = $row[1];
                                 $note_user = $row[2];
-                                $note_note = $row[3];
+                                $note_title = $row[3];
+                                $note_note = $row[4];
                             }
                             echo "<form action=\"?tab=data\" method=\"POST\" enctype=\"multipart/form-data\">
                             <table class=\"notes\">
@@ -3418,6 +3408,12 @@ if (isset($output_error)) {
                                 <tr>
                                     <td><input style=\"width: 11em;\" type=\"text\" maxlength=50 name=\"Edit_Note_Time\" title=\"\" value=\"$note_time\"></td>
                                     <td><input style=\"width: 11em;\" type=\"text\" maxlength=50 name=\"Edit_Note_User\" title=\"\" value=\"$note_user\"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan=\"2\" style=\"padding-top: 0.5em;\">Title</td>
+                                </tr>
+                                <tr>
+                                    <td colspan=\"2\"><input style=\"width: 100%;\" type=\"text\" maxlength=50 name=\"Edit_Note_Title\" title=\"\" value=\"$note_title\"></td>
                                 </tr>
                             </table>
                             <br>
@@ -3464,7 +3460,7 @@ if (isset($output_error)) {
                             else {
                                 echo "<tr><td style=\"vertical-align: top;\">Files (uncheck to delete):<br>";
                                 for ($v = 0; $v < count($upload_id); $v++) {
-                                    echo "<div style=\"float:left; padding: 0.5em;\"><input type=\"hidden\" name=\"$v\" value=\"0\" /><input type=\"checkbox\" name=\"$v\" value=\"1\" checked> <a href=\"image.php?span=ul-dl&file=$upload_file_name[$v]\">$upload_name[$v]</a></div>";
+                                    echo "<div style=\"float:left; padding: 0.5em;\"><input type=\"hidden\" name=\"$v\" value=\"0\" /><input type=\"checkbox\" name=\"$v\" value=\"1\" checked> <a href=\"file.php?span=ul-dl&file=$upload_file_name[$v]\">$upload_name[$v]</a></div>";
                                 }
                                 echo "</td></tr>";
 
@@ -3480,13 +3476,13 @@ if (isset($output_error)) {
                                 }
                                 for ($v = 0; $v < count($upload_id); $v++) {
                                     if (endswith($upload_name[$v], '.jpg') || endswith($upload_name[$v], '.jpeg')) {
-                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-jpg&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-jpg&file=thumb$upload_file_name[$v]\"></a></div>";
+                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"file.php?span=ul-jpg&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"file.php?span=ul-jpg&file=thumb$upload_file_name[$v]\"></a></div>";
                                     }
                                     if (endswith($upload_name[$v], '.png')) {
-                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-png&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-png&file=thumb$upload_file_name[$v]\"></a></div>";
+                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"file.php?span=ul-png&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"file.php?span=ul-png&file=thumb$upload_file_name[$v]\"></a></div>";
                                     }
                                     if (endswith($upload_name[$v], '.gif')) {
-                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"image.php?span=ul-gif&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"image.php?span=ul-gif&file=thumb$upload_file_name[$v]\"></a></div>";
+                                        echo "<div style=\"float: left; padding:0.4em;\"><a target=\"_blank\" href=\"file.php?span=ul-gif&file=$upload_file_name[$v]\"><img class=\"thumbnail\" src=\"file.php?span=ul-gif&file=thumb$upload_file_name[$v]\"></a></div>";
                                     }
                                 }
                                 if ($images == True) {
@@ -4689,9 +4685,9 @@ if (isset($output_error)) {
                             <?php
                     if ($timelapse_timestamp) {
                         $timelapse_tstamp = substr(`date +"%Y%m%d%H%M%S"`, 0, -1);
-                        echo 'Output file series: ' , $timelapse_path , '/' , $timelapse_prefix , $timelapse_tstamp , '-00001.jpg';
+                        echo 'Output file series: ' , $timelapse_path , '/' , $timelapse_prefix , '-' , $timelapse_tstamp , '-00001.jpg';
                     } else {
-                        echo 'Output file series: ' , $timelapse_path , '/' , $timelapse_prefix , '00001.jpg';
+                        echo 'Output file series: ' , $timelapse_path , '/' , $timelapse_prefix , '-00001.jpg';
                     }
                      ?>
                         </td>

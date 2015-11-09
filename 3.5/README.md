@@ -90,6 +90,9 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 Major changes for each versioned release
 
+#### 3.5.87
++ Add display of Notes on dynamic humidity/temperature graph, add title to notes (for graph display)
+
 #### 3.5.86
 + Change the PID period to a constant interval (thanks @KnyazSh)"
 

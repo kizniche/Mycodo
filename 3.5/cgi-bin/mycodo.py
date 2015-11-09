@@ -396,7 +396,9 @@ def usage():
 
 # Check for any command line options
 def menu():
+    global a
     a = 'silent'
+    global b
     b = 'info'
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'hl:v',
@@ -408,7 +410,7 @@ def menu():
     for opt, arg in opts:
         if opt in ("-h", "--help"):
             usage()
-            return 1
+            return 0
         elif opt in ("-l", "--log"):
             if (arg == 'w'): b = 'warning'
             elif (arg == 'd'): b = 'debug'
@@ -416,7 +418,6 @@ def menu():
             a = 'verbose'
         else:
             assert False, "Fail"
-    daemon(a, b)
     return 1
 
 
@@ -537,46 +538,16 @@ def daemon(output, log):
         # Run remote commands issued by mycodo-client.py
         #
         if client_que == 'TerminateServer':
-            logging.info("[Daemon] Turning off all PID controllers")
-            pid_t_temp_alive = [0] * len(sensor_t_id)
-            pid_ht_temp_alive =  [0] * len(sensor_ht_id)
-            pid_ht_hum_alive =  [0] * len(sensor_ht_id)
-            pid_co2_alive =  [0] * len(sensor_co2_id)
-            pid_press_temp_alive =  [0] * len(sensor_press_id)
-            pid_press_press_alive =  [0] * len(sensor_press_id)
-            # for t in threads_t_t:
-            #     t.join()
-            # for t in threads_ht_t:
-            #     t.join()
-            # for t in threads_ht_h:
-            #     t.join()
-            # for t in threads_co2:
-            #     t.join()
-            # server.close()
-            for i in range(0, len(sensor_t_id)):
-                if pid_t_temp_or[i] == 0:
-                    while pid_t_temp_alive[i] == 0:
-                        time.sleep(0.1)
-            for i in range(0, len(sensor_ht_id)):
-                if pid_ht_temp_or[i] == 0:
-                    while pid_ht_temp_alive[i] == 0:
-                        time.sleep(0.1)
-            for i in range(0, len(sensor_ht_id)):
-                if pid_ht_hum_or[i] == 0:
-                    while pid_ht_hum_alive[i] == 0:
-                        time.sleep(0.1)
-            for i in range(0, len(sensor_co2_id)):
-                if pid_co2_or[i] == 0:
-                    while pid_co2_alive[i] == 0:
-                        time.sleep(0.1)
-            for i in range(0, len(sensor_press_id)):
-                if pid_press_temp_or[i] == 0:
-                    while pid_press_temp_alive[i] == 0:
-                        time.sleep(0.1)
-            for i in range(0, len(sensor_press_id)):
-                if pid_press_press_or[i] == 0:
-                    while pid_press_press_alive[i] == 0:
-                        time.sleep(0.1)
+            logging.info("[Daemon] Shutting down all threads")
+            for t in threads_t_t:
+                t.join()
+            for t in threads_ht_t:
+                t.join()
+            for t in threads_ht_h:
+                t.join()
+            for t in threads_co2:
+                t.join()
+            server.close()
             logging.info("[Daemon] Turning off all relays")
             Relays_Off()
             logging.info("[Daemon] Shutdown success")
@@ -948,8 +919,8 @@ def daemon(output, log):
             if total_log_size > 5000000:
                 logging.debug("[Log Backup] Sum of log sizes = %s bytes > 5,000,000 bytes (5 MB). Backing up logs.", total_log_size)
                 mycodoLog.Concatenate_Logs()
-            elif timerLogBackupCount > 16:
-                logging.debug("[Log Backup] 3-hour timer expired. Backing up logs.", total_log_size)
+            elif timerLogBackupCount > 5:
+                logging.debug("[Log Backup] 1-hour timer expired. Backing up logs.", total_log_size)
                 mycodoLog.Concatenate_Logs()
                 timerLogBackupCount = 0
             timerLogBackupCount += 1
@@ -4031,22 +4002,23 @@ def main():
         logging.warning("Must be executed as root.")
         usage()
         sys.exit("Must be executed as root")
-    if not os.path.exists(lock_directory):
-        os.makedirs(lock_directory)
-    runlock = LockFile(daemon_lock_path)
-    while not runlock.i_am_locking():
-        try:
-            runlock.acquire(timeout=1)
-        except:
-            logging.warning("Lock file present: %s. Delete it or run 'sudo service mycodo restart'", runlock.path)
-            error = "Error: Lock file present: %s" % runlock.path
-            print error
-            usage()
-            sys.exit(error)
-    read_sql()
-    initialize_all_gpio()
-    menu()
-    runlock.release()
+    if (menu() == 1):
+        if not os.path.exists(lock_directory):
+            os.makedirs(lock_directory)
+        runlock = LockFile(daemon_lock_path)
+        while not runlock.i_am_locking():
+            try:
+                runlock.acquire(timeout=1)
+            except:
+                logging.warning("Lock file present: %s. Ensure another instance of the Mycodo daemon is not running and delete the file.", runlock.path)
+                error = "Error: Lock file present: %s" % runlock.path
+                print error
+                usage()
+                sys.exit(error)
+        read_sql()
+        initialize_all_gpio()
+        daemon(a, b)
+        runlock.release()
 try:
     main()
 except:

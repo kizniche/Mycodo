@@ -2767,18 +2767,25 @@ if (isset($_POST['Add_Image_Note'])) {
         $uniqueid = uniqid();
         $upload_path = "/var/www/mycodo/notes/uploads/";
         $full_image_path = $_POST['file_path'] . $_POST['file_name'];
-        copy($full_image_path, $upload_path . $_POST['file_name']);
-        makeThumbnail($upload_path, $_POST['file_name']);
+        if (file_exists($upload_path . $_POST['file_name'])) {
+            $file_name = uniqid() . "-" . $_POST['file_name'];
+            copy($full_image_path, $upload_path . $file_name);
+        } else {
+            $file_name = $_POST['file_name'];
+            copy($full_image_path, $upload_path . $file_name);
+        }
+        makeThumbnail($upload_path, $file_name);
         $stmt = $ndb->prepare("INSERT INTO Uploads VALUES(:id, :name, :filename, :location)");
         $stmt->bindValue(':id', $uniqueid, SQLITE3_TEXT);
-        $stmt->bindValue(':name', $_POST['file_name'], SQLITE3_TEXT);
-        $stmt->bindValue(':filename', $_POST['file_name'], SQLITE3_TEXT);
+        $stmt->bindValue(':name', $file_name, SQLITE3_TEXT);
+        $stmt->bindValue(':filename', $file_name, SQLITE3_TEXT);
         $stmt->bindValue(':location', $upload_path, SQLITE3_TEXT);
         $stmt->execute();
-        $stmt = $ndb->prepare("INSERT INTO Notes VALUES(:id, :time, :user, :note)");
+        $stmt = $ndb->prepare("INSERT INTO Notes (Id, Time, User, Title, Note) VALUES(:id, :time, :user, :title, :note)");
         $stmt->bindValue(':id', $uniqueid, SQLITE3_TEXT);
         $stmt->bindValue(':time', $note_ts, SQLITE3_TEXT);
         $stmt->bindValue(':user', $_SESSION['user_name'], SQLITE3_TEXT);
+        $stmt->bindValue(':title', $note_title, SQLITE3_TEXT);
         $stmt->bindValue(':note', '', SQLITE3_TEXT);
         $stmt->execute();
         $_POST['Edit_Note'] = $uniqueid;
@@ -2814,20 +2821,22 @@ if (isset($_POST['Add_Note'])) {
             }
         }
     }
-    $stmt = $ndb->prepare("INSERT INTO Notes VALUES(:id, :time, :user, :note)");
+    $stmt = $ndb->prepare("INSERT INTO Notes (Id, Time, User, Title, Note) VALUES(:id, :time, :user, :title, :note)");
     $stmt->bindValue(':id', $uniqueid, SQLITE3_TEXT);
     $stmt->bindValue(':time', $note_ts, SQLITE3_TEXT);
     $stmt->bindValue(':user', $_SESSION['user_name'], SQLITE3_TEXT);
+    $stmt->bindValue(':title', $_POST['Note_Title'], SQLITE3_TEXT);
     $stmt->bindValue(':note', $_POST['Note_Text'], SQLITE3_TEXT);
     $stmt->execute();
 }
 
 // Edit Note
 if (isset($_POST['Edit_Note_Save'])) {
-    $stmt = $ndb->prepare("UPDATE Notes SET Time=:time, User=:user, Note=:note WHERE Id=:id");
+    $stmt = $ndb->prepare("UPDATE Notes SET Time=:time, User=:user, Title=:title, Note=:note WHERE Id=:id");
     $stmt->bindValue(':id', $_POST['Edit_Note_Save'], SQLITE3_TEXT);
     $stmt->bindValue(':time', $_POST['Edit_Note_Time'], SQLITE3_TEXT);
     $stmt->bindValue(':user', $_POST['Edit_Note_User'], SQLITE3_TEXT);
+    $stmt->bindValue(':title', $_POST['Edit_Note_Title'], SQLITE3_TEXT);
     $stmt->bindValue(':note', $_POST['Edit_Note_Text'], SQLITE3_TEXT);
     $stmt->execute();
     unset($upload_id);
