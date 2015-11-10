@@ -434,7 +434,7 @@ def user_database_update():
         print "User database is already up to date."
     else:
         print "Updating User database..."
-        onn = sqlite3.connect(sql_database_user)
+        conn = sqlite3.connect(sql_database_user)
         cur = conn.cursor()
         cur.execute("PRAGMA user_version = %s;" % db_version_user)
         conn.commit()
