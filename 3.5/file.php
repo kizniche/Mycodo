@@ -102,8 +102,13 @@ if ($_COOKIE['login_hash'] == $user_hash) {
                 readfile($upload_dir . $_GET['file']);
                 break;
             case 'graph':
+                $path = '/var/tmp/' . $_GET['file'];
                 header('Content-Type: text/json');
-                echo json_encode(file_get_contents('/var/tmp/' . $_GET['file']));
+                if (filesize($path) < 16 && empty(trim(file_get_contents($path)))) {
+                    echo json_encode("0");
+                } else {
+                    echo json_encode(file_get_contents($path));
+                }
                 break;
             case 'graph-pop':
                 $mycodo_db = $install_path . "/config/mycodo.db";

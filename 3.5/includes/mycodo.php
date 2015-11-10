@@ -2919,7 +2919,7 @@ if (isset($output_error)) {
                     $latest_file = filectime("$timelapse_path/$newest_file");
                     echo 'Latest File: ' , date("F d Y H:i:s", $latest_file) , '<br>';
                     echo '
-                    <div style="padding-bottom: 2em;">
+                    <div style="padding: 0.5em 0 2em 0;">
                         <img src="file.php?span=cam-timelapse" style="width:100%">
                     </div>
                     ';
@@ -2960,15 +2960,16 @@ if (isset($output_error)) {
                     </tr>
                     <tr>
                         <td>
-                            Latest File: ' , date("F d Y H:i:s", $latest_file) , '
-                        </td>
-                        <td>
                             <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $cam_stills_path . '" /><input type="hidden" name="file_name" value="' . $newest_file . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Image</button>
                             </form>
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            Latest File: ' , date("F d Y H:i:s", $latest_file) , '
+                        </td>
+                    </tr>
                     </table>';
-
                 echo '
                 <div style="padding-bottom: 2em;">
                     <img style="width:100%;" src=file.php?span=cam-still>
