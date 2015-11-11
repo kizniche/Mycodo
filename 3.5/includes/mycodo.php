@@ -3635,7 +3635,7 @@ if (isset($output_error)) {
                                     <tr>
                                         <td class="table-header middle">Relay</td>
                                         <td class="table-header middle">Name</td>
-                                        <td class="table-header">Duration On (hours)<br>Power Usage (kW-hours@<?php echo $relay_stats_volts; ?>V)</td>
+                                        <td class="table-header"></td>
                                         <td class="table-header right" style="width:6em;">Hour</td>
                                         <td class="table-header right" style="width:6em;">Day</td>
                                         <td class="table-header right" style="width:6em;">Week</td>
@@ -3651,6 +3651,7 @@ if (isset($output_error)) {
                                     $relay_stats_seconds_on_week = [];
                                     $relay_stats_seconds_on_month = [];
                                     $relay_stats_seconds_on_year = [];
+                                    $kwh = [];
 
                                     $current_year = date("Y");
                                     $current_month = date("m");
@@ -3685,7 +3686,7 @@ if (isset($output_error)) {
                                     <tr>
                                         <td class="center"><?php echo $i+1; ?></td>
                                         <td><?php echo $relay_name[$i]; ?></td>
-                                        <td>Duration On</td>
+                                        <td>Duration On (hours)</td>
                                         <td class="right"><?php printf("%.2f", $relay_stats_seconds_on_hour[$i]/3600); ?></td>
                                         <td class="right"><?php printf("%.2f", $relay_stats_seconds_on_day[$i]/3600); ?></td>
                                         <td class="right"><?php printf("%.2f", $relay_stats_seconds_on_week[$i]/3600); ?></td>
@@ -3696,60 +3697,109 @@ if (isset($output_error)) {
                                     </tr>
                                     <tr>
                                         <td colspan="2"></td>
-                                        <td>Power Usage</td>
+                                        <td>Power Usage <?php echo "(kWh@, ",$relay_stats_volts,"V)"; ?></td>
                                         <td class="right">
                                             <?php
                                             $date_ago = shell_exec("date --date=\"1 hour ago\" +'%Y/%m/%d-%H:%M:%S'");
                                             $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
-                                            printf("%.2f", $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000);
+                                            $kwh[0] = $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000;
+                                            printf("%.2f", $kwh[0]);
                                             ?>
                                         </td>
                                         <td class="right">
                                             <?php
                                             $date_ago = shell_exec("date --date=\"1 day ago\" +'%Y/%m/%d-%H:%M:%S'");
                                             $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
-                                            printf("%.2f", $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000);
+                                            $kwh[1] = $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000;
+                                            printf("%.2f", $kwh[1]);
                                             ?>
                                         </td>
                                         <td class="right">
                                             <?php
                                             $date_ago = shell_exec("date --date=\"1 week ago\" +'%Y/%m/%d-%H:%M:%S'");
                                             $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
-                                            printf("%.2f", $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000);
+                                            $kwh[2] = $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000;
+                                            printf("%.2f", $kwh[2]);
                                             ?>
                                         </td>
                                         <td class="right">
                                             <?php
                                             $date_ago = shell_exec("date --date=\"1 month ago\" +'%Y/%m/%d-%H:%M:%S'");
                                             $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
-                                            printf("%.2f", $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000);
+                                            $kwh[3] = $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000;
+                                            printf("%.2f", $kwh[3]);
                                             ?>
                                         </td>
                                         <td class="right">
                                             <?php
                                             $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago_dayofmonth . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
-                                            printf("%.2f", $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000);
+                                            $kwh[4] = $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000;
+                                            printf("%.2f", $kwh[4]);
                                             ?>
                                         </td>
                                         <td class="right">
                                             <?php
                                             $date_ago = shell_exec("date --date=\"1 year ago\" +'%Y/%m/%d-%H:%M:%S'");
                                             $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
-                                            printf("%.2f", $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000);
+                                            $kwh[5] = $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000;
+                                            printf("%.2f", $kwh[5]);
                                             ?>
                                         </td>
                                         <td class="right">
                                             <?php
-                                            printf("%.2f", $relay_stats_volts*$relay_amps[$i]*($relay_stats_seconds_on[$i]/3600)/1000);
+                                            $kwh[6] = $relay_stats_volts*$relay_amps[$i]*($relay_stats_seconds_on[$i]/3600)/1000;
+                                            printf("%.2f", $kwh[6]);
                                         ?>
                                         </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"></td>
+                                        <td>Cost <?php echo "(",$relay_stats_currency,$relay_stats_cost,"/kWh)"; ?></td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[0]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[1]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[2]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[3]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[4]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[5]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[6]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 0.6em;"></td>
                                     </tr>
                                     <?php
                                     }
                                     ?>
                                     <tr>
                                         <td colspan="2">Grand Total</td>
-                                        <td>Duration On</td>
+                                        <td>Duration On (hours)</td>
                                         <td class="right">
                                             <?php
                                             $relay_stats_seconds_on_total = 0;
@@ -3816,69 +3866,108 @@ if (isset($output_error)) {
                                     </tr>
                                     <tr>
                                         <td colspan="2"></td>
-                                        <td>Power Usage</td>
+                                        <td>Power Usage (kWh)</td>
                                         <td class="right">
                                         <?php
-                                            $relay_stats_total_amps = 0;
+                                            $kwh[0] = 0;
                                             for ($j=0; $j < count($relay_id); $j++) {
-                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_hour[$j]/3600)/1000, 2);
+                                                $kwh[0] += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_hour[$j]/3600)/1000, 2);
                                             }
-                                            printf("%.2f", $relay_stats_total_amps);
+                                            printf("%.2f", $kwh[0]);
                                         ?>
                                         </td>
                                         <td class="right">
                                         <?php
-                                            $relay_stats_total_amps = 0;
+                                            $kwh[1] = 0;
                                             for ($j=0; $j < count($relay_id); $j++) {
-                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_day[$j]/3600)/1000, 2);
+                                                $kwh[1] += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_day[$j]/3600)/1000, 2);
                                             }
-                                            printf("%.2f", $relay_stats_total_amps);
+                                            printf("%.2f", $kwh[1]);
                                         ?>
                                         </td>
                                         <td class="right">
                                         <?php
-                                            $relay_stats_total_amps = 0;
+                                            $kwh[2] = 0;
                                             for ($j=0; $j < count($relay_id); $j++) {
-                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_week[$j]/3600)/1000, 2);
+                                                $kwh[2] += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_week[$j]/3600)/1000, 2);
                                             }
-                                            printf("%.2f", $relay_stats_total_amps);
+                                            printf("%.2f", $kwh[2]);
                                         ?>
                                         </td>
                                         <td class="right">
                                         <?php
-                                            $relay_stats_total_amps = 0;
+                                            $kwh[3] = 0;
                                             for ($j=0; $j < count($relay_id); $j++) {
-                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_month[$j]/3600)/1000, 2);
+                                                $kwh[3] += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_month[$j]/3600)/1000, 2);
                                             }
-                                            printf("%.2f", $relay_stats_total_amps);
+                                            printf("%.2f", $kwh[3]);
                                         ?>
                                         </td>
                                         <td class="right">
                                         <?php
-                                            $relay_stats_total_amps = 0;
+                                            $kwh[4] = 0;
                                             for ($j=0; $j < count($relay_id); $j++) {
-                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_dayofmonth[$j]/3600)/1000, 2);
+                                                $kwh[4] += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_dayofmonth[$j]/3600)/1000, 2);
                                             }
-                                            printf("%.2f", $relay_stats_total_amps);
+                                            printf("%.2f", $kwh[4]);
                                         ?>
                                         </td>
                                         <td class="right">
                                         <?php
-                                            $relay_stats_total_amps = 0;
+                                            $kwh[5] = 0;
                                             for ($j=0; $j < count($relay_id); $j++) {
-                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_year[$j]/3600)/1000, 2);
+                                                $kwh[5] += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_year[$j]/3600)/1000, 2);
                                             }
-                                            printf("%.2f", $relay_stats_total_amps);
+                                            printf("%.2f", $kwh[5]);
                                         ?>
                                         </td>
                                         <td class="right">
                                         <?php
-                                            $relay_stats_total_amps = 0;
+                                            $kwh[6] = 0;
                                             for ($j=0; $j < count($relay_id); $j++) {
-                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on[$j]/3600)/1000, 2);
+                                                $kwh[6] += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on[$j]/3600)/1000, 2);
                                             }
-                                            printf("%.2f", $relay_stats_total_amps);
+                                            printf("%.2f", $kwh[6]);
                                         ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"></td>
+                                        <td>Cost <?php echo "(",$relay_stats_currency,$relay_stats_cost,"/kWh)"; ?></td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[0]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[1]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[2]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[3]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[4]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[5]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[6]*$relay_stats_cost);
+                                            ?>
                                         </td>
                                     </tr>
                                 </table>
@@ -4030,6 +4119,22 @@ if (isset($output_error)) {
                         </td>
                         <td class="setting-value">
                             <input style="width: 18em;" type="number" min="1" max="9999" step="1" value="<?php echo $relay_stats_volts; ?>" maxlength=4 size=1 name="relay_stats_volts" title="The voltage that is being controlled through the relays."/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Cost per kWh
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" step="0.01" value="<?php echo $relay_stats_cost; ?>" maxlength=4 name="relay_stats_cost" title="The cost per kWh."/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Currency Unit
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $relay_stats_currency; ?>" maxlength=1 name="relay_stats_currency" title="The currency unit."/>
                         </td>
                     </tr>
                     <tr>

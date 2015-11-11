@@ -507,12 +507,14 @@ while ($row = $results->fetchArray()) {
     $timelapse_extra_parameters = str_replace("''","'",$row[7]);
 }
 
-$results = $db->query('SELECT Login_Message, Refresh_Time, Enable_Max_Amps, Max_Amps, Relay_Stats_Volts, Relay_Stats_DayofMonth FROM Misc');
+$results = $db->query('SELECT Login_Message, Refresh_Time, Enable_Max_Amps, Max_Amps, Relay_Stats_Volts, Relay_Stats_Cost, Relay_Stats_Currency, Relay_Stats_DayofMonth FROM Misc');
 while ($row = $results->fetchArray()) {
     $login_message = $row[0];
     $refresh_time = $row[1];
     $enable_max_amps = $row[2];
     $max_amps = $row[3];
     $relay_stats_volts = $row[4];
-    $relay_stats_dayofmonth = $row[5];
+    $relay_stats_cost = $row[5];
+    $relay_stats_currency = $row[6];
+    $relay_stats_dayofmonth = $row[7];
 }

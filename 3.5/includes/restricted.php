@@ -2892,10 +2892,12 @@ if (isset($_POST['Edit_Note_Save'])) {
 
 // Change system settings
 if (isset($_POST['ChangeSystem'])) {
-    $stmt = $db->prepare("UPDATE Misc SET Enable_Max_Amps=:enablemaxamps, Max_Amps=:maxamps, Relay_Stats_Volts=:statvolts, Relay_Stats_DayofMonth=:statdayofmonth, Login_Message=:loginmessage, Refresh_Time=:refreshtime");
+    $stmt = $db->prepare("UPDATE Misc SET Enable_Max_Amps=:enablemaxamps, Max_Amps=:maxamps, Relay_Stats_Volts=:statvolts, Relay_Stats_Cost=:statcost, Relay_Stats_Currency=:statcurrency, Relay_Stats_DayofMonth=:statdayofmonth, Login_Message=:loginmessage, Refresh_Time=:refreshtime");
     $stmt->bindValue(':enablemaxamps', (int)$_POST['enable_max_amps'], SQLITE3_INTEGER);
     $stmt->bindValue(':maxamps', (float)$_POST['max_amps'], SQLITE3_FLOAT);
     $stmt->bindValue(':statvolts', (int)$_POST['relay_stats_volts'], SQLITE3_INTEGER);
+    $stmt->bindValue(':statcost', (float)$_POST['relay_stats_cost'], SQLITE3_FLOAT);
+    $stmt->bindValue(':statcurrency', $_POST['relay_stats_currency'], SQLITE3_TEXT);
     $stmt->bindValue(':statdayofmonth', (int)$_POST['relay_stats_dayofmonth'], SQLITE3_INTEGER);
     $stmt->bindValue(':loginmessage', $_POST['login_message'], SQLITE3_TEXT);
     $stmt->bindValue(':refreshtime', (int)$_POST['refresh_time'], SQLITE3_INTEGER);

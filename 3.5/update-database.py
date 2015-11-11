@@ -27,7 +27,7 @@ sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
 sql_database_user = '/var/www/mycodo/config/users.db'
 sql_database_note = '/var/www/mycodo/config/notes.db'
 
-db_version_mycodo = 16
+db_version_mycodo = 17
 db_version_user = 1
 db_version_note = 3
 
@@ -419,7 +419,12 @@ def mycodo_database_update():
             ModNullValue(sql_database_mycodo, 'Misc', 'Relay_Stats_Volts', 120)
             ModNullValue(sql_database_mycodo, 'Misc', 'Relay_Stats_DayofMonth', 15)
 
-        # Version 15 updates: New graphing method, need to update log file format (remove multiple spaces)
+        # Version 16 updates: New graphing method, need to update log file format (remove multiple spaces)
+
+        # Version 17 updates: Add "cost per kWh" and "currency unit" options
+        if current_db_version_mycodo < 17:
+            ModNullValue(sql_database_mycodo, 'Misc', 'Relay_Stats_Cost', 0.05)
+            ModNullValue(sql_database_mycodo, 'Misc', 'Relay_Stats_Currency', '$')
 
         # any extra commands for version X
         #if current_db_version_mycodo < X:
@@ -1059,10 +1064,12 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'Misc', 'Enable_Max_Amps', 'INT')
     AddColumn(sql_database_mycodo, 'Misc', 'Max_Amps', 'REAL')
     AddColumn(sql_database_mycodo, 'Misc', 'Relay_Stats_Volts', 'INT')
+    AddColumn(sql_database_mycodo, 'Misc', 'Relay_Stats_Cost', 'REAL')
+    AddColumn(sql_database_mycodo, 'Misc', 'Relay_Stats_Currency', 'TEXT')
     AddColumn(sql_database_mycodo, 'Misc', 'Relay_Stats_DayofMonth', 'INT')
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("INSERT OR IGNORE INTO Misc VALUES('0', 0, '', 300, 1, 15, 120, 15)")
+    cur.execute("INSERT OR IGNORE INTO Misc VALUES('0', 0, '', 300, 1, 15, 120, 0.05, '$', 15)")
     conn.commit()
     cur.close()
     ModNullValue(sql_database_mycodo, 'Misc', 'Dismiss_Notification', 0)
