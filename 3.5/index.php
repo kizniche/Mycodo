@@ -112,50 +112,50 @@ class OneFileLoginApplication {
             }
         } else if (isset($_POST['edituser'])) {
             $this->createDatabaseConnection();
-            // $sql = 'SELECT user_password_hash, user_restriction
-            //         FROM users
-            //         WHERE user_name = :user_name
-            //         LIMIT 1';
-            // $query = $this->db_connection->prepare($sql);
-            // $query->bindValue(':user_name', $_COOKIE['login_user']);
-            // $query->execute();
-            // $result_row = $query->fetchObject();
-            // $current_user_hash = $result_row->user_password_hash;
-            // $current_user_restriction = $result_row->user_restriction;
-
-            // if ($current_user_hash != $_COOKIE['login_hash'] || $current_user_restriction == 'admin') {
-            //     return true;
-            // }
-
-            $sql = 'SELECT user_name, user_password_hash, user_email, user_restriction, user_theme
+            $sql = 'SELECT user_password_hash, user_restriction
                     FROM users
                     WHERE user_name = :user_name
                     LIMIT 1';
             $query = $this->db_connection->prepare($sql);
-            $query->bindValue(':user_name', $_POST['user_name']);
+            $query->bindValue(':user_name', $_COOKIE['login_user']);
             $query->execute();
             $result_row = $query->fetchObject();
-            $edit_user_name = $result_row->user_name;
-            $edit_password_hash = $result_row->user_password_hash;
-            $edit_user_email = $result_row->user_email;
-            $edit_user_restriction = $result_row->user_restriction;
-            $edit_user_theme = $result_row->user_theme;
-
-            if (htmlentities($_POST['user_email'], ENT_QUOTES) != $edit_user_email) {
-                if ($this->checkEmailChangeData()) {
-                    $this->changeEmail();
+            $current_user_hash = $result_row->user_password_hash;
+            $current_user_restriction = $result_row->user_restriction;
+            $authorized = false;
+            if ($current_user_hash == $_COOKIE['login_hash'] && ($current_user_restriction == 'admin' || $_COOKIE['login_user'] == $_POST['user_name'])) {
+                $authorized = true;
+            }
+            if ($authorized) {
+                $sql = 'SELECT user_name, user_password_hash, user_email, user_restriction, user_theme
+                        FROM users
+                        WHERE user_name = :user_name
+                        LIMIT 1';
+                $query = $this->db_connection->prepare($sql);
+                $query->bindValue(':user_name', $_POST['user_name']);
+                $query->execute();
+                $result_row = $query->fetchObject();
+                $edit_user_name = $result_row->user_name;
+                $edit_password_hash = $result_row->user_password_hash;
+                $edit_user_email = $result_row->user_email;
+                $edit_user_restriction = $result_row->user_restriction;
+                $edit_user_theme = $result_row->user_theme;
+                if (htmlentities($_POST['user_email'], ENT_QUOTES) != $edit_user_email) {
+                    if ($this->checkEmailChangeData()) {
+                        $this->changeEmail();
+                    }
                 }
-            }
-            if (htmlentities($_POST['new_password'], ENT_QUOTES) != '' && (password_hash(htmlentities($_POST['new_password'], ENT_QUOTES), PASSWORD_DEFAULT) != $edit_password_hash)) {
-                if ($this->checkPasswordChangeData()) {
-                    $this->changePassword();
+                if (htmlentities($_POST['new_password'], ENT_QUOTES) != '' && (password_hash(htmlentities($_POST['new_password'], ENT_QUOTES), PASSWORD_DEFAULT) != $edit_password_hash)) {
+                    if ($this->checkPasswordChangeData()) {
+                        $this->changePassword();
+                    }
                 }
-            }
-            if (strcmp(htmlentities($_POST['user_restriction'], ENT_QUOTES), $edit_user_restriction)) {
-                $this->changeRestriction();
-            }
-            if (strcmp(htmlentities($_POST['user_theme'], ENT_QUOTES), $edit_user_theme)) {
-                $this->changeTheme();
+                if (strcmp(htmlentities($_POST['user_restriction'], ENT_QUOTES), $edit_user_restriction) && $current_user_restriction == 'admin') {
+                    $this->changeRestriction();
+                }
+                if (strcmp(htmlentities($_POST['user_theme'], ENT_QUOTES), $edit_user_theme)) {
+                    $this->changeTheme();
+                }
             }
         }
 
@@ -358,6 +358,7 @@ class OneFileLoginApplication {
         // remove html code etc. from username and email
         $user_name = htmlentities($_POST['user_name'], ENT_QUOTES);
         $user_email = htmlentities($_POST['user_email'], ENT_QUOTES);
+        $user_restriction = htmlentities($_POST['user_restriction'], ENT_QUOTES);
         $user_password = $_POST['user_password_new'];
         // Encrypt the user's password with the PHP 5.5's password_hash() function, results in a 60 char hash string.
         // the constant PASSWORD_DEFAULT comes from PHP 5.5 or the password_compatibility_library
@@ -373,16 +374,15 @@ class OneFileLoginApplication {
         if ($result_row) {
             $this->feedback = "Sorry, that username / email is already taken. Please choose another one.";
         } else {
-            $sql = 'INSERT INTO users (user_name, user_password_hash, user_email)
-                    VALUES(:user_name, :user_password_hash, :user_email)';
+            $sql = 'INSERT INTO users (user_name, user_password_hash, user_email, user_restriction, user_theme)
+                    VALUES(:user_name, :user_password_hash, :user_email, :user_restriction, :user_theme)';
             $query = $this->db_connection->prepare($sql);
             $query->bindValue(':user_name', $user_name);
             $query->bindValue(':user_password_hash', $user_password_hash);
             $query->bindValue(':user_email', $user_email);
-            // PDO's execute() gives back TRUE when successful, FALSE when not
-            // @link http://stackoverflow.com/q/1661863/1114320
+            $query->bindValue(':user_restriction', $user_restriction);
+            $query->bindValue(':user_theme', 'light');
             $registration_success_state = $query->execute();
-
             if ($registration_success_state) {
                 $this->feedback = "User " . $user_name . " successfully created.";
                 return true;

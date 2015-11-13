@@ -76,7 +76,7 @@ if (!file_exists($update_check) || time()-filemtime($update_check) > 24 * 3600) 
 
 // Output an error if the user guest attempts to submit certain forms
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if ($current_user_restriction == 'guest' && !isset($_POST['Graph']) && !isset($_POST['login'])) {
+    if ($current_user_restriction == 'guest' && !isset($_POST['Graph']) && !isset($_POST['login']) && !isset($_POST['edituser'])) {
         $output_error = 'guest';
     } else if ($current_user_restriction != 'guest') {
         // Only non-guest users may perform these actions
@@ -391,6 +391,7 @@ if (isset($output_error)) {
             if (isset($_POST['Generate_Graph_Span'])) $dyn_time_span = $_POST['Generate_Graph_Span'];
             else $dyn_time_span = "1w";
             if (isset($_POST['Generate_Graph_Type'])) $dyn_type = $_POST['Generate_Graph_Type'];
+            else $dyn_type = 'all';
             ?>
 
             <div>
@@ -2917,6 +2918,7 @@ if (isset($output_error)) {
 
                     $start_time = filemtime($lock_timelapse);
                     echo 'Start Time: ' , date("F d Y H:i:s", $start_time) , '<br>';
+                    echo 'End Time: ' , date("F d Y H:i:s", $start_time+($runtime*60)) , '<br>';
                 }
 
                 
@@ -4849,6 +4851,17 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     <tr>
+                        <td class="setting-text">
+                            Group
+                        </td>
+                        <td class="setting-value">
+                            <select style="width: 18em;" title="" name="user_restriction">
+                                <option value="guest">Guest</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
                         <td class="setting-save">
                             <input type="submit" name="register" value="Add User" />
                         </td>
@@ -4883,7 +4896,7 @@ if (isset($output_error)) {
                         <td>Email</td>
                         <td>New Password</td>
                         <td>New Password Repeat</td>
-                        <td>Type</td>
+                        <td>Group</td>
                         <td>Theme</td>
                     </tr>
                 <?php for ($i = 0; $i < count($user_name); $i++) { ?>
@@ -4891,16 +4904,16 @@ if (isset($output_error)) {
                         <form method="post" action="?tab=settings">
                         <td><?php echo $user_name[$i]; ?><input type="hidden" name="user_name" value="<?php echo $user_name[$i]; ?>"></td>
                         <td>
-                            <input style="width: 13em;" type="text" value="<?php echo $user_email[$i]; ?>" name="user_email" />
+                            <input style="width: 12.5em;" type="text" value="<?php echo $user_email[$i]; ?>" name="user_email" />
                         </td>
                         <td>
-                            <input style="width: 13em;" class="login_input" type="password" name="new_password" pattern=".{6,}" autocomplete="off" />
+                            <input style="width: 12.5em;" class="login_input" type="password" name="new_password" pattern=".{6,}" autocomplete="off" />
                             </td>
                         <td>
-                            <input style="width: 13em;" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" autocomplete="off" /> <label for="login_input_password_repeat">
+                            <input style="width: 12.5em;" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" autocomplete="off" /> <label for="login_input_password_repeat">
                         </td>
                         <td>
-                            <select style="width: 65px;" title="" name="user_restriction">
+                            <select title="" name="user_restriction">
                                 <option
                                     <?php if ($user_restriction[$i] == 'admin') {
                                         echo ' selected="selected"';
@@ -4909,9 +4922,10 @@ if (isset($output_error)) {
                                     <?php if ($user_restriction[$i] == 'guest') {
                                         echo ' selected="selected"';
                                     } ?> value="guest">Guest</option>
-                            </select></td>
+                            </select>
+                        </td>
                         <td>
-                            <select style="width: 65px;" title="" name="user_theme">
+                            <select title="" name="user_theme">
                                 <option
                                     <?php if ($user_theme[$i] == 'light') {
                                         echo ' selected="selected"';
