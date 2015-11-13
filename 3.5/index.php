@@ -104,23 +104,58 @@ class OneFileLoginApplication {
                     $this->createNewUser();
                 }
             }
-        } else if (isset($_POST["changeemail"])) {
-            if ($this->checkEmailChangeData()) {
-                if ($this->createDatabaseConnection()) {
-                    $this->changeEmail();
-                }
-            }
-        } else if (isset($_POST["changepassword"])) {
-            if ($this->checkPasswordChangeData()) {
-                if ($this->createDatabaseConnection()) {
-                    $this->changePassword();
-                }
-            }
         } else if (isset($_POST["deleteuser"])) {
             if ($this->checkDeleteUserData()) {
                 if ($this->createDatabaseConnection()) {
                     $this->deleteUser();
                 }
+            }
+        } else if (isset($_POST['edituser'])) {
+            $this->createDatabaseConnection();
+            // $sql = 'SELECT user_password_hash, user_restriction
+            //         FROM users
+            //         WHERE user_name = :user_name
+            //         LIMIT 1';
+            // $query = $this->db_connection->prepare($sql);
+            // $query->bindValue(':user_name', $_COOKIE['login_user']);
+            // $query->execute();
+            // $result_row = $query->fetchObject();
+            // $current_user_hash = $result_row->user_password_hash;
+            // $current_user_restriction = $result_row->user_restriction;
+
+            // if ($current_user_hash != $_COOKIE['login_hash'] || $current_user_restriction == 'admin') {
+            //     return true;
+            // }
+
+            $sql = 'SELECT user_name, user_password_hash, user_email, user_restriction, user_theme
+                    FROM users
+                    WHERE user_name = :user_name
+                    LIMIT 1';
+            $query = $this->db_connection->prepare($sql);
+            $query->bindValue(':user_name', $_POST['user_name']);
+            $query->execute();
+            $result_row = $query->fetchObject();
+            $edit_user_name = $result_row->user_name;
+            $edit_password_hash = $result_row->user_password_hash;
+            $edit_user_email = $result_row->user_email;
+            $edit_user_restriction = $result_row->user_restriction;
+            $edit_user_theme = $result_row->user_theme;
+
+            if (htmlentities($_POST['user_email'], ENT_QUOTES) != $edit_user_email) {
+                if ($this->checkEmailChangeData()) {
+                    $this->changeEmail();
+                }
+            }
+            if (htmlentities($_POST['new_password'], ENT_QUOTES) != '' && (password_hash(htmlentities($_POST['new_password'], ENT_QUOTES), PASSWORD_DEFAULT) != $edit_password_hash)) {
+                if ($this->checkPasswordChangeData()) {
+                    $this->changePassword();
+                }
+            }
+            if (strcmp(htmlentities($_POST['user_restriction'], ENT_QUOTES), $edit_user_restriction)) {
+                $this->changeRestriction();
+            }
+            if (htmlentities($_POST['user_theme'], ENT_QUOTES) != $edit_user_theme) {
+                $this->changeTheme();
             }
         }
 
@@ -389,25 +424,21 @@ class OneFileLoginApplication {
     }
 
     private function changeEmail() {
-        // remove html code etc. from username and email
         $user_name = htmlentities($_POST['user_name'], ENT_QUOTES);
         $user_email = htmlentities($_POST['user_email'], ENT_QUOTES);
-
         $sql = 'UPDATE users SET user_email = :user_email WHERE user_name = :user_name';
         $query = $this->db_connection->prepare($sql);
         $query->bindValue(':user_name', $user_name);
         $query->bindValue(':user_email', $user_email);
-        $emailchange_success_state = $query->execute();
-
-        if ($emailchange_success_state) {
-            $this->feedback = "Email successfully changed for user " . $user_name;
+        $change_success_state = $query->execute();
+        if ($change_success_state) {
+            $data_error = "Email change success. ";
             return true;
         } else {
-            $this->feedback = "Email chage failed.";
+            $data_error = "Email chage failed. ";
         }
         return false;
     }
-
 
     private function checkPasswordChangeData() {
         if (!empty($_POST['user_name'])
@@ -437,29 +468,59 @@ class OneFileLoginApplication {
     }
 
     private function changePassword() {
-        // remove html code etc. from username and email
         $user_name = htmlentities($_POST['user_name'], ENT_QUOTES);
         $user_password = $_POST['new_password'];
         // Encrypt the user's password with the PHP 5.5's password_hash() function, results in a 60 char hash string.
         // the constant PASSWORD_DEFAULT comes from PHP 5.5 or the password_compatibility_library
         $user_password_hash = password_hash($user_password, PASSWORD_DEFAULT);
-
         $sql = 'UPDATE users SET user_password_hash = :user_password_hash WHERE user_name = :user_name';
         $query = $this->db_connection->prepare($sql);
         $query->bindValue(':user_name', $user_name);
         $query->bindValue(':user_password_hash', $user_password_hash);
-        $passchange_success_state = $query->execute();
-
-        if ($passchange_success_state) {
+        $change_success_state = $query->execute();
+        if ($change_success_state) {
             if ($user_name == $_SESSION['user_name']) $this->doLogout();
-            $this->feedback = "Password successfully changed for user " . $user_name;
+            $this->feedback = "Password change success. ";
             return true;
         } else {
-            $this->feedback = "Password chage failed.";
+            $this->feedback = "Password change failed. ";
         }
         return false;
     }
 
+    private function changeRestriction() {
+        $user_name = htmlentities($_POST['user_name'], ENT_QUOTES);
+        $user_restriction = htmlentities($_POST['user_restriction'], ENT_QUOTES);
+        $sql = 'UPDATE users SET user_restriction = :user_restriction WHERE user_name = :user_name';
+        $query = $this->db_connection->prepare($sql);
+        $query->bindValue(':user_name', $user_name);
+        $query->bindValue(':user_restriction', $user_restriction);
+        $change_success_state = $query->execute();
+        if ($change_success_state) {
+            $this->feedback = "Restriction change success. ";
+            return true;
+        } else {
+            $this->feedback = "Restriction change failed. ";
+        }
+        return false;
+    }
+
+    private function changeTheme() {
+        $user_name = htmlentities($_POST['user_name'], ENT_QUOTES);
+        $user_theme = htmlentities($_POST['user_theme'], ENT_QUOTES);
+        $sql = 'UPDATE users SET user_theme = :user_theme WHERE user_name = :user_name';
+        $query = $this->db_connection->prepare($sql);
+        $query->bindValue(':user_name', $user_name);
+        $query->bindValue(':user_theme', $user_theme);
+        $passchange_success_state = $query->execute();
+        if ($passchange_success_state) {
+            $this->feedback = "Theme change success. ";
+            return true;
+        } else {
+            $this->feedback = "Theme chage failed. ";
+        }
+        return false;
+    }
 
     private function checkDeleteUserData() {
         if (!empty($_POST['user_name'])
@@ -526,37 +587,28 @@ class OneFileLoginApplication {
 
     // Login page
     private function showPageLoginForm() {
-        if ($this->feedback) echo $this->feedback . "<br/>";
         ?>
         <html>
         <head>
             <link rel="icon" type="image/png" href="img/favicon.png">
         </head>
         <body>
-        <div style="padding-top: 2em; width: 12em; margin: 8 auto; text-align: left; ">
-            <div style="padding-bottom: 0.6em; text-align: center; font-size: 1.8em;">Mycodo</div>
+        <div style="text-align: center;">
+            <?php if ($this->feedback) echo $this->feedback . "<br/>"; ?>
+        </div>
+        <div style="padding-top: 1.5em; width: 100%; margin: 8 auto; text-align: center; ">
+            <div style="padding-bottom: 0.6em; font-size: 1.8em;">Mycodo</div>
             <form method="post" action="<?php echo $_SERVER['SCRIPT_NAME']; ?>" name="loginform">
-            <table style="width: 100%;">
-                <tr>
-                    <td>
-                        <input style="width: 100%;" id="login_input_username" placeholder="User" type="text" name="user_name" title="Username or Email" required /> 
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <input style="width: 100%;" id="login_input_password" placeholder="Password" type="password" name="user_password" autocomplete="off" required />
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan=2 style="text-align: center; padding-top:0.5em;">
-                        <input type="checkbox" name="cookie" value="1"> Remember me (30 days)
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan=2 style="text-align: center; padding-top:1em;">
-                        <input type="submit"  name="login" value="Log in" />
-                    </td>
-            </table>
+            <div style="padding: 0.2em;">
+                <input style="width: 12em;" id="login_input_username" placeholder="User" type="text" name="user_name" title="Username or Email" required />
+            </div>
+            <div style="padding: 0.2em;">
+                <input style="width: 12em;" id="login_input_password" placeholder="Password" type="password" name="user_password" autocomplete="off" required />
+            </div>
+            <div style="text-align: center; padding: 0.5em 0 1em 0;">
+                <input type="checkbox" name="cookie" value="1"> Remember me (30 days)
+            </div>
+            <input type="submit"  name="login" value="Log in" />
             </form>
         </div>
         <?php

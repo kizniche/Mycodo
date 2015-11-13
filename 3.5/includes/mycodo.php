@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.87";
+$version = "3.5.88";
 
 ######### Start Edit Configure #########
 
@@ -76,9 +76,9 @@ if (!file_exists($update_check) || time()-filemtime($update_check) > 24 * 3600) 
 
 // Output an error if the user guest attempts to submit certain forms
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if ($_SESSION['user_name'] == 'guest' && !isset($_POST['Graph']) && !isset($_POST['login'])) {
+    if ($current_user_restriction == 'guest' && !isset($_POST['Graph']) && !isset($_POST['login'])) {
         $output_error = 'guest';
-    } else if ($_SESSION['user_name'] != 'guest') {
+    } else if ($current_user_restriction != 'guest') {
         // Only non-guest users may perform these actions
         require($install_path . "/includes/restricted.php"); // Configuration changes
         require($install_path . "/includes/database.php"); // Reload SQLite database
@@ -108,6 +108,13 @@ delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete olde
     <link rel="stylesheet" href="css/fonts.css" type="text/css">
     <link rel="stylesheet" href="css/reset.css" type="text/css">
     <link rel="stylesheet" href="css/style.css" type="text/css">
+    <?php
+    if ($current_user_theme == 'light') {
+        echo '<link rel="stylesheet" href="css/theme-light.css" type="text/css">';
+    } else if ($current_user_theme == 'dark') {
+        echo '<link rel="stylesheet" href="css/theme-dark.css" type="text/css">';
+    }
+    ?>
     <script src="js/modernizr.js"></script>
     <script src="js/jquery-2.1.4.min.js"></script>
     <script src="js/highstock.js"></script>
@@ -161,7 +168,7 @@ if (isset($output_error)) {
                 v<?php echo $version; ?>
             </div>
             <div>
-                User: <?php echo $_SESSION['user_name']; ?>
+                User: <?php echo $current_user_restriction; ?>
             </div>
             <div>
                 <a href="index.php?action=logout">Log Out</a>
@@ -2650,7 +2657,7 @@ if (isset($output_error)) {
 
             <?php
             /* DateSelector, modified from work by Leon Atkinson */
-            if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] != 'guest') {
+            if (isset($_POST['SubmitDates']) and $current_user_restriction != 'guest') {
                 if ($_POST['SubmitDates']) {
                     displayform();
                     $id2 = uniqid();
@@ -2794,7 +2801,7 @@ if (isset($output_error)) {
                         }
                     }
                 }
-            } else if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] == 'guest') {
+            } else if (isset($_POST['SubmitDates']) and $current_user_restriction == 'guest') {
                 displayform();
                 echo '<div>Guest access has been revoked for graph generation.';
             } else displayform();
@@ -3494,7 +3501,7 @@ if (isset($output_error)) {
                             </form>";
                         }
 
-                        if(isset($_POST['Login']) && $_SESSION['user_name'] != 'guest') {
+                        if(isset($_POST['Login']) && $current_user_restriction != 'guest') {
                             echo '<pre>Time, Type of auth, user, IP, Hostname, Referral, Browser<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
@@ -3975,18 +3982,75 @@ if (isset($output_error)) {
                         <?php 
                         }
 
-                        if(isset($_POST['Users']) && $_SESSION['user_name'] != 'guest') {
-                            echo exec('file ' . $user_db);
-                            echo '<pre><br> <br>User Email Password_Hash<br> <br>';
-                            $db = new SQLite3($user_db);
-                            $results = $db->query('SELECT user_name, user_email, user_password_hash FROM users');
-                            while ($row = $results->fetchArray()) {
-                                echo $row[0] , ' ' , $row[1] , ' ' , $row[2] , '<br>';
+                        if ((isset($_POST['edituser']) || isset($_POST['Users'])) && $current_user_restriction != 'guest') {
+                            echo '<div style="padding: 0.5em 0 1em 0;"><pre>';
+                            echo exec('file ' . $user_db); 
+                            echo '<br> <br>';
+                            exec('sqlite3 ' . $user_db . ' .dump', $output);
+                            print_r($output);
+                            echo '</pre></div>';
+                            echo '
+                            <table class="edit-user">
+                                <tr>
+                                    <td>User</td>
+                                    <td>Email</td>
+                                    <td>New Password</td>
+                                    <td>New Password Repeat</td>
+                                    <td>Type</td>
+                                    <td>Theme</td>
+                                </tr>';
+                            for ($i = 0; $i < count($user_name); $i++) {
+                                echo '
+                                <tr>
+                                    <form method="post" action="?tab=data">
+                                    <td>' . $user_name[$i] . '<input type="hidden" name="user_name" value="' . $user_name[$i] . '"></td>
+                                    <td>
+                                        <input style="width: 13em;" type="text" value="' . $user_email[$i] . '" name="user_email" />
+                                    </td>
+                                    <td>
+                                        <input style="width: 13em;" class="login_input" type="password" name="new_password" pattern=".{6,}" autocomplete="off" />
+                                        </td>
+                                    <td>
+                                        <input style="width: 13em;" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" autocomplete="off" /> <label for="login_input_password_repeat">
+                                    </td>
+                                    <td>
+                                        <select style="width: 65px;" title="" name="user_restriction">
+                                            <option';
+                                                if ($user_restriction[$i] == 'admin') {
+                                                    echo ' selected="selected"';
+                                                }
+                                                echo' value="admin">Admin</option>
+                                            <option';
+                                                if ($user_restriction[$i] == 'guest') {
+                                                    echo ' selected="selected"';
+                                                }
+                                                echo' value="guest">Guest</option>
+                                        </select></td>
+                                    <td>
+                                        <select style="width: 65px;" title="" name="user_theme">
+                                            <option';
+                                                if ($user_theme[$i] == 'light') {
+                                                    echo ' selected="selected"';
+                                                }
+                                                echo' value="light">Light</option>
+                                            <option';
+                                                if ($user_theme[$i] == 'dark') {
+                                                    echo ' selected="selected"';
+                                                }
+                                                echo' value="dark">Dark</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="submit" name="edituser" value="Save" />
+                                    </td>
+                                    </form>
+                                </tr>';
                             }
-                            echo '</pre>';
+                            echo '
+                            </table>';
                         }
 
-                        if(isset($_POST['Database']) && $_SESSION['user_name'] != 'guest') {
+                        if (isset($_POST['Database']) && $current_user_restriction != 'guest') {
                             echo exec('file ' . $mycodo_db); 
                             echo '<pre><br> <br>';
                             exec('sqlite3 ' . $mycodo_db . ' .dump', $output);

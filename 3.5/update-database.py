@@ -28,7 +28,7 @@ sql_database_user = '/var/www/mycodo/config/users.db'
 sql_database_note = '/var/www/mycodo/config/notes.db'
 
 db_version_mycodo = 17
-db_version_user = 1
+db_version_user = 2
 db_version_note = 3
 
 import getopt
@@ -449,6 +449,17 @@ def user_database_update():
     if current_db_version_user < 1:
         print "User database is not versioned. Updating."
 
+    # Version 2 - Add theme option and ability to restrict access
+    if current_db_version_user < 2:
+        AddColumn(sql_database_user, 'users', 'user_restriction', 'TEXT')
+        AddColumn(sql_database_user, 'users', 'user_theme', 'TEXT')
+        ModNullValue(sql_database_user, 'users', 'user_restriction', 'admin')
+        ModNullValue(sql_database_user, 'users', 'user_theme', 'light')
+        conn = sqlite3.connect(sql_database_user)
+        cur = conn.cursor()
+        cur.execute("UPDATE users SET user_restriction='guest' WHERE user_name='guest'")
+        conn.commit()
+        cur.close()
 
 
 def note_database_update():

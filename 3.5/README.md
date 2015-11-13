@@ -90,6 +90,9 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 Major changes for each versioned release
 
+#### 3.5.88
++ Add theme support (light/dark) and ability to set user as guest/admin
+
 #### 3.5.87
 + Add display of Notes on dynamic humidity/temperature graph, add title to notes (for graph display)
 
