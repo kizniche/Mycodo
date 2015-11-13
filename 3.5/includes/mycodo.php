@@ -3982,72 +3982,13 @@ if (isset($output_error)) {
                         <?php 
                         }
 
-                        if ((isset($_POST['edituser']) || isset($_POST['Users'])) && $current_user_restriction != 'guest') {
+                        if (isset($_POST['Users']) && $current_user_restriction != 'guest') {
                             echo '<div style="padding: 0.5em 0 1em 0;"><pre>';
                             echo exec('file ' . $user_db); 
                             echo '<br> <br>';
                             exec('sqlite3 ' . $user_db . ' .dump', $output);
                             print_r($output);
                             echo '</pre></div>';
-                            echo '
-                            <table class="edit-user">
-                                <tr>
-                                    <td>User</td>
-                                    <td>Email</td>
-                                    <td>New Password</td>
-                                    <td>New Password Repeat</td>
-                                    <td>Type</td>
-                                    <td>Theme</td>
-                                </tr>';
-                            for ($i = 0; $i < count($user_name); $i++) {
-                                echo '
-                                <tr>
-                                    <form method="post" action="?tab=data">
-                                    <td>' . $user_name[$i] . '<input type="hidden" name="user_name" value="' . $user_name[$i] . '"></td>
-                                    <td>
-                                        <input style="width: 13em;" type="text" value="' . $user_email[$i] . '" name="user_email" />
-                                    </td>
-                                    <td>
-                                        <input style="width: 13em;" class="login_input" type="password" name="new_password" pattern=".{6,}" autocomplete="off" />
-                                        </td>
-                                    <td>
-                                        <input style="width: 13em;" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" autocomplete="off" /> <label for="login_input_password_repeat">
-                                    </td>
-                                    <td>
-                                        <select style="width: 65px;" title="" name="user_restriction">
-                                            <option';
-                                                if ($user_restriction[$i] == 'admin') {
-                                                    echo ' selected="selected"';
-                                                }
-                                                echo' value="admin">Admin</option>
-                                            <option';
-                                                if ($user_restriction[$i] == 'guest') {
-                                                    echo ' selected="selected"';
-                                                }
-                                                echo' value="guest">Guest</option>
-                                        </select></td>
-                                    <td>
-                                        <select style="width: 65px;" title="" name="user_theme">
-                                            <option';
-                                                if ($user_theme[$i] == 'light') {
-                                                    echo ' selected="selected"';
-                                                }
-                                                echo' value="light">Light</option>
-                                            <option';
-                                                if ($user_theme[$i] == 'dark') {
-                                                    echo ' selected="selected"';
-                                                }
-                                                echo' value="dark">Dark</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="submit" name="edituser" value="Save" />
-                                    </td>
-                                    </form>
-                                </tr>';
-                            }
-                            echo '
-                            </table>';
                         }
 
                         if (isset($_POST['Database']) && $current_user_restriction != 'guest') {
@@ -4917,72 +4858,6 @@ if (isset($output_error)) {
                     <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
-                            Change Password
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Username
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Password (min. 6 characters)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" class="login_input" type="password" name="new_password" pattern=".{6,}" required autocomplete="off" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Repeat New password
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_repeat">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-save">
-                            <input type="submit" name="changepassword" value="Change Password" />
-                        </td>
-                    </tr>
-                    </form>
-
-                    <form method="post" action="?tab=settings">
-                    <tr>
-                        <td class="setting-title">
-                            Change Email
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Username
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            New Email
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" class="login_input" type="email" name="user_email" required />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-save">
-                            <input type="submit" name="changeemail" value="Change Email" />
-                        </td>
-                    </tr>
-                    </form>
-
-                    <form method="post" action="?tab=settings">
-                    <tr>
-                        <td class="setting-title">
                             Delete User
                         </td>
                     </tr>
@@ -5000,6 +4875,61 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     </form>
+                </table>
+
+                <table class="edit-user">
+                    <tr>
+                        <td>User</td>
+                        <td>Email</td>
+                        <td>New Password</td>
+                        <td>New Password Repeat</td>
+                        <td>Type</td>
+                        <td>Theme</td>
+                    </tr>
+                <?php for ($i = 0; $i < count($user_name); $i++) { ?>
+                    <tr>
+                        <form method="post" action="?tab=settings">
+                        <td><?php echo $user_name[$i]; ?><input type="hidden" name="user_name" value="<?php echo $user_name[$i]; ?>"></td>
+                        <td>
+                            <input style="width: 13em;" type="text" value="<?php echo $user_email[$i]; ?>" name="user_email" />
+                        </td>
+                        <td>
+                            <input style="width: 13em;" class="login_input" type="password" name="new_password" pattern=".{6,}" autocomplete="off" />
+                            </td>
+                        <td>
+                            <input style="width: 13em;" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" autocomplete="off" /> <label for="login_input_password_repeat">
+                        </td>
+                        <td>
+                            <select style="width: 65px;" title="" name="user_restriction">
+                                <option
+                                    <?php if ($user_restriction[$i] == 'admin') {
+                                        echo ' selected="selected"';
+                                    } ?> value="admin">Admin</option>
+                                <option
+                                    <?php if ($user_restriction[$i] == 'guest') {
+                                        echo ' selected="selected"';
+                                    } ?> value="guest">Guest</option>
+                            </select></td>
+                        <td>
+                            <select style="width: 65px;" title="" name="user_theme">
+                                <option
+                                    <?php if ($user_theme[$i] == 'light') {
+                                        echo ' selected="selected"';
+                                    } ?> value="light">Light</option>
+                                <option
+                                    <?php if ($user_theme[$i] == 'dark') {
+                                        echo ' selected="selected"';
+                                    } ?> value="dark">Dark</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="submit" name="edituser" value="Save" />
+                        </td>
+                        </form>
+                    </tr>
+                <?php
+                }
+                ?>
                 </table>
             </div>
             <div style="padding-top: 3em;"></div>

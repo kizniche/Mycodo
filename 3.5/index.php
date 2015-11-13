@@ -154,7 +154,7 @@ class OneFileLoginApplication {
             if (strcmp(htmlentities($_POST['user_restriction'], ENT_QUOTES), $edit_user_restriction)) {
                 $this->changeRestriction();
             }
-            if (htmlentities($_POST['user_theme'], ENT_QUOTES) != $edit_user_theme) {
+            if (strcmp(htmlentities($_POST['user_theme'], ENT_QUOTES), $edit_user_theme)) {
                 $this->changeTheme();
             }
         }
