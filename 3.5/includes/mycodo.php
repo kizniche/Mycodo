@@ -169,7 +169,7 @@ if (isset($output_error)) {
                 v<?php echo $version; ?>
             </div>
             <div>
-                User: <?php echo $current_user_restriction; ?>
+                User: <?php echo $_SESSION['user_name']; ?>
             </div>
             <div>
                 <a href="index.php?action=logout">Log Out</a>
