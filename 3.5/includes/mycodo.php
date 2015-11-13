@@ -501,7 +501,7 @@ if (isset($output_error)) {
                         (isset($sensor_press_graph) && array_sum($sensor_press_graph))) {
 
                         if (!isset($_POST['Generate_Graph']) && !isset($_POST['Generate_Graph_All'])) {
-                            generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_graph, $sensor_ht_graph, $sensor_co2_graph, $sensor_press_graph);
+                            generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_graph, $sensor_ht_graph, $sensor_co2_graph, $sensor_press_graph, $current_user_theme);
                         }
                     } else { ?>
                         <div style="width: 100%; padding: 2em 0 0 0; text-align: center;">

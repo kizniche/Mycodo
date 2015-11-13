@@ -37,7 +37,7 @@ def usage():
     print 'Options:'
     print '    -h, --help'
     print '           Display this help and exit'
-    print '        --graph graph_type graph_id [graph_span] [time_from] [time_to] [width]'
+    print '        --graph theme graph_type graph_id [graph_span] [time_from] [time_to] [width]'
     print '           Generate graph, where time_from and time_to are the number of seconds since epoch'
     print '        --pidallrestart Sensor'
     print '           Restart all PIDs, where Sensor=T, HT, CO2'
@@ -91,11 +91,11 @@ def menu():
             usage()
             return 1
         elif opt == "--graph":
-            print "%s [Remote command] Graph: %s %s %s %s %s %s" % (
-                Timestamp(), sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7])
+            print "%s [Remote command] Graph: %s %s %s %s %s %s %s" % (
+                Timestamp(), sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[7])
             print "%s [Remote command] Server returned:" % (
                 Timestamp()),
-            if c.root.GenerateGraph(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7]) == 1:
+            if c.root.GenerateGraph(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[7]) == 1:
                 print "Success"
             else:
                 print "Fail"
