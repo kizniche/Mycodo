@@ -108,13 +108,6 @@ delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete olde
     <link rel="stylesheet" href="css/fonts.css" type="text/css">
     <link rel="stylesheet" href="css/reset.css" type="text/css">
     <link rel="stylesheet" href="css/style.css" type="text/css">
-    <?php
-    if ($current_user_theme == 'light') {
-        echo '<link rel="stylesheet" href="css/theme-light.css" type="text/css">';
-    } else if ($current_user_theme == 'dark') {
-        echo '<link rel="stylesheet" href="css/theme-dark.css" type="text/css">';
-    }
-    ?>
     <script src="js/modernizr.js"></script>
     <script src="js/jquery-2.1.4.min.js"></script>
     <script src="js/highstock.js"></script>
@@ -124,6 +117,14 @@ delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete olde
     <script src="js/modules/export-csv.js"></script>
     <script src="js/modules/jspdf.min.js"></script>
     <script src="js/modules/highcharts-export-clientside.js"></script>
+    <?php
+    if ($current_user_theme == 'light') {
+        echo '<link rel="stylesheet" href="css/theme-light.css" type="text/css">';
+    } else if ($current_user_theme == 'dark') {
+        echo '<link rel="stylesheet" href="css/theme-dark.css" type="text/css">
+        <script src="js/themes/dark-unica.js"></script>';
+    }
+    ?>
     <script type="text/javascript">
         function open_legend() {
             window.open("file.php?span=legend-small","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=250, height=300");
@@ -484,7 +485,7 @@ if (isset($output_error)) {
                 <?php
                 if (isset($_POST['Generate_Graph'])) {
                     echo '<div style="padding: 1.5em 0 1.5em 0; text-align:center;">';
-                    echo '<div id="container" style="width: 100%; height: 50em; "></div>';
+                    echo '<div id="container" style="width: 100%; height: 50em; border: 1px solid grey;"></div>';
                     echo '</div>';
                 }
                 ?>
