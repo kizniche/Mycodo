@@ -1,7 +1,7 @@
 /*** General ***/
 
 body {
-    background: #222222;
+    background: #161616;
     color: white;
     font-size: 0.875em;
 }
@@ -55,7 +55,7 @@ img.main-image {
 }
 
 hr.fade {
-    margin-bottom: 1.5em;
+    margin: 1.5em 0 1.5em 0;
     border: 0;
     height: 1px;
     background-image: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0));
@@ -500,7 +500,7 @@ Main components
 .cd-tabs nav {
   overflow: auto;
   -webkit-overflow-scrolling: touch;
-  background: #f8f7ee;
+  background: #212121;
   box-shadow: inset 0 -2px 3px rgba(203, 196, 130, 0.06);
 }
 
@@ -628,6 +628,7 @@ Main components
 .cd-tabs-content li {
   display: none;
   padding: 1.4em;
+  margin-bottom: 1.5em;
 }
 .cd-tabs-content li.selected {
   display: block;
@@ -644,6 +645,7 @@ Main components
 @media only screen and (min-width: 768px) {
   .cd-tabs-content {
     min-height: 34.286em;
+    margin-bottom: 2.5em;
   }
   .cd-tabs-content li {
     padding: 0.5em 0.5em 0.5em 0.5em;
@@ -652,6 +654,7 @@ Main components
 @media only screen and (min-width: 64em) {
   .cd-tabs-content {
     min-height: 0;
+    margin-bottom: 0.5em;
   }
   .cd-tabs-content li {
     padding: 0.5em;

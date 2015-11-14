@@ -167,8 +167,8 @@ if (!file_exists($lock_daemon)) {
         <span class="error">
             Daemon unable to start without tentacle_pi installed. Install with:
             <br>1. sudo apt-get install i2c-tools libi2c-dev python-dev build-essential
-            <br>2. git clone --recursive https://github.com/lexruee/tentacle_pi
-            <br>3. cd tentacle_pi
+            <br>2. git clone --recursive https://github.com/lexruee/tentacle_pi ~/tentacle_pi
+            <br>3. cd ~/tentacle_pi
             <br>4. sudo python setup.py install
         </span>';
     }
@@ -2725,7 +2725,7 @@ if (!file_exists($lock_daemon)) {
                             if ($first) echo '<hr class="fade"/>';
                             else $first = True;
                             $file_name = 'graph-temp-combined-' . $id2 . '.png';
-                            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                            echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                                 <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                                 <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                             echo 'graphtype=combinedcustom';
@@ -2738,7 +2738,7 @@ if (!file_exists($lock_daemon)) {
                             if ($first) echo '<hr class="fade"/>';
                             else $first = True;
                             $file_name = 'graph-hum-combined-' . $id2 . '.png';
-                            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                            echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                                 <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                                 <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                             echo 'graphtype=combinedcustom';
@@ -2751,7 +2751,7 @@ if (!file_exists($lock_daemon)) {
                             if ($first) echo '<hr class="fade"/>';
                             else $first = True;
                             $file_name = 'graph-co2-combined-' . $id2 . '.png';
-                            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                            echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                                 <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                                 <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                             echo 'graphtype=combinedcustom';
@@ -2764,7 +2764,7 @@ if (!file_exists($lock_daemon)) {
                             if ($first) echo '<hr class="fade"/>';
                             else $first = True;
                             $file_name = 'graph-press-combined-' . $id2 . '.png';
-                            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                            echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                                 <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                                 <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                             echo 'graphtype=combinedcustom';
@@ -2780,7 +2780,7 @@ if (!file_exists($lock_daemon)) {
                                 if ($first) echo '<hr class="fade"/>';
                                 else $first = True;
                                 $file_name = 'graph-t-separate-x-' . $id2 . '-' . $n . '.png';
-                                echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                                     <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                                     <img src=file.php?';
                                 echo 'graphtype=separatecustom';
@@ -2795,7 +2795,7 @@ if (!file_exists($lock_daemon)) {
                                 if ($first) echo '<hr class="fade"/>';
                                 else $first = True;
                                 $file_name = 'graph-ht-separate-x-' . $id2 . '-' . $n . '.png';
-                                echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                                     <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                                     <img src=file.php?';
                                 echo 'graphtype=separatecustom';
@@ -2810,7 +2810,7 @@ if (!file_exists($lock_daemon)) {
                                 if ($first) echo '<hr class="fade"/>';
                                 else $first = True;
                                 $file_name = 'graph-co2-separate-x-' . $id2 . '-' . $n . '.png';
-                                echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                                     <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                                     <img src=file.php?';
                                 echo 'graphtype=separatecustom';
@@ -2825,7 +2825,7 @@ if (!file_exists($lock_daemon)) {
                                 if ($first) echo '<hr class="fade"/>';
                                 else $first = True;
                                 $file_name = 'graph-press-separate-x-' . $id2 . '-' . $n . '.png';
-                                echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                                     <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                                     <img src=file.php?';
                                 echo 'graphtype=separatecustom';
@@ -4992,7 +4992,7 @@ if (!file_exists($lock_daemon)) {
                 }
                 ?>
             </div>
-            <div style="padding-top: 3em;"></div>
+            <div style="padding-top: 1em;"></div>
         </li>
     </ul> <!-- cd-tabs-content -->
 
