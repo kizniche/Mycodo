@@ -75,7 +75,7 @@ function view_sql_db($sqlite_db) {
  */
 
 // Generate and display graphs on the Graph tab
-function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_graph, $sensor_ht_graph, $sensor_co2_graph, $sensor_press_graph) {
+function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_graph, $sensor_ht_graph, $sensor_co2_graph, $sensor_press_graph, $theme) {
     $image_path = '/var/www/mycodo/images/';
 
     $sensor_t_log_file_tmp = "/var/www/mycodo/log/sensor-t-tmp.log";
@@ -97,7 +97,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
     // Main preset: Display graphs of past day and week
     if ($graph_time_span == 'default') {
         if (sizeof(glob("/var/www/mycodo/images/*default*$graph_id*")) == 0) {
-            shell_exec("$mycodo_client --graph default $graph_id 0 0 0 0");
+            shell_exec("$mycodo_client --graph $theme default $graph_id 0 0 0 0");
         }
         $first = 0;
         if (array_sum($sensor_t_graph)) {
@@ -106,7 +106,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                     if ($first) echo '<hr class="fade"/>';
                     else $first = 1;
                     $file_name = 'graph-t-default-' . $graph_id . '-' . $n . '.png';
-                    echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                    echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                         <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                             <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                     echo 'sensortype=t';
@@ -123,7 +123,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                     if ($first) echo '<hr class="fade"/>';
                     else $first = 1;
                     $file_name = 'graph-ht-default-' . $graph_id . '-' . $n . '.png';
-                    echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                    echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                         <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                             <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                     echo 'sensortype=ht';
@@ -140,7 +140,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                     if ($first) echo '<hr class="fade"/>';
                     else $first = 1;
                     $file_name = 'graph-co2-default-' . $graph_id . '-' . $n . '.png';
-                    echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                    echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                         <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                             <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                     echo 'sensortype=co2';
@@ -157,7 +157,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                     if ($first) echo '<hr class="fade"/>';
                     else $first = 1;
                     $file_name = 'graph-press-default-' . $graph_id . '-' . $n . '.png';
-                    echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                    echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                         <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                             <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                     echo 'sensortype=press';
@@ -170,14 +170,14 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
         }
     } else if ($graph_type == 'combined') {
         if (sizeof(glob("/var/www/mycodo/images/*combined*$graph_id*")) == 0) {
-            shell_exec("$mycodo_client --graph combined $graph_id $graph_time_span 0 0 0");
+            shell_exec("$mycodo_client --graph $theme combined $graph_id $graph_time_span 0 0 0");
         }
         $first = 0;
         if (array_sum($sensor_t_graph) || array_sum($sensor_ht_graph)) {
             if ($first) echo '<hr class="fade"/>';
             else $first = 1;
             $file_name = 'graph-temp-' . $graph_type . '-' . $graph_time_span . '-' . $graph_id . '.png';
-            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+            echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                 <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                     <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
             echo 'sensortype=temp';
@@ -190,7 +190,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
             if ($first) echo '<hr class="fade"/>';
             else $first = 1;
             $file_name = 'graph-hum-' . $graph_type . '-' . $graph_time_span . '-' . $graph_id . '.png';
-            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+            echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                 <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                     <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
             echo 'sensortype=hum';
@@ -203,7 +203,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
             if ($first) echo '<hr class="fade"/>';
             else $first = 1;
             $file_name = 'graph-co2-' . $graph_type . '-' . $graph_time_span . '-' . $graph_id . '.png';
-            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+            echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                 <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                     <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
             echo 'sensortype=co2';
@@ -216,7 +216,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
             if ($first) echo '<hr class="fade"/>';
             else $first = 1;
             $file_name = 'graph-press-' . $graph_type . '-' . $graph_time_span . '-' . $graph_id . '.png';
-            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+            echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                 <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                     <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
             echo 'sensortype=press';
@@ -227,7 +227,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
         }
     } else if ($graph_type == 'separate') {
         if (sizeof(glob("/var/www/mycodo/images/*separate*$graph_id*")) == 0) {
-            shell_exec("$mycodo_client --graph $graph_type $graph_id $graph_time_span 0 0 0");
+            shell_exec("$mycodo_client --graph $theme $graph_type $graph_id $graph_time_span 0 0 0");
         }
         $first = 0;
         if (array_sum($sensor_t_graph)) {
@@ -236,7 +236,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                     if ($first) echo '<hr class="fade"/>';
                     else $first = 1;
                     $file_name = 'graph-t-' . $graph_type . '-' . $graph_time_span . '-' . $graph_id . '-' . $n . '.png';
-                    echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                    echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                         <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                             <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                     echo 'sensortype=t';
@@ -254,7 +254,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                     if ($first) echo '<hr class="fade"/>';
                     else $first = 1;
                     $file_name = 'graph-ht-' . $graph_type . '-' . $graph_time_span . '-' . $graph_id . '-' . $n . '.png';
-                    echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                    echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                         <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                             <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                     echo 'sensortype=ht';
@@ -272,7 +272,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                     if ($first) echo '<hr class="fade"/>';
                     else $first = 1;
                     $file_name = 'graph-co2-' . $graph_type . '-' . $graph_time_span . '-' . $graph_id . '-' . $n . '.png';
-                    echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                    echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                         <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                             <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                     echo 'sensortype=co2';
@@ -290,7 +290,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
                     if ($first) echo '<hr class="fade"/>';
                     else $first = 1;
                     $file_name = 'graph-press-' . $graph_type . '-' . $graph_time_span . '-' . $graph_id . '-' . $n . '.png';
-                    echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                    echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                         <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                             <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                     echo 'sensortype=press';

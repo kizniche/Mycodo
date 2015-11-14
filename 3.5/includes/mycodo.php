@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.87";
+$version = "3.5.89";
 
 ######### Start Edit Configure #########
 
@@ -76,9 +76,9 @@ if (!file_exists($update_check) || time()-filemtime($update_check) > 24 * 3600) 
 
 // Output an error if the user guest attempts to submit certain forms
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if ($_SESSION['user_name'] == 'guest' && !isset($_POST['Graph']) && !isset($_POST['login'])) {
+    if ($current_user_restriction == 'guest' && !isset($_POST['Graph']) && !isset($_POST['login']) && !isset($_POST['edituser'])) {
         $output_error = 'guest';
-    } else if ($_SESSION['user_name'] != 'guest') {
+    } else if ($current_user_restriction != 'guest') {
         // Only non-guest users may perform these actions
         require($install_path . "/includes/restricted.php"); // Configuration changes
         require($install_path . "/includes/database.php"); // Reload SQLite database
@@ -117,6 +117,14 @@ delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete olde
     <script src="js/modules/export-csv.js"></script>
     <script src="js/modules/jspdf.min.js"></script>
     <script src="js/modules/highcharts-export-clientside.js"></script>
+    <?php
+    if ($current_user_theme == 'light') {
+        echo '<link rel="stylesheet" href="css/theme-light.css" type="text/css">';
+    } else if ($current_user_theme == 'dark') {
+        echo '<link rel="stylesheet" href="css/theme-dark.css" type="text/css">
+        <script src="js/themes/dark-unica.js"></script>';
+    }
+    ?>
     <script type="text/javascript">
         function open_legend() {
             window.open("file.php?span=legend-small","_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=250, height=300");
@@ -151,6 +159,19 @@ if (isset($output_error)) {
         echo '<span class="error">You cannot perform that task as a guest user</span>';
     }
     $output_error = NULL;
+}
+if (!file_exists($lock_daemon)) {
+    $check_tentacle_pi = shell_exec('/usr/bin/python -c "import tentacle_pi" 2>&1');
+    if ($check_tentacle_pi != '') {
+        echo '
+        <span class="error">
+            Daemon unable to start without tentacle_pi installed. Install with:
+            <br>1. sudo apt-get install i2c-tools libi2c-dev python-dev build-essential
+            <br>2. git clone --recursive https://github.com/lexruee/tentacle_pi ~/tentacle_pi
+            <br>3. cd ~/tentacle_pi
+            <br>4. sudo python setup.py install
+        </span>';
+    }
 }
 ?>
 <!-- Begin Header -->
@@ -384,6 +405,7 @@ if (isset($output_error)) {
             if (isset($_POST['Generate_Graph_Span'])) $dyn_time_span = $_POST['Generate_Graph_Span'];
             else $dyn_time_span = "1w";
             if (isset($_POST['Generate_Graph_Type'])) $dyn_type = $_POST['Generate_Graph_Type'];
+            else $dyn_type = 'all';
             ?>
 
             <div>
@@ -465,7 +487,7 @@ if (isset($output_error)) {
                             <button type="submit" onclick="submitForm('?tab=graph<?php if (isset($_GET['r'])) echo '&r=' , $_GET['r']; ?>','_self')" name="Generate_Graph" value="all" title="Generate a client-side graph that will render in the browser. Warning: The more data you choose to use, the longer it will take to process. Choosing 'All Time' or 'All Sensors' may take a significant amount of time to process.">Dynamic<br>Graph</button>
                         </div>
                         <div style="float:left;">
-                            <button type="submit" onclick="submitForm('file.php?span=graph-pop','_blank')" name="Generate_Graph" value="all" title="Same as 'Dynamic Graph' but the graph will load in a new window.">Pop<br>Out</button>
+                            <button type="submit" onclick="submitForm('file.php?span=graph-pop&theme=<?php echo $current_user_theme; ?>','_blank')" name="Generate_Graph" value="all" title="Same as 'Dynamic Graph' but the graph will load in a new window.">Pop<br>Out</button>
                         </div>
                         </form>
                     </div>
@@ -476,7 +498,7 @@ if (isset($output_error)) {
                 <?php
                 if (isset($_POST['Generate_Graph'])) {
                     echo '<div style="padding: 1.5em 0 1.5em 0; text-align:center;">';
-                    echo '<div id="container" style="width: 100%; height: 50em; "></div>';
+                    echo '<div id="container" style="width: 100%; height: 50em;"></div>';
                     echo '</div>';
                 }
                 ?>
@@ -492,7 +514,7 @@ if (isset($output_error)) {
                         (isset($sensor_press_graph) && array_sum($sensor_press_graph))) {
 
                         if (!isset($_POST['Generate_Graph']) && !isset($_POST['Generate_Graph_All'])) {
-                            generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_graph, $sensor_ht_graph, $sensor_co2_graph, $sensor_press_graph);
+                            generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_graph, $sensor_ht_graph, $sensor_co2_graph, $sensor_press_graph, $current_user_theme);
                         }
                     } else { ?>
                         <div style="width: 100%; padding: 2em 0 0 0; text-align: center;">
@@ -548,6 +570,7 @@ if (isset($output_error)) {
                                 <option value="DHT11">Humidity/Temperature: DHT11</option>
                                 <option value="DHT22">Humidity/Temperature: DHT22</option>
                                 <option value="AM2302">Humidity/Temperature: AM2302</option>
+                                <option value="AM2315">Humidity/Temperature: AM2315</option>
                                 <option value="BMP">Pressure/Temperature: BMP085/BMP180</option>
                                 <option value="DS18B20">Temperature: DS18B20</option>
                                 <option value="K30">CO2: K-30</option>
@@ -1288,7 +1311,13 @@ if (isset($output_error)) {
                         <td>HT Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_ht_id[$i]; ?>)</span></td>
                         <td>Sensor<br>Name</td>
                         <td>Sensor<br>Device</td>
-                        <td>GPIO<br>Pin</td>
+                        <?php
+                            if ($sensor_ht_device[$i] == 'AM2315') {
+                                echo '<td>I<sup>2</sup>C<br>Add.</td>';
+                            } else {
+                                echo '<td>GPIO<br>Pin</td>';
+                            }
+                        ?>
                         <td>Log<br>Interval</td>
                         <td>Pre<br>Relay</td>
                         <td>Pre<br>Duration</td>
@@ -1327,13 +1356,27 @@ if (isset($output_error)) {
                                         echo ' selected="selected"';
                                     } ?> value="AM2302">AM2302</option>
                                 <option<?php
+                                    if ($sensor_ht_device[$i] == 'AM2315') {
+                                        echo ' selected="selected"';
+                                    } ?> value="AM2315">AM2315</option>
+                                <option<?php
                                     if ($sensor_ht_device[$i] == 'Other') {
                                         echo ' selected="selected"';
                                     } ?> value="Other">Other</option>
                             </select>
                         </td>
                         <td>
-                            <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_ht_pin[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>pin" title="This is the GPIO pin connected to the HT sensor"/>
+                            <?php
+                            if ($sensor_ht_device[$i] == 'AM2315') {
+                            ?>
+                            I<sup>2</sup>C
+                            <?php
+                            } else {
+                            ?>
+                                <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_ht_pin[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>pin" title="This is the GPIO pin connected to the HT sensor"/>
+                            <?php
+                            }
+                            ?>
                         </td>
                         <td>
                             <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_ht_period[$i]; ?>" name="sensorht<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/> sec
@@ -2650,7 +2693,7 @@ if (isset($output_error)) {
 
             <?php
             /* DateSelector, modified from work by Leon Atkinson */
-            if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] != 'guest') {
+            if (isset($_POST['SubmitDates']) and $current_user_restriction != 'guest') {
                 if ($_POST['SubmitDates']) {
                     displayform();
                     $id2 = uniqid();
@@ -2682,7 +2725,7 @@ if (isset($output_error)) {
                             if ($first) echo '<hr class="fade"/>';
                             else $first = True;
                             $file_name = 'graph-temp-combined-' . $id2 . '.png';
-                            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                            echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                                 <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                                 <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                             echo 'graphtype=combinedcustom';
@@ -2695,7 +2738,7 @@ if (isset($output_error)) {
                             if ($first) echo '<hr class="fade"/>';
                             else $first = True;
                             $file_name = 'graph-hum-combined-' . $id2 . '.png';
-                            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                            echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                                 <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                                 <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                             echo 'graphtype=combinedcustom';
@@ -2708,7 +2751,7 @@ if (isset($output_error)) {
                             if ($first) echo '<hr class="fade"/>';
                             else $first = True;
                             $file_name = 'graph-co2-combined-' . $id2 . '.png';
-                            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                            echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                                 <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                                 <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                             echo 'graphtype=combinedcustom';
@@ -2721,7 +2764,7 @@ if (isset($output_error)) {
                             if ($first) echo '<hr class="fade"/>';
                             else $first = True;
                             $file_name = 'graph-press-combined-' . $id2 . '.png';
-                            echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                            echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                                 <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                                 <img class="main-image" style="max-width:100%;height:auto;" src=file.php?';
                             echo 'graphtype=combinedcustom';
@@ -2737,7 +2780,7 @@ if (isset($output_error)) {
                                 if ($first) echo '<hr class="fade"/>';
                                 else $first = True;
                                 $file_name = 'graph-t-separate-x-' . $id2 . '-' . $n . '.png';
-                                echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                                     <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                                     <img src=file.php?';
                                 echo 'graphtype=separatecustom';
@@ -2752,7 +2795,7 @@ if (isset($output_error)) {
                                 if ($first) echo '<hr class="fade"/>';
                                 else $first = True;
                                 $file_name = 'graph-ht-separate-x-' . $id2 . '-' . $n . '.png';
-                                echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                                     <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                                     <img src=file.php?';
                                 echo 'graphtype=separatecustom';
@@ -2767,7 +2810,7 @@ if (isset($output_error)) {
                                 if ($first) echo '<hr class="fade"/>';
                                 else $first = True;
                                 $file_name = 'graph-co2-separate-x-' . $id2 . '-' . $n . '.png';
-                                echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                                     <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                                     <img src=file.php?';
                                 echo 'graphtype=separatecustom';
@@ -2782,7 +2825,7 @@ if (isset($output_error)) {
                                 if ($first) echo '<hr class="fade"/>';
                                 else $first = True;
                                 $file_name = 'graph-press-separate-x-' . $id2 . '-' . $n . '.png';
-                                echo '<div style="padding: 1em 0 3em 0; text-align: center;">
+                                echo '<div style="padding: 1em 0 1em 0; text-align: center;">
                                     <form action="?tab=data" method="POST"><input type="hidden" name="file_path" value="' . $image_path . '" /><input type="hidden" name="file_name" value="' . $file_name . '" /><button type="submit" name="Add_Image_Note" value="">Create Note with Graph</button></form>
                                     <img src=file.php?';
                                 echo 'graphtype=separatecustom';
@@ -2794,7 +2837,7 @@ if (isset($output_error)) {
                         }
                     }
                 }
-            } else if (isset($_POST['SubmitDates']) and $_SESSION['user_name'] == 'guest') {
+            } else if (isset($_POST['SubmitDates']) and $current_user_restriction == 'guest') {
                 displayform();
                 echo '<div>Guest access has been revoked for graph generation.';
             } else displayform();
@@ -2910,6 +2953,7 @@ if (isset($output_error)) {
 
                     $start_time = filemtime($lock_timelapse);
                     echo 'Start Time: ' , date("F d Y H:i:s", $start_time) , '<br>';
+                    echo 'End Time: ' , date("F d Y H:i:s", $start_time+($runtime*60)) , '<br>';
                 }
 
                 
@@ -3494,7 +3538,7 @@ if (isset($output_error)) {
                             </form>";
                         }
 
-                        if(isset($_POST['Login']) && $_SESSION['user_name'] != 'guest') {
+                        if(isset($_POST['Login']) && $current_user_restriction != 'guest') {
                             echo '<pre>Time, Type of auth, user, IP, Hostname, Referral, Browser<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
@@ -3635,7 +3679,7 @@ if (isset($output_error)) {
                                     <tr>
                                         <td class="table-header middle">Relay</td>
                                         <td class="table-header middle">Name</td>
-                                        <td class="table-header">Duration On (hours)<br>Power Usage (kW-hours@<?php echo $relay_stats_volts; ?>V)</td>
+                                        <td class="table-header"></td>
                                         <td class="table-header right" style="width:6em;">Hour</td>
                                         <td class="table-header right" style="width:6em;">Day</td>
                                         <td class="table-header right" style="width:6em;">Week</td>
@@ -3651,6 +3695,7 @@ if (isset($output_error)) {
                                     $relay_stats_seconds_on_week = [];
                                     $relay_stats_seconds_on_month = [];
                                     $relay_stats_seconds_on_year = [];
+                                    $kwh = [];
 
                                     $current_year = date("Y");
                                     $current_month = date("m");
@@ -3685,7 +3730,7 @@ if (isset($output_error)) {
                                     <tr>
                                         <td class="center"><?php echo $i+1; ?></td>
                                         <td><?php echo $relay_name[$i]; ?></td>
-                                        <td>Duration On</td>
+                                        <td>Duration On (hours)</td>
                                         <td class="right"><?php printf("%.2f", $relay_stats_seconds_on_hour[$i]/3600); ?></td>
                                         <td class="right"><?php printf("%.2f", $relay_stats_seconds_on_day[$i]/3600); ?></td>
                                         <td class="right"><?php printf("%.2f", $relay_stats_seconds_on_week[$i]/3600); ?></td>
@@ -3696,60 +3741,109 @@ if (isset($output_error)) {
                                     </tr>
                                     <tr>
                                         <td colspan="2"></td>
-                                        <td>Power Usage</td>
+                                        <td>Power Usage <?php echo "(kWh@, ",$relay_stats_volts,"V)"; ?></td>
                                         <td class="right">
                                             <?php
                                             $date_ago = shell_exec("date --date=\"1 hour ago\" +'%Y/%m/%d-%H:%M:%S'");
                                             $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
-                                            printf("%.2f", $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000);
+                                            $kwh[0] = $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000;
+                                            printf("%.2f", $kwh[0]);
                                             ?>
                                         </td>
                                         <td class="right">
                                             <?php
                                             $date_ago = shell_exec("date --date=\"1 day ago\" +'%Y/%m/%d-%H:%M:%S'");
                                             $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
-                                            printf("%.2f", $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000);
+                                            $kwh[1] = $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000;
+                                            printf("%.2f", $kwh[1]);
                                             ?>
                                         </td>
                                         <td class="right">
                                             <?php
                                             $date_ago = shell_exec("date --date=\"1 week ago\" +'%Y/%m/%d-%H:%M:%S'");
                                             $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
-                                            printf("%.2f", $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000);
+                                            $kwh[2] = $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000;
+                                            printf("%.2f", $kwh[2]);
                                             ?>
                                         </td>
                                         <td class="right">
                                             <?php
                                             $date_ago = shell_exec("date --date=\"1 month ago\" +'%Y/%m/%d-%H:%M:%S'");
                                             $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
-                                            printf("%.2f", $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000);
+                                            $kwh[3] = $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000;
+                                            printf("%.2f", $kwh[3]);
                                             ?>
                                         </td>
                                         <td class="right">
                                             <?php
                                             $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago_dayofmonth . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
-                                            printf("%.2f", $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000);
+                                            $kwh[4] = $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000;
+                                            printf("%.2f", $kwh[4]);
                                             ?>
                                         </td>
                                         <td class="right">
                                             <?php
                                             $date_ago = shell_exec("date --date=\"1 year ago\" +'%Y/%m/%d-%H:%M:%S'");
                                             $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
-                                            printf("%.2f", $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000);
+                                            $kwh[5] = $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000;
+                                            printf("%.2f", $kwh[5]);
                                             ?>
                                         </td>
                                         <td class="right">
                                             <?php
-                                            printf("%.2f", $relay_stats_volts*$relay_amps[$i]*($relay_stats_seconds_on[$i]/3600)/1000);
+                                            $kwh[6] = $relay_stats_volts*$relay_amps[$i]*($relay_stats_seconds_on[$i]/3600)/1000;
+                                            printf("%.2f", $kwh[6]);
                                         ?>
                                         </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"></td>
+                                        <td>Cost <?php echo "(",$relay_stats_currency,$relay_stats_cost,"/kWh)"; ?></td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[0]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[1]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[2]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[3]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[4]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[5]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[6]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 0.6em;"></td>
                                     </tr>
                                     <?php
                                     }
                                     ?>
                                     <tr>
                                         <td colspan="2">Grand Total</td>
-                                        <td>Duration On</td>
+                                        <td>Duration On (hours)</td>
                                         <td class="right">
                                             <?php
                                             $relay_stats_seconds_on_total = 0;
@@ -3816,69 +3910,108 @@ if (isset($output_error)) {
                                     </tr>
                                     <tr>
                                         <td colspan="2"></td>
-                                        <td>Power Usage</td>
+                                        <td>Power Usage (kWh)</td>
                                         <td class="right">
                                         <?php
-                                            $relay_stats_total_amps = 0;
+                                            $kwh[0] = 0;
                                             for ($j=0; $j < count($relay_id); $j++) {
-                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_hour[$j]/3600)/1000, 2);
+                                                $kwh[0] += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_hour[$j]/3600)/1000, 2);
                                             }
-                                            printf("%.2f", $relay_stats_total_amps);
+                                            printf("%.2f", $kwh[0]);
                                         ?>
                                         </td>
                                         <td class="right">
                                         <?php
-                                            $relay_stats_total_amps = 0;
+                                            $kwh[1] = 0;
                                             for ($j=0; $j < count($relay_id); $j++) {
-                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_day[$j]/3600)/1000, 2);
+                                                $kwh[1] += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_day[$j]/3600)/1000, 2);
                                             }
-                                            printf("%.2f", $relay_stats_total_amps);
+                                            printf("%.2f", $kwh[1]);
                                         ?>
                                         </td>
                                         <td class="right">
                                         <?php
-                                            $relay_stats_total_amps = 0;
+                                            $kwh[2] = 0;
                                             for ($j=0; $j < count($relay_id); $j++) {
-                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_week[$j]/3600)/1000, 2);
+                                                $kwh[2] += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_week[$j]/3600)/1000, 2);
                                             }
-                                            printf("%.2f", $relay_stats_total_amps);
+                                            printf("%.2f", $kwh[2]);
                                         ?>
                                         </td>
                                         <td class="right">
                                         <?php
-                                            $relay_stats_total_amps = 0;
+                                            $kwh[3] = 0;
                                             for ($j=0; $j < count($relay_id); $j++) {
-                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_month[$j]/3600)/1000, 2);
+                                                $kwh[3] += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_month[$j]/3600)/1000, 2);
                                             }
-                                            printf("%.2f", $relay_stats_total_amps);
+                                            printf("%.2f", $kwh[3]);
                                         ?>
                                         </td>
                                         <td class="right">
                                         <?php
-                                            $relay_stats_total_amps = 0;
+                                            $kwh[4] = 0;
                                             for ($j=0; $j < count($relay_id); $j++) {
-                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_dayofmonth[$j]/3600)/1000, 2);
+                                                $kwh[4] += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_dayofmonth[$j]/3600)/1000, 2);
                                             }
-                                            printf("%.2f", $relay_stats_total_amps);
+                                            printf("%.2f", $kwh[4]);
                                         ?>
                                         </td>
                                         <td class="right">
                                         <?php
-                                            $relay_stats_total_amps = 0;
+                                            $kwh[5] = 0;
                                             for ($j=0; $j < count($relay_id); $j++) {
-                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_year[$j]/3600)/1000, 2);
+                                                $kwh[5] += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on_year[$j]/3600)/1000, 2);
                                             }
-                                            printf("%.2f", $relay_stats_total_amps);
+                                            printf("%.2f", $kwh[5]);
                                         ?>
                                         </td>
                                         <td class="right">
                                         <?php
-                                            $relay_stats_total_amps = 0;
+                                            $kwh[6] = 0;
                                             for ($j=0; $j < count($relay_id); $j++) {
-                                                $relay_stats_total_amps += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on[$j]/3600)/1000, 2);
+                                                $kwh[6] += round($relay_stats_volts*$relay_amps[$j]*($relay_stats_seconds_on[$j]/3600)/1000, 2);
                                             }
-                                            printf("%.2f", $relay_stats_total_amps);
+                                            printf("%.2f", $kwh[6]);
                                         ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"></td>
+                                        <td>Cost <?php echo "(",$relay_stats_currency,$relay_stats_cost,"/kWh)"; ?></td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[0]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[1]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[2]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[3]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[4]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[5]*$relay_stats_cost);
+                                            ?>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            printf("%s%.2f", $relay_stats_currency, $kwh[6]*$relay_stats_cost);
+                                            ?>
                                         </td>
                                     </tr>
                                 </table>
@@ -3886,18 +4019,16 @@ if (isset($output_error)) {
                         <?php 
                         }
 
-                        if(isset($_POST['Users']) && $_SESSION['user_name'] != 'guest') {
-                            echo exec('file ' . $user_db);
-                            echo '<pre><br> <br>User Email Password_Hash<br> <br>';
-                            $db = new SQLite3($user_db);
-                            $results = $db->query('SELECT user_name, user_email, user_password_hash FROM users');
-                            while ($row = $results->fetchArray()) {
-                                echo $row[0] , ' ' , $row[1] , ' ' , $row[2] , '<br>';
-                            }
-                            echo '</pre>';
+                        if (isset($_POST['Users']) && $current_user_restriction != 'guest') {
+                            echo '<div style="padding: 0.5em 0 1em 0;"><pre>';
+                            echo exec('file ' . $user_db); 
+                            echo '<br> <br>';
+                            exec('sqlite3 ' . $user_db . ' .dump', $output);
+                            print_r($output);
+                            echo '</pre></div>';
                         }
 
-                        if(isset($_POST['Database']) && $_SESSION['user_name'] != 'guest') {
+                        if (isset($_POST['Database']) && $current_user_restriction != 'guest') {
                             echo exec('file ' . $mycodo_db); 
                             echo '<pre><br> <br>';
                             exec('sqlite3 ' . $mycodo_db . ' .dump', $output);
@@ -3928,7 +4059,7 @@ if (isset($output_error)) {
             <?php if ($this->feedback) echo $this->feedback; ?>
 
             <div style="padding: 2em 0 0 1em;">
-                <a class="manual" href="manual.html" target="_blank">Mycodo 3.5 Manual</a> | <a class="manual" href="https://github.com/kizniche/Mycodo" target="_blank">Mycodo on GitHub</a> | Have a problem? <a class="manual" href="http://kylegabriel.com/contact" target="_blank">Contact the developer</a> or <a class="manual" href="https://github.com/kizniche/Mycodo/issues" target="_blank">submit an issue</a>.
+                <a href="manual.html" target="_blank">Mycodo 3.5 Manual</a> | <a href="https://github.com/kizniche/Mycodo" target="_blank">Mycodo on GitHub</a> | Have a problem? <a href="http://kylegabriel.com/contact" target="_blank">Contact the developer</a> or <a href="https://github.com/kizniche/Mycodo/issues" target="_blank">submit an issue</a>.
             </div>
 
             <div style="padding: 0 0 0 1em;">
@@ -3946,7 +4077,7 @@ if (isset($output_error)) {
                             if (strpos(`cat /var/www/mycodo/.updatecheck`,'1') !== false) {
                                 echo ' (<span style="color: red;">A newer version is available</span>)';
                             } else {
-                                echo ' (<span style="color: green;">You are running the latest version</span>)';
+                                echo ' (<span style="color: #00AA00;">You are running the latest version</span>)';
                             }
                             ?>
                         </td>
@@ -3959,7 +4090,7 @@ if (isset($output_error)) {
                     <form action="?tab=settings" method="post" onsubmit="return confirm('Confirm that you would like to begin the update process now. If not, click Cancel.')">
                     <tr>
                         <td class="setting-text">
-                            Update Mycodo to the latest version on <a href="https://github.com/kizniche/Mycodo" target="_blank">github</a>
+                            Update Mycodo to the latest version on <a href="https://github.com/kizniche/Mycodo" target="_blank">GitHub</a>
                         </td>
                         <td class="setting-value">
                             <button name="UpdateMycodo" type="submit" value="" title="Update the mycodo system to the latest version on github.">Update Mycodo</button>
@@ -4030,6 +4161,22 @@ if (isset($output_error)) {
                         </td>
                         <td class="setting-value">
                             <input style="width: 18em;" type="number" min="1" max="9999" step="1" value="<?php echo $relay_stats_volts; ?>" maxlength=4 size=1 name="relay_stats_volts" title="The voltage that is being controlled through the relays."/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Cost per kWh
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" step="0.01" value="<?php echo $relay_stats_cost; ?>" maxlength=4 name="relay_stats_cost" title="The cost per kWh."/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="setting-text">
+                            Currency Unit
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $relay_stats_currency; ?>" maxlength=1 name="relay_stats_currency" title="The currency unit."/>
                         </td>
                     </tr>
                     <tr>
@@ -4699,8 +4846,14 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     </form>
+                </table>
 
-                    <form method="post" action="?tab=settings">
+                <?php
+                if ($current_user_restriction != 'guest') {
+                ?>
+
+                <form method="post" action="?tab=settings">
+                <table>
                     <tr>
                         <td class="setting-title">
                             Add User
@@ -4739,74 +4892,19 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <input type="submit" name="register" value="Add User" />
-                        </td>
-                    </tr>
-                    </form>
-
-                    <form method="post" action="?tab=settings">
-                    <tr>
-                        <td class="setting-title">
-                            Change Password
-                        </td>
-                    </tr>
-                    <tr>
                         <td class="setting-text">
-                            Username
+                            Group
                         </td>
                         <td class="setting-value">
-                            <input style="width: 18em;" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Password (min. 6 characters)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" class="login_input" type="password" name="new_password" pattern=".{6,}" required autocomplete="off" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Repeat New password
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" required autocomplete="off" /> <label for="login_input_password_repeat">
+                            <select style="width: 18em;" title="" name="user_restriction">
+                                <option value="guest">Guest</option>
+                                <option value="admin">Admin</option>
+                            </select>
                         </td>
                     </tr>
                     <tr>
                         <td class="setting-save">
-                            <input type="submit" name="changepassword" value="Change Password" />
-                        </td>
-                    </tr>
-                    </form>
-
-                    <form method="post" action="?tab=settings">
-                    <tr>
-                        <td class="setting-title">
-                            Change Email
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Username
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            New Email
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" class="login_input" type="email" name="user_email" required />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-save">
-                            <input type="submit" name="changeemail" value="Change Email" />
+                            <input type="submit" name="register" value="Add User" />
                         </td>
                     </tr>
                     </form>
@@ -4832,8 +4930,69 @@ if (isset($output_error)) {
                     </tr>
                     </form>
                 </table>
+                </form>
+
+                <table class="edit-user">
+                    <tr>
+                        <td>User</td>
+                        <td>Email</td>
+                        <td>New Password</td>
+                        <td>New Password Repeat</td>
+                        <td>Group</td>
+                        <td>Theme</td>
+                    </tr>
+                <?php for ($i = 0; $i < count($user_name); $i++) { ?>
+                    <tr>
+                        <form method="post" action="?tab=settings">
+                        <td><?php echo $user_name[$i]; ?><input type="hidden" name="user_name" value="<?php echo $user_name[$i]; ?>"></td>
+                        <td>
+                            <input style="width: 12.5em;" type="text" value="<?php echo $user_email[$i]; ?>" name="user_email" />
+                        </td>
+                        <td>
+                            <input style="width: 12.5em;" class="login_input" type="password" name="new_password" pattern=".{6,}" autocomplete="off" />
+                            </td>
+                        <td>
+                            <input style="width: 12.5em;" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" autocomplete="off" /> <label for="login_input_password_repeat">
+                        </td>
+                        <td>
+                            <select title="" name="user_restriction">
+                                <option
+                                    <?php if ($user_restriction[$i] == 'admin') {
+                                        echo ' selected="selected"';
+                                    } ?> value="admin">Admin</option>
+                                <option
+                                    <?php if ($user_restriction[$i] == 'guest') {
+                                        echo ' selected="selected"';
+                                    } ?> value="guest">Guest</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select title="" name="user_theme">
+                                <option
+                                    <?php if ($user_theme[$i] == 'light') {
+                                        echo ' selected="selected"';
+                                    } ?> value="light">Light</option>
+                                <option
+                                    <?php if ($user_theme[$i] == 'dark') {
+                                        echo ' selected="selected"';
+                                    } ?> value="dark">Dark</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="submit" name="edituser" value="Save" />
+                        </td>
+                        </form>
+                    </tr>
+                <?php
+                }
+                ?>
+                </table>
+
+                <?php
+                }
+                ?>
             </div>
-            <div style="padding-top: 3em;"></div>
+            <div style="padding-top: 1em;"></div>
         </li>
     </ul> <!-- cd-tabs-content -->
 

@@ -26,12 +26,20 @@ $db = new SQLite3($mycodo_db);
 $udb = new SQLite3($user_db);
 $ndb = new SQLite3($note_db);
 
-$results = $udb->query('SELECT user_name, user_email FROM users');
+$results = $udb->query('SELECT user_name, user_email, user_restriction, user_theme FROM users');
 $i = 0;
 while ($row = $results->fetchArray()) {
     $user_name[$i] = $row[0];
     $user_email[$i] = $row[1];
+    $user_restriction[$i] = $row[2];
+    $user_theme[$i] = $row[3];
     $i++;
+}
+
+$results = $udb->query("SELECT user_restriction, user_theme FROM users WHERE user_name='" . $_SESSION['user_name'] . "'");
+while ($row = $results->fetchArray()) { 
+    $current_user_restriction = $row[0];
+    $current_user_theme = $row[1];
 }
 
 unset($relay_id);
@@ -507,12 +515,14 @@ while ($row = $results->fetchArray()) {
     $timelapse_extra_parameters = str_replace("''","'",$row[7]);
 }
 
-$results = $db->query('SELECT Login_Message, Refresh_Time, Enable_Max_Amps, Max_Amps, Relay_Stats_Volts, Relay_Stats_DayofMonth FROM Misc');
+$results = $db->query('SELECT Login_Message, Refresh_Time, Enable_Max_Amps, Max_Amps, Relay_Stats_Volts, Relay_Stats_Cost, Relay_Stats_Currency, Relay_Stats_DayofMonth FROM Misc');
 while ($row = $results->fetchArray()) {
     $login_message = $row[0];
     $refresh_time = $row[1];
     $enable_max_amps = $row[2];
     $max_amps = $row[3];
     $relay_stats_volts = $row[4];
-    $relay_stats_dayofmonth = $row[5];
+    $relay_stats_cost = $row[5];
+    $relay_stats_currency = $row[6];
+    $relay_stats_dayofmonth = $row[7];
 }

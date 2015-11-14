@@ -8,7 +8,6 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
   + [Web Interface](#web-interface)
   + [Terminal](#terminal)
 + [Changelog](#changelog)
-+ [Development](#Development)
 + [New Dependencies](#new-dependencies)
 + [Supported Sensors](#supported-sensors)
 + [Software Install](#software-install)
@@ -89,6 +88,12 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 ## Changelog
 
 Major changes for each versioned release
+
+#### 3.5.89
++ Add support for the AM2315 Humidity/Temperature sensor
+
+#### 3.5.88
++ Add theme support (light/dark) and ability to set user as guest/admin
 
 #### 3.5.87
 + Add display of Notes on dynamic humidity/temperature graph, add title to notes (for graph display)
@@ -195,16 +200,6 @@ Major changes for each versioned release
 + Moved to simpler login system (log in, log out, remember me cookie)
 + Moved to SQLite settings database (previously plain-text)
 + Moved to SQLite login database (previously MySQL)
-  
-## Development
-
-- [ ] Sensor calibration
-- [ ] More graph options (y-axis min/max, select sensors to be graphed)
-- [ ] Email notification or audible alarm during critical failure or condition
-- [ ] Convert time-lapse images to video
-- [ ] O<sub>2</sub> sensor support
-- [ ] Set electrical current draw of each device and prevent exceeding total current limit with different combinations of devices on
-- [ ] HDR Photo creation (capture series of photos at different ISOs and combine) (Initial testing was slow: 3 photos = 15 minutes processing)
 
 ## New Dependencies
 
@@ -226,7 +221,7 @@ php-login-one-file, HighStock, highcharts-export-clientside, JQuery, Modernizr, 
 
 ### Humidity & Temperature
 
-> [DHT11, DHT22 and AM2302](https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring)
+> [DHT11, DHT22, AM2302](https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring), and [AM2315](https://github.com/lexruee/tentacle_pi)
 
 ### CO<sub>2</sub>
 
@@ -248,6 +243,7 @@ Using raspi-config, perform the following:
  + Set the locale to en_US.UTF-8 (Important! For some reason this isn't initially set)
  + Set the timezone (required for setting the proper time)
  + Enable the camera (optional)
+ * Enable I<sup>2</sup>C
  + Advanced A2: change the hostname (optional)
  + Expand the file system **Warning! This needs to be done before continuing to Prerequisites!**
  + Reboot
@@ -260,7 +256,7 @@ Using raspi-config, perform the following:
 
 `sudo apt-get upgrade`
 
-`sudo apt-get install build-essential apache2 sqlite3 gnuplot git-core python-pip python-dev libconfig-dev php5 libapache2-mod-php5 php5-sqlite php5-gd`
+`sudo apt-get install build-essential apache2 sqlite3 gnuplot git-core python-pip python-dev libconfig-dev php5 libapache2-mod-php5 php5-sqlite php5-gd i2c-tools libi2c-dev`
 
 `git clone https://github.com/kizniche/Mycodo.git ~/Mycodo`
 
@@ -269,6 +265,8 @@ Using raspi-config, perform the following:
 `git clone https://github.com/adafruit/Adafruit_Python_DHT.git ~/Adafruit_Python_DHT && cd ~/Adafruit_Python_DHT && sudo python setup.py install`
 
 `git clone https://github.com/adafruit/Adafruit_Python_BMP.git ~/Adafruit_Python_BMP && cd ~/Adafruit_Python_BMP && sudo python setup.py install`
+
+'git clone --recursive https://github.com/lexruee/tentacle_pi ~/tentacle_pi && cd ~/tentacle_pi && sudo python setup.py install'
 
 Create a symlink to Mycodo
 

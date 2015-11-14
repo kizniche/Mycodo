@@ -127,7 +127,6 @@ if ($_COOKIE['login_hash'] == $user_hash) {
                     <link rel="icon" type="image/png" href="img/favicon.png">
                     <link rel="stylesheet" href="css/fonts.css" type="text/css">
                     <link rel="stylesheet" href="css/reset.css" type="text/css">
-                    <link rel="stylesheet" href="css/style.css" type="text/css">
                     <script src="js/modernizr.js"></script>
                     <script src="js/jquery-2.1.4.min.js"></script>
                     <script src="js/highstock.js"></script>
@@ -137,6 +136,12 @@ if ($_COOKIE['login_hash'] == $user_hash) {
                     <script src="js/modules/jspdf.min.js"></script>
                     <script src="js/modules/highcharts-export-clientside.js"></script>
                 ';
+                if ($_GET['theme'] == 'light') {
+                    echo '<link rel="stylesheet" href="css/theme-light.css" type="text/css">';
+                } else if ($_GET['theme'] == 'dark') {
+                    echo '<link rel="stylesheet" href="css/theme-dark.css" type="text/css">
+                    <script src="js/themes/dark-unica.js"></script>';
+                }
                 if (isset($_POST['Generate_Graph'])) {
                     require($install_path . "/includes/graph.php");
                 }

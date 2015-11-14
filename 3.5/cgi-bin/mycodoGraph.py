@@ -62,7 +62,7 @@ sensor_press_log_lock_path = "%s/sensor-press-log" % lock_directory
 #################################################
 
 # Generate gnuplot graph
-def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_graph, sensor_t_period, sensor_t_yaxis_relay_min, sensor_t_yaxis_relay_max, sensor_t_yaxis_relay_tics, sensor_t_yaxis_relay_mtics, sensor_t_yaxis_temp_min, sensor_t_yaxis_temp_max, sensor_t_yaxis_temp_tics, sensor_t_yaxis_temp_mtics, sensor_t_temp_relays_up_list, sensor_t_temp_relays_down_list, pid_t_temp_relay_high, pid_t_temp_relay_low, sensor_ht_name, sensor_ht_graph, sensor_ht_period, sensor_ht_yaxis_relay_min, sensor_ht_yaxis_relay_max, sensor_ht_yaxis_relay_tics, sensor_ht_yaxis_relay_mtics, sensor_ht_yaxis_temp_min, sensor_ht_yaxis_temp_max, sensor_ht_yaxis_temp_tics, sensor_ht_yaxis_temp_mtics, sensor_ht_yaxis_hum_min, sensor_ht_yaxis_hum_max, sensor_ht_yaxis_hum_tics, sensor_ht_yaxis_hum_mtics, sensor_ht_temp_relays_up_list, sensor_ht_temp_relays_down_list, sensor_ht_hum_relays_up_list, sensor_ht_hum_relays_down_list, pid_ht_temp_relay_high, pid_ht_temp_relay_low, pid_ht_hum_relay_high, pid_ht_hum_relay_low, sensor_co2_name, sensor_co2_graph, sensor_co2_period, sensor_co2_yaxis_relay_min, sensor_co2_yaxis_relay_max, sensor_co2_yaxis_relay_tics, sensor_co2_yaxis_relay_mtics, sensor_co2_yaxis_co2_min, sensor_co2_yaxis_co2_max, sensor_co2_yaxis_co2_tics, sensor_co2_yaxis_co2_mtics, sensor_co2_relays_up_list, sensor_co2_relays_down_list, pid_co2_relay_high, pid_co2_relay_low, sensor_press_name, sensor_press_graph, sensor_press_period, sensor_press_yaxis_relay_min, sensor_press_yaxis_relay_max, sensor_press_yaxis_relay_tics, sensor_press_yaxis_relay_mtics, sensor_press_yaxis_temp_min, sensor_press_yaxis_temp_max, sensor_press_yaxis_temp_tics, sensor_press_yaxis_temp_mtics, sensor_press_yaxis_press_min, sensor_press_yaxis_press_max, sensor_press_yaxis_press_tics, sensor_press_yaxis_press_mtics, sensor_press_temp_relays_up_list, sensor_press_temp_relays_down_list, sensor_press_press_relays_up_list, sensor_press_press_relays_down_list, pid_press_temp_relay_high, pid_press_temp_relay_low, pid_press_press_relay_high, pid_press_press_relay_low, relay_name, relay_pin, time_from, time_to, width, combined_temp_min, combined_temp_max, combined_temp_tics, combined_temp_mtics, combined_temp_relays_up, combined_temp_relays_down, combined_temp_relays_min, combined_temp_relays_max, combined_temp_relays_tics, combined_temp_relays_mtics, combined_hum_min, combined_hum_max, combined_hum_tics, combined_hum_mtics, combined_hum_relays_up, combined_hum_relays_down, combined_hum_relays_min, combined_hum_relays_max, combined_hum_relays_tics, combined_hum_relays_mtics, combined_co2_min, combined_co2_max, combined_co2_tics, combined_co2_mtics, combined_co2_relays_up, combined_co2_relays_down, combined_co2_relays_min, combined_co2_relays_max, combined_co2_relays_tics, combined_co2_relays_mtics, combined_press_min, combined_press_max, combined_press_tics, combined_press_mtics, combined_press_relays_up, combined_press_relays_down, combined_press_relays_min, combined_press_relays_max, combined_press_relays_tics, combined_press_relays_mtics, combined_temp_relays_up_list, combined_temp_relays_down_list, combined_hum_relays_up_list, combined_hum_relays_down_list, combined_co2_relays_up_list, combined_co2_relays_down_list, combined_press_relays_up_list, combined_press_relays_down_list):
+def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, sensor_t_graph, sensor_t_period, sensor_t_yaxis_relay_min, sensor_t_yaxis_relay_max, sensor_t_yaxis_relay_tics, sensor_t_yaxis_relay_mtics, sensor_t_yaxis_temp_min, sensor_t_yaxis_temp_max, sensor_t_yaxis_temp_tics, sensor_t_yaxis_temp_mtics, sensor_t_temp_relays_up_list, sensor_t_temp_relays_down_list, pid_t_temp_relay_high, pid_t_temp_relay_low, sensor_ht_name, sensor_ht_graph, sensor_ht_period, sensor_ht_yaxis_relay_min, sensor_ht_yaxis_relay_max, sensor_ht_yaxis_relay_tics, sensor_ht_yaxis_relay_mtics, sensor_ht_yaxis_temp_min, sensor_ht_yaxis_temp_max, sensor_ht_yaxis_temp_tics, sensor_ht_yaxis_temp_mtics, sensor_ht_yaxis_hum_min, sensor_ht_yaxis_hum_max, sensor_ht_yaxis_hum_tics, sensor_ht_yaxis_hum_mtics, sensor_ht_temp_relays_up_list, sensor_ht_temp_relays_down_list, sensor_ht_hum_relays_up_list, sensor_ht_hum_relays_down_list, pid_ht_temp_relay_high, pid_ht_temp_relay_low, pid_ht_hum_relay_high, pid_ht_hum_relay_low, sensor_co2_name, sensor_co2_graph, sensor_co2_period, sensor_co2_yaxis_relay_min, sensor_co2_yaxis_relay_max, sensor_co2_yaxis_relay_tics, sensor_co2_yaxis_relay_mtics, sensor_co2_yaxis_co2_min, sensor_co2_yaxis_co2_max, sensor_co2_yaxis_co2_tics, sensor_co2_yaxis_co2_mtics, sensor_co2_relays_up_list, sensor_co2_relays_down_list, pid_co2_relay_high, pid_co2_relay_low, sensor_press_name, sensor_press_graph, sensor_press_period, sensor_press_yaxis_relay_min, sensor_press_yaxis_relay_max, sensor_press_yaxis_relay_tics, sensor_press_yaxis_relay_mtics, sensor_press_yaxis_temp_min, sensor_press_yaxis_temp_max, sensor_press_yaxis_temp_tics, sensor_press_yaxis_temp_mtics, sensor_press_yaxis_press_min, sensor_press_yaxis_press_max, sensor_press_yaxis_press_tics, sensor_press_yaxis_press_mtics, sensor_press_temp_relays_up_list, sensor_press_temp_relays_down_list, sensor_press_press_relays_up_list, sensor_press_press_relays_down_list, pid_press_temp_relay_high, pid_press_temp_relay_low, pid_press_press_relay_high, pid_press_press_relay_low, relay_name, relay_pin, time_from, time_to, width, combined_temp_min, combined_temp_max, combined_temp_tics, combined_temp_mtics, combined_temp_relays_up, combined_temp_relays_down, combined_temp_relays_min, combined_temp_relays_max, combined_temp_relays_tics, combined_temp_relays_mtics, combined_hum_min, combined_hum_max, combined_hum_tics, combined_hum_mtics, combined_hum_relays_up, combined_hum_relays_down, combined_hum_relays_min, combined_hum_relays_max, combined_hum_relays_tics, combined_hum_relays_mtics, combined_co2_min, combined_co2_max, combined_co2_tics, combined_co2_mtics, combined_co2_relays_up, combined_co2_relays_down, combined_co2_relays_min, combined_co2_relays_max, combined_co2_relays_tics, combined_co2_relays_mtics, combined_press_min, combined_press_max, combined_press_tics, combined_press_mtics, combined_press_relays_up, combined_press_relays_down, combined_press_relays_min, combined_press_relays_max, combined_press_relays_tics, combined_press_relays_mtics, combined_temp_relays_up_list, combined_temp_relays_down_list, combined_hum_relays_up_list, combined_hum_relays_down_list, combined_co2_relays_up_list, combined_co2_relays_down_list, combined_press_relays_up_list, combined_press_relays_down_list):
 
     sensor_t_log_final = [0] * (len(sensor_t_name)+1)
     sensor_t_log_final_default_day = [0] * (len(sensor_t_name)+1)
@@ -389,7 +389,10 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
         plot.write('set style line 14 lc rgb \'' + graph_colors[5] + '\' pt 0 ps 1 lt 1 lw 2\n')
         plot.write('set style line 15 lc rgb \'' + graph_colors[6] + '\' pt 0 ps 1 lt 1 lw 2\n')
         #plot.write('unset key\n')
-        plot.write('set key left top\n')
+        if theme == 'dark':
+            plot.write('set key left top tc rgb "white"\n')
+        else:
+            plot.write('set key left top\n')
 
     #
     # Combined: Generate one large graph combining each condition to its own graph
@@ -476,6 +479,8 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 setup_initial(plot, width, 900)
             else:
                 setup_initial(plot, width, 600)
+            if theme == 'dark':
+                plot.write('set term png enhanced background rgb "#222222"\n')
             if graph_span != 'x':
                 plot.write('set output \"' + image_path + '/graph-temp-' + graph_type + '-' + graph_span + '-' + graph_id + '.png\"\n')
             else:
@@ -492,7 +497,10 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
             plot.write('set ytics ' + str(combined_temp_tics) + '\n')
             plot.write('set mytics ' + str(combined_temp_mtics) + '\n')
             plot.write('set termopt enhanced\n')
-            plot.write('set title \"Combined Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            if theme == 'dark':
+                plot.write('set title \"Combined Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\" tc rgb "white"\n')
+            else:
+                plot.write('set title \"Combined Temperatures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot ')
             first = 0
             for i in range(0, len(sensor_t_name)):
@@ -559,6 +567,8 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 setup_initial(plot, width, 900)
             else:
                 setup_initial(plot, width, 600)
+            if theme == 'dark':
+                plot.write('set term png enhanced background rgb "#222222"\n')
             if graph_span != 'x':
                 plot.write('set output \"' + image_path + '/graph-hum-' + graph_type + '-' + graph_span + '-' + graph_id + '.png\"\n')
             else:
@@ -577,7 +587,10 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
             plot.write('set mytics ' + str(combined_hum_mtics) + '\n')
             plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
             plot.write('set termopt enhanced\n')
-            plot.write('set title \"Combined Humidities: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            if theme == 'dark':
+                plot.write('set title \"Combined Humidities: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\" tc rgb "white"\n')
+            else:
+                plot.write('set title \"Combined Humidities: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot ')
             first = 0
             for i in range(0, len(sensor_ht_name)):
@@ -632,6 +645,8 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 setup_initial(plot, width, 900)
             else:
                 setup_initial(plot, width, 600)
+            if theme == 'dark':
+                plot.write('set term png enhanced background rgb "#222222"\n')
             if graph_span != 'x':
                 plot.write('set output \"' + image_path + '/graph-co2-' + graph_type + '-' + graph_span + '-' + graph_id + '.png\"\n')
             else:
@@ -648,7 +663,10 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
             plot.write('set mytics ' + str(combined_co2_mtics) + '\n')
             plot.write('set yrange [' + str(combined_co2_min) + ':' + str(combined_co2_max) + ']\n')
             plot.write('set termopt enhanced\n')
-            plot.write('set title \"Combined CO_2s: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            if theme == 'dark':
+                plot.write('set title \"Combined CO_2s: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\" tc rgb "white"\n')
+            else:
+                plot.write('set title \"Combined CO_2s: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot ')
             first = 0
             for i in range(0, len(sensor_co2_name)):
@@ -703,6 +721,8 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 setup_initial(plot, width, 900)
             else:
                 setup_initial(plot, width, 600)
+            if theme == 'dark':
+                plot.write('set term png enhanced background rgb "#222222"\n')
             if graph_span != 'x':
                 plot.write('set output \"' + image_path + '/graph-press-' + graph_type + '-' + graph_span + '-' + graph_id + '.png\"\n')
             else:
@@ -722,7 +742,10 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
             plot.write('unset y2tics\n')
             plot.write('set yrange [' + y1_min + ':' + y1_max + ']\n')
             plot.write('set termopt enhanced\n')
-            plot.write('set title \"Combined Pressures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+            if theme == 'dark':
+                plot.write('set title \"Combined Pressures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\" tc rgb "white"\n')
+            else:
+                plot.write('set title \"Combined Pressures: ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
             plot.write('plot ')
             first = 0
             for i in range(0, len(sensor_press_name)):
@@ -792,6 +815,8 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     setup_initial(plot, width, 900)
                 else:
                     setup_initial(plot, width, 600)
+                if theme == 'dark':
+                    plot.write('set term png enhanced background rgb "#222222"\n')
                 plot.write('set output \"' + image_path + '/graph-t-' + graph_type + '-' + graph_span + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 if sensor_t_graph_relay[h]:
@@ -805,12 +830,18 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 plot.write('set ytics ' + str(sensor_t_yaxis_temp_tics[h]) + '\n')
                 plot.write('set mytics ' + str(sensor_t_yaxis_temp_mtics[h]) + '\n')
                 plot.write('set termopt enhanced\n')
-                plot.write('set title \"Temp Sensor ' + str(h+1) + ': ' + sensor_t_name[h] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+                if theme == 'dark':
+                    plot.write('set title \"Temp Sensor ' + str(h+1) + ': ' + sensor_t_name[h] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\" tc rgb "white"\n')
+                else:
+                    plot.write('set title \"Temp Sensor ' + str(h+1) + ': ' + sensor_t_name[h] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
                 plot.write('plot \"' + sensor_t_log_final[h] + '\" u 1:2 index 0 title \"T\" w lp ls 1 axes x1y1\n')
                 if sensor_t_graph_relay[h]:
                     plot.write('set size 1.0,0.4\n')
                     plot.write('set origin 0.0,0.0\n')
-                    plot.write('set key at graph 0.0, graph 0.97\n')
+                    if theme == 'dark':
+                        plot.write('set key at graph 0.0, graph 0.97 tc rgb "white"\n')
+                    else:
+                        plot.write('set key at graph 0.0, graph 0.97\n')
                     plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                     plot.write('unset y2tics\n')
                     plot.write('set yrange [' + str(sensor_t_yaxis_relay_min[h]) + ':' + str(sensor_t_yaxis_relay_max[h]) + ']\n')
@@ -863,6 +894,8 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     setup_initial(plot, width, 900)
                 else:
                     setup_initial(plot, width, 600)
+                if theme == 'dark':
+                    plot.write('set term png enhanced background rgb "#222222"\n')
                 plot.write('set output \"' + image_path + '/graph-ht-' + graph_type + '-' + graph_span + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 if sensor_ht_graph_relay[h]:
@@ -879,7 +912,10 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 plot.write('set y2tics ' + str(sensor_ht_yaxis_hum_tics[h]) + '\n')
                 plot.write('set my2tics ' + str(sensor_ht_yaxis_hum_mtics[h]) + '\n')
                 plot.write('set termopt enhanced\n')
-                plot.write('set title \"Hum/Temp Sensor ' + str(h+1) + ': ' + sensor_ht_name[h] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+                if theme == 'dark':
+                    plot.write('set title \"Hum/Temp Sensor ' + str(h+1) + ': ' + sensor_ht_name[h] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\" tc rgb "white"\n')
+                else:
+                    plot.write('set title \"Hum/Temp Sensor ' + str(h+1) + ': ' + sensor_ht_name[h] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
                 plot.write('plot \"' + sensor_ht_log_final[h] + '\" u 1:2 index 0 title \"T\" w lp ls 1 axes x1y1, \\\n')
                 plot.write('\"\" u 1:3 index 0 title \"RH\" w lp ls 2 axes x1y2, \\\n')
                 plot.write('\"\" u 1:4 index 0 title \"DP\" w lp ls 3 axes x1y1\n')
@@ -887,7 +923,10 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     plot.write('set size 0.93,0.4\n')
                     plot.write('set origin 0.0,0.0\n')
                     plot.write('set format x \"%H:%M\\n%m/%d\"\n')
-                    plot.write('set key at graph 0.01, graph 0.97\n')
+                    if theme == 'dark':
+                        plot.write('set key at graph 0.01, graph 0.97 tc rgb "white"\n')
+                    else:
+                        plot.write('set key at graph 0.01, graph 0.97\n')
                     plot.write('unset y2tics\n')
                     plot.write('set yrange [' + str(sensor_ht_yaxis_relay_min[h]) + ':' + str(sensor_ht_yaxis_relay_max[h]) + ']\n')
                     plot.write('set ytics ' + str(sensor_ht_yaxis_relay_tics[h]) + '\n')
@@ -953,6 +992,8 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     setup_initial(plot, width, 900)
                 else:
                     setup_initial(plot, width, 600)
+                if theme == 'dark':
+                    plot.write('set term png enhanced background rgb "#222222"\n')
                 plot.write('set output \"' + image_path + '/graph-co2-' + graph_type + '-' + graph_span + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 if sensor_co2_graph_relay[h]:
@@ -966,7 +1007,10 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 plot.write('set ytics ' + str(sensor_co2_yaxis_co2_tics[h]) + '\n')
                 plot.write('set mytics ' + str(sensor_co2_yaxis_co2_mtics[h]) + '\n')
                 plot.write('set termopt enhanced\n')
-                plot.write('set title \"CO_2 Sensor ' + str(h+1) + ': ' + sensor_co2_name[h] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+                if theme == 'dark':
+                    plot.write('set title \"CO_2 Sensor ' + str(h+1) + ': ' + sensor_co2_name[h] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\" tc rgb "white"\n')
+                else:
+                    plot.write('set title \"CO_2 Sensor ' + str(h+1) + ': ' + sensor_co2_name[h] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
                 plot.write('plot \"' + sensor_co2_log_final[h] + '" u 1:2 index 0 title \"CO_2\" w lp ls 1 axes x1y1\n')
 
                 if sensor_co2_graph_relay[h]:
@@ -1024,6 +1068,8 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     setup_initial(plot, width, 900)
                 else:
                     setup_initial(plot, width, 600)
+                if theme == 'dark':
+                    plot.write('set term png enhanced background rgb "#222222"\n')
                 plot.write('set output \"' + image_path + '/graph-press-' + graph_type + '-' + graph_span + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 if sensor_press_graph_relay[h]:
@@ -1040,8 +1086,12 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 plot.write('set y2tics ' + str(sensor_press_yaxis_press_tics[h]) + '\n')
                 plot.write('set my2tics ' + str(sensor_press_yaxis_press_mtics[h]) + '\n')
                 plot.write('set termopt enhanced\n')
-                plot.write('set key at graph 0.02, graph 0.98\n')
-                plot.write('set title \"Press Sensor ' + str(h+1) + ': ' + sensor_press_name[h] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+                if theme == 'dark':
+                    plot.write('set key at graph 0.02, graph 0.98 tc rgb "white"\n')
+                    plot.write('set title \"Press Sensor ' + str(h+1) + ': ' + sensor_press_name[h] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\" tc rgb "white"\n')
+                else:
+                    plot.write('set key at graph 0.02, graph 0.98\n')
+                    plot.write('set title \"Press Sensor ' + str(h+1) + ': ' + sensor_press_name[h] + ' - ' + time_ago + ': ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
                 plot.write('plot \"' + sensor_press_log_final[h] + '\" u 1:2 index 0 title \"T\" w lp ls 1 axes x1y1, \\\n')
                 plot.write('\"\" u 1:3 index 0 title \"Press\" w lp ls 2 axes x1y2\n')
                 if sensor_press_graph_relay[h]:
@@ -1122,6 +1172,8 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     tmp_path, 't', graph_type, graph_span, graph_id, h)
                 plot = open(gnuplot_graph, 'w')
                 setup_initial(plot, width, 1000)
+                if theme == 'dark':
+                    plot.write('set term png enhanced background rgb "#222222"\n')
                 plot.write('set output \"' + image_path + '/graph-t-' + graph_type + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 plot.write('set multiplot\n')
@@ -1134,22 +1186,34 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 if sensor_t_graph_relay[h]:
                     plot.write('set size 0.989,0.4\n')
                     plot.write('set origin 0.011,0.6\n')
-                    plot.write('set key at graph 0.025, graph 0.98\n')
+                    if theme == 'dark':
+                        plot.write('set key at graph 0.025, graph 0.98 tc rgb "white"\n')
+                    else:
+                        plot.write('set key at graph 0.025, graph 0.98\n')
                     plot.write('set format x ""\n')
                 else:
                     plot.write('set size 1.0,0.5\n')
                     plot.write('set origin 0.0,0.5\n')
-                    plot.write('set key at graph 0.025, graph 0.98\n')
+                    if theme == 'dark':
+                        plot.write('set key at graph 0.025, graph 0.98 tc rgb "white"\n')
+                    else:
+                        plot.write('set key at graph 0.025, graph 0.98\n')
                     plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                 plot.write('set yrange [' + str(sensor_t_yaxis_temp_min[h]) + ':' + str(sensor_t_yaxis_temp_max[h]) + ']\n')
                 plot.write('set ytics ' + str(sensor_t_yaxis_temp_tics[h]) + '\n')
                 plot.write('set mytics ' + str(sensor_t_yaxis_temp_mtics[h]) + '\n')
-                plot.write('set title \"Temp Sensor ' + str(h+1) + ': ' + sensor_t_name[h] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+                if theme == 'dark':
+                    plot.write('set title \"Temp Sensor ' + str(h+1) + ': ' + sensor_t_name[h] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\" tc rgb "white"\n')
+                else:
+                    plot.write('set title \"Temp Sensor ' + str(h+1) + ': ' + sensor_t_name[h] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
                 plot.write('plot \"' + sensor_t_log_final_default_day[h] + '" u 1:2 index 0 title \"T\" w lp ls 1 axes x1y1\n')
                 if sensor_t_graph_relay[h]:
                     plot.write('set size 1.0,0.2\n')
                     plot.write('set origin 0.0,0.4\n')
-                    plot.write('set key at graph 0.015, graph 0.95\n')
+                    if theme == 'dark':
+                        plot.write('set key at graph 0.015, graph 0.95 tc rgb "white"\n')
+                    else:
+                        plot.write('set key at graph 0.015, graph 0.95\n')
                     plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                     plot.write('set yrange [' + str(sensor_t_yaxis_relay_min[h]) + ':' + str(sensor_t_yaxis_relay_max[h]) + ']\n')
                     plot.write('set ytics ' + str(sensor_t_yaxis_relay_tics[h]) + '\n')
@@ -1191,7 +1255,10 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     plot.write('set size 1.0,0.5\n')
                     plot.write('set origin 0.0,0.0\n')
                 plot.write('unset xzeroaxis\n')
-                plot.write('set title \"Temp Sensor ' + str(h+1) + ': ' + sensor_t_name[h] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+                if theme == 'dark':
+                    plot.write('set title \"Temp Sensor ' + str(h+1) + ': ' + sensor_t_name[h] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\" tc rgb "white"\n')
+                else:
+                    plot.write('set title \"Temp Sensor ' + str(h+1) + ': ' + sensor_t_name[h] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
                 plot.write('plot \"' + sensor_t_log_final_default_week[h] + '" u 1:2 index 0 notitle w lp ls 1 axes x1y1\n')
                 plot.write('unset multiplot\n')
                 plot.close()
@@ -1227,6 +1294,8 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     tmp_path, 'ht', graph_type, graph_span, graph_id, h)
                 plot = open(gnuplot_graph, 'w')
                 setup_initial(plot, width, 1000)
+                if theme == 'dark':
+                    plot.write('set term png enhanced background rgb "#222222"\n')
                 plot.write('set output \"' + image_path + '/graph-ht-' + graph_type + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 plot.write('set multiplot\n')
@@ -1239,12 +1308,18 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 if sensor_ht_graph_relay[h]:
                     plot.write('set size 0.989,0.4\n')
                     plot.write('set origin 0.011,0.6\n')
-                    plot.write('set key at graph 0.025, graph 0.98\n')
+                    if theme == 'dark':
+                        plot.write('set key at graph 0.025, graph 0.98 tc rgb "white"\n')
+                    else:
+                        plot.write('set key at graph 0.025, graph 0.98"\n')
                     plot.write('set format x ""\n')
                 else:
                     plot.write('set size 1.0,0.5\n')
                     plot.write('set origin 0.0,0.5\n')
-                    plot.write('set key at graph 0.025, graph 0.98\n')
+                    if theme == 'dark':
+                        plot.write('set key at graph 0.025, graph 0.98 tc rgb "white"\n')
+                    else:
+                        plot.write('set key at graph 0.025, graph 0.98\n')
                     plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                 plot.write('set yrange [' + str(sensor_ht_yaxis_temp_min[h]) + ':' + str(sensor_ht_yaxis_temp_max[h]) + ']\n')
                 plot.write('set ytics ' + str(sensor_ht_yaxis_temp_tics[h]) + '\n')
@@ -1252,14 +1327,20 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 plot.write('set y2range [' + str(sensor_ht_yaxis_hum_min[h]) + ':' + str(sensor_ht_yaxis_hum_max[h]) + ']\n')
                 plot.write('set y2tics ' + str(sensor_ht_yaxis_hum_tics[h]) + '\n')
                 plot.write('set my2tics ' + str(sensor_ht_yaxis_hum_mtics[h]) + '\n')
-                plot.write('set title \"Hum/Temp Sensor ' + str(h+1) + ': ' + sensor_ht_name[h] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+                if theme == 'dark':
+                    plot.write('set title \"Hum/Temp Sensor ' + str(h+1) + ': ' + sensor_ht_name[h] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\" tc rgb "white"\n')
+                else:
+                    plot.write('set title \"Hum/Temp Sensor ' + str(h+1) + ': ' + sensor_ht_name[h] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
                 plot.write('plot \"' + sensor_ht_log_final_default_day[h] + '" u 1:2 index 0 title \"T\" w lp ls 1 axes x1y1, ')
                 plot.write('\"\" u 1:3 index 0 title \"RH\" w lp ls 2 axes x1y2, ')
                 plot.write('\"\" u 1:4 index 0 title \"DP\" w lp ls 3 axes x1y1\n')
                 if sensor_ht_graph_relay[h]:
                     plot.write('set size 0.935,0.2\n')
                     plot.write('set origin 0.0,0.4\n')
-                    plot.write('set key at graph 0.0, graph 0.95\n')
+                    if theme == 'dark':
+                        plot.write('set key at graph 0.0, graph 0.95 tc rgb "white"\n')
+                    else:
+                        plot.write('set key at graph 0.0, graph 0.95\n')
                     plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                     plot.write('set yrange [' + str(sensor_ht_yaxis_relay_min[h]) + ':' + str(sensor_ht_yaxis_relay_max[h]) + ']\n')
                     plot.write('set ytics ' + str(sensor_ht_yaxis_relay_tics[h]) + '\n')
@@ -1317,7 +1398,10 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     plot.write('set size 1.0,0.5\n')
                     plot.write('set origin 0.0,0.0\n')
                 plot.write('unset xzeroaxis\n')
-                plot.write('set title \"Hum/Temp Sensor ' + str(h+1) + ': ' + sensor_ht_name[h] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+                if theme == 'dark':
+                    plot.write('set title \"Hum/Temp Sensor ' + str(h+1) + ': ' + sensor_ht_name[h] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"  tc rgb "white"\n')
+                else:
+                    plot.write('set title \"Hum/Temp Sensor ' + str(h+1) + ': ' + sensor_ht_name[h] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
                 plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
                 plot.write('plot \"' + sensor_ht_log_final_default_week[h] + '" u 1:2 index 0 notitle w lp ls 1 axes x1y1, ')
                 plot.write('\"\" u 1:3 index 0 notitle w lp ls 2 axes x1y2, ')
@@ -1356,6 +1440,8 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     tmp_path, 'co2', graph_type, graph_span, graph_id, h)
                 plot = open(gnuplot_graph, 'w')
                 setup_initial(plot, width, 1000)
+                if theme == 'dark':
+                    plot.write('set term png enhanced background rgb "#222222"\n')
                 plot.write('set output \"' + image_path + '/graph-co2-' + graph_type + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 plot.write('set multiplot\n')
@@ -1368,23 +1454,35 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 if sensor_co2_graph_relay[h]:
                     plot.write('set size 1.0,0.4\n')
                     plot.write('set origin 0.0,0.6\n')
-                    plot.write('set key at graph 0.035, graph 0.98\n')
+                    if theme == 'dark':
+                        plot.write('set key at graph 0.035, graph 0.98 tc rgb "white"\n')
+                    else:
+                        plot.write('set key at graph 0.035, graph 0.98\n')
                     plot.write('set format x ""\n')
                 else:
                     plot.write('set size 1.0,0.5\n')
                     plot.write('set origin 0.0,0.5\n')
-                    plot.write('set key at graph 0.035, graph 0.98\n')
+                    if theme == 'dark':
+                        plot.write('set key at graph 0.035, graph 0.98 tc rgb "white"\n')
+                    else:
+                        plot.write('set key at graph 0.035, graph 0.98\n')
                     plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                 plot.write('set yrange [' + str(sensor_co2_yaxis_co2_min[h]) + ':' + str(sensor_co2_yaxis_co2_max[h]) + ']\n')
                 plot.write('set ytics ' + str(sensor_co2_yaxis_co2_tics[h]) + '\n')
                 plot.write('set mytics ' + str(sensor_co2_yaxis_co2_mtics[h]) + '\n')
                 plot.write('set termopt enhanced\n')
-                plot.write('set title \"CO_2 Sensor ' + str(h+1) + ': ' + sensor_co2_name[h] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+                if theme == 'dark':
+                    plot.write('set title \"CO_2 Sensor ' + str(h+1) + ': ' + sensor_co2_name[h] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\" tc rgb "white"\n')
+                else:
+                    plot.write('set title \"CO_2 Sensor ' + str(h+1) + ': ' + sensor_co2_name[h] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
                 plot.write('plot \"' + sensor_co2_log_final_default_day[h] + '" u 1:2 index 0 title \"CO_2\" w lp ls 1 axes x1y1\n')
                 if sensor_co2_graph_relay[h]:
                     plot.write('set size 0.989,0.2\n')
                     plot.write('set origin 0.011,0.4\n')
-                    plot.write('set key at graph 0.01, graph 0.95\n')
+                    if theme == 'dark':
+                        plot.write('set key at graph 0.01, graph 0.95 tc rgb "white"\n')
+                    else:
+                        plot.write('set key at graph 0.01, graph 0.95\n')
                     plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                     plot.write('set yrange [' + str(sensor_co2_yaxis_relay_min[h]) + ':' + str(sensor_co2_yaxis_relay_max[h]) + ']\n')
                     plot.write('set ytics ' + str(sensor_co2_yaxis_relay_tics[h]) + '\n')
@@ -1425,7 +1523,10 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     plot.write('set size 1.0,0.5\n')
                     plot.write('set origin 0.0,0.0\n')
                 plot.write('unset xzeroaxis\n')
-                plot.write('set title \"CO_2 Sensor ' + str(h+1) + ': ' + sensor_co2_name[h] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+                if theme == 'dark':
+                    plot.write('set title \"CO_2 Sensor ' + str(h+1) + ': ' + sensor_co2_name[h] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\" tc rgb "white"\n')
+                else:
+                    plot.write('set title \"CO_2 Sensor ' + str(h+1) + ': ' + sensor_co2_name[h] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
                 plot.write('plot \"' + sensor_co2_log_final_default_week[h] + '" u 1:2 index 0 notitle w lp ls 1 axes x1y1\n')
                 plot.write('unset multiplot\n')
                 plot.close()
@@ -1461,6 +1562,8 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                         tmp_path, 'press', graph_type, graph_span, graph_id, h)
                 plot = open(gnuplot_graph, 'w')
                 setup_initial(plot, width, 1000)
+                if theme == 'dark':
+                    plot.write('set term png enhanced background rgb "#222222"\n')
                 plot.write('set output \"' + image_path + '/graph-press-' + graph_type + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 plot.write('set multiplot\n')
@@ -1473,12 +1576,18 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 if sensor_press_graph_relay[h]:
                     plot.write('set size 0.989,0.4\n')
                     plot.write('set origin 0.011,0.6\n')
-                    plot.write('set key at graph 0.025, graph 0.98\n')
+                    if theme == 'dark':
+                        plot.write('set key at graph 0.025, graph 0.98 tc rgb "white"\n')
+                    else:
+                        plot.write('set key at graph 0.025, graph 0.98\n')
                     plot.write('set format x ""\n')
                 else:
                     plot.write('set size 1.0,0.5\n')
                     plot.write('set origin 0.0,0.5\n')
-                    plot.write('set key at graph 0.025, graph 0.98\n')
+                    if theme == 'dark':
+                        plot.write('set key at graph 0.025, graph 0.98 tc rgb "white"\n')
+                    else:
+                        plot.write('set key at graph 0.025, graph 0.98\n')
                     plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                 plot.write('set yrange [' + str(sensor_press_yaxis_temp_min[h]) + ':' + str(sensor_press_yaxis_temp_max[h]) + ']\n')
                 plot.write('set ytics ' + str(sensor_press_yaxis_temp_tics[h]) + '\n')
@@ -1486,13 +1595,19 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                 plot.write('set y2range [' + str(sensor_press_yaxis_press_min[h]) + ':' + str(sensor_press_yaxis_press_max[h]) + ']\n')
                 plot.write('set y2tics ' + str(sensor_press_yaxis_press_tics[h]) + '\n')
                 plot.write('set my2tics ' + str(sensor_press_yaxis_press_mtics[h]) + '\n')
-                plot.write('set title \"Pressure Sensor ' + str(h+1) + ': ' + sensor_press_name[h] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+                if theme == 'dark':
+                    plot.write('set title \"Pressure Sensor ' + str(h+1) + ': ' + sensor_press_name[h] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\" tc rgb "white"\n')
+                else:
+                    plot.write('set title \"Pressure Sensor ' + str(h+1) + ': ' + sensor_press_name[h] + ' - Past Day: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
                 plot.write('plot \"' + sensor_press_log_final_default_day[h] + '" u 1:2 index 0 title \"T\" w lp ls 1 axes x1y1, ')
                 plot.write('\"\" u 1:3 index 0 title \"Press\" w lp ls 2 axes x1y2\n')
                 if sensor_press_graph_relay[h]:
                     plot.write('set size 0.935,0.2\n')
                     plot.write('set origin 0.0,0.4\n')
-                    plot.write('set key at graph 0.0, graph 0.95\n')
+                    if theme == 'dark':
+                        plot.write('set key at graph 0.0, graph 0.95 tc rgb "white"\n')
+                    else:
+                        plot.write('set key at graph 0.0, graph 0.95\n')
                     plot.write('set format x \"%H:%M\\n%m/%d\"\n')
                     plot.write('set yrange [' + str(sensor_press_yaxis_relay_min[h]) + ':' + str(sensor_press_yaxis_relay_max[h]) + ']\n')
                     plot.write('set ytics ' + str(sensor_press_yaxis_relay_tics[h]) + '\n')
@@ -1551,7 +1666,10 @@ def generate_graph(graph_type, graph_span, graph_id, sensor_t_name, sensor_t_gra
                     plot.write('set size 1.0,0.5\n')
                     plot.write('set origin 0.0,0.0\n')
                 plot.write('unset xzeroaxis\n')
-                plot.write('set title \"Press Sensor ' + str(h+1) + ': ' + sensor_press_name[h] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
+                if theme == 'dark':
+                    plot.write('set title \"Press Sensor ' + str(h+1) + ': ' + sensor_press_name[h] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\" tc rgb "white"\n')
+                else:
+                    plot.write('set title \"Press Sensor ' + str(h+1) + ': ' + sensor_press_name[h] + ' - Past Week: ' + date_ago_disp + ' - ' + date_now_disp + '\"\n')
                 plot.write('plot \"' + sensor_press_log_final_default_week[h] + '" u 1:2 index 0 notitle w lp ls 1 axes x1y1, ')
                 plot.write('\"\" u 1:3 index 0 notitle w lp ls 2 axes x1y2\n')
                 plot.write('unset multiplot\n')

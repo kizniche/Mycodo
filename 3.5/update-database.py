@@ -27,8 +27,8 @@ sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
 sql_database_user = '/var/www/mycodo/config/users.db'
 sql_database_note = '/var/www/mycodo/config/notes.db'
 
-db_version_mycodo = 16
-db_version_user = 1
+db_version_mycodo = 17
+db_version_user = 2
 db_version_note = 3
 
 import getopt
@@ -228,6 +228,7 @@ def setup_db(update):
             delete_all_tables_user()
             create_all_tables_user()
             create_rows_columns_user()
+            user_database_update()
 
         if target == 'all' or target == 'notes':
             note_database_create()
@@ -419,7 +420,12 @@ def mycodo_database_update():
             ModNullValue(sql_database_mycodo, 'Misc', 'Relay_Stats_Volts', 120)
             ModNullValue(sql_database_mycodo, 'Misc', 'Relay_Stats_DayofMonth', 15)
 
-        # Version 15 updates: New graphing method, need to update log file format (remove multiple spaces)
+        # Version 16 updates: New graphing method, need to update log file format (remove multiple spaces)
+
+        # Version 17 updates: Add "cost per kWh" and "currency unit" options
+        if current_db_version_mycodo < 17:
+            ModNullValue(sql_database_mycodo, 'Misc', 'Relay_Stats_Cost', 0.05)
+            ModNullValue(sql_database_mycodo, 'Misc', 'Relay_Stats_Currency', '$')
 
         # any extra commands for version X
         #if current_db_version_mycodo < X:
@@ -444,6 +450,17 @@ def user_database_update():
     if current_db_version_user < 1:
         print "User database is not versioned. Updating."
 
+    # Version 2 - Add theme option and ability to restrict access
+    if current_db_version_user < 2:
+        AddColumn(sql_database_user, 'users', 'user_restriction', 'TEXT')
+        AddColumn(sql_database_user, 'users', 'user_theme', 'TEXT')
+        ModNullValue(sql_database_user, 'users', 'user_restriction', 'admin')
+        ModNullValue(sql_database_user, 'users', 'user_theme', 'light')
+        conn = sqlite3.connect(sql_database_user)
+        cur = conn.cursor()
+        cur.execute("UPDATE users SET user_restriction='guest' WHERE user_name='guest'")
+        conn.commit()
+        cur.close()
 
 
 def note_database_update():
@@ -1059,10 +1076,12 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'Misc', 'Enable_Max_Amps', 'INT')
     AddColumn(sql_database_mycodo, 'Misc', 'Max_Amps', 'REAL')
     AddColumn(sql_database_mycodo, 'Misc', 'Relay_Stats_Volts', 'INT')
+    AddColumn(sql_database_mycodo, 'Misc', 'Relay_Stats_Cost', 'REAL')
+    AddColumn(sql_database_mycodo, 'Misc', 'Relay_Stats_Currency', 'TEXT')
     AddColumn(sql_database_mycodo, 'Misc', 'Relay_Stats_DayofMonth', 'INT')
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("INSERT OR IGNORE INTO Misc VALUES('0', 0, '', 300, 1, 15, 120, 15)")
+    cur.execute("INSERT OR IGNORE INTO Misc VALUES('0', 0, '', 300, 1, 15, 120, 0.05, '$', 15)")
     conn.commit()
     cur.close()
     ModNullValue(sql_database_mycodo, 'Misc', 'Dismiss_Notification', 0)
@@ -1158,10 +1177,10 @@ def create_rows_columns_user():
         else:
             print 'Not a properly-formatted email\n'
 
-    cur.execute("INSERT INTO users (user_name, user_password_hash, user_email) VALUES ('{user_name}', '{user_password_hash}', '{user_email}')".\
+    cur.execute("INSERT INTO users (user_name, user_password_hash, user_email, user_restriction, user_theme) VALUES ('{user_name}', '{user_password_hash}', '{user_email}', 'admin', 'light')".\
         format(user_name='admin', user_password_hash=admin_password_hash, user_email=admin_email))
 
-    if query_yes_no('\nCreate additional user account?'):
+    if query_yes_no('\nCreate additional admin account?'):
         pass_checks = True
         print "\nCreate user (a-z, A-Z, 2-64 characters)"
         while pass_checks:
@@ -1189,7 +1208,7 @@ def create_rows_columns_user():
             else:
                 print 'Not a properly-formatted email\n'
 
-        cur.execute("INSERT INTO users (user_name, user_password_hash, user_email) VALUES ('{user_name}', '{user_password_hash}', '{user_email}')".\
+        cur.execute("INSERT INTO users (user_name, user_password_hash, user_email, user_restriction, user_theme) VALUES ('{user_name}', '{user_password_hash}', '{user_email}', 'admin', 'light')".\
             format(user_name=user_name, user_password_hash=user_password_hash, user_email=user_email))
 
     if query_yes_no("\nAllow 'guest' access (view but not modify)?"):
@@ -1205,7 +1224,7 @@ def create_rows_columns_user():
                 user_password_hash = subprocess.check_output(["php", "/var/www/mycodo/includes/hash.php", "hash", user_password])
                 pass_checks = False
 
-        cur.execute("INSERT INTO users (user_name, user_password_hash, user_email) VALUES ('{user_name}', '{user_password_hash}', '{user_email}')".\
+        cur.execute("INSERT INTO users (user_name, user_password_hash, user_email, user_restriction, user_theme) VALUES ('{user_name}', '{user_password_hash}', '{user_email}', 'guest', 'light')".\
             format(user_name='guest', user_password_hash=user_password_hash, user_email='guest@guest.com'))
 
     conn.commit()

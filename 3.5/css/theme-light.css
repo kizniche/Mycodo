@@ -1,0 +1,706 @@
+/*** General ***/
+
+body {
+    background:#FFF;
+    color: black;
+    font-size: 0.875em;
+}
+
+a:link { color: #000061; }
+a:visited { color: #000037; }
+a:active { color: #F2273B; }
+a:hover { color: #F2273B; }
+
+a.manual {color:red;}
+a.manual:link  {text-decoration: none; color: red;}
+a.manual:visited {text-decoration: none; color: red;}
+a.manual:hover {text-decoration: underline; color: red;}
+a.manual:active {text-decoration: none; color: red;}
+
+.wrap {
+    font-family: monospace;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap; /* Mozilla, supported since 1999 */
+    white-space: -pre-wrap; /* Opera */
+    white-space: -o-pre-wrap; /* Opera */
+    white-space: pre-wrap; /* CSS3 - Text module (Candidate Recommendation) http://www.w3.org/TR/css3-text/#white-space */
+    word-wrap: break-word; /* IE 5.5+ */
+}
+
+/*** Header ***/
+
+.header {
+    height: 4.5em;
+    float: left;
+    vertical-align:top;
+    padding: 1em 1em 0 0.3em;
+}
+
+.header-sense {
+    height: 4.5em;
+    float: left;
+    vertical-align:top;
+    padding: 1em 0.3em 0 0.3em;
+}
+
+.header-title {
+    padding-bottom: 0.3em;
+}
+
+/*** main ***/
+img.main-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+hr.fade {
+    margin: 1.5em 0 1.5em 0;
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+
+/*** sensor tab ***/
+
+.config-title {
+    text-align: center;
+    font-weight: bold;
+    padding-bottom: 0.2em;
+}
+
+.sensor-title {
+    float: left;
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 0 0 0.5em 0.3em;
+    margin-top: 1em;
+}
+
+.pid-wrapper {
+    padding-top: 0.8px;
+    margin: 0 auto;
+    display: inline-block;
+}
+
+.sensor-parent {
+  width: auto;
+  height: auto;
+  border: 0.5em solid #EBEBEB;
+  background-color: #EBEBEB;
+  margin-bottom: 1em;
+}
+
+.sensor {
+  border-collapse: initial;
+}
+
+.center {
+    text-align: center;
+}
+
+.right {
+    text-align: right;
+}
+
+.middle {
+    vertical-align: middle;
+}
+
+table.relays {
+    width: 100%;
+}
+
+table.relays td {
+    padding: 0.4em 0.4em;
+    vertical-align: middle;
+}
+
+table.relays tr:nth-child(even) {
+    background-color: #FFFFFF;
+}
+
+table.sensor_conditional td {
+    background-color: #FFFFFF;
+    padding-right: 0.5em;
+}
+
+table.sensor {
+    width:100%;
+    padding-bottom: 1em;
+}
+
+table.sensor td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 0.3em 0.3em 0.3em 0.3em;
+}
+
+table.yaxis {
+    margin: 0 0.5em 1em 0.5em;
+}
+
+table.yaxis td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 0.3em 0.1em 0.3em 0.1em;
+}
+
+table.pid {
+    width:100%;
+}
+
+table.pid td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 0.4em 0;
+}
+
+table.conditional {
+    margin: 1em 0.5em 0.5em 0.5em;
+}
+
+table.conditional td {
+    text-align: left;
+    vertical-align: middle;
+    padding: 0.4em 0.4em;
+}
+
+table.sensor-conditional td {
+    padding: 0.1em 0.5em;
+}
+
+.pid {
+  border-collapse: initial;
+}
+
+.shade {
+    background-color: #EBEBEB;
+}
+
+.table-header {
+    border-style: none none solid none;
+    border-width: 1px;
+}
+
+input.indicate {
+    height: 0.95em;
+    vertical-align: middle;
+}
+
+.onoff {
+    text-align: center;
+}
+
+.state {
+    font-size: 0.875em;
+  font-weight: bold;
+}
+
+.img-on {
+  content:url("/mycodo/img/on.jpg");
+    height: 0.95em;
+}
+
+.img-off {
+  content:url("/mycodo/img/off.jpg");
+    height: 0.95em;
+}
+
+.on {
+    font-weight: bold;
+    color: green
+}
+
+.off {
+    font-weight: bold;
+    color: red
+}
+
+button.linkon {
+    font-weight: bold;
+    background: none !important;
+    border: none; 
+    padding: 0 !important;
+    font: inherit;
+    color: green;
+    cursor: pointer;
+}
+
+button.linkoff {
+    font-weight: bold;
+    background: none !important;
+    border: none; 
+    padding: 0 !important;
+    font: inherit;
+    color: red;
+    cursor: pointer;
+}
+
+
+/*** Camera tab ***/
+
+table.camera-still {
+  padding-bottom: 0.5em;
+}
+
+table.camera-still td {
+  padding: 0 1em 0.5em 0;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.camera td {
+    padding: 0 0.3em 0.6em 0.3em;
+}
+
+
+/*** Data tab ***/
+
+table.data-data td, th {
+  padding: 0.1em 0.5em;
+  border: 1px solid grey;
+  vertical-align:middle;
+}
+
+table.data-data td {
+  text-align:right;
+}
+
+table.data-data th {
+  text-align:center;
+}
+
+.thumbnail {
+  border:1px solid #bdbdbd;
+  max-height: 125px;
+  max-width: 125px;\"
+}
+
+.notes td {
+    padding: 0.1em 1em 0.1em 0;
+}
+
+.gitcommits td {
+    padding: 0.5em 0.3em 0.5em 0;
+}
+
+.data-buttons {
+    float:left;
+    padding:0 0.1em;
+}
+
+.data-buttons td {
+  padding: 0.1em;
+}
+
+.data-buttons-rightspace {
+    padding:0 0.6em 0 0.1em !important;
+}
+
+
+/*** Settings tab ***/
+
+.smtp {
+    width: 18em;
+}
+
+.setting-title {
+    padding: 2em 0 0.5em 0;
+    font-weight: bold;
+}
+
+.setting-text {
+    padding: 0.4em 2em 0.3em 0;
+    margin-bottom: 0.2em;
+    border-bottom: 1px solid grey;
+}
+
+.setting-value {
+    padding: 0.4em 0.5em 0.3em 0;
+    border-bottom: 1px solid grey;
+}
+
+.pad-top {
+    padding-top: 1.5em;
+}
+
+.setting-save {
+    padding: 0.5em 0;
+}
+
+.notify-title {
+    padding: 0.5em 0 0.5em 1em;
+    font-weight: bold;
+}
+
+.notify {
+    margin-top: 0.3em;
+}
+
+label.notify {
+    display: inline-block;
+    float: left;
+    clear: left;
+    width: 6em;
+    text-align: right;
+    padding-right: 0.5em;
+}
+
+.manageusers-title {
+    margin-top: 0.1em;
+    font-weight: bold;
+}
+
+.advanced {
+  padding: 2em 0 0 1em;
+}
+
+.adv {
+    margin: 0.4em 0 0.4em 0;
+}
+
+
+/* Warnings and errors */
+.error {
+    white-space: normal;
+    margin: 0.5em 0;
+    color: red;
+    font-weight: bold;
+}
+
+/* debug */
+
+table.debug-profiler td {
+    padding: 0.35em 1em 0.25em 0;
+}
+
+
+/* -------------------------------- 
+
+Primary style
+
+-------------------------------- */
+*, *::after, *::before {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+a::after, a::before {
+  content: '';
+}
+
+body {
+  font-size: 100%;
+  font-family: "PT Sans", sans-serif;
+}
+
+a {
+  color: #f05451;
+  text-decoration: none;
+}
+
+span {
+    display: inline-block;
+}
+
+/*div {
+    white-space: nowrap;
+}*/
+
+.main-wrapper {
+    padding-bottom: 0.5em;
+}
+
+.Row-title {
+    float: left;
+    width: 6em;
+    display: block;
+    font-size: 0.875em;
+    color: #000;
+    padding: 0.6em 0.9em 0.6em 0.9em;
+    background-color: #FFF;
+}
+
+.inactive {
+    float: left;
+    display: block;
+    font-size: 0.875em;
+    color: white;
+    padding: 0.6em 0.7em 0.6em 0.7em;
+    border: 1px solid #C97D40;
+    background-color: #E18944;
+}
+
+.active {
+    float: left;
+    display: block;
+    font-weight: bold;
+    font-size: 0.875em;
+    color: white;
+    padding: 0.6em 0.7em 0.6em 0.7em;
+    border: 1px solid #6B370D;
+    background-color: #874611;
+}
+
+
+/* -------------------------------- 
+
+Main components 
+
+-------------------------------- */
+.cd-tabs {
+  position: relative;
+  width: 95%;
+  max-width: 60em;
+  margin: 0.5em auto;
+}
+.cd-tabs:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.cd-tabs::after {
+  /* subtle gradient layer on top right - to indicate it's possible to scroll */
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 4em;
+  width: 3.5em;
+  z-index: 1;
+  pointer-events: none;
+  background: -webkit-linear-gradient( right , #f8f7ee, rgba(248, 247, 238, 0));
+  background: linear-gradient(to left, #f8f7ee, rgba(248, 247, 238, 0));
+  visibility: visible;
+  opacity: 1;
+  -webkit-transition: opacity .3s 0s, visibility 0s 0s;
+  -moz-transition: opacity .3s 0s, visibility 0s 0s;
+  transition: opacity .3s 0s, visibility 0s 0s;
+}
+.no-cssgradients .cd-tabs::after {
+  display: none;
+}
+.cd-tabs.is-ended::after {
+  /* class added in jQuery - remove the gradient layer when it's no longer possible to scroll */
+  visibility: hidden;
+  opacity: 0;
+  -webkit-transition: opacity .3s 0s, visibility 0s .3s;
+  -moz-transition: opacity .3s 0s, visibility 0s .3s;
+  transition: opacity .3s 0s, visibility 0s .3s;
+}
+.cd-tabs nav {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  background: #f8f7ee;
+  box-shadow: inset 0 -2px 3px rgba(203, 196, 130, 0.06);
+}
+
+@media only screen and (min-width: 64em) {
+  .cd-tabs nav {
+    position: relative;
+    float: none;
+    background: transparent;
+    box-shadow: none;
+  }
+}
+
+.cd-tabs-navigation {
+  width: 25.7em;
+}
+.cd-tabs-navigation:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.cd-tabs-navigation li {
+  float: left;
+}
+.cd-tabs-navigation a {
+  position: relative;
+  display: block;
+  height: 4.28em;
+  width: 4.28em;
+  text-align: center;
+  font-size: 0.875em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 700;
+  color: #c3c2b9;
+  padding-top: 2.43em;
+}
+.no-touch .cd-tabs-navigation a:hover {
+  color: #29324e;
+  background-color: rgba(233, 230, 202, 0.3);
+}
+.cd-tabs-navigation a.selected {
+  background-color: #ffffff !important;
+  box-shadow: inset 0 2px 0 #f05451;
+  color: #29324e;
+}
+.cd-tabs-navigation a::before {
+  /* icons */
+  position: absolute;
+  top: 0.86em;
+  left: 50%;
+  margin-left: -0.714em;
+  display: inline-block;
+  height: 1.43em;
+  width: 1.43em;
+  background-image: url("../img/vicons.svg");
+  background-repeat: no-repeat;
+}
+.cd-tabs-navigation a[data-content='data']::before {
+  background-position: 0 0;
+}
+.cd-tabs-navigation a[data-content='custom']::before {
+  background-position: -1.429em 0;
+}
+.cd-tabs-navigation a[data-content='camera']::before {
+  background-position: -2.857em 0;
+}
+.cd-tabs-navigation a[data-content='graph']::before {
+  background-position: -4.286em 0;
+}
+.cd-tabs-navigation a[data-content='sensor']::before {
+  background-position: -5.714em 0;
+}
+.cd-tabs-navigation a[data-content='settings']::before {
+  background-position: -7.143em 0;
+}
+.cd-tabs-navigation a[data-content='data'].selected::before {
+  background-position: 0 -1.429em;
+}
+.cd-tabs-navigation a[data-content='custom'].selected::before {
+  background-position: -1.429em -1.429em;
+}
+.cd-tabs-navigation a[data-content='camera'].selected::before {
+  background-position: -2.857em -1.429em;
+}
+.cd-tabs-navigation a[data-content='graph'].selected::before {
+  background-position: -4.286em -1.429em;
+}
+.cd-tabs-navigation a[data-content='sensor'].selected::before {
+  background-position: -5.714em -1.429em;
+}
+.cd-tabs-navigation a[data-content='settings'].selected::before {
+  background-position: -7.143em -1.429em;
+}
+
+@media only screen and (min-width: 64em) {
+  .cd-tabs-navigation {
+    /* tabbed on top on big devices */
+    width: auto;
+    background-color: #f8f7ee;
+    box-shadow: inset 0 -2px 3px rgba(203, 196, 130, 0.06);
+  }
+  .cd-tabs-navigation a {
+    height: 2.857em;
+    line-height: 2.857em;
+    width: auto;
+    text-align: left;
+    font-size: 0.875em;
+    padding: 0 3.7em 0 4.6em;
+  }
+  .cd-tabs-navigation a.selected {
+    box-shadow: inset 0 2px 0 #f05451;
+  }
+  .cd-tabs-navigation a::before {
+    top: 50%;
+    margin-top: -0.714em;
+    margin-left: 0;
+    left: 2.714em;
+  }
+}
+
+.cd-tabs-content {
+  background: #ffffff;
+}
+.cd-tabs-content li {
+  display: none;
+  padding: 1.4em;
+}
+.cd-tabs-content li.selected {
+  display: block;
+  -webkit-animation: cd-fade-in 0.5s;
+  -moz-animation: cd-fade-in 0.5s;
+  animation: cd-fade-in 0.5s;
+}
+.cd-tabs-content li p {
+  font-size: 0.875em;
+  line-height: 1.6;
+  color: #8493bf;
+  margin-bottom: 2em;
+}
+@media only screen and (min-width: 768px) {
+  .cd-tabs-content {
+    min-height: 34.286em;
+  }
+  .cd-tabs-content li {
+    padding: 0.5em 0.5em 0.5em 0.5em;
+  }
+}
+@media only screen and (min-width: 64em) {
+  .cd-tabs-content {
+    min-height: 0;
+  }
+  .cd-tabs-content li {
+    padding: 0.5em;
+  }
+  .cd-tabs-content li p {
+    font-size: 1em;
+  }
+}
+
+@-webkit-keyframes cd-fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-moz-keyframes cd-fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes cd-fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+sub, sup {
+  /* Specified in % so that the sup/sup is the right size relative to the surrounding text */
+  font-size: 75%;
+
+  /* Zero out the line-height so that it doesn't interfere with the positioning that follows */
+  line-height: 0;
+
+  /* Where the magic happens: makes all browsers position the sup/sup properly, relative to the surrounding text */
+  position: relative;
+
+  /* Note that if you're using Eric Meyer's reset.css, this is already set and you can remove this rule */
+  vertical-align: baseline;
+}
+
+sup {
+  /* Move the superscripted text up */
+  top: -0.5em;
+}
+
+sub {
+  /* Move the subscripted text down, but only half as far down as the superscript moved up */
+  bottom: -0.25em;
+}
+
+strong {
+  font-weight: bold;
+}
