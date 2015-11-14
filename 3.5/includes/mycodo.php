@@ -160,6 +160,19 @@ if (isset($output_error)) {
     }
     $output_error = NULL;
 }
+if (!file_exists($lock_daemon)) {
+    $check_tentacle_pi = shell_exec('/usr/bin/python -c "import tentacle_pi" 2>&1');
+    if ($check_tentacle_pi != '') {
+        echo '
+        <span class="error">
+            Daemon unable to start without tentacle_pi installed. Install with:
+            <br>1. sudo apt-get install i2c-tools libi2c-dev python-dev build-essential
+            <br>2. git clone --recursive https://github.com/lexruee/tentacle_pi
+            <br>3. cd tentacle_pi
+            <br>4. sudo python setup.py install
+        </span>';
+    }
+}
 ?>
 <!-- Begin Header -->
 <div class="main-wrapper">

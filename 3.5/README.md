@@ -266,13 +266,15 @@ Using raspi-config, perform the following:
 
 `git clone https://github.com/adafruit/Adafruit_Python_BMP.git ~/Adafruit_Python_BMP && cd ~/Adafruit_Python_BMP && sudo python setup.py install`
 
+'git clone --recursive https://github.com/lexruee/tentacle_pi ~/tentacle_pi && cd ~/tentacle_pi && sudo python setup.py install'
+
 Create a symlink to Mycodo
 
 `sudo ln -s ~/Mycodo/3.5 /var/www/mycodo`
 
 Install LockFile and RPyC
 
-`sudo pip install lockfile rpyc tentacle_pi`
+`sudo pip install lockfile rpyc`
 
 To access /dev/vchiq (to read the GPU temperature or access the Pi camera), the user www-data needs to be added to the group video
 
