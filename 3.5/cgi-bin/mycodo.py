@@ -57,6 +57,7 @@ from array import *
 from email.mime.text import MIMEText
 from lockfile import LockFile
 from rpyc.utils.server import ThreadedServer
+from tentacle_pi.AM2315 import AM2315
 
 mycodo_database = "%s/config/mycodo.db" % install_directory # SQLite database
 image_path = "%s/images" % install_directory # Where generated graphs are stored
@@ -327,9 +328,16 @@ class ComServer(rpyc.Service):
         if (sensor == 'DHT11'): device = Adafruit_DHT.DHT11
         elif (sensor == 'DHT22'): device = Adafruit_DHT.DHT22
         elif (sensor == 'AM2302'): device = Adafruit_DHT.AM2302
+        elif (sensor == 'AM2315'):
+            device = 'AM2315'
+            am = AM2315(0x5c,"/dev/i2c-1")
+
+        if device == Adafruit_DHT.DHT11 or device == Adafruit_DHT.DHT22 or device == Adafruit_DHT.AM2302:
+            hum, tc = Adafruit_DHT.read_retry(device, pin)
+        elif device == 'AM2315':
+            tc, hum, crc_check = am.sense()
         else:
             return 'Invalid Sensor Name'
-        hum, tc = Adafruit_DHT.read_retry(device, pin)
         return (tc, hum)
 
     def exposed_ReadTSensor(self, pin, device):
@@ -2098,9 +2106,16 @@ def read_ht(sensor, device, pin):
     if device == 'DHT11': device = Adafruit_DHT.DHT11
     elif device == 'DHT22': device = Adafruit_DHT.DHT22
     elif device == 'AM2302': device = Adafruit_DHT.AM2302
+    elif device == 'AM2315':
+        device = 'AM2315'
+        am = AM2315(0x5c,"/dev/i2c-1")
     
     if device == Adafruit_DHT.DHT11 or device == Adafruit_DHT.DHT22 or device == Adafruit_DHT.AM2302:
         humidity, temp = Adafruit_DHT.read_retry(device, pin)
+        last_ht_reading = int(time.time())+2
+        return humidity, temp
+    elif device == 'AM2315':
+        temp, humidity, crc_check = am.sense()
         last_ht_reading = int(time.time())+2
         return humidity, temp
     else:

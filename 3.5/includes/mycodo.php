@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.88";
+$version = "3.5.89";
 
 ######### Start Edit Configure #########
 
@@ -474,7 +474,7 @@ if (isset($output_error)) {
                             <button type="submit" onclick="submitForm('?tab=graph<?php if (isset($_GET['r'])) echo '&r=' , $_GET['r']; ?>','_self')" name="Generate_Graph" value="all" title="Generate a client-side graph that will render in the browser. Warning: The more data you choose to use, the longer it will take to process. Choosing 'All Time' or 'All Sensors' may take a significant amount of time to process.">Dynamic<br>Graph</button>
                         </div>
                         <div style="float:left;">
-                            <button type="submit" onclick="submitForm('file.php?span=graph-pop','_blank')" name="Generate_Graph" value="all" title="Same as 'Dynamic Graph' but the graph will load in a new window.">Pop<br>Out</button>
+                            <button type="submit" onclick="submitForm('file.php?span=graph-pop&theme=<?php echo $current_user_theme; ?>','_blank')" name="Generate_Graph" value="all" title="Same as 'Dynamic Graph' but the graph will load in a new window.">Pop<br>Out</button>
                         </div>
                         </form>
                     </div>
@@ -557,6 +557,7 @@ if (isset($output_error)) {
                                 <option value="DHT11">Humidity/Temperature: DHT11</option>
                                 <option value="DHT22">Humidity/Temperature: DHT22</option>
                                 <option value="AM2302">Humidity/Temperature: AM2302</option>
+                                <option value="AM2315">Humidity/Temperature: AM2315</option>
                                 <option value="BMP">Pressure/Temperature: BMP085/BMP180</option>
                                 <option value="DS18B20">Temperature: DS18B20</option>
                                 <option value="K30">CO2: K-30</option>
@@ -1297,7 +1298,13 @@ if (isset($output_error)) {
                         <td>HT Sensor <?php echo $i+1; ?><br><span style="font-size: 0.7em;">(<?php echo $sensor_ht_id[$i]; ?>)</span></td>
                         <td>Sensor<br>Name</td>
                         <td>Sensor<br>Device</td>
-                        <td>GPIO<br>Pin</td>
+                        <?php
+                            if ($sensor_ht_device[$i] == 'AM2315') {
+                                echo '<td>I<sup>2</sup>C<br>Add.</td>';
+                            } else {
+                                echo '<td>GPIO<br>Pin</td>';
+                            }
+                        ?>
                         <td>Log<br>Interval</td>
                         <td>Pre<br>Relay</td>
                         <td>Pre<br>Duration</td>
@@ -1336,13 +1343,27 @@ if (isset($output_error)) {
                                         echo ' selected="selected"';
                                     } ?> value="AM2302">AM2302</option>
                                 <option<?php
+                                    if ($sensor_ht_device[$i] == 'AM2315') {
+                                        echo ' selected="selected"';
+                                    } ?> value="AM2315">AM2315</option>
+                                <option<?php
                                     if ($sensor_ht_device[$i] == 'Other') {
                                         echo ' selected="selected"';
                                     } ?> value="Other">Other</option>
                             </select>
                         </td>
                         <td>
-                            <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_ht_pin[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>pin" title="This is the GPIO pin connected to the HT sensor"/>
+                            <?php
+                            if ($sensor_ht_device[$i] == 'AM2315') {
+                            ?>
+                            I<sup>2</sup>C
+                            <?php
+                            } else {
+                            ?>
+                                <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_ht_pin[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>pin" title="This is the GPIO pin connected to the HT sensor"/>
+                            <?php
+                            }
+                            ?>
                         </td>
                         <td>
                             <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_ht_period[$i]; ?>" name="sensorht<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/> sec
