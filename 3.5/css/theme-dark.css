@@ -1,15 +1,15 @@
 /*** General ***/
 
 body {
-    background: #373737;
+    background: #222222;
     color: white;
     font-size: 0.875em;
 }
 
-a:link { color: #000061; }
-a:visited { color: #000037; }
-a:active { color: #F2273B; }
-a:hover { color: #F2273B; }
+a:link { color: #FF0000; }
+a:visited { color: #FF8800; }
+a:active { color: #FF0000; }
+a:hover { color: #FF8800; }
 
 a.manual {color:red;}
 a.manual:link  {text-decoration: none; color: red;}
@@ -87,12 +87,13 @@ hr.fade {
   width: auto;
   height: auto;
   border: 0.1em solid #EBEBEB;
-  background-color: #000;
+  background-color: #222222;
   margin-bottom: 1em;
 }
 
 .sensor {
   border-collapse: initial;
+  padding: 0.5em;
 }
 
 .center {
@@ -109,7 +110,7 @@ hr.fade {
 
 table.relays {
     width: 100%;
-    background-color: #000;
+    background-color: #222222;
 }
 
 table.relays td {
@@ -118,18 +119,18 @@ table.relays td {
 }
 
 table.relays tr:nth-child(even) {
-    background-color: #272727;
+    background-color: #161616;
 }
 
 table.sensor_conditional td {
-    background-color: #000;
+    background-color: #222222;
     padding-right: 0.5em;
 }
 
 table.sensor {
     width:100%;
     padding-bottom: 1em;
-    background-color: #000;
+    background-color: #222222;
 }
 
 table.sensor td {
@@ -140,7 +141,7 @@ table.sensor td {
 
 table.yaxis {
     margin: 0 0.5em 1em 0.5em;
-    background-color: #000;
+    background-color: #222222;
 }
 
 table.yaxis td {
@@ -151,19 +152,19 @@ table.yaxis td {
 
 table.pid {
     width:100%;
-    background-color: #000;
+    background-color: #222222;
 }
 
 table.pid td {
     text-align: center;
     vertical-align: middle;
     padding: 0.4em 0;
-    background-color: #000;
+    background-color: #222222;
 }
 
 table.conditional {
     margin: 1em 0.5em 0.5em 0.5em;
-    background-color: #000;
+    background-color: #222222;
 }
 
 table.conditional td {
@@ -174,7 +175,7 @@ table.conditional td {
 
 table.sensor-conditional td {
     padding: 0.1em 0.5em;
-    background-color: #000;
+    background-color: #222222;
 }
 
 .pid {
@@ -541,7 +542,7 @@ Main components
   background-color: #212121;
 }
 .cd-tabs-navigation a.selected {
-  background-color: #373737 !important;
+  background-color: #222222 !important;
   box-shadow: inset 0 2px 0 #f05451;
   color: #fff;
 }
@@ -556,7 +557,7 @@ Main components
   width: 1.43em;
   background-image: url("../img/vicons.svg");
   background-repeat: no-repeat;
-  background-color: #414141;
+  background-color: #222222;
 }
 .cd-tabs-navigation a[data-content='data']::before {
   background-position: 0 0;
@@ -599,7 +600,7 @@ Main components
   .cd-tabs-navigation {
     /* tabbed on top on big devices */
     width: auto;
-    background-color: #373737;
+    background-color: #161616;
     box-shadow: inset 0 -2px 3px rgba(203, 196, 130, 0.06);
   }
   .cd-tabs-navigation a {
@@ -622,7 +623,7 @@ Main components
 }
 
 .cd-tabs-content {
-  background: #373737;
+  background: #222222;
 }
 .cd-tabs-content li {
   display: none;

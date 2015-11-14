@@ -480,7 +480,7 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
             else:
                 setup_initial(plot, width, 600)
             if theme == 'dark':
-                plot.write('set term png enhanced background rgb "#373737"\n')
+                plot.write('set term png enhanced background rgb "#222222"\n')
             if graph_span != 'x':
                 plot.write('set output \"' + image_path + '/graph-temp-' + graph_type + '-' + graph_span + '-' + graph_id + '.png\"\n')
             else:
@@ -568,7 +568,7 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
             else:
                 setup_initial(plot, width, 600)
             if theme == 'dark':
-                plot.write('set term png enhanced background rgb "#373737"\n')
+                plot.write('set term png enhanced background rgb "#222222"\n')
             if graph_span != 'x':
                 plot.write('set output \"' + image_path + '/graph-hum-' + graph_type + '-' + graph_span + '-' + graph_id + '.png\"\n')
             else:
@@ -646,7 +646,7 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
             else:
                 setup_initial(plot, width, 600)
             if theme == 'dark':
-                plot.write('set term png enhanced background rgb "#373737"\n')
+                plot.write('set term png enhanced background rgb "#222222"\n')
             if graph_span != 'x':
                 plot.write('set output \"' + image_path + '/graph-co2-' + graph_type + '-' + graph_span + '-' + graph_id + '.png\"\n')
             else:
@@ -722,7 +722,7 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
             else:
                 setup_initial(plot, width, 600)
             if theme == 'dark':
-                plot.write('set term png enhanced background rgb "#373737"\n')
+                plot.write('set term png enhanced background rgb "#222222"\n')
             if graph_span != 'x':
                 plot.write('set output \"' + image_path + '/graph-press-' + graph_type + '-' + graph_span + '-' + graph_id + '.png\"\n')
             else:
@@ -816,7 +816,7 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 else:
                     setup_initial(plot, width, 600)
                 if theme == 'dark':
-                    plot.write('set term png enhanced background rgb "#373737"\n')
+                    plot.write('set term png enhanced background rgb "#222222"\n')
                 plot.write('set output \"' + image_path + '/graph-t-' + graph_type + '-' + graph_span + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 if sensor_t_graph_relay[h]:
@@ -895,7 +895,7 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 else:
                     setup_initial(plot, width, 600)
                 if theme == 'dark':
-                    plot.write('set term png enhanced background rgb "#373737"\n')
+                    plot.write('set term png enhanced background rgb "#222222"\n')
                 plot.write('set output \"' + image_path + '/graph-ht-' + graph_type + '-' + graph_span + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 if sensor_ht_graph_relay[h]:
@@ -993,7 +993,7 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 else:
                     setup_initial(plot, width, 600)
                 if theme == 'dark':
-                    plot.write('set term png enhanced background rgb "#373737"\n')
+                    plot.write('set term png enhanced background rgb "#222222"\n')
                 plot.write('set output \"' + image_path + '/graph-co2-' + graph_type + '-' + graph_span + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 if sensor_co2_graph_relay[h]:
@@ -1069,7 +1069,7 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 else:
                     setup_initial(plot, width, 600)
                 if theme == 'dark':
-                    plot.write('set term png enhanced background rgb "#373737"\n')
+                    plot.write('set term png enhanced background rgb "#222222"\n')
                 plot.write('set output \"' + image_path + '/graph-press-' + graph_type + '-' + graph_span + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 if sensor_press_graph_relay[h]:
@@ -1173,7 +1173,7 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 plot = open(gnuplot_graph, 'w')
                 setup_initial(plot, width, 1000)
                 if theme == 'dark':
-                    plot.write('set term png enhanced background rgb "#373737"\n')
+                    plot.write('set term png enhanced background rgb "#222222"\n')
                 plot.write('set output \"' + image_path + '/graph-t-' + graph_type + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 plot.write('set multiplot\n')
@@ -1295,7 +1295,7 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 plot = open(gnuplot_graph, 'w')
                 setup_initial(plot, width, 1000)
                 if theme == 'dark':
-                    plot.write('set term png enhanced background rgb "#373737"\n')
+                    plot.write('set term png enhanced background rgb "#222222"\n')
                 plot.write('set output \"' + image_path + '/graph-ht-' + graph_type + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 plot.write('set multiplot\n')
@@ -1441,7 +1441,7 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 plot = open(gnuplot_graph, 'w')
                 setup_initial(plot, width, 1000)
                 if theme == 'dark':
-                    plot.write('set term png enhanced background rgb "#373737"\n')
+                    plot.write('set term png enhanced background rgb "#222222"\n')
                 plot.write('set output \"' + image_path + '/graph-co2-' + graph_type + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 plot.write('set multiplot\n')
@@ -1563,7 +1563,7 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 plot = open(gnuplot_graph, 'w')
                 setup_initial(plot, width, 1000)
                 if theme == 'dark':
-                    plot.write('set term png enhanced background rgb "#373737"\n')
+                    plot.write('set term png enhanced background rgb "#222222"\n')
                 plot.write('set output \"' + image_path + '/graph-press-' + graph_type + '-' + graph_id + '-' + str(h) + '.png\"\n')
                 setup_lines_colors(plot)
                 plot.write('set multiplot\n')

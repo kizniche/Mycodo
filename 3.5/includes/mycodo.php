@@ -485,7 +485,7 @@ if (isset($output_error)) {
                 <?php
                 if (isset($_POST['Generate_Graph'])) {
                     echo '<div style="padding: 1.5em 0 1.5em 0; text-align:center;">';
-                    echo '<div id="container" style="width: 100%; height: 50em; border: 1px solid grey;"></div>';
+                    echo '<div id="container" style="width: 100%; height: 50em;"></div>';
                     echo '</div>';
                 }
                 ?>
@@ -4046,7 +4046,7 @@ if (isset($output_error)) {
             <?php if ($this->feedback) echo $this->feedback; ?>
 
             <div style="padding: 2em 0 0 1em;">
-                <a class="manual" href="manual.html" target="_blank">Mycodo 3.5 Manual</a> | <a class="manual" href="https://github.com/kizniche/Mycodo" target="_blank">Mycodo on GitHub</a> | Have a problem? <a class="manual" href="http://kylegabriel.com/contact" target="_blank">Contact the developer</a> or <a class="manual" href="https://github.com/kizniche/Mycodo/issues" target="_blank">submit an issue</a>.
+                <a href="manual.html" target="_blank">Mycodo 3.5 Manual</a> | <a href="https://github.com/kizniche/Mycodo" target="_blank">Mycodo on GitHub</a> | Have a problem? <a href="http://kylegabriel.com/contact" target="_blank">Contact the developer</a> or <a href="https://github.com/kizniche/Mycodo/issues" target="_blank">submit an issue</a>.
             </div>
 
             <div style="padding: 0 0 0 1em;">
@@ -4064,7 +4064,7 @@ if (isset($output_error)) {
                             if (strpos(`cat /var/www/mycodo/.updatecheck`,'1') !== false) {
                                 echo ' (<span style="color: red;">A newer version is available</span>)';
                             } else {
-                                echo ' (<span style="color: green;">You are running the latest version</span>)';
+                                echo ' (<span style="color: #00AA00;">You are running the latest version</span>)';
                             }
                             ?>
                         </td>
@@ -4077,7 +4077,7 @@ if (isset($output_error)) {
                     <form action="?tab=settings" method="post" onsubmit="return confirm('Confirm that you would like to begin the update process now. If not, click Cancel.')">
                     <tr>
                         <td class="setting-text">
-                            Update Mycodo to the latest version on <a href="https://github.com/kizniche/Mycodo" target="_blank">github</a>
+                            Update Mycodo to the latest version on <a href="https://github.com/kizniche/Mycodo" target="_blank">GitHub</a>
                         </td>
                         <td class="setting-value">
                             <button name="UpdateMycodo" type="submit" value="" title="Update the mycodo system to the latest version on github.">Update Mycodo</button>
@@ -4833,8 +4833,14 @@ if (isset($output_error)) {
                         </td>
                     </tr>
                     </form>
+                </table>
 
-                    <form method="post" action="?tab=settings">
+                <?php
+                if ($current_user_restriction != 'guest') {
+                ?>
+
+                <form method="post" action="?tab=settings">
+                <table>
                     <tr>
                         <td class="setting-title">
                             Add User
@@ -4911,6 +4917,7 @@ if (isset($output_error)) {
                     </tr>
                     </form>
                 </table>
+                </form>
 
                 <table class="edit-user">
                     <tr>
@@ -4967,6 +4974,10 @@ if (isset($output_error)) {
                 }
                 ?>
                 </table>
+
+                <?php
+                }
+                ?>
             </div>
             <div style="padding-top: 3em;"></div>
         </li>
