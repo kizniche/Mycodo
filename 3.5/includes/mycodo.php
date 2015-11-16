@@ -76,7 +76,18 @@ if (!file_exists($update_check) || time()-filemtime($update_check) > 24 * 3600) 
 
 // Output an error if the user guest attempts to submit certain forms
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if ($current_user_restriction == 'guest' && !isset($_POST['Graph']) && !isset($_POST['login']) && !isset($_POST['edituser'])) {
+    if (($current_user_restriction == 'guest' && !isset($_POST['Graph']) && !isset($_POST['login']) && !isset($_POST['edituser'])) &&
+        (isset($_POST['Login']) ||
+        isset($_POST['Users']) ||
+        isset($_POST['Database']) ||
+        isset($_POST['DeleteBackup']) ||
+        isset($_POST['RestoreBackup']) ||
+        isset($_POST['UpdateCheck']) ||
+        isset($_POST['UpdateMycodo']) ||
+        isset($_POST['DaemonStop']) ||
+        isset($_POST['DaemonStart']) ||
+        isset($_POST['DaemonRestart']) ||
+        isset($_POST['DaemonDebug']))) {
         $output_error = 'guest';
     } else if ($current_user_restriction != 'guest') {
         // Only non-guest users may perform these actions
@@ -3568,7 +3579,7 @@ if (!file_exists($lock_daemon)) {
                             }
                             for ($i = 0; $i < count($commits_ahead); $i++) {
                                 if ($commits_ahead[$i] != '' && $commits_ahead_id[$i] != $current_commit) {
-                                    echo "<div style=\"text-indent: -5em; padding: 0.7em 0 0 5em; width: 100%; white-space: normal;\"><a href=\"https://github.com/kizniche/Mycodo/commit/$commits_ahead_id[$i]\" target=\"_blank\">" , htmlentities($commits_ahead[$i]) , "</a></div>";
+                                    echo "<div style=\"text-indent: -5em; padding: 0.7em 0 0 5em; width: 100%; white-space: normal;\"><a class=\"commit-link\" href=\"https://github.com/kizniche/Mycodo/commit/$commits_ahead_id[$i]\" target=\"_blank\">" , htmlentities($commits_ahead[$i]) , "</a></div>";
                                 }
                             }
                             $commits_list = explode("\n", $commits);
@@ -3586,7 +3597,7 @@ if (!file_exists($lock_daemon)) {
                                 if ($commits_behind_id[$j] == $current_commit) {
                                     echo "<div style=\"text-indent: -5em; padding: 0.7em 0 0 5em; width: 100%; white-space: normal;\"><a style=\"color: #FF0000;\" href=\"https://github.com/kizniche/Mycodo/commit/$commits_behind_id[$j]\" target=\"_blank\">" , htmlentities($commits_list[$j]) , "</a></div>";
                                 } else {
-                                    echo "<div style=\"text-indent: -5em; padding: 0.7em 0 0 5em; width: 100%; white-space: normal;\"><a href=\"https://github.com/kizniche/Mycodo/commit/$commits_behind_id[$j]\" target=\"_blank\">" , htmlentities($commits_list[$j]) , "</a></div>";
+                                    echo "<div style=\"text-indent: -5em; padding: 0.7em 0 0 5em; width: 100%; white-space: normal;\"><a class=\"commit-link\" href=\"https://github.com/kizniche/Mycodo/commit/$commits_behind_id[$j]\" target=\"_blank\">" , htmlentities($commits_list[$j]) , "</a></div>";
                                 }
                                 if (isset($backup_commits) && count($backup_commits) != 0) {
                                     for ($i = 0; $i < count($backup_commits); $i++) {
@@ -4849,7 +4860,7 @@ if (!file_exists($lock_daemon)) {
                 </table>
 
                 <?php
-                if ($current_user_restriction != 'guest') {
+                if ($current_user_restriction == 'admin') {
                 ?>
 
                 <form method="post" action="?tab=settings">
@@ -4872,7 +4883,7 @@ if (!file_exists($lock_daemon)) {
                             Email
                         </td>
                         <td class="setting-value">
-                            <input style="width: 18em;" type="email" name="user_email" />
+                            <input style="width: 18em;" type="email" name="user_email" title="The email address associated with this account. In addition to the user name, the email address may be used to log in."/>
                         </td>
                     </tr>
                     <tr>
@@ -4880,7 +4891,7 @@ if (!file_exists($lock_daemon)) {
                             Password (min. 6 characters)
                         </td>
                         <td class="setting-value">
-                            <input style="width: 18em;" class="login_input" type="password" name="user_password_new" pattern=".{6,}" required autocomplete="off" />
+                            <input style="width: 18em;" class="login_input" type="password" name="user_password_new" pattern=".{6,}" required autocomplete="off" title="To change the password, enter the new password twice and click Save."/>
                         </td>
                     </tr>
                     <tr>
@@ -4888,7 +4899,7 @@ if (!file_exists($lock_daemon)) {
                             Repeat password
                         </td>
                         <td class="setting-value">
-                            <input style="width: 18em;" class="login_input" type="password" name="user_password_repeat" pattern=".{6,}" required autocomplete="off" />
+                            <input style="width: 18em;" class="login_input" type="password" name="user_password_repeat" pattern=".{6,}" required autocomplete="off" title="To change the password, repeat the new password to verify it was entered correctly."/>
                         </td>
                     </tr>
                     <tr>
@@ -4896,7 +4907,7 @@ if (!file_exists($lock_daemon)) {
                             Group
                         </td>
                         <td class="setting-value">
-                            <select style="width: 18em;" title="" name="user_restriction">
+                            <select style="width: 18em;" title="" name="user_restriction" title="Select what group this user belongs to. The permissions each group has can be found in the manual.">
                                 <option value="guest">Guest</option>
                                 <option value="admin">Admin</option>
                             </select>
@@ -4904,7 +4915,7 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-save">
-                            <input type="submit" name="register" value="Add User" />
+                            <input type="submit" name="register" value="Add User"/>
                         </td>
                     </tr>
                     </form>
@@ -4934,6 +4945,11 @@ if (!file_exists($lock_daemon)) {
 
                 <table class="edit-user">
                     <tr>
+                        <td class="setting-title">
+                            Edit Users
+                        </td>
+                    </tr>
+                    <tr>
                         <td>User</td>
                         <td>Email</td>
                         <td>New Password</td>
@@ -4941,21 +4957,23 @@ if (!file_exists($lock_daemon)) {
                         <td>Group</td>
                         <td>Theme</td>
                     </tr>
-                <?php for ($i = 0; $i < count($user_name); $i++) { ?>
+                <?php 
+                for ($i = 0; $i < count($user_name); $i++) {
+                ?>
                     <tr>
                         <form method="post" action="?tab=settings">
                         <td><?php echo $user_name[$i]; ?><input type="hidden" name="user_name" value="<?php echo $user_name[$i]; ?>"></td>
                         <td>
-                            <input style="width: 12.5em;" type="text" value="<?php echo $user_email[$i]; ?>" name="user_email" />
+                            <input style="width: 12.5em;" type="text" value="<?php echo $user_email[$i]; ?>" name="user_email" title="The email address associated with this account. In addition to the user name, the email address may be used to log in."/>
                         </td>
                         <td>
-                            <input style="width: 12.5em;" class="login_input" type="password" name="new_password" pattern=".{6,}" autocomplete="off" />
+                            <input style="width: 12.5em;" class="login_input" type="password" name="new_password" pattern=".{6,}" autocomplete="off" title="To change the password, enter the new password twice and click Save."/>
                             </td>
                         <td>
-                            <input style="width: 12.5em;" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" autocomplete="off" /> <label for="login_input_password_repeat">
+                            <input style="width: 12.5em;" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" autocomplete="off" title="To change the password, repeat the new password to verify it was entered correctly."/>
                         </td>
                         <td>
-                            <select title="" name="user_restriction">
+                            <select title="" name="user_restriction" title="Select what group this user belongs to. The permissions each group has can be found in the manual.">
                                 <option
                                     <?php if ($user_restriction[$i] == 'admin') {
                                         echo ' selected="selected"';
@@ -4967,7 +4985,7 @@ if (!file_exists($lock_daemon)) {
                             </select>
                         </td>
                         <td>
-                            <select title="" name="user_theme">
+                            <select title="" name="user_theme" title="Select what theme to display for this user.">
                                 <option
                                     <?php if ($user_theme[$i] == 'light') {
                                         echo ' selected="selected"';
@@ -4984,6 +5002,62 @@ if (!file_exists($lock_daemon)) {
                         </form>
                     </tr>
                 <?php
+                }
+                ?>
+                </table>
+
+                <?php
+                } else {
+                ?>
+
+                <table class="edit-user">
+                    <tr>
+                        <td class="setting-title">
+                            Edit User
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>User</td>
+                        <td>Email</td>
+                        <td>New Password</td>
+                        <td>New Password Repeat</td>
+                        <td>Theme</td>
+                    </tr>
+                <?php 
+                for ($i = 0; $i < count($user_name); $i++) {
+                    if ($user_name[$i] == $_SESSION['user_name']) {
+                ?>
+                    <form method="post" action="?tab=settings">
+                    <tr>
+                        <td><?php echo $user_name[$i]; ?><input type="hidden" name="user_name" value="<?php echo $user_name[$i]; ?>"></td>
+                        <td>
+                            <input style="width: 12.5em;" type="text" value="<?php echo $user_email[$i]; ?>" name="user_email" title="The email address associated with this account. In addition to the user name, the email address may be used to log in."/>
+                        </td>
+                        <td>
+                            <input style="width: 12.5em;" class="login_input" type="password" name="new_password" pattern=".{6,}" autocomplete="off" title="To change the password, enter the new password twice and click Save."/>
+                            </td>
+                        <td>
+                            <input style="width: 12.5em;" class="login_input" type="password" name="new_password_repeat" pattern=".{6,}" autocomplete="off" title="To change the password, repeat the new password to verify it was entered correctly."/>
+                        </td>
+                        <td>
+                            <select title="" name="user_theme" title="Select what theme to display for this user.">
+                                <option
+                                    <?php if ($user_theme[$i] == 'light') {
+                                        echo ' selected="selected"';
+                                    } ?> value="light">Light</option>
+                                <option
+                                    <?php if ($user_theme[$i] == 'dark') {
+                                        echo ' selected="selected"';
+                                    } ?> value="dark">Dark</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="submit" name="edituser" value="Save" />
+                        </td>
+                    </tr>
+                    </form>
+                <?php
+                    }
                 }
                 ?>
                 </table>

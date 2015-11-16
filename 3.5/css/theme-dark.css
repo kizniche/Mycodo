@@ -265,9 +265,13 @@ table.camera-still td {
 
 /*** Data tab ***/
 
+a.commit-link:link, a.commit-link:visited {
+  color: #FF8800;
+}
+
 table.data-data td, th {
   padding: 0.1em 0.5em;
-  border: 1px solid grey;
+  border: 1px solid gray;
   vertical-align:middle;
 }
 
@@ -321,12 +325,12 @@ table.data-data th {
 .setting-text {
     padding: 0.4em 2em 0.3em 0;
     margin-bottom: 0.2em;
-    border-bottom: 1px solid grey;
+    border-bottom: 1px solid gray;
 }
 
 .setting-value {
     padding: 0.4em 0.5em 0.3em 0;
-    border-bottom: 1px solid grey;
+    border-bottom: 1px solid gray;
 }
 
 .pad-top {

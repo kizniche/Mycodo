@@ -145,16 +145,16 @@ class OneFileLoginApplication {
                         $this->changeEmail();
                     }
                 }
-                if (htmlentities($_POST['new_password'], ENT_QUOTES) != '' && (password_hash(htmlentities($_POST['new_password'], ENT_QUOTES), PASSWORD_DEFAULT) != $edit_password_hash)) {
-                    if ($this->checkPasswordChangeData()) {
-                        $this->changePassword();
-                    }
-                }
                 if (strcmp(htmlentities($_POST['user_restriction'], ENT_QUOTES), $edit_user_restriction) && $current_user_restriction == 'admin') {
                     $this->changeRestriction();
                 }
                 if (strcmp(htmlentities($_POST['user_theme'], ENT_QUOTES), $edit_user_theme)) {
                     $this->changeTheme();
+                }
+                if (htmlentities($_POST['new_password'], ENT_QUOTES) != '' && (password_hash(htmlentities($_POST['new_password'], ENT_QUOTES), PASSWORD_DEFAULT) != $edit_password_hash)) {
+                    if ($this->checkPasswordChangeData()) {
+                        $this->changePassword();
+                    }
                 }
             }
         }
@@ -479,7 +479,7 @@ class OneFileLoginApplication {
         $query->bindValue(':user_password_hash', $user_password_hash);
         $change_success_state = $query->execute();
         if ($change_success_state) {
-            if ($user_name == $_SESSION['user_name']) $this->doLogout();
+            if ($user_name == $_COOKIE['login_user']) $this->doLogout();
             $this->feedback = "Password change success. ";
             return true;
         } else {
