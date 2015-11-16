@@ -1311,7 +1311,7 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                     if theme == 'dark':
                         plot.write('set key at graph 0.025, graph 0.98 tc rgb "white"\n')
                     else:
-                        plot.write('set key at graph 0.025, graph 0.98"\n')
+                        plot.write('set key at graph 0.025, graph 0.98\n')
                     plot.write('set format x ""\n')
                 else:
                     plot.write('set size 1.0,0.5\n')
