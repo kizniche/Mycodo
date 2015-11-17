@@ -1197,7 +1197,11 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             $id = $sensor_ht_id[$p];
             $name = str_replace(' ', '', $_POST['sensorht' . $p . 'name']);
             $device = $_POST['sensorht' . $p . 'device'];
-            $pin = $_POST['sensorht' . $p . 'pin'];
+            if ($_POST['sensorht' . $p . 'device'] == 'AM2315') {
+                $pin = 'I2C';
+            } else {
+                $pin = $_POST['sensorht' . $p . 'pin'];
+            }
             $period = (int)$_POST['sensorht' . $p . 'period'];
             $prerelay = (int)$_POST['sensorht' . $p . 'premeasure_relay'];
             $predur = (int)$_POST['sensorht' . $p . 'premeasure_dur'];
@@ -1218,7 +1222,11 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             $verify_hum = (float)$_POST['sensorht' . $p . 'verifyhum'];
             $verify_hum_notify = (int)$_POST['sensorht' . $p . 'verifyhumnotify'];
             $verify_hum_stop = (int)$_POST['sensorht' . $p . 'verifyhumstop'];
-            $verify_email = str_replace(' ', '', $_POST['sensorht' . $p . 'verifyemail']);
+            if ($_POST['sensorht' . $p . 'verifyemail'] != '') {
+                $verify_email = str_replace(' ', '', $_POST['sensorht' . $p . 'verifyemail']);
+            } else {
+                $verify_email = 'None';
+            }
             $yrelaymin = (int)$_POST['SetHT' . $p . 'YAxisRelayMin'];
             $yrelaymax = (int)$_POST['SetHT' . $p . 'YAxisRelayMax'];
             $yrelaytics = (int)$_POST['SetHT' . $p . 'YAxisRelayTics'];
