@@ -3179,12 +3179,7 @@ if (!file_exists($lock_daemon)) {
                             echo '
                                 <table class="data-data">
                                     <tr>
-                                        <th>Y</th>
-                                        <th>M</th>
-                                        <th>D</th>
-                                        <th>H</th>
-                                        <th>M</th>
-                                        <th>S</th>
+                                        <th>Y/M/D-H:M:S</th>
                                         <th>ID</th>
                                         <th>Name</th>
                                         <th>Device</th>
