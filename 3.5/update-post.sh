@@ -75,6 +75,28 @@ if [[ $db_version_mycodo -lt 16 ]]; then
 	fi
 fi
 
+if [[ $db_version_mycodo -lt 18 ]]; then
+	printf "Updating timestamps in log files (this may take a while)...\n";
+	if [ -s "/var/www/mycodo/log/sensor-t-changes.log" ]; then
+		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' /var/www/mycodo/log/sensor-t-changes.log
+	fi
+	if [ -s "/var/www/mycodo/log/sensor-ht-changes.log" ]; then
+		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' /var/www/mycodo/log/sensor-ht-changes.log
+	fi
+	if [ -s "/var/www/mycodo/log/sensor-co2-changes.log" ]; then
+		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' /var/www/mycodo/log/sensor-co2-changes.log
+	fi
+	if [ -s "/var/www/mycodo/log/sensor-press-changes.log" ]; then
+		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' /var/www/mycodo/log/sensor-press-changes.log
+	fi
+	if [ -s "/var/www/mycodo/log/relay-changes.log" ]; then
+		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' /var/www/mycodo/log/relay-changes.log
+	fi
+	if [ -s "/var/www/mycodo/log/timer-changes.log" ]; then
+		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' /var/www/mycodo/log/timer-changes.log
+	fi
+fi
+
 # Perform update based on database version
 if [ ! -f $DATABASEMYC ]; then
     printf "Mycodo database not found: $DATABASEMYC\n";
