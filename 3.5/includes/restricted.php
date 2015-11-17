@@ -154,7 +154,7 @@ for ($p = 0; $p < count($relay_id); $p++) {
         $amps = str_pad((float)$_POST['relay' . $p . 'amps'], 5);
         $trigger = str_pad((int)$_POST['relay' . $p . 'trigger'], 8);
         $state = (int)$_POST['relay' . $p . 'startstate'];
-        $timestamp = date('Y m d H i s');
+        $timestamp = date('Y/m/d-H:i:s');
         $record = "$timestamp $number $name $pin $amps $trigger $state\n";
         file_put_contents($relay_changes_log, $record, FILE_APPEND);
     }
@@ -324,7 +324,7 @@ for ($p = 0; $p < count($timer_id); $p++) {
         $relay = (int)$_POST['Timer' . $p . 'Relay'];
         $durationon = (int)$_POST['Timer' . $p . 'On'];
         $durationoff = (int)$_POST['Timer' . $p . 'Off'];
-        $timestamp = date('Y m d H i s');
+        $timestamp = date('Y/m/d-H:i:s');
         $record = "$timestamp $id $name $relay $durationon $durationoff\n";
         file_put_contents($timer_changes_log, $record, FILE_APPEND);
     }
@@ -686,7 +686,7 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
             $tempP = (float)$_POST['SetT' . $p . 'Temp_P'];
             $tempI = (float)$_POST['SetT' . $p . 'Temp_I'];
             $tempD = (float)$_POST['SetT' . $p . 'Temp_D'];
-            $timestamp = date('Y m d H i s');
+            $timestamp = date('Y/m/d-H:i:s');
             $record = "$timestamp $id $name $device $pin $period $prerelay $predur $activated $graph $yrelaymin $yrelaymax $yrelaytics $yrelaymtics $ytempmin $ytempmax $ytemptics $ytempmtics $temprelaysup $temprelaysdown $temprelayhigh $temprelayhighmin $temprelayhighmax $temprelaylow $temprelaylowmin $temprelaylowmax $tempset $tempsetdir $tempperiod $tempP $tempI $tempD\n";
             file_put_contents($sensor_t_changes_log, $record, FILE_APPEND);
         }
@@ -1255,7 +1255,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             $humP = (float)$_POST['SetHT' . $p . 'Hum_P'];
             $humI = (float)$_POST['SetHT' . $p . 'Hum_I'];
             $humD = (float)$_POST['SetHT' . $p . 'Hum_D'];
-            $timestamp = date('Y m d H i s');
+            $timestamp = date('Y/m/d-H:i:s');
             $record = "$timestamp $id $name $device $pin $period $prerelay $predur $activated $graph $verify_pin $verify_temp $verify_temp_notify $verify_temp_stop $verify_hum $verify_hum_notify $verify_hum_stop $verify_email $yrelaymin $yrelaymax $yrelaytics $yrelaymtics $ytempmin $ytempmax $ytemptics $ytempmtics $temprelaysup $temprelaysdown $temprelayhigh $temprelayhighmin $temprelayhighmax $temprelaylow $temprelaylowmin $temprelaylowmax $tempset $tempsetdir $tempperiod $tempP $tempI $tempD $humrelaysup $humrelaysdown $humrelayhigh $humrelayhighmin $humrelayhighmax $humrelaylow $humrelaylowmin $humrelaylowmax $humset $humsetdir $humperiod $humP $humI $humD\n";
             file_put_contents($sensor_ht_changes_log, $record, FILE_APPEND);
         }
@@ -1753,7 +1753,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
             $co2P = (float)$_POST['SetCO2' . $p . 'CO2_P'];
             $co2I = (float)$_POST['SetCO2' . $p . 'CO2_I'];
             $co2D = (float)$_POST['SetCO2' . $p . 'CO2_D'];
-            $timestamp = date('Y m d H i s');
+            $timestamp = date('Y/m/d-H:i:s');
             $record = "$timestamp $id $name $device $pin $period $prerelay $predur $activated $graph $yrelaymin $yrelaymax $yrelaytics $yrelaymtics $yco2min $yco2max $yco2tics $yco2mtics $co2relaysup $co2relaysdown $co2relayhigh $co2relayhighmin $co2relayhighmax $co2relaylow $co2relaylowmin $co2relaylowmax $co2set $co2setdir $co2period $co2P $co2I $co2D\n";
             file_put_contents($sensor_co2_changes_log, $record, FILE_APPEND);
         }
@@ -2295,7 +2295,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
             $pressP = (float)$_POST['SetPress' . $p . 'Press_P'];
             $pressI = (float)$_POST['SetPress' . $p . 'Press_I'];
             $pressD = (float)$_POST['SetPress' . $p . 'Press_D'];
-            $timestamp = date('Y m d H i s');
+            $timestamp = date('Y/m/d-H:i:s');
             $record = "$timestamp $id $name $device $pin $period $prerelay $predur $activated $graph $yrelaymin $yrelaymax $yrelaytics $yrelaymtics $ytempmin $ytempmax $ytemptics $ytempmtics $temprelaysup $temprelaysdown $temprelayhigh $temprelayhighmin $temprelayhighmax $temprelaylow $temprelaylowmin $temprelaylowmax $tempset $tempsetdir $tempperiod $tempP $tempI $tempD $pressrelaysup $pressrelaysdown $pressrelayhigh $pressrelayhighmin $pressrelayhighmax $pressrelaylow $pressrelaylowmin $pressrelaylowmax $pressset $presssetdir $pressperiod $pressP $pressI $pressD\n";
             file_put_contents($sensor_press_changes_log, $record, FILE_APPEND);
         }
