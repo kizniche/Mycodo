@@ -104,7 +104,7 @@ if ($_COOKIE['login_hash'] == $user_hash) {
             case 'graph':
                 $path = '/var/tmp/' . $_GET['file'];
                 header('Content-Type: text/json');
-                if (filesize($path) < 16 && empty(trim(file_get_contents($path)))) {
+                if (filesize($path) < 16 && trim(file_get_contents($path)) == false) {
                     echo json_encode("0");
                 } else {
                     echo json_encode(file_get_contents($path));
