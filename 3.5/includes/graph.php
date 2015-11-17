@@ -161,8 +161,8 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             labels: {
                                 format: '{value}°C',
                             },
-                            <?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) echo "height: '60%',"; ?>
-                        }<?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) { ?>
+                            <?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) echo "height: '60%',"; ?>
+                        }<?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) { ?>
                         ,{
                             title: {
                                 text: 'Duration (sec)'
@@ -204,7 +204,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             }
                         },<?php
                         }
-                        if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) {
+                        if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) {
                         for ($i = 0; $i < count($relay_id); $i++) {
                         ?>{
                             name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
@@ -223,7 +223,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         },<?php 
                         }
                         }
-                        if (filesize($notes_file) > 16 && !empty(trim(file_get_contents($notes_file)))) {
+                        if (filesize($notes_file) > 16 && trim(file_get_contents($notes_file)) == true) {
                         ?>{
                             name: 'Notes',
                             type : 'flags',
@@ -428,7 +428,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                                 align: 'left',
                                 x: -3
                             },
-                            <?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) echo "height: '60%',"; ?>
+                            <?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) echo "height: '60%',"; ?>
                             minRange: 5,
                             opposite: false
                         },{
@@ -440,10 +440,10 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                                 align: 'right',
                                 x: -3
                             },
-                            <?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) echo "height: '60%',"; ?>
+                            <?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) echo "height: '60%',"; ?>
                             minRange: 10,
                         }
-                        <?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) { ?>
+                        <?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) { ?>
                         ,{
                             title: {
                                 text: 'Duration (sec)',
@@ -504,7 +504,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             }
                         },<?php 
                         }
-                        if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) {
+                        if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) {
                         for ($i = 0; $i < count($relay_id); $i++) {
                         ?>{
                             name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
@@ -524,7 +524,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         },<?php 
                         }
                         }
-                        if (filesize($notes_file) > 16 && !empty(trim(file_get_contents($notes_file)))) {
+                        if (filesize($notes_file) > 16 && trim(file_get_contents($notes_file)) == true) {
                         ?>{
                             name: 'Notes',
                             type : 'flags',
@@ -728,8 +728,8 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             labels: {
                                 format: '{value}ppmv',
                             },
-                            <?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) echo "height: '60%',"; ?>
-                        }<?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) { ?>
+                            <?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) echo "height: '60%',"; ?>
+                        }<?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) { ?>
                         ,{
                             title: {
                                 text: 'Duration (sec)'
@@ -771,7 +771,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             }
                         },<?php
                         }
-                        if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) {
+                        if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) {
                         for ($i = 0; $i < count($relay_id); $i++) {
                         ?>{
                             name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
@@ -790,7 +790,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         },<?php 
                         }
                         }
-                        if (filesize($notes_file) > 16 && !empty(trim(file_get_contents($notes_file)))) {
+                        if (filesize($notes_file) > 16 && trim(file_get_contents($notes_file)) == true) {
                         ?>{
                             name: 'Notes',
                             type : 'flags',
@@ -994,7 +994,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                                 align: 'left',
                                 x: -3
                             },
-                            <?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) echo "height: '60%',"; ?>
+                            <?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) echo "height: '60%',"; ?>
                             minRange: 5,
                             opposite: false
                         },{
@@ -1006,8 +1006,8 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                                 align: 'right',
                                 x: -3
                             },
-                            <?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) echo "height: '60%',"; ?>
-                        }<?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) { ?>
+                            <?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) echo "height: '60%',"; ?>
+                        }<?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) { ?>
                         ,{
                             title: {
                                 text: 'Duration (sec)',
@@ -1060,7 +1060,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             }
                         },<?php 
                         }
-                        if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) {
+                        if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) {
                         for ($i = 0; $i < count($relay_id); $i++) {
                         ?>{
                             name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
@@ -1080,7 +1080,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         },<?php 
                         }
                         }
-                        if (filesize($notes_file) > 16 && !empty(trim(file_get_contents($notes_file)))) {
+                        if (filesize($notes_file) > 16 && trim(file_get_contents($notes_file)) == true) {
                         ?>{
                             name: 'Notes',
                             type : 'flags',
@@ -1322,7 +1322,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             labels: {
                                 format: '{value}°C',
                             },
-                            <?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) echo "height: '60%',"; ?>
+                            <?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) echo "height: '60%',"; ?>
                             minRange: 5,
                             opposite: false
                         },<?php
@@ -1336,7 +1336,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             labels: {
                                 format: '{value}ppmv',
                             },
-                            <?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) echo "height: '60%',"; ?>
+                            <?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) echo "height: '60%',"; ?>
                             opposite: false
                         },<?php
                         }
@@ -1348,7 +1348,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             labels: {
                                 format: '{value}%',
                             },
-                            <?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) echo "height: '60%',"; ?>
+                            <?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) echo "height: '60%',"; ?>
                             minRange: 10,
                         },<?php
                         }
@@ -1360,10 +1360,10 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             labels: {
                                 format: '{value}kPa',
                             },
-                            <?php if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) echo "height: '60%',"; ?>
+                            <?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) echo "height: '60%',"; ?>
                         },<?php
                         }
-                        if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) {
+                        if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) {
                         ?>{
                             title: {
                                 text: 'Duration (sec)',
@@ -1473,7 +1473,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         },<?php
                             }
                         }
-                        if (filesize($relay_file) > 16 && !empty(trim(file_get_contents($relay_file)))) {
+                        if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) {
                         for ($i = 0; $i < count($relay_id); $i++) {
                         ?>{
                             name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
@@ -1493,7 +1493,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         },<?php 
                         }
                         }
-                        if (filesize($notes_file) > 16 && !empty(trim(file_get_contents($notes_file)))) {
+                        if (filesize($notes_file) > 16 && trim(file_get_contents($notes_file)) == true) {
                         ?>{
                             name: 'Notes',
                             type : 'flags',
