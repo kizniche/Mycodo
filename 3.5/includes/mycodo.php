@@ -64,6 +64,8 @@ $lock_mjpg_streamer_relay = $lock_path . "/mycodo-stream-light";
 $lock_timelapse = $lock_path . "/mycodo_time_lapse";
 $lock_timelapse_light = $lock_path . "/mycodo-timelapse-light";
 
+$logged_in_user = $_SESSION['user_name'];
+
 if (!file_exists($mycodo_db)) exit("Mycodo database does not exist. Run 'setup-database.py -i' to create required database.");
 
 require($install_path . "/includes/database.php"); // Initial SQL database load to variables
@@ -193,7 +195,7 @@ if (!file_exists($lock_daemon)) {
                 v<?php echo $version; ?>
             </div>
             <div>
-                User: <?php echo $_SESSION['user_name']; ?>
+                User: <?php echo $logged_in_user; ?>
             </div>
             <div>
                 <a href="index.php?action=logout">Log Out</a>
@@ -3373,15 +3375,15 @@ if (!file_exists($lock_daemon)) {
                                         <td style=\"padding-bottom:0.5em;\">#</td>
                                         <td>Time</td>
                                         <td>User</td>
-                                        <td colspan=\"2\">Note</td>
+                                        <td>Note</td>
                                     </tr>";
                                 for ($u = count($note_id)-1; $u >= 0; $u--) {
                                     echo "<tr>
-                                        <td style=\"padding:0.7em 1em 0.7em 0; border-style: solid none none none; border-width: 1px;\"><button style=\"width:5em;\" type=\"submit\" name=\"Delete_Note\" value=\"$note_id[$u]\">Delete</button><br><button style=\"width:5em;\" type=\"submit\" name=\"Edit_Note\" value=\"$note_id[$u]\">Edit</button></td>
+                                        <td style=\"white-space: nowrap; border-style: solid none none none; border-width: 1px;\"><button style=\"width:5em;\" type=\"submit\" name=\"Delete_Note\" value=\"$note_id[$u]\">Delete</button> <button style=\"width:5em;\" type=\"submit\" name=\"Edit_Note\" value=\"$note_id[$u]\">Edit</button></td>
                                         <td style=\"border-style: solid none none none; border-width: 1px;\">$u</td>
-                                        <td style=\"border-style: solid none none none; border-width: 1px; line-height:1.5em; width:7em;\">$note_time[$u]</td>
+                                        <td style=\"border-style: solid none none none; border-width: 1px; line-height:1.5em; white-space: nowrap;\">$note_time[$u]</td>
                                         <td style=\"border-style: solid none none none; border-width: 1px;\">$note_user[$u]</td>
-                                        <td style=\"border-style: solid none none none; border-width: 1px; padding-bottom: 0.7em;\" colspan=\"2\" class=\"wrap\"><div style=\"padding-bottom: 0.5em; font-weight: bold;\">" . htmlspecialchars($note_title[$u]) . "</div>" . htmlspecialchars($note_note[$u]) . "</td>
+                                        <td style=\"width: 100%; border-style: solid none none none; border-width: 1px; padding-bottom: 0.7em;\" colspan=\"2\" class=\"wrap\"><div style=\"padding-bottom: 0.5em; font-weight: bold;\">" . htmlspecialchars($note_title[$u]) . "</div>" . htmlspecialchars($note_note[$u]) . "</td>
                                     </tr>";
 
                                     unset($upload_id);
@@ -3455,23 +3457,20 @@ if (!file_exists($lock_daemon)) {
                                 <tr>
                                     <td>Time</td>
                                     <td>User</td>
+                                    <td style=\"width: 100%;\"></td>
                                 </tr>
                                 <tr>
-                                    <td><input style=\"width: 11em;\" type=\"text\" maxlength=50 name=\"Edit_Note_Time\" title=\"\" value=\"$note_time\"></td>
-                                    <td><input style=\"width: 11em;\" type=\"text\" maxlength=50 name=\"Edit_Note_User\" title=\"\" value=\"$note_user\"></td>
+                                    <td><input style=\"width: 100%;\" type=\"text\" maxlength=50 name=\"Edit_Note_Time\" title=\"\" value=\"$note_time\"></td>
+                                    <td><input style=\"width: 100%;\" type=\"text\" maxlength=50 name=\"Edit_Note_User\" title=\"\" value=\"$note_user\"></td>
+                                    <td></td>
                                 </tr>
                                 <tr>
-                                    <td colspan=\"2\" style=\"padding-top: 0.5em;\">Title</td>
+                                    <td colspan=\"2\"><input style=\"width: 100%;\" type=\"text\" maxlength=50 name=\"Edit_Note_Title\" title=\"\" value=\"$note_title\" placeholder=\"Title\"></td>
+                                    <td></td>
                                 </tr>
                                 <tr>
-                                    <td colspan=\"2\"><input style=\"width: 100%;\" type=\"text\" maxlength=50 name=\"Edit_Note_Title\" title=\"\" value=\"$note_title\"></td>
-                                </tr>
-                            </table>
-                            <br>
-                            <table style=\"width: auto;\">
-                                <tr>
-                                    <td>
-                                        <textarea style=\"width: 40em;\" rows=\"15\" maxlength=\"100000\" name=\"Edit_Note_Text\" title=\"\">$note_note</textarea>
+                                    <td colspan=\"2\">
+                                        <textarea style=\"width: 40em;\" rows=\"15\" maxlength=\"100000\" name=\"Edit_Note_Text\" title=\"\" placeholder=\"Note\">$note_note</textarea>
                                     </td>
                                     <td style=\"vertical-align: top; height:100%; width:100%;\">
                                         <table style=\"height:100%; width:100%;\">
@@ -4068,10 +4067,10 @@ if (!file_exists($lock_daemon)) {
                 <a href="manual.html" target="_blank">Mycodo 3.5 Manual</a> | <a href="https://github.com/kizniche/Mycodo" target="_blank">Mycodo on GitHub</a> | Have a problem? <a href="http://kylegabriel.com/contact" target="_blank">Contact the developer</a> or <a href="https://github.com/kizniche/Mycodo/issues" target="_blank">submit an issue</a>.
             </div>
 
-            <div style="padding: 0 0 0 1em;">
+            <div style="padding: 0 1em 0 1em;">
                 <table>
                     <tr>
-                        <td class="setting-title">
+                        <td class="setting-title" style="width: 100%;">
                             Update
                         </td>
                     </tr>
@@ -4088,7 +4087,7 @@ if (!file_exists($lock_daemon)) {
                             ?>
                         </td>
                         <td class="setting-value">
-                            <button name="UpdateCheck" type="submit" value="" title="Check if there is a newer version of Mycodo on github.">Check for Update</button>
+                            <button style="width: 18em;" name="UpdateCheck" type="submit" value="" title="Check if there is a newer version of Mycodo on github.">Check for Update</button>
                         </td>
                     </tr>
                     </form>
@@ -4099,7 +4098,7 @@ if (!file_exists($lock_daemon)) {
                             Update Mycodo to the latest version on <a href="https://github.com/kizniche/Mycodo" target="_blank">GitHub</a>
                         </td>
                         <td class="setting-value">
-                            <button name="UpdateMycodo" type="submit" value="" title="Update the mycodo system to the latest version on github.">Update Mycodo</button>
+                            <button style="width: 18em;" name="UpdateMycodo" type="submit" value="" title="Update the mycodo system to the latest version on github.">Update Mycodo</button>
                         </td>
                     </tr>
                     </form>
@@ -4115,7 +4114,7 @@ if (!file_exists($lock_daemon)) {
                             Stop Daemon
                         </td>
                         <td class="setting-value">
-                            <button name="DaemonStop" type="submit" value="" title="Stop the mycodo daemon from running or kill a daemon that has had a segmentation fault.">Stop Daemon</button>
+                            <button style="width: 18em;" name="DaemonStop" type="submit" value="" title="Stop the mycodo daemon from running or kill a daemon that has had a segmentation fault.">Stop Daemon</button>
                         </td>
                     </tr>
                     <tr>
@@ -4123,7 +4122,7 @@ if (!file_exists($lock_daemon)) {
                             Start Daemon
                         </td>
                         <td class="setting-value">
-                            <button name="DaemonStart" type="submit" value="" title="Start the mycodo daemon in normal mode (if no other instance is currently running).">Start Daemon</button>
+                            <button style="width: 18em;" name="DaemonStart" type="submit" value="" title="Start the mycodo daemon in normal mode (if no other instance is currently running).">Start Daemon</button>
                         </td>
                     </tr>
                     <tr>
@@ -4131,7 +4130,7 @@ if (!file_exists($lock_daemon)) {
                             Restart Daemon
                         </td>
                         <td class="setting-value">
-                            <button name="DaemonRestart" type="submit" value="" title="Stop and start the mycodo daemon in normal mode.">Restart Daemon</button>
+                            <button style="width: 18em;" name="DaemonRestart" type="submit" value="" title="Stop and start the mycodo daemon in normal mode.">Restart Daemon</button>
                         </td>
                     </tr>
                     </form>
@@ -4142,7 +4141,7 @@ if (!file_exists($lock_daemon)) {
                             Restart Daemon in Debug Mode (use with caution, produces large logs)
                         </td>
                         <td class="setting-value">
-                            <button name="DaemonDebug" type="submit" value="" title="Stop and start the mycodo daemon in debug mode (verbose log messages, temporary files are not deleted). You should probably not enable this unless you know what you're doing.">Restart Daemon in Debug Mode</button>
+                            <button style="width: 18em;" name="DaemonDebug" type="submit" value="" title="Stop and start the mycodo daemon in debug mode (verbose log messages, temporary files are not deleted). You should probably not enable this unless you know what you're doing.">Restart Daemon in Debug Mode</button>
                         </td>
                     </tr>
                     </form>
@@ -4227,7 +4226,7 @@ if (!file_exists($lock_daemon)) {
                     <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
-                            Combined Graph Generation
+                            Combined Static Graph Generation
                         </td>
                     </tr>
                     <tr>
@@ -4852,14 +4851,12 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     </form>
-                </table>
 
                 <?php
                 if ($current_user_restriction == 'admin') {
                 ?>
 
                 <form method="post" action="?tab=settings">
-                <table>
                     <tr>
                         <td class="setting-title">
                             Add User
@@ -4936,9 +4933,9 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     </form>
                 </table>
-                </form>
 
                 <table class="edit-user">
+                    <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
                             Edit Users
@@ -4955,8 +4952,8 @@ if (!file_exists($lock_daemon)) {
                 <?php 
                 for ($i = 0; $i < count($user_name); $i++) {
                 ?>
+                    <form method="post" action="?tab=settings">
                     <tr>
-                        <form method="post" action="?tab=settings">
                         <td><?php echo $user_name[$i]; ?><input type="hidden" name="user_name" value="<?php echo $user_name[$i]; ?>"></td>
                         <td>
                             <input style="width: 12.5em;" type="text" value="<?php echo $user_email[$i]; ?>" name="user_email" title="The email address associated with this account. In addition to the user name, the email address may be used to log in."/>
@@ -4994,8 +4991,8 @@ if (!file_exists($lock_daemon)) {
                         <td>
                             <input type="submit" name="edituser" value="Save" />
                         </td>
-                        </form>
                     </tr>
+                    </form>
                 <?php
                 }
                 ?>
@@ -5004,8 +5001,9 @@ if (!file_exists($lock_daemon)) {
                 <?php
                 } else {
                 ?>
-
+                </table>
                 <table class="edit-user">
+                    <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
                             Edit User
@@ -5020,7 +5018,7 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                 <?php 
                 for ($i = 0; $i < count($user_name); $i++) {
-                    if ($user_name[$i] == $_SESSION['user_name']) {
+                    if ($user_name[$i] == $logged_in_user) {
                 ?>
                     <form method="post" action="?tab=settings">
                     <tr>
@@ -5056,7 +5054,6 @@ if (!file_exists($lock_daemon)) {
                 }
                 ?>
                 </table>
-
                 <?php
                 }
                 ?>
