@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.89";
+$version = "3.5.90";
 
 ######### Start Edit Configure #########
 
@@ -1326,7 +1326,9 @@ if (!file_exists($lock_daemon)) {
                         <td>Sensor<br>Device</td>
                         <?php
                             if ($sensor_ht_device[$i] == 'AM2315') {
-                                echo '<td>I<sup>2</sup>C<br>Add.</td>';
+                                echo '
+                                <td>Multiplex<br>Channel</td>
+                                ';
                             } else {
                                 echo '<td>GPIO<br>Pin</td>';
                             }
@@ -1382,7 +1384,44 @@ if (!file_exists($lock_daemon)) {
                             <?php
                             if ($sensor_ht_device[$i] == 'AM2315') {
                             ?>
-                            I<sup>2</sup>C
+                            <select style="width: 6.5em;" name="sensorht<?php echo $i; ?>pin">
+                                <option<?php
+                                    if ($sensor_ht_pin[$i] == 0) {
+                                        echo ' selected="selected"';
+                                    } ?> value="0">Use I2C</option>
+                                <option<?php
+                                    if ($sensor_ht_pin[$i] == 1) {
+                                        echo ' selected="selected"';
+                                    } ?> value="1">Channel 1</option>
+                                <option<?php
+                                    if ($sensor_ht_pin[$i] == 2) {
+                                        echo ' selected="selected"';
+                                    } ?> value="2">Channel 2</option>
+                                <option<?php
+                                    if ($sensor_ht_pin[$i] == 3) {
+                                        echo ' selected="selected"';
+                                    } ?> value="3">Channel 3</option>
+                                <option<?php
+                                    if ($sensor_ht_pin[$i] == 4) {
+                                        echo ' selected="selected"';
+                                    } ?> value="4">Channel 4</option>
+                                <option<?php
+                                    if ($sensor_ht_pin[$i] == 5) {
+                                        echo ' selected="selected"';
+                                    } ?> value="5">Channel 5</option>
+                                <option<?php
+                                    if ($sensor_ht_pin[$i] == 6) {
+                                        echo ' selected="selected"';
+                                    } ?> value="6">Channel 6</option>
+                                <option<?php
+                                    if ($sensor_ht_pin[$i] == 7) {
+                                        echo ' selected="selected"';
+                                    } ?> value="7">Channel 7</option>
+                                <option<?php
+                                    if ($sensor_ht_pin[$i] == 8) {
+                                        echo ' selected="selected"';
+                                    } ?> value="8">Channel 8</option>
+                            </select>
                             <?php
                             } else {
                             ?>

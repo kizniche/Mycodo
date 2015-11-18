@@ -48,6 +48,7 @@ import smtplib
 import socket
 import sqlite3
 import subprocess
+import smbus
 import sys
 import threading
 import time
@@ -335,6 +336,15 @@ class ComServer(rpyc.Service):
         if device == Adafruit_DHT.DHT11 or device == Adafruit_DHT.DHT22 or device == Adafruit_DHT.AM2302:
             hum, tc = Adafruit_DHT.read_retry(device, pin)
         elif device == 'AM2315':
+            if sensor_ht_pin[sensor-1] != 0:
+                I2C_address = 0x70
+                if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
+                    I2C_bus_number = 1
+                else:
+                    I2C_bus_number = 0
+                bus = smbus.SMBus(I2C_bus_number)
+                bus.write_byte(I2C_address,sensor_ht_pin[sensor-1])
+                time.sleep(0.1)
             tc, hum, crc_check = am.sense()
         else:
             return 'Invalid Sensor Name'
@@ -2115,6 +2125,15 @@ def read_ht(sensor, device, pin):
         last_ht_reading = int(time.time())+2
         return humidity, temp
     elif device == 'AM2315':
+        if sensor_ht_pin[sensor-1] != 0:
+            I2C_address = 0x70
+            if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
+                I2C_bus_number = 1
+            else:
+                I2C_bus_number = 0
+            bus = smbus.SMBus(I2C_bus_number)
+            bus.write_byte(I2C_address,sensor_ht_pin[sensor-1])
+            time.sleep(0.1)
         temp, humidity, crc_check = am.sense()
         last_ht_reading = int(time.time())+2
         return humidity, temp
