@@ -141,7 +141,7 @@ def add_user(db):
 
     conn = sqlite3.connect(db)
     cur = conn.cursor()
-    cur.execute("INSERT INTO users (user_name, user_password_hash, user_email) VALUES ('{user_name}', '{user_password_hash}', '{user_email}')".\
+    cur.execute("INSERT INTO users (user_name, user_password_hash, user_email, user_restriction, user_theme) VALUES ('{user_name}', '{user_password_hash}', '{user_email}', 'guest', 'light')".\
         format(user_name=user_name, user_password_hash=user_password_hash, user_email=user_email))
     conn.commit()
     cur.close()
@@ -1148,7 +1148,7 @@ def create_all_tables_user():
     conn = sqlite3.connect(sql_database_user)
     cur = conn.cursor()
 
-    cur.execute("CREATE TABLE IF NOT EXISTS `users` (`user_id` INTEGER PRIMARY KEY, `user_name` varchar(64), `user_password_hash` varchar(255), `user_email` varchar(64))")
+    cur.execute("CREATE TABLE IF NOT EXISTS `users` (`user_id` INTEGER PRIMARY KEY, `user_name` varchar(64), `user_password_hash` varchar(255), `user_email` varchar(64), 'user_restriction' varchar(64), 'user_theme' varchar(64))")
     cur.execute("CREATE UNIQUE INDEX `user_name_UNIQUE` ON `users` (`user_name` ASC)")
     cur.execute("CREATE UNIQUE INDEX `user_email_UNIQUE` ON `users` (`user_email` ASC)")
     conn.close()
