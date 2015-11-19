@@ -90,7 +90,7 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 Major changes for each versioned release
 
 #### 3.5.90
-+ Add Support for I<sup>2</sup>C multiplexer (TCA9548A) for using multiple AM2315 humidity/temperature sensors (same I2C address)
++ Add Support for I<sup>2</sup>C multiplexer (TCA9548A) for using multiple AM2315 humidity/temperature sensors (static I<sup>2</sup>C address)
 
 #### 3.5.89
 + Add support for the AM2315 Humidity/Temperature sensor
