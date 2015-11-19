@@ -8,7 +8,6 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
   + [Web Interface](#web-interface)
   + [Terminal](#terminal)
 + [Changelog](#changelog)
-+ [New Dependencies](#new-dependencies)
 + [Supported Sensors](#supported-sensors)
 + [Software Install](#software-install)
   + [Prerequisites](#prerequisites)
@@ -90,7 +89,7 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 Major changes for each versioned release
 
 #### 3.5.90
-+ Add Support for I<sup>2</sup>C multiplexer (TCA9548A) for using multiple AM2315 humidity/temperature sensors (static I<sup>2</sup>C address)
++ Add Support for I<sup>2</sup>C multiplexer (TCA9548A) for using multiple AM2315 humidity/temperature sensors (same I<sup>2</sup>C address)
 
 #### 3.5.89
 + Add support for the AM2315 Humidity/Temperature sensor
@@ -204,18 +203,6 @@ Major changes for each versioned release
 + Moved to SQLite settings database (previously plain-text)
 + Moved to SQLite login database (previously MySQL)
 
-## New Dependencies
-
-php5-sqlite
-
-php5-gd
-
-sqlite3
-
-Software used:
-
-php-login-one-file, HighStock, highcharts-export-clientside, JQuery, Modernizr, canvas-tools, export-csv, jspdf
-
 ## Supported Sensors
 
 ### Temperature
@@ -259,7 +246,7 @@ Using raspi-config, perform the following:
 
 `sudo apt-get upgrade`
 
-`sudo apt-get install build-essential apache2 sqlite3 gnuplot git-core python-pip python-dev libconfig-dev php5 libapache2-mod-php5 php5-sqlite php5-gd i2c-tools libi2c-dev`
+`sudo apt-get install build-essential apache2 sqlite3 gnuplot git-core python-pip python-dev python-smbus libconfig-dev php5 libapache2-mod-php5 php5-sqlite php5-gd i2c-tools libi2c-dev`
 
 `git clone https://github.com/kizniche/Mycodo.git ~/Mycodo`
 
