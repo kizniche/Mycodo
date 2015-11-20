@@ -237,7 +237,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         },<?php 
                         }
                         }
-                        if (filesize($notes_file) > 16 && trim(file_get_contents($notes_file)) == true) {
+                        if ($note) {
                         ?>{
                             name: 'Notes',
                             type : 'flags',
@@ -538,7 +538,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         },<?php 
                         }
                         }
-                        if (filesize($notes_file) > 16 && trim(file_get_contents($notes_file)) == true) {
+                        if ($note) {
                         ?>{
                             name: 'Notes',
                             type : 'flags',
@@ -804,7 +804,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         },<?php 
                         }
                         }
-                        if (filesize($notes_file) > 16 && trim(file_get_contents($notes_file)) == true) {
+                        if ($note) {
                         ?>{
                             name: 'Notes',
                             type : 'flags',
@@ -1094,7 +1094,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         },<?php 
                         }
                         }
-                        if (filesize($notes_file) > 16 && trim(file_get_contents($notes_file)) == true) {
+                        if ($note) {
                         ?>{
                             name: 'Notes',
                             type : 'flags',
