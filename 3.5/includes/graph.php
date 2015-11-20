@@ -161,8 +161,8 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             labels: {
                                 format: '{value}°C',
                             },
-                            <?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) echo "height: '60%',"; ?>
-                        }<?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) { ?>
+                            <?php if ($relay) echo "height: '60%',"; ?>
+                        }<?php if ($relay) { ?>
                         ,{
                             title: {
                                 text: 'Duration (sec)'
@@ -204,7 +204,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             }
                         },<?php
                         }
-                        if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) {
+                        if ($relay) {
                         for ($i = 0; $i < count($relay_id); $i++) {
                         ?>{
                             name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
@@ -428,7 +428,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                                 align: 'left',
                                 x: -3
                             },
-                            <?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) echo "height: '60%',"; ?>
+                            <?php if ($relay) echo "height: '60%',"; ?>
                             minRange: 5,
                             opposite: false
                         },{
@@ -440,10 +440,10 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                                 align: 'right',
                                 x: -3
                             },
-                            <?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) echo "height: '60%',"; ?>
+                            <?php if ($relay) echo "height: '60%',"; ?>
                             minRange: 10,
                         }
-                        <?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) { ?>
+                        <?php if ($relay) { ?>
                         ,{
                             title: {
                                 text: 'Duration (sec)',
@@ -504,7 +504,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             }
                         },<?php 
                         }
-                        if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) {
+                        if ($relay) {
                         for ($i = 0; $i < count($relay_id); $i++) {
                         ?>{
                             name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
@@ -728,8 +728,8 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             labels: {
                                 format: '{value}ppmv',
                             },
-                            <?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) echo "height: '60%',"; ?>
-                        }<?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) { ?>
+                            <?php if ($relay) echo "height: '60%',"; ?>
+                        }<?php if ($relay) { ?>
                         ,{
                             title: {
                                 text: 'Duration (sec)'
@@ -771,7 +771,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             }
                         },<?php
                         }
-                        if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) {
+                        if ($relay) {
                         for ($i = 0; $i < count($relay_id); $i++) {
                         ?>{
                             name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
@@ -994,7 +994,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                                 align: 'left',
                                 x: -3
                             },
-                            <?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) echo "height: '60%',"; ?>
+                            <?php if ($relay) echo "height: '60%',"; ?>
                             minRange: 5,
                             opposite: false
                         },{
@@ -1006,8 +1006,8 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                                 align: 'right',
                                 x: -3
                             },
-                            <?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) echo "height: '60%',"; ?>
-                        }<?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) { ?>
+                            <?php if ($relay) echo "height: '60%',"; ?>
+                        }<?php if ($relay) { ?>
                         ,{
                             title: {
                                 text: 'Duration (sec)',
@@ -1060,7 +1060,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             }
                         },<?php 
                         }
-                        if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) {
+                        if ($relay) {
                         for ($i = 0; $i < count($relay_id); $i++) {
                         ?>{
                             name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
@@ -1227,6 +1227,20 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
         $relay_log_generate = "/var/tmp/relay-$graph_id.log";
         shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh x relay $time_start $time_end $relay_log_first $relay_log_second $relay_log_generate");
         $relay_log_file_final = "file.php?span=graph&file=relay-$graph_id.log";
+
+        $temperature = False;
+        $humidity = False;
+        $co2 = False;
+        $pressure = False;
+        $relay = False;
+        $note = False;
+
+        if (array_sum($sensor_t_id) || array_sum($sensor_ht_id) || array_sum($sensor_press_id)) $temperature = True;
+        if (array_sum($sensor_ht_id)) $temperature = $humidity = True;
+        if (array_sum($sensor_co2_id)) $co2 = True;
+        if (array_sum($sensor_press_id)) $pressure = True;
+        if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) $relay = True;
+        if (filesize($notes_file) > 16 && trim(file_get_contents($notes_file)) == true) $note = True;
     ?>
 
 <script type="text/javascript">
@@ -1314,7 +1328,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             fallbackToExportServer: false,
                         },
                         yAxis: [<?php
-                        if (array_sum($sensor_t_id) || array_sum($sensor_ht_id) || array_sum($sensor_press_id)) {
+                        if ($temperature) {
                         ?>{
                             title: {
                                 text: 'Temperature (°C)',
@@ -1322,12 +1336,24 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             labels: {
                                 format: '{value}°C',
                             },
-                            <?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) echo "height: '60%',"; ?>
+                            <?php if ($relay) echo "height: '60%',"; ?>
                             minRange: 5,
                             opposite: false
                         },<?php
-                        } 
-                        if (array_sum($sensor_co2_id)) {
+                        }
+                        if ($humidity) {
+                        ?>{
+                            title: {
+                                text: 'Humidity (%)',
+                            },
+                            labels: {
+                                format: '{value}%',
+                            },
+                            <?php if ($relay) echo "height: '60%',"; ?>
+                            minRange: 10,
+                        },<?php
+                        }
+                        if ($co2) {
                         ?>{
                             title: {
                                 text: 'CO<sub>2</sub> (ppmv)',
@@ -1336,23 +1362,11 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             labels: {
                                 format: '{value}ppmv',
                             },
-                            <?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) echo "height: '60%',"; ?>
+                            <?php if ($relay) echo "height: '60%',"; ?>
                             opposite: false
                         },<?php
                         }
-                        if (array_sum($sensor_ht_id)) {
-                        ?>{
-                            title: {
-                                text: 'Humidity (%)',
-                            },
-                            labels: {
-                                format: '{value}%',
-                            },
-                            <?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) echo "height: '60%',"; ?>
-                            minRange: 10,
-                        },<?php
-                        }
-                        if (array_sum($sensor_press_id)) {
+                        if ($pressure) {
                         ?>{
                             title: {
                                 text: 'Pressure (kPa)',
@@ -1360,10 +1374,10 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             labels: {
                                 format: '{value}kPa',
                             },
-                            <?php if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) echo "height: '60%',"; ?>
+                            <?php if ($relay) echo "height: '60%',"; ?>
                         },<?php
                         }
-                        if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) {
+                        if ($relay) {
                         ?>{
                             title: {
                                 text: 'Duration (sec)',
@@ -1410,15 +1424,6 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         for ($i = 0; $i < count($sensor_ht_id); $i++) {
                             if ($sensor_ht_graph[$i]) {
                         ?>{
-                            name: '<?php echo "HT" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Humidity',
-                            color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
-                            yAxis: 2,
-                            data: getSensorData(<?php echo $i; ?>, 'ht', 'hum'),
-                            tooltip: {
-                                valueSuffix: ' %',
-                                valueDecimals: 1,
-                            }
-                        },{
                             name: '<?php echo "HT" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Temperature',
                             color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
                             data: getSensorData(<?php echo $i; ?>, 'ht', 'temp'),
@@ -1434,6 +1439,15 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                                 valueSuffix: ' °C',
                                 valueDecimals: 1,
                             }
+                        },{
+                            name: '<?php echo "HT" . ($i+1) . " " . $sensor_ht_name[$i]; ?> Humidity',
+                            color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
+                            yAxis: 1,
+                            data: getSensorData(<?php echo $i; ?>, 'ht', 'hum'),
+                            tooltip: {
+                                valueSuffix: ' %',
+                                valueDecimals: 1,
+                            }
                         },<?php
                             }
                         }
@@ -1442,7 +1456,10 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         ?>{
                             name: '<?php echo "CO2" . ($i+1) . " " . $sensor_co2_name[$i]; ?> CO<sub>2</sub>',
                             color: Highcharts.getOptions().colors[0],
-                            yAxis: 1,
+                            <?php
+                            if ($temperature && $humidity) echo 'yAxis: 2,';
+                            else if (($temperature && !$humidity) || (!$temperature && $humidity)) echo 'yAxis: 1,';
+                            ?>
                             data: getSensorData(<?php echo $i; ?>, 'co2', 0),
                             tooltip: {
                                 valueSuffix: ' ppmv',
@@ -1456,7 +1473,14 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         ?>{
                             name: '<?php echo "Press" . ($i+1) . " " . $sensor_press_name[$i]; ?> Pressure',
                             color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
-                            yAxis: 3,
+                            <?php
+                            if ($temperature && $humidity && $co2) echo 'yAxis: 3,';
+                            else if (($temperature && $humidity && !$co2) ||
+                                    ($temperature && !$humidity && $co2)) echo 'yAxis: 2,';
+                            else if (($temperature && !$humidity && !$co2) ||
+                                    (!$temperature && $humidity && !$co2) ||
+                                    (!$temperature && !$humidity && $co2)) echo 'yAxis: 1,';
+                            ?>
                             data: getSensorData(<?php echo $i; ?>, 'press', 'press'),
                             tooltip: {
                                 valueSuffix: ' kPa',
@@ -1473,7 +1497,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         },<?php
                             }
                         }
-                        if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) {
+                        if ($relay) {
                         for ($i = 0; $i < count($relay_id); $i++) {
                         ?>{
                             name: 'R<?php echo $i+1 . " " . $relay_name[$i]; ?>',
@@ -1493,7 +1517,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         },<?php 
                         }
                         }
-                        if (filesize($notes_file) > 16 && trim(file_get_contents($notes_file)) == true) {
+                        if ($note) {
                         ?>{
                             name: 'Notes',
                             type : 'flags',
