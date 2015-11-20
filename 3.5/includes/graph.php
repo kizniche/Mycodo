@@ -87,7 +87,7 @@ if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) 
 if (filesize($notes_file) > 16 && trim(file_get_contents($notes_file)) == true) $note = True;
 
 if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
-    ?>
+?>
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -348,9 +348,9 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
     });
 </script>
 
-    <?php
-    } else if ($sensor_type == 'ht' && count(${$sensor_num_array}) > 0) {
-    ?>
+<?php
+} else if ($sensor_type == 'ht' && count(${$sensor_num_array}) > 0) {
+?>
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -649,9 +649,9 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
     });
 </script>
 
-    <?php
-    } else if ($sensor_type == 'co2' && count(${$sensor_num_array}) > 0) {
-    ?>
+<?php
+} else if ($sensor_type == 'co2' && count(${$sensor_num_array}) > 0) {
+?>
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -915,9 +915,9 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
     });
 </script>
 
-    <?php
-        } else if ($sensor_type == 'press' && count(${$sensor_num_array}) > 0) {
-    ?>
+<?php
+} else if ($sensor_type == 'press' && count(${$sensor_num_array}) > 0) {
+?>
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -1206,36 +1206,39 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
 </script>
 
 <?php
-    } else if ($sensor_type == 'all') {
-        $sensor_type_list = ['t','ht','co2','press'];
-        $files = array();
-        for ($i=0; $i < count($sensor_type_list); $i++) {
-            $sensor_type = $sensor_type_list[$i];
-            $sensor_num_array = "sensor_{$sensor_type}_id";
-            $sensor_log_first = "/var/www/mycodo/log/sensor-$sensor_type.log";
-            $sensor_log_second = "/var/www/mycodo/log/sensor-$sensor_type-tmp.log";
-            $sensor_log_generate = "/var/tmp/sensor-all-$sensor_type-$graph_id.log";
-            $files[] = $sensor_log_generate;
-            shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh $sensor_type all $time_start $time_end $sensor_log_first $sensor_log_second $sensor_log_generate");
+} else if ($sensor_type == 'all') {
+    $sensor_type_list = ['t','ht','co2','press'];
+    $files = array();
+    for ($i=0; $i < count($sensor_type_list); $i++) {
+        $sensor_type = $sensor_type_list[$i];
+        $sensor_num_array = "sensor_{$sensor_type}_id";
+        $sensor_log_first = "/var/www/mycodo/log/sensor-$sensor_type.log";
+        $sensor_log_second = "/var/www/mycodo/log/sensor-$sensor_type-tmp.log";
+        $sensor_log_generate = "/var/tmp/sensor-all-$sensor_type-$graph_id.log";
+        $files[] = $sensor_log_generate;
+        shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh $sensor_type all $time_start $time_end $sensor_log_first $sensor_log_second $sensor_log_generate");
+    }
+    $out = array();
+    foreach($files as $file) {
+        $name = "/var/tmp/sensor-final-all-$graph_id.log";
+        if (!isset($out[$name])) {
+            $out[$name] = fopen($name, "w");
         }
-        $out = array();
-        foreach($files as $file) {
-            $name = "/var/tmp/sensor-final-all-$graph_id.log";
-            if (!isset($out[$name])) {
-                $out[$name] = fopen($name, "w");
-            }
-            fwrite($out[$name], file_get_contents($file));
-        }
-        foreach ($out as $f) {
-            fclose($f);
-        }
-        $sensor_log_file_final = "file.php?span=graph&file=sensor-final-all-$graph_id.log";
-        $relay_log_first = "/var/www/mycodo/log/relay.log";
-        $relay_log_second = "/var/www/mycodo/log/relay-tmp.log";
-        $relay_log_generate = "/var/tmp/relay-$graph_id.log";
-        shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh x relay $time_start $time_end $relay_log_first $relay_log_second $relay_log_generate");
-        $relay_log_file_final = "file.php?span=graph&file=relay-$graph_id.log";
-    ?>
+        fwrite($out[$name], file_get_contents($file));
+    }
+    foreach ($out as $f) {
+        fclose($f);
+    }
+    $sensor_log_file_final = "file.php?span=graph&file=sensor-final-all-$graph_id.log";
+    $relay_log_first = "/var/www/mycodo/log/relay.log";
+    $relay_log_second = "/var/www/mycodo/log/relay-tmp.log";
+    $relay_log_generate = "/var/tmp/relay-$graph_id.log";
+    shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh x relay $time_start $time_end $relay_log_first $relay_log_second $relay_log_generate");
+    $relay_log_file_final = "file.php?span=graph&file=relay-$graph_id.log";
+
+    if (filesize($relay_log_generate) > 16 && trim(file_get_contents($relay_log_generate)) == true) $relay = True;
+    else $relay = False;
+?>
 
 <script type="text/javascript">
     $(document).ready(function() {
