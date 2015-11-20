@@ -1385,7 +1385,7 @@ if (!file_exists($lock_daemon)) {
                             <?php
                             if ($sensor_ht_device[$i] == 'AM2315') {
                             ?>
-                            <select style="width: 7em;" name="sensorht<?php echo $i; ?>pin">
+                            <select style="width: 7em;" name="sensorht<?php echo $i; ?>pin" title="If the sensor is connected directly to the I2C, select 'Use I2C'. If the sensor is connected through an I2C multiplexer (TCA9548A), select the multiplexer address and channel.">
                                 <option<?php
                                     if ($sensor_ht_pin[$i] == 0) {
                                         echo ' selected="selected"';
