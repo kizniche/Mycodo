@@ -331,20 +331,34 @@ class ComServer(rpyc.Service):
         elif (sensor == 'AM2302'): device = Adafruit_DHT.AM2302
         elif (sensor == 'AM2315'):
             device = 'AM2315'
-            am = AM2315(0x5c,"/dev/i2c-1")
-
         if device == Adafruit_DHT.DHT11 or device == Adafruit_DHT.DHT22 or device == Adafruit_DHT.AM2302:
             hum, tc = Adafruit_DHT.read_retry(device, pin)
         elif device == 'AM2315':
             if sensor_ht_pin[sensor-1] != 0:
-                I2C_address = 0x70
+                if sensor_ht_pin[sensor-1] < 10
+                    I2C_address = 0x70
+                elif sensor_ht_pin[sensor-1] > 10 and ensor_ht_pin[sensor-1] < 20
+                    I2C_address = 0x71
+                elif sensor_ht_pin[sensor-1] > 20 and ensor_ht_pin[sensor-1] < 30
+                    I2C_address = 0x72
+                elif sensor_ht_pin[sensor-1] > 30 and ensor_ht_pin[sensor-1] < 40
+                    I2C_address = 0x73
+                elif sensor_ht_pin[sensor-1] > 40 and ensor_ht_pin[sensor-1] < 50
+                    I2C_address = 0x74
+                elif sensor_ht_pin[sensor-1] > 50 and ensor_ht_pin[sensor-1] < 60
+                    I2C_address = 0x75
+                elif sensor_ht_pin[sensor-1] > 60 and ensor_ht_pin[sensor-1] < 70
+                    I2C_address = 0x76
+                elif sensor_ht_pin[sensor-1] > 70 and ensor_ht_pin[sensor-1] < 80
+                    I2C_address = 0x77
                 if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
                     I2C_bus_number = 1
                 else:
                     I2C_bus_number = 0
                 bus = smbus.SMBus(I2C_bus_number)
-                bus.write_byte(I2C_address,sensor_ht_pin[sensor-1])
+                bus.write_byte(I2C_address, sensor_ht_pin[sensor-1] % 10)
                 time.sleep(0.1)
+            am = AM2315(0x5c,"/dev/i2c-1")
             tc, hum, crc_check = am.sense()
         else:
             return 'Invalid Sensor Name'
@@ -2118,22 +2132,36 @@ def read_ht(sensor, device, pin):
     elif device == 'AM2302': device = Adafruit_DHT.AM2302
     elif device == 'AM2315':
         device = 'AM2315'
-        am = AM2315(0x5c,"/dev/i2c-1")
-    
     if device == Adafruit_DHT.DHT11 or device == Adafruit_DHT.DHT22 or device == Adafruit_DHT.AM2302:
         humidity, temp = Adafruit_DHT.read_retry(device, pin)
         last_ht_reading = int(time.time())+2
         return humidity, temp
     elif device == 'AM2315':
         if sensor_ht_pin[sensor-1] != 0:
-            I2C_address = 0x70
+            if sensor_ht_pin[sensor-1] < 10
+                I2C_address = 0x70
+            elif sensor_ht_pin[sensor-1] > 10 and ensor_ht_pin[sensor-1] < 20
+                I2C_address = 0x71
+            elif sensor_ht_pin[sensor-1] > 20 and ensor_ht_pin[sensor-1] < 30
+                I2C_address = 0x72
+            elif sensor_ht_pin[sensor-1] > 30 and ensor_ht_pin[sensor-1] < 40
+                I2C_address = 0x73
+            elif sensor_ht_pin[sensor-1] > 40 and ensor_ht_pin[sensor-1] < 50
+                I2C_address = 0x74
+            elif sensor_ht_pin[sensor-1] > 50 and ensor_ht_pin[sensor-1] < 60
+                I2C_address = 0x75
+            elif sensor_ht_pin[sensor-1] > 60 and ensor_ht_pin[sensor-1] < 70
+                I2C_address = 0x76
+            elif sensor_ht_pin[sensor-1] > 70 and ensor_ht_pin[sensor-1] < 80
+                I2C_address = 0x77
             if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
                 I2C_bus_number = 1
             else:
                 I2C_bus_number = 0
             bus = smbus.SMBus(I2C_bus_number)
-            bus.write_byte(I2C_address,sensor_ht_pin[sensor-1])
+            bus.write_byte(I2C_address, sensor_ht_pin[sensor-1] % 10)
             time.sleep(0.1)
+        am = AM2315(0x5c,"/dev/i2c-1")
         temp, humidity, crc_check = am.sense()
         last_ht_reading = int(time.time())+2
         return humidity, temp

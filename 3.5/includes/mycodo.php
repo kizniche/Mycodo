@@ -1390,38 +1390,26 @@ if (!file_exists($lock_daemon)) {
                                     if ($sensor_ht_pin[$i] == 0) {
                                         echo ' selected="selected"';
                                     } ?> value="0">Use I2C</option>
-                                <option<?php
-                                    if ($sensor_ht_pin[$i] == 1) {
-                                        echo ' selected="selected"';
-                                    } ?> value="1">Channel 1</option>
-                                <option<?php
-                                    if ($sensor_ht_pin[$i] == 2) {
-                                        echo ' selected="selected"';
-                                    } ?> value="2">Channel 2</option>
-                                <option<?php
-                                    if ($sensor_ht_pin[$i] == 3) {
-                                        echo ' selected="selected"';
-                                    } ?> value="3">Channel 3</option>
-                                <option<?php
-                                    if ($sensor_ht_pin[$i] == 4) {
-                                        echo ' selected="selected"';
-                                    } ?> value="4">Channel 4</option>
-                                <option<?php
-                                    if ($sensor_ht_pin[$i] == 5) {
-                                        echo ' selected="selected"';
-                                    } ?> value="5">Channel 5</option>
-                                <option<?php
-                                    if ($sensor_ht_pin[$i] == 6) {
-                                        echo ' selected="selected"';
-                                    } ?> value="6">Channel 6</option>
-                                <option<?php
-                                    if ($sensor_ht_pin[$i] == 7) {
-                                        echo ' selected="selected"';
-                                    } ?> value="7">Channel 7</option>
-                                <option<?php
-                                    if ($sensor_ht_pin[$i] == 8) {
-                                        echo ' selected="selected"';
-                                    } ?> value="8">Channel 8</option>
+                                <?php
+                                for ($j = 1; $j < 79; $j++) {
+                                    $count_str = str_split($j);
+                                    if ($j < 9) {
+                                        $count_str[1] = $count_str[0];
+                                        $address = 0;
+                                        $channel = $count_str[1];
+                                    } else {
+                                        $address = $count_str[0];
+                                        $channel = $count_str[1];
+                                    }
+                                    if ($count_str[1] > 0 && $count_str[1] < 9) {
+                                        echo '<option';
+                                        if ($sensor_ht_pin[$i] == $j) {
+                                            echo ' selected="selected"';
+                                        }
+                                        echo ' value="' . $j . '">0x7' . $address . ' Channel ' . $channel . '</option>';
+                                    }
+                                }
+                                ?>
                             </select>
                             <?php
                             } else {
