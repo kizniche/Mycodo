@@ -45,6 +45,20 @@ if ($_POST['Generate_Graph_Span'] == "all") {
     $legend_y = 95;
 }
 
+$temperature = False;
+$humidity = False;
+$co2 = False;
+$pressure = False;
+$relay = False;
+$note = False;
+
+if (array_sum($sensor_t_id) || array_sum($sensor_ht_id) || array_sum($sensor_press_id)) $temperature = True;
+if (array_sum($sensor_ht_id)) $temperature = $humidity = True;
+if (array_sum($sensor_co2_id)) $co2 = True;
+if (array_sum($sensor_press_id)) $pressure = True;
+if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) $relay = True;
+if (filesize($notes_file) > 16 && trim(file_get_contents($notes_file)) == true) $note = True;
+
 $ndb = new SQLite3($note_db);
 $results = $ndb->query('SELECT Id, Time, Title FROM Notes');
 $notes_file = "/var/tmp/notes.csv";
@@ -1227,20 +1241,6 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
         $relay_log_generate = "/var/tmp/relay-$graph_id.log";
         shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh x relay $time_start $time_end $relay_log_first $relay_log_second $relay_log_generate");
         $relay_log_file_final = "file.php?span=graph&file=relay-$graph_id.log";
-
-        $temperature = False;
-        $humidity = False;
-        $co2 = False;
-        $pressure = False;
-        $relay = False;
-        $note = False;
-
-        if (array_sum($sensor_t_id) || array_sum($sensor_ht_id) || array_sum($sensor_press_id)) $temperature = True;
-        if (array_sum($sensor_ht_id)) $temperature = $humidity = True;
-        if (array_sum($sensor_co2_id)) $co2 = True;
-        if (array_sum($sensor_press_id)) $pressure = True;
-        if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) $relay = True;
-        if (filesize($notes_file) > 16 && trim(file_get_contents($notes_file)) == true) $note = True;
     ?>
 
 <script type="text/javascript">
