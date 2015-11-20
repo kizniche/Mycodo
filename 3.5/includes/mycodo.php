@@ -1385,7 +1385,7 @@ if (!file_exists($lock_daemon)) {
                             <?php
                             if ($sensor_ht_device[$i] == 'AM2315') {
                             ?>
-                            <select style="width: 6.5em;" name="sensorht<?php echo $i; ?>pin">
+                            <select style="width: 7em;" name="sensorht<?php echo $i; ?>pin">
                                 <option<?php
                                     if ($sensor_ht_pin[$i] == 0) {
                                         echo ' selected="selected"';
@@ -1406,7 +1406,7 @@ if (!file_exists($lock_daemon)) {
                                         if ($sensor_ht_pin[$i] == $j) {
                                             echo ' selected="selected"';
                                         }
-                                        echo ' value="' . $j . '">0x7' . $address . ' Channel ' . $channel . '</option>';
+                                        echo ' value="' . $j . '">0x7' . $address . ' Ch. ' . $channel . '</option>';
                                     }
                                 }
                                 ?>
