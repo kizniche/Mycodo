@@ -110,17 +110,42 @@ if ($_COOKIE['login_hash'] == $user_hash) {
                     echo json_encode(file_get_contents($path));
                 }
                 break;
-            case 'graph-pop':
+            case 'graph-pop': // Generate dynamic graph in new window with descriptive title
                 $mycodo_db = $install_path . "/config/mycodo.db";
                 $user_db = $install_path . "/config/users.db";
                 $note_db = $install_path . "/config/notes.db";
-                require($install_path . "/includes/database.php"); // Initial SQL database load to variables
-                require($install_path . "/includes/functions.php"); // Mycodo functions
+                require($install_path . "/includes/database.php");
+                require($install_path . "/includes/functions.php");
                 $graph_id = get_graph_cookie('id');
+                // Determine what type of graph to generate and for how long in the past
+                $sensor_type = $_POST['Generate_Graph_Type'];
+                $sensor_span = $_POST['Generate_Graph_Span'];
+                if ($sensor_span == "all") { // Don't trim logs (use all data)
+                    $time_start = "0";
+                    $time_end = "0";
+                    $title = "Graph ($sensor_type) All Time";
+                    $legend_y = 75;
+                } else { // Determine start and end points for logs
+                    if ($sensor_span == "1 Hour") $time_start = date('Y/m/d-H:i:s', strtotime('-1 hour'));
+                    else if ($sensor_span == "3 Hours") $time_start = date('Y/m/d-H:i:s', strtotime('-3 hour'));
+                    else if ($sensor_span == "6 Hours") $time_start = date('Y/m/d-H:i:s', strtotime('-6 hour'));
+                    else if ($sensor_span == "12 Hours") $time_start = date('Y/m/d-H:i:s', strtotime('-12 hour'));
+                    else if ($sensor_span == "1 Day") $time_start = date('Y/m/d-H:i:s', strtotime('-1 day'));
+                    else if ($sensor_span == "3 Days") $time_start = date('Y/m/d-H:i:s', strtotime('-3 day'));
+                    else if ($sensor_span == "1 Week") $time_start = date('Y/m/d-H:i:s', strtotime('-1 week'));
+                    else if ($sensor_span == "2 Weeks") $time_start = date('Y/m/d-H:i:s', strtotime('-2 week'));
+                    else if ($sensor_span == "1 Month") $time_start = date('Y/m/d-H:i:s', strtotime('-1 month'));
+                    else if ($sensor_span == "3 Months") $time_start = date('Y/m/d-H:i:s', strtotime('-3 month'));
+                    else if ($sensor_span == "6 Months") $time_start = date('Y/m/d-H:i:s', strtotime('-6 month'));
+                    else if ($sensor_span == "1 Year") $time_start = date('Y/m/d-H:i:s', strtotime('-1 year'));
+                    $time_end = date('Y/m/d-H:i:s');
+                    $title = "Graph ($sensor_type) Past $sensor_span: $time_start - $time_end";
+                    $legend_y = 95;
+                }
                 echo '
                 <html lang="en" class="no-js">
                 <head>
-                    <title>Pop-Out Graph</title>
+                    <title>' . $title . '</title>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1">
                     <meta name="robots" content="noindex">
@@ -134,20 +159,27 @@ if ($_COOKIE['login_hash'] == $user_hash) {
                     <script src="js/modules/canvas-tools.js"></script>
                     <script src="js/modules/export-csv.js"></script>
                     <script src="js/modules/jspdf.min.js"></script>
-                    <script src="js/modules/highcharts-export-clientside.js"></script>
-                ';
+                    <script src="js/modules/highcharts-export-clientside.js"></script>';
                 if ($_GET['theme'] == 'light') {
-                    echo '<link rel="stylesheet" href="css/theme-light.css" type="text/css">';
+                    echo '
+                    <link rel="stylesheet" href="css/theme-light.css" type="text/css">
+                    ';
                 } else if ($_GET['theme'] == 'dark') {
-                    echo '<link rel="stylesheet" href="css/theme-dark.css" type="text/css">
-                    <script src="js/themes/dark-unica.js"></script>';
+                    echo '
+                    <link rel="stylesheet" href="css/theme-dark.css" type="text/css">
+                    <script src="js/themes/dark-unica.js"></script>
+                    ';
                 }
                 if (isset($_POST['Generate_Graph'])) {
                     require($install_path . "/includes/graph.php");
                 }
-                echo '</head><body>';
-                echo '<div id="container" style="width: 100%; height: 100%; "></div>';
-                echo '</body></html>';
+                echo '
+                </head>
+                    <body>
+                        <div id="container" style="width: 100%; height: 100%; "></div>
+                    </body>
+                </html>
+                ';
             break;
             }
     } else if ($_GET['graphtype'] == 'default') {

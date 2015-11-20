@@ -1,6 +1,6 @@
 <?php
 /*
-*  graph.php - Formats graph display javascript
+*  graph.php - Formats HighStock javascript to graph data
 *
 *  Copyright (C) 2015  Kyle T. Gabriel
 *
@@ -22,29 +22,50 @@
 *  Contact at kylegabriel.com
 */
 
-if ($_POST['Generate_Graph_Span'] == "all") {
-    $time_start = "0";
-    $time_end = "0";
-    $title = "";
-    $legend_y = 75;
+// See file.php for variable declarations
+
+// Generate trimmed sensor logs to the start and end points
+if ($sensor_type == "all") {
+    $sensor_type_list = ['t','ht','co2','press'];
+    $files = array();
+    for ($i=0; $i < count($sensor_type_list); $i++) {
+        $sensor_type_tmp = $sensor_type_list[$i];
+        $sensor_num_array = "sensor_{$sensor_type_tmp}_id";
+        $sensor_log_first = "/var/www/mycodo/log/sensor-$sensor_type_tmp.log";
+        $sensor_log_second = "/var/www/mycodo/log/sensor-$sensor_type_tmp-tmp.log";
+        $sensor_log_generate = "/var/tmp/sensor-all-$sensor_type_tmp-$graph_id.log";
+        $files[] = $sensor_log_generate;
+        shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh $sensor_type_tmp all $time_start $time_end $sensor_log_first $sensor_log_second $sensor_log_generate");
+    }
+    $out = array();
+    foreach($files as $file) {
+        $name = "/var/tmp/sensor-final-all-$graph_id.log";
+        if (!isset($out[$name])) {
+            $out[$name] = fopen($name, "w");
+        }
+        fwrite($out[$name], file_get_contents($file));
+    }
+    foreach ($out as $f) {
+        fclose($f);
+    }
+    $sensor_log_file_final = "file.php?span=graph&file=sensor-final-all-$graph_id.log";
 } else {
-    if ($_POST['Generate_Graph_Span'] == "1h") $time_start = date('Y/m/d-H:i:s', strtotime('-1 hour'));
-    else if ($_POST['Generate_Graph_Span'] == "3h") $time_start = date('Y/m/d-H:i:s', strtotime('-3 hour'));
-    else if ($_POST['Generate_Graph_Span'] == "6h") $time_start = date('Y/m/d-H:i:s', strtotime('-6 hour'));
-    else if ($_POST['Generate_Graph_Span'] == "12h") $time_start = date('Y/m/d-H:i:s', strtotime('-12 hour'));
-    else if ($_POST['Generate_Graph_Span'] == "1d") $time_start = date('Y/m/d-H:i:s', strtotime('-1 day'));
-    else if ($_POST['Generate_Graph_Span'] == "3d") $time_start = date('Y/m/d-H:i:s', strtotime('-3 day'));
-    else if ($_POST['Generate_Graph_Span'] == "1w") $time_start = date('Y/m/d-H:i:s', strtotime('-1 week'));
-    else if ($_POST['Generate_Graph_Span'] == "2w") $time_start = date('Y/m/d-H:i:s', strtotime('-2 week'));
-    else if ($_POST['Generate_Graph_Span'] == "1m") $time_start = date('Y/m/d-H:i:s', strtotime('-1 month'));
-    else if ($_POST['Generate_Graph_Span'] == "3m") $time_start = date('Y/m/d-H:i:s', strtotime('-3 month'));
-    else if ($_POST['Generate_Graph_Span'] == "6m") $time_start = date('Y/m/d-H:i:s', strtotime('-6 month'));
-    else if ($_POST['Generate_Graph_Span'] == "1y") $time_start = date('Y/m/d-H:i:s', strtotime('-1 year'));
-    $time_end = date('Y/m/d-H:i:s');
-    $title = "<br>" . $_POST['Generate_Graph_Span'] . ': ' . $time_start . ' - ' . $time_end;
-    $legend_y = 95;
+    $sensor_log_first = "/var/www/mycodo/log/sensor-$sensor_type.log";
+    $sensor_log_second = "/var/www/mycodo/log/sensor-$sensor_type-tmp.log";
+    $sensor_log_generate = "/var/tmp/sensor-$sensor_type-$graph_id.log";
+    shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh x $sensor_type $time_start $time_end $sensor_log_first $sensor_log_second $sensor_log_generate");
+    $sensor_log_file_final = "file.php?span=graph&file=sensor-$sensor_type-$graph_id.log";
+    $sensor_num_array = "sensor_{$sensor_type}_id";
 }
 
+// Trim relay log to start and end point
+$relay_log_first = "/var/www/mycodo/log/relay.log";
+$relay_log_second = "/var/www/mycodo/log/relay-tmp.log";
+$relay_log_generate = "/var/tmp/relay-$graph_id.log";
+shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh x relay $time_start $time_end $relay_log_first $relay_log_second $relay_log_generate");
+$relay_log_file_final = "file.php?span=graph&file=relay-$graph_id.log";
+
+// Create file with notes for input to HighStock JS
 $ndb = new SQLite3($note_db);
 $results = $ndb->query('SELECT Id, Time, Title FROM Notes');
 $notes_file = "/var/tmp/notes.csv";
@@ -57,35 +78,16 @@ while ($row = $results->fetchArray()) {
 }
 $notes_file_final = "file.php?span=graph&file=notes.csv";
 
-$sensor_type = $_POST['Generate_Graph_Type'];
-
-if ($sensor_type != 'all') {
-
-    $sensor_log_first = "/var/www/mycodo/log/sensor-$sensor_type.log";
-    $sensor_log_second = "/var/www/mycodo/log/sensor-$sensor_type-tmp.log";
-    $sensor_log_generate = "/var/tmp/sensor-$sensor_type-$graph_id.log";
-    shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh x $sensor_type $time_start $time_end $sensor_log_first $sensor_log_second $sensor_log_generate");
-    $sensor_log_file_final = "file.php?span=graph&file=sensor-$sensor_type-$graph_id.log";
-
-    $relay_log_first = "/var/www/mycodo/log/relay.log";
-    $relay_log_second = "/var/www/mycodo/log/relay-tmp.log";
-    $relay_log_generate = "/var/tmp/relay-$graph_id.log";
-    shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh x relay $time_start $time_end $relay_log_first $relay_log_second $relay_log_generate");
-    $relay_log_file_final = "file.php?span=graph&file=relay-$graph_id.log";
-
-    $sensor_num_array = "sensor_{$sensor_type}_id";
-}
-
-$relay_file = "/var/tmp/relay-$graph_id.log";
-
+// Determine what sensors have been activated for graphing
 $temperature = $humidity = $co2 = $pressure = $relay = $note = False;
 if (array_sum($sensor_t_id) || array_sum($sensor_ht_id) || array_sum($sensor_press_id)) $temperature = True;
 if (array_sum($sensor_ht_id)) $temperature = $humidity = True;
 if (array_sum($sensor_co2_id)) $co2 = True;
 if (array_sum($sensor_press_id)) $pressure = True;
-if (filesize($relay_file) > 16 && trim(file_get_contents($relay_file)) == true) $relay = True;
+if (filesize($relay_log_generate) > 16 && trim(file_get_contents($relay_log_generate)) == true) $relay = True;
 if (filesize($notes_file) > 16 && trim(file_get_contents($notes_file)) == true) $note = True;
 
+// Check the type of graph to be generated
 if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
 ?>
 
@@ -149,7 +151,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             zoomType: 'x',
                         },
                         title: {
-                            text: 'Temperature Sensor Data<?php echo $title; ?>'
+                            text: 'Temperature Sensor Data'
                         },
                         legend: {
                             enabled: true,
@@ -346,13 +348,11 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
             });
         });
     });
-</script>
+</script><?php
 
-<?php
 } else if ($sensor_type == 'ht' && count(${$sensor_num_array}) > 0) {
-?>
 
-<script type="text/javascript">
+?><script type="text/javascript">
     $(document).ready(function() {
         $.getJSON("<?php echo $sensor_log_file_final; ?>", function(sensor_csv) {
             $.getJSON("<?php echo $relay_log_file_final; ?>", function(relay_csv) {
@@ -414,7 +414,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             zoomType: 'x',
                         },
                         title: {
-                            text: 'Temperature/Humidity Sensor Data<?php echo $title; ?>'
+                            text: 'Temperature/Humidity Sensor Data'
                         },
                         legend: {
                             enabled: true,
@@ -647,13 +647,11 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
             });
         });
     });
-</script>
+</script><?php
 
-<?php
 } else if ($sensor_type == 'co2' && count(${$sensor_num_array}) > 0) {
-?>
 
-<script type="text/javascript">
+?><script type="text/javascript">
     $(document).ready(function() {
         $.getJSON("<?php echo $sensor_log_file_final; ?>", function(sensor_csv) {
             $.getJSON("<?php echo $relay_log_file_final; ?>", function(relay_csv) {
@@ -713,7 +711,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             zoomType: 'x',
                         },
                         title: {
-                            text: 'CO<sub>2</sub> Sensor Data<?php echo $title; ?>',
+                            text: 'CO<sub>2</sub> Sensor Data',
                             useHTML: true
                         },
                         legend: {
@@ -913,13 +911,11 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
             });
         });
     });
-</script>
+</script><?php
 
-<?php
 } else if ($sensor_type == 'press' && count(${$sensor_num_array}) > 0) {
-?>
 
-<script type="text/javascript">
+?><script type="text/javascript">
     $(document).ready(function() {
         $.getJSON("<?php echo $sensor_log_file_final; ?>", function(sensor_csv) {
             $.getJSON("<?php echo $relay_log_file_final; ?>", function(relay_csv) {
@@ -980,7 +976,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             zoomType: 'x',
                         },
                         title: {
-                            text: 'Pressure Sensor Data<?php echo $title; ?>'
+                            text: 'Pressure Sensor Data'
                         },
                         legend: {
                             enabled: true,
@@ -1203,44 +1199,11 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
             });
         });
     });
-</script>
+</script><?php
 
-<?php
 } else if ($sensor_type == 'all') {
-    $sensor_type_list = ['t','ht','co2','press'];
-    $files = array();
-    for ($i=0; $i < count($sensor_type_list); $i++) {
-        $sensor_type = $sensor_type_list[$i];
-        $sensor_num_array = "sensor_{$sensor_type}_id";
-        $sensor_log_first = "/var/www/mycodo/log/sensor-$sensor_type.log";
-        $sensor_log_second = "/var/www/mycodo/log/sensor-$sensor_type-tmp.log";
-        $sensor_log_generate = "/var/tmp/sensor-all-$sensor_type-$graph_id.log";
-        $files[] = $sensor_log_generate;
-        shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh $sensor_type all $time_start $time_end $sensor_log_first $sensor_log_second $sensor_log_generate");
-    }
-    $out = array();
-    foreach($files as $file) {
-        $name = "/var/tmp/sensor-final-all-$graph_id.log";
-        if (!isset($out[$name])) {
-            $out[$name] = fopen($name, "w");
-        }
-        fwrite($out[$name], file_get_contents($file));
-    }
-    foreach ($out as $f) {
-        fclose($f);
-    }
-    $sensor_log_file_final = "file.php?span=graph&file=sensor-final-all-$graph_id.log";
-    $relay_log_first = "/var/www/mycodo/log/relay.log";
-    $relay_log_second = "/var/www/mycodo/log/relay-tmp.log";
-    $relay_log_generate = "/var/tmp/relay-$graph_id.log";
-    shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh x relay $time_start $time_end $relay_log_first $relay_log_second $relay_log_generate");
-    $relay_log_file_final = "file.php?span=graph&file=relay-$graph_id.log";
 
-    if (filesize($relay_log_generate) > 16 && trim(file_get_contents($relay_log_generate)) == true) $relay = True;
-    else $relay = False;
-?>
-
-<script type="text/javascript">
+?><script type="text/javascript">
     $(document).ready(function() {
         $.getJSON("<?php echo $sensor_log_file_final; ?>", function(sensor_csv) {
             $.getJSON("<?php echo $relay_log_file_final; ?>", function(relay_csv) {
@@ -1311,7 +1274,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             zoomType: 'x',
                         },
                         title: {
-                            text: 'All Sensors and Relay Data<?php echo $title; ?>'
+                            text: 'All Sensors and Relay Data'
                         },
                         legend: {
                             enabled: true,
@@ -1629,9 +1592,8 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
             });
         });
     });
-</script>
+</script><?php
 
-<?php
 }
 foreach(glob("/var/tmp/sensor-all-*") as $f) {
     unlink($f);

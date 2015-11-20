@@ -416,7 +416,7 @@ if (!file_exists($lock_daemon)) {
             }
 
             if (isset($_POST['Generate_Graph_Span'])) $dyn_time_span = $_POST['Generate_Graph_Span'];
-            else $dyn_time_span = "1w";
+            else $dyn_time_span = "1 Week";
             if (isset($_POST['Generate_Graph_Type'])) $dyn_type = $_POST['Generate_Graph_Type'];
             else $dyn_type = 'all';
             ?>
@@ -473,17 +473,18 @@ if (!file_exists($lock_daemon)) {
                         <form style="float:left;" id="DynamicGraphForm" action="?tab=graph<?php if (isset($_GET['r'])) echo '&r=' , $_GET['r']; ?>" method="POST">
                         <div style="float:left; padding-right: 0.5em;">
                             <select style="height: 2.8em;" name="Generate_Graph_Span">
-                                <option value="1h" <?php if ($dyn_time_span == '1h') echo 'selected="selected"'; ?>>1 Hour</option>
-                                <option value="3h" <?php if ($dyn_time_span == '3h') echo 'selected="selected"'; ?>>3 Hours</option>
-                                <option value="6h" <?php if ($dyn_time_span == '6h') echo 'selected="selected"'; ?>>6 Hours</option>
-                                <option value="12h" <?php if ($dyn_time_span == '12h') echo 'selected="selected"'; ?>>12 Hours</option>
-                                <option value="1d" <?php if ($dyn_time_span == '1d') echo 'selected="selected"'; ?>>1 Day</option>
-                                <option value="3d" <?php if ($dyn_time_span == '3d') echo 'selected="selected"'; ?>>3 Days</option>
-                                <option value="1w" <?php if ($dyn_time_span == '1w') echo 'selected="selected"'; ?>>1 Week</option>
-                                <option value="2w" <?php if ($dyn_time_span == '2w') echo 'selected="selected"'; ?>>2 Weeks</option>
-                                <option value="1m" <?php if ($dyn_time_span == '1m') echo 'selected="selected"'; ?>>1 Month</option>
-                                <option value="3m" <?php if ($dyn_time_span == '3m') echo 'selected="selected"'; ?>>3 Months</option>
-                                <option value="6m" <?php if ($dyn_time_span == '6m') echo 'selected="selected"'; ?>>6 Months</option>
+                                <option value="1 Hour" <?php if ($dyn_time_span == '1 Hour') echo 'selected="selected"'; ?>>1 Hour</option>
+                                <option value="3 Hours" <?php if ($dyn_time_span == '3 Hours') echo 'selected="selected"'; ?>>3 Hours</option>
+                                <option value="6 Hours" <?php if ($dyn_time_span == '6 Hours') echo 'selected="selected"'; ?>>6 Hours</option>
+                                <option value="12 Hours" <?php if ($dyn_time_span == '12 Hours') echo 'selected="selected"'; ?>>12 Hours</option>
+                                <option value="1 Day" <?php if ($dyn_time_span == '1 Day') echo 'selected="selected"'; ?>>1 Day</option>
+                                <option value="3 Days" <?php if ($dyn_time_span == '3 Days') echo 'selected="selected"'; ?>>3 Days</option>
+                                <option value="1 Week" <?php if ($dyn_time_span == '1 Week') echo 'selected="selected"'; ?>>1 Week</option>
+                                <option value="2 Weeks" <?php if ($dyn_time_span == '2 Weeks') echo 'selected="selected"'; ?>>2 Weeks</option>
+                                <option value="1 Month" <?php if ($dyn_time_span == '1 Month') echo 'selected="selected"'; ?>>1 Month</option>
+                                <option value="3 Months" <?php if ($dyn_time_span == '3 Months') echo 'selected="selected"'; ?>>3 Months</option>
+                                <option value="6 Months" <?php if ($dyn_time_span == '6 Months') echo 'selected="selected"'; ?>>6 Months</option>
+                                <option value="1 Year" <?php if ($dyn_time_span == '1 Year') echo 'selected="selected"'; ?>>1 Year</option>
                                 <option value="all" <?php if ($dyn_time_span == 'all') echo 'selected="selected"'; ?>>All Time</option>
                             </select>
                         </div>

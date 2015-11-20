@@ -1,14 +1,8 @@
 /**
  * Dark theme for Highcharts JS
  * @author Torstein Honsi
+ * Edited by Kyle Gabriel for Mycodo
  */
-
-// Load the fonts
-Highcharts.createElement('link', {
-	href: '//fonts.googleapis.com/css?family=Unica+One',
-	rel: 'stylesheet',
-	type: 'text/css'
-}, null, document.getElementsByTagName('head')[0]);
 
 Highcharts.theme = {
 	colors: ["#2b908f", "#90ee7e", "#f45b5b", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee",
@@ -21,22 +15,16 @@ Highcharts.theme = {
 				[1, '#222222']
 			]
 		},
-		style: {
-			fontFamily: "'Unica One', sans-serif"
-		},
 		plotBorderColor: '#606063'
 	},
 	title: {
 		style: {
 			color: '#E0E0E3',
-			textTransform: 'uppercase',
-			fontSize: '20px'
 		}
 	},
 	subtitle: {
 		style: {
 			color: '#E0E0E3',
-			textTransform: 'uppercase'
 		}
 	},
 	xAxis: {
