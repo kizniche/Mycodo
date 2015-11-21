@@ -24,6 +24,30 @@
 
 <ul>
 <li><a href="#preface">Preface</a></li>
+<li>Supported Devices/Sensors</li>
+<ul>
+	<li><a href="#temperature-sensors">Temperature Sensors</a></li>
+	<ul>
+		<li><a href="#DS18B20">DS18B20</a></li>
+	</ul>
+	<li><a href="#temperature-humidity-sensors">Temperature/Humidity Sensors</a></li>
+	<ul>
+		<li><a href="#DHT">DHT11, DHT22, AM2302</a></li>
+		<li><a href="#AM2315">AM2315</a></li>
+	</ul>
+	<li><a href="#co2-sensors">CO2 Sensors</a></li>
+	<ul>
+		<li><a href="#K-30">K-30</a></li>
+	</ul>
+	<li><a href="#pressure-sensors">Pressure Sensors</a></li>
+	<ul>
+		<li><a href="#BMP">BMP085, BMP180</a></li>
+	</ul>
+	<li><a href="#multiplexers">I<sup>2</sup>C Multiplexers</a></li>
+	<ul>
+		<li><a href="#TCA9548A">TCA9548A</a></li>
+	</ul>
+</ul>
 <li><a href="#web-interface">Web Interface</a></li>
 <li style="padding-top: 0.6em;"><a href="#graph-tab">Graph Tab</a></li>
 <ul>
@@ -68,6 +92,55 @@
 <h2>Preface</h2>
 
 <p>There may be many unforseen issues if multiple commands are sent in rapid succession, when using the web interface. Therefore, after pressing abutton, wait either for a response or for the page to time out before pressing another button.</p>
+
+
+<h2>Supported Devices/Sensors</h2>
+
+<a name="temperature-sensors"></a>
+<h3>Temperature Sensors</h3>
+
+<a name="DS18B20"></a>
+<h4>DS18B20</h4>
+
+<p></p>
+
+<a name="temperature-humidity-sensors"></a>
+<h3>Temperature/Humidity Sensors</h3>
+
+<a name="DHT"></a>
+<h4>DHT11, DHT22, AM2302</h4>
+
+<p></p>
+
+<a name="AM2315"></a>
+<h4>AM2315</h4>
+
+<a name="co2-sensors"></a>
+<h3>CO<sub>2</sub> Sensors</h3>
+
+<p></p>
+
+<a name="K-30"></a>
+<h4>K-30</h4>
+
+<p></p>
+
+<a name="pressure-sensors"></a>
+<h3>Pressure Sensors</h3>
+
+<a name="BMP"></a>
+<h4>BMP085, BMP180</h4>
+
+<p></p>
+
+<a name="multiplexers"></a>
+<h3>I<sup>2</sup>C Multiplexers</h3>
+
+<a name="TCA9548A"></a>
+<h4>TCA9548A</h4>
+
+<p>The TCA9548A I<sup>2</sup>C allows multiple sensors that have the same I<sup>2</sup>C address to be used with mycodo (such as the AM2315). The multiplexer has a selectable address, from 0x70 through 0x77, allowing up to 8 multiplexers to be used at once. With 8 channels per multiplexer, this allows up to 64 devices with the same address to be used.</p>
+
 
 <a name="web-interface"></a>
 <h2>Web Interface</h2>
@@ -134,8 +207,8 @@
 		<td>If there is support for more than one of a particular type of sensor, select which sensor is being used.</td>
 	</tr>
 	<tr>
-		<td>Serial Number or GPIO</td>
-		<td>Depending on what sensor is being used, you will need to either enter the serial number (in the case of the DS18B20 temperature sensor) or the GPIO pin (in the case of the humidity/temperature sensors) connected to the sensor.</td>
+		<td>Serial Number or GPIO or Multiplexer address/channel</td>
+		<td>Depending on what sensor is being used, you will need to either enter the serial number (in the case of the DS18B20 temperature sensor), the GPIO pin (in the case of sensors read by a GPIO), or the I<sup>2</sup>C address and channel if using the TCA9548A I<sup>2</sup>C multiplexer.</td>
 	</tr>
 	<tr>
 		<td>Log Interval</td>

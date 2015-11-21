@@ -8,7 +8,7 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
   + [Web Interface](#web-interface)
   + [Terminal](#terminal)
 + [Changelog](#changelog)
-+ [Supported Sensors](#supported-sensors)
++ [Supported Sensors and Devices](#supported-sensors-and-devices)
 + [Software Install](#software-install)
   + [Prerequisites](#prerequisites)
   + [Wifi](#wifi)
@@ -203,7 +203,7 @@ Major changes for each versioned release
 + Moved to SQLite settings database (previously plain-text)
 + Moved to SQLite login database (previously MySQL)
 
-## Supported Sensors
+## Supported Sensors and Devices
 
 ### Temperature
 
@@ -211,7 +211,9 @@ Major changes for each versioned release
 
 ### Humidity & Temperature
 
-> [DHT11, DHT22, AM2302](https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring), and [AM2315](https://github.com/lexruee/tentacle_pi)
+> [DHT11, DHT22, AM2302](https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring)
+
+> [AM2315](https://github.com/lexruee/tentacle_pi)
 
 ### CO<sub>2</sub>
 
@@ -220,6 +222,12 @@ Major changes for each versioned release
 ### Pressure
 
 > [BMP085/BMP180](https://learn.adafruit.com/using-the-bmp085-with-raspberry-pi)
+
+### I<sup>2</sup>C Multiplexer
+
+> [TCA9548A](https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview)
+
+The TCA9548A I<sup>2</sup>C allows multiple sensors that have the same I<sup>2</sup>C address to be used with mycodo (such as the AM2315). The multiplexer has a selectable address, from 0x70 through 0x77, allowing up to 8 multiplexers to be used at once. With 8 channels per multiplexer, this allows up to 64 devices with the same address to be used.
 
 ## Software Install
 

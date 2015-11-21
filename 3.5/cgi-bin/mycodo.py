@@ -337,19 +337,19 @@ class ComServer(rpyc.Service):
             if sensor_ht_pin[sensor-1] != 0:
                 if sensor_ht_pin[sensor-1] < 10:
                     I2C_address = 0x70
-                elif sensor_ht_pin[sensor-1] > 10 and ensor_ht_pin[sensor-1] < 20:
+                elif sensor_ht_pin[sensor-1] > 10 and sensor_ht_pin[sensor-1] < 20:
                     I2C_address = 0x71
-                elif sensor_ht_pin[sensor-1] > 20 and ensor_ht_pin[sensor-1] < 30:
+                elif sensor_ht_pin[sensor-1] > 20 and sensor_ht_pin[sensor-1] < 30:
                     I2C_address = 0x72
-                elif sensor_ht_pin[sensor-1] > 30 and ensor_ht_pin[sensor-1] < 40:
+                elif sensor_ht_pin[sensor-1] > 30 and sensor_ht_pin[sensor-1] < 40:
                     I2C_address = 0x73
-                elif sensor_ht_pin[sensor-1] > 40 and ensor_ht_pin[sensor-1] < 50:
+                elif sensor_ht_pin[sensor-1] > 40 and sensor_ht_pin[sensor-1] < 50:
                     I2C_address = 0x74
-                elif sensor_ht_pin[sensor-1] > 50 and ensor_ht_pin[sensor-1] < 60:
+                elif sensor_ht_pin[sensor-1] > 50 and sensor_ht_pin[sensor-1] < 60:
                     I2C_address = 0x75
-                elif sensor_ht_pin[sensor-1] > 60 and ensor_ht_pin[sensor-1] < 70:
+                elif sensor_ht_pin[sensor-1] > 60 and sensor_ht_pin[sensor-1] < 70:
                     I2C_address = 0x76
-                elif sensor_ht_pin[sensor-1] > 70 and ensor_ht_pin[sensor-1] < 80:
+                elif sensor_ht_pin[sensor-1] > 70 and sensor_ht_pin[sensor-1] < 80:
                     I2C_address = 0x77
                 if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
                     I2C_bus_number = 1
@@ -2140,19 +2140,19 @@ def read_ht(sensor, device, pin):
         if sensor_ht_pin[sensor-1] != 0:
             if sensor_ht_pin[sensor-1] < 10:
                 I2C_address = 0x70
-            elif sensor_ht_pin[sensor-1] > 10 and ensor_ht_pin[sensor-1] < 20:
+            elif sensor_ht_pin[sensor-1] > 10 and sensor_ht_pin[sensor-1] < 20:
                 I2C_address = 0x71
-            elif sensor_ht_pin[sensor-1] > 20 and ensor_ht_pin[sensor-1] < 30:
+            elif sensor_ht_pin[sensor-1] > 20 and sensor_ht_pin[sensor-1] < 30:
                 I2C_address = 0x72
-            elif sensor_ht_pin[sensor-1] > 30 and ensor_ht_pin[sensor-1] < 40:
+            elif sensor_ht_pin[sensor-1] > 30 and sensor_ht_pin[sensor-1] < 40:
                 I2C_address = 0x73
-            elif sensor_ht_pin[sensor-1] > 40 and ensor_ht_pin[sensor-1] < 50:
+            elif sensor_ht_pin[sensor-1] > 40 and sensor_ht_pin[sensor-1] < 50:
                 I2C_address = 0x74
-            elif sensor_ht_pin[sensor-1] > 50 and ensor_ht_pin[sensor-1] < 60:
+            elif sensor_ht_pin[sensor-1] > 50 and sensor_ht_pin[sensor-1] < 60:
                 I2C_address = 0x75
-            elif sensor_ht_pin[sensor-1] > 60 and ensor_ht_pin[sensor-1] < 70:
+            elif sensor_ht_pin[sensor-1] > 60 and sensor_ht_pin[sensor-1] < 70:
                 I2C_address = 0x76
-            elif sensor_ht_pin[sensor-1] > 70 and ensor_ht_pin[sensor-1] < 80:
+            elif sensor_ht_pin[sensor-1] > 70 and sensor_ht_pin[sensor-1] < 80:
                 I2C_address = 0x77
             if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
                 I2C_bus_number = 1
