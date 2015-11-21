@@ -264,7 +264,7 @@ Using raspi-config, perform the following:
 
 `git clone https://github.com/adafruit/Adafruit_Python_BMP.git ~/Adafruit_Python_BMP && cd ~/Adafruit_Python_BMP && sudo python setup.py install`
 
-'git clone --recursive https://github.com/lexruee/tentacle_pi ~/tentacle_pi && cd ~/tentacle_pi && sudo python setup.py install'
+`git clone --recursive https://github.com/lexruee/tentacle_pi ~/tentacle_pi && cd ~/tentacle_pi && sudo python setup.py install`
 
 Create a symlink to Mycodo
 
@@ -308,7 +308,11 @@ Clean Up
 
 ### Wifi
 
-With a supported usb wifi dongle, setting up a wireless connection is as simple as the next few commands and a reboot. Consult documentation for your wireless card or google if this doesn’t work. Edit wpa_supplicant.conf with `sudo vi /etc/wpa_supplicant/wpa_supplicant.conf` and add the following, change the name and password to that of your wifi network.
+With a supported usb wifi dongle, setting up a wireless connection is as simple as the next few commands and a reboot. Consult documentation for your wireless card or google if this doesn’t work.
+
+`sudo vi /etc/wpa_supplicant/wpa_supplicant.conf`
+
+Edit wpa_supplicant.conf with the above command and add the following, changing the name and password for your wifi network.
 
 ```
 network={
