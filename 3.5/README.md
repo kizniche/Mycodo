@@ -88,6 +88,9 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 Major changes for each versioned release
 
+#### 3.5.91
++ Add ability to use multiple BMP085/180 pressure sensors with the TCA9548A multiplexer
+
 #### 3.5.90
 + Add Support for I<sup>2</sup>C multiplexer (TCA9548A) for using multiple AM2315 humidity/temperature sensors (same I<sup>2</sup>C address)
 

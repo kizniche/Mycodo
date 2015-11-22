@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.90";
+$version = "3.5.91";
 
 ######### Start Edit Configure #########
 
@@ -1393,7 +1393,7 @@ if (!file_exists($lock_daemon)) {
                                 <?php
                                 for ($j = 1; $j < 79; $j++) {
                                     $count_str = str_split($j);
-                                    if ($j < 9) {
+                                    if ($j < 10) {
                                         $count_str[1] = $count_str[0];
                                         $address = 0;
                                         $channel = $count_str[1];
@@ -2252,7 +2252,7 @@ if (!file_exists($lock_daemon)) {
                         <td>Sensor<br>Device</td>
                         <?php
                             if ($sensor_press_device[$i] == 'BMP085-180') {
-                                echo '<td>I<sup>2</sup>C<br>Add.</td>';
+                                echo '<td>Multiplex<br>Channel</td>';
                             } else {
                                 echo '<td>GPIO<br>Pin</td>';
                             }
@@ -2296,7 +2296,32 @@ if (!file_exists($lock_daemon)) {
                             <?php
                             if ($sensor_press_device[$i] == 'BMP085-180') {
                             ?>
-                            I<sup>2</sup>C
+                            <select style="width: 7em;" name="sensorpress<?php echo $i; ?>pin" title="If the sensor is connected directly to the I2C, select 'Use I2C'. If the sensor is connected through an I2C multiplexer (TCA9548A), select the multiplexer address and channel.">
+                                <option<?php
+                                    if ($sensor_ht_pin[$i] == 0) {
+                                        echo ' selected="selected"';
+                                    } ?> value="0">Use I2C</option>
+                                <?php
+                                for ($j = 1; $j < 79; $j++) {
+                                    $count_str = str_split($j);
+                                    if ($j < 10) {
+                                        $count_str[1] = $count_str[0];
+                                        $address = 0;
+                                        $channel = $count_str[1];
+                                    } else {
+                                        $address = $count_str[0];
+                                        $channel = $count_str[1];
+                                    }
+                                    if ($count_str[1] > 0 && $count_str[1] < 9) {
+                                        echo '<option';
+                                        if ($sensor_press_pin[$i] == $j) {
+                                            echo ' selected="selected"';
+                                        }
+                                        echo ' value="' . $j . '">0x7' . $address . ' Ch. ' . $channel . '</option>';
+                                    }
+                                }
+                                ?>
+                            </select>
                             <?php
                             } else {
                             ?>

@@ -305,13 +305,38 @@ class ComServer(rpyc.Service):
         PID_stop(pidtype, number)
         return 1
 
-    def exposed_ReadPressSensor(self, pin, sensor):
-        logging.info("[Client command] Read Press Sensor %s from GPIO pin %s", sensor, pin)
+    def exposed_ReadPressSensor(self, address, sensor):
+        logging.info("[Client command] Read Press Sensor %s from I2C address %s", sensor, address)
         if (sensor == 'BMP085-180'):
-            tc = sensor.read_temperature()
-            press = sensor.read_pressure()
-            alt = sensor.read_altitude()
-            sea_press = sensor.read_sealevel_pressure()
+            if address != 0:
+                if address < 10:
+                    I2C_address = 0x70
+                elif address > 10 and address < 20:
+                    I2C_address = 0x71
+                elif address > 20 and address < 30:
+                    I2C_address = 0x72
+                elif address > 30 and address < 40:
+                    I2C_address = 0x73
+                elif address > 40 and address < 50:
+                    I2C_address = 0x74
+                elif address > 50 and address < 60:
+                    I2C_address = 0x75
+                elif address > 60 and address < 70:
+                    I2C_address = 0x76
+                elif address > 70 and address < 80:
+                    I2C_address = 0x77
+                if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
+                    I2C_bus_number = 1
+                else:
+                    I2C_bus_number = 0
+                bus = smbus.SMBus(I2C_bus_number)
+                bus.write_byte(I2C_address, address % 10)
+                time.sleep(0.1)
+            press_sensor = BMP085.BMP085()
+            tc = press_sensor.read_temperature()
+            press = press_sensor.read_pressure()
+            alt = press_sensor.read_altitude()
+            sea_press = press_sensor.read_sealevel_pressure()
         else:
             return 'Invalid Sensor Name'
         return (tc, press, alt, sea_press)
@@ -325,7 +350,7 @@ class ComServer(rpyc.Service):
             return 'Invalid Sensor Name'
 
     def exposed_ReadHTSensor(self, pin, sensor):
-        logging.info("[Client command] Read HT Sensor %s from GPIO pin %s", sensor, pin)
+        logging.info("[Client command] Read HT Sensor %s from GPIO/I2C address %s", sensor, pin)
         if (sensor == 'DHT11'): device = Adafruit_DHT.DHT11
         elif (sensor == 'DHT22'): device = Adafruit_DHT.DHT22
         elif (sensor == 'AM2302'): device = Adafruit_DHT.AM2302
@@ -334,29 +359,29 @@ class ComServer(rpyc.Service):
         if device == Adafruit_DHT.DHT11 or device == Adafruit_DHT.DHT22 or device == Adafruit_DHT.AM2302:
             hum, tc = Adafruit_DHT.read_retry(device, pin)
         elif device == 'AM2315':
-            if sensor_ht_pin[sensor-1] != 0:
-                if sensor_ht_pin[sensor-1] < 10:
+            if pin != 0:
+                if pin < 10:
                     I2C_address = 0x70
-                elif sensor_ht_pin[sensor-1] > 10 and sensor_ht_pin[sensor-1] < 20:
+                elif pin > 10 and pin < 20:
                     I2C_address = 0x71
-                elif sensor_ht_pin[sensor-1] > 20 and sensor_ht_pin[sensor-1] < 30:
+                elif pin > 20 and pin < 30:
                     I2C_address = 0x72
-                elif sensor_ht_pin[sensor-1] > 30 and sensor_ht_pin[sensor-1] < 40:
+                elif pin > 30 and pin < 40:
                     I2C_address = 0x73
-                elif sensor_ht_pin[sensor-1] > 40 and sensor_ht_pin[sensor-1] < 50:
+                elif pin > 40 and pin < 50:
                     I2C_address = 0x74
-                elif sensor_ht_pin[sensor-1] > 50 and sensor_ht_pin[sensor-1] < 60:
+                elif pin > 50 and pin < 60:
                     I2C_address = 0x75
-                elif sensor_ht_pin[sensor-1] > 60 and sensor_ht_pin[sensor-1] < 70:
+                elif pin > 60 and pin < 70:
                     I2C_address = 0x76
-                elif sensor_ht_pin[sensor-1] > 70 and sensor_ht_pin[sensor-1] < 80:
+                elif pin > 70 and pin < 80:
                     I2C_address = 0x77
                 if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
                     I2C_bus_number = 1
                 else:
                     I2C_bus_number = 0
                 bus = smbus.SMBus(I2C_bus_number)
-                bus.write_byte(I2C_address, sensor_ht_pin[sensor-1] % 10)
+                bus.write_byte(I2C_address, pin % 10)
                 time.sleep(0.1)
             am = AM2315(0x5c,"/dev/i2c-1")
             tc, hum, crc_check = am.sense()
@@ -2383,8 +2408,31 @@ def read_press(sensor, device, pin):
     # Ensure at least 2 seconds between sensor reads
     while last_press_reading > int(time.time()):
         time.sleep(0.25)
-
     if device == 'BMP085-180':
+        if sensor_press_pin[sensor-1] != 0:
+            if sensor_press_pin[sensor-1] < 10:
+                I2C_address = 0x70
+            elif sensor_press_pin[sensor-1] > 10 and sensor_press_pin[sensor-1] < 20:
+                I2C_address = 0x71
+            elif sensor_press_pin[sensor-1] > 20 and sensor_press_pin[sensor-1] < 30:
+                I2C_address = 0x72
+            elif sensor_press_pin[sensor-1] > 30 and sensor_press_pin[sensor-1] < 40:
+                I2C_address = 0x73
+            elif sensor_press_pin[sensor-1] > 40 and sensor_press_pin[sensor-1] < 50:
+                I2C_address = 0x74
+            elif sensor_press_pin[sensor-1] > 50 and sensor_press_pin[sensor-1] < 60:
+                I2C_address = 0x75
+            elif sensor_press_pin[sensor-1] > 60 and sensor_press_pin[sensor-1] < 70:
+                I2C_address = 0x76
+            elif sensor_press_pin[sensor-1] > 70 and sensor_press_pin[sensor-1] < 80:
+                I2C_address = 0x77
+            if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
+                I2C_bus_number = 1
+            else:
+                I2C_bus_number = 0
+            bus = smbus.SMBus(I2C_bus_number)
+            bus.write_byte(I2C_address, sensor_press_pin[sensor-1] % 10)
+            time.sleep(0.1)
         press_sensor = BMP085.BMP085()
         temp = press_sensor.read_temperature()
         press = press_sensor.read_pressure()
