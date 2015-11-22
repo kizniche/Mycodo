@@ -2,6 +2,8 @@
 
 This is an experimental branch of mycodo. It is undergoing constant changes and may or may not work at any time (although it has matured somewhat and is relatively stable at the moment). If you are looking for a stable version, I recommend you check out the [v3.0 branch](../3.0).
 
+---
+
 ## Index
 
 + [Screenshots](#screenshots)
@@ -23,6 +25,8 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 + [Manual](#manual)
 + [License](#license)
 + [Useful Links](#useful-links)
+
+---
 
 ## Screenshots
 
@@ -73,6 +77,8 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
     </td>
   </tr>
 </table>
+
+---
 
 ### Terminal
 
@@ -206,6 +212,8 @@ Major changes for each versioned release
 + Moved to SQLite settings database (previously plain-text)
 + Moved to SQLite login database (previously MySQL)
 
+---
+
 ## Sensors, Devices, and Interfaces
 
 Certain sensors will require extra steps to be taken in order to set up the interface to communicate with them. The DS18B20 needs one-wire support enabled, The sensors that communicate by the I<sup>2</sup>C interface (AM2315, BMP085/180, TCA9548A) will require enabling I<sup>2</sup>C, and the K30 will require configuring UART. Because these procedures are already documented in the following links, they will not appear in the Mycodo install documentation. Therefore, follow the following procedures for any sensors or devices if you wish to use.
@@ -249,6 +257,8 @@ After [configuring I<sup>2</sup>C](https://learn.adafruit.com/adafruits-raspberr
 > [TCA9548A](https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview)
 
 The TCA9548A I<sup>2</sup>C allows multiple sensors that have the same I<sup>2</sup>C address to be used with mycodo (such as the AM2315). The multiplexer has a selectable address, from 0x70 through 0x77, allowing up to 8 multiplexers to be used at once. With 8 channels per multiplexer, this allows up to 64 devices with the same address to be used.
+
+---
 
 ## Software Install
 
@@ -489,6 +499,8 @@ You can either reboot or start the daemon with the following command.
 Note: cgi-bin/mycodo-wrapper is a binary executable used to start and stop the mycodo daemon, and to create and restore backups, from the web interface. It has the setuid bit to permit it to be executed as root (the init.d/mycodo script sets the correct permissions and setuid). Since shell scripts cannot be setuid (ony binary files), the mycodo-wrapper binay permits init.d/mycodo to be executed as root by a non-root user. You can audit the source code of cgi-bin/mycodo-wrapper.c and if you want to ensure the binary is indeed compiled from that source, you may compile it yourself with the following command. Otherwise, the compiled binary is already included and no further action is needed. I mention this to explain the need for setuid, for transparency, for security, and to maintain all code of this project as open source.
 
 `sudo gcc /var/www/mycodo/cgi-bin/mycodo-wrapper.c -o /var/www/mycodo/cgi-bin/mycodo-wrapper`
+
+---
 
 ## Manual
 
