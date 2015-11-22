@@ -8,7 +8,7 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
   + [Web Interface](#web-interface)
   + [Terminal](#terminal)
 + [Changelog](#changelog)
-+ [Supported Sensors and Devices](#supported-sensors-and-devices)
++ [Sensors, Devices, and Interfaces](#sensors-devices-and-interfaces)
 + [Software Install](#software-install)
   + [Prerequisites](#prerequisites)
   + [Wifi](#wifi)
@@ -206,25 +206,43 @@ Major changes for each versioned release
 + Moved to SQLite settings database (previously plain-text)
 + Moved to SQLite login database (previously MySQL)
 
-## Supported Sensors and Devices
+## Sensors, Devices, and Interfaces
 
-### Temperature
+Certain sensors will require extra steps to be taken in order to set up the interface to communicate with them. The DS18B20 needs one-wire support enabled, The sensors that communicate by the I<sup>2</sup>C interface (AM2315, BMP085/180, TCA9548A) will require enabling I<sup>2</sup>C, and the K30 will require configuring UART. Because these procedures are already documented in the following links, they will not appear in the Mycodo install documentation. Therefore, follow the following procedures for any sensors or devices if you wish to use.
+
+### I<sup>2</sup>C Interface
+
+[Configuring I<sup>2</sup>C](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c)
+
+The AM2315 Humidity/Temperature Sensor, BMP085/180 Pressure Sensor, and TCA9548A I<sup>2</sup>C Multiplexer communicate with the I<sup>2</sup>C interface.
+
+### Temperature Sensors
 
 > [DS18B20](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing)
 
-### Humidity & Temperature
+The DS18B20 is a simple 1-wire sensor. Once the one-wire interface has been configured with the above instructions, it may be used with Mycodo.
+
+### Humidity & Temperature Sensors
 
 > [DHT11, DHT22, AM2302](https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring)
 
+Afer [insatlling the Adafruit_Python_DHT library](#prerequisites), it can be tested whether the sensor is able to be read, by executing cgi-bin/Test-Sensor-HT-DHT.py
+
 > [AM2315](https://github.com/lexruee/tentacle_pi)
 
-### CO<sub>2</sub>
+After [configuring I<sup>2</sup>C](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c) and [installing the tentacle_pi libraries](#prerequisites), it can be tested whether the sensor is able to be read, by executing cgi-bin/Test-Sensor-HT-AM2315.py
+
+### CO<sub>2</sub> Sensors
 
 > [K30](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip)
 
-### Pressure
+This documentation provides specific installation proceedures for the Raspberry Pi as well as example code. Once the K30 has been configured with this documentation, it can be tested whether the sensor is able to be read, by executing cgi-bin/Test-Sensor-CO2-K30.py
+
+### Pressure Sensors
 
 > [BMP085/BMP180](https://learn.adafruit.com/using-the-bmp085-with-raspberry-pi)
+
+After [configuring I<sup>2</sup>C](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c) and [installing the Adafruit_Python_BMP library](#prerequisites), it can be tested whether the sensor is able to be read, by executing cgi-bin/Test-Sensor-Press-BMP085-180.py
 
 ### I<sup>2</sup>C Multiplexer
 

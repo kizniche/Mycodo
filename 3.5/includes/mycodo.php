@@ -1328,7 +1328,7 @@ if (!file_exists($lock_daemon)) {
                         <?php
                             if ($sensor_ht_device[$i] == 'AM2315') {
                                 echo '
-                                <td>Multiplex<br>Channel</td>
+                                <td>I<sup>2</sup>C or<br>Multiplex</td>
                                 ';
                             } else {
                                 echo '<td>GPIO<br>Pin</td>';
@@ -2252,7 +2252,7 @@ if (!file_exists($lock_daemon)) {
                         <td>Sensor<br>Device</td>
                         <?php
                             if ($sensor_press_device[$i] == 'BMP085-180') {
-                                echo '<td>Multiplex<br>Channel</td>';
+                                echo '<td>I<sup>2</sup>C or<br>Multiplex</td>';
                             } else {
                                 echo '<td>GPIO<br>Pin</td>';
                             }
@@ -4145,7 +4145,7 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     </form>
 
-                    <form action="?tab=settings" method="post" onsubmit="return confirm('Confirm that you would like to begin the update process now. If not, click Cancel.')">
+                    <form action="?tab=settings" method="post" onsubmit="return confirm('Confirm that you would like to begin the update process now. If not, click Cancel. The update process will go on in the background for several seconds up to a minute or longer. You can check the status of the update with the Update Log in the Data Tab.')">
                     <tr>
                         <td class="setting-text">
                             Update Mycodo to the latest version on <a href="https://github.com/kizniche/Mycodo" target="_blank">GitHub</a>
