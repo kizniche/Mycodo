@@ -2123,7 +2123,6 @@ def read_ht(sensor, device, pin):
     # Ensure at least 2 seconds between sensor reads
     while last_ht_reading > int(time.time()):
         time.sleep(0.25)
-
     if device == 'DHT11': device = Adafruit_DHT.DHT11
     elif device == 'DHT22': device = Adafruit_DHT.DHT22
     elif device == 'AM2302': device = Adafruit_DHT.AM2302
@@ -2135,28 +2134,13 @@ def read_ht(sensor, device, pin):
         return humidity, temp
     elif device == 'AM2315':
         if sensor_ht_pin[sensor-1] != 0:
-            if sensor_ht_pin[sensor-1] < 10:
-                I2C_address = 0x70
-            elif sensor_ht_pin[sensor-1] > 10 and sensor_ht_pin[sensor-1] < 20:
-                I2C_address = 0x71
-            elif sensor_ht_pin[sensor-1] > 20 and sensor_ht_pin[sensor-1] < 30:
-                I2C_address = 0x72
-            elif sensor_ht_pin[sensor-1] > 30 and sensor_ht_pin[sensor-1] < 40:
-                I2C_address = 0x73
-            elif sensor_ht_pin[sensor-1] > 40 and sensor_ht_pin[sensor-1] < 50:
-                I2C_address = 0x74
-            elif sensor_ht_pin[sensor-1] > 50 and sensor_ht_pin[sensor-1] < 60:
-                I2C_address = 0x75
-            elif sensor_ht_pin[sensor-1] > 60 and sensor_ht_pin[sensor-1] < 70:
-                I2C_address = 0x76
-            elif sensor_ht_pin[sensor-1] > 70 and sensor_ht_pin[sensor-1] < 80:
-                I2C_address = 0x77
+            I2C_address = 0x70 + (pin // 10)
             if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
                 I2C_bus_number = 1
             else:
                 I2C_bus_number = 0
             bus = smbus.SMBus(I2C_bus_number)
-            bus.write_byte(I2C_address, sensor_ht_pin[sensor-1] % 10)
+            bus.write_byte(I2C_address, pin % 10)
             time.sleep(0.1)
         am = AM2315(0x5c,"/dev/i2c-1")
         temp, humidity, crc_check = am.sense()
@@ -2389,7 +2373,7 @@ def read_press(sensor, device, pin):
             else:
                 I2C_bus_number = 0
             bus = smbus.SMBus(I2C_bus_number)
-            bus.write_byte(I2C_address, sensor_press_pin[sensor-1] % 10)
+            bus.write_byte(I2C_address, pin % 10)
             time.sleep(0.1)
         press_sensor = BMP085.BMP085()
         temp = press_sensor.read_temperature()

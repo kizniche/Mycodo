@@ -90,6 +90,8 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/mycodo-client.py_.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/mycodo-client.py_-300x219.png"></a>
 
+---
+
 ## Changelog
 
 Major changes for each versioned release
