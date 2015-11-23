@@ -1851,12 +1851,12 @@ def read_t_sensor(sensor):
         for i in range(0, t_read_tries):
             if pid_t_temp_alive[sensor] and client_que != 'TerminateServer' and pause_daemon != 1:
                 tempc2 = read_t(sensor, sensor_t_device[sensor], sensor_t_pin[sensor])
-                if tempc2 != None:
+                if tempc2 is not None:
                     break
             else:
                 break
 
-        if tempc2 == None:
+        if tempc2 is None:
             logging.warning("[Read T Sensor-%s] Could not read first Temp measurement!", sensor+1)
             break
         else:
@@ -1866,12 +1866,12 @@ def read_t_sensor(sensor):
         for i in range(0, t_read_tries): # Multiple attempts to get first reading
             if pid_t_temp_alive[sensor] and client_que != 'TerminateServer' and pause_daemon != 1:
                 tempc = read_t(sensor, sensor_t_device[sensor], sensor_t_pin[sensor])
-                if tempc != None:
+                if tempc is not None:
                     break
             else:
                 break
 
-        if tempc == None:
+        if tempc is None:
             logging.warning("[Read T Sensor-%s] Could not read second Temp measurement!", sensor+1)
             break
         else:
@@ -1979,12 +1979,12 @@ def read_ht_sensor(sensor):
         for i in range(0, ht_read_tries):
             if (pid_ht_temp_alive[sensor] or pid_ht_hum_alive[sensor]) and client_que != 'TerminateServer' and pause_daemon != 1:
                 humidity2, tempc2 = read_ht(sensor, sensor_ht_device[sensor], sensor_ht_pin[sensor])
-                if humidity2 != None and tempc2 != None:
+                if humidity2 is not None and tempc2 is not None:
                     break
             else:
                 break
 
-        if humidity2 == None or tempc2 == None:
+        if humidity2 is None or tempc2 is None:
             logging.warning("[Read HT Sensor-%s] Could not read first Hum/Temp measurement!", sensor+1)
             break
         else:
@@ -1994,12 +1994,12 @@ def read_ht_sensor(sensor):
         for i in range(0, ht_read_tries): # Multiple attempts to get first reading
             if (pid_ht_temp_alive[sensor] or pid_ht_hum_alive[sensor]) and client_que != 'TerminateServer' and pause_daemon != 1:
                 humidity, tempc = read_ht(sensor, sensor_ht_device[sensor], sensor_ht_pin[sensor])
-                if humidity != None and tempc != None:
+                if humidity is not None and tempc is not None:
                     break
             else:
                 break
 
-        if humidity == None or tempc == None:
+        if humidity is None or tempc is None:
             logging.warning("[Read HT Sensor-%s] Could not read second Hum/Temp measurement!", sensor+1)
             break
         else:
@@ -2074,12 +2074,12 @@ def verify_ht_sensor(sensor, GPIO):
         for i in range(0, ht_read_tries):
             if (pid_ht_temp_alive[sensor] or pid_ht_hum_alive[sensor]) and client_que != 'TerminateServer' and pause_daemon != 1:
                 humidity2, tempc2 = read_ht(sensor, sensor_ht_device[sensor], GPIO)
-                if humidity2 != None and tempc2 != None:
+                if humidity2 is not None and tempc2 is not None:
                     break
             else:
                 break
 
-        if humidity2 == None or tempc2 == None:
+        if humidity2 is None or tempc2 is None:
             logging.warning("[Verify HT Sensor-%s] Could not read first Hum/Temp measurement!", sensor+1)
             break
         else:
@@ -2089,12 +2089,12 @@ def verify_ht_sensor(sensor, GPIO):
         for i in range(0, ht_read_tries): # Multiple attempts to get first reading
             if (pid_ht_temp_alive[sensor] or pid_ht_hum_alive[sensor]) and client_que != 'TerminateServer' and pause_daemon != 1:
                 humidity, tempc = read_ht(sensor, sensor_ht_device[sensor], GPIO)
-                if humidity != None and tempc != None:
+                if humidity is not None and tempc is not None:
                     break
             else:
                 break
 
-        if humidity == None or tempc == None:
+        if humidity is None or tempc is None:
             logging.warning("[Verify HT Sensor-%s] Could not read second Hum/Temp measurement!", sensor+1)
             break
         else:
@@ -2237,12 +2237,12 @@ def read_co2_sensor(sensor):
         for i in range(0, co2_read_tries): # Multiple attempts to get first reading
             if pid_co2_alive[sensor] and client_que != 'TerminateServer' and pause_daemon != 1:
                 co22 = read_K30(sensor, sensor_co2_device[sensor])
-                if co22 != None:
+                if co22 is not None:
                     break
             else:
                 break
 
-        if co22 == None:
+        if co22 is None:
             logging.warning("[Read CO2 Sensor-%s] Could not read first CO2 measurement!", sensor+1)
             break
         else:
@@ -2252,12 +2252,12 @@ def read_co2_sensor(sensor):
         for i in range(0, co2_read_tries): # Multiple attempts to get second reading
             if pid_co2_alive[sensor] and client_que != 'TerminateServer' and pause_daemon != 1:
                 co2 = read_K30(sensor, sensor_co2_device[sensor])
-                if co2 != None:
+                if co2 is not None:
                     break
             else:
                 break
 
-        if co2 == None:
+        if co2 is None:
             logging.warning("[Read CO2 Sensor-%s] Could not read second CO2 measurement!", sensor+1)
             break
         else:
@@ -2355,12 +2355,12 @@ def read_press_sensor(sensor):
         for i in range(0, press_read_tries): # Multiple attempts to get first reading
             if (pid_press_temp_alive[sensor] or pid_press_press_alive[sensor]) and client_que != 'TerminateServer' and pause_daemon != 1:
                 pressure2, tempc2, alt2 = read_press(sensor, sensor_press_device[sensor], sensor_press_pin[sensor])
-                if pressure2 != None and tempc2 != None:
+                if pressure2 is not None and tempc2 is not None:
                     break
             else:
                 break
 
-        if pressure2 == None or tempc2 == None:
+        if pressure2 is None or tempc2 is None:
             logging.warning("[Read Press Sensor-%s] Could not read first Press/Temp measurement!", sensor+1)
             break
         else:
@@ -2370,12 +2370,12 @@ def read_press_sensor(sensor):
         for i in range(0, press_read_tries): # Multiple attempts to get second reading
             if (pid_press_temp_alive[sensor] or pid_press_press_alive[sensor]) and client_que != 'TerminateServer' and pause_daemon != 1:
                 pressure, tempc, alt = read_press(sensor, sensor_press_device[sensor], sensor_press_pin[sensor])
-                if pressure != None and tempc != None:
+                if pressure is not None and tempc is not None:
                     break
             else:
                 break
            
-        if pressure == None or tempc == None:
+        if pressure is None or tempc is None:
             logging.warning("[Read Press Sensor-%s] Could not read second Press/Temp measurement!", sensor+1)
             break
         else:
@@ -2917,7 +2917,7 @@ def read_sql():
     for i in range(0, len(tables)):
         query = "SELECT name FROM sqlite_master WHERE type='table' AND name='%s'" % tables[i]
         cur.execute(query)
-        if cur.fetchone() == None:
+        if cur.fetchone() is None:
             missing.append(tables[i])
     if missing != []:
         print "Missing required table(s):",
@@ -2991,7 +2991,7 @@ def read_sql():
         conditional_relay_doaction.append(row[7])
         conditional_relay_doduration.append(row[8])
         conditional_relay_sel_command.append(row[9])
-        if row[10] == None:
+        if row[10] is None:
             conditional_relay_do_command.append(row[10])
         else:
             if "\'\'" not in row[10]:   
