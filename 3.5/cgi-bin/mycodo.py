@@ -4324,7 +4324,7 @@ def represents_float(s):
 
 # Timestamp format used in sensor and relay logs
 def timestamp():
-    return datetime.datetime.fromtimestamp(time.time()).strftime('%Y %m %d %H %M %S')
+    return datetime.datetime.now().strftime('%Y %m %d %H %M %S')
 
 
 #################################################
