@@ -720,11 +720,11 @@ def daemon(output, log):
             start_all_press_pids = 0
 
         # Check if a PID is being stopped or started, used to pause other tasks
-        if any(pid_t_temp_up, pid_ht_temp_up, pid_ht_hum_up, pid_co2_up, pid_press_temp_up,
+        if any((pid_t_temp_up, pid_ht_temp_up, pid_ht_hum_up, pid_co2_up, pid_press_temp_up,
                pid_press_press_up, pid_t_temp_down, pid_ht_temp_down, pid_ht_hum_down,
                pid_co2_down, pid_press_temp_down, pid_press_press_down, stop_all_t_pids,
                start_all_t_pids, stop_all_ht_pids, start_all_ht_pids, stop_all_co2_pids,
-               start_all_co2_pids, stop_all_press_pids, start_all_press_pids):
+               start_all_co2_pids, stop_all_press_pids, start_all_press_pids)):
             PID_change = 1
         else:
             PID_change = 0
