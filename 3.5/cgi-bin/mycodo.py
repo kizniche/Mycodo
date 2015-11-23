@@ -1736,70 +1736,70 @@ def press_sensor_pressure_monitor(ThreadName, sensor):
     pid_press_press_alive[sensor] = 2
 
 
-def PID_start(type, number):
+def PID_start(type_, number):
     global pid_number
     pid_number = number
-    if type == 'TTemp':
+    if type_ == 'TTemp':
         global pid_t_temp_up
         pid_t_temp_up = 1
         while pid_t_temp_up:
             time.sleep(0.1)
-    if type == 'HTTemp':
+    if type_ == 'HTTemp':
         global pid_ht_temp_up
         pid_ht_temp_up = 1
         while pid_ht_temp_up:
             time.sleep(0.1)
-    elif type == 'HTHum':
+    elif type_ == 'HTHum':
         global pid_ht_hum_up
         pid_ht_hum_up = 1
         while pid_ht_hum_up:
             time.sleep(0.1)
-    elif type == 'CO2':
+    elif type_ == 'CO2':
         global pid_co2_up
         pid_co2_up = 1
         while pid_co2_up:
             time.sleep(0.1)
-    if type == 'PressTemp':
+    if type_ == 'PressTemp':
         global pid_press_temp_up
         pid_press_temp_up = 1
         while pid_press_temp_up:
             time.sleep(0.1)
-    elif type == 'PressPress':
+    elif type_ == 'PressPress':
         global pid_press_press_up
         pid_press_press_up = 1
         while pid_press_press_up:
             time.sleep(0.1)
     return 1
 
-def PID_stop(type, number):
+def PID_stop(type_, number):
     global pid_number
     pid_number = number
-    if type == 'TTemp':
+    if type_ == 'TTemp':
         global pid_t_temp_down
         pid_t_temp_down = 1
         while pid_t_temp_down == 1:
             time.sleep(0.1)
-    if type == 'HTTemp':
+    if type_ == 'HTTemp':
         global pid_ht_temp_down
         pid_ht_temp_down = 1
         while pid_ht_temp_down == 1:
             time.sleep(0.1)
-    if type == 'HTHum':
+    if type_ == 'HTHum':
         global pid_ht_hum_down
         pid_ht_hum_down = 1
         while pid_ht_hum_down == 1:
             time.sleep(0.1)
-    if type == 'CO2':
+    if type_ == 'CO2':
         global pid_co2_down
         pid_co2_down = 1
         while pid_co2_down == 1:
             time.sleep(0.1)
-    if type == 'PressTemp':
+    if type_ == 'PressTemp':
         global pid_press_temp_down
         pid_press_temp_down = 1
         while pid_press_temp_down == 1:
             time.sleep(0.1)
-    if type == 'PressPress':
+    if type_ == 'PressPress':
         global pid_press_press_down
         pid_press_press_down = 1
         while pid_press_press_down == 1:
