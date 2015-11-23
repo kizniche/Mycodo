@@ -3033,7 +3033,7 @@ def read_sql():
     conditional_t_time_notify = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
 
     for j in range(0, len(conditional_t_number_sensor)):
-        cur.execute('SELECT Id, Name, State, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM TSensorConditional WHERE Sensor=' + str(j))
+        cur.execute('SELECT Id, Name, State, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM TSensorConditional WHERE Sensor=?', (str(j),))
         count = 0
         for row in cur:
             conditional_t_id[j][count][0] = row[0]
@@ -3198,7 +3198,7 @@ def read_sql():
     conditional_ht_time_notify = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
 
     for j in range(0, len(conditional_ht_number_sensor)):
-        cur.execute('SELECT Id, Name, State, Condition, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM HTSensorConditional WHERE Sensor=' + str(j))
+        cur.execute('SELECT Id, Name, State, Condition, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM HTSensorConditional WHERE Sensor=?', (str(j),))
         count = 0
         for row in cur:
             conditional_ht_id[j][count][0] = row[0]
@@ -3322,7 +3322,7 @@ def read_sql():
     conditional_co2_time_notify = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
 
     for j in range(0, len(conditional_co2_number_sensor)):
-        cur.execute('SELECT Id, Name, State, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM CO2SensorConditional WHERE Sensor=' + str(j))
+        cur.execute('SELECT Id, Name, State, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM CO2SensorConditional WHERE Sensor=?', (str(j),))
         count = 0
         for row in cur:
             conditional_co2_id[j][count][0] = row[0]
@@ -3479,7 +3479,7 @@ def read_sql():
     conditional_press_time_notify = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
 
     for j in range(0, len(conditional_press_number_sensor)):
-        cur.execute('SELECT Id, Name, State, Condition, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM PressSensorConditional WHERE Sensor=' + str(j))
+        cur.execute('SELECT Id, Name, State, Condition, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM PressSensorConditional WHERE Sensor=?',  (str(j),))
         count = 0
         for row in cur:
             conditional_press_id[j][count][0] = row[0]
