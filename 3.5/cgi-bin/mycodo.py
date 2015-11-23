@@ -168,7 +168,47 @@ class ComServer(rpyc.Service):
 
         conn = sqlite3.connect(mycodo_database)
         cur = conn.cursor()
-        cur.execute('SELECT Combined_Temp_Min, Combined_Temp_Max, Combined_Temp_Tics, Combined_Temp_Mtics, Combined_Temp_Relays_Up, Combined_Temp_Relays_Down, Combined_Temp_Relays_Min, Combined_Temp_Relays_Max, Combined_Temp_Relays_Tics, Combined_Temp_Relays_Mtics, Combined_Hum_Min, Combined_Hum_Max, Combined_Hum_Tics, Combined_Hum_Mtics, Combined_Hum_Relays_Up, Combined_Hum_Relays_Down, Combined_Hum_Relays_Min, Combined_Hum_Relays_Max, Combined_Hum_Relays_Tics, Combined_Hum_Relays_Mtics, Combined_Co2_Min, Combined_Co2_Max, Combined_Co2_Tics, Combined_Co2_Mtics, Combined_Co2_Relays_Up, Combined_Co2_Relays_Down, Combined_Co2_Relays_Min, Combined_Co2_Relays_Max, Combined_Co2_Relays_Tics, Combined_Co2_Relays_Mtics, Combined_Press_Min, Combined_Press_Max, Combined_Press_Tics, Combined_Press_Mtics, Combined_Press_Relays_Up, Combined_Press_Relays_Down, Combined_Press_Relays_Min, Combined_Press_Relays_Max, Combined_Press_Relays_Tics, Combined_Press_Relays_Mtics FROM CustomGraph')
+        cur.execute("""SELECT combined_temp_min,
+                              combined_temp_max,
+                              combined_temp_tics,
+                              combined_temp_mtics,
+                              combined_temp_relays_up,
+                              combined_temp_relays_down,
+                              combined_temp_relays_min,
+                              combined_temp_relays_max,
+                              combined_temp_relays_tics,
+                              combined_temp_relays_mtics,
+                              combined_hum_min,
+                              combined_hum_max,
+                              combined_hum_tics,
+                              combined_hum_mtics,
+                              combined_hum_relays_up,
+                              combined_hum_relays_down,
+                              combined_hum_relays_min,
+                              combined_hum_relays_max,
+                              combined_hum_relays_tics,
+                              combined_hum_relays_mtics,
+                              combined_co2_min,
+                              combined_co2_max,
+                              combined_co2_tics,
+                              combined_co2_mtics,
+                              combined_co2_relays_up,
+                              combined_co2_relays_down,
+                              combined_co2_relays_min,
+                              combined_co2_relays_max,
+                              combined_co2_relays_tics,
+                              combined_co2_relays_mtics,
+                              combined_press_min,
+                              combined_press_max,
+                              combined_press_tics,
+                              combined_press_mtics,
+                              combined_press_relays_up,
+                              combined_press_relays_down,
+                              combined_press_relays_min,
+                              combined_press_relays_max,
+                              combined_press_relays_tics,
+                              combined_press_relays_mtics
+                       FROM   customgraph """)
         for row in cur:
             combined_temp_min = row[0]
             combined_temp_max = row[1]
@@ -2857,8 +2897,7 @@ def read_sql():
     tables = ['Relays', 'TSensor', 'HTSensor', 'CO2Sensor', 'PressSensor', 'Timers', 'CustomGraph', 'SMTP', 'Misc']
     missing = []
     for each in tables:
-        query = "SELECT name FROM sqlite_master WHERE type='table' AND name= ? "
-        cur.execute(query, (each,))
+        cur.execute("SELECT name FROM sqlite_master WHERE type = 'table' AND NAME = ? ", (each,))
         if cur.fetchone() is None:
             missing.append(each)
     if missing:
@@ -2867,13 +2906,13 @@ def read_sql():
         return 0
 
     # Begin setting global variables from SQL database values
-    cur.execute('SELECT Enable_Max_Amps, Max_Amps FROM Misc')
+    cur.execute('SELECT enable_max_amps, max_amps FROM misc')
     for row in cur:
         enable_max_amps = row[0]
         max_amps = row[1]
 
     # Begin setting global variables from SQL database values
-    cur.execute('SELECT Id, Name, Pin, Amps, Trigger, Start_State FROM Relays')
+    cur.execute('SELECT id, name, pin, amps, trigger, start_state FROM relays')
     for row in cur:
         relay_id.append(row[0])
         relay_name.append(row[1])
@@ -2914,7 +2953,20 @@ def read_sql():
     conditional_relay_do_notify = []
     conditional_relay_time_notify = []
 
-    cur.execute('SELECT Id, Name, If_Relay, If_Action, If_Duration, Sel_Relay, Do_Relay, Do_Action, Do_Duration, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM RelayConditional')
+    cur.execute("""SELECT id,
+                          name,
+                          if_relay,
+                          if_action,
+                          if_duration,
+                          sel_relay,
+                          do_relay,
+                          do_action,
+                          do_duration,
+                          sel_command,
+                          do_command,
+                          sel_notify,
+                          do_notify
+                   FROM   relayconditional""")
     for row in cur:
         conditional_relay_id.append(row[0])
         conditional_relay_name.append(row[1])
@@ -2937,7 +2989,39 @@ def read_sql():
         conditional_relay_do_notify.append(row[12])
         conditional_relay_time_notify.append(0)
 
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D FROM TSensor')
+    cur.execute("""SELECT id,
+                          name,
+                          pin,
+                          device,
+                          period,
+                          pre_measure_relay,
+                          pre_measure_dur,
+                          activated,
+                          graph,
+                          yaxis_relay_min,
+                          yaxis_relay_max,
+                          yaxis_relay_tics,
+                          yaxis_relay_mtics,
+                          yaxis_temp_min,
+                          yaxis_temp_max,
+                          yaxis_temp_tics,
+                          yaxis_temp_mtics,
+                          temp_relays_up,
+                          temp_relays_down,
+                          temp_relay_high,
+                          temp_outmin_high,
+                          temp_outmax_high,
+                          temp_relay_low,
+                          temp_outmin_low,
+                          temp_outmax_low,
+                          temp_or,
+                          temp_set,
+                          temp_set_direction,
+                          temp_period,
+                          temp_p,
+                          temp_i,
+                          temp_d
+                   FROM   tsensor """)
     for row in cur:
         sensor_t_id.append(row[0])
         sensor_t_name.append(row[1])
@@ -2992,11 +3076,11 @@ def read_sql():
     conditional_t_number_sensor = []
     conditional_t_number_conditional = []
 
-    cur.execute('SELECT Id FROM TSensor')
+    cur.execute('SELECT id FROM tsensor')
     for row in cur:
         conditional_t_number_sensor.append(row[0])
 
-    cur.execute('SELECT Id FROM TSensorConditional')
+    cur.execute('SELECT id FROM tsensorconditional')
     for row in cur:
         conditional_t_number_conditional.append(row[0])
 
@@ -3033,7 +3117,22 @@ def read_sql():
     conditional_t_time_notify = [[[0 for k in xrange(10)] for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
 
     for j in range(0, len(conditional_t_number_sensor)):
-        cur.execute('SELECT Id, Name, State, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM TSensorConditional WHERE Sensor=?', (str(j),))
+        cur.execute("""SELECT id,
+                              name,
+                              state,
+                              direction,
+                              setpoint,
+                              period,
+                              sel_relay,
+                              relay,
+                              relay_state,
+                              relay_seconds_on,
+                              sel_command,
+                              do_command,
+                              sel_notify,
+                              do_notify
+                       FROM   tsensorconditional
+                       WHERE  sensor = ? """, (str(j),))
         count = 0
         for row in cur:
             conditional_t_id[j][count][0] = row[0]
@@ -3059,7 +3158,66 @@ def read_sql():
             conditional_t_time_notify[j][count][0] = 0
             count += 1
 
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Verify_Pin, Verify_Temp, Verify_Temp_Notify, Verify_Temp_Stop, Verify_Hum, Verify_Hum_Notify, Verify_Hum_Stop, Verify_Notify_Email, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relays_Up, Hum_Relays_Down, Hum_Relay_High, Hum_Outmin_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmin_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensor')
+    cur.execute("""SELECT id,
+                          name,
+                          pin,
+                          device,
+                          period,
+                          pre_measure_relay,
+                          pre_measure_dur,
+                          activated,
+                          graph,
+                          verify_pin,
+                          verify_temp,
+                          verify_temp_notify,
+                          verify_temp_stop,
+                          verify_hum,
+                          verify_hum_notify,
+                          verify_hum_stop,
+                          verify_notify_email,
+                          yaxis_relay_min,
+                          yaxis_relay_max,
+                          yaxis_relay_tics,
+                          yaxis_relay_mtics,
+                          yaxis_temp_min,
+                          yaxis_temp_max,
+                          yaxis_temp_tics,
+                          yaxis_temp_mtics,
+                          yaxis_hum_min,
+                          yaxis_hum_max,
+                          yaxis_hum_tics,
+                          yaxis_hum_mtics,
+                          temp_relays_up,
+                          temp_relays_down,
+                          temp_relay_high,
+                          temp_outmin_high,
+                          temp_outmax_high,
+                          temp_relay_low,
+                          temp_outmin_low,
+                          temp_outmax_low,
+                          temp_or,
+                          temp_set,
+                          temp_set_direction,
+                          temp_period,
+                          temp_p,
+                          temp_i,
+                          temp_d,
+                          hum_relays_up,
+                          hum_relays_down,
+                          hum_relay_high,
+                          hum_outmin_high,
+                          hum_outmax_high,
+                          hum_relay_low,
+                          hum_outmin_low,
+                          hum_outmax_low,
+                          hum_or,
+                          hum_set,
+                          hum_set_direction,
+                          hum_period,
+                          hum_p,
+                          hum_i,
+                          hum_d
+                   FROM   htsensor """)
     for row in cur:
         sensor_ht_id.append(row[0])
         sensor_ht_name.append(row[1])
@@ -3155,11 +3313,11 @@ def read_sql():
     conditional_ht_number_sensor = []
     conditional_ht_number_conditional = []
 
-    cur.execute('SELECT Id FROM HTSensor')
+    cur.execute('SELECT id FROM htsensor')
     for row in cur:
         conditional_ht_number_sensor.append(row[0])
 
-    cur.execute('SELECT Id FROM HTSensorConditional')
+    cur.execute('SELECT id FROM htsensorconditional')
     for row in cur:
         conditional_ht_number_conditional.append(row[0])
 
@@ -3198,7 +3356,24 @@ def read_sql():
     conditional_ht_time_notify = [[[0 for k in xrange(10)] for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
 
     for j in range(0, len(conditional_ht_number_sensor)):
-        cur.execute('SELECT Id, Name, State, Condition, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM HTSensorConditional WHERE Sensor=?', (str(j),))
+        cur.execute("""SELECT id,
+                              name,
+                              state,
+                              condition,
+                              direction,
+                              setpoint,
+                              period,
+                              sel_relay,
+                              relay,
+                              relay_state,
+                              relay_seconds_on,
+                              sel_command,
+                              do_command,
+                              sel_notify,
+                              do_notify
+                       FROM   htsensorconditional
+                       WHERE  sensor = ? """, (str(j),))
+
         count = 0
         for row in cur:
             conditional_ht_id[j][count][0] = row[0]
@@ -3225,7 +3400,39 @@ def read_sql():
             conditional_ht_time_notify[j][count][0] = 0
             count += 1
 
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph,  YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_CO2_Min, YAxis_CO2_Max, YAxis_CO2_Tics, YAxis_CO2_MTics, CO2_Relays_Up, CO2_Relays_Down, CO2_Relay_High, CO2_Outmin_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmin_Low, CO2_Outmax_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D FROM CO2Sensor ')
+    cur.execute("""SELECT id,
+                          name,
+                          pin,
+                          device,
+                          period,
+                          pre_measure_relay,
+                          pre_measure_dur,
+                          activated,
+                          graph,
+                          yaxis_relay_min,
+                          yaxis_relay_max,
+                          yaxis_relay_tics,
+                          yaxis_relay_mtics,
+                          yaxis_co2_min,
+                          yaxis_co2_max,
+                          yaxis_co2_tics,
+                          yaxis_co2_mtics,
+                          co2_relays_up,
+                          co2_relays_down,
+                          co2_relay_high,
+                          co2_outmin_high,
+                          co2_outmax_high,
+                          co2_relay_low,
+                          co2_outmin_low,
+                          co2_outmax_low,
+                          co2_or,
+                          co2_set,
+                          co2_set_direction,
+                          co2_period,
+                          co2_p,
+                          co2_i,
+                          co2_d
+                   FROM   co2sensor """)
     for row in cur:
         sensor_co2_id.append(row[0])
         sensor_co2_name.append(row[1])
@@ -3280,11 +3487,11 @@ def read_sql():
     conditional_co2_number_sensor = []
     conditional_co2_number_conditional = []
 
-    cur.execute('SELECT Id FROM CO2Sensor')
+    cur.execute('SELECT id FROM co2sensor')
     for row in cur:
         conditional_co2_number_sensor.append(row[0])
 
-    cur.execute('SELECT Id FROM CO2SensorConditional')
+    cur.execute('SELECT id FROM co2sensorconditional ')
     for row in cur:
         conditional_co2_number_conditional.append(row[0])
 
@@ -3322,7 +3529,22 @@ def read_sql():
     conditional_co2_time_notify = [[[0 for k in xrange(10)] for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
 
     for j in range(0, len(conditional_co2_number_sensor)):
-        cur.execute('SELECT Id, Name, State, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM CO2SensorConditional WHERE Sensor=?', (str(j),))
+        cur.execute("""SELECT id,
+                              name,
+                              state,
+                              direction,
+                              setpoint,
+                              period,
+                              sel_relay,
+                              relay,
+                              relay_state,
+                              relay_seconds_on,
+                              sel_command,
+                              do_command,
+                              sel_notify,
+                              do_notify
+                       FROM   co2sensorconditional
+                       WHERE  sensor = ? """, (str(j),))
         count = 0
         for row in cur:
             conditional_co2_id[j][count][0] = row[0]
@@ -3348,7 +3570,58 @@ def read_sql():
             conditional_co2_time_notify[j][count][0] = 0
             count += 1
 
-    cur.execute('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Press_Min, YAxis_Press_Max, YAxis_Press_Tics, YAxis_Press_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Press_Relays_Up, Press_Relays_Down, Press_Relay_High, Press_Outmin_High, Press_Outmax_High, Press_Relay_Low, Press_Outmin_Low, Press_Outmax_Low, Press_OR, Press_Set, Press_Set_Direction, Press_Period, Press_P, Press_I, Press_D FROM PressSensor')
+    cur.execute("""SELECT id,
+                          name,
+                          pin,
+                          device,
+                          period,
+                          pre_measure_relay,
+                          pre_measure_dur,
+                          activated,
+                          graph,
+                          yaxis_relay_min,
+                          yaxis_relay_max,
+                          yaxis_relay_tics,
+                          yaxis_relay_mtics,
+                          yaxis_temp_min,
+                          yaxis_temp_max,
+                          yaxis_temp_tics,
+                          yaxis_temp_mtics,
+                          yaxis_press_min,
+                          yaxis_press_max,
+                          yaxis_press_tics,
+                          yaxis_press_mtics,
+                          temp_relays_up,
+                          temp_relays_down,
+                          temp_relay_high,
+                          temp_outmin_high,
+                          temp_outmax_high,
+                          temp_relay_low,
+                          temp_outmin_low,
+                          temp_outmax_low,
+                          temp_or,
+                          temp_set,
+                          temp_set_direction,
+                          temp_period,
+                          temp_p,
+                          temp_i,
+                          temp_d,
+                          press_relays_up,
+                          press_relays_down,
+                          press_relay_high,
+                          press_outmin_high,
+                          press_outmax_high,
+                          press_relay_low,
+                          press_outmin_low,
+                          press_outmax_low,
+                          press_or,
+                          press_set,
+                          press_set_direction,
+                          press_period,
+                          press_p,
+                          press_i,
+                          press_d
+                   FROM   presssensor """)
     for row in cur:
         sensor_press_id.append(row[0])
         sensor_press_name.append(row[1])
@@ -3436,11 +3709,11 @@ def read_sql():
     conditional_press_number_sensor = []
     conditional_press_number_conditional = []
 
-    cur.execute('SELECT Id FROM PressSensor')
+    cur.execute('SELECT id FROM presssensor')
     for row in cur:
         conditional_press_number_sensor.append(row[0])
 
-    cur.execute('SELECT Id FROM PressSensorConditional')
+    cur.execute('SELECT id FROM presssensorconditional')
     for row in cur:
         conditional_press_number_conditional.append(row[0])
 
@@ -3479,7 +3752,23 @@ def read_sql():
     conditional_press_time_notify = [[[0 for k in xrange(10)] for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
 
     for j in range(0, len(conditional_press_number_sensor)):
-        cur.execute('SELECT Id, Name, State, Condition, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM PressSensorConditional WHERE Sensor=?',  (str(j),))
+        cur.execute("""SELECT id,
+                              name,
+                              state,
+                              condition,
+                              direction,
+                              setpoint,
+                              period,
+                              sel_relay,
+                              relay,
+                              relay_state,
+                              relay_seconds_on,
+                              sel_command,
+                              do_command,
+                              sel_notify,
+                              do_notify
+                       FROM   presssensorconditional
+                       WHERE  sensor = ? """,  (str(j),))
         count = 0
         for row in cur:
             conditional_press_id[j][count][0] = row[0]
@@ -3506,7 +3795,7 @@ def read_sql():
             conditional_press_time_notify[j][count][0] = 0
             count += 1
 
-    cur.execute('SELECT Id, Name, Relay, State, DurationOn, DurationOff FROM Timers')
+    cur.execute('SELECT id, name, relay, state, durationon, durationoff FROM timers')
     for row in cur:
         timer_id.append(row[0])
         timer_name.append(row[1])
@@ -3515,7 +3804,7 @@ def read_sql():
         timer_duration_on.append(row[4])
         timer_duration_off.append(row[5])
 
-    cur.execute('SELECT Host, SSL, Port, User, Pass, Email_From, Wait_Time FROM SMTP')
+    cur.execute('SELECT host, ssl, port, user, pass, email_from, wait_time FROM smtp')
     for row in cur:
         smtp_host = row[0]
         smtp_ssl = row[1]
