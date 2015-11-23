@@ -22,7 +22,31 @@
 *  Contact at kylegabriel.com
 */
 
-// See file.php for variable declarations
+// Determine what type of graph to generate and for how long in the past
+$sensor_type = $_POST['Generate_Graph_Type'];
+$sensor_span = $_POST['Generate_Graph_Span'];
+if ($sensor_span == "all") { // Don't trim logs (use all data)
+    $time_start = "0";
+    $time_end = "0";
+    $title = "Graph ($sensor_type) All Time";
+    $legend_y = 75;
+} else { // Determine start and end points for logs
+    if ($sensor_span == "1 Hour") $time_start = date('Y/m/d-H:i:s', strtotime('-1 hour'));
+    else if ($sensor_span == "3 Hours") $time_start = date('Y/m/d-H:i:s', strtotime('-3 hour'));
+    else if ($sensor_span == "6 Hours") $time_start = date('Y/m/d-H:i:s', strtotime('-6 hour'));
+    else if ($sensor_span == "12 Hours") $time_start = date('Y/m/d-H:i:s', strtotime('-12 hour'));
+    else if ($sensor_span == "1 Day") $time_start = date('Y/m/d-H:i:s', strtotime('-1 day'));
+    else if ($sensor_span == "3 Days") $time_start = date('Y/m/d-H:i:s', strtotime('-3 day'));
+    else if ($sensor_span == "1 Week") $time_start = date('Y/m/d-H:i:s', strtotime('-1 week'));
+    else if ($sensor_span == "2 Weeks") $time_start = date('Y/m/d-H:i:s', strtotime('-2 week'));
+    else if ($sensor_span == "1 Month") $time_start = date('Y/m/d-H:i:s', strtotime('-1 month'));
+    else if ($sensor_span == "3 Months") $time_start = date('Y/m/d-H:i:s', strtotime('-3 month'));
+    else if ($sensor_span == "6 Months") $time_start = date('Y/m/d-H:i:s', strtotime('-6 month'));
+    else if ($sensor_span == "1 Year") $time_start = date('Y/m/d-H:i:s', strtotime('-1 year'));
+    $time_end = date('Y/m/d-H:i:s');
+    $title = "Graph ($sensor_type) Past $sensor_span: $time_start - $time_end";
+    $legend_y = 95;
+}
 
 // Generate trimmed sensor logs to the start and end points
 if ($sensor_type == "all") {
@@ -106,7 +130,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             var date = timeElements[0].split('/');
                             var time = timeElements[1].split(':');
                             var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
-                            if (parseInt(items[2]) == sensor) sensordata.push([date,parseInt(items[1])]);
+                            if (parseInt(items[2]) == sensor) sensordata.push([date,parseFloat(items[1])]);
                         });
                         return sensordata;
                     }
@@ -210,7 +234,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             data: getSensorData(0),
                             tooltip: {
                                 valueSuffix: ' °C',
-                                valueDecimals: 0,
+                                valueDecimals: 1,
                             }
                         },<?php
                         }
@@ -1219,7 +1243,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             var time = timeElements[1].split(':');
                             var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
                             if (type == 't') {
-                                if (parseInt(items[3]) == sensor && items[0] == 't') sensordata.push([date,parseInt(items[2])]);
+                                if (condition == 'temp' && parseInt(items[3]) == sensor && items[0] == 't') sensordata.push([date,parseFloat(items[2])]);
                             } else if (type == 'ht') {
                                 if (condition == 'temp' && parseInt(items[5]) == sensor && items[0] == 'ht') sensordata.push([date,parseFloat(items[2])]);
                                 if (condition == 'hum' && parseInt(items[5]) == sensor && items[0] == 'ht') sensordata.push([date,parseFloat(items[3])]);
@@ -1372,11 +1396,11 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             if ($sensor_t_graph[$i]) {
                         ?>{
                             name: '<?php echo "T" . ($i+1) . " " . $sensor_t_name[$i]; ?> Temperature',
-                            color: Highcharts.getOptions().colors[0],
-                            data: getSensorData(<?php echo $i; ?>, 't', 0),
+                            color: Highcharts.getOptions().colors[<?php echo $count; $count++; ?>],
+                            data: getSensorData(<?php echo $i; ?>, 't', 'temp'),
                             tooltip: {
                                 valueSuffix: ' °C',
-                                valueDecimals: 0,
+                                valueDecimals: 1,
                             }
                         },<?php
                             }
@@ -1418,7 +1442,8 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             color: Highcharts.getOptions().colors[0],
                             <?php
                             if ($temperature && $humidity) echo 'yAxis: 2,';
-                            else if (($temperature && !$humidity) || (!$temperature && $humidity)) echo 'yAxis: 1,';
+                            else if (($temperature && !$humidity) ||
+                                    (!$temperature && $humidity)) echo 'yAxis: 1,';
                             ?>
                             data: getSensorData(<?php echo $i; ?>, 'co2', 0),
                             tooltip: {
@@ -1468,7 +1493,20 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             },
                             color: Highcharts.getOptions().colors[<?php echo $i+1; ?>],
                             data: getRelayData(<?php echo $i+1; ?>),
-                            yAxis: 4,
+                            <?php
+                            if ($temperature && $humidity && $co2 && $pressure) echo 'yAxis: 4,';
+                            else if (($temperature && $humidity && $co2 && !$pressure) ||
+                                    ($temperature && !$humidity && $co2 && $pressure) ||
+                                    (!$temperature && !$humidity && $co2 && $pressure) ||
+                                    (!$temperature && $humidity && $co2 && !$pressure) ||
+                                    (!$temperature && !$humidity && $co2 && $pressure)) echo 'yAxis: 3,';
+                            else if (($temperature && !$humidity && $co2 && !$pressure) ||
+                                    (!$temperature && $humidity && !$co2 && !$pressure) ||
+                                    (!$temperature && !$humidity && !$co2 && $pressure) ||
+                                    ($temperature && $humidity && !$co2 && !$pressure)) echo 'yAxis: 2,';
+                            else if (($temperature && !$humidity && !$co2 && !$pressure) ||
+                                    (!$temperature && !$humidity && $co2 && !$pressure)) echo 'yAxis: 1,';
+                            ?>
                             tooltip: {
                                 valueSuffix: ' sec',
                                 valueDecimals: 0,
