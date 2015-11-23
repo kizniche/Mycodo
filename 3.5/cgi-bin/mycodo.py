@@ -2856,20 +2856,13 @@ def read_sql():
     cur = conn.cursor()
     tables = ['Relays', 'TSensor', 'HTSensor', 'CO2Sensor', 'PressSensor', 'Timers', 'CustomGraph', 'SMTP', 'Misc']
     missing = []
-    for i in range(0, len(tables)):
-        query = "SELECT name FROM sqlite_master WHERE type='table' AND name='%s'" % tables[i]
-        cur.execute(query)
+    for each in tables:
+        query = "SELECT name FROM sqlite_master WHERE type='table' AND name= ? "
+        cur.execute(query, (each,))
         if cur.fetchone() is None:
-            missing.append(tables[i])
+            missing.append(each)
     if missing:
-        print "Missing required table(s):",
-        for i in range(0, len(missing)):
-            if len(missing) == 1:
-                print "%s" % missing[i]
-            elif len(missing) != 1 and i != len(missing)-1:
-                print "%s," % missing[i],
-            else:
-                print "%s" % missing[i]
+        print "Missing required table(s): %s" % " ,".join(missing)
         print "Reinitialize database to correct."
         return 0
 
