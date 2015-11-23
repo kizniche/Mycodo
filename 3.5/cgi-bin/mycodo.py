@@ -131,10 +131,10 @@ on_duration_seconds = []
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
     def exposed_ChangeRelay(self, relay, state):
-        if (state == 1):
+        if state == 1:
             logging.info("[Client command] Changing Relay %s (%s) to HIGH", relay, relay_name[relay-1])
             relay_onoff(int(relay), 'on')
-        elif (state == 0):
+        elif state == 0:
             logging.info("[Client command] Changing Relay %s (%s) to LOW", relay, relay_name[relay-1])
             relay_onoff(int(relay), 'off')
         else:
@@ -307,7 +307,7 @@ class ComServer(rpyc.Service):
 
     def exposed_ReadPressSensor(self, address, sensor):
         logging.info("[Client command] Read Press Sensor %s from I2C address %s", sensor, address)
-        if (sensor == 'BMP085-180'):
+        if sensor == 'BMP085-180':
             if address != 0:
                 if address < 10:
                     I2C_address = 0x70
@@ -339,11 +339,11 @@ class ComServer(rpyc.Service):
             sea_press = press_sensor.read_sealevel_pressure()
         else:
             return 'Invalid Sensor Name'
-        return (tc, press, alt, sea_press)
+        return tc, press, alt, sea_press
 
     def exposed_ReadCO2Sensor(self, pin, sensor):
         logging.info("[Client command] Read CO2 Sensor %s from GPIO pin %s", sensor, pin)
-        if (sensor == 'K30'):
+        if sensor == 'K30':
             read_co2_sensor(sensor-1)
             return sensor_co2_read_co2
         else:
@@ -351,10 +351,10 @@ class ComServer(rpyc.Service):
 
     def exposed_ReadHTSensor(self, pin, sensor):
         logging.info("[Client command] Read HT Sensor %s from GPIO/I2C address %s", sensor, pin)
-        if (sensor == 'DHT11'): device = Adafruit_DHT.DHT11
-        elif (sensor == 'DHT22'): device = Adafruit_DHT.DHT22
-        elif (sensor == 'AM2302'): device = Adafruit_DHT.AM2302
-        elif (sensor == 'AM2315'):
+        if sensor == 'DHT11': device = Adafruit_DHT.DHT11
+        elif sensor == 'DHT22': device = Adafruit_DHT.DHT22
+        elif sensor == 'AM2302': device = Adafruit_DHT.AM2302
+        elif sensor == 'AM2315':
             device = 'AM2315'
         if device == Adafruit_DHT.DHT11 or device == Adafruit_DHT.DHT22 or device == Adafruit_DHT.AM2302:
             hum, tc = Adafruit_DHT.read_retry(device, pin)
@@ -387,11 +387,11 @@ class ComServer(rpyc.Service):
             tc, hum, crc_check = am.sense()
         else:
             return 'Invalid Sensor Name'
-        return (tc, hum)
+        return tc, hum
 
     def exposed_ReadTSensor(self, pin, device):
         logging.info("[Client command] Read T Sensor %s from GPIO pin %s", sensor, pin)
-        if (sensor == 'DS18B20'):
+        if sensor == 'DS18B20':
             return read_t(0, device, pin)
         else:
             return 'Invalid Sensor Name'
@@ -469,8 +469,8 @@ def menu():
             usage()
             return 0
         elif opt in ("-l", "--log"):
-            if (arg == 'w'): b = 'warning'
-            elif (arg == 'd'): b = 'debug'
+            if arg == 'w': b = 'warning'
+            elif arg == 'd': b = 'debug'
         elif opt in ("-v", "--verbose"):
             a = 'verbose'
         else:
@@ -553,14 +553,14 @@ def daemon(output, log):
 
 
     # Set log level based on startup argument
-    if (log == 'warning'):
+    if log == 'warning':
         logging.getLogger().setLevel(logging.WARNING)
-    elif (log == 'info'):
+    elif log == 'info':
         logging.getLogger().setLevel(logging.INFO)
     else:
         logging.getLogger().setLevel(logging.DEBUG)
 
-    if (output == 'verbose'):
+    if output == 'verbose':
         # define a Handler which writes DEBUG messages or higher to the sys.stderr
         console = logging.StreamHandler()
         console.setLevel(logging.DEBUG)
@@ -621,7 +621,7 @@ def daemon(output, log):
             pid_t_temp_alive = [1] * len(sensor_t_id)
             threads_t_t = []
             for i in range(0, len(sensor_t_id)):
-                if (pid_t_temp_or[i] == 0):
+                if pid_t_temp_or[i] == 0:
                     pid_t_temp_active.append(1)
                     rod = threading.Thread(target = t_sensor_temperature_monitor,
                         args = ('Thread-T-T-%d' % (i+1), i,))
@@ -642,7 +642,7 @@ def daemon(output, log):
             pid_ht_hum_alive =  [1] * len(sensor_ht_id)
             threads_ht_t = []
             for i in range(0, len(sensor_ht_id)):
-                if (pid_ht_temp_or[i] == 0):
+                if pid_ht_temp_or[i] == 0:
                     pid_ht_temp_active.append(1)
                     rod = threading.Thread(target = ht_sensor_temperature_monitor,
                         args = ('Thread-HT-T-%d' % (i+1), i,))
@@ -652,7 +652,7 @@ def daemon(output, log):
                     pid_ht_temp_active.append(0)
             threads_ht_h = []
             for i in range(0, len(sensor_ht_id)):
-                if (pid_ht_hum_or[i] == 0):
+                if pid_ht_hum_or[i] == 0:
                     pid_ht_hum_active.append(1)
                     rod = threading.Thread(target = ht_sensor_humidity_monitor,
                         args = ('Thread-HT-H-%d' % (i+1), i,))
@@ -670,7 +670,7 @@ def daemon(output, log):
             pid_co2_alive =  [1] * len(sensor_co2_id)
             threads_co2 = []
             for i in range(0, len(sensor_co2_id)):
-                if (pid_co2_or[i] == 0):
+                if pid_co2_or[i] == 0:
                     pid_co2_active[i] = 1
                     rod = threading.Thread(target = co2_monitor,
                         args = ('Thread-CO2-%d' % (i+1), i,))
@@ -689,7 +689,7 @@ def daemon(output, log):
             pid_press_press_alive =  [1] * len(sensor_press_id)
             threads_press_t = []
             for i in range(0, len(sensor_press_id)):
-                if (pid_press_temp_or[i] == 0):
+                if pid_press_temp_or[i] == 0:
                     pid_press_temp_active.append(1)
                     rod = threading.Thread(target = press_sensor_temperature_monitor,
                         args = ('Thread-HT-T-%d' % (i+1), i,))
@@ -699,7 +699,7 @@ def daemon(output, log):
                     pid_press_temp_active.append(0)
             threads_press_h = []
             for i in range(0, len(sensor_press_id)):
-                if (pid_press_press_or[i] == 0):
+                if pid_press_press_or[i] == 0:
                     pid_press_press_active.append(1)
                     rod = threading.Thread(target = press_sensor_pressure_monitor,
                         args = ('Thread-HT-H-%d' % (i+1), i,))
@@ -1152,7 +1152,7 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
     pid_temp = PID(pid_t_temp_p[sensor], pid_t_temp_i[sensor], pid_t_temp_d[sensor])
     pid_temp.setPoint(pid_t_temp_set[sensor])
 
-    while (pid_t_temp_alive[sensor]):
+    while pid_t_temp_alive[sensor]:
 
         if pause_daemon:
             logging.debug("[PID T-Temperature-%s] Pausing Temp sensor read for SQL reload", sensor+1)
@@ -1181,7 +1181,7 @@ def t_sensor_temperature_monitor(ThreadName, sensor):
                     PIDTemp = pid_temp.update(float(sensor_t_read_temp_c[sensor]))
                     if sensor_t_read_temp_c[sensor] > pid_t_temp_set[sensor]:
                         logging.debug("[PID T-Temperature-%s] Temperature: %.1f°C now > %.1f°C set", sensor+1, sensor_t_read_temp_c[sensor], pid_t_temp_set[sensor])
-                    elif (sensor_t_read_temp_c[sensor] < pid_t_temp_set[sensor]):
+                    elif sensor_t_read_temp_c[sensor] < pid_t_temp_set[sensor]:
                         logging.debug("[PID T-Temperature-%s] Temperature: %.1f°C now < %.1f°C set", sensor+1, sensor_t_read_temp_c[sensor], pid_t_temp_set[sensor])
                     else:
                         logging.debug("[PID T-Temperature-%s] Temperature: %.1f°C now = %.1f°C set", sensor+1, sensor_t_read_temp_c[sensor], pid_t_temp_set[sensor])
@@ -1249,7 +1249,7 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
     pid_temp = PID(pid_ht_temp_p[sensor], pid_ht_temp_i[sensor], pid_ht_temp_d[sensor])
     pid_temp.setPoint(pid_ht_temp_set[sensor])
 
-    while (pid_ht_temp_alive[sensor]):
+    while pid_ht_temp_alive[sensor]:
 
         if pause_daemon:
             logging.debug("[PID HT-Temperature-%s] Pausing Hum/Temp sensor read for SQL reload", sensor+1)
@@ -1286,7 +1286,7 @@ def ht_sensor_temperature_monitor(ThreadName, sensor):
                         PIDTemp = pid_temp.update(float(sensor_ht_read_temp_c[sensor]))
                         if sensor_ht_read_temp_c[sensor] > pid_ht_temp_set[sensor]:
                             logging.debug("[PID HT-Temperature-%s] Temperature: %.1f°C now > %.1f°C set", sensor+1, sensor_ht_read_temp_c[sensor], pid_ht_temp_set[sensor])
-                        elif (sensor_ht_read_temp_c[sensor] < pid_ht_temp_set[sensor]):
+                        elif sensor_ht_read_temp_c[sensor] < pid_ht_temp_set[sensor]:
                             logging.debug("[PID HT-Temperature-%s] Temperature: %.1f°C now < %.1f°C set", sensor+1, sensor_ht_read_temp_c[sensor], pid_ht_temp_set[sensor])
                         else:
                             logging.debug("[PID HT-Temperature-%s] Temperature: %.1f°C now = %.1f°C set", sensor+1, sensor_ht_read_temp_c[sensor], pid_ht_temp_set[sensor])
@@ -1355,7 +1355,7 @@ def ht_sensor_humidity_monitor(ThreadName, sensor):
     pid_hum = PID(pid_ht_hum_p[sensor], pid_ht_hum_i[sensor], pid_ht_hum_d[sensor])
     pid_hum.setPoint(pid_ht_hum_set[sensor])
 
-    while (pid_ht_hum_alive[sensor]):
+    while pid_ht_hum_alive[sensor]:
 
         if pause_daemon:
             logging.debug("[PID HT-Humidity-%s] Pausing Hum/Temp sensor read for SQL reload", sensor+1)
@@ -1460,7 +1460,7 @@ def co2_monitor(ThreadName, sensor):
     pid_co2 = PID(pid_co2_p[sensor], pid_co2_i[sensor], pid_co2_d[sensor])
     pid_co2.setPoint(pid_co2_set[sensor])
 
-    while (pid_co2_alive[sensor]):
+    while pid_co2_alive[sensor]:
 
         if pause_daemon:
             logging.debug("[PID CO2-%s] Pausing CO2 sensor read for SQL reload", sensor+1)
@@ -1489,7 +1489,7 @@ def co2_monitor(ThreadName, sensor):
                     PIDCO2 = pid_co2.update(float(sensor_co2_read_co2[sensor]))
                     if sensor_co2_read_co2[sensor] > pid_co2_set[sensor]:
                         logging.debug("[PID CO2-%s] CO2: %.1f ppm > %.1f ppm set", sensor+1, sensor_co2_read_co2[sensor], pid_co2_set[sensor])
-                    elif (sensor_co2_read_co2[sensor] < pid_co2_set[sensor]):
+                    elif sensor_co2_read_co2[sensor] < pid_co2_set[sensor]:
                         logging.debug("[PID CO2-%s] CO2: %.1f ppm < %.1f ppm set", sensor+1, sensor_co2_read_co2[sensor], pid_co2_set[sensor])
                     else:
                         logging.debug("[PID CO2-%s] CO2: %.1f ppm now = %.1f ppm set", sensor+1, sensor_co2_read_co2[sensor], pid_co2_set[sensor])
@@ -1557,7 +1557,7 @@ def press_sensor_temperature_monitor(ThreadName, sensor):
     pid_temp = PID(pid_press_temp_p[sensor], pid_press_temp_i[sensor], pid_press_temp_d[sensor])
     pid_temp.setPoint(pid_press_temp_set[sensor])
 
-    while (pid_press_temp_alive[sensor]):
+    while pid_press_temp_alive[sensor]:
 
         if pause_daemon:
             logging.debug("[PID Press-Temperature-%s] Pausing Press/Temp sensor read for SQL reload", sensor+1)
@@ -1586,7 +1586,7 @@ def press_sensor_temperature_monitor(ThreadName, sensor):
                     PIDTemp = pid_temp.update(float(sensor_ht_read_temp_c[sensor]))
                     if sensor_ht_read_temp_c[sensor] > pid_press_temp_set[sensor]:
                         logging.debug("[PID Press-Temperature-%s] Temperature: %.1f°C now > %.1f°C set", sensor+1, sensor_ht_read_temp_c[sensor], pid_press_temp_set[sensor])
-                    elif (sensor_ht_read_temp_c[sensor] < pid_press_temp_set[sensor]):
+                    elif sensor_ht_read_temp_c[sensor] < pid_press_temp_set[sensor]:
                         logging.debug("[PID Press-Temperature-%s] Temperature: %.1f°C now < %.1f°C set", sensor+1, sensor_ht_read_temp_c[sensor], pid_press_temp_set[sensor])
                     else:
                         logging.debug("[PID Press-Temperature-%s] Temperature: %.1f°C now = %.1f°C set", sensor+1, sensor_ht_read_temp_c[sensor], pid_press_temp_set[sensor])
@@ -1654,7 +1654,7 @@ def press_sensor_pressure_monitor(ThreadName, sensor):
     pid_press = PID(pid_press_press_p[sensor], pid_press_press_i[sensor], pid_press_press_d[sensor])
     pid_press.setPoint(pid_press_press_set[sensor])
 
-    while (pid_press_press_alive[sensor]):
+    while pid_press_press_alive[sensor]:
 
         if pause_daemon:
             logging.debug("[PID Press-Pressure-%s] Pausing Press/Temp sensor read for SQL reload", sensor+1)
@@ -1964,7 +1964,7 @@ def read_ht_sensor(sensor):
         rod = threading.Thread(target = relay_on_duration,
             args = (sensor_ht_premeasure_relay[sensor], sensor_ht_premeasure_dur[sensor], sensor, relay_trigger, relay_pin,))
         rod.start()
-        while ((timerHT > int(time.time())) and client_que != 'TerminateServer'):
+        while (timerHT > int(time.time())) and client_que != 'TerminateServer':
             if pause_daemon:
                 relay_onoff(sensor_ht_premeasure_relay[sensor], 'off')
                 break
@@ -2059,7 +2059,7 @@ def verify_ht_sensor(sensor, GPIO):
         rod = threading.Thread(target = relay_on_duration,
             args = (sensor_ht_premeasure_relay[sensor], sensor_ht_premeasure_dur[sensor], sensor, relay_trigger, relay_pin,))
         rod.start()
-        while ((timerHT > int(time.time())) and client_que != 'TerminateServer'):
+        while (timerHT > int(time.time())) and client_que != 'TerminateServer':
             if pause_daemon:
                 relay_onoff(sensor_ht_premeasure_relay[sensor], 'off')
                 break
@@ -2222,7 +2222,7 @@ def read_co2_sensor(sensor):
         rod = threading.Thread(target = relay_on_duration,
             args = (sensor_co2_premeasure_relay[sensor], sensor_co2_premeasure_dur[sensor], sensor, relay_trigger, relay_pin,))
         rod.start()
-        while ((timerCO2 > int(time.time())) and client_que != 'TerminateServer'):
+        while (timerCO2 > int(time.time())) and client_que != 'TerminateServer':
             if pause_daemon:
                 relay_onoff(sensor_co2_premeasure_relay[sensor], 'off')
                 break
@@ -2335,7 +2335,7 @@ def read_press_sensor(sensor):
             lock.acquire()
     logging.debug("[Read Press Sensor-%s] Gained lock: %s", sensor+1, lock.path)
     timerPress = 0
-    if (sensor_press_premeasure_relay[sensor] and sensor_press_premeasure_dur[sensor]):
+    if sensor_press_premeasure_relay[sensor] and sensor_press_premeasure_dur[sensor]:
         timerPress = int(time.time()) + sensor_press_premeasure_dur[sensor]
         rod = threading.Thread(target = relay_on_duration,
             args = (sensor_press_premeasure_relay[sensor], sensor_press_premeasure_dur[sensor], sensor, relay_trigger, relay_pin,))
@@ -3329,14 +3329,14 @@ def read_sql():
     global sensor_co2_relays_up_list
     sensor_co2_relays_up_list = []
     for i in range(0, len(sensor_co2_relays_up)):
-        if (sensor_co2_relays_up[i] != ''):
+        if sensor_co2_relays_up[i] != '':
             sensor_co2_relays_up_list.append(sensor_co2_relays_up[i].split(","))
             sensor_co2_relays_up_list[i] = map(int, sensor_co2_relays_up_list[i])
 
     global sensor_co2_relays_down_list
     sensor_co2_relays_down_list = []
     for i in range(0, len(sensor_co2_relays_down)):
-        if (sensor_co2_relays_down[i] != ''):
+        if sensor_co2_relays_down[i] != '':
             sensor_co2_relays_down_list.append(sensor_co2_relays_down[i].split(","))
             sensor_co2_relays_down_list[i] = map(int, sensor_co2_relays_down_list[i])
 
@@ -3746,7 +3746,7 @@ def set_relay_gpio(relay, State):
 
 # Turn relay on or off and use conditionals
 def relay_onoff(relay, state):
-    if (relay_trigger[relay-1] == 1 and state == 'on'):
+    if relay_trigger[relay-1] == 1 and state == 'on':
         if enable_max_amps == 1:
             total_amps = 0
             for i in range(0, len(relay_id)):
@@ -3761,7 +3761,7 @@ def relay_onoff(relay, state):
                         relay, relay_name[relay-1], total_amps, max_amps)
                 return 1
         set_relay_gpio(relay, 1)
-    elif (relay_trigger[relay-1] == 0 and state == 'on'):
+    elif relay_trigger[relay-1] == 0 and state == 'on':
         if enable_max_amps == 1:
             total_amps = 0
             for i in range(0, len(relay_id)):
@@ -3777,9 +3777,9 @@ def relay_onoff(relay, state):
                 return 1
         set_relay_gpio(relay, 0)
 
-    elif (relay_trigger[relay-1] == 0 and state == 'off'):
+    elif relay_trigger[relay-1] == 0 and state == 'off':
         set_relay_gpio(relay, 1)
-    elif (relay_trigger[relay-1] == 1 and state == 'off'):
+    elif relay_trigger[relay-1] == 1 and state == 'off':
         set_relay_gpio(relay, 0)
 
     for i in range(0, len(conditional_relay_id)):
@@ -3975,7 +3975,7 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
             logging.warning("[Relay Duration] SQL database reloaded while Relay %s is in a timed on duration. Turning off and cancelling current timer.", relay)
             relay_off(relay, local_relay_pin, local_relay_trigger)
         else:
-            while (client_que != 'TerminateServer' and on_duration_timer[relay-1] > int(time.time())):
+            while client_que != 'TerminateServer' and on_duration_timer[relay-1] > int(time.time()):
                 if pause_daemon:
                     relay_off(relay, local_relay_pin, local_relay_trigger)
                     logging.warning("[Relay Duration] SQL database reloaded while Relay %s is in a timed on duration. Turning off and cancelling current timer.", relay)
@@ -4059,7 +4059,7 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
 # Email notification
 def email(email_to, message):
     try:
-        if (smtp_ssl):
+        if smtp_ssl:
             server = smtplib.SMTP_SSL(smtp_host, smtp_port)
             server.ehlo()
         else:
@@ -4112,7 +4112,7 @@ def main():
         logging.warning("Must be executed as root.")
         usage()
         sys.exit("Must be executed as root")
-    if (menu() == 1):
+    if menu() == 1:
         if not os.path.exists(lock_directory):
             os.makedirs(lock_directory)
         runlock = LockFile(daemon_lock_path)
