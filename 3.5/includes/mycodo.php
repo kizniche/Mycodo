@@ -4969,7 +4969,7 @@ if (!file_exists($lock_daemon)) {
                 <table class="edit-user">
                     <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
+                        <td colspan="2" class="setting-title">
                             Edit Users
                         </td>
                     </tr>
@@ -4984,8 +4984,8 @@ if (!file_exists($lock_daemon)) {
                 <?php 
                 for ($i = 0; $i < count($user_name); $i++) {
                 ?>
-                    <form method="post" action="?tab=settings">
                     <tr>
+                        <form method="post" action="?tab=settings">
                         <td><?php echo $user_name[$i]; ?><input type="hidden" name="user_name" value="<?php echo $user_name[$i]; ?>"></td>
                         <td>
                             <input style="width: 12.5em;" type="text" value="<?php echo $user_email[$i]; ?>" name="user_email" title="The email address associated with this account. In addition to the user name, the email address may be used to log in."/>
@@ -5029,9 +5029,8 @@ if (!file_exists($lock_daemon)) {
                             <input type="hidden" name="user_name" value="<?php echo $user_name[$i]; ?>">
                             <button type="submit" name="deleteuser" value="<?php echo $user_name[$i]; ?>" title="Delete user <?php echo $user_name[$i]; ?>">Delete</button>
                         </td>
-                    </form>
+                        </form>
                     </tr>
-                    </form>
                 <?php
                 }
                 ?>
