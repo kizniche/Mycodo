@@ -4964,27 +4964,6 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     </form>
-
-                    <form method="post" action="?tab=settings">
-                    <tr>
-                        <td class="setting-title">
-                            Delete User
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Username
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-save">
-                            <input type="submit" name="deleteuser" value="Delete User" />
-                        </td>
-                    </tr>
-                    </form>
                 </table>
 
                 <table class="edit-user">
@@ -5042,8 +5021,15 @@ if (!file_exists($lock_daemon)) {
                             </select>
                         </td>
                         <td>
-                            <input type="submit" name="edituser" value="Save" />
+                            <input type="submit" name="edituser" value="Save" title="Save settings for user <?php echo $user_name[$i]; ?>" />
                         </td>
+                        </form>
+                        <form method="post" action="?tab=settings" onsubmit="return confirm('Confirm the deletion of user <?php echo $user_name[$i]; ?>. This cannot be undone. To keep this user, click Cancel.')">
+                        <td>
+                            <input type="hidden" name="user_name" value="<?php echo $user_name[$i]; ?>">
+                            <button type="submit" name="deleteuser" value="<?php echo $user_name[$i]; ?>" title="Delete user <?php echo $user_name[$i]; ?>">Delete</button>
+                        </td>
+                    </form>
                     </tr>
                     </form>
                 <?php
