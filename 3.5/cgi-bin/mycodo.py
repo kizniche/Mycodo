@@ -309,22 +309,8 @@ class ComServer(rpyc.Service):
         logging.info("[Client command] Read Press Sensor %s from I2C address %s", sensor, address)
         if sensor == 'BMP085-180':
             if address != 0:
-                if address < 10:
-                    I2C_address = 0x70
-                elif address > 10 and address < 20:
-                    I2C_address = 0x71
-                elif address > 20 and address < 30:
-                    I2C_address = 0x72
-                elif address > 30 and address < 40:
-                    I2C_address = 0x73
-                elif address > 40 and address < 50:
-                    I2C_address = 0x74
-                elif address > 50 and address < 60:
-                    I2C_address = 0x75
-                elif address > 60 and address < 70:
-                    I2C_address = 0x76
-                elif address > 70 and address < 80:
-                    I2C_address = 0x77
+                I2C_address = 0x70 + address // 10
+
                 if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
                     I2C_bus_number = 1
                 else:
@@ -360,22 +346,8 @@ class ComServer(rpyc.Service):
             hum, tc = Adafruit_DHT.read_retry(device, pin)
         elif device == 'AM2315':
             if pin != 0:
-                if pin < 10:
-                    I2C_address = 0x70
-                elif pin > 10 and pin < 20:
-                    I2C_address = 0x71
-                elif pin > 20 and pin < 30:
-                    I2C_address = 0x72
-                elif pin > 30 and pin < 40:
-                    I2C_address = 0x73
-                elif pin > 40 and pin < 50:
-                    I2C_address = 0x74
-                elif pin > 50 and pin < 60:
-                    I2C_address = 0x75
-                elif pin > 60 and pin < 70:
-                    I2C_address = 0x76
-                elif pin > 70 and pin < 80:
-                    I2C_address = 0x77
+                I2C_address = 0x70 + pin // 10
+
                 if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
                     I2C_bus_number = 1
                 else:
@@ -2410,22 +2382,8 @@ def read_press(sensor, device, pin):
         time.sleep(0.25)
     if device == 'BMP085-180':
         if sensor_press_pin[sensor-1] != 0:
-            if sensor_press_pin[sensor-1] < 10:
-                I2C_address = 0x70
-            elif sensor_press_pin[sensor-1] > 10 and sensor_press_pin[sensor-1] < 20:
-                I2C_address = 0x71
-            elif sensor_press_pin[sensor-1] > 20 and sensor_press_pin[sensor-1] < 30:
-                I2C_address = 0x72
-            elif sensor_press_pin[sensor-1] > 30 and sensor_press_pin[sensor-1] < 40:
-                I2C_address = 0x73
-            elif sensor_press_pin[sensor-1] > 40 and sensor_press_pin[sensor-1] < 50:
-                I2C_address = 0x74
-            elif sensor_press_pin[sensor-1] > 50 and sensor_press_pin[sensor-1] < 60:
-                I2C_address = 0x75
-            elif sensor_press_pin[sensor-1] > 60 and sensor_press_pin[sensor-1] < 70:
-                I2C_address = 0x76
-            elif sensor_press_pin[sensor-1] > 70 and sensor_press_pin[sensor-1] < 80:
-                I2C_address = 0x77
+            I2C_address = 0x70 + sensor_press_pin[sensor-1] // 10
+
             if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
                 I2C_bus_number = 1
             else:
