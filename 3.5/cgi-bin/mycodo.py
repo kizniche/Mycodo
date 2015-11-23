@@ -4253,7 +4253,12 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
                 logging.debug("[Relay Conditional %s (%s)] True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", i+1, conditional_relay_name[i], conditional_relay_do_notify[i], (smtp_wait_time - (smtp_wait_time - (conditional_relay_time_notify[i] - int(time.time())))), smtp_wait_time)
         elif conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'off' and conditional_relay_doaction[i] == 'on':
             if conditional_relay_sel_relay[i]:
-                relay_onoff(conditional_relay_dorelay[i], 'on')
+                if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
+                    rod = threading.Thread(target = relay_on_duration,
+                        args = (conditional_relay_dorelay[i], conditional_relay_doduration[i], sensor, relay_trigger, relay_pin,))
+                    rod.start()
+                elif (conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] == 0) or conditional_relay_doaction[i] == 'off':
+                    relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
             if conditional_relay_sel_command[i]:
                 p = subprocess.Popen(conditional_relay_do_command[i], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 output, errors = p.communicate()
