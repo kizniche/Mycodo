@@ -35,11 +35,9 @@ from mycodoPID import PID
 import Adafruit_DHT
 import Adafruit_BMP.BMP085 as BMP085
 import datetime
-import fcntl
 import getopt
 import logging
 import os
-import re
 import rpyc
 import RPi.GPIO as GPIO
 import serial
@@ -52,9 +50,6 @@ import smbus
 import sys
 import threading
 import time
-import traceback
-import uuid
-from array import *
 from email.mime.text import MIMEText
 from lockfile import LockFile
 from rpyc.utils.server import ThreadedServer
