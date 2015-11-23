@@ -36,7 +36,7 @@ while ($row = $results->fetchArray()) {
     $i++;
 }
 
-$results = $udb->query("SELECT user_restriction, user_theme FROM users WHERE user_name='" . $_SESSION['user_name'] . "'");
+$results = $udb->query("SELECT user_restriction, user_theme FROM users WHERE user_name='" . $logged_in_user . "'");
 while ($row = $results->fetchArray()) { 
     $current_user_restriction = $row[0];
     $current_user_theme = $row[1];

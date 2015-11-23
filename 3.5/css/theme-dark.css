@@ -289,10 +289,6 @@ table.data-data th {
   max-width: 125px;\"
 }
 
-.notes td {
-    padding: 0.1em 1em 0.1em 0;
-}
-
 .gitcommits td {
     padding: 0.5em 0.3em 0.5em 0;
 }

@@ -141,7 +141,7 @@ def add_user(db):
 
     conn = sqlite3.connect(db)
     cur = conn.cursor()
-    cur.execute("INSERT INTO users (user_name, user_password_hash, user_email) VALUES ('{user_name}', '{user_password_hash}', '{user_email}')".\
+    cur.execute("INSERT INTO users (user_name, user_password_hash, user_email, user_restriction, user_theme) VALUES ('{user_name}', '{user_password_hash}', '{user_email}', 'guest', 'light')".\
         format(user_name=user_name, user_password_hash=user_password_hash, user_email=user_email))
     conn.commit()
     cur.close()

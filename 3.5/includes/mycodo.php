@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.89";
+$version = "3.5.91";
 
 ######### Start Edit Configure #########
 
@@ -63,6 +63,8 @@ $lock_mjpg_streamer = $lock_path . "/mycodo_mjpg_streamer";
 $lock_mjpg_streamer_relay = $lock_path . "/mycodo-stream-light";
 $lock_timelapse = $lock_path . "/mycodo_time_lapse";
 $lock_timelapse_light = $lock_path . "/mycodo-timelapse-light";
+
+$logged_in_user = $_SESSION['user_name'];
 
 if (!file_exists($mycodo_db)) exit("Mycodo database does not exist. Run 'setup-database.py -i' to create required database.");
 
@@ -193,7 +195,7 @@ if (!file_exists($lock_daemon)) {
                 v<?php echo $version; ?>
             </div>
             <div>
-                User: <?php echo $_SESSION['user_name']; ?>
+                User: <?php echo $logged_in_user; ?>
             </div>
             <div>
                 <a href="index.php?action=logout">Log Out</a>
@@ -414,7 +416,7 @@ if (!file_exists($lock_daemon)) {
             }
 
             if (isset($_POST['Generate_Graph_Span'])) $dyn_time_span = $_POST['Generate_Graph_Span'];
-            else $dyn_time_span = "1w";
+            else $dyn_time_span = "1 Week";
             if (isset($_POST['Generate_Graph_Type'])) $dyn_type = $_POST['Generate_Graph_Type'];
             else $dyn_type = 'all';
             ?>
@@ -471,17 +473,18 @@ if (!file_exists($lock_daemon)) {
                         <form style="float:left;" id="DynamicGraphForm" action="?tab=graph<?php if (isset($_GET['r'])) echo '&r=' , $_GET['r']; ?>" method="POST">
                         <div style="float:left; padding-right: 0.5em;">
                             <select style="height: 2.8em;" name="Generate_Graph_Span">
-                                <option value="1h" <?php if ($dyn_time_span == '1h') echo 'selected="selected"'; ?>>1 Hour</option>
-                                <option value="3h" <?php if ($dyn_time_span == '3h') echo 'selected="selected"'; ?>>3 Hours</option>
-                                <option value="6h" <?php if ($dyn_time_span == '6h') echo 'selected="selected"'; ?>>6 Hours</option>
-                                <option value="12h" <?php if ($dyn_time_span == '12h') echo 'selected="selected"'; ?>>12 Hours</option>
-                                <option value="1d" <?php if ($dyn_time_span == '1d') echo 'selected="selected"'; ?>>1 Day</option>
-                                <option value="3d" <?php if ($dyn_time_span == '3d') echo 'selected="selected"'; ?>>3 Days</option>
-                                <option value="1w" <?php if ($dyn_time_span == '1w') echo 'selected="selected"'; ?>>1 Week</option>
-                                <option value="2w" <?php if ($dyn_time_span == '2w') echo 'selected="selected"'; ?>>2 Weeks</option>
-                                <option value="1m" <?php if ($dyn_time_span == '1m') echo 'selected="selected"'; ?>>1 Month</option>
-                                <option value="3m" <?php if ($dyn_time_span == '3m') echo 'selected="selected"'; ?>>3 Months</option>
-                                <option value="6m" <?php if ($dyn_time_span == '6m') echo 'selected="selected"'; ?>>6 Months</option>
+                                <option value="1 Hour" <?php if ($dyn_time_span == '1 Hour') echo 'selected="selected"'; ?>>1 Hour</option>
+                                <option value="3 Hours" <?php if ($dyn_time_span == '3 Hours') echo 'selected="selected"'; ?>>3 Hours</option>
+                                <option value="6 Hours" <?php if ($dyn_time_span == '6 Hours') echo 'selected="selected"'; ?>>6 Hours</option>
+                                <option value="12 Hours" <?php if ($dyn_time_span == '12 Hours') echo 'selected="selected"'; ?>>12 Hours</option>
+                                <option value="1 Day" <?php if ($dyn_time_span == '1 Day') echo 'selected="selected"'; ?>>1 Day</option>
+                                <option value="3 Days" <?php if ($dyn_time_span == '3 Days') echo 'selected="selected"'; ?>>3 Days</option>
+                                <option value="1 Week" <?php if ($dyn_time_span == '1 Week') echo 'selected="selected"'; ?>>1 Week</option>
+                                <option value="2 Weeks" <?php if ($dyn_time_span == '2 Weeks') echo 'selected="selected"'; ?>>2 Weeks</option>
+                                <option value="1 Month" <?php if ($dyn_time_span == '1 Month') echo 'selected="selected"'; ?>>1 Month</option>
+                                <option value="3 Months" <?php if ($dyn_time_span == '3 Months') echo 'selected="selected"'; ?>>3 Months</option>
+                                <option value="6 Months" <?php if ($dyn_time_span == '6 Months') echo 'selected="selected"'; ?>>6 Months</option>
+                                <option value="1 Year" <?php if ($dyn_time_span == '1 Year') echo 'selected="selected"'; ?>>1 Year</option>
                                 <option value="all" <?php if ($dyn_time_span == 'all') echo 'selected="selected"'; ?>>All Time</option>
                             </select>
                         </div>
@@ -1324,7 +1327,9 @@ if (!file_exists($lock_daemon)) {
                         <td>Sensor<br>Device</td>
                         <?php
                             if ($sensor_ht_device[$i] == 'AM2315') {
-                                echo '<td>I<sup>2</sup>C<br>Add.</td>';
+                                echo '
+                                <td>I<sup>2</sup>C or<br>Multiplex</td>
+                                ';
                             } else {
                                 echo '<td>GPIO<br>Pin</td>';
                             }
@@ -1380,7 +1385,32 @@ if (!file_exists($lock_daemon)) {
                             <?php
                             if ($sensor_ht_device[$i] == 'AM2315') {
                             ?>
-                            I<sup>2</sup>C
+                            <select style="width: 7em;" name="sensorht<?php echo $i; ?>pin" title="If the sensor is connected directly to the I2C, select 'Use I2C'. If the sensor is connected through an I2C multiplexer (TCA9548A), select the multiplexer address and channel.">
+                                <option<?php
+                                    if ($sensor_ht_pin[$i] == 0) {
+                                        echo ' selected="selected"';
+                                    } ?> value="0">Use I2C</option>
+                                <?php
+                                for ($j = 1; $j < 79; $j++) {
+                                    $count_str = str_split($j);
+                                    if ($j < 10) {
+                                        $count_str[1] = $count_str[0];
+                                        $address = 0;
+                                        $channel = $count_str[1];
+                                    } else {
+                                        $address = $count_str[0];
+                                        $channel = $count_str[1];
+                                    }
+                                    if ($count_str[1] > 0 && $count_str[1] < 9) {
+                                        echo '<option';
+                                        if ($sensor_ht_pin[$i] == $j) {
+                                            echo ' selected="selected"';
+                                        }
+                                        echo ' value="' . $j . '">0x7' . $address . ' Ch. ' . $channel . '</option>';
+                                    }
+                                }
+                                ?>
+                            </select>
                             <?php
                             } else {
                             ?>
@@ -2222,7 +2252,7 @@ if (!file_exists($lock_daemon)) {
                         <td>Sensor<br>Device</td>
                         <?php
                             if ($sensor_press_device[$i] == 'BMP085-180') {
-                                echo '<td>I<sup>2</sup>C<br>Add.</td>';
+                                echo '<td>I<sup>2</sup>C or<br>Multiplex</td>';
                             } else {
                                 echo '<td>GPIO<br>Pin</td>';
                             }
@@ -2266,7 +2296,32 @@ if (!file_exists($lock_daemon)) {
                             <?php
                             if ($sensor_press_device[$i] == 'BMP085-180') {
                             ?>
-                            I<sup>2</sup>C
+                            <select style="width: 7em;" name="sensorpress<?php echo $i; ?>pin" title="If the sensor is connected directly to the I2C, select 'Use I2C'. If the sensor is connected through an I2C multiplexer (TCA9548A), select the multiplexer address and channel.">
+                                <option<?php
+                                    if ($sensor_ht_pin[$i] == 0) {
+                                        echo ' selected="selected"';
+                                    } ?> value="0">Use I2C</option>
+                                <?php
+                                for ($j = 1; $j < 79; $j++) {
+                                    $count_str = str_split($j);
+                                    if ($j < 10) {
+                                        $count_str[1] = $count_str[0];
+                                        $address = 0;
+                                        $channel = $count_str[1];
+                                    } else {
+                                        $address = $count_str[0];
+                                        $channel = $count_str[1];
+                                    }
+                                    if ($count_str[1] > 0 && $count_str[1] < 9) {
+                                        echo '<option';
+                                        if ($sensor_press_pin[$i] == $j) {
+                                            echo ' selected="selected"';
+                                        }
+                                        echo ' value="' . $j . '">0x7' . $address . ' Ch. ' . $channel . '</option>';
+                                    }
+                                }
+                                ?>
+                            </select>
                             <?php
                             } else {
                             ?>
@@ -3373,15 +3428,15 @@ if (!file_exists($lock_daemon)) {
                                         <td style=\"padding-bottom:0.5em;\">#</td>
                                         <td>Time</td>
                                         <td>User</td>
-                                        <td colspan=\"2\">Note</td>
+                                        <td>Note</td>
                                     </tr>";
                                 for ($u = count($note_id)-1; $u >= 0; $u--) {
                                     echo "<tr>
-                                        <td style=\"padding:0.7em 1em 0.7em 0; border-style: solid none none none; border-width: 1px;\"><button style=\"width:5em;\" type=\"submit\" name=\"Delete_Note\" value=\"$note_id[$u]\">Delete</button><br><button style=\"width:5em;\" type=\"submit\" name=\"Edit_Note\" value=\"$note_id[$u]\">Edit</button></td>
+                                        <td style=\"white-space: nowrap; border-style: solid none none none; border-width: 1px;\"><button style=\"width:5em;\" type=\"submit\" name=\"Delete_Note\" value=\"$note_id[$u]\">Delete</button> <button style=\"width:5em;\" type=\"submit\" name=\"Edit_Note\" value=\"$note_id[$u]\">Edit</button></td>
                                         <td style=\"border-style: solid none none none; border-width: 1px;\">$u</td>
-                                        <td style=\"border-style: solid none none none; border-width: 1px; line-height:1.5em; width:7em;\">$note_time[$u]</td>
+                                        <td style=\"border-style: solid none none none; border-width: 1px; line-height:1.5em; white-space: nowrap;\">$note_time[$u]</td>
                                         <td style=\"border-style: solid none none none; border-width: 1px;\">$note_user[$u]</td>
-                                        <td style=\"border-style: solid none none none; border-width: 1px; padding-bottom: 0.7em;\" colspan=\"2\" class=\"wrap\"><div style=\"padding-bottom: 0.5em; font-weight: bold;\">" . htmlspecialchars($note_title[$u]) . "</div>" . htmlspecialchars($note_note[$u]) . "</td>
+                                        <td style=\"width: 100%; border-style: solid none none none; border-width: 1px; padding-bottom: 0.7em;\" colspan=\"2\" class=\"wrap\"><div style=\"padding-bottom: 0.5em; font-weight: bold;\">" . htmlspecialchars($note_title[$u]) . "</div>" . htmlspecialchars($note_note[$u]) . "</td>
                                     </tr>";
 
                                     unset($upload_id);
@@ -3455,23 +3510,20 @@ if (!file_exists($lock_daemon)) {
                                 <tr>
                                     <td>Time</td>
                                     <td>User</td>
+                                    <td style=\"width: 100%;\"></td>
                                 </tr>
                                 <tr>
-                                    <td><input style=\"width: 11em;\" type=\"text\" maxlength=50 name=\"Edit_Note_Time\" title=\"\" value=\"$note_time\"></td>
-                                    <td><input style=\"width: 11em;\" type=\"text\" maxlength=50 name=\"Edit_Note_User\" title=\"\" value=\"$note_user\"></td>
+                                    <td><input style=\"width: 100%;\" type=\"text\" maxlength=50 name=\"Edit_Note_Time\" title=\"\" value=\"$note_time\"></td>
+                                    <td><input style=\"width: 100%;\" type=\"text\" maxlength=50 name=\"Edit_Note_User\" title=\"\" value=\"$note_user\"></td>
+                                    <td></td>
                                 </tr>
                                 <tr>
-                                    <td colspan=\"2\" style=\"padding-top: 0.5em;\">Title</td>
+                                    <td colspan=\"2\"><input style=\"width: 100%;\" type=\"text\" maxlength=50 name=\"Edit_Note_Title\" title=\"\" value=\"$note_title\" placeholder=\"Title\"></td>
+                                    <td></td>
                                 </tr>
                                 <tr>
-                                    <td colspan=\"2\"><input style=\"width: 100%;\" type=\"text\" maxlength=50 name=\"Edit_Note_Title\" title=\"\" value=\"$note_title\"></td>
-                                </tr>
-                            </table>
-                            <br>
-                            <table style=\"width: auto;\">
-                                <tr>
-                                    <td>
-                                        <textarea style=\"width: 40em;\" rows=\"15\" maxlength=\"100000\" name=\"Edit_Note_Text\" title=\"\">$note_note</textarea>
+                                    <td colspan=\"2\">
+                                        <textarea style=\"width: 40em;\" rows=\"15\" maxlength=\"100000\" name=\"Edit_Note_Text\" title=\"\" placeholder=\"Note\">$note_note</textarea>
                                     </td>
                                     <td style=\"vertical-align: top; height:100%; width:100%;\">
                                         <table style=\"height:100%; width:100%;\">
@@ -4068,10 +4120,10 @@ if (!file_exists($lock_daemon)) {
                 <a href="manual.html" target="_blank">Mycodo 3.5 Manual</a> | <a href="https://github.com/kizniche/Mycodo" target="_blank">Mycodo on GitHub</a> | Have a problem? <a href="http://kylegabriel.com/contact" target="_blank">Contact the developer</a> or <a href="https://github.com/kizniche/Mycodo/issues" target="_blank">submit an issue</a>.
             </div>
 
-            <div style="padding: 0 0 0 1em;">
+            <div style="padding: 0 1em 0 1em;">
                 <table>
                     <tr>
-                        <td class="setting-title">
+                        <td class="setting-title" style="width: 100%;">
                             Update
                         </td>
                     </tr>
@@ -4088,18 +4140,18 @@ if (!file_exists($lock_daemon)) {
                             ?>
                         </td>
                         <td class="setting-value">
-                            <button name="UpdateCheck" type="submit" value="" title="Check if there is a newer version of Mycodo on github.">Check for Update</button>
+                            <button style="width: 18em;" name="UpdateCheck" type="submit" value="" title="Check if there is a newer version of Mycodo on github.">Check for Update</button>
                         </td>
                     </tr>
                     </form>
 
-                    <form action="?tab=settings" method="post" onsubmit="return confirm('Confirm that you would like to begin the update process now. If not, click Cancel.')">
+                    <form action="?tab=settings" method="post" onsubmit="return confirm('Confirm that you would like to begin the update process now. If not, click Cancel. The update process will go on in the background for several seconds up to a minute or longer. You can check the status of the update with the Update Log in the Data Tab.')">
                     <tr>
                         <td class="setting-text">
                             Update Mycodo to the latest version on <a href="https://github.com/kizniche/Mycodo" target="_blank">GitHub</a>
                         </td>
                         <td class="setting-value">
-                            <button name="UpdateMycodo" type="submit" value="" title="Update the mycodo system to the latest version on github.">Update Mycodo</button>
+                            <button style="width: 18em;" name="UpdateMycodo" type="submit" value="" title="Update the mycodo system to the latest version on github.">Update Mycodo</button>
                         </td>
                     </tr>
                     </form>
@@ -4115,7 +4167,7 @@ if (!file_exists($lock_daemon)) {
                             Stop Daemon
                         </td>
                         <td class="setting-value">
-                            <button name="DaemonStop" type="submit" value="" title="Stop the mycodo daemon from running or kill a daemon that has had a segmentation fault.">Stop Daemon</button>
+                            <button style="width: 18em;" name="DaemonStop" type="submit" value="" title="Stop the mycodo daemon from running or kill a daemon that has had a segmentation fault.">Stop Daemon</button>
                         </td>
                     </tr>
                     <tr>
@@ -4123,7 +4175,7 @@ if (!file_exists($lock_daemon)) {
                             Start Daemon
                         </td>
                         <td class="setting-value">
-                            <button name="DaemonStart" type="submit" value="" title="Start the mycodo daemon in normal mode (if no other instance is currently running).">Start Daemon</button>
+                            <button style="width: 18em;" name="DaemonStart" type="submit" value="" title="Start the mycodo daemon in normal mode (if no other instance is currently running).">Start Daemon</button>
                         </td>
                     </tr>
                     <tr>
@@ -4131,7 +4183,7 @@ if (!file_exists($lock_daemon)) {
                             Restart Daemon
                         </td>
                         <td class="setting-value">
-                            <button name="DaemonRestart" type="submit" value="" title="Stop and start the mycodo daemon in normal mode.">Restart Daemon</button>
+                            <button style="width: 18em;" name="DaemonRestart" type="submit" value="" title="Stop and start the mycodo daemon in normal mode.">Restart Daemon</button>
                         </td>
                     </tr>
                     </form>
@@ -4142,7 +4194,7 @@ if (!file_exists($lock_daemon)) {
                             Restart Daemon in Debug Mode (use with caution, produces large logs)
                         </td>
                         <td class="setting-value">
-                            <button name="DaemonDebug" type="submit" value="" title="Stop and start the mycodo daemon in debug mode (verbose log messages, temporary files are not deleted). You should probably not enable this unless you know what you're doing.">Restart Daemon in Debug Mode</button>
+                            <button style="width: 18em;" name="DaemonDebug" type="submit" value="" title="Stop and start the mycodo daemon in debug mode (verbose log messages, temporary files are not deleted). You should probably not enable this unless you know what you're doing.">Restart Daemon in Debug Mode</button>
                         </td>
                     </tr>
                     </form>
@@ -4227,7 +4279,7 @@ if (!file_exists($lock_daemon)) {
                     <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
-                            Combined Graph Generation
+                            Combined Static Graph Generation
                         </td>
                     </tr>
                     <tr>
@@ -4852,14 +4904,12 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     </form>
-                </table>
 
                 <?php
                 if ($current_user_restriction == 'admin') {
                 ?>
 
                 <form method="post" action="?tab=settings">
-                <table>
                     <tr>
                         <td class="setting-title">
                             Add User
@@ -4936,9 +4986,9 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     </form>
                 </table>
-                </form>
 
                 <table class="edit-user">
+                    <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
                             Edit Users
@@ -4955,8 +5005,8 @@ if (!file_exists($lock_daemon)) {
                 <?php 
                 for ($i = 0; $i < count($user_name); $i++) {
                 ?>
+                    <form method="post" action="?tab=settings">
                     <tr>
-                        <form method="post" action="?tab=settings">
                         <td><?php echo $user_name[$i]; ?><input type="hidden" name="user_name" value="<?php echo $user_name[$i]; ?>"></td>
                         <td>
                             <input style="width: 12.5em;" type="text" value="<?php echo $user_email[$i]; ?>" name="user_email" title="The email address associated with this account. In addition to the user name, the email address may be used to log in."/>
@@ -4994,8 +5044,8 @@ if (!file_exists($lock_daemon)) {
                         <td>
                             <input type="submit" name="edituser" value="Save" />
                         </td>
-                        </form>
                     </tr>
+                    </form>
                 <?php
                 }
                 ?>
@@ -5004,8 +5054,9 @@ if (!file_exists($lock_daemon)) {
                 <?php
                 } else {
                 ?>
-
+                </table>
                 <table class="edit-user">
+                    <form method="post" action="?tab=settings">
                     <tr>
                         <td class="setting-title">
                             Edit User
@@ -5020,7 +5071,7 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                 <?php 
                 for ($i = 0; $i < count($user_name); $i++) {
-                    if ($user_name[$i] == $_SESSION['user_name']) {
+                    if ($user_name[$i] == $logged_in_user) {
                 ?>
                     <form method="post" action="?tab=settings">
                     <tr>
@@ -5056,7 +5107,6 @@ if (!file_exists($lock_daemon)) {
                 }
                 ?>
                 </table>
-
                 <?php
                 }
                 ?>

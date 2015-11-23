@@ -5,3 +5,11 @@ table.edit-user {
 table.edit-user td {
   padding: 0.5em;
 }
+
+table.notes {
+	width: 100%;
+}
+
+table.notes td {
+    padding: 0.5em 1em 0.5em 0;
+}

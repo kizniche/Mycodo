@@ -2,14 +2,15 @@
 
 This is an experimental branch of mycodo. It is undergoing constant changes and may or may not work at any time (although it has matured somewhat and is relatively stable at the moment). If you are looking for a stable version, I recommend you check out the [v3.0 branch](../3.0).
 
+---
+
 ## Index
 
 + [Screenshots](#screenshots)
   + [Web Interface](#web-interface)
   + [Terminal](#terminal)
 + [Changelog](#changelog)
-+ [New Dependencies](#new-dependencies)
-+ [Supported Sensors](#supported-sensors)
++ [Sensors, Devices, and Interfaces](#sensors-devices-and-interfaces)
 + [Software Install](#software-install)
   + [Prerequisites](#prerequisites)
   + [Wifi](#wifi)
@@ -24,6 +25,8 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 + [Manual](#manual)
 + [License](#license)
 + [Useful Links](#useful-links)
+
+---
 
 ## Screenshots
 
@@ -75,6 +78,8 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
   </tr>
 </table>
 
+---
+
 ### Terminal
 
 #### Daemon
@@ -85,9 +90,17 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 <a href="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/mycodo-client.py_.png" target="_blank"><img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2015/09/mycodo-client.py_-300x219.png"></a>
 
+---
+
 ## Changelog
 
 Major changes for each versioned release
+
+#### 3.5.91
++ Add ability to use multiple BMP085/180 pressure sensors with the TCA9548A multiplexer
+
+#### 3.5.90
++ Add Support for I<sup>2</sup>C multiplexer (TCA9548A) for using multiple AM2315 humidity/temperature sensors (same I<sup>2</sup>C address)
 
 #### 3.5.89
 + Add support for the AM2315 Humidity/Temperature sensor
@@ -201,35 +214,53 @@ Major changes for each versioned release
 + Moved to SQLite settings database (previously plain-text)
 + Moved to SQLite login database (previously MySQL)
 
-## New Dependencies
+---
 
-php5-sqlite
+## Sensors, Devices, and Interfaces
 
-php5-gd
+Certain sensors will require extra steps to be taken in order to set up the interface to communicate with them. The DS18B20 needs one-wire support enabled, The sensors that communicate by the I<sup>2</sup>C interface (AM2315, BMP085/180, TCA9548A) will require enabling I<sup>2</sup>C, and the K30 will require configuring UART. Because these procedures are already documented in the following links, they will not appear in the Mycodo install documentation. Therefore, follow the following procedures for any sensors or devices if you wish to use.
 
-sqlite3
+### I<sup>2</sup>C Interface
 
-Software used:
+[Configuring I<sup>2</sup>C](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c)
 
-php-login-one-file, HighStock, highcharts-export-clientside, JQuery, Modernizr, canvas-tools, export-csv, jspdf
+The AM2315 Humidity/Temperature Sensor, BMP085/180 Pressure Sensor, and TCA9548A I<sup>2</sup>C Multiplexer communicate with the I<sup>2</sup>C interface.
 
-## Supported Sensors
-
-### Temperature
+### Temperature Sensors
 
 > [DS18B20](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing)
 
-### Humidity & Temperature
+The DS18B20 is a simple 1-wire sensor. Once the one-wire interface has been configured with the above instructions, it may be used with Mycodo.
 
-> [DHT11, DHT22, AM2302](https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring), and [AM2315](https://github.com/lexruee/tentacle_pi)
+### Humidity & Temperature Sensors
 
-### CO<sub>2</sub>
+> [DHT11, DHT22, AM2302](https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring)
+
+Afer [insatlling the Adafruit_Python_DHT library](#prerequisites), it can be tested whether the sensor is able to be read, by executing cgi-bin/Test-Sensor-HT-DHT.py
+
+> [AM2315](https://github.com/lexruee/tentacle_pi)
+
+After [configuring I<sup>2</sup>C](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c) and [installing the tentacle_pi libraries](#prerequisites), it can be tested whether the sensor is able to be read, by executing cgi-bin/Test-Sensor-HT-AM2315.py
+
+### CO<sub>2</sub> Sensors
 
 > [K30](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip)
 
-### Pressure
+This documentation provides specific installation proceedures for the Raspberry Pi as well as example code. Once the K30 has been configured with this documentation, it can be tested whether the sensor is able to be read, by executing cgi-bin/Test-Sensor-CO2-K30.py
+
+### Pressure Sensors
 
 > [BMP085/BMP180](https://learn.adafruit.com/using-the-bmp085-with-raspberry-pi)
+
+After [configuring I<sup>2</sup>C](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c) and [installing the Adafruit_Python_BMP library](#prerequisites), it can be tested whether the sensor is able to be read, by executing cgi-bin/Test-Sensor-Press-BMP085-180.py
+
+### I<sup>2</sup>C Multiplexer
+
+> [TCA9548A](https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview)
+
+The TCA9548A I<sup>2</sup>C allows multiple sensors that have the same I<sup>2</sup>C address to be used with mycodo (such as the AM2315). The multiplexer has a selectable address, from 0x70 through 0x77, allowing up to 8 multiplexers to be used at once. With 8 channels per multiplexer, this allows up to 64 devices with the same address to be used.
+
+---
 
 ## Software Install
 
@@ -256,7 +287,7 @@ Using raspi-config, perform the following:
 
 `sudo apt-get upgrade`
 
-`sudo apt-get install build-essential apache2 sqlite3 gnuplot git-core python-pip python-dev libconfig-dev php5 libapache2-mod-php5 php5-sqlite php5-gd i2c-tools libi2c-dev`
+`sudo apt-get install build-essential apache2 sqlite3 gnuplot git-core python-pip python-dev python-smbus libconfig-dev php5 libapache2-mod-php5 php5-sqlite php5-gd i2c-tools libi2c-dev`
 
 `git clone https://github.com/kizniche/Mycodo.git ~/Mycodo`
 
@@ -266,7 +297,7 @@ Using raspi-config, perform the following:
 
 `git clone https://github.com/adafruit/Adafruit_Python_BMP.git ~/Adafruit_Python_BMP && cd ~/Adafruit_Python_BMP && sudo python setup.py install`
 
-'git clone --recursive https://github.com/lexruee/tentacle_pi ~/tentacle_pi && cd ~/tentacle_pi && sudo python setup.py install'
+`git clone --recursive https://github.com/lexruee/tentacle_pi ~/tentacle_pi && cd ~/tentacle_pi && sudo python setup.py install`
 
 Create a symlink to Mycodo
 
@@ -310,7 +341,11 @@ Clean Up
 
 ### Wifi
 
-With a supported usb wifi dongle, setting up a wireless connection is as simple as the next few commands and a reboot. Consult documentation for your wireless card or google if this doesn’t work. Edit wpa_supplicant.conf with `sudo vi /etc/wpa_supplicant/wpa_supplicant.conf` and add the following, change the name and password to that of your wifi network.
+With a supported usb wifi dongle, setting up a wireless connection is as simple as the next few commands and a reboot. Consult documentation for your wireless card or google if this doesn’t work.
+
+`sudo vi /etc/wpa_supplicant/wpa_supplicant.conf`
+
+Edit wpa_supplicant.conf with the above command and add the following, changing the name and password for your wifi network.
 
 ```
 network={
@@ -466,6 +501,8 @@ You can either reboot or start the daemon with the following command.
 Note: cgi-bin/mycodo-wrapper is a binary executable used to start and stop the mycodo daemon, and to create and restore backups, from the web interface. It has the setuid bit to permit it to be executed as root (the init.d/mycodo script sets the correct permissions and setuid). Since shell scripts cannot be setuid (ony binary files), the mycodo-wrapper binay permits init.d/mycodo to be executed as root by a non-root user. You can audit the source code of cgi-bin/mycodo-wrapper.c and if you want to ensure the binary is indeed compiled from that source, you may compile it yourself with the following command. Otherwise, the compiled binary is already included and no further action is needed. I mention this to explain the need for setuid, for transparency, for security, and to maintain all code of this project as open source.
 
 `sudo gcc /var/www/mycodo/cgi-bin/mycodo-wrapper.c -o /var/www/mycodo/cgi-bin/mycodo-wrapper`
+
+---
 
 ## Manual
 
