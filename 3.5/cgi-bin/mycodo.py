@@ -2919,7 +2919,7 @@ def read_sql():
         cur.execute(query)
         if cur.fetchone() is None:
             missing.append(tables[i])
-    if missing != []:
+    if missing:
         print "Missing required table(s):",
         for i in range(0, len(missing)):
             if len(missing) == 1:
