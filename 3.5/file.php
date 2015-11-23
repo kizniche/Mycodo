@@ -121,9 +121,9 @@ if ($_COOKIE['login_hash'] == $user_hash) {
                 // Create page title (only create title)
                 $sensor_type = $_POST['Generate_Graph_Type'];
                 $sensor_span = $_POST['Generate_Graph_Span'];
-                if ($sensor_span == "all") { // Don't trim logs (use all data)
+                if ($sensor_span == "all") {
                     $title = "Graph ($sensor_type) All Time";
-                } else { // Determine start and end points for logs
+                } else {
                     if ($sensor_span == "1 Hour") $time_start = date('Y/m/d-H:i:s', strtotime('-1 hour'));
                     else if ($sensor_span == "3 Hours") $time_start = date('Y/m/d-H:i:s', strtotime('-3 hour'));
                     else if ($sensor_span == "6 Hours") $time_start = date('Y/m/d-H:i:s', strtotime('-6 hour'));
