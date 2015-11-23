@@ -2942,21 +2942,25 @@ def read_sql():
     global conditional_t_do_notify
     global conditional_t_time_notify
 
-    conditional_t_id = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_name = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_state = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_direction = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_setpoint = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_period = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_sel_relay = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_relay = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_relay_state = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_relay_seconds_on = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_sel_command = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_do_command = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_sel_notify = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_do_notify = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_time_notify = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
+    # There may be multiple conditional statements per sensor.
+    # get_3d_array() will initialize (to 0) a 3-dimensional array with the length of indexes
+    # equal to the number of sensors and the number of conditionals per each sensor.
+    # Elements are then set and accessed with conditional_x[sensor_number][conditonal_number][0]
+    conditional_t_id = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_name = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_state = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_direction = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_setpoint = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_period = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_sel_relay = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_relay = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_relay_state = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_relay_seconds_on = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_sel_command = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_do_command = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_sel_notify = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_do_notify = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_time_notify = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
 
     for j in range(0, len(conditional_t_number_sensor)):
         cur.execute("""SELECT id,
@@ -3180,22 +3184,26 @@ def read_sql():
     global conditional_ht_do_notify
     global conditional_ht_time_notify
 
-    conditional_ht_id = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_name = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_state = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_condition = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_direction = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_setpoint = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_period = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_sel_relay = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_relay = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_relay_state = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_relay_seconds_on = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_sel_command = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_do_command = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_sel_notify = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_do_notify = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_time_notify = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
+    # There may be multiple conditional statements per sensor.
+    # get_3d_array() will initialize (to 0) a 3-dimensional array with the length of indexes
+    # equal to the number of sensors and the number of conditionals per each sensor.
+    # Elements are then set and accessed with conditional_x[sensor_number][conditonal_number][0]
+    conditional_ht_id = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_name = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_state = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_condition = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_direction = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_setpoint = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_period = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_sel_relay = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_relay = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_relay_state = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_relay_seconds_on = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_sel_command = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_do_command = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_sel_notify = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_do_notify = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_time_notify = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
 
     for j in range(0, len(conditional_ht_number_sensor)):
         cur.execute("""SELECT id,
@@ -3354,21 +3362,25 @@ def read_sql():
     global conditional_co2_do_notify
     global conditional_co2_time_notify
 
-    conditional_co2_id = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_name = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_state = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_direction = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_setpoint = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_period = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_sel_relay = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_relay = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_relay_state = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_relay_seconds_on = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_sel_command = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_do_command = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_sel_notify = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_do_notify = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_time_notify = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
+    # There may be multiple conditional statements per sensor.
+    # get_3d_array() will initialize (to 0) a 3-dimensional array with the length of indexes
+    # equal to the number of sensors and the number of conditionals per each sensor.
+    # Elements are then set and accessed with conditional_x[sensor_number][conditonal_number][0]
+    conditional_co2_id = get_3d_array(len(conditional_co2_number_sensor), len(conditional_co2_number_conditional), 1)
+    conditional_co2_name = get_3d_array(len(conditional_co2_number_sensor), len(conditional_co2_number_conditional), 1)
+    conditional_co2_state = get_3d_array(len(conditional_co2_number_sensor), len(conditional_co2_number_conditional), 1)
+    conditional_co2_direction = get_3d_array(len(conditional_co2_number_sensor), len(conditional_co2_number_conditional), 1)
+    conditional_co2_setpoint = get_3d_array(len(conditional_co2_number_sensor), len(conditional_co2_number_conditional), 1)
+    conditional_co2_period = get_3d_array(len(conditional_co2_number_sensor), len(conditional_co2_number_conditional), 1)
+    conditional_co2_sel_relay = get_3d_array(len(conditional_co2_number_sensor), len(conditional_co2_number_conditional), 1)
+    conditional_co2_relay = get_3d_array(len(conditional_co2_number_sensor), len(conditional_co2_number_conditional), 1)
+    conditional_co2_relay_state = get_3d_array(len(conditional_co2_number_sensor), len(conditional_co2_number_conditional), 1)
+    conditional_co2_relay_seconds_on = get_3d_array(len(conditional_co2_number_sensor), len(conditional_co2_number_conditional), 1)
+    conditional_co2_sel_command = get_3d_array(len(conditional_co2_number_sensor), len(conditional_co2_number_conditional), 1)
+    conditional_co2_do_command = get_3d_array(len(conditional_co2_number_sensor), len(conditional_co2_number_conditional), 1)
+    conditional_co2_sel_notify = get_3d_array(len(conditional_co2_number_sensor), len(conditional_co2_number_conditional), 1)
+    conditional_co2_do_notify = get_3d_array(len(conditional_co2_number_sensor), len(conditional_co2_number_conditional), 1)
+    conditional_co2_time_notify = get_3d_array(len(conditional_co2_number_sensor), len(conditional_co2_number_conditional), 1)
 
     for j in range(0, len(conditional_co2_number_sensor)):
         cur.execute("""SELECT id,
@@ -3576,22 +3588,26 @@ def read_sql():
     global conditional_press_do_notify
     global conditional_press_time_notify
 
-    conditional_press_id = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_name = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_state = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_condition = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_direction = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_setpoint = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_period = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_sel_relay = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_relay = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_relay_state = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_relay_seconds_on = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_sel_command = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_do_command = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_sel_notify = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_do_notify = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_time_notify = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
+    # There may be multiple conditional statements per sensor.
+    # get_3d_array() will initialize (to 0) a 3-dimensional array with the length of indexes
+    # equal to the number of sensors and the number of conditionals per each sensor.
+    # Elements are then set and accessed with conditional_x[sensor_number][conditonal_number][0]
+    conditional_press_id = get_3d_array(len(conditional_press_number_sensor), len(conditional_press_number_conditional), 1)
+    conditional_press_name = get_3d_array(len(conditional_press_number_sensor), len(conditional_press_number_conditional), 1)
+    conditional_press_state = get_3d_array(len(conditional_press_number_sensor), len(conditional_press_number_conditional), 1)
+    conditional_press_condition = get_3d_array(len(conditional_press_number_sensor), len(conditional_press_number_conditional), 1)
+    conditional_press_direction = get_3d_array(len(conditional_press_number_sensor), len(conditional_press_number_conditional), 1)
+    conditional_press_setpoint = get_3d_array(len(conditional_press_number_sensor), len(conditional_press_number_conditional), 1)
+    conditional_press_period = get_3d_array(len(conditional_press_number_sensor), len(conditional_press_number_conditional), 1)
+    conditional_press_sel_relay = get_3d_array(len(conditional_press_number_sensor), len(conditional_press_number_conditional), 1)
+    conditional_press_relay = get_3d_array(len(conditional_press_number_sensor), len(conditional_press_number_conditional), 1)
+    conditional_press_relay_state = get_3d_array(len(conditional_press_number_sensor), len(conditional_press_number_conditional), 1)
+    conditional_press_relay_seconds_on = get_3d_array(len(conditional_press_number_sensor), len(conditional_press_number_conditional), 1)
+    conditional_press_sel_command = get_3d_array(len(conditional_press_number_sensor), len(conditional_press_number_conditional), 1)
+    conditional_press_do_command = get_3d_array(len(conditional_press_number_sensor), len(conditional_press_number_conditional), 1)
+    conditional_press_sel_notify = get_3d_array(len(conditional_press_number_sensor), len(conditional_press_number_conditional), 1)
+    conditional_press_do_notify = get_3d_array(len(conditional_press_number_sensor), len(conditional_press_number_conditional), 1)
+    conditional_press_time_notify = get_3d_array(len(conditional_press_number_sensor), len(conditional_press_number_conditional), 1)
 
     for j in range(0, len(conditional_press_number_sensor)):
         cur.execute("""SELECT id,
@@ -4155,12 +4171,12 @@ def represents_float(s):
         return False
 
 
-# Timestamp format used in sensor and relay logs
+# Log timestamp format
 def timestamp():
     return datetime.datetime.now().strftime('%Y %m %d %H %M %S')
 
 
-def get_3d_array(x, y, z=1):
+def get_3d_array(z, y, x=1):
     """
     Get a three dimensional array initialized with zeroes.  These are normally set to values
     later in the code.

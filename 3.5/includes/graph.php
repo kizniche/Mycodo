@@ -955,7 +955,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             var time = timeElements[1].split(':');
                             var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
                             if (condition == 'temperature' && parseInt(items[4]) == sensor) sensordata.push([date,parseFloat(items[1])]);
-                        if (condition == 'pressure' && parseInt(items[4]) == sensor) sensordata.push([date,parseFloat(items[2])]);
+                        if (condition == 'pressure' && parseInt(items[4]) == sensor) sensordata.push([date,parseInt(items[2])]);
                         });
                         return sensordata;
                     }
@@ -1243,7 +1243,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                             var time = timeElements[1].split(':');
                             var date = Date.UTC(date[0], date[1]-1, date[2], time[0], time[1], time[2], 0);
                             if (type == 't') {
-                                if (condition == 'temp' && parseInt(items[3]) == sensor && items[0] == 't') sensordata.push([date,parseFloat(items[2])]);
+                                if (parseInt(items[3]) == sensor && items[0] == 't') sensordata.push([date,parseFloat(items[2])]);
                             } else if (type == 'ht') {
                                 if (condition == 'temp' && parseInt(items[5]) == sensor && items[0] == 'ht') sensordata.push([date,parseFloat(items[2])]);
                                 if (condition == 'hum' && parseInt(items[5]) == sensor && items[0] == 'ht') sensordata.push([date,parseFloat(items[3])]);
@@ -1252,7 +1252,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                                 if (parseInt(items[3]) == sensor && items[0] == 'co2') sensordata.push([date,parseInt(items[2])]);
                             } else if (type == 'press') {
                                 if (condition == 'temp' && parseInt(items[5]) == sensor && items[0] == 'press') sensordata.push([date,parseFloat(items[2])]);
-                                if (condition == 'press' && parseInt(items[5]) == sensor && items[0] == 'press') sensordata.push([date,parseFloat(items[3])]);
+                                if (condition == 'press' && parseInt(items[5]) == sensor && items[0] == 'press') sensordata.push([date,parseInt(items[3])]);
                             }
                         });
                         return sensordata;
