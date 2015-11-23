@@ -60,12 +60,12 @@ from lockfile import LockFile
 from rpyc.utils.server import ThreadedServer
 from tentacle_pi.AM2315 import AM2315
 
-mycodo_database = "%s/config/mycodo.db" % install_directory # SQLite database
-image_path = "%s/images" % install_directory # Where generated graphs are stored
-log_path = "%s/log" % install_directory # Where generated logs are stored
+mycodo_database = os.path.join(install_directory, "/config/mycodo.db") # SQLite database
+image_path = os.path.join(install_directory, "/images") # Where generated graphs are stored
+log_path = os.path.join(install_directory, "/log") # Where generated logs are stored
 
 # Daemon log on tempfs
-daemon_log_file_tmp = "%s/daemon-tmp.log" % log_path
+daemon_log_file_tmp = os.path.join(log_path, "/daemon-tmp.log")
 
 logging.basicConfig(
     filename = daemon_log_file_tmp,
@@ -74,20 +74,20 @@ logging.basicConfig(
 
 # Where lockfiles are stored for certain processes
 lock_directory = "/var/lock/mycodo"
-sql_lock_path = "%s/config" % lock_directory
-daemon_lock_path = "%s/daemon" % lock_directory
-sensor_t_lock_path = "%s/sensor-t" % lock_directory
-sensor_ht_lock_path = "%s/sensor-ht" % lock_directory
-sensor_co2_lock_path = "%s/sensor-co2" % lock_directory
-sensor_press_lock_path = "%s/sensor-press" % lock_directory
+sql_lock_path = os.path.join(lock_directory, "/config")
+daemon_lock_path = os.path.join(lock_directory, "/daemon")
+sensor_t_lock_path = os.path.join(lock_directory, "/sensor-t")
+sensor_ht_lock_path = os.path.join(lock_directory, "/sensor-ht")
+sensor_co2_lock_path = os.path.join(lock_directory, "/sensor-co2")
+sensor_press_lock_path = os.path.join(lock_directory, "/sensor-press")
 
 # Logs that are on the tempfs
-daemon_log_file_tmp = "%s/daemon-tmp.log" % log_path
-sensor_t_log_file_tmp = "%s/sensor-t-tmp.log" % log_path
-sensor_ht_log_file_tmp = "%s/sensor-ht-tmp.log" % log_path
-sensor_co2_log_file_tmp = "%s/sensor-co2-tmp.log" % log_path
-sensor_press_log_file_tmp = "%s/sensor-press-tmp.log" % log_path
-relay_log_file_tmp = "%s/relay-tmp.log" % log_path
+daemon_log_file_tmp = os.path.join(log_path, "/daemon-tmp.log")
+sensor_t_log_file_tmp = os.path.join(log_path, "/sensor-t-tmp.log")
+sensor_ht_log_file_tmp = os.path.join(log_path, "/sensor-ht-tmp.log")
+sensor_co2_log_file_tmp = os.path.join(log_path, "/sensor-co2-tmp.log")
+sensor_press_log_file_tmp = os.path.join(log_path, "/sensor-press-tmp.log")
+relay_log_file_tmp = os.path.join(log_path, "/relay-tmp.log")
 
 # PID Restarting
 pid_number = None
