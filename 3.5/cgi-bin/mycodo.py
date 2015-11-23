@@ -60,12 +60,12 @@ from lockfile import LockFile
 from rpyc.utils.server import ThreadedServer
 from tentacle_pi.AM2315 import AM2315
 
-mycodo_database = os.path.join(install_directory, "/config/mycodo.db") # SQLite database
-image_path = os.path.join(install_directory, "/images") # Where generated graphs are stored
-log_path = os.path.join(install_directory, "/log") # Where generated logs are stored
+mycodo_database = os.path.join(install_directory, "config/mycodo.db") # SQLite database
+image_path = os.path.join(install_directory, "images") # Where generated graphs are stored
+log_path = os.path.join(install_directory, "log") # Where generated logs are stored
 
 # Daemon log on tempfs
-daemon_log_file_tmp = os.path.join(log_path, "/daemon-tmp.log")
+daemon_log_file_tmp = os.path.join(log_path, "daemon-tmp.log")
 
 logging.basicConfig(
     filename = daemon_log_file_tmp,
@@ -74,20 +74,20 @@ logging.basicConfig(
 
 # Where lockfiles are stored for certain processes
 lock_directory = "/var/lock/mycodo"
-sql_lock_path = os.path.join(lock_directory, "/config")
-daemon_lock_path = os.path.join(lock_directory, "/daemon")
-sensor_t_lock_path = os.path.join(lock_directory, "/sensor-t")
-sensor_ht_lock_path = os.path.join(lock_directory, "/sensor-ht")
-sensor_co2_lock_path = os.path.join(lock_directory, "/sensor-co2")
-sensor_press_lock_path = os.path.join(lock_directory, "/sensor-press")
+sql_lock_path = os.path.join(lock_directory, "config")
+daemon_lock_path = os.path.join(lock_directory, "daemon")
+sensor_t_lock_path = os.path.join(lock_directory, "sensor-t")
+sensor_ht_lock_path = os.path.join(lock_directory, "sensor-ht")
+sensor_co2_lock_path = os.path.join(lock_directory, "sensor-co2")
+sensor_press_lock_path = os.path.join(lock_directory, "sensor-press")
 
 # Logs that are on the tempfs
-daemon_log_file_tmp = os.path.join(log_path, "/daemon-tmp.log")
-sensor_t_log_file_tmp = os.path.join(log_path, "/sensor-t-tmp.log")
-sensor_ht_log_file_tmp = os.path.join(log_path, "/sensor-ht-tmp.log")
-sensor_co2_log_file_tmp = os.path.join(log_path, "/sensor-co2-tmp.log")
-sensor_press_log_file_tmp = os.path.join(log_path, "/sensor-press-tmp.log")
-relay_log_file_tmp = os.path.join(log_path, "/relay-tmp.log")
+daemon_log_file_tmp = os.path.join(log_path, "daemon-tmp.log")
+sensor_t_log_file_tmp = os.path.join(log_path, "sensor-t-tmp.log")
+sensor_ht_log_file_tmp = os.path.join(log_path, "sensor-ht-tmp.log")
+sensor_co2_log_file_tmp = os.path.join(log_path, "sensor-co2-tmp.log")
+sensor_press_log_file_tmp = os.path.join(log_path, "sensor-press-tmp.log")
+relay_log_file_tmp = os.path.join(log_path, "relay-tmp.log")
 
 # PID Restarting
 pid_number = None
@@ -310,7 +310,6 @@ class ComServer(rpyc.Service):
         if sensor == 'BMP085-180':
             if address != 0:
                 I2C_address = 0x70 + address // 10
-
                 if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
                     I2C_bus_number = 1
                 else:
@@ -347,7 +346,6 @@ class ComServer(rpyc.Service):
         elif device == 'AM2315':
             if pin != 0:
                 I2C_address = 0x70 + pin // 10
-
                 if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
                     I2C_bus_number = 1
                 else:
@@ -2133,8 +2131,8 @@ def read_ht(sensor, device, pin):
         last_ht_reading = int(time.time())+2
         return humidity, temp
     elif device == 'AM2315':
-        if sensor_ht_pin[sensor-1] != 0:
-            I2C_address = 0x70 + (pin // 10)
+        if pin != 0:
+            I2C_address = 0x70 + pin // 10
             if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
                 I2C_bus_number = 1
             else:
@@ -2365,9 +2363,8 @@ def read_press(sensor, device, pin):
     while last_press_reading > int(time.time()):
         time.sleep(0.25)
     if device == 'BMP085-180':
-        if sensor_press_pin[sensor-1] != 0:
-            I2C_address = 0x70 + sensor_press_pin[sensor-1] // 10
-
+        if pin != 0:
+            I2C_address = 0x70 + pin // 10
             if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
                 I2C_bus_number = 1
             else:
