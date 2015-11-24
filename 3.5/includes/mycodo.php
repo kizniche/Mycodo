@@ -4266,8 +4266,8 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <button name="ChangeSystem" type="submit" value="">Save</button>
+                        <td colspan="2" class="setting-save">
+                            <button style="width: 18em;" name="ChangeSystem" type="submit" value="">Save</button>
                         </td>
                     </tr>
                     </form>
@@ -4597,8 +4597,8 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <button name="ChangeCombinedSetings" type="submit" value="">Save</button>
+                        <td colspan="4" class="setting-save">
+                            <button style="width: 18em;" name="ChangeCombinedSetings" type="submit" value="">Save</button>
                         </td>
                     </tr>
                     </form>
@@ -4670,12 +4670,21 @@ if (!file_exists($lock_daemon)) {
                             Send Test Email (save configure above, then enter recipient and click Send)
                         </td>
                         <td class="setting-value">
-                            <input style="width: 13em;" type="text" value="" maxlength="50" name="smtp_email_test" title=""/> <input style="width: 5em;"type="submit" name="TestNotify" value="Send">
+                            <table style="100%;">
+                                <tr>
+                                    <td style="width: 100%;">
+                                        <input style="width: 100%;" type="text" value="" maxlength="50" name="smtp_email_test" title=""/>
+                                    </td>
+                                    <td>
+                                        <input type="submit" name="TestNotify" value="Send">
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <input type="submit" name="ChangeNotify" value="Save">
+                        <td colspan="2" class="setting-save">
+                            <input style="width: 18em;" type="submit" name="ChangeNotify" value="Save">
                         </td>
                     </tr>
                     </form>
@@ -4735,8 +4744,8 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <button name="ChangeStill" type="submit" value="">Save</button>
+                        <td colspan="2" class="setting-save">
+                            <button style="width: 18em;" name="ChangeStill" type="submit" value="">Save</button>
                         </td>
                     </tr>
                     </form>
@@ -4780,8 +4789,8 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <button name="ChangeStream" type="submit" value="">Save</button>
+                        <td colspan="2" class="setting-save">
+                            <button style="width: 18em;" name="ChangeStream" type="submit" value="">Save</button>
                         </td>
                     </tr>
                     </form>
@@ -4869,8 +4878,8 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <button name="ChangeTimelapse" type="submit" value="">Save</button>
+                        <td colspan="2" class="setting-save">
+                            <button style="width: 18em;" name="ChangeTimelapse" type="submit" value="">Save</button>
                         </td>
                     </tr>
                     </form>
@@ -4929,8 +4938,8 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <input type="submit" name="register" value="Add User"/>
+                        <td colspan="2" class="setting-save">
+                            <input style="width: 18em;" type="submit" name="register" value="Add User"/>
                         </td>
                     </tr>
                     </form>

@@ -1,3 +1,15 @@
+/* Data Tab */
+
+table.notes {
+    width: 100%;
+}
+
+table.notes td {
+    padding: 0.5em 1em 0.5em 0;
+}
+
+/* Settings Tab */
+
 fieldset.settings-box {
     padding: 0.5em;
     margin: 1.5em 0 0 0;
@@ -17,10 +29,18 @@ table.edit-user td {
   padding: 0.5em;
 }
 
-table.notes {
-	width: 100%;
+.setting-text {
+    padding: 0.4em 2em 0.3em 0;
+    margin-bottom: 0.2em;
+    border-bottom: 1px solid gray;
 }
 
-table.notes td {
-    padding: 0.5em 1em 0.5em 0;
+.setting-value {
+    padding: 0.4em 0.5em 0.3em 0;
+    border-bottom: 1px solid gray;
+}
+
+.setting-save {
+    padding: 0.7em 0.5em 0.5em 0;
+    text-align: right;
 }

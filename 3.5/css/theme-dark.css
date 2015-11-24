@@ -317,28 +317,8 @@ fieldset.settings-box {
     width: 18em;
 }
 
-.setting-title {
-    padding: 2em 0 0.5em 0;
-    font-weight: bold;
-}
-
-.setting-text {
-    padding: 0.4em 2em 0.3em 0;
-    margin-bottom: 0.2em;
-    border-bottom: 1px solid gray;
-}
-
-.setting-value {
-    padding: 0.4em 0.5em 0.3em 0;
-    border-bottom: 1px solid gray;
-}
-
 .pad-top {
     padding-top: 1.5em;
-}
-
-.setting-save {
-    padding: 0.5em 0;
 }
 
 .notify-title {
