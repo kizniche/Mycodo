@@ -1059,7 +1059,7 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'CameraTimelapse', 'Extra_Parameters', 'TEXT')
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("INSERT OR IGNORE INTO CameraTimelapse (id, relay, path, prefix, file_timestamp, display_last, cmd_pre, cmd_post, extra_parameters) VALUES ('0', 0, '/var/www/mycodo/camera-timelapse', 'Timelapse-', 1, 1, '', '', '--nopreview --contrast 20 --sharpness 60 --awb auto --quality 20 --vflip --hflip --width 800 --height 600')")
+    cur.execute("INSERT OR IGNORE INTO CameraTimelapse (id, relay, path, prefix, file_timestamp, display_last, cmd_pre, cmd_post, extra_parameters) VALUES ('0', 0, '/var/www/mycodo/camera-timelapse', 'Timelapse', 1, 1, '', '', '--nopreview --contrast 20 --sharpness 60 --awb auto --quality 20 --vflip --hflip --width 800 --height 600')")
     conn.commit()
     cur.close()
     ModNullValue(sql_database_mycodo, 'CameraTimelapse', 'Relay', 0)

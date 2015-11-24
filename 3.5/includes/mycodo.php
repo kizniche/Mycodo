@@ -4116,21 +4116,17 @@ if (!file_exists($lock_daemon)) {
 
             <?php if ($this->feedback) echo $this->feedback; ?>
 
-            <div style="padding: 2em 0 0 1em;">
+            <div style="padding: 1.5em 0 0 1em;">
                 <a href="manual.html" target="_blank">Mycodo 3.5 Manual</a> | <a href="https://github.com/kizniche/Mycodo" target="_blank">Mycodo on GitHub</a> | Have a problem? <a href="http://kylegabriel.com/contact" target="_blank">Contact the developer</a> or <a href="https://github.com/kizniche/Mycodo/issues" target="_blank">submit an issue</a>.
             </div>
 
-            <div style="padding: 0 1em 0 1em;">
-                <table>
-                    <tr>
-                        <td class="setting-title" style="width: 100%;">
-                            Update
-                        </td>
-                    </tr>
-
+            <div style="padding: 0.5em 1em 0 1em; width: 100%;">
+                <fieldset class="settings-box">
+                <legend>Update</legend>
+                <table style="width: 100%;">
                     <form action="?tab=settings" method="post">
-                        <tr>
-                        <td class="setting-text">
+                    <tr>
+                        <td class="setting-text" style="width: 100%;">
                             Check if there is an update avaialble for Mycodo<?php
                             if (strpos(`cat /var/www/mycodo/.updatecheck`,'1') !== false) {
                                 echo ' (<span style="color: red;">A newer version is available</span>)';
@@ -4155,15 +4151,15 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>Daemon</legend>
+                <table style="width: 100%;">
                     <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            Daemon
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="width: 100%;">
                             Stop Daemon
                         </td>
                         <td class="setting-value">
@@ -4198,15 +4194,15 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>System</legend>
+                <table style="width: 100%;">
                     <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            System
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="width: 100%;">
                             Maximum current draw
                         </td>
                         <td class="setting-value">
@@ -4275,15 +4271,15 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>Combined Static Graph Generation</legend>
+                <table style="width: 100%;">
                     <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            Combined Static Graph Generation
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="width: 100%;">
                             Combined Temperatures
                         </td>
                         <td class="setting-value"></td>
@@ -4632,15 +4628,15 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>Email Notification</legend>
+                <table style="width: 100%;">
                     <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            Email Notification
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="width: 100%;">
                             SMTP Host
                         </td>
                         <td class="setting-value">
@@ -4709,15 +4705,15 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>Camera: Still Capture</legend>
+                <table style="width: 100%;">
                     <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            Camera: Still Capture
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="width: 100%;">
                             Relay to activate during capture (0 to disable)
                         </td>
                         <td class="setting-value">
@@ -4770,15 +4766,15 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>Camera: Video Stream</legend>
+                <table style="width: 100%;">
                     <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            Camera: Video Stream
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="width: 100%;">
                             Relay to activate during capture (0 to disable)
                         </td>
                         <td class="setting-value">
@@ -4815,15 +4811,15 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>Camera: Time-lapse</legend>
+                <table style="width: 100%;">
                     <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            Camera: Time-lapse
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="width: 100%;">
                             Relay to activate during capture (0 to disable)
                         </td>
                         <td class="setting-value">
@@ -4904,19 +4900,19 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
                 <?php
                 if ($current_user_restriction == 'admin') {
                 ?>
 
+                <fieldset class="settings-box">
+                <legend>Add User</legend>
+                <table style="width: 100%;">
                 <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            Add User
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="width: 100%;">
                             Username (only letters and numbers, 2 to 64 characters)
                         </td>
                         <td class="setting-value">
@@ -4965,14 +4961,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     </form>
                 </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>User Management</legend>
                 <table class="edit-user">
-                    <form method="post" action="?tab=settings">
-                    <tr>
-                        <td colspan="2" class="setting-title">
-                            Edit Users
-                        </td>
-                    </tr>
+                <form method="post" action="?tab=settings">
                     <tr>
                         <td>User</td>
                         <td>Email</td>
@@ -5039,14 +5033,9 @@ if (!file_exists($lock_daemon)) {
                 <?php
                 } else {
                 ?>
-                </table>
+                <fieldset class="settings-box">
+                <legend>User Management</legend>
                 <table class="edit-user">
-                    <form method="post" action="?tab=settings">
-                    <tr>
-                        <td class="setting-title">
-                            Edit User
-                        </td>
-                    </tr>
                     <tr>
                         <td>User</td>
                         <td>Email</td>
@@ -5092,6 +5081,7 @@ if (!file_exists($lock_daemon)) {
                 }
                 ?>
                 </table>
+                </fieldset>
                 <?php
                 }
                 ?>

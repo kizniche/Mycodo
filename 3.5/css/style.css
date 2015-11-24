@@ -1,5 +1,11 @@
+fieldset.settings-box {
+    padding: 0.5em;
+    margin: 1.5em 0 0 0;
+    width: 100%;
+}
+
 table.edit-user {
-  margin-top: 2em;
+  width: 100%;
 }
 
 table.edit-user td {

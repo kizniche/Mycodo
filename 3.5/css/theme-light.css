@@ -297,6 +297,10 @@ table.data-data th {
 
 /*** Settings tab ***/
 
+fieldset.settings-box {
+    border: 1px solid black;
+}
+
 .smtp {
     width: 18em;
 }
