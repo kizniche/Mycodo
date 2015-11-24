@@ -337,9 +337,9 @@ class ComServer(rpyc.Service):
         PID_stop(pidtype, number)
         return 1
 
-    def exposed_ReadPressSensor(self, address, sensor):
-        logging.info("[Client command] Read Press Sensor %s from I2C address %s", sensor, address)
-        if sensor == 'BMP085-180':
+    def exposed_ReadPressSensor(self, address, device):
+        logging.info("[Client command] Read Press Sensor %s from I2C address %s", device, address)
+        if device == 'BMP085-180':
             if address != 0:
                 I2C_address = 0x70 + address // 10
                 if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
@@ -358,23 +358,24 @@ class ComServer(rpyc.Service):
             return 'Invalid Sensor Name'
         return tc, press, alt, sea_press
 
-    def exposed_ReadCO2Sensor(self, device, sensor):
-        logging.info("[Client command] Read %s CO2 Sensor %s", device, sensor)
+    def exposed_ReadCO2Sensor(self, device, sensor_id):
+        logging.info("[Client command] Read %s CO2 Sensor %s", device, sensor_id)
         if device == 'K30':
-            return read_co2_sensor(sensor - 1)
+            return read_co2_sensor(sensor_id - 1)
         else:
             return 'Invalid Sensor Name'
 
-    def exposed_ReadHTSensor(self, pin, sensor):
-        logging.info("[Client command] Read HT Sensor %s from GPIO/I2C address %s", sensor, pin)
-        if sensor == 'DHT11': 
+    def exposed_ReadHTSensor(self, pin, device):
+        logging.info("[Client command] Read HT Sensor %s from GPIO/I2C address %s", device, pin)
+        if device == 'DHT11': 
             device = Adafruit_DHT.DHT11
-        elif sensor == 'DHT22': 
+        elif device == 'DHT22': 
             device = Adafruit_DHT.DHT22
-        elif sensor == 'AM2302': 
+        elif device == 'AM2302': 
             device = Adafruit_DHT.AM2302
-        elif sensor == 'AM2315':
+        elif device == 'AM2315':
             device = 'AM2315'
+
         if device == Adafruit_DHT.DHT11 or device == Adafruit_DHT.DHT22 or device == Adafruit_DHT.AM2302:
             hum, tc = Adafruit_DHT.read_retry(device, pin)
         elif device == 'AM2315':
@@ -394,8 +395,8 @@ class ComServer(rpyc.Service):
         return tc, hum
 
     def exposed_ReadTSensor(self, pin, device):
-        logging.info("[Client command] Read T Sensor %s from GPIO pin %s", sensor, pin)
-        if sensor == 'DS18B20':
+        logging.info("[Client command] Read T Sensor %s from GPIO pin %s", device, pin)
+        if device == 'DS18B20':
             return read_t(0, device, pin)
         else:
             return 'Invalid Sensor Name'
