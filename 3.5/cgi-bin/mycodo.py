@@ -3811,9 +3811,19 @@ def Relays_Start():
                     GPIO.output(relay_pin[i], 0)
 
 
-# Read the state of a relay
 def read_relay(relay):
-    if (relay_trigger[relay - 1] == 0 and GPIO.input(relay_pin[relay - 1]) == 0) or (relay_trigger[relay - 1] == 1 and GPIO.input(relay_pin[relay - 1]) == 1):
+    """
+    Read the state of a relay
+
+    :param relay:
+    :type relay:
+    :return: State of the relay as a string.  Either 'on' or 'off'
+    :rtype: str
+    """
+    rename_this_condition1 = relay_trigger[relay - 1] == 0 and GPIO.input(relay_pin[relay - 1]) == 0
+    rename_this_condition2 = relay_trigger[relay - 1] == 1 and GPIO.input(relay_pin[relay - 1]) == 1
+
+    if rename_this_condition1 or rename_this_condition2:
         return "on"
     else:
         return "off"
