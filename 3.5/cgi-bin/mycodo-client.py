@@ -53,8 +53,8 @@ def usage():
     print '    -r, --relay relay state'
     print '           Turn a relay on or off. state can be 0, 1, or X.'
     print '           0=OFF, 1=ON, or X number of seconds On'
-    print '        --sensorco2 pin device'
-    print '           Returns a reading from the CO2 sensor on GPIO pin'
+    print '        --sensorco2 device sensor-number'
+    print '           Returns a reading from the CO2 sensor'
     print '           Device options: K30'
     print '        --sensorht pin device'
     print '           Returns a reading from the temperature and humidity sensor on GPIO pin'
@@ -173,9 +173,9 @@ def menu():
                 print 'Error: second input must be an integer greater than 0'
                 sys.exit(1)
         elif opt == "--sensorco2":
-            print "%s [Remote command] Read CO2 sensor %s on GPIO pin %s" % (
+            print "%s [Remote command] Read %s CO2 sensor %s" % (
                 Timestamp(), sys.argv[3], int(float(sys.argv[2])))
-            temperature, humidity = c.root.ReadCO2Sensor(int(float(sys.argv[2])), sys.argv[3])
+            co2 = c.root.ReadCO2Sensor(int(float(sys.argv[2])), sys.argv[3])
             print "%s [Remote Command] Daemon Returned: CO2: %s" % (Timestamp(), co2)
             sys.exit(0)
         elif opt == "--sensorht":
