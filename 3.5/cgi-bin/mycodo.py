@@ -1755,45 +1755,6 @@ def read_t_sensor(sensor_id):
     return 0
 
 
-# Obtain reading from T sensor
-def read_t(sensor_id, device, pin):
-    global last_t_reading
-
-    # Ensure at least 1 second between sensor reads
-    while last_t_reading > time.time():
-        time.sleep(0.25)
-
-    if device == 'DS18B20':
-        import glob
-        os.system('modprobe w1-gpio')
-        os.system('modprobe w1-therm')
-        base_dir = '/sys/bus/w1/devices/'
-        #device_folder = glob.glob(base_dir + '28*')[0]
-        device_file = base_dir + '28-' + pin + '/w1_slave'
-        
-        def read_temp_raw():
-            f = open(device_file, 'r')
-            lines = f.readlines()
-            f.close()
-            return lines
-
-        lines = read_temp_raw()
-        while lines[0].strip()[-3:] != 'YES':
-            time.sleep(0.2)
-            lines = read_temp_raw()
-        equals_pos = lines[1].find('t=')
-        if equals_pos != -1:
-            temp_string = lines[1][equals_pos + 2:]
-            tempc = float(temp_string) / 1000.0
-            #temp_f = temp_c * 9.0 / 5.0 + 32.0
-            last_t_reading = time.time() + 2
-            return tempc
-    else:
-        logging.debug("[Read T Sensor-%s] Device not recognized: %s", sensor_id + 1, device)
-        last_t_reading = time.time() + 1
-        return None
-
-
 # Read the temperature and humidity from sensor
 def read_ht_sensor(sensor_id):
     global sensor_ht_read_temp_c
@@ -2000,44 +1961,6 @@ def verify_ht_sensor(sensor_id, GPIO):
     return 0
 
 
-# Obtain reading from HT sensor
-def read_ht(sensor_id, device, pin):
-    global last_ht_reading
-    # Ensure at least 2 seconds between sensor reads
-    while last_ht_reading > time.time():
-        time.sleep(0.25)
-    if device == 'DHT11':
-        device = Adafruit_DHT.DHT11
-    elif device == 'DHT22':
-        device = Adafruit_DHT.DHT22
-    elif device == 'AM2302':
-        device = Adafruit_DHT.AM2302
-    elif device == 'AM2315':
-        device = 'AM2315'
-    if device == Adafruit_DHT.DHT11 or device == Adafruit_DHT.DHT22 or device == Adafruit_DHT.AM2302:
-        humidity, temp = Adafruit_DHT.read_retry(device, pin)
-        last_ht_reading = time.time() + 2
-        return humidity, temp
-    elif device == 'AM2315':
-        if pin != 0:
-            I2C_address = 0x70 + pin // 10
-            if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
-                I2C_bus_number = 1
-            else:
-                I2C_bus_number = 0
-            bus = smbus.SMBus(I2C_bus_number)
-            bus.write_byte(I2C_address, pin % 10)
-            time.sleep(0.1)
-        am = AM2315(0x5c, "/dev/i2c-1")
-        temp, humidity, crc_check = am.sense()
-        last_ht_reading = time.time() + 2
-        return humidity, temp
-    else:
-        logging.debug("[Read HT Sensor-%s] Device not recognized: %s", sensor_id + 1, device)
-        last_ht_reading = time.time() + 2
-        return 0
-
-
 # Read CO2 sensor
 def read_co2_sensor(sensor_id):
     global sensor_co2_read_co2
@@ -2077,7 +2000,7 @@ def read_co2_sensor(sensor_id):
 
         for i in range(0, co2_read_tries):  # Multiple attempts to get first reading
             if pid_co2_alive[sensor_id] and client_que != 'TerminateServer' and pause_daemon != 1:
-                co22 = read_K30(sensor_id, sensor_co2_device[sensor_id])
+                co22 = read_co2(sensor_id, sensor_co2_device[sensor_id])
                 if co22 is not None:
                     break
             else:
@@ -2092,7 +2015,7 @@ def read_co2_sensor(sensor_id):
 
         for i in range(0, co2_read_tries):  # Multiple attempts to get second reading
             if pid_co2_alive[sensor_id] and client_que != 'TerminateServer' and pause_daemon != 1:
-                co2 = read_K30(sensor_id, sensor_co2_device[sensor_id])
+                co2 = read_co2(sensor_id, sensor_co2_device[sensor_id])
                 if co2 is not None:
                     break
             else:
@@ -2119,35 +2042,6 @@ def read_co2_sensor(sensor_id):
     logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor_id + 1, lock.path)
     lock.release()
     return 0
-
-
-# Read K30 CO2 Sensor
-def read_K30(sensor_id, device):
-    global last_co2_reading
-    # Ensure at least 2 seconds between sensor reads
-    while last_co2_reading > time.time():
-        time.sleep(0.25)
-
-    if device == 'K30':
-        ser = serial.Serial("/dev/ttyAMA0", timeout=1)  # Wait 1 second for reply
-        ser.flushInput()
-        time.sleep(1)
-        ser.write("\xFE\x44\x00\x08\x02\x9F\x25")
-        time.sleep(.01)
-        resp = ser.read(7)
-        if len(resp) == 0:
-            last_co2_reading = time.time() + 2
-            return None
-        else:
-            high = ord(resp[3])
-            low = ord(resp[4])
-            co2 = (high * 256) + low
-            last_co2_reading = time.time() + 2
-            return co2
-    else:
-        logging.debug("[Read CO2 Sensor-%s] Device not recognized: %s", sensor_id + 1, device)
-        last_co2_reading = time.time() + 2
-        return 0
 
 
 # Read the temperature and pressure from sensor
@@ -2195,7 +2089,7 @@ def read_press_sensor(sensor_id):
         for i in range(0, press_read_tries):  # Multiple attempts to get first reading
             if (pid_press_temp_alive[sensor_id] or pid_press_press_alive[sensor_id]) and client_que != 'TerminateServer' and pause_daemon != 1:
                 pressure2, tempc2, alt2 = read_press(sensor_id, sensor_press_device[sensor_id], sensor_press_pin[sensor_id])
-                if pressure2 is not None and tempc2 is not None:
+                if pressure2 is not None and tempc2 is not None and alt is not None:
                     break
             else:
                 break
@@ -2210,7 +2104,7 @@ def read_press_sensor(sensor_id):
         for i in range(0, press_read_tries):  # Multiple attempts to get second reading
             if (pid_press_temp_alive[sensor_id] or pid_press_press_alive[sensor_id]) and client_que != 'TerminateServer' and pause_daemon != 1:
                 pressure, tempc, alt = read_press(sensor_id, sensor_press_device[sensor_id], sensor_press_pin[sensor_id])
-                if pressure is not None and tempc is not None:
+                if pressure is not None and tempc is not None and alt is not None:
                     break
             else:
                 break
@@ -2242,12 +2136,122 @@ def read_press_sensor(sensor_id):
     return 0
 
 
-# Obtain reading from Press sensor
-def read_press(sensor_id, device, pin):
-    global last_press_reading
+
+#################################################
+#            Read Data From Sensors             #
+#################################################
+
+# Obtain reading from Temperature sensor
+def read_t(sensor_id, device, pin):
     # Ensure at least 2 seconds between sensor reads
+    global last_t_reading
+    while last_t_reading > time.time():
+        time.sleep(0.2)
+
+    if device == 'DS18B20':
+        import glob
+        os.system('modprobe w1-gpio')
+        os.system('modprobe w1-therm')
+        base_dir = '/sys/bus/w1/devices/'
+        #device_folder = glob.glob(base_dir + '28*')[0]
+        device_file = base_dir + '28-' + pin + '/w1_slave'
+        
+        def read_temp_raw():
+            f = open(device_file, 'r')
+            lines = f.readlines()
+            f.close()
+            return lines
+        lines = read_temp_raw()
+        while lines[0].strip()[-3:] != 'YES':
+            time.sleep(0.2)
+            lines = read_temp_raw()
+        equals_pos = lines[1].find('t=')
+        if equals_pos != -1:
+            temp_string = lines[1][equals_pos + 2:]
+            temperature = float(temp_string) / 1000.0
+            #temp_f = temp_c * 9.0 / 5.0 + 32.0
+    else:
+        logging.debug("[Read T Sensor-%s] Device not recognized: %s", sensor_id + 1, device)
+        temperature = None
+
+    last_t_reading = time.time() + 2
+    return temperature
+
+
+# Obtain reading from Humidity/Temperature sensor
+def read_ht(sensor_id, device, pin):
+    # Ensure at least 2 seconds between sensor reads
+    global last_ht_reading
+    while last_ht_reading > time.time():
+        time.sleep(0.2)
+
+    if device == 'DHT11':
+        device = Adafruit_DHT.DHT11
+    elif device == 'DHT22':
+        device = Adafruit_DHT.DHT22
+    elif device == 'AM2302':
+        device = Adafruit_DHT.AM2302
+    elif device == 'AM2315':
+        device = 'AM2315'
+
+    if device == Adafruit_DHT.DHT11 or device == Adafruit_DHT.DHT22 or device == Adafruit_DHT.AM2302:
+        humidity, temperature = Adafruit_DHT.read_retry(device, pin)
+    elif device == 'AM2315':
+        if pin != 0:
+            I2C_address = 0x70 + pin // 10
+            if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
+                I2C_bus_number = 1
+            else:
+                I2C_bus_number = 0
+            bus = smbus.SMBus(I2C_bus_number)
+            bus.write_byte(I2C_address, pin % 10)
+            time.sleep(0.1)
+        am = AM2315(0x5c, "/dev/i2c-1")
+        temperature, humidity, crc_check = am.sense()
+    else:
+        logging.debug("[Read HT Sensor-%s] Device not recognized: %s", sensor_id + 1, device)
+        temperature = humidity = None
+
+    last_ht_reading = time.time() + 2
+    return humidity, temperature
+
+
+# Obtain reading from CO2 Sensor
+def read_co2(sensor_id, device):
+    # Ensure at least 2 seconds between sensor reads
+    global last_co2_reading
+    while last_co2_reading > time.time():
+        time.sleep(0.2)
+
+    if device == 'K30':
+        ser = serial.Serial("/dev/ttyAMA0", timeout=1)  # Wait 1 second for reply
+        ser.flushInput()
+        time.sleep(1)
+        ser.write("\xFE\x44\x00\x08\x02\x9F\x25")
+        time.sleep(.01)
+        resp = ser.read(7)
+        if len(resp) == 0:
+            last_co2_reading = time.time() + 2
+            co2 = None
+        else:
+            high = ord(resp[3])
+            low = ord(resp[4])
+            co2 = (high * 256) + low
+    else:
+        logging.debug("[Read CO2 Sensor-%s] Device not recognized: %s", sensor_id + 1, device)
+        co2 = None
+
+    last_co2_reading = time.time() + 2
+    return co2
+
+
+# Obtain reading from Pressure sensor
+def read_press(sensor_id, device, pin):
+    # Ensure at least 2 seconds between sensor reads
+    global last_press_reading
     while last_press_reading > time.time():
-        time.sleep(0.25)
+        time.sleep(0.2)
+
     if device == 'BMP085-180':
         if pin != 0:
             I2C_address = 0x70 + pin // 10
@@ -2259,16 +2263,17 @@ def read_press(sensor_id, device, pin):
             bus.write_byte(I2C_address, pin % 10)
             time.sleep(0.1)
         press_sensor = BMP085.BMP085()
-        temp = press_sensor.read_temperature()
-        press = press_sensor.read_pressure()
-        alt = press_sensor.read_altitude()
+        temperature = press_sensor.read_temperature()
+        pressure = press_sensor.read_pressure()
+        altitude = press_sensor.read_altitude()
         #sea_level = sensor.read_sealevel_pressure()
-        last_press_reading = time.time() + 2
-        return press, temp, alt
     else:
         logging.debug("[Read Press Sensor-%s] Device not recognized: %s", sensor_id + 1, device)
-        last_press_reading = time.time() + 2
-        return 0
+        pressure = temperature = altitude = None
+
+    last_press_reading = time.time() + 2
+    return pressure, temperature, altitude
+
 
 
 #################################################
@@ -3815,8 +3820,8 @@ def read_relay(relay_id):
     """
     Read the state of a relay
 
-    :param relay_id:
-    :type relay_id:
+    :param relay_id: Relay number
+    :type relay_id: int
     :return: State of the relay as a string.  Either 'on' or 'off'
     :rtype: str
     """
