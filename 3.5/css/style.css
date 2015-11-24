@@ -4,6 +4,11 @@ fieldset.settings-box {
     width: 100%;
 }
 
+legend {
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
 table.edit-user {
   width: 100%;
 }

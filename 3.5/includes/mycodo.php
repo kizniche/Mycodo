@@ -4279,10 +4279,9 @@ if (!file_exists($lock_daemon)) {
                 <table style="width: 100%;">
                     <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-text" style="width: 100%;">
+                        <td colspan="4" class="setting-text">
                             Combined Temperatures
                         </td>
-                        <td class="setting-value"></td>
                     </tr>
                     <tr>
                         <td class="setting-text">
@@ -4291,48 +4290,6 @@ if (!file_exists($lock_daemon)) {
                         <td class="setting-value">
                             <input style="width: 18em;" type="number" value="<?php echo $combined_temp_min; ?>" maxlength="6" name="combined_temp_min" title=""/>
                         </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Max
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_max; ?>" maxlength="6" name="combined_temp_max" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Tics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_tics; ?>" maxlength="6" name="combined_temp_tics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis mTics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_mtics; ?>" maxlength="6" name="combined_temp_mtics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_temp_relays_up; ?>" name="combined_temp_relays_up" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_temp_relays_down; ?>" name="combined_temp_relays_down" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
                         <td class="setting-text">
                             Relay Y-Axis Min
                         </td>
@@ -4342,6 +4299,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_max; ?>" maxlength="6" name="combined_temp_max" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis Max
                         </td>
                         <td class="setting-value">
@@ -4349,6 +4312,12 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
+                        <td class="setting-text">
+                            Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_tics; ?>" maxlength="6" name="combined_temp_tics" title=""/>
+                        </td>
                         <td class="setting-text">
                             Relay Y-Axis Tics
                         </td>
@@ -4358,6 +4327,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_mtics; ?>" maxlength="6" name="combined_temp_mtics" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis mTics
                         </td>
                         <td class="setting-value">
@@ -4365,10 +4340,28 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-text pad-top">
+                        <td colspan="3" class="setting-text" style="width: 100%;">
+                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_temp_relays_up; ?>" name="combined_temp_relays_up" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="setting-text">
+                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_temp_relays_down; ?>" name="combined_temp_relays_down" title=""/>
+                        </td>
+                    </tr>
+                </table>
+
+                <table>
+                    <tr>
+                        <td colspan="4" class="setting-text pad-top">
                             Combined Humidities
                         </td>
-                        <td class="setting-value"></td>
                     </tr>
                     <tr>
                         <td class="setting-text">
@@ -4377,48 +4370,6 @@ if (!file_exists($lock_daemon)) {
                         <td class="setting-value">
                             <input style="width: 18em;" type="number" value="<?php echo $combined_hum_min; ?>" maxlength="6" name="combined_hum_min" title=""/>
                         </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Max
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_max; ?>" maxlength="6" name="combined_hum_max" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Tics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_tics; ?>" maxlength="6" name="combined_hum_tics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis mTics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_mtics; ?>" maxlength="6" name="combined_hum_mtics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_hum_relays_up; ?>" name="combined_hum_relays_up" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_hum_relays_down; ?>" name="combined_hum_relays_down" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
                         <td class="setting-text">
                             Relay Y-Axis Min
                         </td>
@@ -4428,6 +4379,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_max; ?>" maxlength="6" name="combined_hum_max" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis Max
                         </td>
                         <td class="setting-value">
@@ -4435,6 +4392,12 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
+                        <td class="setting-text">
+                            Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_tics; ?>" maxlength="6" name="combined_hum_tics" title=""/>
+                        </td>
                         <td class="setting-text">
                             Relay Y-Axis Tics
                         </td>
@@ -4444,6 +4407,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_mtics; ?>" maxlength="6" name="combined_hum_mtics" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis mTics
                         </td>
                         <td class="setting-value">
@@ -4451,10 +4420,29 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-text pad-top">
+                        <td colspan="3" class="setting-text" style="width: 100%">
+                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_hum_relays_up; ?>" name="combined_hum_relays_up" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="setting-text">
+                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_hum_relays_down; ?>" name="combined_hum_relays_down" title=""/>
+                        </td>
+                    </tr>
+                </table>
+                    
+                <table>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="setting-text pad-top">
                             Combined CO<sub>2</sub>s
                         </td>
-                        <td class="setting-value"></td>
                     </tr>
                     <tr>
                         <td class="setting-text">
@@ -4463,48 +4451,6 @@ if (!file_exists($lock_daemon)) {
                         <td class="setting-value">
                             <input style="width: 18em;" type="number" value="<?php echo $combined_co2_min; ?>" maxlength="6" name="combined_co2_min" title=""/>
                         </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Max
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_max; ?>" maxlength="6" name="combined_co2_max" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Tics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_tics; ?>" maxlength="6" name="combined_co2_tics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis mTics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_mtics; ?>" maxlength="6" name="combined_co2_mtics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_co2_relays_up; ?>" name="combined_co2_relays_up" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_co2_relays_down; ?>" name="combined_co2_relays_down" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
                         <td class="setting-text">
                             Relay Y-Axis Min
                         </td>
@@ -4514,6 +4460,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_max; ?>" maxlength="6" name="combined_co2_max" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis Max
                         </td>
                         <td class="setting-value">
@@ -4521,6 +4473,12 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
+                        <td class="setting-text">
+                            Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_tics; ?>" maxlength="6" name="combined_co2_tics" title=""/>
+                        </td>
                         <td class="setting-text">
                             Relay Y-Axis Tics
                         </td>
@@ -4530,6 +4488,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_mtics; ?>" maxlength="6" name="combined_co2_mtics" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis mTics
                         </td>
                         <td class="setting-value">
@@ -4537,10 +4501,28 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-text pad-top">
+                        <td colspan="3" class="setting-text" style="width: 100%">
+                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_co2_relays_up; ?>" name="combined_co2_relays_up" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="setting-text">
+                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_co2_relays_down; ?>" name="combined_co2_relays_down" title=""/>
+                        </td>
+                    </tr>
+                </table>
+
+                <table>
+                    <tr>
+                        <td colspan="4" class="setting-text pad-top">
                             Combined Pressures
                         </td>
-                        <td class="setting-value"></td>
                     </tr>
                     <tr>
                         <td class="setting-text">
@@ -4549,48 +4531,6 @@ if (!file_exists($lock_daemon)) {
                         <td class="setting-value">
                             <input style="width: 18em;" type="number" value="<?php echo $combined_press_min; ?>" maxlength="6" name="combined_press_min" title=""/>
                         </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Max
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_max; ?>" maxlength="6" name="combined_press_max" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Tics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_tics; ?>" maxlength="6" name="combined_press_tics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis mTics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_mtics; ?>" maxlength="6" name="combined_press_mtics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_press_relays_up; ?>" name="combined_press_relays_up" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_press_relays_down; ?>" name="combined_press_relays_down" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
                         <td class="setting-text">
                             Relay Y-Axis Min
                         </td>
@@ -4600,6 +4540,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_max; ?>" maxlength="6" name="combined_press_max" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis Max
                         </td>
                         <td class="setting-value">
@@ -4607,6 +4553,12 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
+                        <td class="setting-text">
+                            Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_tics; ?>" maxlength="6" name="combined_press_tics" title=""/>
+                        </td>
                         <td class="setting-text">
                             Relay Y-Axis Tics
                         </td>
@@ -4616,10 +4568,32 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_mtics; ?>" maxlength="6" name="combined_press_mtics" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis mTics
                         </td>
                         <td class="setting-value">
                             <input style="width: 18em;" type="number" value="<?php echo $combined_press_relays_mtics; ?>" maxlength="6" name="combined_press_relays_mtics" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="setting-text" style="width: 100%;">
+                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_press_relays_up; ?>" name="combined_press_relays_up" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="setting-text">
+                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_press_relays_down; ?>" name="combined_press_relays_down" title=""/>
                         </td>
                     </tr>
                     <tr>
