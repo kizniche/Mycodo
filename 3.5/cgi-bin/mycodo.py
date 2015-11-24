@@ -358,11 +358,10 @@ class ComServer(rpyc.Service):
             return 'Invalid Sensor Name'
         return tc, press, alt, sea_press
 
-    def exposed_ReadCO2Sensor(self, pin, sensor):
-        logging.info("[Client command] Read CO2 Sensor %s from GPIO pin %s", sensor, pin)
-        if sensor == 'K30':
-            read_co2_sensor(sensor - 1)
-            return sensor_co2_read_co2
+    def exposed_ReadCO2Sensor(self, device, sensor):
+        logging.info("[Client command] Read %s CO2 Sensor %s", device, sensor)
+        if device == 'K30':
+            return read_co2_sensor(sensor - 1)
         else:
             return 'Invalid Sensor Name'
 
@@ -743,7 +742,7 @@ def daemon(output, log):
 
         for i in range(0, len(sensor_co2_id)):
             if time.time() > timerCo2SensorLog[i] and sensor_co2_device[i] != 'Other' and sensor_co2_activated[i] == 1 and client_que != 'TerminateServer' and pause_daemon != 1 and PID_change != 1:
-                if read_co2_sensor(i) == 1:
+                if read_co2_sensor(i):
                     mycodoLog.write_co2_sensor_log(sensor_co2_read_co2, i)
                 else:
                     logging.warning("Could not read CO2-%s sensor, not writing to sensor log", i + 1)
@@ -856,7 +855,7 @@ def daemon(output, log):
                 if conditional_co2_id[j][k][0] != 0 and client_que != 'TerminateServer' and pause_daemon != 1 and PID_change != 1:
                     if time.time() > timerCO2Conditional[j][k] and conditional_co2_state[j][k][0] == 1:
                         logging.debug("[Conditional CO2] Check conditional statement %s: %s", k + 1, conditional_co2_name[j][k][0])
-                        if read_co2_sensor(j) == 1:
+                        if read_co2_sensor(j):
                             if (conditional_co2_direction[j][k][0] == 1 and sensor_co2_read_co2[j] > conditional_co2_setpoint[j][k][0]) or (conditional_co2_direction[j][k][0] == -1 and sensor_co2_read_co2[j] < conditional_co2_setpoint[j][k][0]):
                                 if conditional_co2_sel_relay[j][k][0]:
                                     if conditional_co2_relay_state[j][k][0] == 1:
@@ -1380,7 +1379,7 @@ def co2_monitor(ThreadName, sensor_id):
             if time.time() > timerCO2:
 
                 logging.debug("[PID CO2-%s] Reading temperature...", sensor_id + 1)
-                if read_co2_sensor(sensor_id) == 1:
+                if read_co2_sensor(sensor_id):
 
                     PIDCO2 = pid_co2.update(float(sensor_co2_read_co2[sensor_id]))
                     if sensor_co2_read_co2[sensor_id] > pid_co2_set[sensor_id]:
@@ -2114,7 +2113,7 @@ def read_co2_sensor(sensor_id):
                 sensor_co2_read_co2[sensor_id] = co2
                 logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor_id + 1, lock.path)
                 lock.release()
-                return 1
+                return co2
     logging.warning("[Read CO2 Sensor-%s] Could not get two consecutive CO2 measurements that were consistent.", sensor_id + 1)
     logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor_id + 1, lock.path)
     lock.release()
