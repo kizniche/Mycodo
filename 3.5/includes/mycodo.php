@@ -4116,21 +4116,17 @@ if (!file_exists($lock_daemon)) {
 
             <?php if ($this->feedback) echo $this->feedback; ?>
 
-            <div style="padding: 2em 0 0 1em;">
+            <div style="padding: 1.5em 0 0 1em;">
                 <a href="manual.html" target="_blank">Mycodo 3.5 Manual</a> | <a href="https://github.com/kizniche/Mycodo" target="_blank">Mycodo on GitHub</a> | Have a problem? <a href="http://kylegabriel.com/contact" target="_blank">Contact the developer</a> or <a href="https://github.com/kizniche/Mycodo/issues" target="_blank">submit an issue</a>.
             </div>
 
-            <div style="padding: 0 1em 0 1em;">
-                <table>
-                    <tr>
-                        <td class="setting-title" style="width: 100%;">
-                            Update
-                        </td>
-                    </tr>
-
+            <div style="padding: 0.5em 1em 0 1em; width: 100%;">
+                <fieldset class="settings-box">
+                <legend>Update</legend>
+                <table style="width: 100%;">
                     <form action="?tab=settings" method="post">
-                        <tr>
-                        <td class="setting-text">
+                    <tr>
+                        <td class="setting-text" style="width: 100%;">
                             Check if there is an update avaialble for Mycodo<?php
                             if (strpos(`cat /var/www/mycodo/.updatecheck`,'1') !== false) {
                                 echo ' (<span style="color: red;">A newer version is available</span>)';
@@ -4155,15 +4151,15 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>Daemon</legend>
+                <table style="width: 100%;">
                     <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            Daemon
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="width: 100%;">
                             Stop Daemon
                         </td>
                         <td class="setting-value">
@@ -4198,15 +4194,15 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>System</legend>
+                <table style="width: 100%;">
                     <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            System
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="width: 100%;">
                             Maximum current draw
                         </td>
                         <td class="setting-value">
@@ -4270,23 +4266,22 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <button name="ChangeSystem" type="submit" value="">Save</button>
+                        <td colspan="2" class="setting-save">
+                            <button style="width: 18em;" name="ChangeSystem" type="submit" value="">Save</button>
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>Combined Static Graph Generation</legend>
+                <table style="width: 100%;">
                     <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            Combined Static Graph Generation
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td colspan="4" class="setting-text">
                             Combined Temperatures
                         </td>
-                        <td class="setting-value"></td>
                     </tr>
                     <tr>
                         <td class="setting-text">
@@ -4295,48 +4290,6 @@ if (!file_exists($lock_daemon)) {
                         <td class="setting-value">
                             <input style="width: 18em;" type="number" value="<?php echo $combined_temp_min; ?>" maxlength="6" name="combined_temp_min" title=""/>
                         </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Max
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_max; ?>" maxlength="6" name="combined_temp_max" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Tics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_tics; ?>" maxlength="6" name="combined_temp_tics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis mTics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_mtics; ?>" maxlength="6" name="combined_temp_mtics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_temp_relays_up; ?>" name="combined_temp_relays_up" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_temp_relays_down; ?>" name="combined_temp_relays_down" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
                         <td class="setting-text">
                             Relay Y-Axis Min
                         </td>
@@ -4346,6 +4299,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_max; ?>" maxlength="6" name="combined_temp_max" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis Max
                         </td>
                         <td class="setting-value">
@@ -4353,6 +4312,12 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
+                        <td class="setting-text">
+                            Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_tics; ?>" maxlength="6" name="combined_temp_tics" title=""/>
+                        </td>
                         <td class="setting-text">
                             Relay Y-Axis Tics
                         </td>
@@ -4362,6 +4327,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_mtics; ?>" maxlength="6" name="combined_temp_mtics" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis mTics
                         </td>
                         <td class="setting-value">
@@ -4369,10 +4340,28 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-text pad-top">
+                        <td colspan="3" class="setting-text" style="width: 100%;">
+                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_temp_relays_up; ?>" name="combined_temp_relays_up" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="setting-text">
+                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_temp_relays_down; ?>" name="combined_temp_relays_down" title=""/>
+                        </td>
+                    </tr>
+                </table>
+
+                <table>
+                    <tr>
+                        <td colspan="4" class="setting-text pad-top">
                             Combined Humidities
                         </td>
-                        <td class="setting-value"></td>
                     </tr>
                     <tr>
                         <td class="setting-text">
@@ -4381,48 +4370,6 @@ if (!file_exists($lock_daemon)) {
                         <td class="setting-value">
                             <input style="width: 18em;" type="number" value="<?php echo $combined_hum_min; ?>" maxlength="6" name="combined_hum_min" title=""/>
                         </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Max
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_max; ?>" maxlength="6" name="combined_hum_max" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Tics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_tics; ?>" maxlength="6" name="combined_hum_tics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis mTics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_mtics; ?>" maxlength="6" name="combined_hum_mtics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_hum_relays_up; ?>" name="combined_hum_relays_up" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_hum_relays_down; ?>" name="combined_hum_relays_down" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
                         <td class="setting-text">
                             Relay Y-Axis Min
                         </td>
@@ -4432,6 +4379,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_max; ?>" maxlength="6" name="combined_hum_max" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis Max
                         </td>
                         <td class="setting-value">
@@ -4439,6 +4392,12 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
+                        <td class="setting-text">
+                            Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_tics; ?>" maxlength="6" name="combined_hum_tics" title=""/>
+                        </td>
                         <td class="setting-text">
                             Relay Y-Axis Tics
                         </td>
@@ -4448,6 +4407,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_mtics; ?>" maxlength="6" name="combined_hum_mtics" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis mTics
                         </td>
                         <td class="setting-value">
@@ -4455,10 +4420,29 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-text pad-top">
+                        <td colspan="3" class="setting-text" style="width: 100%">
+                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_hum_relays_up; ?>" name="combined_hum_relays_up" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="setting-text">
+                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_hum_relays_down; ?>" name="combined_hum_relays_down" title=""/>
+                        </td>
+                    </tr>
+                </table>
+                    
+                <table>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="setting-text pad-top">
                             Combined CO<sub>2</sub>s
                         </td>
-                        <td class="setting-value"></td>
                     </tr>
                     <tr>
                         <td class="setting-text">
@@ -4467,48 +4451,6 @@ if (!file_exists($lock_daemon)) {
                         <td class="setting-value">
                             <input style="width: 18em;" type="number" value="<?php echo $combined_co2_min; ?>" maxlength="6" name="combined_co2_min" title=""/>
                         </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Max
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_max; ?>" maxlength="6" name="combined_co2_max" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Tics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_tics; ?>" maxlength="6" name="combined_co2_tics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis mTics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_mtics; ?>" maxlength="6" name="combined_co2_mtics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_co2_relays_up; ?>" name="combined_co2_relays_up" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_co2_relays_down; ?>" name="combined_co2_relays_down" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
                         <td class="setting-text">
                             Relay Y-Axis Min
                         </td>
@@ -4518,6 +4460,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_max; ?>" maxlength="6" name="combined_co2_max" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis Max
                         </td>
                         <td class="setting-value">
@@ -4525,6 +4473,12 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
+                        <td class="setting-text">
+                            Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_tics; ?>" maxlength="6" name="combined_co2_tics" title=""/>
+                        </td>
                         <td class="setting-text">
                             Relay Y-Axis Tics
                         </td>
@@ -4534,6 +4488,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_mtics; ?>" maxlength="6" name="combined_co2_mtics" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis mTics
                         </td>
                         <td class="setting-value">
@@ -4541,10 +4501,28 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-text pad-top">
+                        <td colspan="3" class="setting-text" style="width: 100%">
+                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_co2_relays_up; ?>" name="combined_co2_relays_up" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="setting-text">
+                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_co2_relays_down; ?>" name="combined_co2_relays_down" title=""/>
+                        </td>
+                    </tr>
+                </table>
+
+                <table>
+                    <tr>
+                        <td colspan="4" class="setting-text pad-top">
                             Combined Pressures
                         </td>
-                        <td class="setting-value"></td>
                     </tr>
                     <tr>
                         <td class="setting-text">
@@ -4553,48 +4531,6 @@ if (!file_exists($lock_daemon)) {
                         <td class="setting-value">
                             <input style="width: 18em;" type="number" value="<?php echo $combined_press_min; ?>" maxlength="6" name="combined_press_min" title=""/>
                         </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Max
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_max; ?>" maxlength="6" name="combined_press_max" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Tics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_tics; ?>" maxlength="6" name="combined_press_tics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis mTics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_mtics; ?>" maxlength="6" name="combined_press_mtics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_press_relays_up; ?>" name="combined_press_relays_up" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_press_relays_down; ?>" name="combined_press_relays_down" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
                         <td class="setting-text">
                             Relay Y-Axis Min
                         </td>
@@ -4604,6 +4540,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_max; ?>" maxlength="6" name="combined_press_max" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis Max
                         </td>
                         <td class="setting-value">
@@ -4611,6 +4553,12 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
+                        <td class="setting-text">
+                            Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_tics; ?>" maxlength="6" name="combined_press_tics" title=""/>
+                        </td>
                         <td class="setting-text">
                             Relay Y-Axis Tics
                         </td>
@@ -4620,6 +4568,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_mtics; ?>" maxlength="6" name="combined_press_mtics" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis mTics
                         </td>
                         <td class="setting-value">
@@ -4627,20 +4581,36 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <button name="ChangeCombinedSetings" type="submit" value="">Save</button>
+                        <td colspan="3" class="setting-text" style="width: 100%;">
+                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_press_relays_up; ?>" name="combined_press_relays_up" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="setting-text">
+                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_press_relays_down; ?>" name="combined_press_relays_down" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="setting-save">
+                            <button style="width: 18em;" name="ChangeCombinedSetings" type="submit" value="">Save</button>
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>Email Notification</legend>
+                <table style="width: 100%;">
                     <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            Email Notification
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="width: 100%;">
                             SMTP Host
                         </td>
                         <td class="setting-value">
@@ -4700,24 +4670,33 @@ if (!file_exists($lock_daemon)) {
                             Send Test Email (save configure above, then enter recipient and click Send)
                         </td>
                         <td class="setting-value">
-                            <input style="width: 13em;" type="text" value="" maxlength="50" name="smtp_email_test" title=""/> <input style="width: 5em;"type="submit" name="TestNotify" value="Send">
+                            <table style="100%;">
+                                <tr>
+                                    <td style="width: 100%;">
+                                        <input style="width: 100%;" type="text" value="" maxlength="50" name="smtp_email_test" title=""/>
+                                    </td>
+                                    <td>
+                                        <input type="submit" name="TestNotify" value="Send">
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <input type="submit" name="ChangeNotify" value="Save">
+                        <td colspan="2" class="setting-save">
+                            <input style="width: 18em;" type="submit" name="ChangeNotify" value="Save">
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>Camera: Still Capture</legend>
+                <table style="width: 100%;">
                     <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            Camera: Still Capture
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="width: 100%;">
                             Relay to activate during capture (0 to disable)
                         </td>
                         <td class="setting-value">
@@ -4765,20 +4744,20 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <button name="ChangeStill" type="submit" value="">Save</button>
+                        <td colspan="2" class="setting-save">
+                            <button style="width: 18em;" name="ChangeStill" type="submit" value="">Save</button>
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>Camera: Video Stream</legend>
+                <table style="width: 100%;">
                     <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            Camera: Video Stream
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="width: 100%;">
                             Relay to activate during capture (0 to disable)
                         </td>
                         <td class="setting-value">
@@ -4810,20 +4789,20 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <button name="ChangeStream" type="submit" value="">Save</button>
+                        <td colspan="2" class="setting-save">
+                            <button style="width: 18em;" name="ChangeStream" type="submit" value="">Save</button>
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>Camera: Time-lapse</legend>
+                <table style="width: 100%;">
                     <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            Camera: Time-lapse
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="width: 100%;">
                             Relay to activate during capture (0 to disable)
                         </td>
                         <td class="setting-value">
@@ -4899,24 +4878,24 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <button name="ChangeTimelapse" type="submit" value="">Save</button>
+                        <td colspan="2" class="setting-save">
+                            <button style="width: 18em;" name="ChangeTimelapse" type="submit" value="">Save</button>
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
                 <?php
                 if ($current_user_restriction == 'admin') {
                 ?>
 
+                <fieldset class="settings-box">
+                <legend>Add User</legend>
+                <table style="width: 100%;">
                 <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            Add User
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="width: 100%;">
                             Username (only letters and numbers, 2 to 64 characters)
                         </td>
                         <td class="setting-value">
@@ -4959,41 +4938,18 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <input type="submit" name="register" value="Add User"/>
-                        </td>
-                    </tr>
-                    </form>
-
-                    <form method="post" action="?tab=settings">
-                    <tr>
-                        <td class="setting-title">
-                            Delete User
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Username
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-save">
-                            <input type="submit" name="deleteuser" value="Delete User" />
+                        <td colspan="2" class="setting-save">
+                            <input style="width: 18em;" type="submit" name="register" value="Add User"/>
                         </td>
                     </tr>
                     </form>
                 </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>User Management</legend>
                 <table class="edit-user">
-                    <form method="post" action="?tab=settings">
-                    <tr>
-                        <td class="setting-title">
-                            Edit Users
-                        </td>
-                    </tr>
+                <form method="post" action="?tab=settings">
                     <tr>
                         <td>User</td>
                         <td>Email</td>
@@ -5005,8 +4961,8 @@ if (!file_exists($lock_daemon)) {
                 <?php 
                 for ($i = 0; $i < count($user_name); $i++) {
                 ?>
-                    <form method="post" action="?tab=settings">
                     <tr>
+                        <form method="post" action="?tab=settings">
                         <td><?php echo $user_name[$i]; ?><input type="hidden" name="user_name" value="<?php echo $user_name[$i]; ?>"></td>
                         <td>
                             <input style="width: 12.5em;" type="text" value="<?php echo $user_email[$i]; ?>" name="user_email" title="The email address associated with this account. In addition to the user name, the email address may be used to log in."/>
@@ -5042,10 +4998,16 @@ if (!file_exists($lock_daemon)) {
                             </select>
                         </td>
                         <td>
-                            <input type="submit" name="edituser" value="Save" />
+                            <input type="submit" name="edituser" value="Save" title="Save settings for user <?php echo $user_name[$i]; ?>" />
                         </td>
+                        </form>
+                        <form method="post" action="?tab=settings" onsubmit="return confirm('Confirm the deletion of user <?php echo $user_name[$i]; ?>. This cannot be undone. To keep this user, click Cancel.')">
+                        <td>
+                            <input type="hidden" name="user_name" value="<?php echo $user_name[$i]; ?>">
+                            <button type="submit" name="deleteuser" value="<?php echo $user_name[$i]; ?>" title="Delete user <?php echo $user_name[$i]; ?>">Delete</button>
+                        </td>
+                        </form>
                     </tr>
-                    </form>
                 <?php
                 }
                 ?>
@@ -5054,14 +5016,9 @@ if (!file_exists($lock_daemon)) {
                 <?php
                 } else {
                 ?>
-                </table>
+                <fieldset class="settings-box">
+                <legend>User Management</legend>
                 <table class="edit-user">
-                    <form method="post" action="?tab=settings">
-                    <tr>
-                        <td class="setting-title">
-                            Edit User
-                        </td>
-                    </tr>
                     <tr>
                         <td>User</td>
                         <td>Email</td>
@@ -5107,6 +5064,7 @@ if (!file_exists($lock_daemon)) {
                 }
                 ?>
                 </table>
+                </fieldset>
                 <?php
                 }
                 ?>
