@@ -3600,9 +3600,13 @@ if (!file_exists($lock_daemon)) {
                             echo '<pre>Time, Type of auth, user, IP, Hostname, Referral, Browser<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `tail -n $Lines $auth_log`;
+                                $login_lines = `tail -n $Lines $auth_log`;
                             } else {
-                                echo `tail -n 30 $auth_log`;
+                                $login_lines = `tail -n 30 $auth_log`;
+                            }
+                            $login_lines = explode("\n", $login_lines);
+                            for ($i = 0; $i < count($login_lines); $i++) {
+                                echo htmlentities($login_lines[$i]) , "<br>";
                             }
                             echo '</pre>';
                         }
