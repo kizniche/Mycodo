@@ -188,13 +188,13 @@ def menu():
             print "%s [Remote command] Read %s CO2 sensor %s" % (
                 Timestamp(), sys.argv[2], int(float(sys.argv[3])))
             co2 = c.root.ReadCO2Sensor(sys.argv[2], int(float(sys.argv[3])))
-            print "%s [Remote Command] Daemon Returned: CO2: %s" % (Timestamp(), co2)
+            print "%s [Remote Command] Daemon Returned: CO2: %s ppmv" % (Timestamp(), co2)
             sys.exit(0)
         elif opt == "--sensorpress":
-            print "%s [Remote command] Read Press sensor %s on GPIO pin %s" % (
+            print "%s [Remote command] Read %s Press sensor %s" % (
                 Timestamp(), sys.argv[2], int(float(sys.argv[3])))
             pressure, temperature, altitude = c.root.ReadPressSensor(sys.argv[2], int(float(sys.argv[3])))
-            print "%s [Remote Command] Daemon Returned: Pressure: %s kPa Temperature: %s°C" % (Timestamp(), pressure, round(temperature,2), round(altitude,2))
+            print "%s [Remote Command] Daemon Returned: Pressure: %s kPa Temperature: %s°C Altitude: %s m" % (Timestamp(), pressure, round(temperature,2), round(altitude,2))
             sys.exit(0)
         
         elif opt == "--sqlreload":
