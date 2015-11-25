@@ -350,7 +350,7 @@ class ComServer(rpyc.Service):
         """
 
         logging.info("[Client command] Read %s T Sensor %s", device, raw_sensor_id + 1)
-        if device == 'DS18B20':
+        if device is 'DS18B20':
             return read_t_sensor(raw_sensor_id)
         else:
             return 'Invalid Sensor Name'
@@ -386,10 +386,11 @@ class ComServer(rpyc.Service):
         """
 
         logging.info("[Client command] Read %s CO2 Sensor %s", device, raw_sensor_id + 1)
-        if device == 'K30':
+        if device is 'K30':
             return read_co2_sensor(raw_sensor_id)
         else:
             return 'Invalid Sensor Name'
+
 
     def exposed_ReadPressSensor(self, device, sensor_id):
         """
@@ -403,7 +404,7 @@ class ComServer(rpyc.Service):
         """
 
         logging.info("[Client command] Read %s Press Sensor %s", device, raw_sensor_id + 1)
-        if device == 'BMP085-180':
+        if device is 'BMP085-180':
             return read_press_sensor(raw_sensor_id)
         else:
             return 'Invalid Sensor Name'
