@@ -581,13 +581,13 @@ if (!file_exists($lock_daemon)) {
                     <div style="float: left;">
                         <div>
                             <select style="height: 1.6em; width: 20em;" name="AddSensorDev">
+                                <option value="DS18B20">Temperature: DS18B20</option>
                                 <option value="DHT11">Humidity/Temperature: DHT11</option>
                                 <option value="DHT22">Humidity/Temperature: DHT22</option>
                                 <option value="AM2302">Humidity/Temperature: AM2302</option>
                                 <option value="AM2315">Humidity/Temperature: AM2315</option>
+                                <option value="K30">Carbon Dioxide (CO2): K-30</option>
                                 <option value="BMP">Pressure/Temperature: BMP085/BMP180</option>
-                                <option value="DS18B20">Temperature: DS18B20</option>
-                                <option value="K30">CO2: K-30</option>
                             </select>
                         </div>
                         <div style="padding: 0.1em 0 0 0.2em;">Sensor</div>
