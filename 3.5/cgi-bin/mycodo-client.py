@@ -53,18 +53,18 @@ def usage():
     print '    -r, --relay relay state'
     print '           Turn a relay on or off. state can be 0, 1, or X.'
     print '           0=OFF, 1=ON, or X number of seconds On'
+    print '        --sensort device sensor-number'
+    print '           Returns a reading from the temperature and humidity sensor on GPIO pin'
+    print '           Device options: DS18B20'
+    print '        --sensorht device sensor-number'
+    print '           Returns a reading from the temperature and humidity sensor'
+    print '           Device options: DHT22, DHT11, or AM2302'
     print '        --sensorco2 device sensor-number'
     print '           Returns a reading from the CO2 sensor'
     print '           Device options: K30'
-    print '        --sensorht pin device'
-    print '           Returns a reading from the temperature and humidity sensor on GPIO pin'
-    print '           Device options: DHT22, DHT11, or AM2302'
-    print '        --sensorpress pin device'
+    print '        --sensorpress device sensor-number'
     print '           Returns a reading from the pressure sensor on GPIO pin'
     print '           Device options: BMP085-180'
-    print '        --sensort pin device'
-    print '           Returns a reading from the temperature and humidity sensor on GPIO pin'
-    print '           Device options: DS18B20'
     print '        --sqlreload relay'
     print '           Reload the SQLite database, initialize GPIO of relay if relay != -1'
     print '    -s, --status'
@@ -172,30 +172,31 @@ def menu():
             else:
                 print 'Error: second input must be an integer greater than 0'
                 sys.exit(1)
-        elif opt == "--sensorco2":
-            print "%s [Remote command] Read %s CO2 sensor %s" % (
-                Timestamp(), sys.argv[3], int(float(sys.argv[2])))
-            co2 = c.root.ReadCO2Sensor(int(float(sys.argv[2])), sys.argv[3])
-            print "%s [Remote Command] Daemon Returned: CO2: %s" % (Timestamp(), co2)
+        elif opt == "--sensort":
+            print "%s [Remote command] Read %s T sensor %s" % (
+                Timestamp(), sys.argv[2], int(float(sys.argv[3])))
+            temperature = c.root.ReadTSensor(sys.argv[2], int(float(sys.argv[3])))
+            print "%s [Remote Command] Daemon Returned: Temperature: %s°C" % (Timestamp(), round(temperature,2))
             sys.exit(0)
         elif opt == "--sensorht":
-            print "%s [Remote command] Read HT sensor %s on GPIO pin %s" % (
-                Timestamp(), sys.argv[3], int(float(sys.argv[2])))
-            temperature, humidity = c.root.ReadHTSensor(int(float(sys.argv[2])), sys.argv[3])
+            print "%s [Remote command] Read %s HT sensor %s" % (
+                Timestamp(), sys.argv[2], int(float(sys.argv[3])))
+            humidity, temperature = c.root.ReadHTSensor(sys.argv[2], int(float(sys.argv[3])))
             print "%s [Remote Command] Daemon Returned: Temperature: %s°C Humidity: %s%%" % (Timestamp(), round(temperature,2), round(humidity,2))
+            sys.exit(0)
+        elif opt == "--sensorco2":
+            print "%s [Remote command] Read %s CO2 sensor %s" % (
+                Timestamp(), sys.argv[2], int(float(sys.argv[3])))
+            co2 = c.root.ReadCO2Sensor(sys.argv[2], int(float(sys.argv[3])))
+            print "%s [Remote Command] Daemon Returned: CO2: %s" % (Timestamp(), co2)
             sys.exit(0)
         elif opt == "--sensorpress":
             print "%s [Remote command] Read Press sensor %s on GPIO pin %s" % (
-                Timestamp(), sys.argv[3], int(float(sys.argv[2])))
-            temperature, press, alt = c.root.ReadPressSensor(int(float(sys.argv[2])), sys.argv[3])
-            print "%s [Remote Command] Daemon Returned: Temperature: %s°C Humidity: %s%%" % (Timestamp(), round(temperature,2), round(press,2), round(alt,2))
+                Timestamp(), sys.argv[2], int(float(sys.argv[3])))
+            pressure, temperature, altitude = c.root.ReadPressSensor(sys.argv[2], int(float(sys.argv[3])))
+            print "%s [Remote Command] Daemon Returned: Pressure: %s kPa Temperature: %s°C" % (Timestamp(), pressure, round(temperature,2), round(altitude,2))
             sys.exit(0)
-        elif opt == "--sensort":
-            print "%s [Remote command] Read T sensor %s on GPIO pin %s" % (
-                Timestamp(), sys.argv[3], int(float(sys.argv[2])))
-            temperature, humidity = c.root.ReadTSensor(int(float(sys.argv[2])), sys.argv[3])
-            print "%s [Remote Command] Daemon Returned: Temperature: %s°C" % (Timestamp(), round(temperature,2))
-            sys.exit(0)
+        
         elif opt == "--sqlreload":
             if int(float(sys.argv[2])) != -1:
                 print "%s [Remote command] Reload SQLite database and initialize relay %s: Server returned:" % (
