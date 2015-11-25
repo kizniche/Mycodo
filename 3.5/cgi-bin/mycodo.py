@@ -3815,18 +3815,20 @@ def Relays_Start():
                 else:
                     GPIO.output(relay_pin[i], 0)
 
-
-def read_relay(relay_id):
+# 
+# TODO: rename relay_id_ when relay_id is no longer a global variable
+# 
+def read_relay(relay_id_):
     """
     Read the state of a relay
 
-    :param relay_id: Relay number
-    :type relay_id: int
+    :param relay_id_: Relay number
+    :type relay_id_: int
     :return: State of the relay as a string.  Either 'on' or 'off'
     :rtype: str
     """
-    relay_active_low = relay_trigger[relay_id - 1] == 0 and GPIO.input(relay_pin[relay_id - 1]) == 0
-    relay_active_high = relay_trigger[relay_id - 1] == 1 and GPIO.input(relay_pin[relay_id - 1]) == 1
+    relay_active_low = relay_trigger[relay_id_ - 1] == 0 and GPIO.input(relay_pin[relay_id_ - 1]) == 0
+    relay_active_high = relay_trigger[relay_id_ - 1] == 1 and GPIO.input(relay_pin[relay_id_ - 1]) == 1
 
     if relay_active_low or relay_active_high:
         return "on"
