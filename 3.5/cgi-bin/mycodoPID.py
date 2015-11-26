@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-# PID-controller.py - Discrete PID Controller
+# mycodoPID.py - Discrete PID Controller for Mycodo
 #
 # Copyright (c) 2010 cnr437@gmail.com
 #
