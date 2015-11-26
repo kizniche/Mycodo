@@ -1195,7 +1195,7 @@ def ht_sensor_temperature_monitor(ThreadName, sensor_id):
     if pid_ht_temp_relay_low[sensor_id]:
         relay_onoff(int(pid_ht_temp_relay_low[sensor_id]), 'off')
 
-    pid_temp = PID(pid_ht_temp_p[sensor_id], pid_ht_temp_i[sensor_id], pid_ht_temp_d[sensor_id], pid_ht_temp_period[sensor_id], Measure_interval=pid_ht_temp_period[sensor_id])
+    pid_temp = PID(pid_ht_temp_p[sensor_id], pid_ht_temp_i[sensor_id], pid_ht_temp_d[sensor_id], Measure_interval=pid_ht_temp_period[sensor_id])
     pid_temp.setPoint(pid_ht_temp_set[sensor_id])
 
     while pid_ht_temp_alive[sensor_id]:

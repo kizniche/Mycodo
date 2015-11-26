@@ -44,7 +44,7 @@ class PID:
         """Calculate PID output value from reference input and feedback"""
         self.error = self.set_point - current_value
         self.P_value = self.Kp * self.error
-        self.D_value = self.Kd * ( self.error - self.Derivator)
+        self.D_value = self.Kd * (self.error - self.Derivator)
         self.Derivator = self.error
         self.Integrator = self.Integrator + self.error
         # if self.Integrator > self.Integrator_max:
