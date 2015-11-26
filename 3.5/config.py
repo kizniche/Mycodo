@@ -26,10 +26,6 @@ SQL_DATABASE_MYCODO = '/var/www/mycodo/config/mycodo.db'
 SQL_DATABASE_USER = '/var/www/mycodo/config/users.db'
 SQL_DATABASE_NOTE = '/var/www/mycodo/config/notes.db'
 
-SQL_DATABASE_MYCODO = '/mycodo.db'
-SQL_DATABASE_USER = '/users.db'
-SQL_DATABASE_NOTE = '/notes.db'
-
 
 DB_VERSION_MYCODO = 18
 DB_VERSION_USER = 2
