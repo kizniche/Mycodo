@@ -28,11 +28,12 @@
 # <http://code.activestate.com/recipes/577231-discrete-pid-controller/>
 
 class PID:
-    def __init__(self, P=2.0, I=0.0, D=1.0, Derivator=0, Integrator=0,
+    def __init__(self, P=2.0, I=0.0, D=1.0, Measure_interval=None, Derivator=0, Integrator=0,
             Integrator_max=500, Integrator_min=-500):
         self.Kp=P
         self.Ki=I
         self.Kd=D
+        self.Measure_interval=Measure_interval
         self.Derivator=Derivator
         self.Integrator=Integrator
         self.Integrator_max=Integrator_max
@@ -46,10 +47,15 @@ class PID:
         self.D_value = self.Kd * ( self.error - self.Derivator)
         self.Derivator = self.error
         self.Integrator = self.Integrator + self.error
-        if self.Integrator > self.Integrator_max:
-            self.Integrator = self.Integrator_max
-        elif self.Integrator < self.Integrator_min:
-            self.Integrator = self.Integrator_min
+        # if self.Integrator > self.Integrator_max:
+        #     self.Integrator = self.Integrator_max
+        # elif self.Integrator < self.Integrator_min:
+        #     self.Integrator = self.Integrator_min
+        if self.Measure_interval is not None: #  New method for regulating Integrator
+            if self.Integrator * self.Ki > self.Measure_interval:
+                self.Integrator = self.Measure_interval / self.Ki
+            elif self.Integrator * self.Ki < -self.Measure_interval:
+                self.Integrator = -self.Measure_interval / self.Ki
         self.I_value = self.Integrator * self.Ki
         PID = self.P_value + self.I_value + self.D_value
         return PID

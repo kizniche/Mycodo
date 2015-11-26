@@ -1114,7 +1114,7 @@ def t_sensor_temperature_monitor(ThreadName, sensor_id):
     if pid_t_temp_relay_low[sensor_id]:
         relay_onoff(int(pid_t_temp_relay_low[sensor_id]), 'off')
 
-    pid_temp = PID(pid_t_temp_p[sensor_id], pid_t_temp_i[sensor_id], pid_t_temp_d[sensor_id], Integrator_max=pid_t_temp_period[sensor_id], Integrator_min=-pid_t_temp_period[sensor_id])
+    pid_temp = PID(pid_t_temp_p[sensor_id], pid_t_temp_i[sensor_id], pid_t_temp_d[sensor_id], Measure_interval=pid_t_temp_period[sensor_id])
     pid_temp.setPoint(pid_t_temp_set[sensor_id])
 
     while pid_t_temp_alive[sensor_id]:
@@ -1195,7 +1195,7 @@ def ht_sensor_temperature_monitor(ThreadName, sensor_id):
     if pid_ht_temp_relay_low[sensor_id]:
         relay_onoff(int(pid_ht_temp_relay_low[sensor_id]), 'off')
 
-    pid_temp = PID(pid_ht_temp_p[sensor_id], pid_ht_temp_i[sensor_id], pid_ht_temp_d[sensor_id], pid_ht_temp_period[sensor_id], Integrator_max=pid_ht_temp_period[sensor_id], Integrator_min=-pid_ht_temp_period[sensor_id])
+    pid_temp = PID(pid_ht_temp_p[sensor_id], pid_ht_temp_i[sensor_id], pid_ht_temp_d[sensor_id], pid_ht_temp_period[sensor_id], Measure_interval=pid_ht_temp_period[sensor_id])
     pid_temp.setPoint(pid_ht_temp_set[sensor_id])
 
     while pid_ht_temp_alive[sensor_id]:
@@ -1285,7 +1285,7 @@ def ht_sensor_humidity_monitor(ThreadName, sensor_id):
     if pid_ht_hum_relay_low[sensor_id]:
         relay_onoff(int(pid_ht_hum_relay_low[sensor_id]), 'off')
 
-    pid_hum = PID(pid_ht_hum_p[sensor_id], pid_ht_hum_i[sensor_id], pid_ht_hum_d[sensor_id], Integrator_max=pid_ht_hum_period[sensor_id], Integrator_min=-pid_ht_hum_period[sensor_id])
+    pid_hum = PID(pid_ht_hum_p[sensor_id], pid_ht_hum_i[sensor_id], pid_ht_hum_d[sensor_id], Measure_interval=pid_ht_hum_period[sensor_id])
     pid_hum.setPoint(pid_ht_hum_set[sensor_id])
 
     while pid_ht_hum_alive[sensor_id]:
@@ -1374,7 +1374,7 @@ def co2_monitor(ThreadName, sensor_id):
     if pid_co2_relay_low[sensor_id]:
         relay_onoff(int(pid_co2_relay_low[sensor_id]), 'off')
 
-    pid_co2 = PID(pid_co2_p[sensor_id], pid_co2_i[sensor_id], pid_co2_d[sensor_id], Integrator_max=pid_co2_period[sensor_id], Integrator_min=-pid_co2_period[sensor_id])
+    pid_co2 = PID(pid_co2_p[sensor_id], pid_co2_i[sensor_id], pid_co2_d[sensor_id], Measure_interval=pid_co2_period[sensor_id])
     pid_co2.setPoint(pid_co2_set[sensor_id])
 
     while pid_co2_alive[sensor_id]:
@@ -1455,7 +1455,7 @@ def press_sensor_temperature_monitor(ThreadName, sensor_id):
     if pid_press_temp_relay_low[sensor_id]:
         relay_onoff(int(pid_press_temp_relay_low[sensor_id]), 'off')
 
-    pid_temp = PID(pid_press_temp_p[sensor_id], pid_press_temp_i[sensor_id], pid_press_temp_d[sensor_id], Integrator_max=pid_press_temp_period[sensor_id], Integrator_min=-pid_press_temp_period[sensor_id])
+    pid_temp = PID(pid_press_temp_p[sensor_id], pid_press_temp_i[sensor_id], pid_press_temp_d[sensor_id], Measure_interval=pid_press_temp_period[sensor_id])
     pid_temp.setPoint(pid_press_temp_set[sensor_id])
 
     while pid_press_temp_alive[sensor_id]:
@@ -1536,7 +1536,7 @@ def press_sensor_pressure_monitor(ThreadName, sensor_id):
     if pid_press_press_relay_low[sensor_id]:
         relay_onoff(int(pid_press_press_relay_low[sensor_id]), 'off')
 
-    pid_press = PID(pid_press_press_p[sensor_id], pid_press_press_i[sensor_id], pid_press_press_d[sensor_id], Integrator_max=pid_press_press_period[sensor_id], Integrator_min=-pid_press_press_period[sensor_id])
+    pid_press = PID(pid_press_press_p[sensor_id], pid_press_press_i[sensor_id], pid_press_press_d[sensor_id], Measure_interval=pid_press_press_period[sensor_id])
     pid_press.setPoint(pid_press_press_set[sensor_id])
 
     while pid_press_press_alive[sensor_id]:
@@ -4018,7 +4018,7 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
         return 1
 
     elif ((local_relay_trigger[relay - 1] == 0 and GPIO.input(local_relay_pin[relay - 1]) == 0) or (local_relay_trigger[relay - 1] == 1 and GPIO.input(local_relay_pin[relay - 1]) == 1)) and on_duration_timer[relay - 1] < time.time():
-        logging.warning("[Relay Duration] Relay %s (%s) is set On without a duration. Turning into a duration.", relay, relay_name[relay - 1], seconds)
+        logging.debug("[Relay Duration] Relay %s (%s) is set On without a duration. Turning into a duration (%.1f).", relay, relay_name[relay - 1], seconds)
     
     on_duration_seconds[relay - 1] = abs(seconds)
     on_duration_timer[relay - 1] = time.time() + abs(seconds)
