@@ -3375,7 +3375,7 @@ if (!file_exists($lock_daemon)) {
                         if (isset($_POST['Notes']) || isset($_POST['Delete_Note']) || isset($_POST['Add_Note']) || isset($_POST['Edit_Note_Save'])) {
                             echo "Notes<br> <br>
                             <form action=\"?tab=data\" method=\"POST\" enctype=\"multipart/form-data\">
-                            <table style=\"width:100%\";>
+                            <table style=\"width:100%;\">
                                 <tr>
                                     <td style=\"padding-bottom: 0.2em;\"><input style=\"width: 100%;\" type=\"text\" placeholder=\"Title\" maxlength=\"200\" name=\"Note_Title\"></td>
                                 </tr>
