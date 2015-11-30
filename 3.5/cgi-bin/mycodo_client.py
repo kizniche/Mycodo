@@ -37,7 +37,7 @@ VALID_PID_TYPES = ["TTemp", "HTTemp", "HTHum", "CO2", "PressTemp", "PressPress"]
 now = datetime.datetime.now
 
 
-def menu2():
+def menu():
     parser = argparse.ArgumentParser(
             description="Client for mycodo.py daemon (daemon must be running).",
             formatter_class=argparse.RawTextHelpFormatter)
@@ -397,5 +397,5 @@ def menu2():
 
 
 if __name__ == "__main__":
-    menu2()
+    menu()
     sys.exit(0)
