@@ -146,7 +146,9 @@ def create_dbs(db_name, create_all=False):
         print("Creating/verifying {} at {}...".format(db_name, MYCODO_DB_PATH))
 
         from databases.mycodo_db import init_db
+        from databases.mycodo_db import populate_db
         init_db(MYCODO_DB_PATH)
+        populate_db(MYCODO_DB_PATH)
 
     if db_name == 'notes' or create_all:
         print("Creating/verifying {} at {}...".format(db_name, NOTES_DB_PATH))

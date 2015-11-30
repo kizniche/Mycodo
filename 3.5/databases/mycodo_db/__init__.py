@@ -65,19 +65,6 @@ def populate_db(db_path):
     Session = sessionmaker(bind=engine)
     session = Session()
     try:
-        initial_misc = Misc(id='0',
-                            dismiss_notification=0,
-                            login_message='',
-                            refresh_time=300,
-                            enable_max_amps=1,
-                            max_amps=15,
-                            relay_stats_volts=120,
-                            relay_stats_cost=0.05,
-                            relay_stats_currency="$",
-                            relay_stats_dayofmonth=15)
-
-        insert_or_ignore(initial_misc, session)
-
         initial_cameratimelapse = CameraTimelapse(id='0',
                                                   relay=0,
                                                   path='/var/www/mycodo/camera-timelapse',
@@ -89,24 +76,21 @@ def populate_db(db_path):
                                                   extra_parameters='--nopreview --contrast 20 --sharpness 60 --awb auto --quality 20 --vflip --hflip --width 800 --height 600')
         insert_or_ignore(initial_cameratimelapse, session)
 
+        initial_camerastill = CameraStill(id='0',
+                                          relay=0,
+                                          timestamp=1,
+                                          display_last=1,
+                                          cmd_pre='',
+                                          cmd_post='',
+                                          extra_parameters='--vflip --hflip --width 800 --height 600')
+        insert_or_ignore(initial_camerastill, session)
+
         initial_camerastream = CameraStream(id='0',
                                             relay=0,
                                             cmd_pre='',
                                             cmd_post='',
                                             extra_parameters='--contrast 20 --sharpness 60 --awb auto --quality 20 --vflip --hflip --nopreview --width 800 --height 600')
         insert_or_ignore(initial_camerastream, session)
-
-        initial_camerastill = CameraStill(id='0', relay=0, timestamp=1, display_last=1, cmd_pre='',
-                                          cmd_post='',
-                                          extra_parameters='--vflip --hflip --width 800 --height 600')
-
-        insert_or_ignore(initial_camerastill, session)
-
-        initial_smtp_values = SMTP(id='0', host='smtp.gmail.com', ssl=1, port=465,
-                                   user='email@gmail.com', passw='password',
-                                   email_from='email@gmail.com', daily_max=48,
-                                   wait_time=3600)
-        insert_or_ignore(initial_smtp_values, session)
 
         initial_customgraph = CustomGraph(id='0',
                                           combined_temp_min=0,
@@ -149,7 +133,29 @@ def populate_db(db_path):
                                           combined_press_relays_max=100,
                                           combined_press_relays_tics=25,
                                           combined_press_relays_mtics=5)
-
         insert_or_ignore(initial_customgraph, session)
+
+        initial_misc = Misc(id='0',
+                            dismiss_notification=0,
+                            login_message='',
+                            refresh_time=300,
+                            enable_max_amps=1,
+                            max_amps=15,
+                            relay_stats_volts=120,
+                            relay_stats_cost=0.05,
+                            relay_stats_currency="$",
+                            relay_stats_dayofmonth=15)
+        insert_or_ignore(initial_misc, session)
+
+        initial_smtp_values = SMTP(id='0',
+                                   host='smtp.gmail.com',
+                                   ssl=1,
+                                   port=465,
+                                   user='email@gmail.com',
+                                   passw='password',
+                                   email_from='email@gmail.com',
+                                   daily_max=48,
+                                   wait_time=3600)
+        insert_or_ignore(initial_smtp_values, session)
     finally:
         session.close()
