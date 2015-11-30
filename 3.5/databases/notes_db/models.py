@@ -34,4 +34,13 @@ class Notes(Base):
     id = Column(TEXT, primary_key=True)
     time = Column(TEXT)
     user = Column(TEXT)
+    title = Column(TEXT)
     note = Column(TEXT)
+
+class Uploads(Base):
+    __tablename__ = "uploads"
+
+    id = Column(TEXT, primary_key=True)
+    name = Column(TEXT)
+    file_name = Column(TEXT)
+    location = Column(TEXT)
