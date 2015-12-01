@@ -2159,7 +2159,15 @@ def read_t(sensor_id, device, pin):
     while last_t_reading > time.time():
         time.sleep(0.2)
 
-    if device == 'DS18B20':
+    if device in 'RPi':
+        if pin in '0':
+            CPUtempFile = open('/sys/class/thermal/thermal_zone0/temp')
+            CPUtempF = float(CPUtempFile.read())
+            temperature = CPUtempF/1000  # Temperature in Celsius
+        else:
+            GPUtempStr = subprocess.check_output(('/opt/vc/bin/vcgencmd','measure_temp'))
+            temperature = float(GPUtempStr.split('=')[1].split("'")[0])  # Temperature in Celsius
+    elif device in 'DS18B20':
         import glob
         os.system('modprobe w1-gpio')
         os.system('modprobe w1-therm')

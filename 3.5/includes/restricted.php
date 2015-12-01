@@ -350,10 +350,12 @@ if (isset($_POST['AddTimers']) && isset($_POST['AddTimersNumber'])) {
 if (isset($_POST['AddSensor'])) {
     if (isset($_POST['AddSensorName']) && ctype_alnum($_POST['AddSensorName'])) {
         switch ($_POST['AddSensorDev']) {
+            case "RPi":
             case "DS18B20":
-                $stmt = $db->prepare("INSERT INTO TSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D) VALUES (:id, :name, 0, 'DS18B20', 120, 0, 0, 0, 0, -100, 100, 25, 5, 0, 35, 5, 5, '0', '0', 0, 0, 0, 0, 0, 0, 1, 25, 0, 90, 0, 0, 0)");
+                $stmt = $db->prepare("INSERT INTO TSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D) VALUES (:id, :name, 0, :dev, 120, 0, 0, 0, 0, -100, 100, 25, 5, 0, 55, 5, 5, '0', '0', 0, 0, 0, 0, 0, 0, 1, 25, 0, 90, 0, 0, 0)");
                 $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
                 $stmt->bindValue(':name', $_POST['AddSensorName'], SQLITE3_TEXT);
+                $stmt->bindValue(':dev', $_POST['AddSensorDev'], SQLITE3_TEXT);
                 $stmt->execute();
                 shell_exec("$mycodo_client --pidallrestart T");
                 break;

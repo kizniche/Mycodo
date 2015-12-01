@@ -21,7 +21,7 @@ a.manual:active {text-decoration: none; color: red;}
     height: 4.5em;
     float: left;
     vertical-align:top;
-    padding: 1em 1em 0 0.3em;
+    padding: 1em 0.9em 0 0.3em;
 }
 
 .header-sense {

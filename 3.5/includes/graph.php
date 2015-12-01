@@ -231,7 +231,7 @@ if ($sensor_type == 't' && count(${$sensor_num_array}) > 0) {
                         ?>{
                             name: '<?php echo "S" . ($i+1) . " " . $sensor_t_name[$i]; ?> °C',
                             color: Highcharts.getOptions().colors[0],
-                            data: getSensorData(0),
+                            data: getSensorData(<?php echo $i; ?>),
                             tooltip: {
                                 valueSuffix: ' °C',
                                 valueDecimals: 1,
