@@ -581,7 +581,8 @@ if (!file_exists($lock_daemon)) {
                     <div style="float: left;">
                         <div>
                             <select style="height: 1.6em; width: 20em;" name="AddSensorDev">
-                                <option value="RPi">Temperature: Raspberry Pi</option>
+                                <option value="RPiCPU">Temperature: Raspberry Pi CPU</option>
+                                <option value="RPiGPU">Temperature: Raspberry Pi GPU</option>
                                 <option value="DS18B20">Temperature: DS18B20</option>
                                 <option value="DHT11">Humidity/Temperature: DHT11</option>
                                 <option value="DHT22">Humidity/Temperature: DHT22</option>
