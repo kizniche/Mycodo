@@ -96,7 +96,7 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 Major changes for each versioned release
 
-#### 3.5.91
+#### 3.5.92
 + Add ability to use Raspberry Pi internal CPU and GPU thermal sensors (log, PID, conditionals)
 
 #### 3.5.91
