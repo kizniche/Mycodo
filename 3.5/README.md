@@ -487,7 +487,7 @@ Follow the prompts to create an admin password, optionally create another user, 
 
 To initialize GPIO pins at startup, open crontab with `sudo crontab -e` and add the following lines, then save with `Ctrl+x`
 
-`@reboot /usr/bin/python /var/www/mycodo/cgi-bin/GPIO-initialize.py &`
+`@reboot /usr/bin/python /var/www/mycodo/cgi-bin/gpio_initialize.py &`
 
 Last, set the daemon to automatically start
 

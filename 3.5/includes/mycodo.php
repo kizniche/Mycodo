@@ -32,7 +32,7 @@ $gpio_path = "/usr/local/bin/gpio";
 
 ########## End Edit Configure ##########
 
-$mycodo_client = $install_path . "/cgi-bin/mycodo-client.py";
+$mycodo_client = $install_path . "/cgi-bin/mycodo_client.py";
 $still_exec = $install_path . "/cgi-bin/camera-still.sh";
 $stream_exec = $install_path . "/cgi-bin/camera-stream.sh";
 $timelapse_exec = $install_path . "/cgi-bin/camera-timelapse.sh";
