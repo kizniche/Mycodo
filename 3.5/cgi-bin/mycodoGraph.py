@@ -78,8 +78,8 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
     sensor_press_log_final_default_week = [0] * (len(sensor_press_name)+1)
 
     tmp_path = "/var/tmp"
-    h = 0
-    d = 0
+    hour = 0
+    day = 0
     seconds = None
     cmd = None
 
@@ -91,47 +91,47 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
 
     # Calculate a past date from a number of hours or days ago
     if graph_span == "1h":
-        h = 1
+        hour = 1
         seconds = 3600
         time_ago = '1 Hour'
     elif graph_span == "3h":
-        h = 3
+        hour = 3
         seconds = 10800
         time_ago = '3 Hours'
     elif graph_span == "6h":
-        h = 6
+        hour = 6
         seconds = 21600
         time_ago = '6 Hours'
     elif graph_span == "12h":
-        h = 12
+        hour = 12
         seconds = 43200
         time_ago = '12 Hours'
     elif graph_span == "1d" or graph_type == "default":
-        d = 1
+        day = 1
         seconds = 86400
         time_ago = '1 Day'
     elif graph_span == "3d":
-        d = 3
+        day = 3
         seconds = 259200
         time_ago = '3 Days'
     elif graph_span == "1w":
-        d = 7
+        day = 7
         seconds = 604800
         time_ago = '1 Week'
     elif graph_span == "2w":
-        d = 14
+        day = 14
         seconds = 1209600
         time_ago = '2 Weeks'
     elif graph_span == "1m":
-        d = 30
+        day = 30
         seconds = 2592000
         time_ago = '1 Month'
     elif graph_span == "3m":
-        d = 90
+        day = 90
         seconds = 7776000
         time_ago = '3 Months'
     elif graph_span == "6m":
-        d = 180
+        day = 180
         seconds = 15552000
         time_ago = '6 Months'
 
@@ -144,9 +144,9 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
         seconds = 0
     else:
         date_now = datetime.datetime.now().strftime("%Y/%m/%d-%H:%M:%S")
-        date_now_disp = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-        date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d-%H:%M:%S")
-        date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%d/%m/%Y %H:%M:%S")
+        date_now_disp = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+        date_ago = (datetime.datetime.now() - datetime.timedelta(hours=hour, days=day)).strftime("%Y/%m/%d-%H:%M:%S")
+        date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=hour, days=day)).strftime("%Y/%m/%d %H:%M:%S")
 
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
@@ -1178,10 +1178,10 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 setup_lines_colors(plot)
                 plot.write('set multiplot\n')
                 # Top graph - day
-                d = 1
+                day = 1
                 time_ago = '1 Day'
-                date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d-%H:%M:%S")
-                date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S")
+                date_ago = (datetime.datetime.now() - datetime.timedelta(hours=hour, days=day)).strftime("%Y/%m/%d-%H:%M:%S")
+                date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=hour, days=day)).strftime("%Y/%m/%d %H:%M:%S")
                 plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
                 if sensor_t_graph_relay[h]:
                     plot.write('set size 0.989,0.4\n')
@@ -1239,10 +1239,10 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
 
                     plot.write(' \n')
                 # Bottom graph - week
-                d = 7
+                day = 7
                 time_ago = '1 Week'
-                date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d-%H:%M:%S")
-                date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S")
+                date_ago = (datetime.datetime.now() - datetime.timedelta(hours=hour, days=day)).strftime("%Y/%m/%d-%H:%M:%S")
+                date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=hour, days=day)).strftime("%Y/%m/%d %H:%M:%S")
                 plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
                 plot.write('set format x \"%a\\n%m/%d\"\n')
                 if sensor_t_graph_relay[h]:
@@ -1300,10 +1300,10 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 setup_lines_colors(plot)
                 plot.write('set multiplot\n')
                 # Top graph - day
-                d = 1
+                day = 1
                 time_ago = '1 Day'
-                date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d-%H:%M:%S")
-                date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S")
+                date_ago = (datetime.datetime.now() - datetime.timedelta(hours=hour, days=day)).strftime("%Y/%m/%d-%H:%M:%S")
+                date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=hour, days=day)).strftime("%Y/%m/%d %H:%M:%S")
                 plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
                 if sensor_ht_graph_relay[h]:
                     plot.write('set size 0.989,0.4\n')
@@ -1380,10 +1380,10 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                             first += 1
                     plot.write('\n')
                 # Bottom graph - week
-                d = 7
+                day = 7
                 time_ago = '1 Week'
-                date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d-%H:%M:%S")
-                date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S")
+                date_ago = (datetime.datetime.now() - datetime.timedelta(hours=hour, days=day)).strftime("%Y/%m/%d-%H:%M:%S")
+                date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=hour, days=day)).strftime("%Y/%m/%d %H:%M:%S")
                 plot.write('set format x \"%a\\n%m/%d\"\n')
                 if sensor_ht_graph_relay[h]:
                     plot.write('set size 0.989,0.4\n')
@@ -1446,10 +1446,10 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 setup_lines_colors(plot)
                 plot.write('set multiplot\n')
                 # Top graph - day
-                d = 1
+                day = 1
                 time_ago = '1 Day'
-                date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d-%H:%M:%S")
-                date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S")
+                date_ago = (datetime.datetime.now() - datetime.timedelta(hours=hour, days=day)).strftime("%Y/%m/%d-%H:%M:%S")
+                date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=hour, days=day)).strftime("%Y/%m/%d %H:%M:%S")
                 plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
                 if sensor_co2_graph_relay[h]:
                     plot.write('set size 1.0,0.4\n')
@@ -1507,10 +1507,10 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                             first += 1
                     plot.write(' \n')
                 # Bottom graph - week
-                d = 7
+                day = 7
                 time_ago = '1 Week'
-                date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d-%H:%M:%S")
-                date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S")
+                date_ago = (datetime.datetime.now() - datetime.timedelta(hours=hour, days=day)).strftime("%Y/%m/%d-%H:%M:%S")
+                date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=hour, days=day)).strftime("%Y/%m/%d %H:%M:%S")
                 plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
                 plot.write('set format x \"%a\\n%m/%d\"\n')
                 if sensor_co2_graph_relay[h]:
@@ -1568,10 +1568,10 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 setup_lines_colors(plot)
                 plot.write('set multiplot\n')
                 # Top graph - day
-                d = 1
+                day = 1
                 time_ago = '1 Day'
-                date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d-%H:%M:%S")
-                date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S")
+                date_ago = (datetime.datetime.now() - datetime.timedelta(hours=hour, days=day)).strftime("%Y/%m/%d-%H:%M:%S")
+                date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=hour, days=day)).strftime("%Y/%m/%d %H:%M:%S")
                 plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
                 if sensor_press_graph_relay[h]:
                     plot.write('set size 0.989,0.4\n')
@@ -1647,10 +1647,10 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                             first += 1
                     plot.write('\n')
                 # Bottom graph - week
-                d = 7
+                day = 7
                 time_ago = '1 Week'
-                date_ago = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d-%H:%M:%S")
-                date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=h, days=d)).strftime("%Y/%m/%d %H:%M:%S")
+                date_ago = (datetime.datetime.now() - datetime.timedelta(hours=hour, days=day)).strftime("%Y/%m/%d-%H:%M:%S")
+                date_ago_disp = (datetime.datetime.now() - datetime.timedelta(hours=hour, days=day)).strftime("%Y/%m/%d %H:%M:%S")
                 plot.write('set xrange [\"' + date_ago + '\":\"' + date_now + '\"]\n')
                 plot.write('set format x \"%a\\n%m/%d\"\n')
                 if sensor_press_graph_relay[h]:

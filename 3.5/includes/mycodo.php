@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.91";
+$version = "3.5.92";
 
 ######### Start Edit Configure #########
 
@@ -581,13 +581,14 @@ if (!file_exists($lock_daemon)) {
                     <div style="float: left;">
                         <div>
                             <select style="height: 1.6em; width: 20em;" name="AddSensorDev">
+                                <option value="RPi">Temperature: Raspberry Pi</option>
+                                <option value="DS18B20">Temperature: DS18B20</option>
                                 <option value="DHT11">Humidity/Temperature: DHT11</option>
                                 <option value="DHT22">Humidity/Temperature: DHT22</option>
                                 <option value="AM2302">Humidity/Temperature: AM2302</option>
                                 <option value="AM2315">Humidity/Temperature: AM2315</option>
+                                <option value="K30">Carbon Dioxide (CO2): K-30</option>
                                 <option value="BMP">Pressure/Temperature: BMP085/BMP180</option>
-                                <option value="DS18B20">Temperature: DS18B20</option>
-                                <option value="K30">CO2: K-30</option>
                             </select>
                         </div>
                         <div style="padding: 0.1em 0 0 0.2em;">Sensor</div>
@@ -954,7 +955,9 @@ if (!file_exists($lock_daemon)) {
                         <td>Sensor<br>Name</td>
                         <td>Sensor<br>Device</td>
                         <?php 
-                        if ($sensor_t_device[$i] == 'DS18B20') {
+                        if ($sensor_t_device[$i] == 'RPi') {
+                            echo '<td>Sensor<br>Type</td>';
+                        } else if ($sensor_t_device[$i] == 'DS18B20') {
                             echo '<td>Serial No<br>28-xxx</td>';
                         } else {
                             echo '<td>GPIO<br>Pin</td>';
@@ -984,11 +987,15 @@ if (!file_exists($lock_daemon)) {
                             <input style="width: <?php if ($sensor_t_device[$i] == 'DS18B20') echo '6em'; else echo '10em'; ?>;" type="text" value="<?php echo $sensor_t_name[$i]; ?>" maxlength=12 size=10 name="sensort<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
                         </td>
                         <td>
-                            <select style="width: 6.5em;" name="sensort<?php echo $i; ?>device">
+                            <select style="width: 7em;" name="sensort<?php echo $i; ?>device">
                                 <option<?php
                                     if ($sensor_t_device[$i] == 'Other') {
                                         echo ' selected="selected"';
                                     } ?> value="Other">Other</option>
+                                <option<?php
+                                    if ($sensor_t_device[$i] == 'RPi') {
+                                        echo ' selected="selected"';
+                                    } ?> value="RPi">Raspberry Pi</option>
                                 <option<?php
                                     if ($sensor_t_device[$i] == 'DS18B20') {
                                         echo ' selected="selected"';
@@ -997,7 +1004,20 @@ if (!file_exists($lock_daemon)) {
                         </td>
                         <td>
                             <?php 
-                            if ($sensor_t_device[$i] == 'DS18B20') {
+                            if ($sensor_t_device[$i] == 'RPi') {
+                            ?>
+                                <select style="width: 3.5em;" name="sensort<?php echo $i; ?>pin">
+                                <option<?php
+                                    if ($sensor_t_pin[$i] == 0) {
+                                        echo ' selected="selected"';
+                                    } ?> value="0">CPU</option>
+                                <option<?php
+                                    if ($sensor_t_pin[$i] == 1) {
+                                        echo ' selected="selected"';
+                                    } ?> value="1">GPU</option>
+                            </select>
+                            <?php
+                            } else if ($sensor_t_device[$i] == 'DS18B20') {
                                 echo '<input style="width: 7em;" type="text" value="' , $sensor_t_pin[$i] . '" maxlength=12 name="sensort' , $i , 'pin" title="This is the serial number found at /sys/bus/w1/devices/28-x where x is the serial number of your connected DS18B20."/>';
                             } else {
                                 echo '<input style="width: 3em;" type="number" min="0" max="40" value="' , $sensor_t_pin[$i] , '" maxlength=2 name="sensort' , $i , 'pin" title="This is the GPIO pin connected to the temperature sensor"/>';
@@ -3375,7 +3395,7 @@ if (!file_exists($lock_daemon)) {
                         if (isset($_POST['Notes']) || isset($_POST['Delete_Note']) || isset($_POST['Add_Note']) || isset($_POST['Edit_Note_Save'])) {
                             echo "Notes<br> <br>
                             <form action=\"?tab=data\" method=\"POST\" enctype=\"multipart/form-data\">
-                            <table style=\"width:100%\";>
+                            <table style=\"width:100%;\">
                                 <tr>
                                     <td style=\"padding-bottom: 0.2em;\"><input style=\"width: 100%;\" type=\"text\" placeholder=\"Title\" maxlength=\"200\" name=\"Note_Title\"></td>
                                 </tr>
@@ -3600,9 +3620,13 @@ if (!file_exists($lock_daemon)) {
                             echo '<pre>Time, Type of auth, user, IP, Hostname, Referral, Browser<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `tail -n $Lines $auth_log`;
+                                $login_lines = `tail -n $Lines $auth_log`;
                             } else {
-                                echo `tail -n 30 $auth_log`;
+                                $login_lines = `tail -n 30 $auth_log`;
+                            }
+                            $login_lines = explode("\n", $login_lines);
+                            for ($i = 0; $i < count($login_lines); $i++) {
+                                echo htmlentities($login_lines[$i]) , "<br>";
                             }
                             echo '</pre>';
                         }
