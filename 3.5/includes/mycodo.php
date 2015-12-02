@@ -581,8 +581,7 @@ if (!file_exists($lock_daemon)) {
                     <div style="float: left;">
                         <div>
                             <select style="height: 1.6em; width: 20em;" name="AddSensorDev">
-                                <option value="RPiCPU">Temperature: Raspberry Pi CPU</option>
-                                <option value="RPiGPU">Temperature: Raspberry Pi GPU</option>
+                                <option value="RPi">Temperature: Raspberry Pi CPU/GPU</option>
                                 <option value="DS18B20">Temperature: DS18B20</option>
                                 <option value="DHT11">Humidity/Temperature: DHT11</option>
                                 <option value="DHT22">Humidity/Temperature: DHT22</option>
@@ -1006,18 +1005,7 @@ if (!file_exists($lock_daemon)) {
                         <td>
                             <?php 
                             if ($sensor_t_device[$i] == 'RPi') {
-                            ?>
-                                <select style="width: 3.5em;" name="sensort<?php echo $i; ?>pin">
-                                <option<?php
-                                    if ($sensor_t_pin[$i] == 0) {
-                                        echo ' selected="selected"';
-                                    } ?> value="0">CPU</option>
-                                <option<?php
-                                    if ($sensor_t_pin[$i] == 1) {
-                                        echo ' selected="selected"';
-                                    } ?> value="1">GPU</option>
-                            </select>
-                            <?php
+                                echo 'SoC';
                             } else if ($sensor_t_device[$i] == 'DS18B20') {
                                 echo '<input style="width: 7em;" type="text" value="' , $sensor_t_pin[$i] . '" maxlength=12 name="sensort' , $i , 'pin" title="This is the serial number found at /sys/bus/w1/devices/28-x where x is the serial number of your connected DS18B20."/>';
                             } else {

@@ -2160,13 +2160,9 @@ def read_t(sensor_id, device, pin):
         time.sleep(0.2)
 
     if device in 'RPi':
-        if pin in '0':
-            CPUtempFile = open('/sys/class/thermal/thermal_zone0/temp')
-            CPUtempF = float(CPUtempFile.read())
-            temperature = CPUtempF/1000  # Temperature in Celsius
-        else:
-            GPUtempStr = subprocess.check_output(('/opt/vc/bin/vcgencmd','measure_temp'))
-            temperature = float(GPUtempStr.split('=')[1].split("'")[0])  # Temperature in Celsius
+        rpi_temp_file = open('/sys/class/thermal/thermal_zone0/temp')
+        rpi_tempf = float(CPUtempFile.read())
+        temperature = rpi_tempf / 1000  # Temperature in Celsius
     elif device in 'DS18B20':
         import glob
         os.system('modprobe w1-gpio')
@@ -2188,7 +2184,6 @@ def read_t(sensor_id, device, pin):
         if equals_pos != -1:
             temp_string = lines[1][equals_pos + 2:]
             temperature = float(temp_string) / 1000.0
-            #temp_f = temp_c * 9.0 / 5.0 + 32.0
     else:
         logging.debug("[Read T Sensor-%s] Device not recognized: %s", sensor_id + 1, device)
         temperature = None
