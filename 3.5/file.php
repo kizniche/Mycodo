@@ -109,6 +109,9 @@ if ($_COOKIE['login_hash'] == $user_hash) {
                 } else {
                     echo json_encode(file_get_contents($path));
                 }
+                if (!isset($_COOKIE['debug'])) {
+                    unlink($path);
+                }
                 break;
             case 'graph-pop': // Generate dynamic graph in new window with descriptive title
                 $mycodo_db = $install_path . "/config/mycodo.db";

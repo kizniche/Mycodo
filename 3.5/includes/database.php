@@ -26,6 +26,8 @@ $db = new SQLite3($mycodo_db);
 $udb = new SQLite3($user_db);
 $ndb = new SQLite3($note_db);
 
+$logged_in_user = $_SESSION['user_name'];
+
 $results = $udb->query('SELECT user_name,
                                user_email,
                                user_restriction,
