@@ -2161,7 +2161,7 @@ def read_t(sensor_id, device, pin):
 
     if device in 'RPi':
         rpi_temp_file = open('/sys/class/thermal/thermal_zone0/temp')
-        rpi_tempf = float(CPUtempFile.read())
+        rpi_tempf = float(rpi_temp_file.read())
         temperature = rpi_tempf / 1000  # Temperature in Celsius
     elif device in 'DS18B20':
         import glob
