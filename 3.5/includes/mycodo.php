@@ -262,7 +262,7 @@ if (!file_exists($lock_daemon)) {
             <div class="header">
                 <table>
                     <tr>
-                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'T' , $i+1 , ': ' , $sensor_t_name[$i]; ?></td>
+                        <td colspan=2 style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'T' , $i+1 , ': ' , $sensor_t_name[$i]; ?></td>
                     </tr>
                     <tr>
                         <?php
@@ -291,7 +291,7 @@ if (!file_exists($lock_daemon)) {
             <div class="header">
                 <table>
                     <tr>
-                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'HT' , $i+1 , ': ' , $sensor_ht_name[$i]; ?></td>
+                        <td colspan=2 style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'HT' , $i+1 , ': ' , $sensor_ht_name[$i]; ?></td>
                     </tr>
                     <tr>
                         <?php
@@ -322,7 +322,7 @@ if (!file_exists($lock_daemon)) {
             <div class="header">
                 <table>
                     <tr>
-                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'CO<sub>2</sub>' , $i+1 , ': ' , $sensor_co2_name[$i]; ?></td>
+                        <td colspan=2 style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'CO<sub>2</sub>' , $i+1 , ': ' , $sensor_co2_name[$i]; ?></td>
                     </tr>
                     <tr>
                         <?php
@@ -347,7 +347,7 @@ if (!file_exists($lock_daemon)) {
             <div class="header">
                 <table>
                     <tr>
-                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'P' , $i+1 , ': ' , $sensor_press_name[$i]; ?></td>
+                        <td colspan=2 style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'P' , $i+1 , ': ' , $sensor_press_name[$i]; ?></td>
                     </tr>
                     <tr>
                         <?php
