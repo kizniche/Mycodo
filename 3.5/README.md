@@ -97,7 +97,7 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 Major changes for each versioned release
 
 #### 3.5.92
-+ Add ability to use Raspberry Pi internal CPU and GPU thermal sensors (log, PID, conditionals)
++ Add ability to use Raspberry Pi internal CPU/GPU thermal sensor
 
 #### 3.5.91
 + Add ability to use multiple BMP085/180 pressure sensors with the TCA9548A multiplexer
@@ -487,7 +487,7 @@ Follow the prompts to create an admin password, optionally create another user, 
 
 To initialize GPIO pins at startup, open crontab with `sudo crontab -e` and add the following lines, then save with `Ctrl+x`
 
-`@reboot /usr/bin/python /var/www/mycodo/cgi-bin/GPIO-initialize.py &`
+`@reboot /usr/bin/python /var/www/mycodo/cgi-bin/gpio_initialize.py &`
 
 Last, set the daemon to automatically start
 

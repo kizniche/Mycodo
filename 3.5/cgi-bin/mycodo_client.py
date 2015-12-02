@@ -95,7 +95,7 @@ def menu():
                 Timestamp(), sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[7])
             print "%s [Remote command] Server returned:" % (
                 Timestamp()),
-            if c.root.GenerateGraph(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[7]) == 1:
+            if c.root.generate_graph(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[7]) == 1:
                 print "Success"
             else:
                 print "Fail"
@@ -106,7 +106,7 @@ def menu():
                 sys.exit(0)
             print "%s [Remote command] Restart all %s PID controllers: Server returned:" % (
                 Timestamp(), sys.argv[2]),
-            reload_status = c.root.all_PID_restart(sys.argv[2])
+            reload_status = c.root.all_pid_restart(sys.argv[2])
             if reload_status == 1:
                 print "Success"
             else:
@@ -118,7 +118,7 @@ def menu():
                 sys.exit(0)
             print "%s [Remote command] Restart %s PID controller number %s: Server returned:" % (
                 Timestamp(), sys.argv[2], sys.argv[3]),
-            reload_status = c.root.PID_restart(sys.argv[2], int(float(sys.argv[3])))
+            reload_status = c.root.pid_restart(sys.argv[2], int(float(sys.argv[3])))
             if reload_status == 1:
                 print "Success"
             else:
@@ -130,7 +130,7 @@ def menu():
                 sys.exit(0)
             print "%s [Remote command] Start %s PID controller number %s: Server returned:" % (
                 Timestamp(), sys.argv[2], sys.argv[3]),
-            reload_status = c.root.PID_start(sys.argv[2], int(float(sys.argv[3])))
+            reload_status = c.root.pid_start(sys.argv[2], int(float(sys.argv[3])))
             if reload_status == 1:
                 print "Success"
             else:
@@ -142,7 +142,7 @@ def menu():
                 sys.exit(0)
             print "%s [Remote command] Stop %s PID controller number %s: Server returned:" % (
                 Timestamp(), sys.argv[2], sys.argv[3]),
-            reload_status = c.root.PID_stop(sys.argv[2], int(float(sys.argv[3])))
+            reload_status = c.root.pid_stop(sys.argv[2], int(float(sys.argv[3])))
             if reload_status == 1:
                 print "Success"
             else:
@@ -154,7 +154,7 @@ def menu():
                 if (sys.argv[3] == '0' or sys.argv[3] == '1'):
                     print "%s [Remote command] Set relay %s to %s: Server returned:" % (
                         Timestamp(), int(float(sys.argv[2])), int(float(sys.argv[3]))),
-                    if c.root.ChangeRelay(int(float(sys.argv[2])),
+                    if c.root.change_relay(int(float(sys.argv[2])),
                             int(float(sys.argv[3]))) == 1:
                         print 'success'
                     else:
@@ -163,7 +163,7 @@ def menu():
                 if (sys.argv[2] > 1):
                     print '%s [Remote command] Relay %s ON for %s seconds: Server returned:' % (
                         Timestamp(), int(float(sys.argv[2])), int(float(sys.argv[3]))),
-                    if c.root.ChangeRelay(int(float(sys.argv[2])),
+                    if c.root.change_relay(int(float(sys.argv[2])),
                             int(float(sys.argv[3]))) == 1:
                         print "Success"
                     else:
@@ -175,25 +175,25 @@ def menu():
         elif opt == "--sensort":
             print "%s [Remote command] Read %s T sensor %s" % (
                 Timestamp(), sys.argv[2], int(float(sys.argv[3])))
-            temperature = c.root.ReadTSensor(sys.argv[2], int(float(sys.argv[3])))
+            temperature = c.root.read_t_sensor(sys.argv[2], int(float(sys.argv[3])))
             print "%s [Remote Command] Daemon Returned: Temperature: %s°C" % (Timestamp(), round(temperature,2))
             sys.exit(0)
         elif opt == "--sensorht":
             print "%s [Remote command] Read %s HT sensor %s" % (
                 Timestamp(), sys.argv[2], int(float(sys.argv[3])))
-            humidity, temperature = c.root.ReadHTSensor(sys.argv[2], int(float(sys.argv[3])))
+            humidity, temperature = c.root.read_ht_sensor(sys.argv[2], int(float(sys.argv[3])))
             print "%s [Remote Command] Daemon Returned: Temperature: %s°C Humidity: %s%%" % (Timestamp(), round(temperature,2), round(humidity,2))
             sys.exit(0)
         elif opt == "--sensorco2":
             print "%s [Remote command] Read %s CO2 sensor %s" % (
                 Timestamp(), sys.argv[2], int(float(sys.argv[3])))
-            co2 = c.root.ReadCO2Sensor(sys.argv[2], int(float(sys.argv[3])))
+            co2 = c.root.read_co2_sensor(sys.argv[2], int(float(sys.argv[3])))
             print "%s [Remote Command] Daemon Returned: CO2: %s ppmv" % (Timestamp(), co2)
             sys.exit(0)
         elif opt == "--sensorpress":
             print "%s [Remote command] Read %s Press sensor %s" % (
                 Timestamp(), sys.argv[2], int(float(sys.argv[3])))
-            pressure, temperature, altitude = c.root.ReadPressSensor(sys.argv[2], int(float(sys.argv[3])))
+            pressure, temperature, altitude = c.root.read_press_sensor(sys.argv[2], int(float(sys.argv[3])))
             print "%s [Remote Command] Daemon Returned: Pressure: %s kPa Temperature: %s°C Altitude: %s m" % (Timestamp(), pressure, round(temperature,2), round(altitude,2))
             sys.exit(0)
         
@@ -201,14 +201,14 @@ def menu():
             if int(float(sys.argv[2])) != -1:
                 print "%s [Remote command] Reload SQLite database and initialize relay %s: Server returned:" % (
                     Timestamp(), int(float(sys.argv[2]))),
-                if c.root.SQLReload(int(float(sys.argv[2]))) == 1:
+                if c.root.sqlreload(int(float(sys.argv[2]))) == 1:
                     print "Success"
                 else:
                     print "Fail"
             else:
                 print "%s [Remote command] Reload SQLite database: Server returned:" % (
                     Timestamp()),
-                if c.root.SQLReload(-1) == 1:
+                if c.root.sqlreload(-1) == 1:
                     print "Success"
                 else:
                     print "Fail"
@@ -216,7 +216,7 @@ def menu():
         elif opt in ("-s", "--status"):
             print "%s [Remote command] Request Status Report: Daemon is active:" % (
                 Timestamp()),
-            output, names, values = c.root.Status(1)
+            output, names, values = c.root.status(1)
             if output == 1:
                 print "Yes"
                 print "Parsing global variables..."
@@ -231,13 +231,13 @@ def menu():
         elif opt in ("-t", "--terminate"):
             print "%s [Remote command] Terminate all threads and daemon: Server returned:" % (
                 Timestamp()),
-            if c.root.Terminate(1) == 1: print "Success"
+            if c.root.terminate_daemon(1) == 1: print "Success"
             else: print "Fail"
             sys.exit(0)
         elif opt == "--test-email":
             print "%s [Remote command] Send test email to %s: Server returned:" % (
                 Timestamp(), sys.argv[2]),
-            if c.root.TestEmail(sys.argv[2]) == 1:
+            if c.root.test_email(sys.argv[2]) == 1:
                 print "Success (check your email for confirmation)"
             else:
                 print "Fail"

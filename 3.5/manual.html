@@ -28,11 +28,13 @@
 <ul>
 	<li><a href="#temperature-sensors">Temperature Sensors</a></li>
 	<ul>
+		<li><a href="#raspberry-pi">Raspberry Pi</a></li>
 		<li><a href="#DS18B20">DS18B20</a></li>
 	</ul>
 	<li><a href="#temperature-humidity-sensors">Temperature/Humidity Sensors</a></li>
 	<ul>
-		<li><a href="#DHT">DHT11, DHT22, AM2302</a></li>
+		<li><a href="#DHT11">DHT11</a></li>
+		<li><a href="#DHT22-AM2302">DHT22, AM2302</a></li>
 		<li><a href="#AM2315">AM2315</a></li>
 	</ul>
 	<li><a href="#co2-sensors">CO2 Sensors</a></li>
@@ -99,31 +101,87 @@
 <a name="temperature-sensors"></a>
 <h3>Temperature Sensors</h3>
 
+<a name="raspberry-pi"></a>
+<h4>Raspberry Pi (integrated)</h4>
+
+<p>The Raspberry Pi has an integrated temperature sensor on the BCM2835 SoC that measure the temperature of the CPU/GPU. This is the easiest sensor to set up in Mycodo, as it is immediately available to be used.</p>
+
 <a name="DS18B20"></a>
 <h4>DS18B20</h4>
 
-<p></p>
+<p>The DS18B20 is a 1-Wire digital temperature sensor from Maxim IC. Each sensor has a unique 64-Bit Serial number, allowing for a huge number of sensors to be used on one data bus (GPIO 4).</p>
+
+<p>
+Specifications:
+<br>Usable temperature range: -55 to 125°C (-67°F to +257°F)
+<br>9 to 12 bit selectable resolution
+<br>Uses 1-Wire interface- requires only one digital pin for communication
+<br>Unique 64 bit ID burned into chip
+<br>Multiple sensors can share one pin
+<br>±0.5°C Accuracy from -10°C to +85°C
+<br>Temperature-limit alarm system
+<br>Query time is less than 750ms
+<br>Usable with 3.0V to 5.5V power/data
+</p>
 
 <a name="temperature-humidity-sensors"></a>
 <h3>Temperature/Humidity Sensors</h3>
 
-<a name="DHT"></a>
-<h4>DHT11, DHT22, AM2302</h4>
+<a name="DHT11"></a>
+<h4>DHT11</h4>
 
-<p></p>
+<p>
+Specifications:
+<br>3 to 5V power and I/O
+<br>2.5mA max current use during conversion (while requesting data)
+<br>20-80% humidity readings with 5% accuracy
+<br>0-50°C temperature readings ±2°C accuracy
+<br>No more than 1 Hz sampling rate (once every second)
+</p>
+
+<a name="DHT22-AM2302"></a>
+<h4>DHT22, AM2302</h4>
+
+<p>Compared to the DHT11, this sensor is more precise, more accurate and works in a bigger range of temperature/humidity, but its larger and more expensive.</p>
+
+<p>
+Specifications:
+<br>0-100% humidity readings with 2% (10-90%) and 5% (0-10%, 90-100%) accuracy
+<br>-40 to 80°C temperature readings ±0.5°C accuracy
+<br>3 to 5V power and I/O
+<br>2.5mA max current use during conversion (while requesting data)
+<br>No more than 0.5 Hz sampling rate (once every 2 seconds)
+</p>
 
 <a name="AM2315"></a>
 <h4>AM2315</h4>
 
+<p>
+Specifications:
+<br>0-100% humidity readings with 2% accuracy
+<br>-20 to 80°C temperature readings ±0.1°C typical accuracy
+<br>3.5 to 5.5V power and I/O
+<br>10 mA max current use during conversion (while requesting data)
+<br>No more than 0.5 Hz sampling rate (once every 2 seconds)
+</p>
+
 <a name="co2-sensors"></a>
 <h3>CO<sub>2</sub> Sensors</h3>
-
-<p></p>
 
 <a name="K-30"></a>
 <h4>K-30</h4>
 
-<p></p>
+<p>
+Specifications:
+<br>0 – 10,000 ppm (0-5,000 ppm within specifications)
+<br>Repeatability: ± 20 ppm ± 1 % of measured value within specifications
+<br>Accuracy: ± 30 ppm ± 3 % of measured value within specifications
+<br>Non-dispersive infrared (NDIR) technology
+<br>Sensor life expectancy: > 15 years
+<br>Self-diagnostics: complete function check of the sensor module
+<br>Warm-up time: &lt; 1 min. (@ full specs &lt; 15 min)
+<br>0.5 Hz sampling rate (once every 2 seconds)
+</p>
 
 <a name="pressure-sensors"></a>
 <h3>Pressure Sensors</h3>
@@ -131,7 +189,18 @@
 <a name="BMP"></a>
 <h4>BMP085, BMP180</h4>
 
-<p></p>
+<p>The BMP180 is the next-generation of sensors from Bosch, and replaces the BMP085. It is completely identical to the BMP085 in terms of firmware/software/interfacing.</p>
+
+<p>
+Specifications:
+<br>300-1100 hPa (9000m to -500m above sea level)
+<br>Up to 0.03hPa / 0.25m resolution
+<br>-40 to +85°C operational range
+<br>+-2°C temperature accuracy
+<br>Vin: 3 to 5V
+<br>Logic: 3 to 5V compliant
+<br>I<sup>2</sup>C 7-bit address 0x77
+</p>
 
 <a name="multiplexers"></a>
 <h3>I<sup>2</sup>C Multiplexers</h3>

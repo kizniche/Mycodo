@@ -32,7 +32,7 @@ $gpio_path = "/usr/local/bin/gpio";
 
 ########## End Edit Configure ##########
 
-$mycodo_client = $install_path . "/cgi-bin/mycodo-client.py";
+$mycodo_client = $install_path . "/cgi-bin/mycodo_client.py";
 $still_exec = $install_path . "/cgi-bin/camera-still.sh";
 $stream_exec = $install_path . "/cgi-bin/camera-stream.sh";
 $timelapse_exec = $install_path . "/cgi-bin/camera-timelapse.sh";
@@ -262,7 +262,7 @@ if (!file_exists($lock_daemon)) {
             <div class="header">
                 <table>
                     <tr>
-                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'T' , $i+1 , ': ' , $sensor_t_name[$i]; ?></td>
+                        <td colspan=2 style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'T' , $i+1 , ': ' , $sensor_t_name[$i]; ?></td>
                     </tr>
                     <tr>
                         <?php
@@ -291,7 +291,7 @@ if (!file_exists($lock_daemon)) {
             <div class="header">
                 <table>
                     <tr>
-                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'HT' , $i+1 , ': ' , $sensor_ht_name[$i]; ?></td>
+                        <td colspan=2 style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'HT' , $i+1 , ': ' , $sensor_ht_name[$i]; ?></td>
                     </tr>
                     <tr>
                         <?php
@@ -322,7 +322,7 @@ if (!file_exists($lock_daemon)) {
             <div class="header">
                 <table>
                     <tr>
-                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'CO<sub>2</sub>' , $i+1 , ': ' , $sensor_co2_name[$i]; ?></td>
+                        <td colspan=2 style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'CO<sub>2</sub>' , $i+1 , ': ' , $sensor_co2_name[$i]; ?></td>
                     </tr>
                     <tr>
                         <?php
@@ -347,7 +347,7 @@ if (!file_exists($lock_daemon)) {
             <div class="header">
                 <table>
                     <tr>
-                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'P' , $i+1 , ': ' , $sensor_press_name[$i]; ?></td>
+                        <td colspan=2 style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'P' , $i+1 , ': ' , $sensor_press_name[$i]; ?></td>
                     </tr>
                     <tr>
                         <?php
@@ -581,7 +581,7 @@ if (!file_exists($lock_daemon)) {
                     <div style="float: left;">
                         <div>
                             <select style="height: 1.6em; width: 20em;" name="AddSensorDev">
-                                <option value="RPi">Temperature: Raspberry Pi</option>
+                                <option value="RPi">Temperature: Raspberry Pi CPU/GPU</option>
                                 <option value="DS18B20">Temperature: DS18B20</option>
                                 <option value="DHT11">Humidity/Temperature: DHT11</option>
                                 <option value="DHT22">Humidity/Temperature: DHT22</option>
@@ -1005,18 +1005,7 @@ if (!file_exists($lock_daemon)) {
                         <td>
                             <?php 
                             if ($sensor_t_device[$i] == 'RPi') {
-                            ?>
-                                <select style="width: 3.5em;" name="sensort<?php echo $i; ?>pin">
-                                <option<?php
-                                    if ($sensor_t_pin[$i] == 0) {
-                                        echo ' selected="selected"';
-                                    } ?> value="0">CPU</option>
-                                <option<?php
-                                    if ($sensor_t_pin[$i] == 1) {
-                                        echo ' selected="selected"';
-                                    } ?> value="1">GPU</option>
-                            </select>
-                            <?php
+                                echo 'SoC';
                             } else if ($sensor_t_device[$i] == 'DS18B20') {
                                 echo '<input style="width: 7em;" type="text" value="' , $sensor_t_pin[$i] . '" maxlength=12 name="sensort' , $i , 'pin" title="This is the serial number found at /sys/bus/w1/devices/28-x where x is the serial number of your connected DS18B20."/>';
                             } else {
