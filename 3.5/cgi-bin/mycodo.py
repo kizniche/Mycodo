@@ -108,7 +108,6 @@ stop_all_p_pids = None
 camera_light = None
 server = None
 client_que = '0'
-client_var = None
 
 last_t_reading = 0
 last_ht_reading = 0
@@ -2157,6 +2156,7 @@ def read_press_sensor(sensor_id):
 # Obtain reading from Temperature sensor
 def read_t(sensor_id, device, pin):
     # Ensure at least 2 seconds between sensor reads
+    temperature = None
     global last_t_reading
     while last_t_reading > time.time():
         time.sleep(0.2)
@@ -2188,7 +2188,6 @@ def read_t(sensor_id, device, pin):
             temperature = float(temp_string) / 1000.0
     else:
         logging.debug("[Read T Sensor-%s] Device not recognized: %s", sensor_id + 1, device)
-        temperature = None
 
     last_t_reading = time.time() + 2
     return temperature
@@ -4168,8 +4167,8 @@ def email(email_to, message):
     Example:
         email([email@mydomain.com, you@yourdomain.com], 'Hello!')
 
-    :return: Array of zeroes
-    :rtype: list
+    :return: success (0) or failure (1)
+    :rtype: int
 
     :param email_to: Who to email
     :type x: str or list
