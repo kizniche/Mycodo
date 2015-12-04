@@ -66,6 +66,9 @@ case "${1:-''}" in
                 printf "#### Updating from github ####\n"
                 git fetch --all
                 git reset --hard origin/master
+                # git pull
+                git submodule init
+                git submodule update
 
                 if [ ! -h /var/www/mycodo ]; then
                     ln -s $DIR /var/www/mycodo
