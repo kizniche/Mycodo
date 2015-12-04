@@ -1,0 +1,3 @@
+[submodule "3.5/cgi-bin/mycodo_python"]
+	path = 3.5/cgi-bin/mycodo_python
+	url = https://github.com/kizniche/mycodo_python

@@ -595,7 +595,7 @@ if (!file_exists($lock_daemon)) {
                     </div>
                     <div style="float: left; padding: 0 0.2em;">
                         <div>
-                            <input style="width: 6em;" maxlength=12 size=10 name="AddSensorName" title="Name of the new sensor."/>
+                            <input style="width: 6em;" maxlength=12 size=10 name="AddSensorName" title="Name for the sensor"/>
                         </div>
                         <div style="padding: 0.1em 0 0 0.2em;">Name</div>
                     </div>
@@ -608,7 +608,7 @@ if (!file_exists($lock_daemon)) {
             <form action="?tab=sensor" method="POST">
                 <div style="float:left; margin: 0.5em 0.7em;">
                     <div style="float:left; padding-right: 0.2em;">
-                        <input style="height: 2.6em; width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddRelaysNumber" title="Add Sensors" required/>
+                        <input style="height: 2.6em; width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddRelaysNumber" title="How many relays to add" required/>
                     </div>
                     <div style="float:left">
                         <button type="submit" name="AddRelays" value="Add">Add<br>Relays</button>
@@ -619,7 +619,7 @@ if (!file_exists($lock_daemon)) {
             <form action="?tab=sensor" method="POST">
                 <div style="float:left; margin: 0.5em 0.7em;">
                     <div style="float:left; padding-right: 0.2em;">
-                        <input style="height: 2.6em; width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddTimersNumber" title="Add Sensors"  required/>
+                        <input style="height: 2.6em; width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddTimersNumber" title="How many timers to add"  required/>
                     </div>
                     <div style="float:left">
                         <button type="submit" name="AddTimers" value="Add">Add<br>Timers</button>
@@ -632,309 +632,307 @@ if (!file_exists($lock_daemon)) {
             <?php
             if (count($relay_id) > 0) {
             ?>
-                <div class="sensor-parent" style="margin-top: 2em;">
-                    <form action="?tab=sensor" method="POST">
-                    <table class="relays">
-                        <tr>
-                            <td class="table-header center middle">Relay</td>
-                            <td class="table-header middle">Name</td>
-                            <td colspan="2" class="table-header center" style="vertical-align: middle;">
-                                On <img style="height: 1em;" src="/mycodo/img/on.png" alt="On" title="On"> ~ Off <img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off"></td>
-                            <td class="table-header center">Seconds<br>On</td>
-                            <td class="table-header center">GPIO<br>Pin</td>
-                            <td class="table-header center">Amps<br>Draw</td>
-                            <td class="table-header center">Signal<br>ON</td>
-                            <td class="table-header center">Startup<br>State</td>
-                            <td class="table-header center"></td>
-                        </tr>
-                        <?php for ($i = 0; $i < count($relay_id); $i++) {
-                            $read = "$gpio_path -g read $relay_pin[$i]";
-                        ?>
-                        <tr>
-                            <td class="center">
-                                <?php echo $i+1; ?>
-                            </td>
-                            <td>
-                                <input style="width: 10em;" type="text" value="<?php echo $relay_name[$i]; ?>" maxlength=13 name="relay<?php echo $i; ?>name" title="Name of relay <?php echo $i+1; ?>"/>
-                            </td>
-                            <?php
-                                if ((shell_exec($read) == 1 && $relay_trigger[$i] == 0) || (shell_exec($read) == 0 && $relay_trigger[$i] == 1)) {
-                                    ?>
-                                    <td style="vertical-align: middle;">
-                                        <input type="hidden" "R<?php echo $i; ?>" value="1" /><img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
-                                    </td>
-                                    <td>
-                                        <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="1">Turn On</button>
-                                    </td>
-                                    <?php
-                                } else {
-                                    ?>
-                                    <td style="vertical-align: middle;">
-                                        <img style="height: 1em;" src="/mycodo/img/on.png" alt="On" title="On">
-                                    </td>
-                                    <td>
-                                        <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="0">Turn Off</button>
-                                    </td>
-                                    <?php
-                                }
-                            ?>
-                            <td class="center">
-                                 [<input style="width: 4em;" type="number" min="1" max="99999" name="sR<?php echo $i; ?>" title="Number of seconds to turn this relay on"/><input type="submit" name="<?php echo $i; ?>secON" value="ON">]
-                            </td>
-                            <td class="center">
-                                <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $relay_pin[$i]; ?>" name="relay<?php echo $i; ?>pin" title="GPIO pin using BCM numbering, connected to relay <?php echo $i+1; ?>"/>
-                            </td>
-                            <td class="center">
-                                <input style="width: 4em;" type="number" min="0" max="500" step="0.1" value="<?php echo $relay_amps[$i]; ?>" name="relay<?php echo $i; ?>amps" title="The maximum number of amps that the device connected to relay <?php echo $i+1; ?> draws. Set overall maximum allowed to be drawn from all relays in the Settings tab."/>
-                            </td>
-                            <td class="center">
-                                <select style="width: 65px;" title="Does this relay activate with a LOW (0-volt) or HIGH (5-volt) signal?" name="relay<?php echo $i; ?>trigger">
-                                    <option<?php
-                                        if ($relay_trigger[$i] == 1) {
-                                            echo ' selected="selected"';
-                                        } ?> value="1">High</option>
-                                    <option<?php
-                                        if ($relay_trigger[$i] == 0) {
-                                            echo ' selected="selected"';
-                                        } ?> value="0">Low</option>
-                                </select>
-                            </td>
-                            <td class="center">
-                                <select style="width: 65px;" title="Should the relay be On or Off at startup?" name="relay<?php echo $i; ?>startstate">
-                                    <option<?php
-                                        if ($relay_start_state[$i] == 1) {
-                                            echo ' selected="selected"';
-                                        } ?> value="1">On</option>
-                                    <option<?php
-                                        if ($relay_start_state[$i] == 0) {
-                                            echo ' selected="selected"';
-                                        } ?> value="0">Off</option>
-                                </select>
-                            </td>
-                            <td class="center">
-                                <input type="submit" name="Mod<?php echo $i; ?>Relay" value="Set"> <button type="submit" name="Delete<?php echo $i; ?>Relay" title="Delete">Delete</button>
-                            </td>
-                        </tr>
-                        <?php
-                        } ?>
-                    </table>
-                    </form>
-
-                    <table class="conditional">
-                        <tr>
-                            <td>
-                                Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                    <table class="sensor-conditional">
-                        <tr>
-                            <td style="padding-left: 1em;">
-                                Name: 
-                                <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionrelayname" title="Name for this relay conditional statement." required/>
-                                If Relay
-                                <select style="width: 3em;" name="conditionrelayifrelay" title="Select the relay to watch for whether it turns on or off.">
-                                    <?php
-                                    for ($n = 0; $n < count($relay_id); $n++) {
-                                    echo '<option value="' . ($n+1) . '">' . ($n+1) . '</option>';
-                                    } ?>
-                                </select>
-                                turns
-                                <select style="width: 3em;" name="conditionrelayifaction" title="Select whether the relay that is watched will be watched whether it turns on or off.">
-                                    <option value="on">On</option>
-                                    <option value="off">Off</option>
-                                </select>
-                                (if on, for 
-                                <input style="width: 4em;" type="number" step="any" value="0" maxlength=5 size=1 name="conditionrelayifduration" title="Check if the number of seconds the selected relay turns on for is equal to this value. If it is the same number of seconds, this statement is true. Leave at 0 if you only want to check if the relay was turned on and not necessarily if there is a duration associated with it. If 'Off' is selected in the previous field, this variable is not considered." required/>
-                                sec): 
-                            </td>
-                            <td style="padding-bottom: 0.3em;">
-                                <input type="checkbox" name="conditionrelayselrelay" value="1" checked> Turn Relay
-                                <select style="width: 3em;" name="conditionrelaydorelay" title="Select the relay that will be modified based on the watched relay and watched action.">
-                                    <?php
-                                    for ($n = 0; $n < count($relay_id); $n++) {
-                                    echo '<option value="' . ($n+1) . '">' . ($n+1) . '</option>';
-                                    } ?>
-                                </select>
-                                <select style="width: 3em;" name="conditionrelaydoaction" title="What do you want the modified relay to do once the watched relay performs the watched action.">
-                                    <option value="on">On</option>
-                                    <option value="off">Off</option>
-                                </select>
-                                (for 
-                                <input style="width: 4em;" type="number" step="any" value="0" maxlength=5 size=1 name="conditionrelaydoduration" title="The number of seconds for the modified relay to remain on. Leave at 0 to only turn the selected relay on, but not off. If 'Off' is selected in the previous field, this variable is not considered." required/>
-                                sec)
-                            </td>
-                            <td rowspan="3" style="vertical-align:middle; padding: 0 0 0.8em 0.5em;">
-                                <button type="submit" style="height:5em; width:4em;" style="height:5em;" name="AddRelayConditional" title="Save new relay conditional statement">Save</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td style="padding-bottom: 0.3em;"><input type="checkbox" name="conditionrelayselcommand" value="1"> Execute command: <input style="width: 11em;" type="text" value="" maxlength=100 name="conditionrelaycommand" title="Command to execute in a linux shell."/></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td style="padding-bottom: 1em;">
-                                <input type="checkbox" name="conditionrelayselnotify" value="1"> Email <input style="width: 17em;" type="text" value="" name="conditionrelaynotify" title="These are the email addresses that will be notified. Separate multiple email addresses with commas."/>
-                            </td>
-                        </tr>
-                    </table>
-                    </form>
-
-                    <?php
-                    if (isset($conditional_relay_id) && count($conditional_relay_id) > 0) {
-                    ?>
-                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                    <table class="sensor_conditional">
-                        <?php
-                        for ($z = 0; $z < count($conditional_relay_id); $z++) {
-                        ?>
-                        <tr>
-                            <td style="padding-top: 1em; padding-left: 1em; white-space: nowrap;">
-                            <?php
-                            echo '<button type="submit" name="DeleteRelay' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
-
-                            echo $z+1 . ': ' . $conditional_relay_name[$z] . ': If Relay ' . $conditional_relay_ifrelay[$z] . ' turns';
-
-                            if ($conditional_relay_ifaction[$z] == 'on') {
-                                echo ' On';
-                                if ($conditional_relay_ifduration[$z] > 0) {
-                                    echo ' for ' . $conditional_relay_ifduration[$z] . ' seconds:';
-                                } else {
-                                    echo ':';
-                                }
-                            } else {
-                                echo ' Off:';
-                            }
-
-                        echo '</td>';
-
-                            $first = 1;
-
-                            if ($conditional_relay_sel_relay[$z]) {
-                                if ($first) {
-                                    $first = 0;
-                                }
-                                echo '<td style="width: 100%;">Turn Relay ' . $conditional_relay_dorelay[$z];
-
-                                if ($conditional_relay_doaction[$z] == 'on') {
-                                    echo ' On';
-                                    if ($conditional_relay_doduration[$z] > 0) {
-                                        echo ' for ' . $conditional_relay_doduration[$z] . ' seconds';
-                                    }
-                                } else {
-                                    echo ' Off';
-                                }
-                                echo '</td>';
-                            }
-
-                            if ($conditional_relay_sel_command[$z]) {
-                                if ($first) {
-                                    $first = 0;
-                                } else {
-                                    echo '</tr><tr><td></td>';
-                                }
-                                echo '<td style="padding-bottom: 0.3em;">Execute: <strong>' . htmlentities($conditional_relay_command[$z]) . '</strong></td>';
-                            }
-
-                            if ($conditional_relay_sel_notify[$z]) {
-                                if (!$first) {
-                                    echo '</tr><tr><td></td>';
-                                }
-                                echo '<td style="width: 100%; white-space:normal;">Email <b>' . str_replace(",", ", ", $conditional_relay_notify[$z]) . '</b></td>';
-                            }
-
-                            echo '</tr>';
-                        }
+            <fieldset class="settings-box">
+                <legend>Relays</legend>
+                <form action="?tab=sensor" method="POST">
+                <table class="relays">
+                    <tr>
+                        <td class="table-header center middle">#</td>
+                        <td class="table-header middle">Name</td>
+                        <td colspan="2" class="table-header center" style="vertical-align: middle; line-height: 1.2em;">
+                            State<br>On <img style="height: 1em;" src="/mycodo/img/on.png"> ~ Off <img style="height: 1em;" src="/mycodo/img/off.png"></td>
+                        <td class="table-header center">Seconds<br>On</td>
+                        <td class="table-header center">GPIO<br>Pin</td>
+                        <td class="table-header center">Amps<br>Draw</td>
+                        <td class="table-header center">Signal<br>ON</td>
+                        <td class="table-header center">Startup<br>State</td>
+                        <td class="table-header center"></td>
+                    </tr>
+                    <?php for ($i = 0; $i < count($relay_id); $i++) {
+                        $read = "$gpio_path -g read $relay_pin[$i]";
                     ?>
                     <tr>
-                        <td style="padding-top: 1em;"></td>
-                        <td></td>
+                        <td class="center">
+                            <?php echo $i+1; ?>
+                        </td>
+                        <td>
+                            <input style="width: 10em;" type="text" value="<?php echo $relay_name[$i]; ?>" maxlength=13 name="relay<?php echo $i; ?>name" title="Name of relay <?php echo $i+1; ?>"/>
+                        </td>
+                        <?php
+                            if ((shell_exec($read) == 1 && $relay_trigger[$i] == 0) || (shell_exec($read) == 0 && $relay_trigger[$i] == 1)) {
+                                ?>
+                                <td style="vertical-align: middle;">
+                                    <input type="hidden" "R<?php echo $i; ?>" value="1" /><img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
+                                </td>
+                                <td>
+                                    <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="1">Turn On</button>
+                                </td>
+                                <?php
+                            } else {
+                                ?>
+                                <td style="vertical-align: middle;">
+                                    <img style="height: 1em;" src="/mycodo/img/on.png" alt="On" title="On">
+                                </td>
+                                <td>
+                                    <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="0">Turn Off</button>
+                                </td>
+                                <?php
+                            }
+                        ?>
+                        <td class="center">
+                             [<input style="width: 4em;" type="number" min="1" max="99999" name="sR<?php echo $i; ?>" title="Number of seconds to turn this relay on"/><input type="submit" name="<?php echo $i; ?>secON" value="ON">]
+                        </td>
+                        <td class="center">
+                            <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $relay_pin[$i]; ?>" name="relay<?php echo $i; ?>pin" title="GPIO pin using BCM numbering, connected to relay <?php echo $i+1; ?>"/>
+                        </td>
+                        <td class="center">
+                            <input style="width: 4em;" type="number" min="0" max="500" step="0.1" value="<?php echo $relay_amps[$i]; ?>" name="relay<?php echo $i; ?>amps" title="The maximum number of amps that the device connected to relay <?php echo $i+1; ?> draws. Set overall maximum allowed to be drawn from all relays in the Settings tab."/>
+                        </td>
+                        <td class="center">
+                            <select style="width: 65px;" title="Does this relay activate with a LOW (0-volt) or HIGH (5-volt) signal?" name="relay<?php echo $i; ?>trigger">
+                                <option<?php
+                                    if ($relay_trigger[$i] == 1) {
+                                        echo ' selected="selected"';
+                                    } ?> value="1">High</option>
+                                <option<?php
+                                    if ($relay_trigger[$i] == 0) {
+                                        echo ' selected="selected"';
+                                    } ?> value="0">Low</option>
+                            </select>
+                        </td>
+                        <td class="center">
+                            <select style="width: 65px;" title="Should the relay be On or Off at startup?" name="relay<?php echo $i; ?>startstate">
+                                <option<?php
+                                    if ($relay_start_state[$i] == 1) {
+                                        echo ' selected="selected"';
+                                    } ?> value="1">On</option>
+                                <option<?php
+                                    if ($relay_start_state[$i] == 0) {
+                                        echo ' selected="selected"';
+                                    } ?> value="0">Off</option>
+                            </select>
+                        </td>
+                        <td class="center">
+                            <input type="submit" name="Mod<?php echo $i; ?>Relay" value="Set"> <button type="submit" name="Delete<?php echo $i; ?>Relay" title="Delete">Delete</button>
+                        </td>
                     </tr>
-                    </table>
-                    </form>
+                    <?php
+                    } ?>
+                </table>
+                </form>
+
+                <table class="conditional">
+                    <tr>
+                        <td>
+                            Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                        </td>
+                    </tr>
+                </table>
+
+                <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                <table class="sensor-conditional">
+                    <tr>
+                        <td style="padding-left: 1em;">
+                            Name: 
+                            <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionrelayname" title="Name for this relay conditional statement." required/>
+                            If Relay
+                            <select style="width: 3em;" name="conditionrelayifrelay" title="Select the relay to watch for whether it turns on or off.">
+                                <?php
+                                for ($n = 0; $n < count($relay_id); $n++) {
+                                echo '<option value="' . ($n+1) . '">' . ($n+1) . '</option>';
+                                } ?>
+                            </select>
+                            turns
+                            <select style="width: 3em;" name="conditionrelayifaction" title="Select whether the relay that is watched will be watched whether it turns on or off.">
+                                <option value="on">On</option>
+                                <option value="off">Off</option>
+                            </select>
+                            (if on, for 
+                            <input style="width: 4em;" type="number" step="any" value="0" maxlength=5 size=1 name="conditionrelayifduration" title="Check if the number of seconds the selected relay turns on for is equal to this value. If it is the same number of seconds, this statement is true. Leave at 0 if you only want to check if the relay was turned on and not necessarily if there is a duration associated with it. If 'Off' is selected in the previous field, this variable is not considered." required/>
+                            sec): 
+                        </td>
+                        <td style="padding-bottom: 0.3em;">
+                            <input type="checkbox" name="conditionrelayselrelay" value="1" checked> Turn Relay
+                            <select style="width: 3em;" name="conditionrelaydorelay" title="Select the relay that will be modified based on the watched relay and watched action.">
+                                <?php
+                                for ($n = 0; $n < count($relay_id); $n++) {
+                                echo '<option value="' . ($n+1) . '">' . ($n+1) . '</option>';
+                                } ?>
+                            </select>
+                            <select style="width: 3em;" name="conditionrelaydoaction" title="What do you want the modified relay to do once the watched relay performs the watched action.">
+                                <option value="on">On</option>
+                                <option value="off">Off</option>
+                            </select>
+                            (for 
+                            <input style="width: 4em;" type="number" step="any" value="0" maxlength=5 size=1 name="conditionrelaydoduration" title="The number of seconds for the modified relay to remain on. Leave at 0 to only turn the selected relay on, but not off. If 'Off' is selected in the previous field, this variable is not considered." required/>
+                            sec)
+                        </td>
+                        <td rowspan="3" style="vertical-align:middle; padding: 0 0 0.8em 0.5em;">
+                            <button type="submit" style="height:5em; width:4em;" style="height:5em;" name="AddRelayConditional" title="Save new relay conditional statement">Save</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding-bottom: 0.3em;"><input type="checkbox" name="conditionrelayselcommand" value="1"> Execute command: <input style="width: 11em;" type="text" value="" maxlength=100 name="conditionrelaycommand" title="Command to execute in a linux shell."/></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding-bottom: 1em;">
+                            <input type="checkbox" name="conditionrelayselnotify" value="1"> Email <input style="width: 17em;" type="text" value="" name="conditionrelaynotify" title="These are the email addresses that will be notified. Separate multiple email addresses with commas."/>
+                        </td>
+                    </tr>
+                </table>
+                </form>
+
+                <?php
+                if (isset($conditional_relay_id) && count($conditional_relay_id) > 0) {
+                ?>
+                <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                <table class="sensor_conditional">
+                    <?php
+                    for ($z = 0; $z < count($conditional_relay_id); $z++) {
+                    ?>
+                    <tr>
+                        <td style="padding-top: 1em; padding-left: 1em; white-space: nowrap;">
+                        <?php
+                        echo '<button type="submit" name="DeleteRelay' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
+
+                        echo $z+1 . ': ' . $conditional_relay_name[$z] . ': If Relay ' . $conditional_relay_ifrelay[$z] . ' turns';
+
+                        if ($conditional_relay_ifaction[$z] == 'on') {
+                            echo ' On';
+                            if ($conditional_relay_ifduration[$z] > 0) {
+                                echo ' for ' . $conditional_relay_ifduration[$z] . ' seconds:';
+                            } else {
+                                echo ':';
+                            }
+                        } else {
+                            echo ' Off:';
+                        }
+
+                    echo '</td>';
+
+                        $first = 1;
+
+                        if ($conditional_relay_sel_relay[$z]) {
+                            if ($first) {
+                                $first = 0;
+                            }
+                            echo '<td style="width: 100%;">Turn Relay ' . $conditional_relay_dorelay[$z];
+
+                            if ($conditional_relay_doaction[$z] == 'on') {
+                                echo ' On';
+                                if ($conditional_relay_doduration[$z] > 0) {
+                                    echo ' for ' . $conditional_relay_doduration[$z] . ' seconds';
+                                }
+                            } else {
+                                echo ' Off';
+                            }
+                            echo '</td>';
+                        }
+
+                        if ($conditional_relay_sel_command[$z]) {
+                            if ($first) {
+                                $first = 0;
+                            } else {
+                                echo '</tr><tr><td></td>';
+                            }
+                            echo '<td style="padding-bottom: 0.3em;">Execute: <strong>' . htmlentities($conditional_relay_command[$z]) . '</strong></td>';
+                        }
+
+                        if ($conditional_relay_sel_notify[$z]) {
+                            if (!$first) {
+                                echo '</tr><tr><td></td>';
+                            }
+                            echo '<td style="width: 100%; white-space:normal;">Email <b>' . str_replace(",", ", ", $conditional_relay_notify[$z]) . '</b></td>';
+                        }
+
+                        echo '</tr>';
+                    }
+                ?>
+                <tr>
+                    <td style="padding-top: 1em;"></td>
+                    <td></td>
+                </tr>
+                </table>
+                </form>
+                <?php
+                }
+                ?>
+            </fieldset>
+            <?php
+            }
+            
+            if (count($relay_id) > 0) echo '<div style="margin-bottom:1em;"></div>';
+
+            if (count($timer_id) > 0) {
+            ?>
+            <div style="clear: both;"></div>
+
+            <fieldset class="settings-box">
+                <legend>Timers</legend>
+                <form action="?tab=sensor" method="POST">
+                <table class="relays">
+                    <tr>
+                        <td class="table-header center middle">Timer</td>
+                        <td class="table-header middle">Name</td>
+                        <td class="table-header center middle">Status</td>
+                        <td class="table-header center middle">Activate</td>
+                        <td class="table-header center middle">Relay</td>
+                        <td class="table-header center middle">On (sec)</td>
+                        <td class="table-header center middle">Off (sec)</td>
+                        <td class="table-header"></td>
+                    </tr>
+                    <?php
+                    for ($i = 0; $i < count($timer_id); $i++) {
+                    ?>
+                    <tr>
+                        <td class="center">
+                            <?php echo $i+1; ?>
+                        </td>
+                        <td>
+                            <input style="width: 10em;" type="text" value="<?php echo $timer_name[$i]; ?>" maxlength=13 name="Timer<?php echo $i; ?>Name" title="This is the relay name for timer <?php echo $i; ?>"/>
+                        </td>
+                        <?php
+                        if ($timer_state[$i] == 0) {
+                        ?>
+                            <td  class="center" style="vertical-align:middle;">
+                                <img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
+                            </td>
+                            <td class="center">
+                                <button style="width: 5em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">Turn On</button></nobr>
+                            </td>
+                        <?php
+                        } else {
+                        ?>
+                            <td  class="center" style="vertical-align:middle;">
+                                <img style="height: 1em;" src="/mycodo/img/on.png" alt="On" title="On">
+                            </td>
+                            <td class="center">
+                                <button style="width: 5em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="0">Turn Off</button></nobr>
+                            </td>
+                        <?php
+                        }
+                        ?>
+                        <td class="center">
+                            <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $timer_relay[$i]; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>Relay" title="This is the relay number for timer <?php echo $i; ?>"/>
+                        </td>
+                        <td class="center">
+                            <input style="width: 5em;" type="number" min="1" max="99999" value="<?php echo $timer_duration_on[$i]; ?>" name="Timer<?php echo $i; ?>On" title="This is On duration of timer <?php echo $i; ?>"/>
+                        </td>
+                        <td class="center">
+                            <input style="width: 5em;" type="number" min="0" max="99999" value="<?php echo $timer_duration_off[$i]; ?>" name="Timer<?php echo $i; ?>Off" title="This is Off duration for timer <?php echo $i; ?>"/>
+                        </td>
+                        <td class="center">
+                            <input type="submit" name="ChangeTimer<?php echo $i; ?>" value="Set"> <button type="submit" name="Delete<?php echo $i; ?>Timer" title="Delete">Delete</button>
+                        </td>
+                    </tr>
                     <?php
                     }
                     ?>
-                </div>
-            <?php
-            }
-            ?>
-
-            <?php if (count($relay_id) > 0) echo '<div style="margin-bottom:1em;"></div>'; ?>
-            
-            <?php
-            if (count($timer_id) > 0) {
-            ?>
-                <div style="clear: both;"></div>
-                <div class="sensor-title">Timers</div>
-                <div style="clear: both;"></div>
-
-                <div class="sensor-parent">
-                <form action="?tab=sensor" method="POST">
-                    <table class="relays">
-                        <tr>
-                            <td class="table-header center middle">Timer</td>
-                            <td class="table-header middle">Name</td>
-                            <td class="table-header center middle">Status</td>
-                            <td class="table-header center middle">Activate</td>
-                            <td class="table-header center middle">Relay</td>
-                            <td class="table-header center middle">On (sec)</td>
-                            <td class="table-header center middle">Off (sec)</td>
-                            <td class="table-header"></td>
-                        </tr>
-                        <?php
-                        for ($i = 0; $i < count($timer_id); $i++) {
-                        ?>
-                        <tr>
-                            <td class="center">
-                                <?php echo $i+1; ?>
-                            </td>
-                            <td>
-                                <input style="width: 10em;" type="text" value="<?php echo $timer_name[$i]; ?>" maxlength=13 name="Timer<?php echo $i; ?>Name" title="This is the relay name for timer <?php echo $i; ?>"/>
-                            </td>
-                            <?php
-                            if ($timer_state[$i] == 0) {
-                            ?>
-                                <td  class="center" style="vertical-align:middle;">
-                                    <img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
-                                </td>
-                                <td class="center">
-                                    <button style="width: 5em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">Turn On</button></nobr>
-                                </td>
-                            <?php
-                            } else {
-                            ?>
-                                <td  class="center" style="vertical-align:middle;">
-                                    <img style="height: 1em;" src="/mycodo/img/on.png" alt="On" title="On">
-                                </td>
-                                <td class="center">
-                                    <button style="width: 5em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="0">Turn Off</button></nobr>
-                                </td>
-                            <?php
-                            }
-                            ?>
-                            <td class="center">
-                                <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $timer_relay[$i]; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>Relay" title="This is the relay number for timer <?php echo $i; ?>"/>
-                            </td>
-                            <td class="center">
-                                <input style="width: 5em;" type="number" min="1" max="99999" value="<?php echo $timer_duration_on[$i]; ?>" name="Timer<?php echo $i; ?>On" title="This is On duration of timer <?php echo $i; ?>"/>
-                            </td>
-                            <td class="center">
-                                <input style="width: 5em;" type="number" min="0" max="99999" value="<?php echo $timer_duration_off[$i]; ?>" name="Timer<?php echo $i; ?>Off" title="This is Off duration for timer <?php echo $i; ?>"/>
-                            </td>
-                            <td class="center">
-                                <input type="submit" name="ChangeTimer<?php echo $i; ?>" value="Set"> <button type="submit" name="Delete<?php echo $i; ?>Timer" title="Delete">Delete</button>
-                            </td>
-                        </tr>
-                        <?php
-                        }
-                        ?>
-                    </table>
+                </table>
                 </form>
-                </div>
+            </fieldset>
             <?php
             }
             ?>

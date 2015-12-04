@@ -587,6 +587,18 @@ class OneFileLoginApplication {
 
     // Login page
     private function showPageLoginForm() {
+        $mycodo_db = "config/mycodo.db";
+        $db = new SQLite3($mycodo_db);
+        if (isset($_POST['dismiss'])) {  // Dismiss Notification
+            $stmt = $db->prepare("UPDATE Misc SET Dismiss_Notification=:dismiss");
+            $stmt->bindValue(':dismiss', 1, SQLITE3_INTEGER);
+            $stmt->execute();
+        }
+        $stmt = $db->query('SELECT Login_Message, Dismiss_Notification FROM Misc');
+        while ($row = $stmt->fetchArray()) {
+            $login_message = $row[0]; 
+            $dismiss = $row[1];
+        }
         ?>
         <html>
         <head>
@@ -612,26 +624,9 @@ class OneFileLoginApplication {
             </form>
         </div>
         <?php
-        $mycodo_db = "config/mycodo.db";
-        $db = new SQLite3($mycodo_db);
-
-        // Dismiss Notification
-        if (isset($_POST['dismiss'])) {
-            $stmt = $db->prepare("UPDATE Misc SET Dismiss_Notification=:dismiss");
-            $stmt->bindValue(':dismiss', 1, SQLITE3_INTEGER);
-            $stmt->execute();
-        }
-
-        $stmt = $db->query('SELECT Login_Message, Dismiss_Notification FROM Misc');
-        while ($row = $stmt->fetchArray()) {
-            $login_message = $row[0]; 
-            $dismiss = $row[1];
-        }
-
         if ($login_message != '') {
             echo '<div style="padding-top: 2em; width: 33em; margin: 8 auto; text-align: center;">' . $login_message . '</div>';
         }
-
         if (!$dismiss) {
             ?>
             <div style="padding-top: 1em; width: 33em; margin: 8 auto; text-align: justify;">
