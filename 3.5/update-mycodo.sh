@@ -66,7 +66,7 @@ case "${1:-''}" in
                 printf "#### Updating from github ####\n"
                 git fetch --all
                 git reset --hard origin/master
-                # git pull
+                # git pull # test edit. testing submodule update system
                 git submodule init
                 git submodule update
 
