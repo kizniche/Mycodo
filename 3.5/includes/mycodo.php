@@ -639,13 +639,14 @@ if (!file_exists($lock_daemon)) {
                     <tr>
                         <td class="table-header center middle">#</td>
                         <td class="table-header middle">Name</td>
-                        <td colspan="2" class="table-header center" style="vertical-align: middle; line-height: 1.2em;">
-                            State<br>On <img style="height: 1em;" src="/mycodo/img/on.png"> ~ Off <img style="height: 1em;" src="/mycodo/img/off.png"></td>
-                        <td class="table-header center">Seconds<br>On</td>
-                        <td class="table-header center">GPIO<br>Pin</td>
-                        <td class="table-header center">Amps<br>Draw</td>
-                        <td class="table-header center">Signal<br>ON</td>
-                        <td class="table-header center">Startup<br>State</td>
+                        <td class="table-header middle">Status</td>
+                        <td class="table-header center" style="vertical-align: middle; line-height: 1.2em;">
+                            On <img style="height: 1em;" src="/mycodo/img/on.png"> ~ Off <img style="height: 1em;" src="/mycodo/img/off.png"></td>
+                        <td class="table-header center">Seconds On</td>
+                        <td class="table-header center">GPIO</td>
+                        <td class="table-header center">Amps</td>
+                        <td class="table-header center">On Signal</td>
+                        <td class="table-header center">Startup</td>
                         <td class="table-header center"></td>
                     </tr>
                     <?php for ($i = 0; $i < count($relay_id); $i++) {
@@ -661,26 +662,26 @@ if (!file_exists($lock_daemon)) {
                         <?php
                             if ((shell_exec($read) == 1 && $relay_trigger[$i] == 0) || (shell_exec($read) == 0 && $relay_trigger[$i] == 1)) {
                                 ?>
-                                <td style="vertical-align: middle;">
+                                <td class="middle center">
                                     <input type="hidden" "R<?php echo $i; ?>" value="1" /><img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
                                 </td>
-                                <td>
+                                <td class="middle center">
                                     <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="1">Turn On</button>
                                 </td>
                                 <?php
                             } else {
                                 ?>
-                                <td style="vertical-align: middle;">
+                                <td class="middle center">
                                     <img style="height: 1em;" src="/mycodo/img/on.png" alt="On" title="On">
                                 </td>
-                                <td>
+                                <td class="middle center">
                                     <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="0">Turn Off</button>
                                 </td>
                                 <?php
                             }
                         ?>
                         <td class="center">
-                             [<input style="width: 4em;" type="number" min="1" max="99999" name="sR<?php echo $i; ?>" title="Number of seconds to turn this relay on"/><input type="submit" name="<?php echo $i; ?>secON" value="ON">]
+                             <input style="width: 4em;" type="number" min="1" max="99999" name="sR<?php echo $i; ?>" title="Number of seconds to turn this relay on"/><input type="submit" name="<?php echo $i; ?>secON" value="ON">
                         </td>
                         <td class="center">
                             <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $relay_pin[$i]; ?>" name="relay<?php echo $i; ?>pin" title="GPIO pin using BCM numbering, connected to relay <?php echo $i+1; ?>"/>
@@ -724,7 +725,7 @@ if (!file_exists($lock_daemon)) {
                 <table class="conditional">
                     <tr>
                         <td>
-                            Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                            Relay Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                         </td>
                     </tr>
                 </table>
@@ -874,7 +875,7 @@ if (!file_exists($lock_daemon)) {
                 <form action="?tab=sensor" method="POST">
                 <table class="relays">
                     <tr>
-                        <td class="table-header center middle">Timer</td>
+                        <td class="table-header center middle">#</td>
                         <td class="table-header middle">Name</td>
                         <td class="table-header center middle">Status</td>
                         <td class="table-header center middle">Activate</td>
@@ -1189,10 +1190,11 @@ if (!file_exists($lock_daemon)) {
                 <table class="conditional">
                     <tr>
                         <td>
-                            Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                            Sensor Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                         </td>
                     </tr>
                 </table>
+                
                 <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                 <table class="sensor-conditional">
                     <tr>
@@ -1730,7 +1732,7 @@ if (!file_exists($lock_daemon)) {
                 <table class="conditional">
                     <tr>
                         <td>
-                            Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                            Sensor Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                         </td>
                     </tr>
                 </table>
@@ -2109,15 +2111,14 @@ if (!file_exists($lock_daemon)) {
                 </table>
                 </form>
 
-
-
                 <table class="conditional">
                     <tr>
                         <td>
-                            Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                            Sensor Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                         </td>
                     </tr>
                 </table>
+
                 <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                 <table class="sensor-conditional">
                     <tr>
@@ -2606,14 +2607,14 @@ if (!file_exists($lock_daemon)) {
                 </table>
                 </form>
 
-
                 <table class="conditional">
                     <tr>
                         <td>
-                            Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                            Sensor Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                         </td>
                     </tr>
                 </table>
+
                 <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                 <table class="sensor-conditional">
                     <tr>
