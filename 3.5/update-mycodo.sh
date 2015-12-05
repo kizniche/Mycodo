@@ -66,6 +66,7 @@ case "${1:-''}" in
                 printf "#### Updating from github ####\n"
                 git fetch --all
                 git reset --hard origin/master
+                cd ..  # git < v1.8.4 requires being at the toplevel of the working tree
                 git submodule init
                 git submodule sync
                 git submodule update
