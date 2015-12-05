@@ -67,13 +67,15 @@ case "${1:-''}" in
                 git fetch --all
                 git reset --hard origin/master
 
-                if [ "$(ls -A /var/www/mycodo/cgi-bin/mycodo_python/)" ]; then  # Submodule already initialized, pull updates
+                if [ "$(ls -A /var/www/mycodo/cgi-bin/mycodo_python/)" ]; then
+                    # Submodule already initialized, pull updates
                     cd -P /var/www/mycodo/cgi-bin/mycodo_python/
                     git submodule init
                     git checkout -- .  # Discard unstaged files
                     cd -P /var/www/mycodo/../  # git < 1.8.4 (Debian wheezy) requires being at toplevel to update submodule
                     git submodule foreach git pull origin master
-                else  # Submodule directory empty, initialize
+                else
+                    # Submodule directory empty, initialize
                     cd -P /var/www/mycodo/../  # git < 1.8.4 (Debian wheezy) requires being at toplevel to update submodule
                     git submodule init
                     git submodule sync
