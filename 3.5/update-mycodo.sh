@@ -43,7 +43,7 @@ case "${1:-''}" in
         DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
         PDIR="$( dirname "$DIR" )"
 
-        cd $DIR
+        cd -P $DIR
 
         printf "#### Checking if there is an update ####\n"
         git fetch origin
@@ -66,10 +66,10 @@ case "${1:-''}" in
                 printf "#### Updating from github ####\n"
                 git fetch --all
                 git reset --hard origin/master
-                cd ..  # git < v1.8.4 requires being at the toplevel of the working tree to update a submodule.
-                git submodule init
-                git submodule sync
-                git submodule update
+                cd -P /var/www/mycodo/cgi-bin/mycodo_python/
+                git checkout -- .  # Discard any unstaged files
+                cd -P /var/www/mycodo/../  # git < v1.8.4 requires being at the toplevel of the working tree to update a submodule.
+                git submodule foreach git pull origin master
 
                 if [ ! -h /var/www/mycodo ]; then
                     ln -s $DIR /var/www/mycodo
