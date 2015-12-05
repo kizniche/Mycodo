@@ -292,7 +292,7 @@ Using raspi-config, perform the following:
 
 `sudo apt-get install build-essential apache2 sqlite3 gnuplot git-core python-pip python-dev python-smbus libconfig-dev php5 libapache2-mod-php5 php5-sqlite php5-gd i2c-tools libi2c-dev`
 
-`git clone https://github.com/kizniche/Mycodo.git ~/Mycodo`
+`git clone --recursive https://github.com/kizniche/Mycodo.git ~/Mycodo`
 
 `git clone git://git.drogon.net/wiringPi ~/WiringPi && cd ~/WiringPi && sudo ./build`
 
