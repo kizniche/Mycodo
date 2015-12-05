@@ -27,7 +27,7 @@ sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
 sql_database_user = '/var/www/mycodo/config/users.db'
 sql_database_note = '/var/www/mycodo/config/notes.db'
 
-db_version_mycodo = 18
+db_version_mycodo = 19
 db_version_user = 2
 db_version_note = 3
 
@@ -428,6 +428,8 @@ def mycodo_database_update():
             ModNullValue(sql_database_mycodo, 'Misc', 'Relay_Stats_Currency', '$')
 
         # Version 18 updates: no database changes, update log format
+
+        # Version 19 updates: no database changes, initialize submodule mycodo_python
 
         # any extra commands for version X
         #if current_db_version_mycodo < X:
