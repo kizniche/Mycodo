@@ -64,23 +64,20 @@ case "${1:-''}" in
                 cp -a $DIR/../../Mycodo/3.5/. /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT/
 
                 printf "#### Updating from github ####\n"
-                git fetch --all
+                git fetch
                 git reset --hard origin/master
 
+                cd -P /var/www/mycodo/../  # git < 1.8.4 (Debian wheezy) requires being at toplevel to update submodule
+                git submodule init
+                
                 if [ "$(ls -A /var/www/mycodo/cgi-bin/mycodo_python/)" ]; then
-                    # Submodule already initialized, pull updates
+                    # Submodule already initialized
                     cd -P /var/www/mycodo/cgi-bin/mycodo_python/
-                    git submodule init
                     git checkout -- .  # Discard unstaged files
-                    cd -P /var/www/mycodo/../  # git < 1.8.4 (Debian wheezy) requires being at toplevel to update submodule
-                    git submodule foreach git pull origin master
-                else
-                    # Submodule directory empty, initialize
-                    cd -P /var/www/mycodo/../  # git < 1.8.4 (Debian wheezy) requires being at toplevel to update submodule
-                    git submodule init
-                    git submodule sync
-                    git submodule update
                 fi
+
+                cd -P /var/www/mycodo/../  # git < 1.8.4 (Debian wheezy) requires being at toplevel to update submodule
+                git submodule update
 
                 if [ ! -h /var/www/mycodo ]; then
                     ln -s $DIR /var/www/mycodo
