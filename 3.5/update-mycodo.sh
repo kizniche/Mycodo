@@ -70,7 +70,7 @@ case "${1:-''}" in
                 if [ "$(ls -A /var/www/mycodo/cgi-bin/mycodo_python/)" ]; then  # Submodule already initialized, pull updates
                     cd -P /var/www/mycodo/cgi-bin/mycodo_python/
                     git submodule init
-                    git checkout -- .  # Discard any unstaged files
+                    git checkout -- .  # Discard unstaged files
                     cd -P /var/www/mycodo/../  # git < 1.8.4 (Debian wheezy) requires being at toplevel to update submodule
                     git submodule foreach git pull origin master
                 else  # Submodule directory empty, initialize
