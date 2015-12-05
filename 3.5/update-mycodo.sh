@@ -68,7 +68,7 @@ case "${1:-''}" in
                 git reset --hard origin/master
                 cd -P /var/www/mycodo/cgi-bin/mycodo_python/
                 git checkout -- .  # Discard any unstaged files
-                cd -P /var/www/mycodo/../  # git < v1.8.4 requires being at the toplevel of the working tree to update a submodule.
+                cd -P /var/www/mycodo/../  # git < 1.8.4 (Debian wheezy) requires being at toplevel to update submodule
                 git submodule foreach git pull origin master
 
                 if [ ! -h /var/www/mycodo ]; then
