@@ -798,7 +798,7 @@ if (!file_exists($lock_daemon)) {
                         <?php
                         echo '<button type="submit" name="DeleteRelay' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
 
-                        echo $z+1 . ': ' . $conditional_relay_name[$z] . ':</td><td>If Relay ' . $conditional_relay_ifrelay[$z] . ' turns';
+                        echo $z+1 . ': ' . $conditional_relay_name[$z] . ':</td><td style="white-space: nowrap;">If Relay ' . $conditional_relay_ifrelay[$z] . ' turns';
 
                         if ($conditional_relay_ifaction[$z] == 'on') {
                             echo ' On';
@@ -836,14 +836,14 @@ if (!file_exists($lock_daemon)) {
                             if ($first) {
                                 $first = 0;
                             } else {
-                                echo '</tr><tr><td></td>';
+                                echo '</tr><tr><td colspan="2"></td>';
                             }
                             echo '<td style="padding-bottom: 0.3em;">Execute: <strong>' . htmlentities($conditional_relay_command[$z]) . '</strong></td>';
                         }
 
                         if ($conditional_relay_sel_notify[$z]) {
                             if (!$first) {
-                                echo '</tr><tr><td></td>';
+                                echo '</tr><tr><td colspan="2"></td>';
                             }
                             echo '<td style="width: 100%; white-space:normal;">Email <b>' . str_replace(",", ", ", $conditional_relay_notify[$z]) . '</b></td>';
                         }
