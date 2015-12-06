@@ -308,7 +308,23 @@ Create a symlink to Mycodo
 
 Install LockFile and RPyC
 
-`sudo pip install lockfile rpyc`
+`sudo pip install lockfile rpyc pyserial`
+
+In order to configure the sensor you just need to make a small change to the config.txt file using `sudo vi /boot/config.txt` and add the following line to the bottom:
+
+```
+# 1-wire settings
+dtoverlay=w1-gpio,gpiopin=4
+```
+
+The 1-Wire drivers are not loaded by default when the rPI boots. You can load them with the following commands from a command prompt:
+
+```
+sudo  modprobe wire
+sudo  modprobe  w1-gpio
+sudo  modprobe  w1-therm
+```
+
 
 To access /dev/vchiq (to read the GPU temperature or access the Pi camera), the user www-data needs to be added to the group video
 
