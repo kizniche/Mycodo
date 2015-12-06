@@ -27,9 +27,9 @@
 install_directory = "/var/www/mycodo"
 
 # Mycodo modules
-import mycodoGraph
-import mycodoLog
-from mycodoPID import PID
+import mycodo_graph
+import mycodo_log
+from mycodo_pid import PID
 
 # Other modules
 import Adafruit_DHT
@@ -70,15 +70,15 @@ sql_lock_path = os.path.join(lock_directory, "config")
 daemon_lock_path = os.path.join(lock_directory, "daemon")
 sensor_t_lock_path = os.path.join(lock_directory, "sensor-t")
 sensor_ht_lock_path = os.path.join(lock_directory, "sensor-ht")
-sensor_co2_lock_path = os.path.join(lock_directory, "sensor-co2")
-sensor_press_lock_path = os.path.join(lock_directory, "sensor-press")
+sensor_c_lock_path = os.path.join(lock_directory, "sensor-co2")
+sensor_p_lock_path = os.path.join(lock_directory, "sensor-press")
 
 # Logs that are on the tempfs
 daemon_log_file_tmp = os.path.join(log_path, "daemon-tmp.log")
 sensor_t_log_file_tmp = os.path.join(log_path, "sensor-t-tmp.log")
 sensor_ht_log_file_tmp = os.path.join(log_path, "sensor-ht-tmp.log")
-sensor_co2_log_file_tmp = os.path.join(log_path, "sensor-co2-tmp.log")
-sensor_press_log_file_tmp = os.path.join(log_path, "sensor-press-tmp.log")
+sensor_c_log_file_tmp = os.path.join(log_path, "sensor-co2-tmp.log")
+sensor_p_log_file_tmp = os.path.join(log_path, "sensor-press-tmp.log")
 relay_log_file_tmp = os.path.join(log_path, "relay-tmp.log")
 
 # PID Restarting
@@ -89,29 +89,30 @@ pid_ht_temp_down = 0
 pid_ht_temp_up = 0
 pid_ht_hum_down = 0
 pid_ht_hum_up = 0
-pid_co2_down = 0
-pid_co2_up = 0
-pid_press_temp_down = 0
-pid_press_temp_up = 0
-pid_press_press_down = 0
-pid_press_press_up = 0
+pid_c_down = 0
+pid_c_up = 0
+pid_p_temp_down = 0
+pid_p_temp_up = 0
+pid_p_press_down = 0
+pid_p_press_up = 0
 
 # Miscellaneous
 start_all_t_pids = None
 stop_all_t_pids = None
 start_all_ht_pids = None
 stop_all_ht_pids = None
-start_all_co2_pids = None
-stop_all_co2_pids = None
+start_all_c_pids = None
+stop_all_c_pids = None
+start_all_p_pids = None
+stop_all_p_pids = None
 camera_light = None
 server = None
 client_que = '0'
-client_var = None
 
 last_t_reading = 0
 last_ht_reading = 0
-last_co2_reading = 0
-last_press_reading = 0
+last_c_reading = 0
+last_p_reading = 0
 
 pause_daemon = 0
 pause_daemon_confirm = 0
@@ -122,7 +123,7 @@ on_duration_seconds = []
 
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
-    def exposed_ChangeRelay(self, relay, state):
+    def exposed_change_relay(self, relay, state):
         if state == 1:
             logging.info("[Client command] Changing Relay %s (%s) to HIGH", relay, relay_name[relay - 1])
             relay_onoff(int(relay), 'on')
@@ -135,7 +136,7 @@ class ComServer(rpyc.Service):
             rod.start()
         return 1
 
-    def exposed_GenerateGraph(self, theme, graph_type, graph_id, graph_span, time_from, time_to, width):
+    def exposed_generate_graph(self, theme, graph_type, graph_id, graph_span, time_from, time_to, width):
         # Calculate the size of /var/tmp
         folder_path = '/var/tmp'
         total_tmp_folder_size = 0
@@ -253,10 +254,10 @@ class ComServer(rpyc.Service):
         combined_press_relays_down_list = [int(x) for x in combined_press_relays_down.split(',')]
 
         logging.info("[Client command] Generate Graph: %s %s %s %s %s %s %s", theme, graph_type, graph_span, graph_id, time_from, time_to, width)
-        mycodoGraph.generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, sensor_t_graph, sensor_t_period, sensor_t_yaxis_relay_min, sensor_t_yaxis_relay_max, sensor_t_yaxis_relay_tics, sensor_t_yaxis_relay_mtics, sensor_t_yaxis_temp_min, sensor_t_yaxis_temp_max, sensor_t_yaxis_temp_tics, sensor_t_yaxis_temp_mtics, sensor_t_temp_relays_up_list, sensor_t_temp_relays_down_list, pid_t_temp_relay_high, pid_t_temp_relay_low, sensor_ht_name, sensor_ht_graph, sensor_ht_period, sensor_ht_yaxis_relay_min, sensor_ht_yaxis_relay_max, sensor_ht_yaxis_relay_tics, sensor_ht_yaxis_relay_mtics, sensor_ht_yaxis_temp_min, sensor_ht_yaxis_temp_max, sensor_ht_yaxis_temp_tics, sensor_ht_yaxis_temp_mtics, sensor_ht_yaxis_hum_min, sensor_ht_yaxis_hum_max, sensor_ht_yaxis_hum_tics, sensor_ht_yaxis_hum_mtics, sensor_ht_temp_relays_up_list, sensor_ht_temp_relays_down_list, sensor_ht_hum_relays_up_list, sensor_ht_hum_relays_down_list, pid_ht_temp_relay_high, pid_ht_temp_relay_low, pid_ht_hum_relay_high, pid_ht_hum_relay_low, sensor_co2_name, sensor_co2_graph, sensor_co2_period, sensor_co2_yaxis_relay_min, sensor_co2_yaxis_relay_max, sensor_co2_yaxis_relay_tics, sensor_co2_yaxis_relay_mtics, sensor_co2_yaxis_co2_min, sensor_co2_yaxis_co2_max, sensor_co2_yaxis_co2_tics, sensor_co2_yaxis_co2_mtics, sensor_co2_relays_up_list, sensor_co2_relays_down_list, pid_co2_relay_high, pid_co2_relay_low, sensor_press_name, sensor_press_graph, sensor_press_period, sensor_press_yaxis_relay_min, sensor_press_yaxis_relay_max, sensor_press_yaxis_relay_tics, sensor_press_yaxis_relay_mtics, sensor_press_yaxis_temp_min, sensor_press_yaxis_temp_max, sensor_press_yaxis_temp_tics, sensor_press_yaxis_temp_mtics, sensor_press_yaxis_press_min, sensor_press_yaxis_press_max, sensor_press_yaxis_press_tics, sensor_press_yaxis_press_mtics, sensor_press_temp_relays_up_list, sensor_press_temp_relays_down_list, sensor_press_press_relays_up_list, sensor_press_press_relays_down_list, pid_press_temp_relay_high, pid_press_temp_relay_low, pid_press_press_relay_high, pid_press_press_relay_low, relay_name, relay_pin, time_from, time_to, width, combined_temp_min, combined_temp_max, combined_temp_tics, combined_temp_mtics, combined_temp_relays_up, combined_temp_relays_down, combined_temp_relays_min, combined_temp_relays_max, combined_temp_relays_tics, combined_temp_relays_mtics, combined_hum_min, combined_hum_max, combined_hum_tics, combined_hum_mtics, combined_hum_relays_up, combined_hum_relays_down, combined_hum_relays_min, combined_hum_relays_max, combined_hum_relays_tics, combined_hum_relays_mtics, combined_co2_min, combined_co2_max, combined_co2_tics, combined_co2_mtics, combined_co2_relays_up, combined_co2_relays_down, combined_co2_relays_min, combined_co2_relays_max, combined_co2_relays_tics, combined_co2_relays_mtics, combined_press_min, combined_press_max, combined_press_tics, combined_press_mtics, combined_press_relays_up, combined_press_relays_down, combined_press_relays_min, combined_press_relays_max, combined_press_relays_tics, combined_press_relays_mtics, combined_temp_relays_up_list, combined_temp_relays_down_list, combined_hum_relays_up_list, combined_hum_relays_down_list, combined_co2_relays_up_list, combined_co2_relays_down_list, combined_press_relays_up_list, combined_press_relays_down_list)
+        mycodo_graph.generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, sensor_t_graph, sensor_t_period, sensor_t_yaxis_relay_min, sensor_t_yaxis_relay_max, sensor_t_yaxis_relay_tics, sensor_t_yaxis_relay_mtics, sensor_t_yaxis_temp_min, sensor_t_yaxis_temp_max, sensor_t_yaxis_temp_tics, sensor_t_yaxis_temp_mtics, sensor_t_temp_relays_up_list, sensor_t_temp_relays_down_list, pid_t_temp_relay_high, pid_t_temp_relay_low, sensor_ht_name, sensor_ht_graph, sensor_ht_period, sensor_ht_yaxis_relay_min, sensor_ht_yaxis_relay_max, sensor_ht_yaxis_relay_tics, sensor_ht_yaxis_relay_mtics, sensor_ht_yaxis_temp_min, sensor_ht_yaxis_temp_max, sensor_ht_yaxis_temp_tics, sensor_ht_yaxis_temp_mtics, sensor_ht_yaxis_hum_min, sensor_ht_yaxis_hum_max, sensor_ht_yaxis_hum_tics, sensor_ht_yaxis_hum_mtics, sensor_ht_temp_relays_up_list, sensor_ht_temp_relays_down_list, sensor_ht_hum_relays_up_list, sensor_ht_hum_relays_down_list, pid_ht_temp_relay_high, pid_ht_temp_relay_low, pid_ht_hum_relay_high, pid_ht_hum_relay_low, sensor_c_name, sensor_c_graph, sensor_c_period, sensor_c_yaxis_relay_min, sensor_c_yaxis_relay_max, sensor_c_yaxis_relay_tics, sensor_c_yaxis_relay_mtics, sensor_c_yaxis_co2_min, sensor_c_yaxis_co2_max, sensor_c_yaxis_co2_tics, sensor_c_yaxis_co2_mtics, sensor_c_relays_up_list, sensor_c_relays_down_list, pid_c_relay_high, pid_c_relay_low, sensor_p_name, sensor_p_graph, sensor_p_period, sensor_p_yaxis_relay_min, sensor_p_yaxis_relay_max, sensor_p_yaxis_relay_tics, sensor_p_yaxis_relay_mtics, sensor_p_yaxis_temp_min, sensor_p_yaxis_temp_max, sensor_p_yaxis_temp_tics, sensor_p_yaxis_temp_mtics, sensor_p_yaxis_press_min, sensor_p_yaxis_press_max, sensor_p_yaxis_press_tics, sensor_p_yaxis_press_mtics, sensor_p_temp_relays_up_list, sensor_p_temp_relays_down_list, sensor_p_press_relays_up_list, sensor_p_press_relays_down_list, pid_p_temp_relay_high, pid_p_temp_relay_low, pid_p_press_relay_high, pid_p_press_relay_low, relay_name, relay_pin, time_from, time_to, width, combined_temp_min, combined_temp_max, combined_temp_tics, combined_temp_mtics, combined_temp_relays_up, combined_temp_relays_down, combined_temp_relays_min, combined_temp_relays_max, combined_temp_relays_tics, combined_temp_relays_mtics, combined_hum_min, combined_hum_max, combined_hum_tics, combined_hum_mtics, combined_hum_relays_up, combined_hum_relays_down, combined_hum_relays_min, combined_hum_relays_max, combined_hum_relays_tics, combined_hum_relays_mtics, combined_co2_min, combined_co2_max, combined_co2_tics, combined_co2_mtics, combined_co2_relays_up, combined_co2_relays_down, combined_co2_relays_min, combined_co2_relays_max, combined_co2_relays_tics, combined_co2_relays_mtics, combined_press_min, combined_press_max, combined_press_tics, combined_press_mtics, combined_press_relays_up, combined_press_relays_down, combined_press_relays_min, combined_press_relays_max, combined_press_relays_tics, combined_press_relays_mtics, combined_temp_relays_up_list, combined_temp_relays_down_list, combined_hum_relays_up_list, combined_hum_relays_down_list, combined_co2_relays_up_list, combined_co2_relays_down_list, combined_press_relays_up_list, combined_press_relays_down_list)
         return 1
 
-    def exposed_all_PID_restart(self, sensortype):
+    def exposed_all_pid_restart(self, sensortype):
         global PID_change
         PID_change = 1
         logging.info("[Daemon] Commanding all %s PID controllers to restart", sensortype)
@@ -264,7 +265,7 @@ class ComServer(rpyc.Service):
             global start_all_t_pids
             global stop_all_t_pids
             stop_all_t_pids = 1
-            for i in range(0, len(sensor_t_id)):
+            for i in range(len(sensor_t_id)):
                 if pid_t_temp_or[i] == 0:
                     while pid_t_temp_alive[i] == 0:
                         time.sleep(0.1)
@@ -277,11 +278,11 @@ class ComServer(rpyc.Service):
             global start_all_ht_pids
             global stop_all_ht_pids
             stop_all_ht_pids = 1
-            for i in range(0, len(sensor_ht_id)):
+            for i in range(len(sensor_ht_id)):
                 if pid_ht_temp_or[i] == 0:
                     while pid_ht_temp_alive[i] == 0:
                         time.sleep(0.1)
-            for i in range(0, len(sensor_ht_id)):
+            for i in range(len(sensor_ht_id)):
                 if pid_ht_hum_or[i] == 0:
                     while pid_ht_hum_alive[i] == 0:
                         time.sleep(0.1)
@@ -289,34 +290,34 @@ class ComServer(rpyc.Service):
             logging.info("[Daemon] Commanding all HT PID controllers to start")
             start_all_ht_pids = 1
         elif sensortype == 'CO2':
-            global start_all_co2_pids
-            global stop_all_co2_pids
-            stop_all_co2_pids = 1
-            for i in range(0, len(sensor_co2_id)):
-                if pid_co2_or[i] == 0:
-                    while pid_co2_alive[i] == 0:
+            global start_all_c_pids
+            global stop_all_c_pids
+            stop_all_c_pids = 1
+            for i in range(len(sensor_c_id)):
+                if pid_c_or[i] == 0:
+                    while pid_c_alive[i] == 0:
                         time.sleep(0.1)
             read_sql()
             logging.info("[Daemon] Commanding all CO2 PID controllers to start")
-            start_all_co2_pids = 1
+            start_all_c_pids = 1
         elif sensortype == 'Press':
-            global start_all_press_pids
-            global stop_all_press_pids
-            stop_all_press_pids = 1
-            for i in range(0, len(sensor_press_id)):
-                if pid_press_temp_or[i] == 0:
-                    while pid_press_temp_alive[i] == 0:
+            global start_all_p_pids
+            global stop_all_p_pids
+            stop_all_p_pids = 1
+            for i in range(len(sensor_p_id)):
+                if pid_p_temp_or[i] == 0:
+                    while pid_p_temp_alive[i] == 0:
                         time.sleep(0.1)
-            for i in range(0, len(sensor_press_id)):
-                if pid_press_press_or[i] == 0:
-                    while pid_press_press_alive[i] == 0:
+            for i in range(len(sensor_p_id)):
+                if pid_p_press_or[i] == 0:
+                    while pid_p_press_alive[i] == 0:
                         time.sleep(0.1)
             read_sql()
             logging.info("[Daemon] Commanding all Press PID controllers to start")
-            start_all_press_pids = 1
+            start_all_p_pids = 1
         return 1
 
-    def exposed_PID_restart(self, pidtype, number):
+    def exposed_pid_restart(self, pidtype, number):
         global PID_change
         PID_change = 1
         PID_stop(pidtype, number)
@@ -325,83 +326,92 @@ class ComServer(rpyc.Service):
         PID_start(pidtype, number)
         return 1
 
-    def exposed_PID_start(self, pidtype, number):
+    def exposed_pid_start(self, pidtype, number):
         global PID_change
         PID_change = 1
         PID_start(pidtype, number)
         return 1
 
-    def exposed_PID_stop(self, pidtype, number):
+    def exposed_pid_stop(self, pidtype, number):
         global PID_change
         PID_change = 1
         PID_stop(pidtype, number)
         return 1
 
-    def exposed_ReadPressSensor(self, address, sensor):
-        logging.info("[Client command] Read Press Sensor %s from I2C address %s", sensor, address)
-        if sensor == 'BMP085-180':
-            if address != 0:
-                I2C_address = 0x70 + address // 10
-                if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
-                    I2C_bus_number = 1
-                else:
-                    I2C_bus_number = 0
-                bus = smbus.SMBus(I2C_bus_number)
-                bus.write_byte(I2C_address, address % 10)
-                time.sleep(0.1)
-            press_sensor = BMP085.BMP085()
-            tc = press_sensor.read_temperature()
-            press = press_sensor.read_pressure()
-            alt = press_sensor.read_altitude()
-            sea_press = press_sensor.read_sealevel_pressure()
-        else:
-            return 'Invalid Sensor Name'
-        return tc, press, alt, sea_press
 
-    def exposed_ReadCO2Sensor(self, pin, sensor):
-        logging.info("[Client command] Read CO2 Sensor %s from GPIO pin %s", sensor, pin)
-        if sensor == 'K30':
-            read_co2_sensor(sensor - 1)
-            return sensor_co2_read_co2
+    def exposed_read_t_sensor(self, device, sensor_id):
+        """
+        User facing function takes sensor_id as numbered on webpage.
+        """
+        return self.readtsensor(device, sensor_id - 1)
+
+    def readtsensor(self, device, raw_sensor_id):
+        """
+        Internal implementation of readtsensor.  May change over time or as sensors are added.  Consistent internal notation 
+        """
+
+        logging.info("[Client command] Read %s T Sensor %s", device, raw_sensor_id + 1)
+        if device in 'DS18B20':
+            return read_t_sensor(raw_sensor_id)
         else:
             return 'Invalid Sensor Name'
 
-    def exposed_ReadHTSensor(self, pin, sensor):
-        logging.info("[Client command] Read HT Sensor %s from GPIO/I2C address %s", sensor, pin)
-        if sensor == 'DHT11': 
-            device = Adafruit_DHT.DHT11
-        elif sensor == 'DHT22': 
-            device = Adafruit_DHT.DHT22
-        elif sensor == 'AM2302': 
-            device = Adafruit_DHT.AM2302
-        elif sensor == 'AM2315':
-            device = 'AM2315'
-        if device == Adafruit_DHT.DHT11 or device == Adafruit_DHT.DHT22 or device == Adafruit_DHT.AM2302:
-            hum, tc = Adafruit_DHT.read_retry(device, pin)
-        elif device == 'AM2315':
-            if pin != 0:
-                I2C_address = 0x70 + pin // 10
-                if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
-                    I2C_bus_number = 1
-                else:
-                    I2C_bus_number = 0
-                bus = smbus.SMBus(I2C_bus_number)
-                bus.write_byte(I2C_address, pin % 10)
-                time.sleep(0.1)
-            am = AM2315(0x5c, "/dev/i2c-1")
-            tc, hum, crc_check = am.sense()
-        else:
-            return 'Invalid Sensor Name'
-        return tc, hum
 
-    def exposed_ReadTSensor(self, pin, device):
-        logging.info("[Client command] Read T Sensor %s from GPIO pin %s", sensor, pin)
-        if sensor == 'DS18B20':
-            return read_t(0, device, pin)
+    def exposed_read_ht_sensor(self, device, sensor_id):
+        """
+        User facing function takes sensor_id as numbered on webpage.
+        """
+        return self.readhtsensor(device, sensor_id - 1)
+
+    def readhtsensor(self, device, raw_sensor_id):
+        """
+        Internal implementation of readhtsensor.  May change over time or as sensors are added.  Consistent internal notation 
+        """
+
+        logging.info("[Client command] Read %s HT Sensor %s", device, raw_sensor_id + 1)
+        if device in ['DHT11', 'DHT22', 'AM2302', 'AM2315']:
+            return read_ht_sensor(raw_sensor_id)
         else:
             return 'Invalid Sensor Name'
 
-    def exposed_SQLReload(self, relay):
+
+    def exposed_read_co2_sensor(self, device, sensor_id):
+        """
+        User facing function takes sensor_id as numbered on webpage.
+        """
+        return self.readco2sensor(device, sensor_id - 1)
+
+    def readco2sensor(self, device, raw_sensor_id):
+        """
+        Internal implementation of readco2sensor.  May change over time or as sensors are added.  Consistent internal notation 
+        """
+
+        logging.info("[Client command] Read %s CO2 Sensor %s", device, raw_sensor_id + 1)
+        if device in 'K30':
+            return read_co2_sensor(raw_sensor_id)
+        else:
+            return 'Invalid Sensor Name'
+
+
+    def exposed_read_press_sensor(self, device, sensor_id):
+        """
+        User facing function takes sensor_id as numbered on webpage.
+        """
+        return self.readpresssensor(device, sensor_id - 1)
+
+    def readpresssensor(self, device, raw_sensor_id):
+        """
+        Internal implementation of readpresssensor.  May change over time or as sensors are added.  Consistent internal notation 
+        """
+
+        logging.info("[Client command] Read %s Press Sensor %s", device, raw_sensor_id + 1)
+        if device in 'BMP085-180':
+            return read_press_sensor(raw_sensor_id)
+        else:
+            return 'Invalid Sensor Name'
+
+
+    def exposed_sqlreload(self, relay):
         if relay != -1:
             logging.info("[Client command] Relay %s GPIO pin changed to %s, initialize and turn off", relay, relay_pin[relay])
             initialize_gpio(relay)
@@ -409,20 +419,20 @@ class ComServer(rpyc.Service):
         read_sql()
         return 1
 
-    def exposed_Status(self, var):
+    def exposed_status(self, var):
         logging.info("[Client command] Request status report")        
         return 1, globals().keys(), globals().values()
 
-    def exposed_TestEmail(self, email_to):
+    def exposed_test_email(self, email_to):
         logging.info("[Client command] Send test email to %s", email_to)
         email(email_to, "This is a test of the Mycodo email notification system")
         return 1
 
-    def exposed_Terminate(self, remoteCommand):
+    def exposed_terminate_daemon(self, remoteCommand):
         global client_que
         client_que = 'TerminateServer'
         logging.info("[Client command] Shut down the daemon")
-        mycodoLog.Concatenate_Logs()
+        mycodo_log.Concatenate_Logs()
         return 1
 
 
@@ -503,49 +513,49 @@ def daemon(output, log):
     global pid_ht_hum_down
     global pid_ht_hum_up
 
-    global pid_co2_alive
-    global pid_co2_down
-    global pid_co2_up
+    global pid_c_alive
+    global pid_c_down
+    global pid_c_up
 
-    global pid_press_temp_alive
-    global pid_press_temp_down
-    global pid_press_temp_up
+    global pid_p_temp_alive
+    global pid_p_temp_down
+    global pid_p_temp_up
 
-    global pid_press_press_alive
-    global pid_press_press_down
-    global pid_press_press_up
+    global pid_p_press_alive
+    global pid_p_press_down
+    global pid_p_press_up
 
     global pid_t_temp_active
     global pid_ht_temp_active
     global pid_ht_hum_active
-    global pid_co2_active
-    global pid_press_temp_active
-    global pid_press_press_active
+    global pid_c_active
+    global pid_p_temp_active
+    global pid_p_press_active
 
     pid_t_temp_active = []
     pid_ht_temp_active = []
     pid_ht_hum_active = []
-    pid_co2_active = []
-    pid_press_temp_active = []
-    pid_press_press_active = []
+    pid_c_active = []
+    pid_p_temp_active = []
+    pid_p_press_active = []
 
     global start_all_t_pids
     global stop_all_t_pids
     global start_all_ht_pids
     global stop_all_ht_pids
-    global start_all_co2_pids
-    global stop_all_co2_pids
-    global start_all_press_pids
-    global stop_all_press_pids
+    global start_all_c_pids
+    global stop_all_c_pids
+    global start_all_p_pids
+    global stop_all_p_pids
 
     start_all_t_pids = 1
     stop_all_t_pids = 0
     start_all_ht_pids = 1
     stop_all_ht_pids = 0
-    start_all_co2_pids = 1
-    stop_all_co2_pids = 0
-    start_all_press_pids = 1
-    stop_all_press_pids = 0
+    start_all_c_pids = 1
+    stop_all_c_pids = 0
+    start_all_p_pids = 1
+    stop_all_p_pids = 0
 
     global change_sensor_log
     global server
@@ -580,11 +590,11 @@ def daemon(output, log):
     pid_t_temp_alive = [1] * len(sensor_t_id)
     pid_ht_temp_alive = [1] * len(sensor_ht_id)
     pid_ht_hum_alive = [1] * len(sensor_ht_id)
-    pid_co2_alive = [1] * len(sensor_co2_id)
-    pid_press_temp_alive = [1] * len(sensor_press_id)
-    pid_press_press_alive = [1] * len(sensor_press_id)
+    pid_c_alive = [1] * len(sensor_c_id)
+    pid_p_temp_alive = [1] * len(sensor_p_id)
+    pid_p_press_alive = [1] * len(sensor_p_id)
     # How often to check log sizes and backup all logs to SD card
-    timerLogBackup = int(time.time()) + 600  # 600 seconds = 10 minutes
+    timerLogBackup = time.time() + 600  # 600 seconds = 10 minutes
     timerLogBackupCount = 0
 
     while True:  # Main loop of the daemon
@@ -611,7 +621,7 @@ def daemon(output, log):
                 t.join()
             server.close()
             logging.info("[Daemon] Turning off all relays")
-            Relays_Off()
+            relays_off()
             logging.info("[Daemon] Shutdown success")
             return 0
 
@@ -625,7 +635,7 @@ def daemon(output, log):
             pid_t_temp_alive = []
             pid_t_temp_alive = [1] * len(sensor_t_id)
             threads_t_t = []
-            for i in range(0, len(sensor_t_id)):
+            for i in range(len(sensor_t_id)):
                 if pid_t_temp_or[i] == 0:
                     pid_t_temp_active.append(1)
                     rod = threading.Thread(target=t_sensor_temperature_monitor, args=('Thread-T-T-%d' % (i + 1), i,))
@@ -645,7 +655,7 @@ def daemon(output, log):
             pid_ht_hum_alive = []
             pid_ht_hum_alive = [1] * len(sensor_ht_id)
             threads_ht_t = []
-            for i in range(0, len(sensor_ht_id)):
+            for i in range(len(sensor_ht_id)):
                 if pid_ht_temp_or[i] == 0:
                     pid_ht_temp_active.append(1)
                     rod = threading.Thread(target=ht_sensor_temperature_monitor, args=('Thread-HT-T-%d' % (i + 1), i,))
@@ -654,7 +664,7 @@ def daemon(output, log):
                 else:
                     pid_ht_temp_active.append(0)
             threads_ht_h = []
-            for i in range(0, len(sensor_ht_id)):
+            for i in range(len(sensor_ht_id)):
                 if pid_ht_hum_or[i] == 0:
                     pid_ht_hum_active.append(1)
                     rod = threading.Thread(target=ht_sensor_humidity_monitor, args=('Thread-HT-H-%d' % (i + 1), i,))
@@ -664,56 +674,56 @@ def daemon(output, log):
                     pid_ht_hum_active.append(0)
             start_all_ht_pids = 0
 
-        if stop_all_co2_pids:
-            pid_co2_temp_alive = [0] * len(sensor_co2_id)
-            stop_all_co2_pids = 0
-        if start_all_co2_pids:
-            pid_co2_alive = []
-            pid_co2_alive = [1] * len(sensor_co2_id)
+        if stop_all_c_pids:
+            pid_c_temp_alive = [0] * len(sensor_c_id)
+            stop_all_c_pids = 0
+        if start_all_c_pids:
+            pid_c_alive = []
+            pid_c_alive = [1] * len(sensor_c_id)
             threads_co2 = []
-            for i in range(0, len(sensor_co2_id)):
-                if pid_co2_or[i] == 0:
-                    pid_co2_active[i] = 1
+            for i in range(len(sensor_c_id)):
+                if pid_c_or[i] == 0:
+                    pid_c_active[i] = 1
                     rod = threading.Thread(target=co2_monitor, args=('Thread-CO2-%d' % (i + 1), i,))
                     rod.start()
                     threads_co2.append(rod)
-            start_all_co2_pids = 0
+            start_all_c_pids = 0
 
-        if stop_all_press_pids:
-            pid_press_temp_alive = [0] * len(sensor_press_id)
-            pid_press_press_alive = [0] * len(sensor_press_id)
-            stop_all_press_pids = 0
-        if start_all_press_pids:
-            pid_press_temp_alive = []
-            pid_press_temp_alive = [1] * len(sensor_press_id)
-            pid_press_press_alive = []
-            pid_press_press_alive = [1] * len(sensor_press_id)
+        if stop_all_p_pids:
+            pid_p_temp_alive = [0] * len(sensor_p_id)
+            pid_p_press_alive = [0] * len(sensor_p_id)
+            stop_all_p_pids = 0
+        if start_all_p_pids:
+            pid_p_temp_alive = []
+            pid_p_temp_alive = [1] * len(sensor_p_id)
+            pid_p_press_alive = []
+            pid_p_press_alive = [1] * len(sensor_p_id)
             threads_press_t = []
-            for i in range(0, len(sensor_press_id)):
-                if pid_press_temp_or[i] == 0:
-                    pid_press_temp_active.append(1)
+            for i in range(len(sensor_p_id)):
+                if pid_p_temp_or[i] == 0:
+                    pid_p_temp_active.append(1)
                     rod = threading.Thread(target=press_sensor_temperature_monitor, args=('Thread-HT-T-%d' % (i + 1), i,))
                     rod.start()
                     threads_press_t.append(rod)
                 else:
-                    pid_press_temp_active.append(0)
+                    pid_p_temp_active.append(0)
             threads_press_h = []
-            for i in range(0, len(sensor_press_id)):
-                if pid_press_press_or[i] == 0:
-                    pid_press_press_active.append(1)
+            for i in range(len(sensor_p_id)):
+                if pid_p_press_or[i] == 0:
+                    pid_p_press_active.append(1)
                     rod = threading.Thread(target=press_sensor_pressure_monitor, args=('Thread-HT-H-%d' % (i + 1), i,))
                     rod.start()
                     threads_press_h.append(rod)
                 else:
-                    pid_press_press_active.append(0)
-            start_all_press_pids = 0
+                    pid_p_press_active.append(0)
+            start_all_p_pids = 0
 
         # Check if a PID is being stopped or started, used to pause other tasks
-        if any((pid_t_temp_up, pid_ht_temp_up, pid_ht_hum_up, pid_co2_up, pid_press_temp_up,
-               pid_press_press_up, pid_t_temp_down, pid_ht_temp_down, pid_ht_hum_down,
-               pid_co2_down, pid_press_temp_down, pid_press_press_down, stop_all_t_pids,
-               start_all_t_pids, stop_all_ht_pids, start_all_ht_pids, stop_all_co2_pids,
-               start_all_co2_pids, stop_all_press_pids, start_all_press_pids)):
+        if any((pid_t_temp_up, pid_ht_temp_up, pid_ht_hum_up, pid_c_up, pid_p_temp_up,
+               pid_p_press_up, pid_t_temp_down, pid_ht_temp_down, pid_ht_hum_down,
+               pid_c_down, pid_p_temp_down, pid_p_press_down, stop_all_t_pids,
+               start_all_t_pids, stop_all_ht_pids, start_all_ht_pids, stop_all_c_pids,
+               start_all_c_pids, stop_all_p_pids, start_all_p_pids)):
             PID_change = 1
         else:
             PID_change = 0
@@ -721,52 +731,52 @@ def daemon(output, log):
         #
         # Read sensors and write logs
         #
-        for i in range(0, len(sensor_t_id)):
-            if int(time.time()) > timerTSensorLog[i] and sensor_t_device[i] != 'Other' and sensor_t_activated[i] == 1 and client_que != 'TerminateServer' and pause_daemon != 1 and PID_change != 1:
+        for i in range(len(sensor_t_id)):
+            if time.time() > timerTSensorLog[i] and sensor_t_device[i] != 'Other' and sensor_t_activated[i] == 1 and client_que != 'TerminateServer' and pause_daemon != 1 and PID_change != 1:
                 logging.debug("[Timer Expiration] Read Temp-%s sensor every %s seconds: Write sensor log", i + 1, sensor_t_period[i])
-                if read_t_sensor(i) == 1:
-                    mycodoLog.write_t_sensor_log(sensor_t_read_temp_c, i)
+                if read_t_sensor(i) is not None:
+                    mycodo_log.write_t_sensor_log(sensor_t_read_temp_c, i)
                 else:
                     logging.warning("Could not read Temp-%s sensor, not writing to sensor log", i + 1)
-                timerTSensorLog[i] = int(time.time()) + sensor_t_period[i]
+                timerTSensorLog[i] = time.time() + sensor_t_period[i]
 
-        for i in range(0, len(sensor_ht_id)):
-            if int(time.time()) > timerHTSensorLog[i] and sensor_ht_device[i] != 'Other' and sensor_ht_activated[i] == 1 and client_que != 'TerminateServer' and pause_daemon != 1 and PID_change != 1:
+        for i in range(len(sensor_ht_id)):
+            if time.time() > timerHTSensorLog[i] and sensor_ht_device[i] != 'Other' and sensor_ht_activated[i] == 1 and client_que != 'TerminateServer' and pause_daemon != 1 and PID_change != 1:
                 logging.debug("[Timer Expiration] Read HT-%s sensor every %s seconds: Write sensor log", i + 1, sensor_ht_period[i])
-                if read_ht_sensor(i) == 1:
+                if read_ht_sensor(i) is not None:
                     if (sensor_ht_verify_hum_notify[i] or sensor_ht_verify_temp_notify[i]) and sensor_ht_verify_pin[i] != 0:
                         verify_ht_sensor(i, sensor_ht_verify_pin[i])
-                    mycodoLog.write_ht_sensor_log(sensor_ht_read_temp_c, sensor_ht_read_hum, sensor_ht_dewpt_c, i)
+                    mycodo_log.write_ht_sensor_log(sensor_ht_read_temp_c, sensor_ht_read_hum, sensor_ht_dewpt_c, i)
                 else:
                     logging.warning("Could not read HT-%s sensor, not writing to sensor log", i + 1)
-                timerHTSensorLog[i] = int(time.time()) + sensor_ht_period[i]
+                timerHTSensorLog[i] = time.time() + sensor_ht_period[i]
 
-        for i in range(0, len(sensor_co2_id)):
-            if int(time.time()) > timerCo2SensorLog[i] and sensor_co2_device[i] != 'Other' and sensor_co2_activated[i] == 1 and client_que != 'TerminateServer' and pause_daemon != 1 and PID_change != 1:
-                if read_co2_sensor(i) == 1:
-                    mycodoLog.write_co2_sensor_log(sensor_co2_read_co2, i)
+        for i in range(len(sensor_c_id)):
+            if time.time() > timerCo2SensorLog[i] and sensor_c_device[i] != 'Other' and sensor_c_activated[i] == 1 and client_que != 'TerminateServer' and pause_daemon != 1 and PID_change != 1:
+                if read_co2_sensor(i) is not None:
+                    mycodo_log.write_co2_sensor_log(sensor_c_read_co2, i)
                 else:
                     logging.warning("Could not read CO2-%s sensor, not writing to sensor log", i + 1)
-                timerCo2SensorLog[i] = int(time.time()) + sensor_co2_period[i]
+                timerCo2SensorLog[i] = time.time() + sensor_c_period[i]
 
-        for i in range(0, len(sensor_press_id)):
-            if int(time.time()) > timerPressSensorLog[i] and sensor_press_device[i] != 'Other' and sensor_press_activated[i] == 1 and client_que != 'TerminateServer' and pause_daemon != 1 and PID_change != 1:
-                logging.debug("[Timer Expiration] Read Press-%s sensor every %s seconds: Write sensor log", i + 1, sensor_press_period[i])
-                if read_press_sensor(i) == 1:
-                    mycodoLog.write_press_sensor_log(sensor_press_read_temp_c, sensor_press_read_press, sensor_press_read_alt, i)
+        for i in range(len(sensor_p_id)):
+            if time.time() > timerPressSensorLog[i] and sensor_p_device[i] != 'Other' and sensor_p_activated[i] == 1 and client_que != 'TerminateServer' and pause_daemon != 1 and PID_change != 1:
+                logging.debug("[Timer Expiration] Read Press-%s sensor every %s seconds: Write sensor log", i + 1, sensor_p_period[i])
+                if read_press_sensor(i) is not None:
+                    mycodo_log.write_press_sensor_log(sensor_p_read_temp_c, sensor_p_read_press, sensor_p_read_alt, i)
                 else:
                     logging.warning("Could not read Press-%s sensor, not writing to sensor log", i + 1)
-                timerPressSensorLog[i] = int(time.time()) + sensor_press_period[i]
+                timerPressSensorLog[i] = time.time() + sensor_p_period[i]
 
         #
         # Check if T conditional statements are true
         #
-        for j in range(0, len(conditional_t_number_sensor)):
-            for k in range(0, len(conditional_t_number_conditional)):
+        for j in range(len(conditional_t_number_sensor)):
+            for k in range(len(conditional_t_number_conditional)):
                 if conditional_t_id[j][k][0] != 0 and client_que != 'TerminateServer' and pause_daemon != 1 and PID_change != 1:
-                    if int(time.time()) > timerTConditional[j][k] and conditional_t_state[j][k][0] == 1:
+                    if time.time() > timerTConditional[j][k] and conditional_t_state[j][k][0] == 1:
                         logging.debug("[Conditional T] Check conditional statement %s: %s", k + 1, conditional_t_name[j][k][0])
-                        if read_t_sensor(j) == 1:
+                        if read_t_sensor(j) is not None:
                             if (conditional_t_direction[j][k][0] == 1 and sensor_t_read_temp_c[j] > conditional_t_setpoint[j][k][0]) or (conditional_t_direction[j][k][0] == -1 and sensor_t_read_temp_c[j] < conditional_t_setpoint[j][k][0]):
                                 if conditional_t_sel_relay[j][k][0]:
                                     if conditional_t_relay_state[j][k][0] == 1:
@@ -782,7 +792,7 @@ def daemon(output, log):
                                     p = subprocess.Popen(conditional_t_do_command[j][k][0], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                                     output, errors = p.communicate()
                                     logging.debug("[Conditional T] Conditional %s (%s) T Sensor %s (%s) True: Execute command: %s Command output: %s Command errors: %s", i + 1, conditional_t_name[j][k][0], conditional_t_do_command[j][k][0], output, errors)
-                                if conditional_t_sel_notify[j][k][0] and conditional_t_time_notify[j][k][0] < int(time.time()):
+                                if conditional_t_sel_notify[j][k][0] and conditional_t_time_notify[j][k][0] < time.time():
                                     logging.debug("[Conditional T] Conditional %s (%s) T Sensor %s (%s) True: Notify %s", j + 1, sensor_t_name[j], k + 1, conditional_t_name[j][k][0], conditional_t_do_notify[j][k][0])
                                     if (conditional_t_direction[j][k][0] == 1 and
                                             sensor_t_read_temp_c[j] > conditional_t_setpoint[j][k][0]):
@@ -791,22 +801,22 @@ def daemon(output, log):
                                             sensor_t_read_temp_c[j] < conditional_t_setpoint[j][k][0]):
                                         message = "Conditional %s (%s) T Sensor %s (%s) Temperature: %s C < %s C." % (j + 1, sensor_t_name[j], k + 1, conditional_t_name[j][k][0], round(sensor_t_read_temp_c[j], 2), conditional_t_setpoint[j][k][0])
                                     email(conditional_t_do_notify[j][k][0], message)
-                                    conditional_t_time_notify[j][k][0] = int(time.time()) + smtp_wait_time
+                                    conditional_t_time_notify[j][k][0] = time.time() + smtp_wait_time
                                 elif conditional_t_sel_notify[j][k][0]:
-                                    logging.debug("[Conditional T] Conditional %s (%s) T Sensor %s (%s) True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", j + 1, sensor_t_name[j], k + 1, conditional_t_name[j][k][0], conditional_t_do_notify[j][k][0], (smtp_wait_time - (smtp_wait_time - (conditional_t_time_notify[j][k][0] - int(time.time())))), smtp_wait_time)
+                                    logging.debug("[Conditional T] Conditional %s (%s) T Sensor %s (%s) True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", j + 1, sensor_t_name[j], k + 1, conditional_t_name[j][k][0], conditional_t_do_notify[j][k][0], (smtp_wait_time - (smtp_wait_time - (conditional_t_time_notify[j][k][0] - time.time()))), smtp_wait_time)
                         else:
                             logging.warning("[Conditional T] Could not read sensor %s, did not check conditional %s", j + 1, k + 1)
-                        timerTConditional[j][k] = int(time.time()) + conditional_t_period[j][k][0]
+                        timerTConditional[j][k] = time.time() + conditional_t_period[j][k][0]
 
         #
         # Check if HT conditional statements are true
         #
-        for j in range(0, len(conditional_ht_number_sensor)):
-            for k in range(0, len(conditional_ht_number_conditional)):
+        for j in range(len(conditional_ht_number_sensor)):
+            for k in range(len(conditional_ht_number_conditional)):
                 if conditional_ht_id[j][k][0] != 0 and client_que != 'TerminateServer' and pause_daemon != 1 and PID_change != 1:
-                    if int(time.time()) > timerHTConditional[j][k] and conditional_ht_state[j][k][0] == 1:
+                    if time.time() > timerHTConditional[j][k] and conditional_ht_state[j][k][0] == 1:
                         logging.debug("[Conditional HT] Check conditional statement %s: %s", k + 1, conditional_ht_name[j][k][0])
-                        if read_ht_sensor(j) == 1:
+                        if read_ht_sensor(j) is not None:
                             if (conditional_ht_condition[j][k][0] == "Temperature" and conditional_ht_direction[j][k][0] == 1 and sensor_ht_read_temp_c[j] > conditional_ht_setpoint[j][k][0]) or (conditional_ht_condition[j][k][0] == "Temperature" and conditional_ht_direction[j][k][0] == -1 and sensor_ht_read_temp_c[j] < conditional_ht_setpoint[j][k][0]) or (conditional_ht_condition[j][k][0] == "Humidity" and conditional_ht_direction[j][k][0] == 1 and sensor_ht_read_hum[j] > conditional_ht_setpoint[j][k][0]) or (conditional_ht_condition[j][k][0] == "Humidity" and conditional_ht_direction[j][k][0] == -1 and sensor_ht_read_hum[j] < conditional_ht_setpoint[j][k][0]):
                                 if conditional_ht_sel_relay[j][k][0]:
                                     if conditional_ht_relay_state[j][k][0] == 1:
@@ -822,7 +832,7 @@ def daemon(output, log):
                                     p = subprocess.Popen(conditional_ht_do_command[j][k][0], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                                     output, errors = p.communicate()
                                     logging.debug("[Conditional HT] Conditional %s (%s) HT Sensor %s (%s) True: Execute command: %s Command output: %s Command errors: %s", i + 1, conditional_ht_name[j][k][0], conditional_ht_do_command[j][k][0], output, errors)
-                                if conditional_ht_sel_notify[j][k][0] and conditional_ht_time_notify[j][k][0] < int(time.time()):
+                                if conditional_ht_sel_notify[j][k][0] and conditional_ht_time_notify[j][k][0] < time.time():
                                     logging.debug("[Conditional HT] Conditional %s (%s) HT Sensor %s (%s) True: Notify %s", j + 1, sensor_ht_name[j], k + 1, conditional_ht_name[j][k][0], conditional_ht_do_notify[j][k][0])
                                     if (conditional_ht_condition[j][k][0] == "Temperature" and
                                             conditional_ht_direction[j][k][0] == 1 and
@@ -841,121 +851,121 @@ def daemon(output, log):
                                             sensor_ht_read_hum[j] < conditional_ht_setpoint[j][k][0]):
                                         message = "Conditional %s (%s) HT Sensor %s (%s) Humidity: %s%% < %s%%." % (j + 1, sensor_ht_name[j], k + 1, conditional_ht_name[j][k][0], round(sensor_ht_read_hum[j], 2), conditional_ht_setpoint[j][k][0])
                                     email(conditional_ht_do_notify[j][k][0], message)
-                                    conditional_ht_time_notify[j][k][0] = int(time.time()) + smtp_wait_time
+                                    conditional_ht_time_notify[j][k][0] = time.time() + smtp_wait_time
                                 elif conditional_ht_sel_notify[j][k][0]:
-                                    logging.debug("[Conditional HT] Conditional %s (%s) HT Sensor %s (%s) True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", j + 1, sensor_ht_name[j], k + 1, conditional_ht_name[j][k][0], conditional_ht_do_notify[j][k][0], (smtp_wait_time - (smtp_wait_time - (conditional_ht_time_notify[j][k][0] - int(time.time())))), smtp_wait_time)
+                                    logging.debug("[Conditional HT] Conditional %s (%s) HT Sensor %s (%s) True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", j + 1, sensor_ht_name[j], k + 1, conditional_ht_name[j][k][0], conditional_ht_do_notify[j][k][0], (smtp_wait_time - (smtp_wait_time - (conditional_ht_time_notify[j][k][0] - time.time()))), smtp_wait_time)
                         else:
                             logging.warning("[Conditional HT] Could not read sensor %s, did not check conditional %s", j + 1, k + 1)
-                        timerHTConditional[j][k] = int(time.time()) + conditional_ht_period[j][k][0]
+                        timerHTConditional[j][k] = time.time() + conditional_ht_period[j][k][0]
 
         #
         # Check if CO2 conditional statements are true
         #
-        for j in range(0, len(conditional_co2_number_sensor)):
-            for k in range(0, len(conditional_co2_number_conditional)):
-                if conditional_co2_id[j][k][0] != 0 and client_que != 'TerminateServer' and pause_daemon != 1 and PID_change != 1:
-                    if int(time.time()) > timerCO2Conditional[j][k] and conditional_co2_state[j][k][0] == 1:
-                        logging.debug("[Conditional CO2] Check conditional statement %s: %s", k + 1, conditional_co2_name[j][k][0])
-                        if read_co2_sensor(j) == 1:
-                            if (conditional_co2_direction[j][k][0] == 1 and sensor_co2_read_co2[j] > conditional_co2_setpoint[j][k][0]) or (conditional_co2_direction[j][k][0] == -1 and sensor_co2_read_co2[j] < conditional_co2_setpoint[j][k][0]):
-                                if conditional_co2_sel_relay[j][k][0]:
-                                    if conditional_co2_relay_state[j][k][0] == 1:
-                                        if conditional_co2_relay_seconds_on[j][k][0] > 0:
-                                            logging.debug("[Conditional CO2] Conditional statement %s True: Turn relay %s on for %s seconds", k + 1, conditional_co2_relay[j][k][0], conditional_co2_relay_seconds_on[j][k][0])
-                                            rod = threading.Thread(target=relay_on_duration, args=(conditional_co2_relay[j][k][0], conditional_co2_relay_seconds_on[j][k][0], j, relay_trigger, relay_pin,))
+        for j in range(len(conditional_c_number_sensor)):
+            for k in range(len(conditional_c_number_conditional)):
+                if conditional_c_id[j][k][0] != 0 and client_que != 'TerminateServer' and pause_daemon != 1 and PID_change != 1:
+                    if time.time() > timerCO2Conditional[j][k] and conditional_c_state[j][k][0] == 1:
+                        logging.debug("[Conditional CO2] Check conditional statement %s: %s", k + 1, conditional_c_name[j][k][0])
+                        if read_co2_sensor(j) is not None:
+                            if (conditional_c_direction[j][k][0] == 1 and sensor_c_read_co2[j] > conditional_c_setpoint[j][k][0]) or (conditional_c_direction[j][k][0] == -1 and sensor_c_read_co2[j] < conditional_c_setpoint[j][k][0]):
+                                if conditional_c_sel_relay[j][k][0]:
+                                    if conditional_c_relay_state[j][k][0] == 1:
+                                        if conditional_c_relay_seconds_on[j][k][0] > 0:
+                                            logging.debug("[Conditional CO2] Conditional statement %s True: Turn relay %s on for %s seconds", k + 1, conditional_c_relay[j][k][0], conditional_c_relay_seconds_on[j][k][0])
+                                            rod = threading.Thread(target=relay_on_duration, args=(conditional_c_relay[j][k][0], conditional_c_relay_seconds_on[j][k][0], j, relay_trigger, relay_pin,))
                                             rod.start()
                                         else:
-                                            relay_onoff(conditional_co2_relay[j][k][0], 'on')
-                                    elif conditional_co2_relay_state[j][k][0] == 0:
-                                        relay_onoff(conditional_co2_relay[j][k][0], 'off')
-                                if conditional_co2_sel_command[j][k][0]:
-                                    p = subprocess.Popen(conditional_co2_do_command[j][k][0], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                            relay_onoff(conditional_c_relay[j][k][0], 'on')
+                                    elif conditional_c_relay_state[j][k][0] == 0:
+                                        relay_onoff(conditional_c_relay[j][k][0], 'off')
+                                if conditional_c_sel_command[j][k][0]:
+                                    p = subprocess.Popen(conditional_c_do_command[j][k][0], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                                     output, errors = p.communicate()
-                                    logging.debug("[Conditional CO2] Conditional %s (%s) T Sensor %s (%s) True: Execute command: %s Command output: %s Command errors: %s", i + 1, conditional_co2_name[j][k][0], conditional_co2_do_command[j][k][0], output, errors)
-                                if conditional_co2_sel_notify[j][k][0] and conditional_co2_time_notify[j][k][0] < int(time.time()):
-                                    logging.debug("[Conditional CO2] Conditional %s (%s) CO2 Sensor %s (%s) True: Notify %s", j + 1, sensor_co2_name[j], k + 1, conditional_co2_name[j][k][0], conditional_co2_do_notify[j][k][0])
-                                    if (conditional_co2_direction[j][k][0] == 1 and
-                                            sensor_co2_read_co2[j] > conditional_co2_setpoint[j][k][0]):
-                                        message = "Conditional %s (%s) CO2 Sensor %s (%s) CO2: %s ppmv > %s ppmv." % (j + 1, sensor_co2_name[j], k + 1, conditional_co2_name[j][k][0], sensor_co2_read_co2[j], conditional_co2_setpoint[j][k][0])
-                                    if (conditional_co2_direction[j][k][0] == -1 and
-                                            sensor_co2_read_co2[j] < conditional_co2_setpoint[j][k][0]):
-                                        message = "Conditional %s (%s) CO2 Sensor %s (%s) CO2: %s ppmv < %s ppmv." % (j + 1, sensor_co2_name[j], k + 1, conditional_co2_name[j][k][0], sensor_co2_read_co2[j], conditional_co2_setpoint[j][k][0])
-                                    email(conditional_co2_do_notify[j][k][0], message)
-                                    conditional_co2_time_notify[j][k][0] = int(time.time()) + smtp_wait_time
-                                elif conditional_co2_sel_notify[j][k][0]:
-                                    logging.debug("[Conditional CO2] Conditional %s (%s) CO2 Sensor %s (%s) True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", j + 1, sensor_co2_name[j], k + 1, conditional_co2_name[j][k][0], conditional_co2_do_notify[j][k][0], (smtp_wait_time - (smtp_wait_time - (conditional_co2_time_notify[j][k][0] - int(time.time())))), smtp_wait_time)
+                                    logging.debug("[Conditional CO2] Conditional %s (%s) T Sensor %s (%s) True: Execute command: %s Command output: %s Command errors: %s", i + 1, conditional_c_name[j][k][0], conditional_c_do_command[j][k][0], output, errors)
+                                if conditional_c_sel_notify[j][k][0] and conditional_c_time_notify[j][k][0] < time.time():
+                                    logging.debug("[Conditional CO2] Conditional %s (%s) CO2 Sensor %s (%s) True: Notify %s", j + 1, sensor_c_name[j], k + 1, conditional_c_name[j][k][0], conditional_c_do_notify[j][k][0])
+                                    if (conditional_c_direction[j][k][0] == 1 and
+                                            sensor_c_read_co2[j] > conditional_c_setpoint[j][k][0]):
+                                        message = "Conditional %s (%s) CO2 Sensor %s (%s) CO2: %s ppmv > %s ppmv." % (j + 1, sensor_c_name[j], k + 1, conditional_c_name[j][k][0], sensor_c_read_co2[j], conditional_c_setpoint[j][k][0])
+                                    if (conditional_c_direction[j][k][0] == -1 and
+                                            sensor_c_read_co2[j] < conditional_c_setpoint[j][k][0]):
+                                        message = "Conditional %s (%s) CO2 Sensor %s (%s) CO2: %s ppmv < %s ppmv." % (j + 1, sensor_c_name[j], k + 1, conditional_c_name[j][k][0], sensor_c_read_co2[j], conditional_c_setpoint[j][k][0])
+                                    email(conditional_c_do_notify[j][k][0], message)
+                                    conditional_c_time_notify[j][k][0] = time.time() + smtp_wait_time
+                                elif conditional_c_sel_notify[j][k][0]:
+                                    logging.debug("[Conditional CO2] Conditional %s (%s) CO2 Sensor %s (%s) True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", j + 1, sensor_c_name[j], k + 1, conditional_c_name[j][k][0], conditional_c_do_notify[j][k][0], (smtp_wait_time - (smtp_wait_time - (conditional_c_time_notify[j][k][0] - time.time()))), smtp_wait_time)
                         else:
                             logging.warning("[Conditional CO2] Could not read sensor %s, did not check conditional %s", j + 1, k + 1)
-                        timerCO2Conditional[j][k] = int(time.time()) + conditional_co2_period[j][k][0]
+                        timerCO2Conditional[j][k] = time.time() + conditional_c_period[j][k][0]
 
         #
         # Check if Press conditional statements are true
         #
-        for j in range(0, len(conditional_press_number_sensor)):
-            for k in range(0, len(conditional_press_number_conditional)):
-                if conditional_press_id[j][k][0] != 0 and client_que != 'TerminateServer' and pause_daemon != 1 and PID_change != 1:
-                    if int(time.time()) > timerPressConditional[j][k] and conditional_press_state[j][k][0] == 1:
-                        logging.debug("[Conditional Press] Check conditional statement %s: %s", k + 1, conditional_press_name[j][k][0])
-                        if read_press_sensor(j) == 1:
-                            if (conditional_press_condition[j][k][0] == "Pressure" and conditional_press_direction[j][k][0] == 1 and sensor_press_read_press[j] > conditional_press_setpoint[j][k][0]) or (conditional_press_condition[j][k][0] == "Pressure" and conditional_press_direction[j][k][0] == -1 and sensor_press_read_press[j] < conditional_press_setpoint[j][k][0]) or (conditional_press_condition[j][k][0] == "Temperature" and conditional_press_direction[j][k][0] == 1 and sensor_press_read_temp_c[j] > conditional_press_setpoint[j][k][0]) or (conditional_press_condition[j][k][0] == "Temperature" and conditional_press_direction[j][k][0] == -1 and sensor_press_read_temp_c[j] < conditional_press_setpoint[j][k][0]):
-                                if conditional_press_sel_relay[j][k][0]:
-                                    if conditional_press_relay_state[j][k][0] == 1:
-                                        if conditional_press_relay_seconds_on[j][k][0] > 0:
-                                            logging.debug("[Conditional Press] Conditional statement %s True: Turn relay %s on for %s seconds", k + 1, conditional_press_relay[j][k][0], conditional_press_relay_seconds_on[j][k][0])
-                                            rod = threading.Thread(target=relay_on_duration, args=(conditional_press_relay[j][k][0], conditional_press_relay_seconds_on[j][k][0], j, relay_trigger, relay_pin,))
+        for j in range(len(conditional_p_number_sensor)):
+            for k in range(len(conditional_p_number_conditional)):
+                if conditional_p_id[j][k][0] != 0 and client_que != 'TerminateServer' and pause_daemon != 1 and PID_change != 1:
+                    if time.time() > timerPressConditional[j][k] and conditional_p_state[j][k][0] == 1:
+                        logging.debug("[Conditional Press] Check conditional statement %s: %s", k + 1, conditional_p_name[j][k][0])
+                        if read_press_sensor(j) is not None:
+                            if (conditional_p_condition[j][k][0] == "Pressure" and conditional_p_direction[j][k][0] == 1 and sensor_p_read_press[j] > conditional_p_setpoint[j][k][0]) or (conditional_p_condition[j][k][0] == "Pressure" and conditional_p_direction[j][k][0] == -1 and sensor_p_read_press[j] < conditional_p_setpoint[j][k][0]) or (conditional_p_condition[j][k][0] == "Temperature" and conditional_p_direction[j][k][0] == 1 and sensor_p_read_temp_c[j] > conditional_p_setpoint[j][k][0]) or (conditional_p_condition[j][k][0] == "Temperature" and conditional_p_direction[j][k][0] == -1 and sensor_p_read_temp_c[j] < conditional_p_setpoint[j][k][0]):
+                                if conditional_p_sel_relay[j][k][0]:
+                                    if conditional_p_relay_state[j][k][0] == 1:
+                                        if conditional_p_relay_seconds_on[j][k][0] > 0:
+                                            logging.debug("[Conditional Press] Conditional statement %s True: Turn relay %s on for %s seconds", k + 1, conditional_p_relay[j][k][0], conditional_p_relay_seconds_on[j][k][0])
+                                            rod = threading.Thread(target=relay_on_duration, args=(conditional_p_relay[j][k][0], conditional_p_relay_seconds_on[j][k][0], j, relay_trigger, relay_pin,))
                                             rod.start()
                                         else:
-                                            relay_onoff(conditional_press_relay[j][k][0], 'on')
-                                    elif conditional_press_relay_state[j][k][0] == 0:
-                                        relay_onoff(conditional_press_relay[j][k][0], 'off')
-                                if conditional_press_sel_command[j][k][0]:
-                                    p = subprocess.Popen(conditional_press_do_command[j][k][0], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                            relay_onoff(conditional_p_relay[j][k][0], 'on')
+                                    elif conditional_p_relay_state[j][k][0] == 0:
+                                        relay_onoff(conditional_p_relay[j][k][0], 'off')
+                                if conditional_p_sel_command[j][k][0]:
+                                    p = subprocess.Popen(conditional_p_do_command[j][k][0], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                                     output, errors = p.communicate()
-                                    logging.debug("[Conditional Press] Conditional %s (%s) Press Sensor %s (%s) True: Execute command: %s Command output: %s Command errors: %s", i + 1, conditional_press_name[j][k][0], conditional_press_do_command[j][k][0], output, errors)
-                                if conditional_press_sel_notify[j][k][0] and conditional_press_time_notify[j][k][0] < int(time.time()):
-                                    logging.debug("[Conditional Press] Conditional %s (%s) Press Sensor %s (%s) True: Notify %s", j + 1, sensor_press_name[j], k + 1, conditional_press_name[j][k][0], conditional_press_do_notify[j][k][0])
-                                    if conditional_press_condition[j][k][0] == "Pressure" and conditional_press_direction[j][k][0] == 1 and sensor_press_read_press[j] > conditional_press_setpoint[j][k][0]:
-                                        message = "Conditional %s (%s) Press Sensor %s (%s) Pressure: %s kPa > %s kPa." % (j + 1, sensor_press_name[j], k + 1, conditional_press_name[j][k][0], sensor_press_read_press[j], conditional_press_setpoint[j][k][0])
-                                    if conditional_press_condition[j][k][0] == "Pressure" and conditional_press_direction[j][k][0] == -1 and sensor_press_read_press[j] < conditional_press_setpoint[j][k][0]:
-                                        message = "Conditional %s (%s) Press Sensor %s (%s) Pressure: %s kPa < %s kPa." % (j + 1, sensor_press_name[j], k + 1, conditional_press_name[j][k][0], sensor_press_read_press[j], conditional_press_setpoint[j][k][0])
-                                    if conditional_press_condition[j][k][0] == "Temperature" and conditional_press_direction[j][k][0] == 1 and sensor_press_read_temp_c[j] > conditional_press_setpoint[j][k][0]:
-                                        message = "Conditional %s (%s) Press Sensor %s (%s) Temperature: %s C > %s C." % (j + 1, sensor_press_name[j], k + 1, conditional_press_name[j][k][0], sensor_press_read_temp_c[j], conditional_press_setpoint[j][k][0])
-                                    if conditional_press_condition[j][k][0] == "Temperature" and conditional_press_direction[j][k][0] == -1 and sensor_press_read_temp_c[j] < conditional_press_setpoint[j][k][0]:
-                                        message = "Conditional %s (%s) Press Sensor %s (%s) Temperature: %s C < %s C." % (j + 1, sensor_press_name[j], k + 1, conditional_press_name[j][k][0], sensor_press_read_temp_c[j], conditional_press_setpoint[j][k][0])
-                                    email(conditional_press_do_notify[j][k][0], message)
-                                    conditional_press_time_notify[j][k][0] = int(time.time()) + smtp_wait_time
-                                elif conditional_press_sel_notify[j][k][0]:
-                                    logging.debug("[Conditional Press] Conditional %s (%s) Press Sensor %s (%s) True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", j + 1, sensor_press_name[j], k + 1, conditional_press_name[j][k][0], conditional_press_do_notify[j][k][0], (smtp_wait_time - (smtp_wait_time - (conditional_press_time_notify[j][k][0] - int(time.time())))), smtp_wait_time)
+                                    logging.debug("[Conditional Press] Conditional %s (%s) Press Sensor %s (%s) True: Execute command: %s Command output: %s Command errors: %s", i + 1, conditional_p_name[j][k][0], conditional_p_do_command[j][k][0], output, errors)
+                                if conditional_p_sel_notify[j][k][0] and conditional_p_time_notify[j][k][0] < time.time():
+                                    logging.debug("[Conditional Press] Conditional %s (%s) Press Sensor %s (%s) True: Notify %s", j + 1, sensor_p_name[j], k + 1, conditional_p_name[j][k][0], conditional_p_do_notify[j][k][0])
+                                    if conditional_p_condition[j][k][0] == "Pressure" and conditional_p_direction[j][k][0] == 1 and sensor_p_read_press[j] > conditional_p_setpoint[j][k][0]:
+                                        message = "Conditional %s (%s) Press Sensor %s (%s) Pressure: %s kPa > %s kPa." % (j + 1, sensor_p_name[j], k + 1, conditional_p_name[j][k][0], sensor_p_read_press[j], conditional_p_setpoint[j][k][0])
+                                    if conditional_p_condition[j][k][0] == "Pressure" and conditional_p_direction[j][k][0] == -1 and sensor_p_read_press[j] < conditional_p_setpoint[j][k][0]:
+                                        message = "Conditional %s (%s) Press Sensor %s (%s) Pressure: %s kPa < %s kPa." % (j + 1, sensor_p_name[j], k + 1, conditional_p_name[j][k][0], sensor_p_read_press[j], conditional_p_setpoint[j][k][0])
+                                    if conditional_p_condition[j][k][0] == "Temperature" and conditional_p_direction[j][k][0] == 1 and sensor_p_read_temp_c[j] > conditional_p_setpoint[j][k][0]:
+                                        message = "Conditional %s (%s) Press Sensor %s (%s) Temperature: %s C > %s C." % (j + 1, sensor_p_name[j], k + 1, conditional_p_name[j][k][0], sensor_p_read_temp_c[j], conditional_p_setpoint[j][k][0])
+                                    if conditional_p_condition[j][k][0] == "Temperature" and conditional_p_direction[j][k][0] == -1 and sensor_p_read_temp_c[j] < conditional_p_setpoint[j][k][0]:
+                                        message = "Conditional %s (%s) Press Sensor %s (%s) Temperature: %s C < %s C." % (j + 1, sensor_p_name[j], k + 1, conditional_p_name[j][k][0], sensor_p_read_temp_c[j], conditional_p_setpoint[j][k][0])
+                                    email(conditional_p_do_notify[j][k][0], message)
+                                    conditional_p_time_notify[j][k][0] = time.time() + smtp_wait_time
+                                elif conditional_p_sel_notify[j][k][0]:
+                                    logging.debug("[Conditional Press] Conditional %s (%s) Press Sensor %s (%s) True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", j + 1, sensor_p_name[j], k + 1, conditional_p_name[j][k][0], conditional_p_do_notify[j][k][0], (smtp_wait_time - (smtp_wait_time - (conditional_p_time_notify[j][k][0] - time.time()))), smtp_wait_time)
                         else:
                             logging.warning("[Conditional Press] Could not read sensor %s, did not check conditional %s", j + 1, k + 1)
-                        timerPressConditional[j][k] = int(time.time()) + conditional_press_period[j][k][0]
+                        timerPressConditional[j][k] = time.time() + conditional_p_period[j][k][0]
 
         #
         # Check log size on tempfs every 10 minutes and back up if larger than maximum allowed
         #
-        if int(time.time()) > timerLogBackup and client_que != 'TerminateServer' and PID_change != 1:
-            total_log_size = os.stat(daemon_log_file_tmp).st_size + os.stat(sensor_t_log_file_tmp).st_size + os.stat(sensor_ht_log_file_tmp).st_size + os.stat(sensor_co2_log_file_tmp).st_size + os.stat(sensor_press_log_file_tmp).st_size + os.stat(relay_log_file_tmp).st_size
+        if time.time() > timerLogBackup and client_que != 'TerminateServer' and PID_change != 1:
+            total_log_size = os.stat(daemon_log_file_tmp).st_size + os.stat(sensor_t_log_file_tmp).st_size + os.stat(sensor_ht_log_file_tmp).st_size + os.stat(sensor_c_log_file_tmp).st_size + os.stat(sensor_p_log_file_tmp).st_size + os.stat(relay_log_file_tmp).st_size
             # Back up logs if their combined size is greater than 5 MB
             if total_log_size > 5000000:
                 logging.debug("[Log Backup] Sum of log sizes = %s bytes > 5,000,000 bytes (5 MB). Backing up logs.", total_log_size)
-                mycodoLog.Concatenate_Logs()
+                mycodo_log.Concatenate_Logs()
             elif timerLogBackupCount > 5:
                 logging.debug("[Log Backup] 1-hour timer expired. Backing up logs.", total_log_size)
-                mycodoLog.Concatenate_Logs()
+                mycodo_log.Concatenate_Logs()
                 timerLogBackupCount = 0
             timerLogBackupCount += 1
-            timerLogBackup = int(time.time()) + 600
+            timerLogBackup = time.time() + 600
 
         #
         # Simple duration timers
         #
         if len(timer_id) != 0:
-            for i in range(0, len(timer_id)):
-                if timer_state[i] == 1 and int(time.time()) > timer_time[i] and client_que != 'TerminateServer' and PID_change != 1:
+            for i in range(len(timer_id)):
+                if timer_state[i] == 1 and time.time() > timer_time[i] and client_que != 'TerminateServer' and PID_change != 1:
                     logging.debug("[Timer Expiration] Timer %s: Turn Relay %s on for %s seconds, off %s seconds.", i, timer_relay[i], timer_duration_on[i], timer_duration_off[i])
                     rod = threading.Thread(target=relay_on_duration, args=(timer_relay[i], timer_duration_on[i], 0, relay_trigger, relay_pin,))
                     rod.start()
-                    timer_time[i] = int(time.time()) + timer_duration_on[i] + timer_duration_off[i]
+                    timer_time[i] = time.time() + timer_duration_on[i] + timer_duration_off[i]
 
         #
         # Stop/Start indevidual PID threads
@@ -1023,68 +1033,68 @@ def daemon(output, log):
                 logging.warning("[Daemon] Cannot Start Humidity PID Thread-HT-H-%s: It's already running.", pid_number + 1)
             pid_ht_hum_up = 0
 
-        if pid_co2_down:
-            if pid_co2_active[pid_number] == 1:
+        if pid_c_down:
+            if pid_c_active[pid_number] == 1:
                 logging.info("[Daemon] Shutting Down CO2 PID Thread-CO2-%s", pid_number + 1)
-                pid_co2_alive[pid_number] = 0
-                while pid_co2_alive[pid_number] != 2:
+                pid_c_alive[pid_number] = 0
+                while pid_c_alive[pid_number] != 2:
                     time.sleep(0.1)
-                pid_co2_alive[pid_number] = 1
-                pid_co2_active[pid_number] = 0
+                pid_c_alive[pid_number] = 1
+                pid_c_active[pid_number] = 0
             else:
                 logging.warning("[Daemon] Cannot Shut Down CO2 PID Thread-CO2-%s: It isn't running.", pid_number + 1)
-            pid_co2_down = 0
-        if pid_co2_up:
-            if pid_co2_active[pid_number] == 0:
+            pid_c_down = 0
+        if pid_c_up:
+            if pid_c_active[pid_number] == 0:
                 logging.info("[Daemon] Starting CO2 PID Thread-CO2-%s", pid_number + 1)
                 rod = threading.Thread(target=co2_monitor, args=('Thread-%d' % (int(pid_number) + 1), pid_number,))
                 rod.start()
-                pid_co2_active[pid_number] = 1
+                pid_c_active[pid_number] = 1
             else:
                 logging.warning("[Daemon] Cannot Start CO2 PID Thread-CO2-%s: It's already running.", pid_number + 1)
-            pid_co2_up = 0
+            pid_c_up = 0
 
-        if pid_press_temp_down:
-            if pid_press_temp_active[pid_number] == 1:
+        if pid_p_temp_down:
+            if pid_p_temp_active[pid_number] == 1:
                 logging.info("[Daemon] Shutting Down Pressure PID Thread-Press-T-%s", pid_number + 1)
-                pid_press_temp_alive[pid_number] = 0
-                while pid_press_temp_alive[pid_number] != 2:
+                pid_p_temp_alive[pid_number] = 0
+                while pid_p_temp_alive[pid_number] != 2:
                     time.sleep(0.1)
-                pid_press_temp_alive[pid_number] = 1
-                pid_press_temp_active[pid_number] = 0
+                pid_p_temp_alive[pid_number] = 1
+                pid_p_temp_active[pid_number] = 0
             else:
                 logging.warning("[Daemon] Cannot Shut Down Pressure PID Thread-Press-T-%s: It isn't running.", pid_number + 1)
-            pid_press_temp_down = 0
-        if pid_press_temp_up:
-            if pid_press_temp_active[pid_number] == 0:
+            pid_p_temp_down = 0
+        if pid_p_temp_up:
+            if pid_p_temp_active[pid_number] == 0:
                 logging.info("[Daemon] Starting Pressure PID Thread-Press-T-%s", pid_number + 1)
                 rod = threading.Thread(target=press_sensor_temperature_monitor, args=('Thread-%d' % (int(pid_number) + 1), pid_number,))
                 rod.start()
-                pid_press_temp_active[pid_number] = 1
+                pid_p_temp_active[pid_number] = 1
             else:
                 logging.warning("[Daemon] Cannot Start Pressure PID Thread-Press-T-%s: It's already running.", pid_number + 1)
-            pid_press_temp_up = 0
+            pid_p_temp_up = 0
 
-        if pid_press_press_down:
-            if pid_press_press_active[pid_number] == 1:
+        if pid_p_press_down:
+            if pid_p_press_active[pid_number] == 1:
                 logging.info("[Daemon] Shutting Down Humidity PID Thread-Press-P-%s", pid_number + 1)
-                pid_press_press_alive[pid_number] = 0
-                while pid_press_press_alive[pid_number] != 2:
+                pid_p_press_alive[pid_number] = 0
+                while pid_p_press_alive[pid_number] != 2:
                     time.sleep(0.1)
-                pid_press_press_alive[pid_number] = 1
-                pid_press_press_active[pid_number] = 0
+                pid_p_press_alive[pid_number] = 1
+                pid_p_press_active[pid_number] = 0
             else:
                 logging.warning("[Daemon] Cannot Shut Down Humidity PID Thread-Press-P-%s: It isn't running.", pid_number + 1)
-            pid_press_press_down = 0
-        if pid_press_press_up:
-            if pid_press_press_active[pid_number] == 0:
+            pid_p_press_down = 0
+        if pid_p_press_up:
+            if pid_p_press_active[pid_number] == 0:
                 logging.info("[Daemon] Starting Humidity PID Thread-Press-P-%s", pid_number + 1)
                 rod = threading.Thread(target=press_sensor_pressure_monitor, args=('Thread-%d' % (int(pid_number) + 1), pid_number,))
                 rod.start()
-                pid_press_press_active[pid_number] = 1
+                pid_p_press_active[pid_number] = 1
             else:
                 logging.warning("[Daemon] Cannot Start Humidity PID Thread-Press-P-%s: It's already running.", pid_number + 1)
-            pid_press_press_up = 0
+            pid_p_press_up = 0
 
         time.sleep(0.25)
 
@@ -1094,506 +1104,506 @@ def daemon(output, log):
 #################################################
 
 # Temperature Sensor Temperature modulation by PID control
-def t_sensor_temperature_monitor(ThreadName, sensor):
+def t_sensor_temperature_monitor(ThreadName, sensor_id):
     global pid_t_temp_alive
     timerTemp = 0
     PIDTemp = 0
-    logging.info("[PID T-Temperature-%s] Starting %s", sensor + 1, ThreadName)
+    logging.info("[PID T-Temperature-%s] Starting %s", sensor_id + 1, ThreadName)
 
-    if pid_t_temp_relay_high[sensor]:
-        relay_onoff(int(pid_t_temp_relay_high[sensor]), 'off')
-    if pid_t_temp_relay_low[sensor]:
-        relay_onoff(int(pid_t_temp_relay_low[sensor]), 'off')
+    if pid_t_temp_relay_high[sensor_id]:
+        relay_onoff(int(pid_t_temp_relay_high[sensor_id]), 'off')
+    if pid_t_temp_relay_low[sensor_id]:
+        relay_onoff(int(pid_t_temp_relay_low[sensor_id]), 'off')
 
-    pid_temp = PID(pid_t_temp_p[sensor], pid_t_temp_i[sensor], pid_t_temp_d[sensor])
-    pid_temp.setPoint(pid_t_temp_set[sensor])
+    pid_temp = PID(pid_t_temp_p[sensor_id], pid_t_temp_i[sensor_id], pid_t_temp_d[sensor_id], Measure_interval=pid_t_temp_period[sensor_id])
+    pid_temp.setPoint(pid_t_temp_set[sensor_id])
 
-    while pid_t_temp_alive[sensor]:
+    while pid_t_temp_alive[sensor_id]:
 
         if pause_daemon:
-            logging.debug("[PID T-Temperature-%s] Pausing Temp sensor read for SQL reload", sensor + 1)
+            logging.debug("[PID T-Temperature-%s] Pausing Temp sensor read for SQL reload", sensor_id + 1)
             while pause_daemon:
                 time.sleep(0.1)
 
-        if ((pid_t_temp_set_dir[sensor] == 0 and pid_t_temp_relay_high[sensor] != 0 and pid_t_temp_relay_low[sensor] != 0) or (pid_t_temp_set_dir[sensor] == -1 and pid_t_temp_relay_high[sensor] != 0) or (pid_t_temp_set_dir[sensor] == 1 and pid_t_temp_relay_low[sensor] != 0)) and pid_t_temp_or[sensor] == 0 and pid_t_temp_down == 0 and sensor_t_activated[sensor] == 1:
+        if ((pid_t_temp_set_dir[sensor_id] == 0 and pid_t_temp_relay_high[sensor_id] != 0 and pid_t_temp_relay_low[sensor_id] != 0) or (pid_t_temp_set_dir[sensor_id] == -1 and pid_t_temp_relay_high[sensor_id] != 0) or (pid_t_temp_set_dir[sensor_id] == 1 and pid_t_temp_relay_low[sensor_id] != 0)) and pid_t_temp_or[sensor_id] == 0 and pid_t_temp_down == 0 and sensor_t_activated[sensor_id] == 1:
 
-            if int(time.time()) > timerTemp:
+            if time.time() > timerTemp:
 
-                logging.debug("[PID T-Temperature-%s] Reading temperature...", sensor + 1)
-                if read_t_sensor(sensor) == 1:
+                logging.debug("[PID T-Temperature-%s] Reading temperature...", sensor_id + 1)
+                if read_t_sensor(sensor_id) is not None:
 
-                    PIDTemp = pid_temp.update(float(sensor_t_read_temp_c[sensor]))
-                    if sensor_t_read_temp_c[sensor] > pid_t_temp_set[sensor]:
-                        logging.debug("[PID T-Temperature-%s] Temperature: %.1f°C now > %.1f°C set", sensor + 1, sensor_t_read_temp_c[sensor], pid_t_temp_set[sensor])
-                    elif sensor_t_read_temp_c[sensor] < pid_t_temp_set[sensor]:
-                        logging.debug("[PID T-Temperature-%s] Temperature: %.1f°C now < %.1f°C set", sensor + 1, sensor_t_read_temp_c[sensor], pid_t_temp_set[sensor])
+                    PIDTemp = pid_temp.update(float(sensor_t_read_temp_c[sensor_id]))
+                    if sensor_t_read_temp_c[sensor_id] > pid_t_temp_set[sensor_id]:
+                        logging.debug("[PID T-Temperature-%s] Temperature: %.1f°C now > %.1f°C set", sensor_id + 1, sensor_t_read_temp_c[sensor_id], pid_t_temp_set[sensor_id])
+                    elif sensor_t_read_temp_c[sensor_id] < pid_t_temp_set[sensor_id]:
+                        logging.debug("[PID T-Temperature-%s] Temperature: %.1f°C now < %.1f°C set", sensor_id + 1, sensor_t_read_temp_c[sensor_id], pid_t_temp_set[sensor_id])
                     else:
-                        logging.debug("[PID T-Temperature-%s] Temperature: %.1f°C now = %.1f°C set", sensor + 1, sensor_t_read_temp_c[sensor], pid_t_temp_set[sensor])
+                        logging.debug("[PID T-Temperature-%s] Temperature: %.1f°C now = %.1f°C set", sensor_id + 1, sensor_t_read_temp_c[sensor_id], pid_t_temp_set[sensor_id])
 
-                    if pid_t_temp_set_dir[sensor] > -1 and PIDTemp > 0:
-                        if pid_t_temp_outmin_low[sensor] != 0 and PIDTemp < pid_t_temp_outmin_low[sensor]:
-                            logging.debug("[PID T-Temperature-%s] PID = %.1f (min enabled, %s, not turning on)", sensor + 1, PIDTemp, pid_t_temp_outmin_low[sensor])
-                        elif pid_t_temp_outmax_low[sensor] != 0 and PIDTemp > pid_t_temp_outmax_low[sensor]:
-                            logging.debug("[PID T-Temperature-%s] PID = %.1f (max enabled, %s)", sensor + 1, PIDTemp, pid_t_temp_outmax_low[sensor])
-                            PIDTemp = pid_t_temp_outmax_low[sensor]
-                            rod = threading.Thread(target=relay_on_duration, args=(pid_t_temp_relay_low[sensor], round(PIDTemp, 2), sensor, relay_trigger, relay_pin,))
+                    if pid_t_temp_set_dir[sensor_id] > -1 and PIDTemp > 0:
+                        if pid_t_temp_outmin_low[sensor_id] != 0 and PIDTemp < pid_t_temp_outmin_low[sensor_id]:
+                            logging.debug("[PID T-Temperature-%s] PID = %.1f (min enabled, %s, not turning on)", sensor_id + 1, PIDTemp, pid_t_temp_outmin_low[sensor_id])
+                        elif pid_t_temp_outmax_low[sensor_id] != 0 and PIDTemp > pid_t_temp_outmax_low[sensor_id]:
+                            logging.debug("[PID T-Temperature-%s] PID = %.1f (max enabled, %s)", sensor_id + 1, PIDTemp, pid_t_temp_outmax_low[sensor_id])
+                            PIDTemp = pid_t_temp_outmax_low[sensor_id]
+                            rod = threading.Thread(target=relay_on_duration, args=(pid_t_temp_relay_low[sensor_id], round(PIDTemp, 2), sensor_id, relay_trigger, relay_pin,))
                             rod.start()
                         else:
-                            logging.debug("[PID T-Temperature-%s] PID = %.1f", sensor + 1, PIDTemp)
-                            rod = threading.Thread(target=relay_on_duration, args=(pid_t_temp_relay_low[sensor], round(PIDTemp, 2), sensor, relay_trigger, relay_pin,))
+                            logging.debug("[PID T-Temperature-%s] PID = %.1f", sensor_id + 1, PIDTemp)
+                            rod = threading.Thread(target=relay_on_duration, args=(pid_t_temp_relay_low[sensor_id], round(PIDTemp, 2), sensor_id, relay_trigger, relay_pin,))
                             rod.start()
 
-                    elif pid_t_temp_set_dir[sensor] < 1 and PIDTemp < 0:
+                    elif pid_t_temp_set_dir[sensor_id] < 1 and PIDTemp < 0:
                         PIDTemp = abs(PIDTemp)
-                        if pid_t_temp_outmin_high[sensor] != 0 and PIDTemp < pid_t_temp_outmin_high[sensor]:
-                            logging.debug("[PID T-Temperature-%s] PID = %.1f (min enabled, %s, not turning on)", sensor + 1, PIDTemp, pid_t_temp_outmin_high[sensor])
-                        elif pid_t_temp_outmax_high[sensor] != 0 and PIDTemp > pid_t_temp_outmax_high[sensor]:
-                            logging.debug("[PID T-Temperature-%s] PID = %.1f (max enabled, %s)", sensor + 1, PIDTemp, pid_t_temp_outmax_high[sensor])
-                            PIDTemp = pid_t_temp_outmax_high[sensor]
-                            rod = threading.Thread(target=relay_on_duration, args=(pid_t_temp_relay_high[sensor], round(PIDTemp, 2), sensor, relay_trigger, relay_pin,))
+                        if pid_t_temp_outmin_high[sensor_id] != 0 and PIDTemp < pid_t_temp_outmin_high[sensor_id]:
+                            logging.debug("[PID T-Temperature-%s] PID = %.1f (min enabled, %s, not turning on)", sensor_id + 1, PIDTemp, pid_t_temp_outmin_high[sensor_id])
+                        elif pid_t_temp_outmax_high[sensor_id] != 0 and PIDTemp > pid_t_temp_outmax_high[sensor_id]:
+                            logging.debug("[PID T-Temperature-%s] PID = %.1f (max enabled, %s)", sensor_id + 1, PIDTemp, pid_t_temp_outmax_high[sensor_id])
+                            PIDTemp = pid_t_temp_outmax_high[sensor_id]
+                            rod = threading.Thread(target=relay_on_duration, args=(pid_t_temp_relay_high[sensor_id], round(PIDTemp, 2), sensor_id, relay_trigger, relay_pin,))
                             rod.start()
                         else:
-                            logging.debug("[PID T-Temperature-%s] PID = %.1f", sensor + 1, PIDTemp)
-                            rod = threading.Thread(target=relay_on_duration, args=(pid_t_temp_relay_high[sensor], round(PIDTemp, 2), sensor, relay_trigger, relay_pin,))
+                            logging.debug("[PID T-Temperature-%s] PID = %.1f", sensor_id + 1, PIDTemp)
+                            rod = threading.Thread(target=relay_on_duration, args=(pid_t_temp_relay_high[sensor_id], round(PIDTemp, 2), sensor_id, relay_trigger, relay_pin,))
                             rod.start()
 
                     else:
-                        logging.debug("[PID T-Temperature-%s] PID = %.1f", sensor + 1, PIDTemp)
+                        logging.debug("[PID T-Temperature-%s] PID = %.1f", sensor_id + 1, PIDTemp)
                         PIDTemp = 0
-                    timerTemp = int(time.time()) + pid_t_temp_period[sensor]
+                    timerTemp = time.time() + pid_t_temp_period[sensor_id]
                 else:
-                    logging.warning("[PID T-Temperature-%s] Could not read Temp sensor, not updating PID", sensor + 1)
+                    logging.warning("[PID T-Temperature-%s] Could not read Temp sensor, not updating PID", sensor_id + 1)
         time.sleep(0.1)
-    logging.info("[PID T-Temperature-%s] Shutting Down %s", sensor + 1, ThreadName)
+    logging.info("[PID T-Temperature-%s] Shutting Down %s", sensor_id + 1, ThreadName)
 
-    if pid_t_temp_relay_high[sensor]:
-        relay_onoff(int(pid_t_temp_relay_high[sensor]), 'off')
-    if pid_t_temp_relay_low[sensor]:
-        relay_onoff(int(pid_t_temp_relay_low[sensor]), 'off')
+    if pid_t_temp_relay_high[sensor_id]:
+        relay_onoff(int(pid_t_temp_relay_high[sensor_id]), 'off')
+    if pid_t_temp_relay_low[sensor_id]:
+        relay_onoff(int(pid_t_temp_relay_low[sensor_id]), 'off')
 
-    pid_t_temp_alive[sensor] = 2
+    pid_t_temp_alive[sensor_id] = 2
 
 
 # HT Sensor Temperature modulation by PID control
-def ht_sensor_temperature_monitor(ThreadName, sensor):
+def ht_sensor_temperature_monitor(ThreadName, sensor_id):
     global pid_ht_temp_alive
     timerTemp = 0
     PIDTemp = 0
-    logging.info("[PID HT-Temperature-%s] Starting %s", sensor + 1, ThreadName)
+    logging.info("[PID HT-Temperature-%s] Starting %s", sensor_id + 1, ThreadName)
 
-    if pid_ht_temp_relay_high[sensor]:
-        relay_onoff(int(pid_ht_temp_relay_high[sensor]), 'off')
-    if pid_ht_temp_relay_low[sensor]:
-        relay_onoff(int(pid_ht_temp_relay_low[sensor]), 'off')
+    if pid_ht_temp_relay_high[sensor_id]:
+        relay_onoff(int(pid_ht_temp_relay_high[sensor_id]), 'off')
+    if pid_ht_temp_relay_low[sensor_id]:
+        relay_onoff(int(pid_ht_temp_relay_low[sensor_id]), 'off')
 
-    pid_temp = PID(pid_ht_temp_p[sensor], pid_ht_temp_i[sensor], pid_ht_temp_d[sensor])
-    pid_temp.setPoint(pid_ht_temp_set[sensor])
+    pid_temp = PID(pid_ht_temp_p[sensor_id], pid_ht_temp_i[sensor_id], pid_ht_temp_d[sensor_id], Measure_interval=pid_ht_temp_period[sensor_id])
+    pid_temp.setPoint(pid_ht_temp_set[sensor_id])
 
-    while pid_ht_temp_alive[sensor]:
+    while pid_ht_temp_alive[sensor_id]:
 
         if pause_daemon:
-            logging.debug("[PID HT-Temperature-%s] Pausing Hum/Temp sensor read for SQL reload", sensor + 1)
+            logging.debug("[PID HT-Temperature-%s] Pausing Hum/Temp sensor read for SQL reload", sensor_id + 1)
             while pause_daemon:
                 time.sleep(0.1)
 
-        if ((pid_ht_temp_set_dir[sensor] == 0 and pid_ht_temp_relay_high[sensor] != 0 and pid_ht_temp_relay_low[sensor] != 0) or (pid_ht_temp_set_dir[sensor] == -1 and pid_ht_temp_relay_high[sensor] != 0) or (pid_ht_temp_set_dir[sensor] == 1 and pid_ht_temp_relay_low[sensor] != 0)) and pid_ht_temp_or[sensor] == 0 and pid_ht_temp_down == 0 and sensor_ht_activated[sensor] == 1:
+        if ((pid_ht_temp_set_dir[sensor_id] == 0 and pid_ht_temp_relay_high[sensor_id] != 0 and pid_ht_temp_relay_low[sensor_id] != 0) or (pid_ht_temp_set_dir[sensor_id] == -1 and pid_ht_temp_relay_high[sensor_id] != 0) or (pid_ht_temp_set_dir[sensor_id] == 1 and pid_ht_temp_relay_low[sensor_id] != 0)) and pid_ht_temp_or[sensor_id] == 0 and pid_ht_temp_down == 0 and sensor_ht_activated[sensor_id] == 1:
 
-            if int(time.time()) > timerTemp:
+            if time.time() > timerTemp:
 
-                logging.debug("[PID HT-Temperature-%s] Reading temperature...", sensor + 1)
-                if read_ht_sensor(sensor) == 1:
+                logging.debug("[PID HT-Temperature-%s] Reading temperature...", sensor_id + 1)
+                if read_ht_sensor(sensor_id) is not None:
 
                     verify_check = {"temperature": 0, "humidity": 0}
-                    if (sensor_ht_verify_temp_stop[sensor] or sensor_ht_verify_temp_notify[sensor]) and sensor_ht_verify_pin[sensor] != 0:
-                        return_value, verify_check["temperature"], verify_check["humidity"] = verify_ht_sensor(sensor, sensor_ht_verify_pin[sensor])
+                    if (sensor_ht_verify_temp_stop[sensor_id] or sensor_ht_verify_temp_notify[sensor_id]) and sensor_ht_verify_pin[sensor_id] != 0:
+                        return_value, verify_check["temperature"], verify_check["humidity"] = verify_ht_sensor(sensor_id, sensor_ht_verify_pin[sensor_id])
 
-                    if sensor_ht_verify_temp_stop[sensor] and verify_check["temperature"]:
-                        logging.warning("[PID HT-Temperature-%s] Verification of Temperature failed, not updating PID or turning on relay", sensor + 1)
-                        timerTemp = int(time.time()) + pid_ht_temp_period[sensor]
+                    if sensor_ht_verify_temp_stop[sensor_id] and verify_check["temperature"]:
+                        logging.warning("[PID HT-Temperature-%s] Verification of Temperature failed, not updating PID or turning on relay", sensor_id + 1)
+                        timerTemp = time.time() + pid_ht_temp_period[sensor_id]
                     else:
-                        PIDTemp = pid_temp.update(float(sensor_ht_read_temp_c[sensor]))
-                        if sensor_ht_read_temp_c[sensor] > pid_ht_temp_set[sensor]:
-                            logging.debug("[PID HT-Temperature-%s] Temperature: %.1f°C now > %.1f°C set", sensor + 1, sensor_ht_read_temp_c[sensor], pid_ht_temp_set[sensor])
-                        elif sensor_ht_read_temp_c[sensor] < pid_ht_temp_set[sensor]:
-                            logging.debug("[PID HT-Temperature-%s] Temperature: %.1f°C now < %.1f°C set", sensor + 1, sensor_ht_read_temp_c[sensor], pid_ht_temp_set[sensor])
+                        PIDTemp = pid_temp.update(float(sensor_ht_read_temp_c[sensor_id]))
+                        if sensor_ht_read_temp_c[sensor_id] > pid_ht_temp_set[sensor_id]:
+                            logging.debug("[PID HT-Temperature-%s] Temperature: %.1f°C now > %.1f°C set", sensor_id + 1, sensor_ht_read_temp_c[sensor_id], pid_ht_temp_set[sensor_id])
+                        elif sensor_ht_read_temp_c[sensor_id] < pid_ht_temp_set[sensor_id]:
+                            logging.debug("[PID HT-Temperature-%s] Temperature: %.1f°C now < %.1f°C set", sensor_id + 1, sensor_ht_read_temp_c[sensor_id], pid_ht_temp_set[sensor_id])
                         else:
-                            logging.debug("[PID HT-Temperature-%s] Temperature: %.1f°C now = %.1f°C set", sensor + 1, sensor_ht_read_temp_c[sensor], pid_ht_temp_set[sensor])
+                            logging.debug("[PID HT-Temperature-%s] Temperature: %.1f°C now = %.1f°C set", sensor_id + 1, sensor_ht_read_temp_c[sensor_id], pid_ht_temp_set[sensor_id])
 
-                        if pid_ht_temp_set_dir[sensor] > -1 and PIDTemp > 0:
-                            if pid_ht_temp_outmin_low[sensor] != 0 and PIDTemp < pid_ht_temp_outmin_low[sensor]:
-                                logging.debug("[PID HT-Temperature-%s] PID = %.1f (min enabled, %s, not turning on)", sensor + 1, PIDTemp, pid_ht_temp_outmin_low[sensor])
-                            elif pid_ht_temp_outmax_low[sensor] != 0 and PIDTemp > pid_ht_temp_outmax_low[sensor]:
-                                logging.debug("[PID HT-Temperature-%s] PID = %.1f (max enabled, %s)", sensor + 1, PIDTemp, pid_ht_temp_outmax_low[sensor])
-                                PIDTemp = pid_ht_temp_outmax_low[sensor]
-                                rod = threading.Thread(target=relay_on_duration, args=(pid_ht_temp_relay_low[sensor], round(PIDTemp, 2), sensor, relay_trigger, relay_pin,))
+                        if pid_ht_temp_set_dir[sensor_id] > -1 and PIDTemp > 0:
+                            if pid_ht_temp_outmin_low[sensor_id] != 0 and PIDTemp < pid_ht_temp_outmin_low[sensor_id]:
+                                logging.debug("[PID HT-Temperature-%s] PID = %.1f (min enabled, %s, not turning on)", sensor_id + 1, PIDTemp, pid_ht_temp_outmin_low[sensor_id])
+                            elif pid_ht_temp_outmax_low[sensor_id] != 0 and PIDTemp > pid_ht_temp_outmax_low[sensor_id]:
+                                logging.debug("[PID HT-Temperature-%s] PID = %.1f (max enabled, %s)", sensor_id + 1, PIDTemp, pid_ht_temp_outmax_low[sensor_id])
+                                PIDTemp = pid_ht_temp_outmax_low[sensor_id]
+                                rod = threading.Thread(target=relay_on_duration, args=(pid_ht_temp_relay_low[sensor_id], round(PIDTemp, 2), sensor_id, relay_trigger, relay_pin,))
                                 rod.start()
                             else:
-                                logging.debug("[PID HT-Temperature-%s] PID = %.1f", sensor + 1, PIDTemp)
-                                rod = threading.Thread(target=relay_on_duration, args=(pid_ht_temp_relay_low[sensor], round(PIDTemp, 2), sensor, relay_trigger, relay_pin,))
+                                logging.debug("[PID HT-Temperature-%s] PID = %.1f", sensor_id + 1, PIDTemp)
+                                rod = threading.Thread(target=relay_on_duration, args=(pid_ht_temp_relay_low[sensor_id], round(PIDTemp, 2), sensor_id, relay_trigger, relay_pin,))
                                 rod.start()
 
-                        elif pid_ht_temp_set_dir[sensor] < 1 and PIDTemp < 0:
+                        elif pid_ht_temp_set_dir[sensor_id] < 1 and PIDTemp < 0:
                             PIDTemp = abs(PIDTemp)
-                            if pid_ht_temp_outmin_high[sensor] != 0 and PIDTemp < pid_ht_temp_outmin_high[sensor]:
-                                logging.debug("[PID HT-Temperature-%s] PID = %.1f (min enabled, %s, not turning on)", sensor + 1, PIDTemp, pid_ht_temp_outmin_high[sensor])
-                            elif pid_ht_temp_outmax_high[sensor] != 0 and PIDTemp > pid_ht_temp_outmax_high[sensor]:
-                                logging.debug("[PID HT-Temperature-%s] PID = %.1f (max enabled, %s)", sensor + 1, PIDTemp, pid_ht_temp_outmax_high[sensor])
-                                PIDTemp = pid_ht_temp_outmax_high[sensor]
-                                rod = threading.Thread(target=relay_on_duration, args=(pid_ht_temp_relay_high[sensor], round(PIDTemp, 2), sensor, relay_trigger, relay_pin,))
+                            if pid_ht_temp_outmin_high[sensor_id] != 0 and PIDTemp < pid_ht_temp_outmin_high[sensor_id]:
+                                logging.debug("[PID HT-Temperature-%s] PID = %.1f (min enabled, %s, not turning on)", sensor_id + 1, PIDTemp, pid_ht_temp_outmin_high[sensor_id])
+                            elif pid_ht_temp_outmax_high[sensor_id] != 0 and PIDTemp > pid_ht_temp_outmax_high[sensor_id]:
+                                logging.debug("[PID HT-Temperature-%s] PID = %.1f (max enabled, %s)", sensor_id + 1, PIDTemp, pid_ht_temp_outmax_high[sensor_id])
+                                PIDTemp = pid_ht_temp_outmax_high[sensor_id]
+                                rod = threading.Thread(target=relay_on_duration, args=(pid_ht_temp_relay_high[sensor_id], round(PIDTemp, 2), sensor_id, relay_trigger, relay_pin,))
                                 rod.start()
                             else:
-                                logging.debug("[PID HT-Temperature-%s] PID = %.1f", sensor + 1, PIDTemp)
-                                rod = threading.Thread(target=relay_on_duration, args=(pid_ht_temp_relay_high[sensor], round(PIDTemp, 2), sensor, relay_trigger, relay_pin,))
+                                logging.debug("[PID HT-Temperature-%s] PID = %.1f", sensor_id + 1, PIDTemp)
+                                rod = threading.Thread(target=relay_on_duration, args=(pid_ht_temp_relay_high[sensor_id], round(PIDTemp, 2), sensor_id, relay_trigger, relay_pin,))
                                 rod.start()
 
                         else:
-                            logging.debug("[PID HT-Temperature-%s] PID = %.1f", sensor + 1, PIDTemp)
+                            logging.debug("[PID HT-Temperature-%s] PID = %.1f", sensor_id + 1, PIDTemp)
                             PIDTemp = 0
-                        timerTemp = int(time.time()) + pid_ht_temp_period[sensor]
+                        timerTemp = time.time() + pid_ht_temp_period[sensor_id]
                 else:
-                    logging.warning("[PID HT-Temperature-%s] Could not read Hum/Temp sensor, not updating PID", sensor + 1)
+                    logging.warning("[PID HT-Temperature-%s] Could not read Hum/Temp sensor, not updating PID", sensor_id + 1)
 
         time.sleep(0.1)
-    logging.info("[PID HT-Temperature-%s] Shutting Down %s", sensor + 1, ThreadName)
+    logging.info("[PID HT-Temperature-%s] Shutting Down %s", sensor_id + 1, ThreadName)
 
-    if pid_ht_temp_relay_high[sensor]:
-        relay_onoff(int(pid_ht_temp_relay_high[sensor]), 'off')
-    if pid_ht_temp_relay_low[sensor]:
-        relay_onoff(int(pid_ht_temp_relay_low[sensor]), 'off')
+    if pid_ht_temp_relay_high[sensor_id]:
+        relay_onoff(int(pid_ht_temp_relay_high[sensor_id]), 'off')
+    if pid_ht_temp_relay_low[sensor_id]:
+        relay_onoff(int(pid_ht_temp_relay_low[sensor_id]), 'off')
 
-    pid_ht_temp_alive[sensor] = 2
+    pid_ht_temp_alive[sensor_id] = 2
 
 
 # HT Sensor Humidity modulation by PID control
-def ht_sensor_humidity_monitor(ThreadName, sensor):
+def ht_sensor_humidity_monitor(ThreadName, sensor_id):
     global pid_ht_hum_alive
     timerHum = 0
     PIDHum = 0
-    logging.info("[PID HT-Humidity-%s] Starting %s", sensor + 1, ThreadName)
+    logging.info("[PID HT-Humidity-%s] Starting %s", sensor_id + 1, ThreadName)
 
-    if pid_ht_hum_relay_high[sensor]:
-        relay_onoff(int(pid_ht_hum_relay_high[sensor]), 'off')
-    if pid_ht_hum_relay_low[sensor]:
-        relay_onoff(int(pid_ht_hum_relay_low[sensor]), 'off')
+    if pid_ht_hum_relay_high[sensor_id]:
+        relay_onoff(int(pid_ht_hum_relay_high[sensor_id]), 'off')
+    if pid_ht_hum_relay_low[sensor_id]:
+        relay_onoff(int(pid_ht_hum_relay_low[sensor_id]), 'off')
 
-    pid_hum = PID(pid_ht_hum_p[sensor], pid_ht_hum_i[sensor], pid_ht_hum_d[sensor])
-    pid_hum.setPoint(pid_ht_hum_set[sensor])
+    pid_hum = PID(pid_ht_hum_p[sensor_id], pid_ht_hum_i[sensor_id], pid_ht_hum_d[sensor_id], Measure_interval=pid_ht_hum_period[sensor_id])
+    pid_hum.setPoint(pid_ht_hum_set[sensor_id])
 
-    while pid_ht_hum_alive[sensor]:
+    while pid_ht_hum_alive[sensor_id]:
 
         if pause_daemon:
-            logging.debug("[PID HT-Humidity-%s] Pausing Hum/Temp sensor read for SQL reload", sensor + 1)
+            logging.debug("[PID HT-Humidity-%s] Pausing Hum/Temp sensor read for SQL reload", sensor_id + 1)
             while pause_daemon:
                 time.sleep(0.1)
 
-        if ((pid_ht_hum_set_dir[sensor] == 0 and pid_ht_hum_relay_high[sensor] != 0 and pid_ht_hum_relay_low[sensor] != 0) or (pid_ht_hum_set_dir[sensor] == -1 and pid_ht_hum_relay_high[sensor] != 0) or (pid_ht_hum_set_dir[sensor] == 1 and pid_ht_hum_relay_low[sensor] != 0)) and pid_ht_hum_or[sensor] == 0 and pid_ht_hum_down == 0 and sensor_ht_activated[sensor] == 1:
+        if ((pid_ht_hum_set_dir[sensor_id] == 0 and pid_ht_hum_relay_high[sensor_id] != 0 and pid_ht_hum_relay_low[sensor_id] != 0) or (pid_ht_hum_set_dir[sensor_id] == -1 and pid_ht_hum_relay_high[sensor_id] != 0) or (pid_ht_hum_set_dir[sensor_id] == 1 and pid_ht_hum_relay_low[sensor_id] != 0)) and pid_ht_hum_or[sensor_id] == 0 and pid_ht_hum_down == 0 and sensor_ht_activated[sensor_id] == 1:
 
-            if int(time.time()) > timerHum:
+            if time.time() > timerHum:
 
-                logging.debug("[PID HT-Humidity-%s] Reading humidity...", sensor + 1)
-                if read_ht_sensor(sensor) == 1:
+                logging.debug("[PID HT-Humidity-%s] Reading humidity...", sensor_id + 1)
+                if read_ht_sensor(sensor_id) is not None:
 
                     verify_check = {"temperature": 0, "humidity": 0}
-                    if (sensor_ht_verify_hum_stop[sensor] or sensor_ht_verify_hum_notify[sensor]) and sensor_ht_verify_pin[sensor] != 0:
-                        return_value, verify_check["temperature"], verify_check["humidity"] = verify_ht_sensor(sensor, sensor_ht_verify_pin[sensor])
+                    if (sensor_ht_verify_hum_stop[sensor_id] or sensor_ht_verify_hum_notify[sensor_id]) and sensor_ht_verify_pin[sensor_id] != 0:
+                        return_value, verify_check["temperature"], verify_check["humidity"] = verify_ht_sensor(sensor_id, sensor_ht_verify_pin[sensor_id])
 
-                    if sensor_ht_verify_hum_stop[sensor] and verify_check["humidity"]:
-                        logging.warning("[PID HT-Humidity-%s] Verification of Humidity failed, not updating PID or turning on relay", sensor + 1)
-                        timerHum = int(time.time()) + pid_ht_hum_period[sensor]
+                    if sensor_ht_verify_hum_stop[sensor_id] and verify_check["humidity"]:
+                        logging.warning("[PID HT-Humidity-%s] Verification of Humidity failed, not updating PID or turning on relay", sensor_id + 1)
+                        timerHum = time.time() + pid_ht_hum_period[sensor_id]
                     else:
-                        PIDHum = pid_hum.update(float(sensor_ht_read_hum[sensor]))
-                        if sensor_ht_read_hum[sensor] > pid_ht_hum_set[sensor]:
-                            logging.debug("[PID HT-Humidity-%s] Humidity: %.1f%% now > %.1f%% set", sensor + 1, sensor_ht_read_hum[sensor], pid_ht_hum_set[sensor])
-                        elif sensor_ht_read_hum[sensor] < pid_ht_hum_set[sensor]:
-                            logging.debug("[PID HT-Humidity-%s] Humidity: %.1f%% now < %.1f%% set", sensor + 1, sensor_ht_read_hum[sensor], pid_ht_hum_set[sensor])
+                        PIDHum = pid_hum.update(float(sensor_ht_read_hum[sensor_id]))
+                        if sensor_ht_read_hum[sensor_id] > pid_ht_hum_set[sensor_id]:
+                            logging.debug("[PID HT-Humidity-%s] Humidity: %.1f%% now > %.1f%% set", sensor_id + 1, sensor_ht_read_hum[sensor_id], pid_ht_hum_set[sensor_id])
+                        elif sensor_ht_read_hum[sensor_id] < pid_ht_hum_set[sensor_id]:
+                            logging.debug("[PID HT-Humidity-%s] Humidity: %.1f%% now < %.1f%% set", sensor_id + 1, sensor_ht_read_hum[sensor_id], pid_ht_hum_set[sensor_id])
                         else:
-                            logging.debug("[PID HT-Humidity-%s] Humidity: %.1f%% now = %.1f%% set", sensor + 1, sensor_ht_read_hum[sensor], pid_ht_hum_set[sensor])
+                            logging.debug("[PID HT-Humidity-%s] Humidity: %.1f%% now = %.1f%% set", sensor_id + 1, sensor_ht_read_hum[sensor_id], pid_ht_hum_set[sensor_id])
 
-                        if pid_ht_hum_set_dir[sensor] > -1 and PIDHum > 0:
-                            if pid_ht_hum_outmin_low[sensor] != 0 and PIDHum < pid_ht_hum_outmin_low[sensor]:
-                                logging.debug("[PID HT-Humidity-%s] PID = %.1f (min enabled, %s, not turning on)", sensor + 1, PIDHum, pid_ht_hum_outmin_low[sensor])
-                            elif pid_ht_hum_outmax_low[sensor] != 0 and PIDHum > pid_ht_hum_outmax_low[sensor]:
-                                logging.debug("[PID HT-Humidity-%s] PID = %.1f (max enabled, %s)", sensor + 1, PIDHum, pid_ht_hum_outmax_low[sensor])
-                                PIDHum = pid_ht_hum_outmax_low[sensor]
-                                rod = threading.Thread(target=relay_on_duration, args=(pid_ht_hum_relay_low[sensor], round(PIDHum, 2), sensor, relay_trigger, relay_pin,))
+                        if pid_ht_hum_set_dir[sensor_id] > -1 and PIDHum > 0:
+                            if pid_ht_hum_outmin_low[sensor_id] != 0 and PIDHum < pid_ht_hum_outmin_low[sensor_id]:
+                                logging.debug("[PID HT-Humidity-%s] PID = %.1f (min enabled, %s, not turning on)", sensor_id + 1, PIDHum, pid_ht_hum_outmin_low[sensor_id])
+                            elif pid_ht_hum_outmax_low[sensor_id] != 0 and PIDHum > pid_ht_hum_outmax_low[sensor_id]:
+                                logging.debug("[PID HT-Humidity-%s] PID = %.1f (max enabled, %s)", sensor_id + 1, PIDHum, pid_ht_hum_outmax_low[sensor_id])
+                                PIDHum = pid_ht_hum_outmax_low[sensor_id]
+                                rod = threading.Thread(target=relay_on_duration, args=(pid_ht_hum_relay_low[sensor_id], round(PIDHum, 2), sensor_id, relay_trigger, relay_pin,))
                                 rod.start()
                             else:
-                                logging.debug("[PID HT-Humidity-%s] PID = %.1f (max disabled)", sensor + 1, PIDHum)
-                                rod = threading.Thread(target=relay_on_duration, args=(pid_ht_hum_relay_low[sensor], round(PIDHum, 2), sensor, relay_trigger, relay_pin,))
+                                logging.debug("[PID HT-Humidity-%s] PID = %.1f (max disabled)", sensor_id + 1, PIDHum)
+                                rod = threading.Thread(target=relay_on_duration, args=(pid_ht_hum_relay_low[sensor_id], round(PIDHum, 2), sensor_id, relay_trigger, relay_pin,))
                                 rod.start()
 
-                        elif pid_ht_hum_set_dir[sensor] < 1 and PIDHum < 0:
+                        elif pid_ht_hum_set_dir[sensor_id] < 1 and PIDHum < 0:
                             PIDHum = abs(PIDHum)
-                            if pid_ht_hum_outmin_high[sensor] != 0 and PIDHum < pid_ht_hum_outmin_high[sensor]:
-                                logging.debug("[PID HT-Humidity-%s] PID = %.1f (min enabled, %s, not turning on)", sensor + 1, PIDHum, pid_ht_hum_outmin_high[sensor])
-                            elif pid_ht_hum_outmax_high[sensor] != 0 and PIDHum > pid_ht_hum_outmax_high[sensor]:
-                                logging.debug("[PID HT-Humidity-%s] PID = %.1f (max enabled, %s)", sensor + 1, PIDHum, pid_ht_hum_outmax_high[sensor])
-                                PIDHum = pid_ht_hum_outmax_high[sensor]
-                                rod = threading.Thread(target=relay_on_duration, args=(pid_ht_hum_relay_high[sensor], round(PIDHum, 2), sensor, relay_trigger, relay_pin,))
+                            if pid_ht_hum_outmin_high[sensor_id] != 0 and PIDHum < pid_ht_hum_outmin_high[sensor_id]:
+                                logging.debug("[PID HT-Humidity-%s] PID = %.1f (min enabled, %s, not turning on)", sensor_id + 1, PIDHum, pid_ht_hum_outmin_high[sensor_id])
+                            elif pid_ht_hum_outmax_high[sensor_id] != 0 and PIDHum > pid_ht_hum_outmax_high[sensor_id]:
+                                logging.debug("[PID HT-Humidity-%s] PID = %.1f (max enabled, %s)", sensor_id + 1, PIDHum, pid_ht_hum_outmax_high[sensor_id])
+                                PIDHum = pid_ht_hum_outmax_high[sensor_id]
+                                rod = threading.Thread(target=relay_on_duration, args=(pid_ht_hum_relay_high[sensor_id], round(PIDHum, 2), sensor_id, relay_trigger, relay_pin,))
                                 rod.start()
                             else:
-                                logging.debug("[PID HT-Humidity-%s] PID = %.1f", sensor + 1, PIDHum)
-                                rod = threading.Thread(target=relay_on_duration, args=(pid_ht_hum_relay_high[sensor], round(PIDHum, 2), sensor, relay_trigger, relay_pin,))
+                                logging.debug("[PID HT-Humidity-%s] PID = %.1f", sensor_id + 1, PIDHum)
+                                rod = threading.Thread(target=relay_on_duration, args=(pid_ht_hum_relay_high[sensor_id], round(PIDHum, 2), sensor_id, relay_trigger, relay_pin,))
                                 rod.start()
 
                         else:
-                            logging.debug("[PID HT-Humidity-%s] PID = %.1f", sensor + 1, PIDHum)
+                            logging.debug("[PID HT-Humidity-%s] PID = %.1f", sensor_id + 1, PIDHum)
                             PIDHum = 0
-                        timerHum = int(time.time()) + pid_ht_hum_period[sensor]
+                        timerHum = time.time() + pid_ht_hum_period[sensor_id]
                 else:
-                    logging.warning("[PID HT-Humidity-%s] Could not read Hum/Temp sensor, not updating PID", sensor + 1)
+                    logging.warning("[PID HT-Humidity-%s] Could not read Hum/Temp sensor, not updating PID", sensor_id + 1)
         time.sleep(0.1)
-    logging.info("[PID HT-Humidity-%s] Shutting Down %s", sensor + 1, ThreadName)
+    logging.info("[PID HT-Humidity-%s] Shutting Down %s", sensor_id + 1, ThreadName)
 
-    if pid_ht_hum_relay_high[sensor]:
-        relay_onoff(int(pid_ht_hum_relay_high[sensor]), 'off')
-    if pid_ht_hum_relay_low[sensor]:
-        relay_onoff(int(pid_ht_hum_relay_low[sensor]), 'off')
+    if pid_ht_hum_relay_high[sensor_id]:
+        relay_onoff(int(pid_ht_hum_relay_high[sensor_id]), 'off')
+    if pid_ht_hum_relay_low[sensor_id]:
+        relay_onoff(int(pid_ht_hum_relay_low[sensor_id]), 'off')
 
-    pid_ht_hum_alive[sensor] = 2
+    pid_ht_hum_alive[sensor_id] = 2
 
 
 # CO2 modulation by PID control
-def co2_monitor(ThreadName, sensor):
-    global pid_co2_alive
+def co2_monitor(ThreadName, sensor_id):
+    global pid_c_alive
     timerCO2 = 0
     PIDCO2 = 0
-    logging.info("[PID CO2-%s] Starting %s", sensor + 1, ThreadName)
+    logging.info("[PID CO2-%s] Starting %s", sensor_id + 1, ThreadName)
 
-    if pid_co2_relay_high[sensor]:
-        relay_onoff(int(pid_co2_relay_high[sensor]), 'off')
-    if pid_co2_relay_low[sensor]:
-        relay_onoff(int(pid_co2_relay_low[sensor]), 'off')
+    if pid_c_relay_high[sensor_id]:
+        relay_onoff(int(pid_c_relay_high[sensor_id]), 'off')
+    if pid_c_relay_low[sensor_id]:
+        relay_onoff(int(pid_c_relay_low[sensor_id]), 'off')
 
-    pid_co2 = PID(pid_co2_p[sensor], pid_co2_i[sensor], pid_co2_d[sensor])
-    pid_co2.setPoint(pid_co2_set[sensor])
+    pid_co2 = PID(pid_c_p[sensor_id], pid_c_i[sensor_id], pid_c_d[sensor_id], Measure_interval=pid_c_period[sensor_id])
+    pid_co2.setPoint(pid_c_set[sensor_id])
 
-    while pid_co2_alive[sensor]:
+    while pid_c_alive[sensor_id]:
 
         if pause_daemon:
-            logging.debug("[PID CO2-%s] Pausing CO2 sensor read for SQL reload", sensor + 1)
+            logging.debug("[PID CO2-%s] Pausing CO2 sensor read for SQL reload", sensor_id + 1)
             while pause_daemon:
                 time.sleep(0.1)
 
-        if ((pid_co2_set_dir[sensor] == 0 and pid_co2_relay_high[sensor] != 0 and pid_co2_relay_low[sensor] != 0) or (pid_co2_set_dir[sensor] == -1 and pid_co2_relay_high[sensor] != 0) or (pid_co2_set_dir[sensor] == 1 and pid_co2_relay_low[sensor] != 0)) and pid_co2_or[sensor] == 0 and pid_co2_down == 0 and sensor_co2_activated[sensor] == 1:
+        if ((pid_c_set_dir[sensor_id] == 0 and pid_c_relay_high[sensor_id] != 0 and pid_c_relay_low[sensor_id] != 0) or (pid_c_set_dir[sensor_id] == -1 and pid_c_relay_high[sensor_id] != 0) or (pid_c_set_dir[sensor_id] == 1 and pid_c_relay_low[sensor_id] != 0)) and pid_c_or[sensor_id] == 0 and pid_c_down == 0 and sensor_c_activated[sensor_id] == 1:
 
-            if int(time.time()) > timerCO2:
+            if time.time() > timerCO2:
 
-                logging.debug("[PID CO2-%s] Reading temperature...", sensor + 1)
-                if read_co2_sensor(sensor) == 1:
+                logging.debug("[PID CO2-%s] Reading temperature...", sensor_id + 1)
+                if read_co2_sensor(sensor_id) is not None:
 
-                    PIDCO2 = pid_co2.update(float(sensor_co2_read_co2[sensor]))
-                    if sensor_co2_read_co2[sensor] > pid_co2_set[sensor]:
-                        logging.debug("[PID CO2-%s] CO2: %.1f ppm > %.1f ppm set", sensor + 1, sensor_co2_read_co2[sensor], pid_co2_set[sensor])
-                    elif sensor_co2_read_co2[sensor] < pid_co2_set[sensor]:
-                        logging.debug("[PID CO2-%s] CO2: %.1f ppm < %.1f ppm set", sensor + 1, sensor_co2_read_co2[sensor], pid_co2_set[sensor])
+                    PIDCO2 = pid_co2.update(float(sensor_c_read_co2[sensor_id]))
+                    if sensor_c_read_co2[sensor_id] > pid_c_set[sensor_id]:
+                        logging.debug("[PID CO2-%s] CO2: %.1f ppm > %.1f ppm set", sensor_id + 1, sensor_c_read_co2[sensor_id], pid_c_set[sensor_id])
+                    elif sensor_c_read_co2[sensor_id] < pid_c_set[sensor_id]:
+                        logging.debug("[PID CO2-%s] CO2: %.1f ppm < %.1f ppm set", sensor_id + 1, sensor_c_read_co2[sensor_id], pid_c_set[sensor_id])
                     else:
-                        logging.debug("[PID CO2-%s] CO2: %.1f ppm now = %.1f ppm set", sensor + 1, sensor_co2_read_co2[sensor], pid_co2_set[sensor])
+                        logging.debug("[PID CO2-%s] CO2: %.1f ppm now = %.1f ppm set", sensor_id + 1, sensor_c_read_co2[sensor_id], pid_c_set[sensor_id])
 
-                    if pid_co2_set_dir[sensor] > -1 and PIDCO2 > 0:
-                        if pid_co2_outmin_low[sensor] != 0 and PIDCO2 < pid_co2_outmin_low[sensor]:
-                            logging.debug("[PID CO2-%s] PID = %.1f (min enabled, %s, not turning on)", sensor + 1, PIDCO2, pid_co2_outmin_low[sensor])
-                        elif pid_co2_outmax_low[sensor] != 0 and PIDCO2 > pid_co2_outmax_low[sensor]:
-                            logging.debug("[PID CO2-%s] PID = %.1f (max enabled, %s)", sensor + 1, PIDCO2, pid_co2_outmax_low[sensor])
-                            PIDCO2 = pid_co2_outmax_low[sensor]
-                            rod = threading.Thread(target=relay_on_duration, args=(pid_co2_relay_low[sensor], round(PIDCO2, 2), sensor, relay_trigger, relay_pin,))
+                    if pid_c_set_dir[sensor_id] > -1 and PIDCO2 > 0:
+                        if pid_c_outmin_low[sensor_id] != 0 and PIDCO2 < pid_c_outmin_low[sensor_id]:
+                            logging.debug("[PID CO2-%s] PID = %.1f (min enabled, %s, not turning on)", sensor_id + 1, PIDCO2, pid_c_outmin_low[sensor_id])
+                        elif pid_c_outmax_low[sensor_id] != 0 and PIDCO2 > pid_c_outmax_low[sensor_id]:
+                            logging.debug("[PID CO2-%s] PID = %.1f (max enabled, %s)", sensor_id + 1, PIDCO2, pid_c_outmax_low[sensor_id])
+                            PIDCO2 = pid_c_outmax_low[sensor_id]
+                            rod = threading.Thread(target=relay_on_duration, args=(pid_c_relay_low[sensor_id], round(PIDCO2, 2), sensor_id, relay_trigger, relay_pin,))
                             rod.start()
                         else:
-                            logging.debug("[PID CO2-%s] PID = %.1f", sensor + 1, PIDCO2)
-                            rod = threading.Thread(target=relay_on_duration, args=(pid_co2_relay_low[sensor], round(PIDCO2, 2), sensor, relay_trigger, relay_pin,))
+                            logging.debug("[PID CO2-%s] PID = %.1f", sensor_id + 1, PIDCO2)
+                            rod = threading.Thread(target=relay_on_duration, args=(pid_c_relay_low[sensor_id], round(PIDCO2, 2), sensor_id, relay_trigger, relay_pin,))
                             rod.start()
 
-                    elif pid_co2_set_dir[sensor] < 1 and PIDCO2 < 0:
+                    elif pid_c_set_dir[sensor_id] < 1 and PIDCO2 < 0:
                         PIDCO2 = abs(PIDCO2)
-                        if pid_co2_outmin_high[sensor] != 0 and PIDCO2 < pid_co2_outmin_high[sensor]:
-                            logging.debug("[PID CO2-%s] PID = %.1f (min enabled, %s, not turning on)", sensor + 1, PIDCO2, pid_co2_outmin_high[sensor])
-                        elif pid_co2_outmax_high[sensor] != 0 and PIDCO2 > pid_co2_outmax_high[sensor]:
-                            logging.debug("[PID CO2-%s] PID = %.1f (max enabled, %s)", sensor + 1, PIDCO2, pid_co2_outmax_high[sensor])
-                            PIDCO2 = pid_co2_outmax_high[sensor]
-                            rod = threading.Thread(target=relay_on_duration, args=(pid_co2_relay_high[sensor], round(PIDCO2, 2), sensor, relay_trigger, relay_pin,))
+                        if pid_c_outmin_high[sensor_id] != 0 and PIDCO2 < pid_c_outmin_high[sensor_id]:
+                            logging.debug("[PID CO2-%s] PID = %.1f (min enabled, %s, not turning on)", sensor_id + 1, PIDCO2, pid_c_outmin_high[sensor_id])
+                        elif pid_c_outmax_high[sensor_id] != 0 and PIDCO2 > pid_c_outmax_high[sensor_id]:
+                            logging.debug("[PID CO2-%s] PID = %.1f (max enabled, %s)", sensor_id + 1, PIDCO2, pid_c_outmax_high[sensor_id])
+                            PIDCO2 = pid_c_outmax_high[sensor_id]
+                            rod = threading.Thread(target=relay_on_duration, args=(pid_c_relay_high[sensor_id], round(PIDCO2, 2), sensor_id, relay_trigger, relay_pin,))
                             rod.start()
                         else:
-                            logging.debug("[PID CO2-%s] PID = %.1f", sensor + 1, PIDCO2)
-                            rod = threading.Thread(target=relay_on_duration, args=(pid_co2_relay_high[sensor], round(PIDCO2, 2), sensor, relay_trigger, relay_pin,))
+                            logging.debug("[PID CO2-%s] PID = %.1f", sensor_id + 1, PIDCO2)
+                            rod = threading.Thread(target=relay_on_duration, args=(pid_c_relay_high[sensor_id], round(PIDCO2, 2), sensor_id, relay_trigger, relay_pin,))
                             rod.start()
 
                     else:
-                        logging.debug("[PID CO2-%s] PID = %.1f", sensor + 1, PIDCO2)
+                        logging.debug("[PID CO2-%s] PID = %.1f", sensor_id + 1, PIDCO2)
                         PIDCO2 = 0
-                    timerCO2 = int(time.time()) + pid_co2_period[sensor]
+                    timerCO2 = time.time() + pid_c_period[sensor_id]
                 else:
-                    logging.warning("[PID CO2-%s] Could not read CO2 sensor, not updating PID", sensor + 1)
+                    logging.warning("[PID CO2-%s] Could not read CO2 sensor, not updating PID", sensor_id + 1)
         time.sleep(0.1)
-    logging.info("[PID CO2-%s] Shutting Down %s", sensor + 1, ThreadName)
+    logging.info("[PID CO2-%s] Shutting Down %s", sensor_id + 1, ThreadName)
 
-    if pid_co2_relay_high[sensor]:
-        relay_onoff(int(pid_co2_relay_high[sensor]), 'off')
-    if pid_co2_relay_low[sensor]:
-        relay_onoff(int(pid_co2_relay_low[sensor]), 'off')
+    if pid_c_relay_high[sensor_id]:
+        relay_onoff(int(pid_c_relay_high[sensor_id]), 'off')
+    if pid_c_relay_low[sensor_id]:
+        relay_onoff(int(pid_c_relay_low[sensor_id]), 'off')
 
-    pid_co2_alive[sensor] = 2
+    pid_c_alive[sensor_id] = 2
 
 
 # Press Sensor Temperature modulation by PID control
-def press_sensor_temperature_monitor(ThreadName, sensor):
-    global pid_press_temp_alive
+def press_sensor_temperature_monitor(ThreadName, sensor_id):
+    global pid_p_temp_alive
     timerTemp = 0
     PIDTemp = 0
-    logging.info("[PID Press-Temperature-%s] Starting %s", sensor + 1, ThreadName)
+    logging.info("[PID Press-Temperature-%s] Starting %s", sensor_id + 1, ThreadName)
 
-    if pid_press_temp_relay_high[sensor]:
-        relay_onoff(int(pid_press_temp_relay_high[sensor]), 'off')
-    if pid_press_temp_relay_low[sensor]:
-        relay_onoff(int(pid_press_temp_relay_low[sensor]), 'off')
+    if pid_p_temp_relay_high[sensor_id]:
+        relay_onoff(int(pid_p_temp_relay_high[sensor_id]), 'off')
+    if pid_p_temp_relay_low[sensor_id]:
+        relay_onoff(int(pid_p_temp_relay_low[sensor_id]), 'off')
 
-    pid_temp = PID(pid_press_temp_p[sensor], pid_press_temp_i[sensor], pid_press_temp_d[sensor])
-    pid_temp.setPoint(pid_press_temp_set[sensor])
+    pid_temp = PID(pid_p_temp_p[sensor_id], pid_p_temp_i[sensor_id], pid_p_temp_d[sensor_id], Measure_interval=pid_p_temp_period[sensor_id])
+    pid_temp.setPoint(pid_p_temp_set[sensor_id])
 
-    while pid_press_temp_alive[sensor]:
+    while pid_p_temp_alive[sensor_id]:
 
         if pause_daemon:
-            logging.debug("[PID Press-Temperature-%s] Pausing Press/Temp sensor read for SQL reload", sensor + 1)
+            logging.debug("[PID Press-Temperature-%s] Pausing Press/Temp sensor read for SQL reload", sensor_id + 1)
             while pause_daemon:
                 time.sleep(0.1)
 
-        if ((pid_press_temp_set_dir[sensor] == 0 and pid_press_temp_relay_high[sensor] != 0 and pid_press_temp_relay_low[sensor] != 0) or (pid_press_temp_set_dir[sensor] == -1 and pid_press_temp_relay_high[sensor] != 0) or (pid_press_temp_set_dir[sensor] == 1 and pid_press_temp_relay_low[sensor] != 0)) and pid_press_temp_or[sensor] == 0 and pid_press_temp_down == 0 and sensor_ht_activated[sensor] == 1:
+        if ((pid_p_temp_set_dir[sensor_id] == 0 and pid_p_temp_relay_high[sensor_id] != 0 and pid_p_temp_relay_low[sensor_id] != 0) or (pid_p_temp_set_dir[sensor_id] == -1 and pid_p_temp_relay_high[sensor_id] != 0) or (pid_p_temp_set_dir[sensor_id] == 1 and pid_p_temp_relay_low[sensor_id] != 0)) and pid_p_temp_or[sensor_id] == 0 and pid_p_temp_down == 0 and sensor_ht_activated[sensor_id] == 1:
 
-            if int(time.time()) > timerTemp:
+            if time.time() > timerTemp:
 
-                logging.debug("[PID Press-Temperature-%s] Reading temperature...", sensor + 1)
-                if read_press_sensor(sensor) == 1:
+                logging.debug("[PID Press-Temperature-%s] Reading temperature...", sensor_id + 1)
+                if read_press_sensor(sensor_id) is not None:
 
-                    PIDTemp = pid_temp.update(float(sensor_ht_read_temp_c[sensor]))
-                    if sensor_ht_read_temp_c[sensor] > pid_press_temp_set[sensor]:
-                        logging.debug("[PID Press-Temperature-%s] Temperature: %.1f°C now > %.1f°C set", sensor + 1, sensor_ht_read_temp_c[sensor], pid_press_temp_set[sensor])
-                    elif sensor_ht_read_temp_c[sensor] < pid_press_temp_set[sensor]:
-                        logging.debug("[PID Press-Temperature-%s] Temperature: %.1f°C now < %.1f°C set", sensor + 1, sensor_ht_read_temp_c[sensor], pid_press_temp_set[sensor])
+                    PIDTemp = pid_temp.update(float(sensor_ht_read_temp_c[sensor_id]))
+                    if sensor_ht_read_temp_c[sensor_id] > pid_p_temp_set[sensor_id]:
+                        logging.debug("[PID Press-Temperature-%s] Temperature: %.1f°C now > %.1f°C set", sensor_id + 1, sensor_ht_read_temp_c[sensor_id], pid_p_temp_set[sensor_id])
+                    elif sensor_ht_read_temp_c[sensor_id] < pid_p_temp_set[sensor_id]:
+                        logging.debug("[PID Press-Temperature-%s] Temperature: %.1f°C now < %.1f°C set", sensor_id + 1, sensor_ht_read_temp_c[sensor_id], pid_p_temp_set[sensor_id])
                     else:
-                        logging.debug("[PID Press-Temperature-%s] Temperature: %.1f°C now = %.1f°C set", sensor + 1, sensor_ht_read_temp_c[sensor], pid_press_temp_set[sensor])
+                        logging.debug("[PID Press-Temperature-%s] Temperature: %.1f°C now = %.1f°C set", sensor_id + 1, sensor_ht_read_temp_c[sensor_id], pid_p_temp_set[sensor_id])
 
-                    if pid_press_temp_set_dir[sensor] > -1 and PIDTemp > 0:
-                        if pid_press_temp_outmin_low[sensor] != 0 and PIDTemp < pid_press_temp_outmin_low[sensor]:
-                            logging.debug("[PID Press-Temperature-%s] PID = %.1f (min enabled, %s, not turning on)", sensor + 1, PIDTemp, pid_press_temp_outmin_low[sensor])
-                        elif pid_press_temp_outmax_low[sensor] != 0 and PIDTemp > pid_press_temp_outmax_low[sensor]:
-                            logging.debug("[PID Press-Temperature-%s] PID = %.1f (max enabled, %s)", sensor + 1, PIDTemp, pid_press_temp_outmax_low[sensor])
-                            PIDTemp = pid_press_temp_outmax_low[sensor]
-                            rod = threading.Thread(target=relay_on_duration, args=(pid_press_temp_relay_low[sensor], round(PIDTemp, 2), sensor, relay_trigger, relay_pin,))
+                    if pid_p_temp_set_dir[sensor_id] > -1 and PIDTemp > 0:
+                        if pid_p_temp_outmin_low[sensor_id] != 0 and PIDTemp < pid_p_temp_outmin_low[sensor_id]:
+                            logging.debug("[PID Press-Temperature-%s] PID = %.1f (min enabled, %s, not turning on)", sensor_id + 1, PIDTemp, pid_p_temp_outmin_low[sensor_id])
+                        elif pid_p_temp_outmax_low[sensor_id] != 0 and PIDTemp > pid_p_temp_outmax_low[sensor_id]:
+                            logging.debug("[PID Press-Temperature-%s] PID = %.1f (max enabled, %s)", sensor_id + 1, PIDTemp, pid_p_temp_outmax_low[sensor_id])
+                            PIDTemp = pid_p_temp_outmax_low[sensor_id]
+                            rod = threading.Thread(target=relay_on_duration, args=(pid_p_temp_relay_low[sensor_id], round(PIDTemp, 2), sensor_id, relay_trigger, relay_pin,))
                             rod.start()
                         else:
-                            logging.debug("[PID Press-Temperature-%s] PID = %.1f", sensor + 1, PIDTemp)
-                            rod = threading.Thread(target=relay_on_duration, args=(pid_press_temp_relay_low[sensor], round(PIDTemp, 2), sensor, relay_trigger, relay_pin,))
+                            logging.debug("[PID Press-Temperature-%s] PID = %.1f", sensor_id + 1, PIDTemp)
+                            rod = threading.Thread(target=relay_on_duration, args=(pid_p_temp_relay_low[sensor_id], round(PIDTemp, 2), sensor_id, relay_trigger, relay_pin,))
                             rod.start()
 
-                    elif pid_press_temp_set_dir[sensor] < 1 and PIDTemp < 0:
+                    elif pid_p_temp_set_dir[sensor_id] < 1 and PIDTemp < 0:
                         PIDTemp = abs(PIDTemp)
-                        if pid_press_temp_outmin_high[sensor] != 0 and PIDTemp < pid_press_temp_outmin_high[sensor]:
-                            logging.debug("[PID Press-Temperature-%s] PID = %.1f (min enabled, %s, not turning on)", sensor + 1, PIDTemp, pid_press_temp_outmin_high[sensor])
-                        elif pid_press_temp_outmax_high[sensor] != 0 and PIDTemp > pid_press_temp_outmax_high[sensor]:
-                            logging.debug("[PID Press-Temperature-%s] PID = %.1f (max enabled, %s)", sensor + 1, PIDTemp, pid_press_temp_outmax_high[sensor])
-                            PIDTemp = pid_press_temp_outmax_high[sensor]
-                            rod = threading.Thread(target=relay_on_duration, args=(pid_press_temp_relay_high[sensor], round(PIDTemp, 2), sensor, relay_trigger, relay_pin,))
+                        if pid_p_temp_outmin_high[sensor_id] != 0 and PIDTemp < pid_p_temp_outmin_high[sensor_id]:
+                            logging.debug("[PID Press-Temperature-%s] PID = %.1f (min enabled, %s, not turning on)", sensor_id + 1, PIDTemp, pid_p_temp_outmin_high[sensor_id])
+                        elif pid_p_temp_outmax_high[sensor_id] != 0 and PIDTemp > pid_p_temp_outmax_high[sensor_id]:
+                            logging.debug("[PID Press-Temperature-%s] PID = %.1f (max enabled, %s)", sensor_id + 1, PIDTemp, pid_p_temp_outmax_high[sensor_id])
+                            PIDTemp = pid_p_temp_outmax_high[sensor_id]
+                            rod = threading.Thread(target=relay_on_duration, args=(pid_p_temp_relay_high[sensor_id], round(PIDTemp, 2), sensor_id, relay_trigger, relay_pin,))
                             rod.start()
                         else:
-                            logging.debug("[PID Press-Temperature-%s] PID = %.1f", sensor + 1, PIDTemp)
-                            rod = threading.Thread(target=relay_on_duration, args=(pid_press_temp_relay_high[sensor], round(PIDTemp, 2), sensor, relay_trigger, relay_pin,))
+                            logging.debug("[PID Press-Temperature-%s] PID = %.1f", sensor_id + 1, PIDTemp)
+                            rod = threading.Thread(target=relay_on_duration, args=(pid_p_temp_relay_high[sensor_id], round(PIDTemp, 2), sensor_id, relay_trigger, relay_pin,))
                             rod.start()
 
                     else:
-                        logging.debug("[PID Press-Temperature-%s] PID = %.1f", sensor + 1, PIDTemp)
+                        logging.debug("[PID Press-Temperature-%s] PID = %.1f", sensor_id + 1, PIDTemp)
                         PIDTemp = 0
-                    timerTemp = int(time.time()) + pid_press_temp_period[sensor]
+                    timerTemp = time.time() + pid_p_temp_period[sensor_id]
                 else:
-                    logging.warning("[PID Press-Temperature-%s] Could not read Press/Temp sensor, not updating PID", sensor + 1)
+                    logging.warning("[PID Press-Temperature-%s] Could not read Press/Temp sensor, not updating PID", sensor_id + 1)
         time.sleep(0.1)
-    logging.info("[PID Press-Temperature-%s] Shutting Down %s", sensor + 1, ThreadName)
+    logging.info("[PID Press-Temperature-%s] Shutting Down %s", sensor_id + 1, ThreadName)
 
-    if pid_press_temp_relay_high[sensor]:
-        relay_onoff(int(pid_press_temp_relay_high[sensor]), 'off')
-    if pid_press_temp_relay_low[sensor]:
-        relay_onoff(int(pid_press_temp_relay_low[sensor]), 'off')
+    if pid_p_temp_relay_high[sensor_id]:
+        relay_onoff(int(pid_p_temp_relay_high[sensor_id]), 'off')
+    if pid_p_temp_relay_low[sensor_id]:
+        relay_onoff(int(pid_p_temp_relay_low[sensor_id]), 'off')
 
-    pid_press_temp_alive[sensor] = 2
+    pid_p_temp_alive[sensor_id] = 2
 
 
 # Press Sensor Pressure modulation by PID control
-def press_sensor_pressure_monitor(ThreadName, sensor):
-    global pid_press_press_alive
+def press_sensor_pressure_monitor(ThreadName, sensor_id):
+    global pid_p_press_alive
     timerPress = 0
     PIDPress = 0
-    logging.info("[PID Press-Pressure-%s] Starting %s", sensor + 1, ThreadName)
+    logging.info("[PID Press-Pressure-%s] Starting %s", sensor_id + 1, ThreadName)
 
-    if pid_press_press_relay_high[sensor]:
-        relay_onoff(int(pid_press_press_relay_high[sensor]), 'off')
-    if pid_press_press_relay_low[sensor]:
-        relay_onoff(int(pid_press_press_relay_low[sensor]), 'off')
+    if pid_p_press_relay_high[sensor_id]:
+        relay_onoff(int(pid_p_press_relay_high[sensor_id]), 'off')
+    if pid_p_press_relay_low[sensor_id]:
+        relay_onoff(int(pid_p_press_relay_low[sensor_id]), 'off')
 
-    pid_press = PID(pid_press_press_p[sensor], pid_press_press_i[sensor], pid_press_press_d[sensor])
-    pid_press.setPoint(pid_press_press_set[sensor])
+    pid_press = PID(pid_p_press_p[sensor_id], pid_p_press_i[sensor_id], pid_p_press_d[sensor_id], Measure_interval=pid_p_press_period[sensor_id])
+    pid_press.setPoint(pid_p_press_set[sensor_id])
 
-    while pid_press_press_alive[sensor]:
+    while pid_p_press_alive[sensor_id]:
 
         if pause_daemon:
-            logging.debug("[PID Press-Pressure-%s] Pausing Press/Temp sensor read for SQL reload", sensor + 1)
+            logging.debug("[PID Press-Pressure-%s] Pausing Press/Temp sensor read for SQL reload", sensor_id + 1)
             while pause_daemon:
                 time.sleep(0.1)
 
-        if ((pid_press_press_set_dir[sensor] == 0 and pid_press_press_relay_high[sensor] != 0 and pid_press_press_relay_low[sensor] != 0) or (pid_press_press_set_dir[sensor] == -1 and pid_press_press_relay_high[sensor] != 0) or (pid_press_press_set_dir[sensor] == 1 and pid_press_press_relay_low[sensor] != 0)) and pid_press_press_or[sensor] == 0 and pid_press_press_down == 0 and sensor_press_activated[sensor] == 1:
+        if ((pid_p_press_set_dir[sensor_id] == 0 and pid_p_press_relay_high[sensor_id] != 0 and pid_p_press_relay_low[sensor_id] != 0) or (pid_p_press_set_dir[sensor_id] == -1 and pid_p_press_relay_high[sensor_id] != 0) or (pid_p_press_set_dir[sensor_id] == 1 and pid_p_press_relay_low[sensor_id] != 0)) and pid_p_press_or[sensor_id] == 0 and pid_p_press_down == 0 and sensor_p_activated[sensor_id] == 1:
 
-            if int(time.time()) > timerPress:
+            if time.time() > timerPress:
 
-                logging.debug("[PID Press-Pressure-%s] Reading pressure...", sensor + 1)
-                if read_press_sensor(sensor) == 1:
+                logging.debug("[PID Press-Pressure-%s] Reading pressure...", sensor_id + 1)
+                if read_press_sensor(sensor_id) is not None:
 
-                    PIDPress = pid_press.update(float(sensor_press_read_press[sensor]))
-                    if sensor_press_read_press[sensor] > pid_press_press_set[sensor]:
-                        logging.debug("[PID Press-Pressure-%s] Pressure: %.1f%% now > %.1fPa set", sensor + 1, sensor_press_read_press[sensor], pid_press_press_set[sensor])
-                    elif sensor_press_read_press[sensor] < pid_press_press_set[sensor]:
-                        logging.debug("[PID Press-Pressure-%s] Pressure: %.1f%% now < %.1fPa set", sensor + 1, sensor_press_read_press[sensor], pid_press_press_set[sensor])
+                    PIDPress = pid_press.update(float(sensor_p_read_press[sensor_id]))
+                    if sensor_p_read_press[sensor_id] > pid_p_press_set[sensor_id]:
+                        logging.debug("[PID Press-Pressure-%s] Pressure: %.1f%% now > %.1fPa set", sensor_id + 1, sensor_p_read_press[sensor_id], pid_p_press_set[sensor_id])
+                    elif sensor_p_read_press[sensor_id] < pid_p_press_set[sensor_id]:
+                        logging.debug("[PID Press-Pressure-%s] Pressure: %.1f%% now < %.1fPa set", sensor_id + 1, sensor_p_read_press[sensor_id], pid_p_press_set[sensor_id])
                     else:
-                        logging.debug("[PID Press-Pressure-%s] Pressure: %.1f%% now = %.1fPa set", sensor + 1, sensor_press_read_press[sensor], pid_press_press_set[sensor])
+                        logging.debug("[PID Press-Pressure-%s] Pressure: %.1f%% now = %.1fPa set", sensor_id + 1, sensor_p_read_press[sensor_id], pid_p_press_set[sensor_id])
 
-                    if pid_press_press_set_dir[sensor] > -1 and PIDPress > 0:
-                        if pid_press_press_outmin_low[sensor] != 0 and PIDPress < pid_press_press_outmin_low[sensor]:
-                            logging.debug("[PID Press-Pressure-%s] PID = %.1f (min enabled, %s, not turning on)", sensor + 1, PIDPress, pid_press_press_outmin_low[sensor])
-                        elif pid_press_press_outmax_low[sensor] != 0 and PIDPress > pid_press_press_outmax_low[sensor]:
-                            logging.debug("[PID Press-Pressure-%s] PID = %.1f (max enabled, %s)", sensor + 1, PIDPress, pid_press_press_outmax_low[sensor])
-                            PIDPress = pid_press_press_outmax_low[sensor]
-                            rod = threading.Thread(target=relay_on_duration, args=(pid_press_press_relay_low[sensor], round(PIDPress, 2), sensor, relay_trigger, relay_pin,))
+                    if pid_p_press_set_dir[sensor_id] > -1 and PIDPress > 0:
+                        if pid_p_press_outmin_low[sensor_id] != 0 and PIDPress < pid_p_press_outmin_low[sensor_id]:
+                            logging.debug("[PID Press-Pressure-%s] PID = %.1f (min enabled, %s, not turning on)", sensor_id + 1, PIDPress, pid_p_press_outmin_low[sensor_id])
+                        elif pid_p_press_outmax_low[sensor_id] != 0 and PIDPress > pid_p_press_outmax_low[sensor_id]:
+                            logging.debug("[PID Press-Pressure-%s] PID = %.1f (max enabled, %s)", sensor_id + 1, PIDPress, pid_p_press_outmax_low[sensor_id])
+                            PIDPress = pid_p_press_outmax_low[sensor_id]
+                            rod = threading.Thread(target=relay_on_duration, args=(pid_p_press_relay_low[sensor_id], round(PIDPress, 2), sensor_id, relay_trigger, relay_pin,))
                             rod.start()
                         else:
-                            logging.debug("[PID Press-Pressure-%s] PID = %.1f", sensor + 1, PIDPress)
-                            rod = threading.Thread(target=relay_on_duration, args=(pid_press_press_relay_low[sensor], round(PIDPress, 2), sensor, relay_trigger, relay_pin,))
+                            logging.debug("[PID Press-Pressure-%s] PID = %.1f", sensor_id + 1, PIDPress)
+                            rod = threading.Thread(target=relay_on_duration, args=(pid_p_press_relay_low[sensor_id], round(PIDPress, 2), sensor_id, relay_trigger, relay_pin,))
                             rod.start()
 
-                    elif pid_press_press_set_dir[sensor] < 1 and PIDPress < 0:
+                    elif pid_p_press_set_dir[sensor_id] < 1 and PIDPress < 0:
                         PIDPress = abs(PIDPress)
-                        if pid_press_press_outmin_high[sensor] != 0 and PIDPress < pid_press_press_outmin_high[sensor]:
-                            logging.debug("[PID Press-Pressure-%s] PID = %.1f (min enabled, %s, not turning on)", sensor + 1, PIDPress, pid_press_press_outmin_high[sensor])
-                        elif pid_press_press_outmax_high[sensor] != 0 and PIDPress > pid_press_press_outmax_high[sensor]:
-                            logging.debug("[PID Press-Pressure-%s] PID = %.1f (max enabled, %s)", sensor + 1, PIDPress, pid_press_press_outmax_high[sensor])
-                            PIDPress = pid_press_press_outmax_high[sensor]
-                            rod = threading.Thread(target=relay_on_duration, args=(pid_press_press_relay_high[sensor], round(PIDPress, 2), sensor, relay_trigger, relay_pin,))
+                        if pid_p_press_outmin_high[sensor_id] != 0 and PIDPress < pid_p_press_outmin_high[sensor_id]:
+                            logging.debug("[PID Press-Pressure-%s] PID = %.1f (min enabled, %s, not turning on)", sensor_id + 1, PIDPress, pid_p_press_outmin_high[sensor_id])
+                        elif pid_p_press_outmax_high[sensor_id] != 0 and PIDPress > pid_p_press_outmax_high[sensor_id]:
+                            logging.debug("[PID Press-Pressure-%s] PID = %.1f (max enabled, %s)", sensor_id + 1, PIDPress, pid_p_press_outmax_high[sensor_id])
+                            PIDPress = pid_p_press_outmax_high[sensor_id]
+                            rod = threading.Thread(target=relay_on_duration, args=(pid_p_press_relay_high[sensor_id], round(PIDPress, 2), sensor_id, relay_trigger, relay_pin,))
                             rod.start()
                         else:
-                            logging.debug("[PID Press-Pressure-%s] PID = %.1f", sensor + 1, PIDPress)
-                            rod = threading.Thread(target=relay_on_duration, args=(pid_press_press_relay_high[sensor], round(PIDPress, 2), sensor, relay_trigger, relay_pin,))
+                            logging.debug("[PID Press-Pressure-%s] PID = %.1f", sensor_id + 1, PIDPress)
+                            rod = threading.Thread(target=relay_on_duration, args=(pid_p_press_relay_high[sensor_id], round(PIDPress, 2), sensor_id, relay_trigger, relay_pin,))
                             rod.start()
 
                     else:
-                        logging.debug("[PID Press-Pressure-%s] PID = %.1f", sensor + 1, PIDPress)
+                        logging.debug("[PID Press-Pressure-%s] PID = %.1f", sensor_id + 1, PIDPress)
                         PIDPress = 0
-                    timerPress = int(time.time()) + pid_press_press_period[sensor]
+                    timerPress = time.time() + pid_p_press_period[sensor_id]
                 else:
-                    logging.warning("[PID Press-Pressure-%s] Could not read Press/Temp sensor, not updating PID", sensor + 1)
+                    logging.warning("[PID Press-Pressure-%s] Could not read Press/Temp sensor, not updating PID", sensor_id + 1)
         time.sleep(0.1)
-    logging.info("[PID Press-Pressure-%s] Shutting Down %s", sensor + 1, ThreadName)
+    logging.info("[PID Press-Pressure-%s] Shutting Down %s", sensor_id + 1, ThreadName)
 
-    if pid_press_press_relay_high[sensor]:
-        relay_onoff(int(pid_press_press_relay_high[sensor]), 'off')
-    if pid_press_press_relay_low[sensor]:
-        relay_onoff(int(pid_press_press_relay_low[sensor]), 'off')
+    if pid_p_press_relay_high[sensor_id]:
+        relay_onoff(int(pid_p_press_relay_high[sensor_id]), 'off')
+    if pid_p_press_relay_low[sensor_id]:
+        relay_onoff(int(pid_p_press_relay_low[sensor_id]), 'off')
 
-    pid_press_press_alive[sensor] = 2
+    pid_p_press_alive[sensor_id] = 2
 
 
 def PID_start(type_, number):
@@ -1615,19 +1625,19 @@ def PID_start(type_, number):
         while pid_ht_hum_up:
             time.sleep(0.1)
     elif type_ == 'CO2':
-        global pid_co2_up
-        pid_co2_up = 1
-        while pid_co2_up:
+        global pid_c_up
+        pid_c_up = 1
+        while pid_c_up:
             time.sleep(0.1)
     if type_ == 'PressTemp':
-        global pid_press_temp_up
-        pid_press_temp_up = 1
-        while pid_press_temp_up:
+        global pid_p_temp_up
+        pid_p_temp_up = 1
+        while pid_p_temp_up:
             time.sleep(0.1)
     elif type_ == 'PressPress':
-        global pid_press_press_up
-        pid_press_press_up = 1
-        while pid_press_press_up:
+        global pid_p_press_up
+        pid_p_press_up = 1
+        while pid_p_press_up:
             time.sleep(0.1)
     return 1
 
@@ -1651,19 +1661,19 @@ def PID_stop(type_, number):
         while pid_ht_hum_down == 1:
             time.sleep(0.1)
     if type_ == 'CO2':
-        global pid_co2_down
-        pid_co2_down = 1
-        while pid_co2_down == 1:
+        global pid_c_down
+        pid_c_down = 1
+        while pid_c_down == 1:
             time.sleep(0.1)
     if type_ == 'PressTemp':
-        global pid_press_temp_down
-        pid_press_temp_down = 1
-        while pid_press_temp_down == 1:
+        global pid_p_temp_down
+        pid_p_temp_down = 1
+        while pid_p_temp_down == 1:
             time.sleep(0.1)
     if type_ == 'PressPress':
-        global pid_press_press_down
-        pid_press_press_down = 1
-        while pid_press_press_down == 1:
+        global pid_p_press_down
+        pid_p_press_down = 1
+        while pid_p_press_down == 1:
             time.sleep(0.1)
     return 1
 
@@ -1673,7 +1683,7 @@ def PID_stop(type_, number):
 #################################################
 
 # Read the temperature and humidity from sensor
-def read_t_sensor(sensor):
+def read_t_sensor(sensor_id):
     global sensor_t_read_temp_c
     tempc = None
     tempc2 = None
@@ -1685,117 +1695,78 @@ def read_t_sensor(sensor):
     lock = LockFile(sensor_t_lock_path)
     while not lock.i_am_locking():
         try:
-            logging.debug("[Read T Sensor-%s] Acquiring Lock: %s", sensor + 1, lock.path)
+            logging.debug("[Read T Sensor-%s] Acquiring Lock: %s", sensor_id + 1, lock.path)
             lock.acquire(timeout=90)    # wait up to 60 seconds
         except:
-            logging.warning("[Read T Sensor-%s] Breaking Lock to Acquire: %s", sensor + 1, lock.path)
+            logging.warning("[Read T Sensor-%s] Breaking Lock to Acquire: %s", sensor_id + 1, lock.path)
             lock.break_lock()
             lock.acquire()
-    logging.debug("[Read T Sensor-%s] Gained lock: %s", sensor + 1, lock.path)
+    logging.debug("[Read T Sensor-%s] Gained lock: %s", sensor_id + 1, lock.path)
     timerT = 0
-    if sensor_t_premeasure_relay[sensor] and sensor_t_premeasure_dur[sensor]:
-        timerT = int(time.time()) + sensor_t_premeasure_dur[sensor]
-        rod = threading.Thread(target=relay_on_duration, args=(sensor_t_premeasure_relay[sensor], sensor_t_premeasure_dur[sensor], sensor, relay_trigger, relay_pin,))
+    if sensor_t_premeasure_relay[sensor_id] and sensor_t_premeasure_dur[sensor_id]:
+        timerT = time.time() + sensor_t_premeasure_dur[sensor_id]
+        rod = threading.Thread(target=relay_on_duration, args=(sensor_t_premeasure_relay[sensor_id], sensor_t_premeasure_dur[sensor_id], sensor_id, relay_trigger, relay_pin,))
         rod.start()
-        while timerT > int(time.time()) and client_que != 'TerminateServer':
+        while timerT > time.time() and client_que != 'TerminateServer':
             if pause_daemon:
-                relay_onoff(sensor_t_premeasure_relay[sensor], 'off')
+                relay_onoff(sensor_t_premeasure_relay[sensor_id], 'off')
                 break
             time.sleep(0.25)
 
-    for r in range(0, t_read_tries):  # Multiple attempts to get similar consecutive readings
-        if not pid_t_temp_alive[sensor] or client_que == 'TerminateServer' or pause_daemon:
+    for r in range(t_read_tries):  # Multiple attempts to get similar consecutive readings
+        if not pid_t_temp_alive[sensor_id] or client_que == 'TerminateServer' or pause_daemon:
             break
-        logging.debug("[Read T Sensor-%s] Taking first Temperature/Humidity reading", sensor + 1)
-        for i in range(0, t_read_tries):
-            if pid_t_temp_alive[sensor] and client_que != 'TerminateServer' and pause_daemon != 1:
-                tempc2 = read_t(sensor, sensor_t_device[sensor], sensor_t_pin[sensor])
+        logging.debug("[Read T Sensor-%s] Taking first Temperature/Humidity reading", sensor_id + 1)
+        for i in range(t_read_tries):
+            if pid_t_temp_alive[sensor_id] and client_que != 'TerminateServer' and pause_daemon != 1:
+                tempc2 = read_t(sensor_id, sensor_t_device[sensor_id], sensor_t_pin[sensor_id])
                 if tempc2 is not None:
                     break
             else:
                 break
 
         if tempc2 is None:
-            logging.warning("[Read T Sensor-%s] Could not read first Temp measurement!", sensor + 1)
+            logging.warning("[Read T Sensor-%s] Could not read first Temp measurement!", sensor_id + 1)
             break
         else:
-            logging.debug("[Read T Sensor-%s] %.1f°C", sensor, tempc2)
-            logging.debug("[Read T Sensor-%s] Taking second Temperature reading", sensor + 1)
+            logging.debug("[Read T Sensor-%s] %.1f°C", sensor_id, tempc2)
+            logging.debug("[Read T Sensor-%s] Taking second Temperature reading", sensor_id + 1)
 
-        for i in range(0, t_read_tries):  # Multiple attempts to get first reading
-            if pid_t_temp_alive[sensor] and client_que != 'TerminateServer' and pause_daemon != 1:
-                tempc = read_t(sensor, sensor_t_device[sensor], sensor_t_pin[sensor])
+        for i in range(t_read_tries):  # Multiple attempts to get first reading
+            if pid_t_temp_alive[sensor_id] and client_que != 'TerminateServer' and pause_daemon != 1:
+                tempc = read_t(sensor_id, sensor_t_device[sensor_id], sensor_t_pin[sensor_id])
                 if tempc is not None:
                     break
             else:
                 break
 
         if tempc is None:
-            logging.warning("[Read T Sensor-%s] Could not read second Temp measurement!", sensor + 1)
+            logging.warning("[Read T Sensor-%s] Could not read second Temp measurement!", sensor_id + 1)
             break
         else:
-            logging.debug("[Read T Sensor-%s] %.1f°C", sensor, tempc)
-            logging.debug("[Read T Sensor-%s] Differences: %.1f°C", sensor + 1, abs(tempc2 - tempc))
+            logging.debug("[Read T Sensor-%s] %.1f°C", sensor_id, tempc)
+            logging.debug("[Read T Sensor-%s] Differences: %.1f°C", sensor_id + 1, abs(tempc2 - tempc))
 
             if abs(tempc2 - tempc) > 1:
                 tempc2 = tempc
-                logging.debug("[Read T Sensor-%s] Successive readings > 1 difference: Rereading", sensor + 1)
+                logging.debug("[Read T Sensor-%s] Successive readings > 1 difference: Rereading", sensor_id + 1)
             else:
-                logging.debug("[Read T Sensor-%s] Successive readings < 1 difference: keeping.", sensor + 1)
+                logging.debug("[Read T Sensor-%s] Successive readings < 1 difference: keeping.", sensor_id + 1)
                 temperature_f = float(tempc) * 9.0 / 5.0 + 32.0
-                logging.debug("[Read T Sensor-%s] Temp: %.1f°C", sensor + 1, tempc)
-                sensor_t_read_temp_c[sensor] = tempc
-                logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor + 1, lock.path)
+                logging.debug("[Read T Sensor-%s] Temp: %.1f°C", sensor_id + 1, tempc)
+                sensor_t_read_temp_c[sensor_id] = tempc
+                logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor_id + 1, lock.path)
                 lock.release()
-                return 1
+                return tempc
     else:
-        logging.warning("[Read T Sensor-%s] Could not get two consecutive Temp measurements that were consistent.", sensor + 1)
-    logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor + 1, lock.path)
+        logging.warning("[Read T Sensor-%s] Could not get two consecutive Temp measurements that were consistent.", sensor_id + 1)
+    logging.debug("[Read T Sensor-%s] Removing lock: %s", sensor_id + 1, lock.path)
     lock.release()
-    return 0
-
-
-# Obtain reading from T sensor
-def read_t(sensor, device, pin):
-    global last_t_reading
-
-    # Ensure at least 1 second between sensor reads
-    while last_t_reading > int(time.time()):
-        time.sleep(0.25)
-
-    if device == 'DS18B20':
-        import glob
-        os.system('modprobe w1-gpio')
-        os.system('modprobe w1-therm')
-        base_dir = '/sys/bus/w1/devices/'
-        #device_folder = glob.glob(base_dir + '28*')[0]
-        device_file = base_dir + '28-' + pin + '/w1_slave'
-        
-        def read_temp_raw():
-            f = open(device_file, 'r')
-            lines = f.readlines()
-            f.close()
-            return lines
-
-        lines = read_temp_raw()
-        while lines[0].strip()[-3:] != 'YES':
-            time.sleep(0.2)
-            lines = read_temp_raw()
-        equals_pos = lines[1].find('t=')
-        if equals_pos != -1:
-            temp_string = lines[1][equals_pos + 2:]
-            tempc = float(temp_string) / 1000.0
-            #temp_f = temp_c * 9.0 / 5.0 + 32.0
-            last_t_reading = int(time.time()) + 2
-            return tempc
-    else:
-        logging.debug("[Read T Sensor-%s] Device not recognized: %s", sensor + 1, device)
-        last_t_reading = int(time.time()) + 1
-        return None
+    return None
 
 
 # Read the temperature and humidity from sensor
-def read_ht_sensor(sensor):
+def read_ht_sensor(sensor_id):
     global sensor_ht_read_temp_c
     global sensor_ht_read_hum
     global sensor_ht_dewpt_c
@@ -1811,86 +1782,86 @@ def read_ht_sensor(sensor):
     lock = LockFile(sensor_ht_lock_path)
     while not lock.i_am_locking():
         try:
-            logging.debug("[Read HT Sensor-%s] Acquiring Lock: %s", sensor + 1, lock.path)
+            logging.debug("[Read HT Sensor-%s] Acquiring Lock: %s", sensor_id + 1, lock.path)
             lock.acquire(timeout=90)    # wait up to 60 seconds
         except:
-            logging.warning("[Read HT Sensor-%s] Breaking Lock to Acquire: %s", sensor + 1, lock.path)
+            logging.warning("[Read HT Sensor-%s] Breaking Lock to Acquire: %s", sensor_id + 1, lock.path)
             lock.break_lock()
             lock.acquire()
-    logging.debug("[Read HT Sensor-%s] Gained lock: %s", sensor + 1, lock.path)
+    logging.debug("[Read HT Sensor-%s] Gained lock: %s", sensor_id + 1, lock.path)
     timerHT = 0
-    if sensor_ht_premeasure_relay[sensor] and sensor_ht_premeasure_dur[sensor]:
-        timerHT = int(time.time()) + sensor_ht_premeasure_dur[sensor]
-        rod = threading.Thread(target=relay_on_duration, args=(sensor_ht_premeasure_relay[sensor], sensor_ht_premeasure_dur[sensor], sensor, relay_trigger, relay_pin,))
+    if sensor_ht_premeasure_relay[sensor_id] and sensor_ht_premeasure_dur[sensor_id]:
+        timerHT = time.time() + sensor_ht_premeasure_dur[sensor_id]
+        rod = threading.Thread(target=relay_on_duration, args=(sensor_ht_premeasure_relay[sensor_id], sensor_ht_premeasure_dur[sensor_id], sensor_id, relay_trigger, relay_pin,))
         rod.start()
-        while (timerHT > int(time.time())) and client_que != 'TerminateServer':
+        while (timerHT > time.time()) and client_que != 'TerminateServer':
             if pause_daemon:
-                relay_onoff(sensor_ht_premeasure_relay[sensor], 'off')
+                relay_onoff(sensor_ht_premeasure_relay[sensor_id], 'off')
                 break
             time.sleep(0.25)
 
-    for r in range(0, ht_read_tries):  # Multiple attempts to get similar consecutive readings
-        if (not pid_ht_temp_alive[sensor] and not pid_ht_hum_alive[sensor]) or client_que == 'TerminateServer' or pause_daemon:
+    for r in range(ht_read_tries):  # Multiple attempts to get similar consecutive readings
+        if (not pid_ht_temp_alive[sensor_id] and not pid_ht_hum_alive[sensor_id]) or client_que == 'TerminateServer' or pause_daemon:
             break
 
-        logging.debug("[Read HT Sensor-%s] Taking first Temperature/Humidity reading", sensor + 1)
+        logging.debug("[Read HT Sensor-%s] Taking first Temperature/Humidity reading", sensor_id + 1)
 
-        for i in range(0, ht_read_tries):
-            if (pid_ht_temp_alive[sensor] or pid_ht_hum_alive[sensor]) and client_que != 'TerminateServer' and pause_daemon != 1:
-                humidity2, tempc2 = read_ht(sensor, sensor_ht_device[sensor], sensor_ht_pin[sensor])
+        for i in range(ht_read_tries):
+            if (pid_ht_temp_alive[sensor_id] or pid_ht_hum_alive[sensor_id]) and client_que != 'TerminateServer' and pause_daemon != 1:
+                humidity2, tempc2 = read_ht(sensor_id, sensor_ht_device[sensor_id], sensor_ht_pin[sensor_id])
                 if humidity2 is not None and tempc2 is not None:
                     break
             else:
                 break
 
         if humidity2 is None or tempc2 is None:
-            logging.warning("[Read HT Sensor-%s] Could not read first Hum/Temp measurement!", sensor + 1)
+            logging.warning("[Read HT Sensor-%s] Could not read first Hum/Temp measurement!", sensor_id + 1)
             break
         else:
-            logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor + 1, tempc2, humidity2)
-            logging.debug("[Read HT Sensor-%s] Taking second Temperature/Humidity reading", sensor + 1)
+            logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor_id + 1, tempc2, humidity2)
+            logging.debug("[Read HT Sensor-%s] Taking second Temperature/Humidity reading", sensor_id + 1)
         
-        for i in range(0, ht_read_tries):  # Multiple attempts to get first reading
-            if (pid_ht_temp_alive[sensor] or pid_ht_hum_alive[sensor]) and client_que != 'TerminateServer' and pause_daemon != 1:
-                humidity, tempc = read_ht(sensor, sensor_ht_device[sensor], sensor_ht_pin[sensor])
+        for i in range(ht_read_tries):  # Multiple attempts to get first reading
+            if (pid_ht_temp_alive[sensor_id] or pid_ht_hum_alive[sensor_id]) and client_que != 'TerminateServer' and pause_daemon != 1:
+                humidity, tempc = read_ht(sensor_id, sensor_ht_device[sensor_id], sensor_ht_pin[sensor_id])
                 if humidity is not None and tempc is not None:
                     break
             else:
                 break
 
         if humidity is None or tempc is None:
-            logging.warning("[Read HT Sensor-%s] Could not read second Hum/Temp measurement!", sensor + 1)
+            logging.warning("[Read HT Sensor-%s] Could not read second Hum/Temp measurement!", sensor_id + 1)
             break
         else:
-            logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor + 1, tempc, humidity)
-            logging.debug("[Read HT Sensor-%s] Differences: %.1f°C, %.1f%%", sensor + 1, abs(tempc2 - tempc), abs(humidity2 - humidity))
+            logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor_id + 1, tempc, humidity)
+            logging.debug("[Read HT Sensor-%s] Differences: %.1f°C, %.1f%%", sensor_id + 1, abs(tempc2 - tempc), abs(humidity2 - humidity))
 
             if abs(tempc2 - tempc) > 1 or abs(humidity2 - humidity) > 1:
                 tempc2 = tempc
                 humidity2 = humidity
-                logging.debug("[Read HT Sensor-%s] Successive readings > 1 difference: Rereading", sensor + 1)
+                logging.debug("[Read HT Sensor-%s] Successive readings > 1 difference: Rereading", sensor_id + 1)
             else:
-                logging.debug("[Read HT Sensor-%s] Successive readings < 1 difference: keeping.", sensor + 1)
+                logging.debug("[Read HT Sensor-%s] Successive readings < 1 difference: keeping.", sensor_id + 1)
                 temperature_f = float(tempc) * 9.0 / 5.0 + 32.0
-                sensor_ht_dewpt_c[sensor] = tempc - ((100 - humidity) / 5)
+                sensor_ht_dewpt_c[sensor_id] = tempc - ((100 - humidity) / 5)
                 #sensor_ht_dewpt_f[sensor] = sensor_ht_dewpt_c[sensor] * 9 / 5 + 32
                 #sensor_ht_heatindex_f = -42.379 + 2.04901523 * temperature_f + 10.14333127 * sensor_ht_read_hum - 0.22475541 * temperature_f * sensor_ht_read_hum - 6.83783 * 10**-3 * temperature_f**2 - 5.481717 * 10**-2 * sensor_ht_read_hum**2 + 1.22874 * 10**-3 * temperature_f**2 * sensor_ht_read_hum + 8.5282 * 10**-4 * temperature_f * sensor_ht_read_hum**2 - 1.99 * 10**-6 * temperature_f**2 * sensor_ht_read_hum**2
                 #sensor_ht_heatindex_c[sensor] = (heatindexf - 32) * (5 / 9)
-                logging.debug("[Read HT Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", sensor + 1, tempc, humidity, sensor_ht_dewpt_c[sensor])
-                sensor_ht_read_hum[sensor] = humidity
-                sensor_ht_read_temp_c[sensor] = tempc
-                logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor + 1, lock.path)
+                logging.debug("[Read HT Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", sensor_id + 1, tempc, humidity, sensor_ht_dewpt_c[sensor_id])
+                sensor_ht_read_hum[sensor_id] = humidity
+                sensor_ht_read_temp_c[sensor_id] = tempc
+                logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor_id + 1, lock.path)
                 lock.release()
-                return 1
+                return humidity, tempc
 
-    logging.warning("[Read HT Sensor-%s] Could not get two consecutive Hum/Temp measurements that were consistent.", sensor + 1)
-    logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor + 1, lock.path)
+    logging.warning("[Read HT Sensor-%s] Could not get two consecutive Hum/Temp measurements that were consistent.", sensor_id + 1)
+    logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor_id + 1, lock.path)
     lock.release()
-    return 0
+    return None
 
 
 # Verify the temperature and/or humidity from second sensor
-def verify_ht_sensor(sensor, GPIO):
+def verify_ht_sensor(sensor_id, GPIO):
     global sensor_ht_verify_read_temp_c
     global sensor_ht_verify_read_hum
     tempc = None
@@ -1905,142 +1876,104 @@ def verify_ht_sensor(sensor, GPIO):
     lock = LockFile(sensor_ht_lock_path)
     while not lock.i_am_locking():
         try:
-            logging.debug("[Verify HT Sensor-%s] Acquiring Lock: %s", sensor + 1, lock.path)
+            logging.debug("[Verify HT Sensor-%s] Acquiring Lock: %s", sensor_id + 1, lock.path)
             lock.acquire(timeout=90)    # wait up to 60 seconds
         except:
-            logging.warning("[Verify HT Sensor-%s] Breaking Lock to Acquire: %s", sensor + 1, lock.path)
+            logging.warning("[Verify HT Sensor-%s] Breaking Lock to Acquire: %s", sensor_id + 1, lock.path)
             lock.break_lock()
             lock.acquire()
-    logging.debug("[Verify HT Sensor-%s] Gained lock: %s", sensor + 1, lock.path)
+    logging.debug("[Verify HT Sensor-%s] Gained lock: %s", sensor_id + 1, lock.path)
     timerHT = 0
-    if sensor_ht_premeasure_relay[sensor] and sensor_ht_premeasure_dur[sensor]:
-        timerHT = int(time.time()) + sensor_ht_premeasure_dur[sensor]
-        rod = threading.Thread(target=relay_on_duration, args=(sensor_ht_premeasure_relay[sensor], sensor_ht_premeasure_dur[sensor], sensor, relay_trigger, relay_pin,))
+    if sensor_ht_premeasure_relay[sensor_id] and sensor_ht_premeasure_dur[sensor_id]:
+        timerHT = time.time() + sensor_ht_premeasure_dur[sensor_id]
+        rod = threading.Thread(target=relay_on_duration, args=(sensor_ht_premeasure_relay[sensor_id], sensor_ht_premeasure_dur[sensor_id], sensor_id, relay_trigger, relay_pin,))
         rod.start()
-        while (timerHT > int(time.time())) and client_que != 'TerminateServer':
+        while (timerHT > time.time()) and client_que != 'TerminateServer':
             if pause_daemon:
-                relay_onoff(sensor_ht_premeasure_relay[sensor], 'off')
+                relay_onoff(sensor_ht_premeasure_relay[sensor_id], 'off')
                 break
             time.sleep(0.25)
 
-    for r in range(0, ht_read_tries):  # Multiple attempts to get similar consecutive readings
-        if (not pid_ht_temp_alive[sensor] and not pid_ht_hum_alive[sensor]) or client_que == 'TerminateServer' or pause_daemon:
+    for r in range(ht_read_tries):  # Multiple attempts to get similar consecutive readings
+        if (not pid_ht_temp_alive[sensor_id] and not pid_ht_hum_alive[sensor_id]) or client_que == 'TerminateServer' or pause_daemon:
             break
 
-        logging.debug("[Verify HT Sensor-%s] Taking first Temperature/Humidity reading", sensor + 1)
+        logging.debug("[Verify HT Sensor-%s] Taking first Temperature/Humidity reading", sensor_id + 1)
 
-        for i in range(0, ht_read_tries):
-            if (pid_ht_temp_alive[sensor] or pid_ht_hum_alive[sensor]) and client_que != 'TerminateServer' and pause_daemon != 1:
-                humidity2, tempc2 = read_ht(sensor, sensor_ht_device[sensor], GPIO)
+        for i in range(ht_read_tries):
+            if (pid_ht_temp_alive[sensor_id] or pid_ht_hum_alive[sensor_id]) and client_que != 'TerminateServer' and pause_daemon != 1:
+                humidity2, tempc2 = read_ht(sensor_id, sensor_ht_device[sensor_id], GPIO)
                 if humidity2 is not None and tempc2 is not None:
                     break
             else:
                 break
 
         if humidity2 is None or tempc2 is None:
-            logging.warning("[Verify HT Sensor-%s] Could not read first Hum/Temp measurement!", sensor + 1)
+            logging.warning("[Verify HT Sensor-%s] Could not read first Hum/Temp measurement!", sensor_id + 1)
             break
         else:
-            logging.debug("[Verify HT Sensor-%s] %.1f°C, %.1f%%", sensor + 1, tempc2, humidity2)
-            logging.debug("[Verify HT Sensor-%s] Taking second Temperature/Humidity reading", sensor + 1)
+            logging.debug("[Verify HT Sensor-%s] %.1f°C, %.1f%%", sensor_id + 1, tempc2, humidity2)
+            logging.debug("[Verify HT Sensor-%s] Taking second Temperature/Humidity reading", sensor_id + 1)
         
-        for i in range(0, ht_read_tries):  # Multiple attempts to get first reading
-            if (pid_ht_temp_alive[sensor] or pid_ht_hum_alive[sensor]) and client_que != 'TerminateServer' and pause_daemon != 1:
-                humidity, tempc = read_ht(sensor, sensor_ht_device[sensor], GPIO)
+        for i in range(ht_read_tries):  # Multiple attempts to get first reading
+            if (pid_ht_temp_alive[sensor_id] or pid_ht_hum_alive[sensor_id]) and client_que != 'TerminateServer' and pause_daemon != 1:
+                humidity, tempc = read_ht(sensor_id, sensor_ht_device[sensor_id], GPIO)
                 if humidity is not None and tempc is not None:
                     break
             else:
                 break
 
         if humidity is None or tempc is None:
-            logging.warning("[Verify HT Sensor-%s] Could not read second Hum/Temp measurement!", sensor + 1)
+            logging.warning("[Verify HT Sensor-%s] Could not read second Hum/Temp measurement!", sensor_id + 1)
             break
         else:
-            logging.debug("[Verify HT Sensor-%s] %.1f°C, %.1f%%", sensor + 1, tempc, humidity)
-            logging.debug("[Verify HT Sensor-%s] Differences: %.1f°C, %.1f%%", sensor + 1, abs(tempc2 - tempc), abs(humidity2 - humidity))
+            logging.debug("[Verify HT Sensor-%s] %.1f°C, %.1f%%", sensor_id + 1, tempc, humidity)
+            logging.debug("[Verify HT Sensor-%s] Differences: %.1f°C, %.1f%%", sensor_id + 1, abs(tempc2 - tempc), abs(humidity2 - humidity))
 
             if abs(tempc2 - tempc) > 1 or abs(humidity2 - humidity) > 1:
                 tempc2 = tempc
                 humidity2 = humidity
-                logging.debug("[Verify HT Sensor-%s] Successive readings > 1 difference: Rereading", sensor + 1)
+                logging.debug("[Verify HT Sensor-%s] Successive readings > 1 difference: Rereading", sensor_id + 1)
             else:
-                logging.debug("[Verify HT Sensor-%s] Successive readings < 1 difference: keeping.", sensor + 1)
+                logging.debug("[Verify HT Sensor-%s] Successive readings < 1 difference: keeping.", sensor_id + 1)
                 temperature_f = float(tempc) * 9.0 / 5.0 + 32.0
-                logging.debug("[Verify HT Sensor-%s] Temp: %.1f°C, Hum: %.1f%%", sensor + 1, tempc, humidity)
+                logging.debug("[Verify HT Sensor-%s] Temp: %.1f°C, Hum: %.1f%%", sensor_id + 1, tempc, humidity)
                 sensor_ht_verify_read_hum = humidity
                 sensor_ht_verify_read_temp_c = tempc
-                logging.debug("[Verify HT Sensor-%s] Removing lock: %s", sensor + 1, lock.path)
+                logging.debug("[Verify HT Sensor-%s] Removing lock: %s", sensor_id + 1, lock.path)
                 lock.release()
 
                 verify_check = {"temperature": 0, "humidity": 0}
-                if abs(tempc - sensor_ht_read_temp_c[sensor]) > sensor_ht_verify_temp[sensor]:
+                if abs(tempc - sensor_ht_read_temp_c[sensor_id]) > sensor_ht_verify_temp[sensor_id]:
                     verify_check["temperature"] = 1
-                if abs(humidity - sensor_ht_read_hum[sensor]) > sensor_ht_verify_hum[sensor]:
+                if abs(humidity - sensor_ht_read_hum[sensor_id]) > sensor_ht_verify_hum[sensor_id]:
                     verify_check["humidity"] = 1
 
                 if verify_check["temperature"] and verify_check["humidity"]:
-                    message = "[Verify HT Sensor-%s] (%s) Temperature difference (%.1f C) greater than set (%.1f C) and Humidity difference (%.1f%%) greater than set (%.1f%%)" % (sensor + 1, sensor_ht_name[sensor], abs(tempc - sensor_ht_read_temp_c[sensor]), sensor_ht_verify_temp[sensor], abs(humidity - sensor_ht_read_hum[sensor]), sensor_ht_verify_hum[sensor])
+                    message = "[Verify HT Sensor-%s] (%s) Temperature difference (%.1f C) greater than set (%.1f C) and Humidity difference (%.1f%%) greater than set (%.1f%%)" % (sensor_id + 1, sensor_ht_name[sensor_id], abs(tempc - sensor_ht_read_temp_c[sensor_id]), sensor_ht_verify_temp[sensor_id], abs(humidity - sensor_ht_read_hum[sensor_id]), sensor_ht_verify_hum[sensor_id])
                 elif verify_check["temperature"] and not verify_check["humidity"]:
-                    message = "[Verify HT Sensor-%s] (%s) Temperature difference (%.1f C) greater than set (%.1f C)" % (sensor + 1, sensor_ht_name[sensor], abs(tempc - sensor_ht_read_temp_c[sensor]), sensor_ht_verify_temp[sensor])
+                    message = "[Verify HT Sensor-%s] (%s) Temperature difference (%.1f C) greater than set (%.1f C)" % (sensor_id + 1, sensor_ht_name[sensor_id], abs(tempc - sensor_ht_read_temp_c[sensor_id]), sensor_ht_verify_temp[sensor_id])
                 elif verify_check["humidity"] and not verify_check["temperature"]:
-                    message = "[Verify HT Sensor-%s] (%s) Humidity difference (%.1f%%) greater than set (%.1f%%)" % (sensor + 1, sensor_ht_name[sensor], abs(humidity - sensor_ht_read_hum[sensor]), sensor_ht_verify_hum[sensor])
+                    message = "[Verify HT Sensor-%s] (%s) Humidity difference (%.1f%%) greater than set (%.1f%%)" % (sensor_id + 1, sensor_ht_name[sensor_id], abs(humidity - sensor_ht_read_hum[sensor_id]), sensor_ht_verify_hum[sensor_id])
 
                 if verify_check["temperature"] or verify_check["humidity"]:
-                    if ((sensor_ht_verify_temp_notify[sensor] and sensor_ht_verify_hum_notify[sensor]) and (verify_check["temperature"] and verify_check["humidity"])) or (sensor_ht_verify_temp_notify[sensor] and verify_check["temperature"]) or (sensor_ht_verify_hum_notify[sensor] and verify_check["humidity"]):
-                        email(sensor_ht_verify_email[sensor], message)
+                    if ((sensor_ht_verify_temp_notify[sensor_id] and sensor_ht_verify_hum_notify[sensor_id]) and (verify_check["temperature"] and verify_check["humidity"])) or (sensor_ht_verify_temp_notify[sensor_id] and verify_check["temperature"]) or (sensor_ht_verify_hum_notify[sensor_id] and verify_check["humidity"]):
+                        email(sensor_ht_verify_email[sensor_id], message)
                     logging.warning(message)
                     return 2, verify_check["temperature"], verify_check["humidity"]
                 else:
-                    logging.debug("[Verify HT Sensor-%s] Both differences within range: %.1f°C <= %.1f°C set, %.1f%% <= %.1f%% set", sensor + 1, abs(tempc - sensor_ht_read_temp_c[sensor]), sensor_ht_verify_temp[sensor], abs(humidity - sensor_ht_read_hum[sensor]), sensor_ht_verify_hum[sensor])
+                    logging.debug("[Verify HT Sensor-%s] Both differences within range: %.1f°C <= %.1f°C set, %.1f%% <= %.1f%% set", sensor_id + 1, abs(tempc - sensor_ht_read_temp_c[sensor_id]), sensor_ht_verify_temp[sensor_id], abs(humidity - sensor_ht_read_hum[sensor_id]), sensor_ht_verify_hum[sensor_id])
                     return 1, verify_check["temperature"], verify_check["humidity"]
                     
-    logging.warning("[Verify HT Sensor-%s] Could not get two consecutive Hum/Temp measurements that were consistent.", sensor + 1)
-    logging.debug("[Verify HT Sensor-%s] Removing lock: %s", sensor + 1, lock.path)
+    logging.warning("[Verify HT Sensor-%s] Could not get two consecutive Hum/Temp measurements that were consistent.", sensor_id + 1)
+    logging.debug("[Verify HT Sensor-%s] Removing lock: %s", sensor_id + 1, lock.path)
     lock.release()
     return 0
 
 
-# Obtain reading from HT sensor
-def read_ht(sensor, device, pin):
-    global last_ht_reading
-    # Ensure at least 2 seconds between sensor reads
-    while last_ht_reading > int(time.time()):
-        time.sleep(0.25)
-    if device == 'DHT11':
-        device = Adafruit_DHT.DHT11
-    elif device == 'DHT22':
-        device = Adafruit_DHT.DHT22
-    elif device == 'AM2302':
-        device = Adafruit_DHT.AM2302
-    elif device == 'AM2315':
-        device = 'AM2315'
-    if device == Adafruit_DHT.DHT11 or device == Adafruit_DHT.DHT22 or device == Adafruit_DHT.AM2302:
-        humidity, temp = Adafruit_DHT.read_retry(device, pin)
-        last_ht_reading = int(time.time()) + 2
-        return humidity, temp
-    elif device == 'AM2315':
-        if pin != 0:
-            I2C_address = 0x70 + pin // 10
-            if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
-                I2C_bus_number = 1
-            else:
-                I2C_bus_number = 0
-            bus = smbus.SMBus(I2C_bus_number)
-            bus.write_byte(I2C_address, pin % 10)
-            time.sleep(0.1)
-        am = AM2315(0x5c, "/dev/i2c-1")
-        temp, humidity, crc_check = am.sense()
-        last_ht_reading = int(time.time()) + 2
-        return humidity, temp
-    else:
-        logging.debug("[Read HT Sensor-%s] Device not recognized: %s", sensor + 1, device)
-        last_ht_reading = int(time.time()) + 2
-        return 0
-
-
 # Read CO2 sensor
-def read_co2_sensor(sensor):
-    global sensor_co2_read_co2
+def read_co2_sensor(sensor_id):
+    global sensor_c_read_co2
     co2 = None
     co22 = None
     co2_read_tries = 5
@@ -2048,112 +1981,84 @@ def read_co2_sensor(sensor):
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
 
-    lock = LockFile(sensor_co2_lock_path)
+    lock = LockFile(sensor_c_lock_path)
     while not lock.i_am_locking():
         try:
-            logging.debug("[Read CO2 Sensor-%s] Acquiring Lock: %s", sensor + 1, lock.path)
+            logging.debug("[Read CO2 Sensor-%s] Acquiring Lock: %s", sensor_id + 1, lock.path)
             lock.acquire(timeout=90)    # wait up to 60 seconds
         except:
-            logging.warning("[Read CO2 Sensor-%s] Breaking Lock to Acquire: %s", sensor + 1, lock.path)
+            logging.warning("[Read CO2 Sensor-%s] Breaking Lock to Acquire: %s", sensor_id + 1, lock.path)
             lock.break_lock()
             lock.acquire()
-    logging.debug("[Read CO2 Sensor-%s] Gained lock: %s", sensor + 1, lock.path)
+    logging.debug("[Read CO2 Sensor-%s] Gained lock: %s", sensor_id + 1, lock.path)
     timerCO2 = 0
-    if sensor_co2_premeasure_relay[sensor] and sensor_co2_premeasure_dur[sensor]:
-        timerCO2 = int(time.time()) + sensor_co2_premeasure_dur[sensor]
-        rod = threading.Thread(target=relay_on_duration, args=(sensor_co2_premeasure_relay[sensor], sensor_co2_premeasure_dur[sensor], sensor, relay_trigger, relay_pin,))
+    if sensor_c_premeasure_relay[sensor_id] and sensor_c_premeasure_dur[sensor_id]:
+        timerCO2 = time.time() + sensor_c_premeasure_dur[sensor_id]
+        rod = threading.Thread(target=relay_on_duration, args=(sensor_c_premeasure_relay[sensor_id], sensor_c_premeasure_dur[sensor_id], sensor_id, relay_trigger, relay_pin,))
         rod.start()
-        while (timerCO2 > int(time.time())) and client_que != 'TerminateServer':
+        while (timerCO2 > time.time()) and client_que != 'TerminateServer':
             if pause_daemon:
-                relay_onoff(sensor_co2_premeasure_relay[sensor], 'off')
+                relay_onoff(sensor_c_premeasure_relay[sensor_id], 'off')
                 break
             time.sleep(0.25)
 
-    for r in range(0, co2_read_tries):
-        if not pid_co2_alive[sensor] or client_que == 'TerminateServer' or pause_daemon:
+    for r in range(co2_read_tries):
+        if not pid_c_alive[sensor_id] or client_que == 'TerminateServer' or pause_daemon:
             break
 
-        logging.debug("[Read CO2 Sensor-%s] Taking first CO2 reading", sensor + 1)
+        logging.debug("[Read CO2 Sensor-%s] Taking first CO2 reading", sensor_id + 1)
 
-        for i in range(0, co2_read_tries):  # Multiple attempts to get first reading
-            if pid_co2_alive[sensor] and client_que != 'TerminateServer' and pause_daemon != 1:
-                co22 = read_K30(sensor, sensor_co2_device[sensor])
+        for i in range(co2_read_tries):  # Multiple attempts to get first reading
+            if pid_c_alive[sensor_id] and client_que != 'TerminateServer' and pause_daemon != 1:
+                co22 = read_co2(sensor_id, sensor_c_device[sensor_id])
                 if co22 is not None:
                     break
             else:
                 break
 
         if co22 is None:
-            logging.warning("[Read CO2 Sensor-%s] Could not read first CO2 measurement!", sensor + 1)
+            logging.warning("[Read CO2 Sensor-%s] Could not read first CO2 measurement!", sensor_id + 1)
             break
         else:
-            logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor + 1, co22)
-            logging.debug("[Read CO2 Sensor-%s] Taking second CO2 reading", sensor + 1)
+            logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor_id + 1, co22)
+            logging.debug("[Read CO2 Sensor-%s] Taking second CO2 reading", sensor_id + 1)
 
-        for i in range(0, co2_read_tries):  # Multiple attempts to get second reading
-            if pid_co2_alive[sensor] and client_que != 'TerminateServer' and pause_daemon != 1:
-                co2 = read_K30(sensor, sensor_co2_device[sensor])
+        for i in range(co2_read_tries):  # Multiple attempts to get second reading
+            if pid_c_alive[sensor_id] and client_que != 'TerminateServer' and pause_daemon != 1:
+                co2 = read_co2(sensor_id, sensor_c_device[sensor_id])
                 if co2 is not None:
                     break
             else:
                 break
 
         if co2 is None:
-            logging.warning("[Read CO2 Sensor-%s] Could not read second CO2 measurement!", sensor + 1)
+            logging.warning("[Read CO2 Sensor-%s] Could not read second CO2 measurement!", sensor_id + 1)
             break
         else:
-            logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor + 1, co2)
-            logging.debug("[Read CO2 Sensor-%s] Difference: %s", sensor + 1, abs(co22 - co2))
+            logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor_id + 1, co2)
+            logging.debug("[Read CO2 Sensor-%s] Difference: %s", sensor_id + 1, abs(co22 - co2))
 
             if abs(co22 - co2) > 200:
                 co22 = co2
-                logging.debug("[Read CO2 Sensor-%s] Successive readings > 200 difference: Rereading", sensor + 1)
+                logging.debug("[Read CO2 Sensor-%s] Successive readings > 200 difference: Rereading", sensor_id + 1)
             else:
-                logging.debug("[Read CO2 Sensor-%s] Successive readings < 200 difference: keeping.", sensor + 1)
-                logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor + 1, co2)
-                sensor_co2_read_co2[sensor] = co2
-                logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor + 1, lock.path)
+                logging.debug("[Read CO2 Sensor-%s] Successive readings < 200 difference: keeping.", sensor_id + 1)
+                logging.debug("[Read CO2 Sensor-%s] CO2: %s", sensor_id + 1, co2)
+                sensor_c_read_co2[sensor_id] = co2
+                logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor_id + 1, lock.path)
                 lock.release()
-                return 1
-    logging.warning("[Read CO2 Sensor-%s] Could not get two consecutive CO2 measurements that were consistent.", sensor + 1)
-    logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor + 1, lock.path)
+                return co2
+
+    logging.warning("[Read CO2 Sensor-%s] Could not get two consecutive CO2 measurements that were consistent.", sensor_id + 1)
+    logging.debug("[Read CO2 Sensor-%s] Removing lock: %s", sensor_id + 1, lock.path)
     lock.release()
-    return 0
-
-
-# Read K30 CO2 Sensor
-def read_K30(sensor, device):
-    global last_co2_reading
-    # Ensure at least 2 seconds between sensor reads
-    while last_co2_reading > int(time.time()):
-        time.sleep(0.25)
-
-    if device == 'K30':
-        ser = serial.Serial("/dev/ttyAMA0", timeout=1)  # Wait 1 second for reply
-        ser.flushInput()
-        time.sleep(1)
-        ser.write("\xFE\x44\x00\x08\x02\x9F\x25")
-        time.sleep(.01)
-        resp = ser.read(7)
-        if len(resp) == 0:
-            last_co2_reading = int(time.time()) + 2
-            return None
-        else:
-            high = ord(resp[3])
-            low = ord(resp[4])
-            co2 = (high * 256) + low
-            last_co2_reading = int(time.time()) + 2
-            return co2
-    else:
-        logging.debug("[Read CO2 Sensor-%s] Device not recognized: %s", sensor + 1, device)
-        last_co2_reading = int(time.time()) + 2
-        return 0
+    return None
 
 
 # Read the temperature and pressure from sensor
-def read_press_sensor(sensor):
-    global sensor_press_read_temp_c
-    global sensor_press_read_press
+def read_press_sensor(sensor_id):
+    global sensor_p_read_temp_c
+    global sensor_p_read_press
     tempc = None
     tempc2 = None
     pressure = None
@@ -2165,89 +2070,203 @@ def read_press_sensor(sensor):
     if not os.path.exists(lock_directory):
         os.makedirs(lock_directory)
 
-    lock = LockFile(sensor_press_lock_path)
+    lock = LockFile(sensor_p_lock_path)
     while not lock.i_am_locking():
         try:
-            logging.debug("[Read Press Sensor-%s] Acquiring Lock: %s", sensor + 1, lock.path)
+            logging.debug("[Read Press Sensor-%s] Acquiring Lock: %s", sensor_id + 1, lock.path)
             lock.acquire(timeout=90)    # wait up to 60 seconds
         except:
-            logging.warning("[Read Press Sensor-%s] Breaking Lock to Acquire: %s", sensor + 1, lock.path)
+            logging.warning("[Read Press Sensor-%s] Breaking Lock to Acquire: %s", sensor_id + 1, lock.path)
             lock.break_lock()
             lock.acquire()
-    logging.debug("[Read Press Sensor-%s] Gained lock: %s", sensor + 1, lock.path)
+    logging.debug("[Read Press Sensor-%s] Gained lock: %s", sensor_id + 1, lock.path)
     timerPress = 0
-    if sensor_press_premeasure_relay[sensor] and sensor_press_premeasure_dur[sensor]:
-        timerPress = int(time.time()) + sensor_press_premeasure_dur[sensor]
-        rod = threading.Thread(target=relay_on_duration, args=(sensor_press_premeasure_relay[sensor], sensor_press_premeasure_dur[sensor], sensor, relay_trigger, relay_pin,))
+    if sensor_p_premeasure_relay[sensor_id] and sensor_p_premeasure_dur[sensor_id]:
+        timerPress = time.time() + sensor_p_premeasure_dur[sensor_id]
+        rod = threading.Thread(target=relay_on_duration, args=(sensor_p_premeasure_relay[sensor_id], sensor_p_premeasure_dur[sensor_id], sensor_id, relay_trigger, relay_pin,))
         rod.start()
-        while timerPress > int(time.time()) and client_que != 'TerminateServer':
+        while timerPress > time.time() and client_que != 'TerminateServer':
             if pause_daemon:
-                relay_onoff(sensor_press_premeasure_relay[sensor], 'off')
+                relay_onoff(sensor_p_premeasure_relay[sensor_id], 'off')
                 break
             time.sleep(0.25)
 
-    for r in range(0, press_read_tries):  # Multiple attempts to get similar consecutive readings
-        if (not pid_press_temp_alive[sensor] and not pid_press_press_alive[sensor]) and client_que == 'TerminateServer' or pause_daemon:
+    for r in range(press_read_tries):  # Multiple attempts to get similar consecutive readings
+        if (not pid_p_temp_alive[sensor_id] and not pid_p_press_alive[sensor_id]) and client_que == 'TerminateServer' or pause_daemon:
             break
 
-        logging.debug("[Read Press Sensor-%s] Taking first Temperature/Pressure reading", sensor + 1)
+        logging.debug("[Read Press Sensor-%s] Taking first Temperature/Pressure reading", sensor_id + 1)
 
-        for i in range(0, press_read_tries):  # Multiple attempts to get first reading
-            if (pid_press_temp_alive[sensor] or pid_press_press_alive[sensor]) and client_que != 'TerminateServer' and pause_daemon != 1:
-                pressure2, tempc2, alt2 = read_press(sensor, sensor_press_device[sensor], sensor_press_pin[sensor])
-                if pressure2 is not None and tempc2 is not None:
+        for i in range(press_read_tries):  # Multiple attempts to get first reading
+            if (pid_p_temp_alive[sensor_id] or pid_p_press_alive[sensor_id]) and client_que != 'TerminateServer' and pause_daemon != 1:
+                pressure2, tempc2, alt2 = read_press(sensor_id, sensor_p_device[sensor_id], sensor_p_pin[sensor_id])
+                if pressure2 is not None and tempc2 is not None and alt is not None:
                     break
             else:
                 break
 
         if pressure2 is None or tempc2 is None:
-            logging.warning("[Read Press Sensor-%s] Could not read first Press/Temp measurement!", sensor + 1)
+            logging.warning("[Read Press Sensor-%s] Could not read first Press/Temp measurement!", sensor_id + 1)
             break
         else:
-            logging.debug("[Read Press Sensor-%s] %.1f°C, %.1fPa", sensor + 1, tempc2, pressure2)
-            logging.debug("[Read Press Sensor-%s] Taking second Temperature/Pressure reading", sensor + 1)
+            logging.debug("[Read Press Sensor-%s] %.1f°C, %.1fPa", sensor_id + 1, tempc2, pressure2)
+            logging.debug("[Read Press Sensor-%s] Taking second Temperature/Pressure reading", sensor_id + 1)
         
-        for i in range(0, press_read_tries):  # Multiple attempts to get second reading
-            if (pid_press_temp_alive[sensor] or pid_press_press_alive[sensor]) and client_que != 'TerminateServer' and pause_daemon != 1:
-                pressure, tempc, alt = read_press(sensor, sensor_press_device[sensor], sensor_press_pin[sensor])
-                if pressure is not None and tempc is not None:
+        for i in range(press_read_tries):  # Multiple attempts to get second reading
+            if (pid_p_temp_alive[sensor_id] or pid_p_press_alive[sensor_id]) and client_que != 'TerminateServer' and pause_daemon != 1:
+                pressure, tempc, alt = read_press(sensor_id, sensor_p_device[sensor_id], sensor_p_pin[sensor_id])
+                if pressure is not None and tempc is not None and alt is not None:
                     break
             else:
                 break
            
         if pressure is None or tempc is None:
-            logging.warning("[Read Press Sensor-%s] Could not read second Press/Temp measurement!", sensor + 1)
+            logging.warning("[Read Press Sensor-%s] Could not read second Press/Temp measurement!", sensor_id + 1)
             break
         else:
-            logging.debug("[Read Press Sensor-%s] %.1f°C, %.1fPa", sensor + 1, tempc, pressure)
-            logging.debug("[Read Press Sensor-%s] Differences: %.1f°C, %.1fPa", sensor + 1, abs(tempc2 - tempc), abs(pressure2 - pressure))
+            logging.debug("[Read Press Sensor-%s] %.1f°C, %.1fPa", sensor_id + 1, tempc, pressure)
+            logging.debug("[Read Press Sensor-%s] Differences: %.1f°C, %.1fPa", sensor_id + 1, abs(tempc2 - tempc), abs(pressure2 - pressure))
 
             if abs(tempc2 - tempc) > 1 or abs(pressure2 - pressure) > 15:
                 tempc2 = tempc
                 pressure2 = pressure
-                logging.debug("[Read Press Sensor-%s] Successive readings > 15 Pa or > 1°C difference: Rereading", sensor + 1)
+                logging.debug("[Read Press Sensor-%s] Successive readings > 15 Pa or > 1°C difference: Rereading", sensor_id + 1)
             else:
-                logging.debug("[Read Press Sensor-%s] Successive readings < 15 Pa or < 1°C difference: keeping.", sensor + 1)
+                logging.debug("[Read Press Sensor-%s] Successive readings < 15 Pa or < 1°C difference: keeping.", sensor_id + 1)
                 temperature_f = float(tempc) * 9.0 / 5.0 + 32.0
-                logging.debug("[Read Press Sensor-%s] Temp: %.1f°C, Press: %.1fPa, ALT: %.1fm", sensor + 1, tempc, pressure, alt)
-                sensor_press_read_press[sensor] = pressure
-                sensor_press_read_temp_c[sensor] = tempc
-                sensor_press_read_alt[sensor] = alt
-                logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor + 1, lock.path)
+                logging.debug("[Read Press Sensor-%s] Temp: %.1f°C, Press: %.1fPa, ALT: %.1fm", sensor_id + 1, tempc, pressure, alt)
+                sensor_p_read_press[sensor_id] = pressure
+                sensor_p_read_temp_c[sensor_id] = tempc
+                sensor_p_read_alt[sensor_id] = alt
+                logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor_id + 1, lock.path)
                 lock.release()
-                return 1
-    logging.warning("[Read Press Sensor-%s] Could not get two consecutive Press measurements that were consistent.", sensor + 1)
-    logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor + 1, lock.path)
+                return pressure, tempc, alt
+
+    logging.warning("[Read Press Sensor-%s] Could not get two consecutive Press measurements that were consistent.", sensor_id + 1)
+    logging.debug("[Read Press Sensor-%s] Removing lock: %s", sensor_id + 1, lock.path)
     lock.release()
-    return 0
+    return None
 
 
-# Obtain reading from Press sensor
-def read_press(sensor, device, pin):
-    global last_press_reading
+
+#################################################
+#            Read Data From Sensors             #
+#################################################
+
+# Obtain reading from Temperature sensor
+def read_t(sensor_id, device, pin):
     # Ensure at least 2 seconds between sensor reads
-    while last_press_reading > int(time.time()):
-        time.sleep(0.25)
+    temperature = None
+    global last_t_reading
+    while last_t_reading > time.time():
+        time.sleep(0.2)
+
+    if device in 'RPi':
+        rpi_temp_file = open('/sys/class/thermal/thermal_zone0/temp')
+        rpi_tempf = float(rpi_temp_file.read())
+        temperature = rpi_tempf / 1000  # Temperature in Celsius
+    elif device in 'DS18B20':
+        import glob
+        os.system('modprobe w1-gpio')
+        os.system('modprobe w1-therm')
+        base_dir = '/sys/bus/w1/devices/'
+        #device_folder = glob.glob(base_dir + '28*')[0]
+        device_file = base_dir + '28-' + pin + '/w1_slave'
+        
+        def read_temp_raw():
+            f = open(device_file, 'r')
+            lines = f.readlines()
+            f.close()
+            return lines
+        lines = read_temp_raw()
+        while lines[0].strip()[-3:] != 'YES':
+            time.sleep(0.2)
+            lines = read_temp_raw()
+        equals_pos = lines[1].find('t=')
+        if equals_pos != -1:
+            temp_string = lines[1][equals_pos + 2:]
+            temperature = float(temp_string) / 1000.0
+    else:
+        logging.debug("[Read T Sensor-%s] Device not recognized: %s", sensor_id + 1, device)
+
+    last_t_reading = time.time() + 2
+    return temperature
+
+
+# Obtain reading from Humidity/Temperature sensor
+def read_ht(sensor_id, device, pin):
+    # Ensure at least 2 seconds between sensor reads
+    global last_ht_reading
+    while last_ht_reading > time.time():
+        time.sleep(0.2)
+
+    if device == 'DHT11':
+        device = Adafruit_DHT.DHT11
+    elif device == 'DHT22':
+        device = Adafruit_DHT.DHT22
+    elif device == 'AM2302':
+        device = Adafruit_DHT.AM2302
+    elif device == 'AM2315':
+        device = 'AM2315'
+
+    if device == Adafruit_DHT.DHT11 or device == Adafruit_DHT.DHT22 or device == Adafruit_DHT.AM2302:
+        humidity, temperature = Adafruit_DHT.read_retry(device, pin)
+    elif device == 'AM2315':
+        if pin != 0:
+            I2C_address = 0x70 + pin // 10
+            if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
+                I2C_bus_number = 1
+            else:
+                I2C_bus_number = 0
+            bus = smbus.SMBus(I2C_bus_number)
+            bus.write_byte(I2C_address, pin % 10)
+            time.sleep(0.1)
+        am = AM2315(0x5c, "/dev/i2c-1")
+        temperature, humidity, crc_check = am.sense()
+    else:
+        logging.debug("[Read HT Sensor-%s] Device not recognized: %s", sensor_id + 1, device)
+        temperature = humidity = None
+
+    last_ht_reading = time.time() + 2
+    return humidity, temperature
+
+
+# Obtain reading from CO2 Sensor
+def read_co2(sensor_id, device):
+    # Ensure at least 2 seconds between sensor reads
+    global last_c_reading
+    while last_c_reading > time.time():
+        time.sleep(0.2)
+
+    if device == 'K30':
+        ser = serial.Serial("/dev/ttyAMA0", timeout=1)  # Wait 1 second for reply
+        ser.flushInput()
+        time.sleep(1)
+        ser.write("\xFE\x44\x00\x08\x02\x9F\x25")
+        time.sleep(.01)
+        resp = ser.read(7)
+        if len(resp) == 0:
+            last_c_reading = time.time() + 2
+            co2 = None
+        else:
+            high = ord(resp[3])
+            low = ord(resp[4])
+            co2 = (high * 256) + low
+    else:
+        logging.debug("[Read CO2 Sensor-%s] Device not recognized: %s", sensor_id + 1, device)
+        co2 = None
+
+    last_c_reading = time.time() + 2
+    return co2
+
+
+# Obtain reading from Pressure sensor
+def read_press(sensor_id, device, pin):
+    # Ensure at least 2 seconds between sensor reads
+    global last_p_reading
+    while last_p_reading > time.time():
+        time.sleep(0.2)
+
     if device == 'BMP085-180':
         if pin != 0:
             I2C_address = 0x70 + pin // 10
@@ -2259,16 +2278,17 @@ def read_press(sensor, device, pin):
             bus.write_byte(I2C_address, pin % 10)
             time.sleep(0.1)
         press_sensor = BMP085.BMP085()
-        temp = press_sensor.read_temperature()
-        press = press_sensor.read_pressure()
-        alt = press_sensor.read_altitude()
+        temperature = press_sensor.read_temperature()
+        pressure = press_sensor.read_pressure()
+        altitude = press_sensor.read_altitude()
         #sea_level = sensor.read_sealevel_pressure()
-        last_press_reading = int(time.time()) + 2
-        return press, temp, alt
     else:
-        logging.debug("[Read Press Sensor-%s] Device not recognized: %s", sensor + 1, device)
-        last_press_reading = int(time.time()) + 2
-        return 0
+        logging.debug("[Read Press Sensor-%s] Device not recognized: %s", sensor_id + 1, device)
+        pressure = temperature = altitude = None
+
+    last_p_reading = time.time() + 2
+    return pressure, temperature, altitude
+
 
 
 #################################################
@@ -2486,190 +2506,190 @@ def read_sql():
     sensor_ht_read_temp_c = []
     
     # CO2 sensor globals
-    global sensor_co2_id
-    global sensor_co2_name
-    global sensor_co2_device
-    global sensor_co2_pin
-    global sensor_co2_period
-    global sensor_co2_premeasure_relay
-    global sensor_co2_premeasure_dur
-    global sensor_co2_activated
-    global sensor_co2_graph
-    global sensor_co2_yaxis_relay_min
-    global sensor_co2_yaxis_relay_max
-    global sensor_co2_yaxis_relay_tics
-    global sensor_co2_yaxis_relay_mtics
-    global sensor_co2_yaxis_co2_min
-    global sensor_co2_yaxis_co2_max
-    global sensor_co2_yaxis_co2_tics
-    global sensor_co2_yaxis_co2_mtics
-    global sensor_co2_relays_up
-    global sensor_co2_relays_down
-    global pid_co2_relay_high
-    global pid_co2_outmin_high
-    global pid_co2_outmax_high
-    global pid_co2_relay_low
-    global pid_co2_outmin_low
-    global pid_co2_outmax_low
-    global pid_co2_set
-    global pid_co2_set_dir
-    global pid_co2_or
-    global pid_co2_period
-    global pid_co2_p
-    global pid_co2_i
-    global pid_co2_d
-    global pid_co2_alive
-    global sensor_co2_read_co2
+    global sensor_c_id
+    global sensor_c_name
+    global sensor_c_device
+    global sensor_c_pin
+    global sensor_c_period
+    global sensor_c_premeasure_relay
+    global sensor_c_premeasure_dur
+    global sensor_c_activated
+    global sensor_c_graph
+    global sensor_c_yaxis_relay_min
+    global sensor_c_yaxis_relay_max
+    global sensor_c_yaxis_relay_tics
+    global sensor_c_yaxis_relay_mtics
+    global sensor_c_yaxis_co2_min
+    global sensor_c_yaxis_co2_max
+    global sensor_c_yaxis_co2_tics
+    global sensor_c_yaxis_co2_mtics
+    global sensor_c_relays_up
+    global sensor_c_relays_down
+    global pid_c_relay_high
+    global pid_c_outmin_high
+    global pid_c_outmax_high
+    global pid_c_relay_low
+    global pid_c_outmin_low
+    global pid_c_outmax_low
+    global pid_c_set
+    global pid_c_set_dir
+    global pid_c_or
+    global pid_c_period
+    global pid_c_p
+    global pid_c_i
+    global pid_c_d
+    global pid_c_alive
+    global sensor_c_read_co2
 
     # CO2 sensor variable reset
-    sensor_co2_id = []
-    sensor_co2_name = []
-    sensor_co2_device = []
-    sensor_co2_pin = []
-    sensor_co2_period = []
-    sensor_co2_premeasure_relay = []
-    sensor_co2_premeasure_dur = []
-    sensor_co2_activated = []
-    sensor_co2_graph = []
-    sensor_co2_yaxis_relay_min = []
-    sensor_co2_yaxis_relay_max = []
-    sensor_co2_yaxis_relay_tics = []
-    sensor_co2_yaxis_relay_mtics = []
-    sensor_co2_yaxis_co2_min = []
-    sensor_co2_yaxis_co2_max = []
-    sensor_co2_yaxis_co2_tics = []
-    sensor_co2_yaxis_co2_mtics = []
-    sensor_co2_relays_up = []
-    sensor_co2_relays_down = []
-    pid_co2_relay_high = []
-    pid_co2_outmin_high = []
-    pid_co2_outmax_high = []
-    pid_co2_relay_low = []
-    pid_co2_outmin_low = []
-    pid_co2_outmax_low = []
-    pid_co2_set = []
-    pid_co2_set_dir = []
-    pid_co2_period = []
-    pid_co2_p = []
-    pid_co2_i = []
-    pid_co2_d = []
-    pid_co2_outmax = []
-    pid_co2_or = []
-    sensor_co2_read_co2 = []
+    sensor_c_id = []
+    sensor_c_name = []
+    sensor_c_device = []
+    sensor_c_pin = []
+    sensor_c_period = []
+    sensor_c_premeasure_relay = []
+    sensor_c_premeasure_dur = []
+    sensor_c_activated = []
+    sensor_c_graph = []
+    sensor_c_yaxis_relay_min = []
+    sensor_c_yaxis_relay_max = []
+    sensor_c_yaxis_relay_tics = []
+    sensor_c_yaxis_relay_mtics = []
+    sensor_c_yaxis_co2_min = []
+    sensor_c_yaxis_co2_max = []
+    sensor_c_yaxis_co2_tics = []
+    sensor_c_yaxis_co2_mtics = []
+    sensor_c_relays_up = []
+    sensor_c_relays_down = []
+    pid_c_relay_high = []
+    pid_c_outmin_high = []
+    pid_c_outmax_high = []
+    pid_c_relay_low = []
+    pid_c_outmin_low = []
+    pid_c_outmax_low = []
+    pid_c_set = []
+    pid_c_set_dir = []
+    pid_c_period = []
+    pid_c_p = []
+    pid_c_i = []
+    pid_c_d = []
+    pid_c_outmax = []
+    pid_c_or = []
+    sensor_c_read_co2 = []
 
     # Pressure sensor globals
-    global sensor_press_id
-    global sensor_press_name
-    global sensor_press_device
-    global sensor_press_pin
-    global sensor_press_period
-    global sensor_press_premeasure_relay
-    global sensor_press_premeasure_dur
-    global sensor_press_activated
-    global sensor_press_graph
-    global sensor_press_yaxis_relay_min
-    global sensor_press_yaxis_relay_max
-    global sensor_press_yaxis_relay_tics
-    global sensor_press_yaxis_relay_mtics
-    global sensor_press_yaxis_temp_min
-    global sensor_press_yaxis_temp_max
-    global sensor_press_yaxis_temp_tics
-    global sensor_press_yaxis_temp_mtics
-    global sensor_press_yaxis_press_min
-    global sensor_press_yaxis_press_max
-    global sensor_press_yaxis_press_tics
-    global sensor_press_yaxis_press_mtics
-    global sensor_press_temp_relays_up
-    global sensor_press_temp_relays_down
-    global pid_press_temp_relay_high
-    global pid_press_temp_outmin_high
-    global pid_press_temp_outmax_high
-    global pid_press_temp_relay_low
-    global pid_press_temp_outmin_low
-    global pid_press_temp_outmax_low
-    global pid_press_temp_set
-    global pid_press_temp_set_dir
-    global pid_press_temp_or
-    global pid_press_temp_period
-    global pid_press_temp_p
-    global pid_press_temp_i
-    global pid_press_temp_d
-    global sensor_press_press_relays_up
-    global sensor_press_press_relays_down
-    global pid_press_press_relay_high
-    global pid_press_press_outmin_high
-    global pid_press_press_outmax_high
-    global pid_press_press_relay_low
-    global pid_press_press_outmin_low
-    global pid_press_press_outmax_low
-    global pid_press_press_set
-    global pid_press_press_set_dir
-    global pid_press_press_or
-    global pid_press_press_period
-    global pid_press_press_p
-    global pid_press_press_i
-    global pid_press_press_d
-    global pid_press_temp_alive
-    global pid_press_press_alive
-    global sensor_press_read_alt
-    global sensor_press_read_press
-    global sensor_press_read_temp_c
+    global sensor_p_id
+    global sensor_p_name
+    global sensor_p_device
+    global sensor_p_pin
+    global sensor_p_period
+    global sensor_p_premeasure_relay
+    global sensor_p_premeasure_dur
+    global sensor_p_activated
+    global sensor_p_graph
+    global sensor_p_yaxis_relay_min
+    global sensor_p_yaxis_relay_max
+    global sensor_p_yaxis_relay_tics
+    global sensor_p_yaxis_relay_mtics
+    global sensor_p_yaxis_temp_min
+    global sensor_p_yaxis_temp_max
+    global sensor_p_yaxis_temp_tics
+    global sensor_p_yaxis_temp_mtics
+    global sensor_p_yaxis_press_min
+    global sensor_p_yaxis_press_max
+    global sensor_p_yaxis_press_tics
+    global sensor_p_yaxis_press_mtics
+    global sensor_p_temp_relays_up
+    global sensor_p_temp_relays_down
+    global pid_p_temp_relay_high
+    global pid_p_temp_outmin_high
+    global pid_p_temp_outmax_high
+    global pid_p_temp_relay_low
+    global pid_p_temp_outmin_low
+    global pid_p_temp_outmax_low
+    global pid_p_temp_set
+    global pid_p_temp_set_dir
+    global pid_p_temp_or
+    global pid_p_temp_period
+    global pid_p_temp_p
+    global pid_p_temp_i
+    global pid_p_temp_d
+    global sensor_p_press_relays_up
+    global sensor_p_press_relays_down
+    global pid_p_press_relay_high
+    global pid_p_press_outmin_high
+    global pid_p_press_outmax_high
+    global pid_p_press_relay_low
+    global pid_p_press_outmin_low
+    global pid_p_press_outmax_low
+    global pid_p_press_set
+    global pid_p_press_set_dir
+    global pid_p_press_or
+    global pid_p_press_period
+    global pid_p_press_p
+    global pid_p_press_i
+    global pid_p_press_d
+    global pid_p_temp_alive
+    global pid_p_press_alive
+    global sensor_p_read_alt
+    global sensor_p_read_press
+    global sensor_p_read_temp_c
     
     # Pressure sensor variable reset
-    sensor_press_id = []
-    sensor_press_name = []
-    sensor_press_device = []
-    sensor_press_pin = []
-    sensor_press_period = []
-    sensor_press_premeasure_relay = []
-    sensor_press_premeasure_dur = []
-    sensor_press_activated = []
-    sensor_press_graph = []
-    sensor_press_yaxis_relay_min = []
-    sensor_press_yaxis_relay_max = []
-    sensor_press_yaxis_relay_tics = []
-    sensor_press_yaxis_relay_mtics = []
-    sensor_press_yaxis_temp_min = []
-    sensor_press_yaxis_temp_max = []
-    sensor_press_yaxis_temp_tics = []
-    sensor_press_yaxis_temp_mtics = []
-    sensor_press_yaxis_press_min = []
-    sensor_press_yaxis_press_max = []
-    sensor_press_yaxis_press_tics = []
-    sensor_press_yaxis_press_mtics = []
-    sensor_press_temp_relays_up = []
-    sensor_press_temp_relays_down = []
-    pid_press_temp_relay_high = []
-    pid_press_temp_outmin_high = []
-    pid_press_temp_outmax_high = []
-    pid_press_temp_relay_low = []
-    pid_press_temp_outmin_low = []
-    pid_press_temp_outmax_low = []
-    pid_press_temp_set = []
-    pid_press_temp_set_dir = []
-    pid_press_temp_period = []
-    pid_press_temp_p = []
-    pid_press_temp_i = []
-    pid_press_temp_d = []
-    pid_press_temp_or = []
-    sensor_press_press_relays_up = []
-    sensor_press_press_relays_down = []
-    pid_press_press_relay_high = []
-    pid_press_press_outmin_high = []
-    pid_press_press_outmax_high = []
-    pid_press_press_relay_low = []
-    pid_press_press_outmin_low = []
-    pid_press_press_outmax_low = []
-    pid_press_press_set = []
-    pid_press_press_set_dir = []
-    pid_press_press_period = []
-    pid_press_press_p = []
-    pid_press_press_i = []
-    pid_press_press_d = []
-    pid_press_press_or = []
-    sensor_press_read_alt = []
-    sensor_press_read_press = []
-    sensor_press_read_temp_c = []
+    sensor_p_id = []
+    sensor_p_name = []
+    sensor_p_device = []
+    sensor_p_pin = []
+    sensor_p_period = []
+    sensor_p_premeasure_relay = []
+    sensor_p_premeasure_dur = []
+    sensor_p_activated = []
+    sensor_p_graph = []
+    sensor_p_yaxis_relay_min = []
+    sensor_p_yaxis_relay_max = []
+    sensor_p_yaxis_relay_tics = []
+    sensor_p_yaxis_relay_mtics = []
+    sensor_p_yaxis_temp_min = []
+    sensor_p_yaxis_temp_max = []
+    sensor_p_yaxis_temp_tics = []
+    sensor_p_yaxis_temp_mtics = []
+    sensor_p_yaxis_press_min = []
+    sensor_p_yaxis_press_max = []
+    sensor_p_yaxis_press_tics = []
+    sensor_p_yaxis_press_mtics = []
+    sensor_p_temp_relays_up = []
+    sensor_p_temp_relays_down = []
+    pid_p_temp_relay_high = []
+    pid_p_temp_outmin_high = []
+    pid_p_temp_outmax_high = []
+    pid_p_temp_relay_low = []
+    pid_p_temp_outmin_low = []
+    pid_p_temp_outmax_low = []
+    pid_p_temp_set = []
+    pid_p_temp_set_dir = []
+    pid_p_temp_period = []
+    pid_p_temp_p = []
+    pid_p_temp_i = []
+    pid_p_temp_d = []
+    pid_p_temp_or = []
+    sensor_p_press_relays_up = []
+    sensor_p_press_relays_down = []
+    pid_p_press_relay_high = []
+    pid_p_press_outmin_high = []
+    pid_p_press_outmax_high = []
+    pid_p_press_relay_low = []
+    pid_p_press_outmin_low = []
+    pid_p_press_outmax_low = []
+    pid_p_press_set = []
+    pid_p_press_set_dir = []
+    pid_p_press_period = []
+    pid_p_press_p = []
+    pid_p_press_i = []
+    pid_p_press_d = []
+    pid_p_press_or = []
+    sensor_p_read_alt = []
+    sensor_p_read_press = []
+    sensor_p_read_temp_c = []
 
     # Relay globals
     global relay_id
@@ -2901,15 +2921,15 @@ def read_sql():
     # Convert string of comma-separated values to a 2-dimensional list of integers
     global sensor_t_temp_relays_up_list
     sensor_t_temp_relays_up_list = []
-    for i in range(0, len(sensor_t_temp_relays_up)):
-        if sensor_t_temp_relays_up[i] != '':
+    for i, each_t_temp_relays_up in enumerate(sensor_t_temp_relays_up):
+        if each_t_temp_relays_up != '':
             sensor_t_temp_relays_up_list.append(sensor_t_temp_relays_up[i].split(","))
             sensor_t_temp_relays_up_list[i] = map(int, sensor_t_temp_relays_up_list[i])
 
     global sensor_t_temp_relays_down_list
     sensor_t_temp_relays_down_list = []
-    for i in range(0, len(sensor_t_temp_relays_down)):
-        if sensor_t_temp_relays_down[i] != '':
+    for i, each_t_temp_relays_down in enumerate(sensor_t_temp_relays_down):
+        if each_t_temp_relays_down != '':
             sensor_t_temp_relays_down_list.append(sensor_t_temp_relays_down[i].split(","))
             sensor_t_temp_relays_down_list[i] = map(int, sensor_t_temp_relays_down_list[i])
 
@@ -2942,23 +2962,27 @@ def read_sql():
     global conditional_t_do_notify
     global conditional_t_time_notify
 
-    conditional_t_id = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_name = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_state = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_direction = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_setpoint = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_period = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_sel_relay = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_relay = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_relay_state = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_relay_seconds_on = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_sel_command = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_do_command = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_sel_notify = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_do_notify = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
-    conditional_t_time_notify = get_3d_array(1, len(conditional_t_number_conditional), len(conditional_t_number_sensor))
+    # There may be multiple conditional statements per sensor.
+    # get_3d_array() will initialize (to 0) a 3-dimensional array with the length of indexes
+    # equal to the number of sensors and the number of conditionals per each sensor.
+    # Elements are then set and accessed with conditional_x[sensor_number][conditonal_number][0]
+    conditional_t_id = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_name = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_state = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_direction = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_setpoint = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_period = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_sel_relay = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_relay = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_relay_state = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_relay_seconds_on = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_sel_command = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_do_command = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_sel_notify = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_do_notify = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
+    conditional_t_time_notify = get_3d_array(len(conditional_t_number_sensor), len(conditional_t_number_conditional), 1)
 
-    for j in range(0, len(conditional_t_number_sensor)):
+    for j in range(len(conditional_t_number_sensor)):
         cur.execute("""SELECT id,
                               name,
                               state,
@@ -3124,29 +3148,29 @@ def read_sql():
     # Convert string of comma-separated values to a 2-dimensional list of integers
     global sensor_ht_temp_relays_up_list
     sensor_ht_temp_relays_up_list = []
-    for i in range(0, len(sensor_ht_temp_relays_up)):
-        if sensor_ht_temp_relays_up[i] != '':
+    for i, each_ht_temp_relays_up in enumerate(sensor_ht_temp_relays_up):
+        if each_ht_temp_relays_up != '':
             sensor_ht_temp_relays_up_list.append(sensor_ht_temp_relays_up[i].split(","))
             sensor_ht_temp_relays_up_list[i] = map(int, sensor_ht_temp_relays_up_list[i])
 
     global sensor_ht_temp_relays_down_list
     sensor_ht_temp_relays_down_list = []
-    for i in range(0, len(sensor_ht_temp_relays_down)):
-        if sensor_ht_temp_relays_down[i] != '':
+    for i, each_ht_temp_relays_down in enumerate(sensor_ht_temp_relays_down):
+        if each_ht_temp_relays_down != '':
             sensor_ht_temp_relays_down_list.append(sensor_ht_temp_relays_down[i].split(","))
             sensor_ht_temp_relays_down_list[i] = map(int, sensor_ht_temp_relays_down_list[i])
 
     global sensor_ht_hum_relays_up_list
     sensor_ht_hum_relays_up_list = []
-    for i in range(0, len(sensor_ht_hum_relays_up)):
-        if sensor_ht_hum_relays_up[i] != '':
+    for i, each_ht_hum_relays_up in enumerate(sensor_ht_hum_relays_up):
+        if each_ht_hum_relays_up != '':
             sensor_ht_hum_relays_up_list.append(sensor_ht_hum_relays_up[i].split(","))
             sensor_ht_hum_relays_up_list[i] = map(int, sensor_ht_hum_relays_up_list[i])
 
     global sensor_ht_hum_relays_down_list
     sensor_ht_hum_relays_down_list = []
-    for i in range(0, len(sensor_ht_hum_relays_down)):
-        if sensor_ht_hum_relays_down[i] != '':
+    for i, each_ht_hum_relays_down in enumerate(sensor_ht_hum_relays_down):
+        if each_ht_hum_relays_down != '':
             sensor_ht_hum_relays_down_list.append(sensor_ht_hum_relays_down[i].split(","))
             sensor_ht_hum_relays_down_list[i] = map(int, sensor_ht_hum_relays_down_list[i])
     
@@ -3180,24 +3204,28 @@ def read_sql():
     global conditional_ht_do_notify
     global conditional_ht_time_notify
 
-    conditional_ht_id = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_name = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_state = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_condition = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_direction = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_setpoint = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_period = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_sel_relay = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_relay = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_relay_state = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_relay_seconds_on = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_sel_command = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_do_command = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_sel_notify = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_do_notify = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
-    conditional_ht_time_notify = get_3d_array(1, len(conditional_ht_number_conditional), len(conditional_ht_number_sensor))
+    # There may be multiple conditional statements per sensor.
+    # get_3d_array() will initialize (to 0) a 3-dimensional array with the length of indexes
+    # equal to the number of sensors and the number of conditionals per each sensor.
+    # Elements are then set and accessed with conditional_x[sensor_number][conditonal_number][0]
+    conditional_ht_id = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_name = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_state = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_condition = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_direction = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_setpoint = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_period = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_sel_relay = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_relay = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_relay_state = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_relay_seconds_on = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_sel_command = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_do_command = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_sel_notify = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_do_notify = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
+    conditional_ht_time_notify = get_3d_array(len(conditional_ht_number_sensor), len(conditional_ht_number_conditional), 1)
 
-    for j in range(0, len(conditional_ht_number_sensor)):
+    for j in range(len(conditional_ht_number_sensor)):
         cur.execute("""SELECT id,
                               name,
                               state,
@@ -3276,101 +3304,105 @@ def read_sql():
                           co2_d
                    FROM   co2sensor """)
     for row in cur:
-        sensor_co2_id.append(row[0])
-        sensor_co2_name.append(row[1])
-        sensor_co2_pin.append(row[2])
-        sensor_co2_device.append(row[3])
-        sensor_co2_period.append(row[4])
-        sensor_co2_premeasure_relay.append(row[5])
-        sensor_co2_premeasure_dur.append(row[6])
-        sensor_co2_activated.append(row[7])
-        sensor_co2_graph.append(row[8])
-        sensor_co2_yaxis_relay_min.append(row[9])
-        sensor_co2_yaxis_relay_max.append(row[10])
-        sensor_co2_yaxis_relay_tics.append(row[11])
-        sensor_co2_yaxis_relay_mtics.append(row[12])
-        sensor_co2_yaxis_co2_min.append(row[13])
-        sensor_co2_yaxis_co2_max.append(row[14])
-        sensor_co2_yaxis_co2_tics.append(row[15])
-        sensor_co2_yaxis_co2_mtics.append(row[16])
-        sensor_co2_relays_up.append(row[17])
-        sensor_co2_relays_down.append(row[18])
-        pid_co2_relay_high.append(row[19])
-        pid_co2_outmin_high.append(row[20])
-        pid_co2_outmax_high.append(row[21])
-        pid_co2_relay_low.append(row[22])
-        pid_co2_outmin_low.append(row[23])
-        pid_co2_outmax_low.append(row[24])
-        pid_co2_or.append(row[25])
-        pid_co2_set.append(row[26])
-        pid_co2_set_dir.append(row[27])
-        pid_co2_period.append(row[28])
-        pid_co2_p.append(row[29])
-        pid_co2_i.append(row[30])
-        pid_co2_d.append(row[31])
+        sensor_c_id.append(row[0])
+        sensor_c_name.append(row[1])
+        sensor_c_pin.append(row[2])
+        sensor_c_device.append(row[3])
+        sensor_c_period.append(row[4])
+        sensor_c_premeasure_relay.append(row[5])
+        sensor_c_premeasure_dur.append(row[6])
+        sensor_c_activated.append(row[7])
+        sensor_c_graph.append(row[8])
+        sensor_c_yaxis_relay_min.append(row[9])
+        sensor_c_yaxis_relay_max.append(row[10])
+        sensor_c_yaxis_relay_tics.append(row[11])
+        sensor_c_yaxis_relay_mtics.append(row[12])
+        sensor_c_yaxis_co2_min.append(row[13])
+        sensor_c_yaxis_co2_max.append(row[14])
+        sensor_c_yaxis_co2_tics.append(row[15])
+        sensor_c_yaxis_co2_mtics.append(row[16])
+        sensor_c_relays_up.append(row[17])
+        sensor_c_relays_down.append(row[18])
+        pid_c_relay_high.append(row[19])
+        pid_c_outmin_high.append(row[20])
+        pid_c_outmax_high.append(row[21])
+        pid_c_relay_low.append(row[22])
+        pid_c_outmin_low.append(row[23])
+        pid_c_outmax_low.append(row[24])
+        pid_c_or.append(row[25])
+        pid_c_set.append(row[26])
+        pid_c_set_dir.append(row[27])
+        pid_c_period.append(row[28])
+        pid_c_p.append(row[29])
+        pid_c_i.append(row[30])
+        pid_c_d.append(row[31])
 
     # Convert string of comma-separated values to a 2-dimensional list of integers
-    global sensor_co2_relays_up_list
-    sensor_co2_relays_up_list = []
-    for i in range(0, len(sensor_co2_relays_up)):
-        if sensor_co2_relays_up[i] != '':
-            sensor_co2_relays_up_list.append(sensor_co2_relays_up[i].split(","))
-            sensor_co2_relays_up_list[i] = map(int, sensor_co2_relays_up_list[i])
+    global sensor_c_relays_up_list
+    sensor_c_relays_up_list = []
+    for i, each_co2_relays_up in enumerate(sensor_c_relays_up):
+        if each_co2_relays_up != '':
+            sensor_c_relays_up_list.append(sensor_c_relays_up[i].split(","))
+            sensor_c_relays_up_list[i] = map(int, sensor_c_relays_up_list[i])
 
-    global sensor_co2_relays_down_list
-    sensor_co2_relays_down_list = []
-    for i in range(0, len(sensor_co2_relays_down)):
-        if sensor_co2_relays_down[i] != '':
-            sensor_co2_relays_down_list.append(sensor_co2_relays_down[i].split(","))
-            sensor_co2_relays_down_list[i] = map(int, sensor_co2_relays_down_list[i])
+    global sensor_c_relays_down_list
+    sensor_c_relays_down_list = []
+    for i, each_co2_relays_down in enumerate(sensor_c_relays_down):
+        if each_co2_relays_down != '':
+            sensor_c_relays_down_list.append(sensor_c_relays_down[i].split(","))
+            sensor_c_relays_down_list[i] = map(int, sensor_c_relays_down_list[i])
 
-    global conditional_co2_number_sensor
-    global conditional_co2_number_conditional
-    conditional_co2_number_sensor = []
-    conditional_co2_number_conditional = []
+    global conditional_c_number_sensor
+    global conditional_c_number_conditional
+    conditional_c_number_sensor = []
+    conditional_c_number_conditional = []
 
     cur.execute('SELECT id FROM co2sensor')
     for row in cur:
-        conditional_co2_number_sensor.append(row[0])
+        conditional_c_number_sensor.append(row[0])
 
     cur.execute('SELECT id FROM co2sensorconditional ')
     for row in cur:
-        conditional_co2_number_conditional.append(row[0])
+        conditional_c_number_conditional.append(row[0])
 
-    global conditional_co2_id
-    global conditional_co2_name
-    global conditional_co2_state
-    global conditional_co2_condition
-    global conditional_co2_direction
-    global conditional_co2_setpoint
-    global conditional_co2_period
-    global conditional_co2_sel_relay
-    global conditional_co2_relay
-    global conditional_co2_relay_state
-    global conditional_co2_relay_seconds_on
-    global conditional_co2_sel_command
-    global conditional_co2_do_command
-    global conditional_co2_sel_notify
-    global conditional_co2_do_notify
-    global conditional_co2_time_notify
+    global conditional_c_id
+    global conditional_c_name
+    global conditional_c_state
+    global conditional_c_condition
+    global conditional_c_direction
+    global conditional_c_setpoint
+    global conditional_c_period
+    global conditional_c_sel_relay
+    global conditional_c_relay
+    global conditional_c_relay_state
+    global conditional_c_relay_seconds_on
+    global conditional_c_sel_command
+    global conditional_c_do_command
+    global conditional_c_sel_notify
+    global conditional_c_do_notify
+    global conditional_c_time_notify
 
-    conditional_co2_id = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_name = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_state = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_direction = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_setpoint = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_period = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_sel_relay = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_relay = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_relay_state = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_relay_seconds_on = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_sel_command = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_do_command = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_sel_notify = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_do_notify = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
-    conditional_co2_time_notify = get_3d_array(1, len(conditional_co2_number_conditional), len(conditional_co2_number_sensor))
+    # There may be multiple conditional statements per sensor.
+    # get_3d_array() will initialize (to 0) a 3-dimensional array with the length of indexes
+    # equal to the number of sensors and the number of conditionals per each sensor.
+    # Elements are then set and accessed with conditional_x[sensor_number][conditonal_number][0]
+    conditional_c_id = get_3d_array(len(conditional_c_number_sensor), len(conditional_c_number_conditional), 1)
+    conditional_c_name = get_3d_array(len(conditional_c_number_sensor), len(conditional_c_number_conditional), 1)
+    conditional_c_state = get_3d_array(len(conditional_c_number_sensor), len(conditional_c_number_conditional), 1)
+    conditional_c_direction = get_3d_array(len(conditional_c_number_sensor), len(conditional_c_number_conditional), 1)
+    conditional_c_setpoint = get_3d_array(len(conditional_c_number_sensor), len(conditional_c_number_conditional), 1)
+    conditional_c_period = get_3d_array(len(conditional_c_number_sensor), len(conditional_c_number_conditional), 1)
+    conditional_c_sel_relay = get_3d_array(len(conditional_c_number_sensor), len(conditional_c_number_conditional), 1)
+    conditional_c_relay = get_3d_array(len(conditional_c_number_sensor), len(conditional_c_number_conditional), 1)
+    conditional_c_relay_state = get_3d_array(len(conditional_c_number_sensor), len(conditional_c_number_conditional), 1)
+    conditional_c_relay_seconds_on = get_3d_array(len(conditional_c_number_sensor), len(conditional_c_number_conditional), 1)
+    conditional_c_sel_command = get_3d_array(len(conditional_c_number_sensor), len(conditional_c_number_conditional), 1)
+    conditional_c_do_command = get_3d_array(len(conditional_c_number_sensor), len(conditional_c_number_conditional), 1)
+    conditional_c_sel_notify = get_3d_array(len(conditional_c_number_sensor), len(conditional_c_number_conditional), 1)
+    conditional_c_do_notify = get_3d_array(len(conditional_c_number_sensor), len(conditional_c_number_conditional), 1)
+    conditional_c_time_notify = get_3d_array(len(conditional_c_number_sensor), len(conditional_c_number_conditional), 1)
 
-    for j in range(0, len(conditional_co2_number_sensor)):
+    for j in range(len(conditional_c_number_sensor)):
         cur.execute("""SELECT id,
                               name,
                               state,
@@ -3389,27 +3421,27 @@ def read_sql():
                        WHERE  sensor = ? """, (str(j),))
         count = 0
         for row in cur:
-            conditional_co2_id[j][count][0] = row[0]
-            conditional_co2_name[j][count][0] = row[1]
-            conditional_co2_state[j][count][0] = row[2]
-            conditional_co2_direction[j][count][0] = row[3]
-            conditional_co2_setpoint[j][count][0] = row[4]
-            conditional_co2_period[j][count][0] = row[5]
-            conditional_co2_sel_relay[j][count][0] = row[6]
-            conditional_co2_relay[j][count][0] = row[7]
-            conditional_co2_relay_state[j][count][0] = row[8]
-            conditional_co2_relay_seconds_on[j][count][0] = row[9]
-            conditional_co2_sel_command[j][count][0] = row[10]
+            conditional_c_id[j][count][0] = row[0]
+            conditional_c_name[j][count][0] = row[1]
+            conditional_c_state[j][count][0] = row[2]
+            conditional_c_direction[j][count][0] = row[3]
+            conditional_c_setpoint[j][count][0] = row[4]
+            conditional_c_period[j][count][0] = row[5]
+            conditional_c_sel_relay[j][count][0] = row[6]
+            conditional_c_relay[j][count][0] = row[7]
+            conditional_c_relay_state[j][count][0] = row[8]
+            conditional_c_relay_seconds_on[j][count][0] = row[9]
+            conditional_c_sel_command[j][count][0] = row[10]
             if row[11] is None:
-                conditional_co2_do_command[j][count][0] = row[11]
+                conditional_c_do_command[j][count][0] = row[11]
             else:
                 if "\'\'" not in row[11]:
-                    conditional_co2_do_command[j][count][0] = row[11]
+                    conditional_c_do_command[j][count][0] = row[11]
                 else:
-                    conditional_co2_do_command[j][count][0] = row[11].replace("\'\'", "\'")
-            conditional_co2_sel_notify[j][count][0] = row[12]
-            conditional_co2_do_notify[j][count][0] = row[13]
-            conditional_co2_time_notify[j][count][0] = 0
+                    conditional_c_do_command[j][count][0] = row[11].replace("\'\'", "\'")
+            conditional_c_sel_notify[j][count][0] = row[12]
+            conditional_c_do_notify[j][count][0] = row[13]
+            conditional_c_time_notify[j][count][0] = 0
             count += 1
 
     cur.execute("""SELECT id,
@@ -3465,135 +3497,139 @@ def read_sql():
                           press_d
                    FROM   presssensor """)
     for row in cur:
-        sensor_press_id.append(row[0])
-        sensor_press_name.append(row[1])
-        sensor_press_pin.append(row[2])
-        sensor_press_device.append(row[3])
-        sensor_press_period.append(row[4])
-        sensor_press_premeasure_relay.append(row[5])
-        sensor_press_premeasure_dur.append(row[6])
-        sensor_press_activated.append(row[7])
-        sensor_press_graph.append(row[8])
-        sensor_press_yaxis_relay_min.append(row[9])
-        sensor_press_yaxis_relay_max.append(row[10])
-        sensor_press_yaxis_relay_tics.append(row[11])
-        sensor_press_yaxis_relay_mtics.append(row[12])
-        sensor_press_yaxis_temp_min.append(row[13])
-        sensor_press_yaxis_temp_max.append(row[14])
-        sensor_press_yaxis_temp_tics.append(row[15])
-        sensor_press_yaxis_temp_mtics.append(row[16])
-        sensor_press_yaxis_press_min.append(row[17])
-        sensor_press_yaxis_press_max.append(row[18])
-        sensor_press_yaxis_press_tics.append(row[19])
-        sensor_press_yaxis_press_mtics.append(row[20])
-        sensor_press_temp_relays_up.append(row[21])
-        sensor_press_temp_relays_down.append(row[22])
-        pid_press_temp_relay_high.append(row[23])
-        pid_press_temp_outmin_high.append(row[24])
-        pid_press_temp_outmax_high.append(row[25])
-        pid_press_temp_relay_low.append(row[26])
-        pid_press_temp_outmin_low.append(row[27])
-        pid_press_temp_outmax_low.append(row[28])
-        pid_press_temp_or.append(row[29])
-        pid_press_temp_set.append(row[30])
-        pid_press_temp_set_dir.append(row[31])
-        pid_press_temp_period.append(row[32])
-        pid_press_temp_p.append(row[33])
-        pid_press_temp_i.append(row[34])
-        pid_press_temp_d.append(row[35])
-        sensor_press_press_relays_up.append(row[36])
-        sensor_press_press_relays_down.append(row[37])
-        pid_press_press_relay_high.append(row[38])
-        pid_press_press_outmin_high.append(row[39])
-        pid_press_press_outmax_high.append(row[40])
-        pid_press_press_relay_low.append(row[41])
-        pid_press_press_outmin_low.append(row[42])
-        pid_press_press_outmax_low.append(row[43])
-        pid_press_press_or.append(row[44])
-        pid_press_press_set.append(row[45])
-        pid_press_press_set_dir.append(row[46])
-        pid_press_press_period.append(row[47])
-        pid_press_press_p.append(row[48])
-        pid_press_press_i.append(row[49])
-        pid_press_press_d.append(row[50])
+        sensor_p_id.append(row[0])
+        sensor_p_name.append(row[1])
+        sensor_p_pin.append(row[2])
+        sensor_p_device.append(row[3])
+        sensor_p_period.append(row[4])
+        sensor_p_premeasure_relay.append(row[5])
+        sensor_p_premeasure_dur.append(row[6])
+        sensor_p_activated.append(row[7])
+        sensor_p_graph.append(row[8])
+        sensor_p_yaxis_relay_min.append(row[9])
+        sensor_p_yaxis_relay_max.append(row[10])
+        sensor_p_yaxis_relay_tics.append(row[11])
+        sensor_p_yaxis_relay_mtics.append(row[12])
+        sensor_p_yaxis_temp_min.append(row[13])
+        sensor_p_yaxis_temp_max.append(row[14])
+        sensor_p_yaxis_temp_tics.append(row[15])
+        sensor_p_yaxis_temp_mtics.append(row[16])
+        sensor_p_yaxis_press_min.append(row[17])
+        sensor_p_yaxis_press_max.append(row[18])
+        sensor_p_yaxis_press_tics.append(row[19])
+        sensor_p_yaxis_press_mtics.append(row[20])
+        sensor_p_temp_relays_up.append(row[21])
+        sensor_p_temp_relays_down.append(row[22])
+        pid_p_temp_relay_high.append(row[23])
+        pid_p_temp_outmin_high.append(row[24])
+        pid_p_temp_outmax_high.append(row[25])
+        pid_p_temp_relay_low.append(row[26])
+        pid_p_temp_outmin_low.append(row[27])
+        pid_p_temp_outmax_low.append(row[28])
+        pid_p_temp_or.append(row[29])
+        pid_p_temp_set.append(row[30])
+        pid_p_temp_set_dir.append(row[31])
+        pid_p_temp_period.append(row[32])
+        pid_p_temp_p.append(row[33])
+        pid_p_temp_i.append(row[34])
+        pid_p_temp_d.append(row[35])
+        sensor_p_press_relays_up.append(row[36])
+        sensor_p_press_relays_down.append(row[37])
+        pid_p_press_relay_high.append(row[38])
+        pid_p_press_outmin_high.append(row[39])
+        pid_p_press_outmax_high.append(row[40])
+        pid_p_press_relay_low.append(row[41])
+        pid_p_press_outmin_low.append(row[42])
+        pid_p_press_outmax_low.append(row[43])
+        pid_p_press_or.append(row[44])
+        pid_p_press_set.append(row[45])
+        pid_p_press_set_dir.append(row[46])
+        pid_p_press_period.append(row[47])
+        pid_p_press_p.append(row[48])
+        pid_p_press_i.append(row[49])
+        pid_p_press_d.append(row[50])
 
     # Convert string of comma-separated values to a 2-dimensional list of integers
-    global sensor_press_temp_relays_up_list
-    sensor_press_temp_relays_up_list = []
-    for i in range(0, len(sensor_press_temp_relays_up)):
-        if sensor_press_temp_relays_up[i] != '':
-            sensor_press_temp_relays_up_list.append(sensor_press_temp_relays_up[i].split(","))
-            sensor_press_temp_relays_up_list[i] = map(int, sensor_press_temp_relays_up_list[i])
+    global sensor_p_temp_relays_up_list
+    sensor_p_temp_relays_up_list = []
+    for i, each_press_temp_relays_up in enumerate(sensor_p_temp_relays_up):
+        if sensor_p_temp_relays_up[i] != '':
+            sensor_p_temp_relays_up_list.append(sensor_p_temp_relays_up[i].split(","))
+            sensor_p_temp_relays_up_list[i] = map(int, sensor_p_temp_relays_up_list[i])
 
-    global sensor_press_temp_relays_down_list
-    sensor_press_temp_relays_down_list = []
-    for i in range(0, len(sensor_press_temp_relays_down)):
-        if sensor_press_temp_relays_down[i] != '':
-            sensor_press_temp_relays_down_list.append(sensor_press_temp_relays_down[i].split(","))
-            sensor_press_temp_relays_down_list[i] = map(int, sensor_press_temp_relays_down_list[i])
+    global sensor_p_temp_relays_down_list
+    sensor_p_temp_relays_down_list = []
+    for i, each_press_temp_relays_down in enumerate(sensor_p_temp_relays_down):
+        if each_press_temp_relays_down != '':
+            sensor_p_temp_relays_down_list.append(sensor_p_temp_relays_down[i].split(","))
+            sensor_p_temp_relays_down_list[i] = map(int, sensor_p_temp_relays_down_list[i])
 
-    global sensor_press_press_relays_up_list
-    sensor_press_press_relays_up_list = []
-    for i in range(0, len(sensor_press_press_relays_up)):
-        if sensor_press_press_relays_up[i] != '':
-            sensor_press_press_relays_up_list.append(sensor_press_press_relays_up[i].split(","))
-            sensor_press_press_relays_up_list[i] = map(int, sensor_press_press_relays_up_list[i])
+    global sensor_p_press_relays_up_list
+    sensor_p_press_relays_up_list = []
+    for i, each_press_press_relays_up in enumerate(sensor_p_press_relays_up):
+        if each_press_press_relays_up != '':
+            sensor_p_press_relays_up_list.append(sensor_p_press_relays_up[i].split(","))
+            sensor_p_press_relays_up_list[i] = map(int, sensor_p_press_relays_up_list[i])
 
-    global sensor_press_press_relays_down_list
-    sensor_press_press_relays_down_list = []
-    for i in range(0, len(sensor_press_press_relays_down)):
-        if sensor_press_press_relays_down[i] != '':
-            sensor_press_press_relays_down_list.append(sensor_press_press_relays_down[i].split(","))
-            sensor_press_press_relays_down_list[i] = map(int, sensor_press_press_relays_down_list[i])
+    global sensor_p_press_relays_down_list
+    sensor_p_press_relays_down_list = []
+    for i, each_press_press_relays_down in enumerate(sensor_p_press_relays_down):
+        if each_press_press_relays_down != '':
+            sensor_p_press_relays_down_list.append(sensor_p_press_relays_down[i].split(","))
+            sensor_p_press_relays_down_list[i] = map(int, sensor_p_press_relays_down_list[i])
 
-    global conditional_press_number_sensor
-    global conditional_press_number_conditional
-    conditional_press_number_sensor = []
-    conditional_press_number_conditional = []
+    global conditional_p_number_sensor
+    global conditional_p_number_conditional
+    conditional_p_number_sensor = []
+    conditional_p_number_conditional = []
 
     cur.execute('SELECT id FROM presssensor')
     for row in cur:
-        conditional_press_number_sensor.append(row[0])
+        conditional_p_number_sensor.append(row[0])
 
     cur.execute('SELECT id FROM presssensorconditional')
     for row in cur:
-        conditional_press_number_conditional.append(row[0])
+        conditional_p_number_conditional.append(row[0])
 
-    global conditional_press_id
-    global conditional_press_name
-    global conditional_press_state
-    global conditional_press_condition
-    global conditional_press_direction
-    global conditional_press_setpoint
-    global conditional_press_period
-    global conditional_press_sel_relay
-    global conditional_press_relay
-    global conditional_press_relay_state
-    global conditional_press_relay_seconds_on
-    global conditional_press_sel_command
-    global conditional_press_do_command
-    global conditional_press_sel_notify
-    global conditional_press_do_notify
-    global conditional_press_time_notify
+    global conditional_p_id
+    global conditional_p_name
+    global conditional_p_state
+    global conditional_p_condition
+    global conditional_p_direction
+    global conditional_p_setpoint
+    global conditional_p_period
+    global conditional_p_sel_relay
+    global conditional_p_relay
+    global conditional_p_relay_state
+    global conditional_p_relay_seconds_on
+    global conditional_p_sel_command
+    global conditional_p_do_command
+    global conditional_p_sel_notify
+    global conditional_p_do_notify
+    global conditional_p_time_notify
 
-    conditional_press_id = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_name = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_state = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_condition = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_direction = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_setpoint = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_period = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_sel_relay = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_relay = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_relay_state = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_relay_seconds_on = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_sel_command = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_do_command = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_sel_notify = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_do_notify = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
-    conditional_press_time_notify = get_3d_array(1, len(conditional_press_number_conditional), len(conditional_press_number_sensor))
+    # There may be multiple conditional statements per sensor.
+    # get_3d_array() will initialize (to 0) a 3-dimensional array with the length of indexes
+    # equal to the number of sensors and the number of conditionals per each sensor.
+    # Elements are then set and accessed with conditional_x[sensor_number][conditonal_number][0]
+    conditional_p_id = get_3d_array(len(conditional_p_number_sensor), len(conditional_p_number_conditional), 1)
+    conditional_p_name = get_3d_array(len(conditional_p_number_sensor), len(conditional_p_number_conditional), 1)
+    conditional_p_state = get_3d_array(len(conditional_p_number_sensor), len(conditional_p_number_conditional), 1)
+    conditional_p_condition = get_3d_array(len(conditional_p_number_sensor), len(conditional_p_number_conditional), 1)
+    conditional_p_direction = get_3d_array(len(conditional_p_number_sensor), len(conditional_p_number_conditional), 1)
+    conditional_p_setpoint = get_3d_array(len(conditional_p_number_sensor), len(conditional_p_number_conditional), 1)
+    conditional_p_period = get_3d_array(len(conditional_p_number_sensor), len(conditional_p_number_conditional), 1)
+    conditional_p_sel_relay = get_3d_array(len(conditional_p_number_sensor), len(conditional_p_number_conditional), 1)
+    conditional_p_relay = get_3d_array(len(conditional_p_number_sensor), len(conditional_p_number_conditional), 1)
+    conditional_p_relay_state = get_3d_array(len(conditional_p_number_sensor), len(conditional_p_number_conditional), 1)
+    conditional_p_relay_seconds_on = get_3d_array(len(conditional_p_number_sensor), len(conditional_p_number_conditional), 1)
+    conditional_p_sel_command = get_3d_array(len(conditional_p_number_sensor), len(conditional_p_number_conditional), 1)
+    conditional_p_do_command = get_3d_array(len(conditional_p_number_sensor), len(conditional_p_number_conditional), 1)
+    conditional_p_sel_notify = get_3d_array(len(conditional_p_number_sensor), len(conditional_p_number_conditional), 1)
+    conditional_p_do_notify = get_3d_array(len(conditional_p_number_sensor), len(conditional_p_number_conditional), 1)
+    conditional_p_time_notify = get_3d_array(len(conditional_p_number_sensor), len(conditional_p_number_conditional), 1)
 
-    for j in range(0, len(conditional_press_number_sensor)):
+    for j in range(len(conditional_p_number_sensor)):
         cur.execute("""SELECT id,
                               name,
                               state,
@@ -3613,28 +3649,28 @@ def read_sql():
                        WHERE  sensor = ? """, (str(j),))
         count = 0
         for row in cur:
-            conditional_press_id[j][count][0] = row[0]
-            conditional_press_name[j][count][0] = row[1]
-            conditional_press_state[j][count][0] = row[2]
-            conditional_press_condition[j][count][0] = row[3]
-            conditional_press_direction[j][count][0] = row[4]
-            conditional_press_setpoint[j][count][0] = row[5]
-            conditional_press_period[j][count][0] = row[6]
-            conditional_press_sel_relay[j][count][0] = row[7]
-            conditional_press_relay[j][count][0] = row[8]
-            conditional_press_relay_state[j][count][0] = row[9]
-            conditional_press_relay_seconds_on[j][count][0] = row[10]
-            conditional_press_sel_command[j][count][0] = row[11]
+            conditional_p_id[j][count][0] = row[0]
+            conditional_p_name[j][count][0] = row[1]
+            conditional_p_state[j][count][0] = row[2]
+            conditional_p_condition[j][count][0] = row[3]
+            conditional_p_direction[j][count][0] = row[4]
+            conditional_p_setpoint[j][count][0] = row[5]
+            conditional_p_period[j][count][0] = row[6]
+            conditional_p_sel_relay[j][count][0] = row[7]
+            conditional_p_relay[j][count][0] = row[8]
+            conditional_p_relay_state[j][count][0] = row[9]
+            conditional_p_relay_seconds_on[j][count][0] = row[10]
+            conditional_p_sel_command[j][count][0] = row[11]
             if row[12] is None:
-                conditional_press_do_command[j][count][0] = row[12]
+                conditional_p_do_command[j][count][0] = row[12]
             else:
                 if "\'\'" not in row[12]:
-                    conditional_press_do_command[j][count][0] = row[12]
+                    conditional_p_do_command[j][count][0] = row[12]
                 else:
-                    conditional_press_do_command[j][count][0] = row[12].replace("\'\'", "\'")
-            conditional_press_sel_notify[j][count][0] = row[13]
-            conditional_press_do_notify[j][count][0] = row[14]
-            conditional_press_time_notify[j][count][0] = 0
+                    conditional_p_do_command[j][count][0] = row[12].replace("\'\'", "\'")
+            conditional_p_sel_notify[j][count][0] = row[13]
+            conditional_p_do_notify[j][count][0] = row[14]
+            conditional_p_time_notify[j][count][0] = 0
             count += 1
 
     cur.execute('SELECT id, name, relay, state, durationon, durationoff FROM timers')
@@ -3658,29 +3694,29 @@ def read_sql():
 
     cur.close()
 
-    for i in range(0, len(sensor_t_id)):
+    for i in range(len(sensor_t_id)):
         timerTSensorLog.append(0)
 
-    for i in range(0, len(sensor_ht_id)):
+    for i in range(len(sensor_ht_id)):
         timerHTSensorLog.append(0)
 
-    for i in range(0, len(sensor_co2_id)):
+    for i in range(len(sensor_c_id)):
         timerCo2SensorLog.append(0)
 
-    for i in range(0, len(sensor_press_id)):
+    for i in range(len(sensor_p_id)):
         timerPressSensorLog.append(0)
 
-    for i in range(0, len(timer_id)):
+    for i in range(len(timer_id)):
         timer_time.append(0)
 
     if len(on_duration_timer) != len(relay_id):
         on_duration_timer = []
-        for i in range(0, len(relay_id)):
+        for i in range(len(relay_id)):
             on_duration_timer.append(0)
 
     if len(on_duration_seconds) != len(relay_id):
         on_duration_seconds = []
-        for i in range(0, len(relay_id)):
+        for i in range(len(relay_id)):
             on_duration_seconds.append(0)
 
     global timerTConditional
@@ -3690,51 +3726,51 @@ def read_sql():
 
     timerTConditional = [[0 for j in xrange(len(conditional_t_number_conditional))] for i in xrange(len(conditional_t_number_sensor))]
     timerHTConditional = [[0 for j in xrange(len(conditional_ht_number_conditional))] for i in xrange(len(conditional_ht_number_sensor))]
-    timerCO2Conditional = [[0 for j in xrange(len(conditional_co2_number_conditional))] for i in xrange(len(conditional_co2_number_sensor))]
-    timerPressConditional = [[0 for j in xrange(len(conditional_press_number_conditional))] for i in xrange(len(conditional_press_number_sensor))]
+    timerCO2Conditional = [[0 for j in xrange(len(conditional_c_number_conditional))] for i in xrange(len(conditional_c_number_sensor))]
+    timerPressConditional = [[0 for j in xrange(len(conditional_p_number_conditional))] for i in xrange(len(conditional_p_number_sensor))]
     
-    for j in range(0, len(conditional_t_number_sensor)):
-        for k in range(0, len(conditional_t_number_conditional)):
+    for j in range(len(conditional_t_number_sensor)):
+        for k in range(len(conditional_t_number_conditional)):
             if conditional_t_id[j][k][0] != 0:
                 timerTConditional[j][k] = 0
 
-    for j in range(0, len(conditional_ht_number_sensor)):
-        for k in range(0, len(conditional_ht_number_conditional)):
+    for j in range(len(conditional_ht_number_sensor)):
+        for k in range(len(conditional_ht_number_conditional)):
             if conditional_ht_id[j][k][0] != 0:
                 timerHTConditional[j][k] = 0
 
-    for j in range(0, len(conditional_co2_number_sensor)):
-        for k in range(0, len(conditional_co2_number_conditional)):
-            if conditional_co2_id[j][k][0] != 0:
+    for j in range(len(conditional_c_number_sensor)):
+        for k in range(len(conditional_c_number_conditional)):
+            if conditional_c_id[j][k][0] != 0:
                 timerCO2Conditional[j][k] = 0
 
-    for j in range(0, len(conditional_press_number_sensor)):
-        for k in range(0, len(conditional_press_number_conditional)):
-            if conditional_press_id[j][k][0] != 0:
+    for j in range(len(conditional_p_number_sensor)):
+        for k in range(len(conditional_p_number_conditional)):
+            if conditional_p_id[j][k][0] != 0:
                 timerPressConditional[j][k] = 0
 
     sensor_t_read_temp_c = [0] * len(sensor_t_id)
     sensor_ht_dewpt_c = [0] * len(sensor_ht_id)
     sensor_ht_read_hum = [0] * len(sensor_ht_id)
     sensor_ht_read_temp_c = [0] * len(sensor_ht_id)
-    sensor_co2_read_co2 = [0] * len(sensor_co2_id)
-    sensor_press_read_alt = [0] * len(sensor_press_id)
-    sensor_press_read_press = [0] * len(sensor_press_id)
-    sensor_press_read_temp_c = [0] * len(sensor_press_id)
+    sensor_c_read_co2 = [0] * len(sensor_c_id)
+    sensor_p_read_alt = [0] * len(sensor_p_id)
+    sensor_p_read_press = [0] * len(sensor_p_id)
+    sensor_p_read_temp_c = [0] * len(sensor_p_id)
 
     pid_t_temp_alive = []
     pid_ht_temp_alive = []
     pid_ht_hum_alive = []
-    pid_co2_alive = []
-    pid_press_temp_alive = []
-    pid_press_press_alive = []
+    pid_c_alive = []
+    pid_p_temp_alive = []
+    pid_p_press_alive = []
     
     pid_t_temp_alive = [1] * len(sensor_t_id)
     pid_ht_temp_alive = [1] * len(sensor_ht_id)
     pid_ht_hum_alive = [1] * len(sensor_ht_id)
-    pid_co2_alive = [1] * len(sensor_co2_id)
-    pid_press_temp_alive = [1] * len(sensor_press_id)
-    pid_press_press_alive = [1] * len(sensor_press_id)
+    pid_c_alive = [1] * len(sensor_c_id)
+    pid_p_temp_alive = [1] * len(sensor_p_id)
+    pid_p_press_alive = [1] * len(sensor_p_id)
 
     pause_daemon = 0
 
@@ -3749,13 +3785,13 @@ def initialize_all_gpio():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
     # Initialize GPIOs from all 8 relays
-    for i in range(0, len(relay_id)):
-        if relay_pin[i] > 0:
-            GPIO.setup(relay_pin[i], GPIO.OUT)
+    for i, each_relay_pin in enumerate(relay_pin):
+        if each_relay_pin > 0:
+            GPIO.setup(each_relay_pin, GPIO.OUT)
     logging.info("[GPIO Initialize] Turning off all relays")
-    Relays_Off()
+    relays_off()
     logging.info("[GPIO Initialize] Turning on all relays set to on at startup")
-    Relays_Start()
+    relays_start()
 
 
 # Initialize specified GPIO pin
@@ -3770,34 +3806,46 @@ def initialize_gpio(relay):
 
 
 # Turn Relays Off
-def Relays_Off():
-    for i in range(0, len(relay_id)):
-        if relay_pin[i] > 0:
+def relays_off():
+    for i, each_relay_pin in enumerate(relay_pin):
+        if each_relay_pin > 0:
             if relay_trigger[i] == 0:
-                GPIO.output(relay_pin[i], 1)
+                GPIO.output(each_relay_pin, 1)
             else:
-                GPIO.output(relay_pin[i], 0)
+                GPIO.output(each_relay_pin, 0)
 
 
 # Turn Select Relays On
-def Relays_Start():
-    for i in range(0, len(relay_id)):
-        if relay_pin[i] > 0:
+def relays_start():
+    for i, each_relay_pin in enumerate(relay_pin):
+        if each_relay_pin > 0:
             if relay_trigger[i] == 0:
                 if relay_start_state[i] == 1:
-                    GPIO.output(relay_pin[i], 0)
+                    GPIO.output(each_relay_pin, 0)
                 else:
-                    GPIO.output(relay_pin[i], 1)
+                    GPIO.output(each_relay_pin, 1)
             else: 
                 if relay_start_state[i] == 1:
-                    GPIO.output(relay_pin[i], 1)
+                    GPIO.output(each_relay_pin, 1)
                 else:
-                    GPIO.output(relay_pin[i], 0)
+                    GPIO.output(each_relay_pin, 0)
 
+# 
+# TODO: rename relay_id_ when relay_id is no longer a global variable
+# 
+def read_relay(relay_id_):
+    """
+    Read the state of a relay
 
-# Read the state of a relay
-def read_relay(relay):
-    if (relay_trigger[relay - 1] == 0 and GPIO.input(relay_pin[relay - 1]) == 0) or (relay_trigger[relay - 1] == 1 and GPIO.input(relay_pin[relay - 1]) == 1):
+    :param relay_id_: Relay number
+    :type relay_id_: int
+    :return: State of the relay as a string.  Either 'on' or 'off'
+    :rtype: str
+    """
+    relay_active_low = relay_trigger[relay_id_ - 1] == 0 and GPIO.input(relay_pin[relay_id_ - 1]) == 0
+    relay_active_high = relay_trigger[relay_id_ - 1] == 1 and GPIO.input(relay_pin[relay_id_ - 1]) == 1
+
+    if relay_active_low or relay_active_high:
         return "on"
     else:
         return "off"
@@ -3817,8 +3865,8 @@ def relay_onoff(relay, state):
     if relay_trigger[relay - 1] == 1 and state == 'on':
         if enable_max_amps == 1:
             total_amps = 0
-            for i in range(0, len(relay_id)):
-                if (relay_trigger[i] == 0 and GPIO.input(relay_pin[i]) == 0) or (relay_trigger[i] == 1 and GPIO.input(relay_pin[i]) == 1):
+            for i, each_relay_trigger in enumerate(relay_trigger):
+                if (each_relay_trigger == 0 and GPIO.input(relay_pin[i]) == 0) or (each_relay_trigger == 1 and GPIO.input(relay_pin[i]) == 1):
                     total_amps += relay_amps[i]
             if ((relay_trigger[relay - 1] == 0 and GPIO.input(relay_pin[relay - 1]) == 1) or (
                     relay_trigger[relay - 1] == 1 and GPIO.input(relay_pin[relay - 1]) == 0)):
@@ -3830,8 +3878,8 @@ def relay_onoff(relay, state):
     elif relay_trigger[relay - 1] == 0 and state == 'on':
         if enable_max_amps == 1:
             total_amps = 0
-            for i in range(0, len(relay_id)):
-                if (relay_trigger[i] == 0 and GPIO.input(relay_pin[i]) == 0) or (relay_trigger[i] == 1 and GPIO.input(relay_pin[i]) == 1):
+            for i, each_relay_trigger in enumerate(relay_trigger):
+                if (each_relay_trigger == 0 and GPIO.input(relay_pin[i]) == 0) or (each_relay_trigger == 1 and GPIO.input(relay_pin[i]) == 1):
                     total_amps += relay_amps[i]   
             if ((relay_trigger[relay - 1] == 0 and GPIO.input(relay_pin[relay - 1]) == 1) or (
                     relay_trigger[relay - 1] == 1 and GPIO.input(relay_pin[relay - 1]) == 0)):
@@ -3846,7 +3894,7 @@ def relay_onoff(relay, state):
     elif relay_trigger[relay - 1] == 1 and state == 'off':
         set_relay_gpio(relay, 0)
 
-    for i in range(0, len(conditional_relay_id)):
+    for i in range(len(conditional_relay_id)):
         if state == 'on':
             if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'on' and conditional_relay_ifduration[i] == 0:
                 if conditional_relay_sel_relay[i]:
@@ -3859,16 +3907,16 @@ def relay_onoff(relay, state):
                     p = subprocess.Popen(conditional_relay_do_command[i], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     output, errors = p.communicate()
                     logging.debug("[Relay Conditional %s (%s)] Execute command: %s Command output: %s Command errors: %s", i + 1, conditional_relay_name[i], conditional_relay_do_command[i], output, errors)
-                if conditional_relay_sel_notify[i] and conditional_relay_time_notify[i] < int(time.time()):
+                if conditional_relay_sel_notify[i] and conditional_relay_time_notify[i] < time.time():
                     logging.debug("[Relay Conditional %s (%s)] True: Notify %s", i + 1, conditional_relay_name[i], conditional_relay_do_notify[i])
                     if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
                         message = "Relay Conditional %s (%s): Relay %s turned %s for %s seconds." % ((i + 1), conditional_relay_name[i], relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
                     else:
                         message = "Relay Conditional %s (%s): Relay %s turned %s." % ((i + 1), conditional_relay_name[i], relay, conditional_relay_doaction[i])
                     email(conditional_relay_do_notify[i], message)
-                    conditional_relay_time_notify[i] = int(time.time()) + smtp_wait_time
+                    conditional_relay_time_notify[i] = time.time() + smtp_wait_time
                 elif conditional_relay_sel_notify[i]:
-                    logging.debug("[Relay Conditional %s (%s)] True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", i + 1, conditional_relay_name[i], conditional_relay_do_notify[i], (smtp_wait_time - (smtp_wait_time - (conditional_relay_time_notify[i] - int(time.time())))), smtp_wait_time)
+                    logging.debug("[Relay Conditional %s (%s)] True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", i + 1, conditional_relay_name[i], conditional_relay_do_notify[i], (smtp_wait_time - (smtp_wait_time - (conditional_relay_time_notify[i] - time.time()))), smtp_wait_time)
         elif state == 'off':
             if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'off':
                 if conditional_relay_sel_relay[i]:
@@ -3881,15 +3929,15 @@ def relay_onoff(relay, state):
                     p = subprocess.Popen(conditional_relay_do_command[i], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     output, errors = p.communicate()
                     logging.debug("[Relay Conditional %s (%s)] Execute command: %s Command output: %s Command errors: %s", i + 1, conditional_relay_name[i], conditional_relay_do_command[i], output, errors)
-                if conditional_relay_sel_notify[i] and conditional_relay_time_notify[i] < int(time.time()):
+                if conditional_relay_sel_notify[i] and conditional_relay_time_notify[i] < time.time():
                     if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
                         message = "Relay Conditional %s (%s): Relay %s turned %s for %s seconds." % ((i + 1), conditional_relay_name[i], relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
                     else:
                         message = "Relay Conditional %s (%s): Relay %s turned %s." % ((i + 1), conditional_relay_name[i], relay, conditional_relay_doaction[i])
                     email(conditional_relay_do_notify[i], message)
-                    conditional_relay_time_notify[i] = int(time.time()) + smtp_wait_time
+                    conditional_relay_time_notify[i] = time.time() + smtp_wait_time
                 elif conditional_relay_sel_notify[i]:
-                    logging.debug("[Relay Conditional %s (%s)] True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", i + 1, conditional_relay_name[i], conditional_relay_do_notify[i], (smtp_wait_time - (smtp_wait_time - (conditional_relay_time_notify[i] - int(time.time())))), smtp_wait_time)
+                    logging.debug("[Relay Conditional %s (%s)] True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", i + 1, conditional_relay_name[i], conditional_relay_do_notify[i], (smtp_wait_time - (smtp_wait_time - (conditional_relay_time_notify[i] - time.time()))), smtp_wait_time)
 
 
 # Turn relay off without conditional check
@@ -3912,8 +3960,8 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
     global on_duration_seconds
     if enable_max_amps == 1:
         total_amps = 0
-        for i in range(0, len(relay_id)):
-            if (local_relay_trigger[i] == 0 and GPIO.input(local_relay_pin[i]) == 0) or (local_relay_trigger[i] == 1 and GPIO.input(local_relay_pin[i]) == 1):
+        for i, each_local_relay_trigger in enumerate(local_relay_trigger):
+            if (each_local_relay_trigger == 0 and GPIO.input(local_relay_pin[i]) == 0) or (each_local_relay_trigger == 1 and GPIO.input(local_relay_pin[i]) == 1):
                 total_amps += relay_amps[i]
         if ((local_relay_trigger[relay - 1] == 0 and GPIO.input(local_relay_pin[relay - 1]) == 1) or (
                 local_relay_trigger[relay - 1] == 1 and GPIO.input(local_relay_pin[relay - 1]) == 0)):
@@ -3924,14 +3972,14 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
 
     if (((local_relay_trigger[relay - 1] == 0 and GPIO.input(local_relay_pin[relay - 1]) == 0) or (
             local_relay_trigger[relay - 1] == 1 and GPIO.input(local_relay_pin[relay - 1]) == 1)) and
-            on_duration_timer[relay - 1] > int(time.time())):
-        logging.debug("[Relay Duration] Relay %s (%s) is already On for a duration (%s sec with %s sec remaining). Recording the amount of time the relay has been on (%s sec) to log and updating On duration to %s seconds.", relay, relay_name[relay - 1], on_duration_seconds[relay - 1], (on_duration_timer[relay - 1] - int(time.time())), (on_duration_seconds[relay - 1] - (on_duration_timer[relay - 1] - int(time.time()))), seconds)
-        wrl = threading.Thread(target=mycodoLog.write_relay_log, args=(relay, (on_duration_seconds[relay - 1] - (on_duration_timer[relay - 1] - int(time.time()))), sensor, local_relay_pin[relay - 1],))
+            on_duration_timer[relay - 1] > time.time()):
+        logging.debug("[Relay Duration] Relay %s (%s) is already On for a duration (%.1f sec with %.1f sec remaining). Recording the amount of time the relay has been on (%.1f sec) to log and updating On duration to %.1f seconds.", relay, relay_name[relay - 1], on_duration_seconds[relay - 1], (on_duration_timer[relay - 1] - time.time()), (on_duration_seconds[relay - 1] - (on_duration_timer[relay - 1] - time.time())), seconds)
+        wrl = threading.Thread(target=mycodo_log.write_relay_log, args=(relay, (on_duration_seconds[relay - 1] - (on_duration_timer[relay - 1] - time.time())), sensor, local_relay_pin[relay - 1],))
         wrl.start()
-        on_duration_timer[relay - 1] = int(time.time()) + abs(seconds)
+        on_duration_timer[relay - 1] = time.time() + abs(seconds)
         on_duration_seconds[relay - 1] = abs(seconds)
 
-        for i in range(0, len(conditional_relay_id)):
+        for i in range(len(conditional_relay_id)):
             if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'on':
                 if conditional_relay_ifduration[i] == seconds:
                     if conditional_relay_sel_relay[i]:
@@ -3944,16 +3992,16 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
                         p = subprocess.Popen(conditional_relay_do_command[i], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                         output, errors = p.communicate()
                         logging.debug("[Relay Conditional %s (%s)] Execute command: %s Command output: %s Command errors: %s", i + 1, conditional_relay_name[i], conditional_relay_do_command[i], output, errors)
-                    if conditional_relay_sel_notify[i] and conditional_relay_time_notify[i] < int(time.time()):
+                    if conditional_relay_sel_notify[i] and conditional_relay_time_notify[i] < time.time():
                         logging.debug("[Relay Conditional %s (%s)] True: Notify %s", i + 1, conditional_relay_name[i], conditional_relay_do_notify[i])
                         if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
                             message = "Relay Conditional %s (%s): Relay %s turned %s for %s seconds." % ((i + 1), conditional_relay_name[i], relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
                         else:
                             message = "Relay Conditional %s (%s): Relay %s turned %s." % ((i + 1), conditional_relay_name[i], relay, conditional_relay_doaction[i])
                         email(conditional_relay_do_notify[i], message)
-                        conditional_relay_time_notify[i] = int(time.time()) + smtp_wait_time
+                        conditional_relay_time_notify[i] = time.time() + smtp_wait_time
                     elif conditional_relay_sel_notify[i]:
-                        logging.debug("[Relay Conditional %s (%s)] True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", i + 1, conditional_relay_name[i], conditional_relay_do_notify[i], (smtp_wait_time - (smtp_wait_time - (conditional_relay_time_notify[i] - int(time.time())))), smtp_wait_time)
+                        logging.debug("[Relay Conditional %s (%s)] True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", i + 1, conditional_relay_name[i], conditional_relay_do_notify[i], (smtp_wait_time - (smtp_wait_time - (conditional_relay_time_notify[i] - time.time()))), smtp_wait_time)
                 elif conditional_relay_ifduration[i] == 0:
                     if conditional_relay_sel_relay[i]:
                         relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
@@ -3961,23 +4009,23 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
                         p = subprocess.Popen(conditional_relay_do_command[i], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                         output, errors = p.communicate()
                         logging.debug("[Relay Conditional %s (%s)] Execute command: %s Command output: %s Command errors: %s", i + 1, conditional_relay_name[i], conditional_relay_do_command[i], output, errors)
-                    if conditional_relay_sel_notify[i] and conditional_relay_time_notify[i] < int(time.time()):
+                    if conditional_relay_sel_notify[i] and conditional_relay_time_notify[i] < time.time():
                         logging.debug("[Relay Conditional %s (%s)] True: Notify %s", i + 1, conditional_relay_name[i], conditional_relay_do_notify[i])
                         if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
                             message = "Relay Conditional %s (%s): Relay %s turned %s for %s seconds." % ((i + 1), conditional_relay_name[i], relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
                         else:
                             message = "Relay Conditional %s (%s): Relay %s turned %s." % ((i + 1), conditional_relay_name[i], relay, conditional_relay_doaction[i])
                         email(conditional_relay_do_notify[i], message)
-                        conditional_relay_time_notify[i] = int(time.time()) + smtp_wait_time
+                        conditional_relay_time_notify[i] = time.time() + smtp_wait_time
                     elif conditional_relay_sel_notify[i]:
-                        logging.debug("[Relay Conditional %s (%s)] True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", i + 1, conditional_relay_name[i], conditional_relay_do_notify[i], (smtp_wait_time - (smtp_wait_time - (conditional_relay_time_notify[i] - int(time.time())))), smtp_wait_time)
+                        logging.debug("[Relay Conditional %s (%s)] True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", i + 1, conditional_relay_name[i], conditional_relay_do_notify[i], (smtp_wait_time - (smtp_wait_time - (conditional_relay_time_notify[i] - time.time()))), smtp_wait_time)
         return 1
 
-    elif ((local_relay_trigger[relay - 1] == 0 and GPIO.input(local_relay_pin[relay - 1]) == 0) or (local_relay_trigger[relay - 1] == 1 and GPIO.input(local_relay_pin[relay - 1]) == 1)) and on_duration_timer[relay - 1] < int(time.time()):
-        logging.warning("[Relay Duration] Relay %s (%s) is set On without a duration. Turning into a duration.", relay, relay_name[relay - 1], seconds)
+    elif ((local_relay_trigger[relay - 1] == 0 and GPIO.input(local_relay_pin[relay - 1]) == 0) or (local_relay_trigger[relay - 1] == 1 and GPIO.input(local_relay_pin[relay - 1]) == 1)) and on_duration_timer[relay - 1] < time.time():
+        logging.debug("[Relay Duration] Relay %s (%s) is set On without a duration. Turning into a duration (%.1f).", relay, relay_name[relay - 1], seconds)
     
     on_duration_seconds[relay - 1] = abs(seconds)
-    on_duration_timer[relay - 1] = int(time.time()) + abs(seconds)
+    on_duration_timer[relay - 1] = time.time() + abs(seconds)
 
     logging.debug("[Relay Duration] Relay %s (%s) On for %s seconds.", relay, relay_name[relay - 1], round(abs(seconds), 1))
 
@@ -3985,7 +4033,7 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
     GPIO.output(local_relay_pin[relay - 1], local_relay_trigger[relay - 1])
 
     try:
-        for i in range(0, len(conditional_relay_id)):
+        for i in range(len(conditional_relay_id)):
             if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'on':
                 if conditional_relay_ifduration[i] == seconds:
                     if conditional_relay_sel_relay[i]:
@@ -3998,16 +4046,16 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
                         p = subprocess.Popen(conditional_relay_do_command[i], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                         output, errors = p.communicate()
                         logging.debug("[Relay Conditional %s (%s)] Execute command: %s Command output: %s Command errors: %s", i + 1, conditional_relay_name[i], conditional_relay_do_command[i], output, errors)
-                    if conditional_relay_sel_notify[i] and conditional_relay_time_notify[i] < int(time.time()):
+                    if conditional_relay_sel_notify[i] and conditional_relay_time_notify[i] < time.time():
                         logging.debug("[Relay Conditional %s (%s)] True: Notify %s", i + 1, conditional_relay_name[i], conditional_relay_do_notify[i])
                         if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
                             message = "Relay Conditional %s (%s): Relay %s turned %s for %s seconds." % ((i + 1), conditional_relay_name[i], relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
                         else:
                             message = "Relay Conditional %s (%s): Relay %s turned %s." % ((i + 1), conditional_relay_name[i], relay, conditional_relay_doaction[i])
                         email(conditional_relay_do_notify[i], message)
-                        conditional_relay_time_notify[i] = int(time.time()) + smtp_wait_time
+                        conditional_relay_time_notify[i] = time.time() + smtp_wait_time
                     elif conditional_relay_sel_notify[i]:
-                        logging.debug("[Relay Conditional %s (%s)] True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", i + 1, conditional_relay_name[i], conditional_relay_do_notify[i], (smtp_wait_time - (smtp_wait_time - (conditional_relay_time_notify[i] - int(time.time())))), smtp_wait_time)
+                        logging.debug("[Relay Conditional %s (%s)] True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", i + 1, conditional_relay_name[i], conditional_relay_do_notify[i], (smtp_wait_time - (smtp_wait_time - (conditional_relay_time_notify[i] - time.time()))), smtp_wait_time)
                 elif conditional_relay_ifduration[i] == 0:
                     if conditional_relay_sel_relay[i]:
                         relay_onoff(conditional_relay_dorelay[i], conditional_relay_doaction[i])
@@ -4015,22 +4063,22 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
                         p = subprocess.Popen(conditional_relay_do_command[i], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                         output, errors = p.communicate()
                         logging.debug("[Relay Conditional %s (%s)] Execute command: %s Command output: %s Command errors: %s", i + 1, conditional_relay_name[i], conditional_relay_do_command[i], output, errors)
-                    if conditional_relay_sel_notify[i] and conditional_relay_time_notify[i] < int(time.time()):
+                    if conditional_relay_sel_notify[i] and conditional_relay_time_notify[i] < time.time():
                         logging.debug("[Relay Conditional %s (%s)] True: Notify %s", i + 1, conditional_relay_name[i], conditional_relay_do_notify[i])
                         if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
                             message = "Relay Conditional %s (%s): Relay %s turned %s for %s seconds." % ((i + 1), conditional_relay_name[i], relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
                         else:
                             message = "Relay Conditional %s (%s): Relay %s turned %s." % ((i + 1), conditional_relay_name[i], relay, conditional_relay_doaction[i])
                         email(conditional_relay_do_notify[i], message)
-                        conditional_relay_time_notify[i] = int(time.time()) + smtp_wait_time
+                        conditional_relay_time_notify[i] = time.time() + smtp_wait_time
                     elif conditional_relay_sel_notify[i]:
-                        logging.debug("[Relay Conditional %s (%s)] True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", i + 1, conditional_relay_name[i], conditional_relay_do_notify[i], (smtp_wait_time - (smtp_wait_time - (conditional_relay_time_notify[i] - int(time.time())))), smtp_wait_time)
+                        logging.debug("[Relay Conditional %s (%s)] True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", i + 1, conditional_relay_name[i], conditional_relay_do_notify[i], (smtp_wait_time - (smtp_wait_time - (conditional_relay_time_notify[i] - time.time()))), smtp_wait_time)
 
         if pause_daemon:
             logging.warning("[Relay Duration] SQL database reloaded while Relay %s is in a timed on duration. Turning off and cancelling current timer.", relay)
             relay_off(relay, local_relay_pin, local_relay_trigger)
         else:
-            while client_que != 'TerminateServer' and on_duration_timer[relay - 1] > int(time.time()):
+            while client_que != 'TerminateServer' and on_duration_timer[relay - 1] > time.time():
                 if pause_daemon:
                     relay_off(relay, local_relay_pin, local_relay_trigger)
                     logging.warning("[Relay Duration] SQL database reloaded while Relay %s is in a timed on duration. Turning off and cancelling current timer.", relay)
@@ -4043,7 +4091,7 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
 
     except Exception, error:
         relay_off(relay, local_relay_pin, local_relay_trigger)
-        logging.warning("[Relay Duration] Exception caught while Relay %s was supposed to be on for %s seconds.",
+        logging.warning("[Relay Duration] Exception caught while Relay %s was supposed to be on for %.1f seconds.",
                         relay, seconds)
         logging.warning("[Relay Duration] Exception error: %s", error)
         if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'off' and conditional_relay_doaction[i] == 'off':
@@ -4055,16 +4103,16 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
     relay_off(relay, local_relay_pin, local_relay_trigger)
 
     if on_duration_seconds[relay - 1] == 0:
-        wrl = threading.Thread(target=mycodoLog.write_relay_log, args=(relay, seconds, sensor, local_relay_pin[relay - 1],))
+        wrl = threading.Thread(target=mycodo_log.write_relay_log, args=(relay, seconds, sensor, local_relay_pin[relay - 1],))
         wrl.start()
     else:
-        wrl = threading.Thread(target=mycodoLog.write_relay_log, args=(relay, on_duration_seconds[relay - 1], sensor, local_relay_pin[relay - 1],))
+        wrl = threading.Thread(target=mycodo_log.write_relay_log, args=(relay, on_duration_seconds[relay - 1], sensor, local_relay_pin[relay - 1],))
         wrl.start()
 
     while pause_daemon:
         time.sleep(0.1)
 
-    for i in range(0, len(conditional_relay_id)):
+    for i in range(len(conditional_relay_id)):
         if conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'off' and conditional_relay_doaction[i] == 'off':
             if conditional_relay_sel_relay[i]:
                 relay_onoff(conditional_relay_dorelay[i], 'off')
@@ -4072,16 +4120,16 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
                 p = subprocess.Popen(conditional_relay_do_command[i], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 output, errors = p.communicate()
                 logging.debug("[Relay Conditional %s (%s)] Execute command: %s Command output: %s Command errors: %s", i + 1, conditional_relay_name[i], conditional_relay_do_command[i], output, errors)
-            if conditional_relay_sel_notify[i] and conditional_relay_time_notify[i] < int(time.time()):
+            if conditional_relay_sel_notify[i] and conditional_relay_time_notify[i] < time.time():
                 logging.debug("[Relay Conditional %s (%s)] True: Notify %s", i + 1, conditional_relay_name[i], conditional_relay_do_notify[i])
                 if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
                     message = "Relay Conditional %s (%s): Relay %s turned %s for %s seconds." % ((i + 1), conditional_relay_name[i], relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
                 else:
                     message = "Relay Conditional %s (%s): Relay %s turned %s." % ((i + 1), conditional_relay_name[i], relay, conditional_relay_doaction[i])
                 email(conditional_relay_do_notify[i], message)
-                conditional_relay_time_notify[i] = int(time.time()) + smtp_wait_time
+                conditional_relay_time_notify[i] = time.time() + smtp_wait_time
             elif conditional_relay_sel_notify[i]:
-                logging.debug("[Relay Conditional %s (%s)] True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", i + 1, conditional_relay_name[i], conditional_relay_do_notify[i], (smtp_wait_time - (smtp_wait_time - (conditional_relay_time_notify[i] - int(time.time())))), smtp_wait_time)
+                logging.debug("[Relay Conditional %s (%s)] True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", i + 1, conditional_relay_name[i], conditional_relay_do_notify[i], (smtp_wait_time - (smtp_wait_time - (conditional_relay_time_notify[i] - time.time()))), smtp_wait_time)
         elif conditional_relay_ifrelay[i] == relay and conditional_relay_ifaction[i] == 'off' and conditional_relay_doaction[i] == 'on':
             if conditional_relay_sel_relay[i]:
                 if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
@@ -4093,16 +4141,16 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
                 p = subprocess.Popen(conditional_relay_do_command[i], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 output, errors = p.communicate()
                 logging.debug("[Relay Conditional %s (%s)] Execute command: %s Command output: %s Command errors: %s", i + 1, conditional_relay_name[i], conditional_relay_do_command[i], output, errors)
-            if conditional_relay_sel_notify[i] and conditional_relay_time_notify[i] < int(time.time()):
+            if conditional_relay_sel_notify[i] and conditional_relay_time_notify[i] < time.time():
                 logging.debug("[Relay Conditional %s (%s)] True: Notify %s", i + 1, conditional_relay_name[i], conditional_relay_do_notify[i])
                 if conditional_relay_doaction[i] == 'on' and conditional_relay_doduration[i] != 0:
                     message = "Relay Conditional %s (%s): Relay %s turned %s for %s seconds." % ((i + 1), conditional_relay_name[i], relay, conditional_relay_doaction[i], conditional_relay_doduration[i])
                 else:
                     message = "Relay Conditional %s (%s): Relay %s turned %s." % ((i + 1), conditional_relay_name[i], relay, conditional_relay_doaction[i])
                 email(conditional_relay_do_notify[i], message)
-                conditional_relay_time_notify[i] = int(time.time()) + smtp_wait_time
+                conditional_relay_time_notify[i] = time.time() + smtp_wait_time
             elif conditional_relay_sel_notify[i]:
-                logging.debug("[Relay Conditional %s (%s)] True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", i + 1, conditional_relay_name[i], conditional_relay_do_notify[i], (smtp_wait_time - (smtp_wait_time - (conditional_relay_time_notify[i] - int(time.time())))), smtp_wait_time)
+                logging.debug("[Relay Conditional %s (%s)] True: Waiting to notify %s. %s seconds left to wait to be able to notify again (of %s seconds).", i + 1, conditional_relay_name[i], conditional_relay_do_notify[i], (smtp_wait_time - (smtp_wait_time - (conditional_relay_time_notify[i] - time.time()))), smtp_wait_time)
     logging.debug("[Relay Duration] Relay %s (%s) Off (was On for %s seconds)", relay, relay_name[relay - 1], round(abs(seconds), 1))
     return 1
 
@@ -4113,6 +4161,20 @@ def relay_on_duration(relay, seconds, sensor, local_relay_trigger, local_relay_p
 
 # Email notification
 def email(email_to, message):
+    """
+    Email a specific recipient or recipients a message.
+
+    Example:
+        email([email@mydomain.com, you@yourdomain.com], 'Hello!')
+
+    :return: success (0) or failure (1)
+    :rtype: int
+
+    :param email_to: Who to email
+    :type x: str or list
+    :param message: Message in the body of the email
+    :type y: str
+    """
     try:
         if smtp_ssl:
             server = smtplib.SMTP_SSL(smtp_host, smtp_port)
@@ -4128,9 +4190,11 @@ def email(email_to, message):
         msg['To'] = email_to
         server.sendmail(msg['From'], msg['To'].split(","), msg.as_string())
         server.quit()
+        return 0
     except Exception, error:
         logging.warning("[Email Notification] Error: %s", error)
         logging.warning("[Email Notification] Cound not send email to %s with message: %s", email_to, message)
+        return 1
 
 
 #################################################
@@ -4155,12 +4219,12 @@ def represents_float(s):
         return False
 
 
-# Timestamp format used in sensor and relay logs
+# Log timestamp format
 def timestamp():
     return datetime.datetime.now().strftime('%Y %m %d %H %M %S')
 
 
-def get_3d_array(x, y, z=1):
+def get_3d_array(z, y, x=1):
     """
     Get a three dimensional array initialized with zeroes.  These are normally set to values
     later in the code.

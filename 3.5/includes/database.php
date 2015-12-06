@@ -26,7 +26,13 @@ $db = new SQLite3($mycodo_db);
 $udb = new SQLite3($user_db);
 $ndb = new SQLite3($note_db);
 
-$results = $udb->query('SELECT user_name, user_email, user_restriction, user_theme FROM users');
+$logged_in_user = $_SESSION['user_name'];
+
+$results = $udb->query('SELECT user_name,
+                               user_email,
+                               user_restriction,
+                               user_theme
+                        FROM   users');
 $i = 0;
 while ($row = $results->fetchArray()) {
     $user_name[$i] = $row[0];
@@ -36,14 +42,23 @@ while ($row = $results->fetchArray()) {
     $i++;
 }
 
-$results = $udb->query("SELECT user_restriction, user_theme FROM users WHERE user_name='" . $logged_in_user . "'");
-while ($row = $results->fetchArray()) { 
+$results = $udb->query("SELECT user_restriction,
+                               user_theme
+                        FROM   users
+                        WHERE  user_name='" . $logged_in_user . "'");
+while ($row = $results->fetchArray()) {
     $current_user_restriction = $row[0];
     $current_user_theme = $row[1];
 }
 
 unset($relay_id);
-$results = $db->query('SELECT Id, Name, Pin, Amps, Trigger, Start_State FROM Relays');
+$results = $db->query('SELECT id,
+                              name,
+                              pin,
+                              amps,
+                              trigger,
+                              start_state
+                       FROM   relays');
 $i = 0;
 while ($row = $results->fetchArray()) {
     $relay_id[$i] = $row[0];
@@ -58,7 +73,20 @@ if (!isset($relay_id)) $relay_id = [];
 
 // conditional statements
 unset($conditional_relay_id);
-$results = $db->query('SELECT Id, Name, If_Relay, If_Action, If_Duration, Sel_Relay, Do_Relay, Do_Action, Do_Duration, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM RelayConditional');
+$results = $db->query('SELECT id,
+                              name,
+                              if_relay,
+                              if_action,
+                              if_duration,
+                              sel_relay,
+                              do_relay,
+                              do_action,
+                              do_duration,
+                              sel_command,
+                              do_command,
+                              sel_notify,
+                              do_notify
+                       FROM   relayconditional');
 $i = 0;
 while ($row = $results->fetchArray()) {
     $conditional_relay_id[$i] = $row[0];
@@ -79,7 +107,39 @@ while ($row = $results->fetchArray()) {
 if (!isset($conditional_relay_id)) $conditional_relay_id = [];
 
 unset($sensor_t_id);
-$results = $db->query('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D FROM TSensor');
+$results = $db->query('SELECT id,
+                              name,
+                              pin,
+                              device,
+                              period,
+                              pre_measure_relay,
+                              pre_measure_dur,
+                              activated,
+                              graph,
+                              yaxis_relay_min,
+                              yaxis_relay_max,
+                              yaxis_relay_tics,
+                              yaxis_relay_mtics,
+                              yaxis_temp_min,
+                              yaxis_temp_max,
+                              yaxis_temp_tics,
+                              yaxis_temp_mtics,
+                              temp_relays_up,
+                              temp_relays_down,
+                              temp_relay_high,
+                              temp_outmin_high,
+                              temp_outmax_high,
+                              temp_relay_low,
+                              temp_outmin_low,
+                              temp_outmax_low,
+                              temp_or,
+                              temp_set,
+                              temp_set_direction,
+                              temp_period,
+                              temp_p,
+                              temp_i,
+                              temp_d
+                       FROM   tsensor');
 $i = 0;
 while ($row = $results->fetchArray()) {
     $sensor_t_id[$i] = $row[0];
@@ -120,7 +180,66 @@ if (!isset($sensor_t_id)) $sensor_t_id = [];
 if (!isset($sensor_t_graph)) $sensor_t_graph = [];
 
 unset($sensor_ht_id);
-$results = $db->query('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Verify_Pin, Verify_Temp, Verify_Temp_Notify, Verify_Temp_Stop, Verify_Hum, Verify_Hum_Notify, Verify_Hum_Stop, Verify_Notify_Email, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relays_Up, Hum_Relays_Down, Hum_Relay_High, Hum_Outmin_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmin_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D FROM HTSensor');
+$results = $db->query('SELECT id,
+                              name,
+                              pin,
+                              device,
+                              period,
+                              pre_measure_relay,
+                              pre_measure_dur,
+                              activated,
+                              graph,
+                              verify_pin,
+                              verify_temp,
+                              verify_temp_notify,
+                              verify_temp_stop,
+                              verify_hum,
+                              verify_hum_notify,
+                              verify_hum_stop,
+                              verify_notify_email,
+                              yaxis_relay_min,
+                              yaxis_relay_max,
+                              yaxis_relay_tics,
+                              yaxis_relay_mtics,
+                              yaxis_temp_min,
+                              yaxis_temp_max,
+                              yaxis_temp_tics,
+                              yaxis_temp_mtics,
+                              yaxis_hum_min,
+                              yaxis_hum_max,
+                              yaxis_hum_tics,
+                              yaxis_hum_mtics,
+                              temp_relays_up,
+                              temp_relays_down,
+                              temp_relay_high,
+                              temp_outmin_high,
+                              temp_outmax_high,
+                              temp_relay_low,
+                              temp_outmin_low,
+                              temp_outmax_low,
+                              temp_or,
+                              temp_set,
+                              temp_set_direction,
+                              temp_period,
+                              temp_p,
+                              temp_i,
+                              temp_d,
+                              hum_relays_up,
+                              hum_relays_down,
+                              hum_relay_high,
+                              hum_outmin_high,
+                              hum_outmax_high,
+                              hum_relay_low,
+                              hum_outmin_low,
+                              hum_outmax_low,
+                              hum_or,
+                              hum_set,
+                              hum_set_direction,
+                              hum_period,
+                              hum_p,
+                              hum_i,
+                              hum_d
+                       FROM   htsensor');
 $i = 0;
 while ($row = $results->fetchArray()) {
     $sensor_ht_id[$i] = $row[0];
@@ -188,7 +307,39 @@ if (!isset($sensor_ht_id)) $sensor_ht_id = [];
 if (!isset($sensor_ht_graph)) $sensor_ht_graph = [];
 
 unset($sensor_co2_id);
-$results = $db->query('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph,  YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_CO2_Min, YAxis_CO2_Max, YAxis_CO2_Tics, YAxis_CO2_MTics, CO2_Relays_Up, CO2_Relays_Down, CO2_Relay_High, CO2_Outmin_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmin_Low, CO2_Outmax_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D FROM CO2Sensor');
+$results = $db->query('SELECT id,
+                              name,
+                              pin,
+                              device,
+                              period,
+                              pre_measure_relay,
+                              pre_measure_dur,
+                              activated,
+                              graph,
+                              yaxis_relay_min,
+                              yaxis_relay_max,
+                              yaxis_relay_tics,
+                              yaxis_relay_mtics,
+                              yaxis_co2_min,
+                              yaxis_co2_max,
+                              yaxis_co2_tics,
+                              yaxis_co2_mtics,
+                              co2_relays_up,
+                              co2_relays_down,
+                              co2_relay_high,
+                              co2_outmin_high,
+                              co2_outmax_high,
+                              co2_relay_low,
+                              co2_outmin_low,
+                              co2_outmax_low,
+                              co2_or,
+                              co2_set,
+                              co2_set_direction,
+                              co2_period,
+                              co2_p,
+                              co2_i,
+                              co2_d
+                       FROM   co2sensor');
 $i = 0;
 while ($row = $results->fetchArray()) {
     $sensor_co2_id[$i] = $row[0];
@@ -229,7 +380,58 @@ if (!isset($sensor_co2_id)) $sensor_co2_id = [];
 if (!isset($sensor_co2_graph)) $sensor_co2_graph = [];
 
 unset($sensor_press_id);
-$results = $db->query('SELECT Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Press_Min, YAxis_Press_Max, YAxis_Press_Tics, YAxis_Press_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Press_Relays_Up, Press_Relays_Down, Press_Relay_High, Press_Outmin_High, Press_Outmax_High, Press_Relay_Low, Press_Outmin_Low, Press_Outmax_Low, Press_OR, Press_Set, Press_Set_Direction, Press_Period, Press_P, Press_I, Press_D FROM PressSensor');
+$results = $db->query('SELECT id,
+                              name,
+                              pin,
+                              device,
+                              period,
+                              pre_measure_relay,
+                              pre_measure_dur,
+                              activated,
+                              graph,
+                              yaxis_relay_min,
+                              yaxis_relay_max,
+                              yaxis_relay_tics,
+                              yaxis_relay_mtics,
+                              yaxis_temp_min,
+                              yaxis_temp_max,
+                              yaxis_temp_tics,
+                              yaxis_temp_mtics,
+                              yaxis_press_min,
+                              yaxis_press_max,
+                              yaxis_press_tics,
+                              yaxis_press_mtics,
+                              temp_relays_up,
+                              temp_relays_down,
+                              temp_relay_high,
+                              temp_outmin_high,
+                              temp_outmax_high,
+                              temp_relay_low,
+                              temp_outmin_low,
+                              temp_outmax_low,
+                              temp_or,
+                              temp_set,
+                              temp_set_direction,
+                              temp_period,
+                              temp_p,
+                              temp_i,
+                              temp_d,
+                              press_relays_up,
+                              press_relays_down,
+                              press_relay_high,
+                              press_outmin_high,
+                              press_outmax_high,
+                              press_relay_low,
+                              press_outmin_low,
+                              press_outmax_low,
+                              press_or,
+                              press_set,
+                              press_set_direction,
+                              press_period,
+                              press_p,
+                              press_i,
+                              press_d
+                       FROM   presssensor');
 $i = 0;
 while ($row = $results->fetchArray()) {
     $sensor_press_id[$i] = $row[0];
@@ -291,7 +493,23 @@ if (!isset($sensor_press_graph)) $sensor_press_graph = [];
 // conditional statements
 unset($conditional_t_id);
 for ($n = 0; $n < count($sensor_t_id); $n++) {
-    $results = $db->query('SELECT Id, Name, State, Sensor, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM TSensorConditional WHERE Sensor=' . $n);
+    $results = $db->query('SELECT id,
+                                  name,
+                                  state,
+                                  sensor,
+                                  direction,
+                                  setpoint,
+                                  period,
+                                  sel_relay,
+                                  relay,
+                                  relay_state,
+                                  relay_seconds_on,
+                                  sel_command,
+                                  do_command,
+                                  sel_notify,
+                                  do_notify
+                           FROM   tsensorconditional  
+                           WHERE  Sensor=' . $n);
     $i = 0;
     while ($row = $results->fetchArray()) {
         $conditional_t_id[$n][$i] = $row[0];
@@ -315,7 +533,24 @@ for ($n = 0; $n < count($sensor_t_id); $n++) {
 
 unset($conditional_ht_id);
 for ($n = 0; $n < count($sensor_ht_id); $n++) {
-    $results = $db->query('SELECT Id, Name, State, Sensor, Condition, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM HTSensorConditional WHERE Sensor=' . $n);
+    $results = $db->query('SELECT id,
+                                  name,
+                                  state,
+                                  sensor,
+                                  condition,
+                                  direction,
+                                  setpoint,
+                                  period,
+                                  sel_relay,
+                                  relay,
+                                  relay_state,
+                                  relay_seconds_on,
+                                  sel_command,
+                                  do_command,
+                                  sel_notify,
+                                  do_notify
+                           FROM   htsensorconditional  
+                           WHERE  Sensor=' . $n);
     $i = 0;
     while ($row = $results->fetchArray()) {
         $conditional_ht_id[$n][$i] = $row[0];
@@ -340,7 +575,23 @@ for ($n = 0; $n < count($sensor_ht_id); $n++) {
 
 unset($conditional_co2_id);
 for ($n = 0; $n < count($sensor_co2_id); $n++) {
-    $results = $db->query('SELECT Id, Name, State, Sensor, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM CO2SensorConditional WHERE Sensor=' . $n);
+    $results = $db->query('SELECT id,
+                                  name,
+                                  state,
+                                  sensor,
+                                  direction,
+                                  setpoint,
+                                  period,
+                                  sel_relay,
+                                  relay,
+                                  relay_state,
+                                  relay_seconds_on,
+                                  sel_command,
+                                  do_command,
+                                  sel_notify,
+                                  do_notify
+                           FROM   co2sensorconditional  
+                           WHERE  Sensor=' . $n);
     $i = 0;
     while ($row = $results->fetchArray()) {
         $conditional_co2_id[$n][$i] = $row[0];
@@ -364,7 +615,24 @@ for ($n = 0; $n < count($sensor_co2_id); $n++) {
 
 unset($conditional_press_id);
 for ($n = 0; $n < count($sensor_press_id); $n++) {
-    $results = $db->query('SELECT Id, Name, State, Sensor, Condition, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify FROM PressSensorConditional WHERE Sensor=' . $n);
+    $results = $db->query('SELECT id,
+                                  name,
+                                  state,
+                                  sensor,
+                                  condition,
+                                  direction,
+                                  setpoint,
+                                  period,
+                                  sel_relay,
+                                  relay,
+                                  relay_state,
+                                  relay_seconds_on,
+                                  sel_command,
+                                  do_command,
+                                  sel_notify,
+                                  do_notify
+                           FROM   presssensorconditional
+                           WHERE  Sensor=' . $n);
     $i = 0;
     while ($row = $results->fetchArray()) {
         $conditional_press_id[$n][$i] = $row[0];
@@ -389,35 +657,41 @@ for ($n = 0; $n < count($sensor_press_id); $n++) {
 
 // Sort sensor Presets
 $sensor_t_preset = [];
-$results = $db->query('SELECT Id FROM TSensorPreset');
+$results = $db->query('SELECT id FROM tsensorpreset');
 while ($row = $results->fetchArray()) {
     $sensor_t_preset[] = $row[0];
 }
 sort($sensor_t_preset, SORT_NATURAL | SORT_FLAG_CASE);
 
 $sensor_ht_preset = [];
-$results = $db->query('SELECT Id FROM HTSensorPreset');
+$results = $db->query('SELECT id FROM htsensorpreset');
 while ($row = $results->fetchArray()) {
     $sensor_ht_preset[] = $row[0];
 }
 sort($sensor_ht_preset, SORT_NATURAL | SORT_FLAG_CASE);
 
 $sensor_co2_preset = [];
-$results = $db->query('SELECT Id FROM CO2SensorPreset');
+$results = $db->query('SELECT id FROM co2sensorpreset');
 while ($row = $results->fetchArray()) {
     $sensor_co2_preset[] = $row[0];
 }
 sort($sensor_co2_preset, SORT_NATURAL | SORT_FLAG_CASE);
 
 $sensor_press_preset = [];
-$results = $db->query('SELECT Id FROM CO2SensorPreset');
+$results = $db->query('SELECT id FROM presssensorpreset');
 while ($row = $results->fetchArray()) {
     $sensor_press_preset[] = $row[0];
 }
 sort($sensor_press_preset, SORT_NATURAL | SORT_FLAG_CASE);
 
 unset($timer_id);
-$results = $db->query('SELECT Id, Name, State, Relay, DurationOn, DurationOff FROM Timers');
+$results = $db->query('SELECT id,
+                              name,
+                              state,
+                              relay,
+                              durationon,
+                              durationoff
+                       FROM   timers');
 $i = 0;
 while ($row = $results->fetchArray()) {
     $timer_id[$i] = $row[0];
@@ -430,7 +704,47 @@ while ($row = $results->fetchArray()) {
 }
 if (!isset($timer_id)) $timer_id = [];
 
-$results = $db->query('SELECT Combined_Temp_Min, Combined_Temp_Max, Combined_Temp_Tics, Combined_Temp_Mtics, Combined_Temp_Relays_Up, Combined_Temp_Relays_Down, Combined_Temp_Relays_Min, Combined_Temp_Relays_Max, Combined_Temp_Relays_Tics, Combined_Temp_Relays_Mtics, Combined_Hum_Min, Combined_Hum_Max, Combined_Hum_Tics, Combined_Hum_Mtics, Combined_Hum_Relays_Up, Combined_Hum_Relays_Down, Combined_Hum_Relays_Min, Combined_Hum_Relays_Max, Combined_Hum_Relays_Tics, Combined_Hum_Relays_Mtics, Combined_Co2_Min, Combined_Co2_Max, Combined_Co2_Tics, Combined_Co2_Mtics, Combined_Co2_Relays_Up, Combined_Co2_Relays_Down, Combined_Co2_Relays_Min, Combined_Co2_Relays_Max, Combined_Co2_Relays_Tics, Combined_Co2_Relays_Mtics, Combined_Press_Min, Combined_Press_Max, Combined_Press_Tics, Combined_Press_Mtics, Combined_Press_Relays_Up, Combined_Press_Relays_Down, Combined_Press_Relays_Min, Combined_Press_Relays_Max, Combined_Press_Relays_Tics, Combined_Press_Relays_Mtics FROM CustomGraph');
+$results = $db->query('SELECT combined_temp_min,
+                              combined_temp_max,
+                              combined_temp_tics,
+                              combined_temp_mtics,
+                              combined_temp_relays_up,
+                              combined_temp_relays_down,
+                              combined_temp_relays_min,
+                              combined_temp_relays_max,
+                              combined_temp_relays_tics,
+                              combined_temp_relays_mtics,
+                              combined_hum_min,
+                              combined_hum_max,
+                              combined_hum_tics,
+                              combined_hum_mtics,
+                              combined_hum_relays_up,
+                              combined_hum_relays_down,
+                              combined_hum_relays_min,
+                              combined_hum_relays_max,
+                              combined_hum_relays_tics,
+                              combined_hum_relays_mtics,
+                              combined_co2_min,
+                              combined_co2_max,
+                              combined_co2_tics,
+                              combined_co2_mtics,
+                              combined_co2_relays_up,
+                              combined_co2_relays_down,
+                              combined_co2_relays_min,
+                              combined_co2_relays_max,
+                              combined_co2_relays_tics,
+                              combined_co2_relays_mtics,
+                              combined_press_min,
+                              combined_press_max,
+                              combined_press_tics,
+                              combined_press_mtics,
+                              combined_press_relays_up,
+                              combined_press_relays_down,
+                              combined_press_relays_min,
+                              combined_press_relays_max,
+                              combined_press_relays_tics,
+                              combined_press_relays_mtics
+                       FROM   customgraph');
 while ($row = $results->fetchArray()) {
     $combined_temp_min = $row[0];
     $combined_temp_max = $row[1];
@@ -474,7 +788,14 @@ while ($row = $results->fetchArray()) {
     $combined_press_relays_mtics = $row[39];
 }
 
-$results = $db->query('SELECT Host, SSL, Port, User, Pass, Email_From, Wait_Time FROM SMTP');
+$results = $db->query('SELECT host,
+                              ssl,
+                              port,
+                              user,
+                              pass,
+                              email_from,
+                              wait_time
+                       FROM   smtp');
 while ($row = $results->fetchArray()) {
     $smtp_host = $row[0];
     $smtp_ssl = $row[1];
@@ -485,7 +806,13 @@ while ($row = $results->fetchArray()) {
     $smtp_wait_time = $row[6];
 }
 
-$results = $db->query('SELECT Relay, Timestamp, Display_Last, Cmd_Pre, Cmd_Post, Extra_Parameters FROM CameraStill');
+$results = $db->query('SELECT relay,
+                              timestamp,
+                              display_last,
+                              cmd_pre,
+                              cmd_post,
+                              extra_parameters
+                       FROM   camerastill');
 while ($row = $results->fetchArray()) {
     $still_relay = $row[0];
     $still_timestamp = $row[1];
@@ -495,7 +822,11 @@ while ($row = $results->fetchArray()) {
     $still_extra_parameters = str_replace("''","'",$row[5]);
 }
 
-$results = $db->query('SELECT Relay, Cmd_Pre, Cmd_Post, Extra_Parameters FROM CameraStream');
+$results = $db->query('SELECT relay,
+                              cmd_pre,
+                              cmd_post,
+                              extra_parameters
+                       FROM   camerastream');
 while ($row = $results->fetchArray()) {
     $stream_relay = $row[0];
     $stream_cmd_pre = str_replace("''","'",$row[1]);
@@ -503,7 +834,15 @@ while ($row = $results->fetchArray()) {
     $stream_extra_parameters = str_replace("''","'",$row[3]);
 }
 
-$results = $db->query('SELECT Relay, Path, Prefix, File_Timestamp, Display_Last, Cmd_Pre, Cmd_Post, Extra_Parameters FROM CameraTimelapse');
+$results = $db->query('SELECT relay,
+                              path,
+                              prefix,
+                              file_timestamp,
+                              display_last,
+                              cmd_pre,
+                              cmd_post,
+                              extra_parameters
+                       FROM   cameratimelapse');
 while ($row = $results->fetchArray()) {
     $timelapse_relay = $row[0];
     $timelapse_path = $row[1];
@@ -515,7 +854,15 @@ while ($row = $results->fetchArray()) {
     $timelapse_extra_parameters = str_replace("''","'",$row[7]);
 }
 
-$results = $db->query('SELECT Login_Message, Refresh_Time, Enable_Max_Amps, Max_Amps, Relay_Stats_Volts, Relay_Stats_Cost, Relay_Stats_Currency, Relay_Stats_DayofMonth FROM Misc');
+$results = $db->query('SELECT login_message,
+                              refresh_time,
+                              enable_max_amps,
+                              max_amps,
+                              relay_stats_volts,
+                              relay_stats_cost,
+                              relay_stats_currency,
+                              relay_stats_dayofmonth
+                       FROM   misc');
 while ($row = $results->fetchArray()) {
     $login_message = $row[0];
     $refresh_time = $row[1];

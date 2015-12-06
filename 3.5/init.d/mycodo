@@ -152,7 +152,7 @@ case "${1:-''}" in
         exit 0
         ;;
     'stop')
-        /var/www/mycodo/cgi-bin/mycodo-client.py -t
+        /var/www/mycodo/cgi-bin/mycodo_client.py -t
         
         printf "Checking if daemon has stopped (please wait 10 seconds)."
         
@@ -189,7 +189,7 @@ case "${1:-''}" in
             printf "mycodo.py (pid $PID) has been killed after $count seconds.\n"
 
             printf "Because daemon had to be killed, turning off all GPIOs\n"
-            /var/www/mycodo/cgi-bin/GPIO-initialize.py
+            /var/www/mycodo/cgi-bin/gpio_initialize.py
 
         else
            printf " No daemon running.\n"

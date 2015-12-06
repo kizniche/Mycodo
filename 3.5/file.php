@@ -109,6 +109,9 @@ if ($_COOKIE['login_hash'] == $user_hash) {
                 } else {
                     echo json_encode(file_get_contents($path));
                 }
+                if (!isset($_COOKIE['debug'])) {
+                    unlink($path);
+                }
                 break;
             case 'graph-pop': // Generate dynamic graph in new window with descriptive title
                 $mycodo_db = $install_path . "/config/mycodo.db";
@@ -117,15 +120,13 @@ if ($_COOKIE['login_hash'] == $user_hash) {
                 require($install_path . "/includes/database.php");
                 require($install_path . "/includes/functions.php");
                 $graph_id = get_graph_cookie('id');
-                // Determine what type of graph to generate and for how long in the past
+
+                // Create page title (only create title)
                 $sensor_type = $_POST['Generate_Graph_Type'];
                 $sensor_span = $_POST['Generate_Graph_Span'];
-                if ($sensor_span == "all") { // Don't trim logs (use all data)
-                    $time_start = "0";
-                    $time_end = "0";
+                if ($sensor_span == "all") {
                     $title = "Graph ($sensor_type) All Time";
-                    $legend_y = 75;
-                } else { // Determine start and end points for logs
+                } else {
                     if ($sensor_span == "1 Hour") $time_start = date('Y/m/d-H:i:s', strtotime('-1 hour'));
                     else if ($sensor_span == "3 Hours") $time_start = date('Y/m/d-H:i:s', strtotime('-3 hour'));
                     else if ($sensor_span == "6 Hours") $time_start = date('Y/m/d-H:i:s', strtotime('-6 hour'));
@@ -140,8 +141,8 @@ if ($_COOKIE['login_hash'] == $user_hash) {
                     else if ($sensor_span == "1 Year") $time_start = date('Y/m/d-H:i:s', strtotime('-1 year'));
                     $time_end = date('Y/m/d-H:i:s');
                     $title = "Graph ($sensor_type) Past $sensor_span: $time_start - $time_end";
-                    $legend_y = 95;
                 }
+                
                 echo '
                 <html lang="en" class="no-js">
                 <head>

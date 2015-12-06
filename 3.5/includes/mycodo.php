@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.91";
+$version = "3.5.92";
 
 ######### Start Edit Configure #########
 
@@ -32,7 +32,7 @@ $gpio_path = "/usr/local/bin/gpio";
 
 ########## End Edit Configure ##########
 
-$mycodo_client = $install_path . "/cgi-bin/mycodo-client.py";
+$mycodo_client = $install_path . "/cgi-bin/mycodo_client.py";
 $still_exec = $install_path . "/cgi-bin/camera-still.sh";
 $stream_exec = $install_path . "/cgi-bin/camera-stream.sh";
 $timelapse_exec = $install_path . "/cgi-bin/camera-timelapse.sh";
@@ -262,7 +262,7 @@ if (!file_exists($lock_daemon)) {
             <div class="header">
                 <table>
                     <tr>
-                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'T' , $i+1 , ': ' , $sensor_t_name[$i]; ?></td>
+                        <td colspan=2 style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'T' , $i+1 , ': ' , $sensor_t_name[$i]; ?></td>
                     </tr>
                     <tr>
                         <?php
@@ -291,7 +291,7 @@ if (!file_exists($lock_daemon)) {
             <div class="header">
                 <table>
                     <tr>
-                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'HT' , $i+1 , ': ' , $sensor_ht_name[$i]; ?></td>
+                        <td colspan=2 style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'HT' , $i+1 , ': ' , $sensor_ht_name[$i]; ?></td>
                     </tr>
                     <tr>
                         <?php
@@ -322,7 +322,7 @@ if (!file_exists($lock_daemon)) {
             <div class="header">
                 <table>
                     <tr>
-                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'CO<sub>2</sub>' , $i+1 , ': ' , $sensor_co2_name[$i]; ?></td>
+                        <td colspan=2 style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'CO<sub>2</sub>' , $i+1 , ': ' , $sensor_co2_name[$i]; ?></td>
                     </tr>
                     <tr>
                         <?php
@@ -347,7 +347,7 @@ if (!file_exists($lock_daemon)) {
             <div class="header">
                 <table>
                     <tr>
-                        <td colspan=2 align=center style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'P' , $i+1 , ': ' , $sensor_press_name[$i]; ?></td>
+                        <td colspan=2 style="border-bottom:1pt solid black; font-size: 0.8em;"><?php echo 'P' , $i+1 , ': ' , $sensor_press_name[$i]; ?></td>
                     </tr>
                     <tr>
                         <?php
@@ -581,20 +581,21 @@ if (!file_exists($lock_daemon)) {
                     <div style="float: left;">
                         <div>
                             <select style="height: 1.6em; width: 20em;" name="AddSensorDev">
+                                <option value="RPi">Temperature: Raspberry Pi CPU/GPU</option>
+                                <option value="DS18B20">Temperature: DS18B20</option>
                                 <option value="DHT11">Humidity/Temperature: DHT11</option>
                                 <option value="DHT22">Humidity/Temperature: DHT22</option>
                                 <option value="AM2302">Humidity/Temperature: AM2302</option>
                                 <option value="AM2315">Humidity/Temperature: AM2315</option>
+                                <option value="K30">Carbon Dioxide (CO2): K-30</option>
                                 <option value="BMP">Pressure/Temperature: BMP085/BMP180</option>
-                                <option value="DS18B20">Temperature: DS18B20</option>
-                                <option value="K30">CO2: K-30</option>
                             </select>
                         </div>
                         <div style="padding: 0.1em 0 0 0.2em;">Sensor</div>
                     </div>
                     <div style="float: left; padding: 0 0.2em;">
                         <div>
-                            <input style="width: 6em;" maxlength=12 size=10 name="AddSensorName" title="Name of the new sensor."/>
+                            <input style="width: 6em;" maxlength=12 size=10 name="AddSensorName" title="Name for the sensor"/>
                         </div>
                         <div style="padding: 0.1em 0 0 0.2em;">Name</div>
                     </div>
@@ -607,7 +608,7 @@ if (!file_exists($lock_daemon)) {
             <form action="?tab=sensor" method="POST">
                 <div style="float:left; margin: 0.5em 0.7em;">
                     <div style="float:left; padding-right: 0.2em;">
-                        <input style="height: 2.6em; width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddRelaysNumber" title="Add Sensors" required/>
+                        <input style="height: 2.6em; width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddRelaysNumber" title="How many relays to add" required/>
                     </div>
                     <div style="float:left">
                         <button type="submit" name="AddRelays" value="Add">Add<br>Relays</button>
@@ -618,7 +619,7 @@ if (!file_exists($lock_daemon)) {
             <form action="?tab=sensor" method="POST">
                 <div style="float:left; margin: 0.5em 0.7em;">
                     <div style="float:left; padding-right: 0.2em;">
-                        <input style="height: 2.6em; width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddTimersNumber" title="Add Sensors"  required/>
+                        <input style="height: 2.6em; width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddTimersNumber" title="How many timers to add"  required/>
                     </div>
                     <div style="float:left">
                         <button type="submit" name="AddTimers" value="Add">Add<br>Timers</button>
@@ -631,309 +632,308 @@ if (!file_exists($lock_daemon)) {
             <?php
             if (count($relay_id) > 0) {
             ?>
-                <div class="sensor-parent" style="margin-top: 2em;">
-                    <form action="?tab=sensor" method="POST">
-                    <table class="relays">
-                        <tr>
-                            <td class="table-header center middle">Relay</td>
-                            <td class="table-header middle">Name</td>
-                            <td colspan="2" class="table-header center" style="vertical-align: middle;">
-                                On <img style="height: 1em;" src="/mycodo/img/on.png" alt="On" title="On"> ~ Off <img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off"></td>
-                            <td class="table-header center">Seconds<br>On</td>
-                            <td class="table-header center">GPIO<br>Pin</td>
-                            <td class="table-header center">Amps<br>Draw</td>
-                            <td class="table-header center">Signal<br>ON</td>
-                            <td class="table-header center">Startup<br>State</td>
-                            <td class="table-header center"></td>
-                        </tr>
-                        <?php for ($i = 0; $i < count($relay_id); $i++) {
-                            $read = "$gpio_path -g read $relay_pin[$i]";
-                        ?>
-                        <tr>
-                            <td class="center">
-                                <?php echo $i+1; ?>
-                            </td>
-                            <td>
-                                <input style="width: 10em;" type="text" value="<?php echo $relay_name[$i]; ?>" maxlength=13 name="relay<?php echo $i; ?>name" title="Name of relay <?php echo $i+1; ?>"/>
-                            </td>
-                            <?php
-                                if ((shell_exec($read) == 1 && $relay_trigger[$i] == 0) || (shell_exec($read) == 0 && $relay_trigger[$i] == 1)) {
-                                    ?>
-                                    <td style="vertical-align: middle;">
-                                        <input type="hidden" "R<?php echo $i; ?>" value="1" /><img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
-                                    </td>
-                                    <td>
-                                        <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="1">Turn On</button>
-                                    </td>
-                                    <?php
-                                } else {
-                                    ?>
-                                    <td style="vertical-align: middle;">
-                                        <img style="height: 1em;" src="/mycodo/img/on.png" alt="On" title="On">
-                                    </td>
-                                    <td>
-                                        <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="0">Turn Off</button>
-                                    </td>
-                                    <?php
-                                }
-                            ?>
-                            <td class="center">
-                                 [<input style="width: 4em;" type="number" min="1" max="99999" name="sR<?php echo $i; ?>" title="Number of seconds to turn this relay on"/><input type="submit" name="<?php echo $i; ?>secON" value="ON">]
-                            </td>
-                            <td class="center">
-                                <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $relay_pin[$i]; ?>" name="relay<?php echo $i; ?>pin" title="GPIO pin using BCM numbering, connected to relay <?php echo $i+1; ?>"/>
-                            </td>
-                            <td class="center">
-                                <input style="width: 4em;" type="number" min="0" max="500" step="0.1" value="<?php echo $relay_amps[$i]; ?>" name="relay<?php echo $i; ?>amps" title="The maximum number of amps that the device connected to relay <?php echo $i+1; ?> draws. Set overall maximum allowed to be drawn from all relays in the Settings tab."/>
-                            </td>
-                            <td class="center">
-                                <select style="width: 65px;" title="Does this relay activate with a LOW (0-volt) or HIGH (5-volt) signal?" name="relay<?php echo $i; ?>trigger">
-                                    <option<?php
-                                        if ($relay_trigger[$i] == 1) {
-                                            echo ' selected="selected"';
-                                        } ?> value="1">High</option>
-                                    <option<?php
-                                        if ($relay_trigger[$i] == 0) {
-                                            echo ' selected="selected"';
-                                        } ?> value="0">Low</option>
-                                </select>
-                            </td>
-                            <td class="center">
-                                <select style="width: 65px;" title="Should the relay be On or Off at startup?" name="relay<?php echo $i; ?>startstate">
-                                    <option<?php
-                                        if ($relay_start_state[$i] == 1) {
-                                            echo ' selected="selected"';
-                                        } ?> value="1">On</option>
-                                    <option<?php
-                                        if ($relay_start_state[$i] == 0) {
-                                            echo ' selected="selected"';
-                                        } ?> value="0">Off</option>
-                                </select>
-                            </td>
-                            <td class="center">
-                                <input type="submit" name="Mod<?php echo $i; ?>Relay" value="Set"> <button type="submit" name="Delete<?php echo $i; ?>Relay" title="Delete">Delete</button>
-                            </td>
-                        </tr>
-                        <?php
-                        } ?>
-                    </table>
-                    </form>
-
-                    <table class="conditional">
-                        <tr>
-                            <td>
-                                Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                    <table class="sensor-conditional">
-                        <tr>
-                            <td style="padding-left: 1em;">
-                                Name: 
-                                <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionrelayname" title="Name for this relay conditional statement." required/>
-                                If Relay
-                                <select style="width: 3em;" name="conditionrelayifrelay" title="Select the relay to watch for whether it turns on or off.">
-                                    <?php
-                                    for ($n = 0; $n < count($relay_id); $n++) {
-                                    echo '<option value="' . ($n+1) . '">' . ($n+1) . '</option>';
-                                    } ?>
-                                </select>
-                                turns
-                                <select style="width: 3em;" name="conditionrelayifaction" title="Select whether the relay that is watched will be watched whether it turns on or off.">
-                                    <option value="on">On</option>
-                                    <option value="off">Off</option>
-                                </select>
-                                (if on, for 
-                                <input style="width: 4em;" type="number" step="any" value="0" maxlength=5 size=1 name="conditionrelayifduration" title="Check if the number of seconds the selected relay turns on for is equal to this value. If it is the same number of seconds, this statement is true. Leave at 0 if you only want to check if the relay was turned on and not necessarily if there is a duration associated with it. If 'Off' is selected in the previous field, this variable is not considered." required/>
-                                sec): 
-                            </td>
-                            <td style="padding-bottom: 0.3em;">
-                                <input type="checkbox" name="conditionrelayselrelay" value="1" checked> Turn Relay
-                                <select style="width: 3em;" name="conditionrelaydorelay" title="Select the relay that will be modified based on the watched relay and watched action.">
-                                    <?php
-                                    for ($n = 0; $n < count($relay_id); $n++) {
-                                    echo '<option value="' . ($n+1) . '">' . ($n+1) . '</option>';
-                                    } ?>
-                                </select>
-                                <select style="width: 3em;" name="conditionrelaydoaction" title="What do you want the modified relay to do once the watched relay performs the watched action.">
-                                    <option value="on">On</option>
-                                    <option value="off">Off</option>
-                                </select>
-                                (for 
-                                <input style="width: 4em;" type="number" step="any" value="0" maxlength=5 size=1 name="conditionrelaydoduration" title="The number of seconds for the modified relay to remain on. Leave at 0 to only turn the selected relay on, but not off. If 'Off' is selected in the previous field, this variable is not considered." required/>
-                                sec)
-                            </td>
-                            <td rowspan="3" style="vertical-align:middle; padding: 0 0 0.8em 0.5em;">
-                                <button type="submit" style="height:5em; width:4em;" style="height:5em;" name="AddRelayConditional" title="Save new relay conditional statement">Save</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td style="padding-bottom: 0.3em;"><input type="checkbox" name="conditionrelayselcommand" value="1"> Execute command: <input style="width: 11em;" type="text" value="" maxlength=100 name="conditionrelaycommand" title="Command to execute in a linux shell."/></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td style="padding-bottom: 1em;">
-                                <input type="checkbox" name="conditionrelayselnotify" value="1"> Email <input style="width: 17em;" type="text" value="" name="conditionrelaynotify" title="These are the email addresses that will be notified. Separate multiple email addresses with commas."/>
-                            </td>
-                        </tr>
-                    </table>
-                    </form>
-
-                    <?php
-                    if (isset($conditional_relay_id) && count($conditional_relay_id) > 0) {
-                    ?>
-                    <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
-                    <table class="sensor_conditional">
-                        <?php
-                        for ($z = 0; $z < count($conditional_relay_id); $z++) {
-                        ?>
-                        <tr>
-                            <td style="padding-top: 1em; padding-left: 1em; white-space: nowrap;">
-                            <?php
-                            echo '<button type="submit" name="DeleteRelay' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
-
-                            echo $z+1 . ': ' . $conditional_relay_name[$z] . ': If Relay ' . $conditional_relay_ifrelay[$z] . ' turns';
-
-                            if ($conditional_relay_ifaction[$z] == 'on') {
-                                echo ' On';
-                                if ($conditional_relay_ifduration[$z] > 0) {
-                                    echo ' for ' . $conditional_relay_ifduration[$z] . ' seconds:';
-                                } else {
-                                    echo ':';
-                                }
-                            } else {
-                                echo ' Off:';
-                            }
-
-                        echo '</td>';
-
-                            $first = 1;
-
-                            if ($conditional_relay_sel_relay[$z]) {
-                                if ($first) {
-                                    $first = 0;
-                                }
-                                echo '<td style="width: 100%;">Turn Relay ' . $conditional_relay_dorelay[$z];
-
-                                if ($conditional_relay_doaction[$z] == 'on') {
-                                    echo ' On';
-                                    if ($conditional_relay_doduration[$z] > 0) {
-                                        echo ' for ' . $conditional_relay_doduration[$z] . ' seconds';
-                                    }
-                                } else {
-                                    echo ' Off';
-                                }
-                                echo '</td>';
-                            }
-
-                            if ($conditional_relay_sel_command[$z]) {
-                                if ($first) {
-                                    $first = 0;
-                                } else {
-                                    echo '</tr><tr><td></td>';
-                                }
-                                echo '<td style="padding-bottom: 0.3em;">Execute: <strong>' . htmlentities($conditional_relay_command[$z]) . '</strong></td>';
-                            }
-
-                            if ($conditional_relay_sel_notify[$z]) {
-                                if (!$first) {
-                                    echo '</tr><tr><td></td>';
-                                }
-                                echo '<td style="width: 100%; white-space:normal;">Email <b>' . str_replace(",", ", ", $conditional_relay_notify[$z]) . '</b></td>';
-                            }
-
-                            echo '</tr>';
-                        }
+            <fieldset class="settings-box">
+                <legend>Relays</legend>
+                <form action="?tab=sensor" method="POST">
+                <table class="relays">
+                    <tr>
+                        <td class="table-header center middle">#</td>
+                        <td class="table-header middle">Name</td>
+                        <td class="table-header middle">Status</td>
+                        <td class="table-header center" style="vertical-align: middle; line-height: 1.2em;">
+                            On <img style="height: 1em;" src="/mycodo/img/on.png"> ~ Off <img style="height: 1em;" src="/mycodo/img/off.png"></td>
+                        <td class="table-header center">Seconds On</td>
+                        <td class="table-header center">GPIO</td>
+                        <td class="table-header center">Amps</td>
+                        <td class="table-header center">On Signal</td>
+                        <td class="table-header center">Startup</td>
+                        <td class="table-header center"></td>
+                    </tr>
+                    <?php for ($i = 0; $i < count($relay_id); $i++) {
+                        $read = "$gpio_path -g read $relay_pin[$i]";
                     ?>
                     <tr>
-                        <td style="padding-top: 1em;"></td>
-                        <td></td>
+                        <td class="center">
+                            <?php echo $i+1; ?>
+                        </td>
+                        <td>
+                            <input style="width: 10em;" type="text" value="<?php echo $relay_name[$i]; ?>" maxlength=13 name="relay<?php echo $i; ?>name" title="Name of relay <?php echo $i+1; ?>"/>
+                        </td>
+                        <?php
+                            if ((shell_exec($read) == 1 && $relay_trigger[$i] == 0) || (shell_exec($read) == 0 && $relay_trigger[$i] == 1)) {
+                                ?>
+                                <td class="middle center">
+                                    <input type="hidden" "R<?php echo $i; ?>" value="1" /><img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
+                                </td>
+                                <td class="middle center">
+                                    <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="1">Turn On</button>
+                                </td>
+                                <?php
+                            } else {
+                                ?>
+                                <td class="middle center">
+                                    <img style="height: 1em;" src="/mycodo/img/on.png" alt="On" title="On">
+                                </td>
+                                <td class="middle center">
+                                    <button style="width: 5em;" type="submit" name="R<?php echo $i; ?>" value="0">Turn Off</button>
+                                </td>
+                                <?php
+                            }
+                        ?>
+                        <td class="center">
+                             <input style="width: 4em;" type="number" min="1" max="99999" name="sR<?php echo $i; ?>" title="Number of seconds to turn this relay on"/><input type="submit" name="<?php echo $i; ?>secON" value="ON">
+                        </td>
+                        <td class="center">
+                            <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $relay_pin[$i]; ?>" name="relay<?php echo $i; ?>pin" title="GPIO pin using BCM numbering, connected to relay <?php echo $i+1; ?>"/>
+                        </td>
+                        <td class="center">
+                            <input style="width: 4em;" type="number" min="0" max="500" step="0.1" value="<?php echo $relay_amps[$i]; ?>" name="relay<?php echo $i; ?>amps" title="The maximum number of amps that the device connected to relay <?php echo $i+1; ?> draws. Set overall maximum allowed to be drawn from all relays in the Settings tab."/>
+                        </td>
+                        <td class="center">
+                            <select style="width: 65px;" title="Does this relay activate with a LOW (0-volt) or HIGH (5-volt) signal?" name="relay<?php echo $i; ?>trigger">
+                                <option<?php
+                                    if ($relay_trigger[$i] == 1) {
+                                        echo ' selected="selected"';
+                                    } ?> value="1">High</option>
+                                <option<?php
+                                    if ($relay_trigger[$i] == 0) {
+                                        echo ' selected="selected"';
+                                    } ?> value="0">Low</option>
+                            </select>
+                        </td>
+                        <td class="center">
+                            <select style="width: 65px;" title="Should the relay be On or Off at startup?" name="relay<?php echo $i; ?>startstate">
+                                <option<?php
+                                    if ($relay_start_state[$i] == 1) {
+                                        echo ' selected="selected"';
+                                    } ?> value="1">On</option>
+                                <option<?php
+                                    if ($relay_start_state[$i] == 0) {
+                                        echo ' selected="selected"';
+                                    } ?> value="0">Off</option>
+                            </select>
+                        </td>
+                        <td class="center">
+                            <input type="submit" name="Mod<?php echo $i; ?>Relay" value="Set"> <button type="submit" name="Delete<?php echo $i; ?>Relay" title="Delete">Delete</button>
+                        </td>
                     </tr>
-                    </table>
-                    </form>
+                    <?php
+                    } ?>
+                </table>
+                </form>
+
+                <table class="conditional">
+                    <tr>
+                        <td>
+                            Relay Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                        </td>
+                    </tr>
+                </table>
+
+                <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                <table class="sensor-conditional">
+                    <tr>
+                        <td style="padding-left: 1em;">
+                            Name: 
+                            <input style="width: 5em;" type="text" step="any" value="" maxlength=12 size=1 name="conditionrelayname" title="Name for this relay conditional statement." required/>
+                            If Relay
+                            <select style="width: 3em;" name="conditionrelayifrelay" title="Select the relay to watch for whether it turns on or off.">
+                                <?php
+                                for ($n = 0; $n < count($relay_id); $n++) {
+                                echo '<option value="' . ($n+1) . '">' . ($n+1) . '</option>';
+                                } ?>
+                            </select>
+                            turns
+                            <select style="width: 3em;" name="conditionrelayifaction" title="Select whether the relay that is watched will be watched whether it turns on or off.">
+                                <option value="on">On</option>
+                                <option value="off">Off</option>
+                            </select>
+                            (if on, for 
+                            <input style="width: 4em;" type="number" step="any" value="0" maxlength=5 size=1 name="conditionrelayifduration" title="Check if the number of seconds the selected relay turns on for is equal to this value. If it is the same number of seconds, this statement is true. Leave at 0 if you only want to check if the relay was turned on and not necessarily if there is a duration associated with it. If 'Off' is selected in the previous field, this variable is not considered." required/>
+                            sec): 
+                        </td>
+                        <td style="padding-bottom: 0.3em;">
+                            <input type="checkbox" name="conditionrelayselrelay" value="1" checked> Turn Relay
+                            <select style="width: 3em;" name="conditionrelaydorelay" title="Select the relay that will be modified based on the watched relay and watched action.">
+                                <?php
+                                for ($n = 0; $n < count($relay_id); $n++) {
+                                echo '<option value="' . ($n+1) . '">' . ($n+1) . '</option>';
+                                } ?>
+                            </select>
+                            <select style="width: 3em;" name="conditionrelaydoaction" title="What do you want the modified relay to do once the watched relay performs the watched action.">
+                                <option value="on">On</option>
+                                <option value="off">Off</option>
+                            </select>
+                            (for 
+                            <input style="width: 4em;" type="number" step="any" value="0" maxlength=5 size=1 name="conditionrelaydoduration" title="The number of seconds for the modified relay to remain on. Leave at 0 to only turn the selected relay on, but not off. If 'Off' is selected in the previous field, this variable is not considered." required/>
+                            sec)
+                        </td>
+                        <td rowspan="3" style="vertical-align:middle; padding: 0 0 0.8em 0.5em;">
+                            <button type="submit" style="height:5em; width:4em;" style="height:5em;" name="AddRelayConditional" title="Save new relay conditional statement">Save</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding-bottom: 0.3em;"><input type="checkbox" name="conditionrelayselcommand" value="1"> Execute command: <input style="width: 11em;" type="text" value="" maxlength=100 name="conditionrelaycommand" title="Command to execute in a linux shell."/></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding-bottom: 1em;">
+                            <input type="checkbox" name="conditionrelayselnotify" value="1"> Email <input style="width: 17em;" type="text" value="" name="conditionrelaynotify" title="These are the email addresses that will be notified. Separate multiple email addresses with commas."/>
+                        </td>
+                    </tr>
+                </table>
+                </form>
+
+                <?php
+                if (isset($conditional_relay_id) && count($conditional_relay_id) > 0) {
+                ?>
+                <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
+                <table class="sensor_conditional">
+                    <?php
+                    for ($z = 0; $z < count($conditional_relay_id); $z++) {
+                    ?>
+                    <tr>
+                        <td style="padding-top: 1em; padding-left: 1em; white-space: nowrap;">
+                        <?php
+                        echo '<button type="submit" name="DeleteRelay' . $z . 'Conditional" title="Delete conditional statement">Delete</button> ';
+
+                        echo $z+1 . ': ' . $conditional_relay_name[$z] . ':</td><td style="white-space: nowrap;">If Relay ' . $conditional_relay_ifrelay[$z] . ' turns';
+
+                        if ($conditional_relay_ifaction[$z] == 'on') {
+                            echo ' On';
+                            if ($conditional_relay_ifduration[$z] > 0) {
+                                echo ' for ' . $conditional_relay_ifduration[$z] . ' seconds:';
+                            } else {
+                                echo ':';
+                            }
+                        } else {
+                            echo ' Off:';
+                        }
+
+                    echo '</td>';
+
+                        $first = 1;
+
+                        if ($conditional_relay_sel_relay[$z]) {
+                            if ($first) {
+                                $first = 0;
+                            }
+                            echo '<td style="width: 100%;">Turn Relay ' . $conditional_relay_dorelay[$z];
+
+                            if ($conditional_relay_doaction[$z] == 'on') {
+                                echo ' On';
+                                if ($conditional_relay_doduration[$z] > 0) {
+                                    echo ' for ' . $conditional_relay_doduration[$z] . ' seconds';
+                                }
+                            } else {
+                                echo ' Off';
+                            }
+                            echo '</td>';
+                        }
+
+                        if ($conditional_relay_sel_command[$z]) {
+                            if ($first) {
+                                $first = 0;
+                            } else {
+                                echo '</tr><tr><td colspan="2"></td>';
+                            }
+                            echo '<td style="padding-bottom: 0.3em;">Execute: <strong>' . htmlentities($conditional_relay_command[$z]) . '</strong></td>';
+                        }
+
+                        if ($conditional_relay_sel_notify[$z]) {
+                            if (!$first) {
+                                echo '</tr><tr><td colspan="2"></td>';
+                            }
+                            echo '<td style="width: 100%; white-space:normal;">Email <b>' . str_replace(",", ", ", $conditional_relay_notify[$z]) . '</b></td>';
+                        }
+
+                        echo '</tr>';
+                    }
+                ?>
+                <tr>
+                    <td style="padding-top: 1em;"></td>
+                    <td></td>
+                </tr>
+                </table>
+                </form>
+                <?php
+                }
+                ?>
+            </fieldset>
+            <?php
+            }
+            
+            if (count($relay_id) > 0) echo '<div style="margin-bottom:1em;"></div>';
+
+            if (count($timer_id) > 0) {
+            ?>
+            <div style="clear: both;"></div>
+
+            <fieldset class="settings-box">
+                <legend>Timers</legend>
+                <form action="?tab=sensor" method="POST">
+                <table class="relays">
+                    <tr>
+                        <td class="table-header center middle">#</td>
+                        <td class="table-header middle">Name</td>
+                        <td class="table-header center middle">Status</td>
+                        <td class="table-header center middle">Activate</td>
+                        <td class="table-header center middle">Relay</td>
+                        <td class="table-header center middle">On (sec)</td>
+                        <td class="table-header center middle">Off (sec)</td>
+                        <td class="table-header"></td>
+                    </tr>
+                    <?php
+                    for ($i = 0; $i < count($timer_id); $i++) {
+                    ?>
+                    <tr>
+                        <td class="center">
+                            <?php echo $i+1; ?>
+                        </td>
+                        <td>
+                            <input style="width: 10em;" type="text" value="<?php echo $timer_name[$i]; ?>" maxlength=13 name="Timer<?php echo $i; ?>Name" title="This is the relay name for timer <?php echo $i; ?>"/>
+                        </td>
+                        <?php
+                        if ($timer_state[$i] == 0) {
+                        ?>
+                            <td  class="center" style="vertical-align:middle;">
+                                <img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
+                            </td>
+                            <td class="center">
+                                <button style="width: 5em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">Turn On</button></nobr>
+                            </td>
+                        <?php
+                        } else {
+                        ?>
+                            <td  class="center" style="vertical-align:middle;">
+                                <img style="height: 1em;" src="/mycodo/img/on.png" alt="On" title="On">
+                            </td>
+                            <td class="center">
+                                <button style="width: 5em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="0">Turn Off</button></nobr>
+                            </td>
+                        <?php
+                        }
+                        ?>
+                        <td class="center">
+                            <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $timer_relay[$i]; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>Relay" title="This is the relay number for timer <?php echo $i; ?>"/>
+                        </td>
+                        <td class="center">
+                            <input style="width: 5em;" type="number" min="1" max="99999" value="<?php echo $timer_duration_on[$i]; ?>" name="Timer<?php echo $i; ?>On" title="This is On duration of timer <?php echo $i; ?>"/>
+                        </td>
+                        <td class="center">
+                            <input style="width: 5em;" type="number" min="0" max="99999" value="<?php echo $timer_duration_off[$i]; ?>" name="Timer<?php echo $i; ?>Off" title="This is Off duration for timer <?php echo $i; ?>"/>
+                        </td>
+                        <td class="center">
+                            <input type="submit" name="ChangeTimer<?php echo $i; ?>" value="Set"> <button type="submit" name="Delete<?php echo $i; ?>Timer" title="Delete">Delete</button>
+                        </td>
+                    </tr>
                     <?php
                     }
                     ?>
-                </div>
-            <?php
-            }
-            ?>
-
-            <?php if (count($relay_id) > 0) echo '<div style="margin-bottom:1em;"></div>'; ?>
-            
-            <?php
-            if (count($timer_id) > 0) {
-            ?>
-                <div style="clear: both;"></div>
-                <div class="sensor-title">Timers</div>
-                <div style="clear: both;"></div>
-
-                <div class="sensor-parent">
-                <form action="?tab=sensor" method="POST">
-                    <table class="relays">
-                        <tr>
-                            <td class="table-header center middle">Timer</td>
-                            <td class="table-header middle">Name</td>
-                            <td class="table-header center middle">Status</td>
-                            <td class="table-header center middle">Activate</td>
-                            <td class="table-header center middle">Relay</td>
-                            <td class="table-header center middle">On (sec)</td>
-                            <td class="table-header center middle">Off (sec)</td>
-                            <td class="table-header"></td>
-                        </tr>
-                        <?php
-                        for ($i = 0; $i < count($timer_id); $i++) {
-                        ?>
-                        <tr>
-                            <td class="center">
-                                <?php echo $i+1; ?>
-                            </td>
-                            <td>
-                                <input style="width: 10em;" type="text" value="<?php echo $timer_name[$i]; ?>" maxlength=13 name="Timer<?php echo $i; ?>Name" title="This is the relay name for timer <?php echo $i; ?>"/>
-                            </td>
-                            <?php
-                            if ($timer_state[$i] == 0) {
-                            ?>
-                                <td  class="center" style="vertical-align:middle;">
-                                    <img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
-                                </td>
-                                <td class="center">
-                                    <button style="width: 5em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="1">Turn On</button></nobr>
-                                </td>
-                            <?php
-                            } else {
-                            ?>
-                                <td  class="center" style="vertical-align:middle;">
-                                    <img style="height: 1em;" src="/mycodo/img/on.png" alt="On" title="On">
-                                </td>
-                                <td class="center">
-                                    <button style="width: 5em;" type="submit" name="Timer<?php echo $i; ?>StateChange" value="0">Turn Off</button></nobr>
-                                </td>
-                            <?php
-                            }
-                            ?>
-                            <td class="center">
-                                <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $timer_relay[$i]; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>Relay" title="This is the relay number for timer <?php echo $i; ?>"/>
-                            </td>
-                            <td class="center">
-                                <input style="width: 5em;" type="number" min="1" max="99999" value="<?php echo $timer_duration_on[$i]; ?>" name="Timer<?php echo $i; ?>On" title="This is On duration of timer <?php echo $i; ?>"/>
-                            </td>
-                            <td class="center">
-                                <input style="width: 5em;" type="number" min="0" max="99999" value="<?php echo $timer_duration_off[$i]; ?>" name="Timer<?php echo $i; ?>Off" title="This is Off duration for timer <?php echo $i; ?>"/>
-                            </td>
-                            <td class="center">
-                                <input type="submit" name="ChangeTimer<?php echo $i; ?>" value="Set"> <button type="submit" name="Delete<?php echo $i; ?>Timer" title="Delete">Delete</button>
-                            </td>
-                        </tr>
-                        <?php
-                        }
-                        ?>
-                    </table>
+                </table>
                 </form>
-                </div>
+            </fieldset>
             <?php
             }
             ?>
@@ -954,7 +954,9 @@ if (!file_exists($lock_daemon)) {
                         <td>Sensor<br>Name</td>
                         <td>Sensor<br>Device</td>
                         <?php 
-                        if ($sensor_t_device[$i] == 'DS18B20') {
+                        if ($sensor_t_device[$i] == 'RPi') {
+                            echo '<td>Sensor<br>Type</td>';
+                        } else if ($sensor_t_device[$i] == 'DS18B20') {
                             echo '<td>Serial No<br>28-xxx</td>';
                         } else {
                             echo '<td>GPIO<br>Pin</td>';
@@ -984,11 +986,15 @@ if (!file_exists($lock_daemon)) {
                             <input style="width: <?php if ($sensor_t_device[$i] == 'DS18B20') echo '6em'; else echo '10em'; ?>;" type="text" value="<?php echo $sensor_t_name[$i]; ?>" maxlength=12 size=10 name="sensort<?php echo $i; ?>name" title="Name of area using sensor <?php echo $i; ?>"/>
                         </td>
                         <td>
-                            <select style="width: 6.5em;" name="sensort<?php echo $i; ?>device">
+                            <select style="width: 7em;" name="sensort<?php echo $i; ?>device">
                                 <option<?php
                                     if ($sensor_t_device[$i] == 'Other') {
                                         echo ' selected="selected"';
                                     } ?> value="Other">Other</option>
+                                <option<?php
+                                    if ($sensor_t_device[$i] == 'RPi') {
+                                        echo ' selected="selected"';
+                                    } ?> value="RPi">Raspberry Pi</option>
                                 <option<?php
                                     if ($sensor_t_device[$i] == 'DS18B20') {
                                         echo ' selected="selected"';
@@ -997,7 +1003,9 @@ if (!file_exists($lock_daemon)) {
                         </td>
                         <td>
                             <?php 
-                            if ($sensor_t_device[$i] == 'DS18B20') {
+                            if ($sensor_t_device[$i] == 'RPi') {
+                                echo 'SoC';
+                            } else if ($sensor_t_device[$i] == 'DS18B20') {
                                 echo '<input style="width: 7em;" type="text" value="' , $sensor_t_pin[$i] . '" maxlength=12 name="sensort' , $i , 'pin" title="This is the serial number found at /sys/bus/w1/devices/28-x where x is the serial number of your connected DS18B20."/>';
                             } else {
                                 echo '<input style="width: 3em;" type="number" min="0" max="40" value="' , $sensor_t_pin[$i] , '" maxlength=2 name="sensort' , $i , 'pin" title="This is the GPIO pin connected to the temperature sensor"/>';
@@ -1182,10 +1190,11 @@ if (!file_exists($lock_daemon)) {
                 <table class="conditional">
                     <tr>
                         <td>
-                            Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                            Sensor Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                         </td>
                     </tr>
                 </table>
+                
                 <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                 <table class="sensor-conditional">
                     <tr>
@@ -1250,7 +1259,7 @@ if (!file_exists($lock_daemon)) {
                                 echo '<button style="width: 5em;" type="submit" name="TurnOnT' . $i . '-' . $z . 'Conditional" title="">Turn On</button> <img style="height: 1em; padding: 0 0.5em;" src="/mycodo/img/off.png" alt="Off" title="Off"> ';
                             }
 
-                            echo $z+1 . ' ' . $conditional_t_name[$i][$z] . ': Every ' . $conditional_t_period[$i][$z] . ' sec, if the Temperature is ';
+                            echo $z+1 . ' ' . $conditional_t_name[$i][$z] . ':</td><td style="white-space: nowrap;">Every ' . $conditional_t_period[$i][$z] . ' sec, if the Temperature is ';
 
                             if ($conditional_t_direction[$i][$z] == 1) {
                                 echo 'Above ';
@@ -1283,14 +1292,14 @@ if (!file_exists($lock_daemon)) {
                                 if ($first) {
                                     $first = 0;
                                 } else {
-                                    echo '</tr><tr><td></td>';
+                                    echo '</tr><tr><td colspan="2"></td>';
                                 }
                                 echo '<td style="padding-bottom: 0.3em;">Execute: <strong>' . htmlentities($conditional_t_command[$i][$z]) . '</strong></td>';
                             }
 
                             if ($conditional_t_sel_notify[$i][$z]) {
                                 if (!$first) {
-                                    echo '</tr><tr><td></td>';
+                                    echo '</tr><tr><td colspan="2"></td>';
                                 }
                                 echo '<td style="width: 100%; white-space:normal;">Email <b>' . str_replace(",", ", ", $conditional_t_notify[$i][$z]) . '</b></td>';
                             }
@@ -1723,7 +1732,7 @@ if (!file_exists($lock_daemon)) {
                 <table class="conditional">
                     <tr>
                         <td>
-                            Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                            Sensor Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                         </td>
                     </tr>
                 </table>
@@ -2102,15 +2111,14 @@ if (!file_exists($lock_daemon)) {
                 </table>
                 </form>
 
-
-
                 <table class="conditional">
                     <tr>
                         <td>
-                            Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                            Sensor Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                         </td>
                     </tr>
                 </table>
+
                 <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                 <table class="sensor-conditional">
                     <tr>
@@ -2599,14 +2607,14 @@ if (!file_exists($lock_daemon)) {
                 </table>
                 </form>
 
-
                 <table class="conditional">
                     <tr>
                         <td>
-                            Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
+                            Sensor Conditional Statements<br/><span style="padding-top: 0.5em;font-size: 0.7em;">Note: Ensure these conditional statements don't produce conflicts with themselves or interfere with running PID controllers.</span>
                         </td>
                     </tr>
                 </table>
+
                 <form action="?tab=sensor<?php if (isset($_GET['r']))  echo '&r=' , $_GET['r']; ?>" method="POST">
                 <table class="sensor-conditional">
                     <tr>
@@ -3375,7 +3383,7 @@ if (!file_exists($lock_daemon)) {
                         if (isset($_POST['Notes']) || isset($_POST['Delete_Note']) || isset($_POST['Add_Note']) || isset($_POST['Edit_Note_Save'])) {
                             echo "Notes<br> <br>
                             <form action=\"?tab=data\" method=\"POST\" enctype=\"multipart/form-data\">
-                            <table style=\"width:100%\";>
+                            <table style=\"width:100%;\">
                                 <tr>
                                     <td style=\"padding-bottom: 0.2em;\"><input style=\"width: 100%;\" type=\"text\" placeholder=\"Title\" maxlength=\"200\" name=\"Note_Title\"></td>
                                 </tr>
@@ -3600,9 +3608,13 @@ if (!file_exists($lock_daemon)) {
                             echo '<pre>Time, Type of auth, user, IP, Hostname, Referral, Browser<br> <br>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `tail -n $Lines $auth_log`;
+                                $login_lines = `tail -n $Lines $auth_log`;
                             } else {
-                                echo `tail -n 30 $auth_log`;
+                                $login_lines = `tail -n 30 $auth_log`;
+                            }
+                            $login_lines = explode("\n", $login_lines);
+                            for ($i = 0; $i < count($login_lines); $i++) {
+                                echo htmlentities($login_lines[$i]) , "<br>";
                             }
                             echo '</pre>';
                         }
@@ -4116,21 +4128,17 @@ if (!file_exists($lock_daemon)) {
 
             <?php if ($this->feedback) echo $this->feedback; ?>
 
-            <div style="padding: 2em 0 0 1em;">
+            <div style="padding: 1.5em 0 0 1em;">
                 <a href="manual.html" target="_blank">Mycodo 3.5 Manual</a> | <a href="https://github.com/kizniche/Mycodo" target="_blank">Mycodo on GitHub</a> | Have a problem? <a href="http://kylegabriel.com/contact" target="_blank">Contact the developer</a> or <a href="https://github.com/kizniche/Mycodo/issues" target="_blank">submit an issue</a>.
             </div>
 
-            <div style="padding: 0 1em 0 1em;">
-                <table>
-                    <tr>
-                        <td class="setting-title" style="width: 100%;">
-                            Update
-                        </td>
-                    </tr>
-
+            <div style="padding: 0.5em 1em 0 1em; width: 100%;">
+                <fieldset class="settings-box">
+                <legend>Update</legend>
+                <table style="width: 100%;">
                     <form action="?tab=settings" method="post">
-                        <tr>
-                        <td class="setting-text">
+                    <tr>
+                        <td class="setting-text" style="width: 100%;">
                             Check if there is an update avaialble for Mycodo<?php
                             if (strpos(`cat /var/www/mycodo/.updatecheck`,'1') !== false) {
                                 echo ' (<span style="color: red;">A newer version is available</span>)';
@@ -4155,15 +4163,15 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>Daemon</legend>
+                <table style="width: 100%;">
                     <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            Daemon
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="width: 100%;">
                             Stop Daemon
                         </td>
                         <td class="setting-value">
@@ -4198,15 +4206,15 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>System</legend>
+                <table style="width: 100%;">
                     <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            System
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="width: 100%;">
                             Maximum current draw
                         </td>
                         <td class="setting-value">
@@ -4270,23 +4278,22 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <button name="ChangeSystem" type="submit" value="">Save</button>
+                        <td colspan="2" class="setting-save">
+                            <button style="width: 18em;" name="ChangeSystem" type="submit" value="">Save</button>
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>Combined Static Graph Generation</legend>
+                <table style="width: 100%;">
                     <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            Combined Static Graph Generation
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td colspan="4" class="setting-text">
                             Combined Temperatures
                         </td>
-                        <td class="setting-value"></td>
                     </tr>
                     <tr>
                         <td class="setting-text">
@@ -4295,48 +4302,6 @@ if (!file_exists($lock_daemon)) {
                         <td class="setting-value">
                             <input style="width: 18em;" type="number" value="<?php echo $combined_temp_min; ?>" maxlength="6" name="combined_temp_min" title=""/>
                         </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Max
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_max; ?>" maxlength="6" name="combined_temp_max" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Tics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_tics; ?>" maxlength="6" name="combined_temp_tics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis mTics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_mtics; ?>" maxlength="6" name="combined_temp_mtics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_temp_relays_up; ?>" name="combined_temp_relays_up" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_temp_relays_down; ?>" name="combined_temp_relays_down" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
                         <td class="setting-text">
                             Relay Y-Axis Min
                         </td>
@@ -4346,6 +4311,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_max; ?>" maxlength="6" name="combined_temp_max" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis Max
                         </td>
                         <td class="setting-value">
@@ -4353,6 +4324,12 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
+                        <td class="setting-text">
+                            Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_tics; ?>" maxlength="6" name="combined_temp_tics" title=""/>
+                        </td>
                         <td class="setting-text">
                             Relay Y-Axis Tics
                         </td>
@@ -4362,6 +4339,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_temp_mtics; ?>" maxlength="6" name="combined_temp_mtics" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis mTics
                         </td>
                         <td class="setting-value">
@@ -4369,10 +4352,28 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-text pad-top">
+                        <td colspan="3" class="setting-text" style="width: 100%;">
+                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_temp_relays_up; ?>" name="combined_temp_relays_up" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="setting-text">
+                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_temp_relays_down; ?>" name="combined_temp_relays_down" title=""/>
+                        </td>
+                    </tr>
+                </table>
+
+                <table>
+                    <tr>
+                        <td colspan="4" class="setting-text pad-top">
                             Combined Humidities
                         </td>
-                        <td class="setting-value"></td>
                     </tr>
                     <tr>
                         <td class="setting-text">
@@ -4381,48 +4382,6 @@ if (!file_exists($lock_daemon)) {
                         <td class="setting-value">
                             <input style="width: 18em;" type="number" value="<?php echo $combined_hum_min; ?>" maxlength="6" name="combined_hum_min" title=""/>
                         </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Max
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_max; ?>" maxlength="6" name="combined_hum_max" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Tics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_tics; ?>" maxlength="6" name="combined_hum_tics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis mTics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_mtics; ?>" maxlength="6" name="combined_hum_mtics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_hum_relays_up; ?>" name="combined_hum_relays_up" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_hum_relays_down; ?>" name="combined_hum_relays_down" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
                         <td class="setting-text">
                             Relay Y-Axis Min
                         </td>
@@ -4432,6 +4391,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_max; ?>" maxlength="6" name="combined_hum_max" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis Max
                         </td>
                         <td class="setting-value">
@@ -4439,6 +4404,12 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
+                        <td class="setting-text">
+                            Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_tics; ?>" maxlength="6" name="combined_hum_tics" title=""/>
+                        </td>
                         <td class="setting-text">
                             Relay Y-Axis Tics
                         </td>
@@ -4448,6 +4419,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_hum_mtics; ?>" maxlength="6" name="combined_hum_mtics" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis mTics
                         </td>
                         <td class="setting-value">
@@ -4455,10 +4432,29 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-text pad-top">
+                        <td colspan="3" class="setting-text" style="width: 100%">
+                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_hum_relays_up; ?>" name="combined_hum_relays_up" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="setting-text">
+                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_hum_relays_down; ?>" name="combined_hum_relays_down" title=""/>
+                        </td>
+                    </tr>
+                </table>
+                    
+                <table>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="setting-text pad-top">
                             Combined CO<sub>2</sub>s
                         </td>
-                        <td class="setting-value"></td>
                     </tr>
                     <tr>
                         <td class="setting-text">
@@ -4467,48 +4463,6 @@ if (!file_exists($lock_daemon)) {
                         <td class="setting-value">
                             <input style="width: 18em;" type="number" value="<?php echo $combined_co2_min; ?>" maxlength="6" name="combined_co2_min" title=""/>
                         </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Max
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_max; ?>" maxlength="6" name="combined_co2_max" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Tics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_tics; ?>" maxlength="6" name="combined_co2_tics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis mTics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_mtics; ?>" maxlength="6" name="combined_co2_mtics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_co2_relays_up; ?>" name="combined_co2_relays_up" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_co2_relays_down; ?>" name="combined_co2_relays_down" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
                         <td class="setting-text">
                             Relay Y-Axis Min
                         </td>
@@ -4518,6 +4472,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_max; ?>" maxlength="6" name="combined_co2_max" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis Max
                         </td>
                         <td class="setting-value">
@@ -4525,6 +4485,12 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
+                        <td class="setting-text">
+                            Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_tics; ?>" maxlength="6" name="combined_co2_tics" title=""/>
+                        </td>
                         <td class="setting-text">
                             Relay Y-Axis Tics
                         </td>
@@ -4534,6 +4500,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_co2_mtics; ?>" maxlength="6" name="combined_co2_mtics" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis mTics
                         </td>
                         <td class="setting-value">
@@ -4541,10 +4513,28 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-text pad-top">
+                        <td colspan="3" class="setting-text" style="width: 100%">
+                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_co2_relays_up; ?>" name="combined_co2_relays_up" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="setting-text">
+                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_co2_relays_down; ?>" name="combined_co2_relays_down" title=""/>
+                        </td>
+                    </tr>
+                </table>
+
+                <table>
+                    <tr>
+                        <td colspan="4" class="setting-text pad-top">
                             Combined Pressures
                         </td>
-                        <td class="setting-value"></td>
                     </tr>
                     <tr>
                         <td class="setting-text">
@@ -4553,48 +4543,6 @@ if (!file_exists($lock_daemon)) {
                         <td class="setting-value">
                             <input style="width: 18em;" type="number" value="<?php echo $combined_press_min; ?>" maxlength="6" name="combined_press_min" title=""/>
                         </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Max
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_max; ?>" maxlength="6" name="combined_press_max" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis Tics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_tics; ?>" maxlength="6" name="combined_press_tics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Y-Axis mTics
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_mtics; ?>" maxlength="6" name="combined_press_mtics" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_press_relays_up; ?>" name="combined_press_relays_up" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" value="<?php echo $combined_press_relays_down; ?>" name="combined_press_relays_down" title=""/>
-                        </td>
-                    </tr>
-                    <tr>
                         <td class="setting-text">
                             Relay Y-Axis Min
                         </td>
@@ -4604,6 +4552,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis Max
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_max; ?>" maxlength="6" name="combined_press_max" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis Max
                         </td>
                         <td class="setting-value">
@@ -4611,6 +4565,12 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
+                        <td class="setting-text">
+                            Y-Axis Tics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_tics; ?>" maxlength="6" name="combined_press_tics" title=""/>
+                        </td>
                         <td class="setting-text">
                             Relay Y-Axis Tics
                         </td>
@@ -4620,6 +4580,12 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <tr>
                         <td class="setting-text">
+                            Y-Axis mTics
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="number" value="<?php echo $combined_press_mtics; ?>" maxlength="6" name="combined_press_mtics" title=""/>
+                        </td>
+                        <td class="setting-text">
                             Relay Y-Axis mTics
                         </td>
                         <td class="setting-value">
@@ -4627,20 +4593,36 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <button name="ChangeCombinedSetings" type="submit" value="">Save</button>
+                        <td colspan="3" class="setting-text" style="width: 100%;">
+                            Relays to Plot Up (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_press_relays_up; ?>" name="combined_press_relays_up" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="setting-text">
+                            Relays to Plot Down (0 to disable, separate multiple relays with commas)
+                        </td>
+                        <td class="setting-value">
+                            <input style="width: 18em;" type="text" value="<?php echo $combined_press_relays_down; ?>" name="combined_press_relays_down" title=""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="setting-save">
+                            <button style="width: 18em;" name="ChangeCombinedSetings" type="submit" value="">Save</button>
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>Email Notification</legend>
+                <table style="width: 100%;">
                     <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            Email Notification
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="width: 100%;">
                             SMTP Host
                         </td>
                         <td class="setting-value">
@@ -4700,24 +4682,33 @@ if (!file_exists($lock_daemon)) {
                             Send Test Email (save configure above, then enter recipient and click Send)
                         </td>
                         <td class="setting-value">
-                            <input style="width: 13em;" type="text" value="" maxlength="50" name="smtp_email_test" title=""/> <input style="width: 5em;"type="submit" name="TestNotify" value="Send">
+                            <table style="100%;">
+                                <tr>
+                                    <td style="width: 100%;">
+                                        <input style="width: 100%;" type="text" value="" maxlength="50" name="smtp_email_test" title=""/>
+                                    </td>
+                                    <td>
+                                        <input type="submit" name="TestNotify" value="Send">
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <input type="submit" name="ChangeNotify" value="Save">
+                        <td colspan="2" class="setting-save">
+                            <input style="width: 18em;" type="submit" name="ChangeNotify" value="Save">
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>Camera: Still Capture</legend>
+                <table style="width: 100%;">
                     <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            Camera: Still Capture
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="width: 100%;">
                             Relay to activate during capture (0 to disable)
                         </td>
                         <td class="setting-value">
@@ -4765,20 +4756,20 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <button name="ChangeStill" type="submit" value="">Save</button>
+                        <td colspan="2" class="setting-save">
+                            <button style="width: 18em;" name="ChangeStill" type="submit" value="">Save</button>
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>Camera: Video Stream</legend>
+                <table style="width: 100%;">
                     <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            Camera: Video Stream
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="width: 100%;">
                             Relay to activate during capture (0 to disable)
                         </td>
                         <td class="setting-value">
@@ -4810,20 +4801,20 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <button name="ChangeStream" type="submit" value="">Save</button>
+                        <td colspan="2" class="setting-save">
+                            <button style="width: 18em;" name="ChangeStream" type="submit" value="">Save</button>
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>Camera: Time-lapse</legend>
+                <table style="width: 100%;">
                     <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            Camera: Time-lapse
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="width: 100%;">
                             Relay to activate during capture (0 to disable)
                         </td>
                         <td class="setting-value">
@@ -4899,24 +4890,24 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <button name="ChangeTimelapse" type="submit" value="">Save</button>
+                        <td colspan="2" class="setting-save">
+                            <button style="width: 18em;" name="ChangeTimelapse" type="submit" value="">Save</button>
                         </td>
                     </tr>
                     </form>
+                </table>
+                </fieldset>
 
                 <?php
                 if ($current_user_restriction == 'admin') {
                 ?>
 
+                <fieldset class="settings-box">
+                <legend>Add User</legend>
+                <table style="width: 100%;">
                 <form method="post" action="?tab=settings">
                     <tr>
-                        <td class="setting-title">
-                            Add User
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
+                        <td class="setting-text" style="width: 100%;">
                             Username (only letters and numbers, 2 to 64 characters)
                         </td>
                         <td class="setting-value">
@@ -4959,41 +4950,18 @@ if (!file_exists($lock_daemon)) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="setting-save">
-                            <input type="submit" name="register" value="Add User"/>
-                        </td>
-                    </tr>
-                    </form>
-
-                    <form method="post" action="?tab=settings">
-                    <tr>
-                        <td class="setting-title">
-                            Delete User
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-text">
-                            Username
-                        </td>
-                        <td class="setting-value">
-                            <input style="width: 18em;" type="text" pattern="[a-zA-Z0-9]{2,64}" required name="user_name" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="setting-save">
-                            <input type="submit" name="deleteuser" value="Delete User" />
+                        <td colspan="2" class="setting-save">
+                            <input style="width: 18em;" type="submit" name="register" value="Add User"/>
                         </td>
                     </tr>
                     </form>
                 </table>
+                </fieldset>
 
+                <fieldset class="settings-box">
+                <legend>User Management</legend>
                 <table class="edit-user">
-                    <form method="post" action="?tab=settings">
-                    <tr>
-                        <td class="setting-title">
-                            Edit Users
-                        </td>
-                    </tr>
+                <form method="post" action="?tab=settings">
                     <tr>
                         <td>User</td>
                         <td>Email</td>
@@ -5005,8 +4973,8 @@ if (!file_exists($lock_daemon)) {
                 <?php 
                 for ($i = 0; $i < count($user_name); $i++) {
                 ?>
-                    <form method="post" action="?tab=settings">
                     <tr>
+                        <form method="post" action="?tab=settings">
                         <td><?php echo $user_name[$i]; ?><input type="hidden" name="user_name" value="<?php echo $user_name[$i]; ?>"></td>
                         <td>
                             <input style="width: 12.5em;" type="text" value="<?php echo $user_email[$i]; ?>" name="user_email" title="The email address associated with this account. In addition to the user name, the email address may be used to log in."/>
@@ -5042,10 +5010,16 @@ if (!file_exists($lock_daemon)) {
                             </select>
                         </td>
                         <td>
-                            <input type="submit" name="edituser" value="Save" />
+                            <input type="submit" name="edituser" value="Save" title="Save settings for user <?php echo $user_name[$i]; ?>" />
                         </td>
+                        </form>
+                        <form method="post" action="?tab=settings" onsubmit="return confirm('Confirm the deletion of user <?php echo $user_name[$i]; ?>. This cannot be undone. To keep this user, click Cancel.')">
+                        <td>
+                            <input type="hidden" name="user_name" value="<?php echo $user_name[$i]; ?>">
+                            <button type="submit" name="deleteuser" value="<?php echo $user_name[$i]; ?>" title="Delete user <?php echo $user_name[$i]; ?>">Delete</button>
+                        </td>
+                        </form>
                     </tr>
-                    </form>
                 <?php
                 }
                 ?>
@@ -5054,14 +5028,9 @@ if (!file_exists($lock_daemon)) {
                 <?php
                 } else {
                 ?>
-                </table>
+                <fieldset class="settings-box">
+                <legend>User Management</legend>
                 <table class="edit-user">
-                    <form method="post" action="?tab=settings">
-                    <tr>
-                        <td class="setting-title">
-                            Edit User
-                        </td>
-                    </tr>
                     <tr>
                         <td>User</td>
                         <td>Email</td>
@@ -5107,6 +5076,7 @@ if (!file_exists($lock_daemon)) {
                 }
                 ?>
                 </table>
+                </fieldset>
                 <?php
                 }
                 ?>

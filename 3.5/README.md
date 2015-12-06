@@ -96,6 +96,9 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 Major changes for each versioned release
 
+#### 3.5.92
++ Add ability to use Raspberry Pi internal CPU/GPU thermal sensor
+
 #### 3.5.91
 + Add ability to use multiple BMP085/180 pressure sensors with the TCA9548A multiplexer
 
@@ -289,7 +292,7 @@ Using raspi-config, perform the following:
 
 `sudo apt-get install build-essential apache2 sqlite3 gnuplot git-core python-pip python-dev python-smbus libconfig-dev php5 libapache2-mod-php5 php5-sqlite php5-gd i2c-tools libi2c-dev`
 
-`git clone https://github.com/kizniche/Mycodo.git ~/Mycodo`
+`git clone --recursive https://github.com/kizniche/Mycodo.git ~/Mycodo`
 
 `git clone git://git.drogon.net/wiringPi ~/WiringPi && cd ~/WiringPi && sudo ./build`
 
@@ -484,7 +487,7 @@ Follow the prompts to create an admin password, optionally create another user, 
 
 To initialize GPIO pins at startup, open crontab with `sudo crontab -e` and add the following lines, then save with `Ctrl+x`
 
-`@reboot /usr/bin/python /var/www/mycodo/cgi-bin/GPIO-initialize.py &`
+`@reboot /usr/bin/python /var/www/mycodo/cgi-bin/gpio_initialize.py &`
 
 Last, set the daemon to automatically start
 

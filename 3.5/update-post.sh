@@ -97,6 +97,17 @@ if [[ $db_version_mycodo -lt 18 ]]; then
 	fi
 fi
 
+if [[ $db_version_mycodo -lt 19 ]]; then
+	if [ "$(ls -A /var/www/mycodo/cgi-bin/mycodo_python/)" ]; then  # Submodule already initialized
+	    continue
+	else  # Submodule directory empty, initialize
+	    cd -P /var/www/mycodo/../  # git < 1.8.4 (Debian wheezy) requires being at toplevel to update submodule
+	    git submodule init
+	    git submodule sync
+	    git submodule update
+	fi
+fi
+
 # Perform update based on database version
 if [ ! -f $DATABASEMYC ]; then
     printf "Mycodo database not found: $DATABASEMYC\n";

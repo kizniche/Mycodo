@@ -27,7 +27,7 @@ sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
 sql_database_user = '/var/www/mycodo/config/users.db'
 sql_database_note = '/var/www/mycodo/config/notes.db'
 
-db_version_mycodo = 18
+db_version_mycodo = 19
 db_version_user = 2
 db_version_note = 3
 
@@ -428,6 +428,8 @@ def mycodo_database_update():
             ModNullValue(sql_database_mycodo, 'Misc', 'Relay_Stats_Currency', '$')
 
         # Version 18 updates: no database changes, update log format
+
+        # Version 19 updates: no database changes, initialize submodule mycodo_python
 
         # any extra commands for version X
         #if current_db_version_mycodo < X:
@@ -987,7 +989,7 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Press_Relays_Mtics', 'INT')
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("INSERT OR IGNORE INTO CustomGraph VALUES('0', 0, 35, 5, 5, '0', '0', -100, 100, 25, 5, 0, 100, 10, 5, '0', '0', -100, 100, 25, 5, 0, 5000, 500, 5, '0', '0', -100, 100, 25, 5, 96000, 100000, 500, 5, '0', '0', -100, 100, 25, 5)")
+    cur.execute("INSERT OR IGNORE INTO CustomGraph (id, combined_temp_min, combined_temp_max, combined_temp_tics, combined_temp_mtics, combined_temp_relays_up, combined_temp_relays_down, combined_temp_relays_min, combined_temp_relays_max, combined_temp_relays_tics, combined_temp_relays_mtics, combined_hum_min, combined_hum_max, combined_hum_tics, combined_hum_mtics, combined_hum_relays_up, combined_hum_relays_down, combined_hum_relays_min, combined_hum_relays_max, combined_hum_relays_tics, combined_hum_relays_mtics, combined_co2_min, combined_co2_max, combined_co2_tics, combined_co2_mtics, combined_co2_relays_up, combined_co2_relays_down, combined_co2_relays_min, combined_co2_relays_max, combined_co2_relays_tics, combined_co2_relays_mtics, combined_press_min, combined_press_max, combined_press_tics, combined_press_mtics, combined_press_relays_up, combined_press_relays_down, combined_press_relays_min, combined_press_relays_max, combined_press_relays_tics, combined_press_relays_mtics) VALUES ('0', 0, 35, 5, 5, '0', '0', -100, 100, 25, 5, 0, 100, 10, 5, '0', '0', -100, 100, 25, 5, 0, 5000, 500, 5, '0', '0', -100, 100, 25, 5, 96000, 100000, 500, 5, '0', '0', -100, 100, 25, 5)")
     conn.commit()
     cur.close()
        
@@ -1002,7 +1004,7 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'SMTP', 'Wait_Time', 'INT')
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("INSERT OR IGNORE INTO SMTP VALUES('0', 'smtp.gmail.com', 1, 465, 'email@gmail.com', 'password', 'email@gmail.com', 48, 3600)")
+    cur.execute("INSERT OR IGNORE INTO SMTP (id, host, ssl, port, user, pass, email_from, daily_max, wait_time) VALUES ('0', 'smtp.gmail.com', 1, 465, 'email@gmail.com', 'password', 'email@gmail.com', 48, 3600)")
     conn.commit()
     cur.close()
     ModNullValue(sql_database_mycodo, 'SMTP', 'Host', 'smtp.gmail.com')
@@ -1023,7 +1025,7 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'CameraStill', 'Extra_Parameters', 'TEXT')
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("INSERT OR IGNORE INTO CameraStill VALUES('0', 0, 1, 1, '', '', '--vflip --hflip --width 800 --height 600')")
+    cur.execute("INSERT OR IGNORE INTO CameraStill (id, relay, timestamp, display_last, cmd_pre, cmd_post, extra_parameters) VALUES ('0', 0, 1, 1, '', '', '--vflip --hflip --width 800 --height 600')")
     conn.commit()
     cur.close()
     ModNullValue(sql_database_mycodo, 'CameraStill', 'Relay', 0)
@@ -1040,7 +1042,7 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'CameraStream', 'Extra_Parameters', 'TEXT')
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("INSERT OR IGNORE INTO CameraStream VALUES('0', 0, '', '', '--contrast 20 --sharpness 60 --awb auto --quality 20 --vflip --hflip --nopreview --width 800 --height 600')")
+    cur.execute("INSERT OR IGNORE INTO CameraStream (id, relay, cmd_pre, cmd_post, extra_parameters) VALUES ('0', 0, '', '', '--contrast 20 --sharpness 60 --awb auto --quality 20 --vflip --hflip --nopreview --width 800 --height 600')")
     conn.commit()
     cur.close()
     ModNullValue(sql_database_mycodo, 'CameraStream', 'Relay', 0)
@@ -1059,7 +1061,7 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'CameraTimelapse', 'Extra_Parameters', 'TEXT')
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("INSERT OR IGNORE INTO CameraTimelapse VALUES('0', 0, '/var/www/mycodo/camera-timelapse', 'Timelapse-', 1, 1, '', '', '--nopreview --contrast 20 --sharpness 60 --awb auto --quality 20 --vflip --hflip --width 800 --height 600')")
+    cur.execute("INSERT OR IGNORE INTO CameraTimelapse (id, relay, path, prefix, file_timestamp, display_last, cmd_pre, cmd_post, extra_parameters) VALUES ('0', 0, '/var/www/mycodo/camera-timelapse', 'Timelapse', 1, 1, '', '', '--nopreview --contrast 20 --sharpness 60 --awb auto --quality 20 --vflip --hflip --width 800 --height 600')")
     conn.commit()
     cur.close()
     ModNullValue(sql_database_mycodo, 'CameraTimelapse', 'Relay', 0)
@@ -1083,7 +1085,7 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'Misc', 'Relay_Stats_DayofMonth', 'INT')
     conn = sqlite3.connect(sql_database_mycodo)
     cur = conn.cursor()
-    cur.execute("INSERT OR IGNORE INTO Misc VALUES('0', 0, '', 300, 1, 15, 120, 0.05, '$', 15)")
+    cur.execute("INSERT OR IGNORE INTO Misc (id, dismiss_notification, login_message, refresh_time, enable_max_amps, max_amps, relay_stats_volts, relay_stats_cost, relay_stats_currency, relay_stats_dayofmonth) VALUES ('0', 0, '', 300, 1, 15, 120, 0.05, '$', 15)")
     conn.commit()
     cur.close()
     ModNullValue(sql_database_mycodo, 'Misc', 'Dismiss_Notification', 0)

@@ -1,15 +1,364 @@
+
+.wrap {
+    font-family: monospace;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap; /* Mozilla, supported since 1999 */
+    white-space: -pre-wrap; /* Opera */
+    white-space: -o-pre-wrap; /* Opera */
+    white-space: pre-wrap; /* CSS3 - Text module (Candidate Recommendation) http://www.w3.org/TR/css3-text/#white-space */
+    word-wrap: break-word; /* IE 5.5+ */
+}
+
+a.manual {color:red;}
+a.manual:link  {text-decoration: none; color: red;}
+a.manual:visited {text-decoration: none; color: red;}
+a.manual:hover {text-decoration: underline; color: red;}
+a.manual:active {text-decoration: none; color: red;}
+
+/*** Header ***/
+
+.header {
+    height: 4.5em;
+    float: left;
+    vertical-align:top;
+    padding: 1em 0.9em 0 0.3em;
+}
+
+.header-sense {
+    height: 4.5em;
+    float: left;
+    vertical-align:top;
+    padding: 1em 0.3em 0 0.3em;
+}
+
+.header-title {
+    padding-bottom: 0.3em;
+}
+
+/*** main ***/
+img.main-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/*** Sensor tab ***/
+
+.center {
+    text-align: center;
+}
+
+.right {
+    text-align: right;
+}
+
+.middle {
+    vertical-align: middle;
+}
+
+.config-title {
+    text-align: center;
+    font-weight: bold;
+    padding-bottom: 0.2em;
+}
+
+.sensor {
+  border-collapse: initial;
+  padding: 0.5em;
+}
+
+.sensor-parent {
+  width: auto;
+  height: auto;
+  margin-bottom: 1em;
+}
+
+.sensor-title {
+    float: left;
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 0 0 0.5em 0.3em;
+    margin-top: 1em;
+}
+
+.pid-wrapper {
+    padding-top: 0.8px;
+    margin: 0 auto;
+    display: inline-block;
+}
+
+table.relays {
+    width: 100%;
+}
+
+table.relays td {
+    padding: 0.4em 0.4em;
+    vertical-align: middle;
+}
+
+table.sensor_conditional td {
+    padding-right: 0.5em;
+}
+
+table.sensor {
+    width:100%;
+    padding-bottom: 1em;
+}
+
+table.sensor td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 0.3em 0.3em 0.3em 0.3em;
+}
+
+table.yaxis {
+    margin: 0 0.5em 1em 0.5em;
+}
+
+table.yaxis td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 0.3em 0.1em 0.3em 0.1em;
+}
+
+table.pid {
+    width:100%;
+}
+
+table.pid td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 0.4em 0;
+}
+
+table.conditional {
+    margin: 1em 0.5em 0.5em 0.5em;
+}
+
+table.conditional td {
+    text-align: left;
+    vertical-align: middle;
+    padding: 0.4em 0.4em;
+}
+
+table.sensor-conditional td {
+    padding: 0.1em 0.5em;
+}
+
+.pid {
+  border-collapse: initial;
+}
+
+.table-header {
+    border-style: none none solid none;
+    border-width: 1px;
+}
+
+input.indicate {
+    height: 0.95em;
+    vertical-align: middle;
+}
+
+.onoff {
+    text-align: center;
+}
+
+.state {
+    font-size: 0.875em;
+    font-weight: bold;
+}
+
+.img-on {
+    content:url("/mycodo/img/on.jpg");
+    height: 0.95em;
+}
+
+.img-off {
+    content:url("/mycodo/img/off.jpg");
+    height: 0.95em;
+}
+
+.on {
+    font-weight: bold;
+    color: green
+}
+
+.off {
+    font-weight: bold;
+    color: red
+}
+
+button.linkon {
+    font-weight: bold;
+    background: none !important;
+    border: none; 
+    padding: 0 !important;
+    font: inherit;
+    color: green;
+    cursor: pointer;
+}
+
+button.linkoff {
+    font-weight: bold;
+    background: none !important;
+    border: none; 
+    padding: 0 !important;
+    font: inherit;
+    color: red;
+    cursor: pointer;
+}
+
+
+/*** Camera tab ***/
+
+table.camera-still {
+  padding-bottom: 0.5em;
+}
+
+table.camera-still td {
+  padding: 0 1em 0.5em 0;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.camera td {
+    padding: 0 0.3em 0.6em 0.3em;
+}
+
+
+/* Data Tab */
+
+table.notes {
+    width: 100%;
+}
+
+table.notes td {
+    padding: 0.5em 1em 0.5em 0;
+}
+
+table.data-data td, th {
+  padding: 0.1em 0.5em;
+  vertical-align:middle;
+}
+
+table.data-data td {
+  text-align:right;
+}
+
+table.data-data th {
+  text-align:center;
+}
+
+.thumbnail {
+  max-height: 125px;
+  max-width: 125px;
+}
+
+.gitcommits td {
+    padding: 0.5em 0.3em 0.5em 0;
+}
+
+.data-buttons {
+    float:left;
+    padding:0 0.1em;
+}
+
+.data-buttons td {
+  padding: 0.1em;
+}
+
+.data-buttons-rightspace {
+    padding:0 0.6em 0 0.1em !important;
+}
+
+
+/* Settings Tab */
+
+fieldset.settings-box {
+    padding: 0.5em;
+    margin: 1.5em 0 0 0;
+    width: 100%;
+}
+
+legend {
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
 table.edit-user {
-  margin-top: 2em;
+  width: 100%;
 }
 
 table.edit-user td {
   padding: 0.5em;
 }
 
-table.notes {
-	width: 100%;
+.setting-text {
+    padding: 0.4em 2em 0.3em 0;
+    margin-bottom: 0.2em;
+    border-bottom: 1px solid gray;
 }
 
-table.notes td {
-    padding: 0.5em 1em 0.5em 0;
+.setting-value {
+    padding: 0.4em 0.5em 0.3em 0;
+    border-bottom: 1px solid gray;
+}
+
+.setting-save {
+    padding: 0.7em 0.5em 0.5em 0;
+    text-align: right;
+}
+
+.smtp {
+    width: 18em;
+}
+
+.pad-top {
+    padding-top: 1.5em;
+}
+
+.notify-title {
+    padding: 0.5em 0 0.5em 1em;
+    font-weight: bold;
+}
+
+.notify {
+    margin-top: 0.3em;
+}
+
+label.notify {
+    display: inline-block;
+    float: left;
+    clear: left;
+    width: 6em;
+    text-align: right;
+    padding-right: 0.5em;
+}
+
+.manageusers-title {
+    margin-top: 0.1em;
+    font-weight: bold;
+}
+
+.advanced {
+  padding: 2em 0 0 1em;
+}
+
+.adv {
+    margin: 0.4em 0 0.4em 0;
+}
+
+/* Warnings and errors */
+
+.error {
+    white-space: normal;
+    margin: 0.5em 0;
+    color: red;
+    font-weight: bold;
+}
+
+/* debug */
+
+table.debug-profiler td {
+    padding: 0.35em 1em 0.25em 0;
 }
