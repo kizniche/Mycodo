@@ -342,9 +342,9 @@ Install video streaming capabilities
 
 `sudo ln -s /usr/include/linux/videodev2.h /usr/include/linux/videodev.h`
 
-`sudo wget -P ~/ http://sourceforge.net/code-snapshots/svn/m/mj/mjpg-streamer/code/mjpg-streamer-code-182.zip`
+`svn co https://svn.code.sf.net/p/mjpg-streamer/code/mjpg-streamer/ mjpg-streamer`
 
-`cd ~ && unzip mjpg-streamer-code-182.zip && cd mjpg-streamer-code-182/mjpg-streamer`
+`cd mjpg-streamer`
 
 `make mjpg_streamer input_file.so output_http.so`
 
