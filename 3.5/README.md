@@ -300,15 +300,13 @@ Using raspi-config, perform the following:
 
 `git clone https://github.com/adafruit/Adafruit_Python_BMP.git ~/Adafruit_Python_BMP && cd ~/Adafruit_Python_BMP && sudo python setup.py install`
 
-`git clone --recursive https://github.com/lexruee/tentacle_pi ~/tentacle_pi && cd ~/tentacle_pi && sudo python setup.py install`
+Install LockFile, RPyC, pySerial, and tentacle_pi
+
+`sudo pip install lockfile rpyc pyserial tentacle_pi`
 
 Create a symlink to Mycodo
 
 `sudo ln -s ~/Mycodo/3.5 /var/www/mycodo`
-
-Install LockFile and RPyC
-
-`sudo pip install lockfile rpyc pyserial`
 
 In order to configure the sensor you just need to make a small change to the config.txt file using `sudo vi /boot/config.txt` and add the following line to the bottom:
 
@@ -380,8 +378,8 @@ A temporary file system in RAM can be created for areas of the disk that are wri
 Edit /etc/fstab with `sudo vi /etc/fstab` and add the following lines
 
 ```
-tmpfs /tmp     tmpfs nodev,nosuid,mode=1777,size=30M              0 0
-tmpfs /var/log tmpfs defaults,noatime,nosuid,mode=0755,size=100M  0 0
+tmpfs /tmp     tmpfs nodev,nosuid,mode=1777,size=100M              0 0
+tmpfs /var/log tmpfs defaults,noatime,nosuid,mode=0755,size=50M  0 0
 ```
 
 Using a tempfs does create some issues with certain software. Apache does not start if there is no directory structure in /var/log, and the designation of /var/log as a tempfs means that at every bootup this directory is empty. This init script will ensure that the proper directory structure is created at every boot, prior to Apache starting.
