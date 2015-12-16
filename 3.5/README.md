@@ -294,15 +294,13 @@ Using raspi-config, perform the following:
 
 `git clone --recursive https://github.com/kizniche/Mycodo.git ~/Mycodo`
 
-`git clone git://git.drogon.net/wiringPi ~/WiringPi && cd ~/WiringPi && sudo ./build`
-
 `git clone https://github.com/adafruit/Adafruit_Python_DHT.git ~/Adafruit_Python_DHT && cd ~/Adafruit_Python_DHT && sudo python setup.py install`
 
 `git clone https://github.com/adafruit/Adafruit_Python_BMP.git ~/Adafruit_Python_BMP && cd ~/Adafruit_Python_BMP && sudo python setup.py install`
 
-Install LockFile, RPyC, pySerial, and tentacle_pi
+Install/Upgrade LockFile, RPyC, pySerial, tentacle_pi, RPi.GPIO
 
-`sudo pip install lockfile rpyc pyserial tentacle_pi`
+`sudo pip install --upgrade lockfile rpyc pyserial tentacle_pi RPi.GPIO`
 
 Create a symlink to Mycodo
 
