@@ -412,11 +412,11 @@ class ComServer(rpyc.Service):
 
 
     def exposed_sqlreload(self, relay):
-        if relay != -1:
-            logging.info("[Client command] Relay %s GPIO pin changed to %s, initialize and turn off", relay, relay_pin[relay])
-            initialize_gpio(relay)
         logging.info("[Client command] Reload SQLite database (Note: May cause interruption of sensor readings)")
         read_sql()
+        if relay != -1:
+            logging.info("[Client command] Relay %s GPIO pin changed to %s, initialize and turn off", relay + 1, relay_pin[relay])
+            initialize_gpio(relay)
         return 1
 
     def exposed_status(self, var):
