@@ -935,10 +935,10 @@ if (!file_exists($lock_daemon)) {
                             <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $timer_relay[$i]; ?>" maxlength=1 size=1 name="Timer<?php echo $i; ?>Relay" title="This is the relay number for timer <?php echo $i; ?>"/>
                         </td>
                         <td class="center">
-                            <input style="width: 5em;" type="number" min="1" max="99999" value="<?php echo $timer_duration_on[$i]; ?>" name="Timer<?php echo $i; ?>On" title="This is On duration of timer <?php echo $i; ?>"/>
+                            <input style="width: 5em;" type="number" min="1" max="99999" value="<?php echo $timer_duration_on[$i]; ?>" name="Timer<?php echo $i; ?>On" title="This is the number of seconds to turn on the relay for timer <?php echo $i; ?>"/>
                         </td>
                         <td class="center">
-                            <input style="width: 5em;" type="number" min="0" max="99999" value="<?php echo $timer_duration_off[$i]; ?>" name="Timer<?php echo $i; ?>Off" title="This is Off duration for timer <?php echo $i; ?>"/>
+                            <input style="width: 5em;" type="number" min="0" max="99999" value="<?php echo $timer_duration_off[$i]; ?>" name="Timer<?php echo $i; ?>Off" title="This is the number of seconds to turn off the relay for timer <?php echo $i; ?>"/>
                         </td>
                         <td class="center">
                             <input type="submit" name="ChangeTimer<?php echo $i; ?>" value="Set"> <button type="submit" name="Delete<?php echo $i; ?>Timer" title="Delete">Delete</button>
@@ -1038,7 +1038,7 @@ if (!file_exists($lock_daemon)) {
                             </select>
                         </td>
                         <td class="center">
-                            <input style="width: 5em;" type="number" min="1" max="99999" value="<?php echo $timer_daily_duration_on[$i]; ?>" name="TimerDaily<?php echo $i; ?>On" title="This is On duration of timer <?php echo $i; ?>"/>
+                            <input style="width: 5em;" type="number" min="1" max="86400" value="<?php echo $timer_daily_duration_on[$i]; ?>" name="TimerDaily<?php echo $i; ?>On" title="This is the number of seconds to turn on the relay for timer <?php echo $i; ?>"/>
                         </td>
                         <td class="center">
                             <input type="submit" name="ChangeTimerDaily<?php echo $i; ?>" value="Set"> <button type="submit" name="Delete<?php echo $i; ?>TimerDaily" title="Delete">Delete</button>
