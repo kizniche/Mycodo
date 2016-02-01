@@ -962,10 +962,25 @@ def daemon(output, log):
         if len(timer_id) != 0:
             for i in range(len(timer_id)):
                 if timer_state[i] == 1 and time.time() > timer_time[i] and client_que != 'TerminateServer' and PID_change != 1:
-                    logging.debug("[Timer Expiration] Timer %s: Turn Relay %s on for %s seconds, off %s seconds.", i, timer_relay[i], timer_duration_on[i], timer_duration_off[i])
+                    logging.debug("[Timer Expiration] Duration Timer %s: Turn Relay %s on for %s seconds, off %s seconds.", i, timer_relay[i], timer_duration_on[i], timer_duration_off[i])
                     rod = threading.Thread(target=relay_on_duration, args=(timer_relay[i], timer_duration_on[i], 0, relay_trigger, relay_pin,))
                     rod.start()
                     timer_time[i] = time.time() + timer_duration_on[i] + timer_duration_off[i]
+
+        #
+        # Simple daily timers
+        #
+        if len(timer_daily_id) != 0:
+            for i in range(len(timer_daily_id)):
+                if timer_daily_state[i] == 1 and client_que != 'TerminateServer':
+                    if timer_daily_hour_on[i] == datetime.datetime.now().hour and timer_daily_minute_on[i] == datetime.datetime.now().minute:
+                        if timer_daily_notbeenexecuted[i]:
+                            logging.debug("[Timer Expiration] Daily Timer %s: Turn Relay %s on for %s seconds at %s:%s.", i, timer_daily_relay[i], timer_daily_duration_on[i], timer_daily_hour_on[i], timer_daily_minute_on[i])
+                            rod = threading.Thread(target=relay_on_duration, args=(timer_daily_relay[i], timer_daily_duration_on[i], 0, relay_trigger, relay_pin,))
+                            rod.start()
+                            timer_daily_notbeenexecuted[i] = False
+                    elif not timer_daily_notbeenexecuted[i]:
+                        timer_daily_notbeenexecuted[i] = True
 
         #
         # Stop/Start indevidual PID threads
@@ -2723,8 +2738,27 @@ def read_sql():
     timer_duration_on = []
     timer_duration_off = []
 
+    # Timer globals
+    global timer_daily_id
+    global timer_daily_name
+    global timer_daily_relay
+    global timer_daily_state
+    global timer_daily_hour_on
+    global timer_daily_minute_on
+    global timer_daily_duration_on
+
+    # Timer variable reset 
+    timer_daily_id = []
+    timer_daily_name = []
+    timer_daily_relay = []
+    timer_daily_state = []
+    timer_daily_hour_on = []
+    timer_daily_minute_on = []
+    timer_daily_duration_on = []
+
     # Daemon timer globals
     global timer_time
+    global timer_daily_notbeenexecuted
     global timerTSensorLog
     global timerHTSensorLog
     global timerCo2SensorLog
@@ -2732,6 +2766,7 @@ def read_sql():
 
     # Daemon timer variable reset
     timer_time = []
+    timer_daily_notbeenexecuted = []
     timerTSensorLog = []
     timerHTSensorLog = []
     timerCo2SensorLog = []
@@ -3682,6 +3717,16 @@ def read_sql():
         timer_duration_on.append(row[4])
         timer_duration_off.append(row[5])
 
+    cur.execute('SELECT id, name, relay, state, houron, minuteon, durationon FROM timers_daily')
+    for row in cur:
+        timer_daily_id.append(row[0])
+        timer_daily_name.append(row[1])
+        timer_daily_relay.append(row[2])
+        timer_daily_state.append(row[3])
+        timer_daily_hour_on.append(row[4])
+        timer_daily_minute_on.append(row[5])
+        timer_daily_duration_on.append(row[6])
+
     cur.execute('SELECT host, ssl, port, user, pass, email_from, wait_time FROM smtp')
     for row in cur:
         smtp_host = row[0]
@@ -3708,6 +3753,9 @@ def read_sql():
 
     for i in range(len(timer_id)):
         timer_time.append(0)
+
+    for i in range(len(timer_daily_id)):
+        timer_daily_notbeenexecuted.append(False)
 
     if len(on_duration_timer) != len(relay_id):
         on_duration_timer = []
