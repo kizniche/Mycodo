@@ -27,7 +27,7 @@ sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
 sql_database_user = '/var/www/mycodo/config/users.db'
 sql_database_note = '/var/www/mycodo/config/notes.db'
 
-db_version_mycodo = 19
+db_version_mycodo = 20
 db_version_user = 2
 db_version_note = 3
 
@@ -430,6 +430,8 @@ def mycodo_database_update():
         # Version 18 updates: no database changes, update log format
 
         # Version 19 updates: no database changes, initialize submodule mycodo_python
+
+        # Version 20 updates: Add daily timers
 
         # any extra commands for version X
         #if current_db_version_mycodo < X:
@@ -945,6 +947,14 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'Timers', 'State', 'INT')
     AddColumn(sql_database_mycodo, 'Timers', 'DurationOn', 'INT')
     AddColumn(sql_database_mycodo, 'Timers', 'DurationOff', 'INT')
+
+    AddTable(sql_database_mycodo, 'Timers_daily')
+    AddColumn(sql_database_mycodo, 'Timers_daily', 'Name', 'TEXT')
+    AddColumn(sql_database_mycodo, 'Timers_daily', 'Relay', 'INT')
+    AddColumn(sql_database_mycodo, 'Timers_daily', 'State', 'INT')
+    AddColumn(sql_database_mycodo, 'Timers_daily', 'HourOn', 'INT')
+    AddColumn(sql_database_mycodo, 'Timers_daily', 'MinuteOn', 'INT')
+    AddColumn(sql_database_mycodo, 'Timers_daily', 'DurationOn', 'INT')
 
     AddTable(sql_database_mycodo, 'CustomGraph')
     AddColumn(sql_database_mycodo, 'CustomGraph', 'Combined_Temp_Min', 'INT')

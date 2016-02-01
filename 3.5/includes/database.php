@@ -704,6 +704,28 @@ while ($row = $results->fetchArray()) {
 }
 if (!isset($timer_id)) $timer_id = [];
 
+unset($timer_daily_id);
+$results = $db->query('SELECT id,
+                              name,
+                              state,
+                              relay,
+                              houron,
+                              minuteon,
+                              durationon
+                       FROM   timers_daily');
+$i = 0;
+while ($row = $results->fetchArray()) {
+    $timer_daily_id[$i] = $row[0];
+    $timer_daily_name[$i] = $row[1];
+    $timer_daily_state[$i] = $row[2];
+    $timer_daily_relay[$i] = $row[3];
+    $timer_daily_hour_on[$i] = $row[4];
+    $timer_daily_minute_on[$i] = $row[5];
+    $timer_daily_duration_on[$i] = $row[6];
+    $i++;
+}
+if (!isset($timer_daily_id)) $timer_daily_id = [];
+
 $results = $db->query('SELECT combined_temp_min,
                               combined_temp_max,
                               combined_temp_tics,

@@ -96,6 +96,9 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 Major changes for each versioned release
 
+#### 3.5.93
++ Add daily timers (relay turns on for duration at specific hour and minute, every day)
+
 #### 3.5.92
 + Add ability to use Raspberry Pi internal CPU/GPU thermal sensor
 

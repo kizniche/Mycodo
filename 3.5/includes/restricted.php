@@ -340,6 +340,62 @@ if (isset($_POST['AddTimers']) && isset($_POST['AddTimersNumber'])) {
 }
 
 
+for ($p = 0; $p < count($timer_daily_id); $p++) {
+    if (isset($_POST['ChangeTimerDaily' . $p])) {  // Set timer variables
+        $stmt = $db->prepare("UPDATE timers_daily
+                              SET    name = :name,
+                                     relay = :relay,
+                                     houron = :houron,
+                                     minuteon = :minuteon,
+                                     durationon = :durationon
+                              WHERE  id = :id");
+        $stmt->bindValue(':name', str_replace(' ', '', $_POST['TimerDaily' . $p . 'Name']), SQLITE3_TEXT);
+        $stmt->bindValue(':relay', (int)$_POST['TimerDaily' . $p . 'Relay'], SQLITE3_INTEGER);
+        $stmt->bindValue(':houron', (int)$_POST['TimerDaily' . $p . 'HourOn'], SQLITE3_INTEGER);
+        $stmt->bindValue(':minuteon', (int)$_POST['TimerDaily' . $p . 'MinuteOn'], SQLITE3_INTEGER);
+        $stmt->bindValue(':durationon', (int)$_POST['TimerDaily' . $p . 'On'], SQLITE3_INTEGER);
+        $stmt->bindValue(':id', $timer_daily_id[$p], SQLITE3_TEXT);
+        $stmt->execute();
+        shell_exec("$mycodo_client --sqlreload -1");
+        $id = $timer_daily_id[$p];
+        $name = str_replace(' ', '', $_POST['TimerDaily' . $p . 'Name']);
+        $relay = (int)$_POST['TimerDaily' . $p . 'Relay'];
+        $houron = (int)$_POST['TimerDaily' . $p . 'HourOn'];
+        $minuteon = (int)$_POST['TimerDaily' . $p . 'MinuteOn'];
+        $durationon = (int)$_POST['TimerDaily' . $p . 'On'];
+        $timestamp = date('Y/m/d-H:i:s');
+        $record = "$timestamp $id $name $relay $houron $minuteon $durationon\n";
+        file_put_contents($timer_daily_changes_log, $record, FILE_APPEND);
+    }
+    if (isset($_POST['TimerDaily' . $p . 'StateChange'])) {  // Set timer state
+        $stmt = $db->prepare("UPDATE timers_daily SET State=:state WHERE Id=:id");
+        $stmt->bindValue(':state', (int)$_POST['TimerDaily' . $p . 'StateChange'], SQLITE3_INTEGER);
+        $stmt->bindValue(':id', $timer_daily_id[$p], SQLITE3_TEXT);
+        $stmt->execute();
+        shell_exec("$mycodo_client --sqlreload -1");
+        if ((int)$_POST['TimerDaily' . $p . 'StateChange'] == 0) {
+            $relay = $timer_relay[$p];
+            shell_exec("$mycodo_client -r $relay 0");
+        }
+    }
+    if (isset($_POST['Delete' . $p . 'TimerDaily'])) {  // Delete Timer
+        $stmt = $db->prepare("DELETE FROM timers_daily WHERE Id=:id");
+        $stmt->bindValue(':id', $timer_daily_id[$p], SQLITE3_TEXT);
+        $stmt->execute();
+        shell_exec("$mycodo_client --sqlreload -1");
+    }
+}
+// Add timers
+if (isset($_POST['AddTimersDaily']) && isset($_POST['AddTimersDailyNumber'])) {
+    for ($j = 0; $j < $_POST['AddTimersDailyNumber']; $j++) {
+        $stmt = $db->prepare("INSERT INTO Timers_daily VALUES (:id, 'Timer', 0, 0, 0, 0, 60)");
+        $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
+        $stmt->execute();
+    }
+    shell_exec("$mycodo_client --sqlreload -1");
+}
+
+
 
 /*
  *

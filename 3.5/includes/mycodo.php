@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.92";
+$version = "3.5.93";
 
 ######### Start Edit Configure #########
 
@@ -55,6 +55,7 @@ $sensor_co2_changes_log = $install_path . "/log/sensor-co2-changes.log";
 $sensor_press_changes_log = $install_path . "/log/sensor-press-changes.log";
 $relay_changes_log = $install_path . "/log/relay-changes.log";
 $timer_changes_log = $install_path . "/log/timer-changes.log";
+$timer_daily_changes_log = $install_path . "/log/timer-daily-changes.log";
 
 $images = $install_path . "/images";
 $lock_daemon = $lock_path . "/mycodo/daemon.lock";
@@ -604,6 +605,10 @@ if (!file_exists($lock_daemon)) {
                     </div>
                 </div>
             </form>
+
+            <div style="clear: both"></div>
+
+            <div style="float:left; margin: 0.5em 0.7em;">Add:</div>
             
             <form action="?tab=sensor" method="POST">
                 <div style="float:left; margin: 0.5em 0.7em;">
@@ -611,7 +616,7 @@ if (!file_exists($lock_daemon)) {
                         <input style="height: 2.6em; width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddRelaysNumber" title="How many relays to add" required/>
                     </div>
                     <div style="float:left">
-                        <button type="submit" name="AddRelays" value="Add">Add<br>Relays</button>
+                        <button type="submit" name="AddRelays" value="Add">Controlled<br>Relays</button>
                     </div>
                 </div>
             </form>
@@ -619,10 +624,21 @@ if (!file_exists($lock_daemon)) {
             <form action="?tab=sensor" method="POST">
                 <div style="float:left; margin: 0.5em 0.7em;">
                     <div style="float:left; padding-right: 0.2em;">
-                        <input style="height: 2.6em; width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddTimersNumber" title="How many timers to add"  required/>
+                        <input style="height: 2.6em; width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddTimersNumber" title="How many duration timers to add"  required/>
                     </div>
                     <div style="float:left">
-                        <button type="submit" name="AddTimers" value="Add">Add<br>Timers</button>
+                        <button type="submit" name="AddTimers" value="Add">Duration<br>Timers</button>
+                    </div>
+                </div>
+            </form>
+
+            <form action="?tab=sensor" method="POST">
+                <div style="float:left; margin: 0.5em 0.7em;">
+                    <div style="float:left; padding-right: 0.2em;">
+                        <input style="height: 2.6em; width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddTimersDailyNumber" title="How many daily timers to add"  required/>
+                    </div>
+                    <div style="float:left">
+                        <button type="submit" name="AddTimersDaily" value="Add">Daily<br>Timers</button>
                     </div>
                 </div>
             </form>
@@ -871,7 +887,7 @@ if (!file_exists($lock_daemon)) {
             <div style="clear: both;"></div>
 
             <fieldset class="settings-box">
-                <legend>Timers</legend>
+                <legend>Duration Timers</legend>
                 <form action="?tab=sensor" method="POST">
                 <table class="relays">
                     <tr>
@@ -926,6 +942,106 @@ if (!file_exists($lock_daemon)) {
                         </td>
                         <td class="center">
                             <input type="submit" name="ChangeTimer<?php echo $i; ?>" value="Set"> <button type="submit" name="Delete<?php echo $i; ?>Timer" title="Delete">Delete</button>
+                        </td>
+                    </tr>
+                    <?php
+                    }
+                    ?>
+                </table>
+                </form>
+            </fieldset>
+            <?php
+            }
+            ?>
+
+            <?php
+            if (count($timer_daily_id) > 0) {
+            ?>
+            <div style="clear: both;"></div>
+
+            <fieldset class="settings-box">
+                <legend>Daily Timers</legend>
+                <form action="?tab=sensor" method="POST">
+                <table class="relays">
+                    <tr>
+                        <td class="table-header center middle">#</td>
+                        <td class="table-header middle">Name</td>
+                        <td class="table-header center middle">Status</td>
+                        <td class="table-header center middle">Activate</td>
+                        <td class="table-header center middle">Relay</td>
+                        <td class="table-header center middle">Hour On</td>
+                        <td class="table-header center middle">Minute On</td>
+                        <td class="table-header center middle">On (sec)</td>
+                        <td class="table-header"></td>
+                    </tr>
+                    <?php
+                    for ($i = 0; $i < count($timer_daily_id); $i++) {
+                    ?>
+                    <tr>
+                        <td class="center">
+                            <?php echo $i+1; ?>
+                        </td>
+                        <td>
+                            <input style="width: 10em;" type="text" value="<?php echo $timer_daily_name[$i]; ?>" maxlength=13 name="TimerDaily<?php echo $i; ?>Name" title="This is the relay name for timer <?php echo $i; ?>"/>
+                        </td>
+                        <?php
+                        if ($timer_daily_state[$i] == 0) {
+                        ?>
+                            <td  class="center" style="vertical-align:middle;">
+                                <img style="height: 1em;" src="/mycodo/img/off.png" alt="Off" title="Off">
+                            </td>
+                            <td class="center">
+                                <button style="width: 5em;" type="submit" name="TimerDaily<?php echo $i; ?>StateChange" value="1">Turn On</button></nobr>
+                            </td>
+                        <?php
+                        } else {
+                        ?>
+                            <td  class="center" style="vertical-align:middle;">
+                                <img style="height: 1em;" src="/mycodo/img/on.png" alt="On" title="On">
+                            </td>
+                            <td class="center">
+                                <button style="width: 5em;" type="submit" name="TimerDaily<?php echo $i; ?>StateChange" value="0">Turn Off</button></nobr>
+                            </td>
+                        <?php
+                        }
+                        ?>
+                        <td class="center">
+                            <input style="width: 3em;" type="number" min="0" max="8" value="<?php echo $timer_daily_relay[$i]; ?>" maxlength=1 size=1 name="TimerDaily<?php echo $i; ?>Relay" title="This is the relay number for timer <?php echo $i; ?>"/>
+                        </td>
+                        <td class="center">
+                            <select name="TimerDaily<?php echo $i; ?>HourOn" title="This is the start hour of timer <?php echo $i; ?>">
+                            <?php
+
+                            for ($hour=0; $hour<24; $hour++) {
+                                if ($hour == $timer_daily_hour_on[$i]) {
+                                    echo "<option value=\"$hour\" selected>$hour</option>";
+                                } else {
+                                    echo "<option value=\"$hour\">$hour</option>";
+                                }
+                            }
+                            ?>
+                            </select>
+                        </td>
+                        <td class="center">
+                            <select name="TimerDaily<?php echo $i; ?>MinuteOn" title="This is the start minute of timer <?php echo $i; ?>">
+                            <?php
+
+                            for ($min=0; $min<60; $min++) {
+                                if ($min == $timer_daily_minute_on[$i]) {
+                                    echo "<option value=\"$min\" selected>$min</option>";
+                                }
+                                else {
+                                    echo "<option value=\"$min\">$min</option>";
+                                }
+                            }
+                            ?>
+                            </select>
+                        </td>
+                        <td class="center">
+                            <input style="width: 5em;" type="number" min="1" max="99999" value="<?php echo $timer_daily_duration_on[$i]; ?>" name="TimerDaily<?php echo $i; ?>On" title="This is On duration of timer <?php echo $i; ?>"/>
+                        </td>
+                        <td class="center">
+                            <input type="submit" name="ChangeTimerDaily<?php echo $i; ?>" value="Set"> <button type="submit" name="Delete<?php echo $i; ?>TimerDaily" title="Delete">Delete</button>
                         </td>
                     </tr>
                     <?php
