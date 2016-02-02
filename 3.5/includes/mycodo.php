@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.93";
+$version = "3.5.94";
 
 ######### Start Edit Configure #########
 
@@ -584,6 +584,7 @@ if (!file_exists($lock_daemon)) {
                             <select style="height: 1.6em; width: 20em;" name="AddSensorDev">
                                 <option value="RPi">Temperature: Raspberry Pi CPU/GPU</option>
                                 <option value="DS18B20">Temperature: DS18B20</option>
+                                <option value="SHT75">Humidity/Temperature: SHT75</option>
                                 <option value="DHT11">Humidity/Temperature: DHT11</option>
                                 <option value="DHT22">Humidity/Temperature: DHT22</option>
                                 <option value="AM2302">Humidity/Temperature: AM2302</option>
@@ -1459,6 +1460,13 @@ if (!file_exists($lock_daemon)) {
                                 echo '<td>GPIO<br>Pin</td>';
                             }
                         ?>
+                        <?php
+						/* Add for SHT75 sensor */
+                            if ($sensor_ht_device[$i] == 'SHT75') {
+                                echo '<td>GPIO<br>Clock_Pin</td>';
+                                echo '<td>SENSOR<br>Voltage</td>';
+                            }
+                        ?>
                         <td>Log<br>Interval</td>
                         <td>Pre<br>Relay</td>
                         <td>Pre<br>Duration</td>
@@ -1500,6 +1508,10 @@ if (!file_exists($lock_daemon)) {
                                     if ($sensor_ht_device[$i] == 'AM2315') {
                                         echo ' selected="selected"';
                                     } ?> value="AM2315">AM2315</option>
+                                    <option<?php
+                                    if ($sensor_ht_device[$i] == 'SHT75') {
+                                        echo ' selected="selected"';
+                                    } ?> value="SHT75">SHT75</option>
                                 <option<?php
                                     if ($sensor_ht_device[$i] == 'Other') {
                                         echo ' selected="selected"';
@@ -1544,6 +1556,80 @@ if (!file_exists($lock_daemon)) {
                             }
                             ?>
                         </td>
+
+
+                    <?php // IF - SHT75 Sensor device is used
+                    if ($sensor_ht_device[$i] == 'SHT75') {
+                    ?>
+                        <td>
+                            <input style="width: 3em;" type="number" min="0" max="40" value="<?php echo $sensor_ht_clock_pin[$i]; ?>" maxlength=2 size=1 name="sensorht<?php echo $i; ?>clock_pin" title="This is the Clock-GPIO pin connected to the HT sensor"/>
+                        </td>
+
+                        <td>
+
+
+                            <?php
+                            // code to combine name=VALUE into one variable for further processing in KeepFocus code
+                            $nameVarA = "sensorht";
+                            $nameVarC = "sensor_voltage";
+                            $nameVarD = $nameVarA . $i . $nameVarC; /* now $nameVarD is equivalent to: "sensorht<?php echo $i; ?>sensor_voltage" */
+
+                            // code to keep "focus" after selection has been made
+                            $nature = null;
+                            if(isset($_POST[$nameVarD])) {
+                                $nature = $_POST[$nameVarD];
+                            }
+
+                            // WARNING! PLEASE NOTE THAT SHT SENSOR SUPPORTED VOLTAGE LIST IS DEFINED IN SHT DRIVER
+                            // HERE ARE USED ALREADY IN THAT DRIVER PREDEFINED VALUES ONLY !!!
+                            // 3.3V IS NOT PRESENT IN ORIGINAL sht-sensor DRIVER
+                            // BUT WAS ADD IN VERSION MADE ESPECIALLY FOR RASPBERRY PI AND MYCODO
+
+                            // This is routine that checks the default value of sensor voltage,
+                            // set in a new, just created DataBase
+                            // It is the case when you have just installed the MyCodo, recreated the DataBase by script
+                            // or when you just add new sensor via web panel
+                            // I did on purpose not set the value in Installation- or in Database creation Script.
+
+
+                            if( ($sensor_ht_voltage[$i] != "2.5V") && ($sensor_ht_voltage[$i] != "3V") && ($sensor_ht_voltage[$i] != "3.3V") && ($sensor_ht_voltage[$i] != "3.5V") && ($sensor_ht_voltage[$i] != "4V") && ($sensor_ht_voltage[$i] != "5V") ){
+                                $sensor_ht_voltage[$i] = "3.5V"; // This is default value of new created sensor
+                            }
+                            // End of routine
+
+                            ?>
+                            <select style="width: 6.5em;" name="<?php echo $nameVarD; ?>">
+                                <option value="">now: <?php echo $sensor_ht_voltage[$i]; ?></option>
+                                <?php
+                                $selected = ($nature == '5V') ? 'selected' : '';
+                                echo "<option value='5V' $selected>5V</option>";
+
+                                $selected = ($nature == '4V') ? 'selected' : '';
+                                echo "<option value='4V' $selected>4V</option>";
+
+                                $selected = ($nature == '3.5V') ? 'selected' : '';
+                                echo "<option value='3.5V' $selected>3.5V</option>";
+
+                                $selected = ($nature == '3.3V') ? 'selected' : '';
+                                echo "<option value='3.3V' $selected>3.3V</option>";
+
+                                $selected = ($nature == '3V') ? 'selected' : '';
+                                echo "<option value='3V' $selected>3V</option>";
+
+                                $selected = ($nature == '2.5V') ? 'selected' : '';
+                                echo "<option value='2.5V' $selected>2.5V</option>";
+                                ?>
+                            </select>
+
+
+                        </td>
+
+                    <?php
+                    }
+                    ?>
+
+
+
                         <td>
                             <input style="width: 4em;" type="number" min="1" max="99999" value="<?php echo $sensor_ht_period[$i]; ?>" name="sensorht<?php echo $i; ?>period" title="The number of seconds between writing sensor readings to the log"/> sec
                         </td>
