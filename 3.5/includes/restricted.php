@@ -1191,7 +1191,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
                 $stmt->bindValue(':device', str_replace(' ', '', $_POST['sensorht' . $p . 'device']), SQLITE3_TEXT);
                 $stmt->bindValue(':pin', (int)$_POST['sensorht' . $p . 'pin'], SQLITE3_INTEGER);
                 $stmt->bindValue(':clock_pin', (int)$_POST['sensorht' . $p . 'clock_pin'], SQLITE3_INTEGER);
-				$stmt->bindValue(':sensor_voltage', str_replace(' ', '', $_POST['sensorht' . $p . 'sensor_voltage']), SQLITE3_TEXT);
+                $stmt->bindValue(':sensor_voltage', str_replace(' ', '', $_POST['sensorht' . $p . 'sensor_voltage']), SQLITE3_TEXT);
                 $stmt->bindValue(':period', (int)$_POST['sensorht' . $p . 'period'], SQLITE3_INTEGER);
                 $stmt->bindValue(':premeas_relay', (int)$_POST['sensorht' . $p . 'premeasure_relay'], SQLITE3_INTEGER);
                 $stmt->bindValue(':premeas_dur', (int)$_POST['sensorht' . $p . 'premeasure_dur'], SQLITE3_INTEGER);
@@ -1320,8 +1320,8 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             $stmt->bindValue(':name', str_replace(' ', '', $_POST['sensorht' . $p . 'name']), SQLITE3_TEXT);
             $stmt->bindValue(':device', str_replace(' ', '', $_POST['sensorht' . $p . 'device']), SQLITE3_TEXT);
             $stmt->bindValue(':pin', (int)$_POST['sensorht' . $p . 'pin'], SQLITE3_INTEGER);
-			$stmt->bindValue(':clock_pin', (int)$_POST['sensorht' . $p . 'clock_pin'], SQLITE3_INTEGER);
-			$stmt->bindValue(':sensor_voltage', str_replace(' ', '', $_POST['sensorht' . $p . 'sensor_voltage']), SQLITE3_TEXT);
+            $stmt->bindValue(':clock_pin', (int)$_POST['sensorht' . $p . 'clock_pin'], SQLITE3_INTEGER);
+            $stmt->bindValue(':sensor_voltage', str_replace(' ', '', $_POST['sensorht' . $p . 'sensor_voltage']), SQLITE3_TEXT);
             $stmt->bindValue(':period', (int)$_POST['sensorht' . $p . 'period'], SQLITE3_INTEGER);
             $stmt->bindValue(':premeas_relay', (int)$_POST['sensorht' . $p . 'premeasure_relay'], SQLITE3_INTEGER);
             $stmt->bindValue(':premeas_dur', (int)$_POST['sensorht' . $p . 'premeasure_dur'], SQLITE3_INTEGER);
@@ -1521,8 +1521,8 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
                     $stmt->bindValue(':name', str_replace(' ', '', $_POST['sensorht' . $p . 'name']), SQLITE3_TEXT);
                     $stmt->bindValue(':device', str_replace(' ', '', $_POST['sensorht' . $p . 'device']), SQLITE3_TEXT);
                     $stmt->bindValue(':pin', (int)$_POST['sensorht' . $p . 'pin'], SQLITE3_INTEGER);
-					$stmt->bindValue(':clock_pin', (int)$_POST['sensorht' . $p . 'clock_pin'], SQLITE3_INTEGER);
-					$stmt->bindValue(':sensor_voltage', str_replace(' ', '', $_POST['sensorht' . $p . 'sensor_voltage']), SQLITE3_TEXT);
+                    $stmt->bindValue(':clock_pin', (int)$_POST['sensorht' . $p . 'clock_pin'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':sensor_voltage', str_replace(' ', '', $_POST['sensorht' . $p . 'sensor_voltage']), SQLITE3_TEXT);
                     $stmt->bindValue(':period', (int)$_POST['sensorht' . $p . 'period'], SQLITE3_INTEGER);
                     $stmt->bindValue(':premeas_relay', (int)$_POST['sensorht' . $p . 'premeasure_relay'], SQLITE3_INTEGER);
                     $stmt->bindValue(':premeas_dur', (int)$_POST['sensorht' . $p . 'premeasure_dur'], SQLITE3_INTEGER);
@@ -1605,7 +1605,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             $stmt = $db->prepare('SELECT name,
                                          pin,
                                          clock_pin,
-										 sensor_voltage,
+                                         sensor_voltage,
                                          device,
                                          period,
                                          pre_measure_relay,
@@ -1670,7 +1670,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
                                          device = :device,
                                          pin = :pin,
                                          clock_pin = :clock_pin,
-										 sensor_voltage = :sensor_voltage,
+                                         sensor_voltage = :sensor_voltage,
                                          period = :period,
                                          pre_measure_relay = :premeas_relay,
                                          pre_measure_dur = :premeas_dur,
@@ -1731,8 +1731,8 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             $stmt->bindValue(':name', $row['Name'], SQLITE3_TEXT);
             $stmt->bindValue(':device', $row['Device'], SQLITE3_TEXT);
             $stmt->bindValue(':pin', $row['Pin'], SQLITE3_INTEGER);
-			$stmt->bindValue(':clock_pin', $row['Clock_Pin'], SQLITE3_INTEGER);
-			$stmt->bindValue(':sensor_voltage', $row['Sensor_Voltage'], SQLITE3_TEXT);
+            $stmt->bindValue(':clock_pin', $row['Clock_Pin'], SQLITE3_INTEGER);
+            $stmt->bindValue(':sensor_voltage', $row['Sensor_Voltage'], SQLITE3_TEXT);
             $stmt->bindValue(':period', $row['Period'], SQLITE3_INTEGER);
             $stmt->bindValue(':premeas_relay', $row['Pre_Measure_Relay'], SQLITE3_INTEGER);
             $stmt->bindValue(':premeas_dur', $row['Pre_Measure_Dur'], SQLITE3_INTEGER);
