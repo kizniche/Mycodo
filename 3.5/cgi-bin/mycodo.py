@@ -1869,8 +1869,10 @@ def read_ht_sensor(sensor_id):
                 #sensor_ht_dewpt_f[sensor] = sensor_ht_dewpt_c[sensor] * 9 / 5 + 32
                 #sensor_ht_heatindex_f = -42.379 + 2.04901523 * temperature_f + 10.14333127 * sensor_ht_read_hum - 0.22475541 * temperature_f * sensor_ht_read_hum - 6.83783 * 10**-3 * temperature_f**2 - 5.481717 * 10**-2 * sensor_ht_read_hum**2 + 1.22874 * 10**-3 * temperature_f**2 * sensor_ht_read_hum + 8.5282 * 10**-4 * temperature_f * sensor_ht_read_hum**2 - 1.99 * 10**-6 * temperature_f**2 * sensor_ht_read_hum**2
                 #sensor_ht_heatindex_c[sensor] = (heatindexf - 32) * (5 / 9)
-                logging.debug("[Read HT Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", sensor_id + 1, tempc, humidity, sensor_ht_dewpt_c[sensor_id], sensor_ht_voltage[sensor_id])
-                #logging.debug("Voltage: ", sensor_ht_voltage[sensor_id])
+                if sensor_ht_device[sensor_id] == "SHT75":
+                    logging.debug("[Read HT Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C, V: %s", sensor_id + 1, tempc, humidity, sensor_ht_dewpt_c[sensor_id], sensor_ht_voltage[sensor_id])
+                else:
+                    logging.debug("[Read HT Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", sensor_id + 1, tempc, humidity, sensor_ht_dewpt_c[sensor_id])
                 sensor_ht_read_hum[sensor_id] = humidity
                 sensor_ht_read_temp_c[sensor_id] = tempc
                 logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor_id + 1, lock.path)
