@@ -1821,7 +1821,9 @@ def read_ht_sensor(sensor_id):
             break
 
         logging.debug("[Read HT Sensor-%s] Taking first Temperature/Humidity reading", sensor_id + 1)
-        logging.debug(sensor_ht_voltage[sensor_id])
+
+        if sensor_ht_device[sensor_id] == "SHT75":
+            logging.debug('[Read HT Sensor-%s] %s - sensor voltage is set to : %s', sensor_id + 1, sensor_ht_device[sensor_id], sensor_ht_voltage[sensor_id])
 
         for i in range(ht_read_tries):
             if (pid_ht_temp_alive[sensor_id] or pid_ht_hum_alive[sensor_id]) and client_que != 'TerminateServer' and pause_daemon != 1:
@@ -1837,6 +1839,9 @@ def read_ht_sensor(sensor_id):
         else:
             logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor_id + 1, tempc2, humidity2)
             logging.debug("[Read HT Sensor-%s] Taking second Temperature/Humidity reading", sensor_id + 1)
+
+            if sensor_ht_device[sensor_id] == "SHT75":
+                logging.debug('[Read HT Sensor-%s] %s - sensor voltage is set to : %s', sensor_id + 1, sensor_ht_device[sensor_id], sensor_ht_voltage[sensor_id])
         
         for i in range(ht_read_tries):  # Multiple attempts to get first reading
             if (pid_ht_temp_alive[sensor_id] or pid_ht_hum_alive[sensor_id]) and client_que != 'TerminateServer' and pause_daemon != 1:
