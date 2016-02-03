@@ -242,7 +242,7 @@ The DS18B20 is a simple 1-wire sensor. Once the one-wire interface has been conf
 
 > [DHT11, DHT22, AM2302](https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring)
 
-Afer [insatlling the Adafruit_Python_DHT library](#prerequisites), it can be tested whether the sensor is able to be read, by executing cgi-bin/Test-Sensor-HT-DHT.py
+After [insatling the Adafruit_Python_DHT library](#prerequisites), it can be tested whether the sensor is able to be read, by executing cgi-bin/Test-Sensor-HT-DHT.py
 
 > [AM2315](https://github.com/lexruee/tentacle_pi)
 
