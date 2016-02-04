@@ -7,7 +7,6 @@ from sht_sensor import Sht
 sht = Sht(4, 17)
 
 for x in range(0, 10):
-    # temperature, humidity, crc_check = am.sense()
 
     temperature = sht.read_t()
     humidity = sht.read_rh()
