@@ -108,6 +108,9 @@ if [[ $db_version_mycodo -lt 19 ]]; then
 	fi
 fi
 
+# Make sure python modules are installed/updated
+pip install --upgrade lockfile rpyc pyserial tentacle_pi sht-sensor
+
 # Perform update based on database version
 if [ ! -f $DATABASEMYC ]; then
     printf "Mycodo database not found: $DATABASEMYC\n";
