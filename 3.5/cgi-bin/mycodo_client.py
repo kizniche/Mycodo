@@ -92,10 +92,10 @@ def menu():
             return 1
         elif opt == "--graph":
             print "%s [Remote command] Graph: %s %s %s %s %s %s %s" % (
-                Timestamp(), sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[7])
+                Timestamp(), sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8])
             print "%s [Remote command] Server returned:" % (
                 Timestamp()),
-            if c.root.generate_graph(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[7]) == 1:
+            if c.root.generate_graph(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8]) == 1:
                 print "Success"
             else:
                 print "Fail"

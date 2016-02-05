@@ -2995,7 +2995,11 @@ if (!file_exists($lock_daemon)) {
                     $image_path = '/var/www/mycodo/images/';
 
                     if ($_POST['custom_type'] == 'Combined') {
-                        shell_exec("$mycodo_client --graph combined $id2 x $time_from $time_to $graph_width");
+                        if ($current_user_theme == 'light') {
+                            shell_exec("$mycodo_client --graph light combined $id2 x $time_from $time_to $graph_width");
+                        } else {
+                            shell_exec("$mycodo_client --graph dark combined $id2 x $time_from $time_to $graph_width");
+                        }
                         $first = False;
                         if (array_sum($sensor_t_graph) || array_sum($sensor_ht_graph)) {
                             if ($first) echo '<hr class="fade"/>';
@@ -3049,7 +3053,11 @@ if (!file_exists($lock_daemon)) {
                             echo '</div>';
                         }
                     } else if ($_POST['custom_type'] == 'Separate') {
-                        shell_exec("$mycodo_client --graph separate $id2 x $time_from $time_to $graph_width");
+                        if ($current_user_theme == 'light') {
+                            shell_exec("$mycodo_client --graph light separate $id2 x $time_from $time_to $graph_width");
+                        } else {
+                            shell_exec("$mycodo_client --graph dark separate $id2 x $time_from $time_to $graph_width");
+                        }
                         $first = False;
                         for ($n = 0; $n < count($sensor_t_id); $n++) {
                             if ($sensor_t_graph[$n] == 1) {
