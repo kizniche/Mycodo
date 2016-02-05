@@ -97,7 +97,7 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 Major changes for each versioned release
 
 #### 3.5.94
-+ Add support for Senserion SHT1x and SHT7x sensors
++ Add support for Senserion SHT1x and SHT7x sensors (Thanks @MountAthos)
 
 #### 3.5.93
 + Add daily timers (relay turns on for duration at specific hour and minute, every day)
@@ -121,7 +121,7 @@ Major changes for each versioned release
 + Add display of Notes on dynamic humidity/temperature graph, add title to notes (for graph display)
 
 #### 3.5.86
-+ Change the PID period to a constant interval (thanks @KnyazSh)"
++ Change the PID period to a constant interval (thanks @KnyazSh)
 
 #### 3.5.85
 + New client-side graph generation using HighCharts/HighStock
