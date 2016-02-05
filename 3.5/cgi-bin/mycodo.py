@@ -54,6 +54,7 @@ from email.mime.text import MIMEText
 from lockfile import LockFile
 from rpyc.utils.server import ThreadedServer
 from tentacle_pi.AM2315 import AM2315
+from sht_sensor import Sht # sht senserion support
 
 mycodo_database = os.path.join(install_directory, "config/mycodo.db")  # SQLite database
 image_path = os.path.join(install_directory, "images")  # Where generated graphs are stored
@@ -1821,9 +1822,12 @@ def read_ht_sensor(sensor_id):
 
         logging.debug("[Read HT Sensor-%s] Taking first Temperature/Humidity reading", sensor_id + 1)
 
+        if sensor_ht_device[sensor_id] == "SHT75":
+            logging.debug('[Read HT Sensor-%s] %s - sensor voltage is set to : %s', sensor_id + 1, sensor_ht_device[sensor_id], sensor_ht_voltage[sensor_id])
+
         for i in range(ht_read_tries):
             if (pid_ht_temp_alive[sensor_id] or pid_ht_hum_alive[sensor_id]) and client_que != 'TerminateServer' and pause_daemon != 1:
-                humidity2, tempc2 = read_ht(sensor_id, sensor_ht_device[sensor_id], sensor_ht_pin[sensor_id])
+                humidity2, tempc2 = read_ht(sensor_id, sensor_ht_device[sensor_id], sensor_ht_pin[sensor_id], sensor_ht_clock_pin[sensor_id], sensor_ht_voltage[sensor_id])
                 if humidity2 is not None and tempc2 is not None:
                     break
             else:
@@ -1835,10 +1839,13 @@ def read_ht_sensor(sensor_id):
         else:
             logging.debug("[Read HT Sensor-%s] %.1f°C, %.1f%%", sensor_id + 1, tempc2, humidity2)
             logging.debug("[Read HT Sensor-%s] Taking second Temperature/Humidity reading", sensor_id + 1)
+
+            if sensor_ht_device[sensor_id] == "SHT75":
+                logging.debug('[Read HT Sensor-%s] %s - sensor voltage is set to : %s', sensor_id + 1, sensor_ht_device[sensor_id], sensor_ht_voltage[sensor_id])
         
         for i in range(ht_read_tries):  # Multiple attempts to get first reading
             if (pid_ht_temp_alive[sensor_id] or pid_ht_hum_alive[sensor_id]) and client_que != 'TerminateServer' and pause_daemon != 1:
-                humidity, tempc = read_ht(sensor_id, sensor_ht_device[sensor_id], sensor_ht_pin[sensor_id])
+                humidity, tempc = read_ht(sensor_id, sensor_ht_device[sensor_id], sensor_ht_pin[sensor_id], sensor_ht_clock_pin[sensor_id], sensor_ht_voltage[sensor_id])
                 if humidity is not None and tempc is not None:
                     break
             else:
@@ -1862,7 +1869,10 @@ def read_ht_sensor(sensor_id):
                 #sensor_ht_dewpt_f[sensor] = sensor_ht_dewpt_c[sensor] * 9 / 5 + 32
                 #sensor_ht_heatindex_f = -42.379 + 2.04901523 * temperature_f + 10.14333127 * sensor_ht_read_hum - 0.22475541 * temperature_f * sensor_ht_read_hum - 6.83783 * 10**-3 * temperature_f**2 - 5.481717 * 10**-2 * sensor_ht_read_hum**2 + 1.22874 * 10**-3 * temperature_f**2 * sensor_ht_read_hum + 8.5282 * 10**-4 * temperature_f * sensor_ht_read_hum**2 - 1.99 * 10**-6 * temperature_f**2 * sensor_ht_read_hum**2
                 #sensor_ht_heatindex_c[sensor] = (heatindexf - 32) * (5 / 9)
-                logging.debug("[Read HT Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", sensor_id + 1, tempc, humidity, sensor_ht_dewpt_c[sensor_id])
+                if sensor_ht_device[sensor_id] == "SHT75":
+                    logging.debug("[Read HT Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C, V: %s", sensor_id + 1, tempc, humidity, sensor_ht_dewpt_c[sensor_id], sensor_ht_voltage[sensor_id])
+                else:
+                    logging.debug("[Read HT Sensor-%s] Temp: %.1f°C, Hum: %.1f%%, DP: %.1f°C", sensor_id + 1, tempc, humidity, sensor_ht_dewpt_c[sensor_id])
                 sensor_ht_read_hum[sensor_id] = humidity
                 sensor_ht_read_temp_c[sensor_id] = tempc
                 logging.debug("[Read HT Sensor-%s] Removing lock: %s", sensor_id + 1, lock.path)
@@ -2209,7 +2219,7 @@ def read_t(sensor_id, device, pin):
 
 
 # Obtain reading from Humidity/Temperature sensor
-def read_ht(sensor_id, device, pin):
+def read_ht(sensor_id, device, pin, clock_pin, sensor_voltage):
     # Ensure at least 2 seconds between sensor reads
     global last_ht_reading
     while last_ht_reading > time.time():
@@ -2238,6 +2248,12 @@ def read_ht(sensor_id, device, pin):
             time.sleep(0.1)
         am = AM2315(0x5c, "/dev/i2c-1")
         temperature, humidity, crc_check = am.sense()
+
+    elif device == 'SHT75': # SHT Senserion reading
+        sht = Sht(clock_pin, pin, voltage=sensor_voltage) # command to get readings from SHT sensor
+        temperature = sht.read_t() # Temperature in Celsius
+        humidity = sht.read_rh(temperature) # RH %
+
     else:
         logging.debug("[Read HT Sensor-%s] Device not recognized: %s", sensor_id + 1, device)
         temperature = humidity = None
@@ -2395,6 +2411,8 @@ def read_sql():
     global sensor_ht_name
     global sensor_ht_device
     global sensor_ht_pin
+    global sensor_ht_clock_pin
+    global sensor_ht_voltage
     global sensor_ht_period
     global sensor_ht_premeasure_relay
     global sensor_ht_premeasure_dur
@@ -2461,6 +2479,8 @@ def read_sql():
     sensor_ht_name = []
     sensor_ht_device = []
     sensor_ht_pin = []
+    sensor_ht_clock_pin = []
+    sensor_ht_voltage = []
     sensor_ht_period = []
     sensor_ht_premeasure_relay = []
     sensor_ht_premeasure_dur = []
@@ -3062,6 +3082,8 @@ def read_sql():
     cur.execute("""SELECT id,
                           name,
                           pin,
+                          clock_pin,
+                          sensor_voltage,
                           device,
                           period,
                           pre_measure_relay,
@@ -3123,62 +3145,64 @@ def read_sql():
         sensor_ht_id.append(row[0])
         sensor_ht_name.append(row[1])
         sensor_ht_pin.append(row[2])
-        sensor_ht_device.append(row[3])
-        sensor_ht_period.append(row[4])
-        sensor_ht_premeasure_relay.append(row[5])
-        sensor_ht_premeasure_dur.append(row[6])
-        sensor_ht_activated.append(row[7])
-        sensor_ht_graph.append(row[8])
-        sensor_ht_verify_pin.append(row[9])
-        sensor_ht_verify_temp.append(row[10])
-        sensor_ht_verify_temp_notify.append(row[11])
-        sensor_ht_verify_temp_stop.append(row[12])
-        sensor_ht_verify_hum.append(row[13])
-        sensor_ht_verify_hum_notify.append(row[14])
-        sensor_ht_verify_hum_stop.append(row[15])
-        sensor_ht_verify_email.append(row[16])
-        sensor_ht_yaxis_relay_min.append(row[17])
-        sensor_ht_yaxis_relay_max.append(row[18])
-        sensor_ht_yaxis_relay_tics.append(row[19])
-        sensor_ht_yaxis_relay_mtics.append(row[20])
-        sensor_ht_yaxis_temp_min.append(row[21])
-        sensor_ht_yaxis_temp_max.append(row[22])
-        sensor_ht_yaxis_temp_tics.append(row[23])
-        sensor_ht_yaxis_temp_mtics.append(row[24])
-        sensor_ht_yaxis_hum_min.append(row[25])
-        sensor_ht_yaxis_hum_max.append(row[26])
-        sensor_ht_yaxis_hum_tics.append(row[27])
-        sensor_ht_yaxis_hum_mtics.append(row[28])
-        sensor_ht_temp_relays_up.append(row[29])
-        sensor_ht_temp_relays_down.append(row[30])
-        pid_ht_temp_relay_high.append(row[31])
-        pid_ht_temp_outmin_high.append(row[32])
-        pid_ht_temp_outmax_high.append(row[33])
-        pid_ht_temp_relay_low.append(row[34])
-        pid_ht_temp_outmin_low.append(row[35])
-        pid_ht_temp_outmax_low.append(row[36])
-        pid_ht_temp_or.append(row[37])
-        pid_ht_temp_set.append(row[38])
-        pid_ht_temp_set_dir.append(row[39])
-        pid_ht_temp_period.append(row[40])
-        pid_ht_temp_p.append(row[41])
-        pid_ht_temp_i.append(row[42])
-        pid_ht_temp_d.append(row[43])
-        sensor_ht_hum_relays_up.append(row[44])
-        sensor_ht_hum_relays_down.append(row[45])
-        pid_ht_hum_relay_high.append(row[46])
-        pid_ht_hum_outmin_high.append(row[47])
-        pid_ht_hum_outmax_high.append(row[48])
-        pid_ht_hum_relay_low.append(row[49])
-        pid_ht_hum_outmin_low.append(row[50])
-        pid_ht_hum_outmax_low.append(row[51])
-        pid_ht_hum_or.append(row[52])
-        pid_ht_hum_set.append(row[53])
-        pid_ht_hum_set_dir.append(row[54])
-        pid_ht_hum_period.append(row[55])
-        pid_ht_hum_p.append(row[56])
-        pid_ht_hum_i.append(row[57])
-        pid_ht_hum_d.append(row[58])
+        sensor_ht_clock_pin.append(row[3])
+        sensor_ht_voltage.append(row[4])
+        sensor_ht_device.append(row[5])
+        sensor_ht_period.append(row[6])
+        sensor_ht_premeasure_relay.append(row[7])
+        sensor_ht_premeasure_dur.append(row[8])
+        sensor_ht_activated.append(row[9])
+        sensor_ht_graph.append(row[10])
+        sensor_ht_verify_pin.append(row[11])
+        sensor_ht_verify_temp.append(row[12])
+        sensor_ht_verify_temp_notify.append(row[13])
+        sensor_ht_verify_temp_stop.append(row[14])
+        sensor_ht_verify_hum.append(row[15])
+        sensor_ht_verify_hum_notify.append(row[16])
+        sensor_ht_verify_hum_stop.append(row[17])
+        sensor_ht_verify_email.append(row[18])
+        sensor_ht_yaxis_relay_min.append(row[19])
+        sensor_ht_yaxis_relay_max.append(row[20])
+        sensor_ht_yaxis_relay_tics.append(row[21])
+        sensor_ht_yaxis_relay_mtics.append(row[22])
+        sensor_ht_yaxis_temp_min.append(row[23])
+        sensor_ht_yaxis_temp_max.append(row[24])
+        sensor_ht_yaxis_temp_tics.append(row[25])
+        sensor_ht_yaxis_temp_mtics.append(row[26])
+        sensor_ht_yaxis_hum_min.append(row[27])
+        sensor_ht_yaxis_hum_max.append(row[28])
+        sensor_ht_yaxis_hum_tics.append(row[29])
+        sensor_ht_yaxis_hum_mtics.append(row[30])
+        sensor_ht_temp_relays_up.append(row[31])
+        sensor_ht_temp_relays_down.append(row[32])
+        pid_ht_temp_relay_high.append(row[33])
+        pid_ht_temp_outmin_high.append(row[34])
+        pid_ht_temp_outmax_high.append(row[35])
+        pid_ht_temp_relay_low.append(row[36])
+        pid_ht_temp_outmin_low.append(row[37])
+        pid_ht_temp_outmax_low.append(row[38])
+        pid_ht_temp_or.append(row[39])
+        pid_ht_temp_set.append(row[40])
+        pid_ht_temp_set_dir.append(row[41])
+        pid_ht_temp_period.append(row[42])
+        pid_ht_temp_p.append(row[43])
+        pid_ht_temp_i.append(row[44])
+        pid_ht_temp_d.append(row[45])
+        sensor_ht_hum_relays_up.append(row[46])
+        sensor_ht_hum_relays_down.append(row[47])
+        pid_ht_hum_relay_high.append(row[48])
+        pid_ht_hum_outmin_high.append(row[49])
+        pid_ht_hum_outmax_high.append(row[50])
+        pid_ht_hum_relay_low.append(row[51])
+        pid_ht_hum_outmin_low.append(row[52])
+        pid_ht_hum_outmax_low.append(row[53])
+        pid_ht_hum_or.append(row[54])
+        pid_ht_hum_set.append(row[55])
+        pid_ht_hum_set_dir.append(row[56])
+        pid_ht_hum_period.append(row[57])
+        pid_ht_hum_p.append(row[58])
+        pid_ht_hum_i.append(row[59])
+        pid_ht_hum_d.append(row[60])
 
     # Convert string of comma-separated values to a 2-dimensional list of integers
     global sensor_ht_temp_relays_up_list

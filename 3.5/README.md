@@ -96,6 +96,9 @@ This is an experimental branch of mycodo. It is undergoing constant changes and 
 
 Major changes for each versioned release
 
+#### 3.5.94
++ Add support for Senserion SHT1x and SHT7x sensors
+
 #### 3.5.93
 + Add daily timers (relay turns on for duration at specific hour and minute, every day)
 
@@ -248,11 +251,17 @@ After [insatling the Adafruit_Python_DHT library](#prerequisites), it can be tes
 
 After [configuring I<sup>2</sup>C](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c) and [installing the tentacle_pi libraries](#prerequisites), it can be tested whether the sensor is able to be read, by executing cgi-bin/Test-Sensor-HT-AM2315.py
 
+> [Senserion SHT1x / SHT7x](https://github.com/mk-fg/sht-sensor)
+
+Default library is installed via command line : pip install sht-sensor
+NOTE: Raspberry Pi is using 3.3V for powering the SHT sensor and the default driver (sht-sensor) does not handle in calculations 3.3V, but only 3.5V. This can be easy corrected by setting the correct coefficient in driver.
+REMARK: In one of next revision will be fixed from MyCodo side.
+
 ### CO<sub>2</sub> Sensors
 
 > [K30](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip)
 
-This documentation provides specific installation proceedures for the Raspberry Pi as well as example code. Once the K30 has been configured with this documentation, it can be tested whether the sensor is able to be read, by executing cgi-bin/Test-Sensor-CO2-K30.py
+This documentation provides specific installation procedures for the Raspberry Pi as well as example code. Once the K30 has been configured with this documentation, it can be tested whether the sensor is able to be read, by executing cgi-bin/Test-Sensor-CO2-K30.py
 
 ### Pressure Sensors
 

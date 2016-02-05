@@ -419,7 +419,8 @@ if (isset($_POST['AddSensor'])) {
             case "DHT22":
             case "AM2302":
             case "AM2315":
-                $stmt = $db->prepare("INSERT INTO HTSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Verify_Pin, Verify_Temp, Verify_Temp_Notify, Verify_Temp_Stop, Verify_Hum, Verify_Hum_Notify, Verify_Hum_Stop, Verify_Notify_Email, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relays_Up, Hum_Relays_Down, Hum_Relay_High, Hum_Outmin_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmin_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D) VALUES (:id, :name, 0, :dev, 120, 0, 0, 0, 0, 0, 5, 0, 0, 10, 0, 0, '', -100, 100, 25, 5, 0, 35, 5, 5, 0, 100, 10, 5, '0', '0', 0, 0, 0, 0, 0, 0, 1, 25, 0, 90, 0, 0, 0, '0', '0', 0, 0, 0, 0, 0, 0, 1, 50.0, 0, 90, 0, 0, 0)");
+            case "SHT75":
+                $stmt = $db->prepare("INSERT INTO HTSensor (Id, Name, Pin, Clock_Pin, Sensor_Voltage, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Verify_Pin, Verify_Temp, Verify_Temp_Notify, Verify_Temp_Stop, Verify_Hum, Verify_Hum_Notify, Verify_Hum_Stop, Verify_Notify_Email, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relays_Up, Hum_Relays_Down, Hum_Relay_High, Hum_Outmin_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmin_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D) VALUES (:id, :name, 0, 0, :sensor_voltage, :dev, 120, 0, 0, 0, 0, 0, 5, 0, 0, 10, 0, 0, '', -100, 100, 25, 5, 0, 35, 5, 5, 0, 100, 10, 5, '0', '0', 0, 0, 0, 0, 0, 0, 1, 25, 0, 90, 0, 0, 0, '0', '0', 0, 0, 0, 0, 0, 0, 1, 50.0, 0, 90, 0, 0, 0)");
                 $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
                 $stmt->bindValue(':name', $_POST['AddSensorName'], SQLITE3_TEXT);
                 $stmt->bindValue(':dev', $_POST['AddSensorDev'], SQLITE3_TEXT);
@@ -1130,6 +1131,8 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
                                       SET    name = :name,
                                              device = :device,
                                              pin = :pin,
+                                             clock_pin = :clock_pin,
+                                             sensor_voltage = :sensor_voltage,
                                              period = :period,
                                              pre_measure_relay = :premeas_relay,
                                              pre_measure_dur = :premeas_dur,
@@ -1187,6 +1190,8 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
                 $stmt->bindValue(':name', str_replace(' ', '', $_POST['sensorht' . $p . 'name']), SQLITE3_TEXT);
                 $stmt->bindValue(':device', str_replace(' ', '', $_POST['sensorht' . $p . 'device']), SQLITE3_TEXT);
                 $stmt->bindValue(':pin', (int)$_POST['sensorht' . $p . 'pin'], SQLITE3_INTEGER);
+                $stmt->bindValue(':clock_pin', (int)$_POST['sensorht' . $p . 'clock_pin'], SQLITE3_INTEGER);
+                $stmt->bindValue(':sensor_voltage', str_replace(' ', '', $_POST['sensorht' . $p . 'sensor_voltage']), SQLITE3_TEXT);
                 $stmt->bindValue(':period', (int)$_POST['sensorht' . $p . 'period'], SQLITE3_INTEGER);
                 $stmt->bindValue(':premeas_relay', (int)$_POST['sensorht' . $p . 'premeasure_relay'], SQLITE3_INTEGER);
                 $stmt->bindValue(':premeas_dur', (int)$_POST['sensorht' . $p . 'premeasure_dur'], SQLITE3_INTEGER);
@@ -1255,6 +1260,8 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
                                   SET    name = :name,
                                          device = :device,
                                          pin = :pin,
+                                         clock_pin = :clock_pin,
+                                         sensor_voltage = :sensor_voltage,
                                          period = :period,
                                          pre_measure_relay = :premeas_relay,
                                          pre_measure_dur = :premeas_dur,
@@ -1313,6 +1320,8 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             $stmt->bindValue(':name', str_replace(' ', '', $_POST['sensorht' . $p . 'name']), SQLITE3_TEXT);
             $stmt->bindValue(':device', str_replace(' ', '', $_POST['sensorht' . $p . 'device']), SQLITE3_TEXT);
             $stmt->bindValue(':pin', (int)$_POST['sensorht' . $p . 'pin'], SQLITE3_INTEGER);
+            $stmt->bindValue(':clock_pin', (int)$_POST['sensorht' . $p . 'clock_pin'], SQLITE3_INTEGER);
+            $stmt->bindValue(':sensor_voltage', str_replace(' ', '', $_POST['sensorht' . $p . 'sensor_voltage']), SQLITE3_TEXT);
             $stmt->bindValue(':period', (int)$_POST['sensorht' . $p . 'period'], SQLITE3_INTEGER);
             $stmt->bindValue(':premeas_relay', (int)$_POST['sensorht' . $p . 'premeasure_relay'], SQLITE3_INTEGER);
             $stmt->bindValue(':premeas_dur', (int)$_POST['sensorht' . $p . 'premeasure_dur'], SQLITE3_INTEGER);
@@ -1429,6 +1438,10 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             } else {
                 $pin = $_POST['sensorht' . $p . 'pin'];
             }
+            if ($_POST['sensorht' . $p . 'device'] == 'SHT75') {
+                $clock_pin = $_POST['sensorht' . $p . 'clock_pin'];
+                $sensor_voltage = $_POST['sensorht' . $p . 'sensor_voltage'];
+            }
             $period = (int)$_POST['sensorht' . $p . 'period'];
             $prerelay = (int)$_POST['sensorht' . $p . 'premeasure_relay'];
             $predur = (int)$_POST['sensorht' . $p . 'premeasure_dur'];
@@ -1491,7 +1504,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             $humI = (float)$_POST['SetHT' . $p . 'Hum_I'];
             $humD = (float)$_POST['SetHT' . $p . 'Hum_D'];
             $timestamp = date('Y/m/d-H:i:s');
-            $record = "$timestamp $id $name $device $pin $period $prerelay $predur $activated $graph $verify_pin $verify_temp $verify_temp_notify $verify_temp_stop $verify_hum $verify_hum_notify $verify_hum_stop $verify_email $yrelaymin $yrelaymax $yrelaytics $yrelaymtics $ytempmin $ytempmax $ytemptics $ytempmtics $temprelaysup $temprelaysdown $temprelayhigh $temprelayhighmin $temprelayhighmax $temprelaylow $temprelaylowmin $temprelaylowmax $tempset $tempsetdir $tempperiod $tempP $tempI $tempD $humrelaysup $humrelaysdown $humrelayhigh $humrelayhighmin $humrelayhighmax $humrelaylow $humrelaylowmin $humrelaylowmax $humset $humsetdir $humperiod $humP $humI $humD\n";
+            $record = "$timestamp $id $name $device $pin $clock_pin $sensor_voltage $period $prerelay $predur $activated $graph $verify_pin $verify_temp $verify_temp_notify $verify_temp_stop $verify_hum $verify_hum_notify $verify_hum_stop $verify_email $yrelaymin $yrelaymax $yrelaytics $yrelaymtics $ytempmin $ytempmax $ytemptics $ytempmtics $temprelaysup $temprelaysdown $temprelayhigh $temprelayhighmin $temprelayhighmax $temprelaylow $temprelaylowmin $temprelaylowmax $tempset $tempsetdir $tempperiod $tempP $tempI $tempD $humrelaysup $humrelaysdown $humrelayhigh $humrelayhighmin $humrelayhighmax $humrelaylow $humrelaylowmin $humrelaylowmax $humset $humsetdir $humperiod $humP $humI $humD\n";
             file_put_contents($sensor_ht_changes_log, $record, FILE_APPEND);
         }
 
@@ -1503,11 +1516,13 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             } else {
                 if (isset($_POST['sensorht' . $p . 'presetname']) && $_POST['sensorht' . $p . 'presetname'] != '') {
 
-                    $stmt = $db->prepare("INSERT INTO HTSensorPreset (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Verify_Pin, Verify_Temp, Verify_Temp_Notify, Verify_Temp_Stop, Verify_Hum, Verify_Hum_Notify, Verify_Hum_Stop, Verify_Notify_Email, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relays_Up, Hum_Relays_Down, Hum_Relay_High, Hum_Outmin_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmin_Low, Hum_Outmax_Low, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D) VALUES (:preset, :name, :pin, :device, :period, :premeas_relay, :premeas_dur, :activated, :graph, :verify_pin, :verify_temp, :verify_tempnotify, :verify_tempstop, :verify_hum, :verify_humnotify, :verify_humstop, :verify_notifyemail, :yaxis_relay_min, :yaxis_relay_max, :yaxis_relay_tics, :yaxis_relay_mtics, :yaxis_temp_min, :yaxis_temp_max, :yaxis_temp_tics, :yaxis_temp_mtics, :yaxis_hum_min, :yaxis_hum_max, :yaxis_hum_tics, :yaxis_hum_mtics, :temprelaysup, :temprelaysdown, :temprelayhigh, :tempoutminhigh, :tempoutmaxhigh, :temprelaylow, :tempoutminlow, :tempoutmaxlow, :tempset, :tempsetdir, :tempperiod, :tempp, :tempi, :tempd, :humrelaysup, :humrelaysdown, :humrelayhigh, :humoutminhigh, :humoutmaxhigh, :humrelaylow, :humoutminlow, :humoutmaxlow, :humset, :humsetdir, :humperiod, :hump, :humi, :humd)");
+                    $stmt = $db->prepare("INSERT INTO HTSensorPreset (Id, Name, Pin, Clock_Pin, Sensor_Voltage, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Verify_Pin, Verify_Temp, Verify_Temp_Notify, Verify_Temp_Stop, Verify_Hum, Verify_Hum_Notify, Verify_Hum_Stop, Verify_Notify_Email, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relays_Up, Hum_Relays_Down, Hum_Relay_High, Hum_Outmin_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmin_Low, Hum_Outmax_Low, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D) VALUES (:preset, :name, :pin, :device, :period, :premeas_relay, :premeas_dur, :activated, :graph, :verify_pin, :verify_temp, :verify_tempnotify, :verify_tempstop, :verify_hum, :verify_humnotify, :verify_humstop, :verify_notifyemail, :yaxis_relay_min, :yaxis_relay_max, :yaxis_relay_tics, :yaxis_relay_mtics, :yaxis_temp_min, :yaxis_temp_max, :yaxis_temp_tics, :yaxis_temp_mtics, :yaxis_hum_min, :yaxis_hum_max, :yaxis_hum_tics, :yaxis_hum_mtics, :temprelaysup, :temprelaysdown, :temprelayhigh, :tempoutminhigh, :tempoutmaxhigh, :temprelaylow, :tempoutminlow, :tempoutmaxlow, :tempset, :tempsetdir, :tempperiod, :tempp, :tempi, :tempd, :humrelaysup, :humrelaysdown, :humrelayhigh, :humoutminhigh, :humoutmaxhigh, :humrelaylow, :humoutminlow, :humoutmaxlow, :humset, :humsetdir, :humperiod, :hump, :humi, :humd)");
                     $stmt->bindValue(':preset', $_POST['sensorht' . $p . 'presetname'], SQLITE3_TEXT);
                     $stmt->bindValue(':name', str_replace(' ', '', $_POST['sensorht' . $p . 'name']), SQLITE3_TEXT);
                     $stmt->bindValue(':device', str_replace(' ', '', $_POST['sensorht' . $p . 'device']), SQLITE3_TEXT);
                     $stmt->bindValue(':pin', (int)$_POST['sensorht' . $p . 'pin'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':clock_pin', (int)$_POST['sensorht' . $p . 'clock_pin'], SQLITE3_INTEGER);
+                    $stmt->bindValue(':sensor_voltage', str_replace(' ', '', $_POST['sensorht' . $p . 'sensor_voltage']), SQLITE3_TEXT);
                     $stmt->bindValue(':period', (int)$_POST['sensorht' . $p . 'period'], SQLITE3_INTEGER);
                     $stmt->bindValue(':premeas_relay', (int)$_POST['sensorht' . $p . 'premeasure_relay'], SQLITE3_INTEGER);
                     $stmt->bindValue(':premeas_dur', (int)$_POST['sensorht' . $p . 'premeasure_dur'], SQLITE3_INTEGER);
@@ -1589,6 +1604,8 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
         if ($exist != False) {
             $stmt = $db->prepare('SELECT name,
                                          pin,
+                                         clock_pin,
+                                         sensor_voltage,
                                          device,
                                          period,
                                          pre_measure_relay,
@@ -1652,6 +1669,8 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
                                   SET    name = :name,
                                          device = :device,
                                          pin = :pin,
+                                         clock_pin = :clock_pin,
+                                         sensor_voltage = :sensor_voltage,
                                          period = :period,
                                          pre_measure_relay = :premeas_relay,
                                          pre_measure_dur = :premeas_dur,
@@ -1712,6 +1731,8 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             $stmt->bindValue(':name', $row['Name'], SQLITE3_TEXT);
             $stmt->bindValue(':device', $row['Device'], SQLITE3_TEXT);
             $stmt->bindValue(':pin', $row['Pin'], SQLITE3_INTEGER);
+            $stmt->bindValue(':clock_pin', $row['Clock_Pin'], SQLITE3_INTEGER);
+            $stmt->bindValue(':sensor_voltage', $row['Sensor_Voltage'], SQLITE3_TEXT);
             $stmt->bindValue(':period', $row['Period'], SQLITE3_INTEGER);
             $stmt->bindValue(':premeas_relay', $row['Pre_Measure_Relay'], SQLITE3_INTEGER);
             $stmt->bindValue(':premeas_dur', $row['Pre_Measure_Dur'], SQLITE3_INTEGER);
