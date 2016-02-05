@@ -524,7 +524,7 @@ If Humidity if Less Than 50%, turn relay #1 on for 21 seconds, execute '/usr/loc
 
 <p>The <b>D</b>erivative multiplies the error by K<sub>d</sub>, then differentiates it (K<sub>d</sub> · s). When the error rate changes over time, the output signal will change. The faster the change in error, the larger the derivative path becomes, decreasing the output rate of change. This has the effect of dampening overshoot and undershoot (oscillation) of the Set Point.</p>
 
-<p><a href="https://en.wikipedia.org/wiki/PID_controller" target="_blank"><img src="http://kylegabriel.com/images/PID_Animated.gif"></a></p>
+<p><a href="https://en.wikipedia.org/wiki/PID_controller" target="_blank"><img src="/mycodo/img/PID_Animated.gif"></a></p>
 
 <p>Using temperature as an example, the Process Variable (PV) is the sensed temperature, the Set Point (SP) is the desired temperature, and the Error (e) is the distance between the measured temperature and the desired temperature (indicating if the actual temperature is too hot or too cold and to what degree). The error is manipulated by each of the three PID components, producing an output, called the Manipulated Variable (MV) or Control Variable (CV). To allow control of how much each path contributes to the output value, each path is multiplied by a gain (represented by K). By adjusting the gains, the sensitivity of the system to each path is affected. When all three paths are summed, the PID output is produced. If a gain is set to 0, that path does not contribute to the output and that path is eessentially turned off.</p>
 
