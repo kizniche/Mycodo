@@ -253,9 +253,9 @@ After [configuring I<sup>2</sup>C](https://learn.adafruit.com/adafruits-raspberr
 
 > [Senserion SHT1x / SHT7x](https://github.com/mk-fg/sht-sensor)
 
-Default library is installed via command line : pip install sht-sensor
-NOTE: Raspberry Pi is using 3.3V for powering the SHT sensor and the default driver (sht-sensor) does not handle in calculations 3.3V, but only 3.5V. This can be easy corrected by setting the correct coefficient in driver.
-REMARK: In one of next revision will be fixed from MyCodo side.
+After [insatling the sht-sensor python module](#prerequisites), it can be tested whether the sensor is able to be read, by executing cgi-bin/Test-Sensor-HT-SHT75.py
+
+NOTE: The Raspberry Pi uses 3.3-volts for powering the SHT sensor, however the default driver (sht-sensor) does not handle measurement calculations from 3.3-volts, only 3.5-volts. This can be easy corrected by setting the correct coefficient in driver (one of next revisions will fix this).
 
 ### CO<sub>2</sub> Sensors
 
@@ -312,7 +312,7 @@ Using raspi-config, perform the following:
 
 Install/Upgrade LockFile, RPyC, pySerial, tentacle_pi, RPi.GPIO
 
-`sudo pip install --upgrade lockfile rpyc pyserial tentacle_pi RPi.GPIO`
+`sudo pip install --upgrade lockfile rpyc pyserial tentacle_pi sht-sensor RPi.GPIO`
 
 Create a symlink to Mycodo
 
