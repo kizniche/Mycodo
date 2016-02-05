@@ -251,7 +251,7 @@ After [insatling the Adafruit_Python_DHT library](#prerequisites), it can be tes
 
 After [configuring I<sup>2</sup>C](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c) and [installing the tentacle_pi libraries](#prerequisites), it can be tested whether the sensor is able to be read, by executing cgi-bin/Test-Sensor-HT-AM2315.py
 
-> [Senserion SHT1x / SHT7x](https://github.com/mk-fg/sht-sensor)
+> [SHT10, SHT11, SHT15, SHT71, SHT75](https://github.com/mk-fg/sht-sensor)
 
 After [insatling the sht-sensor python module](#prerequisites), it can be tested whether the sensor is able to be read, by executing cgi-bin/Test-Sensor-HT-SHT75.py
 
