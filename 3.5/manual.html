@@ -238,13 +238,11 @@ Specifications:
 <a name="web-interface"></a>
 <h2>Web Interface</h2>
 
-<p>Go to http://127.0.0.1/mycodo/index.php (replace 127.0.0.1 with the correct domain name or IP address of your system) and log in with the credentials you created with update-database.py. You will be greeted by a header with various information about the currently-logged in user, the status of the daemon and other services, system performance statistics, and (if sensors are receiving data and activated) information about the activated sensors.</p>
+<p>Go to http://127.0.0.1/mycodo/index.php (replace 127.0.0.1 with the correct domain name or IP address of your system) and log in with the credentials you created when you ran update-database.py. You will be greeted by a header with various information about the currently-logged in user, the status of the daemon, system performance statistics, and an area for information about sensors (when they are activated).</p>
 
-<p><b>Many input fields and buttons of the web interface will display descriptions or instructions when the mouse is hovered over them. Use this information in addition to the manual to learn how to operate the system.</b></p>
+<p><b>Many input boxes and buttons in the web interface will display descriptions or instructions when the mouse is hovered over them. Use this information in addition to the manual to learn how to configure the system.</b></p>
 
-<p>The Daemon indicator at the top-left indicates the daemon is running (green). If it is not (red), sensor measurements, logging, and PID regulation cannot operate.</p>
-
-<p>Additionally, relays must be properly set up before PID regulation can be achieved. Add and configure relays in the Sensor tab. Set the "GPIO Pin" to the BCM number of the pin connected to the relay. "Signal ON" should be set to the signal that activates the relay (close the circuit). If your relay activates when the potential across the coil is 0-volts, set "Signal ON" to "Low", otherwise if your relay activates when the potential across the coil is 5-volts, set it to "High".</p>
+<p>The icon to the left of the word "Daemon", at the top-left, indicates if the daemon is running (green) or if it is not (red). If the daemon is not running, sensor measurements, logging, and PID regulation will not operate.</p>
 
 <a name="graph-tab"></a>
 <h2>Graph Tab</h2>
@@ -277,10 +275,12 @@ Specifications:
 
 <p>Relays are electromechanical or solid-state devices that enable a small voltage signal (such as from a microprocessor) to activate a much larger voltage, without exposing the low -voltage system to the dangers of the higher voltage.</p>
 
+<p>Relays must be properly set up before PID regulation can be achieved. Add and configure relays in the Sensor tab. Set the "GPIO Pin" to the BCM GPIO number of each pin that activates each relay. "Signal ON" should be set to the signal that activates the relay (closes the relay circuit). If your relay activates when the potential across the coil is 0-volts, set "Signal ON" to "Low", otherwise if your relay activates when the potential across the coil is 5-volts, set it to "High".</p>
+
 <a name="sensors"></a>
 <h3>Sensors</h3>
 
-<p>Sensors will acquire environmental measurements, which will be used to create historical logs and modulate relays on and off to regulate the environment.</p>
+<p>Sensors will acquire environmental measurements, which will be used to create historical logs and provide the mos recent measurement for any PID controllers to operate from, allowing modulation of relays to regulate the environment.</p>
 
 <a name="main-setup"></a>
 <table class="options">
@@ -493,7 +493,7 @@ Specifications:
 <a name="timers"></a>
 <h3>Timers</h3>
 
-<p>Timers enable a relay to be switched on and off at specific durations. Both the on duration and the off duration can be defined and the timer can be turned on and off at will. Nothing fancy yet.</p>
+<p>Timers enable a relay to be switched on and off at specific durations. For <em>Duration Timers</em>, both the on duration and the off duration can be defined and the timer will be turned on and off for those durations until deactivated. For <em>Daily Timers</em>, the start hour:minute and on duration can be set to turn a specific realy on at a specific time of day.</p>
 
 <a name="conditional-statements"></a>
 <h3>Conditional Statements</h3>

@@ -3478,7 +3478,7 @@ if (isset($_POST['Add_Note'])) {
     $note_ts = `date +"%Y-%m-%d %H:%M:%S"`;
     $uniqueid = uniqid();
     if(count($_FILES['notes']['name']) > 0) {
-        if (!function_exists(ImageCreateFromGIF) || !function_exists(ImageCreateFromJPEG) || !function_exists(ImageCreateFromPNG)) {
+        if (!function_exists('ImageCreateFromGIF') || !function_exists('ImageCreateFromJPEG') || !function_exists('ImageCreateFromPNG')) {
             $data_error = "Error: missing required function to create image thumbnail. Install php5-gd (sudo apt-get install php5-gd)";
         } else {
             for($i = 0; $i < count($_FILES['notes']['name']); $i++) {

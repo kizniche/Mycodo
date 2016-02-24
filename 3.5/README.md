@@ -1,10 +1,10 @@
-# Mycodo 3.5-beta (experimental)
+# Mycodo 3.5 (experimental)
 
-This is an experimental branch of mycodo. It is undergoing constant changes and may or may not work at any time (although it has matured somewhat and is relatively stable at the moment). If you are looking for a stable version, I recommend you check out the [v3.0 branch](../3.0).
+This is an experimental branch of Mycodo. It is undergoing constant changes and may or may not work at any time (although it has matured somewhat and is relatively stable at the moment).
 
 ## Requirements
 
-* Raspberry Pi, v1 or v2 (GPIO functionality also works with BeagleBone Black and MinnowBoard, but are untested)
+* [Raspberry Pi](https://www.raspberrypi.org), v1 or v2 (GPIO functionality also works with [BeagleBone Black](http://beagleboard.org/black) and [MinnowBoard](http://www.minnowboard.org), but are untested)
 * [Raspbian Jessie](https://www.raspberrypi.org/downloads/raspbian/) (other linux distributions should work, but are untested)
 
 ---

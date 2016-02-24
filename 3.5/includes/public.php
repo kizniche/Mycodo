@@ -77,11 +77,11 @@ $pi_temp_cpu_c = `cat /sys/class/thermal/thermal_zone0/temp`;
 $pi_temp_cpu_c = round((float)($pi_temp_cpu_c / 1000), 1);
 $pi_temp_cpu_f = round(($pi_temp_cpu_c*(9/5) + 32), 1);
 
-$pi_temp_gpu_c = `/opt/vc/bin/vcgencmd measure_temp`;
-$pi_temp_gpu_c = substr_replace($pi_temp_gpu_c,'',0,5);
-$pi_temp_gpu_c = substr($pi_temp_gpu_c,0,-3);
-$pi_temp_gpu_c = trim($pi_temp_gpu_c, "tempC=\'C");
-$pi_temp_gpu_f = round(($pi_temp_gpu_c*(9/5) + 32), 1);
+// $pi_temp_gpu_c = `/opt/vc/bin/vcgencmd measure_temp`;
+// $pi_temp_gpu_c = substr_replace($pi_temp_gpu_c,'',0,5);
+// $pi_temp_gpu_c = substr($pi_temp_gpu_c,0,-3);
+// $pi_temp_gpu_c = trim($pi_temp_gpu_c, "tempC=\'C");
+// $pi_temp_gpu_f = round(($pi_temp_gpu_c*(9/5) + 32), 1);
 
 // Determine the time of the last sensor read
 $time_now = `date +"%Y/%m/%d-%H:%M:%S"`;
