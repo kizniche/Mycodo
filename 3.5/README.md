@@ -2,6 +2,11 @@
 
 This is an experimental branch of mycodo. It is undergoing constant changes and may or may not work at any time (although it has matured somewhat and is relatively stable at the moment). If you are looking for a stable version, I recommend you check out the [v3.0 branch](../3.0).
 
+## Requirements
+
+* Raspberry Pi, v1 or v2 (GPIO functionality also works with BeagleBone Black and MinnowBoard, but are untested)
+* [Raspbian Jessie](https://www.raspberrypi.org/downloads/raspbian/) (other linux distributions should work, but are untested)
+
 ---
 
 ## Index
@@ -255,7 +260,7 @@ After [configuring I<sup>2</sup>C](https://learn.adafruit.com/adafruits-raspberr
 
 After [insatling the sht-sensor python module](#prerequisites), it can be tested whether the sensor is able to be read, by executing cgi-bin/Test-Sensor-HT-SHT75.py
 
-NOTE: The Raspberry Pi uses 3.3-volts for powering the SHT sensor, however the default driver (sht-sensor) does not handle measurement calculations from 3.3-volts, only 3.5-volts. This can be easy corrected by setting the correct coefficient in driver (one of next revisions will fix this).
+NOTE: The Raspberry Pi uses 3.3-volts for powering the SHT sensor, however the default driver (sht-sensor) does not handle measurement calculations from 3.3-volts, only 3.5-volts. This can be easy corrected by setting the correct coefficient in driver (a future revision will fix this).
 
 ### CO<sub>2</sub> Sensors
 
