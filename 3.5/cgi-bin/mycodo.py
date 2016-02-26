@@ -3856,7 +3856,7 @@ def initialize_all_gpio():
     logging.info("[GPIO Initialize] Set GPIO mode to BCM numbering, all set GPIOs as output")
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
-    # Initialize GPIOs from all 8 relays
+    # Initialize GPIOs from all relays
     for i, each_relay_pin in enumerate(relay_pin):
         if each_relay_pin > 0:
             GPIO.setup(each_relay_pin, GPIO.OUT)
@@ -3938,8 +3938,9 @@ def relay_onoff(relay, state):
         if enable_max_amps == 1:
             total_amps = 0
             for i, each_relay_trigger in enumerate(relay_trigger):
-                if (each_relay_trigger == 0 and GPIO.input(relay_pin[i]) == 0) or (each_relay_trigger == 1 and GPIO.input(relay_pin[i]) == 1):
-                    total_amps += relay_amps[i]
+                if relay_pin[i] != 0:
+                    if (each_relay_trigger == 0 and GPIO.input(relay_pin[i]) == 0) or (each_relay_trigger == 1 and GPIO.input(relay_pin[i]) == 1):
+                        total_amps += relay_amps[i]
             if ((relay_trigger[relay - 1] == 0 and GPIO.input(relay_pin[relay - 1]) == 1) or (
                     relay_trigger[relay - 1] == 1 and GPIO.input(relay_pin[relay - 1]) == 0)):
                 total_amps += relay_amps[relay - 1]
@@ -3951,8 +3952,9 @@ def relay_onoff(relay, state):
         if enable_max_amps == 1:
             total_amps = 0
             for i, each_relay_trigger in enumerate(relay_trigger):
-                if (each_relay_trigger == 0 and GPIO.input(relay_pin[i]) == 0) or (each_relay_trigger == 1 and GPIO.input(relay_pin[i]) == 1):
-                    total_amps += relay_amps[i]   
+                if relay_pin[i] != 0:
+                    if (each_relay_trigger == 0 and GPIO.input(relay_pin[i]) == 0) or (each_relay_trigger == 1 and GPIO.input(relay_pin[i]) == 1):
+                        total_amps += relay_amps[i]   
             if ((relay_trigger[relay - 1] == 0 and GPIO.input(relay_pin[relay - 1]) == 1) or (
                     relay_trigger[relay - 1] == 1 and GPIO.input(relay_pin[relay - 1]) == 0)):
                 total_amps += relay_amps[relay - 1]

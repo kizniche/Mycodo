@@ -23,243 +23,408 @@
 #
 #  Contact at kylegabriel.com
 
-# Server status check
+import argparse
+import datetime
+import socket
+import sys
 
 import rpyc
-import time
-import sys
-import getopt
-import datetime
 
-def usage():
-    print 'mycodo-client.py: Client for mycodo.py daemon (daemon must be running).\n'
-    print 'Usage:  mycodo-client.py [OPTION]...\n'
-    print 'Options:'
-    print '    -h, --help'
-    print '           Display this help and exit'
-    print '        --graph theme graph_type graph_id [graph_span] [time_from] [time_to] [width]'
-    print '           Generate graph, where time_from and time_to are the number of seconds since epoch'
-    print '        --pidallrestart Sensor'
-    print '           Restart all PIDs, where Sensor=T, HT, CO2'
-    print '        --pidrestart PIDType PIDnumber'
-    print '           Restart PID Controller, where PIDType=TTemp, HTTemp, HTHum, CO2, PressTemp, or PressPress'
-    print '           PIDnumber=the PID controller number'
-    print '        --pidstart PIDType PIDnumber'
-    print '           Start PID Controller, where PIDType=TTemp, HTTemp, HTHum, CO2, PressTemp, or PressPress'
-    print '           PIDnumber=the PID controller number'
-    print '        --pidstop PIDType PIDnumber'
-    print '           Stop PID Controller, where PIDType=TTemp, HTTemp, HTHum, CO2, PressTemp, or PressPress'
-    print '           PIDnumber=the PID controller number'
-    print '    -r, --relay relay state'
-    print '           Turn a relay on or off. state can be 0, 1, or X.'
-    print '           0=OFF, 1=ON, or X number of seconds On'
-    print '        --sensort device sensor-number'
-    print '           Returns a reading from the temperature and humidity sensor on GPIO pin'
-    print '           Device options: DS18B20'
-    print '        --sensorht device sensor-number'
-    print '           Returns a reading from the temperature and humidity sensor'
-    print '           Device options: DHT22, DHT11, or AM2302'
-    print '        --sensorco2 device sensor-number'
-    print '           Returns a reading from the CO2 sensor'
-    print '           Device options: K30'
-    print '        --sensorpress device sensor-number'
-    print '           Returns a reading from the pressure sensor on GPIO pin'
-    print '           Device options: BMP085-180'
-    print '        --sqlreload relay'
-    print '           Reload the SQLite database, initialize GPIO of relay if relay != -1'
-    print '    -s, --status'
-    print '           Return the status of the daemon and all global variables'
-    print '    -t, --terminate'
-    print '           Terminate the communication service and daemon'
-    print '        --test-email recipient'
-    print '           Send a test email'
+# TODO: Move to logging printing to STDOUT (for line prefix)
+# TODO: Run it and see if it works
+
+VALID_PID_TYPES = ["TTemp", "HTTemp", "HTHum", "CO2", "PressTemp", "PressPress"]
+now = datetime.datetime.now
+
 
 def menu():
+    parser = argparse.ArgumentParser(description="Client for mycodo.py daemon "
+                                                 "(daemon must be running).",
+                                     formatter_class=argparse.RawTextHelpFormatter)
+
+    graph_options = parser.add_argument_group('Graph options')
+    graph_options.add_argument('--graph',
+                               nargs=7,
+                               metavar=('THEME', 'GRAPH_TYPE', 'GRAPH_ID', 'GRAPH_SPAN',
+                                        'TIME_FROM', 'TIME_TO', 'WIDTH'),
+                               help="Generate graph, where time_from and time_to are the number "
+                                    "of seconds since epoch")
+
+    pid_options = parser.add_argument_group('PID controls')
+    pid_options.add_argument('--pidstart',
+                             nargs=2,
+                             metavar=("PID_TYPE", "PID_NUMBER"),
+                             help="Start PID Controller. "
+                                  "Valid options are: {{{}}}".format(", ".join(VALID_PID_TYPES)))
+
+    pid_options.add_argument('--pidstop',
+                             nargs=2,
+                             metavar=("PID_TYPE", "PID_NUMBER"),
+                             help="Stop PID Controller. "
+                                  "Valid options are: {{{}}}".format(", ".join(VALID_PID_TYPES)))
+
+    pid_options.add_argument('--pidrestart',
+                             nargs=2,
+                             metavar=("PID_TYPE", "PID_NUMBER"),
+                             help="Restart PID Controller. "
+                                  "Valid options are: {{{}}}".format(", ".join(VALID_PID_TYPES)))
+
+    pid_options.add_argument('--pidallrestart', choices=['T', 'HT', 'CO2', 'PRESS'],
+                             help="Restart all PIDs of a particular type.")
+
+    relay_option = parser.add_argument_group('Relay Controls')
+    relay_option.add_argument('-r', '--relay', nargs=2, metavar=("RELAY_NUMBER", "STATE"),
+                              help="Turn a relay on or off. \nState can be 0, 1, or X; "
+                                   "0=OFF, 1=ON, or X number of seconds on")
+
+    relay_option.add_argument('--sqlreload', nargs=1, metavar='RELAY_NUMBER',
+                              help="Reload the SQLite database, initialize GPIO of "
+                                   "relay if relay != -1")
+
+    sensor_options = parser.add_argument_group('Sensor controls')
+    sensor_options.add_argument('--sensort',
+                                nargs=2,
+                                metavar=("DEVICE", "SENSOR_NUMBER"),
+                                help="Returns a reading from the temperature on given GPIO pin\n"
+                                     "Device options: RPi DS18B20")
+
+    sensor_options.add_argument('--sensorht',
+                                nargs=2,
+                                metavar=("DEVICE", "SENSOR_NUMBER"),
+                                help="Returns a reading from the temperature and humidity "
+                                     "sensor on given GPIO pin\n"
+                                     "Device options: DHT22, DHT11, AM2302, or AM2315")
+
+    sensor_options.add_argument('--sensorco2',
+                                nargs=2,
+                                metavar=("DEVICE", "SENSOR_NUMBER"),
+                                help="Returns a reading from the CO2 sensor on given GPIO pin\n "
+                                     "Device options: K30")
+
+    sensor_options.add_argument('--sensorpress',
+                                nargs=2,
+                                metavar=("DEVICE", "SENSOR_NUMBER"),
+                                help="Returns a reading from the pressure sensor on given GPIO pin\n"
+                                     "Device options: BMP085-180")
+
+    misc_options = parser.add_argument_group('Misc.')
+    misc_options.add_argument('-s', '--status', action='store_true',
+                              help="Return the status of the daemon and all global variables")
+
+    misc_options.add_argument('-t', '--terminate', action='store_true',
+                              help="Terminate the communication service and daemon")
+
+    misc_options.add_argument('--test_email', nargs=1, metavar='RECIPIENT',
+                              help="Send a test email")
+
+    args = parser.parse_args()
+
+    ########################################
+    #                                      #
+    #       Connect to RPyC server         #
+    #                                      #
+    ########################################
+
     try:
-        opts, args = getopt.getopt(
-            sys.argv[1:], 'hr:st',
-            ["help", "graph=", "graph-custom=", "pidallrestart=", "pidrestart=", "pidstart=", "pidstop=", "relay=", "sensorco2", "sensorht", "sensorpress", "sensort", "sqlreload=", "status", "terminate", "test-email="])
-    except getopt.GetoptError as err:
-        print(err) # will print "option -a not recognized"
-        usage()
-        sys.exit(2)
+        rpyc_client = rpyc.connect("localhost", 18812)
+    except socket.error:
+        print("Connection refused.")
+        sys.exit(1)
 
-    c = rpyc.connect("localhost", 18812)
+    ########################################
+    #                                      #
+    #            Graph Options             #
+    #                                      #
+    ########################################
 
-    for opt, arg in opts:
-        if opt in ("-h", "--help"):
-            usage()
-            return 1
-        elif opt == "--graph":
-            print "%s [Remote command] Graph: %s %s %s %s %s %s %s" % (
-                Timestamp(), sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8])
-            print "%s [Remote command] Server returned:" % (
-                Timestamp()),
-            if c.root.generate_graph(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8]) == 1:
-                print "Success"
-            else:
-                print "Fail"
-            sys.exit(0)
-        elif opt == "--pidallrestart":
-            if (sys.argv[2] != 'T' and sys.argv[2] != 'HT' and sys.argv[2] != 'CO2' and sys.argv[2] != 'Press'):
-                print "'%s' is not a valid option. Use 'T', 'HT', 'CO2', 'PressTemp', or 'PressPress'" % sys.argv[2]
-                sys.exit(0)
-            print "%s [Remote command] Restart all %s PID controllers: Server returned:" % (
-                Timestamp(), sys.argv[2]),
-            reload_status = c.root.all_pid_restart(sys.argv[2])
-            if reload_status == 1:
-                print "Success"
-            else:
-                print "Fail, %s" % reload_status
-            sys.exit(1)
-        elif opt == "--pidrestart":
-            if (sys.argv[2] != 'TTemp' and sys.argv[2] != 'HTTemp' and sys.argv[2] != 'HTHum' and sys.argv[2] != 'CO2' and sys.argv[2] != 'PressTemp' and sys.argv[2] != 'PressPress'):
-                print "'%s' is not a valid option. Use 'TTemp', 'HTTemp', 'HTHum', 'CO2', 'PressTemp', or 'PressPress'" % sys.argv[2]
-                sys.exit(0)
-            print "%s [Remote command] Restart %s PID controller number %s: Server returned:" % (
-                Timestamp(), sys.argv[2], sys.argv[3]),
-            reload_status = c.root.pid_restart(sys.argv[2], int(float(sys.argv[3])))
-            if reload_status == 1:
-                print "Success"
-            else:
-                print "Fail, %s" % reload_status
-            sys.exit(1)
-        elif opt == "--pidstart":
-            if (sys.argv[2] != 'TTemp' and sys.argv[2] != 'HTTemp' and sys.argv[2] != 'HTHum' and sys.argv[2] != 'CO2' and sys.argv[2] != 'PressTemp' and sys.argv[2] != 'PressPress'):
-                print "'%s' is not a valid option. Use 'TTemp', 'HTTemp', 'HTHum', 'CO2', 'PressTemp', or 'PressPress'" % sys.argv[2]
-                sys.exit(0)
-            print "%s [Remote command] Start %s PID controller number %s: Server returned:" % (
-                Timestamp(), sys.argv[2], sys.argv[3]),
-            reload_status = c.root.pid_start(sys.argv[2], int(float(sys.argv[3])))
-            if reload_status == 1:
-                print "Success"
-            else:
-                print "Fail, %s" % reload_status
-            sys.exit(1)
-        elif opt == "--pidstop":
-            if (sys.argv[2] != 'TTemp' and sys.argv[2] != 'HTTemp' and sys.argv[2] != 'HTHum' and sys.argv[2] != 'CO2' and sys.argv[2] != 'PressTemp' and sys.argv[2] != 'PressPress'):
-                print "'%s' is not a valid option. Use 'TTemp', 'HTTemp', 'HTHum',  'CO2', 'PressTemp', or 'PressPress'" % sys.argv[2]
-                sys.exit(0)
-            print "%s [Remote command] Stop %s PID controller number %s: Server returned:" % (
-                Timestamp(), sys.argv[2], sys.argv[3]),
-            reload_status = c.root.pid_stop(sys.argv[2], int(float(sys.argv[3])))
-            if reload_status == 1:
-                print "Success"
-            else:
-                print "Fail, %s" % reload_status
-            sys.exit(1)
-        elif opt in ("-r", "--relay"):
-            if RepresentsInt(sys.argv[2]) and \
-                int(float(sys.argv[2])) > 0:
-                if (sys.argv[3] == '0' or sys.argv[3] == '1'):
-                    print "%s [Remote command] Set relay %s to %s: Server returned:" % (
-                        Timestamp(), int(float(sys.argv[2])), int(float(sys.argv[3]))),
-                    if c.root.change_relay(int(float(sys.argv[2])),
-                            int(float(sys.argv[3]))) == 1:
-                        print 'success'
-                    else:
-                        print 'fail'
-                    sys.exit(0)
-                if (sys.argv[2] > 1):
-                    print '%s [Remote command] Relay %s ON for %s seconds: Server returned:' % (
-                        Timestamp(), int(float(sys.argv[2])), int(float(sys.argv[3]))),
-                    if c.root.change_relay(int(float(sys.argv[2])),
-                            int(float(sys.argv[3]))) == 1:
-                        print "Success"
-                    else:
-                        print "Fail"
-                    sys.exit(0)
-            else:
-                print 'Error: second input must be an integer greater than 0'
-                sys.exit(1)
-        elif opt == "--sensort":
-            print "%s [Remote command] Read %s T sensor %s" % (
-                Timestamp(), sys.argv[2], int(float(sys.argv[3])))
-            temperature = c.root.read_t_sensor(sys.argv[2], int(float(sys.argv[3])))
-            print "%s [Remote Command] Daemon Returned: Temperature: %s°C" % (Timestamp(), round(temperature,2))
-            sys.exit(0)
-        elif opt == "--sensorht":
-            print "%s [Remote command] Read %s HT sensor %s" % (
-                Timestamp(), sys.argv[2], int(float(sys.argv[3])))
-            humidity, temperature = c.root.read_ht_sensor(sys.argv[2], int(float(sys.argv[3])))
-            print "%s [Remote Command] Daemon Returned: Temperature: %s°C Humidity: %s%%" % (Timestamp(), round(temperature,2), round(humidity,2))
-            sys.exit(0)
-        elif opt == "--sensorco2":
-            print "%s [Remote command] Read %s CO2 sensor %s" % (
-                Timestamp(), sys.argv[2], int(float(sys.argv[3])))
-            co2 = c.root.read_co2_sensor(sys.argv[2], int(float(sys.argv[3])))
-            print "%s [Remote Command] Daemon Returned: CO2: %s ppmv" % (Timestamp(), co2)
-            sys.exit(0)
-        elif opt == "--sensorpress":
-            print "%s [Remote command] Read %s Press sensor %s" % (
-                Timestamp(), sys.argv[2], int(float(sys.argv[3])))
-            pressure, temperature, altitude = c.root.read_press_sensor(sys.argv[2], int(float(sys.argv[3])))
-            print "%s [Remote Command] Daemon Returned: Pressure: %s kPa Temperature: %s°C Altitude: %s m" % (Timestamp(), pressure, round(temperature,2), round(altitude,2))
-            sys.exit(0)
-        
-        elif opt == "--sqlreload":
-            if int(float(sys.argv[2])) != -1:
-                print "%s [Remote command] Reload SQLite database and initialize relay %s: Server returned:" % (
-                    Timestamp(), int(float(sys.argv[2]))),
-                if c.root.sqlreload(int(float(sys.argv[2]))) == 1:
-                    print "Success"
-                else:
-                    print "Fail"
-            else:
-                print "%s [Remote command] Reload SQLite database: Server returned:" % (
-                    Timestamp()),
-                if c.root.sqlreload(-1) == 1:
-                    print "Success"
-                else:
-                    print "Fail"
-            sys.exit(0)
-        elif opt in ("-s", "--status"):
-            print "%s [Remote command] Request Status Report: Daemon is active:" % (
-                Timestamp()),
-            output, names, values = c.root.status(1)
-            if output == 1:
-                print "Yes"
-                print "Parsing global variables..."
-            else:
-                print "No"
+    if args.graph:
+        print("{}, [Remote command] Graph:"
+              " {} {} {} {} {} {} {}".format(now(), *args.graph))
 
-            padding = 36
-            for nam, val in zip(names, values):
-                print "%s %s" % (nam.ljust(padding), val)
+        print("{} [Remote command] Server returned:".format(now()))
 
-            sys.exit(0)
-        elif opt in ("-t", "--terminate"):
-            print "%s [Remote command] Terminate all threads and daemon: Server returned:" % (
-                Timestamp()),
-            if c.root.terminate_daemon(1) == 1: print "Success"
-            else: print "Fail"
-            sys.exit(0)
-        elif opt == "--test-email":
-            print "%s [Remote command] Send test email to %s: Server returned:" % (
-                Timestamp(), sys.argv[2]),
-            if c.root.test_email(sys.argv[2]) == 1:
-                print "Success (check your email for confirmation)"
-            else:
-                print "Fail"
-            sys.exit(1)
+        if rpyc_client.root.generate_graph(*args.graph):
+            print("Success")
         else:
-            assert False, "Fail"
-    usage()
-    sys.exit(1)
+            print("Fail")
 
-def RepresentsInt(s):
-    try:
-        int(s)
-        return True
-    except ValueError:
-        return False
+    ########################################
+    #                                      #
+    #             PID Options              #
+    #                                      #
+    ########################################
 
-def Timestamp():
-    return datetime.datetime.fromtimestamp(time.time()).strftime('%Y %m %d %H %M %S')
+    if args.pidstart:
+        pid_type, pid_number = args.pidstart
 
-if len(sys.argv) == 1: # No arguments given
-    usage()
-    sys.exit(1)
+        if pid_type not in VALID_PID_TYPES:
+            print("invalid pid_type: {}  "
+                  "(choose from '{}')".format(pid_type, "', '".join(VALID_PID_TYPES)))
+            sys.exit(1)
 
-menu()
-sys.exit(0)
+        try:
+            pid_number = int(pid_number)
+        except ValueError:
+            print("Not a valid PID number: {}".format(pid_number))
+            sys.exit(1)
+
+        print("{} [Remote command] Start {} PID controller number {}:"
+              " Server returned:".format(now(), pid_type, pid_number))
+
+        reload_status = rpyc_client.root.pid_start(pid_type, pid_number)
+        if reload_status == 1:
+            print("Success")
+        else:
+            print("Failure: {}".format(reload_status))
+            sys.exit(1)
+
+    if args.pidstop:
+        pid_type, pid_number = args.pidstop
+
+        if pid_type not in VALID_PID_TYPES:
+            print("invalid pid_type: {}  "
+                  "(choose from '{}')".format(pid_type, "', '".join(VALID_PID_TYPES)))
+            sys.exit(1)
+
+        try:
+            pid_number = int(pid_number)
+        except ValueError:
+            print("Not a valid PID number: {}".format(pid_number))
+            sys.exit(1)
+
+        print("{} [Remote command] Stop {} PID controller number {}: "
+              "Server returned:".format(now(), pid_type, pid_number))
+
+        reload_status = rpyc_client.root.pid_stop(pid_type, pid_number)
+        if reload_status == 1:
+            print("Success")
+        else:
+            print("Failure: {}".format(reload_status))
+            sys.exit(1)
+
+    if args.pidrestart:
+        pid_type, pid_number = args.pidrestart
+
+        if pid_type not in VALID_PID_TYPES:
+            print("invalid pid_type: {}  "
+                  "(choose from '{}')".format(pid_type, "', '".join(VALID_PID_TYPES)))
+            sys.exit(1)
+
+        try:
+            pid_number = int(pid_number)
+        except ValueError:
+            print("Not a valid PID number: {}".format(pid_number))
+            sys.exit(1)
+
+        print("{} [Remote command] Restart {} PID controller number %s: Server returned:".format(now(), pid_type, pid_number))
+
+        reload_status = rpyc_client.root.pid_restart(pid_type, pid_number)
+        if reload_status == 1:
+            print("Success")
+        else:
+            print("Failure: {}".format(reload_status))
+            sys.exit(1)
+
+    if args.pidallrestart:
+        pid_type = args.pidallrestart
+
+        print("{} [Remote command] Restart all {} PID controllers: "
+              "Server returned:".format(now(), pid_type))
+
+        reload_status = rpyc_client.root.all_pid_restart(pid_type)
+        if reload_status == 1:
+            print("Success!")
+        else:
+            print("Failure: ".format(reload_status))
+            sys.exit(1)
+
+    ########################################
+    #                                      #
+    #            Relay Options             #
+    #                                      #
+    ########################################
+
+    if args.relay:
+        relay_number, state = args.relay
+
+        try:
+            relay_number = int(relay_number)
+        except ValueError:
+            print("Not a valid Relay ID: {}".format(relay_number))
+            sys.exit(1)
+
+        try:
+            state = int(state)
+        except ValueError:
+            print("Invalid state given: {}".format(state))
+            sys.exit(1)
+
+        # State 1 or 0 is On or Off.  Anything greater than 1 is duration for relay.
+        if state < 0:
+            print("State must not be negative")
+            sys.exit(1)
+
+        if relay_number <= 0:
+            print("Relay ID must be greater than 0")
+            sys.exit(1)
+
+        if state > 1:
+            print('{} [Remote command] Relay {} ON for {} seconds:'
+                  ' Server returned:'.format(now(), relay_number, state))
+        else:
+            print("{} [Remote command] Set Relay {} to {}: "
+                  "Server returned:".format(now(), relay_number, "On" if state else "Off"))
+
+        if rpyc_client.root.change_relay(relay_number, state) == 1:
+            print('Success')
+        else:
+            print('Failure.')
+            sys.exit(1)
+
+    if args.sqlreload:
+        relay_number = args.sqlreload
+
+        try:
+            relay_number = int(relay_number[0])
+        except ValueError:
+            print("Not a valid Relay ID: {}".format(relay_number))
+            sys.exit(1)
+
+        if relay_number == -1:
+            print("{} [Remote command] Reload SQLite database: "
+                  "Server returned:".format(now()))
+        else:
+            print("{} [Remote command] Reload SQLite database "
+                  "and initialize relay {}: Server returned:".format(now(), relay_number))
+
+        if rpyc_client.root.sqlreload(relay_number) == 1:
+            print("Success")
+        else:
+            print("Fail")
+
+    ########################################
+    #                                      #
+    #           Sensor Options             #
+    #                                      #
+    ########################################
+
+    if args.sensort:
+        device, sensor_number = args.sensort
+
+        device = device.upper()
+
+        if device not in ['RPi', 'DS18B20']:
+            print("Invalid device name.  Please select a valid device.")
+            sys.exit(1)
+
+        try:
+            sensor_number = int(sensor_number)
+        except ValueError:
+            print("Not a valid Sensor number: {}".format(sensor_number))
+            sys.exit(1)
+
+        print("{} [Remote command] Read {} T sensor {}".format(now(), device, sensor_number))
+        temperature = rpyc_client.root.read_t_sensor(device, sensor_number)
+        print("{} [Remote Command] Daemon Returned:"
+              " Temperature: {:.2f}°C".format(now(), temperature))
+
+    if args.sensorht:
+        device, sensor_number = args.sensorht
+        device = device.upper()
+
+        if device not in ['DHT22', 'DHT11', 'AM2302', 'AM2315']:
+            print("Invalid device name.  Please select a valid device.")
+            sys.exit(1)
+
+        try:
+            sensor_number = int(sensor_number)
+        except ValueError:
+            print("Not a valid Sensor number: {}".format(sensor_number))
+            sys.exit(1)
+
+        print("{} [Remote command] Read {} HT sensor {}".format(now(), device, sensor_number))
+        humidity, temperature = rpyc_client.root.read_ht_sensor(device, sensor_number)
+        print("{} [Remote Command] Daemon Returned: "
+              "Temperature: {:.2f}°C Humidity: {:.2f}%".format(now(), temperature, humidity))
+
+    if args.sensorco2:
+        device, sensor_number = args.sensorco2
+        device = device.upper()
+
+        if device not in ['K30']:
+            print("Invalid device name.  Please select a valid device.")
+            sys.exit(1)
+
+        try:
+            sensor_number = int(sensor_number)
+        except ValueError:
+            print("Not a valid Sensor number: {}".format(sensor_number))
+            sys.exit(1)
+
+        print("{} [Remote command] Read {} CO2 sensor {}".format(now(), device, sensor_number))
+        co2 = rpyc_client.root.read_co2_sensor(device, sensor_number)
+        print("{} [Remote Command] Daemon Returned: CO2: {} ppmv".format(now(), co2))
+
+    if args.sensorpress:
+        device, sensor_number = args.sensorpress
+        device = device.upper()
+
+        if device not in ['BMP085-180']:
+            print("Invalid device name.  Please select a valid device.")
+            sys.exit(1)
+
+        try:
+            sensor_number = int(sensor_number)
+        except ValueError:
+            print("Not a valid Sensor number: {}".format(sensor_number))
+            sys.exit(1)
+
+        print("{} [Remote command] Read {} Pressure sensor {}".format(now(), device, sensor_number))
+
+        pressure, temperature, altitude = rpyc_client.root.read_press_sensor(device, sensor_number)
+
+        print("{} [Remote Command] Daemon Returned: Pressure: {} "
+              "kPa Temperature: {:2f}°C "
+              "Altitude: {:.2f} m".format(now(), pressure, temperature, altitude))
+
+    ########################################
+    #                                      #
+    #                Misc.                 #
+    #                                      #
+    ########################################
+    if args.status:
+        print("{} [Remote command] Request Status Report: "
+              "Daemon is active:".format(now()))
+        output, names, values = rpyc_client.root.status(1)
+        if output == 1:
+            print("Yes")
+            print("Parsing global variables...")
+        else:
+            print("No")
+
+        padding = 36
+        for name, value in zip(names, values):
+            print("{} {}".format(name.ljust(padding, "."), value))
+
+    if args.terminate:
+        print("{} [Remote command] Terminate all threads "
+              "and daemon: Server returned:".format(now()))
+        if rpyc_client.root.terminate_daemon(1) == 1:
+            print("Success")
+        else:
+            print("Fail")
+
+    if args.test_email:
+        recepient = args.test_email[0]
+        print("{} [Remote command] Send test email to {}: "
+              "Server returned:".format(now(), recepient))
+        if rpyc_client.root.test_email(recepient) == 1:
+            print("Success (check your email for confirmation)")
+        else:
+            print("Fail")
+            sys.exit(1)
+
+
+if __name__ == "__main__":
+    menu()
+    sys.exit(0)
