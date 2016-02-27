@@ -1155,13 +1155,13 @@ if (!file_exists($lock_daemon)) {
                             if ($sensor_t_device[$i] == 'RPi') {
                                 echo 'SoC';
                             } else if ($sensor_t_device[$i] == 'DS18B20') {
-                                // Look in /sys/bus/w1/devices/ to detect any connected DS18B20 sensors
-                                // Crete an array of symlinks that start with "28-"
+                                // Crete an array of symlinks that start with "28-" from
+                                // within /sys/bus/w1/devices/ to detect connected DS18B20 sensors
                                 $iterator = new DirectoryIterator("/sys/bus/w1/devices/");
+                                $query = "28-";
                                 $DS18b20Serials = []; 
                                 foreach ($iterator as $fileinfo) {
                                     if ($fileinfo->isDir()) {
-                                        $query = "28-";
                                         if (substr($fileinfo->getFilename(), 0, strlen($query)) === $query) {
                                             $DS18b20Serials[] = substr($fileinfo->getFilename(), 3);
                                         }
@@ -1182,7 +1182,7 @@ if (!file_exists($lock_daemon)) {
                                         }
                                         echo ' value="' . $DS18b20Serials[$DS18b20SerialCount] . '">' . $DS18b20Serials[$DS18b20SerialCount] . '</option>';
                                     }
-                                    // The saved sensor serial number is not in the array of detected sensor seral numbers
+                                    // The saved sensor serial number is not in the array of detected sensor serial numbers
                                     if (!in_array($sensor_t_pin[$i], $DS18b20Serials)) {
                                         echo '<option selected="selected"></option>';
                                         echo '</select>';
@@ -1192,8 +1192,7 @@ if (!file_exists($lock_daemon)) {
                                         echo '</select>';
                                     }
                                 }
-                                // Display the currently-saved value
-                                if ($sensor_t_pin[$i] != 0) {
+                                if ($sensor_t_pin[$i] != 0) { // Display the currently-saved sensor serial number
                                     echo '<br>Currently saved:<br>' . $sensor_t_pin[$i];
                                 } else {
                                     echo '<br>None Saved';
