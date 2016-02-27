@@ -108,8 +108,9 @@ if [[ $db_version_mycodo -lt 19 ]]; then
 	fi
 fi
 
+printf "Checking if python modules are up-to-date...\n";
 # Make sure python modules are installed/updated
-pip install --upgrade lockfile rpyc pyserial tentacle_pi sht-sensor
+pip install --upgrade -r /var/www/mycodo/requirements.txt
 
 # Perform update based on database version
 if [ ! -f $DATABASEMYC ]; then

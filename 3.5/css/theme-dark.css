@@ -18,6 +18,14 @@ hr.fade {
     background-image: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0));
 }
 
+/*** Header ***/
+
+.header-preview-style {
+    border-bottom: 1pt solid white;
+    font-size: 0.8em;"
+}
+
+
 /*** Sensor tab ***/
 
 .sensor-parent {
