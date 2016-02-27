@@ -3639,6 +3639,6 @@ if (isset($_POST['TestNotify'])) {
       $settings_error = "Error: Invalid email format for recipient of test email";
     } else {
         $settings_error = "Test email command sent to daemon. Check the daemon log and/or your email to verify it was delivered.";
-        shell_exec("$mycodo_client --test-email $email_to");
+        shell_exec("$mycodo_client --test_email $email_to");
     }
 }
