@@ -5375,12 +5375,33 @@ if (!file_exists($lock_daemon)) {
                 <div style="padding: 1em 0; font-weight: bold; font-size: 1.2em;">
                     System
                 </div>
-                <div style="font-family: monospace; padding-bottom:0.5em;"><pre><?php echo `uname -a`; ?></pre></div>
-                <div style="font-family: monospace; padding-bottom:0.5em;"><pre><?php echo `uptime`; ?></pre></div>
+                <div style="padding: 0.5em 0; font-weight: bold; font-size: 1em;">
+                    lsb_release -da:
+                </div>
                 <div style="font-family: monospace; padding-bottom:0.5em;"><pre><?php echo `lsb_release -da`; ?></pre></div>
+                <div style="padding: 0.5em 0; font-weight: bold; font-size: 1em;">
+                    uname -a:
+                </div>
+                <div style="font-family: monospace; padding-bottom:0.5em;"><pre><?php echo `uname -a`; ?></pre></div>
+                <div style="padding: 0.5em 0; font-weight: bold; font-size: 1em;">
+                    uptime:
+                </div>
+                <div style="font-family: monospace; padding-bottom:0.5em;"><pre><?php echo `uptime`; ?></pre></div>
+                <div style="padding: 0.5em 0; font-weight: bold; font-size: 1em;">
+                    lscpu:
+                </div>
                 <div style="font-family: monospace; padding-bottom:0.5em;"><pre><?php echo `lscpu`; ?></pre></div>
+                <div style="padding: 0.5em 0; font-weight: bold; font-size: 1em;">
+                    cpuinfo:
+                </div>
                 <div style="font-family: monospace; padding-bottom:0.5em;"><pre><?php echo `cat /proc/cpuinfo`; ?></pre></div>
+                <div style="padding: 0.5em 0; font-weight: bold; font-size: 1em;">
+                    df:
+                </div>
                 <div style="font-family: monospace; padding-bottom:0.5em;"><pre><?php echo `df`; ?></pre></div>
+                <div style="padding: 0.5em 0; font-weight: bold; font-size: 1em;">
+                    free:
+                </div>
                 <div style="font-family: monospace;"><pre><?php echo `free`; ?></pre></div>
             </div>
             <div style="padding-bottom: 2em;">
