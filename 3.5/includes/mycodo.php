@@ -1167,14 +1167,12 @@ if (!file_exists($lock_daemon)) {
                                         }
                                     }
                                 }
-
-                                // Notify if no DS18B20 sensors were detected
+                                // No DS18B20 sensors were detected
                                 if (count($DS18b20Serials) == 0) {
                                     echo '<select style="width: 8em;" title="Error: There are no DS18B20 sensors detected. When detected, this drop-down will populate with serial numbers of devices found in "/sys/bus/w1/devices/". Symlinks in this directory will be named "28-x", with x being the serial number of your connected DS18B20."><option>None detected</option></select>';
-                                    echo '<br>Currently saved:<br>' . $sensor_t_pin[$i];
                                     echo '<input type="hidden" name="sensort' . $i . 'pin" value="' . $sensor_t_pin[$i] . '">';
                                 } 
-                                // Produce a drop-down list of available DS18B20 sensors to choose from
+                                // DS18B20 sensors detected
                                 else {
                                     echo '<select style="width: 8em;" name="sensort' . $i . 'pin" title="This drop-down is populated with serial numbers of detected DS18B20 devices. Symlinks found in "/sys/bus/w1/devices/" will be named "28-x", with x being the serial number of your connected DS18B20.">';
                                     for ($DS18b20SerialCount = 0; $DS18b20SerialCount < count($DS18b20Serials); $DS18b20SerialCount++) {
@@ -1184,8 +1182,23 @@ if (!file_exists($lock_daemon)) {
                                         }
                                         echo ' value="' . $DS18b20Serials[$DS18b20SerialCount] . '">' . $DS18b20Serials[$DS18b20SerialCount] . '</option>';
                                     }
-                                    echo '</select>';
+                                    // The saved sensor serial number is not in the array of detected sensor seral numbers
+                                    if (!in_array($sensor_t_pin[$i], $DS18b20Serials)) {
+                                        echo '<option selected="selected"></option>';
+                                        echo '</select>';
+                                        echo '<input type="hidden" name="sensort' . $i . 'pin" value="' . $sensor_t_pin[$i] . '">';
+                                    }
+                                    else {
+                                        echo '</select>';
+                                    }
                                 }
+                                // Display the currently-saved value
+                                if ($sensor_t_pin[$i] != 0) {
+                                    echo '<br>Currently saved:<br>' . $sensor_t_pin[$i];
+                                } else {
+                                    echo '<br>None Saved';
+                                }
+                                
                             } else {
                                 echo '<input style="width: 3em;" type="number" min="0" max="40" value="' , $sensor_t_pin[$i] , '" maxlength=2 name="sensort' , $i , 'pin" title="This is the GPIO pin connected to the temperature sensor"/>';
                             }
