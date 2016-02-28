@@ -101,7 +101,8 @@ fi
 
 # update /var/www/mycodo symlink to new public_html directory
 if [[ $db_version_mycodo -lt 21 ]]; then
-	ln -sf $INSTALL_DIRECTORY/public_html /var/www/mycodo
+	rm -rf /var/www/mycodo
+	ln -s $INSTALL_DIRECTORY/public_html /var/www/mycodo
 fi
 
 printf "Checking if python modules are up-to-date...\n";
