@@ -22,6 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
+
 /*
  * Logging
  */
@@ -76,27 +77,30 @@ function view_sql_db($sqlite_db) {
 
 // Generate and display graphs on the Graph tab
 function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_graph, $sensor_ht_graph, $sensor_co2_graph, $sensor_press_graph, $theme) {
-    $image_path = '/var/www/mycodo/images/';
 
-    $sensor_t_log_file_tmp = "/var/www/mycodo/log/sensor-t-tmp.log";
-    $sensor_t_log_file = "/var/www/mycodo/log/sensor-t.log";
+    $install_path = dirname(__FILE__) . '/../..';
+
+    $image_path = "$install_path/images/";
+
+    $sensor_t_log_file_tmp = "$install_path/log/sensor-t-tmp.log";
+    $sensor_t_log_file = "$install_path/log/sensor-t.log";
     $sensor_t_log_generate = "/var/tmp/sensor-t-logs-combined.log";
 
-    $sensor_ht_log_file_tmp = "/var/www/mycodo/log/sensor-ht-tmp.log";
-    $sensor_ht_log_file = "/var/www/mycodo/log/sensor-ht.log";
+    $sensor_ht_log_file_tmp = "$install_path/log/sensor-ht-tmp.log";
+    $sensor_ht_log_file = "$install_path/log/sensor-ht.log";
     $sensor_ht_log_generate = "/var/tmp/sensor-ht-logs-combined.log";
 
-    $sensor_co2_log_file_tmp = "/var/www/mycodo/log/sensor-co2-tmp.log";
-    $sensor_co2_log_file = "/var/www/mycodo/log/sensor-co2.log";
+    $sensor_co2_log_file_tmp = "$install_path/log/sensor-co2-tmp.log";
+    $sensor_co2_log_file = "$install_path/log/sensor-co2.log";
     $sensor_co2_log_generate = "/var/tmp/sensor-co2-logs-combined.log";
 
-    $sensor_press_log_file_tmp = "/var/www/mycodo/log/sensor-press-tmp.log";
-    $sensor_press_log_file = "/var/www/mycodo/log/sensor-press.log";
+    $sensor_press_log_file_tmp = "$install_path/log/sensor-press-tmp.log";
+    $sensor_press_log_file = "$install_path/log/sensor-press.log";
     $sensor_press_log_generate = "/var/tmp/sensor-press-logs-combined.log";
 
     // Main preset: Display graphs of past day and week
     if ($graph_time_span == 'default') {
-        if (sizeof(glob("/var/www/mycodo/images/*default*$graph_id*")) == 0) {
+        if (sizeof(glob("$install_path/images/*default*$graph_id*")) == 0) {
             shell_exec("$mycodo_client --graph $theme default $graph_id 0 0 0 0");
         }
         $first = 0;
@@ -169,7 +173,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
             }
         }
     } else if ($graph_type == 'combined') {
-        if (sizeof(glob("/var/www/mycodo/images/*combined*$graph_id*")) == 0) {
+        if (sizeof(glob("$install_path/images/*combined*$graph_id*")) == 0) {
             shell_exec("$mycodo_client --graph $theme combined $graph_id $graph_time_span 0 0 0");
         }
         $first = 0;
@@ -226,7 +230,7 @@ function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_spa
             echo '</div>';
         }
     } else if ($graph_type == 'separate') {
-        if (sizeof(glob("/var/www/mycodo/images/*separate*$graph_id*")) == 0) {
+        if (sizeof(glob("$install_path/images/*separate*$graph_id*")) == 0) {
             shell_exec("$mycodo_client --graph $theme $graph_type $graph_id $graph_time_span 0 0 0");
         }
         $first = 0;
@@ -524,7 +528,9 @@ function is_positive_integer($str) {
 }
 
 function update_check($install_path, $update_check) {
-    exec("$install_path/cgi-bin/mycodo-wrapper updatecheck 2>&1", $update_check_output, $update_check_return);
+    $install_path = dirname(__FILE__) . '/../..';
+    
+    exec("$install_path/mycodo_core/mycodo-wrapper updatecheck 2>&1", $update_check_output, $update_check_return);
 
     if ($update_check_return) {
         exec("echo '1' > $update_check");

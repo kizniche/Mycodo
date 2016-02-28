@@ -24,14 +24,14 @@
 */
 
 ####### Configure #######
-$install_path = "/var/www/mycodo";
+$install_path = dirname(__FILE__);
 
-$image_dir = $install_path . "/images/";
-$still_dir = $install_path . "/camera-stills/";
-$timelapse_dir = $install_path . "/camera-timelapse/";
+$image_dir = $install_path . "/../images/";
+$still_dir = $install_path . "/public_html/camera-stills/";
+$timelapse_dir = $install_path . "/public_html/camera-timelapse/";
 $upload_dir = $install_path . "/notes/uploads/";
-$hdr_dir = $install_path . "/camera-hdr/";
-$mycodo_client = $install_path . "/cgi-bin/mycodo-client.py";
+$hdr_dir = $install_path . "/public_html/camera-hdr/";
+$mycodo_client = $install_path . "/mycodo_core/mycodo-client.py";
 
 require_once("includes/auth.php"); // Check authorization to view
 
@@ -117,8 +117,8 @@ if ($_COOKIE['login_hash'] == $user_hash) {
                 $mycodo_db = $install_path . "/config/mycodo.db";
                 $user_db = $install_path . "/config/users.db";
                 $note_db = $install_path . "/config/notes.db";
-                require($install_path . "/includes/database.php");
-                require($install_path . "/includes/functions.php");
+                require($install_path . "/public_html/includes/database.php");
+                require($install_path . "/public_html/includes/functions.php");
                 $graph_id = get_graph_cookie('id');
 
                 // Create page title (only create title)
@@ -172,7 +172,7 @@ if ($_COOKIE['login_hash'] == $user_hash) {
                     ';
                 }
                 if (isset($_POST['Generate_Graph'])) {
-                    require($install_path . "/includes/graph.php");
+                    require($install_path . "/public_html/includes/graph.php");
                 }
                 echo '
                 </head>

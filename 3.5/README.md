@@ -250,15 +250,15 @@ The DS18B20 is a simple 1-wire sensor. Once the one-wire interface has been conf
 
 > [DHT11, DHT22, AM2302](https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring)
 
-After [insatling the Adafruit_Python_DHT library](#prerequisites), it can be tested whether the sensor is able to be read, by executing cgi-bin/Test-Sensor-HT-DHT.py
+After [insatling the Adafruit_Python_DHT library](#prerequisites), it can be tested whether the sensor is able to be read, by executing mycodo_core/Test-Sensor-HT-DHT.py
 
 > [AM2315](https://github.com/lexruee/tentacle_pi)
 
-After [configuring I<sup>2</sup>C](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c) and [installing the tentacle_pi libraries](#prerequisites), it can be tested whether the sensor is able to be read, by executing cgi-bin/Test-Sensor-HT-AM2315.py
+After [configuring I<sup>2</sup>C](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c) and [installing the tentacle_pi libraries](#prerequisites), it can be tested whether the sensor is able to be read, by executing mycodo_core/Test-Sensor-HT-AM2315.py
 
 > [SHT10, SHT11, SHT15, SHT71, SHT75](https://github.com/mk-fg/sht-sensor)
 
-After [insatling the sht-sensor python module](#prerequisites), it can be tested whether the sensor is able to be read, by executing cgi-bin/Test-Sensor-HT-SHT75.py
+After [insatling the sht-sensor python module](#prerequisites), it can be tested whether the sensor is able to be read, by executing mycodo_core/Test-Sensor-HT-SHT75.py
 
 NOTE: The Raspberry Pi uses 3.3-volts for powering the SHT sensor, however the default driver (sht-sensor) does not handle measurement calculations from 3.3-volts, only 3.5-volts. This can be easy corrected by setting the correct coefficient in driver (a future revision will fix this).
 
@@ -266,13 +266,13 @@ NOTE: The Raspberry Pi uses 3.3-volts for powering the SHT sensor, however the d
 
 > [K30](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip)
 
-This documentation provides specific installation procedures for the Raspberry Pi as well as example code. Once the K30 has been configured with this documentation, it can be tested whether the sensor is able to be read, by executing cgi-bin/Test-Sensor-CO2-K30.py
+This documentation provides specific installation procedures for the Raspberry Pi as well as example code. Once the K30 has been configured with this documentation, it can be tested whether the sensor is able to be read, by executing mycodo_core/Test-Sensor-CO2-K30.py
 
 ### Pressure Sensors
 
 > [BMP085/BMP180](https://learn.adafruit.com/using-the-bmp085-with-raspberry-pi)
 
-After [configuring I<sup>2</sup>C](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c) and [installing the Adafruit_Python_BMP library](#prerequisites), it can be tested whether the sensor is able to be read, by executing cgi-bin/Test-Sensor-Press-BMP085-180.py
+After [configuring I<sup>2</sup>C](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c) and [installing the Adafruit_Python_BMP library](#prerequisites), it can be tested whether the sensor is able to be read, by executing mycodo_core/Test-Sensor-Press-BMP085-180.py
 
 ### I<sup>2</sup>C Multiplexer
 
@@ -321,7 +321,7 @@ Install/Upgrade LockFile, RPyC, pySerial, tentacle_pi, RPi.GPIO
 
 Create a symlink to Mycodo
 
-`sudo ln -s ~/Mycodo/3.5 /var/www/mycodo`
+`sudo ln -s ~/Mycodo/3.5/public_html /var/www/mycodo`
 
 In order to configure the sensor you just need to make a small change to the config.txt file using `sudo vi /boot/config.txt` and add the following line to the bottom:
 
@@ -399,7 +399,7 @@ tmpfs /var/log tmpfs defaults,noatime,nosuid,mode=0755,size=50M  0 0
 
 Using a tempfs does create some issues with certain software. Apache does not start if there is no directory structure in /var/log, and the designation of /var/log as a tempfs means that at every bootup this directory is empty. This init script will ensure that the proper directory structure is created at every boot, prior to Apache starting.
 
-`sudo cp /var/www/mycodo/init.d/apache2-tmpfs /etc/init.d/`
+`sudo cp ~/Mycodo/3.5/init.d/apache2-tmpfs /etc/init.d/`
 
 `sudo chmod 0755 /etc/init.d/apache2-tmpfs`
 
@@ -508,7 +508,7 @@ It is highly recommended that the configuration change be tested to determine if
 
 Use the following command and type 'all' when prompted to create both the user and mycodo databases.
 
-`sudo /var/www/mycodo/update-database.py -i`
+`sudo ~/Mycodo/3.5/update-database.py -i`
 
 Follow the prompts to create an admin password, optionally create another user, and enable/disable guest access.
 
@@ -516,11 +516,13 @@ Follow the prompts to create an admin password, optionally create another user, 
 
 To initialize GPIO pins at startup, open crontab with `sudo crontab -e` and add the following lines, then save with `Ctrl+x`
 
-`@reboot /usr/bin/python /var/www/mycodo/cgi-bin/gpio_initialize.py &`
+<strong>IMPORTANT: Replace "user" with the user you have the folder Mycodo saved under.</strong>
+
+`@reboot /usr/bin/python /home/user/Mycodo/3.5/mycodo_core/gpio_initialize.py &`
 
 Last, set the daemon to automatically start
 
-`sudo cp /var/www/mycodo/init.d/mycodo /etc/init.d/`
+`sudo cp ~/Mycodo/3.5/init.d/mycodo /etc/init.d/`
 
 `sudo chmod 0755 /etc/init.d/mycodo`
 
@@ -530,9 +532,9 @@ You can either reboot or start the daemon with the following command.
 
 `sudo service mycodo start`
 
-Note: cgi-bin/mycodo-wrapper is a binary executable used to start and stop the mycodo daemon, and to create and restore backups, from the web interface. It has the setuid bit to permit it to be executed as root (the init.d/mycodo script sets the correct permissions and setuid). Since shell scripts cannot be setuid (ony binary files), the mycodo-wrapper binay permits init.d/mycodo to be executed as root by a non-root user. You can audit the source code of cgi-bin/mycodo-wrapper.c and if you want to ensure the binary is indeed compiled from that source, you may compile it yourself with the following command. Otherwise, the compiled binary is already included and no further action is needed. I mention this to explain the need for setuid, for transparency, for security, and to maintain all code of this project as open source.
+Note: mycodo_core/mycodo-wrapper is a binary executable used to start and stop the mycodo daemon, and to create and restore backups, from the web interface. It has the setuid bit to permit it to be executed as root (the init.d/mycodo script sets the correct permissions and setuid). Since shell scripts cannot be setuid (ony binary files), the mycodo-wrapper binay permits init.d/mycodo to be executed as root by a non-root user. You can audit the source code of mycodo_core/mycodo-wrapper.c and if you want to ensure the binary is indeed compiled from that source, you may compile it yourself with the following command. Otherwise, the compiled binary is already included and no further action is needed. I mention this to explain the need for setuid, for transparency, for security, and to maintain all code of this project as open source.
 
-`sudo gcc /var/www/mycodo/cgi-bin/mycodo-wrapper.c -o /var/www/mycodo/cgi-bin/mycodo-wrapper`
+`sudo gcc ~/Mycodo/3.5/mycodo_core/mycodo-wrapper.c -o ~/Mycodo/3.5/mycodo_core/mycodo-wrapper`
 
 ---
 
@@ -548,7 +550,7 @@ Mycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRAN
 
 A full copy of the GNU General Public License can be found at <a href="http://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">http://www.gnu.org/licenses/gpl-3.0.en.html</a> and in license.txt in the root directory for this software.
 
-This software includes third party open source software components: Discrete PID Controller. Each of these software components have their own license. Please see ./cgi-bin/mycodoPID.py for license information.
+This software includes third party open source software components: Discrete PID Controller. Each of these software components have their own license. Please see ./mycodo_core/mycodoPID.py for license information.
 
 ## Useful Links
 

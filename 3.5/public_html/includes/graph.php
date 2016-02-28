@@ -22,6 +22,8 @@
 *  Contact at kylegabriel.com
 */
 
+$install_path = dirname(__FILE__) . '/../..';
+
 // Determine what type of graph to generate and for how long in the past
 $sensor_type = $_POST['Generate_Graph_Type'];
 $sensor_span = $_POST['Generate_Graph_Span'];
@@ -55,11 +57,11 @@ if ($sensor_type == "all") {
     for ($i=0; $i < count($sensor_type_list); $i++) {
         $sensor_type_tmp = $sensor_type_list[$i];
         $sensor_num_array = "sensor_{$sensor_type_tmp}_id";
-        $sensor_log_first = "/var/www/mycodo/log/sensor-$sensor_type_tmp.log";
-        $sensor_log_second = "/var/www/mycodo/log/sensor-$sensor_type_tmp-tmp.log";
+        $sensor_log_first = "$install_path/log/sensor-$sensor_type_tmp.log";
+        $sensor_log_second = "$install_path/log/sensor-$sensor_type_tmp-tmp.log";
         $sensor_log_generate = "/var/tmp/sensor-all-$sensor_type_tmp-$graph_id.log";
         $files[] = $sensor_log_generate;
-        shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh $sensor_type_tmp all $time_start $time_end $sensor_log_first $sensor_log_second $sensor_log_generate");
+        shell_exec("$install_path/mycodo_core/log-parser-chart.sh $sensor_type_tmp all $time_start $time_end $sensor_log_first $sensor_log_second $sensor_log_generate");
     }
     $out = array();
     foreach($files as $file) {
@@ -74,19 +76,19 @@ if ($sensor_type == "all") {
     }
     $sensor_log_file_final = "file.php?span=graph&file=sensor-final-all-$graph_id.log";
 } else {
-    $sensor_log_first = "/var/www/mycodo/log/sensor-$sensor_type.log";
-    $sensor_log_second = "/var/www/mycodo/log/sensor-$sensor_type-tmp.log";
+    $sensor_log_first = "$install_path/log/sensor-$sensor_type.log";
+    $sensor_log_second = "$install_path/log/sensor-$sensor_type-tmp.log";
     $sensor_log_generate = "/var/tmp/sensor-$sensor_type-$graph_id.log";
-    shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh x $sensor_type $time_start $time_end $sensor_log_first $sensor_log_second $sensor_log_generate");
+    shell_exec("$install_path/mycodo_core/log-parser-chart.sh x $sensor_type $time_start $time_end $sensor_log_first $sensor_log_second $sensor_log_generate");
     $sensor_log_file_final = "file.php?span=graph&file=sensor-$sensor_type-$graph_id.log";
     $sensor_num_array = "sensor_{$sensor_type}_id";
 }
 
 // Trim relay log to start and end point
-$relay_log_first = "/var/www/mycodo/log/relay.log";
-$relay_log_second = "/var/www/mycodo/log/relay-tmp.log";
+$relay_log_first = "$install_path/log/relay.log";
+$relay_log_second = "$install_path/log/relay-tmp.log";
 $relay_log_generate = "/var/tmp/relay-$graph_id.log";
-shell_exec("/var/www/mycodo/cgi-bin/log-parser-chart.sh x relay $time_start $time_end $relay_log_first $relay_log_second $relay_log_generate");
+shell_exec("$install_path/mycodo_core/log-parser-chart.sh x relay $time_start $time_end $relay_log_first $relay_log_second $relay_log_generate");
 $relay_log_file_final = "file.php?span=graph&file=relay-$graph_id.log";
 
 // Create file with notes for input to HighStock JS

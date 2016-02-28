@@ -22,7 +22,6 @@
 #
 #  Contact at kylegabriel.com
 
-install_directory = "/var/www/mycodo"
 
 import datetime
 import fileinput
@@ -31,6 +30,8 @@ import os
 import subprocess
 import time
 from lockfile import LockFile
+
+install_directory = os.path.dirname(os.path.abspath(__file__)) + "/.."
 
 log_path = "%s/log" % install_directory # Where generated logs are stored
 image_path = "%s/images" % install_directory # Where generated graphs are stored
@@ -409,8 +410,8 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 if sensor_t_graph[i]:
                     sensor_t_log_final[i] = "%s/sensor-%s-logs-%s-%s-%s.log" %  (
                         tmp_path, 't', graph_type, graph_id, i)
-                    cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                        i, 't', lines, sensor_t_log_generate, sensor_t_log_final[i])
+                    cmd = "%s/mycodo_core/log-parser.sh %s %s %s %s %s" % (
+                        install_directory, i, 't', lines, sensor_t_log_generate, sensor_t_log_final[i])
                     logging.debug("[Generate Graph] cmd: %s", cmd)
                     os.system(cmd)
         else:
@@ -427,8 +428,8 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 if sensor_ht_graph[i]:
                     sensor_ht_log_final[i] = "%s/sensor-%s-logs-%s-%s-%s.log" %  (
                         tmp_path, 'ht', graph_type, graph_id, i)
-                    cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                        i, 'ht', lines, sensor_ht_log_generate, sensor_ht_log_final[i])
+                    cmd = "%s/mycodo_core/log-parser.sh %s %s %s %s %s" % (
+                        install_directory, i, 'ht', lines, sensor_ht_log_generate, sensor_ht_log_final[i])
                     logging.debug("[Generate Graph] cmd: %s", cmd)
                     os.system(cmd)
         else:
@@ -445,8 +446,8 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 if sensor_co2_graph[i]:
                     sensor_co2_log_final[i] = "%s/sensor-%s-logs-%s-%s-%s.log" %  (
                         tmp_path, 'co2', graph_type, graph_id, i)
-                    cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                        i, 'co2', lines, sensor_co2_log_generate, sensor_co2_log_final[i])
+                    cmd = "%s/mycodo_core/log-parser.sh %s %s %s %s %s" % (
+                        install_directory, i, 'co2', lines, sensor_co2_log_generate, sensor_co2_log_final[i])
                     logging.debug("[Generate Graph] cmd: %s", cmd)
                     os.system(cmd)
         else:
@@ -463,8 +464,8 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 if sensor_press_graph[i]:
                     sensor_press_log_final[i] = "%s/sensor-%s-logs-%s-%s-%s.log" %  (
                         tmp_path, 'press', graph_type, graph_id, i)
-                    cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                        i, 'press', lines, sensor_press_log_generate, sensor_press_log_final[i])
+                    cmd = "%s/mycodo_core/log-parser.sh %s %s %s %s %s" % (
+                        install_directory, i, 'press', lines, sensor_press_log_generate, sensor_press_log_final[i])
                     logging.debug("[Generate Graph] cmd: %s", cmd)
                     os.system(cmd)
         else:
@@ -802,8 +803,8 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 lines = seconds/sensor_t_period[h]
                 sensor_t_log_final[h] = "%s/sensor-%s-logs-%s-%s-%s.log" % (
                     tmp_path, 'ht', graph_type, graph_id, h)
-                cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                    h, 't', lines, sensor_log_generate, sensor_t_log_final[h])
+                cmd = "%s/mycodo_core/log-parser.sh %s %s %s %s %s" % (
+                    install_directory, h, 't', lines, sensor_log_generate, sensor_t_log_final[h])
                 logging.debug("[Generate Graph] cmd: %s", cmd)
                 os.system(cmd)
 
@@ -881,8 +882,8 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 lines = seconds/sensor_ht_period[h]
                 sensor_ht_log_final[h] = "%s/sensor-%s-logs-%s-%s-%s.log" % (
                     tmp_path, 'ht', graph_type, graph_id, h)
-                cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                    h, 'ht', lines, sensor_log_generate, sensor_ht_log_final[h])
+                cmd = "%s/mycodo_core/log-parser.sh %s %s %s %s %s" % (
+                    install_directory, h, 'ht', lines, sensor_log_generate, sensor_ht_log_final[h])
                 logging.debug("[Generate Graph] cmd: %s", cmd)
                 os.system(cmd)
 
@@ -979,8 +980,8 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 lines = seconds/sensor_co2_period[h]
                 sensor_co2_log_final[h] = "%s/sensor-%s-logs-%s-%s-%s.log" % (
                     tmp_path, 'co2', graph_type, graph_id, h)
-                cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                    h, 'co2', lines, sensor_log_generate, sensor_co2_log_final[h])
+                cmd = "%s/mycodo_core/log-parser.sh %s %s %s %s %s" % (
+                    install_directory, h, 'co2', lines, sensor_log_generate, sensor_co2_log_final[h])
                 logging.debug("[Generate Graph] cmd: %s", cmd)
                 os.system(cmd)
 
@@ -1055,8 +1056,8 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 lines = seconds/sensor_press_period[h]
                 sensor_press_log_final[h] = "%s/sensor-%s-logs-%s-%s-%s.log" % (
                     tmp_path, 'press', graph_type, graph_id, h)
-                cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                    h, 'press', lines, sensor_log_generate, sensor_press_log_final[h])
+                cmd = "%s/mycodo_core/log-parser.sh %s %s %s %s %s" % (
+                    install_directory, h, 'press', lines, sensor_log_generate, sensor_press_log_final[h])
                 logging.debug("[Generate Graph] cmd: %s", cmd)
                 os.system(cmd)
 
@@ -1155,15 +1156,15 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 lines = 86400
                 sensor_t_log_final_default_day[h] = "%s/sensor-%s-logs-%s-%s-day.log" %  (
                     tmp_path, 't', graph_id, h)
-                cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                    h, 't', lines, sensor_t_log_generate, sensor_t_log_final_default_day[h])
+                cmd = "%s/mycodo_core/log-parser.sh %s %s %s %s %s" % (
+                    install_directory, h, 't', lines, sensor_t_log_generate, sensor_t_log_final_default_day[h])
                 logging.debug("[Generate Graph] cmd: %s", cmd)
                 os.system(cmd)
                 lines = 604800
                 sensor_t_log_final_default_week[h] = "%s/sensor-%s-logs-%s-%s-week.log" %  (
                     tmp_path, 't', graph_id, h)
-                cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                    h, 't', lines, sensor_t_log_generate, sensor_t_log_final_default_week[h])
+                cmd = "%s/mycodo_core/log-parser.sh %s %s %s %s %s" % (
+                    install_directory, h, 't', lines, sensor_t_log_generate, sensor_t_log_final_default_week[h])
                 logging.debug("[Generate Graph] cmd: %s", cmd)
                 os.system(cmd)
 
@@ -1277,15 +1278,15 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 lines = 86400
                 sensor_ht_log_final_default_day[h] = "%s/sensor-%s-logs-%s-%s-day.log" %  (
                     tmp_path, 'ht', graph_id, h)
-                cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                    h, 'ht', lines, sensor_ht_log_generate, sensor_ht_log_final_default_day[h])
+                cmd = "%s/mycodo_core/log-parser.sh %s %s %s %s %s" % (
+                    install_directory, h, 'ht', lines, sensor_ht_log_generate, sensor_ht_log_final_default_day[h])
                 logging.debug("[Generate Graph] cmd: %s", cmd)
                 os.system(cmd)
                 lines = 604800
                 sensor_ht_log_final_default_week[h] = "%s/sensor-%s-logs-%s-%s-week.log" %  (
                     tmp_path, 'ht', graph_id, h)
-                cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                    h, 'ht', lines, sensor_ht_log_generate, sensor_ht_log_final_default_week[h])
+                cmd = "%s/mycodo_core/log-parser.sh %s %s %s %s %s" % (
+                    install_directory, h, 'ht', lines, sensor_ht_log_generate, sensor_ht_log_final_default_week[h])
                 logging.debug("[Generate Graph] cmd: %s", cmd)
                 os.system(cmd)
 
@@ -1423,15 +1424,15 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 lines = 86400
                 sensor_co2_log_final_default_day[h] = "%s/sensor-%s-logs-%s-%s-day.log" %  (
                     tmp_path, 'co2', graph_id, h)
-                cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                    h, 'co2', lines, sensor_co2_log_generate, sensor_co2_log_final_default_day[h])
+                cmd = "%s/mycodo_core/log-parser.sh %s %s %s %s %s" % (
+                    install_directory, h, 'co2', lines, sensor_co2_log_generate, sensor_co2_log_final_default_day[h])
                 logging.debug("[Generate Graph] cmd: %s", cmd)
                 os.system(cmd)
                 lines = 604800
                 sensor_co2_log_final_default_week[h] = "%s/sensor-%s-logs-%s-%s-week.log" %  (
                     tmp_path, 'co2', graph_id, h)
-                cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                    h, 'co2', lines, sensor_co2_log_generate, sensor_co2_log_final_default_week[h])
+                cmd = "%s/mycodo_core/log-parser.sh %s %s %s %s %s" % (
+                    install_directory, h, 'co2', lines, sensor_co2_log_generate, sensor_co2_log_final_default_week[h])
                 logging.debug("[Generate Graph] cmd: %s", cmd)
                 os.system(cmd)
 
@@ -1545,15 +1546,15 @@ def generate_graph(theme, graph_type, graph_span, graph_id, sensor_t_name, senso
                 lines = 86400
                 sensor_press_log_final_default_day[h] = "%s/sensor-%s-logs-%s-%s-%s-day.log" %  (
                     tmp_path, 'press', graph_span, graph_id, h)
-                cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                    h, 'press', lines, sensor_press_log_generate, sensor_press_log_final_default_day[h])
+                cmd = "%s/mycodo_core/log-parser.sh %s %s %s %s %s" % (
+                    install_directory, h, 'press', lines, sensor_press_log_generate, sensor_press_log_final_default_day[h])
                 logging.debug("[Generate Graph] cmd: %s", cmd)
                 os.system(cmd)
                 lines = 604800
                 sensor_press_log_final_default_week[h] = "%s/sensor-%s-logs-%s-%s-%s-week.log" %  (
                     tmp_path, 'press', graph_span, graph_id, h)
-                cmd = "/var/www/mycodo/cgi-bin/log-parser.sh %s %s %s %s %s" % (
-                    h, 'press', lines, sensor_press_log_generate, sensor_press_log_final_default_week[h])
+                cmd = "%s/mycodo_core/log-parser.sh %s %s %s %s %s" % (
+                    install_directory, h, 'press', lines, sensor_press_log_generate, sensor_press_log_final_default_week[h])
                 logging.debug("[Generate Graph] cmd: %s", cmd)
                 os.system(cmd)
 

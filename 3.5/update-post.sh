@@ -24,112 +24,108 @@
 #
 #  Contact at kylegabriel.com
 
+
+
 if [ "$EUID" -ne 0 ]; then
     printf "Please run as root\n";
     exit
 fi
 
-DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 PDIR="$( dirname "$DIR" )"
 cd $DIR
 
-DATABASEMYC="/var/www/mycodo/config/mycodo.db"
+DATABASEMYC="$INSTALL_DIRECTORY/config/mycodo.db"
 db_version_mycodo=`sqlite3 $DATABASEMYC "PRAGMA user_version;"`;
 
 if [[ $db_version_mycodo -lt 15 ]]; then
 	printf "Updating timestamps in log files (this may take a while)...\n";
-	if [ -s "/var/www/mycodo/log/sensor-t.log" ]; then
-		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' /var/www/mycodo/log/sensor-t.log
+	if [ -s "$INSTALL_DIRECTORY/log/sensor-t.log" ]; then
+		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' $INSTALL_DIRECTORY/log/sensor-t.log
 	fi
-	if [ -s "/var/www/mycodo/log/sensor-ht.log" ]; then
-		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' /var/www/mycodo/log/sensor-ht.log
+	if [ -s "$INSTALL_DIRECTORY/log/sensor-ht.log" ]; then
+		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' $INSTALL_DIRECTORY/log/sensor-ht.log
 	fi
-	if [ -s "/var/www/mycodo/log/sensor-co2.log" ]; then
-		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' /var/www/mycodo/log/sensor-co2.log
+	if [ -s "$INSTALL_DIRECTORY/log/sensor-co2.log" ]; then
+		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' $INSTALL_DIRECTORY/log/sensor-co2.log
 	fi
-	if [ -s "/var/www/mycodo/log/sensor-press.log" ]; then
-		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' /var/www/mycodo/log/sensor-press.log
+	if [ -s "$INSTALL_DIRECTORY/log/sensor-press.log" ]; then
+		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' $INSTALL_DIRECTORY/log/sensor-press.log
 	fi
-	if [ -s "/var/www/mycodo/log/relay.log" ]; then
-		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' /var/www/mycodo/log/relay.log
+	if [ -s "$INSTALL_DIRECTORY/log/relay.log" ]; then
+		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' $INSTALL_DIRECTORY/log/relay.log
 	fi
 fi
 
 if [[ $db_version_mycodo -lt 16 ]]; then
 	printf "Updating log file formatting (this may take a while)...\n";
-	if [ -s "/var/www/mycodo/log/sensor-t.log" ]; then
-		tr -s " " < /var/www/mycodo/log/sensor-t.log > /var/www/mycodo/log/sensor-t.log-new
-		mv -f /var/www/mycodo/log/sensor-t.log-new /var/www/mycodo/log/sensor-t.log
+	if [ -s "$INSTALL_DIRECTORY/log/sensor-t.log" ]; then
+		tr -s " " < $INSTALL_DIRECTORY/log/sensor-t.log > $INSTALL_DIRECTORY/log/sensor-t.log-new
+		mv -f $INSTALL_DIRECTORY/log/sensor-t.log-new $INSTALL_DIRECTORY/log/sensor-t.log
 	fi
-	if [ -s "/var/www/mycodo/log/sensor-ht.log" ]; then
-		tr -s " " < /var/www/mycodo/log/sensor-ht.log > /var/www/mycodo/log/sensor-ht.log-new
-		mv -f /var/www/mycodo/log/sensor-ht.log-new /var/www/mycodo/log/sensor-ht.log
+	if [ -s "$INSTALL_DIRECTORY/log/sensor-ht.log" ]; then
+		tr -s " " < $INSTALL_DIRECTORY/log/sensor-ht.log > $INSTALL_DIRECTORY/log/sensor-ht.log-new
+		mv -f $INSTALL_DIRECTORY/log/sensor-ht.log-new $INSTALL_DIRECTORY/log/sensor-ht.log
 	fi
-	if [ -s "/var/www/mycodo/log/sensor-co2.log" ]; then
-		tr -s " " < /var/www/mycodo/log/sensor-co2.log > /var/www/mycodo/log/sensor-co2.log-new
-		mv -f /var/www/mycodo/log/sensor-co2.log-new /var/www/mycodo/log/sensor-co2.log
+	if [ -s "$INSTALL_DIRECTORY/log/sensor-co2.log" ]; then
+		tr -s " " < $INSTALL_DIRECTORY/log/sensor-co2.log > $INSTALL_DIRECTORY/log/sensor-co2.log-new
+		mv -f $INSTALL_DIRECTORY/log/sensor-co2.log-new $INSTALL_DIRECTORY/log/sensor-co2.log
 	fi
-	if [ -s "/var/www/mycodo/log/sensor-press.log" ]; then
-		tr -s " " < /var/www/mycodo/log/sensor-press.log > /var/www/mycodo/log/sensor-press.log-new
-		mv -f /var/www/mycodo/log/sensor-press.log-new /var/www/mycodo/log/sensor-press.log
+	if [ -s "$INSTALL_DIRECTORY/log/sensor-press.log" ]; then
+		tr -s " " < $INSTALL_DIRECTORY/log/sensor-press.log > $INSTALL_DIRECTORY/log/sensor-press.log-new
+		mv -f $INSTALL_DIRECTORY/log/sensor-press.log-new $INSTALL_DIRECTORY/log/sensor-press.log
 	fi
 fi
 
 if [[ $db_version_mycodo -lt 18 ]]; then
 	printf "Updating timestamps in log files (this may take a while)...\n";
-	if [ -s "/var/www/mycodo/log/sensor-t-changes.log" ]; then
-		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' /var/www/mycodo/log/sensor-t-changes.log
+	if [ -s "$INSTALL_DIRECTORY/log/sensor-t-changes.log" ]; then
+		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' $INSTALL_DIRECTORY/log/sensor-t-changes.log
 	fi
-	if [ -s "/var/www/mycodo/log/sensor-ht-changes.log" ]; then
-		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' /var/www/mycodo/log/sensor-ht-changes.log
+	if [ -s "$INSTALL_DIRECTORY/log/sensor-ht-changes.log" ]; then
+		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' $INSTALL_DIRECTORY/log/sensor-ht-changes.log
 	fi
-	if [ -s "/var/www/mycodo/log/sensor-co2-changes.log" ]; then
-		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' /var/www/mycodo/log/sensor-co2-changes.log
+	if [ -s "$INSTALL_DIRECTORY/log/sensor-co2-changes.log" ]; then
+		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' $INSTALL_DIRECTORY/log/sensor-co2-changes.log
 	fi
-	if [ -s "/var/www/mycodo/log/sensor-press-changes.log" ]; then
-		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' /var/www/mycodo/log/sensor-press-changes.log
+	if [ -s "$INSTALL_DIRECTORY/log/sensor-press-changes.log" ]; then
+		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' $INSTALL_DIRECTORY/log/sensor-press-changes.log
 	fi
-	if [ -s "/var/www/mycodo/log/relay-changes.log" ]; then
-		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' /var/www/mycodo/log/relay-changes.log
+	if [ -s "$INSTALL_DIRECTORY/log/relay-changes.log" ]; then
+		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' $INSTALL_DIRECTORY/log/relay-changes.log
 	fi
-	if [ -s "/var/www/mycodo/log/timer-changes.log" ]; then
-		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' /var/www/mycodo/log/timer-changes.log
+	if [ -s "$INSTALL_DIRECTORY/log/timer-changes.log" ]; then
+		sed -i -e 's/./\//5' -e 's/./\//8' -e 's/./-/11' -e 's/./:/14' -e 's/./:/17' $INSTALL_DIRECTORY/log/timer-changes.log
 	fi
 fi
 
-if [[ $db_version_mycodo -lt 19 ]]; then
-	if [ "$(ls -A /var/www/mycodo/cgi-bin/mycodo_python/)" ]; then  # Submodule already initialized
-	    continue
-	else  # Submodule directory empty, initialize
-	    cd -P /var/www/mycodo/../  # git < 1.8.4 (Debian wheezy) requires being at toplevel to update submodule
-	    git submodule init
-	    git submodule sync
-	    git submodule update
-	fi
+# update /var/www/mycodo symlink to new public_html directory
+if [[ $db_version_mycodo -lt 21 ]]; then
+	ln -sf $INSTALL_DIRECTORY/public_html /var/www/mycodo
 fi
 
 printf "Checking if python modules are up-to-date...\n";
 # Make sure python modules are installed/updated
-pip install --upgrade -r /var/www/mycodo/requirements.txt
+pip install --upgrade -r $INSTALL_DIRECTORY/requirements.txt
 
 # Perform update based on database version
 if [ ! -f $DATABASEMYC ]; then
     printf "Mycodo database not found: $DATABASEMYC\n";
     printf "Creating Mycodo database...\n";
-    $DIR/update-database.py -i update
+    $INSTALL_DIRECTORY/update-database.py -i update
 elif [[ $db_version_mycodo -gt 0 ]]; then
 	printf "Checking if databases are up-to-date...\n";
-	$DIR/update-database.py -i update
+	$INSTALL_DIRECTORY/update-database.py -i update
 elif [[ $db_version_mycodo == "0" ]]; then
 	printf "Mycodo database is not versioned. Recreating database...\n";
-	rm -rf $DIR/config/mycodo.db
-	$DIR/update-database.py -i update
+	rm -rf $INSTALL_DIRECTORY/config/mycodo.db
+	$INSTALL_DIRECTORY/update-database.py -i update
 elif [ -z "$db_version_mycodo" ]; then
 	printf "Missing Mycodo database version. Recreating database...\n";
-	rm -rf $DIR/config/mycodo.db
-	$DIR/update-database.py -i update
+	rm -rf $INSTALL_DIRECTORY/config/mycodo.db
+	$INSTALL_DIRECTORY/update-database.py -i update
 else
 	printf "Unknown Mycodo database version. Recreating database...\n";
-	rm -rf $DIR/config/mycodo.db
-	$DIR/update-database.py -i update
+	rm -rf $INSTALL_DIRECTORY/config/mycodo.db
+	$INSTALL_DIRECTORY/update-database.py -i update
 fi

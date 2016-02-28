@@ -22,7 +22,6 @@
 #
 #  Contact at kylegabriel.com
 
-install_directory = "/var/www/mycodo"
 
 import datetime
 import filecmp
@@ -30,6 +29,8 @@ import fileinput
 import logging
 import os
 from lockfile import LockFile
+
+install_directory = os.path.dirname(os.path.abspath(__file__)) + "/.."
 
 log_path = "%s/log" % install_directory # Where generated logs are stored
 

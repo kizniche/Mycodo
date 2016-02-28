@@ -23,9 +23,6 @@
 #
 #  Contact at kylegabriel.com
 
-#### Install Directory ####
-install_directory = "/var/www/mycodo"
-
 # Mycodo modules
 import mycodo_graph
 import mycodo_log
@@ -55,6 +52,8 @@ from lockfile import LockFile
 from rpyc.utils.server import ThreadedServer
 from tentacle_pi.AM2315 import AM2315
 from sht_sensor import Sht # sht senserion support
+
+install_directory = os.path.dirname(os.path.abspath(__file__)) + "/.."
 
 mycodo_database = os.path.join(install_directory, "config/mycodo.db")  # SQLite database
 image_path = os.path.join(install_directory, "images")  # Where generated graphs are stored
@@ -4338,7 +4337,7 @@ def main():
                 runlock.acquire(timeout=1)
             except:
                 logging.warning("Lock file present: %s. Ensure another instance of the Mycodo daemon is not running and delete the file.", runlock.path)
-                error = "Error: Lock file present: %s" % runlock.path
+                error = "Error: Lock file present: %s\n" % runlock.path
                 print error
                 usage()
                 sys.exit(error)

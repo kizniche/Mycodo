@@ -24,21 +24,17 @@
 
 $version = "3.5.94";
 
-######### Start Edit Configure #########
+require_once(dirname(__FILE__) . '/../config.php');
 
-$install_path = "/var/www/mycodo";
-$lock_path = "/var/lock";
-$gpio_path = "/usr/local/bin/gpio";
+$install_path = dirname(__FILE__) . '/../..';
+$lock_path = $config["paths"]["lock"];
+$image_path = "$install_path/images/";
+$gpio_path = '/usr/local/bin/gpio';
 
-########## End Edit Configure ##########
-
-$mycodo_client = $install_path . "/cgi-bin/mycodo_client.py";
-$still_exec = $install_path . "/cgi-bin/camera-still.sh";
-$stream_exec = $install_path . "/cgi-bin/camera-stream.sh";
-$timelapse_exec = $install_path . "/cgi-bin/camera-timelapse.sh";
-$mycodo_db = $install_path . "/config/mycodo.db";
-$user_db = $install_path . "/config/users.db";
-$note_db = $install_path . "/config/notes.db";
+$mycodo_client = $install_path . "/mycodo_core/mycodo_client.py";
+$still_exec = $install_path . "/mycodo_core/camera-still.sh";
+$stream_exec = $install_path . "/mycodo_core/camera-stream.sh";
+$timelapse_exec = $install_path . "/mycodo_core/camera-timelapse.sh";
 $update_check = $install_path . "/.updatecheck";
 
 $daemon_log = $install_path . "/log/daemon.log";
@@ -57,7 +53,6 @@ $relay_changes_log = $install_path . "/log/relay-changes.log";
 $timer_changes_log = $install_path . "/log/timer-changes.log";
 $timer_daily_changes_log = $install_path . "/log/timer-daily-changes.log";
 
-$images = $install_path . "/images";
 $lock_daemon = $lock_path . "/mycodo/daemon.lock";
 $lock_raspistill = $lock_path . "/mycodo_raspistill";
 $lock_mjpg_streamer = $lock_path . "/mycodo_mjpg_streamer";
@@ -67,10 +62,11 @@ $lock_timelapse_light = $lock_path . "/mycodo-timelapse-light";
 
 $logged_in_user = $_SESSION['user_name'];
 
-if (!file_exists($mycodo_db)) exit("Mycodo database does not exist. Run 'setup-database.py -i' to create required database.");
 
-require($install_path . "/includes/database.php"); // Initial SQL database load to variables
-require($install_path . "/includes/functions.php"); // Mycodo functions
+if (!file_exists($config["db"]["mycodo"])) exit("Mycodo database does not exist. Run 'setup-database.py -i' to create required database.");
+
+require($install_path . "/public_html/includes/database.php"); // Initial SQL database load to variables
+require($install_path . "/public_html/includes/functions.php"); // Mycodo functions
 
 // Check is there is an update (check at minimum every 24 hours)
 if (!file_exists($update_check) || time()-filemtime($update_check) > 24 * 3600) {
@@ -94,15 +90,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $output_error = 'guest';
     } else if ($current_user_restriction != 'guest') {
         // Only non-guest users may perform these actions
-        require($install_path . "/includes/restricted.php"); // Configuration changes
-        require($install_path . "/includes/database.php"); // Reload SQLite database
+        require($install_path . "/public_html/includes/restricted.php"); // Configuration changes
+        require($install_path . "/public_html/includes/database.php"); // Reload SQLite database
     }
 } else {
     if ((isset($_GET['r']) && $_GET['r'] == 1) && 
         (isset($_GET['tab']) && $_GET['tab'] == 'graph')) set_new_graph_id();
 }
 
-require($install_path . "/includes/public.php"); // Handle remaining forms
+require($install_path . "/public_html/includes/public.php"); // Handle remaining forms
 // Retrieve graph-generation variables (must come after running public.php)
 $graph_id = get_graph_cookie('id');
 $graph_type = get_graph_cookie('type');
@@ -3066,8 +3062,6 @@ if (!file_exists($lock_daemon)) {
                         $graph_width = 950;
                     }
 
-                    $image_path = '/var/www/mycodo/images/';
-
                     if ($_POST['custom_type'] == 'Combined') {
                         if ($current_user_theme == 'light') {
                             shell_exec("$mycodo_client --graph light combined $id2 x $time_from $time_to $graph_width");
@@ -3476,9 +3470,9 @@ if (!file_exists($lock_daemon)) {
                             echo "<pre>Temperature Sensor Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y/M/D-H:M:S Tc Sensor\n$(cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Tc Sensor\n$(cat $install_path/log/sensor-t.log $install_path/log/sensor-t-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y/M/D-H:M:S Tc Sensor\n$(cat /var/www/mycodo/log/sensor-t.log /var/www/mycodo/log/sensor-t-tmp.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Tc Sensor\n$(cat $install_path/log/sensor-t.log $install_path/log/sensor-t-tmp.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3487,9 +3481,9 @@ if (!file_exists($lock_daemon)) {
                             echo "<pre>Temperature Sensor Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y/M/D-H:M:S ID Name Device Pin/Ser# Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD\n$(cat /var/www/mycodo/log/sensor-t-changes.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Device Pin/Ser# Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD\n$(cat $install_path/log/sensor-t-changes.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y/M/D-H:M:S ID Name Device Pin/Ser# Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD\n$(cat /var/www/mycodo/log/sensor-t-changes.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Device Pin/Ser# Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD\n$(cat $install_path/log/sensor-t-changes.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3512,7 +3506,7 @@ if (!file_exists($lock_daemon)) {
                                     </tr>
                                     <tr>
                                         <td>';
-                            echo `echo "$(cat /var/www/mycodo/log/sensor-ht.log /var/www/mycodo/log/sensor-ht-tmp.log | tail -n $Lines)" | column -t | tail -n +2 | tr -s " " | sed 's/ /\<\/td\>\<td\>/g' | awk '{ print $0; }' RS='\n' ORS='</td></tr><tr><td>'`;
+                            echo `echo "$(cat $install_path/log/sensor-ht.log $install_path/log/sensor-ht-tmp.log | tail -n $Lines)" | column -t | tail -n +2 | tr -s " " | sed 's/ /\<\/td\>\<td\>/g' | awk '{ print $0; }' RS='\n' ORS='</td></tr><tr><td>'`;
                             echo 'End</td></tr></table></pre>';
                         }
 
@@ -3583,7 +3577,7 @@ if (!file_exists($lock_daemon)) {
                                     </tr>
                                     <tr>
                                         <td>';
-                            echo `echo "$(cat /var/www/mycodo/log/sensor-ht-changes.log | tail -n $Lines)" | column -t | tail -n +2 | tr -s " " | sed 's/ /\<\/td\>\<td\>/g' | awk '{ print $0; }' RS='\n' ORS='</td></tr><tr><td>'`;
+                            echo `echo "$(cat $install_path/log/sensor-ht-changes.log | tail -n $Lines)" | column -t | tail -n +2 | tr -s " " | sed 's/ /\<\/td\>\<td\>/g' | awk '{ print $0; }' RS='\n' ORS='</td></tr><tr><td>'`;
                             echo 'End</td></tr></table></pre>';
                         }
 
@@ -3591,9 +3585,9 @@ if (!file_exists($lock_daemon)) {
                             echo "<pre>CO<sub>2</sub> Sensor Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y/M/D-H:M:S CO2 Sensor\n$(cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S CO2 Sensor\n$(cat $install_path/log/sensor-co2.log $install_path/log/sensor-co2-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y/M/D-H:M:S CO2 Sensor\n$(cat /var/www/mycodo/log/sensor-co2.log /var/www/mycodo/log/sensor-co2-tmp.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S CO2 Sensor\n$(cat $install_path/log/sensor-co2.log $install_path/log/sensor-co2-tmp.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3602,9 +3596,9 @@ if (!file_exists($lock_daemon)) {
                             echo "<pre>CO<sub>2</sub> Sensor Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y/M/D-H:M:S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YCO2Min YCO2Max YCO2Tics YCO2MTics CO2RelaysUp CO2RelaysDown CO2RelayHigh CO2RelayHighMin CO2RelayHighMax CO2RelayLow CO2RelayLowMin CO2RelayLowMax CO2Set CO2SetDir CO2Period CO2P CO2I CO2D\n$(cat /var/www/mycodo/log/sensor-co2-changes.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YCO2Min YCO2Max YCO2Tics YCO2MTics CO2RelaysUp CO2RelaysDown CO2RelayHigh CO2RelayHighMin CO2RelayHighMax CO2RelayLow CO2RelayLowMin CO2RelayLowMax CO2Set CO2SetDir CO2Period CO2P CO2I CO2D\n$(cat $install_path/log/sensor-co2-changes.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y/M/D-H:M:S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YCO2Min YCO2Max YCO2Tics YCO2MTics CO2RelaysUp CO2RelaysDown CO2RelayHigh CO2RelayHighMin CO2RelayHighMax CO2RelayLow CO2RelayLowMin CO2RelayLowMax CO2Set CO2SetDir CO2Period CO2P CO2I CO2D\n$(cat /var/www/mycodo/log/sensor-co2-changes.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YCO2Min YCO2Max YCO2Tics YCO2MTics CO2RelaysUp CO2RelaysDown CO2RelayHigh CO2RelayHighMin CO2RelayHighMax CO2RelayLow CO2RelayLowMin CO2RelayLowMax CO2Set CO2SetDir CO2Period CO2P CO2I CO2D\n$(cat $install_path/log/sensor-co2-changes.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3613,9 +3607,9 @@ if (!file_exists($lock_daemon)) {
                             echo "<pre>Pressure Sensor Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y/M/D-H:M:S Temperature(C) Pressure(kPa) Altitude(m) Sensor\n$(cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Temperature(C) Pressure(kPa) Altitude(m) Sensor\n$(cat $install_path/log/sensor-press.log $install_path/log/sensor-press-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y/M/D-H:M:S Temperature(C) Pressure(kPa) Altitude(m) Sensor\n$(cat /var/www/mycodo/log/sensor-press.log /var/www/mycodo/log/sensor-press-tmp.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Temperature(C) Pressure(kPa) Altitude(m) Sensor\n$(cat $install_path/log/sensor-press.log $install_path/log/sensor-press-tmp.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3624,9 +3618,9 @@ if (!file_exists($lock_daemon)) {
                             echo "<pre>Temperature/Pressure Sensor Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y/M/D-H:M:S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD PressRelaysUp PressRelaysDown PressRelayHigh PressRelayHighMin PressRelayHighMax PressRelayLow PressRelayLowMin PressRelayLowMax PressSet PressSetDir PressPeriod PressP PressI PressD\n$(cat /var/www/mycodo/log/sensor-press-changes.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD PressRelaysUp PressRelaysDown PressRelayHigh PressRelayHighMin PressRelayHighMax PressRelayLow PressRelayLowMin PressRelayLowMax PressSet PressSetDir PressPeriod PressP PressI PressD\n$(cat $install_path/log/sensor-press-changes.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y/M/D-H:M:S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD PressRelaysUp PressRelaysDown PressRelayHigh PressRelayHighMin PressRelayHighMax PressRelayLow PressRelayLowMin PressRelayLowMax PressSet PressSetDir PressPeriod PressP PressI PressD\n$(cat /var/www/mycodo/log/sensor-press-changes.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Device GPIO Period PreRelay PreDur Log Graph YRelayMin YRelayMax YRelayTics YRelayMTics YTempMin YTempMax YTempTics YTempMTics TempRelaysUp TempRelaysDown TempRelayHigh TempRelayHighMin TempRelayHighMax TempRelayLow TempRelayLowMin TempRelayLowMax TempSet TempSetDir TempPeriod TempP TempI TempD PressRelaysUp PressRelaysDown PressRelayHigh PressRelayHighMin PressRelayHighMax PressRelayLow PressRelayLowMin PressRelayLowMax PressSet PressSetDir PressPeriod PressP PressI PressD\n$(cat $install_path/log/sensor-press-changes.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3635,9 +3629,9 @@ if (!file_exists($lock_daemon)) {
                             echo "<pre>Relay Log<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y/M/D-H:M:S Sensor Relay GPIO SecondsOn\n$(cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Sensor Relay GPIO SecondsOn\n$(cat $install_path/log/relay.log $install_path/log/relay-tmp.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y/M/D-H:M:S Sensor Relay GPIO SecondsOn\n$(cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Sensor Relay GPIO SecondsOn\n$(cat $install_path/log/relay.log $install_path/log/relay-tmp.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3646,9 +3640,9 @@ if (!file_exists($lock_daemon)) {
                             echo "<pre>Relay Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y/M/D-H:M:S Relay Name GPIO Amps Trigger State\n$(cat /var/www/mycodo/log/relay-changes.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Relay Name GPIO Amps Trigger State\n$(cat $install_path/log/relay-changes.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y/M/D-H:M:S Relay Name GPIO Amps Trigger State\n$(cat /var/www/mycodo/log/relay-changes.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S Relay Name GPIO Amps Trigger State\n$(cat $install_path/log/relay-changes.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3657,9 +3651,9 @@ if (!file_exists($lock_daemon)) {
                             echo "<pre>Timer Changes<br> <br>";
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `echo "Y/M/D-H:M:S ID Name Relay DurationOn DurationOff\n$(cat /var/www/mycodo/log/timer-changes.log | tail -n $Lines)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Relay DurationOn DurationOff\n$(cat $install_path/log/timer-changes.log | tail -n $Lines)" | column -t`;
                             } else {
-                                echo `echo "Y/M/D-H:M:S ID Name Relay DurationOn DurationOff\n$(cat /var/www/mycodo/log/timer-changes.log | tail -n 30)" | column -t`;
+                                echo `echo "Y/M/D-H:M:S ID Name Relay DurationOn DurationOff\n$(cat $install_path/log/timer-changes.log | tail -n 30)" | column -t`;
                             }
                             echo '</pre>';
                         }
@@ -3700,7 +3694,7 @@ if (!file_exists($lock_daemon)) {
                                 </tr>
                             </table><br> <br>";
 
-                            $ndb = new SQLite3($note_db);
+                            $ndb = new SQLite3($config["db"]["notes"]);
                             unset($note_id);
                             $results = $ndb->query('SELECT Id, Time, User, Title, Note FROM Notes');
                             $i = 0;
@@ -3783,7 +3777,7 @@ if (!file_exists($lock_daemon)) {
 
                         if (isset($_POST['Edit_Note']) || isset($_POST['Add_Image_Note']) || isset($_GET['displaynote'])) {
                             echo "Edit Note<br> <br>";
-                            $ndb = new SQLite3($note_db);
+                            $ndb = new SQLite3($config["db"]["notes"]);
                             unset($note_id);
                             if (isset($_GET['displaynote'])) {
                                 $results = $ndb->query("SELECT Id, Time, User, Title, Note FROM Notes WHERE Id='" . $_GET['noteid'] . "'");
@@ -3914,7 +3908,7 @@ if (!file_exists($lock_daemon)) {
                             $current_commit = `git rev-parse --short HEAD`;
                             $current_commit = mb_substr($current_commit, 0, 7);
                             echo "Current commit: <a style=\"color: #FF0000;\" href=\"https://github.com/kizniche/Mycodo/commit/$current_commit\" target=\"_blank\">$current_commit</a> (newest commits are at the top and the system's current commit is <span style=\"color:red;\">colored red</span>)<br> <br><strong><u>Commit</u>  <u>Description</u></strong><br>";
-                            exec("$install_path/cgi-bin/mycodo-wrapper fetchorigin");
+                            exec("$install_path/mycodo_core/mycodo-wrapper fetchorigin");
                             $commits_ahead = `git log --oneline master...origin/master`;
                             $commits_ahead = explode("\n", $commits_ahead);
                             foreach ($commits_ahead as $n => $line) {
@@ -3995,33 +3989,31 @@ if (!file_exists($lock_daemon)) {
                             echo '<pre>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `cat /var/www/mycodo/log/daemon.log /var/www/mycodo/log/daemon-tmp.log | tail -n $Lines`;
+                                echo `cat $install_path/log/daemon.log $install_path/log/daemon-tmp.log | tail -n $Lines`;
                             } else {
-                                echo `cat /var/www/mycodo/log/daemon.log /var/www/mycodo/log/daemon-tmp.log | tail -n 30`;
+                                echo `cat $install_path/log/daemon.log $install_path/log/daemon-tmp.log | tail -n 30`;
                             }
                             echo '</pre>';
                         }
 
                         if(isset($_POST['Update'])) {
-                            $log = '/var/www/mycodo/log/update.log';
                             echo '<pre>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `tail -n $Lines $log`;
+                                echo `tail -n $Lines $install_path/log/update.log`;
                             } else {
-                                echo `tail -n 30 $log`;
+                                echo `tail -n 30 $install_path/log/update.log`;
                             }
                             echo '</pre>';
                         }
 
                         if(isset($_POST['Restore'])) {
-                            $log = '/var/www/mycodo/log/restore.log';
                             echo '<pre>';
                             if ($_POST['Lines'] != '') {
                                 $Lines = $_POST['Lines'];
-                                echo `tail -n $Lines $log`;
+                                echo `tail -n $Lines $install_path/log/restore.log`;
                             } else {
-                                echo `tail -n 30 $log`;
+                                echo `tail -n 30 $install_path/log/restore.log`;
                             }
                             echo '</pre>';
                         }
@@ -4069,17 +4061,17 @@ if (!file_exists($lock_daemon)) {
                                         $read = "$gpio_path -g read $relay_pin[$i]";
                                         $date_now = substr(shell_exec("date --date=\"now\" +'%Y/%m/%d-%H:%M:%S'"), 0, -1);
                                         $date_ago = shell_exec("date --date=\"1 hour ago\" +'%Y/%m/%d-%H:%M:%S'");
-                                        $relay_stats_seconds_on_hour[$i] = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                        $relay_stats_seconds_on_hour[$i] = (int)shell_exec("cat $install_path/log/relay.log $install_path/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
                                         $date_ago = shell_exec("date --date=\"1 day ago\" +'%Y/%m/%d-%H:%M:%S'");
-                                        $relay_stats_seconds_on_day[$i] = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                        $relay_stats_seconds_on_day[$i] = (int)shell_exec("cat $install_path/log/relay.log $install_path/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
                                         $date_ago = shell_exec("date --date=\"1 week ago\" +'%Y/%m/%d-%H:%M:%S'");
-                                        $relay_stats_seconds_on_week[$i] = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                        $relay_stats_seconds_on_week[$i] = (int)shell_exec("cat $install_path/log/relay.log $install_path/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
                                         $date_ago = shell_exec("date --date=\"1 month ago\" +'%Y/%m/%d-%H:%M:%S'");
-                                        $relay_stats_seconds_on_month[$i] = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
-                                        $relay_stats_seconds_on_dayofmonth[$i] = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago_dayofmonth . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                        $relay_stats_seconds_on_month[$i] = (int)shell_exec("cat $install_path/log/relay.log $install_path/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                        $relay_stats_seconds_on_dayofmonth[$i] = (int)shell_exec("cat $install_path/log/relay.log $install_path/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago_dayofmonth . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
                                         $date_ago = shell_exec("date --date=\"1 year ago\" +'%Y/%m/%d-%H:%M:%S'");
-                                        $relay_stats_seconds_on_year[$i] = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
-                                        $relay_stats_seconds_on[$i] = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                        $relay_stats_seconds_on_year[$i] = (int)shell_exec("cat $install_path/log/relay.log $install_path/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                        $relay_stats_seconds_on[$i] = (int)shell_exec("cat $install_path/log/relay.log $install_path/log/relay-tmp.log | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
                                     ?>
                                     <tr>
                                         <td class="center"><?php echo $i+1; ?></td>
@@ -4099,7 +4091,7 @@ if (!file_exists($lock_daemon)) {
                                         <td class="right">
                                             <?php
                                             $date_ago = shell_exec("date --date=\"1 hour ago\" +'%Y/%m/%d-%H:%M:%S'");
-                                            $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                            $amps = (int)shell_exec("cat $install_path/log/relay.log $install_path/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
                                             $kwh[0] = $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000;
                                             printf("%.2f", $kwh[0]);
                                             ?>
@@ -4107,7 +4099,7 @@ if (!file_exists($lock_daemon)) {
                                         <td class="right">
                                             <?php
                                             $date_ago = shell_exec("date --date=\"1 day ago\" +'%Y/%m/%d-%H:%M:%S'");
-                                            $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                            $amps = (int)shell_exec("cat $install_path/log/relay.log $install_path/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
                                             $kwh[1] = $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000;
                                             printf("%.2f", $kwh[1]);
                                             ?>
@@ -4115,7 +4107,7 @@ if (!file_exists($lock_daemon)) {
                                         <td class="right">
                                             <?php
                                             $date_ago = shell_exec("date --date=\"1 week ago\" +'%Y/%m/%d-%H:%M:%S'");
-                                            $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                            $amps = (int)shell_exec("cat $install_path/log/relay.log $install_path/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
                                             $kwh[2] = $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000;
                                             printf("%.2f", $kwh[2]);
                                             ?>
@@ -4123,14 +4115,14 @@ if (!file_exists($lock_daemon)) {
                                         <td class="right">
                                             <?php
                                             $date_ago = shell_exec("date --date=\"1 month ago\" +'%Y/%m/%d-%H:%M:%S'");
-                                            $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                            $amps = (int)shell_exec("cat $install_path/log/relay.log $install_path/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
                                             $kwh[3] = $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000;
                                             printf("%.2f", $kwh[3]);
                                             ?>
                                         </td>
                                         <td class="right">
                                             <?php
-                                            $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago_dayofmonth . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                            $amps = (int)shell_exec("cat $install_path/log/relay.log $install_path/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago_dayofmonth . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
                                             $kwh[4] = $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000;
                                             printf("%.2f", $kwh[4]);
                                             ?>
@@ -4138,7 +4130,7 @@ if (!file_exists($lock_daemon)) {
                                         <td class="right">
                                             <?php
                                             $date_ago = shell_exec("date --date=\"1 year ago\" +'%Y/%m/%d-%H:%M:%S'");
-                                            $amps = (int)shell_exec("cat /var/www/mycodo/log/relay.log /var/www/mycodo/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
+                                            $amps = (int)shell_exec("cat $install_path/log/relay.log $install_path/log/relay-tmp.log | awk '$0>=from&&$0<=to' from=\"" . $date_ago . "\" to=\"" . $date_now . "\" | awk '{a[$3]+=$5}END{for(i in a) {if (i == \"" . ($i+1) . "\") printf \"%.0f\",a[i]}}'");
                                             $kwh[5] = $relay_stats_volts*$relay_amps[$i]*($amps/3600)/1000;
                                             printf("%.2f", $kwh[5]);
                                             ?>
@@ -4375,18 +4367,18 @@ if (!file_exists($lock_daemon)) {
 
                         if (isset($_POST['Users']) && $current_user_restriction != 'guest') {
                             echo '<div style="padding: 0.5em 0 1em 0;"><pre>';
-                            echo exec('file ' . $user_db); 
+                            echo exec('file ' . $config["db"]["users"]); 
                             echo '<br> <br>';
-                            exec('sqlite3 ' . $user_db . ' .dump', $output);
+                            exec('sqlite3 ' . $config["db"]["users"] . ' .dump', $output);
                             print_r($output);
                             echo '</pre></div>';
                         }
 
                         if (isset($_POST['Database']) && $current_user_restriction != 'guest') {
-                            echo exec('file ' . $mycodo_db); 
+                            echo exec('file ' . $config["db"]["mycodo"]); 
                             echo '<pre><br> <br>';
-                            exec('sqlite3 ' . $mycodo_db . ' .dump', $output);
-                            $db = new SQLite3($mycodo_db);
+                            exec('sqlite3 ' . $config["db"]["mycodo"] . ' .dump', $output);
+                            $db = new SQLite3($config["db"]["mycodo"]);
                             $results = $db->query('SELECT Pass FROM SMTP');
                             while ($row = $results->fetchArray()) {
                                 $email_password = $row[0];
@@ -4424,7 +4416,7 @@ if (!file_exists($lock_daemon)) {
                     <tr>
                         <td class="setting-text" style="width: 100%;">
                             Check if there is an update avaialble for Mycodo<?php
-                            if (strpos(`cat /var/www/mycodo/.updatecheck`,'1') !== false) {
+                            if (strpos(`cat $install_path/.updatecheck`,'1') !== false) {
                                 echo ' (<span style="color: red;">A newer version is available</span>)';
                             } else {
                                 echo ' (<span style="color: #00AA00;">You are running the latest version</span>)';

@@ -55,7 +55,7 @@ class OneFileLoginApplication {
     private $db_type = "sqlite"; //
 
     // @var string Path of the database file
-    private $db_sqlite_path = "./config/users.db";
+    private $db_sqlite_path = "../config/users.db";
 
     // @var object Database connection
     private $db_connection = null;
@@ -96,7 +96,7 @@ class OneFileLoginApplication {
 
     // controller that handles the entire flow of the application.
     public function runApplication() {
-        if (!file_exists($this->db_sqlite_path)) exit("User database does not exist. Run 'sudo /var/www/mycodo/update-database.py -i' to create required database.");
+        if (!file_exists($this->db_sqlite_path)) exit("User database does not exist. Run 'sudo update-database.py -i' from the install directory to create required database.");
         
         if (isset($_POST["register"])) {
             if ($this->checkRegistrationData()) {

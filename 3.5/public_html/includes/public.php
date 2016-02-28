@@ -22,10 +22,12 @@
 *  Contact at kylegabriel.com
 */
 
+$install_path = dirname(__FILE__) . '/../..';
+
 // Grab last entry for each sensor from the respective log file
 for ($p = 0; $p < count($sensor_t_id); $p++) {
     if ($sensor_t_activated[$p]) {
-        $last_t_sensor[$p] = `awk '$3 == $p {print}' /var/www/mycodo/log/sensor-t-tmp.log | tail -n 1`;
+        $last_t_sensor[$p] = `awk '$3 == $p {print}' $install_path/log/sensor-t-tmp.log | tail -n 1`;
         if ($last_t_sensor[$p] != '') {
             $sensor_explode = preg_split('/[\s]+/', $last_t_sensor[$p]);
             $t_temp_c[$p] = $sensor_explode[1];
@@ -37,7 +39,7 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
 
 for ($p = 0; $p < count($sensor_ht_id); $p++) {
     if ($sensor_ht_activated[$p]) {
-        $last_ht_sensor[$p] = `awk '$5 == $p {print}' /var/www/mycodo/log/sensor-ht-tmp.log | tail -n 1`;
+        $last_ht_sensor[$p] = `awk '$5 == $p {print}' $install_path/log/sensor-ht-tmp.log | tail -n 1`;
         if ($last_ht_sensor[$p] != '') {
             $sensor_explode = preg_split('/[\s]+/', $last_ht_sensor[$p]);
             $ht_temp_c[$p] = floatval($sensor_explode[1]);
@@ -52,7 +54,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
 
 for ($p = 0; $p < count($sensor_co2_id); $p++) {
     if ($sensor_co2_activated[$p]) {
-        $last_co2_sensor[$p] = `awk '$3 == $p {print}' /var/www/mycodo/log/sensor-co2-tmp.log | tail -n 1`;
+        $last_co2_sensor[$p] = `awk '$3 == $p {print}' $install_path/log/sensor-co2-tmp.log | tail -n 1`;
         if ($last_co2_sensor[$p] != '') {
             $sensor_explode = preg_split('/[\s]+/', $last_co2_sensor[$p]);
             $co2[$p] = $sensor_explode[1];
@@ -62,7 +64,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
 
 for ($p = 0; $p < count($sensor_press_id); $p++) {
     if ($sensor_press_activated[$p]) {
-        $last_press_sensor[$p] = `awk '$5 == $p {print}' /var/www/mycodo/log/sensor-press-tmp.log | tail -n 1`;
+        $last_press_sensor[$p] = `awk '$5 == $p {print}' $install_path/log/sensor-press-tmp.log | tail -n 1`;
         if ($last_press_sensor[$p] != '') {
             $sensor_explode = preg_split('/[\s]+/', $last_press_sensor[$p]);
             $press_temp_c[$p] = floatval($sensor_explode[1]);
@@ -86,25 +88,25 @@ $pi_temp_cpu_f = round(($pi_temp_cpu_c*(9/5) + 32), 1);
 // Determine the time of the last sensor read
 $time_now = `date +"%Y/%m/%d-%H:%M:%S"`;
 
-$time_last_t = `tail -n 1 /var/www/mycodo/log/sensor-t-tmp.log`;
+$time_last_t = `tail -n 1 $install_path/log/sensor-t-tmp.log`;
 if ($time_last_t != '') {
     $time_explode = preg_split('/[\s]+/', $time_last_t);
     $time_last_t = $time_explode[0];
 }
 
-$time_last_ht = `tail -n 1 /var/www/mycodo/log/sensor-ht-tmp.log`;
+$time_last_ht = `tail -n 1 $install_path/log/sensor-ht-tmp.log`;
 if ($time_last_ht != '') {
     $time_explode = preg_split('/[\s]+/', $time_last_ht);
     $time_last_ht = $time_explode[0];
 }
 
-$time_last_co2 = `tail -n 1 /var/www/mycodo/log/sensor-co2-tmp.log`;
+$time_last_co2 = `tail -n 1 $install_path/log/sensor-co2-tmp.log`;
 if ($time_last_co2 != '') {
     $time_explode = preg_split('/[\s]+/', $time_last_co2);
     $time_last_co2 = $time_explode[0];
 }
 
-$time_last_press = `tail -n 1 /var/www/mycodo/log/sensor-press-tmp.log`;
+$time_last_press = `tail -n 1 $install_path/log/sensor-press-tmp.log`;
 if ($time_last_press != '') {
     $time_explode = preg_split('/[\s]+/', $time_last_press);
     $time_last_press = $time_explode[0];

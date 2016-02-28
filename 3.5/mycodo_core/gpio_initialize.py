@@ -23,11 +23,11 @@
 #
 #  Contact at kylegabriel.com
 
+import os
 import RPi.GPIO as GPIO
 import sqlite3
 
-#### Configure Install Directory ####
-install_directory = "/var/www/mycodo"
+install_directory = os.path.dirname(os.path.abspath(__file__)) + "/.."
 
 sql_database = "%s/config/mycodo.db" % install_directory
 

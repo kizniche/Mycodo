@@ -22,18 +22,20 @@
 #
 #  Contact at kylegabriel.com
 
+INSTALL_DIRECTORY="$(pwd -P /var/www/mycodo)"
+
 DATE=$(date +"%Y-%m-%d_%H%M%S")
 if [ "$1" > 0 ]; then # Turn relay on
 	/usr/local/bin/gpio -g write $1 $2
 fi
 sleep 1
 # Getting extra command options
-DATABASE="/var/www/mycodo/config/mycodo.db"
+DATABASE="$INSTALL_DIRECTORY/../config/mycodo.db"
 EXTRA=`sqlite3 $DATABASE "SELECT Extra_Parameters FROM CameraStill;"`;
 if [ ! -z "$EXTRA" ]; then
-	/usr/bin/raspistill $EXTRA -o /var/www/mycodo/camera-stills/$DATE.jpg
+	/usr/bin/raspistill $EXTRA -o $INSTALL_DIRECTORY/camera-stills/$DATE.jpg
 else
-	/usr/bin/raspistill -o /var/www/mycodo/camera-stills/$DATE.jpg
+	/usr/bin/raspistill -o $INSTALL_DIRECTORY/camera-stills/$DATE.jpg
 fi
 if [ "$1" > 0 ]; then # Turn relay off
 	if [ "$2" == 0 ]; then
@@ -44,10 +46,10 @@ if [ "$1" > 0 ]; then # Turn relay off
 	/usr/local/bin/gpio -g write $1 $TRIGGEROFF
 fi
 if [ "$3" == 1 ]; then
-	convert /var/www/mycodo/camera-stills/$DATE.jpg -pointsize 14 -fill white \
+	convert $INSTALL_DIRECTORY/camera-stills/$DATE.jpg -pointsize 14 -fill white \
     	-annotate +20+20 %[exif:DateTimeOriginal] \
-    	/var/www/mycodo/camera-stills/$DATE.jpg
+    	$INSTALL_DIRECTORY/camera-stills/$DATE.jpg
 else
-	convert /var/www/mycodo/camera-stills/$DATE.jpg -pointsize 14 -fill white \
-    	/var/www/mycodo/camera-stills/$DATE.jpg
+	convert $INSTALL_DIRECTORY/camera-stills/$DATE.jpg -pointsize 14 -fill white \
+    	$INSTALL_DIRECTORY/camera-stills/$DATE.jpg
 fi

@@ -26,21 +26,21 @@ if [ "$EUID" -ne 0 ]; then
     exit
 fi
 
+INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
 case "${1:-''}" in
     'backup')
-        DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
         NOW=$(date +"%Y-%m-%d_%H-%M-%S")
         CURCOMMIT=$(git rev-parse --short HEAD)
         printf "#### Creating backup /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT ####\n"
         mkdir -p /var/Mycodo-backups
         mkdir -p /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT
-        cp -a $DIR/../../Mycodo/3.5/. /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT/
+        cp -a $INSTALL_DIRECTORY/../. /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT/
     ;;
     'update')
         NOW=$(date +"%m-%d-%Y %H:%M:%S")
         printf "#### Update Started $NOW ####\n"
 
-        DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
         PDIR="$( dirname "$DIR" )"
 
         cd -P $DIR
@@ -54,40 +54,29 @@ case "${1:-''}" in
 
             if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
                 printf "#### Stopping Daemon ####\n"
-                $DIR/init.d/mycodo stop
-
+                $INSTALL_DIRECTORY/init.d/mycodo stop
                 NOW=$(date +"%Y-%m-%d_%H-%M-%S")
                 CURCOMMIT=$(git rev-parse --short HEAD)
                 printf "#### Creating backup /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT ####\n"
                 mkdir -p /var/Mycodo-backups
                 mkdir -p /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT
-                cp -a $DIR/../../Mycodo/3.5/. /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT/
+                cp -a $INSTALL_DIRECTORY/../. /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT/
 
                 printf "#### Updating from github ####\n"
                 git fetch
                 git reset --hard origin/master
 
-                cd -P /var/www/mycodo/../  # git < 1.8.4 (Debian wheezy) requires being at toplevel to update submodule
-                git submodule init
-                
-                if [ "$(ls -A /var/www/mycodo/cgi-bin/mycodo_python/)" ]; then
-                    # Submodule already initialized
-                    cd -P /var/www/mycodo/cgi-bin/mycodo_python/
-                    git checkout -- .  # Discard unstaged files
-                fi
-
-                cd -P /var/www/mycodo/../  # git < 1.8.4 (Debian wheezy) requires being at toplevel to update submodule
-                git submodule update
 
                 if [ ! -h /var/www/mycodo ]; then
-                    ln -s $DIR /var/www/mycodo
+                    ln -sf $INSTALL_DIRECTORY /var/www/mycodo
                 fi
-                cp $DIR/init.d/mycodo /etc/init.d/
-                cp $DIR/init.d/apache2-tmpfs /etc/init.d/
+                cp $INSTALL_DIRECTORY/init.d/mycodo /etc/init.d/
+                cp $INSTALL_DIRECTORY/init.d/apache2-tmpfs /etc/init.d/
 
                 printf "#### Executing Post-Update Commands ####\n"
                 if [ -f $DIR/update-post.sh ]; then
-                    $DIR/update-post.sh
+                    $INSTALL_DIRECTORY/update-post.sh
+                    INSTALL_DIRECTORY="$(pwd -P /var/www/mycodo)"
                 else
                     printf "Error: update-post.sh not found\n"
                 fi
@@ -97,7 +86,7 @@ case "${1:-''}" in
 
                 printf "#### Update Finished ####\n\n"
 
-                echo '0' > $DIR/.updatecheck
+                echo '0' > $INSTALL_DIRECTORY/../.updatecheck
                 exit 0
             else
                 printf "Error: No git repository found. Update stopped.\n\n"

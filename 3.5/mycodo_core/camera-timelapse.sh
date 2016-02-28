@@ -22,13 +22,15 @@
 #
 #  Contact at kylegabriel.com
 
+INSTALL_DIRECTORY="$(pwd -P /var/www/mycodo)"
+
 start() {
     if [ $1 -ne 0 ]; then
         SECON=$((($6/1000)+($5/1000)+20))
-        /var/www/mycodo/cgi-bin/mycodo-client.py -r $1 $SECON
+        $INSTALL_DIRECTORY/../mycodo_core/mycodo-client.py -r $1 $SECON
     fi
     # Getting extra command options
-    DATABASE="/var/www/mycodo/config/mycodo.db"
+    DATABASE="$INSTALL_DIRECTORY/../config/mycodo.db"
     EXTRA=`sqlite3 $DATABASE "SELECT Extra_Parameters FROM CameraTimelapse;"`;
     if [ $4 -ne 0 ]; then
         if [ ! -z "$EXTRA" ]; then
@@ -47,7 +49,7 @@ start() {
 
 stop() {
     if [ $1 -ne 0 ]; then
-        /var/www/mycodo/cgi-bin/mycodo-client.py -r $1 0
+        $INSTALL_DIRECTORY/../mycodo_core/mycodo-client.py -r $1 0
     fi
     pkill raspistill
 }

@@ -22,13 +22,15 @@
 #
 #  Contact at kylegabriel.com
 
+INSTALL_DIRECTORY="$(pwd -P /var/www/mycodo)"
+
 start() {
 	mkdir /tmp/stream
     if [ -n "$1" ]; then
     /usr/local/bin/gpio -g write $2 $3
     fi
     # Getting extra command options
-    DATABASE="/var/www/mycodo/config/mycodo.db"
+    DATABASE="$INSTALL_DIRECTORY/../config/mycodo.db"
     EXTRA=`sqlite3 $DATABASE "SELECT Extra_Parameters FROM CameraStream;"`;
     if [ ! -z "$EXTRA" ]; then
         /usr/bin/nohup /usr/bin/raspistill $EXTRA --burst -o /tmp/stream/pic.jpg --timelapse 500 --timeout 9999999 --thumb 0:0:0 &

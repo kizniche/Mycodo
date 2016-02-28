@@ -22,12 +22,13 @@
 #
 #  Contact at kylegabriel.com
 
+install_directory = os.path.dirname(os.path.abspath(__file__)) + "/.."
 
-sql_database_mycodo = '/var/www/mycodo/config/mycodo.db'
-sql_database_user = '/var/www/mycodo/config/users.db'
-sql_database_note = '/var/www/mycodo/config/notes.db'
+sql_database_mycodo = '%s/config/mycodo.db' % install_directory
+sql_database_user = '%s/config/users.db' % install_directory
+sql_database_note = '%s/config/notes.db' % install_directory
 
-db_version_mycodo = 20
+db_version_mycodo = 21
 db_version_user = 2
 db_version_note = 3
 
@@ -57,18 +58,22 @@ def menu():
         return 2
     for opt, arg in opts:
         if opt in ("-a", "--adduser"):
-            if database != None:
-                if db_exists_user(database):
-                    add_user(database)
-            else:
+            try:
+                sys.argv[2]
+            except:
                 add_user(sql_database_user)
+            else:
+                if db_exists_user(sys.argv[2]):
+                    add_user(sys.argv[2])
             return 1
         elif opt in ("-d", "--deleteuser"):
-            if database != None:
-                if db_exists_user(database):
-                    delete_user(database)
-            else:
+            try:
+                sys.argv[2]
+            except:
                 delete_user(sql_database_user)
+            else:
+                if db_exists_user(sys.argv[2]):
+                    delete_user(sys.argv[2])
             return 1
         elif opt in ("-h", "--help"):
             usage()
@@ -80,36 +85,38 @@ def menu():
                 setup_db(0)
             else:
                 if sys.argv[2] == 'update':
-                    setup_db('update') 
+                    setup_db('update')
             return 1
         elif opt in ("-p", "--pwchange"):
-            if database != None:
-                if db_exists_user(database):
-                    password_change(database)
-            else:
+            try:
+                sys.argv[2]
+            except:
                 password_change(sql_database_user)
+            else:
+                if db_exists_user(sys.argv[2]):
+                    password_change(sys.argv[2])
             return 1
         else:
             assert False, "Fail"
 
 
 def usage():
-    print 'Usage: setup-database.py [OPTION] [FILE]...'
+    print 'Usage: update-database.py [OPTION] [FILE]...'
     print 'Create and manage Mycodo databases (if no database is specified, the'
-    print 'default users.db and mycodo.db in /var/www/mycodo/config will be used)\n'
+    print 'default users.db and mycodo.db in config/ will be used)\n'
     print 'Options:'
-    print '    -a, --adduser'
+    print '    -a, --adduser [file]'
     print '           Add user to existing users.db database'
-    print '    -d, --deleteuser'
+    print '    -d, --deleteuser [file]'
     print '           Delete user from existing users.db database'
     print '    -h, --help'
     print '           Display this help and exit'
     print "    -i, --install-db [update]"
     print '           Create new users.db, mycodo.db. or both'
-    print '    -p, --pwchange'
+    print '    -p, --pwchange [file]'
     print '           Create a new password for user\n'
     print 'Examples: update-database.py -i'
-    print '          update-database.py -p /var/www/mycodo/config/users.db'
+    print '          update-database.py -p /home/user/Mycodo/3.5/config/users.db'
 
 
 def add_user(db):
@@ -128,7 +135,7 @@ def add_user(db):
             print "Passwords don't match"
         else:
             if test_password(user_password):
-                user_password_hash = subprocess.check_output(["php", "/var/www/mycodo/includes/hash.php", "hash", user_password])
+                user_password_hash = subprocess.check_output(["php", install_directory + "/public_html/includes/hash.php", "hash", user_password])
                 pass_checks = False
 
     pass_checks = True
@@ -152,7 +159,7 @@ def delete_user(db):
     while 1:
         user_name = raw_input('User: ')
         if test_username(user_name):
-            if query_yes_no("Confirm delete user '%s' from /var/www/mycodo/config/users.db" % user_name):
+            if query_yes_no("Confirm delete user '%s' from %s/config/users.db" % user_name, install_directory):
                 conn = sqlite3.connect(sql_database_user)
                 cur = conn.cursor()
                 cur.execute("DELETE FROM users WHERE user_name = '%s' " % user_name)
@@ -177,7 +184,7 @@ def password_change(db):
         if user_password != user_password_again:
             print "Passwords don't match"
         elif test_password(user_password):
-            user_password_hash = subprocess.check_output(["php", "/var/www/mycodo/includes/hash.php", "hash", user_password])
+            user_password_hash = subprocess.check_output(["php", install_directory + "/public_html/includes/hash.php", "hash", user_password])
             conn = sqlite3.connect(sql_database_user)
             cur = conn.cursor()
             cur.execute("UPDATE users SET user_password_hash='%s' WHERE user_name='%s'" % (user_password_hash, user_name))
@@ -432,6 +439,8 @@ def mycodo_database_update():
         # Version 19 updates: no database changes, initialize submodule mycodo_python
 
         # Version 20 updates: Add daily timers
+
+        # Version 21 updates: move files/folders to public_html directory, symlink update happens in update-post.sh
 
         # any extra commands for version X
         #if current_db_version_mycodo < X:
@@ -1183,7 +1192,7 @@ def create_rows_columns_user():
         if admin_password != admin_password_again:
             print "Passwords don't match"
         elif test_password(admin_password):
-            admin_password_hash = subprocess.check_output(["php", "/var/www/mycodo/includes/hash.php", "hash", admin_password])
+            admin_password_hash = subprocess.check_output(["php", install_directory + "/public_html/includes/hash.php", "hash", admin_password])
             pass_checks = False
 
     pass_checks = True
@@ -1214,7 +1223,7 @@ def create_rows_columns_user():
             if user_password != user_password_again:
                 print "Passwords don't match"
             elif test_password(user_password):
-                user_password_hash = subprocess.check_output(["php", "/var/www/mycodo/includes/hash.php", "hash", user_password])
+                user_password_hash = subprocess.check_output(["php", install_directory + "/public_html/includes/hash.php", "hash", user_password])
                 pass_checks = False
 
         pass_checks = True
@@ -1239,7 +1248,7 @@ def create_rows_columns_user():
             if user_password != user_password_again:
                 print "Passwords don't match"
             elif test_password(user_password):
-                user_password_hash = subprocess.check_output(["php", "/var/www/mycodo/includes/hash.php", "hash", user_password])
+                user_password_hash = subprocess.check_output(["php", install_directory + "/public_html/includes/hash.php", "hash", user_password])
                 pass_checks = False
 
         cur.execute("INSERT INTO users (user_name, user_password_hash, user_email, user_restriction, user_theme) VALUES ('{user_name}', '{user_password_hash}', '{user_email}', 'guest', 'light')".\

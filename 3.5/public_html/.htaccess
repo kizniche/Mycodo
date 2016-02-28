@@ -7,19 +7,7 @@ DirectoryIndex index.php
         Allow from All
 </FilesMatch>
 
-<FilesMatch "^(ajax-test\.html)?$">
-        Allow from All
-</FilesMatch>
-
-<FilesMatch "^(ajax-form-process\.php)?$">
-        Allow from All
-</FilesMatch>
-
 <FilesMatch "^(file\.php)?$">
-        Allow from All
-</FilesMatch>
-
-<FilesMatch "^(stream\.php)?$">
         Allow from All
 </FilesMatch>
 

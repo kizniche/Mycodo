@@ -22,13 +22,15 @@
 *  Contact at kylegabriel.com
 */
 
-$db = new SQLite3($mycodo_db);
-$udb = new SQLite3($user_db);
-$ndb = new SQLite3($note_db);
+require_once(dirname(__FILE__) . '/../config.php');
+
+$db_mycodo = new SQLite3($config["db"]["mycodo"]);
+$db_users = new SQLite3($config["db"]["users"]);
+$db_notes = new SQLite3($config["db"]["notes"]);
 
 $logged_in_user = $_SESSION['user_name'];
 
-$results = $udb->query('SELECT user_name,
+$results = $db_users->query('SELECT user_name,
                                user_email,
                                user_restriction,
                                user_theme
@@ -42,7 +44,7 @@ while ($row = $results->fetchArray()) {
     $i++;
 }
 
-$results = $udb->query("SELECT user_restriction,
+$results = $db_users->query("SELECT user_restriction,
                                user_theme
                         FROM   users
                         WHERE  user_name='" . $logged_in_user . "'");
@@ -52,7 +54,7 @@ while ($row = $results->fetchArray()) {
 }
 
 unset($relay_id);
-$results = $db->query('SELECT id,
+$results = $db_mycodo->query('SELECT id,
                               name,
                               pin,
                               amps,
@@ -73,7 +75,7 @@ if (!isset($relay_id)) $relay_id = [];
 
 // conditional statements
 unset($conditional_relay_id);
-$results = $db->query('SELECT id,
+$results = $db_mycodo->query('SELECT id,
                               name,
                               if_relay,
                               if_action,
@@ -107,7 +109,7 @@ while ($row = $results->fetchArray()) {
 if (!isset($conditional_relay_id)) $conditional_relay_id = [];
 
 unset($sensor_t_id);
-$results = $db->query('SELECT id,
+$results = $db_mycodo->query('SELECT id,
                               name,
                               pin,
                               device,
@@ -180,7 +182,7 @@ if (!isset($sensor_t_id)) $sensor_t_id = [];
 if (!isset($sensor_t_graph)) $sensor_t_graph = [];
 
 unset($sensor_ht_id);
-$results = $db->query('SELECT id,
+$results = $db_mycodo->query('SELECT id,
                               name,
                               pin,
                               clock_pin,
@@ -311,7 +313,7 @@ if (!isset($sensor_ht_id)) $sensor_ht_id = [];
 if (!isset($sensor_ht_graph)) $sensor_ht_graph = [];
 
 unset($sensor_co2_id);
-$results = $db->query('SELECT id,
+$results = $db_mycodo->query('SELECT id,
                               name,
                               pin,
                               device,
@@ -384,7 +386,7 @@ if (!isset($sensor_co2_id)) $sensor_co2_id = [];
 if (!isset($sensor_co2_graph)) $sensor_co2_graph = [];
 
 unset($sensor_press_id);
-$results = $db->query('SELECT id,
+$results = $db_mycodo->query('SELECT id,
                               name,
                               pin,
                               device,
@@ -497,7 +499,7 @@ if (!isset($sensor_press_graph)) $sensor_press_graph = [];
 // conditional statements
 unset($conditional_t_id);
 for ($n = 0; $n < count($sensor_t_id); $n++) {
-    $results = $db->query('SELECT id,
+    $results = $db_mycodo->query('SELECT id,
                                   name,
                                   state,
                                   sensor,
@@ -537,7 +539,7 @@ for ($n = 0; $n < count($sensor_t_id); $n++) {
 
 unset($conditional_ht_id);
 for ($n = 0; $n < count($sensor_ht_id); $n++) {
-    $results = $db->query('SELECT id,
+    $results = $db_mycodo->query('SELECT id,
                                   name,
                                   state,
                                   sensor,
@@ -579,7 +581,7 @@ for ($n = 0; $n < count($sensor_ht_id); $n++) {
 
 unset($conditional_co2_id);
 for ($n = 0; $n < count($sensor_co2_id); $n++) {
-    $results = $db->query('SELECT id,
+    $results = $db_mycodo->query('SELECT id,
                                   name,
                                   state,
                                   sensor,
@@ -619,7 +621,7 @@ for ($n = 0; $n < count($sensor_co2_id); $n++) {
 
 unset($conditional_press_id);
 for ($n = 0; $n < count($sensor_press_id); $n++) {
-    $results = $db->query('SELECT id,
+    $results = $db_mycodo->query('SELECT id,
                                   name,
                                   state,
                                   sensor,
@@ -661,35 +663,35 @@ for ($n = 0; $n < count($sensor_press_id); $n++) {
 
 // Sort sensor Presets
 $sensor_t_preset = [];
-$results = $db->query('SELECT id FROM tsensorpreset');
+$results = $db_mycodo->query('SELECT id FROM tsensorpreset');
 while ($row = $results->fetchArray()) {
     $sensor_t_preset[] = $row[0];
 }
 sort($sensor_t_preset, SORT_NATURAL | SORT_FLAG_CASE);
 
 $sensor_ht_preset = [];
-$results = $db->query('SELECT id FROM htsensorpreset');
+$results = $db_mycodo->query('SELECT id FROM htsensorpreset');
 while ($row = $results->fetchArray()) {
     $sensor_ht_preset[] = $row[0];
 }
 sort($sensor_ht_preset, SORT_NATURAL | SORT_FLAG_CASE);
 
 $sensor_co2_preset = [];
-$results = $db->query('SELECT id FROM co2sensorpreset');
+$results = $db_mycodo->query('SELECT id FROM co2sensorpreset');
 while ($row = $results->fetchArray()) {
     $sensor_co2_preset[] = $row[0];
 }
 sort($sensor_co2_preset, SORT_NATURAL | SORT_FLAG_CASE);
 
 $sensor_press_preset = [];
-$results = $db->query('SELECT id FROM presssensorpreset');
+$results = $db_mycodo->query('SELECT id FROM presssensorpreset');
 while ($row = $results->fetchArray()) {
     $sensor_press_preset[] = $row[0];
 }
 sort($sensor_press_preset, SORT_NATURAL | SORT_FLAG_CASE);
 
 unset($timer_id);
-$results = $db->query('SELECT id,
+$results = $db_mycodo->query('SELECT id,
                               name,
                               state,
                               relay,
@@ -709,7 +711,7 @@ while ($row = $results->fetchArray()) {
 if (!isset($timer_id)) $timer_id = [];
 
 unset($timer_daily_id);
-$results = $db->query('SELECT id,
+$results = $db_mycodo->query('SELECT id,
                               name,
                               state,
                               relay,
@@ -730,7 +732,7 @@ while ($row = $results->fetchArray()) {
 }
 if (!isset($timer_daily_id)) $timer_daily_id = [];
 
-$results = $db->query('SELECT combined_temp_min,
+$results = $db_mycodo->query('SELECT combined_temp_min,
                               combined_temp_max,
                               combined_temp_tics,
                               combined_temp_mtics,
@@ -814,7 +816,7 @@ while ($row = $results->fetchArray()) {
     $combined_press_relays_mtics = $row[39];
 }
 
-$results = $db->query('SELECT host,
+$results = $db_mycodo->query('SELECT host,
                               ssl,
                               port,
                               user,
@@ -832,7 +834,7 @@ while ($row = $results->fetchArray()) {
     $smtp_wait_time = $row[6];
 }
 
-$results = $db->query('SELECT relay,
+$results = $db_mycodo->query('SELECT relay,
                               timestamp,
                               display_last,
                               cmd_pre,
@@ -848,7 +850,7 @@ while ($row = $results->fetchArray()) {
     $still_extra_parameters = str_replace("''","'",$row[5]);
 }
 
-$results = $db->query('SELECT relay,
+$results = $db_mycodo->query('SELECT relay,
                               cmd_pre,
                               cmd_post,
                               extra_parameters
@@ -860,7 +862,7 @@ while ($row = $results->fetchArray()) {
     $stream_extra_parameters = str_replace("''","'",$row[3]);
 }
 
-$results = $db->query('SELECT relay,
+$results = $db_mycodo->query('SELECT relay,
                               path,
                               prefix,
                               file_timestamp,
@@ -880,7 +882,7 @@ while ($row = $results->fetchArray()) {
     $timelapse_extra_parameters = str_replace("''","'",$row[7]);
 }
 
-$results = $db->query('SELECT login_message,
+$results = $db_mycodo->query('SELECT login_message,
                               refresh_time,
                               enable_max_amps,
                               max_amps,

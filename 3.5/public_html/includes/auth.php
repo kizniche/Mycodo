@@ -22,8 +22,10 @@
 *  Contact at kylegabriel.com
 */
 
-$install_path = "/var/www/mycodo";
-$user_db = $install_path . "/config/users.db";
+$install_path = dirname(__FILE__) . "/../..";
+
+$db_users = new SQLite3($install_path . "/config/users.db");
+
 
 if (!isset($_COOKIE['login_user']) || !isset($_COOKIE['login_hash'])) {
 	echo "Invalid username/password";
@@ -33,13 +35,11 @@ if (!isset($_COOKIE['login_user']) || !isset($_COOKIE['login_hash'])) {
 	return 0;
 }
 
-$userdb = new SQLite3($user_db);
-
 $sql = "SELECT user_name, user_email, user_password_hash
         FROM users
         WHERE user_name = '" . $_COOKIE['login_user'] . "' OR user_email = '" . $_COOKIE['login_user'] . "'
         LIMIT 1";
-$results = $userdb->query($sql);
+$results = $db_users->query($sql);
 while ($row = $results->fetchArray()) {
 	$user_name = $row[1];
 	$user_hash = $row[2];

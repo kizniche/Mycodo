@@ -33,9 +33,9 @@ if (isset($_POST['UpdateCheck'])) {
     update_check($install_path, $update_check);
 }
 if (isset($_POST['UpdateMycodo'])) {
-    exec("$install_path/cgi-bin/mycodo-wrapper updatecheck 2>&1", $update_check_output, $update_check_return);
+    exec("$install_path/mycodo_core/mycodo-wrapper updatecheck 2>&1", $update_check_output, $update_check_return);
     if ($update_check_return) {
-        exec("$install_path/cgi-bin/mycodo-wrapper update >> /var/www/mycodo/log/update.log &");
+        exec("$install_path/mycodo_core/mycodo-wrapper update >> /var/www/mycodo/log/update.log &");
         $settings_error = "The update process has begun. You can follow the progress of the update from the Update Log under the Data tab.";
     } else {
         $settings_error = "Error: Cannot update: You are already running the latest version of Mycodo.";
@@ -43,15 +43,15 @@ if (isset($_POST['UpdateMycodo'])) {
 }
 if (isset($_POST['RestoreBackup'])) {
     $restore_directory = $_POST['RestoreBackup'];
-    exec("$install_path/cgi-bin/mycodo-wrapper restore $restore_directory >> /var/www/mycodo/log/restore.log &");
+    exec("$install_path/mycodo_core/mycodo-wrapper restore $restore_directory >> /var/www/mycodo/log/restore.log &");
     $data_error = "The restore process has begun. You can follow the progress of the restore from the Restore Log under the Data tab.";
 }
 if (isset($_POST['DeleteBackup'])) {
     $delete_directory = $_POST['DeleteBackup'];
-    exec("$install_path/cgi-bin/mycodo-wrapper delete $delete_directory &");
+    exec("$install_path/mycodo_core/mycodo-wrapper delete $delete_directory &");
 }
 if (isset($_POST['CreateBackup'])) {
-    exec("$install_path/cgi-bin/mycodo-wrapper backup");
+    exec("$install_path/mycodo_core/mycodo-wrapper backup");
 }
 
 
@@ -66,25 +66,25 @@ if (isset($_POST['DaemonStop'])) {
     if (!file_exists($lock_daemon)) {
         $settings_error = 'Error: Lock-file not present: ' . $lock_daemon . ' Is the daemon really running? Checking for and force-closing any running daemon.';
     } else {
-        exec("$install_path/cgi-bin/mycodo-wrapper stop 2>&1 > /dev/null");
+        exec("$install_path/mycodo_core/mycodo-wrapper stop 2>&1 > /dev/null");
     }
 }
 if (isset($_POST['DaemonStart'])) {
     if (file_exists($lock_daemon)) {
         $settings_error = 'Error: Lock-file present: ' . $lock_daemon . ' Is the daemon aready running? Delete the lock file to start or select "Restart Daemon"';
     } else {
-        exec("$install_path/cgi-bin/mycodo-wrapper start 2>&1 > /dev/null");
+        exec("$install_path/mycodo_core/mycodo-wrapper start 2>&1 > /dev/null");
     }
 }
 if (isset($_POST['DaemonRestart'])) {
     if (!file_exists($lock_daemon)) {
         $settings_error = 'Error: Lock-file not present: ' . $lock_daemon . ' Is the daemon really running? Checking for and force-closing any running daemon before attempting to start.';
     } else {
-        exec("$install_path/cgi-bin/mycodo-wrapper restart 2>&1 > /dev/null");
+        exec("$install_path/mycodo_core/mycodo-wrapper restart 2>&1 > /dev/null");
     }
 }
 if (isset($_POST['DaemonDebug'])) {
-    exec("$install_path/cgi-bin/mycodo-wrapper debug 2>&1 > /dev/null");
+    exec("$install_path/mycodo_core/mycodo-wrapper debug 2>&1 > /dev/null");
 }
 
 
@@ -98,7 +98,7 @@ if (isset($_POST['DaemonDebug'])) {
 // Add relays
 if (isset($_POST['AddRelays']) && isset($_POST['AddRelaysNumber'])) {
     for ($j = 0; $j < $_POST['AddRelaysNumber']; $j++) {
-        $stmt = $db->prepare("INSERT INTO Relays (id, name, pin, amps, trigger, start_state) VALUES (:id, 'Relay', 0, 0, 0, 0)");
+        $stmt = $db_mycodo->prepare("INSERT INTO Relays (id, name, pin, amps, trigger, start_state) VALUES (:id, 'Relay', 0, 0, 0, 0)");
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->execute();
     }
@@ -109,7 +109,7 @@ if (isset($_POST['AddRelays']) && isset($_POST['AddRelaysNumber'])) {
 for ($p = 0; $p < count($relay_id); $p++) {
     // Set relay variables
     if (isset($_POST['Mod' . $p . 'Relay'])) {
-        $stmt = $db->prepare("UPDATE relays
+        $stmt = $db_mycodo->prepare("UPDATE relays
                               SET    name = :name,
                                      pin = :pin,
                                      amps = :amps,
@@ -157,7 +157,7 @@ for ($p = 0; $p < count($relay_id); $p++) {
     }
     // Delete Relay
     if (isset($_POST['Delete' . $p . 'Relay'])) {
-        $stmt = $db->prepare("DELETE FROM Relays WHERE Id=:id");
+        $stmt = $db_mycodo->prepare("DELETE FROM Relays WHERE Id=:id");
         $stmt->bindValue(':id', $relay_id[$p], SQLITE3_TEXT);
         $stmt->execute();
 
@@ -237,7 +237,7 @@ if (isset($_POST['AddRelayConditional'])) {
     }
     // If no errors encountered, proceed
     if (!isset($sensor_error)) {
-        $stmt = $db->prepare("INSERT INTO RelayConditional (Id, Name, If_Relay, If_Action, If_Duration, Sel_Relay, Do_Relay, Do_Action, Do_Duration, Sel_Command, Do_Command, Sel_Notify, Do_Notify) VALUES (:id, :name, :ifrelay, :ifaction, :ifduration, :selrelay, :dorelay, :doaction, :doduration, :selcommand, :command, :selnotify, :notify)");
+        $stmt = $db_mycodo->prepare("INSERT INTO RelayConditional (Id, Name, If_Relay, If_Action, If_Duration, Sel_Relay, Do_Relay, Do_Action, Do_Duration, Sel_Command, Do_Command, Sel_Notify, Do_Notify) VALUES (:id, :name, :ifrelay, :ifaction, :ifduration, :selrelay, :dorelay, :doaction, :doduration, :selcommand, :command, :selnotify, :notify)");
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->bindValue(':name', str_replace(' ', '', $_POST['conditionrelayname']), SQLITE3_TEXT);
         $stmt->bindValue(':ifrelay', (int)$_POST['conditionrelayifrelay'], SQLITE3_INTEGER);
@@ -272,7 +272,7 @@ if (isset($_POST['AddRelayConditional'])) {
 # Delete relay conditional statement
 for ($p = 0; $p < count($conditional_relay_id); $p++) {
     if (isset($_POST['DeleteRelay' . $p . 'Conditional'])) {
-        $stmt = $db->prepare("DELETE FROM RelayConditional WHERE Id=:id");
+        $stmt = $db_mycodo->prepare("DELETE FROM RelayConditional WHERE Id=:id");
         $stmt->bindValue(':id', $conditional_relay_id[$p], SQLITE3_TEXT);
         $stmt->execute();
         shell_exec("$mycodo_client --sqlreload -1");
@@ -289,7 +289,7 @@ for ($p = 0; $p < count($conditional_relay_id); $p++) {
 
 for ($p = 0; $p < count($timer_id); $p++) {
     if (isset($_POST['ChangeTimer' . $p])) {  // Set timer variables
-        $stmt = $db->prepare("UPDATE timers
+        $stmt = $db_mycodo->prepare("UPDATE timers
                               SET    name = :name,
                                      relay = :relay,
                                      durationon = :durationon,
@@ -312,7 +312,7 @@ for ($p = 0; $p < count($timer_id); $p++) {
         file_put_contents($timer_changes_log, $record, FILE_APPEND);
     }
     if (isset($_POST['Timer' . $p . 'StateChange'])) {  // Set timer state
-        $stmt = $db->prepare("UPDATE Timers SET State=:state WHERE Id=:id");
+        $stmt = $db_mycodo->prepare("UPDATE Timers SET State=:state WHERE Id=:id");
         $stmt->bindValue(':state', (int)$_POST['Timer' . $p . 'StateChange'], SQLITE3_INTEGER);
         $stmt->bindValue(':id', $timer_id[$p], SQLITE3_TEXT);
         $stmt->execute();
@@ -323,7 +323,7 @@ for ($p = 0; $p < count($timer_id); $p++) {
         }
     }
     if (isset($_POST['Delete' . $p . 'Timer'])) {  // Delete Timer
-        $stmt = $db->prepare("DELETE FROM Timers WHERE Id=:id");
+        $stmt = $db_mycodo->prepare("DELETE FROM Timers WHERE Id=:id");
         $stmt->bindValue(':id', $timer_id[$p], SQLITE3_TEXT);
         $stmt->execute();
         shell_exec("$mycodo_client --sqlreload -1");
@@ -332,7 +332,7 @@ for ($p = 0; $p < count($timer_id); $p++) {
 // Add timers
 if (isset($_POST['AddTimers']) && isset($_POST['AddTimersNumber'])) {
     for ($j = 0; $j < $_POST['AddTimersNumber']; $j++) {
-        $stmt = $db->prepare("INSERT INTO Timers VALUES (:id, 'Timer', 0, 0, 60, 360)");
+        $stmt = $db_mycodo->prepare("INSERT INTO Timers VALUES (:id, 'Timer', 0, 0, 60, 360)");
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->execute();
     }
@@ -342,7 +342,7 @@ if (isset($_POST['AddTimers']) && isset($_POST['AddTimersNumber'])) {
 
 for ($p = 0; $p < count($timer_daily_id); $p++) {
     if (isset($_POST['ChangeTimerDaily' . $p])) {  // Set timer variables
-        $stmt = $db->prepare("UPDATE timers_daily
+        $stmt = $db_mycodo->prepare("UPDATE timers_daily
                               SET    name = :name,
                                      relay = :relay,
                                      houron = :houron,
@@ -368,7 +368,7 @@ for ($p = 0; $p < count($timer_daily_id); $p++) {
         file_put_contents($timer_daily_changes_log, $record, FILE_APPEND);
     }
     if (isset($_POST['TimerDaily' . $p . 'StateChange'])) {  // Set timer state
-        $stmt = $db->prepare("UPDATE timers_daily SET State=:state WHERE Id=:id");
+        $stmt = $db_mycodo->prepare("UPDATE timers_daily SET State=:state WHERE Id=:id");
         $stmt->bindValue(':state', (int)$_POST['TimerDaily' . $p . 'StateChange'], SQLITE3_INTEGER);
         $stmt->bindValue(':id', $timer_daily_id[$p], SQLITE3_TEXT);
         $stmt->execute();
@@ -379,7 +379,7 @@ for ($p = 0; $p < count($timer_daily_id); $p++) {
         }
     }
     if (isset($_POST['Delete' . $p . 'TimerDaily'])) {  // Delete Timer
-        $stmt = $db->prepare("DELETE FROM timers_daily WHERE Id=:id");
+        $stmt = $db_mycodo->prepare("DELETE FROM timers_daily WHERE Id=:id");
         $stmt->bindValue(':id', $timer_daily_id[$p], SQLITE3_TEXT);
         $stmt->execute();
         shell_exec("$mycodo_client --sqlreload -1");
@@ -388,7 +388,7 @@ for ($p = 0; $p < count($timer_daily_id); $p++) {
 // Add timers
 if (isset($_POST['AddTimersDaily']) && isset($_POST['AddTimersDailyNumber'])) {
     for ($j = 0; $j < $_POST['AddTimersDailyNumber']; $j++) {
-        $stmt = $db->prepare("INSERT INTO Timers_daily VALUES (:id, 'Timer', 0, 0, 0, 0, 60)");
+        $stmt = $db_mycodo->prepare("INSERT INTO Timers_daily VALUES (:id, 'Timer', 0, 0, 0, 0, 60)");
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->execute();
     }
@@ -408,7 +408,7 @@ if (isset($_POST['AddSensor'])) {
         switch ($_POST['AddSensorDev']) {
             case "RPi":
             case "DS18B20":
-                $stmt = $db->prepare("INSERT INTO TSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D) VALUES (:id, :name, 0, :dev, 120, 0, 0, 0, 0, -100, 100, 25, 5, 0, 55, 5, 5, '0', '0', 0, 0, 0, 0, 0, 0, 1, 25, 0, 90, 0, 0, 0)");
+                $stmt = $db_mycodo->prepare("INSERT INTO TSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D) VALUES (:id, :name, 0, :dev, 120, 0, 0, 0, 0, -100, 100, 25, 5, 0, 55, 5, 5, '0', '0', 0, 0, 0, 0, 0, 0, 1, 25, 0, 90, 0, 0, 0)");
                 $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
                 $stmt->bindValue(':name', $_POST['AddSensorName'], SQLITE3_TEXT);
                 $stmt->bindValue(':dev', $_POST['AddSensorDev'], SQLITE3_TEXT);
@@ -420,7 +420,7 @@ if (isset($_POST['AddSensor'])) {
             case "AM2302":
             case "AM2315":
             case "SHT75":
-                $stmt = $db->prepare("INSERT INTO HTSensor (Id, Name, Pin, Clock_Pin, Sensor_Voltage, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Verify_Pin, Verify_Temp, Verify_Temp_Notify, Verify_Temp_Stop, Verify_Hum, Verify_Hum_Notify, Verify_Hum_Stop, Verify_Notify_Email, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relays_Up, Hum_Relays_Down, Hum_Relay_High, Hum_Outmin_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmin_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D) VALUES (:id, :name, 0, 0, :sensor_voltage, :dev, 120, 0, 0, 0, 0, 0, 5, 0, 0, 10, 0, 0, '', -100, 100, 25, 5, 0, 35, 5, 5, 0, 100, 10, 5, '0', '0', 0, 0, 0, 0, 0, 0, 1, 25, 0, 90, 0, 0, 0, '0', '0', 0, 0, 0, 0, 0, 0, 1, 50.0, 0, 90, 0, 0, 0)");
+                $stmt = $db_mycodo->prepare("INSERT INTO HTSensor (Id, Name, Pin, Clock_Pin, Sensor_Voltage, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Verify_Pin, Verify_Temp, Verify_Temp_Notify, Verify_Temp_Stop, Verify_Hum, Verify_Hum_Notify, Verify_Hum_Stop, Verify_Notify_Email, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relays_Up, Hum_Relays_Down, Hum_Relay_High, Hum_Outmin_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmin_Low, Hum_Outmax_Low, Hum_OR, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D) VALUES (:id, :name, 0, 0, :sensor_voltage, :dev, 120, 0, 0, 0, 0, 0, 5, 0, 0, 10, 0, 0, '', -100, 100, 25, 5, 0, 35, 5, 5, 0, 100, 10, 5, '0', '0', 0, 0, 0, 0, 0, 0, 1, 25, 0, 90, 0, 0, 0, '0', '0', 0, 0, 0, 0, 0, 0, 1, 50.0, 0, 90, 0, 0, 0)");
                 $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
                 $stmt->bindValue(':name', $_POST['AddSensorName'], SQLITE3_TEXT);
                 $stmt->bindValue(':dev', $_POST['AddSensorDev'], SQLITE3_TEXT);
@@ -428,14 +428,14 @@ if (isset($_POST['AddSensor'])) {
                 shell_exec("$mycodo_client --pidallrestart HT");
                 break;
             case "K30":
-                $stmt = $db->prepare("INSERT INTO CO2Sensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph,  YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_CO2_Min, YAxis_CO2_Max, YAxis_CO2_Tics, YAxis_CO2_MTics, CO2_Relays_Up, CO2_Relays_Down, CO2_Relay_High, CO2_Outmin_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmin_Low, CO2_Outmax_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D) VALUES (:id, :name, 0, 'K30', 120, 0, 0, 0, 0, -100, 100, 25, 5, 0, 5000, 500, 5, '0', '0', 0, 0, 0, 0, 0, 0, 1, 1200, 0, 90, 0, 0, 0)");
+                $stmt = $db_mycodo->prepare("INSERT INTO CO2Sensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph,  YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_CO2_Min, YAxis_CO2_Max, YAxis_CO2_Tics, YAxis_CO2_MTics, CO2_Relays_Up, CO2_Relays_Down, CO2_Relay_High, CO2_Outmin_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmin_Low, CO2_Outmax_Low, CO2_OR, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D) VALUES (:id, :name, 0, 'K30', 120, 0, 0, 0, 0, -100, 100, 25, 5, 0, 5000, 500, 5, '0', '0', 0, 0, 0, 0, 0, 0, 1, 1200, 0, 90, 0, 0, 0)");
                 $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
                 $stmt->bindValue(':name', $_POST['AddSensorName'], SQLITE3_TEXT);
                 $stmt->execute();
                 shell_exec("$mycodo_client --pidallrestart CO2");
                 break;
             case "BMP":
-                $stmt = $db->prepare("INSERT INTO PressSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Press_Min, YAxis_Press_Max, YAxis_Press_Tics, YAxis_Press_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Press_Relays_Up, Press_Relays_Down, Press_Relay_High, Press_Outmin_High, Press_Outmax_High, Press_Relay_Low, Press_Outmin_Low, Press_Outmax_Low, Press_OR, Press_Set, Press_Set_Direction, Press_Period, Press_P, Press_I, Press_D) VALUES (:id, :name, 0, 'BMP085-180', 120, 0, 0, 0, 0, -100, 100, 25, 5, 0, 35, 5, 5, 97000, 100000, 500, 5, '0', '0', 0, 0, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0, '0', '0', 0, 0, 0, 0, 0, 0, 1, 97000, 0, 90, 0, 0, 0)");
+                $stmt = $db_mycodo->prepare("INSERT INTO PressSensor (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Press_Min, YAxis_Press_Max, YAxis_Press_Tics, YAxis_Press_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_OR, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Press_Relays_Up, Press_Relays_Down, Press_Relay_High, Press_Outmin_High, Press_Outmax_High, Press_Relay_Low, Press_Outmin_Low, Press_Outmax_Low, Press_OR, Press_Set, Press_Set_Direction, Press_Period, Press_P, Press_I, Press_D) VALUES (:id, :name, 0, 'BMP085-180', 120, 0, 0, 0, 0, -100, 100, 25, 5, 0, 35, 5, 5, 97000, 100000, 500, 5, '0', '0', 0, 0, 0, 0, 0, 0, 1, 25.0, 0, 90, 0, 0, 0, '0', '0', 0, 0, 0, 0, 0, 0, 1, 97000, 0, 90, 0, 0, 0)");
                 $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
                 $stmt->bindValue(':name', $_POST['AddSensorName'], SQLITE3_TEXT);
                 $stmt->execute();
@@ -458,7 +458,7 @@ if (isset($_POST['AddSensor'])) {
 for ($p = 0; $p < count($sensor_t_id); $p++) {
     // Add T Conditional statement
     if (isset($_POST['AddT' . $p . 'Conditional'])) {
-        $stmt = $db->prepare("INSERT INTO TSensorConditional (Id, Name, Sensor, State, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify) VALUES (:id, :name, :sensor, 0, :direction, :setpoint, :period, :selrelay, :relay, :relaystate, :relaysecondson, :selcommand, :command, :selnotify, :notify)");
+        $stmt = $db_mycodo->prepare("INSERT INTO TSensorConditional (Id, Name, Sensor, State, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify) VALUES (:id, :name, :sensor, 0, :direction, :setpoint, :period, :selrelay, :relay, :relaystate, :relaysecondson, :selcommand, :command, :selnotify, :notify)");
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->bindValue(':name', str_replace(' ', '', $_POST['conditiont' . $p . 'name']), SQLITE3_TEXT);
         $stmt->bindValue(':sensor', $p, SQLITE3_INTEGER);
@@ -492,21 +492,21 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
         for ($z = 0; $z < count($conditional_t_id[$p]); $z++) {
             // Delete T Conditional Statement
             if (isset($_POST['DeleteT' . $p . '-' . $z . 'Conditional'])) {
-                $stmt = $db->prepare("DELETE FROM TSensorConditional WHERE Id=:id");
+                $stmt = $db_mycodo->prepare("DELETE FROM TSensorConditional WHERE Id=:id");
                 $stmt->bindValue(':id', $conditional_t_id[$p][$z], SQLITE3_TEXT);
                 $stmt->execute();
                 shell_exec("$mycodo_client --sqlreload -1");
             }
             // Turn T Conditional Statements On/Off
             if (isset($_POST['TurnOnT' . $p . '-' . $z . 'Conditional'])) {
-                $stmt = $db->prepare("UPDATE TSensorConditional SET State=:state WHERE Id=:id");
+                $stmt = $db_mycodo->prepare("UPDATE TSensorConditional SET State=:state WHERE Id=:id");
                 $stmt->bindValue(':state', 1);
                 $stmt->bindValue(':id', $conditional_t_id[$p][$z], SQLITE3_TEXT);
                 $stmt->execute();
                 shell_exec("$mycodo_client --sqlreload -1");
             }
             if (isset($_POST['TurnOffT' . $p . '-' . $z . 'Conditional'])) {
-                $stmt = $db->prepare("UPDATE TSensorConditional SET State=:state WHERE Id=:id");
+                $stmt = $db_mycodo->prepare("UPDATE TSensorConditional SET State=:state WHERE Id=:id");
                 $stmt->bindValue(':state', 0);
                 $stmt->bindValue(':id', $conditional_t_id[$p][$z], SQLITE3_TEXT);
                 $stmt->execute();
@@ -544,7 +544,7 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
 
         // Set Temperature PID override on or off
         if (isset($_POST['ChangeT' . $p . 'TempOR'])) {
-            $stmt = $db->prepare("UPDATE TSensor SET Temp_OR=:tempor WHERE Id=:id");
+            $stmt = $db_mycodo->prepare("UPDATE TSensor SET Temp_OR=:tempor WHERE Id=:id");
             $stmt->bindValue(':tempor', (int)$_POST['ChangeT' . $p . 'TempOR'], SQLITE3_INTEGER);
             $stmt->bindValue(':id', $sensor_t_id[$p], SQLITE3_TEXT);
             $stmt->execute();
@@ -560,7 +560,7 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
         // Overwrite preset for Temperature sensor and PID variables
         if (isset($_POST['Change' . $p . 'TSensorOverwrite'])) {
             if (isset($_POST['sensort' . $p . 'preset']) && $_POST['sensort' . $p . 'preset'] != 'default') {
-                $stmt = $db->prepare("UPDATE tsensorpreset
+                $stmt = $db_mycodo->prepare("UPDATE tsensorpreset
                                       SET    name = :name,
                                              device = :device,
                                              pin = :pin,
@@ -633,7 +633,7 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
                 $stmt->bindValue(':preset', $_POST['sensort' . $p . 'preset'], SQLITE3_TEXT);
                 $stmt->execute();
             }
-            $stmt = $db->prepare("UPDATE tsensor
+            $stmt = $db_mycodo->prepare("UPDATE tsensor
                                   SET    name = :name,
                                          device = :device,
                                          pin = :pin,
@@ -767,13 +767,13 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
         }
         // Load Temperature sensor and PID variables from preset
         if (isset($_POST['Change' . $p . 'TSensorLoad']) && $_POST['sensort' . $p . 'preset'] != 'default') {
-            $stmt = $db->prepare('SELECT * FROM TSensorPreset WHERE Id=:preset');
+            $stmt = $db_mycodo->prepare('SELECT * FROM TSensorPreset WHERE Id=:preset');
             $stmt->bindValue(':preset', $_POST['sensort' . $p . 'preset']);
             $result = $stmt->execute();
             $exist = $result->fetchArray();
             // Id exists, change values to preset
             if ($exist != False) {
-                $stmt = $db->prepare('SELECT name,
+                $stmt = $db_mycodo->prepare('SELECT name,
                                              pin,
                                              device,
                                              period,
@@ -808,7 +808,7 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
                 $stmt->bindValue(':preset', $_POST['sensort' . $p . 'preset']);
                 $result = $stmt->execute();
                 $row = $result->fetchArray();
-                $stmt = $db->prepare("UPDATE tsensor
+                $stmt = $db_mycodo->prepare("UPDATE tsensor
                                       SET    name = :name,
                                              pin = :pin,
                                              device = :device,
@@ -900,7 +900,7 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
             $sensor_error = "Error: The preset name '$name' is already in use. Use a different name.";
         } else {
             if (isset($_POST['sensort' . $p . 'presetname']) && $_POST['sensort' . $p . 'presetname'] != '') {
-                $stmt = $db->prepare("INSERT INTO TSensorPreset (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D) VALUES (:preset, :name, :pin, :device, :period, :premeas_relay, :premeas_dur, :activated, :graph, :yaxis_relay_min, :yaxis_relay_max, :yaxis_relay_tics, :yaxis_relay_mtics, :yaxis_temp_min, :yaxis_temp_max, :yaxis_temp_tics, :yaxis_temp_mtics, :temprelaysup, :temprelaysdown, :temprelayhigh, :tempoutminhigh, :tempoutmaxhigh, :temprelaylow, :tempoutminlow, :tempoutmaxlow, :tempset, :tempsetdir, :tempperiod, :tempp, :tempi, :tempd)");
+                $stmt = $db_mycodo->prepare("INSERT INTO TSensorPreset (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D) VALUES (:preset, :name, :pin, :device, :period, :premeas_relay, :premeas_dur, :activated, :graph, :yaxis_relay_min, :yaxis_relay_max, :yaxis_relay_tics, :yaxis_relay_mtics, :yaxis_temp_min, :yaxis_temp_max, :yaxis_temp_tics, :yaxis_temp_mtics, :temprelaysup, :temprelaysdown, :temprelayhigh, :tempoutminhigh, :tempoutmaxhigh, :temprelaylow, :tempoutminlow, :tempoutmaxlow, :tempset, :tempsetdir, :tempperiod, :tempp, :tempi, :tempd)");
                 $stmt->bindValue(':preset', $_POST['sensort' . $p . 'presetname'], SQLITE3_TEXT);
                 $stmt->bindValue(':name', str_replace(' ', '', $_POST['sensort' . $p . 'name']), SQLITE3_TEXT);
                 $stmt->bindValue(':device', str_replace(' ', '', $_POST['sensort' . $p . 'device']), SQLITE3_TEXT);
@@ -953,7 +953,7 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
             $name = $_POST['sensort' . $p . 'presetname'];
             $sensor_error = "Error: The preset name '$name' is already in use. Use a different name.";
         } else {
-            $stmt = $db->prepare("UPDATE TSensorPreset SET Id=:presetnew WHERE Id=:presetold");
+            $stmt = $db_mycodo->prepare("UPDATE TSensorPreset SET Id=:presetnew WHERE Id=:presetold");
             $stmt->bindValue(':presetold', $_POST['sensort' . $p . 'preset'], SQLITE3_TEXT);
             $stmt->bindValue(':presetnew', $_POST['sensort' . $p . 'presetname'], SQLITE3_TEXT);
             $stmt->execute();
@@ -962,14 +962,14 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
 
     // Delete Temperature preset
     if (isset($_POST['Change' . $p . 'TSensorDelete']) && $_POST['sensort' . $p . 'preset'] != 'default') {
-        $stmt = $db->prepare("DELETE FROM TSensorPreset WHERE Id=:preset");
+        $stmt = $db_mycodo->prepare("DELETE FROM TSensorPreset WHERE Id=:preset");
         $stmt->bindValue(':preset', $_POST['sensort' . $p . 'preset']);
         $stmt->execute();
     }
 
     // Delete Temperature sensors
     if (isset($_POST['Delete' . $p . 'TSensor'])) {
-        $stmt = $db->prepare("DELETE FROM TSensor WHERE Id=:id");
+        $stmt = $db_mycodo->prepare("DELETE FROM TSensor WHERE Id=:id");
         $stmt->bindValue(':id', $sensor_t_id[$p], SQLITE3_TEXT);
         $stmt->execute();
         shell_exec("$mycodo_client --pidallrestart T");
@@ -987,7 +987,7 @@ for ($p = 0; $p < count($sensor_t_id); $p++) {
 for ($p = 0; $p < count($sensor_ht_id); $p++) {
     // Add HT Conditional statement
     if (isset($_POST['AddHT' . $p . 'Conditional'])) {
-        $stmt = $db->prepare("INSERT INTO HTSensorConditional (Id, Name, Sensor, State, Condition, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify) VALUES (:id, :name, :sensor, 0, :condition, :direction, :setpoint, :period, :selrelay, :relay, :relaystate, :relaysecondson, :selcommand, :command, :selnotify, :notify)");
+        $stmt = $db_mycodo->prepare("INSERT INTO HTSensorConditional (Id, Name, Sensor, State, Condition, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify) VALUES (:id, :name, :sensor, 0, :condition, :direction, :setpoint, :period, :selrelay, :relay, :relaystate, :relaysecondson, :selcommand, :command, :selnotify, :notify)");
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->bindValue(':name', str_replace(' ', '', $_POST['conditionht' . $p . 'name']), SQLITE3_TEXT);
         $stmt->bindValue(':sensor', $p, SQLITE3_INTEGER);
@@ -1023,21 +1023,21 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
         for ($z = 0; $z < count($conditional_ht_id[$p]); $z++) {
             // Delete HT Conditional Statement
             if (isset($_POST['DeleteHT' . $p . '-' . $z . 'Conditional'])) {
-                $stmt = $db->prepare("DELETE FROM HTSensorConditional WHERE Id=:id");
+                $stmt = $db_mycodo->prepare("DELETE FROM HTSensorConditional WHERE Id=:id");
                 $stmt->bindValue(':id', $conditional_ht_id[$p][$z], SQLITE3_TEXT);
                 $stmt->execute();
                 shell_exec("$mycodo_client --sqlreload -1");
             }
             // Turn HT Conditional Statements On/Off
             if (isset($_POST['TurnOnHT' . $p . '-' . $z . 'Conditional'])) {
-                $stmt = $db->prepare("UPDATE HTSensorConditional SET State=:state WHERE Id=:id");
+                $stmt = $db_mycodo->prepare("UPDATE HTSensorConditional SET State=:state WHERE Id=:id");
                 $stmt->bindValue(':state', 1);
                 $stmt->bindValue(':id', $conditional_ht_id[$p][$z], SQLITE3_TEXT);
                 $stmt->execute();
                 shell_exec("$mycodo_client --sqlreload -1");
             }
             if (isset($_POST['TurnOffHT' . $p . '-' . $z . 'Conditional'])) {
-                $stmt = $db->prepare("UPDATE HTSensorConditional SET State=:state WHERE Id=:id");
+                $stmt = $db_mycodo->prepare("UPDATE HTSensorConditional SET State=:state WHERE Id=:id");
                 $stmt->bindValue(':state', 0);
                 $stmt->bindValue(':id', $conditional_ht_id[$p][$z], SQLITE3_TEXT);
                 $stmt->execute();
@@ -1096,7 +1096,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
     if (!isset($sensor_error)) {
         // Set Humidity PID override on or off
         if (isset($_POST['ChangeHT' . $p . 'TempOR'])) {
-            $stmt = $db->prepare("UPDATE HTSensor SET Temp_OR=:humor WHERE Id=:id");
+            $stmt = $db_mycodo->prepare("UPDATE HTSensor SET Temp_OR=:humor WHERE Id=:id");
             $stmt->bindValue(':humor', (int)$_POST['ChangeHT' . $p . 'TempOR'], SQLITE3_INTEGER);
             $stmt->bindValue(':id', $sensor_ht_id[$p], SQLITE3_TEXT);
             $stmt->execute();
@@ -1110,7 +1110,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
         }
         if (isset($_POST['ChangeHT' . $p . 'HumOR'])) {
             if (!isset($sensor_error)) {
-                $stmt = $db->prepare("UPDATE HTSensor SET Hum_OR=:humor WHERE Id=:id");
+                $stmt = $db_mycodo->prepare("UPDATE HTSensor SET Hum_OR=:humor WHERE Id=:id");
                 $stmt->bindValue(':humor', (int)$_POST['ChangeHT' . $p . 'HumOR'], SQLITE3_INTEGER);
                 $stmt->bindValue(':id', $sensor_ht_id[$p], SQLITE3_TEXT);
                 $stmt->execute();
@@ -1127,7 +1127,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
         // Overwrite preset for Temperature/Humidity sensor and PID variables
         if (isset($_POST['Change' . $p . 'HTSensorOverwrite'])) {
             if (isset($_POST['sensorht' . $p . 'preset']) && $_POST['sensorht' . $p . 'preset'] != 'default') {
-                $stmt = $db->prepare("UPDATE htsensorpreset
+                $stmt = $db_mycodo->prepare("UPDATE htsensorpreset
                                       SET    name = :name,
                                              device = :device,
                                              pin = :pin,
@@ -1256,7 +1256,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
                 $stmt->bindValue(':preset', $_POST['sensorht' . $p . 'preset'], SQLITE3_TEXT);
                 $stmt->execute();
             }
-            $stmt = $db->prepare("UPDATE htsensor
+            $stmt = $db_mycodo->prepare("UPDATE htsensor
                                   SET    name = :name,
                                          device = :device,
                                          pin = :pin,
@@ -1516,7 +1516,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             } else {
                 if (isset($_POST['sensorht' . $p . 'presetname']) && $_POST['sensorht' . $p . 'presetname'] != '') {
 
-                    $stmt = $db->prepare("INSERT INTO HTSensorPreset (Id, Name, Pin, Clock_Pin, Sensor_Voltage, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Verify_Pin, Verify_Temp, Verify_Temp_Notify, Verify_Temp_Stop, Verify_Hum, Verify_Hum_Notify, Verify_Hum_Stop, Verify_Notify_Email, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relays_Up, Hum_Relays_Down, Hum_Relay_High, Hum_Outmin_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmin_Low, Hum_Outmax_Low, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D) VALUES (:preset, :name, :pin, :device, :period, :premeas_relay, :premeas_dur, :activated, :graph, :verify_pin, :verify_temp, :verify_tempnotify, :verify_tempstop, :verify_hum, :verify_humnotify, :verify_humstop, :verify_notifyemail, :yaxis_relay_min, :yaxis_relay_max, :yaxis_relay_tics, :yaxis_relay_mtics, :yaxis_temp_min, :yaxis_temp_max, :yaxis_temp_tics, :yaxis_temp_mtics, :yaxis_hum_min, :yaxis_hum_max, :yaxis_hum_tics, :yaxis_hum_mtics, :temprelaysup, :temprelaysdown, :temprelayhigh, :tempoutminhigh, :tempoutmaxhigh, :temprelaylow, :tempoutminlow, :tempoutmaxlow, :tempset, :tempsetdir, :tempperiod, :tempp, :tempi, :tempd, :humrelaysup, :humrelaysdown, :humrelayhigh, :humoutminhigh, :humoutmaxhigh, :humrelaylow, :humoutminlow, :humoutmaxlow, :humset, :humsetdir, :humperiod, :hump, :humi, :humd)");
+                    $stmt = $db_mycodo->prepare("INSERT INTO HTSensorPreset (Id, Name, Pin, Clock_Pin, Sensor_Voltage, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, Verify_Pin, Verify_Temp, Verify_Temp_Notify, Verify_Temp_Stop, Verify_Hum, Verify_Hum_Notify, Verify_Hum_Stop, Verify_Notify_Email, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Hum_Min, YAxis_Hum_Max, YAxis_Hum_Tics, YAxis_Hum_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Hum_Relays_Up, Hum_Relays_Down, Hum_Relay_High, Hum_Outmin_High, Hum_Outmax_High, Hum_Relay_Low, Hum_Outmin_Low, Hum_Outmax_Low, Hum_Set, Hum_Set_Direction, Hum_Period, Hum_P, Hum_I, Hum_D) VALUES (:preset, :name, :pin, :device, :period, :premeas_relay, :premeas_dur, :activated, :graph, :verify_pin, :verify_temp, :verify_tempnotify, :verify_tempstop, :verify_hum, :verify_humnotify, :verify_humstop, :verify_notifyemail, :yaxis_relay_min, :yaxis_relay_max, :yaxis_relay_tics, :yaxis_relay_mtics, :yaxis_temp_min, :yaxis_temp_max, :yaxis_temp_tics, :yaxis_temp_mtics, :yaxis_hum_min, :yaxis_hum_max, :yaxis_hum_tics, :yaxis_hum_mtics, :temprelaysup, :temprelaysdown, :temprelayhigh, :tempoutminhigh, :tempoutmaxhigh, :temprelaylow, :tempoutminlow, :tempoutmaxlow, :tempset, :tempsetdir, :tempperiod, :tempp, :tempi, :tempd, :humrelaysup, :humrelaysdown, :humrelayhigh, :humoutminhigh, :humoutmaxhigh, :humrelaylow, :humoutminlow, :humoutmaxlow, :humset, :humsetdir, :humperiod, :hump, :humi, :humd)");
                     $stmt->bindValue(':preset', $_POST['sensorht' . $p . 'presetname'], SQLITE3_TEXT);
                     $stmt->bindValue(':name', str_replace(' ', '', $_POST['sensorht' . $p . 'name']), SQLITE3_TEXT);
                     $stmt->bindValue(':device', str_replace(' ', '', $_POST['sensorht' . $p . 'device']), SQLITE3_TEXT);
@@ -1595,14 +1595,14 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
 
     // Load Temperature/Humidity sensor and PID variables from preset
     if (isset($_POST['Change' . $p . 'HTSensorLoad']) && $_POST['sensorht' . $p . 'preset'] != 'default') {
-        $stmt = $db->prepare('SELECT * FROM HTSensorPreset WHERE Id=:preset');
+        $stmt = $db_mycodo->prepare('SELECT * FROM HTSensorPreset WHERE Id=:preset');
         $stmt->bindValue(':preset', $_POST['sensorht' . $p . 'preset']);
         $result = $stmt->execute();
         $exist = $result->fetchArray();
 
         // Id exists, change values to preset
         if ($exist != False) {
-            $stmt = $db->prepare('SELECT name,
+            $stmt = $db_mycodo->prepare('SELECT name,
                                          pin,
                                          clock_pin,
                                          sensor_voltage,
@@ -1665,7 +1665,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             $stmt->bindValue(':preset', $_POST['sensorht' . $p . 'preset']);
             $result = $stmt->execute();
             $row = $result->fetchArray();
-            $stmt = $db->prepare("UPDATE htsensor
+            $stmt = $db_mycodo->prepare("UPDATE htsensor
                                   SET    name = :name,
                                          device = :device,
                                          pin = :pin,
@@ -1817,7 +1817,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
             $name = $_POST['sensorht' . $p . 'presetname'];
             $sensor_error = "Error: The preset name '$name' is already in use. Use a different name.";
         } else {
-            $stmt = $db->prepare("UPDATE HTSensorPreset SET Id=:presetnew WHERE Id=:presetold");
+            $stmt = $db_mycodo->prepare("UPDATE HTSensorPreset SET Id=:presetnew WHERE Id=:presetold");
             $stmt->bindValue(':presetold', $_POST['sensorht' . $p . 'preset'], SQLITE3_TEXT);
             $stmt->bindValue(':presetnew', $_POST['sensorht' . $p . 'presetname'], SQLITE3_TEXT);
             $stmt->execute();
@@ -1826,14 +1826,14 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
 
     // Delete Temperature/Humidity preset
     if (isset($_POST['Change' . $p . 'HTSensorDelete']) && $_POST['sensorht' . $p . 'preset'] != 'default') {
-        $stmt = $db->prepare("DELETE FROM HTSensorPreset WHERE Id=:preset");
+        $stmt = $db_mycodo->prepare("DELETE FROM HTSensorPreset WHERE Id=:preset");
         $stmt->bindValue(':preset', $_POST['sensorht' . $p . 'preset']);
         $stmt->execute();
     }
 
     // Delete HT sensors
     if (isset($_POST['Delete' . $p . 'HTSensor'])) {
-        $stmt = $db->prepare("DELETE FROM HTSensor WHERE Id=:id");
+        $stmt = $db_mycodo->prepare("DELETE FROM HTSensor WHERE Id=:id");
         $stmt->bindValue(':id', $sensor_ht_id[$p], SQLITE3_TEXT);
         $stmt->execute();
         shell_exec("$mycodo_client --pidallrestart HT");
@@ -1851,7 +1851,7 @@ for ($p = 0; $p < count($sensor_ht_id); $p++) {
 for ($p = 0; $p < count($sensor_co2_id); $p++) {
     // Add CO2 Conditional statement
     if (isset($_POST['AddCO2' . $p . 'Conditional'])) {
-        $stmt = $db->prepare("INSERT INTO CO2SensorConditional (Id, Name, Sensor, State, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify) VALUES (:id, :name, :sensor, 0, :direction, :setpoint, :period, :selrelay, :relay, :relaystate, :relaysecondson, :selcommand, :command, :selnotify, :notify)");
+        $stmt = $db_mycodo->prepare("INSERT INTO CO2SensorConditional (Id, Name, Sensor, State, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify) VALUES (:id, :name, :sensor, 0, :direction, :setpoint, :period, :selrelay, :relay, :relaystate, :relaysecondson, :selcommand, :command, :selnotify, :notify)");
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->bindValue(':name', $_POST['conditionco2' . $p . 'name'], SQLITE3_TEXT);
         $stmt->bindValue(':sensor', $p, SQLITE3_INTEGER);
@@ -1885,21 +1885,21 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
         for ($z = 0; $z < count($conditional_co2_id[$p]); $z++) {
             // Delete CO2 Conditional Statement
             if (isset($_POST['DeleteCO2' . $p . '-' . $z . 'Conditional'])) {
-                $stmt = $db->prepare("DELETE FROM CO2SensorConditional WHERE Id=:id");
+                $stmt = $db_mycodo->prepare("DELETE FROM CO2SensorConditional WHERE Id=:id");
                 $stmt->bindValue(':id', $conditional_co2_id[$p][$z], SQLITE3_TEXT);
                 $stmt->execute();
                 shell_exec("$mycodo_client --sqlreload -1");
             }
             // Turn CO2 Conditional Statements On/Off
             if (isset($_POST['TurnOnCO2' . $p . '-' . $z . 'Conditional'])) {
-                $stmt = $db->prepare("UPDATE CO2SensorConditional SET State=:state WHERE Id=:id");
+                $stmt = $db_mycodo->prepare("UPDATE CO2SensorConditional SET State=:state WHERE Id=:id");
                 $stmt->bindValue(':state', 1);
                 $stmt->bindValue(':id', $conditional_co2_id[$p][$z], SQLITE3_TEXT);
                 $stmt->execute();
                 shell_exec("$mycodo_client --sqlreload -1");
             }
             if (isset($_POST['TurnOffCO2' . $p . '-' . $z . 'Conditional'])) {
-                $stmt = $db->prepare("UPDATE CO2SensorConditional SET State=:state WHERE Id=:id");
+                $stmt = $db_mycodo->prepare("UPDATE CO2SensorConditional SET State=:state WHERE Id=:id");
                 $stmt->bindValue(':state', 0);
                 $stmt->bindValue(':id', $conditional_co2_id[$p][$z], SQLITE3_TEXT);
                 $stmt->execute();
@@ -1935,7 +1935,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
     if (!isset($sensor_error)) {
         // Set CO2 PID override on or off
         if (isset($_POST['ChangeCO2' . $p . 'CO2OR'])) {
-            $stmt = $db->prepare("UPDATE CO2Sensor SET CO2_OR=:co2or WHERE Id=:id");
+            $stmt = $db_mycodo->prepare("UPDATE CO2Sensor SET CO2_OR=:co2or WHERE Id=:id");
             $stmt->bindValue(':co2or', (int)$_POST['ChangeCO2' . $p . 'CO2OR'], SQLITE3_INTEGER);
             $stmt->bindValue(':id', $sensor_co2_id[$p], SQLITE3_TEXT);
             $stmt->execute();
@@ -1950,7 +1950,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
         // Overwrite preset for CO2 sensor and PID variables
         if (isset($_POST['Change' . $p . 'CO2SensorOverwrite'])) {
             if (isset($_POST['sensorco2' . $p . 'preset']) && $_POST['sensorco2' . $p . 'preset'] != 'default') {
-                $stmt = $db->prepare("UPDATE co2sensorpreset
+                $stmt = $db_mycodo->prepare("UPDATE co2sensorpreset
                                       SET    name = :name,
                                              device = :device,
                                              pin = :pin,
@@ -2027,7 +2027,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
                 $stmt->bindValue(':preset', $_POST['sensorco2' . $p . 'preset'], SQLITE3_TEXT);
                 $stmt->execute();
             }
-            $stmt = $db->prepare("UPDATE co2sensor
+            $stmt = $db_mycodo->prepare("UPDATE co2sensor
                                   SET    name = :name,
                                          device = :device,
                                          pin = :pin,
@@ -2175,7 +2175,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
             } else {
                 if (isset($_POST['sensorco2' . $p . 'presetname']) && $_POST['sensorco2' . $p . 'presetname'] != '') {
 
-                    $stmt = $db->prepare("INSERT INTO CO2SensorPreset (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_CO2_Min, YAxis_CO2_Max, YAxis_CO2_Tics, YAxis_CO2_MTics, CO2_Relays_Up, CO2_Relays_Down, CO2_Relay_High, CO2_Outmin_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmin_Low, CO2_Outmax_Low, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D) VALUES (:preset, :name, :pin, :device, :period, :premeas_relay, :premeas_dur, :activated, :graph, :yaxis_relay_min, :yaxis_relay_max, :yaxis_relay_tics, :yaxis_relay_mtics, :yaxis_co2_min, :yaxis_co2_max, :yaxis_co2_tics, :yaxis_co2_mtics, :co2relaysup, :co2relaysdown, :co2relayhigh, :co2outminhigh, :co2outmaxhigh, :co2relaylow, :co2outminlow, :co2outmaxlow, :co2set, :co2setdir, :co2period, :co2p, :co2i, :co2d)");
+                    $stmt = $db_mycodo->prepare("INSERT INTO CO2SensorPreset (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_CO2_Min, YAxis_CO2_Max, YAxis_CO2_Tics, YAxis_CO2_MTics, CO2_Relays_Up, CO2_Relays_Down, CO2_Relay_High, CO2_Outmin_High, CO2_Outmax_High, CO2_Relay_Low, CO2_Outmin_Low, CO2_Outmax_Low, CO2_Set, CO2_Set_Direction, CO2_Period, CO2_P, CO2_I, CO2_D) VALUES (:preset, :name, :pin, :device, :period, :premeas_relay, :premeas_dur, :activated, :graph, :yaxis_relay_min, :yaxis_relay_max, :yaxis_relay_tics, :yaxis_relay_mtics, :yaxis_co2_min, :yaxis_co2_max, :yaxis_co2_tics, :yaxis_co2_mtics, :co2relaysup, :co2relaysdown, :co2relayhigh, :co2outminhigh, :co2outmaxhigh, :co2relaylow, :co2outminlow, :co2outmaxlow, :co2set, :co2setdir, :co2period, :co2p, :co2i, :co2d)");
                     $stmt->bindValue(':preset', str_replace(' ', '', $_POST['sensorco2' . $p . 'presetname']), SQLITE3_TEXT);
                     $stmt->bindValue(':name', str_replace(' ', '', $_POST['sensorco2' . $p . 'name']), SQLITE3_TEXT);
                     $stmt->bindValue(':device', str_replace(' ', '', $_POST['sensorco2' . $p . 'device']), SQLITE3_TEXT);
@@ -2225,13 +2225,13 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
 
     // Load CO2 sensor and PID variables from preset
     if (isset($_POST['Change' . $p . 'CO2SensorLoad']) && $_POST['sensorco2' . $p . 'preset'] != 'default') {
-        $stmt = $db->prepare('SELECT * FROM CO2SensorPreset WHERE Id=:preset');
+        $stmt = $db_mycodo->prepare('SELECT * FROM CO2SensorPreset WHERE Id=:preset');
         $stmt->bindValue(':preset', $_POST['sensorco2' . $p . 'preset']);
         $result = $stmt->execute();
         $exist = $result->fetchArray();
         // Id exists, change values to preset
         if ($exist != False) {
-            $stmt = $db->prepare('SELECT name,
+            $stmt = $db_mycodo->prepare('SELECT name,
                                          pin,
                                          device,
                                          period,
@@ -2266,7 +2266,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
             $stmt->bindValue(':preset', $_POST['sensorco2' . $p . 'preset']);
             $result = $stmt->execute();
             $row = $result->fetchArray();
-            $stmt = $db->prepare("UPDATE co2sensor
+            $stmt = $db_mycodo->prepare("UPDATE co2sensor
                                   SET    name = :name,
                                          device = :device,
                                          pin = :pin,
@@ -2355,7 +2355,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
             $name = $_POST['sensorco2' . $p . 'presetname'];
             $sensor_error = "Error: The preset name '$name' is already in use. Use a different name.";
         } else {
-            $stmt = $db->prepare("UPDATE CO2SensorPreset SET Id=:presetnew WHERE Id=:presetold");
+            $stmt = $db_mycodo->prepare("UPDATE CO2SensorPreset SET Id=:presetnew WHERE Id=:presetold");
             $stmt->bindValue(':presetold', $_POST['sensorco2' . $p . 'preset'], SQLITE3_TEXT);
             $stmt->bindValue(':presetnew', $_POST['sensorco2' . $p . 'presetname'], SQLITE3_TEXT);
             $stmt->execute();
@@ -2363,13 +2363,13 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
     }
     // Delete CO2 preset
     if (isset($_POST['Change' . $p . 'CO2SensorDelete']) && $_POST['sensorco2' . $p . 'preset'] != 'default') {
-        $stmt = $db->prepare("DELETE FROM CO2SensorPreset WHERE Id=:preset");
+        $stmt = $db_mycodo->prepare("DELETE FROM CO2SensorPreset WHERE Id=:preset");
         $stmt->bindValue(':preset', $_POST['sensorco2' . $p . 'preset']);
         $stmt->execute();
     }
     // Delete CO2 sensors
     if (isset($_POST['Delete' . $p . 'CO2Sensor'])) {
-        $stmt = $db->prepare("DELETE FROM CO2Sensor WHERE Id=:id");
+        $stmt = $db_mycodo->prepare("DELETE FROM CO2Sensor WHERE Id=:id");
         $stmt->bindValue(':id', $sensor_co2_id[$p], SQLITE3_TEXT);
         $stmt->execute();
         shell_exec("$mycodo_client --pidallrestart CO2");
@@ -2387,7 +2387,7 @@ for ($p = 0; $p < count($sensor_co2_id); $p++) {
 for ($p = 0; $p < count($sensor_press_id); $p++) {
     // Add Press Conditional statement
     if (isset($_POST['AddPress' . $p . 'Conditional'])) {
-        $stmt = $db->prepare("INSERT INTO PressSensorConditional (Id, Name, Sensor, State, Condition, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify) VALUES (:id, :name, :sensor, 0, :condition, :direction, :setpoint, :period, :selrelay, :relay, :relaystate, :relaysecondson, :selcommand, :command, :selnotify, :notify)");
+        $stmt = $db_mycodo->prepare("INSERT INTO PressSensorConditional (Id, Name, Sensor, State, Condition, Direction, Setpoint, Period, Sel_Relay, Relay, Relay_State, Relay_Seconds_On, Sel_Command, Do_Command, Sel_Notify, Do_Notify) VALUES (:id, :name, :sensor, 0, :condition, :direction, :setpoint, :period, :selrelay, :relay, :relaystate, :relaysecondson, :selcommand, :command, :selnotify, :notify)");
         $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
         $stmt->bindValue(':name', str_replace(' ', '', $_POST['conditionpress' . $p . 'name']), SQLITE3_TEXT);
         $stmt->bindValue(':sensor', $p, SQLITE3_INTEGER);
@@ -2422,21 +2422,21 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
         for ($z = 0; $z < count($conditional_press_id[$p]); $z++) {
             // Delete Press Conditional Statement
             if (isset($_POST['DeletePress' . $p . '-' . $z . 'Conditional'])) {
-                $stmt = $db->prepare("DELETE FROM PressSensorConditional WHERE Id=:id");
+                $stmt = $db_mycodo->prepare("DELETE FROM PressSensorConditional WHERE Id=:id");
                 $stmt->bindValue(':id', $conditional_press_id[$p][$z], SQLITE3_TEXT);
                 $stmt->execute();
                 shell_exec("$mycodo_client --sqlreload -1");
             }
             // Turn Press Conditional Statements On/Off
             if (isset($_POST['TurnOnPress' . $p . '-' . $z . 'Conditional'])) {
-                $stmt = $db->prepare("UPDATE PressSensorConditional SET State=:state WHERE Id=:id");
+                $stmt = $db_mycodo->prepare("UPDATE PressSensorConditional SET State=:state WHERE Id=:id");
                 $stmt->bindValue(':state', 1);
                 $stmt->bindValue(':id', $conditional_press_id[$p][$z], SQLITE3_TEXT);
                 $stmt->execute();
                 shell_exec("$mycodo_client --sqlreload -1");
             }
             if (isset($_POST['TurnOffPress' . $p . '-' . $z . 'Conditional'])) {
-                $stmt = $db->prepare("UPDATE PressSensorConditional SET State=:state WHERE Id=:id");
+                $stmt = $db_mycodo->prepare("UPDATE PressSensorConditional SET State=:state WHERE Id=:id");
                 $stmt->bindValue(':state', 0);
                 $stmt->bindValue(':id', $conditional_press_id[$p][$z], SQLITE3_TEXT);
                 $stmt->execute();
@@ -2489,7 +2489,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
     if (!isset($sensor_error)) {
         // Set Temperature PID override on or off
         if (isset($_POST['ChangePress' . $p . 'TempOR'])) {
-            $stmt = $db->prepare("UPDATE PressSensor SET Temp_OR=:pressor WHERE Id=:id");
+            $stmt = $db_mycodo->prepare("UPDATE PressSensor SET Temp_OR=:pressor WHERE Id=:id");
             $stmt->bindValue(':pressor', (int)$_POST['ChangePress' . $p . 'TempOR'], SQLITE3_INTEGER);
             $stmt->bindValue(':id', $sensor_press_id[$p], SQLITE3_TEXT);
             $stmt->execute();
@@ -2503,7 +2503,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
         }
         // Set Pressure sensor PID override on or off
         if (isset($_POST['ChangePress' . $p . 'PressOR'])) {
-            $stmt = $db->prepare("UPDATE PressSensor SET Press_OR=:pressor WHERE Id=:id");
+            $stmt = $db_mycodo->prepare("UPDATE PressSensor SET Press_OR=:pressor WHERE Id=:id");
             $stmt->bindValue(':pressor', (int)$_POST['ChangePress' . $p . 'PressOR'], SQLITE3_INTEGER);
             $stmt->bindValue(':id', $sensor_press_id[$p], SQLITE3_TEXT);
             $stmt->execute();
@@ -2518,7 +2518,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
         // Overwrite preset for Pressure sensor and PID variables
         if (isset($_POST['Change' . $p . 'PressSensorOverwrite'])) {
             if (isset($_POST['sensorpress' . $p . 'preset']) && $_POST['sensorpress' . $p . 'preset'] != 'default') {
-                $stmt = $db->prepare("UPDATE presssensorpreset
+                $stmt = $db_mycodo->prepare("UPDATE presssensorpreset
                                       SET    name = :name,
                                              device = :device,
                                              pin = :pin,
@@ -2627,7 +2627,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
                 $stmt->bindValue(':preset', $_POST['sensorpress' . $p . 'preset'], SQLITE3_TEXT);
                 $stmt->execute();
             }
-            $stmt = $db->prepare("UPDATE presssensor
+            $stmt = $db_mycodo->prepare("UPDATE presssensor
                                   SET    name = :name,
                                          device = :device,
                                          pin = :pin,
@@ -2840,7 +2840,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
             } else {
                 if (isset($_POST['sensorpress' . $p . 'presetname']) && $_POST['sensorpress' . $p . 'presetname'] != '') {
 
-                    $stmt = $db->prepare("INSERT INTO PressSensorPreset (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Press_Min, YAxis_Press_Max, YAxis_Press_Tics, YAxis_Press_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Press_Relays_Up, Press_Relays_Down, Press_Relay_High, Press_Outmin_High, Press_Outmax_High, Press_Relay_Low, Press_Outmin_Low, Press_Outmax_Low, Press_Set, Press_Set_Direction, Press_Period, Press_P, Press_I, Press_D) VALUES (:preset, :name, :pin, :device, :period, :premeas_relay, :premeas_dur, :activated, :graph, :yaxis_relay_min, :yaxis_relay_max, :yaxis_relay_tics, :yaxis_relay_mtics, :yaxis_temp_min, :yaxis_temp_max, :yaxis_temp_tics, :yaxis_temp_mtics, :yaxis_press_min, :yaxis_press_max, :yaxis_press_tics, :yaxis_press_mtics, :temprelaysup, :temprelaysdown, :temprelayhigh, :tempoutminhigh, :tempoutmaxhigh, :temprelaylow, :tempoutminlow, :tempoutmaxlow, :tempset, :tempsetdir, :tempperiod, :tempp, :tempi, :tempd, :pressrelaysup, :pressrelaysdown, :pressrelayhigh, :pressoutminhigh, :pressoutmaxhigh, :pressrelaylow, :pressoutminlow, :pressoutmaxlow, :pressset, :presssetdir, :pressperiod, :pressp, :pressi, :pressd)");
+                    $stmt = $db_mycodo->prepare("INSERT INTO PressSensorPreset (Id, Name, Pin, Device, Period, Pre_Measure_Relay, Pre_Measure_Dur, Activated, Graph, YAxis_Relay_Min, YAxis_Relay_Max, YAxis_Relay_Tics, YAxis_Relay_MTics, YAxis_Temp_Min, YAxis_Temp_Max, YAxis_Temp_Tics, YAxis_Temp_MTics, YAxis_Press_Min, YAxis_Press_Max, YAxis_Press_Tics, YAxis_Press_MTics, Temp_Relays_Up, Temp_Relays_Down, Temp_Relay_High, Temp_Outmin_High, Temp_Outmax_High, Temp_Relay_Low, Temp_Outmin_Low, Temp_Outmax_Low, Temp_Set, Temp_Set_Direction, Temp_Period, Temp_P, Temp_I, Temp_D, Press_Relays_Up, Press_Relays_Down, Press_Relay_High, Press_Outmin_High, Press_Outmax_High, Press_Relay_Low, Press_Outmin_Low, Press_Outmax_Low, Press_Set, Press_Set_Direction, Press_Period, Press_P, Press_I, Press_D) VALUES (:preset, :name, :pin, :device, :period, :premeas_relay, :premeas_dur, :activated, :graph, :yaxis_relay_min, :yaxis_relay_max, :yaxis_relay_tics, :yaxis_relay_mtics, :yaxis_temp_min, :yaxis_temp_max, :yaxis_temp_tics, :yaxis_temp_mtics, :yaxis_press_min, :yaxis_press_max, :yaxis_press_tics, :yaxis_press_mtics, :temprelaysup, :temprelaysdown, :temprelayhigh, :tempoutminhigh, :tempoutmaxhigh, :temprelaylow, :tempoutminlow, :tempoutmaxlow, :tempset, :tempsetdir, :tempperiod, :tempp, :tempi, :tempd, :pressrelaysup, :pressrelaysdown, :pressrelayhigh, :pressoutminhigh, :pressoutmaxhigh, :pressrelaylow, :pressoutminlow, :pressoutmaxlow, :pressset, :presssetdir, :pressperiod, :pressp, :pressi, :pressd)");
                     $stmt->bindValue(':preset', str_replace(' ', '', $_POST['sensorpress' . $p . 'presetname']), SQLITE3_TEXT);
                     $stmt->bindValue(':name', str_replace(' ', '', $_POST['sensorpress' . $p . 'name']), SQLITE3_TEXT);
                     $stmt->bindValue(':device', str_replace(' ', '', $_POST['sensorpress' . $p . 'device']), SQLITE3_TEXT);
@@ -2907,13 +2907,13 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
     }
     // Load Pressure sensor and PID variables from preset
     if (isset($_POST['Change' . $p . 'PressSensorLoad']) && $_POST['sensorpress' . $p . 'preset'] != 'default') {
-        $stmt = $db->prepare('SELECT * FROM PressSensorPreset WHERE Id=:preset');
+        $stmt = $db_mycodo->prepare('SELECT * FROM PressSensorPreset WHERE Id=:preset');
         $stmt->bindValue(':preset', $_POST['sensorpress' . $p . 'preset']);
         $result = $stmt->execute();
         $exist = $result->fetchArray();
         // Id exists, change values to preset
         if ($exist != False) {
-            $stmt = $db->prepare('SELECT name,
+            $stmt = $db_mycodo->prepare('SELECT name,
                                          pin,
                                          device,
                                          period,
@@ -2966,7 +2966,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
             $stmt->bindValue(':preset', $_POST['sensorpress' . $p . 'preset']);
             $result = $stmt->execute();
             $row = $result->fetchArray();
-            $stmt = $db->prepare("UPDATE presssensor
+            $stmt = $db_mycodo->prepare("UPDATE presssensor
                                   SET    name = :name,
                                          device = :device,
                                          pin = :pin,
@@ -3097,7 +3097,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
             $name = $_POST['sensorpress' . $p . 'presetname'];
             $sensor_error = "Error: The preset name '$name' is already in use. Use a different name.";
         } else {
-            $stmt = $db->prepare("UPDATE PressSensorPreset SET Id=:presetnew WHERE Id=:presetold");
+            $stmt = $db_mycodo->prepare("UPDATE PressSensorPreset SET Id=:presetnew WHERE Id=:presetold");
             $stmt->bindValue(':presetold', $_POST['sensorpress' . $p . 'preset'], SQLITE3_TEXT);
             $stmt->bindValue(':presetnew', $_POST['sensorpress' . $p . 'presetname'], SQLITE3_TEXT);
             $stmt->execute();
@@ -3105,13 +3105,13 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
     }
     // Delete Pressure preset
     if (isset($_POST['Change' . $p . 'PressSensorDelete']) && $_POST['sensorpress' . $p . 'preset'] != 'default') {
-        $stmt = $db->prepare("DELETE FROM PressSensorPreset WHERE Id=:preset");
+        $stmt = $db_mycodo->prepare("DELETE FROM PressSensorPreset WHERE Id=:preset");
         $stmt->bindValue(':preset', $_POST['sensorpress' . $p . 'preset']);
         $stmt->execute();
     }
     // Delete Pressure sensors
     if (isset($_POST['Delete' . $p . 'PressSensor'])) {
-        $stmt = $db->prepare("DELETE FROM PressSensor WHERE Id=:id");
+        $stmt = $db_mycodo->prepare("DELETE FROM PressSensor WHERE Id=:id");
         $stmt->bindValue(':id', $sensor_press_id[$p], SQLITE3_TEXT);
         $stmt->execute();
         shell_exec("$mycodo_client --pidallrestart Press");
@@ -3128,7 +3128,7 @@ for ($p = 0; $p < count($sensor_press_id); $p++) {
 
 // Change camera still image settings
 if (isset($_POST['ChangeStill'])) {
-    $stmt = $db->prepare("UPDATE camerastill
+    $stmt = $db_mycodo->prepare("UPDATE camerastill
                           SET    relay = :relay,
                                  timestamp = :timestamp,
                                  display_last = :displaylast,
@@ -3149,7 +3149,7 @@ if (isset($_POST['ChangeStill'])) {
 
 // Change camera video stream settings
 if (isset($_POST['ChangeStream'])) {
-    $stmt = $db->prepare("UPDATE camerastream
+    $stmt = $db_mycodo->prepare("UPDATE camerastream
                           SET    relay = :relay,
                                  cmd_pre = :cmdpre,
                                  cmd_post = :cmdpost,
@@ -3166,7 +3166,7 @@ if (isset($_POST['ChangeStream'])) {
 
 // Change camera timelapse settings
 if (isset($_POST['ChangeTimelapse'])) {
-    $stmt = $db->prepare("UPDATE cameratimelapse
+    $stmt = $db_mycodo->prepare("UPDATE cameratimelapse
                           SET    relay = :relay,
                                  path = :path,
                                  prefix = :prefix,
@@ -3323,7 +3323,7 @@ if (isset($_POST['ChangeCombinedSetings'])) {
         ($_POST['combined_press_relays_down'] == '')) {
         $sensor_error = 'Error: Custom Graph Relays must contain digits separated by commas or be set to 0.';
     } else {
-        $stmt = $db->prepare("UPDATE customgraph
+        $stmt = $db_mycodo->prepare("UPDATE customgraph
                               SET    combined_temp_min = :tempmin,
                                      combined_temp_max = :tempmax,
                                      combined_temp_tics = :temptics,
@@ -3410,10 +3410,10 @@ if (isset($_POST['ChangeCombinedSetings'])) {
 
 // Delete Note
 if (isset($_POST['Delete_Note'])) {
-    $stmt = $ndb->prepare('DELETE FROM Notes WHERE Id = :id');
+    $stmt = $db_notes->prepare('DELETE FROM Notes WHERE Id = :id');
     $stmt->bindValue(':id', $_POST['Delete_Note'], SQLITE3_TEXT);
     $stmt->execute();
-    $results = $ndb->query("SELECT id,
+    $results = $db_notes->query("SELECT id,
                                    name,
                                    file_name,
                                    location
@@ -3456,13 +3456,13 @@ if (isset($_POST['Add_Image_Note'])) {
             copy($full_image_path, $upload_path . $file_name);
         }
         makeThumbnail($upload_path, $file_name);
-        $stmt = $ndb->prepare("INSERT INTO Uploads (id, name, file_name, location) VALUES (:id, :name, :filename, :location)");
+        $stmt = $db_notes->prepare("INSERT INTO Uploads (id, name, file_name, location) VALUES (:id, :name, :filename, :location)");
         $stmt->bindValue(':id', $uniqueid, SQLITE3_TEXT);
         $stmt->bindValue(':name', $file_name, SQLITE3_TEXT);
         $stmt->bindValue(':filename', $file_name, SQLITE3_TEXT);
         $stmt->bindValue(':location', $upload_path, SQLITE3_TEXT);
         $stmt->execute();
-        $stmt = $ndb->prepare("INSERT INTO Notes (Id, Time, User, Title, Note) VALUES (:id, :time, :user, :title, :note)");
+        $stmt = $db_notes->prepare("INSERT INTO Notes (Id, Time, User, Title, Note) VALUES (:id, :time, :user, :title, :note)");
         $stmt->bindValue(':id', $uniqueid, SQLITE3_TEXT);
         $stmt->bindValue(':time', $note_ts, SQLITE3_TEXT);
         $stmt->bindValue(':user', $_SESSION['user_name'], SQLITE3_TEXT);
@@ -3490,7 +3490,7 @@ if (isset($_POST['Add_Note'])) {
                     $full_upload_path = $upload_path . $file_name;
                     if(move_uploaded_file($tmpFilePath, $full_upload_path)) {
                         $files[] = $shortname;
-                        $stmt = $ndb->prepare("INSERT INTO Uploads (id, name, file_name, location) VALUES (:id, :name, :filename, :location)");
+                        $stmt = $db_notes->prepare("INSERT INTO Uploads (id, name, file_name, location) VALUES (:id, :name, :filename, :location)");
                         $stmt->bindValue(':id', $uniqueid, SQLITE3_TEXT);
                         $stmt->bindValue(':name', $shortname, SQLITE3_TEXT);
                         $stmt->bindValue(':filename', $file_name, SQLITE3_TEXT);
@@ -3502,7 +3502,7 @@ if (isset($_POST['Add_Note'])) {
             }
         }
     }
-    $stmt = $ndb->prepare("INSERT INTO Notes (Id, Time, User, Title, Note) VALUES (:id, :time, :user, :title, :note)");
+    $stmt = $db_notes->prepare("INSERT INTO Notes (Id, Time, User, Title, Note) VALUES (:id, :time, :user, :title, :note)");
     $stmt->bindValue(':id', $uniqueid, SQLITE3_TEXT);
     $stmt->bindValue(':time', $note_ts, SQLITE3_TEXT);
     $stmt->bindValue(':user', $_SESSION['user_name'], SQLITE3_TEXT);
@@ -3513,7 +3513,7 @@ if (isset($_POST['Add_Note'])) {
 
 // Edit Note
 if (isset($_POST['Edit_Note_Save'])) {
-    $stmt = $ndb->prepare("UPDATE notes
+    $stmt = $db_notes->prepare("UPDATE notes
                            SET    time = :time,
                                   user = :user,
                                   title = :title,
@@ -3526,7 +3526,7 @@ if (isset($_POST['Edit_Note_Save'])) {
     $stmt->bindValue(':note', $_POST['Edit_Note_Text'], SQLITE3_TEXT);
     $stmt->execute();
     unset($upload_id);
-    $results = $ndb->query("SELECT id,
+    $results = $db_notes->query("SELECT id,
                                    name,
                                    file_name,
                                    location
@@ -3545,7 +3545,7 @@ if (isset($_POST['Edit_Note_Save'])) {
     else {
         for ($v = 0; $v < count($upload_id); $v++) {
             if ($_POST["$v"] == 0) {
-                $stmt = $ndb->prepare("DELETE FROM uploads
+                $stmt = $db_notes->prepare("DELETE FROM uploads
                                        WHERE file_name = :filename");
                 $stmt->bindValue(':filename', $upload_file_name[$v]);
                 $stmt->execute();
@@ -3568,7 +3568,7 @@ if (isset($_POST['Edit_Note_Save'])) {
                     $full_upload_path = $upload_path . $file_name;
                     if(move_uploaded_file($tmpFilePath, $full_upload_path)) {
                         $files[] = $shortname;
-                        $stmt = $ndb->prepare("INSERT INTO Uploads (id, name, file_name, location) VALUES (:id, :name, :filename, :location)");
+                        $stmt = $db_notes->prepare("INSERT INTO Uploads (id, name, file_name, location) VALUES (:id, :name, :filename, :location)");
                         $stmt->bindValue(':id', $_POST['Edit_Note_Save'], SQLITE3_TEXT);
                         $stmt->bindValue(':name', $shortname, SQLITE3_TEXT);
                         $stmt->bindValue(':filename', $file_name, SQLITE3_TEXT);
@@ -3584,7 +3584,7 @@ if (isset($_POST['Edit_Note_Save'])) {
 
 // Change system settings
 if (isset($_POST['ChangeSystem'])) {
-    $stmt = $db->prepare("UPDATE Misc SET Enable_Max_Amps=:enablemaxamps, Max_Amps=:maxamps, Relay_Stats_Volts=:statvolts, Relay_Stats_Cost=:statcost, Relay_Stats_Currency=:statcurrency, Relay_Stats_DayofMonth=:statdayofmonth, Login_Message=:loginmessage, Refresh_Time=:refreshtime");
+    $stmt = $db_mycodo->prepare("UPDATE Misc SET Enable_Max_Amps=:enablemaxamps, Max_Amps=:maxamps, Relay_Stats_Volts=:statvolts, Relay_Stats_Cost=:statcost, Relay_Stats_Currency=:statcurrency, Relay_Stats_DayofMonth=:statdayofmonth, Login_Message=:loginmessage, Refresh_Time=:refreshtime");
     $stmt->bindValue(':enablemaxamps', (int)$_POST['enable_max_amps'], SQLITE3_INTEGER);
     $stmt->bindValue(':maxamps', (float)$_POST['max_amps'], SQLITE3_FLOAT);
     $stmt->bindValue(':statvolts', (int)$_POST['relay_stats_volts'], SQLITE3_INTEGER);
@@ -3599,7 +3599,7 @@ if (isset($_POST['ChangeSystem'])) {
 // Change email notify settings
 if (isset($_POST['ChangeNotify'])) {
     if ($_POST['smtp_pass'] != '') {
-        $stmt = $db->prepare("UPDATE smtp
+        $stmt = $db_mycodo->prepare("UPDATE smtp
                               SET    host = :host,
                                      ssl = :ssl,
                                      port = :port,
@@ -3610,7 +3610,7 @@ if (isset($_POST['ChangeNotify'])) {
                                      wait_time = :waittime");
         $stmt->bindValue(':password', $_POST['smtp_pass'], SQLITE3_TEXT);
     } else {
-        $stmt = $db->prepare("UPDATE smtp
+        $stmt = $db_mycodo->prepare("UPDATE smtp
                               SET    host = :host,
                                      ssl = :ssl,
                                      port = :port,
