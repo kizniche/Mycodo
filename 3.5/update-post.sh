@@ -31,7 +31,7 @@ if [ "$EUID" -ne 0 ]; then
     exit
 fi
 
-INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )
 PDIR="$( dirname "$DIR" )"
 cd $DIR
 

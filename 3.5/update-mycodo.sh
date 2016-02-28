@@ -26,7 +26,7 @@ if [ "$EUID" -ne 0 ]; then
     exit
 fi
 
-INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )
 
 case "${1:-''}" in
     'backup')
@@ -68,7 +68,7 @@ case "${1:-''}" in
 
 
                 if [ ! -h /var/www/mycodo ]; then
-                    ln -sf $INSTALL_DIRECTORY /var/www/mycodo
+                    ln -sf $INSTALL_DIRECTORY/public_html /var/www/mycodo
                 fi
                 cp $INSTALL_DIRECTORY/init.d/mycodo /etc/init.d/
                 cp $INSTALL_DIRECTORY/init.d/apache2-tmpfs /etc/init.d/
