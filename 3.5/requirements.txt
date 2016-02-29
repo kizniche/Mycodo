@@ -5,10 +5,10 @@ tentacle_pi
 
 #Adafruit_GPIO, cross-platofrm RPi.GPIO implementation
 #For Raspberry Pi, BeagleBone Black, and MinnowBoard 
--e git://github.com/adafruit/Adafruit_Python_GPIO.git#egg=Adafruit_GPIO
+git+https://github.com/adafruit/Adafruit_Python_GPIO.git#egg=Adafruit_GPIO
 
 #Adafruit_DHT
--e git://github.com/adafruit/Adafruit_Python_DHT.git#egg=Adafruit_DHT
+git+https://github.com/adafruit/Adafruit_Python_DHT.git#egg=Adafruit_DHT
 
 #Adafruit_BMP
--e git://github.com/adafruit/Adafruit_Python_BMP.git#egg=Adafruit_BMP
+git+https://github.com/adafruit/Adafruit_Python_BMP.git#egg=Adafruit_BMP

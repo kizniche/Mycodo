@@ -312,51 +312,47 @@ Using raspi-config, perform the following:
 
 `sudo apt-get install build-essential apache2 sqlite3 gnuplot git-core python-pip python-dev python-smbus libconfig-dev php5 libapache2-mod-php5 php5-sqlite php5-gd i2c-tools libi2c-dev lsb_release`
 
-`git clone --recursive https://github.com/kizniche/Mycodo.git ~/Mycodo`
+Clone the latest Mycodo from the git repository
 
-`git clone https://github.com/adafruit/Adafruit_Python_DHT.git ~/Adafruit_Python_DHT && cd ~/Adafruit_Python_DHT && sudo python setup.py install`
+`git clone https://github.com/kizniche/Mycodo.git ~/Mycodo`
 
-`git clone https://github.com/adafruit/Adafruit_Python_BMP.git ~/Adafruit_Python_BMP && cd ~/Adafruit_Python_BMP && sudo python setup.py install`
+Install/upgrade required python modules (LockFile, RPyC, pySerial, tentacle_pi, sht-sensor, RAdafruit_Python_BMP, and Adafruit_Python_DHT)
 
-Install/Upgrade LockFile, RPyC, pySerial, tentacle_pi, RPi.GPIO
+`sudo pip install --upgrade -r ~/Mycodo/3.5/requirements.txt`
 
-`sudo pip install --upgrade lockfile rpyc pyserial tentacle_pi sht-sensor RPi.GPIO`
-
-Create a symlink to Mycodo
+Create a symlink to Mycodo for the http root
 
 `sudo ln -s ~/Mycodo/3.5/public_html /var/www/mycodo`
 
-In order to configure the sensor you just need to make a small change to the config.txt file using `sudo vi /boot/config.txt` and add the following line to the bottom:
+In order to configure the DS18B20 sensor, a change to /boot/config.txt needs to be made. Edit with `sudo vi /boot/config.txt` and add the following line to the bottom.
 
 ```
-# 1-wire settings
 dtoverlay=w1-gpio,gpiopin=4
 ```
 
-The 1-Wire drivers are not loaded by default when the rPI boots. You can load them with the following commands from a command prompt:
+The 1-Wire drivers are loaded by default when the Pi boots. You can load them manually with the following commands.
 
 ```
-sudo  modprobe wire
-sudo  modprobe  w1-gpio
-sudo  modprobe  w1-therm
+sudo modprobe wire
+sudo modprobe w1-gpio
+sudo modprobe w1-therm
 ```
 
-
-To access /dev/vchiq (to read the GPU temperature or access the Pi camera), the user www-data needs to be added to the group video
+To access /dev/vchiq (to read the GPU temperature or access the Pi camera), the user www-data needs to be added to the group video.
 
 `sudo usermod -a -G video www-data`
 
-If you want mycodo to support using the Raspberry Pi camera module, a SUBSYSTEM line must be added to 10-vchiq-permissions.rules
+If you want mycodo to support using the Pi camera module, a SUBSYSTEM line must be added to 10-vchiq-permissions.rules.
 
 `echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' | sudo tee /etc/udev/rules.d/10-vchiq-permissions.rules`
 
-To be able to place a timestamp on an still image captures, the command 'convert' is required from the package imagemagick. Additionally, php5-gd is required for the creation of thumbnails when images are uploaded to notes.
+To be able to place a timestamp on an still image captures, the command 'convert' is required from the package imagemagick. Additionally, php5-gd (installed previously) is required for the creation of thumbnails when images are uploaded to notes.
 
 `sudo apt-get install imagemagick`
 
 Install video streaming capabilities
 
-`sudo apt-get install libjpeg8-dev libv4l-dev wget subversion`
+`sudo apt-get install libjpeg8-dev libv4l-dev subversion`
 
 `sudo ln -s /usr/include/linux/videodev2.h /usr/include/linux/videodev.h`
 
@@ -372,7 +368,7 @@ Install video streaming capabilities
 
 Clean Up
 
-`cd ~ && sudo rm -rf WiringPi Adafruit_Python_BMP Adafruit_Python_DHT mjpg-streamer-code-182 mjpg-streamer-code-182.zip`
+`cd ~ && sudo rm -rf mjpg-streamer-code-182 mjpg-streamer-code-182.zip`
 
 ### Wifi
 
@@ -434,15 +430,9 @@ Generate your self-signed certificate with the following command. You will be pr
 
 Change the symlink from non-SSL to SSL
 
-If using Raspbian Wheezy:
-
-`sudo ln -sf /etc/apache2/sites-available/default-ssl /etc/apache2/sites-enabled/000-default`
-
-If using Raspbian Jessie:
-
 `sudo ln -sf /etc/apache2/sites-available/default-ssl.conf /etc/apache2/sites-enabled/000-default.conf`
 
-Edit /etc/apache2/sites-enabled/000-default (or 000-default.conf if running Jessie) and make sure the top looks similar to this:
+Edit /etc/apache2/sites-enabled/000-default.conf and make sure the top looks similar to this:
 
 ```
 <IfModule mod_ssl.c>
@@ -509,7 +499,7 @@ It is highly recommended that the configuration change be tested to determine if
 
 ### Database Creation
 
-Use the following command and type 'all' when prompted to create both the user and mycodo databases.
+Use the following command and type 'all' when prompted to create the mycodo, users, and notes databases.
 
 `sudo ~/Mycodo/3.5/update-database.py -i`
 
@@ -517,9 +507,7 @@ Follow the prompts to create an admin password, optionally create another user, 
 
 ### Daemon
 
-To initialize GPIO pins at startup, open crontab with `sudo crontab -e` and add the following lines, then save with `Ctrl+x`
-
-<strong>IMPORTANT: Replace "user" with the user you have the folder Mycodo saved under.</strong>
+To initialize GPIO pins at startup, open crontab with `sudo crontab -e` and add the following line, then save with `Ctrl+x`. <strong>IMPORTANT: Replace "user" with the correct user directoty where the Mycodo directory is located.</strong>
 
 `@reboot /usr/bin/python /home/user/Mycodo/3.5/mycodo_core/gpio_initialize.py &`
 
