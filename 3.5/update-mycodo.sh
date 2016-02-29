@@ -86,7 +86,7 @@ case "${1:-''}" in
 
                 printf "#### Update Finished ####\n\n"
 
-                echo '0' > $INSTALL_DIRECTORY/../.updatecheck
+                echo '0' > $INSTALL_DIRECTORY/.updatecheck
                 exit 0
             else
                 printf "Error: No git repository found. Update stopped.\n\n"
