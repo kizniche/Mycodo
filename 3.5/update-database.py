@@ -22,7 +22,7 @@
 #
 #  Contact at kylegabriel.com
 
-install_directory = os.path.dirname(os.path.abspath(__file__)) + "/.."
+install_directory = os.path.dirname(os.path.abspath(__file__))
 
 sql_database_mycodo = '%s/config/mycodo.db' % install_directory
 sql_database_user = '%s/config/users.db' % install_directory
