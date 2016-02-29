@@ -33,7 +33,7 @@
 
 export PATH="$PATH:/usr/sbin:/usr/local/bin:/usr/bin:/bin:/sbin"
 
-INSTALL_DIRECTORY="$(pwd -P /var/www/mycodo)"
+INSTALL_DIRECTORY="$(cd /var/www/mycodo && pwd -P)"
 
 case "${1:-''}" in
     'initialize')
