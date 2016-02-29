@@ -547,7 +547,7 @@ This software includes third party open source software components: Discrete PID
 
 Thanks for using and supporting my software, however it may not be the latest version or it may have been altered if not obtained through an official distribution site. You should be able to find the latest version on github or my web site.
 
-[Mycodo Manual](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/3.5/manual.html)
+[Mycodo Manual](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/3.5/public_html/manual.html)
 
 [Mycodo on Github](https://github.com/kizniche/Mycodo)
 
