@@ -27,11 +27,11 @@
 $install_path = dirname(__FILE__);
 
 $image_dir = $install_path . "/../images/";
-$still_dir = $install_path . "/public_html/camera-stills/";
-$timelapse_dir = $install_path . "/public_html/camera-timelapse/";
-$upload_dir = $install_path . "/notes/uploads/";
-$hdr_dir = $install_path . "/public_html/camera-hdr/";
-$mycodo_client = $install_path . "/mycodo_core/mycodo-client.py";
+$still_dir = $install_path . "/camera-stills/";
+$timelapse_dir = $install_path . "/camera-timelapse/";
+$upload_dir = $install_path . "/../notes/uploads/";
+$hdr_dir = $install_path . "/camera-hdr/";
+$mycodo_client = $install_path . "/../mycodo_core/mycodo-client.py";
 
 require_once("includes/auth.php"); // Check authorization to view
 
