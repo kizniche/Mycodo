@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.94";
+$version = "3.5.95";
 
 require_once(dirname(__FILE__) . '/../config.php');
 

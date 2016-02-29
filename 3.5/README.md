@@ -101,6 +101,9 @@ This is an experimental branch of Mycodo. It is undergoing constant changes and 
 
 Major changes for each versioned release
 
+#### 3.5.95
++ Directory restructuring for better project organization
+
 #### 3.5.94
 + Add support for Senserion SHT1x and SHT7x sensors (Thanks [MountAthos](https://github.com/MountAthos))
 
