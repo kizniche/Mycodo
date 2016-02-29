@@ -22,12 +22,6 @@
 #
 #  Contact at kylegabriel.com
 
-install_directory = os.path.dirname(os.path.abspath(__file__))
-
-sql_database_mycodo = '%s/config/mycodo.db' % install_directory
-sql_database_user = '%s/config/users.db' % install_directory
-sql_database_note = '%s/config/notes.db' % install_directory
-
 db_version_mycodo = 21
 db_version_user = 2
 db_version_note = 3
@@ -41,8 +35,13 @@ import subprocess
 import sys
 import time
 
-start_time = time.time()
+install_directory = os.path.dirname(os.path.abspath(__file__))
 
+sql_database_mycodo = '%s/config/mycodo.db' % install_directory
+sql_database_user = '%s/config/users.db' % install_directory
+sql_database_note = '%s/config/notes.db' % install_directory
+
+start_time = time.time()
 
 def menu():
     if len(sys.argv) == 1:
