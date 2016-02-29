@@ -114,11 +114,11 @@ if ($_COOKIE['login_hash'] == $user_hash) {
                 }
                 break;
             case 'graph-pop': // Generate dynamic graph in new window with descriptive title
-                $mycodo_db = $install_path . "config/mycodo.db";
-                $user_db = $install_path . "config/users.db";
-                $note_db = $install_path . "config/notes.db";
-                require($install_path . "public_html/includes/database.php");
-                require($install_path . "public_html/includes/functions.php");
+                $mycodo_db = $install_path . "../config/mycodo.db";
+                $user_db = $install_path . "../config/users.db";
+                $note_db = $install_path . "../config/notes.db";
+                require($install_path . "includes/database.php");
+                require($install_path . "includes/functions.php");
                 $graph_id = get_graph_cookie('id');
 
                 // Create page title (only create title)
@@ -172,7 +172,7 @@ if ($_COOKIE['login_hash'] == $user_hash) {
                     ';
                 }
                 if (isset($_POST['Generate_Graph'])) {
-                    require($install_path . "public_html/includes/graph.php");
+                    require($install_path . "includes/graph.php");
                 }
                 echo '
                 </head>

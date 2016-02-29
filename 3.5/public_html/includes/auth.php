@@ -22,9 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$install_path = dirname(__FILE__) . "/../..";
-
-$db_users = new SQLite3($install_path . "/config/users.db");
+$db_users = new SQLite3(dirname(__FILE__) . "/../../config/users.db");
 
 
 if (!isset($_COOKIE['login_user']) || !isset($_COOKIE['login_hash'])) {
