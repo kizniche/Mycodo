@@ -103,6 +103,7 @@ fi
 if [[ $db_version_mycodo -lt 21 ]]; then
 	rm -rf /var/www/mycodo
 	ln -s $INSTALL_DIRECTORY/public_html /var/www/mycodo
+	(crontab -l 2>/dev/null; echo "@reboot /usr/bin/python $INSTALL_DIRECTORY/mycodo_core/gpio_initialize.py &") | crontab -
 fi
 
 printf "Checking if python modules are up-to-date...\n";
