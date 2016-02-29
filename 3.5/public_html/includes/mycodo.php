@@ -27,6 +27,7 @@ $version = "3.5.94";
 require_once(dirname(__FILE__) . '/../config.php');
 
 $install_path = dirname(__FILE__) . '/../..';
+
 $lock_path = $config["paths"]["lock"];
 $image_path = "$install_path/images/";
 $gpio_path = '/usr/local/bin/gpio';

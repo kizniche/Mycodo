@@ -35,7 +35,7 @@ if (isset($_POST['UpdateCheck'])) {
 if (isset($_POST['UpdateMycodo'])) {
     exec("$install_path/mycodo_core/mycodo-wrapper updatecheck 2>&1", $update_check_output, $update_check_return);
     if ($update_check_return) {
-        exec("$install_path/mycodo_core/mycodo-wrapper update >> /var/www/mycodo/log/update.log &");
+        exec("$install_path/mycodo_core/mycodo-wrapper update >> $install_path/log/update.log &");
         $settings_error = "The update process has begun. You can follow the progress of the update from the Update Log under the Data tab.";
     } else {
         $settings_error = "Error: Cannot update: You are already running the latest version of Mycodo.";
@@ -43,7 +43,7 @@ if (isset($_POST['UpdateMycodo'])) {
 }
 if (isset($_POST['RestoreBackup'])) {
     $restore_directory = $_POST['RestoreBackup'];
-    exec("$install_path/mycodo_core/mycodo-wrapper restore $restore_directory >> /var/www/mycodo/log/restore.log &");
+    exec("$install_path/mycodo_core/mycodo-wrapper restore $restore_directory >> $install_path/log/restore.log &");
     $data_error = "The restore process has begun. You can follow the progress of the restore from the Restore Log under the Data tab.";
 }
 if (isset($_POST['DeleteBackup'])) {
@@ -3427,7 +3427,7 @@ if (isset($_POST['Delete_Note'])) {
         $upload_location[$i] = $row[3];
         $i++;
     }
-    $upload_path = "/var/www/mycodo/notes/uploads/";
+    $upload_path = $install_path . "/notes/uploads/";
     if (!isset($upload_id)) $upload_id = [];
     else {
         for ($v = 0; $v < count($upload_id); $v++) {
@@ -3446,7 +3446,7 @@ if (isset($_POST['Add_Image_Note'])) {
     } else {
         $note_ts = `date +"%Y-%m-%d %H:%M:%S"`;
         $uniqueid = uniqid();
-        $upload_path = "/var/www/mycodo/notes/uploads/";
+        $upload_path = $install_path . "/notes/uploads/";
         $full_image_path = $_POST['file_path'] . $_POST['file_name'];
         if (file_exists($upload_path . $_POST['file_name'])) {
             $file_name = uniqid() . "-" . $_POST['file_name'];
@@ -3486,7 +3486,7 @@ if (isset($_POST['Add_Note'])) {
                 if($tmpFilePath != "") {
                     $shortname = $_FILES['notes']['name'][$i];
                     $file_name = date('d-m-Y-H-i-s') . '-' . $_FILES['notes']['name'][$i];
-                    $upload_path = "/var/www/mycodo/notes/uploads/";
+                    $upload_path = $install_path . "/notes/uploads/";
                     $full_upload_path = $upload_path . $file_name;
                     if(move_uploaded_file($tmpFilePath, $full_upload_path)) {
                         $files[] = $shortname;
@@ -3540,7 +3540,7 @@ if (isset($_POST['Edit_Note_Save'])) {
         $upload_location[$i] = $row[3];
         $i++;
     }
-    $upload_path = "/var/www/mycodo/notes/uploads/";
+    $upload_path = $install_path . "/notes/uploads/";
     if (!isset($upload_id)) $upload_id = [];
     else {
         for ($v = 0; $v < count($upload_id); $v++) {
