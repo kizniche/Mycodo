@@ -74,9 +74,8 @@ case "${1:-''}" in
                 cp $INSTALL_DIRECTORY/init.d/apache2-tmpfs /etc/init.d/
 
                 printf "#### Executing Post-Update Commands ####\n"
-                if [ -f $DIR/update-post.sh ]; then
+                if [ -f $INSTALL_DIRECTORY/update-post.sh ]; then
                     $INSTALL_DIRECTORY/update-post.sh
-                    INSTALL_DIRECTORY="$(pwd -P /var/www/mycodo)"
                 else
                     printf "Error: update-post.sh not found\n"
                 fi
