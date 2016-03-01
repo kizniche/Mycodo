@@ -563,7 +563,7 @@ class OneFileLoginApplication {
     }
 
     private function writeAuthLog($auth, $user) {
-        $auth_file = getcwd() . "/log/auth.log";
+        $auth_file = getcwd() . "../log/auth.log";
         $date = new DateTime();
         if ($auth == 2) $auth = 'NOUSER';
         else if ($auth == 1) $auth = 'LOGIN';
@@ -587,7 +587,7 @@ class OneFileLoginApplication {
 
     // Login page
     private function showPageLoginForm() {
-        $mycodo_db = "config/mycodo.db";
+        $mycodo_db = "../config/mycodo.db";
         $db = new SQLite3($mycodo_db);
         if (isset($_POST['dismiss'])) {  // Dismiss Notification
             $stmt = $db->prepare("UPDATE Misc SET Dismiss_Notification=:dismiss");
