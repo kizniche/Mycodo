@@ -26,48 +26,48 @@ $version = "3.5.95";
 
 require_once(dirname(__FILE__) . '/../config.php');
 
-$install_path = dirname(__FILE__) . '/../..';
-
+$install_path = $config["paths"]["install"];
 $lock_path = $config["paths"]["lock"];
+
 $image_path = "$install_path/images/";
 $gpio_path = '/usr/local/bin/gpio';
 
-$mycodo_client = $install_path . "/mycodo_core/mycodo_client.py";
-$still_exec = $install_path . "/mycodo_core/camera-still.sh";
-$stream_exec = $install_path . "/mycodo_core/camera-stream.sh";
-$timelapse_exec = $install_path . "/mycodo_core/camera-timelapse.sh";
-$update_check = $install_path . "/.updatecheck";
+$mycodo_client = "$install_path/mycodo_core/mycodo_client.py";
+$still_exec = "$install_path/mycodo_core/camera-still.sh";
+$stream_exec = "$install_path/mycodo_core/camera-stream.sh";
+$timelapse_exec = "$install_path/mycodo_core/camera-timelapse.sh";
+$update_check = "$install_path/.updatecheck";
 
-$daemon_log = $install_path . "/log/daemon.log";
-$auth_log = $install_path . "/log/auth.log";
-$sensor_t_log = $install_path . "/log/sensor-t.log";
-$sensor_ht_log = $install_path . "/log/sensor-ht.log";
-$sensor_co2_log = $install_path . "/log/sensor-co2.log";
-$sensor_press_log = $install_path . "/log/sensor-press.log";
-$relay_log = $install_path . "/log/relay.log";
+$daemon_log = "$install_path/log/daemon.log";
+$auth_log = "$install_path/log/auth.log";
+$sensor_t_log = "$install_path/log/sensor-t.log";
+$sensor_ht_log = "$install_path/log/sensor-ht.log";
+$sensor_co2_log = "$install_path/log/sensor-co2.log";
+$sensor_press_log = "$install_path/log/sensor-press.log";
+$relay_log = "$install_path/log/relay.log";
 
-$sensor_t_changes_log = $install_path . "/log/sensor-t-changes.log";
-$sensor_ht_changes_log = $install_path . "/log/sensor-ht-changes.log";
-$sensor_co2_changes_log = $install_path . "/log/sensor-co2-changes.log";
-$sensor_press_changes_log = $install_path . "/log/sensor-press-changes.log";
-$relay_changes_log = $install_path . "/log/relay-changes.log";
-$timer_changes_log = $install_path . "/log/timer-changes.log";
-$timer_daily_changes_log = $install_path . "/log/timer-daily-changes.log";
+$sensor_t_changes_log = "$install_path/log/sensor-t-changes.log";
+$sensor_ht_changes_log = "$install_path/log/sensor-ht-changes.log";
+$sensor_co2_changes_log = "$install_path/log/sensor-co2-changes.log";
+$sensor_press_changes_log = "$install_path/log/sensor-press-changes.log";
+$relay_changes_log = "$install_path/log/relay-changes.log";
+$timer_changes_log = "$install_path/log/timer-changes.log";
+$timer_daily_changes_log = "$install_path/log/timer-daily-changes.log";
 
-$lock_daemon = $lock_path . "/mycodo/daemon.lock";
-$lock_raspistill = $lock_path . "/mycodo_raspistill";
-$lock_mjpg_streamer = $lock_path . "/mycodo_mjpg_streamer";
-$lock_mjpg_streamer_relay = $lock_path . "/mycodo-stream-light";
-$lock_timelapse = $lock_path . "/mycodo_time_lapse";
-$lock_timelapse_light = $lock_path . "/mycodo-timelapse-light";
+$lock_daemon = "$lock_path/mycodo/daemon.lock";
+$lock_raspistill = "$lock_path/mycodo_raspistill";
+$lock_mjpg_streamer = "$lock_path/mycodo_mjpg_streamer";
+$lock_mjpg_streamer_relay = "$lock_path/mycodo-stream-light";
+$lock_timelapse = "$lock_path/mycodo_time_lapse";
+$lock_timelapse_light = "$lock_path/mycodo-timelapse-light";
 
 $logged_in_user = $_SESSION['user_name'];
 
 
 if (!file_exists($config["db"]["mycodo"])) exit("Mycodo database does not exist. Run 'setup-database.py -i' to create required database.");
 
-require($install_path . "/public_html/includes/database.php"); // Initial SQL database load to variables
-require($install_path . "/public_html/includes/functions.php"); // Mycodo functions
+require("$install_path/public_html/includes/database.php"); // Initial SQL database load to variables
+require("$install_path/public_html/includes/functions.php"); // Mycodo functions
 
 // Check is there is an update (check at minimum every 24 hours)
 if (!file_exists($update_check) || time()-filemtime($update_check) > 24 * 3600) {
@@ -91,15 +91,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $output_error = 'guest';
     } else if ($current_user_restriction != 'guest') {
         // Only non-guest users may perform these actions
-        require($install_path . "/public_html/includes/restricted.php"); // Configuration changes
-        require($install_path . "/public_html/includes/database.php"); // Reload SQLite database
+        require("$install_path/public_html/includes/restricted.php"); // Configuration changes
+        require("$install_path/public_html/includes/database.php"); // Reload SQLite database
     }
 } else {
     if ((isset($_GET['r']) && $_GET['r'] == 1) && 
         (isset($_GET['tab']) && $_GET['tab'] == 'graph')) set_new_graph_id();
 }
 
-require($install_path . "/public_html/includes/public.php"); // Handle remaining forms
+require("$install_path/public_html/includes/public.php"); // Handle remaining forms
 // Retrieve graph-generation variables (must come after running public.php)
 $graph_id = get_graph_cookie('id');
 $graph_type = get_graph_cookie('type');
@@ -153,7 +153,7 @@ delete_graphs(); // Delete graph image files if quantity exceeds 20 (delete olde
     </script>
     <?php
     if (isset($_POST['Generate_Graph'])) {
-        require($install_path . "/includes/graph.php");
+        require("$install_path/includes/graph.php");
     }
 
     if (isset($_GET['r']) && ($_GET['r'] == 1)) {

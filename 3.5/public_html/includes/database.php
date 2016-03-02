@@ -22,7 +22,6 @@
 *  Contact at kylegabriel.com
 */
 
-require_once(dirname(__FILE__) . '/../config.php');
 
 $db_mycodo = new SQLite3($config["db"]["mycodo"]);
 $db_users = new SQLite3($config["db"]["users"]);

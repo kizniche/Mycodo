@@ -11,6 +11,7 @@
  * @license http://opensource.org/licenses/MIT MIT License
  */
 
+
 if (isset($_COOKIE['debug']) && $_COOKIE['debug'] == True) {
     ini_set('display_errors', 'On');
     error_reporting(E_ALL);

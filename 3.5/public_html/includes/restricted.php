@@ -3441,7 +3441,7 @@ if (isset($_POST['Delete_Note'])) {
 
 // Add Note with image attachment
 if (isset($_POST['Add_Image_Note'])) {
-    if (!function_exists(ImageCreateFromGIF) || !function_exists(ImageCreateFromJPEG) || !function_exists(ImageCreateFromPNG)) {
+    if (!function_exists('ImageCreateFromGIF') || !function_exists('ImageCreateFromJPEG') || !function_exists('ImageCreateFromPNG')) {
         $data_error = "Error: missing required function to create image thumbnail. Install php5-gd (sudo apt-get install php5-gd)";
     } else {
         $note_ts = `date +"%Y-%m-%d %H:%M:%S"`;
@@ -3466,7 +3466,7 @@ if (isset($_POST['Add_Image_Note'])) {
         $stmt->bindValue(':id', $uniqueid, SQLITE3_TEXT);
         $stmt->bindValue(':time', $note_ts, SQLITE3_TEXT);
         $stmt->bindValue(':user', $_SESSION['user_name'], SQLITE3_TEXT);
-        $stmt->bindValue(':title', $note_title, SQLITE3_TEXT);
+        $stmt->bindValue(':title', '', SQLITE3_TEXT);
         $stmt->bindValue(':note', '', SQLITE3_TEXT);
         $stmt->execute();
         $_POST['Edit_Note'] = $uniqueid;
@@ -3557,7 +3557,7 @@ if (isset($_POST['Edit_Note_Save'])) {
         }
     }
     if(count($_FILES['edit_notes']['name']) > 0) {
-        if (!function_exists(ImageCreateFromGIF) || !function_exists(ImageCreateFromJPEG) || !function_exists(ImageCreateFromPNG)) {
+        if (!function_exists('ImageCreateFromGIF') || !function_exists('ImageCreateFromJPEG') || !function_exists('ImageCreateFromPNG')) {
             $data_error = "Error: missing required function to create image thumbnail. Install php5-gd (sudo apt-get install php5-gd)";
         } else {
             for($i = 0; $i < count($_FILES['edit_notes']['name']); $i++) {

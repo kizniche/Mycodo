@@ -22,7 +22,6 @@
 *  Contact at kylegabriel.com
 */
 
-$install_path = dirname(__FILE__) . '/../..';
 
 // Determine what type of graph to generate and for how long in the past
 $sensor_type = $_POST['Generate_Graph_Type'];

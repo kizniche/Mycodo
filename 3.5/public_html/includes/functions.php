@@ -78,7 +78,9 @@ function view_sql_db($sqlite_db) {
 // Generate and display graphs on the Graph tab
 function generate_graphs($mycodo_client, $graph_id, $graph_type, $graph_time_span, $sensor_t_graph, $sensor_ht_graph, $sensor_co2_graph, $sensor_press_graph, $theme) {
 
-    $install_path = dirname(__FILE__) . '/../..';
+    require(dirname(__FILE__) . '/../config.php');
+
+    $install_path = $config['paths']['install'];
 
     $image_path = "$install_path/images/";
 

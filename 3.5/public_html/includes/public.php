@@ -22,7 +22,6 @@
 *  Contact at kylegabriel.com
 */
 
-$install_path = dirname(__FILE__) . '/../..';
 
 // Grab last entry for each sensor from the respective log file
 for ($p = 0; $p < count($sensor_t_id); $p++) {

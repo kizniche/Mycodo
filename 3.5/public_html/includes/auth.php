@@ -22,8 +22,9 @@
 *  Contact at kylegabriel.com
 */
 
-$db_users = new SQLite3(dirname(__FILE__) . "/../../config/users.db");
+require_once(dirname(__FILE__) . '/../config.php');
 
+$db_users = new SQLite3($config["db"]["users"]);
 
 if (!isset($_COOKIE['login_user']) || !isset($_COOKIE['login_hash'])) {
 	echo "Invalid username/password";

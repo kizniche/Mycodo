@@ -316,6 +316,10 @@ Clone the latest Mycodo from the git repository
 
 `git clone https://github.com/kizniche/Mycodo.git ~/Mycodo`
 
+Install WiringPi
+
+`git clone git://git.drogon.net/wiringPi && cd wiringPi && ./build`
+
 Install/upgrade required python modules (LockFile, RPyC, pySerial, tentacle_pi, sht-sensor, RAdafruit_Python_BMP, and Adafruit_Python_DHT)
 
 `sudo pip install --upgrade -r ~/Mycodo/3.5/requirements.txt`

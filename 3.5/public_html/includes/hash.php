@@ -7,6 +7,7 @@
  * @copyright 2012 The Authors
  */
 
+
 if (!function_exists('password_hash')) {
     define('PASSWORD_BCRYPT', 1);
     define('PASSWORD_DEFAULT', PASSWORD_BCRYPT);
