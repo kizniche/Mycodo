@@ -564,7 +564,7 @@ class OneFileLoginApplication {
     }
 
     private function writeAuthLog($auth, $user) {
-        $auth_file = getcwd() . "../log/auth.log";
+        $auth_file = getcwd() . "/../log/auth.log";
         $date = new DateTime();
         if ($auth == 2) $auth = 'NOUSER';
         else if ($auth == 1) $auth = 'LOGIN';
