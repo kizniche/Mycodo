@@ -1181,9 +1181,8 @@ if (!file_exists($lock_daemon)) {
                                     }
                                     // The saved sensor serial number is not in the array of detected sensor serial numbers
                                     if (!in_array($sensor_t_pin[$i], $DS18b20Serials)) {
-                                        echo '<option selected="selected"></option>';
+                                        echo '<option selected="selected" value="' . $sensor_t_pin[$i] . '"></option>';
                                         echo '</select>';
-                                        echo '<input type="hidden" name="sensort' . $i . 'pin" value="' . $sensor_t_pin[$i] . '">';
                                     }
                                     else {
                                         echo '</select>';
