@@ -1,3 +1,4 @@
+pySerial
 rpyc
 lockfile
 w1thermsensor
