@@ -1154,13 +1154,16 @@ if (!file_exists($lock_daemon)) {
                             } else if ($sensor_t_device[$i] == 'DS18B20') {
                                 // Crete an array of symlinks that start with "28-" from
                                 // within /sys/bus/w1/devices/ to detect connected DS18B20 sensors
-                                $iterator = new DirectoryIterator("/sys/bus/w1/devices/");
-                                $query = "28-";
+                                $ds18B20_directory = "/sys/bus/w1/devices/";
                                 $DS18b20Serials = []; 
-                                foreach ($iterator as $fileinfo) {
-                                    if ($fileinfo->isDir()) {
-                                        if (substr($fileinfo->getFilename(), 0, strlen($query)) === $query) {
-                                            $DS18b20Serials[] = substr($fileinfo->getFilename(), 3);
+                                if (is_dir($ds18B20_directory)) {
+                                    $iterator = new DirectoryIterator($ds18B20_directory);
+                                    $query = "28-";
+                                    foreach ($iterator as $fileinfo) {
+                                        if ($fileinfo->isDir()) {
+                                            if (substr($fileinfo->getFilename(), 0, strlen($query)) === $query) {
+                                                $DS18b20Serials[] = substr($fileinfo->getFilename(), 3);
+                                            }
                                         }
                                     }
                                 }
