@@ -1,5 +1,6 @@
 pySerial
 rpyc
+sht-sensor
 lockfile
 w1thermsensor
 tentacle_pi
