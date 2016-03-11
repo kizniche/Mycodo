@@ -22,7 +22,7 @@
 *  Contact at kylegabriel.com
 */
 
-$version = "3.5.95";
+$version = "3.5.96";
 
 require_once(dirname(__FILE__) . '/../config.php');
 
@@ -624,6 +624,17 @@ if (!file_exists($lock_daemon)) {
             <form action="?tab=sensor" method="POST">
                 <div style="float:left; margin: 0.5em 0.7em;">
                     <div style="float:left; padding-right: 0.2em;">
+                        <input style="height: 2.6em; width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddLCDNumber" title="How many LCDs to add" required/>
+                    </div>
+                    <div style="float:left">
+                        <button type="submit" name="AddLCD" value="Add">I2C LCD<br>Displays</button>
+                    </div>
+                </div>
+            </form>
+
+            <form action="?tab=sensor" method="POST">
+                <div style="float:left; margin: 0.5em 0.7em;">
+                    <div style="float:left; padding-right: 0.2em;">
                         <input style="height: 2.6em; width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddTimersNumber" title="How many duration timers to add"  required/>
                     </div>
                     <div style="float:left">
@@ -881,6 +892,60 @@ if (!file_exists($lock_daemon)) {
             }
             
             if (count($relay_id) > 0) echo '<div style="margin-bottom:1em;"></div>';
+
+            if (count($lcd_id) > 0) {
+            ?>
+            <div style="clear: both;"></div>
+
+            <fieldset class="settings-box">
+                <legend>LCD Displays (only temperature sensors currently supported)</legend>
+                <form action="?tab=sensor" method="POST">
+                <table class="relays">
+                    <tr>
+                        <td class="table-header center middle">#</td>
+                        <td class="table-header middle">Name</td>
+                        <td class="table-header center middle">I2C Address<br>(ex. 0x27)</td>
+                        <td class="table-header center middle">Refresh<br>Period (sec)</td>
+                        <td class="table-header center middle">Top Line<br>(sensor ID)</td>
+                        <td class="table-header center middle">Bottom Line<br>(sensor ID)</td>
+                        <td class="table-header"></td>
+                    </tr>
+                    <?php
+                    for ($i = 0; $i < count($lcd_id); $i++) {
+                    ?>
+                    <tr>
+                        <td class="center">
+                            <?php echo $i+1; ?>
+                        </td>
+                        <td>
+                            <input style="width: 8em;" type="text" value="<?php echo $lcd_name[$i]; ?>" maxlength=13 name="lcd<?php echo $i; ?>name" title="This is the relay name for timer <?php echo $i; ?>"/>
+                        </td>
+                        <td  class="center" style="vertical-align:middle;">
+                            <input style="width: 8em;" type="text" value="<?php echo $lcd_pin[$i]; ?>" name="lcd<?php echo $i; ?>pin" title="This is the I2C address of <?php echo $i; ?>"/>
+                        </td>
+                        <td class="center">
+                            <input style="width: 8em;" type="text" value="<?php echo $lcd_period[$i]; ?>" name="lcd<?php echo $i; ?>period" title="This is the duration between updates."/>
+                        </td>
+                        <td class="center">
+                            <input style="width: 8em;" type="text" value="<?php echo $lcd_line_top[$i]; ?>" name="lcd<?php echo $i; ?>line_top" title="This is the sensor value that will be displayed on the top line of the display. Enter sensor ID."/>
+                        </td>
+                        <td class="center">
+                            <input style="width: 8em;" type="text" value="<?php echo $lcd_line_bottom[$i]; ?>" name="lcd<?php echo $i; ?>line_bottom" title="This is the sensor value that will be displayed on the bottom line of the display. Enter sensor ID"/>
+                        </td>
+                        <td class="center">
+                            <input type="submit" name="Mod<?php echo $i; ?>LCD" value="Set"> <button type="submit" name="Delete<?php echo $i; ?>LCD" title="Delete">Delete</button>
+                        </td>
+                    </tr>
+                    <?php
+                    }
+                    ?>
+                </table>
+                </form>
+            </fieldset>
+            <?php
+            }
+
+            if (count($lcd_id) > 0) echo '<div style="margin-bottom:1em;"></div>';
 
             if (count($timer_id) > 0) {
             ?>

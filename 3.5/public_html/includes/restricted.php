@@ -283,6 +283,52 @@ for ($p = 0; $p < count($conditional_relay_id); $p++) {
 
 /*
  *
+ * LCDs
+ *
+ */
+
+// Add LCDs
+if (isset($_POST['AddLCD']) && isset($_POST['AddLCDNumber'])) {
+    for ($j = 0; $j < $_POST['AddLCDNumber']; $j++) {
+        $stmt = $db_mycodo->prepare("INSERT INTO LCDs (id, name, pin, period, line_top, line_bottom) VALUES (:id, 'LCD', 0, 60, '', '')");
+        $stmt->bindValue(':id', uniqid(), SQLITE3_TEXT);
+        $stmt->execute();
+    }
+    shell_exec("$mycodo_client --sqlreload -1");
+}
+// Check for changes to LCD variables
+for ($p = 0; $p < count($lcd_id); $p++) {
+    // Set lcd variables
+    if (isset($_POST['Mod' . $p . 'LCD'])) {
+        $stmt = $db_mycodo->prepare("UPDATE lcds
+                              SET    name = :name,
+                                     pin = :pin,
+                                     period = :period,
+                                     line_top = :line_top,
+                                     line_bottom = :line_bottom
+                              WHERE  id = :id  ");
+        $stmt->bindValue(':name', str_replace(' ', '', $_POST['lcd' . $p . 'name']), SQLITE3_TEXT);
+        $stmt->bindValue(':pin', $_POST['lcd' . $p . 'pin'], SQLITE3_TEXT);
+        $stmt->bindValue(':period', (int)$_POST['lcd' . $p . 'period'], SQLITE3_INTEGER);
+        $stmt->bindValue(':line_top', $_POST['lcd' . $p . 'line_top'], SQLITE3_TEXT);
+        $stmt->bindValue(':line_bottom', $_POST['lcd' . $p . 'line_bottom'], SQLITE3_TEXT);
+        $stmt->bindValue(':id', $lcd_id[$p], SQLITE3_TEXT);
+        $stmt->execute();
+        shell_exec("$mycodo_client --sqlreload -1");
+    }
+    // Delete LCD
+    if (isset($_POST['Delete' . $p . 'LCD'])) {
+        $stmt = $db_mycodo->prepare("DELETE FROM LCDs WHERE Id=:id");
+        $stmt->bindValue(':id', $lcd_id[$p], SQLITE3_TEXT);
+        $stmt->execute();
+        shell_exec("$mycodo_client --sqlreload -1");
+    }
+}
+
+
+
+/*
+ *
  * Timers
  *
  */

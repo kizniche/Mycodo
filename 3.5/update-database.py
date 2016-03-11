@@ -22,7 +22,7 @@
 #
 #  Contact at kylegabriel.com
 
-db_version_mycodo = 21
+db_version_mycodo = 22
 db_version_user = 2
 db_version_note = 3
 
@@ -441,6 +441,8 @@ def mycodo_database_update():
 
         # Version 21 updates: move files/folders to public_html directory, symlink update happens in update-post.sh
 
+        # Version 22 updates: Add LCD support
+
         # any extra commands for version X
         #if current_db_version_mycodo < X:
         #    pass
@@ -518,6 +520,13 @@ def mycodo_database_create():
     AddColumn(sql_database_mycodo, 'Relays', 'Amps', 'REAL')
     AddColumn(sql_database_mycodo, 'Relays', 'Trigger', 'INT')
     AddColumn(sql_database_mycodo, 'Relays', 'Start_State', 'INT')
+
+    AddTable(sql_database_mycodo, 'LCDs')
+    AddColumn(sql_database_mycodo, 'LCDs', 'Name', 'TEXT')
+    AddColumn(sql_database_mycodo, 'LCDs', 'Pin', 'TEXT')
+    AddColumn(sql_database_mycodo, 'LCDs', 'period', 'INT')
+    AddColumn(sql_database_mycodo, 'LCDs', 'line_top', 'TEXT')
+    AddColumn(sql_database_mycodo, 'LCDs', 'line_bottom', 'TEXT')
 
     AddTable(sql_database_mycodo, 'RelayConditional')
     AddColumn(sql_database_mycodo, 'RelayConditional', 'Name', 'TEXT')

@@ -120,6 +120,18 @@ pause_daemon_confirm = 0
 on_duration_timer = []
 on_duration_seconds = []
 
+# LCD veriables
+LCD_WIDTH = 16   # Maximum characters per line
+LCD_CHR = 1 # Mode - Sending data
+LCD_CMD = 0 # Mode - Sending command
+LCD_LINE_1 = 0x80 # LCD RAM address for the 1st line
+LCD_LINE_2 = 0xC0 # LCD RAM address for the 2nd line
+LCD_BACKLIGHT  = 0x08  # On
+#LCD_BACKLIGHT = 0x00  # Off
+ENABLE = 0b00000100 # Enable bit
+E_PULSE = 0.0005
+E_DELAY = 0.0005
+bus = smbus.SMBus(1) # Rev 2 Pi uses 1
 
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
@@ -727,6 +739,30 @@ def daemon(output, log):
             PID_change = 1
         else:
             PID_change = 0
+
+        #
+        # LCDs
+        #
+        # WORK IN PROGRESS
+        # Only temperature sensors supported at the moment
+        for i in range(len(lcd_id)):
+            if time.time() > timer_lcds[i] and lcd_pin[i] != '0' and (lcd_line_top[i] != '' or lcd_line_bottom[i] != ''):
+                global I2C_ADDR
+                I2C_ADDR = int(lcd_pin[i], 16)
+                lcd_init()
+                if lcd_line_top[i] != '':
+                    for j in range(len(sensor_t_id)):
+                        if sensor_t_id[j] == lcd_line_top[i]:
+                            name_value = sensor_t_name[j] + ': ' + str(read_t(sensor_t_id[j] , sensor_t_device[j], sensor_t_pin[j])) + ' C'
+                            LCD_string = name_value[:16]
+                    lcd_string(LCD_string,LCD_LINE_1)
+                if lcd_line_bottom[i] != '':
+                    for j in range(len(sensor_t_id)):
+                        if sensor_t_id[j] == lcd_line_bottom[i]:
+                            name_value = sensor_t_name[j] + ': ' + str(read_t(sensor_t_id[j] , sensor_t_device[j], sensor_t_pin[j])) + ' C'
+                            LCD_string = name_value[:16]
+                    lcd_string(LCD_string,LCD_LINE_2)
+                timer_lcds[i] = time.time() + lcd_period[i]
 
         #
         # Read sensors and write logs
@@ -2741,6 +2777,21 @@ def read_sql():
     relay_trigger = []
     relay_start_state = []
 
+    # LCD globals
+    global lcd_id
+    global lcd_name
+    global lcd_pin
+    global lcd_period
+    global lcd_line_top
+    global lcd_line_bottom
+
+    lcd_id = []
+    lcd_name = []
+    lcd_pin = []
+    lcd_period = []
+    lcd_line_top = []
+    lcd_line_bottom = []
+
     # Timer globals
     global timer_id
     global timer_name
@@ -2778,6 +2829,7 @@ def read_sql():
     # Daemon timer globals
     global timer_time
     global timer_daily_notbeenexecuted
+    global timer_lcds
     global timerTSensorLog
     global timerHTSensorLog
     global timerCo2SensorLog
@@ -2786,6 +2838,7 @@ def read_sql():
     # Daemon timer variable reset
     timer_time = []
     timer_daily_notbeenexecuted = []
+    timer_lcds = []
     timerTSensorLog = []
     timerHTSensorLog = []
     timerCo2SensorLog = []
@@ -2826,6 +2879,15 @@ def read_sql():
     for row in cur:
         enable_max_amps = row[0]
         max_amps = row[1]
+
+    cur.execute('SELECT id, name, pin, period, line_top, line_bottom FROM lcds')
+    for row in cur:
+        lcd_id.append(row[0])
+        lcd_name.append(row[1])
+        lcd_pin.append(row[2])
+        lcd_period.append(row[3])
+        lcd_line_top.append(row[4])
+        lcd_line_bottom.append(row[5])
 
     # Begin setting global variables from SQL database values
     cur.execute('SELECT id, name, pin, amps, trigger, start_state FROM relays')
@@ -3762,6 +3824,9 @@ def read_sql():
 
     cur.close()
 
+    for i in range(len(lcd_id)):
+        timer_lcds.append(0)
+
     for i in range(len(sensor_t_id)):
         timerTSensorLog.append(0)
 
@@ -4273,6 +4338,49 @@ def email(email_to, message):
 #################################################
 #                 Miscellaneous                 #
 #################################################
+
+def lcd_init():
+  # Initialise display
+  lcd_byte(0x33,LCD_CMD) # 110011 Initialise
+  lcd_byte(0x32,LCD_CMD) # 110010 Initialise
+  lcd_byte(0x06,LCD_CMD) # 000110 Cursor move direction
+  lcd_byte(0x0C,LCD_CMD) # 001100 Display On,Cursor Off, Blink Off 
+  lcd_byte(0x28,LCD_CMD) # 101000 Data length, number of lines, font size
+  lcd_byte(0x01,LCD_CMD) # 000001 Clear display
+  time.sleep(E_DELAY)
+
+
+def lcd_byte(bits, mode):
+  # Send byte to data pins
+  # bits = the data
+  # mode = 1 for data
+  #        0 for command
+  bits_high = mode | (bits & 0xF0) | LCD_BACKLIGHT
+  bits_low = mode | ((bits<<4) & 0xF0) | LCD_BACKLIGHT
+  # High bits
+  bus.write_byte(I2C_ADDR, bits_high)
+  lcd_toggle_enable(bits_high)
+  # Low bits
+  bus.write_byte(I2C_ADDR, bits_low)
+  lcd_toggle_enable(bits_low)
+
+
+def lcd_toggle_enable(bits):
+  # Toggle enable
+  time.sleep(E_DELAY)
+  bus.write_byte(I2C_ADDR, (bits | ENABLE))
+  time.sleep(E_PULSE)
+  bus.write_byte(I2C_ADDR,(bits & ~ENABLE))
+  time.sleep(E_DELAY)
+
+
+def lcd_string(message,line):
+  # Send string to display
+  message = message.ljust(LCD_WIDTH," ")
+  lcd_byte(line, LCD_CMD)
+  for i in range(LCD_WIDTH):
+    lcd_byte(ord(message[i]),LCD_CHR)
+
 
 # Check if string represents an integer value
 def represents_int(s):

@@ -72,6 +72,26 @@ while ($row = $results->fetchArray()) {
 }
 if (!isset($relay_id)) $relay_id = [];
 
+unset($lcd_id);
+$results = $db_mycodo->query('SELECT id,
+                              name,
+                              pin,
+                              period,
+                              line_top,
+                              line_bottom
+                       FROM   lcds');
+$i = 0;
+while ($row = $results->fetchArray()) {
+    $lcd_id[$i] = $row[0];
+    $lcd_name[$i] = $row[1];
+    $lcd_pin[$i] = $row[2];
+    $lcd_period[$i] = $row[3];
+    $lcd_line_top[$i] = $row[4];
+    $lcd_line_bottom[$i] = $row[5];
+    $i++;
+}
+if (!isset($lcd_id)) $lcd_id = [];
+
 // conditional statements
 unset($conditional_relay_id);
 $results = $db_mycodo->query('SELECT id,

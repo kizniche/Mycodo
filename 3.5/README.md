@@ -101,6 +101,9 @@ This is an experimental branch of Mycodo. It is undergoing constant changes and 
 
 Major changes for each versioned release
 
+#### 3.5.96
++ Add I2C LCD support (16x2 characters, only temperature sensors at the moment)
+
 #### 3.5.95
 + Directory restructuring for better project organization
 
