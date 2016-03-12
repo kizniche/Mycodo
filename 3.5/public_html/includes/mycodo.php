@@ -963,6 +963,12 @@ if (!file_exists($lock_daemon)) {
                                 }
                                 echo '>' . $activated_sensor_list[$j][0] . ": " . $activated_sensor_list[$j][2] . '</option>';
                             }
+                            echo '<option value="last measurement"';
+                            if ($lcd_line_top[$i] == "last measurement") {
+                                echo " selected";
+                                $selected = True;
+                            }
+                            echo '>Last Measurement Time</option>';
                             if (!$selected) echo '<option value="" selected></option>';
                             ?>
                             </select>
@@ -979,6 +985,12 @@ if (!file_exists($lock_daemon)) {
                                 }
                                 echo '>' . $activated_sensor_list[$j][0] . ": " . $activated_sensor_list[$j][2] . '</option>';
                             }
+                            echo '<option value="last measurement"';
+                            if ($lcd_line_top[$i] == "last measurement") {
+                                echo " selected";
+                                $selected = True;
+                            }
+                            echo '>Last Measurement Time</option>';
                             if (!$selected) echo '<option value="" selected></option>';
                             ?>
                             </select>

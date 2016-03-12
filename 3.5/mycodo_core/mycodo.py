@@ -752,9 +752,15 @@ def daemon(output, log):
                 lcd_string_bottom = ''
                 
                 if lcd_line_top[i] != '':
-                    lcd_string_top = lcd_string_generate(lcd_line_top[i], 1)
+                    if lcd_line_top[i][0] == 'last' and lcd_line_top[i][1] == 'measurement':
+                        lcd_string_top = time.strftime("%d/%m %I:%M:%S")
+                    else:
+                        lcd_string_top = lcd_string_generate(lcd_line_top[i], 1)
                 if lcd_line_bottom[i] != '':
-                    lcd_string_bottom = lcd_string_generate(lcd_line_bottom[i], 1)
+                    if lcd_line_bottom[i][0] == 'last' and lcd_line_bottom[i][1] == 'measurement':
+                        lcd_string_bottom = time.strftime("%d/%m %I:%M:%S")
+                    else:
+                        lcd_string_bottom = lcd_string_generate(lcd_line_bottom[i], 1)
 
                 lcd_init()
 
