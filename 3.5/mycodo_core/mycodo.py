@@ -121,6 +121,8 @@ on_duration_timer = []
 on_duration_seconds = []
 
 # LCD globals
+LCD_LINE_1 = 0x80 # LCD RAM address for the 1st line
+LCD_LINE_2 = 0xC0 # LCD RAM address for the 2nd line
 LCD_CMD = 0 # Mode - SenLCDding command
 E_DELAY = 0.0005 # write delay
 
@@ -746,8 +748,6 @@ def daemon(output, log):
             if time.time() > timer_lcds[i] and lcd_pin[i] != '0' and (lcd_line_top[i][0] != '' or lcd_line_bottom[i][0] != ''):
                 global I2C_ADDR
                 I2C_ADDR = int(lcd_pin[i], 16)
-                LCD_LINE_1 = 0x80 # LCD RAM address for the 1st line
-                LCD_LINE_2 = 0xC0 # LCD RAM address for the 2nd line
                 lcd_string_top = ''
                 lcd_string_bottom = ''
                 
@@ -2333,11 +2333,6 @@ def read_press(sensor_id, device, pin):
     if device == 'BMP085-180':
         if pin != 0:
             I2C_address = 0x70 + pin // 10
-            if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
-                I2C_bus_number = 1
-            else:
-                I2C_bus_number = 0
-            bus = smbus.SMBus(I2C_bus_number)
             bus.write_byte(I2C_address, pin % 10)
             time.sleep(0.1)
         press_sensor = BMP085.BMP085()
@@ -4513,3 +4508,7 @@ try:
     main()
 except:
     logging.exception(1)
+finally:
+    lcd_byte(0x01, LCD_CMD)
+    lcd_string_write('  Mycodo Deamon ',LCD_LINE_1) 
+    lcd_string_write('    Shut Down   ',LCD_LINE_2) 
