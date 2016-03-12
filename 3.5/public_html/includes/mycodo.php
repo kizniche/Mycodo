@@ -898,7 +898,7 @@ if (!file_exists($lock_daemon)) {
             <div style="clear: both;"></div>
 
             <fieldset class="settings-box">
-                <legend>LCD Displays (only temperature sensors currently supported)</legend>
+                <legend>LCD Displays</legend>
                 <form action="?tab=sensor" method="POST">
                 <table class="relays">
                     <tr>
@@ -912,6 +912,31 @@ if (!file_exists($lock_daemon)) {
                     </tr>
                     <?php
                     for ($i = 0; $i < count($lcd_id); $i++) {
+
+                    $activated_sensor_list = [];
+                    for ($j = 0; $j < count($sensor_t_id); $j++) {
+                        if ($sensor_t_activated[$j] == 1) {
+                            array_push($activated_sensor_list, array($sensor_t_name[$j], $sensor_t_id[$j], 'Temperature'));
+                        }
+                    }
+                    for ($j = 0; $j < count($sensor_ht_id); $j++) {
+                        if ($sensor_ht_activated[$j] == 1) {
+                            array_push($activated_sensor_list, array($sensor_ht_name[$j], $sensor_ht_id[$j], 'Temperature'));
+                            array_push($activated_sensor_list, array($sensor_ht_name[$j], $sensor_ht_id[$j], 'Humidity'));
+                        }
+                    }
+                    for ($j = 0; $j < count($sensor_co2_id); $j++) {
+                        if ($sensor_co2_activated[$j] == 1) {
+                            array_push($activated_sensor_list, array($sensor_co2_name[$j], $sensor_co2_id[$j], 'CO2'));
+                        }
+                    }
+                    for ($j = 0; $j < count($sensor_press_id); $j++) {
+                        if ($sensor_press_activated[$j] == 1) {
+                            array_push($activated_sensor_list, array($sensor_press_name[$j], $sensor_press_id[$j], 'Temperature'));
+                            array_push($activated_sensor_list, array($sensor_press_name[$j], $sensor_press_id[$j], 'Pressure'));
+                            array_push($activated_sensor_list, array($sensor_press_name[$j], $sensor_press_id[$j], 'Altitude'));
+                        }
+                    }
                     ?>
                     <tr>
                         <td class="center">
@@ -927,10 +952,36 @@ if (!file_exists($lock_daemon)) {
                             <input style="width: 8em;" type="text" value="<?php echo $lcd_period[$i]; ?>" name="lcd<?php echo $i; ?>period" title="This is the duration between updates."/>
                         </td>
                         <td class="center">
-                            <input style="width: 8em;" type="text" value="<?php echo $lcd_line_top[$i]; ?>" name="lcd<?php echo $i; ?>line_top" title="This is the sensor value that will be displayed on the top line of the display. Enter sensor ID."/>
+                            <select style="width: 12em;" name="lcd<?php echo $i; ?>line_top" title="What condition to display on the top line of the LCD.">
+                            <?php
+                            $selected = False;
+                            for ($j = 0; $j < count($activated_sensor_list); $j++) {
+                                echo '<option value="' . $activated_sensor_list[$j][1] . " " . $activated_sensor_list[$j][2] . '"';
+                                if ($lcd_line_top[$i] == $activated_sensor_list[$j][1] . " " . $activated_sensor_list[$j][2]) {
+                                    echo " selected";
+                                    $selected = True;
+                                }
+                                echo '>' . $activated_sensor_list[$j][0] . ": " . $activated_sensor_list[$j][2] . '</option>';
+                            }
+                            if (!$selected) echo '<option value="" selected></option>';
+                            ?>
+                            </select>
                         </td>
                         <td class="center">
-                            <input style="width: 8em;" type="text" value="<?php echo $lcd_line_bottom[$i]; ?>" name="lcd<?php echo $i; ?>line_bottom" title="This is the sensor value that will be displayed on the bottom line of the display. Enter sensor ID"/>
+                            <select style="width: 12em;" name="lcd<?php echo $i; ?>line_bottom" title="What condition to display on the top line of the LCD.">
+                            <?php
+                            $selected = False;
+                            for ($j = 0; $j < count($activated_sensor_list); $j++) {
+                                echo '<option value="' . $activated_sensor_list[$j][1] . " " . $activated_sensor_list[$j][2] . '"';
+                                if ($lcd_line_bottom[$i] == $activated_sensor_list[$j][1] . " " . $activated_sensor_list[$j][2]) {
+                                    echo " selected";
+                                    $selected = True;
+                                }
+                                echo '>' . $activated_sensor_list[$j][0] . ": " . $activated_sensor_list[$j][2] . '</option>';
+                            }
+                            if (!$selected) echo '<option value="" selected></option>';
+                            ?>
+                            </select>
                         </td>
                         <td class="center">
                             <input type="submit" name="Mod<?php echo $i; ?>LCD" value="Set"> <button type="submit" name="Delete<?php echo $i; ?>LCD" title="Delete">Delete</button>

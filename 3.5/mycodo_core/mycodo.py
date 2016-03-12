@@ -120,18 +120,17 @@ pause_daemon_confirm = 0
 on_duration_timer = []
 on_duration_seconds = []
 
-# LCD veriables
-LCD_WIDTH = 16   # Maximum characters per line
-LCD_CHR = 1 # Mode - Sending data
-LCD_CMD = 0 # Mode - Sending command
-LCD_LINE_1 = 0x80 # LCD RAM address for the 1st line
-LCD_LINE_2 = 0xC0 # LCD RAM address for the 2nd line
-LCD_BACKLIGHT  = 0x08  # On
-#LCD_BACKLIGHT = 0x00  # Off
-ENABLE = 0b00000100 # Enable bit
-E_PULSE = 0.0005
-E_DELAY = 0.0005
-bus = smbus.SMBus(1) # Rev 2 Pi uses 1
+# LCD globals
+LCD_CMD = 0 # Mode - SenLCDding command
+E_DELAY = 0.0005 # write delay
+
+# Setup I2C bus
+if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
+    I2C_bus_number = 1
+else:
+    I2C_bus_number = 0
+bus = smbus.SMBus(I2C_bus_number)
+
 
 # Threaded server that receives commands from mycodo-client.py
 class ComServer(rpyc.Service):
@@ -743,26 +742,27 @@ def daemon(output, log):
         #
         # LCDs
         #
-        # WORK IN PROGRESS
-        # Only temperature sensors supported at the moment
         for i in range(len(lcd_id)):
-            if time.time() > timer_lcds[i] and lcd_pin[i] != '0' and (lcd_line_top[i] != '' or lcd_line_bottom[i] != ''):
+            if time.time() > timer_lcds[i] and lcd_pin[i] != '0' and (lcd_line_top[i][0] != '' or lcd_line_bottom[i][0] != ''):
                 global I2C_ADDR
                 I2C_ADDR = int(lcd_pin[i], 16)
+                LCD_LINE_1 = 0x80 # LCD RAM address for the 1st line
+                LCD_LINE_2 = 0xC0 # LCD RAM address for the 2nd line
+                lcd_string_top = ''
+                lcd_string_bottom = ''
                 lcd_init()
+                print "TEST2 {}".format(lcd_line_top[i])
+
                 if lcd_line_top[i] != '':
-                    for j in range(len(sensor_t_id)):
-                        if sensor_t_id[j] == lcd_line_top[i]:
-                            name_value = sensor_t_name[j] + ': ' + str(read_t(sensor_t_id[j] , sensor_t_device[j], sensor_t_pin[j])) + ' C'
-                            LCD_string = name_value[:16]
-                            lcd_string(LCD_string,LCD_LINE_1)
+                    lcd_string_top = lcd_string_generate(lcd_line_top[i], 1)
+                    lcd_string_write(lcd_string_top,LCD_LINE_1)        
+
                 if lcd_line_bottom[i] != '':
-                    for j in range(len(sensor_t_id)):
-                        if sensor_t_id[j] == lcd_line_bottom[i]:
-                            name_value = sensor_t_name[j] + ': ' + str(read_t(sensor_t_id[j] , sensor_t_device[j], sensor_t_pin[j])) + ' C'
-                            LCD_string = name_value[:16]
-                            lcd_string(LCD_string,LCD_LINE_2)
+                    lcd_string_bottom = lcd_string_generate(lcd_line_bottom[i], 1)
+                    lcd_string_write(lcd_string_bottom,LCD_LINE_2)
+
                 timer_lcds[i] = time.time() + lcd_period[i]
+
 
         #
         # Read sensors and write logs
@@ -2274,11 +2274,6 @@ def read_ht(sensor_id, device, pin, clock_pin, sensor_voltage):
     elif device == 'AM2315':
         if pin != 0:
             I2C_address = 0x70 + pin // 10
-            if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
-                I2C_bus_number = 1
-            else:
-                I2C_bus_number = 0
-            bus = smbus.SMBus(I2C_bus_number)
             bus.write_byte(I2C_address, pin % 10)
             time.sleep(0.1)
         am = AM2315(0x5c, "/dev/i2c-1")
@@ -2888,6 +2883,13 @@ def read_sql():
         lcd_period.append(row[3])
         lcd_line_top.append(row[4])
         lcd_line_bottom.append(row[5])
+
+    for i in range(len(lcd_id)):
+        if lcd_line_top[i] is not '':
+            lcd_line_top[i] = lcd_line_top[i].split()
+        if lcd_line_bottom[i] is not '':
+            lcd_line_bottom[i] = lcd_line_bottom[i].split()
+
 
     # Begin setting global variables from SQL database values
     cur.execute('SELECT id, name, pin, amps, trigger, start_state FROM relays')
@@ -4339,47 +4341,99 @@ def email(email_to, message):
 #                 Miscellaneous                 #
 #################################################
 
+def lcd_string_generate(lcd_line_string, metric):
+    sensor_name = ''
+    sensor_id = lcd_line_string[0]
+    measurement_type = lcd_line_string[1]
+    measurement_value = ''
+    measurement_unit = ''
+    for j in range(len(sensor_t_id)):
+        if sensor_t_id[j] == sensor_id:
+            sensor_name = sensor_t_name[j]
+            if measurement_type == 'Temperature':
+                measurement_value = str(format(read_t(sensor_t_id[j], sensor_t_device[j], sensor_t_pin[j]), '.2f'))
+                measurement_unit = ' C'
+    for j in range(len(sensor_ht_id)):
+        if sensor_ht_id[j] == sensor_id:
+            sensor_name = sensor_ht_name[j]
+            temperature, humidity = read_ht(sensor_ht_id[j], sensor_ht_device[j], sensor_ht_pin[j], sensor_ht_clock_pin[j], sensor_ht_voltage[j])
+            if measurement_type == 'Temperature':
+                measurement_value = str(format(temperature, '.2f'))
+                measurement_unit = ' C'
+            elif measurement_type == 'Humidity':
+                measurement_value = str(format(humidity, '.2f'))
+                measurement_unit = ' %'
+    for j in range(len(sensor_c_id)):
+        if sensor_c_id[j] == sensor_id:
+            sensor_name = sensor_c_name[j]
+            if measurement_type == 'CO2':
+                measurement_value = str(read_co2(sensor_c_id[j], sensor_c_device[j]))
+                measurement_unit = ' ppm'
+    for j in range(len(sensor_p_id)):
+        if sensor_p_id[j] == sensor_id:
+            sensor_name = sensor_p_name[j]
+            pressure, temperature, altitude = read_press(sensor_p_id[j], sensor_p_device[j], sensor_p_pin[j])
+            if measurement_type == 'Temperature':
+                measurement_value = str(format(temperature, '.2f'))
+                measurement_unit = ' C'
+            elif measurement_type == 'Pressure':
+                measurement_value = str(pressure)
+                measurement_unit = ' Pa'
+            elif measurement_type == 'Altitude':
+                measurement_value = str(format(altitude, '.2f'))
+                measurement_unit = ' m'
+    max_length_name = 16 - (2 + len(measurement_value) + len(measurement_unit))
+    lcd_string = sensor_name[:max_length_name] + ': ' + measurement_value + measurement_unit
+    return lcd_string
+
+
 def lcd_init():
-  # Initialise display
-  lcd_byte(0x33,LCD_CMD) # 110011 Initialise
-  lcd_byte(0x32,LCD_CMD) # 110010 Initialise
-  lcd_byte(0x06,LCD_CMD) # 000110 Cursor move direction
-  lcd_byte(0x0C,LCD_CMD) # 001100 Display On,Cursor Off, Blink Off 
-  lcd_byte(0x28,LCD_CMD) # 101000 Data length, number of lines, font size
-  lcd_byte(0x01,LCD_CMD) # 000001 Clear display
-  time.sleep(E_DELAY)
+    # Initialise display
+    lcd_byte(0x33,LCD_CMD) # 110011 Initialise
+    lcd_byte(0x32,LCD_CMD) # 110010 Initialise
+    lcd_byte(0x06,LCD_CMD) # 000110 Cursor move direction
+    lcd_byte(0x0C,LCD_CMD) # 001100 Display On,Cursor Off, Blink Off 
+    lcd_byte(0x28,LCD_CMD) # 101000 Data length, number of lines, font size
+    lcd_byte(0x01,LCD_CMD) # 000001 Clear display
+    time.sleep(E_DELAY)
 
 
 def lcd_byte(bits, mode):
-  # Send byte to data pins
-  # bits = the data
-  # mode = 1 for data
-  #        0 for command
-  bits_high = mode | (bits & 0xF0) | LCD_BACKLIGHT
-  bits_low = mode | ((bits<<4) & 0xF0) | LCD_BACKLIGHT
-  # High bits
-  bus.write_byte(I2C_ADDR, bits_high)
-  lcd_toggle_enable(bits_high)
-  # Low bits
-  bus.write_byte(I2C_ADDR, bits_low)
-  lcd_toggle_enable(bits_low)
+    # Send byte to data pins
+    LCD_BACKLIGHT  = 0x08  # On
+    #LCD_BACKLIGHT = 0x00  # Off
+    # bits = the data
+    # mode = 1 for data
+    #        0 for command
+    bits_high = mode | (bits & 0xF0) | LCD_BACKLIGHT
+    bits_low = mode | ((bits<<4) & 0xF0) | LCD_BACKLIGHT
+    # High bits
+    bus.write_byte(I2C_ADDR, bits_high)
+    lcd_toggle_enable(bits_high)
+    # Low bits
+    bus.write_byte(I2C_ADDR, bits_low)
+    lcd_toggle_enable(bits_low)
 
 
 def lcd_toggle_enable(bits):
-  # Toggle enable
-  time.sleep(E_DELAY)
-  bus.write_byte(I2C_ADDR, (bits | ENABLE))
-  time.sleep(E_PULSE)
-  bus.write_byte(I2C_ADDR,(bits & ~ENABLE))
-  time.sleep(E_DELAY)
+    # Toggle enable
+    ENABLE = 0b00000100 # Enable bit
+    E_PULSE = 0.0005
+    time.sleep(E_DELAY)
+    bus.write_byte(I2C_ADDR, (bits | ENABLE))
+    time.sleep(E_PULSE)
+    bus.write_byte(I2C_ADDR,(bits & ~ENABLE))
+    time.sleep(E_DELAY)
 
 
-def lcd_string(message,line):
-  # Send string to display
-  message = message.ljust(LCD_WIDTH," ")
-  lcd_byte(line, LCD_CMD)
-  for i in range(LCD_WIDTH):
-    lcd_byte(ord(message[i]),LCD_CHR)
+def lcd_string_write(message,line):
+    # Send string to display
+    LCD_CHR = 1 # Mode - Sending data
+    LCD_WIDTH = 16   # Maximum characters per line
+    message = message.ljust(LCD_WIDTH," ")
+    lcd_byte(line, LCD_CMD)
+    for i in range(LCD_WIDTH):
+      lcd_byte(ord(message[i]),LCD_CHR)
 
 
 # Check if string represents an integer value
