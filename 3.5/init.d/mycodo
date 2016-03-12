@@ -33,89 +33,89 @@
 
 export PATH="$PATH:/usr/sbin:/usr/local/bin:/usr/bin:/bin:/sbin"
 
-INSTALL_DIRECTORY="$(cd /var/www/mycodo && pwd -P)"
+INSTALL_DIRECTORY="$(cd -P /var/www/mycodo/../ && pwd -P)"
 
 case "${1:-''}" in
     'initialize')
         mkdir -p /var/log/mycodo
         mkdir -p /var/log/mycodo/images
-        mkdir -p $INSTALL_DIRECTORY/camera-stills
-        mkdir -p $INSTALL_DIRECTORY/camera-timelapse
-        mkdir -p $INSTALL_DIRECTORY/../notes
-        mkdir -p $INSTALL_DIRECTORY/../notes/uploads
+        mkdir -p $INSTALL_DIRECTORY/public_html/camera-stills
+        mkdir -p $INSTALL_DIRECTORY/public_html/camera-timelapse
+        mkdir -p $INSTALL_DIRECTORY/notes
+        mkdir -p $INSTALL_DIRECTORY/notes/uploads
         
-        if [ ! -e $INSTALL_DIRECTORY/../log/auth.log ]; then
-            touch $INSTALL_DIRECTORY/../log/auth.log
+        if [ ! -e $INSTALL_DIRECTORY/log/auth.log ]; then
+            touch $INSTALL_DIRECTORY/log/auth.log
         fi
-        if [ ! -e $INSTALL_DIRECTORY/../log/update.log ]; then
-            touch $INSTALL_DIRECTORY/../log/update.log
+        if [ ! -e $INSTALL_DIRECTORY/log/update.log ]; then
+            touch $INSTALL_DIRECTORY/log/update.log
         fi
-        if [ ! -e $INSTALL_DIRECTORY/../log/restore.log ]; then
-            touch $INSTALL_DIRECTORY/../log/restore.log
+        if [ ! -e $INSTALL_DIRECTORY/log/restore.log ]; then
+            touch $INSTALL_DIRECTORY/log/restore.log
         fi
 
-        if [ ! -h $INSTALL_DIRECTORY/images ]; then
-            ln -s /var/log/mycodo/images $INSTALL_DIRECTORY/images
+        if [ ! -h $INSTALL_DIRECTORY/public_html/images ]; then
+            ln -s /var/log/mycodo/images $INSTALL_DIRECTORY/public_html/images
         fi
 
         if [ ! -e /var/log/mycodo/sensor-t-tmp.log ]; then
             touch /var/log/mycodo/sensor-t-tmp.log
         fi
-        if [ ! -e $INSTALL_DIRECTORY/../log/sensor-t.log ]; then
-            touch $INSTALL_DIRECTORY/../log/sensor-t.log
+        if [ ! -e $INSTALL_DIRECTORY/log/sensor-t.log ]; then
+            touch $INSTALL_DIRECTORY/log/sensor-t.log
         fi
-        if [ ! -h $INSTALL_DIRECTORY/../log/sensor-t-tmp.log ]; then
-            ln -s /var/log/mycodo/sensor-t-tmp.log $INSTALL_DIRECTORY/../log/sensor-t-tmp.log
+        if [ ! -h $INSTALL_DIRECTORY/log/sensor-t-tmp.log ]; then
+            ln -s /var/log/mycodo/sensor-t-tmp.log $INSTALL_DIRECTORY/log/sensor-t-tmp.log
         fi
 
         if [ ! -e /var/log/mycodo/sensor-ht-tmp.log ]; then
             touch /var/log/mycodo/sensor-ht-tmp.log
         fi
-        if [ ! -e $INSTALL_DIRECTORY/../log/sensor-ht.log ]; then
-            touch $INSTALL_DIRECTORY/../log/sensor-ht.log
+        if [ ! -e $INSTALL_DIRECTORY/log/sensor-ht.log ]; then
+            touch $INSTALL_DIRECTORY/log/sensor-ht.log
         fi
-        if [ ! -h $INSTALL_DIRECTORY/../log/sensor-ht-tmp.log ]; then
-            ln -s /var/log/mycodo/sensor-ht-tmp.log $INSTALL_DIRECTORY/../log/sensor-ht-tmp.log
+        if [ ! -h $INSTALL_DIRECTORY/log/sensor-ht-tmp.log ]; then
+            ln -s /var/log/mycodo/sensor-ht-tmp.log $INSTALL_DIRECTORY/log/sensor-ht-tmp.log
         fi
         
         if [ ! -e /var/log/mycodo/sensor-co2-tmp.log ]; then
             touch /var/log/mycodo/sensor-co2-tmp.log
         fi
-        if [ ! -e $INSTALL_DIRECTORY/../log/sensor-co2.log ]; then
-            touch $INSTALL_DIRECTORY/../log/sensor-co2.log
+        if [ ! -e $INSTALL_DIRECTORY/log/sensor-co2.log ]; then
+            touch $INSTALL_DIRECTORY/log/sensor-co2.log
         fi
-        if [ ! -h $INSTALL_DIRECTORY/../log/sensor-co2-tmp.log ]; then
-            ln -s /var/log/mycodo/sensor-co2-tmp.log $INSTALL_DIRECTORY/../log/sensor-co2-tmp.log
+        if [ ! -h $INSTALL_DIRECTORY/log/sensor-co2-tmp.log ]; then
+            ln -s /var/log/mycodo/sensor-co2-tmp.log $INSTALL_DIRECTORY/log/sensor-co2-tmp.log
         fi
 
         if [ ! -e /var/log/mycodo/sensor-press-tmp.log ]; then
             touch /var/log/mycodo/sensor-press-tmp.log
         fi
-        if [ ! -e $INSTALL_DIRECTORY/../log/sensor-press.log ]; then
-            touch $INSTALL_DIRECTORY/../log/sensor-press.log
+        if [ ! -e $INSTALL_DIRECTORY/log/sensor-press.log ]; then
+            touch $INSTALL_DIRECTORY/log/sensor-press.log
         fi
-        if [ ! -h $INSTALL_DIRECTORY/../log/sensor-press-tmp.log ]; then
-            ln -s /var/log/mycodo/sensor-press-tmp.log $INSTALL_DIRECTORY/../log/sensor-press-tmp.log
+        if [ ! -h $INSTALL_DIRECTORY/log/sensor-press-tmp.log ]; then
+            ln -s /var/log/mycodo/sensor-press-tmp.log $INSTALL_DIRECTORY/log/sensor-press-tmp.log
         fi
         
         if [ ! -e /var/log/mycodo/relay-tmp.log ]; then
             touch /var/log/mycodo/relay-tmp.log
         fi
-        if [ ! -e $INSTALL_DIRECTORY/../log/relay.log ]; then
-            touch $INSTALL_DIRECTORY/../log/relay.log
+        if [ ! -e $INSTALL_DIRECTORY/log/relay.log ]; then
+            touch $INSTALL_DIRECTORY/log/relay.log
         fi
-        if [ ! -h $INSTALL_DIRECTORY/../log/relay-tmp.log ]; then
-            ln -s /var/log/mycodo/relay-tmp.log $INSTALL_DIRECTORY/../log/relay-tmp.log
+        if [ ! -h $INSTALL_DIRECTORY/log/relay-tmp.log ]; then
+            ln -s /var/log/mycodo/relay-tmp.log $INSTALL_DIRECTORY/log/relay-tmp.log
         fi
         
         if [ ! -e /var/log/mycodo/daemon-tmp.log ]; then
             touch /var/log/mycodo/daemon-tmp.log
         fi
-        if [ ! -e $INSTALL_DIRECTORY/../log/daemon.log ]; then
-            touch $INSTALL_DIRECTORY/../log/daemon.log
+        if [ ! -e $INSTALL_DIRECTORY/log/daemon.log ]; then
+            touch $INSTALL_DIRECTORY/log/daemon.log
         fi
-        if [ ! -h $INSTALL_DIRECTORY/../log/daemon-tmp.log ]; then
-            ln -s /var/log/mycodo/daemon-tmp.log $INSTALL_DIRECTORY/../log/daemon-tmp.log
+        if [ ! -h $INSTALL_DIRECTORY/log/daemon-tmp.log ]; then
+            ln -s /var/log/mycodo/daemon-tmp.log $INSTALL_DIRECTORY/log/daemon-tmp.log
         fi
 
         if [ ! -e /var/tmp/sensor-t.log ]; then
@@ -139,25 +139,25 @@ case "${1:-''}" in
         chown -LR www-data.www-data $INSTALL_DIRECTORY
         chown -LR www-data.www-data /var/log/mycodo
 
-        find $INSTALL_DIRECTORY/../ -type d -exec chmod u+wx,g+wx {} +
-        find $INSTALL_DIRECTORY/../ -type f -exec chmod u+w,g+w,o+r {} +
-        find $INSTALL_DIRECTORY/../mycodo_core -type f -name '.?*' -prune -o -exec chmod 770 {} +
-        chown root:root $INSTALL_DIRECTORY/../mycodo_core/mycodo-wrapper
-        chmod 4775 $INSTALL_DIRECTORY/../mycodo_core/mycodo-wrapper
+        find $INSTALL_DIRECTORY/ -type d -exec chmod u+wx,g+wx {} +
+        find $INSTALL_DIRECTORY/ -type f -exec chmod u+w,g+w,o+r {} +
+        find $INSTALL_DIRECTORY/mycodo_core -type f -name '.?*' -prune -o -exec chmod 770 {} +
+        chown root:root $INSTALL_DIRECTORY/mycodo_core/mycodo-wrapper
+        chmod 4775 $INSTALL_DIRECTORY/mycodo_core/mycodo-wrapper
         exit 0
         ;;
     'start')
         $0 initialize
-        python $INSTALL_DIRECTORY/../mycodo_core/mycodo.py 2>/dev/null &
+        python $INSTALL_DIRECTORY/mycodo_core/mycodo.py 2>/dev/null &
         exit 0
         ;;
     'start-debug')
         $0 initialize
-        python $INSTALL_DIRECTORY/../mycodo_core/mycodo.py -l d 2>/dev/null &
+        python $INSTALL_DIRECTORY/mycodo_core/mycodo.py -l d 2>/dev/null &
         exit 0
         ;;
     'stop')
-        $INSTALL_DIRECTORY/../mycodo_core/mycodo_client.py -t
+        $INSTALL_DIRECTORY/mycodo_core/mycodo_client.py -t
         
         printf "Checking if daemon has stopped (please wait 10 seconds)."
         
@@ -194,7 +194,7 @@ case "${1:-''}" in
             printf "mycodo.py (pid $PID) has been killed after $count seconds.\n"
 
             printf "Because daemon had to be killed, turning off all GPIOs\n"
-            $INSTALL_DIRECTORY/../mycodo_core/gpio_initialize.py
+            $INSTALL_DIRECTORY/mycodo_core/gpio_initialize.py
 
         else
            printf " No daemon running.\n"

@@ -580,6 +580,13 @@ def daemon(output, log):
     global pause_daemon_confirm
     pause_daemon_confirm = -1
 
+    for i in range(len(lcd_id)):
+        global I2C_ADDR
+        I2C_ADDR = int(lcd_pin[i], 16)
+        lcd_byte(0x01, LCD_CMD)
+        lcd_string_write('  Mycodo 3.5.x  ',LCD_LINE_1) 
+        lcd_string_write('  {} Starting '.format(lcd_pin[i]),LCD_LINE_2) 
+
     # Set log level based on startup argument
     if log == 'warning':
         logging.getLogger().setLevel(logging.WARNING)
@@ -4515,6 +4522,9 @@ try:
 except:
     logging.exception(1)
 finally:
-    lcd_byte(0x01, LCD_CMD)
-    lcd_string_write('  Mycodo Deamon ',LCD_LINE_1) 
-    lcd_string_write('    Shut Down   ',LCD_LINE_2) 
+    for i in range(len(lcd_id)):
+        global I2C_ADDR
+        I2C_ADDR = int(lcd_pin[i], 16)
+        lcd_byte(0x01, LCD_CMD)
+        lcd_string_write('  Mycodo Deamon ',LCD_LINE_1) 
+        lcd_string_write('    Shut Down   ',LCD_LINE_2) 
