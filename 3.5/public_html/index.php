@@ -577,10 +577,6 @@ class OneFileLoginApplication {
         $browser = $_SERVER['HTTP_USER_AGENT'];
         $auth_write = $date->format('Y m d H:i:s') . ', ' . $auth . ', ' . $user . ', ' . $ip . ', ' . $hostaddress . ', ' . $referred . ', ' . $browser . "\n";
 
-        if (!file_exists($auth_file)) {
-            $fh = fopen($auth_file, 'w') or die("Can't create file " . $auth_file);
-        }
-
         $fh = fopen($auth_file, 'a') or die("Error: Can't find/open " . $auth_file);
         fwrite($fh, $auth_write);
         fclose($fh);

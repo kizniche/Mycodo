@@ -44,6 +44,9 @@ case "${1:-''}" in
         mkdir -p $INSTALL_DIRECTORY/../notes
         mkdir -p $INSTALL_DIRECTORY/../notes/uploads
         
+        if [ ! -e $INSTALL_DIRECTORY/../log/auth.log ]; then
+            touch $INSTALL_DIRECTORY/../log/auth.log
+        fi
         if [ ! -e $INSTALL_DIRECTORY/../log/update.log ]; then
             touch $INSTALL_DIRECTORY/../log/update.log
         fi
