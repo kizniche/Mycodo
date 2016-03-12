@@ -750,15 +750,17 @@ def daemon(output, log):
                 LCD_LINE_2 = 0xC0 # LCD RAM address for the 2nd line
                 lcd_string_top = ''
                 lcd_string_bottom = ''
-                lcd_init()
-                print "TEST2 {}".format(lcd_line_top[i])
-
+                
                 if lcd_line_top[i] != '':
                     lcd_string_top = lcd_string_generate(lcd_line_top[i], 1)
-                    lcd_string_write(lcd_string_top,LCD_LINE_1)        
-
                 if lcd_line_bottom[i] != '':
                     lcd_string_bottom = lcd_string_generate(lcd_line_bottom[i], 1)
+
+                lcd_init()
+
+                if lcd_line_top[i] != '':
+                    lcd_string_write(lcd_string_top,LCD_LINE_1) 
+                if lcd_line_bottom[i] != '':
                     lcd_string_write(lcd_string_bottom,LCD_LINE_2)
 
                 timer_lcds[i] = time.time() + lcd_period[i]
