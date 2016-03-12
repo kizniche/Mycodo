@@ -755,13 +755,13 @@ def daemon(output, log):
                         if sensor_t_id[j] == lcd_line_top[i]:
                             name_value = sensor_t_name[j] + ': ' + str(read_t(sensor_t_id[j] , sensor_t_device[j], sensor_t_pin[j])) + ' C'
                             LCD_string = name_value[:16]
-                    lcd_string(LCD_string,LCD_LINE_1)
+                            lcd_string(LCD_string,LCD_LINE_1)
                 if lcd_line_bottom[i] != '':
                     for j in range(len(sensor_t_id)):
                         if sensor_t_id[j] == lcd_line_bottom[i]:
                             name_value = sensor_t_name[j] + ': ' + str(read_t(sensor_t_id[j] , sensor_t_device[j], sensor_t_pin[j])) + ' C'
                             LCD_string = name_value[:16]
-                    lcd_string(LCD_string,LCD_LINE_2)
+                            lcd_string(LCD_string,LCD_LINE_2)
                 timer_lcds[i] = time.time() + lcd_period[i]
 
         #
