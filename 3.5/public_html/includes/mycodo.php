@@ -627,7 +627,7 @@ if (!file_exists($lock_daemon)) {
                         <input style="height: 2.6em; width: 3em;" type="number" value="1" min="1" max="20" step="1" maxlength=2 name="AddLCDNumber" title="How many LCDs to add" required/>
                     </div>
                     <div style="float:left">
-                        <button type="submit" name="AddLCD" value="Add">I2C LCD<br>Displays</button>
+                        <button type="submit" name="AddLCD" value="Add">I<sup>2</sup>C LCD<br>Displays</button>
                     </div>
                 </div>
             </form>
@@ -898,16 +898,16 @@ if (!file_exists($lock_daemon)) {
             <div style="clear: both;"></div>
 
             <fieldset class="settings-box">
-                <legend>LCD Displays</legend>
+                <legend>I<sup>2</sup>C LCD Displays</legend>
                 <form action="?tab=sensor" method="POST">
                 <table class="relays">
                     <tr>
                         <td class="table-header center middle">#</td>
                         <td class="table-header middle">Name</td>
-                        <td class="table-header center middle">I2C Address<br>(ex. 0x27)</td>
-                        <td class="table-header center middle">Refresh<br>Period (sec)</td>
-                        <td class="table-header center middle">Top Line<br>(sensor ID)</td>
-                        <td class="table-header center middle">Bottom Line<br>(sensor ID)</td>
+                        <td class="table-header center middle">I<sup>2</sup>C Address<br>(ex. 0x27)</td>
+                        <td class="table-header center middle">Refresh Period<br>(sec)</td>
+                        <td class="table-header center middle">Top Line</td>
+                        <td class="table-header center middle">Bottom Line</td>
                         <td class="table-header"></td>
                     </tr>
                     <?php
