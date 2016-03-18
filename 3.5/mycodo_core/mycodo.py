@@ -580,13 +580,6 @@ def daemon(output, log):
     global pause_daemon_confirm
     pause_daemon_confirm = -1
 
-    for i in range(len(lcd_id)):
-        global I2C_ADDR
-        I2C_ADDR = int(lcd_pin[i], 16)
-        lcd_byte(0x01, LCD_CMD)
-        lcd_string_write('  Mycodo 3.5.x  ',LCD_LINE_1) 
-        lcd_string_write('  {} Starting '.format(lcd_pin[i]),LCD_LINE_2) 
-
     # Set log level based on startup argument
     if log == 'warning':
         logging.getLogger().setLevel(logging.WARNING)
@@ -616,6 +609,14 @@ def daemon(output, log):
     # How often to check log sizes and backup all logs to SD card
     timerLogBackup = time.time() + 600  # 600 seconds = 10 minutes
     timerLogBackupCount = 0
+
+    for i in range(len(lcd_id)):
+        if lcd_pin[i] != '0':
+            global I2C_ADDR
+            I2C_ADDR = int(lcd_pin[i], 16)
+            lcd_byte(0x01, LCD_CMD)
+            lcd_string_write('  Mycodo 3.5.x  ',LCD_LINE_1) 
+            lcd_string_write('  {} Starting '.format(lcd_pin[i]),LCD_LINE_2) 
 
     while True:  # Main loop of the daemon
         # Wait for and pause the daemon while the SQL database is reloaded
@@ -760,12 +761,12 @@ def daemon(output, log):
                 
                 if lcd_line_top[i] != '':
                     if lcd_line_top[i][0] == 'last' and lcd_line_top[i][1] == 'measurement':
-                        lcd_string_top = time.strftime("%d/%m %I:%M:%S")
+                        lcd_string_top = time.strftime("%m/%d %I:%M:%S")
                     else:
                         lcd_string_top = lcd_string_generate(lcd_line_top[i], 1)
                 if lcd_line_bottom[i] != '':
                     if lcd_line_bottom[i][0] == 'last' and lcd_line_bottom[i][1] == 'measurement':
-                        lcd_string_bottom = time.strftime("%d/%m %I:%M:%S")
+                        lcd_string_bottom = time.strftime("%m/%d %I:%M:%S")
                     else:
                         lcd_string_bottom = lcd_string_generate(lcd_line_bottom[i], 1)
 
@@ -4523,8 +4524,9 @@ except:
     logging.exception(1)
 finally:
     for i in range(len(lcd_id)):
-        global I2C_ADDR
-        I2C_ADDR = int(lcd_pin[i], 16)
-        lcd_byte(0x01, LCD_CMD)
-        lcd_string_write('  Mycodo Deamon ',LCD_LINE_1) 
-        lcd_string_write('    Shut Down   ',LCD_LINE_2) 
+        if lcd_pin[i] != '0':
+            global I2C_ADDR
+            I2C_ADDR = int(lcd_pin[i], 16)
+            lcd_byte(0x01, LCD_CMD)
+            lcd_string_write('  Mycodo Deamon ',LCD_LINE_1) 
+            lcd_string_write('    Shut Down   ',LCD_LINE_2) 
