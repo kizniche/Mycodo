@@ -127,11 +127,14 @@ LCD_CMD = 0 # Mode - SenLCDding command
 E_DELAY = 0.0005 # write delay
 
 # Setup I2C bus
-if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
-    I2C_bus_number = 1
-else:
-    I2C_bus_number = 0
-bus = smbus.SMBus(I2C_bus_number)
+try:
+    if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
+        I2C_bus_number = 1
+    else:
+        I2C_bus_number = 0
+    bus = smbus.SMBus(I2C_bus_number)
+except Exception as except_msg:
+    print("Could not initialize I2C bus: {}".format(except_msg))
 
 
 # Threaded server that receives commands from mycodo-client.py
