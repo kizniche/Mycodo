@@ -2273,7 +2273,7 @@ def read_t(sensor_id, device, pin):
                 temp_string = lines[1][equals_pos + 2:]
                 temperature = float(temp_string) / 1000.0
         except Exception as msg:
-            logging.debug("[Read T Sensor-%s] Could not read DS18B20: %s", sensor_id + 1, msg)
+            logging.debug("[Read T Sensor-{}] Could not read DS18B20: {}".format(sensor_id + 1, msg))
     else:
         logging.debug("[Read T Sensor-%s] Device not recognized: %s", sensor_id + 1, device)
 
