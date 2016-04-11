@@ -617,9 +617,12 @@ def daemon(output, log):
         if lcd_pin[i] != '0':
             global I2C_ADDR
             I2C_ADDR = int(lcd_pin[i], 16)
-            lcd_byte(0x01, LCD_CMD)
-            lcd_string_write('  Mycodo 3.5.x  ',LCD_LINE_1) 
-            lcd_string_write('  {} Starting '.format(lcd_pin[i]),LCD_LINE_2) 
+            try:
+                lcd_byte(0x01, LCD_CMD)
+                lcd_string_write('  Mycodo 3.5.x  ',LCD_LINE_1) 
+                lcd_string_write('  {} Starting '.format(lcd_pin[i]),LCD_LINE_2)
+            except Exception as msg:
+                logging.debug("[LCD {}] Could not start LCD".format(lcd_id[i]))
 
     while True:  # Main loop of the daemon
         # Wait for and pause the daemon while the SQL database is reloaded
@@ -773,12 +776,15 @@ def daemon(output, log):
                     else:
                         lcd_string_bottom = lcd_string_generate(lcd_line_bottom[i], 1)
 
-                lcd_init()
+                try:
+                    lcd_init()
 
-                if lcd_line_top[i] != '':
-                    lcd_string_write(lcd_string_top,LCD_LINE_1) 
-                if lcd_line_bottom[i] != '':
-                    lcd_string_write(lcd_string_bottom,LCD_LINE_2)
+                    if lcd_line_top[i] != '':
+                        lcd_string_write(lcd_string_top,LCD_LINE_1) 
+                    if lcd_line_bottom[i] != '':
+                        lcd_string_write(lcd_string_bottom,LCD_LINE_2)
+                except Exception as msg:
+                    logging.debug("[LCD {}] Could not write to LCD".format(lcd_id[i]))
 
                 timer_lcds[i] = time.time() + lcd_period[i]
 
@@ -4530,6 +4536,9 @@ finally:
         if lcd_pin[i] != '0':
             global I2C_ADDR
             I2C_ADDR = int(lcd_pin[i], 16)
-            lcd_byte(0x01, LCD_CMD)
-            lcd_string_write('  Mycodo Deamon ',LCD_LINE_1) 
-            lcd_string_write('    Shut Down   ',LCD_LINE_2) 
+            try:
+                lcd_byte(0x01, LCD_CMD)
+                lcd_string_write('  Mycodo Deamon ',LCD_LINE_1) 
+                lcd_string_write('    Shut Down   ',LCD_LINE_2)
+            except Exception as msg:
+                logging.debug("[LCD {}] Could not write to LCD".format(lcd_id[i]))
