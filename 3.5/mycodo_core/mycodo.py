@@ -622,7 +622,7 @@ def daemon(output, log):
                 lcd_string_write('  Mycodo 3.5.x  ',LCD_LINE_1) 
                 lcd_string_write('  {} Starting '.format(lcd_pin[i]),LCD_LINE_2)
             except Exception as msg:
-                logging.debug("[LCD {}] Could not start LCD".format(lcd_id[i]))
+                logging.debug("[LCD {}] Could not write to LCD: {}".format(lcd_id[i], msg))
 
     while True:  # Main loop of the daemon
         # Wait for and pause the daemon while the SQL database is reloaded
@@ -784,7 +784,7 @@ def daemon(output, log):
                     if lcd_line_bottom[i] != '':
                         lcd_string_write(lcd_string_bottom,LCD_LINE_2)
                 except Exception as msg:
-                    logging.debug("[LCD {}] Could not write to LCD".format(lcd_id[i]))
+                    logging.debug("[LCD {}] Could not write to LCD: {}".format(lcd_id[i], msg))
 
                 timer_lcds[i] = time.time() + lcd_period[i]
 
@@ -4541,4 +4541,4 @@ finally:
                 lcd_string_write('  Mycodo Deamon ',LCD_LINE_1) 
                 lcd_string_write('    Shut Down   ',LCD_LINE_2)
             except Exception as msg:
-                logging.debug("[LCD {}] Could not write to LCD".format(lcd_id[i]))
+                logging.debug("[LCD {}] Could not write to LCD: {}".format(lcd_id[i], msg))
