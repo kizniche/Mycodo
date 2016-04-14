@@ -2257,7 +2257,7 @@ def read_t(sensor_id, device, pin):
         except Exception as msg:
             logging.debug("[Read T Sensor-{}] Could not read DS18B20: {}".format(int(sensor_id) + 1, msg))
     else:
-        logging.debug("[Read T Sensor-{}] Device not recognized: {}".format(int(sensor_id) + 1, device)
+        logging.debug("[Read T Sensor-{}] Device not recognized: {}".format(int(sensor_id) + 1, device))
 
     last_t_reading = time.time() + 2
     return temperature
