@@ -2253,7 +2253,7 @@ def read_t(sensor_id, device, pin):
         temperature = rpi_tempf / 1000  # Temperature in Celsius
     elif device in 'DS18B20':
         try:
-            temperature = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, pin).get_temperature()
+            temperature = float(W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, pin).get_temperature())
         except Exception as msg:
             logging.debug("[Read T Sensor-{}] Could not read DS18B20: {}".format(sensor_id, msg))
     else:
