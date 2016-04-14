@@ -4356,7 +4356,7 @@ def lcd_string_generate(lcd_line_string, metric):
         if sensor_t_id[j] == sensor_id:
             sensor_name = sensor_t_name[j]
             if measurement_type == 'Temperature':
-                measurement_value = str(format(read_t(sensor_t_id[j], sensor_t_device[j], sensor_t_pin[j]), '.2f'))
+                measurement_value = "{:.2f}".format(read_t(sensor_t_id[j], sensor_t_device[j], sensor_t_pin[j]))
                 measurement_unit = ' C'
     for j in range(len(sensor_ht_id)):
         if sensor_ht_id[j] == sensor_id:
