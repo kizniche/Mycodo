@@ -4363,7 +4363,7 @@ def lcd_string_generate(lcd_line_string, metric):
     for j in range(len(sensor_ht_id)):
         if sensor_ht_id[j] == sensor_id:
             sensor_name = sensor_ht_name[j]
-            temperature, humidity = read_ht(sensor_ht_id[j], sensor_ht_device[j], sensor_ht_pin[j], sensor_ht_clock_pin[j], sensor_ht_voltage[j])
+            humidity, temperature = read_ht(sensor_ht_id[j], sensor_ht_device[j], sensor_ht_pin[j], sensor_ht_clock_pin[j], sensor_ht_voltage[j])
             if measurement_type == 'Temperature':
                 measurement_value = str(format(temperature, '.2f'))
                 measurement_unit = ' C'
