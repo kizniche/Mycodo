@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% set active_page = "settings" %}
+
+{% block head %}
+  <link href="/static/css/dashboard.css" rel="stylesheet">
+  <script>
+    $(document).ready(function(){
+      $('input[title]').tooltip({placement:'bottom'});
+    })
+    $(document).ready(function() {
+      $('[data-toggle=offcanvas]').click(function() {
+        $('.row-offcanvas').toggleClass('active');
+      });
+    });
+  </script>
+{% endblock %} 
+
+{% block body %}
+
+  {% set navigation_bar_left1 = [
+    ('/settings/general', 'general', 'General'),
+    ('/settings/users', 'users', 'Users'),
+    ('/settings/alerts', 'alerts', 'Alerts')
+  ] -%}
+
+  {% set navigation_bar_left2 = [
+    ('/settings/camera', 'camera', 'Camera')
+  ] -%}
+
+  {% set active_settings = active_settings|default('users') -%}
+
+  <div class="container-fluid">
+    <div class="row row-offcanvas row-offcanvas-left">
+      <div class="col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
+        <ul class="nav nav-sidebar">
+        {% for href, id, caption in navigation_bar_left1 %}
+          <li{% if id == active_settings %} class="active"{% endif %}><a href="{{href|e}}">{{caption|e}}</a></li>
+        {% endfor %}
+        </ul>
+        <ul class="nav nav-sidebar">
+        {% for href, id, caption in navigation_bar_left2 %}
+          <li{% if id == active_settings %} class="active"{% endif %}><a href="{{href|e}}">{{caption|e}}</a></li>
+        {% endfor %}
+        </ul>
+      </div><!--/span-->
+      <div class="col-sm-9 col-md-10 main">
+        <!--toggle sidebar button-->
+        <p class="visible-xs">
+          <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas"><i class="glyphicon glyphicon-chevron-left"></i></button>
+        </p>
+
+        {% include 'flash_messages.html' %}
+
+        {% block settings %}{% endblock %}
+
+      </div><!--/row-->
+    </div>
+  </div><!--/.container-->
+
+{% endblock %}

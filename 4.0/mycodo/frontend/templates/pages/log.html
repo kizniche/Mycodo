@@ -1,0 +1,155 @@
+{% extends "layout.html" %}
+{% set active_page = "log" %}
+{% block title %} - Logs{% endblock %}
+
+{% block body %}
+
+  <div class="container">
+   {% include 'flash_messages.html' %}
+
+    <div class="form-inline" style="padding-bottom:1em">
+      <form method="post" action="/log">
+        <input type="hidden" name="form-name" value="addLog">
+        {{formLog.csrf_token}}
+        <div class="form-group">
+          {{formLog.name.label(class_='control-label')}}
+          <div>
+            {{formLog.name(class_='form-control')}}
+          </div>
+        </div>
+        <div class="form-group">
+          {{formLog.sensorMeasurement.label(class_='control-label')}}
+          <div>
+            <select class="form-control" id="sensorMeasurement" name="sensorMeasurement">
+              {%- for each_sensor in sensor -%}
+                {%- if each_sensor.device_type == 'tsensor' -%}
+                  <option value="{{each_sensor.id}},temperature">{{each_sensor.id}} ({{each_sensor.name}}) Temperature</option>
+                {%- elif each_sensor.device_type == 'htsensor' -%}
+                  <option value="{{each_sensor.id}},temperature">{{each_sensor.id}} ({{each_sensor.name}}) Temperature</option>
+                  <option value="{{each_sensor.id}},humidity">{{each_sensor.id}} ({{each_sensor.name}}) Humidity</option>
+                {%- elif each_sensor.device_type == 'co2sensor' -%}
+                  <option value="{{each_sensor.id}},co2">{{each_sensor.id}} ({{each_sensor.name}}) CO2</option>
+                {%- elif each_sensor.device_type == 'presssensor' -%}
+                  <option value="{{each_sensor.id}},temperature">{{each_sensor.id}} ({{each_sensor.name}}) Temperature</option>
+                  <option value="{{each_sensor.id}},pressure">{{each_sensor.id}} ({{each_sensor.name}}) Pressure</option>
+                  <option value="{{each_sensor.id}},altitude">{{each_sensor.id}} ({{each_sensor.name}}) Altitude</option>
+                {%- endif -%}
+              {%- endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          {{formLog.period.label(class_='control-label')}}
+          <div>
+            {{formLog.period(class_='form-control', value=0, **{'size':'6'})}}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class='control-label'></label>
+          <div>
+            {{formLog.logCreate(class_='form-control btn btn-default')}}
+          </div>
+        </div>
+      </form>
+    </div>
+
+    {%- if displayOrder -%}
+    {%- for order in displayOrder -%}
+      {% for each_log in log if each_log.id in order %}
+
+        <div class="form-inline {% if each_log.activated -%}active-background{%- else -%}inactive-background{% endif -%}" style="margin-top: 1em; padding: 0.5em; border: 2px solid #ddd; border-radius: 5px;">
+          <form method="post" action="/log">
+            <input type="hidden" name="form-name" value="modLog">
+            {{formLog.csrf_token}}
+            {{formLog.log_id(class_='form-control', value=each_log.id)}}
+            <div>
+              {%- if each_log.activated %}
+                <div class="form-group">
+                  {{formLog.deactivate(class_='form-control btn btn-default')}}
+                </div>
+              {%- else %}
+                <div class="form-group">
+                  {{formLog.activate(class_='form-control btn btn-default')}}
+                </div>
+              {%- endif %}
+              <div class="form-group">
+                ID {{each_log.id}}
+              </div>
+              <div class="form-group pull-right">
+                Reorder 
+                <div class="form-group">
+                  {{formLog.orderLogUp(class_='form-control btn btn-default')}}
+                </div>
+                <div class="form-group">
+                  {{formLog.orderLogDown(class_='form-control btn btn-default')}}
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              {{formLog.name.label(class_='control-label')}}
+              <div>
+                {{formLog.name(class_='form-control', value=each_log.name)}}
+              </div>
+            </div>
+            <div class="form-group">
+              {{formLog.sensorMeasurement.label(class_='control-label')}}
+              <div>
+                <select class="form-control" id="sensorMeasurement" name="sensorMeasurement">
+                  <option value=""{% if each_log.sensor_id == '' or each_log.measure_type == '' %} selected{% endif %}></option>
+                  {%- for each_sensor in sensor -%}
+                    {%- if each_sensor.device_type == 'tsensor' -%}
+                      <option value="{{each_sensor.id}},temperature"{% if each_log.sensor_id == each_sensor.id and each_log.measure_type == 'temperature'  %} selected{% endif %}>{{each_sensor.id}} ({{each_sensor.name}}) Temperature</option>
+                    {%- elif each_sensor.device_type == 'htsensor' -%}
+                      <option value="{{each_sensor.id}},temperature"{% if each_log.sensor_id == each_sensor.id and each_log.measure_type == 'temperature'  %} selected{% endif %}>{{each_sensor.id}} ({{each_sensor.name}}) Temperature</option>
+                      <option value="{{each_sensor.id}},humidity"{% if each_log.sensor_id == each_sensor.id and each_log.measure_type == 'humidity'  %} selected{% endif %}>{{each_sensor.id}} ({{each_sensor.name}}) Humidity</option>
+                    {%- elif each_sensor.device_type == 'co2sensor' -%}
+                      <option value="{{each_sensor.id}},co2"{% if each_log.sensor_id == each_sensor.id and each_log.measure_type == 'co2'  %} selected{% endif %}>{{each_sensor.id}} ({{each_sensor.name}}) CO2</option>
+                    {%- elif each_sensor.device_type == 'presssensor' -%}
+                      <option value="{{each_sensor.id}},temperature"{% if each_log.sensor_id == each_sensor.id and each_log.measure_type == 'temperature'  %} selected{% endif %}>{{each_sensor.id}} ({{each_sensor.name}}) Temperature</option>
+                      <option value="{{each_sensor.id}},pressure"{% if each_log.sensor_id == each_sensor.id and each_log.measure_type == 'pressure'  %} selected{% endif %}>{{each_sensor.id}} ({{each_sensor.name}}) Pressure</option>
+                      <option value="{{each_sensor.id}},altitude"{% if each_log.sensor_id == each_sensor.id and each_log.measure_type == 'altitude'  %} selected{% endif %}>{{each_sensor.id}} ({{each_sensor.name}}) Altitude</option>
+                    {%- endif -%}
+                  {%- endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              {{formLog.period.label(class_='control-label')}}
+              <div>
+                {{formLog.period(class_='form-control', value=each_log.period, **{'size':'6'})}}
+              </div>
+            </div>
+            <div class="form-group">
+              <label></label>
+              <div style="padding-left:0.5em">
+                {%- if log_file_exists[each_log.id] -%}
+                  <a href="/dl/log/{{each_log.sensor_id}}-{{each_log.measure_type}}.log">Download Log</a>
+                {%- else -%}
+                  No File to Download
+                {%- endif -%}
+              </div>
+            </div>
+            <div class="form-group pull-right">
+              <div class="form-group">
+                <label class='control-label'></label>
+                <div>
+                  {{formLog.logMod(class_='form-control btn btn-default')}}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class='control-label'></label>
+                <div>
+                  {{formLog.logDel(class_='form-control btn btn-default')}}
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+      {%- endfor -%}
+    {%- endfor -%}
+    {%- endif -%}
+
+  </div>
+
+{% endblock %}

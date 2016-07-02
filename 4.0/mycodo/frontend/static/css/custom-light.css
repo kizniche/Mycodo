@@ -1,0 +1,11 @@
+/*
+/ Custom Light CSS
+*/
+
+.active-background {
+    background-color: #B3E2B6 !important
+}
+
+.inactive-background {
+    background-color: #FFCBCA !important
+}

@@ -1,0 +1,86 @@
+{% extends "settings.html" %}
+
+{% set active_page = "settings" %}
+{% set active_settings = "alerts" %}
+
+{% block title %} - Alerts Settings{% endblock %}
+
+{% block settings %}
+
+  {% for smtp_set in smtp %}
+    <h3 style="text-align: right; padding-bottom: 1.3em;">Email Notification</h3>
+
+    <form class="form-horizontal" method="post" action="/settings/alerts">
+      <input type="hidden" name="form-name" value="EmailAlert">
+      {{formEmailAlert.hidden_tag()}}
+      <div class="form-group">
+        {{formEmailAlert.smtpHost.label(class_='col-sm-4 control-label')}}
+        <div class="col-sm-8">
+          {{formEmailAlert.smtpHost(class_='form-control', value=smtp_set.host)}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{formEmailAlert.smtpPort.label(class_='col-sm-4 control-label')}}
+        <div class="col-sm-8">
+          {{formEmailAlert.smtpPort(class_='form-control',type="number", value=smtp_set.port,**{'title':'465 for SSL, 587 for TSL'})}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{formEmailAlert.sslEnable.label(class_='col-sm-4 control-label')}}
+        <div class="col-sm-8">
+          {%- if smtp_set.ssl == 1 -%}
+            {{formEmailAlert.sslEnable(checked=True)}}
+          {%- else -%}
+            {{formEmailAlert.sslEnable()}}
+          {%- endif -%}
+          &nbsp;&nbsp;(unchecked for TSL)
+        </div>
+      </div>
+      <div class="form-group">
+        {{formEmailAlert.smtpUser.label(class_='col-sm-4 control-label')}}
+        <div class="col-sm-8">
+          {{formEmailAlert.smtpUser(class_='form-control', value=smtp_set.user,**{'title':'Usually your full email address'})}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{formEmailAlert.smtpPassword.label(class_='col-sm-4 control-label')}}
+        <div class="col-sm-8">
+          {{formEmailAlert.smtpPassword(class_='form-control',**{'title':'Only enter a password here if you wish to change it'})}} 
+        </div>
+      </div>
+      <div class="form-group">
+        {{formEmailAlert.smtpFromEmail.label(class_='col-sm-4 control-label')}}
+        <div class="col-sm-8">
+          {{formEmailAlert.smtpFromEmail(class_='form-control', value=smtp_set.email_from)}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{formEmailAlert.smtpMaxPerHour.label(class_='col-sm-4 control-label')}}
+        <div class="col-sm-8">
+          {{formEmailAlert.smtpMaxPerHour(class_='form-control',type="number", value=smtp_set.hourly_max,**{'title':'Maximum number of alerts that can be emailed per hour.'})}}
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-4 col-sm-8">
+          {{formEmailAlert.smtpSubmit(class_='btn btn-default')}}
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-4 col-sm-8">
+          <div>
+            <div class="pull-left" style="margin-right:5px">
+              {{formEmailAlert.sendTestEmail(class_='btn btn-default')}}
+            </div>
+            <div>
+              <div class="input-group">
+                {{formEmailAlert.testEmailTo(class_='form-control')}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  {% endfor %}
+
+{% endblock %}

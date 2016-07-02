@@ -1,0 +1,13 @@
+[Unit]
+Description=Mycodo server
+After=syslog.target network.target influxd.service
+
+[Service]
+Type=forking
+ExecStart=/var/www/mycodo/mycodo/mycodo_daemon.py
+ExecStop=/var/www/mycodo/mycodo/mycodo_client.py -t
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target
+Alias=mycodo.service

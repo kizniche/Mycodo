@@ -1,0 +1,35 @@
+alembic
+argparse
+bcrypt
+daemonize == 2.4.6
+Flask == 0.11
+Flask_InfluxDB == 0.1
+Flask_WTF == 0.12
+geocoder == 1.15.0
+influxdb == 2.12.0
+lockfile == 0.12.2
+picamera == 1.10
+pyserial == 3.1
+python-dateutil
+RPi.GPIO
+rpyc == 3.3.0
+sht-sensor == 16.2.0
+SQLAlchemy == 1.0.13
+tentacle_pi == 0.6.2
+w1thermsensor == 0.3.1
+WTForms == 2.1
+
+#MCP342x
+-e git://github.com/stevemarple/python-MCP342x.git#egg=MCP342x
+
+#Adafruit_GPIO
+-e git://github.com/adafruit/Adafruit_Python_GPIO.git#egg=Adafruit_GPIO
+
+#Adafruit_TMP
+-e git://github.com/adafruit/Adafruit_Python_TMP.git#egg=Adafruit_TMP
+
+#Adafruit_DHT
+-e git://github.com/adafruit/Adafruit_Python_DHT.git#egg=Adafruit_DHT
+
+#Adafruit_BMP
+-e git://github.com/adafruit/Adafruit_Python_BMP.git#egg=Adafruit_BMP

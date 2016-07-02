@@ -1,0 +1,320 @@
+{% extends "layout.html" %}
+{% set active_page = "lcd" %}
+{% block title %} - LCD{% endblock %}
+
+{% block body %}
+
+  <div class="container">
+  {% include 'flash_messages.html' %}
+
+  <form class="form-inline" method="post" action="/lcd">
+    <input type="hidden" name="form-name" value="addLCD">
+    {{formAddLCD.hidden_tag()}}
+    <div class="form-group">
+      {{formAddLCD.numberLCDs(class_='form-control',type="number",**{'rel':'tooltip','title':'How many LCD controllers to add'})}}
+    </div>
+    <div class="form-group">
+      {{formAddLCD.lcdAddSubmit(class_='form-control btn btn-default')}}
+    </div>
+  </form>
+
+  <div style="clear: both; padding:1em 0;"></div>
+
+    {%- if displayOrder -%}
+    {%- for order in displayOrder -%}
+      {%- for each_lcd in lcd if each_lcd.id in order-%}
+
+        <div class="table-responsive" style="border: 2px solid #ddd; border-radius: 5px;">
+          <table class="table {% if each_lcd.activated -%}active-background{%- else -%}inactive-background{% endif -%}">
+            <tr>
+              <th rowspan="2" class="col-sm-2">
+                {%- if each_lcd.activated %}
+                  <form method="post" action="/lcd">
+                    <input type="hidden" name="form-name" value="deactivateLCD">
+                    {{formDeactivateLCD.csrf_token}}
+                    {{formDeactivateLCD.deactivateLCD_id(value=each_lcd.id)}}
+                    {{formDeactivateLCD.deactivateLCDSubmit(class_='form-control btn btn-default')}}
+                  </form>
+                {%- else %}
+                  <form method="post" action="/lcd">
+                    <input type="hidden" name="form-name" value="activateLCD">
+                    {{formActivateLCD.csrf_token}}
+                    {{formActivateLCD.activateLCD_id(value=each_lcd.id)}}
+                    {{formActivateLCD.activateLCDSubmit(class_='form-control btn btn-default')}}
+                  </form>
+                {%- endif -%}
+                <form method="post" action="/lcd">
+                  <input type="hidden" name="form-name" value="delLCD">
+                  {{formDelLCD.csrf_token}}
+                  {{formDelLCD.delLCD_id(value=each_lcd.id)}}
+                  {{formDelLCD.delLCDSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this LCD controller?")'})}}
+                </form>
+              </th>
+              <th rowspan="2" class="col-sm-2">
+                <form method="post" action="/lcd">
+                  <input type="hidden" name="form-name" value="orderLCD">
+                  {{formOrderLCD.csrf_token}}
+                  {{formOrderLCD.orderLCD_id(value=each_lcd.id)}}
+                  {{formOrderLCD.orderLCDUp(class_='form-control btn btn-default')}}
+                  {{formOrderLCD.orderLCDDown(class_='form-control btn btn-default')}}
+                </form>
+              </th>
+              <th rowspan="2" class="col-sm-2">
+                <form method="post" action="/lcd">
+                  <input type="hidden" name="form-name" value="resetFlashingLCD">
+                  {{formResetFlashingLCD.csrf_token}}
+                  {{formResetFlashingLCD.flashLCD_id(value=each_lcd.id)}}
+                  {{formResetFlashingLCD.Submit(class_='form-control btn btn-default')}}
+                </form>
+                <form method="post" action="/lcd">
+                <input type="hidden" name="form-name" value="modLCD">
+                {{formModLCD.csrf_token}}
+                {{formModLCD.modLCD_id(value=each_lcd.id)}}
+                {{formModLCD.modLCDSubmit(class_='form-control btn btn-default')}}
+              </th>
+              <th class="col-sm-6">
+                {{formModLCD.modName(class_='form-control', value=each_lcd.name)}}
+              </th>
+            </tr>
+            <tr>
+              <td>ID {{each_lcd.id}}</td>
+            </tr>
+          </table>
+          <table class="table">
+            <tr>
+              <td class="col-sm-1">LCD Type</td>
+              <td class="col-sm-1">LCD I<sup>2</sup>C Address</td>
+              <td class="col-sm-1">Multiplexer I<sup>2</sup>C Address</td>
+              <td class="col-sm-1">Multiplexer Channel</td>
+              <td class="col-sm-1">Period (sec)</td>
+            </tr>
+            <tr>
+              <td>
+                <select class="form-control" id="modLCDType" name="modLCDType">
+                  <option value="16x2"{% if each_lcd.x_characters == 16 and each_lcd.y_lines == 2 %} selected{% endif %}>16x2</option>
+                  <option value="20x4"{% if each_lcd.x_characters == 20 and each_lcd.y_lines == 4 %} selected{% endif %}>20x4</option>
+                </select>
+              </td>
+              <td>
+                <select class="form-control" id="modPin" name="modPin">
+                  {%- for address in range(0, 8) %}
+                    <option value="2{{address}}"{% if each_lcd.pin == (20 + address)|string %} selected{% endif %}>0x2{{address}}</option>
+                  {%- endfor %}
+                </select>
+              </td>
+              <td>
+                <select class="form-control" id="modMultiplexAddress" name="modMultiplexAddress">
+                  <option value=""{% if each_lcd.multiplexer_address == '0' %} selected{% endif %}></option>
+                  <option value="0x70"{% if each_lcd.multiplexer_address == '0x70' %} selected{% endif %}>0x70</option>
+                  <option value="0x71"{% if each_lcd.multiplexer_address == '0x71' %} selected{% endif %}>0x71</option>
+                  <option value="0x72"{% if each_lcd.multiplexer_address == '0x72' %} selected{% endif %}>0x72</option>
+                  <option value="0x73"{% if each_lcd.multiplexer_address == '0x73' %} selected{% endif %}>0x73</option>
+                  <option value="0x74"{% if each_lcd.multiplexer_address == '0x74' %} selected{% endif %}>0x74</option>
+                  <option value="0x75"{% if each_lcd.multiplexer_address == '0x75' %} selected{% endif %}>0x75</option>
+                  <option value="0x76"{% if each_lcd.multiplexer_address == '0x76' %} selected{% endif %}>0x76</option>
+                  <option value="0x77"{% if each_lcd.multiplexer_address == '0x77' %} selected{% endif %}>0x77</option>
+                </select>
+              </td>
+              <td>
+                <select class="form-control" id="modMultiplexChannel" name="modMultiplexChannel">
+                  <option value="0"{% if each_lcd.multiplexer_channel == 0 %} selected{% endif %}></option>
+                  <option value="1"{% if each_lcd.multiplexer_channel == 1 %} selected{% endif %}>1</option>
+                  <option value="2"{% if each_lcd.multiplexer_channel == 2 %} selected{% endif %}>2</option>
+                  <option value="3"{% if each_lcd.multiplexer_channel == 3 %} selected{% endif %}>3</option>
+                  <option value="4"{% if each_lcd.multiplexer_channel == 4 %} selected{% endif %}>4</option>
+                  <option value="5"{% if each_lcd.multiplexer_channel == 5 %} selected{% endif %}>5</option>
+                  <option value="6"{% if each_lcd.multiplexer_channel == 6 %} selected{% endif %}>6</option>
+                  <option value="7"{% if each_lcd.multiplexer_channel == 7 %} selected{% endif %}>7</option>
+                  <option value="8"{% if each_lcd.multiplexer_channel == 8 %} selected{% endif %}>8</option>
+                </select>
+              </td>
+              <td>
+                {{formModLCD.modPeriod(class_='form-control', value=each_lcd.period)}}
+              </td>
+            </tr>
+          </table>
+          <table class="table">
+            <tr>
+              {%- if each_lcd.y_lines == 4 -%}
+                <td class="col-sm-1">Display Line 1</td>
+                <td class="col-sm-1">Display Line 2</td>
+                <td class="col-sm-1">Display Line 3</td>
+                <td class="col-sm-1">Display Line 4</td>
+              {%- else -%}
+                <td class="col-sm-1">Display Line 1</td>
+                <td class="col-sm-1">Display Line 2</td>
+              {%- endif -%}
+            </tr>
+            <tr>
+              <td>
+                <select class="form-control" id="modLine1SensorIDMeasurement" name="modLine1SensorIDMeasurement">
+                  <option value=""{% if each_lcd.line_1_sensor_id == '' or each_lcd.line_1_measurement == '' %} selected{% endif %}></option>
+                  {%- for each_sensor in sensor -%}
+                    {%- if each_sensor.device_type == 'tsensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},temperature"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'temperature' %} selected{% endif %}>Sensor {{each_sensor.device}} Temperature: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- elif each_sensor.device_type == 'tmpsensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},temperature_object"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'temperature_object' %} selected{% endif %}>Sensor {{each_sensor.device}} Temperature (Object): {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},temperature_die"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'temperature_die' %} selected{% endif %}>Sensor {{each_sensor.device}} Temperature (Die): {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- elif each_sensor.device_type == 'htsensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},temperature"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'temperature' %} selected{% endif %}>Sensor {{each_sensor.device}} Temperature: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},humidity"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'humidity' %} selected{% endif %}>Sensor {{each_sensor.device}} Humidity: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- elif each_sensor.device_type == 'co2sensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},co2"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'co2' %} selected{% endif %}>Sensor {{each_sensor.device}} CO2: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- elif each_sensor.device_type == 'luxsensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},lux"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'lux' %} selected{% endif %}>Sensor {{each_sensor.device}} Luminosity: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- elif each_sensor.device_type == 'presssensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},temperature"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'temperature' %} selected{% endif %}>Sensor {{each_sensor.device}} Temperature: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},pressure"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'pressure' %} selected{% endif %}>Sensor {{each_sensor.device}} Pressure: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},altitude"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'altitude' %} selected{% endif %}>Sensor {{each_sensor.device}} Altitude: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- endif -%}
+                  {%- endfor %}
+                  {%- for each_pid in pid -%}
+                    <option value="{{each_pid.id}},pid_time"{% if each_lcd.line_1_sensor_id == each_pid.id and each_lcd.line_1_measurement == 'pid_time' %} selected{% endif %}>PID Time: {{each_pid.id}} ({{each_pid.name}})</option>
+                    <option value="{{each_pid.id}},setpoint"{% if each_lcd.line_1_sensor_id == each_pid.id and each_lcd.line_1_measurement == 'setpoint' %} selected{% endif %}>PID Setpoint: {{each_pid.id}} ({{each_pid.name}})</option>
+                  {%- endfor %}
+                  {%- for each_relay in relay -%}
+                    <option value="{{each_relay.id}},relay_time"{% if each_lcd.line_1_sensor_id == each_relay.id and each_lcd.line_1_measurement == 'relay_time' %} selected{% endif %}>Relay Time: {{each_relay.id}} ({{each_relay.name}})</option>
+                    <option value="{{each_relay.id}},duration_sec"{% if each_lcd.line_1_sensor_id == each_relay.id and each_lcd.line_1_measurement == 'duration_sec' %} selected{% endif %}>Relay Duration: {{each_relay.id}} ({{each_relay.name}})</option>
+                    <option value="{{each_relay.id}},relay_state"{% if each_lcd.line_1_sensor_id == each_relay.id and each_lcd.line_1_measurement == 'relay_state' %} selected{% endif %}>Relay State: {{each_relay.id}} ({{each_relay.name}})</option>
+                  {%- endfor %}
+                </select>
+              </td>
+              <td>
+                <select class="form-control" id="modLine2SensorIDMeasurement" name="modLine2SensorIDMeasurement">
+                  <option value=""{% if each_lcd.line_2_sensor_id == '' or each_lcd.line_2_measurement == '' %} selected{% endif %}></option>
+                  {%- for each_sensor in sensor -%}
+                    {%- if each_sensor.device_type == 'tsensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_2_sensor_id == each_sensor.id and each_lcd.line_2_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},temperature"{% if each_lcd.line_2_sensor_id == each_sensor.id and each_lcd.line_2_measurement == 'temperature' %} selected{% endif %}>Sensor {{each_sensor.device}} Temperature: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- elif each_sensor.device_type == 'tmpsensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},temperature_object"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'temperature_object' %} selected{% endif %}>Sensor {{each_sensor.device}} Temperature (Object): {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},temperature_die"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'temperature_die' %} selected{% endif %}>Sensor {{each_sensor.device}} Temperature (Die): {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- elif each_sensor.device_type == 'htsensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_2_sensor_id == each_sensor.id and each_lcd.line_2_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},temperature"{% if each_lcd.line_2_sensor_id == each_sensor.id and each_lcd.line_2_measurement == 'temperature' %} selected{% endif %}>Sensor {{each_sensor.device}} Temperature: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},humidity"{% if each_lcd.line_2_sensor_id == each_sensor.id and each_lcd.line_2_measurement == 'humidity' %} selected{% endif %}>Sensor {{each_sensor.device}} Humidity: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- elif each_sensor.device_type == 'co2sensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_2_sensor_id == each_sensor.id and each_lcd.line_2_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},co2"{% if each_lcd.line_2_sensor_id == each_sensor.id and each_lcd.line_2_measurement == 'co2' %} selected{% endif %}>Sensor {{each_sensor.device}} CO2: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- elif each_sensor.device_type == 'luxsensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_2_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},lux"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_2_measurement == 'lux' %} selected{% endif %}>Sensor {{each_sensor.device}} Luminosity: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- elif each_sensor.device_type == 'presssensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_2_sensor_id == each_sensor.id and each_lcd.line_2_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},temperature"{% if each_lcd.line_2_sensor_id == each_sensor.id and each_lcd.line_2_measurement == 'temperature' %} selected{% endif %}>Sensor {{each_sensor.device}} Temperature: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},pressure"{% if each_lcd.line_2_sensor_id == each_sensor.id and each_lcd.line_2_measurement == 'pressure' %} selected{% endif %}>Sensor {{each_sensor.device}} Pressure: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},altitude"{% if each_lcd.line_2_sensor_id == each_sensor.id and each_lcd.line_2_measurement == 'altitude' %} selected{% endif %}>Sensor {{each_sensor.device}} Altitude: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- endif -%}
+                  {%- endfor %}
+                  {%- for each_pid in pid -%}
+                    <option value="{{each_pid.id}},pid_time"{% if each_lcd.line_2_sensor_id == each_pid.id and each_lcd.line_2_measurement == 'pid_time' %} selected{% endif %}>PID Time: {{each_pid.id}} ({{each_pid.name}})</option>
+                    <option value="{{each_pid.id}},setpoint"{% if each_lcd.line_2_sensor_id == each_pid.id and each_lcd.line_2_measurement == 'setpoint' %} selected{% endif %}>PID Setpoint: {{each_pid.id}} ({{each_pid.name}})</option>
+                  {%- endfor %}
+                  {%- for each_relay in relay -%}
+                    <option value="{{each_relay.id}},relay_time"{% if each_lcd.line_2_sensor_id == each_relay.id and each_lcd.line_2_measurement == 'relay_time' %} selected{% endif %}>Relay Time: {{each_relay.id}} ({{each_relay.name}})</option>
+                    <option value="{{each_relay.id}},duration_sec"{% if each_lcd.line_2_sensor_id == each_relay.id and each_lcd.line_2_measurement == 'duration_sec' %} selected{% endif %}>Relay Duration: {{each_relay.id}} ({{each_relay.name}})</option>
+                    <option value="{{each_relay.id}},relay_state"{% if each_lcd.line_2_sensor_id == each_relay.id and each_lcd.line_2_measurement == 'relay_state' %} selected{% endif %}>Relay State: {{each_relay.id}} ({{each_relay.name}})</option>
+                  {%- endfor %}
+                </select>
+              </td>
+              {%- if each_lcd.y_lines == 4 -%}
+                <td>
+                  <select class="form-control" id="modLine3SensorIDMeasurement" name="modLine3SensorIDMeasurement">
+                    <option value=""{% if each_lcd.line_3_sensor_id == '' or each_lcd.line_3_measurement == '' %} selected{% endif %}></option>
+                    {%- for each_sensor in sensor -%}
+                    {%- if each_sensor.device_type == 'tsensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_3_sensor_id == each_sensor.id and each_lcd.line_3_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},temperature"{% if each_lcd.line_3_sensor_id == each_sensor.id and each_lcd.line_3_measurement == 'temperature' %} selected{% endif %}>Sensor {{each_sensor.device}} Temperature: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- elif each_sensor.device_type == 'tmpsensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_3_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},temperature_object"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_3_measurement == 'temperature_object' %} selected{% endif %}>Sensor {{each_sensor.device}} Temperature (Object): {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},temperature_die"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_3_measurement == 'temperature_die' %} selected{% endif %}>Sensor {{each_sensor.device}} Temperature (Die): {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- elif each_sensor.device_type == 'htsensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_3_sensor_id == each_sensor.id and each_lcd.line_3_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},temperature"{% if each_lcd.line_3_sensor_id == each_sensor.id and each_lcd.line_3_measurement == 'temperature' %} selected{% endif %}>Sensor {{each_sensor.device}} Temperature: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},humidity"{% if each_lcd.line_3_sensor_id == each_sensor.id and each_lcd.line_3_measurement == 'humidity' %} selected{% endif %}>Sensor {{each_sensor.device}} Humidity: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- elif each_sensor.device_type == 'co2sensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_3_sensor_id == each_sensor.id and each_lcd.line_3_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},co2"{% if each_lcd.line_3_sensor_id == each_sensor.id and each_lcd.line_3_measurement == 'co2' %} selected{% endif %}>Sensor {{each_sensor.device}} CO2: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- elif each_sensor.device_type == 'luxsensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_3_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},lux"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_3_measurement == 'lux' %} selected{% endif %}>Sensor {{each_sensor.device}} Luminosity: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- elif each_sensor.device_type == 'presssensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_3_sensor_id == each_sensor.id and each_lcd.line_3_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},temperature"{% if each_lcd.line_3_sensor_id == each_sensor.id and each_lcd.line_3_measurement == 'temperature' %} selected{% endif %}>Sensor {{each_sensor.device}} Temperature: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},pressure"{% if each_lcd.line_3_sensor_id == each_sensor.id and each_lcd.line_3_measurement == 'pressure' %} selected{% endif %}>Sensor {{each_sensor.device}} Pressure: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},altitude"{% if each_lcd.line_3_sensor_id == each_sensor.id and each_lcd.line_3_measurement == 'altitude' %} selected{% endif %}>Sensor {{each_sensor.device}} Altitude: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- endif -%}
+                  {%- endfor %}
+                  {%- for each_pid in pid -%}
+                    <option value="{{each_pid.id}},pid_time"{% if each_lcd.line_3_sensor_id == each_pid.id and each_lcd.line_3_measurement == 'pid_time' %} selected{% endif %}>PID Time: {{each_pid.id}} ({{each_pid.name}})</option>
+                    <option value="{{each_pid.id}},setpoint"{% if each_lcd.line_3_sensor_id == each_pid.id and each_lcd.line_3_measurement == 'setpoint' %} selected{% endif %}>PID Setpoint: {{each_pid.id}} ({{each_pid.name}})</option>
+                  {%- endfor %}
+                  {%- for each_relay in relay -%}
+                    <option value="{{each_relay.id}},relay_time"{% if each_lcd.line_3_sensor_id == each_relay.id and each_lcd.line_3_measurement == 'relay_time' %} selected{% endif %}>Relay Time: {{each_relay.id}} ({{each_relay.name}})</option>
+                    <option value="{{each_relay.id}},duration_sec"{% if each_lcd.line_3_sensor_id == each_relay.id and each_lcd.line_3_measurement == 'duration_sec' %} selected{% endif %}>Relay Duration: {{each_relay.id}} ({{each_relay.name}})</option>
+                    <option value="{{each_relay.id}},relay_state"{% if each_lcd.line_3_sensor_id == each_relay.id and each_lcd.line_3_measurement == 'relay_state' %} selected{% endif %}>Relay State: {{each_relay.id}} ({{each_relay.name}})</option>
+                  {%- endfor %}
+                  </select>
+                </td>
+                <td>
+                  <select class="form-control" id="modLine4SensorIDMeasurement" name="modLine4SensorIDMeasurement">
+                    <option value=""{% if each_lcd.line_4_sensor_id == '' or each_lcd.line_4_measurement == '' %} selected{% endif %}></option>
+                    {%- for each_sensor in sensor -%}
+                    {%- if each_sensor.device_type == 'tsensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_4_sensor_id == each_sensor.id and each_lcd.line_4_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},temperature"{% if each_lcd.line_4_sensor_id == each_sensor.id and each_lcd.line_4_measurement == 'temperature' %} selected{% endif %}>Sensor {{each_sensor.device}} Temperature: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- elif each_sensor.device_type == 'tmpsensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_4_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},temperature_object"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_4_measurement == 'temperature_object' %} selected{% endif %}>Sensor {{each_sensor.device}} Temperature (Object): {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},temperature_die"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_4_measurement == 'temperature_die' %} selected{% endif %}>Sensor {{each_sensor.device}} Temperature (Die): {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- elif each_sensor.device_type == 'htsensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_4_sensor_id == each_sensor.id and each_lcd.line_4_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},temperature"{% if each_lcd.line_4_sensor_id == each_sensor.id and each_lcd.line_4_measurement == 'temperature' %} selected{% endif %}>Sensor {{each_sensor.device}} Temperature: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},humidity"{% if each_lcd.line_4_sensor_id == each_sensor.id and each_lcd.line_4_measurement == 'humidity' %} selected{% endif %}>Sensor {{each_sensor.device}} Humidity: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- elif each_sensor.device_type == 'co2sensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_4_sensor_id == each_sensor.id and each_lcd.line_4_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},co2"{% if each_lcd.line_4_sensor_id == each_sensor.id and each_lcd.line_4_measurement == 'co2' %} selected{% endif %}>Sensor {{each_sensor.device}} CO2: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- elif each_sensor.device_type == 'luxsensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_4_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},lux"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_4_measurement == 'lux' %} selected{% endif %}>Sensor {{each_sensor.device}} Luminosity: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- elif each_sensor.device_type == 'presssensor' -%}
+                      <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_4_sensor_id == each_sensor.id and each_lcd.line_4_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},temperature"{% if each_lcd.line_4_sensor_id == each_sensor.id and each_lcd.line_4_measurement == 'temperature' %} selected{% endif %}>Sensor {{each_sensor.device}} Temperature: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},pressure"{% if each_lcd.line_4_sensor_id == each_sensor.id and each_lcd.line_4_measurement == 'pressure' %} selected{% endif %}>Sensor {{each_sensor.device}} Pressure: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},altitude"{% if each_lcd.line_4_sensor_id == each_sensor.id and each_lcd.line_4_measurement == 'altitude' %} selected{% endif %}>Sensor {{each_sensor.device}} Altitude: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                    {%- endif -%}
+                  {%- endfor %}
+                  {%- for each_pid in pid -%}
+                    <option value="{{each_pid.id}},pid_time"{% if each_lcd.line_4_sensor_id == each_pid.id and each_lcd.line_4_measurement == 'pid_time' %} selected{% endif %}>PID Time: {{each_pid.id}} ({{each_pid.name}})</option>
+                    <option value="{{each_pid.id}},setpoint"{% if each_lcd.line_4_sensor_id == each_pid.id and each_lcd.line_4_measurement == 'setpoint' %} selected{% endif %}>PID Setpoint: {{each_pid.id}} ({{each_pid.name}})</option>
+                  {%- endfor %}
+                  {%- for each_relay in relay -%}
+                    <option value="{{each_relay.id}},relay_time"{% if each_lcd.line_4_sensor_id == each_relay.id and each_lcd.line_4_measurement == 'relay_time' %} selected{% endif %}>Relay Time: {{each_relay.id}} ({{each_relay.name}})</option>
+                    <option value="{{each_relay.id}},duration_sec"{% if each_lcd.line_4_sensor_id == each_relay.id and each_lcd.line_4_measurement == 'duration_sec' %} selected{% endif %}>Relay Duration: {{each_relay.id}} ({{each_relay.name}})</option>
+                    <option value="{{each_relay.id}},relay_state"{% if each_lcd.line_4_sensor_id == each_relay.id and each_lcd.line_4_measurement == 'relay_state' %} selected{% endif %}>Relay State: {{each_relay.id}} ({{each_relay.name}})</option>
+                  {%- endfor %}
+                  </select>
+                </td>
+              {%- endif -%}
+            </tr>
+          </table>
+          </form>
+        </div>
+
+        <div style="clear: both; padding:1em 0;"></div>
+
+      {%- endfor -%}
+    {%- endfor -%}
+    {%- endif -%}
+
+  </div>
+
+{% endblock %}
