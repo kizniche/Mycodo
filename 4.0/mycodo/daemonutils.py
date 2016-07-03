@@ -18,9 +18,10 @@ from influxdb import InfluxDBClient
 from lockfile import LockFile
 from sqlalchemy import func
 
+from config import ID_FILE
+from config import MYCODO_VERSION
 from config import SQL_DATABASE_MYCODO
 from config import SQL_DATABASE_USER
-from config import ID_FILE
 from config import STATS_CSV
 from config import STATS_INTERVAL
 from databases.mycodo_db.models import LCD
@@ -429,6 +430,7 @@ def recreate_stat_file():
                    ['id', stat_id],
                    ['next_send', time.time()+STATS_INTERVAL],
                    ['RPi_revision', get_pi_revision()],
+                   ['Mycodo_revision', MYCODO_VERSION],
                    ['country', 'None'],
                    ['daemon_startup_seconds', 0.0],
                    ['ram_use_mb', 0.0],
@@ -562,6 +564,8 @@ def send_stats(logger, host, port, user, password, dbname):
                     admin_count += 1
         add_update_stat(logger, 'num_users_admin', admin_count)
         add_update_stat(logger, 'num_users_guest', user_count-admin_count)
+
+        add_update_stat(logger, 'Mycodo_revision', MYCODO_VERSION)
 
         # Combine stats into list of dictionaries to be pushed to influxdb
         new_stats_dict = return_stat_file_dict()
