@@ -90,6 +90,7 @@ case "${1:-''}" in
             echo '0' > $INSTALL_DIRECTORY/.updating
         fi
         chown -LR mycodo.mycodo $INSTALL_DIRECTORY
+        chown -R mycodo.mycodo $INSTALL_DIRECTORY/../
         ln -snf $INSTALL_DIRECTORY /var/www/mycodo
 
         mkdir -p /var/log/mycodo
