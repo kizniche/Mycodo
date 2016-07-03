@@ -1,6 +1,4 @@
-# Mycodo 3.5 (experimental)
-
-This is an experimental branch of Mycodo. It is undergoing constant changes and may or may not work at any time (although it has matured somewhat and is relatively stable at the moment).
+# Mycodo 3.5 (2016)
 
 ## Requirements
 

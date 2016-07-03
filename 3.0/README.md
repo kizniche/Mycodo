@@ -1,4 +1,4 @@
-# Mycodo 3.0 (Stable)
+# Mycodo 3.0 (2015)
 
 ## Installation
 
