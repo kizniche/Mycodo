@@ -280,8 +280,8 @@
 		<p>If you need to restore a backup, do the following, changing the appropriate directory names with these commands, changing 'user' to your user name:
 
 		<pre>
-		sudo mv /home/user/Mycodo/4.0 /home/user/Mycodo/4.0_old
-		sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo/4.0
+		sudo mv /home/user/Mycodo /home/user/Mycodo_old
+		sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
 		sudo service mycodo restart
 		sudo /etc/init.d/apache2 restart
 		</pre>

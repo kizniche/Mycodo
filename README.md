@@ -63,6 +63,7 @@ Originally developed for cultivating gourmet mushrooms, its use has since broade
 
 * Add graph export options (width, height, scale)
 * Create custom log from influxdb query
+* Add wireless support (z-wave devices)
 * Notes, flag points of time on graph (text, file upload, graph saving, etc.).
 
 
@@ -280,9 +281,9 @@ mkdir ~/Mycodo/mycodo/frontend/ssl_certs
 
 ```openssl req -new -key certificate.key -out certificate.csr```
 
-```openssl x509 -req -days 365 -in certificate.csr -CA cert.pem -CAkey privkey.pem -set_serial $RANDOM -out chain.pem```
+```sudo openssl x509 -req -days 365 -in certificate.csr -CA cert.pem -CAkey privkey.pem -set_serial $RANDOM -out chain.pem```
 
-```rm certificate.csr```
+```rm -f certificate.csr```
 
 
 ### Final Steps
