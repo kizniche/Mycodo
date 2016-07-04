@@ -876,33 +876,18 @@ class ModSensor(Form):
         )]
     )
     modSensorSubmit = SubmitField(u'Save')
-
-class DelSensor(Form):
-    delSensor_id = HiddenField(u'Sensor')
     delSensorSubmit = SubmitField(u'Delete')
-
-class ActivateSensor(Form):
-    activateSensor_id = HiddenField(u'Sensor')
     activateSensorSubmit = SubmitField(u'Activate')
-
-class DeactivateSensor(Form):
-    deactivateSensor_id = HiddenField(u'Sensor')
     deactivateSensorSubmit = SubmitField(u'Deactivate')
-
-class OrderSensor(Form):
-    orderSensor_id = HiddenField(u'Sensor')
     orderSensorUp = SubmitField(u'Up')
     orderSensorDown = SubmitField(u'Down')
+    sensorCondAddSubmit = SubmitField(u'Add Conditional')
 
 
 
 #
 # Sensor Conditionals
 #
-
-class AddSensorConditional(Form):
-    addSensorCond_sensorid = HiddenField(u'Sensor ID')
-    sensorCondAddSubmit = SubmitField(u'Add Conditional')
 
 class ModSensorConditional(Form):
     modCondSensor_id = HiddenField(u'Conditional ID')

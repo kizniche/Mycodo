@@ -1424,7 +1424,7 @@ def sum_relay_usage(relay_id, past_seconds):
 # Sensor manipulation
 #
 
-def sensor_add(formAddSensor, formOrderSensor, display_order):
+def sensor_add(formAddSensor, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to add sensors", "error")
     elif formAddSensor.validate():
@@ -1507,140 +1507,131 @@ def sensor_add(formAddSensor, formOrderSensor, display_order):
 def sensor_mod(formModSensor):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to modify sensors", "error")
-    elif formModSensor.validate():
-        try:
-            with session_scope(MYCODO_DB_PATH) as db_session:
-                mod_sensor = db_session.query(Sensor).filter(
-                    Sensor.id == formModSensor.modSensor_id.data).first()
-                error = False
-                if mod_sensor.activated:
-                    flash("Deactivate sensor controller before modifying its "
-                          "settings.", "error")
-                    error = True
-                if (mod_sensor.device == 'AM2315' and
-                        formModSensor.modPeriod.data < 7):
-                    flash("Choose a Read Period equal to or greater than 7. "
-                          "The AM2315 may become unresponsive if the period "
-                          "is below 7.", "error")
-                    error = True
-                if formModSensor.modPeriod.data < mod_sensor.pre_relay_duration:
-                    flash("The Read Period cannot be less than the "
-                          "Pre-Relay Duration. ", "error")
-                    error = True
-                if error:
-                    return redirect('/sensor')
-                mod_sensor.name = formModSensor.modName.data
-                mod_sensor.location = formModSensor.modLocation.data
-                mod_sensor.multiplexer_address = formModSensor.modMultiplexAddress.data
-                mod_sensor.multiplexer_channel = formModSensor.modMultiplexChannel.data
-                mod_sensor.adc_address = formModSensor.modADCAddress.data
-                mod_sensor.adc_channel = formModSensor.modADCChannel.data
-                mod_sensor.adc_resolution = formModSensor.modADCResolution.data
-                mod_sensor.adc_measure = formModSensor.modADCMeasure.data.replace(" ", "_")
-                mod_sensor.adc_measure_units = formModSensor.modADCMeasureUnits.data
-                mod_sensor.adc_volts_min = formModSensor.modADCVoltsMin.data
-                mod_sensor.adc_volts_max = formModSensor.modADCVoltsMax.data
-                mod_sensor.adc_units_min = formModSensor.modADCUnitsMin.data
-                mod_sensor.adc_units_max = formModSensor.modADCUnitsMax.data
-                mod_sensor.switch_edge = formModSensor.modSwitchEdge.data
-                mod_sensor.switch_bouncetime = formModSensor.modSwitchBounceTime.data
-                mod_sensor.switch_reset_period = formModSensor.modSwitchResetPeriod.data
-                mod_sensor.pre_relay_id = formModSensor.modPreRelayID.data
-                mod_sensor.pre_relay_duration = formModSensor.modPreRelayDuration.data
-                mod_sensor.period = formModSensor.modPeriod.data
-                mod_sensor.sht_clock_pin = formModSensor.modSHTClockPin.data
-                mod_sensor.sht_voltage = formModSensor.modSHTVoltage.data
-                db_session.commit()
-                flash("Sensor settings successfully modified", "success")
-        except Exception as except_msg:
-            flash("Sensor settings were not able to be modified: "
-                  "{}".format(except_msg), "error")
-    else:
-        flash_form_errors(formModSensor)
+    try:
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            mod_sensor = db_session.query(Sensor).filter(
+                Sensor.id == formModSensor.modSensor_id.data).first()
+            error = False
+            if mod_sensor.activated:
+                flash("Deactivate sensor controller before modifying its "
+                      "settings.", "error")
+                error = True
+            if (mod_sensor.device == 'AM2315' and
+                    formModSensor.modPeriod.data < 7):
+                flash("Choose a Read Period equal to or greater than 7. "
+                      "The AM2315 may become unresponsive if the period "
+                      "is below 7.", "error")
+                error = True
+            if formModSensor.modPeriod.data < mod_sensor.pre_relay_duration:
+                flash("The Read Period cannot be less than the "
+                      "Pre-Relay Duration. ", "error")
+                error = True
+            if error:
+                return redirect('/sensor')
+            mod_sensor.name = formModSensor.modName.data
+            mod_sensor.location = formModSensor.modLocation.data
+            mod_sensor.multiplexer_address = formModSensor.modMultiplexAddress.data
+            mod_sensor.multiplexer_channel = formModSensor.modMultiplexChannel.data
+            mod_sensor.adc_address = formModSensor.modADCAddress.data
+            mod_sensor.adc_channel = formModSensor.modADCChannel.data
+            mod_sensor.adc_resolution = formModSensor.modADCResolution.data
+            mod_sensor.adc_measure = formModSensor.modADCMeasure.data.replace(" ", "_")
+            mod_sensor.adc_measure_units = formModSensor.modADCMeasureUnits.data
+            mod_sensor.adc_volts_min = formModSensor.modADCVoltsMin.data
+            mod_sensor.adc_volts_max = formModSensor.modADCVoltsMax.data
+            mod_sensor.adc_units_min = formModSensor.modADCUnitsMin.data
+            mod_sensor.adc_units_max = formModSensor.modADCUnitsMax.data
+            mod_sensor.switch_edge = formModSensor.modSwitchEdge.data
+            mod_sensor.switch_bouncetime = formModSensor.modSwitchBounceTime.data
+            mod_sensor.switch_reset_period = formModSensor.modSwitchResetPeriod.data
+            mod_sensor.pre_relay_id = formModSensor.modPreRelayID.data
+            mod_sensor.pre_relay_duration = formModSensor.modPreRelayDuration.data
+            mod_sensor.period = formModSensor.modPeriod.data
+            mod_sensor.sht_clock_pin = formModSensor.modSHTClockPin.data
+            mod_sensor.sht_voltage = formModSensor.modSHTVoltage.data
+            db_session.commit()
+            flash("Sensor settings successfully modified", "success")
+    except Exception as except_msg:
+        flash("Sensor settings were not able to be modified: "
+              "{}".format(except_msg), "error")
 
 
-def sensor_del(formDelSensor, display_order):
+def sensor_del(formModSensor, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to delete sensors", "error")
-    elif formDelSensor.validate():
-        try:
-            with session_scope(MYCODO_DB_PATH) as db_session:
-                sensor = db_session.query(Sensor).filter(
-                    Sensor.id == formDelSensor.delSensor_id.data).first()
-                if sensor.activated:
-                    sensor_deactivate_associated_controllers(
-                        formDelSensor.delSensor_id.data)
-                    activate_deactivate_controller(
-                        'deactivate', 'Sensor',
-                        formDelSensor.delSensor_id.data)
+    try:
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            sensor = db_session.query(Sensor).filter(
+                Sensor.id == formModSensor.modSensor_id.data).first()
+            if sensor.activated:
+                sensor_deactivate_associated_controllers(
+                    formModSensor.modSensor_id.data)
+                activate_deactivate_controller(
+                    'deactivate', 'Sensor',
+                    formModSensor.modSensor_id.data)
 
-                sensor_cond = db_session.query(SensorConditional).all()
-                for each_sensor_cond in sensor_cond:
-                    if each_sensor_cond.sensor_id == formDelSensor.delSensor_id.data:
-                        delete_entry_with_id(
-                            MYCODO_DB_PATH,
-                            SensorConditional,
-                            each_sensor_cond.id)
+            sensor_cond = db_session.query(SensorConditional).all()
+            for each_sensor_cond in sensor_cond:
+                if each_sensor_cond.sensor_id == formModSensor.modSensor_id.data:
+                    delete_entry_with_id(
+                        MYCODO_DB_PATH,
+                        SensorConditional,
+                        each_sensor_cond.id)
 
-            delete_entry_with_id(MYCODO_DB_PATH,
-                                 Sensor,
-                                 formDelSensor.delSensor_id.data)
-            with session_scope(MYCODO_DB_PATH) as db_session:
-                order_sensor = db_session.query(DisplayOrder).first()
-                display_order.remove(formDelSensor.delSensor_id.data)
-                order_sensor.sensor = ','.join(display_order)
-                db_session.commit()
-        except Exception as except_msg:
-            flash("Error while deleting sensor: {}".format(except_msg),
-                                                           "error")
-    else:
-        flash_form_errors(formDelSensor)
+        delete_entry_with_id(MYCODO_DB_PATH,
+                             Sensor,
+                             formModSensor.modSensor_id.data)
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            order_sensor = db_session.query(DisplayOrder).first()
+            display_order.remove(formModSensor.modSensor_id.data)
+            order_sensor.sensor = ','.join(display_order)
+            db_session.commit()
+    except Exception as except_msg:
+        flash("Error while deleting sensor: {}".format(except_msg),
+                                                       "error")
 
 
-def sensor_reorder(formOrderSensor, display_order):
+def sensor_reorder(formModSensor, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to reorder sensors", "error")
-    elif formOrderSensor.validate():
-        try:
-            if formOrderSensor.orderSensorUp.data:
-                status, reordered_list = reorderList(
-                        display_order,
-                        formOrderSensor.orderSensor_id.data,
-                        'up')
-            elif formOrderSensor.orderSensorDown.data:
-                status, reordered_list = reorderList(
-                        display_order,
-                        formOrderSensor.orderSensor_id.data,
-                        'down')
-            if status == 'success':
-                with session_scope(MYCODO_DB_PATH) as db_session:
-                    order_sensor = db_session.query(DisplayOrder).first()
-                    order_sensor.sensor = ','.join(reordered_list)
-                    db_session.commit()
-                flash("Sensor display successfully reordered", status)
-            else:
-                flash(reordered_list, status)
-        except Exception as except_msg:
-            flash("Sensor display was not able to be reordered: {}".format(
-                except_msg), "error")
-    else:
-        flash_form_errors(formOrderSensor)
+    try:
+        if formModSensor.orderSensorUp.data:
+            status, reordered_list = reorderList(
+                    display_order,
+                    formModSensor.modSensor_id.data,
+                    'up')
+        elif formModSensor.orderSensorDown.data:
+            status, reordered_list = reorderList(
+                    display_order,
+                    formModSensor.modSensor_id.data,
+                    'down')
+        if status == 'success':
+            with session_scope(MYCODO_DB_PATH) as db_session:
+                order_sensor = db_session.query(DisplayOrder).first()
+                order_sensor.sensor = ','.join(reordered_list)
+                db_session.commit()
+            flash("Sensor display successfully reordered", status)
+        else:
+            flash(reordered_list, status)
+    except Exception as except_msg:
+        flash("Sensor display was not able to be reordered: {}".format(
+            except_msg), "error")
 
 
-def sensor_activate(formActivateSensor):
+def sensor_activate(formModSensor):
     activate_deactivate_controller(
         'activate',
         'Sensor',
-        formActivateSensor.activateSensor_id.data)
+        formModSensor.modSensor_id.data)
 
 
-def sensor_deactivate(formDeactivateSensor):
+def sensor_deactivate(formModSensor):
     sensor_deactivate_associated_controllers(
-        formDeactivateSensor.deactivateSensor_id.data)
+        formModSensor.modSensor_id.data)
     activate_deactivate_controller(
         'deactivate',
         'Sensor',
-        formDeactivateSensor.deactivateSensor_id.data)
+        formModSensor.modSensor_id.data)
 
 
 # Deactivate any active PID or LCD controllers using this sensor
@@ -1673,45 +1664,42 @@ def sensor_deactivate_associated_controllers(sensor_id):
 # Sensor conditional manipulation
 #
 
-def sensor_conditional_add(formAddSensorCond):
+def sensor_conditional_add(formModSensor):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to add sensor conditionals", "error")
-    elif formAddSensorCond.validate():
-        new_sensor_cond = SensorConditional()
-        random_id = ''.join([random.choice(
-                string.ascii_letters + string.digits) for n in xrange(8)])
-        new_sensor_cond.id = random_id
-        new_sensor_cond.name = 'Sensor Conditional'
-        new_sensor_cond.activated = 0
-        new_sensor_cond.sensor_id = formAddSensorCond.addSensorCond_sensorid.data
-        new_sensor_cond.period = 60
-        new_sensor_cond.measurement_type = ''
-        new_sensor_cond.edge_detected = 'rising'
-        new_sensor_cond.direction = ''
-        new_sensor_cond.setpoint = 0.0
-        new_sensor_cond.relay_id = ''
-        new_sensor_cond.relay_state = ''
-        new_sensor_cond.relay_on_duration = 0.0
-        new_sensor_cond.execute_command = ''
-        new_sensor_cond.email_notify = ''
-        new_sensor_cond.flash_lcd = ''
-        try:
-            with session_scope(MYCODO_DB_PATH) as db_session:
-                db_session.add(new_sensor_cond)
-            flash("Sensor Conditional with ID {} successfully added".format(
-                  random_id),
-                  "success")
-            check_refresh_conditional(formAddSensorCond.addSensorCond_sensorid.data,
-                                      'add',
-                                      random_id)
-        except sqlalchemy.exc.OperationalError as except_msg:
-            flash("Failed to add sensor conditional: {}".format(except_msg),
-                  "error")
-        except sqlalchemy.exc.IntegrityError:
-            flash("A sensor conditional with that ID already exists",
-                  "error")
-    else:
-        flash_form_errors(formAddSensorCond)
+    new_sensor_cond = SensorConditional()
+    random_id = ''.join([random.choice(
+            string.ascii_letters + string.digits) for n in xrange(8)])
+    new_sensor_cond.id = random_id
+    new_sensor_cond.name = 'Sensor Conditional'
+    new_sensor_cond.activated = 0
+    new_sensor_cond.sensor_id = formModSensor.modSensor_id.data
+    new_sensor_cond.period = 60
+    new_sensor_cond.measurement_type = ''
+    new_sensor_cond.edge_detected = 'rising'
+    new_sensor_cond.direction = ''
+    new_sensor_cond.setpoint = 0.0
+    new_sensor_cond.relay_id = ''
+    new_sensor_cond.relay_state = ''
+    new_sensor_cond.relay_on_duration = 0.0
+    new_sensor_cond.execute_command = ''
+    new_sensor_cond.email_notify = ''
+    new_sensor_cond.flash_lcd = ''
+    try:
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            db_session.add(new_sensor_cond)
+        flash("Sensor Conditional with ID {} successfully added".format(
+              random_id),
+              "success")
+        check_refresh_conditional(formModSensor.modSensor_id.data,
+                                  'add',
+                                  random_id)
+    except sqlalchemy.exc.OperationalError as except_msg:
+        flash("Failed to add sensor conditional: {}".format(except_msg),
+              "error")
+    except sqlalchemy.exc.IntegrityError:
+        flash("A sensor conditional with that ID already exists",
+              "error")
 
 
 def sensor_conditional_mod(formModSensorCond):

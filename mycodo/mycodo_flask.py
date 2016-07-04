@@ -228,31 +228,27 @@ def page(page):
         sensor = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Sensor)
         sensor_conditional = flaskutils.db_retrieve_table(MYCODO_DB_PATH, SensorConditional)
         users = flaskutils.db_retrieve_table(USER_DB_PATH, Users)
-        formActivateSensor = flaskforms.ActivateSensor()
         formAddSensor = flaskforms.AddSensor()
-        formDeactivateSensor = flaskforms.DeactivateSensor()
-        formDelSensor = flaskforms.DelSensor()
         formModSensor = flaskforms.ModSensor()
-        formOrderSensor = flaskforms.OrderSensor()
-        formAddSensorCond = flaskforms.AddSensorConditional()
         formModSensorCond = flaskforms.ModSensorConditional()
 
         if request.method == 'POST':
             form_name = request.form['form-name']
             if form_name == 'addSensor':
-                flaskutils.sensor_add(formAddSensor, formOrderSensor, display_order)
+                flaskutils.sensor_add(formAddSensor, display_order)
             elif form_name == 'modSensor':
-                flaskutils.sensor_mod(formModSensor)
-            elif form_name == 'delSensor':
-                flaskutils.sensor_del(formDelSensor, display_order)
-            elif form_name == 'orderSensor':
-                flaskutils.sensor_reorder(formOrderSensor, display_order)
-            elif form_name == 'activateSensor':
-                flaskutils.sensor_activate(formActivateSensor)
-            elif form_name == 'deactivateSensor':
-                flaskutils.sensor_deactivate(formDeactivateSensor)
-            elif form_name == 'addSensorConditional':
-                flaskutils.sensor_conditional_add(formAddSensorCond)
+                if formModSensor.modSensorSubmit.data:
+                    flaskutils.sensor_mod(formModSensor)
+                elif formModSensor.delSensorSubmit.data:
+                    flaskutils.sensor_del(formModSensor, display_order)
+                elif formModSensor.orderSensorUp.data or formModSensor.orderSensorDown.data:
+                    flaskutils.sensor_reorder(formModSensor, display_order)
+                elif formModSensor.activateSensorSubmit.data:
+                    flaskutils.sensor_activate(formModSensor)
+                elif formModSensor.deactivateSensorSubmit.data:
+                    flaskutils.sensor_deactivate(formModSensor)
+                elif formModSensor.sensorCondAddSubmit.data:
+                    flaskutils.sensor_conditional_add(formModSensor)
             elif form_name == 'modSensorConditional':
                 flaskutils.sensor_conditional_mod(formModSensorCond)
             return redirect('/sensor')
@@ -265,13 +261,8 @@ def page(page):
                                sensor_conditional=sensor_conditional,
                                users=users,
                                displayOrder=display_order,
-                               formOrderSensor=formOrderSensor,
                                formAddSensor=formAddSensor,
                                formModSensor=formModSensor,
-                               formDelSensor=formDelSensor,
-                               formActivateSensor=formActivateSensor,
-                               formDeactivateSensor=formDeactivateSensor,
-                               formAddSensorCond=formAddSensorCond,
                                formModSensorCond=formModSensorCond)
 
     elif page == 'relay':
