@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% set active_page = "logview" %}
+{% block title %} - View Logs{% endblock %}
+
+{% block body %}
+
+  <div class="container"> 
+    {% include 'flash_messages.html' %}
+
+    <form class="form-inline" method="post" action="/logview">
+      <input type="hidden" name="form-name" value="logview">
+      {{formLogView.hidden_tag()}}
+      <div class="form-group">
+        Display last {{formLogView.lines(class_='form-control',type="number",value=lines)}} lines from
+      </div>
+      <div class="form-group">
+        {{formLogView.loglogin(class_='form-control btn btn-default')}}
+      </div>
+      <div class="form-group">
+        {{formLogView.logdaemon(class_='form-control btn btn-default')}}
+      </div>
+      <div class="form-group">
+        {{formLogView.logupdate(class_='form-control btn btn-default')}}
+      </div>
+      <div class="form-group">
+        {{formLogView.logrestore(class_='form-control btn btn-default')}}
+      </div>
+    </form>
+
+    {%- if log_output != None -%}
+    <div style="padding-top:1.5em">
+      {%- if log_output == 404 -%}
+        File not found: {{logfile}}
+      {%- elif log_output == '' -%}
+        File empty: {{logfile}}
+      {%- else -%}
+        Last {{lines}} lines of {{logfile}}:
+        <pre>{{log_output}}</pre>
+      {%- endif -%}
+    </div>
+    {%- endif -%}
+
+  </div>
+
+{% endblock %}

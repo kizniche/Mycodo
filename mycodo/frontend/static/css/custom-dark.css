@@ -1,0 +1,20 @@
+/*
+/ Custom Dark CSS
+*/
+
+.active-background {
+    background-color: #002202 !important
+}
+
+.inactive-background {
+    background-color: #2B0100 !important
+}
+
+.alert-success {
+    background-color: #0B5310;
+}
+
+.alert-warning {
+    background-color: #744400;
+}
+

@@ -1,0 +1,61 @@
+/*
+ * Custom CSS
+ */
+
+.table {
+  margin-bottom: 0;
+}
+
+/*.graph-width {
+  display: inline-block;
+  margin: 0.5em;
+  padding: 0.2em 0 0 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+@media only screen and (max-width: 500px) {
+  .graph-width {
+    width: 400px;
+  }
+}*/
+
+/*
+ * Live view
+ */
+
+.inline-align {
+  text-align: justify; 
+
+   /* IE special */  
+  width: 100%;  
+  -ms-text-justify: distribute-all-lines;
+  text-justify: distribute-all-lines;
+}
+ .inline-align:after{
+  content: '';
+  display: inline-block;
+  width: 100%;
+  height: 0;
+  font-size:0;
+  line-height:0;
+}
+
+.inline-left {
+  display: inline-block;
+
+  /* ie 7*/ 
+  *display: inline;
+  *zoom: 1;
+  *text-align: left; 
+}
+
+.inline-right {
+  display: inline-block;
+  vertical-align: baseline; 
+
+  /* ie 7*/
+  *display: inline;
+  *zoom:1;
+  *text-align: right;
+}

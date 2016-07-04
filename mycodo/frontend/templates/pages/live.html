@@ -1,0 +1,299 @@
+{% extends "layout.html" %}
+{% set active_page = "live" %}
+
+{% block title %} - Live{% endblock %}
+
+{% block head %}
+  <script>
+    function updateMeasurements(sensor_name, sensor_type, sensor_measurement, sensor_id, period) {
+      var url = '/last/' + sensor_type + '/' + sensor_measurement + '/' + sensor_id + '/' + period;
+      $.ajax(url, {
+        success: function(data, responseText, jqXHR) {
+          if (jqXHR.status == 204) {
+            document.getElementById(sensor_id + "-" + sensor_measurement + "-time").innerHTML = "No Data Last " + period + "m";
+            document.getElementById(sensor_id + "-" + sensor_measurement + "-value").innerHTML = "0";
+          }
+          else {
+            var time = data[0];
+            var measurement = data[1];
+            var date = new Date(parseFloat(time));
+            var year = date.getFullYear();
+            var month = date.getMonth() + 1;
+            var day = date.getDate();
+            var hours = date.getHours();
+            var minutes = "0" + date.getMinutes();
+            var seconds = "0" + date.getSeconds();
+            var formattedDate = year + "/" + month + "/" + day;
+            var formattedTime = formattedDate + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+            document.getElementById(sensor_id + "-" + sensor_measurement + "-time").innerHTML = formattedTime;
+            document.getElementById(sensor_id + "-" + sensor_measurement + "-value").innerHTML = measurement;
+          }
+        },
+        cache: false
+      });
+    }
+
+    function liveTextData(sensor_name, sensor_type, sensor_measurement, sensor_id, period) {
+      // Update when page first loads
+      updateMeasurements(sensor_name, sensor_type, sensor_measurement, sensor_id, period);
+      setInterval(function () {
+        // Update after every 30 seconds
+        updateMeasurements(sensor_name, sensor_type, sensor_measurement, sensor_id, period);
+      }, 30000);
+    }
+
+    $(function() {
+      {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'cpu_load' -%}
+        liveTextData('{{each_sensor.name}}', 'cpu_load', 'cpu_load_1m', '{{each_sensor.id}}', '30');
+        liveTextData('{{each_sensor.name}}', 'cpu_load', 'cpu_load_5m', '{{each_sensor.id}}', '30');
+        liveTextData('{{each_sensor.name}}', 'cpu_load', 'cpu_load_15m', '{{each_sensor.id}}', '30');
+      {%- endfor -%}
+      {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'tsensor' -%}
+        liveTextData('{{each_sensor.name}}', 'tsensor', 'temperature', '{{each_sensor.id}}', '30');
+      {%- endfor -%}
+      {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'tmpsensor' -%}
+        liveTextData('{{each_sensor.name}}', 'tmpsensor', 'temperature_object', '{{each_sensor.id}}', '30');
+        liveTextData('{{each_sensor.name}}', 'tmpsensor', 'temperature_die', '{{each_sensor.id}}', '30');
+      {%- endfor -%}
+      {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'htsensor' -%}
+        liveTextData('{{each_sensor.name}}', 'htsensor', 'temperature', '{{each_sensor.id}}', '30');
+        liveTextData('{{each_sensor.name}}', 'htsensor', 'humidity', '{{each_sensor.id}}', '30');
+      {%- endfor -%}
+      {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'co2sensor' -%}
+        liveTextData('{{each_sensor.name}}', 'co2sensor', 'co2', '{{each_sensor.id}}', '30');
+      {%- endfor -%}
+      {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'luxsensor' -%}
+        liveTextData('{{each_sensor.name}}', 'luxsensor', 'lux', '{{each_sensor.id}}', '30');
+      {%- endfor -%}
+      {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'presssensor' -%}
+        liveTextData('{{each_sensor.name}}', 'presssensor', 'temperature', '{{each_sensor.id}}', '30');
+        liveTextData('{{each_sensor.name}}', 'presssensor', 'pressure', '{{each_sensor.id}}', '30');
+        liveTextData('{{each_sensor.name}}', 'presssensor', 'altitude', '{{each_sensor.id}}', '30');
+      {%- endfor -%}
+      {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'analogsensor' -%}
+        liveTextData('{{each_sensor.name}}', 'analogsensor', 'voltage', '{{each_sensor.id}}', '30');
+        liveTextData('{{each_sensor.name}}', 'analogsensor', '{{each_sensor.adc_measure}}', '{{each_sensor.id}}', '30');
+      {%- endfor -%}
+      {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'edgedetect' -%}
+        liveTextData('{{each_sensor.name}}', 'edgedetect', 'edge', '{{each_sensor.id}}', '30');
+      {%- endfor -%}
+    });
+  </script>
+{% endblock %}
+
+{%- block body %}
+  <div class="container">
+    {% include 'flash_messages.html' %}
+
+    {%- if sensorDisplayOrderSorted|length == 0 -%}
+      <div>
+        No Sensors Activated. <a href="/sensor">Click here</a> to add and activate a sensor.
+      </div>
+    {%- endif -%}
+
+    {%- if sensorDisplayOrderSorted -%}
+    {%- for sensor_order in sensorDisplayOrderSorted -%}
+      {%- set collapse_container_number = loop.index -%}
+
+      {%- for each_sensor in sensor if each_sensor.id == sensor_order -%}
+
+        <div style="margin-bottom: 1.4em; border: 2px solid #ddd; border-radius: 5px;">
+          <div class="inline-align" style="margin-bottom: -1.2em; padding: 0.3em 0.3em 0 0.3em;">
+            <div class="inline-left" style="vertical-align: top; display: inline-block; padding: 0.5em;">
+              {%- set sensor_has_pid = [] -%}
+              {%- if pidDisplayOrder -%}
+                {%- for pid_order in pidDisplayOrder -%}
+                  {%- for each_pid in pid if each_pid.id in pid_order and each_pid.activated and each_pid.sensor_id == each_sensor.id -%}
+                    {%- do sensor_has_pid.append(1) -%}
+                  {%- endfor -%}
+                {%- endfor -%}
+              {%- endif -%}
+              {%- if sensor_has_pid -%}
+                <a style="padding-right: 0.5em" data-toggle="collapse" href="#collapseContainer{{collapse_container_number}}" aria-expanded="false" aria-controls="collapseContainer{{collapse_container_number}}">
+                  <span class='collapse-button{{collapse_container_number}} glyphicon glyphicon-plus' style="font-size: 1.3em;"></span>
+                </a>
+              {%- endif -%}
+              {{each_sensor.name}} ({{each_sensor.id}})
+              {%- if each_sensor.device != 'EDGE' -%}
+                <div>
+                  {{each_sensor.device}} Sensor, {{each_sensor.period}} sec. between reads
+                </div>
+                {%- endif -%}
+            </div>
+            {%- if each_sensor.device_type == 'cpu_load' %}
+              <div class="inline-right text-right" style="padding: 0.5em;">
+                Measurement | Timestamp
+                <div>
+                  <b><span id="{{each_sensor.id}}-cpu_load_1m-value">0.0</span> (1m)</b> | <span id="{{each_sensor.id}}-cpu_load_1m-time">&lt;please wait&gt;</span>
+                  <br><b><span id="{{each_sensor.id}}-cpu_load_5m-value">0.0</span> (5m)</b> | <span id="{{each_sensor.id}}-cpu_load_5m-time">&lt;please wait&gt;</span>
+                  <br><b><span id="{{each_sensor.id}}-cpu_load_15m-value">0.0</span> (15m)</b> | <span id="{{each_sensor.id}}-cpu_load_15m-time">&lt;please wait&gt;</span>
+                </div>
+              </div>
+            {%- elif each_sensor.device_type == 'tsensor' %}
+              <div class="inline-right text-right" style="padding: 0.5em;">
+                Measurement | Timestamp
+                <div>
+                  <b><span id="{{each_sensor.id}}-temperature-value">0.0</span> &deg;C</b> | <span id="{{each_sensor.id}}-temperature-time">&lt;please wait&gt;</span>
+                </div>
+              </div>
+            {%- elif each_sensor.device_type == 'tmpsensor' %}
+              <div class="inline-right text-right" style="padding: 0.5em;">
+                Measurement | Timestamp
+                <div>
+                  <b><span id="{{each_sensor.id}}-temperature_object-value">0.0</span> &deg;C</b> | <span id="{{each_sensor.id}}-temperature_object-time">&lt;please wait&gt;</span>
+                  <br><b><span id="{{each_sensor.id}}-temperature_die-value">0.0</span> &deg;C</b> | <span id="{{each_sensor.id}}-temperature_die-time">&lt;please wait&gt;</span>
+                </div>
+              </div>
+            {%- elif each_sensor.device_type == 'htsensor' %}
+              <div class="inline-right text-right" style="padding: 0.5em;">
+                Measurement | Timestamp
+                <div>
+                  <b><span id="{{each_sensor.id}}-temperature-value">0.0</span> &deg;C</b> | <span id="{{each_sensor.id}}-temperature-time">&lt;please wait&gt;</span>
+                  <br><b><span id="{{each_sensor.id}}-humidity-value">0.0</span> %</b> | <span id="{{each_sensor.id}}-humidity-time">&lt;please wait&gt;</span>
+                </div>
+              </div>
+            {%- elif each_sensor.device_type == 'co2sensor' %}
+              <div class="inline-right text-right" style="padding: 0.5em;">
+                Measurement | Timestamp
+                <div>
+                  <b><span id="{{each_sensor.id}}-co2-value">0</span> ppmv</b> | <span id="{{each_sensor.id}}-co2-time">&lt;please wait&gt;</span>
+                </div>
+              </div>
+            {%- elif each_sensor.device_type == 'luxsensor' %}
+              <div class="inline-right text-right" style="padding: 0.5em;">
+                Measurement | Timestamp
+                <div>
+                  <b><span id="{{each_sensor.id}}-lux-value">0</span> lx</b> | <span id="{{each_sensor.id}}-lux-time">&lt;please wait&gt;</span>
+                </div>
+              </div>
+            {%- elif each_sensor.device_type == 'presssensor' %}
+              <div class="inline-right text-right" style="padding: 0.5em;">
+                Measurement | Timestamp
+                <div>
+                  <b><span id="{{each_sensor.id}}-temperature-value">0.0</span> &deg;C</b> | <span id="{{each_sensor.id}}-temperature-time">&lt;please wait&gt;</span>
+                  <br><b><span id="{{each_sensor.id}}-pressure-value">0</span> Pa</b> | <span id="{{each_sensor.id}}-pressure-time">&lt;please wait&gt;</span>
+                  <br><b><span id="{{each_sensor.id}}-altitude-value">0.0</span> m</b> | <span id="{{each_sensor.id}}-altitude-time">&lt;please wait&gt;</span>
+                </div>
+              </div>
+            {%- elif each_sensor.device_type == 'analogsensor' %}
+              <div class="inline-right text-right" style="padding: 0.5em;">
+                Measurement | Timestamp
+                <div>
+                  <b><span id="{{each_sensor.id}}-voltage-value">0.0</span> volts</b> | <span id="{{each_sensor.id}}-voltage-time">&lt;please wait&gt;</span>
+                  <br><b><span id="{{each_sensor.id}}-{{each_sensor.adc_measure}}-value">0.0</span> {{each_sensor.adc_measure_units}}</b> | <span id="{{each_sensor.id}}-{{each_sensor.adc_measure}}-time">&lt;please wait&gt;</span>
+                </div>
+              </div>
+            {%- elif each_sensor.device_type == 'edgedetect' %}
+              <div class="inline-right text-right" style="padding: 0.5em;">
+                Measurement | Timestamp
+                <div>
+                  <b><span id="{{each_sensor.id}}-edge-value">0</span></b> | <span id="{{each_sensor.id}}-edge-time">&lt;please wait&gt;</span>
+                </div>
+              </div>
+            {%- endif -%}
+          </div>
+
+          <div class="collapse" id="collapseContainer{{collapse_container_number}}" style="padding: 0 0.5em 0.5em 0.5em;">
+
+            {%- if pidDisplayOrder -%}
+            {%- for pid_order in pidDisplayOrder -%}
+              {%- for each_pid in pid if each_pid.id in pid_order and each_pid.activated and each_pid.sensor_id == each_sensor.id -%}
+
+                <div style="padding-bottom: 1em; border: 1px solid #ddd; border-radius: 5px;">
+                  <div class="inline-align" style="margin-bottom: -1.5em;">
+                    <div class="inline-left" style="padding: 0.5em;">
+                      {{each_pid.name}} ({{each_pid.id}})
+                      <div>
+                        Every {{each_pid.period}} seconds, apply PID to {% if each_pid.direction == 'both' -%}raise or lower{%- else -%}{{each_pid.direction}}{%- endif %} {{each_pid.measure_type}} to {{each_pid.setpoint}}
+                      </div>
+                    </div>
+                    <div class="inline-right" style="padding: 0.5em;">
+                      Gains
+                      <div>
+                        K<sub>P</sub>: {{each_pid.p}}, K<sub>I</sub>: {{each_pid.i}}, K<sub>D</sub>: {{each_pid.d}}
+                      </div>
+                    </div>
+                  </div>
+
+                  {%- for rel in relay if rel.id == each_pid.raise_relay_id -%}
+                  <div style="padding: 0 0.3em 0.3em 0.3em;">
+                    <div style="display: inline-block; padding: 0 0.3em;">
+                      Raise Relay
+                      <div>
+                        {{rel.name}} ({{rel.id}})
+                      </div>
+                    </div>
+                    <div style="display: inline-block; padding: 0.3em;">
+                      On Duration
+                      <div>
+                        Min: {{each_pid.raise_min_duration}} sec., Max: {{each_pid.raise_max_duration}} sec.
+                      </div>
+                    </div>
+                    <div style="display: inline-block; padding: 0.3em;">
+                      Current Draw
+                      <div>
+                        {{rel.amps}} amps
+                      </div>
+                    </div>
+                  </div>
+                  {%- endfor -%}
+
+                  {%- for rel in relay if rel.id == each_pid.lower_relay_id -%}
+                  <div style="padding: 0 0.3em 0.3em 0.3em;">
+                    <div style="display: inline-block; padding: 0 0.3em;">
+                      Lower Relay
+                      <div>
+                        {{rel.name}} ({{rel.id}})
+                      </div>
+                    </div>
+                    <div style="display: inline-block; padding: 0.5em;">
+                      On Duration
+                      <div>
+                        Min: {{each_pid.lower_min_duration}} sec., Max: {{each_pid.lower_max_duration}} sec.
+                      </div>
+                    </div>
+                    <div style="display: inline-block; padding: 0.5em;">
+                      Current Draw
+                      <div>
+                        {{rel.amps}} amps
+                      </div>
+                    </div>
+                  </div>
+                  {%- endfor -%}
+
+                  {%- for each_pid_setpoint in pidsetpoints if each_pid_setpoint.pid_id == each_pid.id -%}
+                  {%- if each_pid_setpoint.end_setpoint %}
+                    <div style="padding: 0 0.7em">
+                      From {{each_pid_setpoint.start_time}} to {{each_pid_setpoint.end_time}}, change from {{each_pid_setpoint.start_setpoint}} to {{each_pid_setpoint.end_setpoint}}
+                    </div>
+                  {%- else %}
+                    <div style="padding: 0 0.7em">
+                      From {{each_pid_setpoint.start_time}} to {{each_pid_setpoint.end_time}}, maintain {{each_pid_setpoint.start_setpoint}}
+                    </div>
+                  {%- endif -%}
+                  {%- endfor -%}
+
+                </div>
+
+              {%- endfor -%}
+            {%- endfor -%}
+            {%- endif -%}
+
+          </div>
+        </div>
+
+      {%- endfor -%}
+    {%- endfor -%}
+    {%- endif -%}
+
+  </div>
+
+  <script>
+    $('.collapse').on('show.bs.collapse', function(){
+      $(this).parent().find(".glyphicon-plus").removeClass("glyphicon-plus").addClass("glyphicon-minus");
+    }).on('hide.bs.collapse', function(){
+      $(this).parent().find(".glyphicon-minus").removeClass("glyphicon-minus").addClass("glyphicon-plus");
+    });
+  </script>
+
+{% endblock -%}

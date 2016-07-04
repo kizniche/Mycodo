@@ -1,0 +1,38 @@
+{%- with errors = get_flashed_messages(category_filter=["success"]) -%}
+  {%- if errors and not hide_alert_success %}
+    <div class="alert alert-success">
+      <span class="close" data-dismiss="alert" aria-label="close">&times;</span>
+      <ul>
+        {%- for msg in errors %}
+          <li>{{msg}}</li>
+        {%- endfor %}
+      </ul>
+    </div>
+  {%- endif -%}
+{%- endwith -%}
+
+{%- with errors = get_flashed_messages(category_filter=["info"]) -%}
+  {%- if errors and not hide_alert_info %}
+    <div class="alert alert-info">
+      <span class="close" data-dismiss="alert" aria-label="close">&times;</span>
+      <ul>
+        {%- for msg in errors %}
+          <li>{{msg}}</li>
+        {%- endfor %}
+      </ul>
+    </div>
+  {%- endif -%}
+{%- endwith -%}
+
+{%- with errors = get_flashed_messages(category_filter=["error"]) -%}
+  {%- if errors and not hide_alert_warning %}
+    <div class="alert alert-warning">
+      <span class="close" data-dismiss="alert" aria-label="close">&times;</span>
+      <ul>
+        {%- for msg in errors %}
+          <li>{{msg}}</li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+{%- endwith -%}

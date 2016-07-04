@@ -1,0 +1,114 @@
+{% extends "settings.html" %}
+
+{% set active_page = "settings" %}
+{% set active_settings = "users" %}
+
+{% block title %} - Users Settings{% endblock %}
+
+{% block settings %}
+
+  <h3 style="text-align: right; padding-bottom: 1.3em;">User Management</h3>
+
+  <form class="form-horizontal" method="post" action="/settings/users">
+    <input type="hidden" name="form-name" value="addUser">
+    {{formAddUser.hidden_tag()}}
+    <div class="form-group">
+      {{formAddUser.addUsername.label(class_='col-sm-4 control-label')}}
+      <div class="col-sm-8">
+        {{formAddUser.addUsername(class_='form-control')}}
+      </div>
+    </div>
+    <div class="form-group">
+      {{formAddUser.addEmail.label(class_='col-sm-4 control-label')}}
+      <div class="col-sm-8">
+        {{formAddUser.addEmail(class_='form-control')}}
+      </div>
+    </div>
+    <div class="form-group">
+      {{formAddUser.addPassword.label(class_='col-sm-4 control-label')}}
+      <div class="col-sm-8">
+        {{formAddUser.addPassword(class_='form-control')}}
+      </div>
+    </div>
+    <div class="form-group">
+      {{formAddUser.addPassword_repeat.label(class_='col-sm-4 control-label')}}
+      <div class="col-sm-8">
+        {{formAddUser.addPassword_repeat(class_='form-control')}}
+      </div>
+    </div>
+    <div class="form-group">
+      {{formAddUser.addGroup.label(class_='col-sm-4 control-label')}}
+      <div class="col-sm-8">
+        {{formAddUser.addGroup(class_='form-control')}}
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-4 col-sm-8">
+        {{formAddUser.addSubmit(class_='btn btn-default', value="Create New User")}}
+      </div>
+    </div>
+  </form>
+
+  <div style="padding: 1em 0;"></div>
+
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <td class="col-sm-1"></td>
+          <td class="col-sm-1">User</td>
+          <td class="col-sm-2">Email</td>
+          <td class="col-sm-2">New Password</td>
+          <td class="col-sm-2">Repeat Password</td>
+          <td class="col-sm-2">Group</td>
+          <td class="col-sm-2">Theme</td>
+          <td class="col-sm-1"></td>
+        </tr>
+      </thead>
+      <tbody>
+      {% for user in users %}
+        <tr>
+          <td>
+          <form method="post" action="/settings/users" onsubmit="return confirm('Confirm the deletion of user {{user.user_name}}. This cannot be undone. To keep this user, click Cancel.')">
+            <input type="hidden" name="form-name" value="delUser">
+            {{formDelUser.csrf_token}}
+            {{formDelUser.delUsername(value=user.user_name)}}
+            {{formDelUser.delUserSubmit(class_='btn btn-default')}}
+          </form>
+          </td>
+          <form method="post" action="/settings/users">
+          {{formModUser.csrf_token}}
+          <input type="hidden" name="form-name" value="modUser">
+          <td>{{user.user_name}}{{formModUser.modUsername(value=user.user_name)}}</td>
+          <td>
+            {{formModUser.modEmail(class_='form-control', value=user.user_email)}}
+          </td>
+          <td>
+            {{formModUser.modPassword(class_='form-control')}}
+          </td>
+          <td>
+            {{formModUser.modPassword_repeat(class_='form-control')}}
+          </td>
+          <td>
+            <select class="form-control" id="modGroup" name="modGroup">
+              <option value="admin"{% if user.user_restriction == 'admin' %} selected{% endif %}>Admin</option>
+              <option value="guest"{% if user.user_restriction == 'guest' %} selected{% endif %}>Guest</option>
+            </select>
+          </td>
+          <td>
+            <select class="form-control" id="modGroup" name="modTheme">
+              <option value="light"{% if user.user_theme == 'light' %} selected{% endif %}>Light</option>
+              <option value="dark"{% if user.user_theme == 'dark' %} selected{% endif %}>Dark</option>
+            </select>
+          </td>
+          <td>
+            {{formModUser.modSubmit(class_='btn btn-default', value="Save")}}
+          </td>
+          </form>
+        </tr>
+      {% endfor -%}
+      </tbody>
+    </table>
+  </div>
+
+{% endblock %}

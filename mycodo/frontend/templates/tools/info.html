@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+{% set active_page = "info" %}
+{% block title %} - Info{% endblock %}
+
+{% block body %}
+
+  <div class="container"> 
+    {% include 'flash_messages.html' %}
+
+    <div style="padding-bottom: 1.5em">
+      <div style="padding-bottom: 0.5em; font-size: 1.3em">
+        Daemon is currently 
+        {%- if daemon_status == "alive" %}
+          <span style="color: #4E9258; font-weight: bold;">Running</span>
+        {%- else %}
+          <span style="color: #F70D1A; font-weight: bold;">Not Running</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <div style="padding-bottom: 1.5em">
+      <div style="padding-bottom: 0.5em">
+        uptime
+      </div>
+      <div>
+        {{uptime}}
+      </div>
+    </div>
+
+    <div style="padding-bottom: 1.5em">
+      <div style="padding-bottom: 0.5em">
+        uname
+      </div>
+      <div>
+        {{uname}}
+      </div>
+    </div>
+
+    <div style="padding-bottom: 1.5em">
+      <div style="padding-bottom: 0.5em">
+        gpio readall
+      </div>
+      <div>
+        <pre>
+          {%- if gpio_readall != "" -%}
+            {{gpio_readall}}
+          {%- else -%}
+Command 'gpio' not found. Install gpio from the terminal with the following commands:
+cd
+git clone git://git.drogon.net/wiringPi
+cd wiringPi
+./build
+          {%- endif -%}
+        </pre>
+      </div>
+    </div>
+
+    <div style="padding-bottom: 1.5em">
+      <div style="padding-bottom: 0.5em">
+        df
+      </div>
+      <div>
+        <pre>{{df}}</pre>
+      </div>
+    </div>
+
+    <div style="padding-bottom: 1.5em">
+      <div style="padding-bottom: 0.5em">
+        free
+      </div>
+      <div>
+        <pre>{{free}}</pre>
+      </div>
+    </div>
+
+  </div>
+
+{% endblock %}

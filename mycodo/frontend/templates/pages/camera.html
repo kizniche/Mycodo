@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% set active_page = "camera" %}
+{% block title %} - Camera{% endblock %}
+
+{% block body %}
+
+  <div class="container"> 
+    {% include 'flash_messages.html' %}
+
+    {% if camera_enabled %}
+    <div style="padding-bottom: 1.5em">
+      <form class="form-inline" method="post" action="/camera">
+        <input type="hidden" name="form-name" value="camera">
+        {{formCamera.hidden_tag()}}
+        <div class="form-group">
+          {{formCamera.Still(class_='form-control btn btn-default')}}
+        </div>
+        {% if not stream_locked -%}
+          <div class="form-group">
+            {{formCamera.StartTimelapse(class_='form-control btn btn-default')}}
+          </div>
+        {%- endif %}
+        <div class="form-group">
+          {% if stream_locked -%}
+            {{formCamera.StopStream(class_='form-control btn btn-default')}}
+          {% else %}
+            {{formCamera.StartStream(class_='form-control btn btn-default')}}
+          {%- endif %}
+        </div>
+      </form>
+    </div>
+    {% endif %}
+
+    {%- if stream_locked -%}
+      <div style="padding-bottom: 1.5em">
+        <img style="max-width: 100%" src="{{url_for('video_feed')}}">
+      </div>
+    {%- endif -%}
+
+    {% if latest_still_img %}
+      <div style="padding-bottom: 1.5em">
+        Last Still: {{latest_still_img_ts}}
+        <img style="max-width: 100%" src="/camera/still/{{latest_still_img}}">
+      </div>
+    {% endif %}
+  </div>
+
+{% endblock %}

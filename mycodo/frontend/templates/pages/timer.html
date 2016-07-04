@@ -1,0 +1,216 @@
+{% extends "layout.html" %}
+{% set active_page = "timer" %}
+{% block title %} - Timers{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="/static/css/bootstrap-clockpicker.min.css">
+{% endblock %}
+
+{% block body %}
+
+  <div class="container">
+    {% include 'flash_messages.html' %}
+
+    <div class="form-inline" style="padding-bottom:1em">
+      <form method="post" action="/timer">
+        <input type="hidden" name="form-name" value="addTimer">
+        {{formTimer.csrf_token}}
+        <div>
+          <div class="form-group">
+            {{formTimer.name.label(class_='control-label')}}
+            <div>
+              {{formTimer.name(class_='form-control')}}
+            </div>
+          </div>
+          <div class="form-group">
+            {{formTimer.relayID.label(class_='control-label')}}
+            <div>
+              <select class="form-control" id="relayID" name="relayID">
+              {% for each_choice, value in relay_choices.iteritems() -%}
+                <option value="{{each_choice}}">{{value}}</option>
+              {% endfor -%}
+              </select>
+            </div>
+          </div>
+        </div>
+        <div>
+          <label class="radio-inline">
+            <input type="radio" name="timerType" id="inlineRadio1" value="time" checked>
+          </label>
+          <div class="form-group">
+            {{formTimer.state.label(class_='control-label')}}
+            <div>
+              <select class="form-control" id="state" name="state">
+                <option value="on">On</option>
+                <option value="off">Off</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            {{formTimer.timeOn.label(class_='control-label')}}
+            <div>
+              <div class="input-group clockpicker">
+                <input type="text" class="form-control" id="timeOn" name="timeOn" size="7" value="09:30">
+                <span class="input-group-addon">
+                  <span class="glyphicon glyphicon-time"></span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class='control-label'></label>
+            <div>
+              (Optional: On for {{formTimer.timeOnDurationOn(class_='form-control', value=0.0, **{'size':'6'})}} seconds)
+            </div>
+          </div>
+        </div>
+        <div>
+          <label class="radio-inline">
+            <input type="radio" name="timerType" id="inlineRadio2" value="duration">
+          </label>
+          <div class="form-group">
+            {{formTimer.durationOn.label(class_='control-label')}}
+            <div>
+              {{formTimer.durationOn(class_='form-control', value=0.0, **{'size':'6'})}}
+            </div>
+          </div>
+          <div class="form-group">
+            {{formTimer.durationOff.label(class_='control-label')}}
+            <div>
+              {{formTimer.durationOff(class_='form-control', value=0.0, **{'size':'6'})}}
+            </div>
+          </div>
+          <br/>
+          <div class="form-group">
+            <label class='control-label'></label>
+            <div>
+              {{formTimer.timerCreate(class_='form-control btn btn-default')}}
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    {%- if displayOrder -%}
+    {%- for order in displayOrder -%}
+      {% for each_timer in timer if each_timer.id in order %}
+
+        <div class="form-inline {% if each_timer.activated -%}active-background{%- else -%}inactive-background{% endif -%}" style="margin-top: 1em; padding: 0.5em; border: 2px solid #ddd; border-radius: 5px;">
+          <form method="post" action="/timer">
+            <input type="hidden" name="form-name" value="modTimer">
+            {{formTimer.csrf_token}}
+            {{formTimer.timer_id(class_='form-control', value=each_timer.id)}}
+            <div>
+              {%- if each_timer.activated %}
+                <div class="form-group">
+                  {{formTimer.deactivate(class_='form-control btn btn-default')}}
+                </div>
+              {%- else %}
+                <div class="form-group">
+                  {{formTimer.activate(class_='form-control btn btn-default')}}
+                </div>
+              {%- endif %}
+              <div class="form-group">
+                ID {{each_timer.id}}
+              </div>
+              <div class="form-group pull-right">
+                Reorder 
+                <div class="form-group">
+                  {{formTimer.orderTimerUp(class_='form-control btn btn-default')}}
+                </div>
+                <div class="form-group">
+                  {{formTimer.orderTimerDown(class_='form-control btn btn-default')}}
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              {{formTimer.name.label(class_='control-label')}}
+              <div>
+                {{formTimer.name(class_='form-control', value=each_timer.name, **{'size':'16'})}}
+              </div>
+            </div>
+            <div class="form-group">
+              {{formTimer.relayID.label(class_='control-label')}}
+              <div>
+                <select class="form-control" id="relayID" name="relayID">
+                  <option value=""></option>
+                {% for each_choice, value in relay_choices.iteritems() -%}
+                  <option value="{{each_choice}}"{% if each_timer.relay_id == each_choice %} selected{% endif %}>{{value}}</option>
+                {% endfor -%}
+                </select>
+              </div>
+            </div>
+            {% if each_timer.time_on != '' %}
+            <input type="hidden" name="timerType" value="time">
+            <div class="form-group">
+              {{formTimer.state.label(class_='control-label')}}
+              <div>
+                <select class="form-control" id="state" name="state">
+                  <option value="on"{% if each_timer.state == 'on' %} selected{% endif %}>On</option>
+                  <option value="off"{% if each_timer.state == 'off' %} selected{% endif %}>Off</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              {{formTimer.timeOn.label(class_='control-label')}}
+              <div>
+                <div class="input-group clockpicker">
+                  <input type="text" class="form-control" id="timeOn" name="timeOn" size="4" value="{{each_timer.time_on}}">
+                  <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-time"></span>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class='control-label'></label>
+              <div>
+                (For {{formTimer.timeOnDurationOn(class_='form-control', value=each_timer.duration_on, **{'size':'4'})}} seconds)
+              </div>
+            </div>
+            {% else %}
+            <input type="hidden" name="timerType" value="duration">
+            <div class="form-group">
+              {{formTimer.durationOn.label(class_='control-label')}}
+              <div>
+                {{formTimer.durationOn(class_='form-control', value=each_timer.duration_on, **{'size':'6'})}}
+              </div>
+            </div>
+            <div class="form-group">
+              {{formTimer.durationOff.label(class_='control-label')}}
+              <div>
+                {{formTimer.durationOff(class_='form-control', value=each_timer.duration_off, **{'size':'6'})}}
+              </div>
+            </div>
+            {% endif %}
+            <div class="form-group pull-right">
+              <div class="form-group">
+                <label class='control-label'></label>
+                <div>
+                  {{formTimer.timerMod(class_='form-control btn btn-default')}}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class='control-label'></label>
+                <div>
+                  {{formTimer.timerDel(class_='form-control btn btn-default')}}
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+      {%- endfor -%}
+    {%- endfor -%}
+    {%- endif -%}
+
+  </div>
+
+  <script type="text/javascript" src="/static/js/bootstrap-clockpicker.min.js"></script>
+  <script type="text/javascript">
+    $('.clockpicker').clockpicker({
+      donetext: 'Done'
+    });
+  </script>
+
+{% endblock %}
