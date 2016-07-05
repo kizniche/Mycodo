@@ -836,11 +836,11 @@ class ModSensor(Form):
         render_kw={"placeholder": "Reset Period"}
     )
     modPreRelayID = TextField(
-        u'Pre Relay ID',
-        render_kw={"placeholder": "Pre Relay ID"}
+        u'Pre Relay',
+        render_kw={"placeholder": "Pre Relay"}
     )
     modPreRelayDuration = DecimalField(
-        u'Pre Relay Dur. (sec)',
+        u'Pre Relay Duration (sec)',
         render_kw={"placeholder": "Pre Relay Duration"},
         validators=[validators.NumberRange(
             min=0,

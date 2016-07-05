@@ -152,13 +152,13 @@
                 <div class="form-group">
                     <label class="control-label">Bounce Time (ms)</label>
                   <div>
-                    {{formModSensor.modSwitchBounceTime(class_='form-control', value=each_sensor.switch_bouncetime, **{'title':'How many miliseconds to debounce the input through software?'})}}
+                    {{formModSensor.modSwitchBounceTime(class_='form-control', value=each_sensor.switch_bouncetime, **{'title':'The amount of time to bounce the input signal, in miliseconds.'})}}
                   </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label">Reset Period (sec)</label>
+                    <label class="control-label">Refractory Period (sec)</label>
                   <div>
-                    {{formModSensor.modSwitchResetPeriod(class_='form-control', value=each_sensor.switch_reset_period, **{'title':'How long to wait after the first detection to begin detecting again.'})}}
+                    {{formModSensor.modSwitchResetPeriod(class_='form-control', value=each_sensor.switch_reset_period, **{'title':'How long to wait after the first edge detection to begin detecting again, in seconds.'})}}
                   </div>
                 </div>
               {% endif -%}
@@ -166,7 +166,7 @@
                 <div class="form-group">
                     {{formModSensor.modPeriod.label(class_='control-label')}}
                   <div>
-                    {{formModSensor.modPeriod(class_='form-control', value=each_sensor.period, **{'title':'How long between sensor reads.'})}}
+                    {{formModSensor.modPeriod(class_='form-control', value=each_sensor.period, **{'title':'The duration between sensor reads, in seconds.'})}}
                   </div>
                 </div>
               {% endif -%}
@@ -174,8 +174,8 @@
                 <div class="form-group">
                     {{formModSensor.modPreRelayID.label(class_='control-label')}}
                   <div>
-                    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modPreRelayID" name="modPreRelayID" title="Turn relay on before taking a measurement?">
-                      <option value=""></option>
+                    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modPreRelayID" name="modPreRelayID" title="Turn the selected relay on before taking a measurement.">
+                      <option value="">Disabled</option>
                       {% for rel in relay -%}
                         <option value="{{rel.id}}"{% if each_sensor.pre_relay_id == rel.id %} selected{% endif %}>{{rel.id}} ({{rel.name}})</option>
                       {% endfor -%}
@@ -185,7 +185,7 @@
                 <div class="form-group">
                     {{formModSensor.modPreRelayDuration.label(class_='control-label')}}
                   <div>
-                    {{formModSensor.modPreRelayDuration(class_='form-control', value=each_sensor.pre_relay_duration, **{'title':'How long to turn the pre-relay on before a measurement.'})}}
+                    {{formModSensor.modPreRelayDuration(class_='form-control', value=each_sensor.pre_relay_duration, **{'title':'If a Pre Relay is selected, set the duration to turn the Pre Relay on, in seconds.'})}}
                   </div>
                 </div>
               {% endif -%}
@@ -193,13 +193,13 @@
                 <div class="form-group">
                     {{formModSensor.modSHTClockPin.label(class_='control-label')}}
                   <div>
-                    {{formModSensor.modSHTClockPin(class_='form-control', value=each_sensor.sht_clock_pin, **{'title':'The GPIO connected to the SHT sensor clock pin.'})}}
+                    {{formModSensor.modSHTClockPin(class_='form-control', value=each_sensor.sht_clock_pin, **{'title':'The GPIO pin of the Raspberry Pi connected to the SHT sensor clock pin.'})}}
                   </div>
                 </div>
                 <div class="form-group">
                     {{formModSensor.modSHTVoltage.label(class_='control-label')}}
                   <div>
-                    {{formModSensor.modSHTVoltage(class_='form-control', value=each_sensor.sht_voltage, **{'title':'The input voltage of the SHT sensor.'})}}
+                    {{formModSensor.modSHTVoltage(class_='form-control', value=each_sensor.sht_voltage, **{'title':'The input voltage to the SHT sensor.'})}}
                   </div>
                 </div>
               {% endif -%}
@@ -208,7 +208,7 @@
                     <label class="control-label">Multiplexer Address</label>
                   <div>
                     <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modMultiplexAddress" name="modMultiplexAddress" title="The I2C address of the multiplexer (if used).">
-                      <option value=""{% if each_sensor.multiplexer_address == '' %} selected{% endif %}></option>
+                      <option value=""{% if each_sensor.multiplexer_address == '' %} selected{% endif %}>Disabled</option>
                       <option value="0x70"{% if each_sensor.multiplexer_address == '0x70' %} selected{% endif %}>Address 0x70</option>
                       <option value="0x71"{% if each_sensor.multiplexer_address == '0x71' %} selected{% endif %}>Address 0x71</option>
                       <option value="0x72"{% if each_sensor.multiplexer_address == '0x72' %} selected{% endif %}>Address 0x72</option>
@@ -223,8 +223,8 @@
                 <div class="form-group">
                     <label class="control-label">Multiplexer Chan.</label>
                   <div>
-                    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modMultiplexChannel" name="modMultiplexChannel" rel="tooltip" title="The channel of the multiplexer (if used).">
-                      <option value="0"{% if each_sensor.multiplexer_channel == 0 %} selected{% endif %}></option>
+                    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modMultiplexChannel" name="modMultiplexChannel" rel="tooltip" title="If a multiplexer address is selected, select the channel connected to your target device.">
+                      <option value="0"{% if each_sensor.multiplexer_channel == 0 %} selected{% endif %}>Disabled</option>
                       <option value="1"{% if each_sensor.multiplexer_channel == 1 %} selected{% endif %}>Channel 1</option>
                       <option value="2"{% if each_sensor.multiplexer_channel == 2 %} selected{% endif %}>Channel 2</option>
                       <option value="3"{% if each_sensor.multiplexer_channel == 3 %} selected{% endif %}>Channel 3</option>
@@ -266,7 +266,7 @@
               <div class="form-group">
                   <label class="control-label">I2C Address</label>
                 <div>
-                  <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modADCAddress" name="modADCAddress" title="The I2C address of the ADC.">
+                  <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modADCAddress" name="modADCAddress" title="The I2C address of the analog to digital converter.">
                     <option value=""{% if each_sensor.adc_address == '' %} selected{% endif %}></option>
                     <option value="0x68"{% if each_sensor.adc_address == '0x68' %} selected{% endif %}>Address 0x68</option>
                     <option value="0x6A"{% if each_sensor.adc_address == '0x6A' %} selected{% endif %}>Address 0x6A</option>
@@ -278,7 +278,7 @@
               <div class="form-group">
                   <label class="control-label">Channel</label>
                 <div>
-                  <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modADCChannel" name="modADCChannel" title="The channel of the ADC.">
+                  <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modADCChannel" name="modADCChannel" title="The channel of the analog to digital converter.">
                     <option value="0"{% if each_sensor.adc_channel == 0 %} selected{% endif %}>Channel 1</option>
                     <option value="1"{% if each_sensor.adc_channel == 1 %} selected{% endif %}>Channel 2</option>
                     <option value="2"{% if each_sensor.adc_channel == 2 %} selected{% endif %}>Channel 3</option>
@@ -289,31 +289,31 @@
               <div class="form-group">
                   <label class="control-label">Resolution</label>
                 <div>
-                  {{formModSensor.modADCResolution(class_='form-control', value=each_sensor.adc_resolution, **{'title':'12, 14, 16, or 18-bit resolution?'})}}
+                  {{formModSensor.modADCResolution(class_='form-control', value=each_sensor.adc_resolution, **{'title':'12, 14, 16, or 18-bit ADC resolution.'})}}
                 </div>
               </div>
               <div class="form-group">
                   <label class="control-label">Volts Min</label>
                 <div>
-                  {{formModSensor.modADCVoltsMin(class_='form-control', value=each_sensor.adc_volts_min, **{'title':'Minimum voltage the ADC will measure.'})}}
+                  {{formModSensor.modADCVoltsMin(class_='form-control', value=each_sensor.adc_volts_min, **{'title':'Minimum analog to digital converter input voltage.'})}}
                 </div>
               </div>
               <div class="form-group">
                   <label class="control-label">Volts Max</label>
                 <div>
-                  {{formModSensor.modADCVoltsMax(class_='form-control', value=each_sensor.adc_volts_max, **{'title':'Maximum voltage the ADC will measure.'})}}
+                  {{formModSensor.modADCVoltsMax(class_='form-control', value=each_sensor.adc_volts_max, **{'title':'Maximum analog to digital converter input voltage.'})}}
                 </div>
               </div>
               <div class="form-group">
                   <label class="control-label">Units Min</label>
                 <div>
-                  {{formModSensor.modADCUnitsMin(class_='form-control', value=each_sensor.adc_units_min, **{'title':'Minimum of the unit the ADC will measure.'})}}
+                  {{formModSensor.modADCUnitsMin(class_='form-control', value=each_sensor.adc_units_min, **{'title':'Minimum unit to convert the voltage to.'})}}
                 </div>
               </div>
               <div class="form-group">
                   <label class="control-label">Units Max</label>
                 <div>
-                  {{formModSensor.modADCUnitsMax(class_='form-control', value=each_sensor.adc_units_max, **{'title':'Maximum of the unit the ADC will measure.'})}}
+                  {{formModSensor.modADCUnitsMax(class_='form-control', value=each_sensor.adc_units_max, **{'title':'Maximum unit to convert the voltage to.'})}}
                 </div>
               </div>
             </div>
@@ -380,7 +380,7 @@
                       </select>
                       the setpoint of 
                       {{formModSensorCond.Setpoint(class_='form-control', value=each_sensorcond.setpoint, **{'title':'What value to check the measurement against.', 'size':'3'})}}
-                      (check every {{formModSensorCond.Period(class_='form-control', value=each_sensorcond.period, **{'title':'How often to check whether the conditional is true.', 'size':'3'})}} seconds)
+                      (check every {{formModSensorCond.Period(class_='form-control', value=each_sensorcond.period, **{'title':'The duration between checking whether the conditional is true, in seconds.', 'size':'3'})}} seconds)
                     </td>
                   {% endif %}
                 </tr>
@@ -398,7 +398,7 @@
                       <option value="on"{% if each_sensorcond.relay_state == 'on' %} selected{% endif %}>On</option>
                       <option value="off"{% if each_sensorcond.relay_state == 'off' %} selected{% endif %}>Off</option>
                     </select>
-                    (for {{formModSensorCond.RelayDuration(class_='form-control', value=each_sensorcond.relay_on_duration, **{'title':'If a relay is set to turn on, an optional duration can be set.', 'size':'3'})}} sec.)
+                    (for {{formModSensorCond.RelayDuration(class_='form-control', value=each_sensorcond.relay_on_duration, **{'title':'If a relay is set to turn on, an optional duration can be set, in seconds.', 'size':'3'})}} sec)
                   </td>
                 </tr>
                 <tr>
@@ -417,10 +417,12 @@
                         <option value="{{each_lcd.id}}"{% if each_sensorcond.flash_lcd == each_lcd.id %} selected{% endif %}>{{each_lcd.id}} ({{each_lcd.name}})</option>
                       {%- endfor -%}
                     </select>, Record
-                    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="DoRecord" name="DoRecord" title="Activte camera when the condition is true.">
+                    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="DoRecord" name="DoRecord" title="Activte camera if the condition is true.">
                       <option value="">NOT YET WORKING</option>
-                      <option value="photo"{% if each_sensorcond.relay_state == 'photo' %} selected{% endif %}>Photo Only</option>
-                      <option value="photoemailf"{% if each_sensorcond.relay_state == 'photoemailf' %} selected{% endif %}>Email Photo</option>
+                      <option value="photo"{% if each_sensorcond.relay_state == 'photo' %} selected{% endif %}>Save Photo</option>
+                      <option value="photoemail"{% if each_sensorcond.relay_state == 'photoemail' %} selected{% endif %}>Email Photo</option>
+                      <option value="video"{% if each_sensorcond.relay_state == 'video' %} selected{% endif %}>Save 10s Video</option>
+                      <option value="videoemail"{% if each_sensorcond.relay_state == 'videoemail' %} selected{% endif %}>Email 10s Video</option>
                     </select>
                   </td>
                 </tr>

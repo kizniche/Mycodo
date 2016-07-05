@@ -26,7 +26,7 @@
         </div>
       </div>
       <div class="form-group">
-        {{formEmailAlert.sslEnable.label(class_='col-sm-4 control-label')}}
+        {{formEmailAlert.sslEnable.label(class_='col-sm-4 control-label checkbox-nopad')}}
         <div class="col-sm-8">
           {%- if smtp_set.ssl == 1 -%}
             {{formEmailAlert.sslEnable(checked=True)}}

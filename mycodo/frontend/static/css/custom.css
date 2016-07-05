@@ -2,6 +2,10 @@
  * Custom CSS
  */
 
+.checkbox-nopad {
+  padding-top: 0 !important;
+}
+
 .table {
   margin-bottom: 0;
 }
