@@ -350,13 +350,15 @@
                     <td class="text-left">
                       Edge Detected, Direction of change: 
                       <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="EdgeDetected " name="EdgeDetected" title="Detect low to high (rising), high to low (falling), or both?">
-                        <option value="rising">Rising</option>
-                        <option value="falling">Falling</option>
-                        <option value="both">Both</option>
+                        <option value="rising"{% if each_sensorcond.edge_detected == 'rising' %} selected{% endif %}>Rising</option>
+                        <option value="falling"{% if each_sensorcond.edge_detected == 'falling' %} selected{% endif %}>Falling</option>
+                        <option value="both"{% if each_sensorcond.edge_detected == 'both' %} selected{% endif %}>Both</option>
                       </select>
+                      <input type="hidden" class="form-control" id="Period" name="Period" value="0">
                     </td>
                   {% else %}
                     <td class="text-left">
+                      <input type="hidden" class="form-control" id="EdgeDetected" name="EdgeDetected" value="">
                       <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="MeasureType" name="MeasureType" title="The measurement from the sensor to test the following conditional logic.">
                         <option value=""></option>
                         {%- if each_sensor.device_type == 'tsensor' -%}

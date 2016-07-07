@@ -727,10 +727,6 @@ class ModRelayConditional(Form):
         u'Flash LCD',
         render_kw={"placeholder": "LCD"}
     )
-    DoRecord = TextField(
-        u'Record with Camera',
-        render_kw={"placeholder": "Record"}
-    )
     activate = SubmitField(u'Activate')
     deactivate = SubmitField(u'Deactivate')
     modCondRelaySubmit = SubmitField(u'Save')
@@ -911,7 +907,7 @@ class ModSensorConditional(Form):
     MeasureType = TextField(
         u'Measurement Type'
     )
-    EdgeDetect = TextField(
+    EdgeDetected = TextField(
         u'Edge Detected'
     )
     Direction = TextField(
@@ -942,6 +938,10 @@ class ModSensorConditional(Form):
     DoFlashLCD = TextField(
         u'Flash LCD',
         render_kw={"placeholder": "LCD"}
+    )
+    DoRecord = TextField(
+        u'Record with Camera',
+        render_kw={"placeholder": "Record"}
     )
     modSubmit = SubmitField(u'Save')
     delSubmit = SubmitField(u'Delete')
