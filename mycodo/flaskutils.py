@@ -1685,6 +1685,7 @@ def sensor_conditional_add(formModSensor):
     new_sensor_cond.execute_command = ''
     new_sensor_cond.email_notify = ''
     new_sensor_cond.flash_lcd = ''
+    new_sensor_cond.camera_record = ''
     try:
         with session_scope(MYCODO_DB_PATH) as db_session:
             db_session.add(new_sensor_cond)
@@ -1721,6 +1722,13 @@ def sensor_conditional_mod(formModSensorCond):
     elif (formModSensorCond.modSubmit.data and
             formModSensorCond.validate()):
         try:
+            error = False
+            if ((formModSensor.DoRecord.data == 'photoemail' or formModSensor.DoRecord.data == 'videoemail') and not formModSensor.DoNotify.data):
+                flash("You must specify a notification email address if the "
+                      "record and email option is selcted. ", "error")
+                error = True
+            if error:
+                return redirect('/sensor')
             with session_scope(MYCODO_DB_PATH) as db_session:
                 mod_sensor = db_session.query(SensorConditional).filter(
                     SensorConditional.id == formModSensorCond.modCondSensor_id.data).first()
@@ -1736,6 +1744,7 @@ def sensor_conditional_mod(formModSensorCond):
                 mod_sensor.execute_command = formModSensorCond.DoExecute.data
                 mod_sensor.email_notify = formModSensorCond.DoNotify.data
                 mod_sensor.flash_lcd = formModSensorCond.DoFlashLCD.data
+                mod_sensor.camera_record = formModSensorCond.DoRecord.data
                 db_session.commit()
                 flash("Sensor Conditional settings successfully "
                       "modified", "success")

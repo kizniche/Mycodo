@@ -190,6 +190,7 @@ class SensorConditional(Base):
     execute_command = Column(TEXT)
     email_notify = Column(TEXT)
     flash_lcd = Column(TEXT)
+    camera_record = Column(TEXT)
 
 
 class PID(Base):

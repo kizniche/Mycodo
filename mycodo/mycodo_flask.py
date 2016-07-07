@@ -9,7 +9,6 @@ import calendar
 import datetime
 import glob
 import os
-import picamera
 import random
 import socket
 import sqlalchemy
@@ -40,7 +39,7 @@ from databases.mycodo_db.models import Sensor
 from databases.mycodo_db.models import SensorConditional
 from databases.mycodo_db.models import SMTP
 from databases.mycodo_db.models import Timer
-from daemonutils import return_stat_file_dict, email
+from daemonutils import camera_record, return_stat_file_dict, email
 from devices.camera_pi import CameraStream
 from devices.camera_pi import CameraTimelapse
 from mycodo_client import DaemonControl
@@ -751,15 +750,7 @@ def page(page):
                             CameraStream().terminate()  # Stop camera stream to take a photo
                             time.sleep(2)
                             stream_locked = True  # Signal to enable camera stream
-                        with picamera.PiCamera() as camera:
-                            camera.resolution = (1024, 768)
-                            camera.hflip = True
-                            camera.vflip = True
-                            camera.start_preview()
-                            time.sleep(2)  # Camera warm-up time
-                            now = time.time()
-                            timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H-%M-%S')
-                            camera.capture(INSTALL_DIRECTORY+'/camera-stills/'+timestamp+'.jpg', use_video_port=True)
+                        camera_record('photo')
                         time.sleep(1)
                     except Exception as msg:
                         flash("Camera Error: {}".format(msg), "error")

@@ -5,6 +5,7 @@ import filecmp
 import geocoder
 import logging
 import os
+import picamera
 import pwd
 import random
 import resource
@@ -19,6 +20,7 @@ from lockfile import LockFile
 from sqlalchemy import func
 
 from config import ID_FILE
+from config import INSTALL_DIRECTORY
 from config import MYCODO_VERSION
 from config import SQL_DATABASE_MYCODO
 from config import SQL_DATABASE_USER
@@ -144,12 +146,50 @@ def concat_log_tmp_to_perm(log_file_tmp, log_file_perm, log_lock_path):
 
 
 #
+# Camera record
+#
+
+def assure_path_exists(path):
+    dir = os.path.dirname(path)
+    if not os.path.exists(dir):
+            os.makedirs(dir)
+
+def camera_record(record_type, duration_sec=10):
+    if record_type == 'photo':
+        with picamera.PiCamera() as camera:
+            camera.resolution = (1024, 768)
+            camera.hflip = True
+            camera.vflip = True
+            camera.start_preview()
+            time.sleep(2)  # Camera warm-up time
+            now = time.time()
+            timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H-%M-%S')
+            path = '{}/camera-stills'.format(INSTALL_DIRECTORY)
+            assure_path_exists(path)
+            camera.capture('{}/camera-stills/{}.jpg'.format(INSTALL_DIRECTORY, timestamp), use_video_port=True)
+        return '{}/camera-stills/{}.jpg'.format(INSTALL_DIRECTORY, timestamp)
+    elif record_type == 'video':
+        with picamera.PiCamera() as camera:
+            camera.resolution = (1024, 768)
+            camera.hflip = True
+            camera.vflip = True
+            now = time.time()
+            timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H-%M-%S')
+            path = '{}/camera-videos'.format(INSTALL_DIRECTORY)
+            assure_path_exists(path)
+            camera.start_recording('{}/camera-videos'.format(INSTALL_DIRECTORY, timestamp))
+            camera.wait_recording(duration_sec)
+            camera.stop_recording()
+        return 
+
+
+#
 # Email notification
 #
 
 def email(logging, smtp_host, smtp_ssl,
           smtp_port, smtp_user, smtp_pass,
-          smtp_email_from, email_to, message):
+          smtp_email_from, email_to, message, attachment=False):
     """
     Email a specific recipient or recipients a message.
 
@@ -177,6 +217,8 @@ def email(logging, smtp_host, smtp_ssl,
         msg['Subject'] = "Mycodo Notification ({})".format(socket.gethostname())
         msg['From'] = smtp_email_from
         msg['To'] = email_to
+        if attachment:
+            pass
         server.sendmail(msg['From'], msg['To'].split(","), msg.as_string())
         server.quit()
         return 0

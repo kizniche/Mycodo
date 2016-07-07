@@ -404,25 +404,25 @@
                 <tr>
                   <td></td>
                   <td>
-                    Execute {{formModSensorCond.DoExecute(class_='form-control', value=each_sensorcond.execute_command, **{'title':'Execute linux commands if the condition is true.'})}}, Notify
-                    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="DoNotify" name="DoNotify" title="Notify a user by email if the condition is true.">
-                      <option value=""></option>
-                      {%- for each_user in users -%}
-                        <option value="{{each_user.user_email}}"{% if each_sensorcond.email_notify == each_user.user_email %} selected{% endif %}>{{each_user.user_email}}</option>
-                      {%- endfor -%}
-                    </select>, Flash LCD
+                    Execute {{formModSensorCond.DoExecute(class_='form-control', value=each_sensorcond.execute_command, **{'title':'Execute linux commands if the condition is true.'})}}, Flash LCD
                     <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="DoFlashLCD" name="DoFlashLCD" title="Flash LCD if the condition is true.">
                       <option value=""></option>
                       {%- for each_lcd in lcd -%}
                         <option value="{{each_lcd.id}}"{% if each_sensorcond.flash_lcd == each_lcd.id %} selected{% endif %}>{{each_lcd.id}} ({{each_lcd.name}})</option>
                       {%- endfor -%}
+                    </select>, Notify
+                    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="DoNotify" name="DoNotify" title="Notify a user by email if the condition is true.">
+                      <option value=""></option>
+                      {%- for each_user in users -%}
+                        <option value="{{each_user.user_email}}"{% if each_sensorcond.email_notify == each_user.user_email %} selected{% endif %}>{{each_user.user_email}}</option>
+                      {%- endfor -%}
                     </select>, Record
                     <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="DoRecord" name="DoRecord" title="Activte camera if the condition is true.">
-                      <option value="">NOT YET WORKING</option>
-                      <option value="photo"{% if each_sensorcond.relay_state == 'photo' %} selected{% endif %}>Save Photo</option>
-                      <option value="photoemail"{% if each_sensorcond.relay_state == 'photoemail' %} selected{% endif %}>Email Photo</option>
-                      <option value="video"{% if each_sensorcond.relay_state == 'video' %} selected{% endif %}>Save 10s Video</option>
-                      <option value="videoemail"{% if each_sensorcond.relay_state == 'videoemail' %} selected{% endif %}>Email 10s Video</option>
+                      <option value=""></option>
+                      <option value="photo"{% if each_sensorcond.camera_record == 'photo' %} selected{% endif %}>Save Photo</option>
+                      <option value="photoemail"{% if each_sensorcond.camera_record == 'photoemail' %} selected{% endif %}>Email Photo</option>
+                      <option value="video"{% if each_sensorcond.camera_record == 'video' %} selected{% endif %}>Save 10s Video</option>
+                      <option value="videoemail"{% if each_sensorcond.camera_record == 'videoemail' %} selected{% endif %}>Email 10s Video</option>
                     </select>
                   </td>
                 </tr>

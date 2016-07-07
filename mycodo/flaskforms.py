@@ -727,6 +727,10 @@ class ModRelayConditional(Form):
         u'Flash LCD',
         render_kw={"placeholder": "LCD"}
     )
+    DoRecord = TextField(
+        u'Record with Camera',
+        render_kw={"placeholder": "Record"}
+    )
     activate = SubmitField(u'Activate')
     deactivate = SubmitField(u'Deactivate')
     modCondRelaySubmit = SubmitField(u'Save')

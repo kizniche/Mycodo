@@ -45,7 +45,7 @@ from databases.mycodo_db.models import SensorConditional
 from databases.mycodo_db.models import SMTP
 from databases.utils import session_scope
 from mycodo_client import DaemonControl
-from daemonutils import email, write_influxdb, read_last_influxdb
+from daemonutils import camera_record, email, write_influxdb, read_last_influxdb
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -367,13 +367,23 @@ class SensorController(threading.Thread):
                     self.email_count += 1
 
                     if self.allowed_to_send_notice:
+                        attachment = False
                         message += "Notify {}.".format(
                                 self.cond_email_notify[cond_id])
+
+                        if self.cond_camera_record[cond_id] == 'photoemail':
+                            message += " Photo attached."
+                            attachment = camera_record('photo')
+
+                        elif self.cond_camera_record[cond_id] == 'videoemail':
+                            message += " Video attached."
+                            attachment = camera_record('video', 10)
+
                         with session_scope(MYCODO_DB_PATH) as new_session:
                             smtp = new_session.query(SMTP).first()
                             email(self.logger, smtp.host, smtp.ssl, smtp.port,
                                   smtp.user, smtp.passw, smtp.email_from,
-                                  self.cond_email_notify[cond_id], message)
+                                  self.cond_email_notify[cond_id], message, attachment)
                     else:
                         self.logger.debug("[Sensor Conditional {}] "
                                           "{:.0f} seconds left to be "
@@ -387,6 +397,16 @@ class SensorController(threading.Thread):
                         args=(self.cond_flash_lcd[cond_id],
                               1,))
                     start_flashing.start()
+
+                if self.cond_camera_record[cond_id]:
+                    if self.cond_camera_record[cond_id] == 'photo':
+                        pass
+                    elif self.cond_camera_record[cond_id] == 'photoemail':
+                        pass
+                    elif self.cond_camera_record[cond_id] == 'video':
+                        pass
+                    elif self.cond_camera_record[cond_id] == 'videoemail':
+                        pass
 
             self.logger.debug(message)
         else:
@@ -588,6 +608,7 @@ class SensorController(threading.Thread):
             self.cond_execute_command.pop(cond_id, None)
             self.cond_email_notify.pop(cond_id, None)
             self.cond_flash_lcd.pop(cond_id, None)
+            self.cond_camera_record.pop(cond_id, None)
             self.cond_timer.pop(cond_id, None)
             self.smtp_wait_timer.pop(cond_id, None)
             self.logger.debug("[Sensor Conditional {}] Deleted Conditional "
@@ -608,6 +629,7 @@ class SensorController(threading.Thread):
                     self.cond_execute_command = {}
                     self.cond_email_notify = {}
                     self.cond_flash_lcd = {}
+                    self.cond_camera_record = {}
                     self.cond_timer = {}
                     self.smtp_wait_timer = {}
                     self.sensor_conditional = new_session.query(
@@ -658,6 +680,7 @@ class SensorController(threading.Thread):
                     self.cond_execute_command[each_cond.id] = each_cond.execute_command
                     self.cond_email_notify[each_cond.id] = each_cond.email_notify
                     self.cond_flash_lcd[each_cond.id] = each_cond.email_notify
+                    self.cond_camera_record[each_cond.id] = each_cond.camera_record
                     self.cond_timer[each_cond.id] = time.time()+self.cond_period[each_cond.id]
                     self.smtp_wait_timer[each_cond.id] = time.time()+3600
 
