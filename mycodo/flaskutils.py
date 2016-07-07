@@ -1723,7 +1723,7 @@ def sensor_conditional_mod(formModSensorCond):
             formModSensorCond.validate()):
         try:
             error = False
-            if ((formModSensor.DoRecord.data == 'photoemail' or formModSensor.DoRecord.data == 'videoemail') and not formModSensor.DoNotify.data):
+            if ((formModSensorCond.DoRecord.data == 'photoemail' or formModSensorCond.DoRecord.data == 'videoemail') and not formModSensorCond.DoNotify.data):
                 flash("You must specify a notification email address if the "
                       "record and email option is selcted. ", "error")
                 error = True
