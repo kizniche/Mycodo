@@ -69,7 +69,7 @@ INFLUXDB_DATABASE = 'mycodo_db'
 # Anonymous usage statistics
 STATS_CSV = os.path.join(DATABASE_PATH, 'statistics.csv')
 ID_FILE = os.path.join(DATABASE_PATH, 'statistics.id')
-STATS_INTERVAL = 259200 # 259200 seconds = 3 days
+STATS_INTERVAL = 86400  # 1 day
 STATS_HOST = 'fungi.kylegabriel.com'
 STATS_PORT = 8086
 STATS_USER = 'mycodo_stats'
