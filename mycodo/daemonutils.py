@@ -53,7 +53,8 @@ USER_DB_PATH = 'sqlite:///' + SQL_DATABASE_USER
 
 def cmd_output(command):
     """Executed command and returns a list of lines from the output"""
-    cmd = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+    full_cmd = 'su mycodo && {}'.format(command)
+    cmd = subprocess.Popen(full_cmd, stdout=subprocess.PIPE, shell=True)
     cmd_output, cmd_err = cmd.communicate()
     cmd_status = cmd.wait()
     return cmd_output, cmd_err, cmd_status
