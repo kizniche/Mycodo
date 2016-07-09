@@ -27,7 +27,7 @@ from databases.mycodo_db.models import RelayConditional
 from databases.mycodo_db.models import SMTP
 from databases.utils import session_scope
 from mycodo_client import DaemonControl
-from daemonutils import email, write_influxdb
+from daemonutils import cmd_output, email, write_influxdb
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -254,7 +254,7 @@ class RelayController(threading.Thread):
 
             if self.is_on(relay_id):
                 conditionals = conditionals.filter(RelayConditional.if_action == 'on')
-                conditionals = conditionals.filter(RelayConditional.if_duration == 0)
+                conditionals = conditionals.filter(RelayConditional.if_duration == duration)
             else:
                 conditionals = conditionals.filter(RelayConditional.if_action == 'off')
 
@@ -263,12 +263,14 @@ class RelayController(threading.Thread):
                 if (each_conditional.do_relay_id or
                         each_conditional.execute_command or
                         each_conditional.email_notify):
-                    message = "[Relay Conditional {}] " \
-                              "If relay {} ({}) turns " \
-                              "{}: ".format(each_conditional.id,
-                                            each_conditional.if_relay_id,
-                                            self.relay_name[each_conditional.if_relay_id],
-                                            each_conditional.if_action)
+                    now = time.time()
+                    timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H-%M-%S')
+                    message = "{}\n[Relay Conditional {}] {}\n".format(
+                        timestamp, each_conditional.id, each_conditional.name)
+                    message += "If relay {} ({}) turns {}, Then:\n".format(
+                        each_conditional.if_relay_id,
+                        self.relay_name[each_conditional.if_relay_id],
+                        each_conditional.if_action)
 
                 if each_conditional.do_relay_id:
                     message += "Turn relay {} ({}) {}".format(
@@ -284,7 +286,7 @@ class RelayController(threading.Thread):
                         self.relay_on_off(each_conditional.do_relay_id,
                                           each_conditional.do_action,
                                           each_conditional.do_duration)
-                    message += ". "
+                    message += ".\n"
 
 
                 if each_conditional.execute_command:
@@ -300,18 +302,9 @@ class RelayController(threading.Thread):
                     # TODO: SECURITY: FIX THIS This runs arbitrary as ROOT
                     #       Make sure this works (currently untested)
 
-                    message += "Execute '{}'. ".format(each_conditional.execute_command)
-                    pass
-                    # p = subprocess.Popen(each_conditional.execute_command, shell=True,
-                    #                      stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    # output, errors = p.communicate()
-                    # self.logger.debug("[Relay Conditional {} ({})] "
-                    #                   "Execute command: {} "
-                    #                   "Command output: {} "
-                    #                   "Command errors: {}".format(each_conditional.id,
-                    #                                               each_conditional.name,
-                    #                                               each_conditional.execute_command,
-                    #                                               output, errors))
+                    message += "Execute: '{}'. ".format(each_conditional.execute_command)
+                    cmd_out, cmd_err, cmd_status = cmd_output(self.cond_execute_command[cond_id])
+                    message += "Status: {}. ".format(cmd_status)
 
                 if each_conditional.email_notify:
                     if (self.email_count >= self.smtp_max_count and

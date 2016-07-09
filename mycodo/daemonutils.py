@@ -17,7 +17,11 @@ import string
 import subprocess
 import time
 from collections import OrderedDict
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email.mime.image import MIMEImage
 from email.mime.text import MIMEText
+from email import Encoders
 from influxdb import InfluxDBClient
 from lockfile import LockFile
 from sqlalchemy import func
@@ -37,14 +41,34 @@ from databases.mycodo_db.models import Sensor
 from databases.mycodo_db.models import Timer
 from databases.users_db.models import Users
 from databases.utils import session_scope
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
-from email.mime.image import MIMEImage
-from email.mime.text import MIMEText
-from email import Encoders
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 USER_DB_PATH = 'sqlite:///' + SQL_DATABASE_USER
+
+
+
+#
+# Filesystem and command tools
+#
+
+def cmd_output(command):
+    """Executed command and returns a list of lines from the output"""
+    cmd = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+    cmd_output, cmd_err = cmd.communicate()
+    cmd_status = cmd.wait()
+    return cmd_output, cmd_err, cmd_status
+
+
+def assure_path_exists(new_dir):
+    if not os.path.exists(new_dir):
+        os.makedirs(new_dir)
+        set_user_grp(new_dir, 'mycodo', 'mycodo')
+
+
+def set_user_grp(filepath, user, group):
+    uid = pwd.getpwnam(user).pw_uid
+    gid = grp.getgrnam(group).gr_gid
+    os.chown(filepath, uid, gid)
 
 
 
@@ -156,23 +180,6 @@ def concat_log_tmp_to_perm(log_file_tmp, log_file_perm, log_lock_path):
 #
 # Camera record
 #
-
-def cmd_output(command):
-    """Executed command and returns a list of lines from the output"""
-    cmd = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
-    cmd_output, cmd_err = cmd.communicate()
-    cmd_status = cmd.wait()
-    return cmd_output, cmd_err, cmd_status
-
-def assure_path_exists(new_dir):
-    if not os.path.exists(new_dir):
-        os.makedirs(new_dir)
-        set_user_grp(new_dir, 'mycodo', 'mycodo')
-
-def set_user_grp(filepath, user, group):
-    uid = pwd.getpwnam(user).pw_uid
-    gid = grp.getgrnam(group).gr_gid
-    os.chown(filepath, uid, gid)
 
 def camera_record(record_type, duration_sec=10):
     now = time.time()
