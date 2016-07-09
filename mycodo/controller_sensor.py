@@ -386,25 +386,21 @@ class SensorController(threading.Thread):
                             self.allowed_to_send_notice = True
                         self.email_count += 1
 
-                        try:
-                            if self.allowed_to_send_notice:
-                                message += "\nNotify {}.".format(
-                                        self.cond_email_notify[cond_id])
-                                if self.cond_camera_record[cond_id] == 'photoemail':
-                                    message += "\nPhoto attached."
-                                    attachment_type = 'still'
-                                elif self.cond_camera_record[cond_id] == 'videoemail':
-                                    message += "\nVideo attached."
-                                    attachment_type = 'video'
-                                with session_scope(MYCODO_DB_PATH) as new_session:
-                                    smtp = new_session.query(SMTP).first()
-                                    email(self.logger, smtp.host, smtp.ssl, smtp.port,
-                                          smtp.user, smtp.passw, smtp.email_from,
-                                          self.cond_email_notify[cond_id], message,
-                                          attachment_file, attachment_type)
-                        except Exception as msg:
-                            self.logger.exception("ER2 {}".format(msg))
-
+                        if self.allowed_to_send_notice:
+                            message += "\nNotify {}.".format(
+                                    self.cond_email_notify[cond_id])
+                            if self.cond_camera_record[cond_id] == 'photoemail':
+                                message += "\nPhoto attached."
+                                attachment_type = 'still'
+                            elif self.cond_camera_record[cond_id] == 'videoemail':
+                                message += "\nVideo attached."
+                                attachment_type = 'video'
+                            with session_scope(MYCODO_DB_PATH) as new_session:
+                                smtp = new_session.query(SMTP).first()
+                                email(self.logger, smtp.host, smtp.ssl, smtp.port,
+                                      smtp.user, smtp.passw, smtp.email_from,
+                                      self.cond_email_notify[cond_id], message,
+                                      attachment_file, attachment_type)
                         else:
                             self.logger.debug("[Sensor Conditional {}] "
                                               "{:.0f} seconds left to be "
