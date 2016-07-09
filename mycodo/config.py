@@ -24,14 +24,14 @@
 
 import os
 
-MYCODO_VERSION = "4.0.2"
+MYCODO_VERSION = '4.0.3'
 
-INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + "/.."
+INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'
 
-LOCK_PATH = "/var/lock"
-DAEMON_PID_FILE = os.path.join(LOCK_PATH, "mycodo.pid")
+LOCK_PATH = '/var/lock'
+DAEMON_PID_FILE = os.path.join(LOCK_PATH, 'mycodo.pid')
 
-LOG_PATH = "/var/log/mycodo" # Where generated logs are stored
+LOG_PATH = '/var/log/mycodo' # Where generated logs are stored
 
 LOGIN_LOG_FILE = os.path.join(LOG_PATH, 'login.log')
 DAEMON_LOG_FILE = os.path.join(LOG_PATH, 'mycodo.log')
