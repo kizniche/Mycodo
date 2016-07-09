@@ -716,14 +716,6 @@ def page(page):
         formCamera = flaskforms.Camera()
         lock_file_stream = '/var/lock/mycodo-camera-stream.lock'
         lock_file_timelapse = '/var/lock/mycodo-camera-timelapse.lock'
-        try:
-            latest_still_img_fullpath = max(glob.iglob(INSTALL_DIRECTORY+'/camera-stills/*.jpg'), key=os.path.getctime)
-            ts = os.path.getmtime(latest_still_img_fullpath)
-            latest_still_img_ts = datetime.datetime.fromtimestamp(ts)
-            latest_still_img = os.path.basename(latest_still_img_fullpath)
-        except:
-            latest_still_img_ts = None
-            latest_still_img = None
 
         if 'start_x=1' not in open('/boot/config.txt').read():
             flash("Camera support doesn't appear to be enabled. Please enable it with 'sudo raspi-config'", "error")
@@ -746,36 +738,45 @@ def page(page):
             if form_name == 'camera':
                 if formCamera.Still.data:
                     try:
-                        if CameraStream().is_running():
-                            CameraStream().terminate()  # Stop camera stream to take a photo
-                            time.sleep(2)
-                            stream_locked = True  # Signal to enable camera stream
+                        # if CameraStream().is_running():
+                        #     CameraStream().terminate()  # Stop camera stream to take a photo
+                        #     time.sleep(2)
+                        #     stream_locked = True  # Signal to enable camera stream
                         camera_record('photo')
-                        time.sleep(1)
                     except Exception as msg:
                         flash("Camera Error: {}".format(msg), "error")
                 elif formCamera.StartTimelapse.data:
-                    # interval_sec = 5
-                    # run_time_sec = 300
-                    # CameraTimelapse().start_timelapse(interval_sec, run_time_sec)
-                    # open('/var/lock/mycodo-camera-timelapse.lock', 'a')
-                    # timelapse_locked = True
-                    pass
+                    CameraTimelapse().start_timelapse(
+                        formCamera.TimelapseInterval.data,
+                        formCamera.TimelapseRunTime.data)
+                    open('/var/lock/mycodo-camera-timelapse.lock', 'a')
+                    timelapse_locked = True
+                    flash("timelapse started {} {}".format(formCamera.TimelapseInterval.data, formCamera.TimelapseRunTime.data), "success")
                 elif formCamera.StopTimelapse.data:
-                    # CameraTimelapse().terminate()
-                    # os.remove('/var/lock/mycodo-camera-timelapse.lock')
-                    # timelapse_locked = False
-                    pass
+                    CameraTimelapse().terminate()
+                    os.remove('/var/lock/mycodo-camera-timelapse.lock')
+                    timelapse_locked = False
                 elif formCamera.StartStream.data:
-                    open(lock_file_stream, 'a')
-                    stream_locked = True
-                    stream = True
+                    pass
+                    # open(lock_file_stream, 'a')
+                    # stream_locked = True
+                    # stream = True
                 elif formCamera.StopStream.data:
-                    if CameraStream().is_running():
-                        CameraStream().terminate()
-                    if os.path.isfile(lock_file_stream):
-                        os.remove(lock_file_stream)
-                    stream_locked = False
+                    pass
+                    # if CameraStream().is_running():
+                    #     CameraStream().terminate()
+                    # if os.path.isfile(lock_file_stream):
+                    #     os.remove(lock_file_stream)
+                    # stream_locked = False
+        try:
+            latest_still_img_fullpath = max(glob.iglob(INSTALL_DIRECTORY+'/camera-stills/*.jpg'), key=os.path.getctime)
+            ts = os.path.getmtime(latest_still_img_fullpath)
+            latest_still_img_ts = datetime.datetime.fromtimestamp(ts)
+            latest_still_img = os.path.basename(latest_still_img_fullpath)
+        except:
+            latest_still_img_ts = None
+            latest_still_img = None
+
         return render_template('pages/camera.html',
                                camera_enabled=camera_enabled,
                                formCamera=formCamera,

@@ -1,8 +1,10 @@
 # coding=utf-8
 
 import csv
+import datetime
 import filecmp
 import geocoder
+import grp
 import logging
 import os
 import picamera
@@ -12,6 +14,7 @@ import resource
 import smtplib
 import socket
 import string
+import subprocess
 import time
 from collections import OrderedDict
 from email.mime.text import MIMEText
@@ -34,6 +37,11 @@ from databases.mycodo_db.models import Sensor
 from databases.mycodo_db.models import Timer
 from databases.users_db.models import Users
 from databases.utils import session_scope
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email.mime.image import MIMEImage
+from email.mime.text import MIMEText
+from email import Encoders
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 USER_DB_PATH = 'sqlite:///' + SQL_DATABASE_USER
@@ -149,38 +157,54 @@ def concat_log_tmp_to_perm(log_file_tmp, log_file_perm, log_lock_path):
 # Camera record
 #
 
-def assure_path_exists(path):
-    dir = os.path.dirname(path)
-    if not os.path.exists(dir):
-            os.makedirs(dir)
+def cmd_output(command):
+    """Executed command and returns a list of lines from the output"""
+    cmd = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+    cmd_output, cmd_err = cmd.communicate()
+    cmd_status = cmd.wait()
+    return cmd_output, cmd_err, cmd_status
+
+def assure_path_exists(new_dir):
+    if not os.path.exists(new_dir):
+        os.makedirs(new_dir)
+        set_user_grp(new_dir, 'mycodo', 'mycodo')
+
+def set_user_grp(filepath, user, group):
+    uid = pwd.getpwnam(user).pw_uid
+    gid = grp.getgrnam(group).gr_gid
+    os.chown(filepath, uid, gid)
 
 def camera_record(record_type, duration_sec=10):
+    now = time.time()
+    timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d_%H-%M-%S')
     if record_type == 'photo':
+        path_stills = '{}/camera-stills'.format(INSTALL_DIRECTORY)
+        still_filename = 'Still-{}.jpg'.format(timestamp)
+        output_filepath = '{}/{}'.format(path_stills, still_filename)
+        assure_path_exists(path_stills)
         with picamera.PiCamera() as camera:
             camera.resolution = (1024, 768)
             camera.hflip = True
             camera.vflip = True
             camera.start_preview()
             time.sleep(2)  # Camera warm-up time
-            now = time.time()
-            timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H-%M-%S')
-            path = '{}/camera-stills'.format(INSTALL_DIRECTORY)
-            assure_path_exists(path)
-            camera.capture('{}/camera-stills/{}.jpg'.format(INSTALL_DIRECTORY, timestamp), use_video_port=True)
-        return '{}/camera-stills/{}.jpg'.format(INSTALL_DIRECTORY, timestamp)
+            camera.capture(output_filepath, use_video_port=True)
     elif record_type == 'video':
+        path_video = '{}/camera-video'.format(INSTALL_DIRECTORY)
+        video_filename = 'Video-{}.h264'.format(timestamp)
+        output_filepath = '{}/{}'.format(path_video, video_filename)
+        assure_path_exists(path_video)
         with picamera.PiCamera() as camera:
-            camera.resolution = (1024, 768)
+            camera.resolution = (1296, 972)
             camera.hflip = True
             camera.vflip = True
-            now = time.time()
-            timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H-%M-%S')
-            path = '{}/camera-videos'.format(INSTALL_DIRECTORY)
-            assure_path_exists(path)
-            camera.start_recording('{}/camera-videos'.format(INSTALL_DIRECTORY, timestamp))
+            camera.start_preview()
+            time.sleep(2)
+            camera.start_recording(output_filepath, format='h264', quality=20)
             camera.wait_recording(duration_sec)
             camera.stop_recording()
-        return 
+    set_user_grp(output_filepath, 'mycodo', 'mycodo')
+    return output_filepath
 
 
 #
@@ -189,12 +213,10 @@ def camera_record(record_type, duration_sec=10):
 
 def email(logging, smtp_host, smtp_ssl,
           smtp_port, smtp_user, smtp_pass,
-          smtp_email_from, email_to, message, attachment=False):
+          smtp_email_from, email_to, message,
+          attachment_file=False, attachment_type=False):
     """
     Email a specific recipient or recipients a message.
-
-    Example:
-        email([email@mydomain.com, you@yourdomain.com], 'Hello!')
 
     :return: success (0) or failure (1)
     :rtype: bool
@@ -213,12 +235,28 @@ def email(logging, smtp_host, smtp_ssl,
             server.ehlo()
             server.starttls()
         server.login(smtp_user, smtp_pass)
-        msg = MIMEText(message.decode('utf-8'), 'plain', 'utf-8')
+        msg = MIMEMultipart()
         msg['Subject'] = "Mycodo Notification ({})".format(socket.gethostname())
         msg['From'] = smtp_email_from
         msg['To'] = email_to
-        if attachment:
-            pass
+        msg_body = MIMEText(message.decode('utf-8'), 'plain', 'utf-8')
+        msg.attach(msg_body)
+
+        if attachment_file and attachment_type == 'still':
+            img_data = open(attachment_file, 'rb').read()
+            image = MIMEImage(img_data, name=os.path.basename(attachment_file))
+            msg.attach(image)
+        elif attachment_file and attachment_type == 'video':
+            out_filename = '{}-compressed.h264'.format(attachment_file)
+            cmd_output('avconv -i "{}" -vf scale=-1:768 -c:v libx264 -preset veryfast -crf 22 -c:a copy "{}"'.format(attachment_file, out_filename))
+            set_user_grp(out_filename, 'mycodo', 'mycodo')
+            f = open(attachment_file, 'rb').read()
+            video = MIMEBase('application', 'octet-stream')
+            video.set_payload(f)
+            Encoders.encode_base64(video)
+            video.add_header('Content-Disposition', 'attachment; filename="{}"'.format(os.path.basename(attachment_file)))
+            msg.attach(video)
+
         server.sendmail(msg['From'], msg['To'].split(","), msg.as_string())
         server.quit()
         return 0

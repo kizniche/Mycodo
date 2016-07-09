@@ -2,7 +2,7 @@
 
 ## An Environmental Monitoring and Regulation System
 
-### Latest version: 4.0.1
+### Latest version: 4.0.2
 
 Mycodo is a remote monitoring and automation system with a focus on environmental regulation from sensor stimuli. Responses can be as simple as a trigger (camera capture, email notification, relay activation) or as complex as a PID controller to regulate conditions in an environment. Mycodo has been used for cultivating gourmet mushrooms, maintaining homeostatsis in a honey bee apiary, incubating eggs, aging cheeses, and more.
 
@@ -162,7 +162,7 @@ Set up the initial settings with raspi-config. **Don't skip the file system expa
 
 ```
 sudo apt-get update -y && sudo apt-get upgrade -y && sudo apt-get autoremove -y
-sudo apt-get install -y git libffi-dev libi2c-dev python-dev python-setuptools python-smbus sqlite3 vim
+sudo apt-get install -y git libav-tools libffi-dev libi2c-dev python-dev python-setuptools python-smbus sqlite3 vim
 sudo easy_install pip
 ```
 

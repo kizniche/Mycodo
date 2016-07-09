@@ -70,6 +70,22 @@ class Camera(Form):
     Still = SubmitField(u'Capture Still')
     StartTimelapse = SubmitField(u'Start Timelapse')
     StopTimelapse = SubmitField(u'Stop Timelapse')
+    TimelapseInterval = DecimalField(
+        u'Photo Interval (sec)',
+        render_kw={"placeholder": ""},
+        validators=[validators.NumberRange(
+            min=0,
+            message="Photo Interval must be a positive value."
+        )]
+    )
+    TimelapseRunTime = DecimalField(
+        u'Total Run Time (sec)',
+        render_kw={"placeholder": ""},
+        validators=[validators.NumberRange(
+            min=0,
+            message="Total Run Time must be a positive value."
+        )]
+    )
     StartStream = SubmitField(u'Start Stream')
     StopStream = SubmitField(u'Stop Stream')
 

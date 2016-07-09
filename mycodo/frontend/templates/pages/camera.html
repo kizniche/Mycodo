@@ -8,27 +8,50 @@
     {% include 'flash_messages.html' %}
 
     {% if camera_enabled %}
-    <div style="padding-bottom: 1.5em">
-      <form class="form-inline" method="post" action="/camera">
+    <form class="form-inline" method="post" action="/camera">
+      <div style="padding-bottom: 1.5em">
         <input type="hidden" name="form-name" value="camera">
         {{formCamera.hidden_tag()}}
         <div class="form-group">
           {{formCamera.Still(class_='form-control btn btn-default')}}
         </div>
-        {% if not stream_locked -%}
+        <!-- {% if not stream_locked -%}
           <div class="form-group">
-            {{formCamera.StartTimelapse(class_='form-control btn btn-default')}}
+            <a data-toggle="collapse" href="#collapseContainerTimelapse" aria-expanded="false" aria-controls="collapseContainerTimelapse" class="btn btn-default" role="button">Create Timelapse</a>
           </div>
-        {%- endif %}
-        <div class="form-group">
+        {%- endif %} -->
+        <!-- <div class="form-group">
           {% if stream_locked -%}
             {{formCamera.StopStream(class_='form-control btn btn-default')}}
           {% else %}
             {{formCamera.StartStream(class_='form-control btn btn-default')}}
           {%- endif %}
+        </div> -->
+      </div>
+
+      <div class="collapse" id="collapseContainerTimelapse" style="padding: 0.5em 0 3em 1em">
+        <div class="form-inline">
+          <div class="form-group">
+            {{formCamera.TimelapseInterval.label(class_='control-label')}}
+            <div>
+              {{formCamera.TimelapseInterval(class_='form-control')}}
+            </div>
+          </div>
+          <div class="form-group">
+            {{formCamera.TimelapseRunTime.label(class_='control-label')}}
+            <div>
+              {{formCamera.TimelapseRunTime(class_='form-control')}}
+            </div>
+          </div>
+          <div class="form-group">
+            <label></label>
+            <div>
+              {{formCamera.StartTimelapse(class_='form-control btn btn-default')}}
+            </div>
+          </div>
         </div>
-      </form>
-    </div>
+      </div>
+    </form>
     {% endif %}
 
     {%- if stream_locked -%}

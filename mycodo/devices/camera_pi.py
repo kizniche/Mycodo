@@ -86,9 +86,9 @@ class CameraTimelapse(object):
         CameraTimelapse.terminate = True
 
     def start_timelapse(self, interval_sec, run_time_sec):
-        CameraTimelapse.interval_sec = interval_sec
-        CameraTimelapse.run_time_sec = time.time()+run_time_sec
-        initialize()
+        CameraTimelapse.interval_sec = float(interval_sec)
+        CameraTimelapse.run_time_sec = time.time()+float(run_time_sec)
+        self.initialize()
 
     @classmethod
     def _thread(cls):

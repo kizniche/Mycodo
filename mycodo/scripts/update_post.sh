@@ -48,7 +48,7 @@ rm -rf /etc/systemd/system/multi-user.target.wants/mycodo.service
 systemctl enable $INSTALL_DIRECTORY/mycodo/scripts/mycodo.service
 
 printf "#### Checking if apt requirements met ####\n"
-sudo apt-get install -y libffi-dev libi2c-dev python-dev python-setuptools python-smbus sqlite3
+sudo apt-get install -y libav-tools libffi-dev libi2c-dev python-dev python-setuptools python-smbus sqlite3
 
 printf "#### Checking if python modules are up-to-date ####\n"
 # Make sure python modules are installed/updated
