@@ -970,7 +970,7 @@ def do_admin_login():
                 new_session.expunge_all()
                 new_session.close()
             if not user:
-                flaskutils.login_log(user.user_name, user.user_restriction,
+                flaskutils.login_log(form.username.data, 'NA',
                     request.environ['REMOTE_ADDR'], 'NOUSER')
                 flaskutils.failed_login()
             elif Users().check_password(form.password.data, user.user_password_hash) == user.user_password_hash:
