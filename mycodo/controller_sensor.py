@@ -276,7 +276,7 @@ class SensorController(threading.Thread):
                 self.sensor_id,
                 (timeit.default_timer()-self.thread_shutdown_timer)*1000))
         except Exception as msg:
-            self.logger.debug("[Sensor {}] Error: {}".format(self.sensor_id,
+            self.logger.exception("[Sensor {}] Error: {}".format(self.sensor_id,
                                                              msg))
 
 
@@ -494,7 +494,7 @@ class SensorController(threading.Thread):
                     else:
                         measurements[self.adc_measure] = converted_units
             except Exception as msg:
-                self.logger.warning("[Sensor {}] Error while attempting to read "
+                self.logger.exception("[Sensor {}] Error while attempting to read "
                                     "adc: {}".format(self.sensor_id, msg))
             finally:
                 self.release_lock(self.adc_address, self.adc_lock_file)
@@ -503,7 +503,7 @@ class SensorController(threading.Thread):
                 # Get measurement from sensor
                 measurements = self.measure_sensor.next()
             except Exception as msg:
-                self.logger.warning("[Sensor {}] Error while attempting to read "
+                self.logger.exception("[Sensor {}] Error while attempting to read "
                                     "sensor: {}".format(self.sensor_id, msg))
 
         if self.multiplexer:
@@ -527,7 +527,7 @@ class SensorController(threading.Thread):
                     self.logger.debug("[Locking 0x{:02X}] Acquiring Lock: {}".format(i2c_address, self.lock[lockfile].path))
                     self.lock[lockfile].acquire(timeout=60)    # wait up to 60 seconds
                 except:
-                    self.logger.warning("[Locking 0x{:02X}] Waited 60 seconds. Breaking lock to acquire {}".format(i2c_address, self.lock[lockfile].path))
+                    self.logger.exception("[Locking 0x{:02X}] Waited 60 seconds. Breaking lock to acquire {}".format(i2c_address, self.lock[lockfile].path))
                     self.lock[lockfile].break_lock()
                     self.lock[lockfile].acquire()
             self.logger.debug("[Locking 0x{:02X}] Acquired Lock: {}".format(i2c_address, self.lock[lockfile].path))

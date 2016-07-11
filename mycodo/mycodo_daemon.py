@@ -172,7 +172,7 @@ class DaemonController(threading.Thread):
 
                 time.sleep(0.25)
         except Exception as except_msg:
-            self.logger.warning("Unexpected error: {}: {}".format(
+            self.logger.exception("Unexpected error: {}: {}".format(
                 sys.exc_info()[0], except_msg))
             raise
         # if it errors or finishes, shut it down
@@ -383,7 +383,7 @@ class DaemonController(threading.Thread):
             else:
                 self.timer_stats = float(stat_dict['next_send'])
         except Exception as msg:
-            self.logger.warning("Error: Cound not read file. Deleting file and regenerating. Error msg: {}".format(msg))
+            self.logger.exception("Error: Cound not read file. Deleting file and regenerating. Error msg: {}".format(msg))
             os.remove(STATS_CSV)
             daemonutils.recreate_stat_file()
         try:
@@ -391,7 +391,7 @@ class DaemonController(threading.Thread):
                              STATS_PORT, STATS_USER,
                              STATS_PASSWORD, STATS_DATABASE)
         except Exception as msg:
-            self.logger.warning("Error: Cound not send statistics: {}".format(msg))
+            self.logger.exception("Error: Cound not send statistics: {}".format(msg))
 
 
     def startup_stats(self):
@@ -417,7 +417,7 @@ class DaemonController(threading.Thread):
             daemonutils.add_update_stat(
                 self.logger, 'daemon_startup_seconds', daemon_startup_time)
         except Exception as msg:
-            self.logger.warning(
+            self.logger.exception(
                 "[Daemon] Statistics initilization Error: {}".format(msg))
 
 

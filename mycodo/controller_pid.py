@@ -128,7 +128,7 @@ class PIDController(threading.Thread):
                 self.pid_id,
                 (timeit.default_timer()-self.thread_shutdown_timer)*1000))
         except Exception as except_msg:
-                self.logger.warning("[PID {}] Error: {}".format(self.pid_id,
+                self.logger.exception("[PID {}] Error: {}".format(self.pid_id,
                                                                 except_msg))
 
 
@@ -205,7 +205,7 @@ class PIDController(threading.Thread):
                 self.logger.warning("[PID {}] No data returned "
                                     "from influxdb".format(self.pid_id))
         except Exception as except_msg:
-            self.logger.warning("[PID {}] Failed to read "
+            self.logger.exception("[PID {}] Failed to read "
                                 "measurement from the influxdb "
                                 "database: {}".format(self.pid_id,
                                                       except_msg))

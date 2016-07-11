@@ -74,111 +74,6 @@ def set_user_grp(filepath, user, group):
 
 
 #
-# Logging
-#
-
-def append_line_to_mycodo_log(log_file_path, log_lock_path, log_line):
-    """
-    Appends given line to log file.
-
-    :return:
-    :rtype:
-
-    :param log_file_path: Path to the Log File
-    :type log_file_path: str
-    :param log_lock_path: Path to the Lock File
-    :type log_lock_path: str
-    :param log_line: String to write to the Log File
-    :type log_line: str
-    """
-    lock = LockFile(log_lock_path)
-    while not lock.i_am_locking():
-        try:
-            logging.debug("[Write Sensor Log] Acquiring Lock: {}".format(lock.path))
-            lock.acquire(timeout=60)  # wait up to 60 seconds
-        except:  # TODO Needs better catch statement
-            logging.warning("[Write Sensor Log] Breaking Lock to Acquire: {}".format(lock.path))
-            lock.break_lock()
-            lock.acquire()
-        finally:
-            logging.debug("[Write Sensor Log] Gained lock: {}".format(lock.path))
-    try:
-        with open(log_file_path, "ab") as sensorlog:
-            pass
-            sensorlog.write(log_line + "\n")
-
-            # Temperature:
-            # sensorlog.write('{"%Y/%m/%d-%H:%M:%S"} {:.1f} {}'.format(now(), sensor_t_read_temp_c[sensor], sensor))
-
-            # Temperature/Humidity:
-            # sensorlog.write('{"%Y/%m/%d-%H:%M:%S"} {:.1f} {:.1f} {:.1f} {}'.format(now(), sensor_ht_read_temp_c[sensor], sensor_ht_read_hum[sensor], sensor_ht_dewpt_c[sensor], sensor))
-
-            # CO2
-            # sensorlog.write('{"%Y/%m/%d-%H:%M:%S"} {} {}'.format(now(), sensor_co2_read_co2[sensor], sensor))
-
-            # Pressure
-            # sensorlog.write('{"%Y/%m/%d-%H:%M:%S"} {:.1f} {} {:.1f} {}'.format(now(), sensor_press_read_temp_c[sensor], sensor_press_read_press[sensor], sensor_press_read_alt[sensor], sensor))
-
-            # Relay
-            # relaylog.write('{"%Y/%m/%d-%H:%M:%S"} {} {} {} {:.2f}'.format(now(), sensor, relayNumber, gpio, relaySeconds))
-
-            logging.debug("[Write Sensor Log] Data appended to {}".format(
-                          log_file_path))
-    except:  # TODO Needs better catch statement
-        logging.warning("[Write Sensor Log] Unable to append data to %s",
-                        log_file_path)
-    logging.debug("[Write Sensor Log] Removing lock: {}".format(lock.path))
-    lock.release()
-
-
-def concat_log_tmp_to_perm(log_file_tmp, log_file_perm, log_lock_path):
-    """
-    Combines logs on the temporary file system with the logs on the SD card.
-    
-    :return:
-    :rtype:
-
-    :param log_file_tmp: Path to the Log File on the tmpfs
-    :type log_file_tmp: str
-    :param log_file_perm: Path to the Log File on the SD Card
-    :type log_file_perm: str
-    :param log_lock_path: Path to the lock file
-    :type log_lock_path: str
-    """
-    # Daemon Logs
-    if not filecmp.cmp(log_file_tmp, log_file_perm):
-        logging.debug("[Log Backup] Concatenating log cache"
-                      " ({}) to permanent storage ({})".format(log_file_tmp, log_file_perm))
-        lock = LockFile(log_lock_path)
-
-        while not lock.i_am_locking():
-            try:
-                logging.debug("[Log Backup] Acquiring Lock: {}".format(lock.path))
-                lock.acquire(timeout=60)  # wait up to 60 seconds
-            except:  # TODO Needs better catch statement
-                logging.warning("[Log Backup] Breaking Lock to Acquire: {}".format(lock.path))
-                lock.break_lock()
-                lock.acquire()
-            finally:
-                logging.debug("[Log Backup] Gained lock: {}".format(lock.path))
-        try:
-            with open(log_file_perm, 'a') as fout, open(log_file_tmp, 'r+') as tmp_log:
-                for line in tmp_log:
-                    fout.write(line)
-            logging.debug("[Log Backup] Appended log data to {}".format(log_file_perm))
-            tmp_log.truncate()  # Clear tmp_log if we've copied the lines over
-        except:  # TODO Needs better catch statement
-            logging.warning("[Log Backup] Unable to append data to {}".format(log_file_perm))
-
-        logging.debug("[Log Backup] Removing lock: {}".format(lock.path))
-        lock.release()
-    else:
-        logging.debug(
-                "[Log Backup] Logs the same, skipping. ({}) ({})".format(log_file_tmp,
-                                                                         log_file_perm))
-
-
-#
 # Camera record
 #
 
@@ -270,9 +165,8 @@ def email(logging, smtp_host, smtp_ssl,
         return 0
     except Exception as error:
         if logging:
-            logging.warning("[Email Notification] Error: {}".format(error))
-            logging.warning("[Email Notification] Cound not send email to {} "
-                            "with message: {}".format(email_to, message))
+            logging.exception("[Email Notification] Cound not send email to {} "
+                            "with message: {}. Error: {}".format(email_to, message, error))
         return 1
 
 
@@ -415,10 +309,9 @@ def write_influxdb(logger, host, port, user, password,
         #                                            device_type))
         return 0
     except Exception as except_msg:
-        logger.debug('Failed to write measurement to influxdb (Device ID: '
-                     '{})'.format(device_id))
-        logger.debug('Data that was submitted for writing: {}'.format(data))
-        logger.debug('Exception: {}'.format(except_msg))
+        logger.exception('Failed to write measurement to influxdb (Device ID: '
+                         '{}). Data that was submitted for writing: {}. '
+                         'Exception: {}'.format(device_id, data, except_msg))
         return 1
 
 
@@ -593,7 +486,7 @@ def add_update_stat(logger, stat, value):
         os.chmod(STATS_CSV, 0664)
         os.remove(tempfilename)  # delete backed-up original
     except Exception as except_msg:
-        logger.warning('[Statistics] Could not update stat csv: '
+        logger.exception('[Statistics] Could not update stat csv: '
             '{}'.format(except_msg))
         os.rename(tempfilename, STATS_CSV)  # rename temp file to original
 
@@ -670,7 +563,7 @@ def send_stats(logger, host, port, user, password, dbname):
         logger.debug("[Daemon] Sent anonymous usage statistics")
         return 0
     except Exception as except_msg:
-        logger.warning('[Daemon] Could not send anonymous usage statictics: '
+        logger.exception('[Daemon] Could not send anonymous usage statictics: '
             '{}'.format(except_msg))
         return 1
 

@@ -242,7 +242,7 @@ class LCDController(threading.Thread):
                     I2C_bus_number = 0
                 self.bus = smbus.SMBus(I2C_bus_number)
             except Exception as except_msg:
-                self.logger.debug("Could not initialize I2C bus: {}".format(
+                self.logger.exception("Could not initialize I2C bus: {}".format(
                     except_msg))
 
             self.I2C_ADDR = int(self.lcd_pin, 16)
@@ -251,43 +251,47 @@ class LCDController(threading.Thread):
             self.lcd_string_write('Start {}'.format(
                 self.lcd_name), self.LCD_LINE[2])
         except Exception as except_msg:
-            self.logger.warning("[LCD {}] Error: {}".format(
+            self.logger.exception("[LCD {}] Error: {}".format(
                 self.lcd_id, except_msg))
 
 
     def run(self):
-        self.running = True
-        self.logger.info("[LCD {}] Activated in {}ms".format(
-            self.lcd_id,
-            (timeit.default_timer()-self.thread_startup_timer)*1000))
-        self.ready.set()
+        try:
+            self.running = True
+            self.logger.info("[LCD {}] Activated in {}ms".format(
+                self.lcd_id,
+                (timeit.default_timer()-self.thread_startup_timer)*1000))
+            self.ready.set()
 
-        while (self.running):
-            if time.time() > self.timer:
-                self.get_lcd_strings()
-                self.output_lcds()
-                self.timer = time.time() + self.lcd_period
+            while (self.running):
+                if time.time() > self.timer:
+                    self.get_lcd_strings()
+                    self.output_lcds()
+                    self.timer = time.time() + self.lcd_period
 
-            if self.flash_lcd_on:
-                if time.time() > self.backlight_timer:
-                    if self.lcd_is_on:
-                        self.lcd_backlight(0)
-                        seconds = 0.2
-                    else:
-                        self.output_lcds()
-                        seconds = 1.1
-                    self.backlight_timer = time.time()+seconds
+                if self.flash_lcd_on:
+                    if time.time() > self.backlight_timer:
+                        if self.lcd_is_on:
+                            self.lcd_backlight(0)
+                            seconds = 0.2
+                        else:
+                            self.output_lcds()
+                            seconds = 1.1
+                        self.backlight_timer = time.time()+seconds
 
-            time.sleep(1)
+                time.sleep(1)
 
-        self.lcd_init()  # Blank LCD
-        self.lcd_string_write('Mycodo Shut Down', self.LCD_LINE[1]) 
-        self.lcd_string_write('{}'.format(self.lcd_name), self.LCD_LINE[2]) 
+            self.lcd_init()  # Blank LCD
+            self.lcd_string_write('Mycodo Shut Down', self.LCD_LINE[1]) 
+            self.lcd_string_write('{}'.format(self.lcd_name), self.LCD_LINE[2]) 
 
-        self.running = False
-        self.logger.info("[LCD {}] Deactivated in {}ms".format(
-            self.lcd_id,
-            (timeit.default_timer()-self.thread_shutdown_timer)*1000))
+            self.running = False
+            self.logger.info("[LCD {}] Deactivated in {}ms".format(
+                self.lcd_id,
+                (timeit.default_timer()-self.thread_shutdown_timer)*1000))
+        except Exception as except_msg:
+            self.logger.exception("[LCD {}] Exception: {}".format(
+                self.lcd_id, except_msg))
 
 
     def get_lcd_strings(self):
@@ -343,7 +347,7 @@ class LCDController(threading.Thread):
                             self.logger.debug("[LCD {}] No data returned "
                                 "from influxdb".format(self.lcd_id))
                 except Exception as except_msg:
-                    self.logger.warning("[LCD {}] Failed to read "
+                    self.logger.exception("[LCD {}] Failed to read "
                         "measurement from the influxdb database: "
                         "{}".format(self.lcd_id, except_msg))
 
@@ -396,7 +400,7 @@ class LCDController(threading.Thread):
                     else:
                         self.lcd_string_line[i] = 'NO DATA < 5 MIN'
                 except Exception as except_msg:
-                    self.logger.warning("[LCD {}] Error ({}): {}".format(
+                    self.logger.exception("[LCD {}] Error ({}): {}".format(
                         self.lcd_id, except_msg))
             else:
                 self.lcd_string_line[i] = ''

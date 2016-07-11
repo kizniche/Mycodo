@@ -70,7 +70,8 @@ case "${1:-''}" in
                     printf "Error: update_post.sh not found\n"
                 fi
                 
-                printf "#### Update Finished ####\n\n"
+                END=$(date +"%Y-%m-%d_%H-%M-%S")
+                printf "#### Update Finished at $END ####\n\n"
 
                 echo '0' > $INSTALL_DIRECTORY/.updating
                 exit 0

@@ -116,7 +116,7 @@ class LogController(threading.Thread):
                                     "influxdb could be "
                                     "retrieved.".format(self.log_id))
         except Exception as except_msg:
-            self.logger.warning("[Log {}] Could not retrieve influxdb"
+            self.logger.exception("[Log {}] Could not retrieve influxdb"
                                 " data: {}".format(self.log_id,
                                                    except_msg))
 
