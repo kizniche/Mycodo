@@ -42,23 +42,23 @@ case "${1:-''}" in
     'upgrade')
         echo "1" > $INSTALL_DIRECTORY/.updating
         NOW=$(date +"%m-%d-%Y %H:%M:%S")
-        printf "#### Update initiated $NOW ####\n"
+        printf "#### Update Initiated $NOW ####\n"
 
-        printf "#### Checking if there is an update ####\n"
+        printf "#### Checking for Update ####\n"
         git fetch origin
 
         if git status -uno | grep 'Your branch is behind' > /dev/null; then
             git status -uno | grep 'Your branch is behind'
-            printf "The remote repository is newer than yours. This could mean there is an update to Mycodo.\n"
+            printf "The remote git repository is newer than yours. This could mean there is an update to Mycodo.\n"
 
             if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
-                printf "#### Stopping Mycodo daemon ####\n"
+                printf "#### Stopping Mycodo Daemon ####\n"
                 $INSTALL_DIRECTORY/mycodo/mycodo_client.py -t
 
                 # Create backup
                 $INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh backup
 
-                printf "#### Updating from github ####\n"
+                printf "#### Updating From GitHub ####\n"
                 git fetch
                 git reset --hard origin/master
 
@@ -70,8 +70,8 @@ case "${1:-''}" in
                     printf "Error: update_post.sh not found\n"
                 fi
                 
-                END=$(date +"%Y-%m-%d_%H-%M-%S")
-                printf "#### Update Finished at $END ####\n\n"
+                END=$(date +"%m-%d-%Y %H:%M:%S")
+                printf "#### Update Finished $END ####\n\n"
 
                 echo '0' > $INSTALL_DIRECTORY/.updating
                 exit 0
