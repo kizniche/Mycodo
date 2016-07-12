@@ -130,6 +130,7 @@ class Sensor(Base):
     multiplexer_channel = Column(INT)
     adc_address = Column(TEXT)
     adc_channel = Column(INT)
+    adc_gain = Column(INT)
     adc_resolution = Column(INT)
     adc_measure = Column(TEXT)
     adc_measure_units = Column(TEXT)

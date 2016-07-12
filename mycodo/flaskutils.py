@@ -481,7 +481,7 @@ def choices_sensors(sensor):
             display = '{} ({}) Edge'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value:display})
-        if each_sensor.device == 'MCP342x':
+        if each_sensor.device in ['ADS1x15', 'MCP342x']:
             value = '{},voltage'.format(each_sensor.id)
             display = '{} ({}) Volts'.format(
                 each_sensor.id, each_sensor.name)
@@ -1439,13 +1439,11 @@ def sensor_add(formAddSensor, display_order):
             new_sensor.location = ''
             new_sensor.multiplexer_address = ''
             new_sensor.multiplexer_channel = 0
-            new_sensor.adc_address = ''
             new_sensor.adc_channel = 0
+            new_sensor.adc_gain = 1
             new_sensor.adc_resolution = 18
             new_sensor.adc_measure = 'Condition'
             new_sensor.adc_measure_units = 'Unit'
-            new_sensor.adc_volts_min = -2.048
-            new_sensor.adc_volts_max = 2.048
             new_sensor.adc_units_min = 0.0
             new_sensor.adc_units_max = 10.0
             new_sensor.switch_edge = 'rising'
@@ -1480,8 +1478,16 @@ def sensor_add(formAddSensor, display_order):
             elif formAddSensor.sensor.data == 'TSL2561':
                 new_sensor.device_type = 'luxsensor'
                 new_sensor.location = '0x39'
+            elif formAddSensor.sensor.data == 'ADS1x15':
+                new_sensor.device_type = 'analogsensor'
+                new_sensor.adc_address = '0x48'
+                new_sensor.adc_volts_min = -4.096
+                new_sensor.adc_volts_max = 4.096
             elif formAddSensor.sensor.data == 'MCP342x':
                 new_sensor.device_type = 'analogsensor'
+                new_sensor.adc_address = '0x68'
+                new_sensor.adc_volts_min = -2.048
+                new_sensor.adc_volts_max = 2.048
 
             try:
                 with session_scope(MYCODO_DB_PATH) as db_session:
@@ -1534,6 +1540,7 @@ def sensor_mod(formModSensor):
             mod_sensor.multiplexer_channel = formModSensor.modMultiplexChannel.data
             mod_sensor.adc_address = formModSensor.modADCAddress.data
             mod_sensor.adc_channel = formModSensor.modADCChannel.data
+            mod_sensor.adc_gain = formModSensor.modADCGain.data
             mod_sensor.adc_resolution = formModSensor.modADCResolution.data
             mod_sensor.adc_measure = formModSensor.modADCMeasure.data.replace(" ", "_")
             mod_sensor.adc_measure_units = formModSensor.modADCMeasureUnits.data

@@ -1,3 +1,8 @@
+adafruit-ads1x15
+adafruit-bmp
+adafruit-dht
+adafruit-gpio
+adafruit-tmp
 alembic
 argparse
 bcrypt
@@ -23,13 +28,13 @@ WTForms == 2.1
 -e git://github.com/stevemarple/python-MCP342x.git#egg=MCP342x
 
 #Adafruit_GPIO
--e git://github.com/adafruit/Adafruit_Python_GPIO.git#egg=Adafruit_GPIO
+#-e git://github.com/adafruit/Adafruit_Python_GPIO.git#egg=Adafruit_GPIO
 
 #Adafruit_TMP
--e git://github.com/adafruit/Adafruit_Python_TMP.git#egg=Adafruit_TMP
+#-e git://github.com/adafruit/Adafruit_Python_TMP.git#egg=Adafruit_TMP
 
 #Adafruit_DHT
--e git://github.com/adafruit/Adafruit_Python_DHT.git#egg=Adafruit_DHT
+#-e git://github.com/adafruit/Adafruit_Python_DHT.git#egg=Adafruit_DHT
 
 #Adafruit_BMP
--e git://github.com/adafruit/Adafruit_Python_BMP.git#egg=Adafruit_BMP
+#-e git://github.com/adafruit/Adafruit_Python_BMP.git#egg=Adafruit_BMP

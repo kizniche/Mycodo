@@ -16,6 +16,7 @@ from lockfile import LockFile
 
 # Sensor/device modules tested and working
 from devices.tca9548a import TCA9548A
+from devices.ads1x15 import ADS1x15_read
 from devices.mcp342x import MCP342x_read
 from sensors.am2315 import AM2315_read
 from sensors.bmp import BMP
@@ -105,6 +106,7 @@ class SensorController(threading.Thread):
             self.multiplexer_channel = sensor.multiplexer_channel
             self.adc_address_raw = sensor.adc_address
             self.adc_channel = sensor.adc_channel
+            self.adc_gain = sensor.adc_gain
             self.adc_resolution = sensor.adc_resolution
             self.adc_measure = sensor.adc_measure
             self.adc_measure_units = sensor.adc_measure_units
@@ -152,11 +154,14 @@ class SensorController(threading.Thread):
         else:
             self.multiplexer = None
 
-        if self.device_type == 'MCP342x' and self.adc_address_raw:
+        if self.device_type in ['ADS1x15','MCP342x'] and self.adc_address_raw:
             self.adc_address_string = self.adc_address_raw
             self.adc_address = int(str(self.adc_address_raw), 16)
             self.adc_lock_file = "/var/lock/mycodo_adc_0x{:02X}.pid".format(self.adc_address)
-            self.adc = MCP342x_read(self.logger, self.adc_address, self.adc_channel, self.adc_resolution)
+            if self.device_type == 'ADS1x15':
+                self.adc = ADS1x15_read(self.logger, self.adc_address, self.adc_channel, self.gain)
+            if self.device_type == 'MCP342x':
+                self.adc = MCP342x_read(self.logger, self.adc_address, self.adc_channel, self.gain, self.adc_resolution)
         else:
             self.adc = None
 
@@ -181,7 +186,7 @@ class SensorController(threading.Thread):
             self.measure_sensor = TMP006_read(self.location)
         elif self.device_type == 'TSL2561':
             self.measure_sensor = TSL2561_read(self.location)
-        elif self.device_type in ['EDGE', 'MCP342x']:
+        elif self.device_type in ['EDGE', 'ADS1x15', 'MCP342x']:
             self.measure_sensor = None
         else:
             self.device_recognized = False
@@ -301,7 +306,7 @@ class SensorController(threading.Thread):
                                          'temperature_die',
                                          'lux',
                                          'voltage'] or
-                        self.device_type == 'MCP342x'):
+                        self.device_type in ['ADS1x15', 'MCP342x']):
                     write_db = threading.Thread(
                         target=write_influxdb,
                         args=(self.logger, INFLUXDB_HOST,
@@ -705,6 +710,6 @@ class SensorController(threading.Thread):
 
     def stopController(self):
         self.thread_shutdown_timer = timeit.default_timer()
-        if self.device_type not in  ['EDGE', 'MCP342x']:
+        if self.device_type not in  ['EDGE', 'ADS1x15', 'MCP342x']:
             self.measure_sensor.stopSensor()
         self.running = False

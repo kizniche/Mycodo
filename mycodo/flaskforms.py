@@ -769,6 +769,7 @@ class AddSensor(Form):
             ('EDGE', 'Edge Detection: Simple Switch'),
             ('RPi', 'Raspberry Pi CPU Temperature'),
             ('RPiCPULoad', 'Raspberry Pi CPU Load'),
+            ('ADS1x15', 'Analog to Digital Converter: ADS1x15'),
             ('MCP342x', 'Analog to Digital Converter: MCP342x'),
             ('K30', 'CO2: K30'),
             ('TSL2561', 'Luminance: TSL2561'),
@@ -782,7 +783,7 @@ class AddSensor(Form):
         ],
         validators=[DataRequired()]
     )
-    sensorAddSubmit = SubmitField(u'Add Sensors')
+    sensorAddSubmit = SubmitField(u'Add Device')
 
 class ModSensor(Form):
     modSensor_id = HiddenField(u'Sensor')
@@ -810,6 +811,10 @@ class ModSensor(Form):
     modADCChannel = IntegerField(
         u'ADC Channel',
         render_kw={"placeholder": "Channel"}
+    )
+    modADCGain = IntegerField(
+        u'ADC Gain',
+        render_kw={"placeholder": "Gain"}
     )
     modADCResolution = IntegerField(
         u'ADC Resolution',

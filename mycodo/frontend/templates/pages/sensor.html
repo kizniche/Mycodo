@@ -47,7 +47,7 @@
                 </div>
               </div>
               <div class="form-group">
-                  {{formModSensor.modName.label(class_='control-label')}}
+                {{formModSensor.modName.label(class_='control-label')}}
                 <div>
                   {{formModSensor.modName(class_='form-control', value=each_sensor.name, **{'title':'A common name to distinguish this sensor from others'})}}
                 </div>
@@ -74,7 +74,7 @@
                 </div>
               {% else -%}
                 <div class="form-group">
-                    <label class="control-label"></label>
+                  <label class="control-label"></label>
                   <div>
                     {{formModSensor.csrf_token}}
                     {{formModSensor.activateSensorSubmit(class_='form-control btn btn-default')}}
@@ -83,7 +83,7 @@
               {% endif -%}
             {% if each_sensor.device != 'RPiCPULoad' -%}
               <div class="form-group">
-                  <label class="control-label"></label>
+                <label class="control-label"></label>
                 <div>
                   {{formModSensor.csrf_token}}
                   {{formModSensor.sensorCondAddSubmit(class_='form-control btn btn-default')}}
@@ -91,7 +91,7 @@
               </div>
             {% endif -%}
               <div class="form-group">
-                  <label class="control-label"></label>
+                <label class="control-label"></label>
                 <div>
                   {{formModSensor.csrf_token}}
                   {{formModSensor.orderSensorUp(class_='form-control btn btn-default')}}
@@ -99,7 +99,7 @@
                 </div>
               </div>
               <div class="form-group">
-                  <label class="control-label"></label>
+                <label class="control-label"></label>
                 <div>
                   {{formModSensor.csrf_token}}
                   {% if has_active_pid or has_active_lcd -%}
@@ -115,7 +115,7 @@
               </div>
             </div>
             <div style="padding: 0.5em;" class="form-inline">
-              {% if each_sensor.device not in ['RPi', 'RPiCPULoad'] -%}
+              {% if each_sensor.device not in ['RPi', 'RPiCPULoad', 'ADS1x15', 'MCP342x'] -%}
                 <div class="form-group">
                   <label class="control-label">
                     {%- if each_sensor.device in ['DHT11', 'DHT22', 'SHT', 'EDGE'] -%}
@@ -123,7 +123,7 @@
                     {%- elif each_sensor.device == 'DS18B20' -%}
                       Device ID (28-x)
                     {%- elif each_sensor.device in ['AM2315', 'BMP', 'TSL2561', 'TMP006'] -%}
-                      I2C Address
+                      I<sup>2</sup>C Address
                     {%- elif each_sensor.device == 'K30' -%}
                       Interface
                     {%- endif -%}
@@ -137,10 +137,36 @@
                     {% endif -%}
                   </div>
                 </div>
+              {% elif each_sensor.device == 'ADS1x15' %}
+                <div class="form-group">
+                  <label class="control-label">I2C Address</label>
+                  <div>
+                    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modADCAddress" name="modADCAddress" title="The I2C address of the analog to digital converter.">
+                      <option value=""{% if each_sensor.adc_address == '' %} selected{% endif %}></option>
+                      <option value="0x68"{% if each_sensor.adc_address == '0x48' %} selected{% endif %}>Address 0x68</option>
+                      <option value="0x6A"{% if each_sensor.adc_address == '0x49' %} selected{% endif %}>Address 0x6A</option>
+                      <option value="0x6C"{% if each_sensor.adc_address == '0x4A' %} selected{% endif %}>Address 0x6C</option>
+                      <option value="0x6E"{% if each_sensor.adc_address == '0x4B' %} selected{% endif %}>Address 0x6E</option>
+                    </select>
+                  </div>
+                </div>
+              {% elif each_sensor.device == 'MCP342x' %}
+                <div class="form-group">
+                  <label class="control-label">I<sup>2</sup>C Address</label>
+                  <div>
+                    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modADCAddress" name="modADCAddress" title="The I2C address of the analog to digital converter.">
+                      <option value=""{% if each_sensor.adc_address == '' %} selected{% endif %}></option>
+                      <option value="0x68"{% if each_sensor.adc_address == '0x68' %} selected{% endif %}>Address 0x68</option>
+                      <option value="0x6A"{% if each_sensor.adc_address == '0x6A' %} selected{% endif %}>Address 0x6A</option>
+                      <option value="0x6C"{% if each_sensor.adc_address == '0x6C' %} selected{% endif %}>Address 0x6C</option>
+                      <option value="0x6E"{% if each_sensor.adc_address == '0x6E' %} selected{% endif %}>Address 0x6E</option>
+                    </select>
+                  </div>
+                </div>
               {% endif -%}
               {% if each_sensor.device == 'EDGE' -%}
                 <div class="form-group">
-                    <label class="control-label">Edge</label>
+                  <label class="control-label">Edge</label>
                   <div>
                     <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modSwitchEdge" name="modSwitchEdge" title="Detect low to high (rising), high to low (falling), or both?">
                       <option value="rising"{% if each_sensor.switch_edge == "rising" %} selected{% endif %}>Rising</option>
@@ -150,13 +176,13 @@
                   </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label">Bounce Time (ms)</label>
+                  <label class="control-label">Bounce Time (ms)</label>
                   <div>
                     {{formModSensor.modSwitchBounceTime(class_='form-control', value=each_sensor.switch_bouncetime, **{'title':'The amount of time to bounce the input signal, in miliseconds.'})}}
                   </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label">Refractory Period (sec)</label>
+                  <label class="control-label">Refractory Period (sec)</label>
                   <div>
                     {{formModSensor.modSwitchResetPeriod(class_='form-control', value=each_sensor.switch_reset_period, **{'title':'How long to wait after the first edge detection to begin detecting again, in seconds.'})}}
                   </div>
@@ -164,7 +190,7 @@
               {% endif -%}
               {% if each_sensor.device != 'EDGE' -%}
                 <div class="form-group">
-                    {{formModSensor.modPeriod.label(class_='control-label')}}
+                  {{formModSensor.modPeriod.label(class_='control-label')}}
                   <div>
                     {{formModSensor.modPeriod(class_='form-control', value=each_sensor.period, **{'title':'The duration between sensor reads, in seconds.'})}}
                   </div>
@@ -172,7 +198,7 @@
               {% endif -%}
               {% if each_sensor.device != 'RPiCPULoad' -%}
                 <div class="form-group">
-                    {{formModSensor.modPreRelayID.label(class_='control-label')}}
+                  {{formModSensor.modPreRelayID.label(class_='control-label')}}
                   <div>
                     <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modPreRelayID" name="modPreRelayID" title="Turn the selected relay on before taking a measurement.">
                       <option value="">Disabled</option>
@@ -183,7 +209,7 @@
                   </div>
                 </div>
                 <div class="form-group">
-                    {{formModSensor.modPreRelayDuration.label(class_='control-label')}}
+                  {{formModSensor.modPreRelayDuration.label(class_='control-label')}}
                   <div>
                     {{formModSensor.modPreRelayDuration(class_='form-control', value=each_sensor.pre_relay_duration, **{'title':'If a Pre Relay is selected, set the duration to turn the Pre Relay on, in seconds.'})}}
                   </div>
@@ -191,21 +217,21 @@
               {% endif -%}
               {% if each_sensor.device == 'SHT' -%}
                 <div class="form-group">
-                    {{formModSensor.modSHTClockPin.label(class_='control-label')}}
+                  {{formModSensor.modSHTClockPin.label(class_='control-label')}}
                   <div>
                     {{formModSensor.modSHTClockPin(class_='form-control', value=each_sensor.sht_clock_pin, **{'title':'The GPIO pin of the Raspberry Pi connected to the SHT sensor clock pin.'})}}
                   </div>
                 </div>
                 <div class="form-group">
-                    {{formModSensor.modSHTVoltage.label(class_='control-label')}}
+                  {{formModSensor.modSHTVoltage.label(class_='control-label')}}
                   <div>
                     {{formModSensor.modSHTVoltage(class_='form-control', value=each_sensor.sht_voltage, **{'title':'The input voltage to the SHT sensor.'})}}
                   </div>
                 </div>
               {% endif -%}
-              {% if each_sensor.device in ['AM2315', 'BMP', 'TSL2561', 'TMP006', 'MCP342x'] -%}
+              {% if each_sensor.device in ['AM2315', 'BMP', 'TSL2561', 'TMP006', 'ADS1x15', 'MCP342x'] -%}
                 <div class="form-group">
-                    <label class="control-label">Multiplexer Address</label>
+                  <label class="control-label">Multiplexer Address</label>
                   <div>
                     <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modMultiplexAddress" name="modMultiplexAddress" title="The I2C address of the multiplexer (if used).">
                       <option value=""{% if each_sensor.multiplexer_address == '' %} selected{% endif %}>Disabled</option>
@@ -221,7 +247,7 @@
                   </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label">Multiplexer Chan.</label>
+                  <label class="control-label">Multiplexer Chan.</label>
                   <div>
                     <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modMultiplexChannel" name="modMultiplexChannel" rel="tooltip" title="If a multiplexer address is selected, select the channel connected to your target device.">
                       <option value="0"{% if each_sensor.multiplexer_channel == 0 %} selected{% endif %}>Disabled</option>
@@ -249,34 +275,22 @@
                 <input id="modPeriod" name="modPeriod" type="hidden" value="10">
               {% endif -%}
             </div>
-            {% if each_sensor.device == 'MCP342x' -%}
-            <div class="form-inline">
+            {% if each_sensor.device in ['ADS1x15', 'MCP342x'] -%}
+            <div class="form-inline" style="padding: 0.5em;">
               <div class="form-group">
-                  <label class="control-label">Measurement</label>
+                <label class="control-label">Measurement</label>
                 <div>
                   {{formModSensor.modADCMeasure(class_='form-control', value=each_sensor.adc_measure, **{'title':'What condition is being measured by the ADC?'})}}
                 </div>
               </div>
               <div class="form-group">
-                  <label class="control-label">Units</label>
+                <label class="control-label">Units</label>
                 <div>
                   {{formModSensor.modADCMeasureUnits(class_='form-control', value=each_sensor.adc_measure_units, **{'title':'What are the units of the condition being measured by the ADC?'})}}
                 </div>
               </div>
               <div class="form-group">
-                  <label class="control-label">I2C Address</label>
-                <div>
-                  <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modADCAddress" name="modADCAddress" title="The I2C address of the analog to digital converter.">
-                    <option value=""{% if each_sensor.adc_address == '' %} selected{% endif %}></option>
-                    <option value="0x68"{% if each_sensor.adc_address == '0x68' %} selected{% endif %}>Address 0x68</option>
-                    <option value="0x6A"{% if each_sensor.adc_address == '0x6A' %} selected{% endif %}>Address 0x6A</option>
-                    <option value="0x6C"{% if each_sensor.adc_address == '0x6C' %} selected{% endif %}>Address 0x6C</option>
-                    <option value="0x6E"{% if each_sensor.adc_address == '0x6E' %} selected{% endif %}>Address 0x6E</option>
-                  </select>
-                </div>
-              </div>
-              <div class="form-group">
-                  <label class="control-label">Channel</label>
+                <label class="control-label">Channel</label>
                 <div>
                   <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modADCChannel" name="modADCChannel" title="The channel of the analog to digital converter.">
                     <option value="0"{% if each_sensor.adc_channel == 0 %} selected{% endif %}>Channel 1</option>
@@ -287,31 +301,41 @@
                 </div>
               </div>
               <div class="form-group">
-                  <label class="control-label">Resolution</label>
+                <label class="control-label">Gain</label>
                 <div>
-                  {{formModSensor.modADCResolution(class_='form-control', value=each_sensor.adc_resolution, **{'title':'12, 14, 16, or 18-bit ADC resolution.'})}}
+                  {{formModSensor.modADCGain(class_='form-control', value=each_sensor.adc_gain, **{'title':'Adjust the gain to change the measureable voltage range. For MCP342x: 1, 2, 4, or 8. For ADS1x15: 1, 2, 3, 4, 8, 16. See ADC documentation for details.'})}}
                 </div>
               </div>
+              {% if each_sensor.device == 'MCP342x' -%}
+                <div class="form-group">
+                  <label class="control-label">Resolution</label>
+                  <div>
+                    {{formModSensor.modADCResolution(class_='form-control', value=each_sensor.adc_resolution, **{'title':'12, 14, 16, or 18-bit ADC resolution.'})}}
+                  </div>
+                </div>
+              {% endif -%}
+            </div>
+            <div class="form-inline" style="padding: 0.5em;">
               <div class="form-group">
-                  <label class="control-label">Volts Min</label>
+                <label class="control-label">Volts Min</label>
                 <div>
                   {{formModSensor.modADCVoltsMin(class_='form-control', value=each_sensor.adc_volts_min, **{'title':'Minimum analog to digital converter input voltage.'})}}
                 </div>
               </div>
               <div class="form-group">
-                  <label class="control-label">Volts Max</label>
+                <label class="control-label">Volts Max</label>
                 <div>
                   {{formModSensor.modADCVoltsMax(class_='form-control', value=each_sensor.adc_volts_max, **{'title':'Maximum analog to digital converter input voltage.'})}}
                 </div>
               </div>
               <div class="form-group">
-                  <label class="control-label">Units Min</label>
+                <label class="control-label">Units Min</label>
                 <div>
                   {{formModSensor.modADCUnitsMin(class_='form-control', value=each_sensor.adc_units_min, **{'title':'Minimum unit to convert the voltage to.'})}}
                 </div>
               </div>
               <div class="form-group">
-                  <label class="control-label">Units Max</label>
+                <label class="control-label">Units Max</label>
                 <div>
                   {{formModSensor.modADCUnitsMax(class_='form-control', value=each_sensor.adc_units_max, **{'title':'Maximum unit to convert the voltage to.'})}}
                 </div>
