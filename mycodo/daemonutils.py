@@ -309,7 +309,7 @@ def write_influxdb(logger, host, port, user, password,
         #                                            device_type))
         return 0
     except Exception as except_msg:
-        logger.exception('Failed to write measurement to influxdb (Device ID: '
+        logger.debug('Failed to write measurement to influxdb (Device ID: '
                          '{}). Data that was submitted for writing: {}. '
                          'Exception: {}'.format(device_id, data, except_msg))
         return 1
