@@ -347,7 +347,7 @@ class LCDController(threading.Thread):
                             self.logger.debug("[LCD {}] No data returned "
                                 "from influxdb".format(self.lcd_id))
                 except Exception as except_msg:
-                    self.logger.exception("[LCD {}] Failed to read "
+                    self.logger.debug("[LCD {}] Failed to read "
                         "measurement from the influxdb database: "
                         "{}".format(self.lcd_id, except_msg))
 
