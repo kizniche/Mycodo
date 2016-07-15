@@ -685,24 +685,24 @@ def page(page):
         if request.method == 'POST':
             form_name = request.form['form-name']
             if form_name == 'logview':
-                if formLogView.validate():
-                    if formLogView.loglogin.data:
-                        logfile = LOGIN_LOG_FILE
-                    elif formLogView.logdaemon.data:
-                        logfile = DAEMON_LOG_FILE
-                    elif formLogView.logupdate.data:
-                        logfile = UPDATE_LOG_FILE
-                    elif formLogView.logrestore.data:
-                        logfile = RESTORE_LOG_FILE
-                    lines = str(formLogView.lines.data)
-                    if os.path.isfile(logfile):
-                        log = subprocess.Popen('tail -n '+lines+' '+logfile, stdout=subprocess.PIPE, shell=True)
-                        (log_output, log_err) = log.communicate()
-                        log_status = log.wait()
-                    else:
-                        log_output = 404
+                if formLogView.lines.data:
+                    lines = formLogView.lines.data
+
+                if formLogView.loglogin.data:
+                    logfile = LOGIN_LOG_FILE
+                elif formLogView.logdaemon.data:
+                    logfile = DAEMON_LOG_FILE
+                elif formLogView.logupdate.data:
+                    logfile = UPDATE_LOG_FILE
+                elif formLogView.logrestore.data:
+                    logfile = RESTORE_LOG_FILE
+
+                if os.path.isfile(logfile):
+                    log = subprocess.Popen('tail -n '+str(lines)+' '+logfile, stdout=subprocess.PIPE, shell=True)
+                    (log_output, log_err) = log.communicate()
+                    log_status = log.wait()
                 else:
-                    flaskutils.flash_form_errors(formLogView)
+                    log_output = 404
         return render_template('tools/logview.html',
                                formLogView=formLogView,
                                lines=lines,

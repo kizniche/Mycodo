@@ -97,9 +97,9 @@
 
       {%- for each_sensor in sensor if each_sensor.id == sensor_order -%}
 
-        <div style="margin-bottom: 1.4em; border: 2px solid #ddd; border-radius: 5px;">
+        <div style="margin-bottom: 0.7em; border: 2px solid #ddd; border-radius: 5px;">
           <div class="inline-align" style="margin-bottom: -1.2em; padding: 0.3em 0.3em 0 0.3em;">
-            <div class="inline-left" style="vertical-align: top; display: inline-block; padding: 0.5em;">
+            <div class="inline-left" style="vertical-align: top; display: inline-block; padding: 0.3em;">
               {%- set sensor_has_pid = [] -%}
               {%- if pidDisplayOrder -%}
                 {%- for pid_order in pidDisplayOrder -%}
@@ -121,7 +121,7 @@
                 {%- endif -%}
             </div>
             {%- if each_sensor.device_type == 'cpu_load' %}
-              <div class="inline-right text-right" style="padding: 0.5em;">
+              <div class="inline-right text-right" style="padding: 0.3em;">
                 Measurement | Timestamp
                 <div>
                   <b><span id="{{each_sensor.id}}-cpu_load_1m-value">0.0</span> (1m)</b> | <span id="{{each_sensor.id}}-cpu_load_1m-time">&lt;please wait&gt;</span>
@@ -130,14 +130,14 @@
                 </div>
               </div>
             {%- elif each_sensor.device_type == 'tsensor' %}
-              <div class="inline-right text-right" style="padding: 0.5em;">
+              <div class="inline-right text-right" style="padding: 0.3em;">
                 Measurement | Timestamp
                 <div>
                   <b><span id="{{each_sensor.id}}-temperature-value">0.0</span> &deg;C</b> | <span id="{{each_sensor.id}}-temperature-time">&lt;please wait&gt;</span>
                 </div>
               </div>
             {%- elif each_sensor.device_type == 'tmpsensor' %}
-              <div class="inline-right text-right" style="padding: 0.5em;">
+              <div class="inline-right text-right" style="padding: 0.3em;">
                 Measurement | Timestamp
                 <div>
                   <b><span id="{{each_sensor.id}}-temperature_object-value">0.0</span> &deg;C</b> | <span id="{{each_sensor.id}}-temperature_object-time">&lt;please wait&gt;</span>
@@ -145,7 +145,7 @@
                 </div>
               </div>
             {%- elif each_sensor.device_type == 'htsensor' %}
-              <div class="inline-right text-right" style="padding: 0.5em;">
+              <div class="inline-right text-right" style="padding: 0.3em;">
                 Measurement | Timestamp
                 <div>
                   <b><span id="{{each_sensor.id}}-temperature-value">0.0</span> &deg;C</b> | <span id="{{each_sensor.id}}-temperature-time">&lt;please wait&gt;</span>
@@ -153,21 +153,21 @@
                 </div>
               </div>
             {%- elif each_sensor.device_type == 'co2sensor' %}
-              <div class="inline-right text-right" style="padding: 0.5em;">
+              <div class="inline-right text-right" style="padding: 0.3em;">
                 Measurement | Timestamp
                 <div>
                   <b><span id="{{each_sensor.id}}-co2-value">0</span> ppmv</b> | <span id="{{each_sensor.id}}-co2-time">&lt;please wait&gt;</span>
                 </div>
               </div>
             {%- elif each_sensor.device_type == 'luxsensor' %}
-              <div class="inline-right text-right" style="padding: 0.5em;">
+              <div class="inline-right text-right" style="padding: 0.3em;">
                 Measurement | Timestamp
                 <div>
                   <b><span id="{{each_sensor.id}}-lux-value">0</span> lx</b> | <span id="{{each_sensor.id}}-lux-time">&lt;please wait&gt;</span>
                 </div>
               </div>
             {%- elif each_sensor.device_type == 'presssensor' %}
-              <div class="inline-right text-right" style="padding: 0.5em;">
+              <div class="inline-right text-right" style="padding: 0.3em;">
                 Measurement | Timestamp
                 <div>
                   <b><span id="{{each_sensor.id}}-temperature-value">0.0</span> &deg;C</b> | <span id="{{each_sensor.id}}-temperature-time">&lt;please wait&gt;</span>
@@ -176,7 +176,7 @@
                 </div>
               </div>
             {%- elif each_sensor.device_type == 'analogsensor' %}
-              <div class="inline-right text-right" style="padding: 0.5em;">
+              <div class="inline-right text-right" style="padding: 0.3em;">
                 Measurement | Timestamp
                 <div>
                   <b><span id="{{each_sensor.id}}-voltage-value">0.0</span> volts</b> | <span id="{{each_sensor.id}}-voltage-time">&lt;please wait&gt;</span>
@@ -184,7 +184,7 @@
                 </div>
               </div>
             {%- elif each_sensor.device_type == 'edgedetect' %}
-              <div class="inline-right text-right" style="padding: 0.5em;">
+              <div class="inline-right text-right" style="padding: 0.3em;">
                 Measurement | Timestamp
                 <div>
                   <b><span id="{{each_sensor.id}}-edge-value">0</span></b> | <span id="{{each_sensor.id}}-edge-time">&lt;please wait&gt;</span>
@@ -201,13 +201,13 @@
 
                 <div style="padding-bottom: 1em; border: 1px solid #ddd; border-radius: 5px;">
                   <div class="inline-align" style="margin-bottom: -1.5em;">
-                    <div class="inline-left" style="padding: 0.5em;">
+                    <div class="inline-left" style="padding: 0.3em;">
                       {{each_pid.name}} ({{each_pid.id}})
                       <div>
                         Every {{each_pid.period}} seconds, apply PID to {% if each_pid.direction == 'both' -%}raise or lower{%- else -%}{{each_pid.direction}}{%- endif %} {{each_pid.measure_type}} to {{each_pid.setpoint}}
                       </div>
                     </div>
-                    <div class="inline-right" style="padding: 0.5em;">
+                    <div class="inline-right" style="padding: 0.3em;">
                       Gains
                       <div>
                         K<sub>P</sub>: {{each_pid.p}}, K<sub>I</sub>: {{each_pid.i}}, K<sub>D</sub>: {{each_pid.d}}
@@ -246,13 +246,13 @@
                         {{rel.name}} ({{rel.id}})
                       </div>
                     </div>
-                    <div style="display: inline-block; padding: 0.5em;">
+                    <div style="display: inline-block; padding: 0.3em;">
                       On Duration
                       <div>
                         Min: {{each_pid.lower_min_duration}} sec., Max: {{each_pid.lower_max_duration}} sec.
                       </div>
                     </div>
-                    <div style="display: inline-block; padding: 0.5em;">
+                    <div style="display: inline-block; padding: 0.3em;">
                       Current Draw
                       <div>
                         {{rel.amps}} amps
