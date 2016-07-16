@@ -119,7 +119,7 @@ case "${1:-''}" in
         printf "#### Creating SQLite databases\n"
         $INSTALL_DIRECTORY/init_databases.py -i all &&
 
-        printf "#### Creating Adminitrator User - Please answer the following questions\n"
+        printf "#### Creating Adminitrator User - Please answer the following questions (Note: your password will not display when you type it)\n"
         $INSTALL_DIRECTORY/init_databases.py -A &&
         
         printf "#### Creating cron entry to start pigpiod at boot\n"

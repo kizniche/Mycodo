@@ -88,6 +88,7 @@ def before_request():
 def home():
     if (not session.get('logged_in') and
         not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
+        logout()
         return redirect('/login')
     return redirect('/live')
 

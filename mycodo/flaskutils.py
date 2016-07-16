@@ -15,7 +15,7 @@ import subprocess
 import time as tm
 from collections import OrderedDict
 from datetime import datetime, time
-from flask import flash, make_response, request, session, redirect
+from flask import flash, request, session, redirect
 from influxdb import InfluxDBClient
 from sqlalchemy import and_
 from sqlalchemy.orm import sessionmaker
@@ -2103,11 +2103,8 @@ def authenticate_cookies(db_path, users):
                 users.user_name == cookie_username).first()
             new_session.expunge_all()
             new_session.close()
-            if not user:
-                response = make_response(redirect('/login'))
-                response.set_cookie('user_name', '', expires=0)
-                response.set_cookie('user_pass_hash', '', expires=0)
-                return response
+            if not user.user_password_hash:
+                return False
             elif cookie_password_hash == user.user_password_hash:
                 session['logged_in'] = True
                 session['user_group'] = user.user_restriction
