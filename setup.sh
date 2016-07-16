@@ -2,7 +2,7 @@
 #
 
 if [ "$EUID" -ne 0 ]; then
-    printf "Please run as root\n";
+    printf "Please run as root with \"sudo ./setup.sh\"\n";
     exit
 fi
 
