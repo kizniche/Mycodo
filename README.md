@@ -2,7 +2,7 @@
 
 ## An Environmental Monitoring and Regulation System
 
-### Latest version: 4.0.4
+### Latest version: 4.0.5
 
 Mycodo is a remote monitoring and automation system with a focus on environmental regulation from sensor stimuli. Responses can be as simple as a trigger (camera capture, email notification, relay activation) or as complex as a PID controller to regulate conditions in an environment. Mycodo has been used for cultivating gourmet mushrooms, maintaining homeostatsis in a honey bee apiary, incubating eggs, aging cheeses, and more.
 
