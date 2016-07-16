@@ -10,7 +10,7 @@ INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/" && pwd -P )
 cd $INSTALL_DIRECTORY
 
 NOW=$(date +"%m-%d-%Y %H:%M:%S")
-printf "Mycodo Installation began at $NOW\n"
+printf "### Mycodo installation began at $NOW\n\n"
 
 printf "#### Setting up folders, files, and permissions.\n"
 if [ -f $INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh ]; then
