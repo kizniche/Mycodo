@@ -163,7 +163,12 @@ case "${1:-''}" in
         $INSTALL_DIRECTORY/init_databases.py -i all &&
 
         printf "#### Creating Adminitrator User - Please answer the following questions (Note: your password will not display when you type it)\n"
-        $INSTALL_DIRECTORY/init_databases.py -A
+        $INSTALL_DIRECTORY/init_databases.py -A &&
+
+        printf "#### Rerunning pip to correct errors\n"
+        cd $INSTALL_DIRECTORY &&
+        pip install -r $INSTALL_DIRECTORY/requirements.txt --upgrade --force-reinstall --no-deps &&
+        rm -rf ./src
     ;;
     'upgrade-packages')
         apt-get update -y
