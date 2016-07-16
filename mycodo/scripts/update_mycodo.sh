@@ -112,26 +112,26 @@ case "${1:-''}" in
 
         sleep 5
 
-        printf "#### Creating InfluxDB database and user"
-        influx -execute 'CREATE DATABASE "mycodo_db"'
-        influx -execute 'CREATE USER "mycodo" WITH PASSWORD "mmdu77sj3nIoiajjs"'
+        printf "#### Creating InfluxDB database and user\n"
+        influx -execute "CREATE DATABASE \"mycodo_db\""
+        influx -execute "CREATE USER \"mycodo\" WITH PASSWORD \"mmdu77sj3nIoiajjs\""
 
         printf "#### Creating SQLite databases"
         $INSTALL_DIRECTORY/init_databases.py -i all
 
-        printf "#### Creating Adminitrator User - Please answer the following questions"
+        printf "#### Creating Adminitrator User - Please answer the following questions\n"
         $INSTALL_DIRECTORY/init_databases.py -A
         
-        printf "#### Creating cron entry to start pigpiod at boot"
+        printf "#### Creating cron entry to start pigpiod at boot\n"
         $INSTALL_DIRECTORY/mycodo/scripts/crontab.sh mycodo
 
-        printf "#### Installing and configuring apache2 web server"
+        printf "#### Installing and configuring apache2 web server\n"
         apt-get install -y apache2 libapache2-mod-wsgi
         a2enmod wsgi ssl
         ln -s $INSTALL_DIRECTORY /var/www/mycodo
         ln -sf $INSTALL_DIRECTORY/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf
 
-        printf "#### Creating SSL certificates at $INSTALL_DIRECTORY/mycodo/frontend/ssl_certs (replace with your own if desired)"
+        printf "#### Creating SSL certificates at $INSTALL_DIRECTORY/mycodo/frontend/ssl_certs (replace with your own if desired)\n"
         mkdir -p $INSTALL_DIRECTORY/mycodo/frontend/ssl_certs
         cd $INSTALL_DIRECTORY/mycodo/frontend/ssl_certs/
 
@@ -162,7 +162,7 @@ case "${1:-''}" in
 
         rm -f certificate.csr
 
-        printf "#### Enabling mycodo startup script"
+        printf "#### Enabling mycodo startup script\n"
         sudo systemctl enable $INSTALL_DIRECTORY/mycodo/scripts/mycodo.service
     ;;
     'upgrade-packages')

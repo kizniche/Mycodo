@@ -9,7 +9,7 @@ fi
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/" && pwd -P )
 cd $INSTALL_DIRECTORY
 
-printf "Installing Mycodo"
+printf "Installing Mycodo\n"
 
 printf "#### Setting up folders, files, and permissions.\n"
 if [ -f $INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh ]; then
