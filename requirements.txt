@@ -21,20 +21,11 @@ sht-sensor == 16.2.0
 tentacle_pi == 0.6.2
 w1thermsensor == 0.3.1
 
-#MCP342x
--e git://github.com/stevemarple/python-MCP342x.git#egg=MCP342x
-
-#Adafruit_GPIO
--e git://github.com/adafruit/Adafruit_Python_GPIO.git#egg=Adafruit_GPIO
-
-#Adafruit_TMP
--e git://github.com/adafruit/Adafruit_Python_TMP.git#egg=Adafruit_TMP
+Adafruit-ADS1x15
+Adafruit_BMP
+Adafruit_GPIO
+Adafruit_TMP
+MCP342x
 
 #Adafruit_DHT
--e git://github.com/adafruit/Adafruit_Python_DHT.git#egg=Adafruit_DHT
-
-#Adafruit_BMP
--e git://github.com/adafruit/Adafruit_Python_BMP.git#egg=Adafruit_BMP
-
-#Adafruit_ADS1x15
--e git://github.com/adafruit/Adafruit_Python_ADS1x15#egg=Adafruit_ADS1x15
+#-e git://github.com/adafruit/Adafruit_Python_DHT.git#egg=Adafruit_DHT
