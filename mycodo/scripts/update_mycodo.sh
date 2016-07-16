@@ -89,7 +89,7 @@ case "${1:-''}" in
     'setup')
         printf "#### Installing prerequisites\n"
         ln -snf $INSTALL_DIRECTORY /var/www/mycodo &&
-        cp -f $INSTALL_DIRECTORY/mycodo_flask_apache.conf /etc/apache2/sites-available/ &&
+        cp -snf $INSTALL_DIRECTORY/mycodo_flask_apache.conf /etc/apache2/sites-available/ &&
 
         wget abyz.co.uk/rpi/pigpio/pigpio.zip -P $INSTALL_DIRECTORY/ &&
         unzip pigpio.zip &&
@@ -128,8 +128,8 @@ case "${1:-''}" in
         printf "#### Installing and configuring apache2 web server\n"
         apt-get install -y apache2 libapache2-mod-wsgi &&
         a2enmod wsgi ssl &&
-        ln -s $INSTALL_DIRECTORY /var/www/mycodo &&
-        ln -sf $INSTALL_DIRECTORY/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf &&
+        ln -snf $INSTALL_DIRECTORY /var/www/mycodo &&
+        ln -snf $INSTALL_DIRECTORY/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf &&
 
         printf "#### Creating SSL certificates at $INSTALL_DIRECTORY/mycodo/frontend/ssl_certs (replace with your own if desired)\n"
         mkdir -p $INSTALL_DIRECTORY/mycodo/frontend/ssl_certs &&
