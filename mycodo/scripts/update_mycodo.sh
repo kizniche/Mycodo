@@ -163,7 +163,7 @@ case "${1:-''}" in
         rm -f certificate.csr &&
 
         printf "#### Enabling mycodo startup script\n"
-        sudo systemctl enable $INSTALL_DIRECTORY/mycodo/scripts/mycodo.service &&
+        sudo systemctl enable $INSTALL_DIRECTORY/mycodo/scripts/mycodo.service
     ;;
     'upgrade-packages')
         apt-get update -y

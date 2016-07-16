@@ -164,7 +164,7 @@ The following install script will install or modify the default apache2 configur
 ```
 sudo apt-get install git -y
 cd
-git clone --depth=1 https://github.com/kizniche/Mycodo
+git clone https://github.com/kizniche/Mycodo
 cd Mycodo
 sudo ./setup.sh
 ```
