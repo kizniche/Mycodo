@@ -12,7 +12,6 @@ cd $INSTALL_DIRECTORY
 NOW=$(date +"%m-%d-%Y %H:%M:%S")
 printf "### Mycodo installation began at $NOW\n\n"
 
-printf "#### Setting up folders, files, and permissions.\n"
 if [ -f $INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh ]; then
     $INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh upgrade-packages &&
     $INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh setup &&

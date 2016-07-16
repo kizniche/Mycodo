@@ -88,7 +88,7 @@ case "${1:-''}" in
     ;;
     'setup')
         printf "#### Installing prerequisites\n"
-        ln -snf $INSTALL_DIRECTORY /var/www/mycodo &&
+        ln -sf $INSTALL_DIRECTORY /var/www/mycodo &&
         cp -snf $INSTALL_DIRECTORY/mycodo_flask_apache.conf /etc/apache2/sites-available/ &&
 
         wget abyz.co.uk/rpi/pigpio/pigpio.zip -P $INSTALL_DIRECTORY/ &&
@@ -122,8 +122,8 @@ case "${1:-''}" in
         printf "#### Installing and configuring apache2 web server\n"
         apt-get install -y apache2 libapache2-mod-wsgi &&
         a2enmod wsgi ssl &&
-        ln -snf $INSTALL_DIRECTORY /var/www/mycodo &&
-        ln -snf $INSTALL_DIRECTORY/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf &&
+        ln -sf $INSTALL_DIRECTORY /var/www/mycodo &&
+        ln -sf $INSTALL_DIRECTORY/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf &&
 
         printf "#### Creating SSL certificates at $INSTALL_DIRECTORY/mycodo/frontend/ssl_certs (replace with your own if desired)\n"
         mkdir -p $INSTALL_DIRECTORY/mycodo/frontend/ssl_certs &&
@@ -164,15 +164,11 @@ case "${1:-''}" in
 
         printf "#### Creating Adminitrator User - Please answer the following questions (Note: your password will not display when you type it)\n"
         $INSTALL_DIRECTORY/init_databases.py -A &&
-
-        printf "#### Rerunning pip to correct errors\n"
-        cd $INSTALL_DIRECTORY &&
-        pip install -r $INSTALL_DIRECTORY/requirements.txt --upgrade --force-reinstall --no-deps &&
-        rm -rf ./src
     ;;
     'upgrade-packages')
-        apt-get update -y
-        apt-get install -y libav-tools libffi-dev libi2c-dev python-dev python-setuptools python-smbus sqlite3
+        printf "#### Installing prerequisite apt packages.\n"
+        apt-get update -y &&
+        apt-get install -y libav-tools libffi-dev libi2c-dev python-dev python-setuptools python-smbus sqlite3 &&
         easy_install pip
     ;;
     'initialize')
@@ -184,7 +180,7 @@ case "${1:-''}" in
             echo '0' > $INSTALL_DIRECTORY/.updating
         fi
         chown -LR mycodo.mycodo $INSTALL_DIRECTORY
-        ln -snf $INSTALL_DIRECTORY /var/www/mycodo
+        ln -sf $INSTALL_DIRECTORY /var/www/mycodo
 
         mkdir -p /var/log/mycodo
         chown mycodo.mycodo /var/log/mycodo

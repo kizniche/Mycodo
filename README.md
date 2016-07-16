@@ -143,7 +143,7 @@ Mycodo/mycodo/scripts/mycodo_wrapper is a binary executable used to update the s
 
 ### Prerequisites
 
-These install procedures have been tested to work with a Raspberry Pi following a fresh intall of [Raspbian Jessie](https://www.raspberrypi.org/downloads/raspbian/).
+These install procedures have been tested to work with a Raspberry Pi following a fresh intall of [Raspbian Jessie](https://www.raspberrypi.org/downloads/raspbian/), and with an active internet connection.
 
 Set up the initial settings with raspi-config. **Don't skip the file system expansion and reboot! This needs to be done before continuing to install anything or there won't be any free disk space.**
 
@@ -162,7 +162,7 @@ Set up the initial settings with raspi-config. **Don't skip the file system expa
 The following install script will install or modify the default apache2 configurtion. If you require a custom setup, please examine and modify this script accordingly. If you do not require a cusom setup, just run the two commands below.
 
 ```
-sudo apt-get install git -y
+sudo apt-get update && sudo apt-get install git -y
 cd
 git clone https://github.com/kizniche/Mycodo
 cd Mycodo
