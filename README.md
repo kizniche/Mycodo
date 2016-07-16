@@ -26,10 +26,7 @@ The system is built to run on the Raspberry Pi and aims to be easy to install an
 - [Installation](#installation)
     - [Prerequisites](#prerequisites)
     - [Enable I2C](#enable-i2c)
-    - [Influxdb](#influxdb)
-    - [Databases](#databases)
-    - [HTTP Server](#http-server)
-    - [Final Steps](#final-steps)
+- [HTTP Server](#http-server-security)
 - [Daemon Info](#daemon-info)
 - [Upgrading](#upgrading)
 - [Restoring Backups](#restoring-backups)
@@ -162,43 +159,30 @@ Set up the initial settings with raspi-config. **Don't skip the file system expa
  + **Reboot**
 
 
-```
-sudo apt-get update -y && sudo apt-get upgrade -y && sudo apt-get autoremove -y
-sudo apt-get install -y git libav-tools libffi-dev libi2c-dev python-dev python-setuptools python-smbus sqlite3 vim
-sudo easy_install pip
-```
-
-```
-wget abyz.co.uk/rpi/pigpio/pigpio.zip
-unzip pigpio.zip
-cd PIGPIO
-make -j4
-sudo make install
-```
-
-If you plan to use the DHT11, DHT22, or AM2302, you must add pigpiod to cron to start at boot. Edit the cron file with:
-
-```sudo crontab -e```
-
-Then add this line to the bottom of the file, then save and reboot:
-
-```@reboot /usr/local/bin/pigpiod &```
-
-```
-cd
-git clone git://git.drogon.net/wiringPi
-cd wiringPi
-./build
-```
+The following install script will install or modify the default apache2 configurtion. If you require a custom setup, please examine and modify this script accordingly. If you do not require a cusom setup, just run the two commands below.
 
 ```
 cd
 git clone https://github.com/kizniche/Mycodo
 cd Mycodo
-sudo pip install -r requirements.txt --upgrade
-sudo useradd -M mycodo
-sudo adduser mycodo gpio
+sudo setup.sh
 ```
+
+Follow the on-screen prompts to create an administrator user for the web interface and to reboot at the very end.
+
+If you want write access to the mycodo files, add your user to the mycodo group, changing 'username' to your user.
+
+```sudo usermod -a -G mycodo username```
+
+In certain circumstances after the initial install, the mycodo service will not be able to start because of a missing or corrupt package. I'm still trying to understand why this happens and how to prevent it. If you cannot start the daemon, try to resinstall the required modules with the following command, and then try:
+
+```sudo pip install -r ~/Mycodo/requirements.txt --upgrade --force-reinstall --no-deps```
+
+and reboot with ``sudo shutdown now -r```
+
+The login page can be found at https://localhost/ (note the 's' in https)
+
+If you receive an unresolvable error during the install, please [create an issue](https://github.com/kizniche/Mycodo/issues).
 
 
 ### Enable I2C
@@ -225,86 +209,11 @@ Reboot
 ```sudo shutdown now -r```
 
 
-### Influxdb
+### HTTP Server Security
 
-```
-wget https://dl.influxdata.com/influxdb/releases/influxdb_0.13.0_armhf.deb
-sudo dpkg -i influxdb_0.13.0_armhf.deb
-sudo service influxdb start
-```
+SSL certificates will be generated and stored at ~/Mycodo/mycodo/frontend/ssl_certs/ during the install process. If you want to use your own SSL certificates, replace them as they are named in this directory. [letsencrypt.org](https://letsencrypt.org) provides free verified SSL certificates.
 
-Set up the InfluxDB database and user from the influxdb console.
-
-```
-influx
-CREATE DATABASE "mycodo_db"
-CREATE USER "mycodo" WITH PASSWORD 'mmdu77sj3nIoiajjs'
-exit
-```
-
-
-### Databases
-
-Create all the required databases
-
-```~/Mycodo/init_databases.py -i all```
-
-Add an Administrator to the User database
-
-```~/Mycodo/init_databases.py -A```
-
-
-### HTTP Server
-
-If you want write access to the mycodo files, add your user to the mycodo group, changing 'username' to your user.
-
-```sudo usermod -a -G mycodo username```
-
-The following steps will enable Flask application to run on Apache2 using mod_wsgi.
-
-```
-sudo apt-get install -y apache2 libapache2-mod-wsgi
-sudo a2enmod wsgi ssl
-sudo ln -s ~/Mycodo /var/www/mycodo
-sudo cp ~/Mycodo/mycodo_flask_apache.conf /etc/apache2/sites-available/
-sudo ln -sf /etc/apache2/sites-available/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf
-mkdir ~/Mycodo/mycodo/frontend/ssl_certs
-```
-
-[letsencrypt.org](https://letsencrypt.org) provides free verified SSL certificates. However, if you don't want to bother, or don't have a domain, use the following commands to generate them locally (Note that this certificate will not be verified and you will have warning messages about the security of your site, unless you add the certificate to your browser's trusted list).
-
-```
-cd ~/Mycodo/mycodo/frontend/ssl_certs/
-openssl req -new -x509 -sha512 -days 365 -nodes -out cert.pem -keyout privkey.pem
-openssl genrsa -out certificate.key 1024
-openssl req -new -key certificate.key -out certificate.csr
-sudo openssl x509 -req -days 365 -in certificate.csr -CA cert.pem -CAkey privkey.pem -set_serial $RANDOM -out chain.pem
-rm -f certificate.csr
-```
-
-
-### Final Steps
-
-Create the proper permissions and files
-
-```sudo ~/Mycodo/mycodo/scripts/update_mycodo.sh initialize```
-
-Enable the systemd script
-
-```
-sudo systemctl enable ~/Mycodo/mycodo/scripts/mycodo.service
-sudo service mycodo start
-```
-
-In certain circumstances after the initial install, the mycodo service will not be able to start because of a missing or corrupt package. I'm still trying to understand why this happens and how to prevent it. If you cannot start the daemon, try to resinstall the required modules with the following command, and then try:
-
-```sudo pip install -r ~/Mycodo/requirements.txt --upgrade --force-reinstall --no-deps```
-
-Restart apache2 to pick up any changes during the install process
-
-```sudo /etc/init.d/apache2 restart```
-
-The login page can be found at https://localhost/ (note the 's' in https)
+If using the auto-generated certificate, be aware that they will not be verified when visiting the https:// version of the WEB UI. You will receive warning messages about the security of your site unless you add the certificate to your browser's trusted list). 
 
 
 ### Daemon info

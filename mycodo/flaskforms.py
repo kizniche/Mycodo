@@ -46,6 +46,7 @@ class LogView(Form):
         )]
     )
     loglogin = SubmitField(u'Login Log')
+    loghttp = SubmitField(u'HTTP Log')
     logdaemon = SubmitField(u'Daemon Log')
     logupdate = SubmitField(u'Update Log')
     logrestore = SubmitField(u'Restore Log')

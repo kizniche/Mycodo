@@ -86,7 +86,95 @@ case "${1:-''}" in
             exit 0
         fi
     ;;
+    'setup')
+        printf "#### Installing prerequisites\n"
+        ln -snf $INSTALL_DIRECTORY /var/www/mycodo
+        cp -f $INSTALL_DIRECTORY/mycodo_flask_apache.conf /etc/apache2/sites-available/
+
+        wget abyz.co.uk/rpi/pigpio/pigpio.zip -P $INSTALL_DIRECTORY/
+        unzip pigpio.zip
+        cd $INSTALL_DIRECTORY/PIGPIO
+        make -j4
+        sudo make install
+
+        git clone git://git.drogon.net/wiringPi $INSTALL_DIRECTORY/wiringPi
+        cd $INSTALL_DIRECTORY/wiringPi
+        ./build
+
+        wget https://dl.influxdata.com/influxdb/releases/influxdb_0.13.0_armhf.deb -P $INSTALL_DIRECTORY/
+        dpkg -i -P $INSTALL_DIRECTORY/influxdb_0.13.0_armhf.deb
+        service influxdb start
+
+        cd $INSTALL_DIRECTORY
+        sudo pip install -r requirements.txt --upgrade
+
+        rm -rf ./PIGPIO pigpio.zip wiringPi src influxdb_0.13.0_armhf.deb
+
+        sleep 5
+
+        printf "#### Creating InfluxDB database and user"
+        influx -execute 'CREATE DATABASE "mycodo_db"'
+        influx -execute 'CREATE USER "mycodo" WITH PASSWORD "mmdu77sj3nIoiajjs"'
+
+        printf "#### Creating SQLite databases"
+        $INSTALL_DIRECTORY/init_databases.py -i all
+
+        printf "#### Creating Adminitrator User - Please answer the following questions"
+        $INSTALL_DIRECTORY/init_databases.py -A
+        
+        printf "#### Creating cron entry to start pigpiod at boot"
+        $INSTALL_DIRECTORY/mycodo/scripts/crontab.sh mycodo
+
+        printf "#### Installing and configuring apache2 web server"
+        apt-get install -y apache2 libapache2-mod-wsgi
+        a2enmod wsgi ssl
+        ln -s $INSTALL_DIRECTORY /var/www/mycodo
+        ln -sf $INSTALL_DIRECTORY/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf
+
+        printf "#### Creating SSL certificates at $INSTALL_DIRECTORY/mycodo/frontend/ssl_certs (replace with your own if desired)"
+        mkdir -p $INSTALL_DIRECTORY/mycodo/frontend/ssl_certs
+        cd $INSTALL_DIRECTORY/mycodo/frontend/ssl_certs/
+
+        openssl req \
+            -new \
+            -x509 \
+            -sha512 \
+            -days 365 \
+            -nodes \
+            -out cert.pem \
+            -keyout privkey.pem\
+            -subj "/C=US/ST=Georgia/L=Atlanta/O=mycodo/OU=mycodo/CN=mycodo"
+
+        openssl genrsa -out certificate.key 1024
+
+        openssl req \
+            -new \
+            -key certificate.key \
+            -out certificate.csr \
+            -subj "/C=US/ST=Georgia/L=Atlanta/O=mycodo/OU=mycodo/CN=mycodo"
+
+        openssl x509 -req \
+            -days 365 \
+            -in certificate.csr -CA cert.pem \
+            -CAkey privkey.pem \
+            -set_serial $RANDOM \
+            -out chain.pem
+
+        rm -f certificate.csr
+
+        printf "#### Enabling mycodo startup script"
+        sudo systemctl enable $INSTALL_DIRECTORY/mycodo/scripts/mycodo.service
+    ;;
+    'upgrade-packages')
+        apt-get update -y
+        apt-get install -y libav-tools libffi-dev libi2c-dev python-dev python-setuptools python-smbus sqlite3
+        easy_install pip
+    ;;
     'initialize')
+        sudo useradd -M mycodo
+        adduser mycodo gpio
+        adduser mycodo adm
+
         if [ ! -e $INSTALL_DIRECTORY/.updating ]; then
             echo '0' > $INSTALL_DIRECTORY/.updating
         fi

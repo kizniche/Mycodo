@@ -34,21 +34,19 @@ INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
 cd $INSTALL_DIRECTORY
 
 ln -snf $INSTALL_DIRECTORY /var/www/mycodo
-
 cp -f $INSTALL_DIRECTORY/mycodo_flask_apache.conf /etc/apache2/sites-available/
 
 if [ -f "$INSTALL_DIRECTORY/mycodo_flask/ssl_certs/cert.pem" ] && [ ! -d "$INSTALL_DIRECTORY/mycodo/frontend/ssl_certs/" ]; then
-    mkdir $INSTALL_DIRECTORY/mycodo/frontend/ssl_certs/
+    mkdir -p $INSTALL_DIRECTORY/mycodo/frontend/ssl_certs/
     cp $INSTALL_DIRECTORY/mycodo_flask/ssl_certs/* $INSTALL_DIRECTORY/mycodo/frontend/ssl_certs/
 fi
+
+$INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh upgrade-packages
 
 printf "#### Enable mycodo service ####\n"
 rm -rf /etc/systemd/system/mycodo.service
 rm -rf /etc/systemd/system/multi-user.target.wants/mycodo.service
 systemctl enable $INSTALL_DIRECTORY/mycodo/scripts/mycodo.service
-
-printf "#### Checking if apt requirements met ####\n"
-sudo apt-get install -y libav-tools libffi-dev libi2c-dev python-dev python-setuptools python-smbus sqlite3
 
 printf "#### Checking if python modules are up-to-date ####\n"
 # Make sure python modules are installed/updated

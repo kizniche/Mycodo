@@ -106,8 +106,10 @@ def camera_record(record_type, duration_sec=10):
             camera.start_recording(output_filepath, format='h264', quality=20)
             camera.wait_recording(duration_sec)
             camera.stop_recording()
-    set_user_grp(output_filepath, 'mycodo', 'mycodo')
-    return output_filepath
+    try:
+        set_user_grp(output_filepath, 'mycodo', 'mycodo')
+    except:
+        pass
 
 
 #

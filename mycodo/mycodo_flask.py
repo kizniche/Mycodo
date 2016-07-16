@@ -8,6 +8,7 @@ import argparse
 import calendar
 import datetime
 import glob
+import logging
 import os
 import random
 import socket
@@ -19,6 +20,7 @@ from collections import OrderedDict
 from dateutil.parser import parse as date_parse
 from flask import Flask, flash, make_response, redirect, render_template, request, send_from_directory, session, g, jsonify, Response
 from flask_influxdb import InfluxDB
+from logging.handlers import RotatingFileHandler
 from sqlalchemy.orm import sessionmaker
 
 import flaskforms
@@ -54,6 +56,7 @@ from config import SQL_DATABASE_MYCODO
 from config import LOG_PATH
 from config import LOGIN_LOG_FILE
 from config import DAEMON_LOG_FILE
+from config import HTTP_LOG_FILE
 from config import UPDATE_LOG_FILE
 from config import RESTORE_LOG_FILE
 
@@ -690,6 +693,8 @@ def page(page):
 
                 if formLogView.loglogin.data:
                     logfile = LOGIN_LOG_FILE
+                elif formLogView.loghttp.data:
+                    logfile = HTTP_LOG_FILE
                 elif formLogView.logdaemon.data:
                     logfile = DAEMON_LOG_FILE
                 elif formLogView.logupdate.data:
@@ -1162,6 +1167,15 @@ def inject_mycodo_version():
                     hide_alert_success=misc.hide_alert_success,
                     hide_alert_info=misc.hide_alert_info,
                     hide_alert_warning=misc.hide_alert_warning)
+
+
+@app.errorhandler(500)
+def handle_error(error):
+    code = 500
+    if isinstance(error, HTTPException):
+        code = error.code
+    return render_template('500.html'), 500
+    # return jsonify(error=str(e)), code
 
 
 @app.errorhandler(404)

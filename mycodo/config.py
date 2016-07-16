@@ -35,6 +35,7 @@ LOG_PATH = '/var/log/mycodo' # Where generated logs are stored
 
 LOGIN_LOG_FILE = os.path.join(LOG_PATH, 'login.log')
 DAEMON_LOG_FILE = os.path.join(LOG_PATH, 'mycodo.log')
+HTTP_LOG_FILE = '/var/log/apache2/error.log'
 UPDATE_LOG_FILE = os.path.join(LOG_PATH, 'mycodoupdate.log')
 RESTORE_LOG_FILE = os.path.join(LOG_PATH, 'mycodorestore.log')
 
