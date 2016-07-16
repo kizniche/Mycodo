@@ -116,7 +116,7 @@ case "${1:-''}" in
         influx -execute "CREATE DATABASE mycodo_db" &&
         influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'" &&
 
-        printf "#### Creating SQLite databases"
+        printf "#### Creating SQLite databases\n"
         $INSTALL_DIRECTORY/init_databases.py -i all &&
 
         printf "#### Creating Adminitrator User - Please answer the following questions\n"
