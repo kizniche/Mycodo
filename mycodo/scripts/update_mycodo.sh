@@ -113,8 +113,8 @@ case "${1:-''}" in
         sleep 5 &&
 
         printf "#### Creating InfluxDB database and user\n"
-        influx -execute "CREATE DATABASE \"mycodo_db\"" &&
-        influx -execute "CREATE USER \"mycodo\" WITH PASSWORD \"mmdu77sj3nIoiajjs\"" &&
+        influx -execute "CREATE DATABASE mycodo_db" &&
+        influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'" &&
 
         printf "#### Creating SQLite databases"
         $INSTALL_DIRECTORY/init_databases.py -i all &&
