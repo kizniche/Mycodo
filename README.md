@@ -162,10 +162,11 @@ Set up the initial settings with raspi-config. **Don't skip the file system expa
 The following install script will install or modify the default apache2 configurtion. If you require a custom setup, please examine and modify this script accordingly. If you do not require a cusom setup, just run the two commands below.
 
 ```
+sudo apt-get install git -y
 cd
-git clone https://github.com/kizniche/Mycodo
+git clone --depth=1 https://github.com/kizniche/Mycodo
 cd Mycodo
-sudo setup.sh
+sudo ./setup.sh
 ```
 
 Follow the on-screen prompts to create an administrator user for the web interface and to reboot at the very end.

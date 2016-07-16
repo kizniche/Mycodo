@@ -2103,14 +2103,14 @@ def authenticate_cookies(db_path, users):
                 users.user_name == cookie_username).first()
             new_session.expunge_all()
             new_session.close()
-        if cookie_password_hash == user.user_password_hash:
-            session['logged_in'] = True
-            session['user_group'] = user.user_restriction
-            session['user_name'] = user.user_name
-            session['user_theme'] = user.user_theme
-            return True
-        else:
-            failed_login()
+            if cookie_password_hash == user.user_password_hash:
+                session['logged_in'] = True
+                session['user_group'] = user.user_restriction
+                session['user_name'] = user.user_name
+                session['user_theme'] = user.user_theme
+                return True
+            else:
+                failed_login()
     return False
 
 

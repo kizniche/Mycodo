@@ -102,7 +102,7 @@ case "${1:-''}" in
         ./build
 
         wget https://dl.influxdata.com/influxdb/releases/influxdb_0.13.0_armhf.deb -P $INSTALL_DIRECTORY/
-        dpkg -i -P $INSTALL_DIRECTORY/influxdb_0.13.0_armhf.deb
+        dpkg -i $INSTALL_DIRECTORY/influxdb_0.13.0_armhf.deb
         service influxdb start
 
         cd $INSTALL_DIRECTORY
@@ -204,7 +204,6 @@ case "${1:-''}" in
         fi
         chown mycodo.mycodo /var/log/mycodo/login.log
 
-        chown mycodo.mycodo /etc/apache2/sites-available/mycodo_flask_apache.conf
         find $INSTALL_DIRECTORY/ -type d -exec chmod u+wx,g+wx {} +
         find $INSTALL_DIRECTORY/ -type f -exec chmod u+w,g+w,o+r {} +
         # find $INSTALL_DIRECTORY/mycodo -type f -name '.?*' -prune -o -exec chmod 770 {} +

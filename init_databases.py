@@ -45,7 +45,7 @@ NOTES_DB_PATH = 'sqlite:///' + SQL_DATABASE_NOTE
 def add_user(admin=False):
     new_user = Users()
 
-    print('Add user to database')
+    print('\nAdd user to database')
 
     while True:
         user_name = raw_input('User (a-z, A-Z, 2-64 chars): ')
