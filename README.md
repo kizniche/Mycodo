@@ -169,6 +169,8 @@ cd Mycodo
 sudo ./setup.sh
 ```
 
+A log of the setup.sh script output will be created at ~/Mycodo/setup.log
+
 Follow the on-screen prompts to create an administrator user for the web interface and to reboot at the very end.
 
 If you want write access to the mycodo files, add your user to the mycodo group, changing 'username' to your user.
