@@ -2103,7 +2103,7 @@ def authenticate_cookies(db_path, users):
                 users.user_name == cookie_username).first()
             new_session.expunge_all()
             new_session.close()
-            if not user.user_password_hash:
+            if user == None:
                 return False
             elif cookie_password_hash == user.user_password_hash:
                 session['logged_in'] = True

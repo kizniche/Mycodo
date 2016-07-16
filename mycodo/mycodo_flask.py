@@ -1015,7 +1015,8 @@ def do_admin_login():
 @app.route("/logout")
 def logout():
     response = make_response(redirect('/login'))
-    flaskutils.login_log(session['user_name'], session['user_group'],
+    if session.get('user_name'):
+        flaskutils.login_log(session['user_name'], session['user_group'],
         request.environ['REMOTE_ADDR'], 'LOGOUT')
     session.clear()  # or session['logged_in'] = False
     response.set_cookie('user_name', '', expires=0)

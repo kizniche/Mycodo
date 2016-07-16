@@ -115,12 +115,6 @@ case "${1:-''}" in
         printf "#### Creating InfluxDB database and user\n"
         influx -execute "CREATE DATABASE mycodo_db" &&
         influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'" &&
-
-        printf "#### Creating SQLite databases\n"
-        $INSTALL_DIRECTORY/init_databases.py -i all &&
-
-        printf "#### Creating Adminitrator User - Please answer the following questions (Note: your password will not display when you type it)\n"
-        $INSTALL_DIRECTORY/init_databases.py -A &&
         
         printf "#### Creating cron entry to start pigpiod at boot\n"
         $INSTALL_DIRECTORY/mycodo/scripts/crontab.sh mycodo &&
@@ -163,7 +157,13 @@ case "${1:-''}" in
         rm -f certificate.csr &&
 
         printf "#### Enabling mycodo startup script\n"
-        sudo systemctl enable $INSTALL_DIRECTORY/mycodo/scripts/mycodo.service
+        sudo systemctl enable $INSTALL_DIRECTORY/mycodo/scripts/mycodo.service &&
+
+        printf "#### Creating SQLite databases\n"
+        $INSTALL_DIRECTORY/init_databases.py -i all &&
+
+        printf "#### Creating Adminitrator User - Please answer the following questions (Note: your password will not display when you type it)\n"
+        $INSTALL_DIRECTORY/init_databases.py -A
     ;;
     'upgrade-packages')
         apt-get update -y
