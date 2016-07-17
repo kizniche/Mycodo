@@ -88,9 +88,6 @@ case "${1:-''}" in
     ;;
     'setup')
         printf "#### Installing prerequisites\n"
-        ln -sf $INSTALL_DIRECTORY/ /var/www/mycodo &&
-        cp -snf $INSTALL_DIRECTORY/mycodo_flask_apache.conf /etc/apache2/sites-available/ &&
-
         wget abyz.co.uk/rpi/pigpio/pigpio.zip -P $INSTALL_DIRECTORY/ &&
         unzip pigpio.zip &&
         cd $INSTALL_DIRECTORY/PIGPIO &&
@@ -177,7 +174,7 @@ case "${1:-''}" in
             echo '0' > $INSTALL_DIRECTORY/.updating
         fi
         chown -LR mycodo.mycodo $INSTALL_DIRECTORY
-        ln -sf $INSTALL_DIRECTORY /var/www/mycodo
+        ln -sf $INSTALL_DIRECTORY/ /var/www/mycodo
 
         mkdir -p /var/log/mycodo
         chown mycodo.mycodo /var/log/mycodo
