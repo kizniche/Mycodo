@@ -159,17 +159,17 @@ Set up the initial settings with raspi-config. **Don't skip the file system expa
  + **Reboot**
 
 
-The following install script will install or modify the default apache2 configurtion. If you require a custom setup, please examine and modify this script accordingly. If you do not require a cusom setup, just run the two commands below.
+Mycodo will be installed with the following install script (setup.sh) will install or modify the default apache2 configurtion. If you require a custom setup, please examine and modify this script accordingly. If you do not require a cusom setup, just run the commands below.
 
 ```
-sudo apt-get update && sudo apt-get install git -y
+sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y git
 cd
 git clone https://github.com/kizniche/Mycodo
 cd Mycodo
 sudo ./setup.sh
 ```
 
-A log of the setup.sh script output will be created at ~/Mycodo/setup.log
+Make sure the script runs without errors. A log of the setup.sh script output will be created at ~/Mycodo/setup.log.
 
 Follow the on-screen prompts to create an administrator user for the web interface and to reboot at the very end.
 

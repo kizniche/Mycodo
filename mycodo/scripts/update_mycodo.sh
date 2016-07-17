@@ -88,7 +88,7 @@ case "${1:-''}" in
     ;;
     'setup')
         printf "#### Installing prerequisites\n"
-        ln -sf $INSTALL_DIRECTORY /var/www/mycodo &&
+        ln -sf $INSTALL_DIRECTORY/ /var/www/mycodo &&
         cp -snf $INSTALL_DIRECTORY/mycodo_flask_apache.conf /etc/apache2/sites-available/ &&
 
         wget abyz.co.uk/rpi/pigpio/pigpio.zip -P $INSTALL_DIRECTORY/ &&
@@ -106,7 +106,7 @@ case "${1:-''}" in
         service influxdb start &&
 
         cd $INSTALL_DIRECTORY &&
-        sudo pip install -r requirements.txt --upgrade &&
+        pip install -r requirements.txt --upgrade &&
 
         rm -rf ./PIGPIO pigpio.zip wiringPi src influxdb_0.13.0_armhf.deb &&
 
@@ -163,7 +163,7 @@ case "${1:-''}" in
         $INSTALL_DIRECTORY/init_databases.py -i all &&
 
         printf "#### Creating Adminitrator User - Please answer the following questions (Note: your password will not display when you type it)\n"
-        $INSTALL_DIRECTORY/init_databases.py -A &&
+        $INSTALL_DIRECTORY/init_databases.py -A
     ;;
     'upgrade-packages')
         printf "#### Installing prerequisite apt packages.\n"
