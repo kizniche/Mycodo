@@ -47,7 +47,7 @@ if [ -f $INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh ]; then
         printf "#### Mycodo successfully finished installing at $END\n" &&
         read -r -p "You need to reboot to complete the installation. Reboot now? [y/n] " response
         if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
-            shutdown now -r
+            shutdown now -r &
         fi
     else
         printf "#### Error during install. Mycodo did not install properly. Check the log for errors.\n"

@@ -91,17 +91,17 @@ case "${1:-''}" in
         ln -sf $INSTALL_DIRECTORY/ /var/www/mycodo &&
         cp -snf $INSTALL_DIRECTORY/mycodo_flask_apache.conf /etc/apache2/sites-available/ &&
 
-        wget abyz.co.uk/rpi/pigpio/pigpio.zip -P $INSTALL_DIRECTORY/ &&
+        wget abyz.co.uk/rpi/pigpio/pigpio.zip -q --show-progress -P $INSTALL_DIRECTORY/ &&
         unzip pigpio.zip &&
         cd $INSTALL_DIRECTORY/PIGPIO &&
         make -j4 &&
-        sudo make install &&
+        make install &&
 
         git clone git://git.drogon.net/wiringPi $INSTALL_DIRECTORY/wiringPi &&
         cd $INSTALL_DIRECTORY/wiringPi &&
         ./build &&
 
-        wget https://dl.influxdata.com/influxdb/releases/influxdb_0.13.0_armhf.deb -P $INSTALL_DIRECTORY/ &&
+        wget https://dl.influxdata.com/influxdb/releases/influxdb_0.13.0_armhf.deb -q --show-progress -P $INSTALL_DIRECTORY/ &&
         dpkg -i $INSTALL_DIRECTORY/influxdb_0.13.0_armhf.deb &&
         service influxdb start &&
 
@@ -157,13 +157,10 @@ case "${1:-''}" in
         rm -f certificate.csr &&
 
         printf "#### Enabling mycodo startup script\n"
-        sudo systemctl enable $INSTALL_DIRECTORY/mycodo/scripts/mycodo.service &&
+        systemctl enable $INSTALL_DIRECTORY/mycodo/scripts/mycodo.service &&
 
         printf "#### Creating SQLite databases\n"
-        $INSTALL_DIRECTORY/init_databases.py -i all &&
-
-        printf "#### Creating Adminitrator User - Please answer the following questions (Note: your password will not display when you type it)\n"
-        $INSTALL_DIRECTORY/init_databases.py -A
+        $INSTALL_DIRECTORY/init_databases.py -i all
     ;;
     'upgrade-packages')
         printf "#### Installing prerequisite apt packages.\n"
@@ -172,7 +169,7 @@ case "${1:-''}" in
         easy_install pip
     ;;
     'initialize')
-        sudo useradd -M mycodo
+        useradd -M mycodo
         adduser mycodo gpio
         adduser mycodo adm
 

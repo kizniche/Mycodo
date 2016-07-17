@@ -169,7 +169,11 @@ cd Mycodo
 sudo ./setup.sh
 ```
 
-Make sure the script runs without errors. A log of the setup.sh script output will be created at ~/Mycodo/setup.log.
+Create an adminitrator user for the web UI:
+
+```sudo ./init_databases.py -A```
+
+Make sure the setup.sh and init_databases.py scripts run without error. A log of the setup.sh script output will be created at ~/Mycodo/setup.log.
 
 Follow the on-screen prompts to create an administrator user for the web interface and to reboot at the very end.
 
