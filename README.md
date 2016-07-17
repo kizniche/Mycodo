@@ -87,11 +87,11 @@ NOTE: The Raspberry Pi uses 3.3-volts for powering the SHT sensor, however the d
 
 ### Carbon Dioxide (CO<sub>2</sub>)
 
-> [K30](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip) (UART)
+> [K30](http://www.co2meter.com/products/k-30-co2-sensor-module) (UART)
 
-This documentation provides specific installation procedures for the K30 with the Raspberry Pi as well as example code. Once the K30 has been configured with this documentation, it can be tested whether the sensor is able to be read, by executing mycodo/tests/Test-Sensor-CO2-K30.py
+[This documentation](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip) provides specific installation procedures for the K30 with the Raspberry Pi version 1 or 2, as well as example code. Once the K30 has been configured with this documentation, it can be tested whether the sensor is able to be read, by executing mycodo/tests/Test-Sensor-CO2-K30.py
 
-UART is handled differently with the Raspberry Pi 3, because of bluetooth. Therefore, follow the instructions in the above link for Raspberry Pis 1 and 2, and the following instructions for the Raspberry pi 3:
+UART is handled differently with the Raspberry Pi 3, because of bluetooth. Therefore, follow the instructions in the above link for Raspberry Pi version 1 or 2, and the following instructions for the Raspberry Pi 3:
 
 Run raspi-config, go to Advanced Options->Serial and disable.
 
