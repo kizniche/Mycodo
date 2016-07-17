@@ -1171,15 +1171,6 @@ def inject_mycodo_version():
                     hide_alert_warning=misc.hide_alert_warning)
 
 
-@app.errorhandler(500)
-def handle_error(error):
-    code = 500
-    if isinstance(error, HTTPException):
-        code = error.code
-    return render_template('500.html'), 500
-    # return jsonify(error=str(e)), code
-
-
 @app.errorhandler(404)
 def not_found(error):
     return render_template('404.html'), 404

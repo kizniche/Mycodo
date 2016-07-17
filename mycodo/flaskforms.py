@@ -767,20 +767,20 @@ class AddSensor(Form):
     sensor = SelectField(
         u'Sensor',
         choices=[
-            ('EDGE', 'Edge Detection: Simple Switch'),
             ('RPi', 'Raspberry Pi CPU Temperature'),
             ('RPiCPULoad', 'Raspberry Pi CPU Load'),
             ('ADS1x15', 'Analog to Digital Converter: ADS1x15'),
             ('MCP342x', 'Analog to Digital Converter: MCP342x'),
             ('K30', 'CO2: K30'),
+            ('EDGE', 'Edge Detection: Simple Switch'),
             ('TSL2561', 'Luminance: TSL2561'),
+            ('BMP', 'Pressure/Temperature: BMP 180/085'),
             ('DS18B20', 'Temperature: DS18B20'),
             ('TMP006', 'Temperature (Contactless): TMP 006/007'),
             ('DHT11', 'Temperature/Humidity: DHT11'),
             ('DHT22', 'Temperature/Humidity: DHT22'),
             ('AM2315', 'Temperature/Humidity: AM2315'),
-            ('SHT', 'Temperature/Humidity: SHT 10/11/15/71/75'),
-            ('BMP', 'Temperature/Pressure: BMP 180/085')
+            ('SHT', 'Temperature/Humidity: SHT 10/11/15/71/75')
         ],
         validators=[DataRequired()]
     )

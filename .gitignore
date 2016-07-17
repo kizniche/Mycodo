@@ -3,8 +3,10 @@ mycodo_virtualenv/
 camera-stills/
 camera-video/
 camera-timelapse/
+src/
 *.db
 *.pem
+*.bak
 .updating
 .updatecheck
 statistics.csv

@@ -108,7 +108,7 @@ case "${1:-''}" in
         cd $INSTALL_DIRECTORY &&
         pip install -r requirements.txt --upgrade &&
 
-        rm -rf ./PIGPIO pigpio.zip wiringPi src influxdb_0.13.0_armhf.deb &&
+        rm -rf ./PIGPIO ./pigpio.zip ./wiringPi ./src ./influxdb_0.13.0_armhf.deb &&
 
         sleep 5 &&
 
