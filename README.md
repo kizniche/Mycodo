@@ -147,7 +147,7 @@ Mycodo/mycodo/scripts/mycodo_wrapper is a binary executable used to update the s
 
 ### Prerequisites
 
-These install procedures have been tested to work with a Raspberry Pi following a fresh intall of [Raspbian Jessie](https://www.raspberrypi.org/downloads/raspbian/), and with an active internet connection.
+These install procedures have been tested to work with a Raspberry Pi following a fresh intall of [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/), with an active internet connection. Note: Only the Lite version has been confirmed to work.
 
 Set up the initial settings with raspi-config. **Don't skip the file system expansion and reboot! This needs to be done before continuing to install anything or there won't be any free disk space.**
 
@@ -191,7 +191,7 @@ If you want write access to the mycodo files, add your user to the mycodo group,
 
 ```sudo usermod -a -G mycodo username```
 
-In certain circumstances after the initial install, the mycodo service will not be able to start because of a missing or corrupt package. I'm still trying to understand why this happens and how to prevent it. If you cannot start the daemon, try to resinstall the required modules with the following command, and then try:
+In certain circumstances after the initial install, the mycodo service will not be able to start because of a missing or corrupt package. I'm still trying to understand why this happens and how to prevent it. If you cannot start the daemon, try to resinstall the required modules with the following command:
 
 ```sudo pip install -r ~/Mycodo/requirements.txt --upgrade --force-reinstall --no-deps```
 
