@@ -25,7 +25,7 @@ The system is built to run on the Raspberry Pi and aims to be easy to install an
 - [Notes](#notes)
 - [Installation](#installation)
     - [Prerequisites](#prerequisites)
-    - [Enable I2C](#enable-i2c)
+    - [Install Notes](#install-notes)
 - [HTTP Server](#http-server-security)
 - [Daemon Info](#daemon-info)
 - [Upgrading](#upgrading)
@@ -97,7 +97,11 @@ Run raspi-config, go to Advanced Options->Serial and disable.
 
 ```sudo raspi-config```
 
-edit /boot/config.txt and find the line "enable_uart=0" and change it to "enable_uart=1", then reboot.
+Then edit /boot/config.txt
+
+```sudo vi /boot/config.txt```
+
+Find the line "enable_uart=0" and change it to "enable_uart=1", then reboot.
 
 ### Pressure
 
@@ -181,6 +185,8 @@ Follow the on-screen prompts to create an administrator user for the web interfa
 
 That's it. After the reboot, you should be able to log into the Mycodo web UI at https://localhost/ (note the 's' in https) with the user you just created. Make sure the Mycodo logo and version number at the top left is the color green, indicating the daemon is running.
 
+### Install Notes
+
 If you want write access to the mycodo files, add your user to the mycodo group, changing 'username' to your user.
 
 ```sudo usermod -a -G mycodo username```
@@ -194,30 +200,6 @@ Then reboot
 ```sudo shutdown now -r```
 
 If you receive an unresolvable error during the install, please [create an issue](https://github.com/kizniche/Mycodo/issues).
-
-
-### Enable I2C
-
-Enable I<sup>2</sup>C support through raspi-config (and other options if not already done)
-
-Edit /etc/modules and add 'i2c-bcm2708' to the last line of the file
-
-```sudo vim /etc/modules```
-
-Edit /boot/config.txt
-
-```sudo vim /boot/config.txt```
-
-and add the following two lines to the end of the file
-
-```
-dtparam=i2c1=on
-dtparam=i2c_arm=on
-```
-
-Reboot
-
-```sudo shutdown now -r```
 
 
 ### HTTP Server Security
