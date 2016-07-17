@@ -91,7 +91,7 @@ case "${1:-''}" in
         ln -sf $INSTALL_DIRECTORY/ /var/www/mycodo &&
         cp -snf $INSTALL_DIRECTORY/mycodo_flask_apache.conf /etc/apache2/sites-available/ &&
 
-        wget abyz.co.uk/rpi/pigpio/pigpio.zip -q --show-progress -P $INSTALL_DIRECTORY/ &&
+        wget abyz.co.uk/rpi/pigpio/pigpio.zip -P $INSTALL_DIRECTORY/ &&
         unzip pigpio.zip &&
         cd $INSTALL_DIRECTORY/PIGPIO &&
         make -j4 &&
@@ -101,7 +101,7 @@ case "${1:-''}" in
         cd $INSTALL_DIRECTORY/wiringPi &&
         ./build &&
 
-        wget https://dl.influxdata.com/influxdb/releases/influxdb_0.13.0_armhf.deb -q --show-progress -P $INSTALL_DIRECTORY/ &&
+        wget https://dl.influxdata.com/influxdb/releases/influxdb_0.13.0_armhf.deb -P $INSTALL_DIRECTORY/ &&
         dpkg -i $INSTALL_DIRECTORY/influxdb_0.13.0_armhf.deb &&
         service influxdb start &&
 

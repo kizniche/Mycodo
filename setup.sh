@@ -38,7 +38,7 @@ printf "### Mycodo installation began at $NOW\n\n"
 if [ -f $INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh ]; then
     $INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh upgrade-packages &&
     $INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh setup &&
-    $INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh initialize &&
+    $INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh initialize
 else
     printf "Error: $INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh not found\n"
 fi

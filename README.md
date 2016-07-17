@@ -25,6 +25,7 @@ The system is built to run on the Raspberry Pi and aims to be easy to install an
 - [Notes](#notes)
 - [Installation](#installation)
     - [Prerequisites](#prerequisites)
+    - [Notes](#notes)
     - [Enable I2C](#enable-i2c)
 - [HTTP Server](#http-server-security)
 - [Daemon Info](#daemon-info)
@@ -179,6 +180,11 @@ Follow the on-screen prompts to create an administrator user for the web interfa
 
 ```sudo shudown now -r```
 
+The login page can be found at https://localhost/ (note the 's' in https)
+
+
+#### Notes
+
 If you want write access to the mycodo files, add your user to the mycodo group, changing 'username' to your user.
 
 ```sudo usermod -a -G mycodo username```
@@ -190,8 +196,6 @@ In certain circumstances after the initial install, the mycodo service will not 
 Then reboot
 
 ```sudo shutdown now -r```
-
-The login page can be found at https://localhost/ (note the 's' in https)
 
 If you receive an unresolvable error during the install, please [create an issue](https://github.com/kizniche/Mycodo/issues).
 
