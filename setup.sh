@@ -38,7 +38,7 @@ printf "### Mycodo installation began at $NOW\n\n"
 $INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh upgrade-packages
 
 printf "#### Installing prerequisites\n"
-wget abyz.co.uk/rpi/pigpio/pigpio.zip -q --show-progress -P $INSTALL_DIRECTORY/
+wget abyz.co.uk/rpi/pigpio/pigpio.zip --quiet --show-progress -P $INSTALL_DIRECTORY/
 unzip pigpio.zip
 cd $INSTALL_DIRECTORY/PIGPIO
 make -j4
@@ -48,7 +48,7 @@ git clone git://git.drogon.net/wiringPi $INSTALL_DIRECTORY/wiringPi
 cd $INSTALL_DIRECTORY/wiringPi
 ./build
 
-wget https://dl.influxdata.com/influxdb/releases/influxdb_0.13.0_armhf.deb -q --show-progress -P $INSTALL_DIRECTORY/
+wget https://dl.influxdata.com/influxdb/releases/influxdb_0.13.0_armhf.deb --quiet --show-progress -P $INSTALL_DIRECTORY/
 dpkg -i $INSTALL_DIRECTORY/influxdb_0.13.0_armhf.deb
 service influxdb start
 
