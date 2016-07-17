@@ -86,7 +86,7 @@ def camera_record(record_type, duration_sec=10):
         output_filepath = '{}/{}'.format(path_stills, still_filename)
         assure_path_exists(path_stills)
         with picamera.PiCamera() as camera:
-            camera.resolution = (1024, 768)
+            camera.resolution = (1296, 972)
             camera.hflip = True
             camera.vflip = True
             camera.start_preview()

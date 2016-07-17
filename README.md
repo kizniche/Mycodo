@@ -24,8 +24,7 @@ The system is built to run on the Raspberry Pi and aims to be easy to install an
     - [Devices](#devices)
 - [Notes](#notes)
 - [Installation](#installation)
-    - [Prerequisites](#prerequisites)
-    - [Install Notes](#install-notes)
+- [Install Notes](#install-notes)
 - [HTTP Server](#http-server-security)
 - [Daemon Info](#daemon-info)
 - [Upgrading](#upgrading)
@@ -145,8 +144,6 @@ Mycodo/mycodo/scripts/mycodo_wrapper is a binary executable used to update the s
 
 ## Installation
 
-### Prerequisites
-
 These install procedures have been tested to work with a Raspberry Pi following a fresh intall of [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/), with an active internet connection. Note: Only the Lite version has been confirmed to work.
 
 Set up the initial settings with raspi-config. **Don't skip the file system expansion and reboot! This needs to be done before continuing to install anything or there won't be any free disk space.**
@@ -166,7 +163,7 @@ Set up the initial settings with raspi-config. **Don't skip the file system expa
 Mycodo will be installed with the following install script (setup.sh) will install or modify the default apache2 configurtion. If you require a custom setup, please examine and modify this script accordingly. If you do not require a cusom setup, just run the commands below.
 
 ```
-sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y git
+sudo apt-get update && sudo apt-get install -y git
 cd
 git clone https://github.com/kizniche/Mycodo
 cd Mycodo
