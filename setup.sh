@@ -36,22 +36,9 @@ NOW=$(date +"%m-%d-%Y %H:%M:%S")
 printf "### Mycodo installation began at $NOW\n\n"
 
 if [ -f $INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh ]; then
-    success=0 &&
     $INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh upgrade-packages &&
     $INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh setup &&
     $INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh initialize &&
-    success=1
-    
-    if [[ $success == 1 ]]; then
-        END=$(date +"%m-%d-%Y %H:%M:%S") &&
-        printf "#### Mycodo successfully finished installing at $END\n" &&
-        read -r -p "You need to reboot to complete the installation. Reboot now? [y/n] " response
-        if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
-            shutdown now -r &
-        fi
-    else
-        printf "#### Error during install. Mycodo did not install properly. Check the log for errors.\n"
-    fi
 else
     printf "Error: $INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh not found\n"
 fi

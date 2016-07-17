@@ -175,7 +175,9 @@ Create an adminitrator user for the web UI:
 
 Make sure the setup.sh and init_databases.py scripts run without error. A log of the setup.sh script output will be created at ~/Mycodo/setup.log.
 
-Follow the on-screen prompts to create an administrator user for the web interface and to reboot at the very end.
+Follow the on-screen prompts to create an administrator user for the web interface and then reboot.
+
+```sudo shudown now -r```
 
 If you want write access to the mycodo files, add your user to the mycodo group, changing 'username' to your user.
 
@@ -185,7 +187,9 @@ In certain circumstances after the initial install, the mycodo service will not 
 
 ```sudo pip install -r ~/Mycodo/requirements.txt --upgrade --force-reinstall --no-deps```
 
-and reboot with ``sudo shutdown now -r```
+Then reboot
+
+```sudo shutdown now -r```
 
 The login page can be found at https://localhost/ (note the 's' in https)
 
