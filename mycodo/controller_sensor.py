@@ -114,6 +114,8 @@ class SensorController(threading.Thread):
             self.adc_volts_max = sensor.adc_volts_max
             self.adc_units_min = sensor.adc_units_min
             self.adc_units_max = sensor.adc_units_max
+            self.sht_clock_pin = sensor.sht_clock_pin
+            self.sht_voltage = sensor.sht_voltage
 
             if self.device_type == 'EDGE':
                 if sensor.switch_edge == 'rising':
@@ -182,6 +184,8 @@ class SensorController(threading.Thread):
             self.measure_sensor = K30()
         elif self.device_type == 'BMP':
             self.measure_sensor = BMP()
+        elif self.device_type == 'SHT':
+            self.measure_sensor = SHT(self.location, self.sht_clock_pin, self.sht_voltage)
         elif self.device_type == 'TMP006':
             self.measure_sensor = TMP006_read(self.location)
         elif self.device_type == 'TSL2561':
