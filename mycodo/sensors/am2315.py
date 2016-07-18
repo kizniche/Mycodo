@@ -3,7 +3,7 @@
 import time
 import RPi.GPIO as GPIO
 from tentacle_pi.AM2315 import AM2315
-from calculate_dewpoint import dewpoint
+from sensorutils import dewpoint
 
 
 class AM2315_read(object):

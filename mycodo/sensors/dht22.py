@@ -3,7 +3,7 @@
 import atexit
 import time
 import pigpio
-from calculate_dewpoint import dewpoint
+from sensorutils import dewpoint
 
 
 class DHT22(object):

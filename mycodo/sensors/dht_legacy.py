@@ -2,7 +2,7 @@
 
 import time
 import Adafruit_DHT
-from calculate_dewpoint import dewpoint
+from sensorutils import dewpoint
 
 
 class DHT(object):
