@@ -30,7 +30,7 @@ from sensors.tsl2561 import TSL2561_read
 
 # Sensor modules that are untested (don't have these sensors to test)
 from sensors.dht11 import DHT11
-from sensors.sht import SHT
+from sensors.sht import SHT_read
 
 # Currently unused modules
 # from sensors.dht_legacy import DHT # The Adafruit DHT code is crap! pigpio all the way!!!
@@ -185,7 +185,7 @@ class SensorController(threading.Thread):
         elif self.device_type == 'BMP':
             self.measure_sensor = BMP()
         elif self.device_type == 'SHT':
-            self.measure_sensor = SHT(self.location, self.sht_clock_pin, self.sht_voltage)
+            self.measure_sensor = SHT_read(self.location, self.sht_clock_pin, self.sht_voltage)
         elif self.device_type == 'TMP006':
             self.measure_sensor = TMP006_read(self.location)
         elif self.device_type == 'TSL2561':

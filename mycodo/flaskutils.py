@@ -1454,7 +1454,7 @@ def sensor_add(formAddSensor, display_order):
             new_sensor.graph = 0
             new_sensor.period = 15
             new_sensor.sht_clock_pin = 0
-            new_sensor.sht_voltage = 0
+            new_sensor.sht_voltage = 3.5
             if formAddSensor.sensor.data in ['RPiCPULoad']:
                 new_sensor.device_type = 'cpu_load'
             elif formAddSensor.sensor.data in ['RPi', 'DS18B20']:
@@ -1555,7 +1555,7 @@ def sensor_mod(formModSensor):
             mod_sensor.pre_relay_duration = formModSensor.modPreRelayDuration.data
             mod_sensor.period = formModSensor.modPeriod.data
             mod_sensor.sht_clock_pin = formModSensor.modSHTClockPin.data
-            mod_sensor.sht_voltage = formModSensor.modSHTVoltage.data
+            mod_sensor.sht_voltage = float(formModSensor.modSHTVoltage.data)
             db_session.commit()
             flash("Sensor settings successfully modified", "success")
     except Exception as except_msg:

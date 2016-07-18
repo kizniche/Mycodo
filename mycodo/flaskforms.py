@@ -888,14 +888,9 @@ class ModSensor(Form):
             message="If using a SHT sensor, enter the clock pin."
         )]
     )
-    modSHTVoltage = DecimalField(
+    modSHTVoltage = TextField(
         u'Voltage',
-        render_kw={"placeholder": "SHT Voltage"},
-        validators=[validators.NumberRange(
-            min=0,
-            max=50,
-            message="If using a SHT sensor, enter the voltage going to the device."
-        )]
+        render_kw={"placeholder": "Voltage"}
     )
     modSensorSubmit = SubmitField(u'Save')
     delSensorSubmit = SubmitField(u'Delete')

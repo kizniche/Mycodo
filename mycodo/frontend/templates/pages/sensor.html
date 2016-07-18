@@ -225,7 +225,14 @@
                 <div class="form-group">
                   {{formModSensor.modSHTVoltage.label(class_='control-label')}}
                   <div>
-                    {{formModSensor.modSHTVoltage(class_='form-control', value=each_sensor.sht_voltage, **{'title':'The input voltage to the SHT sensor.'})}}
+                    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modSHTVoltage" name="modSHTVoltage" title="The input voltage to the SHT sensor.">
+                      <option value=""></option>
+                      <option value="2.5"{% if each_sensor.sht_voltage == 2.5 %} selected{% endif %}>2.5V</option>
+                      <option value="3.0"{% if each_sensor.sht_voltage == 3.0 %} selected{% endif %}>3.0V</option>
+                      <option value="3.5"{% if each_sensor.sht_voltage == 3.5 %} selected{% endif %}>3.5V</option>
+                      <option value="4.0"{% if each_sensor.sht_voltage == 4.0 %} selected{% endif %}>4.0V</option>
+                      <option value="5.0"{% if each_sensor.sht_voltage == 5.0 %} selected{% endif %}>5.0V</option>
+                    </select>
                   </div>
                 </div>
               {% endif -%}
