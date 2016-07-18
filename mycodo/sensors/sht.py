@@ -10,7 +10,7 @@ class SHT(object):
         self._temperature = 0
         self._humidity = 0
         self.pin = pin
-        self.click_pin = clock_pin
+        self.clock_pin = clock_pin
         self.voltage = voltage
         self.running = True
 
