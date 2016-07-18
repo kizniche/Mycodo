@@ -159,9 +159,9 @@ class SensorController(threading.Thread):
             self.adc_address = int(str(self.adc_address_raw), 16)
             self.adc_lock_file = "/var/lock/mycodo_adc_0x{:02X}.pid".format(self.adc_address)
             if self.device_type == 'ADS1x15':
-                self.adc = ADS1x15_read(self.logger, self.adc_address, self.adc_channel, self.gain)
+                self.adc = ADS1x15_read(self.logger, self.adc_address, self.adc_channel, self.adc_gain)
             if self.device_type == 'MCP342x':
-                self.adc = MCP342x_read(self.logger, self.adc_address, self.adc_channel, self.gain, self.adc_resolution)
+                self.adc = MCP342x_read(self.logger, self.adc_address, self.adc_channel, self.adc_gain, self.adc_resolution)
         else:
             self.adc = None
 
