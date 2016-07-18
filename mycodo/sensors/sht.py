@@ -1,6 +1,7 @@
 # coding=utf-8
 
 import time
+import traceback
 from sht_sensor import Sht
 
 
@@ -18,7 +19,11 @@ class SHT(object):
             sht_sensor = Sht(self.clock_pin, self.pin, voltage=self.voltage)
             self._temperature = sht_sensor.read_t()
             self._humidity = sht_sensor.read_rh()
-        except:
+        except Exception as msg:
+            try:
+                raise TypeError("Error: {}".format(msg))
+            except:
+                pass
             return None
 
     @property
@@ -58,7 +63,7 @@ class SHT(object):
 if __name__ == "__main__":
     sht = SHT(16, 17, '3.5V')
 
-    for measure in sht:
-        print("Temperature: {}".format(measure['temperature']))
-        print("Humidity: {}".format(measure['humidity']))
+    for measurement in sht:
+        print("Temperature: {}".format(measurement['temperature']))
+        print("Humidity: {}".format(measurement['humidity']))
         time.sleep(1)
