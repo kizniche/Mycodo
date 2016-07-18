@@ -397,6 +397,7 @@
                         {%- elif each_sensor.device_type == 'htsensor' -%}
                           <option value="temperature"{% if each_sensorcond.measurement_type == 'temperature' %} selected{% endif %}>Temperature</option>
                           <option value="humidity"{% if each_sensorcond.measurement_type == 'humidity' %} selected{% endif %}>Humidity</option>
+                          <option value="dewpoint"{% if each_sensorcond.measurement_type == 'dewpoint' %} selected{% endif %}>Dew Point</option>
                         {%- elif each_sensor.device_type == 'co2sensor' -%}
                           <option value="co2"{% if each_sensorcond.measurement_type == 'co2' %} selected{% endif %}>CO2</option>
                         {%- elif each_sensor.device_type == 'presssensor' -%}

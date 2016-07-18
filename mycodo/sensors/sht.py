@@ -8,6 +8,7 @@ class SHT_read(object):
     def __init__(self, pin, clock_pin, voltage):
         self._temperature = 0
         self._humidity = 0
+        self._dewpoint = 0
         self.pin = pin
         self.clock_pin = clock_pin
         self.voltage = "{}V".format(voltage)

@@ -395,6 +395,8 @@
               {%- do yaxis_temp.append(1) -%}
             {%- elif 'humidity' in each_sensor_and_measure -%}
               {%- do yaxis_hum.append(1) -%}
+            {%- elif 'dewpoint' in each_sensor_and_measure -%}
+              {%- do yaxis_temp.append(1) -%}
             {%- elif 'co2' in each_sensor_and_measure -%}
               {%- do yaxis_co2.append(1) -%}
             {%- elif 'lux' in each_sensor_and_measure -%}
@@ -421,6 +423,8 @@
                 {%- do yaxis_temp.append(1) -%}
               {%- elif each_pid.measure_type == 'humidity' -%}
                 {%- do yaxis_hum.append(1) -%}
+              {%- elif each_pid.measure_type == 'dewpoint' -%}
+                {%- do yaxis_temp.append(1) -%}
               {%- elif each_pid.measure_type == 'co2' -%}
                 {%- do yaxis_co2.append(1) -%}
               {%- elif each_pid.measure_type == 'lux' -%}
@@ -499,6 +503,10 @@
                   {% elif 'humidity' in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'htsensor', 'humidity', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
             getLiveData({{chart_number}}, {{count_series|count}}, 'htsensor', 'humidity', '{{each_sensor.id}}', {{each_graph.refresh_duration+30}}, {{each_graph.x_axis_duration}});
+                    {%- do count_series.append(1) -%}
+                  {% elif 'dewpoint' in each_sensor_and_measure %}
+            getPastData({{chart_number}}, {{count_series|count}}, 'htsensor', 'dewpoint', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'htsensor', 'dewpoint', '{{each_sensor.id}}', {{each_graph.refresh_duration+30}}, {{each_graph.x_axis_duration}});
                     {%- do count_series.append(1) -%}
                   {%- endif -%}
                 {%- elif each_sensor.device_type == 'co2sensor' %}
@@ -897,6 +905,16 @@
                   valueDecimals: 1
                 },
                 yAxis: 'humidity',
+                data: []
+              },
+            {%- elif 'dewpoint' in each_sensor_and_measure -%}
+              {
+                name: '{{each_sensor.name}} Dew Point',
+                tooltip: {
+                  valueSuffix: ' °C',
+                  valueDecimals: 1
+                },
+                yAxis: 'temperature',
                 data: []
               },
             {%- endif -%}

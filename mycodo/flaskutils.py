@@ -462,6 +462,11 @@ def choices_sensors(sensor):
             display = '{} ({}) Humidity'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value:display})
+        if each_sensor.device in ['DHT11', 'DHT22', 'AM2315', 'SHT']:
+            value = '{},dewpoint'.format(each_sensor.id)
+            display = '{} ({}) Dew Point'.format(
+                each_sensor.id, each_sensor.name)
+            choices.update({value:display})
         if each_sensor.device == 'K30':
             value = '{},co2'.format(each_sensor.id)
             display = '{} ({}) CO2'.format(
