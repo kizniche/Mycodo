@@ -166,6 +166,7 @@ def page(page):
                              'temperature_object':'°C'.decode('utf-8'),
                              'temperature_die':'°C'.decode('utf-8'),
                              'humidity':' %',
+                             'dewpoint':'°C'.decode('utf-8'),
                              'co2':' ppmv',
                              'lux':'lx',
                              'pressure':' Pa',

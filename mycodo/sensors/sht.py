@@ -19,7 +19,7 @@ class SHT_read(object):
             sht_sensor = Sht(self.clock_pin, self.pin, voltage=self.voltage)
             self._temperature = sht_sensor.read_t()
             self._humidity = sht_sensor.read_rh()
-            self._dewpoint = sht.read_dew_point(self.temperature, self.humidity)
+            self._dewpoint = sht_sensor.read_dew_point(self.temperature, self.humidity)
         except:
             return 1
 

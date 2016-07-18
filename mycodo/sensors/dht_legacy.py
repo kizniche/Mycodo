@@ -2,6 +2,7 @@
 
 import time
 import Adafruit_DHT
+from calculate_dewpoint import dewpoint
 
 
 class DHT(object):
@@ -65,7 +66,8 @@ class DHT(object):
             return None
         response = {
             'humidity': float("{0:.2f}".format(self.humidity)),
-            'temperature': float("{0:.2f}".format(self.temperature))
+            'temperature': float("{0:.2f}".format(self.temperature)),
+            'dewpoint': float("{0:.2f}".format(dewpoint(self.temperature, self.humidity)))
         }
         return response
 
@@ -81,15 +83,17 @@ if __name__ == "__main__":
     total_diff = 0
     none_count = 0
     max_diff = 0
-    for measure in dht:
-        if measure is not None:
+    for measurements in dht:
+        if measurements is not None:
             count += 1
             diff = time.time()-time_diff
             diff_success = time.time()-time_success
             total_diff += diff
             if diff > max_diff:
                 max_diff = diff
-            print("Temperature: {:.2f}, Humidity: {:.2f}".format(measure['temperature'], measure['humidity']))
+            print("Temperature: {}".format(measurements['temperature']))
+            print("Humidity: {}".format(measurements['humidity']))
+            print("Dew Point: {}".format(dewpoint(measurements['temperature'], measurements['humidity'])))
             print("No Resp. = {}, Avg Read Time: {:.2f}, Max Read Time: {:.2f}, Read Time: {:.2f}, Time Success: {:.2f}".format(none_count, total_diff/count, max_diff, diff, diff_success))
             time_diff = time.time()
             time_success = time.time()

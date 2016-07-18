@@ -3,6 +3,7 @@
 import time
 import RPi.GPIO as GPIO
 from tentacle_pi.AM2315 import AM2315
+from calculate_dewpoint import dewpoint
 
 
 class AM2315_read(object):
@@ -57,6 +58,7 @@ class AM2315_read(object):
         response = {
             'humidity': float("{0:.2f}".format(self.humidity)),
             'temperature': float("{0:.2f}".format(self.temperature)),
+            'dewpoint': float("{0:.2f}".format(dewpoint(self.temperature, self.humidity))),
             'crc_check': self.crc_check
         }
         return response
@@ -68,8 +70,9 @@ class AM2315_read(object):
 if __name__ == "__main__":
     am2315 = AM2315_read()
 
-    for measure in am2315:
-        print("Temperature: {}".format(measure['temperature']))
-        print("Humidity: {}".format(measure['humidity']))
-        print("CRC Check: {}".format(measure['crc_check']))
+    for measurements in am2315:
+        print("Temperature: {}".format(measurements['temperature']))
+        print("Humidity: {}".format(measurements['humidity']))
+        print("Dew Point: {}".format(dewpoint(measurements['temperature'], measurements['humidity'])))
+        print("CRC Check: {}".format(measurements['crc_check']))
         time.sleep(1)

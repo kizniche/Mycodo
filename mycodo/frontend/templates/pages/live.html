@@ -58,6 +58,7 @@
       {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'htsensor' -%}
         liveTextData('{{each_sensor.name}}', 'htsensor', 'temperature', '{{each_sensor.id}}', '30');
         liveTextData('{{each_sensor.name}}', 'htsensor', 'humidity', '{{each_sensor.id}}', '30');
+        liveTextData('{{each_sensor.name}}', 'htsensor', 'dewpoint', '{{each_sensor.id}}', '30');
       {%- endfor -%}
       {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'co2sensor' -%}
         liveTextData('{{each_sensor.name}}', 'co2sensor', 'co2', '{{each_sensor.id}}', '30');
@@ -150,6 +151,7 @@
                 <div>
                   <b><span id="{{each_sensor.id}}-temperature-value">0.0</span> &deg;C</b> | <span id="{{each_sensor.id}}-temperature-time">&lt;please wait&gt;</span>
                   <br><b><span id="{{each_sensor.id}}-humidity-value">0.0</span> %</b> | <span id="{{each_sensor.id}}-humidity-time">&lt;please wait&gt;</span>
+                  <br><b><span id="{{each_sensor.id}}-dewpoint-value">0.0</span> &deg;C DP</b> | <span id="{{each_sensor.id}}-dewpoint-time">&lt;please wait&gt;</span>
                 </div>
               </div>
             {%- elif each_sensor.device_type == 'co2sensor' %}

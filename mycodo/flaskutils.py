@@ -462,7 +462,6 @@ def choices_sensors(sensor):
             display = '{} ({}) Humidity'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value:display})
-        if each_sensor.device in ['DHT11', 'DHT22', 'AM2315', 'SHT']:
             value = '{},dewpoint'.format(each_sensor.id)
             display = '{} ({}) Dew Point'.format(
                 each_sensor.id, each_sensor.name)
@@ -1055,7 +1054,8 @@ def pid_mod(formModPID):
                     
                     (sensor.device_type == 'htsensor' and
                     formModPID.modMeasureType.data not in ['temperature',
-                                                           'humidity']) or
+                                                           'humidity',
+                                                           'dewpoint']) or
                     
                     (sensor.device_type == 'co2sensor' and
                     formModPID.modMeasureType.data not in ['co2']) or

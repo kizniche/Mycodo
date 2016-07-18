@@ -285,8 +285,8 @@ class SensorController(threading.Thread):
                 self.sensor_id,
                 (timeit.default_timer()-self.thread_shutdown_timer)*1000))
         except Exception as msg:
-            self.logger.exception("[Sensor {}] Error: {}".format(self.sensor_id,
-                                                             msg))
+            self.logger.exception("[Sensor {}] Error: {}".format(
+                self.sensor_id, msg))
 
 
     def addMeasurementInfluxdb(self):
@@ -303,6 +303,7 @@ class SensorController(threading.Thread):
                                          'cpu_load_15m',
                                          'temperature',
                                          'humidity',
+                                         'dewpoint',
                                          'co2',
                                          'pressure',
                                          'altitude',

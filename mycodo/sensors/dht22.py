@@ -71,7 +71,6 @@ class DHT22(object):
 
         self._temperature = 0
         self._humidity = 0
-        self._deewpoint = 0
 
         self.tov = None
 
@@ -154,7 +153,6 @@ class DHT22(object):
                     else:
                         mult = 0.1
                     self._temperature = ((self.tH << 8) + self.tL) * mult
-                    self._dewpoint = dewpoint(self.temperature, self.humidity)
                     self.tov = time.time()
                     if self.LED is not None:
                         self.pi.write(self.LED, 0)
@@ -275,10 +273,6 @@ class DHT22(object):
     def humidity(self):
         return self._humidity
 
-    @property
-    def dewpoint(self):
-        return self._dewpoint
-
     def __iter__(self):
         """
         Support the iterator protocol.
@@ -294,7 +288,7 @@ class DHT22(object):
         response = {
             'humidity': float("{0:.2f}".format(self.humidity)),
             'temperature': float("{0:.2f}".format(self.temperature)),
-            'dewpoint': float("{0:.2f}".format(self.dewpoint))
+            'dewpoint': float("{0:.2f}".format(dewpoint(self.temperature, self.humidity)))
         }
         return response
 
@@ -311,7 +305,7 @@ if __name__ == '__main__':
         for measurements in sensor:
             print("Temperature: {}".format(measurements['temperature']))
             print("Humidity: {}".format(measurements['humidity']))
-            print("Dew Point: {}".format(measurements['dewpoint']))
+            print("Dew Point: {}".format(dewpoint(measurements['temperature'], measurements['humidity'])))
             time.sleep(INTERVAL)
     except KeyboardInterrupt:
         sensor.close()

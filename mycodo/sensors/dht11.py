@@ -4,8 +4,8 @@
 
 import atexit
 import time
-
 import pigpio
+from calculate_dewpoint import dewpoint
 
 
 class DHT11(object):
@@ -195,7 +195,8 @@ class DHT11(object):
             return None
         response = {
             'humidity': float("{0:.2f}".format(self.humidity)),
-            'temperature': float("{0:.2f}".format(self.temperature))
+            'temperature': float("{0:.2f}".format(self.temperature)),
+            'dewpoint': float("{0:.2f}".format(dewpoint(self.temperature, self.humidity)))
         }
         return response
 
@@ -207,9 +208,10 @@ if __name__ == '__main__':
     pi = pigpio.pi()
     sensor = DHT11(pi, 4)
     try:
-        for d in sensor:
-            print("temperature: {}".format(d['temperature']))
-            print("humidity: {}".format(d['humidity']))
+        for measurements in sensor:
+            print("Temperature: {}".format(measurements['temperature']))
+            print("Humidity: {}".format(measurements['humidity']))
+            print("Dew Point: {}".format(dewpoint(measurements['temperature'], measurements['humidity'])))
             time.sleep(1)
     except KeyboardInterrupt:
         sensor.close()
