@@ -8,6 +8,7 @@ Flask_WTF == 0.12
 geocoder == 1.15.0
 influxdb == 2.12.0
 lockfile == 0.12.2
+numpy
 pyserial == 3.1
 python-dateutil
 RPi.GPIO
