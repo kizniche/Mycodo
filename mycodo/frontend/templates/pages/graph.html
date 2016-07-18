@@ -39,7 +39,7 @@
     {%- set chart_number = loop.index -%}
     {%- for each_graph in graph if each_graph.id in order -%}
 
-    <div style="display: inline-block; margin: 0.5em; padding: 0.2em 0 0 0; border: 2px solid #ddd; border-radius: 5px; width: calc({{each_graph.width}}% - 1em); min-width: 350px">
+    <div style="display: inline-block; margin: 0 0.5em 0.5em 0.5em; border: 2px solid #ddd; border-radius: 5px; width: calc({{each_graph.width}}% - 1em); min-width: 350px">
 
       <div class="container" style="width: 100%;">
         <div class="row">
