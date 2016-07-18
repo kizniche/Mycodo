@@ -293,7 +293,7 @@ class DHT22(object):
             return None
         response = {
             'humidity': float("{0:.2f}".format(self.humidity)),
-            'temperature': float("{0:.2f}".format(self.temperature))
+            'temperature': float("{0:.2f}".format(self.temperature)),
             'dewpoint': float("{0:.2f}".format(self.dewpoint))
         }
         return response
