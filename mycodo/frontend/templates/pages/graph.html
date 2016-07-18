@@ -34,12 +34,14 @@
     {%- endif -%}
   {%- endfor %}
 
+  <div style="padding: 0 0.5em 0.5em 0.5em">
+
   {%- if displayOrder -%}
   {%- for order in displayOrder -%}
     {%- set chart_number = loop.index -%}
     {%- for each_graph in graph if each_graph.id in order -%}
 
-    <div style="display: inline-block; margin: 0 0.5em 0.5em 0.5em; border: 2px solid #ddd; border-radius: 5px; width: calc({{each_graph.width}}% - 1em); min-width: 350px">
+    <div style="display: inline-block; margin: 0 0.3em 0.6em 0.3em; border: 2px solid #ddd; border-radius: 5px; width: calc({{each_graph.width}}% - 0.7em); min-width: 350px">
 
       <div class="container" style="width: 100%;">
         <div class="row">
@@ -180,14 +182,12 @@
             </form>
           </div>
         </div>
-
       </div>
-
     </div>
-
     {%- endfor -%}
   {%- endfor -%}
   {%- endif -%}
+  </div>
 
   <div class="container" style="padding-bottom: 1em;">
     <a data-toggle="collapse" href="#collapseContainerGraphAdd" aria-expanded="false" aria-controls="collapseContainerGraphAdd" class="btn btn-default" role="button">New Graph</a>
