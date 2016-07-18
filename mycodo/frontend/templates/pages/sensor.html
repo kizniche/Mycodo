@@ -196,7 +196,7 @@
                   </div>
                 </div>
               {% endif -%}
-              {% if each_sensor.device != 'RPiCPULoad' -%}
+              {% if each_sensor.device not in ['EDGE', 'RPiCPULoad'] -%}
                 <div class="form-group">
                   {{formModSensor.modPreRelayID.label(class_='control-label')}}
                   <div>
