@@ -12,10 +12,11 @@ from MCP342x import MCP342x
 
 
 class MCP342x_read(object):
-    def __init__(self, logger, address, channel, resolution):
+    def __init__(self, logger, address, channel, gain, resolution):
         self.logger = logger
         self.i2c_address = address
         self.channel = channel
+        self.gain = gain
         self.resolution = resolution
         if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
             self.I2C_bus_number = 1
@@ -52,7 +53,7 @@ class MCP342x_read(object):
         try:
             time.sleep(0.1)
             self.setup_lock()
-            adc = MCP342x(self.bus, self.i2c_address, channel=self.channel-1, resolution=self.resolution)
+            adc = MCP342x(self.bus, self.i2c_address, channel=self.channel-1, gain=self.gain, resolution=self.resolution)
             response = adc.convert_and_read()
             self.release_lock()
             return 1, response
@@ -63,11 +64,14 @@ class MCP342x_read(object):
 
 def menu(logger):
     parser = argparse.ArgumentParser(description='Select I2C address and channel of TCA9548A I2C multiplexer')
-    parser.add_argument('-a', '--address', metavar='ADDRESS', type=int,
+    parser.add_argument('-a', '--address', metavar='ADDRESS', type=str,
                         help='I2C address of the ADC, only last two digits, (ex. enter "68" if 0x68)',
                         required=True)
     parser.add_argument('-c', '--channel', metavar='CHANNEL', type=int,
                         help='Channel to read the voltage. Options are 1, 2, 3, 4.',
+                        required=True)
+    parser.add_argument('-g', '--gain', metavar='GAIN', type=int,
+                        help='Gain. Options are 1, 2, 4, or 8.',
                         required=True)
     parser.add_argument('-r', '--resolution', metavar='RESOLUTION', type=int,
                         help='How many bits precision? Options are 12, 14, 16, 18.',
@@ -76,10 +80,10 @@ def menu(logger):
     args = parser.parse_args()
 
     i2c_address = int(str(args.address), 16)
-    adc = MCP342x_read(logger, i2c_address, args.channel, args.resolution)
+    adc = MCP342x_read(logger, i2c_address, args.channel, args.gain, args.resolution)
     read_status, read_response = adc.read()
     if read_status:
-        print("MCP342x response on channel {} with {}-bit resolution: {} volts".format(args.channel, args.resolution, read_response))
+        print("MCP342x response on channel {}: {} volts".format(args.channel, read_response))
     else:
         print("Error: {}".format(read_response))
 
