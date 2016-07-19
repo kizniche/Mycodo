@@ -4,6 +4,7 @@
 
 import smbus
 import time
+from sensorutils import dewpoint
 
 
 class SHT2x_read(object):
@@ -45,7 +46,7 @@ class SHT2x_read(object):
             data1 = bus.read_byte(self.i2c_address)
             self._humidity = -6 + (((data0 * 256 + data1) * 125.0) / 65536.0)
 
-            self._dewpoint = sht_sensor.read_dew_point(self.temperature, self.humidity)
+            self._dewpoint = dewwpoint(self.temperature, self.humidity)
         except:
             return 1
 
