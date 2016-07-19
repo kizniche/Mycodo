@@ -37,7 +37,7 @@ printf "### Mycodo installation began at $NOW\n\n"
 
 printf "#### Installing prerequisites\n"
 apt-get update -y
-apt-get remove -y python-pip
+apt-get purge -y python-pip
 apt-get upgrade -y
 apt-get install -y libav-tools libffi-dev libi2c-dev python-dev python-setuptools python-smbus sqlite3
 easy_install pip
