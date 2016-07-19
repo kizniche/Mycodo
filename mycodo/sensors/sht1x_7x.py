@@ -4,7 +4,7 @@ import time
 from sht_sensor import Sht
 
 
-class SHT_read(object):
+class SHT1x_7x_read(object):
     def __init__(self, pin, clock_pin, voltage):
         self._temperature = 0
         self._humidity = 0
@@ -59,7 +59,7 @@ class SHT_read(object):
 
 
 if __name__ == "__main__":
-    sht = SHT_read(16, 17, 3.5)
+    sht = SHT1x_7x_read(16, 17, 3.5)
 
     for measurements in sht:
         print("Temperature: {}".format(measurements['temperature']))

@@ -115,23 +115,23 @@
               </div>
             </div>
             <div style="padding: 0.5em;" class="form-inline">
-              {% if each_sensor.device not in ['RPi', 'RPiCPULoad', 'ADS1x15', 'MCP342x'] -%}
+              {% if each_sensor.device not in ['RPi', 'RPiCPULoad', 'ADS1x15', 'MCP342x', 'TSL2561'] -%}
                 <div class="form-group">
                   <label class="control-label">
-                    {%- if each_sensor.device in ['DHT11', 'DHT22', 'SHT', 'EDGE'] -%}
+                    {%- if each_sensor.device in ['DHT11', 'DHT22', 'SHT1x_7x', 'EDGE'] -%}
                       GPIO
                     {%- elif each_sensor.device == 'DS18B20' -%}
                       Device ID (28-x)
-                    {%- elif each_sensor.device in ['AM2315', 'BMP', 'TSL2561', 'TMP006'] -%}
+                    {%- elif each_sensor.device in ['AM2315', 'BMP', 'TSL2561', 'TMP006', 'SHT2x'] -%}
                       I<sup>2</sup>C Address
                     {%- elif each_sensor.device == 'K30' -%}
                       Interface
                     {%- endif -%}
                   </label>
                   <div>
-                    {% if each_sensor.device in ['DS18B20', 'DHT11', 'DHT22', 'SHT', 'EDGE', 'TSL2561', 'TMP006'] -%}
+                    {% if each_sensor.device in ['DS18B20', 'DHT11', 'DHT22', 'SHT1x_7x', 'EDGE', 'TMP006'] -%}
                       {{formModSensor.modLocation(class_='form-control', value=each_sensor.location, **{'title':'Where to access the device/sensor?'})}}
-                    {% elif each_sensor.device in ['AM2315', 'BMP', 'K30'] -%}
+                    {% elif each_sensor.device in ['AM2315', 'BMP', 'K30', 'SHT2x'] -%}
                       {{formModSensor.modLocation(class_='form-control', value=each_sensor.location, disabled=True)}}
                       <input type="hidden" class="form-control" id="modLocation" name="modLocation" value="{{each_sensor.location}}">
                     {% endif -%}
@@ -160,6 +160,35 @@
                       <option value="0x6A"{% if each_sensor.adc_address == '0x6A' %} selected{% endif %}>Address 0x6A</option>
                       <option value="0x6C"{% if each_sensor.adc_address == '0x6C' %} selected{% endif %}>Address 0x6C</option>
                       <option value="0x6E"{% if each_sensor.adc_address == '0x6E' %} selected{% endif %}>Address 0x6E</option>
+                    </select>
+                  </div>
+                </div>
+              {% elif each_sensor.device == 'TMP006' %}
+                <div class="form-group">
+                  <label class="control-label">I2C Address</label>
+                  <div>
+                    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modLocation" name="modLocation" title="The I2C address of the sensor.">
+                      <option value=""{% if each_sensor.adc_address == '' %} selected{% endif %}></option>
+                      <option value="0x70"{% if each_sensor.adc_address == '0x70' %} selected{% endif %}>Address 0x70</option>
+                      <option value="0x71"{% if each_sensor.adc_address == '0x71' %} selected{% endif %}>Address 0x71</option>
+                      <option value="0x72"{% if each_sensor.adc_address == '0x72' %} selected{% endif %}>Address 0x72</option>
+                      <option value="0x73"{% if each_sensor.adc_address == '0x73' %} selected{% endif %}>Address 0x73</option>
+                      <option value="0x74"{% if each_sensor.adc_address == '0x74' %} selected{% endif %}>Address 0x74</option>
+                      <option value="0x75"{% if each_sensor.adc_address == '0x75' %} selected{% endif %}>Address 0x75</option>
+                      <option value="0x76"{% if each_sensor.adc_address == '0x76' %} selected{% endif %}>Address 0x76</option>
+                      <option value="0x77"{% if each_sensor.adc_address == '0x77' %} selected{% endif %}>Address 0x77</option>
+                    </select>
+                  </div>
+                </div>
+              {% elif each_sensor.device == 'TSL2561' %}
+                <div class="form-group">
+                  <label class="control-label">I2C Address</label>
+                  <div>
+                    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modLocation" name="modLocation" title="The I2C address of the sensor.">
+                      <option value=""{% if each_sensor.adc_address == '' %} selected{% endif %}></option>
+                      <option value="0x29"{% if each_sensor.adc_address == '0x29' %} selected{% endif %}>Address 0x29</option>
+                      <option value="0x39"{% if each_sensor.adc_address == '0x39' %} selected{% endif %}>Address 0x39</option>
+                      <option value="0x49"{% if each_sensor.adc_address == '0x49' %} selected{% endif %}>Address 0x49</option>
                     </select>
                   </div>
                 </div>
@@ -215,7 +244,7 @@
                   </div>
                 </div>
               {% endif -%}
-              {% if each_sensor.device == 'SHT' -%}
+              {% if each_sensor.device == 'SHT1x_7x' -%}
                 <div class="form-group">
                   {{formModSensor.modSHTClockPin.label(class_='control-label')}}
                   <div>
@@ -236,7 +265,7 @@
                   </div>
                 </div>
               {% endif -%}
-              {% if each_sensor.device in ['AM2315', 'BMP', 'TSL2561', 'TMP006', 'ADS1x15', 'MCP342x'] -%}
+              {% if each_sensor.device in ['AM2315', 'BMP', 'TSL2561', 'TMP006', 'ADS1x15', 'MCP342x', 'SHT2x'] -%}
                 <div class="form-group">
                   <label class="control-label">Multiplexer Address</label>
                   <div>
@@ -270,7 +299,7 @@
                   </div>
                 </div>
               {% endif -%}
-              {% if each_sensor.device == 'SHT' -%}
+              {% if each_sensor.device == 'SHT1x_7x' -%}
                 <input id="modSHTClockPin" name="modSHTClockPin" type="hidden" value="0">
                 <input id="modSHTVoltage" name="modSHTVoltage" type="hidden" value="0">
               {% endif -%}

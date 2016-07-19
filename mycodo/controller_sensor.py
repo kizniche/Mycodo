@@ -27,10 +27,11 @@ from sensors.raspi import RaspberryPiCPUTemp
 from sensors.raspi_cpuload import RaspberryPiCPULoad
 from sensors.tmp006 import TMP006_read
 from sensors.tsl2561 import TSL2561_read
+from sensors.sht1x_7x import SHT1x_7x_read
 
 # Sensor modules that are untested (don't have these sensors to test)
 from sensors.dht11 import DHT11
-from sensors.sht import SHT_read
+from sensors.sht2x import SHT2x_read
 
 # Currently unused modules
 # from sensors.dht_legacy import DHT # The Adafruit DHT code is crap! pigpio all the way!!!
@@ -184,8 +185,10 @@ class SensorController(threading.Thread):
             self.measure_sensor = K30()
         elif self.device_type == 'BMP':
             self.measure_sensor = BMP()
-        elif self.device_type == 'SHT':
-            self.measure_sensor = SHT_read(self.location, self.sht_clock_pin, self.sht_voltage)
+        elif self.device_type == 'SHT1x_7x':
+            self.measure_sensor = SHT1x_7x_read(self.location, self.sht_clock_pin, self.sht_voltage)
+        elif self.device_type == 'SHT2x':
+            self.measure_sensor = SHT2x_read(int(str(self.location), 16))
         elif self.device_type == 'TMP006':
             self.measure_sensor = TMP006_read(self.location)
         elif self.device_type == 'TSL2561':

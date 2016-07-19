@@ -443,7 +443,7 @@ def choices_sensors(sensor):
                 each_sensor.id, each_sensor.name)
             choices.update({value:display})
         if each_sensor.device in ['DS18B20', 'RPi', 'DHT11', 'DHT22',
-                                  'AM2315', 'BMP', 'SHT']:
+                                  'AM2315', 'BMP', 'SHT1x_7x', 'SHT2x']:
             value = '{},temperature'.format(each_sensor.id)
             display = '{} ({}) Temperature'.format(
                 each_sensor.id, each_sensor.name)
@@ -457,7 +457,8 @@ def choices_sensors(sensor):
             display = '{} ({}) Temperature (Die)'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value:display})
-        if each_sensor.device in ['DHT11', 'DHT22', 'AM2315', 'SHT']:
+        if each_sensor.device in ['DHT11', 'DHT22', 'AM2315',
+                                  'SHT1x_7x', 'SHT2x']:
             value = '{},humidity'.format(each_sensor.id)
             display = '{} ({}) Humidity'.format(
                 each_sensor.id, each_sensor.name)
@@ -1468,8 +1469,11 @@ def sensor_add(formAddSensor, display_order):
                 new_sensor.device_type = 'tmpsensor'
                 new_sensor.location = '0x40'
             elif formAddSensor.sensor.data in ['DHT11', 'DHT22',
-                                               'AM2315', 'SHT']:
+                                               'AM2315', 'SHT1x_7x']:
                 new_sensor.device_type = 'htsensor'
+            elif formAddSensor.sensor.data == 'SHT2x':
+                new_sensor.device_type = 'htsensor'
+                new_sensor.location = '0x40'
             elif formAddSensor.sensor.data == 'K30':
                 new_sensor.device_type = 'co2sensor'
                 new_sensor.location = 'Tx/Rx'

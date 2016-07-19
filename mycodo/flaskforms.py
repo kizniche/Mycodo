@@ -780,7 +780,8 @@ class AddSensor(Form):
             ('DHT11', 'Temperature/Humidity: DHT11'),
             ('DHT22', 'Temperature/Humidity: DHT22'),
             ('AM2315', 'Temperature/Humidity: AM2315'),
-            ('SHT', 'Temperature/Humidity: SHT 10/11/15/71/75')
+            ('SHT1x_7x', 'Temperature/Humidity: SHT 10/11/15/71/75'),
+            ('SHT2x', 'Temperature/Humidity: SHT 21/25')
         ],
         validators=[DataRequired()]
     )

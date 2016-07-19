@@ -14,3 +14,6 @@ def dewpoint(t, rh):
     return (
         tn * (math.log(rh / 100.0) + (m * t) / (tn + t))
         / (m - math.log(rh / 100.0) - m * t / (tn + t)) )
+
+def c_to_f(temperture_c):
+    return 9.0/5.0 * temperture_c + 32
