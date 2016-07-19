@@ -74,20 +74,19 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 
 ## Install
 
-These install procedures have been tested to work with a Raspberry Pi following a fresh intall of [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/), with an active internet connection. Note: Only the Lite version has been confirmed to work.
+These install procedures have been tested to work with a Raspberry Pi following a fresh intall of [Raspbian Jessie](https://www.raspberrypi.org/downloads/raspbian/) (Full or Lite version), with an active internet connection.
 
-Set up the initial settings with raspi-config. **Don't skip the file system expansion and reboot! This needs to be done before continuing to install anything or there won't be any free disk space.**
+Set up the initial settings with raspi-config. **It's very important that you don't skip the file system expansion and reboot! This needs to be done before continuing or there won't be any free disk space.**
 
 ```sudo raspi-config```
 
- + Change the default user (pi) password
- + Set the locale to en_US.UTF-8
- + Set the time zone (required for setting the proper time)
- + Enable I<sup>2</sup>C (required)
- + Enable Pi Camera support (optional)
- + Advanced A2: change the hostname (optional)
- + **Expand the file system (required)**
- + **Reboot**
+ + Expand File system (required)**
+ + Change User Password
+ + Internationalisation Options -> Change Locale (set and select en_US.UTF-8 if US)
+ + Internationalisation Options -> Change Timezone
+ + Enable Camera
+ + Advanced Options -> Enable I<sup>2</sup>C (required)
+ + **Reboot (required)**
 
 
 Mycodo will be installed with the following install script (setup.sh). As a part of the instllation, it will install and modify the default apache2 configuration to host the Mycodo web UI. If you require a custom setup, examine and modify this script accordingly. If you do not require a custom setup, just run the install script with the following commands.
