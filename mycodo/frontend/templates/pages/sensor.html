@@ -299,7 +299,7 @@
                   </div>
                 </div>
               {% endif -%}
-              {% if each_sensor.device == 'SHT2x' -%}
+              {% if each_sensor.device != 'SHT1x7x' -%}
                 <input id="modSHTClockPin" name="modSHTClockPin" type="hidden" value="0">
                 <input id="modSHTVoltage" name="modSHTVoltage" type="hidden" value="0">
               {% endif -%}
