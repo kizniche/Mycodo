@@ -86,7 +86,7 @@ def before_request():
 
 @app.route('/')
 def home():
-    if logged_in()
+    if logged_in():
         return redirect('/live')
     return clear_cookie_auth()
 
