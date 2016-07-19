@@ -4,6 +4,7 @@
 
 import smbus
 import time
+import RPi.GPIO as GPIO
 from sensorutils import dewpoint
 
 
