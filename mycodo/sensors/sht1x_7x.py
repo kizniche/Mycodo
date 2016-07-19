@@ -48,9 +48,9 @@ class SHT1x_7x_read(object):
         if self.read():
             return None
         response = {
-            'humidity': self.humidity,
-            'temperature': self.temperature,
-            'dewpoint': self.dewpoint
+            'humidity': float("{0:.2f}".format(self.humidity)),
+            'temperature': float("{0:.2f}".format(self.temperature)),
+            'dewpoint': float("{0:.2f}".format(self.dewpoint))
         }
         return response
 
