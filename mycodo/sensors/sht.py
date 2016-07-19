@@ -54,7 +54,7 @@ class SHT_read(object):
         response = {
             'humidity': self.humidity,
             'temperature': self.temperature,
-            'dewpoint': self.dew_point
+            'dewpoint': self.dewpoint
         }
         return response
 
