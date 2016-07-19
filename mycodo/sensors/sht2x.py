@@ -15,9 +15,9 @@ class SHT2x_read(object):
         self._dewpoint = 0
         self.i2c_address = address
         if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
-            self.I2C_bus_number = '1'
+            self.I2C_bus_number = 1
         else:
-            self.I2C_bus_number = '0'
+            self.I2C_bus_number = 0
         self.running = True
 
     def read(self):
@@ -47,7 +47,7 @@ class SHT2x_read(object):
             data1 = bus.read_byte(self.i2c_address)
             self._humidity = -6 + (((data0 * 256 + data1) * 125.0) / 65536.0)
 
-            self._dewpoint = dewwpoint(self.temperature, self.humidity)
+            self._dewpoint = dewpoint(self.temperature, self.humidity)
         except:
             return 1
 

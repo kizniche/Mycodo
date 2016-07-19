@@ -86,17 +86,14 @@ def before_request():
 
 @app.route('/')
 def home():
-    if (not session.get('logged_in') and
-        not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
-        logout()
-        return redirect('/login')
-    return redirect('/live')
+    if logged_in()
+        return redirect('/live')
+    return clear_cookie_auth()
 
 
 @app.route('/<page>', methods=('GET', 'POST'))
 def page(page):
-    if (not session.get('logged_in') and
-        not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
+    if not logged_in():
         return redirect('/')
 
     # Default landing page
@@ -1015,14 +1012,29 @@ def do_admin_login():
 
 @app.route("/logout")
 def logout():
-    response = make_response(redirect('/login'))
     if session.get('user_name'):
         flaskutils.login_log(session['user_name'], session['user_group'],
         request.environ['REMOTE_ADDR'], 'LOGOUT')
+    response = clear_cookie_auth()
+    flash('Successfully logged out', 'success')
+    return response
+
+
+def logged_in():
+    if (not session.get('logged_in') and
+            not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
+        return 0
+    elif (session.get('logged_in') or
+            (not session.get('logged_in') and
+             flaskutils.authenticate_cookies(USER_DB_PATH, Users))):
+        return 1
+
+
+def clear_cookie_auth():
+    response = make_response(redirect('/login'))
     session.clear()  # or session['logged_in'] = False
     response.set_cookie('user_name', '', expires=0)
     response.set_cookie('user_pass_hash', '', expires=0)
-    flash('Successfully logged out', "success")
     return response
 
 
