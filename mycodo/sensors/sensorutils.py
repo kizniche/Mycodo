@@ -1,21 +1,16 @@
 # coding=utf-8
 #
-# From http://www.meteo-blog.net/2012-05/dewpoint-calculation-script-in-python/
-
-import sys
-import numpy as np
+# From https://github.com/mk-fg/sht-sensor
 
 
 def dewpoint(temperature, humidity):
-    # approximation valid for
-    # 0 degC < T < 60 degC
-    # 1% < RH < 100%
-    # 0 degC < Td < 50 degC 
-    a = 17.271
-    b = 237.7 # degC
-    dewpt = (b*gamma(temperature, humidity, a, b))/(a-gamma(temperature, humidity, a, b))
-    return dewpt
-
-def gamma(temperature, humidity, a, b):
-    g = (a*temperature/(b+temperature))+np.log(humidity/100.0)
-    return g
+    dict_tn = dict(water=243.12, ice=272.62) # Table 9
+    dict_m = dict(water=17.62, ice=22.46) # Table 9
+    'With t and rh provided, does not access the hardware.'
+    if t is None: t, rh = self.read_t(), None
+    if rh is None: rh = self.read_rh(t)
+    t_range = 'water' if t >= 0 else 'ice'
+    tn, m = dict_tn[t_range], dict_m[t_range]
+    return (
+        tn * (math.log(rh / 100.0) + (m * t) / (tn + t))
+        / (m - math.log(rh / 100.0) - m * t / (tn + t)) )
