@@ -2,11 +2,11 @@
 #
 # From https://github.com/mk-fg/sht-sensor
 
+import math
 
-def dewpoint(temperature, humidity):
+def dewpoint(t, rh):
     dict_tn = dict(water=243.12, ice=272.62) # Table 9
     dict_m = dict(water=17.62, ice=22.46) # Table 9
-    'With t and rh provided, does not access the hardware.'
     if t is None: t, rh = self.read_t(), None
     if rh is None: rh = self.read_rh(t)
     t_range = 'water' if t >= 0 else 'ice'

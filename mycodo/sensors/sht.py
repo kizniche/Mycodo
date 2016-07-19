@@ -35,10 +35,6 @@ class SHT_read(object):
     def dewpoint(self):
         return self._dewpoint
 
-    @property
-    def crc_check(self):
-        return self._crc_check
-
     def __iter__(self):
         """
         Support the iterator protocol.
@@ -65,8 +61,8 @@ class SHT_read(object):
 if __name__ == "__main__":
     sht = SHT_read(16, 17, 3.5)
 
-    for measurement in sht:
-        print("Temperature: {}".format(measurement['temperature']))
-        print("Humidity: {}".format(measurement['humidity']))
-        print("Dew Point: {}".format(measurement['dewpoint']))
+    for measurements in sht:
+        print("Temperature: {}".format(measurements['temperature']))
+        print("Humidity: {}".format(measurements['humidity']))
+        print("Dew Point: {}".format(measurements['dewpoint']))
         time.sleep(1)
