@@ -242,8 +242,6 @@ class PIDController(threading.Thread):
             # Update PID and get control variable
             self.control_variable = self.update(self.last_measurement)
 
-            # self.tuned_control_variable = self.autotune()
-
             #
             # PID control variable positive to raise environmental condition
             #
@@ -437,41 +435,6 @@ class PIDController(threading.Thread):
                   INFLUXDB_PASSWORD, INFLUXDB_DATABASE,
                   'pid', pid_id, 'setpoint', setpoint,))
         write_db.start()
-
-
-    # PID Autotune, by Tanase Bogdan
-    # https://www.ccsinfo.com/forum/viewtopic.php?t=54563&highlight=
-    def autotune(self):
-        kp = 4
-        ki = 0.2
-        kd = 1
-        abs_osc = 0.2  # how fast to move, between 0.1 & 0.8 is enouth
-        self.temp_gap = 0.0
-        temp = 0.0
-        # Conservative tune
-        if self.Kp < 1 or self.Ki < 0.05 or self.Kd < 0.25:
-            kp=1
-            ki=0.05
-            kd=0.25
-            return 0
-        # Aggressive terms tune
-        elif self.Kp > 8 or self.Ki > 0.5 or self.Kd > 2:
-            kp=8
-            ki=0.5
-            kd=2
-            return 0
-        # after this will become exp then limit 
-        gap = abs(self.setpoint-self.error)  # verify distance to the setpoint
-        gap *= abs_osc  # not so hard
-        temp = gap - self.temp_gap
-        # limit some kamikaze
-        # enouth(temp, -0.8, 0.8)  # What is this function?
-        kp += (temp)*2
-        kd += (temp)/2
-        ki += (temp)/8
-        self.temp_gap = gap
-        output = kp+ki+kd
-        return output
 
 
     def setPoint(self, set_point):
