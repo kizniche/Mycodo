@@ -5,7 +5,65 @@
 # Ported to Python by Kyle Gabriel for Mycodo
 
 
-class PID_Filter(object):
+class PID_Filter_simple1(object):
+    """
+    PID controller and filter
+    """
+
+    def __init__(self, variables):
+        self.abs_osc = 0.2  # how fast to move, between 0.1 & 0.8 is enough
+
+    # Simple PID Autotune, by Tanase Bogdan
+    # https:# www.ccsinfo.com/forum/viewtopic.php?t=54563&highlight=
+    def autotune_simple(temp_gap=0.0, Kp, Ki, Kd, setpoint, error):
+        self.kp = 4.0
+        self.ki = 0.2
+        self.kd = 1.0
+
+        self.temp = temp_gap
+
+        # after this will become exp then limit 
+        self.gap = abs(setpoint-error)  # verify distance to the setpoint
+        self.gap *= self.abs_osc  # not so hard
+        self.temp = self.gap - self.temp_gap
+
+        # Conservative tune
+        if Kp < 1 or Ki < 0.05 or Kd < 0.25:
+            self.kp = 1.0
+            self.ki = 0.05
+            self.kd = 0.25
+            return 0
+
+        # Aggressive terms tune
+        elif Kp > 8 or Ki > 0.5 or Kd > 2:
+            self.kp = 8.0
+            self.ki = 0.5
+            self.kd = 2.0
+            return 0
+
+        # limit some kamikaze
+        self.temp = enouth(temp, -0.8, 0.8)
+        self.kp += (self.temp)*2
+        self.kd += (self.temp)/2
+        self.ki += (self.temp)/8
+        self.temp_gap = self.gap
+        self.output = self.kp+self.ki+self.kd  # Filtered output
+        return (self.kp, self.ki, self.kd, self.output)
+
+
+    def enough(_abs, _min, _max):
+        # Original in C
+        # define enough(_abs, _min, _max) (_abs = ((_abs > _max) ? _max : ((_abs < _min) ? _min : _abs)))
+        if _abs > _max:
+            return _max
+        elif _abs < _min:
+            return _min
+        else:
+            return _abs
+
+
+
+class PID_Filter_Simple2(object):
     """
     PID controller and filter
     """
@@ -64,9 +122,9 @@ class PID_Filter(object):
             error = self.Setpoint_t-self.intrare_t
             self.ITerm += (self.ki*error)
             if self.ITerm > self.outMax:
-                self.ITerm= self.outMax
+                self.ITerm = self.outMax
             elif self.ITerm < self.outMin:
-                self.ITerm= self.outMin
+                self.ITerm = self.outMin
             dInput = self.intrare_t-self.lastInput
 
             # Compute PID Output
@@ -281,53 +339,12 @@ class PID_Filter_Kalman(object):
         t_0 = PCt_0
         t_1 = C_0*P[0][1]  # and error in the estimate
 
-        self.P[0][0] -= K_0*t_0;
-        self.P[0][1] -= K_0*t_1;
-        self.P[1][0] -= K_1*t_0;
-        self.P[1][1] -= K_1*t_1;
+        self.P[0][0] -= K_0*t_0
+        self.P[0][1] -= K_0*t_1
+        self.P[1][0] -= K_1*t_0
+        self.P[1][1] -= K_1*t_1
 
         angle_err = angle_m-angle
 
         self.angle += K_0*angle_err   # Update state estimate
         self.q_bias += K_1*angle_err  # Update bias estimate (not necesary)
-
-
-
-# Simple PID Autotune, by Tanase Bogdan
-# https:# www.ccsinfo.com/forum/viewtopic.php?t=54563&highlight=
-def autotune_simple(self):
-    kp = 4.0
-    ki = 0.2
-    kd = 1.0
-    abs_osc = 0.2  # how fast to move, between 0.1 & 0.8 is enouth
-    self.temp_gap = 0.0
-    temp = 0.0
-    # Conservative tune
-    if Kp < 1 or Ki < 0.05 or Kd < 0.25:
-        kp = 1.0
-        ki = 0.05
-        kd = 0.25
-        return 0
-    # Aggressive terms tune
-    elif Kp > 8 or Ki > 0.5 or Kd > 2:
-        kp = 8.0
-        ki = 0.5
-        kd = 2.0
-        return 0
-    # after this will become exp then limit 
-    gap = abs(setpoint-error)  # verify distance to the setpoint
-    gap *= abs_osc  # not so hard
-    temp = gap - self.temp_gap
-    # limit some kamikaze
-    # enouth(temp, -0.8, 0.8)  # What is this function?
-    kp += (temp)*2
-    kd += (temp)/2
-    ki += (temp)/8
-    self.temp_gap = gap
-    output = kp+ki+kd
-    return output
-
-
-def enough(_abs, _min, _max):
-    # Original in C
-    # define enough(_abs, _min, _max) (_abs = ((_abs > _max) ? _max : ((_abs < _min) ? _min : _abs)))
