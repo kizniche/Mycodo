@@ -12,18 +12,23 @@ class PID_Filter_simple1(object):
 
     def __init__(self, variables):
         self.abs_osc = 0.2  # how fast to move, between 0.1 & 0.8 is enough
+        self.temp_gap = 0.0
+        self.setpoint = variables.setpoint
+        self.Kp = variables.Kp
+        self.Ki = variables.Ki
+        self.Kd = variables.Kd
 
     # Simple PID Autotune, by Tanase Bogdan
     # https:# www.ccsinfo.com/forum/viewtopic.php?t=54563&highlight=
-    def autotune_simple(temp_gap=0.0, Kp, Ki, Kd, setpoint, error):
+    def autotune_simple(self, Kp, Ki, Kd, error):
         self.kp = 4.0
         self.ki = 0.2
         self.kd = 1.0
 
-        self.temp = temp_gap
+        self.temp = self.temp_gap
 
         # after this will become exp then limit 
-        self.gap = abs(setpoint-error)  # verify distance to the setpoint
+        self.gap = abs(self.setpoint-error)  # verify distance to the setpoint
         self.gap *= self.abs_osc  # not so hard
         self.temp = self.gap - self.temp_gap
 
@@ -32,26 +37,26 @@ class PID_Filter_simple1(object):
             self.kp = 1.0
             self.ki = 0.05
             self.kd = 0.25
-            return 0
 
         # Aggressive terms tune
         elif Kp > 8 or Ki > 0.5 or Kd > 2:
             self.kp = 8.0
             self.ki = 0.5
             self.kd = 2.0
-            return 0
 
         # limit some kamikaze
-        self.temp = enouth(temp, -0.8, 0.8)
-        self.kp += (self.temp)*2
-        self.kd += (self.temp)/2
-        self.ki += (self.temp)/8
-        self.temp_gap = self.gap
+        else:
+            self.temp = self.enough(self.temp, -0.8, 0.8)
+            self.kp += (self.temp)*2
+            self.kd += (self.temp)/2
+            self.ki += (self.temp)/8
+            self.temp_gap = self.gap
+
         self.output = self.kp+self.ki+self.kd  # Filtered output
         return (self.kp, self.ki, self.kd, self.output)
 
 
-    def enough(_abs, _min, _max):
+    def enough(self, _abs, _min, _max):
         # Original in C
         # define enough(_abs, _min, _max) (_abs = ((_abs > _max) ? _max : ((_abs < _min) ? _min : _abs)))
         if _abs > _max:
@@ -179,7 +184,7 @@ class PID_Filter_Simple2(object):
         temp = gap-self.temp_gap
         
         # limit some kamikaze
-        enouth(temp,-0.8f,0.8f)
+        enouth(temp,-0.8,0.8)
         self.kp += (temp)*2
         self.kd += (temp)/2
         self.ki += (temp)/8
@@ -204,7 +209,7 @@ class PID_Filter_Simple2(object):
 
         if self.iesire_t > self.outMax:
             self.iesire_t = self.outMax
-        elif(self.iesire_t < self.outMin:
+        elif self.iesire_t < self.outMin:
             self.iesire_t = self.outMin
 
         if self.ITerm > self.outMax:
