@@ -242,7 +242,7 @@ class PIDController(threading.Thread):
             # Update PID and get control variable
             self.control_variable = self.update(self.last_measurement)
 
-            self.tuned_control_variable = self.autotune()
+            # self.tuned_control_variable = self.autotune()
 
             #
             # PID control variable positive to raise environmental condition
