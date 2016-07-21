@@ -522,7 +522,7 @@ class SensorController(threading.Thread):
         if self.multiplexer:
             self.release_lock(self.multiplexer_address, self.multiplexer_lock_file)
 
-        if self.device_recognized and measurements:
+        if self.device_recognized and measurements is not None:
             self.measurement = Measurement(measurements)
             self.updateSuccess = True
         else:

@@ -11,9 +11,14 @@ def dewpoint(t, rh):
     if rh is None: rh = self.read_rh(t)
     t_range = 'water' if t >= 0 else 'ice'
     tn, m = dict_tn[t_range], dict_m[t_range]
-    return (
-        tn * (math.log(rh / 100.0) + (m * t) / (tn + t))
-        / (m - math.log(rh / 100.0) - m * t / (tn + t)) )
+    if rh/100.0 <= 0:
+        # Cannot perform log on 0 or negative number
+        return None
+    else:
+        return (
+            tn * (math.log(rh / 100.0) + (m * t) / (tn + t))
+            / (m - math.log(rh / 100.0) - m * t / (tn + t)) )
+
 
 def c_to_f(temperture_c):
     return 9.0/5.0 * temperture_c + 32
