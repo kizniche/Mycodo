@@ -38,6 +38,7 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 - [Daemon Info](#daemon-info)
 - [Upgrading](#upgrading)
 - [Restoring Backups](#restoring-backups)
+- [Directory Structure](#directory-structure)
 - [License](#license)
 - [Screenshots](#screenshots)
 - [Links](#links)
@@ -255,6 +256,70 @@ sudo mv ~/Mycodo ~/Mycodo_old
 sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT ~/Mycodo
 sudo service mycodo restart
 sudo /etc/init.d/apache2 restart
+```
+
+
+### Directory Structure
+
+This is the file structure of Mycodo, so it may assist anyone to understand or modify the system. I'll try to keep this current.
+
+```
+Mycodo/
+    databases/ - mycodo, user, and notes SQLite databases (system configurations)
+    mycodo/
+        databases/ - SQL database manipulation framework (SQLAlchemy)
+        devices/ - Python modules for devices (such as I2C multiplexer)
+        sensors/ - Python modules for sensors (such as the DS18B20 temperature sensor)
+        scripts/ - Miscellaneous helper and test scripts and functions
+        frontend/ - HTTP server files (Flask)
+            ssl_certs/ - Location of HTTP SSL certificates
+            static/ - Static files reside (images, css, js, etc.)'
+                css/
+                img/
+                js/
+            templates/ - Flask HTML templates
+                pages/ - Flask general pages
+                    live.html - Live data page
+                    graph.html - Graph page
+                    sensors.html - Sensors page
+                    ...
+                remote/ - Future remote administration panel
+                    setup.html - Add remote systems and check status of connected systems
+                    ...
+                settings/ - Flask settings pages
+                    users.html - Users settings page
+                    alert.html - Alerts settings page
+                    ...
+                tools/ - Various tools for Mycodo
+                    info.html - Information about your system
+                    logview.html - Display log files
+                    usage.html - Calculate relay usage and power consumtion/cost
+                    ...
+                flash_messages.html - Handler for different error messages
+                layout.html - Template for pages/, settings/, and /tools
+                layout-remote.html - Template for /remote
+                login.html - Login page
+                manual.html - Mycodo manual
+                settings.html - settings template (left settings nav bar) for settings/
+        config.py - global configuration file
+        controller_lcd.py - LCD controller class
+        controller_log.py - Log controller class
+        controller_pid.py - PID controller class
+        controller_relay.py - Relay controller class
+        controller_sensor.py - Sensor controller class
+        controller_timer.py - Timer controller class
+        mycodo_client.py - Communicates with the running daemon
+        mycodo_daemon.py - Daemon for sensor reads/db-writes (Relay & PID control to be added)
+        daemonutils.py - Various functions to assist mycodo_daemon.py
+        mycodo_flask.py - Flask routes/views (the meat of Flask code)
+        flaskutils.py - Various functions to assist mycodo_flask.py
+        flaskforms.py - Flask form classes
+        ...
+    init_databases.py - Create SQLite databases and add users
+    mycodo_flask_apache.conf - Apache2 configuration file
+    mycodo_flask.wsgi - Start script for Apache2 mod_wsgi
+    requirements.txt - Python module requirements
+    setup.sh - Install script
 ```
 
 
