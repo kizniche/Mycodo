@@ -265,61 +265,86 @@ This is the file structure of Mycodo, so it may assist anyone to understand or m
 
 ```
 Mycodo/
-    databases/ - mycodo, user, and notes SQLite databases (system configurations)
-    mycodo/
-        databases/ - SQL database manipulation framework (SQLAlchemy)
-        devices/ - Python modules for devices (such as I2C multiplexer)
-        sensors/ - Python modules for sensors (such as the DS18B20 temperature sensor)
-        scripts/ - Miscellaneous helper and test scripts and functions
-        frontend/ - HTTP server files (Flask)
-            ssl_certs/ - Location of HTTP SSL certificates
-            static/ - Static files reside (images, css, js, etc.)'
-                css/
-                img/
-                js/
-            templates/ - Flask HTML templates
-                pages/ - Flask general pages
-                    live.html - Live data page
-                    graph.html - Graph page
-                    sensors.html - Sensors page
-                    ...
-                remote/ - Future remote administration panel
-                    setup.html - Add remote systems and check status of connected systems
-                    ...
-                settings/ - Flask settings pages
-                    users.html - Users settings page
-                    alert.html - Alerts settings page
-                    ...
-                tools/ - Various tools for Mycodo
-                    info.html - Information about your system
-                    logview.html - Display log files
-                    usage.html - Calculate relay usage and power consumtion/cost
-                    ...
-                flash_messages.html - Handler for different error messages
-                layout.html - Template for pages/, settings/, and /tools
-                layout-remote.html - Template for /remote
-                login.html - Login page
-                manual.html - Mycodo manual
-                settings.html - settings template (left settings nav bar) for settings/
-        config.py - global configuration file
-        controller_lcd.py - LCD controller class
-        controller_log.py - Log controller class
-        controller_pid.py - PID controller class
-        controller_relay.py - Relay controller class
-        controller_sensor.py - Sensor controller class
-        controller_timer.py - Timer controller class
-        mycodo_client.py - Communicates with the running daemon
-        mycodo_daemon.py - Daemon for sensor reads/db-writes (Relay & PID control to be added)
-        daemonutils.py - Various functions to assist mycodo_daemon.py
-        mycodo_flask.py - Flask routes/views (the meat of Flask code)
-        flaskutils.py - Various functions to assist mycodo_flask.py
-        flaskforms.py - Flask form classes
-        ...
-    init_databases.py - Create SQLite databases and add users
-    mycodo_flask_apache.conf - Apache2 configuration file
-    mycodo_flask.wsgi - Start script for Apache2 mod_wsgi
-    requirements.txt - Python module requirements
-    setup.sh - Install script
+├── databases - SQLite databases (for configuration)
+│   ├── alembic - Alembic SQL database migration tool
+│   │   └── versions - Scripts to upgrade/downgrade databases
+│   │       ├── 04303bc223c4_create_dynamic_pid_setpoint_table.py
+│   │       ├── px5pvbcdpw46_rename_table.py
+│   │       └── ...
+│   ├── mycodo.db - Mycodo settings
+│   ├── notes.db
+│   ├── statistics.csv - Anonymous statistics data
+│   └── users.db - User settings
+├── init_databases.py - Create SQLite databases and add users
+├── mycodo
+│   ├── config.py - Global configuration file
+│   ├── controller_lcd.py - LCD controller class
+│   ├── controller_log.py - Log controller class
+│   ├── controller_pid.py - PID controller class
+│   ├── controller_relay.py - Relay controller class
+│   ├── controller_sensor.py - Sensor controller class
+│   ├── controller_timer.py - Timer controller class
+│   ├── daemonutils.py - Various functions to assist mycodo_daemon.py
+│   ├── databases - SQL database manipulation framework (SQLAlchemy)
+│   │   └── ...
+│   ├── devices - Python modules for devices (such as I2C multiplexer)
+│   │   ├── ads1x15.py
+│   │   ├── camera_pi.py
+│   │   └── ...
+│   ├── flaskforms.py - Flask form classes
+│   ├── flaskutils.py - Various functions to assist mycodo_flask.py
+│   ├── frontend - HTTP server files (Flask)
+│   │   ├── ssl_certs - Location of HTTP SSL certificates
+│   │   ├── static - Static files reside (images, css, js, etc.)
+│   │   └── templates - Flask HTML templates
+│   │       ├── 404.html
+│   │       ├── flash_messages.html - Error message handler
+│   │       ├── layout.html - Template for pages/, settings/, /tools
+│   │       ├── layout-remote.html - Template for /remote
+│   │       ├── layout-settings.html - Template for /settings
+│   │       ├── login.html - Login page
+│   │       ├── manual.html - Mycodo usage manual
+│   │       ├── pages - Flask general pages
+│   │       │   ├── graph.html - Graph display age
+│   │       │   ├── live.html - Live data display page
+│   │       │   ├── sensor.html - Sensor configuration page
+│   │       │   └── ...
+│   │       ├── remote - Future remote administration panel
+│   │       │   └── setup.html - Add or check the status of remote systems
+│   │       ├── settings - Flask settings pages
+│   │       │   ├── alerts.html - Alerts settings page
+│   │       │   ├── users.html - Users settings page
+│   │       │   └── ...
+│   │       └── tools - Various tools for Mycodo
+│   │           ├── info.html - Information about your system
+│   │           ├── logview.html - Display log files
+│   │           ├── usage.html - Calculate relay usage/power consumtion
+│   │           └── ...
+│   ├── mycodo_client.py - Communicates with the running daemon
+│   ├── mycodo_daemon.py - Mycodo daemon (core of the system)
+│   ├── mycodo_flask.py - Flask routes/views (handles webpage requests)
+│   ├── scripts - Miscellaneous helper and test scripts and functions
+│   │   ├── mycodo.service - Systemd script
+│   │   ├── mycodo_wrapper.c - Source to binary that's setuid, for upgrades 
+│   │   ├── restore_mycodo.sh - Script to restore a backed up Mycodo version
+│   │   ├── update_mycodo.sh - Update script to bring the git repository to HEAD
+│   │   ├── update_post.sh - Post update script (commands from the latest version)
+│   │   └── ...
+│   ├── sensors - Python modules for sensors
+│   │   ├── am2315.py
+│   │   ├── bmp.py
+│   │   ├── dht11.py
+│   │   └── ...
+│   └── tests - Scripts to test various sensors or devices
+│       ├── Test_I2C_LCD.py
+│       ├── Test_I2C_MCP342x.py
+│       ├── Test_I2C_Multiplexer.py
+│       └── ...
+├── mycodo_flask_apache.conf - Apache2 configuration file
+├── mycodo_flask.wsgi - Start script for Apache2 mod_wsgi
+├── old - Old versions of Mycodo
+├── requirements.txt - Python module requirements
+└── setup.sh - Install script
 ```
 
 

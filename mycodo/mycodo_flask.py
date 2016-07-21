@@ -575,9 +575,11 @@ def page(page):
             with open(INSTALL_DIRECTORY + '/.updating') as f:
                 updating = int(f.read(1))
         except IOError:
-            with open(INSTALL_DIRECTORY + '/.updating', 'w') as f:
-                f.write('0')
-            updating = 0
+            try:
+                with open(INSTALL_DIRECTORY + '/.updating', 'w') as f:
+                    f.write('0')
+            finally:
+                updating = 0
 
         return render_template('settings/update.html',
                                formBackup=formBackup,
