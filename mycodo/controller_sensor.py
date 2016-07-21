@@ -48,7 +48,7 @@ from databases.mycodo_db.models import SensorConditional
 from databases.mycodo_db.models import SMTP
 from databases.utils import session_scope
 from mycodo_client import DaemonControl
-from daemonutils import camera_record, cmd_output, email, write_influxdb, read_last_influxdb
+from daemonutils import camera_record, cmd_output, email, write_influxdb, write_influxdb_list, read_last_influxdb
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -294,35 +294,31 @@ class SensorController(threading.Thread):
 
     def addMeasurementInfluxdb(self):
         """
-        Add a measurement entry to InfluxDB
+        Add a measurement entries to InfluxDB
 
         :rtype: None
         """
         if self.updateSuccess:
-            measurements = self.measurement.values.iteritems()
-            for measurement_type, measurement_value in measurements:
-                if (measurement_type in ['cpu_load_1m',
-                                         'cpu_load_5m',
-                                         'cpu_load_15m',
-                                         'temperature',
-                                         'humidity',
-                                         'dewpoint',
-                                         'co2',
-                                         'pressure',
-                                         'altitude',
-                                         'temperature_object',
-                                         'temperature_die',
-                                         'lux',
-                                         'voltage'] or
-                        self.device_type in ['ADS1x15', 'MCP342x']):
-                    write_db = threading.Thread(
-                        target=write_influxdb,
-                        args=(self.logger, INFLUXDB_HOST,
-                              INFLUXDB_PORT, INFLUXDB_USER,
-                              INFLUXDB_PASSWORD, INFLUXDB_DATABASE,
-                              self.sensor_type, self.sensor_id,
-                              measurement_type, measurement_value,))
-                    write_db.start()
+            data = []
+            for each_measurement, each_value in self.measurement.values.iteritems():
+                data.append({
+                    "measurement": each_measurement,
+                    "tags": {
+                        "device_id": self.sensor_id,
+                        "device_type": self.sensor_type
+                    },
+                    "fields": {
+                        "value": each_value
+                    }
+                })
+
+            write_db = threading.Thread(
+                target=write_influxdb_list,
+                args=(self.logger, INFLUXDB_HOST,
+                      INFLUXDB_PORT, INFLUXDB_USER,
+                      INFLUXDB_PASSWORD, INFLUXDB_DATABASE,
+                      data,))
+            write_db.start()
 
 
     def checkConditionals(self, cond_id):

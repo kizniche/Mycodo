@@ -317,6 +317,43 @@ def write_influxdb(logger, host, port, user, password,
         return 1
 
 
+def write_influxdb_list(logger, host, port, user, password,
+                        dbname, data):
+    """
+    Write an entry into an Influxdb database
+
+    example:
+        write_influxdb('localhost', 8086, 'mycodo', 'password123',
+                       'mycodo_db', data_list_of_dictionaries)
+
+    :return: success (0) or failure (1)
+    :rtype: bool
+
+    :param host: What influxdb address
+    :type host: str
+    :param port: What influxdb port
+    :type port: int
+    :param user: What user to connect to influxdb with
+    :type user: str
+    :param password: What password to supply for Influxdb user
+    :type password: str
+    :param dbname: What Influxdb database name to write to
+    :type dbname: str
+    :param data_list_of_dictionaries: The data being entered into the Influxdb
+        database. See controller_sensor.py function addMeasurementInfluxdb()
+    :type data_list_of_dictionaries: list of dictionaries
+    """
+    client = InfluxDBClient(host, port, user, password, dbname)
+    try:
+        client.write_points(data)
+        return 0
+    except Exception as except_msg:
+        logger.debug('Failed to write measurements to influxdb (Device ID: '
+                         '{}). Data that was submitted for writing: {}. '
+                         'Exception: {}'.format(device_id, data, except_msg))
+        return 1
+
+
 def format_influxdb_data(device_type, device_id, measure_type, value):
     """
     Format data for entry into an Influxdb database
