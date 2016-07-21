@@ -895,7 +895,8 @@ def settings(page):
             if form_name == 'addUser':
                 flaskutils.user_add(formAddUser)
             elif form_name == 'delUser':
-                flaskutils.user_del(formDelUser)
+                if flaskutils.user_del(formDelUser) == 'logout':
+                    return redirect('/logout')
             elif form_name == 'modUser':
                 if flaskutils.user_mod(formModUser) == 'logout':
                     return redirect('/logout')

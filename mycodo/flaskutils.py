@@ -2045,6 +2045,8 @@ def user_del(formDelUser):
         flash("Guests are not permitted to delete users", "error")
     elif formDelUser.validate():
         delete_user(USER_DB_PATH, Users, formDelUser.delUsername.data)
+        if formDelUser.delUsername.data == session['user_name']:
+            return 'logout'
     else:
         flash_form_errors(formDelUser)
 
