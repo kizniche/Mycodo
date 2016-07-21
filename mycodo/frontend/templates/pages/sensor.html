@@ -126,12 +126,14 @@
                       I<sup>2</sup>C Address
                     {%- elif each_sensor.device == 'K30' -%}
                       Interface
+                    {%- else -%}
+                      Location
                     {%- endif -%}
                   </label>
                   <div>
                     {% if each_sensor.device in ['DS18B20', 'DHT11', 'DHT22', 'SHT1x_7x', 'EDGE', 'TMP006'] -%}
                       {{formModSensor.modLocation(class_='form-control', value=each_sensor.location, **{'title':'Where to access the device/sensor?'})}}
-                    {% elif each_sensor.device in ['AM2315', 'BMP', 'K30', 'SHT2x'] -%}
+                    {% elif each_sensor.device in ['RPiCPULoad', 'RPi', 'AM2315', 'BMP', 'K30', 'SHT2x'] -%}
                       {{formModSensor.modLocation(class_='form-control', value=each_sensor.location, disabled=True)}}
                       <input type="hidden" class="form-control" id="modLocation" name="modLocation" value="{{each_sensor.location}}">
                     {% endif -%}

@@ -1468,12 +1468,13 @@ def sensor_add(formAddSensor, display_order):
                 new_sensor.location = 'RPi'
             elif formAddSensor.sensor.data == 'EDGE':
                 new_sensor.device_type = 'edgedetect'
-                new_sensor.location = 'RPi'
 
             # Environmental Sensors
-            elif formAddSensor.sensor.data in ['RPi', 'DS18B20']:
+            elif formAddSensor.sensor.data == 'RPi':
                 new_sensor.device_type = 'tsensor'
                 new_sensor.location = 'RPi'
+            elif formAddSensor.sensor.data == 'DS18B20':
+                new_sensor.device_type = 'tsensor'
             elif formAddSensor.sensor.data == 'TMP006':
                 new_sensor.device_type = 'tmpsensor'
                 new_sensor.location = '0x40'
