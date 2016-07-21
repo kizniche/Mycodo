@@ -115,7 +115,7 @@
               </div>
             </div>
             <div style="padding: 0.5em;" class="form-inline">
-              {% if each_sensor.device not in ['RPi', 'RPiCPULoad', 'ADS1x15', 'MCP342x', 'TSL2561'] -%}
+              {% if each_sensor.device not in ['ADS1x15', 'MCP342x', 'TSL2561', 'TMP006'] -%}
                 <div class="form-group">
                   <label class="control-label">
                     {%- if each_sensor.device in ['DHT11', 'DHT22', 'SHT1x_7x', 'EDGE'] -%}

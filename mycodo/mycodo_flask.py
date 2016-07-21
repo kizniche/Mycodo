@@ -565,7 +565,9 @@ def page(page):
                               "before doing anything. When the update "
                               "has successfully finished, the daemon "
                               "status indicator at the top left will "
-                              "turn from red to green.", "success")
+                              "turn from red to green. You can monitor "
+                              "the update progress under Tools->View Logs"
+                              "->Update Log.", "success")
                     else:
                         flash("You cannot update if an update is not available", "error")
 
