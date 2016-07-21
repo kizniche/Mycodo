@@ -806,10 +806,6 @@ class ModSensor(Form):
         u'Multiplexer Channel',
         render_kw={"placeholder": "Channel"}
     )
-    modADCAddress = TextField(
-        u'ADC I2C Address',
-        render_kw={"placeholder": "I2C Address"}
-    )
     modADCChannel = IntegerField(
         u'ADC Channel',
         render_kw={"placeholder": "Channel"}

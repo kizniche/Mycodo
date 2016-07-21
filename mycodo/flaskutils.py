@@ -1461,10 +1461,19 @@ def sensor_add(formAddSensor, display_order):
             new_sensor.period = 15
             new_sensor.sht_clock_pin = 0
             new_sensor.sht_voltage = 3.5
+
+            # Process monitors
             if formAddSensor.sensor.data in ['RPiCPULoad']:
                 new_sensor.device_type = 'cpu_load'
+                new_sensor.location = 'RPi'
+            elif formAddSensor.sensor.data == 'EDGE':
+                new_sensor.device_type = 'edgedetect'
+                new_sensor.location = 'RPi'
+
+            # Environmental Sensors
             elif formAddSensor.sensor.data in ['RPi', 'DS18B20']:
                 new_sensor.device_type = 'tsensor'
+                new_sensor.location = 'RPi'
             elif formAddSensor.sensor.data == 'TMP006':
                 new_sensor.device_type = 'tmpsensor'
                 new_sensor.location = '0x40'
@@ -1482,21 +1491,21 @@ def sensor_add(formAddSensor, display_order):
             elif formAddSensor.sensor.data =='BMP':
                 new_sensor.device_type = 'presssensor'
                 new_sensor.location = '0x77'
-            elif formAddSensor.sensor.data == 'EDGE':
-                new_sensor.device_type = 'edgedetect'
             elif formAddSensor.sensor.data == 'TSL2561':
                 new_sensor.device_type = 'luxsensor'
                 new_sensor.location = '0x39'
-            elif formAddSensor.sensor.data == 'ADS1x15':
+
+            # Analog to Digital Converters
+            elif formAddSensor.sensor.data in ['ADS1x15', 'MCP342x']:
                 new_sensor.device_type = 'analogsensor'
-                new_sensor.adc_address = '0x48'
-                new_sensor.adc_volts_min = -4.096
-                new_sensor.adc_volts_max = 4.096
-            elif formAddSensor.sensor.data == 'MCP342x':
-                new_sensor.device_type = 'analogsensor'
-                new_sensor.adc_address = '0x68'
-                new_sensor.adc_volts_min = -2.048
-                new_sensor.adc_volts_max = 2.048
+                if formAddSensor.sensor.data == 'ADS1x15':
+                    new_sensor.location = '0x48'
+                    new_sensor.adc_volts_min = -4.096
+                    new_sensor.adc_volts_max = 4.096
+                elif formAddSensor.sensor.data == 'MCP342x':
+                    new_sensor.location = '0x68'
+                    new_sensor.adc_volts_min = -2.048
+                    new_sensor.adc_volts_max = 2.048
 
             try:
                 with session_scope(MYCODO_DB_PATH) as db_session:
@@ -1531,13 +1540,13 @@ def sensor_mod(formModSensor):
                 flash("Deactivate sensor controller before modifying its "
                       "settings.", "error")
                 error = True
-            if (mod_sensor.device == 'AM2315' and
+            elif (mod_sensor.device == 'AM2315' and
                     formModSensor.modPeriod.data < 7):
                 flash("Choose a Read Period equal to or greater than 7. "
                       "The AM2315 may become unresponsive if the period "
                       "is below 7.", "error")
                 error = True
-            if formModSensor.modPeriod.data < mod_sensor.pre_relay_duration:
+            elif formModSensor.modPeriod.data < mod_sensor.pre_relay_duration:
                 flash("The Read Period cannot be less than the "
                       "Pre-Relay Duration. ", "error")
                 error = True
@@ -1547,7 +1556,6 @@ def sensor_mod(formModSensor):
             mod_sensor.location = formModSensor.modLocation.data
             mod_sensor.multiplexer_address = formModSensor.modMultiplexAddress.data
             mod_sensor.multiplexer_channel = formModSensor.modMultiplexChannel.data
-            mod_sensor.adc_address = formModSensor.modADCAddress.data
             mod_sensor.adc_channel = formModSensor.modADCChannel.data
             mod_sensor.adc_gain = formModSensor.modADCGain.data
             mod_sensor.adc_resolution = formModSensor.modADCResolution.data
@@ -1635,6 +1643,12 @@ def sensor_reorder(formModSensor, display_order):
 
 
 def sensor_activate(formModSensor):
+    with session_scope(MYCODO_DB_PATH) as db_session:
+        sensor = db_session.query(Sensor).filter(
+            Sensor.id == formModSensor.modSensor_id.data).first()
+        if not sensor.location:
+            flash("Cannot activate sensor without the GPIO/I2C Address/Port to communicate with it set.", "error")
+            return redirect('/sensor')
     activate_deactivate_controller(
         'activate',
         'Sensor',

@@ -105,7 +105,6 @@ class SensorController(threading.Thread):
             self.period = sensor.period
             self.multiplexer_address_raw = sensor.multiplexer_address
             self.multiplexer_channel = sensor.multiplexer_channel
-            self.adc_address_raw = sensor.adc_address
             self.adc_channel = sensor.adc_channel
             self.adc_gain = sensor.adc_gain
             self.adc_resolution = sensor.adc_resolution
@@ -157,22 +156,21 @@ class SensorController(threading.Thread):
         else:
             self.multiplexer = None
 
-        if self.device_type in ['ADS1x15','MCP342x'] and self.adc_address_raw:
-            self.adc_address_string = self.adc_address_raw
-            self.adc_address = int(str(self.adc_address_raw), 16)
-            self.adc_lock_file = "/var/lock/mycodo_adc_0x{:02X}.pid".format(self.adc_address)
-            if self.device_type == 'ADS1x15':
-                self.adc = ADS1x15_read(self.logger, self.adc_address, self.adc_channel, self.adc_gain)
-            if self.device_type == 'MCP342x':
-                self.adc = MCP342x_read(self.logger, self.adc_address, self.adc_channel, self.adc_gain, self.adc_resolution)
+        if self.device_type in ['ADS1x15','MCP342x'] and self.location:
+            self.adc_lock_file = "/var/lock/mycodo_adc_0x{:02X}.pid".format(int(str(self.location), 16))
+            
         else:
             self.adc = None
 
         self.device_recognized = True
-        if self.device_type == 'RPi':
-            self.measure_sensor = RaspberryPiCPUTemp()
-        elif self.device_type == 'RPiCPULoad':
+
+        # Processes
+        if self.device_type == 'RPiCPULoad':
             self.measure_sensor = RaspberryPiCPULoad()
+
+        # Environmental Sensors
+        elif self.device_type == 'RPi':
+            self.measure_sensor = RaspberryPiCPUTemp()
         elif self.device_type == 'DS18B20':
             self.measure_sensor = DS18B20(self.location)
         elif self.device_type == 'DHT11':
@@ -193,6 +191,14 @@ class SensorController(threading.Thread):
             self.measure_sensor = TMP006_read(self.location)
         elif self.device_type == 'TSL2561':
             self.measure_sensor = TSL2561_read(self.location)
+
+        # Devices
+        elif self.device_type == 'ADS1x15':
+            self.adc = ADS1x15_read(self.logger, int(str(self.location), 16), self.adc_channel, self.adc_gain)
+        elif self.device_type == 'MCP342x':
+            self.adc = MCP342x_read(self.logger, int(str(self.location), 16), self.adc_channel, self.adc_gain, self.adc_resolution)
+
+        # Other
         elif self.device_type in ['EDGE', 'ADS1x15', 'MCP342x']:
             self.measure_sensor = None
         else:
@@ -475,7 +481,7 @@ class SensorController(threading.Thread):
         if self.adc:
             try:
                 # Acquire a lock for ADC
-                self.lock_status, self.lock_response = self.setup_lock(self.adc_address, self.adc_lock_file)
+                self.lock_status, self.lock_response = self.setup_lock(int(str(self.location), 16), self.adc_lock_file)
                 if not self.lock_status:
                     self.logger.warning("[Sensor {}] Could not acquire lock "
                                         "for multiplexer. Error:"
@@ -506,7 +512,7 @@ class SensorController(threading.Thread):
                 self.logger.exception("[Sensor {}] Error while attempting to read "
                                     "adc: {}".format(self.sensor_id, msg))
             finally:
-                self.release_lock(self.adc_address, self.adc_lock_file)
+                self.release_lock(int(str(self.location), 16), self.adc_lock_file)
         else:
             try:
                 # Get measurement from sensor
