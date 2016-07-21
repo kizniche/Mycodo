@@ -283,7 +283,8 @@ class DHT22(object):
         """
         Call the read method and return temperature and humidity information.
         """
-        if self.read():
+        if (self.read() or
+                (self.humidity == 0 and self.temperature == 0)):
             return None
         response = {
             'humidity': float("{0:.2f}".format(self.humidity)),
