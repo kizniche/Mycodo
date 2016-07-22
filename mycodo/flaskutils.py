@@ -95,7 +95,9 @@ def auth_credentials(address, user, password_hash):
 def remote_host_add(formSetup, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to add remote hosts", "error")
-    elif formSetup.validate():
+        return redirect('/')
+
+    if formSetup.validate():
         try:
             pw_check = check_new_credentials(formSetup.host.data, formSetup.username.data, formSetup.password.data)
             if pw_check['status']:
@@ -135,6 +137,8 @@ def remote_host_add(formSetup, display_order):
 def remote_host_del(formSetup, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to delete remote hosts", "error")
+        return redirect('/')
+    
     try:
         delete_entry_with_id(MYCODO_DB_PATH,
                              Remote,
@@ -157,7 +161,9 @@ def pid_add_setpoint(formAddPIDSetpoint):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to add dynamic PID setpoints",
             "error")
-    elif formAddPIDSetpoint.validate():
+        return redirect('/pid')
+
+    if formAddPIDSetpoint.validate():
         if not check_setpoint_data(formAddPIDSetpoint):
             new_pid_setpt = PIDSetpoints()
             random_id = ''.join([random.choice(
@@ -186,9 +192,11 @@ def pid_add_setpoint(formAddPIDSetpoint):
 
 def pid_mod_setpoint(formModPIDSetpoint):
     if session['user_group'] == 'guest':
-            flash("Guests are not permitted to modify PID Setpoints",
-                  "error")
-    elif formModPIDSetpoint.Delete.data:
+        flash("Guests are not permitted to modify PID Setpoints",
+              "error")
+        return redirect('/timer')
+
+    if formModPIDSetpoint.Delete.data:
         delete_entry_with_id(MYCODO_DB_PATH,
                              PIDSetpoints,
                              formModPIDSetpoint.PIDSetpoint_id.data)
@@ -349,49 +357,50 @@ def activate_deactivate_controller(controller_action,
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to activate/deactivate {} "
               "controllers".format(controller_type), "error")
-    else:
-        activated_integer = None
-        try:
-            control = DaemonControl()
-            if controller_action == 'activate':
-                activated_integer = 1
-                return_values = control.activate_controller(controller_type,
-                                                            controller_id)
-            else:
-                activated_integer = 0
-                return_values = control.deactivate_controller(controller_type,
-                                                              controller_id)
-            if return_values[0]:
-                flash("{}".format(return_values[1]), "error")
-            else:
-                flash("{}".format(return_values[1]), "success")
-        except Exception as except_msg:
-            flash("Could not communicate with daemon: {}".format(except_msg),
-                                                                 "error")
-        try:
-            with session_scope(MYCODO_DB_PATH) as db_session:
-                if controller_type == 'LCD':
-                    mod_controller = db_session.query(LCD).filter(
-                        LCD.id == controller_id).first()
-                elif controller_type == 'Log':
-                    mod_controller = db_session.query(Log).filter(
-                        Log.id == controller_id).first()
-                elif controller_type == 'PID':
-                    mod_controller = db_session.query(PID).filter(
-                        PID.id == controller_id).first()
-                elif controller_type == 'Sensor':
-                    mod_controller = db_session.query(Sensor).filter(
-                        Sensor.id == controller_id).first()
-                elif controller_type == 'Timer':
-                    mod_controller = db_session.query(Timer).filter(
-                        Timer.id == controller_id).first()
-                mod_controller.activated = activated_integer
-                db_session.commit()
-            flash("{} controller {}d in SQL database.".format(
-                controller_type, controller_action), "success")
-        except Exception as except_msg:
-            flash("{} settings were not able to be modified: {}".format(
-                controller_type, except_msg), "error")
+        return redirect('/')
+
+    activated_integer = None
+    try:
+        control = DaemonControl()
+        if controller_action == 'activate':
+            activated_integer = 1
+            return_values = control.activate_controller(controller_type,
+                                                        controller_id)
+        else:
+            activated_integer = 0
+            return_values = control.deactivate_controller(controller_type,
+                                                          controller_id)
+        if return_values[0]:
+            flash("{}".format(return_values[1]), "error")
+        else:
+            flash("{}".format(return_values[1]), "success")
+    except Exception as except_msg:
+        flash("Could not communicate with daemon: {}".format(except_msg),
+                                                             "error")
+    try:
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            if controller_type == 'LCD':
+                mod_controller = db_session.query(LCD).filter(
+                    LCD.id == controller_id).first()
+            elif controller_type == 'Log':
+                mod_controller = db_session.query(Log).filter(
+                    Log.id == controller_id).first()
+            elif controller_type == 'PID':
+                mod_controller = db_session.query(PID).filter(
+                    PID.id == controller_id).first()
+            elif controller_type == 'Sensor':
+                mod_controller = db_session.query(Sensor).filter(
+                    Sensor.id == controller_id).first()
+            elif controller_type == 'Timer':
+                mod_controller = db_session.query(Timer).filter(
+                    Timer.id == controller_id).first()
+            mod_controller.activated = activated_integer
+            db_session.commit()
+        flash("{} controller {}d in SQL database.".format(
+            controller_type, controller_action), "success")
+    except Exception as except_msg:
+        flash("{} settings were not able to be modified: {}".format(
+            controller_type, except_msg), "error")
 
 
 def cmd_output(command):
@@ -523,7 +532,9 @@ def choices_id_name(table):
 def graph_add(formAddGraph, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to add graphs", "error")
-    elif (formAddGraph.name.data and formAddGraph.width.data and
+        return redirect('/graph')
+
+    if (formAddGraph.name.data and formAddGraph.width.data and
             formAddGraph.height.data and formAddGraph.xAxisDuration.data and
             formAddGraph.refreshDuration.data):
         new_graph = Graph()
@@ -567,7 +578,9 @@ def graph_add(formAddGraph, display_order):
 def graph_mod(formModGraph):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to modify graphs", "error")
-    elif formModGraph.validate():
+        return redirect('/graph')
+
+    if formModGraph.validate():
         try:
             with session_scope(MYCODO_DB_PATH) as db_session:
                 mod_graph = db_session.query(Graph).filter(
@@ -599,7 +612,9 @@ def graph_mod(formModGraph):
 def graph_del(formDelGraph, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to delete graphs", "error")
-    elif formDelGraph.validate():
+        return redirect('/graph')
+
+    if formDelGraph.validate():
         try:
             delete_entry_with_id(MYCODO_DB_PATH,
                                  Graph,
@@ -619,7 +634,9 @@ def graph_del(formDelGraph, display_order):
 def graph_reorder(formOrderGraph, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to reorder graphs", "error")
-    elif formOrderGraph.validate():
+        return redirect('/graph')
+
+    if formOrderGraph.validate():
         try:
             if formOrderGraph.orderGraphUp.data:
                 status, reordered_list = reorderList(
@@ -654,7 +671,9 @@ def graph_reorder(formOrderGraph, display_order):
 def lcd_add(formAddLCD, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to add LCDs", "error")
-    elif formAddLCD.validate():
+        return redirect('/lcd')
+
+    if formAddLCD.validate():
         for x in range(0, formAddLCD.numberLCDs.data):
             new_lcd = LCD()
             random_lcd_id = ''.join([random.choice(
@@ -698,7 +717,9 @@ def lcd_add(formAddLCD, display_order):
 def lcd_mod(formModLCD):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to modify LCDs", "error")
-    elif formModLCD.validate():
+        return redirect('/lcd')
+
+    if formModLCD.validate():
         try:
             with session_scope(MYCODO_DB_PATH) as db_session:
                 mod_lcd = db_session.query(LCD).filter(
@@ -753,7 +774,9 @@ def lcd_mod(formModLCD):
 def lcd_del(formDelLCD, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to delete LCD controllers", "error")
-    elif formDelLCD.validate():
+        return redirect('/lcd')
+
+    if formDelLCD.validate():
         try:
             delete_entry_with_id(MYCODO_DB_PATH,
                                  LCD,
@@ -773,7 +796,9 @@ def lcd_del(formDelLCD, display_order):
 def lcd_reorder(formOrderLCD, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to reorder LCDs", "error")
-    elif formOrderLCD.validate():
+        return redirect('/lcd')
+
+    if formOrderLCD.validate():
         try:
             if formOrderLCD.orderLCDUp.data:
                 status, reordered_list = reorderList(
@@ -842,7 +867,9 @@ def lcd_deactivate(formDeactivateLCD):
 def lcd_reset_flashing(formResetFlashingLCD):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to reset LCD alarms", "error")
-    elif formResetFlashingLCD.validate():
+        return redirect('/lcd')
+
+    if formResetFlashingLCD.validate():
         control = DaemonControl()
         return_value, return_msg = control.flash_lcd(formResetFlashingLCD.flashLCD_id.data, 0)
         if return_value:
@@ -861,7 +888,9 @@ def lcd_reset_flashing(formResetFlashingLCD):
 def log_add(formAddLog, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to add logs", "error")
-    elif formAddLog.validate():
+        return redirect('/log')
+
+    if formAddLog.validate():
         if formAddLog.period.data <= 0:
             flash("Error in the period field: Durations must be greater "
                   "than 0", "error")
@@ -898,69 +927,72 @@ def log_add(formAddLog, display_order):
 def log_mod(formLog):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to modify logs", "error")
-    else:
-        try:
-            with session_scope(MYCODO_DB_PATH) as db_session:
-                mod_log = db_session.query(Log).filter(
-                    Log.id == formLog.log_id.data).first()
-                if mod_log.activated:
-                    flash("Deactivate log controller before modifying its "
-                          "settings.", "error")
-                    return redirect('/log')
-                mod_log.name = formLog.name.data
-                sensor_and_measurement_split = formLog.sensorMeasurement.data.split(",")
-                mod_log.sensor_id = sensor_and_measurement_split[0]
-                mod_log.measure_type = sensor_and_measurement_split[1]
-                mod_log.period = formLog.period.data
-                db_session.commit()
-                flash("Log settings successfully modified", "success")
-        except Exception as except_msg:
-            flash("Failed to modify log: {}".format(except_msg), "error")
+        return redirect('/log')
+
+    try:
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            mod_log = db_session.query(Log).filter(
+                Log.id == formLog.log_id.data).first()
+            if mod_log.activated:
+                flash("Deactivate log controller before modifying its "
+                      "settings.", "error")
+                return redirect('/log')
+            mod_log.name = formLog.name.data
+            sensor_and_measurement_split = formLog.sensorMeasurement.data.split(",")
+            mod_log.sensor_id = sensor_and_measurement_split[0]
+            mod_log.measure_type = sensor_and_measurement_split[1]
+            mod_log.period = formLog.period.data
+            db_session.commit()
+            flash("Log settings successfully modified", "success")
+    except Exception as except_msg:
+        flash("Failed to modify log: {}".format(except_msg), "error")
 
 
 def log_del(formLog, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to delete logs", "error")
-    else:
-        try:
-            delete_entry_with_id(MYCODO_DB_PATH,
-                                 Log,
-                                 formLog.log_id.data)
-            with session_scope(MYCODO_DB_PATH) as db_session:
-                    order_sensor = db_session.query(DisplayOrder).first()
-                    display_order.remove(formLog.log_id.data)
-                    order_sensor.log = ','.join(display_order)
-                    db_session.commit()
-        except Exception as except_msg:
-            flash("Error while deleting log: {}".format(except_msg), "error")
+        return redirect('/log')
+
+    try:
+        delete_entry_with_id(MYCODO_DB_PATH,
+                             Log,
+                             formLog.log_id.data)
+        with session_scope(MYCODO_DB_PATH) as db_session:
+                order_sensor = db_session.query(DisplayOrder).first()
+                display_order.remove(formLog.log_id.data)
+                order_sensor.log = ','.join(display_order)
+                db_session.commit()
+    except Exception as except_msg:
+        flash("Error while deleting log: {}".format(except_msg), "error")
 
 
 def log_reorder(formLog, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to reorder logs", "error")
-    else:
-        try:
-            if formLog.orderLogUp.data:
-                status, reordered_list = reorderList(
-                        display_order,
-                        formLog.log_id.data,
-                        'up')
-            elif formLog.orderLogDown.data:
-                status, reordered_list = reorderList(
-                        display_order,
-                        formLog.log_id.data,
-                        'down')
-            if status == 'success':
-                with session_scope(MYCODO_DB_PATH) as db_session:
-                    order_log = db_session.query(DisplayOrder).first()
-                    order_log.log = ','.join(reordered_list)
-                    db_session.commit()
-                flash("Log display successfully reordered", status)
-            else:
-                flash(reordered_list, status)
-        except Exception as except_msg:
-            flash("Log display was not able to be reordered: {}".format(
-                except_msg), "error")
+        return redirect('/log')
+
+    try:
+        if formLog.orderLogUp.data:
+            status, reordered_list = reorderList(
+                    display_order,
+                    formLog.log_id.data,
+                    'up')
+        elif formLog.orderLogDown.data:
+            status, reordered_list = reorderList(
+                    display_order,
+                    formLog.log_id.data,
+                    'down')
+        if status == 'success':
+            with session_scope(MYCODO_DB_PATH) as db_session:
+                order_log = db_session.query(DisplayOrder).first()
+                order_log.log = ','.join(reordered_list)
+                db_session.commit()
+            flash("Log display successfully reordered", status)
+        else:
+            flash(reordered_list, status)
+    except Exception as except_msg:
+        flash("Log display was not able to be reordered: {}".format(
+            except_msg), "error")
 
 
 def log_activate(formLog):
@@ -989,7 +1021,9 @@ def log_deactivate(formLog):
 def pid_add(formAddPID, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to add pids", "error")
-    elif formAddPID.validate():
+        return redirect('/pid')
+
+    if formAddPID.validate():
         for x in range(0, formAddPID.numberPIDs.data):
             new_pid = PID()
             random_pid_id = ''.join([random.choice(
@@ -1034,7 +1068,9 @@ def pid_add(formAddPID, display_order):
 def pid_mod(formModPID):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to modify pids", "error")
-    elif formModPID.validate():
+        return redirect('/pid')
+
+    if formModPID.validate():
         try:
             with session_scope(MYCODO_DB_PATH) as db_session:
                 mod_pid = db_session.query(PID).filter(
@@ -1100,7 +1136,9 @@ def pid_del(formDelPID, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to delete PID controllers",
               "error")
-    elif formDelPID.validate():
+        return redirect('/pid')
+
+    if formDelPID.validate():
         try:
             delete_entry_with_id(MYCODO_DB_PATH,
                                  PID,
@@ -1120,7 +1158,9 @@ def pid_del(formDelPID, display_order):
 def pid_reorder(formOrderPID, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to reorder pids", "error")
-    elif formOrderPID.validate():
+        return redirect('/pid')
+
+    if formOrderPID.validate():
         try:
             if formOrderPID.orderPIDUp.data:
                 status, reordered_list = reorderList(
@@ -1177,26 +1217,29 @@ def pid_deactivate(formDeactivatePID):
 def relay_on_off(formRelayOnOff):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to turn relays on or off", "error")
-    else:
-        try:
-            control = DaemonControl()
-            if int(formRelayOnOff.Relay_pin.data) <= 0:
-                flash("Cannot modulate relay with a GPIO of 0", "error")
-            elif formRelayOnOff.On.data:
-                return_value = control.relay_on(formRelayOnOff.Relay_id.data, 0)
-                flash("Relay successfully turned on", "success")
-            elif formRelayOnOff.Off.data:
-                return_value = control.relay_off(formRelayOnOff.Relay_id.data)
-                flash("Relay successfully turned off", "success")
-        except Exception as except_msg:
-            flash("Relay was not able to be turned on or off: {}".format(
-                except_msg), "error")
+        return redirect('/relay')
+
+    try:
+        control = DaemonControl()
+        if int(formRelayOnOff.Relay_pin.data) <= 0:
+            flash("Cannot modulate relay with a GPIO of 0", "error")
+        elif formRelayOnOff.On.data:
+            return_value = control.relay_on(formRelayOnOff.Relay_id.data, 0)
+            flash("Relay successfully turned on", "success")
+        elif formRelayOnOff.Off.data:
+            return_value = control.relay_off(formRelayOnOff.Relay_id.data)
+            flash("Relay successfully turned off", "success")
+    except Exception as except_msg:
+        flash("Relay was not able to be turned on or off: {}".format(
+            except_msg), "error")
 
 
 def relay_add(formAddRelay, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to add relays", "error")
-    elif formAddRelay.validate():
+        return redirect('/relay')
+
+    if formAddRelay.validate():
         for x in range(0, formAddRelay.numberRelays.data):
             new_relay = Relay()
             random_relay_id = ''.join([random.choice(
@@ -1230,7 +1273,9 @@ def relay_add(formAddRelay, display_order):
 def relay_mod(formModRelay):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to modify relays", "error")
-    elif formModRelay.validate():
+        return redirect('/relay')
+
+    if formModRelay.validate():
         try:
             with session_scope(MYCODO_DB_PATH) as db_session:
                 mod_relay = db_session.query(Relay).filter(
@@ -1252,8 +1297,10 @@ def relay_mod(formModRelay):
 
 def relay_del(formDelRelay, display_order):
     if session['user_group'] == 'guest':
-            flash("Guests are not permitted to delete relays", "error")
-    elif formDelRelay.validate():
+        flash("Guests are not permitted to delete relays", "error")
+        return redirect('/relay')
+
+    if formDelRelay.validate():
         try:
             delete_entry_with_id(MYCODO_DB_PATH,
                                  Relay,
@@ -1273,7 +1320,9 @@ def relay_del(formDelRelay, display_order):
 def relay_reorder(formOrderRelay, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to reorder relays", "error")
-    elif formOrderRelay.validate():
+        return redirect('/relay')
+
+    if formOrderRelay.validate():
         try:
             if formOrderRelay.orderRelayUp.data:
                 status, reordered_list = reorderList(
@@ -1307,7 +1356,9 @@ def relay_reorder(formOrderRelay, display_order):
 def relay_conditional_add(formAddRelayCond):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to add relay conditionals", "error")
-    elif formAddRelayCond.validate():
+        return redirect('/relay')
+
+    if formAddRelayCond.validate():
         for x in range(0, formAddRelayCond.numberRelayConditionals.data):
             new_relay_cond = RelayConditional()
             random_id = ''.join([random.choice(
@@ -1345,7 +1396,9 @@ def relay_conditional_mod(formModRelayCond):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to modify relay conditionals",
               "error")
-    elif formModRelayCond.activate.data:
+        return redirect('/relay')
+
+    if formModRelayCond.activate.data:
         try:
             with session_scope(MYCODO_DB_PATH) as db_session:
                 relay_cond = db_session.query(RelayConditional)
@@ -1433,7 +1486,9 @@ def sum_relay_usage(relay_id, past_seconds):
 def sensor_add(formAddSensor, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to add sensors", "error")
-    elif formAddSensor.validate():
+        return redirect('/sensor')
+
+    if formAddSensor.validate():
         for x in range(0, formAddSensor.numberSensors.data):
             new_sensor = Sensor()
             random_sensor_id = ''.join([random.choice(
@@ -1532,6 +1587,8 @@ def sensor_add(formAddSensor, display_order):
 def sensor_mod(formModSensor):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to modify sensors", "error")
+        return redirect('/sensor')
+
     try:
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_sensor = db_session.query(Sensor).filter(
@@ -1584,6 +1641,8 @@ def sensor_mod(formModSensor):
 def sensor_del(formModSensor, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to delete sensors", "error")
+        return redirect('/sensor')
+
     try:
         with session_scope(MYCODO_DB_PATH) as db_session:
             sensor = db_session.query(Sensor).filter(
@@ -1619,6 +1678,8 @@ def sensor_del(formModSensor, display_order):
 def sensor_reorder(formModSensor, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to reorder sensors", "error")
+        return redirect('/sensor')
+
     try:
         if formModSensor.orderSensorUp.data:
             status, reordered_list = reorderList(
@@ -1669,25 +1730,26 @@ def sensor_deactivate(formModSensor):
 def sensor_deactivate_associated_controllers(sensor_id):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to deactivate sensors", "error")
-    else:
-        with session_scope(MYCODO_DB_PATH) as db_session:
-            pid = db_session.query(PID).filter(and_(
-                    PID.sensor_id == sensor_id,
-                    PID.activated == 1)).all()
-            if pid:
-                for each_pid in pid:
-                    activate_deactivate_controller('deactivate',
-                                                   'PID',
-                                                   each_pid.id)
-            lcd = db_session.query(LCD).filter(LCD.activated)
-            for each_lcd in lcd:
-                if sensor_id in [each_lcd.line_1_sensor_id,
-                                 each_lcd.line_2_sensor_id,
-                                 each_lcd.line_3_sensor_id,
-                                 each_lcd.line_4_sensor_id]:
-                    activate_deactivate_controller('deactivate',
-                                                   'LCD',
-                                                   each_lcd.id)
+        return redirect('/sensor')
+
+    with session_scope(MYCODO_DB_PATH) as db_session:
+        pid = db_session.query(PID).filter(and_(
+                PID.sensor_id == sensor_id,
+                PID.activated == 1)).all()
+        if pid:
+            for each_pid in pid:
+                activate_deactivate_controller('deactivate',
+                                               'PID',
+                                               each_pid.id)
+        lcd = db_session.query(LCD).filter(LCD.activated)
+        for each_lcd in lcd:
+            if sensor_id in [each_lcd.line_1_sensor_id,
+                             each_lcd.line_2_sensor_id,
+                             each_lcd.line_3_sensor_id,
+                             each_lcd.line_4_sensor_id]:
+                activate_deactivate_controller('deactivate',
+                                               'LCD',
+                                               each_lcd.id)
 
 
 
@@ -1698,6 +1760,8 @@ def sensor_deactivate_associated_controllers(sensor_id):
 def sensor_conditional_add(formModSensor):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to add sensor conditionals", "error")
+        return redirect('/sensor')
+
     new_sensor_cond = SensorConditional()
     random_id = ''.join([random.choice(
             string.ascii_letters + string.digits) for n in xrange(8)])
@@ -1738,7 +1802,9 @@ def sensor_conditional_mod(formModSensorCond):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to modify sensor conditionals",
               "error")
-    elif formModSensorCond.delSubmit.data:
+        return redirect('/sensor')
+
+    if formModSensorCond.delSubmit.data:
         try:
             delete_entry_with_id(
                 MYCODO_DB_PATH,
@@ -1849,7 +1915,9 @@ def check_refresh_conditional(sensor_id, cond_mod, cond_id):
 def timer_add(formAddTimer, timerType, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to add timers", "error")
-    elif formAddTimer.validate():
+        return redirect('/timer')
+    
+    if formAddTimer.validate():
         new_timer = Timer()
         random_timer_id = ''.join([random.choice(
                 string.ascii_letters + string.digits) for n in xrange(8)])
@@ -1894,73 +1962,76 @@ def timer_add(formAddTimer, timerType, display_order):
 def timer_mod(formTimer, timerType):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to modify timers", "error")
-    else:
-        try:
-            with session_scope(MYCODO_DB_PATH) as db_session:
-                mod_timer = db_session.query(Timer).filter(
-                    Timer.id == formTimer.timer_id.data).first()
-                if mod_timer.activated:
-                    flash("Deactivate timer controller before modifying its "
-                          "settings.", "error")
-                    return redirect('/timer')
-                mod_timer.name = formTimer.name.data
-                mod_timer.relay_id = formTimer.relayID.data
-                if timerType == 'time':
-                    mod_timer.state = formTimer.state.data
-                    mod_timer.time_on = formTimer.timeOn.data
-                    mod_timer.duration_on = formTimer.timeOnDurationOn.data
-                else:
-                    mod_timer.duration_on = formTimer.durationOn.data
-                    mod_timer.duration_off = formTimer.durationOff.data
-                db_session.commit()
-                flash("Timer settings successfully modified", "success")
-        except Exception as except_msg:
-            flash("Failed to modify timer: {}".format(except_msg), "error")
+        return redirect('/timer')
+
+    try:
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            mod_timer = db_session.query(Timer).filter(
+                Timer.id == formTimer.timer_id.data).first()
+            if mod_timer.activated:
+                flash("Deactivate timer controller before modifying its "
+                      "settings.", "error")
+                return redirect('/timer')
+            mod_timer.name = formTimer.name.data
+            mod_timer.relay_id = formTimer.relayID.data
+            if timerType == 'time':
+                mod_timer.state = formTimer.state.data
+                mod_timer.time_on = formTimer.timeOn.data
+                mod_timer.duration_on = formTimer.timeOnDurationOn.data
+            else:
+                mod_timer.duration_on = formTimer.durationOn.data
+                mod_timer.duration_off = formTimer.durationOff.data
+            db_session.commit()
+            flash("Timer settings successfully modified", "success")
+    except Exception as except_msg:
+        flash("Failed to modify timer: {}".format(except_msg), "error")
 
 
 def timer_del(formTimer, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to delete timers", "error")
-    else:
-        try:
-            delete_entry_with_id(MYCODO_DB_PATH,
-                                 Timer,
-                                 formTimer.timer_id.data)
-            with session_scope(MYCODO_DB_PATH) as db_session:
-                    order_sensor = db_session.query(DisplayOrder).first()
-                    display_order.remove(formTimer.timer_id.data)
-                    order_sensor.timer = ','.join(display_order)
-                    db_session.commit()
-        except Exception as except_msg:
-            flash("Error while deleting timer: {}".format(except_msg), "error")
+        return redirect('/timer')
+
+    try:
+        delete_entry_with_id(MYCODO_DB_PATH,
+                             Timer,
+                             formTimer.timer_id.data)
+        with session_scope(MYCODO_DB_PATH) as db_session:
+                order_sensor = db_session.query(DisplayOrder).first()
+                display_order.remove(formTimer.timer_id.data)
+                order_sensor.timer = ','.join(display_order)
+                db_session.commit()
+    except Exception as except_msg:
+        flash("Error while deleting timer: {}".format(except_msg), "error")
 
 
 def timer_reorder(formTimer, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to reorder timers", "error")
-    else:
-        try:
-            if formTimer.orderTimerUp.data:
-                status, reordered_list = reorderList(
-                        display_order,
-                        formTimer.timer_id.data,
-                        'up')
-            elif formTimer.orderTimerDown.data:
-                status, reordered_list = reorderList(
-                        display_order,
-                        formTimer.timer_id.data,
-                        'down')
-            if status == 'success':
-                with session_scope(MYCODO_DB_PATH) as db_session:
-                    order_timer = db_session.query(DisplayOrder).first()
-                    order_timer.timer = ','.join(reordered_list)
-                    db_session.commit()
-                flash("Timer display successfully reordered", status)
-            else:
-                flash(reordered_list, status)
-        except Exception as except_msg:
-            flash("Timer display was not able to be reordered: {}".format(
-                except_msg), "error")
+        return redirect('/timer')
+
+    try:
+        if formTimer.orderTimerUp.data:
+            status, reordered_list = reorderList(
+                    display_order,
+                    formTimer.timer_id.data,
+                    'up')
+        elif formTimer.orderTimerDown.data:
+            status, reordered_list = reorderList(
+                    display_order,
+                    formTimer.timer_id.data,
+                    'down')
+        if status == 'success':
+            with session_scope(MYCODO_DB_PATH) as db_session:
+                order_timer = db_session.query(DisplayOrder).first()
+                order_timer.timer = ','.join(reordered_list)
+                db_session.commit()
+            flash("Timer display successfully reordered", status)
+        else:
+            flash(reordered_list, status)
+    except Exception as except_msg:
+        flash("Timer display was not able to be reordered: {}".format(
+            except_msg), "error")
 
 
 def timer_activate(formTimer):
@@ -1983,35 +2054,35 @@ def timer_deactivate(formTimer):
 def user_add(formAddUser):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to add users", "error")
+        return redirect('/')
+
+    if formAddUser.validate():
+        new_user = Users()
+        if test_username(formAddUser.addUsername.data):
+            new_user.user_name = formAddUser.addUsername.data
+        new_user.user_email = formAddUser.addEmail.data
+        if test_password(formAddUser.addPassword.data):
+            new_user.set_password(formAddUser.addPassword.data)
+        new_user.user_restriction = formAddUser.addGroup.data
+        new_user.user_theme = 'dark'
+        try:
+            with session_scope(USER_DB_PATH) as db_session:
+                db_session.add(new_user)
+            flash("User '{}' successfully added".format(
+                formAddUser.addUsername.data), "success")
+        except sqlalchemy.exc.OperationalError as except_msg:
+            flash("Failed to create user: {}".format(except_msg), "error")
+        except sqlalchemy.exc.IntegrityError:
+            flash("Username or email already exists", "error")
     else:
-        if formAddUser.validate():
-            new_user = Users()
-            if test_username(formAddUser.addUsername.data):
-                new_user.user_name = formAddUser.addUsername.data
-            new_user.user_email = formAddUser.addEmail.data
-            if test_password(formAddUser.addPassword.data):
-                new_user.set_password(formAddUser.addPassword.data)
-            new_user.user_restriction = formAddUser.addGroup.data
-            new_user.user_theme = 'dark'
-            try:
-                with session_scope(USER_DB_PATH) as db_session:
-                    db_session.add(new_user)
-                flash("User '{}' successfully added".format(
-                    formAddUser.addUsername.data), "success")
-            except sqlalchemy.exc.OperationalError as except_msg:
-                flash("Failed to create user: {}".format(except_msg), "error")
-            except sqlalchemy.exc.IntegrityError:
-                flash("Username or email already exists", "error")
-        else:
-            flash_form_errors(formAddUser)
+        flash_form_errors(formAddUser)
 
 
 def user_mod(formModUser):
-    if (session['user_group'] == 'guest' and
-            session['user_name'] != formModUser.modUsername.data):
-        flash("Guests are only permitted to modify their own user "
-              "settings", "error")
-    elif formModUser.validate():
+    if session['user_group'] == 'guest':
+        flash("Guests are not permitted to modify user settings", "error")
+        return redirect('/')
+    if formModUser.validate():
         try:
             with session_scope(USER_DB_PATH) as db_session:
                 mod_user = db_session.query(Users).filter(
@@ -2043,7 +2114,9 @@ def user_mod(formModUser):
 def user_del(formDelUser):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to delete users", "error")
-    elif formDelUser.validate():
+        return redirect('/')
+
+    if formDelUser.validate():
         delete_user(USER_DB_PATH, Users, formDelUser.delUsername.data)
         if formDelUser.delUsername.data == session['user_name']:
             return 'logout'
@@ -2062,7 +2135,9 @@ def user_del(formDelUser):
 def settings_general_mod(formModGeneral):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to modify general settings", 'error')
-    elif formModGeneral.validate():
+        return redirect('/settings')
+
+    if formModGeneral.validate():
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_misc = db_session.query(Misc).one()
             mod_misc.hide_alert_success = formModGeneral.hideAlertSuccess.data
@@ -2082,7 +2157,9 @@ def settings_general_mod(formModGeneral):
 def settings_alert_mod(formModAlert):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to modify smtp settings", 'error')
-    elif formModAlert.validate():
+        return redirect('/alert')
+
+    if formModAlert.validate():
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_smtp = db_session.query(SMTP).one()
             if formModAlert.sendTestEmail.data:

@@ -913,6 +913,10 @@ def settings(page):
 
     # User management settings page
     elif page == 'users':
+        if session['user_group'] == 'guest':
+            flash('Guests are not permitted to view user settings.', 'error')
+            return redirect('/settings')
+
         users = flaskutils.db_retrieve_table(USER_DB_PATH, Users)
         formAddUser = flaskforms.AddUser()
         formModUser = flaskforms.ModUser()
@@ -938,6 +942,10 @@ def settings(page):
 
     # Alert email notifification settings
     elif page == 'alerts':
+        if session['user_group'] == 'guest':
+            flash('Guests are not permitted to view alert settings.', 'error')
+            return redirect('/settings')
+
         smtp = flaskutils.db_retrieve_table(MYCODO_DB_PATH, SMTP)
         formEmailAlert = flaskforms.EmailAlert()
         if request.method == 'POST':
