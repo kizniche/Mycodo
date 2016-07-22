@@ -463,15 +463,8 @@ class ModPID(Form):
         render_kw={"placeholder": "Sensor ID"},
         validators=[DataRequired()]
     )
-    modMeasureType = SelectField(
+    modMeasureType = TextField(
         u'Measure Type',
-        choices=[
-            ('temperature', 'Temperature'),
-            ('humidity', 'Humidity'),
-            ('co2', 'CO2'),
-            ('pressure', 'Pressure'),
-            ('altitude', 'Altitude')
-        ],
         validators=[DataRequired()]
     )
     modDirection = SelectField(

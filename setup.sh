@@ -35,9 +35,18 @@ set -e
 NOW=$(date +"%m-%d-%Y %H:%M:%S")
 printf "### Mycodo installation began at $NOW\n\n"
 
-printf "#### Installing prerequisites\n"
-apt-get update -y
+printf "#### Uninstalling specific prerequisites\n"
 apt-get purge -y python-pip
+pip uninstall -y Adafruit_ADS1x15
+pip uninstall -y Adafruit_BMP
+pip uninstall -y Adafruit_GPIO
+pip uninstall -y Adafruit_TMP
+pip uninstall -y MCP342x
+pip uninstall -y Adafruit_DHT
+pip uninstall -y Adafruit_Python_DHT
+
+printf "#### Installing all prerequisites\n"
+apt-get update -y
 apt-get upgrade -y
 apt-get install -y libav-tools libffi-dev libi2c-dev python-dev python-setuptools python-smbus sqlite3
 easy_install pip

@@ -20,14 +20,9 @@ picamera == 1.10
 sht-sensor == 16.2.0
 tentacle_pi == 0.6.2
 w1thermsensor == 0.3.1
-
+Adafruit_Python_DHT
 Adafruit_ADS1x15
 Adafruit_BMP
 Adafruit_GPIO
 Adafruit_TMP
-
-#MCP342x
--e git://github.com/stevemarple/python-MCP342x.git#egg=MCP342x
-
-#Adafruit_DHT
-#-e git://github.com/adafruit/Adafruit_Python_DHT.git#egg=Adafruit_DHT
+MCP342x

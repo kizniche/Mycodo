@@ -1067,7 +1067,7 @@ def pid_add(formAddPID, display_order):
 
 def pid_mod(formModPID):
     if session['user_group'] == 'guest':
-        flash("Guests are not permitted to modify pids", "error")
+        flash("Guests are not permitted to modify PIDs", "error")
         return redirect('/pid')
 
     if formModPID.validate():
