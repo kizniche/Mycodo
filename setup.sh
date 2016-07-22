@@ -35,23 +35,26 @@ set -e
 NOW=$(date +"%m-%d-%Y %H:%M:%S")
 printf "### Mycodo installation began at $NOW\n\n"
 
-printf "#### Uninstalling specific prerequisites\n"
-apt-get purge -y python-pip
-pip uninstall -y Adafruit_ADS1x15
-pip uninstall -y Adafruit_BMP
-pip uninstall -y Adafruit_GPIO
-pip uninstall -y Adafruit_TMP
-pip uninstall -y MCP342x
-pip uninstall -y Adafruit_DHT
-pip uninstall -y Adafruit_Python_DHT
-
-printf "#### Installing all prerequisites\n"
+printf "#### Uninstall current version of pip\n"
 apt-get update -y
+apt-get purge -y python-pip
+
+printf "#### Install latest pip\n"
 apt-get upgrade -y
 apt-get install -y libav-tools libffi-dev libi2c-dev python-dev python-setuptools python-smbus sqlite3
 easy_install pip
 pip install -U pip
 
+printf "#### Uninstalling specific prerequisites\n"
+pip uninstall -y Adafruit_ADS1x15
+pip uninstall -y Adafruit_BMP
+pip uninstall -y Adafruit_DHT
+pip uninstall -y Adafruit_GPIO
+pip uninstall -y Adafruit_Python_DHT
+pip uninstall -y Adafruit_TMP
+pip uninstall -y MCP342x
+
+printf "#### Installing prerequisites\n"
 wget --quiet --show-progress -P $INSTALL_DIRECTORY/ abyz.co.uk/rpi/pigpio/pigpio.zip
 unzip pigpio.zip
 cd $INSTALL_DIRECTORY/PIGPIO
