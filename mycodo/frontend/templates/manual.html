@@ -75,6 +75,11 @@
 				<ul>
 					<li><a href="#TCA9548A">TCA9548A</a></li>
 				</ul>
+        <li><a href="#adc">Analog to Digital Converters</a></li>
+        <ul>
+          <li><a href="#ADS1x15">ADS1x15</a></li>
+          <li><a href="#MCP342x">MCP342x</a></li>
+        </ul>
 			</ul>
 
 		<div style="padding-bottom: 2em"></div>
@@ -279,12 +284,10 @@
 
 		<p>If you need to restore a backup, do the following, changing the appropriate directory names with these commands, changing 'user' to your user name:
 
-		<pre>
-		sudo mv /home/user/Mycodo /home/user/Mycodo_old
-		sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
-		sudo service mycodo restart
-		sudo /etc/init.d/apache2 restart
-		</pre>
+		<pre>sudo mv /home/user/Mycodo /home/user/Mycodo_old
+sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
+sudo service mycodo restart
+sudo /etc/init.d/apache2 restart</pre>
 		</p>
 
 		<a name="preserving-custom-code"></a>
@@ -500,6 +503,37 @@
 		<h4>TCA9548A</h4>
 
 		<p>The TCA9548A I<sup>2</sup>C allows multiple sensors that have the same I<sup>2</sup>C address to be used with mycodo (such as the AM2315). The multiplexer has a selectable address, from 0x70 through 0x77, allowing up to 8 multiplexers to be used at once. With 8 channels per multiplexer, this allows up to 64 devices with the same address to be used.</p>
+
+    <a name="adc"></a>
+    <h3>Analog to Digital Converters</h3>
+
+    <a name="ADS1x15"></a>
+    <h4>ADS1x15</h4> (ADS1015, ADS1115)
+
+    <p>
+    Specifications:
+    <br>Interface: I<sup>2</sup>C
+    <br>I<sup>2</sup>C 7-bit addresses 0x48 - 0x4B
+    <br>Input channels: 2 (differential), 4 (single-ended)
+    <br>Power: 2.0V to 5.5V
+    <br>Sample Rate: 1015: 128SPS to 3.3kSPS, 1115: 8SPS to 860SPS
+    <br>Resolution: 1015: 12-bit, 1115: 16-bit
+    </p>
+
+    <a name="MCP342x"></a>
+    <h4>MCP342x</h4> (MCP3422, MCP3423, MCP3424, MCP3426, MCP3427, MCP3428)
+
+    <p>
+    Specifications:
+    <br>Interface: I<sup>2</sup>C
+    <br>I<sup>2</sup>C 7-bit addresses 0x68 - 0x6F
+    <br>MCP3422: 2 channel, 12, 14, 16, or 18 bit
+    <br>MCP3423: 2 channel, 12, 14, 16, or 18 bit
+    <br>MCP3424: 4 channel, 12, 14, 16, or 18 bit
+    <br>MCP3426: 2 channel, 12, 14, or 16 bit
+    <br>MCP3427: 2 channel, 12, 14, or 16 bit
+    <br>MCP3428: 4 channel, 12, 14, or 16 bit
+    </p>
 
   </div>
 
