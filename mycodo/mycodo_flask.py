@@ -504,6 +504,9 @@ def page(page):
 
 
     elif page == 'backup':
+        if session['user_group'] == 'guest':
+            flash('Guests are not permitted to view backups.', 'error')
+            return redirect('/')
         formBackup = flaskforms.Backup()
         internet = True
         backup_dirs = []
@@ -529,6 +532,9 @@ def page(page):
 
 
     elif page == 'update':
+        if session['user_group'] == 'guest':
+            flash('Guests are not permitted to view the update panel.', 'error')
+            return redirect('/')
         if not flaskutils.internet():
             flash("Update functionality is disabled because an internet "
                   "connection was unable to be detected.", "error")
@@ -684,6 +690,9 @@ def page(page):
 
     # Display log output
     elif page == 'logview':
+        if session['user_group'] == 'guest':
+            flash('Guests are not permitted to view logs.', 'error')
+            return redirect('/')
         formLogView = flaskforms.LogView()
         log_output = None
         lines = 30
@@ -742,7 +751,7 @@ def page(page):
             timelapse_locked = False
 
         if request.method == 'POST':
-            if session['user_group'] != 'admin':
+            if session['user_group'] == 'guest':
                 flash('Guests are not permitted to use camera options.', 'error')
                 return redirect('/camera')
             form_name = request.form['form-name']
@@ -809,7 +818,7 @@ def remote_admin(page):
     if (not session.get('logged_in') and
         not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
         return redirect('/')
-    if session['user_group'] != 'admin':
+    if session['user_group'] == 'guest':
         flash('Guests are not permitted to view the romote systems panel.', 'error')
         return redirect('/')
 
