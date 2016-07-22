@@ -356,7 +356,7 @@ Mycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRAN
 
 A full copy of the GNU General Public License can be found at <a href="http://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">http://www.gnu.org/licenses/gpl-3.0.en.html</a>
 
-This software includes third party open source software components: Discrete PID Controller. Each of these software components have their own license. Please see ./3.5/cgi-bin/mycodoPID.py for license information.
+This software includes third party open source software components: Discrete PID Controller. Each of these software components have their own license. Please see Mycodo/mycodo/controller_PID.py for license information.
 
 
 ### Screenshots (may be outdated)

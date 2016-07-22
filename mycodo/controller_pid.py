@@ -4,6 +4,8 @@
 # controller_pid.py - PID controller that manages descrete control of a
 #                     regulation system of sensors, relays, and devices
 #
+# PID controller code was used from the source below, with modifications.
+#
 # Copyright (c) 2010 cnr437@gmail.com
 #
 # Licensed under the MIT License <http://opensource.org/licenses/MIT>
