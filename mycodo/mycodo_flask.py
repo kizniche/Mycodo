@@ -742,6 +742,9 @@ def page(page):
             timelapse_locked = False
 
         if request.method == 'POST':
+            if session['user_group'] != 'admin':
+                flash('Guests are not permitted to use camera options.', 'error')
+                return redirect('/camera')
             form_name = request.form['form-name']
             if form_name == 'camera':
                 if formCamera.Still.data:
@@ -806,6 +809,9 @@ def remote_admin(page):
     if (not session.get('logged_in') and
         not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
         return redirect('/')
+    if session['user_group'] != 'admin':
+        flash('Guests are not permitted to view the romote systems panel.', 'error')
+        return redirect('/')
 
     remote_hosts = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Remote)
     display_order_unsplit = flaskutils.db_retrieve_table(
@@ -847,16 +853,27 @@ def camera_img(img_type, filename):
         not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
         return redirect('/')
 
+    still_path = INSTALL_DIRECTORY+'/camera-stills/'
+    timelapse_path = INSTALL_DIRECTORY+'/camera-timelapse/'
+
+    # Get a list of files in each directory
+    still_files = (file for file in os.listdir(still_path)
+            if os.path.isfile(os.path.join(still_path, file)))
+    timelapse_files = (file for file in os.listdir(timelapse_path)
+            if os.path.isfile(os.path.join(timelapse_path, file)))
+
     if img_type == 'still':
-        resp = make_response(open(INSTALL_DIRECTORY+'/camera-stills/'+filename).read())
-        resp.content_type = "image/jpeg"
-        return resp
+        # Ensure file exists in directory before serving it
+        if filename in still_files:
+            resp = make_response(open(still_path+filename).read())
+            resp.content_type = "image/jpeg"
+            return resp
     elif img_type == 'timestamp':
-        resp = flask.make_response(open(INSTALL_DIRECTORY+'/camera-timelapse/'+filename).read())
-        resp.content_type = "image/jpeg"
-        return resp
-    else:
-        return "Image not found"
+        if filename in timelapse_files:
+            resp = flask.make_response(open(timelapse_path+filename).read())
+            resp.content_type = "image/jpeg"
+            return resp
+    return "Image not found"
     
 
 def gen(camera):
