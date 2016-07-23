@@ -436,6 +436,9 @@
                           <option value="temperature"{% if each_sensorcond.measurement_type == 'temperature' %} selected{% endif %}>Temperature</option>
                           <option value="pressure"{% if each_sensorcond.measurement_type == 'pressure' %} selected{% endif %}>Pressure</option>
                           <option value="altitude"{% if each_sensorcond.measurement_type == 'altitude' %} selected{% endif %}>Altitude</option>
+                        {% elif each_sensor.device_type == 'analogsensor' %}
+                          <option value="voltage"{% if each_sensorcond.measurement_type == 'voltage' %} selected{% endif %}>Voltage (ADC)</option>
+                          <option value="{{each_sensor.adc_measure}}"{% if each_sensorcond.measurement_type == each_sensor.adc_measure %} selected{% endif %}>{{each_sensor.adc_measure}} (ADC)</option>
                         {%- endif -%}
                       </select>
                       is
