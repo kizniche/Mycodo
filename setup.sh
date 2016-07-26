@@ -45,14 +45,14 @@ apt-get install -y libav-tools libffi-dev libi2c-dev python-dev python-setuptool
 easy_install pip
 pip install -U pip
 
-printf "#### Uninstalling specific prerequisites\n"
-pip uninstall -y Adafruit_ADS1x15
-pip uninstall -y Adafruit_BMP
-pip uninstall -y Adafruit_DHT
-pip uninstall -y Adafruit_GPIO
-pip uninstall -y Adafruit_Python_DHT
-pip uninstall -y Adafruit_TMP
-pip uninstall -y MCP342x
+# printf "#### Uninstalling specific prerequisites\n"
+# pip uninstall -y Adafruit_ADS1x15
+# pip uninstall -y Adafruit_BMP
+# pip uninstall -y Adafruit_DHT
+# pip uninstall -y Adafruit_GPIO
+# pip uninstall -y Adafruit_Python_DHT
+# pip uninstall -y Adafruit_TMP
+# pip uninstall -y MCP342x
 
 printf "#### Installing prerequisites\n"
 wget --quiet --show-progress -P $INSTALL_DIRECTORY/ abyz.co.uk/rpi/pigpio/pigpio.zip
