@@ -387,7 +387,7 @@ class PIDController(threading.Thread):
         start_time_formatted  = datetime.strptime("1 "+start_time, date_format)
         end_day_modifier = "1 "  # End time is the same day
         if (start_hour > end_hour or
-                (start_hour == end_hour and start_minute > end_minute)):
+                (start_hour == end_hour and start_min > end_min)):
             end_day_modifier = "2 "  # End time is the next day
         end_time_formatted  = datetime.strptime(end_day_modifier+end_time, date_format)
 

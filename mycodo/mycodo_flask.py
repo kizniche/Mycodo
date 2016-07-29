@@ -879,7 +879,7 @@ def camera_img(img_type, filename):
             return resp
     elif img_type == 'timestamp':
         if filename in timelapse_files:
-            resp = flask.make_response(open(timelapse_path+filename).read())
+            resp = make_response(open(timelapse_path+filename).read())
             resp.content_type = "image/jpeg"
             return resp
     return "Image not found"
