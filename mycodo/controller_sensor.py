@@ -492,16 +492,21 @@ class SensorController(threading.Thread):
                 # Get measurement from ADC
                 measurements = self.adc.next()
                 if measurements is not None:
+                    # Get the voltage difference between min and max volts
                     diff_voltage = abs(self.adc_volts_max-self.adc_volts_min)
+                    # Ensure the measured voltage stays within the min/max bounds
                     if measurements['voltage'] < self.adc_volts_min:
                         measured_voltage = self.adc_volts_min
                     elif measurements['voltage'] > self.adc_volts_max:
                         measured_voltage = self.adc_volts_max
                     else:
                         measured_voltage = measurements['voltage']
-                    ratio_voltage = measured_voltage/diff_voltage
+                    # Calculate the percentage of the voltage difference
+                    percent_diff = (measured_voltage-self.adc_volts_min)/diff_voltage
+                    # Get the units difference between min and max units
                     diff_units = abs(self.adc_units_max-self.adc_units_min)
-                    converted_units = self.adc_units_min+(diff_units*ratio_voltage)
+                    # Calculate the measured units from the percent difference
+                    converted_units = self.adc_units_min+(diff_units*percent_diff)
                     if converted_units < self.adc_units_min:
                         measurements[self.adc_measure] = self.adc_units_min
                     elif converted_units > self.adc_units_max:
