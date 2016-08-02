@@ -15,7 +15,7 @@
     {% include 'flash_messages.html' %}
 
     {%- set method_setpoint = [] -%}
-    {%- for each_method in method_list if each_method.method_id == method_key['method_id'] and each_method.start_setpoint -%}
+    {%- for each_method in method_list if each_method.method_id == method_key['method_id'] -%}
       {%- do method_setpoint.append(1) -%}
     {%- endfor -%}
 

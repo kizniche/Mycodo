@@ -102,7 +102,8 @@ class PIDController(threading.Thread):
         self.I_value = None
         self.D_value = None
         self.raise_seconds_on = 0
-        self.timer = t.time() + self.measure_interval
+        self.timer = t.time()+self.measure_interval
+        self.method_start_time = datetime.now()
 
 
     def run(self):
@@ -115,7 +116,7 @@ class PIDController(threading.Thread):
 
             while (self.running):
                 if t.time() > self.timer:
-                    self.timer = t.time() + self.measure_interval
+                    self.timer = self.timer+self.measure_interval
                     self.get_last_measurement()
                     self.manipulate_relays()
                 t.sleep(0.1)
@@ -338,6 +339,76 @@ class PIDController(threading.Thread):
             if now_time >= time(start_hour,start_min) or now_time <= time(end_hour,end_min):
                 return 1  # Yes now within range
         return 0 # No now not within range
+
+
+    def calculate_method_setpoint(self, method_id):
+        with session_scope(MYCODO_DB_PATH) as new_session:
+            method = new_session.query(Method)
+            new_session.expunge_all()
+            new_session.close()
+
+        method_key = method.filter(Method.method_id == method_id)
+        method_key = method_key.filter(Method.method_order == 0).first()
+
+        method = method.filter(Method.method_order > 0)
+        method = method.filter(Method.method_id == method_id)
+        method = method.order_by(Method.method_order.asc()).all()
+
+        now = datetime.now()
+
+        if method_key.method_type == 'Date':
+            for each_method in method:
+                start_time = datetime.strptime(each_method.start_time, '%Y-%m-%d %H:%M:%S')
+                end_time = end_time = datetime.strptime(each_method.end_time, '%Y-%m-%d %H:%M:%S')
+                if start_time < now < end_time:
+                    start_setpoint = each_method.start_setpoint
+                    if each_method.end_setpoint:
+                        end_setpoint = each_method.end_setpoint
+                    else:
+                        end_setpoint = each_method.start_setpoint
+
+                    setpoint_diff = abs(end_setpoint-start_setpoint)
+                    total_seconds = (end_time-start_time).total_seconds()
+                    part_seconds = (now-start_time).total_seconds()
+                    percent_total = part_seconds/total_seconds
+                    new_setpoint = start_setpoint+(setpoint_diff*percent_total)
+
+                    self.logger.debug("[Method] Start: {} End: {}".format(start_time, end_time))
+                    self.logger.debug("[Method] Start: {} End: {}".format(start_setpoint, end_setpoint))
+                    self.logger.debug("[Method] Total: {} Part total: {} ({}%)".format(
+                        total_seconds, part_seconds, percent_total))
+                    self.logger.debug("[Method] New Setpoint: {}".format(new_setpoint))
+                    return new_setpoint
+        elif method_key.method_type == 'Duration':
+            if self.method_start_time == None:
+                self.method_start_time = now
+            seconds_from_start = (now-self.method_start_time).total_seconds()
+            total_sec = 0
+            previous_total_sec = 0
+            for each_method in method:
+                total_sec += each_method.duration_sec
+                if previous_total_sec <= seconds_from_start < total_sec:
+                    row_start_time = float(self.method_start_time.strftime('%s'))+previous_total_sec
+                    row_since_start_sec = (now-(self.method_start_time+timedelta(0, previous_total_sec))).total_seconds()
+                    percent_row = row_since_start_sec/each_method.duration_sec
+
+                    start_setpoint = each_method.start_setpoint
+                    if each_method.end_setpoint:
+                        end_setpoint = each_method.end_setpoint
+                    else:
+                        end_setpoint = each_method.start_setpoint
+                    setpoint_diff = abs(end_setpoint-start_setpoint)
+                    new_setpoint = start_setpoint+(setpoint_diff*percent_row)
+                    
+                    self.logger.debug("[Method] Start: {} Seconds Since: {}".format(
+                        self.method_start_time, seconds_from_start))
+                    self.logger.debug("[Method] Start time of row: {}".format(datetime.fromtimestamp(row_start_time)))
+                    self.logger.debug("[Method] Sec since start of row: {}".format(row_since_start_sec))
+                    self.logger.debug("[Method] Percent of row: {}".format(percent_row))
+                    self.logger.debug("[Method] New Setpoint: {}".format(new_setpoint))
+                    return new_setpoint
+                previous_total_sec = total_sec
+        return None
 
 
     def calculate_new_setpoint(self, start_time, end_time, start_setpoint, end_setpoint):

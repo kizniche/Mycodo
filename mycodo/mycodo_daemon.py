@@ -39,6 +39,7 @@ from controller_sensor import SensorController
 from controller_timer import TimerController
 from databases.mycodo_db.models import LCD
 from databases.mycodo_db.models import Log
+from databases.mycodo_db.models import Method
 from databases.mycodo_db.models import Misc
 from databases.mycodo_db.models import PID
 from databases.mycodo_db.models import Sensor
@@ -154,6 +155,7 @@ class DaemonController(threading.Thread):
         self.timer_stats = time.time()+120
         self.timer_ram_use = time.time()
 
+
     def run(self):
         self.start_all_controllers()
         self.startup_stats()
@@ -161,7 +163,7 @@ class DaemonController(threading.Thread):
             # loop until daemon is instructed to shut down
             while self.daemon_run:
                 if time.time() > self.timer_ram_use:
-                    self.timer_ram_use = time.time()+86400
+                    self.timer_ram_use = self.timer_ram_use+86400
                     ram = resource.getrusage(
                         resource.RUSAGE_SELF).ru_maxrss / float(1000)
                     self.logger.info("[Daemon] {} MB ram in use".format(ram))
@@ -185,7 +187,7 @@ class DaemonController(threading.Thread):
         self.terminated = True
         # wait so the client doesn't disconnectd before it receives response
         time.sleep(0.25)
-        
+
 
     def activateController(self, cont_type, cont_id):
         """
@@ -377,7 +379,7 @@ class DaemonController(threading.Thread):
         try:
             stat_dict = daemonutils.return_stat_file_dict()
             if float(stat_dict['next_send']) < time.time():
-                self.timer_stats = time.time()+STATS_INTERVAL
+                self.timer_stats = self.timer_stats+STATS_INTERVAL
                 daemonutils.add_update_stat(self.logger, 'next_send',
                                       self.timer_stats)
             else:

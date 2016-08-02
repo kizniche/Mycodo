@@ -61,7 +61,7 @@ USER_DB_PATH = 'sqlite:///' + SQL_DATABASE_USER
 
 
 #
-# Add Method (Date)
+# Method Development
 #
 
 def is_positive_integer(number_string):
@@ -80,7 +80,7 @@ def validate_method_data(form_data, this_method):
         if this_method.method_type == 'Date':
             if (not form_data.startTime.data or
                     not form_data.endTime.data or
-                    not form_data.startSetpoint.data):
+                    form_data.startSetpoint.data == ''):
                 flash("Required: Start date/time, end date/time, start setpoint",
                       "error")
                 return 1
@@ -96,7 +96,7 @@ def validate_method_data(form_data, this_method):
                 return 1
         elif this_method.method_type == 'Duration':
             if (not form_data.DurationSec.data or
-                    not form_data.startSetpoint.data):
+                    form_data.startSetpoint.data == ''):
                 flash("Required: Duration, start setpoint",
                       "error")
                 return 1
@@ -225,15 +225,14 @@ def method_add(formAddMethod, method):
         if formAddMethod.method_select.data == 'setpoint':
             if this_method.method_type == 'Date':
                 flash("Added duration to method from {} to {}.".format(
-                    start_time.strftime('%Y-%m-%d %H:%M:%S'),
-                    end_time.strftime('%Y-%m-%d %H:%M:%S')), "success")
+                    start_time, end_time), "success")
             elif this_method.method_type == 'Duration':
                 flash("Added duration to method for {} seconds".format(
                     formAddMethod.DurationSec.data), "success")
         elif formAddMethod.method_select.data == 'relay':
             if this_method.method_type == 'Date':
                 flash("Added relay modulation to method at {}".format(
-                    start_time.strftime('%Y-%m-%d %H:%M:%S')), "success")
+                    start_time), "success")
             elif this_method.method_type == 'Duration':
                 flash("Added relay modulation to method at {} seconds".format(
                     formAddMethod.DurationSec.data), "success")
@@ -264,6 +263,7 @@ def method_mod(formModMethod, method):
             if method_set.method_type == 'Date':
                 start_time = datetime.strptime(formModMethod.startTime.data, '%Y-%m-%d %H:%M:%S')
                 end_time = datetime.strptime(formModMethod.endTime.data, '%Y-%m-%d %H:%M:%S')
+
                 # Ensure the start time comes after the previous entry's end time
                 # and the end time comes before the next entry's start time
                 # method_id_set is the id given to all method entries, 'method_id', not 'id'

@@ -110,7 +110,6 @@ def method_data(method_type, method_id):
 
     method = method.filter(Method.method_order > 0)
     method = method.filter(Method.method_id == method_id)
-    method = method.filter(Method.start_setpoint != '')
     method = method.order_by(Method.method_order.asc()).all()
 
     method_list = []
