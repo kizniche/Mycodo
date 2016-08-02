@@ -95,7 +95,7 @@ class ModMethod(Form):
         render_kw={"placeholder": "0.0"}
     )
     endSetpoint = DecimalField(
-        u'End Setpoint',
+        u'End Setpoint (optional)',
         render_kw={"placeholder": "0.0"}
     )
     relayID = TextField(u'Relay',)
