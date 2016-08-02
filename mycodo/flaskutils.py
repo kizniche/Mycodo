@@ -85,8 +85,8 @@ def validate_method_data(form_data, this_method):
                       "error")
                 return 1
             try:
-                start_time = datetime.strptime(form_data.startTime.data, '%d-%m-%Y %H:%M:%S')
-                end_time = datetime.strptime(form_data.endTime.data, '%d-%m-%Y %H:%M:%S')
+                start_time = datetime.strptime(form_data.startTime.data, '%Y-%m-%d %H:%M:%S')
+                end_time = datetime.strptime(form_data.endTime.data, '%Y-%m-%d %H:%M:%S')
             except ValueError:
                 flash("Invalid Date/Time format. Correct format: DD/MM/YYYY HH:MM:SS", "error")
                 return 1
@@ -112,7 +112,7 @@ def validate_method_data(form_data, this_method):
                       "error")
                 return 1
             try:
-                start_time = datetime.strptime(form_data.relayTime.data, '%d-%m-%Y %H:%M:%S')
+                start_time = datetime.strptime(form_data.relayTime.data, '%Y-%m-%d %H:%M:%S')
             except ValueError:
                 flash("Invalid Date/Time format. Correct format: DD-MM-YYYY HH:MM:SS", "error")
                 return 1
@@ -156,8 +156,8 @@ def method_add(formAddMethod, method):
     
     if formAddMethod.method_select.data == 'setpoint':
         if this_method.method_type == 'Date':
-            start_time = datetime.strptime(formAddMethod.startTime.data, '%d-%m-%Y %H:%M:%S')
-            end_time = datetime.strptime(formAddMethod.endTime.data, '%d-%m-%Y %H:%M:%S')
+            start_time = datetime.strptime(formAddMethod.startTime.data, '%Y-%m-%d %H:%M:%S')
+            end_time = datetime.strptime(formAddMethod.endTime.data, '%Y-%m-%d %H:%M:%S')
 
             # Check if the start time comes after the last entry's end time
             try:
@@ -165,16 +165,16 @@ def method_add(formAddMethod, method):
                 last_method = last_method.filter(Method.method_order > 0)
                 last_method = last_method.order_by(Method.method_order.desc()).first()
                 if last_method != None:
-                    last_method_end_time = datetime.strptime(last_method.end_time, '%d-%m-%Y %H:%M:%S')
+                    last_method_end_time = datetime.strptime(last_method.end_time, '%Y-%m-%d %H:%M:%S')
                     if start_time < last_method_end_time:
-                        flash("The new entry start time ({}) cannot overlap the last entry's end time ({}). Note: They may be the same time.".format(last_method_end_time.strftime('%d-%m-%Y %H:%M:%S'), start_time.strftime('%d-%m-%Y %H:%M:%S')), "error")
+                        flash("The new entry start time ({}) cannot overlap the last entry's end time ({}). Note: They may be the same time.".format(last_method_end_time, start_time), "error")
                         return 1
             except ValueError:
                 pass
 
     elif formAddMethod.method_select.data == 'relay':
         if this_method.method_type == 'Date':
-            start_time = datetime.strptime(formAddMethod.relayTime.data, '%d-%m-%Y %H:%M:%S')
+            start_time = datetime.strptime(formAddMethod.relayTime.data, '%Y-%m-%d %H:%M:%S')
 
     # Check if this is the first entry of the method
     method_exists = False
@@ -199,8 +199,8 @@ def method_add(formAddMethod, method):
 
         if this_method.method_type == 'Date':
             if formAddMethod.method_select.data == 'setpoint':
-                new_method.start_time = start_time.strftime('%d-%m-%Y %H:%M:%S')
-                new_method.end_time = end_time.strftime('%d-%m-%Y %H:%M:%S')
+                new_method.start_time = start_time.strftime('%Y-%m-%d %H:%M:%S')
+                new_method.end_time = end_time.strftime('%Y-%m-%d %H:%M:%S')
             if formAddMethod.method_select.data == 'relay':
                 new_method.start_time = formAddMethod.relayTime.data
         elif this_method.method_type == 'Duration':
@@ -225,15 +225,15 @@ def method_add(formAddMethod, method):
         if formAddMethod.method_select.data == 'setpoint':
             if this_method.method_type == 'Date':
                 flash("Added duration to method from {} to {}.".format(
-                    start_time.strftime('%d-%m-%Y %H:%M:%S'),
-                    end_time.strftime('%d-%m-%Y %H:%M:%S')), "success")
+                    start_time.strftime('%Y-%m-%d %H:%M:%S'),
+                    end_time.strftime('%Y-%m-%d %H:%M:%S')), "success")
             elif this_method.method_type == 'Duration':
                 flash("Added duration to method for {} seconds".format(
                     formAddMethod.DurationSec.data), "success")
         elif formAddMethod.method_select.data == 'relay':
             if this_method.method_type == 'Date':
                 flash("Added relay modulation to method at {}".format(
-                    start_time.strftime('%d-%m-%Y %H:%M:%S')), "success")
+                    start_time.strftime('%Y-%m-%d %H:%M:%S')), "success")
             elif this_method.method_type == 'Duration':
                 flash("Added relay modulation to method at {} seconds".format(
                     formAddMethod.DurationSec.data), "success")
@@ -262,8 +262,8 @@ def method_mod(formModMethod, method):
 
         if formModMethod.method_select.data == 'setpoint':
             if method_set.method_type == 'Date':
-                start_time = datetime.strptime(formModMethod.startTime.data, '%d-%m-%Y %H:%M:%S')
-                end_time = datetime.strptime(formModMethod.endTime.data, '%d-%m-%Y %H:%M:%S')
+                start_time = datetime.strptime(formModMethod.startTime.data, '%Y-%m-%d %H:%M:%S')
+                end_time = datetime.strptime(formModMethod.endTime.data, '%Y-%m-%d %H:%M:%S')
                 # Ensure the start time comes after the previous entry's end time
                 # and the end time comes before the next entry's start time
                 # method_id_set is the id given to all method entries, 'method_id', not 'id'
@@ -278,8 +278,8 @@ def method_mod(formModMethod, method):
 
                 if previous_method != None and previous_method.end_time != None:
                     previous_end_time = datetime.strptime(previous_method.end_time,
-                        '%d-%m-%Y %H:%M:%S')
-                    if previous_end_time != None and start_time <= previous_end_time:
+                        '%Y-%m-%d %H:%M:%S')
+                    if previous_end_time != None and start_time < previous_end_time:
                         flash("The entry start time ({}) cannot overlap the previous "
                               "entry's end time ({})".format(start_time, previous_end_time),
                               "error")
@@ -287,15 +287,15 @@ def method_mod(formModMethod, method):
 
                 if next_method != None and next_method.start_time != None:
                     next_start_time = datetime.strptime(next_method.start_time,
-                        '%d-%m-%Y %H:%M:%S')
-                    if next_start_time != None and end_time >= next_start_time:
+                        '%Y-%m-%d %H:%M:%S')
+                    if next_start_time != None and end_time > next_start_time:
                         flash("The entry end time ({}) cannot overlap the next entry's "
                               "start time ({})".format(end_time, next_start_time),
                               "error")
                         return 1
 
-                mod_method.start_time = start_time.strftime('%d-%m-%Y %H:%M:%S')
-                mod_method.end_time = end_time.strftime('%d-%m-%Y %H:%M:%S')
+                mod_method.start_time = start_time.strftime('%Y-%m-%d %H:%M:%S')
+                mod_method.end_time = end_time.strftime('%Y-%m-%d %H:%M:%S')
 
 
             elif method_set.method_type == 'Duration':

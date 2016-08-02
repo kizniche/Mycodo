@@ -127,8 +127,8 @@ def method_data(method_type, method_id):
             else:
                 end_setpoint = each_method.end_setpoint
 
-            start_time = datetime.strptime(each_method.start_time, '%d-%m-%Y %H:%M:%S')
-            end_time = datetime.strptime(end_time, '%d-%m-%Y %H:%M:%S')
+            start_time = datetime.strptime(each_method.start_time, '%Y-%m-%d %H:%M:%S')
+            end_time = datetime.strptime(end_time, '%Y-%m-%d %H:%M:%S')
 
             if not first_start:
                 first_start = start_time
