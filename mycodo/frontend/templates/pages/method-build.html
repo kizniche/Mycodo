@@ -308,10 +308,7 @@
           if (jqXHR.status != 204) {
             chart.addSeries({
               name: 'Setpoint',
-              data : data,
-              tooltip: {
-                valueDecimals: 2
-              } 
+              data : data
             });
           }
         }
@@ -347,6 +344,10 @@
       },
       title: {
         text: null
+      },
+      tooltip: {
+        xDateFormat: '%a, %b %e, %Y %H:%M:%S',
+        valueDecimals: 2
       },
       legend: {
         enabled: false

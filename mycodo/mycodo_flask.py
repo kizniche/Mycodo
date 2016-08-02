@@ -136,9 +136,6 @@ def method_data(method_type, method_id):
             is_dst = time.daylight and time.localtime().tm_isdst > 0
             utc_offset_ms = (time.altzone if is_dst else time.timezone)
 
-            # method_list.append([start_time, each_method.start_setpoint])
-            # method_list.append([end_time, end_setpoint])
-
             method_list.append([(int(start_time.strftime("%s"))-utc_offset_ms)*1000 , each_method.start_setpoint])
             method_list.append([(int(end_time.strftime("%s"))-utc_offset_ms)*1000, end_setpoint])
             method_list.append([(int(start_time.strftime("%s"))-utc_offset_ms)*1000 , None])
