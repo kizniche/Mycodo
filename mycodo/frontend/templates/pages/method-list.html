@@ -61,7 +61,16 @@
           <a href="/method-build/{{each_method.method_type}}/{{each_method.method_id}}" class="btn btn-default" role="button">Edit Method</a>
           {{each_method.method_type}} Method: {{each_method.name}} ({{each_method.method_id}})
         </div>
-        <div id="container{{chart_number}}" style="height: 300px; width: 100%;"></div>
+
+        {%- set method_setpoint = [] -%}
+        {%- for each_method_all in method_all if each_method_all.method_id == each_method.method_id and each_method_all.start_setpoint -%}
+          {%- do method_setpoint.append(1) -%}
+        {%- endfor -%}
+
+        {%- if method_setpoint -%}
+          <div id="container{{chart_number}}" style="height: 300px; width: 100%;"></div>
+        {%- endif -%}
+
       </div>
     {%- endfor -%}
     <div style="clear: both; padding:1em 0;"></div>
@@ -78,8 +87,8 @@
         function(data, responseText, jqXHR) {
           if (jqXHR.status != 204) {
             chart[chart_number].addSeries({
-              yAxis: 'unit',
-              data : data,
+              name: 'Setpoint',
+              data: data,
               tooltip: {
                 valueDecimals: 2
               } 
@@ -128,13 +137,12 @@
       yAxis: [
       {   
         title: {
-          text: 'Units',
+          text: null,
         },
         labels: {
           format: '{value}',
         },
-        opposite: false,
-        id: 'unit'
+        opposite: false
       }],
       credits: {
         enabled: false

@@ -307,7 +307,7 @@
         function(data, responseText, jqXHR) {
           if (jqXHR.status != 204) {
             chart.addSeries({
-              yAxis: 'unit',
+              name: 'Setpoint',
               data : data,
               tooltip: {
                 valueDecimals: 2
@@ -367,13 +367,12 @@
       yAxis: [
       {   
         title: {
-          text: 'Units',
+          text: null,
         },
         labels: {
           format: '{value}',
         },
-        opposite: false,
-        id: 'unit'
+        opposite: false
       }],
       credits: {
         enabled: false

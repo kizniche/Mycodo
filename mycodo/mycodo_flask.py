@@ -183,9 +183,12 @@ def method_list():
         method = new_session.query(Method)
         new_session.expunge_all()
         new_session.close()
+    method_all = method.filter(Method.method_order > 0).all()
     method = method.filter(Method.method_order == 0).all()
+
     return render_template('pages/method-list.html',
                            method=method,
+                           method_all=method_all,
                            formCreateMethod=formCreateMethod)
 
 

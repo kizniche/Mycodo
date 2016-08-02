@@ -29,11 +29,11 @@ class AddMethod(Form):
     method_type = HiddenField(u'Method Type')
     method_select = HiddenField(u'Method Select')
     startTime = TextField(
-        u'Start (DD-MM-YYYY HH:MM:SS)',
+        u'Start DD-MM-YYYY HH:MM:SS',
         render_kw={"placeholder": "DD-MM-YYYY HH:MM:SS"}
     )
     endTime = TextField(
-        u'End (DD-MM-YYYY HH:MM:SS)',
+        u'End DD-MM-YYYY HH:MM:SS',
         render_kw={"placeholder": "DD-MM-YYYY HH:MM:SS"}
     )
     startSetpoint = DecimalField(
@@ -49,7 +49,7 @@ class AddMethod(Form):
         render_kw={"placeholder": ""}
     )
     relayTime = TextField(
-        u'Time (DD-MM-YYYY HH:MM:SS)',
+        u'Time DD-MM-YYYY HH:MM:SS',
         render_kw={"placeholder": "DD-MM-YYYY HH:MM:SS"}
     )
     relayDurationSec = IntegerField(
@@ -75,15 +75,15 @@ class ModMethod(Form):
     method_type = HiddenField(u'Method Type')
     method_select = HiddenField(u'Method Select')
     startTime = TextField(
-        u'Start (DD-MM-YYYY HH:MM:SS)',
+        u'Start DD-MM-YYYY HH:MM:SS',
         render_kw={"placeholder": "DD-MM-YYYY HH:MM:SS"}
     )
     endTime = TextField(
-        u'End (DD-MM-YYYY HH:MM:SS)',
+        u'End DD-MM-YYYY HH:MM:SS',
         render_kw={"placeholder": "DD-MM-YYYY HH:MM:SS"}
     )
     relayTime = TextField(
-        u'Time (DD-MM-YYYY HH:MM:SS)',
+        u'Time DD-MM-YYYY HH:MM:SS',
         render_kw={"placeholder": "DD-MM-YYYY HH:MM:SS"}
     )
     DurationSec = IntegerField(
