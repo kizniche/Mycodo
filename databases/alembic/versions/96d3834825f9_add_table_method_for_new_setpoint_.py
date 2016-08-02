@@ -33,8 +33,17 @@ def upgrade():
         sa.Column('start_setpoint', sa.REAL),
         sa.Column('end_setpoint', sa.REAL)
     )
+
     with op.batch_alter_table("pid") as batch_op:
         batch_op.add_column(sa.Column('method_id', sa.TEXT))
+
+    op.execute(
+        '''
+        UPDATE pid
+        SET method_id=''
+        WHERE method_id IS NULL
+        '''
+    )
 
 
 def downgrade():
