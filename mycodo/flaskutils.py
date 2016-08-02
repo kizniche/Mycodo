@@ -160,13 +160,17 @@ def method_add(formAddMethod, method):
             end_time = datetime.strptime(formAddMethod.endTime.data, '%d-%m-%Y %H:%M:%S')
 
             # Check if the start time comes after the last entry's end time
-            last_method_end_time_str = method.filter(Method.method_order > 0)
-            last_method_end_time_str = method.order_by(Method.method_order.desc()).first().end_time
-            if last_method_end_time_str != None:
-                last_method_end_time = datetime.strptime(last_method_end_time_str, '%d-%m-%Y %H:%M:%S')
-                if start_time <= last_method_end_time:
-                    flash("The new entry start time cannot overlap the last entry's end time {} {}".format(last_method_end_time, start_time), "error")
-                    return 1
+            try:
+                last_method = method.filter(Method.method_id == this_method.method_id)
+                last_method = last_method.filter(Method.method_order > 0)
+                last_method = last_method.order_by(Method.method_order.desc()).first()
+                if last_method != None:
+                    last_method_end_time = datetime.strptime(last_method.end_time, '%d-%m-%Y %H:%M:%S')
+                    if start_time < last_method_end_time:
+                        flash("The new entry start time ({}) cannot overlap the last entry's end time ({}). Note: They may be the same time.".format(last_method_end_time.strftime('%d-%m-%Y %H:%M:%S'), start_time.strftime('%d-%m-%Y %H:%M:%S')), "error")
+                        return 1
+            except ValueError:
+                pass
 
     elif formAddMethod.method_select.data == 'relay':
         if this_method.method_type == 'Date':

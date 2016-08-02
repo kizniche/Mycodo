@@ -242,6 +242,32 @@ def method_builder(method_type, method_id):
         method_list = method.filter(Method.method_order > 0)
         method_list = method_list.order_by(Method.method_order.asc()).all()
 
+        
+        last_end_time = ''
+        last_setpoint = ''
+        if method_type == 'Date':
+            # Get last entry end time to populate the form start time
+            last_method = method.filter(Method.method_id == method_key.method_id)
+            last_method = last_method.filter(Method.method_order > 0)
+            last_method = last_method.order_by(Method.method_order.desc()).first()
+            if last_method == None:
+                last_end_time = ''
+            else:
+                last_end_time = last_method.end_time
+
+            # Get last entry end setpoint to populate the form start setpoint
+            last_method = method.filter(Method.method_id == method_key.method_id)
+            last_method = last_method.filter(Method.method_order > 0)
+            last_method = last_method.order_by(Method.method_order.desc()).first()
+            if last_method == None:
+                last_setpoint = ''
+            else:
+                if last_method.end_setpoint:
+                    last_setpoint = last_method.end_setpoint
+                else:
+                    last_setpoint = last_method.start_setpoint
+
+
         # method = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Method)
         relay = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Relay)
 
@@ -263,6 +289,8 @@ def method_builder(method_type, method_id):
                                method_list=method_list,
                                method_id=method_id,
                                method_type=method_type,
+                               last_end_time=last_end_time,
+                               last_setpoint=last_setpoint,
                                formCreateMethod=formCreateMethod,
                                formAddMethod=formAddMethod,
                                formModMethod=formModMethod)
