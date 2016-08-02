@@ -1,0 +1,148 @@
+{% extends "layout.html" %}
+{% set active_page = "method_list" %}
+{% block title %} - Method List{% endblock %}
+
+{% block head %}
+  <script src="/static/js/highcharts.js"></script>
+  {% if session.user_theme == 'dark' %}
+    <script src="/static/js/dark-unica.js"></script>
+  {% endif %}
+{% endblock %}
+
+{% block body %}
+
+  <div class="container">
+    {% include 'flash_messages.html' %}
+
+    <h4>Method Management</h4>
+
+    <div class="form-inline">
+      <form method="post" action="/method-build/0/0" style="padding: 0.7em 0">
+        <input type="hidden" name="form-name" value="createMethod">
+        {{formCreateMethod.csrf_token}}
+        <div class="form-group">
+          {{formCreateMethod.name.label(class_='control-label')}}
+          <div>
+            {{formCreateMethod.name(class_='form-control')}}
+          </div>
+        </div>
+        <div class="form-group">
+          {{formCreateMethod.method_type.label(class_='control-label')}}
+          <div>
+            <select class="form-control" id="method_type" name="method_type">
+              <option value="Date">Method based on time/date durations</option>
+              <option value="Duration">Method based on elapsed time durations</option>
+              <option value="Repeating">Method based on repeatable events</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class='control-label'></label>
+          <div>
+            {{formCreateMethod.Submit(class_='form-control btn btn-default')}}
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div style="clear: both; padding: 0.5em 0 0.5em 0.5em;"><h4>
+      {%- if method == [] -%}
+        No Saved Methods Exist
+      {%- else -%}
+        Saved Methods
+      {%- endif -%}
+    </h4></div>
+
+    {%- for each_method in method -%}
+      {%- set chart_number = loop.index -%}
+      <div style="margin: 0 0.3em 0.6em 0.3em; border: 2px solid #ddd; border-radius: 5px;">
+        <div class="form-inline" style="padding: 0.5em">
+          <a href="/method-delete/{{each_method.method_id}}" class="btn btn-default" role="button" onclick="return confirm('Are you sure you want to delete the Method &quot;{{each_method.name}}&quot;?')">Delete Method</a>
+          <a href="/method-build/{{each_method.method_type}}/{{each_method.method_id}}" class="btn btn-default" role="button">Edit Method</a>
+          {{each_method.method_type}} Method: {{each_method.name}} ({{each_method.method_id}})
+        </div>
+        <div id="container{{chart_number}}" style="height: 300px; width: 100%;"></div>
+      </div>
+    {%- endfor -%}
+    <div style="clear: both; padding:1em 0;"></div>
+  </div>
+
+
+  <script>
+  $(document).ready(function() {
+    var chart = new Array();
+    // Retrieve intiial chart data set from the past (duration set by user)
+    function getPastData(chart_number, method_type, method_id) {
+      var url = '/method-data/' + method_type + '/' + method_id
+      $.getJSON(url,
+        function(data, responseText, jqXHR) {
+          if (jqXHR.status != 204) {
+            chart[chart_number].addSeries({
+              yAxis: 'unit',
+              data : data,
+              tooltip: {
+                valueDecimals: 2
+              } 
+            });
+          }
+        }
+      );
+    }
+
+    {%- for each_method in method -%}
+    {%- set chart_number = loop.index -%}
+    chart[{{chart_number}}] = new Highcharts.Chart({
+      chart : {
+        renderTo: 'container{{chart_number}}',
+        zoomType: 'x',
+        resetZoomButton: {
+          theme: {
+            display: 'none'
+          }
+        },
+        events: {
+          load: function () {
+            getPastData({{chart_number}}, "{{each_method.method_type}}", "{{each_method.method_id}}");
+          }
+        }
+      },
+      title: {
+        text: null
+      },
+      legend: {
+        enabled: false
+      },
+      navigator: {
+        enabled: false
+      },
+      rangeSelector: {
+        enabled: false
+      },
+      scrollbar: {
+        enabled: false
+      },
+      xAxis: {
+        type: '{%- if each_method.method_type == "Duration" -%}linear{%- elif each_method.method_type == "Date" -%}datetime{%- endif -%}',
+        ordinal: false
+      },
+      yAxis: [
+      {   
+        title: {
+          text: 'Units',
+        },
+        labels: {
+          format: '{value}',
+        },
+        opposite: false,
+        id: 'unit'
+      }],
+      credits: {
+        enabled: false
+      }
+    });
+    {%- endfor -%}
+
+  });
+  </script>
+
+{% endblock %}

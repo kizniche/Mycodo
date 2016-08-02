@@ -24,7 +24,7 @@ import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from .models import Base, AlembicVersion, DisplayOrder, Misc, CameraTimelapse, CameraStream, CameraStill, SMTP, Remote
+from .models import Base, AlembicVersion, DisplayOrder, Method, Misc, CameraTimelapse, CameraStream, CameraStill, SMTP, Remote
 
 
 def insert_or_ignore(an_object, a_session):
@@ -63,7 +63,7 @@ def populate_db(db_path):
     Session = sessionmaker(bind=engine)
     session = Session()
     try:
-        alembic_version = AlembicVersion(version_num='22bd961f2c91')
+        alembic_version = AlembicVersion(version_num='96d3834825f9')
         insert_or_ignore(alembic_version, session)
 
         initial_displayorder = DisplayOrder(id='0',

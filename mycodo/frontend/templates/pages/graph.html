@@ -294,15 +294,15 @@
   </div>
 
   <script>
-    $('.collapse').on('show.bs.collapse', function(){
-      $(this).parent().find(".glyphicon-plus").removeClass("glyphicon-plus").addClass("glyphicon-minus");
-    }).on('hide.bs.collapse', function(){
-      $(this).parent().find(".glyphicon-minus").removeClass("glyphicon-minus").addClass("glyphicon-plus");
-    });
-    
-    $('#collapseContainerGraphAdd').on('shown.bs.collapse', function () {
-      document.getElementById('collapseContainerGraphAdd').scrollIntoView();
-    });
+  $('.collapse').on('show.bs.collapse', function(){
+    $(this).parent().find(".glyphicon-plus").removeClass("glyphicon-plus").addClass("glyphicon-minus");
+  }).on('hide.bs.collapse', function(){
+    $(this).parent().find(".glyphicon-minus").removeClass("glyphicon-minus").addClass("glyphicon-plus");
+  });
+  
+  $('#collapseContainerGraphAdd').on('shown.bs.collapse', function () {
+    document.getElementById('collapseContainerGraphAdd').scrollIntoView();
+  });
 
   Highcharts.setOptions({
     global: {
@@ -762,8 +762,8 @@
       navigator: {
         enabled: {% if each_graph.enable_navbar %}true{% else %}false{% endif %}
       },
-      scrollbar : {
-        enabled : false
+      scrollbar: {
+        enabled: false
       },
       rangeSelector: {
         enabled: {% if each_graph.enable_rangeselect %}true{% else %}false{% endif %},

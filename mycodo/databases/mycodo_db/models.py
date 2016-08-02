@@ -38,6 +38,24 @@ class AlembicVersion(Base):
     version_num = Column(String(32), primary_key=True, nullable=False)
 
 
+class Method(Base):
+    __tablename__ = "method"
+
+    id = Column(TEXT, unique=True, primary_key=True)
+    name = Column(TEXT)
+    method_id = Column(TEXT)
+    method_type = Column(TEXT)
+    method_order = Column(INT)
+    start_time = Column(TEXT)
+    end_time = Column(TEXT)
+    duration_sec = Column(INT)
+    relay_id = Column(TEXT)
+    relay_state = Column(TEXT)
+    relay_duration = Column(REAL)
+    start_setpoint = Column(REAL)
+    end_setpoint = Column(REAL)
+
+
 class Relay(Base):
     __tablename__ = "relays"
 
@@ -204,6 +222,7 @@ class PID(Base):
     direction = Column(TEXT)
     period = Column(INT)
     setpoint = Column(REAL)
+    method_id = Column(TEXT)
     p = Column(REAL)
     i = Column(REAL)
     d = Column(REAL)

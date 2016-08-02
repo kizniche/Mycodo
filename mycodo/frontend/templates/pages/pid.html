@@ -165,9 +165,52 @@
           </form>
 
           <div class="form-inline" style="margin: 0.5em; padding: 0.5em; border: 2px solid #ddd; border-radius: 5px;">
-            <div>
-              Setpoint Tracking: Change the setpoint over the duration of a time span.<br/>Note: Any unaccounted periods of time will use the default setpoint (set above).
-            </div>
+              <strong>Note: This method builder has not been implemented. Any selected method will NOT be used by the PID.
+              <br>Only the standard daily setpoint tracking currently works (below).</strong>
+            <form method="post" action="/pid" style="padding: 0.5em 0 0   0">
+              <input type="hidden" name="form-name" value="modPIDMethod">
+              {{formModPIDMethod.csrf_token}}
+              {{formModPIDMethod.pid_id(class_='form-control', value=each_pid.id)}}
+              <div class="form-group">
+                {{formModPIDMethod.method_id.label(class_='control-label')}}
+                <div>
+                  <select class="form-control" id="method_id" name="method_id">
+                    {%- if method == [] -%}
+                      <option value="">No methods exist. Create one with this button -></option>
+                    {%- else -%}
+                      <option value="">Disabled</option>
+                    {%- endif-%}
+
+                    {%- set valid_saved_method = [] -%}
+                    {%- for each_method in method -%}
+                      {%- if each_method.method_id == each_pid.method_id -%}
+                        {%- do valid_saved_method.append(1) -%}
+                      {%- endif -%}
+                      {%- if each_method.controller_type == 'pid' -%}
+                        <option value="{{each_method.method_id}}"{% if each_pid.method_id == each_method.method_id %} selected{% endif %}>{{each_method.name}} ({{each_method.method_id}})</option>
+                      {%- endif -%}
+                    {%- endfor -%}
+                    {%- if not valid_saved_method and each_pid.method_id != '' -%}
+                      <option value="" selected>Invalid saved method. Save another method from this list.</option>
+                    {%- endif -%}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class='control-label'></label>
+                <div>
+                  {%- if method != [] -%}
+                    {{formModPIDMethod.Submit(class_='form-control btn btn-default')}}
+                  {%- endif-%}
+                  <a href="/method-list" class="btn btn-default" role="button">Manage Methods</a>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div class="form-inline" style="margin: 0.5em; padding: 0.5em; border: 2px solid #ddd; border-radius: 5px;">
+            Setpoint Tracking: Change the setpoint over the duration of a time span.
+            <br>Note: Any unaccounted periods of time will use the default setpoint (set above).
             <form method="post" action="/pid" style="padding: 0.7em 0">
               <input type="hidden" name="form-name" value="addPIDSetpoint">
               {{formAddPIDSetpoint.csrf_token}}

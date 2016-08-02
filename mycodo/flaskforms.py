@@ -8,6 +8,104 @@ from wtforms.fields.html5 import EmailField
 
 
 #
+# Method (Date)
+#
+
+class CreateMethod(Form):
+    name = TextField(
+        u'Name',
+        render_kw={"placeholder": "Name"}
+    )
+    method_type = TextField(
+        u'Method Type',
+        render_kw={"placeholder": ""}
+    )
+    controller_type = HiddenField(u'Controller Type')
+    Submit = SubmitField(u'Create New Method')
+
+
+class AddMethod(Form):
+    method_id = HiddenField(u'Method ID')
+    method_type = HiddenField(u'Method Type')
+    method_select = HiddenField(u'Method Select')
+    startTime = TextField(
+        u'Start (DD-MM-YYYY HH:MM:SS)',
+        render_kw={"placeholder": "DD-MM-YYYY HH:MM:SS"}
+    )
+    endTime = TextField(
+        u'End (DD-MM-YYYY HH:MM:SS)',
+        render_kw={"placeholder": "DD-MM-YYYY HH:MM:SS"}
+    )
+    startSetpoint = DecimalField(
+        u'Start Setpoint',
+        render_kw={"placeholder": "0.0"}
+    )
+    endSetpoint = DecimalField(
+        u'End Setpoint (optional)',
+        render_kw={"placeholder": "0.0"}
+    )
+    DurationSec = IntegerField(
+        u'Duration (seconds)',
+        render_kw={"placeholder": ""}
+    )
+    relayTime = TextField(
+        u'Time (DD-MM-YYYY HH:MM:SS)',
+        render_kw={"placeholder": "DD-MM-YYYY HH:MM:SS"}
+    )
+    relayDurationSec = IntegerField(
+        u'Duration On (seconds)',
+        render_kw={"placeholder": ""}
+    )
+    relayID = TextField(
+        u'Relay ID',
+        render_kw={"placeholder": ""}
+    )
+    relayState = SelectField(
+        u'Relay State',
+        choices=[
+            ('', ''),
+            ('On', 'Turn On'),
+            ('Off', 'Turn Off')
+        ]
+    )
+    Submit = SubmitField(u'Add to Method')
+
+class ModMethod(Form):
+    method_id = HiddenField(u'Method ID')
+    method_type = HiddenField(u'Method Type')
+    method_select = HiddenField(u'Method Select')
+    startTime = TextField(
+        u'Start (DD-MM-YYYY HH:MM:SS)',
+        render_kw={"placeholder": "DD-MM-YYYY HH:MM:SS"}
+    )
+    endTime = TextField(
+        u'End (DD-MM-YYYY HH:MM:SS)',
+        render_kw={"placeholder": "DD-MM-YYYY HH:MM:SS"}
+    )
+    relayTime = TextField(
+        u'Time (DD-MM-YYYY HH:MM:SS)',
+        render_kw={"placeholder": "DD-MM-YYYY HH:MM:SS"}
+    )
+    DurationSec = IntegerField(
+        u'Duration (seconds)',
+        render_kw={"placeholder": ""}
+    )
+    startSetpoint = DecimalField(
+        u'Start Setpoint',
+        render_kw={"placeholder": "0.0"}
+    )
+    endSetpoint = DecimalField(
+        u'End Setpoint',
+        render_kw={"placeholder": "0.0"}
+    )
+    relayID = TextField(u'Relay',)
+    relayState = TextField(u'Relay State')
+    relayDurationSec = IntegerField(u'Relay On Duration (sec)')
+    Submit = SubmitField(u'Save')
+    Delete = SubmitField(u'Delete')
+
+
+#
 # Remote Admin add servers
 #
 
@@ -563,6 +661,13 @@ class ModPID(Form):
         )]
     )
     modPIDSubmit = SubmitField(u'Save')
+
+
+class ModPIDMethod(Form):
+    pid_id = HiddenField(u'PID ID')
+    method_id = HiddenField(u'Selected Method')
+    Submit = SubmitField(u'Use Method')
+
 
 class AddPIDsetpoint(Form):
     PID_id = HiddenField(u'PID ID')

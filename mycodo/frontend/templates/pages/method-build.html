@@ -1,0 +1,386 @@
+{% extends "layout.html" %}
+{% set active_page = "method_build" %}
+{% block title %} - Method Builder{% endblock %}
+
+{% block head %}
+  <script src="/static/js/highcharts.js"></script>
+  {% if session.user_theme == 'dark' %}
+    <script src="/static/js/dark-unica.js"></script>
+  {% endif %}
+{% endblock %}
+
+{% block body %}
+
+  <div class="container">
+    {% include 'flash_messages.html' %}
+
+    {%- set method_setpoint = [] -%}
+    {%- for each_method in method_list if each_method.method_id == method_key['method_id'] and each_method.start_setpoint -%}
+      {%- do method_setpoint.append(1) -%}
+    {%- endfor -%}
+
+    <a href="/method-list" class="btn btn-default" role="button">&lt;&lt; Back to Method List</a>
+    <div style="clear: both; padding:0.5em 0;"></div>
+    <div class="table-responsive" style="border: 2px solid #ddd; border-radius: 5px;">
+      <div class="form-inline" style="margin: 0.5em; padding: 0.5em; border: 2px solid #ddd; border-radius: 5px;">
+        <div>
+          Editing Method: {{method_key['name']}} ({{method_key['method_id']}})
+        </div>
+        <div>
+          Method-Builder (New entried will be added at the end of the method)
+        </div>
+        <form method="post" action="/method-build/{{method_type}}/{{method_id}}" style="padding: 0.7em 0">
+          <input type="hidden" name="form-name" value="addMethod">
+          {{formAddMethod.csrf_token}}
+          {{formAddMethod.method_id(class_='form-control', value=method_key['method_id'])}}
+          <div>
+
+          {%- if method_type == "Duration" -%}
+            <div class="form-group" style="padding-bottom: 1.5em">
+              {{formAddMethod.DurationSec.label(class_='control-label')}}
+              <div>
+                {{formAddMethod.DurationSec(class_='form-control')}}
+              </div>
+            </div>
+          {%- endif -%}
+
+          {%- if method_type == "Date" -%}
+            <div>
+              <input type="radio" name="method_select" value="setpoint" checked="checked"> Define the setpoint (or setpoint change) over a period of time based on specific time/dates.
+            </div>
+            <div class="form-group">
+              {{formAddMethod.startTime.label(class_='control-label')}}
+              <div>
+                {{formAddMethod.startTime(class_='form-control')}}
+              </div>
+            </div>
+            <div class="form-group">
+              {{formAddMethod.endTime.label(class_='control-label')}}
+              <div>
+                {{formAddMethod.endTime(class_='form-control')}}
+              </div>
+            </div>
+          {%- elif method_type == "Duration" -%}
+            <div>
+              <input type="radio" name="method_select" value="setpoint" checked="checked"> Define the setpoint (or setpoint change) over a period of time based on a specific duration of time.
+              <br>Duration here is defined as the amount of time after the previous duration. If this is the first duration added, this will be the beginning of the method. If this is not the first duration added, it will execute after the last duration already in the method.
+            </div>
+          {%- elif method_type == "Repeating" -%}
+
+          {%- endif -%}
+          </div>
+          <div>
+            <div class="form-group">
+              {{formAddMethod.startSetpoint.label(class_='control-label')}}
+              <div>
+                {{formAddMethod.startSetpoint(class_='form-control')}}
+              </div>
+            </div>
+            <div class="form-group">
+              {{formAddMethod.endSetpoint.label(class_='control-label')}}
+              <div>
+                {{formAddMethod.endSetpoint(class_='form-control')}}
+              </div>
+            </div>
+          </div>
+          <div style="padding: 1em 0">
+            OR
+          </div>
+          <div>
+
+            {%- if method_type == "Date" -%}
+              <div>
+                <input type="radio" name="method_select" value="relay"> Activate or deactivate a relay within this method at a specific time/date.
+              </div>
+              <div class="form-group">
+                {{formAddMethod.relayTime.label(class_='control-label')}}
+                <div>
+                  {{formAddMethod.relayTime(class_='form-control')}}
+                </div>
+              </div>
+            {%- elif method_type == "Duration" -%}
+              <div>
+                <input type="radio" name="method_select" value="relay"> Activate or deactivate a relay within this method at a specific duration.
+                <br>Duration here is defined as the amount of time since the beginning of the method. For example, 60 seconds would execute the relay modulation 60 seconds after the start of the method.
+              </div>
+            {%- elif method_type == "Repeating" -%}
+
+            {%- endif -%}
+
+          </div>
+          <div>
+            <div class="form-group">
+              {{formAddMethod.relayID.label(class_='control-label')}}
+              <div>
+                <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relayID" name="relayID" title="Modulate the selected relay.">
+                  <option value="">Disabled</option>
+                  {% for rel in relay -%}
+                    <option value="{{rel.id}}">{{rel.id}} ({{rel.name}})</option>
+                  {% endfor -%}
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              {{formAddMethod.relayState.label(class_='control-label')}}
+              <div>
+                {{formAddMethod.relayState(class_='form-control')}}
+              </div>
+            </div>
+            <div class="form-group">
+              {{formAddMethod.relayDurationSec.label(class_='control-label')}}
+              <div>
+                {{formAddMethod.relayDurationSec(class_='form-control')}}
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="form-group">
+              <label class='control-label'></label>
+              <div>
+                {{formAddMethod.Submit(class_='form-control btn btn-default')}}
+              </div>
+            </div>
+          </div>
+        </form>
+
+        {%- if method_setpoint -%}
+          <div id="container" style="height: 300px; width: 100%;"></div>
+        {%- endif -%}
+
+      </div>
+
+      {%- if method_setpoint -%}
+        <div class="form-inline" style="margin: 0.5em; padding: 0.5em; border: 2px solid #ddd; border-radius: 5px;">
+          <div>
+            Setpoint Tracking
+          </div>
+      {%- endif -%}
+
+        {%- for each_method in method_list if each_method.method_id == method_key['method_id'] and each_method.start_setpoint -%}
+          <form method="post" action="/method-build/{{method_type}}/{{method_id}}" style="padding: 0.7em 0">
+          <input type="hidden" name="form-name" value="modMethod">
+          {{formModMethod.csrf_token}}
+          {{formModMethod.method_id(class_='form-control', value=each_method.id)}}
+          <input class="form-control" id="method_select" name="method_select" type="hidden" value="setpoint">
+          {% if method_type == "Date" -%}
+            <div class="form-group">
+              {{formModMethod.startTime.label(class_='control-label')}}
+              <div>
+                {{formModMethod.startTime(class_='form-control', value=each_method.start_time)}}
+              </div>
+            </div>
+            <div class="form-group">
+              {{formModMethod.endTime.label(class_='control-label')}}
+              <div>
+                {{formModMethod.endTime(class_='form-control', value=each_method.end_time)}}
+              </div>
+            </div>
+          {% elif method_type == "Duration" -%}
+            <div class="form-group">
+              {{formModMethod.DurationSec.label(class_='control-label')}}
+              <div>
+                {{formModMethod.DurationSec(class_='form-control', value=each_method.duration_sec)}}
+              </div>
+            </div>
+          {% endif -%}
+          <div class="form-group">
+            {{formModMethod.startSetpoint.label(class_='control-label')}}
+            <div>
+              {{formModMethod.startSetpoint(class_='form-control', value=each_method.start_setpoint)}}
+            </div>
+          </div>
+          <div class="form-group">
+            {{formModMethod.endSetpoint.label(class_='control-label')}}
+            <div>
+              {{formModMethod.endSetpoint(class_='form-control', value=each_method.end_setpoint)}}
+            </div>
+          </div>
+          <div class="form-group">
+            <label class='control-label'></label>
+            <div>
+              {{formModMethod.Submit(class_='form-control btn btn-default')}}
+            </div>
+          </div>
+          <div class="form-group">
+            <label class='control-label'></label>
+            <div>
+              {{formModMethod.Delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this method line?")'})}}
+            </div>
+          </div>
+          </form>
+        {%- endfor -%}
+
+      {%- if method_setpoint -%}
+        </div>
+      {%- endif -%}
+
+      {%- set method_relay = [] -%}
+      {%- for each_method in method_list if each_method.method_id == method_key['method_id'] and each_method.relay_id -%}
+        {%- do method_relay.append(1) -%}
+      {%- endfor -%}
+
+      {%- if method_relay -%}
+        <div class="form-inline" style="margin: 0.5em; padding: 0.5em; border: 2px solid #ddd; border-radius: 5px;">
+          <div>
+            Relay Modulation
+          </div>
+      {%- endif -%}
+
+        {%- for each_method in method_list if each_method.method_id == method_key['method_id'] and each_method.relay_id -%}
+          <form method="post" action="/method-build/{{method_type}}/{{method_id}}" style="padding: 0.7em 0">
+          <input type="hidden" name="form-name" value="modMethod">
+          {{formModMethod.csrf_token}}
+          {{formModMethod.method_id(class_='form-control', value=each_method.id)}}
+          <input class="form-control" id="method_select" name="method_select" type="hidden" value="relay">
+          {% if method_type == "Date" -%}
+            <div class="form-group">
+              <label class='control-label'>Time (DD-MM-YYYY HH:MM:SS)</label>
+              <div>
+                {{formModMethod.relayTime(class_='form-control', value=each_method.start_time)}}
+              </div>
+            </div>
+          {% elif method_type == "Duration" -%}
+            <div class="form-group">
+              {{formModMethod.DurationSec.label(class_='control-label')}}
+              <div>
+                {{formModMethod.DurationSec(class_='form-control', value=each_method.duration_sec)}}
+              </div>
+            </div>
+          {% endif -%}
+          <div class="form-group">
+            {{formModMethod.relayID.label(class_='control-label')}}
+            <div>
+              <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relayID" name="relayID" title="Modulate the selected relay.">
+                <option value="">Disabled</option>
+                {% for each_relay in relay -%}
+                  <option value="{{each_relay.id}}"{%- if each_relay.id == each_method.relay_id -%} selected{%- endif -%}>{{each_relay.id}} ({{each_relay.name}})</option>
+                {% endfor -%}
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            {{formModMethod.relayState.label(class_='control-label')}}
+            <div>
+              <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relayState" name="relayState" title="Modulate the selected relay.">
+                <option value=""></option>
+                <option value="On"{%- if each_method.relay_state == "On" -%} selected{%- endif -%}>Turn On</option>
+                <option value="Off"{%- if each_method.relay_state == "Off" -%} selected{%- endif -%}>Turn Off</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            {{formModMethod.relayDurationSec.label(class_='control-label')}}
+            <div>
+              {{formModMethod.relayDurationSec(class_='form-control', value=each_method.relay_duration)}}
+            </div>
+          </div>
+          <div class="form-group">
+            <label class='control-label'></label>
+            <div>
+              {{formModMethod.Submit(class_='form-control btn btn-default')}}
+            </div>
+          </div>
+          <div class="form-group">
+            <label class='control-label'></label>
+            <div>
+              {{formModMethod.Delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this method line?")'})}}
+            </div>
+          </div>
+          </form>
+        {%- endfor -%}
+
+      {%- if method_setpoint -%}
+        </div>
+      {%- endif -%}
+
+    </div>
+  </div>
+
+  <div style="clear: both; padding:1em 0;"></div>
+
+  <script>
+  $(document).ready(function() {
+    // Retrieve intiial chart data set from the past (duration set by user)
+    function getPastData(method_type, method_id) {
+      var url = '/method-data/' + method_type + '/' + method_id
+      $.getJSON(url,
+        function(data, responseText, jqXHR) {
+          if (jqXHR.status != 204) {
+            chart.addSeries({
+              yAxis: 'unit',
+              data : data,
+              tooltip: {
+                valueDecimals: 2
+              } 
+            });
+          }
+        }
+      );
+    }
+
+    var x = new Date();
+    var currentTimeZoneOffsetInHours = x.getTimezoneOffset();
+
+    Highcharts.setOptions({
+      global: {
+        useUTC: true
+      },
+      lang: {
+        thousandsSep: ','
+      }
+    });
+
+    chart = new Highcharts.Chart({
+      chart : {
+        renderTo: 'container',
+        zoomType: 'x',
+        resetZoomButton: {
+          theme: {
+            display: 'none'
+          }
+        },
+        events: {
+          load: function () {
+            getPastData("{{method_key['method_type']}}", "{{method_key['method_id']}}");
+          }
+        }
+      },
+      title: {
+        text: null
+      },
+      legend: {
+        enabled: false
+      },
+      navigator: {
+        enabled: false
+      },
+      rangeSelector: {
+        enabled: false
+      },
+      scrollbar: {
+        enabled: false
+      },
+      xAxis: {
+        type: '{%- if method_key['method_type'] == "Duration" -%}linear{%- elif method_key['method_type'] == "Date" -%}datetime{%- endif -%}',
+        ordinal: false
+      },
+      yAxis: [
+      {   
+        title: {
+          text: 'Units',
+        },
+        labels: {
+          format: '{value}',
+        },
+        opposite: false,
+        id: 'unit'
+      }],
+      credits: {
+        enabled: false
+      }
+    });
+
+  });
+  </script>
+
+{% endblock %}

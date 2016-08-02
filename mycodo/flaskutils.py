@@ -26,6 +26,7 @@ from databases.mycodo_db.models import DisplayOrder
 from databases.mycodo_db.models import Graph
 from databases.mycodo_db.models import LCD
 from databases.mycodo_db.models import Log
+from databases.mycodo_db.models import Method
 from databases.mycodo_db.models import Misc
 from databases.mycodo_db.models import PID
 from databases.mycodo_db.models import PIDSetpoints
@@ -57,6 +58,270 @@ from config import INFLUXDB_DATABASE
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 USER_DB_PATH = 'sqlite:///' + SQL_DATABASE_USER
+
+
+#
+# Add Method (Date)
+#
+
+def is_positive_integer(number_string):
+    try:
+        if int(number_string) < 0:
+            flash("Duration must be a positive integer", "error")
+            return False
+    except ValueError:
+        flash("Duration must be a valid integer", "error")
+        return False
+    return True
+
+
+def validate_method_data(form_data, this_method):
+    if form_data.method_select.data == 'setpoint':
+        if this_method.method_type == 'Date':
+            if (not form_data.startTime.data or
+                    not form_data.endTime.data or
+                    not form_data.startSetpoint.data):
+                flash("Required: Start date/time, end date/time, start setpoint",
+                      "error")
+                return 1
+            try:
+                start_time = datetime.strptime(form_data.startTime.data, '%d-%m-%Y %H:%M:%S')
+                end_time = datetime.strptime(form_data.endTime.data, '%d-%m-%Y %H:%M:%S')
+            except ValueError:
+                flash("Invalid Date/Time format. Correct format: DD/MM/YYYY HH:MM:SS", "error")
+                return 1
+            # Check if the end time is after the start time
+            if end_time <= start_time:
+                flash("The end time/date must be after the start time/date.", "error")
+                return 1
+        elif this_method.method_type == 'Duration':
+            if (not form_data.DurationSec.data or
+                    not form_data.startSetpoint.data):
+                flash("Required: Duration, start setpoint",
+                      "error")
+                return 1
+            if not is_positive_integer(form_data.DurationSec.data):
+                return 1
+
+    elif form_data.method_select.data == 'relay':
+        if this_method.method_type == 'Date':
+            if (not form_data.relayTime.data or
+                    not form_data.relayID.data or
+                    not form_data.relayState.data):
+                flash("Required: Date/Time, Relay ID, and Relay State",
+                      "error")
+                return 1
+            try:
+                start_time = datetime.strptime(form_data.relayTime.data, '%d-%m-%Y %H:%M:%S')
+            except ValueError:
+                flash("Invalid Date/Time format. Correct format: DD-MM-YYYY HH:MM:SS", "error")
+                return 1
+        elif this_method.method_type == 'Duration':
+            if (not form_data.DurationSec.data or
+                    not form_data.relayID.data or
+                    not form_data.relayState.data):
+                flash("Required: Duration, Relay ID, and Relay State {} {} {}".format(form_data.DurationSec.data, form_data.relayID.data, form_data.relayState.data),
+                      "error")
+                return 1
+            if not is_positive_integer(form_data.DurationSec.data):
+                return 1
+
+
+def method_create(formCreateMethod, method_id):
+    try:
+        new_method = Method()
+        random_id = ''.join([random.choice(
+            string.ascii_letters + string.digits) for n in xrange(8)])
+        new_method.id = random_id
+        new_method.method_id = method_id
+        if not formCreateMethod.name.data:
+            new_method.name = "New Method"
+        else:
+            new_method.name = formCreateMethod.name.data
+        new_method.method_type = formCreateMethod.method_type.data
+        new_method.method_order = 0
+        new_method.controller_type = formCreateMethod.controller_type.data
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            db_session.add(new_method)
+    except Exception as msg:
+        flash("ER00 {}".format(msg), "error")
+
+
+def method_add(formAddMethod, method):
+    # Validate input time data
+    this_method = method.filter(Method.method_id == formAddMethod.method_id.data)
+    this_method = this_method.filter(Method.method_order == 0).first()
+    if validate_method_data(formAddMethod, this_method):
+        return 1
+    
+    if formAddMethod.method_select.data == 'setpoint':
+        if this_method.method_type == 'Date':
+            start_time = datetime.strptime(formAddMethod.startTime.data, '%d-%m-%Y %H:%M:%S')
+            end_time = datetime.strptime(formAddMethod.endTime.data, '%d-%m-%Y %H:%M:%S')
+
+            # Check if the start time comes after the last entry's end time
+            last_method_end_time_str = method.filter(Method.method_order > 0)
+            last_method_end_time_str = method.order_by(Method.method_order.desc()).first().end_time
+            if last_method_end_time_str != None:
+                last_method_end_time = datetime.strptime(last_method_end_time_str, '%d-%m-%Y %H:%M:%S')
+                if start_time <= last_method_end_time:
+                    flash("The new entry start time cannot overlap the last entry's end time {} {}".format(last_method_end_time, start_time), "error")
+                    return 1
+
+    elif formAddMethod.method_select.data == 'relay':
+        if this_method.method_type == 'Date':
+            start_time = datetime.strptime(formAddMethod.relayTime.data, '%d-%m-%Y %H:%M:%S')
+
+    # Check if this is the first entry of the method
+    method_exists = False
+    method_empty = True
+    for each_method in method:
+        if each_method.id == formAddMethod.method_id.data:
+            method_exists = True
+            break
+        if each_method.method_order > 0:
+            method_empty = False
+
+    try:
+        new_method = Method()
+        random_id = ''.join([random.choice(
+            string.ascii_letters + string.digits) for n in xrange(8)])
+        new_method.id = random_id
+        new_method.method_id = formAddMethod.method_id.data
+
+        # Get last number in ordered list, incrememnt for new entry
+        method_last = method.order_by(Method.method_order.desc()).first()
+        new_method.method_order = method_last.method_order+1
+
+        if this_method.method_type == 'Date':
+            if formAddMethod.method_select.data == 'setpoint':
+                new_method.start_time = start_time.strftime('%d-%m-%Y %H:%M:%S')
+                new_method.end_time = end_time.strftime('%d-%m-%Y %H:%M:%S')
+            if formAddMethod.method_select.data == 'relay':
+                new_method.start_time = formAddMethod.relayTime.data
+        elif this_method.method_type == 'Duration':
+            new_method.duration_sec = formAddMethod.DurationSec.data
+
+        if formAddMethod.method_select.data == 'setpoint':
+            new_method.start_setpoint = formAddMethod.startSetpoint.data
+            new_method.end_setpoint = formAddMethod.endSetpoint.data
+        elif formAddMethod.method_select.data == 'relay':
+            new_method.relay_id = formAddMethod.relayID.data
+            new_method.relay_state = formAddMethod.relayState.data
+            new_method.relay_duration = formAddMethod.relayDurationSec.data
+
+        new_method.repeat = ''
+        new_method.repeat_duration = ''
+        new_method.repeat_units = ''
+        new_method.total_runs = ''
+
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            db_session.add(new_method)
+
+        if formAddMethod.method_select.data == 'setpoint':
+            if this_method.method_type == 'Date':
+                flash("Added duration to method from {} to {}.".format(
+                    start_time.strftime('%d-%m-%Y %H:%M:%S'),
+                    end_time.strftime('%d-%m-%Y %H:%M:%S')), "success")
+            elif this_method.method_type == 'Duration':
+                flash("Added duration to method for {} seconds".format(
+                    formAddMethod.DurationSec.data), "success")
+        elif formAddMethod.method_select.data == 'relay':
+            if this_method.method_type == 'Date':
+                flash("Added relay modulation to method at {}".format(
+                    start_time.strftime('%d-%m-%Y %H:%M:%S')), "success")
+            elif this_method.method_type == 'Duration':
+                flash("Added relay modulation to method at {} seconds".format(
+                    formAddMethod.DurationSec.data), "success")
+
+    except Exception as msg:
+        flash("Add Method Error: {}".format(msg), "error")
+
+
+def method_mod(formModMethod, method):
+    if formModMethod.Delete.data:
+        delete_entry_with_id(MYCODO_DB_PATH,
+                             Method,
+                             formModMethod.method_id.data)
+        return 0
+
+    # Ensure data data is valid
+    this_method = method.filter(Method.id == formModMethod.method_id.data).first()
+    method_set = method.filter(Method.method_id == this_method.method_id)
+    method_set = method_set.filter(Method.method_order == 0).first()
+    if validate_method_data(formModMethod, method_set):
+        return 1
+
+    with session_scope(MYCODO_DB_PATH) as db_session:
+        mod_method = db_session.query(Method).filter(
+            Method.id == formModMethod.method_id.data).first()
+
+        if formModMethod.method_select.data == 'setpoint':
+            if method_set.method_type == 'Date':
+                start_time = datetime.strptime(formModMethod.startTime.data, '%d-%m-%Y %H:%M:%S')
+                end_time = datetime.strptime(formModMethod.endTime.data, '%d-%m-%Y %H:%M:%S')
+                # Ensure the start time comes after the previous entry's end time
+                # and the end time comes before the next entry's start time
+                # method_id_set is the id given to all method entries, 'method_id', not 'id'
+                
+                method_filtered = method.filter(Method.method_order > 0)
+                method_filtered = method_filtered.filter(Method.method_id == this_method.method_id)
+
+                previous_method = method.order_by(Method.method_order.desc()).filter(
+                    Method.method_order < this_method.method_order).first()
+                next_method = method.order_by(Method.method_order.asc()).filter(
+                    Method.method_order > this_method.method_order).first()
+
+                if previous_method != None and previous_method.end_time != None:
+                    previous_end_time = datetime.strptime(previous_method.end_time,
+                        '%d-%m-%Y %H:%M:%S')
+                    if previous_end_time != None and start_time <= previous_end_time:
+                        flash("The entry start time ({}) cannot overlap the previous "
+                              "entry's end time ({})".format(start_time, previous_end_time),
+                              "error")
+                        return 1
+
+                if next_method != None and next_method.start_time != None:
+                    next_start_time = datetime.strptime(next_method.start_time,
+                        '%d-%m-%Y %H:%M:%S')
+                    if next_start_time != None and end_time >= next_start_time:
+                        flash("The entry end time ({}) cannot overlap the next entry's "
+                              "start time ({})".format(end_time, next_start_time),
+                              "error")
+                        return 1
+
+                mod_method.start_time = start_time.strftime('%d-%m-%Y %H:%M:%S')
+                mod_method.end_time = end_time.strftime('%d-%m-%Y %H:%M:%S')
+
+
+            elif method_set.method_type == 'Duration':
+                mod_method.duration_sec = formModMethod.DurationSec.data
+
+            mod_method.start_setpoint = formModMethod.startSetpoint.data
+            mod_method.end_setpoint = formModMethod.endSetpoint.data
+
+        elif formModMethod.method_select.data == 'relay':
+            if method_set.method_type == 'Date':
+                mod_method.start_time = formModMethod.relayTime.data
+            elif method_set.method_type == 'Duration':
+                mod_method.duration_sec = formModMethod.DurationSec.data
+            mod_method.relay_id = formModMethod.relayID.data
+            mod_method.relay_state = formModMethod.relayState.data
+            mod_method.relay_duration = formModMethod.relayDurationSec.data
+    
+        db_session.commit()
+        flash("Method settings successfully modified.", "success")
+
+
+def method_del(method_id):
+    try:
+        delete_entry_with_id(MYCODO_DB_PATH,
+                             Method,
+                             method_id)
+    except Exception as except_msg:
+        flash("Error while deleting Method: "
+              "{}".format(except_msg), "error")
+
 
 
 #
@@ -194,7 +459,7 @@ def pid_mod_setpoint(formModPIDSetpoint):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to modify PID Setpoints",
               "error")
-        return redirect('/timer')
+        return redirect('/pid')
 
     if formModPIDSetpoint.Delete.data:
         delete_entry_with_id(MYCODO_DB_PATH,
@@ -1035,6 +1300,7 @@ def pid_add(formAddPID, display_order):
             new_pid.direction = 'raise'
             new_pid.period = 60
             new_pid.setpoint = 0.0
+            new_pid.method_id = ''
             new_pid.p = 1.0
             new_pid.i = 0.0
             new_pid.d = 0.0
@@ -1130,6 +1396,27 @@ def pid_mod(formModPID):
                 except_msg), "error")
     else:
         flash_form_errors(formModPID)
+
+
+def pid_mod_method(formModPIDMethod):
+    if session['user_group'] == 'guest':
+        flash("Guests are not permitted to modify PID Methods",
+              "error")
+        return redirect('/pid')
+    try:
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            mod_pid = db_session.query(PID).filter(
+                PID.id == formModPIDMethod.pid_id.data).first()
+            if mod_pid.activated:
+                flash("Deactivate PID controller before modifying its "
+                      "settings.", "error")
+                return redirect('/pid')
+            mod_pid.method_id = formModPIDMethod.method_id.data
+            db_session.commit()
+            flash("PID method successfully modified.", "success")
+    except Exception as except_msg:
+        flash("PID method was not able to be modified: {}".format(
+            except_msg), "error")
 
 
 def pid_del(formDelPID, display_order):
@@ -2263,9 +2550,9 @@ def delete_user(db_path, users, username):
 def delete_entry_with_id(db_path, table, entry_id):
     try:
         with session_scope(db_path) as db_session:
-            sensor = db_session.query(table).filter(
+            entries = db_session.query(table).filter(
                 table.id == entry_id).first()
-            db_session.delete(sensor)
+            db_session.delete(entries)
             flash("Entry with ID {} deleted".format(entry_id), "success")
             return 1
     except sqlalchemy.orm.exc.NoResultFound:
