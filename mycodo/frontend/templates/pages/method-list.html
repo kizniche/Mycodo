@@ -96,59 +96,62 @@
     }
 
     {%- for each_method in method -%}
-    {%- set chart_number = loop.index -%}
-    chart[{{chart_number}}] = new Highcharts.Chart({
-      chart : {
-        renderTo: 'container{{chart_number}}',
-        zoomType: 'x',
-        resetZoomButton: {
-          theme: {
-            display: 'none'
+      {%- set chart_number = loop.index -%}
+      chart[{{chart_number}}] = new Highcharts.Chart({
+        chart : {
+          renderTo: 'container{{chart_number}}',
+          zoomType: 'x',
+          resetZoomButton: {
+            theme: {
+              display: 'none'
+            }
+          },
+          events: {
+            load: function () {
+              getPastData({{chart_number}}, "{{each_method.method_type}}", "{{each_method.method_id}}");
+            }
           }
         },
-        events: {
-          load: function () {
-            getPastData({{chart_number}}, "{{each_method.method_type}}", "{{each_method.method_id}}");
-          }
-        }
-      },
-      title: {
-        text: null
-      },
-      tooltip: {
-        xDateFormat: '%a, %b %e, %Y %H:%M:%S',
-        valueDecimals: 2
-      },
-      legend: {
-        enabled: false
-      },
-      navigator: {
-        enabled: false
-      },
-      rangeSelector: {
-        enabled: false
-      },
-      scrollbar: {
-        enabled: false
-      },
-      xAxis: {
-        type: '{%- if each_method.method_type == "Duration" -%}linear{%- elif each_method.method_type == "Date" -%}datetime{%- endif -%}',
-        ordinal: false
-      },
-      yAxis: [
-      {   
         title: {
-          text: null,
+          text: null
         },
-        labels: {
-          format: '{value}',
+        tooltip: {
+          {% if each_method.method_type == "Duration" -%}
+            headerFormat: '<span style="font-size: 10px">{point.key} Seconds</span><br/>',
+          {%- endif -%}
+          xDateFormat: '%a, %b %e, %Y %H:%M:%S',
+          valueDecimals: 2
         },
-        opposite: false
-      }],
-      credits: {
-        enabled: false
-      }
-    });
+        legend: {
+          enabled: false
+        },
+        navigator: {
+          enabled: false
+        },
+        rangeSelector: {
+          enabled: false
+        },
+        scrollbar: {
+          enabled: false
+        },
+        xAxis: {
+          type: '{%- if each_method.method_type == "Duration" -%}linear{%- elif each_method.method_type == "Date" -%}datetime{%- endif -%}',
+          ordinal: false
+        },
+        yAxis: [
+        {   
+          title: {
+            text: null,
+          },
+          labels: {
+            format: '{value}',
+          },
+          opposite: false
+        }],
+        credits: {
+          enabled: false
+        }
+      });
     {%- endfor -%}
 
   });

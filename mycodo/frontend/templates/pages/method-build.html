@@ -27,7 +27,7 @@
           Editing Method: {{method_key['name']}} ({{method_key['method_id']}})
         </div>
         <div>
-          Method-Builder (New entried will be added at the end of the method)
+          Method-Builder (New entried will be added at the end of the method). The new entry's start time may be equal to the last entry's end time, but it cannot overlap.
         </div>
         <form method="post" action="/method-build/{{method_type}}/{{method_id}}" style="padding: 0.7em 0">
           <input type="hidden" name="form-name" value="addMethod">
@@ -303,6 +303,10 @@
     // Retrieve intiial chart data set from the past (duration set by user)
     function getPastData(method_type, method_id) {
       var url = '/method-data/' + method_type + '/' + method_id
+      var units = '';
+      if (method_type == "Duration") {
+        units = 'seconds';
+      }
       $.getJSON(url,
         function(data, responseText, jqXHR) {
           if (jqXHR.status != 204) {
@@ -346,6 +350,9 @@
         text: null
       },
       tooltip: {
+        {% if method_key['method_type'] == "Duration" -%}
+          headerFormat: '<span style="font-size: 10px">{point.key} Seconds</span><br/>',
+        {%- endif -%}
         xDateFormat: '%a, %b %e, %Y %H:%M:%S',
         valueDecimals: 2
       },
