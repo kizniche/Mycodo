@@ -117,17 +117,13 @@ def method_data(method_type, method_id):
     if method_key.method_type == "Date":
         first_start = False
         for each_method in method:
-            if not each_method.end_time:
-                end_time = each_method.start_time
-            else:
-                end_time = each_method.end_time
-            if not each_method.end_setpoint:
+            if each_method.end_setpoint == None:
                 end_setpoint = each_method.start_setpoint
             else:
                 end_setpoint = each_method.end_setpoint
 
             start_time = datetime.strptime(each_method.start_time, '%Y-%m-%d %H:%M:%S')
-            end_time = datetime.strptime(end_time, '%Y-%m-%d %H:%M:%S')
+            end_time = datetime.strptime(each_method.end_time, '%Y-%m-%d %H:%M:%S')
 
             if not first_start:
                 first_start = start_time
@@ -144,7 +140,7 @@ def method_data(method_type, method_id):
         start_duration = 0
         end_duration = 0
         for each_method in method:
-            if not each_method.end_setpoint:
+            if each_method.end_setpoint == None:
                 end_setpoint = each_method.start_setpoint
             else:
                 end_setpoint = each_method.end_setpoint
