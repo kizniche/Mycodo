@@ -128,6 +128,10 @@ def validate_method_data(form_data, this_method):
 
 
 def method_create(formCreateMethod, method_id):
+    if session['user_group'] == 'guest':
+        flash("Guests are not permitted to create methods", "error")
+        return redirect('/')
+
     try:
         new_method = Method()
         random_id = ''.join([random.choice(
@@ -148,6 +152,10 @@ def method_create(formCreateMethod, method_id):
 
 
 def method_add(formAddMethod, method):
+    if session['user_group'] == 'guest':
+        flash("Guests are not permitted to add to methods", "error")
+        return redirect('/')
+
     # Validate input time data
     this_method = method.filter(Method.method_id == formAddMethod.method_id.data)
     this_method = this_method.filter(Method.method_order == 0).first()
@@ -242,6 +250,10 @@ def method_add(formAddMethod, method):
 
 
 def method_mod(formModMethod, method):
+    if session['user_group'] == 'guest':
+        flash("Guests are not permitted to modify methods", "error")
+        return redirect('/')
+
     if formModMethod.Delete.data:
         delete_entry_with_id(MYCODO_DB_PATH,
                              Method,
