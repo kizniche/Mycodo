@@ -35,6 +35,7 @@ from config import STATS_CSV
 from config import STATS_INTERVAL
 from databases.mycodo_db.models import LCD
 from databases.mycodo_db.models import Log
+from databases.mycodo_db.models import Method
 from databases.mycodo_db.models import PID
 from databases.mycodo_db.models import Relay
 from databases.mycodo_db.models import Sensor
@@ -460,6 +461,8 @@ def recreate_stat_file():
                    ['num_lcds_active', 0],
                    ['num_logs', 0],
                    ['num_logs_active', 0],
+                   ['num_methods', 0],
+                   ['num_methods_in_pid', 0],
                    ['num_pids', 0],
                    ['num_pids_active', 0],
                    ['num_relays', 0],
@@ -564,6 +567,12 @@ def send_stats(logger, host, port, user, password, dbname):
             add_update_stat(logger, 'num_logs', get_count(logs))
             add_update_stat(logger, 'num_logs_active', get_count(logs.filter(
                 Log.activated == True)))
+
+            methods = new_session.query(Method)
+            add_update_stat(logger, 'num_methods', get_count(methods.filter(
+                Method.method_order == 0)))
+            add_update_stat(logger, 'num_methods_in_pid', get_count(pids.filter(
+                PID.method_id != '')))
             
             timers = new_session.query(Timer)
             add_update_stat(logger, 'num_timers', get_count(timers))

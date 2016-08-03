@@ -42,6 +42,7 @@ from config import INFLUXDB_USER
 from config import INFLUXDB_PASSWORD
 from config import INFLUXDB_DATABASE
 from config import SQL_DATABASE_MYCODO
+from databases.mycodo_db.models import Method
 from databases.mycodo_db.models import PID
 from databases.mycodo_db.models import PIDSetpoints
 from databases.mycodo_db.models import Relay
@@ -72,6 +73,7 @@ class PIDController(threading.Thread):
             pid = new_session.query(PID).filter(PID.id == self.pid_id).first()
             self.sensor_id = pid.sensor_id
             self.measure_type = pid.measure_type
+            self.method_id = pid.method_id
             self.direction = pid.direction
             self.raise_relay_id = pid.raise_relay_id
             self.raise_min_duration = pid.raise_min_duration
@@ -224,6 +226,10 @@ class PIDController(threading.Thread):
         # If there was a measurement able to be retrieved from
         # influxdb database that was entered within the past minute
         if self.last_measurement_success:
+
+            # Update setpoint if a method is selected
+            # if self.method_id != '':
+            #     self.calculate_method_setpoint(self.method_id)
 
             # Update setpoint if dynamic setpoints are enabled for this PID
             # and the current time is within one of the set time spans
@@ -378,7 +384,7 @@ class PIDController(threading.Thread):
                     self.logger.debug("[Method] Total: {} Part total: {} ({}%)".format(
                         total_seconds, part_seconds, percent_total))
                     self.logger.debug("[Method] New Setpoint: {}".format(new_setpoint))
-                    return new_setpoint
+                    self.set_point = new_setpoint
         elif method_key.method_type == 'Duration':
             if self.method_start_time == None:
                 self.method_start_time = now
@@ -406,9 +412,8 @@ class PIDController(threading.Thread):
                     self.logger.debug("[Method] Sec since start of row: {}".format(row_since_start_sec))
                     self.logger.debug("[Method] Percent of row: {}".format(percent_row))
                     self.logger.debug("[Method] New Setpoint: {}".format(new_setpoint))
-                    return new_setpoint
+                    self.set_point = new_setpoint
                 previous_total_sec = total_sec
-        return None
 
 
     def calculate_new_setpoint(self, start_time, end_time, start_setpoint, end_setpoint):

@@ -186,9 +186,7 @@
                       {%- if each_method.method_id == each_pid.method_id -%}
                         {%- do valid_saved_method.append(1) -%}
                       {%- endif -%}
-                      {%- if each_method.controller_type == 'pid' -%}
-                        <option value="{{each_method.method_id}}"{% if each_pid.method_id == each_method.method_id %} selected{% endif %}>{{each_method.name}} ({{each_method.method_id}})</option>
-                      {%- endif -%}
+                      <option value="{{each_method.method_id}}"{% if each_pid.method_id == each_method.method_id %} selected{% endif %}>{{each_method.name}} ({{each_method.method_id}})</option>
                     {%- endfor -%}
                     {%- if not valid_saved_method and each_pid.method_id != '' -%}
                       <option value="" selected>Invalid saved method. Save another method from this list.</option>

@@ -39,7 +39,6 @@ from controller_sensor import SensorController
 from controller_timer import TimerController
 from databases.mycodo_db.models import LCD
 from databases.mycodo_db.models import Log
-from databases.mycodo_db.models import Method
 from databases.mycodo_db.models import Misc
 from databases.mycodo_db.models import PID
 from databases.mycodo_db.models import Sensor

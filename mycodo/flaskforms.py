@@ -666,7 +666,7 @@ class ModPID(Form):
 class ModPIDMethod(Form):
     pid_id = HiddenField(u'PID ID')
     method_id = HiddenField(u'Selected Method')
-    Submit = SubmitField(u'Use Method')
+    Submit = SubmitField(u'Select Method')
 
 
 class AddPIDsetpoint(Form):
