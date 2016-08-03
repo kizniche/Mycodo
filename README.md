@@ -62,6 +62,8 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 
 ## TODO:
 
+* Support Serial Port Expander
+* Support Atlas Scientific sensors
 * Add PID filters (of input or output) and alternate PID functions.
 * Add support for wireless communication (z-wave, xbee, or other).
 * Add ability to build and run rate-change methods (reflow oven, thermal cycler for PCR, etc.).

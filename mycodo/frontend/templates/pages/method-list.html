@@ -63,7 +63,7 @@
         </div>
 
         {%- set method_setpoint = [] -%}
-        {%- for each_method_all in method_all if each_method_all.method_id == each_method.method_id and each_method_all.start_setpoint -%}
+        {%- for each_method_all in method_all if each_method_all.method_id == each_method.method_id -%}
           {%- do method_setpoint.append(1) -%}
         {%- endfor -%}
 
