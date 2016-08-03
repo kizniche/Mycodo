@@ -257,7 +257,7 @@ def method_builder(method_type, method_id):
             if last_method == None:
                 last_setpoint = ''
             else:
-                if last_method.end_setpoint:
+                if last_method.end_setpoint != None:
                     last_setpoint = last_method.end_setpoint
                 else:
                     last_setpoint = last_method.start_setpoint
