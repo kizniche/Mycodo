@@ -6,7 +6,6 @@
 
 import argparse
 import calendar
-import datetime
 import glob
 import logging
 import os
@@ -18,7 +17,7 @@ import subprocess
 import time
 import RPi.GPIO as GPIO
 from collections import OrderedDict
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil.parser import parse as date_parse
 from flask import Flask, flash, make_response, redirect, render_template, request, send_from_directory, session, g, jsonify, Response
 from flask_influxdb import InfluxDB
@@ -854,15 +853,15 @@ def page(page):
             date_suffix = 'th'
         else:
             date_suffix = ['st', 'nd', 'rd'][day%10-1]
-        if misc.relay_stats_dayofmonth == datetime.datetime.today().day:
+        if misc.relay_stats_dayofmonth == datetime.today().day:
             past_month_seconds = (now-now.replace(
                 hour=0, minute=0, second=0, microsecond=0)).total_seconds()
-        elif misc.relay_stats_dayofmonth > datetime.datetime.today().day:
+        elif misc.relay_stats_dayofmonth > datetime.today().day:
             first_day = now.replace(day=1)
-            last_Month = first_day - datetime.timedelta(days=1)
+            last_Month = first_day - timedelta(days=1)
             past_month = last_Month.replace(day=misc.relay_stats_dayofmonth)
             past_month_seconds = (now-past_month).total_seconds()       
-        elif misc.relay_stats_dayofmonth < datetime.datetime.today().day:
+        elif misc.relay_stats_dayofmonth < datetime.today().day:
             past_month = now.replace(day=misc.relay_stats_dayofmonth)
             past_month_seconds = (now-past_month).total_seconds()
 
@@ -1000,7 +999,7 @@ def page(page):
         try:
             latest_still_img_fullpath = max(glob.iglob(INSTALL_DIRECTORY+'/camera-stills/*.jpg'), key=os.path.getctime)
             ts = os.path.getmtime(latest_still_img_fullpath)
-            latest_still_img_ts = datetime.datetime.fromtimestamp(ts)
+            latest_still_img_ts = datetime.fromtimestamp(ts)
             latest_still_img = os.path.basename(latest_still_img_fullpath)
         except:
             latest_still_img_ts = None
@@ -1234,8 +1233,8 @@ def do_admin_login():
                 session['user_theme'] = user.user_theme
                 if form.remember.data:
                     response = make_response(redirect('/'))
-                    expire_date = datetime.datetime.now()
-                    expire_date = expire_date + datetime.timedelta(days=30)
+                    expire_date = datetime.now()
+                    expire_date = expire_date + timedelta(days=30)
                     response.set_cookie('user_name', user.user_name, expires=expire_date)
                     response.set_cookie('user_pass_hash', user.user_password_hash, expires=expire_date)
                     return response
