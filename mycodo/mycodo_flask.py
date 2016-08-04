@@ -858,7 +858,7 @@ def page(page):
                 hour=0, minute=0, second=0, microsecond=0)).total_seconds()
         elif misc.relay_stats_dayofmonth > datetime.datetime.today().day:
             first_day = now.replace(day=1)
-            last_Month = first_day - timedelta(days=1)
+            last_Month = first_day - datetime.timedelta(days=1)
             past_month = last_Month.replace(day=misc.relay_stats_dayofmonth)
             past_month_seconds = (now-past_month).total_seconds()       
         elif misc.relay_stats_dayofmonth < datetime.datetime.today().day:
