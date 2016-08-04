@@ -164,7 +164,7 @@ def method_data(method_type, method_id):
         return ('', 204)
 
 
-@app.route('/method-list', methods=('GET', 'POST'))
+@app.route('/method', methods=('GET', 'POST'))
 def method_list():
     if not logged_in():
         return redirect('/')
