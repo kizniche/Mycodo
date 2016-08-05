@@ -2392,20 +2392,20 @@ def user_mod(formModUser):
                     Users.user_name == formModUser.modUsername.data).first()
                 mod_user.user_email = formModUser.modEmail.data
                 # Only change the password if it's entered in the form
+                logout_user = False
                 if formModUser.modPassword.data is not '':
                     if (test_password(formModUser.modPassword.data) and
                             formModUser.modPassword.data == formModUser.modPassword_repeat.data):
-                        mod_user.user_password_hash = bcrypt.hashpw(formModUser.modPassword.data, bcrypt.gensalt())
+                        mod_user.user_password_hash = bcrypt.hashpw(formModUser.modPassword.data.encode('utf-8'), bcrypt.gensalt())
+                        if session['user_name'] == formModUser.modUsername.data:
+                            logout_user = True
                 mod_user.user_restriction = formModUser.modGroup.data
                 mod_user.user_theme = formModUser.modTheme.data
                 if session['user_name'] == formModUser.modUsername.data:
                     session['user_theme'] = formModUser.modTheme.data
                 db_session.commit()
                 flash("User settings successfully modified", "success")
-                if (formModUser.modPassword.data is not '' and
-                        test_password(formModUser.modPassword.data) and
-                        session['user_name'] == formModUser.modUsername.data and
-                        formModUser.modPassword.data == formModUser.modPassword_repeat.data):
+                if logout_user:
                     return 'logout'
         except Exception as except_msg:
             flash("User settings were not able to be modified: {}".format(

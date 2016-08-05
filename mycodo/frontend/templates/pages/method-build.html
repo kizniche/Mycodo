@@ -46,7 +46,7 @@
 
           {%- if method_type == "Date" -%}
             <div>
-              <input type="radio" name="method_select" value="setpoint" checked="checked"> Define the setpoint (or setpoint change) over a period of time based on specific time/dates.
+              <input type="radio" name="method_select" value="setpoint" checked="checked"> Define the setpoint over a period of time based on specific times/dates.
             </div>
             <div class="form-group">
               {{formAddMethod.startTime.label(class_='control-label')}}
@@ -62,12 +62,13 @@
             </div>
           {%- elif method_type == "Duration" -%}
             <div>
-              <input type="radio" name="method_select" value="setpoint" checked="checked"> Define the setpoint (or setpoint change) over a period of time based on a specific duration of time.
+              <input type="radio" name="method_select" value="setpoint" checked="checked"> Define the setpoint over a period of time, based on specific durations of time.
               <br>Duration here is defined as the amount of time after the previous duration. If this is the first duration added, this will be the beginning of the method. If this is not the first duration added, it will execute after the last duration already in the method.
             </div>
           {%- elif method_type == "Repeating" -%}
 
           {%- endif -%}
+
           </div>
           <div>
             <div class="form-group">
