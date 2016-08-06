@@ -1501,12 +1501,17 @@ def pid_activate(formActivatePID):
             flash("Cannot activate PID controller if the associated "
                   "sensor controller is inactive.", "error")
             return redirect('/pid')
+
+        # Signal the duration method can run because it's been
+        # properly initiated (non-power failure)
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_method = db_session.query(Method).filter(
                 Method.method_id == pid.method_id)
             mod_method = mod_method.filter(Method.method_order == 0).first()
-            mod_method.start_time = 'Ready'
-            db_session.commit()
+            if mod_method.method_type == 'Duration':
+                mod_method.start_time = 'Ready'
+                db_session.commit()
+
     activate_deactivate_controller('activate',
                                    'PID',
                                    formActivatePID.activatePID_id.data)

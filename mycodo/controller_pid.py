@@ -116,11 +116,11 @@ class PIDController(threading.Thread):
                     self.method_type = method.method_type
                     self.method_start_time = method.start_time
                 if self.method_type == 'Duration':
-                    # start_time is used to resume the method if a power outage occurs
-                    # It will jump into the method at the duration since start_time
                     if self.method_start_time == 'Ended':
+                        # Method has ended and hasn't been instructed to begin again
                         pass
                     elif self.method_start_time == 'Ready' or self.method_start_time == None:
+                        # Method has been instructed to begin
                         with session_scope(MYCODO_DB_PATH) as db_session:
                             mod_method = db_session.query(Method)
                             mod_method = mod_method.filter(Method.method_id == self.method_id)
@@ -129,6 +129,9 @@ class PIDController(threading.Thread):
                             self.method_start_time = mod_method.start_time
                             db_session.commit()
                     else:
+                        # Method neither instructed to begin or not to
+                        # Likely there was a daemon restart ot power failure
+                        # Resume method with saved start_time
                         self.method_start_time = datetime.datetime.strptime(
                             self.method_start_time, '%Y-%m-%d %H:%M:%S.%f')
                         self.logger.warning("[PID {}] Resuming method {} started at {}".format(
@@ -457,8 +460,8 @@ class PIDController(threading.Thread):
                     db_session.commit()
                 self.method_start_time = 'Ended'
 
-        # Setpoint not needing to be calculated, use default setpoint.
-        self.set_point = self.default_set_point  # Default setpoint
+        # Setpoint not needing to be calculated, use default setpoint
+        self.set_point = self.default_set_point
 
 
     def addSetpointInfluxdb(self, pid_id, setpoint):
