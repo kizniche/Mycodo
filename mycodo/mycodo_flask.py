@@ -109,6 +109,7 @@ def method_data(method_type, method_id):
 
     method = method.filter(Method.method_order > 0)
     method = method.filter(Method.method_id == method_id)
+    method = method.filter(Method.relay_id == None)
     method = method.order_by(Method.method_order.asc()).all()
 
     method_list = []
@@ -174,7 +175,8 @@ def method_list():
         method = new_session.query(Method)
         new_session.expunge_all()
         new_session.close()
-    method_all = method.filter(Method.method_order > 0).all()
+    method_all = method.filter(Method.method_order > 0)
+    method_all = method.filter(Method.relay_id == None).all()
     method = method.filter(Method.method_order == 0).all()
 
     return render_template('pages/method-list.html',
@@ -195,7 +197,7 @@ def method_delete(method_id):
         flash("Error while deleting Method: "
               "{}".format(except_msg), "error")
     # flaskutils.method_del(method_id)
-    return redirect('/method-list')
+    return redirect('/method')
 
 
 @app.route('/method-build/<method_type>/<method_id>', methods=('GET', 'POST'))
