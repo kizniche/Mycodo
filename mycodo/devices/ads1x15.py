@@ -35,7 +35,7 @@ class ADS1x15_read(object):
         try:
             time.sleep(1)
             adc = Adafruit_ADS1x15.ADS1115(address=self.i2c_address, busnum=self.I2C_bus_number)
-            self._voltage = adc.read_adc(self.channel, gain=self.gain)
+            self._voltage = adc.read_adc(self.channel, gain=self.gain)/10000.0
         except:
             return 1
 
@@ -65,8 +65,11 @@ class ADS1x15_read(object):
 
 
 if __name__ == "__main__":
-    ads = ads1x15_read(0, 0x68, 0, 18)
-
-    for measure in ads:
-        print("Voltage: {}".format(measure['voltage']))
-        time.sleep(1)
+    ads = ADS1x15_read(0, 0x48, 0, 1)
+    print("Channel 0: {}".format(ads.next()))
+    ads = ADS1x15_read(0, 0x48, 1, 1)
+    print("Channel 1: {}".format(ads.next()))
+    ads = ADS1x15_read(0, 0x48, 2, 1)
+    print("Channel 2: {}".format(ads.next()))
+    ads = ADS1x15_read(0, 0x48, 3, 1)
+    print("Channel 3: {}".format(ads.next()))

@@ -150,7 +150,7 @@ Certain sensors will require extra steps to be taken in order to set up the inte
 
 > [AM2315](https://github.com/lexruee/tentacle_pi) (I<sup>2</sup>C): Measures relative humidity and temperature.
 
-> [SHT10, SHT11, SHT15, SHT71, SHT75](https://github.com/mk-fg/sht-sensor) (GPIO): Measures relative humidity and temperature.
+> [SHT1x, SHT2x, SHT7x](https://github.com/mk-fg/sht-sensor) (GPIO): Measures relative humidity and temperature.
 
 ### Carbon Dioxide (CO<sub>2</sub>)
 
@@ -170,7 +170,7 @@ Find the line "enable_uart=0" and change it to "enable_uart=1", then reboot.
 
 ### Pressure
 
-> [BMP085/BMP180](https://learn.adafruit.com/using-the-bmp085-with-raspberry-pi) (I<sup>2</sup>C)
+> [BMP085, BMP180](https://learn.adafruit.com/using-the-bmp085-with-raspberry-pi) (I<sup>2</sup>C)
 
 ### Luminosity
 
@@ -362,61 +362,43 @@ This software includes third party open source software components: Discrete PID
 
 ### Screenshots (may be outdated)
 
-Console output of the daemon running in debug mode (verbose output).
-
-<img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/03/Mycodo-Console.png">
-
----
-
-Status page displays all active sensors with a collapsible menu of activated PIDs and associated relays.
+See the status of all sensors on one page
 
 <img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/04/Mycodo-Status-2016-04-10-10-53-58.png">
 
 ---
 
-Custom graphs can be created with specific measurements and relays displayed (also duration, height, width).
+Create custom live graphs
 
 <img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/04/Mycodo-Graph-2016-04-14-18-29-24.png">
 
 ---
 
-The sensor controller page lists activated and deactivated sensor controllers and their conditionals.
+Add sensors
 
 <img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/04/Mycodo-Sensors-2016-04-10-10-52-36.png">
 
 ---
 
-The relay page lists available relays and their conditionals.
+Configure and manipulate relays
 
 <img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/04/Mycodo-Relays-2016-04-10-10-52-57.png">
 
 ---
 
-The PID page lists activated and deactivated PID controllers.
+Create PID controllers
 
 <img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/04/Mycodo-PID-2016-04-10-10-53-11.png">
 
 ---
 
-Timers can be set to occur at a specific time of day or on a timed schedule.
-
-<img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/04/Mycodo-Timers-2016-04-14-18-33-24.png">
-
----
-
-Log controllers enable polling of the influxdb at specific periods to create a log file.
-
-<img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/04/Mycodo-Logs-2016-04-15-10-45-09.png">
-
----
-
-The LCD page lists activated and deactivated LCD controllers.
+Output to LCDs
 
 <img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/04/Mycodo-LCD-2016-04-10-10-53-38.png">
 
 ---
 
-Settings pages to modify miscellaneous settings SQL databases
+Change settings
 
 <img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/04/Mycodo-Alerts-Settings-2016-04-10-11-50-29-e1460303466599.png">
 

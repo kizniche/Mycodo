@@ -28,10 +28,10 @@ from sensors.raspi_cpuload import RaspberryPiCPULoad
 from sensors.tmp006 import TMP006_read
 from sensors.tsl2561 import TSL2561_read
 from sensors.sht1x_7x import SHT1x_7x_read
+from sensors.sht2x import SHT2x_read
 
 # Sensor modules that are untested (don't have these sensors to test)
 from sensors.dht11 import DHT11
-from sensors.sht2x import SHT2x_read
 
 # Currently unused modules
 # from sensors.dht_legacy import DHT # The Adafruit DHT code is crap! pigpio all the way!!!
