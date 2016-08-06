@@ -157,7 +157,7 @@
         </div>
     {%- endif -%}
 
-      {%- for each_method in method_list if each_method.method_id == method_key['method_id'] -%}
+      {%- for each_method in method_list if each_method.method_id == method_key['method_id'] and not each_method.relay_id -%}
         <form method="post" action="/method-build/{{method_type}}/{{method_id}}" style="padding: 0.7em 0">
         <input type="hidden" name="form-name" value="modMethod">
         {{formModMethod.csrf_token}}
