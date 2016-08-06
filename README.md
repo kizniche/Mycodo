@@ -2,7 +2,7 @@
 
 ## Environmental Regulation System
 
-### Latest version: 4.0.9
+### Latest version: 4.0.10
 
 Mycodo is a remote monitoring and automated regulation system with a focus on modulating environmental conditions. It was built to run on the Raspberry Pi (1, 2, and 3) and aims to be easy to install and set up.
 
@@ -53,7 +53,7 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 * Support for several digital sensors for measuring temperature, humidity, CO<sub>2</sub>, atmospheric pressure, luminosity, and infrared heat).
 * Event triggers (relay, camera, email, etc.) when certain sensor measurements occur or conditions are met.
 * Regulate environmental conditions with discrete PID control.
-* Dynamic PID setpoints for changing environmental conditions throughout the day.
+* Method creation for dynamic PID setpoints for changing conditions over time (examples: reflow oven, thermal cycler).
 * 16x2 and 20x4 I<sup>2</sup>C LCD support.
 * I<sup>2</sup>C multiplexer support to allow using multiple devices/sensors with the same address.
 * Pi Camera support.
@@ -66,7 +66,6 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 * Support Atlas Scientific sensors
 * Add PID filters (of input or output) and alternate PID functions.
 * Add support for wireless communication (z-wave, xbee, or other).
-* Add ability to build and run rate-change methods (reflow oven, thermal cycler for PCR, etc.).
 * Support for PWM and servo/stepper motors
 * Dashboard to monitor other Mycodo servers
 * Add graph export options (width, height, scale)

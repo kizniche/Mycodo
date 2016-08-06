@@ -24,7 +24,7 @@
 
 import os
 
-MYCODO_VERSION = '4.0.9'
+MYCODO_VERSION = '4.0.10'
 
 INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'
 
