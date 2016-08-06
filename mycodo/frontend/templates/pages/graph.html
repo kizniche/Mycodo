@@ -330,7 +330,7 @@
               past_data.push([new_time, data[i][1]])
             }
             chart[chart_number].series[sensor].isDirty = true;
-            chart[chart_number].xAxis[0].setExtremes(new Date().setHours(new Date().getHours()-(1*(past_seconds/60/60))), new Date().getTime());
+            chart[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes()-(1*(past_seconds/60))), new Date().getTime());
             chart[chart_number].series[sensor].setData(past_data, true, false);
           }
         }
@@ -350,7 +350,7 @@
               }
             }
             var current_time = new Date();
-            chart[chart_number].xAxis[0].update({min: new Date().setHours(new Date().getHours()-(1*(xaxis_duration_min/60)))}, false);
+            chart[chart_number].xAxis[0].update({min: new Date().setMinutes(new Date().getMinutes()-(1*(xaxis_duration_min)))}, false);
             chart[chart_number].xAxis[0].update({max: new Date().getTime()}, false);
             chart[chart_number].redraw();
           }
