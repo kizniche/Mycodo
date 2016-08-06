@@ -118,7 +118,9 @@ class PIDController(threading.Thread):
                 if self.method_type == 'Duration':
                     # start_time is used to resume the method if a power outage occurs
                     # It will jump into the method at the duration since start_time
-                    if not self.method_start_time:
+                    if self.method_start_time == 'Ended':
+                        pass
+                    elif self.method_start_time == 'Ready' or self.method_start_time == None:
                         with session_scope(MYCODO_DB_PATH) as db_session:
                             mod_method = db_session.query(Method)
                             mod_method = mod_method.filter(Method.method_id == self.method_id)
@@ -258,21 +260,6 @@ class PIDController(threading.Thread):
             if self.method_id != '':
                 self.calculate_method_setpoint(self.method_id)
 
-            # Update setpoint if dynamic setpoints are enabled for this PID
-            # and the current time is within one of the set time spans
-            # use_default_setpoint = True
-            # for each_setpt in self.pidsetpoints:
-            #     if self.now_in_range(each_setpt.start_time,
-            #                          each_setpt.end_time):
-            #         use_default_setpoint = False
-            #         self.calculate_new_setpoint(each_setpt.start_time,
-            #                                     each_setpt.end_time,
-            #                                     each_setpt.start_setpoint,
-            #                                     each_setpt.end_setpoint)
-            #         self.logger.debug("[PID {}] New setpoint: {}".format(self.pid_id, self.set_point))
-            # if use_default_setpoint:
-            #     self.set_point = self.default_set_point
-
             self.addSetpointInfluxdb(self.pid_id, self.set_point)
 
             # Update PID and get control variable
@@ -383,8 +370,9 @@ class PIDController(threading.Thread):
         method_key = method.filter(Method.method_id == method_id)
         method_key = method_key.filter(Method.method_order == 0).first()
 
-        method = method.filter(Method.method_order > 0)
         method = method.filter(Method.method_id == method_id)
+        method = method.filter(Method.relay_id == None)
+        method = method.filter(Method.method_order > 0)
         method = method.order_by(Method.method_order.asc()).all()
 
         now = datetime.datetime.now()
@@ -423,7 +411,7 @@ class PIDController(threading.Thread):
                     return 0
 
         # Calculate the duration in the method based on self.method_start_time
-        elif method_key.method_type == 'Duration' and self.method_start_time:
+        elif method_key.method_type == 'Duration' and self.method_start_time != 'Ended':
             seconds_from_start = (now-self.method_start_time).total_seconds()
             total_sec = 0
             previous_total_sec = 0
@@ -465,96 +453,12 @@ class PIDController(threading.Thread):
                     mod_method = db_session.query(Method).filter(
                         Method.method_id == self.method_id)
                     mod_method = mod_method.filter(Method.method_order == 0).first()
-                    mod_method.start_time = None
+                    mod_method.start_time = 'Ended'
                     db_session.commit()
-                self.method_start_time = None
+                self.method_start_time = 'Ended'
 
         # Setpoint not needing to be calculated, use default setpoint.
         self.set_point = self.default_set_point  # Default setpoint
-
-
-    # def calculate_new_setpoint(self, start_time, end_time, start_setpoint, end_setpoint):
-    #     """
-    #     Calculate a dynamic setpoint that changes over time
-
-    #     The current time must fall between the start_time and end_time.
-    #     If there is only a start_setpoint, that is the only setpoint that can
-    #     be returned.
-
-    #     Based on where the current time falls between the start_time
-    #     and the end_time, a setpoint between the start_setpoint and
-    #     end_setpoint will be calculated.
-
-    #     For example, if the time range is 12:00 to 1:00, and the setPoint
-    #     range is 0 to 60, and the current time is 12:30, the calculated
-    #     setpoint will be 30.
-
-    #     :return: 0 if only a start setpoint is set, 1 if both start and end
-    #         setpoints are set and the value between has been calculated.
-    #     :rtype: int
-
-    #     :param start_time: The start hour and minute of the time range
-    #     :type start_time: str
-    #     :param end_time: The end hour and minute of the time range
-    #     :type end_time: str
-    #     :param start_setpoint: The start setpoint
-    #     :type start_setpoint: float
-    #     :param end_setpoint: The end setpoint
-    #     :type end_setpoint: float or None
-    #     """
-    #     # Only a start_setpoint set for this time period
-    #     if end_setpoint is None:
-    #         self.set_point = start_setpoint
-    #         return 0
-
-    #     # Split hour and minute into separate integers
-    #     start_hour = int(start_time.split(":")[0])
-    #     start_min = int(start_time.split(":")[1])
-    #     end_hour = int(end_time.split(":")[0])
-    #     end_min = int(end_time.split(":")[1])
-
-    #     # Set the date and time format
-    #     date_format = "%d %H:%M"  # Add day in case end time is the next day
-
-    #     # Convert string of 'day hour:minute' to actual date and time
-    #     start_time_formatted  = datetime.datetime.strptime("1 "+start_time, date_format)
-    #     end_day_modifier = "1 "  # End time is the same day
-    #     if (start_hour > end_hour or
-    #             (start_hour == end_hour and start_min > end_min)):
-    #         end_day_modifier = "2 "  # End time is the next day
-    #     end_time_formatted  = datetime.datetime.strptime(end_day_modifier+end_time, date_format)
-
-    #     # Total number of minute between start time and end time
-    #     diff = end_time_formatted-start_time_formatted
-    #     diff_min = diff.seconds/60
-
-    #     # Find the difference between setpoints
-    #     diff_setpoints = abs(end_setpoint-start_setpoint) 
-
-    #     # Total number of minute between start time and now
-    #     now = datetime.datetime.now()
-    #     if now.hour > start_hour:
-    #         hours = now.hour-start_hour
-    #     elif now.hour < start_hour:
-    #         hours = now.hour+(24-start_hour)
-    #     elif now.hour == start_hour:
-    #         hours = 0
-    #     minutes = now.minute-start_min  # May be negative
-    #     total_minutes = (hours*60)+minutes
-
-    #     # Based on the number of minutes between the start and end time and the
-    #     # minutes passed since the start time, calculate the new setpoint
-    #     mod_setpoint = total_minutes/float(diff_min/diff_setpoints)
-
-    #     if end_setpoint < start_setpoint:
-    #         # Setpoint decreases over duration
-    #         new_setpoint = float("{0:.2f}".format(start_setpoint-mod_setpoint))
-    #     else:
-    #         # Setpoint increases over duration
-    #         new_setpoint = float("{0:.2f}".format(start_setpoint+mod_setpoint))
-
-    #     self.set_point = new_setpoint
-    #     return 1
 
 
     def addSetpointInfluxdb(self, pid_id, setpoint):
@@ -633,5 +537,5 @@ class PIDController(threading.Thread):
                 mod_method = db_session.query(Method)
                 mod_method = mod_method.filter(Method.method_id == self.method_id)
                 mod_method = mod_method.filter(Method.method_order == 0).first()
-                mod_method.start_time = None
+                mod_method.start_time = 'Ended'
                 db_session.commit()
