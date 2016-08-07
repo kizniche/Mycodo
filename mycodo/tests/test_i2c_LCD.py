@@ -7,8 +7,14 @@
 import RPi.GPIO as GPIO
 import smbus
 import threading
+import os
+import sys
 import time
 import timeit
+
+# Check for root priveileges
+if not os.geteuid() == 0:
+    sys.exit("Script must be executed as root")
 
 # Change this address for the device being tested
 lcd_pin = '0x26'

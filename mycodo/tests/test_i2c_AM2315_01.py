@@ -1,10 +1,18 @@
 #!/usr/bin/python
+# coding=utf-8
 
 from datetime import datetime
 import RPi.GPIO as GPIO
+import os
+import sys
 import time
 
 from tentacle_pi.AM2315 import AM2315
+
+
+if not os.geteuid() == 0:
+    print("Error: Script must be executed as root.\n")
+    sys.exit(1)
 
 if GPIO.RPI_REVISION in [2, 3]:
     I2C_device = "/dev/i2c-1"

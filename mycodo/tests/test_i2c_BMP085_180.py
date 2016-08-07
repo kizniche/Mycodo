@@ -1,4 +1,6 @@
 #!/usr/bin/python
+# coding=utf-8
+#
 # Copyright (c) 2014 Adafruit Industries
 # Author: Tony DiCola
 #
@@ -24,7 +26,16 @@
 #import logging
 #logging.basicConfig(level=logging.DEBUG)
 
+import os
+import sys
+
 import Adafruit_BMP.BMP085 as BMP085
+import RPi.GPIO as GPIO
+
+
+if not os.geteuid() == 0:
+    print("Error: Script must be executed as root.\n")
+    sys.exit(1)
 
 # Default constructor will pick a default I2C bus.
 #
@@ -34,10 +45,12 @@ import Adafruit_BMP.BMP085 as BMP085
 #
 # For the Beaglebone Black the library will assume bus 1 by default, which is
 # exposed with SCL = P9_19 and SDA = P9_20.
-sensor = BMP085.BMP085()
+if GPIO.RPI_REVISION in [2, 3]:
+    I2C_bus_number = 1
+else:
+    I2C_bus_number = 0
 
-# Optionally you can override the bus number:
-#sensor = BMP085.BMP085(busnum=2)
+sensor = BMP085.BMP085(busnum=I2C_bus_number)
 
 # You can also optionally change the BMP085 mode to one of BMP085_ULTRALOWPOWER, 
 # BMP085_STANDARD, BMP085_HIGHRES, or BMP085_ULTRAHIGHRES.  See the BMP085

@@ -1,22 +1,41 @@
+#!/usr/bin/python
+# coding=utf-8
+#
 # Simple demo of reading each analog input from the ADS1x15 and printing it to
 # the screen.
-# Author: Tony DiCola
+# Author: Tony DiCola (Edited by Kyle Gabriel)
 # License: Public Domain
+
+import os
+import sys
 import time
-
-# Import the ADS1x15 module.
 import Adafruit_ADS1x15
+import RPi.GPIO as GPIO
 
+
+if not os.geteuid() == 0:
+    print("Error: Script must be executed as root.\n")
+    sys.exit(1)
+
+# Setup I2C bus
+try:
+    if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
+        I2C_bus_number = 1
+    else:
+        I2C_bus_number = 0
+except Exception as except_msg:
+    print("Could not identify I2C bus: {}".format(
+        except_msg))
 
 # Create an ADS1115 ADC (16-bit) instance.
-adc = Adafruit_ADS1x15.ADS1115()
+# adc = Adafruit_ADS1x15.ADS1115()
 
 # Or create an ADS1015 ADC (12-bit) instance.
 #adc = Adafruit_ADS1x15.ADS1015()
 
 # Note you can change the I2C address from its default (0x48), and/or the I2C
 # bus by passing in these optional parameters:
-#adc = Adafruit_ADS1x15.ADS1015(address=0x49, busnum=1)
+adc = Adafruit_ADS1x15.ADS1115(address=0x48, busnum=I2C_bus_number)
 
 # Choose a gain of 1 for reading voltages from 0 to 4.09V.
 # Or pick a different gain to change the range of voltages that are read:

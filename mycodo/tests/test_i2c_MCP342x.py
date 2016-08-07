@@ -1,8 +1,10 @@
+#!/usr/bin/python
 # coding=utf-8
 
 import argparse
 import logging
 import os
+import sys
 import smbus
 import time
 import timeit
@@ -88,9 +90,12 @@ def menu(logger):
         print("Error: {}".format(read_response))
 
 if __name__ == "__main__":
+    if not os.geteuid() == 0:
+        print("Error: Script must be executed as root.\n")
+        sys.exit(1)
     logging.basicConfig(level='DEBUG')
     logger = logging.getLogger(__name__)
-    menu(logger)
+    menu()
 
 
 # bus = get_smbus()
