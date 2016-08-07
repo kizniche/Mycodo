@@ -1,0 +1,7 @@
+<div class="form-group">
+  <label class="control-label">I<sup>2</sup>C Address</label>
+  <div>
+    {{formModSensor.modLocation(class_='form-control', value=each_sensor.location, disabled=True)}}
+    <input type="hidden" class="form-control" id="modLocation" name="modLocation" value="{{each_sensor.location}}">
+  </div>
+</div>
