@@ -158,7 +158,7 @@
               
               {% if each_sensor.device in ['AM2315', 'BMP', 'TSL2561', 'TMP006', 'ADS1x15', 'MCP342x', 'SHT2x'] -%}
                 <div class="form-group">
-                  <label class="control-label">Multiplexer Address</label>
+                  <label class="control-label">Multiplexer (Mx)</label>
                   <div>
                     <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modMultiplexAddress" name="modMultiplexAddress" title="The I2C address of the multiplexer (if used).">
                       <option value=""{% if each_sensor.multiplexer_address == '' %} selected{% endif %}>Disabled</option>
@@ -174,7 +174,7 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="control-label">Multiplexer Chan.</label>
+                  <label class="control-label">Mx Channel</label>
                   <div>
                     <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modMultiplexChannel" name="modMultiplexChannel" rel="tooltip" title="If a multiplexer address is selected, select the channel connected to your target device.">
                       <option value="0"{% if each_sensor.multiplexer_channel == 0 %} selected{% endif %}>Disabled</option>
