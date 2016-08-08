@@ -81,32 +81,36 @@ def set_user_grp(filepath, user, group):
 def camera_record(record_type, duration_sec=10):
     now = time.time()
     timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d_%H-%M-%S')
-    if record_type == 'photo':
-        path_stills = '{}/camera-stills'.format(INSTALL_DIRECTORY)
-        still_filename = 'Still-{}.jpg'.format(timestamp)
-        output_filepath = '{}/{}'.format(path_stills, still_filename)
-        assure_path_exists(path_stills)
-        with picamera.PiCamera() as camera:
-            camera.resolution = (1296, 972)
-            camera.hflip = True
-            camera.vflip = True
-            camera.start_preview()
-            time.sleep(2)  # Camera warm-up time
-            camera.capture(output_filepath, use_video_port=True)
-    elif record_type == 'video':
-        path_video = '{}/camera-video'.format(INSTALL_DIRECTORY)
-        video_filename = 'Video-{}.h264'.format(timestamp)
-        output_filepath = '{}/{}'.format(path_video, video_filename)
-        assure_path_exists(path_video)
-        with picamera.PiCamera() as camera:
-            camera.resolution = (1296, 972)
-            camera.hflip = True
-            camera.vflip = True
-            camera.start_preview()
-            time.sleep(2)
-            camera.start_recording(output_filepath, format='h264', quality=20)
-            camera.wait_recording(duration_sec)
-            camera.stop_recording()
+    try:
+        if record_type == 'photo':
+            path_stills = '{}/camera-stills'.format(INSTALL_DIRECTORY)
+            still_filename = 'Still-{}.jpg'.format(timestamp)
+            output_filepath = '{}/{}'.format(path_stills, still_filename)
+            assure_path_exists(path_stills)
+            with picamera.PiCamera() as camera:
+                camera.resolution = (1296, 972)
+                camera.hflip = True
+                camera.vflip = True
+                camera.start_preview()
+                time.sleep(2)  # Camera warm-up time
+                camera.capture(output_filepath, use_video_port=True)
+        elif record_type == 'video':
+            path_video = '{}/camera-video'.format(INSTALL_DIRECTORY)
+            video_filename = 'Video-{}.h264'.format(timestamp)
+            output_filepath = '{}/{}'.format(path_video, video_filename)
+            assure_path_exists(path_video)
+            with picamera.PiCamera() as camera:
+                camera.resolution = (1296, 972)
+                camera.hflip = True
+                camera.vflip = True
+                camera.start_preview()
+                time.sleep(2)
+                camera.start_recording(output_filepath, format='h264', quality=20)
+                camera.wait_recording(duration_sec)
+                camera.stop_recording()
+    except:
+        raise RuntimeError('TST1')
+
     try:
         set_user_grp(output_filepath, 'mycodo', 'mycodo')
     except:

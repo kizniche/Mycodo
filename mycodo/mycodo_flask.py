@@ -79,6 +79,11 @@ influx_db = InfluxDB(app)
 
 
 def gzipped(f):
+    """
+    Allows gzipping the response of any view.
+    Just add '@gzipped' after the '@app'.
+    Used mainly for sending large amounts of data for graphs.
+    """
     @functools.wraps(f)
     def view_func(*args, **kwargs):
         @after_this_request
@@ -129,207 +134,6 @@ def home():
     if logged_in():
         return redirect('/live')
     return clear_cookie_auth()
-
-
-@app.route('/method-data/<method_type>/<method_id>')
-def method_data(method_type, method_id):
-    if (not session.get('logged_in') and
-        not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
-        return ('', 204)
-
-    with session_scope(MYCODO_DB_PATH) as new_session:
-        method = new_session.query(Method)
-        new_session.expunge_all()
-        new_session.close()
-
-    method_key = method.filter(Method.method_id == method_id)
-    method_key = method_key.filter(Method.method_order == 0).first()
-
-    method = method.filter(Method.method_order > 0)
-    method = method.filter(Method.method_id == method_id)
-    method = method.filter(Method.relay_id == None)
-    method = method.order_by(Method.method_order.asc()).all()
-
-    method_list = []
-
-    if method_key.method_type == "Date":
-        first_start = False
-        for each_method in method:
-            if each_method.end_setpoint == None:
-                end_setpoint = each_method.start_setpoint
-            else:
-                end_setpoint = each_method.end_setpoint
-
-            start_time = datetime.datetime.strptime(each_method.start_time, '%Y-%m-%d %H:%M:%S')
-            end_time = datetime.datetime.strptime(each_method.end_time, '%Y-%m-%d %H:%M:%S')
-
-            if not first_start:
-                first_start = start_time
-
-            is_dst = time.daylight and time.localtime().tm_isdst > 0
-            utc_offset_ms = (time.altzone if is_dst else time.timezone)
-
-            method_list.append([(int(start_time.strftime("%s"))-utc_offset_ms)*1000 , each_method.start_setpoint])
-            method_list.append([(int(end_time.strftime("%s"))-utc_offset_ms)*1000, end_setpoint])
-            method_list.append([(int(start_time.strftime("%s"))-utc_offset_ms)*1000 , None])
-
-    elif method_key.method_type == "Duration":
-        first_entry = True
-        start_duration = 0
-        end_duration = 0
-        for each_method in method:
-            if each_method.end_setpoint == None:
-                end_setpoint = each_method.start_setpoint
-            else:
-                end_setpoint = each_method.end_setpoint
-            if first_entry:
-                method_list.append([0 , each_method.start_setpoint])
-                method_list.append([each_method.duration_sec, end_setpoint])
-                start_duration += each_method.duration_sec
-                first_entry = False
-            else:
-                end_duration = start_duration+each_method.duration_sec
-
-                method_list.append([start_duration, each_method.start_setpoint])
-                method_list.append([end_duration, end_setpoint])
-
-                start_duration += each_method.duration_sec
-
-    return jsonify(method_list)
-
-    try:
-        return jsonify(method)
-    except:
-        return ('', 204)
-
-
-@app.route('/method', methods=('GET', 'POST'))
-def method_list():
-    if not logged_in():
-        return redirect('/')
-
-    formCreateMethod = flaskforms.CreateMethod()
-    with session_scope(MYCODO_DB_PATH) as new_session:
-        method = new_session.query(Method)
-        new_session.expunge_all()
-        new_session.close()
-    method_all = method.filter(Method.method_order > 0)
-    method_all = method.filter(Method.relay_id == None).all()
-    method = method.filter(Method.method_order == 0).all()
-
-    return render_template('pages/method-list.html',
-                           method=method,
-                           method_all=method_all,
-                           formCreateMethod=formCreateMethod)
-
-
-@app.route('/method-delete/<method_id>')
-def method_delete(method_id):
-    if not logged_in():
-        return redirect('/')
-    try:
-        with session_scope(MYCODO_DB_PATH) as new_session:
-            method = new_session.query(Method)
-            method = method.filter(Method.method_id == method_id).delete()
-    except Exception as except_msg:
-        flash("Error while deleting Method: "
-              "{}".format(except_msg), "error")
-    # flaskutils.method_del(method_id)
-    return redirect('/method')
-
-
-@app.route('/method-build/<method_type>/<method_id>', methods=('GET', 'POST'))
-def method_builder(method_type, method_id):
-    if not logged_in():
-        return redirect('/')
-
-    if method_type in ['Date', 'Duration', 'Repeating', '0']:
-        formCreateMethod = flaskforms.CreateMethod()
-        formAddMethod = flaskforms.AddMethod()
-        formModMethod = flaskforms.ModMethod()
-
-        # Create new method
-        if method_type == '0':
-            random_id = ''.join([random.choice(
-                string.ascii_letters + string.digits) for n in xrange(8)])
-            method_id = random_id
-            method_type = formCreateMethod.method_type.data
-            form_fail = flaskutils.method_create(formCreateMethod, method_id)
-            if not form_fail:
-                flash("New Method successfully created. It may now have time "
-                      "points added.", "success")
-                return redirect('/method-build/{}/{}'.format(
-                    method_type, method_id))
-            else:
-                flash("Could not create method.", "error")
-
-        with session_scope(MYCODO_DB_PATH) as new_session:
-            method = new_session.query(Method)
-            new_session.expunge_all()
-            new_session.close()
-
-        # The single table entry that holds the method type information
-        method_key = method.filter(Method.method_id == method_id)
-        method_key = method_key.filter(Method.method_order == 0).first()
-
-        # The table entries with time, setpoint, and relay data, sorted by order
-        method_list = method.filter(Method.method_order > 0)
-        method_list = method_list.order_by(Method.method_order.asc()).all()
-
-        
-        last_end_time = ''
-        last_setpoint = ''
-        if method_type == 'Date':
-            # Get last entry end time to populate the form start time
-            last_method = method.filter(Method.method_id == method_key.method_id)
-            last_method = last_method.filter(Method.method_order > 0)
-            last_method = last_method.order_by(Method.method_order.desc()).first()
-            if last_method == None:
-                last_end_time = ''
-            else:
-                last_end_time = last_method.end_time
-
-            # Get last entry end setpoint to populate the form start setpoint
-            last_method = method.filter(Method.method_id == method_key.method_id)
-            last_method = last_method.filter(Method.method_order > 0)
-            last_method = last_method.order_by(Method.method_order.desc()).first()
-            if last_method == None:
-                last_setpoint = ''
-            else:
-                if last_method.end_setpoint != None:
-                    last_setpoint = last_method.end_setpoint
-                else:
-                    last_setpoint = last_method.start_setpoint
-
-
-        # method = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Method)
-        relay = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Relay)
-
-        if request.method == 'POST':
-            form_name = request.form['form-name']
-            if form_name == 'addMethod':
-                form_fail = flaskutils.method_add(formAddMethod, method)
-            elif form_name == 'modMethod':
-                form_fail = flaskutils.method_mod(formModMethod, method)
-            if ((form_name == 'modMethod') or 
-                    form_name == 'addMethod' and not form_fail):
-                return redirect('/method-build/{}/{}'.format(
-                    method_type, method_id))
-                
-        return render_template('pages/method-build.html',
-                               method=method,
-                               relay=relay,
-                               method_key=method_key,
-                               method_list=method_list,
-                               method_id=method_id,
-                               method_type=method_type,
-                               last_end_time=last_end_time,
-                               last_setpoint=last_setpoint,
-                               formCreateMethod=formCreateMethod,
-                               formAddMethod=formAddMethod,
-                               formModMethod=formModMethod)
-
-    return redirect('/method-list')
 
 
 @app.route('/<page>', methods=('GET', 'POST'))
@@ -1060,6 +864,206 @@ def page(page):
         return render_template('404.html'), 404
 
 
+@app.route('/method-data/<method_type>/<method_id>')
+def method_data(method_type, method_id):
+    if (not session.get('logged_in') and
+        not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
+        return ('', 204)
+
+    with session_scope(MYCODO_DB_PATH) as new_session:
+        method = new_session.query(Method)
+        new_session.expunge_all()
+        new_session.close()
+
+    method_key = method.filter(Method.method_id == method_id)
+    method_key = method_key.filter(Method.method_order == 0).first()
+
+    method = method.filter(Method.method_order > 0)
+    method = method.filter(Method.method_id == method_id)
+    method = method.filter(Method.relay_id == None)
+    method = method.order_by(Method.method_order.asc()).all()
+
+    method_list = []
+
+    if method_key.method_type == "Date":
+        first_start = False
+        for each_method in method:
+            if each_method.end_setpoint == None:
+                end_setpoint = each_method.start_setpoint
+            else:
+                end_setpoint = each_method.end_setpoint
+
+            start_time = datetime.datetime.strptime(each_method.start_time, '%Y-%m-%d %H:%M:%S')
+            end_time = datetime.datetime.strptime(each_method.end_time, '%Y-%m-%d %H:%M:%S')
+
+            if not first_start:
+                first_start = start_time
+
+            is_dst = time.daylight and time.localtime().tm_isdst > 0
+            utc_offset_ms = (time.altzone if is_dst else time.timezone)
+
+            method_list.append([(int(start_time.strftime("%s"))-utc_offset_ms)*1000 , each_method.start_setpoint])
+            method_list.append([(int(end_time.strftime("%s"))-utc_offset_ms)*1000, end_setpoint])
+            method_list.append([(int(start_time.strftime("%s"))-utc_offset_ms)*1000 , None])
+
+    elif method_key.method_type == "Duration":
+        first_entry = True
+        start_duration = 0
+        end_duration = 0
+        for each_method in method:
+            if each_method.end_setpoint == None:
+                end_setpoint = each_method.start_setpoint
+            else:
+                end_setpoint = each_method.end_setpoint
+            if first_entry:
+                method_list.append([0 , each_method.start_setpoint])
+                method_list.append([each_method.duration_sec, end_setpoint])
+                start_duration += each_method.duration_sec
+                first_entry = False
+            else:
+                end_duration = start_duration+each_method.duration_sec
+
+                method_list.append([start_duration, each_method.start_setpoint])
+                method_list.append([end_duration, end_setpoint])
+
+                start_duration += each_method.duration_sec
+
+    return jsonify(method_list)
+
+    try:
+        return jsonify(method)
+    except:
+        return ('', 204)
+
+
+@app.route('/method', methods=('GET', 'POST'))
+def method_list():
+    if not logged_in():
+        return redirect('/')
+
+    formCreateMethod = flaskforms.CreateMethod()
+    with session_scope(MYCODO_DB_PATH) as new_session:
+        method = new_session.query(Method)
+        new_session.expunge_all()
+        new_session.close()
+    method_all = method.filter(Method.method_order > 0)
+    method_all = method.filter(Method.relay_id == None).all()
+    method = method.filter(Method.method_order == 0).all()
+
+    return render_template('pages/method-list.html',
+                           method=method,
+                           method_all=method_all,
+                           formCreateMethod=formCreateMethod)
+
+
+@app.route('/method-delete/<method_id>')
+def method_delete(method_id):
+    if not logged_in():
+        return redirect('/')
+    try:
+        with session_scope(MYCODO_DB_PATH) as new_session:
+            method = new_session.query(Method)
+            method = method.filter(Method.method_id == method_id).delete()
+    except Exception as except_msg:
+        flash("Error while deleting Method: "
+              "{}".format(except_msg), "error")
+    # flaskutils.method_del(method_id)
+    return redirect('/method')
+
+
+@app.route('/method-build/<method_type>/<method_id>', methods=('GET', 'POST'))
+def method_builder(method_type, method_id):
+    if not logged_in():
+        return redirect('/')
+
+    if method_type in ['Date', 'Duration', 'Repeating', '0']:
+        formCreateMethod = flaskforms.CreateMethod()
+        formAddMethod = flaskforms.AddMethod()
+        formModMethod = flaskforms.ModMethod()
+
+        # Create new method
+        if method_type == '0':
+            random_id = ''.join([random.choice(
+                string.ascii_letters + string.digits) for n in xrange(8)])
+            method_id = random_id
+            method_type = formCreateMethod.method_type.data
+            form_fail = flaskutils.method_create(formCreateMethod, method_id)
+            if not form_fail:
+                flash("New Method successfully created. It may now have time "
+                      "points added.", "success")
+                return redirect('/method-build/{}/{}'.format(
+                    method_type, method_id))
+            else:
+                flash("Could not create method.", "error")
+
+        with session_scope(MYCODO_DB_PATH) as new_session:
+            method = new_session.query(Method)
+            new_session.expunge_all()
+            new_session.close()
+
+        # The single table entry that holds the method type information
+        method_key = method.filter(Method.method_id == method_id)
+        method_key = method_key.filter(Method.method_order == 0).first()
+
+        # The table entries with time, setpoint, and relay data, sorted by order
+        method_list = method.filter(Method.method_order > 0)
+        method_list = method_list.order_by(Method.method_order.asc()).all()
+
+        last_end_time = ''
+        last_setpoint = ''
+        if method_type == 'Date':
+            # Get last entry end time to populate the form start time
+            last_method = method.filter(Method.method_id == method_key.method_id)
+            last_method = last_method.filter(Method.method_order > 0)
+            last_method = last_method.order_by(Method.method_order.desc()).first()
+            if last_method == None:
+                last_end_time = ''
+            else:
+                last_end_time = last_method.end_time
+
+            # Get last entry end setpoint to populate the form start setpoint
+            last_method = method.filter(Method.method_id == method_key.method_id)
+            last_method = last_method.filter(Method.method_order > 0)
+            last_method = last_method.order_by(Method.method_order.desc()).first()
+            if last_method == None:
+                last_setpoint = ''
+            else:
+                if last_method.end_setpoint != None:
+                    last_setpoint = last_method.end_setpoint
+                else:
+                    last_setpoint = last_method.start_setpoint
+
+
+        # method = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Method)
+        relay = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Relay)
+
+        if request.method == 'POST':
+            form_name = request.form['form-name']
+            if form_name == 'addMethod':
+                form_fail = flaskutils.method_add(formAddMethod, method)
+            elif form_name == 'modMethod':
+                form_fail = flaskutils.method_mod(formModMethod, method)
+            if ((form_name == 'modMethod') or
+                    form_name == 'addMethod' and not form_fail):
+                return redirect('/method-build/{}/{}'.format(
+                    method_type, method_id))
+
+        return render_template('pages/method-build.html',
+                               method=method,
+                               relay=relay,
+                               method_key=method_key,
+                               method_list=method_list,
+                               method_id=method_id,
+                               method_type=method_type,
+                               last_end_time=last_end_time,
+                               last_setpoint=last_setpoint,
+                               formCreateMethod=formCreateMethod,
+                               formAddMethod=formAddMethod,
+                               formModMethod=formModMethod)
+
+    return redirect('/method')
+
+
 @app.route('/remote/<page>', methods=('GET', 'POST'))
 def remote_admin(page):
     """Return pages for remote administraion"""
@@ -1357,7 +1361,6 @@ def download_file(dl_type, filename):
 
 # Return the most recent time and value from influxdb
 @app.route('/last/<sensor_type>/<sensor_measure>/<sensor_id>/<sensor_period>')
-@gzipped
 def last_data(sensor_type, sensor_measure, sensor_id, sensor_period):
     if (not session.get('logged_in') and
         not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
