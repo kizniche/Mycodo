@@ -7,8 +7,7 @@ from MCP342x import MCP342x
 
 
 class MCP342x_read(object):
-    def __init__(self, logger, address, channel, gain, resolution):
-        self.logger = logger
+    def __init__(self, address, channel, gain, resolution):
         self._voltage = None
         self.i2c_address = address
         self.channel = channel

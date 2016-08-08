@@ -8,6 +8,8 @@ import argparse
 import calendar
 import datetime
 import glob
+import gzip
+import functools
 import logging
 import os
 import random
@@ -18,8 +20,9 @@ import subprocess
 import time
 import RPi.GPIO as GPIO
 from collections import OrderedDict
+from cStringIO import StringIO as IO
 from dateutil.parser import parse as date_parse
-from flask import Flask, flash, make_response, redirect, render_template, request, send_from_directory, session, g, jsonify, Response
+from flask import Flask, after_this_request, flash, make_response, redirect, render_template, request, send_from_directory, session, g, jsonify, Response
 from flask_influxdb import InfluxDB
 from logging.handlers import RotatingFileHandler
 from sqlalchemy.orm import sessionmaker
@@ -73,6 +76,41 @@ app.secret_key = os.urandom(24)
 app.jinja_env.add_extension('jinja2.ext.do')  # Global values in jinja
 
 influx_db = InfluxDB(app)
+
+
+def gzipped(f):
+    @functools.wraps(f)
+    def view_func(*args, **kwargs):
+        @after_this_request
+        def zipper(response):
+            accept_encoding = request.headers.get('Accept-Encoding', '')
+
+            if 'gzip' not in accept_encoding.lower():
+                return response
+
+            response.direct_passthrough = False
+
+            if (response.status_code < 200 or
+                response.status_code >= 300 or
+                'Content-Encoding' in response.headers):
+                return response
+            gzip_buffer = IO()
+            gzip_file = gzip.GzipFile(mode='wb',
+                                      fileobj=gzip_buffer)
+
+            gzip_file.write(response.data)
+            gzip_file.close()
+
+            response.data = gzip_buffer.getvalue()
+            response.headers['Content-Encoding'] = 'gzip'
+            response.headers['Vary'] = 'Accept-Encoding'
+            response.headers['Content-Length'] = len(response.data)
+
+            return response
+
+        return f(*args, **kwargs)
+
+    return view_func
 
 
 @app.before_request
@@ -1319,6 +1357,7 @@ def download_file(dl_type, filename):
 
 # Return the most recent time and value from influxdb
 @app.route('/last/<sensor_type>/<sensor_measure>/<sensor_id>/<sensor_period>')
+@gzipped
 def last_data(sensor_type, sensor_measure, sensor_id, sensor_period):
     if (not session.get('logged_in') and
         not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
@@ -1352,6 +1391,7 @@ def last_data(sensor_type, sensor_measure, sensor_id, sensor_period):
 
 # Return data from past_seconds until present from influxdb
 @app.route('/past/<sensor_type>/<sensor_measure>/<sensor_id>/<past_seconds>')
+@gzipped
 def past_data(sensor_type, sensor_measure, sensor_id, past_seconds):
     if (not session.get('logged_in') and
         not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):

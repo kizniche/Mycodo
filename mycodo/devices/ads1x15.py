@@ -7,8 +7,7 @@ import Adafruit_ADS1x15
 
 
 class ADS1x15_read(object):
-    def __init__(self, logger, address, channel, gain):
-        self.logger = logger
+    def __init__(self, address, channel, gain):
         self._voltage = None
         self.i2c_address = address
         self.channel = channel

@@ -194,9 +194,9 @@ class SensorController(threading.Thread):
 
         # Devices
         elif self.device_type == 'ADS1x15':
-            self.adc = ADS1x15_read(self.logger, int(str(self.location), 16), self.adc_channel, self.adc_gain)
+            self.adc = ADS1x15_read(int(str(self.location), 16), self.adc_channel, self.adc_gain)
         elif self.device_type == 'MCP342x':
-            self.adc = MCP342x_read(self.logger, int(str(self.location), 16), self.adc_channel, self.adc_gain, self.adc_resolution)
+            self.adc = MCP342x_read(int(str(self.location), 16), self.adc_channel, self.adc_gain, self.adc_resolution)
 
         # Other
         elif self.device_type in ['EDGE', 'ADS1x15', 'MCP342x']:
