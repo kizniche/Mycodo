@@ -87,16 +87,13 @@ def camera_record(record_type, duration_sec=10):
             still_filename = 'Still-{}.jpg'.format(timestamp)
             output_filepath = '{}/{}'.format(path_stills, still_filename)
             assure_path_exists(path_stills)
-            extra_args = ''
-            command = '/usr/bin/raspistill {} -o {}'.format(extra_args, output_filepath)
-            cmd_out, cmd_err, cmd_status = cmd_output(command)
-            # with picamera.PiCamera() as camera:
-            #     camera.resolution = (1296, 972)
-            #     camera.hflip = True
-            #     camera.vflip = True
-            #     camera.start_preview()
-            #     time.sleep(2)  # Camera warm-up time
-            #     camera.capture(output_filepath, use_video_port=True)
+            with picamera.PiCamera() as camera:
+                camera.resolution = (1296, 972)
+                camera.hflip = True
+                camera.vflip = True
+                camera.start_preview()
+                time.sleep(2)  # Camera warm-up time
+                camera.capture(output_filepath, use_video_port=True)
         elif record_type == 'video':
             path_video = '{}/camera-video'.format(INSTALL_DIRECTORY)
             video_filename = 'Video-{}.h264'.format(timestamp)
