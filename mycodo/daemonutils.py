@@ -79,8 +79,7 @@ def set_user_grp(filepath, user, group):
 #
 
 def camera_record(record_type, duration_sec=10):
-    now = time.time()
-    timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d_%H-%M-%S')
+    timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     try:
         if record_type == 'photo':
             path_stills = '{}/camera-stills'.format(INSTALL_DIRECTORY)

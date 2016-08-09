@@ -1,8 +1,15 @@
+# -*- coding: utf-8 -*-
+
+from __future__ import print_function # In python 2.7
+import sys
+
+import datetime
 import time
 import io
 import os
 import threading
 import picamera
+
 
 class CameraStream(object):
     thread = None  # background thread that reads frames from camera
@@ -66,11 +73,17 @@ class CameraStream(object):
         cls.thread = None
 
 
+
 class CameraTimelapse(object):
     thread = None
     interval_sec = None
     run_time_sec = None
-    terminate = False
+    timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    timelapse_path = os.path.dirname(os.path.realpath(__file__))+'/../../camera-timelapse/'
+    if not os.path.exists(timelapse_path):
+        os.makedirs(timelapse_path)
+    timelapse_file = timestamp+'-img-{counter:03d}.jpg'
+    timelapse_pathfile = timelapse_path+timelapse_file
 
     def initialize(self):
         if CameraTimelapse.thread is None:
@@ -86,6 +99,7 @@ class CameraTimelapse(object):
         CameraTimelapse.terminate = True
 
     def start_timelapse(self, interval_sec, run_time_sec):
+        CameraTimelapse.terminate = False
         CameraTimelapse.interval_sec = float(interval_sec)
         CameraTimelapse.run_time_sec = time.time()+float(run_time_sec)
         self.initialize()
@@ -94,16 +108,15 @@ class CameraTimelapse(object):
     def _thread(cls):
         try:
             with picamera.PiCamera() as camera:
-                camera.resolution = (1024, 768)
+                camera.resolution = (1296, 972)
                 camera.hflip = True
                 camera.vflip = True
                 camera.start_preview()
                 time.sleep(2)
-                for filename in camera.capture_continuous(
-                        os.path.dirname(os.path.realpath(__file__))+'/../../camera-timelapse/'+timestamp+'-img-{counter:03d}.jpg'):
-                    if time.time() - cls.run_time_sec or cls.terminate:
+                for filename in camera.capture_continuous(cls.timelapse_pathfile):
+                    if time.time() > cls.run_time_sec or cls.terminate:
                         break
                     time.sleep(cls.interval_sec)
-        except:
-            pass
+        except Exception as msg:
+            print('Timelapse Error: {}'.format(msg), file=sys.stderr)
         cls.thread = None

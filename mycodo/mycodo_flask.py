@@ -794,13 +794,15 @@ def page(page):
 
         stream_locked = os.path.isfile(lock_file_stream)
         if stream_locked and not CameraStream().is_running():
-            os.remove('/var/lock/mycodo-camera-stream.lock')
+            os.remove(lock_file_stream)
             stream_locked = False
+        stream_locked = os.path.isfile(lock_file_stream)
 
         timelapse_locked = os.path.isfile(lock_file_timelapse)
         if timelapse_locked and not CameraTimelapse().is_running():
-            os.remove('/var/lock/mycodo-camera-timelapse.lock')
+            os.remove(lock_file_timelapse)
             timelapse_locked = False
+        timelapse_locked = os.path.isfile(lock_file_timelapse)
 
         if request.method == 'POST':
             if session['user_group'] == 'guest':
@@ -809,29 +811,50 @@ def page(page):
             form_name = request.form['form-name']
             if form_name == 'camera':
                 if formCamera.Still.data:
-                    try:
-                        # if CameraStream().is_running():
-                        #     CameraStream().terminate()  # Stop camera stream to take a photo
-                        #     time.sleep(2)
-                        #     stream_locked = True  # Signal to enable camera stream
-                        camera_record('photo')
-                    except Exception as msg:
-                        flash("Camera Error: {}".format(msg), "error")
+                    if not stream_locked or not timelapse_locked:
+                        try:
+                            # if CameraStream().is_running():
+                            #     CameraStream().terminate()  # Stop camera stream to take a photo
+                            #     time.sleep(2)
+                            #     stream_locked = True  # Signal to enable camera stream
+                            camera_record('photo')
+                        except Exception as msg:
+                            flash("Camera Error: {}".format(msg), "error")
+                    else:
+                        flash("Cannot capture still if timelapse or stream is "
+                              "active. If they are not active, delete {} and {}.".format(
+                              stream_locked, timelapse_locked), "error")
                 elif formCamera.StartTimelapse.data:
-                    CameraTimelapse().start_timelapse(
-                        formCamera.TimelapseInterval.data,
-                        formCamera.TimelapseRunTime.data)
-                    open('/var/lock/mycodo-camera-timelapse.lock', 'a')
-                    timelapse_locked = True
-                    flash("timelapse started {} {}".format(formCamera.TimelapseInterval.data, formCamera.TimelapseRunTime.data), "success")
+                    if not stream_locked:
+                        CameraTimelapse().start_timelapse(
+                            formCamera.TimelapseInterval.data,
+                            formCamera.TimelapseRunTime.data)
+                        open(lock_file_timelapse, 'a')
+                        timelapse_locked = True
+                        flash("timelapse started {} {}".format(
+                            formCamera.TimelapseInterval.data,
+                            formCamera.TimelapseRunTime.data),
+                            "success")
+                    else:
+                        flash("Cannot capture still if a stream is active. "
+                              "If it is not active, delete {}.".format(
+                              stream_locked), "error")
                 elif formCamera.StopTimelapse.data:
-                    CameraTimelapse().terminate()
-                    os.remove('/var/lock/mycodo-camera-timelapse.lock')
-                    timelapse_locked = False
+                    try:
+                        CameraTimelapse().terminate()
+                        os.remove(lock_file_timelapse)
+                        timelapse_locked = False
+                    except Exception as msg:
+                        flash("Could not stop timelapse: {}".format(msg), "error")
                 elif formCamera.StartStream.data:
-                    open(lock_file_stream, 'a')
-                    stream_locked = True
-                    stream = True
+                    if not timelapse_locked:
+                        open(lock_file_stream, 'a')
+                        stream_locked = True
+                        stream = True
+                    else:
+                        flash("Cannot capture still if a timelapse is active. "
+                              "If it is not active, delete {}.".format(
+                              timelapse_locked), "error")
                 elif formCamera.StopStream.data:
                     if CameraStream().is_running():
                         CameraStream().terminate()
@@ -841,17 +864,28 @@ def page(page):
         try:
             latest_still_img_fullpath = max(glob.iglob(INSTALL_DIRECTORY+'/camera-stills/*.jpg'), key=os.path.getctime)
             ts = os.path.getmtime(latest_still_img_fullpath)
-            latest_still_img_ts = datetime.datetime.fromtimestamp(ts)
+            latest_still_img_ts = datetime.datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M:%S")
             latest_still_img = os.path.basename(latest_still_img_fullpath)
         except:
             latest_still_img_ts = None
             latest_still_img = None
+
+        try:
+            latest_timelapse_img_fullpath = max(glob.iglob(INSTALL_DIRECTORY+'/camera-timelapse/*.jpg'), key=os.path.getctime)
+            ts = os.path.getmtime(latest_timelapse_img_fullpath)
+            latest_timelapse_img_ts = datetime.datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M:%S")
+            latest_timelapse_img = os.path.basename(latest_timelapse_img_fullpath)
+        except:
+            latest_timelapse_img_ts = None
+            latest_timelapse_img = None
 
         return render_template('pages/camera.html',
                                camera_enabled=camera_enabled,
                                formCamera=formCamera,
                                latest_still_img_ts=latest_still_img_ts,
                                latest_still_img=latest_still_img,
+                               latest_timelapse_img_ts=latest_timelapse_img_ts,
+                               latest_timelapse_img=latest_timelapse_img,
                                stream_locked=stream_locked,
                                timelapse_locked=timelapse_locked)
 
@@ -1116,10 +1150,17 @@ def camera_img(img_type, filename):
     timelapse_path = INSTALL_DIRECTORY+'/camera-timelapse/'
 
     # Get a list of files in each directory
-    still_files = (file for file in os.listdir(still_path)
+    if os.path.isdir(still_path):
+        still_files = (file for file in os.listdir(still_path)
             if os.path.isfile(os.path.join(still_path, file)))
-    timelapse_files = (file for file in os.listdir(timelapse_path)
-            if os.path.isfile(os.path.join(timelapse_path, file)))
+    else:
+        still_files = []
+
+    if os.path.isdir(timelapse_path):
+        timelapse_files = (file for file in os.listdir(timelapse_path)
+                if os.path.isfile(os.path.join(timelapse_path, file)))
+    else:
+        timelapse_files = []
 
     if img_type == 'still':
         # Ensure file exists in directory before serving it
@@ -1127,7 +1168,7 @@ def camera_img(img_type, filename):
             resp = make_response(open(still_path+filename).read())
             resp.content_type = "image/jpeg"
             return resp
-    elif img_type == 'timestamp':
+    elif img_type == 'timelapse':
         if filename in timelapse_files:
             resp = make_response(open(timelapse_path+filename).read())
             resp.content_type = "image/jpeg"
