@@ -96,6 +96,7 @@ case "${1:-''}" in
         useradd -M mycodo
         adduser mycodo gpio
         adduser mycodo adm
+        adduser mycodo video
 
         if [ ! -e $INSTALL_DIRECTORY/.updating ]; then
             echo '0' > $INSTALL_DIRECTORY/.updating

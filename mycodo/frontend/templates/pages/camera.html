@@ -20,13 +20,13 @@
             <a data-toggle="collapse" href="#collapseContainerTimelapse" aria-expanded="false" aria-controls="collapseContainerTimelapse" class="btn btn-default" role="button">Create Timelapse</a>
           </div>
         {%- endif %} -->
-        <!-- <div class="form-group">
+        <div class="form-group">
           {% if stream_locked -%}
             {{formCamera.StopStream(class_='form-control btn btn-default')}}
           {% else %}
             {{formCamera.StartStream(class_='form-control btn btn-default')}}
           {%- endif %}
-        </div> -->
+        </div>
       </div>
 
       <div class="collapse" id="collapseContainerTimelapse" style="padding: 0.5em 0 3em 1em">

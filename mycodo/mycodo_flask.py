@@ -829,17 +829,15 @@ def page(page):
                     os.remove('/var/lock/mycodo-camera-timelapse.lock')
                     timelapse_locked = False
                 elif formCamera.StartStream.data:
-                    pass
-                    # open(lock_file_stream, 'a')
-                    # stream_locked = True
-                    # stream = True
+                    open(lock_file_stream, 'a')
+                    stream_locked = True
+                    stream = True
                 elif formCamera.StopStream.data:
-                    pass
-                    # if CameraStream().is_running():
-                    #     CameraStream().terminate()
-                    # if os.path.isfile(lock_file_stream):
-                    #     os.remove(lock_file_stream)
-                    # stream_locked = False
+                    if CameraStream().is_running():
+                        CameraStream().terminate()
+                    if os.path.isfile(lock_file_stream):
+                        os.remove(lock_file_stream)
+                    stream_locked = False
         try:
             latest_still_img_fullpath = max(glob.iglob(INSTALL_DIRECTORY+'/camera-stills/*.jpg'), key=os.path.getctime)
             ts = os.path.getmtime(latest_still_img_fullpath)
