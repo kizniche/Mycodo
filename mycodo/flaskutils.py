@@ -1508,9 +1508,9 @@ def pid_activate(formActivatePID):
             mod_method = db_session.query(Method).filter(
                 Method.method_id == pid.method_id)
             mod_method = mod_method.filter(Method.method_order == 0).first()
-            if mod_method.method_type == 'Duration':
-                mod_method.start_time = 'Ready'
-                db_session.commit()
+            if mod_method and mod_method.method_type == 'Duration':
+                    mod_method.start_time = 'Ready'
+                    db_session.commit()
 
     activate_deactivate_controller('activate',
                                    'PID',
