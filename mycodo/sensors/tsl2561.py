@@ -8,7 +8,7 @@ from tentacle_pi.TSL2561 import TSL2561
 class TSL2561_read(object):
     def __init__(self, address, bus):
         self._lux = None
-        self.i2c_address = i2c_address
+        self.i2c_address = address
         self.i2c_bus = bus
         self.running = True
 
