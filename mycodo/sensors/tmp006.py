@@ -2,24 +2,20 @@
 
 
 import time
-import RPi.GPIO as GPIO
 import Adafruit_TMP.TMP006 as TMP006
 
 
 class TMP006_read(object):
-    def __init__(self, i2c_address):
+    def __init__(self, address, bus):
         self._temperature_die = None
         self._temperature_object = None
-        self.i2c_address = int(i2c_address, 16)
-        if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
-            self.I2C_bus_number = '1'
-        else:
-            self.I2C_bus_number = '0'
+        self.i2c_address = address
+        self.i2c_bus = bus
         self.running = True
 
     def read(self):
         try:
-            sensor = TMP006.TMP006(address=self.i2c_address, busnum=self.I2C_bus_number)
+            sensor = TMP006.TMP006(address=self.i2c_address, busnum=self.i2c_bus)
             sensor.begin()
             self._temperature_object = sensor.readObjTempC()
             self._temperature_die = sensor.readDieTempC()

@@ -2,7 +2,7 @@
 
 ## Environmental Regulation System
 
-### Latest version: 4.0.11
+### Latest version: 4.0.12
 
 Mycodo is a remote monitoring and automated regulation system with a focus on modulating environmental conditions. It was built to run on the Raspberry Pi (1, 2, and 3) and aims to be easy to install and set up.
 
@@ -154,15 +154,17 @@ Certain sensors will require extra steps to be taken in order to set up the inte
 
 ### Carbon Dioxide (CO<sub>2</sub>)
 
-> [K30](http://www.co2meter.com/products/k-30-co2-sensor-module) (UART): [This documentation](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip) provides specific installation procedures for the K30 with the Raspberry Pi version 1 or 2, as well as example code. Once the K30 has been configured with this documentation, it can be tested whether the sensor is able to be read, by executing mycodo/tests/Test-Sensor-CO2-K30.py
+> [K30](http://www.co2meter.com/products/k-30-co2-sensor-module) (UART): Measures carbon dioxide in ppmv
+
+[This documentation](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip) provides specific installation procedures for the K30 with the Raspberry Pi version 1 or 2. Once the K30 has been configured with this documentation, it can be tested whether the sensor is able to be read, by executing ~/Mycodo/mycodo/tests/test_uart_K30.py
 
 Because the UART is handled differently by the Raspberry Pi 3, from of the addition of bluetooth, there are a different set of instructions for getting the K30 working on the Raspberry Pi 3. If installing on a Raspberry Pi 3, you only need to perform these steps to get the K30 working:
 
-Run raspi-config, go to Advanced Options->Serial and disable.
+Run raspi-config
 
 ```sudo raspi-config```
 
-Then edit /boot/config.txt
+Go to Advanced Options->Serial and disable. Then edit /boot/config.txt
 
 ```sudo vi /boot/config.txt```
 
@@ -170,15 +172,15 @@ Find the line "enable_uart=0" and change it to "enable_uart=1", then reboot.
 
 ### Pressure
 
-> [BMP085, BMP180](https://learn.adafruit.com/using-the-bmp085-with-raspberry-pi) (I<sup>2</sup>C)
+> [BMP085, BMP180](https://learn.adafruit.com/using-the-bmp085-with-raspberry-pi) (I<sup>2</sup>C): Measures barometric pressure and temperature
 
 ### Luminosity
 
-> [TSL2561](https://www.sparkfun.com/products/12055) (I<sup>2</sup>C): A light sensor with a flat response across most of the visible spectrum. It measures both infrared and visible light to better approximate the response of the human eye. Because it's an integrating sensor (it soaks up light for a predetermined amount of time), it is capable of measuring both small and large amounts of light by changing the integration time. Conducts specific light ranges from 0.1 - 40k+ Lux and contains two integrating analog-to-digital converters (ADC) that integrate currents from two photodiodes, simultaneously.
+> [TSL2561](https://www.sparkfun.com/products/12055) (I<sup>2</sup>C): A light sensor with a flat response across most of the visible spectrum. Light range from 0.1 - 40k+ Lux. Contains two integrating analog-to-digital converters (ADC) that integrate currents from two photodiodes to measure both infrared and visible light to better approximate the response of the human eye.
 
 ### Edge Detection
 
-The detection of a changing signal, for instance, 5-volts (HIGH) to 0-volts (LOW), requires the use of edge detection. By detecting a rising edge (LOW to HIGH), a falling edge (HIGH to LOW), or both, we can trigger actions or events. The GPIO chosen to detect the signal should be equipped with an appropriate resistor that either pulls the GPIO up (connected to 5-volts) or down (connected to ground). The option to enable the internal pull-up or pull-down resistors is not available for safety reasons. Use your own resistor to pull the GPIO high or low.
+The detection of a changing signal, for instance a simple switch completing a circuit, requires the use of edge detection. By detecting a rising edge (LOW to HIGH), a falling edge (HIGH to LOW), or both, actions or events can be triggered. The GPIO chosen to detect the signal should be equipped with an appropriate resistor that either pulls the GPIO up [to 5-volts] or down [to ground]. The option to enable the internal pull-up or pull-down resistors is not available for safety reasons. Use your own resistor to pull the GPIO high or low.
 
 Examples of devices that can be used with edge detection: simple switches and buttons, PIR motion sensors, reed switches, hall effect sensors, float switches, and more.
 
@@ -187,9 +189,9 @@ Examples of devices that can be used with edge detection: simple switches and bu
 
 ## I<sup>2</sup>C Multiplexers
 
-All devices that connected to the Raspberry Pi by the I<sup>2</sup>C bus need to have a unique address in order to communicate. Some sensors may have the same address (such as the AM2315), which prevents both from being connected at the same time. Others may provide the ability to change the address, however the address range may be limited, so you will be limited by how many sensors you can use at ine time. I<sup>2</sup>C multiplexers are extremely clever and useful in these scenarios because they allow multiple sensors with the same I<sup>2</sup>C address to be connected.
+All devices that connected to the Raspberry Pi by the I<sup>2</sup>C bus need to have a unique address in order to communicate. Some sensors may have the same address (such as the AM2315), which prevents more than one from being connected at the same time. Others may provide the ability to change the address, however the address range may be limited, which limits by how many you can use at the same time. I<sup>2</sup>C multiplexers are extremely clever and useful in these scenarios because they allow multiple sensors with the same I<sup>2</sup>C address to be connected.
 
-> [TCA9548A I2C Multiplexer](https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview) (I<sup>2</sup>C): Has 8 selectable address, so 8 multiplexers can be connected to one Raspberry Pi. Each multiplexer has 8 channels, allowing up to 8 devices/sensors with the same address to be connected to each. 8 multiplexers x 8 channels = 64 devices/sensors with the same address.
+> [TCA9548A I2C Multiplexer](https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview) (I<sup>2</sup>C): Has 8 selectable addresses, so 8 multiplexers can be connected to one Raspberry Pi. Each multiplexer has 8 channels, allowing up to 8 devices/sensors with the same address to be connected to each. 8 multiplexers x 8 channels = 64 devices/sensors with the same address.
 
 ## Analog to Digital Converters
 

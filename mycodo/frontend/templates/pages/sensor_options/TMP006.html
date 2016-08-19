@@ -1,4 +1,10 @@
 <div class="form-group">
+  {{formModSensor.modBus.label(class_='control-label')}}
+  <div>
+    {{formModSensor.modBus(class_='form-control', value=each_sensor.i2c_bus, **{'title':'Which I2C bus is this sensor connected?'})}}
+  </div>
+</div>
+<div class="form-group">
   <label class="control-label">I2C Address</label>
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modLocation" name="modLocation" title="The I2C address of the sensor.">

@@ -83,6 +83,14 @@ class SensorController(threading.Thread):
     def __init__(self, ready, logger, sensor_id):
         threading.Thread.__init__(self)
 
+        list_sensors_i2c = ['AM2315',
+                            'BMP',
+                            'SHT2x',
+                            'TMP006',
+                            'TSL2561',
+                            'ADS1x15',
+                            'MCP342x']
+
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
         self.ready = ready
@@ -99,11 +107,13 @@ class SensorController(threading.Thread):
         with session_scope(MYCODO_DB_PATH) as new_session:
             sensor = new_session.query(Sensor).filter(
                 Sensor.id == self.sensor_id).first()
+            self.i2c_bus = sensor.i2c_bus
             self.location = sensor.location
             self.device_type = sensor.device
             self.sensor_type = sensor.device_type
             self.period = sensor.period
             self.multiplexer_address_raw = sensor.multiplexer_address
+            self.multiplexer_bus = sensor.multiplexer_bus
             self.multiplexer_channel = sensor.multiplexer_channel
             self.adc_channel = sensor.adc_channel
             self.adc_gain = sensor.adc_gain
@@ -148,27 +158,28 @@ class SensorController(threading.Thread):
                 if each_relay.id == self.pre_relay_id and self.pre_relay_duration:
                     self.pre_relay_setup = True
 
-        if self.device_type in ['AM2315', 'BMP'] and self.multiplexer_address_raw:
+        if self.device_type in list_sensors_i2c:
+            self.i2c_address = int(str(self.location), 16)
+
+        if self.device_type in list_sensors_i2c and self.multiplexer_address_raw:
             self.multiplexer_address_string = self.multiplexer_address_raw
             self.multiplexer_address = int(str(self.multiplexer_address_raw), 16)
             self.multiplexer_lock_file = "/var/lock/mycodo_multiplexer_0x{:02X}.pid".format(self.multiplexer_address)
-            self.multiplexer = TCA9548A(self.multiplexer_address)
+            self.multiplexer = TCA9548A(self.multiplexer_bus,
+                                        self.multiplexer_address)
         else:
             self.multiplexer = None
 
-        if self.device_type in ['ADS1x15','MCP342x'] and self.location:
-            self.adc_lock_file = "/var/lock/mycodo_adc_0x{:02X}.pid".format(int(str(self.location), 16))
+        if self.device_type in ['ADS1x15', 'MCP342x'] and self.location:
+            self.adc_lock_file = "/var/lock/mycodo_adc_bus{}_0x{:02X}.pid".format(self.i2c_bus, self.i2c_address)
             
         else:
             self.adc = None
 
         self.device_recognized = True
 
-        # Processes
         if self.device_type == 'RPiCPULoad':
             self.measure_sensor = RaspberryPiCPULoad()
-
-        # Environmental Sensors
         elif self.device_type == 'RPi':
             self.measure_sensor = RaspberryPiCPUTemp()
         elif self.device_type == 'DS18B20':
@@ -184,19 +195,25 @@ class SensorController(threading.Thread):
         elif self.device_type == 'BMP':
             self.measure_sensor = BMP()
         elif self.device_type == 'SHT1x_7x':
-            self.measure_sensor = SHT1x_7x_read(self.location, self.sht_clock_pin, self.sht_voltage)
+            self.measure_sensor = SHT1x_7x_read(self.location,
+                                                self.sht_clock_pin,
+                                                self.sht_voltage)
         elif self.device_type == 'SHT2x':
-            self.measure_sensor = SHT2x_read(int(str(self.location), 16))
+            self.measure_sensor = SHT2x_read(self.i2c_address,
+                                             self.i2c_bus)
         elif self.device_type == 'TMP006':
-            self.measure_sensor = TMP006_read(self.location)
+            self.measure_sensor = TMP006_read(self.i2c_address,
+                                              self.i2c_bus)
         elif self.device_type == 'TSL2561':
-            self.measure_sensor = TSL2561_read(self.location)
-
-        # Devices
+            self.measure_sensor = TSL2561_read(self.i2c_address,
+                                               self.i2c_bus)
         elif self.device_type == 'ADS1x15':
-            self.adc = ADS1x15_read(int(str(self.location), 16), self.adc_channel, self.adc_gain)
+            self.adc = ADS1x15_read(self.i2c_address, self.i2c_bus,
+                                    self.adc_channel, self.adc_gain)
         elif self.device_type == 'MCP342x':
-            self.adc = MCP342x_read(int(str(self.location), 16), self.adc_channel, self.adc_gain, self.adc_resolution)
+            self.adc = MCP342x_read(self.i2c_address, self.i2c_bus,
+                                    self.adc_channel, self.adc_gain,
+                                    self.adc_resolution)
 
         # Other
         elif self.device_type in ['EDGE', 'ADS1x15', 'MCP342x']:
@@ -455,7 +472,10 @@ class SensorController(threading.Thread):
 
         if self.multiplexer:
             # Acquire a lock for multiplexer
-            self.lock_status, self.lock_response = self.setup_lock(self.multiplexer_address, self.multiplexer_lock_file)
+            (self.lock_status,
+            self.lock_response) = self.setup_lock(self.multiplexer_address,
+                                                  self.multiplexer_bus,
+                                                  self.multiplexer_lock_file)
             if not self.lock_status:
                 self.logger.warning("[Sensor {}] Could not acquire lock "
                                     "for multiplexer. Error:"
@@ -468,7 +488,8 @@ class SensorController(threading.Thread):
                                                   self.multiplexer_address_string,
                                                   self.multiplexer_channel))
             # Set multiplexer channel
-            self.multiplexer_status, self.multiplexer_response = self.multiplexer.setup(self.multiplexer_channel)
+            (self.multiplexer_status,
+            self.multiplexer_response) = self.multiplexer.setup(self.multiplexer_channel)
             if not self.multiplexer_status:
                 self.logger.warning("[Sensor {}] Could not set channel "
                                     "with multiplexer at address {}. Error:"
@@ -481,7 +502,10 @@ class SensorController(threading.Thread):
         if self.adc:
             try:
                 # Acquire a lock for ADC
-                self.lock_status, self.lock_response = self.setup_lock(int(str(self.location), 16), self.adc_lock_file)
+                (self.lock_status,
+                self.lock_response) = self.setup_lock(self.i2c_address,
+                                                      self.i2c_bus,
+                                                      self.adc_lock_file)
                 if not self.lock_status:
                     self.logger.warning("[Sensor {}] Could not acquire lock "
                                         "for multiplexer. Error:"
@@ -517,7 +541,9 @@ class SensorController(threading.Thread):
                 self.logger.exception("[Sensor {}] Error while attempting to read "
                                     "adc: {}".format(self.sensor_id, msg))
             finally:
-                self.release_lock(int(str(self.location), 16), self.adc_lock_file)
+                self.release_lock(self.i2c_address,
+                                  self.i2c_bus,
+                                  self.adc_lock_file)
         else:
             try:
                 # Get measurement from sensor
@@ -527,7 +553,9 @@ class SensorController(threading.Thread):
                                     "sensor: {}".format(self.sensor_id, msg))
 
         if self.multiplexer:
-            self.release_lock(self.multiplexer_address, self.multiplexer_lock_file)
+            self.release_lock(self.multiplexer_address,
+                              self.multiplexer_bus,
+                              self.multiplexer_lock_file)
 
         if self.device_recognized and measurements is not None:
             self.measurement = Measurement(measurements)
@@ -538,27 +566,34 @@ class SensorController(threading.Thread):
         self.lastUpdate = time.time()
 
 
-    def setup_lock(self, i2c_address, lockfile):
+    def setup_lock(self, i2c_address, i2c_bus, lockfile):
         self.execution_timer = timeit.default_timer()
         try:
             self.lock[lockfile] = LockFile(lockfile)
             while not self.lock[lockfile].i_am_locking():
                 try:
-                    self.logger.debug("[Locking 0x{:02X}] Acquiring Lock: {}".format(i2c_address, self.lock[lockfile].path))
+                    self.logger.debug("[Locking bus-{} 0x{:02X}] Acquiring "
+                                      "Lock: {}".format(i2c_bus, i2c_address,
+                                                        self.lock[lockfile].path))
                     self.lock[lockfile].acquire(timeout=60)    # wait up to 60 seconds
                 except:
-                    self.logger.exception("[Locking 0x{:02X}] Waited 60 seconds. Breaking lock to acquire {}".format(i2c_address, self.lock[lockfile].path))
+                    self.logger.exception("[Locking bus-{} 0x{:02X}] Waited 60 "
+                                          "seconds. Breaking lock to acquire "
+                                          "{}".format(i2c_bus, i2c_address,
+                                                      self.lock[lockfile].path))
                     self.lock[lockfile].break_lock()
                     self.lock[lockfile].acquire()
-            self.logger.debug("[Locking 0x{:02X}] Acquired Lock: {}".format(i2c_address, self.lock[lockfile].path))
-            self.logger.debug("[Locking 0x{:02X}] Executed in {}ms".format(i2c_address, (timeit.default_timer()-self.execution_timer)*1000))
+            self.logger.debug("[Locking bus-{} 0x{:02X}] Acquired Lock: {}".format(
+                i2c_bus, i2c_address, self.lock[lockfile].path))
+            self.logger.debug("[Locking bus-{} 0x{:02X}] Executed in {}ms".format(
+                i2c_bus, i2c_address, (timeit.default_timer()-self.execution_timer)*1000))
             return 1, "Success"
         except Exception as msg:
             return 0, "Multiplexer Fail: {}".format(msg)
 
 
-    def release_lock(self, i2c_address, lockfile):
-        self.logger.debug("[Locking 0x{:02X}] Releasing Lock: {}".format(i2c_address, lockfile))
+    def release_lock(self, i2c_address, i2c_bus, lockfile):
+        self.logger.debug("[Locking bus-{} 0x{:02X}] Releasing Lock: {}".format(i2c_bus, i2c_address, lockfile))
         self.lock[lockfile].release()
 
 

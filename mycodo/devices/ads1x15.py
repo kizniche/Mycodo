@@ -2,14 +2,14 @@
 
 import smbus
 import time
-import RPi.GPIO as GPIO
 import Adafruit_ADS1x15
 
 
 class ADS1x15_read(object):
-    def __init__(self, address, channel, gain):
+    def __init__(self, address, bus, channel, gain):
         self._voltage = None
         self.i2c_address = address
+        self.i2c_bus = bus
         self.channel = channel
 
         # Choose a gain of 1 for reading voltages from 0 to 4.09V.
@@ -22,18 +22,13 @@ class ADS1x15_read(object):
         #  -  16 = +/-0.256V
         # See table 3 in the ADS1015/ADS1115 datasheet for more info on gain.
         self.gain = gain
-
-        if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
-            self.I2C_bus_number = 1
-        else:
-            self.I2C_bus_number = 0
         self.running = True
 
 
     def read(self):
         try:
             time.sleep(1)
-            adc = Adafruit_ADS1x15.ADS1115(address=self.i2c_address, busnum=self.I2C_bus_number)
+            adc = Adafruit_ADS1x15.ADS1115(address=self.i2c_address, busnum=self.i2c_bus)
             self._voltage = adc.read_adc(self.channel, gain=self.gain)/10000.0
         except:
             return 1

@@ -4,25 +4,21 @@
 
 import smbus
 import time
-import RPi.GPIO as GPIO
 from sensorutils import dewpoint
 
 
 class SHT2x_read(object):
-    def __init__(self, address):
+    def __init__(self, address, bus):
         self._temperature = 0
         self._humidity = 0
         self._dewpoint = 0
         self.i2c_address = address
-        if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
-            self.I2C_bus_number = 1
-        else:
-            self.I2C_bus_number = 0
+        self.i2c_bus = bus
         self.running = True
 
     def read(self):
         try:
-            bus = smbus.SMBus(self.I2C_bus_number)
+            bus = smbus.SMBus(self.i2c_bus)
             # SHT25 address, 0x40(64)
             # Send temperature measurement command
             #       0xF3(243)   NO HOLD master

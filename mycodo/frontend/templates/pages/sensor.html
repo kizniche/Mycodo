@@ -116,15 +116,13 @@
             </div>
 
             <div style="padding: 0.5em;" class="form-inline">
-              {% if each_sensor.device not in ['ADS1x15', 'MCP342x', 'TSL2561', 'TMP006'] -%}
+              {% if each_sensor.device not in ['BMP', 'AM2315', 'ADS1x15', 'MCP342x', 'SHT1x_7x', 'SHT2x', 'TSL2561', 'TMP006'] -%}
                 <div class="form-group">
                   <label class="control-label">
-                    {%- if each_sensor.device in ['DHT11', 'DHT22', 'SHT1x_7x', 'EDGE'] -%}
+                    {%- if each_sensor.device in ['DHT11', 'DHT22', 'EDGE'] -%}
                       GPIO
                     {%- elif each_sensor.device == 'DS18B20' -%}
                       Device ID (28-x)
-                    {%- elif each_sensor.device in ['AM2315', 'BMP', 'TSL2561', 'TMP006', 'SHT2x'] -%}
-                      I<sup>2</sup>C Address
                     {%- elif each_sensor.device == 'K30' -%}
                       Interface
                     {%- else -%}
@@ -132,9 +130,9 @@
                     {%- endif -%}
                   </label>
                   <div>
-                    {% if each_sensor.device in ['DS18B20', 'DHT11', 'DHT22', 'SHT1x_7x', 'EDGE', 'TMP006'] -%}
+                    {% if each_sensor.device in ['DS18B20', 'DHT11', 'DHT22', 'EDGE'] -%}
                       {{formModSensor.modLocation(class_='form-control', value=each_sensor.location, **{'title':'Where to access the device/sensor?'})}}
-                    {% elif each_sensor.device in ['RPiCPULoad', 'RPi', 'AM2315', 'BMP', 'K30', 'SHT2x'] -%}
+                    {% elif each_sensor.device in ['RPiCPULoad', 'RPi', 'K30'] -%}
                       {{formModSensor.modLocation(class_='form-control', value=each_sensor.location, disabled=True)}}
                       <input type="hidden" class="form-control" id="modLocation" name="modLocation" value="{{each_sensor.location}}">
                     {% endif -%}
@@ -142,14 +140,20 @@
                 </div>
               {% endif -%}
 
-              {% if each_sensor.device == 'SHT1x_7x' %}
-                {% include 'pages/sensor_options/SHT1x_7x.html' %}
+              {% if each_sensor.device == 'ADS1x15' %}
+                {% include 'pages/sensor_options/ADS1x15.html' %}
+              {% elif each_sensor.device == 'AM2315' %}
+                {% include 'pages/sensor_options/AM2315.html' %}
+              {% elif each_sensor.device == 'BMP' %}
+                {% include 'pages/sensor_options/BMP.html' %}
               {% elif each_sensor.device == 'EDGE' %}
                 {% include 'pages/sensor_options/edge.html' %}
-              {% elif each_sensor.device == 'ADS1x15' %}
-                {% include 'pages/sensor_options/ADS1x15.html' %}
               {% elif each_sensor.device == 'MCP342x' %}
                 {% include 'pages/sensor_options/MCP342x.html' %}
+              {% elif each_sensor.device == 'SHT1x_7x' %}
+                {% include 'pages/sensor_options/SHT1x_7x.html' %}
+              {% elif each_sensor.device == 'SHT2x' %}
+                {% include 'pages/sensor_options/SHT2x.html' %}
               {% elif each_sensor.device == 'TMP006' %}
                 {% include 'pages/sensor_options/TMP006.html' %}
               {% elif each_sensor.device == 'TSL2561' %}
@@ -158,7 +162,7 @@
               
               {% if each_sensor.device in ['AM2315', 'BMP', 'TSL2561', 'TMP006', 'ADS1x15', 'MCP342x', 'SHT2x'] -%}
                 <div class="form-group">
-                  <label class="control-label">Multiplexer (Mx)</label>
+                  {{formModSensor.modMultiplexAddress.label(class_='control-label')}}
                   <div>
                     <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modMultiplexAddress" name="modMultiplexAddress" title="The I2C address of the multiplexer (if used).">
                       <option value=""{% if each_sensor.multiplexer_address == '' %} selected{% endif %}>Disabled</option>
@@ -174,7 +178,13 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="control-label">Mx Channel</label>
+                  {{formModSensor.modMultiplexBus.label(class_='control-label')}}
+                  <div>
+                    {{formModSensor.modMultiplexBus(class_='form-control', value=each_sensor.multiplexer_bus, **{'title':'Which I2C bus is this multiplexer connected?'})}}
+                  </div>
+                </div>
+                <div class="form-group">
+                  {{formModSensor.modMultiplexChannel.label(class_='control-label')}}
                   <div>
                     <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modMultiplexChannel" name="modMultiplexChannel" rel="tooltip" title="If a multiplexer address is selected, select the channel connected to your target device.">
                       <option value="0"{% if each_sensor.multiplexer_channel == 0 %} selected{% endif %}>Disabled</option>

@@ -8,6 +8,7 @@ import operator
 import os
 import random
 import requests
+import RPi.GPIO as GPIO
 import socket
 import sqlalchemy
 import string
@@ -1811,6 +1812,10 @@ def sensor_add(formAddSensor, display_order):
             new_sensor.device = formAddSensor.sensor.data
             new_sensor.name = '{} ({})'.format(formAddSensor.sensor.data,
                                                random_sensor_id)
+            if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
+                new_sensor.i2c_bus = '1'
+            else:
+                new_sensor.i2c_bus = '0'
             new_sensor.location = ''
             new_sensor.multiplexer_address = ''
             new_sensor.multiplexer_channel = 0
@@ -1925,8 +1930,10 @@ def sensor_mod(formModSensor):
             if error:
                 return redirect('/sensor')
             mod_sensor.name = formModSensor.modName.data
+            mod_sensor.i2c_bus = formModSensor.modBus.data
             mod_sensor.location = formModSensor.modLocation.data
             mod_sensor.multiplexer_address = formModSensor.modMultiplexAddress.data
+            mod_sensor.multiplexer_bus = formModSensor.modMultiplexBus.data
             mod_sensor.multiplexer_channel = formModSensor.modMultiplexChannel.data
             mod_sensor.adc_channel = formModSensor.modADCChannel.data
             mod_sensor.adc_gain = formModSensor.modADCGain.data

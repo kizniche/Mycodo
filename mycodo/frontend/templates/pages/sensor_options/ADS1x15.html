@@ -1,5 +1,5 @@
 <div class="form-group">
-  <label class="control-label">I2C Address</label>
+  <label class="control-label">I<sup>2</sup>C Address</label>
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modLocation" name="modLocation" title="The I2C address of the analog to digital converter.">
       <option value=""{% if each_sensor.location == '' %} selected{% endif %}></option>
@@ -8,6 +8,12 @@
       <option value="0x4A"{% if each_sensor.location == '0x4A' %} selected{% endif %}>Address 0x4A</option>
       <option value="0x4B"{% if each_sensor.location == '0x4B' %} selected{% endif %}>Address 0x4B</option>
     </select>
+  </div>
+</div>
+<div class="form-group">
+  {{formModSensor.modBus.label(class_='control-label')}}
+  <div>
+    {{formModSensor.modBus(class_='form-control', value=each_sensor.i2c_bus, **{'title':'Which I2C bus is this sensor connected?'})}}
   </div>
 </div>
 <div class="form-group">

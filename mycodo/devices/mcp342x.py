@@ -2,28 +2,24 @@
 
 import smbus
 import time
-import RPi.GPIO as GPIO
 from MCP342x import MCP342x
 
 
 class MCP342x_read(object):
-    def __init__(self, address, channel, gain, resolution):
+    def __init__(self, address, bus, channel, gain, resolution):
         self._voltage = None
         self.i2c_address = address
+        self.i2c_bus = bus
         self.channel = channel
         self.gain = gain
         self.resolution = resolution
-        if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
-            self.I2C_bus_number = 1
-        else:
-            self.I2C_bus_number = 0
         self.running = True
 
 
     def read(self):
         try:
             time.sleep(1)
-            self.bus = smbus.SMBus(self.I2C_bus_number)
+            self.bus = smbus.SMBus(self.i2c_bus)
             adc = MCP342x(self.bus, self.i2c_address, channel=self.channel, gain=self.gain, resolution=self.resolution)
             self._voltage = adc.convert_and_read()
         except:

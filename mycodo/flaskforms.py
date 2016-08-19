@@ -889,76 +889,28 @@ class ModSensor(Form):
     modSensor_id = HiddenField(u'Sensor')
     modName = TextField(
         u'Name',
-        render_kw={"placeholder": "Name"},
         validators=[DataRequired()]
     )
-    modLocation = TextField(
-        u'Location',
-        render_kw={"placeholder": "Location"}
-    )
-    modMultiplexAddress = TextField(
-        u'Multiplexer I2C Address',
-        render_kw={"placeholder": "I2C Address"}
-    )
-    modMultiplexChannel = IntegerField(
-        u'Multiplexer Channel',
-        render_kw={"placeholder": "Channel"}
-    )
-    modADCChannel = IntegerField(
-        u'ADC Channel',
-        render_kw={"placeholder": "Channel"}
-    )
-    modADCGain = IntegerField(
-        u'ADC Gain',
-        render_kw={"placeholder": "Gain"}
-    )
-    modADCResolution = IntegerField(
-        u'ADC Resolution',
-        render_kw={"placeholder": "Resolution"}
-    )
-    modADCMeasure = TextField(
-        u'ADC Measurement Type',
-        render_kw={"placeholder": "Measurement"}
-    )
-    modADCMeasureUnits = TextField(
-        u'ADC Measurement Units',
-        render_kw={"placeholder": "Units"}
-    )
-    modADCVoltsMin = DecimalField(
-        u'Volts Min',
-        render_kw={"placeholder": "Volts Min"}
-    )
-    modADCVoltsMax = DecimalField(
-        u'Volts Max',
-        render_kw={"placeholder": "Volts Max"}
-    )
-    modADCUnitsMin = DecimalField(
-        u'Units Min',
-        render_kw={"placeholder": "Units Min"}
-    )
-    modADCUnitsMax = DecimalField(
-        u'Units Max',
-        render_kw={"placeholder": "Units Max"}
-    )
-    modSwitchEdge = TextField(
-        u'Switch Edge Detected',
-        render_kw={"placeholder": "Edge Detected"}
-    )
-    modSwitchBounceTime = IntegerField(
-        u'Bounce Time (ms)',
-        render_kw={"placeholder": "Bounce Time"}
-    )
-    modSwitchResetPeriod = IntegerField(
-        u'Reset Period (sec)',
-        render_kw={"placeholder": "Reset Period"}
-    )
-    modPreRelayID = TextField(
-        u'Pre Relay',
-        render_kw={"placeholder": "Pre Relay"}
-    )
+    modBus = IntegerField(u'I<sup>2</sup>C Bus')
+    modLocation = TextField(u'Location')
+    modMultiplexAddress = TextField(u'Multiplexer (MX)')
+    modMultiplexBus = TextField(u'Mx I<sup>2</sup>C Bus')
+    modMultiplexChannel = IntegerField(u'Mx Channel')
+    modADCChannel = IntegerField(u'ADC Channel')
+    modADCGain = IntegerField(u'ADC Gain')
+    modADCResolution = IntegerField(u'ADC Resolution')
+    modADCMeasure = TextField(u'ADC Measurement Type')
+    modADCMeasureUnits = TextField(u'ADC Measurement Units')
+    modADCVoltsMin = DecimalField(u'Volts Min')
+    modADCVoltsMax = DecimalField(u'Volts Max')
+    modADCUnitsMin = DecimalField(u'Units Min')
+    modADCUnitsMax = DecimalField(u'Units Max')
+    modSwitchEdge = TextField(u'Switch Edge Detected')
+    modSwitchBounceTime = IntegerField(u'Bounce Time (ms)')
+    modSwitchResetPeriod = IntegerField(u'Reset Period (sec)')
+    modPreRelayID = TextField(u'Pre Relay')
     modPreRelayDuration = DecimalField(
         u'Pre Relay Duration (sec)',
-        render_kw={"placeholder": "Pre Relay Duration"},
         validators=[validators.NumberRange(
             min=0,
             max=86400
@@ -966,7 +918,6 @@ class ModSensor(Form):
     )
     modPeriod = IntegerField(
         u'Read Period (sec)',
-        render_kw={"placeholder": "Period"},
         validators=[
                 DataRequired(),
                 validators.NumberRange(
@@ -976,17 +927,13 @@ class ModSensor(Form):
     )
     modSHTClockPin = IntegerField(
         u'Clock Pin',
-        render_kw={"placeholder": "SHT Clock Pin"},
         validators=[validators.NumberRange(
             min=0,
             max=100,
-            message="If using a SHT sensor, enter the clock pin."
+            message="If using a SHT sensor, enter the GPIO connected to the clock pin (using BCM numbering)."
         )]
     )
-    modSHTVoltage = TextField(
-        u'Voltage',
-        render_kw={"placeholder": "Voltage"}
-    )
+    modSHTVoltage = TextField(u'SHT Input Voltage')
     modSensorSubmit = SubmitField(u'Save')
     delSensorSubmit = SubmitField(u'Delete')
     activateSensorSubmit = SubmitField(u'Activate')

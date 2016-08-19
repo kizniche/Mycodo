@@ -1,3 +1,10 @@
+
+<div class="form-group">
+  <label class="control-label">GPIO</label>
+  <div>
+    {{formModSensor.modLocation(class_='form-control', value=each_sensor.location, **{'title':'Where to access the device/sensor?'})}}
+  </div>
+</div>
 <div class="form-group">
   {{formModSensor.modSHTClockPin.label(class_='control-label')}}
   <div>
