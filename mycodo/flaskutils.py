@@ -1813,9 +1813,11 @@ def sensor_add(formAddSensor, display_order):
             new_sensor.name = '{} ({})'.format(formAddSensor.sensor.data,
                                                random_sensor_id)
             if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
-                new_sensor.i2c_bus = '1'
+                new_sensor.i2c_bus = 1
+                new_sensor.multiplexer_bus = 1
             else:
-                new_sensor.i2c_bus = '0'
+                new_sensor.i2c_bus = 0
+                new_sensor.multiplexer_bus = 0
             new_sensor.location = ''
             new_sensor.multiplexer_address = ''
             new_sensor.multiplexer_channel = 0
