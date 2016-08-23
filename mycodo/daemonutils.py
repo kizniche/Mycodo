@@ -78,14 +78,19 @@ def set_user_grp(filepath, user, group):
 # Camera record
 #
 
-def camera_record(record_type, duration_sec=10):
+def camera_record(record_type, duration_sec=None, start_time=None, capture_number=None):
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     try:
-        if record_type == 'photo':
-            path_stills = '{}/camera-stills'.format(INSTALL_DIRECTORY)
-            still_filename = 'Still-{}.jpg'.format(timestamp)
-            output_filepath = '{}/{}'.format(path_stills, still_filename)
-            assure_path_exists(path_stills)
+        if record_type == 'photo' or record_type == 'timelapse':
+            if record_type == 'photo':
+                path_images = '{}/camera-stills'.format(INSTALL_DIRECTORY)
+                still_filename = 'Still-{}.jpg'.format(timestamp)
+                output_filepath = '{}/{}'.format(path_images, still_filename)
+            elif record_type == 'timelapse':
+                path_images = '{}/camera-timelapse'.format(INSTALL_DIRECTORY)
+                still_filename = '{}-img-{:05d}.jpg'.format(start_time, capture_number)
+                output_filepath = '{}/{}'.format(path_images, still_filename)
+            assure_path_exists(path_images)
             with picamera.PiCamera() as camera:
                 camera.resolution = (1296, 972)
                 camera.hflip = True
@@ -450,29 +455,29 @@ def recreate_stat_file():
     with open(ID_FILE, 'r') as read_file:
         stat_id = read_file.read()
 
-    new_stat_data=[['stat', 'value'],
-                   ['id', stat_id],
-                   ['next_send', time.time()+STATS_INTERVAL],
-                   ['RPi_revision', get_pi_revision()],
-                   ['Mycodo_revision', MYCODO_VERSION],
-                   ['country', 'None'],
-                   ['daemon_startup_seconds', 0.0],
-                   ['ram_use_mb', 0.0],
-                   ['num_users_admin', 0],
-                   ['num_users_guest', 0],
-                   ['num_lcds', 0],
-                   ['num_lcds_active', 0],
-                   ['num_logs', 0],
-                   ['num_logs_active', 0],
-                   ['num_methods', 0],
-                   ['num_methods_in_pid', 0],
-                   ['num_pids', 0],
-                   ['num_pids_active', 0],
-                   ['num_relays', 0],
-                   ['num_sensors', 0],
-                   ['num_sensors_active', 0],
-                   ['num_timers', 0],
-                   ['num_timers_active', 0]]
+    new_stat_data = [['stat', 'value'],
+                     ['id', stat_id],
+                     ['next_send', time.time()+STATS_INTERVAL],
+                     ['RPi_revision', get_pi_revision()],
+                     ['Mycodo_revision', MYCODO_VERSION],
+                     ['country', 'None'],
+                     ['daemon_startup_seconds', 0.0],
+                     ['ram_use_mb', 0.0],
+                     ['num_users_admin', 0],
+                     ['num_users_guest', 0],
+                     ['num_lcds', 0],
+                     ['num_lcds_active', 0],
+                     ['num_logs', 0],
+                     ['num_logs_active', 0],
+                     ['num_methods', 0],
+                     ['num_methods_in_pid', 0],
+                     ['num_pids', 0],
+                     ['num_pids_active', 0],
+                     ['num_relays', 0],
+                     ['num_sensors', 0],
+                     ['num_sensors_active', 0],
+                     ['num_timers', 0],
+                     ['num_timers_active', 0]]
              
     with open(STATS_CSV, 'w') as csv_stat_file:
         write_csv = csv.writer(csv_stat_file)
@@ -488,10 +493,10 @@ def increment_stat(logger, stat, amount):
 
     """
     stat_dict = return_stat_file_dict()
-    add_update_stat(logger, stat, int(stat_dict[stat])+amount)
+    add_update_csv(logger, STATS_CSV, stat, int(stat_dict[stat])+amount)
 
 
-def add_update_stat(logger, stat, value):
+def add_update_csv(logger, csv_file, key, value):
     """
     Either add or update the value in the statistics file with the new value.
     If the key exists, update the value.
@@ -499,13 +504,13 @@ def add_update_stat(logger, stat, value):
 
     """
     try:
-        stats_dict = {stat:value}
-        tempfilename = os.path.splitext(STATS_CSV)[0] + '.bak'
+        stats_dict = {key:value}
+        tempfilename = os.path.splitext(csv_file)[0] + '.bak'
         try:
             os.remove(tempfilename)  # delete any existing temp file
         except OSError:
             pass
-        os.rename(STATS_CSV, tempfilename)
+        os.rename(csv_file, tempfilename)
 
         # create a temporary dictionary from the input file
         with open(tempfilename, mode='r') as infile:
@@ -521,19 +526,19 @@ def add_update_stat(logger, stat, value):
         temp_dict.update({key: value for (key, value) in stats_dict.items()})
 
         # create updated version of file    
-        with open(STATS_CSV, mode='w') as outfile:
+        with open(csv_file, mode='w') as outfile:
             writer = csv.writer(outfile)
             writer.writerow(header)
             writer.writerows(temp_dict.items())
 
         uid_gid = pwd.getpwnam('mycodo').pw_uid
-        os.chown(STATS_CSV, uid_gid, uid_gid)
-        os.chmod(STATS_CSV, 0664)
+        os.chown(csv_file, uid_gid, uid_gid)
+        os.chmod(csv_file, 0664)
         os.remove(tempfilename)  # delete backed-up original
     except Exception as except_msg:
         logger.exception('[Statistics] Could not update stat csv: '
             '{}'.format(except_msg))
-        os.rename(tempfilename, STATS_CSV)  # rename temp file to original
+        os.rename(tempfilename, csv_file)  # rename temp file to original
 
 
 def send_stats(logger, host, port, user, password, dbname):
@@ -542,48 +547,48 @@ def send_stats(logger, host, port, user, password, dbname):
 
     Example use:
         current_stat = return_stat_file_dict()
-        add_update_stat(logger, 'stat', current_stat['stat'] + 5)
+        add_update_csv(logger, csv_file, 'stat', current_stat['stat'] + 5)
     """
     try:
         client = InfluxDBClient(host, port, user, password, dbname)
         # Prepare stats before sending
         with session_scope(MYCODO_DB_PATH) as new_session:
             relays = new_session.query(Relay)
-            add_update_stat(logger, 'num_relays', get_count(relays))
+            add_update_csv(logger, STATS_CSV, 'num_relays', get_count(relays))
 
             sensors = new_session.query(Sensor)
-            add_update_stat(logger, 'num_sensors', get_count(sensors))
-            add_update_stat(logger, 'num_sensors_active', get_count(sensors.filter(
+            add_update_csv(logger, STATS_CSV, 'num_sensors', get_count(sensors))
+            add_update_csv(logger, STATS_CSV, 'num_sensors_active', get_count(sensors.filter(
                 Sensor.activated == True)))
 
             pids = new_session.query(PID)
-            add_update_stat(logger, 'num_pids', get_count(pids))
-            add_update_stat(logger, 'num_pids_active', get_count(pids.filter(
+            add_update_csv(logger, STATS_CSV, 'num_pids', get_count(pids))
+            add_update_csv(logger, STATS_CSV, 'num_pids_active', get_count(pids.filter(
                 PID.activated == True)))
 
             lcds = new_session.query(LCD)
-            add_update_stat(logger, 'num_lcds', get_count(lcds))
-            add_update_stat(logger, 'num_lcds_active', get_count(lcds.filter(
+            add_update_csv(logger, STATS_CSV, 'num_lcds', get_count(lcds))
+            add_update_csv(logger, STATS_CSV, 'num_lcds_active', get_count(lcds.filter(
                 LCD.activated == True)))
 
             logs = new_session.query(Log)
-            add_update_stat(logger, 'num_logs', get_count(logs))
-            add_update_stat(logger, 'num_logs_active', get_count(logs.filter(
+            add_update_csv(logger, STATS_CSV, 'num_logs', get_count(logs))
+            add_update_csv(logger, STATS_CSV, 'num_logs_active', get_count(logs.filter(
                 Log.activated == True)))
 
             methods = new_session.query(Method)
-            add_update_stat(logger, 'num_methods', get_count(methods.filter(
+            add_update_csv(logger, STATS_CSV, 'num_methods', get_count(methods.filter(
                 Method.method_order == 0)))
-            add_update_stat(logger, 'num_methods_in_pid', get_count(pids.filter(
+            add_update_csv(logger, STATS_CSV, 'num_methods_in_pid', get_count(pids.filter(
                 PID.method_id != '')))
             
             timers = new_session.query(Timer)
-            add_update_stat(logger, 'num_timers', get_count(timers))
-            add_update_stat(logger, 'num_timers_active', get_count(timers.filter(
+            add_update_csv(logger, STATS_CSV, 'num_timers', get_count(timers))
+            add_update_csv(logger, STATS_CSV, 'num_timers_active', get_count(timers.filter(
                 Timer.activated == True)))
 
-        add_update_stat(logger, 'country', geocoder.ip('me').country)
-        add_update_stat(logger, 'ram_use_mb', resource.getrusage(
+        add_update_csv(logger, STATS_CSV, 'country', geocoder.ip('me').country)
+        add_update_csv(logger, STATS_CSV, 'ram_use_mb', resource.getrusage(
             resource.RUSAGE_SELF).ru_maxrss / float(1000))
         
         user_count = 0
@@ -594,10 +599,10 @@ def send_stats(logger, host, port, user, password, dbname):
                 user_count += 1
                 if each_user.user_restriction == 'admin':
                     admin_count += 1
-        add_update_stat(logger, 'num_users_admin', admin_count)
-        add_update_stat(logger, 'num_users_guest', user_count-admin_count)
+        add_update_csv(logger, STATS_CSV, 'num_users_admin', admin_count)
+        add_update_csv(logger, STATS_CSV, 'num_users_guest', user_count-admin_count)
 
-        add_update_stat(logger, 'Mycodo_revision', MYCODO_VERSION)
+        add_update_csv(logger, STATS_CSV, 'Mycodo_revision', MYCODO_VERSION)
 
         # Combine stats into list of dictionaries to be pushed to influxdb
         new_stats_dict = return_stat_file_dict()

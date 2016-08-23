@@ -405,7 +405,7 @@ class SensorController(threading.Thread):
             if self.cond_camera_record[cond_id] in ['photo', 'photoemail']:
                 attachment_file = camera_record('photo')
             elif self.cond_camera_record[cond_id] in ['video', 'videoemail']:
-                attachment_file = camera_record('video', 5)
+                attachment_file = camera_record('video', duration_sec=5)
 
             if self.cond_email_notify[cond_id]:
                 if (self.email_count >= self.smtp_max_count and

@@ -7,23 +7,28 @@
 #
 
 import argparse
+import csv
 import logging
 import resource
 import os
+import pwd
 import sys
 import threading
 import time
 import timeit
 import rpyc
+from collections import OrderedDict
 from daemonize import Daemonize
 from rpyc.utils.server import ThreadedServer
 
 import daemonutils
 from config import DAEMON_PID_FILE
 from config import DAEMON_LOG_FILE
-from config import SQL_DATABASE_MYCODO
-from config import MYCODO_VERSION
+from config import FILE_TIMELAPSE_PARAM
 from config import ID_FILE
+from config import LOCK_FILE_TIMELAPSE
+from config import MYCODO_VERSION
+from config import SQL_DATABASE_MYCODO
 from config import STATS_INTERVAL
 from config import STATS_CSV
 from config import STATS_HOST
@@ -31,12 +36,14 @@ from config import STATS_PORT
 from config import STATS_USER
 from config import STATS_PASSWORD
 from config import STATS_DATABASE
+
 from controller_lcd import LCDController
 from controller_log import LogController
 from controller_pid import PIDController
 from controller_relay import RelayController
 from controller_sensor import SensorController
 from controller_timer import TimerController
+
 from databases.mycodo_db.models import LCD
 from databases.mycodo_db.models import Log
 from databases.mycodo_db.models import Misc
@@ -44,6 +51,7 @@ from databases.mycodo_db.models import PID
 from databases.mycodo_db.models import Sensor
 from databases.mycodo_db.models import Timer
 from databases.utils import session_scope
+
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -161,14 +169,62 @@ class DaemonController(threading.Thread):
         try:
             # loop until daemon is instructed to shut down
             while self.daemon_run:
-                if time.time() > self.timer_ram_use:
-                    self.timer_ram_use = self.timer_ram_use+86400
+                now = time.time()
+
+                # If timelapse active, take photo at predefined periods
+                if (os.path.isfile(FILE_TIMELAPSE_PARAM) and
+                        os.path.isfile(LOCK_FILE_TIMELAPSE)):
+                    # Read user-defined timelapse parameters
+                    with open(FILE_TIMELAPSE_PARAM, mode='r') as infile:
+                        reader = csv.reader(infile)
+                        dict_timelapse_param = OrderedDict((row[0], row[1]) for row in reader)
+                    if now > float(dict_timelapse_param['end_time']):
+                        try:
+                            os.remove(FILE_TIMELAPSE_PARAM)
+                            os.remove(LOCK_FILE_TIMELAPSE)
+                        except:
+                            pass
+                    elif now > float(dict_timelapse_param['next_capture']):
+                        # Ensure next capture is greater than now (in case of power failure/reboot)
+                        next_capture = float(dict_timelapse_param['next_capture'])
+                        capture_number = int(dict_timelapse_param['capture_number'])
+                        while next_capture < now:
+                            # Update last capture and image number to latest before capture
+                            next_capture += float(dict_timelapse_param['interval'])
+                            capture_number += 1
+                        daemonutils.add_update_csv(logger,
+                                                   FILE_TIMELAPSE_PARAM,
+                                                   'next_capture',
+                                                   next_capture)
+                        daemonutils.add_update_csv(logger,
+                                                   FILE_TIMELAPSE_PARAM,
+                                                   'capture_number',
+                                                   capture_number)
+                        # Capture image
+                        daemonutils.camera_record(
+                            'timelapse',
+                            start_time=dict_timelapse_param['start_time'],
+                            capture_number=capture_number)
+
+                elif (os.path.isfile(FILE_TIMELAPSE_PARAM) or
+                        os.path.isfile(LOCK_FILE_TIMELAPSE)):
+                    try:
+                        os.remove(FILE_TIMELAPSE_PARAM)
+                        os.remove(LOCK_FILE_TIMELAPSE)
+                    except:
+                        pass
+
+
+                # Log ram usage every 24 hours
+                if now > self.timer_ram_use:
+                    self.timer_ram_use = now+86400
                     ram = resource.getrusage(
                         resource.RUSAGE_SELF).ru_maxrss / float(1000)
                     self.logger.info("[Daemon] {} MB ram in use".format(ram))
+
                 # collect and send anonymous statistics
                 if (not self.opt_out_statistics and
-                        time.time() > self.timer_stats):
+                        now > self.timer_stats):
                     self.send_stats()
 
                 time.sleep(0.25)
@@ -379,8 +435,8 @@ class DaemonController(threading.Thread):
             stat_dict = daemonutils.return_stat_file_dict()
             if float(stat_dict['next_send']) < time.time():
                 self.timer_stats = self.timer_stats+STATS_INTERVAL
-                daemonutils.add_update_stat(self.logger, 'next_send',
-                                      self.timer_stats)
+                daemonutils.add_update_csv(self.logger, STATS_CSV,
+                                           'next_send', self.timer_stats)
             else:
                 self.timer_stats = float(stat_dict['next_send'])
         except Exception as msg:
@@ -415,8 +471,9 @@ class DaemonController(threading.Thread):
             daemon_startup_time = timeit.default_timer()-self.startup_timer
             self.logger.info("[Daemon] Mycodo v{} started in {} seconds".format(
                 MYCODO_VERSION, daemon_startup_time))
-            daemonutils.add_update_stat(
-                self.logger, 'daemon_startup_seconds', daemon_startup_time)
+            daemonutils.add_update_csv(self.logger, STATS_CSV,
+                                       'daemon_startup_seconds',
+                                       daemon_startup_time)
         except Exception as msg:
             self.logger.exception(
                 "[Daemon] Statistics initilization Error: {}".format(msg))

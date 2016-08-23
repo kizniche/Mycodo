@@ -24,7 +24,7 @@
 
 import os
 
-MYCODO_VERSION = '4.0.12'
+MYCODO_VERSION = '4.0.13'
 
 INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'
 
@@ -70,6 +70,13 @@ INFLUXDB_DATABASE = 'mycodo_db'
 # Anonymous usage statistics
 STATS_CSV = os.path.join(DATABASE_PATH, 'statistics.csv')
 ID_FILE = os.path.join(DATABASE_PATH, 'statistics.id')
+
+# Camera
+LOCK_FILE_STREAM = os.path.join(DATABASE_PATH, 'mycodo-camera-stream.pid')
+LOCK_FILE_TIMELAPSE = os.path.join(DATABASE_PATH, 'mycodo-camera-timelapse.pid')
+FILE_TIMELAPSE_PARAM = os.path.join(DATABASE_PATH, 'timelapse_parameters.csv')
+
+# Anonymous statistics
 STATS_INTERVAL = 86400  # 1 day
 STATS_HOST = 'fungi.kylegabriel.com'
 STATS_PORT = 8086

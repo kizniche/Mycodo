@@ -6,12 +6,14 @@
 
 import argparse
 import calendar
+import csv
 import datetime
 import glob
 import gzip
 import functools
 import logging
 import os
+import pwd
 import random
 import socket
 import sqlalchemy
@@ -51,19 +53,23 @@ from devices.camera_pi import CameraStream
 from devices.camera_pi import CameraTimelapse
 from mycodo_client import DaemonControl
 
+from config import DAEMON_LOG_FILE
+from config import FILE_TIMELAPSE_PARAM
+from config import HTTP_LOG_FILE
 from config import INFLUXDB_USER
 from config import INFLUXDB_PASSWORD
 from config import INFLUXDB_DATABASE
 from config import INSTALL_DIRECTORY
-from config import MYCODO_VERSION
-from config import SQL_DATABASE_USER
-from config import SQL_DATABASE_MYCODO
 from config import LOG_PATH
 from config import LOGIN_LOG_FILE
-from config import DAEMON_LOG_FILE
-from config import HTTP_LOG_FILE
-from config import UPDATE_LOG_FILE
+from config import LOCK_FILE_STREAM
+from config import LOCK_FILE_TIMELAPSE
+from config import MYCODO_VERSION
 from config import RESTORE_LOG_FILE
+from config import SQL_DATABASE_USER
+from config import SQL_DATABASE_MYCODO
+from config import UPDATE_LOG_FILE
+
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 USER_DB_PATH = 'sqlite:///' + SQL_DATABASE_USER
@@ -783,26 +789,24 @@ def page(page):
 
     elif page == 'camera':
         formCamera = flaskforms.Camera()
-        lock_file_stream = '/var/lock/mycodo-camera-stream.lock'
-        lock_file_timelapse = '/var/lock/mycodo-camera-timelapse.lock'
-
         if 'start_x=1' not in open('/boot/config.txt').read():
             flash("Camera support doesn't appear to be enabled. Please enable it with 'sudo raspi-config'", "error")
             camera_enabled = False
         else:
             camera_enabled = True
 
-        stream_locked = os.path.isfile(lock_file_stream)
+        stream_locked = os.path.isfile(LOCK_FILE_STREAM)
         if stream_locked and not CameraStream().is_running():
-            os.remove(lock_file_stream)
+            os.remove(LOCK_FILE_STREAM)
             stream_locked = False
-        stream_locked = os.path.isfile(lock_file_stream)
+        stream_locked = os.path.isfile(LOCK_FILE_STREAM)
 
-        timelapse_locked = os.path.isfile(lock_file_timelapse)
-        if timelapse_locked and not CameraTimelapse().is_running():
-            os.remove(lock_file_timelapse)
-            timelapse_locked = False
-        timelapse_locked = os.path.isfile(lock_file_timelapse)
+        timelapse_locked = os.path.isfile(LOCK_FILE_TIMELAPSE)
+        if timelapse_locked and not os.path.isfile(FILE_TIMELAPSE_PARAM):
+            os.remove(LOCK_FILE_TIMELAPSE)
+        elif not timelapse_locked and os.path.isfile(FILE_TIMELAPSE_PARAM):
+            os.remove(FILE_TIMELAPSE_PARAM)
+        timelapse_locked = os.path.isfile(LOCK_FILE_TIMELAPSE)
 
         if request.method == 'POST':
             if session['user_group'] == 'guest':
@@ -824,43 +828,79 @@ def page(page):
                         flash("Cannot capture still if timelapse or stream is "
                               "active. If they are not active, delete {} and {}.".format(
                               stream_locked, timelapse_locked), "error")
+
                 elif formCamera.StartTimelapse.data:
                     if not stream_locked:
-                        CameraTimelapse().start_timelapse(
-                            formCamera.TimelapseInterval.data,
-                            formCamera.TimelapseRunTime.data)
-                        open(lock_file_timelapse, 'a')
-                        timelapse_locked = True
-                        flash("timelapse started {} {}".format(
-                            formCamera.TimelapseInterval.data,
-                            formCamera.TimelapseRunTime.data),
-                            "success")
+                        # Create lockfile and file with timelapse parameters
+                        open(LOCK_FILE_TIMELAPSE, 'a')
+                        now = time.time()
+                        timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+                        uid_gid = pwd.getpwnam('mycodo').pw_uid
+                        timelapse_data = [['start_time', timestamp],
+                                          ['end_time', now+float(formCamera.TimelapseRunTime.data)],
+                                          ['interval', formCamera.TimelapseInterval.data],
+                                          ['next_capture', now],
+                                          ['capture_number', 0]]
+                        with open(FILE_TIMELAPSE_PARAM, 'w') as timelapse_file:
+                            write_csv = csv.writer(timelapse_file)
+                            for row in timelapse_data:
+                                write_csv.writerow(row)
+                        os.chown(FILE_TIMELAPSE_PARAM, uid_gid, uid_gid)
+                        os.chmod(FILE_TIMELAPSE_PARAM, 0664)
                     else:
                         flash("Cannot capture still if a stream is active. "
                               "If it is not active, delete {}.".format(
                               stream_locked), "error")
+                        
+                    # else:
+                    #     CameraTimelapse().start_timelapse(
+                    #         formCamera.TimelapseInterval.data,
+                    #         formCamera.TimelapseRunTime.data)
+                    #     open(LOCK_FILE_TIMELAPSE, 'a')
+                    #     timelapse_locked = True
+                    #     flash("timelapse started {} {}".format(
+                    #         formCamera.TimelapseInterval.data,
+                    #         formCamera.TimelapseRunTime.data),
+                    #         "success")
+                        
                 elif formCamera.StopTimelapse.data:
                     try:
-                        CameraTimelapse().terminate()
-                        os.remove(lock_file_timelapse)
-                        timelapse_locked = False
-                    except Exception as msg:
-                        flash("Could not stop timelapse: {}".format(msg), "error")
+                        os.remove(FILE_TIMELAPSE_PARAM)
+                        os.remove(LOCK_FILE_TIMELAPSE)
+                    except:
+                        pass
+
+                    # try:
+                    #     CameraTimelapse().terminate()
+                    #     os.remove(LOCK_FILE_TIMELAPSE)
+                    #     timelapse_locked = False
+                    # except Exception as msg:
+                    #     flash("Could not stop timelapse: {}".format(msg), "error")
+
                 elif formCamera.StartStream.data:
                     if not timelapse_locked:
-                        open(lock_file_stream, 'a')
+                        open(LOCK_FILE_STREAM, 'a')
                         stream_locked = True
                         stream = True
                     else:
                         flash("Cannot capture still if a timelapse is active. "
                               "If it is not active, delete {}.".format(
                               timelapse_locked), "error")
+
                 elif formCamera.StopStream.data:
                     if CameraStream().is_running():
                         CameraStream().terminate()
-                    if os.path.isfile(lock_file_stream):
-                        os.remove(lock_file_stream)
+                    if os.path.isfile(LOCK_FILE_STREAM):
+                        os.remove(LOCK_FILE_STREAM)
                     stream_locked = False
+
+        timelapse_locked = os.path.isfile(LOCK_FILE_TIMELAPSE)
+        if timelapse_locked and not os.path.isfile(FILE_TIMELAPSE_PARAM):
+            os.remove(LOCK_FILE_TIMELAPSE)
+        elif not timelapse_locked and os.path.isfile(FILE_TIMELAPSE_PARAM):
+            os.remove(FILE_TIMELAPSE_PARAM)
+        timelapse_locked = os.path.isfile(LOCK_FILE_TIMELAPSE)
+
         try:
             latest_still_img_fullpath = max(glob.iglob(INSTALL_DIRECTORY+'/camera-stills/*.jpg'), key=os.path.getctime)
             ts = os.path.getmtime(latest_still_img_fullpath)
