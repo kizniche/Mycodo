@@ -30,8 +30,9 @@
           {{formCreateMethod.method_type.label(class_='control-label')}}
           <div>
             <select class="form-control" id="method_type" name="method_type">
-              <option value="Date">Method based on the time and date</option>
-              <option value="Duration">Method based on durations of time</option>
+              <option value="Date">Time/Date</option>
+              <option value="Duration">Duration</option>
+              <option value="Daily">Daily</option>
              <!--  <option value="Repeating">Method based on durations with repetition</option> -->
             </select>
           </div>
@@ -119,7 +120,11 @@
           {% if each_method.method_type == "Duration" -%}
             headerFormat: '<span style="font-size: 10px">{point.key} Seconds</span><br/>',
           {%- endif -%}
-          xDateFormat: '%a, %b %e, %Y %H:%M:%S',
+          {% if each_method.method_type == "Date" -%}
+            xDateFormat: '%a, %b %e, %Y %H:%M:%S',
+          {% elif each_method.method_type == "Daily" -%}
+            xDateFormat: '%H:%M:%S',
+          {%- endif -%}
           valueDecimals: 2
         },
         legend: {
@@ -135,7 +140,7 @@
           enabled: false
         },
         xAxis: {
-          type: '{%- if each_method.method_type == "Duration" -%}linear{%- elif each_method.method_type == "Date" -%}datetime{%- endif -%}',
+          type: '{%- if each_method.method_type == "Duration" -%}linear{%- elif each_method.method_type in ["Date", "Daily"] -%}datetime{%- endif -%}',
           ordinal: false
         },
         yAxis: [

@@ -935,6 +935,10 @@ def page(page):
     else:
         return render_template('404.html'), 404
 
+def get_sec(time_str):
+    h, m, s = time_str.split(':')
+    return int(h) * 3600 + int(m) * 60 + int(s)
+
 
 @app.route('/method-data/<method_type>/<method_id>')
 def method_data(method_type, method_id):
@@ -950,15 +954,14 @@ def method_data(method_type, method_id):
     method_key = method.filter(Method.method_id == method_id)
     method_key = method_key.filter(Method.method_order == 0).first()
 
-    method = method.filter(Method.method_order > 0)
     method = method.filter(Method.method_id == method_id)
+    method = method.filter(Method.method_order > 0)
     method = method.filter(Method.relay_id == None)
     method = method.order_by(Method.method_order.asc()).all()
 
     method_list = []
 
     if method_key.method_type == "Date":
-        first_start = False
         for each_method in method:
             if each_method.end_setpoint == None:
                 end_setpoint = each_method.start_setpoint
@@ -968,15 +971,23 @@ def method_data(method_type, method_id):
             start_time = datetime.datetime.strptime(each_method.start_time, '%Y-%m-%d %H:%M:%S')
             end_time = datetime.datetime.strptime(each_method.end_time, '%Y-%m-%d %H:%M:%S')
 
-            if not first_start:
-                first_start = start_time
-
             is_dst = time.daylight and time.localtime().tm_isdst > 0
             utc_offset_ms = (time.altzone if is_dst else time.timezone)
 
             method_list.append([(int(start_time.strftime("%s"))-utc_offset_ms)*1000 , each_method.start_setpoint])
             method_list.append([(int(end_time.strftime("%s"))-utc_offset_ms)*1000, end_setpoint])
             method_list.append([(int(start_time.strftime("%s"))-utc_offset_ms)*1000 , None])
+
+    if method_key.method_type == "Daily":
+        for each_method in method:
+            if each_method.end_setpoint == None:
+                end_setpoint = each_method.start_setpoint
+            else:
+                end_setpoint = each_method.end_setpoint
+
+            method_list.append([get_sec(each_method.start_time)*1000, each_method.start_setpoint])
+            method_list.append([get_sec(each_method.end_time)*1000, end_setpoint])
+            method_list.append([get_sec(each_method.start_time)*1000, None])
 
     elif method_key.method_type == "Duration":
         first_entry = True
@@ -1048,7 +1059,7 @@ def method_builder(method_type, method_id):
     if not logged_in():
         return redirect('/')
 
-    if method_type in ['Date', 'Duration', 'Repeating', '0']:
+    if method_type in ['Date', 'Duration', 'Daily', '0']:
         formCreateMethod = flaskforms.CreateMethod()
         formAddMethod = flaskforms.AddMethod()
         formModMethod = flaskforms.ModMethod()
@@ -1083,28 +1094,22 @@ def method_builder(method_type, method_id):
 
         last_end_time = ''
         last_setpoint = ''
-        if method_type == 'Date':
-            # Get last entry end time to populate the form start time
+        if method_type in ['Date', 'Daily']:
             last_method = method.filter(Method.method_id == method_key.method_id)
             last_method = last_method.filter(Method.method_order > 0)
+            last_method = last_method.filter(Method.relay_id == None)
             last_method = last_method.order_by(Method.method_order.desc()).first()
+
+            # Get last entry end time and setpoint to populate the form
             if last_method == None:
                 last_end_time = ''
-            else:
-                last_end_time = last_method.end_time
-
-            # Get last entry end setpoint to populate the form start setpoint
-            last_method = method.filter(Method.method_id == method_key.method_id)
-            last_method = last_method.filter(Method.method_order > 0)
-            last_method = last_method.order_by(Method.method_order.desc()).first()
-            if last_method == None:
                 last_setpoint = ''
             else:
+                last_end_time = last_method.end_time
                 if last_method.end_setpoint != None:
                     last_setpoint = last_method.end_setpoint
                 else:
                     last_setpoint = last_method.start_setpoint
-
 
         # method = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Method)
         relay = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Relay)

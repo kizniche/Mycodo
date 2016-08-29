@@ -91,10 +91,27 @@ def validate_method_data(form_data, this_method):
             except ValueError:
                 flash("Invalid Date/Time format. Correct format: DD/MM/YYYY HH:MM:SS", "error")
                 return 1
-            # Check if the end time is after the start time
             if end_time <= start_time:
                 flash("The end time/date must be after the start time/date.", "error")
                 return 1
+        
+        elif this_method.method_type == 'Daily':
+            if (not form_data.startDailyTime.data or
+                    not form_data.endDailyTime.data or
+                    form_data.startSetpoint.data == ''):
+                flash("Required: Start time, end time, start setpoint",
+                      "error")
+                return 1
+            try:
+                start_time = datetime.strptime(form_data.startDailyTime.data, '%H:%M:%S')
+                end_time = datetime.strptime(form_data.endDailyTime.data, '%H:%M:%S')
+            except ValueError:
+                flash("Invalid Date/Time format. Correct format: HH:MM:SS", "error")
+                return 1
+            if end_time <= start_time:
+                flash("The end time must be after the start time.", "error")
+                return 1
+
         elif this_method.method_type == 'Duration':
             if (not form_data.DurationSec.data or
                     form_data.startSetpoint.data == ''):
@@ -125,6 +142,18 @@ def validate_method_data(form_data, this_method):
                       "error")
                 return 1
             if not is_positive_integer(form_data.DurationSec.data):
+                return 1
+        elif this_method.method_type == 'Daily':
+            if (not form_data.relayDailyTime.data or
+                    not form_data.relayID.data or
+                    not form_data.relayState.data):
+                flash("Required: Time, Relay ID, and Relay State",
+                      "error")
+                return 1
+            try:
+                start_time = datetime.strptime(form_data.relayDailyTime.data, '%H:%M:%S')
+            except ValueError:
+                flash("Invalid Date/Time format. Correct format: HH:MM:SS", "error")
                 return 1
 
 
@@ -167,14 +196,23 @@ def method_add(formAddMethod, method):
         if this_method.method_type == 'Date':
             start_time = datetime.strptime(formAddMethod.startTime.data, '%Y-%m-%d %H:%M:%S')
             end_time = datetime.strptime(formAddMethod.endTime.data, '%Y-%m-%d %H:%M:%S')
+        elif this_method.method_type == 'Daily':
+            start_time = datetime.strptime(formAddMethod.startDailyTime.data, '%H:%M:%S')
+            end_time = datetime.strptime(formAddMethod.endDailyTime.data, '%H:%M:%S')
 
+        if this_method.method_type in ['Date', 'Daily']:
             # Check if the start time comes after the last entry's end time
             try:
                 last_method = method.filter(Method.method_id == this_method.method_id)
                 last_method = last_method.filter(Method.method_order > 0)
+                last_method = last_method.filter(Method.relay_id == None)
                 last_method = last_method.order_by(Method.method_order.desc()).first()
                 if last_method != None:
-                    last_method_end_time = datetime.strptime(last_method.end_time, '%Y-%m-%d %H:%M:%S')
+                    if this_method.method_type == 'Date':
+                        last_method_end_time = datetime.strptime(last_method.end_time, '%Y-%m-%d %H:%M:%S')
+                    elif this_method.method_type == 'Daily':
+                        last_method_end_time = datetime.strptime(last_method.end_time, '%H:%M:%S')
+
                     if start_time < last_method_end_time:
                         flash("The new entry start time ({}) cannot overlap the last entry's end time ({}). Note: They may be the same time.".format(last_method_end_time, start_time), "error")
                         return 1
@@ -184,6 +222,8 @@ def method_add(formAddMethod, method):
     elif formAddMethod.method_select.data == 'relay':
         if this_method.method_type == 'Date':
             start_time = datetime.strptime(formAddMethod.relayTime.data, '%Y-%m-%d %H:%M:%S')
+        elif this_method.method_type == 'Daily':
+            start_time = datetime.strptime(formAddMethod.relayDailyTime.data, '%H:%M:%S')
 
     # Check if this is the first entry of the method
     method_exists = False
@@ -212,6 +252,12 @@ def method_add(formAddMethod, method):
                 new_method.end_time = end_time.strftime('%Y-%m-%d %H:%M:%S')
             if formAddMethod.method_select.data == 'relay':
                 new_method.start_time = formAddMethod.relayTime.data
+        elif this_method.method_type == 'Daily':
+            if formAddMethod.method_select.data == 'setpoint':
+                new_method.start_time = start_time.strftime('%H:%M:%S')
+                new_method.end_time = end_time.strftime('%H:%M:%S')
+            if formAddMethod.method_select.data == 'relay':
+                new_method.start_time = formAddMethod.relayDailyTime.data
         elif this_method.method_type == 'Duration':
             new_method.duration_sec = formAddMethod.DurationSec.data
 
@@ -235,6 +281,9 @@ def method_add(formAddMethod, method):
             if this_method.method_type == 'Date':
                 flash("Added duration to method from {} to {}.".format(
                     start_time, end_time), "success")
+            elif this_method.method_type == 'Daily':
+                flash("Added duration to method from {} to {}.".format(
+                    start_time.strftime('%H:%M:%S'), end_time.strftime('%H:%M:%S')), "success")
             elif this_method.method_type == 'Duration':
                 flash("Added duration to method for {} seconds".format(
                     formAddMethod.DurationSec.data), "success")
@@ -242,6 +291,9 @@ def method_add(formAddMethod, method):
             if this_method.method_type == 'Date':
                 flash("Added relay modulation to method at {}".format(
                     start_time), "success")
+            elif this_method.method_type == 'Daily':
+                flash("Added relay modulation to method at {}".format(
+                    start_time.strftime('%H:%M:%S')), "success")
             elif this_method.method_type == 'Duration':
                 flash("Added relay modulation to method at {} seconds".format(
                     formAddMethod.DurationSec.data), "success")

@@ -28,6 +28,14 @@ class AddMethod(Form):
     method_id = HiddenField(u'Method ID')
     method_type = HiddenField(u'Method Type')
     method_select = HiddenField(u'Method Select')
+    startDailyTime = TextField(
+        u'Start HH:MM:SS',
+        render_kw={"placeholder": "HH:MM:SS"}
+    )
+    endDailyTime = TextField(
+        u'End HH:MM:SS',
+        render_kw={"placeholder": "HH:MM:SS"}
+    )
     startTime = TextField(
         u'Start YYYY-MM-DD HH:MM:SS',
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
@@ -47,6 +55,10 @@ class AddMethod(Form):
     DurationSec = IntegerField(
         u'Duration (seconds)',
         render_kw={"placeholder": ""}
+    )
+    relayDailyTime = TextField(
+        u'Time HH:MM:SS',
+        render_kw={"placeholder": "HH:MM:SS"}
     )
     relayTime = TextField(
         u'Time YYYY-MM-DD HH:MM:SS',
@@ -74,6 +86,14 @@ class ModMethod(Form):
     method_id = HiddenField(u'Method ID')
     method_type = HiddenField(u'Method Type')
     method_select = HiddenField(u'Method Select')
+    startDailyTime = TextField(
+        u'Start HH:MM:SS',
+        render_kw={"placeholder": "HH:MM:SS"}
+    )
+    endDailyTime = TextField(
+        u'End HH:MM:SS',
+        render_kw={"placeholder": "HH:MM:SS"}
+    )
     startTime = TextField(
         u'Start YYYY-MM-DD HH:MM:SS',
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
@@ -81,6 +101,10 @@ class ModMethod(Form):
     endTime = TextField(
         u'End YYYY-MM-DD HH:MM:SS',
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
+    )
+    relayDailyTime = TextField(
+        u'Time HH:MM:SS',
+        render_kw={"placeholder": "HH:MM:SS"}
     )
     relayTime = TextField(
         u'Time YYYY-MM-DD HH:MM:SS',

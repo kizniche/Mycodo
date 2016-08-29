@@ -60,13 +60,28 @@
               {{formAddMethod.endTime(class_='form-control')}}
             </div>
           </div>
+        {%- elif method_type == "Daily" -%}
+          <div>
+            <input type="radio" name="method_select" value="setpoint" checked="checked"> Define the setpoint over a period of time based on specific times of the day. This method will repeat daily. Start the firat entry at midnight 00:00 if you wish to fill the entire day.
+            <br>The new entry's start time may be equal to the last entry's end time, but it cannot overlap. The default setpoint for the PID will be used if there is any unaccounted time.
+          </div>
+          <div class="form-group">
+            {{formAddMethod.startDailyTime.label(class_='control-label')}}
+            <div>
+              {{formAddMethod.startDailyTime(class_='form-control', value=last_end_time)}}
+            </div>
+          </div>
+          <div class="form-group">
+            {{formAddMethod.endDailyTime.label(class_='control-label')}}
+            <div>
+              {{formAddMethod.endDailyTime(class_='form-control')}}
+            </div>
+          </div>
         {%- elif method_type == "Duration" -%}
           <div>
             <input type="radio" name="method_select" value="setpoint" checked="checked"> Define the setpoint over a period of time, based on specific durations of time.
             <br>Duration here is defined as the amount of time after the previous duration. If this is the first duration added, this will be the beginning of the method. If this is not the first duration added, it will execute after the last duration already in the method.
           </div>
-        {%- elif method_type == "Repeating" -%}
-
         {%- endif -%}
 
         </div>
@@ -99,13 +114,22 @@
                 {{formAddMethod.relayTime(class_='form-control')}}
               </div>
             </div>
+          {%- elif method_type == "Daily" -%}
+            <div>
+              <input type="radio" name="method_select" value="relay"> Activate or deactivate a relay at a specific time of day.
+              <br>Hour and minute (HH:MM) here is defined as the time of day. For example, 3:05 PM would be "15:05".
+            </div>
+            <div class="form-group">
+              {{formAddMethod.relayDailyTime.label(class_='control-label')}}
+              <div>
+                {{formAddMethod.relayDailyTime(class_='form-control')}}
+              </div>
+            </div>
           {%- elif method_type == "Duration" -%}
             <div>
               <input type="radio" name="method_select" value="relay"> Activate or deactivate a relay within this method at a specific duration.
               <br>Duration here is defined as the amount of time since the beginning of the method. For example, 60 seconds would execute the relay modulation 60 seconds after the start of the method.
             </div>
-          {%- elif method_type == "Repeating" -%}
-
           {%- endif -%}
 
         </div>
@@ -114,7 +138,7 @@
             {{formAddMethod.relayID.label(class_='control-label')}}
             <div>
               <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relayID" name="relayID" title="Modulate the selected relay.">
-                <option value="">Disabled</option>
+                <option value=""></option>
                 {% for rel in relay -%}
                   <option value="{{rel.id}}">{{rel.id}} ({{rel.name}})</option>
                 {% endfor -%}
@@ -176,6 +200,19 @@
               {{formModMethod.endTime(class_='form-control', value=each_method.end_time)}}
             </div>
           </div>
+        {% elif method_type == "Daily" -%}
+          <div class="form-group">
+            {{formModMethod.startDailyTime.label(class_='control-label')}}
+            <div>
+              {{formModMethod.startDailyTime(class_='form-control', value=each_method.start_time)}}
+            </div>
+          </div>
+          <div class="form-group">
+            {{formModMethod.endDailyTime.label(class_='control-label')}}
+            <div>
+              {{formModMethod.endDailyTime(class_='form-control', value=each_method.end_time)}}
+            </div>
+          </div>
         {% elif method_type == "Duration" -%}
           <div class="form-group">
             {{formModMethod.DurationSec.label(class_='control-label')}}
@@ -235,9 +272,16 @@
       <input class="form-control" id="method_select" name="method_select" type="hidden" value="relay">
       {% if method_type == "Date" -%}
         <div class="form-group">
-          <label class='control-label'>Time (DD-MM-YYYY HH:MM:SS)</label>
+          {{formModMethod.relayTime.label(class_='control-label')}}
           <div>
             {{formModMethod.relayTime(class_='form-control', value=each_method.start_time)}}
+          </div>
+        </div>
+      {% elif method_type == "Daily" -%}
+        <div class="form-group">
+          {{formModMethod.relayDailyTime.label(class_='control-label')}}
+          <div>
+            {{formModMethod.relayDailyTime(class_='form-control', value=each_method.start_time)}}
           </div>
         </div>
       {% elif method_type == "Duration" -%}
@@ -353,7 +397,11 @@
         {% if method_key['method_type'] == "Duration" -%}
           headerFormat: '<span style="font-size: 10px">{point.key} Seconds</span><br/>',
         {%- endif -%}
-        xDateFormat: '%a, %b %e, %Y %H:%M:%S',
+        {% if method_key['method_type'] == "Date" -%}
+          xDateFormat: '%a, %b %e, %Y %H:%M:%S',
+        {% elif method_key['method_type'] == "Daily" -%}
+          xDateFormat: '%H:%M:%S',
+        {%- endif -%}
         valueDecimals: 2
       },
       legend: {
@@ -369,7 +417,7 @@
         enabled: false
       },
       xAxis: {
-        type: '{%- if method_key['method_type'] == "Duration" -%}linear{%- elif method_key['method_type'] == "Date" -%}datetime{%- endif -%}',
+        type: '{%- if method_key['method_type'] == "Duration" -%}linear{%- elif method_key['method_type'] in ["Date", "Daily"] -%}datetime{%- endif -%}',
         ordinal: false
       },
       yAxis: [

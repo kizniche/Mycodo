@@ -413,6 +413,41 @@ class PIDController(threading.Thread):
                     self.set_point = new_setpoint
                     return 0
 
+        # Calculate where the current Hour:Minute:Seconds is within the Daily method
+        elif method_key.method_type == 'Daily':
+            daily_now = datetime.datetime.now().strftime('%H:%M:%S')
+            daily_now = datetime.datetime.strptime(str(daily_now), '%H:%M:%S')
+            for each_method in method:
+                start_time = datetime.datetime.strptime(each_method.start_time, '%H:%M:%S')
+                end_time = end_time = datetime.datetime.strptime(each_method.end_time, '%H:%M:%S')
+                if start_time < daily_now < end_time:
+                    start_setpoint = each_method.start_setpoint
+                    if each_method.end_setpoint:
+                        end_setpoint = each_method.end_setpoint
+                    else:
+                        end_setpoint = each_method.start_setpoint
+
+                    setpoint_diff = abs(end_setpoint-start_setpoint)
+                    total_seconds = (end_time-start_time).total_seconds()
+                    part_seconds = (daily_now-start_time).total_seconds()
+                    percent_total = part_seconds/total_seconds
+
+                    if start_setpoint < end_setpoint:
+                        new_setpoint = start_setpoint+(setpoint_diff*percent_total)
+                    else:
+                        new_setpoint = start_setpoint-(setpoint_diff*percent_total)
+
+                    self.logger.debug("[Method] Start: {} End: {}".format(
+                        start_time.strftime('%H:%M:%S'), end_time.strftime('%H:%M:%S')))
+                    self.logger.debug("[Method] Start: {} End: {}".format(
+                        start_setpoint, end_setpoint))
+                    self.logger.debug("[Method] Total: {} Part total: {} ({}%)".format(
+                        total_seconds, part_seconds, percent_total))
+                    self.logger.debug("[Method] New Setpoint: {}".format(
+                        new_setpoint))
+                    self.set_point = new_setpoint
+                    return 0
+
         # Calculate the duration in the method based on self.method_start_time
         elif method_key.method_type == 'Duration' and self.method_start_time != 'Ended':
             seconds_from_start = (now-self.method_start_time).total_seconds()
