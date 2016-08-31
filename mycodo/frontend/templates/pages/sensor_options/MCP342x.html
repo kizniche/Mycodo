@@ -12,6 +12,12 @@
   </div>
 </div>
 <div class="form-group">
+  {{formModSensor.modBus.label(class_='control-label')}}
+  <div>
+    {{formModSensor.modBus(class_='form-control', value=each_sensor.i2c_bus, **{'title':'Which I2C bus is this ADC connected?'})}}
+  </div>
+</div>
+<div class="form-group">
   <label class="control-label">Measurement</label>
   <div>
     {{formModSensor.modADCMeasure(class_='form-control', value=each_sensor.adc_measure, **{'title':'What condition is being measured by the ADC?'})}}
@@ -27,6 +33,7 @@
   <label class="control-label">Channel</label>
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modADCChannel" name="modADCChannel" title="The channel of the analog to digital converter.">
+      <option value=""{% if each_sensor.adc_channel == '' %} selected{% endif %}></option>
       <option value="0"{% if each_sensor.adc_channel == 0 %} selected{% endif %}>Channel 1</option>
       <option value="1"{% if each_sensor.adc_channel == 1 %} selected{% endif %}>Channel 2</option>
       <option value="2"{% if each_sensor.adc_channel == 2 %} selected{% endif %}>Channel 3</option>
@@ -37,17 +44,27 @@
 <div class="form-group">
   <label class="control-label">Gain</label>
   <div>
-    {{formModSensor.modADCGain(class_='form-control', value=each_sensor.adc_gain, **{'title':'Adjust the gain to change the measureable voltage range. Options: 1, 2, 4, or 8. See ADC documentation for details.'})}}
+    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modADCGain" name="modADCGain" title="Adjust the gain to change the measureable voltage range. See ADC documentation for details.">
+      <option value=""{% if each_sensor.adc_gain == '' %} selected{% endif %}></option>
+      <option value="1"{% if each_sensor.adc_gain == 1 %} selected{% endif %}>1 Gain</option>
+      <option value="2"{% if each_sensor.adc_gain == 2 %} selected{% endif %}>2 Gain</option>
+      <option value="4"{% if each_sensor.adc_gain == 4 %} selected{% endif %}>4 Gain</option>
+      <option value="8"{% if each_sensor.adc_gain == 8 %} selected{% endif %}>8 Gain</option>
+    </select>
   </div>
 </div>
-{% if each_sensor.device == 'MCP342x' -%}
-  <div class="form-group">
-    <label class="control-label">Resolution</label>
-    <div>
-      {{formModSensor.modADCResolution(class_='form-control', value=each_sensor.adc_resolution, **{'title':'12, 14, 16, or 18-bit ADC resolution.'})}}
-    </div>
+<div class="form-group">
+  <label class="control-label">Resolution</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modADCResolution" name="modADCResolution" title="Adjust the ADC resolution. See ADC documentation for details.">
+      <option value=""{% if each_sensor.adc_resolution == '' %} selected{% endif %}></option>
+      <option value="12"{% if each_sensor.adc_resolution == 12 %} selected{% endif %}>12-bit</option>
+      <option value="14"{% if each_sensor.adc_resolution == 14 %} selected{% endif %}>14-bit</option>
+      <option value="16"{% if each_sensor.adc_resolution == 16 %} selected{% endif %}>16-bit</option>
+      <option value="18"{% if each_sensor.adc_resolution == 18 %} selected{% endif %}>18-bit</option>
+    </select>
   </div>
-{% endif -%}
+</div>
 </div>
 <div class="form-inline" style="padding: 0.5em;">
 <div class="form-group">
