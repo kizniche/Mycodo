@@ -54,7 +54,7 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 * Discrete PID control: Regulate environmental conditions with prediction and precision.
 * Method creation for dynamic PID setpoints for changing conditions over time .
 --* Time/Date: Change the setpoint based on specific times and dates (ideal for long-duration changes).
---* Daily: Change the setpoint on a daily schedule (examples: lighting and watering schedules).
+--* Daily: Change the setpoint on a daily, repeatable schedule.
 --* Duration: Change the setpoint at durations form when it was activated (examples: reflow oven, thermal cycler).
 * 16x2 and 20x4 I<sup>2</sup>C LCD support: Create a physical display of conditions or status of the system.
 * I<sup>2</sup>C multiplexer support to allow using multiple devices/sensors with the same address.

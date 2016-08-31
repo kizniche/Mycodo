@@ -26,6 +26,7 @@ from cStringIO import StringIO as IO
 from dateutil.parser import parse as date_parse
 from flask import Flask, after_this_request, flash, make_response, redirect, render_template, request, send_from_directory, session, g, jsonify, Response
 from flask_influxdb import InfluxDB
+from flask_sslify import SSLify
 from logging.handlers import RotatingFileHandler
 from sqlalchemy.orm import sessionmaker
 
@@ -81,6 +82,7 @@ app = Flask(__name__, static_folder=static_dir, template_folder=tmpl_dir)
 app.secret_key = os.urandom(24)
 app.jinja_env.add_extension('jinja2.ext.do')  # Global values in jinja
 
+sslify = SSLify(app)
 influx_db = InfluxDB(app)
 
 
