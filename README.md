@@ -2,7 +2,7 @@
 
 ## Environmental Regulation System
 
-### Latest version: 4.0.14
+### Latest version: 4.0.15
 
 Mycodo is a remote monitoring and automated regulation system with a focus on modulating environmental conditions. It was built to run on the Raspberry Pi (1, 2, and 3) and aims to be easy to install and set up.
 
@@ -148,9 +148,11 @@ Certain sensors will require extra steps to be taken in order to set up the inte
 
 ### Humidity
 
+> [AM2315](https://github.com/lexruee/tentacle_pi) (I<sup>2</sup>C): Measures relative humidity and temperature.
+
 > [DHT11, DHT22, AM2302](https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring) (GPIO): Measures relative humidity and temperature.
 
-> [AM2315](https://github.com/lexruee/tentacle_pi) (I<sup>2</sup>C): Measures relative humidity and temperature.
+> [HTU21D](http://www.te.com/usa-en/product-CAT-HSC0004.html) (I<sup>2</sup>C): Measures relative humidity and temperature.
 
 > [SHT1x, SHT2x, SHT7x](https://github.com/mk-fg/sht-sensor) (GPIO): Measures relative humidity and temperature.
 

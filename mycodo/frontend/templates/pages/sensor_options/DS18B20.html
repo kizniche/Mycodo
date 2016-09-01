@@ -1,0 +1,6 @@
+<div class="form-group">
+  <label class="control-label">Device ID (28-x)</label>
+  <div>
+    {{formModSensor.modLocation(class_='form-control', value=each_sensor.location, **{'title':'Where to access the device/sensor? This is the ID code that comes after the 28- of the devices listed with the command "ls /sys/bus/w1/devices"'})}}
+  </div>
+</div>

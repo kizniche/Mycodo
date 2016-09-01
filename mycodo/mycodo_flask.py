@@ -286,6 +286,17 @@ def page(page):
         formModSensor = flaskforms.ModSensor()
         formModSensorCond = flaskforms.ModSensorConditional()
 
+        # Create list of file names from the sensor_options directory
+        # Used in generating the correct options for each sensor/device
+        sensor_template_list = []
+        sensor_path = "{}/mycodo/frontend/templates/pages/sensor_options/".format(INSTALL_DIRECTORY)
+        for (dirpath, dirnames, filenames) in os.walk(sensor_path):
+            sensor_template_list.extend(filenames)
+            break
+        sensor_templates = []
+        for each_fname in sensor_template_list:
+            sensor_templates.append(each_fname.split(".")[0])
+
         if request.method == 'POST':
             form_name = request.form['form-name']
             if form_name == 'addSensor':
@@ -313,6 +324,7 @@ def page(page):
                                relay=relay,
                                sensor=sensor,
                                sensor_conditional=sensor_conditional,
+                               sensor_templates=sensor_templates,
                                users=users,
                                displayOrder=display_order,
                                formAddSensor=formAddSensor,

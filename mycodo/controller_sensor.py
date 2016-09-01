@@ -22,6 +22,7 @@ from sensors.am2315 import AM2315_read
 from sensors.bmp import BMP
 from sensors.dht22 import DHT22
 from sensors.ds18b20 import DS18B20
+from sensors.htu21d import HTU21D_read
 from sensors.k30 import K30
 from sensors.raspi import RaspberryPiCPUTemp
 from sensors.raspi_cpuload import RaspberryPiCPULoad
@@ -85,6 +86,7 @@ class SensorController(threading.Thread):
 
         list_sensors_i2c = ['AM2315',
                             'BMP',
+                            'HTU21D',
                             'SHT2x',
                             'TMP006',
                             'TSL2561',
@@ -188,6 +190,8 @@ class SensorController(threading.Thread):
             self.measure_sensor = DHT11(pigpio.pi(), int(self.location))
         elif self.device_type in ['DHT22', 'AM2302']:
             self.measure_sensor = DHT22(pigpio.pi(), int(self.location))
+        elif self.device_type == 'HTU21D':
+            self.measure_sensor = HTU21D_read()
         elif self.device_type == 'AM2315':
             self.measure_sensor = AM2315_read()
         elif self.device_type == 'K30':

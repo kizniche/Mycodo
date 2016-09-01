@@ -116,49 +116,9 @@
             </div>
 
             <div style="padding: 0.5em;" class="form-inline">
-              {% if each_sensor.device not in ['BMP', 'AM2315', 'ADS1x15', 'MCP342x', 'SHT1x_7x', 'SHT2x', 'TSL2561', 'TMP006'] -%}
-                <div class="form-group">
-                  <label class="control-label">
-                    {%- if each_sensor.device in ['DHT11', 'DHT22', 'EDGE'] -%}
-                      GPIO
-                    {%- elif each_sensor.device == 'DS18B20' -%}
-                      Device ID (28-x)
-                    {%- elif each_sensor.device == 'K30' -%}
-                      Interface
-                    {%- else -%}
-                      Location
-                    {%- endif -%}
-                  </label>
-                  <div>
-                    {% if each_sensor.device in ['DS18B20', 'DHT11', 'DHT22', 'EDGE'] -%}
-                      {{formModSensor.modLocation(class_='form-control', value=each_sensor.location, **{'title':'Where to access the device/sensor?'})}}
-                    {% elif each_sensor.device in ['RPiCPULoad', 'RPi', 'K30'] -%}
-                      {{formModSensor.modLocation(class_='form-control', value=each_sensor.location, disabled=True)}}
-                      <input type="hidden" class="form-control" id="modLocation" name="modLocation" value="{{each_sensor.location}}">
-                    {% endif -%}
-                  </div>
-                </div>
-              {% endif -%}
-
-              {% if each_sensor.device == 'ADS1x15' %}
-                {% include 'pages/sensor_options/ADS1x15.html' %}
-              {% elif each_sensor.device == 'AM2315' %}
-                {% include 'pages/sensor_options/AM2315.html' %}
-              {% elif each_sensor.device == 'BMP' %}
-                {% include 'pages/sensor_options/BMP.html' %}
-              {% elif each_sensor.device == 'EDGE' %}
-                {% include 'pages/sensor_options/edge.html' %}
-              {% elif each_sensor.device == 'MCP342x' %}
-                {% include 'pages/sensor_options/MCP342x.html' %}
-              {% elif each_sensor.device == 'SHT1x_7x' %}
-                {% include 'pages/sensor_options/SHT1x_7x.html' %}
-              {% elif each_sensor.device == 'SHT2x' %}
-                {% include 'pages/sensor_options/SHT2x.html' %}
-              {% elif each_sensor.device == 'TMP006' %}
-                {% include 'pages/sensor_options/TMP006.html' %}
-              {% elif each_sensor.device == 'TSL2561' %}
-                {% include 'pages/sensor_options/TSL2561.html' %}
-              {% endif %}
+              {% for each_sensor_template in sensor_templates if each_sensor_template == each_sensor.device %}
+                {% include 'pages/sensor_options/'+each_sensor_template+'.html' %}
+              {% endfor %}
 
               {% if each_sensor.device != 'EDGE' -%}
                 <div class="form-group">
@@ -189,7 +149,7 @@
                 </div>
               {% endif -%}
 
-              {% if each_sensor.device in ['AM2315', 'BMP', 'TSL2561', 'TMP006', 'ADS1x15', 'MCP342x', 'SHT2x'] -%}
+              {% if each_sensor.device in ['AM2315', 'BMP', 'HTU21D', 'TSL2561', 'TMP006', 'ADS1x15', 'MCP342x', 'SHT2x'] -%}
                 <div class="form-group">
                   {{formModSensor.modMultiplexAddress.label(class_='control-label')}}
                   <div>
