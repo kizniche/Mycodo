@@ -122,7 +122,7 @@ class HTU21D_read(object):
 if __name__ == "__main__":
     htu21d = HTU21D_read()
 
-    for measurements in am2315:
+    for measurements in htu21d:
         print("Temperature: {}".format(measurements['temperature']))
         print("Humidity: {}".format(measurements['humidity']))
         print("Dew Point: {}".format(dewpoint(measurements['temperature'], measurements['humidity'])))
