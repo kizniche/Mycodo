@@ -159,7 +159,36 @@
               {% elif each_sensor.device == 'TSL2561' %}
                 {% include 'pages/sensor_options/TSL2561.html' %}
               {% endif %}
-              
+
+              {% if each_sensor.device != 'EDGE' -%}
+                <div class="form-group">
+                  {{formModSensor.modPeriod.label(class_='control-label')}}
+                  <div>
+                    {{formModSensor.modPeriod(class_='form-control', value=each_sensor.period, **{'title':'The duration between sensor reads, in seconds.'})}}
+                  </div>
+                </div>
+              {% endif -%}
+
+              {% if each_sensor.device not in ['EDGE', 'RPiCPULoad'] -%}
+                <div class="form-group">
+                  {{formModSensor.modPreRelayID.label(class_='control-label')}}
+                  <div>
+                    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modPreRelayID" name="modPreRelayID" title="Turn the selected relay on before taking a measurement.">
+                      <option value="">Disabled</option>
+                      {% for rel in relay -%}
+                        <option value="{{rel.id}}"{% if each_sensor.pre_relay_id == rel.id %} selected{% endif %}>{{rel.id}} ({{rel.name}})</option>
+                      {% endfor -%}
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  {{formModSensor.modPreRelayDuration.label(class_='control-label')}}
+                  <div>
+                    {{formModSensor.modPreRelayDuration(class_='form-control', value=each_sensor.pre_relay_duration, **{'title':'If a Pre Relay is selected, set the duration to turn the Pre Relay on, in seconds.'})}}
+                  </div>
+                </div>
+              {% endif -%}
+
               {% if each_sensor.device in ['AM2315', 'BMP', 'TSL2561', 'TMP006', 'ADS1x15', 'MCP342x', 'SHT2x'] -%}
                 <div class="form-group">
                   {{formModSensor.modMultiplexAddress.label(class_='control-label')}}
@@ -197,34 +226,6 @@
                       <option value="7"{% if each_sensor.multiplexer_channel == 7 %} selected{% endif %}>Channel 7</option>
                       <option value="8"{% if each_sensor.multiplexer_channel == 8 %} selected{% endif %}>Channel 8</option>
                     </select>
-                  </div>
-                </div>
-              {% endif -%}
-
-              {% if each_sensor.device != 'EDGE' -%}
-                <div class="form-group">
-                  {{formModSensor.modPeriod.label(class_='control-label')}}
-                  <div>
-                    {{formModSensor.modPeriod(class_='form-control', value=each_sensor.period, **{'title':'The duration between sensor reads, in seconds.'})}}
-                  </div>
-                </div>
-              {% endif -%}
-              {% if each_sensor.device not in ['EDGE', 'RPiCPULoad'] -%}
-                <div class="form-group">
-                  {{formModSensor.modPreRelayID.label(class_='control-label')}}
-                  <div>
-                    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modPreRelayID" name="modPreRelayID" title="Turn the selected relay on before taking a measurement.">
-                      <option value="">Disabled</option>
-                      {% for rel in relay -%}
-                        <option value="{{rel.id}}"{% if each_sensor.pre_relay_id == rel.id %} selected{% endif %}>{{rel.id}} ({{rel.name}})</option>
-                      {% endfor -%}
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group">
-                  {{formModSensor.modPreRelayDuration.label(class_='control-label')}}
-                  <div>
-                    {{formModSensor.modPreRelayDuration(class_='form-control', value=each_sensor.pre_relay_duration, **{'title':'If a Pre Relay is selected, set the duration to turn the Pre Relay on, in seconds.'})}}
                   </div>
                 </div>
               {% endif -%}

@@ -165,8 +165,7 @@
           </form>
 
           <div class="form-inline" style="margin: 0.5em; padding: 0.5em; border: 2px solid #ddd; border-radius: 5px;">
-              <strong>Note: This method builder has not been implemented. Any selected method will NOT be used by the PID.
-              <br>Only the standard daily setpoint tracking currently works (below).</strong>
+            <strong>Setpoint Tracking: Select a method to enable setpoint tracking.</strong>
             <form method="post" action="/pid" style="padding: 0.5em 0 0   0">
               <input type="hidden" name="form-name" value="modPIDMethod">
               {{formModPIDMethod.csrf_token}}
