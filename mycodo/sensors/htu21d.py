@@ -20,7 +20,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 
-import math
 import pigpio
 import time
 import RPi.GPIO as GPIO
@@ -68,7 +67,7 @@ class HTU21D_read(object):
         t1 = byteArray[0] # most significant byte msb
         t2 = byteArray[1] # least significant byte lsb
         temp_reading = (t1 * 256) + t2 # combine both bytes into one big integer
-        temp_reading = math.fabs(temp_reading) # I'm an idiot and can't figure out any other way to make it a float 
+        temp_reading = float(temp_reading) # I'm an idiot and can't figure out any other way to make it a float 
         return ((temp_reading / 65536) * 175.72 ) - 46.85 # formula from datasheet
 
     def read_humidity(self):
@@ -80,9 +79,9 @@ class HTU21D_read(object):
         h1 = byteArray[0] # most significant byte msb
         h2 = byteArray[1] # least significant byte lsb
         humi_reading = (h1 * 256) + h2 # combine both bytes into one big integer
-        humi_reading = math.fabs(humi_reading) # I'm an idiot and can't figure out any other way to make it a float
+        humi_reading = float(humi_reading) # I'm an idiot and can't figure out any other way to make it a float
         uncomp_humidity = ((humi_reading / 65536) * 125 ) - 6 # formula from datasheet
-        return ((25 - self.temperature()) * -0.15) + uncomp_humidity
+        return ((25 - self.temperature) * -0.15) + uncomp_humidity
 
     @property
     def temperature(self):
