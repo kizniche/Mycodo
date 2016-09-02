@@ -173,7 +173,13 @@ def page(page):
                 if each_sensor_order == each_sensor.id and each_sensor.activated:
                     display_order_sensor_sorted.append(each_sensor.id)
 
+        with session_scope(MYCODO_DB_PATH) as new_session:
+            method = new_session.query(Method).filter(Method.method_order == 0).all()
+            new_session.expunge_all()
+            new_session.close()
+
         return render_template('pages/live.html',
+                               method=method,
                                pid=pid,
                                relay=relay,
                                sensor=sensor,
@@ -393,6 +399,11 @@ def page(page):
         formDelPID = flaskforms.DelPID()
         formModPID = flaskforms.ModPID()
         formOrderPID = flaskforms.OrderPID()
+
+        with session_scope(MYCODO_DB_PATH) as new_session:
+            method = new_session.query(Method).filter(Method.method_order == 0).all()
+            new_session.expunge_all()
+            new_session.close()
 
         if request.method == 'POST':
             form_name = request.form['form-name']
