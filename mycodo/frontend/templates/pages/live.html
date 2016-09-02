@@ -263,18 +263,6 @@
                   </div>
                   {%- endfor -%}
 
-                  {%- for each_pid_setpoint in pidsetpoints if each_pid_setpoint.pid_id == each_pid.id -%}
-                  {%- if each_pid_setpoint.end_setpoint %}
-                    <div style="padding: 0 0.7em">
-                      From {{each_pid_setpoint.start_time}} to {{each_pid_setpoint.end_time}}, change from {{each_pid_setpoint.start_setpoint}} to {{each_pid_setpoint.end_setpoint}}
-                    </div>
-                  {%- else %}
-                    <div style="padding: 0 0.7em">
-                      From {{each_pid_setpoint.start_time}} to {{each_pid_setpoint.end_time}}, maintain {{each_pid_setpoint.start_setpoint}}
-                    </div>
-                  {%- endif -%}
-                  {%- endfor -%}
-
                 </div>
 
               {%- endfor -%}

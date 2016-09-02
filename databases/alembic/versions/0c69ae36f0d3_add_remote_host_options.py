@@ -22,7 +22,7 @@ def upgrade():
         sa.Column('activated', sa.INT),
         sa.Column('host', sa.TEXT),
         sa.Column('username', sa.TEXT),
-        sa.Column('password_hash', sa.TEXT),
+        sa.Column('password_hash', sa.TEXT)
     )
     with op.batch_alter_table("displayorder") as batch_op:
         batch_op.add_column(sa.Column('remote_host', sa.TEXT))

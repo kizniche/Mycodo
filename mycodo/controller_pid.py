@@ -44,7 +44,6 @@ from config import INFLUXDB_DATABASE
 from config import SQL_DATABASE_MYCODO
 from databases.mycodo_db.models import Method
 from databases.mycodo_db.models import PID
-from databases.mycodo_db.models import PIDSetpoints
 from databases.mycodo_db.models import Relay
 from databases.utils import session_scope
 from mycodo_client import DaemonControl
@@ -87,13 +86,6 @@ class PIDController(threading.Thread):
             self.measure_interval = pid.period
             self.default_set_point = pid.setpoint
             self.set_point = pid.setpoint
-
-        with session_scope(MYCODO_DB_PATH) as new_session:
-            self.pidsetpoints = new_session.query(PIDSetpoints)
-            self.pidsetpoints = self.pidsetpoints.filter(PIDSetpoints.pid_id == self.pid_id)
-            self.pidsetpoints = self.pidsetpoints.order_by(PIDSetpoints.start_time.asc())
-            new_session.expunge_all()
-            new_session.close()
 
         self.Derivator = 0
         self.Integrator = 0

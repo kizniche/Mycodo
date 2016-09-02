@@ -41,7 +41,6 @@ from databases.mycodo_db.models import Log
 from databases.mycodo_db.models import Method
 from databases.mycodo_db.models import Misc
 from databases.mycodo_db.models import PID
-from databases.mycodo_db.models import PIDSetpoints
 from databases.mycodo_db.models import Relay
 from databases.mycodo_db.models import RelayConditional
 from databases.mycodo_db.models import Remote
@@ -156,11 +155,6 @@ def page(page):
         relay = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Relay)
         sensor = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Sensor)
         timer = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Timer)
-        # Sort PID tracking by start time, earlest to latest
-        with session_scope(MYCODO_DB_PATH) as new_session:
-            pidsetpoints = new_session.query(PIDSetpoints).order_by(PIDSetpoints.start_time.asc()).all()
-            new_session.expunge_all()
-            new_session.close()
 
         pid_display_order_unsplit = flaskutils.db_retrieve_table(MYCODO_DB_PATH, DisplayOrder, first=True).pid
         if pid_display_order_unsplit:
@@ -181,7 +175,6 @@ def page(page):
 
         return render_template('pages/live.html',
                                pid=pid,
-                               pidsetpoints=pidsetpoints,
                                relay=relay,
                                sensor=sensor,
                                timer=timer,
@@ -401,13 +394,6 @@ def page(page):
         formModPID = flaskforms.ModPID()
         formOrderPID = flaskforms.OrderPID()
 
-        # Sort by start time earlest to latest
-        with session_scope(MYCODO_DB_PATH) as new_session:
-            pidsetpoints = new_session.query(PIDSetpoints).order_by(PIDSetpoints.start_time.asc()).all()
-            method = new_session.query(Method).filter(Method.method_order == 0).all()
-            new_session.expunge_all()
-            new_session.close()
-
         if request.method == 'POST':
             form_name = request.form['form-name']
             if form_name == 'addPID':
@@ -433,7 +419,6 @@ def page(page):
         return render_template('pages/pid.html',
                                method=method,
                                pids=pids,
-                               pidsetpoints=pidsetpoints,
                                relay=relay,
                                sensor=sensor,
                                displayOrder=display_order,

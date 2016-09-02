@@ -236,17 +236,6 @@ class PID(Base):
     lower_max_duration = Column(INT)
 
 
-class PIDSetpoints(Base):
-    __tablename__ = "pidsetpoints"
-
-    id = Column(TEXT, unique=True, primary_key=True)
-    pid_id = Column(TEXT)
-    start_time = Column(TEXT)
-    end_time = Column(TEXT)
-    start_setpoint = Column(REAL)
-    end_setpoint = Column(REAL)
-
-
 class PIDPreset(Base):
     __tablename__ = "pidpreset"
 
