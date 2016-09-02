@@ -40,9 +40,9 @@ class HTU21D_read(object):
         self._temperature = 0
         self._humidity = 0
         if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
-            self.I2C_bus_number = '1'
+            self.I2C_bus_number = 1
         else:
-            self.I2C_bus_number = '0'
+            self.I2C_bus_number = 0
         self.running = True
 
     def read(self):
