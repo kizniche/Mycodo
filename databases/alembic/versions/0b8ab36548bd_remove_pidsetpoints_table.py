@@ -24,9 +24,9 @@ def downgrade():
     op.create_table(
         'pidsetpoints',
         sa.Column('id', sa.TEXT,  unique=True, primary_key=True),
-        sa.Column('pid_id', sa.INT),
+        sa.Column('pid_id', sa.TEXT),
         sa.Column('start_time', sa.TEXT),
         sa.Column('end_time', sa.TEXT),
-        sa.Column('start_setpoint', sa.TEXT),
-        sa.Column('end_setpoint', sa.TEXT)
+        sa.Column('start_setpoint', sa.REAL),
+        sa.Column('end_setpoint', sa.REAL)
     )
