@@ -1372,7 +1372,7 @@ def do_admin_login():
                 if form.remember.data:
                     response = make_response(redirect('/'))
                     expire_date = datetime.datetime.now()
-                    expire_date = expire_date + datetime.timedelta(days=30)
+                    expire_date = expire_date + datetime.timedelta(days=90)
                     response.set_cookie('user_name', user.user_name, expires=expire_date)
                     response.set_cookie('user_pass_hash', user.user_password_hash, expires=expire_date)
                     return response
