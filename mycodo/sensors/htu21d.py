@@ -48,8 +48,8 @@ class HTU21D_read(object):
     def read(self):
         try:
             self.htu_reset()
-            self.read_temperature()
-            self.read_humidity()
+            self._temperature = self.read_temperature()
+            self._humidity = self.read_humidity()
         except:
             return 1
 
@@ -69,7 +69,7 @@ class HTU21D_read(object):
         t2 = byteArray[1] # least significant byte lsb
         temp_reading = (t1 * 256) + t2 # combine both bytes into one big integer
         temp_reading = math.fabs(temp_reading) # I'm an idiot and can't figure out any other way to make it a float 
-        self._temperature = ((temp_reading / 65536) * 175.72 ) - 46.85 # formula from datasheet
+        return ((temp_reading / 65536) * 175.72 ) - 46.85 # formula from datasheet
 
     def read_humidity(self):
         handle = self.pi.i2c_open(self.I2C_bus_number, self.address) # open i2c bus
@@ -82,7 +82,7 @@ class HTU21D_read(object):
         humi_reading = (h1 * 256) + h2 # combine both bytes into one big integer
         humi_reading = math.fabs(humi_reading) # I'm an idiot and can't figure out any other way to make it a float
         uncomp_humidity = ((humi_reading / 65536) * 125 ) - 6 # formula from datasheet
-        self._humidity = ((25 - measurements['temperature']) * -0.15) + uncomp_humidity
+        return ((25 - self.temperature()) * -0.15) + uncomp_humidity
 
     @property
     def temperature(self):
