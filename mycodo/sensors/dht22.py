@@ -80,7 +80,12 @@ class DHT22(object):
         self.either_edge_cb = None
 
         self.running = True
-        self.setup()
+        
+        # Prevent from crashing the mycodo daemon if pigpiod isn't running
+        try:
+            self.setup()
+        except:
+            pass
 
     def setup(self):
         """
