@@ -182,7 +182,7 @@
                 Measurement | Timestamp
                 <div>
                   <b><span id="{{each_sensor.id}}-voltage-value">0.0</span> volts</b> | <span id="{{each_sensor.id}}-voltage-time">&lt;please wait&gt;</span>
-                  <br><b><span id="{{each_sensor.id}}-{{each_sensor.adc_measure}}-value">0.0</span> {{each_sensor.adc_measure_units}}</b> | <span id="{{each_sensor.id}}-{{each_sensor.adc_measure}}-time">&lt;please wait&gt;</span>
+                  <br><b><span id="{{each_sensor.id}}-{{each_sensor.adc_measure}}-value">0.0</span> {{each_sensor.adc_measure_units}} {{each_sensor.adc_measure}}</b> | <span id="{{each_sensor.id}}-{{each_sensor.adc_measure}}-time">&lt;please wait&gt;</span>
                 </div>
               </div>
             {%- elif each_sensor.device_type == 'edgedetect' %}
