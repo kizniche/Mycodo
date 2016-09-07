@@ -19,6 +19,13 @@ import sqlalchemy as sa
 def upgrade():
     with op.batch_alter_table("misc") as batch_op:
         batch_op.add_column(sa.Column('force_https', sa.BOOLEAN))
+    op.execute(
+        '''
+        UPDATE misc
+        SET force_https=1
+        WHERE force_https IS NULL
+        '''
+    )
 
 
 def downgrade():
