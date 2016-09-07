@@ -1552,6 +1552,11 @@ def data():
     return "1"
 
 
+@app.route('/robots.txt')
+def robots():
+	return "User-agent: *\nDisallow: /"
+
+
 @app.context_processor
 def inject_mycodo_version():
     try:
