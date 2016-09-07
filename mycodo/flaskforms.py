@@ -277,6 +277,7 @@ class EmailAlert(Form):
 #
 
 class SettingsGeneral(Form):
+    forceHTTPS = BooleanField(u'Force HTTPS')
     hideAlertSuccess = BooleanField(u'Hide success messages')
     hideAlertInfo = BooleanField(u'Hide info messages')
     hideAlertWarning = BooleanField(u'Hide warning messages')

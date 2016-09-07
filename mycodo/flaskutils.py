@@ -2364,12 +2364,21 @@ def settings_general_mod(formModGeneral):
     if formModGeneral.validate():
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_misc = db_session.query(Misc).one()
+            force_https = mod_misc.force_https
+            mod_misc.force_https = formModGeneral.forceHTTPS.data
             mod_misc.hide_alert_success = formModGeneral.hideAlertSuccess.data
             mod_misc.hide_alert_info = formModGeneral.hideAlertInfo.data
             mod_misc.hide_alert_warning = formModGeneral.hideAlertWarning.data
             mod_misc.stats_opt_out = formModGeneral.stats_opt_out.data
             db_session.commit()
             flash("General settings successfully changed", "success")
+
+            if force_https != formModGeneral.forceHTTPS.data:
+                # Force HTTPS option changed.
+                # Reload web server with new settings.
+                wsgi_file = INSTALL_DIRECTORY+'/mycodo_flask.wsgi'
+                with open(wsgi_file, 'a'):
+                    os.utime(wsgi_file, None)
     else:
         flash_form_errors(formModGeneral)
 

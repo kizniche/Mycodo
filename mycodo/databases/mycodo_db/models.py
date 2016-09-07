@@ -410,6 +410,7 @@ class Misc(Base):
     __tablename__ = "misc"
 
     id = Column(TEXT, unique=True, primary_key=True)
+    force_https = Column(BOOLEAN)
     dismiss_notification = Column(INT)
     hide_alert_success = Column(BOOLEAN)
     hide_alert_info = Column(BOOLEAN)

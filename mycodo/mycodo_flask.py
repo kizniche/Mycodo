@@ -81,8 +81,12 @@ app = Flask(__name__, static_folder=static_dir, template_folder=tmpl_dir)
 app.secret_key = os.urandom(24)
 app.jinja_env.add_extension('jinja2.ext.do')  # Global values in jinja
 
-sslify = SSLify(app)
 influx_db = InfluxDB(app)
+
+# Check user option to force all web connections to use SSL
+misc = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Misc, first=True)
+if misc.force_https:
+    sslify = SSLify(app)
 
 
 def gzipped(f):

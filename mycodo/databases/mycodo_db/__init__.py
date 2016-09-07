@@ -63,7 +63,7 @@ def populate_db(db_path):
     Session = sessionmaker(bind=engine)
     session = Session()
     try:
-        alembic_version = AlembicVersion(version_num='0b8ab36548bd')
+        alembic_version = AlembicVersion(version_num='b62c62a93a7d')
         insert_or_ignore(alembic_version, session)
 
         initial_displayorder = DisplayOrder(id='0',
@@ -102,6 +102,7 @@ def populate_db(db_path):
         insert_or_ignore(initial_camerastream, session)
 
         initial_misc = Misc(id='0',
+                            force_https=True,
                             dismiss_notification=0,
                             hide_alert_success=False,
                             hide_alert_info=False,

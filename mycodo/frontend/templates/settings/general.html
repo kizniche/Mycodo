@@ -14,6 +14,17 @@
       <input type="hidden" name="form-name" value="General">
       {{formSettingsGeneral.csrf_token}}
       <div class="form-group">
+        {{formSettingsGeneral.forceHTTPS.label(class_='col-sm-4 control-label checkbox-nopad')}}
+        <div class="col-sm-8">
+          {%- if each_misc.force_https == true -%}
+            {{formSettingsGeneral.forceHTTPS(checked=True)}}
+          {%- else -%}
+            {{formSettingsGeneral.forceHTTPS()}}
+          {%- endif -%}
+          &nbsp;&nbsp;Check to force all web connections to use SSL (port 443) for greater security.
+        </div>
+      </div>
+      <div class="form-group">
         {{formSettingsGeneral.hideAlertSuccess.label(class_='col-sm-4 control-label checkbox-nopad')}}
         <div class="col-sm-8">
           {%- if each_misc.hide_alert_success == true -%}
