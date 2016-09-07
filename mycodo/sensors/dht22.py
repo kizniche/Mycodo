@@ -85,7 +85,7 @@ class DHT22(object):
         try:
             self.setup()
         except:
-            pass
+            raise Exception('DHT22 could not initialize. Check if gpiod is running.')
 
     def setup(self):
         """
