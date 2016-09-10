@@ -47,7 +47,7 @@ from databases.mycodo_db.models import PID
 from databases.mycodo_db.models import Relay
 from databases.utils import session_scope
 from mycodo_client import DaemonControl
-from daemonutils import read_last_influxdb, write_influxdb
+from utils.influx import read_last_influxdb, write_influxdb
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 

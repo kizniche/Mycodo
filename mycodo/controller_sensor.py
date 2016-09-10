@@ -43,13 +43,20 @@ from config import INFLUXDB_PORT
 from config import INFLUXDB_USER
 from config import INFLUXDB_PASSWORD
 from config import INFLUXDB_DATABASE
+from config import INSTALL_DIRECTORY
+
 from databases.mycodo_db.models import Relay
 from databases.mycodo_db.models import Sensor
 from databases.mycodo_db.models import SensorConditional
 from databases.mycodo_db.models import SMTP
 from databases.utils import session_scope
+
 from mycodo_client import DaemonControl
-from daemonutils import camera_record, cmd_output, email, write_influxdb, write_influxdb_list, read_last_influxdb
+
+from utils.camera import camera_record
+from utils.influx import write_influxdb, write_influxdb_list, read_last_influxdb
+from utils.send_data import send_email
+from utils.system_pi import cmd_output
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -407,9 +414,9 @@ class SensorController(threading.Thread):
                 message += "Status: {}. ".format(cmd_status)
 
             if self.cond_camera_record[cond_id] in ['photo', 'photoemail']:
-                attachment_file = camera_record('photo')
+                attachment_file = camera_record(INSTALL_DIRECTORY, 'photo')
             elif self.cond_camera_record[cond_id] in ['video', 'videoemail']:
-                attachment_file = camera_record('video', duration_sec=5)
+                attachment_file = camera_record(INSTALL_DIRECTORY, 'video', duration_sec=5)
 
             if self.cond_email_notify[cond_id]:
                 if (self.email_count >= self.smtp_max_count and
@@ -436,7 +443,7 @@ class SensorController(threading.Thread):
                         attachment_type = 'video'
                     with session_scope(MYCODO_DB_PATH) as new_session:
                         smtp = new_session.query(SMTP).first()
-                        email(self.logger, smtp.host, smtp.ssl, smtp.port,
+                        send_email(self.logger, smtp.host, smtp.ssl, smtp.port,
                               smtp.user, smtp.passw, smtp.email_from,
                               self.cond_email_notify[cond_id], message,
                               attachment_file, attachment_type)

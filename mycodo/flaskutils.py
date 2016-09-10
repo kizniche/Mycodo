@@ -22,7 +22,7 @@ from sqlalchemy import and_
 from sqlalchemy.orm import sessionmaker
 from subprocess import Popen, PIPE
 
-from daemonutils import email
+from utils.send_data import send_email
 from databases.mycodo_db.models import DisplayOrder
 from databases.mycodo_db.models import Graph
 from databases.mycodo_db.models import LCD
@@ -2396,7 +2396,7 @@ def settings_alert_mod(formModAlert):
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_smtp = db_session.query(SMTP).one()
             if formModAlert.sendTestEmail.data:
-                email(False, mod_smtp.host,
+                send_email(False, mod_smtp.host,
                       mod_smtp.ssl, mod_smtp.port,
                       mod_smtp.user, mod_smtp.passw,
                       mod_smtp.email_from, formModAlert.testEmailTo.data,

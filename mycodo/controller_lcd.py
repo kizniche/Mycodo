@@ -69,7 +69,7 @@ from databases.mycodo_db.models import Relay
 from databases.mycodo_db.models import Sensor
 from databases.utils import session_scope
 from devices.tca9548a import TCA9548A
-from daemonutils import read_last_influxdb
+from utils.influx import read_last_influxdb
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 

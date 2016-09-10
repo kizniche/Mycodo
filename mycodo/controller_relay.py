@@ -22,12 +22,17 @@ from config import INFLUXDB_USER
 from config import INFLUXDB_PASSWORD
 from config import INFLUXDB_DATABASE
 from config import MAX_AMPS
+
 from databases.mycodo_db.models import Relay
 from databases.mycodo_db.models import RelayConditional
 from databases.mycodo_db.models import SMTP
 from databases.utils import session_scope
+
 from mycodo_client import DaemonControl
-from daemonutils import cmd_output, email, write_influxdb
+
+from utils.influx import write_influxdb
+from utils.send_data import send_email
+from utils.system_pi import cmd_output
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -328,7 +333,7 @@ class RelayController(threading.Thread):
 
                     with session_scope(MYCODO_DB_PATH) as new_session:
                         smtp = new_session.query(SMTP).first()
-                        email(self.logger, smtp.host, smtp.ssl, smtp.port,
+                        send_email(self.logger, smtp.host, smtp.ssl, smtp.port,
                               smtp.user, smtp.passw, smtp.email_from,
                               each_conditional.email_notify, message)
                 else:

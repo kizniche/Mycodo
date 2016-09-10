@@ -21,14 +21,21 @@ from collections import OrderedDict
 from daemonize import Daemonize
 from rpyc.utils.server import ThreadedServer
 
-import daemonutils
+from utils.camera import camera_record
+from utils.statistics import add_update_csv
+from utils.statistics import recreate_stat_file
+from utils.statistics import return_stat_file_dict
+from utils.statistics import send_stats
+
 from config import DAEMON_PID_FILE
 from config import DAEMON_LOG_FILE
 from config import FILE_TIMELAPSE_PARAM
 from config import ID_FILE
+from config import INSTALL_DIRECTORY
 from config import LOCK_FILE_TIMELAPSE
 from config import MYCODO_VERSION
 from config import SQL_DATABASE_MYCODO
+from config import SQL_DATABASE_USER
 from config import STATS_INTERVAL
 from config import STATS_CSV
 from config import STATS_HOST
@@ -46,14 +53,18 @@ from controller_timer import TimerController
 
 from databases.mycodo_db.models import LCD
 from databases.mycodo_db.models import Log
+from databases.mycodo_db.models import Method
 from databases.mycodo_db.models import Misc
 from databases.mycodo_db.models import PID
+from databases.mycodo_db.models import Relay
 from databases.mycodo_db.models import Sensor
 from databases.mycodo_db.models import Timer
+from databases.users_db.models import Users
 from databases.utils import session_scope
 
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+USER_DB_PATH = 'sqlite:///' + SQL_DATABASE_USER
 
 
 class ComThread(threading.Thread):
@@ -192,16 +203,17 @@ class DaemonController(threading.Thread):
                             # Update last capture and image number to latest before capture
                             next_capture += float(dict_timelapse_param['interval'])
                             capture_number += 1
-                        daemonutils.add_update_csv(logger,
+                        add_update_csv(logger,
                                                    FILE_TIMELAPSE_PARAM,
                                                    'next_capture',
                                                    next_capture)
-                        daemonutils.add_update_csv(logger,
+                        add_update_csv(logger,
                                                    FILE_TIMELAPSE_PARAM,
                                                    'capture_number',
                                                    capture_number)
                         # Capture image
-                        daemonutils.camera_record(
+                        camera_record(
+                            INSTALL_DIRECTORY,
                             'timelapse',
                             start_time=dict_timelapse_param['start_time'],
                             capture_number=capture_number)
@@ -432,21 +444,24 @@ class DaemonController(threading.Thread):
     def send_stats(self):
         """Collect and send statistics"""
         try:
-            stat_dict = daemonutils.return_stat_file_dict()
+            stat_dict = return_stat_file_dict(STATS_CSV)
             if float(stat_dict['next_send']) < time.time():
                 self.timer_stats = self.timer_stats+STATS_INTERVAL
-                daemonutils.add_update_csv(self.logger, STATS_CSV,
+                add_update_csv(self.logger, STATS_CSV,
                                            'next_send', self.timer_stats)
             else:
                 self.timer_stats = float(stat_dict['next_send'])
         except Exception as msg:
             self.logger.exception("Error: Cound not read file. Deleting file and regenerating. Error msg: {}".format(msg))
             os.remove(STATS_CSV)
-            daemonutils.recreate_stat_file()
+            recreate_stat_file(ID_FILE, STATS_CSV, STATS_INTERVAL, MYCODO_VERSION)
         try:
-            daemonutils.send_stats(self.logger, STATS_HOST,
-                             STATS_PORT, STATS_USER,
-                             STATS_PASSWORD, STATS_DATABASE)
+            send_stats(self.logger, STATS_HOST, STATS_PORT,
+                                   STATS_USER, STATS_PASSWORD, STATS_DATABASE,
+                                   MYCODO_DB_PATH, USER_DB_PATH,
+                                   STATS_CSV, MYCODO_VERSION,
+                                   session_scope, LCD, Log, Method, PID,
+                                   Relay, Sensor, Timer, Users)
         except Exception as msg:
             self.logger.exception("Error: Cound not send statistics: {}".format(msg))
 
@@ -466,12 +481,12 @@ class DaemonController(threading.Thread):
             if not os.path.isfile(STATS_CSV):
                 self.logger.debug("[Daemon] Statistics file doesn't "
                                   "exist, creating {}".format(STATS_CSV))
-                daemonutils.recreate_stat_file()
+                recreate_stat_file(ID_FILE, STATS_CSV, STATS_INTERVAL, MYCODO_VERSION)
 
             daemon_startup_time = timeit.default_timer()-self.startup_timer
             self.logger.info("[Daemon] Mycodo v{} started in {} seconds".format(
                 MYCODO_VERSION, daemon_startup_time))
-            daemonutils.add_update_csv(self.logger, STATS_CSV,
+            add_update_csv(self.logger, STATS_CSV,
                                        'daemon_startup_seconds',
                                        daemon_startup_time)
         except Exception as msg:

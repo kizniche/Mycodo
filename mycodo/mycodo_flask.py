@@ -33,7 +33,6 @@ from sqlalchemy.orm import sessionmaker
 import flaskforms
 import flaskutils
 from databases.utils import session_scope
-from databases.users_db.models import Users
 from databases.mycodo_db.models import DisplayOrder
 from databases.mycodo_db.models import Graph
 from databases.mycodo_db.models import LCD
@@ -48,9 +47,14 @@ from databases.mycodo_db.models import Sensor
 from databases.mycodo_db.models import SensorConditional
 from databases.mycodo_db.models import SMTP
 from databases.mycodo_db.models import Timer
-from daemonutils import camera_record, return_stat_file_dict, email
+from databases.users_db.models import Users
+
+from utils.camera import camera_record
+from utils.statistics import return_stat_file_dict
+
 from devices.camera_pi import CameraStream
 from devices.camera_pi import CameraTimelapse
+
 from mycodo_client import DaemonControl
 
 from config import DAEMON_LOG_FILE
@@ -66,8 +70,9 @@ from config import LOCK_FILE_STREAM
 from config import LOCK_FILE_TIMELAPSE
 from config import MYCODO_VERSION
 from config import RESTORE_LOG_FILE
-from config import SQL_DATABASE_USER
 from config import SQL_DATABASE_MYCODO
+from config import SQL_DATABASE_USER
+from config import STATS_CSV
 from config import UPDATE_LOG_FILE
 
 
@@ -835,7 +840,7 @@ def page(page):
                             #     CameraStream().terminate()  # Stop camera stream to take a photo
                             #     time.sleep(2)
                             #     stream_locked = True  # Signal to enable camera stream
-                            camera_record('photo')
+                            camera_record(INSTALL_DIRECTORY, 'photo')
                         except Exception as msg:
                             flash("Camera Error: {}".format(msg), "error")
                     else:
@@ -1326,7 +1331,7 @@ def settings(page):
 
     # Display collected statistics
     elif page == 'statistics':
-        statistics = return_stat_file_dict()
+        statistics = return_stat_file_dict(STATS_CSV)
         return render_template('settings/statistics.html',
                                statistics=statistics)
 
