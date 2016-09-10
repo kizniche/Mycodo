@@ -79,7 +79,7 @@
           </div>
         {%- elif method_type == "DailySine" -%}
           <div>
-            <input type="radio" name="method_select" value="setpoint" checked="checked"> Define the setpoint over the day based on a sinusoidal wave. This method will repeat daily.
+            <input class="form-control" id="method_select" name="method_select" type="hidden" value="setpoint">Define the setpoint over the day based on a sinusoidal wave. This method will repeat daily.
           </div>
           <div class="form-group">
             {{formAddMethod.amplitude.label(class_='control-label')}}
@@ -203,7 +203,7 @@
             <div class="form-group">
               <label class='control-label'></label>
               <div>
-                {{formAddMethod.Submit(class_='form-control btn btn-default', **{'value':'Save Sine Variables'})}}
+                {{formAddMethod.Submit(class_='form-control btn btn-default', **{'value':'Save'})}}
               </div>
             </div>
           </div>
@@ -303,7 +303,7 @@
     {%- if method_relay -%}
       <div class="form-inline" style="margin: 0.5em; padding: 0.5em; border: 2px solid #ddd; border-radius: 5px;">
         <div>
-          Relay Modulation
+          Relay Modulation <span style="font-weight: bold; color: red">(Note: This feature is currently not implemented. These relays will NOT be modulated if applied to a PID. This will be implemented soon.)</span>
         </div>
     {%- endif -%}
 
