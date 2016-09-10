@@ -443,7 +443,6 @@ class PIDController(threading.Thread):
                                            method_key.frequency,
                                            method_key.shift_angle,
                                            method_key.shift_y)
-            self.logger.warning("[Method] ER: {}".format(new_setpoint))
             self.set_point = new_setpoint
             return 0
 
