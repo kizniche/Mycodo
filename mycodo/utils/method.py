@@ -13,6 +13,6 @@ def sine_wave_y_out(amplitude, frequency, shift_angle, shift_y, angle_in=None):
     else:
         angle = angle_in
 
-    return (amplitude+sin(radians(frequency*angle+shift_angle)))+shift_y
+    return (amplitude*sin(radians(frequency*angle+shift_angle)))+shift_y
 
 print(sine_wave_y_out(5.0, 5.0, 200.0, 33.0))
