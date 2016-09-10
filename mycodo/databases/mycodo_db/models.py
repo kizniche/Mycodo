@@ -54,6 +54,10 @@ class Method(Base):
     relay_duration = Column(REAL)
     start_setpoint = Column(REAL)
     end_setpoint = Column(REAL)
+    amplitude = Column(REAL)
+    frequency = Column(REAL)
+    shift_angle = Column(REAL)
+    shift_y = Column(REAL)
 
 
 class Relay(Base):

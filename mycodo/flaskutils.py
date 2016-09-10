@@ -172,6 +172,11 @@ def method_create(formCreateMethod, method_id):
         else:
             new_method.name = formCreateMethod.name.data
         new_method.method_type = formCreateMethod.method_type.data
+        if formCreateMethod.method_type.data == 'DailySine':
+            new_method.amplitude = 0
+            new_method.frequency = 1
+            new_method.shift_angle = 0
+            new_method.shift_y = 0
         new_method.method_order = 0
         new_method.controller_type = formCreateMethod.controller_type.data
         with session_scope(MYCODO_DB_PATH) as db_session:
@@ -190,7 +195,20 @@ def method_add(formAddMethod, method):
     this_method = this_method.filter(Method.method_order == 0).first()
     if validate_method_data(formAddMethod, this_method):
         return 1
-    
+
+    if this_method.method_type == 'DailySine':
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            mod_method = db_session.query(Method).filter(
+                Method.method_id == formAddMethod.method_id.data).first()
+            mod_method.amplitude = formAddMethod.amplitude.data
+            mod_method.frequency = formAddMethod.frequency.data
+            mod_method.shift_angle = formAddMethod.shiftAngle.data
+            mod_method.shift_y = formAddMethod.shiftY.data
+            db_session.commit()
+            flash("Method settings successfully modified", "success")
+        return 0
+
+
     if formAddMethod.method_select.data == 'setpoint':
         if this_method.method_type == 'Date':
             start_time = datetime.strptime(formAddMethod.startTime.data, '%Y-%m-%d %H:%M:%S')
@@ -376,6 +394,18 @@ def method_mod(formModMethod, method):
             mod_method.relay_id = formModMethod.relayID.data
             mod_method.relay_state = formModMethod.relayState.data
             mod_method.relay_duration = formModMethod.relayDurationSec.data
+
+        elif method_set.method_type == 'DailySine':
+            if formModMethod.method_select.data == 'relay':
+                mod_method.start_time = formModMethod.relayTime.data
+                mod_method.relay_id = formModMethod.relayID.data
+                mod_method.relay_state = formModMethod.relayState.data
+                mod_method.relay_duration = formModMethod.relayDurationSec.data
+            else:
+                mod_method.amplitude = formModMethod.amplitude.data
+                mod_method.frequency = formModMethod.frequency.data
+                mod_method.shift_angle = formModMethod.shiftAngle.data
+                mod_method.shift_y = formModMethod.shiftY.data
     
         db_session.commit()
         flash("Method settings successfully modified.", "success")

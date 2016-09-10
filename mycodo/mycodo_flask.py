@@ -50,6 +50,7 @@ from databases.mycodo_db.models import Timer
 from databases.users_db.models import Users
 
 from utils.camera import camera_record
+from utils.method import sine_wave_y_out
 from utils.statistics import return_stat_file_dict
 
 from devices.camera_pi import CameraStream
@@ -1008,6 +1009,17 @@ def method_data(method_type, method_id):
             method_list.append([get_sec(each_method.end_time)*1000, end_setpoint])
             method_list.append([get_sec(each_method.start_time)*1000, None])
 
+    elif method_key.method_type == "DailySine":
+        points_x = 700
+        for n in range(points_x):
+            day_in_seconds = 60*60*24
+            seconds = n/float(points_x)
+            angle = n/float(points_x)*360
+            y = sine_wave_y_out(method_key.amplitude, method_key.frequency,
+                                method_key.shift_angle, method_key.shift_y,
+                                angle)
+            method_list.append([seconds*day_in_seconds*1000, y])
+
     elif method_key.method_type == "Duration":
         first_entry = True
         start_duration = 0
@@ -1078,7 +1090,7 @@ def method_builder(method_type, method_id):
     if not logged_in():
         return redirect('/')
 
-    if method_type in ['Date', 'Duration', 'Daily', '0']:
+    if method_type in ['Date', 'Duration', 'Daily', 'DailySine', '0']:
         formCreateMethod = flaskforms.CreateMethod()
         formAddMethod = flaskforms.AddMethod()
         formModMethod = flaskforms.ModMethod()

@@ -44,18 +44,13 @@ class AddMethod(Form):
         u'End YYYY-MM-DD HH:MM:SS',
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
-    startSetpoint = DecimalField(
-        u'Start Setpoint',
-        render_kw={"placeholder": "0.0"}
-    )
-    endSetpoint = DecimalField(
-        u'End Setpoint (optional)',
-        render_kw={"placeholder": "0.0"}
-    )
-    DurationSec = IntegerField(
-        u'Duration (seconds)',
-        render_kw={"placeholder": ""}
-    )
+    startSetpoint = DecimalField(u'Start Setpoint')
+    endSetpoint = DecimalField(u'End Setpoint (optional)')
+    DurationSec = IntegerField(u'Duration (seconds)')
+    amplitude = DecimalField(u'Amplitude')
+    frequency = DecimalField(u'Frequency')
+    shiftAngle = DecimalField(u'Shift Angle')
+    shiftY = DecimalField(u'Shift Y')
     relayDailyTime = TextField(
         u'Time HH:MM:SS',
         render_kw={"placeholder": "HH:MM:SS"}
@@ -110,18 +105,9 @@ class ModMethod(Form):
         u'Time YYYY-MM-DD HH:MM:SS',
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
-    DurationSec = IntegerField(
-        u'Duration (seconds)',
-        render_kw={"placeholder": ""}
-    )
-    startSetpoint = DecimalField(
-        u'Start Setpoint',
-        render_kw={"placeholder": "0.0"}
-    )
-    endSetpoint = DecimalField(
-        u'End Setpoint (optional)',
-        render_kw={"placeholder": "0.0"}
-    )
+    DurationSec = IntegerField(u'Duration (seconds)')
+    startSetpoint = DecimalField(u'Start Setpoint')
+    endSetpoint = DecimalField(u'End Setpoint (optional)')
     relayID = TextField(u'Relay',)
     relayState = TextField(u'Relay State')
     relayDurationSec = IntegerField(u'Relay On Duration (sec)')

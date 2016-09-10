@@ -63,7 +63,7 @@ def populate_db(db_path):
     Session = sessionmaker(bind=engine)
     session = Session()
     try:
-        alembic_version = AlembicVersion(version_num='b62c62a93a7d')
+        alembic_version = AlembicVersion(version_num='054aacc97ae8')
         insert_or_ignore(alembic_version, session)
 
         initial_displayorder = DisplayOrder(id='0',

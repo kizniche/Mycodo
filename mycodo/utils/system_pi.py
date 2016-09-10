@@ -11,7 +11,9 @@ import subprocess
 #
 
 def cmd_output(command):
-    """Executed command and returns a list of lines from the output"""
+    """
+    Executed command and returns a list of lines from the output
+    """
     full_cmd = 'su mycodo && {}'.format(command)
     cmd = subprocess.Popen(full_cmd, stdout=subprocess.PIPE, shell=True)
     cmd_output, cmd_err = cmd.communicate()

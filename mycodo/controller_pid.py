@@ -48,6 +48,7 @@ from databases.mycodo_db.models import Relay
 from databases.utils import session_scope
 from mycodo_client import DaemonControl
 from utils.influx import read_last_influxdb, write_influxdb
+from utils.method import sine_wave_y_out
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -100,36 +101,33 @@ class PIDController(threading.Thread):
 
         # Check if a method is set for this PID
         if self.method_id:
-            try:
-                with session_scope(MYCODO_DB_PATH) as new_session:
-                    method = new_session.query(Method)
-                    method = method.filter(Method.method_id == self.method_id)
-                    method = method.filter(Method.method_order == 0).first()
-                    self.method_type = method.method_type
-                    self.method_start_time = method.start_time
-                if self.method_type == 'Duration':
-                    if self.method_start_time == 'Ended':
-                        # Method has ended and hasn't been instructed to begin again
-                        pass
-                    elif self.method_start_time == 'Ready' or self.method_start_time == None:
-                        # Method has been instructed to begin
-                        with session_scope(MYCODO_DB_PATH) as db_session:
-                            mod_method = db_session.query(Method)
-                            mod_method = mod_method.filter(Method.method_id == self.method_id)
-                            mod_method = mod_method.filter(Method.method_order == 0).first()
-                            mod_method.start_time = datetime.datetime.now()
-                            self.method_start_time = mod_method.start_time
-                            db_session.commit()
-                    else:
-                        # Method neither instructed to begin or not to
-                        # Likely there was a daemon restart ot power failure
-                        # Resume method with saved start_time
-                        self.method_start_time = datetime.datetime.strptime(
-                            self.method_start_time, '%Y-%m-%d %H:%M:%S.%f')
-                        self.logger.warning("[PID {}] Resuming method {} started at {}".format(
-                            self.pid_id, self.method_id, self.method_start_time))
-            except Exception as msg:
-                self.logger.warning("ER1: {}".format(msg))
+            with session_scope(MYCODO_DB_PATH) as new_session:
+                method = new_session.query(Method)
+                method = method.filter(Method.method_id == self.method_id)
+                method = method.filter(Method.method_order == 0).first()
+                self.method_type = method.method_type
+                self.method_start_time = method.start_time
+            if self.method_type == 'Duration':
+                if self.method_start_time == 'Ended':
+                    # Method has ended and hasn't been instructed to begin again
+                    pass
+                elif self.method_start_time == 'Ready' or self.method_start_time == None:
+                    # Method has been instructed to begin
+                    with session_scope(MYCODO_DB_PATH) as db_session:
+                        mod_method = db_session.query(Method)
+                        mod_method = mod_method.filter(Method.method_id == self.method_id)
+                        mod_method = mod_method.filter(Method.method_order == 0).first()
+                        mod_method.start_time = datetime.datetime.now()
+                        self.method_start_time = mod_method.start_time
+                        db_session.commit()
+                else:
+                    # Method neither instructed to begin or not to
+                    # Likely there was a daemon restart ot power failure
+                    # Resume method with saved start_time
+                    self.method_start_time = datetime.datetime.strptime(
+                        self.method_start_time, '%Y-%m-%d %H:%M:%S.%f')
+                    self.logger.warning("[PID {}] Resuming method {} started at {}".format(
+                        self.pid_id, self.method_id, self.method_start_time))
 
 
     def run(self):
@@ -439,6 +437,15 @@ class PIDController(threading.Thread):
                         new_setpoint))
                     self.set_point = new_setpoint
                     return 0
+
+        elif method_key.method_type == 'DailySine':
+            new_setpoint = sine_wave_y_out(method_key.amplitude,
+                                           method_key.frequency,
+                                           method_key.shift_angle,
+                                           method_key.shift_y)
+            self.logger.warning("[Method] ER: {}".format(new_setpoint))
+            self.set_point = new_setpoint
+            return 0
 
         # Calculate the duration in the method based on self.method_start_time
         elif method_key.method_type == 'Duration' and self.method_start_time != 'Ended':

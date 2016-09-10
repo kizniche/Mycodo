@@ -32,8 +32,8 @@
             <select class="form-control" id="method_type" name="method_type">
               <option value="Date">Time/Date</option>
               <option value="Duration">Duration</option>
-              <option value="Daily">Daily</option>
-             <!--  <option value="Repeating">Method based on durations with repetition</option> -->
+              <option value="Daily">Daily (Time-Based)</option>
+              <option value="DailySine">Daily (Sine Wave)</option>
             </select>
           </div>
         </div>
@@ -68,7 +68,7 @@
           {%- do method_setpoint.append(1) -%}
         {%- endfor -%}
 
-        {%- if method_setpoint -%}
+        {%- if method_setpoint or each_method.method_type == "DailySine" -%}
           <div id="container{{chart_number}}" style="height: 300px; width: 100%;"></div>
         {%- endif -%}
 
@@ -122,7 +122,7 @@
           {%- endif -%}
           {% if each_method.method_type == "Date" -%}
             xDateFormat: '%a, %b %e, %Y %H:%M:%S',
-          {% elif each_method.method_type == "Daily" -%}
+          {% elif each_method.method_type in ["Daily", "DailySine"] -%}
             xDateFormat: '%H:%M:%S',
           {%- endif -%}
           valueDecimals: 2
@@ -140,7 +140,7 @@
           enabled: false
         },
         xAxis: {
-          type: '{%- if each_method.method_type == "Duration" -%}linear{%- elif each_method.method_type in ["Date", "Daily"] -%}datetime{%- endif -%}',
+          type: '{%- if each_method.method_type == "Duration" -%}linear{%- elif each_method.method_type in ["Date", "Daily", "DailySine"] -%}datetime{%- endif -%}',
           ordinal: false
         },
         yAxis: [

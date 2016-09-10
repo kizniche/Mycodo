@@ -77,6 +77,34 @@
               {{formAddMethod.endDailyTime(class_='form-control')}}
             </div>
           </div>
+        {%- elif method_type == "DailySine" -%}
+          <div>
+            <input type="radio" name="method_select" value="setpoint" checked="checked"> Define the setpoint over the day based on a sinusoidal wave. This method will repeat daily.
+          </div>
+          <div class="form-group">
+            {{formAddMethod.amplitude.label(class_='control-label')}}
+            <div>
+              {{formAddMethod.amplitude(class_='form-control', value=method_key['amplitude'])}}
+            </div>
+          </div>
+          <div class="form-group">
+            {{formAddMethod.frequency.label(class_='control-label')}}
+            <div>
+              {{formAddMethod.frequency(class_='form-control', value=method_key['frequency'])}}
+            </div>
+          </div>
+          <div class="form-group">
+            {{formAddMethod.shiftAngle.label(class_='control-label')}}
+            <div>
+              {{formAddMethod.shiftAngle(class_='form-control', value=method_key['shift_angle'])}}
+            </div>
+          </div>
+          <div class="form-group">
+            {{formAddMethod.shiftY.label(class_='control-label')}}
+            <div>
+              {{formAddMethod.shiftY(class_='form-control', value=method_key['shift_y'])}}
+            </div>
+          </div>
         {%- elif method_type == "Duration" -%}
           <div>
             <input type="radio" name="method_select" value="setpoint" checked="checked"> Define the setpoint over a period of time, based on specific durations of time.
@@ -85,24 +113,26 @@
         {%- endif -%}
 
         </div>
-        <div>
-          <div class="form-group">
-            {{formAddMethod.startSetpoint.label(class_='control-label')}}
-            <div>
-              {{formAddMethod.startSetpoint(class_='form-control', value=last_setpoint)}}
+        {%- if method_type in ['Date', 'Duration', 'Daily'] -%}
+          <div>
+            <div class="form-group">
+              {{formAddMethod.startSetpoint.label(class_='control-label')}}
+              <div>
+                {{formAddMethod.startSetpoint(class_='form-control', value=last_setpoint)}}
+              </div>
+            </div>
+            <div class="form-group">
+              {{formAddMethod.endSetpoint.label(class_='control-label')}}
+              <div>
+                {{formAddMethod.endSetpoint(class_='form-control')}}
+              </div>
             </div>
           </div>
-          <div class="form-group">
-            {{formAddMethod.endSetpoint.label(class_='control-label')}}
-            <div>
-              {{formAddMethod.endSetpoint(class_='form-control')}}
-            </div>
+
+          <div style="padding: 1.5em 0">
+            OR
           </div>
-        </div>
-        <div style="padding: 1.5em 0">
-          OR
-        </div>
-        <div>
+          <div>
 
           {%- if method_type == "Date" -%}
             <div>
@@ -114,7 +144,7 @@
                 {{formAddMethod.relayTime(class_='form-control')}}
               </div>
             </div>
-          {%- elif method_type == "Daily" -%}
+          {%- elif method_type == 'Daily' -%}
             <div>
               <input type="radio" name="method_select" value="relay"> Activate or deactivate a relay at a specific time of day.
               <br>Hour and minute (HH:MM) here is defined as the time of day. For example, 3:05 PM would be "15:05".
@@ -132,43 +162,56 @@
             </div>
           {%- endif -%}
 
-        </div>
-        <div>
-          <div class="form-group">
-            {{formAddMethod.relayID.label(class_='control-label')}}
-            <div>
-              <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relayID" name="relayID" title="Modulate the selected relay.">
-                <option value=""></option>
-                {% for rel in relay -%}
-                  <option value="{{rel.id}}">{{rel.id}} ({{rel.name}})</option>
-                {% endfor -%}
-              </select>
+          </div>
+
+          <div>
+            <div class="form-group">
+              {{formAddMethod.relayID.label(class_='control-label')}}
+              <div>
+                <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relayID" name="relayID" title="Modulate the selected relay.">
+                  <option value=""></option>
+                  {% for rel in relay -%}
+                    <option value="{{rel.id}}">{{rel.id}} ({{rel.name}})</option>
+                  {% endfor -%}
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              {{formAddMethod.relayState.label(class_='control-label')}}
+              <div>
+                {{formAddMethod.relayState(class_='form-control')}}
+              </div>
+            </div>
+            <div class="form-group">
+              {{formAddMethod.relayDurationSec.label(class_='control-label')}}
+              <div>
+                {{formAddMethod.relayDurationSec(class_='form-control')}}
+              </div>
             </div>
           </div>
-          <div class="form-group">
-            {{formAddMethod.relayState.label(class_='control-label')}}
-            <div>
-              {{formAddMethod.relayState(class_='form-control')}}
+          <div>
+            <div class="form-group">
+              <label class='control-label'></label>
+              <div>
+                {{formAddMethod.Submit(class_='form-control btn btn-default')}}
+              </div>
             </div>
           </div>
-          <div class="form-group">
-            {{formAddMethod.relayDurationSec.label(class_='control-label')}}
-            <div>
-              {{formAddMethod.relayDurationSec(class_='form-control')}}
+
+        {%- elif method_type == 'DailySine' -%}
+          <div>
+            <div class="form-group">
+              <label class='control-label'></label>
+              <div>
+                {{formAddMethod.Submit(class_='form-control btn btn-default', **{'value':'Save Sine Variables'})}}
+              </div>
             </div>
           </div>
-        </div>
-        <div>
-          <div class="form-group">
-            <label class='control-label'></label>
-            <div>
-              {{formAddMethod.Submit(class_='form-control btn btn-default')}}
-            </div>
-          </div>
-        </div>
+        {%- endif -%}
+
       </form>
 
-      {%- if method_setpoint -%}
+      {%- if method_setpoint or method_key['method_type'] == "DailySine" -%}
         <div id="container" style="height: 300px; width: 100%;"></div>
       {%- endif -%}
 
@@ -399,7 +442,7 @@
         {%- endif -%}
         {% if method_key['method_type'] == "Date" -%}
           xDateFormat: '%a, %b %e, %Y %H:%M:%S',
-        {% elif method_key['method_type'] == "Daily" -%}
+        {% elif method_key['method_type'] in ["Daily", "DailySine"] -%}
           xDateFormat: '%H:%M:%S',
         {%- endif -%}
         valueDecimals: 2
@@ -417,7 +460,7 @@
         enabled: false
       },
       xAxis: {
-        type: '{%- if method_key['method_type'] == "Duration" -%}linear{%- elif method_key['method_type'] in ["Date", "Daily"] -%}datetime{%- endif -%}',
+        type: '{%- if method_key['method_type'] == "Duration" -%}linear{%- elif method_key['method_type'] in ["Date", "Daily", "DailySine"] -%}datetime{%- endif -%}',
         ordinal: false
       },
       yAxis: [
