@@ -176,7 +176,7 @@ def method_create(formCreateMethod, method_id):
             new_method.amplitude = 1.0
             new_method.frequency = 1.0
             new_method.shift_angle = 0.0
-            new_method.shift_y = 0.0
+            new_method.shift_y = 1.0
         new_method.method_order = 0
         new_method.controller_type = formCreateMethod.controller_type.data
         with session_scope(MYCODO_DB_PATH) as db_session:
