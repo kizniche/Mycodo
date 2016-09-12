@@ -22,10 +22,12 @@ class Atlas_PT1000(object):
             self.set_i2c_address(self.address)
             temperature_string = self.query("R")
             self.close()
+            # the temperature return string, if successfully read, will be
+            # "Command succeeded X.XX", where X denotes the temperature
             if temperature_string[:17] != 'Command succeeded':
                 return 1
             else:
-                self._temperature = float(temperature_string[-6:])
+                self._temperature = float(temperature_string[18:])
         except Exception as msg:
             print(msg)
             return 1
