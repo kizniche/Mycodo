@@ -173,10 +173,10 @@ def method_create(formCreateMethod, method_id):
             new_method.name = formCreateMethod.name.data
         new_method.method_type = formCreateMethod.method_type.data
         if formCreateMethod.method_type.data == 'DailySine':
-            new_method.amplitude = 0
-            new_method.frequency = 1
-            new_method.shift_angle = 0
-            new_method.shift_y = 0
+            new_method.amplitude = 1.0
+            new_method.frequency = 1.0
+            new_method.shift_angle = 0.0
+            new_method.shift_y = 0.0
         new_method.method_order = 0
         new_method.controller_type = formCreateMethod.controller_type.data
         with session_scope(MYCODO_DB_PATH) as db_session:
@@ -382,6 +382,10 @@ def method_mod(formModMethod, method):
 
             elif method_set.method_type == 'Duration':
                 mod_method.duration_sec = formModMethod.DurationSec.data
+
+            elif method_set.method_type == 'Daily':
+                mod_method.start_time = formModMethod.startDailyTime.data
+                mod_method.end_time = formModMethod.endDailyTime.data
 
             mod_method.start_setpoint = formModMethod.startSetpoint.data
             mod_method.end_setpoint = formModMethod.endSetpoint.data

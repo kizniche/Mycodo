@@ -20,8 +20,12 @@ class Atlas_PT1000(object):
             self.file_read = io.open("/dev/i2c-"+str(self.I2C_bus_number), "rb", buffering=0)
             self.file_write = io.open("/dev/i2c-"+str(self.I2C_bus_number), "wb", buffering=0)
             self.set_i2c_address(self.address)
-            self._temperature = float(self.query("R")[-6:])
+            temperature_string = self.query("R")
             self.close()
+            if temperature_string[:17] != 'Command succeeded':
+                return 1
+            else:
+                self._temperature = float(temperature_string[-6:])
         except Exception as msg:
             print(msg)
             return 1
@@ -96,7 +100,7 @@ class Atlas_PT1000(object):
 
 
 if __name__ == "__main__":
-    pt1000 = Atlas_PT1000(102)
+    pt1000 = Atlas_PT1000(102, 1)
 
     for measurement in pt1000:
         print("Temperature: {}".format(measurement['temperature']))
