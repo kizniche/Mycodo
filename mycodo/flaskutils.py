@@ -655,9 +655,9 @@ def choices_sensors(sensor):
             display = '{} ({}) CPU Load (15m)'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value:display})
-        if each_sensor.device in ['AM2315', 'BMP', 'DHT11', 'DHT22',
-                                  'DS18B20', 'HTU21D', 'RPi', 'SHT1x_7x',
-                                  'SHT2x']:
+        if each_sensor.device in ['AM2315', 'ATLAS_PT1000', 'BMP', 'DHT11',
+                                  'DHT22', 'DS18B20', 'HTU21D', 'RPi',
+                                  'SHT1x_7x', 'SHT2x']:
             value = '{},temperature'.format(each_sensor.id)
             display = '{} ({}) Temperature'.format(
                 each_sensor.id, each_sensor.name)
