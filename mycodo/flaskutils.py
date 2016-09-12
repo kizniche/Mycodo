@@ -1770,9 +1770,11 @@ def sensor_add(formAddSensor, display_order):
 
             # Environmental Sensors
             # Temperature
-            if formAddSensor.sensor.data in ['RPi', 'DS18B20', 'TMP006']:
+            if formAddSensor.sensor.data in ['ATLAS_PT1000', 'DS18B20', 'RPi', 'TMP006']:
                 new_sensor.device_type = 'tsensor'
-                if formAddSensor.sensor.data == 'RPi':
+                if formAddSensor.sensor.data == 'ATLAS_PT1000':
+                    new_sensor.location = '0x66'
+                elif formAddSensor.sensor.data == 'RPi':
                     new_sensor.location = 'RPi'
                 elif formAddSensor.sensor.data == 'TMP006':
                     new_sensor.location = '0x40'

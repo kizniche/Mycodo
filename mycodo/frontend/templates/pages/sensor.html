@@ -149,7 +149,7 @@
                 </div>
               {% endif -%}
 
-              {% if each_sensor.device in ['AM2315', 'BMP', 'HTU21D', 'TSL2561', 'TMP006', 'ADS1x15', 'MCP342x', 'SHT2x'] -%}
+              {% if each_sensor.device in ['AM2315', 'ATLAS_PT1000', 'BMP', 'HTU21D', 'TSL2561', 'TMP006', 'ADS1x15', 'MCP342x', 'SHT2x'] -%}
                 <div class="form-group">
                   {{formModSensor.modMultiplexAddress.label(class_='control-label')}}
                   <div>

@@ -79,7 +79,7 @@
           </div>
         {%- elif method_type == "DailySine" -%}
           <div>
-            <input class="form-control" id="method_select" name="method_select" type="hidden" value="setpoint">Define the setpoint over the day based on a sinusoidal wave. This method will repeat daily.
+            <input class="form-control" id="method_select" name="method_select" type="hidden" value="setpoint">Define the setpoint over the day based on a sinusoidal wave defined by y = [A * sin(B * x + C)] + D, where A is amplitude, B is frequency, C is the angle shift, and D is the y-axis shift. This method will repeat daily.
           </div>
           <div class="form-group">
             {{formAddMethod.amplitude.label(class_='control-label')}}

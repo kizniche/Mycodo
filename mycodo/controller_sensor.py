@@ -18,6 +18,7 @@ from lockfile import LockFile
 from devices.tca9548a import TCA9548A
 from devices.ads1x15 import ADS1x15_read
 from devices.mcp342x import MCP342x_read
+from sensors.atlas_pt1000 import Atlas_PT1000
 from sensors.am2315 import AM2315_read
 from sensors.bmp import BMP
 from sensors.dht22 import DHT22
@@ -91,7 +92,8 @@ class SensorController(threading.Thread):
     def __init__(self, ready, logger, sensor_id):
         threading.Thread.__init__(self)
 
-        list_sensors_i2c = ['AM2315',
+        list_sensors_i2c = ['ATLAS_PT1000',
+                            'AM2315',
                             'BMP',
                             'HTU21D',
                             'SHT2x',
@@ -201,6 +203,9 @@ class SensorController(threading.Thread):
             self.measure_sensor = HTU21D_read()
         elif self.device_type == 'AM2315':
             self.measure_sensor = AM2315_read()
+        elif self.device_type == 'ATLAS_PT1000':
+            self.measure_sensor = Atlas_PT1000(self.i2c_address,
+                                               self.i2c_bus)
         elif self.device_type == 'K30':
             self.measure_sensor = K30()
         elif self.device_type == 'BMP':

@@ -1,0 +1,13 @@
+<div class="form-group">
+  <label class="control-label">I<sup>2</sup>C Address</label>
+  <div>
+    {{formModSensor.modLocation(class_='form-control', value=each_sensor.location, disabled=True)}}
+    <input type="hidden" class="form-control" id="modLocation" name="modLocation" value="{{each_sensor.location}}">
+  </div>
+</div>
+<div class="form-group">
+  {{formModSensor.modBus.label(class_='control-label')}}
+  <div>
+    {{formModSensor.modBus(class_='form-control', value=each_sensor.i2c_bus, **{'title':'Which I2C bus is this sensor connected?'})}}
+  </div>
+</div>

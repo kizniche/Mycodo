@@ -2,7 +2,7 @@
 
 ## Environmental Regulation System
 
-### Latest version: 4.0.17
+### Latest version: 4.0.18
 
 Mycodo is a remote monitoring and automated regulation system with a focus on modulating environmental conditions. It was built to run on the Raspberry Pi (1, 2, and 3) and aims to be easy to install and set up.
 
@@ -141,6 +141,8 @@ If you receive an unresolvable error during the install, please [create an issue
 Certain sensors will require extra steps to be taken in order to set up the interface for communication. This includes I<sup>2</sup>C, one-wire, and UART.
 
 ### Temperature
+
+> [Atlas Scientific PT-1000](http://www.atlas-scientific.com/product_pages/kits/temp_kit.html) (I<sup>2</sup>C): Industrial-grade temperature probe that can be indefinitely submersed in liquid and sustain extreme temperatures (-200˚C to 850˚C, with the use of a thermowell).
 
 > [DS18B20](https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf) (1-wire): Once the one-wire interface has been configured with [these instructions](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing), it may be used with Mycodo.
 

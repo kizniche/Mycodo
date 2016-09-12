@@ -49,8 +49,8 @@ class AddMethod(Form):
     DurationSec = IntegerField(u'Duration (seconds)')
     amplitude = DecimalField(u'Amplitude')
     frequency = DecimalField(u'Frequency')
-    shiftAngle = DecimalField(u'Shift Angle')
-    shiftY = DecimalField(u'Shift Y')
+    shiftAngle = DecimalField(u'Angle Shift')
+    shiftY = DecimalField(u'Y-Axis Shift')
     relayDailyTime = TextField(
         u'Time HH:MM:SS',
         render_kw={"placeholder": "HH:MM:SS"}
@@ -886,6 +886,7 @@ class AddSensor(Form):
             ('BMP', 'Pressure: BMP 180/085'),
             ('DS18B20', 'Temperature: DS18B20'),
             ('TMP006', 'Temperature (Contactless): TMP 006/007'),
+            ('ATLAS_PT1000', 'Temperature: Atlas Scientific, PT-1000'),
             ('AM2315', 'Temperature/Humidity: AM2315'),
             ('DHT11', 'Temperature/Humidity: DHT11'),
             ('DHT22', 'Temperature/Humidity: DHT22'),
