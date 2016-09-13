@@ -224,7 +224,7 @@
         <div class="form-group">
           {{formAddGraph.refreshDuration.label(class_='control-label')}}
           <div>
-            {{formAddGraph.refreshDuration(class_='form-control', value=20)}}
+            {{formAddGraph.refreshDuration(class_='form-control', value=60)}}
           </div>
         </div>
 
@@ -349,10 +349,12 @@
                 chart[chart_number].series[sensor].addPoint([new_time, data[i][1]], false, false);
               }
             }
-            var current_time = new Date();
+            // Ensure Reset Zoom button resets to the proper start and end times
             chart[chart_number].xAxis[0].update({min: new Date().setMinutes(new Date().getMinutes()-(1*(xaxis_duration_min)))}, false);
             chart[chart_number].xAxis[0].update({max: new Date().getTime()}, false);
-            chart[chart_number].redraw();
+            // Update the new data time frame and redraw the chart
+            chart[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes()-(1*(xaxis_duration_min))), new Date().getTime(), true);
+            chart[chart_number].xAxis[0].isDirty = true;
           }
         );
       }, past_seconds * 1000);
