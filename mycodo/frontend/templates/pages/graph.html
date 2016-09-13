@@ -544,7 +544,7 @@
                     {%- do count_series.append(1) -%}
                   {% elif each_sensor.adc_measure in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'analogsensor', '{{each_sensor.adc_measure}}', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'analogsensor', '{{each_sensor.adc_measure}}', '{{each_sensor.id}}', {{each_graph.refresh_duration+30}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'analogsensor', '{{each_sensor.adc_measure}}', '{{each_sensor.id}}', {{each_graph.refresh_duration+30}}, {{each_graph.x_axis_duration}});
                     {%- do count_series.append(1) -%}
                   {%- endif -%}
                 {%- endif -%}
