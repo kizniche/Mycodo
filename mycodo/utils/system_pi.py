@@ -7,7 +7,7 @@ import subprocess
 
 
 #
-# Filesystem and command tools
+# Command tools
 #
 
 def cmd_output(command):
@@ -21,10 +21,18 @@ def cmd_output(command):
     return cmd_output, cmd_err, cmd_status
 
 
+#
+# Filesystem tools
+#
+
 def assure_path_exists(new_dir):
     if not os.path.exists(new_dir):
         os.makedirs(new_dir)
         set_user_grp(new_dir, 'mycodo', 'mycodo')
+
+
+def find_owner(filename):
+    return pwd.getpwuid(os.stat(filename).st_uid).pw_name
 
 
 def set_user_grp(filepath, user, group):

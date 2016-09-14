@@ -40,13 +40,22 @@ def read_last_influxdb(host, port, user, password,
     :type duration_min: int
     """
     client = InfluxDBClient(host, port, user, password, dbname)
-    query = """SELECT value
-                   FROM   {}
-                   WHERE  device_id = '{}'
-                          AND TIME > Now() - {}m
-                          ORDER BY time
-                          DESC LIMIT 1;
-            """.format(measure_type, device_id, duration_min)
+
+    if not duration_min:
+        query = """SELECT value
+                       FROM   {}
+                       WHERE  device_id = '{}'
+                              ORDER BY time
+                              DESC LIMIT 1;
+                """.format(measure_type, device_id)
+    else:
+        query = """SELECT value
+                       FROM   {}
+                       WHERE  device_id = '{}'
+                              AND TIME > Now() - {}m
+                              ORDER BY time
+                              DESC LIMIT 1;
+                """.format(measure_type, device_id, duration_min)
     return client.query(query)
 
 

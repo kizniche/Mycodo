@@ -105,27 +105,24 @@ case "${1:-''}" in
         ln -sf $INSTALL_DIRECTORY/ /var/www/mycodo
 
         mkdir -p /var/log/mycodo
-        chown mycodo.mycodo /var/log/mycodo
 
         if [ ! -e /var/log/mycodo/mycodo.log ]; then
             touch /var/log/mycodo/mycodo.log
         fi
-        chown mycodo.mycodo /var/log/mycodo/mycodo.log
         
         if [ ! -e /var/log/mycodo/mycodoupdate.log ]; then
             touch /var/log/mycodo/mycodoupdate.log
         fi
-        chown mycodo.mycodo /var/log/mycodo/mycodoupdate.log
 
         if [ ! -e /var/log/mycodo/mycodorestore.log ]; then
             touch /var/log/mycodo/mycodorestore.log
         fi
-        chown mycodo.mycodo /var/log/mycodo/mycodorestore.log
 
         if [ ! -e /var/log/mycodo/login.log ]; then
             touch /var/log/mycodo/login.log
         fi
-        chown mycodo.mycodo /var/log/mycodo/login.log
+
+        chown -R mycodo.mycodo /var/log/mycodo
 
         find $INSTALL_DIRECTORY/ -type d -exec chmod u+wx,g+wx {} +
         find $INSTALL_DIRECTORY/ -type f -exec chmod u+w,g+w,o+r {} +

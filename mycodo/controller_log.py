@@ -25,6 +25,11 @@ from config import INFLUXDB_DATABASE
 from databases.mycodo_db.models import Log
 from databases.utils import session_scope
 
+from utils.influx import read_last_influxdb
+from utils.system_pi import assure_path_exists
+from utils.system_pi import find_owner
+from utils.system_pi import set_user_grp
+
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
@@ -42,9 +47,6 @@ class LogController(threading.Thread):
         self.ready = ready
         self.logger = logger
         self.log_id = log_id
-        self.client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT,
-                                     INFLUXDB_USER, INFLUXDB_PASSWORD,
-                                     INFLUXDB_DATABASE)
 
         with session_scope(MYCODO_DB_PATH) as new_session:
             log = new_session.query(Log).filter(Log.id == self.log_id).first()
@@ -87,32 +89,46 @@ class LogController(threading.Thread):
                 self.log_id, self.name, self.sensor_id,
                 self.measure_type, self.period))
         try:
-            result = self.client.query("""SELECT last(value)
-                                          FROM {}
-                                          WHERE device_id='{}' AND
-                                                time > now() - 1m;
-                                       """.format(self.measure_type,
-                                                  self.sensor_id)).raw
-            self.time = result['series'][0]['values'][0][0]
-            self.value = result['series'][0]['values'][0][1]
-            self.dt =  date_parse(self.time)
+            self.last_measurement = read_last_influxdb(
+                INFLUXDB_HOST,
+                INFLUXDB_PORT,
+                INFLUXDB_USER,
+                INFLUXDB_PASSWORD,
+                INFLUXDB_DATABASE,
+                self.sensor_id,
+                self.measure_type,
+                duration_min=0)
+            if self.last_measurement:
+                measurement_list = list(self.last_measurement.get_points(
+                    measurement=self.measure_type))
+                self.last_time = measurement_list[0]['time']
+                self.last_measurement = measurement_list[0]['value']
+            else:
+                self.logger.warning("[Log {}] No data returned "
+                                    "from influxdb".format(self.log_id))
+                return 1
+
+            self.dt =  date_parse(self.last_time)
             self.timestamp = calendar.timegm(self.dt.timetuple())
             if self.last_timestamp != self.timestamp:
                 self.last_timestamp = self.timestamp
                 self.logger.debug("[Log {}] Time: {}, {} Value: "
                                   "{}".format(self.log_id,
-                                              self.time,
+                                              self.last_time,
                                               self.timestamp,
-                                              self.value))
+                                              self.last_measurement))
                 SENSOR_LOG_FILE = os.path.join(
                     LOG_PATH, "{}-{}.log".format(self.sensor_id,
                                                  self.measure_type))
-                if not os.path.exists(LOG_PATH):
-                    os.makedirs(LOG_PATH)
+                assure_path_exists(LOG_PATH)
                 with open(SENSOR_LOG_FILE, "a") as log_file:
-                    log_file.write("{},{}\n".format(self.timestamp, self.value))
+                    log_file.write("{},{}\n".format(self.timestamp, self.last_measurement))
+
+                # Ensure log is owned by user 'mycodo'
+                if find_owner(SENSOR_LOG_FILE) != 'mycodo':
+                    set_user_grp(SENSOR_LOG_FILE, 'mycodo', 'mycodo')
             else:
-                self.logger.warning("[Log {}] No new data from "
+                self.logger.debug("[Log {}] No new data from "
                                     "influxdb could be "
                                     "retrieved.".format(self.log_id))
         except Exception as except_msg:
