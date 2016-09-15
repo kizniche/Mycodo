@@ -200,16 +200,16 @@ class SensorController(threading.Thread):
         elif self.device_type in ['DHT22', 'AM2302']:
             self.measure_sensor = DHT22(pigpio.pi(), int(self.location))
         elif self.device_type == 'HTU21D':
-            self.measure_sensor = HTU21D_read()
+            self.measure_sensor = HTU21D_read(self.i2c_bus)
         elif self.device_type == 'AM2315':
-            self.measure_sensor = AM2315_read()
+            self.measure_sensor = AM2315_read(self.i2c_bus)
         elif self.device_type == 'ATLAS_PT1000':
             self.measure_sensor = Atlas_PT1000(self.i2c_address,
                                                self.i2c_bus)
         elif self.device_type == 'K30':
             self.measure_sensor = K30()
         elif self.device_type == 'BMP':
-            self.measure_sensor = BMP()
+            self.measure_sensor = BMP(self.i2c_bus)
         elif self.device_type == 'SHT1x_7x':
             self.measure_sensor = SHT1x_7x_read(self.location,
                                                 self.sht_clock_pin,

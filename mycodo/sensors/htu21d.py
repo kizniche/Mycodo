@@ -26,7 +26,7 @@ import RPi.GPIO as GPIO
 from sensorutils import dewpoint
 
 class HTU21D_read(object):
-    def __init__(self):
+    def __init__(self, bus):
         self.pi = pigpio.pi()
         # HTU21D-F Commands
         self.rdtemp = 0xE3
@@ -38,10 +38,7 @@ class HTU21D_read(object):
         self.address = 0x40  # HTU21D-F Address
         self._temperature = 0
         self._humidity = 0
-        if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
-            self.I2C_bus_number = 1
-        else:
-            self.I2C_bus_number = 0
+        self.I2C_bus_number = bus
         self.running = True
 
     def read(self):

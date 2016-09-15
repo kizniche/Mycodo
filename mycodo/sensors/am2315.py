@@ -7,14 +7,11 @@ from sensorutils import dewpoint
 
 
 class AM2315_read(object):
-    def __init__(self):
+    def __init__(self, bus):
         self._temperature = 0
         self._humidity = 0
         self._crc_check = 0
-        if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
-            self.I2C_bus_number = '1'
-        else:
-            self.I2C_bus_number = '0'
+        self.I2C_bus_number = str(bus)
         self.running = True
 
     def read(self):

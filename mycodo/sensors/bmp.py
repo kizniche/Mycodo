@@ -5,7 +5,8 @@ import Adafruit_BMP.BMP085 as BMP085
 
 
 class BMP(object):
-    def __init__(self):
+    def __init__(self, bus):
+        self.I2C_bus_number = bus
         self._temperature = None
         self._pressure = None
         self._altitude = None
@@ -14,9 +15,10 @@ class BMP(object):
     def read(self):
         try:
             time.sleep(2)
-            self._temperature = BMP085.BMP085().read_temperature()
-            self._pressure = BMP085.BMP085().read_pressure()
-            self._altitude = BMP085.BMP085().read_altitude()
+            bmp = BMP085.BMP085(busnum=self.I2C_bus_number)
+            self._temperature = bmp.read_temperature()
+            self._pressure = bmp.read_pressure()
+            self._altitude = bmp.read_altitude()
         except:
             return 1
 
