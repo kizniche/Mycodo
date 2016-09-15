@@ -83,6 +83,9 @@ class DaemonControl():
     def daemon_status(self):
         return self.rpyc_client.root.daemon_status()
 
+    def system_control(self, command):
+        return self.rpyc_client.root.system_control(command)
+
     def terminate_daemon(self):
         return self.rpyc_client.root.terminate_daemon()
 

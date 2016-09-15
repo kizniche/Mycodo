@@ -7,7 +7,7 @@
   <div class="container"> 
     {% include 'flash_messages.html' %}
 
-    {% if internet %}
+    {% if is_internet %}
       {% if not update_available %}
         <div style="padding-bottom: 1em">
           You are running the lastest version of Mycodo.

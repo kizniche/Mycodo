@@ -9,7 +9,6 @@ import os
 import random
 import requests
 import RPi.GPIO as GPIO
-import socket
 import sqlalchemy
 import string
 import subprocess
@@ -609,30 +608,6 @@ def activate_deactivate_controller(controller_action,
     except Exception as except_msg:
         flash("{} settings were not able to be modified: {}".format(
             controller_type, except_msg), "error")
-
-
-def cmd_output(command):
-    """Executed command and returns a list of lines from the output"""
-    cmd = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
-    cmd_output, cmd_err = cmd.communicate()
-    cmd_status = cmd.wait()
-    return cmd_output, cmd_err, cmd_status
-
-
-def internet(host="8.8.8.8", port=53, timeout=3):
-    """
-    Checks if there is an internet connection
-    Host: 8.8.8.8 (google-public-dns-a.google.com)
-    OpenPort: 53/tcp
-    Service: domain (DNS/TCP)
-    """
-    try:
-        socket.setdefaulttimeout(timeout)
-        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
-        return True
-    except Exception as ex:
-        pass
-    return False
 
 
 

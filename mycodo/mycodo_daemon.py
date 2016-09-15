@@ -43,6 +43,7 @@ from utils.statistics import add_update_csv
 from utils.statistics import recreate_stat_file
 from utils.statistics import return_stat_file_dict
 from utils.statistics import send_stats
+from utils.system_pi import cmd_output
 
 from config import DAEMON_PID_FILE
 from config import DAEMON_LOG_FILE
@@ -144,12 +145,20 @@ class ComServer(rpyc.Service):
         return mycodo_daemon.refresh_sensor_conditionals(sensor_id, cond_mod, cond_id)
 
     def exposed_daemon_status(self):
-        """Indicates if the daemon is alive ro not"""
+        """Indicates if the daemon is alive or not"""
         return 'alive'
 
     def exposed_terminate_daemon(self):
         """Instructs daemon to shut down"""
         return mycodo_daemon.terminateDaemon()
+
+    def exposed_system_control(self, cmd):
+        """Execute command as root"""
+        if cmd == 'restart':
+            return cmd_output('shutdown now -r')
+        elif cmd == 'shutdown':
+            return cmd_output('shutdown now -h')
+        return 1
 
 
 class DaemonController(threading.Thread):

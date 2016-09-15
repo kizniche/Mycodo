@@ -71,6 +71,8 @@ from databases.users_db.models import Users
 from utils.camera import camera_record
 from utils.method import sine_wave_y_out
 from utils.statistics import return_stat_file_dict
+from utils.system_pi import cmd_output
+from utils.system_pi import internet
 
 from devices.camera_pi import CameraStream
 from devices.camera_pi import CameraTimelapse
@@ -605,7 +607,6 @@ def page(page):
             flash('Guests are not permitted to view backups.', 'error')
             return redirect('/')
         formBackup = flaskforms.Backup()
-        internet = True
         backup_dirs = []
         backups_sorted = []
         if not os.path.isdir('/var/Mycodo-backups'):
@@ -624,20 +625,19 @@ def page(page):
 
         return render_template('settings/backup.html',
                                formBackup=formBackup,
-                               internet=internet,
                                backups_sorted=backup_dirs)
 
 
-    elif page == 'update':
+    elif page == 'upgrade':
         if session['user_group'] == 'guest':
-            flash('Guests are not permitted to view the update panel.', 'error')
+            flash('Guests are not permitted to view the upgrade panel.', 'error')
             return redirect('/')
-        if not flaskutils.internet():
-            flash("Update functionality is disabled because an internet "
+        if not internet():
+            flash("Upgrade functionality is disabled because an internet "
                   "connection was unable to be detected.", "error")
-            return render_template('settings/update.html',
-                                   internet=False)
-        internet = True
+            return render_template('settings/upgrade.html',
+                                   is_internet=False)
+        is_internet = True
         updating = 0
         update_available = False
         backup_directories = []
@@ -647,11 +647,11 @@ def page(page):
         formBackup = flaskforms.Backup()
         formUpdate = flaskforms.Update()
 
-        flaskutils.cmd_output("git fetch origin")
-        current_commit, _, _ = flaskutils.cmd_output("git rev-parse --short HEAD")
-        commits_behind, _, _ = flaskutils.cmd_output("git log --oneline | head -n 1")
+        cmd_output("git fetch origin")
+        current_commit, _, _ = cmd_output("git rev-parse --short HEAD")
+        commits_behind, _, _ = cmd_output("git log --oneline | head -n 1")
         commits_behind_list = commits_behind.split('\n')
-        commits_ahead, commits_ahead_err, _ = flaskutils.cmd_output("git log --oneline master...origin/master")
+        commits_ahead, commits_ahead_err, _ = cmd_output("git log --oneline master...origin/master")
         commits_ahead_list = commits_ahead.split('\n')
         if commits_ahead and commits_ahead_err is None:
             update_available = True
@@ -684,7 +684,7 @@ def page(page):
             finally:
                 updating = 0
 
-        return render_template('settings/update.html',
+        return render_template('settings/upgrade.html',
                                formBackup=formBackup,
                                formUpdate=formUpdate,
                                current_commit=current_commit,
@@ -692,7 +692,7 @@ def page(page):
                                commits_behind=commits_behind_list,
                                update_available=update_available,
                                updating=updating,
-                               internet=internet)
+                               is_internet=is_internet)
 
     elif page == 'info':
         uptime = subprocess.Popen("uptime", stdout=subprocess.PIPE, shell=True)
@@ -1556,9 +1556,31 @@ def past_data(sensor_type, sensor_measure, sensor_id, past_seconds):
 # Return 'alive' if the daemon is running
 @app.route('/daemonactive')
 def daemon_active():
+    if (not session.get('logged_in') and
+        not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
+        return ('', 204)
     try:
         control = DaemonControl()
         return control.daemon_status()
+    except:
+        return '0'
+
+
+@app.route('/systemctl/<action>')
+def computer_command(action):
+    """
+    Execute one of a set of commands as root
+
+    action sent, command executed
+    shutdown, 'shutdown now -h'
+    restart, 'shutdown now -r'
+    """
+    if (not session.get('logged_in') and
+        not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
+        return ('', 204)
+    try:
+        control = DaemonControl()
+        return control.system_control(action)
     except:
         return '0'
 
@@ -1597,6 +1619,7 @@ def static_from_root():
     return send_from_directory(app.static_folder, request.path[1:])
 
 
+# Variables to send with every page request
 @app.context_processor
 def inject_mycodo_version():
     try:

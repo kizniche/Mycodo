@@ -3,12 +3,10 @@
 import grp
 import os
 import pwd
+import socket
 import subprocess
 
 
-#
-# Command tools
-#
 
 def cmd_output(command):
     """
@@ -21,9 +19,21 @@ def cmd_output(command):
     return cmd_output, cmd_err, cmd_status
 
 
-#
-# Filesystem tools
-#
+def internet(host="8.8.8.8", port=53, timeout=3):
+    """
+    Checks if there is an internet connection
+    Host: 8.8.8.8 (google-public-dns-a.google.com)
+    OpenPort: 53/tcp
+    Service: domain (DNS/TCP)
+    """
+    try:
+        socket.setdefaulttimeout(timeout)
+        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
+        return True
+    except Exception as ex:
+        pass
+    return False
+
 
 def assure_path_exists(new_dir):
     if not os.path.exists(new_dir):
