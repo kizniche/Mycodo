@@ -860,8 +860,9 @@
             {
               name: '{{each_sensor.name}} Temperature',
               tooltip: {
-                valueSuffix: '°C',
-                valueDecimals: 1
+                pointFormatter: function () {
+                  return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 1) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 1) + '°F)</b><br>';
+                }
               },
               yAxis: 'temperature',
               data: []
@@ -870,9 +871,10 @@
             {% if 'temperature_object' in each_sensor_and_measure -%}
               {
                 name: '{{each_sensor.name}} Temperature (Object)',
-                tooltip: {
-                  valueSuffix: '°C',
-                  valueDecimals: 1
+                  tooltip: {
+                  pointFormatter: function () {
+                    return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 1) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 1) + '°F)</b><br>';
+                  }
                 },
                 yAxis: 'temperature',
                 data: []
@@ -881,8 +883,9 @@
               {
                 name: '{{each_sensor.name}} Temperature (Die)',
                 tooltip: {
-                  valueSuffix: '°C',
-                  valueDecimals: 1
+                  pointFormatter: function () {
+                    return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 1) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 1) + '°F)</b><br>';
+                  }
                 },
                 yAxis: 'temperature',
                 data: []
@@ -893,8 +896,9 @@
               {
                 name: '{{each_sensor.name}} Temperature',
                 tooltip: {
-                  valueSuffix: '°C',
-                  valueDecimals: 1
+                  pointFormatter: function () {
+                    return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 1) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 1) + '°F)</b><br>';
+                  }
                 },
                 yAxis: 'temperature',
                 data: []
@@ -913,8 +917,9 @@
               {
                 name: '{{each_sensor.name}} Dew Point',
                 tooltip: {
-                  valueSuffix: ' °C',
-                  valueDecimals: 1
+                  pointFormatter: function () {
+                    return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 1) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 1) + '°F)</b><br>';
+                  }
                 },
                 yAxis: 'temperature',
                 data: []
@@ -945,8 +950,9 @@
               {
                 name: '{{each_sensor.name}} Temperature',
                 tooltip: {
-                  valueSuffix: '°C',
-                  valueDecimals: 1
+                  pointFormatter: function () {
+                    return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 1) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 1) + '°F)</b><br>';
+                  }
                 },
                 yAxis: 'temperature',
                 data: []
