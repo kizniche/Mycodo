@@ -647,11 +647,11 @@ def page(page):
         formBackup = flaskforms.Backup()
         formUpdate = flaskforms.Update()
 
-        cmd_output("git fetch origin")
-        current_commit, _, _ = cmd_output("git rev-parse --short HEAD")
-        commits_behind, _, _ = cmd_output("git log --oneline | head -n 1")
+        cmd_output("git fetch origin", su_mycodo=False)
+        current_commit, _, _ = cmd_output("git rev-parse --short HEAD", su_mycodo=False)
+        commits_behind, _, _ = cmd_output("git log --oneline | head -n 1", su_mycodo=False)
         commits_behind_list = commits_behind.split('\n')
-        commits_ahead, commits_ahead_err, _ = cmd_output("git log --oneline master...origin/master")
+        commits_ahead, commits_ahead_err, _ = cmd_output("git log --oneline master...origin/master", su_mycodo=False)
         commits_ahead_list = commits_ahead.split('\n')
         if commits_ahead and commits_ahead_err is None:
             update_available = True

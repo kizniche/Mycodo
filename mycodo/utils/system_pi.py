@@ -8,11 +8,13 @@ import subprocess
 
 
 
-def cmd_output(command):
+def cmd_output(command, su_mycodo=True):
     """
     Executed command and returns a list of lines from the output
     """
-    full_cmd = 'su mycodo && {}'.format(command)
+    full_cmd = '{}'.format(command)
+    if su_mycodo:
+        full_cmd = 'su mycodo && {}'.format(command)
     cmd = subprocess.Popen(full_cmd, stdout=subprocess.PIPE, shell=True)
     cmd_output, cmd_err = cmd.communicate()
     cmd_status = cmd.wait()
