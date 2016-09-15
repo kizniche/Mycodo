@@ -2,6 +2,7 @@
 
 import time
 import Adafruit_BMP.BMP085 as BMP085
+import RPi.GPIO as GPIO
 
 
 class BMP(object):
@@ -58,7 +59,11 @@ class BMP(object):
 
 
 if __name__ == "__main__":
-    bmp = BMP()
+    if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
+        I2C_bus_number = 1
+    else:
+        I2C_bus_number = 0
+    bmp = BMP(I2C_bus_number)
 
     for measure in bmp:
         print("Temperature: {}".format(measure['temperature']))

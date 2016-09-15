@@ -65,11 +65,15 @@ class AM2315_read(object):
 
 
 if __name__ == "__main__":
-    am2315 = AM2315_read()
+    if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
+        I2C_bus_number = 1
+    else:
+        I2C_bus_number = 0
+    am2315 = AM2315_read(I2C_bus_number)
 
     for measurements in am2315:
         print("Temperature: {}".format(measurements['temperature']))
         print("Humidity: {}".format(measurements['humidity']))
         print("Dew Point: {}".format(dewpoint(measurements['temperature'], measurements['humidity'])))
         print("CRC Check: {}".format(measurements['crc_check']))
-        time.sleep(1)
+        time.sleep(4)

@@ -112,7 +112,11 @@ class HTU21D_read(object):
 
 
 if __name__ == "__main__":
-    htu21d = HTU21D_read()
+    if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
+        I2C_bus_number = 1
+    else:
+        I2C_bus_number = 0
+    htu21d = HTU21D_read(I2C_bus_number)
 
     for measurements in htu21d:
         print("Temperature: {}".format(measurements['temperature']))

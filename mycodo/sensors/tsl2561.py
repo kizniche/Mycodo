@@ -2,6 +2,7 @@
 
 
 import time
+import RPi.GPIO as GPIO
 from tentacle_pi.TSL2561 import TSL2561
 
 
@@ -49,7 +50,11 @@ class TSL2561_read(object):
 
 
 if __name__ == "__main__":
-    tsl2561 = TSL2561_read('0x39')
+    if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
+        I2C_bus_number = 1
+    else:
+        I2C_bus_number = 0
+    tsl2561 = TSL2561_read('0x39', I2C_bus_number)
 
     for measurement in tsl2561:
         print("Lumenosity: {} lux".format(measurement['lux']))

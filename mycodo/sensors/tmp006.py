@@ -3,6 +3,7 @@
 
 import time
 import Adafruit_TMP.TMP006 as TMP006
+import RPi.GPIO as GPIO
 
 
 class TMP006_read(object):
@@ -57,7 +58,11 @@ class TMP006_read(object):
 
 
 if __name__ == "__main__":
-    tmp006 = TMP006_read('0x40')
+    if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
+        I2C_bus_number = 1
+    else:
+        I2C_bus_number = 0
+    tmp006 = TMP006_read('0x40', I2C_bus_number)
 
     for measurement in tmp006:
         print("Temperature (die): {} C".format(measurement['temperature_die']))

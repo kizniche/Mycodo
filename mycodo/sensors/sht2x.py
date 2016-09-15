@@ -4,6 +4,8 @@
 
 import smbus
 import time
+import RPi.GPIO as GPIO
+
 from sensorutils import dewpoint
 
 
@@ -83,7 +85,11 @@ class SHT2x_read(object):
 
 
 if __name__ == "__main__":
-    sht = SHT2x_read(0x40)
+    if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
+        I2C_bus_number = 1
+    else:
+        I2C_bus_number = 0
+    sht = SHT2x_read(0x40, I2C_bus_number)
 
     for measurements in sht:
         print("Temperature: {}".format(measurements['temperature']))

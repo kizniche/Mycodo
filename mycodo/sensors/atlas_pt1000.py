@@ -102,7 +102,11 @@ class Atlas_PT1000(object):
 
 
 if __name__ == "__main__":
-    pt1000 = Atlas_PT1000(102, 1)
+    if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
+        I2C_bus_number = 1
+    else:
+        I2C_bus_number = 0
+    pt1000 = Atlas_PT1000(102, I2C_bus_number)
 
     for measurement in pt1000:
         print("Temperature: {}".format(measurement['temperature']))
