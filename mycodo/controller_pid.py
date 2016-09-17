@@ -133,7 +133,7 @@ class PIDController(threading.Thread):
     def run(self):
         try:
             self.running = True
-            self.logger.info("[PID {}] Activated in {}ms".format(
+            self.logger.info("[PID {}] Activated in {:.1f} ms".format(
                 self.pid_id,
                 (timeit.default_timer()-self.thread_startup_timer)*1000))
             self.ready.set()
@@ -151,7 +151,7 @@ class PIDController(threading.Thread):
                 self.control.relay_off(self.lower_relay_id)
 
             self.running = False
-            self.logger.info("[PID {}] Deactivated in {}ms".format(
+            self.logger.info("[PID {}] Deactivated in {:.1f} ms".format(
                 self.pid_id,
                 (timeit.default_timer()-self.thread_shutdown_timer)*1000))
         except Exception as except_msg:

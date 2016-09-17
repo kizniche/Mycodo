@@ -61,7 +61,7 @@ class RelayController(threading.Thread):
         self.relay_last_duration = {}
         self.relay_on_duration = {}
 
-        self.logger.debug("[Relay] Initializing relays")
+        self.logger.debug("[Relay] Initializing Relays")
         try:
             # Setup GPIO (BCM numbering) and initialize all relays in database
             GPIO.setmode(GPIO.BCM)
@@ -82,7 +82,7 @@ class RelayController(threading.Thread):
             self.all_relays_off()
             # Turn relays on that are set to be on at start
             self.all_relays_on()
-            self.logger.info("[Relay] Finished initializing relays")
+            self.logger.info("[Relay] Relays Initialized")
 
         except Exception as except_msg:
             self.logger.exception("[Relay] Problem initializing "
@@ -95,7 +95,7 @@ class RelayController(threading.Thread):
         try:
             self.running = True
             self.logger.info("[Relay] Relay controller activated in "
-                             "{}ms".format((timeit.default_timer()-self.thread_startup_timer)*1000))
+                             "{:.1f} ms".format((timeit.default_timer()-self.thread_startup_timer)*1000))
             while (self.running):
                 current_time = datetime.datetime.now()
                 for relay_id in self.relay_id:
@@ -125,7 +125,7 @@ class RelayController(threading.Thread):
             self.all_relays_off()
             self.running = False    
             self.logger.info("[Relay] Relay controller deactivated in "
-                             "{}ms".format((timeit.default_timer()-self.thread_shutdown_timer)*1000))
+                             "{:.1f} ms".format((timeit.default_timer()-self.thread_shutdown_timer)*1000))
 
 
     def relay_on_off(self, relay_id, state,

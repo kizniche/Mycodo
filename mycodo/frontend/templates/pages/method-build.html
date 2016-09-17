@@ -23,11 +23,27 @@
     <div style="clear: both; padding:0.5em 0;"></div>
     <div class="form-inline" style="margin: 0.5em; padding: 0.5em; border: 2px solid #ddd; border-radius: 5px;">
       <div>
-        Editing Method: {{method_key['name']}} ({{method_key['method_id']}})
+        Method-Builder (Method ID: {{method_key['method_id']}})
       </div>
-      <div>
-        Method-Builder
-      </div>
+
+      <form method="post" action="/method-build/{{method_type}}/{{method_id}}" style="padding: 0.7em 0">
+        <input type="hidden" name="form-name" value="renameMethod">
+        {{formModMethod.csrf_token}}
+        {{formModMethod.method_id(class_='form-control', value=method_key['method_id'])}}
+        <div class="form-group">
+          {{formModMethod.name.label(class_='control-label')}}
+          <div>
+            {{formModMethod.name(class_='form-control', value=method_key['name'])}}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class='control-label'></label>
+          <div>
+            {{formModMethod.Submit(class_='form-control btn btn-default', **{'value':'Rename'})}}
+          </div>
+        </div>
+      </form>
+
       <form method="post" action="/method-build/{{method_type}}/{{method_id}}" style="padding: 0.7em 0">
         <input type="hidden" name="form-name" value="addMethod">
         {{formAddMethod.csrf_token}}

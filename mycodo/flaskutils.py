@@ -329,6 +329,16 @@ def method_mod(formModMethod, method):
                              formModMethod.method_id.data)
         return 0
 
+    if formModMethod.name.data:
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            mod_method = db_session.query(Method).filter(
+                Method.method_id == formModMethod.method_id.data)
+            mod_method = mod_method.filter(Method.method_order == 0).first()
+            mod_method.name = formModMethod.name.data
+            db_session.commit()
+            flash("Method successfully renamed.", "success")
+            return 0
+
     # Ensure data data is valid
     this_method = method.filter(Method.id == formModMethod.method_id.data).first()
     method_set = method.filter(Method.method_id == this_method.method_id)

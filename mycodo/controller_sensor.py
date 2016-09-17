@@ -250,7 +250,7 @@ class SensorController(threading.Thread):
     def run(self):
         try:
             self.running = True
-            self.logger.info("[Sensor {}] Activated in {}ms".format(
+            self.logger.info("[Sensor {}] Activated in {:.1f} ms".format(
                 self.sensor_id,
                 (timeit.default_timer()-self.thread_startup_timer)*1000))
             self.ready.set()
@@ -323,7 +323,7 @@ class SensorController(threading.Thread):
                 time.sleep(0.1)
 
             self.running = False
-            self.logger.info("[Sensor {}] Deactivated in {}ms".format(
+            self.logger.info("[Sensor {}] Deactivated in {:.1f} ms".format(
                 self.sensor_id,
                 (timeit.default_timer()-self.thread_shutdown_timer)*1000))
         except Exception as msg:
@@ -601,7 +601,7 @@ class SensorController(threading.Thread):
                     self.lock[lockfile].acquire()
             self.logger.debug("[Locking bus-{} 0x{:02X}] Acquired Lock: {}".format(
                 i2c_bus, i2c_address, self.lock[lockfile].path))
-            self.logger.debug("[Locking bus-{} 0x{:02X}] Executed in {}ms".format(
+            self.logger.debug("[Locking bus-{} 0x{:02X}] Executed in {:.1f} ms".format(
                 i2c_bus, i2c_address, (timeit.default_timer()-self.execution_timer)*1000))
             return 1, "Success"
         except Exception as msg:

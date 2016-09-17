@@ -1168,10 +1168,9 @@ def method_builder(method_type, method_id):
             form_name = request.form['form-name']
             if form_name == 'addMethod':
                 form_fail = flaskutils.method_add(formAddMethod, method)
-            elif form_name == 'modMethod':
+            elif form_name in ['modMethod', 'renameMethod']:
                 form_fail = flaskutils.method_mod(formModMethod, method)
-            if ((form_name == 'modMethod') or
-                    form_name == 'addMethod' and not form_fail):
+            if (form_name in ['addMethod', 'modMethod', 'renameMethod'] and not form_fail):
                 return redirect('/method-build/{}/{}'.format(
                     method_type, method_id))
 

@@ -81,6 +81,7 @@ class ModMethod(Form):
     method_id = HiddenField(u'Method ID')
     method_type = HiddenField(u'Method Type')
     method_select = HiddenField(u'Method Select')
+    name = TextField(u'Name')
     startDailyTime = TextField(
         u'Start HH:MM:SS',
         render_kw={"placeholder": "HH:MM:SS"}

@@ -34,6 +34,7 @@ import threading
 import time
 import timeit
 import rpyc
+from time import strptime  # Fix multithread bug in strptime
 from collections import OrderedDict
 from daemonize import Daemonize
 from rpyc.utils.server import ThreadedServer
@@ -275,7 +276,7 @@ class DaemonController(threading.Thread):
             self.logger.debug("[Daemon] Stopping all running controllers")
             self.stop_all_controllers()
 
-        self.logger.info("[Daemon] Mycodo terminated in {} seconds".format(
+        self.logger.info("[Daemon] Mycodo terminated in {:.3f} seconds".format(
             timeit.default_timer()-self.thread_shutdown_timer))
         self.terminated = True
         # wait so the client doesn't disconnectd before it receives response
@@ -510,7 +511,7 @@ class DaemonController(threading.Thread):
                 recreate_stat_file(ID_FILE, STATS_CSV, STATS_INTERVAL, MYCODO_VERSION)
 
             daemon_startup_time = timeit.default_timer()-self.startup_timer
-            self.logger.info("[Daemon] Mycodo v{} started in {} seconds".format(
+            self.logger.info("[Daemon] Mycodo v{} started in {:.3f} seconds".format(
                 MYCODO_VERSION, daemon_startup_time))
             add_update_csv(self.logger, STATS_CSV,
                                        'daemon_startup_seconds',

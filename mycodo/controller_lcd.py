@@ -258,7 +258,7 @@ class LCDController(threading.Thread):
     def run(self):
         try:
             self.running = True
-            self.logger.info("[LCD {}] Activated in {}ms".format(
+            self.logger.info("[LCD {}] Activated in {:.1f} ms".format(
                 self.lcd_id,
                 (timeit.default_timer()-self.thread_startup_timer)*1000))
             self.ready.set()
@@ -286,7 +286,7 @@ class LCDController(threading.Thread):
             self.lcd_string_write('{}'.format(self.lcd_name), self.LCD_LINE[2]) 
 
             self.running = False
-            self.logger.info("[LCD {}] Deactivated in {}ms".format(
+            self.logger.info("[LCD {}] Deactivated in {:.1f} ms".format(
                 self.lcd_id,
                 (timeit.default_timer()-self.thread_shutdown_timer)*1000))
         except Exception as except_msg:

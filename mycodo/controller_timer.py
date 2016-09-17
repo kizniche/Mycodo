@@ -62,7 +62,7 @@ class TimerController(threading.Thread):
 
     def run(self):
         self.running = True
-        self.logger.info("[Timer {}] Activated in {}ms".format(
+        self.logger.info("[Timer {}] Activated in {:.1f} ms".format(
             self.timer_id,
             (timeit.default_timer()-self.thread_startup_timer)*1000))
         self.ready.set()
@@ -109,7 +109,7 @@ class TimerController(threading.Thread):
 
         self.control.relay_off(self.relay_id)
         self.running = False
-        self.logger.info("[Timer {}] Deactivated in {}ms".format(
+        self.logger.info("[Timer {}] Deactivated in {:.1f} ms".format(
             self.timer_id,
             (timeit.default_timer()-self.thread_shutdown_timer)*1000))
 

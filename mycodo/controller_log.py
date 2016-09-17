@@ -63,7 +63,7 @@ class LogController(threading.Thread):
 
     def run(self):
         self.running = True
-        self.logger.info("[Log {}] Activated in {}ms".format(
+        self.logger.info("[Log {}] Activated in {:.1f} ms".format(
             self.log_id,
             (timeit.default_timer()-self.thread_startup_timer)*1000))
         self.ready.set()
@@ -75,7 +75,7 @@ class LogController(threading.Thread):
             time.sleep(1)
 
         self.running = False
-        self.logger.info("[Log {}] Deactivated in {}ms".format(
+        self.logger.info("[Log {}] Deactivated in {:.1f} ms".format(
             self.log_id,
             (timeit.default_timer()-self.thread_shutdown_timer)*1000))
 
