@@ -65,8 +65,8 @@ git clone git://git.drogon.net/wiringPi $INSTALL_DIRECTORY/wiringPi
 cd $INSTALL_DIRECTORY/wiringPi
 ./build
 
-wget --quiet --show-progress -P $INSTALL_DIRECTORY/ https://dl.influxdata.com/influxdb/releases/influxdb_0.13.0_armhf.deb
-dpkg -i $INSTALL_DIRECTORY/influxdb_0.13.0_armhf.deb
+wget --quiet --show-progress -P $INSTALL_DIRECTORY/ https://dl.influxdata.com/influxdb/releases/influxdb_1.0.0_armhf.deb
+dpkg -i $INSTALL_DIRECTORY/influxdb_1.0.0_armhf.deb
 service influxdb start
 
 cd $INSTALL_DIRECTORY
