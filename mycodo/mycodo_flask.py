@@ -944,7 +944,7 @@ def page(page):
         timelapse_locked = os.path.isfile(LOCK_FILE_TIMELAPSE)
 
         try:
-            latest_still_img_fullpath = max(glob.iglob(INSTALL_DIRECTORY+'/camera-stills/*.jpg'), key=os.path.getctime)
+            latest_still_img_fullpath = max(glob.iglob(INSTALL_DIRECTORY+'/camera-stills/*.jpg'), key=os.path.getmtime)
             ts = os.path.getmtime(latest_still_img_fullpath)
             latest_still_img_ts = datetime.datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M:%S")
             latest_still_img = os.path.basename(latest_still_img_fullpath)
@@ -953,7 +953,7 @@ def page(page):
             latest_still_img = None
 
         try:
-            latest_timelapse_img_fullpath = max(glob.iglob(INSTALL_DIRECTORY+'/camera-timelapse/*.jpg'), key=os.path.getctime)
+            latest_timelapse_img_fullpath = max(glob.iglob(INSTALL_DIRECTORY+'/camera-timelapse/*.jpg'), key=os.path.getmtime)
             ts = os.path.getmtime(latest_timelapse_img_fullpath)
             latest_timelapse_img_ts = datetime.datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M:%S")
             latest_timelapse_img = os.path.basename(latest_timelapse_img_fullpath)
