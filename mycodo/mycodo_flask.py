@@ -862,9 +862,9 @@ def page(page):
                             #     CameraStream().terminate()  # Stop camera stream to take a photo
                             #     time.sleep(2)
                             #     stream_locked = True  # Signal to enable camera stream
-                            with session_scope(MYCODO_DB_PATH) as new_session:
-                                camera = new_session.query(Method)
-                                camera_record(INSTALL_DIRECTORY, 'photo', camera)
+                            camera = flaskutils.db_retrieve_table(
+                                MYCODO_DB_PATH, CameraStill, first=True)
+                            camera_record(INSTALL_DIRECTORY, 'photo', camera)
                         except Exception as msg:
                             flash("Camera Error: {}".format(msg), "error")
                     else:
