@@ -663,14 +663,15 @@ def page(page):
                 if formUpdate.update.data:
                     if update_available:
                         subprocess.Popen(INSTALL_DIRECTORY + '/mycodo/scripts/mycodo_wrapper upgrade >> /var/log/mycodo/mycodoupdate.log 2>&1', shell=True)
-                        flash("Upgrade started. The daemon will be "
+                        flash("THe upgrade has started. The daemon will be "
                               "stopped during the upgrade. Give the "
-                              "process a minute or two to complete "
-                              "before doing anything. When the update "
+                              "process several minutes to complete "
+                              "before doing anything. It may seem "
+                              "unresponsive at times. When the update "
                               "has successfully finished, the daemon "
                               "status indicator at the top left will "
                               "turn from red to green. You can monitor "
-                              "the update progress under Tools->View Logs"
+                              "the update progress under Tools->Mycodo Logs"
                               "->Update Log.", "success")
                     else:
                         flash("You cannot update if an update is not available", "error")

@@ -48,6 +48,14 @@ rm -rf /etc/systemd/system/mycodo.service
 rm -rf /etc/systemd/system/multi-user.target.wants/mycodo.service
 systemctl enable $INSTALL_DIRECTORY/mycodo/scripts/mycodo.service
 
+printf "#### Upgrade influxdb if out-of-date ####\n"
+INFLUX_VERSION=$(apt-cache policy influxdb | grep 'Installed' | gawk '{print $2}')
+if [ "$INFLUX_VERSION" != "1.0.0-1" ]; then
+    echo "Incorrect version of InfluxDB installed. Downloading and installing the appropriate version."
+    wget https://dl.influxdata.com/influxdb/releases/influxdb_1.0.0_armhf.deb
+    dpkg -i influxdb_1.0.0_armhf.deb
+fi
+
 printf "#### Checking if python modules are up-to-date ####\n"
 # Make sure python modules are installed/updated
 pip install --upgrade -r $INSTALL_DIRECTORY/requirements.txt
