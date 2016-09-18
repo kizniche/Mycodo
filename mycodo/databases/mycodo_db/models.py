@@ -232,6 +232,8 @@ class PID(Base):
     p = Column(REAL)
     i = Column(REAL)
     d = Column(REAL)
+    integrator_min = Column(REAL)
+    integrator_max = Column(REAL)
     raise_relay_id = Column(TEXT)
     raise_min_duration = Column(INT)
     raise_max_duration = Column(INT)
@@ -378,6 +380,9 @@ class CameraStill(Base):
     __tablename__ = "camerastill"
 
     id = Column(TEXT, unique=True, primary_key=True)
+    hflip = Column(BOOLEAN)
+    vflip = Column(BOOLEAN)
+    rotation = Column(INT)
     relay_id = Column(TEXT)
     timestamp = Column(INT)
     display_last = Column(INT)

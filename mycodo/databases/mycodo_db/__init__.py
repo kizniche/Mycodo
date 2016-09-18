@@ -63,7 +63,7 @@ def populate_db(db_path):
     Session = sessionmaker(bind=engine)
     session = Session()
     try:
-        alembic_version = AlembicVersion(version_num='054aacc97ae8')
+        alembic_version = AlembicVersion(version_num='2445c9b1bf3a')
         insert_or_ignore(alembic_version, session)
 
         initial_displayorder = DisplayOrder(id='0',
@@ -86,6 +86,9 @@ def populate_db(db_path):
         insert_or_ignore(initial_cameratimelapse, session)
 
         initial_camerastill = CameraStill(id='0',
+                                          hflip=False,
+                                          vflip=False,
+                                          rotation=0,
                                           relay_id='',
                                           timestamp=1,
                                           display_last=1,

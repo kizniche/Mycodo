@@ -84,14 +84,14 @@ class PIDController(threading.Thread):
             self.Kp = pid.p
             self.Ki = pid.i
             self.Kd = pid.d
+            self.Integrator_min = pid.integrator_min
+            self.Integrator_max = pid.integrator_max
             self.measure_interval = pid.period
             self.default_set_point = pid.setpoint
             self.set_point = pid.setpoint
 
         self.Derivator = 0
         self.Integrator = 0
-        self.Integrator_max = 500
-        self.Integrator_min = -500
         self.error = 0.0
         self.P_value = None
         self.I_value = None
@@ -177,17 +177,20 @@ class PIDController(threading.Thread):
 
         # Calculate I-value
         self.Integrator += self.error
-        # Old method for managing Integrator
-        # if self.Integrator > self.Integrator_max:
-        #     self.Integrator = self.Integrator_max
-        # elif self.Integrator < self.Integrator_min:
-        #     self.Integrator = self.Integrator_min
-        # New method for regulating Integrator
-        if self.measure_interval is not None:  
-            if self.Integrator * self.Ki > self.measure_interval:
-                self.Integrator = self.measure_interval / self.Ki
-            elif self.Integrator * self.Ki < -self.measure_interval:
-                self.Integrator = -self.measure_interval / self.Ki
+        
+        # First method for managing Integrator
+        if self.Integrator > self.Integrator_max:
+            self.Integrator = self.Integrator_max
+        elif self.Integrator < self.Integrator_min:
+            self.Integrator = self.Integrator_min
+        
+        # Second method for regulating Integrator
+        # if self.measure_interval is not None:  
+        #     if self.Integrator * self.Ki > self.measure_interval:
+        #         self.Integrator = self.measure_interval / self.Ki
+        #     elif self.Integrator * self.Ki < -self.measure_interval:
+        #         self.Integrator = -self.measure_interval / self.Ki
+
         self.I_value = self.Integrator * self.Ki
 
         # Calculate D-value
@@ -196,6 +199,7 @@ class PIDController(threading.Thread):
 
         # Produce output form P, I, and D values
         PID = self.P_value + self.I_value + self.D_value
+
         return PID
 
 

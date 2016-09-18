@@ -173,7 +173,7 @@ class DaemonControl(Form):
 
 
 #
-# Camera
+# Camera Use
 #
 
 class Camera(Form):
@@ -260,7 +260,7 @@ class EmailAlert(Form):
 
 
 #
-# Settings - General
+# General Settings
 #
 
 class SettingsGeneral(Form):
@@ -271,6 +271,112 @@ class SettingsGeneral(Form):
     stats_opt_out = BooleanField(u'Opt-out of sending statistics')
     Submit = SubmitField(u'Save')
 
+
+#
+# User Settings
+#
+
+class AddUser(Form):
+    addUsername = TextField(
+        u'Username',
+        render_kw={"placeholder": "Username"},
+        validators=[DataRequired()]
+    )
+    addEmail = EmailField(
+        u'Email',
+        render_kw={"placeholder": "Email"},
+        validators=[
+            DataRequired(),
+            validators.Email()
+        ]
+    )
+    addPassword = PasswordField(
+        u'Password',
+        render_kw={"placeholder": "Password"}, 
+        validators=[
+            DataRequired(),
+            validators.EqualTo('addPassword_repeat', message='Passwords must match'),
+            validators.Length(
+                min=6,
+                message='Password must be 6 or more characters'
+            )
+        ]
+    )
+    addPassword_repeat = PasswordField(
+        u'Repeat Password',
+        render_kw={"placeholder": "Repeat Password"},
+        validators=[DataRequired()]
+    )
+    addGroup = SelectField(
+        u'Group',
+        choices=[
+            ('admin', 'Admin'),
+            ('guest', 'Guest')
+        ],
+        validators=[DataRequired()]
+    )
+    addSubmit = SubmitField(u'Submit')
+
+
+class ModUser(Form):
+    modUsername = HiddenField(u'Username')
+    modEmail = EmailField(u'Email',
+            render_kw={"placeholder": "Email"},
+            validators=[
+                DataRequired(),
+                validators.Email()])
+    modPassword = PasswordField(
+        u'Password',
+        render_kw={"placeholder": "New Password"},
+        validators=[
+            validators.Optional(),
+            validators.EqualTo(
+                'modPassword_repeat',
+                message='Passwords must match'
+            ),
+            validators.Length(
+                min=6,
+                message='Password must be 6 or more characters'
+            )
+        ]
+    )
+    modPassword_repeat = PasswordField(
+        u'Repeat Password',
+        render_kw={"placeholder": "Repeat Password"}
+    )
+    modGroup = SelectField(
+        u'Group',
+        choices=[
+            ('admin', 'Admin'),
+            ('guest', 'Guest')
+        ],
+        validators=[DataRequired()]
+    )
+    modTheme = SelectField(
+        u'Group',
+        choices=[
+            ('light', 'Light'),
+            ('dark', 'Dark')
+        ],
+        validators=[DataRequired()]
+    )
+    modSubmit = SubmitField(u'Submit')
+
+
+class DelUser(Form):
+    delUsername = HiddenField(u'Username')
+    delUserSubmit = SubmitField(u'Delete')
+
+
+#
+# Camera Settings
+#
+
+class SettingsCamera(Form):
+    hflip = BooleanField(u'Flip Horizontally')
+    vflip = BooleanField(u'Flip Vertically')
+    rotation = IntegerField(u'Rotate Image')
+    Submit = SubmitField(u'Save')
 
 
 #
@@ -628,6 +734,8 @@ class ModPID(Form):
             message="Kd must be a positive value."
         )]
     )
+    modIntegratorMin = DecimalField(u'Integrator Min')
+    modIntegratorMax = DecimalField(u'Integrator Max')
     modRaiseRelayID = TextField(
         u'Raise Relay ID',
         render_kw={"placeholder": "Raise Relay ID"},
@@ -1041,102 +1149,6 @@ class Backup(Form):
     restore = SubmitField(u'Restore Backup')
     restore_dir = HiddenField(u'Restore Backup')
 
-
-
-#
-# Users
-#
-
-class AddUser(Form):
-    addUsername = TextField(
-        u'Username',
-        render_kw={"placeholder": "Username"},
-        validators=[DataRequired()]
-    )
-    addEmail = EmailField(
-        u'Email',
-        render_kw={"placeholder": "Email"},
-        validators=[
-            DataRequired(),
-            validators.Email()
-        ]
-    )
-    addPassword = PasswordField(
-        u'Password',
-        render_kw={"placeholder": "Password"}, 
-        validators=[
-            DataRequired(),
-            validators.EqualTo('addPassword_repeat', message='Passwords must match'),
-            validators.Length(
-                min=6,
-                message='Password must be 6 or more characters'
-            )
-        ]
-    )
-    addPassword_repeat = PasswordField(
-        u'Repeat Password',
-        render_kw={"placeholder": "Repeat Password"},
-        validators=[DataRequired()]
-    )
-    addGroup = SelectField(
-        u'Group',
-        choices=[
-            ('admin', 'Admin'),
-            ('guest', 'Guest')
-        ],
-        validators=[DataRequired()]
-    )
-    addSubmit = SubmitField(u'Submit')
-
-
-class ModUser(Form):
-    modUsername = HiddenField(u'Username')
-    modEmail = EmailField(u'Email',
-            render_kw={"placeholder": "Email"},
-            validators=[
-                DataRequired(),
-                validators.Email()])
-    modPassword = PasswordField(
-        u'Password',
-        render_kw={"placeholder": "New Password"},
-        validators=[
-            validators.Optional(),
-            validators.EqualTo(
-                'modPassword_repeat',
-                message='Passwords must match'
-            ),
-            validators.Length(
-                min=6,
-                message='Password must be 6 or more characters'
-            )
-        ]
-    )
-    modPassword_repeat = PasswordField(
-        u'Repeat Password',
-        render_kw={"placeholder": "Repeat Password"}
-    )
-    modGroup = SelectField(
-        u'Group',
-        choices=[
-            ('admin', 'Admin'),
-            ('guest', 'Guest')
-        ],
-        validators=[DataRequired()]
-    )
-    modTheme = SelectField(
-        u'Group',
-        choices=[
-            ('light', 'Light'),
-            ('dark', 'Dark')
-        ],
-        validators=[DataRequired()]
-    )
-    modSubmit = SubmitField(u'Submit')
-
-
-class DelUser(Form):
-    delUsername = HiddenField(u'Username')
-    delUserSubmit = SubmitField(u'Delete')
 
 
 #

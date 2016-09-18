@@ -7,73 +7,71 @@
 
 {% block settings %}
 
-  {% for each_misc in misc %}
-    <h3 style="text-align: right; padding-bottom: 1.3em;">General</h3>
+  <h3 style="text-align: right; padding-bottom: 1.3em;">General</h3>
 
-    <form class="form-horizontal" method="post" action="/settings/general">
-      <input type="hidden" name="form-name" value="General">
-      {{formSettingsGeneral.csrf_token}}
-      <div class="form-group">
-        {{formSettingsGeneral.forceHTTPS.label(class_='col-sm-4 control-label checkbox-nopad')}}
-        <div class="col-sm-8">
-          {%- if each_misc.force_https == true -%}
-            {{formSettingsGeneral.forceHTTPS(checked=True)}}
-          {%- else -%}
-            {{formSettingsGeneral.forceHTTPS()}}
-          {%- endif -%}
-          &nbsp;&nbsp;Check to force all web connections to use SSL (port 443) for greater security.
-        </div>
+  <form class="form-horizontal" method="post" action="/settings/general">
+    <input type="hidden" name="form-name" value="General">
+    {{formSettingsGeneral.csrf_token}}
+    <div class="form-group">
+      {{formSettingsGeneral.forceHTTPS.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      <div class="col-sm-8">
+        {%- if misc.force_https == true -%}
+          {{formSettingsGeneral.forceHTTPS(checked=True)}}
+        {%- else -%}
+          {{formSettingsGeneral.forceHTTPS()}}
+        {%- endif -%}
+        &nbsp;&nbsp;Check to force all web connections to use SSL (port 443) for greater security.
       </div>
-      <div class="form-group">
-        {{formSettingsGeneral.hideAlertSuccess.label(class_='col-sm-4 control-label checkbox-nopad')}}
-        <div class="col-sm-8">
-          {%- if each_misc.hide_alert_success == true -%}
-            {{formSettingsGeneral.hideAlertSuccess(checked=True)}}
-          {%- else -%}
-            {{formSettingsGeneral.hideAlertSuccess()}}
-          {%- endif -%}
-          &nbsp;&nbsp;Check to prevent <b>Success</b> alert messages from appearing at the top of the page.
-        </div>
+    </div>
+    <div class="form-group">
+      {{formSettingsGeneral.hideAlertSuccess.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      <div class="col-sm-8">
+        {%- if misc.hide_alert_success == true -%}
+          {{formSettingsGeneral.hideAlertSuccess(checked=True)}}
+        {%- else -%}
+          {{formSettingsGeneral.hideAlertSuccess()}}
+        {%- endif -%}
+        &nbsp;&nbsp;Check to prevent <b>Success</b> alert messages from appearing at the top of the page.
       </div>
-      <div class="form-group">
-        {{formSettingsGeneral.hideAlertInfo.label(class_='col-sm-4 control-label checkbox-nopad')}}
-        <div class="col-sm-8">
-          {%- if each_misc.hide_alert_info == true -%}
-            {{formSettingsGeneral.hideAlertInfo(checked=True)}}
-          {%- else -%}
-            {{formSettingsGeneral.hideAlertInfo()}}
-          {%- endif -%}
-          &nbsp;&nbsp;Check to prevent <b>Info</b> alert messages from appearing at the top of the page.
-        </div>
+    </div>
+    <div class="form-group">
+      {{formSettingsGeneral.hideAlertInfo.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      <div class="col-sm-8">
+        {%- if misc.hide_alert_info == true -%}
+          {{formSettingsGeneral.hideAlertInfo(checked=True)}}
+        {%- else -%}
+          {{formSettingsGeneral.hideAlertInfo()}}
+        {%- endif -%}
+        &nbsp;&nbsp;Check to prevent <b>Info</b> alert messages from appearing at the top of the page.
       </div>
-      <div class="form-group">
-        {{formSettingsGeneral.hideAlertWarning.label(class_='col-sm-4 control-label checkbox-nopad')}}
-        <div class="col-sm-8">
-          {%- if each_misc.hide_alert_warning == true -%}
-            {{formSettingsGeneral.hideAlertWarning(checked=True)}}
-          {%- else -%}
-            {{formSettingsGeneral.hideAlertWarning()}}
-          {%- endif -%}
-          &nbsp;&nbsp;Check to prevent <b>Warning</b> alert messages from appearing at the top of the page.
-        </div>
+    </div>
+    <div class="form-group">
+      {{formSettingsGeneral.hideAlertWarning.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      <div class="col-sm-8">
+        {%- if misc.hide_alert_warning == true -%}
+          {{formSettingsGeneral.hideAlertWarning(checked=True)}}
+        {%- else -%}
+          {{formSettingsGeneral.hideAlertWarning()}}
+        {%- endif -%}
+        &nbsp;&nbsp;Check to prevent <b>Warning</b> alert messages from appearing at the top of the page.
       </div>
-      <div class="form-group">
-        {{formSettingsGeneral.stats_opt_out.label(class_='col-sm-4 control-label checkbox-nopad')}}
-        <div class="col-sm-8">
-          {%- if each_misc.stats_opt_out == true -%}
-            {{formSettingsGeneral.stats_opt_out(checked=True)}}
-          {%- else -%}
-            {{formSettingsGeneral.stats_opt_out()}}
-          {%- endif -%}
-          &nbsp;&nbsp;Check if you do not wish to send anonymous usage statistics. <a href="/settings/statistics">View collected statistics</a>
-        </div>
+    </div>
+    <div class="form-group">
+      {{formSettingsGeneral.stats_opt_out.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      <div class="col-sm-8">
+        {%- if misc.stats_opt_out == true -%}
+          {{formSettingsGeneral.stats_opt_out(checked=True)}}
+        {%- else -%}
+          {{formSettingsGeneral.stats_opt_out()}}
+        {%- endif -%}
+        &nbsp;&nbsp;Check if you do not wish to send anonymous usage statistics. <a href="/settings/statistics">View collected statistics</a>
       </div>
-      <div class="form-group">
-        <div class="col-sm-offset-4 col-sm-8">
-          {{formSettingsGeneral.Submit(class_='btn btn-default')}}
-        </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-4 col-sm-8">
+        {{formSettingsGeneral.Submit(class_='btn btn-default')}}
       </div>
-    </form>
-  {% endfor %}
+    </div>
+  </form>
 
 {% endblock %}

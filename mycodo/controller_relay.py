@@ -102,7 +102,7 @@ class RelayController(threading.Thread):
                     if (self.relay_on_until[relay_id] < current_time and
                             self.relay_on_duration[relay_id] and 
                             self.relay_pin[relay_id]):
-                        
+
                         # Use threads to prevent a slow execution of a
                         # process that could slow the loop
                         turn_relay_off = threading.Thread(
@@ -129,7 +129,8 @@ class RelayController(threading.Thread):
 
 
     def relay_on_off(self, relay_id, state,
-                     duration=0.0, trigger_conditionals=True):
+                     duration=0.0, trigger_conditionals=True,
+                     datetime_now=datetime.datetime.now()):
         """
         Turn a relay on or off
         The GPIO may be either HIGH or LOW to activate a relay. This trigger
@@ -156,10 +157,9 @@ class RelayController(threading.Thread):
             return 1
         if state == 'on':
             if not self.relay_pin[relay_id]:
-                self.logger.warning("[Relay] Cannot turn a relay "
-                                    "{} ({}) on with a pin of "
-                                    "0.".format(self.relay_id[relay_id],
-                                                self.relay_name[relay_id]))
+                self.logger.warning("[Relay] Invalid pin for relay "
+                                    "{} ({}).".format(self.relay_id[relay_id],
+                                                      self.relay_name[relay_id]))
                 return 1
 
             current_amps = self.current_amp_load()

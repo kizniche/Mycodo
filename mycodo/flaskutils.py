@@ -22,6 +22,7 @@ from sqlalchemy.orm import sessionmaker
 from subprocess import Popen, PIPE
 
 from utils.send_data import send_email
+from databases.mycodo_db.models import CameraStill
 from databases.mycodo_db.models import DisplayOrder
 from databases.mycodo_db.models import Graph
 from databases.mycodo_db.models import LCD
@@ -1233,6 +1234,8 @@ def pid_add(formAddPID, display_order):
             new_pid.p = 1.0
             new_pid.i = 0.0
             new_pid.d = 0.0
+            new_pid.integrator_min = -100.0
+            new_pid.integrator_max = 100.0
             new_pid.raise_relay_id = ''
             new_pid.raise_min_duration = 0
             new_pid.raise_max_duration = 0
@@ -1312,6 +1315,8 @@ def pid_mod(formModPID):
                 mod_pid.p = formModPID.modKp.data
                 mod_pid.i = formModPID.modKi.data
                 mod_pid.d = formModPID.modKd.data
+                mod_pid.integrator_min = formModPID.modIntegratorMin.data
+                mod_pid.integrator_max = formModPID.modIntegratorMax.data
                 mod_pid.raise_relay_id = formModPID.modRaiseRelayID.data
                 mod_pid.raise_min_duration = formModPID.modRaiseMinDuration.data
                 mod_pid.raise_max_duration = formModPID.modRaiseMaxDuration.data
@@ -2402,6 +2407,27 @@ def settings_general_mod(formModGeneral):
                     os.utime(wsgi_file, None)
     else:
         flash_form_errors(formModGeneral)
+
+
+#
+# Camera
+#
+
+def settings_camera_mod(formModCamera):
+    if session['user_group'] == 'guest':
+        flash("Guests are not permitted to modify camera settings", 'error')
+        return redirect('/settings')
+
+    if formModCamera.validate():
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            mod_camera = db_session.query(CameraStill).one()
+            mod_camera.hflip = formModCamera.hflip.data
+            mod_camera.vflip = formModCamera.vflip.data
+            mod_camera.rotation = formModCamera.rotation.data
+            db_session.commit()
+            flash("Camera settings successfully changed", "success")
+    else:
+        flash_form_errors(formModCamera)
 
 
 #

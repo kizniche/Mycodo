@@ -3,7 +3,14 @@
 {% block title %} - PID{% endblock %}
 
 {% block head %}
-<link rel="stylesheet" type="text/css" href="/static/css/bootstrap-clockpicker.min.css">
+  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-clockpicker.min.css">
+  <script>
+    $(document).ready(function(){
+      $('input[title]').tooltip({placement:'bottom'});
+      $('.form-dropdown').dropdown();
+      $('.form-dropdown').tooltip();
+    })
+  </script>
 {% endblock %}
 
 {% block body %}
@@ -79,26 +86,21 @@
             </tr>
           </table>
 
-          <table class="table">
-            <tr>
-              <td class="col-sm-3">Sensor</td>
-              <td class="col-sm-2">Measure Type</td>
-              <td class="col-sm-2">Regulate Direction</td>
-              <td class="col-sm-1">Period (sec)</td>
-              <td class="col-sm-1">Setpoint</td>
-              <td class="col-sm-1">K<sub>P</sub></td>
-              <td class="col-sm-1">K<sub>I</sub></td>
-              <td class="col-sm-1">K<sub>D</sub></td>
-            </tr>
-            <tr>
-              <td>
+          <div style="padding: 0.5em" class="form-inline">
+            <div class="form-group">
+              {{formModPID.modSensorID.label(class_='control-label')}}
+              <div>
                 <select class="form-control" id="modSensorID" name="modSensorID">
                   <option value=""></option>
                   {%- for each_sensor in sensor -%}
                     <option value="{{each_sensor.id}}"{% if each_pid.sensor_id == each_sensor.id %} selected{% endif %}>{{each_sensor.id}} ({{each_sensor.name}})</option>
                   {%- endfor -%}
                 </select>
-              <td>
+              </div>
+            </div>
+            <div class="form-group">
+              {{formModPID.modMeasureType.label(class_='control-label')}}
+              <div>
                 <select class="form-control" id="modMeasureType" name="modMeasureType">
                   <option value=""></option>
                   <option value="temperature"{% if each_pid.measure_type == 'temperature' %} selected{% endif %}>Temperature</option>
@@ -115,53 +117,115 @@
                     <option value="{{each_sensor.adc_measure}}"{% if each_pid.measure_type == each_sensor.adc_measure %} selected{% endif %}>{{each_sensor.adc_measure}} (ADC)</option>
                   {% endfor %}
                 </select>
-              <td>
+              </div>
+            </div>
+            <div class="form-group">
+              {{formModPID.modDirection.label(class_='control-label')}}
+              <div>
                 <select class="form-control" id="modDirection" name="modDirection">
                   <option value=""></option>
                   <option value="raise"{% if each_pid.direction == 'raise' %} selected{% endif %}>Raise</option>
                   <option value="lower"{% if each_pid.direction == 'lower' %} selected{% endif %}>Lower</option>
                   <option value="both"{% if each_pid.direction == 'both' %} selected{% endif %}>Both</option>
                 </select>
-              </td>
-              <td>{{formModPID.modPeriod(class_='form-control', value=each_pid.period)}}</td>
-              <td>{{formModPID.modSetpoint(class_='form-control', value=each_pid.setpoint)}}</td>
-              <td>{{formModPID.modKp(class_='form-control', value=each_pid.p)}}</td>
-              <td>{{formModPID.modKi(class_='form-control', value=each_pid.i)}}</td>
-              <td>{{formModPID.modKd(class_='form-control', value=each_pid.d)}}</td>
-            </tr>
-          </table>
+              </div>
+            </div>
+            <div class="form-group">
+              {{formModPID.modPeriod.label(class_='control-label')}}
+              <div>
+                {{formModPID.modPeriod(class_='form-control', value=each_pid.period)}}
+              </div>
+            </div>
+            <div class="form-group">
+              {{formModPID.modSetpoint.label(class_='control-label')}}
+              <div>
+                {{formModPID.modSetpoint(class_='form-control', value=each_pid.setpoint)}}
+              </div>
+            </div>
+            <div class="form-group">
+              {{formModPID.modKp.label(class_='control-label')}}
+              <div>
+                {{formModPID.modKp(class_='form-control', value=each_pid.p, **{'title':'Proportional gain'})}}
+              </div>
+            </div>
+            <div class="form-group">
+              {{formModPID.modKi.label(class_='control-label')}}
+              <div>
+                {{formModPID.modKi(class_='form-control', value=each_pid.i, **{'title':'Integral gain'})}}
+              </div>
+            </div>
+            <div class="form-group">
+              {{formModPID.modKd.label(class_='control-label')}}
+              <div>
+                {{formModPID.modKd(class_='form-control', value=each_pid.d, **{'title':'Derivative gain'})}}
+              </div>
+            </div>
+            <div class="form-group">
+              {{formModPID.modIntegratorMin.label(class_='control-label')}}
+              <div>
+                {{formModPID.modIntegratorMin(class_='form-control', value=each_pid.integrator_min, **{'title':'Limit the integrator minimum, for calculating Ki_total (Ki * integrator = Ki_total; and PID output = Kp_total + Ki_total + Kd_total)'})}}
+              </div>
+            </div>
+            <div class="form-group">
+              {{formModPID.modIntegratorMax.label(class_='control-label')}}
+              <div>
+                {{formModPID.modIntegratorMax(class_='form-control', value=each_pid.integrator_max, **{'title':'Limit the integrator maximum, for calculating Ki_total (Ki * integrator = Ki_total; and PID output = Kp_total + Ki_total + Kd_total)'})}}
+              </div>
+            </div>
+          </div>
 
-          <table class="table">
-            <tr>
-              <td class="col-sm-2">Raise Relay</td>
-              <td class="col-sm-1">Min Duration</td>
-              <td class="col-sm-1">Max Duration</td>
-              <td class="col-sm-2">Lower Relay</td>
-              <td class="col-sm-1">Min Duration</td>
-              <td class="col-sm-1">Max Duration</td>
-            </tr>
-            <tr>
-              <td>
+          <div style="padding: 0.5em" class="form-inline">
+            <div class="form-group">
+              {{formModPID.modRaiseRelayID.label(class_='control-label')}}
+              <div>
                 <select class="form-control" id="modRaiseRelayID" name="modRaiseRelayID">
                   <option value=""></option>
                   {%- for each_relay in relay -%}
                     <option value="{{each_relay.id}}"{% if each_pid.raise_relay_id == each_relay.id %} selected{% endif %}>{{each_relay.id}} ({{each_relay.name}})</option>
                   {%- endfor -%}
                 </select>
-              <td>{{formModPID.modRaiseMinDuration(class_='form-control', value=each_pid.raise_min_duration)}}</td>
-              <td>{{formModPID.modRaiseMaxDuration(class_='form-control', value=each_pid.raise_max_duration)}}</td>
-              <td>
+              </div>
+            </div>
+            <div class="form-group">
+              {{formModPID.modRaiseMinDuration.label(class_='control-label')}}
+              <div>
+                {{formModPID.modRaiseMinDuration(class_='form-control', value=each_pid.raise_min_duration)}}
+              </div>
+            </div>
+            <div class="form-group">
+              {{formModPID.modRaiseMaxDuration.label(class_='control-label')}}
+              <div>
+                {{formModPID.modRaiseMaxDuration(class_='form-control', value=each_pid.raise_max_duration)}}
+              </div>
+            </div>
+          </div>
+
+          <div style="padding: 0.5em" class="form-inline">
+            <div class="form-group">
+              {{formModPID.modLowerRelayID.label(class_='control-label')}}
+              <div>
                 <select class="form-control" id="modLowerRelayID" name="modLowerRelayID">
                   <option value=""></option>
                   {%- for each_relay in relay -%}
                     <option value="{{each_relay.id}}"{% if each_pid.lower_relay_id == each_relay.id %} selected{% endif %}>{{each_relay.id}} ({{each_relay.name}})</option>
                   {%- endfor -%}
                 </select>
-              </td>
-              <td>{{formModPID.modLowerMinDuration(class_='form-control', value=each_pid.lower_min_duration)}}</td>
-              <td>{{formModPID.modLowerMaxDuration(class_='form-control', value=each_pid.lower_max_duration)}}</td>
-            </tr>
-          </table>
+              </div>
+            </div>
+            <div class="form-group">
+              {{formModPID.modLowerMinDuration.label(class_='control-label')}}
+              <div>
+                {{formModPID.modLowerMinDuration(class_='form-control', value=each_pid.lower_min_duration)}}
+              </div>
+            </div>
+            <div class="form-group">
+              {{formModPID.modLowerMaxDuration.label(class_='control-label')}}
+              <div>
+                {{formModPID.modLowerMaxDuration(class_='form-control', value=each_pid.lower_max_duration)}}
+              </div>
+            </div>
+          </div>
+
           </form>
 
           <div class="form-inline" style="margin: 0.5em; padding: 0.5em; border: 2px solid #ddd; border-radius: 5px;">

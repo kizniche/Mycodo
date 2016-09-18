@@ -70,6 +70,7 @@ from controller_relay import RelayController
 from controller_sensor import SensorController
 from controller_timer import TimerController
 
+from databases.mycodo_db.models import CameraStill
 from databases.mycodo_db.models import LCD
 from databases.mycodo_db.models import Log
 from databases.mycodo_db.models import Method
@@ -239,11 +240,14 @@ class DaemonController(threading.Thread):
                                                    'capture_number',
                                                    capture_number)
                         # Capture image
-                        camera_record(
-                            INSTALL_DIRECTORY,
-                            'timelapse',
-                            start_time=dict_timelapse_param['start_time'],
-                            capture_number=capture_number)
+                        with session_scope(MYCODO_DB_PATH) as new_session:
+                            camera = new_session.query(Method)
+                            camera_record(
+                                INSTALL_DIRECTORY,
+                                'timelapse',
+                                camera,
+                                start_time=dict_timelapse_param['start_time'],
+                                capture_number=capture_number)
 
                 elif (os.path.isfile(FILE_TIMELAPSE_PARAM) or
                         os.path.isfile(LOCK_FILE_TIMELAPSE)):
@@ -410,7 +414,7 @@ class DaemonController(threading.Thread):
         :param duration: How long to turn the relay on
         :type duration: float
         """
-        self.controller['Relay'].relay_on_off(relay_id, 'on', duration)
+        self.controller['Relay'].relay_on_off(relay_id, 'on', duration=duration)
         return "Relay turned on"
 
 

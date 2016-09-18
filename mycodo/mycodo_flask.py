@@ -52,6 +52,7 @@ from sqlalchemy.orm import sessionmaker
 import flaskforms
 import flaskutils
 from databases.utils import session_scope
+from databases.mycodo_db.models import CameraStill
 from databases.mycodo_db.models import DisplayOrder
 from databases.mycodo_db.models import Graph
 from databases.mycodo_db.models import LCD
@@ -860,7 +861,9 @@ def page(page):
                             #     CameraStream().terminate()  # Stop camera stream to take a photo
                             #     time.sleep(2)
                             #     stream_locked = True  # Signal to enable camera stream
-                            camera_record(INSTALL_DIRECTORY, 'photo')
+                            with session_scope(MYCODO_DB_PATH) as new_session:
+                                camera = new_session.query(Method)
+                                camera_record(INSTALL_DIRECTORY, 'photo', camera)
                         except Exception as msg:
                             flash("Camera Error: {}".format(msg), "error")
                     else:
@@ -1346,11 +1349,10 @@ def settings(page):
 
     # General settings
     elif page == 'general':
-        misc = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Misc)
+        misc = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Misc, first=True)
         formSettingsGeneral = flaskforms.SettingsGeneral()
         if request.method == 'POST':
             form_name = request.form['form-name']
-            # Update smtp settings table in mycodo SQL database
             if form_name == 'General':
                 flaskutils.settings_general_mod(formSettingsGeneral)
             return redirect('/settings/general')
@@ -1358,6 +1360,20 @@ def settings(page):
         return render_template('settings/general.html',
                                misc=misc,
                                formSettingsGeneral=formSettingsGeneral)
+
+    # Camera settings
+    elif page == 'camera':
+        camera = flaskutils.db_retrieve_table(MYCODO_DB_PATH, CameraStill, first=True)
+        formSettingsCamera = flaskforms.SettingsCamera()
+        if request.method == 'POST':
+            form_name = request.form['form-name']
+            if form_name == 'Camera':
+                flaskutils.settings_camera_mod(formSettingsCamera)
+            return redirect('/settings/camera')
+
+        return render_template('settings/camera.html',
+                               camera=camera,
+                               formSettingsCamera=formSettingsCamera)
 
     # Display collected statistics
     elif page == 'statistics':
