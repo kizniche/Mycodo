@@ -24,11 +24,11 @@ def camera_record(install_directory, record_type, settings, duration_sec=None, s
             filename = '{}-img-{:05d}.jpg'.format(start_time, capture_number)
             path_file = '{}/{}'.format(path, filename)
         elif record_type == 'video':
-            path_video = '{}/camera-video'.format(install_directory)
+            path = '{}/camera-video'.format(install_directory)
             filename = 'Video-{}.h264'.format(timestamp)
-            path_file = '{}/{}'.format(path_video, filename)
+            path_file = '{}/{}'.format(path, filename)
         
-        assure_path_exists(path_file)
+        assure_path_exists(path)
 
         with picamera.PiCamera() as camera:
             camera.resolution = (1296, 972)
