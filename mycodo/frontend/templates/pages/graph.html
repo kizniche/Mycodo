@@ -463,6 +463,14 @@
           load: function () {
             {%- set count_series = [] -%}
 
+            {%- for each_relay in relay -%}
+              {%- for each_graph_relay in graph_relay_ids if each_relay.id in each_graph_relay %}
+            getPastData({{chart_number}}, {{count_series|count}}, 'relay', 'duration_sec', '{{each_relay.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'relay', 'duration_sec', '{{each_relay.id}}', {{each_graph.refresh_duration+30}}, {{each_graph.x_axis_duration}});
+                {%- do count_series.append(1) %}
+              {%- endfor -%}
+            {%- endfor -%}
+
             {%- for each_sensor in sensor -%}
               {%- for each_sensor_and_measure in graph_sensor_ids if each_sensor.id in each_sensor_and_measure -%}
                 {%- if each_sensor.device_type == 'cpu_load' %}
@@ -548,14 +556,6 @@
                     {%- do count_series.append(1) -%}
                   {%- endif -%}
                 {%- endif -%}
-              {%- endfor -%}
-            {%- endfor -%}
-
-            {%- for each_relay in relay -%}
-              {%- for each_graph_relay in graph_relay_ids if each_relay.id in each_graph_relay %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'relay', 'duration_sec', '{{each_relay.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'relay', 'duration_sec', '{{each_relay.id}}', {{each_graph.refresh_duration+30}}, {{each_graph.x_axis_duration}});
-                {%- do count_series.append(1) %}
               {%- endfor -%}
             {%- endfor -%}
 
@@ -843,12 +843,14 @@
           },
         {%- endfor -%}
       {%- endfor -%}
+
       {%- for each_sensor in sensor -%}
         {%- for each_sensor_and_measure in graph_sensor_ids if each_sensor.id in each_sensor_and_measure -%}
           {%- if each_sensor.device_type == 'cpu_load' -%}
             {% if 'cpu_load_1m' in each_sensor_and_measure -%}
               {
                 name: '{{each_sensor.name}} CPU Load (1m)',
+                type: 'line',
                 tooltip: {
                   valueDecimals: 2
                 },
@@ -858,6 +860,7 @@
             {% elif 'cpu_load_5m' in each_sensor_and_measure -%}
               {
                 name: '{{each_sensor.name}} CPU Load (5m)',
+                type: 'line',
                 tooltip: {
                   valueDecimals: 2
                 },
@@ -867,6 +870,7 @@
             {% elif 'cpu_load_15m' in each_sensor_and_measure -%}
               {
                 name: '{{each_sensor.name}} CPU Load (15m)',
+                type: 'line',
                 tooltip: {
                   valueDecimals: 2
                 },
@@ -877,6 +881,7 @@
           {%- elif each_sensor.device_type == 'tsensor' -%}
             {
               name: '{{each_sensor.name}} Temperature',
+              type: 'line',
               tooltip: {
                 pointFormatter: function () {
                   return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 1) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 1) + '°F)</b><br>';
@@ -889,6 +894,7 @@
             {% if 'temperature_object' in each_sensor_and_measure -%}
               {
                 name: '{{each_sensor.name}} Temperature (Object)',
+                type: 'line',
                   tooltip: {
                   pointFormatter: function () {
                     return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 1) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 1) + '°F)</b><br>';
@@ -900,6 +906,7 @@
             {% elif 'temperature_die' in each_sensor_and_measure -%}
               {
                 name: '{{each_sensor.name}} Temperature (Die)',
+                type: 'line',
                 tooltip: {
                   pointFormatter: function () {
                     return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 1) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 1) + '°F)</b><br>';
@@ -913,6 +920,7 @@
             {% if 'temperature' in each_sensor_and_measure -%}
               {
                 name: '{{each_sensor.name}} Temperature',
+                type: 'line',
                 tooltip: {
                   pointFormatter: function () {
                     return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 1) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 1) + '°F)</b><br>';
@@ -924,6 +932,7 @@
             {%- elif 'humidity' in each_sensor_and_measure -%}
               {
                 name: '{{each_sensor.name}} Humidity',
+                type: 'line',
                 tooltip: {
                   valueSuffix: ' %',
                   valueDecimals: 1
@@ -946,6 +955,7 @@
           {%- elif each_sensor.device_type == 'co2sensor' -%}
             {
               name: '{{each_sensor.name}} CO<sub>2</sub>',
+              type: 'line',
               tooltip: {
                 valueSuffix: ' ppmv',
                 valueDecimals: 0
@@ -956,6 +966,7 @@
           {%- elif each_sensor.device_type == 'luxsensor' -%}
             {
               name: '{{each_sensor.name}} Lux',
+              type: 'line',
               tooltip: {
                 valueSuffix: ' lx',
                 valueDecimals: 1
@@ -967,6 +978,7 @@
             {%- if 'temperature' in each_sensor_and_measure -%}
               {
                 name: '{{each_sensor.name}} Temperature',
+                type: 'line',
                 tooltip: {
                   pointFormatter: function () {
                     return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 1) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 1) + '°F)</b><br>';
@@ -978,6 +990,7 @@
             {%- elif 'pressure' in each_sensor_and_measure -%}
               {
                 name: '{{each_sensor.name}} Pressure',
+                type: 'line',
                 tooltip: {
                   valueSuffix: ' Pa',
                   valueDecimals: 0
@@ -988,6 +1001,7 @@
             {%- elif 'altitude' in each_sensor_and_measure -%}
               {
                 name: '{{each_sensor.name}} Altitude',
+                type: 'line',
                 tooltip: {
                   valueSuffix: ' m',
                   valueDecimals: 0
@@ -999,6 +1013,7 @@
           {%- elif each_sensor.device_type == 'edgedetect' -%}
             {
               name: '{{each_sensor.name}} Edge',
+              type: 'line',
               type: 'column',
               tooltip: {
                 valueSuffix: ' edge',
@@ -1011,6 +1026,7 @@
             {%- if 'voltage' in each_sensor_and_measure -%}
               {
                 name: '{{each_sensor.name}} Voltage',
+                type: 'line',
                 tooltip: {
                   valueSuffix: ' volts',
                   valueDecimals: 5
@@ -1021,6 +1037,7 @@
             {%- elif each_sensor.adc_measure in each_sensor_and_measure -%}
               {
                 name: '{{each_sensor.name}} {{each_sensor.adc_measure}}',
+                type: 'line',
                 tooltip: {
                   valueSuffix: ' {{each_sensor.adc_measure_units}}',
                   valueDecimals: 3
@@ -1032,10 +1049,12 @@
           {%- endif -%}
         {%- endfor -%}
       {%- endfor -%}
+      
       {%- for each_pid in pid -%}
         {%- for each_graph_pid_ids in graph_pid_ids if each_pid.id in each_graph_pid_ids -%}
           {
             name: '{{each_pid.name}} Setpoint',
+            type: 'line',
             tooltip: {
               valueSuffix: '{{measurement_units[each_pid.measure_type]|safe}}',
               valueDecimals: 2,
