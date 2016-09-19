@@ -103,7 +103,7 @@ def read_duration_influxdb(host, port, user, password, dbname,
 
 def write_influxdb(logger, host, port, user, password,
                    dbname, device_type, device_id,
-                   measure_type, value):
+                   measure_type, value, timestamp=None):
     """
     Write an entry into an Influxdb database
 
@@ -140,7 +140,8 @@ def write_influxdb(logger, host, port, user, password,
     data = format_influxdb_data(device_type,
                                 device_id,
                                 measure_type,
-                                value)
+                                value,
+                                timestamp)
     try:
         client.write_points(data)
         # logger.debug('Write {} {} to {}, '
@@ -194,7 +195,7 @@ def write_influxdb_list(logger, host, port, user, password,
         return 1
 
 
-def format_influxdb_data(device_type, device_id, measure_type, value):
+def format_influxdb_data(device_type, device_id, measure_type, value, timestamp=None):
     """
     Format data for entry into an Influxdb database
 
@@ -217,15 +218,30 @@ def format_influxdb_data(device_type, device_id, measure_type, value):
     :type value: int or float
 
     """
-    return [
-        {
-            "measurement": measure_type,
-            "tags": {
-                "device_id": device_id,
-                "device_type": device_type
-            },
-            "fields": {
-                "value": value
+    if timestamp:
+        return [
+            {
+                "measurement": measure_type,
+                "tags": {
+                    "device_id": device_id,
+                    "device_type": device_type
+                },
+                "time": timestamp.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+                "fields": {
+                    "value": value
+                }
             }
-        }
-    ]
+        ]
+    else:
+        return [
+            {
+                "measurement": measure_type,
+                "tags": {
+                    "device_id": device_id,
+                    "device_type": device_type
+                },
+                "fields": {
+                    "value": value
+                }
+            }
+        ]

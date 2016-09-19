@@ -111,13 +111,16 @@ class RelayController(threading.Thread):
                         turn_relay_off.start()
 
                         if self.relay_last_duration[relay_id] > 0:
+                            duration = float(self.relay_last_duration[relay_id])
+                            timestamp = datetime.datetime.utcnow()-datetime.timedelta(seconds=duration)
                             write_db = threading.Thread(
                                 target=write_influxdb,
                                 args=(self.logger, INFLUXDB_HOST,
                                       INFLUXDB_PORT, INFLUXDB_USER,
                                       INFLUXDB_PASSWORD, INFLUXDB_DATABASE,
                                       'relay', relay_id, 'duration_sec',
-                                      float(self.relay_last_duration[relay_id]),))
+                                      duration,
+                                      timestamp,))
                             write_db.start()
 
                 time.sleep(0.01)
@@ -195,13 +198,15 @@ class RelayController(threading.Thread):
                                                               time_on,
                                                               duration))
                         if time_on > 0:
+                            duration = float(time_on)
+                            timestamp = datetime.datetime.utcnow()-datetime.timedelta(seconds=duration)
                             write_db = threading.Thread(
                                 target=write_influxdb,
                                 args=(self.logger, INFLUXDB_HOST,
                                       INFLUXDB_PORT, INFLUXDB_USER,
                                       INFLUXDB_PASSWORD, INFLUXDB_DATABASE,
                                       'relay', relay_id, 'duration_sec',
-                                      float(time_on),))
+                                      duration, timestamp,))
                             write_db.start()
 
                         self.relay_on_until[relay_id] = time_now+datetime.timedelta(seconds=duration)
