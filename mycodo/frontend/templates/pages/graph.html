@@ -471,6 +471,14 @@
               {%- endfor -%}
             {%- endfor -%}
 
+            {%- for each_pid in pid -%}
+              {%- for each_graph_pid in graph_pid_ids if each_pid.id in each_graph_pid %}
+            getPastData({{chart_number}}, {{count_series|count}}, 'pid', 'setpoint', '{{each_pid.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'pid', 'setpoint', '{{each_pid.id}}', {{each_graph.refresh_duration+30}}, {{each_graph.x_axis_duration}});
+                {%- do count_series.append(1) %}
+              {%- endfor -%}
+            {%- endfor -%}
+
             {%- for each_sensor in sensor -%}
               {%- for each_sensor_and_measure in graph_sensor_ids if each_sensor.id in each_sensor_and_measure -%}
                 {%- if each_sensor.device_type == 'cpu_load' %}
@@ -556,14 +564,6 @@
                     {%- do count_series.append(1) -%}
                   {%- endif -%}
                 {%- endif -%}
-              {%- endfor -%}
-            {%- endfor -%}
-
-            {%- for each_pid in pid -%}
-              {%- for each_graph_pid in graph_pid_ids if each_pid.id in each_graph_pid %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'pid', 'setpoint', '{{each_pid.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'pid', 'setpoint', '{{each_pid.id}}', {{each_graph.refresh_duration+30}}, {{each_graph.x_axis_duration}});
-                {%- do count_series.append(1) %}
               {%- endfor -%}
             {%- endfor -%}
           }
@@ -844,6 +844,21 @@
         {%- endfor -%}
       {%- endfor -%}
 
+      {%- for each_pid in pid -%}
+        {%- for each_graph_pid_ids in graph_pid_ids if each_pid.id in each_graph_pid_ids -%}
+          {
+            name: '{{each_pid.name}} Setpoint',
+            type: 'line',
+            tooltip: {
+              valueSuffix: '{{measurement_units[each_pid.measure_type]|safe}}',
+              valueDecimals: 2,
+            },
+            yAxis: '{{each_pid.measure_type}}',
+            data: []
+          },
+        {%- endfor -%}
+      {%- endfor -%}
+
       {%- for each_sensor in sensor -%}
         {%- for each_sensor_and_measure in graph_sensor_ids if each_sensor.id in each_sensor_and_measure -%}
           {%- if each_sensor.device_type == 'cpu_load' -%}
@@ -1047,21 +1062,6 @@
               },
             {%- endif -%}
           {%- endif -%}
-        {%- endfor -%}
-      {%- endfor -%}
-      
-      {%- for each_pid in pid -%}
-        {%- for each_graph_pid_ids in graph_pid_ids if each_pid.id in each_graph_pid_ids -%}
-          {
-            name: '{{each_pid.name}} Setpoint',
-            type: 'line',
-            tooltip: {
-              valueSuffix: '{{measurement_units[each_pid.measure_type]|safe}}',
-              valueDecimals: 2,
-            },
-            yAxis: '{{each_pid.measure_type}}',
-            data: []
-          },
         {%- endfor -%}
       {%- endfor -%}
       ]
