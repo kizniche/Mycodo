@@ -89,7 +89,7 @@ case "${1:-''}" in
     'upgrade-packages')
         printf "#### Installing prerequisite apt packages.\n"
         apt-get update -y
-        apt-get install -y libav-tools libffi-dev libi2c-dev python-dev python-setuptools python-smbus sqlite3
+        apt-get install -y libav-tools libffi-dev libi2c-dev python-dev python-setuptools python-smbus sqlite3 gawk
         easy_install pip
     ;;
     'initialize')
