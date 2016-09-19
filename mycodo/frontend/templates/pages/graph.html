@@ -825,6 +825,24 @@
         text: "Mycodo"
       },
       series: [
+      {%- for each_relay in relay -%}
+        {%- for each_graph_relay in graph_relay_ids if each_relay.id in each_graph_relay -%}
+          {
+            name: '{{each_relay.name}}',
+            type: 'column',
+            dataGrouping: {
+              approximation: 'low',
+              groupPixelWidth: 3,
+            },
+            tooltip: {
+              valueSuffix: ' sec',
+              valueDecimals: 2,
+            },
+            yAxis: 'relay',
+            data: []
+          },
+        {%- endfor -%}
+      {%- endfor -%}
       {%- for each_sensor in sensor -%}
         {%- for each_sensor_and_measure in graph_sensor_ids if each_sensor.id in each_sensor_and_measure -%}
           {%- if each_sensor.device_type == 'cpu_load' -%}
@@ -1012,24 +1030,6 @@
               },
             {%- endif -%}
           {%- endif -%}
-        {%- endfor -%}
-      {%- endfor -%}
-      {%- for each_relay in relay -%}
-        {%- for each_graph_relay in graph_relay_ids if each_relay.id in each_graph_relay -%}
-          {
-            name: '{{each_relay.name}}',
-            type: 'column',
-            dataGrouping: {
-              approximation: 'low',
-              groupPixelWidth: 3,
-            },
-            tooltip: {
-              valueSuffix: ' sec',
-              valueDecimals: 2,
-            },
-            yAxis: 'relay',
-            data: []
-          },
         {%- endfor -%}
       {%- endfor -%}
       {%- for each_pid in pid -%}
