@@ -603,6 +603,18 @@
         ordinal: false
       },
       yAxis: [
+      {%- if yaxis_relay -%}
+        {
+          title: {
+            text: 'Relay Duration (sec)',
+          },
+          labels: {
+            format: '{value}',
+          },
+          opposite: false,
+          id: 'relay'
+        },
+      {%- endif -%}
       {%- if yaxis_cpu_load -%}
         {   
           title: {
@@ -723,18 +735,6 @@
           id: '{{each_adc_measure}}'
         },
       {%- endfor -%}
-      {%- if yaxis_relay -%}
-        {
-          title: {
-            text: 'Relay Duration (sec)',
-          },
-          labels: {
-            format: '{value}',
-          },
-          opposite: false,
-          id: 'relay'
-        },
-      {%- endif -%}
       ],
       exporting: {
         enabled: {% if each_graph.enable_export %}true{% else %}false{% endif %},
