@@ -177,6 +177,16 @@ def method_create(formCreateMethod, method_id):
             new_method.frequency = 1.0
             new_method.shift_angle = 0.0
             new_method.shift_y = 1.0
+        if formCreateMethod.method_type.data == 'DailyBezier':
+            new_method.shift_angle = 0.0
+            new_method.x0 = 20.0
+            new_method.y0 = 20.0
+            new_method.x1 = 10.0
+            new_method.y1 = 13.5
+            new_method.x2 = 22.5
+            new_method.y2 = 30.0
+            new_method.x3 = 0.0
+            new_method.y3 = 20.0
         new_method.method_order = 0
         new_method.controller_type = formCreateMethod.controller_type.data
         with session_scope(MYCODO_DB_PATH) as db_session:
@@ -205,7 +215,30 @@ def method_add(formAddMethod, method):
             mod_method.shift_angle = formAddMethod.shiftAngle.data
             mod_method.shift_y = formAddMethod.shiftY.data
             db_session.commit()
-            flash("Method settings successfully modified", "success")
+            flash("Sine method settings successfully modified", "success")
+        return 0
+
+    if this_method.method_type == 'DailyBezier':
+        if not 0 <= formAddMethod.shiftAngle.data <= 360:
+            flash("Error: Angle Shift is out of range. It must be <= 0 and <= 360.", "error")
+            return 1
+        if formAddMethod.x0.data <= formAddMethod.x3.data:
+            flash("Error: X0 must be greater than X3.", "error")
+            return 1
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            mod_method = db_session.query(Method).filter(
+                Method.method_id == formAddMethod.method_id.data).first()
+            mod_method.shift_angle = formAddMethod.shiftAngle.data
+            mod_method.x0 = formAddMethod.x0.data
+            mod_method.y0 = formAddMethod.y0.data
+            mod_method.x1 = formAddMethod.x1.data
+            mod_method.y1 = formAddMethod.y1.data
+            mod_method.x2 = formAddMethod.x2.data
+            mod_method.y2 = formAddMethod.y2.data
+            mod_method.x3 = formAddMethod.x3.data
+            mod_method.y3 = formAddMethod.y3.data
+            db_session.commit()
+            flash("Bezier method settings successfully modified", "success")
         return 0
 
 
@@ -415,11 +448,6 @@ def method_mod(formModMethod, method):
                 mod_method.relay_id = formModMethod.relayID.data
                 mod_method.relay_state = formModMethod.relayState.data
                 mod_method.relay_duration = formModMethod.relayDurationSec.data
-            else:
-                mod_method.amplitude = formModMethod.amplitude.data
-                mod_method.frequency = formModMethod.frequency.data
-                mod_method.shift_angle = formModMethod.shiftAngle.data
-                mod_method.shift_y = formModMethod.shiftY.data
     
         db_session.commit()
         flash("Method settings successfully modified.", "success")

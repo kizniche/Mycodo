@@ -49,8 +49,16 @@ class AddMethod(Form):
     DurationSec = IntegerField(u'Duration (seconds)')
     amplitude = DecimalField(u'Amplitude')
     frequency = DecimalField(u'Frequency')
-    shiftAngle = DecimalField(u'Angle Shift')
+    shiftAngle = DecimalField(u'Angle Shift (0 to 360)')
     shiftY = DecimalField(u'Y-Axis Shift')
+    x0 = DecimalField(u'X0')
+    y0 = DecimalField(u'Y0')
+    x1 = DecimalField(u'X1')
+    y1 = DecimalField(u'Y1')
+    x2 = DecimalField(u'X2')
+    y2 = DecimalField(u'Y2')
+    x3 = DecimalField(u'X3')
+    y3 = DecimalField(u'Y3')
     relayDailyTime = TextField(
         u'Time HH:MM:SS',
         render_kw={"placeholder": "HH:MM:SS"}

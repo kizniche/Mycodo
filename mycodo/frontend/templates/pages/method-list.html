@@ -34,6 +34,7 @@
               <option value="Duration">Duration</option>
               <option value="Daily">Daily (Time-Based)</option>
               <option value="DailySine">Daily (Sine Wave)</option>
+              <option value="DailyBezier">Daily (Cubic Bezier Curve)</option>
             </select>
           </div>
         </div>
@@ -68,7 +69,7 @@
           {%- do method_setpoint.append(1) -%}
         {%- endfor -%}
 
-        {%- if method_setpoint or each_method.method_type == "DailySine" -%}
+        {%- if method_setpoint or each_method.method_type in ["DailySine", "DailyBezier"] -%}
           <div id="container{{chart_number}}" style="height: 300px; width: 100%;"></div>
         {%- endif -%}
 
@@ -102,7 +103,7 @@
       {%- endfor -%}
       {%- set chart_number = loop.index -%}
 
-      {%- if method_setpoint or each_method.method_type == "DailySine" -%}
+      {%- if method_setpoint or each_method.method_type in ['DailySine', 'DailyBezier'] -%}
         chart[{{chart_number}}] = new Highcharts.Chart({
           chart : {
             renderTo: 'container{{chart_number}}',
@@ -127,7 +128,7 @@
             {%- endif -%}
             {% if each_method.method_type == "Date" -%}
               xDateFormat: '%a, %b %e, %Y %H:%M:%S',
-            {% elif each_method.method_type in ["Daily", "DailySine"] -%}
+            {% elif each_method.method_type in ["Daily", "DailySine", 'DailyBezier'] -%}
               xDateFormat: '%H:%M:%S',
             {%- endif -%}
             valueDecimals: 2
@@ -145,7 +146,7 @@
             enabled: false
           },
           xAxis: {
-            type: '{%- if each_method.method_type == "Duration" -%}linear{%- elif each_method.method_type in ["Date", "Daily", "DailySine"] -%}datetime{%- endif -%}',
+            type: '{%- if each_method.method_type == "Duration" -%}linear{%- elif each_method.method_type in ["Date", "Daily", "DailySine", "DailyBezier"] -%}datetime{%- endif -%}',
             ordinal: false
           },
           yAxis: [

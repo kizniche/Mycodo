@@ -48,7 +48,7 @@ from databases.mycodo_db.models import Relay
 from databases.utils import session_scope
 from mycodo_client import DaemonControl
 from utils.influx import read_last_influxdb, write_influxdb
-from utils.method import sine_wave_y_out
+from utils.method import sine_wave_y_out, bezier_curve_y_out
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -442,11 +442,22 @@ class PIDController(threading.Thread):
                     self.set_point = new_setpoint
                     return 0
 
+        # Calculate sine y-axis value from the x-axis (seconds of the day)
         elif method_key.method_type == 'DailySine':
             new_setpoint = sine_wave_y_out(method_key.amplitude,
                                            method_key.frequency,
                                            method_key.shift_angle,
                                            method_key.shift_y)
+            self.set_point = new_setpoint
+            return 0
+
+        # Calculate Bezier curve y-axis value from the x-axis (seconds of the day)
+        elif method_key.method_type == 'DailyBezier':
+            new_setpoint = bezier_curve_y_out(method_key.shift_angle,
+                                              (method_key.x0, method_key.y0),
+                                              (method_key.x1, method_key.y1),
+                                              (method_key.x2, method_key.y2),
+                                              (method_key.x3, method_key.y3))
             self.set_point = new_setpoint
             return 0
 

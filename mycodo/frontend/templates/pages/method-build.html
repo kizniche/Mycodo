@@ -76,6 +76,7 @@
               {{formAddMethod.endTime(class_='form-control')}}
             </div>
           </div>
+
         {%- elif method_type == "Daily" -%}
           <div>
             <input type="radio" name="method_select" value="setpoint" checked="checked"> Define the setpoint over a period of time based on specific times of the day. This method will repeat daily. Start the firat entry at midnight 00:00 if you wish to fill the entire day.
@@ -93,6 +94,7 @@
               {{formAddMethod.endDailyTime(class_='form-control')}}
             </div>
           </div>
+
         {%- elif method_type == "DailySine" -%}
           <div>
             <input class="form-control" id="method_select" name="method_select" type="hidden" value="setpoint">Define the setpoint over the day based on a sinusoidal wave defined by y = [A * sin(B * x + C)] + D, where A is amplitude, B is frequency, C is the angle shift, and D is the y-axis shift. This method will repeat daily.
@@ -121,6 +123,75 @@
               {{formAddMethod.shiftY(class_='form-control', value=method_key['shift_y'])}}
             </div>
           </div>
+
+        {%- elif method_type == "DailyBezier" -%}
+          <div>
+            <input class="form-control" id="method_select" name="method_select" type="hidden" value="setpoint">Define the setpoint over the day based on a cubic Bezier curve. If unfamiliar with a Bezier curve, it is recommended you use the <a href="https://www.desmos.com/calculator/cahqdxeshd" target="_blank">graphical Bezier curve generator</a> and use the 8 variables it creates for 4 points (each a set of x and y). The x-axis start (x3) and end (x0) will be automatically stretched or skewed to fit within a 24-hour period and this method will repeat daily.
+          </div>
+          
+          <div>
+            <div class="form-group">
+              {{formAddMethod.x0.label(class_='control-label')}}
+              <div>
+                {{formAddMethod.x0(class_='form-control', value=method_key['x0'])}}
+              </div>
+            </div>
+            <div class="form-group">
+              {{formAddMethod.y0.label(class_='control-label')}}
+              <div>
+                {{formAddMethod.y0(class_='form-control', value=method_key['y0'])}}
+              </div>
+            </div>
+          </div>
+          <div>
+          <div class="form-group">
+            {{formAddMethod.x1.label(class_='control-label')}}
+            <div>
+              {{formAddMethod.x1(class_='form-control', value=method_key['x1'])}}
+            </div>
+          </div>
+          <div class="form-group">
+            {{formAddMethod.y1.label(class_='control-label')}}
+            <div>
+              {{formAddMethod.y1(class_='form-control', value=method_key['y1'])}}
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="form-group">
+            {{formAddMethod.x2.label(class_='control-label')}}
+            <div>
+              {{formAddMethod.x2(class_='form-control', value=method_key['x2'])}}
+            </div>
+          </div>
+          <div class="form-group">
+            {{formAddMethod.y2.label(class_='control-label')}}
+            <div>
+              {{formAddMethod.y2(class_='form-control', value=method_key['y2'])}}
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="form-group">
+            {{formAddMethod.x3.label(class_='control-label')}}
+            <div>
+              {{formAddMethod.x3(class_='form-control', value=method_key['x3'])}}
+            </div>
+          </div>
+          <div class="form-group">
+            {{formAddMethod.y3.label(class_='control-label')}}
+            <div>
+              {{formAddMethod.y3(class_='form-control', value=method_key['y3'])}}
+            </div>
+          </div>
+        </div>
+          <div class="form-group">
+            {{formAddMethod.shiftAngle.label(class_='control-label')}}
+            <div>
+              {{formAddMethod.shiftAngle(class_='form-control', value=method_key['shift_angle'])}}
+            </div>
+          </div>
+
         {%- elif method_type == "Duration" -%}
           <div>
             <input type="radio" name="method_select" value="setpoint" checked="checked"> Define the setpoint over a period of time, based on specific durations of time.
@@ -214,7 +285,7 @@
             </div>
           </div>
 
-        {%- elif method_type == 'DailySine' -%}
+        {%- elif method_type in ['DailySine', 'DailyBezier'] -%}
           <div>
             <div class="form-group">
               <label class='control-label'></label>
@@ -227,7 +298,7 @@
 
       </form>
 
-      {%- if method_setpoint or method_key['method_type'] == "DailySine" -%}
+      {%- if method_setpoint or method_key['method_type'] in ["DailySine", "DailyBezier"] -%}
         <div id="container" style="height: 300px; width: 100%;"></div>
       {%- endif -%}
 
@@ -458,7 +529,7 @@
         {%- endif -%}
         {% if method_key['method_type'] == "Date" -%}
           xDateFormat: '%a, %b %e, %Y %H:%M:%S',
-        {% elif method_key['method_type'] in ["Daily", "DailySine"] -%}
+        {% elif method_key['method_type'] in ["Daily", "DailySine", "DailyBezier"] -%}
           xDateFormat: '%H:%M:%S',
         {%- endif -%}
         valueDecimals: 2
@@ -476,7 +547,7 @@
         enabled: false
       },
       xAxis: {
-        type: '{%- if method_key['method_type'] == "Duration" -%}linear{%- elif method_key['method_type'] in ["Date", "Daily", "DailySine"] -%}datetime{%- endif -%}',
+        type: '{%- if method_key['method_type'] == "Duration" -%}linear{%- elif method_key['method_type'] in ["Date", "Daily", "DailySine", "DailyBezier"] -%}datetime{%- endif -%}',
         ordinal: false
       },
       yAxis: [

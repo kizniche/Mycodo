@@ -58,6 +58,14 @@ class Method(Base):
     frequency = Column(REAL)
     shift_angle = Column(REAL)
     shift_y = Column(REAL)
+    x0 = Column(REAL)
+    y0 = Column(REAL)
+    x1 = Column(REAL)
+    y1 = Column(REAL)
+    x2 = Column(REAL)
+    y2 = Column(REAL)
+    x3 = Column(REAL)
+    y3 = Column(REAL)
 
 
 class Relay(Base):

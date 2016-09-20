@@ -2,7 +2,7 @@
 
 ## Environmental Regulation System
 
-### Latest version: 4.0.19
+### Latest version: 4.0.20
 
 Mycodo is a remote monitoring and automated regulation system with a focus on modulating environmental conditions. It was built to run on the Raspberry Pi (versions Zero, 1, 2, and 3) and aims to be easy to install and set up.
 
@@ -54,8 +54,10 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 * Discrete PID control: Regulate environmental conditions with prediction and precision.
 * Method creation for dynamic PID setpoints for changing conditions over time .
 --* Time/Date: Change the setpoint based on specific times and dates (ideal for long-duration changes).
---* Daily: Change the setpoint on a daily, repeatable schedule.
 --* Duration: Change the setpoint at durations form when it was activated (examples: reflow oven, thermal cycler).
+--* Daily: Change the setpoint on a daily, repeatable schedule.
+--* Daily Sine Wave: Change the setpoint on a daily, repeatable schedule that follows a configurable sinusoidal wave.
+--* Daily Bezier Curve: Change the setpoint on a daily, repeatable schedule that follows a configurable Bezier curve.
 * 16x2 and 20x4 I<sup>2</sup>C LCD support: Create a physical display of conditions or status of the system.
 * I<sup>2</sup>C multiplexer support to allow using multiple devices/sensors with the same address.
 * Pi Camera support: Streaming live video, capture still images, or create time-lapses.

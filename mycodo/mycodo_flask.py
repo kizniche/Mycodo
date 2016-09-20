@@ -23,6 +23,9 @@
 #
 #  Contact at kylegabriel.com
 
+from __future__ import print_function # In python 2.7
+import sys
+
 import argparse
 import calendar
 import csv
@@ -70,7 +73,7 @@ from databases.mycodo_db.models import Timer
 from databases.users_db.models import Users
 
 from utils.camera import camera_record
-from utils.method import sine_wave_y_out
+from utils.method import sine_wave_y_out, bezier_curve_y_out
 from utils.statistics import return_stat_file_dict
 from utils.system_pi import cmd_output
 from utils.system_pi import internet
@@ -1032,16 +1035,30 @@ def method_data(method_type, method_id):
             method_list.append([get_sec(each_method.end_time)*1000, end_setpoint])
             method_list.append([get_sec(each_method.start_time)*1000, None])
 
+    elif method_key.method_type == "DailyBezier":
+        points_x = 700
+        seconds_in_day = 60*60*24
+        P0 = (method_key.x0, method_key.y0)
+        P1 = (method_key.x1, method_key.y1)
+        P2 = (method_key.x2, method_key.y2)
+        P3 = (method_key.x3, method_key.y3)
+        print('TEST {} {} {} {}'.format(P0, P1, P2, P3), file=sys.stderr)
+        for n in range(points_x):
+            percent = n/float(points_x)
+            second_of_day = percent*seconds_in_day
+            y = bezier_curve_y_out(method_key.shift_angle, P0, P1, P2, P3, second_of_day)
+            method_list.append([percent*seconds_in_day*1000, y])
+
     elif method_key.method_type == "DailySine":
         points_x = 700
+        seconds_in_day = 60*60*24
         for n in range(points_x):
-            day_in_seconds = 60*60*24
-            seconds = n/float(points_x)
+            percent = n/float(points_x)
             angle = n/float(points_x)*360
             y = sine_wave_y_out(method_key.amplitude, method_key.frequency,
                                 method_key.shift_angle, method_key.shift_y,
                                 angle)
-            method_list.append([seconds*day_in_seconds*1000, y])
+            method_list.append([percent*seconds_in_day*1000, y])
 
     elif method_key.method_type == "Duration":
         first_entry = True
@@ -1113,7 +1130,7 @@ def method_builder(method_type, method_id):
     if not logged_in():
         return redirect('/')
 
-    if method_type in ['Date', 'Duration', 'Daily', 'DailySine', '0']:
+    if method_type in ['Date', 'Duration', 'Daily', 'DailySine', 'DailyBezier', '0']:
         formCreateMethod = flaskforms.CreateMethod()
         formAddMethod = flaskforms.AddMethod()
         formModMethod = flaskforms.ModMethod()
