@@ -775,10 +775,16 @@ def page(page):
         (free_output, free_err) = free.communicate()
         free_status = free.wait()
 
+        ifconfig = subprocess.Popen(
+            "ifconfig -a", stdout=subprocess.PIPE, shell=True)
+        (ifconfig_output, ifconfig_err) = ifconfig.communicate()
+        ifconfig_status = ifconfig.wait()
+
         return render_template('tools/info.html',
                                gpio_readall=gpio_output,
                                df=df_output,
                                free=free_output,
+                               ifconfig=ifconfig_output,
                                uname=uname_output,
                                uptime=uptime_output)
 

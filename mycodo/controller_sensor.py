@@ -105,14 +105,13 @@ class SensorController(threading.Thread):
         self.lock = {}
         self.sensor_id = sensor_id
         self.control = DaemonControl()
-
         self.pause_loop = False
         self.verify_pause_loop = True
         self.setup_sensor_conditionals()
 
         with session_scope(MYCODO_DB_PATH) as new_session:
-            sensor = new_session.query(Sensor).filter(
-                Sensor.id == self.sensor_id).first()
+            sensor = new_session.query(Sensor)
+            sensor = sensor.filter(Sensor.id == self.sensor_id).first()
             self.i2c_bus = sensor.i2c_bus
             self.location = sensor.location
             self.device_type = sensor.device
@@ -132,14 +131,11 @@ class SensorController(threading.Thread):
             self.adc_units_max = sensor.adc_units_max
             self.sht_clock_pin = sensor.sht_clock_pin
             self.sht_voltage = sensor.sht_voltage
+
+            # Edge detection
             self.switch_edge = sensor.switch_edge
             self.switch_bouncetime = sensor.switch_bouncetime
             self.switch_reset_period = sensor.switch_reset_period
-
-            smtp = new_session.query(SMTP).first()
-            self.smtp_max_count = smtp.hourly_max
-            self.email_count = 0
-            self.allowed_to_send_notice = True
 
             # Relay that will activate prior to sensor read
             self.pre_relay_id = sensor.pre_relay_id
@@ -154,6 +150,11 @@ class SensorController(threading.Thread):
             for each_relay in relay:  # Check if relay ID actually exists
                 if each_relay.id == self.pre_relay_id and self.pre_relay_duration:
                     self.pre_relay_setup = True
+
+            smtp = new_session.query(SMTP).first()
+            self.smtp_max_count = smtp.hourly_max
+            self.email_count = 0
+            self.allowed_to_send_notice = True
 
         # Convert string I2C address to base-16 int
         if self.device_type in list_devices_i2c:
@@ -171,8 +172,6 @@ class SensorController(threading.Thread):
 
         if self.device_type in ['ADS1x15', 'MCP342x'] and self.location:
             self.adc_lock_file = "/var/lock/mycodo_adc_bus{}_0x{:02X}.pid".format(self.i2c_bus, self.i2c_address)
-
-        self.device_recognized = True
 
         # Set up edge detection of a GPIO pin
         if self.device_type == 'EDGE':
@@ -194,6 +193,8 @@ class SensorController(threading.Thread):
         else:
             self.adc = None
 
+        self.device_recognized = True
+
         # Set up sensor
         if self.device_type in ['EDGE', 'ADS1x15', 'MCP342x']:
             self.measure_sensor = None
@@ -212,8 +213,7 @@ class SensorController(threading.Thread):
         elif self.device_type == 'AM2315':
             self.measure_sensor = AM2315_read(self.i2c_bus)
         elif self.device_type == 'ATLAS_PT1000':
-            self.measure_sensor = Atlas_PT1000(self.i2c_address,
-                                               self.i2c_bus)
+            self.measure_sensor = Atlas_PT1000(self.i2c_address, self.i2c_bus)
         elif self.device_type == 'K30':
             self.measure_sensor = K30()
         elif self.device_type == 'BMP':
@@ -223,14 +223,11 @@ class SensorController(threading.Thread):
                                                 self.sht_clock_pin,
                                                 self.sht_voltage)
         elif self.device_type == 'SHT2x':
-            self.measure_sensor = SHT2x_read(self.i2c_address,
-                                             self.i2c_bus)
+            self.measure_sensor = SHT2x_read(self.i2c_address, self.i2c_bus)
         elif self.device_type == 'TMP006':
-            self.measure_sensor = TMP006_read(self.i2c_address,
-                                              self.i2c_bus)
+            self.measure_sensor = TMP006_read(self.i2c_address, self.i2c_bus)
         elif self.device_type == 'TSL2561':
-            self.measure_sensor = TSL2561_read(self.i2c_address,
-                                               self.i2c_bus)
+            self.measure_sensor = TSL2561_read(self.i2c_address, self.i2c_bus)
         else:
             self.device_recognized = False
             self.logger.debug("[Sensor {}] Device '{}' not "
