@@ -35,9 +35,6 @@ from sensors.sht2x import SHT2x_read
 # Sensor modules that are untested (don't have these sensors to test)
 from sensors.dht11 import DHT11
 
-# Currently unused modules
-# from sensors.dht_legacy import DHT # The Adafruit DHT code is crap! pigpio all the way!!!
-
 from config import SQL_DATABASE_MYCODO
 from config import INFLUXDB_HOST
 from config import INFLUXDB_PORT
@@ -53,9 +50,8 @@ from databases.mycodo_db.models import SMTP
 from databases.utils import session_scope
 
 from mycodo_client import DaemonControl
-
 from utils.camera import camera_record
-from utils.influx import write_influxdb, write_influxdb_list, read_last_influxdb
+from utils.influx import format_influxdb_data, read_last_influxdb, write_influxdb_value, write_influxdb_list
 from utils.send_data import send_email
 from utils.system_pi import cmd_output
 
@@ -85,22 +81,22 @@ class Measurement():
 
 class SensorController(threading.Thread):
     """
-    class for controlling the sensor
+    Class for controlling the sensor
 
     """
 
     def __init__(self, ready, logger, sensor_id):
         threading.Thread.__init__(self)
 
-        list_sensors_i2c = ['ATLAS_PT1000',
+        list_devices_i2c = ['ADS1x15',
                             'AM2315',
+                            'ATLAS_PT1000',
                             'BMP',
                             'HTU21D',
+                            'MCP342x',
                             'SHT2x',
                             'TMP006',
-                            'TSL2561',
-                            'ADS1x15',
-                            'MCP342x']
+                            'TSL2561']
 
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
@@ -114,7 +110,6 @@ class SensorController(threading.Thread):
         self.verify_pause_loop = True
         self.setup_sensor_conditionals()
 
-        # Obtain database configuration options
         with session_scope(MYCODO_DB_PATH) as new_session:
             sensor = new_session.query(Sensor).filter(
                 Sensor.id == self.sensor_id).first()
@@ -137,17 +132,9 @@ class SensorController(threading.Thread):
             self.adc_units_max = sensor.adc_units_max
             self.sht_clock_pin = sensor.sht_clock_pin
             self.sht_voltage = sensor.sht_voltage
-
-            if self.device_type == 'EDGE':
-                if sensor.switch_edge == 'rising':
-                    self.switch_edge_gpio = GPIO.RISING
-                elif sensor.switch_edge == 'falling':
-                    self.switch_edge_gpio = GPIO.FALLING
-                else:
-                    self.switch_edge_gpio = GPIO.BOTH
-                self.switch_edge = sensor.switch_edge
-                self.switch_bouncetime = sensor.switch_bouncetime
-                self.switch_reset_period = sensor.switch_reset_period
+            self.switch_edge = sensor.switch_edge
+            self.switch_bouncetime = sensor.switch_bouncetime
+            self.switch_reset_period = sensor.switch_reset_period
 
             smtp = new_session.query(SMTP).first()
             self.smtp_max_count = smtp.hourly_max
@@ -164,15 +151,16 @@ class SensorController(threading.Thread):
             self.pre_relay_activated = False
             self.pre_relay_timer = time.time()
             relay = new_session.query(Relay).all()
-            # Check if relay ID actually exists
-            for each_relay in relay:
+            for each_relay in relay:  # Check if relay ID actually exists
                 if each_relay.id == self.pre_relay_id and self.pre_relay_duration:
                     self.pre_relay_setup = True
 
-        if self.device_type in list_sensors_i2c:
+        # Convert string I2C address to base-16 int
+        if self.device_type in list_devices_i2c:
             self.i2c_address = int(str(self.location), 16)
 
-        if self.device_type in list_sensors_i2c and self.multiplexer_address_raw:
+        # Set up multiplexer if enabled
+        if self.device_type in list_devices_i2c and self.multiplexer_address_raw:
             self.multiplexer_address_string = self.multiplexer_address_raw
             self.multiplexer_address = int(str(self.multiplexer_address_raw), 16)
             self.multiplexer_lock_file = "/var/lock/mycodo_multiplexer_0x{:02X}.pid".format(self.multiplexer_address)
@@ -183,13 +171,33 @@ class SensorController(threading.Thread):
 
         if self.device_type in ['ADS1x15', 'MCP342x'] and self.location:
             self.adc_lock_file = "/var/lock/mycodo_adc_bus{}_0x{:02X}.pid".format(self.i2c_bus, self.i2c_address)
-            
-        else:
-            self.adc = None
 
         self.device_recognized = True
 
-        if self.device_type == 'RPiCPULoad':
+        # Set up edge detection of a GPIO pin
+        if self.device_type == 'EDGE':
+            if self.switch_edge == 'rising':
+                self.switch_edge_gpio = GPIO.RISING
+            elif self.switch_edge == 'falling':
+                self.switch_edge_gpio = GPIO.FALLING
+            else:
+                self.switch_edge_gpio = GPIO.BOTH
+
+        # Set up analog-to-digital converter
+        elif self.device_type == 'ADS1x15':
+            self.adc = ADS1x15_read(self.i2c_address, self.i2c_bus,
+                                    self.adc_channel, self.adc_gain)
+        elif self.device_type == 'MCP342x':
+            self.adc = MCP342x_read(self.i2c_address, self.i2c_bus,
+                                    self.adc_channel, self.adc_gain,
+                                    self.adc_resolution)
+        else:
+            self.adc = None
+
+        # Set up sensor
+        if self.device_type in ['EDGE', 'ADS1x15', 'MCP342x']:
+            self.measure_sensor = None
+        elif self.device_type == 'RPiCPULoad':
             self.measure_sensor = RaspberryPiCPULoad()
         elif self.device_type == 'RPi':
             self.measure_sensor = RaspberryPiCPUTemp()
@@ -223,17 +231,6 @@ class SensorController(threading.Thread):
         elif self.device_type == 'TSL2561':
             self.measure_sensor = TSL2561_read(self.i2c_address,
                                                self.i2c_bus)
-        elif self.device_type == 'ADS1x15':
-            self.adc = ADS1x15_read(self.i2c_address, self.i2c_bus,
-                                    self.adc_channel, self.adc_gain)
-        elif self.device_type == 'MCP342x':
-            self.adc = MCP342x_read(self.i2c_address, self.i2c_bus,
-                                    self.adc_channel, self.adc_gain,
-                                    self.adc_resolution)
-
-        # Other
-        elif self.device_type in ['EDGE', 'ADS1x15', 'MCP342x']:
-            self.measure_sensor = None
         else:
             self.device_recognized = False
             self.logger.debug("[Sensor {}] Device '{}' not "
@@ -340,17 +337,10 @@ class SensorController(threading.Thread):
         if self.updateSuccess:
             data = []
             for each_measurement, each_value in self.measurement.values.iteritems():
-                data.append({
-                    "measurement": each_measurement,
-                    "tags": {
-                        "device_id": self.sensor_id,
-                        "device_type": self.sensor_type
-                    },
-                    "fields": {
-                        "value": each_value
-                    }
-                })
-
+                data.append(format_influxdb_data(self.sensor_type,
+                                                 self.sensor_id,
+                                                 each_measurement,
+                                                 each_value))
             write_db = threading.Thread(
                 target=write_influxdb_list,
                 args=(self.logger, INFLUXDB_HOST,
@@ -630,7 +620,8 @@ class SensorController(threading.Thread):
                                               INFLUXDB_PASSWORD,
                                               INFLUXDB_DATABASE,
                                               self.sensor_id,
-                                              measurement_type).raw
+                                              measurement_type,
+                                              self.period/60*1.5).raw
         if last_measurement:
             number = len(last_measurement['series'][0]['values'])
             last_value = last_measurement['series'][0]['values'][number-1][1]
@@ -649,7 +640,7 @@ class SensorController(threading.Thread):
             else:
                 rising_or_falling = -1
             write_db = threading.Thread(
-                target=write_influxdb,
+                target=write_influxdb_value,
                 args=(self.logger, INFLUXDB_HOST,
                       INFLUXDB_PORT, INFLUXDB_USER,
                       INFLUXDB_PASSWORD, INFLUXDB_DATABASE,

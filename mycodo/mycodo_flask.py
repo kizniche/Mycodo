@@ -23,9 +23,6 @@
 #
 #  Contact at kylegabriel.com
 
-from __future__ import print_function # In python 2.7
-import sys
-
 import argparse
 import calendar
 import csv
@@ -76,6 +73,7 @@ from utils.camera import camera_record
 from utils.method import sine_wave_y_out, bezier_curve_y_out
 from utils.statistics import return_stat_file_dict
 from utils.system_pi import cmd_output
+from utils.system_pi import get_sec
 from utils.system_pi import internet
 
 from devices.camera_pi import CameraStream
@@ -162,17 +160,22 @@ def gzipped(f):
 
 @app.before_request
 def before_request():
+    """
+    Ensure databases exist and at least one user is in the user database.
+    """
     if (not os.path.isfile(SQL_DATABASE_MYCODO) or
         not os.path.isfile(SQL_DATABASE_USER)):
         return "Error: Cannot find databases. Run \"init_databases.py --install_db all\" to generate them."
     with session_scope(USER_DB_PATH) as new_session:
-        user = new_session.query(Users).first()
+        user = new_session.query(Users).filter(
+            Users.user_restriction == 'admin').first()
         if not user.user_id:
-            return "Error: No user found. Run \"init_databases.py --addadmin\" to add one"
+            return "Error: No admin user found. Run \"init_databases.py --addadmin\" to add one"
 
 
 @app.route('/')
 def home():
+    """Load the default landing page"""
     if logged_in():
         return redirect('/live')
     return clear_cookie_auth()
@@ -180,36 +183,51 @@ def home():
 
 @app.route('/<page>', methods=('GET', 'POST'))
 def page(page):
+    """
+    Load the main pages of the web-UI
+    """
     if not logged_in():
         return redirect('/')
 
+    # Default 'settings' landing page
+    elif page == 'settings':
+        return redirect('settings/general')
+
     # Default landing page
-    if page == 'live':
-        display_order_sensor_sorted = []
+    elif page == 'live':
+        # Retrieve tables for the data displayed on the live page
         pid = flaskutils.db_retrieve_table(MYCODO_DB_PATH, PID)
         relay = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Relay)
         sensor = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Sensor)
         timer = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Timer)
 
-        pid_display_order_unsplit = flaskutils.db_retrieve_table(MYCODO_DB_PATH, DisplayOrder, first=True).pid
+        # Retrieve the display order of the controllers
+        pid_display_order_unsplit = flaskutils.db_retrieve_table(
+            MYCODO_DB_PATH, DisplayOrder, first=True).pid
         if pid_display_order_unsplit:
             pid_display_order = pid_display_order_unsplit.split(",")
         else:
             pid_display_order = []
 
-        sensor_display_order_unsplit = flaskutils.db_retrieve_table(MYCODO_DB_PATH, DisplayOrder, first=True).sensor
+        sensor_display_order_unsplit = flaskutils.db_retrieve_table(
+            MYCODO_DB_PATH, DisplayOrder, first=True).sensor
         if sensor_display_order_unsplit:
             sensor_display_order = sensor_display_order_unsplit.split(",")
         else:
             sensor_display_order = []
 
+        # Filter only activated sensors
+        sensor_order_sorted = []
         for each_sensor_order in sensor_display_order:
             for each_sensor in sensor:
-                if each_sensor_order == each_sensor.id and each_sensor.activated:
-                    display_order_sensor_sorted.append(each_sensor.id)
+                if (each_sensor_order == each_sensor.id and
+                        each_sensor.activated):
+                    sensor_order_sorted.append(each_sensor.id)
 
+        # Retrieve only parent method columns
         with session_scope(MYCODO_DB_PATH) as new_session:
-            method = new_session.query(Method).filter(Method.method_order == 0).all()
+            method = new_session.query(Method).filter(
+                Method.method_order == 0).all()
             new_session.expunge_all()
             new_session.close()
 
@@ -220,29 +238,28 @@ def page(page):
                                sensor=sensor,
                                timer=timer,
                                pidDisplayOrder=pid_display_order,
-                               sensorDisplayOrderSorted=display_order_sensor_sorted)
+                               sensorDisplayOrderSorted=sensor_order_sorted)
 
     elif page == 'graph':
-        display_order_unsplit = flaskutils.db_retrieve_table(MYCODO_DB_PATH, DisplayOrder, first=True).graph
-        if display_order_unsplit:
-            display_order = display_order_unsplit.split(",")
-        else:
-            display_order = []
         graph = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Graph)
         pid = flaskutils.db_retrieve_table(MYCODO_DB_PATH, PID)
         relay = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Relay)
         sensor = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Sensor)
+
+        display_order_unsplit = flaskutils.db_retrieve_table(
+            MYCODO_DB_PATH, DisplayOrder, first=True).graph
+        if display_order_unsplit:
+            display_order = display_order_unsplit.split(",")
+        else:
+            display_order = []
+
+        # Create form objects
         formModGraph = flaskforms.ModGraph()
         formDelGraph = flaskforms.DelGraph()
         formOrderGraph = flaskforms.OrderGraph()
         formAddGraph = flaskforms.AddGraph()
 
-        # retrieve all available measurements and relays
-        pid_choices = flaskutils.choices_id_name(pid)
-        relay_choices = flaskutils.choices_id_name(relay)
-        sensor_choices = flaskutils.choices_sensors(sensor)
-
-        # What units to display for each measurement in the graph legend
+        # Units to display for each measurement in the graph legend
         measurement_units = {'cpu_load_1m':'',
                              'cpu_load_5m':'',
                              'cpu_load_15m':'',
@@ -256,9 +273,15 @@ def page(page):
                              'pressure':' Pa',
                              'altitude':' m'}
 
+        # Retrieve all choices to populate form dropdowns
+        pid_choices = flaskutils.choices_id_name(pid)
+        relay_choices = flaskutils.choices_id_name(relay)
+        sensor_choices = flaskutils.choices_sensors(sensor)
+
         formModGraph.pidIDs.choices = []
         formModGraph.relayIDs.choices = []
         formModGraph.sensorIDs.choices = []
+
         for key, value in pid_choices.iteritems():
             formModGraph.pidIDs.choices.append((key, value))
         for key, value in relay_choices.iteritems():
@@ -271,6 +294,7 @@ def page(page):
             # Separate sensor IDs and measurement types
             sensor_choices_split.update({order[0]:order[1]})
 
+        # Detect which form on the page was submitted
         if request.method == 'POST':
             form_name = request.form['form-name']
             if form_name == 'modGraph':
@@ -299,23 +323,22 @@ def page(page):
                                formOrderGraph=formOrderGraph,
                                formAddGraph=formAddGraph)
 
-    # Default 'settings' landing page
-    elif page == 'settings':
-        return redirect('settings/general')
-
-    # Modify sensor SQL database
     elif page == 'sensor':
-        display_order_unsplit = flaskutils.db_retrieve_table(MYCODO_DB_PATH, DisplayOrder, first=True).sensor
-        if display_order_unsplit:
-            display_order = display_order_unsplit.split(",")
-        else:
-            display_order = []
         lcd = flaskutils.db_retrieve_table(MYCODO_DB_PATH, LCD)
         pid = flaskutils.db_retrieve_table(MYCODO_DB_PATH, PID)
         relay = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Relay)
         sensor = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Sensor)
-        sensor_conditional = flaskutils.db_retrieve_table(MYCODO_DB_PATH, SensorConditional)
+        sensor_conditional = flaskutils.db_retrieve_table(
+            MYCODO_DB_PATH, SensorConditional)
         users = flaskutils.db_retrieve_table(USER_DB_PATH, Users)
+
+        display_order_unsplit = flaskutils.db_retrieve_table(
+            MYCODO_DB_PATH, DisplayOrder, first=True).sensor
+        if display_order_unsplit:
+            display_order = display_order_unsplit.split(",")
+        else:
+            display_order = []
+
         formAddSensor = flaskforms.AddSensor()
         formModSensor = flaskforms.ModSensor()
         formModSensorCond = flaskforms.ModSensorConditional()
@@ -366,15 +389,19 @@ def page(page):
                                formModSensorCond=formModSensorCond)
 
     elif page == 'relay':
-        display_order_unsplit = flaskutils.db_retrieve_table(MYCODO_DB_PATH, DisplayOrder, first=True).relay
+        lcd = flaskutils.db_retrieve_table(MYCODO_DB_PATH, LCD)
+        relay = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Relay)
+        relayconditional = flaskutils.db_retrieve_table(
+            MYCODO_DB_PATH, RelayConditional)
+        users = flaskutils.db_retrieve_table(USER_DB_PATH, Users)
+
+        display_order_unsplit = flaskutils.db_retrieve_table(
+            MYCODO_DB_PATH, DisplayOrder, first=True).relay
         if display_order_unsplit:
             display_order = display_order_unsplit.split(",")
         else:
             display_order = []
-        lcd = flaskutils.db_retrieve_table(MYCODO_DB_PATH, LCD)
-        relay = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Relay)
-        relayconditional = flaskutils.db_retrieve_table(MYCODO_DB_PATH, RelayConditional)
-        users = flaskutils.db_retrieve_table(USER_DB_PATH, Users)
+
         formAddRelay = flaskforms.AddRelay()
         formDelRelay = flaskforms.DelRelay()
         formModRelay = flaskforms.ModRelay()
@@ -416,15 +443,17 @@ def page(page):
                                formModRelayCond=formModRelayCond)
 
     elif page == 'pid':
-        display_order_unsplit = flaskutils.db_retrieve_table(MYCODO_DB_PATH, DisplayOrder, first=True).pid
+        pids = flaskutils.db_retrieve_table(MYCODO_DB_PATH, PID)
+        relay = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Relay)
+        sensor = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Sensor)
+
+        display_order_unsplit = flaskutils.db_retrieve_table(
+            MYCODO_DB_PATH, DisplayOrder, first=True).pid
         if display_order_unsplit:
             display_order = display_order_unsplit.split(",")
         else:
             display_order = []
 
-        pids = flaskutils.db_retrieve_table(MYCODO_DB_PATH, PID)
-        relay = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Relay)
-        sensor = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Sensor)
         formModPIDMethod = flaskforms.ModPIDMethod()
         formActivatePID = flaskforms.ActivatePID()
         formAddPID = flaskforms.AddPID()
@@ -436,7 +465,8 @@ def page(page):
         formOrderPID = flaskforms.OrderPID()
 
         with session_scope(MYCODO_DB_PATH) as new_session:
-            method = new_session.query(Method).filter(Method.method_order == 0).all()
+            method = new_session.query(Method)
+            method = method.filter(Method.method_order == 0).all()
             new_session.expunge_all()
             new_session.close()
 
@@ -479,15 +509,18 @@ def page(page):
                                formDeactivatePID=formDeactivatePID)
 
     elif page == 'lcd':
-        display_order_unsplit = flaskutils.db_retrieve_table(MYCODO_DB_PATH, DisplayOrder, first=True).lcd
-        if display_order_unsplit:
-            display_order = display_order_unsplit.split(",")
-        else:
-            display_order = []
         lcd = flaskutils.db_retrieve_table(MYCODO_DB_PATH, LCD)
         pid = flaskutils.db_retrieve_table(MYCODO_DB_PATH, PID)
         relay = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Relay)
         sensor = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Sensor)
+
+        display_order_unsplit = flaskutils.db_retrieve_table(
+            MYCODO_DB_PATH, DisplayOrder, first=True).lcd
+        if display_order_unsplit:
+            display_order = display_order_unsplit.split(",")
+        else:
+            display_order = []
+
         formActivateLCD = flaskforms.ActivateLCD()
         formAddLCD = flaskforms.AddLCD()
         formDeactivateLCD = flaskforms.DeactivateLCD()
@@ -529,19 +562,24 @@ def page(page):
                                formResetFlashingLCD=formResetFlashingLCD)
 
     elif page == 'log':
-        display_order_unsplit = flaskutils.db_retrieve_table(MYCODO_DB_PATH, DisplayOrder, first=True).log
+        log = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Log)
+        sensor = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Sensor)
+
+        display_order_unsplit = flaskutils.db_retrieve_table(
+            MYCODO_DB_PATH, DisplayOrder, first=True).log
         if display_order_unsplit:
             display_order = display_order_unsplit.split(",")
         else:
             display_order = []
-        log = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Log)
-        sensor = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Sensor)
+
         formLog = flaskforms.Log()
 
         # Determine if a log file exists for each log controller
         log_file_exists = {}
         for each_log in log:
-            fname = '{}/{}-{}.log'.format(LOG_PATH, each_log.sensor_id, each_log.measure_type)
+            fname = '{}/{}-{}.log'.format(LOG_PATH,
+                                          each_log.sensor_id,
+                                          each_log.measure_type)
             if os.path.isfile(fname):
                 log_file_exists[each_log.id] = True
             else:
@@ -572,20 +610,25 @@ def page(page):
                                formLog=formLog)
 
     elif page == 'timer':
-        display_order_unsplit = flaskutils.db_retrieve_table(MYCODO_DB_PATH, DisplayOrder, first=True).timer
+        timer = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Timer)
+        relay = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Relay)
+        relay_choices = flaskutils.choices_id_name(relay)
+
+        display_order_unsplit = flaskutils.db_retrieve_table(
+            MYCODO_DB_PATH, DisplayOrder, first=True).timer
         if display_order_unsplit:
             display_order = display_order_unsplit.split(",")
         else:
             display_order = []
-        timer = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Timer)
-        relay = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Relay)
-        relay_choices = flaskutils.choices_id_name(relay)
+
         formTimer = flaskforms.Timer()
 
         if request.method == 'POST':
             form_name = request.form['form-name']
             if form_name == 'addTimer':
-                flaskutils.timer_add(formTimer, request.form['timerType'], display_order)
+                flaskutils.timer_add(formTimer,
+                                     request.form['timerType'],
+                                     display_order)
             elif form_name == 'modTimer':
                 if formTimer.timerDel.data:
                     flaskutils.timer_del(formTimer, display_order)
@@ -605,14 +648,14 @@ def page(page):
                                relay_choices=relay_choices,
                                formTimer=formTimer)
 
-
     elif page == 'backup':
         if session['user_group'] == 'guest':
-            flash('Guests are not permitted to view backups.', 'error')
+            flash("Guests are not permitted to view backups.", "error")
             return redirect('/')
+
         formBackup = flaskforms.Backup()
+
         backup_dirs = []
-        backups_sorted = []
         if not os.path.isdir('/var/Mycodo-backups'):
             flash("Error: Backup directory doesn't exist.", "error")
         else:
@@ -622,7 +665,8 @@ def page(page):
             form_name = request.form['form-name']
             if form_name == 'restore':
                 if formBackup.restore.data:
-                    flash("Restore functionality is not currently enabled.", "error")
+                    flash("Restore functionality is not currently enabled.",
+                          "error")
                     # formUpdate.restore.data
                     # restore_command = INSTALL_DIRECTORY+'/mycodo/scripts/mycodo_wrapper restore '+ +'  >> /var/log/mycodo/mycodorestore.log 2>&1'
                     # subprocess.Popen(restore_command, shell=True)
@@ -634,13 +678,16 @@ def page(page):
 
     elif page == 'upgrade':
         if session['user_group'] == 'guest':
-            flash('Guests are not permitted to view the upgrade panel.', 'error')
+            flash("Guests are not permitted to view the upgrade panel.",
+                  "error")
             return redirect('/')
+
         if not internet():
             flash("Upgrade functionality is disabled because an internet "
                   "connection was unable to be detected.", "error")
             return render_template('settings/upgrade.html',
                                    is_internet=False)
+
         is_internet = True
         updating = 0
         update_available = False
@@ -648,9 +695,11 @@ def page(page):
         list_only_commits = []
         restore_commits_extended = []
         commits_extended_messages = []
+
         formBackup = flaskforms.Backup()
         formUpdate = flaskforms.Update()
 
+        # Check for new commits of this repository on github
         cmd_output("git fetch origin", su_mycodo=False)
         current_commit, _, _ = cmd_output("git rev-parse --short HEAD", su_mycodo=False)
         commits_behind, _, _ = cmd_output("git log --oneline | head -n 1", su_mycodo=False)
@@ -661,24 +710,24 @@ def page(page):
             update_available = True
 
         if request.method == 'POST':
-            form_name = request.form['form-name']
-            if form_name == 'update':
-                if formUpdate.update.data:
-                    if update_available:
-                        subprocess.Popen(INSTALL_DIRECTORY + '/mycodo/scripts/mycodo_wrapper upgrade >> /var/log/mycodo/mycodoupdate.log 2>&1', shell=True)
-                        flash("THe upgrade has started. The daemon will be "
-                              "stopped during the upgrade. Give the "
-                              "process several minutes to complete "
-                              "before doing anything. It may seem "
-                              "unresponsive at times. When the update "
-                              "has successfully finished, the daemon "
-                              "status indicator at the top left will "
-                              "turn from red to green. You can monitor "
-                              "the update progress under Tools->Mycodo Logs"
-                              "->Update Log.", "success")
-                    else:
-                        flash("You cannot update if an update is not available", "error")
+            if formUpdate.update.data and update_available:
+                subprocess.Popen(INSTALL_DIRECTORY + '/mycodo/scripts/mycodo_wrapper upgrade >> /var/log/mycodo/mycodoupdate.log 2>&1', shell=True)
+                flash("THe upgrade has started. The daemon will be "
+                      "stopped during the upgrade. Give the "
+                      "process several minutes to complete "
+                      "before doing anything. It may seem "
+                      "unresponsive at times. When the update "
+                      "has successfully finished, the daemon "
+                      "status indicator at the top left will "
+                      "turn from red to green. You can monitor "
+                      "the update progress under Tools->Mycodo Logs"
+                      "->Update Log.", "success")
+            else:
+                flash("You cannot update if an update is not available",
+                      "error")
 
+        # Read from the update status file created by the upgrade script
+        # to indicate if the update is running.
         try:
             with open(INSTALL_DIRECTORY + '/.updating') as f:
                 updating = int(f.read(1))
@@ -699,46 +748,53 @@ def page(page):
                                updating=updating,
                                is_internet=is_internet)
 
+    # Display page with system information from command line tools
     elif page == 'info':
-        uptime = subprocess.Popen("uptime", stdout=subprocess.PIPE, shell=True)
+        uptime = subprocess.Popen(
+            "uptime", stdout=subprocess.PIPE, shell=True)
         (uptime_output, uptime_err) = uptime.communicate()
         uptime_status = uptime.wait()
 
-        uname = subprocess.Popen("uname -a", stdout=subprocess.PIPE, shell=True)
+        uname = subprocess.Popen(
+            "uname -a", stdout=subprocess.PIPE, shell=True)
         (uname_output, uname_err) = uname.communicate()
         uname_status = uname.wait()
 
-        gpio_readall = subprocess.Popen("gpio readall", stdout=subprocess.PIPE, shell=True)
-        (gpio_readall_output, gpio_readall_err) = gpio_readall.communicate()
-        gpio_readall_status = gpio_readall.wait()
+        gpio = subprocess.Popen(
+            "gpio readall", stdout=subprocess.PIPE, shell=True)
+        (gpio_output, gpio_err) = gpio.communicate()
+        gpio_status = gpio.wait()
 
-        df = subprocess.Popen("df", stdout=subprocess.PIPE, shell=True)
+        df = subprocess.Popen(
+            "df", stdout=subprocess.PIPE, shell=True)
         (df_output, df_err) = df.communicate()
         df_status = df.wait()
 
-        free = subprocess.Popen("free", stdout=subprocess.PIPE, shell=True)
+        free = subprocess.Popen(
+            "free", stdout=subprocess.PIPE, shell=True)
         (free_output, free_err) = free.communicate()
         free_status = free.wait()
 
         return render_template('tools/info.html',
-                               gpio_readall=gpio_readall_output,
+                               gpio_readall=gpio_output,
                                df=df_output,
                                free=free_output,
                                uname=uname_output,
                                uptime=uptime_output)
 
-    # Display relay usage
+    # Display relay usage (duration and energy usage/cost)
     elif page == 'usage':
+        misc = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Misc, first=True)
+        relay = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Relay)
+
         display_order_unsplit = flaskutils.db_retrieve_table(
             MYCODO_DB_PATH, DisplayOrder, first=True).relay
         if display_order_unsplit:
             display_order = display_order_unsplit.split(",")
         else:
             display_order = []
-        misc = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Misc, first=True)
-        relay = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Relay)
 
-        # Calculate the number of seconds since the nth day of tyhe month
+        # Calculate the number of seconds since the (n)th day of tyhe month
         # Enables usage/cost assessments to align with a power bill cycle
         now = datetime.date.today()
         past_month_seconds = 0
@@ -759,6 +815,7 @@ def page(page):
             past_month = now.replace(day=misc.relay_stats_dayofmonth)
             past_month_seconds = (now-past_month).total_seconds()
 
+        # Calculate relay on duration for different time periods
         relay_each_duration = {}
         relay_sum_duration = dict.fromkeys(
             ['1d', '1w', '1m', '1m-date', '1y'], 0)
@@ -781,6 +838,7 @@ def page(page):
             relay_sum_kwh['1m'] += misc.relay_stats_volts*each_relay.amps*relay_each_duration[each_relay.id]['1m']/1000
             relay_sum_kwh['1m-date'] += misc.relay_stats_volts*each_relay.amps*relay_each_duration[each_relay.id]['1m']/1000
             relay_sum_kwh['1y'] += misc.relay_stats_volts*each_relay.amps*relay_each_duration[each_relay.id]['1y']/1000
+
         return render_template('tools/usage.html',
                                display_order=display_order,
                                misc=misc,
@@ -790,61 +848,64 @@ def page(page):
                                relay_sum_kwh=relay_sum_kwh,
                                date_suffix=date_suffix)
 
-    # Display log output
+    # Display the last (n) lines from a log file
     elif page == 'logview':
-        if session['user_group'] == 'guest':
-            flash('Guests are not permitted to view logs.', 'error')
-            return redirect('/')
         formLogView = flaskforms.LogView()
+
         log_output = None
         lines = 30
         logfile = ''
         if request.method == 'POST':
-            form_name = request.form['form-name']
-            if form_name == 'logview':
-                if formLogView.lines.data:
-                    lines = formLogView.lines.data
+            if session['user_group'] == 'guest':
+                flash('Guests are not permitted to view logs.', 'error')
+                return redirect('/logview')
+            elif formLogView.lines.data:
+                lines = formLogView.lines.data
+            elif formLogView.loglogin.data:
+                logfile = LOGIN_LOG_FILE
+            elif formLogView.loghttp.data:
+                logfile = HTTP_LOG_FILE
+            elif formLogView.logdaemon.data:
+                logfile = DAEMON_LOG_FILE
+            elif formLogView.logupdate.data:
+                logfile = UPDATE_LOG_FILE
+            elif formLogView.logrestore.data:
+                logfile = RESTORE_LOG_FILE
 
-                if formLogView.loglogin.data:
-                    logfile = LOGIN_LOG_FILE
-                elif formLogView.loghttp.data:
-                    logfile = HTTP_LOG_FILE
-                elif formLogView.logdaemon.data:
-                    logfile = DAEMON_LOG_FILE
-                elif formLogView.logupdate.data:
-                    logfile = UPDATE_LOG_FILE
-                elif formLogView.logrestore.data:
-                    logfile = RESTORE_LOG_FILE
+            # Get contents from file
+            if os.path.isfile(logfile):
+                log = subprocess.Popen('tail -n '+str(lines)+' '+logfile,
+                                       stdout=subprocess.PIPE,
+                                       shell=True)
+                (log_output, log_err) = log.communicate()
+                log_status = log.wait()
+            else:
+                log_output = 404
 
-                if os.path.isfile(logfile):
-                    log = subprocess.Popen('tail -n '+str(lines)+' '+logfile, stdout=subprocess.PIPE, shell=True)
-                    (log_output, log_err) = log.communicate()
-                    log_status = log.wait()
-                else:
-                    log_output = 404
         return render_template('tools/logview.html',
                                formLogView=formLogView,
                                lines=lines,
                                logfile=logfile,
                                log_output=log_output)
 
-    elif page == 'notes':
-        return render_template('tools/notes.html')
-
     elif page == 'camera':
         formCamera = flaskforms.Camera()
+
         if 'start_x=1' not in open('/boot/config.txt').read():
-            flash("Camera support doesn't appear to be enabled. Please enable it with 'sudo raspi-config'", "error")
+            flash("Camera support doesn't appear to be enabled. Please "
+                  "enable it with 'sudo raspi-config'", "error")
             camera_enabled = False
         else:
             camera_enabled = True
 
+        # Check if a video stream is active
         stream_locked = os.path.isfile(LOCK_FILE_STREAM)
         if stream_locked and not CameraStream().is_running():
             os.remove(LOCK_FILE_STREAM)
             stream_locked = False
         stream_locked = os.path.isfile(LOCK_FILE_STREAM)
 
+        # Check if a timelapse is active
         timelapse_locked = os.path.isfile(LOCK_FILE_TIMELAPSE)
         if timelapse_locked and not os.path.isfile(FILE_TIMELAPSE_PARAM):
             os.remove(LOCK_FILE_TIMELAPSE)
@@ -853,32 +914,36 @@ def page(page):
         timelapse_locked = os.path.isfile(LOCK_FILE_TIMELAPSE)
 
         if request.method == 'POST':
-            if session['user_group'] == 'guest':
-                flash('Guests are not permitted to use camera options.', 'error')
-                return redirect('/camera')
             form_name = request.form['form-name']
-            if form_name == 'camera':
+            if session['user_group'] == 'guest':
+                flash("Guests are not permitted to use camera options.",
+                      "error")
+                return redirect('/camera')
+            elif form_name == 'camera':
                 if formCamera.Still.data:
-                    if not stream_locked or not timelapse_locked:
+                    if not stream_locked and not timelapse_locked:
                         try:
-                            # if CameraStream().is_running():
-                            #     CameraStream().terminate()  # Stop camera stream to take a photo
-                            #     time.sleep(2)
-                            #     stream_locked = True  # Signal to enable camera stream
+                            if CameraStream().is_running():
+                                CameraStream().terminate()  # Stop camera stream
+                                time.sleep(2)
                             camera = flaskutils.db_retrieve_table(
                                 MYCODO_DB_PATH, CameraStill, first=True)
                             camera_record(INSTALL_DIRECTORY, 'photo', camera)
                         except Exception as msg:
                             flash("Camera Error: {}".format(msg), "error")
                     else:
-                        flash("Cannot capture still if timelapse or stream is "
-                              "active. If they are not active, delete {} and {}.".format(
-                              stream_locked, timelapse_locked), "error")
+                        flash("Cannot capture still if timelapse or stream is"
+                              " active. If they are not active, delete {} and"
+                              " {}.".format(stream_locked, timelapse_locked),
+                              "error")
 
                 elif formCamera.StartTimelapse.data:
                     if not stream_locked:
                         # Create lockfile and file with timelapse parameters
                         open(LOCK_FILE_TIMELAPSE, 'a')
+
+                        # Save timelapse parapaters to a csv file to resume
+                        # if there is a power outage or reboot.
                         now = time.time()
                         timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
                         uid_gid = pwd.getpwnam('mycodo').pw_uid
@@ -897,18 +962,7 @@ def page(page):
                         flash("Cannot capture still if a stream is active. "
                               "If it is not active, delete {}.".format(
                               stream_locked), "error")
-                        
-                    # else:
-                    #     CameraTimelapse().start_timelapse(
-                    #         formCamera.TimelapseInterval.data,
-                    #         formCamera.TimelapseRunTime.data)
-                    #     open(LOCK_FILE_TIMELAPSE, 'a')
-                    #     timelapse_locked = True
-                    #     flash("timelapse started {} {}".format(
-                    #         formCamera.TimelapseInterval.data,
-                    #         formCamera.TimelapseRunTime.data),
-                    #         "success")
-                        
+
                 elif formCamera.StopTimelapse.data:
                     try:
                         os.remove(FILE_TIMELAPSE_PARAM)
@@ -916,22 +970,15 @@ def page(page):
                     except:
                         pass
 
-                    # try:
-                    #     CameraTimelapse().terminate()
-                    #     os.remove(LOCK_FILE_TIMELAPSE)
-                    #     timelapse_locked = False
-                    # except Exception as msg:
-                    #     flash("Could not stop timelapse: {}".format(msg), "error")
-
                 elif formCamera.StartStream.data:
                     if not timelapse_locked:
                         open(LOCK_FILE_STREAM, 'a')
                         stream_locked = True
                         stream = True
                     else:
-                        flash("Cannot capture still if a timelapse is active. "
-                              "If it is not active, delete {}.".format(
-                              timelapse_locked), "error")
+                        flash("Cannot capture still if a timelapse is active."
+                              " If not, delete {}.".format(timelapse_locked),
+                              "error")
 
                 elif formCamera.StopStream.data:
                     if CameraStream().is_running():
@@ -940,6 +987,7 @@ def page(page):
                         os.remove(LOCK_FILE_STREAM)
                     stream_locked = False
 
+        # Check again if timelapse is active to catch if it started
         timelapse_locked = os.path.isfile(LOCK_FILE_TIMELAPSE)
         if timelapse_locked and not os.path.isfile(FILE_TIMELAPSE_PARAM):
             os.remove(LOCK_FILE_TIMELAPSE)
@@ -947,6 +995,7 @@ def page(page):
             os.remove(FILE_TIMELAPSE_PARAM)
         timelapse_locked = os.path.isfile(LOCK_FILE_TIMELAPSE)
 
+        # Get the full path of latest still image
         try:
             latest_still_img_fullpath = max(glob.iglob(INSTALL_DIRECTORY+'/camera-stills/*.jpg'), key=os.path.getmtime)
             ts = os.path.getmtime(latest_still_img_fullpath)
@@ -956,6 +1005,7 @@ def page(page):
             latest_still_img_ts = None
             latest_still_img = None
 
+        # Get the full path of latest timelapse image
         try:
             latest_timelapse_img_fullpath = max(glob.iglob(INSTALL_DIRECTORY+'/camera-timelapse/*.jpg'), key=os.path.getmtime)
             ts = os.path.getmtime(latest_timelapse_img_fullpath)
@@ -978,16 +1028,18 @@ def page(page):
     elif page == 'help':
         return render_template('manual.html')
 
+    elif page == 'notes':
+        return render_template('tools/notes.html')
+
     else:
         return render_template('404.html'), 404
-
-def get_sec(time_str):
-    h, m, s = time_str.split(':')
-    return int(h) * 3600 + int(m) * 60 + int(s)
 
 
 @app.route('/method-data/<method_type>/<method_id>')
 def method_data(method_type, method_id):
+    """
+    Return database settings for a particular method
+    """
     if (not session.get('logged_in') and
         not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
         return ('', 204)
@@ -997,16 +1049,17 @@ def method_data(method_type, method_id):
         new_session.expunge_all()
         new_session.close()
 
+    # First method column with general information about method
     method_key = method.filter(Method.method_id == method_id)
     method_key = method_key.filter(Method.method_order == 0).first()
 
+    # User-edited lines of each method
     method = method.filter(Method.method_id == method_id)
     method = method.filter(Method.method_order > 0)
     method = method.filter(Method.relay_id == None)
     method = method.order_by(Method.method_order.asc()).all()
 
     method_list = []
-
     if method_key.method_type == "Date":
         for each_method in method:
             if each_method.end_setpoint == None:
@@ -1014,15 +1067,20 @@ def method_data(method_type, method_id):
             else:
                 end_setpoint = each_method.end_setpoint
 
-            start_time = datetime.datetime.strptime(each_method.start_time, '%Y-%m-%d %H:%M:%S')
-            end_time = datetime.datetime.strptime(each_method.end_time, '%Y-%m-%d %H:%M:%S')
+            start_time = datetime.datetime.strptime(
+                each_method.start_time, '%Y-%m-%d %H:%M:%S')
+            end_time = datetime.datetime.strptime(
+                each_method.end_time, '%Y-%m-%d %H:%M:%S')
 
             is_dst = time.daylight and time.localtime().tm_isdst > 0
             utc_offset_ms = (time.altzone if is_dst else time.timezone)
 
-            method_list.append([(int(start_time.strftime("%s"))-utc_offset_ms)*1000 , each_method.start_setpoint])
-            method_list.append([(int(end_time.strftime("%s"))-utc_offset_ms)*1000, end_setpoint])
-            method_list.append([(int(start_time.strftime("%s"))-utc_offset_ms)*1000 , None])
+            method_list.append(
+                [(int(start_time.strftime("%s"))-utc_offset_ms)*1000, each_method.start_setpoint])
+            method_list.append(
+                [(int(end_time.strftime("%s"))-utc_offset_ms)*1000, end_setpoint])
+            method_list.append(
+                [(int(start_time.strftime("%s"))-utc_offset_ms)*1000, None])
 
     if method_key.method_type == "Daily":
         for each_method in method:
@@ -1031,9 +1089,12 @@ def method_data(method_type, method_id):
             else:
                 end_setpoint = each_method.end_setpoint
 
-            method_list.append([get_sec(each_method.start_time)*1000, each_method.start_setpoint])
-            method_list.append([get_sec(each_method.end_time)*1000, end_setpoint])
-            method_list.append([get_sec(each_method.start_time)*1000, None])
+            method_list.append(
+                [get_sec(each_method.start_time)*1000, each_method.start_setpoint])
+            method_list.append(
+                [get_sec(each_method.end_time)*1000, end_setpoint])
+            method_list.append(
+                [get_sec(each_method.start_time)*1000, None])
 
     elif method_key.method_type == "DailyBezier":
         points_x = 700
@@ -1042,11 +1103,12 @@ def method_data(method_type, method_id):
         P1 = (method_key.x1, method_key.y1)
         P2 = (method_key.x2, method_key.y2)
         P3 = (method_key.x3, method_key.y3)
-        print('TEST {} {} {} {}'.format(P0, P1, P2, P3), file=sys.stderr)
         for n in range(points_x):
             percent = n/float(points_x)
             second_of_day = percent*seconds_in_day
-            y = bezier_curve_y_out(method_key.shift_angle, P0, P1, P2, P3, second_of_day)
+            y = bezier_curve_y_out(method_key.shift_angle,
+                                   P0, P1, P2, P3,
+                                   second_of_day)
             method_list.append([percent*seconds_in_day*1000, y])
 
     elif method_key.method_type == "DailySine":
@@ -1077,8 +1139,10 @@ def method_data(method_type, method_id):
             else:
                 end_duration = start_duration+each_method.duration_sec
 
-                method_list.append([start_duration, each_method.start_setpoint])
-                method_list.append([end_duration, end_setpoint])
+                method_list.append(
+                    [start_duration, each_method.start_setpoint])
+                method_list.append(
+                    [end_duration, end_setpoint])
 
                 start_duration += each_method.duration_sec
 
@@ -1092,6 +1156,7 @@ def method_data(method_type, method_id):
 
 @app.route('/method', methods=('GET', 'POST'))
 def method_list():
+    """List all methods on one page"""
     if not logged_in():
         return redirect('/')
 
@@ -1110,23 +1175,9 @@ def method_list():
                            formCreateMethod=formCreateMethod)
 
 
-@app.route('/method-delete/<method_id>')
-def method_delete(method_id):
-    if not logged_in():
-        return redirect('/')
-    try:
-        with session_scope(MYCODO_DB_PATH) as new_session:
-            method = new_session.query(Method)
-            method = method.filter(Method.method_id == method_id).delete()
-    except Exception as except_msg:
-        flash("Error while deleting Method: "
-              "{}".format(except_msg), "error")
-    # flaskutils.method_del(method_id)
-    return redirect('/method')
-
-
 @app.route('/method-build/<method_type>/<method_id>', methods=('GET', 'POST'))
 def method_builder(method_type, method_id):
+    """Page to edit the details of each method"""
     if not logged_in():
         return redirect('/')
 
@@ -1211,14 +1262,31 @@ def method_builder(method_type, method_id):
     return redirect('/method')
 
 
+@app.route('/method-delete/<method_id>')
+def method_delete(method_id):
+    """Delete a method"""
+    if not logged_in():
+        return redirect('/')
+    try:
+        with session_scope(MYCODO_DB_PATH) as new_session:
+            method = new_session.query(Method)
+            method = method.filter(Method.method_id == method_id).delete()
+    except Exception as except_msg:
+        flash("Error while deleting Method: "
+              "{}".format(except_msg), "error")
+    # flaskutils.method_del(method_id)
+    return redirect('/method')
+
+
 @app.route('/remote/<page>', methods=('GET', 'POST'))
 def remote_admin(page):
     """Return pages for remote administraion"""
     if (not session.get('logged_in') and
         not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
         return redirect('/')
-    if session['user_group'] == 'guest':
-        flash('Guests are not permitted to view the romote systems panel.', 'error')
+    elif session['user_group'] == 'guest':
+        flash("Guests are not permitted to view the romote systems panel.",
+              "error")
         return redirect('/')
 
     remote_hosts = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Remote)
@@ -1233,7 +1301,8 @@ def remote_admin(page):
         formSetup = flaskforms.RemoteSetup()
         host_auth = {}
         for each_host in remote_hosts:
-            host_auth[each_host.host] = flaskutils.auth_credentials(each_host.host, each_host.username, each_host.password_hash)
+            host_auth[each_host.host] = flaskutils.auth_credentials(
+                each_host.host, each_host.username, each_host.password_hash)
         
         if request.method == 'POST':
             form_name = request.form['form-name']
@@ -1288,39 +1357,78 @@ def camera_img(img_type, filename):
             resp = make_response(open(timelapse_path+filename).read())
             resp.content_type = "image/jpeg"
             return resp
+
     return "Image not found"
-    
-
-def gen(camera):
-    """Video streaming generator function."""
-    while True:
-        frame = camera.get_frame()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
-@app.route('/video_feed')
-def video_feed():
-    """Video streaming route. Put this in the src attribute of an img tag."""
-    if (not session.get('logged_in') and
-        not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
-        return redirect('/')
-
-    return Response(gen(CameraStream()),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
-
-
-# Settings pages: This will mostly be form submissions to modify the SQL database
 @app.route('/settings/<page>', methods=('GET', 'POST'))
 def settings(page):
+    """Serve settings pages"""
     if (not session.get('logged_in') and
         not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
         return redirect('/')
+
+    # Alert email notifification settings
+    elif page == 'alerts':
+        if session['user_group'] == 'guest':
+            flash("Guests are not permitted to view alert settings.", "error")
+            return redirect('/settings')
+
+        smtp = flaskutils.db_retrieve_table(MYCODO_DB_PATH, SMTP)
+        formEmailAlert = flaskforms.EmailAlert()
+
+        if request.method == 'POST':
+            form_name = request.form['form-name']
+            # Update smtp settings table in mycodo SQL database
+            if form_name == 'EmailAlert':
+                flaskutils.settings_alert_mod(formEmailAlert)
+            return redirect('/settings/alerts')
+
+        return render_template('settings/alerts.html',
+                               smtp=smtp,
+                               formEmailAlert=formEmailAlert)
+
+    # Camera settings
+    elif page == 'camera':
+        camera = flaskutils.db_retrieve_table(
+            MYCODO_DB_PATH, CameraStill, first=True)
+        formSettingsCamera = flaskforms.SettingsCamera()
+
+        if request.method == 'POST':
+            form_name = request.form['form-name']
+            if form_name == 'Camera':
+                flaskutils.settings_camera_mod(formSettingsCamera)
+            return redirect('/settings/camera')
+
+        return render_template('settings/camera.html',
+                               camera=camera,
+                               formSettingsCamera=formSettingsCamera)
+
+    # General settings
+    elif page == 'general':
+        misc = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Misc, first=True)
+        formSettingsGeneral = flaskforms.SettingsGeneral()
+
+        if request.method == 'POST':
+            form_name = request.form['form-name']
+            if form_name == 'General':
+                flaskutils.settings_general_mod(formSettingsGeneral)
+            return redirect('/settings/general')
+
+        return render_template('settings/general.html',
+                               misc=misc,
+                               formSettingsGeneral=formSettingsGeneral)
+
+    # Display collected statistics
+    elif page == 'statistics':
+        statistics = return_stat_file_dict(STATS_CSV)
+        return render_template('settings/statistics.html',
+                               statistics=statistics)
 
     # User management settings page
     elif page == 'users':
         if session['user_group'] == 'guest':
-            flash('Guests are not permitted to view user settings.', 'error')
+            flash("Guests are not permitted to view user settings.", "error")
             return redirect('/settings')
 
         users = flaskutils.db_retrieve_table(USER_DB_PATH, Users)
@@ -1346,71 +1454,19 @@ def settings(page):
                                formModUser=formModUser,
                                formDelUser=formDelUser)
 
-    # Alert email notifification settings
-    elif page == 'alerts':
-        if session['user_group'] == 'guest':
-            flash('Guests are not permitted to view alert settings.', 'error')
-            return redirect('/settings')
-
-        smtp = flaskutils.db_retrieve_table(MYCODO_DB_PATH, SMTP)
-        formEmailAlert = flaskforms.EmailAlert()
-        if request.method == 'POST':
-            form_name = request.form['form-name']
-            # Update smtp settings table in mycodo SQL database
-            if form_name == 'EmailAlert':
-                flaskutils.settings_alert_mod(formEmailAlert)
-            return redirect('/settings/alerts')
-
-        return render_template('settings/alerts.html',
-                               smtp=smtp,
-                               formEmailAlert=formEmailAlert)
-
-    # General settings
-    elif page == 'general':
-        misc = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Misc, first=True)
-        formSettingsGeneral = flaskforms.SettingsGeneral()
-        if request.method == 'POST':
-            form_name = request.form['form-name']
-            if form_name == 'General':
-                flaskutils.settings_general_mod(formSettingsGeneral)
-            return redirect('/settings/general')
-
-        return render_template('settings/general.html',
-                               misc=misc,
-                               formSettingsGeneral=formSettingsGeneral)
-
-    # Camera settings
-    elif page == 'camera':
-        camera = flaskutils.db_retrieve_table(MYCODO_DB_PATH, CameraStill, first=True)
-        formSettingsCamera = flaskforms.SettingsCamera()
-        if request.method == 'POST':
-            form_name = request.form['form-name']
-            if form_name == 'Camera':
-                flaskutils.settings_camera_mod(formSettingsCamera)
-            return redirect('/settings/camera')
-
-        return render_template('settings/camera.html',
-                               camera=camera,
-                               formSettingsCamera=formSettingsCamera)
-
-    # Display collected statistics
-    elif page == 'statistics':
-        statistics = return_stat_file_dict(STATS_CSV)
-        return render_template('settings/statistics.html',
-                               statistics=statistics)
-
     return render_template('settings/{}.html'.format(page))
 
 
 @app.route('/login', methods=('GET', 'POST'))
 def do_admin_login():
+    """Authenticate users of the web-UI"""
     # Check if the user is banned from logging in
     if flaskutils.banned_from_login():
         return redirect('/')
 
-    # Authenticate with SQL database using form input
     form = flaskforms.Login()
     formNotice = flaskforms.InstallNotice()
+
     with session_scope(MYCODO_DB_PATH) as db_session:
         misc = db_session.query(Misc).first()
         dismiss_notification = misc.dismiss_notification
@@ -1432,12 +1488,12 @@ def do_admin_login():
                 new_session.expunge_all()
                 new_session.close()
             if not user:
-                flaskutils.login_log(form.username.data, 'NA',
-                    request.environ['REMOTE_ADDR'], 'NOUSER')
+                flaskutils.login_log(form.username.data,'NA',
+                                     request.environ['REMOTE_ADDR'], 'NOUSER')
                 flaskutils.failed_login()
             elif Users().check_password(form.password.data, user.user_password_hash) == user.user_password_hash:
                 flaskutils.login_log(user.user_name, user.user_restriction,
-                    request.environ['REMOTE_ADDR'], 'LOGIN')
+                                     request.environ['REMOTE_ADDR'], 'LOGIN')
                 session['logged_in'] = True
                 session['user_group'] = user.user_restriction
                 session['user_name'] = user.user_name
@@ -1446,8 +1502,12 @@ def do_admin_login():
                     response = make_response(redirect('/'))
                     expire_date = datetime.datetime.now()
                     expire_date = expire_date + datetime.timedelta(days=90)
-                    response.set_cookie('user_name', user.user_name, expires=expire_date)
-                    response.set_cookie('user_pass_hash', user.user_password_hash, expires=expire_date)
+                    response.set_cookie('user_name',
+                                        user.user_name,
+                                        expires=expire_date)
+                    response.set_cookie('user_pass_hash',
+                                        user.user_password_hash,
+                                        expires=expire_date)
                     return response
                 return redirect('/')
             else:
@@ -1470,15 +1530,17 @@ def do_admin_login():
 
 @app.route("/logout")
 def logout():
+    """Log out of the web-ui"""
     if session.get('user_name'):
         flaskutils.login_log(session['user_name'], session['user_group'],
-        request.environ['REMOTE_ADDR'], 'LOGOUT')
+                             request.environ['REMOTE_ADDR'], 'LOGOUT')
     response = clear_cookie_auth()
     flash('Successfully logged out', 'success')
     return response
 
 
 def logged_in():
+    """Verify the user is logged in"""
     if (not session.get('logged_in') and
             not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
         return 0
@@ -1489,6 +1551,7 @@ def logged_in():
 
 
 def clear_cookie_auth():
+    """Delete authentication cookies"""
     response = make_response(redirect('/login'))
     session.clear()  # or session['logged_in'] = False
     response.set_cookie('user_name', '', expires=0)
@@ -1496,8 +1559,28 @@ def clear_cookie_auth():
     return response
 
 
+def gen(camera):
+    """Video streaming generator function."""
+    while True:
+        frame = camera.get_frame()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+
+@app.route('/video_feed')
+def video_feed():
+    """Video streaming route. Put this in the src attribute of an img tag."""
+    if (not session.get('logged_in') and
+        not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
+        return redirect('/')
+
+    return Response(gen(CameraStream()),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
 @app.route('/gpiostate')
 def gpio_state():
+    """Return the GPIO state, for relay page status"""
     if (not session.get('logged_in') and
         not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
         return ('', 204)
@@ -1517,18 +1600,19 @@ def gpio_state():
 
 @app.route('/dl/<dl_type>/<path:filename>')
 def download_file(dl_type, filename):
+    """Serve log file to download"""
     if (not session.get('logged_in') and
         not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
         return ('', 204)
-
-    if dl_type == 'log':
+    elif dl_type == 'log':
         return send_from_directory(LOG_PATH, filename, as_attachment=True)
+
     return ('', 204)
 
 
-# Return the most recent time and value from influxdb
 @app.route('/last/<sensor_type>/<sensor_measure>/<sensor_id>/<sensor_period>')
 def last_data(sensor_type, sensor_measure, sensor_id, sensor_period):
+    """Return the most recent time and value from influxdb"""
     if (not session.get('logged_in') and
         not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
         return ('', 204)
@@ -1559,10 +1643,10 @@ def last_data(sensor_type, sensor_measure, sensor_id, sensor_period):
         return ('', 204)
 
 
-# Return data from past_seconds until present from influxdb
 @app.route('/past/<sensor_type>/<sensor_measure>/<sensor_id>/<past_seconds>')
 @gzipped
 def past_data(sensor_type, sensor_measure, sensor_id, past_seconds):
+    """Return data from past_seconds until present from influxdb"""
     if (not session.get('logged_in') and
         not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
         return ('', 204)
@@ -1586,9 +1670,9 @@ def past_data(sensor_type, sensor_measure, sensor_id, past_seconds):
         return ('', 204)
 
 
-# Return 'alive' if the daemon is running
 @app.route('/daemonactive')
 def daemon_active():
+    """Return 'alive' if the daemon is running"""
     if (not session.get('logged_in') and
         not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
         return ('', 204)
@@ -1601,13 +1685,7 @@ def daemon_active():
 
 @app.route('/systemctl/<action>')
 def computer_command(action):
-    """
-    Execute one of a set of commands as root
-
-    action sent, command executed
-    shutdown, 'shutdown now -h'
-    restart, 'shutdown now -r'
-    """
+    """Execute one of several commands, as root"""
     if (not session.get('logged_in') and
         not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
         return ('', 204)
@@ -1620,10 +1698,12 @@ def computer_command(action):
 
 @app.route('/newremote/')
 def newremote():
+    """Verify authentication as a client computer to the remote admin"""
     user = request.args.get('user')
     passw = request.args.get('passw')
     with session_scope(USER_DB_PATH) as new_session:
-        user = new_session.query(Users).filter(Users.user_name == user).first()
+        user = new_session.query(Users).filter(
+            Users.user_name == user).first()
         new_session.expunge_all()
         new_session.close()
     if user:
@@ -1634,10 +1714,12 @@ def newremote():
 
 @app.route('/auth/')
 def data():
+    """Checks authentication for remote admin"""
     user = request.args.get('user')
     pw_hash = request.args.get('pw_hash')
     with session_scope(USER_DB_PATH) as new_session:
-        user = new_session.query(Users).filter(Users.user_name == user).first()
+        user = new_session.query(Users).filter(
+            Users.user_name == user).first()
         new_session.expunge_all()
         new_session.close()
     if (user and 
@@ -1649,12 +1731,13 @@ def data():
 
 @app.route('/robots.txt')
 def static_from_root():
+    """Return static robots.txt"""
     return send_from_directory(app.static_folder, request.path[1:])
 
 
-# Variables to send with every page request
 @app.context_processor
 def inject_mycodo_version():
+    """Variables to send with every page request"""
     try:
         control = DaemonControl()
         daemon_status = control.daemon_status()
@@ -1696,7 +1779,8 @@ if __name__ == "__main__":
     if args.ssl:
         app.run(host='0.0.0.0', port=80, debug=debug)
     else:
-        # locate ssl certificates, if not executing Flask script from the script's directory
+        # locate ssl certificates, if not executing Flask script from
+        # the script's directory.
         file_path = os.path.abspath(__file__)
         dir_path = os.path.dirname(file_path)
         cert = os.path.join(dir_path, "frontend/ssl_certs/cert.pem")

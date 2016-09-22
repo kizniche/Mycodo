@@ -30,7 +30,7 @@ from databases.utils import session_scope
 
 from mycodo_client import DaemonControl
 
-from utils.influx import write_influxdb
+from utils.influx import write_influxdb_value
 from utils.send_data import send_email
 from utils.system_pi import cmd_output
 
@@ -114,7 +114,7 @@ class RelayController(threading.Thread):
                             duration = float(self.relay_last_duration[relay_id])
                             timestamp = datetime.datetime.utcnow()-datetime.timedelta(seconds=duration)
                             write_db = threading.Thread(
-                                target=write_influxdb,
+                                target=write_influxdb_value,
                                 args=(self.logger, INFLUXDB_HOST,
                                       INFLUXDB_PORT, INFLUXDB_USER,
                                       INFLUXDB_PASSWORD, INFLUXDB_DATABASE,
@@ -201,7 +201,7 @@ class RelayController(threading.Thread):
                             duration = float(time_on)
                             timestamp = datetime.datetime.utcnow()-datetime.timedelta(seconds=duration)
                             write_db = threading.Thread(
-                                target=write_influxdb,
+                                target=write_influxdb_value,
                                 args=(self.logger, INFLUXDB_HOST,
                                       INFLUXDB_PORT, INFLUXDB_USER,
                                       INFLUXDB_PASSWORD, INFLUXDB_DATABASE,
@@ -303,18 +303,7 @@ class RelayController(threading.Thread):
                 message += ".\n"
 
             if each_conditional.execute_command:
-                #################################
-                #        DANGEROUS CODE         #
-                #################################
-                # This code is not secure at all#
-                # and could cause serious       #
-                # damage to your software and   #
-                # hardware.                     #
-                #################################
-
-                # TODO: SECURITY: FIX THIS This runs arbitrary as ROOT
-                #       Make sure this works (currently untested)
-
+                # Execute command as user mycodo
                 message += "Execute: '{}'. ".format(
                     each_conditional.execute_command)
                 cmd_out, cmd_err, cmd_status = cmd_output(

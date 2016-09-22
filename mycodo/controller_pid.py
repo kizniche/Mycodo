@@ -45,9 +45,10 @@ from config import SQL_DATABASE_MYCODO
 from databases.mycodo_db.models import Method
 from databases.mycodo_db.models import PID
 from databases.mycodo_db.models import Relay
+from databases.mycodo_db.models import Sensor
 from databases.utils import session_scope
 from mycodo_client import DaemonControl
-from utils.influx import read_last_influxdb, write_influxdb
+from utils.influx import read_last_influxdb, write_influxdb_value
 from utils.method import sine_wave_y_out, bezier_curve_y_out
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -89,6 +90,8 @@ class PIDController(threading.Thread):
             self.measure_interval = pid.period
             self.default_set_point = pid.setpoint
             self.set_point = pid.setpoint
+            sensor = new_session.query(Sensor).filter(Sensor.id == self.sensor_id).first()
+            self.sensor_duration = sensor.period
 
         self.Derivator = 0
         self.Integrator = 0
@@ -107,6 +110,7 @@ class PIDController(threading.Thread):
                 method = method.filter(Method.method_order == 0).first()
                 self.method_type = method.method_type
                 self.method_start_time = method.start_time
+
             if self.method_type == 'Duration':
                 if self.method_start_time == 'Ended':
                     # Method has ended and hasn't been instructed to begin again
@@ -212,6 +216,10 @@ class PIDController(threading.Thread):
         self.last_measurement_success = False
         # Get latest measurement (from within the past minute) from influxdb
         try:
+            if self.sensor_duration/60 < 1:
+                duration = 1
+            else:
+                duration = self.sensor_duration/60*1.5
             self.last_measurement = read_last_influxdb(
                 INFLUXDB_HOST,
                 INFLUXDB_PORT,
@@ -219,7 +227,8 @@ class PIDController(threading.Thread):
                 INFLUXDB_PASSWORD,
                 INFLUXDB_DATABASE,
                 self.sensor_id,
-                self.measure_type)
+                self.measure_type,
+                duration)
             if self.last_measurement:
                 measurement_list = list(self.last_measurement.get_points(
                     measurement=self.measure_type))
@@ -519,7 +528,7 @@ class PIDController(threading.Thread):
         :rtype: None
         """
         write_db = threading.Thread(
-            target=write_influxdb,
+            target=write_influxdb_value,
             args=(self.logger, INFLUXDB_HOST,
                   INFLUXDB_PORT, INFLUXDB_USER,
                   INFLUXDB_PASSWORD, INFLUXDB_DATABASE,

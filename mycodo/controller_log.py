@@ -96,8 +96,7 @@ class LogController(threading.Thread):
                 INFLUXDB_PASSWORD,
                 INFLUXDB_DATABASE,
                 self.sensor_id,
-                self.measure_type,
-                duration_min=0)
+                self.measure_type)
             if self.last_measurement:
                 measurement_list = list(self.last_measurement.get_points(
                     measurement=self.measure_type))

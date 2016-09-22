@@ -38,16 +38,25 @@ def internet(host="8.8.8.8", port=53, timeout=3):
 
 
 def assure_path_exists(new_dir):
+    """Create path if it doesn't exist"""
     if not os.path.exists(new_dir):
         os.makedirs(new_dir)
         set_user_grp(new_dir, 'mycodo', 'mycodo')
 
 
 def find_owner(filename):
+    """Return the owner of a file"""
     return pwd.getpwuid(os.stat(filename).st_uid).pw_name
 
 
+def get_sec(time_str):
+    """Convert HH:MM:SS string into number of seconds"""
+    h, m, s = time_str.split(':')
+    return int(h) * 3600 + int(m) * 60 + int(s)
+
+
 def set_user_grp(filepath, user, group):
+    """Set the UID and GUID of a file"""
     uid = pwd.getpwnam(user).pw_uid
     gid = grp.getgrnam(group).gr_gid
     os.chown(filepath, uid, gid)

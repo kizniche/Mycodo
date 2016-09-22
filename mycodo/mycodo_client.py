@@ -34,7 +34,7 @@ import sys
 
 class DaemonControl():
     """
-    Class for controlling the daemon
+    Communicate with the daemon to execute commands or retrieve information.
 
     """
 
@@ -43,7 +43,7 @@ class DaemonControl():
             self.rpyc_client = rpyc.connect("localhost", 18813)
         except socket.error:
             print("Connection refused.")
-            raise Exception("Connection refused. The daemon doesn't appear to be running.")
+            raise Exception("Connection refused. Is the daemon running?")
 
     def flash_lcd(self, lcd_id, state):
         return self.rpyc_client.root.flash_lcd(lcd_id, state)
@@ -78,7 +78,9 @@ class DaemonControl():
                                                            controller_id)
 
     def refresh_sensor_conditionals(self, sensor_id, cond_mod, cond_id):
-        return self.rpyc_client.root.refresh_sensor_conditionals(sensor_id, cond_mod, cond_id)
+        return self.rpyc_client.root.refresh_sensor_conditionals(sensor_id,
+                                                                 cond_mod,
+                                                                 cond_id)
 
     def daemon_status(self):
         return self.rpyc_client.root.daemon_status()
@@ -121,11 +123,9 @@ if __name__ == "__main__":
     daemon_control = DaemonControl()
 
     if args.relayoff:
-        print("{} [Remote command] Turn off relay with "
-              "relay ID of {}: Server returned:".format(
-                now(), args.relayoff))
-        print("{}".format(daemon_control.relay_off(
-            args.relayoff)))
+        print("{} [Remote command] Turn off relay with relay ID of {}: "
+              "Server returned:".format(now(), args.relayoff))
+        print("{}".format(daemon_control.relay_off(args.relayoff)))
 
     if args.duration and args.relayon is None:
         parser.error("--duration requires --relayon")
@@ -134,20 +134,18 @@ if __name__ == "__main__":
         duration = 0
         if args.duration:
             duration = args.duration
-        print("{} [Remote command] Turn on relay with "
-              "relay ID of {}: Server returned:".format(
-                now(), args.relayon))
-        print("{}".format(daemon_control.relay_on(
-            args.relayon, duration)))
+        print("{} [Remote command] Turn on relay with relay ID of {}: "
+              "Server returned:".format(now(), args.relayon))
+        print("{}".format(daemon_control.relay_on(args.relayon, duration)))
 
     if args.activatecontroller:
         if args.activatecontroller[0] not in ['LCD', 'Log', 'PID',
                                               'Sensor', 'Timer']:
-            print("Invalid controller type. Options are LCD, Log,"
-                  " PID, Sensor, and Timer.")
+            print("Invalid controller type. Options are LCD, Log, PID, Sensor,"
+                  " and Timer.")
         else:
-            print("{} [Remote command] Activate {} controller with ID of {}: "
-                  "Server returned:".format(now(),
+            print("{} [Remote command] Activate {} controller with ID of {}"
+                  ": Server returned:".format(now(),
                                             args.activatecontroller[0],
                                             args.activatecontroller[1]))
             print("{}".format(daemon_control.activate_controller(
@@ -156,8 +154,8 @@ if __name__ == "__main__":
     if args.deactivatecontroller:
         if args.deactivatecontroller[0] not in ['LCD', 'Log', 'PID',
                                               'Sensor', 'Timer']:
-            print("Invalid controller type. Options are LCD, Log,"
-                  " PID, Sensor, and Timer.")
+            print("Invalid controller type. Options are LCD, Log, PID, Sensor,"
+                  " and Timer.")
         else:
             print("{} [Remote command] Deactivate {} controller with ID of {}"
                   ": Server returned:".format(now(),
@@ -167,8 +165,7 @@ if __name__ == "__main__":
                 args.deactivatecontroller[0], args.deactivatecontroller[1])))
 
     if args.terminate:
-        print("{} [Remote command] Terminate daemon: "
-              "Server returned:".format(now()))
+        print("{} [Remote command] Terminate daemon. Server:".format(now()))
         if daemon_control.terminate_daemon():
             print("Daemon Terminated.")
         else:

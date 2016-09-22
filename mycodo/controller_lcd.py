@@ -318,8 +318,7 @@ class LCDController(threading.Thread):
                                 INFLUXDB_PASSWORD,
                                 INFLUXDB_DATABASE,
                                 self.lcd_line[i]['id'],
-                                '/.*/',
-                                duration_min=5).raw
+                                '/.*/').raw
                         else:
                             last_measurement = read_last_influxdb(
                                 INFLUXDB_HOST,
@@ -328,8 +327,7 @@ class LCDController(threading.Thread):
                                 INFLUXDB_PASSWORD,
                                 INFLUXDB_DATABASE,
                                 self.lcd_line[i]['id'],
-                                self.lcd_line[i]['measurement'],
-                                duration_min=5).raw
+                                self.lcd_line[i]['measurement']).raw
                         if last_measurement:
                             number = len(last_measurement['series'][0]['values'])
                             self.lcd_line[i]['time'] = last_measurement['series'][0]['values'][number-1][0]
