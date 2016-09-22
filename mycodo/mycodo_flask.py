@@ -712,7 +712,7 @@ def page(page):
         if request.method == 'POST':
             if formUpdate.update.data and update_available:
                 subprocess.Popen(INSTALL_DIRECTORY + '/mycodo/scripts/mycodo_wrapper upgrade >> /var/log/mycodo/mycodoupdate.log 2>&1', shell=True)
-                flash("THe upgrade has started. The daemon will be "
+                flash("The upgrade has started. The daemon will be "
                       "stopped during the upgrade. Give the "
                       "process several minutes to complete "
                       "before doing anything. It may seem "
@@ -865,9 +865,9 @@ def page(page):
             if session['user_group'] == 'guest':
                 flash('Guests are not permitted to view logs.', 'error')
                 return redirect('/logview')
-            elif formLogView.lines.data:
+            if formLogView.lines.data:
                 lines = formLogView.lines.data
-            elif formLogView.loglogin.data:
+            if formLogView.loglogin.data:
                 logfile = LOGIN_LOG_FILE
             elif formLogView.loghttp.data:
                 logfile = HTTP_LOG_FILE
