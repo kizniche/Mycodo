@@ -2134,14 +2134,30 @@ def sensor_conditional_mod(formModSensorCond):
             with session_scope(MYCODO_DB_PATH) as db_session:
                 mod_sensor = db_session.query(SensorConditional).filter(
                     SensorConditional.id == formModSensorCond.modCondSensor_id.data).first()
-                if (mod_sensor.period and
-                    mod_sensor.measurement_type and
-                    mod_sensor.direction and
-                        ((mod_sensor.relay_id and mod_sensor.relay_state) or
-                         mod_sensor.execute_command or
-                         mod_sensor.email_notify or
-                         mod_sensor.flash_lcd)
-                    ):
+                sensor = db_session.query(Sensor).filter(
+                    Sensor.id == mod_sensor.sensor_id).first()
+
+                device_specific_configured = False
+                cond_configured = False
+                
+                # Ensure device-specific settings configured properly
+                if sensor.device == 'EDGE' and mod_sensor.edge_detected:
+                    device_specific_configured = True
+                elif (sensor.device != 'EDGE' and
+                        mod_sensor.period and
+                        mod_sensor.measurement_type and
+                        mod_sensor.direction):
+                    device_specific_configured = True
+
+                # Ensure universal conditional settings configured properly
+                if ((mod_sensor.relay_id and mod_sensor.relay_state) or
+                        mod_sensor.execute_command or
+                        mod_sensor.email_notify or
+                        mod_sensor.flash_lcd or
+                        mod_sensor.camera_record):
+                    cond_configured = True
+
+                if device_specific_configured and cond_configured:
                     mod_sensor.activated = 1
                     db_session.commit()
                     flash("Sensor Conditional deactivated in SQL "
