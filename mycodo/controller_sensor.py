@@ -618,7 +618,7 @@ class SensorController(threading.Thread):
                                               INFLUXDB_DATABASE,
                                               self.sensor_id,
                                               measurement_type,
-                                              self.period/60*1.5).raw
+                                              int(self.period*1.5)).raw
         if last_measurement:
             number = len(last_measurement['series'][0]['values'])
             last_value = last_measurement['series'][0]['values'][number-1][1]

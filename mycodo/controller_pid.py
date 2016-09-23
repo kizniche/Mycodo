@@ -216,10 +216,10 @@ class PIDController(threading.Thread):
         self.last_measurement_success = False
         # Get latest measurement (from within the past minute) from influxdb
         try:
-            if self.sensor_duration/60 < 1:
-                duration = 1
+            if self.sensor_duration < 60:
+                duration = 60
             else:
-                duration = self.sensor_duration/60*1.5
+                duration = int(self.sensor_duration*1.5)
             self.last_measurement = read_last_influxdb(
                 INFLUXDB_HOST,
                 INFLUXDB_PORT,

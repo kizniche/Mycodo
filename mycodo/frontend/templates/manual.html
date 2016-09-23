@@ -48,14 +48,16 @@
 				<li><a href="#temperature-sensors">Temperature Sensors</a></li>
 				<ul>
 					<li><a href="#raspberry-pi">Raspberry Pi</a></li>
-					<li><a href="#DS18B20">DS18B20</a></li>
+					<li><a href="#atlas_scientific-PT1000">Atlas Scientific PT-1000</a></li>
+          <li><a href="#DS18B20">DS18B20</a></li>
           <li><a href="#TMP006">TMP006/007</a></li>
 				</ul>
 				<li><a href="#temperature-humidity-sensors">Temperature/Humidity Sensors</a></li>
 				<ul>
+          <li><a href="#AM2315">AM2315</a></li>
 					<li><a href="#DHT11">DHT11</a></li>
 					<li><a href="#DHT22-AM2302">DHT22, AM2302</a></li>
-					<li><a href="#AM2315">AM2315</a></li>
+          <li><a href="#HTU21D">HTU21D</a></li>
 					<li><a href="#SHT1X">SHT1x</a></li>
 					<li><a href="#SHT7X">SHT7x</a></li>
 				</ul>
@@ -148,9 +150,7 @@
 
 		<p>
 		If Relay #1 turns ON, turn Relay #3 ON<br>
-		If Relay #1 turns OFF, turn Relay #3 OFF<br>
 		If Relay #1 turns ON, turn Relay #4 ON for 40 seconds and notify critical-issue@domain.com<br>
-		If Relay #2 turns ON, turn Relay #4 ON for 21 seconds<br>
 		If Relay #4 turns ON for 21 seconds, turn Relay #5 ON for 50 seconds<br>
 		If Relay #4 turns ON for 20 seconds, turn Relay #1 OFF<br>
 		If Humidity is Greater Than 80%, turn Relay #4 ON for 40 seconds<br>
@@ -352,6 +352,28 @@ sudo /etc/init.d/apache2 restart</pre>
 
 		<p>The Raspberry Pi has an integrated temperature sensor on the BCM2835 SoC that measure the temperature of the CPU/GPU. This is the easiest sensor to set up in Mycodo, as it is immediately available to be used.</p>
 
+
+    <a name="atlas_scientific-PT1000"></a>
+    <h4>Atlas Scientific PT-1000</h4>
+
+    <p>The PT1000 temperature probe is a resistance type thermometer. Where PT stands for platinum and 1000 is the measured resistance of the probe at 0 ̊C in ohms (1k at 0 ̊C).</p>
+
+    <p>
+    Specifications:
+    <br>Accuracy +/- (0.15 + (0.002*t))
+    <br>Probe type: Class A Platnum, RTD (resistance temperature detector)
+    <br>Cable length: 81cm (32")
+    <br>Cable material: Silicone rubber
+    <br>30mm sensing area (304 SS)
+    <br>6mm Diameter
+    <br>BNC Connector
+    <br>Reaction Time: 90% value in 13 seconds
+    <br>Probe output: analog
+    <br>Full temperature sensing range: -200˚C to 850˚C
+    <br>Cable max temp 125°C
+    <br>Cable min temp -55°C
+    </p>
+
 		<a name="DS18B20"></a>
 		<h4>DS18B20</h4>
 
@@ -384,6 +406,18 @@ sudo /etc/init.d/apache2 restart</pre>
 		<a name="temperature-humidity-sensors"></a>
 		<h3>Temperature/Humidity Sensors</h3>
 
+    <a name="AM2315"></a>
+    <h4>AM2315</h4>
+
+    <p>
+    Specifications:
+    <br>0-100% humidity readings with 1% (10-90% RH) and 3% (0-10% RH and 90-100% RH) accuracy
+    <br>-20 to 80°C temperature readings ±0.1°C typical accuracy
+    <br>3.5 to 5.5V power and I/O
+    <br>10 mA max current use during conversion (while requesting data)
+    <br>No more than 0.5 Hz sampling rate (once every 2 seconds)
+    </p>
+
 		<a name="DHT11"></a>
 		<h4>DHT11</h4>
 
@@ -410,17 +444,15 @@ sudo /etc/init.d/apache2 restart</pre>
 		<br>No more than 0.5 Hz sampling rate (once every 2 seconds)
 		</p>
 
-		<a name="AM2315"></a>
-		<h4>AM2315</h4>
+    <a name="HTU21D"></a>
+    <h4>HTU21D</h4>
 
-		<p>
-		Specifications:
-		<br>0-100% humidity readings with 1% (10-90% RH) and 3% (0-10% RH and 90-100% RH) accuracy
-		<br>-20 to 80°C temperature readings ±0.1°C typical accuracy
-		<br>3.5 to 5.5V power and I/O
-		<br>10 mA max current use during conversion (while requesting data)
-		<br>No more than 0.5 Hz sampling rate (once every 2 seconds)
-		</p>
+    <p>
+    Specifications:
+    <br>0-100% humidity readings with 2% (20-80% RH) and 2%-5% (0-20% RH and 80-100% RH) accuracy
+    <br>Optimum accuracy measurements within 5 to 95% RH
+    <br>-30 to 90°C temperature readings ±1°C typical accuracy
+    </p>
 
 		<a name="SHT1X"></a>
 		<h4>SHT1x</h4> (SHT10, SHT11, SHT15)

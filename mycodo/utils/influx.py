@@ -58,7 +58,7 @@ def format_influxdb_data(device_type, device_id, measure_type, value, timestamp=
 
 
 def read_last_influxdb(host, port, user, password, dbname,
-                       device_id, measure_type, duration_min=None):
+                       device_id, measure_type, duration_sec=None):
     """
     Query Influxdb for the last entry within the past minute,
     for a set of conditions.
@@ -86,19 +86,19 @@ def read_last_influxdb(host, port, user, password, dbname,
     :param measure_type: What measurement to query in the Influxdb
         database (ex. 'temperature', 'duration')
     :type measure_type: str
-    :param duration_min: How many minutes to look for a past measurement
-    :type duration_min: int
+    :param duration_sec: How many minutes to look for a past measurement
+    :type duration_sec: int
     """
     client = InfluxDBClient(host, port, user, password, dbname)
 
-    if duration_min:
+    if duration_sec:
         query = """SELECT value
                        FROM   {}
                        WHERE  device_id = '{}'
-                              AND TIME > Now() - {}m
+                              AND TIME > Now() - {}s
                               ORDER BY time
                               DESC LIMIT 1;
-                """.format(measure_type, device_id, duration_min)
+                """.format(measure_type, device_id, duration_sec)
     else:
         query = """SELECT value
                        FROM   {}
