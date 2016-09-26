@@ -1738,7 +1738,7 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
     end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
     # Get how many points there are in the past year
-    raw_data = dbcon.query("""SELECT COUNT(*)
+    raw_data = dbcon.query("""SELECT COUNT(value)
                               FROM {}
                               WHERE device_id='{}'
                                     AND time >= '{}'
