@@ -1,0 +1,194 @@
+{% extends "layout.html" %}
+{% set active_page = "graph" %}
+
+{% block head %}
+  <script src="/static/js/highstock.js"></script>
+  <script src="/static/js/modules/exporting.js"></script>
+  <script src="/static/js/modules/canvas-tools.js"></script>
+  <script src="/static/js/modules/export-csv.js"></script>
+  <script src="/static/js/modules/jspdf.min.js"></script>
+  <script src="/static/js/modules/highcharts-export-clientside.js"></script>
+  {% if session.user_theme == 'dark' %}
+    <script src="/static/js/dark-unica.js"></script>
+  {% endif %}
+
+{% endblock %}  
+
+{% block title %} - Asynchronous Graph{% endblock %}
+
+{% block body %}
+
+  <div class="container">
+  {% include 'flash_messages.html' %}
+  </div>
+
+  <div style="padding: 0 0.5em 0.5em 0.5em">
+
+  {%- set count_measurements = [0] -%}
+
+  {%- for each_sensor in sensor -%}
+    {%- if each_sensor.device_type in ['tsensor', 'co2sensor', 'luxsensor', 'edgedetect'] -%}
+      {% if count_measurements.append(count_measurements.pop() + 1) %}{% endif %}
+    {%- elif each_sensor.device_type in ['tmpsensor', 'analogsensor'] -%}
+      {% if count_measurements.append(count_measurements.pop() + 2) %}{% endif %}
+    {%- elif each_sensor.device_type in ['htsensor', 'presssensor', 'cpu_load'] -%}
+      {% if count_measurements.append(count_measurements.pop() + 3) %}{% endif %}
+    {%- endif -%}
+  {%- endfor %}
+
+  <form method="post" action="/graph-async">
+  <div class="form-inline">
+    <div class="form-group">
+      <select class="form-control" id="selected_measure" name="selected_measure">
+      {% for each_choice, value in sensor_choices.iteritems() -%}
+        <option value="{{each_choice}}">{{value}}</option>
+      {% endfor -%}
+      </select>
+    </div>
+    <div class="form-group">
+      <input type="submit" value="Submit">
+    </div>
+  </div>
+  </form>
+
+  <div style="padding: 0.5em">
+    This is a simple test of asychronous loading of data. I just figured out how to do this, so it is in its infancy. Expect updated functionality in the future. For every zoom, 700 data points will be loaded. If there are more than 700 data points recorded for the time span selected, 700 points will be created from an averaging of the points in that time span. This enables much less data to be used to navigate a large data set. Fir instance, 4 months of data may be 10 megabytes if all of it were downloaded. However, when viewing a 4 month span, it's not possible to see every data point of that 10 megabytes, and aggregatin of points is inevitable. With asynchronous loading of data, you only download what you see. So, instead of downloading 10 megabytes every graph load, you will only be downloading ~50kb until you select a new zoom level, at which time you will download only another ~50kb.
+  </div>
+
+  {% if selected_measure %}
+    <div id="container" style="height: 500px; min-width: 300px"></div>
+  {% endif %}
+
+  </div>
+  
+  {% if selected_measure %}
+  <script>
+$(function () {
+    var chart = new Array();
+
+    function getPastData(sensor_type, sensor_measurement, sensor_id) {
+      var url = '/async/' + sensor_type + '/' + sensor_measurement + '/' + sensor_id + '/0/0'
+      $.getJSON(url,
+        function(data, responseText, jqXHR) {
+          if (jqXHR.status != 204) {
+            var past_data = [];
+            for (i = 0; i < data.length; i++) {
+              var new_date = new Date(data[i][0]);
+              var new_time = new_date.getTime();
+              past_data.push([new_time, data[i][1]]);
+            }
+            past_data.push([new Date().getTime(), null]);
+            return past_data
+          }
+        }
+      );
+    }
+
+    function afterSetExtremes(e) {
+      var url = '/async/{{selected_measure}}/{{selected_id}}/' + Math.round(e.min)/1000 + '/' + Math.round(e.max)/1000
+      console.log(url);
+      $.getJSON(url,
+        function(data, responseText, jqXHR) {
+          if (jqXHR.status != 204) {
+            var new_data = [];
+            for (i = 0; i < data.length; i++){
+              var new_date = new Date(data[i][0]);
+              var new_time = new_date.getTime();
+              new_data.push([new_time, data[i][1]]);
+            }
+          }
+          chart[0].series[0].setData(new_data);
+          chart[0].hideLoading();
+        }
+      );
+    }
+
+    var url = '/async/{{selected_measure}}/{{selected_id}}/0/0'
+    $.getJSON(url, function (data_raw) {
+
+      var data = [];
+      for (i = 0; i < data_raw.length; i++) {
+        var new_date = new Date(data_raw[i][0]);
+        var new_time = new_date.getTime();
+        data.push([new_time, data_raw[i][1]]);
+      }
+      data.push([new Date().getTime(), null]);
+
+      // var data = getPastData('tsensor', 'temperature', 'Ps7I233m');
+      // console.log(data)
+
+      // create the chart
+      chart[0] = new Highcharts.StockChart({
+          chart: {
+              renderTo: 'container',
+              zoomType: 'x'
+          },
+
+          navigator: {
+              adaptToUpdatedData: false,
+              series: {
+                  data: data
+              }
+          },
+
+          scrollbar: {
+              liveRedraw: false
+          },
+
+          title: {
+              text: 'Asynchronous loading of {{selected_measure}} data from sensor ID {{selected_id}}'
+          },
+
+          // subtitle: {
+          //     text: 'Display many data points'
+          // },
+
+          rangeSelector: {
+              buttons: [{
+                  type: 'hour',
+                  count: 1,
+                  text: '1h'
+              }, {
+                  type: 'day',
+                  count: 1,
+                  text: '1d'
+              }, {
+                  type: 'month',
+                  count: 1,
+                  text: '1m'
+              }, {
+                  type: 'year',
+                  count: 1,
+                  text: '1y'
+              }, {
+                  type: 'all',
+                  text: 'All'
+              }],
+              inputEnabled: false, // it supports only days
+              selected: 4 // all
+          },
+
+          xAxis: {
+              events: {
+                  afterSetExtremes: afterSetExtremes
+              },
+              minRange: 1800 * 1000 // 30 minutes
+          },
+
+          yAxis: {
+              floor: 0
+          },
+
+          series: [{
+              data: data,
+              dataGrouping: {
+                  enabled: false
+              }
+          }]
+      });
+  });
+});
+</script>
+{% endif %}
+
+{% endblock %}

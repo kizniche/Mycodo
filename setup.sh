@@ -125,6 +125,9 @@ $INSTALL_DIRECTORY/init_databases.py -i all
 
 $INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh initialize
 
+service mycodo start
+/etc/init.d/apache2 restart
+
 trap : 0
 
 echo >&2 '

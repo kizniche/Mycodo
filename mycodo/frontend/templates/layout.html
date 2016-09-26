@@ -74,8 +74,6 @@
   <body>
 
     {% set navigation_bar_top = [
-      ('/live', 'live', 'Live'),
-      ('/graph', 'graph', 'Graph'),
       ('/sensor', 'sensor', 'Sensor'),
       ('/relay', 'relay', 'Relay'),
       ('/method', 'method_list', 'Method'),
@@ -98,6 +96,14 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
+            <li><a href="/live">Live</a></li>
+            <li class="dropdown{% if active_page == 'graph' %} active{% endif %}">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Graph<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="/graph">General Graph</a></li>
+                <li><a href="/graph-async">Asynchronous Graph</a></li>
+              </ul>
+            </li>
           {% for href, id, caption in navigation_bar_top %}
             <li{% if id == active_page %} class="active"{% endif %}><a href="{{ href|e }}">{{caption|e}}</a></li>
           {% endfor -%}

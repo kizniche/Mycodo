@@ -2,7 +2,7 @@
 
 ## Environmental Regulation System
 
-### Latest version: 4.0.20
+### Latest version: 4.0.21
 
 Mycodo is a remote monitoring and automated regulation system with a focus on modulating environmental conditions. It was built to run on the Raspberry Pi (versions Zero, 1, 2, and 3) and aims to be easy to install and set up.
 
@@ -108,15 +108,13 @@ sudo ./setup.sh
 
 Create an administrator user for the web UI:
 
-```sudo ./init_databases.py -A```
+```sudo ~/Mycodo/init_databases.py --addadmin```
 
 Make sure the setup.sh and init_databases.py scripts run without error. A log of the setup.sh script output will be created at ~/Mycodo/setup.log.
 
-Follow the on-screen prompts to create an administrator user for the web interface and then reboot.
+Follow the on-screen prompts to create an administrator user for the web interface.
 
-```sudo shutdown now -r```
-
-That's it. After the reboot, you should be able to use the user you just created to log into the Mycodo web UI at https://localhost/ (note the 's' in https), with localhost changed to your Raspberry Pi's host or IP address. Once logged in, make sure the Mycodo logo and version number at the top left is green, indicating the daemon is running. Red indicates the daemon is inactive or unresponsive. Ensure any java-blocking plugins are disabled for all the web UI features to work.
+That's it. You should be able to use the user you just created to log into the Mycodo web UI at https://localhost with localhost changed to your Raspberry Pi's hostname or IP address. Once logged in, make sure the Mycodo logo and version number at the top left is green, indicating the daemon is running. Red indicates the daemon is inactive or unresponsive. Ensure any java-blocking plugins are disabled for all the web UI features to work.
 
 
 

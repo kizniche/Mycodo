@@ -23,6 +23,10 @@
 #
 #  Contact at kylegabriel.com
 
+# Debug messages to debug console
+from __future__ import print_function # In python 2.7
+import sys
+
 import argparse
 import calendar
 import csv
@@ -169,8 +173,8 @@ def before_request():
     with session_scope(USER_DB_PATH) as new_session:
         user = new_session.query(Users).filter(
             Users.user_restriction == 'admin').first()
-        if not user.user_id:
-            return "Error: No admin user found. Run \"init_databases.py --addadmin\" to add one"
+        if user == None:
+            return "Error: No admin user found. Run \"sudo ~/Mycodo/init_databases.py --addadmin\" to add one"
 
 
 @app.route('/')
@@ -239,6 +243,28 @@ def page(page):
                                timer=timer,
                                pidDisplayOrder=pid_display_order,
                                sensorDisplayOrderSorted=sensor_order_sorted)
+
+    elif page == 'graph-async':
+        sensor = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Sensor)
+        sensor_choices = flaskutils.choices_sensors(sensor)
+        sensor_choices_split = OrderedDict()
+        for key, value in sensor_choices.iteritems():
+            order = key.split(",")
+            # Separate sensor IDs and measurement types
+            sensor_choices_split.update({order[0]:order[1]})
+
+        selected_id = None
+        selected_measure = None
+        if request.method == 'POST':
+            selected_id = request.form['selected_measure'].split(",")[0]
+            selected_measure = request.form['selected_measure'].split(",")[1]
+
+        return render_template('pages/graph-async.html',
+                               sensor=sensor,
+                               sensor_choices=sensor_choices,
+                               sensor_choices_split=sensor_choices_split,
+                               selected_id=selected_id,
+                               selected_measure=selected_measure)
 
     elif page == 'graph':
         graph = flaskutils.db_retrieve_table(MYCODO_DB_PATH, Graph)
@@ -688,6 +714,24 @@ def page(page):
             return render_template('settings/upgrade.html',
                                    is_internet=False)
 
+        # Read from the update status file created by the upgrade script
+        # to indicate if the update is running.
+        try:
+            with open(INSTALL_DIRECTORY + '/.updating') as f:
+                updating = int(f.read(1))
+        except IOError:
+            try:
+                with open(INSTALL_DIRECTORY + '/.updating', 'w') as f:
+                    f.write('0')
+            finally:
+                updating = 0
+
+        if updating:
+            flash("An upgrade is currently in progress. "
+                  "Please wait for it to finish.", "error")
+            return render_template('settings/upgrade.html',
+                                   updating=True)
+
         is_internet = True
         updating = 0
         update_available = False
@@ -712,6 +756,7 @@ def page(page):
         if request.method == 'POST':
             if formUpdate.update.data and update_available:
                 subprocess.Popen(INSTALL_DIRECTORY + '/mycodo/scripts/mycodo_wrapper upgrade >> /var/log/mycodo/mycodoupdate.log 2>&1', shell=True)
+                updating = 1
                 flash("The upgrade has started. The daemon will be "
                       "stopped during the upgrade. Give the "
                       "process several minutes to complete "
@@ -725,18 +770,6 @@ def page(page):
             else:
                 flash("You cannot update if an update is not available",
                       "error")
-
-        # Read from the update status file created by the upgrade script
-        # to indicate if the update is running.
-        try:
-            with open(INSTALL_DIRECTORY + '/.updating') as f:
-                updating = int(f.read(1))
-        except IOError:
-            try:
-                with open(INSTALL_DIRECTORY + '/.updating', 'w') as f:
-                    f.write('0')
-            finally:
-                updating = 0
 
         return render_template('settings/upgrade.html',
                                formBackup=formBackup,
@@ -766,12 +799,12 @@ def page(page):
         gpio_status = gpio.wait()
 
         df = subprocess.Popen(
-            "df", stdout=subprocess.PIPE, shell=True)
+            "df -h", stdout=subprocess.PIPE, shell=True)
         (df_output, df_err) = df.communicate()
         df_status = df.wait()
 
         free = subprocess.Popen(
-            "free", stdout=subprocess.PIPE, shell=True)
+            "free -h", stdout=subprocess.PIPE, shell=True)
         (free_output, free_err) = free.communicate()
         free_status = free.wait()
 
@@ -1674,6 +1707,113 @@ def past_data(sensor_type, sensor_measure, sensor_id, past_seconds):
         return jsonify(raw_data['series'][0]['values'])
     except:
         return ('', 204)
+
+
+@app.route('/async/<sensor_measure>/<sensor_id>/<start_seconds>/<end_seconds>')
+@gzipped
+def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
+    """
+    Return data from start_seconds to end_seconds from influxdb.
+    Used for asyncronous graph display of many points (up to millions).
+    """
+    if (not session.get('logged_in') and
+        not flaskutils.authenticate_cookies(USER_DB_PATH, Users)):
+        return ('', 204)
+
+    app.config['INFLUXDB_USER'] = INFLUXDB_USER
+    app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
+    app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
+    dbcon = influx_db.connection
+
+    # Set the time frame to the past year if start/end not specified
+    if start_seconds == '0' and end_seconds == '0':
+        end = datetime.datetime.utcnow()
+        start = end-datetime.timedelta(seconds=31557600)
+    else:
+        start = datetime.datetime.utcfromtimestamp(float(start_seconds))
+        end = datetime.datetime.utcfromtimestamp(float(end_seconds))
+
+    # Convert timestamps to datetime objects
+    start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+    end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
+    # Get how many points there are in the past year
+    raw_data = dbcon.query("""SELECT COUNT(*)
+                              FROM {}
+                              WHERE device_id='{}'
+                                    AND time >= '{}'
+                                    AND time <= '{}'
+                           """.format(sensor_measure,
+                                      sensor_id,
+                                      start_str,
+                                      end_str)).raw
+    count_points = raw_data['series'][0]['values'][0][1]
+    print('Count = {}'.format(count_points), file=sys.stderr)
+
+    # Get the timestamp of the first point in the past year
+    raw_data = dbcon.query("""SELECT value
+                              FROM {}
+                              WHERE device_id='{}'
+                                    AND time >= '{}'
+                                    AND time <= '{}'
+                                    GROUP BY * LIMIT 1
+                           """.format(sensor_measure,
+                                      sensor_id,
+                                      start_str,
+                                      end_str)).raw
+    first_point_time_str = raw_data['series'][0]['values'][0][0]
+    print('First = {}'.format(first_point_time_str), file=sys.stderr)
+    first_point_time = datetime.datetime.strptime(first_point_time_str[:26], "%Y-%m-%dT%H:%M:%S.%f")
+    print('TS = {}'.format(first_point_time), file=sys.stderr)
+
+    # Change start time to the first data point timestamp if it is sooner
+    # than 1 year ago.
+    if first_point_time > start:
+        start = first_point_time
+
+    # How many seconds between the start and end period
+    time_difference_seconds = (end-start).total_seconds()
+    print('Difference seconds = {}'.format(time_difference_seconds), file=sys.stderr)
+
+    # If there are more than 700 points in the time frame, we need to group
+    # data points into 700 groups with points averaged in each group.
+    if count_points > 700:
+        # Average period between sensor reads
+        seconds_per_point = time_difference_seconds/count_points
+        print('Seconds per point = {}'.format(seconds_per_point), file=sys.stderr)
+
+        # How many seconds to group data points in
+        group_seconds = int(time_difference_seconds/700)
+        print('Group seconds = {}'.format(group_seconds), file=sys.stderr)
+
+        try:
+            raw_data = dbcon.query("""SELECT MEAN(value)
+                                      FROM {}
+                                      WHERE device_id='{}'
+                                            AND time >= '{}'
+                                            AND time <= '{}' GROUP BY TIME({}s)
+                                   """.format(sensor_measure,
+                                              sensor_id,
+                                              start,
+                                              end,
+                                              group_seconds)).raw
+            return jsonify(raw_data['series'][0]['values'])
+        except:
+            return ('', 204)
+    else:
+        try:
+            raw_data = dbcon.query("""SELECT value
+                                      FROM {}
+                                      WHERE device_id='{}'
+                                            AND time >= '{}'
+                                            AND time <= '{}'
+                                   """.format(sensor_measure,
+                                              sensor_id,
+                                              start,
+                                              end)).raw
+            return jsonify(raw_data['series'][0]['values'])
+        except:
+            return ('', 204)
 
 
 @app.route('/daemonactive')

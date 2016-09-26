@@ -57,7 +57,6 @@ if [ "$INFLUX_VERSION" != "1.0.0-1" ]; then
 fi
 
 printf "#### Checking if python modules are up-to-date ####\n"
-# Make sure python modules are installed/updated
 pip install --upgrade -r $INSTALL_DIRECTORY/requirements.txt
 
 printf "#### Upgrading database ####\n"
@@ -71,5 +70,5 @@ printf "#### Setting permissions ####\n"
 $INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh initialize
 
 printf "#### Starting Mycodo daemon and reloading Apache ####\n"
-$INSTALL_DIRECTORY/mycodo/mycodo_daemon.py
+service mycodo start
 touch $INSTALL_DIRECTORY/mycodo_flask.wsgi

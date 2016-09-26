@@ -52,8 +52,10 @@ case "${1:-''}" in
             printf "The remote git repository is newer than yours. This could mean there is an update to Mycodo.\n"
 
             if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+                echo '1' > $INSTALL_DIRECTORY/.updating
+
                 printf "#### Stopping Mycodo Daemon ####\n"
-                $INSTALL_DIRECTORY/mycodo/mycodo_client.py -t
+                service mycodo stop
 
                 # Create backup
                 $INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh backup
@@ -82,7 +84,7 @@ case "${1:-''}" in
             fi
         else
             printf "Your version of Mycodo is already the latest version.\n\n"
-            echo "1" > $INSTALL_DIRECTORY/.updating
+            echo '0' > $INSTALL_DIRECTORY/.updating
             exit 0
         fi
     ;;
