@@ -1727,49 +1727,57 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
 
     # Set the time frame to the past year if start/end not specified
     if start_seconds == '0' and end_seconds == '0':
+        # Get how many points there are in the past year
+        raw_data = dbcon.query("""SELECT COUNT(value)
+                                  FROM {}
+                                  WHERE device_id='{}'
+                               """.format(sensor_measure,
+                                          sensor_id)).raw
+        count_points = raw_data['series'][0]['values'][0][1]
+        # Get the timestamp of the first point in the past year
+        raw_data = dbcon.query("""SELECT value
+                                  FROM {}
+                                  WHERE device_id='{}'
+                                        GROUP BY * LIMIT 1
+                               """.format(sensor_measure,
+                                          sensor_id)).raw
+        first_point = raw_data['series'][0]['values'][0][0]
         end = datetime.datetime.utcnow()
-        start = end-datetime.timedelta(seconds=31557600)
+        end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
     else:
         start = datetime.datetime.utcfromtimestamp(float(start_seconds))
+        start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
         end = datetime.datetime.utcfromtimestamp(float(end_seconds))
+        end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        raw_data = dbcon.query("""SELECT COUNT(value)
+                                  FROM {}
+                                  WHERE device_id='{}'
+                                        AND time >= '{}'
+                                        AND time <= '{}'
+                               """.format(sensor_measure,
+                                          sensor_id,
+                                          start_str,
+                                          end_str)).raw
+        count_points = raw_data['series'][0]['values'][0][1]
+        # Get the timestamp of the first point in the past year
+        raw_data = dbcon.query("""SELECT value
+                                  FROM {}
+                                  WHERE device_id='{}'
+                                        AND time >= '{}'
+                                        AND time <= '{}'
+                                        GROUP BY * LIMIT 1
+                               """.format(sensor_measure,
+                                          sensor_id,
+                                          start_str,
+                                          end_str)).raw
+        first_point = raw_data['series'][0]['values'][0][0]
 
-    # Convert timestamps to datetime objects
+    start = datetime.datetime.strptime(first_point[:26], "%Y-%m-%dT%H:%M:%S.%f")
     start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-    end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
-    # Get how many points there are in the past year
-    raw_data = dbcon.query("""SELECT COUNT(value)
-                              FROM {}
-                              WHERE device_id='{}'
-                                    AND time >= '{}'
-                                    AND time <= '{}'
-                           """.format(sensor_measure,
-                                      sensor_id,
-                                      start_str,
-                                      end_str)).raw
-    count_points = raw_data['series'][0]['values'][0][1]
     print('Count = {}'.format(count_points), file=sys.stderr)
-
-    # Get the timestamp of the first point in the past year
-    raw_data = dbcon.query("""SELECT value
-                              FROM {}
-                              WHERE device_id='{}'
-                                    AND time >= '{}'
-                                    AND time <= '{}'
-                                    GROUP BY * LIMIT 1
-                           """.format(sensor_measure,
-                                      sensor_id,
-                                      start_str,
-                                      end_str)).raw
-    first_point_time_str = raw_data['series'][0]['values'][0][0]
-    print('First = {}'.format(first_point_time_str), file=sys.stderr)
-    first_point_time = datetime.datetime.strptime(first_point_time_str[:26], "%Y-%m-%dT%H:%M:%S.%f")
-    print('TS = {}'.format(first_point_time), file=sys.stderr)
-
-    # Change start time to the first data point timestamp if it is sooner
-    # than 1 year ago.
-    if first_point_time > start:
-        start = first_point_time
+    print('Start = {}'.format(start), file=sys.stderr)
+    print('End   = {}'.format(end), file=sys.stderr)
 
     # How many seconds between the start and end period
     time_difference_seconds = (end-start).total_seconds()
@@ -1794,8 +1802,8 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
                                             AND time <= '{}' GROUP BY TIME({}s)
                                    """.format(sensor_measure,
                                               sensor_id,
-                                              start,
-                                              end,
+                                              start_str,
+                                              end_str,
                                               group_seconds)).raw
             return jsonify(raw_data['series'][0]['values'])
         except:
@@ -1809,8 +1817,8 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
                                             AND time <= '{}'
                                    """.format(sensor_measure,
                                               sensor_id,
-                                              start,
-                                              end)).raw
+                                              start_str,
+                                              end_str)).raw
             return jsonify(raw_data['series'][0]['values'])
         except:
             return ('', 204)
