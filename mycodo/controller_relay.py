@@ -155,110 +155,107 @@ class RelayController(threading.Thread):
         :type trigger_conditionals: bool
         """
         # Check if relay exists
-        try:
-            if relay_id not in self.relay_id:
-                self.logger.warning("[Relay] Cannot turn {} Relay with ID {}. It "
-                                    "doesn't exist".format(state, relay_id))
+        if relay_id not in self.relay_id:
+            self.logger.warning("[Relay] Cannot turn {} Relay with ID {}. It "
+                                "doesn't exist".format(state, relay_id))
+            return 1
+        if state == 'on':
+            if not self.relay_pin[relay_id]:
+                self.logger.warning("[Relay] Invalid pin for relay "
+                                    "{} ({}).".format(self.relay_id[relay_id],
+                                                      self.relay_name[relay_id]))
                 return 1
-            if state == 'on':
-                if not self.relay_pin[relay_id]:
-                    self.logger.warning("[Relay] Invalid pin for relay "
-                                        "{} ({}).".format(self.relay_id[relay_id],
-                                                          self.relay_name[relay_id]))
-                    return 1
 
-                current_amps = self.current_amp_load()
-                if current_amps+self.relay_amps[relay_id] > MAX_AMPS:
-                    self.logger.warning("[Relay] Cannot turn relay {} "
-                                        "({}) On. If this relay turns on, "
-                                        "there will be {} amps being drawn, "
-                                        "which exceeds the maximum set draw of {}"
-                                        " amps.".format(self.relay_id[relay_id],
-                                                        self.relay_name[relay_id],
-                                                        current_amps,
-                                                        MAX_AMPS))
-                    return 1
-
-                else:
-                    if duration:
-                        time_now = datetime.datetime.now()
-                        if self.is_on(relay_id) and self.relay_on_duration[relay_id]:
-                            if self.relay_on_until[relay_id] > time_now:
-                                remaining_time = (self.relay_on_until[relay_id]-time_now).seconds
-                            else:
-                                remaining_time = 0
-                            time_on = self.relay_last_duration[relay_id] - remaining_time
-                            self.logger.debug("[Relay] Relay {} ({}) is already "
-                                                "on for a duration of {:.1f} seconds (with "
-                                                "{:.1f} seconds remaining). Recording the "
-                                                "amount of time the relay has been on ({:.1f} "
-                                                "sec) and updating the on duration to {:.1f} "
-                                                "seconds.".format(self.relay_id[relay_id],
-                                                                  self.relay_name[relay_id],
-                                                                  self.relay_last_duration[relay_id],
-                                                                  remaining_time,
-                                                                  time_on,
-                                                                  duration))
-                            if time_on > 0:
-                                duration = float(time_on)
-                                timestamp = datetime.datetime.utcnow()-datetime.timedelta(seconds=duration)
-                                write_db = threading.Thread(
-                                    target=write_influxdb_value,
-                                    args=(self.logger, INFLUXDB_HOST,
-                                          INFLUXDB_PORT, INFLUXDB_USER,
-                                          INFLUXDB_PASSWORD, INFLUXDB_DATABASE,
-                                          'relay', relay_id, 'duration_sec',
-                                          duration, timestamp,))
-                                write_db.start()
-
-                            self.relay_on_until[relay_id] = time_now+datetime.timedelta(seconds=duration)
-                            self.relay_last_duration[relay_id] = duration
-                            return 0
-                        elif self.is_on(relay_id) and not self.relay_on_duration:
-                            self.relay_on_duration[relay_id] = True
-                            self.relay_on_until[relay_id] = time_now+datetime.timedelta(seconds=duration)
-                            self.relay_last_duration[relay_id] = duration
-
-                            self.logger.debug("[Relay] Relay {} ({}) is currently"
-                                              " on without a duration. Turning "
-                                              "into a duration  of {:.1f} "
-                                              "seconds.".format(self.relay_id[relay_id],
-                                                                self.relay_name[relay_id],
-                                                                duration))
-                            return 0
-                        else:
-                            self.relay_on_until[relay_id] = time_now+datetime.timedelta(seconds=duration)
-                            self.relay_on_duration[relay_id] = True
-                            self.relay_last_duration[relay_id] = duration
-                            self.logger.debug("[Relay] Relay {} ({}) on for {:.1f} "
-                                              "seconds.".format(self.relay_id[relay_id],
-                                                                 self.relay_name[relay_id],
-                                                                 duration))
-                            GPIO.output(self.relay_pin[relay_id], self.relay_trigger[relay_id])
-
-                    else:
-                        if self.is_on(relay_id):
-                            self.logger.warning("[Relay] Relay {} ({}) is already on.".format(
-                                    self.relay_id[relay_id],
-                                    self.relay_name[relay_id]))
-                            return 1
-                        else:
-                            GPIO.output(self.relay_pin[relay_id],
-                                        self.relay_trigger[relay_id])
+            current_amps = self.current_amp_load()
+            if current_amps+self.relay_amps[relay_id] > MAX_AMPS:
+                self.logger.warning("[Relay] Cannot turn relay {} "
+                                    "({}) On. If this relay turns on, "
+                                    "there will be {} amps being drawn, "
+                                    "which exceeds the maximum set draw of {}"
+                                    " amps.".format(self.relay_id[relay_id],
+                                                    self.relay_name[relay_id],
+                                                    current_amps,
+                                                    MAX_AMPS))
+                return 1
 
             else:
-                if self._is_setup() and self.relay_pin[relay_id]:  # if pin not 0
-                    self.relay_on_duration[relay_id] = False
-                    self.relay_on_until[relay_id] = datetime.datetime.now()
-                    GPIO.output(self.relay_pin[relay_id], not self.relay_trigger[relay_id])
-                    self.logger.debug("[Relay] Relay {} ({}) turned off.".format(
-                            self.relay_id[relay_id],
-                            self.relay_name[relay_id]))
+                if duration:
+                    time_now = datetime.datetime.now()
+                    if self.is_on(relay_id) and self.relay_on_duration[relay_id]:
+                        if self.relay_on_until[relay_id] > time_now:
+                            remaining_time = (self.relay_on_until[relay_id]-time_now).seconds
+                        else:
+                            remaining_time = 0
+                        time_on = self.relay_last_duration[relay_id] - remaining_time
+                        self.logger.debug("[Relay] Relay {} ({}) is already "
+                                            "on for a duration of {:.1f} seconds (with "
+                                            "{:.1f} seconds remaining). Recording the "
+                                            "amount of time the relay has been on ({:.1f} "
+                                            "sec) and updating the on duration to {:.1f} "
+                                            "seconds.".format(self.relay_id[relay_id],
+                                                              self.relay_name[relay_id],
+                                                              self.relay_last_duration[relay_id],
+                                                              remaining_time,
+                                                              time_on,
+                                                              duration))
+                        if time_on > 0:
+                            duration = float(time_on)
+                            timestamp = datetime.datetime.utcnow()-datetime.timedelta(seconds=duration)
+                            write_db = threading.Thread(
+                                target=write_influxdb_value,
+                                args=(self.logger, INFLUXDB_HOST,
+                                      INFLUXDB_PORT, INFLUXDB_USER,
+                                      INFLUXDB_PASSWORD, INFLUXDB_DATABASE,
+                                      'relay', relay_id, 'duration_sec',
+                                      duration, timestamp,))
+                            write_db.start()
 
-            if trigger_conditionals:
-                self.checkConditionals(relay_id, duration)
-        except Exception as msg:
-            self.logger.debug("[Relay ERROR: {}".format(msg))
+                        self.relay_on_until[relay_id] = time_now+datetime.timedelta(seconds=duration)
+                        self.relay_last_duration[relay_id] = duration
+                        return 0
+                    elif self.is_on(relay_id) and not self.relay_on_duration:
+                        self.relay_on_duration[relay_id] = True
+                        self.relay_on_until[relay_id] = time_now+datetime.timedelta(seconds=duration)
+                        self.relay_last_duration[relay_id] = duration
+
+                        self.logger.debug("[Relay] Relay {} ({}) is currently"
+                                          " on without a duration. Turning "
+                                          "into a duration  of {:.1f} "
+                                          "seconds.".format(self.relay_id[relay_id],
+                                                            self.relay_name[relay_id],
+                                                            duration))
+                        return 0
+                    else:
+                        self.relay_on_until[relay_id] = time_now+datetime.timedelta(seconds=duration)
+                        self.relay_on_duration[relay_id] = True
+                        self.relay_last_duration[relay_id] = duration
+                        self.logger.debug("[Relay] Relay {} ({}) on for {:.1f} "
+                                          "seconds.".format(self.relay_id[relay_id],
+                                                             self.relay_name[relay_id],
+                                                             duration))
+                        GPIO.output(self.relay_pin[relay_id], self.relay_trigger[relay_id])
+
+                else:
+                    if self.is_on(relay_id):
+                        self.logger.warning("[Relay] Relay {} ({}) is already on.".format(
+                                self.relay_id[relay_id],
+                                self.relay_name[relay_id]))
+                        return 1
+                    else:
+                        GPIO.output(self.relay_pin[relay_id],
+                                    self.relay_trigger[relay_id])
+
+        else:
+            if self._is_setup() and self.relay_pin[relay_id]:  # if pin not 0
+                self.relay_on_duration[relay_id] = False
+                self.relay_on_until[relay_id] = datetime.datetime.now()
+                GPIO.output(self.relay_pin[relay_id], not self.relay_trigger[relay_id])
+                self.logger.debug("[Relay] Relay {} ({}) turned off.".format(
+                        self.relay_id[relay_id],
+                        self.relay_name[relay_id]))
+
+        if trigger_conditionals:
+            self.checkConditionals(relay_id, duration)
 
 
     def checkConditionals(self, relay_id, on_duration):
