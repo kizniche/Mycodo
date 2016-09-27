@@ -317,6 +317,11 @@ class SensorController(threading.Thread):
                 time.sleep(0.1)
 
             self.running = False
+
+            if self.device_type == 'EDGE':
+                GPIO.setmode(GPIO.BCM)
+                GPIO.cleanup(int(self.location))
+
             self.logger.info("[Sensor {}] Deactivated in {:.1f} ms".format(
                 self.sensor_id,
                 (timeit.default_timer()-self.thread_shutdown_timer)*1000))

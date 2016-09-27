@@ -27,6 +27,7 @@ import argparse
 import csv
 import logging
 import resource
+import RPi.GPIO as GPIO
 import os
 import pwd
 import sys
@@ -305,6 +306,7 @@ class DaemonController(threading.Thread):
                     self.send_stats()
 
                 time.sleep(0.25)
+            GPIO.cleanup()
         except Exception as except_msg:
             self.logger.exception("Unexpected error: {}: {}".format(
                 sys.exc_info()[0], except_msg))
@@ -314,6 +316,7 @@ class DaemonController(threading.Thread):
         finally:
             self.logger.debug("[Daemon] Stopping all running controllers")
             self.stop_all_controllers()
+            
 
         self.logger.info("[Daemon] Mycodo terminated in {:.3f} seconds".format(
             timeit.default_timer()-self.thread_shutdown_timer))

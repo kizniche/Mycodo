@@ -159,8 +159,7 @@ class PIDController(threading.Thread):
                 self.pid_id,
                 (timeit.default_timer()-self.thread_shutdown_timer)*1000))
         except Exception as except_msg:
-                self.logger.exception("[PID {}] Error: {}".format(self.pid_id,
-                                                                except_msg))
+                self.logger.exception("[PID {}] Run Error: UP {} Down {}: {}".format(self.pid_id, self.raise_relay_id, self.lower_relay_id, except_msg))
 
 
     def update(self, current_value):
