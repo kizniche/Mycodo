@@ -1538,6 +1538,12 @@ def relay_mod(formModRelay):
     if formModRelay.validate():
         try:
             with session_scope(MYCODO_DB_PATH) as db_session:
+                sensor = db_session.query(Sensor).filter(
+                    Sensor.location == str(formModRelay.modGpio.data)).first()
+                if sensor is not None:
+                    flash("Invalid pin. Already in use with a sensor.",
+                          "error")
+                    return 1
                 mod_relay = db_session.query(Relay).filter(
                     Relay.id == formModRelay.modRelay_id.data).first()
                 mod_relay.name = formModRelay.modName.data
@@ -1869,8 +1875,14 @@ def sensor_mod(formModSensor):
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_sensor = db_session.query(Sensor).filter(
                 Sensor.id == formModSensor.modSensor_id.data).first()
+
             error = False
-            if mod_sensor.activated:
+            relay = db_session.query(Relay).filter(
+                Relay.pin == int(formModSensor.modLocation.data)).first()
+            if relay is not None:
+                flash("Invalid pin. Already in use with a relay.", "error")
+                error = True
+            elif mod_sensor.activated:
                 flash("Deactivate sensor controller before modifying its "
                       "settings.", "error")
                 error = True
