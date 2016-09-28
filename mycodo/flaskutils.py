@@ -1508,7 +1508,7 @@ def relay_add(formAddRelay, display_order):
             new_relay.name = 'Relay'
             new_relay.pin = 0
             new_relay.amps = 0
-            new_relay.trigger = 0
+            new_relay.trigger = 1
             new_relay.start_state = 0
             try:
                 with session_scope(MYCODO_DB_PATH) as db_session:
@@ -1544,6 +1544,15 @@ def relay_mod(formModRelay):
                     flash("Invalid pin. Already in use with a sensor.",
                           "error")
                     return 1
+
+                relay = db_session.query(Relay)
+                relay = relay.filter(Relay.id != formModRelay.modRelay_id.data)
+                relay = relay.filter(Relay.pin == int(formModRelay.modGpio.data)).first()
+                if relay is not None:
+                    flash("Invalid pin. Already in use with a relay.",
+                          "error")
+                    return 1
+
                 mod_relay = db_session.query(Relay).filter(
                     Relay.id == formModRelay.modRelay_id.data).first()
                 mod_relay.name = formModRelay.modName.data
@@ -1877,27 +1886,41 @@ def sensor_mod(formModSensor):
                 Sensor.id == formModSensor.modSensor_id.data).first()
 
             error = False
+
             relay = db_session.query(Relay).filter(
                 Relay.pin == int(formModSensor.modLocation.data)).first()
             if relay is not None:
-                flash("Invalid pin. Already in use with a relay.", "error")
+                flash("Invalid GPIO. Already in use with a relay.", "error")
                 error = True
-            elif mod_sensor.activated:
+
+            sensor = db_session.query(Sensor)
+            sensor = sensor.filter(
+                Sensor.id != formModSensor.modSensor_id.data)
+            sensor = sensor.filter(
+                Sensor.location == formModSensor.modLocation.data).first()
+            if sensor is not None and mod_sensor.device == 'EDGE':
+                flash("Invalid GPIO/Location. Already in use with another "
+                      "sensor.", "error")
+                error = True
+
+            if mod_sensor.activated:
                 flash("Deactivate sensor controller before modifying its "
                       "settings.", "error")
                 error = True
-            elif (mod_sensor.device == 'AM2315' and
+            if (mod_sensor.device == 'AM2315' and
                     formModSensor.modPeriod.data < 7):
                 flash("Choose a Read Period equal to or greater than 7. "
                       "The AM2315 may become unresponsive if the period "
                       "is below 7.", "error")
                 error = True
-            elif formModSensor.modPeriod.data < mod_sensor.pre_relay_duration:
+            if formModSensor.modPeriod.data < mod_sensor.pre_relay_duration:
                 flash("The Read Period cannot be less than the "
                       "Pre-Relay Duration. ", "error")
                 error = True
+
             if error:
                 return redirect('/sensor')
+
             mod_sensor.name = formModSensor.modName.data
             mod_sensor.i2c_bus = formModSensor.modBus.data
             mod_sensor.location = formModSensor.modLocation.data
