@@ -246,7 +246,7 @@ class RelayController(threading.Thread):
                                     self.relay_trigger[relay_id])
 
         else:
-            if self._is_setup() and self.relay_pin[relay_id]:  # if pin not 0
+            if self._is_setup(self.relay_pin[relay_id]) and self.relay_pin[relay_id]:  # if pin not 0
                 self.relay_on_duration[relay_id] = False
                 self.relay_on_until[relay_id] = datetime.datetime.now()
                 GPIO.output(self.relay_pin[relay_id], not self.relay_trigger[relay_id])
@@ -496,7 +496,7 @@ class RelayController(threading.Thread):
         return self.relay_trigger[relay_id] == GPIO.input(self.relay_pin[relay_id])
 
 
-    def _is_setup(self):
+    def _is_setup(self, pin):
         """
         This function checks to see if the GPIO pin is setup and ready
         to use. This is for safety and to make sure we don't blow anything.
@@ -506,6 +506,8 @@ class RelayController(threading.Thread):
         :return: Is it safe to manipulate this relay?
         :rtype: bool
         """
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(pin, GPIO.OUT)
         return True
 
 

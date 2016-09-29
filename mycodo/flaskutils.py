@@ -2195,7 +2195,7 @@ def sensor_conditional_mod(formModSensorCond):
                 if device_specific_configured and cond_configured:
                     mod_sensor.activated = 1
                     db_session.commit()
-                    flash("Sensor Conditional deactivated in SQL "
+                    flash("Sensor Conditional activated in SQL "
                           "database.", "success")
                     check_refresh_conditional(formModSensorCond.modSensor_id.data,
                                               'mod',
