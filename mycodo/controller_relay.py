@@ -63,10 +63,6 @@ class RelayController(threading.Thread):
 
         self.logger.debug("[Relay] Initializing Relays")
         try:
-            # Setup GPIO (BCM numbering) and initialize all relays in database
-            GPIO.setmode(GPIO.BCM)
-            GPIO.setwarnings(False)
-
             with session_scope(MYCODO_DB_PATH) as new_session:
                 smtp = new_session.query(SMTP).first()
                 self.smtp_max_count = smtp.hourly_max
@@ -76,7 +72,6 @@ class RelayController(threading.Thread):
                 self.allowed_to_send_notice = True
 
                 relays = new_session.query(Relay).all()
-
                 self.all_relays_initialize(relays)
             # Turn all relays off
             self.all_relays_off()
@@ -415,11 +410,11 @@ class RelayController(threading.Thread):
                 self.relay_on_duration[relay_id] = False
                 message = "[Relay] Relay {} ({}) ".format(
                     self.relay_id[relay_id], self.relay_name[relay_id])
-                if not do_setup_pin:
-                    message += "added"
-                else:
+                if do_setup_pin:
                     self.setup_pin(relay.pin)
                     message += "initiliazed"
+                else:
+                    message += "added"
                 self.logger.debug(message)
             return 0, "success"
         except Exception as msg:
@@ -481,7 +476,9 @@ class RelayController(threading.Thread):
         Setup pin for this relay
         :rtype: None
         """
-        # TODO add some extra checks here.  Maybe verify BCM?
+        # Setup GPIO (BCM numbering) and initialize relay pin as output
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(True)
         GPIO.setup(pin, GPIO.OUT)
 
 

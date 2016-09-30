@@ -652,9 +652,9 @@ class SensorController(threading.Thread):
             self.edge_reset_timer = time.time()+self.switch_reset_period
             if (self.switch_edge == 'rising' or
                     (self.switch_edge == 'both' and gpio_state)):
-                rising_or_falling = 1
+                rising_or_falling = 1  # Rising edge detected
             else:
-                rising_or_falling = -1
+                rising_or_falling = -1  # Falling edge detected
             write_db = threading.Thread(
                 target=write_influxdb_value,
                 args=(self.logger, INFLUXDB_HOST,
@@ -666,15 +666,12 @@ class SensorController(threading.Thread):
 
             # Check sensor conditionals
             for each_cond_id in self.cond_id:
-                if self.cond_activated[each_cond_id]:
-                    self.logger.info("TST01 {}, {}".format(self.cond_edge_detected[each_cond_id], rising_or_falling))
                 if (self.cond_activated[each_cond_id] and
                         ((self.cond_edge_detected[each_cond_id] == 'rising' and
                         rising_or_falling == 1) or
                         (self.cond_edge_detected[each_cond_id] == 'falling' and
                         rising_or_falling == -1) or
                         self.cond_edge_detected[each_cond_id] == 'both')):
-                    self.logger.info("TST02")
                     self.checkConditionals(each_cond_id)
 
 
