@@ -241,6 +241,7 @@ class DaemonController(threading.Thread):
     def run(self):
         self.start_all_controllers()
         self.startup_stats()
+
         try:
             # loop until daemon is instructed to shut down
             while self.daemon_run:

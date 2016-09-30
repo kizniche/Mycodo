@@ -13,6 +13,8 @@ from influxdb import InfluxDBClient
 from lockfile import LockFile
 from sqlalchemy import func
 
+from system_pi import get_git_commit
+
 
 #
 # Anonymous usage statistics collection and transmission
@@ -149,6 +151,7 @@ def recreate_stat_file(id_file, stats_csv, stats_interval, mycodo_version):
                      ['next_send', time.time()+stats_interval],
                      ['RPi_revision', get_pi_revision()],
                      ['Mycodo_revision', mycodo_version],
+                     ['git_commit', 'None'],
                      ['country', 'None'],
                      ['daemon_startup_seconds', 0.0],
                      ['ram_use_mb', 0.0],
@@ -240,6 +243,8 @@ def send_stats(logger, host, port, user, password, dbname,
         add_update_csv(logger, stats_csv, 'num_users_guest', user_count-admin_count)
 
         add_update_csv(logger, stats_csv, 'Mycodo_revision', mycodo_version)
+
+        add_update_csv(logger, stats_csv, 'git_commit', get_git_commit())
 
         # Combine stats into list of dictionaries to be pushed to influxdb
         new_stats_dict = return_stat_file_dict(stats_csv)

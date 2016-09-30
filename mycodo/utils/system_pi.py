@@ -5,6 +5,7 @@ import os
 import pwd
 import socket
 import subprocess
+import sys
 
 
 
@@ -19,6 +20,12 @@ def cmd_output(command, su_mycodo=True):
     cmd_output, cmd_err = cmd.communicate()
     cmd_status = cmd.wait()
     return cmd_output, cmd_err, cmd_status
+
+
+def get_git_commit():
+    current_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+    output, err, status = cmd_output('cd {} && git rev-parse --short HEAD'.format(current_path))
+    return output[:7]
 
 
 def internet(host="8.8.8.8", port=53, timeout=3):
