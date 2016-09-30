@@ -278,7 +278,7 @@ class DaemonController(threading.Thread):
                                                    capture_number)
                         # Capture image
                         with session_scope(MYCODO_DB_PATH) as new_session:
-                            camera = new_session.query(Method)
+                            camera = new_session.query(CameraStill).first()
                             camera_record(
                                 INSTALL_DIRECTORY,
                                 'timelapse',
