@@ -346,11 +346,13 @@ Mycodo/
 │   │   ├── bmp.py
 │   │   ├── dht11.py
 │   │   └── ...
-│   └── tests - Scripts to test various sensors or devices
-│       ├── Test_I2C_LCD.py
-│       ├── Test_I2C_MCP342x.py
-│       ├── Test_I2C_Multiplexer.py
-│       └── ...
+│   └── tests - Software and Hardware Tests 
+│       ├── manual_tests - Scripts to test various sensors or devices
+│       │   ├── Test_I2C_LCD.py
+│       │   ├── Test_I2C_MCP342x.py
+│       │   ├── Test_I2C_Multiplexer.py
+│       │   └──...
+│       └── software_tests - Automated Tests for Software
 ├── mycodo_flask_apache.conf - Apache2 configuration file
 ├── mycodo_flask.wsgi - Start script for Apache2 mod_wsgi
 ├── old - Archived milestone versions of Mycodo
