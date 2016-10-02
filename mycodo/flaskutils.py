@@ -2084,7 +2084,9 @@ def sensor_conditional_add(formModSensor):
     new_sensor_cond.sensor_id = formModSensor.modSensor_id.data
     new_sensor_cond.period = 60
     new_sensor_cond.measurement_type = ''
+    new_sensor_cond.edge_select = 'edge'
     new_sensor_cond.edge_detected = 'rising'
+    new_sensor_cond.gpio_state = 1
     new_sensor_cond.direction = ''
     new_sensor_cond.setpoint = 0.0
     new_sensor_cond.relay_id = ''
@@ -2145,7 +2147,9 @@ def sensor_conditional_mod(formModSensorCond):
                 mod_sensor.name = formModSensorCond.modCondName.data
                 mod_sensor.period = formModSensorCond.Period.data
                 mod_sensor.measurement_type = formModSensorCond.MeasureType.data
+                mod_sensor.edge_select = formModSensorCond.EdgeSelect.data
                 mod_sensor.edge_detected = formModSensorCond.EdgeDetected.data
+                mod_sensor.gpio_state = formModSensorCond.GPIOState.data
                 mod_sensor.direction = formModSensorCond.Direction.data
                 mod_sensor.setpoint = formModSensorCond.Setpoint.data
                 mod_sensor.relay_id = formModSensorCond.modCondRelayID.data

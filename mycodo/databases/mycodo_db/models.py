@@ -213,6 +213,8 @@ class SensorConditional(Base):
     sensor_id = Column(TEXT)
     period = Column(INT)
     measurement_type = Column(TEXT)
+    edge_select = Column(TEXT)
+    gpio_state = Column(INT)
     edge_detected = Column(TEXT)
     direction = Column(TEXT) # 'above' or 'below' setpoint
     setpoint = Column(REAL)
