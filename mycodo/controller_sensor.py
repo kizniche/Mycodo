@@ -366,6 +366,7 @@ class SensorController(threading.Thread):
         """
         attachment_file = False
         attachment_type = False
+        message = ""
 
         conditional = False
         if self.cond_edge_detected[cond_id]:
