@@ -115,6 +115,10 @@ class ComServer(rpyc.Service):
         """Starts or stops an LCD from flashing (alarm)"""
         return mycodo_daemon.flash_lcd(lcd_id, state)
 
+    def exposed_relay_state(self, relay_id):
+        """Return the relay state (not pin but whether relay is on or off"""
+        return mycodo_daemon.relay_state(relay_id)
+
     def exposed_relay_on(self, relay_id, duration):
         """Turns relay on from the client"""
         return mycodo_daemon.relay_on(relay_id, duration)
@@ -443,6 +447,16 @@ class DaemonController(threading.Thread):
             return self.controller['LCD'][lcd_id].flash_lcd(state)
         else:
             return "LCD {} not running".format(lcd_id)
+
+
+    def relay_state(self, relay_id):
+        """
+        Return the relay state, wither "on" or "off"
+
+        :param relay_id: Unique ID for relay
+        :type relay_id: str
+        """
+        return self.controller['Relay'].relay_state(relay_id)
 
 
     def relay_on(self, relay_id, duration):

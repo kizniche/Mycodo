@@ -482,6 +482,20 @@ class RelayController(threading.Thread):
         GPIO.setup(pin, GPIO.OUT)
 
 
+    def relay_state(self, relay_id):
+        """
+        :return: Whether the relay is currently "ON"
+        :rtype: str
+
+        :param relay_id: Unique ID for each relay
+        :type relay_id: str
+        """
+        if self.relay_trigger[relay_id] == GPIO.input(self.relay_pin[relay_id]):
+            return 'on'
+        else:
+            return 'off'
+
+
     def is_on(self, relay_id):
         """
         :return: Whether the relay is currently "ON"

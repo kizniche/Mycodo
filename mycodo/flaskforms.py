@@ -2,7 +2,7 @@
 #
 
 from flask_wtf import Form
-from wtforms import BooleanField, DecimalField, HiddenField, IntegerField, PasswordField, SelectField, SelectMultipleField, SubmitField, TextField, validators
+from wtforms import BooleanField, DecimalField, HiddenField, IntegerField, PasswordField, RadioField, SelectField, SelectMultipleField, SubmitField, TextField, validators
 from wtforms.validators import DataRequired
 from wtforms.fields.html5 import EmailField
 
@@ -1081,57 +1081,32 @@ class ModSensor(Form):
 class ModSensorConditional(Form):
     modCondSensor_id = HiddenField(u'Conditional ID')
     modSensor_id = HiddenField(u'Sensor ID')
-    modCondName = TextField(
-        u'Name',
-        render_kw={"placeholder": "Name"}
-    )
+    modCondName = TextField(u'Name')
     Period = IntegerField(
         u'Period (sec)',
-        render_kw={"placeholder": "Period"},
         validators=[validators.NumberRange(
-            min=0,
-            max=86400
+            min=0
         )]
     )
-    MeasureType = TextField(
-        u'Measurement Type'
+    MeasureType = TextField(u'Measurement Type')
+    EdgeSelect = RadioField(
+        u'Edge or State',
+        choices=[
+            ('edge','Detect Edge'),
+            ('state','Detect State')
+        ]
     )
-    EdgeDetected = TextField(
-        u'Edge Detected'
-    )
-    Direction = TextField(
-        u'Direction'
-    )
-    Setpoint = DecimalField(
-        u'Setpoint',
-        render_kw={"placeholder": "Setpoint"}
-    )
-    modCondRelayID = TextField(
-        u'Relay ID'
-    )
-    RelayState = TextField(
-        u'Relay State'
-    )
-    RelayDuration = DecimalField(
-        u'Relay Duration',
-        render_kw={"placeholder": "Duration"}
-    )
-    DoExecute = TextField(
-        u'Execute Command',
-        render_kw={"placeholder": "Command"}
-    )
-    DoNotify = TextField(
-        u'Notify by Email',
-        render_kw={"placeholder": "Email"}
-    )
-    DoFlashLCD = TextField(
-        u'Flash LCD',
-        render_kw={"placeholder": "LCD"}
-    )
-    DoRecord = TextField(
-        u'Record with Camera',
-        render_kw={"placeholder": "Record"}
-    )
+    EdgeDetected = TextField(u'Edge Detected')
+    GPIOState = IntegerField(u'GPIO State')
+    Direction = TextField( u'Direction')
+    Setpoint = DecimalField(u'Setpoint')
+    modCondRelayID = TextField(u'Relay ID')
+    RelayState = TextField(u'Relay State')
+    RelayDuration = DecimalField(u'Relay Duration')
+    DoExecute = TextField(u'Execute Command')
+    DoNotify = TextField(u'Notify by Email')
+    DoFlashLCD = TextField(u'Flash LCD')
+    DoRecord = TextField(u'Record with Camera')
     modSubmit = SubmitField(u'Save')
     delSubmit = SubmitField(u'Delete')
     activateSubmit = SubmitField(u'Activate')
@@ -1182,10 +1157,8 @@ class Timer(Form):
         ],
         validators=[DataRequired()]
     )
-    timeOn = TextField(
-        u'Time of day',
-        render_kw={"placeholder": "Time"}
-    )
+    timeStart = TextField(u'Time of day')
+    timeEnd = TextField(u'Time of day')
     timeOnDurationOn = DecimalField(
         u'On (sec)',
         render_kw={"placeholder": "On sec."},

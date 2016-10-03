@@ -236,13 +236,24 @@
                     <td>If</td>
                     {% if each_sensor.device_type == 'edgedetect' %}
                       <td class="text-left">
-                        Edge Detected, Direction of change: 
-                        <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="EdgeDetected " name="EdgeDetected" title="Detect low to high (rising), high to low (falling), or both?">
+                        <input id="EdgeSelect-0" name="EdgeSelect" type="radio" value="edge" {% if each_sensorcond.edge_select == 'edge' %} checked{% endif %}> Edge Detected, Direction of change: 
+                        <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="EdgeDetected" name="EdgeDetected" title="Detect low to high (rising), high to low (falling), or both?">
                           <option value="rising"{% if each_sensorcond.edge_detected == 'rising' %} selected{% endif %}>Rising</option>
                           <option value="falling"{% if each_sensorcond.edge_detected == 'falling' %} selected{% endif %}>Falling</option>
                           <option value="both"{% if each_sensorcond.edge_detected == 'both' %} selected{% endif %}>Both</option>
                         </select>
-                        <input type="hidden" class="form-control" id="Period" name="Period" value="0">
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                      </td>
+                      <td>
+                        <input id="EdgeSelect-1" name="EdgeSelect" type="radio" value="state" {% if each_sensorcond.edge_select == 'state' %} checked{% endif %}> GPIO state is: 
+                        <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="GPIOState" name="GPIOState">
+                          <option value="1"{% if each_sensorcond.gpio_state == 1 %} selected{% endif %}>HIGH (3.3 volts)</option>
+                          <option value="0"{% if each_sensorcond.gpio_state == 0 %} selected{% endif %}>LOW (0 volts)</option>
+                        </select>
+                        (check every {{formModSensorCond.Period(class_='form-control', value=each_sensorcond.period, **{'title':'The duration between checking whether the conditional is true, in seconds.', 'size':'3'})}} seconds)
                       </td>
                     {% else %}
                       <td class="text-left">

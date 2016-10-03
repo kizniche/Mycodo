@@ -960,7 +960,7 @@ def page(page):
                 return redirect('/camera')
             elif form_name == 'camera':
                 if formCamera.Still.data:
-                    if not stream_locked and not timelapse_locked:
+                    if not stream_locked:
                         try:
                             if CameraStream().is_running():
                                 CameraStream().terminate()  # Stop camera stream
@@ -971,9 +971,9 @@ def page(page):
                         except Exception as msg:
                             flash("Camera Error: {}".format(msg), "error")
                     else:
-                        flash("Cannot capture still if timelapse or stream is"
+                        flash("Cannot capture still if stream is"
                               " active. If they are not active, delete {} and"
-                              " {}.".format(stream_locked, timelapse_locked),
+                              " {}.".format(LOCK_FILE_STREAM),
                               "error")
 
                 elif formCamera.StartTimelapse.data:
@@ -998,9 +998,9 @@ def page(page):
                         os.chown(FILE_TIMELAPSE_PARAM, uid_gid, uid_gid)
                         os.chmod(FILE_TIMELAPSE_PARAM, 0664)
                     else:
-                        flash("Cannot capture still if a stream is active. "
+                        flash("Cannot start timelapse if a stream is active. "
                               "If it is not active, delete {}.".format(
-                              stream_locked), "error")
+                              LOCK_FILE_STREAM), "error")
 
                 elif formCamera.StopTimelapse.data:
                     try:
@@ -1015,8 +1015,8 @@ def page(page):
                         stream_locked = True
                         stream = True
                     else:
-                        flash("Cannot capture still if a timelapse is active."
-                              " If not, delete {}.".format(timelapse_locked),
+                        flash("Cannot start stream if a timelapse is active. "
+                              "If not active, delete {}.".format(LOCK_FILE_TIMELAPSE),
                               "error")
 
                 elif formCamera.StopStream.data:

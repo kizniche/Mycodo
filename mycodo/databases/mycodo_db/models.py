@@ -213,6 +213,8 @@ class SensorConditional(Base):
     sensor_id = Column(TEXT)
     period = Column(INT)
     measurement_type = Column(TEXT)
+    edge_select = Column(TEXT)
+    gpio_state = Column(INT)
     edge_detected = Column(TEXT)
     direction = Column(TEXT) # 'above' or 'below' setpoint
     setpoint = Column(REAL)
@@ -362,11 +364,13 @@ class Timer(Base):
     __tablename__ = "timer"
 
     id = Column(TEXT, unique=True, primary_key=True)
+    timer_type = Column(TEXT)
     name = Column(TEXT)
     activated = Column(INT)
     relay_id = Column(TEXT)
     state = Column(TEXT) # 'on' or 'off'
-    time_on = Column(TEXT)
+    time_start = Column(TEXT)
+    time_end = Column(TEXT)
     duration_on = Column(REAL)
     duration_off = Column(REAL)
 

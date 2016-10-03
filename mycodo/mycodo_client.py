@@ -48,6 +48,9 @@ class DaemonControl():
     def flash_lcd(self, lcd_id, state):
         return self.rpyc_client.root.flash_lcd(lcd_id, state)
 
+    def relay_state(self, relay_id):
+        return self.rpyc_client.root.relay_state(relay_id)
+
     def relay_on_off(self, relay_id, state, duration):
         if state == 'on':
             self.relay_on(relay_id, duration)

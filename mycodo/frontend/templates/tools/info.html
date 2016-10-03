@@ -23,7 +23,7 @@
         uptime
       </div>
       <div>
-        {{uptime}}
+        <pre>{{uptime}}</pre>
       </div>
     </div>
 
@@ -32,7 +32,7 @@
         uname
       </div>
       <div>
-        {{uname}}
+        <pre>{{uname}}</pre>
       </div>
     </div>
 
@@ -41,17 +41,12 @@
         gpio readall
       </div>
       <div>
-        <pre>
-          {%- if gpio_readall != "" -%}
-            {{gpio_readall}}
-          {%- else -%}
+        {%- if gpio_readall != "" -%}
+          <pre>{{gpio_readall}}</pre>
+        {%- else -%}
 Command 'gpio' not found. Install gpio from the terminal with the following commands:
-cd
-git clone git://git.drogon.net/wiringPi
-cd wiringPi
-./build
-          {%- endif -%}
-        </pre>
+<pre>cd &amp;&amp; git clone git://git.drogon.net/wiringPi &amp;&amp; cd wiringPi &amp;&amp; ./build</pre>
+        {%- endif -%}
       </div>
     </div>
 

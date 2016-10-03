@@ -2,7 +2,7 @@
 
 ## Environmental Regulation System
 
-### Latest version: 4.0.21
+### Latest version: 4.0.22
 
 Mycodo is a remote monitoring and automated regulation system with a focus on modulating environmental conditions. It was built to run on the Raspberry Pi (versions Zero, 1, 2, and 3) and aims to be easy to install and set up.
 
@@ -66,14 +66,14 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 
 ## TODO:
 
+* Add persistent daily timers (ensures relays are reactivated after power failure, such as for grow lighting)
 * Support Serial Port Expander
-* Support Atlas Scientific sensors
+* Support [more] Atlas Scientific sensors
 * Add PID filters (of input or output) and alternate PID functions.
 * Add support for wireless communication (z-wave, xbee, or other).
 * Support for PWM and servo/stepper motors
-* Dashboard to monitor other Mycodo servers
+* Continue development of Remote Admin Dashboard to monitor other Mycodo servers
 * Add graph export options (width, height, scale)
-* Add stepper motor support
 * Create custom log from influxdb query
 * Notes, flag points of time on graph (text, file upload, graph saving, etc.).
 

@@ -270,7 +270,13 @@ class SensorController(threading.Thread):
                 if self.device_type in ['EDGE']:
                     # Sensors that are triggered (simple switch,
                     # PIR motion, reed, hall, etc.)
-                    pass
+                    # Check sensor conditionals if their timers have expired
+                    for each_cond_id in self.cond_id:
+                        if (self.cond_activated[each_cond_id] and
+                                self.cond_edge_select[each_cond_id] == 'state'):
+                            if time.time() > self.cond_timer[each_cond_id]:
+                                self.cond_timer[each_cond_id] = time.time()+self.cond_period[each_cond_id]
+                                self.checkConditionals(each_cond_id)
 
                 else:
                     # Sensors that are read at a regular period
@@ -366,6 +372,7 @@ class SensorController(threading.Thread):
         """
         attachment_file = False
         attachment_type = False
+        message = ""
 
         conditional = False
         if self.cond_edge_detected[cond_id]:
@@ -397,12 +404,22 @@ class SensorController(threading.Thread):
             else:
                 self.logger.debug("[Sensor Conditional {}] Last measurement "
                                   "not found".format(cond_id))
+                return 1
 
         elif conditional == 'edge':
-            message = "{}\n[Sensor Conditional {}] {}. {} Edge Detected.".format(
-                timestamp, cond_id,
-                self.cond_name[cond_id],
-                self.cond_edge_detected)
+            if self.cond_edge_select[cond_id] == 'edge':
+                message = "{}\n[Sensor Conditional {}] {}. {} Edge Detected.".format(
+                    timestamp, cond_id,
+                    self.cond_name[cond_id],
+                    self.cond_edge_detected)
+            elif self.cond_edge_select[cond_id] == 'state':
+                if GPIO.input(int(self.location)) == self.cond_gpio_state[cond_id]:
+                    message = "{}\n[Sensor Conditional {}] {}. {} GPIO State Detected.".format(
+                        timestamp, cond_id,
+                        self.cond_name[cond_id],
+                        self.cond_gpio_state[cond_id])
+                else:
+                    return 0
 
         if (self.cond_relay_id[cond_id] and
                 self.cond_relay_state[cond_id] in ['on', 'off']):
@@ -666,7 +683,7 @@ class SensorController(threading.Thread):
 
             # Check sensor conditionals
             for each_cond_id in self.cond_id:
-                if (self.cond_activated[each_cond_id] and
+                if ((self.cond_activated[each_cond_id] and self.cond_edge_select[each_cond_id] == 'edge') and
                         ((self.cond_edge_detected[each_cond_id] == 'rising' and
                         rising_or_falling == 1) or
                         (self.cond_edge_detected[each_cond_id] == 'falling' and
@@ -687,7 +704,9 @@ class SensorController(threading.Thread):
             self.cond_period.pop(cond_id, None)
             self.cond_name.pop(cond_id, None)
             self.cond_measurement_type.pop(cond_id, None)
+            self.cond_edge_select.pop(cond_id, None)
             self.cond_edge_detected.pop(cond_id, None)
+            self.cond_gpio_state.pop(cond_id, None)
             self.cond_direction.pop(cond_id, None)
             self.cond_setpoint.pop(cond_id, None)
             self.cond_relay_id.pop(cond_id, None)
@@ -709,7 +728,9 @@ class SensorController(threading.Thread):
                     self.cond_activated = {}
                     self.cond_period = {}
                     self.cond_measurement_type = {}
+                    self.cond_edge_select = {}
                     self.cond_edge_detected = {}
+                    self.cond_gpio_state = {}
                     self.cond_direction = {}
                     self.cond_setpoint = {}
                     self.cond_relay_id = {}
@@ -759,7 +780,9 @@ class SensorController(threading.Thread):
                     self.cond_activated[each_cond.id] = each_cond.activated
                     self.cond_period[each_cond.id] = each_cond.period
                     self.cond_measurement_type[each_cond.id] = each_cond.measurement_type
+                    self.cond_edge_select[each_cond.id] = each_cond.edge_select
                     self.cond_edge_detected[each_cond.id] = each_cond.edge_detected
+                    self.cond_gpio_state[each_cond.id] = each_cond.gpio_state
                     self.cond_direction[each_cond.id] = each_cond.direction
                     self.cond_setpoint[each_cond.id] = each_cond.setpoint
                     self.cond_relay_id[each_cond.id] = each_cond.relay_id

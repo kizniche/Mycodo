@@ -2084,7 +2084,9 @@ def sensor_conditional_add(formModSensor):
     new_sensor_cond.sensor_id = formModSensor.modSensor_id.data
     new_sensor_cond.period = 60
     new_sensor_cond.measurement_type = ''
+    new_sensor_cond.edge_select = 'edge'
     new_sensor_cond.edge_detected = 'rising'
+    new_sensor_cond.gpio_state = 1
     new_sensor_cond.direction = ''
     new_sensor_cond.setpoint = 0.0
     new_sensor_cond.relay_id = ''
@@ -2145,7 +2147,9 @@ def sensor_conditional_mod(formModSensorCond):
                 mod_sensor.name = formModSensorCond.modCondName.data
                 mod_sensor.period = formModSensorCond.Period.data
                 mod_sensor.measurement_type = formModSensorCond.MeasureType.data
+                mod_sensor.edge_select = formModSensorCond.EdgeSelect.data
                 mod_sensor.edge_detected = formModSensorCond.EdgeDetected.data
+                mod_sensor.gpio_state = formModSensorCond.GPIOState.data
                 mod_sensor.direction = formModSensorCond.Direction.data
                 mod_sensor.setpoint = formModSensorCond.Setpoint.data
                 mod_sensor.relay_id = formModSensorCond.modCondRelayID.data
@@ -2255,18 +2259,23 @@ def timer_add(formAddTimer, timerType, display_order):
         new_timer.activated = 0
         new_timer.relay_id = formAddTimer.relayID.data
         if timerType == 'time':
+            new_timer.timer_type = 'time'
             new_timer.state = formAddTimer.state.data
-            new_timer.time_on = formAddTimer.timeOn.data
+            new_timer.time_start = formAddTimer.timeStart.data
             new_timer.duration_on = formAddTimer.timeOnDurationOn.data
             new_timer.duration_off = 0
-        else:
+        elif timerType == 'timespan':
+            new_timer.timer_type = 'timespan'
+            new_timer.state = formAddTimer.state.data
+            new_timer.time_start = formAddTimer.timeStart.data
+            new_timer.time_end = formAddTimer.timeEnd.data
+        elif timerType == 'duration':
             if (formAddTimer.durationOn.data <= 0 or
                     formAddTimer.durationOff.data <= 0):
                 flash("Error in the Duration field(s): Durations must be "
                       "greater than 0", "error")
                 return 1
-            new_timer.state = ''
-            new_timer.time_on = ''
+            new_timer.timer_type = 'duration'
             new_timer.duration_on = formAddTimer.durationOn.data
             new_timer.duration_off = formAddTimer.durationOff.data
         try:
@@ -2303,11 +2312,15 @@ def timer_mod(formTimer, timerType):
                 return redirect('/timer')
             mod_timer.name = formTimer.name.data
             mod_timer.relay_id = formTimer.relayID.data
-            if timerType == 'time':
+            if mod_timer.timer_type == 'time':
                 mod_timer.state = formTimer.state.data
-                mod_timer.time_on = formTimer.timeOn.data
+                mod_timer.time_start = formTimer.timeStart.data
                 mod_timer.duration_on = formTimer.timeOnDurationOn.data
-            else:
+            elif mod_timer.timer_type == 'timespan':
+                mod_timer.state = formTimer.state.data
+                mod_timer.time_start = formTimer.timeStart.data
+                mod_timer.time_end = formTimer.timeEnd.data
+            elif mod_timer.timer_type == 'duration':
                 mod_timer.duration_on = formTimer.durationOn.data
                 mod_timer.duration_off = formTimer.durationOff.data
             db_session.commit()
