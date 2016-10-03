@@ -2259,18 +2259,23 @@ def timer_add(formAddTimer, timerType, display_order):
         new_timer.activated = 0
         new_timer.relay_id = formAddTimer.relayID.data
         if timerType == 'time':
+            new_timer.timer_type = 'time'
             new_timer.state = formAddTimer.state.data
-            new_timer.time_on = formAddTimer.timeOn.data
+            new_timer.time_start = formAddTimer.timeStart.data
             new_timer.duration_on = formAddTimer.timeOnDurationOn.data
             new_timer.duration_off = 0
-        else:
+        elif timerType == 'timespan':
+            new_timer.timer_type = 'timespan'
+            new_timer.state = formAddTimer.state.data
+            new_timer.time_start = formAddTimer.timeStart.data
+            new_timer.time_end = formAddTimer.timeEnd.data
+        elif timerType == 'duration':
             if (formAddTimer.durationOn.data <= 0 or
                     formAddTimer.durationOff.data <= 0):
                 flash("Error in the Duration field(s): Durations must be "
                       "greater than 0", "error")
                 return 1
-            new_timer.state = ''
-            new_timer.time_on = ''
+            new_timer.timer_type = 'duration'
             new_timer.duration_on = formAddTimer.durationOn.data
             new_timer.duration_off = formAddTimer.durationOff.data
         try:
@@ -2307,11 +2312,15 @@ def timer_mod(formTimer, timerType):
                 return redirect('/timer')
             mod_timer.name = formTimer.name.data
             mod_timer.relay_id = formTimer.relayID.data
-            if timerType == 'time':
+            if mod_timer.timer_type == 'time':
                 mod_timer.state = formTimer.state.data
-                mod_timer.time_on = formTimer.timeOn.data
+                mod_timer.time_start = formTimer.timeStart.data
                 mod_timer.duration_on = formTimer.timeOnDurationOn.data
-            else:
+            elif mod_timer.timer_type == 'timespan':
+                mod_timer.state = formTimer.state.data
+                mod_timer.time_start = formTimer.timeStart.data
+                mod_timer.time_end = formTimer.timeEnd.data
+            elif mod_timer.timer_type == 'duration':
                 mod_timer.duration_on = formTimer.durationOn.data
                 mod_timer.duration_off = formTimer.durationOff.data
             db_session.commit()

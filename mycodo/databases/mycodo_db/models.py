@@ -364,11 +364,13 @@ class Timer(Base):
     __tablename__ = "timer"
 
     id = Column(TEXT, unique=True, primary_key=True)
+    timer_type = Column(TEXT)
     name = Column(TEXT)
     activated = Column(INT)
     relay_id = Column(TEXT)
     state = Column(TEXT) # 'on' or 'off'
-    time_on = Column(TEXT)
+    time_start = Column(TEXT)
+    time_end = Column(TEXT)
     duration_on = Column(REAL)
     duration_off = Column(REAL)
 

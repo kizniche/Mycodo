@@ -1157,10 +1157,8 @@ class Timer(Form):
         ],
         validators=[DataRequired()]
     )
-    timeOn = TextField(
-        u'Time of day',
-        render_kw={"placeholder": "Time"}
-    )
+    timeStart = TextField(u'Time of day')
+    timeEnd = TextField(u'Time of day')
     timeOnDurationOn = DecimalField(
         u'On (sec)',
         render_kw={"placeholder": "On sec."},
