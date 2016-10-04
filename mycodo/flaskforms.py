@@ -360,14 +360,7 @@ class ModUser(Form):
         ],
         validators=[DataRequired()]
     )
-    modTheme = SelectField(
-        u'Group',
-        choices=[
-            ('light', 'Light'),
-            ('dark', 'Dark')
-        ],
-        validators=[DataRequired()]
-    )
+    modTheme = TextField(u'Theme')
     modSubmit = SubmitField(u'Submit')
 
 
