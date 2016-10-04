@@ -24,7 +24,7 @@
 
 from sqlalchemy import Column, TEXT, INT, REAL, DATETIME, BOOLEAN, String
 from sqlalchemy.ext.declarative import declarative_base
-import RPi.GPIO as GPIO
+from RPi import GPIO
 import datetime
 
 

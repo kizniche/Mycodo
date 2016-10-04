@@ -43,7 +43,7 @@ import sqlalchemy
 import string
 import subprocess
 import time
-import RPi.GPIO as GPIO
+from RPi import GPIO
 from collections import OrderedDict
 from cStringIO import StringIO as IO
 from dateutil.parser import parse as date_parse
