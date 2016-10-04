@@ -1,0 +1,93 @@
+<div class="form-group">
+  <label class="control-label">I<sup>2</sup>C Address</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modLocation" name="modLocation" title="The I2C address of the analog to digital converter.">
+      <option value=""></option>
+      <option value="0x68"{% if each_sensor.location == '0x68' %} selected{% endif %}>Address 0x68</option>
+      <option value="0x6A"{% if each_sensor.location == '0x6A' %} selected{% endif %}>Address 0x6A</option>
+      <option value="0x6C"{% if each_sensor.location == '0x6C' %} selected{% endif %}>Address 0x6C</option>
+      <option value="0x6E"{% if each_sensor.location == '0x6E' %} selected{% endif %}>Address 0x6E</option>
+      <option value="0x6F"{% if each_sensor.location == '0x6F' %} selected{% endif %}>Address 0x6F</option>
+    </select>
+  </div>
+</div>
+<div class="form-group">
+  {{formModSensor.modBus.label(class_='control-label')}}
+  <div>
+    {{formModSensor.modBus(class_='form-control', value=each_sensor.i2c_bus, **{'title':'Which I2C bus is this ADC connected?'})}}
+  </div>
+</div>
+<div class="form-group">
+  <label class="control-label">Measurement</label>
+  <div>
+    {{formModSensor.modADCMeasure(class_='form-control', value=each_sensor.adc_measure, **{'title':'What condition is being measured by the ADC?'})}}
+  </div>
+</div>
+<div class="form-group">
+  <label class="control-label">Units</label>
+  <div>
+    {{formModSensor.modADCMeasureUnits(class_='form-control', value=each_sensor.adc_measure_units, **{'title':'What are the units of the condition being measured by the ADC?'})}}
+  </div>
+</div>
+<div class="form-group">
+  <label class="control-label">Channel</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modADCChannel" name="modADCChannel" title="The channel of the analog to digital converter.">
+      <option value=""></option>
+      <option value="0"{% if each_sensor.adc_channel == 0 %} selected{% endif %}>Channel 1</option>
+      <option value="1"{% if each_sensor.adc_channel == 1 %} selected{% endif %}>Channel 2</option>
+      <option value="2"{% if each_sensor.adc_channel == 2 %} selected{% endif %}>Channel 3</option>
+      <option value="3"{% if each_sensor.adc_channel == 3 %} selected{% endif %}>Channel 4</option>
+    </select>
+  </div>
+</div>
+<div class="form-group">
+  <label class="control-label">Gain</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modADCGain" name="modADCGain" title="Adjust the gain to change the measureable voltage range. See ADC documentation for details.">
+      <option value=""></option>
+      <option value="1"{% if each_sensor.adc_gain == 1 %} selected{% endif %}>1</option>
+      <option value="2"{% if each_sensor.adc_gain == 2 %} selected{% endif %}>2</option>
+      <option value="4"{% if each_sensor.adc_gain == 4 %} selected{% endif %}>4</option>
+      <option value="8"{% if each_sensor.adc_gain == 8 %} selected{% endif %}>8</option>
+    </select>
+  </div>
+</div>
+<div class="form-group">
+  <label class="control-label">Resolution</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modADCResolution" name="modADCResolution" title="Adjust the ADC resolution. See ADC documentation for details.">
+      <option value=""></option>
+      <option value="12"{% if each_sensor.adc_resolution == 12 %} selected{% endif %}>12-bit</option>
+      <option value="14"{% if each_sensor.adc_resolution == 14 %} selected{% endif %}>14-bit</option>
+      <option value="16"{% if each_sensor.adc_resolution == 16 %} selected{% endif %}>16-bit</option>
+      <option value="18"{% if each_sensor.adc_resolution == 18 %} selected{% endif %}>18-bit</option>
+    </select>
+  </div>
+</div>
+</div>
+<div class="form-inline" style="padding: 0.5em;">
+<div class="form-group">
+  <label class="control-label">Volts Min</label>
+  <div>
+    {{formModSensor.modADCVoltsMin(class_='form-control', value=each_sensor.adc_volts_min, **{'title':'Minimum analog to digital converter input voltage.'})}}
+  </div>
+</div>
+<div class="form-group">
+  <label class="control-label">Volts Max</label>
+  <div>
+    {{formModSensor.modADCVoltsMax(class_='form-control', value=each_sensor.adc_volts_max, **{'title':'Maximum analog to digital converter input voltage.'})}}
+  </div>
+</div>
+<div class="form-group">
+  <label class="control-label">Units Min</label>
+  <div>
+    {{formModSensor.modADCUnitsMin(class_='form-control', value=each_sensor.adc_units_min, **{'title':'Minimum unit to convert the voltage to.'})}}
+  </div>
+</div>
+<div class="form-group">
+  <label class="control-label">Units Max</label>
+  <div>
+    {{formModSensor.modADCUnitsMax(class_='form-control', value=each_sensor.adc_units_max, **{'title':'Maximum unit to convert the voltage to.'})}}
+  </div>
+</div>

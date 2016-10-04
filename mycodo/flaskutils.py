@@ -8,7 +8,7 @@ import operator
 import os
 import random
 import requests
-import RPi.GPIO as GPIO
+from RPi import GPIO
 import sqlalchemy
 import string
 import subprocess

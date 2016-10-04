@@ -26,6 +26,7 @@ import argparse
 import getpass
 import os
 import sys
+import errno
 
 import sqlalchemy
 

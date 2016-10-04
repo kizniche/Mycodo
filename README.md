@@ -222,7 +222,7 @@ Mycodo/mycodo/scripts/mycodo_wrapper is a binary executable used to update the s
 
 ### HTTP Server Security
 
-SSL certificates will be generated and stored at ~/Mycodo/mycodo/frontend/ssl_certs/ during the install process. If you want to use your own SSL certificates, replace them as they are named in this directory. [letsencrypt.org](https://letsencrypt.org) provides free verified SSL certificates.
+SSL certificates will be generated and stored at ~/Mycodo/mycodo/mycodo_flask/ssl_certs/ during the install process. If you want to use your own SSL certificates, replace them as they are named in this directory. [letsencrypt.org](https://letsencrypt.org) provides free verified SSL certificates.
 
 If using the auto-generated certificate, be aware that they will not be verified when visiting the https:// version of the WEB UI. You will receive warning messages about the security of your site unless you add the certificate to your browser's trusted list). 
 
@@ -304,7 +304,7 @@ Mycodo/
 │   │   └── ...
 │   ├── flaskforms.py - Flask form classes
 │   ├── flaskutils.py - Various functions to assist mycodo_flask.py
-│   ├── frontend - HTTP server files (Flask)
+│   ├── mycodo_flask - HTTP server files (Flask)
 │   │   ├── ssl_certs - Location of HTTP SSL certificates
 │   │   ├── static - Static files reside (images, css, js, etc.)
 │   │   └── templates - Flask HTML templates
@@ -333,7 +333,7 @@ Mycodo/
 │   │           └── ...
 │   ├── mycodo_client.py - Communicates with the running daemon
 │   ├── mycodo_daemon.py - Mycodo daemon (core of the system)
-│   ├── mycodo_flask.py - Flask routes/views (handles webpage requests)
+│   ├── mycodo_flask.py - Flask startup script
 │   ├── scripts - Miscellaneous helper and test scripts and functions
 │   │   ├── mycodo.service - Systemd script
 │   │   ├── mycodo_wrapper.c - Source to binary that's setuid, for upgrades 
@@ -346,11 +346,13 @@ Mycodo/
 │   │   ├── bmp.py
 │   │   ├── dht11.py
 │   │   └── ...
-│   └── tests - Scripts to test various sensors or devices
-│       ├── Test_I2C_LCD.py
-│       ├── Test_I2C_MCP342x.py
-│       ├── Test_I2C_Multiplexer.py
-│       └── ...
+│   └── tests - Software and Hardware Tests 
+│       ├── manual_tests - Scripts to test various sensors or devices
+│       │   ├── Test_I2C_LCD.py
+│       │   ├── Test_I2C_MCP342x.py
+│       │   ├── Test_I2C_Multiplexer.py
+│       │   └──...
+│       └── software_tests - Automated Tests for Software
 ├── mycodo_flask_apache.conf - Apache2 configuration file
 ├── mycodo_flask.wsgi - Start script for Apache2 mod_wsgi
 ├── old - Archived milestone versions of Mycodo
