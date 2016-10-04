@@ -1,0 +1,26 @@
+
+<div class="form-group">
+  <label class="control-label">GPIO</label>
+  <div>
+    {{formModSensor.modLocation(class_='form-control', value=each_sensor.location, **{'title':'Where to access the device/sensor?'})}}
+  </div>
+</div>
+<div class="form-group">
+  {{formModSensor.modSHTClockPin.label(class_='control-label')}}
+  <div>
+    {{formModSensor.modSHTClockPin(class_='form-control', value=each_sensor.sht_clock_pin, **{'title':'The GPIO pin of the Raspberry Pi connected to the SHT sensor clock pin.'})}}
+  </div>
+</div>
+<div class="form-group">
+  {{formModSensor.modSHTVoltage.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modSHTVoltage" name="modSHTVoltage" title="The input voltage to the SHT sensor.">
+      <option value="0"></option>
+      <option value="2.5"{% if each_sensor.sht_voltage == 2.5 %} selected{% endif %}>2.5V</option>
+      <option value="3.0"{% if each_sensor.sht_voltage == 3.0 %} selected{% endif %}>3.0V</option>
+      <option value="3.5"{% if each_sensor.sht_voltage == 3.5 %} selected{% endif %}>3.5V</option>
+      <option value="4.0"{% if each_sensor.sht_voltage == 4.0 %} selected{% endif %}>4.0V</option>
+      <option value="5.0"{% if each_sensor.sht_voltage == 5.0 %} selected{% endif %}>5.0V</option>
+    </select>
+  </div>
+</div>

@@ -1,5 +1,6 @@
 # coding=utf-8
 """ functional tests for flask endpoints """
+import mock
 
 
 def redirects_to_login_page(app, endpoint):
@@ -27,4 +28,14 @@ def test_video_feed_for_non_logged_in_user(testapp):
 def test_gpio_state_for_non_logged_in_user(testapp):
     """ Verifies behavior of this endpoint for non-logged in users """
     redirects_to_login_page(app=testapp, endpoint='/video_feed')
+
+
+def test_settings_for_non_logged_in_user(testapp):
+    """ Verifies behavior of this endpoint for non-logged in users """
+    redirects_to_login_page(app=testapp, endpoint='/settings')
+
+
+def test_settings_general_for_non_logged_in_user(testapp):
+    """ Verifies behavior of this endpoint for non-logged in users """
+    redirects_to_login_page(app=testapp, endpoint='/settings/general')
 

@@ -36,9 +36,9 @@ cd $INSTALL_DIRECTORY
 ln -snf $INSTALL_DIRECTORY /var/www/mycodo
 cp -f $INSTALL_DIRECTORY/mycodo_flask_apache.conf /etc/apache2/sites-available/
 
-if [ -f "$INSTALL_DIRECTORY/mycodo_flask/ssl_certs/cert.pem" ] && [ ! -d "$INSTALL_DIRECTORY/mycodo/frontend/ssl_certs/" ]; then
-    mkdir -p $INSTALL_DIRECTORY/mycodo/frontend/ssl_certs/
-    cp $INSTALL_DIRECTORY/mycodo_flask/ssl_certs/* $INSTALL_DIRECTORY/mycodo/frontend/ssl_certs/
+if [ -f "$INSTALL_DIRECTORY/mycodo_flask/ssl_certs/cert.pem" ] && [ ! -d "$INSTALL_DIRECTORY/mycodo/mycodo_flask/ssl_certs/" ]; then
+    mkdir -p $INSTALL_DIRECTORY/mycodo/mycodo_flask/ssl_certs/
+    cp $INSTALL_DIRECTORY/mycodo_flask/ssl_certs/* $INSTALL_DIRECTORY/mycodo/mycodo_flask/ssl_certs/
 fi
 
 $INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh upgrade-packages

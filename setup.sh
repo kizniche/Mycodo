@@ -86,9 +86,9 @@ apt-get install -y apache2 libapache2-mod-wsgi
 a2enmod wsgi ssl
 ln -sf $INSTALL_DIRECTORY/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf
 
-printf "#### Creating SSL certificates at $INSTALL_DIRECTORY/mycodo/frontend/ssl_certs (replace with your own if desired)\n"
-mkdir -p $INSTALL_DIRECTORY/mycodo/frontend/ssl_certs
-cd $INSTALL_DIRECTORY/mycodo/frontend/ssl_certs/
+printf "#### Creating SSL certificates at $INSTALL_DIRECTORY/mycodo/mycodo_flask/ssl_certs (replace with your own if desired)\n"
+mkdir -p $INSTALL_DIRECTORY/mycodo/mycodo_flask/ssl_certs
+cd $INSTALL_DIRECTORY/mycodo/mycodo_flask/ssl_certs/
 
 openssl req \
     -new \

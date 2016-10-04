@@ -1,0 +1,29 @@
+<div class="form-group">
+  <label class="control-label">GPIO</label>
+  <div>
+    {{formModSensor.modLocation(class_='form-control', value=each_sensor.location, **{'title':'Where to access the device/sensor?'})}}
+  </div>
+</div>
+<div class="form-group">
+  <label class="control-label">Edge</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modSwitchEdge" name="modSwitchEdge" title="Detect low to high (rising), high to low (falling), or both?">
+      <option value="rising"{% if each_sensor.switch_edge == "rising" %} selected{% endif %}>Rising</option>
+      <option value="falling"{% if each_sensor.switch_edge == "falling" %} selected{% endif %}>Falling</option>
+      <option value="both"{% if each_sensor.switch_edge == "both" %} selected{% endif %}>Both</option>
+    </select>
+  </div>
+</div>
+<div class="form-group">
+  <label class="control-label">Bounce Time (ms)</label>
+  <div>
+    {{formModSensor.modSwitchBounceTime(class_='form-control', value=each_sensor.switch_bouncetime, **{'title':'The amount of time to bounce the input signal, in miliseconds.'})}}
+  </div>
+</div>
+<div class="form-group">
+  <label class="control-label">Refractory Period (sec)</label>
+  <div>
+    {{formModSensor.modSwitchResetPeriod(class_='form-control', value=each_sensor.switch_reset_period, **{'title':'How long to wait after the first edge detection to begin detecting again, in seconds.'})}}
+  </div>
+</div>
+<input id="modPeriod" name="modPeriod" type="hidden" value="10">
