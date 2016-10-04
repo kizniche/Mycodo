@@ -56,6 +56,11 @@ if [ "$INFLUX_VERSION" != "1.0.0-1" ]; then
     dpkg -i influxdb_1.0.0_armhf.deb
 fi
 
+printf "#### Move ssl certificates directory if not in correct directory\n"
+if [ -d "$INSTALL_DIRECTORY/mycodo/frontend/ssl_certs" ]; then
+    mv $INSTALL_DIRECTORY/mycodo/frontend/ssl_certs $INSTALL_DIRECTORY/mycodo/mycodo_flask/
+fi
+
 printf "#### Checking if python modules are up-to-date ####\n"
 pip install --upgrade -r $INSTALL_DIRECTORY/requirements.txt
 

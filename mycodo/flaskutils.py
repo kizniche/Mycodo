@@ -2406,7 +2406,7 @@ def user_add(formAddUser):
         if test_password(formAddUser.addPassword.data):
             new_user.set_password(formAddUser.addPassword.data)
         new_user.user_restriction = formAddUser.addGroup.data
-        new_user.user_theme = 'dark'
+        new_user.user_theme = 'slate'
         try:
             with session_scope(USER_DB_PATH) as db_session:
                 db_session.add(new_user)
