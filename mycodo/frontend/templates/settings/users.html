@@ -96,9 +96,29 @@
             </select>
           </td>
           <td>
+            {% set theme_options = [
+                  ('cerulean', 'Cerulean'),
+                  ('cosmo', 'Cosmo'),
+                  ('cyborg', 'Cyborg'),
+                  ('darkly', 'Darkly'),
+                  ('flatly', 'Flatly'),
+                  ('journal', 'Journal'),
+                  ('lumen', 'Lumen'),
+                  ('paper', 'Paper'),
+                  ('readable', 'Readable'),
+                  ('sadstone', 'Sadstone'),
+                  ('simplex', 'Simplex'),
+                  ('slate', 'Slate'),
+                  ('spacelab', 'Spacelab'),
+                  ('superhearo', 'Superhearo'),
+                  ('united', 'United'),
+                  ('yeti', 'Yeti')
+            ] -%}
             <select class="form-control" id="modGroup" name="modTheme">
-              <option value="light"{% if user.user_theme == 'light' %} selected{% endif %}>Light</option>
-              <option value="dark"{% if user.user_theme == 'dark' %} selected{% endif %}>Dark</option>
+              <option value=""{% if user.user_theme == '' %} selected{% endif %}>Default</option>
+              {% for value, name in theme_options %}
+                <option value="{{value|e}}"{% if value == user.user_theme %} selected{% endif %}>{{name|e}}</option>
+              {% endfor -%}
             </select>
           </td>
           <td>

@@ -41,8 +41,8 @@
             {{formTimer.state.label(class_='control-label')}}
             <div>
               <select class="form-control" id="state" name="state">
-                <option value="on">On</option>
-                <option value="off">Off</option>
+                <option value="on">ON</option>
+                <option value="off">OFF</option>
               </select>
             </div>
           </div>
@@ -60,7 +60,7 @@
           <div class="form-group">
             <label class='control-label'></label>
             <div>
-              (Optional: On for {{formTimer.timeOnDurationOn(class_='form-control', value=0.0, **{'size':'6'})}} seconds)
+              (Optional: If ON, for {{formTimer.timeOnDurationOn(class_='form-control', value=0.0, **{'size':'6'})}} seconds)
             </div>
           </div>
         </div>
@@ -72,8 +72,8 @@
             {{formTimer.state.label(class_='control-label')}}
             <div>
               <select class="form-control" id="state" name="state">
-                <option value="on">On</option>
-                <option value="off">Off</option>
+                <option value="on">ON</option>
+                <option value="off">OFF</option>
               </select>
             </div>
           </div>
@@ -188,8 +188,8 @@
               {{formTimer.state.label(class_='control-label')}}
               <div>
                 <select class="form-control" id="state" name="state">
-                  <option value="on"{% if each_timer.state == 'on' %} selected{% endif %}>On</option>
-                  <option value="off"{% if each_timer.state == 'off' %} selected{% endif %}>Off</option>
+                  <option value="on"{% if each_timer.state == 'on' %} selected{% endif %}>ON</option>
+                  <option value="off"{% if each_timer.state == 'off' %} selected{% endif %}>OFF</option>
                 </select>
               </div>
             </div>
@@ -216,8 +216,8 @@
               {{formTimer.state.label(class_='control-label')}}
               <div>
                 <select class="form-control" id="state" name="state">
-                  <option value="on"{% if each_timer.state == 'on' %} selected{% endif %}>On</option>
-                  <option value="off"{% if each_timer.state == 'off' %} selected{% endif %}>Off</option>
+                  <option value="on"{% if each_timer.state == 'on' %} selected{% endif %}>ON</option>
+                  <option value="off"{% if each_timer.state == 'off' %} selected{% endif %}>OFF</option>
                 </select>
               </div>
             </div>
