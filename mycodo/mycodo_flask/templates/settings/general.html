@@ -6,7 +6,6 @@
 {% block title %} - General Settings{% endblock %}
 
 {% block settings %}
-
   <h3 style="text-align: right; padding-bottom: 1.3em;">General</h3>
 
   <form class="form-horizontal" method="post" action="/settings/general">
@@ -65,6 +64,18 @@
           {{formSettingsGeneral.stats_opt_out()}}
         {%- endif -%}
         &nbsp;&nbsp;Check if you do not wish to send anonymous usage statistics. <a href="/settings/statistics">View collected statistics</a>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-4"></div>
+      <div class="col-sm-8">
+        <h3><a href="/usage">Relay Stats</a> Options</h3>
+      </div>
+    </div>
+    <div class="form-group">
+      {{formSettingsGeneral.relayStatsVolts.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      <div class="col-sm-8">
+        {{formSettingsGeneral.relayStatsVolts(class_='form-control', value=misc.relay_stats_volts)}}
       </div>
     </div>
     <div class="form-group">

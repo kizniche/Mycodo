@@ -275,6 +275,7 @@ class SettingsGeneral(Form):
     forceHTTPS = BooleanField(u'Force HTTPS')
     hideAlertSuccess = BooleanField(u'Hide success messages')
     hideAlertInfo = BooleanField(u'Hide info messages')
+    relayStatsVolts = IntegerField(u'Voltage')
     hideAlertWarning = BooleanField(u'Hide warning messages')
     stats_opt_out = BooleanField(u'Opt-out of sending statistics')
     Submit = SubmitField(u'Save')
@@ -1082,13 +1083,7 @@ class ModSensorConditional(Form):
         )]
     )
     MeasureType = TextField(u'Measurement Type')
-    EdgeSelect = RadioField(
-        u'Edge or State',
-        choices=[
-            ('edge','Detect Edge'),
-            ('state','Detect State')
-        ]
-    )
+    EdgeSelect = TextField(u'Edge or State')
     EdgeDetected = TextField(u'Edge Detected')
     GPIOState = IntegerField(u'GPIO State')
     Direction = TextField( u'Direction')

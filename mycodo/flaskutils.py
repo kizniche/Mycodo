@@ -1899,11 +1899,15 @@ def sensor_mod(formModSensor):
 
             error = False
 
-            relay = db_session.query(Relay).filter(
-                Relay.pin == int(formModSensor.modLocation.data)).first()
-            if relay is not None:
-                flash("Invalid GPIO. Already in use with a relay.", "error")
+            if not formModSensor.modLocation.data:
+                flash("Invalid GPIO.", "error")
                 error = True
+            elif mod_sensor.device in ['DHT11', 'DHT22', 'EDGE', 'SHT1x_7x']:
+                relay = db_session.query(Relay).filter(
+                    Relay.pin == int(formModSensor.modLocation.data)).first()
+                if relay is not None:
+                    flash("Invalid GPIO. Already in use with a relay.", "error")
+                    error = True
 
             sensor = db_session.query(Sensor)
             sensor = sensor.filter(
@@ -2498,6 +2502,7 @@ def settings_general_mod(formModGeneral):
             mod_misc.force_https = formModGeneral.forceHTTPS.data
             mod_misc.hide_alert_success = formModGeneral.hideAlertSuccess.data
             mod_misc.hide_alert_info = formModGeneral.hideAlertInfo.data
+            mod_misc.relay_stats_volts = formModGeneral.relayStatsVolts.data
             mod_misc.hide_alert_warning = formModGeneral.hideAlertWarning.data
             mod_misc.stats_opt_out = formModGeneral.stats_opt_out.data
             db_session.commit()
