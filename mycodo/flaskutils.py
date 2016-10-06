@@ -1887,11 +1887,15 @@ def sensor_mod(formModSensor):
 
             error = False
 
-            relay = db_session.query(Relay).filter(
-                Relay.pin == int(formModSensor.modLocation.data)).first()
-            if relay is not None:
-                flash("Invalid GPIO. Already in use with a relay.", "error")
+            if not formModSensor.modLocation.data:
+                flash("Invalid GPIO.", "error")
                 error = True
+            elif mod_sensor.device in ['DHT11', 'DHT22', 'EDGE', 'SHT1x_7x']:
+                relay = db_session.query(Relay).filter(
+                    Relay.pin == int(formModSensor.modLocation.data)).first()
+                if relay is not None:
+                    flash("Invalid GPIO. Already in use with a relay.", "error")
+                    error = True
 
             sensor = db_session.query(Sensor)
             sensor = sensor.filter(

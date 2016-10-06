@@ -75,7 +75,7 @@ def add_user(admin=False):
     else:
         new_user.user_restriction = 'guest'
 
-    new_user.user_theme = 'dark'
+    new_user.user_theme = 'slate'
     try:
         with session_scope(USER_DB_PATH) as db_session:
             db_session.add(new_user)
