@@ -3,7 +3,6 @@
 import mock
 from mycodo.tests.software_tests.factories import UserFactory
 from mycodo.tests.software_tests.test_mycodo_flask.conftest import login_user
-from mycodo.databases.users_db.models import Users
 
 # ----------------------
 #   Non-Logged In Tests
@@ -50,7 +49,7 @@ def test_settings_general_for_non_logged_in_user(testapp):
 # -----------------------
 @mock.patch('mycodo.flaskutils.login_log')  # the login_log writes to a system protected file
 def test_user_can_login(_, testapp, user_db):
-    """ Verifies behavior of this endpoint for non-logged in users """
+    """ user logs in and sees a nav bar """
     # Build a user that we can login with
     norm_user = UserFactory()
     norm_user.set_password('something_secrete')
