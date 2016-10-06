@@ -1,5 +1,5 @@
-pytest
-factory_boy
+pytest == 3.0.3
+factory_boy == 2.7.0
 alembic
 argparse
 bcrypt
