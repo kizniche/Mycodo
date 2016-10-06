@@ -303,7 +303,7 @@ Mycodo/
 │   │   ├── camera_pi.py
 │   │   └── ...
 │   ├── flaskforms.py - Flask form classes
-│   ├── flaskutils.py - Various functions to assist flask UI
+│   ├── flaskutils.py - Various functions to assist the flask UI
 │   ├── mycodo_flask - HTTP server files (Flask)
 │   │   ├── ssl_certs - Location of HTTP SSL certificates
 │   │   ├── static - Static files reside (images, css, js, etc.)
