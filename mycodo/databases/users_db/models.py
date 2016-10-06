@@ -30,6 +30,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
+
 class Users(Base):
     __tablename__ = "users"
 
@@ -39,6 +40,12 @@ class Users(Base):
     user_email = Column(VARCHAR(64), unique=True, index=True)
     user_restriction = Column(VARCHAR(64))
     user_theme = Column(VARCHAR(64))
+
+    def __repr__(self):
+        output = "<User: <name='{name}', email='{email}' is_admin='{isadmin}'>"
+        return output.format(name=self.user_name,
+                             email=self.user_email,
+                             isadmin=bool(self.user_restriction == 'admin'))
 
     def set_password(self, new_password):
         self.user_password_hash = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
