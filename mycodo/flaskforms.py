@@ -275,6 +275,7 @@ class SettingsGeneral(Form):
     forceHTTPS = BooleanField(u'Force HTTPS')
     hideAlertSuccess = BooleanField(u'Hide success messages')
     hideAlertInfo = BooleanField(u'Hide info messages')
+    relayStatsVolts = IntegerField(u'Voltage')
     hideAlertWarning = BooleanField(u'Hide warning messages')
     stats_opt_out = BooleanField(u'Opt-out of sending statistics')
     Submit = SubmitField(u'Save')

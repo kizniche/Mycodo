@@ -2486,6 +2486,7 @@ def settings_general_mod(formModGeneral):
             mod_misc.force_https = formModGeneral.forceHTTPS.data
             mod_misc.hide_alert_success = formModGeneral.hideAlertSuccess.data
             mod_misc.hide_alert_info = formModGeneral.hideAlertInfo.data
+            mod_misc.relay_stats_volts = formModGeneral.relayStatsVolts.data
             mod_misc.hide_alert_warning = formModGeneral.hideAlertWarning.data
             mod_misc.stats_opt_out = formModGeneral.stats_opt_out.data
             db_session.commit()
