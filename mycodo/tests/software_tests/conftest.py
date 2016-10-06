@@ -1,11 +1,21 @@
 # coding=utf-8
 """ pytest file """
+import pytest
 import logging
 from os.path import isfile
 from mycodo.config import SQL_DATABASE_MYCODO, SQL_DATABASE_NOTE, SQL_DATABASE_USER
 from init_databases import create_dbs
 from mycodo.databases.utils import session_scope
 from mycodo.databases.users_db.models import Users
+
+
+@pytest.yield_fixture()
+def user_db():
+    """ yields a session to the user db """
+    with session_scope("sqlite:///" + SQL_DATABASE_USER) as db_session:
+        yield db_session
+
+        db_session.commit()
 
 
 def setup_databases_if_missing():
@@ -39,3 +49,10 @@ def setup_databases_if_missing():
             logging.warning("--> Creating new 'test' user as an admin")
             db_session.add(Users(user_name='test', user_restriction='admin'))
             db_session.commit()
+
+
+@pytest.yield_fixture()
+def mycodo_db_sess():
+    """ yields mycodo_db sqlalchemy session """
+    with session_scope("""sqlite://""" + SQL_DATABASE_USER) as session:
+        yield session
