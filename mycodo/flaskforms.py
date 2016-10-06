@@ -1083,13 +1083,7 @@ class ModSensorConditional(Form):
         )]
     )
     MeasureType = TextField(u'Measurement Type')
-    EdgeSelect = RadioField(
-        u'Edge or State',
-        choices=[
-            ('edge','Detect Edge'),
-            ('state','Detect State')
-        ]
-    )
+    EdgeSelect = TextField(u'Edge or State')
     EdgeDetected = TextField(u'Edge Detected')
     GPIOState = IntegerField(u'GPIO State')
     Direction = TextField( u'Direction')
