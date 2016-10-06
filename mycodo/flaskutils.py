@@ -3,16 +3,12 @@
 #
 
 import bcrypt
-import itertools
-import operator
 import os
 import random
 import requests
 from RPi import GPIO
 import sqlalchemy
 import string
-import subprocess
-import time as tm
 from collections import OrderedDict
 from datetime import datetime, time
 import functools
@@ -30,8 +26,6 @@ from flask import after_this_request
 from influxdb import InfluxDBClient
 from sqlalchemy import and_
 from sqlalchemy.orm import sessionmaker
-from subprocess import Popen, PIPE
-
 
 from utils.send_data import send_email
 from databases.mycodo_db.models import CameraStill

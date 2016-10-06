@@ -33,12 +33,11 @@ import csv
 import datetime
 import glob
 
-import logging
 import os
 import pwd
 import random
 import socket
-import sqlalchemy
+
 import string
 import subprocess
 import time
@@ -91,7 +90,6 @@ from utils.system_pi import get_sec
 from utils.system_pi import internet
 
 from devices.camera_pi import CameraStream
-from devices.camera_pi import CameraTimelapse
 
 from mycodo_client import DaemonControl
 
