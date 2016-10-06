@@ -1,3 +1,5 @@
+pytest
+factory_boy
 alembic
 argparse
 bcrypt
