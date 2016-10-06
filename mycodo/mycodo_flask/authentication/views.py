@@ -54,11 +54,11 @@ def do_admin_login():
                 new_session.close()
             if not user:
                 flaskutils.login_log(form.username.data, 'NA',
-                                     request.environ['REMOTE_ADDR'], 'NOUSER')
+                                     request.environ.get('REMOTE_ADDR', 'unknown address'), 'NOUSER')
                 flaskutils.failed_login()
             elif Users().check_password(form.password.data, user.user_password_hash) == user.user_password_hash:
                 flaskutils.login_log(user.user_name, user.user_restriction,
-                                     request.environ['REMOTE_ADDR'], 'LOGIN')
+                                     request.environ.get('REMOTE_ADDR', 'unknown address'), 'LOGIN')
                 session['logged_in'] = True
                 session['user_group'] = user.user_restriction
                 session['user_name'] = user.user_name
@@ -77,11 +77,11 @@ def do_admin_login():
                 return redirect('/')
             else:
                 flaskutils.login_log(user.user_name, user.user_restriction,
-                                     request.environ['REMOTE_ADDR'], 'FAIL')
+                                     request.environ.get('REMOTE_ADDR', 'unknown address'), 'FAIL')
                 flaskutils.failed_login()
         else:
             flaskutils.login_log(form.username.data, 'NA',
-                                 request.environ['REMOTE_ADDR'], 'FAIL')
+                                 request.environ.get('REMOTE_ADDR', 'unknown address'), 'FAIL')
             flaskutils.failed_login()
 
         return redirect('/login')
@@ -98,8 +98,8 @@ def logout():
     """Log out of the web-ui"""
     if session.get('user_name'):
         flaskutils.login_log(session['user_name'], session['user_group'],
-                             request.environ['REMOTE_ADDR'], 'LOGOUT')
-    response = clear_cookie_auth()
+                             request.environget('REMOTE_ADDR', 'unknown address'), 'LOGOUT')
+    response = flaskutils.clear_cookie_auth()
     flash('Successfully logged out', 'success')
     return response
 
