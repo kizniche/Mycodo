@@ -59,6 +59,8 @@ DATABASE_PATH = os.path.join(INSTALL_DIRECTORY, 'databases')
 SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, 'mycodo.db')
 SQL_DATABASE_USER = os.path.join(DATABASE_PATH, 'users.db')
 SQL_DATABASE_NOTE = os.path.join(DATABASE_PATH, 'notes.db')
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+USER_DB_PATH = 'sqlite:///' + SQL_DATABASE_USER
 
 # Influxdb
 INFLUXDB_HOST = 'localhost'

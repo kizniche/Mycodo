@@ -18,6 +18,8 @@ from mycodo.mycodo_flask import app as _app
 @pytest.yield_fixture()
 def app():
     """ Create a python-eve test fixture """
+    _app.config['DEBUG'] = True
+
     ctx = _app.test_request_context()
     ctx.push()
 

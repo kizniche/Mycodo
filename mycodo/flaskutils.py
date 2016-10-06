@@ -15,11 +15,23 @@ import subprocess
 import time as tm
 from collections import OrderedDict
 from datetime import datetime, time
-from flask import flash, request, session, redirect
+import functools
+
+import gzip
+from cStringIO import StringIO as IO
+
+from flask import flash
+from flask import make_response
+from flask import request
+from flask import session
+from flask import redirect
+from flask import after_this_request
+
 from influxdb import InfluxDBClient
 from sqlalchemy import and_
 from sqlalchemy.orm import sessionmaker
 from subprocess import Popen, PIPE
+
 
 from utils.send_data import send_email
 from databases.mycodo_db.models import CameraStill
@@ -2689,3 +2701,52 @@ def login_log(user, group, ip, status):
     with open(LOGIN_LOG_FILE, 'a') as file:
         file.write('{:%Y-%m-%d %H:%M:%S}: {} {} ({}), {}\n'.format(
             datetime.now(), status, user, group, ip))
+
+
+def clear_cookie_auth():
+    """Delete authentication cookies"""
+    response = make_response(redirect('/login'))
+    session.clear()  # or session['logged_in'] = False
+    response.set_cookie('user_name', '', expires=0)
+    response.set_cookie('user_pass_hash', '', expires=0)
+    return response
+
+
+def gzipped(f):
+    """
+    Allows gzipping the response of any view.
+    Just add '@gzipped' after the '@app'.
+    Used mainly for sending large amounts of data for graphs.
+    """
+    @functools.wraps(f)
+    def view_func(*args, **kwargs):
+        @after_this_request
+        def zipper(response):
+            accept_encoding = request.headers.get('Accept-Encoding', '')
+
+            if 'gzip' not in accept_encoding.lower():
+                return response
+
+            response.direct_passthrough = False
+
+            if (response.status_code < 200 or
+                response.status_code >= 300 or
+                'Content-Encoding' in response.headers):
+                return response
+            gzip_buffer = IO()
+            gzip_file = gzip.GzipFile(mode='wb',
+                                      fileobj=gzip_buffer)
+
+            gzip_file.write(response.data)
+            gzip_file.close()
+
+            response.data = gzip_buffer.getvalue()
+            response.headers['Content-Encoding'] = 'gzip'
+            response.headers['Vary'] = 'Accept-Encoding'
+            response.headers['Content-Length'] = len(response.data)
+
+            return response
+
+        return f(*args, **kwargs)
+
+    return view_func
