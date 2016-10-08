@@ -943,8 +943,8 @@ def page(page):
                             flash("Camera Error: {}".format(msg), "error")
                     else:
                         flash("Cannot capture still if stream is"
-                              " active. If they are not active, delete {} and"
-                              " {}.".format(LOCK_FILE_STREAM),
+                              " active. If it is not active, delete "
+                              "{sfile}.".format(sfile=LOCK_FILE_STREAM),
                               "error")
 
                 elif formCamera.StartTimelapse.data:
