@@ -32,29 +32,38 @@ import calendar
 import csv
 import datetime
 import glob
-import gzip
-import functools
-import logging
+
 import os
 import pwd
 import random
 import socket
-import sqlalchemy
+
 import string
 import subprocess
 import time
 from RPi import GPIO
 from collections import OrderedDict
-from cStringIO import StringIO as IO
 from dateutil.parser import parse as date_parse
-from flask import Flask, after_this_request, flash, make_response, redirect, render_template, request, send_from_directory, session, g, jsonify, Response
+
+from flask import Flask
+from flask import flash
+from flask import make_response
+from flask import redirect
+from flask import render_template
+from flask import request
+from flask import send_from_directory
+from flask import session
+from flask import jsonify
+from flask import Response
+
 from flask_influxdb import InfluxDB
 from flask_sslify import SSLify
-from logging.handlers import RotatingFileHandler
-from sqlalchemy.orm import sessionmaker
 
 import flaskforms
 import flaskutils
+from flaskutils import clear_cookie_auth
+from flaskutils import gzipped
+
 from databases.utils import session_scope
 from databases.mycodo_db.models import CameraStill
 from databases.mycodo_db.models import DisplayOrder
@@ -81,7 +90,6 @@ from utils.system_pi import get_sec
 from utils.system_pi import internet
 
 from devices.camera_pi import CameraStream
-from devices.camera_pi import CameraTimelapse
 
 from mycodo_client import DaemonControl
 
@@ -102,14 +110,16 @@ from config import SQL_DATABASE_MYCODO
 from config import SQL_DATABASE_USER
 from config import STATS_CSV
 from config import UPDATE_LOG_FILE
+from config import MYCODO_DB_PATH
+from config import USER_DB_PATH
 
+from mycodo.mycodo_flask import authentication
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
-USER_DB_PATH = 'sqlite:///' + SQL_DATABASE_USER
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 app.jinja_env.add_extension('jinja2.ext.do')  # Global values in jinja
+app.register_blueprint(authentication.views.blueprint)  # register our login/logout views
 
 influx_db = InfluxDB(app)
 
@@ -119,44 +129,7 @@ if misc.force_https:
     sslify = SSLify(app)
 
 
-def gzipped(f):
-    """
-    Allows gzipping the response of any view.
-    Just add '@gzipped' after the '@app'.
-    Used mainly for sending large amounts of data for graphs.
-    """
-    @functools.wraps(f)
-    def view_func(*args, **kwargs):
-        @after_this_request
-        def zipper(response):
-            accept_encoding = request.headers.get('Accept-Encoding', '')
 
-            if 'gzip' not in accept_encoding.lower():
-                return response
-
-            response.direct_passthrough = False
-
-            if (response.status_code < 200 or
-                response.status_code >= 300 or
-                'Content-Encoding' in response.headers):
-                return response
-            gzip_buffer = IO()
-            gzip_file = gzip.GzipFile(mode='wb',
-                                      fileobj=gzip_buffer)
-
-            gzip_file.write(response.data)
-            gzip_file.close()
-
-            response.data = gzip_buffer.getvalue()
-            response.headers['Content-Encoding'] = 'gzip'
-            response.headers['Vary'] = 'Accept-Encoding'
-            response.headers['Content-Length'] = len(response.data)
-
-            return response
-
-        return f(*args, **kwargs)
-
-    return view_func
 
 
 @app.before_request
@@ -1493,87 +1466,6 @@ def settings(page):
     return render_template('settings/{}.html'.format(page))
 
 
-@app.route('/login', methods=('GET', 'POST'))
-def do_admin_login():
-    """Authenticate users of the web-UI"""
-    # Check if the user is banned from logging in
-    if flaskutils.banned_from_login():
-        return redirect('/')
-
-    form = flaskforms.Login()
-    formNotice = flaskforms.InstallNotice()
-
-    with session_scope(MYCODO_DB_PATH) as db_session:
-        misc = db_session.query(Misc).first()
-        dismiss_notification = misc.dismiss_notification
-        stats_opt_out = misc.stats_opt_out
-
-    if request.method == 'POST':
-        form_name = request.form['form-name']
-        if form_name == 'acknowledge':
-            try:
-                with session_scope(MYCODO_DB_PATH) as db_session:
-                    mod_misc = db_session.query(Misc).first()
-                    mod_misc.dismiss_notification = 1
-                    db_session.commit()
-            except Exception as except_msg:
-                flash("Acknowledgement not saved: {}".format(except_msg), "error")
-        elif form_name == 'login' and form.validate_on_submit():
-            with session_scope(USER_DB_PATH) as new_session:
-                user = new_session.query(Users).filter(Users.user_name == form.username.data).first()
-                new_session.expunge_all()
-                new_session.close()
-            if not user:
-                flaskutils.login_log(form.username.data,'NA',
-                                     request.environ['REMOTE_ADDR'], 'NOUSER')
-                flaskutils.failed_login()
-            elif Users().check_password(form.password.data, user.user_password_hash) == user.user_password_hash:
-                flaskutils.login_log(user.user_name, user.user_restriction,
-                                     request.environ['REMOTE_ADDR'], 'LOGIN')
-                session['logged_in'] = True
-                session['user_group'] = user.user_restriction
-                session['user_name'] = user.user_name
-                session['user_theme'] = user.user_theme
-                if form.remember.data:
-                    response = make_response(redirect('/'))
-                    expire_date = datetime.datetime.now()
-                    expire_date = expire_date + datetime.timedelta(days=90)
-                    response.set_cookie('user_name',
-                                        user.user_name,
-                                        expires=expire_date)
-                    response.set_cookie('user_pass_hash',
-                                        user.user_password_hash,
-                                        expires=expire_date)
-                    return response
-                return redirect('/')
-            else:
-                flaskutils.login_log(user.user_name, user.user_restriction,
-                    request.environ['REMOTE_ADDR'], 'FAIL')
-                flaskutils.failed_login()
-        else:
-            flaskutils.login_log(form.username.data, 'NA',
-                request.environ['REMOTE_ADDR'], 'FAIL')
-            flaskutils.failed_login()
-
-        return redirect('/login')
-
-    return render_template('login.html',
-                           form=form,
-                           formNotice=formNotice,
-                           dismiss_notification=dismiss_notification,
-                           stats_opt_out=stats_opt_out)
-
-
-@app.route("/logout")
-def logout():
-    """Log out of the web-ui"""
-    if session.get('user_name'):
-        flaskutils.login_log(session['user_name'], session['user_group'],
-                             request.environ['REMOTE_ADDR'], 'LOGOUT')
-    response = clear_cookie_auth()
-    flash('Successfully logged out', 'success')
-    return response
-
 
 def logged_in():
     """Verify the user is logged in"""
@@ -1586,13 +1478,7 @@ def logged_in():
         return 1
 
 
-def clear_cookie_auth():
-    """Delete authentication cookies"""
-    response = make_response(redirect('/login'))
-    session.clear()  # or session['logged_in'] = False
-    response.set_cookie('user_name', '', expires=0)
-    response.set_cookie('user_pass_hash', '', expires=0)
-    return response
+
 
 
 def gen(camera):

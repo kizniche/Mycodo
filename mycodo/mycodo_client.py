@@ -22,7 +22,7 @@
 #  along with Mycodo. If not, see <http://www.gnu.org/licenses/>.
 #
 #  Contact at kylegabriel.com
-
+import logging
 import argparse
 import datetime
 import rpyc
@@ -42,7 +42,7 @@ class DaemonControl():
         try:
             self.rpyc_client = rpyc.connect("localhost", 18813)
         except socket.error:
-            print("Connection refused.")
+            logging.debug("Connection refused. Is the daemon running?")
             raise Exception("Connection refused. Is the daemon running?")
 
     def flash_lcd(self, lcd_id, state):

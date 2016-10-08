@@ -18,6 +18,12 @@ from mycodo.mycodo_flask import app as _app
 @pytest.yield_fixture()
 def app():
     """ Create a python-eve test fixture """
+
+    # this change of settings part can be removed when we switch to using
+    # an application factory: http://flask.pocoo.org/docs/0.11/patterns/appfactories/
+    _app.config['TESTING'] = True
+    _app.config['DEBUG'] = True
+
     ctx = _app.test_request_context()
     ctx.push()
 
@@ -34,4 +40,22 @@ def testapp(app):
     :return: webtest.TestApp
     """
     return TestApp(app)
+
+
+def login_user(app, username, password):
+    """
+    returns a test context with a modified
+    session for the user login status
+
+    :returns: None
+    """
+
+    res = app.get('/login')
+    form = res.forms['login_form']
+
+    form['username'] = username
+    form['password'] = password
+    form.submit().maybe_follow()
+
+    return None
 

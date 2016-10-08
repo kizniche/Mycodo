@@ -303,7 +303,7 @@ Mycodo/
 │   │   ├── camera_pi.py
 │   │   └── ...
 │   ├── flaskforms.py - Flask form classes
-│   ├── flaskutils.py - Various functions to assist mycodo_flask.py
+│   ├── flaskutils.py - Various functions to assist the flask UI
 │   ├── mycodo_flask - HTTP server files (Flask)
 │   │   ├── ssl_certs - Location of HTTP SSL certificates
 │   │   ├── static - Static files reside (images, css, js, etc.)
@@ -333,7 +333,7 @@ Mycodo/
 │   │           └── ...
 │   ├── mycodo_client.py - Communicates with the running daemon
 │   ├── mycodo_daemon.py - Mycodo daemon (core of the system)
-│   ├── mycodo_flask.py - Flask startup script
+│   ├── start_flask_ui.py - Flask startup script
 │   ├── scripts - Miscellaneous helper and test scripts and functions
 │   │   ├── mycodo.service - Systemd script
 │   │   ├── mycodo_wrapper.c - Source to binary that's setuid, for upgrades 
