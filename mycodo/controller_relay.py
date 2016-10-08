@@ -250,6 +250,8 @@ class RelayController(threading.Thread):
                         self.relay_name[relay_id]))
 
         if trigger_conditionals:
+            if state == 'on' and duration != 0:
+                self.checkConditionals(relay_id, 0)
             self.checkConditionals(relay_id, duration)
 
 
