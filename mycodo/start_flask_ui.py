@@ -28,8 +28,8 @@ if __name__ == '__main__':
         # the script's directory.
         file_path = os.path.abspath(__file__)
         dir_path = os.path.dirname(file_path)
-        cert = os.path.join(dir_path, "ssl_certs/cert.pem")
-        privkey = os.path.join(dir_path, "ssl_certs/privkey.pem")
+        cert = os.path.join(dir_path, "mycodo_flask/ssl_certs/cert.pem")
+        privkey = os.path.join(dir_path, "mycodo_flask/ssl_certs/privkey.pem")
         # chain = os.path.join(dir_path, "ssl_certs/chain.pem")
         context = (cert, privkey)
         app.run(host='0.0.0.0', port=443, ssl_context=context, debug=debug)

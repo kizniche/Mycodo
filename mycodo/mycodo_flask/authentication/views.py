@@ -98,7 +98,7 @@ def logout():
     """Log out of the web-ui"""
     if session.get('user_name'):
         flaskutils.login_log(session['user_name'], session['user_group'],
-                             request.environget('REMOTE_ADDR', 'unknown address'), 'LOGOUT')
+                             request.environ.get('REMOTE_ADDR', 'unknown address'), 'LOGOUT')
     response = flaskutils.clear_cookie_auth()
     flash('Successfully logged out', 'success')
     return response

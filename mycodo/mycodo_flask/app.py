@@ -113,6 +113,7 @@ from config import UPDATE_LOG_FILE
 from config import MYCODO_DB_PATH
 from config import USER_DB_PATH
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 from mycodo.mycodo_flask import authentication
 
 
