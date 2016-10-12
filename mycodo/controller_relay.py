@@ -61,6 +61,8 @@ class RelayController(threading.Thread):
         self.relay_last_duration = {}
         self.relay_on_duration = {}
 
+        self.relay_time_turned_on = {}
+
         self.logger.debug("[Relay] Initializing Relays")
         try:
             with session_scope(MYCODO_DB_PATH) as new_session:
@@ -194,6 +196,8 @@ class RelayController(threading.Thread):
                                                               time_on,
                                                               duration))
                         if time_on > 0:
+                            # Write the duration the relay was ON to the
+                            # database at the timestamp it turned ON
                             duration = float(time_on)
                             timestamp = datetime.datetime.utcnow()-datetime.timedelta(seconds=duration)
                             write_db = threading.Thread(
@@ -237,10 +241,19 @@ class RelayController(threading.Thread):
                                 self.relay_name[relay_id]))
                         return 1
                     else:
+                        # Record the time the relay was turned on in order to
+                        # calculate and log the total duration is was on, when
+                        # it evetually turns off.
+                        self.relay_time_turned_on[relay_id] = datetime.datetime.now()
+                        self.logger.debug("[Relay] Relay {rid} ({rname}) ON "
+                            "at {timeon}.".format(rid=self.relay_id[relay_id],
+                                                  rname=self.relay_name[relay_id],
+                                                  timeon=self.relay_time_turned_on[relay_id]))
                         GPIO.output(self.relay_pin[relay_id],
                                     self.relay_trigger[relay_id])
 
         else:
+            # Turn relay off
             if self._is_setup(self.relay_pin[relay_id]) and self.relay_pin[relay_id]:  # if pin not 0
                 self.relay_on_duration[relay_id] = False
                 self.relay_on_until[relay_id] = datetime.datetime.now()
@@ -248,6 +261,22 @@ class RelayController(threading.Thread):
                 self.logger.debug("[Relay] Relay {} ({}) turned off.".format(
                         self.relay_id[relay_id],
                         self.relay_name[relay_id]))
+
+                if self.relay_time_turned_on[relay_id]:
+                    # Write the duration the relay was ON to the database
+                    # at the timestamp it turned ON
+                    duration = (datetime.datetime.now()-self.relay_time_turned_on[relay_id]).total_seconds()
+                    timestamp = datetime.datetime.utcnow()-datetime.timedelta(seconds=duration)
+                    self.logger.info("TST {} - {}.".format(duration, timestamp))
+                    write_db = threading.Thread(
+                        target=write_influxdb_value,
+                        args=(self.logger, INFLUXDB_HOST,
+                              INFLUXDB_PORT, INFLUXDB_USER,
+                              INFLUXDB_PASSWORD, INFLUXDB_DATABASE,
+                              'relay', relay_id, 'duration_sec',
+                              duration, timestamp,))
+                    write_db.start()
+                    self.relay_time_turned_on[relay_id] = None
 
         if trigger_conditionals:
             if state == 'on' and duration != 0:
