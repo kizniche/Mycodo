@@ -267,7 +267,6 @@ class RelayController(threading.Thread):
                     # at the timestamp it turned ON
                     duration = (datetime.datetime.now()-self.relay_time_turned_on[relay_id]).total_seconds()
                     timestamp = datetime.datetime.utcnow()-datetime.timedelta(seconds=duration)
-                    self.logger.info("TST {} - {}.".format(duration, timestamp))
                     write_db = threading.Thread(
                         target=write_influxdb_value,
                         args=(self.logger, INFLUXDB_HOST,
