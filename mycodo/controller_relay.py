@@ -387,7 +387,7 @@ class RelayController(threading.Thread):
             self.relay_on_until[each_relay.id] = datetime.datetime.now()
             self.relay_last_duration[each_relay.id] = 0
             self.relay_on_duration[each_relay.id] = False
-            self.relay_time_turned_on[relay_id] = None
+            self.relay_time_turned_on[each_relay.id] = None
             self.setup_pin(each_relay.pin)
             self.logger.debug("[Relay] {} ({}) Initialized".format(each_relay.id, each_relay.name))
 
