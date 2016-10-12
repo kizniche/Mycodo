@@ -278,6 +278,7 @@ class SettingsGeneral(Form):
     relayStatsVolts = IntegerField(u'Voltage')
     relayStatsCost = DecimalField(u'Cost per kWh')
     relayStatsCurrency = TextField(u'Currency Unit')
+    relayStatsDayOfMonth = TextField(u'Billing Day of Month (1-30)')
     hideAlertWarning = BooleanField(u'Hide warning messages')
     stats_opt_out = BooleanField(u'Opt-out of sending statistics')
     Submit = SubmitField(u'Save')

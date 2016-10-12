@@ -2499,6 +2499,7 @@ def settings_general_mod(formModGeneral):
             mod_misc.relay_stats_volts = formModGeneral.relayStatsVolts.data
             mod_misc.relay_stats_cost = formModGeneral.relayStatsCost.data
             mod_misc.relay_stats_currency = formModGeneral.relayStatsCurrency.data
+            mod_misc.relay_stats_dayofmonth = formModGeneral.relayStatsDayOfMonth.data
             mod_misc.hide_alert_warning = formModGeneral.hideAlertWarning.data
             mod_misc.stats_opt_out = formModGeneral.stats_opt_out.data
             db_session.commit()
