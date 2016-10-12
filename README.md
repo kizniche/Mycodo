@@ -49,15 +49,15 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 
 * Web interface: Visualize data, configure the system, manipulate relays, and more, from anywhere with an internet connection.
 * Many Analog and digital sensors supported: Measuring temperature, humidity, CO<sub>2</sub>, atmospheric pressure, luminosity, infrared heat, soil moisture, and more!
---* Analog to digital converter support for reading any analog sensor or signal.
+  * Analog to digital converter support for reading any analog sensor or signal.
 * Event triggers: When certain conditions are met, activate relays, camera recording, email notification, and more.
 * Discrete PID control: Regulate environmental conditions with prediction and precision.
 * Method creation for dynamic PID setpoints for changing conditions over time .
---* Time/Date: Change the setpoint based on specific times and dates (ideal for long-duration changes).
---* Duration: Change the setpoint at durations form when it was activated (examples: reflow oven, thermal cycler).
---* Daily: Change the setpoint on a daily, repeatable schedule.
---* Daily Sine Wave: Change the setpoint on a daily, repeatable schedule that follows a configurable sinusoidal wave.
---* Daily Bezier Curve: Change the setpoint on a daily, repeatable schedule that follows a configurable Bezier curve.
+  * Time/Date: Change the setpoint based on specific times and dates (ideal for long-duration changes).
+  * Duration: Change the setpoint at durations form when it was activated (examples: reflow oven, thermal cycler).
+  * Daily: Change the setpoint on a daily, repeatable schedule.
+  * Daily Sine Wave: Change the setpoint on a daily, repeatable schedule that follows a configurable sinusoidal wave.
+  * Daily Bezier Curve: Change the setpoint on a daily, repeatable schedule that follows a configurable Bezier curve.
 * 16x2 and 20x4 I<sup>2</sup>C LCD support: Create a physical display of conditions or status of the system.
 * I<sup>2</sup>C multiplexer support to allow using multiple devices/sensors with the same address.
 * Pi Camera support: Streaming live video, capture still images, or create time-lapses.
