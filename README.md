@@ -64,9 +64,9 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 * Automated system upgrade: When a new feature is pushed to github, one click will update the entire system.
 
 
+
 ## TODO:
 
-* Add persistent daily timers (ensures relays are reactivated after power failure, such as for grow lighting)
 * Support Serial Port Expander
 * Support [more] Atlas Scientific sensors
 * Add PID filters (of input or output) and alternate PID functions.
@@ -270,6 +270,7 @@ sudo /etc/init.d/apache2 restart
 ```
 
 
+
 ### Directory Structure
 
 This is the file structure of Mycodo, so it may assist anyone to understand or modify the system. I'll try to keep this current.
@@ -413,6 +414,8 @@ Output to LCDs
 Change settings
 
 <img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/04/Mycodo-Alerts-Settings-2016-04-10-11-50-29-e1460303466599.png">
+
+
 
 ## Links
 
