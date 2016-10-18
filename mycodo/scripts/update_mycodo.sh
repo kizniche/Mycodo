@@ -34,7 +34,7 @@ case "${1:-''}" in
     'backup')
         NOW=$(date +"%Y-%m-%d_%H-%M-%S")
         CURCOMMIT=$(git rev-parse --short HEAD)
-        printf "#### $INSTALL_DIRECTORY Creating backup /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT ####\n"
+        printf "#### Creating backup /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT from $INSTALL_DIRECTORY ####\n"
         mkdir -p /var/Mycodo-backups
         mkdir -p /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT
         rsync -ah --stats \
