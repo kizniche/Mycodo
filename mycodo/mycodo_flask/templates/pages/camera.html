@@ -74,11 +74,13 @@
     {% if timelapse_locked %}
       <div style="padding-bottom: 1em">
         Timelapse Parameters:
-        <br>Start: {{tl_start}}
-        <br>End: {{tl_end}}
-        <br>Interval: {{tl_interval}} seconds
-        <br>Next Capture: {{tl_next_capture}}
-        <br>Next Capture Number: {{tl_capture_number}}
+        {% for key, value in tl_parameters_dict.iteritems() %}
+          {% if key == 'start_time' %}<br>Start: {{value[0]}}{% endif %}
+          {% if key == 'end_time' %}<br>End: {{value[0]}}{% endif %}
+          {% if key == 'interval' %}<br>Interval: {{value}} seconds{% endif %}
+          {% if key == 'next_capture' %}<br>Next Capture: {{value[0]}}{% endif %}
+          {% if key == 'capture_number' %}<br>Next Capture Number: {{value}}{% endif %}
+        {% endfor %}
       </div>
       {% if latest_timelapse_img %}
         <div style="padding-bottom: 1.5em">
