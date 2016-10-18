@@ -11,6 +11,8 @@ from ctypes import c_ubyte
 
 import RPi.GPIO as GPIO
 
+import traceback
+
 
 class BME280(object):
     def __init__(self, address, bus):
@@ -26,7 +28,9 @@ class BME280(object):
             time.sleep(2)
             self.bus = smbus.SMBus(self.I2C_bus_number)
             self._temperature, self._humidity, self._pressure = self.readBME280All()
-        except:
+        except Exception, err:
+            raise Exception(err)
+            traceback.print_exc()
             return 1
 
     @property
@@ -113,33 +117,33 @@ class BME280(object):
         cal3 = self.bus.read_i2c_block_data(self.i2c_address, 0xE1, 7)
 
         # Convert byte data to word values
-        dig_T1 = getUShort(cal1, 0)
-        dig_T2 = getShort(cal1, 2)
-        dig_T3 = getShort(cal1, 4)
+        dig_T1 = self.getUShort(cal1, 0)
+        dig_T2 = self.getShort(cal1, 2)
+        dig_T3 = self.getShort(cal1, 4)
 
-        dig_P1 = getUShort(cal1, 6)
-        dig_P2 = getShort(cal1, 8)
-        dig_P3 = getShort(cal1, 10)
-        dig_P4 = getShort(cal1, 12)
-        dig_P5 = getShort(cal1, 14)
-        dig_P6 = getShort(cal1, 16)
-        dig_P7 = getShort(cal1, 18)
-        dig_P8 = getShort(cal1, 20)
-        dig_P9 = getShort(cal1, 22)
+        dig_P1 = self.getUShort(cal1, 6)
+        dig_P2 = self.getShort(cal1, 8)
+        dig_P3 = self.getShort(cal1, 10)
+        dig_P4 = self.getShort(cal1, 12)
+        dig_P5 = self.getShort(cal1, 14)
+        dig_P6 = self.getShort(cal1, 16)
+        dig_P7 = self.getShort(cal1, 18)
+        dig_P8 = self.getShort(cal1, 20)
+        dig_P9 = self.getShort(cal1, 22)
 
-        dig_H1 = getUChar(cal2, 0)
-        dig_H2 = getShort(cal3, 0)
-        dig_H3 = getUChar(cal3, 2)
+        dig_H1 = self.getUChar(cal2, 0)
+        dig_H2 = self.getShort(cal3, 0)
+        dig_H3 = self.getUChar(cal3, 2)
 
-        dig_H4 = getChar(cal3, 3)
+        dig_H4 = self.getChar(cal3, 3)
         dig_H4 = (dig_H4 << 24) >> 20
-        dig_H4 = dig_H4 | (getChar(cal3, 4) & 0x0F)
+        dig_H4 = dig_H4 | (self.getChar(cal3, 4) & 0x0F)
 
-        dig_H5 = getChar(cal3, 5)
+        dig_H5 = self.getChar(cal3, 5)
         dig_H5 = (dig_H5 << 24) >> 20
-        dig_H5 = dig_H5 | (getUChar(cal3, 4) >> 4 & 0x0F)
+        dig_H5 = dig_H5 | (self.getUChar(cal3, 4) >> 4 & 0x0F)
 
-        dig_H6 = getChar(cal3, 6)
+        dig_H6 = self.getChar(cal3, 6)
 
         # Read temperature/pressure/humidity
         data = self.bus.read_i2c_block_data(self.i2c_address, REG_DATA, 8)
@@ -186,7 +190,7 @@ if __name__ == "__main__":
         I2C_bus_number = 1
     else:
         I2C_bus_number = 0
-    bme = BME280(int(str('0x77'), 16), I2C_bus_number)
+    bme = BME280(int('0x77', 16), I2C_bus_number)
 
     for measure in bme:
         print("Temperature: {}".format(measure['temperature']))
