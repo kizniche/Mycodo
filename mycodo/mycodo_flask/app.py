@@ -1026,11 +1026,11 @@ def page(page):
             latest_timelapse_img = None
 
 
-        # If timelapse active, take photo at predefined periods
+        # If timelapse active, retrieve parameters for display
         dict_timelapse = {}
+        time_now = datetime.datetime.now().strftime('%c')
         if (os.path.isfile(FILE_TIMELAPSE_PARAM) and
                 os.path.isfile(LOCK_FILE_TIMELAPSE)):
-            # Read user-defined timelapse parameters
             with open(FILE_TIMELAPSE_PARAM, mode='r') as infile:
                 reader = csv.reader(infile)
                 dict_timelapse = OrderedDict((row[0], row[1]) for row in reader)
@@ -1038,8 +1038,6 @@ def page(page):
             dict_timelapse['start_time'] = dict_timelapse['start_time'].strftime('%c')
             dict_timelapse['end_time'] = datetime.datetime.fromtimestamp(float(dict_timelapse['end_time'])).strftime('%c')
             dict_timelapse['next_capture'] = datetime.datetime.fromtimestamp(float(dict_timelapse['next_capture'])).strftime('%c')
-
-        time_now = datetime.datetime.now().strftime('%c')
 
         return render_template('pages/camera.html',
                                camera_enabled=camera_enabled,

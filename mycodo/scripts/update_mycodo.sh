@@ -37,7 +37,14 @@ case "${1:-''}" in
         printf "#### $INSTALL_DIRECTORY Creating backup /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT ####\n"
         mkdir -p /var/Mycodo-backups
         mkdir -p /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT
-        rsync -ah --stats --exclude old --exclude .git --exclude src $INSTALL_DIRECTORY/ /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT
+        rsync -ah --stats \
+            --exclude old \
+            --exclude .git \
+            --exclude src \
+            --exclude camera-stills \
+            --exclude camera-timelapse \
+            --exclude camera-video \
+            $INSTALL_DIRECTORY/ /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT
     ;;
     'upgrade')
         echo "1" > $INSTALL_DIRECTORY/.updating
