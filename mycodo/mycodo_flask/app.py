@@ -1009,7 +1009,7 @@ def page(page):
         try:
             latest_still_img_fullpath = max(glob.iglob(INSTALL_DIRECTORY+'/camera-stills/*.jpg'), key=os.path.getmtime)
             ts = os.path.getmtime(latest_still_img_fullpath)
-            latest_still_img_ts = datetime.datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M:%S")
+            latest_still_img_ts = datetime.datetime.fromtimestamp(ts).strftime("%c")
             latest_still_img = os.path.basename(latest_still_img_fullpath)
         except:
             latest_still_img_ts = None
@@ -1019,11 +1019,21 @@ def page(page):
         try:
             latest_timelapse_img_fullpath = max(glob.iglob(INSTALL_DIRECTORY+'/camera-timelapse/*.jpg'), key=os.path.getmtime)
             ts = os.path.getmtime(latest_timelapse_img_fullpath)
-            latest_timelapse_img_ts = datetime.datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M:%S")
+            latest_timelapse_img_ts = datetime.datetime.fromtimestamp(ts).strftime("%c")
             latest_timelapse_img = os.path.basename(latest_timelapse_img_fullpath)
         except:
             latest_timelapse_img_ts = None
             latest_timelapse_img = None
+
+        # If timelapse active, take photo at predefined periods
+        if (os.path.isfile(FILE_TIMELAPSE_PARAM) and
+                os.path.isfile(LOCK_FILE_TIMELAPSE)):
+            # Read user-defined timelapse parameters
+            dict_timelapse = {}
+            with open(FILE_TIMELAPSE_PARAM, mode='r') as infile:
+                reader = csv.reader(infile)
+                dict_timelapse = OrderedDict((row[0], row[1]) for row in reader)
+            dict_timelapse['start_time'] = datetime.datetime.strptime(dict_timelapse['start_time'], "%Y-%m-%d_%H-%M-%S")
 
         return render_template('pages/camera.html',
                                camera_enabled=camera_enabled,
@@ -1033,7 +1043,12 @@ def page(page):
                                latest_timelapse_img_ts=latest_timelapse_img_ts,
                                latest_timelapse_img=latest_timelapse_img,
                                stream_locked=stream_locked,
-                               timelapse_locked=timelapse_locked)
+                               timelapse_locked=timelapse_locked,
+                               tl_start=dict_timelapse['start_time'].strftime('%c'),
+                               tl_end=datetime.datetime.fromtimestamp(float(dict_timelapse['end_time'])).strftime('%c'),
+                               tl_interval=dict_timelapse['interval'],
+                               tl_next_capture=datetime.datetime.fromtimestamp(float(dict_timelapse['next_capture'])).strftime('%c'),
+                               tl_capture_number=dict_timelapse['capture_number'])
 
     elif page == 'help':
         return render_template('manual.html')

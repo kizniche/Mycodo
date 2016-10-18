@@ -12,9 +12,11 @@
       <div style="padding-bottom: 1.5em">
         <input type="hidden" name="form-name" value="camera">
         {{formCamera.hidden_tag()}}
+
         <div class="form-group">
           {{formCamera.Still(class_='form-control btn btn-default')}}
         </div>
+
         {% if not stream_locked -%}
           {% if not timelapse_locked %}
             <div class="form-group">
@@ -26,13 +28,16 @@
             </div>
           {% endif %}
         {%- endif %}
-        <div class="form-group">
-          {% if stream_locked -%}
-            {{formCamera.StopStream(class_='form-control btn btn-default')}}
-          {% else %}
-            {{formCamera.StartStream(class_='form-control btn btn-default')}}
-          {%- endif %}
-        </div>
+
+        {% if not timelapse_locked %}
+          <div class="form-group">
+            {% if stream_locked -%}
+              {{formCamera.StopStream(class_='form-control btn btn-default')}}
+            {% else %}
+              {{formCamera.StartStream(class_='form-control btn btn-default')}}
+            {%- endif %}
+          </div>
+        {%- endif %}
       </div>
 
       <div class="collapse" id="collapseContainerTimelapse" style="padding: 0.5em 0 3em 1em">
@@ -66,6 +71,23 @@
       </div>
     {%- endif -%}
 
+    {% if timelapse_locked %}
+      <div style="padding-bottom: 1em">
+        Timelapse Parameters:
+        <br>Start: {{tl_start}}
+        <br>End: {{tl_end}}
+        <br>Interval: {{tl_interval}} seconds
+        <br>Next Capture: {{tl_next_capture}}
+        <br>Next Capture Number: {{tl_capture_number}}
+      </div>
+      {% if latest_timelapse_img %}
+        <div style="padding-bottom: 1.5em">
+          Last Timelapse: {{latest_timelapse_img_ts}}
+          <a href="/camera/timelapse/{{latest_timelapse_img}}" target="_blank"><img style="max-width: 100%" src="/camera/timelapse/{{latest_timelapse_img}}"></a>
+        </div>
+      {% endif %}
+    {% endif %}
+
     {% if latest_still_img %}
       <div style="padding-bottom: 1.5em">
         Last Still: {{latest_still_img_ts}}
@@ -73,12 +95,6 @@
       </div>
     {% endif %}
 
-    {% if latest_timelapse_img %}
-      <div style="padding-bottom: 1.5em">
-        Last Timelapse: {{latest_timelapse_img_ts}}
-        <a href="/camera/timelapse/{{latest_timelapse_img}}" target="_blank"><img style="max-width: 100%" src="/camera/timelapse/{{latest_timelapse_img}}"></a>
-      </div>
-    {% endif %}
   </div>
 
 {% endblock %}
