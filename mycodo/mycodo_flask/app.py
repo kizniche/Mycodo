@@ -1035,9 +1035,11 @@ def page(page):
                 reader = csv.reader(infile)
                 dict_timelapse = OrderedDict((row[0], row[1]) for row in reader)
             dict_timelapse['start_time'] = datetime.datetime.strptime(dict_timelapse['start_time'], "%Y-%m-%d_%H-%M-%S")
-            dict_timelapse['start_time'] = dict_timelapse['start_time'].strftime('%c'),
-            dict_timelapse['end_time'] = datetime.datetime.fromtimestamp(float(dict_timelapse['end_time'])).strftime('%c'),
-            dict_timelapse['next_capture'] = datetime.datetime.fromtimestamp(float(dict_timelapse['next_capture'])).strftime('%c'),
+            dict_timelapse['start_time'] = dict_timelapse['start_time'].strftime('%c')
+            dict_timelapse['end_time'] = datetime.datetime.fromtimestamp(float(dict_timelapse['end_time'])).strftime('%c')
+            dict_timelapse['next_capture'] = datetime.datetime.fromtimestamp(float(dict_timelapse['next_capture'])).strftime('%c')
+
+        time_now = datetime.datetime.now().strftime('%c')
 
         return render_template('pages/camera.html',
                                camera_enabled=camera_enabled,
@@ -1048,6 +1050,7 @@ def page(page):
                                latest_timelapse_img=latest_timelapse_img,
                                stream_locked=stream_locked,
                                timelapse_locked=timelapse_locked,
+                               time_now=time_now,
                                tl_parameters_dict=dict_timelapse)
 
     elif page == 'help':
