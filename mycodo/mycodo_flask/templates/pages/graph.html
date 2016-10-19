@@ -34,6 +34,13 @@
     {%- endif -%}
   {%- endfor %}
 
+  {# comment Add one for the BME280 sensors because it also records humidity and dewpoint #}
+  {%- for each_sensor in sensor -%}
+    {%- if each_sensor.device == 'BME280' -%}
+      {% if count_measurements.append(count_measurements.pop() + 2) %}{% endif %}
+    {%- endif -%}
+  {%- endfor %}
+
   <div style="padding: 0 0.5em 0.5em 0.5em">
 
   {%- if displayOrder -%}
@@ -544,6 +551,14 @@
             getPastData({{chart_number}}, {{count_series|count}}, 'presssensor', 'temperature', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
             getLiveData({{chart_number}}, {{count_series|count}}, 'presssensor', 'temperature', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) %}
+                  {% elif 'humidity' in each_sensor_and_measure %}
+            getPastData({{chart_number}}, {{count_series|count}}, 'presssensor', 'humidity', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'presssensor', 'humidity', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+                    {%- do count_series.append(1) -%}
+                  {% elif 'dewpoint' in each_sensor_and_measure %}
+            getPastData({{chart_number}}, {{count_series|count}}, 'presssensor', 'dewpoint', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'presssensor', 'dewpoint', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+                    {%- do count_series.append(1) -%}
                   {% elif 'pressure' in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'presssensor', 'pressure', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
             getLiveData({{chart_number}}, {{count_series|count}}, 'presssensor', 'pressure', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
@@ -998,6 +1013,28 @@
               {
                 name: '{{each_sensor.name}} Temperature',
                 type: 'line',
+                tooltip: {
+                  pointFormatter: function () {
+                    return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';
+                  }
+                },
+                yAxis: 'temperature',
+                data: []
+              },
+            {%- elif 'humidity' in each_sensor_and_measure -%}
+              {
+                name: '{{each_sensor.name}} Humidity',
+                type: 'line',
+                tooltip: {
+                  valueSuffix: ' %',
+                  valueDecimals: 2
+                },
+                yAxis: 'humidity',
+                data: []
+              },
+            {%- elif 'dewpoint' in each_sensor_and_measure -%}
+              {
+                name: '{{each_sensor.name}} Dew Point',
                 tooltip: {
                   pointFormatter: function () {
                     return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';

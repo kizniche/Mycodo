@@ -18,11 +18,17 @@ def dewpoint(t, rh):
     tn, m = dict_tn[t_range], dict_m[t_range]
     if rh/100.0 <= 0:
         # Cannot perform log on 0 or negative number
-        return None
+        return 0.0
     else:
         return float(
             tn * (math.log(rh / 100.0) + (m * t) / (tn + t))
             / (m - math.log(rh / 100.0) - m * t / (tn + t)) )
+
+
+def altitude(pressure_pa, sealevel_pa=101325.0):
+    """Calculates the altitude in meters."""
+    altitude = 44330.0 * (1.0 - pow(pressure_pa / sealevel_pa, (1.0/5.255)))
+    return altitude
 
 
 def c_to_f(temperture_c):

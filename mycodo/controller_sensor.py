@@ -20,6 +20,7 @@ from devices.ads1x15 import ADS1x15_read
 from devices.mcp342x import MCP342x_read
 from sensors.atlas_pt1000 import Atlas_PT1000
 from sensors.am2315 import AM2315_read
+from sensors.bme280 import BME280
 from sensors.bmp import BMP
 from sensors.dht22 import DHT22
 from sensors.ds18b20 import DS18B20
@@ -91,6 +92,7 @@ class SensorController(threading.Thread):
         list_devices_i2c = ['ADS1x15',
                             'AM2315',
                             'ATLAS_PT1000',
+                            'BME280',
                             'BMP',
                             'HTU21D',
                             'MCP342x',
@@ -216,6 +218,8 @@ class SensorController(threading.Thread):
             self.measure_sensor = Atlas_PT1000(self.i2c_address, self.i2c_bus)
         elif self.device_type == 'K30':
             self.measure_sensor = K30()
+        elif self.device_type == 'BME280':
+            self.measure_sensor = BME280(self.i2c_address, self.i2c_bus)
         elif self.device_type == 'BMP':
             self.measure_sensor = BMP(self.i2c_bus)
         elif self.device_type == 'SHT1x_7x':

@@ -10,9 +10,8 @@ from ctypes import c_byte
 from ctypes import c_ubyte
 
 import RPi.GPIO as GPIO
-
-import traceback
-
+from sensorutils import dewpoint
+from sensorutils import altitude
 
 class BME280(object):
     def __init__(self, address, bus):
@@ -30,7 +29,6 @@ class BME280(object):
             self._temperature, self._humidity, self._pressure = self.readBME280All()
         except Exception, err:
             raise Exception(err)
-            traceback.print_exc()
             return 1
 
     @property
@@ -60,7 +58,9 @@ class BME280(object):
         response = {
             'temperature': float("{0:.2f}".format(self.temperature)),
             'humidity': float("{0:.2f}".format(self.humidity)),
-            'pressure': self.pressure
+            'dewpoint': float("{0:.2f}".format(dewpoint(self.temperature, self.humidity))),
+            'pressure': int(self.pressure),
+            'altitude': float("{0:.2f}".format(altitude(self.pressure)))
         }
         return response
 
@@ -193,8 +193,10 @@ if __name__ == "__main__":
     bme = BME280(int('0x77', 16), I2C_bus_number)
 
     for measure in bme:
-        print("Temperature: {}".format(measure['temperature']))
-        print("Humidity: {}".format(measure['humidity']))
-        print("Pressure: {}".format(measure['pressure']))
+        print("Temperature: {} C".format(measure['temperature']))
+        print("Humidity: {} %".format(measure['humidity']))
+        print("Dew Point: {} C".format(dewpoint(measure['temperature'], measure['humidity'])))
+        print("Pressure: {} Pa".format(int(measure['pressure'])))
+        print("Altitude: {} m".format(altitude(measure['pressure'])))
         
         time.sleep(1)

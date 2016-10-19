@@ -679,7 +679,7 @@ def choices_sensors(sensor):
             display = '{} ({}) CPU Load (15m)'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value:display})
-        if each_sensor.device in ['AM2315', 'ATLAS_PT1000', 'BMP', 'DHT11',
+        if each_sensor.device in ['AM2315', 'ATLAS_PT1000', 'BME280', 'BMP', 'DHT11',
                                   'DHT22', 'DS18B20', 'HTU21D', 'RPi',
                                   'SHT1x_7x', 'SHT2x']:
             value = '{},temperature'.format(each_sensor.id)
@@ -695,7 +695,7 @@ def choices_sensors(sensor):
             display = '{} ({}) Temperature (Die)'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value:display})
-        if each_sensor.device in ['AM2315', 'DHT11', 'DHT22', 'HTU21D',
+        if each_sensor.device in ['AM2315', 'BME280', 'DHT11', 'DHT22', 'HTU21D',
                                   'SHT1x_7x', 'SHT2x']:
             value = '{},humidity'.format(each_sensor.id)
             display = '{} ({}) Humidity'.format(
@@ -710,7 +710,7 @@ def choices_sensors(sensor):
             display = '{} ({}) CO2'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value:display})
-        if each_sensor.device == 'BMP':
+        if each_sensor.device in ['BME280', 'BMP']:
             value = '{},pressure'.format(each_sensor.id)
             display = '{} ({}) Pressure'.format(
                 each_sensor.id, each_sensor.name)
@@ -1839,9 +1839,12 @@ def sensor_add(formAddSensor, display_order):
                 new_sensor.location = 'Tx/Rx'
             
             # Pressure
-            elif formAddSensor.sensor.data =='BMP':
+            elif formAddSensor.sensor.data in ['BME280', 'BMP']:
                 new_sensor.device_type = 'presssensor'
-                new_sensor.location = '0x77'
+                if formAddSensor.sensor.data == 'BME280':
+                    new_sensor.location = '0x76'
+                elif formAddSensor.sensor.data == 'BMP':
+                    new_sensor.location = '0x77'
 
             # Light
             elif formAddSensor.sensor.data == 'TSL2561':
