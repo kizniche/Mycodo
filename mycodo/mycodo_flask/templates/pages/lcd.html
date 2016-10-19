@@ -161,6 +161,7 @@
                       <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
                       <option value="{{each_sensor.id}},temperature"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'temperature' %} selected{% endif %}>Sensor {{each_sensor.device}} Temperature: {{each_sensor.id}} ({{each_sensor.name}})</option>
                       <option value="{{each_sensor.id}},humidity"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'humidity' %} selected{% endif %}>Sensor {{each_sensor.device}} Humidity: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      <option value="{{each_sensor.id}},dewpoint"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'dewpoint' %} selected{% endif %}>Sensor {{each_sensor.device}} Dew Point: {{each_sensor.id}} ({{each_sensor.name}})</option>
                     {%- elif each_sensor.device_type == 'co2sensor' -%}
                       <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
                       <option value="{{each_sensor.id}},co2"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'co2' %} selected{% endif %}>Sensor {{each_sensor.device}} CO2: {{each_sensor.id}} ({{each_sensor.name}})</option>
@@ -170,6 +171,10 @@
                     {%- elif each_sensor.device_type == 'presssensor' -%}
                       <option value="{{each_sensor.id}},sensor_time"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.device}} Time: {{each_sensor.id}} ({{each_sensor.name}})</option>
                       <option value="{{each_sensor.id}},temperature"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'temperature' %} selected{% endif %}>Sensor {{each_sensor.device}} Temperature: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      {%- if each_sensor.device == 'BME280' -%}
+                        <option value="{{each_sensor.id}},humidity"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'humidity' %} selected{% endif %}>Sensor {{each_sensor.device}} Humidity: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                        <option value="{{each_sensor.id}},dewpoint"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'dewpoint' %} selected{% endif %}>Sensor {{each_sensor.device}} Dew Point: {{each_sensor.id}} ({{each_sensor.name}})</option>
+                      {%- endif -%}
                       <option value="{{each_sensor.id}},pressure"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'pressure' %} selected{% endif %}>Sensor {{each_sensor.device}} Pressure: {{each_sensor.id}} ({{each_sensor.name}})</option>
                       <option value="{{each_sensor.id}},altitude"{% if each_lcd.line_1_sensor_id == each_sensor.id and each_lcd.line_1_measurement == 'altitude' %} selected{% endif %}>Sensor {{each_sensor.device}} Altitude: {{each_sensor.id}} ({{each_sensor.name}})</option>
                     {%- endif -%}
