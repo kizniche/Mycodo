@@ -4,6 +4,7 @@ import mock
 from mycodo.tests.software_tests.factories import UserFactory
 from mycodo.tests.software_tests.test_mycodo_flask.conftest import login_user
 
+
 # ----------------------
 #   Non-Logged In Tests
 # ----------------------
@@ -72,4 +73,3 @@ def test_user_can_login(_, testapp, user_db):
     assert 'Timer' in res
     assert 'Help' in res
     assert 'Admin' in res
-
