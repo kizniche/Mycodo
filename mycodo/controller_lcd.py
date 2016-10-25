@@ -63,6 +63,7 @@ from config import INFLUXDB_USER
 from config import INFLUXDB_PASSWORD
 from config import INFLUXDB_DATABASE
 from config import SQL_DATABASE_MYCODO
+from config import MYCODO_VERSION
 from databases.mycodo_db.models import LCD
 from databases.mycodo_db.models import PID
 from databases.mycodo_db.models import Relay
@@ -247,7 +248,7 @@ class LCDController(threading.Thread):
 
             self.I2C_ADDR = int(self.lcd_pin, 16)
             self.lcd_init()
-            self.lcd_string_write('Mycodo 3.6.0', self.LCD_LINE[1]) 
+            self.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION), self.LCD_LINE[1]) 
             self.lcd_string_write('Start {}'.format(
                 self.lcd_name), self.LCD_LINE[2])
         except Exception as except_msg:
@@ -266,7 +267,11 @@ class LCDController(threading.Thread):
             while (self.running):
                 if time.time() > self.timer:
                     self.get_lcd_strings()
-                    self.output_lcds()
+                    try:
+                        self.output_lcds()
+                    except IOError as msg:
+                        self.logger.exception("[LCD {}] IOError: Unable to output to LCD".format(
+                            self.lcd_id))
                     self.timer = time.time() + self.lcd_period
 
                 if self.flash_lcd_on:
@@ -280,18 +285,18 @@ class LCDController(threading.Thread):
                         self.backlight_timer = time.time()+seconds
 
                 time.sleep(1)
-
-            self.lcd_init()  # Blank LCD
-            self.lcd_string_write('Mycodo Shut Down', self.LCD_LINE[1]) 
-            self.lcd_string_write('{}'.format(self.lcd_name), self.LCD_LINE[2]) 
-
-            self.running = False
-            self.logger.info("[LCD {}] Deactivated in {:.1f} ms".format(
-                self.lcd_id,
-                (timeit.default_timer()-self.thread_shutdown_timer)*1000))
         except Exception as except_msg:
             self.logger.exception("[LCD {}] Exception: {}".format(
                 self.lcd_id, except_msg))
+        finally:
+            self.lcd_init()  # Blank LCD
+            self.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION), self.LCD_LINE[1]) 
+            self.lcd_string_write('Stop {}'.format(
+                self.lcd_name), self.LCD_LINE[2])
+            self.logger.info("[LCD {}] Deactivated in {:.1f} ms".format(
+                self.lcd_id,
+                (timeit.default_timer()-self.thread_shutdown_timer)*1000))
+            self.running = False
 
 
     def get_lcd_strings(self):
