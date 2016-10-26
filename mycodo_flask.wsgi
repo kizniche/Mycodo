@@ -2,4 +2,4 @@ import sys
 
 sys.path.append('/var/www/mycodo/mycodo')
 
-from mycodo_flask import app as application
+from mycodo.start_flask_ui import app as application
