@@ -2,7 +2,10 @@
 """ Starts the mycodo flask UI """
 import os
 import argparse
-from mycodo_flask import app
+from mycodo.mycodo_flask.app import create_app
+
+app = create_app()  # required by the wsgi config and main()
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Mycodo Flask HTTP server.",
@@ -10,16 +13,16 @@ if __name__ == '__main__':
 
     options = parser.add_argument_group('Options')
     options.add_argument('-d', '--debug', action='store_true',
-                              help="Run Flask with debug=True (Default: False)")
+                         help="Run Flask with debug=True (Default: False)")
     options.add_argument('-s', '--ssl', action='store_true',
-                              help="Run Flask without SSL (Default: Enabled)")
+                         help="Run Flask without SSL (Default: Enabled)")
 
     args = parser.parse_args()
 
     if args.debug:
-        debug=True
+        debug = True
     else:
-        debug=False
+        debug = False
 
     if args.ssl:
         app.run(host='0.0.0.0', port=80, debug=debug)

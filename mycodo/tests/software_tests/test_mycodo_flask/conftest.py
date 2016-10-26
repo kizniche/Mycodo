@@ -9,20 +9,36 @@ patch.dict("sys.modules", RPi=MagicMock(), picamera=MagicMock()).start()
 import pytest
 from webtest import TestApp
 
-# See docstring of this fuction for details on use
-from mycodo.tests.software_tests.conftest import setup_databases_if_missing
-setup_databases_if_missing()
-from mycodo.mycodo_flask import app as _app
+from mycodo.config import TestConfig
+from mycodo.mycodo_flask.app import create_app
+from mycodo.databases.utils import session_scope
+from mycodo.tests.software_tests.conftest import create_admin_user
+
+
+def build_single_use_config(db_config):
+    """
+    Creates a TestConfig instance with database fixtures
+    that get deleted when test ends
+    """
+    config = TestConfig
+    config.SQL_DATABASE_USER = db_config.SQL_DATABASE_USER
+    config.SQL_DATABASE_MYCODO = db_config.SQL_DATABASE_MYCODO
+    config.SQL_DATABASE_NOTE = db_config.SQL_DATABASE_NOTE
+    config.MYCODO_DB_PATH = db_config.MYCODO_DB_PATH
+    config.NOTES_DB_PATH = db_config.NOTES_DB_PATH
+    config.USER_DB_PATH = db_config.USER_DB_PATH
+    return config
 
 
 @pytest.yield_fixture()
-def app():
-    """ Create a python-eve test fixture """
+def app(db_config):
+    """
+    Create a flask app test fixture
 
-    # this change of settings part can be removed when we switch to using
-    # an application factory: http://flask.pocoo.org/docs/0.11/patterns/appfactories/
-    _app.config['TESTING'] = True
-    _app.config['DEBUG'] = True
+    :param tmp_file: pytest fixture
+    """
+    config = build_single_use_config(db_config=db_config)
+    _app = create_app(config=config)
 
     ctx = _app.test_request_context()
     ctx.push()
@@ -34,6 +50,17 @@ def app():
 
 @pytest.fixture()
 def testapp(app):
+    """ A basic web app
+
+    :param app: flask app
+    :return: webtest.TestApp
+    """
+    create_admin_user(app.config['USER_DB_PATH'])
+    return TestApp(app)
+
+
+@pytest.fixture()
+def testapp_no_admin_user(app):
     """ A basic web app
 
     :param app: flask app
@@ -59,3 +86,9 @@ def login_user(app, username, password):
 
     return None
 
+
+@pytest.yield_fixture()
+def user_db(app):
+    """ creates a session to the user db """
+    with session_scope(app.config['USER_DB_PATH']) as session:
+        yield session

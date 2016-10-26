@@ -24,7 +24,7 @@
 
 import os
 
-MYCODO_VERSION = '4.0.23'
+MYCODO_VERSION = '4.0.24'
 
 INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'
 
@@ -92,3 +92,26 @@ LOGIN_BAN_TIME_SECONDS = 600 # 10 minutes
 
 # Relay
 MAX_AMPS = 15
+
+
+class ProdConfig(object):
+    """ Production Configuration """
+    SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, 'mycodo.db')
+    SQL_DATABASE_USER = os.path.join(DATABASE_PATH, 'users.db')
+    SQL_DATABASE_NOTE = os.path.join(DATABASE_PATH, 'notes.db')
+
+    MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+    USER_DB_PATH = 'sqlite:///' + SQL_DATABASE_USER
+
+
+class TestConfig(object):
+    """ Testing Configuration """
+    SQL_DATABASE_USER = ''  # defined later when tests run
+    SQL_DATABASE_MYCODO = '' # defined later when tests run
+    SQL_DATABASE_NOTE = '' # defined later when tests run
+    MYCODO_DB_PATH = ''  # defined later when tests run
+    NOTES_DB_PATH = ''  # defined later when tests run
+    USER_DB_PATH = ''  # defined later when tests run
+
+    TESTING = True
+    DEBUG = True

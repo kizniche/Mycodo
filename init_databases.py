@@ -123,34 +123,53 @@ def change_password(username):
                     sys.exit(1)
 
 
-def create_dbs(db_name, create_all=False):
-    if not os.path.exists(os.path.dirname(SQL_DATABASE_USER)):
+def create_dbs(db_name, create_all=False, config=None, exit_when_done=True):
+    """
+    Creates the individual databases using a database URI or
+    a configuration object (like 'ProdConfig', or 'TestConfig' in
+    mycodo.config
+
+    :param db_name:  SQLAlchemy URI
+    :param create_all: Bool to create all DBs
+    :param config: Configuration Object to use custom URIs
+    :param exit_when_done: Normally this code exits after setup is complete
+
+    :return: None
+    """
+    user_db_path = config.SQL_DATABASE_USER if config and hasattr(config, 'SQL_DATABASE_USER') else SQL_DATABASE_USER
+    mycodo_db_uri = config.MYCODO_DB_PATH if config and hasattr(config, 'MYCODO_DB_PATH') else MYCODO_DB_PATH
+    notes_db_uri = config.NOTES_DB_PATH if config and hasattr(config, 'NOTES_DB_PATH') else NOTES_DB_PATH
+    user_db_uri = config.USER_DB_PATH if config and hasattr(config, 'USER_DB_PATH') else USER_DB_PATH
+
+    if not os.path.exists(os.path.dirname(user_db_path)):
         try:
-            os.makedirs(os.path.dirname(SQL_DATABASE_USER))
+            os.makedirs(os.path.dirname(user_db_path))
         except OSError as exc: # Guard against race condition
             if exc.errno != errno.EEXIST:
                 raise
 
     if db_name == 'mycodo' or create_all:
-        print("Creating/verifying {} at {} ...".format(db_name, MYCODO_DB_PATH))
+        print("Creating/verifying {} at {} ...".format(db_name, mycodo_db_uri))
 
         from mycodo.databases.mycodo_db import init_db
         from mycodo.databases.mycodo_db import populate_db
-        init_db(MYCODO_DB_PATH)
-        populate_db(MYCODO_DB_PATH)
+        init_db(mycodo_db_uri)
+        populate_db(mycodo_db_uri)
 
     if db_name == 'notes' or create_all:
-        print("Creating/verifying {} at {} ...".format(db_name, NOTES_DB_PATH))
+        print("Creating/verifying {} at {} ...".format(db_name, notes_db_uri))
 
         from mycodo.databases.notes_db import init_db
-        init_db(NOTES_DB_PATH)
+        init_db(notes_db_uri)
 
     if db_name == 'users' or create_all:
-        print("Creating/verifying {} at {} ...".format(db_name, USER_DB_PATH))
+        print("Creating/verifying {} at {} ...".format(db_name, user_db_uri))
 
         from mycodo.databases.users_db import init_db
-        init_db(USER_DB_PATH)
-    sys.exit(0)
+        init_db(user_db_uri)
+
+    if exit_when_done:
+        sys.exit(0)
 
 
 def menu():
