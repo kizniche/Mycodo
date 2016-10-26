@@ -64,15 +64,16 @@ def register_extensions(_app, config):
     # create the databases if needed
     create_dbs(None, create_all=True, config=config, exit_when_done=False)
 
-
-def register_blueprints(_app):
-    """ register blueprints to the app """
-    _app.register_blueprint(authentication.views.blueprint)  # register our login/logout views
-    _app.register_blueprint(general_routes.blueprint)  # register general routes
-
+    # attach influx db
     influx_db.init_app(_app)
 
     # Check user option to force all web connections to use SSL
     misc = flaskutils.db_retrieve_table(_app.config['MYCODO_DB_PATH'], Misc, first=True)
     if misc.force_https:
         SSLify(_app)
+
+
+def register_blueprints(_app):
+    """ register blueprints to the app """
+    _app.register_blueprint(authentication.views.blueprint)  # register our login/logout views
+    _app.register_blueprint(general_routes.blueprint)  # register general routes
