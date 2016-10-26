@@ -33,7 +33,7 @@ def build_single_use_config(db_config):
 @pytest.yield_fixture()
 def app(db_config):
     """
-    Create a python-eve test fixture
+    Create a flask app test fixture
 
     :param tmp_file: pytest fixture
     """
