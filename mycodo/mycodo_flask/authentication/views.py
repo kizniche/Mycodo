@@ -2,6 +2,7 @@
 """ flask views that deal with user authentication """
 import datetime
 
+from flask import current_app
 from flask import redirect
 from flask import request
 from flask import render_template
@@ -16,8 +17,6 @@ from mycodo.databases.utils import session_scope
 from mycodo.databases.users_db.models import Users
 from mycodo.databases.mycodo_db.models import Misc
 
-from config import MYCODO_DB_PATH
-from config import USER_DB_PATH
 
 blueprint = Blueprint('authentication', __name__, static_folder='../static', template_folder='../templates')
 
@@ -32,7 +31,7 @@ def do_admin_login():
     form = flaskforms.Login()
     form_notice = flaskforms.InstallNotice()
 
-    with session_scope(MYCODO_DB_PATH) as db_session:
+    with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
         misc = db_session.query(Misc).first()
         dismiss_notification = misc.dismiss_notification
         stats_opt_out = misc.stats_opt_out
@@ -41,14 +40,14 @@ def do_admin_login():
         form_name = request.form['form-name']
         if form_name == 'acknowledge':
             try:
-                with session_scope(MYCODO_DB_PATH) as db_session:
+                with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                     mod_misc = db_session.query(Misc).first()
                     mod_misc.dismiss_notification = 1
                     db_session.commit()
             except Exception as except_msg:
                 flash("Acknowledgement not saved: {}".format(except_msg), "error")
         elif form_name == 'login' and form.validate_on_submit():
-            with session_scope(USER_DB_PATH) as new_session:
+            with session_scope(current_app.config['USER_DB_PATH']) as new_session:
                 user = new_session.query(Users).filter(Users.user_name == form.username.data).first()
                 new_session.expunge_all()
                 new_session.close()
