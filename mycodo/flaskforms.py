@@ -605,6 +605,29 @@ class ResetFlashingLCD(Form):
 
 
 #
+# Create Admin
+#
+
+class CreateAdmin(Form):
+    username = TextField(
+        u'Username',
+        render_kw={"placeholder": "Username"},
+        validators=[DataRequired()]
+    )
+    email = TextField(
+        u'Email',
+        render_kw={"placeholder": "Email"},
+        validators=[DataRequired()]
+    )
+    password = PasswordField(
+        u'Password',
+         render_kw={"placeholder": "Password"},
+         validators=[DataRequired()]
+    )
+
+
+
+#
 # Login
 #
 

@@ -46,6 +46,7 @@ from flask_influxdb import InfluxDB
 import flaskforms
 import flaskutils
 from flaskutils import clear_cookie_auth
+from flaskutils import flash_form_errors
 from flaskutils import gzipped
 
 from databases.utils import session_scope
@@ -74,6 +75,7 @@ from utils.system_pi import get_sec
 from utils.system_pi import internet
 
 from devices.camera_pi import CameraStream
+from scripts.utils import test_username, test_password
 
 from mycodo_client import DaemonControl
 
@@ -111,7 +113,30 @@ def before_blueprint_request():
         user = new_session.query(Users).filter(
             Users.user_restriction == 'admin').first()
         if user == None:
-            return "Error: No admin user found. Run \"sudo ~/Mycodo/init_databases.py --addadmin\" to add one"
+            flash("Unable to find an admin user in the user database. Create an admin user with the form below to access the login page.", "error")
+            form = flaskforms.CreateAdmin()
+            if request.method == 'POST':
+                if form.validate():
+                    new_user = Users()
+                    if test_username(form.username.data):
+                        new_user.user_name = form.username.data
+                    new_user.user_email = form.email.data
+                    if test_password(form.password.data):
+                        new_user.set_password(form.password.data)
+                    new_user.user_restriction = 'admin'
+                    new_user.user_theme = 'slate'
+                    try:
+                        with session_scope(current_app.config['USER_DB_PATH']) as db_session:
+                            db_session.add(new_user)
+                        flash("User '{}' successfully created. Please log in below.".format(
+                            form.username.data), "success")
+                        return redirect('/')
+                    except Exception as except_msg:
+                        flash("Failed to create user: {}".format(except_msg), "error")
+                else:
+                    flash_form_errors(form)
+            return render_template('create_admin.html',
+                                   form=form)
 blueprint.before_request(before_blueprint_request)
 
 
