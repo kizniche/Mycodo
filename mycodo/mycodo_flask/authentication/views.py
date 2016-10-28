@@ -13,6 +13,7 @@ from flask import make_response
 from flask.blueprints import Blueprint
 
 from mycodo import flaskutils, flaskforms
+from flaskutils import authenticate_cookies
 from flaskutils import flash_form_errors
 
 from mycodo.databases.utils import session_scope
@@ -30,7 +31,7 @@ def create_admin():
     if admin_exists():
         flash("Cannot access admin creation form if an admin user "
               "already exists.", "error")
-        return redirect(url_for('do_login'))
+        return redirect(url_for('general_routes.home'))
     form = flaskforms.CreateAdmin()
     if request.method == 'POST':
         if form.validate():
@@ -65,6 +66,10 @@ def do_login():
     """Authenticate users of the web-UI"""
     if not admin_exists():
         return redirect('/create_admin')
+
+    if logged_in():
+        flash("Cannot access login page if you're already logged in.", "error")
+        return redirect(url_for('general_routes.home'))
 
     # Check if the user is banned from logging in
     if flaskutils.banned_from_login():
@@ -152,3 +157,13 @@ def admin_exists():
         if user == None:
             return False
         return True
+
+def logged_in():
+    """Verify the user is logged in"""
+    if (not session.get('logged_in') and
+            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
+        return 0
+    elif (session.get('logged_in') or
+              (not session.get('logged_in') and
+                   authenticate_cookies(current_app.config['USER_DB_PATH'], Users))):
+        return 1

@@ -50,6 +50,7 @@ from flaskutils import clear_cookie_auth
 from flaskutils import gzipped
 
 from mycodo_flask.authentication.views import admin_exists
+from mycodo_flask.authentication.views import logged_in
 
 from databases.utils import session_scope
 from databases.mycodo_db.models import CameraStill
@@ -120,7 +121,7 @@ blueprint.before_request(before_blueprint_request)
 def home():
     """Load the default landing page"""
     if logged_in():
-        return redirect('/live')
+        return redirect(url_for('general_routes.page', page='live'))
     return clear_cookie_auth()
 
 
@@ -130,7 +131,7 @@ def page(page):
     Load the main pages of the web-UI
     """
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     # Default 'settings' landing page
     elif page == 'settings':
@@ -1460,17 +1461,6 @@ def settings(page):
                                formDelUser=formDelUser)
 
     return render_template('settings/{}.html'.format(page))
-
-
-def logged_in():
-    """Verify the user is logged in"""
-    if (not session.get('logged_in') and
-            not flaskutils.authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
-        return 0
-    elif (session.get('logged_in') or
-              (not session.get('logged_in') and
-                   flaskutils.authenticate_cookies(current_app.config['USER_DB_PATH'], Users))):
-        return 1
 
 
 def gen(camera):
