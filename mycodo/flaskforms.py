@@ -810,38 +810,10 @@ class ModPID(Form):
     )
     modPIDSubmit = SubmitField(u'Save')
 
-
 class ModPIDMethod(Form):
     pid_id = HiddenField(u'PID ID')
     method_id = HiddenField(u'Selected Method')
     Submit = SubmitField(u'Select Method')
-
-
-class AddPIDsetpoint(Form):
-    PID_id = HiddenField(u'PID ID')
-    startTime = TextField(u'Start Time')
-    endTime = TextField(u'End Time')
-    startSetpoint = DecimalField(u'Start Setpoint')
-    endSetpoint = DecimalField(
-        u'End Setpoint (optional)',
-        validators=[
-            validators.Optional()
-        ])
-    Submit = SubmitField(u'Add New Setpoint(s)')
-
-class ModPIDsetpoint(Form):
-    PIDSetpoint_id = HiddenField(u'PID Setpoint ID')
-    PID_id = HiddenField(u'PID ID')
-    startTime = TextField(u'Start Time')
-    endTime = TextField(u'End Time')
-    startSetpoint = DecimalField(u'Start Setpoint')
-    endSetpoint = DecimalField(
-        u'End Setpoint (optional)',
-        validators=[
-            validators.Optional()
-        ])
-    Delete = SubmitField(u'Delete')
-    Save = SubmitField(u'Save')
 
 class DelPID(Form):
     delPID_id = HiddenField(u'PID')

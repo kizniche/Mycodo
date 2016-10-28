@@ -50,9 +50,6 @@ from mycodo_client import DaemonControl
 
 from config import DAEMON_PID_FILE
 from config import INSTALL_DIRECTORY
-from config import LOGIN_ATTEMPTS
-from config import LOGIN_BAN_TIME_SECONDS
-from config import LOGIN_LOG_FILE
 from config import SQL_DATABASE_USER
 from config import SQL_DATABASE_MYCODO
 from config import INFLUXDB_HOST
@@ -2585,29 +2582,6 @@ def daemonActive():
     return False
 
 
-# Check for cookies to authenticate Login
-def authenticate_cookies(db_path, users):
-    cookie_username = request.cookies.get('user_name')
-    cookie_password_hash = request.cookies.get('user_pass_hash')
-    if cookie_username is not None:
-        with session_scope(db_path) as new_session:
-            user = new_session.query(users).filter(
-                users.user_name == cookie_username).first()
-            new_session.expunge_all()
-            new_session.close()
-            if user == None:
-                return False
-            elif cookie_password_hash == user.user_password_hash:
-                session['logged_in'] = True
-                session['user_group'] = user.user_restriction
-                session['user_name'] = user.user_name
-                session['user_theme'] = user.user_theme
-                return True
-            else:
-                failed_login()
-    return False
-
-
 def reorderList(modified_list, item, direction):
     from_position = modified_list.index(item)
     if direction == "up":
@@ -2670,51 +2644,6 @@ def flash_form_errors(form):
                 getattr(form, field).label.text,
                 error
                 ), "error")
-
-
-def banned_from_login():
-    if not session.get('failed_login_ban_time'):
-        session['failed_login_ban_time'] = 0
-    elif session['failed_login_ban_time']:
-        ban_time_left = time.time() - session['failed_login_ban_time']
-        if ban_time_left < LOGIN_BAN_TIME_SECONDS:
-            flash('Wait {} more minutes before attempting to login'.format(
-                int(LOGIN_BAN_TIME_SECONDS - ban_time_left) / 60), "info")
-            return 1
-        else:
-            session['failed_login_ban_time'] = 0
-    return 0
-
-
-def failed_login():
-    try:
-        session['failed_login_count'] += 1
-    except KeyError:
-        session['failed_login_count'] = 1
-
-    if session['failed_login_count'] > LOGIN_ATTEMPTS - 1:
-        flash('{} failed login attempts, wait 10 minutes to try again'.format(
-            session['failed_login_count']), "error")
-        session['failed_login_ban_time'] = time.time()
-        session['failed_login_count'] = 0
-    else:
-        flash('Failed Login ({}/{})'.format(
-            session['failed_login_count'],LOGIN_ATTEMPTS), "error")
-
-
-def login_log(user, group, ip, status):
-    with open(LOGIN_LOG_FILE, 'a') as file:
-        file.write('{:%Y-%m-%d %H:%M:%S}: {} {} ({}), {}\n'.format(
-            datetime.now(), status, user, group, ip))
-
-
-def clear_cookie_auth():
-    """Delete authentication cookies"""
-    response = make_response(redirect('/login'))
-    session.clear()  # or session['logged_in'] = False
-    response.set_cookie('user_name', '', expires=0)
-    response.set_cookie('user_pass_hash', '', expires=0)
-    return response
 
 
 def gzipped(f):

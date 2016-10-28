@@ -38,9 +38,10 @@
     {% else %}
 
       <div class="container">
+        {% include 'flash_messages.html' %}
+
         <form id='login_form' class="form-signin" name="login" action="/login" method="POST">
           <input type="hidden" name="form-name" value="login">
-          {% include 'flash_messages.html' %}
           <h2 class="form-signin-heading">Mycodo Login</h2>
           {{form.hidden_tag()}}
           {{form.username.label(class_='sr-only')}}
