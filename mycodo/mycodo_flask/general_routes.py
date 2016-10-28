@@ -112,9 +112,6 @@ def before_blueprint_request():
         return ('Error: Cannot find databases. Run '
                 '"init_databases.py --install_db all" to generate them.')
     if not admin_exists():
-        flash("Unable to find an admin user in the user database. "
-              "Create an admin user with the form below to access "
-              "the login page.", "error")
         return redirect(url_for("authentication.create_admin"))
 blueprint.before_request(before_blueprint_request)
 

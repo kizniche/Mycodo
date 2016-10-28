@@ -8,6 +8,7 @@ from flask import request
 from flask import render_template
 from flask import flash
 from flask import session
+from flask import url_for
 from flask import make_response
 from flask.blueprints import Blueprint
 
@@ -26,6 +27,10 @@ blueprint = Blueprint('authentication', __name__, static_folder='../static', tem
 
 @blueprint.route('/create_admin', methods=('GET', 'POST'))
 def create_admin():
+    if admin_exists():
+        flash("Cannot access admin creation form if an admin user "
+              "already exists.", "error")
+        return redirect(url_for('do_login'))
     form = flaskforms.CreateAdmin()
     if request.method == 'POST':
         if form.validate():
@@ -40,20 +45,23 @@ def create_admin():
             try:
                 with session_scope(current_app.config['USER_DB_PATH']) as db_session:
                     db_session.add(new_user)
-                # This message never makes it to the UI for some reason
                 flash("User '{}' successfully created. Please log in below.".format(
                     form.username.data), "success")
-                return redirect('/')
+                return redirect(url_for('authentication.do_login'))
             except Exception as except_msg:
                 flash("Failed to create user: {}".format(except_msg), "error")
         else:
             flash_form_errors(form)
+    else:
+        flash("Unable to find an admin user in the user database. "
+              "Create an admin user with the form below to access "
+              "the login page.", "error")
     return render_template('create_admin.html',
                            form=form)
 
 
 @blueprint.route('/login', methods=('GET', 'POST'))
-def do_admin_login():
+def do_login():
     """Authenticate users of the web-UI"""
     if not admin_exists():
         return redirect('/create_admin')
@@ -135,6 +143,7 @@ def logout():
     response = flaskutils.clear_cookie_auth()
     flash('Successfully logged out', 'success')
     return response
+
 
 def admin_exists():
     with session_scope(current_app.config['USER_DB_PATH']) as new_session:
